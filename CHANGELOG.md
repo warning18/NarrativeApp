@@ -8,6 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.475.0+511]
+
+The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
+
+### Added
+- **Buildings on arrival:** 28 new buildings in geography.json (prison, temple, library, forge, hall, house, cellar, warehouse, shop), linked from the scenes that take place inside them, with a spot for the party where the text makes it clear. 76 of the story's 99 indoor scenes now open on the building's own room plan (7 before); 23 still wait at their district (listed in the contract).
+- **Service spots in towns:** every town with a city plan gets fixed pins for its notice board, market, tavern and temple, plus a harbour on a quay and a forge in 5 towns, each on a real lot or square. `townServicesProvider(cityId)` says what each opens (the town's shop, the bounty board, rest, the port); the temple has no screen yet.
+- **The move on the world view:** `worldLegPathProvider((from:, to:))` returns the polyline of a Journey leg in the world chart's coordinates along the world roads and sea lanes, its kind (road, sea, crossing) and stops; a straight line when no route connects the two places.
+
+## [1.474.0+510]
+
+The land walk knows who walks.
+
+### Added
+- **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
+- **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
+
+## [1.473.0+509]
+
+Chapters 5 to 8 read in short paragraphs, with the key facts in bold. Needs v1.472 (chapters 3 and 4) first.
+
+### Changed
+- **Shorter paragraphs:** the long scenes of chapters 5 onward (node ids 6000 and up) are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French) in 189 scenes: a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+
+## [1.472.0+508]
+
+Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
+
+## [1.471.0+507]
+
+Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
+
+### Changed
+- **Shorter paragraphs:** 66 long scenes of chapters 1 and 2 are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+- **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
+
 ## [1.470.0+506]
 
 The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.

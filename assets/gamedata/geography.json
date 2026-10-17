@@ -102,6 +102,16 @@
     "landmark": "hold",
     "glyph": "keep"
   },
+  "black_hold_cells": {
+    "level": "building",
+    "parent": "alster_black_hold",
+    "kind": "prison",
+    "name": "The Black Hold’s cells",
+    "name_fr": "Les cachots de la Geôle Noire",
+    "blurb": "The Inquisition’s cells under Alster: a chamber of instruments, a hallway held by Wardens and a stair up to the battlements or down the Corpse Chute.",
+    "blurb_fr": "Les cachots de l’Inquisition sous Alster : une chambre d’instruments, un couloir tenu par des Gardiens et un escalier vers les remparts ou la Chute aux cadavres.",
+    "landmark": ""
+  },
   "alster_undercroft": {
     "level": "district",
     "danger": 3,
@@ -245,6 +255,16 @@
     "landmark": "upper",
     "glyph": "gate"
   },
+  "saltmouth_green_door": {
+    "level": "building",
+    "parent": "saltmouth_landward_gate",
+    "kind": "house",
+    "name": "The green door",
+    "name_fr": "La porte verte",
+    "blurb": "Up the Rope Stair, a green door with no knocker, and behind it a room with nothing in it but a chair facing the door.",
+    "blurb_fr": "En haut de l’escalier de la Corde, une porte verte sans heurtoir, et derrière elle une pièce vide, une chaise face à la porte.",
+    "landmark": ""
+  },
   "saltmouth_tern_row": {
     "level": "district",
     "controller": "tidekin",
@@ -269,6 +289,16 @@
     "blurb_fr": "Le quartier du port de Bouche-de-Sel, glissant d’écailles et d’huile noire, dont les remises à filets, les tanneries et les quais aux lanternes commercent encore sous le nez de l’Inquisition.",
     "landmark": "wharf",
     "glyph": "wharf"
+  },
+  "saltmouth_tide_cellar": {
+    "level": "building",
+    "parent": "saltmouth_wharf",
+    "kind": "cellar",
+    "name": "The Tide Cellar",
+    "name_fr": "La Cave des Marées",
+    "blurb": "A fence’s cellar under the wharf that floods at the spring tides, where everything has a price and some of it is information.",
+    "blurb_fr": "La cave d’un receleur sous le quai, inondée aux grandes marées, où tout a un prix, renseignements compris.",
+    "landmark": ""
   },
   "saltmouth_yard": {
     "level": "district",
@@ -428,6 +458,16 @@
     "landmark": "",
     "glyph": "yard"
   },
+  "cove_sail_loft": {
+    "level": "building",
+    "parent": "cove_camp_sail_loft",
+    "kind": "warehouse",
+    "name": "The sail-loft",
+    "name_fr": "La voilerie",
+    "blurb": "The only roof in the cove big enough for a council of war, and not big enough.",
+    "blurb_fr": "Le seul toit de la crique assez grand pour un conseil de guerre, et pas assez grand.",
+    "landmark": ""
+  },
   "ashlands": {
     "level": "zone",
     "parent": "ashen_coast",
@@ -507,6 +547,16 @@
     "landmark": "",
     "glyph": "temple"
   },
+  "ashen_quarter_archive": {
+    "level": "building",
+    "parent": "ashen_quarter_spire_stair",
+    "kind": "library",
+    "name": "The Quarter’s archive",
+    "name_fr": "Les archives du Quartier",
+    "blurb": "A cellar of what the Spire threw out in a hurry: rotted record cabinets, burnt ledgers and a rack of ship’s logs stamped with the Admiralty’s anchor.",
+    "blurb_fr": "Une cave de ce que la Flèche a jeté à la hâte : des armoires d’archives pourries, des registres brûlés et un râtelier de journaux de bord frappés de l’ancre de l’Amirauté.",
+    "landmark": ""
+  },
   "emberwick": {
     "level": "location",
     "controller": "compact",
@@ -538,6 +588,26 @@
     "landmark": "",
     "glyph": "market"
   },
+  "emberwick_cold_forge": {
+    "level": "building",
+    "parent": "emberwick_smithy_lane",
+    "kind": "forge",
+    "name": "The cold forge",
+    "name_fr": "La forge froide",
+    "blurb": "The oldest smith’s forge, unlit, where he talks with his hands to anyone who will watch them.",
+    "blurb_fr": "La forge du plus vieux forgeron, éteinte, où il parle avec les mains à quiconque veut bien les regarder.",
+    "landmark": ""
+  },
+  "emberwick_widows_house": {
+    "level": "building",
+    "parent": "emberwick_smithy_lane",
+    "kind": "house",
+    "name": "The widow’s house",
+    "name_fr": "La maison de la veuve",
+    "blurb": "A scrap-built house by the kilns with a hammer on the lintel, where a smith’s widow keeps his hymn in her head.",
+    "blurb_fr": "Une maison de ferraille près des fours, un marteau sur le linteau, où la veuve d’un forgeron garde son hymne en tête.",
+    "landmark": ""
+  },
   "emberwick_well_square": {
     "level": "district",
     "parent": "emberwick",
@@ -562,6 +632,26 @@
     "blurb": "The Inquisition’s mother-house, whose cathedral bled purple light over the flats until the night it burned.",
     "blurb_fr": "La maison mère de l’Inquisition, dont la cathédrale saignait une lumière pourpre sur les plaines jusqu’à la nuit où elle a brûlé.",
     "landmark": "spire"
+  },
+  "spire_cathedral": {
+    "level": "building",
+    "parent": "spire_of_judgment",
+    "kind": "temple",
+    "name": "The Spire’s cathedral",
+    "name_fr": "La cathédrale de la Flèche",
+    "blurb": "Inner doors that seal behind you, incense from above, a Tribunal arch and the inner sanctum under the High Warden’s white standard.",
+    "blurb_fr": "Des portes intérieures qui se referment derrière vous, de l’encens qui tombe d’en haut, l’arche du Tribunal et le sanctuaire sous l’étendard blanc du Haut Gardien.",
+    "landmark": ""
+  },
+  "spire_hall_of_records": {
+    "level": "building",
+    "parent": "spire_of_judgment",
+    "kind": "library",
+    "name": "The Hall of Records",
+    "name_fr": "La Salle des Archives",
+    "blurb": "Shelves past counting of the sins of every citizen the Inquisition ever took an interest in, and an archivist’s desk by the third door.",
+    "blurb_fr": "Des rayonnages à perte de vue des péchés de chaque citoyen auquel l’Inquisition s’est intéressée, et le bureau d’un archiviste près de la troisième porte.",
+    "landmark": ""
   },
   "spring_terraces": {
     "level": "zone",
@@ -615,6 +705,16 @@
     "blurb_fr": "La terrasse du haut, où un forgeron à une corne fait des lames pour personne en particulier, et où l’on brode sur une bannière, en fil brun, le nom de tous ceux que la Flèche a pendus.",
     "landmark": "",
     "glyph": "yard"
+  },
+  "akagiri_tetsu_forge": {
+    "level": "building",
+    "parent": "akagiri_forge_terrace",
+    "kind": "forge",
+    "name": "Tetsu’s forge",
+    "name_fr": "La forge de Tetsu",
+    "blurb": "A one-horned smith’s anvil on the terraces, and blades made for no one in particular.",
+    "blurb_fr": "L’enclume d’un forgeron à une seule corne sur les terrasses, et des lames faites pour personne en particulier.",
+    "landmark": ""
   },
   "grey_fen": {
     "level": "country",
@@ -724,6 +824,16 @@
     "landmark": "",
     "glyph": "hall"
   },
+  "kindly_hill_long_room": {
+    "level": "building",
+    "parent": "kindly_hill_hall",
+    "kind": "hall",
+    "name": "The long room",
+    "name_fr": "La longue salle",
+    "blurb": "Inside the hill it is always a summer evening: a long table, a hearth, and a clock by the door that shows what each visit costs.",
+    "blurb_fr": "Sous la colline, c’est toujours un soir d’été : une longue table, un âtre, et une horloge près de la porte qui montre ce que coûte chaque visite.",
+    "landmark": ""
+  },
   "drowned_cloister": {
     "level": "location",
     "danger": 2,
@@ -762,6 +872,16 @@
     "landmark": "",
     "glyph": "temple"
   },
+  "drowned_cloister_nave_hall": {
+    "level": "building",
+    "parent": "drowned_cloister_nave",
+    "kind": "temple",
+    "name": "The cloister’s nave",
+    "name_fr": "La nef du cloître",
+    "blurb": "Vaulted arches knee-deep in black water, candles on every ledge, the sick on the driest one and a skiff poled down the middle.",
+    "blurb_fr": "Des arches voûtées dans une eau noire jusqu’aux genoux, des bougies sur chaque corniche, les malades sur la plus sèche et une barque poussée à la perche au milieu.",
+    "landmark": ""
+  },
   "drowned_cloister_ossuary": {
     "level": "district",
     "tags": ["market"],
@@ -772,6 +892,16 @@
     "blurb_fr": "Des rayons de crânes avec les marchandises entre les mâchoires, les déserteurs de la Cour, les cellules sèches des Corneilles derrière des portes noyées, et des guides qui connaissent le marais.",
     "landmark": "",
     "glyph": "market"
+  },
+  "drowned_cloister_cache": {
+    "level": "building",
+    "parent": "drowned_cloister_ossuary",
+    "kind": "cellar",
+    "name": "The Keyholders’ cache",
+    "name_fr": "La cache des Porte-Clés",
+    "blurb": "A dry cell behind a drowned door, locked with a Keyholder’s key and watched by two hired blades.",
+    "blurb_fr": "Une cellule sèche derrière une porte noyée, fermée d’une clé de Porte-Clés et gardée par deux lames à gages.",
+    "landmark": ""
   },
   "mire_court": {
     "level": "district",
@@ -797,6 +927,16 @@
     "blurb": "A chamber carved smooth at the bottom of the Drowned Stair, where the inked inquisitors kept their black altar, the Shroud’s twin and the ledger of the taken.",
     "blurb_fr": "Une salle taillée lisse au pied de l’Escalier Noyé, où les inquisiteurs tatoués gardaient leur autel noir, le jumeau du Linceul et le registre des disparus.",
     "landmark": "court"
+  },
+  "hollow_court_chamber": {
+    "level": "building",
+    "parent": "hollow_court",
+    "kind": "temple",
+    "name": "The Chamber of the Black Altar",
+    "name_fr": "La Chambre de l’Autel noir",
+    "blurb": "A chamber carved smooth at the bottom of the stair, a black altar in a ring of kneeling robes, and the cradle of stone where the Shroud’s twin lay.",
+    "blurb_fr": "Une chambre taillée lisse au pied de l’escalier, un autel noir dans un cercle de robes agenouillées, et le berceau de pierre où reposait le jumeau du Suaire.",
+    "landmark": ""
   },
   "frost_reach": {
     "level": "country",
@@ -843,6 +983,16 @@
     "landmark": "reliquary",
     "glyph": "temple"
   },
+  "reliquary_chair_chapel": {
+    "level": "building",
+    "parent": "reliquary_quarter",
+    "kind": "temple",
+    "name": "The chapel with the chair",
+    "name_fr": "La chapelle à la chaise",
+    "blurb": "A chapel for making penitents: a chair with straps, a porcelain mask on a hook and a bowl of white paint.",
+    "blurb_fr": "Une chapelle où l’on fait des pénitents : une chaise à sangles, un masque de porcelaine à un crochet et un bol de peinture blanche.",
+    "landmark": ""
+  },
   "dead_heart": {
     "level": "district",
     "danger": 3,
@@ -878,6 +1028,46 @@
     "landmark": "",
     "glyph": "temple"
   },
+  "reliquary_tribunal_chapel": {
+    "level": "building",
+    "parent": "reliquary_chapels",
+    "kind": "temple",
+    "name": "The Tribunal’s chapel",
+    "name_fr": "La chapelle du Tribunal",
+    "blurb": "A reliquary chapel with frost on its windows, where the Tribunal sits in violet now that it has lost its Spire.",
+    "blurb_fr": "Une chapelle reliquaire aux vitres givrées, où le Tribunal siège en violet depuis qu’il a perdu sa Flèche.",
+    "landmark": ""
+  },
+  "reliquary_hammer_chapel": {
+    "level": "building",
+    "parent": "reliquary_chapels",
+    "kind": "temple",
+    "name": "The chapel of the Hammer",
+    "name_fr": "La chapelle du Marteau",
+    "blurb": "A reliquary chapel with a vault-keeper, a penitent on the door, and the Compact’s master hammer on velvet above a brass plate.",
+    "blurb_fr": "Une chapelle reliquaire avec un gardien de la crypte, un pénitent à la porte, et le marteau maître du Pacte sur du velours, au-dessus d’une plaque de laiton.",
+    "landmark": ""
+  },
+  "reliquary_chartkeeper_chapel": {
+    "level": "building",
+    "parent": "reliquary_chapels",
+    "kind": "temple",
+    "name": "The chart-keeper’s chapel",
+    "name_fr": "La chapelle de la cartographe",
+    "blurb": "A chapel whose saints were chipped off the walls, where the chart-keeper keeps the Quarter’s maps and a reliquary of grey cloth.",
+    "blurb_fr": "Une chapelle dont les saints ont été arrachés des murs, où la cartographe garde les cartes du Quartier et un reliquaire de toile grise.",
+    "landmark": ""
+  },
+  "reliquary_muniment_room": {
+    "level": "building",
+    "parent": "reliquary_chapels",
+    "kind": "library",
+    "name": "The muniment room",
+    "name_fr": "La salle des chartes",
+    "blurb": "The Reliquary’s archive under its oldest chapel, behind a seal of a burning skull: rolls, boxes of black wood and fifty years of dust.",
+    "blurb_fr": "Les archives du Reliquaire sous sa plus vieille chapelle, derrière un sceau au crâne ardent : des rouleaux, des coffrets de bois noir et cinquante ans de poussière.",
+    "landmark": ""
+  },
   "reliquary_frost_line": {
     "level": "district",
     "tags": ["haunted"],
@@ -888,6 +1078,16 @@
     "blurb_fr": "Au-delà de la ligne où le Quartier cesse d’être un quartier : des pavés givrés en plein été, un dessin dans le givre, et ce que la déchirure envoie dans les rues, qui a la forme de chiens et se vêt de vitraux.",
     "landmark": "",
     "glyph": "void"
+  },
+  "reliquary_parish_chapel": {
+    "level": "building",
+    "parent": "reliquary_frost_line",
+    "kind": "temple",
+    "name": "The parish chapel",
+    "name_fr": "La chapelle de la paroisse",
+    "blurb": "A frightened parish’s chapel whose stained glass something from the tear made into a nest.",
+    "blurb_fr": "La chapelle d’une paroisse effrayée, dont une chose venue de la déchirure a fait son nid dans les vitraux.",
+    "landmark": ""
   },
   "rimewell": {
     "level": "location",
@@ -911,6 +1111,16 @@
     "landmark": "",
     "glyph": "market"
   },
+  "rimewell_chapel": {
+    "level": "building",
+    "parent": "rimewell_bell_square",
+    "kind": "temple",
+    "name": "Rimewell’s chapel",
+    "name_fr": "La chapelle de Puits-de-Givre",
+    "blurb": "The pilgrims’ chapel, its belfry stair heaped with coins, and a bell that rings on its own at the hour the tear opened.",
+    "blurb_fr": "La chapelle des pèlerins, son escalier de clocher couvert de pièces, et une cloche qui sonne seule à l’heure où la déchirure s’est ouverte.",
+    "landmark": ""
+  },
   "rimewell_pilgrims_road": {
     "level": "district",
     "tags": ["wild"],
@@ -921,6 +1131,16 @@
     "blurb_fr": "Le dernier tronçon de la route vers le Reliquaire Noir, où le givre marche à vos côtés, et d’où descendent des choses qui n’y étaient pas l’an dernier.",
     "landmark": "",
     "glyph": "gate"
+  },
+  "rimewell_road_keepers_house": {
+    "level": "building",
+    "parent": "rimewell_pilgrims_road",
+    "kind": "house",
+    "name": "The road-keeper’s house",
+    "name_fr": "La maison de la gardienne de la route",
+    "blurb": "A low house on the pilgrims’ road with a back window and a bread oven big enough to hide a child.",
+    "blurb_fr": "Une maison basse sur la route des pèlerins, avec une fenêtre de derrière et un four à pain assez grand pour cacher un enfant.",
+    "landmark": ""
   },
   "rimewell_ridge_post": {
     "level": "district",
@@ -966,6 +1186,16 @@
     "blurb_fr": "La grande salle des géants, bâtie pour des gens trois fois plus hauts que vous, avec le feu qui ne s’est pas éteint depuis six cents ans, et l’aînée qui se souvient de tout.",
     "landmark": "",
     "glyph": "hall"
+  },
+  "highhearth_great_hearth": {
+    "level": "building",
+    "parent": "highhearth_moot_hall",
+    "kind": "hall",
+    "name": "The great hearth",
+    "name_fr": "Le grand âtre",
+    "blurb": "A giants’ hall with benches a yard off the floor and a hearth you could stand up in, its fire six hundred years old.",
+    "blurb_fr": "Une salle de géants aux bancs perchés à un mètre du sol et à l’âtre où l’on tiendrait debout, son feu vieux de six cents ans.",
+    "landmark": ""
   },
   "highhearth_quarry": {
     "level": "district",
@@ -1043,6 +1273,36 @@
     "landmark": "",
     "glyph": "wharf"
   },
+  "white_anchorage_chandlery": {
+    "level": "building",
+    "parent": "white_anchorage_hulls",
+    "kind": "shop",
+    "name": "The wreck-wrights’ chandlery",
+    "name_fr": "La boutique des charpentiers d’épaves",
+    "blurb": "A hull roofed with its own sail where the wreck-wrights sell what the sea gave back, and a door you walk past twenty times.",
+    "blurb_fr": "Une coque couverte de sa propre voile où les charpentiers d’épaves vendent ce que la mer a rendu, et une porte devant laquelle on passe vingt fois.",
+    "landmark": ""
+  },
+  "white_anchorage_vault": {
+    "level": "building",
+    "parent": "white_anchorage_hulls",
+    "kind": "cellar",
+    "name": "The Smugglers’ Vault",
+    "name_fr": "La Chambre forte des contrebandiers",
+    "blurb": "The cellar under the chandlery that follows the Crusade’s ships wherever they go, and the Keyholders who wait in it.",
+    "blurb_fr": "La cave sous la boutique, qui suit les navires de la Croisade où qu’ils aillent, et les Porte-Clés qui y attendent.",
+    "landmark": ""
+  },
+  "white_anchorage_impound": {
+    "level": "building",
+    "parent": "white_anchorage_hulls",
+    "kind": "warehouse",
+    "name": "The Admiralty’s impound",
+    "name_fr": "La fourrière de l’Amirauté",
+    "blurb": "A hull above the tide line under the Admiralty’s seal, two soldiers on its deck and the salvage in its hold.",
+    "blurb_fr": "Une coque au-dessus de la laisse de mer sous le sceau de l’Amirauté, deux soldats sur le pont et l’épave dans la cale.",
+    "landmark": ""
+  },
   "white_anchorage_chapel": {
     "level": "district",
     "tags": ["holy"],
@@ -1053,6 +1313,16 @@
     "blurb_fr": "La poupe du vaisseau amiral devenue chapelle, son journal sous l’autel qui fut la table à cartes de l’Amiral, où l’Ordre compte ses morts.",
     "landmark": "",
     "glyph": "temple"
+  },
+  "white_anchorage_stern": {
+    "level": "building",
+    "parent": "white_anchorage_chapel",
+    "kind": "temple",
+    "name": "The flagship’s stern",
+    "name_fr": "La poupe du vaisseau amiral",
+    "blurb": "The chapel inside the flagship’s stern, its altar the Admiral’s chart table and the fleet’s log under it.",
+    "blurb_fr": "La chapelle dans la poupe du vaisseau amiral, son autel la table à cartes de l’Amiral et le journal de la flotte dessous.",
+    "landmark": ""
   },
   "greyhithe": {
     "level": "location",
@@ -1227,6 +1497,16 @@
     "blurb_fr": "La salle au sommet de l’escalier, sous la Première Lanterne, où le Trône attend et où il faut affronter celui qui tient les portes.",
     "landmark": "",
     "glyph": "hall"
+  },
+  "candlehold_throne_room": {
+    "level": "building",
+    "parent": "candlehold_lantern_hall",
+    "kind": "hall",
+    "name": "The throne room",
+    "name_fr": "La salle du Trône",
+    "blurb": "The hall under the First Lantern: the Throne, its step, and the Houses’ galleries above.",
+    "blurb_fr": "La salle sous la Première Lanterne : le Trône, sa marche, et les galeries des Maisons au-dessus.",
+    "landmark": ""
   },
   "candlehold_lantern_cliff": {
     "level": "district",
