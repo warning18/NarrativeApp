@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.467.0+503]
+
+The Journey's step button reads "Go" in French too.
+
+### Changed
+- **"Partir" becomes "Go"** on the selected Journey step's button, and in the two lines that name it (the map hint and the Journey tutorial). The key is unchanged; "Set out" for expeditions keeps "Partir".
+
 ## [1.466.0+502]
 
 A skill challenge's dice can be seeded in tests. Play is unchanged.
