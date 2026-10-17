@@ -18,6 +18,23 @@ Follow-up to the Journey's world data (v1.475): the crownings seat in the Lanter
 
 Once the story links those 18 scenes to their rooms (their `location`, Narrative's field), 94 of the 99 indoor scenes open on a room plan.
 
+## [1.477.0+513]
+
+Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
+
+### Added
+- **The Parley Tent** (camp, workshops): 250 gold, 2 timber, 2 cut stone. Once built, risky gifts can be offered.
+- **Risky gifts:** in about 3 in 10 offers where a suitor qualifies, at most one card is marked risky. The suitor must be a clan you stand Wary, Unfriendly or Resented with, or one whose alignment opposes yours; never a hostile clan or the nemesis. The gift is one rarity better than its roll. The card shows the odds (for example "Gift 80% · Price 20%").
+- **The roll:** a d20 plus up to +2 from Luck, rolled when the offer is drawn, so a reload can't change it.
+  - Usually the gift (75 to 85%).
+  - Otherwise a price: 40% of max health, a quarter of the purse, or −2 to the clan's stat for two levels, shown as a Curse in the stat breakdown. A natural 1 always costs the health.
+  - Each price falls back to another, so "nothing" never happens.
+  - Standing with the clan rises whatever the die says.
+- **Simulator:** about 3.2 risky cards seen per run and 1.1 taken, 72% of them the gift. A risky card is never taken at half health or less.
+
+### Changed
+- **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
+
 ## [1.476.0+512]
 
 Companions say a word on the road.

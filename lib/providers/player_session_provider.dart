@@ -38,6 +38,7 @@ import '../data/perks.dart';
 import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
+import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
@@ -296,6 +297,7 @@ class PlayerSession {
     this.trainingTaken = const {},
     this.statPickOffer = const [],
     this.statSources = const {},
+    this.riskCurses = const [],
     this.tomePicks = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
@@ -596,6 +598,11 @@ class PlayerSession {
   /// [withSourcedGains]; read by statBreakdown. Empty in a save from before
   /// it (statBreakdown then shows what it can't explain as "earlier").
   final Map<String, Map<String, int>> statSources;
+
+  /// The clans' curses worn (risky_gifts.dart): each lowers a stat, written
+  /// in [statSources] as `curse:<clan>`, until its level is reached (see
+  /// [withCursesEnded]). Left out of the save when empty.
+  final List<RiskCurse> riskCurses;
 
   /// The tomes whose pick still waits among the [pendingStatPicks], oldest
   /// first: the next pick taken counts as the first one's (the ledger's
@@ -956,6 +963,7 @@ class PlayerSession {
     Map<String, int>? trainingTaken,
     List<StatPickOffer>? statPickOffer,
     Map<String, Map<String, int>>? statSources,
+    List<RiskCurse>? riskCurses,
     List<String>? tomePicks,
     List<String>? heldTitleIds,
     String? activeTitleId,
@@ -1073,6 +1081,7 @@ class PlayerSession {
       trainingTaken: trainingTaken ?? this.trainingTaken,
       statPickOffer: statPickOffer ?? this.statPickOffer,
       statSources: statSources ?? this.statSources,
+      riskCurses: riskCurses ?? this.riskCurses,
       tomePicks: tomePicks ?? this.tomePicks,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
@@ -1176,6 +1185,46 @@ class PlayerSession {
     );
   }
 
+  /// This session with [faction]'s curse (risky_gifts.dart): [amount]
+  /// points off [stat] for [riskyCurseLevels] levels, in the ledger as
+  /// `curse:<faction>`. A second curse from the same clan restarts the
+  /// count instead of stacking.
+  PlayerSession withCurse(String faction, String stat, int amount) {
+    final old = riskCurses.where((c) => c.clan == faction).firstOrNull;
+    var s = this;
+    if (old != null) {
+      s = s.withSourcedGains(ledgerCurse, faction, {old.stat: old.amount});
+    }
+    s = s.withSourcedGains(ledgerCurse, faction, {stat: -amount});
+    return s.copyWith(riskCurses: [
+      for (final c in s.riskCurses)
+        if (c.clan != faction) c,
+      RiskCurse(
+          clan: faction,
+          stat: stat,
+          amount: amount,
+          untilLevel: level + riskyCurseLevels),
+    ]);
+  }
+
+  /// This session with the curses whose level is reached lifted: their
+  /// points given back, the ledger's row cancelled.
+  PlayerSession withCursesEnded() {
+    final ended = [
+      for (final c in riskCurses)
+        if (level >= c.untilLevel) c,
+    ];
+    if (ended.isEmpty) return this;
+    var s = this;
+    for (final c in ended) {
+      s = s.withSourcedGains(ledgerCurse, c.clan, {c.stat: c.amount});
+    }
+    return s.copyWith(riskCurses: [
+      for (final c in riskCurses)
+        if (level < c.untilLevel) c,
+    ]);
+  }
+
   Map<String, dynamic> toJson() => {
         'saveVersion': playerSessionSaveVersion,
         'level': level,
@@ -1247,6 +1296,8 @@ class PlayerSession {
         if (statPickOffer.isNotEmpty)
           'statPickOffer': [for (final o in statPickOffer) o.toJson()],
         if (statSources.isNotEmpty) 'statSources': statSources,
+        if (riskCurses.isNotEmpty)
+          'riskCurses': [for (final c in riskCurses) c.toJson()],
         if (tomePicks.isNotEmpty) 'tomePicks': tomePicks,
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
@@ -1493,6 +1544,7 @@ class PlayerSession {
           if (value is num) key.toString(): value.toInt(),
       },
       statSources: ledgerFromJson(json['statSources']),
+      riskCurses: riskCursesFromJson(json['riskCurses']),
       tomePicks:
           (json['tomePicks'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2352,16 +2404,50 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSpecIds: s.specIds,
       specVariants: tables.specVariants,
       // A lucky sign (or title) helps draw the next gift.
-      luck: s.luck +
-          signEffectsFor(s.heldSigns, tables.signs,
-              alignment: s.alignmentScore,
-              extra: clanEffectsFor(
-                activeTitleId: s.activeTitleId,
-                heldTitleIds: s.heldTitleIds,
-                swornBoonIds: s.swornBoonIds,
-                swornFactionId: s.politics.swornFactionId,
-                data: tables.data,
-              )).stat('luck'),
+      luck: _offerLuck(tables),
+      riskyGifts: riskyGiftsOpen(s.builtHouseIds),
+    );
+  }
+
+  /// The character's Luck as the offers read it: their own, with what the
+  /// signs, the title worn and the Sworn boon add.
+  int _offerLuck(OfferTables tables) {
+    final s = state;
+    return s.luck +
+        signEffectsFor(s.heldSigns, tables.signs,
+            alignment: s.alignmentScore,
+            extra: clanEffectsFor(
+              activeTitleId: s.activeTitleId,
+              heldTitleIds: s.heldTitleIds,
+              swornBoonIds: s.swornBoonIds,
+              swornFactionId: s.politics.swornFactionId,
+              data: tables.data,
+            )).stat('luck');
+  }
+
+  /// The Luck a risky card's roll reads now (see [_offerLuck]).
+  int riskyLuck(OfferTables tables) => _offerLuck(tables);
+
+  /// The odds a risky card shows now (risky_gifts.dart's riskyOddsFor, at
+  /// the character's Luck).
+  ({int gift, int price}) riskyOdds(OfferTables tables) =>
+      riskyOddsFor(_offerLuck(tables));
+
+  /// What taking [suitor]'s risky card would do now (its saved die, the
+  /// Luck, the purse and the health of this moment); null for a normal
+  /// card. [acceptSuitor] applies the same.
+  RiskyResult? riskyResultOf(Suitor suitor, OfferTables tables) {
+    if (!suitor.risky) return null;
+    final s = state;
+    return riskyResultFor(
+      roll: suitor.riskRoll,
+      luck: _offerLuck(tables),
+      gold: s.gold,
+      chapter: _politicsChapter(null),
+      maxHealth: s.maxHealth,
+      currentHealth: s.currentHealth,
+      curseStat: riskyCurseStatFor(
+          tables.data.faction(suitor.factionId), s.professionId),
     );
   }
 
@@ -2592,7 +2678,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    var next = _withGift(state, suitor, tables, origin: origin);
+    // A risky card: the die (rolled with the draw) gives the gift or names
+    // the price; standing rises either way.
+    final risk = riskyResultOf(suitor, tables);
+    var next = switch (risk?.outcome) {
+      null ||
+      RiskyOutcome.gift =>
+        _withGift(state, suitor, tables, origin: origin),
+      RiskyOutcome.health => state.copyWith(
+          currentHealth: max(1, state.currentHealth - risk!.amount)),
+      RiskyOutcome.gold =>
+        state.copyWith(gold: max(0, state.gold - risk!.amount)),
+      RiskyOutcome.curse =>
+        state.withCurse(suitor.factionId, risk!.stat, risk.amount),
+    };
     final politics = acceptPolitics(suitor, offer.ticket,
         politics: next.politics,
         data: tables.data,
@@ -3384,7 +3483,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;
@@ -5036,7 +5135,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;

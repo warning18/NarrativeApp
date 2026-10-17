@@ -188,5 +188,21 @@
     "requiredFlags": [],
     "houseName_fr": "Le Port",
     "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
+  },
+  "parley_tent": {
+    "houseID": "parley_tent",
+    "category": "workshops",
+    "houseName": "Parley Tent",
+    "description": "A wide tent at the edge of camp, with cushions, a brazier and no weapons allowed past the flap. Clans that do not trust you will still sit here, and some will bring a gift better than they should. They always name a price. The die names it for them.",
+    "buildCost": 250,
+    "materialCost": {
+      "material_timber": 2,
+      "material_cut_stone": 2
+    },
+    "partyCapacityBonus": 0,
+    "unlocksRiskyGifts": true,
+    "requiredFlags": [],
+    "houseName_fr": "La tente de pourparlers",
+    "description_fr": "Une large tente à l’orée du camp, avec des coussins, un brasero et aucune arme admise passé le rabat. Les clans qui se défient de vous viendront tout de même s’y asseoir, et certains apporteront un don meilleur qu’ils ne le devraient. Ils fixent toujours un prix. C’est le dé qui le fixe pour eux."
   }
 }
