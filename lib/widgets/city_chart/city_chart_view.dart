@@ -70,6 +70,8 @@ class CityChartView extends StatefulWidget {
     this.onFocus,
     this.onPick,
     this.onPickFog,
+    this.services = const [],
+    this.onService,
     this.controls = true,
     this.cards = true,
     this.numbers = const {},
@@ -98,6 +100,10 @@ class CityChartView extends StatefulWidget {
   /// a district not yet found is.
   final void Function(CityChartWay way)? onPick;
   final void Function(CityChartDistrict district)? onPickFog;
+
+  /// The town's service pins, and told when one is tapped.
+  final List<CityChartService> services;
+  final void Function(CityChartService service)? onService;
 
   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
   /// off when a host has its own.
@@ -154,6 +160,7 @@ class _CityChartViewState extends State<CityChartView>
   (DateTime, Offset)? _lastTap;
   String? _focus;
   CityChartWay? _pickedWay;
+  CityChartService? _pickedService;
   CityChartDistrict? _pickedFog;
   String? _reportedFocus;
 
@@ -303,6 +310,8 @@ class _CityChartViewState extends State<CityChartView>
         hereWayId: widget.hereWayId,
         goalWayId: widget.goalWayId,
         selectedWayId: _pickedWay?.id,
+        services: widget.services,
+        selectedServiceId: _pickedService?.id,
         focusDistrict: _focus,
         numbers: widget.numbers,
         banners: widget.banners,
@@ -314,6 +323,21 @@ class _CityChartViewState extends State<CityChartView>
     final chart = widget.chart;
     final plan = (at - _offset) / _scale;
     final painter = _painter();
+    // Services, when they are showing: a sign on a square or a lot.
+    for (final s in widget.services) {
+      if (!painter.serviceShown(s)) continue;
+      final pin = _offset + s.at * _scale;
+      if ((pin - at).distance <= CityChartPainter.serviceRadius + 8) {
+        setState(() {
+          _pickedService = s;
+          _pickedWay = null;
+          _pickedFog = null;
+        });
+        widget.onService?.call(s);
+        return;
+      }
+    }
+    _pickedService = null;
     // Pins first, when they are showing.
     if (painter.detailed) {
       for (final w in chart.ways) {

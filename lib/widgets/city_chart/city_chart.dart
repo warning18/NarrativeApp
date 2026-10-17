@@ -110,6 +110,31 @@ class CityChartWay {
   final String building;
 }
 
+/// A service of the town pinned on its plan (wave 14): a notice board, the
+/// market, a tavern, a temple, a forge, a harbour. Fixed, not a way of the
+/// story; its [opens] says whether anything opens there yet.
+class CityChartService {
+  const CityChartService({
+    required this.id,
+    required this.kind,
+    required this.at,
+    required this.district,
+    this.opens = true,
+  });
+
+  final String id;
+
+  /// notice_board, market, tavern, temple, forge or harbour.
+  final String kind;
+
+  /// On the plan, in the plan's own units.
+  final Offset at;
+
+  /// The district's id.
+  final String district;
+  final bool opens;
+}
+
 /// A line of the plan with its width: a river, a canal, an avenue, a street.
 class CityChartStroke {
   const CityChartStroke(this.path, this.width, {this.main = false});
