@@ -16,6 +16,24 @@ Two bosses brought back to their curve.
 - **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
 - **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
 
+## [1.484.0+520]
+
+The tutorial strings polished, English and French.
+
+### Changed
+- **Typography:** curly apostrophes throughout the `tut_*` strings (English and French were mixed) and no-break spaces before `:` `;` `!` `?` in the French.
+- **The Rusty Eel** is masculine throughout the French tours (it was "la" in three places); "Harbor" is capitalised like the Harbor tour's title.
+- **A gendered participle** about the player is gone ("blessé" became "à bout de forces"), and the shop line reads "Spend your gold on what the merchant sells."
+- Text only: no key changes.
+- **Two more indoor scenes seated** (`6010_lysa_dead` in the chair chapel, `6010_record` in the muniment room), now that Core's v1.482 moved their ways on the city plan: 94 of the 99 indoor scenes stand in a building.
+
+## [1.483.0+519]
+
+Who rules each town, for the maps to tint it in its clan's colours. Data and a provider only; UX draws it (contract: `docs/proposals/town-ruler-colours.md`).
+
+### Added
+- **Town rulers** (`townRulersProvider`, `rulerOfTown`): the 16 towns with a city plan and their 59 districts, each with its ruling clan and that clan's colour (the `color` factions.json already has) plus a darker accent. A town takes the clan that holds it, else the clan holding most of its districts (neutral on a tie); a district takes its own holder, else its town's. Follows politics as places change hands.
+
 ## [1.482.0+518]
 
 Three camp buildings that bend the rolls: reroll, banish and raise the level's stat pick and the clans' offers.

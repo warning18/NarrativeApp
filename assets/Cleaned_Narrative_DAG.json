@@ -11431,7 +11431,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
     "choices": [
       {
         "text": "Close her eyes and walk back among the chapels",
@@ -18143,7 +18143,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_muniment_room",
     "choices": [
       {
         "text": "Tell the coast: a copy on every boat that sails",

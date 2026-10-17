@@ -1,5 +1,7 @@
 # Clan power over 50 playthroughs
 
+> **Re-measured with the stat picks (v1.480).** The first run (v1.453) left `training_paths` out of the simulator's tables, so no level spent its stat picks (see the erratum in [l3-1.473.0.md](l3-1.473.0.md)). The 50 runs were played again at v1.480 with the table loaded, same seeds; `clan-power-50.json` is the new data. The picture does not change: the mean power at the end of chapter 8 is within 1 point for the Dominion (73), the Compact (60), the Crows (67) and the Mire (6), the Vigil is 29 (was 33) and the Penitents 22 (was 14), and all 50 runs still reach an ending in chapter 8. The figures quoted below are the first run's, to within a few points on the Vigil and the Penitents; regenerate the tables with `tool/clan_power_report.py`.
+
 Asked by the user: *"simulate 50 playthroughs and check and show results of clan's power evolution (it seems really linear)."* Measured on `main` at v1.453.0 (`6cc82b7`) with the playthrough simulator, the engine behind `test/sim_playthroughs_test.dart`. Analysis only: no `lib/` change. The raw data is [clan-power-50.json](clan-power-50.json); the harness is `test/qa_clan_power_50_test.dart` (it runs only when `CLAN_POWER_OUT` is set, so CI skips it) and `tool/clan_power_report.py` merges its files and prints the tables below.
 
 ## The short answer

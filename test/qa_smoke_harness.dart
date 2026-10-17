@@ -159,16 +159,25 @@ Future<void> runSmoke(
         await tester.runAsync(() => container
             .read(appLanguageProvider.notifier)
             .setLanguage(french ? AppLanguage.fr : AppLanguage.en));
+        // A sheet or dialog a case opened is closed before the next one.
+        tester
+            .state<NavigatorState>(find.byType(Navigator).first)
+            .popUntil((route) => route.isFirst);
+        await tester.pump(const Duration(milliseconds: 400));
         overflows.clear();
-        holder.value = Scaffold(
-          body: c.bare
-              ? c.widget
-              : SafeArea(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(12),
-                    child: c.widget,
+        // A new State each pass (a sheet a widget opens opens again).
+        holder.value = KeyedSubtree(
+          key: ValueKey(label),
+          child: Scaffold(
+            body: c.bare
+                ? c.widget
+                : SafeArea(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(12),
+                      child: c.widget,
+                    ),
                   ),
-                ),
+          ),
         );
         await tester.pump();
         await _settle(tester);

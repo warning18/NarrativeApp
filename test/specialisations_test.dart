@@ -165,7 +165,7 @@ void main() {
         'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
         'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
         'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps',
+        'expedition_steps', 'training_paths',
       ])
         name: _table(name),
     };
