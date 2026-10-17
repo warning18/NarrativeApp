@@ -16,6 +16,27 @@ The land walk knows who walks.
 - **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
 - **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
 
+## [1.473.0+509]
+
+Chapters 5 to 8 read in short paragraphs, with the key facts in bold. Needs v1.472 (chapters 3 and 4) first.
+
+### Changed
+- **Shorter paragraphs:** the long scenes of chapters 5 onward (node ids 6000 and up) are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French) in 189 scenes: a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+
+## [1.472.0+508]
+
+Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
+
+## [1.471.0+507]
+
+Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
+
+### Changed
+- **Shorter paragraphs:** 66 long scenes of chapters 1 and 2 are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+- **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
+
 ## [1.470.0+506]
 
 The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.
