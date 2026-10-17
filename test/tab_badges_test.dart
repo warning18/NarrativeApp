@@ -177,6 +177,8 @@ void main() {
                 'smugglers_cellar',
                 'skillwright',
                 'parley_tent',
+                'bone_casters_hut',
+                'warding_cairn',
               ],
               'enemyKillCounts': {'slum_thug': 1},
             })));

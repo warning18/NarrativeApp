@@ -2406,6 +2406,14 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.boolean,
     ),
     FieldSchema(
+      key: 'rollPower',
+      label: 'Roll power (camp_rolls.dart)',
+      type: FieldType.enumeration,
+      enumOptions: ['reroll', 'banish', 'raise'],
+      help: 'The power it gives over the stat pick and the clans\' offer: '
+          'reroll the set, banish a card for some draws, raise a card.',
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',

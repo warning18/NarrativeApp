@@ -6,10 +6,11 @@
 // before (the Blind Beggar) and the rest showed streets. 92 stand in one now
 // (the 7 crownings in the throne room and 9 in the Black Reliquary's
 // chapels were seated last); the 7 in [_waiting] have their building but
-// wait: 3 are seated by Narrative in another district than their room's,
-// 2 (`6010_lysa_dead`, `6010_record`) have their way on the city plan in
-// another district than their building's, and 2 would make a roll's other
-// branch a move with no note
+// wait. 2 of them (`6010_lysa_dead`, `6010_record`) are ready on Core's
+// side since v1.482 (see [_ready]): their way stands in their room's
+// district on the city plan; only the story's `location` is left. 3 are seated
+// by Narrative in another district than their room's, and 2 would make a
+// roll's other branch a move with no note
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
@@ -155,6 +156,8 @@ const _ready = {
   '6010_heist_night',
   '6010_spawn',
   '6010_returned_roll',
+  '6010_lysa_dead',
+  '6010_record',
 };
 
 void main() {
