@@ -24,7 +24,9 @@ import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
 import 'perks.dart';
 import 'shop_stock.dart';
+import 'camp_rolls.dart' show RollBanOn;
 import 'signs.dart';
+import 'sim_rolls.dart';
 import 'training.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
@@ -248,6 +250,10 @@ class SimCharacter {
   Random pickRandom = Random(1);
   final Map<String, int> trainingTaken = {};
 
+  /// The camp's roll houses the walk built (sim_rolls.dart): null, or none
+  /// built, and the picks draw as they always did.
+  SimRolls? rolls;
+
   /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
 
@@ -329,6 +335,7 @@ class SimCharacter {
       level++;
       leveled = true;
       maxHealth += levelHealthGain;
+      rolls?.levels(1);
       if (trainingPaths.isNotEmpty) {
         takeStatPicks(levelStatPicks);
       } else {
@@ -378,27 +385,55 @@ class SimCharacter {
   /// its path counted.
   void takeStatPicks(int count) {
     for (var i = 0; i < count; i++) {
-      final offer = drawStatPick(
+      final stats = {
+        'strength': strength,
+        'dexterity': dexterity,
+        'constitution': constitution,
+        'intelligence': intelligence,
+        'wisdom': wisdom,
+        'perception': perception,
+        'luck': luck,
+        'charisma': charisma,
+      };
+      final roll = rolls;
+      var offer = drawStatPick(
         paths: trainingPaths,
         random: pickRandom,
         professionId: professionId,
         raceId: raceId,
         luck: luck,
         taken: trainingTaken,
-        stats: {
-          'strength': strength,
-          'dexterity': dexterity,
-          'constitution': constitution,
-          'intelligence': intelligence,
-          'wisdom': wisdom,
-          'perception': perception,
-          'luck': luck,
-          'charisma': charisma,
-        },
+        stats: stats,
+        bannedPaths: roll?.banned(RollBanOn.pick) ?? const {},
       );
       if (offer.isEmpty) return;
       final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
-      final pick = offer[statPickForShares(offer, shares, pickedPoints)];
+      int choose(List<StatPickOffer> o) =>
+          statPickForShares(o, shares, pickedPoints);
+      if (roll != null) {
+        roll.freshDraw(RollBanOn.pick);
+        if (roll.built.isNotEmpty) {
+          final main =
+              shares.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+          offer = roll.workStatPick(offer,
+              wanted: shares.keys.toSet(),
+              mainStat: main,
+              paths: trainingPaths,
+              choose: choose,
+              redraw: (tier) => drawStatPick(
+                    paths: trainingPaths,
+                    random: roll.random,
+                    professionId: professionId,
+                    raceId: raceId,
+                    luck: luck,
+                    taken: trainingTaken,
+                    stats: stats,
+                    tier: tier,
+                    bannedPaths: roll.banned(RollBanOn.pick),
+                  ));
+        }
+      }
+      final pick = offer[choose(offer)];
       trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
       for (final MapEntry(:key, :value) in pick.gains.entries) {
         pickedPoints[key] = (pickedPoints[key] ?? 0) + value;
