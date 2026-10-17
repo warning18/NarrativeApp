@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.478.0+514]
+## [1.477.0+513]
 
 Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
 
