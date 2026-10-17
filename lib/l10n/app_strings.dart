@@ -12316,6 +12316,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Malédiction {clanOf}\u00a0: −{n} {stat} pendant deux niveaux.',
   },
+  'offer_risky_roll_title': {
+    AppLanguage.en: 'The die decides',
+    AppLanguage.fr: 'Le dé décide',
+  },
+  'offer_risky_roll_sum': {
+    AppLanguage.en: '{roll} + {bonus} Luck = {total}',
+    AppLanguage.fr: '{roll} + {bonus} Chance = {total}',
+  },
+  'offer_risky_roll_gift': {
+    AppLanguage.en: 'The gift is yours.',
+    AppLanguage.fr: 'Le don est à vous.',
+  },
+  'offer_risky_roll_price': {
+    AppLanguage.en: 'A price to pay.',
+    AppLanguage.fr: 'Un prix à payer.',
+  },
   'ledger_curse': {
     AppLanguage.en: 'Curse',
     AppLanguage.fr: 'Malédiction',

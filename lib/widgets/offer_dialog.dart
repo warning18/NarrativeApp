@@ -8,6 +8,7 @@ import '../data/item_origin_here.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/risky_gifts.dart';
+import 'risky_roll_dialog.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -299,6 +300,14 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     // A risky card: what the die (rolled with the draw) says, read before
     // it is applied.
     final risk = notifier.riskyResultOf(suitor, tables);
+    // ... and the die rolled in front of the player before it is applied.
+    if (risk != null && mounted) {
+      await showRiskyRoll(context,
+          roll: suitor.riskRoll,
+          luck: notifier.riskyLuck(tables),
+          won: risk.won,
+          lang: lang);
+    }
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
     // The gift, as the reward card tells it, before the next offer.
@@ -892,6 +901,12 @@ class _OfferHall extends ConsumerWidget {
                                     ?.copyWith(fontStyle: FontStyle.italic)),
                           Text(trFor(lang, 'offer_risky_hint'),
                               style: theme.textTheme.bodySmall),
+                          const SizedBox(height: 4),
+                          RiskyOddsBar(
+                              luck: ref
+                                  .read(playerSessionProvider.notifier)
+                                  .riskyLuck(tables)),
+                          const SizedBox(height: 4),
                           Text(
                             riskyOddsText(
                                 ref
