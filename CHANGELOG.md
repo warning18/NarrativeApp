@@ -18,6 +18,13 @@ The story text reads like a page: paragraphs, names in colour, key facts in bold
 - **A scene writes itself out, quickly** (about 260 characters a second, never over 4 s): one tap shows it all, the next goes on as before; the choices (and the Journey's Continue, which shows the rest first if pressed too early) come once the text is complete. A scene read before, Edit Mode, reduced motion and animations off show the text at once. In the story player and the Journey's scene view (page and sheet).
 - A place's read mark ignores the `**` signs, so marking a scene up does not make a place you have read look new.
 
+## [1.469.0+505]
+
+A stat's popin on the Character radar.
+
+### Added
+- **Tap an ability on the radar:** its name (STR, DEX...) opens a sheet with the exact number, what a point of it does for this hero's calling ("Each point: +1 damage, +2% dodge", from `statPickEffects`), and where it comes from, from Core's stat breakdown: the starting score, the race, the calling, the picks (the paths named), the patron clan, the tomes, the formative memories, and "Earlier" for an old save's unexplained rest; with a total that adds up to the number. What a fight lends on top (gear, signs, titles, the Sworn boon) is a section of its own, with "In a fight: N" under the number. A line under the radar says it can be tapped. EN and FR at 320 px.
+
 ## [1.468.0+504]
 
 A fight explains its goal, its enemy's doctrine and its situation the first time a save meets each.
