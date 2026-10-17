@@ -64,7 +64,7 @@ Why chapter 5: it is the first chapter where the player does something the clans
 | Variant (flags) | Outcome |
 |---|---|
 | `way_quiet` (speak before the Houses) | Dominion +5, no place moves. The Houses are persuaded, not beaten. |
-| `way_force` (take the stair) | Dominion -8; the clan behind the gate the player used (Vigil, Compact, Mire, Crows or Penitents) **+8** and takes **Candlehold's Lantern Hall** (`control`; this is the big map change of the run). |
+| `way_force` (take the stair) | Dominion -8; the clan behind the gate the player used (Vigil, Compact, Mire, Crows or Penitents) **+8** and takes **Candlehold's Lantern Hall** (`control` of `candlehold_lantern_hall`; this is the big map change of the run). |
 | `way_friends` (the Wickwardens light the way) | Dominion +3, Vigil +3: a modest rise for the lamps. |
 
 The result then feeds the existing `throne_winner_*` flags in chapter 7's end: a clan that took the Hall in this event is the natural first claimant at `7590_*`; nothing in `7590_*` text changes.
@@ -74,7 +74,7 @@ Why chapter 7: it is where power matters most (`throne.dart` already uses power 
 ## What I need from Core
 
 1. Confirm the choice sizes (3 to 8) and that a choice may carry `power` and `control` without a new field.
-2. The place ids for the three `control` moves (Compact forge, Dominion's weakest place on that coast, Candlehold's Lantern Hall).
+2. The place ids for the three `control` moves (Compact forge, Dominion's weakest place on that coast, `candlehold_lantern_hall` is already in geography.json).
 3. That `trigger.power` is usable on a chapter-7 event with a half-size fallback, or else I split it into two events.
 4. Whether the simulator can print each clan's power per chapter before and after, so I can check the swings are felt without collapsing a clan (Core's note aims at 2 to 6 place changes a run).
 
