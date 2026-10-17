@@ -12,6 +12,7 @@ import '../screens/skills/skills_screen.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ability_radar.dart';
+import 'stat_sheet.dart';
 import 'feature_unlock.dart';
 
 /// How many skills the page lists before "All skills".
@@ -98,13 +99,26 @@ class SkillsRadarCard extends ConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Center(
-              child: AbilityRadar(
-                key: const Key('character_radar'),
-                size: 250,
-                t: (key) => tr(ref, key),
-                values: abilities,
-              ),
+            child: Column(
+              children: [
+                Center(
+                  child: AbilityRadar(
+                    key: const Key('character_radar'),
+                    size: 250,
+                    t: (key) => tr(ref, key),
+                    values: abilities,
+                    onAxisTap: (ability) => showStatSheet(context, ability),
+                  ),
+                ),
+                // The corner labels hang below the radar's own box.
+                const SizedBox(height: 14),
+                Text(tr(ref, 'stat_radar_hint'),
+                    key: const Key('character_radar_hint'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: ink.ash, fontStyle: FontStyle.italic)),
+                const SizedBox(height: 4),
+              ],
             ),
           ),
         ),
