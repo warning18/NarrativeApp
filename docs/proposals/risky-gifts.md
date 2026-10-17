@@ -157,8 +157,8 @@ Alternatives:
 - `stat_breakdown` test: the Curse row.
 - `offer_dialog_test`: the risky card and the reveal (UX).
 
-## 8. Open questions for the user
+## 8. Decisions (the manager's defaults; the user may override)
 
-1. **Show the odds on the card?** Recommended: yes ("3 in 4"). A gamble you can read is a choice; a hidden one feels unfair.
-2. **Can a malus be lifted early?** Recommended: not in v1, since two levels is short. A later option is raising that clan back to Unknown.
-3. **Should a lost roll still raise standing?** Recommended: yes. It makes the risky gift a way back to an uneasy clan, and the losses stay small.
+1. **The card shows the odds**, for example "Gift 80% · Price 20%".
+2. **A malus can't be lifted early.** Two levels is short enough.
+3. **Standing rises even on a lost roll.**
