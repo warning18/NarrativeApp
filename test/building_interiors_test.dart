@@ -4,14 +4,12 @@
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
 // before (the Blind Beggar) and the rest showed streets. 76 stand in one now;
-// the 23 in [_waiting] have their building but wait. For 18 of them
-// ([_ready]: the 7 crownings in the throne room, 11 in the Black
-// Reliquary's chapels) Core's side is done: their way stands in their
-// room's district on the city plan, and their building lies inside their
-// landmark's home; only the story's `location` is left to set. 3 are seated
-// by Narrative in another district than their room's, and 2 would make a
-// roll's other branch a move with no note
-// (docs/proposals/journey-world-data.md).
+// the 23 in [_waiting] have their building but wait. For 20 of them
+// ([_ready]: the 7 crownings in the throne room, 13 in the Black
+// Reliquary's chapels and rooms) Core's side is done: their way stands in
+// their room's district on the city plan, and their building lies inside
+// their landmark's home; only the story's `location` is left to set. The
+// other 3 wait on Narrative (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
 
@@ -157,6 +155,8 @@ const _ready = {
   '6010_heist_night',
   '6010_spawn',
   '6010_returned_roll',
+  '6010_lysa_dead',
+  '6010_record',
 };
 
 void main() {
