@@ -4,7 +4,9 @@ import '../data/camp_state.dart' show harborHouseId;
 import '../data/heard_of.dart';
 import '../data/map_charts.dart';
 import '../data/travel_history.dart';
+import '../data/world_leg_path.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import 'chapter_loop_provider.dart'
     show knownPlacesProvider, reachedChapterProvider;
 import 'game_db_providers.dart';
@@ -29,6 +31,17 @@ final travelHistoryProvider = Provider<TravelHistory>((ref) {
 /// ([MapShape.story]), whatever look the world map is set to.
 final storyChartProvider =
     Provider<ChartGeography>((ref) => chartOf(MapShape.story));
+
+/// The path of a move from landmark `from` to landmark `to` on the story
+/// chart (storyChartProvider, the full map's), along the world's roads and
+/// sea lanes, with its stops named in the language read and its kind (road,
+/// sea, crossing); a straight line when no road joins them (see
+/// world_leg_path.dart). The ids are world_map.dart's, as landmarkOfScene
+/// gives them for the scenes the Journey moves between.
+final worldLegPathProvider =
+    Provider.family<WorldLegPath, ({String from, String to})>((ref, leg) =>
+        worldLegPath(ref.watch(storyChartProvider), leg.from, leg.to,
+            language: ref.watch(appLanguageProvider)));
 
 /// What the full map's sheet offers for each place only heard of (see
 /// heard_of.dart): "Set out" there or by the expedition that finds it, or
