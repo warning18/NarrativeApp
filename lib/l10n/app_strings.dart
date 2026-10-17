@@ -3982,6 +3982,63 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Heroic',
     AppLanguage.fr: 'Héroïque',
   },
+  // A stat's popin on the Character radar (stat_sheet.dart).
+  'stat_sheet_does': {
+    AppLanguage.en: 'What a point does',
+    AppLanguage.fr: 'Ce que fait un point'
+  },
+  'stat_sheet_per_point': {
+    AppLanguage.en: 'Each point: {effects}',
+    AppLanguage.fr: 'Chaque point : {effects}',
+  },
+  'stat_sheet_from': {
+    AppLanguage.en: 'Where it comes from',
+    AppLanguage.fr: 'D’où elle vient'
+  },
+  'stat_sheet_total': {AppLanguage.en: 'Total', AppLanguage.fr: 'Total'},
+  'stat_sheet_lent': {
+    AppLanguage.en: 'Lent for a fight',
+    AppLanguage.fr: 'Prêté pour un combat'
+  },
+  'stat_sheet_in_fight': {
+    AppLanguage.en: 'In a fight: {n}',
+    AppLanguage.fr: 'En combat : {n}',
+  },
+  'stat_radar_hint': {
+    AppLanguage.en: 'Tap an ability to see where it comes from.',
+    AppLanguage.fr: 'Touchez une caractéristique pour voir d’où elle vient.',
+  },
+  'stat_src_base': {
+    AppLanguage.en: 'Starting score',
+    AppLanguage.fr: 'Score de départ'
+  },
+  'stat_src_race': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
+  'stat_src_profession': {
+    AppLanguage.en: 'Calling',
+    AppLanguage.fr: 'Vocation'
+  },
+  'stat_src_floor': {AppLanguage.en: 'Floor', AppLanguage.fr: 'Plancher'},
+  'stat_src_level': {AppLanguage.en: 'Levels', AppLanguage.fr: 'Niveaux'},
+  'stat_src_perk': {AppLanguage.en: 'Perks', AppLanguage.fr: 'Atouts'},
+  'stat_src_origin': {AppLanguage.en: 'Origin', AppLanguage.fr: 'Origine'},
+  'stat_src_pick': {AppLanguage.en: 'Picks', AppLanguage.fr: 'Choix'},
+  'stat_src_tome': {AppLanguage.en: 'Tomes', AppLanguage.fr: 'Livres'},
+  'stat_src_patron': {
+    AppLanguage.en: 'Patron clan',
+    AppLanguage.fr: 'Clan patron'
+  },
+  'stat_src_open_hand': {
+    AppLanguage.en: 'The Open Hand',
+    AppLanguage.fr: 'La Main ouverte'
+  },
+  'stat_src_earlier': {AppLanguage.en: 'Earlier', AppLanguage.fr: 'Avant'},
+  'stat_src_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'stat_src_sign': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
+  'stat_src_title': {AppLanguage.en: 'Titles', AppLanguage.fr: 'Titres'},
+  'stat_src_sworn': {
+    AppLanguage.en: 'Sworn boon',
+    AppLanguage.fr: 'Faveur du serment'
+  },
   'stat_effect_damage': {
     AppLanguage.en: '+{n} damage',
     AppLanguage.fr: '+{n} dégâts',
