@@ -3886,7 +3886,7 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 80,
+    "maxHealth": 72,
     "damage": 7,
     "guile": 11,
     "faction": "",
