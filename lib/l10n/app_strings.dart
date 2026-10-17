@@ -7532,9 +7532,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'affix_armored': {AppLanguage.en: 'Armored', AppLanguage.fr: 'Cuirassé'},
   'affix_armored_desc': {
     AppLanguage.en:
-        'Shrugs off 4 damage from every Attack face. Skills cut through.',
+        'Shrugs off 1 damage from every Attack face. Skills cut through.',
     AppLanguage.fr:
-        'Encaisse 4 dégâts de chaque face Attaque. Les compétences passent.',
+        'Encaisse 1 dégât de chaque face Attaque. Les compétences passent.',
   },
   'affix_skittish': {AppLanguage.en: 'Skittish', AppLanguage.fr: 'Craintif'},
   'affix_skittish_desc': {
@@ -9466,25 +9466,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_goal_rout': {
     AppLanguage.en:
-        'Their sturdiest fighter is the Captain. Bring it down and the rest flee: the fight is won, but those who ran leave only part of their spoils. The pay is a little better.',
+        'Their sturdiest fighter is the Captain. Bring the Captain down and the rest flee: you win, though those who ran leave only part of their spoils. The pay is a little better.',
     AppLanguage.fr:
-        'Leur combattant le plus robuste est le Capitaine. Abattez-le et les autres s’enfuient : le combat est gagné, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
+        'Leur combattant le plus robuste est le Capitaine. Abattez le Capitaine et les autres s’enfuient : vous gagnez, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
   },
   'tip_fight_goal_subdue': {
     AppLanguage.en:
-        'Wear them down under {pct} % health and they yield and pay a ransom: more gold than their usual reward. A blow that kills them outright leaves only the usual spoils.',
+        'Wear them down below {pct}% health and they yield and pay a ransom, more gold than their usual reward. A blow that kills outright leaves only the usual spoils.',
     AppLanguage.fr:
-        'Usez-les sous {pct} % de vie et ils se rendent et paient une rançon : plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
+        'Usez-les jusque sous {pct} % de vie et ils se rendent et paient une rançon : plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
   },
   'tip_fight_doctrine_dominion': {
     AppLanguage.en:
-        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: plan on plain Attack and Defend then. The Dominion’s soldiers are often Armored, shrugging off part of each Attack hit; skills cut through.',
+        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: count on plain Attack and Defend then. The Dominion’s soldiers are often Armored and shrug off a little of each Attack hit; skills cut through.',
     AppLanguage.fr:
-        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent une partie de chaque coup d’Attaque ; les compétences passent.',
+        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent un peu de chaque coup d’Attaque ; les compétences passent.',
   },
   'tip_fight_doctrine_crows': {
     AppLanguage.en:
-        'Each hit a Salt Crow lands lifts some of your gold, and it carries it (its card shows how much). Defeat it to get the gold back: whatever a Crow still carries when the fight ends, or takes when it runs, is lost.',
+        'Each hit a Salt Crow lands lifts some of your gold, and the Crow keeps it on itself (its card shows how much). Defeat it to win the gold back; whatever a Crow still carries when the fight ends, or takes when it runs, is lost.',
     AppLanguage.fr:
         'Chaque coup que porte une Corneille de Sel vous prend un peu d’or, qu’elle garde sur elle (sa carte montre combien). Battez-la pour le récupérer : ce qu’une Corneille porte encore à la fin du combat, ou emporte en fuyant, est perdu.',
   },
@@ -9496,9 +9496,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_doctrine_choir': {
     AppLanguage.en:
-        'The Choir’s sentinels are often Armored: they shrug off part of each Attack hit, while skills cut straight through.',
+        'The Choir’s sentinels are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
-        'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent une partie de chaque coup d’Attaque, alors que les compétences passent.',
+        'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
   'tip_fight_doctrine_pit': {
     AppLanguage.en:
@@ -9508,9 +9508,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_doctrine_giants': {
     AppLanguage.en:
-        'The giants of Highhearth are often Armored: they shrug off part of each Attack hit, while skills cut straight through.',
+        'The giants of Highhearth are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
-        'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent une partie de chaque coup d’Attaque, alors que les compétences passent.',
+        'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
   'tip_fight_doctrine_tidekin': {
     AppLanguage.en:
