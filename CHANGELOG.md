@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.485.0+521]
+
+Two bosses brought back to their curve.
+
+### Changed
+- **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
+- **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
+
 ## [1.484.0+520]
 
 The tutorial strings polished, English and French.
