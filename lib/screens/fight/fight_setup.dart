@@ -469,6 +469,11 @@ extension _FightSetup on _FightScreenState {
       _sellswordStrike = sellswordDamage(ref.read(reachedChapterProvider));
       ref.read(playerSessionProvider.notifier).spendSellswordFight();
     }
+    // A temple's blessing (temple.dart): its effects joined the signs as
+    // the party was built; this fight is one of its own.
+    if (!widget.modifiers.isTest && session.blessingFights > 0) {
+      ref.read(playerSessionProvider.notifier).spendBlessingFight();
+    }
     final threatened =
         _threat > 0 && _enemies.any((e) => !isBossEnemy(e.enemyId, e.data));
     for (final enemy in _enemies) {

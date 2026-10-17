@@ -54,6 +54,7 @@ import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
 import '../data/offers.dart' show clanEffectsFor;
+import '../data/temple.dart' show activeBlessingEffects;
 import '../data/throne.dart' show fieldedHost, hostEffects;
 import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
@@ -715,6 +716,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
         data: clanData,
       ),
       ...hostEffects(_host, clanData),
+      // A temple's blessing (temple.dart), a fight of it spent at the start.
+      if (!widget.modifiers.isTest)
+        ...activeBlessingEffects(
+            blessingFights: session.blessingFights,
+            blessingClan: session.blessingClan,
+            data: clanData),
     ]);
     _spells = parseSpells(spellsDb);
 

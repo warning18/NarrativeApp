@@ -3180,6 +3180,56 @@ final DbSchema factionsSchema = DbSchema(
       type: FieldType.text,
     ),
     FieldSchema(
+      key: 'templeName',
+      label: 'Temple: the name of its temples',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeName_fr',
+      label: 'Temple: the name of its temples (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingName',
+      label: 'Temple: the name of its temple blessing',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingName_fr',
+      label: 'Temple: the name of its temple blessing (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLine',
+      label: 'Temple: what its temple keeper says',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLine_fr',
+      label: 'Temple: what its temple keeper says (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLineHunted',
+      label: 'Temple: its temple keeper refusing a Hunted character',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLineHunted_fr',
+      label: 'Temple: its temple keeper refusing a Hunted character (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingGrants',
+      label: 'Temple: one line of what its blessing grants',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingGrants_fr',
+      label: 'Temple: one line of what its blessing grants (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'gender_fr',
       label: 'French gender and number',
       type: FieldType.enumeration,

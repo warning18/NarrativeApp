@@ -110,6 +110,83 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Bounties of the town',
     AppLanguage.fr: 'Primes de la ville',
   },
+  // The temple (temple.dart, docs/proposals/temple-service.md): Narrative's
+  // texts (docs/proposals/temple-service-texts.json).
+  'temple_mend_name': {
+    AppLanguage.en: 'Mending',
+    AppLanguage.fr: 'Guérison',
+  },
+  'temple_mend_desc': {
+    AppLanguage.en:
+        'Heals the whole party to full health, for gold. No day passes.',
+    AppLanguage.fr:
+        'Rend toute sa santé au groupe entier, contre de l’or. Aucun jour ne passe.',
+  },
+  'temple_blessing_name': {
+    AppLanguage.en: 'Blessing',
+    AppLanguage.fr: 'Bénédiction',
+  },
+  'temple_blessing_desc': {
+    AppLanguage.en:
+        'Lasts 3 fights: the ruling clan\'s favour, and a block of 1 at the start.',
+    AppLanguage.fr:
+        'Dure 3 combats : la faveur du clan qui gouverne, et un blocage de 1 au départ.',
+  },
+  'temple_price': {
+    AppLanguage.en: '{gold} gold',
+    AppLanguage.fr: '{gold} or',
+  },
+  'temple_blessed_already': {
+    AppLanguage.en: 'You already carry a blessing. A new one replaces it.',
+    AppLanguage.fr:
+        'Vous portez déjà une bénédiction. Une nouvelle la remplace.',
+  },
+  'temple_mended_today': {
+    AppLanguage.en: 'Already mended today. A night\'s rest opens it again.',
+    AppLanguage.fr: 'Déjà guéri aujourd’hui. Une nuit de repos la rouvre.',
+  },
+  'temple_refused_hunted': {
+    AppLanguage.en:
+        'The keeper will not take your coin: the clan that rules here hunts you.',
+    AppLanguage.fr:
+        'Le gardien refuse votre argent : le clan qui gouverne ici vous traque.',
+  },
+  'temple_mend_result': {
+    AppLanguage.en: 'Everyone stands whole again, and no time has passed.',
+    AppLanguage.fr: 'Chacun se relève entier, et le temps n’a pas passé.',
+  },
+  'temple_blessing_result': {
+    AppLanguage.en: 'The blessing settles on you: 3 fights.',
+    AppLanguage.fr: 'La bénédiction vous enveloppe : 3 combats.',
+  },
+  'temple_neutral_blessing_line': {
+    AppLanguage.en:
+        'No clan rules here, so the blessing is small and plain: +3% party max health, and a block of 1 at the start, for 3 fights.',
+    AppLanguage.fr:
+        'Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3 % de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats.',
+  },
+  'temple_blessing_active': {
+    AppLanguage.en: 'Blessing: {clan} ({n} fights)',
+    AppLanguage.fr: 'Bénédiction : {clan} ({n} combats)',
+  },
+  'temple_blessing_standing': {
+    AppLanguage.en: '+1 standing, once a chapter',
+    AppLanguage.fr: '+1 de réputation, une fois par chapitre',
+  },
+  'temple_neutral_name': {
+    AppLanguage.en: 'The town shrine',
+    AppLanguage.fr: 'Le sanctuaire de la ville',
+  },
+  'temple_neutral_line': {
+    AppLanguage.en:
+        'No clan keeps this shrine, and no clan will mind. A coin in the dish, a word to whoever is listening. Three fights.',
+    AppLanguage.fr:
+        'Aucun clan ne tient ce sanctuaire, et aucun ne s’en offusquera. Une pièce dans le plat, un mot à qui veut bien écouter. Trois combats.',
+  },
+  'temple_too_poor': {
+    AppLanguage.en: 'Not enough gold.',
+    AppLanguage.fr: 'Pas assez d’or.',
+  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
