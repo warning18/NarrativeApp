@@ -1,0 +1,89 @@
+{
+  "strings": {
+    "offer_risky_badge": {
+      "en": "Risky",
+      "fr": "Risqué"
+    },
+    "offer_risky_hint": {
+      "en": "A better gift, at their price: let the die decide.",
+      "fr": "Un meilleur don, à leur prix : laissez le dé décider."
+    },
+    "offer_risky_odds": {
+      "en": "Gift {gift}% · Price {price}%",
+      "fr": "Don {gift} % · Prix {price} %"
+    },
+    "offer_risky_gift": {
+      "en": "The die is kind. {clan} keeps its word.",
+      "fr": "Le dé est clément. Parole tenue par {clan}."
+    },
+    "offer_risky_health": {
+      "en": "The price is paid in blood: −{n} health.",
+      "fr": "Le prix se paie en sang : −{n} points de vie."
+    },
+    "offer_risky_gold": {
+      "en": "The price is paid in coin: −{n} gold.",
+      "fr": "Le prix se paie en pièces : −{n} or."
+    },
+    "offer_risky_curse": {
+      "en": "The curse of {clan}: −{n} {stat} for two levels.",
+      "fr": "Malédiction {clanOf} : −{n} {stat} pendant deux niveaux."
+    },
+    "ledger_curse": {
+      "en": "Curse",
+      "fr": "Malédiction"
+    }
+  },
+  "clan_offer_lines": {
+    "dominion": {
+      "riskyOffer": "We do not trust you. Take it anyway; the flame will judge whether we were wrong.",
+      "riskyOffer_fr": "Nous ne vous faisons pas confiance. Prenez-le quand même ; la flamme dira si nous avions tort."
+    },
+    "vigil": {
+      "riskyOffer": "We watched you walk in. We watch everyone. Take this, and let the dice say what we saw.",
+      "riskyOffer_fr": "Nous vous avons vu entrer. Nous regardons tout le monde. Prenez ceci, et que le dé dise ce que nous avons vu."
+    },
+    "compact": {
+      "riskyOffer": "The Row does not give on a whim. This is a wager: take it, and let the iron fall where it falls.",
+      "riskyOffer_fr": "La Rue ne donne pas sur un coup de tête. C’est un pari : prenez-le, et que le fer tombe où il tombera."
+    },
+    "mire": {
+      "riskyOffer": "The fen offers, the fen asks. Take it, and we will see whether the water likes you.",
+      "riskyOffer_fr": "Le marais offre, le marais demande. Prenez-le, et nous verrons si l’eau vous apprécie."
+    },
+    "crows": {
+      "riskyOffer": "A better prize than you have earned, at a price decided later. Roll for it. That is how we like our friends.",
+      "riskyOffer_fr": "Un meilleur butin que vous n’en avez mérité, pour un prix décidé plus tard. Lancez le dé. C’est ainsi que nous aimons nos amis."
+    },
+    "penitents": {
+      "riskyOffer": "We do not give gifts to strangers. We give tests. Take this, and the die will tell us what you are.",
+      "riskyOffer_fr": "Nous ne faisons pas de cadeaux aux inconnus. Nous faisons passer des épreuves. Prenez ceci, et le dé nous dira ce que vous êtes."
+    },
+    "giants": {
+      "riskyOffer": "Small guest, big gift. If it is too heavy, the table will tell us.",
+      "riskyOffer_fr": "Petit invité, grand don. S’il est trop lourd, la table nous le dira."
+    },
+    "oni": {
+      "riskyOffer": "Come closer. A gift with a hook in it is still a gift. Throw, and see which side the hook is on.",
+      "riskyOffer_fr": "Approchez. Un don à hameçon reste un don. Lancez, et voyez de quel côté est l’hameçon."
+    },
+    "tidekin": {
+      "riskyOffer": "The tide gives, the tide takes. Take this, and ask it which today is.",
+      "riskyOffer_fr": "La marée donne, la marée reprend. Prenez ceci, et demandez-lui quel jour nous sommes."
+    },
+    "kindly": {
+      "riskyOffer": "How kind of you to sit. A gift, then, and a small game, as is polite. Do roll.",
+      "riskyOffer_fr": "Comme c’est aimable de vous asseoir. Un don, donc, et un petit jeu, comme il se doit. Lancez, je vous prie."
+    },
+    "open_hand": {
+      "riskyOffer": "What is drawn, holds. This is drawn on a die: take it, and see whether it holds.",
+      "riskyOffer_fr": "Ce qui est tracé tient. Ceci est tracé sur un dé : prenez-le, et voyez s’il tient."
+    }
+  },
+  "parley_tent": {
+    "houseID": "parley_tent",
+    "houseName": "Parley Tent",
+    "houseName_fr": "La tente de pourparlers",
+    "description": "A wide tent at the edge of camp, with cushions, a brazier and no weapons allowed past the flap. Clans that do not trust you will still sit here, and some will bring a gift better than they should. They always name a price. The die names it for them.",
+    "description_fr": "Une large tente à l’orée du camp, avec des coussins, un brasero et aucune arme admise passé le rabat. Les clans qui se défient de vous viendront tout de même s’y asseoir, et certains apporteront un don meilleur qu’ils ne le devraient. Ils fixent toujours un prix. C’est le dé qui le fixe pour eux."
+  }
+}
