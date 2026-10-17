@@ -60,6 +60,8 @@ import '../widgets/room_plan_painter.dart';
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/calques_sheet.dart';
 import '../widgets/journey_world_map.dart';
+import '../widgets/town_service_sheet.dart';
+import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/story_text.dart';
@@ -5415,6 +5417,8 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
+    // The town's own signs (wave 14): a notice board, the market, a tavern...
+    final townServices = ref.watch(currentTownServicesProvider);
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5592,6 +5596,17 @@ class _CityDistrictView extends ConsumerWidget {
                     if (i != null && i < steps.length) onOpen(i);
                   },
                   onPickFog: (_) {},
+                  services: [
+                    for (final s in townServices)
+                      CityChartService(
+                          id: s.id,
+                          kind: s.kind,
+                          at: s.pin.at,
+                          district: s.pin.district,
+                          opens: s.opensSomething),
+                  ],
+                  onService: (picked) => showTownServiceSheet(context,
+                      townServices.firstWhere((s) => s.id == picked.id)),
                 ),
                 ...overlays,
               ],
