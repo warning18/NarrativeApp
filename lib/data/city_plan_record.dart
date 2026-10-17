@@ -86,6 +86,18 @@ class CityPlanBuilding {
   bool get notable => kind == 'hall' || kind == 'temple';
 }
 
+/// One of a town's services pinned on its plan (wave 14, see
+/// town_service_pins.dart): its [kind] (see townServiceKinds), where it
+/// stands ([at], on a square or a lot of the record) and the district that
+/// is in.
+class CityServicePin {
+  const CityServicePin(this.id, this.kind, this.at, this.district);
+  final String id;
+  final String kind;
+  final Offset at;
+  final String district;
+}
+
 /// One city's plan (see the file's header).
 class CityPlanRecord implements PlacePlan {
   CityPlanRecord({
@@ -106,6 +118,7 @@ class CityPlanRecord implements PlacePlan {
     this.buildings = const [],
     this.anchors = const {},
     this.names = const {},
+    this.services = const [],
   });
 
   factory CityPlanRecord.fromJson(String cityId, Map raw) {
@@ -176,6 +189,16 @@ class CityPlanRecord implements PlacePlan {
               fr: value['fr']?.toString() ?? ''
             ),
       },
+      services: [
+        for (final p in (raw['services'] as List? ?? const []))
+          if (p is Map)
+            CityServicePin(
+              p['id']?.toString() ?? '',
+              p['kind']?.toString() ?? '',
+              _point(p['at']),
+              p['district']?.toString() ?? '',
+            ),
+      ],
     );
   }
 
@@ -212,6 +235,11 @@ class CityPlanRecord implements PlacePlan {
 
   /// Narrative's names of the buildings, by building id.
   final Map<String, ({String en, String fr})> names;
+
+  /// The town's services on the plan (the notice board, the market…), in
+  /// the order of townServiceKinds; see town_services.dart for what each
+  /// opens.
+  final List<CityServicePin> services;
 
   late final Map<String, CityPlanBuilding> _byId = {
     for (final b in buildings) b.id: b,
