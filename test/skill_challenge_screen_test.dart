@@ -30,12 +30,13 @@ void main() {
               onPressed: () async {
                 popped = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
-                    builder: (_) => const SkillChallengeScreen(
+                    builder: (_) => SkillChallengeScreen(
                       promptText: 'Play to win',
                       ability: 'luck',
                       dc: 12,
                       successesNeeded: 3,
                       maxFailures: 2,
+                      random: Random(5),
                     ),
                   ),
                 );
@@ -64,8 +65,8 @@ void main() {
 
     // Race-to-3-successes-or-2-failures resolves in at most
     // successesNeeded + maxFailures - 1 = 4 rounds; advance the fake clock
-    // through more than that so the real (unseeded) outcome always
-    // finishes revealing, whichever way it went.
+    // through more than that so the outcome always finishes
+    // revealing, whichever way it went.
     // Each round now waits for the die to tumble and land (about 1.5 s).
     for (var i = 0; i < 24; i++) {
       await tester.pump(const Duration(milliseconds: 400));
