@@ -73,8 +73,10 @@ import '../providers/politics_provider.dart';
 import '../providers/road_random_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -106,6 +108,7 @@ import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 /// The random stream a story choice's ability check (and a skill
 /// challenge's rounds) rolls with: a fresh one each time in play; a test
@@ -340,7 +343,7 @@ class _StoryView extends ConsumerWidget {
       if (pendingAftermath != null && pendingAftermath.isNotEmpty)
         pendingAftermath,
       if (checkOutcome != null && checkOutcome.isNotEmpty) checkOutcome,
-      for (final prelude in preludes) prelude.text,
+      for (final prelude in preludes) stripStoryMarkup(prelude.text),
       for (final remark in remarks) '${remark.speaker}: ${remark.line}',
     ];
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
@@ -517,6 +520,17 @@ class _StoryView extends ConsumerWidget {
                 readNow: session.readSceneKeys.contains(sceneKey),
               );
     final narrationFolded = (hubFold?.folded ?? false) && !fullscreenReading;
+    // The scene's words write themselves out when it is new (Edit Mode shows
+    // them at once); the choices come once they have. A folded place shows
+    // no text, so its lists are there from the start.
+    final isEditing = ref.watch(appModeProvider) == AppMode.edit;
+    final revealKey = isEditing
+        ? null
+        : '${node.id}|${playState.history.length}|${playState.isInExcursion}';
+    final choicesReady = narrationFolded ||
+        revealKey == null ||
+        storyTextShownAtOnce(context) ||
+        ref.watch(storyTextDoneProvider).contains(revealKey);
     // Reading the place's scene: the place waits behind Enter.
     final readingScene = hubFold != null && !narrationFolded;
     void setNarrationFolded(bool folded) =>
@@ -784,6 +798,7 @@ class _StoryView extends ConsumerWidget {
                                                       .maxHeight,
                                                   child: Center(
                                                     child: _StoryText(
+                                                      revealKey: revealKey,
                                                       text: parts.text,
                                                       prelude: preludes,
                                                       echoes: parts.echoes,
@@ -822,6 +837,7 @@ class _StoryView extends ConsumerWidget {
                                                                 french),
                                                       ),
                                                     _StoryText(
+                                                      revealKey: revealKey,
                                                       text: parts.text,
                                                       prelude: preludes,
                                                       echoes: parts.echoes,
@@ -894,6 +910,7 @@ class _StoryView extends ConsumerWidget {
                           if (node.isTimed &&
                               !playState.isInExcursion &&
                               !readingScene &&
+                              choicesReady &&
                               ref.watch(appModeProvider) != AppMode.edit)
                             TimedChoiceBar(
                               key: ValueKey(
@@ -918,116 +935,129 @@ class _StoryView extends ConsumerWidget {
                                   switchInCurve: Curves.easeOut,
                                   switchOutCurve: Curves.easeIn,
                                   transitionBuilder: _nodeTransition,
-                                  child: readingScene
-                                      ? _EnterPlaceButton(
-                                          key: ValueKey(
-                                              '${node.id}_${playState.isInExcursion}_enter'),
-                                          place: node.settlement!,
-                                          again: hubFold.readBefore,
-                                          french: french,
-                                          onEnter: enterPlace,
-                                        )
-                                      : isHubNode && !isStoryEnding(node)
-                                          ? KeyedSubtree(
+                                  child: !choicesReady
+                                      ? const SizedBox.shrink(
+                                          key: ValueKey('choices_waiting'))
+                                      : readingScene
+                                          ? _EnterPlaceButton(
                                               key: ValueKey(
-                                                  '${node.id}_${playState.isInExcursion}_choices'),
-                                              child: _HubSections(
-                                                node: node,
-                                                choices: visibleChoices,
-                                                done: doneChoices,
-                                                story: story,
-                                                session: session,
-                                                currentNodeId:
-                                                    playState.currentNodeId,
-                                                isExcursion:
-                                                    playState.isInExcursion,
-                                                french: french,
-                                                maxHeight: choiceBudget,
-                                                onReread: hubFold == null
-                                                    ? null
-                                                    : () => setNarrationFolded(
-                                                        false),
-                                              ),
+                                                  '${node.id}_${playState.isInExcursion}_enter'),
+                                              place: node.settlement!,
+                                              again: hubFold.readBefore,
+                                              french: french,
+                                              onEnter: enterPlace,
                                             )
-                                          : ConstrainedBox(
-                                              key: ValueKey(
-                                                  '${node.id}_${playState.isInExcursion}_choices'),
-                                              constraints: BoxConstraints(
-                                                  maxHeight: choiceBudget),
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: [
-                                                    if (node.choices.isEmpty ||
-                                                        isStoryEnding(node))
-                                                      _EndingView(
-                                                        title:
-                                                            tr(ref, 'the_end'),
-                                                        // A written ending (its only way on is "begin
-                                                        // again") closes the story; a node with no choice
-                                                        // at all is a branch left unfinished.
-                                                        message: tr(
-                                                            ref,
-                                                            isStoryEnding(node)
-                                                                ? 'story_end_message'
-                                                                : 'branch_end_message'),
-                                                        restartLabel: isStoryEnding(
-                                                                node)
-                                                            ? node.choices.first
-                                                                .textFor(french)
-                                                            : tr(ref,
-                                                                'restart_story'),
-                                                        onRestart: () =>
-                                                            notifier.restart(
-                                                                StoryRepository
-                                                                    .startNodeId),
-                                                        session: session,
-                                                        onNewGamePlus: session
-                                                                .raceId.isEmpty
-                                                            ? null
-                                                            : () =>
-                                                                _startNewGamePlus(
-                                                                    context,
-                                                                    ref),
-                                                      )
-                                                    else
-                                                      for (var i = 0;
-                                                          i <
-                                                              visibleChoices
-                                                                  .length;
-                                                          i++)
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom: 8),
-                                                          child:
-                                                              _StaggeredReveal(
-                                                            delay: Duration(
-                                                                milliseconds:
-                                                                    60 * i),
-                                                            child:
-                                                                _ChoiceButton(
-                                                              choice:
-                                                                  visibleChoices[
-                                                                      i],
-                                                              story: story,
-                                                              session: session,
-                                                              currentNodeId:
-                                                                  playState
-                                                                      .currentNodeId,
-                                                              isExcursion: playState
-                                                                  .isInExcursion,
-                                                              french: french,
+                                          : isHubNode && !isStoryEnding(node)
+                                              ? KeyedSubtree(
+                                                  key: ValueKey(
+                                                      '${node.id}_${playState.isInExcursion}_choices'),
+                                                  child: _HubSections(
+                                                    node: node,
+                                                    choices: visibleChoices,
+                                                    done: doneChoices,
+                                                    story: story,
+                                                    session: session,
+                                                    currentNodeId:
+                                                        playState.currentNodeId,
+                                                    isExcursion:
+                                                        playState.isInExcursion,
+                                                    french: french,
+                                                    maxHeight: choiceBudget,
+                                                    onReread: hubFold == null
+                                                        ? null
+                                                        : () =>
+                                                            setNarrationFolded(
+                                                                false),
+                                                  ),
+                                                )
+                                              : ConstrainedBox(
+                                                  key: ValueKey(
+                                                      '${node.id}_${playState.isInExcursion}_choices'),
+                                                  constraints: BoxConstraints(
+                                                      maxHeight: choiceBudget),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .stretch,
+                                                      children: [
+                                                        if (node.choices
+                                                                .isEmpty ||
+                                                            isStoryEnding(node))
+                                                          _EndingView(
+                                                            title: tr(
+                                                                ref, 'the_end'),
+                                                            // A written ending (its only way on is "begin
+                                                            // again") closes the story; a node with no choice
+                                                            // at all is a branch left unfinished.
+                                                            message: tr(
+                                                                ref,
+                                                                isStoryEnding(
+                                                                        node)
+                                                                    ? 'story_end_message'
+                                                                    : 'branch_end_message'),
+                                                            restartLabel: isStoryEnding(
+                                                                    node)
+                                                                ? node.choices
+                                                                    .first
+                                                                    .textFor(
+                                                                        french)
+                                                                : tr(ref,
+                                                                    'restart_story'),
+                                                            onRestart: () =>
+                                                                notifier.restart(
+                                                                    StoryRepository
+                                                                        .startNodeId),
+                                                            session: session,
+                                                            onNewGamePlus: session
+                                                                    .raceId
+                                                                    .isEmpty
+                                                                ? null
+                                                                : () =>
+                                                                    _startNewGamePlus(
+                                                                        context,
+                                                                        ref),
+                                                          )
+                                                        else
+                                                          for (var i = 0;
+                                                              i <
+                                                                  visibleChoices
+                                                                      .length;
+                                                              i++)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          8),
+                                                              child:
+                                                                  _StaggeredReveal(
+                                                                delay: Duration(
+                                                                    milliseconds:
+                                                                        60 * i),
+                                                                child:
+                                                                    _ChoiceButton(
+                                                                  choice:
+                                                                      visibleChoices[
+                                                                          i],
+                                                                  story: story,
+                                                                  session:
+                                                                      session,
+                                                                  currentNodeId:
+                                                                      playState
+                                                                          .currentNodeId,
+                                                                  isExcursion:
+                                                                      playState
+                                                                          .isInExcursion,
+                                                                  french:
+                                                                      french,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ),
-                                                  ],
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
                                 )),
                           )),
                         ],
@@ -3505,48 +3535,6 @@ class _RecordSceneButton extends ConsumerWidget {
   }
 }
 
-/// Builds the body's [TextSpan]s for quick skim-reading: the opening
-/// sentence (the scene's "hook") is bolded so a reader can tell what a
-/// passage is about at a glance, and any quoted dialogue is italicized so
-/// spoken lines stand out from surrounding narration. Every node's
-/// description in this game is one continuous block (no author-inserted
-/// paragraph breaks), so this only ever needs to highlight within a single
-/// run of text, not across paragraphs.
-List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
-  if (body.isEmpty) return const [];
-
-  final firstSentenceMatch = RegExp(r'[.!?]+(\s|$)').firstMatch(body);
-  final firstSentenceEnd = firstSentenceMatch?.end ?? 0;
-
-  final quoteRanges = <List<int>>[
-    for (final m in RegExp('["“][^"”]{3,}["”]').allMatches(body))
-      [m.start, m.end],
-  ];
-
-  final breakpoints = <int>{0, firstSentenceEnd, body.length};
-  for (final range in quoteRanges) {
-    breakpoints.addAll(range);
-  }
-  final sorted = breakpoints.toList()..sort();
-
-  final spans = <TextSpan>[];
-  for (var i = 0; i < sorted.length - 1; i++) {
-    final start = sorted[i];
-    final end = sorted[i + 1];
-    if (start >= end) continue;
-    final isBold = start < firstSentenceEnd;
-    final isDialogue = quoteRanges.any((r) => start >= r[0] && end <= r[1]);
-    spans.add(TextSpan(
-      text: body.substring(start, end),
-      style: baseStyle.copyWith(
-        fontWeight: isBold ? FontWeight.w700 : null,
-        fontStyle: isDialogue ? FontStyle.italic : null,
-      ),
-    ));
-  }
-  return spans;
-}
-
 /// A town or camp's scene the reader has already read, folded to one line
 /// that opens it again, with the last fight's aftermath under it when
 /// there is one -- so the place's own lists get the screen.
@@ -3682,9 +3670,14 @@ class _StoryText extends StatelessWidget {
     this.aftermath,
     this.aftermathHeading = '',
     this.outcome,
+    this.revealKey,
   });
 
   final String text;
+
+  /// Names the scene for the typewriter (see StoryText): the text writes
+  /// itself out the first time it is shown under it. Null: shown at once.
+  final String? revealKey;
 
   /// Plain scenes read on the way here (see scene_flow.dart): they open
   /// the page, the scene's own text after a small rule.
@@ -3875,11 +3868,9 @@ class _StoryText extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  Text.rich(
-                    TextSpan(
-                        children: _highlightedSpans(
-                            storyBodyFor(scene.body), baseStyle)),
-                    textAlign: TextAlign.start,
+                  StoryText(
+                    text: storyBodyFor(scene.body),
+                    style: baseStyle,
                   ),
                   for (final echo in scene.echoes) ...[
                     const SizedBox(height: 14),
@@ -3913,9 +3904,10 @@ class _StoryText extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                 ],
-                Text.rich(
-                  TextSpan(children: _highlightedSpans(body, baseStyle)),
-                  textAlign: TextAlign.start,
+                StoryText(
+                  text: body,
+                  style: baseStyle,
+                  revealKey: revealKey,
                 ),
                 for (final echo in echoes) ...[
                   const SizedBox(height: 14),
@@ -3946,10 +3938,10 @@ class _StoryText extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    epilogue!,
-                    textAlign: TextAlign.start,
+                  StoryText(
+                    text: epilogue!,
                     style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                    firstSentenceBold: false,
                   ),
                 ],
               ],
@@ -4343,7 +4335,7 @@ class EchoLine extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text(echo.line, style: style),
+            StoryText(text: echo.line, style: style, firstSentenceBold: false),
           ],
         ),
       ),

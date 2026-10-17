@@ -1,6 +1,7 @@
 import '../models/story_node.dart';
 import 'chapter_grid_layout.dart';
 import 'story_repository.dart';
+import 'story_markup.dart' show stripStoryMarkup;
 
 /// One step of the story so far: the scene's opening line and the choice
 /// that left it (null for the scene the player stands in, or when the
@@ -65,7 +66,7 @@ List<JournalEntry> storySoFar(
     entries.add(JournalEntry(
       nodeId: node.id,
       chapter: chapterOfNode(node.id),
-      opening: openingLine(node.descriptionFor(french)),
+      opening: openingLine(stripStoryMarkup(node.descriptionFor(french))),
       choiceText: taken?.textFor(french),
     ));
   }
