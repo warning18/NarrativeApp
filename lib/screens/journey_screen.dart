@@ -61,6 +61,9 @@ import '../widgets/calques_sheet.dart';
 import '../widgets/journey_world_map.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/story_text.dart';
+import '../providers/story_text_provider.dart'
+    show storyTextDoneProvider, storyTextSkipProvider;
 import '../widgets/journey_glyph.dart';
 import '../widgets/arrival_sheet.dart';
 import '../widgets/journey_banner_pin.dart';
@@ -87,6 +90,7 @@ import 'story_player_screen.dart'
         noteShownEchoes,
         storyChoiceLockedText,
         takeStoryChoice;
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -1618,6 +1622,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
         : null;
+    // The words write themselves out when the scene is new (Edit Mode shows
+    // them at once); its choices come once they have, and a tap on Continue
+    // before that shows them all first.
+    final revealKey =
+        ref.watch(appModeProvider) == AppMode.edit ? null : 'journey|$sceneKey';
+    final textReady = revealKey == null ||
+        storyTextShownAtOnce(context) ||
+        ref.watch(storyTextDoneProvider).contains(revealKey);
+    void continueFromScene() => textReady
+        ? _read(false)
+        : ref.read(storyTextSkipProvider.notifier).state++;
     // Read full screen, the scene has the tab to itself: its words, then the
     // choices acted out here (cards, or a chip for each kind in a hub), then
     // the way back to the map. The map keeps only the ways that carry the
@@ -1631,6 +1646,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             children: [
               Expanded(
                 child: _ScenePanel(
+                  revealKey: revealKey,
                   key: ValueKey('journey_reading_$sceneKey'),
                   story: story,
                   node: node,
@@ -1642,7 +1658,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   detour: detour,
                 ),
               ),
-              if (here) ...[
+              if (here && textReady) ...[
                 const SizedBox(height: 8),
                 ConstrainedBox(
                   constraints: BoxConstraints(
@@ -1657,7 +1673,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 width: double.infinity,
                 child: FilledButton.icon(
                   key: const ValueKey('journey_continue'),
-                  onPressed: () => _read(false),
+                  onPressed: continueFromScene,
                   icon: Icon(here ? Icons.map_outlined : Icons.arrow_forward,
                       size: 18),
                   label: Text(tr(
@@ -1955,7 +1971,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     .indexWhere((n) => n.id == play.activeExcursionNode?.id),
                 french: french,
                 detourLabel: tr(ref, 'detour'),
-                text: node.descriptionFor(french),
+                text: stripStoryMarkup(node.descriptionFor(french)),
                 note: node.contextNoteFor(french) ?? '',
               )
             : TutorialTarget(
@@ -2402,13 +2418,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     title: hereName,
                     continueLabel: tr(ref, 'journey_continue'),
                     closeTip: tr(ref, 'journey_continue'),
-                    onContinue: () => _read(false),
+                    onContinue: continueFromScene,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Flexible(
                           flex: 3,
                           child: _ScenePanel(
+                            revealKey: revealKey,
                             key: ValueKey('journey_arrival_$sceneKey'),
                             story: story,
                             node: node,
@@ -2421,7 +2438,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           ),
                         ),
                         // The choices acted out here, under the words.
-                        if (steps.any((s) => s.onCard)) ...[
+                        if (steps.any((s) => s.onCard) && textReady) ...[
                           const SizedBox(height: 8),
                           Flexible(
                             flex: 2,
@@ -2661,10 +2678,15 @@ class _ScenePanel extends ConsumerWidget {
     required this.onFold,
     required this.onReading,
     this.detour,
+    this.revealKey,
   });
 
   final StoryData story;
   final StoryNode node;
+
+  /// Names the scene for the typewriter (see StoryText); null shows its
+  /// words at once.
+  final String? revealKey;
   final bool french;
 
   /// Folded to its first lines, to leave the map the room.
@@ -2771,10 +2793,11 @@ class _ScenePanel extends ConsumerWidget {
           const SizedBox(height: 4),
         ],
         // A new scene's words come out of the ink, top to bottom.
-        InkReveal(
+        StoryText(
           key: ValueKey(text),
-          animate: !reading && !MediaQuery.of(context).disableAnimations,
-          child: Text(text, style: prose),
+          text: text,
+          style: prose ?? const TextStyle(),
+          revealKey: revealKey,
         ),
         for (final echo in parts.echoes) ...[
           const SizedBox(height: 10),
@@ -2809,7 +2832,7 @@ class _ScenePanel extends ConsumerWidget {
                     if (detour != null && detour!.isNotEmpty) detour!,
                     for (final prelude in preludes) prelude.text,
                     text,
-                  ].join(' '),
+                  ].map(stripStoryMarkup).join(' '),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: prose,
