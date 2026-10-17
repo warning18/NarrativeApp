@@ -21,36 +21,47 @@
   },
   "strings": {
     "roll_reroll": {
-      "en": "Reroll ({n})",
-      "fr": "Relancer ({n})"
+      "en": "Reroll ({left})",
+      "fr": "Relancer ({left})"
     },
-    "roll_banish": {
-      "en": "Banish ({n})",
-      "fr": "Écarter ({n})"
-    },
-    "roll_raise": {
-      "en": "Raise ({n})",
-      "fr": "Hausser ({n})"
-    },
-    "roll_banish_length": {
-      "en": "Keep it away for {draws} draws · {cost} charges",
-      "fr": "L’écarter pendant {draws} tirages · {cost} charges"
+    "roll_reroll_done": {
+      "en": "The bones are cast again.",
+      "fr": "Les os sont jetés de nouveau."
     },
     "roll_reroll_warning": {
       "en": "The raised card goes too.",
       "fr": "La carte haussée part aussi."
     },
+    "roll_banish": {
+      "en": "Banish ({left})",
+      "fr": "Écarter ({left})"
+    },
+    "roll_banish_length": {
+      "en": "{draws} draws · {cost} charges",
+      "fr": "{draws} tirages · {cost} charges"
+    },
+    "roll_banish_done": {
+      "en": "{name} is warded off for {draws} draws.",
+      "fr": "{name} est écarté pour {draws} tirages."
+    },
     "roll_warded": {
       "en": "Warded, {n} draws",
-      "fr": "Écartée, {n} tirages"
+      "fr": "Écarté, {n} tirages"
     },
-    "roll_charges_left": {
-      "en": "{n} charges left",
-      "fr": "{n} charges restantes"
+    "roll_raise": {
+      "en": "Raise ({left})",
+      "fr": "Hausser ({left})"
+    },
+    "roll_raise_done": {
+      "en": "{name} rises to {rarity}.",
+      "fr": "{name} monte au rang {rarity}."
     },
     "roll_no_charge": {
       "en": "No charge left.",
       "fr": "Plus aucune charge."
     }
+  },
+  "camp_lines": {
+    "in": "assets/Cleaned_Narrative_DAG.json: flag_callbacks of 4999_camp (house_bone_casters_hut, house_warding_cairn) and 6002_camp (house_star_well)"
   }
 }
