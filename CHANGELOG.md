@@ -22,6 +22,14 @@ Wave 13: the road's party, clan banners on the skill tree, the level-up radar.
 - **The enemy or NPC met on a land walk comes in from the left**, behind the party, its art mirrored to face east; the party now stands further right to leave it room.
 - Tests: `walk_bubble_test`, `walk_party_view_test`, `encounter_figure_test` (left entry), `skill_tree_test`, `level_up_screen_test`.
 
+## [1.479.0+515]
+
+The new buildings' names and blurbs reworded.
+
+### Changed
+- **27 buildings** (the cells of the Black Hold, the green door, the Tide Cellar, the Reliquary chapels, the White Anchorage's hulls, the throne room and the rest) have their names and blurbs reworded in English and French. Text only: ids, kinds and parents are unchanged.
+- **16 indoor scenes seated in their rooms:** the 7 crownings (`7590_*`) in the throne room, on the dais, and 9 scenes of the Black Reliquary in their chapels (the muniment room, the Tribunal's, the Hammer's, the chart-keeper's, the parish's), so the Journey opens on each room's plan. The French follows the game's own words (Linceul, Porte-Clefs, marteau-maître, Le Coffre des Contrebandiers).
+
 ## [1.478.0+514]
 
 Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.
