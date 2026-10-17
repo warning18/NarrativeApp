@@ -7428,6 +7428,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Review Comments',
     AppLanguage.fr: 'Commentaires de relecture',
   },
+  'level_stats_detail': {
+    AppLanguage.en: 'Detail',
+    AppLanguage.fr: 'Détail',
+  },
   'hold_stat_for_details_hint': {
     AppLanguage.en: 'Hold a stat to see what it does',
     AppLanguage.fr: 'Maintenez une statistique pour voir son effet',

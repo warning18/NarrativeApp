@@ -83,3 +83,30 @@ class PixelBanner extends StatelessWidget {
     return found ? image : ColorFiltered(colorFilter: _unfound, child: image);
   }
 }
+
+/// A clan's main banner as a small flag [height] logical pixels tall (the
+/// sprite is 1:2, so half as wide), or nothing when the clan has none. The
+/// edges stay hard, so it reads as the same cloth as the full banner.
+class ClanFlag extends StatelessWidget {
+  const ClanFlag({
+    super.key,
+    required this.factionId,
+    this.height = 28,
+    this.found = true,
+  });
+
+  final String factionId;
+  final double height;
+  final bool found;
+
+  @override
+  Widget build(BuildContext context) {
+    final id = clanBannerId(factionId);
+    if (id == null) return const SizedBox.shrink();
+    return SizedBox(
+      width: height * pixelBannerSize.width / pixelBannerSize.height,
+      height: height,
+      child: FittedBox(child: PixelBanner(id: id, scale: 1, found: found)),
+    );
+  }
+}

@@ -1,5 +1,5 @@
-// What the party meets on a land crossing walks in from the right and stops
-// in front of it (lib/widgets/side_view/encounter_figure.dart): which
+// What the party meets on a land crossing walks in from the left and stops
+// behind it, facing it (lib/widgets/side_view/encounter_figure.dart): which
 // events put a figure on the road, how the walk runs, and that the scene
 // paints it. UX_SHOTS=<dir> saves the picture.
 import 'dart:io';
@@ -44,6 +44,18 @@ void main() {
     expect(walk.progressAt(10 + EncounterWalk.walkSeconds), 1);
     expect(walk.progressAt(30), 1);
     expect(EncounterWalk(sprite: null, animate: false).progressAt(0), 1);
+  });
+
+  test('it comes in from the left and stops behind the party', () {
+    // The party's last figure stands at x = 71 with a hero and two behind.
+    final rear = walkingPartyXs(3).last;
+    expect(EncounterWalk.xAt(0, rear), lessThan(0));
+    expect(EncounterWalk.xAt(1, rear), EncounterWalk.stopXFor(rear));
+    expect(EncounterWalk.stopXFor(rear), lessThan(rear));
+    expect(
+        EncounterWalk.xAt(0.5, rear), greaterThan(EncounterWalk.xAt(0, rear)));
+    // Never off the scene's left edge, however near the party is to it.
+    expect(EncounterWalk.stopXFor(5), 14);
   });
 
   testWidgets('the scene paints the patrol walking in, then standing',
