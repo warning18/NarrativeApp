@@ -16,6 +16,16 @@ The land walk knows who walks.
 - **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
 - **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
 
+## [1.470.0+506]
+
+The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.
+
+### Changed
+- **Names in colour:** the names of people (`npcs.json`, the companions), places (the geography) and clans (factions, sub-clans, and the clans' short names) are coloured wherever they appear in a scene's text, one colour for each kind (warm orange, teal, violet) in both themes. Found by the game from its own tables, in the language of the text, whole words and the longest first; Narrative marks nothing by hand. A description of someone ("The archivist") is not a name.
+- **Bold and paragraphs:** `**key facts**` are bold, and a blank line starts a paragraph (docs/proposals/story-markup.md). A text with no markup keeps the look it had (its first sentence in bold), and the voice, the journal and the folded lines read the words without the signs.
+- **A scene writes itself out, quickly** (about 260 characters a second, never over 4 s): one tap shows it all, the next goes on as before; the choices (and the Journey's Continue, which shows the rest first if pressed too early) come once the text is complete. A scene read before, Edit Mode, reduced motion and animations off show the text at once. In the story player and the Journey's scene view (page and sheet).
+- A place's read mark ignores the `**` signs, so marking a scene up does not make a place you have read look new.
+
 ## [1.469.0+505]
 
 A stat's popin on the Character radar.
