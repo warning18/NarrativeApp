@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.478.0+514]
+
+Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
+
+### Added
+- **The Parley Tent** (camp, workshops): 250 gold, 2 timber, 2 cut stone. Once built, risky gifts can be offered.
+- **Risky gifts:** in about 3 in 10 offers where a suitor qualifies, at most one card is marked risky. The suitor must be a clan you stand Wary, Unfriendly or Resented with, or one whose alignment opposes yours; never a hostile clan or the nemesis. The gift is one rarity better than its roll. The card shows the odds (for example "Gift 80% · Price 20%").
+- **The roll:** a d20 plus up to +2 from Luck, rolled when the offer is drawn, so a reload can't change it.
+  - Usually the gift (75 to 85%).
+  - Otherwise a price: 40% of max health, a quarter of the purse, or −2 to the clan's stat for two levels, shown as a Curse in the stat breakdown. A natural 1 always costs the health.
+  - Each price falls back to another, so "nothing" never happens.
+  - Standing with the clan rises whatever the die says.
+- **Simulator:** about 3.2 risky cards seen per run and 1.1 taken, 72% of them the gift. A risky card is never taken at half health or less.
+
+### Changed
+- **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
+
 ## [1.475.0+511]
 
 The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
