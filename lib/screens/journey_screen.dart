@@ -11,6 +11,7 @@ import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
+import '../data/city_districts.dart' show districtOfPlace;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -1446,7 +1447,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final place = world.placeOfNode(story.nodeFor(ends[choices[i]]!));
         if (place == null || place.id == herePlace?.id) continue;
         if (world.locationOf(place.id)?.id != hereLocation.id) continue;
-        districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
+        // A way into a building stands in the building's district.
+        districtOfStep[i] = districtOfPlace(world, place.id)?.id ?? '';
       }
     }
     // The city's stored plan (Core's city_plans.json, board 15): the plan
@@ -1516,9 +1518,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var hereSpot = '';
     final leavesRoom = <int>{};
     if (hereBuilding != null && !_outside) {
-      room = RoomPlan.of(
-          seed: _stableSeed(hereBuilding.id),
-          kind: RoomKind.resolve(hereBuilding.kind, hereBuilding.name));
+      room = RoomPlan.ofBuilding(
+          hereBuilding.id, hereBuilding.kind, hereBuilding.name);
       final spot = node.spot ?? '';
       hereSpot = spot.isNotEmpty && room.has(spot) ? spot : 'floor';
       districtOfStep.clear();

@@ -346,9 +346,23 @@ class Faction {
     this.nameToFr = '',
     this.brokenNews = '',
     this.brokenNewsFr = '',
+    this.riskStat = '',
+    this.riskyOffer = '',
+    this.riskyOfferFr = '',
   });
 
   final Patron patron;
+
+  /// The ability its curse lowers when a risky gift goes wrong
+  /// (risky_gifts.dart); '' for a faction that never offers one.
+  final String riskStat;
+
+  /// What it says over a risky gift (Narrative's); '' for none.
+  final String riskyOffer;
+  final String riskyOfferFr;
+
+  String riskyOfferFor(AppLanguage language) =>
+      _pick(language, riskyOffer, riskyOfferFr);
 
   /// Where its power starts (factions.json `power`, clan_power.dart); 0
   /// for a faction with none.
@@ -482,6 +496,9 @@ class Faction {
         nameToFr: _text(json['nameTo_fr']).trim(),
         brokenNews: _text(json['brokenNews']).trim(),
         brokenNewsFr: _text(json['brokenNews_fr']).trim(),
+        riskStat: _text(json['riskStat']).trim(),
+        riskyOffer: _text(json['riskyOffer']).trim(),
+        riskyOfferFr: _text(json['riskyOffer_fr']).trim(),
       );
 }
 

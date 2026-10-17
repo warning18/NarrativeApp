@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.477.0+513]
+
+Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
+
+### Added
+- **The Parley Tent** (camp, workshops): 250 gold, 2 timber, 2 cut stone. Once built, risky gifts can be offered.
+- **Risky gifts:** in about 3 in 10 offers where a suitor qualifies, at most one card is marked risky. The suitor must be a clan you stand Wary, Unfriendly or Resented with, or one whose alignment opposes yours; never a hostile clan or the nemesis. The gift is one rarity better than its roll. The card shows the odds (for example "Gift 80% · Price 20%").
+- **The roll:** a d20 plus up to +2 from Luck, rolled when the offer is drawn, so a reload can't change it.
+  - Usually the gift (75 to 85%).
+  - Otherwise a price: 40% of max health, a quarter of the purse, or −2 to the clan's stat for two levels, shown as a Curse in the stat breakdown. A natural 1 always costs the health.
+  - Each price falls back to another, so "nothing" never happens.
+  - Standing with the clan rises whatever the die says.
+- **Simulator:** about 3.2 risky cards seen per run and 1.1 taken, 72% of them the gift. A risky card is never taken at half health or less.
+
+### Changed
+- **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
+
+## [1.476.0+512]
+
+Companions say a word on the road.
+
+### Added
+- **Walk remarks:** four short lines for each of the eight companions (English and French) for the new `walk` trigger, spoken once as a land walk starts by a companion in the walking party. Data only; the trigger is Core's (v1.474).
+
+## [1.475.0+511]
+
+The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
+
+### Added
+- **Buildings on arrival:** 28 new buildings in geography.json (prison, temple, library, forge, hall, house, cellar, warehouse, shop), linked from the scenes that take place inside them, with a spot for the party where the text makes it clear. 76 of the story's 99 indoor scenes now open on the building's own room plan (7 before); 23 still wait at their district (listed in the contract).
+- **Service spots in towns:** every town with a city plan gets fixed pins for its notice board, market, tavern and temple, plus a harbour on a quay and a forge in 5 towns, each on a real lot or square. `townServicesProvider(cityId)` says what each opens (the town's shop, the bounty board, rest, the port); the temple has no screen yet.
+- **The move on the world view:** `worldLegPathProvider((from:, to:))` returns the polyline of a Journey leg in the world chart's coordinates along the world roads and sea lanes, its kind (road, sea, crossing) and stops; a straight line when no route connects the two places.
+
 ## [1.474.0+510]
 
 The land walk knows who walks.

@@ -254,6 +254,22 @@ class RoomPlan implements PlacePlan {
   static RoomPlan of({required int seed, required String kind}) =>
       _cache['$seed:$kind'] ??= _lay(seed, RoomKind.of(kind));
 
+  /// The plan of geography.json's building [id] (v1.470): laid from a seed
+  /// of its id and the kind its [name] or [kind] says (see
+  /// [RoomKind.resolve]), the same on every visit. The Journey draws this
+  /// one; a scene's `spot` must be one of its anchors.
+  static RoomPlan ofBuilding(String id, String kind, String name) =>
+      of(seed: seedOf(id), kind: RoomKind.resolve(kind, name));
+
+  /// A stable seed of [text] (FNV-1a, 31 bits).
+  static int seedOf(String text) {
+    var hash = 0x811c9dc5;
+    for (final unit in text.codeUnits) {
+      hash = ((hash ^ unit) * 0x01000193) & 0x7fffffff;
+    }
+    return hash;
+  }
+
   // ------------------------------------------------------------------ lay
 
   static RoomPlan _lay(int seed, RoomKind kind) {

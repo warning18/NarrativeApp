@@ -100,8 +100,9 @@ void main() {
         flow('270', 'Leave them both'), const FlowMap('alster_family_house'));
     // Inside the house, the scenes follow one another.
     expect(flow('300', 'Watch from across the street'), const FlowStay());
-    // Kneeling at the house: done here, then carried to the Black Hold.
-    expect(flow('400', 'Kneel'), const FlowTripThenArrive('alster_black_hold'));
+    // Kneeling at the house: done here, then carried to the Black Hold's
+    // cells (a building of it since v1.470).
+    expect(flow('400', 'Kneel'), const FlowTripThenArrive('black_hold_cells'));
     // The toll fight: fought at the bridge, carried home.
     expect(flow('260', 'Refuse and fight'),
         const FlowTripThenArrive('alster_family_house'));
