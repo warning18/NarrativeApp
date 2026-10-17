@@ -3387,13 +3387,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_0': {
     AppLanguage.en:
-        'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
+        'Next: what the chapter’s main quest still needs. Tap a place to find it on the Road.',
     AppLanguage.fr:
-        'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+        'Ensuite\u00a0: ce qu’il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
   },
   'tut_camp_harbour': {
     AppLanguage.en:
-        'First, the harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
+        'First, the Harbor. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
     AppLanguage.fr:
         'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
@@ -3401,7 +3401,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Road: the places you know, expeditions from the shore, and the bounty board.',
     AppLanguage.fr:
-        'Route : les lieux connus, les expéditions depuis la côte et le tableau des primes.',
+        'Route\u00a0: les lieux connus, les expéditions depuis la côte et le tableau des primes.',
   },
   'slots_filled': {
     AppLanguage.en: '{used} of {cap} filled',
@@ -6789,7 +6789,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_done': {
     AppLanguage.en: 'Got it!',
-    AppLanguage.fr: 'Compris !',
+    AppLanguage.fr: 'Compris\u00a0!',
   },
   'remark_done': {
     AppLanguage.en: 'Go on',
@@ -6809,7 +6809,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_story_title': {
     AppLanguage.en: 'The story',
-    AppLanguage.fr: "L'histoire",
+    AppLanguage.fr: "L’histoire",
   },
   'tut_character_title': {
     AppLanguage.en: 'Your character',
@@ -6821,7 +6821,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_other_title': {
     AppLanguage.en: 'The Other tab',
-    AppLanguage.fr: "L'onglet Autre",
+    AppLanguage.fr: "L’onglet Autre",
   },
   'tut_map_title': {
     AppLanguage.en: 'The world map',
@@ -6889,9 +6889,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_story_1': {
     AppLanguage.en:
-        "Woof! I'm {name}. The first time you find something new, I'll show you around. Tap anywhere to go on, or Skip whenever you like.",
+        "Woof! I’m {name}. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
     AppLanguage.fr:
-        "Wouf ! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l'écran pour continuer, ou Passer quand vous voulez.",
+        "Wouf\u00a0! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
   },
   'tut_story_2': {
     AppLanguage.en: 'This is the chapter you are in.',
@@ -6901,29 +6901,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your level, health, mana and gold. Tap them for alignment, quests and more. The book opens your journal; the speaker reads the page aloud.',
     AppLanguage.fr:
-        "Votre niveau, votre santé, votre mana et votre or. Touchez-les pour l'alignement, les quêtes et plus encore. Le livre ouvre le journal ; le haut-parleur lit la page.",
+        "Votre niveau, votre santé, votre mana et votre or. Touchez-les pour l’alignement, les quêtes et plus encore. Le livre ouvre le journal\u00a0; le haut-parleur lit la page.",
   },
   'tut_story_4': {
     AppLanguage.en:
         'The story itself. Scroll to read on, or double-tap the text to read it full screen.',
     AppLanguage.fr:
-        "L'histoire elle-même. Faites défiler pour lire la suite, ou touchez deux fois le texte pour le lire en plein écran.",
+        "L’histoire elle-même. Faites défiler pour lire la suite, ou touchez deux fois le texte pour le lire en plein écran.",
   },
   'tut_story_5': {
     AppLanguage.en:
-        "Choose what you do. Tags show what a choice costs or brings. A padlock means you can't take it yet.",
+        "Choose what you do. Tags show what a choice costs or brings. A padlock means you can’t take it yet.",
     AppLanguage.fr:
-        'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas : pas encore possible.',
+        'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas\u00a0: pas encore possible.',
   },
   'tut_story_6': {
     AppLanguage.en:
-        "And that's me! I trot along each time the story moves on. The arrow tucks me away.",
+        "And that’s me! I trot along each time the story moves on. The arrow tucks me away.",
     AppLanguage.fr:
-        "Et ça, c'est moi ! Je trottine à chaque fois que l'histoire avance. La flèche me range.",
+        "Et ça, c’est moi\u00a0! Je trottine à chaque fois que l’histoire avance. La flèche me range.",
   },
   'tut_story_7': {
     AppLanguage.en: 'The map shows every place the story has reached.',
-    AppLanguage.fr: "La carte montre chaque lieu atteint par l'histoire.",
+    AppLanguage.fr: "La carte montre chaque lieu atteint par l’histoire.",
   },
   'tut_journey_title': {
     AppLanguage.en: 'The Journey',
@@ -6933,19 +6933,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'This is the Journey: the story told on a map, so you can see where each way leads before you take it.',
     AppLanguage.fr:
-        'Voici le Parcours : l’histoire racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.',
+        'Voici le Parcours\u00a0: l’histoire racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.',
   },
   'tut_journey_2': {
     AppLanguage.en:
         'Read opens the scene you are in full screen; the map button brings the map back.',
     AppLanguage.fr:
-        'Lire ouvre la scène où vous êtes en plein écran ; le bouton carte ramène la carte.',
+        'Lire ouvre la scène où vous êtes en plein écran\u00a0; le bouton carte ramène la carte.',
   },
   'tut_journey_3': {
     AppLanguage.en:
         'Your mark, with a step round it for each thing to do here; the ways to other places sit at the edge, in their true direction. A step’s icon and colour say what it holds. The road behind you is below.',
     AppLanguage.fr:
-        'Votre repère, entouré d’une étape pour chaque chose à faire ici ; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
+        'Votre repère, entouré d’une étape pour chaque chose à faire ici\u00a0; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
@@ -6957,7 +6957,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Each choice opens its scene full screen; Continue brings you back to the map. The story so far is a tap away, top right.',
     AppLanguage.fr:
-        'Chaque choix ouvre sa scène en plein écran ; Continuer ramène à la carte. L’histoire jusqu’ici est à portée de main, en haut à droite.',
+        'Chaque choix ouvre sa scène en plein écran\u00a0; Continuer ramène à la carte. L’histoire jusqu’ici est à portée de main, en haut à droite.',
   },
   'tut_story_8': {
     AppLanguage.en:
@@ -6969,17 +6969,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Sea: the Rusty Eel, the Harbor, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
-        'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
+        'Mer\u00a0: le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
   'tut_character_1': {
     AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
-    AppLanguage.fr: "C'est vous : niveau et expérience, santé, mana et or.",
+    AppLanguage.fr:
+        "C’est vous\u00a0: niveau et expérience, santé, mana et or.",
   },
   'tut_character_2': {
     AppLanguage.en:
         'Your choices tip you toward Good or Evil. Past either mark, the story changes, and so do I.',
     AppLanguage.fr:
-        "Vos choix vous font pencher vers le Bien ou le Mal. Au-delà d'une marque, l'histoire change, et moi aussi.",
+        "Vos choix vous font pencher vers le Bien ou le Mal. Au-delà d’une marque, l’histoire change, et moi aussi.",
   },
   'tut_character_3': {
     AppLanguage.en:
@@ -7105,13 +7106,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Town: your cliff town. Every house you build climbs the cliff, and its shops open here.',
     AppLanguage.fr:
-        'Ville : votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
+        'Ville\u00a0: votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
   },
   'tut_camp_2': {
     AppLanguage.en:
         'Pick a house or an addition to see where it would go, then build it with gold.',
     AppLanguage.fr:
-        "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l'or.",
+        "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l’or.",
   },
   'tut_camp_3': {
     AppLanguage.en:
@@ -7123,7 +7124,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Party: companions you recruit rest here. Choose who fights at your side.',
     AppLanguage.fr:
-        'Groupe : vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
+        'Groupe\u00a0: vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
   },
   'tut_other_1': {
     AppLanguage.en: 'Save your game here, or load another one.',
@@ -7131,12 +7132,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_other_2': {
     AppLanguage.en:
-        "The achievements you've earned, and the ones still waiting.",
+        "The achievements you’ve earned, and the ones still waiting.",
     AppLanguage.fr: 'Les succès obtenus, et ceux qui vous attendent.',
   },
   'tut_other_3': {
     AppLanguage.en:
-        "Quests, shops, the bestiary and the people you've met. New entries get a count.",
+        "Quests, shops, the bestiary and the people you’ve met. New entries get a count.",
     AppLanguage.fr:
         'Quêtes, boutiques, bestiaire et personnes rencontrées. Les nouveautés sont comptées.',
   },
@@ -7144,13 +7145,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'And here you can replay any of my tours, whenever you like.',
     AppLanguage.fr:
-        "Et ici, vous pouvez revoir n'importe laquelle de mes visites.",
+        "Et ici, vous pouvez revoir n’importe laquelle de mes visites.",
   },
   'tut_map_1': {
     AppLanguage.en:
         'The chart of your journey. Places appear as the story reaches them. Tap one to read about it; pinch to zoom.',
     AppLanguage.fr:
-        "La carte de votre voyage. Les lieux apparaissent quand l'histoire les atteint. Touchez-en un pour le découvrir ; pincez pour zoomer.",
+        "La carte de votre voyage. Les lieux apparaissent quand l’histoire les atteint. Touchez-en un pour le découvrir\u00a0; pincez pour zoomer.",
   },
   'tut_map_2': {
     AppLanguage.en:
@@ -7173,7 +7174,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Each branch is learned from the top down; a gold ring is known, a lit one is ready. Tap any skill to see what it does, learn it or raise it.',
     AppLanguage.fr:
-        'Chaque branche s\'apprend de haut en bas ; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu\'elle fait, l\'apprendre ou la monter.',
+        'Chaque branche s’apprend de haut en bas\u00a0; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu’elle fait, l’apprendre ou la monter.',
   },
   'tut_skills_5': {
     AppLanguage.en:
@@ -7185,7 +7186,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'In My skills, raise tiers with essence, and fuse two skills you know into a new one.',
     AppLanguage.fr:
-        'Dans Mes compétences, montez les rangs avec l\'essence et fusionnez deux compétences connues en une nouvelle.',
+        'Dans Mes compétences, montez les rangs avec l’essence et fusionnez deux compétences connues en une nouvelle.',
   },
   'tut_dice_1': {
     AppLanguage.en: 'Pick the die you want to set up.',
@@ -7195,7 +7196,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Its faces: attack, defend, heal and skill. In a fight, one lands at random.',
     AppLanguage.fr:
-        'Ses faces : attaque, défense, soin et compétence. En combat, l’une tombe au hasard.',
+        'Ses faces\u00a0: attaque, défense, soin et compétence. En combat, l’une tombe au hasard.',
   },
   'tut_dice_3': {
     AppLanguage.en:
@@ -7225,7 +7226,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_fight_1': {
     AppLanguage.en:
-        "A fight! Your die decides it. Here's how dice combat works.",
+        "A fight! Your die decides it. Here’s how dice combat works.",
     AppLanguage.fr:
         'Un combat\u00a0! Votre dé en décide. Voici comment marche le combat aux dés.',
   },
@@ -7243,7 +7244,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_fight_4': {
     AppLanguage.en: 'Your side: health, shields and effects.',
-    AppLanguage.fr: 'Votre camp : santé, boucliers et effets.',
+    AppLanguage.fr: 'Votre camp\u00a0: santé, boucliers et effets.',
   },
   'tut_fight_5': {
     AppLanguage.en:
@@ -7255,27 +7256,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The round and the battlefield. Momentum builds as you fight; when it is full, you can surge.',
     AppLanguage.fr:
-        'Le tour et le champ de bataille. L’élan monte au fil du combat ; plein, il permet un déferlement.',
+        'Le tour et le champ de bataille. L’élan monte au fil du combat\u00a0; plein, il permet un déferlement.',
   },
   'tut_skillChallenge_1': {
     AppLanguage.en:
         'A skill challenge: roll the d20 and add your ability. Meet the number to succeed.',
     AppLanguage.fr:
-        'Une épreuve : lancez le d20 et ajoutez votre caractéristique. Atteignez le seuil pour réussir.',
+        'Une épreuve\u00a0: lancez le d20 et ajoutez votre caractéristique. Atteignez le seuil pour réussir.',
   },
   'tut_skillChallenge_2': {
     AppLanguage.en: 'Get enough successes before too many failures.',
-    AppLanguage.fr: "Obtenez assez de succès avant trop d'échecs.",
+    AppLanguage.fr: "Obtenez assez de succès avant trop d’échecs.",
   },
   'tut_boat_1': {
     AppLanguage.en: 'The Rusty Eel on her slipway. Mend her hull here.',
-    AppLanguage.fr: 'La Rusty Eel sur sa cale. Réparez sa coque ici.',
+    AppLanguage.fr: 'Le Rusty Eel sur sa cale. Réparez sa coque ici.',
   },
   'tut_boat_2': {
     AppLanguage.en:
-        "Fit the shipwright's parts into her slots to make her stronger for the sea.",
+        "Fit the shipwright’s parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
-        'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+        'Installez les pièces du charpentier dans ses emplacements pour le renforcer en mer.',
   },
   'tut_landCrossing_1': {
     AppLanguage.en:
@@ -7287,37 +7288,37 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
     AppLanguage.fr:
-        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, blessé.',
+        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, à bout de forces.',
   },
   'tut_voyage_1': {
     AppLanguage.en:
         'A crossing takes a few days at sea, and each day brings something: a calm, a storm, a wreck or raiders.',
     AppLanguage.fr:
-        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose : un calme plat, une tempête, une épave ou des pillards.',
+        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose\u00a0: un calme plat, une tempête, une épave ou des pillards.',
   },
   'tut_voyage_2': {
     AppLanguage.en:
         'Watch the hull. Storms and raiders wear it down, calm days let you mend it. If it gives out, the Rusty Eel limps back to the port she left.',
     AppLanguage.fr:
-        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, la Rusty Eel regagne tant bien que mal son port de départ.',
+        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, le Rusty Eel regagne tant bien que mal son port de départ.',
   },
   'tut_voyage_3': {
     AppLanguage.en:
         'Each day, choose what the crew does. Some choices roll one of your stats, named on the button: pushing through a storm, boarding a wreck, outrunning raiders.',
     AppLanguage.fr:
-        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton : forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
+        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton\u00a0: forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
   },
   'tut_voyage_4': {
     AppLanguage.en:
         'Raiders can be paid off or outrun. Fight them and it becomes a ship battle, with your party crewing the stations.',
     AppLanguage.fr:
-        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale : votre groupe tient les postes.',
+        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale\u00a0: votre groupe tient les postes.',
   },
   'tut_shipBattle_1': {
     AppLanguage.en:
         'A ship battle is fought room by room. Each ship has four: the helm dodges, the guns charge the weapons, the bulwark raises shields and the hold repairs the hull.',
     AppLanguage.fr:
-        'Une bataille navale se joue salle par salle. Chaque navire en a quatre : la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
+        'Une bataille navale se joue salle par salle. Chaque navire en a quatre\u00a0: la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
   },
   'tut_shipBattle_2': {
     AppLanguage.en:
@@ -7329,7 +7330,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'When a weapon is charged, tap it, then the enemy room to hit: the shot costs them hull and weakens that room. Hold the room instead to take aim, unless aiming is off in Settings.',
     AppLanguage.fr:
-        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper : le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
+        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper\u00a0: le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
@@ -7347,13 +7348,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left. The detailed tips will show again, one at a time, in your next ship battle.',
     AppLanguage.fr:
-        'Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ. Les conseils détaillés s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
+        'Coulez-le ou prenez son pont pour gagner\u00a0; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ. Les conseils détaillés s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
   },
   'tut_expedition_1': {
     AppLanguage.en:
         'An expedition is a chain of events in one zone. Clear them all to win its reward.',
     AppLanguage.fr:
-        "Une expédition est une suite d'événements dans une zone. Terminez-les tous pour gagner sa récompense.",
+        "Une expédition est une suite d’événements dans une zone. Terminez-les tous pour gagner sa récompense.",
   },
   'tut_expedition_2': {
     AppLanguage.en:
@@ -7365,29 +7366,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A port of call: rest, trade in its shops and set out on the expeditions nearby. The Rusty Eel takes you on to the next port.',
     AppLanguage.fr:
-        'Une escale : reposez-vous, commercez et partez pour les expéditions voisines. La Rusty Eel vous emmène au port suivant.',
+        'Une escale\u00a0: reposez-vous, commercez et partez pour les expéditions voisines. Le Rusty Eel vous emmène au port suivant.',
   },
   'tut_shop_1': {
-    AppLanguage.en: 'Buy what the merchant sells with your gold.',
-    AppLanguage.fr: 'Achetez ce que vend le marchand avec votre or.',
+    AppLanguage.en: 'Spend your gold on what the merchant sells.',
+    AppLanguage.fr: 'Dépensez votre or pour ce que vend le marchand.',
   },
   'tut_shop_2': {
     AppLanguage.en:
         'You can sell what you carry too: the tag at the top opens the sale.',
     AppLanguage.fr:
-        'Vous pouvez aussi vendre ce que vous portez : l’étiquette en haut ouvre la vente.',
+        'Vous pouvez aussi vendre ce que vous portez\u00a0: l’étiquette en haut ouvre la vente.',
   },
   'tut_journal_1': {
     AppLanguage.en:
         'The story so far, newest first: each scene and the choice that left it.',
     AppLanguage.fr:
-        "L'histoire jusqu'ici, la plus récente d'abord : chaque scène et le choix qui l'a conclue.",
+        "L’histoire jusqu’ici, la plus récente d’abord\u00a0: chaque scène et le choix qui l’a conclue.",
   },
   'tut_achievements_1': {
     AppLanguage.en:
         'Every achievement. The ones you have earned are lit; the rest are waiting.',
     AppLanguage.fr:
-        'Tous les succès. Ceux obtenus sont allumés ; les autres vous attendent.',
+        'Tous les succès. Ceux obtenus sont allumés\u00a0; les autres vous attendent.',
   },
   'hub_shops_section': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Commerces'},
   'hub_challenges_section': {
