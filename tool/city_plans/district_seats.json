@@ -246,16 +246,5 @@
       "6010_candle_walk",
       "6010_candle_walk_fight"
     ]
-  },
-  "candlehold_lantern_hall": {
-    "candlehold_lantern_cliff": [
-      "7590_dominion",
-      "7590_vigil",
-      "7590_compact",
-      "7590_mire",
-      "7590_crows",
-      "7590_penitents",
-      "7590_open_hand"
-    ]
   }
 }

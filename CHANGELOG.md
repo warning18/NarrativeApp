@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.478.0+514]
+
+Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.
+
+### Fixed
+- **The crowning scenes (7590_*)** were seated on the Lantern Cliff (`tool/city_plans/district_seats.json`); their way now stands in the throne room's lot of Candlehold's Lantern Hall, where their text sets them.
+- **The Black Reliquary's landmark** covers the whole city, not only the Reliquary Quarter, so the scenes in its Chapels and Frost Line districts stay on the same landmark (no world-chart trip between its districts).
+
+Once the story links those 18 scenes to their rooms (their `location`, Narrative's field), 94 of the 99 indoor scenes open on a room plan.
+
 ## [1.477.0+513]
 
 Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.

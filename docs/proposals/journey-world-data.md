@@ -64,24 +64,36 @@ stands in one of them.
 
 ### Not yet: 23 scenes have a building but still stand at their district (`_waiting` in the test)
 
+- **18 are ready on Core's side and wait only for their `location`** in the
+  story file (`_ready` in the test, which checks that linking them changes
+  neither their landmark nor their way's district):
+  - `7590_*` (7 crowning scenes) → `candlehold_throne_room`, spot `dais`.
+    Their text and their `location` say the Lantern Hall, but
+    `district_seats.json` seated them on the Lantern Cliff, so their ways
+    stood on seven cliff lots (`candlehold_b282`…`b292`). The seat is gone,
+    their ways now stand on the throne room's lot (`candlehold_b158`, as
+    `7520_vane`), and `town-districts.json` lists them under the Lantern
+    Hall. The Lantern Cliff now holds no scene; its seven lots keep
+    Narrative's names, unused.
+  - **11 Black Reliquary scenes** → the Tribunal's chapel
+    (`6010_clan_dominion_2`), the chapel of the Hammer
+    (`6010_clan_compact_3*`), the chart-keeper's chapel (`6010_chartkeeper*`,
+    `6010_chart_bought`, `6010_thread`, `6010_heist_night`), the parish
+    chapel (`6010_spawn`) and the muniment room (`6010_returned_roll`).
+    The `reliquary` landmark's home was the Reliquary Quarter, so a scene in
+    the city's other districts (the Chapels, the Frost Line, the Last
+    Lantern) stood outside it. Its home is now the Black Reliquary itself
+    (`geography.json`); the Dead Heart keeps its own landmark. No new
+    landmark was needed: these districts are walked between on the city
+    plan, not on the world chart.
+  - Setting these 18 `location`s (non-text fields of the story file) is the
+    last step.
 - **Narrative seats them elsewhere** (`tool/city_plans/district_seats.json`).
   Moving them would contradict a seat Narrative already chose.
   - `6010_lysa_dead`: seated in the Chapels, but its chapel (the chapel
     with the chair) holds the Quarter's other chair scenes.
   - `6010_record`: the muniment room.
   - `5200_house_returned`: the long room under the hill.
-  - `7590_*` (7 crowning scenes): their text says "the Lantern Hall's
-    floor", but they are seated on the Lantern Cliff. If Narrative agrees
-    with the text, link them to `candlehold_throne_room`, spot `dais`.
-- **11 Black Reliquary scenes** go to buildings in the Reliquary's new
-  districts (`reliquary_chapels`, `reliquary_frost_line`). Those districts
-  have no world-map landmark yet, and a landmark's scenes must stand at or
-  inside its home. Link them when the landmark lands:
-  - the Tribunal's chapel
-  - the chapel of the Hammer
-  - the chart-keeper's chapel
-  - the parish chapel
-  - the muniment room
 - **2 scenes on either side of a roll** (`3100_house_anvil_deaf_failed`,
   and `5200`, where `5200_house_barkbleeders` ends on a success): linking
   them would make the roll's other branch move the party with no note.
