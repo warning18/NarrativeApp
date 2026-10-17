@@ -15,6 +15,7 @@ import '../combat/specialisations.dart'
 import 'clan_power.dart';
 import 'factions.dart';
 import 'perks.dart';
+import 'risky_gifts.dart';
 import 'signs.dart';
 import 'skill_access.dart' show skillFitsCharacter;
 import 'skill_tree.dart';
@@ -298,6 +299,8 @@ class Suitor {
     this.subclanId = '',
     this.firstMeeting = false,
     this.greetingIndex = 0,
+    this.risky = false,
+    this.riskRoll = 0,
   });
 
   final String factionId;
@@ -306,7 +309,24 @@ class Suitor {
   final bool firstMeeting;
   final int greetingIndex;
 
+  /// A risky gift (risky_gifts.dart): [gift] one rarity better than it
+  /// would be, at a price [riskRoll] (a d20, rolled with the draw) names
+  /// when it is taken.
+  final bool risky;
+  final int riskRoll;
+
   bool get isWayfarer => factionId == wayfarerId;
+
+  /// This suitor's card made risky, with the die's [roll].
+  Suitor asRisky(int roll) => Suitor(
+        factionId: factionId,
+        subclanId: subclanId,
+        gift: gift,
+        firstMeeting: firstMeeting,
+        greetingIndex: greetingIndex,
+        risky: true,
+        riskRoll: roll,
+      );
 
   Map<String, dynamic> toJson() => {
         'faction': factionId,
@@ -314,6 +334,8 @@ class Suitor {
         'gift': gift.toJson(),
         if (firstMeeting) 'first': true,
         'greeting': greetingIndex,
+        if (risky) 'risky': true,
+        if (risky) 'riskRoll': riskRoll,
       };
 
   static Suitor? tryParse(Object? raw) {
@@ -321,12 +343,17 @@ class Suitor {
     final gift = OfferGift.tryParse(raw['gift']);
     final faction = raw['faction']?.toString() ?? '';
     if (gift == null || faction.isEmpty) return null;
+    // An old save has neither: the card is a normal one.
+    final roll = (raw['riskRoll'] as num?)?.toInt() ?? 0;
+    final risky = raw['risky'] == true && roll >= 1 && roll <= 20;
     return Suitor(
       factionId: faction,
       subclanId: raw['subclan']?.toString() ?? '',
       gift: gift,
       firstMeeting: raw['first'] == true,
       greetingIndex: (raw['greeting'] as num?)?.toInt() ?? 0,
+      risky: risky,
+      riskRoll: risky ? roll : 0,
     );
   }
 
@@ -337,11 +364,13 @@ class Suitor {
       other.subclanId == subclanId &&
       other.gift == gift &&
       other.firstMeeting == firstMeeting &&
-      other.greetingIndex == greetingIndex;
+      other.greetingIndex == greetingIndex &&
+      other.risky == risky &&
+      other.riskRoll == riskRoll;
 
   @override
-  int get hashCode =>
-      Object.hash(factionId, subclanId, gift, firstMeeting, greetingIndex);
+  int get hashCode => Object.hash(
+      factionId, subclanId, gift, firstMeeting, greetingIndex, risky, riskRoll);
 }
 
 /// The offer on the table: drawn once for its [ticket] and kept until a
@@ -462,7 +491,12 @@ class OfferContext {
     this.heldSpecIds = const [],
     this.specVariants = const {},
     this.placeHolder = '',
+    this.riskyGifts = false,
   });
+
+  /// Whether risky gifts are open (the Parley Tent built, see
+  /// risky_gifts.dart).
+  final bool riskyGifts;
 
   /// The clan that holds the place the offer is made in (clan_power.dart's
   /// holderOf): its suitor comes [heldPlaceSuitorWeight] times as often;
@@ -1241,6 +1275,7 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
   if (forced.isNotEmpty && c.data.faction(forced) != null) {
     take(drawSuitor(forced, c, random, better: ticket.better));
   }
+  var homeSeat = '';
   // A chapter's end: the Choir or the Pit, if the alignment leans.
   if (ticket.source == OfferSource.chapter && !otherworldTaken) {
     final leaning = otherworldLeaningFor(c);
@@ -1256,7 +1291,9 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
           _homeSkillsOf(s.factionId, c).skills.contains(s.gift.id) ||
           accordsFor(s.factionId, c).any((a) => a.skillId == s.gift.id)));
   if (!hasHomeSkill && suitors.length < offerSuitorCount) {
-    take(drawHomeSuitor(c, random, exclude: taken));
+    final home = drawHomeSuitor(c, random, exclude: taken);
+    take(home);
+    homeSeat = home?.factionId ?? '';
   }
 
   List<String> pool() => [
@@ -1314,7 +1351,53 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
     if (own != null) suitors.add(own);
   }
   if (suitors.isEmpty) return null;
+  if (c.riskyGifts) {
+    _makeOneRisky(suitors, c, random, skip: {forced, homeSeat});
+  }
   return ClanOffer(ticket: ticket, suitors: suitors);
+}
+
+/// Whether [suitor] may be made risky in [c] (risky_gifts.dart's
+/// [riskyEligible]): never the Wayfarer.
+bool riskySuitorEligible(Suitor suitor, OfferContext c) {
+  if (suitor.isWayfarer) return false;
+  final faction = c.data.faction(suitor.factionId);
+  return faction != null &&
+      riskyEligible(faction,
+          tier: c.tierOf(faction.id),
+          alignment: c.alignment,
+          nemesis: c.politics.nemesis);
+}
+
+/// Risky gifts (risky_gifts.dart): when a suitor of [suitors] qualifies
+/// (not one of [skip]: the ticket's own faction, the home seat), at
+/// [riskyGiftChance] one of them at random brings its gift one rarity
+/// better ([drawSuitor] with `better`), with the die rolled now. When the
+/// better draw comes out no rarer, the card stays as it was. [random] is
+/// not drawn on when no suitor qualifies.
+void _makeOneRisky(List<Suitor> suitors, OfferContext c, Random random,
+    {Set<String> skip = const {}}) {
+  final options = [
+    for (var i = 0; i < suitors.length; i++)
+      if (!skip.contains(suitors[i].factionId) &&
+          riskySuitorEligible(suitors[i], c))
+        i,
+  ];
+  if (options.isEmpty || random.nextDouble() >= riskyGiftChance) return;
+  final at = options[random.nextInt(options.length)];
+  final normal = suitors[at];
+  final better = drawSuitor(normal.factionId, c, random, better: true);
+  final roll = random.nextInt(20) + 1;
+  if (better == null || better.gift.rarity.index <= normal.gift.rarity.index) {
+    return;
+  }
+  suitors[at] = Suitor(
+    factionId: better.factionId,
+    subclanId: better.subclanId,
+    gift: better.gift,
+    firstMeeting: normal.firstMeeting,
+    greetingIndex: normal.greetingIndex,
+  ).asRisky(roll);
 }
 
 /// Whether "Your own hand" (the Open Hand, v1.195) takes a fourth place in
@@ -1580,6 +1663,11 @@ List<SignEffect> clanEffectsFor({
 /// die face ([fillsEmptyFace]) first, else the rarest gift (a sign for an
 /// empty slot before one that replaces). With [favourBest] the suitor of
 /// the faction the character stands best with is taken instead.
+///
+/// A risky card (risky_gifts.dart) is taken only when its gift would win at
+/// its normal rarity (one lower); otherwise it scores as usual minus 5, so
+/// the simulator never chases risk. Never while the character is not
+/// [healthy] (above half health). [favourBest] skips it too.
 Suitor? preferredSuitor(
   ClanOffer offer, {
   required bool Function(String skillId) fillsEmptyFace,
@@ -1588,12 +1676,13 @@ Suitor? preferredSuitor(
   bool favourBest = false,
   PoliticsState politics = PoliticsState.empty,
   ClanData data = ClanData.empty,
+  bool healthy = true,
 }) {
   if (offer.suitors.isEmpty) return null;
   if (favourBest) {
     final factions = [
       for (final s in offer.suitors)
-        if (!s.isWayfarer) s,
+        if (!s.isWayfarer && !s.risky) s,
     ];
     if (factions.isNotEmpty) {
       return factions.reduce((a, b) => politics.standingOf(b.factionId, data) >
@@ -1602,8 +1691,7 @@ Suitor? preferredSuitor(
           : a);
     }
   }
-  int score(Suitor s) {
-    final gift = s.gift;
+  int giftScore(OfferGift gift) {
     if (gift.kind == GiftKind.skill && fillsEmptyFace(gift.id)) return 100;
     // A specialisation changes how the character fights: taken first.
     if (gift.kind == GiftKind.spec) return 90;
@@ -1616,6 +1704,25 @@ Suitor? preferredSuitor(
       }
     }
     return score;
+  }
+
+  final safeBest = offer.suitors
+      .where((s) => !s.risky)
+      .map((s) => giftScore(s.gift))
+      .fold<int?>(null, (best, v) => best == null || v > best ? v : best);
+  int score(Suitor s) {
+    final usual = giftScore(s.gift);
+    if (!s.risky) return usual;
+    final g = s.gift;
+    final normal = giftScore(OfferGift(
+        kind: g.kind,
+        id: g.id,
+        rarity: SignRarity.values[max(0, g.rarity.index - 1)],
+        partnerId: g.partnerId));
+    // At half health or less, never (unless it is the only card).
+    if (!healthy) return -1000;
+    if (safeBest == null || normal > safeBest) return usual;
+    return usual - 5;
   }
 
   return offer.suitors.reduce((a, b) => score(b) > score(a) ? b : a);

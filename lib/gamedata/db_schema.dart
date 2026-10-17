@@ -3140,6 +3140,33 @@ final DbSchema factionsSchema = DbSchema(
       type: FieldType.text,
     ),
     FieldSchema(
+      key: 'riskStat',
+      label: 'Risky gift: curse stat',
+      type: FieldType.enumeration,
+      enumOptions: [
+        'strength',
+        'dexterity',
+        'constitution',
+        'intelligence',
+        'wisdom',
+        'perception',
+        'luck',
+        'charisma',
+      ],
+      help: 'The ability a risky gift\'s curse lowers (risky_gifts.dart); '
+          'unset: the clan never offers a risky gift.',
+    ),
+    FieldSchema(
+      key: 'riskyOffer',
+      label: 'Risky gift: what they say',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'riskyOffer_fr',
+      label: 'Risky gift: what they say (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'gender_fr',
       label: 'French gender and number',
       type: FieldType.enumeration,
