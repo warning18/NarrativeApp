@@ -186,6 +186,15 @@ class SimGrowth {
   int chapter = 1;
   final Map<String, int> riskyOutcomes = {};
   final List<RiskCurse> _curses = [];
+
+  /// The risky cards' own draw, so a risky card shifts nothing else in the
+  /// offers' draw: seeded from the character and the moment the tent opens
+  /// (never from the walk's own stream).
+  Random? _riskyRandom;
+  Random _riskySeeded() => Random('${character.professionId}${character.raceId}'
+          .codeUnits
+          .fold<int>(0, (a, b) => a * 31 + b & 0x3fffffff) ^
+      (character.level * 7919 + gold));
   int skillsLearned = 0;
 
   PerkEffects get perks => perkEffectsFor(perkRanks);
@@ -569,7 +578,8 @@ class SimGrowth {
     }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
-      final offer = drawOffer(ticket, _context(next, flags), random);
+      final offer = drawOffer(ticket, _context(next, flags), random,
+          riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
       final suitor = preferredSuitor(
         offer,

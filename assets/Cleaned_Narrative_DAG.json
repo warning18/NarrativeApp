@@ -10962,6 +10962,11 @@
         "fr": "Le Coffre des Contrebandiers avait désormais son comptoir sous le mur et ses prix tracés à la craie près de la porte, et son commis faisait semblant de ne rien reconnaître de ce que j’essayais de lui revendre."
       },
       {
+        "flag": "house_parley_tent",
+        "en": "The Parley Tent’s flap was tied back and its brazier lit, and a stranger’s cup sat upturned on the cushions: someone who does not trust me had come to talk, and would come again.",
+        "fr": "Le rabat de la tente de pourparlers était relevé, son brasero allumé, et la coupe d’un inconnu reposait retournée sur les coussins : quelqu’un qui se défie de moi était venu parler, et reviendrait."
+      },
+      {
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall’s fire was going when I came in, the one the camp never lets go out, and someone had kept a place near it.",
         "fr": "Le feu de la Halle du Foyer brûlait quand j’entrai, celui que le camp ne laisse jamais s’éteindre, et quelqu’un m’avait gardé une place près de lui."

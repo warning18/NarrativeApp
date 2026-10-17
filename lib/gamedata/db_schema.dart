@@ -2401,6 +2401,11 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.boolean,
     ),
     FieldSchema(
+      key: 'unlocksRiskyGifts',
+      label: 'Unlocks risky gifts (the Parley Tent, risky_gifts.dart)',
+      type: FieldType.boolean,
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',

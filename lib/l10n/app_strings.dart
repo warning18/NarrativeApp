@@ -12287,7 +12287,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le prix se paie en pièces\u00a0: −{n} or.',
   },
   'offer_risky_curse': {
-    AppLanguage.en: 'The curse of {clan}: −{n} {stat} for two levels.',
+    AppLanguage.en: 'The curse {clanOf}: −{n} {stat} for two levels.',
     AppLanguage.fr:
         'Malédiction {clanOf}\u00a0: −{n} {stat} pendant deux niveaux.',
   },

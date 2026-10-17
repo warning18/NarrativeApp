@@ -200,6 +200,7 @@
       "material_cut_stone": 2
     },
     "partyCapacityBonus": 0,
+    "unlocksRiskyGifts": true,
     "requiredFlags": [],
     "houseName_fr": "La tente de pourparlers",
     "description_fr": "Une large tente à l’orée du camp, avec des coussins, un brasero et aucune arme admise passé le rabat. Les clans qui se défient de vous viendront tout de même s’y asseoir, et certains apporteront un don meilleur qu’ils ne le devraient. Ils fixent toujours un prix. C’est le dé qui le fixe pour eux."

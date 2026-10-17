@@ -1254,7 +1254,12 @@ Suitor? drawHomeSuitor(OfferContext c, Random random,
 /// - **The Wayfarer** takes a place at [wayfarerChance], and whenever
 ///   fewer than three factions can come.
 /// Null when nobody at all can come.
-ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
+///
+/// [riskyRandom] draws the risky card (risky_gifts.dart) instead of
+/// [random] when given: the simulator keeps it apart so the rest of the
+/// draw is the one it would be without the Parley Tent.
+ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random,
+    {Random? riskyRandom}) {
   final eligible = eligibleSuitors(c);
   final suitors = <Suitor>[];
   final taken = <String>{};
@@ -1352,7 +1357,7 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
   }
   if (suitors.isEmpty) return null;
   if (c.riskyGifts) {
-    _makeOneRisky(suitors, c, random, skip: {forced, homeSeat});
+    _makeOneRisky(suitors, c, riskyRandom ?? random, skip: {forced, homeSeat});
   }
   return ClanOffer(ticket: ticket, suitors: suitors);
 }

@@ -286,7 +286,8 @@ String _inSentence(String name) {
 
 /// The line that tells what the die said ([result]) about [faction]'s
 /// risky gift: `offer_risky_gift`, `_health`, `_gold` or `_curse`, with
-/// `{clan}` the clan's name (its article lowered inside a sentence),
+/// `{clan}` the clan's name (its article lowered inside a sentence, not
+/// at its start),
 /// `{clanOf}` its "of" form (« du Dominion de la Lanterne »), `{n}` the
 /// amount and `{stat}` the stat's own name.
 String riskyResultText(RiskyResult result, Faction? faction, AppLanguage lang) {
@@ -298,9 +299,12 @@ String riskyResultText(RiskyResult result, Faction? faction, AppLanguage lang) {
   };
   final text = trFor(lang, key);
   final name = faction?.nameFor(lang) ?? '';
+  // A name that opens a sentence keeps its capital.
+  final at = text.indexOf('{clan}');
+  final before = at < 0 ? '' : text.substring(0, at).trimRight();
+  final opens = before.isEmpty || '.!?'.contains(before[before.length - 1]);
   return text
-      .replaceAll(
-          '{clan}', text.startsWith('{clan}') ? name : _inSentence(name))
+      .replaceAll('{clan}', opens ? name : _inSentence(name))
       .replaceAll('{clanOf}', faction?.nameOfFor(lang) ?? '')
       .replaceAll('{n}', '${result.amount}')
       .replaceAll('{stat}',
