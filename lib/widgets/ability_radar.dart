@@ -49,7 +49,12 @@ class AbilityRadar extends StatelessWidget {
     this.nowLabel,
     this.size = 320,
     this.compact = false,
+    this.onAxisTap,
   });
+
+  /// A tap on an ability's corner (its key, as in [abilityRadarOrder]); null
+  /// for a radar that only shows.
+  final void Function(String ability)? onAxisTap;
 
   /// Small: each corner reads "STR 8" on one line (see [RadarChart.compact]).
   final bool compact;
@@ -90,6 +95,7 @@ class AbilityRadar extends StatelessWidget {
               ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
               : null,
           subColor: was != null && now[i] < was[i] ? radarLess : radarMore,
+          onTap: onAxisTap == null ? null : () => onAxisTap!(k),
         ),
     ];
     Widget legend(Color c, String label, {bool dashed = false}) => Row(

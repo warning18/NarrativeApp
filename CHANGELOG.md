@@ -16,6 +16,13 @@ The land walk knows who walks.
 - **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
 - **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
 
+## [1.469.0+505]
+
+A stat's popin on the Character radar.
+
+### Added
+- **Tap an ability on the radar:** its name (STR, DEX...) opens a sheet with the exact number, what a point of it does for this hero's calling ("Each point: +1 damage, +2% dodge", from `statPickEffects`), and where it comes from, from Core's stat breakdown: the starting score, the race, the calling, the picks (the paths named), the patron clan, the tomes, the formative memories, and "Earlier" for an old save's unexplained rest; with a total that adds up to the number. What a fight lends on top (gear, signs, titles, the Sworn boon) is a section of its own, with "In a fight: N" under the number. A line under the radar says it can be tapped. EN and FR at 320 px.
+
 ## [1.468.0+504]
 
 A fight explains its goal, its enemy's doctrine and its situation the first time a save meets each.
