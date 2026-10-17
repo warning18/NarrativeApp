@@ -17,6 +17,7 @@ import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../data/climate.dart' show WeatherKind;
@@ -507,6 +508,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                           ? ruinsLayers(progress: progress)
                           : desertLayers(progress: progress),
                       actors: desertActors(
+                          party: ref.watch(walkingPartyProvider),
                           moving: _phase == _Phase.result,
                           encounter: _encounterWalk(event)),
                       particles: particles,
