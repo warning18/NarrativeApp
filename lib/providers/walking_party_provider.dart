@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/companion_remarks.dart';
 import 'player_session_provider.dart';
+import 'remark_provider.dart';
 
 /// The most companions who walk beside the hero on a land walk (wave 13):
 /// the side view has room for three figures.
@@ -64,3 +66,18 @@ List<WalkingPartyMember> walkingPartyOf(PlayerSession session) {
 final walkingPartyProvider = Provider<List<WalkingPartyMember>>(
   (ref) => walkingPartyOf(ref.watch(playerSessionProvider)),
 );
+
+/// The word a walking companion says as a land walk starts, or null (see
+/// [walkRemark]): UX calls it once when a walk begins and shows the line
+/// as a bubble over that companion's figure ([CompanionRemark.companionId]
+/// is the walker's id; [CompanionRemark.lineFor] gives the words).
+CompanionRemark? speakUpOnWalk(WidgetRef ref) {
+  final walkers = [
+    for (final member in ref.read(walkingPartyProvider))
+      if (!member.isHero) member.id,
+  ];
+  final said = walkRemark(
+      ref.read(remarkBookProvider), ref.read(remarkMemoryProvider), walkers);
+  ref.read(remarkMemoryProvider.notifier).state = said.memory;
+  return said.remark;
+}

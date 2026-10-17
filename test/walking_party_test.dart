@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/companion_remarks.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/walking_party_provider.dart';
@@ -64,5 +65,57 @@ void main() {
         baseSession(
             recruitedAllies: [_ally('maren')], activeAllyIds: const ['maren']));
     expect(_ids(container.read(walkingPartyProvider)), ['hero', 'maren']);
+  });
+
+  group('a word on the road', () {
+    final book = RemarkBook({
+      'kelda_walk': {
+        'companionID': 'kelda',
+        'trigger': 'walk',
+        'lines': ['Keep to the verge.', 'Mind your feet.'],
+        'lines_fr': ['Gardez le bord.', 'Vos pieds.'],
+      },
+      'sable_walk': {
+        'companionID': 'sable',
+        'trigger': 'walk',
+        'lines': ['Pace yourself.'],
+      },
+    });
+
+    test('a walking companion with walk lines says one', () {
+      final said = walkRemark(book, const RemarkMemory(), ['maren', 'kelda']);
+      expect(said.remark?.companionId, 'kelda');
+      expect(said.remark?.kind, RemarkKind.walk);
+      expect(said.remark!.lineFor(book, french: false), isNotEmpty);
+    });
+
+    test('nobody speaks when no walker has a line, or nobody walks', () {
+      expect(walkRemark(book, const RemarkMemory(), ['maren']).remark, isNull);
+      expect(walkRemark(book, const RemarkMemory(), const []).remark, isNull);
+    });
+
+    test('the one who spoke least recently goes first', () {
+      final first = walkRemark(book, const RemarkMemory(), ['kelda', 'sable']);
+      expect(first.remark?.companionId, 'kelda');
+      final later = RemarkMemory(
+        choices: first.memory.choices + remarkCooldownChoices,
+        lastRemarkAt: first.memory.lastRemarkAt,
+        lastSpokeAt: first.memory.lastSpokeAt,
+        used: first.memory.used,
+      );
+      expect(walkRemark(book, later, ['kelda', 'sable']).remark?.companionId,
+          'sable');
+    });
+
+    test('it waits out the cooldown after a remark', () {
+      const recent = RemarkMemory(choices: 5, lastRemarkAt: 4);
+      expect(walkRemark(book, recent, ['kelda']).remark, isNull);
+      const past = RemarkMemory(choices: 7, lastRemarkAt: 4);
+      expect(walkRemark(book, past, ['kelda']).remark, isNotNull);
+    });
+
+    test('walk is a trigger a remark record can have', () {
+      expect(remarkTriggerOptions, contains('walk'));
+    });
   });
 }
