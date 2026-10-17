@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.472.0+508]
+
+Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
+
 ## [1.471.0+507]
 
 Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
