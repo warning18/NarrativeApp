@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.487.0+523]
+
+Four more indoor scenes have their rooms (98 of the 99).
+
+### Changed
+- **Seated in their buildings:** `6010_thread` and `6010_heist_night` (the chart-keeper's chapel), `3100_house_anvil_deaf_failed` (the cold forge) and `5200` (the long room under the hill), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that move the party: the tenth sign gone wrong at the cold forge, and the knife slipping on the bark-bleeder's tree.
+
 ## [1.486.0+522]
 
 The story text keeps its room on a small phone.
