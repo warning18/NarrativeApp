@@ -54,6 +54,15 @@ extension _FightView on _FightScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // What this fight's goal, doctrine and situation mean, the
+              // first time this save meets each (fight_tips.dart).
+              FightTipsCard(
+                shown: fightTipIdsFor(
+                    goal: _goal.kind,
+                    doctrineFactionId: _doctrine?.factionId,
+                    condition: condition),
+                holdRounds: _goal.rounds,
+              ),
               if (!_goal.isSlay) ...[
                 _buildGoalBanner(),
                 const SizedBox(height: 12),

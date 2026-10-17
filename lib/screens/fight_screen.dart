@@ -36,6 +36,7 @@ import '../combat/quick_resolve.dart';
 import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
+import '../combat/fight_tips.dart';
 import '../combat/context_rules.dart';
 import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
@@ -99,6 +100,7 @@ import '../widgets/pixel_portrait.dart';
 import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
+import 'fight/fight_tips.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_cards.dart';

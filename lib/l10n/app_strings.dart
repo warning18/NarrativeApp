@@ -9450,6 +9450,100 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La mer a son mot à dire : de temps en temps, une lame de fond, une créature marine ou une épave à la dérive change le tour.',
   },
+  // One-time fight tips (fight_tips.dart): the first fight that shows a
+  // goal, a doctrine or a situation explains it. A hold's tip takes its
+  // turns, a subdue's its health line.
+  'tip_fight_next': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suivant'},
+  'tip_fight_goal_hold': {
+    AppLanguage.en:
+        'Survive {n} of their turns and you win, even if they are still standing. They press harder, since they need not fall, but the pay is better.',
+    AppLanguage.fr:
+        'Survivez à {n} de leurs tours et vous gagnez, même s’ils sont encore debout. Ils frappent plus fort, puisqu’ils n’ont pas à tomber, mais la paie est meilleure.',
+  },
+  'tip_fight_goal_rout': {
+    AppLanguage.en:
+        'Their sturdiest fighter is the Captain. Bring it down and the rest flee: the fight is won, but those who ran leave only part of their spoils. The pay is a little better.',
+    AppLanguage.fr:
+        'Leur combattant le plus robuste est le Capitaine. Abattez-le et les autres s’enfuient : le combat est gagné, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
+  },
+  'tip_fight_goal_subdue': {
+    AppLanguage.en:
+        'Wear them down under {pct} % health and they yield and pay a ransom: more gold than their usual reward. A blow that kills them outright leaves only the usual spoils.',
+    AppLanguage.fr:
+        'Usez-les sous {pct} % de vie et ils se rendent et paient une rançon : plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
+  },
+  'tip_fight_doctrine_dominion': {
+    AppLanguage.en:
+        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: plan on plain Attack and Defend then. The Dominion’s soldiers are often Armored, shrugging off part of each Attack hit; skills cut through.',
+    AppLanguage.fr:
+        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent une partie de chaque coup d’Attaque ; les compétences passent.',
+  },
+  'tip_fight_doctrine_crows': {
+    AppLanguage.en:
+        'Each hit a Salt Crow lands lifts some of your gold, and it carries it (its card shows how much). Defeat it to get the gold back: whatever a Crow still carries when the fight ends, or takes when it runs, is lost.',
+    AppLanguage.fr:
+        'Chaque coup que porte une Corneille de Sel vous prend un peu d’or, qu’elle garde sur elle (sa carte montre combien). Battez-la pour le récupérer : ce qu’une Corneille porte encore à la fin du combat, ou emporte en fuyant, est perdu.',
+  },
+  'tip_fight_doctrine_penitents': {
+    AppLanguage.en:
+        'The Ashen Penitents are often Frenzied: once below half health they hit much harder. Finish a wounded one quickly.',
+    AppLanguage.fr:
+        'Les Pénitents de Cendre sont souvent Enragés : sous la moitié de leur vie, ils frappent bien plus fort. Achevez vite un blessé.',
+  },
+  'tip_fight_doctrine_choir': {
+    AppLanguage.en:
+        'The Choir’s sentinels are often Armored: they shrug off part of each Attack hit, while skills cut straight through.',
+    AppLanguage.fr:
+        'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent une partie de chaque coup d’Attaque, alors que les compétences passent.',
+  },
+  'tip_fight_doctrine_pit': {
+    AppLanguage.en:
+        'The Pit’s things are often Venomous: their attacks poison whoever they hit.',
+    AppLanguage.fr:
+        'Les créatures de la Fosse sont souvent Venimeuses : leurs attaques empoisonnent leur cible.',
+  },
+  'tip_fight_doctrine_giants': {
+    AppLanguage.en:
+        'The giants of Highhearth are often Armored: they shrug off part of each Attack hit, while skills cut straight through.',
+    AppLanguage.fr:
+        'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent une partie de chaque coup d’Attaque, alors que les compétences passent.',
+  },
+  'tip_fight_doctrine_tidekin': {
+    AppLanguage.en:
+        'The Tide-Kin are often Skittish: badly hurt, they flee and you get only part of their spoils. Finish them before they slip away.',
+    AppLanguage.fr:
+        'Les Gens de la Marée sont souvent Craintifs : gravement blessés, ils fuient et vous n’avez qu’une partie de leur butin. Achevez-les avant qu’ils filent.',
+  },
+  'tip_fight_situation_ambush': {
+    AppLanguage.en:
+        'They strike before your first roll, and in that opening round you cannot read what they plan. Winning an ambush improves the spoils chest.',
+    AppLanguage.fr:
+        'Ils frappent avant votre premier jet, et pendant ce premier tour vous ne pouvez pas lire leurs intentions. Gagner une embuscade améliore le coffre de butin.',
+  },
+  'tip_fight_situation_dark': {
+    AppLanguage.en:
+        'In the dark you read what each enemy plans one step less clearly than your Perception would allow. Winning in the dark improves the spoils chest.',
+    AppLanguage.fr:
+        'Dans le noir, vous lisez les intentions de chaque ennemi un cran moins bien que votre Perception ne le permettrait. Gagner dans le noir améliore le coffre de butin.',
+  },
+  'tip_fight_situation_cramped': {
+    AppLanguage.en:
+        'Only two enemies can reach you each round; the rest hold back until there is room. Winning in the press improves the spoils chest a little.',
+    AppLanguage.fr:
+        'Seuls deux ennemis peuvent vous atteindre chaque tour ; les autres attendent qu’une place se libère. Gagner dans la cohue améliore un peu le coffre de butin.',
+  },
+  'tip_fight_situation_high_ground': {
+    AppLanguage.en:
+        'You hold the high ground: every Defend face you roll blocks half again as much.',
+    AppLanguage.fr:
+        'Vous tenez la hauteur : chaque face Défense que vous obtenez bloque moitié plus.',
+  },
+  'tip_fight_situation_shrine': {
+    AppLanguage.en:
+        'A shrine stands here: every Heal face and every potion restores half again as much.',
+    AppLanguage.fr:
+        'Un sanctuaire se dresse ici : chaque face Soin et chaque potion soigne moitié plus.',
+  },
   'ship_fire_hint': {
     AppLanguage.en:
         'Tap a ready weapon, then the room to hit; hold the room to take aim.',

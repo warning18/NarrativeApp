@@ -4,12 +4,13 @@
 // about one run in twenty. This reads every test file and flags
 //   - an unseeded `Random()`,
 //   - a call of rollAbilityCheck or resolveSkillChallenge with no `random:`,
-//   - a VoyageScreen, LandCrossingScreen or ExpeditionScreen built with no
-//     `debugRandom:` / `random:` (each rolls its checks with a Random of its
+//   - a VoyageScreen, LandCrossingScreen, ExpeditionScreen or
+//     SkillChallengeScreen built with no `debugRandom:` / `random:` (each rolls its checks with a Random of its
 //     own when none is given).
 // A line that has to do either carries `// unseeded-ok` with its reason.
-// (A widget test that taps a check choice in the story player rolls inside
-// the screen, which takes no Random yet: not seen here.)
+// (A widget test that taps a check choice in the story player rolls through
+// storyCheckRandomProvider: override it with ProviderScope(overrides: [
+// storyCheckRandomProvider.overrideWithValue(Random(1))]). Not seen here.)
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +21,7 @@ const _rollers = [
   'VoyageScreen(',
   'LandCrossingScreen(',
   'ExpeditionScreen(',
+  'SkillChallengeScreen(',
 ];
 
 /// The problems in [source], as `line: what`.
@@ -70,8 +72,9 @@ void main() {
             'resolveSkillChallenge(ability: "a", dc: 1, session: s,\n'
             '    successesNeeded: 1, maxFailures: 1);\n'
             'home: VoyageScreen(fromPortId: "a", toPortId: "b"),\n'
-            'LandCrossingScreen(route: r, events: e);'),
-        hasLength(5));
+            'LandCrossingScreen(route: r, events: e);\n'
+            'SkillChallengeScreen(ability: "a", dc: 1);'),
+        hasLength(6));
     expect(
         unseededRolls('final r = Random(7);\n'
             'rollAbilityCheck(ability: "a", dc: 1, session: s, random: r);\n'
@@ -79,6 +82,7 @@ void main() {
             '    successesNeeded: 1, maxFailures: 1, random: r);\n'
             'VoyageScreen(fromPortId: "a", debugRandom: Random(1)),\n'
             'LandCrossingScreen(route: r, events: e, random: Random(1));\n'
+            'SkillChallengeScreen(ability: "a", dc: 1, random: Random(1));\n'
             'final x = Random(); // unseeded-ok: only picks a name'),
         isEmpty);
   });

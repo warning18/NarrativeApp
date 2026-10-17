@@ -15,6 +15,13 @@ A stat's popin on the Character radar.
 ### Added
 - **Tap an ability on the radar:** its name (STR, DEX...) opens a sheet with the exact number, what a point of it does for this hero's calling ("Each point: +1 damage, +2% dodge", from `statPickEffects`), and where it comes from, from Core's stat breakdown: the starting score, the race, the calling, the picks (the paths named), the patron clan, the tomes, the formative memories, and "Earlier" for an old save's unexplained rest; with a total that adds up to the number. What a fight lends on top (gear, signs, titles, the Sworn boon) is a section of its own, with "In a fight: N" under the number. A line under the radar says it can be tapped. EN and FR at 320 px.
 
+## [1.468.0+504]
+
+A fight explains its goal, its enemy's doctrine and its situation the first time a save meets each.
+
+### Added
+- **One-time fight tips:** the first fight that shows a goal (Hold the line, Rout, Subdue), an enemy doctrine (the Dominion's Writ, the Crows' Short Con, and the other clans' habits) or a situation (Ambush, Darkness, Cramped, High ground, Shrine) explains what it means for the player, in a sentence or two on the setup screen. Several appear in one card, one after another (1/3, Next). Each one shows once per save, and none show when tutorials are off in Settings. Old saves see them all as new. The texts are drafts in English and French.
+
 ## [1.467.0+503]
 
 The Journey's step button reads "Go" in French too.
