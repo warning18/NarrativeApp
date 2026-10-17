@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.480.0+516]
+
+Wave 13: the road's party, clan banners on the skill tree, the level-up radar.
+
+### Added
+- **The walking party on the land walk:** the hero (the ronin) leads and up to two picked companions follow behind, as coloured placeholder figures until their art comes (a companion's colour stays the same every walk).
+- **A word on the road:** as a walk starts, a walking companion may speak, shown as a small bubble over their figure for a few seconds (Core's `speakUpOnWalk`, Narrative's walk remarks).
+- **Clan banners on the skill tree:** each skill not yet known hangs its offering clan's small banner from its ring (dim while locked); the skill sheet shows the banners of the clans that offer it.
+- **Level up as the ability radar:** the Level Up screen and the pop-up after a fight open on the radar of the eight abilities (a tap on a corner says where it comes from), with the fight numbers under it and a **Detail** tab that opens the full list of rows.
+
+### Changed
+- **The enemy or NPC met on a land walk comes in from the left**, behind the party, its art mirrored to face east; the party now stands further right to leave it room.
+- Tests: `walk_bubble_test`, `walk_party_view_test`, `encounter_figure_test` (left entry), `skill_tree_test`, `level_up_screen_test`.
+
 ## [1.479.0+515]
 
 The new buildings' names and blurbs reworded.

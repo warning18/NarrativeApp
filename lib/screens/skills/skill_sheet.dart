@@ -24,6 +24,7 @@ import '../../widgets/compare_dialog.dart';
 import '../../widgets/immersive_notice.dart';
 import '../../widgets/merge_skills_dialog.dart';
 import '../../widgets/moments.dart';
+import '../../widgets/pixel_banner.dart';
 import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
 
@@ -508,6 +509,24 @@ class _Action extends ConsumerWidget {
             key: const Key('skill_offered_by'),
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (entry.sponsors.any(clanBannerFactionIds.contains))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    key: const Key('skill_offered_flags'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final id in entry.sponsors.take(3))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: ClanFlag(
+                              key: Key('skill_flag_$id'),
+                              factionId: id,
+                              height: 56),
+                        ),
+                    ],
+                  ),
+                ),
               note(offeredByLine(ref, entry)),
               const SizedBox(height: 2),
               Text(
