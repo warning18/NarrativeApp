@@ -52,6 +52,8 @@ class WalkBubble extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(line,
                     key: const Key('walk_bubble_line'),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
                     style: speechBubbleTextStyle(theme)
                         ?.copyWith(fontSize: 13, height: 1.3)),
               ],

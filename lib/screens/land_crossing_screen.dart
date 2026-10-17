@@ -360,18 +360,26 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final xs = walkingPartyXs(party.length);
     const unit = crossingSceneHeight / sideViewRows;
     final width = MediaQuery.sizeOf(context).width;
-    const bubbleWidth = 220.0;
+    final bubbleWidth = min(300.0, width - 16);
     final at = (index < 0 ? xs.first : xs[index]) * unit;
-    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8);
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    // Anchored just above the figure's head, under the HUD's row, scaled down
+    // a little when the words need more room than is left.
     return Positioned(
       left: left,
-      bottom: crossingSceneHeight - 36 * unit + 2,
-      child: WalkBubble(
-        key: const Key('walk_bubble'),
-        speaker: line.speaker,
-        line: line.line,
-        width: bubbleWidth,
-        tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22),
+      top: 34,
+      width: bubbleWidth,
+      bottom: crossingSceneHeight - 40 * unit,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomLeft,
+        child: WalkBubble(
+          key: const Key('walk_bubble'),
+          speaker: line.speaker,
+          line: line.line,
+          width: bubbleWidth,
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+        ),
       ),
     );
   }

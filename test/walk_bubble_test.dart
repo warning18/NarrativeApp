@@ -33,13 +33,17 @@ void main() {
     },
   });
 
-  Future<void> walk(WidgetTester tester, {required bool withMaren}) async {
+  Future<void> walk(WidgetTester tester,
+      {required bool withMaren,
+      RemarkBook? lines,
+      Size size = const Size(390, 800),
+      String ally = 'maren'}) async {
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(390, 800);
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final container = ProviderContainer(overrides: [
-      remarkBookProvider.overrideWithValue(book),
+      remarkBookProvider.overrideWithValue(lines ?? book),
     ]);
     addTearDown(container.dispose);
     container.read(playerSessionProvider.notifier);
@@ -53,11 +57,11 @@ void main() {
           if (withMaren) ...{
             'recruitedAllies': [
               AllyState(
-                      companionId: 'maren',
+                      companionId: ally,
                       currentHealth: AllyState.fullHealthSentinel)
                   .toJson()
             ],
-            'activeAllyIds': ['maren'],
+            'activeAllyIds': [ally],
           },
         })));
     await tester.pumpWidget(UncontrolledProviderScope(
@@ -83,5 +87,28 @@ void main() {
   testWidgets('the hero alone says nothing', (tester) async {
     await walk(tester, withMaren: false);
     expect(find.byKey(const Key('walk_bubble')), findsNothing);
+  });
+
+  testWidgets(
+      'the longest of Narrative\'s real walk lines fits over the scene on a '
+      'narrow phone', (tester) async {
+    final real = RemarkBook(_json('assets/gamedata/companion_remarks.json'));
+    await walk(tester,
+        withMaren: true,
+        lines: real,
+        ally: 'liora',
+        size: const Size(320, 700));
+    final bubble = find.byKey(const Key('walk_bubble'));
+    expect(bubble, findsOneWidget);
+    // (The test font is far wider than the real ones: the HUD's own row
+    // overflows at 320 px with or without the bubble.)
+    tester.takeException();
+    final rect = tester.getRect(bubble);
+    final scene = tester.getRect(find.byKey(const Key('crossing_scene')));
+    expect(rect.left, greaterThanOrEqualTo(0));
+    expect(rect.right, lessThanOrEqualTo(320));
+    expect(rect.top, greaterThanOrEqualTo(scene.top),
+        reason: '$rect in $scene');
+    expect(rect.bottom, lessThanOrEqualTo(scene.bottom));
   });
 }
