@@ -2397,7 +2397,7 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 73,
+    "maxHealth": 76,
     "damage": 5,
     "guile": 10,
     "faction": "",
@@ -5087,8 +5087,8 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 81,
-    "damage": 4,
+    "maxHealth": 72,
+    "damage": 5,
     "guile": 11,
     "faction": "",
     "reaction": "",
