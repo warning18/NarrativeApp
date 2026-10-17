@@ -120,9 +120,12 @@ void main() {
     expect(find.byKey(_stop), findsOneWidget);
     expect(
         tester.widget<Text>(find.byKey(_stop)).data, startsWith('You pass '));
+    // A tap on the map skips the move.
+    await tester.tap(find.byKey(const ValueKey('journey_transit_skip')));
+    await tester.pump();
+    expect(find.byKey(_transit), findsNothing, reason: 'a tap skips');
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
-    expect(find.byKey(_transit), findsNothing, reason: 'the transit ends');
 
     // Back at the yard, the same failed roll tells the author's French.
     play.jumpTo('2070');

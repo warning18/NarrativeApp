@@ -265,9 +265,15 @@ void main() {
             .widget<Text>(find.byKey(const Key('tree_sponsor_power_strike')))
             .data,
         'Dominion');
+    // ... and the Dominion's banner hangs from the ring, small; a skill
+    // already known has none.
+    expect(find.byKey(const Key('tree_flag_power_strike')), findsOneWidget);
+    expect(
+        find.byKey(const Key('tree_flag_warrior_shield_bash')), findsNothing);
     await tester.tap(find.byKey(const Key('tree_node_power_strike')));
     await _settle(tester);
     expect(find.byKey(const Key('tree_learn')), findsNothing);
+    expect(find.byKey(const Key('skill_offered_flags')), findsOneWidget);
     expect(find.text('Offered by the Lantern Dominion'), findsOneWidget);
     Navigator.of(tester.element(find.byKey(const Key('skill_offered_by'))))
         .pop();

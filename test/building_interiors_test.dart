@@ -3,13 +3,11 @@
 // `location` is a geography.json building. Wave 14 audited the story for
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
-// before (the Blind Beggar) and the rest showed streets. 92 stand in one now
-// (the 7 crownings in the throne room and 9 in the Black Reliquary's
-// chapels were seated last); the 7 in [_waiting] have their building but
+// before (the Blind Beggar) and the rest showed streets. 94 stand in one now
+// (the 7 crownings in the throne room and 11 in the Black Reliquary's
+// chapels were seated last); the 5 in [_waiting] have their building but
 // wait: 3 are seated by Narrative in another district than their room's,
-// 2 (`6010_lysa_dead`, `6010_record`) have their way on the city plan in
-// another district than their building's, and 2 would make a roll's other
-// branch a move with no note
+// and 2 would make a roll's other branch a move with no note
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
@@ -117,15 +115,14 @@ const _interiorScenes = [
   '6010_chart_bought',
   '6010_spawn',
   '6010_returned_roll',
+  '6010_lysa_dead',
+  '6010_record',
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: Narrative seats three elsewhere (district_seats.json); two wait
-/// for their way on the Black Reliquary's plan to move to their building's
-/// district; the last two for a roll's note.
+/// goes into: Narrative seats three elsewhere (district_seats.json); the
+/// last two wait for a roll's note.
 const _waiting = {
-  '6010_record': 'reliquary_muniment_room',
-  '6010_lysa_dead': 'reliquary_chair_chapel',
   '5200_house_returned': 'kindly_hill_long_room',
   '6010_thread': 'reliquary_chartkeeper_chapel',
   '6010_heist_night': 'reliquary_chartkeeper_chapel',
@@ -134,8 +131,8 @@ const _waiting = {
 };
 
 /// The scenes Core made ready: their building lies inside their landmark's
-/// home and their way stands in the building's district. Sixteen are seated
-/// now; `6010_thread` and `6010_heist_night` still wait.
+/// home and their way stands in the building's district. Eighteen are seated
+/// now.
 const _ready = {
   '7590_dominion',
   '7590_vigil',
@@ -155,6 +152,8 @@ const _ready = {
   '6010_heist_night',
   '6010_spawn',
   '6010_returned_roll',
+  '6010_lysa_dead',
+  '6010_record',
 };
 
 void main() {

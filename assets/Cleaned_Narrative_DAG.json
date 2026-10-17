@@ -6150,6 +6150,11 @@
         "fr": "Le Grenier aux bannières avait de la toile sur chaque poutre, et le sigil de chaque compagnon travaillé dans un coin ou un autre."
       },
       {
+        "flag": "house_star_well",
+        "en": "The Star Well had been sunk beside the sail-loft to a depth nobody agreed on, and at dusk the crew leaned over its rim in turn and said nothing, and went to bed lighter.",
+        "fr": "Le puits aux étoiles avait été creusé près de la voilerie à une profondeur dont personne ne convenait, et au crépuscule l’équipage se penchait sur la margelle à tour de rôle sans rien dire, puis allait se coucher plus léger."
+      },
+      {
         "flag": "house_hearth_hall",
         "en": "I slept under the Hearth-Hall that night, by the fire that is never let go out, and did not dream of the ledger at all.",
         "fr": "Je dormis sous la Halle du Foyer cette nuit-là, près du feu qu’on ne laisse jamais s’éteindre, et ne rêvai pas du tout du registre."
@@ -10985,6 +10990,16 @@
         "fr": "Le rabat de la tente de pourparlers était relevé, son brasero allumé, et la coupe d’un inconnu reposait retournée sur les coussins : quelqu’un qui se défie de moi était venu parler, et reviendrait."
       },
       {
+        "flag": "house_bone_casters_hut",
+        "en": "The Bone-Caster’s Hut had gone up at the camp’s edge on a bed of stones, knucklebones swinging in the doorway, and a woman inside who tossed a handful as I passed and looked pleased with herself.",
+        "fr": "La hutte du jeteur d’os s’était dressée à l’orée du camp sur un lit de pierres, des osselets pendus à la porte, et une femme à l’intérieur lança une poignée à mon passage et parut contente d’elle."
+      },
+      {
+        "flag": "house_warding_cairn",
+        "en": "The Warding Cairn stood higher than the tents, each stone set by someone who wanted a thing kept away, and a child had been told not to climb it and was sitting on the top.",
+        "fr": "Le cairn de garde dépassait les tentes, chaque pierre posée par quelqu’un qui voulait tenir une chose à distance, et un enfant à qui l’on avait défendu d’y monter était assis tout en haut."
+      },
+      {
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall’s fire was going when I came in, the one the camp never lets go out, and someone had kept a place near it.",
         "fr": "Le feu de la Halle du Foyer brûlait quand j’entrai, celui que le camp ne laisse jamais s’éteindre, et quelqu’un m’avait gardé une place près de lui."
@@ -11416,7 +11431,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
     "choices": [
       {
         "text": "Close her eyes and walk back among the chapels",
@@ -18128,7 +18143,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_muniment_room",
     "choices": [
       {
         "text": "Tell the coast: a copy on every boat that sails",
