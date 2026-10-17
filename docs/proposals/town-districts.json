@@ -576,7 +576,14 @@
       "scenes": [
         "7520_vane",
         "7520_morrow",
-        "7520_tallis"
+        "7520_tallis",
+        "7590_dominion",
+        "7590_vigil",
+        "7590_compact",
+        "7590_mire",
+        "7590_crows",
+        "7590_penitents",
+        "7590_open_hand"
       ]
     },
     {
@@ -587,15 +594,7 @@
       "blurb_fr": "La falaise sous la Première Lanterne, où les Maisons se rassemblent pour voir qui est couronné, et où chaque clan couronne à sa façon.",
       "controller": "dominion",
       "mood": "ceremonial",
-      "scenes": [
-        "7590_dominion",
-        "7590_vigil",
-        "7590_compact",
-        "7590_mire",
-        "7590_crows",
-        "7590_penitents",
-        "7590_open_hand"
-      ]
+      "scenes": []
     }
   ]
 }
