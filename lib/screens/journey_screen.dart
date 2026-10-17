@@ -38,6 +38,7 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
 import '../providers/city_provider.dart';
 import '../providers/clans_provider.dart' show factionsProvider;
+import '../providers/town_rulers_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -5449,7 +5450,53 @@ class _CityDistrictView extends ConsumerWidget {
                   color: const Color(0xFF17151B))),
         );
 
+    // Who rules the town and its districts (wave 15, townRulersProvider): the
+    // blocks take the clan's colour, and a line under the plan names it, so two
+    // clans of near colours are told apart by the words as well.
+    final townRulers = ref.watch(townRulersProvider);
+    final factions = ref.watch(factionsProvider);
+    final language = ref.watch(appLanguageProvider);
+    final rulers = cityChartRulersOf(chart, townRulers);
+    final lookedAt = focus == null
+        ? townRulers[chart.districts
+                .map((d) => townRulers[d.id]?.cityId)
+                .whereType<String>()
+                .firstOrNull ??
+            '']
+        : townRulers[focus];
     final rows = <Widget>[];
+    if (lookedAt != null) {
+      final clan = lookedAt.isNeutral
+          ? null
+          : factions[lookedAt.clanId]?.shortFor(language);
+      rows.add(Padding(
+        key: const ValueKey('journey_city_ruler'),
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(children: [
+          Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(lookedAt.color),
+                  border:
+                      Border.all(color: Color(lookedAt.accent), width: 1.5))),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              [
+                clan == null
+                    ? tr(ref, 'town_ruled_none')
+                    : tr(ref, 'town_ruled_by').replaceAll('{clan}', clan),
+                if (lookedAt.mixed && focus == null)
+                  tr(ref, 'town_ruled_mixed'),
+              ].join(' · '),
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+            ),
+          ),
+        ]),
+      ));
+    }
     if (focus != null) {
       final n = shown.length;
       rows.add(Padding(
@@ -5596,6 +5643,7 @@ class _CityDistrictView extends ConsumerWidget {
                     if (i != null && i < steps.length) onOpen(i);
                   },
                   onPickFog: (_) {},
+                  rulers: rulers,
                   services: [
                     for (final s in townServices)
                       CityChartService(

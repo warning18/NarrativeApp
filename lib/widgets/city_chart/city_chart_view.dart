@@ -72,6 +72,7 @@ class CityChartView extends StatefulWidget {
     this.onPickFog,
     this.services = const [],
     this.onService,
+    this.rulers = const {},
     this.controls = true,
     this.cards = true,
     this.numbers = const {},
@@ -103,6 +104,9 @@ class CityChartView extends StatefulWidget {
 
   /// The town's service pins, and told when one is tapped.
   final List<CityChartService> services;
+
+  /// The ruling clan's colours by district id.
+  final Map<String, CityChartRuler> rulers;
   final void Function(CityChartService service)? onService;
 
   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
@@ -311,6 +315,7 @@ class _CityChartViewState extends State<CityChartView>
         goalWayId: widget.goalWayId,
         selectedWayId: _pickedWay?.id,
         services: widget.services,
+        rulers: widget.rulers,
         selectedServiceId: _pickedService?.id,
         focusDistrict: _focus,
         numbers: widget.numbers,
