@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chart_globe.dart';
 import '../data/map_charts.dart';
+import '../data/world_leg_path.dart';
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -16,6 +17,52 @@ import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'chart_map_painter.dart';
 import 'chart_weather.dart';
+import 'journey_place.dart' show RegionFlightPainter;
+
+/// The chart the Journey's world map draws now: the story's world on the
+/// sphere, else the shape picked in the map's look. A move's path
+/// (worldLegPath) is laid on this chart, so the walker follows its roads.
+ChartGeography journeyChartOf(WidgetRef ref) => ref.read(chartGlobeProvider)
+    ? chartOf(MapShape.story)
+    : chartOf(ref.read(mapShapeProvider));
+
+/// Scales the time a move takes: 1 in the app; the tests shorten it so a
+/// walk over the world chart does not make each wait longer.
+double worldMoveTimeScale = 1;
+
+/// How long a move over the world chart takes: slower than the Journey's
+/// own short walks (a tap skips it), longer for a longer road.
+Duration worldMoveDuration(WorldLegPath path) => Duration(
+    milliseconds: ((4200 + 45 * path.length).round().clamp(6000, 13000) *
+            worldMoveTimeScale)
+        .round());
+
+/// The walk's pace over a move's clock: the party stands while the camera
+/// closes in and again as it pulls back out.
+class _MoveWalkCurve extends Curve {
+  const _MoveWalkCurve();
+  @override
+  double transformInternal(double t) => RegionFlightPainter.walkAt(t);
+}
+
+/// A road's corners rounded as the chart's painter rounds them (two Chaikin
+/// passes), the ends kept, so the walker takes the bends and does not cut
+/// them.
+List<Offset> smoothedWalkPoints(List<Offset> points) {
+  var pts = points;
+  for (var pass = 0; pass < 2 && pts.length > 2; pass++) {
+    final next = <Offset>[pts.first];
+    for (var i = 0; i < pts.length - 1; i++) {
+      final a = pts[i], b = pts[i + 1];
+      next
+        ..add(Offset.lerp(a, b, 0.25)!)
+        ..add(Offset.lerp(a, b, 0.75)!);
+    }
+    next.add(pts.last);
+    pts = next;
+  }
+  return pts;
+}
 
 /// How far out the Journey's map is looked at.
 enum JourneyMapLevel { place, land, world }
@@ -66,7 +113,16 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.replayLegs,
     this.replayToken = 0,
     this.fog = ChartFog.uncharted,
+    this.move,
+    this.moveClock,
   });
+
+  /// A move to show (wave 14): the party walks (or sails) this path over the
+  /// chart while the camera closes in on it and follows, then pulls back out.
+  /// [moveClock] (0 to 1) is the move's time; whoever owns it (the Journey's
+  /// transit) also reads it for the words over the map and skips it on a tap.
+  final WorldLegPath? move;
+  final Animation<double>? moveClock;
 
   /// The "Full map" button among the chart's controls (board 8): shown
   /// only when the Journey gives a way to open the full-screen map.
@@ -134,7 +190,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   late final AnimationController _walk = AnimationController(vsync: this);
   List<(double, double)> _walkPath = const [];
   bool _walking = false;
-  late final Listenable _repaint = Listenable.merge([_view, _reveal, _walk]);
+  late final Listenable _repaint = Listenable.merge(
+      [_view, _reveal, _walk, if (widget.moveClock != null) widget.moveClock!]);
+
+  /// The move's walk over its clock, and the box the camera frames it in.
+  Animation<double>? _moveWalk;
+  Size _box = Size.zero;
 
   /// Glides the chart (or the sphere) from one zoom to another, so a
   /// button or a change of level never jumps (v1.201.1).
@@ -212,6 +273,49 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             _globe = g.copyWith(lon0: turn.$1.value, lat0: turn.$2.value));
       }
     });
+    final move = widget.move, clock = widget.moveClock;
+    if (move != null && clock != null) {
+      _walkPath = [
+        for (final p in smoothedWalkPoints(move.points)) (p.dx, p.dy),
+      ];
+      _walking = true;
+      _moveWalk = clock.drive(CurveTween(curve: const _MoveWalkCurve()));
+      clock
+        ..addListener(_followMove)
+        ..addStatusListener(_moveStatus);
+    }
+  }
+
+  void _moveStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed && mounted && _walking) {
+      setState(() => _walking = false);
+    }
+  }
+
+  /// How much the camera is on the party at [t] of the move: it closes in
+  /// over the first of the move, follows, and pulls out for the last.
+  static double _cameraAt(double t) =>
+      Curves.easeInOut.transform(math.min(1.0, math.min(t, 1 - t) / 0.18));
+
+  /// Frames the party as it walks: the whole chart at the ends, the land's
+  /// zoom on the party between. The sphere turns to the party instead of
+  /// sliding.
+  void _followMove() {
+    final clock = widget.moveClock;
+    if (clock == null || _box == Size.zero || _walkPath.length < 2) return;
+    final w = _cameraAt(clock.value);
+    final (x, y) =
+        pointAlong(_walkPath, RegionFlightPainter.walkAt(clock.value));
+    const middle = Offset(worldMapWidth / 2, worldMapHeight / 2);
+    final centre = Offset.lerp(middle, Offset(x, y), w)!;
+    final zoom = 1 + (_landZoom - 1) * w;
+    if (ref.read(chartGlobeProvider)) {
+      final geo = _geoOf(true);
+      setState(() => _globe = geo.globeAt(centre, zoom, _globeCentre(_box)));
+      return;
+    }
+    _glide.stop();
+    _view.value = _framing(centre, zoom, _box);
   }
 
   final ValueNotifier<int> _frame = ValueNotifier(0);
@@ -269,6 +373,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   @override
   void dispose() {
+    widget.moveClock
+      ?..removeListener(_followMove)
+      ..removeStatusListener(_moveStatus);
     _walk.dispose();
     _glide.dispose();
     _view.dispose();
@@ -529,10 +636,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       // below it, a wide one is scrolled.
       _size = Size(box.maxWidth, box.maxWidth * worldMapHeight / worldMapWidth);
       _childHeight = math.max(box.maxHeight, _size.height);
+      _box = boxSize;
       _frameFor(boxSize);
       ChartMapPainter painter(GlobeView? globe) => ChartMapPainter(
             frame: _frame,
-            walk: _walk,
+            walk: _moveWalk ?? _walk,
             geography: geo,
             palette: widget.palette,
             language: language,

@@ -20,6 +20,7 @@ import '../data/scene_flow.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/road_chart.dart';
+import '../data/world_leg_path.dart';
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
@@ -1766,9 +1767,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     fromName: _partyName,
                     toName: hereName,
                     flight: far,
-                    route: far && _partyLandmark != null && standing != null
-                        ? chartRoadsBetween(
-                            geography, _partyLandmark!, standing.id, language)
+                    path: far &&
+                            _partyLandmark != null &&
+                            standing != null &&
+                            _partyLandmark != standing.id
+                        ? worldLegPath(
+                            journeyChartOf(ref), _partyLandmark!, standing.id,
+                            language: language)
                         : null,
                     forced: forced,
                     caption: partyMoveNote(
@@ -1813,36 +1818,43 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
-    final worldMap = ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: JourneyWorldMap(
-        key: const ValueKey('journey_world_map'),
-        level: _level,
-        palette: palette,
-        here: standing,
-        discovered: worldDiscovered,
-        legs: roadLegs(journeyWalked, worldDiscovered),
-        ahead: nextPlace,
-        shopPlaces: _shopsFor(story),
-        campPlaces: {
-          for (final entry in _kindsFor(story).entries)
-            if (entry.value == 'camp') entry.key,
-        },
-        chapterColor: (n) => switch (look) {
-          MapLook.night => mapChapter(n).dark,
-          MapLook.parchment => mapChapter(n).light,
-          MapLook.shroud => const Color(0xFFA3A3AA),
-        },
-        onLayers: _showCalques,
-        onSelect: (landmark) => setState(() => _lookedAt = landmark),
-        onZoomIn: _arriveAtStreets,
-        enterZoom: _enterZoom,
-        onFullMap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const FullMapScreen()),
-        ),
-        fog: editing ? ChartFog.none : ChartFog.uncharted,
-      ),
-    );
+    Widget worldMapWith(
+            {required JourneyMapLevel level,
+            WorldLegPath? move,
+            Animation<double>? clock}) =>
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: JourneyWorldMap(
+            key: move == null ? const ValueKey('journey_world_map') : null,
+            move: move,
+            moveClock: clock,
+            level: level,
+            palette: palette,
+            here: standing,
+            discovered: worldDiscovered,
+            legs: roadLegs(journeyWalked, worldDiscovered),
+            ahead: nextPlace,
+            shopPlaces: _shopsFor(story),
+            campPlaces: {
+              for (final entry in _kindsFor(story).entries)
+                if (entry.value == 'camp') entry.key,
+            },
+            chapterColor: (n) => switch (look) {
+              MapLook.night => mapChapter(n).dark,
+              MapLook.parchment => mapChapter(n).light,
+              MapLook.shroud => const Color(0xFFA3A3AA),
+            },
+            onLayers: _showCalques,
+            onSelect: (landmark) => setState(() => _lookedAt = landmark),
+            onZoomIn: _arriveAtStreets,
+            enterZoom: _enterZoom,
+            onFullMap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const FullMapScreen()),
+            ),
+            fog: editing ? ChartFog.none : ChartFog.uncharted,
+          ),
+        );
+    final worldMap = worldMapWith(level: _level);
 
     final travelsFromHere = !play.isInExcursion &&
         canReturnToCampFrom(node,
@@ -2269,10 +2281,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                                     key: ValueKey(
                                                         'journey_transit_$sceneKey'),
                                                     transit: _transit!,
-                                                    geography:
-                                                        placeView.geography,
-                                                    marks: placeView.marks,
-                                                    palette: palette,
+                                                    mapBuilder: (path, clock) =>
+                                                        worldMapWith(
+                                                            level:
+                                                                JourneyMapLevel
+                                                                    .world,
+                                                            move: path,
+                                                            clock: clock),
                                                     passText: tr(ref,
                                                         'journey_pass_stop'),
                                                     onDone: () {
@@ -2468,10 +2483,10 @@ class _Transit {
     required this.flight,
     required this.forced,
     required this.caption,
-    this.route,
+    this.path,
   });
 
-  /// The two places on the world chart.
+  /// The two places on the region's chart.
   final Offset from;
   final Offset to;
   final String fromName;
@@ -2486,15 +2501,18 @@ class _Transit {
   final bool forced;
   final String caption;
 
-  /// The roads and named stops between the two places (v1.254), when the
-  /// world's roads lead there.
-  final ChartRoute? route;
+  /// The road (or sea lane) from one place to the other over the world
+  /// chart, with the stops it passes (wave 14), when the world's roads lead
+  /// there; without one only the caption is told.
+  final WorldLegPath? path;
 
-  /// How long the walk takes: longer for a road with more to pass.
-  Duration get duration => Duration(
-      milliseconds: flight
-          ? math.min(5000, 2400 + 400 * (route?.stops.length ?? 0))
-          : 2000);
+  /// How long the move takes: slow, and longer for a longer road.
+  Duration get duration {
+    final path = this.path;
+    return flight && path != null
+        ? worldMoveDuration(path)
+        : const Duration(milliseconds: 2000);
+  }
 }
 
 /// The [_Transit] over the map: the world chart with the party walking the
@@ -2504,17 +2522,15 @@ class _PartyTransit extends StatefulWidget {
   const _PartyTransit({
     super.key,
     required this.transit,
-    required this.geography,
-    required this.marks,
-    required this.palette,
+    required this.mapBuilder,
     required this.passText,
     required this.onDone,
   });
 
   final _Transit transit;
-  final ChartGeography geography;
-  final List<ChartMark> marks;
-  final ChartPalette palette;
+
+  /// The world chart with the move on it, on the move's clock.
+  final Widget Function(WorldLegPath path, Animation<double> clock) mapBuilder;
 
   /// "You pass {stop}.", the words said of the stop the party has reached.
   final String passText;
@@ -2555,38 +2571,27 @@ class _PartyTransitState extends State<_PartyTransit>
       widget.onDone();
     }
 
-    final road = transit.flight && !still;
+    final path = transit.path;
+    final road = transit.flight && !still && path != null;
     return ClipRRect(
       key: const ValueKey('journey_transit'),
       borderRadius: BorderRadius.circular(10),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // The road over the whole map takes a tap to skip; a few words
-          // alone (the party moved inside its place) leave the map to be
-          // played with, and the map shows the move.
-          if (road)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: skip,
-              child: AnimatedBuilder(
-                animation: _c,
-                builder: (context, _) => CustomPaint(
-                  size: Size.infinite,
-                  painter: RegionFlightPainter(
-                    geography: widget.geography,
-                    from: transit.from,
-                    to: transit.to,
-                    marks: widget.marks,
-                    t: Curves.easeInOut.transform(_c.value),
-                    palette: widget.palette,
-                    fromName: transit.fromName,
-                    toName: transit.toName,
-                    route: transit.route,
-                  ),
-                ),
+          // The party's move over the world chart takes a tap to skip; a few
+          // words alone (the party moved inside its place) leave the map to
+          // be played with, and the map shows the move.
+          if (road) ...[
+            widget.mapBuilder(path, _c),
+            Positioned.fill(
+              child: GestureDetector(
+                key: const ValueKey('journey_transit_skip'),
+                behavior: HitTestBehavior.opaque,
+                onTap: skip,
               ),
             ),
+          ],
           Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
@@ -2625,14 +2630,16 @@ class _PartyTransitState extends State<_PartyTransit>
                               ),
                               // The stop the party has just passed on the
                               // way there (v1.254).
-                              if (road && transit.route != null)
+                              if (road)
                                 AnimatedBuilder(
                                   animation: _c,
                                   builder: (context, _) {
-                                    final stop = transit.route!.passed(
-                                        RegionFlightPainter.walkAt(Curves
-                                            .easeInOut
-                                            .transform(_c.value)));
+                                    final walked =
+                                        RegionFlightPainter.walkAt(_c.value);
+                                    ChartRouteStop? stop;
+                                    for (final s in path.stops) {
+                                      if (s.along <= walked) stop = s;
+                                    }
                                     if (stop == null) return const SizedBox();
                                     return Text(
                                       widget.passText
