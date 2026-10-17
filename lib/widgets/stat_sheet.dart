@@ -31,7 +31,8 @@ Future<void> showStatSheet(BuildContext context, String stat) {
 }
 
 /// The l10n key of a source's kind ("Race", "Picks", "Gear"...).
-String statSourceKey(String kind) => 'stat_src_$kind';
+String statSourceKey(String kind) =>
+    kind == 'curse' ? 'ledger_curse' : 'stat_src_$kind';
 
 /// A source row as the sheet shows it: the kind, what names it (the race,
 /// the paths picked...), and its points.
@@ -110,7 +111,7 @@ class StatSheet extends ConsumerWidget {
           'tome' || 'gear' => recordName(items, id),
           'sign' => signs[id]?.nameFor(lang),
           'title' => clans.titles[id]?.nameFor(lang),
-          'sworn' => factions[id]?.nameFor(lang),
+          'sworn' || 'curse' => factions[id]?.nameFor(lang),
           'patron' => id == 'open_hand'
               ? tr(ref, 'stat_src_open_hand')
               : (patrons[id]?.nameFor(lang) ?? factions[id]?.nameFor(lang)),

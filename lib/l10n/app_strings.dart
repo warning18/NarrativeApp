@@ -12281,6 +12281,41 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Offer',
     AppLanguage.fr: 'Offre',
   },
+  // Risky gifts (risky_gifts.dart): Narrative's texts.
+  'offer_risky_badge': {
+    AppLanguage.en: 'Risky',
+    AppLanguage.fr: 'Risqué',
+  },
+  'offer_risky_hint': {
+    AppLanguage.en: 'A better gift, at their price: let the die decide.',
+    AppLanguage.fr:
+        'Un meilleur don, à leur prix\u00a0: laissez le dé décider.',
+  },
+  'offer_risky_odds': {
+    AppLanguage.en: 'Gift {gift}% · Price {price}%',
+    AppLanguage.fr: 'Don {gift} % · Prix {price} %',
+  },
+  'offer_risky_gift': {
+    AppLanguage.en: 'The die is kind. {clan} keeps its word.',
+    AppLanguage.fr: 'Le dé est clément. Parole tenue par {clan}.',
+  },
+  'offer_risky_health': {
+    AppLanguage.en: 'The price is paid in blood: −{n} health.',
+    AppLanguage.fr: 'Le prix se paie en sang\u00a0: −{n} points de vie.',
+  },
+  'offer_risky_gold': {
+    AppLanguage.en: 'The price is paid in coin: −{n} gold.',
+    AppLanguage.fr: 'Le prix se paie en pièces\u00a0: −{n} or.',
+  },
+  'offer_risky_curse': {
+    AppLanguage.en: 'The curse {clanOf}: −{n} {stat} for two levels.',
+    AppLanguage.fr:
+        'Malédiction {clanOf}\u00a0: −{n} {stat} pendant deux niveaux.',
+  },
+  'ledger_curse': {
+    AppLanguage.en: 'Curse',
+    AppLanguage.fr: 'Malédiction',
+  },
   'offers_waiting_label': {
     AppLanguage.en: 'Offers waiting',
     AppLanguage.fr: 'Offres en attente',

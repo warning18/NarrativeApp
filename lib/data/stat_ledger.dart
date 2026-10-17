@@ -27,11 +27,16 @@ const String ledgerOrigin = 'origin';
 const String ledgerPick = 'pick';
 const String ledgerTome = 'tome';
 const String ledgerPatron = 'patron';
+
+/// A clan's curse (risky_gifts.dart): `curse:<clan>`, its points taken
+/// away while it lasts, given back when it ends.
+const String ledgerCurse = 'curse';
 const List<String> ledgerKinds = [
   ledgerOrigin,
   ledgerPick,
   ledgerTome,
   ledgerPatron,
+  ledgerCurse,
 ];
 
 /// The ledger's id of the patron gift that the open hand adds (a banner
