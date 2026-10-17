@@ -16415,8 +16415,8 @@
       {
         "id": "black_reliquary_tavern",
         "kind": "tavern",
-        "at": [663, 451],
-        "district": "reliquary_chapels"
+        "at": [537, 563],
+        "district": "reliquary_quarter"
       },
       {
         "id": "black_reliquary_temple",
