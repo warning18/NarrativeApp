@@ -132,7 +132,7 @@ const _waiting = {
 
 /// The scenes Core made ready: their building lies inside their landmark's
 /// home and their way stands in the building's district. Eighteen are seated
-/// now.
+/// now; `6010_thread` and `6010_heist_night` still wait.
 const _ready = {
   '7590_dominion',
   '7590_vigil',
