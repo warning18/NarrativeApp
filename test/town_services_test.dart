@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/town_services.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/choice_flow_provider.dart';
 import 'package:narrative_data_app/providers/city_provider.dart';
+import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/town_services_provider.dart';
 
 Map<String, dynamic> _table(String name) =>
@@ -111,7 +112,7 @@ void main() {
   test('Saltmouth: shops at the market and the forge, its port, a rest', () {
     final salt = {
       for (final s in townServicesOf(plans['saltmouth']!, stops,
-          unlockedShopIds: {'arcane_bazaar'}))
+          story: story, unlockedShopIds: {'arcane_bazaar'}))
         s.kind: s,
     };
     final market = salt['market']!.opens;
@@ -139,12 +140,29 @@ void main() {
 
   test('a village with no shop: its market and forge open nothing yet', () {
     final ember = {
-      for (final s in townServicesOf(plans['emberwick']!, stops)) s.kind: s,
+      for (final s in townServicesOf(plans['emberwick']!, stops, story: story))
+        s.kind: s,
     };
     expect(ember['market']!.opens, isEmpty);
     expect(ember['forge']!.opens, isEmpty);
     expect(ember['forge']!.pin.district, 'emberwick_smithy_lane');
     expect(ember['tavern']!.opensSomething, isTrue);
+    // Wrack's End lands its boat at the Drowned Stair: that port and its
+    // shops are not the village's own.
+    final wrack = {
+      for (final s in townServicesOf(plans['wracks_end']!, stops, story: story))
+        s.kind: s,
+    };
+    expect(wrack['harbour']!.opens, isEmpty);
+    expect(wrack['market']!.opens, isEmpty);
+    // The Reliquary's Last Lantern is unlocked by a choice in the city.
+    final reliquary = {
+      for (final s
+          in townServicesOf(plans['black_reliquary']!, stops, story: story))
+        s.kind: s,
+    };
+    expect(reliquary['market']!.opens.map((o) => o.id), ['last_lantern']);
+    expect(reliquary['harbour']!.opens, isEmpty);
     // With no story, only the board and the rest open.
     final bare = townServicesOf(plans['saltmouth']!, null);
     expect([
@@ -160,12 +178,16 @@ void main() {
     final container = ProviderContainer(overrides: [
       cityPlanRecordsProvider.overrideWith((ref) async => plans),
       storyStopsProvider.overrideWithValue(stops),
+      storyDataProvider.overrideWith((ref) async => story),
     ]);
     addTearDown(container.dispose);
     expect(container.read(townServicesProvider('saltmouth')), isEmpty);
     await container.read(cityPlanRecordsProvider.future);
+    await container.read(storyDataProvider.future);
     final services = container.read(townServicesProvider('saltmouth'));
     expect(services.map((s) => s.kind), contains('harbour'));
+    expect(services.firstWhere((s) => s.kind == 'harbour').opens.single.id,
+        'port_smugglers_wharf');
     expect(container.read(townServicesProvider('nowhere')), isEmpty);
     // The saved session loads before the container goes.
     await Future<void>.delayed(const Duration(milliseconds: 100));

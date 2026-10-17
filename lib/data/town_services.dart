@@ -5,6 +5,7 @@
 // unlock, the ports its settlements sail from) and the game's own screens.
 import 'choice_flow.dart';
 import 'city_plan_record.dart';
+import 'story_repository.dart' show StoryData;
 
 /// What a service pin opens.
 enum TownServiceAction {
@@ -56,20 +57,32 @@ class TownService {
 
 /// The services of the town [record] is the plan of, with what each opens:
 /// the shops and ports [stops] finds at the town (none when null), a shop
-/// [unlockedShopIds] holds unlocked.
+/// [unlockedShopIds] holds unlocked. Only the town's own: a shop a choice
+/// of one of its scenes unlocks, and the port a settlement of it names as
+/// its `portId` with the shops that port lists. A `landingPortId` (where
+/// the Rusty Eel puts in for a place whose port is elsewhere) is not the
+/// town's, so neither it nor its shops are: [story] tells them apart
+/// (without it, only the shops a choice unlocks count).
 List<TownService> townServicesOf(
   CityPlanRecord record,
   StoryStops? stops, {
+  StoryData? story,
   Set<String> unlockedShopIds = const {},
 }) {
   final offered = stops?.servicesAt(record.cityId) ?? const <PlaceService>[];
+  bool ownPort(PlaceService s) =>
+      story?.nodeFor(s.nodeId)?.settlement?.portId != null;
   final shops = <String>{
     for (final s in offered)
-      if (s.kind == PlaceServiceKind.shop) s.id,
+      if (s.kind == PlaceServiceKind.shop &&
+          (s.choiceIndex != null || ownPort(s)))
+        s.id,
   };
   final ports = <String>{
     for (final s in offered)
-      if (s.kind == PlaceServiceKind.port) s.id,
+      if (s.kind == PlaceServiceKind.port &&
+          story?.nodeFor(s.nodeId)?.settlement?.portId == s.id)
+        s.id,
   };
   TownServiceOpen shop(String id) => (
         action: TownServiceAction.shop,

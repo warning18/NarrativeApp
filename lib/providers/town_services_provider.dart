@@ -4,6 +4,7 @@ import '../data/town_services.dart';
 import 'choice_flow_provider.dart';
 import 'city_provider.dart';
 import 'player_session_provider.dart';
+import 'story_providers.dart';
 
 /// The services of the town [cityId] (a city_plans.json id), each with its
 /// pin on the plan and what it opens (see town_services.dart); empty for a
@@ -17,6 +18,7 @@ final townServicesProvider =
   return townServicesOf(
     record,
     ref.watch(storyStopsProvider),
+    story: ref.watch(storyDataProvider).value,
     unlockedShopIds: unlocked.isEmpty ? const {} : unlocked.split('|').toSet(),
   );
 });
