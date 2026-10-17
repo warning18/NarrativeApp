@@ -4,17 +4,22 @@
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
 // before (the Blind Beggar) and the rest showed streets. 76 stand in one now;
-// the 23 in [_waiting] have their building but wait: 10 are seated by
-// Narrative in another district than their room's, 11 go to the Black
-// Reliquary's new districts, whose world-map landmark is not on the charts
-// yet, and 2 would make a roll's other branch a move with no note
+// the 23 in [_waiting] have their building but wait. For 18 of them
+// ([_ready]: the 7 crownings in the throne room, 11 in the Black
+// Reliquary's chapels) Core's side is done: their way stands in their
+// room's district on the city plan, and their building lies inside their
+// landmark's home; only the story's `location` is left to set. 3 are seated
+// by Narrative in another district than their room's, and 2 would make a
+// roll's other branch a move with no note
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/data/city_plan_record.dart';
 import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/room_plan.dart';
+import 'package:narrative_data_app/data/world_map.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -100,8 +105,10 @@ const _interiorScenes = [
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: Narrative seats the first ten elsewhere (district_seats.json);
-/// the rest wait for the Reliquary's chapels to get a landmark.
+/// goes into: Narrative seats the first three elsewhere
+/// (district_seats.json); the crownings and the Reliquary's chapels
+/// ([_ready]) wait only for their `location`; the last two for a roll's
+/// note.
 const _waiting = {
   '6010_lysa_dead': 'reliquary_chair_chapel',
   '6010_record': 'reliquary_muniment_room',
@@ -126,6 +133,30 @@ const _waiting = {
   '6010_returned_roll': 'reliquary_muniment_room',
   '3100_house_anvil_deaf_failed': 'emberwick_cold_forge',
   '5200': 'kindly_hill_long_room',
+};
+
+/// The waiting scenes Core has made ready: linking each to its building
+/// (the story's `location`, which Core does not set here) changes neither
+/// its landmark nor its way's district.
+const _ready = {
+  '7590_dominion',
+  '7590_vigil',
+  '7590_compact',
+  '7590_mire',
+  '7590_crows',
+  '7590_penitents',
+  '7590_open_hand',
+  '6010_clan_dominion_2',
+  '6010_clan_compact_3',
+  '6010_clan_compact_3_seen',
+  '6010_clan_compact_3_hammer',
+  '6010_chartkeeper',
+  '6010_chartkeeper_words',
+  '6010_chart_bought',
+  '6010_thread',
+  '6010_heist_night',
+  '6010_spawn',
+  '6010_returned_roll',
 };
 
 void main() {
@@ -156,6 +187,30 @@ void main() {
           reason: key);
     }
     expect(_interiorScenes.length + _waiting.length, 99);
+  });
+
+  test('the ready waiting scenes can step into their building', () {
+    final plans = cityPlanRecordsFrom(_json('assets/gamedata/city_plans.json'));
+    expect(_waiting.keys, containsAll(_ready));
+    for (final scene in _ready) {
+      final building = _waiting[scene]!;
+      // Inside the home of the scene's landmark (the Black Reliquary's own
+      // now, not the Quarter's alone).
+      final home = geo.placeOfLandmark(landmarkOfScene(scene)?.id);
+      expect(home, isNotNull, reason: scene);
+      expect(geo.pathOf(building).map((p) => p.id), contains(home!.id),
+          reason: '$scene: $building is outside ${home.id}');
+      // Its way already stands in the building's district (the crownings
+      // left the Lantern Cliff for the Lantern Hall).
+      final district = geo.ancestorAt(building, GeoLevel.district)!;
+      final plan = plans[geo.locationOf(building)!.id]!;
+      expect(plan.building(plan.anchors[scene] ?? '')?.district, district.id,
+          reason: scene);
+    }
+    // The cliff seats nobody any more: no scene is seated against the
+    // story's own place.
+    final seats = _json('tool/city_plans/district_seats.json');
+    expect(seats.containsKey('candlehold_lantern_hall'), isFalse);
   });
 
   test('a scene\'s spot is a spot of its building\'s plan', () {
