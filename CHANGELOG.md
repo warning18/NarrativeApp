@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.481.0+517]
+
+Wave 14: the move on the world chart, the town's service pins.
+
+### Added
+- **The move on the real world view:** when the story sets the party down far away, the Journey shows the walk on the world chart (the sphere or the flat chart): the traveller follows the road or sea lane between the two places, slowly (6 to 13 seconds by the length of the road) while the camera closes in on the party, follows it and pulls back out. **A tap skips it.** The words under the map (the caption and "You pass ...") stay.
+- **Service pins on the town plan:** once a district is looked at, its signs show (notice board, market, tavern, temple, forge, harbour), dim when nothing opens there yet; a tap opens a sheet of what the service opens (the shops of the market or the forge, the bounty board, a night's rest, the port, or "Nothing to do here yet." for the temple).
+- A scene set in one of Core's new buildings (the prison, the library, the forge) opens its own room; a test checks it.
+
+### Changed
+- Tests run a move at a third of its time (`worldMoveTimeScale`, set in `test/flutter_test_config.dart`) so the waits stay short.
+
 ## [1.478.0+514]
 
 Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.
