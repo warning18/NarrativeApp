@@ -16198,7 +16198,7 @@
       "6010_house_reliquary_thieves": "black_reliquary_b030",
       "6010_lysa": "black_reliquary_b023",
       "6010_lysa_later": "black_reliquary_b044",
-      "6010_record": "black_reliquary_b038",
+      "6010_record": "black_reliquary_b205",
       "6010_brannoc_later": "black_reliquary_b061",
       "6010_clement_refused": "black_reliquary_b024",
       "6010_lysa_rescued": "black_reliquary_b043",
@@ -16213,7 +16213,7 @@
       "6010_penitent": "black_reliquary_b208",
       "6010_confession_later": "black_reliquary_b216",
       "6010_thread": "black_reliquary_b200",
-      "6010_lysa_dead": "black_reliquary_b206",
+      "6010_lysa_dead": "black_reliquary_b021",
       "6010_masked": "black_reliquary_b213",
       "6010_chart_bought": "black_reliquary_b198",
       "6010_heist_night": "black_reliquary_b199",
@@ -16278,7 +16278,7 @@
         "en": "The courier’s purse",
         "fr": "La bourse du messager"
       },
-      "black_reliquary_b038": {
+      "black_reliquary_b205": {
         "en": "The muniment room",
         "fr": "La salle des archives"
       },
@@ -16358,7 +16358,7 @@
         "en": "The blade laid hilt-first",
         "fr": "La lame posée la garde en avant"
       },
-      "black_reliquary_b206": {
+      "black_reliquary_b021": {
         "en": "The chair with straps",
         "fr": "La chaise à sangles"
       },
@@ -16415,8 +16415,8 @@
       {
         "id": "black_reliquary_tavern",
         "kind": "tavern",
-        "at": [663, 451],
-        "district": "reliquary_chapels"
+        "at": [537, 563],
+        "district": "reliquary_quarter"
       },
       {
         "id": "black_reliquary_temple",

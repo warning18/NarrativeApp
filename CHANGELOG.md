@@ -14,6 +14,44 @@ The story text keeps its room on a small phone.
 
 ### Changed
 - **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
+## [1.485.0+521]
+
+Two bosses brought back to their curve.
+
+### Changed
+- **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
+- **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
+
+## [1.484.0+520]
+
+The tutorial strings polished, English and French.
+
+### Changed
+- **Typography:** curly apostrophes throughout the `tut_*` strings (English and French were mixed) and no-break spaces before `:` `;` `!` `?` in the French.
+- **The Rusty Eel** is masculine throughout the French tours (it was "la" in three places); "Harbor" is capitalised like the Harbor tour's title.
+- **A gendered participle** about the player is gone ("blessé" became "à bout de forces"), and the shop line reads "Spend your gold on what the merchant sells."
+- Text only: no key changes.
+- **Two more indoor scenes seated** (`6010_lysa_dead` in the chair chapel, `6010_record` in the muniment room), now that Core's v1.482 moved their ways on the city plan: 94 of the 99 indoor scenes stand in a building.
+
+## [1.483.0+519]
+
+Who rules each town, for the maps to tint it in its clan's colours. Data and a provider only; UX draws it (contract: `docs/proposals/town-ruler-colours.md`).
+
+### Added
+- **Town rulers** (`townRulersProvider`, `rulerOfTown`): the 16 towns with a city plan and their 59 districts, each with its ruling clan and that clan's colour (the `color` factions.json already has) plus a darker accent. A town takes the clan that holds it, else the clan holding most of its districts (neutral on a tie); a district takes its own holder, else its town's. Follows politics as places change hands.
+
+## [1.482.0+518]
+
+Three camp buildings that bend the rolls: reroll, banish and raise the level's stat pick and the clans' offers.
+
+### Added
+- **The Bone-Caster's Hut** (Reroll): up to 4 charges, full when built, +1 per level. Redraws the whole set of choices; a rerolled stat pick keeps its rarity.
+- **The Warding Cairn** (Banish): up to 3 charges, full when built, +1 per level. Bans a training path (stat pick) or a gift (offer) for 5, 10 or 15 draws, for 1, 2 or 3 charges; the card is replaced at once.
+- **The Star Well** (Raise, a great work): 1 charge when built, +1 every 15 draws, up to 5. Lifts one card one rarity, never above Heroic and never a risky card.
+- The powers never touch ability checks, combat dice, loot or the risky-gift die. Old saves load unchanged.
+
+### Fixed
+- **The Black Reliquary's plan:** the ways of `6010_lysa_dead` and `6010_record` stand in their building's district, so their scenes can open on their room.
 
 ## [1.481.0+517]
 
