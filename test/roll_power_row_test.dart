@@ -69,7 +69,7 @@ void main() {
     expect(find.text('Raise'), findsOneWidget);
     // Three pips, two, one: six dots in all.
     final pipRows = tester.widgetList<Row>(find.byKey(const Key('roll_pips')));
-    expect(pipRows.map((r) => r.children.where((c) => c is Container).length),
+    expect(pipRows.map((r) => r.children.whereType<Container>().length),
         [3, 2, 1]);
     // Raise shows how near its next charge is.
     final bar = tester.widget<LinearProgressIndicator>(
