@@ -22,12 +22,14 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/climate_provider.dart' show skyHereProvider;
+import '../widgets/companion_remark_bubble.dart' show SpokenLine, spokenRemarks;
 import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
 import '../widgets/side_view/encounter_figure.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
+import '../widgets/walk_bubble.dart';
 import 'fight_screen.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
@@ -107,6 +109,9 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
   ConsumerState<LandCrossingScreen> createState() => _LandCrossingScreenState();
 }
 
+/// The scene's height: the side view's own default.
+const double crossingSceneHeight = 190;
+
 enum _Phase { event, result, arrived, failed, turnedBack }
 
 class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
@@ -153,6 +158,31 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     super.initState();
     _departureHealth = ref.read(playerSessionProvider).currentHealth;
     if (_drawn.isEmpty) _phase = _Phase.arrived;
+    // A walking companion may say a word as the walk starts.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _speakUp());
+  }
+
+  /// A companion's word on the road (Core's speakUpOnWalk), as a bubble over
+  /// their figure for a few seconds.
+  SpokenLine? _spoken;
+  Timer? _spokenTimer;
+
+  void _speakUp() {
+    if (!mounted || _phase == _Phase.arrived) return;
+    final remark = speakUpOnWalk(ref);
+    if (remark == null) return;
+    final line = spokenRemarks(ref, [remark]).firstOrNull;
+    if (line == null) return;
+    setState(() => _spoken = line);
+    _spokenTimer = Timer(const Duration(seconds: 7), () {
+      if (mounted) setState(() => _spoken = null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _spokenTimer?.cancel();
+    super.dispose();
   }
 
   /// What stands on the road at the day's event, walking in from the right
@@ -319,6 +349,29 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// The bubble over the companion who spoke: above their head, kept in view.
+  Widget _walkBubble(SpokenLine line) {
+    final party = ref.read(walkingPartyProvider);
+    final index = party.indexWhere((m) => m.id == line.companionId);
+    final xs = walkingPartyXs(party.length);
+    const unit = crossingSceneHeight / sideViewRows;
+    final width = MediaQuery.sizeOf(context).width;
+    const bubbleWidth = 220.0;
+    final at = (index < 0 ? xs.first : xs[index]) * unit;
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8);
+    return Positioned(
+      left: left,
+      bottom: crossingSceneHeight - 36 * unit + 2,
+      child: WalkBubble(
+        key: const Key('walk_bubble'),
+        speaker: line.speaker,
+        line: line.line,
+        width: bubbleWidth,
+        tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22),
       ),
     );
   }
@@ -504,6 +557,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   children: [
                     SideViewScene(
                       key: const Key('crossing_scene'),
+                      height: crossingSceneHeight,
                       layers: ruins
                           ? ruinsLayers(progress: progress)
                           : desertLayers(progress: progress),
@@ -516,6 +570,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                       moving: _phase == _Phase.result,
                     ),
                     Positioned(left: 0, right: 0, top: 0, child: hud),
+                    if (_spoken != null) _walkBubble(_spoken!),
                   ],
                 )
               else
