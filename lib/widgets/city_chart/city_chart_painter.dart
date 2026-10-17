@@ -29,6 +29,8 @@ class CityChartPainter extends CustomPainter {
     this.hereWayId,
     this.goalWayId,
     this.selectedWayId,
+    this.services = const [],
+    this.selectedServiceId,
     this.focusDistrict,
     this.numbers = const {},
     this.banners = const {},
@@ -53,6 +55,11 @@ class CityChartPainter extends CustomPainter {
   final String? hereWayId;
   final String? goalWayId;
   final String? selectedWayId;
+
+  /// The town's service pins (a notice board, the market...), and the one
+  /// picked.
+  final List<CityChartService> services;
+  final String? selectedServiceId;
 
   /// The district being looked at: the others quieten.
   final String? focusDistrict;
@@ -296,6 +303,7 @@ class CityChartPainter extends CustomPainter {
 
     // Names and pins sit on the plan but are drawn at the screen's size.
     _labels(canvas);
+    _services(canvas);
     _pins(canvas);
     canvas.restore();
   }
@@ -452,6 +460,75 @@ class CityChartPainter extends CustomPainter {
               const Radius.circular(4)),
           Paint()..color = p.fog.withValues(alpha: 0.7));
       tp.paint(canvas, below);
+      canvas.restore();
+    }
+  }
+
+  /// The icon of a service pin.
+  static IconData serviceIcon(String kind) => switch (kind) {
+        'notice_board' => Icons.assignment_outlined,
+        'market' => Icons.storefront_outlined,
+        'tavern' => Icons.local_bar_outlined,
+        'temple' => Icons.temple_buddhist_outlined,
+        'forge' => Icons.hardware_outlined,
+        'harbour' => Icons.anchor,
+        _ => Icons.place_outlined,
+      };
+
+  /// The pins' half-size on the screen.
+  static const double serviceRadius = 11;
+
+  /// Whether the service [s] is on show: in the district looked at, and found.
+  bool serviceShown(CityChartService s) {
+    if (!detailed) return false;
+    if (focusDistrict != null && s.district != focusDistrict) return false;
+    return _known(s.district);
+  }
+
+  /// The services' pins: a small rounded sign on its square or lot, quieter
+  /// than a way's pin, dimmer when nothing opens there yet.
+  void _services(Canvas canvas) {
+    final p = palette;
+    final inv = 1 / scale;
+    for (final s in services) {
+      if (!serviceShown(s)) continue;
+      final picked = s.id == selectedServiceId;
+      canvas.save();
+      canvas.translate(s.at.dx, s.at.dy);
+      canvas.scale(inv);
+      final box = RRect.fromRectAndRadius(
+          Rect.fromCenter(
+              center: Offset.zero,
+              width: serviceRadius * 2,
+              height: serviceRadius * 2),
+          const Radius.circular(5));
+      canvas.drawRRect(
+          box.shift(const Offset(0, 1.5)), Paint()..color = Colors.black26);
+      canvas.drawRRect(box,
+          Paint()..color = s.opens ? p.fog : p.fog.withValues(alpha: 0.75));
+      canvas.drawRRect(
+          box,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = picked ? 2.4 : 1.4
+            ..color = picked
+                ? p.mark
+                : s.opens
+                    ? p.label
+                    : p.label.withValues(alpha: 0.45));
+      final icon = serviceIcon(s.kind);
+      final tp = TextPainter(
+        text: TextSpan(
+            text: String.fromCharCode(icon.codePoint),
+            style: TextStyle(
+                fontFamily: icon.fontFamily,
+                package: icon.fontPackage,
+                fontSize: 15,
+                height: 1,
+                color: s.opens ? p.label : p.label.withValues(alpha: 0.5))),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
       canvas.restore();
     }
   }
@@ -623,6 +700,8 @@ class CityChartPainter extends CustomPainter {
       old.hereWayId != hereWayId ||
       old.goalWayId != goalWayId ||
       old.selectedWayId != selectedWayId ||
+      old.selectedServiceId != selectedServiceId ||
+      !identical(old.services, services) ||
       old.focusDistrict != focusDistrict ||
       old.numbers != numbers ||
       !mapEquals(old.banners, banners) ||

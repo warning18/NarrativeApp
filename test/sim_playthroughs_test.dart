@@ -125,6 +125,7 @@ void main() {
             },
             'housesBuilt': r.housesBuilt,
             'riskyOutcomes': r.riskyOutcomes,
+            'campRolls': r.campRolls,
             'questRecords': [
               for (final q in r.questRecords)
                 {

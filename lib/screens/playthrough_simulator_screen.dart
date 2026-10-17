@@ -29,7 +29,9 @@ import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart' show statPatron;
+import '../data/camp_rolls.dart' show rollPowerOf;
 import '../data/risky_gifts.dart' show riskyGiftsOpen;
+import '../data/sim_rolls.dart';
 import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
@@ -241,6 +243,7 @@ class _SimResult {
     this.arrivals = const {},
     this.housesBuilt = const {},
     this.riskyOutcomes = const {},
+    this.campRolls = const {},
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
@@ -289,6 +292,10 @@ class _SimResult {
   /// Risky gifts (risky_gifts.dart): the cards `seen` and `taken`, and
   /// each outcome (`gift`, `health`, `gold`, `curse`).
   final Map<String, int> riskyOutcomes;
+
+  /// The camp's roll houses (sim_rolls.dart): the `rerolls`, `bans` and
+  /// `raises` the walk used.
+  final Map<String, int> campRolls;
 
   /// The character's level and gold when the run first rested at each
   /// chapter's hub (chapter -> (level, gold)), for the balance reports.
@@ -582,7 +589,9 @@ _SimResult _simulate(
     )
       ..specIds = [...sim.startSpecs]
       ..trainingPaths = sim.trainingPaths
-      ..pickRandom = Random(detourSalt * 31 + 17);
+      ..pickRandom = Random(detourSalt * 31 + 17)
+      // The camp's roll houses draw on their own (sim_rolls.dart).
+      ..rolls = SimRolls(Random(detourSalt * 31 + 29));
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -910,6 +919,7 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       riskyOutcomes: Map.unmodifiable(growth?.riskyOutcomes ?? const {}),
+      campRolls: Map.unmodifiable(character?.rolls?.used ?? const {}),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
@@ -1409,6 +1419,7 @@ _SimResult _simulate(
       }
       final id = ready.first;
       housesBuilt[id] = chapter;
+      character?.rolls?.build(rollPowerOf(houses[id] as Map<String, dynamic>));
       houseGoldSpent += costOf(id);
       materials = withoutMaterials(materials,
           materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'));
@@ -2135,6 +2146,7 @@ typedef SimRunSummary = ({
   Map<int, ({int level, int gold})> arrivals,
   Map<String, int> housesBuilt,
   Map<String, int> riskyOutcomes,
+  Map<String, int> campRolls,
   Set<String> visitedNodes,
   List<String> choicesTaken,
   Set<String> questIds,
@@ -2267,6 +2279,7 @@ List<SimRunSummary> simulatePlaythroughs(
       arrivals: result.arrivals,
       housesBuilt: result.housesBuilt,
       riskyOutcomes: result.riskyOutcomes,
+      campRolls: result.campRolls,
       visitedNodes: {
         for (final step in result.steps)
           if (!step.nodeId.contains(':')) step.nodeId,
