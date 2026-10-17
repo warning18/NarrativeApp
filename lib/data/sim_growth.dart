@@ -15,6 +15,7 @@ import 'perks.dart';
 import 'patron_stats.dart';
 import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
+import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
 import 'skill_tree.dart';
@@ -174,6 +175,26 @@ class SimGrowth {
 
   /// Gifts taken, by kind (offers), for the telemetry.
   final Map<GiftKind, int> giftsTaken = {};
+
+  /// Risky gifts (risky_gifts.dart): open once the walk built the Parley
+  /// Tent; the walk sets [gold] and [chapter] before [settle] and reads
+  /// [gold] back (a gold penalty). [riskyOutcomes] counts the risky cards
+  /// `seen` and `taken`, and each outcome (`gift`, `health`, `gold`,
+  /// `curse`).
+  bool riskyGifts = false;
+  int gold = 0;
+  int chapter = 1;
+  final Map<String, int> riskyOutcomes = {};
+  final List<RiskCurse> _curses = [];
+
+  /// The risky cards' own draw, so a risky card shifts nothing else in the
+  /// offers' draw: seeded from the character and the moment the tent opens
+  /// (never from the walk's own stream).
+  Random? _riskyRandom;
+  Random _riskySeeded() => Random('${character.professionId}${character.raceId}'
+          .codeUnits
+          .fold<int>(0, (a, b) => a * 31 + b & 0x3fffffff) ^
+      (character.level * 7919 + gold));
   int skillsLearned = 0;
 
   PerkEffects get perks => perkEffectsFor(perkRanks);
@@ -271,6 +292,13 @@ class SimGrowth {
       for (var i = before; i < after; i++) {
         pending.add(const OfferTicket(source: OfferSource.level));
         if (passives) _patronGains(i + 1);
+      }
+      // A clan's curse ends at its level.
+      for (final c in [..._curses]) {
+        if (after >= c.untilLevel) {
+          character.addAbilities({c.stat: c.amount});
+          _curses.remove(c);
+        }
       }
     }
   }
@@ -534,6 +562,7 @@ class SimGrowth {
         specs: tables.specs,
         heldSpecIds: character.specIds,
         specVariants: tables.specVariants,
+        riskyGifts: riskyGifts,
       );
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
@@ -549,7 +578,8 @@ class SimGrowth {
     }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
-      final offer = drawOffer(ticket, _context(next, flags), random);
+      final offer = drawOffer(ticket, _context(next, flags), random,
+          riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
       final suitor = preferredSuitor(
         offer,
@@ -559,13 +589,52 @@ class SimGrowth {
         favourBest: random.nextDouble() < simFavourBestChance,
         politics: politics,
         data: tables.clans,
+        healthy: character.currentHealth * 2 > character.maxHealth,
       );
       if (suitor == null) return next;
       pending.removeAt(0);
       for (final s in offer.suitors) {
         if (!patronsMet.contains(s.factionId)) patronsMet.add(s.factionId);
       }
-      next = _applyGift(suitor, next);
+      if (offer.suitors.any((s) => s.risky)) _count('seen');
+      if (suitor.risky) {
+        _count('taken');
+        final risk = riskyResultFor(
+          roll: suitor.riskRoll,
+          luck: character.luck + effects(next).stat('luck'),
+          gold: gold,
+          chapter: chapter,
+          maxHealth: character.maxHealth,
+          currentHealth: character.currentHealth,
+          curseStat: riskyCurseStatFor(
+              tables.clans.faction(suitor.factionId), character.professionId),
+        );
+        _count(risk.outcome.name);
+        switch (risk.outcome) {
+          case RiskyOutcome.gift:
+            next = _applyGift(suitor, next);
+          case RiskyOutcome.health:
+            character.currentHealth =
+                max(1, character.currentHealth - risk.amount);
+          case RiskyOutcome.gold:
+            gold = max(0, gold - risk.amount);
+          case RiskyOutcome.curse:
+            final old =
+                _curses.where((c) => c.clan == suitor.factionId).firstOrNull;
+            if (old != null) {
+              character.addAbilities({old.stat: old.amount});
+              _curses.remove(old);
+            }
+            character.addAbilities({risk.stat: -risk.amount});
+            _curses.add(RiskCurse(
+                clan: suitor.factionId,
+                stat: risk.stat,
+                amount: risk.amount,
+                untilLevel: character.level + riskyCurseLevels));
+        }
+      } else {
+        next = _applyGift(suitor, next);
+      }
       final taken = acceptPolitics(suitor, ticket,
           politics: politics, data: tables.clans);
       politics = taken.politics;
@@ -578,6 +647,8 @@ class SimGrowth {
     }
     return next;
   }
+
+  void _count(String key) => riskyOutcomes[key] = (riskyOutcomes[key] ?? 0) + 1;
 
   int _applyGift(Suitor suitor, int alignment) {
     final gift = suitor.gift;

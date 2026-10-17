@@ -124,6 +124,7 @@ void main() {
                 '${a.key}': {'level': a.value.level, 'gold': a.value.gold},
             },
             'housesBuilt': r.housesBuilt,
+            'riskyOutcomes': r.riskyOutcomes,
             'questRecords': [
               for (final q in r.questRecords)
                 {

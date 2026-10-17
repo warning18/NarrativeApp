@@ -3385,7 +3385,45 @@
         "en": "The corner table",
         "fr": "La table du coin"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "saltmouth_notice_board",
+        "kind": "notice_board",
+        "at": [411, 379],
+        "district": "saltmouth_landward_gate"
+      },
+      {
+        "id": "saltmouth_market",
+        "kind": "market",
+        "at": [602, 429],
+        "district": "saltmouth_wharf"
+      },
+      {
+        "id": "saltmouth_tavern",
+        "kind": "tavern",
+        "at": [682, 405],
+        "district": "saltmouth_card_row"
+      },
+      {
+        "id": "saltmouth_temple",
+        "kind": "temple",
+        "at": [752, 591],
+        "district": "saltmouth_wharf"
+      },
+      {
+        "id": "saltmouth_forge",
+        "kind": "forge",
+        "at": [748, 707],
+        "district": "saltmouth_wharf"
+      },
+      {
+        "id": "saltmouth_harbour",
+        "kind": "harbour",
+        "at": [562, 665],
+        "district": "saltmouth_wharf"
+      }
+    ]
   },
   "alster": {
     "seed": 2207,
@@ -6873,7 +6911,39 @@
         "en": "The empty name",
         "fr": "Le nom absent"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "alster_notice_board",
+        "kind": "notice_board",
+        "at": [369, 440],
+        "district": "alster_lower_town"
+      },
+      {
+        "id": "alster_market",
+        "kind": "market",
+        "at": [558, 490],
+        "district": "alster_high_quay"
+      },
+      {
+        "id": "alster_tavern",
+        "kind": "tavern",
+        "at": [548, 571],
+        "district": "alster_stone_bridge"
+      },
+      {
+        "id": "alster_temple",
+        "kind": "temple",
+        "at": [626, 674],
+        "district": "alster_undercroft"
+      },
+      {
+        "id": "alster_harbour",
+        "kind": "harbour",
+        "at": [431, 440],
+        "district": "alster_high_quay"
+      }
+    ]
   },
   "ashen_quarter": {
     "seed": 3011,
@@ -9675,7 +9745,39 @@
         "en": "The sealed archive door",
         "fr": "La porte des archives scellées"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "ashen_quarter_notice_board",
+        "kind": "notice_board",
+        "at": [349, 480],
+        "district": "ashen_quarter_gate"
+      },
+      {
+        "id": "ashen_quarter_market",
+        "kind": "market",
+        "at": [539, 530],
+        "district": "ashen_quarter_ash_market"
+      },
+      {
+        "id": "ashen_quarter_tavern",
+        "kind": "tavern",
+        "at": [614, 587],
+        "district": "ashen_quarter_ash_market"
+      },
+      {
+        "id": "ashen_quarter_temple",
+        "kind": "temple",
+        "at": [458, 825],
+        "district": "ashen_quarter_cinder_row"
+      },
+      {
+        "id": "ashen_quarter_forge",
+        "kind": "forge",
+        "at": [483, 770],
+        "district": "ashen_quarter_cinder_row"
+      }
+    ]
   },
   "drowned_cloister": {
     "seed": 5023,
@@ -11959,7 +12061,39 @@
         "en": "The woman in grey",
         "fr": "La femme en gris"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "drowned_cloister_notice_board",
+        "kind": "notice_board",
+        "at": [411, 320],
+        "district": "drowned_cloister_nave"
+      },
+      {
+        "id": "drowned_cloister_market",
+        "kind": "market",
+        "at": [601, 370],
+        "district": "drowned_cloister_nave"
+      },
+      {
+        "id": "drowned_cloister_tavern",
+        "kind": "tavern",
+        "at": [550, 461],
+        "district": "drowned_cloister_nave"
+      },
+      {
+        "id": "drowned_cloister_temple",
+        "kind": "temple",
+        "at": [513, 460],
+        "district": "drowned_cloister_nave"
+      },
+      {
+        "id": "drowned_cloister_harbour",
+        "kind": "harbour",
+        "at": [561, 535],
+        "district": "drowned_cloister_nave"
+      }
+    ]
   },
   "black_reliquary": {
     "seed": 6037,
@@ -16264,7 +16398,39 @@
         "en": "The pattern in the frost",
         "fr": "Le motif dans le givre"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "black_reliquary_notice_board",
+        "kind": "notice_board",
+        "at": [389, 430],
+        "district": "reliquary_frost_line"
+      },
+      {
+        "id": "black_reliquary_market",
+        "kind": "market",
+        "at": [579, 480],
+        "district": "reliquary_chapels"
+      },
+      {
+        "id": "black_reliquary_tavern",
+        "kind": "tavern",
+        "at": [663, 451],
+        "district": "reliquary_chapels"
+      },
+      {
+        "id": "black_reliquary_temple",
+        "kind": "temple",
+        "at": [598, 373],
+        "district": "reliquary_chapels"
+      },
+      {
+        "id": "black_reliquary_harbour",
+        "kind": "harbour",
+        "at": [356, 430],
+        "district": "reliquary_frost_line"
+      }
+    ]
   },
   "white_anchorage": {
     "seed": 7109,
@@ -19340,7 +19506,45 @@
         "en": "The burning Vault",
         "fr": "Le Coffre en flammes"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "white_anchorage_notice_board",
+        "kind": "notice_board",
+        "at": [430, 360],
+        "district": "white_anchorage_chapel"
+      },
+      {
+        "id": "white_anchorage_market",
+        "kind": "market",
+        "at": [620, 409],
+        "district": "white_anchorage_quay"
+      },
+      {
+        "id": "white_anchorage_tavern",
+        "kind": "tavern",
+        "at": [542, 460],
+        "district": "white_anchorage_quay"
+      },
+      {
+        "id": "white_anchorage_temple",
+        "kind": "temple",
+        "at": [659, 464],
+        "district": "white_anchorage_quay"
+      },
+      {
+        "id": "white_anchorage_forge",
+        "kind": "forge",
+        "at": [88, 616],
+        "district": "white_anchorage_hulls"
+      },
+      {
+        "id": "white_anchorage_harbour",
+        "kind": "harbour",
+        "at": [559, 556],
+        "district": "white_anchorage_quay"
+      }
+    ]
   },
   "candlehold": {
     "seed": 7507,
@@ -23583,13 +23787,13 @@
       "7520_vane": "candlehold_b158",
       "7520_morrow": "candlehold_b157",
       "7520_tallis": "candlehold_b162",
-      "7590_dominion": "candlehold_b283",
-      "7590_vigil": "candlehold_b282",
-      "7590_compact": "candlehold_b287",
-      "7590_mire": "candlehold_b285",
-      "7590_crows": "candlehold_b284",
-      "7590_penitents": "candlehold_b290",
-      "7590_open_hand": "candlehold_b292",
+      "7590_dominion": "candlehold_b158",
+      "7590_vigil": "candlehold_b158",
+      "7590_compact": "candlehold_b158",
+      "7590_mire": "candlehold_b158",
+      "7590_crows": "candlehold_b158",
+      "7590_penitents": "candlehold_b158",
+      "7590_open_hand": "candlehold_b158",
       "7515_rest": "candlehold_b003"
     },
     "names": {
@@ -23669,7 +23873,39 @@
         "en": "The crown no one remembered",
         "fr": "La couronne que nul ne se rappelait"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "candlehold_notice_board",
+        "kind": "notice_board",
+        "at": [411, 400],
+        "district": "candlehold_lantern_hall"
+      },
+      {
+        "id": "candlehold_market",
+        "kind": "market",
+        "at": [601, 450],
+        "district": "candlehold_lantern_hall"
+      },
+      {
+        "id": "candlehold_tavern",
+        "kind": "tavern",
+        "at": [632, 358],
+        "district": "candlehold_lantern_hall"
+      },
+      {
+        "id": "candlehold_temple",
+        "kind": "temple",
+        "at": [686, 206],
+        "district": "candlehold_lantern_cliff"
+      },
+      {
+        "id": "candlehold_harbour",
+        "kind": "harbour",
+        "at": [561, 685],
+        "district": "candlehold_gates"
+      }
+    ]
   },
   "rimewell": {
     "seed": 6101,
@@ -24549,7 +24785,33 @@
         "en": "The Choir Well",
         "fr": "Le Puits du Chœur"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "rimewell_notice_board",
+        "kind": "notice_board",
+        "at": [562, 461],
+        "district": "rimewell_bell_square"
+      },
+      {
+        "id": "rimewell_market",
+        "kind": "market",
+        "at": [560, 471],
+        "district": "rimewell_bell_square"
+      },
+      {
+        "id": "rimewell_tavern",
+        "kind": "tavern",
+        "at": [652, 449],
+        "district": "rimewell_bell_square"
+      },
+      {
+        "id": "rimewell_temple",
+        "kind": "temple",
+        "at": [481, 436],
+        "district": "rimewell_bell_square"
+      }
+    ]
   },
   "greyhithe": {
     "seed": 7201,
@@ -25894,7 +26156,39 @@
         "en": "The chaplain’s block and tackle",
         "fr": "Le palan de l’aumônier"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "greyhithe_notice_board",
+        "kind": "notice_board",
+        "at": [562, 459],
+        "district": "greyhithe_net_lofts"
+      },
+      {
+        "id": "greyhithe_market",
+        "kind": "market",
+        "at": [559, 470],
+        "district": "greyhithe_net_lofts"
+      },
+      {
+        "id": "greyhithe_tavern",
+        "kind": "tavern",
+        "at": [575, 382],
+        "district": "greyhithe_net_lofts"
+      },
+      {
+        "id": "greyhithe_temple",
+        "kind": "temple",
+        "at": [709, 458],
+        "district": "greyhithe_moorings"
+      },
+      {
+        "id": "greyhithe_harbour",
+        "kind": "harbour",
+        "at": [558, 613],
+        "district": "greyhithe_moorings"
+      }
+    ]
   },
   "wracks_end": {
     "seed": 5101,
@@ -27069,7 +27363,39 @@
         "en": "The Tribunal’s last seal",
         "fr": "Le dernier sceau du Tribunal"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "wracks_end_notice_board",
+        "kind": "notice_board",
+        "at": [563, 459],
+        "district": "wracks_end_hull_houses"
+      },
+      {
+        "id": "wracks_end_market",
+        "kind": "market",
+        "at": [561, 470],
+        "district": "wracks_end_hull_houses"
+      },
+      {
+        "id": "wracks_end_tavern",
+        "kind": "tavern",
+        "at": [488, 528],
+        "district": "wracks_end_hull_houses"
+      },
+      {
+        "id": "wracks_end_temple",
+        "kind": "temple",
+        "at": [636, 417],
+        "district": "wracks_end_lamp_path"
+      },
+      {
+        "id": "wracks_end_harbour",
+        "kind": "harbour",
+        "at": [561, 649],
+        "district": "wracks_end_quay"
+      }
+    ]
   },
   "cove_camp": {
     "seed": 1101,
@@ -28223,7 +28549,39 @@
         "en": "The boat built from three",
         "fr": "Le bateau fait de trois"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "cove_camp_notice_board",
+        "kind": "notice_board",
+        "at": [563, 456],
+        "district": "cove_camp_fireside"
+      },
+      {
+        "id": "cove_camp_market",
+        "kind": "market",
+        "at": [560, 469],
+        "district": "cove_camp_fireside"
+      },
+      {
+        "id": "cove_camp_tavern",
+        "kind": "tavern",
+        "at": [483, 412],
+        "district": "cove_camp_fireside"
+      },
+      {
+        "id": "cove_camp_temple",
+        "kind": "temple",
+        "at": [604, 348],
+        "district": "cove_camp_palisade"
+      },
+      {
+        "id": "cove_camp_harbour",
+        "kind": "harbour",
+        "at": [560, 579],
+        "district": "cove_camp_sail_loft"
+      }
+    ]
   },
   "kindly_hill": {
     "seed": 5301,
@@ -29439,7 +29797,39 @@
         "en": "The voice in the reeds",
         "fr": "La voix dans les roseaux"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "kindly_hill_notice_board",
+        "kind": "notice_board",
+        "at": [563, 458],
+        "district": "kindly_hill_hall"
+      },
+      {
+        "id": "kindly_hill_market",
+        "kind": "market",
+        "at": [561, 471],
+        "district": "kindly_hill_hall"
+      },
+      {
+        "id": "kindly_hill_tavern",
+        "kind": "tavern",
+        "at": [623, 385],
+        "district": "kindly_hill_hall"
+      },
+      {
+        "id": "kindly_hill_temple",
+        "kind": "temple",
+        "at": [666, 433],
+        "district": "kindly_hill_hall"
+      },
+      {
+        "id": "kindly_hill_harbour",
+        "kind": "harbour",
+        "at": [562, 702],
+        "district": "kindly_hill_fen_edge"
+      }
+    ]
   },
   "highhearth": {
     "seed": 6201,
@@ -30373,7 +30763,33 @@
         "en": "The midwife’s hands",
         "fr": "Les mains de la sage-femme"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "highhearth_notice_board",
+        "kind": "notice_board",
+        "at": [563, 457],
+        "district": "highhearth_moot_hall"
+      },
+      {
+        "id": "highhearth_market",
+        "kind": "market",
+        "at": [561, 470],
+        "district": "highhearth_moot_hall"
+      },
+      {
+        "id": "highhearth_tavern",
+        "kind": "tavern",
+        "at": [613, 551],
+        "district": "highhearth_moot_hall"
+      },
+      {
+        "id": "highhearth_temple",
+        "kind": "temple",
+        "at": [566, 420],
+        "district": "highhearth_moot_hall"
+      }
+    ]
   },
   "emberwick": {
     "seed": 4401,
@@ -31385,7 +31801,39 @@
         "en": "The widow’s doorway",
         "fr": "L’entrée de la veuve"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "emberwick_notice_board",
+        "kind": "notice_board",
+        "at": [562, 459],
+        "district": "emberwick_well_square"
+      },
+      {
+        "id": "emberwick_market",
+        "kind": "market",
+        "at": [559, 470],
+        "district": "emberwick_well_square"
+      },
+      {
+        "id": "emberwick_tavern",
+        "kind": "tavern",
+        "at": [650, 447],
+        "district": "emberwick_well_square"
+      },
+      {
+        "id": "emberwick_temple",
+        "kind": "temple",
+        "at": [641, 543],
+        "district": "emberwick_well_square"
+      },
+      {
+        "id": "emberwick_forge",
+        "kind": "forge",
+        "at": [639, 308],
+        "district": "emberwick_smithy_lane"
+      }
+    ]
   },
   "akagiri": {
     "seed": 4701,
@@ -32433,7 +32881,39 @@
         "en": "The Horn-Taker’s chest",
         "fr": "Le coffre du Preneur de Cornes"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "akagiri_notice_board",
+        "kind": "notice_board",
+        "at": [563, 458],
+        "district": "akagiri_brewhouse"
+      },
+      {
+        "id": "akagiri_market",
+        "kind": "market",
+        "at": [561, 470],
+        "district": "akagiri_brewhouse"
+      },
+      {
+        "id": "akagiri_tavern",
+        "kind": "tavern",
+        "at": [569, 564],
+        "district": "akagiri_springs"
+      },
+      {
+        "id": "akagiri_temple",
+        "kind": "temple",
+        "at": [726, 476],
+        "district": "akagiri_brewhouse"
+      },
+      {
+        "id": "akagiri_forge",
+        "kind": "forge",
+        "at": [578, 290],
+        "district": "akagiri_forge_terrace"
+      }
+    ]
   },
   "white_wells": {
     "seed": 1201,
@@ -33169,6 +33649,32 @@
         "en": "The far well",
         "fr": "Le puits du fond"
       }
-    }
+    },
+    "services": [
+      {
+        "id": "white_wells_notice_board",
+        "kind": "notice_board",
+        "at": [562, 458],
+        "district": "white_wells_pool"
+      },
+      {
+        "id": "white_wells_market",
+        "kind": "market",
+        "at": [560, 471],
+        "district": "white_wells_pool"
+      },
+      {
+        "id": "white_wells_tavern",
+        "kind": "tavern",
+        "at": [539, 544],
+        "district": "white_wells_caravan_ring"
+      },
+      {
+        "id": "white_wells_temple",
+        "kind": "temple",
+        "at": [559, 627],
+        "district": "white_wells_caravan_ring"
+      }
+    ]
   }
 }

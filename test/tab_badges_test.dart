@@ -176,6 +176,7 @@ void main() {
                 'harbor',
                 'smugglers_cellar',
                 'skillwright',
+                'parley_tent',
               ],
               'enemyKillCounts': {'slum_thug': 1},
             })));

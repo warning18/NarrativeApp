@@ -1330,7 +1330,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "cells",
     "automations": {
       "script_trigger": "on_load_node_800"
     },
@@ -1394,7 +1395,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "cells",
     "automations": {
       "script_trigger": "on_load_node_816"
     },
@@ -1447,7 +1449,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "guard",
     "automations": {
       "script_trigger": "on_load_node_820"
     },
@@ -1498,7 +1501,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "guard",
     "automations": {
       "script_trigger": "on_load_node_822"
     },
@@ -1537,7 +1541,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "back",
     "automations": {
       "script_trigger": "on_load_node_823"
     },
@@ -3558,7 +3563,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_landward_gate",
+    "location": "saltmouth_green_door",
     "choices": [
       {
         "text": "Back down the Rope Stair",
@@ -4502,7 +4507,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
+    "spot": "door",
     "automations": {
       "script_trigger": "on_load_node_3002"
     },
@@ -5445,7 +5451,8 @@
       "mood": "suspense",
       "speaker": "Archivist"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_hall_of_records",
+    "spot": "stacks",
     "automations": {
       "script_trigger": "on_load_node_3020"
     },
@@ -5474,7 +5481,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
+    "spot": "altar",
     "automations": {
       "script_trigger": "on_load_node_3030"
     },
@@ -5509,7 +5517,8 @@
       "mood": "wry",
       "speaker": "Archivist"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_hall_of_records",
+    "spot": "counter",
     "automations": {
       "script_trigger": "on_load_node_3040"
     },
@@ -5533,7 +5542,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_hall_of_records",
+    "spot": "counter",
     "automations": {
       "script_trigger": "on_load_node_3050"
     },
@@ -5556,7 +5566,8 @@
       "mood": "triumphant",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
+    "spot": "altar",
     "automations": {
       "script_trigger": "on_load_node_4999"
     },
@@ -5609,7 +5620,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "hollow_court",
+    "location": "hollow_court_chamber",
+    "spot": "altar",
     "automations": {
       "script_trigger": "on_load_node_5003"
     },
@@ -5640,7 +5652,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "hollow_court",
+    "location": "hollow_court_chamber",
+    "spot": "altar",
     "automations": {
       "script_trigger": "on_load_node_5004"
     },
@@ -5687,7 +5700,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "hollow_court",
+    "location": "hollow_court_chamber",
     "automations": {
       "script_trigger": "on_load_node_5005"
     },
@@ -6325,7 +6338,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "hollow_court",
+    "location": "hollow_court_chamber",
+    "spot": "altar",
     "automations": {
       "script_trigger": "on_load_node_5004b"
     },
@@ -6400,7 +6414,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "ashen_quarter_spire_stair"
+    "location": "ashen_quarter_archive",
+    "spot": "archive"
   },
   "2010_crane": {
     "id": "2010_crane",
@@ -6657,7 +6672,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "ashen_quarter_spire_stair",
+    "location": "ashen_quarter_archive",
+    "spot": "reading",
     "choices": [
       {
         "text": "Back to the ruined streets",
@@ -6956,7 +6972,8 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "ashen_quarter_spire_stair",
+    "location": "ashen_quarter_archive",
+    "spot": "door",
     "automations": {
       "script_trigger": "on_load_node_3005_archive_failed"
     },
@@ -6980,7 +6997,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "ashen_quarter_spire_stair",
+    "location": "ashen_quarter_archive",
     "automations": {
       "script_trigger": "on_load_node_3005_ledger_failed"
     },
@@ -7656,7 +7673,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "automations": {},
     "choices": [
       {
@@ -7881,7 +7898,7 @@
       "mood": "uncanny",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "automations": {},
     "choices": [
       {
@@ -10396,7 +10413,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "reqAlignmentScore": 20,
     "choices": [
       {
@@ -10503,7 +10520,7 @@
       "mood": "grim",
       "speaker": "Archivist"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "choices": [
       {
         "text": "Wade back to the candle-lit ledges",
@@ -10524,7 +10541,7 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "choices": [
       {
         "text": "Return to the drowned cloister",
@@ -10792,7 +10809,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
+    "spot": "altar",
     "choices": [
       {
         "text": "Cut it free while he lives",
@@ -10962,6 +10980,11 @@
         "fr": "Le Coffre des Contrebandiers avait désormais son comptoir sous le mur et ses prix tracés à la craie près de la porte, et son commis faisait semblant de ne rien reconnaître de ce que j’essayais de lui revendre."
       },
       {
+        "flag": "house_parley_tent",
+        "en": "The Parley Tent’s flap was tied back and its brazier lit, and a stranger’s cup sat upturned on the cushions: someone who does not trust me had come to talk, and would come again.",
+        "fr": "Le rabat de la tente de pourparlers était relevé, son brasero allumé, et la coupe d’un inconnu reposait retournée sur les coussins : quelqu’un qui se défie de moi était venu parler, et reviendrait."
+      },
+      {
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall’s fire was going when I came in, the one the camp never lets go out, and someone had kept a place near it.",
         "fr": "Le feu de la Halle du Foyer brûlait quand j’entrai, celui que le camp ne laisse jamais s’éteindre, et quelqu’un m’avait gardé une place près de lui."
@@ -10998,7 +11021,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "hollow_court",
+    "location": "hollow_court_chamber",
+    "spot": "altar",
     "choices": [
       {
         "text": "Wake them first, so they die as themselves",
@@ -11832,7 +11856,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_cold_forge",
+    "spot": "forge",
     "choices": [
       {
         "text": "Learn the ten signs by heart",
@@ -11971,7 +11996,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_widows_house",
+    "spot": "door",
     "choices": [
       {
         "text": "Back to the well",
@@ -12003,7 +12029,8 @@
       "mood": "neutral",
       "speaker": "Widow"
     },
-    "location": "emberwick",
+    "location": "emberwick_widows_house",
+    "spot": "door",
     "choices": [
       {
         "text": "Tell her it was his voice, and it has stopped",
@@ -12406,7 +12433,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_tetsu_forge",
+    "spot": "anvil",
     "choices": [
       {
         "text": "Back to the bells",
@@ -13613,7 +13641,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
+    "spot": "table",
     "choices": [
       {
         "text": "Leave the table while it still likes me",
@@ -13634,7 +13663,8 @@
       "mood": "wry",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
+    "spot": "table",
     "choices": [
       {
         "text": "Out under the stars, a year lighter",
@@ -13656,7 +13686,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
     "choices": [
       {
         "text": "Leave her to her knitting",
@@ -13689,7 +13719,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
     "choices": [
       {
         "text": "Ask Nell to come down to the camp",
@@ -13723,7 +13753,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
     "choices": [
       {
         "text": "Check the clock, then go",
@@ -14195,7 +14225,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_road_keepers_house",
+    "spot": "door",
     "choices": [
       {
         "text": "Hold the doorway",
@@ -14244,7 +14275,8 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_road_keepers_house",
+    "spot": "hearth",
     "choices": [
       {
         "text": "See them to the edge of the road",
@@ -14380,7 +14412,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_chapel",
     "choices": [
       {
         "text": "Back down to the well",
@@ -14401,7 +14433,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "rimewell",
+    "location": "rimewell_chapel",
     "choices": [
       {
         "text": "Back down to the well",
@@ -14713,7 +14745,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_great_hearth",
+    "spot": "table",
     "choices": [
       {
         "text": "Because the tear has to be closed",
@@ -14777,7 +14810,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_great_hearth",
+    "spot": "table",
     "choices": [
       {
         "text": "Climb down and find a better answer",
@@ -14942,7 +14976,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_great_hearth",
     "choices": [
       {
         "text": "Up, and back to the great door",
@@ -15408,7 +15442,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_hulls",
+    "location": "white_anchorage_vault",
+    "spot": "deep",
     "choices": [
       {
         "text": "Take the master’s chair: be the Key of Keys",
@@ -15565,7 +15600,7 @@
       "mood": "solemn",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_chapel",
+    "location": "white_anchorage_stern",
     "choices": [
       {
         "text": "Back into the Anchorage",
@@ -15595,7 +15630,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_hulls",
+    "location": "white_anchorage_chandlery",
+    "spot": "counter",
     "choices": [
       {
         "text": "Back into the Anchorage",
@@ -17723,7 +17759,8 @@
       "mood": "bitter",
       "speaker": "Narrator"
     },
-    "location": "alster_black_hold",
+    "location": "black_hold_cells",
+    "spot": "guard",
     "choices": [
       {
         "text": "Fight",
@@ -17816,7 +17853,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
     "choices": [
       {
         "text": "Get up before anyone looks",
@@ -17883,7 +17920,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "akagiri",
+    "location": "akagiri_tetsu_forge",
+    "spot": "anvil",
     "choices": [
       {
         "text": "Back to the bells",
@@ -17998,7 +18036,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "spire_of_judgment",
+    "location": "spire_cathedral",
+    "spot": "altar",
     "choices": [
       {
         "text": "Let it burn where they can all see it",
@@ -18297,7 +18336,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "choices": [
       {
         "text": "Copy it out for the Penitents’ runners",
@@ -18346,7 +18385,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_chapel",
+    "location": "white_anchorage_stern",
+    "spot": "altar",
     "choices": [
       {
         "text": "Take the log out under your coat",
@@ -20805,7 +20845,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "throne",
     "choices": [
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21355,7 +21396,8 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "candlehold_lantern_hall",
+    "location": "candlehold_throne_room",
+    "spot": "throne",
     "choices": [
       {
         "text": "Put out her lamps, and leave her the First",
@@ -23222,7 +23264,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "cove_camp",
+    "location": "cove_sail_loft",
     "choices": [
       {
         "text": "Lead the van yourself",
@@ -24047,7 +24089,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "choices": [
       {
         "text": "Leave him to his ledge",
@@ -24070,7 +24112,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_ossuary",
+    "location": "drowned_cloister_cache",
     "choices": [
       {
         "text": "Bring the bark up to the candles",
@@ -24091,7 +24133,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_ossuary",
+    "location": "drowned_cloister_cache",
+    "spot": "door",
     "choices": [
       {
         "text": "Take the cache through them",
@@ -24184,7 +24227,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "highhearth",
+    "location": "highhearth_great_hearth",
     "choices": [
       {
         "text": "Leave him to the fire",
@@ -24274,7 +24317,8 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_hulls",
+    "location": "white_anchorage_impound",
+    "spot": "crates",
     "choices": [
       {
         "text": "Row the salvage back to the sand",
@@ -24295,7 +24339,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "white_anchorage_hulls",
+    "location": "white_anchorage_impound",
+    "spot": "crates",
     "choices": [
       {
         "text": "Clear the hull and take the haul",
@@ -24451,7 +24496,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "ashen_quarter_spire_stair",
+    "location": "ashen_quarter_archive",
+    "spot": "stacks",
     "choices": [
       {
         "text": "Ask who held the archive’s keys",
@@ -24746,7 +24792,7 @@
       "mood": "action",
       "speaker": "Narrator"
     },
-    "location": "drowned_cloister_nave",
+    "location": "drowned_cloister_nave_hall",
     "choices": [
       {
         "text": "Accept what they offer",
@@ -25804,7 +25850,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_wharf",
+    "location": "saltmouth_tide_cellar",
     "automations": {},
     "choices": [
       {
@@ -25979,7 +26025,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
+    "spot": "altar",
     "automations": {},
     "choices": [
       {
@@ -26002,7 +26049,8 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
+    "spot": "altar",
     "automations": {},
     "choices": [
       {
@@ -26051,7 +26099,8 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
+    "spot": "door",
     "automations": {},
     "choices": [
       {
@@ -26092,7 +26141,8 @@
       "mood": "mournful",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
+    "spot": "altar",
     "automations": {},
     "choices": [
       {
@@ -26143,7 +26193,8 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chair_chapel",
+    "spot": "altar",
     "automations": {},
     "choices": [
       {

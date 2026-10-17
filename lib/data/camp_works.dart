@@ -92,7 +92,8 @@ WorkCategory workCategoryOf(String houseId, Map<String, dynamic> house) {
   }
   if (houseId == 'harbor') return WorkCategory.sea;
   if ((house['unlocksShopId']?.toString() ?? '').isNotEmpty ||
-      house['unlocksCraft'] == true) {
+      house['unlocksCraft'] == true ||
+      house['unlocksRiskyGifts'] == true) {
     return WorkCategory.workshops;
   }
   if ((house['requiredAllyId']?.toString() ?? '').isNotEmpty ||
