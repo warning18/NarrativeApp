@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.471.0+507]
+
+Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
+
+### Changed
+- **Shorter paragraphs:** 66 long scenes of chapters 1 and 2 are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+- **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
+
 ## [1.470.0+506]
 
 The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.
