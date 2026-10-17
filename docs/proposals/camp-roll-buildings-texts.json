@@ -1,0 +1,56 @@
+{
+  "houses": {
+    "bone_casters_hut": {
+      "houseName": "Bone-Caster's Hut",
+      "houseName_fr": "La hutte du jeteur d’os",
+      "description": "A low hut at the edge of camp, hung with knucklebones and strung with red thread. The bone-caster throws a hand you do not like back into the dark and reads you another. Four throws, and the bones come back as you grow.",
+      "description_fr": "Une hutte basse à l’orée du camp, garnie d’osselets et de fil rouge. Le jeteur d’os rejette dans l’ombre la main qui vous déplaît et vous en lit une autre. Quatre jets, et les os reviennent à mesure que vous grandissez."
+    },
+    "warding_cairn": {
+      "houseName": "Warding Cairn",
+      "houseName_fr": "Le cairn de garde",
+      "description": "A stack of cut stone and slag glass at the camp’s edge, each stone set by a hand that wanted something kept away. Name what you will not be offered, and the cairn keeps it from your door for a while.",
+      "description_fr": "Un empilement de pierre taillée et de verre de scorie au bord du camp, chaque pierre posée par une main qui voulait tenir quelque chose à distance. Nommez ce qu’on ne doit plus vous offrir, et le cairn le garde hors de votre porte quelque temps."
+    },
+    "star_well": {
+      "houseName": "Star Well",
+      "houseName_fr": "Le puits aux étoiles",
+      "description": "A stone well-house with a sighting tower, sunk to where the water holds the night. Lean over it and make a wish on a hand already dealt, and the well may lift it one step. It gives a little, now and then, and only to those who have walked far enough.",
+      "description_fr": "Une margelle de pierre surmontée d’une tour de visée, creusée jusqu’où l’eau garde la nuit. Penchez-vous dessus et faites un vœu sur une main déjà distribuée, et le puits peut la hausser d’un cran. Il donne peu, de temps en temps, et seulement à qui a assez marché."
+    }
+  },
+  "strings": {
+    "roll_reroll": {
+      "en": "Reroll ({n})",
+      "fr": "Relancer ({n})"
+    },
+    "roll_banish": {
+      "en": "Banish ({n})",
+      "fr": "Écarter ({n})"
+    },
+    "roll_raise": {
+      "en": "Raise ({n})",
+      "fr": "Hausser ({n})"
+    },
+    "roll_banish_length": {
+      "en": "Keep it away for {draws} draws · {cost} charges",
+      "fr": "L’écarter pendant {draws} tirages · {cost} charges"
+    },
+    "roll_reroll_warning": {
+      "en": "The raised card goes too.",
+      "fr": "La carte haussée part aussi."
+    },
+    "roll_warded": {
+      "en": "Warded, {n} draws",
+      "fr": "Écartée, {n} tirages"
+    },
+    "roll_charges_left": {
+      "en": "{n} charges left",
+      "fr": "{n} charges restantes"
+    },
+    "roll_no_charge": {
+      "en": "No charge left.",
+      "fr": "Plus aucune charge."
+    }
+  }
+}
