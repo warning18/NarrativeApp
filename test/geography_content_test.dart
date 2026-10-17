@@ -29,7 +29,8 @@ const _levels = [
 const _kinds = {'city', 'town', 'village', 'camp', 'site', 'wild', 'sea'};
 const _buildingKinds = {
   'den', 'tavern', 'inn', 'house', 'hall', 'keep', 'temple', 'shop', //
-  'warehouse', 'cellar', 'cave', 'tower',
+  'warehouse', 'cellar', 'cave', 'tower', 'casino', 'barracks', 'library', //
+  'prison', 'forge', 'theatre', 'baths',
 };
 const _patterns = {
   'fields', 'dunes', 'salt_flats', 'waves', 'ash', 'terraces', //
@@ -105,10 +106,18 @@ void main() {
         }
         expect(geo.containsKey(parent), isTrue,
             reason: '$key: parent "$parent"');
-        expect(_levels.indexOf(place(parent!)['level'] as String), level - 1,
+        // A building stands in a district, or straight in a location that
+        // has no districts (the Spire, the Hollow Court: v1.470).
+        final parentLevel = _levels.indexOf(place(parent!)['level'] as String);
+        final skips = record['level'] == 'building' &&
+            place(parent)['level'] == 'location' &&
+            !geo.values.any((p) =>
+                (p as Map<String, dynamic>)['parent'] == parent &&
+                p['level'] == 'district');
+        expect(parentLevel, skips ? level - 2 : level - 1,
             reason: '$key: parent "$parent" is not one level up');
         final path = pathOf(key);
-        expect(path.length, level + 1, reason: '$key: $path');
+        expect(path.length, skips ? level : level + 1, reason: '$key: $path');
         expect(place(path.last)['level'], 'continent', reason: key);
       }
     });
