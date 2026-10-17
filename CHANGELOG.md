@@ -15,6 +15,53 @@ Who rules each town, for the maps to tint it in its clan's colours. Data and a p
 ### Added
 - **Town rulers** (`townRulersProvider`, `rulerOfTown`): the 16 towns with a city plan and their 59 districts, each with its ruling clan and that clan's colour (the `color` factions.json already has) plus a darker accent. A town takes the clan that holds it, else the clan holding most of its districts (neutral on a tie); a district takes its own holder, else its town's. Follows politics as places change hands.
 
+## [1.482.0+518]
+
+Three camp buildings that bend the rolls: reroll, banish and raise the level's stat pick and the clans' offers.
+
+### Added
+- **The Bone-Caster's Hut** (Reroll): up to 4 charges, full when built, +1 per level. Redraws the whole set of choices; a rerolled stat pick keeps its rarity.
+- **The Warding Cairn** (Banish): up to 3 charges, full when built, +1 per level. Bans a training path (stat pick) or a gift (offer) for 5, 10 or 15 draws, for 1, 2 or 3 charges; the card is replaced at once.
+- **The Star Well** (Raise, a great work): 1 charge when built, +1 every 15 draws, up to 5. Lifts one card one rarity, never above Heroic and never a risky card.
+- The powers never touch ability checks, combat dice, loot or the risky-gift die. Old saves load unchanged.
+
+### Fixed
+- **The Black Reliquary's plan:** the ways of `6010_lysa_dead` and `6010_record` stand in their building's district, so their scenes can open on their room.
+
+## [1.481.0+517]
+
+Wave 14: the move on the world chart, the town's service pins.
+
+### Added
+- **The move on the real world view:** when the story sets the party down far away, the Journey shows the walk on the world chart (the sphere or the flat chart): the traveller follows the road or sea lane between the two places, slowly (6 to 13 seconds by the length of the road) while the camera closes in on the party, follows it and pulls back out. **A tap skips it.** The words under the map (the caption and "You pass ...") stay.
+- **Service pins on the town plan:** once a district is looked at, its signs show (notice board, market, tavern, temple, forge, harbour), dim when nothing opens there yet; a tap opens a sheet of what the service opens (the shops of the market or the forge, the bounty board, a night's rest, the port, or "Nothing to do here yet." for the temple).
+- A scene set in one of Core's new buildings (the prison, the library, the forge) opens its own room; a test checks it.
+
+### Changed
+- Tests run a move at a third of its time (`worldMoveTimeScale`, set in `test/flutter_test_config.dart`) so the waits stay short.
+
+## [1.480.0+516]
+
+Wave 13: the road's party, clan banners on the skill tree, the level-up radar.
+
+### Added
+- **The walking party on the land walk:** the hero (the ronin) leads and up to two picked companions follow behind, as coloured placeholder figures until their art comes (a companion's colour stays the same every walk).
+- **A word on the road:** as a walk starts, a walking companion may speak, shown as a small bubble over their figure for a few seconds (Core's `speakUpOnWalk`, Narrative's walk remarks).
+- **Clan banners on the skill tree:** each skill not yet known hangs its offering clan's small banner from its ring (dim while locked); the skill sheet shows the banners of the clans that offer it.
+- **Level up as the ability radar:** the Level Up screen and the pop-up after a fight open on the radar of the eight abilities (a tap on a corner says where it comes from), with the fight numbers under it and a **Detail** tab that opens the full list of rows.
+
+### Changed
+- **The enemy or NPC met on a land walk comes in from the left**, behind the party, its art mirrored to face east; the party now stands further right to leave it room.
+- Tests: `walk_bubble_test`, `walk_party_view_test`, `encounter_figure_test` (left entry), `skill_tree_test`, `level_up_screen_test`.
+
+## [1.479.0+515]
+
+The new buildings' names and blurbs reworded.
+
+### Changed
+- **27 buildings** (the cells of the Black Hold, the green door, the Tide Cellar, the Reliquary chapels, the White Anchorage's hulls, the throne room and the rest) have their names and blurbs reworded in English and French. Text only: ids, kinds and parents are unchanged.
+- **16 indoor scenes seated in their rooms:** the 7 crownings (`7590_*`) in the throne room, on the dais, and 9 scenes of the Black Reliquary in their chapels (the muniment room, the Tribunal's, the Hammer's, the chart-keeper's, the parish's), so the Journey opens on each room's plan. The French follows the game's own words (Linceul, Porte-Clefs, marteau-maître, Le Coffre des Contrebandiers).
+
 ## [1.478.0+514]
 
 Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.

@@ -201,7 +201,8 @@ class StatPickOffer {
   const StatPickOffer(
       {required this.pathId,
       required this.gains,
-      this.tier = SignRarity.common});
+      this.tier = SignRarity.common,
+      this.raised = false});
 
   /// A saved offer; one saved as `rare: true` (before the four rarities)
   /// reads as Rare.
@@ -216,11 +217,15 @@ class StatPickOffer {
                 .where((t) => t.name == raw['tier']?.toString())
                 .firstOrNull ??
             (raw['rare'] == true ? SignRarity.rare : SignRarity.common),
+        raised: raw['raised'] == true,
       );
 
   final String pathId;
   final Map<String, int> gains;
   final SignRarity tier;
+
+  /// Raised at the Star Well (camp_rolls.dart): a card is raised once.
+  final bool raised;
 
   /// Rarer than Common.
   bool get rare => tier != SignRarity.common;
@@ -235,6 +240,7 @@ class StatPickOffer {
         'path': pathId,
         'gains': gains,
         if (tier != SignRarity.common) 'tier': tier.name,
+        if (raised) 'raised': true,
       };
 
   @override
@@ -242,6 +248,7 @@ class StatPickOffer {
       other is StatPickOffer &&
       other.pathId == pathId &&
       other.tier == tier &&
+      other.raised == raised &&
       other.gains.length == gains.length &&
       other.gains.entries.every((e) => gains[e.key] == e.value);
 
@@ -282,12 +289,23 @@ List<StatPickOffer> drawStatPick({
   int luck = 0,
   Map<String, int> taken = const {},
   Map<String, int> stats = const {},
+  SignRarity? tier,
+  Set<String> bannedPaths = const {},
 }) {
-  final usable = [
+  var usable = [
     for (final p in paths.values)
       if (p.gains.isNotEmpty) p
   ];
   if (usable.length < statPickOfferCount) return const [];
+  // The paths warded at the Warding Cairn (camp_rolls.dart) are left out,
+  // unless too few would be left to draw from.
+  if (bannedPaths.isNotEmpty) {
+    final open = [
+      for (final p in usable)
+        if (!bannedPaths.contains(p.id)) p
+    ];
+    if (open.length >= statPickOfferCount) usable = open;
+  }
   final chosen = _drawThree(
       paths: usable,
       random: random,
@@ -320,24 +338,79 @@ List<StatPickOffer> drawStatPick({
     picked.add(path);
     gainOf.add(gain.key);
   }
-  final tier = drawStatPickTier(luck, random);
+  final rarity = tier ?? drawStatPickTier(luck, random);
   return [
     for (var i = 0; i < picked.length; i++)
-      () {
-        final rest = [
-          for (final e in picked[i].gains.entries)
-            if (e.key != gainOf[i]) e
-        ];
-        final second = tier == SignRarity.common || rest.isEmpty
-            ? ''
-            : _weighted(rest, size, random).key;
-        final split = tier == SignRarity.rare && random.nextBool();
-        return StatPickOffer(
-            pathId: picked[i].id,
-            gains: statPickGains(gainOf[i], tier, second: second, split: split),
-            tier: tier);
-      }(),
+      _offerOf(picked[i], gainOf[i], rarity, random),
   ];
+}
+
+/// The offer of [path] for its ability [stat] at [tier], a second ability
+/// of the path drawn for the rarer tiers (statPickGains).
+StatPickOffer _offerOf(
+    TrainingPath path, String stat, SignRarity tier, Random random,
+    {bool raised = false}) {
+  double size(MapEntry<String, int> e) => max(1, e.value).toDouble();
+  final rest = [
+    for (final e in path.gains.entries)
+      if (e.key != stat) e
+  ];
+  final second = tier == SignRarity.common || rest.isEmpty
+      ? ''
+      : _weighted(rest, size, random).key;
+  final split = tier == SignRarity.rare && random.nextBool();
+  return StatPickOffer(
+      pathId: path.id,
+      gains: statPickGains(stat, tier, second: second, split: split),
+      tier: tier,
+      raised: raised);
+}
+
+/// The Warding Cairn's replacement (camp_rolls.dart) for the offer at
+/// [index] of [offer]: another path, neither shown nor in [bannedPaths]
+/// (the one just warded among them), offering an ability no other card
+/// shows, at the same tier. Null when no path is left.
+StatPickOffer? replaceStatPickOffer({
+  required List<StatPickOffer> offer,
+  required int index,
+  required Map<String, TrainingPath> paths,
+  required Random random,
+  Set<String> bannedPaths = const {},
+}) {
+  if (index < 0 || index >= offer.length) return null;
+  final shownPaths = {for (final o in offer) o.pathId};
+  final shownStats = {
+    for (var i = 0; i < offer.length; i++)
+      if (i != index) offer[i].stat,
+  };
+  List<MapEntry<String, int>> fresh(TrainingPath p) => [
+        for (final e in p.gains.entries)
+          if (!shownStats.contains(e.key)) e
+      ];
+  final options = [
+    for (final p in paths.values)
+      if (!shownPaths.contains(p.id) &&
+          !bannedPaths.contains(p.id) &&
+          fresh(p).isNotEmpty)
+        p
+  ];
+  if (options.isEmpty) return null;
+  final path = options[random.nextInt(options.length)];
+  double size(MapEntry<String, int> e) => max(1, e.value).toDouble();
+  final gain = _weighted(fresh(path), size, random);
+  return _offerOf(path, gain.key, offer[index].tier, random);
+}
+
+/// [card] raised at the Star Well (camp_rolls.dart): one tier up, its gains
+/// rebuilt for it, the second ability drawn from its path in [paths]. Null
+/// when it can't be: already raised, Heroic, or its path unknown.
+StatPickOffer? raisedStatPickOffer(
+    StatPickOffer card, Map<String, TrainingPath> paths, Random random) {
+  if (card.raised || card.tier == SignRarity.heroic) return null;
+  final path = paths[card.pathId];
+  if (path == null || card.stat.isEmpty) return null;
+  final tier = SignRarity.values[card.tier.index + 1];
+  return _offerOf(path, card.stat, tier, random, raised: true);
 }
 
 /// The abilities a build takes when its own stat is not offered, in order

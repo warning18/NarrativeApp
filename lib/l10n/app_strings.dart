@@ -89,6 +89,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'service_notice_board': {
+    AppLanguage.en: 'Notice board',
+    AppLanguage.fr: 'Panneau d’affichage',
+  },
+  'service_market': {AppLanguage.en: 'Market', AppLanguage.fr: 'Marché'},
+  'service_tavern': {AppLanguage.en: 'Tavern', AppLanguage.fr: 'Taverne'},
+  'service_temple': {AppLanguage.en: 'Temple', AppLanguage.fr: 'Temple'},
+  'service_forge': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
+  'service_harbour': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
+  'service_nothing_yet': {
+    AppLanguage.en: 'Nothing to do here yet.',
+    AppLanguage.fr: 'Rien à faire ici pour l’instant.',
+  },
+  'service_shop_locked': {
+    AppLanguage.en: 'Not found yet',
+    AppLanguage.fr: 'Pas encore trouvée',
+  },
+  'service_bounty_board': {
+    AppLanguage.en: 'Bounties of the town',
+    AppLanguage.fr: 'Primes de la ville',
+  },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
     AppLanguage.fr: 'Les quartiers · touchez-en un pour y entrer',
@@ -7407,6 +7428,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Review Comments',
     AppLanguage.fr: 'Commentaires de relecture',
   },
+  'level_stats_detail': {
+    AppLanguage.en: 'Detail',
+    AppLanguage.fr: 'Détail',
+  },
   'hold_stat_for_details_hint': {
     AppLanguage.en: 'Hold a stat to see what it does',
     AppLanguage.fr: 'Maintenez une statistique pour voir son effet',
@@ -12290,6 +12315,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The curse {clanOf}: −{n} {stat} for two levels.',
     AppLanguage.fr:
         'Malédiction {clanOf}\u00a0: −{n} {stat} pendant deux niveaux.',
+  },
+  // The camp's roll houses (camp_rolls.dart): the Reroll, Banish and Raise
+  // buttons on the stat pick and the offer. Narrative's texts.
+  'roll_reroll': {
+    AppLanguage.en: 'Reroll ({left})',
+    AppLanguage.fr: 'Relancer ({left})',
+  },
+  'roll_reroll_done': {
+    AppLanguage.en: 'The bones are cast again.',
+    AppLanguage.fr: 'Les os sont jetés de nouveau.',
+  },
+  'roll_reroll_warning': {
+    AppLanguage.en: 'The raised card goes too.',
+    AppLanguage.fr: 'La carte haussée part aussi.',
+  },
+  'roll_banish': {
+    AppLanguage.en: 'Banish ({left})',
+    AppLanguage.fr: 'Écarter ({left})',
+  },
+  'roll_banish_length': {
+    AppLanguage.en: '{draws} draws · {cost} charges',
+    AppLanguage.fr: '{draws} tirages · {cost} charges',
+  },
+  'roll_banish_done': {
+    AppLanguage.en: '{name} is warded off for {draws} draws.',
+    AppLanguage.fr: '{name} est écarté pour {draws} tirages.',
+  },
+  'roll_warded': {
+    AppLanguage.en: 'Warded, {n} draws',
+    AppLanguage.fr: 'Écarté, {n} tirages',
+  },
+  'roll_raise': {
+    AppLanguage.en: 'Raise ({left})',
+    AppLanguage.fr: 'Hausser ({left})',
+  },
+  'roll_raise_done': {
+    AppLanguage.en: '{name} rises to {rarity}.',
+    AppLanguage.fr: '{name} monte au rang {rarity}.',
+  },
+  'roll_no_charge': {
+    AppLanguage.en: 'No charge left.',
+    AppLanguage.fr: 'Plus aucune charge.',
   },
   'ledger_curse': {
     AppLanguage.en: 'Curse',
