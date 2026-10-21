@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.496.0+532]
+
+Wave 14 remainder: the player can take the camera during a move.
+
+### Changed
+- **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+
 ## [1.489.0+525]
 
 Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
