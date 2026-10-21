@@ -8,3 +8,6 @@ The draft of `clan-power-story.md`, written to Core's answers. Not for merge unt
   - `conclave_counts`: fires on any of `way_quiet`, `way_force`, `way_friends`, `way_hard`. With `way_force`, the Lantern Hall passes from the Dominion to the claimed clan (one variant per claim: Vigil, Compact, Mire, Crows, Penitents, Open Hand; the Open Hand has no power, so it gets the Hall and the Dominion loses 8).
 - **Changed from the note:** no half-size fallback with `anyPowerAtLeast`; the swings are fixed. If Core wants the gate, I split `conclave_counts` in two. The loud-choice news lines are not written: a choice has no `news`, only an event does.
 - Tests run locally: politics_events, clan_power, politics_session, story_rules, story_graph_integrity, french_data_lint, qa_clan_power_50.
+
+## Status (after v1.488)
+Main merged in; the draft still passes politics_events, clan_power, politics_session, qa_clan_power_50, story_rules, story_graph_integrity, french_data_lint and party_trail. The only open piece is the half-size gate on `conclave_counts` (`anyPowerAtLeast`), which Core has not added yet; the swings are fixed until it exists. Nothing else waits on the user's lever choice except the go-ahead to open the PR (it needs a version number).
