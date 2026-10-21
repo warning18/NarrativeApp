@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
@@ -278,6 +279,7 @@ class PlayerSession {
     this.readSceneKeys = const [],
     this.seenEchoKeys = const [],
     this.seenFightTipIds = const [],
+    this.seenTownRulers = const {},
     this.provisions = provisionsStart,
     this.day = 1,
     this.watch = 1,
@@ -490,6 +492,12 @@ class PlayerSession {
   /// goal, a doctrine or a situation is explained the first time a fight
   /// shows it. An old save without the field has seen none.
   final List<String> seenFightTipIds;
+
+  /// Who ruled each town (town id -> clan id, '' for none) when the player
+  /// last looked at the world chart: a town whose ruler is not the one
+  /// written here has changed hands since, and the chart says so. An old
+  /// save without the field has seen none (the first look just writes it).
+  final Map<String, String> seenTownRulers;
 
   /// Rations carried (see journey_rules.dart): one is eaten on each step
   /// of the road from chapter 2 on; with none left the party goes hungry.
@@ -978,6 +986,7 @@ class PlayerSession {
     List<String>? readSceneKeys,
     List<String>? seenEchoKeys,
     List<String>? seenFightTipIds,
+    Map<String, String>? seenTownRulers,
     int? provisions,
     int? day,
     int? watch,
@@ -1106,6 +1115,7 @@ class PlayerSession {
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
       seenFightTipIds: seenFightTipIds ?? this.seenFightTipIds,
+      seenTownRulers: seenTownRulers ?? this.seenTownRulers,
       provisions: provisions ?? this.provisions,
       day: day ?? this.day,
       watch: watch ?? this.watch,
@@ -1332,6 +1342,7 @@ class PlayerSession {
         'readSceneKeys': readSceneKeys,
         'seenEchoKeys': seenEchoKeys,
         'seenFightTipIds': seenFightTipIds,
+        'seenTownRulers': seenTownRulers,
         'provisions': provisions,
         'day': day,
         'watch': watch,
@@ -1550,6 +1561,10 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      seenTownRulers: {
+        for (final e in ((json['seenTownRulers'] as Map?) ?? const {}).entries)
+          e.key.toString(): e.value.toString(),
+      },
       provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
       day: max(1, (json['day'] as num?)?.toInt() ?? 1),
       watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
@@ -4887,6 +4902,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (fresh.isEmpty) return;
     state =
         state.copyWith(seenFightTipIds: [...state.seenFightTipIds, ...fresh]);
+    await _persist();
+  }
+
+  /// Remembers who rules each town ([rulers]: town id -> clan id) as the
+  /// player has now seen it on the world chart.
+  Future<void> markTownRulersSeen(Map<String, String> rulers) async {
+    if (mapEquals(state.seenTownRulers, rulers)) return;
+    state = state.copyWith(seenTownRulers: Map.unmodifiable(rulers));
     await _persist();
   }
 

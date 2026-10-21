@@ -101,6 +101,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'its districts differ',
     AppLanguage.fr: 'ses quartiers diffèrent',
   },
+  'town_handover_to': {
+    AppLanguage.en: '{clan} now holds {town}.',
+    AppLanguage.fr: '{clan} tient désormais {town}.',
+  },
+  'town_handover_none': {
+    AppLanguage.en: 'No clan holds {town} now.',
+    AppLanguage.fr: 'Plus aucun clan ne tient {town}.',
+  },
+  'town_handover_many': {
+    AppLanguage.en: '{n} towns changed hands.',
+    AppLanguage.fr: '{n} villes ont changé de mains.',
+  },
   'service_notice_board': {
     AppLanguage.en: 'Notice board',
     AppLanguage.fr: 'Panneau d’affichage',
