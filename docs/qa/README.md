@@ -4,6 +4,8 @@
 1.499.0, before a release the user shares, after a big refactor, or on
 request. See "QA levels" in `CLAUDE.md` for what each level covers.
 
+Suite time at v1.499.0 (839 s, 3,086 tests) and where it goes: [suite-time-1.499.0.md](suite-time-1.499.0.md).
+
 The baselines taken ahead of the L3s: [1.270.0](l3-prep-1.270.0.md), [1.285.0](l3-prep-1.285.0.md), [1.473.0](l3-prep-1.473.0.md).
 
 Full-regression (L3) passes, newest first. The detail of each is in its own
