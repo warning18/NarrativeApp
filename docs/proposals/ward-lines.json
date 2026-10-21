@@ -26,7 +26,7 @@
     },
     "ward_mark": {
       "en": "Warded from {clan}: {n} roads",
-      "fr": "Gardé contre la chasse {clanOf} : {n} routes"
+      "fr": "Protection contre la chasse {clanOf} : {n} routes"
     },
     "ward_no_target": {
       "en": "No clan is hunting you.",
