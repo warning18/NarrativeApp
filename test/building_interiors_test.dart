@@ -3,11 +3,9 @@
 // `location` is a geography.json building. Wave 14 audited the story for
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
-// before (the Blind Beggar) and the rest showed streets. 94 stand in one now
-// (the 7 crownings in the throne room and 11 in the Black Reliquary's
-// chapels were seated last); the 5 in [_waiting] have their building but
-// wait: 3 are seated by Narrative in another district than their room's,
-// and 2 would make a roll's other branch a move with no note
+// before (the Blind Beggar) and the rest showed streets. 98 stand in one now;
+// the 1 in [_waiting] (`5200_house_returned`) has its building but waits:
+// Narrative seats it in another district than its room's.
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
@@ -117,22 +115,22 @@ const _interiorScenes = [
   '6010_returned_roll',
   '6010_lysa_dead',
   '6010_record',
+  '3100_house_anvil_deaf_failed',
+  '5200',
+  '6010_thread',
+  '6010_heist_night',
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: Narrative seats three elsewhere (district_seats.json); the
-/// last two wait for a roll's note.
+/// goes into: Narrative seats `5200_house_returned` at the hill's fen edge
+/// (district_seats.json), not in the hall's district where its room is.
 const _waiting = {
   '5200_house_returned': 'kindly_hill_long_room',
-  '6010_thread': 'reliquary_chartkeeper_chapel',
-  '6010_heist_night': 'reliquary_chartkeeper_chapel',
-  '3100_house_anvil_deaf_failed': 'emberwick_cold_forge',
-  '5200': 'kindly_hill_long_room',
 };
 
 /// The scenes Core made ready: their building lies inside their landmark's
-/// home and their way stands in the building's district. Eighteen are seated
-/// now; `6010_thread` and `6010_heist_night` still wait.
+/// home and their way stands in the building's district. All of them are
+/// seated now.
 const _ready = {
   '7590_dominion',
   '7590_vigil',
