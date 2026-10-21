@@ -1949,6 +1949,11 @@ List<SignEffect> clanEffectsFor({
 /// its normal rarity (one lower); otherwise it scores as usual minus 5, so
 /// the simulator never chases risk. Never while the character is not
 /// [healthy] (above half health). [favourBest] skips it too.
+///
+/// With [keepTo] (the patron and its allies, v1.500), a card of any other
+/// clan is taken only when it fills an empty die face; the wayfarer's and
+/// your own hand's cards, which move no clan, stay in. When nothing is
+/// left, the whole offer is picked from.
 Suitor? preferredSuitor(
   ClanOffer offer, {
   required bool Function(String skillId) fillsEmptyFace,
@@ -1958,11 +1963,24 @@ Suitor? preferredSuitor(
   PoliticsState politics = PoliticsState.empty,
   ClanData data = ClanData.empty,
   bool healthy = true,
+  Set<String>? keepTo,
 }) {
   if (offer.suitors.isEmpty) return null;
+  var suitors = offer.suitors;
+  if (keepTo != null && keepTo.isNotEmpty) {
+    final kept = [
+      for (final s in suitors)
+        if (s.isWayfarer ||
+            keepTo.contains(s.factionId) ||
+            (data.faction(s.factionId)?.isLost ?? false) ||
+            (s.gift.kind == GiftKind.skill && fillsEmptyFace(s.gift.id)))
+          s,
+    ];
+    if (kept.isNotEmpty) suitors = kept;
+  }
   if (favourBest) {
     final factions = [
-      for (final s in offer.suitors)
+      for (final s in suitors)
         if (!s.isWayfarer && !s.risky) s,
     ];
     if (factions.isNotEmpty) {
@@ -1989,7 +2007,7 @@ Suitor? preferredSuitor(
     return score;
   }
 
-  final safeBest = offer.suitors
+  final safeBest = suitors
       .where((s) => !s.risky)
       .map((s) => giftScore(s.gift))
       .fold<int?>(null, (best, v) => best == null || v > best ? v : best);
@@ -2011,5 +2029,5 @@ Suitor? preferredSuitor(
     return usual - 5;
   }
 
-  return offer.suitors.reduce((a, b) => score(b) > score(a) ? b : a);
+  return suitors.reduce((a, b) => score(b) > score(a) ? b : a);
 }

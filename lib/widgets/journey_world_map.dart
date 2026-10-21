@@ -15,10 +15,13 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/landmark_towns_provider.dart';
 import '../providers/map_look_provider.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/town_rulers_provider.dart';
 import 'chart_map_painter.dart';
 import 'chart_weather.dart';
 import 'journey_place.dart' show RegionFlightPainter;
+import 'town_handover.dart';
 
 /// The chart the Journey's world map draws now: the story's world on the
 /// sphere, else the shape picked in the map's look. A move's path
@@ -191,8 +194,85 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   late final AnimationController _walk = AnimationController(vsync: this);
   List<(double, double)> _walkPath = const [];
   bool _walking = false;
-  late final Listenable _repaint = Listenable.merge(
-      [_view, _reveal, _walk, if (widget.moveClock != null) widget.moveClock!]);
+  late final Listenable _repaint = Listenable.merge([
+    _view,
+    _reveal,
+    _walk,
+    _handoverFade,
+    if (widget.moveClock != null) widget.moveClock!,
+  ]);
+
+  /// A town that changed hands since the player last looked (wave 16): its
+  /// tint passes from the old ruler's colour over a second ([_handoverFade],
+  /// 0 to 1; a town not in [_fadeFrom] does not fade), and a toast says so.
+  late final AnimationController _handoverFade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1400), value: 1);
+  Map<String, ({Color fill, Color accent})?> _fadeFrom = const {};
+
+  /// Compares who rules each town with who ruled it when the world chart was
+  /// last looked at (the save's seenTownRulers); the first look, an old save
+  /// and a session not yet read just write down the present.
+  bool _handoverQueued = false;
+
+  /// Looks after the frame, never inside a listener: writing the save while
+  /// the providers are still notifying would rebuild them twice in a frame.
+  void _queueHandoverCheck() {
+    if (_handoverQueued) return;
+    _handoverQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handoverQueued = false;
+      _watchHandovers();
+    });
+  }
+
+  void _watchHandovers() {
+    if (!mounted) return;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final rulers = ref.read(townRulersProvider);
+    if (!notifier.isLoaded || rulers.isEmpty) return;
+    final changed =
+        townHandovers(ref.read(playerSessionProvider).seenTownRulers, rulers);
+    notifier.markTownRulersSeen(townRulerIds(rulers));
+    if (changed.isEmpty) return;
+    final factions = ref.read(factionsProvider);
+    final colours = {
+      for (final e in factions.entries) e.key: e.value.color,
+    };
+    final changedTowns = {for (final h in changed) h.townId: h};
+    final from = <String, ({Color fill, Color accent})?>{};
+    for (final e in ref.read(landmarkRulersProvider).entries) {
+      final handover = changedTowns[e.value.placeId];
+      if (handover == null) continue;
+      final old = handoverFromColours(handover, colours);
+      from[e.key] = old == null
+          ? null
+          : (fill: Color(old.fill), accent: Color(old.accent));
+    }
+    final language = ref.read(appLanguageProvider);
+    final geography = ref.read(geographyProvider);
+    String townName(String id) =>
+        geography.places[id]?.nameFor(language == AppLanguage.fr) ?? id;
+    final text = changed.length == 1
+        ? changed.single.toClan.isEmpty
+            ? trFor(language, 'town_handover_none')
+                .replaceAll('{town}', townName(changed.single.townId))
+            : trFor(language, 'town_handover_to')
+                .replaceAll(
+                    '{clan}',
+                    factions[changed.single.toClan]?.shortFor(language) ??
+                        changed.single.toClan)
+                .replaceAll('{town}', townName(changed.single.townId))
+        : trFor(language, 'town_handover_many')
+            .replaceAll('{n}', '${changed.length}');
+    setState(() => _fadeFrom = from);
+    if (MediaQuery.of(context).disableAnimations) {
+      _handoverFade.value = 1;
+    } else {
+      _handoverFade.forward(from: 0);
+    }
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(key: const Key('town_handover_toast'), content: Text(text)));
+  }
 
   /// The move's walk over its clock, and the box the camera frames it in.
   Animation<double>? _moveWalk;
@@ -260,6 +340,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   @override
   void initState() {
     super.initState();
+    _queueHandoverCheck();
     _glide.addListener(() {
       final view = _glideView;
       if (view != null) _view.value = view.value;
@@ -397,6 +478,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     _view.dispose();
     _frame.dispose();
     _reveal.dispose();
+    _handoverFade.dispose();
     super.dispose();
   }
 
@@ -647,6 +729,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
+    // The first look, a session read late, or a town changing hands while
+    // the chart is up: see who rules what against what was seen.
+    ref.listen(townRulersProvider, (_, __) => _queueHandoverCheck());
+    ref.listen(playerSessionProvider.select((s) => s.seenTownRulers),
+        (_, __) => _queueHandoverCheck());
     // The ruling clan's tint under each town (wave 15).
     final townTints = {
       for (final e in ref.watch(landmarkRulersProvider).entries)
@@ -686,6 +773,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
             townTints: townTints,
+            townTintsFrom: _fadeFrom,
+            townFade: _handoverFade,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,

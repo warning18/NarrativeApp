@@ -74,7 +74,7 @@ The rules are in `lib/data/clan_crisis.dart`, with Narrative's words from `terri
   - **Bend the knee:** your standing with the fallen clan moves to the winner, so you are sworn to it if you were Sworn. The fallen clan drops to Resented, and the winner takes a fifth of your gold.
   - **Stay of the fallen clan:** no new oath, no patron's stats, and the clan's gifts kept. The winner is your nemesis, whatever its power. Raising your own banner (the Open Hand's `banner_raised`) ends it, and the fallen clan pledges to your Host; so does the clan rising again.
 - **The Mire's seat** is the Mire's Court, a district of the Drowned Cloister with Narrative's name and blurb. The Mire now holds it from the start.
-- **The simulator** plays no crisis: with no one to ask, seats fall as before.
+- **The simulator** plays no crisis: with no one to ask, seats fall as before. (Since v1.500 it does: see [sim-gaps.md](sim-gaps.md).)
 
 ## PR 4: offers, the throne, the materials price, the survivors (v1.400)
 

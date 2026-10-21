@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.503.0+539]
+
+Wave 16 UX, item 4: a town changing hands is seen.
+
+### Added
+- **Towns that change hands.** The world chart remembers, per save, who ruled each town when it was last looked at. When a town's ruler is another by the next look, its tint fades from the old ruler's colour to the new one's over a second and a toast says so ("The Compact now holds Candlehold.", "No clan holds White Wells now.", or "3 towns changed hands."). A first look, an old save and a town never seen before change nothing; with animations off the tint just changes.
+- English and French strings `town_handover_to`, `town_handover_none`, `town_handover_many`.
+
+### Changed
+- The save gains `seenTownRulers` (town id to clan id); old saves load with none.
+
+## [1.502.0+538]
+
+Wave 16 UX, item 1: one set of parts for the small sheets.
+
+### Changed
+- **Shared sheet parts.** The camp's build sheet, the town's service sheet and the temple rows now share a header (icon, title, one italic line), a row (icon, title with an optional small label, price, lines), a price chip and a button pair (`lib/widgets/sheet_kit.dart`), so a wrap bug on a 320 px phone is fixed once.
+- **Temple rows.** The price is a gold chip on the line under the name (it was a "75 gold" text line); a row that cannot be bought says why, as before.
+- **Camp build sheet.** A house you can build names its cost in the sheet (the same chips as its card) and the main button carries the price ("Build · 280 G").
+## [1.501.0+537]
+
+Chapter 2 gets a little easier, closer to the difficulty curve.
+
+### Changed
+- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98). Bosses keep their own floor. Encounters won within three tries in chapter 2, averaged over seeds 7, 11 and 23: 86.0 → 87.2%. Every boss stays inside its band. Chapter 7 is unchanged: lightening its ordinary fights moved nothing, because its claimants decide it and sit on their target.
+
+## [1.500.0+536]
+
+The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
+
+### Changed
+- **Simulator, seat crisis:** when the patron clan's seat is hunted, the simulated party defends it if healthy and wins the fight, pays if it has the gold, else refuses — through the same scene and rules as the app. Runs count crises held, lost, paid and refused.
+- **Simulator, gifts:** the party takes risky gifts from its patron and the patron's allies; another clan's card only when it fills an empty die face.
+- **Clan study (50 runs) before → after:** Vigil end power 31.6 → 46.0, Crows 65.3 → 45.0, Dominion 78.7 → 73.3; patron falls 3 → 3. Bosses won 48.4% on average (52.9% before), every boss inside its band. Full table in `docs/simulation/clan-power-50-v1.500.md`.
+
 ## [1.499.0+535]
 
 The cleric catches up with the other professions.

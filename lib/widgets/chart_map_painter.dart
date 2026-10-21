@@ -78,6 +78,8 @@ class ChartMapPainter extends CustomPainter {
     this.shopPlaces = const {},
     this.campPlaces = const {},
     this.townTints = const {},
+    this.townTintsFrom = const {},
+    this.townFade,
     this.heardOf = const {},
     this.goalId,
     this.detail = true,
@@ -128,6 +130,13 @@ class ChartMapPainter extends CustomPainter {
   /// (townRulersProvider, wave 15): a wash and an outline in [accent]; none
   /// for a town no clan rules.
   final Map<String, ({Color fill, Color accent})> townTints;
+
+  /// A town that changed hands since the player last looked fades from
+  /// these colours (its old ruler's) to [townTints]' as [townFade] runs 0
+  /// to 1; a null colour is a town that had no ruler, whose tint fades in
+  /// from nothing. A town not listed does not fade.
+  final Map<String, ({Color fill, Color accent})?> townTintsFrom;
+  final Animation<double>? townFade;
 
   /// Places only heard of: a "?" in a ring where they lie, no name (the
   /// full map's sheet offers to set out for them); [goalId], the one marked
@@ -756,6 +765,8 @@ class ChartMapPainter extends CustomPainter {
       shopPlaces: shopPlaces,
       campPlaces: campPlaces,
       townTints: townTints,
+      townTintsFrom: townTintsFrom,
+      townFade: townFade,
       detail: detail,
       zoomOf: () => zoom,
     ).._whole =
@@ -2007,7 +2018,22 @@ class ChartMapPainter extends CustomPainter {
       final n = l.big ? 8 : 4;
       // The ruling clan's tint under the houses: a wash, and an outline in
       // its darker shade.
-      final tint = townTints[l.id];
+      var tint = townTints[l.id];
+      final fade = townFade?.value ?? 1.0;
+      if (tint != null && fade < 1 && townTintsFrom.containsKey(l.id)) {
+        final from = townTintsFrom[l.id];
+        tint = from == null
+            // A town that had no ruler: the tint rises from nothing.
+            ? (
+                fill: tint.fill.withValues(alpha: tint.fill.a * fade),
+                accent: tint.accent.withValues(alpha: tint.accent.a * fade),
+              )
+            // The town changed hands: its tint passes from the old ruler's.
+            : (
+                fill: Color.lerp(from.fill, tint.fill, fade)!,
+                accent: Color.lerp(from.accent, tint.accent, fade)!,
+              );
+      }
       if (tint != null) {
         final radius = l.big ? 8.2 : 6.4;
         canvas.drawCircle(Offset.zero, radius,
