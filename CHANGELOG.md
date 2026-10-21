@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.495.0+531]
+
+Wave 15 UX, part 2: towns wear their ruler's colour.
+
+### Added
+- **Town tints.** On the world chart each town gets a soft halo in its ruling clan's colour, with the clan's accent as a thin ring; on the city plan the districts take a faint wash of the ruler's colour and a stronger outline. Neutral and mixed towns stay plain. Colours come from Core's `townRulersProvider`.
+- **"Held by {clan}"** row on a town's Journey card (or "Held by no one" / "Held by several").
+- English and French strings `town_ruled_by`, `town_ruled_none`, `town_ruled_mixed`.
+- The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
+
+### Fixed
+- **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+
 ## [1.489.0+525]
 
 Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
