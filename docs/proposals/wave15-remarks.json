@@ -1,0 +1,1146 @@
+{
+  "kelda_builtParleyTent": {
+    "remarkID": "kelda_builtParleyTent",
+    "companionID": "kelda",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A tent with no weapons past the flap. I will stand outside it, if it is all the same to you.",
+      "Talking to people who distrust us. Sounds like a gate that opens both ways. I like it."
+    ],
+    "lines_fr": [
+      "Une tente où l’on n’entre pas armé. Je me tiendrai dehors, si cela vous est égal.",
+      "Parler à ceux qui se défient de nous. Une porte qui s’ouvre dans les deux sens. Ça me plaît."
+    ]
+  },
+  "kelda_builtBoneCastersHut": {
+    "remarkID": "kelda_builtBoneCastersHut",
+    "companionID": "kelda",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Bones for a bad hand. Hm. I trusted a shield, but I will not argue with a second throw.",
+      "Another go at it. Every sergeant wishes for that."
+    ],
+    "lines_fr": [
+      "Des os pour une mauvaise main. Hum. Je me fiais à un bouclier, mais je ne discuterai pas un second jet.",
+      "Un second essai. Tout sergent en rêve."
+    ]
+  },
+  "kelda_builtWardingCairn": {
+    "remarkID": "kelda_builtWardingCairn",
+    "companionID": "kelda",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Stones piled to keep a thing out. Now that, I understand.",
+      "A cairn is a gate that cannot be argued with. Good."
+    ],
+    "lines_fr": [
+      "Des pierres empilées pour tenir une chose dehors. Ça, je comprends.",
+      "Un cairn est une porte avec laquelle on ne discute pas. Bien."
+    ]
+  },
+  "kelda_builtStarWell": {
+    "remarkID": "kelda_builtStarWell",
+    "companionID": "kelda",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A well to wish into. I have seen men lose wars on less.",
+      "It looks deep. I hope what it gives back is worth the climb."
+    ],
+    "lines_fr": [
+      "Un puits où faire un vœu. J’ai vu des hommes perdre des guerres pour moins que ça.",
+      "Il a l’air profond. J’espère que ce qu’il rend vaut la remontée."
+    ]
+  },
+  "kelda_riskyTaken": {
+    "remarkID": "kelda_riskyTaken",
+    "companionID": "kelda",
+    "trigger": "riskyTaken",
+    "lines": [
+      "You are rolling for it. Fine. I will hold the line either way.",
+      "They gave you terms. I would have asked for the other side of the table."
+    ],
+    "lines_fr": [
+      "Vous le jouez aux dés. Soit. Je tiendrai la ligne dans les deux cas.",
+      "On vous a posé des conditions. J’aurais demandé l’autre côté de la table."
+    ]
+  },
+  "kelda_riskyWon": {
+    "remarkID": "kelda_riskyWon",
+    "companionID": "kelda",
+    "trigger": "riskyWon",
+    "lines": [
+      "Good throw. A gift is a gift, even from a hard hand.",
+      "Take it, and do not thank them. They will only remember that you did."
+    ],
+    "lines_fr": [
+      "Beau jet. Un don est un don, même d’une main dure.",
+      "Prenez-le, et ne les remerciez pas. Ils ne retiendraient que cela."
+    ]
+  },
+  "kelda_riskyLostHealth": {
+    "remarkID": "kelda_riskyLostHealth",
+    "companionID": "kelda",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "That will heal. A lesson is the part that does not.",
+      "Sit down a moment. I have carried worse than you off worse fields."
+    ],
+    "lines_fr": [
+      "Ça guérira. La leçon, non.",
+      "Asseyez-vous un instant. J’ai porté pire que vous hors de pires champs."
+    ]
+  },
+  "kelda_riskyLostGold": {
+    "remarkID": "kelda_riskyLostGold",
+    "companionID": "kelda",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Coin lost. Well, it is only coin.",
+      "Next time we count it before we roll."
+    ],
+    "lines_fr": [
+      "De l’or perdu. Enfin, ce n’est que de l’or.",
+      "La prochaine fois, on le compte avant de lancer."
+    ]
+  },
+  "kelda_riskyLostCurse": {
+    "remarkID": "kelda_riskyLostCurse",
+    "companionID": "kelda",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse for two levels. Hold your head up, and walk through it.",
+      "We will cover for you until it lifts."
+    ],
+    "lines_fr": [
+      "Une malédiction pour deux niveaux. Tenez la tête haute, et marchez à travers.",
+      "Nous vous couvrirons jusqu’à ce qu’elle se lève."
+    ]
+  },
+  "kelda_templeMended": {
+    "remarkID": "kelda_templeMended",
+    "companionID": "kelda",
+    "trigger": "templeMended",
+    "lines": [
+      "Back on your feet, and no night lost. Good use of coin.",
+      "That is a field hospital with a roof. I approve."
+    ],
+    "lines_fr": [
+      "Sur pied, et sans nuit perdue. Bon emploi de l’or.",
+      "C’est un hôpital de campagne avec un toit. J’approuve."
+    ]
+  },
+  "kelda_templeBlessed": {
+    "remarkID": "kelda_templeBlessed",
+    "companionID": "kelda",
+    "trigger": "templeBlessed",
+    "lines": [
+      "A blessing for three fights. I will take whatever stands beside me.",
+      "Keep your guard up all the same. Gods help the careful."
+    ],
+    "lines_fr": [
+      "Une bénédiction pour trois combats. Je prends tout ce qui se tient à mes côtés.",
+      "Gardez quand même la garde haute. Les dieux aident les prudents."
+    ]
+  },
+  "sable_builtParleyTent": {
+    "remarkID": "sable_builtParleyTent",
+    "companionID": "sable",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A tent for people who do not like you. I love it. Think of the deals.",
+      "Cushions and a brazier, and the knives left outside. Civilised, love."
+    ],
+    "lines_fr": [
+      "Une tente pour ceux qui ne vous aiment pas. J’adore. Pensez aux affaires.",
+      "Des coussins, un brasero, et les couteaux laissés dehors. Civilisé, mon cœur."
+    ]
+  },
+  "sable_builtBoneCastersHut": {
+    "remarkID": "sable_builtBoneCastersHut",
+    "companionID": "sable",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Bones, is it? I prefer marked cards, but I will not turn down a second deal.",
+      "A hut that lets you throw back a bad hand. I may never leave it."
+    ],
+    "lines_fr": [
+      "Des os, alors ? Je préfère les cartes marquées, mais je ne refuse pas une seconde donne.",
+      "Une hutte où l’on rejette une mauvaise main. Je n’en sortirai peut-être plus."
+    ]
+  },
+  "sable_builtWardingCairn": {
+    "remarkID": "sable_builtWardingCairn",
+    "companionID": "sable",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "A pile of stones that says no for you. I could use one of those.",
+      "Keep the unwelcome off the doorstep. Now that is housekeeping."
+    ],
+    "lines_fr": [
+      "Un tas de pierres qui dit non à votre place. Il m’en faudrait un.",
+      "Garder les importuns hors du seuil. Voilà de l’intendance."
+    ]
+  },
+  "sable_builtStarWell": {
+    "remarkID": "sable_builtStarWell",
+    "companionID": "sable",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A wishing well. Lovely. I know three ways to rob one and I will not mention any.",
+      "Do not look at me. I am only admiring the rope."
+    ],
+    "lines_fr": [
+      "Un puits à vœux. Charmant. Je connais trois façons d’en vider un et je n’en citerai aucune.",
+      "Ne me regardez pas. J’admire seulement la corde."
+    ]
+  },
+  "sable_riskyTaken": {
+    "remarkID": "sable_riskyTaken",
+    "companionID": "sable",
+    "trigger": "riskyTaken",
+    "lines": [
+      "You are taking the risky one. I have always liked you.",
+      "A gift with strings, and the die at the end of them. Delicious."
+    ],
+    "lines_fr": [
+      "Vous prenez la risquée. Je vous ai toujours bien aimé.",
+      "Un don avec des fils, et le dé au bout. Délicieux."
+    ]
+  },
+  "sable_riskyWon": {
+    "remarkID": "sable_riskyWon",
+    "companionID": "sable",
+    "trigger": "riskyWon",
+    "lines": [
+      "There you go. Luck loves a bold face.",
+      "Told you. Take it before they change their minds."
+    ],
+    "lines_fr": [
+      "Voilà. La chance aime les visages audacieux.",
+      "Je vous l’avais dit. Prenez-le avant qu’ils changent d’avis."
+    ]
+  },
+  "sable_riskyLostHealth": {
+    "remarkID": "sable_riskyLostHealth",
+    "companionID": "sable",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Ouch. Come here, love, let me look.",
+      "The die has a mean streak. So do I, but I like you."
+    ],
+    "lines_fr": [
+      "Aïe. Venez, mon cœur, que je regarde.",
+      "Le dé a un côté méchant. Moi aussi, mais je vous aime bien."
+    ]
+  },
+  "sable_riskyLostGold": {
+    "remarkID": "sable_riskyLostGold",
+    "companionID": "sable",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Lost gold. It was never really ours. That is the trick of it.",
+      "I will win it back. Do not ask how."
+    ],
+    "lines_fr": [
+      "De l’or perdu. Il n’était jamais vraiment à nous. C’est tout le secret.",
+      "Je le regagnerai. Ne demandez pas comment."
+    ]
+  },
+  "sable_riskyLostCurse": {
+    "remarkID": "sable_riskyLostCurse",
+    "companionID": "sable",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse. Charming. Wear it like a bad hat and nobody will notice.",
+      "Two levels. I have had worse relationships."
+    ],
+    "lines_fr": [
+      "Une malédiction. Charmant. Portez-la comme un mauvais chapeau, personne ne verra.",
+      "Deux niveaux. J’ai eu de pires liaisons."
+    ]
+  },
+  "sable_templeMended": {
+    "remarkID": "sable_templeMended",
+    "companionID": "sable",
+    "trigger": "templeMended",
+    "lines": [
+      "Healed without paying with a night. Almost like cheating.",
+      "A temple that takes coin and gives back health. My kind of faith."
+    ],
+    "lines_fr": [
+      "Soigné sans payer d’une nuit. Presque de la triche.",
+      "Un temple qui prend l’or et rend la santé. Ma sorte de foi."
+    ]
+  },
+  "sable_templeBlessed": {
+    "remarkID": "sable_templeBlessed",
+    "companionID": "sable",
+    "trigger": "templeBlessed",
+    "lines": [
+      "A blessing, three fights. Buy two, love, and see.",
+      "Whoever is up there, I hope they take cash."
+    ],
+    "lines_fr": [
+      "Une bénédiction, trois combats. Achetez-en deux, mon cœur, et voyez.",
+      "Qui que ce soit là-haut, j’espère qu’il prend l’argent liquide."
+    ]
+  },
+  "maren_builtParleyTent": {
+    "remarkID": "maren_builtParleyTent",
+    "companionID": "maren",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A place to sit with those who fear us. That is where mercy begins.",
+      "I will pour the first cup. No one fights over a cup."
+    ],
+    "lines_fr": [
+      "Un lieu où s’asseoir avec ceux qui nous craignent. C’est là que la clémence commence.",
+      "Je servirai la première tasse. Personne ne se bat pour une tasse."
+    ]
+  },
+  "maren_builtBoneCastersHut": {
+    "remarkID": "maren_builtBoneCastersHut",
+    "companionID": "maren",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "I do not hold with casting bones. But I will not judge a mended hope.",
+      "A second chance is a holy thing, however it is thrown."
+    ],
+    "lines_fr": [
+      "Je ne crois pas aux os jetés. Mais je ne jugerai pas un espoir réparé.",
+      "Une seconde chance est une chose sainte, de quelque façon qu’on la jette."
+    ]
+  },
+  "maren_builtWardingCairn": {
+    "remarkID": "maren_builtWardingCairn",
+    "companionID": "maren",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Each stone a small refusal. I pray they hold.",
+      "Keep out what harms us. I can bless that."
+    ],
+    "lines_fr": [
+      "Chaque pierre, un petit refus. Je prie pour qu’elles tiennent.",
+      "Tenir dehors ce qui nous nuit. Cela, je peux le bénir."
+    ]
+  },
+  "maren_builtStarWell": {
+    "remarkID": "maren_builtStarWell",
+    "companionID": "maren",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A well that listens. I will bring my sorrows, and leave them there.",
+      "Whatever you wish at it, wish it kindly."
+    ],
+    "lines_fr": [
+      "Un puits qui écoute. J’y apporterai mes peines, et je les y laisserai.",
+      "Quoi que vous y souhaitiez, souhaitez-le avec bonté."
+    ]
+  },
+  "maren_riskyTaken": {
+    "remarkID": "maren_riskyTaken",
+    "companionID": "maren",
+    "trigger": "riskyTaken",
+    "lines": [
+      "You trust the die with this. I would rather trust the giver. But I understand.",
+      "Whatever falls, you did not take it lightly. I saw that."
+    ],
+    "lines_fr": [
+      "Vous confiez cela au dé. Je préférerais me fier à qui donne. Mais je comprends.",
+      "Quoi qu’il arrive, vous ne l’avez pas pris à la légère. Je l’ai vu."
+    ]
+  },
+  "maren_riskyWon": {
+    "remarkID": "maren_riskyWon",
+    "companionID": "maren",
+    "trigger": "riskyWon",
+    "lines": [
+      "It fell kindly. Give thanks, and give something back.",
+      "A gift well met. May it do good."
+    ],
+    "lines_fr": [
+      "Il est tombé avec bienveillance. Rendez grâce, et rendez quelque chose.",
+      "Un don bien reçu. Qu’il fasse du bien."
+    ]
+  },
+  "maren_riskyLostHealth": {
+    "remarkID": "maren_riskyLostHealth",
+    "companionID": "maren",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Hold still. Let me bind that. It will mend.",
+      "Pain is a teacher with no patience. Forgive yourself."
+    ],
+    "lines_fr": [
+      "Ne bougez pas. Laissez-moi panser cela. Cela guérira.",
+      "La douleur est un maître sans patience. Pardonnez-vous."
+    ]
+  },
+  "maren_riskyLostGold": {
+    "remarkID": "maren_riskyLostGold",
+    "companionID": "maren",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Coin is only coin. Nobody was hurt. That is the part to be grateful for.",
+      "We will manage. We always have."
+    ],
+    "lines_fr": [
+      "L’or n’est que de l’or. Personne n’est blessé. C’est cela dont il faut être reconnaissant.",
+      "Nous nous débrouillerons. Nous l’avons toujours fait."
+    ]
+  },
+  "maren_riskyLostCurse": {
+    "remarkID": "maren_riskyLostCurse",
+    "companionID": "maren",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse is only weight. We will carry it with you.",
+      "Two levels, and it will pass. Be gentle with yourself till then."
+    ],
+    "lines_fr": [
+      "Une malédiction n’est qu’un poids. Nous le porterons avec vous.",
+      "Deux niveaux, et cela passera. Soyez doux avec vous-même d’ici là."
+    ]
+  },
+  "maren_templeMended": {
+    "remarkID": "maren_templeMended",
+    "companionID": "maren",
+    "trigger": "templeMended",
+    "lines": [
+      "A temple that heals without asking your name. That is what temples are for.",
+      "Thank you, keeper. Truly."
+    ],
+    "lines_fr": [
+      "Un temple qui soigne sans demander votre nom. C’est à cela que servent les temples.",
+      "Merci, gardien. Vraiment."
+    ]
+  },
+  "maren_templeBlessed": {
+    "remarkID": "maren_templeBlessed",
+    "companionID": "maren",
+    "trigger": "templeBlessed",
+    "lines": [
+      "Three fights under a blessing. I will walk beside you in every one.",
+      "May it be a shield for the ones who cannot hold their own."
+    ],
+    "lines_fr": [
+      "Trois combats sous une bénédiction. Je marcherai à vos côtés dans chacun.",
+      "Qu’elle soit un bouclier pour ceux qui ne peuvent tenir le leur."
+    ]
+  },
+  "liora_builtParleyTent": {
+    "remarkID": "liora_builtParleyTent",
+    "companionID": "liora",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "I will watch the flap from the roof. Nobody sits at ease without a lookout.",
+      "A tent for talks. Fine. I count the exits, anyway."
+    ],
+    "lines_fr": [
+      "Je surveillerai le rabat depuis le toit. Personne ne s’assied tranquille sans guetteur.",
+      "Une tente pour parler. Soit. Je compte quand même les sorties."
+    ]
+  },
+  "liora_builtBoneCastersHut": {
+    "remarkID": "liora_builtBoneCastersHut",
+    "companionID": "liora",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Throwing bones. I would rather read the wind, but the bones are quieter.",
+      "A redraw for a bad hand. Same as a second arrow, really."
+    ],
+    "lines_fr": [
+      "Jeter des os. Je préférerais lire le vent, mais les os sont plus discrets.",
+      "Un nouveau tirage pour une mauvaise main. Comme une seconde flèche, au fond."
+    ]
+  },
+  "liora_builtWardingCairn": {
+    "remarkID": "liora_builtWardingCairn",
+    "companionID": "liora",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Stones to turn a threat aside. Sensible. I would add a lookout.",
+      "A cairn marks a line. I like a line I can see."
+    ],
+    "lines_fr": [
+      "Des pierres pour détourner une menace. Sensé. J’y ajouterais un guetteur.",
+      "Un cairn marque une ligne. J’aime les lignes que je vois."
+    ]
+  },
+  "liora_builtStarWell": {
+    "remarkID": "liora_builtStarWell",
+    "companionID": "liora",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A tower to sight from, and a well to wish in. I will take the tower.",
+      "The stars look closer from up there. Do not tell anyone I said so."
+    ],
+    "lines_fr": [
+      "Une tour pour viser, et un puits pour souhaiter. Je prends la tour.",
+      "Les étoiles semblent plus proches de là-haut. Ne dites à personne que je l’ai dit."
+    ]
+  },
+  "liora_riskyTaken": {
+    "remarkID": "liora_riskyTaken",
+    "companionID": "liora",
+    "trigger": "riskyTaken",
+    "lines": [
+      "A gamble. I do not mind them if I can see the target.",
+      "Roll it, then. I will be watching the door."
+    ],
+    "lines_fr": [
+      "Un pari. Ils ne me dérangent pas si je vois la cible.",
+      "Lancez, alors. Je surveillerai la porte."
+    ]
+  },
+  "liora_riskyWon": {
+    "remarkID": "liora_riskyWon",
+    "companionID": "liora",
+    "trigger": "riskyWon",
+    "lines": [
+      "Clean shot. Take your gift.",
+      "Told you the wind was with us."
+    ],
+    "lines_fr": [
+      "Tir net. Prenez votre don.",
+      "Je vous avais dit que le vent était avec nous."
+    ]
+  },
+  "liora_riskyLostHealth": {
+    "remarkID": "liora_riskyLostHealth",
+    "companionID": "liora",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Sit. I will clean it. It is not deep.",
+      "A missed shot is still a lesson. You will hit the next."
+    ],
+    "lines_fr": [
+      "Asseyez-vous. Je nettoie. Ce n’est pas profond.",
+      "Un tir manqué reste une leçon. Vous toucherez le suivant."
+    ]
+  },
+  "liora_riskyLostGold": {
+    "remarkID": "liora_riskyLostGold",
+    "companionID": "liora",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "The purse is lighter. I will find us more on the road.",
+      "Gold comes and goes. Arrows are harder to replace."
+    ],
+    "lines_fr": [
+      "La bourse est plus légère. Je nous en trouverai davantage sur la route.",
+      "L’or va et vient. Les flèches se remplacent plus difficilement."
+    ]
+  },
+  "liora_riskyLostCurse": {
+    "remarkID": "liora_riskyLostCurse",
+    "companionID": "liora",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse. I will keep my eyes open for anything that follows it.",
+      "Two levels. You will outwalk it."
+    ],
+    "lines_fr": [
+      "Une malédiction. Je garderai l’œil ouvert pour tout ce qui la suit.",
+      "Deux niveaux. Vous la distancerez à la marche."
+    ]
+  },
+  "liora_templeMended": {
+    "remarkID": "liora_templeMended",
+    "companionID": "liora",
+    "trigger": "templeMended",
+    "lines": [
+      "On your feet, no night spent. Good. We do not have the time.",
+      "Quick and clean. I like that."
+    ],
+    "lines_fr": [
+      "Sur pied, sans nuit perdue. Bien. Nous n’avons pas le temps.",
+      "Rapide et net. J’aime ça."
+    ]
+  },
+  "liora_templeBlessed": {
+    "remarkID": "liora_templeBlessed",
+    "companionID": "liora",
+    "trigger": "templeBlessed",
+    "lines": [
+      "A blessing for three fights. I will make each shot count.",
+      "Do not waste it standing around."
+    ],
+    "lines_fr": [
+      "Une bénédiction pour trois combats. Je ferai compter chaque tir.",
+      "Ne la gaspillez pas à rester sur place."
+    ]
+  },
+  "vess_builtParleyTent": {
+    "remarkID": "vess_builtParleyTent",
+    "companionID": "vess",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A tent where everyone must speak. The whispers will hate it.",
+      "I will sit in the corner, where the dark is thin."
+    ],
+    "lines_fr": [
+      "Une tente où tout le monde doit parler. Les murmures vont la détester.",
+      "Je m’assiérai dans le coin, là où l’ombre est mince."
+    ]
+  },
+  "vess_builtBoneCastersHut": {
+    "remarkID": "vess_builtBoneCastersHut",
+    "companionID": "vess",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "The bones are loud. They say a lot of things that have not happened yet.",
+      "Throw again if you must. The bones do not mind."
+    ],
+    "lines_fr": [
+      "Les os sont bruyants. Ils disent beaucoup de choses qui ne sont pas encore arrivées.",
+      "Jetez encore si vous le devez. Les os ne s’en offusquent pas."
+    ]
+  },
+  "vess_builtWardingCairn": {
+    "remarkID": "vess_builtWardingCairn",
+    "companionID": "vess",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "The stones hum when they keep something out. I can hear them.",
+      "Good. It makes the dark stand further back."
+    ],
+    "lines_fr": [
+      "Les pierres bourdonnent quand elles tiennent quelque chose dehors. Je les entends.",
+      "Bien. Cela fait reculer l’ombre."
+    ]
+  },
+  "vess_builtStarWell": {
+    "remarkID": "vess_builtStarWell",
+    "companionID": "vess",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A well that reaches the night. It looks back, you know.",
+      "I will not lean over it. Not today."
+    ],
+    "lines_fr": [
+      "Un puits qui atteint la nuit. Il regarde aussi, vous savez.",
+      "Je ne me pencherai pas dessus. Pas aujourd’hui."
+    ]
+  },
+  "vess_riskyTaken": {
+    "remarkID": "vess_riskyTaken",
+    "companionID": "vess",
+    "trigger": "riskyTaken",
+    "lines": [
+      "The die is a small voice, and an honest one. It does not lie.",
+      "You chose it. That is what counts. Not what falls."
+    ],
+    "lines_fr": [
+      "Le dé est une petite voix, et honnête. Il ne ment pas.",
+      "Vous l’avez choisi. C’est ce qui compte. Pas ce qui tombe."
+    ]
+  },
+  "vess_riskyWon": {
+    "remarkID": "vess_riskyWon",
+    "companionID": "vess",
+    "trigger": "riskyWon",
+    "lines": [
+      "The whispers went quiet. That means it went well.",
+      "Keep it. It wants to stay with you."
+    ],
+    "lines_fr": [
+      "Les murmures se sont tus. C’est signe que tout s’est bien passé.",
+      "Gardez-le. Il veut rester avec vous."
+    ]
+  },
+  "vess_riskyLostHealth": {
+    "remarkID": "vess_riskyLostHealth",
+    "companionID": "vess",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "The whispers laughed. Ignore them. Let me help you sit.",
+      "Blood is only warm water in the dark. It will pass."
+    ],
+    "lines_fr": [
+      "Les murmures ont ri. Ignorez-les. Laissez-moi vous aider à vous asseoir.",
+      "Le sang n’est que de l’eau chaude dans le noir. Cela passera."
+    ]
+  },
+  "vess_riskyLostGold": {
+    "remarkID": "vess_riskyLostGold",
+    "companionID": "vess",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Gold is a thing the dark does not want. Let it go.",
+      "We will find more. The dark always leaves something."
+    ],
+    "lines_fr": [
+      "L’or est une chose dont l’ombre ne veut pas. Laissez-le aller.",
+      "Nous en trouverons. L’ombre laisse toujours quelque chose."
+    ]
+  },
+  "vess_riskyLostCurse": {
+    "remarkID": "vess_riskyLostCurse",
+    "companionID": "vess",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "I know curses. They whisper too. Listen less, and it fades.",
+      "Two levels. I have lived with longer."
+    ],
+    "lines_fr": [
+      "Je connais les malédictions. Elles murmurent aussi. Écoutez moins, et elle s’efface.",
+      "Deux niveaux. J’ai vécu avec plus long."
+    ]
+  },
+  "vess_templeMended": {
+    "remarkID": "vess_templeMended",
+    "companionID": "vess",
+    "trigger": "templeMended",
+    "lines": [
+      "Warm hands, and the ache is gone. How strange, to be tended.",
+      "Thank you. I am not used to saying it."
+    ],
+    "lines_fr": [
+      "Des mains chaudes, et la douleur s’en va. Comme c’est étrange d’être soigné.",
+      "Merci. Je n’ai pas l’habitude de le dire."
+    ]
+  },
+  "vess_templeBlessed": {
+    "remarkID": "vess_templeBlessed",
+    "companionID": "vess",
+    "trigger": "templeBlessed",
+    "lines": [
+      "A light on me, for three fights. I will stand in it.",
+      "The whispers cannot find me in it. Good."
+    ],
+    "lines_fr": [
+      "Une lumière sur moi, pour trois combats. Je m’y tiendrai.",
+      "Les murmures ne me trouvent pas dedans. Bien."
+    ]
+  },
+  "grosh_builtParleyTent": {
+    "remarkID": "grosh_builtParleyTent",
+    "companionID": "grosh",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "Tent for talking! Grosh does not like talking. Grosh will guard it.",
+      "If they come to talk and then want to fight, Grosh is ready."
+    ],
+    "lines_fr": [
+      "Tente pour parler ! Grosh n’aime pas parler. Grosh la gardera.",
+      "S’ils viennent parler puis veulent se battre, Grosh est prêt."
+    ]
+  },
+  "grosh_builtBoneCastersHut": {
+    "remarkID": "grosh_builtBoneCastersHut",
+    "companionID": "grosh",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Bones! Grosh knows bones. Grosh breaks them. Now you throw them. Funny.",
+      "Throw again if the first is bad. Grosh likes this rule."
+    ],
+    "lines_fr": [
+      "Des os ! Grosh connaît les os. Grosh les casse. Maintenant on les jette. Drôle.",
+      "On relance si le premier est mauvais. Grosh aime cette règle."
+    ]
+  },
+  "grosh_builtWardingCairn": {
+    "remarkID": "grosh_builtWardingCairn",
+    "companionID": "grosh",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Pile of rocks! Grosh can pile rocks. Grosh piles BETTER rocks.",
+      "Keeps bad things out. Grosh does that too, with a fist."
+    ],
+    "lines_fr": [
+      "Tas de cailloux ! Grosh sait empiler des cailloux. Grosh empile de MEILLEURS cailloux.",
+      "Tient les mauvaises choses dehors. Grosh fait ça aussi, avec le poing."
+    ]
+  },
+  "grosh_builtStarWell": {
+    "remarkID": "grosh_builtStarWell",
+    "companionID": "grosh",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A hole with stars in! Grosh will look. Not fall in. Grosh promises.",
+      "Make a wish. Grosh wishes for more stew."
+    ],
+    "lines_fr": [
+      "Un trou avec des étoiles dedans ! Grosh va regarder. Pas tomber. Grosh promet.",
+      "Fais un vœu. Grosh souhaite plus de ragoût."
+    ]
+  },
+  "grosh_riskyTaken": {
+    "remarkID": "grosh_riskyTaken",
+    "companionID": "grosh",
+    "trigger": "riskyTaken",
+    "lines": [
+      "Roll the die! Grosh likes dice. Big number, good. Small number, Grosh smashes someone.",
+      "Grosh does not understand risk. Grosh hits things. Same."
+    ],
+    "lines_fr": [
+      "Lance le dé ! Grosh aime les dés. Gros chiffre, bien. Petit chiffre, Grosh casse quelqu’un.",
+      "Grosh ne comprend pas le risque. Grosh frappe les choses. Pareil."
+    ]
+  },
+  "grosh_riskyWon": {
+    "remarkID": "grosh_riskyWon",
+    "companionID": "grosh",
+    "trigger": "riskyWon",
+    "lines": [
+      "YES! Big number! Grosh shouts for you!",
+      "Take the gift! Hold it high!"
+    ],
+    "lines_fr": [
+      "OUI ! Gros chiffre ! Grosh crie pour toi !",
+      "Prends le cadeau ! Tiens-le bien haut !"
+    ]
+  },
+  "grosh_riskyLostHealth": {
+    "remarkID": "grosh_riskyLostHealth",
+    "companionID": "grosh",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Ow! Grosh feels that too! Sit down. Grosh will carry you.",
+      "Bad die. Grosh will glare at it."
+    ],
+    "lines_fr": [
+      "Aïe ! Grosh sent ça aussi ! Assieds-toi. Grosh te portera.",
+      "Mauvais dé. Grosh va le regarder de travers."
+    ]
+  },
+  "grosh_riskyLostGold": {
+    "remarkID": "grosh_riskyLostGold",
+    "companionID": "grosh",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Gold gone! Grosh does not use gold. Grosh does not mind.",
+      "But you are sad. Grosh is sad with you."
+    ],
+    "lines_fr": [
+      "Or parti ! Grosh n’utilise pas l’or. Grosh s’en fiche.",
+      "Mais tu es triste. Grosh est triste avec toi."
+    ]
+  },
+  "grosh_riskyLostCurse": {
+    "remarkID": "grosh_riskyLostCurse",
+    "companionID": "grosh",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "Curse! Grosh hits curses! ... Does not work. Grosh is sorry.",
+      "Two levels. Grosh will stay close."
+    ],
+    "lines_fr": [
+      "Malédiction ! Grosh frappe les malédictions ! ... Ça ne marche pas. Grosh est désolé.",
+      "Deux niveaux. Grosh restera près de toi."
+    ]
+  },
+  "grosh_templeMended": {
+    "remarkID": "grosh_templeMended",
+    "companionID": "grosh",
+    "trigger": "templeMended",
+    "lines": [
+      "All better! Grosh feels strong! Pay the nice person again.",
+      "No sleeping, no waiting. Grosh likes that!"
+    ],
+    "lines_fr": [
+      "Tout va mieux ! Grosh se sent fort ! Paie encore la gentille personne.",
+      "Pas de dodo, pas d’attente. Grosh aime ça !"
+    ]
+  },
+  "grosh_templeBlessed": {
+    "remarkID": "grosh_templeBlessed",
+    "companionID": "grosh",
+    "trigger": "templeBlessed",
+    "lines": [
+      "Blessing! Three fights! Grosh will smash THREE times as hard! ... Maybe.",
+      "Grosh feels warm. Good warm."
+    ],
+    "lines_fr": [
+      "Bénédiction ! Trois combats ! Grosh va casser TROIS fois plus fort ! ... Peut-être.",
+      "Grosh a chaud. Bon chaud."
+    ]
+  },
+  "tobin_builtParleyTent": {
+    "remarkID": "tobin_builtParleyTent",
+    "companionID": "tobin",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A tent for parley. The brothers taught me that peace begins at a table.",
+      "I will sing quietly. It softens a room."
+    ],
+    "lines_fr": [
+      "Une tente de pourparlers. Les frères m’ont appris que la paix commence à une table.",
+      "Je chanterai doucement. Cela adoucit une pièce."
+    ]
+  },
+  "tobin_builtBoneCastersHut": {
+    "remarkID": "tobin_builtBoneCastersHut",
+    "companionID": "tobin",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Casting bones is not in any hymn I know. But I will hum along.",
+      "A second throw is a second verse. I like that."
+    ],
+    "lines_fr": [
+      "Jeter des os n’est dans aucun hymne que je connaisse. Mais je fredonnerai quand même.",
+      "Un second jet est un second couplet. J’aime ça."
+    ]
+  },
+  "tobin_builtWardingCairn": {
+    "remarkID": "tobin_builtWardingCairn",
+    "companionID": "tobin",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "A cairn is a prayer in stone. Each one adds a line.",
+      "May it keep the dark at the door."
+    ],
+    "lines_fr": [
+      "Un cairn est une prière de pierre. Chacune y ajoute un vers.",
+      "Qu’il tienne l’ombre à la porte."
+    ]
+  },
+  "tobin_builtStarWell": {
+    "remarkID": "tobin_builtStarWell",
+    "companionID": "tobin",
+    "trigger": "builtStarWell",
+    "lines": [
+      "A well that holds the night. I will write a song for it.",
+      "Do not wish too loudly. The stars are shy."
+    ],
+    "lines_fr": [
+      "Un puits qui tient la nuit. J’écrirai une chanson pour lui.",
+      "Ne souhaitez pas trop fort. Les étoiles sont timides."
+    ]
+  },
+  "tobin_riskyTaken": {
+    "remarkID": "tobin_riskyTaken",
+    "companionID": "tobin",
+    "trigger": "riskyTaken",
+    "lines": [
+      "Faith and a die. I have known worse pairs.",
+      "Whatever falls, we sing the same song after."
+    ],
+    "lines_fr": [
+      "La foi et un dé. J’ai connu pires couples.",
+      "Quoi qu’il tombe, nous chanterons la même chanson ensuite."
+    ]
+  },
+  "tobin_riskyWon": {
+    "remarkID": "tobin_riskyWon",
+    "companionID": "tobin",
+    "trigger": "riskyWon",
+    "lines": [
+      "It fell well! A verse for that, I think.",
+      "Give thanks, and mind the next throw."
+    ],
+    "lines_fr": [
+      "Il est tombé juste ! Un couplet pour ça, je pense.",
+      "Rendez grâce, et attention au prochain jet."
+    ]
+  },
+  "tobin_riskyLostHealth": {
+    "remarkID": "tobin_riskyLostHealth",
+    "companionID": "tobin",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Come, sit. I will sing the pain down, and the bandage will do the rest.",
+      "A bruise is a note held too long. It fades."
+    ],
+    "lines_fr": [
+      "Venez, asseyez-vous. Je chanterai la douleur pour la calmer, et le bandage fera le reste.",
+      "Un bleu est une note tenue trop longtemps. Elle s’éteint."
+    ]
+  },
+  "tobin_riskyLostGold": {
+    "remarkID": "tobin_riskyLostGold",
+    "companionID": "tobin",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Lost coin. The brothers never had any, and they were happy.",
+      "We will sing for our supper if we must."
+    ],
+    "lines_fr": [
+      "De l’or perdu. Les frères n’en avaient jamais, et ils étaient heureux.",
+      "Nous chanterons pour notre souper s’il le faut."
+    ]
+  },
+  "tobin_riskyLostCurse": {
+    "remarkID": "tobin_riskyLostCurse",
+    "companionID": "tobin",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse. I know a tune for that. It is not a cheerful one.",
+      "Two levels. We will sing you through."
+    ],
+    "lines_fr": [
+      "Une malédiction. Je connais un air pour ça. Il n’est pas gai.",
+      "Deux niveaux. Nous vous chanterons jusqu’au bout."
+    ]
+  },
+  "tobin_templeMended": {
+    "remarkID": "tobin_templeMended",
+    "companionID": "tobin",
+    "trigger": "templeMended",
+    "lines": [
+      "Mended with no night lost. The brothers would call it a miracle.",
+      "Thank you, keeper. I will leave a coin for the candles."
+    ],
+    "lines_fr": [
+      "Guéri sans nuit perdue. Les frères appelleraient ça un miracle.",
+      "Merci, gardien. Je laisserai une pièce pour les cierges."
+    ]
+  },
+  "tobin_templeBlessed": {
+    "remarkID": "tobin_templeBlessed",
+    "companionID": "tobin",
+    "trigger": "templeBlessed",
+    "lines": [
+      "A blessing for three fights! I will sing the whole way.",
+      "May it go with us, loud or quiet."
+    ],
+    "lines_fr": [
+      "Une bénédiction pour trois combats ! Je chanterai tout le long.",
+      "Qu’elle nous accompagne, bruyante ou discrète."
+    ]
+  },
+  "malrik_builtParleyTent": {
+    "remarkID": "malrik_builtParleyTent",
+    "companionID": "malrik",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "A tent for talks with the unfriendly. The best deals are made with them. Mark it down.",
+      "Cushions are cheap. Cheaper than a war."
+    ],
+    "lines_fr": [
+      "Une tente pour parler aux hostiles. Les meilleures affaires se font avec eux. Notez-le.",
+      "Les coussins ne coûtent pas cher. Moins qu’une guerre."
+    ]
+  },
+  "malrik_builtBoneCastersHut": {
+    "remarkID": "malrik_builtBoneCastersHut",
+    "companionID": "malrik",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Paying for a redraw. Interesting. I would charge more.",
+      "A hut for a second try. That is called insurance."
+    ],
+    "lines_fr": [
+      "Payer pour un nouveau tirage. Intéressant. Je ferais payer plus.",
+      "Une hutte pour un second essai. On appelle ça une assurance."
+    ]
+  },
+  "malrik_builtWardingCairn": {
+    "remarkID": "malrik_builtWardingCairn",
+    "companionID": "malrik",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Pay once, keep something away for a while. Fair price, if it works.",
+      "I will wait to see the returns."
+    ],
+    "lines_fr": [
+      "Payer une fois, tenir quelque chose à distance un temps. Prix correct, si ça marche.",
+      "J’attends de voir le rendement."
+    ]
+  },
+  "malrik_builtStarWell": {
+    "remarkID": "malrik_builtStarWell",
+    "companionID": "malrik",
+    "trigger": "builtStarWell",
+    "lines": [
+      "Good gold for a hole in the ground. I hope it pays off. I will be watching.",
+      "A wishing well that lifts a hand a rarity? I would sell tickets."
+    ],
+    "lines_fr": [
+      "Beaucoup d’or pour un trou dans la terre. J’espère que ça rapportera. Je surveillerai.",
+      "Un puits à vœux qui hausse une main d’un rang ? Je vendrais des billets."
+    ]
+  },
+  "malrik_riskyTaken": {
+    "remarkID": "malrik_riskyTaken",
+    "companionID": "malrik",
+    "trigger": "riskyTaken",
+    "lines": [
+      "A gamble. Never my preferred instrument, but the odds are decent.",
+      "I would have asked for the odds in writing."
+    ],
+    "lines_fr": [
+      "Un pari. Pas mon instrument préféré, mais les chances sont correctes.",
+      "J’aurais demandé les chances par écrit."
+    ]
+  },
+  "malrik_riskyWon": {
+    "remarkID": "malrik_riskyWon",
+    "companionID": "malrik",
+    "trigger": "riskyWon",
+    "lines": [
+      "Profit. Take it before they notice the mistake.",
+      "Well played. I will note it as a win."
+    ],
+    "lines_fr": [
+      "Du profit. Prenez-le avant qu’ils remarquent l’erreur.",
+      "Bien joué. Je le note comme un gain."
+    ]
+  },
+  "malrik_riskyLostHealth": {
+    "remarkID": "malrik_riskyLostHealth",
+    "companionID": "malrik",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "A loss in blood. Not the worst kind, it can be repaired for free.",
+      "Sit. A dead partner pays nothing."
+    ],
+    "lines_fr": [
+      "Une perte en sang. Pas la pire, ça se répare gratuitement.",
+      "Asseyez-vous. Un associé mort ne paie rien."
+    ]
+  },
+  "malrik_riskyLostGold": {
+    "remarkID": "malrik_riskyLostGold",
+    "companionID": "malrik",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Gold lost. I will pretend I did not see the figure.",
+      "Write it off. Next time, we negotiate first."
+    ],
+    "lines_fr": [
+      "De l’or perdu. Je ferai comme si je n’avais pas vu le chiffre.",
+      "Passez-le en pertes. La prochaine fois, on négocie d’abord."
+    ]
+  },
+  "malrik_riskyLostCurse": {
+    "remarkID": "malrik_riskyLostCurse",
+    "companionID": "malrik",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "A curse is a debt that charges in time. Two levels, then it clears.",
+      "I have seen worse interest rates."
+    ],
+    "lines_fr": [
+      "Une malédiction est une dette qui court en temps. Deux niveaux, puis elle s’éteint.",
+      "J’ai vu de pires taux."
+    ]
+  },
+  "malrik_templeMended": {
+    "remarkID": "malrik_templeMended",
+    "companionID": "malrik",
+    "trigger": "templeMended",
+    "lines": [
+      "A little gold, and no lost day. That is a bargain.",
+      "The temple has found a good business."
+    ],
+    "lines_fr": [
+      "Un peu d’or, et pas de jour perdu. Une affaire.",
+      "Le temple a trouvé un bon commerce."
+    ]
+  },
+  "malrik_templeBlessed": {
+    "remarkID": "malrik_templeBlessed",
+    "companionID": "malrik",
+    "trigger": "templeBlessed",
+    "lines": [
+      "Blessed for three fights. The price was fair. The result, we shall see.",
+      "Spend the blessing. Unspent, it is only a cost."
+    ],
+    "lines_fr": [
+      "Béni pour trois combats. Le prix était correct. Le résultat, nous verrons.",
+      "Dépensez la bénédiction. Non dépensée, ce n’est qu’un coût."
+    ]
+  }
+}
