@@ -1040,8 +1040,15 @@ _SimResult _simulate(
       return;
     }
     final data = g.tables.clans;
-    final clanId = templeClanOfPlace(geography.placeOfNode(node)?.id,
-        townRulers(geography, g.politics, data.factions), geography);
+    // The camp is a town by its city plan, which the walk doesn't load:
+    // every camp counts as one here.
+    final clanId = templeClanOfPlace(
+        geography.placeOfNode(node)?.id,
+        townRulers(geography, g.politics, data.factions, planIds: [
+          for (final p in geography.places.values)
+            if (p.level == GeoLevel.location && p.kind == 'camp') p.id,
+        ]),
+        geography);
     if (clanId == null) return;
     final offer = templeOfferFor(
         clanId: clanId,
