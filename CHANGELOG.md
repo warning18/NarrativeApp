@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.501.0+537]
+
+Chapter 2 gets a little easier, closer to the difficulty curve.
+
+### Changed
+- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98). Bosses keep their own floor. Encounters won within three tries in chapter 2, averaged over seeds 7, 11 and 23: 86.0 → 87.2%. Every boss stays inside its band. Chapter 7 is unchanged: lightening its ordinary fights moved nothing, because its claimants decide it and sit on their target.
+
 ## [1.500.0+536]
 
 The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
