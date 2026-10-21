@@ -31,6 +31,7 @@ class CityChartPainter extends CustomPainter {
     this.selectedWayId,
     this.services = const [],
     this.selectedServiceId,
+    this.rulers = const {},
     this.focusDistrict,
     this.numbers = const {},
     this.banners = const {},
@@ -60,6 +61,10 @@ class CityChartPainter extends CustomPainter {
   /// picked.
   final List<CityChartService> services;
   final String? selectedServiceId;
+
+  /// The ruling clan's colours by district id (see [CityChartRuler]): the
+  /// wash and the outline of a ruled district take them.
+  final Map<String, CityChartRuler> rulers;
 
   /// The district being looked at: the others quieten.
   final String? focusDistrict;
@@ -144,11 +149,26 @@ class CityChartPainter extends CustomPainter {
     // The blocks' wash, a district each.
     for (final d in chart.districts) {
       final dim = focusDistrict != null && focusDistrict != d.id ? 0.4 : 1.0;
+      final ruler = rulers[d.id];
       canvas.drawPath(
           d.blocks,
           fill
-            ..color =
-                d.colour.withValues(alpha: (dark ? 0.13 : 0.16) * dim + 0.02));
+            ..color = (ruler?.fill ?? d.colour).withValues(
+                alpha:
+                    ((dark ? 0.13 : 0.16) + (ruler == null ? 0 : 0.07)) * dim +
+                        0.02));
+      // The ruling clan's outline: a stronger border than the wash alone, so
+      // two clans of near colours (Vigil and Giants, Compact and Oni) read
+      // apart by their edges and by the name the card gives.
+      if (ruler != null && _known(d.id)) {
+        canvas.drawPath(
+            d.blocks,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeJoin = StrokeJoin.round
+              ..strokeWidth = math.max(1.4, 2.4 / scale)
+              ..color = ruler.accent.withValues(alpha: 0.85 * dim));
+      }
     }
 
     // Avenues and squares, then the water and its bridges.
@@ -702,6 +722,7 @@ class CityChartPainter extends CustomPainter {
       old.selectedWayId != selectedWayId ||
       old.selectedServiceId != selectedServiceId ||
       !identical(old.services, services) ||
+      !mapEquals(old.rulers, rulers) ||
       old.focusDistrict != focusDistrict ||
       old.numbers != numbers ||
       !mapEquals(old.banners, banners) ||

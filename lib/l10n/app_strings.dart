@@ -89,6 +89,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'town_ruled_by': {
+    AppLanguage.en: 'Held by {clan}',
+    AppLanguage.fr: 'Tenu par {clan}',
+  },
+  'town_ruled_none': {
+    AppLanguage.en: 'No clan holds it',
+    AppLanguage.fr: 'Aucun clan ne le tient',
+  },
+  'town_ruled_mixed': {
+    AppLanguage.en: 'its districts differ',
+    AppLanguage.fr: 'ses quartiers diffèrent',
+  },
   'service_notice_board': {
     AppLanguage.en: 'Notice board',
     AppLanguage.fr: 'Panneau d’affichage',

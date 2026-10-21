@@ -353,7 +353,9 @@ class CampWorksList extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      WorkNeedKind.gold => Text('G\n${need.have}/${need.need}',
+                      WorkNeedKind.gold => Text(
+                          '${tr(ref, 'gold_field_label')}\n'
+                          '${need.have}/${need.need}',
                           style: theme.textTheme.labelMedium
                               ?.copyWith(color: ink.ember)),
                       _ => Text(tr(ref, 'works_sheet_needs'),

@@ -77,6 +77,7 @@ class ChartMapPainter extends CustomPainter {
     this.standingOf = const {},
     this.shopPlaces = const {},
     this.campPlaces = const {},
+    this.townTints = const {},
     this.heardOf = const {},
     this.goalId,
     this.detail = true,
@@ -122,6 +123,11 @@ class ChartMapPainter extends CustomPainter {
   /// shops calque.
   final Set<String> shopPlaces;
   final Set<String> campPlaces;
+
+  /// The ruling clan's colours under a town's houses, by landmark id
+  /// (townRulersProvider, wave 15): a wash and an outline in [accent]; none
+  /// for a town no clan rules.
+  final Map<String, ({Color fill, Color accent})> townTints;
 
   /// Places only heard of: a "?" in a ring where they lie, no name (the
   /// full map's sheet offers to set out for them); [goalId], the one marked
@@ -749,6 +755,7 @@ class ChartMapPainter extends CustomPainter {
       standingOf: standingOf,
       shopPlaces: shopPlaces,
       campPlaces: campPlaces,
+      townTints: townTints,
       detail: detail,
       zoomOf: () => zoom,
     ).._whole =
@@ -1998,6 +2005,21 @@ class ChartMapPainter extends CustomPainter {
       canvas.translate(p.dx, p.dy);
       canvas.scale((m * 1.3).clamp(0.5, 1.3));
       final n = l.big ? 8 : 4;
+      // The ruling clan's tint under the houses: a wash, and an outline in
+      // its darker shade.
+      final tint = townTints[l.id];
+      if (tint != null) {
+        final radius = l.big ? 8.2 : 6.4;
+        canvas.drawCircle(Offset.zero, radius,
+            Paint()..color = tint.fill.withValues(alpha: 0.30));
+        canvas.drawCircle(
+            Offset.zero,
+            radius,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1.1
+              ..color = tint.accent.withValues(alpha: 0.9));
+      }
       if (l.big) {
         _dashedPath(
             canvas,
