@@ -245,6 +245,7 @@ class _SimResult {
     this.arrivals = const {},
     this.housesBuilt = const {},
     this.riskyOutcomes = const {},
+    this.crises = const {},
     this.campRolls = const {},
     this.temple = (blessings: 0, gold: 0),
     this.roads = const [],
@@ -295,6 +296,10 @@ class _SimResult {
   /// Risky gifts (risky_gifts.dart): the cards `seen` and `taken`, and
   /// each outcome (`gift`, `health`, `gold`, `curse`).
   final Map<String, int> riskyOutcomes;
+
+  /// The seat crises played (SimGrowth.crisisOutcomes): `held`, `lost`,
+  /// `paid`, `refused`.
+  final Map<String, int> crises;
 
   /// The camp's roll houses (sim_rolls.dart): the `rerolls`, `bans` and
   /// `raises` the walk used.
@@ -933,6 +938,7 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       riskyOutcomes: Map.unmodifiable(growth?.riskyOutcomes ?? const {}),
+      crises: Map.unmodifiable(growth?.crisisOutcomes ?? const {}),
       campRolls: Map.unmodifiable(character?.rolls?.used ?? const {}),
       temple: (blessings: blessingsBought, gold: blessingGold),
       roads: List.unmodifiable(roads),
@@ -1320,6 +1326,40 @@ _SimResult _simulate(
     return (won: r.won, attempts: r.attempts, casts: r.casts);
   };
 
+  /// Your main clan's seat crisis, when the chapter's turn left one
+  /// (clan_crisis.dart): played at once, the simulated player's way
+  /// (SimGrowth.playCrisis), the defence fought once as the app's scene
+  /// does. Its scene draws on its own dice; the fight is not counted among
+  /// the encounters (the roads' hunters are not either).
+  void playCrisis(int chapter) {
+    final g = growth;
+    final geography = sim?.geography;
+    if (g == null || geography == null || g.politics.crisis.isEmpty) return;
+    final crisis = g.politics.crisis;
+    final r = g.playCrisis(
+      geography: geography,
+      enemies: enemies,
+      chapter: chapter,
+      gold: gold,
+      flags: flags,
+      random: Random(detourSalt * 31 + chapter * 7919 + steps.length),
+      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+    );
+    if (r.how.isEmpty) return;
+    gold = r.gold;
+    flags
+      ..clear()
+      ..addAll(r.flags);
+    steps.add(_SimStep(
+      nodeId: 'road:clan_crisis',
+      chapter: chapter,
+      mood: null,
+      uiTheme: null,
+      description: 'Seat crisis: ${crisis['attacker']} at '
+          '${crisis['place']} (${crisis['clan']}), ${r.how}',
+    ));
+  }
+
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
   /// when it is marked so (v1.196).
   ({
@@ -1697,6 +1737,7 @@ _SimResult _simulate(
         growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
+        playCrisis(reached);
         blessAtHub(node, reached);
         if (transcribe) {
           final standings = growth?.politics.standings ?? const {};
@@ -2224,6 +2265,7 @@ typedef SimRunSummary = ({
   Map<int, ({int level, int gold})> arrivals,
   Map<String, int> housesBuilt,
   Map<String, int> riskyOutcomes,
+  Map<String, int> crises,
   Map<String, int> campRolls,
   ({int blessings, int gold}) temple,
   Set<String> visitedNodes,
@@ -2358,6 +2400,7 @@ List<SimRunSummary> simulatePlaythroughs(
       arrivals: result.arrivals,
       housesBuilt: result.housesBuilt,
       riskyOutcomes: result.riskyOutcomes,
+      crises: result.crises,
       campRolls: result.campRolls,
       temple: result.temple,
       visitedNodes: {

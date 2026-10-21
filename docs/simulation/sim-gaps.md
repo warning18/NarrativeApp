@@ -1,4 +1,4 @@
-# What the simulator plays differently from the app (v1.463)
+# What the simulator plays differently from the app (v1.463, v1.500)
 
 QA's clan-power study (`docs/qa/clan-power-50.md`, "What the simulator does
 not play") listed where the simulator's runs part from the app's. This page
@@ -44,20 +44,46 @@ chapter 7 errands), the Penitents a point in chapter 6, and the rest moves
 by where the stronger Dominion takes its places (the Vigil about 3 lower at
 the end). The fights do not move (400 runs, seed 7).
 
-## Left: no seat crisis
+## Closed: the seat crisis (v1.500)
 
-The simulator plays no seat crisis (`clan_crisis.dart`): with no one to ask
-to defend, pay or refuse, a chapter's turn that would take the patron's seat
-or its last place goes through at once (`SimGrowth.chapterReached`). In the
-app the scene comes first, so patron falls run higher in the simulator than
-a player would see (QA: 9 of 50 runs saw the patron fall). The falls of
-clans the player does not back are the same in both.
+A chapter's turn that would take your main clan's seat or its last place
+now waits as a crisis in the simulator too: `SimGrowth.chapterReached`
+runs `territoryTurn` with `protect: mainClanOf(...)`, as the app's
+`grantChapterOffer` does. The walk plays it at once, at the chapter's hub
+(`SimGrowth.playCrisis`), with the app's own scene (`buildCrisisNode`) and
+its choices' politics, applied through the same `applyStoryPolitics`:
 
-## Left: gifts from every clan
+- **Defend** when the character is healthy (above half health, the
+  estimate `preferredSuitor` reads) and the fight with the attacker's
+  hunter is won, fought once with the simulator's fight model, as the
+  scene's fight is. Won: the seat holds, +5 power and standing to the
+  clan, −10 power to the attacker.
+- Else, or when that fight is lost, **pay** when the purse holds the
+  price (40 gold a chapter): the attacker takes a lesser place, if any.
+- Else **refuse**: −10 standing, and the seat falls.
 
-The simulator's picking rule takes clan gifts from every clan's offers, not
-only the patron's, so unbacked clans rise more here than with a player who
-keeps to a patron (QA's finding 4).
+The crisis fight is not counted among the run's encounters (the roads'
+hunters are not either), and the scene draws its hunter on its own dice.
+`SimRunSummary.crises` counts what came of each (`held`, `lost`, `paid`,
+`refused`). The fall's scene (bend the knee or stay) is still not played.
+
+In QA's 50 runs only 2 crises came (both defended, lost, then paid): the
+patron's seat is rarely the one a war reaches. See
+[clan-power-50-v1.500.md](clan-power-50-v1.500.md).
+
+## Closed: gifts kept to the patron (v1.500)
+
+Once the character has a main clan (sworn, else its patron:
+`mainClanOf`), the simulator's pick (`preferredSuitor`, `keepTo`) keeps to
+that clan and its allies (`alliesOf`). Another clan's card is taken only
+when it fills an empty die face. The wayfarer's and your own hand's cards
+stay in, as they move no clan. If nothing is left, it picks from the
+whole offer. Before a patron, any clan's card is taken as before.
+
+In the 50 runs, 2,443 cards were taken: 206 before a patron, 1,165 from
+the patron, 886 from its allies, 128 neutral and 58 from another clan
+(nothing else left). The Crows and the Dominion get fewer gifts and the
+Vigil more, since the Vigil is the most common patron.
 
 ## Not the simulator's: story power
 
