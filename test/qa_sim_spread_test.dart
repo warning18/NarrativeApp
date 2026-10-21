@@ -4,14 +4,15 @@
 // brought them within a few points. This keeps them there: the same 400 runs
 // as boss_balance_test (seed 7, four goals, the professions in turn), the
 // encounters each profession wins within three tries, and
-//   - no profession more than 10 points from the others (max - min), a
-//     margin that stays quiet at the 0.1 to 1 point noise Core measured;
+//   - no profession more than 8 points from the others (max - min): Core's
+//     v1.497 and v1.499 put all five within about 5 at seed 7, and 8 stays
+//     quiet at the 0.1 to 1 point noise Core measured;
 //   - none under 60% (a profession that falls out of the game).
-// The cleric sat lowest at v1.497 (65.0, 63.4, 62.2 at seeds 7, 11, 23); Core's
-// follow-up (v1.499) lifts it to 65-75, when this band can tighten to 8.
+// (The band was 10 at v1.497, with the cleric lowest; v1.499 lifted it.)
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/story_repository.dart';
@@ -19,13 +20,13 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
 
 /// Points between the best and the worst profession that the guard allows.
-const double maxSpread = 10;
+const double maxSpread = 8;
 
 /// The lowest encounter win a profession may have.
 const double floorWin = 60;
 
 void main() {
-  test('the professions win within 10 points of each other', () {
+  test('the professions win within 8 points of each other', () {
     Map<String, dynamic> table(String name) =>
         jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
             as Map<String, dynamic>;
@@ -84,6 +85,7 @@ void main() {
     final summary = [
       for (final e in win.entries) '${e.key} ${e.value.toStringAsFixed(1)}%',
     ].join(', ');
+    debugPrint('encounter win by profession: $summary');
     final spread = win.values.reduce((a, b) => a > b ? a : b) -
         win.values.reduce((a, b) => a < b ? a : b);
     expect(spread, lessThanOrEqualTo(maxSpread),
