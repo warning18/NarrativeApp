@@ -13,6 +13,8 @@ fail on any overflow at both sizes in both languages.
 | `qa_smoke_world_test.dart` | wave 14 and v1.482: city chart with service pins, town service sheets, world move (flat and globe), roll power row |
 | `qa_smoke_camp_test.dart` | the camp's town section (building tray, works list, built and slot counts), the Parley Tent, Bone-Caster's Hut, Warding Cairn and Star Well cards opened (all chapters unlocked), the skill tree with its clan flags |
 | `qa_smoke_temple_test.dart` | v1.490: the temple sheet: a neutral temple, a Hostile price (Dominion x1.40), a Sworn price (Crows x0.75), the Hunted refusal, too poor, already mended today |
+| `qa_smoke_remarks_test.dart` | v1.493/v1.494: the companions' words at wave 15's moments in their bubble: the longest lines of the 88 records, a two-line exchange, a roll house built (Bone-Caster's Hut), a temple Mending and Blessing bought, with two companions in the party |
+| `qa_smoke_offer_test.dart` (extended) | the same offer hall, now with two companions: the word on the card taken, and on what the die did (won and lost) |
 
 Shared setup: `test/qa_smoke_harness.dart`. Not yet covered: the skill sheet's flag row (a skill opened), the stat pick and offer hall with a built roll house (after UX's #425).
 

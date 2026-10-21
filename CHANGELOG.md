@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.497.0+533]
+
+The professions closer together, the bosses back to a fair fight.
+
+### Changed
+- **The mage's calling path (Arcanist)** gives INT 4 and CON 1 instead of INT 2, WIS 2 and PER 1; the mage starts with 2 more max health.
+- **The Skirmisher path** (rogue and ranger) gives DEX 3, PER 1 and CON 1 instead of DEX 2, PER 1, LUCK 1 and CON 1; the rogue starts with 5 more max health.
+- **Bosses** have about 5% more health (the shared boss health scale 1.15 → 1.21), and Claimant Vane 79 instead of 74.
+- Encounters won within three tries, seed 7: warrior 70.7 → 69.9, mage 60.1 → 65.8, rogue 59.9 → 66.1, cleric 66.4 → 65.0, ranger 69.0 → 68.7. Bosses are won 51.4% on average (51.1% before).
+
+## [1.496.0+532]
+
+Wave 14 remainder: the player can take the camera during a move.
+
+### Changed
+- **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+## [1.495.0+531]
+
+Wave 15 UX, part 2: towns wear their ruler's colour.
+
+### Added
+- **Town tints.** On the world chart each town gets a soft halo in its ruling clan's colour, with the clan's accent as a thin ring; on the city plan the districts take a faint wash of the ruler's colour and a stronger outline. Neutral and mixed towns stay plain. Colours come from Core's `townRulersProvider`.
+- **"Held by {clan}"** row on a town's Journey card (or "Held by no one" / "Held by several").
+- English and French strings `town_ruled_by`, `town_ruled_none`, `town_ruled_mixed`.
+- The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
+
+### Fixed
+- **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
+- **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+## [1.494.0+530]
+
+Companions react to the wave 15 moments.
+
+### Added
+- **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
+
 ## [1.493.0+529]
 
 The party speaks up at wave 15's moments.
