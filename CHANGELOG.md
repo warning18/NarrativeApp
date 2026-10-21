@@ -15,6 +15,22 @@ The party speaks up at wave 15's moments.
 ### Added
 - **Eleven companion remark kinds:** building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn or the Star Well; taking a risky gift, and the die's verdict (the gift, health, gold or the curse); mending and a blessing at a temple. One companion in the party with lines for the moment says one, the one who spoke least recently first, in the same bubble as a shared drink. The lines themselves are Narrative's, in the next release.
 
+## [1.492.0+528]
+
+Every indoor scene has its room (101 of 101).
+
+### Changed
+- **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
+
+## [1.491.0+527]
+
+The roll buildings and the town sheets read alike in both languages.
+
+### Changed
+- **House names:** "Bone-Caster’s Hut" with a curly apostrophe, and the French names capitalised like the other houses (La Hutte du jeteur d’os, Le Cairn de garde, Le Puits aux étoiles, La Tente de pourparlers).
+- **Strings:** "Harbor" (not "Harbour") on the town sheet; the French "banish" lines no longer have to agree with the gender of the thing banished ("On écarte {name} pour {draws} tirages.", "À l’écart, {n} tirages"); a curly apostrophe in the Roll hint. Text only, keys unchanged.
+
 ## [1.490.0+526]
 
 The town temple opens: mending and a clan's blessing.
