@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.500.0+536]
+
+The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
+
+### Changed
+- **Simulator, seat crisis:** when the patron clan's seat is hunted, the simulated party defends it if healthy and wins the fight, pays if it has the gold, else refuses — through the same scene and rules as the app. Runs count crises held, lost, paid and refused.
+- **Simulator, gifts:** the party takes risky gifts from its patron and the patron's allies; another clan's card only when it fills an empty die face.
+- **Clan study (50 runs) before → after:** Vigil end power 31.6 → 46.0, Crows 65.3 → 45.0, Dominion 78.7 → 73.3; patron falls 3 → 3. Bosses won 48.4% on average (52.9% before), every boss inside its band. Full table in `docs/simulation/clan-power-50-v1.500.md`.
+
 ## [1.499.0+535]
 
 The cleric catches up with the other professions.
