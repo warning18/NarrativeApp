@@ -60,7 +60,7 @@ Future<void> loadSmokeFonts() async {
 /// One thing to show.
 class SmokeCase {
   const SmokeCase(this.name, this.widget,
-      {this.session, this.prepare, this.act, this.bare = false});
+      {this.session, this.prepare, this.act, this.after, this.bare = false});
 
   /// A short name, for the failure message and the picture's file.
   final String name;
@@ -75,6 +75,10 @@ class SmokeCase {
   /// Something to do once the widget is up (a tap, a scroll); the widget
   /// is settled again after it.
   final Future<void> Function(WidgetTester tester)? act;
+
+  /// What to do once the pass is checked and photographed (close what the
+  /// case opened the way a player would).
+  final Future<void> Function(WidgetTester tester)? after;
 
   /// Shown as it is, with no scroll view around it (a screen, a sheet's own
   /// body that scrolls itself).
@@ -161,6 +165,12 @@ Future<void> runSmoke(
     for (final size in sizes) {
       tester.view.physicalSize = size;
       for (final french in [false, true]) {
+        // A case that acts (builds, buys) starts every pass from its save.
+        if (c.act != null) {
+          await tester.runAsync(() => container
+              .read(playerSessionProvider.notifier)
+              .loadSession(c.session ?? smokeSession()));
+        }
         final label =
             '${c.name} at ${size.width.toInt()} px ${french ? 'French' : 'English'}';
         await tester.runAsync(() => container
@@ -207,6 +217,7 @@ Future<void> runSmoke(
           File('$shots/${c.name}_${size.width.toInt()}_${french ? 'fr' : 'en'}.png')
               .writeAsBytesSync(bytes!.buffer.asUint8List());
         }
+        if (c.after != null) await c.after!(tester);
       }
     }
     // A sheet the case opened goes before its host does.

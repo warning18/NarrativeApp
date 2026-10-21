@@ -18,11 +18,16 @@ import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/companion_remark_bubble.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 import 'qa_smoke_harness.dart';
+
+AllyState _ally(String id) => AllyState(
+    companionId: id, currentHealth: AllyState.fullHealthSentinel, approval: 10);
 
 const OfferTicket _level = OfferTicket(source: OfferSource.level);
 
@@ -112,6 +117,8 @@ void main() {
         spellsSchema,
         specialisationsSchema,
         specVariantsSchema,
+        companionsSchema,
+        companionRemarksSchema,
       ]) {
         await container.read(gameDbProvider(schema).notifier).whenLoaded();
       }
@@ -156,6 +163,9 @@ void main() {
                 'raceId': 'human',
                 'professionId': 'warrior',
               }).copyWith(
+                // Two companions in the party: they speak at the moments.
+                recruitedAllies: [_ally('maren'), _ally('malrik')],
+                activeAllyIds: const ['maren', 'malrik'],
                 pendingOffers: const [_level],
                 clanOffer: _offer(roll),
               )));
@@ -184,6 +194,13 @@ void main() {
           await check('${label}_confirm');
 
           await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+          // A companion's word on the card taken (riskyTaken), over the hall.
+          await pumpFor(800);
+          expect(find.byType(CompanionRemarkOverlay), findsOneWidget,
+              reason: '$label: a companion speaks when the card is taken');
+          await pumpFor(3000);
+          await check('${label}_remark_taken');
+          await tester.tap(find.byKey(const Key('remark_next')));
           // The die tumbles first (risky_roll_dialog.dart), then goes on.
           await pumpFor(1800);
           expect(find.byKey(const Key('risky_roll_die')), findsOneWidget,
@@ -193,8 +210,14 @@ void main() {
           await pumpFor(1500);
           await check('${label}_reward');
 
-          // The reward card closed, back to the first screen.
+          // The reward card closed; then what the die did, from a companion.
           await tester.tap(find.text(french ? 'Continuer' : 'Continue'));
+          await pumpFor(800);
+          expect(find.byType(CompanionRemarkOverlay), findsOneWidget,
+              reason: '$label: a companion speaks on what the die did');
+          await pumpFor(3000);
+          await check('${label}_remark_result');
+          await tester.tap(find.byKey(const Key('remark_next')));
           await pumpFor(800);
         }
       }
