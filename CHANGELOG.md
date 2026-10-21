@@ -20,6 +20,20 @@ The last indoor scenes get their rooms on Core's side.
 
 Narrative then seats `5200_house_returned`, `2015_informant_trap` and `5100_clan_dominion_1_lit` in their rooms.
 
+## [1.487.0+523]
+
+Four more indoor scenes have their rooms (98 of the 99).
+
+### Changed
+- **Seated in their buildings:** `6010_thread` and `6010_heist_night` (the chart-keeper's chapel), `3100_house_anvil_deaf_failed` (the cold forge) and `5200` (the long room under the hill), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that move the party: the tenth sign gone wrong at the cold forge, and the knife slipping on the bark-bleeder's tree.
+
+## [1.486.0+522]
+
+The story text keeps its room on a small phone.
+
+### Changed
+- **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
 ## [1.485.0+521]
 
 Two bosses brought back to their curve.

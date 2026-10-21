@@ -3,15 +3,13 @@
 // `location` is a geography.json building. Wave 14 audited the story for
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
 // archive, a cellar, a shop): 101 scenes here, of which 7 stood in a
-// building before (the Blind Beggar) and the rest showed streets. 94 stand
-// in one now (the 7 crownings in the throne room and 11 in the Black
-// Reliquary's chapels were seated last); the 7 in [_waiting] have their
-// building but wait for their `location`. For 5 of them ([_ready]) Core's
-// side is done: the long room's way now stands in the Hall Under the Hill,
-// and the two last scenes with no building have one (the informant's
-// warehouse at Saltmouth's Landward Gate, the lamp-room on Wrack's End's
-// Lamp Path). The other 2 would make a roll's other branch a move with no
-// note (docs/proposals/journey-world-data.md).
+// building before (the Blind Beggar) and the rest showed streets. 98 stand
+// in one now; the 3 in [_waiting] have their building but wait for their
+// `location`, and Core's side of all 3 is done ([_ready]): the long room's
+// way stands in the Hall Under the Hill (v1.488), and the last two scenes
+// with no building have one (the informant's warehouse at Saltmouth's
+// Landward Gate, the lamp-room on Wrack's End's Lamp Path)
+// (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
 
@@ -120,25 +118,24 @@ const _interiorScenes = [
   '6010_returned_roll',
   '6010_lysa_dead',
   '6010_record',
+  '3100_house_anvil_deaf_failed',
+  '5200',
+  '6010_thread',
+  '6010_heist_night',
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: five wait only for their `location` ([_ready]); the last two
-/// wait for a roll's note.
+/// goes into: Core's side is done for all three ([_ready]); Narrative sets
+/// their `location` (the two on a roll with a fail note).
 const _waiting = {
   '5200_house_returned': 'kindly_hill_long_room',
-  '6010_thread': 'reliquary_chartkeeper_chapel',
-  '6010_heist_night': 'reliquary_chartkeeper_chapel',
   '2015_informant_trap': 'saltmouth_landward_warehouse',
   '5100_clan_dominion_1_lit': 'wracks_end_lamp_room',
-  '3100_house_anvil_deaf_failed': 'emberwick_cold_forge',
-  '5200': 'kindly_hill_long_room',
 };
 
 /// The scenes Core made ready: their building lies inside their landmark's
-/// home and their way stands in the building's district. Eighteen are seated
-/// now; `6010_thread`, `6010_heist_night`, `5200_house_returned`,
-/// `2015_informant_trap` and `5100_clan_dominion_1_lit` still wait.
+/// home and their way stands in the building's district. All but the three
+/// in [_waiting] are seated now.
 const _ready = {
   '7590_dominion',
   '7590_vigil',
