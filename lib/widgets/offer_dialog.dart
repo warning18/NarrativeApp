@@ -246,6 +246,10 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   String? _selected;
   bool _busy = false;
 
+  /// The offer last on the table: shown dimmed, with a spinner over it,
+  /// while the next one is drawn, rather than a bare spinner in an empty box.
+  ClanOffer? _lastOffer;
+
   Future<void> _take(ClanOffer offer) async {
     final factionId = _selected;
     final suitor = factionId == null ? null : offer.suitorOf(factionId);
@@ -410,7 +414,10 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     watchMomentRemarks(ref);
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
-    final offer = session.clanOffer;
+    final current = session.clanOffer;
+    if (current != null) _lastOffer = current;
+    final offer = current ?? _lastOffer;
+    final drawing = current == null;
     if (offer == null) {
       return const Dialog(
         child: Padding(
@@ -435,140 +442,173 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
         clipBehavior: Clip.antiAlias,
         // The first offer's tour (the topic Signs had, see tutorial_topics).
-        child: TutorialTrigger(
-          topic: TutorialTopic.signs,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TutorialTarget(
-                id: 'signs.patron',
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Row(
-                    children: [
-                      Icon(Icons.diversity_3, color: theme.colorScheme.primary),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              trFor(lang, 'offer_title'),
-                              key: const Key('offer_title'),
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              waiting > 1
-                                  ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                                  : source,
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // The three banners on top, then the clans' compass, then the
-              // picked banner's words. It scrolls; the button below does not.
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
-                  child: TutorialTarget(
-                    id: 'signs.cards',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: _Drawing(
+          drawing: drawing,
+          child: TutorialTrigger(
+            topic: TutorialTopic.signs,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TutorialTarget(
+                  id: 'signs.patron',
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Row(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (final suitor in offer.suitors)
-                              Expanded(
-                                child: _OfferBanner(
-                                  key: Key('offer_suitor_${suitor.factionId}'),
-                                  suitor: suitor,
-                                  ticket: ticket,
-                                  tables: widget.tables,
-                                  selected: _selected == suitor.factionId,
-                                  dimmed: _selected != null &&
-                                      _selected != suitor.factionId,
-                                  onTap: _busy
-                                      ? null
-                                      : () => setState(
-                                          () => _selected = suitor.factionId),
-                                ),
+                        Icon(Icons.diversity_3,
+                            color: theme.colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                trFor(lang, 'offer_title'),
+                                key: const Key('offer_title'),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ConstrainedBox(
-                          key: const Key('offer_detail_zone'),
-                          constraints: const BoxConstraints(minHeight: 280),
-                          child: _OfferHall(
-                            key: selected == null
-                                ? const Key('offer_hall_none')
-                                : Key('offer_summary_${selected.factionId}'),
-                            offer: offer,
-                            suitor: selected,
-                            tables: widget.tables,
+                              Text(
+                                waiting > 1
+                                    ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                                    : source,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // The camp's roll houses (camp_rolls.dart).
-                    RollPowerRow(
-                      keyPrefix: 'offer',
-                      rolls: ref.watch(campRollsProvider),
-                      canBanish:
-                          selected != null && suitorBanishable(selected, offer),
-                      canRaise: selected != null &&
-                          ref.read(playerSessionProvider.notifier).raisePreview(
-                                  selected.factionId, widget.tables) !=
-                              null,
-                      warnRaised: offer.suitors.any((s) => s.raised),
-                      onReroll: () => _roll(() => ref
-                          .read(playerSessionProvider.notifier)
-                          .rerollOffer(widget.tables,
-                              placeHolder: ref.read(holderHereProvider))),
-                      onBanish: (draws) => _roll(() => ref
-                          .read(playerSessionProvider.notifier)
-                          .banishSuitor(
-                              selected!.factionId, draws, widget.tables,
-                              placeHolder: ref.read(holderHereProvider))),
-                      onRaise: () => _roll(
-                          () => ref
-                              .read(playerSessionProvider.notifier)
-                              .raiseSuitor(selected!.factionId, widget.tables),
-                          keep: true),
+                // The three banners on top, then the clans' compass, then the
+                // picked banner's words. It scrolls; the button below does not.
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
+                    child: TutorialTarget(
+                      id: 'signs.cards',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final suitor in offer.suitors)
+                                Expanded(
+                                  child: _OfferBanner(
+                                    key:
+                                        Key('offer_suitor_${suitor.factionId}'),
+                                    suitor: suitor,
+                                    ticket: ticket,
+                                    tables: widget.tables,
+                                    selected: _selected == suitor.factionId,
+                                    dimmed: _selected != null &&
+                                        _selected != suitor.factionId,
+                                    onTap: _busy
+                                        ? null
+                                        : () => setState(
+                                            () => _selected = suitor.factionId),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ConstrainedBox(
+                            key: const Key('offer_detail_zone'),
+                            constraints: const BoxConstraints(minHeight: 280),
+                            child: _OfferHall(
+                              key: selected == null
+                                  ? const Key('offer_hall_none')
+                                  : Key('offer_summary_${selected.factionId}'),
+                              offer: offer,
+                              suitor: selected,
+                              tables: widget.tables,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    FilledButton(
-                      key: const Key('offer_take_button'),
-                      style: FilledButton.styleFrom(backgroundColor: accent),
-                      onPressed:
-                          selected == null || _busy ? null : () => _take(offer),
-                      child: Text(trFor(lang, 'offer_take_button')),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // The camp's roll houses (camp_rolls.dart).
+                      RollPowerRow(
+                        keyPrefix: 'offer',
+                        rolls: ref.watch(campRollsProvider),
+                        canBanish: selected != null &&
+                            suitorBanishable(selected, offer),
+                        canRaise: selected != null &&
+                            ref
+                                    .read(playerSessionProvider.notifier)
+                                    .raisePreview(
+                                        selected.factionId, widget.tables) !=
+                                null,
+                        warnRaised: offer.suitors.any((s) => s.raised),
+                        onReroll: () => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .rerollOffer(widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
+                        onBanish: (draws) => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .banishSuitor(
+                                selected!.factionId, draws, widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
+                        onRaise: () => _roll(
+                            () => ref
+                                .read(playerSessionProvider.notifier)
+                                .raiseSuitor(
+                                    selected!.factionId, widget.tables),
+                            keep: true),
+                      ),
+                      FilledButton(
+                        key: const Key('offer_take_button'),
+                        style: FilledButton.styleFrom(backgroundColor: accent),
+                        onPressed: selected == null || _busy
+                            ? null
+                            : () => _take(offer),
+                        child: Text(trFor(lang, 'offer_take_button')),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Dims what it wraps and lays a spinner over it while [drawing]: the next
+/// offer is on its way and the card on the table is the last one.
+class _Drawing extends StatelessWidget {
+  const _Drawing({required this.drawing, required this.child});
+
+  final bool drawing;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 160),
+          opacity: drawing ? 0.4 : 1,
+          child: IgnorePointer(ignoring: drawing, child: child),
+        ),
+        if (drawing) const CircularProgressIndicator(key: Key('offer_drawing')),
+      ],
     );
   }
 }

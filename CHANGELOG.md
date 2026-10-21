@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.499.0+535]
+
+The cleric catches up with the other professions.
+
+### Changed
+- **The cleric** deals 5 base damage instead of 3. Encounters won within three tries: 65.0 → 70.8 (seed 7), 63.4 → 69.0 (seed 11), 62.2 → 68.6 (seed 23); the other professions are unchanged, bosses are won 52.9% on average (51.4% before), every boss inside its band.
+
+## [1.498.0+534]
+
+Two small town and offer-hall touches from the read-throughs.
+
+### Changed
+- **Temple sheet.** A clan-ruled temple shows its keeper's line in italics under the title, and the blessing row is titled with the clan's blessing name ("The First Lantern's ward") with "Blessing" as the small label above it. The neutral shrine keeps the plain title. No new strings: both texts were already in the clans' data.
+- **Offer hall.** Between offers the hall kept an empty dark box with a bare spinner; it now keeps the last card, dimmed and not tappable, with the spinner over it. The first load, with no earlier card, still shows the bare spinner.
+
+## [1.497.0+533]
+
+The professions closer together, the bosses back to a fair fight.
+
+### Changed
+- **The mage's calling path (Arcanist)** gives INT 4 and CON 1 instead of INT 2, WIS 2 and PER 1; the mage starts with 2 more max health.
+- **The Skirmisher path** (rogue and ranger) gives DEX 3, PER 1 and CON 1 instead of DEX 2, PER 1, LUCK 1 and CON 1; the rogue starts with 5 more max health.
+- **Bosses** have about 5% more health (the shared boss health scale 1.15 → 1.21), and Claimant Vane 79 instead of 74.
+- Encounters won within three tries, seed 7: warrior 70.7 → 69.9, mage 60.1 → 65.8, rogue 59.9 → 66.1, cleric 66.4 → 65.0, ranger 69.0 → 68.7. Bosses are won 51.4% on average (51.1% before).
+
 ## [1.496.0+532]
 
 Wave 14 remainder: the player can take the camera during a move.
