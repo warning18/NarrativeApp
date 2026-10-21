@@ -187,8 +187,8 @@
       "fr": "Elle remplace la bénédiction que vous portez."
     },
     "temple_blessing_active": {
-      "en": "Blessed by {clan}: {n} fights",
-      "fr": "Béni par {clan} : {n} combats"
+      "en": "Blessing: {clan} ({n} fights)",
+      "fr": "Bénédiction : {clan} ({n} combats)"
     },
     "temple_blessing_standing": {
       "en": "+1 standing, once a chapter",
