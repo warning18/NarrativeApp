@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/gamedata/db_schema.dart';
+import 'package:narrative_data_app/providers/chapter_loop_provider.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
@@ -83,6 +84,40 @@ void main() {
         }),
         prepare: _loadTables,
       ),
+      for (final id in const [
+        'parley_tent',
+        'bone_casters_hut',
+        'warding_cairn',
+        'star_well',
+      ])
+        SmokeCase(
+          'camp_card_$id',
+          const _Town(),
+          session: camp({
+            'gold': 900,
+            'inventoryItemIds': [
+              for (final m in const [
+                'material_timber',
+                'material_cut_stone',
+                'material_slag_glass',
+                'material_rime_crystal',
+                'material_tear_glass',
+              ]) ...[m, m, m],
+            ],
+            'builtHouseIds': ['harbor', 'hearth_hall'],
+          }),
+          prepare: _loadTables,
+          act: (tester) async {
+            final card = find.byKey(Key('town_card_$id'));
+            expect(card, findsOneWidget, reason: id);
+            await tester.ensureVisible(card);
+            await tester.pump();
+            await tester.tap(card);
+            await tester.pump(const Duration(milliseconds: 300));
+            await tester.ensureVisible(card);
+            await tester.pump();
+          },
+        ),
       SmokeCase(
         'skill_tree_warrior',
         const SkillsScreen(),
@@ -103,6 +138,8 @@ void main() {
         prepare: _loadTables,
         bare: true,
       ),
+    ], overrides: [
+      reachedChapterProvider.overrideWithValue(8),
     ]);
   }, timeout: const Timeout(Duration(minutes: 10)));
 }
