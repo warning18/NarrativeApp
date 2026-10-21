@@ -1,0 +1,36 @@
+{
+  "strings": {
+    "ward_set": {
+      "en": "The cairn hides your trail from {clan}.",
+      "fr": "Le cairn cache votre piste à la chasse {clanOf}."
+    },
+    "ward_set_nemesis": {
+      "en": "The cairn hides your trail from {clan}’s champion.",
+      "fr": "Le cairn cache votre piste au champion {clanOf}."
+    },
+    "ward_ended": {
+      "en": "The ward on {clan}’s hunters has worn off.",
+      "fr": "La garde contre la chasse {clanOf} s’est dissipée."
+    },
+    "ward_choice": {
+      "en": "Ward the road",
+      "fr": "Garder la route"
+    },
+    "ward_choice_hint": {
+      "en": "Keep a hunting clan off your trail for a few roads.",
+      "fr": "Tenir à l’écart la chasse d’un clan pendant quelques routes."
+    },
+    "ward_length": {
+      "en": "{roads} roads · {cost} charges",
+      "fr": "{roads} routes · {cost} charges"
+    },
+    "ward_mark": {
+      "en": "Warded from {clan}: {n} roads",
+      "fr": "Gardé contre la chasse {clanOf} : {n} routes"
+    },
+    "ward_no_target": {
+      "en": "No clan is hunting you.",
+      "fr": "Aucun clan ne vous chasse."
+    }
+  }
+}
