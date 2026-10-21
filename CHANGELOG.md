@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.498.0+534]
+
+Two small town and offer-hall touches from the read-throughs.
+
+### Changed
+- **Temple sheet.** A clan-ruled temple shows its keeper's line in italics under the title, and the blessing row is titled with the clan's blessing name ("The First Lantern's ward") with "Blessing" as the small label above it. The neutral shrine keeps the plain title. No new strings: both texts were already in the clans' data.
+- **Offer hall.** Between offers the hall kept an empty dark box with a bare spinner; it now keeps the last card, dimmed and not tappable, with the spinner over it. The first load, with no earlier card, still shows the bare spinner.
+
 ## [1.497.0+533]
 
 The professions closer together, the bosses back to a fair fight.
