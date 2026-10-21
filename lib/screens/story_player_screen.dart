@@ -128,6 +128,12 @@ final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
 /// a per-session reading preference, not a persisted setting.
 final _statusBarCollapsedProvider = StateProvider<bool>((ref) => false);
 
+/// What the story text keeps on a small phone before the dog's strip and the
+/// choices take any more: about four lines of the prose with the card's
+/// padding, and room for about two choices.
+const double storyTextMinHeight = 150;
+const double storyChoicesMinHeight = 130;
+
 /// Whether the walking companion strip is collapsed. Independent from
 /// [walkCompanionEnabledProvider] (the permanent Settings toggle that
 /// disables the feature outright) — this is a quick per-session way to
@@ -680,13 +686,24 @@ class _StoryView extends ConsumerWidget {
                     // A folded town scene leaves the rest of the screen to the
                     // place itself.
                     // The companion shrinks on a short screen, and the choices
-                    // leave room for it and for a few lines of the story.
+                    // leave room for it and for about four lines of the story
+                    // ([storyTextMinHeight]). A screen too short for the dog's
+                    // strip beside four lines and two choices goes without
+                    // it, so the story keeps its room (QA's L3 finding at
+                    // 320 x 568, where one line was left).
                     // An open town gives the dog's strip to its own lists.
+                    final wantedStrip =
+                        (area.maxHeight * 0.18).clamp(56.0, 125.0);
                     final companionShown = !fullscreenReading &&
                         walkCompanionEnabled &&
-                        !narrationFolded;
+                        !narrationFolded &&
+                        area.maxHeight >=
+                            wantedStrip +
+                                40 +
+                                storyTextMinHeight +
+                                storyChoicesMinHeight;
                     final stripHeight = companionShown && !companionCollapsed
-                        ? (area.maxHeight * 0.18).clamp(56.0, 125.0)
+                        ? wantedStrip
                         : 0.0;
                     final choiceBudget = narrationFolded
                         ? area.maxHeight
@@ -696,8 +713,8 @@ class _StoryView extends ConsumerWidget {
                                 area.maxHeight * 0.6,
                                 area.maxHeight -
                                     stripHeight -
-                                    (companionShown ? 40 : 0) -
-                                    72));
+                                    (companionShown ? 40 : 16) -
+                                    storyTextMinHeight));
                     Widget fillBelow(Widget child) => narrationFolded
                         ? Expanded(
                             child: Align(

@@ -11116,7 +11116,7 @@
       "mood": "grim",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chartkeeper_chapel",
     "choices": [
       {
         "text": "Open the reliquary yourself",
@@ -11885,6 +11885,8 @@
         "checkAbility": "intelligence",
         "checkDC": 12,
         "failNextId": "3100_house_anvil_deaf_failed",
+        "failNote": "The tenth sign comes out wrong, and you stay at the cold forge a little longer.",
+        "failNote_fr": "Le dixième signe sort de travers, et vous restez à la forge froide un peu plus longtemps.",
         "approvalMods": {
           "kelda": 1
         },
@@ -11918,7 +11920,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "emberwick",
+    "location": "emberwick_cold_forge",
     "choices": [
       {
         "text": "Leave him to his cold forge",
@@ -13273,7 +13275,7 @@
       "mood": "wondrous",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
     "choices": [
       {
         "text": "Drive the Court’s sextons off the barrows",
@@ -13414,6 +13416,8 @@
         "checkAbility": "dexterity",
         "checkDC": 13,
         "failNextId": "5200_house_barkbleeders_bled",
+        "failNote": "The knife slips off the grain, and the tree bleeds across your hands.",
+        "failNote_fr": "Le couteau glisse hors du fil, et l’arbre saigne sur vos mains.",
         "politics": {
           "standing": {
             "mire": 5
@@ -25136,7 +25140,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "reliquary_quarter",
+    "location": "reliquary_chartkeeper_chapel",
     "choices": [
       {
         "text": "Swear to be on the Eel’s deck when the bells ring",
