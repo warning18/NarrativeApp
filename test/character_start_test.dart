@@ -65,8 +65,12 @@ void main() {
     final mage = presetBonuses(professions['mage'] as Map<String, dynamic>,
         withOffers: true);
     expect(mage.last.key, 'offer_bonus_label');
-    expect(mage.first.key, 'hp_label');
-    expect(mage.first.value, -2);
+    // The mage starts with no health change since v1.497, so none is listed.
+    expect(mage.map((e) => e.key), isNot(contains('hp_label')));
+    expect(mage.first.key, 'str_abbrev');
+    final rogue = presetBonuses(professions['rogue'] as Map<String, dynamic>);
+    expect(rogue.first.key, 'hp_label');
+    expect(rogue.first.value, 3);
   });
 
   test('the granted skill drops its preset\'s name', () {
