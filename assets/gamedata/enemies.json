@@ -4813,7 +4813,7 @@
   "claimant_vane": {
     "enemyName": "Cassian Oriel, Regent of the Lantern",
     "enemyName_fr": "Cassian Oriel, Régent de la Lanterne",
-    "maxHealth": 74,
+    "maxHealth": 79,
     "damage": 6,
     "guile": 12,
     "faction": "dominion",
