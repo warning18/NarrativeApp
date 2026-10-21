@@ -30,10 +30,16 @@ Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
 
+/// The first settle of a test waits for the game data to load; the later
+/// ones only let the screen catch up.
+final _warmed = Expando<bool>();
+
 Future<void> _settle(WidgetTester tester) async {
+  final first = _warmed[tester] == null;
+  _warmed[tester] = true;
   for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 100 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
   // A reward card waits for its button (it does not go by itself).
