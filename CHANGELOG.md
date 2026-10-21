@@ -15,6 +15,21 @@ Companions react to the wave 15 moments.
 ### Added
 - **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
 
+## [1.493.0+529]
+
+The party speaks up at wave 15's moments.
+
+### Added
+- **Eleven companion remark kinds:** building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn or the Star Well; taking a risky gift, and the die's verdict (the gift, health, gold or the curse); mending and a blessing at a temple. One companion in the party with lines for the moment says one, the one who spoke least recently first, in the same bubble as a shared drink. The lines themselves are Narrative's, in the next release.
+
+## [1.492.0+528]
+
+Every indoor scene has its room (101 of 101).
+
+### Changed
+- **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
+
 ## [1.491.0+527]
 
 The roll buildings and the town sheets read alike in both languages.

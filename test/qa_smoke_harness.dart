@@ -89,7 +89,7 @@ Future<void> _settle(WidgetTester tester) async {
   _warmed[tester] = true;
   for (var i = 0; i < (first ? 6 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -111,6 +111,9 @@ Future<void> runSmoke(
 }) async {
   final shots = Platform.environment['SMOKE_SHOTS'];
   final overflows = <String>[];
+  // Every pass that overflowed, told at the end: an expect() while the error
+  // handler is ours makes the test runner hang instead of failing.
+  final failures = <String>[];
   final previous = FlutterError.onError;
   FlutterError.onError = (details) {
     if (details.exceptionAsString().contains('overflowed')) {
@@ -189,7 +192,9 @@ Future<void> runSmoke(
           await c.act!(tester);
           await _settle(tester);
         }
-        expect(overflows, isEmpty, reason: '$label: ${overflows.join('; ')}');
+        if (overflows.isNotEmpty) {
+          failures.add('$label: ${overflows.toSet().join('; ')}');
+        }
         if (shots != null) {
           final image = await tester.runAsync(() async {
             final object = boundary.currentContext!.findRenderObject()!
@@ -212,4 +217,6 @@ Future<void> runSmoke(
     holder.value = const SizedBox.shrink();
     await tester.pump();
   }
+  FlutterError.onError = previous;
+  expect(failures, isEmpty, reason: failures.join('\n'));
 }

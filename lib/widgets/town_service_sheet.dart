@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/companion_remarks.dart' show RemarkKind;
 import '../data/temple.dart';
 import '../data/town_services.dart';
 import '../gamedata/db_schema.dart';
@@ -16,6 +17,7 @@ import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/temple_provider.dart';
 import '../screens/port_screen.dart';
@@ -24,6 +26,7 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'bounty_board.dart';
 import 'city_chart/city_chart_painter.dart';
+import 'companion_remark_bubble.dart';
 import 'road_panel.dart';
 
 /// The name of a service's kind, in the player's language.
@@ -171,6 +174,7 @@ class _TempleRows extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final offer = ref.watch(templeOfferProvider(placeId));
+    watchMomentRemarks(ref);
     final lang = ref.watch(appLanguageProvider);
     final keeper = ref.watch(clanDataProvider).faction(offer.clanId);
     String own(String? text, String key) =>
@@ -189,14 +193,20 @@ class _TempleRows extends ConsumerWidget {
           TempleBlock.mendedToday => tr(ref, 'temple_mended_today'),
           _ => tr(ref, 'temple_price').replaceAll('{gold}', '$price'),
         };
-    Future<void> buy(
-        Future<bool> Function(PlayerSessionNotifier n) act, String done) async {
+    Future<void> buy(Future<bool> Function(PlayerSessionNotifier n) act,
+        String done, RemarkKind kind) async {
       final messenger = ScaffoldMessenger.maybeOf(host);
       final text = tr(ref, done);
-      Navigator.of(context).pop();
-      if (await act(ref.read(playerSessionProvider.notifier))) {
-        messenger?.showSnackBar(SnackBar(content: Text(text)));
+      final bought = await act(ref.read(playerSessionProvider.notifier));
+      // A companion's word on it (Core's speakUpOnMoment), over the sheet
+      // while its ref still lives; then the sheet closes.
+      final remark =
+          bought && context.mounted ? speakUpOnMoment(ref, kind) : null;
+      if (remark != null && context.mounted) {
+        await showCompanionRemarks(context, ref, [remark]);
       }
+      if (context.mounted) Navigator.of(context).pop();
+      if (bought) messenger?.showSnackBar(SnackBar(content: Text(text)));
     }
 
     final data = ref.read(clanDataProvider);
@@ -214,7 +224,8 @@ class _TempleRows extends ConsumerWidget {
             enabled: offer.canMend,
             onTap: () => buy(
                 (n) => n.templeMend(offer.clanId, data: data, chapter: chapter),
-                'temple_mend_result'),
+                'temple_mend_result',
+                RemarkKind.templeMended),
           ),
         ListTile(
           key: const Key('temple_bless'),
@@ -231,7 +242,8 @@ class _TempleRows extends ConsumerWidget {
           enabled: offer.canBless,
           onTap: () => buy(
               (n) => n.templeBless(offer.clanId, data: data, chapter: chapter),
-              'temple_blessing_result'),
+              'temple_blessing_result',
+              RemarkKind.templeBlessed),
         ),
       ],
     );
