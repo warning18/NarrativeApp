@@ -110,6 +110,34 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('a drag or a zoom takes the camera; recentre gives it back',
+      (tester) async {
+    final clock = await pumpMove(tester, sphere: false);
+    double scale() => tester
+        .widget<InteractiveViewer>(find.byType(InteractiveViewer))
+        .transformationController!
+        .value
+        .getMaxScaleOnAxis();
+
+    clock.value = 0.5;
+    await tester.pump();
+    expect(scale(), closeTo(JourneyWorldMapZoom.land, 0.01));
+    // The player zooms out: the follow lets go and the camera stays put.
+    await tester.tap(find.byKey(const Key('journey_zoom_out')));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    final taken = scale();
+    expect(taken, lessThan(JourneyWorldMapZoom.land - 0.2));
+    clock.value = 0.6;
+    await tester.pump();
+    expect(scale(), closeTo(taken, 0.01));
+    // Recentre: the camera is on the party again.
+    await tester.tap(find.byKey(const Key('journey_recentre')));
+    await tester.pump();
+    expect(scale(), closeTo(JourneyWorldMapZoom.land, 0.01));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('on the sphere the globe turns with the party', (tester) async {
     final clock = await pumpMove(tester, sphere: true);
     expect(find.byKey(const ValueKey('journey_globe_canvas')), findsOneWidget);
