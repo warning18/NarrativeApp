@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.490.0+526]
+
+The town temple opens: mending and a clan's blessing.
+
+### Added
+- **Mending** (from chapter 2, once a day): the whole party back to full health, for 20 × the chapter in gold. Mana stays as it is and no day passes. The tavern stays the free rest, at the cost of a day.
+- **A blessing** (30 + 30 × the chapter in gold): for the next 3 fights, the ruling clan's host effects and a block of 1 for the whole party at the start; a temple no clan holds gives +3% max health instead. One at a time; the first blessing from a clan each chapter raises standing with it by 1.
+- Prices follow the standing with the temple's ruler, as clan shops do (×1.40 Hostile to ×0.75 Sworn); a clan that hunts you refuses you. No curse is lifted.
+- Each clan's temple name, blessing and lines (Narrative's texts, EN/FR).
+
+### Changed
+- **Claimant Morrow** has 121 max health instead of 112: the blessing could still be running when he is met after the chapter 7 hub.
+- **Forcing the way into a champion** leaves it at 80% health instead of 85% (the champions' curve sat on its floor).
+
 ## [1.489.0+525]
 
 Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
