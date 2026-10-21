@@ -208,6 +208,17 @@ void main() {
     await tester.pump();
     expect(
         find.descendant(of: chips, matching: find.text('2')), findsOneWidget);
+    // Ready: the sheet names the cost and the button carries the price.
+    await tester.tap(find.byKey(const Key('town_card_keldas_hall')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(
+        find.byKey(const Key('works_sheet_cost_keldas_hall')), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('works_sheet_build')),
+            matching: find.textContaining(' G')),
+        findsOneWidget);
   });
 
   testWidgets('a missing material says in plain text where to find it',
