@@ -12,7 +12,7 @@ Wave 15 gave the camp its roll houses, the risky gifts and the temple. Wave 16 s
 - **No seat crisis.** `SimGrowth.chapterReached` takes the patron's seat at once, where the app first plays `clan_crisis.dart`. So patron falls run high (QA: 9 of 50 runs).
 - **Gifts from every clan.** The picking rule takes gifts from any clan, not only the patron's, so unbacked clans rise more than with a real player (QA's finding 4 in `docs/qa/clan-power-50.md`).
 
-Clan power that moves (queued) will be tuned against these numbers. They should be right before it lands.
+Clan power that moves (queued) will be tuned against these numbers. They should be right before it lands. **What that tuning reads from it:** each clan's power by chapter and how often it falls (patron and others), from the 50-run clan study (`qa_clan_power_50_test`, `tool/clan_power_report.py`), whichever levers the user picks.
 
 **The rules.**
 - Seat crisis: the simulated player defends when its party can win the fight (the same estimate as `preferredSuitor` uses), pays when the gold is there, else refuses.
