@@ -2,6 +2,14 @@
 
 Wave 13 to 15 are done and merged (the land walk's party, clan flags on the skill tree, the level-up radar, the move on the world chart with a camera the player can take, service pins, town tints, the risky gift's d20, the roll powers as cards). These five are what the screens still owe. Sizes: **S** is a day's work and one PR, **M** two to three days, **L** a week or a design board first. None needs Core, except where it says so.
 
+## From Core's list (`docs/proposals/wave16-core.md`): the two UX asks
+- **Ward the road (Core's item 2), S + S.** A "Ward the road" choice on the Banish card (the camp tray's roll-power card, or the clan's row), spending 1 / 2 / 3 charges for 3 / 6 / 9 roads, and a small "warded, N roads" mark on the Journey (a chip beside the weather chip, gone when the ward runs out). It rides the roll-power cards I restyled in v1.489 (`roll_power_row.dart`) and the Journey's chips, and needs Core's `RollBan` kind and Narrative's two lines first. One small PR after Core's.
+- **Backdrops and the ruler's colour for the crossings (Core's item 3), M + S.** Side-view backdrops for frost, fen and sea cliffs, on the shared side-view kit (the desert, ashlands and ruins ones exist in `lib/widgets/side_view/`): about a day per biome, three biomes. Plus the ruler's colour on the crossing screen's header, read from `townRulersProvider`'s road ruler (the town tints of v1.495). It waits on Core's routes (it needs the route's terrain key) and goes in UX's PR of Core's three.
+
+Both fit beside the five below; neither is in my own ranking because each waits on Core.
+
+## My own look-side items
+
 ## 1. One sheet pattern (S to M): recommended first
 The camp's build sheet, the temple sheet, the town service sheet, the skill choice sheet and the offer's confirm dialog were each built on their own: each has its own title, price line and button. Fold them into one pattern in `lib/widgets/`: a title with the keeper's or the builder's one italic line, rows with an icon, a name and a price chip, one button that carries the price ("Build · 280 G"), and the same greyed-out reason line. Three of the five already follow it after v1.498 (the temple's keeper line, the build sheet's cost row). Why now: QA's smoke pictures keep finding one-off wrap bugs on 320 px phones (the Star Well "G", "The Wayfarer"), and a shared sheet fixes each once. Risk: low; it touches our own widgets and a few lines of shared screens.
 
