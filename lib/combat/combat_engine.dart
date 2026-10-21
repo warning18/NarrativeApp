@@ -901,8 +901,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// and a steeper global curve once turned the chapter 5-6 bosses into
 /// walls. The same simulation had nine parties in ten beat the Void
 /// Sovereign at the first try on this floor; the stat scale raised it a
-/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count.
-const double bossHealthBaseMultiplier = 1.15;
+/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count, and
+/// the stronger mages and rogues after v1.490 its health to 1.21 (the boss
+/// mean back to about 51%, docs/simulation/difficulty-review.md).
+const double bossHealthBaseMultiplier = 1.21;
 const double bossDamageBaseMultiplier = 1.08;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND

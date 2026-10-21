@@ -163,18 +163,42 @@ Every boss stays inside its existing band (target ±12), so no target was re-cen
 
 ## The professions with the stat picks in (after v1.490)
 
-QA's L3 on v1.489 found the spread widened once the simulator took its stat picks (warrior 73, mage 60, rogue 62% of encounters won). The warrior's four calling paths all lead with Strength and Constitution; the mage's one path led with Intelligence only 2 points in 5, and the rogue's Skirmisher with Dexterity 2 in 5.
+QA's L3 on v1.489 found the spread widened once the simulator took its stat picks (warrior 73, mage 60, rogue 62% of encounters won). The warrior's four calling paths all lead with Strength and Constitution; the mage's one path led with Intelligence only 2 points in 5, and the rogue's Skirmisher with Dexterity 2 in 5. Lifting the mage and the rogue lifted the bosses too (mean 55–57%), so a second pass brought the bosses back to about 51%.
 
+**Pass 1, the professions:**
 - `arcanist`: +2 Intelligence, +2 Wisdom, +1 Perception → **+4 Intelligence, +1 Constitution**.
 - `skirmisher`: +2 Dexterity, +1 Perception, +1 Luck, +1 Constitution → **+3 Dexterity, +1 Perception, +1 Constitution**.
-- Rogue `bonusMaxHealth` −2 → **+1**.
+- Rogue `bonusMaxHealth` −2 → +1 (pass 2: **+3**).
+- Mage `bonusMaxHealth` −2 (pass 2: **0**, once the bosses had room for it).
 
-Encounters won within 3 tries (400 runs, goals random, favorGood, favorEvil, maximizeGold), before → after:
+**Pass 2, the bosses:**
+- `bossHealthBaseMultiplier` (combat_engine.dart, every boss's health floor) 1.15 → **1.21**.
+- Claimant Vane `maxHealth` 74 → **79**: the mage wins the claimants far more often than the others (about 80%), and Vane sat on its band's edge (52%).
 
-| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
-|---|---|---|---|---|---|---|
-| 7 | 70.7 → 72.4 | 60.1 → 65.7 | 59.9 → 67.2 | 66.4 → 68.5 | 69.0 → 68.5 | 51.1 → 55.0 |
-| 11 | 74.1 → 75.3 | 61.7 → 66.4 | 61.8 → 67.6 | 65.7 → 66.6 | 69.3 → 70.7 | 52.0 → 57.1 |
-| 23 | 71.7 → 71.3 | 60.5 → 68.2 | 61.1 → 66.6 | 65.2 → 63.8 | 66.5 → 71.2 | 52.0 → 55.4 |
+Encounters won within 3 tries (400 runs, goals random, favorGood, favorEvil, maximizeGold): v1.490 → pass 1 → pass 2.
 
-The mage is not lifted further: it already wins the chapter-7 claimants far more often than the others (about 80%), and more mage health pushed Claimant Vane past its band (52%) in `boss_balance_test`.
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger |
+|---|---|---|---|---|---|
+| 7 | 70.7 → 72.4 → 69.9 | 60.1 → 65.7 → 65.8 | 59.9 → 67.2 → 66.1 | 66.4 → 68.5 → 65.0 | 69.0 → 68.5 → 68.7 |
+| 11 | 74.1 → 75.3 → 71.5 | 61.7 → 66.4 → 68.3 | 61.8 → 67.6 → 67.3 | 65.7 → 66.6 → 63.4 | 69.3 → 70.7 → 67.8 |
+| 23 | 71.7 → 71.3 → 67.4 | 60.5 → 68.2 → 68.6 | 61.1 → 66.6 → 65.1 | 65.2 → 63.8 → 62.2 | 66.5 → 71.2 → 68.1 |
+
+The bosses, won % (same runs; `boss_balance_test` reads seed 7, band target ±12):
+
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 75 → 78 → 76 | 79 → 82 → 82 | 78 → 80 → 81 |
+| Void Stalker | 65 | 66 → 75 → 66 | 61 → 65 → 67 | 62 → 68 → 64 |
+| Hollow Court Inquisitor | 55 | 50 → 65 → 55 | 57 → 60 → 59 | 52 → 60 → 57 |
+| Bone Warden | 55 | 54 → 60 → 59 | 58 → 61 → 58 | 55 → 62 → 54 |
+| Void Archon | 50 | 50 → 58 → 50 | 51 → 57 → 48 | 53 → 57 → 53 |
+| White Admiral | 45 | 52 → 52 → 48 | 52 → 58 → 49 | 53 → 55 → 48 |
+| Claimant Vane | 40 | 45 → 51 → 49 | 50 → 55 → 51 | 50 → 53 → 43 |
+| Claimant Tallis | 40 | 46 → 45 → 47 | 42 → 46 → 33 | 44 → 46 → 40 |
+| Claimant Morrow | 40 | 46 → 41 → 47 | 42 → 53 → 43 | 44 → 49 → 48 |
+| Tear-Herald | 35 | 40 → 40 → 36 | 37 → 45 → 37 | 38 → 39 → 34 |
+| Void Sovereign | 35 | 38 → 40 → 33 | 43 → 47 → 38 | 44 → 39 → 35 |
+| **Mean** | 42–58 | 51.1 → 55.0 → 51.4 | 52.0 → 57.1 → 51.5 | 52.0 → 55.4 → 50.7 |
+
+- The cleric pays most for the heavier bosses (it wins the claimants least): 62–65% after pass 2, 3 to 8 points under 70.
+- `clash_balance_test`'s chapter-7 gap is noisy across these knobs (0.06 to 0.14 with Vane between 74 and 82); at 79 every chapter is within 0.07.
