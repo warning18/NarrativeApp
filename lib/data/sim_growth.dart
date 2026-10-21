@@ -210,9 +210,11 @@ class SimGrowth {
       );
 
   /// What the signs, the title and the boon add up to at [alignment]; in
-  /// one of the last battles ([host], v1.196) the Host's effects too.
-  SignEffects effects(int alignment, {bool host = false}) {
-    final extra = [...clanEffects, if (host) ...hostEffectsNow];
+  /// one of the last battles ([host], v1.196) the Host's effects too;
+  /// [blessing]: a temple's blessing carried (temple.dart).
+  SignEffects effects(int alignment,
+      {bool host = false, List<SignEffect> blessing = const []}) {
+    final extra = [...clanEffects, if (host) ...hostEffectsNow, ...blessing];
     return tables.signs.isEmpty && extra.isEmpty
         ? SignEffects.none
         : signEffectsFor(character.heldSigns, tables.signs,

@@ -29741,7 +29741,7 @@
       "5200_sleep": "kindly_hill_b002",
       "5200_house_barkbleeders": "kindly_hill_b038",
       "5200_house_barkbleeders_bled": "kindly_hill_b037",
-      "5200_house_returned": "kindly_hill_b052",
+      "5200_house_returned": "kindly_hill_b003",
       "5200_clan_mire_1": "kindly_hill_b056",
       "5200_clan_mire_1_edge": "kindly_hill_b058",
       "5200_clan_mire_1_answered": "kindly_hill_b061",
@@ -29777,7 +29777,7 @@
         "en": "The three fever trees",
         "fr": "Les trois arbres à fièvre"
       },
-      "kindly_hill_b052": {
+      "kindly_hill_b003": {
         "en": "The feast-day masks",
         "fr": "Les masques des jours de fête"
       },

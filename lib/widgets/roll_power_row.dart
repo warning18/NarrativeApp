@@ -3,12 +3,15 @@
 // cards, one per power whose house stands -- "Reroll (3)", "Banish (2)",
 // "Raise (1)". Banish and Raise act on the selected card; Banish asks how
 // long (5, 10 or 15 draws, 1 to 3 charges). Core's minimal row, for UX to
-// restyle; the stat pick and the clans' offer both use it.
+// restyle: each power is a small card with its icon, its name and
+// its charges as pips, and Raise shows how near its next charge is; the stat
+// pick and the clans' offer both use it.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_rolls.dart';
 import '../l10n/app_strings.dart';
+import '../theme/stitched_ink.dart';
 
 class RollPowerRow extends ConsumerWidget {
   const RollPowerRow({
@@ -88,33 +91,148 @@ class RollPowerRow extends ConsumerWidget {
     if (draws != null) await onBanish(draws);
   }
 
+  /// A power's name without its count ("Reroll ({left})" says "Reroll").
+  static String _nameOf(String text) =>
+      text.replaceAll(RegExp(r'\s*\(?\{left\}\)?'), '').trim();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!rolls.any) return const SizedBox.shrink();
-    Widget button(String key, int left, VoidCallback? onTap) => Expanded(
+    Widget button(String key, IconData icon, int left, VoidCallback? onTap,
+            {double? progress}) =>
+        Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
-            child: OutlinedButton(
+            child: _PowerButton(
               key: Key('${keyPrefix}_roll_$key'),
-              onPressed: left > 0 ? onTap : null,
-              child: FittedBox(
-                child: Text(tr(ref, 'roll_$key').replaceAll('{left}', '$left')),
-              ),
+              icon: icon,
+              name: _nameOf(tr(ref, 'roll_$key')),
+              left: left,
+              onTap: left > 0 ? onTap : null,
+              progress: progress,
             ),
           ),
         );
     return Padding(
       padding: const EdgeInsets.only(top: 6),
-      child: Row(
+      // The powers stand as tall as the tallest (Raise carries a bar).
+      child: IntrinsicHeight(
+          child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (rolls.reroll case final left?)
-            button('reroll', left, () => _reroll(context, ref)),
+            button('reroll', Icons.casino_outlined, left,
+                () => _reroll(context, ref)),
           if (rolls.banish case final left?)
-            button(
-                'banish', left, canBanish ? () => _banish(context, ref) : null),
+            button('banish', Icons.block, left,
+                canBanish ? () => _banish(context, ref) : null),
           if (rolls.raise case final left?)
-            button('raise', left, canRaise ? onRaise : null),
+            button('raise', Icons.keyboard_double_arrow_up, left,
+                canRaise ? onRaise : null,
+                progress: rolls.raiseProgress / raiseChargeEvery),
         ],
+      )),
+    );
+  }
+}
+
+/// One power of the camp's roll houses: its icon, its name and its charges as
+/// pips (up to six, then a count); dim when it cannot act now (no charge
+/// left, or no card picked for the powers that act on one). The Raise button
+/// also shows how near the next charge is as a thin bar.
+class _PowerButton extends StatelessWidget {
+  const _PowerButton({
+    super.key,
+    required this.icon,
+    required this.name,
+    required this.left,
+    required this.onTap,
+    this.progress,
+  });
+
+  final IconData icon;
+  final String name;
+  final int left;
+  final VoidCallback? onTap;
+  final double? progress;
+
+  static const int _maxPips = 6;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final on = onTap != null;
+    final colour = on ? ink.gold : ink.ash;
+    return Material(
+      color: on
+          ? ink.gold.withValues(alpha: 0.12)
+          : theme.colorScheme.surfaceContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+        side: BorderSide(color: on ? ink.gold : ink.seam),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Opacity(
+            opacity: on ? 1 : 0.55,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 20, color: colour),
+                const SizedBox(height: 2),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(name,
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: on ? null : ink.ash)),
+                ),
+                const SizedBox(height: 3),
+                if (left <= _maxPips)
+                  Row(
+                    key: const Key('roll_pips'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < left; i++)
+                        Container(
+                          width: 6,
+                          height: 6,
+                          margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: colour),
+                        ),
+                      if (left == 0)
+                        Text('0',
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
+                    ],
+                  )
+                else
+                  Text('×$left',
+                      key: const Key('roll_pips'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: colour)),
+                if (progress != null) ...[
+                  const SizedBox(height: 3),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(1.5),
+                    child: LinearProgressIndicator(
+                      key: const Key('roll_progress'),
+                      value: progress!.clamp(0.0, 1.0),
+                      minHeight: 3,
+                      color: ink.gold,
+                      backgroundColor: ink.seam,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

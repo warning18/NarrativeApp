@@ -265,6 +265,16 @@
     "blurb_fr": "En haut de l’escalier de la Corde, une porte verte sans heurtoir. Derrière, une pièce vide et une seule chaise, face à la porte.",
     "landmark": ""
   },
+  "saltmouth_landward_warehouse": {
+    "level": "building",
+    "parent": "saltmouth_landward_gate",
+    "kind": "warehouse",
+    "name": "The informant’s warehouse",
+    "name_fr": "L’entrepôt de l’indicateur",
+    "blurb": "A warehouse behind the landward gate, named by an informant who sold more than gossip: the shadows here have opinions about visitors, and the warden waits in the doorway.",
+    "blurb_fr": "Un entrepôt derrière la porte de terre, désigné par un indicateur qui vendait plus que des ragots : les ombres y ont leur avis sur les visiteurs, et le gardien attend dans l’embrasure.",
+    "landmark": ""
+  },
   "saltmouth_tern_row": {
     "level": "district",
     "controller": "tidekin",
@@ -769,6 +779,16 @@
     "blurb_fr": "Le sentier de la falaise au-dessus du village, qui s’achève devant une chapelle pas plus grande qu’un hangar à bateaux, avec une salle de lampe où les Garde-Mèches entretenaient une flamme, et les lampes qui appellent les noyés.",
     "landmark": "",
     "glyph": "temple"
+  },
+  "wracks_end_lamp_room": {
+    "level": "building",
+    "parent": "wracks_end_lamp_path",
+    "kind": "tower",
+    "name": "The lamp-room",
+    "name_fr": "La chambre du feu",
+    "blurb": "The lamp-room of the cliff light at Wrack’s End: a wick, a mirror gone green and a log whose last line is twenty years old.",
+    "blurb_fr": "La chambre du feu de la falaise, à Wrack’s End : une mèche, un miroir verdi et un registre dont la dernière ligne a vingt ans.",
+    "landmark": ""
   },
   "wracks_end_quay": {
     "level": "district",

@@ -46,6 +46,7 @@ import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../data/stat_ledger.dart';
 import '../data/stat_scale_save.dart';
+import '../data/temple.dart';
 import '../data/training.dart';
 import '../data/throne.dart'
     show
@@ -283,6 +284,10 @@ class PlayerSession {
     this.clockChapter = 0,
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
+    this.blessingFights = 0,
+    this.blessingClan = '',
+    this.templeMendDay = 0,
+    this.templeStandingChapters = const {},
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.detourPacing = const DetourPacing(),
     this.specIds = const [],
@@ -506,6 +511,19 @@ class PlayerSession {
 
   /// Fights left on a hired sellsword's contract (see journey_rules.dart).
   final int sellswordFights;
+
+  /// A temple's blessing (see temple.dart): the fights it has left, and
+  /// the clan whose temple gave it ('' a neutral temple), its effects read
+  /// live from factions.json.
+  final int blessingFights;
+  final String blessingClan;
+
+  /// The day of the last Mending at a temple (0 never): once a day.
+  final int templeMendDay;
+
+  /// The chapter each clan's blessing last brought standing (clan ->
+  /// chapter): once a chapter per clan.
+  final Map<String, int> templeStandingChapters;
 
   /// Alignment events rolled since the last hunter's ambush: a hunter
   /// waits [hunterCooldownRolls] of them before the next (see
@@ -966,6 +984,10 @@ class PlayerSession {
     int? clockChapter,
     int? chapterStartDay,
     int? sellswordFights,
+    int? blessingFights,
+    String? blessingClan,
+    int? templeMendDay,
+    Map<String, int>? templeStandingChapters,
     int? alignmentRollsSinceAmbush,
     DetourPacing? detourPacing,
     List<String>? specIds,
@@ -1090,6 +1112,11 @@ class PlayerSession {
       clockChapter: clockChapter ?? this.clockChapter,
       chapterStartDay: chapterStartDay ?? this.chapterStartDay,
       sellswordFights: sellswordFights ?? this.sellswordFights,
+      blessingFights: blessingFights ?? this.blessingFights,
+      blessingClan: blessingClan ?? this.blessingClan,
+      templeMendDay: templeMendDay ?? this.templeMendDay,
+      templeStandingChapters:
+          templeStandingChapters ?? this.templeStandingChapters,
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
       detourPacing: detourPacing ?? this.detourPacing,
@@ -1311,6 +1338,11 @@ class PlayerSession {
         'clockChapter': clockChapter,
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
+        if (blessingFights != 0) 'blessingFights': blessingFights,
+        if (blessingClan.isNotEmpty) 'blessingClan': blessingClan,
+        if (templeMendDay != 0) 'templeMendDay': templeMendDay,
+        if (templeStandingChapters.isNotEmpty)
+          'templeStandingChapters': templeStandingChapters,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
         'detourPacing': detourPacing.toJson(),
         'specIds': specIds,
@@ -1524,6 +1556,14 @@ class PlayerSession {
       clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
       chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
       sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
+      blessingFights: (json['blessingFights'] as num?)?.toInt() ?? 0,
+      blessingClan: json['blessingClan']?.toString() ?? '',
+      templeMendDay: (json['templeMendDay'] as num?)?.toInt() ?? 0,
+      templeStandingChapters: {
+        for (final e
+            in ((json['templeStandingChapters'] as Map?) ?? const {}).entries)
+          if (e.value is num) e.key.toString(): (e.value as num).toInt(),
+      },
       alignmentRollsSinceAmbush:
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
@@ -4956,6 +4996,80 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> spendSellswordFight() async {
     if (state.sellswordFights <= 0) return;
     state = state.copyWith(sellswordFights: state.sellswordFights - 1);
+    await _persist();
+  }
+
+  // --- The temple (temple.dart) -------------------------------------------
+
+  /// The offer of the temple [clanId] ('' neutral) keeps, to the party
+  /// now, in [chapter] ([busy]: a fight or an expedition under way).
+  TempleOffer templeOffer(String clanId,
+          {required ClanData data, required int chapter, bool busy = false}) =>
+      templeOfferFor(
+        clanId: clanId,
+        data: data,
+        politics: state.politics,
+        chapter: chapter,
+        day: state.day,
+        gold: state.gold,
+        alignment: state.alignmentScore,
+        templeMendDay: state.templeMendDay,
+        blessingFights: state.blessingFights,
+        standingChapters: state.templeStandingChapters,
+        busy: busy,
+      );
+
+  /// Mending at the temple [clanId] keeps: the whole party to full health,
+  /// mana unchanged, no time passing, for the offer's price. False, and
+  /// nothing done, when the offer is shut (Hunted, busy, too poor, mended
+  /// today, chapter 1).
+  Future<bool> templeMend(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
+    final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
+    if (!offer.canMend) return false;
+    state = state.copyWith(
+      gold: state.gold - offer.mendPrice,
+      templeMendDay: state.day,
+      currentHealth: state.maxHealth,
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          ally.copyWith(currentHealth: AllyState.fullHealthSentinel),
+      ],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// A blessing at the temple [clanId] keeps, for [templeBlessingFights]
+  /// fights, replacing any carried; the first of [chapter] from a clan
+  /// brings [templeStandingGain] standing with it. False, and nothing
+  /// done, when the offer is shut (Hunted, busy, too poor).
+  Future<bool> templeBless(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
+    final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
+    if (!offer.canBless) return false;
+    state = state.copyWith(
+      gold: state.gold - offer.blessingPrice,
+      blessingFights: templeBlessingFights,
+      blessingClan: offer.clanId,
+      templeStandingChapters: offer.blessingStanding
+          ? {...state.templeStandingChapters, offer.clanId: chapter}
+          : null,
+    );
+    if (offer.blessingStanding) {
+      await changeStanding(offer.clanId, templeStandingGain,
+          data: data, cause: 'temple', chapter: chapter);
+    }
+    await _persist();
+    return true;
+  }
+
+  /// One fight of the temple's blessing spent; the last ends it.
+  Future<void> spendBlessingFight() async {
+    if (state.blessingFights <= 0) return;
+    final left = state.blessingFights - 1;
+    state = state.copyWith(
+        blessingFights: left, blessingClan: left == 0 ? '' : null);
     await _persist();
   }
 

@@ -133,9 +133,12 @@ void main() {
     expect(salt['tavern']!.opens.single.action, TownServiceAction.rest);
     expect(salt['notice_board']!.opens.single.action,
         TownServiceAction.bountyBoard);
-    // No temple screen yet.
-    expect(salt['temple']!.opens, isEmpty);
-    expect(salt['temple']!.opensSomething, isFalse);
+    // The temple (temple.dart): kept by whoever rules its district.
+    expect(salt['temple']!.opens.single, (
+      action: TownServiceAction.temple,
+      id: 'saltmouth_wharf',
+      unlocked: true
+    ));
   });
 
   test('a village with no shop: its market and forge open nothing yet', () {
@@ -163,14 +166,15 @@ void main() {
     };
     expect(reliquary['market']!.opens.map((o) => o.id), ['last_lantern']);
     expect(reliquary['harbour']!.opens, isEmpty);
-    // With no story, only the board and the rest open.
+    // With no story, only the board, the rest and the temple open.
     final bare = townServicesOf(plans['saltmouth']!, null);
     expect([
       for (final s in bare)
         if (s.opens.isNotEmpty) s.kind
     ], [
       'notice_board',
-      'tavern'
+      'tavern',
+      'temple'
     ]);
   });
 
