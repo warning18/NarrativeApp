@@ -1,7 +1,7 @@
 # QA log
 
-**Last L3: 1.489.0** (2026-10-21, head `a18f1701`, Android only; [report](l3-1.489.0.md)). Next L3 due at
-1.499.0, before a release the user shares, after a big refactor, or on
+**Last L3: 1.501.0** (2026-10-21, head `b7ba54aa`, Android only; [report](l3-1.501.0.md)). Next L3 due at
+1.511.0, before a release the user shares, after a big refactor, or on
 request. See "QA levels" in `CLAUDE.md` for what each level covers.
 
 Suite time at v1.499.0 (839 s, 3,086 tests) and where it goes: [suite-time-1.499.0.md](suite-time-1.499.0.md).
