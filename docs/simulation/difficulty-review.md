@@ -202,3 +202,19 @@ The bosses, won % (same runs; `boss_balance_test` reads seed 7, band target ±12
 
 - The cleric pays most for the heavier bosses (it wins the claimants least): 62–65% after pass 2, 3 to 8 points under 70.
 - `clash_balance_test`'s chapter-7 gap is noisy across these knobs (0.06 to 0.14 with Vane between 74 and 82); at 79 every chapter is within 0.07.
+
+## Cleric follow-up (after v1.497)
+
+The cleric sat 3 to 8 points under the 65–75 aim after the boss pass. One cleric-only knob:
+
+- Cleric `bonusBaseDamage` 3 → **5** (`professions.json`). Health was tried too (+5 and +10 moved it about half as far), and the Zealot path (cleric-only in data) shifts the simulator's stream for the other professions, so it was left alone. No boss changed.
+
+Encounters won within 3 tries (400 runs, same plan and harness as above): before → after. Only the cleric moves; the other four are identical.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
+|---|---|---|---|---|---|---|
+| 7 | 69.9 | 65.8 | 66.1 | 65.0 → 70.8 | 68.7 | 51.5 → 52.9 |
+| 11 | 71.5 | 68.3 | 67.3 | 63.4 → 69.0 | 67.8 | 51.5 → 52.6 |
+| 23 | 67.4 | 68.6 | 65.1 | 62.2 → 68.6 | 68.1 | 50.7 → 52.3 |
+
+Every boss stays in its band at all three seeds (highest against its band: Aurel Vane 83 of 63–87, Claimant Vane 50 of 28–52 at seed 11). `clash_balance_test` passes on its bounds.
