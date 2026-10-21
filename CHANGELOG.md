@@ -10,10 +10,10 @@ isn't reconstructable from git history alone.
 
 ## [1.501.0+537]
 
-Chapters 2 and 7 get a little easier, closer to the difficulty curve.
+Chapter 2 gets a little easier, closer to the difficulty curve.
 
 ### Changed
-- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98) and in chapter 7 is 2.08 (was 2.28). Bosses keep their own floor. Encounters won within three tries, averaged over seeds 7, 11 and 23: chapter 2 86.8 → 87.7%, chapter 7 57.6 → 59.2%. Every boss stays inside its band, and the professions stay within 64.9–71.9%.
+- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98). Bosses keep their own floor. Encounters won within three tries in chapter 2, averaged over seeds 7, 11 and 23: 86.0 → 87.2%. Every boss stays inside its band. Chapter 7 is unchanged: lightening its ordinary fights moved nothing, because its claimants decide it and sit on their target.
 
 ## [1.500.0+536]
 
