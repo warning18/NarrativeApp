@@ -10,7 +10,7 @@ One table, so an L3 can see at a glance what already has a real-font layout chec
 | **Level up**: the screen and its stat rows with the ability radar; the walk | `qa_smoke_walk_test` | the land walk with and without companions, the walk bubble (long words), the clan flags, the level-up screen, the stat rows |
 | **Level-up pop-up** and the home shell's bar | `qa_real_font_layout_test` | the pop-up at 360 and 320 px, the bar and the tablet rail at a landscape phone |
 | **Story**: choice cards, arrival sheet, return notice, mercy dialog, locked features, banner pins | `qa_smoke_story_test` | 6 cases |
-| **Story text**: the longest scenes and those with the most bold | `qa_story_text_real_font_test` | scenes of chapters 1 to 8; the choices reachable |
+| **Story text**: the longest scenes and those with the most bold | `qa_story_text_real_font_test` | the longest scenes and those with the most bold; the text shown in full, the choices reachable |
 | **Chapter 7 hub** (the cove camp page with the quest tracker) | `qa_ch7_hub_layout_test` | the "Enter the camp" button on the page |
 | **Fight**: one-time tips (ambush, a clan's doctrine) | `qa_fight_tips_real_font_test` | two tips, the doctrine tip, buttons on screen |
 | **Fight**: the anomaly chip | `qa_anomaly_chip_en_test`, `_fr_test` | every field anomaly, a 360 px fight |
