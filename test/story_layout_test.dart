@@ -17,10 +17,16 @@ import 'package:narrative_data_app/widgets/player_stats_bar.dart';
 
 /// Lets the story and game data load (their assets are decoded off the
 /// fake test clock) and the screen settle.
+/// The first settle of a test waits for the game data to load; the later
+/// ones only let the screen catch up.
+final _warmed = Expando<bool>();
+
 Future<void> _settle(WidgetTester tester) async {
+  final first = _warmed[tester] == null;
+  _warmed[tester] = true;
   for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 100 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
