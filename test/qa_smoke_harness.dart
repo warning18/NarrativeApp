@@ -60,7 +60,7 @@ Future<void> loadSmokeFonts() async {
 /// One thing to show.
 class SmokeCase {
   const SmokeCase(this.name, this.widget,
-      {this.session, this.prepare, this.bare = false});
+      {this.session, this.prepare, this.act, this.bare = false});
 
   /// A short name, for the failure message and the picture's file.
   final String name;
@@ -71,6 +71,10 @@ class SmokeCase {
 
   /// More setup, with the container (a table to load, a flag).
   final Future<void> Function(ProviderContainer container)? prepare;
+
+  /// Something to do once the widget is up (a tap, a scroll); the widget
+  /// is settled again after it.
+  final Future<void> Function(WidgetTester tester)? act;
 
   /// Shown as it is, with no scroll view around it (a screen, a sheet's own
   /// body that scrolls itself).
@@ -181,6 +185,10 @@ Future<void> runSmoke(
         );
         await tester.pump();
         await _settle(tester);
+        if (c.act != null) {
+          await c.act!(tester);
+          await _settle(tester);
+        }
         expect(overflows, isEmpty, reason: '$label: ${overflows.join('; ')}');
         if (shots != null) {
           final image = await tester.runAsync(() async {
@@ -196,6 +204,11 @@ Future<void> runSmoke(
         }
       }
     }
+    // A sheet the case opened goes before its host does.
+    tester
+        .state<NavigatorState>(find.byType(Navigator).first)
+        .popUntil((route) => route.isFirst);
+    await tester.pump(const Duration(milliseconds: 400));
     holder.value = const SizedBox.shrink();
     await tester.pump();
   }

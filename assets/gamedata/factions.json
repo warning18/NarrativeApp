@@ -121,7 +121,17 @@
     "brokenNews": "The Dominion’s List of Oaths is torn.",
     "brokenNews_fr": "Le registre des serments du Dominion est déchiré.",
     "ruling": "The Dominion is a theocracy under a single voice. The Lantern-Bearer speaks the will of the First Lantern, and nothing is law until it is spoken; the Order, the Inquisition, the Tribunal, the Admiralty and the Wickwardens each rule a flame beneath it and answer for it. A Lantern-Bearer is not elected: the flame is passed to the name given in the last breath of the one before, and taken away only by death, or by the Houses’ vote at the Lantern Throne when the voice fails. A member owes the oath, the tithe, and their name on the List.",
-    "ruling_fr": "Le Dominion est une théocratie sous une seule voix. Le Porte-Lanterne dit la volonté de la Première Lanterne, et rien n’est loi tant qu’il ne l’a pas prononcé ; l’Ordre, l’Inquisition, le Tribunal, l’Amirauté et les Garde-Mèches gouvernent chacun une flamme sous lui et lui en répondent. Un Porte-Lanterne ne s’élit pas : la flamme passe au nom donné dans le dernier souffle du précédent, et ne se retire que par la mort, ou par le vote des Maisons au Trône de la Lanterne quand la voix s’éteint. Un membre doit le serment, la dîme, et son nom inscrit sur le Registre."
+    "ruling_fr": "Le Dominion est une théocratie sous une seule voix. Le Porte-Lanterne dit la volonté de la Première Lanterne, et rien n’est loi tant qu’il ne l’a pas prononcé ; l’Ordre, l’Inquisition, le Tribunal, l’Amirauté et les Garde-Mèches gouvernent chacun une flamme sous lui et lui en répondent. Un Porte-Lanterne ne s’élit pas : la flamme passe au nom donné dans le dernier souffle du précédent, et ne se retire que par la mort, ou par le vote des Maisons au Trône de la Lanterne quand la voix s’éteint. Un membre doit le serment, la dîme, et son nom inscrit sur le Registre.",
+    "templeName": "The Lantern Hall's shrine",
+    "templeName_fr": "Le sanctuaire de la Salle de la Lanterne",
+    "blessingName": "The First Lantern's ward",
+    "blessingName_fr": "La garde de la Première Lanterne",
+    "templeLine": "One flame, one law. Light a candle, pay the offering, and the Flame will stand between you and what comes.",
+    "templeLine_fr": "Une flamme, une loi. Allumez un cierge, versez l’offrande, et la Flamme se tiendra entre vous et ce qui vient.",
+    "templeLineHunted": "The Flame does not warm what it has marked. The door is shut. Go and answer for yourself.",
+    "templeLineHunted_fr": "La Flamme ne réchauffe pas ce qu’elle a marqué. La porte est close. Allez répondre de vous-même.",
+    "blessingGrants": "For 3 fights: the Writ face, +1% party max health, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : la face du Mandat, +1 % de santé maximale du groupe, et un blocage de 1 au départ."
   },
   "vigil": {
     "id": "vigil",
@@ -231,7 +241,17 @@
     "brokenNews": "The Vigil’s ridge post has gone dark for an hour.",
     "brokenNews_fr": "Le poste de la Veille sur la crête est resté sombre une heure.",
     "ruling": "The Vigil is a chain of watches, and rank is the length of your longest unbroken hour. Every post goes to whoever last kept it without looking away; each captain names the one who will relieve them, and the Warden-in-Chief is simply the watch nobody has yet relieved. A leader is removed by the rule that raised them: a missed hour, a glance turned aside, and the next in the chain takes the lamp without a vote. A member owes their hours, and the truth about the count.",
-    "ruling_fr": "La Veille est une chaîne de gardes, et le rang est la longueur de votre plus longue heure sans faille. Chaque poste revient à celui qui l’a tenu le plus récemment sans détourner les yeux ; chaque capitaine désigne qui le relèvera, et le Garde-en-chef est simplement la veille que nul n’a encore relevée. On destitue un chef par la règle qui l’a élevé : une heure manquée, un regard détourné, et le suivant de la chaîne prend la lampe sans vote. Un membre doit ses heures, et la vérité sur le compte."
+    "ruling_fr": "La Veille est une chaîne de gardes, et le rang est la longueur de votre plus longue heure sans faille. Chaque poste revient à celui qui l’a tenu le plus récemment sans détourner les yeux ; chaque capitaine désigne qui le relèvera, et le Garde-en-chef est simplement la veille que nul n’a encore relevée. On destitue un chef par la règle qui l’a élevé : une heure manquée, un regard détourné, et le suivant de la chaîne prend la lampe sans vote. Un membre doit ses heures, et la vérité sur le compte.",
+    "templeName": "The Wall of Watchers",
+    "templeName_fr": "Le Mur des Veilleurs",
+    "blessingName": "The open eye's watch",
+    "blessingName_fr": "La veille de l’œil ouvert",
+    "templeLine": "Sit with your back to the wall. Everyone does. We will keep your eyes open for three fights.",
+    "templeLine_fr": "Asseyez-vous, le dos au mur. Tout le monde le fait. Nous garderons vos yeux ouverts pendant trois combats.",
+    "templeLineHunted": "You looked away once too often. The Watch will not sit with you. Go.",
+    "templeLineHunted_fr": "Vous avez détourné le regard une fois de trop. La Veille ne s’assiéra pas avec vous. Allez-vous-en.",
+    "blessingGrants": "For 3 fights: +3% dodge, and you see the enemy's next intent, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +3 % d’esquive, et vous voyez la prochaine intention de l’ennemi, et un blocage de 1 au départ."
   },
   "compact": {
     "id": "compact",
@@ -348,7 +368,17 @@
     "brokenNews": "The Compact’s last hammer is silent.",
     "brokenNews_fr": "Le dernier marteau du Pacte ne sonne plus.",
     "ruling": "The Compact is a table, not a throne. Seven masters of the crafts sit at the Charter’s table, each with one stone, and a Speaker chairs it without a casting vote. Nothing is made, sold or sworn that the table has not allowed, and it decides by the stones, one hand each. A Speaker is raised by five stones and removed by five; the Charter binds the Speaker as hard as the apprentice. A member owes restraint: a blade made only by invitation, and the table’s rule kept even when it costs.",
-    "ruling_fr": "Le Pacte est une table, non un trône. Sept maîtres des métiers siègent à la table de la Charte, chacun avec une pierre, et un Orateur la préside sans voix prépondérante. Rien ne se forge, ne se vend ni ne se jure que la table n’ait permis, et elle décide par les pierres, une main chacune. On élève un Orateur par cinq pierres et on le destitue par cinq ; la Charte lie l’Orateur aussi fort que l’apprenti. Un membre doit la retenue : une lame forgée sur invitation seulement, et la règle de la table tenue même quand elle coûte."
+    "ruling_fr": "Le Pacte est une table, non un trône. Sept maîtres des métiers siègent à la table de la Charte, chacun avec une pierre, et un Orateur la préside sans voix prépondérante. Rien ne se forge, ne se vend ni ne se jure que la table n’ait permis, et elle décide par les pierres, une main chacune. On élève un Orateur par cinq pierres et on le destitue par cinq ; la Charte lie l’Orateur aussi fort que l’apprenti. Un membre doit la retenue : une lame forgée sur invitation seulement, et la règle de la table tenue même quand elle coûte.",
+    "templeName": "The Anvil Chapel",
+    "templeName_fr": "La chapelle de l’Enclume",
+    "blessingName": "The anvil's temper",
+    "blessingName_fr": "La trempe de l’enclume",
+    "templeLine": "Strike it once, strike it true. Pay the smith, and what we hammer into you will hold for three fights.",
+    "templeLine_fr": "Frappez une fois, frappez juste. Payez le forgeron, et ce que nous martelons en vous tiendra trois combats.",
+    "templeLineHunted": "The Row signs nothing with you now, and hammers nothing into you. The forge is cold to your hands.",
+    "templeLineHunted_fr": "La Rue ne signe plus rien avec vous, et ne martèle rien en vous. La forge est froide pour vos mains.",
+    "blessingGrants": "For 3 fights: +3% party max health, +6% strike damage, the Compact's edge, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +3 % de santé maximale du groupe, +6 % de dégâts de frappe, le tranchant du Pacte, et un blocage de 1 au départ."
   },
   "mire": {
     "id": "mire",
@@ -467,7 +497,17 @@
     "brokenNews": "The Mire’s Court has lost its Hand.",
     "brokenNews_fr": "La Cour du Marais a perdu sa Main.",
     "ruling": "The Mire Courts are ruled by courtesy and inherited favour. The Heron Queen sits at the Court and is never seen to command; her wishes arrive as invitations, and no one in the fen declines one. Favour passes down like land: a house keeps its place by the courtesies it is owed, and a Queen is not deposed but invited to step into the water, which she does with great grace. A member owes their word, kept to the minute, and a courtesy for every discourtesy received.",
-    "ruling_fr": "Les Cours du Marais se gouvernent par la courtoisie et la faveur héritée. La Reine-Héron siège à la Cour sans qu’on la voie jamais commander ; ses volontés arrivent en invitations, et nul dans le marais n’en décline une. La faveur se transmet comme une terre : une maison garde sa place par les politesses qu’on lui doit, et l’on ne dépose pas une Reine, on l’invite à entrer dans l’eau, ce qu’elle fait avec beaucoup de grâce. Un membre doit sa parole, tenue à la minute, et une politesse pour chaque impolitesse reçue."
+    "ruling_fr": "Les Cours du Marais se gouvernent par la courtoisie et la faveur héritée. La Reine-Héron siège à la Cour sans qu’on la voie jamais commander ; ses volontés arrivent en invitations, et nul dans le marais n’en décline une. La faveur se transmet comme une terre : une maison garde sa place par les politesses qu’on lui doit, et l’on ne dépose pas une Reine, on l’invite à entrer dans l’eau, ce qu’elle fait avec beaucoup de grâce. Un membre doit sa parole, tenue à la minute, et une politesse pour chaque impolitesse reçue.",
+    "templeName": "The Reed Shrine",
+    "templeName_fr": "Le sanctuaire des roseaux",
+    "blessingName": "The fen's cup",
+    "blessingName_fr": "La coupe du marais",
+    "templeLine": "Drink. It is bitter, and it is good for you. The fen will keep you for three fights.",
+    "templeLine_fr": "Buvez. C’est amer, et c’est bon pour vous. Le marais vous gardera pendant trois combats.",
+    "templeLineHunted": "The water remembers your face, and it has not forgiven it. No cup for you.",
+    "templeLineHunted_fr": "L’eau se souvient de votre visage, et ne l’a pas pardonné. Pas de coupe pour vous.",
+    "blessingGrants": "For 3 fights: +1 potion healing, and guard heals, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +1 de soin des potions, et la garde soigne, et un blocage de 1 au départ."
   },
   "crows": {
     "id": "crows",
@@ -587,7 +627,17 @@
     "brokenNews": "The Salt Crows’ collector is gone from the wharf.",
     "brokenNews_fr": "La percepteuse des Corneilles a quitté le quai.",
     "ruling": "The Salt Crows are a syndicate of captains, run on debt. Seven captains hold seats on the Wharf by the contracts they own, and the First Captain is whoever is owed the most; the Keyholders keep the ledger’s doors, and no door opens with fewer than two keys. A First Captain falls when their debts are bought out from under them, which is how every captain before them rose. A member owes the one thing the Crows ask of anyone: a paid contract is honoured, and an unpaid one was never a contract.",
-    "ruling_fr": "Les Corneilles de Sel sont un syndicat de capitaines, mené à la dette. Sept capitaines tiennent un siège sur le Quai par les contrats qu’ils détiennent, et le Premier Capitaine est celui à qui l’on doit le plus ; les Porte-Clefs gardent les portes du registre, et aucune ne s’ouvre à moins de deux clefs. Un Premier Capitaine tombe quand on rachète ses dettes sous ses pieds, ce qui est la façon dont chaque capitaine avant lui s’est élevé. Un membre doit la seule chose que les Corneilles demandent à quiconque : un contrat payé est honoré, et un contrat impayé n’a jamais été un contrat."
+    "ruling_fr": "Les Corneilles de Sel sont un syndicat de capitaines, mené à la dette. Sept capitaines tiennent un siège sur le Quai par les contrats qu’ils détiennent, et le Premier Capitaine est celui à qui l’on doit le plus ; les Porte-Clefs gardent les portes du registre, et aucune ne s’ouvre à moins de deux clefs. Un Premier Capitaine tombe quand on rachète ses dettes sous ses pieds, ce qui est la façon dont chaque capitaine avant lui s’est élevé. Un membre doit la seule chose que les Corneilles demandent à quiconque : un contrat payé est honoré, et un contrat impayé n’a jamais été un contrat.",
+    "templeName": "The Counting Chapel",
+    "templeName_fr": "La chapelle des comptes",
+    "blessingName": "The Ledger's cover",
+    "blessingName_fr": "La couverture du Registre",
+    "templeLine": "Everything has a price, even luck. Pay in advance and the Ledger will cover you for three fights.",
+    "templeLine_fr": "Tout a un prix, même la chance. Payez d’avance et le Registre vous couvrira pendant trois combats.",
+    "templeLineHunted": "Your account is closed. We do not sell cover to those we are hunting. Mind the door on your way out.",
+    "templeLineHunted_fr": "Votre compte est clos. Nous ne vendons pas de couverture à ceux que nous chassons. Prenez garde à la porte en sortant.",
+    "blessingGrants": "For 3 fights: +2% dodge, +5% strike damage, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +5 % de dégâts de frappe, et un blocage de 1 au départ."
   },
   "penitents": {
     "id": "penitents",
@@ -712,7 +762,17 @@
     "brokenNews": "The Ash Confessor’s lantern is out.",
     "brokenNews_fr": "La lanterne de la Confesseuse de Cendre est éteinte.",
     "ruling": "The Ashen Penitents rank their members by what they carry. Each confesses a burden before the others and takes up a lantern with no flame in it; the heavier the confessed weight, the higher the seat, and the Eldest is the one whose burden the rest agree is heaviest. A leader falls the day they put the lantern down, or the day another’s confession outweighs theirs. A member owes a burden carried in public, a confession made in full, and the road walked on foot.",
-    "ruling_fr": "Les Pénitents de Cendre classent leurs membres selon ce qu’ils portent. Chacun confesse un fardeau devant les autres et prend une lanterne sans flamme ; plus le poids confessé est lourd, plus le siège est haut, et l’Aînée ou l’Aîné est celui dont les autres s’accordent à dire que le fardeau pèse le plus. Un chef tombe le jour où il pose sa lanterne, ou le jour où la confession d’un autre pèse davantage que la sienne. Un membre doit un fardeau porté en public, une confession faite en entier, et la route faite à pied."
+    "ruling_fr": "Les Pénitents de Cendre classent leurs membres selon ce qu’ils portent. Chacun confesse un fardeau devant les autres et prend une lanterne sans flamme ; plus le poids confessé est lourd, plus le siège est haut, et l’Aînée ou l’Aîné est celui dont les autres s’accordent à dire que le fardeau pèse le plus. Un chef tombe le jour où il pose sa lanterne, ou le jour où la confession d’un autre pèse davantage que la sienne. Un membre doit un fardeau porté en public, une confession faite en entier, et la route faite à pied.",
+    "templeName": "The Wall of Names",
+    "templeName_fr": "Le Mur des Noms",
+    "blessingName": "The ember's penance",
+    "blessingName_fr": "La pénitence de la braise",
+    "templeLine": "Say a name, and the ember will carry it with you. Three fights; no more is asked.",
+    "templeLine_fr": "Dites un nom, et la braise le portera avec vous. Trois combats ; on n’en demande pas plus.",
+    "templeLineHunted": "A name is read on this wall that you cannot hear. We cannot bless you. Not yet.",
+    "templeLineHunted_fr": "On lit sur ce mur un nom que vous ne pouvez pas entendre. Nous ne pouvons pas vous bénir. Pas encore.",
+    "blessingGrants": "For 3 fights: +3% party max health, +6% spell damage, the ember face, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +3 % de santé maximale du groupe, +6 % de dégâts de sort, la face de braise, et un blocage de 1 au départ."
   },
   "choir": {
     "id": "choir",
@@ -767,7 +827,17 @@
       ],
       "line": "A hymn over the field holds the party up, and every guard you raise is a vow kept.",
       "line_fr": "Un hymne au-dessus du champ de bataille soutient le groupe, et chaque garde que vous levez est un vœu tenu."
-    }
+    },
+    "templeName": "The Hymn Hall",
+    "templeName_fr": "La salle de l’hymne",
+    "blessingName": "The held note",
+    "blessingName_fr": "La note tenue",
+    "templeLine": "Stand in the note and let it hold you up. It will carry you through three fights.",
+    "templeLine_fr": "Tenez-vous dans la note et laissez-la vous porter. Elle vous mènera à travers trois combats.",
+    "templeLineHunted": "The choir falls silent as you come in. There is no note for you here.",
+    "templeLineHunted_fr": "Le chœur se tait à votre entrée. Il n’y a pas de note pour vous ici.",
+    "blessingGrants": "For 3 fights: guard heals, +2% party max health, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : la garde soigne, +2 % de santé maximale du groupe, et un blocage de 1 au départ."
   },
   "pit": {
     "id": "pit",
@@ -822,7 +892,17 @@
       ],
       "line": "The Pit sends what it is owed: your blows bite deeper, and every wound you open feeds you.",
       "line_fr": "La Fosse envoie son dû. Vos coups mordent plus profond, et chaque blessure que vous ouvrez vous nourrit."
-    }
+    },
+    "templeName": "The Pit's Altar",
+    "templeName_fr": "L’autel de la Fosse",
+    "blessingName": "The debt's edge",
+    "blessingName_fr": "Le tranchant de la dette",
+    "templeLine": "What is owed is owed. Take the edge now, and the Pit will collect over three fights.",
+    "templeLine_fr": "Ce qui est dû est dû. Prenez le tranchant maintenant, et la Fosse recouvrera sur trois combats.",
+    "templeLineHunted": "You owe too much already. The Pit will not lend you more.",
+    "templeLineHunted_fr": "Vous devez déjà trop. La Fosse ne vous prêtera plus rien.",
+    "blessingGrants": "For 3 fights: +3% lifesteal, +6% strike damage, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +3 % de vol de vie, +6 % de dégâts de frappe, et un blocage de 1 au départ."
   },
   "giants": {
     "id": "giants",
@@ -882,7 +962,17 @@
       ],
       "line": "The giants of Highhearth stand in the line like walls cut once, and for good.",
       "line_fr": "Les géants de Haut-Âtre se tiennent dans la ligne comme des murs taillés une fois pour toutes."
-    }
+    },
+    "templeName": "The Great Hearth",
+    "templeName_fr": "Le grand âtre",
+    "blessingName": "The hearth's shoulder",
+    "blessingName_fr": "L’épaule de l’âtre",
+    "templeLine": "Sit up on the table, small one. The fire is six hundred years old; it will stand with you for three fights.",
+    "templeLine_fr": "Montez sur la table, petit. Le feu a six cents ans ; il se tiendra à vos côtés pendant trois combats.",
+    "templeLineHunted": "We do not break bread with those who burn our stone. The fire is not for you.",
+    "templeLineHunted_fr": "Nous ne rompons pas le pain avec ceux qui brûlent notre pierre. Le feu n’est pas pour vous.",
+    "blessingGrants": "For 3 fights: +5% party max health, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +5 % de santé maximale du groupe, et un blocage de 1 au départ."
   },
   "oni": {
     "id": "oni",
@@ -942,7 +1032,17 @@
       ],
       "line": "The oni come with their bells and their red: your blows land heavier, and each one drinks a little of the enemy’s life.",
       "line_fr": "Les oni viennent avec leurs cloches et leur rouge. Vos coups tombent plus lourd, et chacun boit un peu de la vie de l’ennemi."
-    }
+    },
+    "templeName": "The Bell Shrine",
+    "templeName_fr": "Le sanctuaire des cloches",
+    "blessingName": "The red bell",
+    "blessingName_fr": "La cloche rouge",
+    "templeLine": "Ring it once, and the red comes to you. Three fights, and then it goes home.",
+    "templeLine_fr": "Sonnez-la une fois, et le rouge vient à vous. Trois combats, puis il rentre chez lui.",
+    "templeLineHunted": "The bell will not ring for you. Do not touch the rope.",
+    "templeLineHunted_fr": "La cloche ne sonnera pas pour vous. Ne touchez pas à la corde.",
+    "blessingGrants": "For 3 fights: +8% strike damage, +2% lifesteal, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +8 % de dégâts de frappe, +2 % de vol de vie, et un blocage de 1 au départ."
   },
   "tidekin": {
     "id": "tidekin",
@@ -1002,7 +1102,17 @@
       ],
       "line": "The Tide-Kin rise from the shallows and draw the sea between you and every blow.",
       "line_fr": "Les Gens de la Marée montent des hauts-fonds et tracent la mer entre vous et chaque coup."
-    }
+    },
+    "templeName": "The Tide Shrine",
+    "templeName_fr": "Le sanctuaire de la marée",
+    "blessingName": "The tide's turning",
+    "blessingName_fr": "Le retournement de la marée",
+    "templeLine": "We call, you answer. Put your feet in the water and the tide will turn for you, for three fights.",
+    "templeLine_fr": "Nous appelons, vous répondez. Mettez les pieds dans l’eau et la marée tournera pour vous, pendant trois combats.",
+    "templeLineHunted": "The water goes out as you come near. It has decided. So have we.",
+    "templeLineHunted_fr": "L’eau se retire quand vous approchez. Elle a décidé. Nous aussi.",
+    "blessingGrants": "For 3 fights: +2% dodge, +2 potion healing, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +2 de soin des potions, et un blocage de 1 au départ."
   },
   "kindly": {
     "id": "kindly",
@@ -1062,7 +1172,17 @@
       ],
       "line": "The Kindly Ones keep their treaty to the minute: not one blow lands on you that was not owed.",
       "line_fr": "Les Bienveillants tiennent leur traité à la minute près : aucun coup ne vous atteint qui ne soit dû."
-    }
+    },
+    "templeName": "The Long Table",
+    "templeName_fr": "La longue table",
+    "blessingName": "The treaty's grace",
+    "blessingName_fr": "La grâce du traité",
+    "templeLine": "How kind of you to sit. A small blessing, as a courtesy, and entirely to the minute: three fights.",
+    "templeLine_fr": "Comme c’est aimable de vous asseoir. Une petite bénédiction, par courtoisie, et à la minute près : trois combats.",
+    "templeLineHunted": "I am afraid the invitation does not extend to you. Do not take it personally. We do not.",
+    "templeLineHunted_fr": "Je crains que l’invitation ne vous soit pas destinée. Ne le prenez pas pour vous. Nous, non plus.",
+    "blessingGrants": "For 3 fights: +2% dodge, +2% party max health, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +2 % de santé maximale du groupe, et un blocage de 1 au départ."
   },
   "open_hand": {
     "id": "open_hand",
@@ -1115,7 +1235,17 @@
       ],
       "line": "The Fishbasket Line draws the old seals across your line. What is drawn, holds.",
       "line_fr": "La Lignée des Paniers trace les vieux sceaux sur votre ligne. Ce qui est tracé tient."
-    }
+    },
+    "templeName": "The Drawn Door",
+    "templeName_fr": "La porte tracée",
+    "blessingName": "The hand's seal",
+    "blessingName_fr": "Le sceau de la main",
+    "templeLine": "What is drawn, holds. Put your hand to the seal, and it will hold you for three fights.",
+    "templeLine_fr": "Ce qui est tracé tient. Posez la main sur le sceau, et il vous tiendra trois combats.",
+    "templeLineHunted": "The seal will not take your hand. It remembers who drew against it.",
+    "templeLineHunted_fr": "Le sceau n’acceptera pas votre main. Il se souvient de qui a tracé contre lui.",
+    "blessingGrants": "For 3 fights: +5% party max health, +5% ally damage, and a block of 1 at the start.",
+    "blessingGrants_fr": "Pendant 3 combats : +5 % de santé maximale du groupe, +5 % de dégâts des alliés, et un blocage de 1 au départ."
   },
   "_newKinds": [
     {

@@ -349,6 +349,16 @@ class Faction {
     this.riskStat = '',
     this.riskyOffer = '',
     this.riskyOfferFr = '',
+    this.templeName = '',
+    this.templeNameFr = '',
+    this.blessingName = '',
+    this.blessingNameFr = '',
+    this.templeLine = '',
+    this.templeLineFr = '',
+    this.templeLineHunted = '',
+    this.templeLineHuntedFr = '',
+    this.blessingGrants = '',
+    this.blessingGrantsFr = '',
   });
 
   final Patron patron;
@@ -363,6 +373,30 @@ class Faction {
 
   String riskyOfferFor(AppLanguage language) =>
       _pick(language, riskyOffer, riskyOfferFr);
+
+  // The temple (temple.dart, Narrative's texts): the temples it keeps, its
+  // blessing, what the keeper says (and says to a Hunted character), and a
+  // line of what the blessing grants; '' for none.
+  final String templeName;
+  final String templeNameFr;
+  final String blessingName;
+  final String blessingNameFr;
+  final String templeLine;
+  final String templeLineFr;
+  final String templeLineHunted;
+  final String templeLineHuntedFr;
+  final String blessingGrants;
+  final String blessingGrantsFr;
+  String templeNameFor(AppLanguage language) =>
+      _pick(language, templeName, templeNameFr);
+  String blessingNameFor(AppLanguage language) =>
+      _pick(language, blessingName, blessingNameFr);
+  String templeLineFor(AppLanguage language) =>
+      _pick(language, templeLine, templeLineFr);
+  String templeLineHuntedFor(AppLanguage language) =>
+      _pick(language, templeLineHunted, templeLineHuntedFr);
+  String blessingGrantsFor(AppLanguage language) =>
+      _pick(language, blessingGrants, blessingGrantsFr);
 
   /// Where its power starts (factions.json `power`, clan_power.dart); 0
   /// for a faction with none.
@@ -499,6 +533,16 @@ class Faction {
         riskStat: _text(json['riskStat']).trim(),
         riskyOffer: _text(json['riskyOffer']).trim(),
         riskyOfferFr: _text(json['riskyOffer_fr']).trim(),
+        templeName: _text(json['templeName']).trim(),
+        templeNameFr: _text(json['templeName_fr']).trim(),
+        blessingName: _text(json['blessingName']).trim(),
+        blessingNameFr: _text(json['blessingName_fr']).trim(),
+        templeLine: _text(json['templeLine']).trim(),
+        templeLineFr: _text(json['templeLine_fr']).trim(),
+        templeLineHunted: _text(json['templeLineHunted']).trim(),
+        templeLineHuntedFr: _text(json['templeLineHunted_fr']).trim(),
+        blessingGrants: _text(json['blessingGrants']).trim(),
+        blessingGrantsFr: _text(json['blessingGrants_fr']).trim(),
       );
 }
 

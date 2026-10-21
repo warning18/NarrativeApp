@@ -1,7 +1,7 @@
 # QA log
 
-**Last L3: 1.473.0** (2026-10-17, head `c19b9d0`, Android only). Next L3 due at
-1.483.0, before a release the user shares, after a big refactor, or on
+**Last L3: 1.489.0** (2026-10-21, head `a18f1701`, Android only; [report](l3-1.489.0.md)). Next L3 due at
+1.499.0, before a release the user shares, after a big refactor, or on
 request. See "QA levels" in `CLAUDE.md` for what each level covers.
 
 The baselines taken ahead of the L3s: [1.270.0](l3-prep-1.270.0.md), [1.285.0](l3-prep-1.285.0.md), [1.473.0](l3-prep-1.473.0.md).

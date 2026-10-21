@@ -16,6 +16,39 @@ Every indoor scene has its room (101 of 101).
 - **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
 - **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
 
+## [1.491.0+527]
+
+The roll buildings and the town sheets read alike in both languages.
+
+### Changed
+- **House names:** "Bone-Caster’s Hut" with a curly apostrophe, and the French names capitalised like the other houses (La Hutte du jeteur d’os, Le Cairn de garde, Le Puits aux étoiles, La Tente de pourparlers).
+- **Strings:** "Harbor" (not "Harbour") on the town sheet; the French "banish" lines no longer have to agree with the gender of the thing banished ("On écarte {name} pour {draws} tirages.", "À l’écart, {n} tirages"); a curly apostrophe in the Roll hint. Text only, keys unchanged.
+
+## [1.490.0+526]
+
+The town temple opens: mending and a clan's blessing.
+
+### Added
+- **Mending** (from chapter 2, once a day): the whole party back to full health, for 20 × the chapter in gold. Mana stays as it is and no day passes. The tavern stays the free rest, at the cost of a day.
+- **A blessing** (30 + 30 × the chapter in gold): for the next 3 fights, the ruling clan's host effects and a block of 1 for the whole party at the start; a temple no clan holds gives +3% max health instead. One at a time; the first blessing from a clan each chapter raises standing with it by 1.
+- Prices follow the standing with the temple's ruler, as clan shops do (×1.40 Hostile to ×0.75 Sworn); a clan that hunts you refuses you. No curse is lifted.
+- Each clan's temple name, blessing and lines (Narrative's texts, EN/FR).
+
+### Changed
+- **Claimant Morrow** has 121 max health instead of 112: the blessing could still be running when he is met after the chapter 7 hub.
+- **Forcing the way into a champion** leaves it at 80% health instead of 85% (the champions' curve sat on its floor).
+
+## [1.489.0+525]
+
+Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
+
+### Added
+- **The risky gift's d20 reveals itself.** After Accept, the die tumbles in a dialog, lands on the saved number, shows the sum with Luck and a verdict ("The gift is yours." / "A price to pay."); Next goes to the result card. With animations off the die is set down at once.
+- **The odds as a bar** on the risky card: gift in gold, price in red.
+
+### Changed
+- **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
+- English and French strings for the die dialog (`offer_risky_roll_*`).
 ## [1.488.0+524]
 
 The last indoor scenes get their rooms on Core's side.
