@@ -237,7 +237,7 @@ class EncounterModifiers {
   /// road event): the champion's health, and its health and damage.
   static const Map<String, ({double health, double difficulty})>
       nemesisWayEdges = {
-    'nemesis_force': (health: 0.85, difficulty: 1.0),
+    'nemesis_force': (health: 0.80, difficulty: 1.0),
     'nemesis_guile': (health: 1.0, difficulty: 0.9),
     'nemesis_mercy': (health: 0.9, difficulty: 1.0),
   };

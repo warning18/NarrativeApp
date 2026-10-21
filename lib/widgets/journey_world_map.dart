@@ -13,6 +13,7 @@ import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../providers/landmark_towns_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'chart_map_painter.dart';
@@ -646,6 +647,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
+    // The ruling clan's tint under each town (wave 15).
+    final townTints = {
+      for (final e in ref.watch(landmarkRulersProvider).entries)
+        e.key: (fill: Color(e.value.color), accent: Color(e.value.accent)),
+    };
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
@@ -679,6 +685,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
+            townTints: townTints,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,

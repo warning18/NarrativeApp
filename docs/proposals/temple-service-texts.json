@@ -1,0 +1,258 @@
+{
+  "clans": {
+    "dominion": {
+      "templeName": "The Lantern Hall's shrine",
+      "templeName_fr": "Le sanctuaire de la Salle de la Lanterne",
+      "blessingName": "The First Lantern's ward",
+      "blessingName_fr": "La garde de la Première Lanterne",
+      "templeLine": "One flame, one law. Light a candle, pay the offering, and the Flame will stand between you and what comes.",
+      "templeLine_fr": "Une flamme, une loi. Allumez un cierge, versez l’offrande, et la Flamme se tiendra entre vous et ce qui vient.",
+      "templeLineHunted": "The Flame does not warm what it has marked. The door is shut. Go and answer for yourself.",
+      "templeLineHunted_fr": "La Flamme ne réchauffe pas ce qu’elle a marqué. La porte est close. Allez répondre de vous-même.",
+      "blessingGrants": "For 3 fights: the Writ face, +1% party max health, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : la face du Mandat, +1 % de santé maximale du groupe, et un blocage de 1 au départ."
+    },
+    "vigil": {
+      "templeName": "The Wall of Watchers",
+      "templeName_fr": "Le Mur des Veilleurs",
+      "blessingName": "The open eye's watch",
+      "blessingName_fr": "La veille de l’œil ouvert",
+      "templeLine": "Sit with your back to the wall. Everyone does. We will keep your eyes open for three fights.",
+      "templeLine_fr": "Asseyez-vous, le dos au mur. Tout le monde le fait. Nous garderons vos yeux ouverts pendant trois combats.",
+      "templeLineHunted": "You looked away once too often. The Watch will not sit with you. Go.",
+      "templeLineHunted_fr": "Vous avez détourné le regard une fois de trop. La Veille ne s’assiéra pas avec vous. Allez-vous-en.",
+      "blessingGrants": "For 3 fights: +3% dodge, and you see the enemy's next intent, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +3 % d’esquive, et vous voyez la prochaine intention de l’ennemi, et un blocage de 1 au départ."
+    },
+    "compact": {
+      "templeName": "The Anvil Chapel",
+      "templeName_fr": "La chapelle de l’Enclume",
+      "blessingName": "The anvil's temper",
+      "blessingName_fr": "La trempe de l’enclume",
+      "templeLine": "Strike it once, strike it true. Pay the smith, and what we hammer into you will hold for three fights.",
+      "templeLine_fr": "Frappez une fois, frappez juste. Payez le forgeron, et ce que nous martelons en vous tiendra trois combats.",
+      "templeLineHunted": "The Row signs nothing with you now, and hammers nothing into you. The forge is cold to your hands.",
+      "templeLineHunted_fr": "La Rue ne signe plus rien avec vous, et ne martèle rien en vous. La forge est froide pour vos mains.",
+      "blessingGrants": "For 3 fights: +3% party max health, +6% strike damage, the Compact's edge, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +3 % de santé maximale du groupe, +6 % de dégâts de frappe, le tranchant du Pacte, et un blocage de 1 au départ."
+    },
+    "mire": {
+      "templeName": "The Reed Shrine",
+      "templeName_fr": "Le sanctuaire des roseaux",
+      "blessingName": "The fen's cup",
+      "blessingName_fr": "La coupe du marais",
+      "templeLine": "Drink. It is bitter, and it is good for you. The fen will keep you for three fights.",
+      "templeLine_fr": "Buvez. C’est amer, et c’est bon pour vous. Le marais vous gardera pendant trois combats.",
+      "templeLineHunted": "The water remembers your face, and it has not forgiven it. No cup for you.",
+      "templeLineHunted_fr": "L’eau se souvient de votre visage, et ne l’a pas pardonné. Pas de coupe pour vous.",
+      "blessingGrants": "For 3 fights: +1 potion healing, and guard heals, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +1 de soin des potions, et la garde soigne, et un blocage de 1 au départ."
+    },
+    "crows": {
+      "templeName": "The Counting Chapel",
+      "templeName_fr": "La chapelle des comptes",
+      "blessingName": "The Ledger's cover",
+      "blessingName_fr": "La couverture du Registre",
+      "templeLine": "Everything has a price, even luck. Pay in advance and the Ledger will cover you for three fights.",
+      "templeLine_fr": "Tout a un prix, même la chance. Payez d’avance et le Registre vous couvrira pendant trois combats.",
+      "templeLineHunted": "Your account is closed. We do not sell cover to those we are hunting. Mind the door on your way out.",
+      "templeLineHunted_fr": "Votre compte est clos. Nous ne vendons pas de couverture à ceux que nous chassons. Prenez garde à la porte en sortant.",
+      "blessingGrants": "For 3 fights: +2% dodge, +5% strike damage, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +5 % de dégâts de frappe, et un blocage de 1 au départ."
+    },
+    "penitents": {
+      "templeName": "The Wall of Names",
+      "templeName_fr": "Le Mur des Noms",
+      "blessingName": "The ember's penance",
+      "blessingName_fr": "La pénitence de la braise",
+      "templeLine": "Say a name, and the ember will carry it with you. Three fights; no more is asked.",
+      "templeLine_fr": "Dites un nom, et la braise le portera avec vous. Trois combats ; on n’en demande pas plus.",
+      "templeLineHunted": "A name is read on this wall that you cannot hear. We cannot bless you. Not yet.",
+      "templeLineHunted_fr": "On lit sur ce mur un nom que vous ne pouvez pas entendre. Nous ne pouvons pas vous bénir. Pas encore.",
+      "blessingGrants": "For 3 fights: +3% party max health, +6% spell damage, the ember face, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +3 % de santé maximale du groupe, +6 % de dégâts de sort, la face de braise, et un blocage de 1 au départ."
+    },
+    "choir": {
+      "templeName": "The Hymn Hall",
+      "templeName_fr": "La salle de l’hymne",
+      "blessingName": "The held note",
+      "blessingName_fr": "La note tenue",
+      "templeLine": "Stand in the note and let it hold you up. It will carry you through three fights.",
+      "templeLine_fr": "Tenez-vous dans la note et laissez-la vous porter. Elle vous mènera à travers trois combats.",
+      "templeLineHunted": "The choir falls silent as you come in. There is no note for you here.",
+      "templeLineHunted_fr": "Le chœur se tait à votre entrée. Il n’y a pas de note pour vous ici.",
+      "blessingGrants": "For 3 fights: guard heals, +2% party max health, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : la garde soigne, +2 % de santé maximale du groupe, et un blocage de 1 au départ."
+    },
+    "pit": {
+      "templeName": "The Pit's Altar",
+      "templeName_fr": "L’autel de la Fosse",
+      "blessingName": "The debt's edge",
+      "blessingName_fr": "Le tranchant de la dette",
+      "templeLine": "What is owed is owed. Take the edge now, and the Pit will collect over three fights.",
+      "templeLine_fr": "Ce qui est dû est dû. Prenez le tranchant maintenant, et la Fosse recouvrera sur trois combats.",
+      "templeLineHunted": "You owe too much already. The Pit will not lend you more.",
+      "templeLineHunted_fr": "Vous devez déjà trop. La Fosse ne vous prêtera plus rien.",
+      "blessingGrants": "For 3 fights: +3% lifesteal, +6% strike damage, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +3 % de vol de vie, +6 % de dégâts de frappe, et un blocage de 1 au départ."
+    },
+    "giants": {
+      "templeName": "The Great Hearth",
+      "templeName_fr": "Le grand âtre",
+      "blessingName": "The hearth's shoulder",
+      "blessingName_fr": "L’épaule de l’âtre",
+      "templeLine": "Sit up on the table, small one. The fire is six hundred years old; it will stand with you for three fights.",
+      "templeLine_fr": "Montez sur la table, petit. Le feu a six cents ans ; il se tiendra à vos côtés pendant trois combats.",
+      "templeLineHunted": "We do not break bread with those who burn our stone. The fire is not for you.",
+      "templeLineHunted_fr": "Nous ne rompons pas le pain avec ceux qui brûlent notre pierre. Le feu n’est pas pour vous.",
+      "blessingGrants": "For 3 fights: +5% party max health, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +5 % de santé maximale du groupe, et un blocage de 1 au départ."
+    },
+    "oni": {
+      "templeName": "The Bell Shrine",
+      "templeName_fr": "Le sanctuaire des cloches",
+      "blessingName": "The red bell",
+      "blessingName_fr": "La cloche rouge",
+      "templeLine": "Ring it once, and the red comes to you. Three fights, and then it goes home.",
+      "templeLine_fr": "Sonnez-la une fois, et le rouge vient à vous. Trois combats, puis il rentre chez lui.",
+      "templeLineHunted": "The bell will not ring for you. Do not touch the rope.",
+      "templeLineHunted_fr": "La cloche ne sonnera pas pour vous. Ne touchez pas à la corde.",
+      "blessingGrants": "For 3 fights: +8% strike damage, +2% lifesteal, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +8 % de dégâts de frappe, +2 % de vol de vie, et un blocage de 1 au départ."
+    },
+    "tidekin": {
+      "templeName": "The Tide Shrine",
+      "templeName_fr": "Le sanctuaire de la marée",
+      "blessingName": "The tide's turning",
+      "blessingName_fr": "Le retournement de la marée",
+      "templeLine": "We call, you answer. Put your feet in the water and the tide will turn for you, for three fights.",
+      "templeLine_fr": "Nous appelons, vous répondez. Mettez les pieds dans l’eau et la marée tournera pour vous, pendant trois combats.",
+      "templeLineHunted": "The water goes out as you come near. It has decided. So have we.",
+      "templeLineHunted_fr": "L’eau se retire quand vous approchez. Elle a décidé. Nous aussi.",
+      "blessingGrants": "For 3 fights: +2% dodge, +2 potion healing, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +2 de soin des potions, et un blocage de 1 au départ."
+    },
+    "kindly": {
+      "templeName": "The Long Table",
+      "templeName_fr": "La longue table",
+      "blessingName": "The treaty's grace",
+      "blessingName_fr": "La grâce du traité",
+      "templeLine": "How kind of you to sit. A small blessing, as a courtesy, and entirely to the minute: three fights.",
+      "templeLine_fr": "Comme c’est aimable de vous asseoir. Une petite bénédiction, par courtoisie, et à la minute près : trois combats.",
+      "templeLineHunted": "I am afraid the invitation does not extend to you. Do not take it personally. We do not.",
+      "templeLineHunted_fr": "Je crains que l’invitation ne vous soit pas destinée. Ne le prenez pas pour vous. Nous, non plus.",
+      "blessingGrants": "For 3 fights: +2% dodge, +2% party max health, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +2 % d’esquive, +2 % de santé maximale du groupe, et un blocage de 1 au départ."
+    },
+    "open_hand": {
+      "templeName": "The Drawn Door",
+      "templeName_fr": "La porte tracée",
+      "blessingName": "The hand's seal",
+      "blessingName_fr": "Le sceau de la main",
+      "templeLine": "What is drawn, holds. Put your hand to the seal, and it will hold you for three fights.",
+      "templeLine_fr": "Ce qui est tracé tient. Posez la main sur le sceau, et il vous tiendra trois combats.",
+      "templeLineHunted": "The seal will not take your hand. It remembers who drew against it.",
+      "templeLineHunted_fr": "Le sceau n’acceptera pas votre main. Il se souvient de qui a tracé contre lui.",
+      "blessingGrants": "For 3 fights: +5% party max health, +5% ally damage, and a block of 1 at the start.",
+      "blessingGrants_fr": "Pendant 3 combats : +5 % de santé maximale du groupe, +5 % de dégâts des alliés, et un blocage de 1 au départ."
+    }
+  },
+  "strings": {
+    "temple_mend": {
+      "en": "Mending",
+      "fr": "Guérison"
+    },
+    "temple_mend_hint": {
+      "en": "Everyone back to full health. Mana stays, and no time passes.",
+      "fr": "Tout le monde retrouve toute sa santé. Le mana reste, et le temps ne passe pas."
+    },
+    "temple_mend_done": {
+      "en": "The keeper's hands do their work. Everyone stands whole again.",
+      "fr": "Les mains du gardien font leur œuvre. Chacun se relève entier."
+    },
+    "temple_mend_used": {
+      "en": "Already mended today. A night's rest opens it again.",
+      "fr": "Déjà guéri aujourd’hui. Une nuit de repos la rouvre."
+    },
+    "temple_blessing": {
+      "en": "Blessing",
+      "fr": "Bénédiction"
+    },
+    "temple_blessing_hint": {
+      "en": "The clan's favour for your next 3 fights.",
+      "fr": "La faveur du clan pour vos 3 prochains combats."
+    },
+    "temple_blessing_replace": {
+      "en": "This replaces the blessing you carry.",
+      "fr": "Elle remplace la bénédiction que vous portez."
+    },
+    "temple_blessing_active": {
+      "en": "Blessing: {clan} ({n} fights)",
+      "fr": "Bénédiction : {clan} ({n} combats)"
+    },
+    "temple_blessing_standing": {
+      "en": "+1 standing, once a chapter",
+      "fr": "+1 de réputation, une fois par chapitre"
+    },
+    "temple_refused": {
+      "en": "The keeper will not take your coin.",
+      "fr": "Le gardien refuse votre argent."
+    },
+    "temple_neutral_name": {
+      "en": "The town shrine",
+      "fr": "Le sanctuaire de la ville"
+    },
+    "temple_neutral_blessing": {
+      "en": "The town's ward",
+      "fr": "La garde de la ville"
+    },
+    "temple_neutral_line": {
+      "en": "No clan keeps this shrine, and no clan will mind. A coin in the dish, a word to whoever is listening. Three fights.",
+      "fr": "Aucun clan ne tient ce sanctuaire, et aucun ne s’en offusquera. Une pièce dans le plat, un mot à qui veut bien écouter. Trois combats."
+    },
+    "temple_mend_name": {
+      "en": "Mending",
+      "fr": "Guérison"
+    },
+    "temple_mend_desc": {
+      "en": "Heals the whole party to full health, for gold. No day passes.",
+      "fr": "Rend toute sa santé au groupe entier, contre de l’or. Aucun jour ne passe."
+    },
+    "temple_blessing_name": {
+      "en": "Blessing",
+      "fr": "Bénédiction"
+    },
+    "temple_blessing_desc": {
+      "en": "Lasts 3 fights: the ruling clan's favour, and a block of 1 at the start.",
+      "fr": "Dure 3 combats : la faveur du clan qui gouverne, et un blocage de 1 au départ."
+    },
+    "temple_price": {
+      "en": "{gold} gold",
+      "fr": "{gold} or"
+    },
+    "temple_blessed_already": {
+      "en": "You already carry a blessing. A new one replaces it.",
+      "fr": "Vous portez déjà une bénédiction. Une nouvelle la remplace."
+    },
+    "temple_mended_today": {
+      "en": "Already mended today. A night's rest opens it again.",
+      "fr": "Déjà guéri aujourd’hui. Une nuit de repos la rouvre."
+    },
+    "temple_refused_hunted": {
+      "en": "The keeper will not take your coin: the clan that rules here hunts you.",
+      "fr": "Le gardien refuse votre argent : le clan qui gouverne ici vous traque."
+    },
+    "temple_mend_result": {
+      "en": "Everyone stands whole again, and no time has passed.",
+      "fr": "Chacun se relève entier, et le temps n’a pas passé."
+    },
+    "temple_blessing_result": {
+      "en": "The blessing settles on you: 3 fights.",
+      "fr": "La bénédiction vous enveloppe : 3 combats."
+    },
+    "temple_neutral_blessing_line": {
+      "en": "No clan rules here, so the blessing is small and plain: +3% party max health, and a block of 1 at the start, for 3 fights.",
+      "fr": "Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3 % de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats."
+    }
+  }
+}

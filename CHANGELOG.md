@@ -14,6 +14,62 @@ Wave 14 remainder: the player can take the camera during a move.
 
 ### Changed
 - **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+## [1.495.0+531]
+
+Wave 15 UX, part 2: towns wear their ruler's colour.
+
+### Added
+- **Town tints.** On the world chart each town gets a soft halo in its ruling clan's colour, with the clan's accent as a thin ring; on the city plan the districts take a faint wash of the ruler's colour and a stronger outline. Neutral and mixed towns stay plain. Colours come from Core's `townRulersProvider`.
+- **"Held by {clan}"** row on a town's Journey card (or "Held by no one" / "Held by several").
+- English and French strings `town_ruled_by`, `town_ruled_none`, `town_ruled_mixed`.
+- The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
+
+### Fixed
+- **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
+- **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+## [1.494.0+530]
+
+Companions react to the wave 15 moments.
+
+### Added
+- **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
+
+## [1.493.0+529]
+
+The party speaks up at wave 15's moments.
+
+### Added
+- **Eleven companion remark kinds:** building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn or the Star Well; taking a risky gift, and the die's verdict (the gift, health, gold or the curse); mending and a blessing at a temple. One companion in the party with lines for the moment says one, the one who spoke least recently first, in the same bubble as a shared drink. The lines themselves are Narrative's, in the next release.
+
+## [1.492.0+528]
+
+Every indoor scene has its room (101 of 101).
+
+### Changed
+- **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
+
+## [1.491.0+527]
+
+The roll buildings and the town sheets read alike in both languages.
+
+### Changed
+- **House names:** "Bone-Caster’s Hut" with a curly apostrophe, and the French names capitalised like the other houses (La Hutte du jeteur d’os, Le Cairn de garde, Le Puits aux étoiles, La Tente de pourparlers).
+- **Strings:** "Harbor" (not "Harbour") on the town sheet; the French "banish" lines no longer have to agree with the gender of the thing banished ("On écarte {name} pour {draws} tirages.", "À l’écart, {n} tirages"); a curly apostrophe in the Roll hint. Text only, keys unchanged.
+
+## [1.490.0+526]
+
+The town temple opens: mending and a clan's blessing.
+
+### Added
+- **Mending** (from chapter 2, once a day): the whole party back to full health, for 20 × the chapter in gold. Mana stays as it is and no day passes. The tavern stays the free rest, at the cost of a day.
+- **A blessing** (30 + 30 × the chapter in gold): for the next 3 fights, the ruling clan's host effects and a block of 1 for the whole party at the start; a temple no clan holds gives +3% max health instead. One at a time; the first blessing from a clan each chapter raises standing with it by 1.
+- Prices follow the standing with the temple's ruler, as clan shops do (×1.40 Hostile to ×0.75 Sworn); a clan that hunts you refuses you. No curse is lifted.
+- Each clan's temple name, blessing and lines (Narrative's texts, EN/FR).
+
+### Changed
+- **Claimant Morrow** has 121 max health instead of 112: the blessing could still be running when he is met after the chapter 7 hub.
+- **Forcing the way into a champion** leaves it at 80% health instead of 85% (the champions' curve sat on its floor).
 
 ## [1.489.0+525]
 

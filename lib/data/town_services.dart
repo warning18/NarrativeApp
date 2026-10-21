@@ -22,6 +22,10 @@ enum TownServiceAction {
 
   /// A port of call: PortScreen(portId: id), ports.json's row.
   port,
+
+  /// The temple's Mending and blessing (temple.dart, wave 15): id the
+  /// place whose ruler keeps it, the pin's district (else the town).
+  temple,
 }
 
 /// One thing a pin opens: the [action], its [id] (the shop or port id, or
@@ -41,8 +45,8 @@ const Set<String> forgeShopIds = {
 };
 
 /// One of a town's services: its pin on the plan and what it opens, in
-/// order. An empty [opens] is a service with no screen yet (the temple; a
-/// market or forge with no shop in this town; a harbour with no port).
+/// order. An empty [opens] is a service with no screen yet (a market or
+/// forge with no shop in this town; a harbour with no port).
 class TownService {
   const TownService(this.pin, this.opens);
   final CityServicePin pin;
@@ -113,6 +117,13 @@ List<TownService> townServicesOf(
                 (
                   action: TownServiceAction.rest,
                   id: 'rest_night',
+                  unlocked: true
+                ),
+              ],
+            'temple' => [
+                (
+                  action: TownServiceAction.temple,
+                  id: pin.district.isNotEmpty ? pin.district : record.cityId,
                   unlocked: true
                 ),
               ],

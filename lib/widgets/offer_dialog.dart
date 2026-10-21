@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../combat/specialisations.dart' show specId;
 import '../data/camp_rolls.dart' show suitorBanishable;
+import '../data/companion_remarks.dart';
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
@@ -15,6 +16,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart';
 import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/territory_provider.dart';
@@ -27,6 +29,7 @@ import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
 import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
+import 'companion_remark_bubble.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
 import 'reward_card.dart';
@@ -302,6 +305,9 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     // A risky card: what the die (rolled with the draw) says, read before
     // it is applied.
     final risk = notifier.riskyResultOf(suitor, tables);
+    // A companion's word on taking the risk, before the die (Core's
+    // speakUpOnMoment), and on what the die did, after the card.
+    if (risk != null) await _speakUp(RemarkKind.riskyTaken);
     // ... and the die rolled in front of the player before it is applied.
     if (risk != null && mounted) {
       await showRiskyRoll(context,
@@ -360,6 +366,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
               ),
       );
     }
+    if (risk != null) await _speakUp(riskyOutcomeRemarkKind(risk.outcome));
     final next = await notifier.ensureOffer(tables,
         placeHolder: ref.read(holderHereProvider));
     if (!mounted) return;
@@ -371,6 +378,13 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       _busy = false;
       _selected = null;
     });
+  }
+
+  /// A companion's word on [kind] (Core's speakUpOnMoment), if any.
+  Future<void> _speakUp(RemarkKind kind) async {
+    if (!mounted) return;
+    final remark = speakUpOnMoment(ref, kind);
+    if (remark != null) await showCompanionRemarks(context, ref, [remark]);
   }
 
   /// A roll power (camp_rolls.dart) used on the offer on the table; the
@@ -393,6 +407,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
+    watchMomentRemarks(ref);
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
     final offer = session.clanOffer;
@@ -650,12 +665,18 @@ class _OfferBanner extends ConsumerWidget {
                     child: Center(child: flag),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  // Scales down a little rather than cutting "The Wayfarer"
+                  // with an ellipsis on a 320 px phone.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      suitor.isWayfarer
+                          ? who
+                          : (faction?.shortFor(lang) ?? who),
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                    ),
                   ),
                   const SizedBox(height: 3),
                   _Tag(
