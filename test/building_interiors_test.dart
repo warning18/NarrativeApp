@@ -2,15 +2,13 @@
 // a building's own rooms (RoomPlan.ofBuilding) only when the scene's
 // `location` is a geography.json building. Wave 14 audited the story for
 // scenes the text puts indoors (a cell, a chapel, a forge, a hall, an
-// archive, a cellar, a shop): 99 scenes here, of which 7 stood in a building
-// before (the Blind Beggar) and the rest showed streets. 92 stand in one now
-// (the 7 crownings in the throne room and 9 in the Black Reliquary's
-// chapels were seated last); the 7 in [_waiting] have their building but
-// wait. 2 of them (`6010_lysa_dead`, `6010_record`) are ready on Core's
-// side since v1.482 (see [_ready]): their way stands in their room's
-// district on the city plan; only the story's `location` is left. 3 are seated
-// by Narrative in another district than their room's, and 2 would make a
-// roll's other branch a move with no note
+// archive, a cellar, a shop): 101 scenes here, of which 7 stood in a
+// building before (the Blind Beggar) and the rest showed streets. 98 stand
+// in one now; the 3 in [_waiting] have their building but wait for their
+// `location`, and Core's side of all 3 is done ([_ready]): the long room's
+// way stands in the Hall Under the Hill (v1.488), and the last two scenes
+// with no building have one (the informant's warehouse at Saltmouth's
+// Landward Gate, the lamp-room on Wrack's End's Lamp Path)
 // (docs/proposals/journey-world-data.md).
 import 'dart:convert';
 import 'dart:io';
@@ -118,25 +116,26 @@ const _interiorScenes = [
   '6010_chart_bought',
   '6010_spawn',
   '6010_returned_roll',
+  '6010_lysa_dead',
+  '6010_record',
+  '3100_house_anvil_deaf_failed',
+  '5200',
+  '6010_thread',
+  '6010_heist_night',
 ];
 
 /// Indoor scenes left at their district for now, with the building each
-/// goes into: Narrative seats three elsewhere (district_seats.json); two wait
-/// for their way on the Black Reliquary's plan to move to their building's
-/// district; the last two for a roll's note.
+/// goes into: Core's side is done for all three ([_ready]); Narrative sets
+/// their `location` (the two on a roll with a fail note).
 const _waiting = {
-  '6010_record': 'reliquary_muniment_room',
-  '6010_lysa_dead': 'reliquary_chair_chapel',
   '5200_house_returned': 'kindly_hill_long_room',
-  '6010_thread': 'reliquary_chartkeeper_chapel',
-  '6010_heist_night': 'reliquary_chartkeeper_chapel',
-  '3100_house_anvil_deaf_failed': 'emberwick_cold_forge',
-  '5200': 'kindly_hill_long_room',
+  '2015_informant_trap': 'saltmouth_landward_warehouse',
+  '5100_clan_dominion_1_lit': 'wracks_end_lamp_room',
 };
 
 /// The scenes Core made ready: their building lies inside their landmark's
-/// home and their way stands in the building's district. Sixteen are seated
-/// now; `6010_thread` and `6010_heist_night` still wait.
+/// home and their way stands in the building's district. All but the three
+/// in [_waiting] are seated now.
 const _ready = {
   '7590_dominion',
   '7590_vigil',
@@ -158,6 +157,9 @@ const _ready = {
   '6010_returned_roll',
   '6010_lysa_dead',
   '6010_record',
+  '5200_house_returned',
+  '2015_informant_trap',
+  '5100_clan_dominion_1_lit',
 };
 
 void main() {
@@ -187,7 +189,7 @@ void main() {
       expect(geo.locationOf(value)?.id, geo.locationOf(locationOf(key))?.id,
           reason: key);
     }
-    expect(_interiorScenes.length + _waiting.length, 99);
+    expect(_interiorScenes.length + _waiting.length, 101);
   });
 
   test('the ready waiting scenes can step into their building', () {

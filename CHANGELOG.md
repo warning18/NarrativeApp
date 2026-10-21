@@ -8,6 +8,62 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.489.0+525]
+
+Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
+
+### Added
+- **The risky gift's d20 reveals itself.** After Accept, the die tumbles in a dialog, lands on the saved number, shows the sum with Luck and a verdict ("The gift is yours." / "A price to pay."); Next goes to the result card. With animations off the die is set down at once.
+- **The odds as a bar** on the risky card: gift in gold, price in red.
+
+### Changed
+- **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
+- English and French strings for the die dialog (`offer_risky_roll_*`).
+## [1.488.0+524]
+
+The last indoor scenes get their rooms on Core's side.
+
+### Added
+- **Two buildings:** the informant's warehouse behind Saltmouth's landward gate, and the lamp-room of the cliff light at Wrack's End (Narrative's names and blurbs, EN/FR).
+
+### Fixed
+- **Kindly Hill:** the way of `5200_house_returned` stands in the hall district, where its long room is.
+
+Narrative then seats `5200_house_returned`, `2015_informant_trap` and `5100_clan_dominion_1_lit` in their rooms.
+
+## [1.487.0+523]
+
+Four more indoor scenes have their rooms (98 of the 99).
+
+### Changed
+- **Seated in their buildings:** `6010_thread` and `6010_heist_night` (the chart-keeper's chapel), `3100_house_anvil_deaf_failed` (the cold forge) and `5200` (the long room under the hill), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that move the party: the tenth sign gone wrong at the cold forge, and the knife slipping on the bark-bleeder's tree.
+
+## [1.486.0+522]
+
+The story text keeps its room on a small phone.
+
+### Changed
+- **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
+## [1.485.0+521]
+
+Two bosses brought back to their curve.
+
+### Changed
+- **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
+- **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
+
+## [1.484.0+520]
+
+The tutorial strings polished, English and French.
+
+### Changed
+- **Typography:** curly apostrophes throughout the `tut_*` strings (English and French were mixed) and no-break spaces before `:` `;` `!` `?` in the French.
+- **The Rusty Eel** is masculine throughout the French tours (it was "la" in three places); "Harbor" is capitalised like the Harbor tour's title.
+- **A gendered participle** about the player is gone ("blessé" became "à bout de forces"), and the shop line reads "Spend your gold on what the merchant sells."
+- Text only: no key changes.
+- **Two more indoor scenes seated** (`6010_lysa_dead` in the chair chapel, `6010_record` in the muniment room), now that Core's v1.482 moved their ways on the city plan: 94 of the 99 indoor scenes stand in a building.
+
 ## [1.483.0+519]
 
 Who rules each town, for the maps to tint it in its clan's colours. Data and a provider only; UX draws it (contract: `docs/proposals/town-ruler-colours.md`).
