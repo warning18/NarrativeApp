@@ -184,6 +184,12 @@ void main() {
           await check('${label}_confirm');
 
           await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+          // The die tumbles first (risky_roll_dialog.dart), then goes on.
+          await pumpFor(1800);
+          expect(find.byKey(const Key('risky_roll_die')), findsOneWidget,
+              reason: '$label: the die');
+          await check('${label}_roll');
+          await tester.tap(find.byKey(const Key('risky_roll_continue')));
           await pumpFor(1500);
           await check('${label}_reward');
 
