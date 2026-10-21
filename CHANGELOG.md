@@ -8,6 +8,140 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.503.0+539]
+
+Wave 16 UX, item 4: a town changing hands is seen.
+
+### Added
+- **Towns that change hands.** The world chart remembers, per save, who ruled each town when it was last looked at. When a town's ruler is another by the next look, its tint fades from the old ruler's colour to the new one's over a second and a toast says so ("The Compact now holds Candlehold.", "No clan holds White Wells now.", or "3 towns changed hands."). A first look, an old save and a town never seen before change nothing; with animations off the tint just changes.
+- English and French strings `town_handover_to`, `town_handover_none`, `town_handover_many`.
+
+### Changed
+- The save gains `seenTownRulers` (town id to clan id); old saves load with none.
+
+## [1.502.0+538]
+
+Wave 16 UX, item 1: one set of parts for the small sheets.
+
+### Changed
+- **Shared sheet parts.** The camp's build sheet, the town's service sheet and the temple rows now share a header (icon, title, one italic line), a row (icon, title with an optional small label, price, lines), a price chip and a button pair (`lib/widgets/sheet_kit.dart`), so a wrap bug on a 320 px phone is fixed once.
+- **Temple rows.** The price is a gold chip on the line under the name (it was a "75 gold" text line); a row that cannot be bought says why, as before.
+- **Camp build sheet.** A house you can build names its cost in the sheet (the same chips as its card) and the main button carries the price ("Build · 280 G").
+## [1.501.0+537]
+
+Chapter 2 gets a little easier, closer to the difficulty curve.
+
+### Changed
+- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98). Bosses keep their own floor. Encounters won within three tries in chapter 2, averaged over seeds 7, 11 and 23: 86.0 → 87.2%. Every boss stays inside its band. Chapter 7 is unchanged: lightening its ordinary fights moved nothing, because its claimants decide it and sit on their target.
+
+## [1.500.0+536]
+
+The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
+
+### Changed
+- **Simulator, seat crisis:** when the patron clan's seat is hunted, the simulated party defends it if healthy and wins the fight, pays if it has the gold, else refuses — through the same scene and rules as the app. Runs count crises held, lost, paid and refused.
+- **Simulator, gifts:** the party takes risky gifts from its patron and the patron's allies; another clan's card only when it fills an empty die face.
+- **Clan study (50 runs) before → after:** Vigil end power 31.6 → 46.0, Crows 65.3 → 45.0, Dominion 78.7 → 73.3; patron falls 3 → 3. Bosses won 48.4% on average (52.9% before), every boss inside its band. Full table in `docs/simulation/clan-power-50-v1.500.md`.
+
+## [1.499.0+535]
+
+The cleric catches up with the other professions.
+
+### Changed
+- **The cleric** deals 5 base damage instead of 3. Encounters won within three tries: 65.0 → 70.8 (seed 7), 63.4 → 69.0 (seed 11), 62.2 → 68.6 (seed 23); the other professions are unchanged, bosses are won 52.9% on average (51.4% before), every boss inside its band.
+
+## [1.498.0+534]
+
+Two small town and offer-hall touches from the read-throughs.
+
+### Changed
+- **Temple sheet.** A clan-ruled temple shows its keeper's line in italics under the title, and the blessing row is titled with the clan's blessing name ("The First Lantern's ward") with "Blessing" as the small label above it. The neutral shrine keeps the plain title. No new strings: both texts were already in the clans' data.
+- **Offer hall.** Between offers the hall kept an empty dark box with a bare spinner; it now keeps the last card, dimmed and not tappable, with the spinner over it. The first load, with no earlier card, still shows the bare spinner.
+
+## [1.497.0+533]
+
+The professions closer together, the bosses back to a fair fight.
+
+### Changed
+- **The mage's calling path (Arcanist)** gives INT 4 and CON 1 instead of INT 2, WIS 2 and PER 1; the mage starts with 2 more max health.
+- **The Skirmisher path** (rogue and ranger) gives DEX 3, PER 1 and CON 1 instead of DEX 2, PER 1, LUCK 1 and CON 1; the rogue starts with 5 more max health.
+- **Bosses** have about 5% more health (the shared boss health scale 1.15 → 1.21), and Claimant Vane 79 instead of 74.
+- Encounters won within three tries, seed 7: warrior 70.7 → 69.9, mage 60.1 → 65.8, rogue 59.9 → 66.1, cleric 66.4 → 65.0, ranger 69.0 → 68.7. Bosses are won 51.4% on average (51.1% before).
+
+## [1.496.0+532]
+
+Wave 14 remainder: the player can take the camera during a move.
+
+### Changed
+- **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+## [1.495.0+531]
+
+Wave 15 UX, part 2: towns wear their ruler's colour.
+
+### Added
+- **Town tints.** On the world chart each town gets a soft halo in its ruling clan's colour, with the clan's accent as a thin ring; on the city plan the districts take a faint wash of the ruler's colour and a stronger outline. Neutral and mixed towns stay plain. Colours come from Core's `townRulersProvider`.
+- **"Held by {clan}"** row on a town's Journey card (or "Held by no one" / "Held by several").
+- English and French strings `town_ruled_by`, `town_ruled_none`, `town_ruled_mixed`.
+- The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
+
+### Fixed
+- **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
+- **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+## [1.494.0+530]
+
+Companions react to the wave 15 moments.
+
+### Added
+- **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
+
+## [1.493.0+529]
+
+The party speaks up at wave 15's moments.
+
+### Added
+- **Eleven companion remark kinds:** building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn or the Star Well; taking a risky gift, and the die's verdict (the gift, health, gold or the curse); mending and a blessing at a temple. One companion in the party with lines for the moment says one, the one who spoke least recently first, in the same bubble as a shared drink. The lines themselves are Narrative's, in the next release.
+
+## [1.492.0+528]
+
+Every indoor scene has its room (101 of 101).
+
+### Changed
+- **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
+
+## [1.491.0+527]
+
+The roll buildings and the town sheets read alike in both languages.
+
+### Changed
+- **House names:** "Bone-Caster’s Hut" with a curly apostrophe, and the French names capitalised like the other houses (La Hutte du jeteur d’os, Le Cairn de garde, Le Puits aux étoiles, La Tente de pourparlers).
+- **Strings:** "Harbor" (not "Harbour") on the town sheet; the French "banish" lines no longer have to agree with the gender of the thing banished ("On écarte {name} pour {draws} tirages.", "À l’écart, {n} tirages"); a curly apostrophe in the Roll hint. Text only, keys unchanged.
+
+## [1.490.0+526]
+
+The town temple opens: mending and a clan's blessing.
+
+### Added
+- **Mending** (from chapter 2, once a day): the whole party back to full health, for 20 × the chapter in gold. Mana stays as it is and no day passes. The tavern stays the free rest, at the cost of a day.
+- **A blessing** (30 + 30 × the chapter in gold): for the next 3 fights, the ruling clan's host effects and a block of 1 for the whole party at the start; a temple no clan holds gives +3% max health instead. One at a time; the first blessing from a clan each chapter raises standing with it by 1.
+- Prices follow the standing with the temple's ruler, as clan shops do (×1.40 Hostile to ×0.75 Sworn); a clan that hunts you refuses you. No curse is lifted.
+- Each clan's temple name, blessing and lines (Narrative's texts, EN/FR).
+
+### Changed
+- **Claimant Morrow** has 121 max health instead of 112: the blessing could still be running when he is met after the chapter 7 hub.
+- **Forcing the way into a champion** leaves it at 80% health instead of 85% (the champions' curve sat on its floor).
+
+## [1.489.0+525]
+
+Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
+
+### Added
+- **The risky gift's d20 reveals itself.** After Accept, the die tumbles in a dialog, lands on the saved number, shows the sum with Luck and a verdict ("The gift is yours." / "A price to pay."); Next goes to the result card. With animations off the die is set down at once.
+- **The odds as a bar** on the risky card: gift in gold, price in red.
+
+### Changed
+- **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
+- English and French strings for the die dialog (`offer_risky_roll_*`).
 ## [1.488.0+524]
 
 The last indoor scenes get their rooms on Core's side.

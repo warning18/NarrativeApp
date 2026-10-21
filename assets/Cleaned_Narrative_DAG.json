@@ -6487,7 +6487,9 @@
         "next_id": "2015_informant_exposed",
         "checkAbility": "wisdom",
         "checkDC": 12,
-        "failNextId": "2015_informant_trap"
+        "failNextId": "2015_informant_trap",
+        "failNote": "You read him wrong: he leads you straight to the warehouse where the warden is waiting.",
+        "failNote_fr": "Vous l’avez mal jugé : il vous mène droit à l’entrepôt où le gardien vous attend."
       }
     ],
     "facing": "wharf_informant",
@@ -6503,7 +6505,7 @@
       "mood": "tense",
       "speaker": "Narrator"
     },
-    "location": "saltmouth_landward_gate",
+    "location": "saltmouth_landward_warehouse",
     "choices": [
       {
         "text": "Drift back along the wharf",
@@ -12894,6 +12896,8 @@
         "checkAbility": "constitution",
         "checkDC": 13,
         "failNextId": "5100_clan_dominion_1_out",
+        "failNote": "The wind takes the flame halfway up, and you come back down in the dark, still out on the rocks.",
+        "failNote_fr": "Le vent prend la flamme à mi-chemin, et vous redescendez dans le noir, toujours sur les rochers.",
         "challengeSuccessesNeeded": 3,
         "challengeMaxFailures": 2,
         "approvalMods": {
@@ -12945,7 +12949,7 @@
       "mood": "hopeful",
       "speaker": "Narrator"
     },
-    "location": "wracks_end",
+    "location": "wracks_end_lamp_room",
     "choices": [
       {
         "text": "Climb down to the village",
@@ -13522,7 +13526,7 @@
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "location": "kindly_hill",
+    "location": "kindly_hill_long_room",
     "choices": [
       {
         "text": "Pay the hill its small drawing",

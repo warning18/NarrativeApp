@@ -53,6 +53,8 @@ import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_growth.dart';
 import '../data/sim_quests.dart';
+import '../data/temple.dart';
+import '../data/town_rulers.dart' show townRulers;
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
@@ -243,7 +245,9 @@ class _SimResult {
     this.arrivals = const {},
     this.housesBuilt = const {},
     this.riskyOutcomes = const {},
+    this.crises = const {},
     this.campRolls = const {},
+    this.temple = (blessings: 0, gold: 0),
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
@@ -293,9 +297,16 @@ class _SimResult {
   /// each outcome (`gift`, `health`, `gold`, `curse`).
   final Map<String, int> riskyOutcomes;
 
+  /// The seat crises played (SimGrowth.crisisOutcomes): `held`, `lost`,
+  /// `paid`, `refused`.
+  final Map<String, int> crises;
+
   /// The camp's roll houses (sim_rolls.dart): the `rerolls`, `bans` and
   /// `raises` the walk used.
   final Map<String, int> campRolls;
+
+  /// The temple's blessings bought and the gold they cost (temple.dart).
+  final ({int blessings, int gold}) temple;
 
   /// The character's level and gold when the run first rested at each
   /// chapter's hub (chapter -> (level, gold)), for the balance reports.
@@ -611,6 +622,14 @@ _SimResult _simulate(
   var materials = <String>[];
   final housesBuilt = <String, int>{};
   var houseGoldSpent = 0;
+  // The temple's blessing (temple.dart): bought at a chapter's hub, worn
+  // for the next fights (every attempt one of them); the count and the
+  // gold go in the report.
+  var blessingFights = 0;
+  var blessingClan = '';
+  var blessingsBought = 0;
+  var blessingGold = 0;
+  final templeStandingChapters = <String, int>{};
   final steps = <_SimStep>[];
   // How the character grows (see sim_growth.dart): the clans' offers, or
   // the old skill points, perks and sign picks.
@@ -919,7 +938,9 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       riskyOutcomes: Map.unmodifiable(growth?.riskyOutcomes ?? const {}),
+      crises: Map.unmodifiable(growth?.crisisOutcomes ?? const {}),
       campRolls: Map.unmodifiable(character?.rolls?.used ?? const {}),
+      temple: (blessings: blessingsBought, gold: blessingGold),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
@@ -1004,7 +1025,68 @@ _SimResult _simulate(
   /// What the character fights with now; in one of the last battles
   /// ([host], v1.196) the Host fights beside them.
   SignEffects signsNow({bool host = false}) =>
-      growth?.effects(alignment, host: host) ?? SignEffects.none;
+      growth?.effects(alignment,
+          host: host,
+          blessing: growth.tables.clans.factions.isEmpty
+              ? const []
+              : activeBlessingEffects(
+                  blessingFights: blessingFights,
+                  blessingClan: blessingClan,
+                  data: growth.tables.clans)) ??
+      SignEffects.none;
+
+  /// A chapter's hub [node] in [chapter]: the walk buys a blessing at its
+  /// town's temple when the purse holds [simBlessingGoldFactor] times the
+  /// price (docs/proposals/temple-service.md section 6); Mending isn't
+  /// simulated (the walk rests at each hub already).
+  void blessAtHub(StoryNode node, int chapter) {
+    final g = growth;
+    final geography = sim?.geography;
+    if (g == null || geography == null || g.tables.clans.factions.isEmpty) {
+      return;
+    }
+    final data = g.tables.clans;
+    // The camp is a town by its city plan, which the walk doesn't load:
+    // every camp counts as one here.
+    final clanId = templeClanOfPlace(
+        geography.placeOfNode(node)?.id,
+        townRulers(geography, g.politics, data.factions, planIds: [
+          for (final p in geography.places.values)
+            if (p.level == GeoLevel.location && p.kind == 'camp') p.id,
+        ]),
+        geography);
+    if (clanId == null) return;
+    final offer = templeOfferFor(
+        clanId: clanId,
+        data: data,
+        politics: g.politics,
+        chapter: chapter,
+        day: 0,
+        gold: gold,
+        alignment: alignment,
+        blessingFights: blessingFights,
+        standingChapters: templeStandingChapters);
+    if (!offer.canBless || gold < simBlessingGoldFactor * offer.blessingPrice) {
+      return;
+    }
+    gold -= offer.blessingPrice;
+    blessingGold += offer.blessingPrice;
+    blessingsBought++;
+    blessingFights = templeBlessingFights;
+    blessingClan = offer.clanId;
+    if (offer.blessingStanding) {
+      templeStandingChapters[offer.clanId] = chapter;
+      g.politics = applyStandingChange(
+              g.politics, offer.clanId, templeStandingGain, 'temple',
+              data: data, chapter: chapter)
+          .state;
+    }
+    if (transcribe) {
+      note('   temple: blessed by ${clanId.isEmpty ? 'the town' : clanId} '
+          'for ${offer.blessingPrice} gold'
+          '${offer.blessingStanding ? ' (+1 standing)' : ''}');
+    }
+  }
 
   /// A story choice's or a scene's politics (v1.196: the claim, the
   /// pledges, the Throne and the muster with the rest), once under [key],
@@ -1169,8 +1251,9 @@ _SimResult _simulate(
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
       );
-      // Every pact runs one fight on, won or lost.
+      // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
+      if (blessingFights > 0 && --blessingFights == 0) blessingClan = '';
       for (final entry in outcome.spellsCast.entries) {
         casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
       }
@@ -1242,6 +1325,40 @@ _SimResult _simulate(
     final r = fightEnemies(ids, chapter, records: records);
     return (won: r.won, attempts: r.attempts, casts: r.casts);
   };
+
+  /// Your main clan's seat crisis, when the chapter's turn left one
+  /// (clan_crisis.dart): played at once, the simulated player's way
+  /// (SimGrowth.playCrisis), the defence fought once as the app's scene
+  /// does. Its scene draws on its own dice; the fight is not counted among
+  /// the encounters (the roads' hunters are not either).
+  void playCrisis(int chapter) {
+    final g = growth;
+    final geography = sim?.geography;
+    if (g == null || geography == null || g.politics.crisis.isEmpty) return;
+    final crisis = g.politics.crisis;
+    final r = g.playCrisis(
+      geography: geography,
+      enemies: enemies,
+      chapter: chapter,
+      gold: gold,
+      flags: flags,
+      random: Random(detourSalt * 31 + chapter * 7919 + steps.length),
+      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+    );
+    if (r.how.isEmpty) return;
+    gold = r.gold;
+    flags
+      ..clear()
+      ..addAll(r.flags);
+    steps.add(_SimStep(
+      nodeId: 'road:clan_crisis',
+      chapter: chapter,
+      mood: null,
+      uiTheme: null,
+      description: 'Seat crisis: ${crisis['attacker']} at '
+          '${crisis['place']} (${crisis['clan']}), ${r.how}',
+    ));
+  }
 
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
   /// when it is marked so (v1.196).
@@ -1620,6 +1737,8 @@ _SimResult _simulate(
         growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
+        playCrisis(reached);
+        blessAtHub(node, reached);
         if (transcribe) {
           final standings = growth?.politics.standings ?? const {};
           note('== Chapter $reached: level ${character.level}, '
@@ -2146,7 +2265,9 @@ typedef SimRunSummary = ({
   Map<int, ({int level, int gold})> arrivals,
   Map<String, int> housesBuilt,
   Map<String, int> riskyOutcomes,
+  Map<String, int> crises,
   Map<String, int> campRolls,
+  ({int blessings, int gold}) temple,
   Set<String> visitedNodes,
   List<String> choicesTaken,
   Set<String> questIds,
@@ -2279,7 +2400,9 @@ List<SimRunSummary> simulatePlaythroughs(
       arrivals: result.arrivals,
       housesBuilt: result.housesBuilt,
       riskyOutcomes: result.riskyOutcomes,
+      crises: result.crises,
       campRolls: result.campRolls,
+      temple: result.temple,
       visitedNodes: {
         for (final step in result.steps)
           if (!step.nodeId.contains(':')) step.nodeId,

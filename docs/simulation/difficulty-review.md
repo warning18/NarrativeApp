@@ -160,3 +160,111 @@ Every boss stays inside its existing band (target ±12), so no target was re-cen
 
 - `chapter_one_fights_test` passes on its original bounds.
 - `clash_balance_test` keeps 0.10 for chapters 2–8. Chapter 1 gets 0.25: the clash rules (the game's) came out 11 to 23 points kinder per try there across the settings and data measured. The likely cause: their goals (rout, subdue, hold) end a fight before the foe's health is gone, so the heavier health floor bites less. This is worth a look if chapter 1 feels too soft.
+
+## The professions with the stat picks in (after v1.490)
+
+QA's L3 on v1.489 found the spread widened once the simulator took its stat picks (warrior 73, mage 60, rogue 62% of encounters won). The warrior's four calling paths all lead with Strength and Constitution; the mage's one path led with Intelligence only 2 points in 5, and the rogue's Skirmisher with Dexterity 2 in 5. Lifting the mage and the rogue lifted the bosses too (mean 55–57%), so a second pass brought the bosses back to about 51%.
+
+**Pass 1, the professions:**
+- `arcanist`: +2 Intelligence, +2 Wisdom, +1 Perception → **+4 Intelligence, +1 Constitution**.
+- `skirmisher`: +2 Dexterity, +1 Perception, +1 Luck, +1 Constitution → **+3 Dexterity, +1 Perception, +1 Constitution**.
+- Rogue `bonusMaxHealth` −2 → +1 (pass 2: **+3**).
+- Mage `bonusMaxHealth` −2 (pass 2: **0**, once the bosses had room for it).
+
+**Pass 2, the bosses:**
+- `bossHealthBaseMultiplier` (combat_engine.dart, every boss's health floor) 1.15 → **1.21**.
+- Claimant Vane `maxHealth` 74 → **79**: the mage wins the claimants far more often than the others (about 80%), and Vane sat on its band's edge (52%).
+
+Encounters won within 3 tries (400 runs, goals random, favorGood, favorEvil, maximizeGold): v1.490 → pass 1 → pass 2.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger |
+|---|---|---|---|---|---|
+| 7 | 70.7 → 72.4 → 69.9 | 60.1 → 65.7 → 65.8 | 59.9 → 67.2 → 66.1 | 66.4 → 68.5 → 65.0 | 69.0 → 68.5 → 68.7 |
+| 11 | 74.1 → 75.3 → 71.5 | 61.7 → 66.4 → 68.3 | 61.8 → 67.6 → 67.3 | 65.7 → 66.6 → 63.4 | 69.3 → 70.7 → 67.8 |
+| 23 | 71.7 → 71.3 → 67.4 | 60.5 → 68.2 → 68.6 | 61.1 → 66.6 → 65.1 | 65.2 → 63.8 → 62.2 | 66.5 → 71.2 → 68.1 |
+
+The bosses, won % (same runs; `boss_balance_test` reads seed 7, band target ±12):
+
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 75 → 78 → 76 | 79 → 82 → 82 | 78 → 80 → 81 |
+| Void Stalker | 65 | 66 → 75 → 66 | 61 → 65 → 67 | 62 → 68 → 64 |
+| Hollow Court Inquisitor | 55 | 50 → 65 → 55 | 57 → 60 → 59 | 52 → 60 → 57 |
+| Bone Warden | 55 | 54 → 60 → 59 | 58 → 61 → 58 | 55 → 62 → 54 |
+| Void Archon | 50 | 50 → 58 → 50 | 51 → 57 → 48 | 53 → 57 → 53 |
+| White Admiral | 45 | 52 → 52 → 48 | 52 → 58 → 49 | 53 → 55 → 48 |
+| Claimant Vane | 40 | 45 → 51 → 49 | 50 → 55 → 51 | 50 → 53 → 43 |
+| Claimant Tallis | 40 | 46 → 45 → 47 | 42 → 46 → 33 | 44 → 46 → 40 |
+| Claimant Morrow | 40 | 46 → 41 → 47 | 42 → 53 → 43 | 44 → 49 → 48 |
+| Tear-Herald | 35 | 40 → 40 → 36 | 37 → 45 → 37 | 38 → 39 → 34 |
+| Void Sovereign | 35 | 38 → 40 → 33 | 43 → 47 → 38 | 44 → 39 → 35 |
+| **Mean** | 42–58 | 51.1 → 55.0 → 51.4 | 52.0 → 57.1 → 51.5 | 52.0 → 55.4 → 50.7 |
+
+- The cleric pays most for the heavier bosses (it wins the claimants least): 62–65% after pass 2, 3 to 8 points under 70.
+- `clash_balance_test`'s chapter-7 gap is noisy across these knobs (0.06 to 0.14 with Vane between 74 and 82); at 79 every chapter is within 0.07.
+
+## Cleric follow-up (after v1.497)
+
+The cleric sat 3 to 8 points under the 65–75 aim after the boss pass. One cleric-only knob:
+
+- Cleric `bonusBaseDamage` 3 → **5** (`professions.json`). Health was tried too (+5 and +10 moved it about half as far), and the Zealot path (cleric-only in data) shifts the simulator's stream for the other professions, so it was left alone. No boss changed.
+
+Encounters won within 3 tries (400 runs, same plan and harness as above): before → after. Only the cleric moves; the other four are identical.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
+|---|---|---|---|---|---|---|
+| 7 | 69.9 | 65.8 | 66.1 | 65.0 → 70.8 | 68.7 | 51.5 → 52.9 |
+| 11 | 71.5 | 68.3 | 67.3 | 63.4 → 69.0 | 67.8 | 51.5 → 52.6 |
+| 23 | 67.4 | 68.6 | 65.1 | 62.2 → 68.6 | 68.1 | 50.7 → 52.3 |
+
+Every boss stays in its band at all three seeds (highest against its band: Aurel Vane 83 of 63–87, Claimant Vane 50 of 28–52 at seed 11). `clash_balance_test` passes on its bounds.
+
+## The chapter curve, chapters 2 and 7 (wave 16, on v1.500's simulator)
+
+QA's L3 on v1.489 found chapter 2 at 84% of encounters won within 3 tries and chapter 7 at 56% (`docs/qa/l3-1.489.0.md`). Measured on v1.500's simulator (the walk keeps its gifts to the patron), 400 runs, goals random, favorGood, favorEvil and maximizeGold, seeds 7, 11 and 23.
+
+- **Chapter 2's losses are the Saltmouth gate soldier** (`2020`, `2015_kelda`, `2015_scaffold_clerk_fight`: one Inquisition soldier, won about 30%); the other chapter-2 enemies are won 86–99%.
+- **Chapter 7 is the claimants.** They are 58% of the chapter's encounters and sit on their 40% target; the regular fights (the Inquisition at the White Anchorage and Candlehold's gates) are won 76%. The proposal's Mending at the gates would change nothing: every way to the Lantern Hall already passes the rest at the gates (`7515_rest`: full health, mana and a major potion), so each claimant is met fresh.
+
+**Applied:** `enemyHealthFloorByChapter` (combat_engine.dart), chapter 2: 1.98 → **1.80**.
+
+**Tried and dropped:** chapter 7's floor 2.28 → 2.08. Its regular fights went from 76 to 80% won, but the claimants fell from 40 to 37 (Morrow to 33 at seeds 7 and 11), so the chapter stayed at 55.1 → 55.0. With the claimants already on target, the chapter can't be lifted from its regular fights alone.
+
+Encounters won within 3 tries, by chapter: before (1.98 / 2.28) → after (1.80 / 2.28).
+
+| Seed | Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 |
+|---|---|---|---|---|---|---|---|---|
+| 7 | 93.5 → 93.5 | 86.1 → 86.9 | 66.5 → 67.3 | 58.0 → 58.8 | 67.8 → 67.3 | 58.0 → 59.3 | 55.4 → 55.5 | 48.9 → 49.9 |
+| 11 | 93.7 → 93.7 | 87.3 → 88.2 | 67.9 → 67.3 | 57.8 → 58.1 | 67.8 → 67.5 | 60.7 → 59.7 | 55.0 → 55.4 | 49.4 → 50.3 |
+| 23 | 94.8 → 94.8 | 84.7 → 86.5 | 66.9 → 66.2 | 57.9 → 56.7 | 67.4 → 66.0 | 58.0 → 57.2 | 54.8 → 53.5 | 47.4 → 48.0 |
+
+Over the three seeds chapter 2 goes from 86.0 to 87.2. Chapters 3–8 move only with the seeded stream (within 1.5 points).
+
+The bosses, won % (band: target ±12): before → after.
+
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 79 → 79 | 83 → 83 | 83 → 83 |
+| Void Stalker | 65 | 68 → 69 | 63 → 68 | 67 → 64 |
+| Hollow Court Inquisitor | 55 | 64 → 62 | 63 → 62 | 65 → 63 |
+| Bone Warden | 55 | 56 → 56 | 53 → 55 | 56 → 54 |
+| Void Archon | 50 | 54 → 54 | 54 → 55 | 55 → 56 |
+| White Admiral | 45 | 36 → 39 | 42 → 39 | 43 → 44 |
+| Claimant Vane | 40 | 42 → 44 | 42 → 39 | 39 → 40 |
+| Claimant Tallis | 40 | 39 → 41 | 41 → 41 | 48 → 42 |
+| Claimant Morrow | 40 | 37 → 36 | 34 → 34 | 40 → 31 |
+| Tear-Herald | 35 | 35 → 34 | 33 → 32 | 32 → 31 |
+| Void Sovereign | 35 | 23 → 29 | 24 → 25 | 28 → 26 |
+| **Mean** | 42–58 | 48.4 → 49.4 | 48.4 → 48.5 | 50.4 → 48.5 |
+
+No boss falls under its band at any seed. The boss mean sits under 50 at every seed: that comes from v1.500's simulator (52.9 → 48.4 at seed 7), not from this change, and no boss was retuned here.
+
+Encounters won within 3 tries by profession: before → after.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger |
+|---|---|---|---|---|---|
+| 7 | 66.2 → 64.1 | 67.8 → 67.8 | 67.7 → 68.7 | 67.9 → 69.2 | 64.5 → 66.9 |
+| 11 | 66.9 → 68.0 | 70.2 → 69.7 | 64.6 → 66.1 | 67.8 → 65.4 | 68.5 → 68.0 |
+| 23 | 68.2 → 64.8 | 66.0 → 66.3 | 66.7 → 68.0 | 66.3 → 67.3 | 66.0 → 64.2 |
+
+`clash_balance_test`, the largest gap: 0.077 (chapter 2) before, 0.072 (chapter 7) after, against 0.10. No test bound changed.

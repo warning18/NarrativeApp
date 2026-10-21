@@ -4813,7 +4813,7 @@
   "claimant_vane": {
     "enemyName": "Cassian Oriel, Regent of the Lantern",
     "enemyName_fr": "Cassian Oriel, Régent de la Lanterne",
-    "maxHealth": 74,
+    "maxHealth": 79,
     "damage": 6,
     "guile": 12,
     "faction": "dominion",
@@ -4950,7 +4950,7 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 112,
+    "maxHealth": 121,
     "damage": 5,
     "guile": 9,
     "faction": "",

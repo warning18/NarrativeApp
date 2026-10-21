@@ -76,9 +76,8 @@
     "blurb_fr": "Les mots font le travail ; vous ne surveillez que le prix.",
     "icon": "book",
     "gains": {
-      "intelligence": 2,
-      "wisdom": 2,
-      "perception": 1
+      "intelligence": 4,
+      "constitution": 1
     },
     "professions": [
       "mage"
@@ -113,9 +112,8 @@
     "blurb_fr": "Dedans, dehors, et parti avant la réponse.",
     "icon": "feather",
     "gains": {
-      "dexterity": 2,
+      "dexterity": 3,
       "perception": 1,
-      "luck": 1,
       "constitution": 1
     },
     "professions": [

@@ -878,9 +878,11 @@ const double chapterDifficultyStep = 0.15;
 /// of the late zones' bosses. Measured with the playthrough
 /// simulator (400 runs, docs/simulation/difficulty-review.md). With the
 /// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
-/// and chapters 3-8 9% heavier in health.
+/// and chapters 3-8 9% heavier in health. Wave 16 (QA's L3 on v1.489)
+/// lightened chapter 2 (1.98 -> 1.80); chapter 7 kept its floor, whose
+/// cut moved nothing once the claimants (their own floor) were counted.
 const List<double> enemyHealthFloorByChapter = [
-  1.36, 1.98, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
+  1.36, 1.80, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
 ];
 const List<double> enemyDamageFloorByChapter = [
   1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
@@ -901,8 +903,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// and a steeper global curve once turned the chapter 5-6 bosses into
 /// walls. The same simulation had nine parties in ten beat the Void
 /// Sovereign at the first try on this floor; the stat scale raised it a
-/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count.
-const double bossHealthBaseMultiplier = 1.15;
+/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count, and
+/// the stronger mages and rogues after v1.490 its health to 1.21 (the boss
+/// mean back to about 51%, docs/simulation/difficulty-review.md).
+const double bossHealthBaseMultiplier = 1.21;
 const double bossDamageBaseMultiplier = 1.08;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND

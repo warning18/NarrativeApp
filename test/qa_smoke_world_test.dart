@@ -14,6 +14,9 @@ import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/town_services.dart';
 import 'package:narrative_data_app/data/world_leg_path.dart';
 import 'package:narrative_data_app/data/world_map.dart';
+import 'package:narrative_data_app/gamedata/db_schema.dart';
+import 'package:narrative_data_app/providers/game_db_providers.dart';
+import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/map_look_provider.dart'
     show chartGlobeProvider;
 import 'package:narrative_data_app/widgets/city_chart/city_chart.dart';
@@ -23,6 +26,13 @@ import 'package:narrative_data_app/widgets/roll_power_row.dart';
 import 'package:narrative_data_app/widgets/town_service_sheet.dart';
 
 import 'qa_smoke_harness.dart';
+
+/// A toast a case raised goes before the next pass (they queue otherwise).
+Future<void> _clearToasts(WidgetTester tester) async {
+  ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first))
+      .clearSnackBars();
+  await tester.pump(const Duration(milliseconds: 500));
+}
 
 /// Opens a town service's sheet as soon as it is built.
 class _OpenSheet extends StatefulWidget {
@@ -139,6 +149,127 @@ void main() {
           ),
           (action: TownServiceAction.rest, id: 'rest_night', unlocked: true),
         ])),
+      ),
+      // Wave 15: the towns' halos in their ruler's colour, closer in (the
+      // Dominion's Candlehold, the Compact's Emberwick).
+      SmokeCase(
+        'world_town_halos',
+        SizedBox(
+          height: 460,
+          child: JourneyWorldMap(
+            level: JourneyMapLevel.land,
+            palette: ChartPalette.of(MapLook.night),
+            here: worldMapLandmarks.firstWhere((l) => l.id == 'candlehold'),
+            discovered: {for (final l in worldMapLandmarks) l.id},
+            legs: const [],
+            ahead: null,
+            shopPlaces: const {},
+            campPlaces: const {},
+            chapterColor: (_) => Colors.amber,
+            onLayers: () {},
+          ),
+        ),
+        bare: true,
+        prepare: (container) async {
+          await container.read(chartGlobeProvider.notifier).choose(false);
+          await container.read(storyDataProvider.future);
+          for (final schema in [
+            factionsSchema,
+            subclansSchema,
+            relationsSchema,
+            titlesSchema,
+            geographySchema,
+            biomesSchema,
+          ]) {
+            await container.read(gameDbProvider(schema).notifier).whenLoaded();
+          }
+        },
+      ),
+      // Wave 16 (v1.503): a town that changed hands since the chart was last
+      // looked at fades to its new colour and says so in a toast.
+      SmokeCase(
+        'world_handover_one',
+        SizedBox(
+          height: 460,
+          child: JourneyWorldMap(
+            level: JourneyMapLevel.land,
+            palette: ChartPalette.of(MapLook.night),
+            here: worldMapLandmarks.firstWhere((l) => l.id == 'candlehold'),
+            discovered: {for (final l in worldMapLandmarks) l.id},
+            legs: const [],
+            ahead: null,
+            shopPlaces: const {},
+            campPlaces: const {},
+            chapterColor: (_) => Colors.amber,
+            onLayers: () {},
+          ),
+        ),
+        bare: true,
+        session: smokeSession()
+            .copyWith(seenTownRulers: const {'candlehold': 'crows'}),
+        act: (tester) async {
+          // The tint fades over 1.4 s and the toast comes in.
+          await tester.pump(const Duration(seconds: 3));
+        },
+        after: _clearToasts,
+        prepare: (container) async {
+          await container.read(chartGlobeProvider.notifier).choose(false);
+          await container.read(storyDataProvider.future);
+          for (final schema in [
+            factionsSchema,
+            subclansSchema,
+            relationsSchema,
+            titlesSchema,
+            geographySchema,
+            biomesSchema,
+          ]) {
+            await container.read(gameDbProvider(schema).notifier).whenLoaded();
+          }
+        },
+      ),
+      // Wave 16 (v1.503): a town that changed hands since the chart was last
+      // looked at fades to its new colour and says so in a toast.
+      SmokeCase(
+        'world_handover_many',
+        SizedBox(
+          height: 460,
+          child: JourneyWorldMap(
+            level: JourneyMapLevel.land,
+            palette: ChartPalette.of(MapLook.night),
+            here: worldMapLandmarks.firstWhere((l) => l.id == 'candlehold'),
+            discovered: {for (final l in worldMapLandmarks) l.id},
+            legs: const [],
+            ahead: null,
+            shopPlaces: const {},
+            campPlaces: const {},
+            chapterColor: (_) => Colors.amber,
+            onLayers: () {},
+          ),
+        ),
+        bare: true,
+        session: smokeSession().copyWith(seenTownRulers: const {
+          'candlehold': 'crows',
+          'emberwick': 'dominion'
+        }),
+        act: (tester) async {
+          // The tint fades over 1.4 s and the toast comes in.
+          await tester.pump(const Duration(seconds: 3));
+        },
+        after: _clearToasts,
+        prepare: (container) async {
+          await container.read(chartGlobeProvider.notifier).choose(false);
+          await container.read(storyDataProvider.future);
+          for (final schema in [
+            factionsSchema,
+            subclansSchema,
+            relationsSchema,
+            titlesSchema,
+            geographySchema,
+            biomesSchema,
+          ]) {
+            await container.read(gameDbProvider(schema).notifier).whenLoaded();
+          }
+        },
       ),
       SmokeCase('world_move_flat', worldMove(), bare: true),
       SmokeCase(

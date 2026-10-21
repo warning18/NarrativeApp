@@ -13,11 +13,15 @@ import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../providers/landmark_towns_provider.dart';
 import '../providers/map_look_provider.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/town_rulers_provider.dart';
 import 'chart_map_painter.dart';
 import 'chart_weather.dart';
 import 'journey_place.dart' show RegionFlightPainter;
+import 'town_handover.dart';
 
 /// The chart the Journey's world map draws now: the story's world on the
 /// sphere, else the shape picked in the map's look. A move's path
@@ -190,8 +194,85 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   late final AnimationController _walk = AnimationController(vsync: this);
   List<(double, double)> _walkPath = const [];
   bool _walking = false;
-  late final Listenable _repaint = Listenable.merge(
-      [_view, _reveal, _walk, if (widget.moveClock != null) widget.moveClock!]);
+  late final Listenable _repaint = Listenable.merge([
+    _view,
+    _reveal,
+    _walk,
+    _handoverFade,
+    if (widget.moveClock != null) widget.moveClock!,
+  ]);
+
+  /// A town that changed hands since the player last looked (wave 16): its
+  /// tint passes from the old ruler's colour over a second ([_handoverFade],
+  /// 0 to 1; a town not in [_fadeFrom] does not fade), and a toast says so.
+  late final AnimationController _handoverFade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1400), value: 1);
+  Map<String, ({Color fill, Color accent})?> _fadeFrom = const {};
+
+  /// Compares who rules each town with who ruled it when the world chart was
+  /// last looked at (the save's seenTownRulers); the first look, an old save
+  /// and a session not yet read just write down the present.
+  bool _handoverQueued = false;
+
+  /// Looks after the frame, never inside a listener: writing the save while
+  /// the providers are still notifying would rebuild them twice in a frame.
+  void _queueHandoverCheck() {
+    if (_handoverQueued) return;
+    _handoverQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handoverQueued = false;
+      _watchHandovers();
+    });
+  }
+
+  void _watchHandovers() {
+    if (!mounted) return;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final rulers = ref.read(townRulersProvider);
+    if (!notifier.isLoaded || rulers.isEmpty) return;
+    final changed =
+        townHandovers(ref.read(playerSessionProvider).seenTownRulers, rulers);
+    notifier.markTownRulersSeen(townRulerIds(rulers));
+    if (changed.isEmpty) return;
+    final factions = ref.read(factionsProvider);
+    final colours = {
+      for (final e in factions.entries) e.key: e.value.color,
+    };
+    final changedTowns = {for (final h in changed) h.townId: h};
+    final from = <String, ({Color fill, Color accent})?>{};
+    for (final e in ref.read(landmarkRulersProvider).entries) {
+      final handover = changedTowns[e.value.placeId];
+      if (handover == null) continue;
+      final old = handoverFromColours(handover, colours);
+      from[e.key] = old == null
+          ? null
+          : (fill: Color(old.fill), accent: Color(old.accent));
+    }
+    final language = ref.read(appLanguageProvider);
+    final geography = ref.read(geographyProvider);
+    String townName(String id) =>
+        geography.places[id]?.nameFor(language == AppLanguage.fr) ?? id;
+    final text = changed.length == 1
+        ? changed.single.toClan.isEmpty
+            ? trFor(language, 'town_handover_none')
+                .replaceAll('{town}', townName(changed.single.townId))
+            : trFor(language, 'town_handover_to')
+                .replaceAll(
+                    '{clan}',
+                    factions[changed.single.toClan]?.shortFor(language) ??
+                        changed.single.toClan)
+                .replaceAll('{town}', townName(changed.single.townId))
+        : trFor(language, 'town_handover_many')
+            .replaceAll('{n}', '${changed.length}');
+    setState(() => _fadeFrom = from);
+    if (MediaQuery.of(context).disableAnimations) {
+      _handoverFade.value = 1;
+    } else {
+      _handoverFade.forward(from: 0);
+    }
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(key: const Key('town_handover_toast'), content: Text(text)));
+  }
 
   /// The move's walk over its clock, and the box the camera frames it in.
   Animation<double>? _moveWalk;
@@ -259,6 +340,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   @override
   void initState() {
     super.initState();
+    _queueHandoverCheck();
     _glide.addListener(() {
       final view = _glideView;
       if (view != null) _view.value = view.value;
@@ -297,12 +379,27 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   static double _cameraAt(double t) =>
       Curves.easeInOut.transform(math.min(1.0, math.min(t, 1 - t) / 0.18));
 
+  /// The player took the camera during the move (a drag, a pinch, a zoom
+  /// button): it stays theirs until they tap the recentre button.
+  bool _cameraFree = false;
+
+  void _takeCamera() {
+    if (_walking && widget.moveClock != null && !_cameraFree) {
+      setState(() => _cameraFree = true);
+    }
+  }
+
   /// Frames the party as it walks: the whole chart at the ends, the land's
   /// zoom on the party between. The sphere turns to the party instead of
   /// sliding.
   void _followMove() {
     final clock = widget.moveClock;
-    if (clock == null || _box == Size.zero || _walkPath.length < 2) return;
+    if (clock == null ||
+        _cameraFree ||
+        _box == Size.zero ||
+        _walkPath.length < 2) {
+      return;
+    }
     final w = _cameraAt(clock.value);
     final (x, y) =
         pointAlong(_walkPath, RegionFlightPainter.walkAt(clock.value));
@@ -381,6 +478,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     _view.dispose();
     _frame.dispose();
     _reveal.dispose();
+    _handoverFade.dispose();
     super.dispose();
   }
 
@@ -475,6 +573,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   /// A pinch or drag on the sphere: it turns, or comes closer.
   void _onGlobeScaleStart(ScaleStartDetails d) {
+    _takeCamera();
     _pinchStartZoom = _globe?.zoom ?? 1;
     _dragLast = d.focalPoint;
   }
@@ -630,6 +729,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
+    // The first look, a session read late, or a town changing hands while
+    // the chart is up: see who rules what against what was seen.
+    ref.listen(townRulersProvider, (_, __) => _queueHandoverCheck());
+    ref.listen(playerSessionProvider.select((s) => s.seenTownRulers),
+        (_, __) => _queueHandoverCheck());
+    // The ruling clan's tint under each town (wave 15).
+    final townTints = {
+      for (final e in ref.watch(landmarkRulersProvider).entries)
+        e.key: (fill: Color(e.value.color), accent: Color(e.value.accent)),
+    };
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
@@ -663,6 +772,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
+            townTints: townTints,
+            townTintsFrom: _fadeFrom,
+            townFade: _handoverFade,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,
@@ -715,6 +827,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         minScale: 1,
         maxScale: _maxZoom,
         onInteractionStart: (_) {
+          _takeCamera();
           _glide.stop();
           _pinchFrom = _scale;
         },
@@ -804,6 +917,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                 ],
                 button('journey_recentre', Icons.my_location,
                     tr(ref, 'journey_recentre'), () {
+                  // Mid-move, the button gives the camera back to the party.
+                  if (_cameraFree && _walking) {
+                    setState(() => _cameraFree = false);
+                    _followMove();
+                    return;
+                  }
                   final here = widget.here;
                   if (here == null) return;
                   // Glides back to the party (v1.201.1).
@@ -816,36 +935,36 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                     _animateTo(_framing(geo.of(here),
                         math.max(_settledScale, _landZoom), boxSize));
                   }
-                }),
+                }, on: _cameraFree && _walking),
                 const SizedBox(height: 6),
                 // The poles (board 11): the sphere turns right over either,
                 // and the view comes round past the seam.
                 if (sphere && geo.wholeSphere) ...[
-                  button(
-                      'journey_pole_north',
-                      Icons.keyboard_double_arrow_up,
-                      tr(ref, 'world_map_pole_north'),
-                      () => _poleTurn(geo, north: true)),
+                  button('journey_pole_north', Icons.keyboard_double_arrow_up,
+                      tr(ref, 'world_map_pole_north'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: true);
+                  }),
                   const SizedBox(height: 6),
-                  button(
-                      'journey_pole_south',
-                      Icons.keyboard_double_arrow_down,
-                      tr(ref, 'world_map_pole_south'),
-                      () => _poleTurn(geo, north: false)),
+                  button('journey_pole_south', Icons.keyboard_double_arrow_down,
+                      tr(ref, 'world_map_pole_south'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: false);
+                  }),
                   const SizedBox(height: 6),
                 ],
                 button(
-                    'journey_zoom_in',
-                    Icons.add,
-                    tr(ref, 'world_map_zoom_in'),
-                    () => sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize)),
+                    'journey_zoom_in', Icons.add, tr(ref, 'world_map_zoom_in'),
+                    () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize);
+                }),
                 const SizedBox(height: 6),
-                button(
-                    'journey_zoom_out',
-                    Icons.remove,
-                    tr(ref, 'world_map_zoom_out'),
-                    () =>
-                        sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize)),
+                button('journey_zoom_out', Icons.remove,
+                    tr(ref, 'world_map_zoom_out'), () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize);
+                }),
               ],
             ),
           ),
