@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.503.0+539]
+
+Wave 16 UX, item 4: a town changing hands is seen.
+
+### Added
+- **Towns that change hands.** The world chart remembers, per save, who ruled each town when it was last looked at. When a town's ruler is another by the next look, its tint fades from the old ruler's colour to the new one's over a second and a toast says so ("The Compact now holds Candlehold.", "No clan holds White Wells now.", or "3 towns changed hands."). A first look, an old save and a town never seen before change nothing; with animations off the tint just changes.
+- English and French strings `town_handover_to`, `town_handover_none`, `town_handover_many`.
+
+### Changed
+- The save gains `seenTownRulers` (town id to clan id); old saves load with none.
+
 ## [1.502.0+538]
 
 Wave 16 UX, item 1: one set of parts for the small sheets.
