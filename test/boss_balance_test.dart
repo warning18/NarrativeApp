@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -182,6 +183,10 @@ void main() {
     };
     late Map<String, (int, int)> tally;
 
+    /// The encounters each profession wins within three tries, in percent
+    /// (the same 400 runs: the guard on the professions' spread, QA).
+    late Map<String, double> professionWin;
+
     setUpAll(() {
       Map<String, dynamic> table(String name) =>
           jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -232,6 +237,21 @@ void main() {
           tally[boss] = (fought + met.fought, lost + met.lost);
         }
       }
+      final fought = <String, int>{};
+      final lost = <String, int>{};
+      for (final run in runs) {
+        for (final chapter in run.enemiesByChapter.values) {
+          for (final enemy in chapter.values) {
+            fought[run.professionId] =
+                (fought[run.professionId] ?? 0) + enemy.fought;
+            lost[run.professionId] = (lost[run.professionId] ?? 0) + enemy.lost;
+          }
+        }
+      }
+      professionWin = {
+        for (final p in professions)
+          p: 100 * (1 - (lost[p] ?? 0) / (fought[p] ?? 1)),
+      };
     });
 
     for (final MapEntry(key: boss, value: (chapter, target))
@@ -260,6 +280,29 @@ void main() {
       expect(mean, inInclusiveRange(0.42, 0.58));
       expect(rate('aurel_vane'), greaterThan(rate('void_archon')));
       expect(rate('void_archon'), greaterThan(rate('tear_herald')));
+    });
+
+    // The five professions win about as often as each other (the L3 on
+    // v1.489 found the warrior at 73% and the mage at 60%; v1.497 and v1.499
+    // closed it). No profession more than 8 points from the others (Core's
+    // numbers sit within about 5; 8 stays quiet at the 0.1 to 1 point
+    // noise), none under 60%. Core tunes this: the profession paths in
+    // training_paths.json, bonusMaxHealth and the base numbers in
+    // professions.json.
+    test('the five professions win within 8 points of each other', () {
+      final summary = [
+        for (final e in professionWin.entries)
+          '${e.key} ${e.value.toStringAsFixed(1)}%',
+      ].join(', ');
+      debugPrint('encounter win by profession: $summary');
+      final spread =
+          professionWin.values.reduce(max) - professionWin.values.reduce(min);
+      expect(spread, lessThanOrEqualTo(8),
+          reason: 'the professions are $spread points apart ($summary)');
+      for (final e in professionWin.entries) {
+        expect(e.value, greaterThanOrEqualTo(60),
+            reason: '${e.key} wins ${e.value.toStringAsFixed(1)}% ($summary)');
+      }
     });
   });
 }
