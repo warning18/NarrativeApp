@@ -10,6 +10,7 @@ import '../screens/skills/skill_sheet.dart' show openCraft;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'camp_build_tray.dart' show SlotChip, slotText;
+import 'sheet_kit.dart';
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -300,6 +301,8 @@ class CampWorksList extends ConsumerWidget {
         final ink = InkColors.of(sheetContext);
         final locked = work.state == WorkState.locked;
         final ready = work.state == WorkState.buildable;
+        final house = (houses[id] as Map?)?.cast<String, dynamic>() ?? const {};
+        final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
         Widget row(Widget key, Widget body) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Row(
@@ -328,12 +331,33 @@ class CampWorksList extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(_nameOf(id), style: theme.textTheme.titleMedium),
+                SheetHeader(title: _nameOf(id)),
                 if (!locked) ...[
                   const SizedBox(height: 4),
                   Text(detailOf(id),
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: ink.ash, height: 1.3)),
+                ],
+                // A house that can be built has no missing need to list:
+                // say what it costs, as its card does.
+                if (ready) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    key: Key('works_sheet_cost_$id'),
+                    spacing: 10,
+                    runSpacing: 4,
+                    children: [
+                      for (final e
+                          in materialCountsOf(house, 'materialCost').entries)
+                        _CostChip(
+                          icon: ItemPixelIcon(e.key, 'Material', size: 18),
+                          tooltip: _itemName(e.key),
+                          text: '${e.value}',
+                          short: false,
+                        ),
+                      PriceChip(cost),
+                    ],
+                  ),
                 ],
                 const SizedBox(height: 8),
                 for (final need in work.needs)
@@ -400,22 +424,26 @@ class CampWorksList extends ConsumerWidget {
                   ),
                 const SizedBox(height: 8),
                 if (!locked)
-                  FilledButton(
-                    key: const Key('works_sheet_build'),
-                    onPressed: ready && !busy
+                  SheetButtons(
+                    primaryKey: const Key('works_sheet_build'),
+                    primaryLabel: tr(ref, 'build_button'),
+                    price: ready ? cost : null,
+                    onPrimary: ready && !busy
                         ? () {
                             Navigator.of(sheetContext).pop();
                             onBuild(id);
                           }
                         : null,
-                    child: Text(tr(ref, 'build_button')),
+                    closeKey: const Key('works_sheet_close'),
+                    closeLabel: tr(ref, 'close_button'),
+                    onClose: () => Navigator.of(sheetContext).pop(),
+                  )
+                else
+                  OutlinedButton(
+                    key: const Key('works_sheet_close'),
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: Text(tr(ref, 'close_button')),
                   ),
-                const SizedBox(height: 6),
-                OutlinedButton(
-                  key: const Key('works_sheet_close'),
-                  onPressed: () => Navigator.of(sheetContext).pop(),
-                  child: Text(tr(ref, 'close_button')),
-                ),
               ],
             ),
           ),

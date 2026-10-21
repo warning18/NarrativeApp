@@ -28,6 +28,7 @@ import 'bounty_board.dart';
 import 'city_chart/city_chart_painter.dart';
 import 'companion_remark_bubble.dart';
 import 'road_panel.dart';
+import 'sheet_kit.dart';
 
 /// The name of a service's kind, in the player's language.
 String townServiceName(WidgetRef ref, String kind) => tr(ref, 'service_$kind');
@@ -69,23 +70,26 @@ class _TownServiceSheet extends ConsumerWidget {
       switch (open.action) {
         case TownServiceAction.shop:
           final shop = shops[open.id] as Map<String, dynamic>?;
-          return ListTile(
+          return SheetRow(
             key: Key('town_service_open_${open.id}'),
             leading: ShopPixelIcon(open.id),
-            title: Text(shop?['shopName']?.toString() ?? open.id),
-            subtitle: open.unlocked
-                ? Text(shop?['shopDescription']?.toString() ?? '',
-                    maxLines: 2, overflow: TextOverflow.ellipsis)
-                : Text(tr(ref, 'service_shop_locked')),
+            title: shop?['shopName']?.toString() ?? open.id,
+            lines: [
+              if (open.unlocked)
+                shop?['shopDescription']?.toString() ?? ''
+              else
+                tr(ref, 'service_shop_locked'),
+            ],
+            maxLines: open.unlocked ? 2 : null,
             trailing: open.unlocked ? const Icon(Icons.chevron_right) : null,
             enabled: open.unlocked && shop != null,
             onTap: () => push(ShopDetailScreen(shopId: open.id, shop: shop!)),
           );
         case TownServiceAction.bountyBoard:
-          return ListTile(
+          return SheetRow(
             key: const Key('town_service_open_bounty_board'),
             leading: const Icon(Icons.assignment_outlined),
-            title: Text(tr(ref, 'service_bounty_board')),
+            title: tr(ref, 'service_bounty_board'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => push(Scaffold(
               appBar: AppBar(title: Text(tr(ref, 'service_bounty_board'))),
@@ -96,11 +100,11 @@ class _TownServiceSheet extends ConsumerWidget {
             )),
           );
         case TownServiceAction.rest:
-          return ListTile(
+          return SheetRow(
             key: const Key('town_service_open_rest'),
             leading: const Icon(Icons.local_fire_department_outlined),
-            title: Text(tr(ref, 'rest_button')),
-            subtitle: busy ? Text(tr(ref, 'rest_blocked_hint')) : null,
+            title: tr(ref, 'rest_button'),
+            lines: [if (busy) tr(ref, 'rest_blocked_hint')],
             enabled: !busy,
             onTap: () {
               Navigator.of(context).pop();
@@ -109,10 +113,10 @@ class _TownServiceSheet extends ConsumerWidget {
           );
         case TownServiceAction.port:
           final port = ports[open.id] as Map<String, dynamic>?;
-          return ListTile(
+          return SheetRow(
             key: Key('town_service_open_${open.id}'),
             leading: const Icon(Icons.anchor),
-            title: Text(port?['portName']?.toString() ?? open.id),
+            title: port?['portName']?.toString() ?? open.id,
             trailing: const Icon(Icons.chevron_right),
             onTap: () => push(PortScreen(portId: open.id)),
           );
@@ -128,22 +132,11 @@ class _TownServiceSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-              child: Row(
-                children: [
-                  Icon(CityChartPainter.serviceIcon(service.kind),
-                      color: ink.gold),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                        _templeName(ref, service) ??
-                            townServiceName(ref, service.kind),
-                        key: const Key('town_service_title'),
-                        style: theme.textTheme.titleMedium),
-                  ),
-                ],
-              ),
+            SheetHeader(
+              icon: CityChartPainter.serviceIcon(service.kind),
+              title: _templeName(ref, service) ??
+                  townServiceName(ref, service.kind),
+              titleKey: const Key('town_service_title'),
             ),
             if (service.opens.isEmpty)
               Padding(
@@ -214,7 +207,6 @@ class _TempleRows extends ConsumerWidget {
     final keeperLine = offer.isNeutral ? '' : keeper?.templeLineFor(lang) ?? '';
     final blessingTitle =
         offer.isNeutral ? '' : keeper?.blessingNameFor(lang) ?? '';
-    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -224,45 +216,49 @@ class _TempleRows extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Text(keeperLine,
                 key: const Key('temple_keeper_line'),
-                style: theme.textTheme.bodyMedium
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
                     ?.copyWith(fontStyle: FontStyle.italic)),
           ),
         if (offer.mendOffered)
-          ListTile(
+          SheetRow(
             key: const Key('temple_mend'),
             leading: const Icon(Icons.healing_outlined),
-            title: Text(tr(ref, 'temple_mend_name')),
-            subtitle: Text('${why(offer.mendBlock, offer.mendPrice)}'
-                '\n${tr(ref, 'temple_mend_desc')}'),
+            title: tr(ref, 'temple_mend_name'),
+            price: offer.mendBlock == null ? offer.mendPrice : null,
+            lines: [
+              if (offer.mendBlock != null)
+                why(offer.mendBlock, offer.mendPrice),
+              tr(ref, 'temple_mend_desc'),
+            ],
             enabled: offer.canMend,
             onTap: () => buy(
                 (n) => n.templeMend(offer.clanId, data: data, chapter: chapter),
                 'temple_mend_result',
                 RemarkKind.templeMended),
           ),
-        ListTile(
+        SheetRow(
           key: const Key('temple_bless'),
           leading: const Icon(Icons.auto_awesome_outlined),
           // A clan's temple gives its blessing a name, "Blessing" the small
           // label above it; the neutral shrine keeps the plain title.
           title: blessingTitle.isEmpty
-              ? Text(tr(ref, 'temple_blessing_name'))
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(tr(ref, 'temple_blessing_name'),
-                        style: theme.textTheme.labelSmall),
-                    Text(blessingTitle, key: const Key('temple_bless_title')),
-                  ],
-                ),
-          subtitle: Text([
-            why(offer.blessingBlock, offer.blessingPrice),
+              ? tr(ref, 'temple_blessing_name')
+              : blessingTitle,
+          label: blessingTitle.isEmpty ? null : tr(ref, 'temple_blessing_name'),
+          titleKey:
+              blessingTitle.isEmpty ? null : const Key('temple_bless_title'),
+          price: offer.blessingBlock == null ? offer.blessingPrice : null,
+          lines: [
+            if (offer.blessingBlock != null)
+              why(offer.blessingBlock, offer.blessingPrice),
             offer.isNeutral
                 ? tr(ref, 'temple_neutral_blessing_line')
                 : own(keeper?.blessingGrantsFor(lang), 'temple_blessing_desc'),
             if (offer.blessingReplaces) tr(ref, 'temple_blessed_already'),
             if (offer.blessingStanding) tr(ref, 'temple_blessing_standing'),
-          ].join('\n')),
+          ],
           enabled: offer.canBless,
           onTap: () => buy(
               (n) => n.templeBless(offer.clanId, data: data, chapter: chapter),

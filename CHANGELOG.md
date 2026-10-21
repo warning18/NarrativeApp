@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.502.0+538]
+
+Wave 16 UX, item 1: one set of parts for the small sheets.
+
+### Changed
+- **Shared sheet parts.** The camp's build sheet, the town's service sheet and the temple rows now share a header (icon, title, one italic line), a row (icon, title with an optional small label, price, lines), a price chip and a button pair (`lib/widgets/sheet_kit.dart`), so a wrap bug on a 320 px phone is fixed once.
+- **Temple rows.** The price is a gold chip on the line under the name (it was a "75 gold" text line); a row that cannot be bought says why, as before.
+- **Camp build sheet.** A house you can build names its cost in the sheet (the same chips as its card) and the main button carries the price ("Build · 280 G").
 ## [1.501.0+537]
 
 Chapter 2 gets a little easier, closer to the difficulty curve.
