@@ -153,7 +153,12 @@ class SheetRow extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label!, style: theme.textTheme.labelSmall),
+                // The body face, not the pixel one: at small sizes the
+                // pixel face read "Blessing" as "Glessing".
+                Text(label!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: InkColors.of(context).ash,
+                        fontWeight: FontWeight.w600)),
                 Text(title, key: titleKey),
               ],
             ),
