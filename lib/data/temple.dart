@@ -23,6 +23,7 @@
 import 'dart:math';
 
 import 'factions.dart';
+import 'geography.dart' show Geography;
 import 'journey_rules.dart';
 import 'risky_gifts.dart' show alignmentOpposite;
 import 'shop_pricing.dart';
@@ -223,3 +224,23 @@ TempleOffer templeOfferFor({
 String templeClanAt(String placeId, Map<String, TownRuler> rulers,
         {String parent = ''}) =>
     (rulers[placeId] ?? rulers[parent])?.clanId ?? '';
+
+/// The clan that keeps the temple of the town [placeId] lies in ('' a
+/// neutral one), or null when it lies in no town of [rulers] (no temple
+/// there): the place, else the nearest place above it that is a town or a
+/// district of one. For the simulator's hubs.
+String? templeClanOfPlace(
+    String? placeId, Map<String, TownRuler> rulers, Geography geography) {
+  var id = placeId;
+  for (var depth = 0; id != null && id.isNotEmpty && depth < 16; depth++) {
+    final ruler = rulers[id];
+    if (ruler != null) return ruler.clanId;
+    id = geography.places[id]?.parent;
+  }
+  return null;
+}
+
+/// The simulator's rule for a blessing (docs/proposals/temple-service.md
+/// section 6): at a chapter's hub, one is bought when the purse holds at
+/// least [simBlessingGoldFactor] times its price.
+const int simBlessingGoldFactor = 3;
