@@ -1034,8 +1034,6 @@ _SimResult _simulate(
   /// price (docs/proposals/temple-service.md section 6); Mending isn't
   /// simulated (the walk rests at each hub already).
   void blessAtHub(StoryNode node, int chapter) {
-    const v = String.fromEnvironment('V');
-    if (v == 'off') return;
     final g = growth;
     final geography = sim?.geography;
     if (g == null || geography == null || g.tables.clans.factions.isEmpty) {
@@ -1065,12 +1063,12 @@ _SimResult _simulate(
     if (!offer.canBless || gold < simBlessingGoldFactor * offer.blessingPrice) {
       return;
     }
-    if (v != 'free') gold -= offer.blessingPrice;
+    gold -= offer.blessingPrice;
     blessingGold += offer.blessingPrice;
     blessingsBought++;
-    blessingFights = v == 'noeffect' ? 0 : templeBlessingFights;
+    blessingFights = templeBlessingFights;
     blessingClan = offer.clanId;
-    if (v != 'nostanding' && offer.blessingStanding) {
+    if (offer.blessingStanding) {
       templeStandingChapters[offer.clanId] = chapter;
       g.politics = applyStandingChange(
               g.politics, offer.clanId, templeStandingGain, 'temple',

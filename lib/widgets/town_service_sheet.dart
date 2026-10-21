@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/temple.dart';
 import '../data/town_services.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
@@ -132,7 +133,9 @@ class _TownServiceSheet extends ConsumerWidget {
                       color: ink.gold),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(townServiceName(ref, service.kind),
+                    child: Text(
+                        _templeName(ref, service) ??
+                            townServiceName(ref, service.kind),
                         key: const Key('town_service_title'),
                         style: theme.textTheme.titleMedium),
                   ),
@@ -168,10 +171,15 @@ class _TempleRows extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final offer = ref.watch(templeOfferProvider(placeId));
+    final lang = ref.watch(appLanguageProvider);
+    final keeper = ref.watch(clanDataProvider).faction(offer.clanId);
+    String own(String? text, String key) =>
+        text == null || text.isEmpty ? tr(ref, key) : text;
     if (offer.refused) {
       return Padding(
         padding: const EdgeInsets.all(12),
-        child: Text(tr(ref, 'temple_refused_hunted'),
+        child: Text(
+            own(keeper?.templeLineHuntedFor(lang), 'temple_refused_hunted'),
             key: const Key('temple_refused')),
       );
     }
@@ -202,7 +210,7 @@ class _TempleRows extends ConsumerWidget {
             leading: const Icon(Icons.healing_outlined),
             title: Text(tr(ref, 'temple_mend_name')),
             subtitle: Text('${why(offer.mendBlock, offer.mendPrice)}'
-                ' · ${tr(ref, 'temple_mend_desc')}'),
+                '\n${tr(ref, 'temple_mend_desc')}'),
             enabled: offer.canMend,
             onTap: () => buy(
                 (n) => n.templeMend(offer.clanId, data: data, chapter: chapter),
@@ -214,10 +222,12 @@ class _TempleRows extends ConsumerWidget {
           title: Text(tr(ref, 'temple_blessing_name')),
           subtitle: Text([
             why(offer.blessingBlock, offer.blessingPrice),
-            tr(ref, 'temple_blessing_desc'),
+            offer.isNeutral
+                ? tr(ref, 'temple_neutral_blessing_line')
+                : own(keeper?.blessingGrantsFor(lang), 'temple_blessing_desc'),
             if (offer.blessingReplaces) tr(ref, 'temple_blessed_already'),
             if (offer.blessingStanding) tr(ref, 'temple_blessing_standing'),
-          ].join(' · ')),
+          ].join('\n')),
           enabled: offer.canBless,
           onTap: () => buy(
               (n) => n.templeBless(offer.clanId, data: data, chapter: chapter),
@@ -226,4 +236,20 @@ class _TempleRows extends ConsumerWidget {
       ],
     );
   }
+}
+
+/// The name of the temple [service] opens: its keeper's `templeName`, or
+/// the neutral shrine's; null for any other service.
+String? _templeName(WidgetRef ref, TownService service) {
+  final open = service.opens
+      .where((o) => o.action == TownServiceAction.temple)
+      .firstOrNull;
+  if (open == null) return null;
+  final clanId = ref.watch(templeClanProvider(open.id));
+  if (clanId.isEmpty) return tr(ref, 'temple_neutral_name');
+  final name = ref
+      .watch(clanDataProvider)
+      .faction(clanId)
+      ?.templeNameFor(ref.watch(appLanguageProvider));
+  return name == null || name.isEmpty ? null : name;
 }

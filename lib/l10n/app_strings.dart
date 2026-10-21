@@ -128,7 +128,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'temple_blessing_desc': {
     AppLanguage.en:
-        'Lasts 3 fights: the ruling clan\'s favour, and a block of 1 at the start.',
+        'Lasts 3 fights: the ruling clan’s favour, and a block of 1 at the start.',
     AppLanguage.fr:
         'Dure 3 combats : la faveur du clan qui gouverne, et un blocage de 1 au départ.',
   },
@@ -142,7 +142,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Vous portez déjà une bénédiction. Une nouvelle la remplace.',
   },
   'temple_mended_today': {
-    AppLanguage.en: 'Already mended today. A night\'s rest opens it again.',
+    AppLanguage.en: 'Already mended today. A night’s rest opens it again.',
     AppLanguage.fr: 'Déjà guéri aujourd’hui. Une nuit de repos la rouvre.',
   },
   'temple_refused_hunted': {
