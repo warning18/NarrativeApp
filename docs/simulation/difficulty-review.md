@@ -219,33 +219,52 @@ Encounters won within 3 tries (400 runs, same plan and harness as above): before
 
 Every boss stays in its band at all three seeds (highest against its band: Aurel Vane 83 of 63–87, Claimant Vane 50 of 28–52 at seed 11). `clash_balance_test` passes on its bounds.
 
-## The chapter curve, chapters 2 and 7 (wave 16, after v1.499)
+## The chapter curve, chapters 2 and 7 (wave 16, on v1.500's simulator)
 
-QA's L3 on v1.489 found chapter 2 at 84% of encounters won within 3 tries and chapter 7 at 56% (`docs/qa/l3-1.489.0.md`). Re-measured on v1.499 first (400 runs, same plan and harness as above): chapter 2 at 87.8 / 87.8 / 84.9 (seeds 7 / 11 / 23), chapter 7 at 58.8 / 57.5 / 56.5.
+QA's L3 on v1.489 found chapter 2 at 84% of encounters won within 3 tries and chapter 7 at 56% (`docs/qa/l3-1.489.0.md`). Measured on v1.500's simulator (the walk keeps its gifts to the patron), 400 runs, goals random, favorGood, favorEvil and maximizeGold, seeds 7, 11 and 23.
 
-**Chapter 7 is the claimants.** They are 58% of the chapter's encounters and are won 45% of the time across the three seeds, above their own 40% target; the regular fights (the Inquisition at the White Anchorage and Candlehold's gates) are won 75%. The proposal's Mending at the gates would change nothing: every way to the Lantern Hall already passes the rest at the gates (`7515_rest`: full health, mana and a major potion), so each claimant is met fresh. The knob used is the chapter's regular floor instead, which leaves the claimants on their own boss floor.
+- **Chapter 2's losses are the Saltmouth gate soldier** (`2020`, `2015_kelda`, `2015_scaffold_clerk_fight`: one Inquisition soldier, won about 30%); the other chapter-2 enemies are won 86–99%.
+- **Chapter 7 is the claimants.** They are 58% of the chapter's encounters and sit on their 40% target; the regular fights (the Inquisition at the White Anchorage and Candlehold's gates) are won 76%. The proposal's Mending at the gates would change nothing: every way to the Lantern Hall already passes the rest at the gates (`7515_rest`: full health, mana and a major potion), so each claimant is met fresh.
 
-**Chapter 2's losses are the Saltmouth gate soldier** (`2020`, `2015_kelda`, `2015_scaffold_clerk_fight`: one Inquisition soldier, won 30%); the other chapter-2 enemies are won 86–99%.
+**Applied:** `enemyHealthFloorByChapter` (combat_engine.dart), chapter 2: 1.98 → **1.80**.
 
-- `enemyHealthFloorByChapter` (combat_engine.dart), chapter 2: 1.98 → **1.80**.
-- `enemyHealthFloorByChapter`, chapter 7: 2.28 → **2.08**.
+**Tried and dropped:** chapter 7's floor 2.28 → 2.08. Its regular fights went from 76 to 80% won, but the claimants fell from 40 to 37 (Morrow to 33 at seeds 7 and 11), so the chapter stayed at 55.1 → 55.0. With the claimants already on target, the chapter can't be lifted from its regular fights alone.
 
-Both knobs sit near the simulator's seeded noise (a change anywhere moves a chapter 1–3 points by itself). Cuts of 1.82 / 2.05 or 1.78 / 2.02 put a `clash_balance_test` gap above 0.10 or Claimant Morrow out of its band at one seed; 1.95 in chapter 7 took Claimant Vane out of its band at seeds 11 and 23. The pair kept is the largest that stays clear of both at the three seeds.
-
-Encounters won within 3 tries, by chapter: before → after.
+Encounters won within 3 tries, by chapter: before (1.98 / 2.28) → after (1.80 / 2.28).
 
 | Seed | Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 |
 |---|---|---|---|---|---|---|---|---|
-| 7 | 93.5 → 93.5 | 87.8 → 87.2 | 68.7 → 67.5 | 58.7 → 57.6 | 67.2 → 67.3 | 62.0 → 62.0 | 58.8 → 59.4 | 54.0 → 54.3 |
-| 11 | 93.7 → 93.7 | 87.8 → 88.8 | 69.4 → 67.9 | 59.0 → 58.7 | 67.0 → 66.4 | 63.7 → 62.1 | 57.5 → 58.5 | 56.2 → 55.1 |
-| 23 | 94.8 → 94.8 | 84.9 → 87.0 | 66.8 → 67.9 | 59.5 → 59.2 | 66.5 → 65.6 | 61.8 → 61.5 | 56.5 → 59.7 | 53.8 → 54.4 |
+| 7 | 93.5 → 93.5 | 86.1 → 86.9 | 66.5 → 67.3 | 58.0 → 58.8 | 67.8 → 67.3 | 58.0 → 59.3 | 55.4 → 55.5 | 48.9 → 49.9 |
+| 11 | 93.7 → 93.7 | 87.3 → 88.2 | 67.9 → 67.3 | 57.8 → 58.1 | 67.8 → 67.5 | 60.7 → 59.7 | 55.0 → 55.4 | 49.4 → 50.3 |
+| 23 | 94.8 → 94.8 | 84.7 → 86.5 | 66.9 → 66.2 | 57.9 → 56.7 | 67.4 → 66.0 | 58.0 → 57.2 | 54.8 → 53.5 | 47.4 → 48.0 |
 
-Over the three seeds: chapter 2 86.8 → 87.7, chapter 7 57.6 → 59.2 (its regular fights 75 → 79, the claimants 45 → 45). Chapter 7 can't reach its old 64 from the regular fights alone without a much heavier cut: the rest of that gap is the claimants, who already sit above their band's target.
+Over the three seeds chapter 2 goes from 86.0 to 87.2. Chapters 3–8 move only with the seeded stream (within 1.5 points).
 
-| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
-|---|---|---|---|---|---|---|
-| 7 | 69.9 → 69.6 | 65.8 → 64.9 | 66.1 → 66.8 | 70.8 → 71.9 | 68.7 → 66.2 | 52.9 → 52.9 |
-| 11 | 71.5 → 71.4 | 68.3 → 68.6 | 67.3 → 65.4 | 69.0 → 69.7 | 67.8 → 65.7 | 52.5 → 52.7 |
-| 23 | 67.4 → 69.7 | 68.6 → 65.7 | 65.1 → 67.7 | 68.6 → 68.9 | 68.1 → 67.1 | 52.3 → 52.7 |
+The bosses, won % (band: target ±12): before → after.
 
-Every boss stays in its band at the three seeds (closest: Aurel Vane 83 of 63–87, Claimant Vane 49 of 28–52 at seed 23). `clash_balance_test` gaps: at most 0.080 (chapter 1; chapter 2 0.026, chapter 7 0.073), against 0.071 before. No test bound changed.
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 79 → 79 | 83 → 83 | 83 → 83 |
+| Void Stalker | 65 | 68 → 69 | 63 → 68 | 67 → 64 |
+| Hollow Court Inquisitor | 55 | 64 → 62 | 63 → 62 | 65 → 63 |
+| Bone Warden | 55 | 56 → 56 | 53 → 55 | 56 → 54 |
+| Void Archon | 50 | 54 → 54 | 54 → 55 | 55 → 56 |
+| White Admiral | 45 | 36 → 39 | 42 → 39 | 43 → 44 |
+| Claimant Vane | 40 | 42 → 44 | 42 → 39 | 39 → 40 |
+| Claimant Tallis | 40 | 39 → 41 | 41 → 41 | 48 → 42 |
+| Claimant Morrow | 40 | 37 → 36 | 34 → 34 | 40 → 31 |
+| Tear-Herald | 35 | 35 → 34 | 33 → 32 | 32 → 31 |
+| Void Sovereign | 35 | 23 → 29 | 24 → 25 | 28 → 26 |
+| **Mean** | 42–58 | 48.4 → 49.4 | 48.4 → 48.5 | 50.4 → 48.5 |
+
+No boss falls under its band at any seed. The boss mean sits under 50 at every seed: that comes from v1.500's simulator (52.9 → 48.4 at seed 7), not from this change, and no boss was retuned here.
+
+Encounters won within 3 tries by profession: before → after.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger |
+|---|---|---|---|---|---|
+| 7 | 66.2 → 64.1 | 67.8 → 67.8 | 67.7 → 68.7 | 67.9 → 69.2 | 64.5 → 66.9 |
+| 11 | 66.9 → 68.0 | 70.2 → 69.7 | 64.6 → 66.1 | 67.8 → 65.4 | 68.5 → 68.0 |
+| 23 | 68.2 → 64.8 | 66.0 → 66.3 | 66.7 → 68.0 | 66.3 → 67.3 | 66.0 → 64.2 |
+
+`clash_balance_test`, the largest gap: 0.077 (chapter 2) before, 0.072 (chapter 7) after, against 0.10. No test bound changed.

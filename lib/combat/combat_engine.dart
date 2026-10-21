@@ -879,10 +879,10 @@ const double chapterDifficultyStep = 0.15;
 /// simulator (400 runs, docs/simulation/difficulty-review.md). With the
 /// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
 /// and chapters 3-8 9% heavier in health. Wave 16 (QA's L3 on v1.489)
-/// lightened chapter 2 (1.98 -> 1.80) and chapter 7 (2.28 -> 2.08): the
-/// claimants keep their own floor and their band.
+/// lightened chapter 2 (1.98 -> 1.80); chapter 7 kept its floor, whose
+/// cut moved nothing once the claimants (their own floor) were counted.
 const List<double> enemyHealthFloorByChapter = [
-  1.36, 1.80, 3.02, 3.02, 3.17, 2.36, 2.08, 2.22, //
+  1.36, 1.80, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
 ];
 const List<double> enemyDamageFloorByChapter = [
   1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
