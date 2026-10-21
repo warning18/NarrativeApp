@@ -2817,7 +2817,7 @@
     ],
     "lines_fr": [
       "Un trou avec des étoiles dedans ! Grosh va regarder. Pas tomber. Grosh promet.",
-      "Fais un vœu. Grosh souhaite plus de ragoût."
+      "Faites un vœu. Grosh souhaite plus de ragoût."
     ]
   },
   "grosh_riskyTaken": {
@@ -2829,7 +2829,7 @@
       "Grosh does not understand risk. Grosh hits things. Same."
     ],
     "lines_fr": [
-      "Lance le dé ! Grosh aime les dés. Gros chiffre, bien. Petit chiffre, Grosh casse quelqu’un.",
+      "Lancez le dé ! Grosh aime les dés. Gros chiffre, bien. Petit chiffre, Grosh casse quelqu’un.",
       "Grosh ne comprend pas le risque. Grosh frappe les choses. Pareil."
     ]
   },
@@ -2842,8 +2842,8 @@
       "Take the gift! Hold it high!"
     ],
     "lines_fr": [
-      "OUI ! Gros chiffre ! Grosh crie pour toi !",
-      "Prends le cadeau ! Tiens-le bien haut !"
+      "OUI ! Gros chiffre ! Grosh crie pour vous !",
+      "Prenez le cadeau ! Tenez-le bien haut !"
     ]
   },
   "grosh_riskyLostHealth": {
@@ -2855,7 +2855,7 @@
       "Bad die. Grosh will glare at it."
     ],
     "lines_fr": [
-      "Aïe ! Grosh sent ça aussi ! Assieds-toi. Grosh te portera.",
+      "Aïe ! Grosh sent ça aussi ! Asseyez-vous. Grosh vous portera.",
       "Mauvais dé. Grosh va le regarder de travers."
     ]
   },
@@ -2869,7 +2869,7 @@
     ],
     "lines_fr": [
       "Or parti ! Grosh n’utilise pas l’or. Grosh s’en fiche.",
-      "Mais tu es triste. Grosh est triste avec toi."
+      "Mais vous êtes triste. Grosh est triste avec vous."
     ]
   },
   "grosh_riskyLostCurse": {
@@ -2882,7 +2882,7 @@
     ],
     "lines_fr": [
       "Malédiction ! Grosh frappe les malédictions ! ... Ça ne marche pas. Grosh est désolé.",
-      "Deux niveaux. Grosh restera près de toi."
+      "Deux niveaux. Grosh restera près de vous."
     ]
   },
   "grosh_templeMended": {
@@ -2894,7 +2894,7 @@
       "No sleeping, no waiting. Grosh likes that!"
     ],
     "lines_fr": [
-      "Tout va mieux ! Grosh se sent fort ! Paie encore la gentille personne.",
+      "Tout va mieux ! Grosh se sent fort ! Payez encore la gentille personne.",
       "Pas de dodo, pas d’attente. Grosh aime ça !"
     ]
   },
