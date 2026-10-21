@@ -650,12 +650,18 @@ class _OfferBanner extends ConsumerWidget {
                     child: Center(child: flag),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  // Scales down a little rather than cutting "The Wayfarer"
+                  // with an ellipsis on a 320 px phone.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      suitor.isWayfarer
+                          ? who
+                          : (faction?.shortFor(lang) ?? who),
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                    ),
                   ),
                   const SizedBox(height: 3),
                   _Tag(

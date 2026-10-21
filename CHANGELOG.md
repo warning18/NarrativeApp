@@ -19,6 +19,7 @@ Wave 15 UX, part 2: towns wear their ruler's colour.
 - The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
 
 ### Fixed
+- **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
 - **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
 
 ## [1.489.0+525]
