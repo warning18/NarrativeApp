@@ -60,7 +60,7 @@ Future<void> loadSmokeFonts() async {
 /// One thing to show.
 class SmokeCase {
   const SmokeCase(this.name, this.widget,
-      {this.session, this.prepare, this.act, this.bare = false});
+      {this.session, this.prepare, this.act, this.after, this.bare = false});
 
   /// A short name, for the failure message and the picture's file.
   final String name;
@@ -76,6 +76,10 @@ class SmokeCase {
   /// is settled again after it.
   final Future<void> Function(WidgetTester tester)? act;
 
+  /// What to do once the pass is checked and photographed (close what the
+  /// case opened the way a player would).
+  final Future<void> Function(WidgetTester tester)? after;
+
   /// Shown as it is, with no scroll view around it (a screen, a sheet's own
   /// body that scrolls itself).
   final bool bare;
@@ -89,7 +93,7 @@ Future<void> _settle(WidgetTester tester) async {
   _warmed[tester] = true;
   for (var i = 0; i < (first ? 6 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -111,6 +115,9 @@ Future<void> runSmoke(
 }) async {
   final shots = Platform.environment['SMOKE_SHOTS'];
   final overflows = <String>[];
+  // Every pass that overflowed, told at the end: an expect() while the error
+  // handler is ours makes the test runner hang instead of failing.
+  final failures = <String>[];
   final previous = FlutterError.onError;
   FlutterError.onError = (details) {
     if (details.exceptionAsString().contains('overflowed')) {
@@ -158,6 +165,12 @@ Future<void> runSmoke(
     for (final size in sizes) {
       tester.view.physicalSize = size;
       for (final french in [false, true]) {
+        // A case that acts (builds, buys) starts every pass from its save.
+        if (c.act != null) {
+          await tester.runAsync(() => container
+              .read(playerSessionProvider.notifier)
+              .loadSession(c.session ?? smokeSession()));
+        }
         final label =
             '${c.name} at ${size.width.toInt()} px ${french ? 'French' : 'English'}';
         await tester.runAsync(() => container
@@ -189,7 +202,9 @@ Future<void> runSmoke(
           await c.act!(tester);
           await _settle(tester);
         }
-        expect(overflows, isEmpty, reason: '$label: ${overflows.join('; ')}');
+        if (overflows.isNotEmpty) {
+          failures.add('$label: ${overflows.toSet().join('; ')}');
+        }
         if (shots != null) {
           final image = await tester.runAsync(() async {
             final object = boundary.currentContext!.findRenderObject()!
@@ -202,6 +217,7 @@ Future<void> runSmoke(
           File('$shots/${c.name}_${size.width.toInt()}_${french ? 'fr' : 'en'}.png')
               .writeAsBytesSync(bytes!.buffer.asUint8List());
         }
+        if (c.after != null) await c.after!(tester);
       }
     }
     // A sheet the case opened goes before its host does.
@@ -212,4 +228,6 @@ Future<void> runSmoke(
     holder.value = const SizedBox.shrink();
     await tester.pump();
   }
+  FlutterError.onError = previous;
+  expect(failures, isEmpty, reason: failures.join('\n'));
 }

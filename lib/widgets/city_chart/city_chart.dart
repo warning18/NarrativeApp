@@ -14,6 +14,7 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 
 import '../../data/city_plan_record.dart';
+import '../../data/town_rulers.dart' show TownRuler;
 
 /// What a way does, as the pin on its building says it.
 enum CityWayKind { quest, fight, check, shop, road }
@@ -109,6 +110,33 @@ class CityChartWay {
   /// The building's key.
   final String building;
 }
+
+/// The colours of the clan that rules a district (wave 15, townRulersProvider):
+/// [fill] washes its blocks, [accent] outlines them. A district no one rules
+/// has none, and keeps its own colour.
+class CityChartRuler {
+  const CityChartRuler({required this.fill, required this.accent});
+  final Color fill;
+  final Color accent;
+
+  @override
+  bool operator ==(Object other) =>
+      other is CityChartRuler && other.fill == fill && other.accent == accent;
+
+  @override
+  int get hashCode => Object.hash(fill, accent);
+}
+
+/// The ruling clan's colours for each district of [chart] that someone rules
+/// (a neutral district is left out and keeps its own colour), from
+/// townRulersProvider's [rulers].
+Map<String, CityChartRuler> cityChartRulersOf(
+        CityChart chart, Map<String, TownRuler> rulers) =>
+    {
+      for (final d in chart.districts)
+        if (rulers[d.id] case final r? when !r.isNeutral)
+          d.id: CityChartRuler(fill: Color(r.color), accent: Color(r.accent)),
+    };
 
 /// A service of the town pinned on its plan (wave 14): a notice board, the
 /// market, a tavern, a temple, a forge, a harbour. Fixed, not a way of the

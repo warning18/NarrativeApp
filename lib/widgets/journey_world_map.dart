@@ -13,6 +13,7 @@ import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../providers/landmark_towns_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'chart_map_painter.dart';
@@ -297,12 +298,27 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   static double _cameraAt(double t) =>
       Curves.easeInOut.transform(math.min(1.0, math.min(t, 1 - t) / 0.18));
 
+  /// The player took the camera during the move (a drag, a pinch, a zoom
+  /// button): it stays theirs until they tap the recentre button.
+  bool _cameraFree = false;
+
+  void _takeCamera() {
+    if (_walking && widget.moveClock != null && !_cameraFree) {
+      setState(() => _cameraFree = true);
+    }
+  }
+
   /// Frames the party as it walks: the whole chart at the ends, the land's
   /// zoom on the party between. The sphere turns to the party instead of
   /// sliding.
   void _followMove() {
     final clock = widget.moveClock;
-    if (clock == null || _box == Size.zero || _walkPath.length < 2) return;
+    if (clock == null ||
+        _cameraFree ||
+        _box == Size.zero ||
+        _walkPath.length < 2) {
+      return;
+    }
     final w = _cameraAt(clock.value);
     final (x, y) =
         pointAlong(_walkPath, RegionFlightPainter.walkAt(clock.value));
@@ -475,6 +491,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   /// A pinch or drag on the sphere: it turns, or comes closer.
   void _onGlobeScaleStart(ScaleStartDetails d) {
+    _takeCamera();
     _pinchStartZoom = _globe?.zoom ?? 1;
     _dragLast = d.focalPoint;
   }
@@ -630,6 +647,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
+    // The ruling clan's tint under each town (wave 15).
+    final townTints = {
+      for (final e in ref.watch(landmarkRulersProvider).entries)
+        e.key: (fill: Color(e.value.color), accent: Color(e.value.accent)),
+    };
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
@@ -663,6 +685,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
+            townTints: townTints,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,
@@ -715,6 +738,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         minScale: 1,
         maxScale: _maxZoom,
         onInteractionStart: (_) {
+          _takeCamera();
           _glide.stop();
           _pinchFrom = _scale;
         },
@@ -804,6 +828,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                 ],
                 button('journey_recentre', Icons.my_location,
                     tr(ref, 'journey_recentre'), () {
+                  // Mid-move, the button gives the camera back to the party.
+                  if (_cameraFree && _walking) {
+                    setState(() => _cameraFree = false);
+                    _followMove();
+                    return;
+                  }
                   final here = widget.here;
                   if (here == null) return;
                   // Glides back to the party (v1.201.1).
@@ -816,36 +846,36 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                     _animateTo(_framing(geo.of(here),
                         math.max(_settledScale, _landZoom), boxSize));
                   }
-                }),
+                }, on: _cameraFree && _walking),
                 const SizedBox(height: 6),
                 // The poles (board 11): the sphere turns right over either,
                 // and the view comes round past the seam.
                 if (sphere && geo.wholeSphere) ...[
-                  button(
-                      'journey_pole_north',
-                      Icons.keyboard_double_arrow_up,
-                      tr(ref, 'world_map_pole_north'),
-                      () => _poleTurn(geo, north: true)),
+                  button('journey_pole_north', Icons.keyboard_double_arrow_up,
+                      tr(ref, 'world_map_pole_north'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: true);
+                  }),
                   const SizedBox(height: 6),
-                  button(
-                      'journey_pole_south',
-                      Icons.keyboard_double_arrow_down,
-                      tr(ref, 'world_map_pole_south'),
-                      () => _poleTurn(geo, north: false)),
+                  button('journey_pole_south', Icons.keyboard_double_arrow_down,
+                      tr(ref, 'world_map_pole_south'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: false);
+                  }),
                   const SizedBox(height: 6),
                 ],
                 button(
-                    'journey_zoom_in',
-                    Icons.add,
-                    tr(ref, 'world_map_zoom_in'),
-                    () => sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize)),
+                    'journey_zoom_in', Icons.add, tr(ref, 'world_map_zoom_in'),
+                    () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize);
+                }),
                 const SizedBox(height: 6),
-                button(
-                    'journey_zoom_out',
-                    Icons.remove,
-                    tr(ref, 'world_map_zoom_out'),
-                    () =>
-                        sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize)),
+                button('journey_zoom_out', Icons.remove,
+                    tr(ref, 'world_map_zoom_out'), () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize);
+                }),
               ],
             ),
           ),
