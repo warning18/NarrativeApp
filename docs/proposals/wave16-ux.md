@@ -4,7 +4,7 @@ Wave 13 to 15 are done and merged (the land walk's party, clan flags on the skil
 
 ## From Core's list (`docs/proposals/wave16-core.md`): the two UX asks
 - **Ward the road (Core's item 2), S + S.** A "Ward the road" choice on the Banish card (the camp tray's roll-power card, or the clan's row), spending 1 / 2 / 3 charges for 3 / 6 / 9 roads, and a small "warded, N roads" mark on the Journey (a chip beside the weather chip, gone when the ward runs out). It rides the roll-power cards I restyled in v1.489 (`roll_power_row.dart`) and the Journey's chips, and needs Core's `RollBan` kind and Narrative's two lines first. One small PR after Core's.
-- **Backdrops and the ruler's colour for the crossings (Core's item 3), M + S.** Side-view backdrops for frost, fen and sea cliffs, on the shared side-view kit (the desert, ashlands and ruins ones exist in `lib/widgets/side_view/`): about a day per biome, three biomes. Plus the ruler's colour on the crossing screen's header, read from `townRulersProvider`'s road ruler (the town tints of v1.495). It waits on Core's routes (it needs the route's terrain key) and goes in UX's PR of Core's three.
+- **Backdrops and the ruler's colour for the crossings (Core's item 3), M + S.** Side-view backdrops for frost, fen and sea cliffs, on the shared side-view kit (the desert and ruins kits exist in `lib/widgets/side_view/`): about a day per biome, three biomes. Plus the ruler's colour on the crossing screen's header, read from `townRulersProvider`'s road ruler (the town tints of v1.495). It waits on Core's routes (it needs the route's terrain key) and goes in UX's PR of Core's three.
 
 Both fit beside the five below; neither is in my own ranking because each waits on Core.
 
