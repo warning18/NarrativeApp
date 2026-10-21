@@ -160,3 +160,21 @@ Every boss stays inside its existing band (target ±12), so no target was re-cen
 
 - `chapter_one_fights_test` passes on its original bounds.
 - `clash_balance_test` keeps 0.10 for chapters 2–8. Chapter 1 gets 0.25: the clash rules (the game's) came out 11 to 23 points kinder per try there across the settings and data measured. The likely cause: their goals (rout, subdue, hold) end a fight before the foe's health is gone, so the heavier health floor bites less. This is worth a look if chapter 1 feels too soft.
+
+## The professions with the stat picks in (after v1.490)
+
+QA's L3 on v1.489 found the spread widened once the simulator took its stat picks (warrior 73, mage 60, rogue 62% of encounters won). The warrior's four calling paths all lead with Strength and Constitution; the mage's one path led with Intelligence only 2 points in 5, and the rogue's Skirmisher with Dexterity 2 in 5.
+
+- `arcanist`: +2 Intelligence, +2 Wisdom, +1 Perception → **+4 Intelligence, +1 Constitution**.
+- `skirmisher`: +2 Dexterity, +1 Perception, +1 Luck, +1 Constitution → **+3 Dexterity, +1 Perception, +1 Constitution**.
+- Rogue `bonusMaxHealth` −2 → **+1**.
+
+Encounters won within 3 tries (400 runs, goals random, favorGood, favorEvil, maximizeGold), before → after:
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
+|---|---|---|---|---|---|---|
+| 7 | 70.7 → 72.4 | 60.1 → 65.7 | 59.9 → 67.2 | 66.4 → 68.5 | 69.0 → 68.5 | 51.1 → 55.0 |
+| 11 | 74.1 → 75.3 | 61.7 → 66.4 | 61.8 → 67.6 | 65.7 → 66.6 | 69.3 → 70.7 | 52.0 → 57.1 |
+| 23 | 71.7 → 71.3 | 60.5 → 68.2 | 61.1 → 66.6 | 65.2 → 63.8 | 66.5 → 71.2 | 52.0 → 55.4 |
+
+The mage is not lifted further: it already wins the chapter-7 claimants far more often than the others (about 80%), and more mage health pushed Claimant Vane past its band (52%) in `boss_balance_test`.

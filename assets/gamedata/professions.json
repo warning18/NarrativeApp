@@ -62,7 +62,7 @@
     "professionID": "rogue",
     "professionName": "Rogue",
     "description": "Fast, opportunistic, and always first to spot a good deal.",
-    "bonusMaxHealth": -2,
+    "bonusMaxHealth": 1,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
     "bonusLuck": 4,
