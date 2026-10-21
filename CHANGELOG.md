@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.494.0+530]
+
+Companions react to the wave 15 moments.
+
+### Added
+- **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
+
 ## [1.493.0+529]
 
 The party speaks up at wave 15's moments.
