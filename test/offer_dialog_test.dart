@@ -194,6 +194,22 @@ void main() {
     if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
   });
 
+  testWidgets('between offers the last card stays, dimmed, with a spinner',
+      (tester) async {
+    final container = await _open(tester, french: false);
+    expect(find.byKey(const Key('offer_drawing')), findsNothing);
+    expect(find.byKey(const Key('offer_title')), findsOneWidget);
+    // The next offer is being drawn: no offer on the table for a moment.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson(baseSession().toJson())));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const Key('offer_drawing')), findsOneWidget);
+    expect(find.byKey(const Key('offer_title')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
       'a long press on a banner or a crest shows the clan\u2019s details',
       (tester) async {

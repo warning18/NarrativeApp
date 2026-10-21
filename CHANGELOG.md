@@ -15,6 +15,14 @@ The cleric catches up with the other professions.
 ### Changed
 - **The cleric** deals 5 base damage instead of 3. Encounters won within three tries: 65.0 → 70.8 (seed 7), 63.4 → 69.0 (seed 11), 62.2 → 68.6 (seed 23); the other professions are unchanged, bosses are won 52.9% on average (51.4% before), every boss inside its band.
 
+## [1.498.0+534]
+
+Two small town and offer-hall touches from the read-throughs.
+
+### Changed
+- **Temple sheet.** A clan-ruled temple shows its keeper's line in italics under the title, and the blessing row is titled with the clan's blessing name ("The First Lantern's ward") with "Blessing" as the small label above it. The neutral shrine keeps the plain title. No new strings: both texts were already in the clans' data.
+- **Offer hall.** Between offers the hall kept an empty dark box with a bare spinner; it now keeps the last card, dimmed and not tappable, with the spinner over it. The first load, with no earlier card, still shows the bare spinner.
+
 ## [1.497.0+533]
 
 The professions closer together, the bosses back to a fair fight.

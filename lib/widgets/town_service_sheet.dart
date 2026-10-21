@@ -211,9 +211,22 @@ class _TempleRows extends ConsumerWidget {
 
     final data = ref.read(clanDataProvider);
     final chapter = ref.read(reachedChapterProvider);
+    final keeperLine = offer.isNeutral ? '' : keeper?.templeLineFor(lang) ?? '';
+    final blessingTitle =
+        offer.isNeutral ? '' : keeper?.blessingNameFor(lang) ?? '';
+    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // What the keeper says of the temple: a clan's voice under its name.
+        if (keeperLine.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(keeperLine,
+                key: const Key('temple_keeper_line'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontStyle: FontStyle.italic)),
+          ),
         if (offer.mendOffered)
           ListTile(
             key: const Key('temple_mend'),
@@ -230,7 +243,18 @@ class _TempleRows extends ConsumerWidget {
         ListTile(
           key: const Key('temple_bless'),
           leading: const Icon(Icons.auto_awesome_outlined),
-          title: Text(tr(ref, 'temple_blessing_name')),
+          // A clan's temple gives its blessing a name, "Blessing" the small
+          // label above it; the neutral shrine keeps the plain title.
+          title: blessingTitle.isEmpty
+              ? Text(tr(ref, 'temple_blessing_name'))
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tr(ref, 'temple_blessing_name'),
+                        style: theme.textTheme.labelSmall),
+                    Text(blessingTitle, key: const Key('temple_bless_title')),
+                  ],
+                ),
           subtitle: Text([
             why(offer.blessingBlock, offer.blessingPrice),
             offer.isNeutral
