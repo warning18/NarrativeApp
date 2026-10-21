@@ -10,6 +10,7 @@ import '../screens/skills/skill_sheet.dart' show openCraft;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'camp_build_tray.dart' show SlotChip, slotText;
+import 'sheet_kit.dart';
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -330,7 +331,7 @@ class CampWorksList extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(_nameOf(id), style: theme.textTheme.titleMedium),
+                SheetHeader(title: _nameOf(id)),
                 if (!locked) ...[
                   const SizedBox(height: 4),
                   Text(detailOf(id),
@@ -354,13 +355,7 @@ class CampWorksList extends ConsumerWidget {
                           text: '${e.value}',
                           short: false,
                         ),
-                      _CostChip(
-                        icon: Text('G',
-                            style: theme.textTheme.labelMedium
-                                ?.copyWith(color: ink.gold)),
-                        text: '$cost',
-                        short: false,
-                      ),
+                      PriceChip(cost),
                     ],
                   ),
                 ],
@@ -429,24 +424,26 @@ class CampWorksList extends ConsumerWidget {
                   ),
                 const SizedBox(height: 8),
                 if (!locked)
-                  FilledButton(
-                    key: const Key('works_sheet_build'),
-                    onPressed: ready && !busy
+                  SheetButtons(
+                    primaryKey: const Key('works_sheet_build'),
+                    primaryLabel: tr(ref, 'build_button'),
+                    price: ready ? cost : null,
+                    onPrimary: ready && !busy
                         ? () {
                             Navigator.of(sheetContext).pop();
                             onBuild(id);
                           }
                         : null,
-                    child: Text(ready
-                        ? '${tr(ref, 'build_button')} · $cost G'
-                        : tr(ref, 'build_button')),
+                    closeKey: const Key('works_sheet_close'),
+                    closeLabel: tr(ref, 'close_button'),
+                    onClose: () => Navigator.of(sheetContext).pop(),
+                  )
+                else
+                  OutlinedButton(
+                    key: const Key('works_sheet_close'),
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: Text(tr(ref, 'close_button')),
                   ),
-                const SizedBox(height: 6),
-                OutlinedButton(
-                  key: const Key('works_sheet_close'),
-                  onPressed: () => Navigator.of(sheetContext).pop(),
-                  child: Text(tr(ref, 'close_button')),
-                ),
               ],
             ),
           ),
