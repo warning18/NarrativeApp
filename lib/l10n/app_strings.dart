@@ -97,7 +97,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'service_tavern': {AppLanguage.en: 'Tavern', AppLanguage.fr: 'Taverne'},
   'service_temple': {AppLanguage.en: 'Temple', AppLanguage.fr: 'Temple'},
   'service_forge': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
-  'service_harbour': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
+  'service_harbour': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
   'service_nothing_yet': {
     AppLanguage.en: 'Nothing to do here yet.',
     AppLanguage.fr: 'Rien à faire ici pour l’instant.',
@@ -5129,7 +5129,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La manche du combat. À partir de la manche {n}, la Marée monte et chaque coup frappe plus fort, plus le combat dure.',
   },
   'roll_hint': {
-    AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
+    AppLanguage.en: 'Roll the party’s dice, then keep or reroll.',
     AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
   },
   'lock_hint': {
@@ -12341,11 +12341,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'roll_banish_done': {
     AppLanguage.en: '{name} is warded off for {draws} draws.',
-    AppLanguage.fr: '{name} est écarté pour {draws} tirages.',
+    AppLanguage.fr: 'On écarte {name} pour {draws} tirages.',
   },
   'roll_warded': {
     AppLanguage.en: 'Warded, {n} draws',
-    AppLanguage.fr: 'Écarté, {n} tirages',
+    AppLanguage.fr: 'À l’écart, {n} tirages',
   },
   'roll_raise': {
     AppLanguage.en: 'Raise ({left})',
