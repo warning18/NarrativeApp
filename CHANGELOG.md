@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.504.0+540]
+
+Wave 16 UX, item 1, second step: two more sheets use the shared parts.
+
+### Changed
+- **The offer's confirm dialog** ("Take the gift?") is built from the shared sheet parts: the title, "Offered by" as its italic line, the standing and risk lines, and the main button with Back under it. Same words, same keys; it scrolls on a short phone.
+- **The skill sheet's header** (the skill's pixel icon, its name, "step 2 of 5 · known") uses the shared header.
+- Not moved: the face skill choice sheet keeps its own layout, since its pick-then-set bar does not fit the shared row.
+
 ## [1.503.0+539]
 
 Wave 16 UX, item 4: a town changing hands is seen.
