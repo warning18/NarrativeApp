@@ -12,6 +12,8 @@ import '../gamedata/db_schema.dart'
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/game_db_providers.dart' show localizedDbProvider;
+import '../data/companion_remarks.dart' show houseBuiltRemarkKinds;
+import '../providers/moment_remark_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -19,6 +21,7 @@ import '../data/camp_works.dart'
     show WorkCategory, tierFirstChapter, workTierOf;
 import 'camp_build_tray.dart';
 import 'camp_works_list.dart';
+import 'companion_remark_bubble.dart';
 import 'cliff_town_view.dart';
 import 'immersive_notice.dart';
 import 'moments.dart';
@@ -207,12 +210,19 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           ],
           trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
     }
-    showImmersiveNotice(
+    // A companion's word on some houses (Core's speakUpOnMoment), after
+    // the notice, as for a shared drink.
+    final kind = houseBuiltRemarkKinds[houseId];
+    final remark = kind == null ? null : speakUpOnMoment(ref, kind);
+    final notice = showImmersiveNotice(
       context,
       icon: Icons.home,
       message: '${trFor(lang, 'house_built_prefix')}: '
           '${_nameOf(houseId)}$achievementSuffix',
     );
+    if (remark == null) return;
+    await notice;
+    if (mounted) await showCompanionRemarks(context, ref, [remark]);
   }
 
   Future<void> _buildAddition(TownAddition addition, CliffTown town) async {
@@ -244,6 +254,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
+    watchMomentRemarks(ref);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final town = CliffTown.build(session.townPieces);

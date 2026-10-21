@@ -120,7 +120,7 @@ void main() {
     Future<void> pumpFor(int ms) async {
       for (var i = 0; i < ms ~/ 100; i++) {
         await tester.runAsync(
-            () => Future<void>.delayed(const Duration(milliseconds: 50)));
+            () => Future<void>.delayed(const Duration(milliseconds: 5)));
         await tester.pump(const Duration(milliseconds: 100));
       }
     }

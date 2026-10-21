@@ -1,4 +1,5 @@
 import 'approval.dart';
+import 'risky_gifts.dart';
 
 /// Companion remarks (v1.167): a companion in the party says something
 /// about what the player just did, in their own voice, and the next scene
@@ -49,7 +50,60 @@ enum RemarkKind {
   /// A word on the road, once per land walk, from a companion who walks
   /// in the party (see walkRemark).
   walk,
+
+  // Wave 15 moments (see momentRemark): something the player chose to do
+  // outside a story choice, said once, by one companion in the party.
+
+  /// The Parley Tent has just been built at camp.
+  builtParleyTent,
+
+  /// The Bone-Caster's Hut has just been built at camp.
+  builtBoneCastersHut,
+
+  /// The Warding Cairn has just been built at camp.
+  builtWardingCairn,
+
+  /// The Star Well has just been built at camp.
+  builtStarWell,
+
+  /// A risky gift taken, before its die is shown (risky_gifts.dart).
+  riskyTaken,
+
+  /// A risky gift's die gave the gift.
+  riskyWon,
+
+  /// A risky gift's die took health.
+  riskyLostHealth,
+
+  /// A risky gift's die took gold.
+  riskyLostGold,
+
+  /// A risky gift's die laid the stat curse.
+  riskyLostCurse,
+
+  /// Mending bought at a temple (templeMend).
+  templeMended,
+
+  /// A Blessing bought at a temple (templeBless).
+  templeBlessed,
 }
+
+/// The houses whose building the party remarks on, by houses.json id.
+const Map<String, RemarkKind> houseBuiltRemarkKinds = {
+  'parley_tent': RemarkKind.builtParleyTent,
+  'bone_casters_hut': RemarkKind.builtBoneCastersHut,
+  'warding_cairn': RemarkKind.builtWardingCairn,
+  'star_well': RemarkKind.builtStarWell,
+};
+
+/// The remark kind for what a risky gift's die did, after the fallbacks
+/// ([RiskyResult.outcome]).
+RemarkKind riskyOutcomeRemarkKind(RiskyOutcome outcome) => switch (outcome) {
+      RiskyOutcome.gift => RemarkKind.riskyWon,
+      RiskyOutcome.health => RemarkKind.riskyLostHealth,
+      RiskyOutcome.gold => RemarkKind.riskyLostGold,
+      RiskyOutcome.curse => RemarkKind.riskyLostCurse,
+    };
 
 /// The trigger of a Companion Remarks record written for one story choice
 /// (its `choiceKey` names the choice).
@@ -300,6 +354,42 @@ class RemarkMemory {
   final id = speakers[order.first];
   final spoken = _spoken(memory, id, RemarkKind.walk,
       lineCount: book.linesFor(id, RemarkKind.walk).length);
+  return (remark: spoken.remark, memory: spoken.memory);
+}
+
+/// A word on a moment the player chose outside a story choice (wave 15: a
+/// house built, a risky gift taken and its die, a temple service bought):
+/// from one of [partyIds] (the companions in the party, see
+/// momentPartyOf) who has lines for [kind], the one who spoke least
+/// recently first. [RemarkMemory.lastSpokeAt] only moves on with story
+/// choices, so between two choices it ties for everyone who spoke; then
+/// the one who has said the fewest lines so far goes first, then the one
+/// further forward in the party. Nothing when nobody has such a line.
+///
+/// No cooldown: like a deed the party cares about, the player chose this
+/// moment and it comes rarely, so it is always remarked on. The caller
+/// makes one call per moment, so a moment has at most one remark.
+({CompanionRemark? remark, RemarkMemory memory}) momentRemark(RemarkBook book,
+    RemarkMemory memory, List<String> partyIds, RemarkKind kind) {
+  int lastSpoke(String id) => memory.lastSpokeAt[id] ?? -1;
+  final speakers = [
+    for (final id in partyIds)
+      if (book.linesFor(id, kind).isNotEmpty) id,
+  ];
+  if (speakers.isEmpty) return (remark: null, memory: memory);
+  int said(String id) => [
+        for (final entry in memory.used.entries)
+          if (entry.key.startsWith('$id/')) entry.value,
+      ].fold(0, (a, b) => a + b);
+  final order = [for (var i = 0; i < speakers.length; i++) i]..sort((a, b) {
+      final byTurn = lastSpoke(speakers[a]).compareTo(lastSpoke(speakers[b]));
+      if (byTurn != 0) return byTurn;
+      final bySaid = said(speakers[a]).compareTo(said(speakers[b]));
+      return bySaid != 0 ? bySaid : a.compareTo(b);
+    });
+  final id = speakers[order.first];
+  final spoken =
+      _spoken(memory, id, kind, lineCount: book.linesFor(id, kind).length);
   return (remark: spoken.remark, memory: spoken.memory);
 }
 
