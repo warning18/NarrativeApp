@@ -218,3 +218,34 @@ Encounters won within 3 tries (400 runs, same plan and harness as above): before
 | 23 | 67.4 | 68.6 | 65.1 | 62.2 → 68.6 | 68.1 | 50.7 → 52.3 |
 
 Every boss stays in its band at all three seeds (highest against its band: Aurel Vane 83 of 63–87, Claimant Vane 50 of 28–52 at seed 11). `clash_balance_test` passes on its bounds.
+
+## The chapter curve, chapters 2 and 7 (wave 16, after v1.499)
+
+QA's L3 on v1.489 found chapter 2 at 84% of encounters won within 3 tries and chapter 7 at 56% (`docs/qa/l3-1.489.0.md`). Re-measured on v1.499 first (400 runs, same plan and harness as above): chapter 2 at 87.8 / 87.8 / 84.9 (seeds 7 / 11 / 23), chapter 7 at 58.8 / 57.5 / 56.5.
+
+**Chapter 7 is the claimants.** They are 58% of the chapter's encounters and are won 45% of the time across the three seeds, above their own 40% target; the regular fights (the Inquisition at the White Anchorage and Candlehold's gates) are won 75%. The proposal's Mending at the gates would change nothing: every way to the Lantern Hall already passes the rest at the gates (`7515_rest`: full health, mana and a major potion), so each claimant is met fresh. The knob used is the chapter's regular floor instead, which leaves the claimants on their own boss floor.
+
+**Chapter 2's losses are the Saltmouth gate soldier** (`2020`, `2015_kelda`, `2015_scaffold_clerk_fight`: one Inquisition soldier, won 30%); the other chapter-2 enemies are won 86–99%.
+
+- `enemyHealthFloorByChapter` (combat_engine.dart), chapter 2: 1.98 → **1.80**.
+- `enemyHealthFloorByChapter`, chapter 7: 2.28 → **2.08**.
+
+Both knobs sit near the simulator's seeded noise (a change anywhere moves a chapter 1–3 points by itself). Cuts of 1.82 / 2.05 or 1.78 / 2.02 put a `clash_balance_test` gap above 0.10 or Claimant Morrow out of its band at one seed; 1.95 in chapter 7 took Claimant Vane out of its band at seeds 11 and 23. The pair kept is the largest that stays clear of both at the three seeds.
+
+Encounters won within 3 tries, by chapter: before → after.
+
+| Seed | Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 |
+|---|---|---|---|---|---|---|---|---|
+| 7 | 93.5 → 93.5 | 87.8 → 87.2 | 68.7 → 67.5 | 58.7 → 57.6 | 67.2 → 67.3 | 62.0 → 62.0 | 58.8 → 59.4 | 54.0 → 54.3 |
+| 11 | 93.7 → 93.7 | 87.8 → 88.8 | 69.4 → 67.9 | 59.0 → 58.7 | 67.0 → 66.4 | 63.7 → 62.1 | 57.5 → 58.5 | 56.2 → 55.1 |
+| 23 | 94.8 → 94.8 | 84.9 → 87.0 | 66.8 → 67.9 | 59.5 → 59.2 | 66.5 → 65.6 | 61.8 → 61.5 | 56.5 → 59.7 | 53.8 → 54.4 |
+
+Over the three seeds: chapter 2 86.8 → 87.7, chapter 7 57.6 → 59.2 (its regular fights 75 → 79, the claimants 45 → 45). Chapter 7 can't reach its old 64 from the regular fights alone without a much heavier cut: the rest of that gap is the claimants, who already sit above their band's target.
+
+| Seed | Warrior | Mage | Rogue | Cleric | Ranger | Boss mean |
+|---|---|---|---|---|---|---|
+| 7 | 69.9 → 69.6 | 65.8 → 64.9 | 66.1 → 66.8 | 70.8 → 71.9 | 68.7 → 66.2 | 52.9 → 52.9 |
+| 11 | 71.5 → 71.4 | 68.3 → 68.6 | 67.3 → 65.4 | 69.0 → 69.7 | 67.8 → 65.7 | 52.5 → 52.7 |
+| 23 | 67.4 → 69.7 | 68.6 → 65.7 | 65.1 → 67.7 | 68.6 → 68.9 | 68.1 → 67.1 | 52.3 → 52.7 |
+
+Every boss stays in its band at the three seeds (closest: Aurel Vane 83 of 63–87, Claimant Vane 49 of 28–52 at seed 23). `clash_balance_test` gaps: at most 0.080 (chapter 1; chapter 2 0.026, chapter 7 0.073), against 0.071 before. No test bound changed.
