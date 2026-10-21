@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.499.0+535]
+
+The cleric catches up with the other professions.
+
+### Changed
+- **The cleric** deals 5 base damage instead of 3. Encounters won within three tries: 65.0 → 70.8 (seed 7), 63.4 → 69.0 (seed 11), 62.2 → 68.6 (seed 23); the other professions are unchanged, bosses are won 52.9% on average (51.4% before), every boss inside its band.
+
 ## [1.497.0+533]
 
 The professions closer together, the bosses back to a fair fight.
