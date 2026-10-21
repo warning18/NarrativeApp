@@ -15,6 +15,15 @@ Chapters 2 and 7 get a little easier, closer to the difficulty curve.
 ### Changed
 - **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98) and in chapter 7 is 2.08 (was 2.28). Bosses keep their own floor. Encounters won within three tries, averaged over seeds 7, 11 and 23: chapter 2 86.8 → 87.7%, chapter 7 57.6 → 59.2%. Every boss stays inside its band, and the professions stay within 64.9–71.9%.
 
+## [1.500.0+536]
+
+The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
+
+### Changed
+- **Simulator, seat crisis:** when the patron clan's seat is hunted, the simulated party defends it if healthy and wins the fight, pays if it has the gold, else refuses — through the same scene and rules as the app. Runs count crises held, lost, paid and refused.
+- **Simulator, gifts:** the party takes risky gifts from its patron and the patron's allies; another clan's card only when it fills an empty die face.
+- **Clan study (50 runs) before → after:** Vigil end power 31.6 → 46.0, Crows 65.3 → 45.0, Dominion 78.7 → 73.3; patron falls 3 → 3. Bosses won 48.4% on average (52.9% before), every boss inside its band. Full table in `docs/simulation/clan-power-50-v1.500.md`.
+
 ## [1.499.0+535]
 
 The cleric catches up with the other professions.

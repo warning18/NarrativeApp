@@ -16,6 +16,7 @@ import 'patron_stats.dart';
 import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'camp_rolls.dart' show RollBanOn;
+import 'clan_crisis.dart' show buildCrisisNode, mainClanOf;
 import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
@@ -245,6 +246,7 @@ class SimGrowth {
     required int chapter,
     String key = '',
     String cause = 'sim',
+    Geography? geography,
   }) {
     final change = coast.applyStoryPolitics(story,
         cause: cause,
@@ -254,7 +256,8 @@ class SimGrowth {
         world: CoastWorld(
             data: tables.clans,
             chapter: max(1, chapter),
-            signPatrons: patronsThisLife));
+            signPatrons: patronsThisLife,
+            geography: geography));
     politics = change.politics;
     final gained = [
       for (final id in change.titles)
@@ -343,18 +346,70 @@ class SimGrowth {
     politics =
         applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
     if (geography != null) {
-      // No seat crisis here (clan_crisis.dart): with no one to ask, a
-      // change that would take the patron's seat or last place goes
-      // through at once, so the patron falls more often than in the app,
-      // where the defend, pay or refuse scene comes first (see
-      // docs/simulation/sim-gaps.md).
+      // As in the app, a change that would take your main clan's seat or
+      // last place waits as a crisis (clan_crisis.dart), which the walk
+      // then plays ([playCrisis]).
       final turn = territoryTurn(politics,
-          data: tables.clans, geography: geography, chapter: chapter);
+          data: tables.clans,
+          geography: geography,
+          chapter: chapter,
+          protect: mainClanOf(politics));
       politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
       territoryChanges.addAll(turn.changes);
       if (politics.nemesis.isNotEmpty) nemeses.add(politics.nemesis);
     }
     pending.add(OfferTicket(source: OfferSource.chapter, detail: '$chapter'));
+  }
+
+  /// The seat crises played ([playCrisis]): `held` (defended and won),
+  /// `lost` (defended and lost, then paid or refused), `paid` and
+  /// `refused`.
+  final Map<String, int> crisisOutcomes = {};
+
+  /// Your main clan's seat crisis waiting (clan_crisis.dart), played the
+  /// simulated player's way with the app's own scene ([buildCrisisNode])
+  /// and its choices' politics: defend when the character is healthy
+  /// (more than half its health, as [preferredSuitor] reads it) and
+  /// [defend] (the walk's fight against the attacker's hunter) is won;
+  /// else, or when it is lost, pay when [gold] holds the price; else
+  /// refuse. Returns the gold and flags after, and how it settled ('' for
+  /// no crisis).
+  ({int gold, List<String> flags, String how}) playCrisis({
+    required Geography geography,
+    required Map<String, dynamic> enemies,
+    required int chapter,
+    required int gold,
+    required Iterable<String> flags,
+    required Random random,
+    required bool Function(String enemyId) defend,
+  }) {
+    final node = buildCrisisNode(politics,
+        data: tables.clans,
+        geography: geography,
+        enemies: enemies,
+        chapter: chapter,
+        gold: gold,
+        random: random);
+    if (node == null) {
+      return (gold: gold, flags: flags.toList(), how: '');
+    }
+    StoryChoice? settling(String how) => node.choices
+        .where((c) => c.politics?.settleCrisis == how && c.goldMod <= 0)
+        .where((c) => c.grantMaterials.isEmpty)
+        .firstOrNull;
+    final held = settling('held');
+    final healthy = character.currentHealth * 2 > character.maxHealth;
+    var choice = held != null && healthy && defend(held.triggerEnemyId ?? '')
+        ? held
+        : null;
+    if (held != null && healthy && choice == null) _crisis('lost');
+    choice ??= settling('paid') ?? settling('refused');
+    final how = choice?.politics?.settleCrisis ?? '';
+    if (choice == null) return (gold: gold, flags: flags.toList(), how: '');
+    _crisis(how);
+    final after = applyStoryPolitics(choice.politics!,
+        flags: flags, chapter: chapter, cause: 'crisis', geography: geography);
+    return (gold: gold + choice.goldMod, flags: after, how: how);
   }
 
   /// Spends whatever waits, the simulator's way; returns the alignment
@@ -586,6 +641,12 @@ class SimGrowth {
           riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
       final favourBest = random.nextDouble() < simFavourBestChance;
+      // Keeping to the patron and its allies (a card of another clan only
+      // for an empty die face), as a player who backs a clan would.
+      final main = mainClanOf(politics);
+      final keepTo = main.isEmpty
+          ? null
+          : {main, ...alliesOf(main, politics, tables.clans)};
       Suitor? choose(ClanOffer o) => preferredSuitor(
             o,
             fillsEmptyFace: fillsEmptyFace,
@@ -595,6 +656,7 @@ class SimGrowth {
             politics: politics,
             data: tables.clans,
             healthy: character.currentHealth * 2 > character.maxHealth,
+            keepTo: keepTo,
           );
       var chosen = choose(offer);
       // The camp's roll houses (sim_rolls.dart), on their own draw.
@@ -668,6 +730,9 @@ class SimGrowth {
     }
     return next;
   }
+
+  void _crisis(String key) =>
+      crisisOutcomes[key] = (crisisOutcomes[key] ?? 0) + 1;
 
   void _count(String key) => riskyOutcomes[key] = (riskyOutcomes[key] ?? 0) + 1;
 
