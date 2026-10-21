@@ -266,7 +266,6 @@
       "scenes": [
         "5200_house_barkbleeders",
         "5200_house_barkbleeders_bled",
-        "5200_house_returned",
         "5200_clan_mire_1",
         "5200_clan_mire_1_edge",
         "5200_clan_mire_1_answered",
@@ -287,7 +286,8 @@
         "5200_riddles_failed",
         "5200_nell",
         "5200_nell_later",
-        "5200_sleep"
+        "5200_sleep",
+        "5200_house_returned"
       ]
     }
   ],

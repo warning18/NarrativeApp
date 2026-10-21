@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.489.0+525]
+
+Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
+
+### Added
+- **The risky gift's d20 reveals itself.** After Accept, the die tumbles in a dialog, lands on the saved number, shows the sum with Luck and a verdict ("The gift is yours." / "A price to pay."); Next goes to the result card. With animations off the die is set down at once.
+- **The odds as a bar** on the risky card: gift in gold, price in red.
+
+### Changed
+- **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
+- English and French strings for the die dialog (`offer_risky_roll_*`).
+## [1.488.0+524]
+
+The last indoor scenes get their rooms on Core's side.
+
+### Added
+- **Two buildings:** the informant's warehouse behind Saltmouth's landward gate, and the lamp-room of the cliff light at Wrack's End (Narrative's names and blurbs, EN/FR).
+
+### Fixed
+- **Kindly Hill:** the way of `5200_house_returned` stands in the hall district, where its long room is.
+
+Narrative then seats `5200_house_returned`, `2015_informant_trap` and `5100_clan_dominion_1_lit` in their rooms.
+
 ## [1.487.0+523]
 
 Four more indoor scenes have their rooms (98 of the 99).
