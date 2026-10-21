@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.497.0+533]
+
+The professions closer together, the bosses back to a fair fight.
+
+### Changed
+- **The mage's calling path (Arcanist)** gives INT 4 and CON 1 instead of INT 2, WIS 2 and PER 1; the mage starts with 2 more max health.
+- **The Skirmisher path** (rogue and ranger) gives DEX 3, PER 1 and CON 1 instead of DEX 2, PER 1, LUCK 1 and CON 1; the rogue starts with 5 more max health.
+- **Bosses** have about 5% more health (the shared boss health scale 1.15 → 1.21), and Claimant Vane 79 instead of 74.
+- Encounters won within three tries, seed 7: warrior 70.7 → 69.9, mage 60.1 → 65.8, rogue 59.9 → 66.1, cleric 66.4 → 65.0, ranger 69.0 → 68.7. Bosses are won 51.4% on average (51.1% before).
+
 ## [1.496.0+532]
 
 Wave 14 remainder: the player can take the camera during a move.
