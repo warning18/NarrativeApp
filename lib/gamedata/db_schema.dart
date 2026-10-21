@@ -2401,6 +2401,19 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.boolean,
     ),
     FieldSchema(
+      key: 'unlocksRiskyGifts',
+      label: 'Unlocks risky gifts (the Parley Tent, risky_gifts.dart)',
+      type: FieldType.boolean,
+    ),
+    FieldSchema(
+      key: 'rollPower',
+      label: 'Roll power (camp_rolls.dart)',
+      type: FieldType.enumeration,
+      enumOptions: ['reroll', 'banish', 'raise'],
+      help: 'The power it gives over the stat pick and the clans\' offer: '
+          'reroll the set, banish a card for some draws, raise a card.',
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
@@ -3137,6 +3150,33 @@ final DbSchema factionsSchema = DbSchema(
     FieldSchema(
       key: 'brokenNews_fr',
       label: 'Broken news (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'riskStat',
+      label: 'Risky gift: curse stat',
+      type: FieldType.enumeration,
+      enumOptions: [
+        'strength',
+        'dexterity',
+        'constitution',
+        'intelligence',
+        'wisdom',
+        'perception',
+        'luck',
+        'charisma',
+      ],
+      help: 'The ability a risky gift\'s curse lowers (risky_gifts.dart); '
+          'unset: the clan never offers a risky gift.',
+    ),
+    FieldSchema(
+      key: 'riskyOffer',
+      label: 'Risky gift: what they say',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'riskyOffer_fr',
+      label: 'Risky gift: what they say (FR)',
       type: FieldType.text,
     ),
     FieldSchema(

@@ -147,6 +147,14 @@ void main() {
     expect(find.text('Level Up! Level 4'), findsOneWidget);
     expect(find.byKey(const Key('level_up_points')), findsOneWidget);
     expect(find.byKey(const Key('level_up_burst')), findsOneWidget);
+    // The stats open as the radar and the fight numbers; the Detail tab
+    // under them opens the list of rows.
+    expect(find.byKey(const Key('level_up_radar')), findsOneWidget);
+    expect(find.byKey(const Key('level_up_fight_damage')), findsOneWidget);
+    expect(find.byKey(const Key('stat_row_strength')), findsNothing);
+    await tester.ensureVisible(find.byKey(const Key('level_up_detail_tab')));
+    await tester.tap(find.byKey(const Key('level_up_detail_tab')));
+    await tester.pump();
     for (final stat in ['damage', 'strength', 'intelligence', 'luck']) {
       expect(find.byKey(Key('stat_row_$stat')), findsOneWidget, reason: stat);
     }

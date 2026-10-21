@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
@@ -38,6 +39,8 @@ import '../data/perks.dart';
 import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
+import '../data/camp_rolls.dart';
+import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
@@ -295,7 +298,14 @@ class PlayerSession {
     this.clanOffer,
     this.trainingTaken = const {},
     this.statPickOffer = const [],
+    this.rerollCharges = 0,
+    this.banishCharges = 0,
+    this.raiseCharges = 0,
+    this.raiseProgress = 0,
+    this.rollBans = const [],
+    this.rollNonce = 0,
     this.statSources = const {},
+    this.riskCurses = const [],
     this.tomePicks = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
@@ -589,6 +599,18 @@ class PlayerSession {
   /// The picks waiting: one per unspent stat point.
   int get pendingStatPicks => statPoints;
 
+  /// The camp's roll houses (camp_rolls.dart): the Reroll, Banish and
+  /// Raise charges left, the fresh draws toward the next Raise charge, the
+  /// bans running, and a count of the powers used, mixed into the stat
+  /// pick's seed so a redraw differs. Each written only when not its
+  /// default; an old save reads them all at it.
+  final int rerollCharges;
+  final int banishCharges;
+  final int raiseCharges;
+  final int raiseProgress;
+  final List<RollBan> rollBans;
+  final int rollNonce;
+
   /// The stat ledger (stat_ledger.dart, v1.459): what raised a stat that
   /// the data can't tell afterwards -- `kind:id` (a pick's path, a tome, the
   /// patron, the formative memories) -> stat -> amount, the base damage and
@@ -596,6 +618,11 @@ class PlayerSession {
   /// [withSourcedGains]; read by statBreakdown. Empty in a save from before
   /// it (statBreakdown then shows what it can't explain as "earlier").
   final Map<String, Map<String, int>> statSources;
+
+  /// The clans' curses worn (risky_gifts.dart): each lowers a stat, written
+  /// in [statSources] as `curse:<clan>`, until its level is reached (see
+  /// [withCursesEnded]). Left out of the save when empty.
+  final List<RiskCurse> riskCurses;
 
   /// The tomes whose pick still waits among the [pendingStatPicks], oldest
   /// first: the next pick taken counts as the first one's (the ledger's
@@ -955,7 +982,14 @@ class PlayerSession {
     bool clearClanOffer = false,
     Map<String, int>? trainingTaken,
     List<StatPickOffer>? statPickOffer,
+    int? rerollCharges,
+    int? banishCharges,
+    int? raiseCharges,
+    int? raiseProgress,
+    List<RollBan>? rollBans,
+    int? rollNonce,
     Map<String, Map<String, int>>? statSources,
+    List<RiskCurse>? riskCurses,
     List<String>? tomePicks,
     List<String>? heldTitleIds,
     String? activeTitleId,
@@ -1072,7 +1106,14 @@ class PlayerSession {
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
       trainingTaken: trainingTaken ?? this.trainingTaken,
       statPickOffer: statPickOffer ?? this.statPickOffer,
+      rerollCharges: rerollCharges ?? this.rerollCharges,
+      banishCharges: banishCharges ?? this.banishCharges,
+      raiseCharges: raiseCharges ?? this.raiseCharges,
+      raiseProgress: raiseProgress ?? this.raiseProgress,
+      rollBans: rollBans ?? this.rollBans,
+      rollNonce: rollNonce ?? this.rollNonce,
       statSources: statSources ?? this.statSources,
+      riskCurses: riskCurses ?? this.riskCurses,
       tomePicks: tomePicks ?? this.tomePicks,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
@@ -1176,6 +1217,46 @@ class PlayerSession {
     );
   }
 
+  /// This session with [faction]'s curse (risky_gifts.dart): [amount]
+  /// points off [stat] for [riskyCurseLevels] levels, in the ledger as
+  /// `curse:<faction>`. A second curse from the same clan restarts the
+  /// count instead of stacking.
+  PlayerSession withCurse(String faction, String stat, int amount) {
+    final old = riskCurses.where((c) => c.clan == faction).firstOrNull;
+    var s = this;
+    if (old != null) {
+      s = s.withSourcedGains(ledgerCurse, faction, {old.stat: old.amount});
+    }
+    s = s.withSourcedGains(ledgerCurse, faction, {stat: -amount});
+    return s.copyWith(riskCurses: [
+      for (final c in s.riskCurses)
+        if (c.clan != faction) c,
+      RiskCurse(
+          clan: faction,
+          stat: stat,
+          amount: amount,
+          untilLevel: level + riskyCurseLevels),
+    ]);
+  }
+
+  /// This session with the curses whose level is reached lifted: their
+  /// points given back, the ledger's row cancelled.
+  PlayerSession withCursesEnded() {
+    final ended = [
+      for (final c in riskCurses)
+        if (level >= c.untilLevel) c,
+    ];
+    if (ended.isEmpty) return this;
+    var s = this;
+    for (final c in ended) {
+      s = s.withSourcedGains(ledgerCurse, c.clan, {c.stat: c.amount});
+    }
+    return s.copyWith(riskCurses: [
+      for (final c in riskCurses)
+        if (level < c.untilLevel) c,
+    ]);
+  }
+
   Map<String, dynamic> toJson() => {
         'saveVersion': playerSessionSaveVersion,
         'level': level,
@@ -1246,7 +1327,16 @@ class PlayerSession {
         'trainingTaken': trainingTaken,
         if (statPickOffer.isNotEmpty)
           'statPickOffer': [for (final o in statPickOffer) o.toJson()],
+        if (rerollCharges != 0) 'rerollCharges': rerollCharges,
+        if (banishCharges != 0) 'banishCharges': banishCharges,
+        if (raiseCharges != 0) 'raiseCharges': raiseCharges,
+        if (raiseProgress != 0) 'raiseProgress': raiseProgress,
+        if (rollBans.isNotEmpty)
+          'rollBans': [for (final b in rollBans) b.toJson()],
+        if (rollNonce != 0) 'rollNonce': rollNonce,
         if (statSources.isNotEmpty) 'statSources': statSources,
+        if (riskCurses.isNotEmpty)
+          'riskCurses': [for (final c in riskCurses) c.toJson()],
         if (tomePicks.isNotEmpty) 'tomePicks': tomePicks,
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
@@ -1487,12 +1577,19 @@ class PlayerSession {
         for (final o in (json['statPickOffer'] as List? ?? const []))
           if (o is Map) StatPickOffer.fromJson(o),
       ],
+      rerollCharges: (json['rerollCharges'] as num?)?.toInt() ?? 0,
+      banishCharges: (json['banishCharges'] as num?)?.toInt() ?? 0,
+      raiseCharges: (json['raiseCharges'] as num?)?.toInt() ?? 0,
+      raiseProgress: (json['raiseProgress'] as num?)?.toInt() ?? 0,
+      rollBans: rollBansFromJson(json['rollBans']),
+      rollNonce: (json['rollNonce'] as num?)?.toInt() ?? 0,
       trainingTaken: {
         for (final MapEntry(:key, :value)
             in ((json['trainingTaken'] as Map?) ?? const {}).entries)
           if (value is num) key.toString(): value.toInt(),
       },
       statSources: ledgerFromJson(json['statSources']),
+      riskCurses: riskCursesFromJson(json['riskCurses']),
       tomePicks:
           (json['tomePicks'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2352,16 +2449,52 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSpecIds: s.specIds,
       specVariants: tables.specVariants,
       // A lucky sign (or title) helps draw the next gift.
-      luck: s.luck +
-          signEffectsFor(s.heldSigns, tables.signs,
-              alignment: s.alignmentScore,
-              extra: clanEffectsFor(
-                activeTitleId: s.activeTitleId,
-                heldTitleIds: s.heldTitleIds,
-                swornBoonIds: s.swornBoonIds,
-                swornFactionId: s.politics.swornFactionId,
-                data: tables.data,
-              )).stat('luck'),
+      luck: _offerLuck(tables),
+      riskyGifts: riskyGiftsOpen(s.builtHouseIds),
+      // The gifts warded at the Warding Cairn (camp_rolls.dart).
+      bannedGifts: bannedIdsOf(s.rollBans, RollBanOn.offer),
+    );
+  }
+
+  /// The character's Luck as the offers read it: their own, with what the
+  /// signs, the title worn and the Sworn boon add.
+  int _offerLuck(OfferTables tables) {
+    final s = state;
+    return s.luck +
+        signEffectsFor(s.heldSigns, tables.signs,
+            alignment: s.alignmentScore,
+            extra: clanEffectsFor(
+              activeTitleId: s.activeTitleId,
+              heldTitleIds: s.heldTitleIds,
+              swornBoonIds: s.swornBoonIds,
+              swornFactionId: s.politics.swornFactionId,
+              data: tables.data,
+            )).stat('luck');
+  }
+
+  /// The Luck a risky card's roll reads now (see [_offerLuck]).
+  int riskyLuck(OfferTables tables) => _offerLuck(tables);
+
+  /// The odds a risky card shows now (risky_gifts.dart's riskyOddsFor, at
+  /// the character's Luck).
+  ({int gift, int price}) riskyOdds(OfferTables tables) =>
+      riskyOddsFor(_offerLuck(tables));
+
+  /// What taking [suitor]'s risky card would do now (its saved die, the
+  /// Luck, the purse and the health of this moment); null for a normal
+  /// card. [acceptSuitor] applies the same.
+  RiskyResult? riskyResultOf(Suitor suitor, OfferTables tables) {
+    if (!suitor.risky) return null;
+    final s = state;
+    return riskyResultFor(
+      roll: suitor.riskRoll,
+      luck: _offerLuck(tables),
+      gold: s.gold,
+      chapter: _politicsChapter(null),
+      maxHealth: s.maxHealth,
+      currentHealth: s.currentHealth,
+      curseStat: riskyCurseStatFor(
+          tables.data.faction(suitor.factionId), s.professionId),
     );
   }
 
@@ -2504,21 +2637,272 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return const [];
     }
     if (s.statPickOffer.isNotEmpty) return s.statPickOffer;
-    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
     final offer = drawStatPick(
       paths: paths,
-      random:
-          random ?? Random(s.level * 7919 + s.statPoints * 131 + takenTotal),
+      random: random ?? _statPickRandom(s),
       professionId: s.professionId,
       raceId: s.raceId,
       luck: s.luck,
       taken: s.trainingTaken,
       stats: _trainingStatsOf(s),
+      bannedPaths: bannedIdsOf(s.rollBans, RollBanOn.pick),
     );
     if (offer.isEmpty) return offer;
-    state = s.copyWith(statPickOffer: offer);
+    state = _countFreshDraw(s.copyWith(statPickOffer: offer), RollBanOn.pick);
     await _persist();
     return offer;
+  }
+
+  /// The stat pick's seed (see [ensureStatPick]): the level, the points
+  /// left, the paths taken, and [PlayerSession.rollNonce], so a reroll, a
+  /// ban or a raise draws anew.
+  static Random _statPickRandom(PlayerSession s) {
+    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
+    return Random(s.level * 7919 +
+        s.statPoints * 131 +
+        takenTotal +
+        s.rollNonce * 104729);
+  }
+
+  // --- The camp's roll houses (camp_rolls.dart) ---------------------------
+
+  /// [s] after a fresh draw of [on] (a stat pick or an offer drawn anew,
+  /// never a reroll or a ban's replacement): its bans count down, and the
+  /// Star Well's count moves on (see afterFreshDraw).
+  static PlayerSession _countFreshDraw(PlayerSession s, RollBanOn on) {
+    final raiseBuilt = rollPowersOf(s.builtHouseIds).contains(RollPower.raise);
+    if (s.rollBans.isEmpty && !raiseBuilt) return s;
+    final next = afterFreshDraw(
+        on: on,
+        bans: s.rollBans,
+        raiseBuilt: raiseBuilt,
+        raise: s.raiseCharges,
+        raiseProgress: s.raiseProgress);
+    return s.copyWith(
+        rollBans: next.bans,
+        raiseCharges: next.raise,
+        raiseProgress: next.raiseProgress);
+  }
+
+  /// [power]'s charges after [levels] levels gained: +1 a level, never above
+  /// its most, while its house stands (Reroll and Banish only).
+  int _levelCharges(RollPower power, int levels) {
+    final s = state;
+    final now = power == RollPower.reroll ? s.rerollCharges : s.banishCharges;
+    if (levels <= 0 || !rollPowersOf(s.builtHouseIds).contains(power)) {
+      return now;
+    }
+    final most =
+        power == RollPower.reroll ? rerollMaxCharges : banishMaxCharges;
+    return min(most, now + levels);
+  }
+
+  /// What the roll houses give now, read from houses.json's `rollPower`
+  /// ([houses]): each power's charges (null when its house isn't up) and
+  /// the bans running.
+  CampRolls campRolls(Map<String, dynamic> houses) =>
+      campRollsOf(state, powers: rollPowersBuilt(state.builtHouseIds, houses));
+
+  bool _has(RollPower power, int charges) =>
+      charges > 0 && rollPowersOf(state.builtHouseIds).contains(power);
+
+  /// The stat pick's tier as drawn: a raised card's is one step up.
+  static SignRarity _drawnTier(List<StatPickOffer> offer) {
+    final plain = offer.where((o) => !o.raised).firstOrNull;
+    if (plain != null) return plain.tier;
+    return SignRarity.values[max(0, offer.first.tier.index - 1)];
+  }
+
+  /// Reroll (the Bone-Caster's Hut): the stat pick on the table drawn
+  /// again, at the same tier, the warded paths left out; one charge. The
+  /// set unchanged when there is no charge or no pick on the table.
+  Future<List<StatPickOffer>> rerollStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (!_has(RollPower.reroll, s.rerollCharges) ||
+        s.statPickOffer.isEmpty ||
+        s.pendingStatPicks <= 0) {
+      return s.statPickOffer;
+    }
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final offer = drawStatPick(
+      paths: paths,
+      random: random ?? _statPickRandom(nonced),
+      professionId: s.professionId,
+      raceId: s.raceId,
+      luck: s.luck,
+      taken: s.trainingTaken,
+      stats: _trainingStatsOf(s),
+      tier: _drawnTier(s.statPickOffer),
+      bannedPaths: bannedIdsOf(s.rollBans, RollBanOn.pick),
+    );
+    if (offer.isEmpty) return s.statPickOffer;
+    state = nonced.copyWith(
+        statPickOffer: offer, rerollCharges: s.rerollCharges - 1);
+    await _persist();
+    return offer;
+  }
+
+  /// Banish (the Warding Cairn): the path of the stat pick's card at
+  /// [index] warded off for [draws] fresh picks (5, 10 or 15, costing 1, 2
+  /// or 3 charges), the card replaced at once by another path at the same
+  /// tier. The set unchanged when the charges fall short, the length is
+  /// not one of [banishLengths], or no path is left to replace it.
+  Future<List<StatPickOffer>> banishStatPickOffer(
+      int index, int draws, Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    final offer = s.statPickOffer;
+    final cost = banishCostOf(draws);
+    if (cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        index < 0 ||
+        index >= offer.length) {
+      return offer;
+    }
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.pick, id: offer[index].pathId, left: draws));
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final card = replaceStatPickOffer(
+        offer: offer,
+        index: index,
+        paths: paths,
+        random: random ?? _statPickRandom(nonced),
+        bannedPaths: bannedIdsOf(bans, RollBanOn.pick));
+    if (card == null) return offer;
+    final next = [...offer]..[index] = card;
+    state = nonced.copyWith(
+        statPickOffer: next,
+        rollBans: bans,
+        banishCharges: s.banishCharges - cost);
+    await _persist();
+    return next;
+  }
+
+  /// Whether the stat pick's card at [index] can be raised now: a Raise
+  /// charge, the card neither raised yet nor Heroic.
+  bool canRaiseStatPickOffer(int index) {
+    final s = state;
+    if (!_has(RollPower.raise, s.raiseCharges)) return false;
+    if (index < 0 || index >= s.statPickOffer.length) return false;
+    final card = s.statPickOffer[index];
+    return !card.raised && card.tier != SignRarity.heroic;
+  }
+
+  /// Raise (the Star Well): the stat pick's card at [index] one tier up,
+  /// its gains rebuilt (see raisedStatPickOffer); one charge. The set
+  /// unchanged when it can't be ([canRaiseStatPickOffer]).
+  Future<List<StatPickOffer>> raiseStatPickOffer(
+      int index, Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (!canRaiseStatPickOffer(index)) return s.statPickOffer;
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final card = raisedStatPickOffer(
+        s.statPickOffer[index], paths, random ?? _statPickRandom(nonced));
+    if (card == null) return s.statPickOffer;
+    final next = [...s.statPickOffer]..[index] = card;
+    state =
+        nonced.copyWith(statPickOffer: next, raiseCharges: s.raiseCharges - 1);
+    await _persist();
+    return next;
+  }
+
+  /// Reroll (the Bone-Caster's Hut): the offer on the table drawn again for
+  /// its ticket (its faction and the home seat still come; a risky card
+  /// drawn anew, with a new die), the warded gifts left out; one charge.
+  /// The offer unchanged when there is no charge or none on the table.
+  Future<ClanOffer?> rerollOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
+    final s = state;
+    final offer = s.clanOffer;
+    if (offer == null || !_has(RollPower.reroll, s.rerollCharges)) {
+      return offer;
+    }
+    final next = drawOffer(offer.ticket,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
+    if (next == null) return offer;
+    state = s.copyWith(
+      clanOffer: next,
+      rerollCharges: s.rerollCharges - 1,
+      rollNonce: s.rollNonce + 1,
+      patronsMet:
+          {...s.patronsMet, for (final x in next.suitors) x.factionId}.toList(),
+    );
+    await _persist();
+    return next;
+  }
+
+  /// Banish (the Warding Cairn): [factionId]'s gift on the offer warded off
+  /// for [draws] fresh offers (5, 10 or 15, costing 1, 2 or 3 charges), its
+  /// card replaced at once: the same clan with something else, else
+  /// another faction (see replacementSuitor). Never the Sworn boon nor the
+  /// ticket's own faction's card (suitorBanishable). The offer unchanged
+  /// when it can't be.
+  Future<ClanOffer?> banishSuitor(
+      String factionId, int draws, OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
+    final s = state;
+    final offer = s.clanOffer;
+    final suitor = offer?.suitorOf(factionId);
+    final cost = banishCostOf(draws);
+    if (offer == null ||
+        suitor == null ||
+        cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        !suitorBanishable(suitor, offer)) {
+      return offer;
+    }
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.offer, id: giftBanId(suitor.gift), left: draws));
+    final c = offerContextFor(tables, placeHolder: placeHolder)
+        .withBans(bannedIdsOf(bans, RollBanOn.offer));
+    final card = replacementSuitor(offer, factionId, c, random ?? Random());
+    if (card == null) return offer;
+    final next = offerWith(offer, factionId, card);
+    state = s.copyWith(
+      clanOffer: next,
+      rollBans: bans,
+      banishCharges: s.banishCharges - cost,
+      rollNonce: s.rollNonce + 1,
+      patronsMet: {...s.patronsMet, card.factionId}.toList(),
+    );
+    await _persist();
+    return next;
+  }
+
+  /// The seed of [factionId]'s raise, the same until a power is used: the
+  /// preview and the raise draw the same card.
+  Random _raiseRandom(String factionId) => Random(
+      state.rollNonce * 104729 + stableSeedOf('${state.level}:$factionId'));
+
+  /// What raising [factionId]'s card would give (raisedSuitor), drawn now
+  /// and the same when it is raised; null when there is no Raise charge or
+  /// no real step up (the button hides).
+  Suitor? raisePreview(String factionId, OfferTables tables) {
+    final s = state;
+    final suitor = s.clanOffer?.suitorOf(factionId);
+    if (suitor == null || !_has(RollPower.raise, s.raiseCharges)) return null;
+    return raisedSuitor(
+        suitor, offerContextFor(tables), _raiseRandom(factionId));
+  }
+
+  /// Raise (the Star Well): [factionId]'s card raised to its
+  /// [raisePreview]; one charge. The offer unchanged when there is none.
+  Future<ClanOffer?> raiseSuitor(String factionId, OfferTables tables) async {
+    final s = state;
+    final offer = s.clanOffer;
+    final raised = raisePreview(factionId, tables);
+    if (offer == null || raised == null) return offer;
+    final next = offerWith(offer, factionId, raised);
+    state = s.copyWith(
+        clanOffer: next,
+        raiseCharges: s.raiseCharges - 1,
+        rollNonce: s.rollNonce + 1);
+    await _persist();
+    return next;
   }
 
   /// Takes the offer at [index] of the stat pick on the table: its gains
@@ -2563,13 +2947,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final offer = drawOffer(state.pendingOffers.first,
         offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (offer == null) return null;
-    state = state.copyWith(
-      clanOffer: offer,
-      patronsMet: {
-        ...state.patronsMet,
-        for (final s in offer.suitors) s.factionId,
-      }.toList(),
-    );
+    state = _countFreshDraw(
+        state.copyWith(
+          clanOffer: offer,
+          patronsMet: {
+            ...state.patronsMet,
+            for (final s in offer.suitors) s.factionId,
+          }.toList(),
+        ),
+        RollBanOn.offer);
     await _persist();
     return offer;
   }
@@ -2592,7 +2978,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    var next = _withGift(state, suitor, tables, origin: origin);
+    // A risky card: the die (rolled with the draw) gives the gift or names
+    // the price; standing rises either way.
+    final risk = riskyResultOf(suitor, tables);
+    var next = switch (risk?.outcome) {
+      null ||
+      RiskyOutcome.gift =>
+        _withGift(state, suitor, tables, origin: origin),
+      RiskyOutcome.health => state.copyWith(
+          currentHealth: max(1, state.currentHealth - risk!.amount)),
+      RiskyOutcome.gold =>
+        state.copyWith(gold: max(0, state.gold - risk!.amount)),
+      RiskyOutcome.curse =>
+        state.withCurse(suitor.factionId, risk!.stat, risk.amount),
+    };
     final politics = acceptPolitics(suitor, offer.ticket,
         politics: next.politics,
         data: tables.data,
@@ -3359,6 +3758,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ...state.pendingOffers,
         ..._levelOffers(leveled.levelsGained),
       ],
+      rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
+      banishCharges: _levelCharges(RollPower.banish, leveled.levelsGained),
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -3384,7 +3785,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;
@@ -3810,7 +4211,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       Map<String, int> materialCost = const {},
       int fromChapter = 1,
       int? chapter,
-      String? requiredAllyId}) async {
+      String? requiredAllyId,
+      String? rollPower}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (chapter != null && chapter < fromChapter) return;
     if ((requiredAllyId ?? '').isNotEmpty &&
@@ -3834,6 +4236,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
       townOrder: [...state.townPieces, houseId],
     );
+    // A roll house (camp_rolls.dart) comes with its charges.
+    switch (rollPowerNamed(rollPower) ?? rollPowerHouses[houseId]) {
+      case RollPower.reroll:
+        state =
+            state.copyWith(rerollCharges: chargesWhenBuilt(RollPower.reroll));
+      case RollPower.banish:
+        state =
+            state.copyWith(banishCharges: chargesWhenBuilt(RollPower.banish));
+      case RollPower.raise:
+        state = state.copyWith(raiseCharges: chargesWhenBuilt(RollPower.raise));
+      case null:
+        break;
+    }
     await _persist();
     if (unlocksShopId != null && unlocksShopId.isNotEmpty) {
       await unlockContent(shopId: unlocksShopId);
@@ -5010,6 +5425,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           const OfferTicket(source: OfferSource.boss),
         ...tomeOffers,
       ],
+      rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
+      banishCharges: _levelCharges(RollPower.banish, leveled.levelsGained),
       titanBlood: state.titanBlood + titanBlood,
       heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
@@ -5036,7 +5453,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;
@@ -5167,6 +5584,24 @@ class PermadeathResult {
   /// How many signs the life carried, all lost with it.
   final int signsLost;
 }
+
+/// What the camp's roll houses give [s] (camp_rolls.dart): the charges of
+/// each power whose house stands ([powers], else read from
+/// rollPowerHouses), and the bans running.
+CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
+  final built = powers ?? rollPowersOf(s.builtHouseIds);
+  return CampRolls(
+    reroll: built.contains(RollPower.reroll) ? s.rerollCharges : null,
+    banish: built.contains(RollPower.banish) ? s.banishCharges : null,
+    raise: built.contains(RollPower.raise) ? s.raiseCharges : null,
+    raiseProgress: s.raiseProgress,
+    bans: s.rollBans,
+  );
+}
+
+/// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
+final campRollsProvider =
+    Provider<CampRolls>((ref) => campRollsOf(ref.watch(playerSessionProvider)));
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {

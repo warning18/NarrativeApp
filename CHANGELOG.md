@@ -8,6 +8,156 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.488.0+524]
+
+The last indoor scenes get their rooms on Core's side.
+
+### Added
+- **Two buildings:** the informant's warehouse behind Saltmouth's landward gate, and the lamp-room of the cliff light at Wrack's End (Narrative's names and blurbs, EN/FR).
+
+### Fixed
+- **Kindly Hill:** the way of `5200_house_returned` stands in the hall district, where its long room is.
+
+Narrative then seats `5200_house_returned`, `2015_informant_trap` and `5100_clan_dominion_1_lit` in their rooms.
+
+## [1.487.0+523]
+
+Four more indoor scenes have their rooms (98 of the 99).
+
+### Changed
+- **Seated in their buildings:** `6010_thread` and `6010_heist_night` (the chart-keeper's chapel), `3100_house_anvil_deaf_failed` (the cold forge) and `5200` (the long room under the hill), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that move the party: the tenth sign gone wrong at the cold forge, and the knife slipping on the bark-bleeder's tree.
+
+## [1.486.0+522]
+
+The story text keeps its room on a small phone.
+
+### Changed
+- **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
+## [1.485.0+521]
+
+Two bosses brought back to their curve.
+
+### Changed
+- **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
+- **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
+
+## [1.484.0+520]
+
+The tutorial strings polished, English and French.
+
+### Changed
+- **Typography:** curly apostrophes throughout the `tut_*` strings (English and French were mixed) and no-break spaces before `:` `;` `!` `?` in the French.
+- **The Rusty Eel** is masculine throughout the French tours (it was "la" in three places); "Harbor" is capitalised like the Harbor tour's title.
+- **A gendered participle** about the player is gone ("blessé" became "à bout de forces"), and the shop line reads "Spend your gold on what the merchant sells."
+- Text only: no key changes.
+- **Two more indoor scenes seated** (`6010_lysa_dead` in the chair chapel, `6010_record` in the muniment room), now that Core's v1.482 moved their ways on the city plan: 94 of the 99 indoor scenes stand in a building.
+
+## [1.483.0+519]
+
+Who rules each town, for the maps to tint it in its clan's colours. Data and a provider only; UX draws it (contract: `docs/proposals/town-ruler-colours.md`).
+
+### Added
+- **Town rulers** (`townRulersProvider`, `rulerOfTown`): the 16 towns with a city plan and their 59 districts, each with its ruling clan and that clan's colour (the `color` factions.json already has) plus a darker accent. A town takes the clan that holds it, else the clan holding most of its districts (neutral on a tie); a district takes its own holder, else its town's. Follows politics as places change hands.
+
+## [1.482.0+518]
+
+Three camp buildings that bend the rolls: reroll, banish and raise the level's stat pick and the clans' offers.
+
+### Added
+- **The Bone-Caster's Hut** (Reroll): up to 4 charges, full when built, +1 per level. Redraws the whole set of choices; a rerolled stat pick keeps its rarity.
+- **The Warding Cairn** (Banish): up to 3 charges, full when built, +1 per level. Bans a training path (stat pick) or a gift (offer) for 5, 10 or 15 draws, for 1, 2 or 3 charges; the card is replaced at once.
+- **The Star Well** (Raise, a great work): 1 charge when built, +1 every 15 draws, up to 5. Lifts one card one rarity, never above Heroic and never a risky card.
+- The powers never touch ability checks, combat dice, loot or the risky-gift die. Old saves load unchanged.
+
+### Fixed
+- **The Black Reliquary's plan:** the ways of `6010_lysa_dead` and `6010_record` stand in their building's district, so their scenes can open on their room.
+
+## [1.481.0+517]
+
+Wave 14: the move on the world chart, the town's service pins.
+
+### Added
+- **The move on the real world view:** when the story sets the party down far away, the Journey shows the walk on the world chart (the sphere or the flat chart): the traveller follows the road or sea lane between the two places, slowly (6 to 13 seconds by the length of the road) while the camera closes in on the party, follows it and pulls back out. **A tap skips it.** The words under the map (the caption and "You pass ...") stay.
+- **Service pins on the town plan:** once a district is looked at, its signs show (notice board, market, tavern, temple, forge, harbour), dim when nothing opens there yet; a tap opens a sheet of what the service opens (the shops of the market or the forge, the bounty board, a night's rest, the port, or "Nothing to do here yet." for the temple).
+- A scene set in one of Core's new buildings (the prison, the library, the forge) opens its own room; a test checks it.
+
+### Changed
+- Tests run a move at a third of its time (`worldMoveTimeScale`, set in `test/flutter_test_config.dart`) so the waits stay short.
+
+## [1.480.0+516]
+
+Wave 13: the road's party, clan banners on the skill tree, the level-up radar.
+
+### Added
+- **The walking party on the land walk:** the hero (the ronin) leads and up to two picked companions follow behind, as coloured placeholder figures until their art comes (a companion's colour stays the same every walk).
+- **A word on the road:** as a walk starts, a walking companion may speak, shown as a small bubble over their figure for a few seconds (Core's `speakUpOnWalk`, Narrative's walk remarks).
+- **Clan banners on the skill tree:** each skill not yet known hangs its offering clan's small banner from its ring (dim while locked); the skill sheet shows the banners of the clans that offer it.
+- **Level up as the ability radar:** the Level Up screen and the pop-up after a fight open on the radar of the eight abilities (a tap on a corner says where it comes from), with the fight numbers under it and a **Detail** tab that opens the full list of rows.
+
+### Changed
+- **The enemy or NPC met on a land walk comes in from the left**, behind the party, its art mirrored to face east; the party now stands further right to leave it room.
+- Tests: `walk_bubble_test`, `walk_party_view_test`, `encounter_figure_test` (left entry), `skill_tree_test`, `level_up_screen_test`.
+
+## [1.479.0+515]
+
+The new buildings' names and blurbs reworded.
+
+### Changed
+- **27 buildings** (the cells of the Black Hold, the green door, the Tide Cellar, the Reliquary chapels, the White Anchorage's hulls, the throne room and the rest) have their names and blurbs reworded in English and French. Text only: ids, kinds and parents are unchanged.
+- **16 indoor scenes seated in their rooms:** the 7 crownings (`7590_*`) in the throne room, on the dais, and 9 scenes of the Black Reliquary in their chapels (the muniment room, the Tribunal's, the Hammer's, the chart-keeper's, the parish's), so the Journey opens on each room's plan. The French follows the game's own words (Linceul, Porte-Clefs, marteau-maître, Le Coffre des Contrebandiers).
+
+## [1.478.0+514]
+
+Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.
+
+### Fixed
+- **The crowning scenes (7590_*)** were seated on the Lantern Cliff (`tool/city_plans/district_seats.json`); their way now stands in the throne room's lot of Candlehold's Lantern Hall, where their text sets them.
+- **The Black Reliquary's landmark** covers the whole city, not only the Reliquary Quarter, so the scenes in its Chapels and Frost Line districts stay on the same landmark (no world-chart trip between its districts).
+
+Once the story links those 18 scenes to their rooms (their `location`, Narrative's field), 94 of the 99 indoor scenes open on a room plan.
+
+## [1.477.0+513]
+
+Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
+
+### Added
+- **The Parley Tent** (camp, workshops): 250 gold, 2 timber, 2 cut stone. Once built, risky gifts can be offered.
+- **Risky gifts:** in about 3 in 10 offers where a suitor qualifies, at most one card is marked risky. The suitor must be a clan you stand Wary, Unfriendly or Resented with, or one whose alignment opposes yours; never a hostile clan or the nemesis. The gift is one rarity better than its roll. The card shows the odds (for example "Gift 80% · Price 20%").
+- **The roll:** a d20 plus up to +2 from Luck, rolled when the offer is drawn, so a reload can't change it.
+  - Usually the gift (75 to 85%).
+  - Otherwise a price: 40% of max health, a quarter of the purse, or −2 to the clan's stat for two levels, shown as a Curse in the stat breakdown. A natural 1 always costs the health.
+  - Each price falls back to another, so "nothing" never happens.
+  - Standing with the clan rises whatever the die says.
+- **Simulator:** about 3.2 risky cards seen per run and 1.1 taken, 72% of them the gift. A risky card is never taken at half health or less.
+
+### Changed
+- **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
+
+## [1.476.0+512]
+
+Companions say a word on the road.
+
+### Added
+- **Walk remarks:** four short lines for each of the eight companions (English and French) for the new `walk` trigger, spoken once as a land walk starts by a companion in the walking party. Data only; the trigger is Core's (v1.474).
+
+## [1.475.0+511]
+
+The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
+
+### Added
+- **Buildings on arrival:** 28 new buildings in geography.json (prison, temple, library, forge, hall, house, cellar, warehouse, shop), linked from the scenes that take place inside them, with a spot for the party where the text makes it clear. 76 of the story's 99 indoor scenes now open on the building's own room plan (7 before); 23 still wait at their district (listed in the contract).
+- **Service spots in towns:** every town with a city plan gets fixed pins for its notice board, market, tavern and temple, plus a harbour on a quay and a forge in 5 towns, each on a real lot or square. `townServicesProvider(cityId)` says what each opens (the town's shop, the bounty board, rest, the port); the temple has no screen yet.
+- **The move on the world view:** `worldLegPathProvider((from:, to:))` returns the polyline of a Journey leg in the world chart's coordinates along the world roads and sea lanes, its kind (road, sea, crossing) and stops; a straight line when no route connects the two places.
+
+## [1.474.0+510]
+
+The land walk knows who walks.
+
+### Added
+- **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
+- **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
+
 ## [1.473.0+509]
 
 Chapters 5 to 8 read in short paragraphs, with the key facts in bold. Needs v1.472 (chapters 3 and 4) first.

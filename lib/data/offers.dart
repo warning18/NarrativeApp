@@ -15,6 +15,7 @@ import '../combat/specialisations.dart'
 import 'clan_power.dart';
 import 'factions.dart';
 import 'perks.dart';
+import 'risky_gifts.dart';
 import 'signs.dart';
 import 'skill_access.dart' show skillFitsCharacter;
 import 'skill_tree.dart';
@@ -298,6 +299,9 @@ class Suitor {
     this.subclanId = '',
     this.firstMeeting = false,
     this.greetingIndex = 0,
+    this.risky = false,
+    this.riskRoll = 0,
+    this.raised = false,
   });
 
   final String factionId;
@@ -306,7 +310,41 @@ class Suitor {
   final bool firstMeeting;
   final int greetingIndex;
 
+  /// A risky gift (risky_gifts.dart): [gift] one rarity better than it
+  /// would be, at a price [riskRoll] (a d20, rolled with the draw) names
+  /// when it is taken.
+  final bool risky;
+  final int riskRoll;
+
+  /// Raised at the Star Well (camp_rolls.dart): a card is raised once.
+  final bool raised;
+
   bool get isWayfarer => factionId == wayfarerId;
+
+  /// This suitor's card made risky, with the die's [roll].
+  Suitor asRisky(int roll) => Suitor(
+        factionId: factionId,
+        subclanId: subclanId,
+        gift: gift,
+        firstMeeting: firstMeeting,
+        greetingIndex: greetingIndex,
+        risky: true,
+        riskRoll: roll,
+        raised: raised,
+      );
+
+  /// This suitor's card raised at the Star Well (camp_rolls.dart) to
+  /// [gift], voiced by [subclanId] (its own when null).
+  Suitor asRaised(OfferGift gift, {String? subclanId}) => Suitor(
+        factionId: factionId,
+        subclanId: subclanId ?? this.subclanId,
+        gift: gift,
+        firstMeeting: firstMeeting,
+        greetingIndex: greetingIndex,
+        risky: risky,
+        riskRoll: riskRoll,
+        raised: true,
+      );
 
   Map<String, dynamic> toJson() => {
         'faction': factionId,
@@ -314,6 +352,9 @@ class Suitor {
         'gift': gift.toJson(),
         if (firstMeeting) 'first': true,
         'greeting': greetingIndex,
+        if (risky) 'risky': true,
+        if (risky) 'riskRoll': riskRoll,
+        if (raised) 'raised': true,
       };
 
   static Suitor? tryParse(Object? raw) {
@@ -321,12 +362,18 @@ class Suitor {
     final gift = OfferGift.tryParse(raw['gift']);
     final faction = raw['faction']?.toString() ?? '';
     if (gift == null || faction.isEmpty) return null;
+    // An old save has neither: the card is a normal one.
+    final roll = (raw['riskRoll'] as num?)?.toInt() ?? 0;
+    final risky = raw['risky'] == true && roll >= 1 && roll <= 20;
     return Suitor(
       factionId: faction,
       subclanId: raw['subclan']?.toString() ?? '',
       gift: gift,
       firstMeeting: raw['first'] == true,
       greetingIndex: (raw['greeting'] as num?)?.toInt() ?? 0,
+      risky: risky,
+      riskRoll: risky ? roll : 0,
+      raised: raw['raised'] == true,
     );
   }
 
@@ -337,11 +384,22 @@ class Suitor {
       other.subclanId == subclanId &&
       other.gift == gift &&
       other.firstMeeting == firstMeeting &&
-      other.greetingIndex == greetingIndex;
+      other.greetingIndex == greetingIndex &&
+      other.risky == risky &&
+      other.riskRoll == riskRoll &&
+      other.raised == raised;
 
   @override
-  int get hashCode =>
-      Object.hash(factionId, subclanId, gift, firstMeeting, greetingIndex);
+  int get hashCode => Object.hash(
+        factionId,
+        subclanId,
+        gift,
+        firstMeeting,
+        greetingIndex,
+        risky,
+        riskRoll,
+        raised,
+      );
 }
 
 /// The offer on the table: drawn once for its [ticket] and kept until a
@@ -462,7 +520,54 @@ class OfferContext {
     this.heldSpecIds = const [],
     this.specVariants = const {},
     this.placeHolder = '',
+    this.riskyGifts = false,
+    this.bannedGifts = const {},
   });
+
+  /// The gifts warded off at the Warding Cairn (camp_rolls.dart), as
+  /// `kind:id` ([giftBanId]): no clan offers them while another gift is
+  /// left to it (see [availableGiftKinds]).
+  final Set<String> bannedGifts;
+
+  /// Whether gift [id] of [kind] is warded off.
+  bool isBanned(GiftKind kind, String id) =>
+      bannedGifts.isNotEmpty && bannedGifts.contains('${kind.name}:$id');
+
+  /// This context with [bans] as its warded gifts.
+  OfferContext withBans(Set<String> bans) => OfferContext(
+        data: data,
+        politics: politics,
+        signs: signs,
+        heldSigns: heldSigns,
+        skills: skills,
+        skillTrees: skillTrees,
+        items: items,
+        raceId: raceId,
+        professionId: professionId,
+        knownSkillIds: knownSkillIds,
+        ownedItemIds: ownedItemIds,
+        knownSpellIds: knownSpellIds,
+        spells: spells,
+        flags: flags,
+        alignment: alignment,
+        patronsThisLife: patronsThisLife,
+        favour: favour,
+        patronsMet: patronsMet,
+        heldTitleIds: heldTitleIds,
+        swornBoonIds: swornBoonIds,
+        perkRanks: perkRanks,
+        luck: luck,
+        specs: specs,
+        heldSpecIds: heldSpecIds,
+        specVariants: specVariants,
+        placeHolder: placeHolder,
+        riskyGifts: riskyGifts,
+        bannedGifts: bans,
+      );
+
+  /// Whether risky gifts are open (the Parley Tent built, see
+  /// risky_gifts.dart).
+  final bool riskyGifts;
 
   /// The clan that holds the place the offer is made in (clan_power.dart's
   /// holderOf): its suitor comes [heldPlaceSuitorWeight] times as often;
@@ -519,8 +624,11 @@ class OfferContext {
 List<SkillBranch> sponsoredBranchesFor(String factionId, OfferContext c) {
   final faction = c.data.faction(factionId);
   if (faction == null) return const [];
-  final mine = skillBranchesFor(c.skillTrees,
-      raceId: c.raceId, professionId: c.professionId);
+  final mine = skillBranchesFor(
+    c.skillTrees,
+    raceId: c.raceId,
+    professionId: c.professionId,
+  );
   return [
     for (final branch in mine)
       if (faction.sponsors.contains(branch.id)) branch,
@@ -544,8 +652,12 @@ bool _leanOffersReputation(int lean, Map<String, dynamic> skill) =>
 /// [tierBonus] for a quest's suitor); then, from a clan that leans one
 /// way, the reputation skills of that side the character's alignment
 /// allows. In the branches' order, no repeats.
-List<String> offerableSkillsFor(String factionId, OfferContext c,
-    {int tierBonus = 0, int deepest = 3}) {
+List<String> offerableSkillsFor(
+  String factionId,
+  OfferContext c, {
+  int tierBonus = 0,
+  int deepest = 3,
+}) {
   final cap = min(deepest, skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
   final out = <String>[];
   final faction = c.data.faction(factionId);
@@ -581,12 +693,18 @@ List<String> offerableSkillsFor(String factionId, OfferContext c,
           skill['enemyOnly'] == true ||
           !_leanOffersReputation(faction.lean, skill) ||
           !reputationAllows(skill, c.alignment) ||
-          !skillFitsCharacter(skill,
-              raceId: c.raceId, professionId: c.professionId)) {
+          !skillFitsCharacter(
+            skill,
+            raceId: c.raceId,
+            professionId: c.professionId,
+          )) {
         continue;
       }
       out.add(id);
     }
+  }
+  if (c.bannedGifts.isNotEmpty) {
+    out.removeWhere((id) => c.isBanned(GiftKind.skill, id));
   }
   return out;
 }
@@ -609,9 +727,18 @@ class AccordOffer {
 /// - **Ascension** (`ascendsSkillID`): the skill it raises is known, the
 ///   character at [ascensionMinTier] with [factionId], which sponsors it.
 /// In the skills' file order, no repeats.
-List<AccordOffer> accordsFor(String factionId, OfferContext c) =>
-    (_accordCache[c] ??= {})
-        .putIfAbsent(factionId, () => _accordsFor(factionId, c));
+/// A warded skill (camp_rolls.dart) is left out.
+List<AccordOffer> accordsFor(String factionId, OfferContext c) {
+  final all = (_accordCache[c] ??= {}).putIfAbsent(
+    factionId,
+    () => _accordsFor(factionId, c),
+  );
+  if (c.bannedGifts.isEmpty) return all;
+  return [
+    for (final a in all)
+      if (!c.isBanned(GiftKind.skill, a.skillId)) a,
+  ];
+}
 
 /// The cards of each context drawn so far (a context is built per draw and
 /// never changes, so each clan's cards are worked out once).
@@ -620,19 +747,24 @@ final Expando<Map<String, List<AccordOffer>>> _accordCache = Expando();
 List<AccordOffer> _accordsFor(String factionId, OfferContext c) {
   final out = <AccordOffer>[];
   final tier = c.tierOf(factionId);
-  List<String> sponsors(String skillId) => sponsorsOfSkill(skillId,
-      data: c.data,
-      skillTrees: c.skillTrees,
-      raceId: c.raceId,
-      professionId: c.professionId,
-      skills: c.skills);
+  List<String> sponsors(String skillId) => sponsorsOfSkill(
+        skillId,
+        data: c.data,
+        skillTrees: c.skillTrees,
+        raceId: c.raceId,
+        professionId: c.professionId,
+        skills: c.skills,
+      );
   for (final entry in c.skills.entries) {
     final skill = entry.value;
     if (skill is! Map<String, dynamic> ||
         c.knownSkillIds.contains(entry.key) ||
         skill['enemyOnly'] == true ||
-        !skillFitsCharacter(skill,
-            raceId: c.raceId, professionId: c.professionId)) {
+        !skillFitsCharacter(
+          skill,
+          raceId: c.raceId,
+          professionId: c.professionId,
+        )) {
       continue;
     }
     final parents = [
@@ -656,9 +788,11 @@ List<AccordOffer> _accordsFor(String factionId, OfferContext c) {
                   c.tierOf(id).isAtLeast(fusionMinTier))
                 id,
       }.toList()
-        ..sort((a, b) => c.politics
-            .standingOf(b, c.data)
-            .compareTo(c.politics.standingOf(a, c.data)));
+        ..sort(
+          (a, b) => c.politics
+              .standingOf(b, c.data)
+              .compareTo(c.politics.standingOf(a, c.data)),
+        );
       if (partners.isNotEmpty) out.add(AccordOffer(entry.key, partners.first));
       continue;
     }
@@ -735,17 +869,22 @@ List<String> sponsorsOfSkill(
     if (parents.isNotEmpty) {
       return {
         for (final parent in parents)
-          ...sponsorsOfSkill(parent,
-              data: data,
-              skillTrees: skillTrees,
-              raceId: raceId,
-              professionId: professionId,
-              skills: skills),
+          ...sponsorsOfSkill(
+            parent,
+            data: data,
+            skillTrees: skillTrees,
+            raceId: raceId,
+            professionId: professionId,
+            skills: skills,
+          ),
       }.toList();
     }
   }
-  final branches =
-      skillBranchesFor(skillTrees, raceId: raceId, professionId: professionId);
+  final branches = skillBranchesFor(
+    skillTrees,
+    raceId: raceId,
+    professionId: professionId,
+  );
   final onBranches = {
     for (final b in branches)
       if (b.skillIds.contains(skillId)) b.id,
@@ -774,8 +913,11 @@ bool _itemOfferable(String itemId, OfferContext c) {
     final spell = c.spells[spellId];
     if (c.knownSpellIds.contains(spellId)) return false;
     if (spell != null &&
-        !canLearnSpell(spell,
-            professionId: c.professionId, knownSpellIds: c.knownSpellIds)) {
+        !canLearnSpell(
+          spell,
+          professionId: c.professionId,
+          knownSpellIds: c.knownSpellIds,
+        )) {
       return false;
     }
   }
@@ -785,8 +927,11 @@ bool _itemOfferable(String itemId, OfferContext c) {
 /// The objects [factionId] can offer now: its `objects` whose tier
 /// (`minTier`, lowered one step for a quest's suitor) standing has
 /// reached.
-List<String> offerableObjectsFor(String factionId, OfferContext c,
-    {int tierBonus = 0}) {
+List<String> offerableObjectsFor(
+  String factionId,
+  OfferContext c, {
+  int tierBonus = 0,
+}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return const [];
   final tier = c.tierOf(factionId);
@@ -794,14 +939,18 @@ List<String> offerableObjectsFor(String factionId, OfferContext c,
       .values[min(StandingTier.values.length - 1, tier.index + tierBonus)];
   return [
     for (final o in faction.objects)
-      if (reach.isAtLeast(o.minTier) && _itemOfferable(o.itemId, c)) o.itemId,
+      if (reach.isAtLeast(o.minTier) &&
+          _itemOfferable(o.itemId, c) &&
+          !c.isBanned(GiftKind.object, o.itemId))
+        o.itemId,
   ];
 }
 
 /// The titles [factionId] can offer: theirs from an `offer`, not held.
 List<String> offerableTitlesFor(String factionId, OfferContext c) => [
       for (final t in c.data.titlesFor(factionId: factionId, source: 'offer'))
-        if (!c.heldTitleIds.contains(t.id)) t.id,
+        if (!c.heldTitleIds.contains(t.id) && !c.isBanned(GiftKind.title, t.id))
+          t.id,
     ];
 
 /// The specialisations [factionId] can offer now: its own for the
@@ -813,8 +962,11 @@ List<String> offerableTitlesFor(String factionId, OfferContext c) => [
 List<String> offerableSpecsFor(String factionId, OfferContext c) {
   final tier = c.tierOf(factionId);
   if (!tier.isAtLeast(specMinTier)) return const [];
-  final mine = specsOfferedBy(c.specs,
-      factionId: factionId, professionId: c.professionId);
+  final mine = specsOfferedBy(
+    c.specs,
+    factionId: factionId,
+    professionId: c.professionId,
+  );
   final ids = [
     for (final info in mine)
       if (!c.heldSpecIds.contains(info.id)) info.id,
@@ -833,6 +985,9 @@ List<String> offerableSpecsFor(String factionId, OfferContext c) {
         v.kind == SpecVariantKind.rank ? specRankMinTier : specVariantMinTier;
     if (tier.isAtLeast(need)) ids.add(v.id);
   }
+  if (c.bannedGifts.isNotEmpty) {
+    ids.removeWhere((id) => c.isBanned(GiftKind.spec, id));
+  }
   return ids;
 }
 
@@ -846,12 +1001,50 @@ bool swornBoonDue(String factionId, OfferContext c) =>
     c.data.faction(factionId)?.sworn != null &&
     !c.swornBoonIds.contains(factionId);
 
-/// What [factionId] could put on the table now, kind by kind.
-Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
-    {bool better = false}) {
+/// The signs [factionId] could offer ([offerableSigns]), the warded ones
+/// left out.
+({List<SignDef> regular, List<SignDef> duos}) _signsOf(
+  String factionId,
+  OfferContext c,
+) {
+  final all = offerableSigns(factionId, signs: c.signs, held: c.heldSigns);
+  if (c.bannedGifts.isEmpty) return all;
+  bool open(SignDef d) => !c.isBanned(GiftKind.sign, d.id);
+  return (
+    regular: all.regular.where(open).toList(),
+    duos: all.duos.where(open).toList(),
+  );
+}
+
+/// What [factionId] could put on the table now, kind by kind. A clan whose
+/// every gift is warded (camp_rolls.dart) keeps them: the ban is ignored
+/// for it (see [giftsLeftAfterBans]).
+Map<GiftKind, int> availableGiftKinds(
+  String factionId,
+  OfferContext c, {
+  bool better = false,
+}) {
+  final kinds = _giftKinds(factionId, c, better: better);
+  if (kinds.isNotEmpty || c.bannedGifts.isEmpty) return kinds;
+  return _giftKinds(factionId, c.withBans(const {}), better: better);
+}
+
+/// Whether [factionId] has a gift left that is not warded.
+bool giftsLeftAfterBans(
+  String factionId,
+  OfferContext c, {
+  bool better = false,
+}) =>
+    _giftKinds(factionId, c, better: better).isNotEmpty;
+
+Map<GiftKind, int> _giftKinds(
+  String factionId,
+  OfferContext c, {
+  bool better = false,
+}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return const {};
-  final signs = offerableSigns(factionId, signs: c.signs, held: c.heldSigns);
+  final signs = _signsOf(factionId, c);
   final hasSign = signs.regular.isNotEmpty || signs.duos.isNotEmpty;
   if (faction.kind == PatronKind.otherworld || faction.isLost) {
     return {if (hasSign) GiftKind.sign: 1};
@@ -890,11 +1083,13 @@ SignRarity maxSignRarityFor(PowerTier tier) => switch (tier) {
 /// neither Hostile nor Hunted, and (clan_power.dart) they have not fallen,
 /// unless the character stayed of them.
 bool suitorOpen(Faction faction, OfferContext c) =>
-    patronOpen(faction.patron,
-        flags: c.flags,
-        alignment: c.alignment,
-        patronsThisLife: c.patronsThisLife,
-        patrons: c.patrons) &&
+    patronOpen(
+      faction.patron,
+      flags: c.flags,
+      alignment: c.alignment,
+      patronsThisLife: c.patronsThisLife,
+      patrons: c.patrons,
+    ) &&
     c.tierOf(faction.id).isAtLeast(StandingTier.resented) &&
     // A fallen clan sends no one -- but to the character who stayed of it
     // (clan_crisis.dart): its survivors still come.
@@ -926,8 +1121,10 @@ List<String> wayfarerObjectsFor(OfferContext c) => [
       for (final e in c.items.entries)
         if (e.value is Map<String, dynamic> &&
             (e.value as Map<String, dynamic>)['rarity'] == 'Common' &&
-            const {'Potion', 'Scroll'}
-                .contains((e.value as Map<String, dynamic>)['itemType']))
+            const {
+              'Potion',
+              'Scroll',
+            }.contains((e.value as Map<String, dynamic>)['itemType']))
           e.key,
     ]..sort();
 
@@ -965,13 +1162,15 @@ T _weighted<T>(Map<T, num> weights, Random random) {
 }
 
 OfferGift _accordGift(AccordOffer accord, OfferContext c, bool better) {
-  final rarity =
-      rarityOfSkill(c.skills[accord.skillId] as Map<String, dynamic>?);
+  final rarity = rarityOfSkill(
+    c.skills[accord.skillId] as Map<String, dynamic>?,
+  );
   return OfferGift(
-      kind: GiftKind.skill,
-      id: accord.skillId,
-      rarity: better ? _better(rarity) : rarity,
-      partnerId: accord.partnerId);
+    kind: GiftKind.skill,
+    id: accord.skillId,
+    rarity: better ? _better(rarity) : rarity,
+    partnerId: accord.partnerId,
+  );
 }
 
 /// The gift [factionId] brings (see [GiftKind]), or null when it has
@@ -980,10 +1179,19 @@ OfferGift _accordGift(AccordOffer accord, OfferContext c, bool better) {
 /// drawn at [giftKindWeights] among those it has. [better]: a quest's
 /// suitor, one rarity better (and one tier deeper for skills and
 /// objects).
-OfferGift? drawGift(String factionId, OfferContext c, Random random,
-    {bool better = false}) {
+OfferGift? drawGift(
+  String factionId,
+  OfferContext c,
+  Random random, {
+  bool better = false,
+}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return null;
+  // Every gift of the clan warded: the ban is ignored for it.
+  if (c.bannedGifts.isNotEmpty &&
+      !giftsLeftAfterBans(factionId, c, better: better)) {
+    c = c.withBans(const {});
+  }
   final kinds = availableGiftKinds(factionId, c, better: better);
   if (kinds.isEmpty) return null;
   final bonus = better ? 1 : 0;
@@ -1005,7 +1213,10 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
   switch (kind) {
     case GiftKind.sworn:
       return OfferGift(
-          kind: GiftKind.sworn, id: factionId, rarity: SignRarity.heroic);
+        kind: GiftKind.sworn,
+        id: factionId,
+        rarity: SignRarity.heroic,
+      );
     case GiftKind.skill:
       final options = offerableSkillsFor(factionId, c, tierBonus: bonus);
       final accords = accordsFor(factionId, c);
@@ -1016,26 +1227,28 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
       final id = options[random.nextInt(options.length)];
       final rarity = rarityOfSkill(c.skills[id] as Map<String, dynamic>?);
       return OfferGift(
-          kind: GiftKind.skill,
-          id: id,
-          rarity: better ? _better(rarity) : rarity);
+        kind: GiftKind.skill,
+        id: id,
+        rarity: better ? _better(rarity) : rarity,
+      );
     case GiftKind.object:
       final options = offerableObjectsFor(factionId, c, tierBonus: bonus);
       final id = options[random.nextInt(options.length)];
       final rarity = rarityOfItem(c.items[id] as Map<String, dynamic>?);
       return OfferGift(
-          kind: GiftKind.object,
-          id: id,
-          rarity: better ? _better(rarity) : rarity);
+        kind: GiftKind.object,
+        id: id,
+        rarity: better ? _better(rarity) : rarity,
+      );
     case GiftKind.title:
       final options = offerableTitlesFor(factionId, c);
       return OfferGift(
-          kind: GiftKind.title,
-          id: options[random.nextInt(options.length)],
-          rarity: better ? SignRarity.epic : SignRarity.rare);
+        kind: GiftKind.title,
+        id: options[random.nextInt(options.length)],
+        rarity: better ? SignRarity.epic : SignRarity.rare,
+      );
     case GiftKind.sign:
-      final offerable =
-          offerableSigns(factionId, signs: c.signs, held: c.heldSigns);
+      final offerable = _signsOf(factionId, c);
       final regular = offerable.regular;
       final duos = offerable.duos;
       final SignDef sign;
@@ -1069,9 +1282,10 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
         _ => SignRarity.rare,
       };
       return OfferGift(
-          kind: GiftKind.spec,
-          id: id,
-          rarity: better ? _better(rarity) : rarity);
+        kind: GiftKind.spec,
+        id: id,
+        rarity: better ? _better(rarity) : rarity,
+      );
     case GiftKind.perk:
       return null;
   }
@@ -1080,16 +1294,35 @@ OfferGift? drawGift(String factionId, OfferContext c, Random random,
 /// The Wayfarer's gift: a perk rank (at [wayfarerPerkChance], while one is
 /// left) or one of [wayfarerObjectsFor]; null when there is neither.
 OfferGift? drawWayfarerGift(OfferContext c, Random random) {
-  final perks = perksAvailable(c.perkRanks);
-  final objects = wayfarerObjectsFor(c);
+  var perks = perksAvailable(c.perkRanks);
+  var objects = wayfarerObjectsFor(c);
   if (perks.isEmpty && objects.isEmpty) return null;
+  // The warded ones left out (camp_rolls.dart), unless nothing else is.
+  if (c.bannedGifts.isNotEmpty) {
+    final p = [
+      for (final k in perks)
+        if (!c.isBanned(GiftKind.perk, k.name)) k,
+    ];
+    final o = [
+      for (final id in objects)
+        if (!c.isBanned(GiftKind.object, id)) id,
+    ];
+    if (p.isNotEmpty || o.isNotEmpty) {
+      perks = p;
+      objects = o;
+    }
+  }
   if (perks.isNotEmpty &&
       (objects.isEmpty || random.nextDouble() < wayfarerPerkChance)) {
     return OfferGift(
-        kind: GiftKind.perk, id: perks[random.nextInt(perks.length)].name);
+      kind: GiftKind.perk,
+      id: perks[random.nextInt(perks.length)].name,
+    );
   }
   return OfferGift(
-      kind: GiftKind.object, id: objects[random.nextInt(objects.length)]);
+    kind: GiftKind.object,
+    id: objects[random.nextInt(objects.length)],
+  );
 }
 
 /// The skills [factionId] can offer from the branches it sponsors for the
@@ -1098,10 +1331,16 @@ OfferGift? drawWayfarerGift(OfferContext c, Random random) {
 /// one tier deeper than standing allows, the fourth skill of a branch
 /// still waiting for Sworn.
 ({List<String> skills, bool heritage}) _homeSkillsOf(
-    String factionId, OfferContext c) {
+  String factionId,
+  OfferContext c,
+) {
   final deepest = c.tierOf(factionId).isAtLeast(StandingTier.sworn) ? 3 : 2;
-  final offerable =
-      offerableSkillsFor(factionId, c, tierBonus: 1, deepest: deepest);
+  final offerable = offerableSkillsFor(
+    factionId,
+    c,
+    tierBonus: 1,
+    deepest: deepest,
+  );
   if (offerable.isEmpty) return (skills: const [], heritage: false);
   final skills = <String>[];
   var heritage = false;
@@ -1139,19 +1378,29 @@ Map<String, double> homeClansFor(OfferContext c) {
 
 /// The suitor [factionId] sends: a sub-clan of theirs at random voices a
 /// clan's gift (none for the others), with the gift drawn by [drawGift].
-Suitor? drawSuitor(String factionId, OfferContext c, Random random,
-    {bool better = false, OfferGift? gift}) {
+Suitor? drawSuitor(
+  String factionId,
+  OfferContext c,
+  Random random, {
+  bool better = false,
+  OfferGift? gift,
+}) {
   final faction = c.data.faction(factionId);
   if (faction == null) return null;
   gift ??= drawGift(factionId, c, random, better: better);
   if (gift == null) return null;
   // Its power caps the strength of the signs it gives (clan_power.dart).
   if (gift.kind == GiftKind.sign && hasPower(factionId, c.data)) {
-    final cap =
-        maxSignRarityFor(powerTierFor(powerOf(c.politics, factionId, c.data)));
+    final cap = maxSignRarityFor(
+      powerTierFor(powerOf(c.politics, factionId, c.data)),
+    );
     if (gift.rarity.index > cap.index) {
       gift = OfferGift(
-          kind: gift.kind, id: gift.id, rarity: cap, partnerId: gift.partnerId);
+        kind: gift.kind,
+        id: gift.id,
+        rarity: cap,
+        partnerId: gift.partnerId,
+      );
     }
   }
   final voices = faction.isClan ? c.data.subclansOf(factionId) : const [];
@@ -1182,8 +1431,11 @@ Suitor? drawSuitor(String factionId, OfferContext c, Random random,
 /// branch, so every offer has a skill to take while their tree has one
 /// left. Null when no clan has one. A sworn boon due still takes the seat
 /// (it comes once).
-Suitor? drawHomeSuitor(OfferContext c, Random random,
-    {Set<String> exclude = const {}}) {
+Suitor? drawHomeSuitor(
+  OfferContext c,
+  Random random, {
+  Set<String> exclude = const {},
+}) {
   final clans = homeClansFor(c)..removeWhere((id, _) => exclude.contains(id));
   if (clans.isEmpty) return null;
   final id = _weighted(clans, random);
@@ -1192,15 +1444,24 @@ Suitor? drawHomeSuitor(OfferContext c, Random random,
   final accords = accordsFor(id, c);
   if (accords.isNotEmpty &&
       (skills.isEmpty || random.nextDouble() < accordPickChance)) {
-    return drawSuitor(id, c, random,
-        gift: _accordGift(accords[random.nextInt(accords.length)], c, false));
+    return drawSuitor(
+      id,
+      c,
+      random,
+      gift: _accordGift(accords[random.nextInt(accords.length)], c, false),
+    );
   }
   final skill = skills[random.nextInt(skills.length)];
-  return drawSuitor(id, c, random,
-      gift: OfferGift(
-          kind: GiftKind.skill,
-          id: skill,
-          rarity: rarityOfSkill(c.skills[skill] as Map<String, dynamic>?)));
+  return drawSuitor(
+    id,
+    c,
+    random,
+    gift: OfferGift(
+      kind: GiftKind.skill,
+      id: skill,
+      rarity: rarityOfSkill(c.skills[skill] as Map<String, dynamic>?),
+    ),
+  );
 }
 
 /// Draws the offer for [ticket]: up to [offerSuitorCount] suitors from
@@ -1220,7 +1481,16 @@ Suitor? drawHomeSuitor(OfferContext c, Random random,
 /// - **The Wayfarer** takes a place at [wayfarerChance], and whenever
 ///   fewer than three factions can come.
 /// Null when nobody at all can come.
-ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
+///
+/// [riskyRandom] draws the risky card (risky_gifts.dart) instead of
+/// [random] when given: the simulator keeps it apart so the rest of the
+/// draw is the one it would be without the Parley Tent.
+ClanOffer? drawOffer(
+  OfferTicket ticket,
+  OfferContext c,
+  Random random, {
+  Random? riskyRandom,
+}) {
   final eligible = eligibleSuitors(c);
   final suitors = <Suitor>[];
   final taken = <String>{};
@@ -1241,6 +1511,7 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
   if (forced.isNotEmpty && c.data.faction(forced) != null) {
     take(drawSuitor(forced, c, random, better: ticket.better));
   }
+  var homeSeat = '';
   // A chapter's end: the Choir or the Pit, if the alignment leans.
   if (ticket.source == OfferSource.chapter && !otherworldTaken) {
     final leaning = otherworldLeaningFor(c);
@@ -1250,13 +1521,17 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
   }
 
   // The home seat: a skill of the character's own tree.
-  final hasHomeSkill = suitors.any((s) =>
-      s.gift.kind == GiftKind.skill &&
-      (s.gift.partnerId.isNotEmpty ||
-          _homeSkillsOf(s.factionId, c).skills.contains(s.gift.id) ||
-          accordsFor(s.factionId, c).any((a) => a.skillId == s.gift.id)));
+  final hasHomeSkill = suitors.any(
+    (s) =>
+        s.gift.kind == GiftKind.skill &&
+        (s.gift.partnerId.isNotEmpty ||
+            _homeSkillsOf(s.factionId, c).skills.contains(s.gift.id) ||
+            accordsFor(s.factionId, c).any((a) => a.skillId == s.gift.id)),
+  );
   if (!hasHomeSkill && suitors.length < offerSuitorCount) {
-    take(drawHomeSuitor(c, random, exclude: taken));
+    final home = drawHomeSuitor(c, random, exclude: taken);
+    take(home);
+    homeSeat = home?.factionId ?? '';
   }
 
   List<String> pool() => [
@@ -1297,12 +1572,14 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
     if (suitors.length == before) taken.add(id);
   }
   if (wayfarerComes) {
-    suitors.add(Suitor(
-      factionId: wayfarerId,
-      gift: wayfarerGift,
-      firstMeeting: !c.patronsMet.contains(wayfarerId),
-      greetingIndex: random.nextInt(4),
-    ));
+    suitors.add(
+      Suitor(
+        factionId: wayfarerId,
+        gift: wayfarerGift,
+        firstMeeting: !c.patronsMet.contains(wayfarerId),
+        greetingIndex: random.nextInt(4),
+      ),
+    );
   }
   // The dead clan: "Your own hand", a fourth card (see ownHandComes).
   final hand = c.data.openHand;
@@ -1314,7 +1591,59 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
     if (own != null) suitors.add(own);
   }
   if (suitors.isEmpty) return null;
+  if (c.riskyGifts) {
+    _makeOneRisky(suitors, c, riskyRandom ?? random, skip: {forced, homeSeat});
+  }
   return ClanOffer(ticket: ticket, suitors: suitors);
+}
+
+/// Whether [suitor] may be made risky in [c] (risky_gifts.dart's
+/// [riskyEligible]): never the Wayfarer.
+bool riskySuitorEligible(Suitor suitor, OfferContext c) {
+  if (suitor.isWayfarer) return false;
+  final faction = c.data.faction(suitor.factionId);
+  return faction != null &&
+      riskyEligible(
+        faction,
+        tier: c.tierOf(faction.id),
+        alignment: c.alignment,
+        nemesis: c.politics.nemesis,
+      );
+}
+
+/// Risky gifts (risky_gifts.dart): when a suitor of [suitors] qualifies
+/// (not one of [skip]: the ticket's own faction, the home seat), at
+/// [riskyGiftChance] one of them at random brings its gift one rarity
+/// better ([drawSuitor] with `better`), with the die rolled now. When the
+/// better draw comes out no rarer, the card stays as it was. [random] is
+/// not drawn on when no suitor qualifies.
+void _makeOneRisky(
+  List<Suitor> suitors,
+  OfferContext c,
+  Random random, {
+  Set<String> skip = const {},
+}) {
+  final options = [
+    for (var i = 0; i < suitors.length; i++)
+      if (!skip.contains(suitors[i].factionId) &&
+          riskySuitorEligible(suitors[i], c))
+        i,
+  ];
+  if (options.isEmpty || random.nextDouble() >= riskyGiftChance) return;
+  final at = options[random.nextInt(options.length)];
+  final normal = suitors[at];
+  final better = drawSuitor(normal.factionId, c, random, better: true);
+  final roll = random.nextInt(20) + 1;
+  if (better == null || better.gift.rarity.index <= normal.gift.rarity.index) {
+    return;
+  }
+  suitors[at] = Suitor(
+    factionId: better.factionId,
+    subclanId: better.subclanId,
+    gift: better.gift,
+    firstMeeting: normal.firstMeeting,
+    greetingIndex: normal.greetingIndex,
+  ).asRisky(roll);
 }
 
 /// Whether "Your own hand" (the Open Hand, v1.195) takes a fourth place in
@@ -1389,13 +1718,20 @@ Map<String, double> suitorPreview(
         : const {};
   }
   final lead = standingPreview(
-      politics, suitor.factionId, standingGainFor(ticket),
-      data: data);
+    politics,
+    suitor.factionId,
+    standingGainFor(ticket),
+    data: data,
+  );
   final partner = suitor.gift.partnerId;
   if (partner.isEmpty || data.faction(partner) == null) return lead;
   // A fusion raises its second clan too, by half.
-  final second = standingPreview(politics, partner, standingGainFor(ticket) / 2,
-      data: data);
+  final second = standingPreview(
+    politics,
+    partner,
+    standingGainFor(ticket) / 2,
+    data: data,
+  );
   return {
     for (final id in {...lead.keys, ...second.keys})
       id: (lead[id] ?? 0) + (second[id] ?? 0),
@@ -1422,37 +1758,65 @@ Map<String, double> suitorPreview(
     return (
       politics: politics,
       standing: StandingResult(state: politics),
-      alignment: 0
+      alignment: 0,
     );
   }
   final cause = offerCause(ticket, suitor.gift);
   if (data.faction(suitor.factionId)?.isLost ?? false) {
     final standing = bannerRaisedIn(flags)
-        ? applyStandingChange(politics, 'dominion', ownHandBannerCost, cause,
-            data: data, chapter: chapter, day: day)
+        ? applyStandingChange(
+            politics,
+            'dominion',
+            ownHandBannerCost,
+            cause,
+            data: data,
+            chapter: chapter,
+            day: day,
+          )
         : StandingResult(state: politics);
     return (politics: standing.state, standing: standing, alignment: 0);
   }
   final standing = applyStandingChange(
-      politics, suitor.factionId, standingGainFor(ticket), cause,
-      data: data, chapter: chapter, day: day);
+    politics,
+    suitor.factionId,
+    standingGainFor(ticket),
+    cause,
+    data: data,
+    chapter: chapter,
+    day: day,
+  );
   var next = standing.state;
   final partner = suitor.gift.partnerId;
   if (partner.isNotEmpty && data.faction(partner) != null) {
     next = applyStandingChange(
-            next, partner, standingGainFor(ticket) / 2, cause,
-            data: data, chapter: chapter, day: day)
-        .state;
+      next,
+      partner,
+      standingGainFor(ticket) / 2,
+      cause,
+      data: data,
+      chapter: chapter,
+      day: day,
+    ).state;
   }
   if (suitor.subclanId.isNotEmpty) {
-    next = setSubclanMark(next, suitor.subclanId, SubclanMark.friend, cause,
-            data: data, chapter: chapter, day: day)
-        .state;
+    next = setSubclanMark(
+      next,
+      suitor.subclanId,
+      SubclanMark.friend,
+      cause,
+      data: data,
+      chapter: chapter,
+      day: day,
+    ).state;
   }
   // Its power grows with the gifts taken (clan_power.dart).
   next = addPower(
-      next, suitor.factionId, giftPowerFor(suitor.gift.rarity.name), data,
-      helped: true);
+    next,
+    suitor.factionId,
+    giftPowerFor(suitor.gift.rarity.name),
+    data,
+    helped: true,
+  );
   return (politics: next, standing: standing, alignment: leanOf(suitor, data));
 }
 
@@ -1580,6 +1944,11 @@ List<SignEffect> clanEffectsFor({
 /// die face ([fillsEmptyFace]) first, else the rarest gift (a sign for an
 /// empty slot before one that replaces). With [favourBest] the suitor of
 /// the faction the character stands best with is taken instead.
+///
+/// A risky card (risky_gifts.dart) is taken only when its gift would win at
+/// its normal rarity (one lower); otherwise it scores as usual minus 5, so
+/// the simulator never chases risk. Never while the character is not
+/// [healthy] (above half health). [favourBest] skips it too.
 Suitor? preferredSuitor(
   ClanOffer offer, {
   required bool Function(String skillId) fillsEmptyFace,
@@ -1588,22 +1957,24 @@ Suitor? preferredSuitor(
   bool favourBest = false,
   PoliticsState politics = PoliticsState.empty,
   ClanData data = ClanData.empty,
+  bool healthy = true,
 }) {
   if (offer.suitors.isEmpty) return null;
   if (favourBest) {
     final factions = [
       for (final s in offer.suitors)
-        if (!s.isWayfarer) s,
+        if (!s.isWayfarer && !s.risky) s,
     ];
     if (factions.isNotEmpty) {
-      return factions.reduce((a, b) => politics.standingOf(b.factionId, data) >
-              politics.standingOf(a.factionId, data)
-          ? b
-          : a);
+      return factions.reduce(
+        (a, b) => politics.standingOf(b.factionId, data) >
+                politics.standingOf(a.factionId, data)
+            ? b
+            : a,
+      );
     }
   }
-  int score(Suitor s) {
-    final gift = s.gift;
+  int giftScore(OfferGift gift) {
     if (gift.kind == GiftKind.skill && fillsEmptyFace(gift.id)) return 100;
     // A specialisation changes how the character fights: taken first.
     if (gift.kind == GiftKind.spec) return 90;
@@ -1616,6 +1987,28 @@ Suitor? preferredSuitor(
       }
     }
     return score;
+  }
+
+  final safeBest = offer.suitors
+      .where((s) => !s.risky)
+      .map((s) => giftScore(s.gift))
+      .fold<int?>(null, (best, v) => best == null || v > best ? v : best);
+  int score(Suitor s) {
+    final usual = giftScore(s.gift);
+    if (!s.risky) return usual;
+    final g = s.gift;
+    final normal = giftScore(
+      OfferGift(
+        kind: g.kind,
+        id: g.id,
+        rarity: SignRarity.values[max(0, g.rarity.index - 1)],
+        partnerId: g.partnerId,
+      ),
+    );
+    // At half health or less, never (unless it is the only card).
+    if (!healthy) return -1000;
+    if (safeBest == null || normal > safeBest) return usual;
+    return usual - 5;
   }
 
   return offer.suitors.reduce((a, b) => score(b) > score(a) ? b : a);

@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:narrative_data_app/data/city_plan_generator.dart';
+import 'package:narrative_data_app/data/town_service_pins.dart';
 
 const _out = 'assets/gamedata/city_plans.json';
 
@@ -540,9 +541,12 @@ void main() {
       // A building of the geography is named on its lot as it is there.
       ...lots.named,
     }..removeWhere((b, _) => lots.freed.contains(b));
+    // The town's services, pinned on the plan as laid (wave 14).
+    record['services'] = placeTownServices(
+        city, jsonDecode(jsonEncode(record)) as Map<String, dynamic>);
     out[city] = record;
   }
-  file.writeAsStringSync(_encode(out));
+  file.writeAsStringSync(encodeCityPlans(out));
   stdout.writeln('wrote $_out');
 }
 
@@ -577,10 +581,4 @@ void main() {
   }
   freed.removeAll(anchors.values);
   return (named: named, freed: freed);
-}
-
-/// Indented JSON with every point ([x, y]) kept on one line.
-String _encode(Object? value) {
-  final text = const JsonEncoder.withIndent('  ').convert(value);
-  return '${text.replaceAllMapped(RegExp(r'\[\s+(-?\d+),\s+(-?\d+)\s+\]'), (m) => '[${m[1]}, ${m[2]}]')}\n';
 }

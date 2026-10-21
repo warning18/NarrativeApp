@@ -29,6 +29,9 @@ import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart' show statPatron;
+import '../data/camp_rolls.dart' show rollPowerOf;
+import '../data/risky_gifts.dart' show riskyGiftsOpen;
+import '../data/sim_rolls.dart';
 import '../data/rival_hunters.dart' show maybeRivalHunter;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
@@ -239,6 +242,8 @@ class _SimResult {
     this.questsStuck = const {},
     this.arrivals = const {},
     this.housesBuilt = const {},
+    this.riskyOutcomes = const {},
+    this.campRolls = const {},
     this.roads = const [],
     this.transcript = const [],
     this.specs = const [],
@@ -283,6 +288,14 @@ class _SimResult {
   /// The camp's works the run built: house id -> the chapter it went up in
   /// (see buildHouses).
   final Map<String, int> housesBuilt;
+
+  /// Risky gifts (risky_gifts.dart): the cards `seen` and `taken`, and
+  /// each outcome (`gift`, `health`, `gold`, `curse`).
+  final Map<String, int> riskyOutcomes;
+
+  /// The camp's roll houses (sim_rolls.dart): the `rerolls`, `bans` and
+  /// `raises` the walk used.
+  final Map<String, int> campRolls;
 
   /// The character's level and gold when the run first rested at each
   /// chapter's hub (chapter -> (level, gold)), for the balance reports.
@@ -576,7 +589,9 @@ _SimResult _simulate(
     )
       ..specIds = [...sim.startSpecs]
       ..trainingPaths = sim.trainingPaths
-      ..pickRandom = Random(detourSalt * 31 + 17);
+      ..pickRandom = Random(detourSalt * 31 + 17)
+      // The camp's roll houses draw on their own (sim_rolls.dart).
+      ..rolls = SimRolls(Random(detourSalt * 31 + 29));
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -903,6 +918,8 @@ _SimResult _simulate(
       questsStuck: questLog?.unmet(flags) ?? const {},
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
+      riskyOutcomes: Map.unmodifiable(growth?.riskyOutcomes ?? const {}),
+      campRolls: Map.unmodifiable(character?.rolls?.used ?? const {}),
       roads: List.unmodifiable(roads),
       specs: List.unmodifiable(character?.specIds ?? const <String>[]),
       patron: growth == null ? '' : statPatron(growth.politics),
@@ -1014,7 +1031,14 @@ _SimResult _simulate(
   void settle() {
     final g = growth;
     if (g == null) return;
+    // Risky gifts once the Parley Tent is up (risky_gifts.dart): a gold
+    // penalty comes out of the purse.
+    g
+      ..riskyGifts = riskyGiftsOpen(housesBuilt.keys)
+      ..gold = gold
+      ..chapter = lastKnownChapter ?? 1;
     alignment = g.settle(alignment: alignment, flags: flags, random: random);
+    gold = g.gold;
   }
 
   /// Hands in every quest whose objectives are met (the player does it at
@@ -1395,6 +1419,7 @@ _SimResult _simulate(
       }
       final id = ready.first;
       housesBuilt[id] = chapter;
+      character?.rolls?.build(rollPowerOf(houses[id] as Map<String, dynamic>));
       houseGoldSpent += costOf(id);
       materials = withoutMaterials(materials,
           materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'));
@@ -2120,6 +2145,8 @@ typedef SimRunSummary = ({
   Map<String, Map<String, ({int fought, int lost})>> enemiesByChapter,
   Map<int, ({int level, int gold})> arrivals,
   Map<String, int> housesBuilt,
+  Map<String, int> riskyOutcomes,
+  Map<String, int> campRolls,
   Set<String> visitedNodes,
   List<String> choicesTaken,
   Set<String> questIds,
@@ -2251,6 +2278,8 @@ List<SimRunSummary> simulatePlaythroughs(
       enemiesByChapter: byChapterEnemy,
       arrivals: result.arrivals,
       housesBuilt: result.housesBuilt,
+      riskyOutcomes: result.riskyOutcomes,
+      campRolls: result.campRolls,
       visitedNodes: {
         for (final step in result.steps)
           if (!step.nodeId.contains(':')) step.nodeId,

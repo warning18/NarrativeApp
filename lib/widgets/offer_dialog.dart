@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../combat/specialisations.dart' show specId;
+import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
+import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -28,6 +30,7 @@ import 'item_stats.dart';
 import 'pixel_banner.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
+import 'roll_power_row.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
@@ -252,6 +255,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         politics: ref.read(playerSessionProvider).politics,
         data: tables.data,
         lang: lang);
+    final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -267,6 +271,15 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
             Text(preview.isEmpty
                 ? trFor(lang, 'offer_no_standing')
                 : preview.map((p) => p.text).join(' · ')),
+            if (suitor.risky) ...[
+              const SizedBox(height: 8),
+              Text(trFor(lang, 'offer_risky_hint')),
+              Text(
+                  trFor(lang, 'offer_risky_odds')
+                      .replaceAll('{gift}', '${odds.gift}')
+                      .replaceAll('{price}', '${odds.price}'),
+                  key: const Key('offer_confirm_risky_odds')),
+            ],
           ],
         ),
         actions: [
@@ -285,6 +298,9 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
+    // A risky card: what the die (rolled with the draw) says, read before
+    // it is applied.
+    final risk = notifier.riskyResultOf(suitor, tables);
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
     // The gift, as the reward card tells it, before the next offer.
@@ -292,22 +308,47 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       final skills =
           ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
       final clanColour = _suitorColor(suitor, tables.data);
+      final card = clanGiftCard(
+        lang: lang,
+        clanName: suitorName(suitor, tables.data, lang),
+        clanColour: clanColour,
+        gift: risk != null && !risk.won
+            // The price paid: the line says what the die took.
+            ? RewardLine(
+                key: Key('reward_risky_${risk.outcome.name}'),
+                icon: Icon(Icons.casino_outlined, color: clanColour),
+                accent: clanColour,
+                title: riskyResultText(
+                    risk, tables.data.faction(suitor.factionId), lang),
+                sub: name,
+                tag: trFor(lang, 'offer_risky_badge'),
+              )
+            : RewardLine(
+                key: Key('reward_gift_${suitor.gift.id}'),
+                icon: _giftGlyph(suitor.gift, clanColour),
+                accent: clanColour,
+                title: name,
+                sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
+                value: trFor(lang, 'reward_new'),
+              ),
+        standing: [for (final p in preview) p.text],
+      );
       await showRewardCard(
         context,
-        clanGiftCard(
-          lang: lang,
-          clanName: suitorName(suitor, tables.data, lang),
-          clanColour: clanColour,
-          gift: RewardLine(
-            key: Key('reward_gift_${suitor.gift.id}'),
-            icon: _giftGlyph(suitor.gift, clanColour),
-            accent: clanColour,
-            title: name,
-            sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
-            value: trFor(lang, 'reward_new'),
-          ),
-          standing: [for (final p in preview) p.text],
-        ),
+        risk == null || !risk.won
+            ? card
+            : RewardCardData(
+                kind: card.kind,
+                title: card.title,
+                accent: card.accent,
+                button: card.button,
+                lines: card.lines,
+                notes: [
+                  RewardNote(riskyResultText(
+                      risk, tables.data.faction(suitor.factionId), lang)),
+                  ...card.notes,
+                ],
+              ),
       );
     }
     final next = await notifier.ensureOffer(tables,
@@ -321,6 +362,23 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       _busy = false;
       _selected = null;
     });
+  }
+
+  /// A roll power (camp_rolls.dart) used on the offer on the table; the
+  /// selection kept only for a raise.
+  Future<void> _roll(Future<void> Function() use, {bool keep = false}) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await use();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          if (!keep) _selected = null;
+        });
+      }
+    }
   }
 
   @override
@@ -444,12 +502,43 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
               const Divider(height: 1),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                child: FilledButton(
-                  key: const Key('offer_take_button'),
-                  style: FilledButton.styleFrom(backgroundColor: accent),
-                  onPressed:
-                      selected == null || _busy ? null : () => _take(offer),
-                  child: Text(trFor(lang, 'offer_take_button')),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // The camp's roll houses (camp_rolls.dart).
+                    RollPowerRow(
+                      keyPrefix: 'offer',
+                      rolls: ref.watch(campRollsProvider),
+                      canBanish:
+                          selected != null && suitorBanishable(selected, offer),
+                      canRaise: selected != null &&
+                          ref.read(playerSessionProvider.notifier).raisePreview(
+                                  selected.factionId, widget.tables) !=
+                              null,
+                      warnRaised: offer.suitors.any((s) => s.raised),
+                      onReroll: () => _roll(() => ref
+                          .read(playerSessionProvider.notifier)
+                          .rerollOffer(widget.tables,
+                              placeHolder: ref.read(holderHereProvider))),
+                      onBanish: (draws) => _roll(() => ref
+                          .read(playerSessionProvider.notifier)
+                          .banishSuitor(
+                              selected!.factionId, draws, widget.tables,
+                              placeHolder: ref.read(holderHereProvider))),
+                      onRaise: () => _roll(
+                          () => ref
+                              .read(playerSessionProvider.notifier)
+                              .raiseSuitor(selected!.factionId, widget.tables),
+                          keep: true),
+                    ),
+                    FilledButton(
+                      key: const Key('offer_take_button'),
+                      style: FilledButton.styleFrom(backgroundColor: accent),
+                      onPressed:
+                          selected == null || _busy ? null : () => _take(offer),
+                      child: Text(trFor(lang, 'offer_take_button')),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -821,6 +910,12 @@ class _OfferHall extends ConsumerWidget {
                                         SignRarityChip(
                                             rarity: gift.rarity,
                                             language: lang),
+                                      if (picked.risky)
+                                        _Tag(
+                                            key: const Key('offer_risky_badge'),
+                                            text: trFor(
+                                                lang, 'offer_risky_badge'),
+                                            color: bad),
                                     ],
                                   ),
                                 ],
@@ -837,6 +932,27 @@ class _OfferHall extends ConsumerWidget {
                           session: session,
                           lang: lang,
                         ),
+                        // A risky gift (risky_gifts.dart): what the clan
+                        // says, its price, and the odds.
+                        if (picked.risky) ...[
+                          const SizedBox(height: 6),
+                          if ((faction?.riskyOfferFor(lang) ?? '').isNotEmpty)
+                            Text(faction!.riskyOfferFor(lang),
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(fontStyle: FontStyle.italic)),
+                          Text(trFor(lang, 'offer_risky_hint'),
+                              style: theme.textTheme.bodySmall),
+                          Text(
+                            riskyOddsText(
+                                ref
+                                    .read(playerSessionProvider.notifier)
+                                    .riskyLuck(tables),
+                                lang),
+                            key: const Key('offer_risky_odds'),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: bad, fontWeight: FontWeight.w700),
+                          ),
+                        ],
                         const SizedBox(height: 6),
                         Container(
                           key: const Key('offer_alignment_word'),
@@ -1186,7 +1302,7 @@ class SuitorCard extends ConsumerWidget {
 }
 
 class _Tag extends StatelessWidget {
-  const _Tag({required this.text, required this.color});
+  const _Tag({super.key, required this.text, required this.color});
 
   final String text;
   final Color color;

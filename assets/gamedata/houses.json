@@ -188,5 +188,69 @@
     "requiredFlags": [],
     "houseName_fr": "Le Port",
     "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
+  },
+  "parley_tent": {
+    "houseID": "parley_tent",
+    "category": "workshops",
+    "houseName": "Parley Tent",
+    "description": "A wide tent at the edge of camp, with cushions, a brazier and no weapons allowed past the flap. Clans that do not trust you will still sit here, and some will bring a gift better than they should. They always name a price. The die names it for them.",
+    "buildCost": 250,
+    "materialCost": {
+      "material_timber": 2,
+      "material_cut_stone": 2
+    },
+    "partyCapacityBonus": 0,
+    "unlocksRiskyGifts": true,
+    "requiredFlags": [],
+    "houseName_fr": "La tente de pourparlers",
+    "description_fr": "Une large tente à l’orée du camp, avec des coussins, un brasero et aucune arme admise passé le rabat. Les clans qui se défient de vous viendront tout de même s’y asseoir, et certains apporteront un don meilleur qu’ils ne le devraient. Ils fixent toujours un prix. C’est le dé qui le fixe pour eux."
+  },
+  "bone_casters_hut": {
+    "houseID": "bone_casters_hut",
+    "category": "workshops",
+    "houseName": "Bone-Caster's Hut",
+    "description": "A low hut at the edge of camp, hung with knucklebones and strung with red thread. The bone-caster throws a hand you do not like back into the dark and reads you another. Four throws, and the bones come back as you grow.",
+    "buildCost": 240,
+    "materialCost": {
+      "material_timber": 2,
+      "material_cut_stone": 2
+    },
+    "partyCapacityBonus": 0,
+    "rollPower": "reroll",
+    "requiredFlags": [],
+    "houseName_fr": "La hutte du jeteur d’os",
+    "description_fr": "Une hutte basse à l’orée du camp, garnie d’osselets et de fil rouge. Le jeteur d’os rejette dans l’ombre la main qui vous déplaît et vous en lit une autre. Quatre jets, et les os reviennent à mesure que vous grandissez."
+  },
+  "warding_cairn": {
+    "houseID": "warding_cairn",
+    "category": "workshops",
+    "houseName": "Warding Cairn",
+    "description": "A stack of cut stone and slag glass at the camp’s edge, each stone set by a hand that wanted something kept away. Name what you will not be offered, and the cairn keeps it from your door for a while.",
+    "buildCost": 300,
+    "materialCost": {
+      "material_cut_stone": 2,
+      "material_slag_glass": 2
+    },
+    "partyCapacityBonus": 0,
+    "rollPower": "banish",
+    "requiredFlags": [],
+    "houseName_fr": "Le cairn de garde",
+    "description_fr": "Un empilement de pierre taillée et de verre de scorie au bord du camp, chaque pierre posée par une main qui voulait tenir quelque chose à distance. Nommez ce qu’on ne doit plus vous offrir, et le cairn le garde hors de votre porte quelque temps."
+  },
+  "star_well": {
+    "houseID": "star_well",
+    "category": "greatWorks",
+    "houseName": "Star Well",
+    "description": "A stone well-house with a sighting tower, sunk to where the water holds the night. Lean over it and make a wish on a hand already dealt, and the well may lift it one step. It gives a little, now and then, and only to those who have walked far enough.",
+    "buildCost": 1200,
+    "materialCost": {
+      "material_rime_crystal": 3,
+      "material_tear_glass": 2
+    },
+    "partyCapacityBonus": 0,
+    "rollPower": "raise",
+    "requiredFlags": [],
+    "houseName_fr": "Le puits aux étoiles",
+    "description_fr": "Une margelle de pierre surmontée d’une tour de visée, creusée jusqu’où l’eau garde la nuit. Penchez-vous dessus et faites un vœu sur une main déjà distribuée, et le puits peut la hausser d’un cran. Il donne peu, de temps en temps, et seulement à qui a assez marché."
   }
 }
