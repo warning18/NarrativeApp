@@ -1,0 +1,18 @@
+# Wave 16, item 3: six ruler events (Narrative, sketch, EN only)
+
+For `docs/proposals/wave16-core.md` §3 (land crossings by who holds the land). One event per main clan, drawn 1 in 3 on a route that clan holds (a `ruler` key in `land_events.json`). Your standing with the clan sets the band: **Friend and up** (let through or helped), **Neutral** (the plain version, with a price or a check), **Hostile and down** (the hard version). Each event has 2 or 3 choices, like the desert's: a check (`push`) and a way round (`shelter`). Costs are the usual `healthPct`, `gold` and `days`; the numbers are Core's. The note texts (EN and FR) follow once the user picks the item.
+
+| Clan | The event | Where it fits | Friend and up | Hostile and down |
+|---|---|---|---|---|
+| **Lantern Dominion** | **The Writ toll.** A Dominion post on the road reads out the Writ and asks for the Lantern's tithe: one coin a head, or a look in your packs. | any ruled road, ch 4 to 7 | A sergeant waves you through and tells you which fords are watched. A day saved. | The post searches the packs: a toll in gold, or a night in the cells (a day lost). A check (Charisma) to talk the price down. |
+| **Grey Vigil** | **The Watch checkpoint.** Spears of the Last Watch stand in the road, eyes open, asking what you looked at on the way. | frost and cliff roads, ch 4 to 7 | They share fire and a warning of what moved in the frost last night. The next crossing event is skipped. | They make you swear before the open eye, and keep your weapons till dawn. A check (Wisdom) to answer true; a failed one costs health. |
+| **Cinder Compact** | **The forge-cart.** A Compact cart with a lit forge on it blocks the road, the smiths arguing over whether to let a stranger past their fire. | any road near the Row, ch 4 to 6 | A smith mends a piece of your gear for free and signs "go well". | A smith demands you earn the road: haul the cart's axle out of the mud (Strength check), or pay a toll in iron or gold. |
+| **Mire Courts** | **The reed guide.** A Heron's Wake guide waits at the edge of the fen with a lantern and a price. | fen roads, ch 5 | The guide takes you through the dry way and asks only for a name to remember. Health is saved. | The guide walks you the long wet way "by mistake": a day lost and health, unless you pay to be told the truth. |
+| **Salt Crows** | **The marked crate.** A Crow cutter has left a crate in the road with a Keyholder's mark, and a lookout in the dunes watching who touches it. | sea-cliff roads, ch 4 to 7 | The lookout shows himself and trades: a map of the safe path for a favour owed. | The Crows treat you as a rival: an ambush on the cliff path (a fight check, or a toll to buy your way out). |
+| **Ashen Penitents** | **The name wall.** A roadside wall of names, a Penitent with chalk, and a line of people waiting to add one. | any road past the Spire's fall, ch 5 to 7 | The Penitent adds a name you give and presses a candle into your hand: a short rest, health back. | The Penitent will not let you pass the wall until you read the names aloud: a check (Charisma), or a long way round (a day). |
+
+## Notes
+- The six are the six clans whose power moves (the same list as `clan-power-story.md`); when a road changes hands, its event changes with it.
+- Chapter 7's route stays mild (wave 16 §4), so I would use only the "Friend and up" and "Neutral" bands there, never the hard band.
+- Each event reuses the ability checks the desert events already use, so no new rules are needed. Biome events (3 to 4 per route: frost, fen, sea cliffs) are written separately, in the style of the desert ones.
+- Premises are open to the user's change: swapping one for another clan's or adding a second pool per clan changes nothing in the plan.
