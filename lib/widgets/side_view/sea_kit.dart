@@ -15,9 +15,11 @@ import 'package:flutter/material.dart';
 import '../../combat/ship_battle.dart' show SeaWeather;
 import '../../data/ship_forms.dart' show ShipForm;
 import '../sea_battlefield.dart' show SeaLook, SeaWaters;
+import '../../data/journey_rules.dart' show DayPhase;
 import '../ship_dress.dart' show ShipDress;
 import 'deck_crew.dart';
 import 'side_ship.dart';
+import 'kit_hour.dart';
 import 'side_view.dart';
 
 /// The horizon, in scene rows from the top.
@@ -346,6 +348,8 @@ SideLayer seaActors({
   double condition = 1.0,
   List<DeckCrew> crew = const [],
   Animation<double>? arrival,
+  DayPhase phase = DayPhase.day,
+  bool showShip = true,
 }) =>
     SideLayer(0, (canvas, size, scroll, t, u) {
       final rough = weather == SeaWeather.squall;
@@ -367,6 +371,8 @@ SideLayer seaActors({
       }
       _drawMeeting(canvas, size, u, t, meeting, rough,
           arrive: arrival?.value ?? 1);
+      // An entrance card shows only what she is about to meet.
+      if (!showShip) return;
       paintSideShip(canvas, u,
           x: shipX,
           base: base,
@@ -375,7 +381,8 @@ SideLayer seaActors({
           t: t,
           rough: rough,
           condition: condition,
-          crew: crew);
+          crew: crew,
+          lamp: phase == DayPhase.dusk || phase == DayPhase.night);
       // The wake: foam along the waterline.
       if (lift == 0) {
         final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
@@ -616,6 +623,8 @@ class SeaSideScene extends StatefulWidget {
     this.dress,
     this.condition = 1.0,
     this.crew = const [],
+    this.phase = DayPhase.day,
+    this.showShip = true,
     this.beside,
     this.height = 140,
   });
@@ -637,6 +646,14 @@ class SeaSideScene extends StatefulWidget {
 
   /// Who stands on her deck (see [deckCrewOf]); nobody when empty.
   final List<DeckCrew> crew;
+
+  /// The part of the day over the sea: the wash, the stars, the hero's
+  /// lantern (see kit_hour.dart); by day nothing.
+  final DayPhase phase;
+
+  /// False to paint only the sea and what she meets (an entrance card's
+  /// picture), not the Eel.
+  final bool showShip;
   final Widget? beside;
   final double height;
 
@@ -689,7 +706,10 @@ class _SeaSideSceneState extends State<SeaSideScene>
         children: [
           SideViewScene(
             key: const Key('sea_scene'),
-            layers: seaLayers(waters: widget.waters, weather: widget.weather),
+            layers: withHourStars(
+                seaLayers(waters: widget.waters, weather: widget.weather),
+                widget.phase),
+            overlay: hourWash(widget.phase),
             actors: seaActors(
                 flying: widget.flying,
                 weather: widget.weather,
@@ -698,7 +718,9 @@ class _SeaSideSceneState extends State<SeaSideScene>
                 dress: widget.dress,
                 condition: widget.condition,
                 crew: widget.crew,
-                arrival: _arrival),
+                arrival: _arrival,
+                phase: widget.phase,
+                showShip: widget.showShip),
             particles: seaParticles(widget.waters, widget.weather),
             intensity: widget.weather == SeaWeather.squall ? 0.9 : 0.6,
             pace: widget.weather == SeaWeather.tailwind ? 56 : 30,

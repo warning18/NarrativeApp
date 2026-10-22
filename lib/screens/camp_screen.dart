@@ -459,9 +459,11 @@ class _ChapterCard extends ConsumerWidget {
     // A choice behind a politics gate that fails (v1.196) is hidden, or
     // shut with its locked text.
     final gateWorld = ref.watch(coastGateWorldProvider);
-    final visible = campNode.choices
-        .where((c) => !choiceHiddenFor(c, session, gateWorld))
-        .toList();
+    // The camp errands follow the camp's own ways (see camp_errands.dart).
+    final visible = [
+      ...campNode.choices,
+      ...ref.watch(campErrandChoicesProvider)
+    ].where((c) => !choiceHiddenFor(c, session, gateWorld)).toList();
     bool shut(StoryChoice c) =>
         story == null ||
         isStoryChoiceLocked(c, story, session, world: gateWorld);

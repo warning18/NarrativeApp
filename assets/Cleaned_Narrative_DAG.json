@@ -14008,6 +14008,17 @@
         "hideIfFlags": [
           "hub_6100_charter_signing"
         ]
+      },
+      {
+        "text": "Question the scribe at the chapel door",
+        "text_fr": "Interroger la scribe devant la chapelle",
+        "next_id": "6100_will_scribe",
+        "showIfFlags": [
+          "hub_3005_envoys"
+        ],
+        "hideIfFlags": [
+          "hub_6100_will_scribe"
+        ]
       }
     ],
     "prompt": "What do you do in Rimewell?",
@@ -15314,6 +15325,17 @@
         "hideIfFlags": [
           "hub_7100_charter_choice"
         ]
+      },
+      {
+        "text": "Look at the wax a wreck-wright has pressed",
+        "text_fr": "Regarder la cire qu’un ouvrier des épaves a pressée",
+        "next_id": "7100_will_seal",
+        "showIfFlags": [
+          "plot_will_1"
+        ],
+        "hideIfFlags": [
+          "hub_7100_will_seal"
+        ]
       }
     ],
     "prompt": "What do you do at the White Anchorage?",
@@ -16136,6 +16158,50 @@
           "throne_backed",
           "throne_filled",
           "on_throne"
+        ]
+      },
+      {
+        "text": "Ask the trimmer’s widow about a name",
+        "text_fr": "Interroger la veuve de l’allumeur sur un nom",
+        "next_id": "7200_will_heir",
+        "showIfFlags": [
+          "plot_will_2"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_heir"
+        ]
+      },
+      {
+        "text": "Meet the courier in the black crape",
+        "text_fr": "Rencontrer le courrier au crêpe noir",
+        "next_id": "7200_will_courier",
+        "showIfFlags": [
+          "plot_will_3"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_courier"
+        ]
+      },
+      {
+        "text": "See what the three boats are waiting for",
+        "text_fr": "Voir ce qu’attendent les trois bateaux",
+        "next_id": "7200_will_houses",
+        "showIfFlags": [
+          "plot_will_4"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_houses"
+        ]
+      },
+      {
+        "text": "Decide what to do with the sealed will",
+        "text_fr": "Décider du sort du testament scellé",
+        "next_id": "7200_will_choice",
+        "showIfFlags": [
+          "plot_will_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_choice"
         ]
       }
     ],
@@ -23340,6 +23406,101 @@
         "flag": "rival_slain",
         "en": "The claimant I had beaten at Candlehold was buried under the cliff with the Dominion’s rites. I had not gone.",
         "fr": "La personne vaincue à Candlehold avait été enterrée sous la falaise selon les rites du Dominion. Je n’avais pas assisté à l’enterrement."
+      },
+      {
+        "flag": "will_read",
+        "en": "Perrin Ash stood at the back of the muster in a trimmer’s apron, grey-faced, with the First Lantern’s wax on a string at his neck, and nobody who passed him failed to bow.",
+        "fr": "Perrin Ash se tenait au fond de la revue en tablier d’allumeur, le visage gris, la cire de la Première Lanterne pendue au cou par un cordon, et nul ne passait devant lui sans s’incliner."
+      },
+      {
+        "flag": "will_hidden",
+        "en": "I kept the ash of the will in the Eel’s chart-case. Every time a House asked after it, I felt the weight of what it did not say.",
+        "fr": "Je gardais la cendre du testament dans l’étui à cartes de l’Eel. Chaque fois qu’une Maison le réclamait, je sentais le poids de ce qu’il ne disait pas."
+      },
+      {
+        "flag": "will_given",
+        "en": "The House that had the will brought it in its own hand to the muster, and read my name beside the Throne’s, as if it had always been written there.",
+        "fr": "La Maison qui avait le testament l’apporta de sa propre main à la revue, et lut mon nom à côté de celui du Trône, comme s’il y avait toujours été écrit."
+      },
+      {
+        "flag": "kelda_gate_held",
+        "en": "Kelda still held the camp’s gate at night, and since the tags were buried under it, nobody had ever tried to rush it.",
+        "fr": "Kelda tenait toujours la porte du camp la nuit, et depuis que les plaques étaient enterrées dessous, personne n’avait jamais tenté de la forcer."
+      },
+      {
+        "flag": "kelda_gate_left",
+        "en": "Kelda kept the gate alone after that, and I made a habit of leaving a lamp lit on the palisade for her.",
+        "fr": "Kelda tint désormais la porte seule, et je pris l’habitude de laisser une lampe allumée pour elle sur la palissade."
+      },
+      {
+        "flag": "sable_marker_kept",
+        "en": "Sable wore the ivory die on a cord at her neck now, and no one at the camp’s tables would play her for it.",
+        "fr": "Sable portait désormais le dé d’ivoire à une cordelette autour du cou, et personne aux tables du camp n’aurait voulu jouer contre elle pour l’avoir."
+      },
+      {
+        "flag": "sable_marker_torn",
+        "en": "Sable never mentioned the six markers again, but she stopped folding her scraps of paper, and left them lying open.",
+        "fr": "Sable ne reparla jamais des six reconnaissances, mais elle cessa de plier ses bouts de papier, et les laissa traîner ouverts."
+      },
+      {
+        "flag": "maren_names_read",
+        "en": "Maren said the names of the roll at dusk now, quietly, once for each, and I noticed that nobody in the camp interrupted her.",
+        "fr": "Maren disait désormais les noms du rôle à la tombée du jour, doucement, une fois chacun, et je remarquai que personne au camp ne l’interrompait."
+      },
+      {
+        "flag": "maren_roll_burned",
+        "en": "Maren had no roll to read now. She kept her hands open at dusk, in the hour when she used to say the names.",
+        "fr": "Maren n’avait plus de rôle à lire. À la tombée du jour, à l’heure où elle disait les noms, elle gardait les mains ouvertes."
+      },
+      {
+        "flag": "liora_watch_shared",
+        "en": "Liora looked a little past the firelight now, never at the edge of it, and from time to time she glanced at me to see whether I was doing the same.",
+        "fr": "Liora regardait désormais un peu au-delà de la lueur du feu, jamais au bord, et de temps à autre elle me jetait un coup d’œil pour voir si j’en faisais autant."
+      },
+      {
+        "flag": "liora_watch_left",
+        "en": "Liora woke me every morning now before the others, and never said what she had seen in the night.",
+        "fr": "Liora me réveillait désormais chaque matin avant les autres, et ne disait jamais ce qu’elle avait vu dans la nuit."
+      },
+      {
+        "flag": "vess_voice_answered",
+        "en": "Vess had stopped flinching when the camp went quiet. She sat nearer the fire than she used to, and when someone said my name she looked up first.",
+        "fr": "Vess ne tressaillait plus quand le camp se taisait. Elle s’asseyait plus près du feu qu’avant, et quand quelqu’un prononçait mon nom, elle levait les yeux la première."
+      },
+      {
+        "flag": "vess_voice_stilled",
+        "en": "Vess sat with her back to the dark now, and her hand where mine could find it.",
+        "fr": "Vess s’asseyait désormais le dos tourné à l’obscurité, la main là où la mienne pouvait la trouver."
+      },
+      {
+        "flag": "grosh_debt_paid",
+        "en": "Grosh had stopped counting coins at the table. It took me a while to see why: he no longer needed to.",
+        "fr": "Grosh ne comptait plus les pièces à table. Il me fallut un moment pour comprendre pourquoi : il n’en avait plus besoin."
+      },
+      {
+        "flag": "grosh_debt_kept",
+        "en": "Grosh counted his forty-one coins every month at the camp table, aloud, and never once let me see his face.",
+        "fr": "Grosh comptait ses quarante et une pièces chaque mois à la table du camp, à voix haute, sans jamais me laisser voir son visage."
+      },
+      {
+        "flag": "tobin_letter_sent",
+        "en": "Tobin hummed a phrase of the precentor’s while he worked, and always stopped it before the last bar.",
+        "fr": "Tobin fredonnait une phrase du chantre en travaillant, et l’arrêtait toujours avant la dernière mesure."
+      },
+      {
+        "flag": "tobin_stays",
+        "en": "Tobin had stopped looking down the coast road for the carter. He sang the evening office with the camp now, a verse behind.",
+        "fr": "Tobin ne guettait plus le charretier sur la route de la côte. Il chantait désormais l’office du soir avec le camp, un verset en retard."
+      },
+      {
+        "flag": "malrik_book_read",
+        "en": "Malrik had stopped writing in the little black book when I was in sight. He still wrote. He just did it where I could not watch.",
+        "fr": "Malrik avait cessé d’écrire dans son petit livre noir quand j’étais en vue. Il écrivait toujours. Simplement là où je ne pouvais pas le regarder."
+      },
+      {
+        "flag": "malrik_book_shut",
+        "en": "Malrik still kept his little black book, but he had stopped hiding the spine when I passed, and it stayed in his coat.",
+        "fr": "Malrik gardait toujours son petit livre noir, mais il ne cachait plus le dos quand je passais, et il restait dans son manteau."
       }
     ],
     "settlement": {
@@ -26566,5 +26727,773 @@
     ],
     "prompt": "Ready for the Hall?",
     "prompt_fr": "La Salle, maintenant ?"
+  },
+  "6100_will_scribe": {
+    "id": "6100_will_scribe",
+    "description": "A scribe had set a trestle up at the chapel door in Rimewell, copying pilgrims’ names into a ledger for a Reliquary that would never read it. She wrote in a long hand, with a tail on every *g* that I had seen only on the Throne’s old letters, and that no clerk of the Inquisition could fake.\n\nShe was not forging. She was finishing. A page had come up the pilgrims’ road in the lining of a dead man’s coat, folded small, and she was copying it out clean before the damp took the ink. When I asked, she turned it face down.\n\n**A will**, she said. **Sealed in the Lantern-Bearer’s last year, and it names neither Vane, nor Morrow, nor Tallis.** That was all she would say until I had decided what I was to her.",
+    "description_fr": "Une scribe avait dressé un tréteau devant la porte de la chapelle de Puits-de-Givre et y copiait des noms de pèlerins dans un registre destiné à un Reliquaire qui ne le lirait jamais. Elle écrivait d’une main longue, avec une queue à chaque *g* que je n’avais vue que sur les vieilles lettres du Trône, et qu’aucun clerc de l’Inquisition ne pouvait contrefaire.\n\nElle ne falsifiait pas. Elle achevait. Une page était remontée par la route des pèlerins dans la doublure du manteau d’un mort, pliée menu, et elle la recopiait au propre avant que l’humidité n’emporte l’encre. Quand je la questionnai, elle la retourna face contre la table.\n\n**Un testament**, dit-elle. **Scellé dans la dernière année du Porte-Lanterne, et il ne nomme ni Vane, ni Morrow, ni Tallis.** Elle n’en dit pas plus avant que j’aie décidé ce que j’étais pour elle.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "rimewell",
+    "choices": [
+      {
+        "text": "Ask for a clean copy, and pay for it",
+        "text_fr": "Demander une copie au propre, et la payer",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_will_scribe",
+          "plot_will_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 1
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Tell her to burn the page and say nothing",
+        "text_fr": "Lui dire de brûler la page et de se taire",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_will_scribe",
+          "plot_will_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 1
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": -1
+      }
+    ],
+    "prompt": "What do you ask of the scribe?",
+    "prompt_fr": "Que demandez-vous à la scribe ?"
+  },
+  "7100_will_seal": {
+    "id": "7100_will_seal",
+    "description": "The wreck-wrights had a trade in wax. A seal that had gone through salt water and sat three years in the stern-chapel still held its shape, and a man who made a living lifting impressions off drowned deeds had one pressed into a lump of beeswax on his bench.\n\n“A flame in a hand,” he said, and turned it for me to see. “**The First Lantern’s own device**. Nobody has cut it since the Long Night, and nobody could cut it now. I took this off a page the fleet’s chaplain carried ashore the week the Bearer failed.”\n\nHe named the page without my asking. **It was the will**. The chaplain had witnessed it, and had been sleeping badly ever since, because he had not known he was witnessing a Throne.",
+    "description_fr": "Les ouvriers des épaves avaient un commerce de cire. Un sceau qui avait traversé l’eau salée et dormi trois ans dans la chapelle de poupe gardait sa forme, et un homme qui vivait de lever des empreintes sur des actes noyés en avait une, pressée dans une motte de cire d’abeille, sur son établi.\n\n« Une flamme dans une main », dit-il en la tournant pour que je la voie. « **Le sceau même de la Première Lanterne**. Personne ne l’a taillé depuis la Longue Nuit, et personne ne saurait le tailler aujourd’hui. Je l’ai pris sur une page que l’aumônier de la flotte a rapportée à terre la semaine où le Porteur a décliné. »\n\nIl nomma la page sans que je le lui demande. **C’était le testament**. L’aumônier l’avait signé comme témoin, et dormait mal depuis, parce qu’il ne savait pas qu’il témoignait d’un Trône.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage_quay",
+    "choices": [
+      {
+        "text": "Take the impression to the chaplain",
+        "text_fr": "Porter l’empreinte à l’aumônier",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_will_seal",
+          "plot_will_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Pocket it and tell the wright to forget it",
+        "text_fr": "L’empocher et dire à l’ouvrier de l’oublier",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_will_seal",
+          "plot_will_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 2
+          },
+          "standing": {
+            "crows": 5
+          }
+        },
+        "alignmentMod": -1
+      }
+    ],
+    "prompt": "What do you do with the wax?",
+    "prompt_fr": "Que faites-vous de la cire ?"
+  },
+  "7200_will_heir": {
+    "id": "7200_will_heir",
+    "description": "The will named one man, and a trimmer’s widow in Greyhithe knew him by the name before I had finished asking. **Perrin Ash**. He had trimmed the First Lantern for nine years from a ledge no wider than a plank, and the old Bearer had trusted him with the wick and nothing else, because nothing else was ever his.\n\nHe had gone down the cliff the night the Bearer sickened, she said. The tear had taken the cliff-path that week, and a good many people with it.\n\n**She pointed at the nets**. A grey-faced fisher sat mending one, with the Wickwardens’ plain hands, and a habit of looking up at the sky when a wick guttered in the next house. He did not know his name. I thought he might be willing to learn it.",
+    "description_fr": "Le testament nommait un seul homme, et une veuve d’allumeur à Grisegrève le connaissait sous ce nom avant que j’aie fini de demander. **Perrin Ash**. Il avait taillé la Première Lanterne pendant neuf ans, depuis une corniche pas plus large qu’une planche, et le vieux Porteur ne lui avait confié que la mèche, parce que rien d’autre n’avait jamais été à lui.\n\nIl était descendu de la falaise la nuit où le Porteur avait décliné, dit-elle. La déchirure avait pris le sentier de la falaise cette semaine-là, et bien des gens avec lui.\n\n**Elle me montra les filets**. Un pêcheur au visage gris, assis, en raccommodait un, avec les mains simples des Garde-Mèches et l’habitude de lever les yeux au ciel quand une mèche vacillait dans la maison voisine. Il ne savait pas son nom. Je pensai qu’il serait peut-être prêt à l’apprendre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Tell him who he was, and what he was named",
+        "text_fr": "Lui dire qui il était, et ce qu’on avait fait de lui",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_heir",
+          "plot_will_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 3
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": 1
+      },
+      {
+        "text": "Let him mend the net, and watch from the quay",
+        "text_fr": "Le laisser raccommoder son filet, et l’observer du quai",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_heir",
+          "plot_will_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 3
+          },
+          "standing": {
+            "vigil": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you tell the grey fisher?",
+    "prompt_fr": "Que dites-vous au pêcheur gris ?"
+  },
+  "7200_will_courier": {
+    "id": "7200_will_courier",
+    "description": "The courier came down the shingle at dusk with a lantern hooded in black crape, and I knew the crape before I knew the man. The Dominion was still in mourning for a Bearer it had not yet buried.\n\nHe had a letter from each of the three. **Oriel offered a writ, Morrow a company of knights, Tallis a lamp**; they had written within a day of one another, in three hands, and all three asked the same question in the same politest words. Did I know of a will?\n\nSomeone in Candlehold had talked. **The Houses knew a page existed, and not whose name was on it**. That was the only thing that had kept the fleet in harbour, and it would not keep it there a week.",
+    "description_fr": "Le courrier descendit les galets à la tombée du jour avec une lanterne voilée de crêpe noir, et je reconnus le crêpe avant de reconnaître l’homme. Le Dominion portait encore le deuil d’un Porteur qu’il n’avait pas encore enterré.\n\nIl avait une lettre de chacun des trois. **Oriel offrait un décret, Morrow une compagnie de chevaliers, Tallis une lampe** ; ils avaient écrit à un jour d’intervalle, de trois mains, et tous trois posaient la même question dans les mêmes termes très polis. Connaissiez-vous un testament ?\n\nQuelqu’un à Candlehold avait parlé. **Les Maisons savaient qu’une page existait, et non le nom qu’elle portait**. C’était la seule chose qui avait retenu la flotte au port, et cela ne la retiendrait pas une semaine.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Answer no one, and let them wonder",
+        "text_fr": "Ne répondre à personne et les laisser s’interroger",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_courier",
+          "plot_will_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": -5
+          }
+        }
+      },
+      {
+        "text": "Answer all three: the page exists, and is safe",
+        "text_fr": "Répondre aux trois : la page existe, et elle est en sûreté",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_courier",
+          "plot_will_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you answer the three Houses?",
+    "prompt_fr": "Que répondez-vous aux trois Maisons ?"
+  },
+  "7200_will_houses": {
+    "id": "7200_will_houses",
+    "description": "The original came on the third night, in the scribe’s own satchel, with the scribe asleep on her feet beside it. **The seal was whole**. A flame in a hand, as the wright had said, and under it the long tail of a *g* where the Bearer had signed.\n\nI did not break it. I set it on the Eel’s chart-table and put a knife beside it, and the village felt the weight of it from the nets to the last door.\n\nBy morning there were three boats off the point, flying three banners, each a little closer than the one before. **None of them had come to ask**. They had come to be there when I decided, and to see which of them I looked at first.",
+    "description_fr": "L’original arriva la troisième nuit, dans la sacoche même de la scribe, la scribe endormie debout à côté. **Le sceau était intact**. Une flamme dans une main, comme l’avait dit l’ouvrier, et dessous la longue queue d’un *g* là où le Porteur avait signé.\n\nJe ne le brisai pas. Je le posai sur la table à cartes de l’Eel, avec un couteau à côté, et le village en sentit le poids des filets à la dernière porte.\n\nAu matin, il y avait trois bateaux au large de la pointe, sous trois bannières, chacun un peu plus près que le précédent. **Aucun n’était venu demander**. Ils étaient venus pour être là quand je déciderais, et voir lequel des trois je regarderais en premier.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Send for Perrin Ash to witness it",
+        "text_fr": "Faire venir Perrin Ash comme témoin",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_houses",
+          "plot_will_5",
+          "will_heir_present"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 5
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": 1
+      },
+      {
+        "text": "Put a guard on it and wait for the tide",
+        "text_fr": "Mettre une garde dessus et attendre la marée",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_houses",
+          "plot_will_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 5
+          },
+          "standing": {
+            "vigil": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you do before you break the seal?",
+    "prompt_fr": "Que faites-vous avant de briser le sceau ?"
+  },
+  "7200_will_choice": {
+    "id": "7200_will_choice",
+    "description": "I stood with the seal under my thumb and the three boats at my back, and for once nobody on the shingle spoke.\n\nIf I read it, Perrin Ash would be named on the beach in front of the whole village: a grey man with a trimmer’s hands, and the First Lantern’s own wax beside his name. If I burned it, **the page would go on being a rumour, and the Houses would go on hunting it**. And if I gave it to a House, I would be giving that House the one thing the coast could not argue with.\n\nI had backed one claimant at the Anchorage. The page had not been written for any of them. **It had been written for whoever was left when the Houses had finished**.",
+    "description_fr": "Je me tenais le sceau sous le pouce et les trois bateaux dans le dos, et pour une fois personne sur les galets ne parla.\n\nSi je le lisais, Perrin Ash serait nommé sur la plage devant tout le village : un homme gris aux mains d’allumeur, et la cire même de la Première Lanterne à côté de son nom. Si je le brûlais, **la page resterait une rumeur, et les Maisons continueraient de la chercher**. Et si je le remettais à une Maison, je lui donnerais la seule chose que la côte ne pouvait pas contester.\n\nJ’avais soutenu un prétendant au Mouillage. La page n’avait été écrite pour aucun d’eux. **Elle l’avait été pour celui qui resterait quand les Maisons en auraient fini**.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Break the seal and read it aloud",
+        "text_fr": "Briser le sceau et le lire à voix haute",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_read"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Burn it unread and tell the Houses it was lost",
+        "text_fr": "Le brûler sans le lire et dire aux Maisons qu’il est perdu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_hidden"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 1
+          }
+        }
+      },
+      {
+        "text": "Give it to Regent Oriel, whom you did not back",
+        "text_fr": "Le remettre au Régent Oriel, que vous n’avez pas soutenu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 2
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_vane"
+        ]
+      },
+      {
+        "text": "Give it to Grand Master Morrow, whom you did not back",
+        "text_fr": "Le remettre au Grand Maître Morrow, que vous n’avez pas soutenu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 3
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_morrow"
+        ]
+      },
+      {
+        "text": "Give it to Eldest Tallis, whom you did not back",
+        "text_fr": "Le remettre à l’Aînée Tallis, que vous n’avez pas soutenue",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 4
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_tallis"
+        ]
+      }
+    ],
+    "prompt": "What do you do with the Lantern-Bearer’s will?",
+    "prompt_fr": "Que faites-vous du testament du Porte-Lanterne ?",
+    "flag_callbacks": [
+      {
+        "flag": "will_heir_present",
+        "en": "Perrin Ash stood at the table in a borrowed apron, looking at the seal the way a man looks at a lamp he used to trim.",
+        "fr": "Perrin Ash se tenait à la table dans un tablier d’emprunt, regardant le sceau comme on regarde une lampe qu’on a longtemps taillée."
+      }
+    ]
+  },
+  "loyal_kelda": {
+    "id": "loyal_kelda",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_kelda",
+      "ally_kelda"
+    ],
+    "hideIfFlags": [
+      "kelda_gate_held",
+      "kelda_gate_left"
+    ],
+    "campErrandText": "Sit with Kelda at the palisade",
+    "campErrandText_fr": "S’asseoir avec Kelda près de la palissade",
+    "description": "Kelda had unwrapped something on the palisade rail: a strip of oilcloth, and in it a dozen dog-tags on a cord, blackened by a fire I did not need explained. The last seal of her unit had come down the coast with a carter who did not know what he carried.\n\nShe turned the tags over one by one without looking at them. “**We held the gate for nine hours**,” she said. “The people we held it for were through it by the third. Nobody told us to leave. Nobody told us to stay, either.” She set the cord on the rail between us. “I want to bury these under the palisade. And I want a gate to hold tonight, here, because I never learned to put one down.”",
+    "description_fr": "Kelda avait déroulé quelque chose sur la lisse de la palissade : une bande de toile cirée, et dedans une douzaine de plaques d’identité sur un cordon, noircies par un feu que je n’avais pas besoin qu’on m’explique. Le dernier sceau de son unité était descendu la côte avec un charretier qui ne savait pas ce qu’il portait.\n\nElle retournait les plaques une à une sans les regarder. « **Nous avons tenu la porte neuf heures**, dit-elle. Ceux pour qui nous la tenions étaient passés dès la troisième. Personne ne nous a dit de partir. Personne ne nous a dit de rester non plus. » Elle posa le cordon sur la lisse entre nous. « Je veux les enterrer sous la palissade. Et je veux une porte à tenir cette nuit, ici, parce que je n’ai jamais appris à en lâcher une. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Bury the tags and hold the gate with her",
+        "text_fr": "Enterrer les plaques et tenir la porte avec elle",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "kelda_gate_held"
+        ],
+        "approvalMods": {
+          "kelda": 2
+        }
+      },
+      {
+        "text": "Bury them for her and let her stand alone",
+        "text_fr": "Les enterrer pour elle et la laisser veiller seule",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "kelda_gate_left"
+        ],
+        "approvalMods": {
+          "kelda": 1
+        }
+      }
+    ],
+    "prompt": "What do you do for Kelda?",
+    "prompt_fr": "Que faites-vous pour Kelda ?"
+  },
+  "loyal_sable": {
+    "id": "loyal_sable",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_sable",
+      "ally_sable"
+    ],
+    "hideIfFlags": [
+      "sable_marker_kept",
+      "sable_marker_torn"
+    ],
+    "campErrandText": "Play a last hand with Sable",
+    "campErrandText_fr": "Jouer une dernière main avec Sable",
+    "description": "Sable had cleared the Eel’s chart-table and laid on it, in a row, six scraps of paper in six hands, each folded once. Her markers: debts she owed, and debts owed to her, a life’s tally of favours that no table would honour.\n\n“**Every one of these is a bet I lost or a bet I never collected**,” she said, and tapped the last. “That one is yours. I wrote it the night you didn’t rob me.” She slid a die across the wood, an ivory cube with a worn corner. “One roll. If you win, I tear up all six and walk clean. If I win, you owe me the seventh, and I name it.”\n\nShe was not smiling. I had never seen her not smile at a table.",
+    "description_fr": "Sable avait débarrassé la table à cartes de l’Eel et y avait posé, en rang, six bouts de papier de six mains, chacun plié une fois. Ses reconnaissances : des dettes qu’elle devait, des dettes qu’on lui devait, le compte d’une vie de services qu’aucune table n’honorerait.\n\n« **Chacune de celles-ci est un pari que j’ai perdu ou un pari que je n’ai jamais encaissé**, dit-elle en tapotant la dernière. Celle-là est la vôtre. Je l’ai écrite la nuit où vous ne m’avez pas volée. » Elle fit glisser un dé sur le bois, un cube d’ivoire à l’angle usé. « Un seul lancer. Si vous gagnez, je déchire les six et je pars quitte. Si je gagne, vous me devez la septième, et c’est moi qui la nomme. »\n\nElle ne souriait pas. Je ne l’avais jamais vue ne pas sourire à une table.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Take the wager and roll the die",
+        "text_fr": "Accepter le pari et lancer le dé",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "sable_marker_kept"
+        ],
+        "approvalMods": {
+          "sable": 2
+        }
+      },
+      {
+        "text": "Tear the markers up without rolling",
+        "text_fr": "Déchirer les reconnaissances sans lancer",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "sable_marker_torn"
+        ],
+        "approvalMods": {
+          "sable": 1
+        }
+      }
+    ],
+    "prompt": "What do you answer Sable?",
+    "prompt_fr": "Que répondez-vous à Sable ?"
+  },
+  "loyal_maren": {
+    "id": "loyal_maren",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_maren",
+      "ally_maren"
+    ],
+    "hideIfFlags": [
+      "maren_names_read",
+      "maren_roll_burned"
+    ],
+    "campErrandText": "Find Maren with the Inquisition’s roll",
+    "campErrandText_fr": "Retrouver Maren et le rôle de l’Inquisition",
+    "description": "Maren had a page spread flat under two stones in the lee of the supply tent, and she was not reading it. She was looking at one line of it.\n\nIt was an Inquisition roll, a copied one, from the sort of ledger that keeps the names of the people it has burned. **Her own name stood in the column of the ones who held the torch**, with a date and a village, and a neat tick beside it in a clerk’s hand. “They tick the ones they trust,” she said. “It means I did it well.”\n\nThe wind lifted a corner of the page and she let it. “I have carried this for a year in my head,” she said. “I would like to see it once with someone else’s eyes.”",
+    "description_fr": "Maren avait une page étalée à plat sous deux pierres, à l’abri de la tente de ravitaillement, et elle ne la lisait pas. Elle regardait une seule ligne.\n\nC’était un rôle de l’Inquisition, une copie, tirée de ce genre de registre qui garde les noms de ceux qu’il a brûlés. **Son propre nom figurait dans la colonne de ceux qui tenaient la torche**, avec une date et un village, et un petit trait soigné à côté, de la main d’un clerc. « Ils cochent ceux en qui ils ont confiance, dit-elle. Cela veut dire que je l’ai bien fait. »\n\nLe vent souleva un coin de la page et elle le laissa faire. « Je porte ça depuis un an dans ma tête, dit-elle. J’aimerais le voir une fois avec les yeux de quelqu’un d’autre. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Read the names aloud with her, all of them",
+        "text_fr": "Lire les noms à voix haute avec elle, tous",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "maren_names_read"
+        ],
+        "approvalMods": {
+          "maren": 2
+        }
+      },
+      {
+        "text": "Burn the page and let the names go",
+        "text_fr": "Brûler la page et laisser aller les noms",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "maren_roll_burned"
+        ],
+        "approvalMods": {
+          "maren": 1
+        }
+      }
+    ],
+    "prompt": "What do you do with the roll?",
+    "prompt_fr": "Que faites-vous du rôle ?"
+  },
+  "loyal_liora": {
+    "id": "loyal_liora",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_liora",
+      "ally_liora"
+    ],
+    "hideIfFlags": [
+      "liora_watch_shared",
+      "liora_watch_left"
+    ],
+    "campErrandText": "Climb to Liora’s post on the roof",
+    "campErrandText_fr": "Monter au poste de Liora sur le toit",
+    "description": "Liora kept a post on the roof-post of the supply shed, a plank wedged between two beams, and she had never once invited anyone up. That night she dropped a rope.\n\nFrom the plank, the camp was a small place and the dark around it was not. She showed me where to put my eyes: not on the edge of the firelight, where everyone looks, but **a hand’s width past it, where the dark moves slightly differently from the dark that is only dark**. “Don’t look at it,” she said. “Look next to it. It cannot bear to be stared at.”\n\nIt took me a long time to see anything. When I did, I understood why she never slept. “I can teach you the rest,” she said. “It takes the whole night.”",
+    "description_fr": "Liora tenait un poste sur le poteau de faîte du hangar, une planche coincée entre deux poutres, et elle n’y avait jamais invité personne. Ce soir-là, elle laissa tomber une corde.\n\nDepuis la planche, le camp était un petit endroit et l’obscurité autour ne l’était pas. Elle me montra où poser les yeux : non pas au bord de la lueur du feu, où tout le monde regarde, mais **à une main au-delà, là où le noir bouge un peu autrement que le noir qui n’est que noir**. « Ne le regardez pas, dit-elle. Regardez à côté. Il ne supporte pas qu’on le fixe. »\n\nIl me fallut longtemps pour voir quoi que ce soit. Quand ce fut fait, je compris pourquoi elle ne dormait jamais. « Je peux vous apprendre le reste, dit-elle. Cela prend toute la nuit. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tender",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Stay up the whole night and learn to see",
+        "text_fr": "Veiller toute la nuit et apprendre à voir",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "liora_watch_shared"
+        ],
+        "approvalMods": {
+          "liora": 2
+        }
+      },
+      {
+        "text": "Sleep, and trust her to wake you",
+        "text_fr": "Dormir, et lui faire confiance pour vous réveiller",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "liora_watch_left"
+        ],
+        "approvalMods": {
+          "liora": 1
+        }
+      }
+    ],
+    "prompt": "Do you stay up with Liora?",
+    "prompt_fr": "Veillez-vous avec Liora ?"
+  },
+  "loyal_vess": {
+    "id": "loyal_vess",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_vess",
+      "ally_vess"
+    ],
+    "hideIfFlags": [
+      "vess_voice_answered",
+      "vess_voice_stilled"
+    ],
+    "campErrandText": "Sit with Vess in the dark",
+    "campErrandText_fr": "Rester avec Vess dans le noir",
+    "description": "Vess had stopped halfway between the fire and her tent, with one hand out in front of her as if the air had been a curtain. When I reached her she did not turn.\n\n“It is saying your name,” she said, very quietly. “Not in my voice. In the voice of the one who stood in the hall the night I was made.” Her hand was shaking. “**It does not threaten**. It says it as if it were reading from a list. I think it has been reading from a list for a long time, and you are near the end.”\n\nThe fire popped. The thing she was listening to did not stop. “I can answer it,” she said. “Or I can let it speak. I do not know which one is worse.”",
+    "description_fr": "Vess s’était arrêtée à mi-chemin entre le feu et sa tente, une main tendue devant elle comme si l’air eût été un rideau. Quand je la rejoignis, elle ne se retourna pas.\n\n« Il dit votre nom, murmura-t-elle. Pas de ma voix. De la voix de celui qui se tenait dans la salle la nuit où l’on m’a faite. » Sa main tremblait. « **Il ne menace pas**. Il le dit comme on lit une liste. Je crois qu’il lit cette liste depuis longtemps, et que vous êtes près de la fin. »\n\nLe feu crépita. Ce qu’elle écoutait ne s’arrêta pas. « Je peux lui répondre, dit-elle. Ou je peux le laisser parler. Je ne sais pas lequel est pire. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "uncanny",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Tell her to answer it, and listen too",
+        "text_fr": "Lui dire de répondre, et écouter aussi",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "vess_voice_answered"
+        ],
+        "approvalMods": {
+          "vess": 2
+        }
+      },
+      {
+        "text": "Hold her hand until the voice stops",
+        "text_fr": "Lui tenir la main jusqu’à ce que la voix cesse",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "vess_voice_stilled"
+        ],
+        "approvalMods": {
+          "vess": 1
+        }
+      }
+    ],
+    "prompt": "What do you do for Vess?",
+    "prompt_fr": "Que faites-vous pour Vess ?"
+  },
+  "loyal_grosh": {
+    "id": "loyal_grosh",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_grosh",
+      "ally_grosh"
+    ],
+    "hideIfFlags": [
+      "grosh_debt_paid",
+      "grosh_debt_kept"
+    ],
+    "campErrandText": "Share a cup with Grosh",
+    "campErrandText_fr": "Partager une chope avec Grosh",
+    "description": "Grosh had never once asked for more than the coin we had agreed, and had never once said what he did with it. That night he put a cup down in front of me and sat across the barrel as if it were a witness stand.\n\n“**Forty-one coins a month**,” he said. “That is what a hole in a mountain costs. Forty-one a month for six years, to a man in Highhearth who holds the paper on my mother’s hall.” He turned the cup. “I am eleven months short. If I miss one more, he sells the hall to a clan that burns halls.”\n\nHe did not ask. An orc will pay a debt with his hands before he asks for coin. “I wanted you to know what the coin is for,” he said. “That is all.”",
+    "description_fr": "Grosh n’avait jamais demandé plus que la somme convenue, et n’avait jamais dit ce qu’il en faisait. Ce soir-là, il posa une chope devant moi et s’assit de l’autre côté du tonneau comme à la barre d’un tribunal.\n\n« **Quarante et une pièces par mois**, dit-il. C’est ce que coûte un trou dans une montagne. Quarante et une par mois pendant six ans, à un homme de Hautefoyer qui détient le papier de la salle de ma mère. » Il fit tourner la chope. « Il me manque onze mois. Si j’en rate un de plus, il vend la salle à un clan qui brûle les salles. »\n\nIl ne demanda rien. Un orc paie une dette de ses mains avant de demander de l’or. « Je voulais que vous sachiez à quoi sert l’or, dit-il. C’est tout. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "bitter",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Pay what he lacks (50 gold)",
+        "text_fr": "Payer ce qui lui manque (50 pièces)",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "grosh_debt_paid"
+        ],
+        "approvalMods": {
+          "grosh": 2
+        },
+        "goldMod": -50,
+        "pays": true
+      },
+      {
+        "text": "Tell him to keep his coin and his pride",
+        "text_fr": "Lui dire de garder son or et sa fierté",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "grosh_debt_kept"
+        ],
+        "approvalMods": {
+          "grosh": 1
+        }
+      }
+    ],
+    "prompt": "What do you say to Grosh?",
+    "prompt_fr": "Que dites-vous à Grosh ?"
+  },
+  "loyal_tobin": {
+    "id": "loyal_tobin",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_tobin",
+      "ally_tobin"
+    ],
+    "hideIfFlags": [
+      "tobin_letter_sent",
+      "tobin_stays"
+    ],
+    "campErrandText": "Sit with Tobin and his letter",
+    "campErrandText_fr": "S’asseoir avec Tobin et sa lettre",
+    "description": "Tobin had a letter on his knee, creased where he had folded it small and unfolded it again. A carter had brought it down the coast with a bundle of wicks for the camp’s lamps; the wax was a choir’s wax, and the hand was a hand he knew.\n\n“They ask me to come home,” he said. “The old precentor is dying. He says I was the best voice he ever sent away.” He laughed, once. “He sent me away, you understand. For asking what the choir did on the night the Quarter burned.”\n\nThe fire made his face older than it was. “**I do not want to go back**. I want to answer. I have never learned how to write to a man I loved and could not forgive.”",
+    "description_fr": "Tobin avait une lettre sur le genou, marquée aux plis où il l’avait pliée menu puis dépliée de nouveau. Un charretier l’avait descendue la côte avec un paquet de mèches pour les lampes du camp ; la cire était celle d’un chœur, et la main était une main qu’il connaissait.\n\n« Ils me demandent de rentrer, dit-il. Le vieux chantre se meurt. Il dit que j’étais la meilleure voix qu’il ait jamais chassée. » Il rit, une fois. « Il m’a chassé, vous comprenez. Pour avoir demandé ce que le chœur avait fait la nuit où le Quartier a brûlé. »\n\nLe feu lui donnait un visage plus vieux que son âge. « **Je ne veux pas retourner là-bas**. Je veux répondre. Je n’ai jamais appris à écrire à un homme que j’ai aimé et que je ne peux pas pardonner. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Help him write the choir an honest reply",
+        "text_fr": "L’aider à écrire au chœur une réponse sincère",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "tobin_letter_sent"
+        ],
+        "approvalMods": {
+          "tobin": 2
+        }
+      },
+      {
+        "text": "Tell him to leave it unanswered, and stay",
+        "text_fr": "Lui dire de ne pas répondre, et de rester",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "tobin_stays"
+        ],
+        "approvalMods": {
+          "tobin": 1
+        }
+      }
+    ],
+    "prompt": "What do you do for Tobin?",
+    "prompt_fr": "Que faites-vous pour Tobin ?"
+  },
+  "loyal_malrik": {
+    "id": "loyal_malrik",
+    "campErrand": true,
+    "showIfFlags": [
+      "devoted_malrik",
+      "ally_malrik"
+    ],
+    "hideIfFlags": [
+      "malrik_book_read",
+      "malrik_book_shut"
+    ],
+    "campErrandText": "Look at Malrik’s account book",
+    "campErrandText_fr": "Regarder le livre de comptes de Malrik",
+    "description": "Malrik put a small black book on the barrel between us the way another man might have set down a knife. Its spine was soft with handling.\n\n“**An investment report**,” he said. “I keep one on everyone I work for. I find it the only honest form of loyalty.” He did not push it toward me. “You have a page. I have been writing it for as long as I have known you, and I would be a poor accountant if I let you leave it unread. It is not complimentary in every line.”\n\nHe waited. For once he did not look as if he were waiting for a price. “There is a line near the bottom,” he said, “that I was not able to write as a figure.”",
+    "description_fr": "Malrik posa un petit livre noir sur le tonneau entre nous, comme un autre eût posé un couteau. Le dos en était mou d’avoir servi.\n\n« **Un rapport d’investissement**, dit-il. J’en tiens un sur chacun de ceux pour qui je travaille. C’est, à mon sens, la seule forme honnête de loyauté. » Il ne le poussa pas vers moi. « Vous avez une page. Je l’écris depuis que je vous connais, et je serais un piètre comptable si je vous laissais partir sans qu’elle soit lue. Elle n’est pas flatteuse à chaque ligne. »\n\nIl attendit. Pour une fois, il n’avait pas l’air d’attendre un prix. « Il y a une ligne vers le bas, dit-il, que je n’ai pas su écrire sous forme de chiffre. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Read the page, and the line at the bottom",
+        "text_fr": "Lire la page, et la ligne du bas",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "malrik_book_read"
+        ],
+        "approvalMods": {
+          "malrik": 2
+        }
+      },
+      {
+        "text": "Push it back unread and say you trust him",
+        "text_fr": "Le repousser sans le lire et dire que vous lui faites confiance",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "malrik_book_shut"
+        ],
+        "approvalMods": {
+          "malrik": 1
+        }
+      }
+    ],
+    "prompt": "What do you do with Malrik’s book?",
+    "prompt_fr": "Que faites-vous du livre de Malrik ?"
   }
 }

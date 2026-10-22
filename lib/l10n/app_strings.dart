@@ -113,6 +113,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} towns changed hands.',
     AppLanguage.fr: '{n} villes ont changé de mains.',
   },
+  'town_handover_title': {
+    AppLanguage.en: 'Changed hands',
+    AppLanguage.fr: 'Passées de main',
+  },
+  'town_handover_no_one': {
+    AppLanguage.en: 'no one',
+    AppLanguage.fr: 'personne',
+  },
   'service_notice_board': {
     AppLanguage.en: 'Notice board',
     AppLanguage.fr: 'Panneau d’affichage',
@@ -3351,6 +3359,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'The Eel lies hauled up on the shingle. Build the harbour in Town ({cost}) and she sails again, with guns, plates and a sail to fit.',
     AppLanguage.fr:
         'Le Rusty Eel est hissé sur les galets. Bâtissez le port en Ville ({cost}) et il reprend la mer, avec canons, plaques et voile à monter.',
+  },
+  'crossing_ruler': {
+    AppLanguage.en: 'Held by {clan}',
+    AppLanguage.fr: 'Tenue par {clan}',
   },
   'crossing_day': {
     AppLanguage.en: 'Day {n} of {m}',

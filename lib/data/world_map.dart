@@ -387,7 +387,15 @@ final List<Landmark> worldMapLandmarks = [
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
       '7400_reed', '7400_reed_later', '7400_herald', '7400_herald_later', //
       '7400_chain', '7400_chain_later',
-      '7800', '7800_council', '7800_lines', '7800_nkem_later',
+      '7800', '7800_council', '7800_lines', '7800_nkem_later', //
+      'loyal_kelda',
+      'loyal_sable',
+      'loyal_maren',
+      'loyal_liora',
+      'loyal_vess',
+      'loyal_grosh',
+      'loyal_tobin',
+      'loyal_malrik',
     ],
   ),
   const Landmark(
@@ -624,7 +632,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier\u00a0: une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
     scenes: [
-      '6100', '6100_charter_signing', '6100_bell', '6100_bell_failed',
+      '6100', '6100_will_scribe', '6100_charter_signing', '6100_bell',
+      '6100_bell_failed',
       '6100_road', //
       '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
       '6100_house_scorched_choir',
@@ -689,7 +698,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués\u00a0: un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
     scenes: [
-      '7100', '7100_charter_choice', '7100_chaplain', '7100_chandlery',
+      '7100', '7100_will_seal', '7100_charter_choice', '7100_chaplain',
+      '7100_chandlery',
       '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
       '7100_helmsman_later', '7100_cutter', '7100_cutter_lost', '7100_log',
@@ -721,6 +731,8 @@ final List<Landmark> worldMapLandmarks = [
         'Un village de pêcheurs que la déchirure a dévoré ailleurs et recraché sur la Rive Creuse, visages gris compris, où l’aînée ne se rappelle pas le nom de sa fille.',
     scenes: [
       '7200', '7200_nets', '7200_reflection', '7200_elder', //
+      '7200_will_heir', '7200_will_courier', '7200_will_houses',
+      '7200_will_choice', //
       '7200_elder_later', '7200_tide', '7200_tide_failed',
       '7200_house_spire_fallen',
       '7200_clan_vigil_3',
