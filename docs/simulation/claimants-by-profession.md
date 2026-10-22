@@ -1,0 +1,106 @@
+# The claimants by profession (wave 17 item 1, the logging run)
+
+Measured on v1.516 with `boss_balance_test`'s plan (400 runs, politics
+events loaded), seed 7, checked at seeds 11 and 23. The fights were traced
+with a throwaway hook in `sim_combat.dart` and a harness under `test/`.
+Neither is committed. The hook doesn't change the results: the traced
+baseline matches the untraced one run for run.
+
+"Win %" is the encounter (3 tries). Everything else is **per try**,
+averaged over the tries each profession made. "Heals" means the claimant's
+own heals: phase heal plus heal moves.
+
+## Per claimant, seed 7
+
+**Cassian Oriel (`claimant_vane`)**: 620–720 health on the fight's scale. Resists Fire, weak to Electricity.
+
+| | Win % (met) | Rounds | Dealt / rd | Taken / rd | Claimant heals | Lost to resist | Party heals |
+|---|---|---|---|---|---|---|---|
+| Cleric | 0 (14) | 16.1 | 19.1 | 14.9 | 12 | 55 | 112 (Mending Light) |
+| Warrior | 0 (10) | 12.3 | 35.6 | 11.1 | 30 | 13 | 5 |
+| Mage | 62.5 (16) | 9.6 | 53.0 | 10.4 | 35 | 24 (+145 weakness) | 0 |
+| Ranger | 62.5 (8) | 15.6 | 37.5 | 9.0 | 40 | 40 | 4 |
+| Rogue | 69.2 (13) | 14.0 | 38.9 | 9.7 | 35 | 60 | 2 |
+
+**Maud Tallis (`claimant_tallis`)**: about 610 health. Resists Light, weak to Void. She is 264 of the 400 meetings.
+
+| | Win % (met) | Rounds | Dealt / rd | Taken / rd | Claimant heals | Lost to resist | Party heals |
+|---|---|---|---|---|---|---|---|
+| Cleric | 5.3 (57) | 18.4 | 20.2 | 17.7 | 48 | 63 | 187 |
+| Warrior | 22.8 (57) | 13.1 | 32.7 | 10.5 | 60 | 69 | 5 |
+| Mage | 51.0 (51) | 10.5 | 47.6 | 10.9 | 67 | 9 | 3 |
+| Ranger | 59.6 (52) | 14.5 | 33.3 | 9.2 | 69 | 44 | 8 |
+| Rogue | 44.7 (47) | 13.4 | 34.1 | 9.0 | 69 | 49 | 3 |
+
+**Hesk Morrow (`claimant_morrow`)**: 810–940 health. Resists Earth, weak to Electricity.
+
+| | Win % (met) | Rounds | Dealt / rd | Taken / rd | Claimant heals | Lost to resist | Party heals |
+|---|---|---|---|---|---|---|---|
+| Cleric | 33.3 (9) | 16.5 | 28.3 | 15.1 | 29 | 28 | 110 |
+| Warrior | 0 (13) | 12.5 | 31.7 | 10.6 | 12 | 77 | 2 |
+| Mage | 100 (13) | 12.4 | 76.2 | 6.1 | 85 | 2 (+261 weakness) | 4 |
+| Ranger | 45.0 (20) | 16.4 | 32.0 | 7.9 | 33 | 144 | 8 |
+| Rogue | 55.0 (20) | 14.8 | 43.2 | 9.0 | 48 | 35 | 1 |
+
+### All three claimants, by round of the fight (party side, per round still standing)
+
+| Rounds | 1–4 | 5–7 | 8–10 | 11–13 | 14–16 | 17+ |
+|---|---|---|---|---|---|---|
+| Cleric: damage dealt | 13.7 | 12.4 | 16.1 | 21.1 | 23.0 | 17.0 |
+| Cleric: damage taken | 6.8 | 7.6 | 13.3 | 22.7 | 27.9 | 32.2 |
+| Cleric: healed | 1.1 | 2.0 | 5.9 | 13.6 | 16.5 | 14.8 |
+| Warrior: damage dealt | 19.9 | 24.1 | 30.4 | 31.2 | 22.8 | 23.5 |
+| Warrior: damage taken | 7.6 | 8.2 | 12.3 | 15.3 | 15.4 | 9.6 |
+| Mage / ranger / rogue: damage dealt | 22–30 | 20–46 | 29–49 | 32–38 | 28–34 | 30–34 |
+
+Average round of a lost try: cleric 17.7, warrior 12.7, mage 9.6, ranger 14.0, rogue 13.0. When the cleric falls, the claimant still has **50%** of its health; for the warrior it has 46%; for the others, 38–49%.
+
+### What the trace rules out
+
+- **Silence and the hex do nothing in the simulator.** `edict_of_silence` and `hex_of_ill_luck` are `tamper` moves, and `sim_combat` doesn't model tamper moves: the claimant spends its turn and nothing happens. They take 23% of Oriel's turns, so in the simulator they help the party. They can't be the cleric's 7.5%. In the app they would make it worse.
+- **Statuses:** the only one the party suffers is the Stun from `radiant_judgment`. It is up 10–13% of rounds for the cleric and the warrior, and 6–11% for the others. That is a small factor.
+- **Mana:** the cleric is starved in under 1% of rounds. It spends its mana on heals: 7.5 Mending Light per try against 0.7 Smite the Wicked.
+- **No fight runs out of time:** every loss is a death.
+
+## Root causes, ranked by impact
+
+1. **The cleric deals half the damage, and the boss Tide punishes the long fight that follows.** About 34% of the cleric's rolls make mana and deal nothing: Mana faces (17%) and `cleric_prayer` (17%). That mana becomes heals. Another 17% are Defend. As a result it deals 13–20 per round against the others' 33–53, and its fights run to round 16–18. From round 8 the Tide raises a boss's blows by 18% a round (`tideBossEnemyStep`), so by round 16 they are ×2.6 and by round 18 ×3.0. The cleric's heals don't grow with the Tide. Damage taken climbs from 7 a round to 28–32, and the cleric dies with the claimant at half health. The cleric's regular fights are shorter and never reach that ramp, which is why it wins 63.5% of them.
+   - What-if, claimant blows on the Tide's ordinary step (0.10): cleric 7.5 → 37.5%.
+   - What-if, removing the claimants' heals: cleric only reaches 16%.
+2. **The warrior has neither the damage nor the staying power, so the claimant's heals and resists decide its fights.** It deals about 32 a round (like the ranger and rogue), but it dodges 11–12% against their 30–37%. It has no heals and falls around round 12.7. Its fights are lost by a small margin, so the following settle them:
+   - Tallis' 12% phase heal plus `cleric_sanctuary`: 60 health per try, about 10% of her pool.
+   - Resists against its two main elements: Earth (`warrior_quarry_break`) against Morrow and Light (`celestial_ward`) against Tallis, which cost it 70–77 per try.
+   - What-ifs: no claimant heals takes the warrior 16 → 40%. No resists takes it 16 → 30%.
+3. **Resists hit the cleric only a little.** Fire against Oriel and Light against Tallis cost it about 3 a round, about 15% of its output. Removing them takes the cleric only from 7.5 to 15%.
+
+## Candidate fixes, measured
+
+All were run in the harness only and reverted. Columns are the claimant encounter win % by profession (Cl, Wa, Ma, Ra, Ro), the claimants' average, each claimant's rate (band 28–52), chapter 7 overall, the boss-curve mean (42–58) and the profession spread in the boss test (8 or less).
+
+| Run (seed) | Cl | Wa | Ma | Ra | Ro | Claimants | Vane | Tallis | Morrow | Ch 7 | Boss mean | Spread |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| v1.516 (7) | 7.5 | 16.2 | 61.2 | 56.2 | 51.2 | 38.5 | 39.3 | 35.6 | 48.0 | 52.6 | 50.1 | 5.9 |
+| v1.516 (11) | 6.2 | 30.0 | 63.8 | 65.0 | 36.2 | 40.2 | 30.6 | 39.0 | 54.1 | 54.3 | 50.6 | 5.3 |
+| v1.516 (23) | 15.0 | 32.5 | 63.8 | 43.8 | 42.5 | 39.5 | 31.5 | 40.8 | 40.6 | 53.8 | 49.6 | 2.9 |
+| **A** heal once + Morrow +10 (7) | 6.2 | 20.0 | 61.2 | 53.8 | 48.8 | 38.0 | 39.3 | 35.6 | 45.3 | 52.3 | 50.3 | 5.4 |
+| A (11) | 8.8 | 27.5 | 63.8 | 61.2 | 35.0 | 39.2 | 36.7 | 38.6 | 44.3 | 53.7 | 49.8 | 4.9 |
+| A (23) | 11.2 | 33.8 | 58.8 | 48.8 | 36.2 | 37.8 | 37.0 | 39.4 | 31.2 | 52.8 | 49.2 | 3.2 |
+| **B** Tide capped at level 6 for claimants (7) | 41.2 | 17.5 | 61.2 | 57.5 | 51.2 | 45.8 | 44.3 | 45.5 | 48.0 | 56.7 | 51.8 | 5.9 |
+| B (11) | 37.5 | 32.5 | 62.5 | 71.2 | 37.5 | 48.2 | 36.7 | 48.6 | 55.7 | 58.9 | 52.0 | 5.2 |
+| B (23) | 48.8 | 38.8 | 63.8 | 60.0 | 45.0 | 51.2 | 38.9 | 53.2 | 53.1 | 60.7 | 52.5 | 2.8 |
+| **C** B + heal once + Morrow +10 + no resists (7) | 37.5 | 32.5 | 66.2 | 58.8 | 47.5 | 48.5 | 50.8 | 48.9 | 45.3 | 58.2 | 52.2 | 5.2 |
+| C (11) | 43.8 | 36.2 | 62.5 | 73.8 | 40.0 | 51.2 | 40.8 | 53.4 | 49.2 | 60.6 | 52.3 | 4.9 |
+| C (23) | 42.5 | 48.8 | 61.2 | 57.5 | 46.2 | 51.2 | 40.7 | 52.8 | 53.1 | 60.7 | 52.6 | 3.0 |
+
+- **A, the proposal's rule:** each claimant heals once a fight (its first heal of any kind; then its heal moves leave its list), and Morrow gets +10 health. It does nothing for the cleric and gives the warrior +4 points at seed 7. The first heal is usually the big one: the 30% phase heal or `cleric_sanctuary`. Not enough on its own.
+- **B, the counter to cause 1:** in a claimant's fight its blows stop growing at Tide level 6 (×2.08, from round 13 on). The cleric gets 38–49% at every seed. Mage, ranger and rogue barely move, because their fights end before round 13. The claimants average 46–51, the boss mean is 51.8–52.5 and the spread is unchanged. The warrior isn't fixed: it falls around round 12.7, before the cap starts to act. It reaches only 17.5% at seed 7. Tallis (53.2) and Morrow (53.1, 55.7 at seed 11) sit just over the band at some seeds. Cap 5 overshoots: Oriel and Tallis go to 55–56. Cap 4 takes the cleric to 70%.
+- **C, B plus the warrior's two levers:** heal once, Morrow +10, and the claimants lose their resists. Their weaknesses stay. Every profession is at 32.5% or more at all three seeds. The claimants average 48.5–51.2 and the boss mean is 52.2–52.6. Tallis goes 0.9–1.4 points over the band at seeds 11 and 23, and Morrow 1.1 at seed 23. A few more points of health on Tallis would settle that, but I didn't measure it.
+
+Variants that were rejected:
+- **Claimant blows on the ordinary Tide step (0.10):** cleric 37.5 and warrior 32.5, but it lifts everyone. Oriel goes to 54.1 and Morrow to 56.0, out of band.
+- **No claimant heals at all:** warrior 40, but cleric only 16.2, and Morrow goes to 56.0.
+- **Heals rising with the Tide in boss fights (cleric-side, step 0.10):** cleric 47.5 on the claimants, but 77% overall, a spread of 12.5.
+
+**My advice is B or C.** B is one rule in `fight_length.dart`, read by the fight screen and `sim_combat`, keyed to the claimants or to a field in `enemies.json`. It fixes the cleric cleanly. C also fixes the warrior, but it changes three things in data.
+
+Separately, **silence and the hex need modelling in `sim_combat`** before any final tuning. Today they are free turns for the party, so the simulator overrates the cleric against Oriel.
