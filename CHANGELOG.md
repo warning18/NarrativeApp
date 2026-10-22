@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.505.0+541]
+## [1.507.0+543]
 
 Wave 16 UX, item 1, second step: two more sheets use the shared parts.
 
@@ -17,6 +17,16 @@ Wave 16 UX, item 1, second step: two more sheets use the shared parts.
 - **The skill sheet's header** (the skill's pixel icon, its name, "step 2 of 5 · known") uses the shared header.
 - **Three cosmetic notes from QA's v1.502 pictures.** The camp build sheet's title lines up with its text (it started 8 px in); the temple row's small "Blessing" label is set in the body face (the pixel face read "Glessing" at 320 px); and the build sheet's gold need reads "Or 900/1200" on one line.
 - Not moved: the face skill choice sheet keeps its own layout, since its pick-then-set bar does not fit the shared row.
+
+## [1.506.0+542]
+
+Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Hour of day:** `dayPhaseProvider` (dawn, day, dusk, night) and `hourOfDayProvider`, read from the saved world clock that the road, walks, voyages and rests already move.
+- **Fight entrance card:** `hasEntranceCard` is true for every boss and for any foe with the new optional `entranceCard` flag in enemies.json.
+- **Sea remark:** a new `atSea` remark kind and `speakUpAtSea`, at most once per chapter, silent until lines are written.
+- **`anyPowerAtLeast`:** a politics event condition that holds when any main clan's power is at least N.
 
 ## [1.504.0+540]
 
