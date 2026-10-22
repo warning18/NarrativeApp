@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../data/sail_powers.dart' show SailPower;
 import '../../data/ship_forms.dart';
 import '../ship_dress.dart';
+import 'deck_crew.dart';
 import 'side_view.dart';
 
 part 'side_gear.dart';
@@ -224,6 +225,7 @@ void paintSideShip(
   double t = 0,
   bool rough = false,
   double condition = 1.0,
+  List<DeckCrew> crew = const [],
 }) {
   final pal = _Palette(form, dress);
   final len = sideShipLength(form);
@@ -265,6 +267,10 @@ void paintSideShip(
   }
   if (worn != null && sails.isNotEmpty && worn.sigils.isNotEmpty) {
     _paintSigils(canvas, u, sails, worn.sigils, t);
+  }
+  if (crew.isNotEmpty) {
+    paintDeckCrew(canvas, u,
+        crew: crew, x: x, len: len, top: deck ?? top, t: t, rough: rough);
   }
   if (condition < 0.8) {
     _damage(canvas, u, x, base, len, form, pal, t, condition,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -26,10 +27,12 @@ import '../providers/chapter_loop_provider.dart'
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart' show speakUpAtSea;
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/ship_dress_provider.dart';
 import '../providers/signs_provider.dart';
+import '../providers/walking_party_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -39,7 +42,10 @@ import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
 import '../widgets/sea_battlefield.dart';
 import '../widgets/ship_widgets.dart' show HullBar, playerShipRecord;
+import '../widgets/side_view/deck_crew.dart';
 import '../widgets/side_view/sea_kit.dart';
+import '../widgets/side_view/side_view.dart' show sideViewRows;
+import '../widgets/walk_bubble.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -153,6 +159,60 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   /// a raider fight).
   String? _beastId;
   BeastProfile? _beast;
+
+  /// A companion's word as the voyage casts off (Core's speakUpAtSea, once a
+  /// chapter), as a bubble over their figure on the deck for a few seconds.
+  SpokenLine? _spoken;
+  Timer? _spokenTimer;
+  bool _seaSpoke = false;
+
+  void _speakUpAtSea() {
+    if (_seaSpoke || !mounted) return;
+    _seaSpoke = true;
+    final remark = speakUpAtSea(ref, chapter: _chapter);
+    if (remark == null) return;
+    final line = spokenRemarks(ref, [remark]).firstOrNull;
+    if (line == null) return;
+    setState(() => _spoken = line);
+    _spokenTimer = Timer(const Duration(seconds: 7), () {
+      if (mounted) setState(() => _spoken = null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _spokenTimer?.cancel();
+    super.dispose();
+  }
+
+  /// The bubble over the crew member who spoke, above their head on the
+  /// deck of a scene [width] pixels wide and [height] tall.
+  Widget _deckBubble(SpokenLine line, double width, double height) {
+    final crew = deckCrewOf(ref.read(walkingPartyProvider));
+    final index = max(0, crew.indexWhere((m) => m.id == line.companionId));
+    final unit = height / sideViewRows;
+    final len = seaShipLength(ref.read(shipFormProvider));
+    final at = deckCrewX(index, crew.length, len, width / unit) * unit;
+    final bubbleWidth = min(300.0, width - 16);
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    return Positioned(
+      left: left,
+      top: 4,
+      width: bubbleWidth,
+      bottom: height - 40 * unit,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomLeft,
+        child: WalkBubble(
+          key: const Key('sea_bubble'),
+          speaker: line.speaker,
+          line: line.line,
+          width: bubbleWidth,
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+        ),
+      ),
+    );
+  }
 
   void _ensureStarted({
     required Map<String, dynamic> ships,
@@ -1086,6 +1146,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     ship: ref.watch(shipFormProvider),
                     dress: ref.watch(shipDressProvider),
                     condition: _hullFraction,
+                    crew: deckCrewOf(ref.watch(walkingPartyProvider)),
                     height: 130,
                   ),
                 ),
@@ -1204,6 +1265,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           // The Eel on the water, beside what she meets. On a short phone
           // the day's words need the room more: she is left out.
           if (constraints.maxHeight >= dayPictureMinHeight) ...[
+            // The crew may say a word as she casts off, once a chapter.
+            if (!_seaSpoke)
+              Builder(builder: (_) {
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _speakUpAtSea());
+                return const SizedBox.shrink();
+              }),
             // A storm day rains and flashes over the water, and stops there.
             ClipRect(
               child: Stack(
@@ -1220,9 +1288,16 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     dress: ref.watch(shipDressProvider),
                     condition: _hullFraction,
                     meeting: _meetingFor(event),
+                    crew: deckCrewOf(ref.watch(walkingPartyProvider)),
                     height: 140,
                     beside: Icon(icon, size: 34, color: colour),
                   ),
+                  if (_spoken != null)
+                    Positioned.fill(
+                      child: Stack(children: [
+                        _deckBubble(_spoken!, constraints.maxWidth, 140),
+                      ]),
+                    ),
                 ],
               ),
             ),

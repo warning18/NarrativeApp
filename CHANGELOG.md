@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.518.0+554]
+
+Wave 16 UX: the sea as the land is now, on Core's `speakUpAtSea` (v1.506).
+
+### Added
+- **The party on the Eel's deck** (`lib/widgets/side_view/deck_crew.dart`): the hero and the companions of the party (the same `walkingPartyProvider` the land walk uses) stand on her deck in the sea side view, small, on the rail line of whatever hull she is (all fourteen), riding the swell with her. The hero is in red with a pale hat; each companion keeps the cloak colour they have on the land walk. They look round now and then, and crouch in a squall.
+- **A companion speaks up as a voyage casts off:** the voyage screen calls `speakUpAtSea` once the day's picture is on screen, and the words show as a bubble over that companion's figure for seven seconds. Core's rule keeps it to once a chapter; until Narrative writes the lines nobody speaks.
+- **What she meets sails in from the right edge** over a second and a half (a raider, a derelict, a beast, a sighting), as the land's encounters walk in from the left; the gulls and the harbour stay put, and reduced motion shows it in place at once.
+- Picture: `docs/ux-shots/sea-crew-on-deck.png`. Test: `test/sea_crew_test.dart` (every hull, the arrival, the bubble over a voyage).
+
+### Touches another session's area
+- `lib/screens/voyage_screen.dart` (shared): the crew passed to the two scenes, the `speakUpAtSea` call and its bubble (about 60 lines). No other open PR touches it.
+
 ## [1.517.0+553]
 
 Wave 16 UX: the fight's entrance and finish, on Core's `hasEntranceCard` (v1.506).
