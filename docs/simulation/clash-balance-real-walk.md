@@ -114,3 +114,133 @@ their bands (see [difficulty-review.md](difficulty-review.md), v1.524).
 The test (`test/clash_balance_test.dart`) is unchanged from the patch
 measured above: 26 tables, seeds 7, 11 and 23 at 100 runs, 0.10 a
 chapter (0.25 for chapter 1), mean of chapters 2 to 8 under 0.08.
+
+## The three options, measured on v1.531 (claude/core-6 + main)
+
+Base: `claude/core-6` merged with main at v1.531 (tamper and claimants in),
+so "base" below is v1.531 + the clash-only pack rules, pack stats 0.8/0.7.
+"Main" is v1.531 alone. Measured with a throwaway harness (reverted):
+gaps as `clash_balance_test` (26 tables, seeds 7/11/23 at 100 runs,
+pooled); everything else as `boss_balance_test` (400 runs a seed,
+politics events in) and `nemesis_quests_test` (200 runs a seed,
+`championFights`).
+
+Note: on v1.531 the base gives chapter 6 at **0.099** and a mean of 0.046
+(the real test, run on the branch, prints the same), not the 0.076 / 0.032
+in the note at the top of this page. The test passes by 0.001.
+
+**Two things to read the numbers right.**
+- `boss_balance`'s professions, chapters and bosses are **clash-rule**
+  numbers: `simulatePlaythroughs` always plays the clash rules (the game's
+  own). Plain-rule play (the gap's other side) puts the cleric at 80-86%
+  and every other profession at 40-59% under every option, so no option
+  passes a 60% floor on plain rules; the floor in the table is the test's
+  (clash rules).
+- The pack rules are clash-only, so the plain-rule numbers depend on the
+  pack stats alone: a and c share the base's plain numbers, b and b+
+  share theirs.
+
+### The options
+
+- **(a)** base + one clash-only lone-foe lever: **under the clash rules
+  a lone foe no longer falls to the execute line** (it still wavers and
+  may flee; packs keep their wave-17 rule, only the last one standing
+  falls). Pack stats 0.8/0.7. Of the lone-foe levers tried (each rule off
+  for lone foes only, one at a time): execute 0.066 at chapter 6, morale
+  0.092, reaction 0.090, parry 0.093; goal (0.103) and Tide (0.141) off
+  made it worse. A lower lone execute line was not enough (0.07: 0.093;
+  0.05: 0.096), so the lever is all or nothing.
+- **(b)** pack stats 0.7/0.6 in both rule sets, main's clash rules (no pack
+  rules).
+- **(b+)** pack stats 0.7/0.6 and the clash pack rules.
+- **(a+)**, not asked, for reference: a with 0.7/0.6.
+- **(c)** no rule change; the limits the test would need.
+
+### Gap (clash minus plain), seeds 7/11/23 pooled
+
+| Option | Ch1 | Ch2 | Ch3 | Ch4 | Ch5 | Ch6 | Ch7 | Ch8 | Mean 2-8 | Worst 2-8 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| main (v1.531) | 0.032 | 0.230 | 0.139 | 0.112 | 0.136 | 0.178 | 0.138 | 0.124 | 0.151 | 0.230 |
+| base (pack rules, 0.8/0.7) | 0.006 | 0.033 | 0.036 | 0.046 | 0.056 | 0.099 | 0.031 | 0.024 | 0.046 | 0.099 |
+| **a** base + lone foes not executed | -0.009 | 0.057 | 0.025 | 0.027 | 0.025 | 0.066 | 0.028 | 0.000 | 0.033 | 0.066 |
+| **b** 0.7/0.6, no pack rules | 0.017 | 0.168 | 0.109 | 0.116 | 0.117 | 0.182 | 0.097 | 0.124 | 0.130 | 0.182 |
+| **b+** 0.7/0.6 + pack rules | 0.010 | 0.047 | -0.003 | 0.035 | 0.029 | 0.122 | 0.009 | 0.031 | 0.039 | 0.122 |
+| a+ (a with 0.7/0.6) | 0.030 | 0.058 | 0.002 | 0.034 | 0.016 | 0.096 | 0.040 | 0.017 | 0.037 | 0.096 |
+
+### What the player sees (`boss_balance`, clash rules, 400 runs a seed)
+
+Encounters won within 3 tries, mean of the three seeds:
+
+| Option | Ch1 | Ch2 | Ch3 | Ch4 | Ch5 | Ch6 | Ch7 | Ch8 |
+|---|---|---|---|---|---|---|---|---|
+| main | 94.0 | 87.2 | 67.0 | 57.4 | 66.2 | 58.1 | 57.4 | 51.8 |
+| base | 92.6 | 79.8 | 57.7 | 49.0 | 59.5 | 50.4 | 46.4 | 39.1 |
+| **a** | 92.5 | 78.9 | 57.6 | 48.8 | 58.5 | 46.0 | 43.8 | 36.4 |
+| **b** | 94.5 | 88.9 | 70.6 | 62.3 | 70.5 | 63.0 | 63.2 | 62.3 |
+| **b+** | 93.3 | 84.4 | 60.0 | 53.3 | 62.0 | 55.6 | 52.2 | 48.8 |
+| a+ | 93.2 | 84.5 | 60.3 | 51.7 | 60.3 | 51.4 | 50.8 | 47.8 |
+
+Plain rules, same runs: base pack stats (a, c) 91.9 / 70.2 / 52.5 / 45.4 /
+54.6 / 38.8 / 43.6 / 40.2; 0.7/0.6 (b, b+) 93.0 / 80.1 / 57.4 / 49.0 /
+57.9 / 43.1 / 52.8 / 49.9.
+
+Professions (cleric / warrior / mage / ranger / rogue; floor 60, spread 8),
+lowest per seed 7 / 11 / 23; champions won (floor 0.38) at 7 / 11 / 23;
+boss mean (42-58):
+
+| Option | Professions, lowest (7 / 11 / 23) | Floor | Champions % | Boss mean |
+|---|---|---|---|---|
+| main | 63.8 / 64.7 / 63.2 | pass | 39.9 / 42.3 / 46.7 | 51.4 / 51.6 / 50.2 |
+| base | 56.8 / 56.6 / 56.6 (ranger, rogue, warrior under 60 at every seed) | fail by 3.4 | 39.8 / 43.3 / 37.7 | 50.9 / 50.6 / 48.4 |
+| **a** | 54.7 / 56.0 / 56.8; seed 7 spread 10.3 (warrior 54.7, cleric 65.0) | fail by 5.3, and the spread | 44.0 / 41.3 / 42.3 | 50.3 / 50.1 / 46.6 |
+| **b** | 69.7 / 70.2 / 68.6 | pass | 42.0 / 44.1 / 44.5 | 53.0 / 50.4 / 51.5 (tear_herald 48.5 at seed 11, 1.5 over its band) |
+| **b+** | 61.6 / 61.7 / 61.7 | pass | 40.6 / 40.0 / 37.9 | 49.6 / 50.2 / 50.1 |
+| a+ | 60.7 / 58.1 / 58.9 | fail by 1.9 | not run | 51.2 / 50.9 / 47.9 |
+
+Champions at seed 23 sit under 0.38 for base (37.7) and b+ (37.9); the
+test runs seed 7 only, where every option passes.
+
+### Reading it
+
+- **a** passes the gap with room (worst 0.066, mean 0.033) but costs the
+  player most: chapter 6 to 8 lose 3-4 more points than the base, and the
+  floor fails by 5.3 (warrior 54.7) with a 10.3 spread at seed 7. It
+  can't meet the floor: `boss_balance` measures clash-rule play, and every
+  clash-only lever that closes the gap makes clash play harder, so it
+  moves the professions down, never up. The floor already failed on the
+  base because the pack rules cost chapters 3-5 8-10 points.
+- **b** fails the gap (mean 0.130, chapter 2 0.168, chapter 6 0.182): the
+  cut makes pack fights easier on both sides (plain chapter 2 +9.9,
+  clash +1.7 vs main), so it moves the gap only from 0.151 to 0.130.
+  The player gains 2-11 points a chapter on main.
+- **b+** passes the floor (61.6 lowest) and the mean (0.039) but chapter
+  6 is 0.122, over 0.10: chapter 6's gap is mostly lone foes, which
+  neither the cut nor the pack rules touch.
+- **Confirmed: the cut makes pack fights easier in both rule sets, and
+  chapters 3-5's drop comes from the clash pack rules.** Chapters 3/4/5,
+  clash: main 67.0 / 57.4 / 66.2, cut alone (b) 70.6 / 62.3 / 70.5 (+3.6
+  / +4.9 / +4.3), pack rules alone (base) 57.7 / 49.0 / 59.5 (-9.3 / -8.4
+  / -6.7), both (b+) 60.0 / 53.3 / 62.0. Plain: 52.5 / 45.4 / 54.6 at
+  0.8/0.7, 57.4 / 49.0 / 57.9 at 0.7/0.6.
+- **c**: with the pack rules (base) the current limits pass, at 0.099 for
+  chapter 6 (limit 0.10) and a mean of 0.046 (0.08); a chapter moves 0.02
+  to 0.05 with any change to the seeded stream, so a safe limit is about
+  0.12 a chapter. Without the pack rules (main) the test needs 0.24 a
+  chapter (chapter 2 is 0.230) and 0.16 for the mean (0.151).
+- Seed noise: the lone-foe lever with 0.7/0.6 (a+) put chapter 6 at
+  0.096, where on 0.8/0.7 it gave 0.066. Chapter 6 is the chapter to
+  watch whatever is chosen.
+
+### Side by side
+
+| | a | b | b+ | c (base / main) |
+|---|---|---|---|---|
+| Rules | pack rules + lone foes not executed (clash), 0.8/0.7 | 0.7/0.6 both, no pack rules | 0.7/0.6 both + pack rules | none |
+| Worst gap ch2-8 | 0.066 (ch6) | 0.182 (ch6) | 0.122 (ch6) | 0.099 / 0.230 |
+| Mean gap 2-8 | 0.033 | 0.130 | 0.039 | 0.046 / 0.151 |
+| Real-walk test (0.10, 0.08) | pass | fail | fail (ch6) | pass by 0.001 / fail |
+| Professions floor 60 | fail (54.7) | pass (68.6) | pass (61.6) | fail (56.6) / pass (63.2) |
+| Champions, seeds 7/11/23 | 44.0 / 41.3 / 42.3 | 42.0 / 44.1 / 44.5 | 40.6 / 40.0 / 37.9 | 39.8 / 43.3 / 37.7 ; 39.9 / 42.3 / 46.7 |
+| Boss mean | 46.6-50.3 | 50.4-53.0 | 49.6-50.2 | 48.4-50.9 / 50.2-51.6 |
+| Ch 3-5 vs main (clash) | -9.4 / -8.6 / -7.7 | +3.6 / +4.9 / +4.3 | -7.0 / -4.1 / -4.2 | -9.3 / -8.4 / -6.7 ; 0 |
+| Limit needed for the test | none | 0.19 a chapter | 0.13 a chapter | none (0.12 for margin) / 0.24 and mean 0.16 |
