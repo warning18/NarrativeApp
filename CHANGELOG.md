@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.513.0+549]
+## [1.514.0+550]
 
 Wave 16 UX: the ward card and the Journey mark, on Core's warding rules (v1.508).
 
