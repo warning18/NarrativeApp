@@ -38,6 +38,7 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
 import '../providers/city_provider.dart';
 import '../providers/clans_provider.dart' show factionsProvider;
+import '../providers/day_phase_provider.dart';
 import '../providers/town_rulers_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
@@ -5644,6 +5645,7 @@ class _CityDistrictView extends ConsumerWidget {
                   },
                   onPickFog: (_) {},
                   rulers: rulers,
+                  phase: ref.watch(dayPhaseProvider),
                   services: [
                     for (final s in townServices)
                       CityChartService(

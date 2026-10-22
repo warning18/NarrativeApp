@@ -63,5 +63,66 @@
       "feral_dogs": 1,
       "falling_wall": 1
     }
+  },
+  "stair_to_court": {
+    "id": "stair_to_court",
+    "name": "From the Drowned Cloister to the Hollow Court",
+    "name_fr": "Du Cloître noyé à la Cour Creuse",
+    "from": "cloister",
+    "to": "court",
+    "roads": [
+      "cloister_court"
+    ],
+    "days": 3,
+    "biome": "fen",
+    "terrain": "marsh",
+    "chapter": 4,
+    "rulerOneIn": 3,
+    "events": {
+      "fen_mud": 2,
+      "fen_lantern": 1,
+      "fen_cart": 1,
+      "fen_child": 1
+    }
+  },
+  "reliquary_to_heart": {
+    "id": "reliquary_to_heart",
+    "name": "From the Black Reliquary down to the Dead Heart",
+    "name_fr": "Du Reliquaire Noir au Cœur mort",
+    "from": "reliquary",
+    "to": "heart",
+    "roads": [
+      "reliquary_heart"
+    ],
+    "days": 3,
+    "biome": "frost",
+    "terrain": "snow",
+    "chapter": 5,
+    "rulerOneIn": 3,
+    "events": {
+      "frost_rime_fall": 2,
+      "frost_cairn": 1,
+      "frost_hound_track": 1,
+      "frost_bell": 1
+    }
+  },
+  "lantern_cliffs": {
+    "id": "lantern_cliffs",
+    "name": "Up the Lantern Cliffs to Candlehold",
+    "name_fr": "Par les Falaises de la Lanterne jusqu’à Candlehold",
+    "from": "camp",
+    "to": "candlehold",
+    "roads": [
+      "camp_candlehold"
+    ],
+    "days": 2,
+    "biome": "sea_cliffs",
+    "terrain": "mountain",
+    "chapter": 7,
+    "rulerOneIn": 0,
+    "events": {
+      "cliff_salt_wind": 1,
+      "cliff_tide_stair": 1
+    }
   }
 }

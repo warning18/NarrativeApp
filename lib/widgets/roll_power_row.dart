@@ -11,7 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_rolls.dart';
 import '../l10n/app_strings.dart';
+import '../providers/clans_provider.dart' show wardTargetsProvider;
 import '../theme/stitched_ink.dart';
+import 'ward_sheet.dart';
 
 class RollPowerRow extends ConsumerWidget {
   const RollPowerRow({
@@ -65,8 +67,17 @@ class RollPowerRow extends ConsumerWidget {
     await onReroll();
   }
 
+  /// What a Banish dialog answers when the player chose to ward the road.
+  static const _ward = -1;
+
   Future<void> _banish(BuildContext context, WidgetRef ref) async {
     final charges = rolls.banish ?? 0;
+    final canWard = ref.read(wardTargetsProvider).isNotEmpty;
+    // No card to banish: only the road can be warded.
+    if (!canBanish) {
+      if (canWard) await showWardSheet(context);
+      return;
+    }
     final draws = await showDialog<int>(
       context: context,
       builder: (context) => SimpleDialog(
@@ -85,10 +96,23 @@ class RollPowerRow extends ConsumerWidget {
                     .replaceAll('{cost}', '${banishCostOf(length)}')),
               ),
             ),
+          // The Warding Cairn's other use: keep a hunting clan off the trail.
+          if (canWard) ...[
+            const Divider(),
+            SimpleDialogOption(
+              key: Key('${keyPrefix}_roll_ward'),
+              onPressed: () => Navigator.pop(context, _ward),
+              child: Text(tr(ref, 'ward_choice')),
+            ),
+          ],
         ],
       ),
     );
-    if (draws != null) await onBanish(draws);
+    if (draws == _ward) {
+      if (context.mounted) await showWardSheet(context);
+    } else if (draws != null) {
+      await onBanish(draws);
+    }
   }
 
   /// A power's name without its count ("Reroll ({left})" says "Reroll").
@@ -124,8 +148,13 @@ class RollPowerRow extends ConsumerWidget {
             button('reroll', Icons.casino_outlined, left,
                 () => _reroll(context, ref)),
           if (rolls.banish case final left?)
-            button('banish', Icons.block, left,
-                canBanish ? () => _banish(context, ref) : null),
+            button(
+                'banish',
+                Icons.block,
+                left,
+                canBanish || ref.watch(wardTargetsProvider).isNotEmpty
+                    ? () => _banish(context, ref)
+                    : null),
           if (rolls.raise case final left?)
             button('raise', Icons.keyboard_double_arrow_up, left,
                 canRaise ? onRaise : null,
