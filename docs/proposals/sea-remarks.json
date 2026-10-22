@@ -1,0 +1,122 @@
+{
+  "kelda_atSea": {
+    "remarkID": "kelda_atSea",
+    "companionID": "kelda",
+    "trigger": "atSea",
+    "lines": [
+      "Sea. No wall, no gate, nothing to hold. I do not like it.",
+      "A deck is only a small piece of ground that moves. I can work with that.",
+      "Keep your feet apart and your knees soft. Same as a shield wall in a gale."
+    ],
+    "lines_fr": [
+      "La mer. Pas de mur, pas de porte, rien à tenir. Je n’aime pas ça.",
+      "Un pont n’est qu’un petit bout de terrain qui bouge. Je peux m’en accommoder.",
+      "Pieds écartés, genoux souples. Comme un mur de boucliers dans la tempête."
+    ]
+  },
+  "sable_atSea": {
+    "remarkID": "sable_atSea",
+    "companionID": "sable",
+    "trigger": "atSea",
+    "lines": [
+      "Open water, love. Nobody to rob but ourselves. Terrible.",
+      "Every ship I ever knew had a secret locker. Ours has three. Do not ask.",
+      "The sea keeps no ledger. I find that very restful."
+    ],
+    "lines_fr": [
+      "L’eau libre, mon cœur. Personne à dévaliser sauf nous. Terrible.",
+      "Tous les navires que j’ai connus avaient une cache. Le nôtre en a trois. Ne demandez pas.",
+      "La mer ne tient aucun registre. Je trouve cela très reposant."
+    ]
+  },
+  "maren_atSea": {
+    "remarkID": "maren_atSea",
+    "companionID": "maren",
+    "trigger": "atSea",
+    "lines": [
+      "The water has no memory of what it has carried. I envy it.",
+      "I say the old prayers at sea. They fit the swell.",
+      "Whoever is lost out here is lost kindly. Perhaps that is something."
+    ],
+    "lines_fr": [
+      "L’eau ne garde pas mémoire de ce qu’elle a porté. Je l’envie.",
+      "Je dis les anciennes prières en mer. Elles épousent la houle.",
+      "Qui se perd ici se perd en douceur. C’est peut-être quelque chose."
+    ]
+  },
+  "liora_atSea": {
+    "remarkID": "liora_atSea",
+    "companionID": "liora",
+    "trigger": "atSea",
+    "lines": [
+      "Nothing to climb out here but the mast. I have been up it twice.",
+      "Flat horizon. I do not trust a view with nothing to hide behind.",
+      "Gulls mean land within a day. I would rather have the gulls than the chart."
+    ],
+    "lines_fr": [
+      "Rien à escalader ici que le mât. J’y suis montée deux fois.",
+      "Un horizon plat. Je me méfie d’une vue sans rien pour se cacher.",
+      "Des goélands, c’est la terre à un jour. Je préfère les goélands à la carte."
+    ]
+  },
+  "vess_atSea": {
+    "remarkID": "vess_atSea",
+    "companionID": "vess",
+    "trigger": "atSea",
+    "lines": [
+      "The whispers are quiet on water. I think they cannot cross it.",
+      "At night the sea is the same dark as the other one. I find it almost kind.",
+      "Do not look at the wake too long. It looks back, a little."
+    ],
+    "lines_fr": [
+      "Les murmures se taisent sur l’eau. Je crois qu’ils ne peuvent pas la franchir.",
+      "La nuit, la mer est du même noir que l’autre. Je la trouve presque bonne.",
+      "Ne regardez pas trop longtemps le sillage. Il regarde un peu en retour."
+    ]
+  },
+  "grosh_atSea": {
+    "remarkID": "grosh_atSea",
+    "companionID": "grosh",
+    "trigger": "atSea",
+    "lines": [
+      "Water, water, water. Grosh does not like a place with no ground.",
+      "Grosh is not sick. Grosh is thinking. Very hard. Down here.",
+      "If the sea attacks, Grosh will hit it. Grosh does not know how yet."
+    ],
+    "lines_fr": [
+      "De l’eau, de l’eau, de l’eau. Grosh n’aime pas un endroit sans sol.",
+      "Grosh n’est pas malade. Grosh réfléchit. Très fort. Là, en bas.",
+      "Si la mer attaque, Grosh la frappera. Grosh ne sait pas encore comment."
+    ]
+  },
+  "tobin_atSea": {
+    "remarkID": "tobin_atSea",
+    "companionID": "tobin",
+    "trigger": "atSea",
+    "lines": [
+      "I know eleven sea songs. They are all about being homesick, which is the only subject.",
+      "The brothers said the sea is a long psalm with no verses. I begin to agree.",
+      "Mind the rail. A good hymn is not worth a drowned singer."
+    ],
+    "lines_fr": [
+      "Je connais onze chansons de mer. Elles parlent toutes du mal du pays, qui est le seul sujet.",
+      "Les frères disaient que la mer est un long psaume sans couplets. Je commence à être de leur avis.",
+      "Attention au bastingage. Un beau cantique ne vaut pas un chanteur noyé."
+    ]
+  },
+  "malrik_atSea": {
+    "remarkID": "malrik_atSea",
+    "companionID": "malrik",
+    "trigger": "atSea",
+    "lines": [
+      "Every wave is a mile of unsold stock. I am trying not to count.",
+      "The Eel is slow, but she is paid for. That is more than I can say of most ships.",
+      "Sea air makes a man hungry for a contract. I have noticed that. Mark it down."
+    ],
+    "lines_fr": [
+      "Chaque vague est une lieue de marchandise invendue. J’essaie de ne pas compter.",
+      "L’Eel est lente, mais elle est payée. On n’en dit pas autant de la plupart des navires.",
+      "L’air de la mer donne faim de contrats. Je l’ai remarqué. Notez-le."
+    ]
+  }
+}
