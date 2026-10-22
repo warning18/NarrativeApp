@@ -234,6 +234,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         townHandovers(ref.read(playerSessionProvider).seenTownRulers, rulers);
     notifier.markTownRulersSeen(townRulerIds(rulers));
     if (changed.isEmpty) return;
+    final recent = ref.read(recentHandoversProvider.notifier);
+    recent.state = withRecentHandovers(recent.state, changed);
     final factions = ref.read(factionsProvider);
     final colours = {
       for (final e in factions.entries) e.key: e.value.color,

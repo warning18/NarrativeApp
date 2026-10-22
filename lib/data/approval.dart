@@ -123,3 +123,48 @@ class ApprovalChange {
 /// [chapter]: once a chapter per companion, for [giftApproval].
 int giftCostFor(int chapter) => 40 * max(1, chapter);
 const int giftApproval = 2;
+
+// --- Companion story flags (wave 17, Narrative's loyalty scenes) ----------
+
+/// The story flag set once, for good, the first time [companionId]'s
+/// approval reaches [devotedApproval]. Falling back below it later does
+/// not clear it: the scene it opens is about the moment they came to
+/// trust the player. A save that already had a Devoted companion gets it
+/// on load.
+String devotedFlag(String companionId) => 'devoted_$companionId';
+
+/// The prefix of [allyFlag]. Flags under it belong to the engine: the
+/// story may read them (`showIfFlags`, `hideIfFlags`) but never sets them.
+const String allyFlagPrefix = 'ally_';
+
+/// The story flag held while [companionId] is on the roster (recruited,
+/// in the party or benched at the camp), cleared when they leave or the
+/// story takes them. A choice shows only while a companion is an ally with
+/// `showIfFlags: ["ally_<id>"]`.
+String allyFlag(String companionId) => '$allyFlagPrefix$companionId';
+
+/// [flags] with the companion flags kept in step with [roster] (each
+/// recruited companion's id and approval): an [allyFlag] for each one on
+/// it and none for anyone else, and a [devotedFlag] added for each one at
+/// [devotedApproval] or more (never taken away). Returns [flags] itself
+/// when nothing changes.
+List<String> withCompanionFlags(List<String> flags, Map<String, int> roster) {
+  List<String>? next;
+  for (final flag in flags) {
+    if (flag.startsWith(allyFlagPrefix) &&
+        !roster.containsKey(flag.substring(allyFlagPrefix.length))) {
+      next ??= [...flags];
+      next.remove(flag);
+    }
+  }
+  for (final entry in roster.entries) {
+    final current = next ?? flags;
+    final ally = allyFlag(entry.key);
+    if (!current.contains(ally)) (next ??= [...flags]).add(ally);
+    final devoted = devotedFlag(entry.key);
+    if (entry.value >= devotedApproval && !(next ?? flags).contains(devoted)) {
+      (next ??= [...flags]).add(devoted);
+    }
+  }
+  return next ?? flags;
+}

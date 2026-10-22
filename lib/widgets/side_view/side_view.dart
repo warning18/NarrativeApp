@@ -54,6 +54,7 @@ class SideViewScene extends StatefulWidget {
     super.key,
     required this.layers,
     this.actors,
+    this.overlay,
     this.particles = SideParticles.none,
     this.intensity = 1,
     this.pace = 40,
@@ -65,6 +66,10 @@ class SideViewScene extends StatefulWidget {
 
   /// Painted over the layers, under the particles: speed 0.
   final SideLayer? actors;
+
+  /// Painted over the actors, under the particles: the part of the day's
+  /// wash (see kit_hour.dart).
+  final SideLayer? overlay;
   final SideParticles particles;
 
   /// 0 to 1: how much of the weather there is.
@@ -120,6 +125,7 @@ class _SideViewSceneState extends State<SideViewScene>
                 painter: _ScenePainter(
                   layers: widget.layers,
                   actors: widget.actors,
+                  overlay: widget.overlay,
                   particles: widget.particles,
                   intensity: widget.intensity,
                   scroll: still ? 0 : _scroll,
@@ -139,6 +145,7 @@ class _ScenePainter extends CustomPainter {
   _ScenePainter({
     required this.layers,
     required this.actors,
+    required this.overlay,
     required this.particles,
     required this.intensity,
     required this.scroll,
@@ -147,6 +154,7 @@ class _ScenePainter extends CustomPainter {
 
   final List<SideLayer> layers;
   final SideLayer? actors;
+  final SideLayer? overlay;
   final SideParticles particles;
   final double intensity;
   final double scroll;
@@ -159,6 +167,7 @@ class _ScenePainter extends CustomPainter {
       layer.paint(canvas, size, scroll * layer.speed, t, unit);
     }
     actors?.paint(canvas, size, 0, t, unit);
+    overlay?.paint(canvas, size, 0, t, unit);
     paintSideParticles(canvas, size, particles, intensity, t, unit);
   }
 

@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.523.0+559]
+
+Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.
+
+### Added
+- **The land crossing and the voyage follow the hour** (`lib/widgets/side_view/kit_hour.dart`): nothing by day; a thin warm wash at dawn, a violet one at dusk, a deep blue one at night, the same as the town plan's, so a place reads the same hour on the plan and on the road to it. Stars come out in the sky at dusk (a few) and at night, laid right behind the hills so none shines through a mountain or a headland. The wash is a new `overlay` of `SideViewScene` (painted over the actors, under the weather).
+- **The hero carries a lantern on the Eel's deck** after dark, with a small warm halo, on every hull.
+- The phase is read from `dayPhaseProvider` in `land_crossing_screen.dart` and `voyage_screen.dart` (the day's scene and the harbour); a scene given no phase stays at noon.
+- Picture: `docs/ux-shots/hour-on-roads-and-sea.png`. Test: `test/hour_roads_test.dart`.
+
+### Not done
+- The fen's lantern, the shelter's lit window and the lighthouse are drawn under the wash, so at night they are dimmed with the rest rather than burning brighter. They would need the kits to take the hour; left for a later pass. The sun (desert, ruins) is only dimmed at night, not removed.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` and `lib/screens/voyage_screen.dart` (shared): the phase read and its passing, about 8 lines.
+
+## [1.522.0+558]
+
+Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Sea-fight entrance card:** `shipHasEntranceCard` is true for every sea beast, the void barge and named raiders (the corsair brig and the Inquisition cutter), false for skiffs; an `entranceCard` flag in enemy_ships.json overrides it.
+- **Loyalty flags:** `devoted_<companion>` is set the first time a companion's approval reaches Devoted and stays set; `ally_<companion>` is held while a companion is recruited. Old saves get both on load.
+
+## [1.521.0+557]
+
+Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large text.
+
+### Changed
+- **The land crossing's bar keeps its numbers whole** at large text on a narrow phone: the health bar shrinks (from up to 96 px) instead of pushing the figures off the edge at 320 px and text ×1.6. Nothing changes at normal text.
+
+### Added
+- **`test/ux_sweep_test.dart`:** the entrance card, the spoils strip, the deck crew with its speech bubble and the sea arrival, the land crossing, and the ward sheet with its mark and the Banish card, each at 320 and 390 px wide, text ×1 and ×1.6, in English and French, with and without reduced motion (the app's own fonts are loaded, as in `qa_fight_tips_real_font_test.dart`; the test font is far wider). No overflow in any; with reduced motion the entrance card shows none and the spoils are whole at once. The crossing's bar was the only thing that did not fit.
+
+## [1.520.0+556]
+
+Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
+
+### Added
+- **The crossing says who holds the road:** a crossing on land a clan holds (`LandCrossingScreen.ruler`, from Core's v1.512) wears the clan's colour in a band under its title and has a small "Held by the Compact" line, with the clan's flag, over the scene (also on a short phone, where the scene is left out). A road no one holds has neither.
+- **The layers sheet lists the towns that changed hands** (`lib/widgets/handover_list.dart`): the town, the old ruler's flag and name, an arrow, the new ruler's, for the player who missed the toast of v1.503. It keeps the last eight since the player last looked, newest first; it is this session's only (it is not saved), and draws nothing when nothing has changed.
+- Strings: `crossing_ruler`, `town_handover_title`, `town_handover_no_one`, EN and FR.
+- Picture: `docs/ux-shots/ruler-and-changes.png`. Test: `test/ruler_changes_test.dart`.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` (shared): the band, the line (about 40 lines). No other open PR touches it.
+
 ## [1.519.0+555]
 
 - Your companions now have something to say at sea: each of the eight has three lines about the deck, the water and the crossing.
