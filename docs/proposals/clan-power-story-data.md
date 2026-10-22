@@ -11,3 +11,6 @@ The draft of `clan-power-story.md`, written to Core's answers. Not for merge unt
 
 ## Status (after v1.488)
 Main merged in; the draft still passes politics_events, clan_power, politics_session, qa_clan_power_50, story_rules, story_graph_integrity, french_data_lint and party_trail. The only open piece is the half-size gate on `conclave_counts` (`anyPowerAtLeast`), which Core has not added yet; the swings are fixed until it exists. Nothing else waits on the user's lever choice except the go-ahead to open the PR (it needs a version number).
+
+## Final (v1.509)
+`conclave_counts` now has the half-size gate: each variant is written twice, the first with `anyPowerAtLeast: 50` (full size, places move), the second without it (half the power, no place moves). Core's `anyPowerAtLeast` reads a main clan at that power or more; the Dominion starts at 60, so the full size holds from the start. Lever (b), the bigger war swings, is numbers only and Core's.

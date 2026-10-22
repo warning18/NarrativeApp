@@ -1398,11 +1398,26 @@
         "conditions": {
           "claim": [
             "dominion"
-          ]
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
             "dominion": 5
+          }
+        },
+        "news": "The Houses came up the stair behind the new Lantern-Bearer’s lamp, and the Dominion stood stronger for it.",
+        "news_fr": "Les Maisons ont gravi l’escalier derrière la lampe du nouveau Porte-Lanterne, et le Dominion en est sorti plus fort."
+      },
+      {
+        "conditions": {
+          "claim": [
+            "dominion"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 3
           }
         },
         "news": "The Houses came up the stair behind the new Lantern-Bearer’s lamp, and the Dominion stood stronger for it.",
@@ -1415,7 +1430,8 @@
           ],
           "claim": [
             "vigil"
-          ]
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1435,8 +1451,27 @@
             "way_force"
           ],
           "claim": [
-            "compact"
+            "vigil"
           ]
+        },
+        "effects": {
+          "power": {
+            "vigil": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Vigil already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la Veille déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "compact"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1456,8 +1491,27 @@
             "way_force"
           ],
           "claim": [
-            "mire"
+            "compact"
           ]
+        },
+        "effects": {
+          "power": {
+            "compact": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Compact already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Pacte déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "mire"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1477,8 +1531,27 @@
             "way_force"
           ],
           "claim": [
-            "crows"
+            "mire"
           ]
+        },
+        "effects": {
+          "power": {
+            "mire": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Mire already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Marais déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "crows"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1498,8 +1571,27 @@
             "way_force"
           ],
           "claim": [
-            "penitents"
+            "crows"
           ]
+        },
+        "effects": {
+          "power": {
+            "crows": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Crows already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Corneilles déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "penitents"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1519,8 +1611,27 @@
             "way_force"
           ],
           "claim": [
-            "open_hand"
+            "penitents"
           ]
+        },
+        "effects": {
+          "power": {
+            "penitents": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Penitents already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Pénitents déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "open_hand"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1536,8 +1647,26 @@
       {
         "conditions": {
           "flags": [
-            "way_hard"
+            "way_force"
+          ],
+          "claim": [
+            "open_hand"
           ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the grey hand already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la main grise déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_hard"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1550,8 +1679,23 @@
       {
         "conditions": {
           "flags": [
-            "way_quiet"
+            "way_hard"
           ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -2
+          }
+        },
+        "news": "Candlehold’s stair ran with blood before the Conclave sat. The Dominion kept the Hall, and lost some of its name for it.",
+        "news_fr": "L’escalier de Candlehold a coulé de sang avant que le Conclave siège. Le Dominion a gardé la Salle, et y a perdu un peu de son nom."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_quiet"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
@@ -1564,13 +1708,43 @@
       {
         "conditions": {
           "flags": [
-            "way_friends"
+            "way_quiet"
           ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 3
+          }
+        },
+        "news": "The claimant spoke before the Houses and was heard. The Conclave named no one, and the Dominion, which likes to be asked, grew stronger.",
+        "news_fr": "Le prétendant a parlé devant les Maisons et a été entendu. Le Conclave n’a nommé personne, et le Dominion, qui aime qu’on le consulte, s’en est trouvé renforcé."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_friends"
+          ],
+          "anyPowerAtLeast": 50
         },
         "effects": {
           "power": {
             "dominion": 3,
             "vigil": 3
+          }
+        },
+        "news": "The Wickwardens lit the cliff and the Vigil walked under the lamps. The Houses saw both, and the Dominion and the Vigil each came out a little stronger.",
+        "news_fr": "Les Garde-Mèches ont éclairé la falaise et la Veille a marché sous les lampes. Les Maisons ont vu l’un et l’autre, et le Dominion comme la Veille en sont sortis un peu plus forts."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_friends"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 2,
+            "vigil": 2
           }
         },
         "news": "The Wickwardens lit the cliff and the Vigil walked under the lamps. The Houses saw both, and the Dominion and the Vigil each came out a little stronger.",
