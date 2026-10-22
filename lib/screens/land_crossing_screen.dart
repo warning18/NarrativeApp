@@ -26,6 +26,9 @@ import '../widgets/companion_remark_bubble.dart' show SpokenLine, spokenRemarks;
 import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
 import '../widgets/side_view/encounter_figure.dart';
+import '../widgets/side_view/cliffs_kit.dart';
+import '../widgets/side_view/fen_kit.dart';
+import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
@@ -73,6 +76,27 @@ Future<bool> runLandCrossing(
 bool crossingIsStorm(String? eventId) =>
     eventId == 'sandstorm' || eventId == 'ash_squall';
 
+/// The terrains a crossing draws a scene for (the route's `terrain`, which
+/// is a biome id).
+const crossingSceneTerrains = {
+  'desert',
+  'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
+};
+
+/// The layers of the scene for [terrain]; the goal comes forward with
+/// [progress] 0 to 1.
+List<SideLayer> crossingLayers(String terrain, double progress) =>
+    switch (terrain) {
+      'ruins' => ruinsLayers(progress: progress),
+      'frost' => frostLayers(progress: progress),
+      'fen' => fenLayers(progress: progress),
+      'sea_cliffs' => cliffsLayers(progress: progress),
+      _ => desertLayers(progress: progress),
+    };
+
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
 SideParticles crossingParticles({
@@ -87,7 +111,12 @@ SideParticles crossingParticles({
     WeatherKind.snow => SideParticles.snow,
     WeatherKind.ash => SideParticles.ash,
     WeatherKind.fog => SideParticles.fog,
-    _ => terrain == 'ruins' ? SideParticles.ash : SideParticles.shimmer,
+    _ => switch (terrain) {
+        'ruins' => SideParticles.ash,
+        'frost' => SideParticles.snow,
+        'fen' || 'sea_cliffs' => SideParticles.fog,
+        _ => SideParticles.shimmer,
+      },
   };
 }
 
@@ -483,11 +512,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     }
 
     // The scene over the words (board 6), by the route's terrain: the
-    // desert kit while it crosses a desert, the ruins kit among ruins; a
-    // terrain with no kit yet keeps only the strip of day and health.
+    // desert, ruins, frost, fen or sea cliffs kit; a terrain with no kit
+    // yet keeps only the strip of day and health.
     final terrain = widget.route.terrain;
-    final scene = terrain == 'desert' || terrain == 'ruins';
-    final ruins = terrain == 'ruins';
+    final scene = crossingSceneTerrains.contains(terrain);
     final progress = _phase == _Phase.arrived
         ? 1.0
         : _drawn.isEmpty
@@ -566,9 +594,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: crossingSceneHeight,
-                      layers: ruins
-                          ? ruinsLayers(progress: progress)
-                          : desertLayers(progress: progress),
+                      layers: crossingLayers(terrain, progress),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),
                           moving: _phase == _Phase.result,

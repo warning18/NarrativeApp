@@ -17,6 +17,15 @@ Thirty events for the roads of the middle chapters (not drawn yet).
 - **12 biome events:** frost (the pilgrim’s cairn, the rime fall, the hound track, the bell on the road), fen (the reed lantern, the sucking mud, the drowned cart, the child in the reeds) and sea cliffs (the wrecker’s lamp, the salt wind, the gull colony, the tide stair).
 - Data only: the routes that draw them are Core’s (next).
 
+## [1.510.0+546]
+
+Wave 16 UX: the land crossing has a backdrop for frost, fen and sea cliffs.
+
+### Added
+- **Three new side-view scenes** for land crossings, keyed on the route's terrain (`frost`, `fen`, `sea_cliffs`, the biome ids): a pale cold dawn over white peaks and snowed pines with a pilgrims' cairn, ending at a shelter with a lit window and a thread of smoke; a grey-green dusk over black pools and reed with a boardwalk, ending at a lantern on a post that bobs; and a bright salt morning over headlands with gulls and the sea below, ending at a lighthouse. The goal comes nearer as the days pass, as in the desert and the ruins.
+- **Their weather:** snow falls over the frost, fog drifts over the fen and the cliffs; a sky's own weather still wins.
+- Core's routes for these biomes name their terrain exactly `frost`, `fen` or `sea_cliffs`; until a route exists the scenes are not seen.
+
 ## [1.509.0+545]
 
 Clan power moves with the story.
