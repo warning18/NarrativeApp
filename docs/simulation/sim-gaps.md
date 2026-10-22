@@ -1,4 +1,4 @@
-# What the simulator plays differently from the app (v1.463, v1.500, v1.513)
+# What the simulator plays differently from the app (v1.463, v1.500, v1.513, v1.531)
 
 QA's clan-power study (`docs/qa/clan-power-50.md`, "What the simulator does
 not play") listed where the simulator's runs part from the app's. This page
@@ -99,3 +99,37 @@ Compact by chapter 3 (before v1.513's softening, see the study), so their
 seats fell far more often than the old simulator said: see [clan-power-50-v1.513.md](clan-power-50-v1.513.md). The
 simulator tests load the table (`qa_sim_tables_test` requires it); only
 `clash_balance_test`'s fights-by-chapter walk runs without it.
+
+## Closed: the enemies' Hex, Silence and Curse
+
+`sim_combat` skipped an enemy's `tamper` move: the enemy spent its turn and
+nothing happened, so `hex_of_ill_luck`, `edict_of_silence` and
+`rotting_mark` were free turns for the hero. Sixteen enemies use them,
+among them Cassian Oriel (both hex and silence, 23% of his turns), the
+six clan champions, Brother Clement and the Hollow Court Inquisitor
+(silence). The simulator now lays them as the fight screen does
+(`fight_dice_rules.dart`), with the shared helpers of `dice_tamper.dart`:
+
+- **Silence:** laid in the enemies' turn, it hangs over the next round:
+  a Skill face lands blank (`silencedFace`), and a skill set on a basic
+  face falls back to that face. A blank is rerolled like any blank.
+- **Hex:** the next roll's first die is rolled again at once (a plain
+  roll, even on the ranger's Trail), unless it landed Steady
+  (`hexVictim`). It waits through a stunned round, as in the app.
+- **Curse:** a random face not yet cursed (`curseTargetFace`) becomes a
+  Pain strike for the rest of the fight (`cursedFace`); the Ember face's
+  charges lift Curses as they come. The tampering lands after the strike
+  signs, as on the fight screen.
+
+The Writ's own silence (doctrines) is unchanged: it was already played.
+`test/sim_tamper_test.dart` checks each rule. In 400 runs (seeds 7, 11,
+23) the boss and profession numbers moved inside the seeds' noise and
+`boss_balance` and `nemesis_quests` pass. Landed in v1.531 with the
+claimants' rules ([claimants-by-profession.md](claimants-by-profession.md));
+the existing `clash_balance` (18 tables, seed 11) passes on v1.530's data.
+
+## v1.531: the claimants' rules
+
+`sim_combat` plays them as the fight screen does, from the same helpers:
+the claimants' Tide cap (`fightTideCap`, enemies.json `tideCap`) and one
+heal (`healsOnce`, `withoutHealMoves`). Nothing new is left unplayed.

@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.531.0+567]
+
+Chapter 7's claimants stop walling the cleric and the warrior (wave 17).
+
+### Changed
+- **The claimant fights** (Vane, Tallis, Morrow): the enemies' Tide stops at level 6, each claimant heals itself at most once, and the claimants lose their resists (they keep their weaknesses). Tallis has 77 health (was 72), Morrow 148 (was 108). Claimants won by the cleric: 8–18% → 31–38%; by the warrior 18–35% → 30–36%; every claimant inside its band. Chapter 7 is won 56–58% (was 52–55%).
+- **The playthrough simulator** now plays the enemies' Silence, Hex and Curse as the fight screen does (it skipped them before). With them counted, the clan champions read 39.9% won in the simulator (45.8% before; floor 38%): that is the honest figure, not a change to the champions.
+
 ## [1.530.0+566]
 
 - Your Devoted companions now have a scene of their own at camp: eight short scenes, one each for Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik, offered once they have grown devoted to you. What you answer is remembered at the muster.
