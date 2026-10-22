@@ -331,7 +331,7 @@ class CampWorksList extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SheetHeader(title: _nameOf(id)),
+                SheetHeader(title: _nameOf(id), padding: EdgeInsets.zero),
                 if (!locked) ...[
                   const SizedBox(height: 4),
                   Text(detailOf(id),
@@ -377,11 +377,17 @@ class CampWorksList extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      WorkNeedKind.gold => Text(
-                          '${tr(ref, 'gold_field_label')}\n'
-                          '${need.have}/${need.need}',
-                          style: theme.textTheme.labelMedium
-                              ?.copyWith(color: ink.ember)),
+                      // The name and the count on one line, scaled down
+                      // rather than stacked on a 320 px phone.
+                      WorkNeedKind.gold => FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              '${tr(ref, 'gold_field_label')} '
+                              '${need.have}/${need.need}',
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: ink.ember)),
+                        ),
                       _ => Text(tr(ref, 'works_sheet_needs'),
                           style: theme.textTheme.labelMedium
                               ?.copyWith(color: ink.ember)),
