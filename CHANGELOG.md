@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.533.0+569]
+
+- A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.
+
 ## [1.532.0+568]
 
 - A new intrigue, The Taken's Names: a clerk brings the names cut into the back of the Lantern Throne, and in the last two chapters you decide whether to read them aloud, burn them, or carry them across unread. Six scenes at camp.

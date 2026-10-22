@@ -1032,5 +1032,215 @@
         ]
       }
     ]
+  },
+  "hosts_price": {
+    "id": "hosts_price",
+    "name": "The Host’s Price",
+    "name_fr": "Le prix de l’Ost",
+    "premise": "Every power that joins the Host asks for something in return, and the sum must be paid before the crossing.",
+    "premise_fr": "Chaque puissance qui rejoint l’Ost demande quelque chose en retour, et la somme doit être payée avant la traversée.",
+    "factions": [
+      "giants",
+      "oni",
+      "tidekin",
+      "kindly"
+    ],
+    "subclans": [],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 8,
+        "text": "Highhearth’s giants ask for the hearth-stone’s face back.",
+        "text_fr": "Les géants de Haut-Âtre demandent qu’on leur rende la face de leur pierre du foyer."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 8,
+        "text": "The Tide-Kin ask for a drowned island raised.",
+        "text_fr": "Les Gens de la Marée demandent qu’on relève une île noyée."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 8,
+        "text": "The oni ask for Candlehold’s bells to be rung for them once.",
+        "text_fr": "Les oni demandent que les cloches de Candlehold sonnent une fois pour eux."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 8,
+        "text": "The Kindly Ones are owed eleven minutes of darkness, to the second.",
+        "text_fr": "On doit aux Bienveillants onze minutes d’obscurité, à la seconde."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 8,
+        "text": "The quartermaster adds up the sum: a hundred and fifty gold.",
+        "text_fr": "La quartier-maîtresse fait la somme : cent cinquante pièces d’or."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 8,
+        "text": "You decide who is paid.",
+        "text_fr": "Vous décidez qui est payé."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Paid in full",
+        "name_fr": "Payés en totalité",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 15
+          },
+          {
+            "faction": "oni",
+            "delta": 15
+          },
+          {
+            "faction": "tidekin",
+            "delta": 15
+          },
+          {
+            "faction": "kindly",
+            "delta": 15
+          },
+          {
+            "note": "Every power is paid before the crossing, and walks it in front of you.",
+            "note_fr": "Chaque puissance est payée avant la traversée, et la franchit devant vous."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the giants",
+        "name_fr": "Payés, mais pas les géants",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": -20
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The giants are told the price is too high. They cross with their eyes on the stone.",
+            "note_fr": "On dit aux géants que le prix est trop haut. Ils traversent les yeux sur la pierre."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the Tide-Kin",
+        "name_fr": "Payés, mais pas les Gens de la Marée",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": -20
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The Tide-Kin are told no. They cross without looking at the water.",
+            "note_fr": "On dit non aux Gens de la Marée. Ils traversent sans regarder l’eau."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the oni",
+        "name_fr": "Payés, mais pas les oni",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": -20
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The oni are told no. They cross silent, with the clapper at their belts.",
+            "note_fr": "On dit non aux oni. Ils traversent en silence, le battant à la ceinture."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the Kindly Ones",
+        "name_fr": "Payés, mais pas les Bienveillants",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": -20
+          },
+          {
+            "note": "The Kindly Ones are told no. They cross with a stopped clock.",
+            "note_fr": "On dit non aux Bienveillants. Ils traversent avec une horloge arrêtée."
+          }
+        ]
+      },
+      {
+        "name": "Nobody paid",
+        "name_fr": "Personne payé",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": -10
+          },
+          {
+            "faction": "oni",
+            "delta": -10
+          },
+          {
+            "faction": "tidekin",
+            "delta": -10
+          },
+          {
+            "faction": "kindly",
+            "delta": -10
+          },
+          {
+            "note": "The crossing is the only payment, and the Host walks behind you with its hands on its knives.",
+            "note_fr": "La traversée est le seul paiement, et l’Ost marche derrière vous, la main sur le couteau."
+          }
+        ]
+      }
+    ]
   }
 }
