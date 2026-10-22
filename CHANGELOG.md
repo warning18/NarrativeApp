@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.526.0+562]
+
+- A new intrigue, The Lantern-Bearer's Will: a sealed page names an heir who is none of the three claimants. Six scenes from Rimewell to Greyhithe, and five ways to settle it.
+
 ## [1.520.0+556]
 
 Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
