@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.521.0+557]
+
+Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large text.
+
+### Changed
+- **The land crossing's bar keeps its numbers whole** at large text on a narrow phone: the health bar shrinks (from up to 96 px) instead of pushing the figures off the edge at 320 px and text ×1.6. Nothing changes at normal text.
+
+### Added
+- **`test/ux_sweep_test.dart`:** the entrance card, the spoils strip, the deck crew with its speech bubble and the sea arrival, the land crossing, and the ward sheet with its mark and the Banish card, each at 320 and 390 px wide, text ×1 and ×1.6, in English and French, with and without reduced motion (the app's own fonts are loaded, as in `qa_fight_tips_real_font_test.dart`; the test font is far wider). No overflow in any; with reduced motion the entrance card shows none and the spoils are whole at once. The crossing's bar was the only thing that did not fit.
+
 ## [1.520.0+556]
 
 Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
