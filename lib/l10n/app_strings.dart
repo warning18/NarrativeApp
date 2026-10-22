@@ -12476,6 +12476,43 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No charge left.',
     AppLanguage.fr: 'Plus aucune charge.',
   },
+  // Warding the road (road_wards.dart): the Warding Cairn's Banish keeps a
+  // hunting clan off the trail. Narrative's texts (ward-lines.json); the
+  // clan's placeholder is its name in English ("the Lantern Dominion") and
+  // its "du …" in French (factions.json nameOf_fr), see wardLine.
+  'ward_set': {
+    AppLanguage.en: 'The cairn hides your trail from {clan}.',
+    AppLanguage.fr: 'Le cairn cache votre piste à la chasse {clan}.',
+  },
+  'ward_set_nemesis': {
+    AppLanguage.en: 'The cairn hides your trail from {clan}’s champion.',
+    AppLanguage.fr: 'Le cairn cache votre piste au champion {clan}.',
+  },
+  'ward_ended': {
+    AppLanguage.en: 'The ward on {clan}’s hunters has worn off.',
+    AppLanguage.fr: 'La garde contre la chasse {clan} s’est dissipée.',
+  },
+  'ward_choice': {
+    AppLanguage.en: 'Ward the road',
+    AppLanguage.fr: 'Garder la route',
+  },
+  'ward_choice_hint': {
+    AppLanguage.en: 'Keep a hunting clan off your trail for a few roads.',
+    AppLanguage.fr:
+        'Tenir à l’écart la chasse d’un clan pendant quelques routes.',
+  },
+  'ward_length': {
+    AppLanguage.en: '{roads} roads · {cost} charges',
+    AppLanguage.fr: '{roads} routes · {cost} charges',
+  },
+  'ward_mark': {
+    AppLanguage.en: 'Warded from {clan}: {n} roads',
+    AppLanguage.fr: 'Protection contre la chasse {clan} : {n} routes',
+  },
+  'ward_no_target': {
+    AppLanguage.en: 'No clan is hunting you.',
+    AppLanguage.fr: 'Aucun clan ne vous chasse.',
+  },
   'ledger_curse': {
     AppLanguage.en: 'Curse',
     AppLanguage.fr: 'Malédiction',

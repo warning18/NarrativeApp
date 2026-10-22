@@ -28,6 +28,7 @@ import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
 import '../data/road_hazards.dart';
+import '../data/road_wards.dart' show wardedClansOf;
 import '../data/encounter_text.dart';
 import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
@@ -2099,10 +2100,14 @@ Future<bool> startRoadEncounter(
       enabled: ref.read(alignmentHuntersEnabledProvider),
       cooledDown: session.alignmentRollsSinceAmbush >= hunterCooldownRolls,
       flags: session.flags,
+      warded: wardedClansOf(session.rollBans),
     );
     await sessionNotifier.noteAlignmentRoll(
         ambushed:
             alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
+    // The Warding Cairn's wards count down (road_wards.dart).
+    await sessionNotifier.tickRoadWards(
+        data: ref.read(clanDataProvider), chapter: chapter);
   }
   // Someone met on an earlier road, when one may come.
   List<StoryNode>? familiarFace;

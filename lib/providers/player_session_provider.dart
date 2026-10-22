@@ -41,6 +41,7 @@ import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/camp_rolls.dart';
+import '../data/road_wards.dart';
 import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
@@ -58,6 +59,7 @@ import '../data/throne.dart'
         onThroneFlag,
         pledgedFlag,
         throneWinnerFlag;
+import '../l10n/app_locale.dart';
 import '../models/ally_state.dart';
 import '../models/item_origin.dart';
 import '../models/story_node.dart' show placeFoundFlag;
@@ -2833,6 +2835,62 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         banishCharges: s.banishCharges - cost);
     await _persist();
     return next;
+  }
+
+  /// Banish (the Warding Cairn) on the road (road_wards.dart): [clanId], a
+  /// clan hunting the character ([wardTargets] with [data]), kept off the
+  /// roads at rest for [roads] of them (3, 6 or 9, costing 1, 2 or 3
+  /// charges). Standing does not move. False, and nothing spent, when the
+  /// cairn isn't up, the charges fall short, the length is not one of
+  /// [wardLengths] or the clan isn't hunting. The line to show is
+  /// [wardSetLine].
+  Future<bool> wardRoad(String clanId, int roads, ClanData data) async {
+    final s = state;
+    final cost = wardCostOf(roads);
+    if (cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        !wardTargets(s.politics, data).contains(clanId)) {
+      return false;
+    }
+    state = s.copyWith(
+        rollBans: withWard(s.rollBans, clanId, roads),
+        banishCharges: s.banishCharges - cost);
+    await _persist();
+    return true;
+  }
+
+  /// A road at rest gone by, where the hunters roll: the wards count down
+  /// by one (road_wards.dart). A ward that runs out tells it in the coast's
+  /// news (`ward_end:<clan>`, Narrative's `ward_ended`, [data] naming the
+  /// clan, dated [chapter]). Returns the clans whose ward ended.
+  Future<List<String>> tickRoadWards({ClanData? data, int chapter = 0}) async {
+    final s = state;
+    if (!s.rollBans.any((b) => b.on == RollBanOn.road)) return const [];
+    final next = afterRoadAtRest(s.rollBans);
+    var politics = s.politics;
+    if (next.ended.isNotEmpty) {
+      final news = [
+        ...politics.news,
+        for (final clanId in next.ended)
+          CoastNews(
+            eventId: 'ward_end:$clanId',
+            chapter: chapter,
+            day: s.day,
+            text: wardLine('ward_ended', AppLanguage.en,
+                clanId: clanId, data: data),
+            textFr: wardLine('ward_ended', AppLanguage.fr,
+                clanId: clanId, data: data),
+          ),
+      ];
+      politics = politics.copyWith(
+          news: news.length <= maxCoastNews
+              ? news
+              : news.sublist(news.length - maxCoastNews));
+    }
+    state = s.copyWith(rollBans: next.bans, politics: politics);
+    await _persist();
+    return next.ended;
   }
 
   /// Whether the stat pick's card at [index] can be raised now: a Raise
@@ -5739,6 +5797,11 @@ CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
 /// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
 final campRollsProvider =
     Provider<CampRolls>((ref) => campRollsOf(ref.watch(playerSessionProvider)));
+
+/// The wards on the road running now, each clan with its roads left
+/// (road_wards.dart), for the Journey's mark (`ward_mark`).
+final roadWardsProvider = Provider<List<RoadWard>>(
+    (ref) => roadWardsOf(ref.watch(playerSessionProvider).rollBans));
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {

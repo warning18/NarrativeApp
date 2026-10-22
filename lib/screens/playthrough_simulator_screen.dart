@@ -33,6 +33,7 @@ import '../data/camp_rolls.dart' show rollPowerOf;
 import '../data/risky_gifts.dart' show riskyGiftsOpen;
 import '../data/sim_rolls.dart';
 import '../data/rival_hunters.dart' show maybeRivalHunter;
+import '../data/road_wards.dart' show wardTargets;
 import '../data/alignment_events.dart'
     show hunterCooldownRolls, isHunterAmbushChain, maybeAlignmentEvent;
 import '../data/camp_state.dart' show landingPortIdFor;
@@ -748,6 +749,12 @@ _SimResult _simulate(
               random: side,
               rollsSinceAmbush: rollsSinceAmbush,
             );
+      // The Warding Cairn turns the nemesis's hunters away (road_wards.dart).
+      final rolls = character?.rolls;
+      if (rolls != null && growth != null) {
+        rolls.wardNemesis(growth.politics.nemesis,
+            wardTargets(growth.politics, growth.tables.clans));
+      }
       // Sworn, the rivals' hunters (v5.2 step 3b) share the road.
       final rival = event == null && betrayer == null && growth != null
           ? maybeRivalHunter(
@@ -758,8 +765,10 @@ _SimResult _simulate(
               random: side,
               cooledDown: rollsSinceAmbush >= hunterCooldownRolls,
               flags: mercyFlags,
+              warded: rolls?.warded ?? const {},
             )
           : null;
+      rolls?.roadAtRest();
       final ambush = (event != null && isHunterAmbushChain(event)) ||
           rival != null ||
           betrayer != null;
