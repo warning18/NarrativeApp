@@ -1,4 +1,4 @@
-# What the simulator plays differently from the app (v1.463, v1.500)
+# What the simulator plays differently from the app (v1.463, v1.500, v1.513)
 
 QA's clan-power study (`docs/qa/clan-power-50.md`, "What the simulator does
 not play") listed where the simulator's runs part from the app's. This page
@@ -85,8 +85,17 @@ the patron, 886 from its allies, 128 neutral and 58 from another clan
 (nothing else left). The Crows and the Dominion get fewer gifts and the
 Vigil more, since the Vigil is the most common patron.
 
-## Not the simulator's: story power
+## Closed: the politics events (v1.513)
 
-No story node, choice or politics event carries `power` in the data, so the
-"story power" source never fires, in the app or here. That is Narrative's
-data to add, if wanted.
+The simulator fired no politics event: neither the chapter ones
+(`lantern_bearer_dies`, `returned_taken`, `coal_stops`...) nor the two
+upheavals that move power (`wrack_vote_result`, `conclave_counts`). With
+`politics_events` in its tables it now fires them as the app does
+(`runDueEvents`), at each scene the walk enters, after a new chapter's turn;
+a choice's `event` fires too, and a choice's `control` gives the place
+through `givePlace`. Narrative's 19 choices with `power` (v1.509) were
+already applied. The events put the Dominion at War with the Mire and the
+Compact by chapter 3 (before v1.513's softening, see the study), so their
+seats fell far more often than the old simulator said: see [clan-power-50-v1.513.md](clan-power-50-v1.513.md). The
+simulator tests load the table (`qa_sim_tables_test` requires it); only
+`clash_balance_test`'s fights-by-chapter walk runs without it.

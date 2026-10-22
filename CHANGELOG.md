@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.516.0+552]
+
+Clan power moves: wars swing harder, fallen clans regroup, and the story's choices and upheavals shift the map (wave 16).
+
+### Changed
+- **War swings:** taking a place in war gives the taker 5 power and costs the loser 8. Seats fall to war only at the turns of chapters 6 and 7, and only to a clan 25 stronger. The Dominion's seat, Candlehold, never falls (chapters 7 and 8 need it).
+- **Fallen clans regroup** 5 power a chapter, up to 20; one that rises back to Rising takes its seat back.
+- **The returned's taking** (chapter 3) leaves the Dominion and the Mire Hostile rather than at war.
+
+### Fixed
+- **The Wrack vote's result** now comes only to those who voted. Before, every player in chapter 5 got the "refused" result (the Dominion −8, the Spire Stair to the Compact).
+
+50-run clan study: the Mire ends a run at 0 in no run (34 before); its seat falls in 20 runs (34), Emberwick's in 10; the patron falls in 1; the lead clan changes in 41 of 50 runs. Fights hold: professions within 5.9 points, bosses won 50.1% on average, every boss inside its band.
+
 ## [1.515.0+551]
 
 Wave 16 UX: the town at the hour, on Core's `dayPhaseProvider` (v1.506).
