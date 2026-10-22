@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.523.0+559]
+
+Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.
+
+### Added
+- **The land crossing and the voyage follow the hour** (`lib/widgets/side_view/kit_hour.dart`): nothing by day; a thin warm wash at dawn, a violet one at dusk, a deep blue one at night, the same as the town plan's, so a place reads the same hour on the plan and on the road to it. Stars come out in the sky at dusk (a few) and at night, laid right behind the hills so none shines through a mountain or a headland. The wash is a new `overlay` of `SideViewScene` (painted over the actors, under the weather).
+- **The hero carries a lantern on the Eel's deck** after dark, with a small warm halo, on every hull.
+- The phase is read from `dayPhaseProvider` in `land_crossing_screen.dart` and `voyage_screen.dart` (the day's scene and the harbour); a scene given no phase stays at noon.
+- Picture: `docs/ux-shots/hour-on-roads-and-sea.png`. Test: `test/hour_roads_test.dart`.
+
+### Not done
+- The fen's lantern, the shelter's lit window and the lighthouse are drawn under the wash, so at night they are dimmed with the rest rather than burning brighter. They would need the kits to take the hour; left for a later pass. The sun (desert, ruins) is only dimmed at night, not removed.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` and `lib/screens/voyage_screen.dart` (shared): the phase read and its passing, about 8 lines.
+
 ## [1.522.0+558]
 
 Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet: UX and Narrative build on them next.
