@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.506.0+542]
+
+Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Hour of day:** `dayPhaseProvider` (dawn, day, dusk, night) and `hourOfDayProvider`, read from the saved world clock that the road, walks, voyages and rests already move.
+- **Fight entrance card:** `hasEntranceCard` is true for every boss and for any foe with the new optional `entranceCard` flag in enemies.json.
+- **Sea remark:** a new `atSea` remark kind and `speakUpAtSea`, at most once per chapter, silent until lines are written.
+- **`anyPowerAtLeast`:** a politics event condition that holds when any main clan's power is at least N.
+
 ## [1.504.0+540]
 
 The three hardest late bosses lose a little health, so the boss curve is back on target with the simulator's honest gift picks (option B4, `docs/simulation/boss-mean-options.md`).
