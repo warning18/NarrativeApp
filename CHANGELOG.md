@@ -23,6 +23,15 @@ Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasE
 ### Touches another session's area
 - `lib/screens/voyage_screen.dart` (shared): the card around the battle panel, the spoils state and strip (about 70 lines). `ship_battle_panel.dart` is not touched.
 
+## [1.524.0+560]
+
+Wave 17 UX, item 5: the party's own faces, as a stand-in until the user's sprite art arrives.
+
+### Added
+- **Each companion has a face of their own** on the land walk and on the Eel's deck (`lib/widgets/side_view/party_look.dart`), over the cloak colour they already had: the skin of their people, the hair, a hood, a veil or a helm, a dwarf's beard (Kelda and Brother Tobin), an orc's tusks (Grosh and Malrik), the elf's pointed ears (Liora), the voidkin's grey-violet skin and white hair (Vess), Sister Maren's white veil, Sable's black hood. A companion added later gets a face made from their id (the same each time) until the table names them. The hero is unchanged.
+- **No portrait art to crop:** the proposal said "crop the portraits", but the repository has no companion portraits (only the enemies' and the hero's walker); the looks are set here by race and profession instead. When the `companion_<id>` sprites come, this file is what they replace.
+- Picture: `docs/ux-shots/party-faces.png`. Test: `test/party_look_test.dart` (every companion distinct, the marks follow the race, the fallback is stable, every group paints on the land and the deck).
+
 ## [1.523.0+559]
 
 Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.
