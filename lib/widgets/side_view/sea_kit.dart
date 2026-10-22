@@ -349,6 +349,7 @@ SideLayer seaActors({
   List<DeckCrew> crew = const [],
   Animation<double>? arrival,
   DayPhase phase = DayPhase.day,
+  bool showShip = true,
 }) =>
     SideLayer(0, (canvas, size, scroll, t, u) {
       final rough = weather == SeaWeather.squall;
@@ -370,6 +371,8 @@ SideLayer seaActors({
       }
       _drawMeeting(canvas, size, u, t, meeting, rough,
           arrive: arrival?.value ?? 1);
+      // An entrance card shows only what she is about to meet.
+      if (!showShip) return;
       paintSideShip(canvas, u,
           x: shipX,
           base: base,
@@ -621,6 +624,7 @@ class SeaSideScene extends StatefulWidget {
     this.condition = 1.0,
     this.crew = const [],
     this.phase = DayPhase.day,
+    this.showShip = true,
     this.beside,
     this.height = 140,
   });
@@ -646,6 +650,10 @@ class SeaSideScene extends StatefulWidget {
   /// The part of the day over the sea: the wash, the stars, the hero's
   /// lantern (see kit_hour.dart); by day nothing.
   final DayPhase phase;
+
+  /// False to paint only the sea and what she meets (an entrance card's
+  /// picture), not the Eel.
+  final bool showShip;
   final Widget? beside;
   final double height;
 
@@ -711,7 +719,8 @@ class _SeaSideSceneState extends State<SeaSideScene>
                 condition: widget.condition,
                 crew: widget.crew,
                 arrival: _arrival,
-                phase: widget.phase),
+                phase: widget.phase,
+                showShip: widget.showShip),
             particles: seaParticles(widget.waters, widget.weather),
             intensity: widget.weather == SeaWeather.squall ? 0.9 : 0.6,
             pace: widget.weather == SeaWeather.tailwind ? 56 : 30,
