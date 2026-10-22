@@ -1,6 +1,6 @@
 # Land crossings by who holds the land (wave 16 item 3)
 
-Core's part of `docs/proposals/wave16-core.md` §3. Three new routes in `land_routes.json`, each with `rulerOneIn: 3`: one day in three is the road's ruler's event, at the band the party's standing puts it in (`landRouteRuler`, `rulerPool`, `drawCrossing` in `lib/data/land_crossing.dart`).
+Core's part of `docs/proposals/wave16-core.md` §3. Three new routes in `land_routes.json`. The chapter 4 and 5 routes have `rulerOneIn: 3`; one day in three is the road's ruler's event, at the band the party's standing puts it in (`landRouteRuler`, `rulerPool`, `drawCrossing` in `lib/data/land_crossing.dart`).
 
 | Route | Chapter | Road | Biome | Ruler at the start of a run |
 |---|---|---|---|---|
@@ -16,7 +16,9 @@ Measured with Narrative's `land_events.json` from `claude/narrative-land-events`
 |---|---|---|---|---|
 | `stair_to_court` | 3–8% / 2% | 22% | 100% | 71% |
 | `reliquary_to_heart` | 6–10% / 4–5% | 22% | 100% | 71% |
-| `lantern_cliffs` | 2–4% / 2% | 8% | 100% | 56% |
+| `lantern_cliffs` | 2–4% / 2% | 8% | 100% | 56%, now 0% |
+
+**Chapter 7's cliffs meet no ruler** (`rulerOneIn: 0`, set after these runs): only Narrative's two mild cliff events, as chapter 7 already reads hard. The Dominion's toll there cost at most 4% health or 30 gold, so the runs below hold or slightly understate chapter 7.
 
 A headless walk takes the way round: at chapter 7 the cliffs' checks are DC 18, so it waits for the ebb and goes inland (1–2%).
 

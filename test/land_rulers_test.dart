@@ -83,7 +83,9 @@ void main() {
         expect(route.chapter, chapter, reason: id);
         expect(route.biome, biome, reason: id);
         expect((route.from, route.to), (from, to), reason: id);
-        expect(route.rulerOneIn, 3, reason: id);
+        // Chapter 7's cliffs meet no ruler: only Narrative's two mild
+        // cliff events (chapter 7 already reads hard).
+        expect(route.rulerOneIn, id == 'lantern_cliffs' ? 0 : 3, reason: id);
         for (final road in route.roads) {
           expect(roads[road]?.joins(from), isTrue, reason: '$id: $road');
           expect(roads[road]?.joins(to), isTrue, reason: '$id: $road');

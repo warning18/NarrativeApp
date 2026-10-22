@@ -119,7 +119,7 @@
     "biome": "sea_cliffs",
     "terrain": "mountain",
     "chapter": 7,
-    "rulerOneIn": 3,
+    "rulerOneIn": 0,
     "events": {
       "cliff_salt_wind": 1,
       "cliff_tide_stair": 1
