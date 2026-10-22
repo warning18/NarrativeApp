@@ -300,11 +300,16 @@
               "a": "mire",
               "b": "vigil",
               "steps": -1
+            },
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": -2
             }
           ]
         },
-        "news": "On Reedholm’s night the Mire burned the Penitents’ infirmary in the Ashen Quarter, as it has sworn to every year since the village burned. The Vigil took the Penitents’ wounded in, and the Mire has not forgiven that either.",
-        "news_fr": "La nuit de Reedholm, le Marais a brûlé le dispensaire des Pénitents dans le Quartier des Cendres, comme il en a fait le serment chaque année depuis que le village a brûlé. La Veille a recueilli les blessés des Pénitents, et le Marais ne lui a pas pardonné cela non plus."
+        "news": "On Reedholm’s night the Mire burned the Penitents’ infirmary in the Ashen Quarter, as it has sworn to every year since the village burned. The Vigil took the Penitents’ wounded in, and the Mire has not forgiven that either. Reedholm is a feud again.",
+        "news_fr": "La nuit de Reedholm, le Marais a brûlé le dispensaire des Pénitents dans le Quartier des Cendres, comme il en a fait le serment chaque année depuis que le village a brûlé. La Veille a recueilli les blessés des Pénitents, et le Marais ne lui a pas pardonné cela non plus. Reedholm redevient une vendetta."
       }
     ]
   },
