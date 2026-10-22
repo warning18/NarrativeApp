@@ -35,6 +35,22 @@ CompanionRemark? speakUpOnMoment(WidgetRef ref, RemarkKind kind) {
   return said.remark;
 }
 
+/// A companion's word at sea as a voyage in [chapter] casts off (wave 16,
+/// [RemarkKind.atSea]), or null: once a chapter (see [seaRemarkDue]), from
+/// the party as for a moment ([momentRemark]). When someone speaks, the
+/// chapter is noted in the save so the chapter's later voyages stay quiet;
+/// nothing is noted while nobody has a sea line. The caller shows it as a
+/// moment's word is shown.
+CompanionRemark? speakUpAtSea(WidgetRef ref, {required int chapter}) {
+  final session = ref.read(playerSessionProvider);
+  if (!seaRemarkDue(chapter, session.seaRemarkChapter)) return null;
+  final remark = speakUpOnMoment(ref, RemarkKind.atSea);
+  if (remark != null) {
+    ref.read(playerSessionProvider.notifier).noteSeaRemark(chapter);
+  }
+  return remark;
+}
+
 /// Watched in the build of a screen with a moment, so the remark lines
 /// are loaded before the moment comes (as the camp's drink panel does).
 void watchMomentRemarks(WidgetRef ref) => ref.watch(remarkBookProvider);
