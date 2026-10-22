@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.514.0+550]
+## [1.515.0+551]
 
 Wave 16 UX: the town at the hour, on Core's `dayPhaseProvider` (v1.506).
 
