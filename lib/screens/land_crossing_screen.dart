@@ -576,29 +576,39 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
               ),
             ),
           ),
-          const Spacer(),
-          TutorialTarget(
-            id: 'crossing.health',
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.55),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.favorite, size: 16, color: Colors.white),
-                  const SizedBox(width: 6),
-                  SizedBox(
-                    width: 96,
-                    child: LinearProgressIndicator(
-                        key: const Key('crossing_health'), value: health),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: TutorialTarget(
+                id: 'crossing.health',
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(width: 6),
-                  Text('${session.currentHealth}/${session.maxHealth}',
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: Colors.white)),
-                ]),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.favorite, size: 16, color: Colors.white),
+                      const SizedBox(width: 6),
+                      // Shrinks with the screen and the text, so large text on a
+                      // narrow phone keeps the numbers whole.
+                      Flexible(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 96),
+                          child: LinearProgressIndicator(
+                              key: const Key('crossing_health'), value: health),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text('${session.currentHealth}/${session.maxHealth}',
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: Colors.white)),
+                    ]),
+                  ),
+                ),
               ),
             ),
           ),
