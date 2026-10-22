@@ -95,6 +95,8 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
+import '../widgets/fight_entrance.dart';
+import '../widgets/fight_spoils_strip.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/pixel_sprite.dart';
 import '../widgets/pixel_portrait.dart';
@@ -251,6 +253,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// choices, the loss) -- only then can the fight be left.
   bool _settled = false;
   bool _leaving = false;
+
+  /// What the won fight brought, for the strip over the log (fight_spoils_strip.dart).
+  FightSpoils? _spoils;
 
   late int _playerLevel;
   int _lastDamageTaken = 0;
@@ -598,6 +603,24 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.dispose();
   }
 
+  /// [child] with the entrance card of the first boss or named foe in this
+  /// fight laid over it (hasEntranceCard); none in a test or a lesson.
+  Widget _withEntrance(Widget child) {
+    final named = widget.modifiers.isTest || widget.modifiers.tutorial
+        ? null
+        : widget._allEnemyEntries
+            .where((e) => hasEntranceCard(e.key, e.value))
+            .firstOrNull;
+    if (named == null) return child;
+    return FightEntrance(
+      enemyId: named.key,
+      name: named.value['enemyName']?.toString() ?? named.key,
+      line: entranceLine(named.value['description']?.toString() ?? ''),
+      boss: isBossEnemy(named.key, named.value),
+      child: child,
+    );
+  }
+
   /// [setState] for the part files: it is @protected, so the extensions
   /// on this state (see fight/) call this instead.
   void _update(VoidCallback fn) => setState(fn);
@@ -763,9 +786,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ),
           ],
         ),
-        body: _victoryTapArea(!_started
+        body: _withEntrance(_victoryTapArea(!_started
             ? _buildSetup(dice, skills, items, session)
-            : _buildBattle(dice, skills, items, session)),
+            : _buildBattle(dice, skills, items, session))),
       ),
     );
   }
