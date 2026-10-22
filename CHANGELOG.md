@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.530.0+566]
+
+- Your Devoted companions now have a scene of their own at camp: eight short scenes, one each for Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik, offered once they have grown devoted to you. What you answer is remembered at the muster.
+
 ## [1.528.0+564]
 
 Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasEntranceCard` (v1.522).

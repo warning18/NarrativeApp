@@ -387,7 +387,15 @@ final List<Landmark> worldMapLandmarks = [
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
       '7400_reed', '7400_reed_later', '7400_herald', '7400_herald_later', //
       '7400_chain', '7400_chain_later',
-      '7800', '7800_council', '7800_lines', '7800_nkem_later',
+      '7800', '7800_council', '7800_lines', '7800_nkem_later', //
+      'loyal_kelda',
+      'loyal_sable',
+      'loyal_maren',
+      'loyal_liora',
+      'loyal_vess',
+      'loyal_grosh',
+      'loyal_tobin',
+      'loyal_malrik',
     ],
   ),
   const Landmark(
