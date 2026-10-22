@@ -14,8 +14,10 @@ import '../l10n/app_strings.dart';
 import '../providers/aftermath_provider.dart'
     show lastFightOutcomeProvider, lastFightRetreatedProvider;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/clans_provider.dart' show loadClanData, politicsProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart' show loadGeography;
 import '../providers/player_session_provider.dart';
 import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -26,6 +28,9 @@ import '../widgets/companion_remark_bubble.dart' show SpokenLine, spokenRemarks;
 import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
 import '../widgets/side_view/encounter_figure.dart';
+import '../widgets/side_view/cliffs_kit.dart';
+import '../widgets/side_view/fen_kit.dart';
+import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
@@ -54,14 +59,32 @@ Future<bool> runLandCrossing(
   final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
   if (route == null) return true;
+  final known = landEventsFrom(events);
+  final ruler = await crossingRulerOf(ref, route);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
         route: route,
-        events: landEventsFrom(events),
+        events: known,
+        ruler: ruler.clanId,
+        rulers: rulerPool(known, ruler.clanId, ruler.band),
         random: ref.read(landCrossingRandomProvider)),
   ));
   return arrived == true;
+}
+
+/// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
+/// and the band the party's standing with them puts it in.
+Future<({String clanId, RulerBand band})> crossingRulerOf(
+    WidgetRef ref, LandRoute route) async {
+  final geography = await loadGeography(ref);
+  final clans = await loadClanData(ref);
+  final politics = ref.read(politicsProvider);
+  final clanId = landRouteRuler(route, geography, politics);
+  return (
+    clanId: clanId,
+    band: rulerBandFor(politics.tierOf(clanId, clans)),
+  );
 }
 
 /// A land crossing (land_crossing.dart): an event a day, each asking what
@@ -72,6 +95,27 @@ Future<bool> runLandCrossing(
 /// the ash squall among the ruins fill the scene with their dust or ash.
 bool crossingIsStorm(String? eventId) =>
     eventId == 'sandstorm' || eventId == 'ash_squall';
+
+/// The terrains a crossing draws a scene for (the route's `terrain`, which
+/// is a biome id).
+const crossingSceneTerrains = {
+  'desert',
+  'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
+};
+
+/// The layers of the scene for [terrain]; the goal comes forward with
+/// [progress] 0 to 1.
+List<SideLayer> crossingLayers(String terrain, double progress) =>
+    switch (terrain) {
+      'ruins' => ruinsLayers(progress: progress),
+      'frost' => frostLayers(progress: progress),
+      'fen' => fenLayers(progress: progress),
+      'sea_cliffs' => cliffsLayers(progress: progress),
+      _ => desertLayers(progress: progress),
+    };
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
@@ -87,7 +131,12 @@ SideParticles crossingParticles({
     WeatherKind.snow => SideParticles.snow,
     WeatherKind.ash => SideParticles.ash,
     WeatherKind.fog => SideParticles.fog,
-    _ => terrain == 'ruins' ? SideParticles.ash : SideParticles.shimmer,
+    _ => switch (terrain) {
+        'ruins' => SideParticles.ash,
+        'frost' => SideParticles.snow,
+        'fen' || 'sea_cliffs' => SideParticles.fog,
+        _ => SideParticles.shimmer,
+      },
   };
 }
 
@@ -96,11 +145,20 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     super.key,
     required this.route,
     required this.events,
+    this.ruler = '',
+    this.rulers = const [],
     this.random,
   });
 
   final LandRoute route;
   final Map<String, LandEvent> events;
+
+  /// The clan that holds the land crossed (landRouteRuler), '' for no one:
+  /// for the header's colour.
+  final String ruler;
+
+  /// The ruler's events the crossing may meet (rulerPool).
+  final List<String> rulers;
 
   /// Injectable for tests; a fresh stream otherwise.
   final Random? random;
@@ -116,8 +174,9 @@ enum _Phase { event, result, arrived, failed, turnedBack }
 
 class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   late final Random _random = widget.random ?? Random();
-  late final List<String> _drawn =
-      drawCrossing(widget.route, widget.events.keys, random: _random);
+  late final List<String> _drawn = drawCrossing(
+      widget.route, widget.events.keys,
+      random: _random, rulers: widget.rulers);
   var _day = 0;
   var _phase = _Phase.event;
   var _daysSpent = 0;
@@ -483,11 +542,10 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     }
 
     // The scene over the words (board 6), by the route's terrain: the
-    // desert kit while it crosses a desert, the ruins kit among ruins; a
-    // terrain with no kit yet keeps only the strip of day and health.
+    // desert, ruins, frost, fen or sea cliffs kit; a terrain with no kit
+    // yet keeps only the strip of day and health.
     final terrain = widget.route.terrain;
-    final scene = terrain == 'desert' || terrain == 'ruins';
-    final ruins = terrain == 'ruins';
+    final scene = crossingSceneTerrains.contains(terrain);
     final progress = _phase == _Phase.arrived
         ? 1.0
         : _drawn.isEmpty
@@ -566,9 +624,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: crossingSceneHeight,
-                      layers: ruins
-                          ? ruinsLayers(progress: progress)
-                          : desertLayers(progress: progress),
+                      layers: crossingLayers(terrain, progress),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),
                           moving: _phase == _Phase.result,
