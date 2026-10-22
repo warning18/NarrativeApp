@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.508.0+544]
+
+Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
+
+### Added
+- **Ward the road:** spend 1 / 2 / 3 Banish charges to ward a hunting clan (a rival at Hostile or Hunted, or the nemesis) for 3 / 6 / 9 roads at rest. While warded, that clan's hunters don't roll on the road. Alignment hunters, betrayals, the nemesis's champion and the seat crisis are not wardable, and standing never changes. When a ward runs out, the coast news says so. The choice on the Banish card and the mark on the Journey come in UX's next PR.
+- **Simulator:** wards the nemesis for 6 roads when it has 2 charges or more. Nemesis hunters a run 1.42 → 1.23 (seed 7); attempt win rates move by under 1 point for every profession.
+
 ## [1.506.0+542]
 
 Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.
