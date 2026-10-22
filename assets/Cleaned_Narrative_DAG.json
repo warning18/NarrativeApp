@@ -9025,6 +9025,7 @@
         "text": "Sail for the White Fleet’s grave",
         "text_fr": "Mettre le cap sur le tombeau de la Flotte Blanche",
         "next_id": "7300",
+        "landRouteId": "anchorage_to_grave",
         "launchZoneId": "z_white_fleet_grave",
         "mainQuest": true,
         "travelPlaceId": "7100",

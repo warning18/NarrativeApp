@@ -2,7 +2,9 @@
 // wave16-core.md §3): the middle chapters' routes, the road's ruler, the
 // band the party's standing puts it in, the draw of one day in three from
 // the ruler's events, chapter 7's mild pool, a route whose events are not
-// on file, and a save in the middle of a crossing.
+// on file, and a save in the middle of a crossing. Wave 17 item 4
+// (wave17-core.md §4): chapter 6's crossing of the Grey Sands, which meets
+// no ruler while no clan holds the Anchorage, and the cliffs' four events.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -72,6 +74,7 @@ void main() {
     const expected = {
       'stair_to_court': (4, 'fen', 'cloister', 'court'),
       'reliquary_to_heart': (5, 'frost', 'reliquary', 'heart'),
+      'anchorage_to_grave': (6, 'tear', 'anchorage', 'wreck'),
       'lantern_cliffs': (7, 'sea_cliffs', 'camp', 'candlehold'),
     };
 
@@ -90,8 +93,12 @@ void main() {
           expect(roads[road]?.joins(from), isTrue, reason: '$id: $road');
           expect(roads[road]?.joins(to), isTrue, reason: '$id: $road');
         }
-        final prefix =
-            const {'fen': 'fen_', 'frost': 'frost_'}[biome] ?? 'cliff_';
+        final prefix = const {
+              'fen': 'fen_',
+              'frost': 'frost_',
+              'tear': 'glass_'
+            }[biome] ??
+            'cliff_';
         expect(route.events.keys.every((e) => e.startsWith(prefix)), isTrue,
             reason: id);
       }
@@ -107,11 +114,60 @@ void main() {
       }
     });
 
-    test('chapter 7 draws only the two mild cliff events', () {
+    test('chapter 7 draws the four cliff events, each with a sure way', () {
+      // The wrecker's lamp and the gulls joined in wave 17, once chapter
+      // 7's claimants were fixed (v1.531).
       final cliffs = landRouteFor(routes, 'lantern_cliffs')!;
-      expect(
-          cliffs.events.keys.toSet(), {'cliff_salt_wind', 'cliff_tide_stair'});
+      expect(cliffs.events, {
+        'cliff_salt_wind': 1,
+        'cliff_tide_stair': 1,
+        'cliff_wrecker_lamp': 1,
+        'cliff_gulls': 1,
+      });
       expect(cliffs.days, lessThanOrEqualTo(2));
+      final events = landEventsFrom(_json('assets/gamedata/land_events.json'));
+      for (final id in cliffs.events.keys) {
+        final event = events[id];
+        expect(event, isNotNull, reason: id);
+        expect(event!.isRulers, isFalse, reason: id);
+        // A way round that costs at most 2% health, whatever the dice.
+        expect(
+            event.choices.any(
+                (c) => !c.hasCheck && !c.isFight && c.outcome.healthPct >= -2),
+            isTrue,
+            reason: id);
+        // The worst a failed check costs stays under the salt wind's 14%.
+        for (final c in event.choices) {
+          expect(c.fail.healthPct, greaterThanOrEqualTo(-14), reason: id);
+        }
+      }
+    });
+
+    test('chapter 6 crosses the Grey Sands on Narrative\'s glass events', () {
+      final sands = landRouteFor(routes, 'anchorage_to_grave')!;
+      expect(sands.roads, ['anchorage_wreck']);
+      // The desert kit draws its dunes until the Grey Sands get their own.
+      expect(sands.terrain, 'desert');
+      // The White Fleet's Grave is on the Grey Sands, the tear's zone.
+      expect(geography.placeOfLandmark(sands.to)?.id, 'white_fleet_grave');
+      expect(geography.zoneOf('white_fleet_grave')?.biome, sands.biome);
+      final events = landEventsFrom(_json('assets/gamedata/land_events.json'));
+      expect(sands.events.keys.toSet(), {
+        'glass_fulgurite',
+        'glass_hull_shelter',
+        'glass_drowned_well',
+        'glass_tear_pull',
+      });
+      for (final id in sands.events.keys) {
+        expect(events[id], isNotNull, reason: id);
+        expect(events[id]!.isRulers, isFalse, reason: id);
+        // Mild: chapter 6 is won little more than half the time.
+        for (final c in events[id]!.choices) {
+          for (final o in [c.outcome, c.success, c.fail]) {
+            expect(o.healthPct, greaterThanOrEqualTo(-10), reason: id);
+          }
+        }
+      }
     });
 
     test('each is named by the choices that leave on it', () {
@@ -122,6 +178,7 @@ void main() {
           '6010_thread#1',
           '6010_thread#2'
         },
+        'anchorage_to_grave': {'7001#0'},
         'lantern_cliffs': {'7400#6'},
       };
       final found = <String, Set<String>>{};
@@ -139,7 +196,7 @@ void main() {
         expect(found[id], ways, reason: id);
       }
       // The chapters' main quests set out on theirs.
-      for (final way in ['4999_camp#0', '7400#6']) {
+      for (final way in ['4999_camp#0', '7001#0', '7400#6']) {
         final [nodeId, at] = way.split('#');
         final choice = StoryChoice.fromJson(Map<String, dynamic>.from(
             (story[nodeId]['choices'] as List)[int.parse(at)]));
@@ -154,6 +211,7 @@ void main() {
       const arrivals = {
         'stair_to_court': '5003',
         'reliquary_to_heart': '6003',
+        'anchorage_to_grave': '7300',
         'lantern_cliffs': '7500',
       };
       for (final MapEntry(key: id, value: arrival) in arrivals.entries) {
@@ -189,6 +247,45 @@ void main() {
       expect(ruler('lantern_cliffs'), 'dominion');
       // The desert has no ruler at all.
       expect(ruler('crash_to_sleeper'), '');
+      // Nobody holds the Grey Sands at the start, and the Hollow Cape has
+      // no ruler: chapter 6's crossing meets only its biome.
+      expect(ruler('anchorage_to_grave'), '');
+    });
+
+    test('the Grey Sands meet a ruler only once a clan holds the land', () {
+      final sands = landRouteFor(routes, 'anchorage_to_grave')!;
+      expect(sands.rulerOneIn, 3);
+      final events = landEventsFrom(_json('assets/gamedata/land_events.json'));
+      // Unheld: no ruler, so no ruler's events at any band, and the draw is
+      // the biome's alone.
+      for (final band in RulerBand.values) {
+        expect(rulerPool(events, '', band), isEmpty);
+      }
+      for (var seed = 0; seed < 300; seed++) {
+        final drawn = drawCrossing(sands, events.keys,
+            random: Random(seed),
+            rulers: rulerPool(events, '', RulerBand.neutral));
+        expect(drawn, hasLength(sands.days), reason: 'seed $seed');
+        expect(drawn.every((id) => id.startsWith('glass_')), isTrue,
+            reason: 'seed $seed');
+      }
+      // The Anchorage's chapel taken (the Penitents and the Dominion both
+      // claim it), or the Anchorage itself: its holder rules the road.
+      const chapel =
+          PoliticsState(control: {'white_anchorage_chapel': 'penitents'});
+      expect(landRouteRuler(sands, geography, chapel), 'penitents');
+      const town = PoliticsState(control: {'white_anchorage': 'crows'});
+      expect(landRouteRuler(sands, geography, town), 'crows');
+      final pool = rulerPool(events, 'penitents', RulerBand.hostile);
+      expect(pool, isNotEmpty);
+      var met = 0;
+      for (var seed = 0; seed < 600; seed++) {
+        final drawn = drawCrossing(sands, events.keys,
+            random: Random(seed), rulers: pool);
+        met += drawn.where(pool.contains).length;
+      }
+      // One day in three, never twice: about 56% of two-day crossings.
+      expect(met / 600, inInclusiveRange(0.45, 0.67));
     });
 
     test('changes hands with the land around it', () {
@@ -313,7 +410,7 @@ void main() {
     });
 
     test('chapter 7\'s cliffs stay mild, its ruler met or not', () {
-      // Narrative's draft numbers for the two cliff events, and the
+      // Narrative's draft numbers for the first two cliff events, and the
       // Dominion's hostile toll (its worst band).
       final cliffEvents = landEventsFrom({
         'cliff_salt_wind': {
@@ -364,12 +461,18 @@ void main() {
           ],
         },
       });
+      // With the wrecker's lamp and the gulls as Narrative wrote them
+      // (wave 17).
+      final all = {
+        ...landEventsFrom(_json('assets/gamedata/land_events.json')),
+        ...cliffEvents,
+      };
       final cliffs = landRouteFor(routes, 'lantern_cliffs')!;
       final hostile = rulerPool(cliffEvents, 'dominion', RulerBand.hostile);
       expect(hostile, ['ruler_dominion_hostile']);
       var worst = 0;
       for (var seed = 0; seed < 500; seed++) {
-        final result = resolveCrossing(cliffs, cliffEvents,
+        final result = resolveCrossing(cliffs, all,
             health: 100,
             maxHealth: 100,
             gold: 0,
