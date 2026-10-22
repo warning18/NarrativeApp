@@ -1,5 +1,10 @@
 # The claimants by profession (wave 17 item 1, the logging run)
 
+> If B or C is picked, the simulator models silence (`edict_of_silence`)
+> and the hex (`hex_of_ill_luck`) first. Today it skips tamper moves, so
+> it overrates the cleric against Oriel. The final numbers are re-measured
+> after that.
+
 Measured on v1.516 with `boss_balance_test`'s plan (400 runs, politics
 events loaded), seed 7, checked at seeds 11 and 23. The fights were traced
 with a throwaway hook in `sim_combat.dart` and a harness under `test/`.
@@ -91,10 +96,37 @@ All were run in the harness only and reverted. Columns are the claimant encounte
 | **C** B + heal once + Morrow +10 + no resists (7) | 37.5 | 32.5 | 66.2 | 58.8 | 47.5 | 48.5 | 50.8 | 48.9 | 45.3 | 58.2 | 52.2 | 5.2 |
 | C (11) | 43.8 | 36.2 | 62.5 | 73.8 | 40.0 | 51.2 | 40.8 | 53.4 | 49.2 | 60.6 | 52.3 | 4.9 |
 | C (23) | 42.5 | 48.8 | 61.2 | 57.5 | 46.2 | 51.2 | 40.7 | 52.8 | 53.1 | 60.7 | 52.6 | 3.0 |
+| **C, complete:** C + Tallis +5, Morrow +20 (7) | 37.5 | 25.0 | 61.2 | 56.2 | 50.0 | 46.0 | 50.8 | 44.7 | 46.7 | 56.8 | 51.8 | 5.4 |
+| C, complete (11) | 43.8 | 30.0 | 57.5 | 65.0 | 38.8 | 47.0 | 40.8 | 48.3 | 45.9 | 58.2 | 51.9 | 4.5 |
+| C, complete (23) | 35.0 | 37.5 | 58.8 | 60.0 | 40.0 | 46.2 | 40.7 | 46.5 | 50.0 | 57.7 | 52.1 | 3.0 |
 
 - **A, the proposal's rule:** each claimant heals once a fight (its first heal of any kind; then its heal moves leave its list), and Morrow gets +10 health. It does nothing for the cleric and gives the warrior +4 points at seed 7. The first heal is usually the big one: the 30% phase heal or `cleric_sanctuary`. Not enough on its own.
 - **B, the counter to cause 1:** in a claimant's fight its blows stop growing at Tide level 6 (×2.08, from round 13 on). The cleric gets 38–49% at every seed. Mage, ranger and rogue barely move, because their fights end before round 13. The claimants average 46–51, the boss mean is 51.8–52.5 and the spread is unchanged. The warrior isn't fixed: it falls around round 12.7, before the cap starts to act. It reaches only 17.5% at seed 7. Tallis (53.2) and Morrow (53.1, 55.7 at seed 11) sit just over the band at some seeds. Cap 5 overshoots: Oriel and Tallis go to 55–56. Cap 4 takes the cleric to 70%.
 - **C, B plus the warrior's two levers:** heal once, Morrow +10, and the claimants lose their resists. Their weaknesses stay. Every profession is at 32.5% or more at all three seeds. The claimants average 48.5–51.2 and the boss mean is 52.2–52.6. Tallis goes 0.9–1.4 points over the band at seeds 11 and 23, and Morrow 1.1 at seed 23. A few more points of health on Tallis would settle that, but I didn't measure it.
+
+### C, complete
+
+C's last points are its health. It needs Tallis +5 (72 → 77) and Morrow
++20 (108 → 128, not C's +10). With those, every claimant is in band
+(28–52) at all three seeds, and every profession wins the claimants at
+25% or more. The warrior is exactly at 25.0 at seed 7.
+
+| Tallis step | Tallis (7 / 11 / 23) | Morrow +10 (7 / 11 / 23) |
+|---|---|---|
+| +0 (C) | 48.9 / 53.4 / 52.8 | 45.3 / 49.2 / 53.1 |
+| **+5** | 44.7 / 48.3 / 46.5 | 45.3 / 49.2 / 53.1 |
+| +10 | 40.2 / 45.2 / 44.3 | 45.3 / 49.2 / 53.1 |
+
+With Tallis +5, Morrow at seed 23 is 53.1 at +10, still 53.1 at +15, and
+50.0 at +20, where seeds 7 and 11 give 46.7 and 45.9. Steps between +15
+and +20 were not tried. "C, complete" in full:
+- in claimant fights, the Tide's level is capped at 6;
+- each claimant heals once a fight;
+- the claimants lose their resists (they keep their weaknesses);
+- Tallis gets +5 health and Morrow +20.
+
+The claimants average 46.0–47.0, chapter 7 is won 56.8–58.2%, the boss mean
+is 51.8–52.1 and the professions' spread is 3.0–5.4.
 
 Variants that were rejected:
 - **Claimant blows on the ordinary Tide step (0.10):** cleric 37.5 and warrior 32.5, but it lifts everyone. Oriel goes to 54.1 and Morrow to 56.0, out of band.
