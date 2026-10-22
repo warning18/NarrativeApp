@@ -712,6 +712,7 @@ extension _FightCards on _FightScreenState {
                   // Hurt, and no boss to stand by it: it may flee.
                   if (enemy.isAlive &&
                       !enemy.yielded &&
+                      _enemies.length < 2 &&
                       !_enemies.any((e) => isBossEnemy(e.enemyId, e.data)) &&
                       wavers(
                           health: enemy.currentHealth,

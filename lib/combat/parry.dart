@@ -18,9 +18,13 @@ const double parryCounterShare = 0.5;
 
 /// The strength of a parry made from a Defend face worth [block], rounded
 /// down: on the fight's small scale (docs/proposals/stat-scale.md) a guard
-/// of 1 parries 1, not 2.
-int parryAmount(int block) =>
-    block <= 0 ? 0 : (block * parryMultiplier).floor();
+/// of 1 parries 1, not 2. Against a pack ([foes] two or more) a parry is
+/// worth the block alone (wave 17): it turns one blow of several.
+int parryAmount(int block, {int foes = 1}) => block <= 0
+    ? 0
+    : foes >= 2
+        ? block
+        : (block * parryMultiplier).floor();
 
 /// True when a parry of [parry] stops a blow of [blow] outright.
 bool parryStopsBlow(int blow, int parry) => blow > 0 && parry >= blow;

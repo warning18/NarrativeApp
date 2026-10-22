@@ -64,6 +64,9 @@ void main() {
   group('parry', () {
     test('a parry counts half again, and only a block gives one', () {
       expect(parryAmount(10), 15);
+      // Against a pack a parry is worth the block alone (wave 17).
+      expect(parryAmount(10, foes: 2), 10);
+      expect(parryAmount(10, foes: 1), 15);
       expect(parryAmount(0), 0);
       expect(parryAmount(-3), 0);
     });

@@ -330,7 +330,7 @@ extension _FightRounds on _FightScreenState {
       // A ward (Glacial Ward, Thornwall) wounds whoever strikes it.
       actor.reflect = result.blockAmount > 0 ? extras.reflect : null;
       if (parryEnemy != null) {
-        final amount = parryAmount(block);
+        final amount = parryAmount(block, foes: _enemies.length);
         parryEnemy.parryBlock += amount;
         newEntries.add(_LogEntry(
             trFor(lang, 'parry_set_log')
