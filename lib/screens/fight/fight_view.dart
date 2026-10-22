@@ -523,6 +523,9 @@ extension _FightView on _FightScreenState {
             child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
+          if (_spoils != null)
+            FightSpoilsStrip(
+                spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
           _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
