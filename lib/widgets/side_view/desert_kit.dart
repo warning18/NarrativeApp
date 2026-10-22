@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../../providers/walking_party_provider.dart'
     show WalkingPartyMember, heroWalkerId;
 import 'encounter_figure.dart';
+import 'party_look.dart';
 import 'side_sprite.dart';
 import 'side_view.dart';
 
@@ -149,7 +150,8 @@ SideLayer desertActors({
       c.save();
       c.scale(1.6);
       _figure(c, u, xs[i] / 1.6, 66 / 1.6, walkPlaceholderColour(members[i].id),
-          moving ? t + i * 0.4 : 1.3);
+          moving ? t + i * 0.4 : 1.3,
+          look: partyLookFor(members[i].id));
       c.restore();
     }
     if (!SideSprites.paint(c, u, xs[0], 66, t, moving: moving)) {
@@ -257,7 +259,8 @@ void _path(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// A placeholder walker: a cloaked body, a head, two legs that swap.
 void _figure(
-    Canvas canvas, double u, double x, double baseY, Color cloak, double t) {
+    Canvas canvas, double u, double x, double baseY, Color cloak, double t,
+    {PartyLook? look}) {
   final step = (t * 6).floor() % 2;
   final skin = Paint()..color = const Color(0xFFE0B48A);
   final body = Paint()..color = cloak;
@@ -268,6 +271,11 @@ void _figure(
   sidePixels(canvas, u, dark, x + 3, baseY - 3 + (step == 0 ? -1 : 0), 1, 3);
   // Cloak and head.
   sidePixels(canvas, u, body, x, baseY - 9 + bob, 5, 6);
+  if (look != null) {
+    // A companion's own face (party_look.dart).
+    paintPartyHead(canvas, u, x + 1, baseY - 12 + bob, look);
+    return;
+  }
   sidePixels(canvas, u, skin, x + 1, baseY - 12 + bob, 3, 3);
   sidePixels(canvas, u, dark, x + 1, baseY - 13 + bob, 3, 1);
 }
