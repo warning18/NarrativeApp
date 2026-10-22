@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.534.0+570]
+
+A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events (wave 17).
+
+### Added
+- **The Glass Shoals** (chapter 6): after landing at the White Anchorage, the party crosses the glass shore to the White Fleet's Grave, with Narrative's four glass-shore events. Once a clan holds the Anchorage, about one day in three brings that clan's event too. A crossing costs about 2–4% health.
+- **The Lantern Cliffs** (chapter 7) also draw the wrecker's lamp and the gulls. Each has a way through that costs nothing.
+
+### Fixed
+- **The fen, frost and sea-cliffs crossings** (chapters 4, 5 and 7) now show their side-view scenes; they showed none before.
+
 ## [1.533.0+569]
 
 - A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.
