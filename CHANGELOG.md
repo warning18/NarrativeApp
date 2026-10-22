@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.507.0+543]
+
+Wave 16 UX, item 1, second step: two more sheets use the shared parts.
+
+### Changed
+- **The offer's confirm dialog** ("Take the gift?") is built from the shared sheet parts: the title, "Offered by" as its italic line, the standing and risk lines, and the main button with Back under it. Same words, same keys; it scrolls on a short phone.
+- **The skill sheet's header** (the skill's pixel icon, its name, "step 2 of 5 · known") uses the shared header.
+- **Three cosmetic notes from QA's v1.502 pictures.** The camp build sheet's title lines up with its text (it started 8 px in); the temple row's small "Blessing" label is set in the body face (the pixel face read "Glessing" at 320 px); and the build sheet's gold need reads "Or 900/1200" on one line.
+- Not moved: the face skill choice sheet keeps its own layout, since its pick-then-set bar does not fit the shared row.
+
 ## [1.506.0+542]
 
 Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.

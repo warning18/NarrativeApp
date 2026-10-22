@@ -11,6 +11,7 @@ import '../data/offers.dart';
 import '../data/perks.dart';
 import '../data/risky_gifts.dart';
 import 'risky_roll_dialog.dart';
+import 'sheet_kit.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -266,41 +267,44 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title:
-            Text(trFor(lang, 'offer_confirm_title').replaceAll('{gift}', name)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(trFor(lang, 'offer_confirm_from')
-                .replaceAll('{who}', suitorName(suitor, tables.data, lang))),
-            const SizedBox(height: 8),
-            Text(preview.isEmpty
-                ? trFor(lang, 'offer_no_standing')
-                : preview.map((p) => p.text).join(' · ')),
-            if (suitor.risky) ...[
-              const SizedBox(height: 8),
-              Text(trFor(lang, 'offer_risky_hint')),
-              Text(
-                  trFor(lang, 'offer_risky_odds')
-                      .replaceAll('{gift}', '${odds.gift}')
-                      .replaceAll('{price}', '${odds.price}'),
-                  key: const Key('offer_confirm_risky_odds')),
+      builder: (dialogContext) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SheetHeader(
+                title: trFor(lang, 'offer_confirm_title')
+                    .replaceAll('{gift}', name),
+                caption: trFor(lang, 'offer_confirm_from')
+                    .replaceAll('{who}', suitorName(suitor, tables.data, lang)),
+                padding: const EdgeInsets.only(bottom: 12),
+              ),
+              Text(preview.isEmpty
+                  ? trFor(lang, 'offer_no_standing')
+                  : preview.map((p) => p.text).join(' · ')),
+              if (suitor.risky) ...[
+                const SizedBox(height: 8),
+                Text(trFor(lang, 'offer_risky_hint')),
+                Text(
+                    trFor(lang, 'offer_risky_odds')
+                        .replaceAll('{gift}', '${odds.gift}')
+                        .replaceAll('{price}', '${odds.price}'),
+                    key: const Key('offer_confirm_risky_odds')),
+              ],
+              const SizedBox(height: 16),
+              SheetButtons(
+                primaryKey: const Key('offer_confirm_accept'),
+                primaryLabel: trFor(lang, 'offer_confirm_accept'),
+                onPrimary: () => Navigator.pop(dialogContext, true),
+                closeLabel: trFor(lang, 'offer_confirm_back'),
+                onClose: () => Navigator.pop(dialogContext, false),
+              ),
             ],
-          ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(trFor(lang, 'offer_confirm_back')),
-          ),
-          FilledButton(
-            key: const Key('offer_confirm_accept'),
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(trFor(lang, 'offer_confirm_accept')),
-          ),
-        ],
       ),
     );
     if (confirmed != true || !mounted) return;
