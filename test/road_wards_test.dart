@@ -249,7 +249,12 @@ void main() {
       expect(
           wardSetLine('compact', AppLanguage.fr,
               data: data, nemesis: 'compact'),
-          'Le cairn cache votre piste au champion du Pacte des Cendres.');
+          'Le cairn cache votre piste aux chasseurs du Pacte des Cendres ; '
+          'son champion, lui, vous trouvera.');
+      expect(
+          wardSetLine('crows', AppLanguage.en, data: data, nemesis: 'crows'),
+          'The cairn hides your trail from the Salt Crows’ ordinary hunters; '
+          'its champion still comes.');
       // A plural's possessive.
       expect(
           wardLine('ward_ended', AppLanguage.en, clanId: 'crows', data: data),

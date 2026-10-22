@@ -12485,8 +12485,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le cairn cache votre piste à la chasse {clan}.',
   },
   'ward_set_nemesis': {
-    AppLanguage.en: 'The cairn hides your trail from {clan}’s champion.',
-    AppLanguage.fr: 'Le cairn cache votre piste au champion {clan}.',
+    AppLanguage.en:
+        'The cairn hides your trail from {clan}’s ordinary hunters; its champion still comes.',
+    AppLanguage.fr:
+        'Le cairn cache votre piste aux chasseurs {clan} ; son champion, lui, vous trouvera.',
   },
   'ward_ended': {
     AppLanguage.en: 'The ward on {clan}’s hunters has worn off.',
