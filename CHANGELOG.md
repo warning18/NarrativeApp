@@ -18,6 +18,19 @@ Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large t
 ### Added
 - **`test/ux_sweep_test.dart`:** the entrance card, the spoils strip, the deck crew with its speech bubble and the sea arrival, the land crossing, and the ward sheet with its mark and the Banish card, each at 320 and 390 px wide, text ×1 and ×1.6, in English and French, with and without reduced motion (the app's own fonts are loaded, as in `qa_fight_tips_real_font_test.dart`; the test font is far wider). No overflow in any; with reduced motion the entrance card shows none and the spoils are whole at once. The crossing's bar was the only thing that did not fit.
 
+## [1.520.0+556]
+
+Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
+
+### Added
+- **The crossing says who holds the road:** a crossing on land a clan holds (`LandCrossingScreen.ruler`, from Core's v1.512) wears the clan's colour in a band under its title and has a small "Held by the Compact" line, with the clan's flag, over the scene (also on a short phone, where the scene is left out). A road no one holds has neither.
+- **The layers sheet lists the towns that changed hands** (`lib/widgets/handover_list.dart`): the town, the old ruler's flag and name, an arrow, the new ruler's, for the player who missed the toast of v1.503. It keeps the last eight since the player last looked, newest first; it is this session's only (it is not saved), and draws nothing when nothing has changed.
+- Strings: `crossing_ruler`, `town_handover_title`, `town_handover_no_one`, EN and FR.
+- Picture: `docs/ux-shots/ruler-and-changes.png`. Test: `test/ruler_changes_test.dart`.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` (shared): the band, the line (about 40 lines). No other open PR touches it.
+
 ## [1.519.0+555]
 
 - Your companions now have something to say at sea: each of the eight has three lines about the deck, the water and the crossing.

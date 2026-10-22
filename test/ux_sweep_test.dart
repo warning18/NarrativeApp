@@ -24,6 +24,8 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/widgets/roll_power_row.dart';
 import 'package:narrative_data_app/widgets/ward_mark.dart';
 import 'package:narrative_data_app/data/land_crossing.dart';
+import 'package:narrative_data_app/providers/clans_provider.dart'
+    show factionsProvider;
 import 'package:narrative_data_app/data/ship_forms.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
@@ -232,7 +234,19 @@ void main() {
       await tester.runAsync(() async {
         SharedPreferences.setMockInitialValues({'app_language': c.lang.name});
       });
-      await tester.pumpWidget(ProviderScope(
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await tester.runAsync(() async {
+        final sub = container.listen(factionsProvider, (_, __) {});
+        addTearDown(sub.close);
+        for (var i = 0;
+            i < 50 && container.read(factionsProvider).isEmpty;
+            i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        }
+      });
+      await tester.pumpWidget(UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           theme: buildAppTheme(const ColorScheme.dark()),
           builder: (context, child) => MediaQuery(
@@ -242,13 +256,15 @@ void main() {
             child: child!,
           ),
           home: LandCrossingScreen(
-              route: route, events: events, random: Random(1)),
+              route: route, events: events, ruler: 'mire', random: Random(1)),
         ),
       ));
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 200)));
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.takeException(), isNull);
+      // The road's ruler is on the screen once the clans have loaded.
+      expect(find.byKey(const Key('crossing_ruler')), findsOneWidget);
     });
   }
 
