@@ -779,5 +779,157 @@
         ]
       }
     ]
+  },
+  "lanternbearers_will": {
+    "id": "lanternbearers_will",
+    "name": "The Lantern-Bearer’s Will",
+    "name_fr": "Le testament du Porte-Lanterne",
+    "premise": "A sealed page names an heir who is neither Vane, Morrow nor Tallis, and all three Houses want it.",
+    "premise_fr": "Une page scellée nomme un héritier qui n’est ni Vane, ni Morrow, ni Tallis, et les trois Maisons la veulent.",
+    "factions": [
+      "dominion",
+      "vigil"
+    ],
+    "subclans": [
+      "wickwardens",
+      "inquisition",
+      "order"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 5,
+        "text": "A scribe at Rimewell is copying out a will in the Lantern-Bearer’s hand.",
+        "text_fr": "Une scribe de Puits-de-Givre recopie un testament de la main du Porte-Lanterne."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 6,
+        "text": "A wreck-wright has the seal in wax: a flame in a hand, the First Lantern’s own.",
+        "text_fr": "Un ouvrier des épaves a le sceau dans la cire : une flamme dans une main, celui de la Première Lanterne.",
+        "npcId": "fleet_chaplain"
+      },
+      {
+        "stage": "Turn",
+        "chapter": 6,
+        "text": "The heir is Perrin Ash, the First Lantern’s trimmer, now a grey fisher at Greyhithe.",
+        "text_fr": "L’héritier est Perrin Ash, l’allumeur de la Première Lanterne, devenu pêcheur gris à Grisegrève."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 6,
+        "text": "The three Houses write to ask whether you know of a will.",
+        "text_fr": "Les trois Maisons écrivent pour demander si vous connaissez un testament.",
+        "npcId": "crape_courier"
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The sealed original reaches Greyhithe, with three boats waiting off it.",
+        "text_fr": "L’original scellé arrive à la crique, et trois bateaux attendent au large."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 6,
+        "text": "You decide what becomes of the will.",
+        "text_fr": "Vous décidez du sort du testament."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Read aloud: Perrin Ash named",
+        "name_fr": "Lu à voix haute : Perrin Ash nommé",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 15
+          },
+          {
+            "faction": "vigil",
+            "delta": -10
+          },
+          {
+            "subclan": "wickwardens",
+            "mark": "friend"
+          },
+          {
+            "note": "The will is read on the shingle: Perrin Ash is named, and the Houses must answer him.",
+            "note_fr": "Le testament est lu sur les galets : Perrin Ash est nommé, et les Maisons doivent lui répondre."
+          }
+        ]
+      },
+      {
+        "name": "Burned: the page stays a rumour",
+        "name_fr": "Brûlé : la page reste une rumeur",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": -15
+          },
+          {
+            "faction": "crows",
+            "delta": 15
+          },
+          {
+            "note": "The will is burned unread. The Houses go on hunting a page that no longer exists.",
+            "note_fr": "Le testament est brûlé sans être lu. Les Maisons continuent de chasser une page qui n’existe plus."
+          }
+        ]
+      },
+      {
+        "name": "Given to Oriel",
+        "name_fr": "Remis à Oriel",
+        "effects": [
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Regent Oriel holds the will, and a Hand for the Throne.",
+            "note_fr": "Le Régent Oriel détient le testament, et une Main pour le Trône."
+          }
+        ]
+      },
+      {
+        "name": "Given to Morrow",
+        "name_fr": "Remis à Morrow",
+        "effects": [
+          {
+            "subclan": "order",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Grand Master Morrow holds the will, and a Hand for the Throne.",
+            "note_fr": "Le Grand Maître Morrow détient le testament, et une Main pour le Trône."
+          }
+        ]
+      },
+      {
+        "name": "Given to Tallis",
+        "name_fr": "Remis à Tallis",
+        "effects": [
+          {
+            "subclan": "wickwardens",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Eldest Tallis holds the will, and a Hand for the Throne.",
+            "note_fr": "L’Aînée Tallis détient le testament, et une Main pour le Trône."
+          }
+        ]
+      }
+    ]
   }
 }
