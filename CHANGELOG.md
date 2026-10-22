@@ -16,6 +16,24 @@ Clan power moves with the story.
 - **19 story choices carry power** (3 to 8 points, `politics.power`): selling a Keyholder’s key, holding the Spire’s wall, cutting the Lantern-Bearer’s standard free, waking the Court, carrying or refusing the Tribunal’s vote, the Crows’ smuggler run, telling the truth about the Vigil’s spear, returning the master hammer, sheltering the Mire’s child or giving her up, breaking the relic, warning the Keyholders. The winners and losers on the same choice move opposite ways.
 - **Two upheaval events:** *The vote reaches Candlehold* (as chapter 5 opens: Cinder Row goes to the Dominion or the Spire Stair to the Compact, by what you did with the vote) and *The Conclave counts* (chapter 7: how you came up the cliff moves the Dominion, and by force, the clan behind your gate takes the Lantern Hall). The Conclave’s swings are full size while some clan stands at 50 power or more, and half size, with no place changing hands, when none does.
 
+## [1.508.0+544]
+
+Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
+
+### Added
+- **Ward the road:** spend 1 / 2 / 3 Banish charges to ward a hunting clan (a rival at Hostile or Hunted, or the nemesis) for 3 / 6 / 9 roads at rest. While warded, that clan's hunters don't roll on the road. Alignment hunters, betrayals, the nemesis's champion and the seat crisis are not wardable, and standing never changes. When a ward runs out, the coast news says so. The choice on the Banish card and the mark on the Journey come in UX's next PR.
+- **Simulator:** wards the nemesis for 6 roads when it has 2 charges or more. Nemesis hunters a run 1.42 → 1.23 (seed 7); attempt win rates move by under 1 point for every profession.
+
+## [1.507.0+543]
+
+Wave 16 UX, item 1, second step: two more sheets use the shared parts.
+
+### Changed
+- **The offer's confirm dialog** ("Take the gift?") is built from the shared sheet parts: the title, "Offered by" as its italic line, the standing and risk lines, and the main button with Back under it. Same words, same keys; it scrolls on a short phone.
+- **The skill sheet's header** (the skill's pixel icon, its name, "step 2 of 5 · known") uses the shared header.
+- **Three cosmetic notes from QA's v1.502 pictures.** The camp build sheet's title lines up with its text (it started 8 px in); the temple row's small "Blessing" label is set in the body face (the pixel face read "Glessing" at 320 px); and the build sheet's gold need reads "Or 900/1200" on one line.
+- Not moved: the face skill choice sheet keeps its own layout, since its pick-then-set bar does not fit the shared row.
+
 ## [1.506.0+542]
 
 Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.
