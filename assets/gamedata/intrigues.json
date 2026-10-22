@@ -931,5 +931,106 @@
         ]
       }
     ]
+  },
+  "taken_names": {
+    "id": "taken_names",
+    "name": "The Taken’s Names",
+    "name_fr": "Les noms des disparus",
+    "premise": "The back of the Lantern Throne is cut with the names of the people the tear took, and a clerk has been copying them.",
+    "premise_fr": "Le dos du Trône de la Lanterne est taillé des noms des gens que la déchirure a pris, et un clerc les copie.",
+    "factions": [
+      "penitents",
+      "choir",
+      "pit"
+    ],
+    "subclans": [
+      "candlebearers"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 7,
+        "text": "A clerk from Candlehold arrives at the cove with a satchel of names.",
+        "text_fr": "Un clerc de Candlehold arrive à la crique avec une sacoche de noms."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 7,
+        "text": "The names run in the order the tear took them, with bare stone left after the last.",
+        "text_fr": "Les noms suivent l’ordre où la déchirure les a pris, avec de la pierre nue après le dernier."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 8,
+        "text": "The Host argues whether the names should be read before the crossing.",
+        "text_fr": "L’Ost débat de lire ou non les noms avant la traversée."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 8,
+        "text": "A Tide-Kin matriarch finds her daughter’s name on the list.",
+        "text_fr": "Une matriarche des Gens de la Marée trouve le nom de sa fille sur la liste."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 8,
+        "text": "The Penitents and the Pit stand either side of a lit brazier.",
+        "text_fr": "Les Pénitents et la Fosse se tiennent de part et d’autre d’un brasero allumé."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 8,
+        "text": "You decide what becomes of the list.",
+        "text_fr": "Vous décidez du sort de la liste."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Read aloud: the dead heard",
+        "name_fr": "Lus à voix haute : les morts entendus",
+        "effects": [
+          {
+            "faction": "penitents",
+            "delta": 20
+          },
+          {
+            "faction": "choir",
+            "delta": 10
+          },
+          {
+            "faction": "dominion",
+            "delta": -15
+          },
+          {
+            "note": "Every name is read aloud before the crossing, and the Host walks with the dead in its ears.",
+            "note_fr": "Chaque nom est lu à voix haute avant la traversée, et l’Ost marche avec les morts dans les oreilles."
+          }
+        ]
+      },
+      {
+        "name": "Burned: nobody owes",
+        "name_fr": "Brûlés : nul ne doit rien",
+        "effects": [
+          {
+            "faction": "pit",
+            "delta": 15
+          },
+          {
+            "note": "The list is burned. The names stay on the stone behind the Throne, and the Host owes the dead nothing.",
+            "note_fr": "La liste est brûlée. Les noms restent sur la pierre derrière le Trône, et l’Ost ne doit rien aux morts."
+          }
+        ]
+      },
+      {
+        "name": "Carried unread",
+        "name_fr": "Emportés sans être lus",
+        "effects": [
+          {
+            "note": "The list crosses unread, in your coat, to the one place where it might be weighed.",
+            "note_fr": "La liste traverse sans être lue, dans votre manteau, vers le seul endroit où on la pèsera peut-être."
+          }
+        ]
+      }
+    ]
   }
 }
