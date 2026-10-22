@@ -2585,7 +2585,7 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 77,
+    "maxHealth": 66,
     "damage": 6,
     "guile": 12,
     "faction": "",
@@ -4950,7 +4950,7 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 121,
+    "maxHealth": 108,
     "damage": 5,
     "guile": 9,
     "faction": "",
@@ -5213,7 +5213,7 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 58,
+    "maxHealth": 52,
     "damage": 5,
     "guile": 12,
     "faction": "",
