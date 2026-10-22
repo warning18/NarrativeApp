@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.525.0+561]
+
+- Four events for the Glass Shore: the glassed dunes, a wrecked hull, a well from a drowned coast and the pull of the tear (not drawn yet).
+
 ## [1.524.0+560]
 
 Wave 17 UX, item 5: the party's own faces, as a stand-in until the user's sprite art arrives.
