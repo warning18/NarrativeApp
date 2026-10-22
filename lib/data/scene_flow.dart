@@ -23,6 +23,9 @@ const int maxPassThrough = 2;
 /// are carried along.
 bool isPlainGoOn(StoryChoice choice) =>
     !choice.isEnding &&
+    // A way back to the camp leads where the party camps, not to its
+    // next_id: a stop (see camp_errands.dart).
+    !choice.returnToCamp &&
     choice.nextId.isNotEmpty &&
     choice.goldMod == 0 &&
     choice.alignmentMod == 0 &&

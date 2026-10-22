@@ -79,9 +79,9 @@
   "whole_web": {
     "achievementID": "whole_web",
     "achievementName": "The Whole Web",
-    "description": "Settle all eight intrigues of the coast.",
+    "description": "Settle all nine intrigues of the coast.",
     "achievementName_fr": "Toute la toile",
-    "description_fr": "Dénouez les huit intrigues de la côte."
+    "description_fr": "Dénouez les neuf intrigues de la côte."
   },
   "time_turned": {
     "achievementID": "time_turned",
