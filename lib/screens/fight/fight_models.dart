@@ -484,10 +484,6 @@ class _FightLength {
   String? leaderKey;
   bool packBroken = false;
 
-  /// A Rout's captain has fallen and the rest have had their chance to
-  /// flee (fight_goal.dart `routFleeChance`).
-  bool routed = false;
-
   /// How many heals [memberId] has given this fight (for the fight screen's
   /// fatigue mark; nothing is counted).
   int healsBy(String memberId) => _heals[memberId] ?? 0;

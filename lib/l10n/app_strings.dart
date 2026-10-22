@@ -7715,8 +7715,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Déroute',
   },
   'goal_rout_desc': {
-    AppLanguage.en: 'Bring down their captain and the rest may flee.',
-    AppLanguage.fr: 'Abattez leur capitaine et les autres peuvent s’enfuir.',
+    AppLanguage.en: 'Bring down their captain and the rest flee.',
+    AppLanguage.fr: 'Abattez leur capitaine et les autres s’enfuient.',
   },
   'goal_subdue': {
     AppLanguage.en: 'Subdue',
@@ -7886,9 +7886,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'parry_tip': {
     AppLanguage.en:
-        'Set this guard on one enemy’s coming blow: it counts half again (just once against a pack), and a blow it stops is answered.',
+        'Set this guard on one enemy’s coming blow: it counts half again, and a blow it stops is answered.',
     AppLanguage.fr:
-        'Placez cette garde sur le prochain coup d’un ennemi : elle compte une fois et demie (une seule fois face à une meute), et un coup arrêté net reçoit une riposte.',
+        'Placez cette garde sur le prochain coup d’un ennemi : elle compte une fois et demie, et un coup arrêté net reçoit une riposte.',
   },
   'parry_set_log': {
     AppLanguage.en: '{name} readies a parry against {enemy} ({n}).',

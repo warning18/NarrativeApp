@@ -74,24 +74,12 @@ void main() {
       const trials = 4000;
       for (var i = 0; i < trials; i++) {
         if (!rollFightGoal(
-                eligible: true, enemyCount: 1, canYield: true, random: random)
+                eligible: true, enemyCount: 2, canYield: false, random: random)
             .isSlay) {
           goals++;
         }
       }
       expect(goals / trials, closeTo(fightGoalChance, 0.04));
-      // Wave 17: a pack fight asks for one half as often.
-      var packGoals = 0;
-      for (var i = 0; i < trials; i++) {
-        if (!rollFightGoal(
-                eligible: true, enemyCount: 2, canYield: false, random: random)
-            .isSlay) {
-          packGoals++;
-        }
-      }
-      expect(packGoals / trials, closeTo(packGoalChance, 0.03));
-      expect(fightGoalChanceFor(1), fightGoalChance);
-      expect(fightGoalChanceFor(3), packGoalChance);
     });
 
     test('a pack holds or routs; a lone person may be subdued; a beast not',
@@ -126,18 +114,13 @@ void main() {
           FightGoal.slay);
     });
 
-    test('a hold lasts four turns more than the foes: six against a pair', () {
-      expect(holdRoundsFor(2), 6);
-      expect(holdRoundsFor(3), 7);
-      expect(holdRoundsFor(4), 8);
+    test('a hold lasts four turns against a pair, five against more', () {
+      expect(holdRoundsFor(2), 4);
+      expect(holdRoundsFor(3), 5);
       final goal = FightGoal(FightGoalKind.hold, rounds: holdRoundsFor(2));
-      expect(holdComplete(goal, 5), isFalse);
-      expect(holdComplete(goal, 6), isTrue);
+      expect(holdComplete(goal, 3), isFalse);
+      expect(holdComplete(goal, 4), isTrue);
       expect(holdComplete(FightGoal.slay, 99), isFalse);
-    });
-
-    test('when a Rout\'s captain falls, half the rest flee', () {
-      expect(routFleeChance, 0.5);
     });
 
     test('the captain is the sturdiest, the first of equals', () {
@@ -158,7 +141,7 @@ void main() {
           fightGoalFromName('subdue'), const FightGoal(FightGoalKind.subdue));
       expect(fightGoalFromName('hold:5'),
           const FightGoal(FightGoalKind.hold, rounds: 5));
-      expect(fightGoalFromName('hold', enemyCount: 3)!.rounds, 7);
+      expect(fightGoalFromName('hold', enemyCount: 3)!.rounds, 5);
       expect(fightGoalFromName('nonsense'), isNull);
       expect(fightGoalFromName(null), isNull);
     });

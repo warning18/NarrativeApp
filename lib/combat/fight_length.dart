@@ -8,21 +8,13 @@
 //   [healFatigueStep] less than the one before, never under
 //   [healFatigueFloor] (what made a healer's fights endless).
 // - Execute: a foe struck this round and left under [executeShare] of its
-//   health falls (never a boss). In a pack fight only the last foe
-//   standing does ([executesInFight], wave 17).
+//   health falls (never a boss).
 // - Morale: a hurt foe (under [moraleFleeShare]) may flee, at
 //   [moraleFleeChance] a round; a fled foe pays part of its spoils, as a
-//   Skittish one does. Only a lone foe wavers: a pack holds its nerve
-//   ([moraleFleeChanceFor], wave 17).
+//   Skittish one does.
 // - The pack breaks: when a pack's leader (its biggest, see
-//   [packLeaderIndex]) falls, each other foe flees at [packBreakChance],
-//   but the last of the pack stands, cornered ([cornered], wave 17).
+//   [packLeaderIndex]) falls, each other foe flees at [packBreakChance].
 //   Neither in a boss's fight: its escort stands by it.
-//
-// Wave 17 made those rules less kind on pack fights: on the real walk the
-// clash rules had made every chapter 10 to 23 points easier a try, most of
-// it pairs that fled or fell to the execute line before the party had
-// earned it (docs/simulation/clash-balance-real-walk.md).
 // - The Tide: from round [tideStartRound], blows grow each round, the
 //   party's by [tidePartyStep], the enemies' by [tideEnemyStep] (by
 //   [tideBossEnemyStep] in a boss's fight). A boss whose record sets
@@ -144,32 +136,10 @@ bool executes(
         {required int health, required int maxHealth, bool boss = false}) =>
     !boss && health > 0 && health < maxHealth * executeShare;
 
-/// [executes], in a fight that began with [foes] foes of which [standing]
-/// still stand: in a pack fight only the last one standing falls to the
-/// line (wave 17).
-bool executesInFight(
-        {required int health,
-        required int maxHealth,
-        required int foes,
-        required int standing,
-        bool boss = false}) =>
-    (foes < 2 || standing <= 1) &&
-    executes(health: health, maxHealth: maxHealth, boss: boss);
-
 /// Under this share of its health, a foe that isn't a boss may flee, at
 /// [moraleFleeChance] each round.
 const double moraleFleeShare = 0.25;
 const double moraleFleeChance = 0.5;
-
-/// The chance a wavering foe flees each round, in a fight that began with
-/// [foes] foes: only a lone foe wavers; a pack holds its nerve (wave 17).
-double moraleFleeChanceFor(int foes) => foes >= 2 ? 0 : moraleFleeChance;
-
-/// Whether the foes of a fight that began with [foes] foes, [standing] of
-/// them still up, are down to the last of a pack: it is cornered, and
-/// neither breaks nor flees (wave 17).
-bool cornered({required int foes, required int standing}) =>
-    foes >= 2 && standing <= 1;
 
 /// Whether a foe at [health] of [maxHealth] wavers.
 bool wavers({required int health, required int maxHealth}) =>

@@ -11,25 +11,15 @@ extension _FightGoals on _FightScreenState {
     switch (_goal.kind) {
       case FightGoalKind.rout:
         final captain = _enemies.where((e) => e.isCaptain).firstOrNull;
-        if (captain == null || captain.isAlive || _length.routed) return;
+        if (captain == null || captain.isAlive) return;
         final rest = _enemies.where((e) => e.isAlive).toList();
         if (rest.isEmpty) return;
-        // Wave 17: each of the rest flees at routFleeChance; the others
-        // fight on.
-        _length.routed = true;
-        var fled = 0;
         for (final enemy in rest) {
-          if (_random.nextDouble() >= routFleeChance) continue;
           enemy.fled = true;
           enemy.currentHealth = 0;
-          fled++;
         }
-        if (fled == rest.length) {
-          entries.add(
-              _LogEntry(trFor(lang, 'goal_won_rout_log'), _LogKind.victory));
-        } else if (fled > 0) {
-          entries.add(_LogEntry(trFor(lang, 'pack_breaks_log'), _LogKind.info));
-        }
+        entries
+            .add(_LogEntry(trFor(lang, 'goal_won_rout_log'), _LogKind.victory));
       case FightGoalKind.subdue:
         for (final enemy in _enemies) {
           if (!enemy.isAlive || enemy.yielded) continue;
@@ -53,18 +43,11 @@ extension _FightGoals on _FightScreenState {
   /// on its captain, so the pack break leaves it be.
   void _noteFightLength(List<_LogEntry> entries, AppLanguage lang) {
     bool boss(_EnemyMember e) => isBossEnemy(e.enemyId, e.data);
-    // Wave 17: in a pack fight only the last foe standing falls to the
-    // execute line, and the last of a pack is cornered: it neither breaks
-    // nor flees. Only a lone foe wavers.
-    final foes = _enemies.length;
-    int standing() => _enemies.where((e) => e.isAlive).length;
     for (final enemy in _enemies) {
       if (!enemy.isAlive || enemy.damageThisRound <= 0) continue;
-      if (!executesInFight(
+      if (!executes(
           health: enemy.currentHealth,
           maxHealth: enemy.maxHealth,
-          foes: foes,
-          standing: standing(),
           boss: boss(enemy))) {
         continue;
       }
@@ -95,7 +78,6 @@ extension _FightGoals on _FightScreenState {
         if (rest.isNotEmpty) {
           entries.add(_LogEntry(trFor(lang, 'pack_breaks_log'), _LogKind.info));
           for (final e in rest) {
-            if (cornered(foes: foes, standing: standing())) break;
             if (_random.nextDouble() < packBreakChance) flee(e);
           }
         }
@@ -108,8 +90,7 @@ extension _FightGoals on _FightScreenState {
       if (!wavers(health: enemy.currentHealth, maxHealth: enemy.maxHealth)) {
         continue;
       }
-      if (cornered(foes: foes, standing: standing())) continue;
-      if (_random.nextDouble() < moraleFleeChanceFor(foes)) flee(enemy);
+      if (_random.nextDouble() < moraleFleeChance) flee(enemy);
     }
   }
 

@@ -28,30 +28,6 @@ void main() {
     expect(executes(health: 0, maxHealth: 100), isFalse);
   });
 
-  // Wave 17 (docs/simulation/clash-balance-real-walk.md): the rules that
-  // end a fight early are a lone foe's, or the last of a pack's.
-  test('in a pack fight only the last foe standing falls to the line', () {
-    expect(executesInFight(health: 9, maxHealth: 100, foes: 1, standing: 1),
-        isTrue);
-    expect(executesInFight(health: 9, maxHealth: 100, foes: 2, standing: 2),
-        isFalse);
-    expect(executesInFight(health: 9, maxHealth: 100, foes: 3, standing: 1),
-        isTrue);
-    expect(
-        executesInFight(
-            health: 9, maxHealth: 100, foes: 3, standing: 1, boss: true),
-        isFalse);
-  });
-
-  test('a pack holds its nerve, and its last foe is cornered', () {
-    expect(moraleFleeChanceFor(1), moraleFleeChance);
-    expect(moraleFleeChanceFor(2), 0);
-    expect(cornered(foes: 1, standing: 1), isFalse);
-    expect(cornered(foes: 2, standing: 2), isFalse);
-    expect(cornered(foes: 2, standing: 1), isTrue);
-    expect(cornered(foes: 3, standing: 1), isTrue);
-  });
-
   test('a foe under a quarter of its health wavers', () {
     expect(wavers(health: 24, maxHealth: 100), isTrue);
     expect(wavers(health: 25, maxHealth: 100), isFalse);

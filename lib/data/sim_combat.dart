@@ -595,7 +595,7 @@ class SimFightOutcome {
 }
 
 /// Pack-size stat multipliers, the fight screen's own.
-const Map<int, double> _packStatMultipliers = {2: 0.7, 3: 0.6};
+const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
 const int _potionHeal = 6;
 const int _maxRolls = 3;
@@ -1024,15 +1024,11 @@ SimFightOutcome simulateSimFight({
   }
   // The goal's early end: a Rout's fallen captain routs the rest, a
   // Subdue's broken fighter yields. True when the party has won by it.
-  var routed = false;
   bool goalMet() {
     if (goal.kind == FightGoalKind.rout) {
       final captain = ens.where((e) => e.isCaptain).firstOrNull;
-      if (captain != null && !captain.isAlive && !routed) {
-        // Each of the rest flees at routFleeChance; the others fight on.
-        routed = true;
+      if (captain != null && !captain.isAlive) {
         for (final e in ens) {
-          if (e.isAlive && random.nextDouble() >= routFleeChance) continue;
           e.health = 0;
         }
       }
@@ -1661,7 +1657,7 @@ SimFightOutcome simulateSimFight({
           }
         }
         if (mark != null) {
-          mark.parryBlock += parryAmount(result.blockAmount, foes: ens.length);
+          mark.parryBlock += parryAmount(result.blockAmount);
           parried = true;
         }
       }
@@ -1701,16 +1697,13 @@ SimFightOutcome simulateSimFight({
     }
     // The fight-length rules after the hero's blows (fight_length.dart):
     // the execute line, the pack's leader, a hurt foe's nerve.
-    int standing() => ens.where((e) => e.isAlive).length;
     if (on('execute')) {
       for (final e in ens) {
         if (e.isAlive &&
             e.damageThisRound > 0 &&
-            executesInFight(
+            executes(
               health: e.health,
               maxHealth: e.maxHealth,
-              foes: ens.length,
-              standing: standing(),
               boss: isBossEnemy(e.id, e.data),
             )) {
           e.health = 0;
@@ -1731,10 +1724,7 @@ SimFightOutcome simulateSimFight({
       if (lead != null && !ens[lead].isAlive) {
         packBroken = true;
         for (final e in ens) {
-          if (e.isAlive &&
-              !boss(e) &&
-              !cornered(foes: ens.length, standing: standing()) &&
-              random.nextDouble() < packBreakChance) {
+          if (e.isAlive && !boss(e) && random.nextDouble() < packBreakChance) {
             e.health = 0;
           }
         }
@@ -1747,8 +1737,7 @@ SimFightOutcome simulateSimFight({
             // Only people and beasts break (foe_kind.dart).
             (!on('kinds') || canWaver(e.data)) &&
             wavers(health: e.health, maxHealth: e.maxHealth) &&
-            !cornered(foes: ens.length, standing: standing()) &&
-            random.nextDouble() < moraleFleeChanceFor(ens.length)) {
+            random.nextDouble() < moraleFleeChance) {
           e.health = 0;
         }
       }

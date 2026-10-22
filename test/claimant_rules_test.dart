@@ -154,6 +154,6 @@ void main() {
       expect(record['weakTo'], isNotEmpty, reason: id);
     }
     expect((enemies['claimant_tallis'] as Map)['maxHealth'], 77);
-    expect((enemies['claimant_morrow'] as Map)['maxHealth'], 128);
+    expect((enemies['claimant_morrow'] as Map)['maxHealth'], 148);
   });
 }

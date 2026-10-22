@@ -1,4 +1,4 @@
-# What the simulator plays differently from the app (v1.463, v1.500, v1.513, v1.524)
+# What the simulator plays differently from the app (v1.463, v1.500, v1.513, v1.531)
 
 QA's clan-power study (`docs/qa/clan-power-50.md`, "What the simulator does
 not play") listed where the simulator's runs part from the app's. This page
@@ -124,19 +124,12 @@ six clan champions, Brother Clement and the Hollow Court Inquisitor
 The Writ's own silence (doctrines) is unchanged: it was already played.
 `test/sim_tamper_test.dart` checks each rule. In 400 runs (seeds 7, 11,
 23) the boss and profession numbers moved inside the seeds' noise and
-`boss_balance` and `nemesis_quests` pass. On the old 18-table
-`clash_balance` the chapter-2 gap went from 0.03 to 0.13 at its seed; on
-the real walk (v1.524) the tampering moved the mean gap from 0.140 to
-0.116 and chapter 2 from 0.213 to 0.232, and the clash rules' pack change brought it to 0.027
-(see [clash-balance-real-walk.md](clash-balance-real-walk.md)). Landed in
-v1.524 with the claimants' rules
-([claimants-by-profession.md](claimants-by-profession.md)).
+`boss_balance` and `nemesis_quests` pass. Landed in v1.531 with the
+claimants' rules ([claimants-by-profession.md](claimants-by-profession.md));
+the existing `clash_balance` (18 tables, seed 11) passes on v1.530's data.
 
-## v1.524: the claimants' rules and the pack rules
+## v1.531: the claimants' rules
 
 `sim_combat` plays them as the fight screen does, from the same helpers:
 the claimants' Tide cap (`fightTideCap`, enemies.json `tideCap`) and one
-heal (`healsOnce`, `withoutHealMoves`); the pack rules
-(`executesInFight`, `cornered`, `moraleFleeChanceFor`, `routFleeChance`,
-`fightGoalChanceFor`, `holdRoundsFor`, `parryAmount(foes:)`) and the pack
-stats (0.7 / 0.6). Nothing new is left unplayed.
+heal (`healsOnce`, `withoutHealMoves`). Nothing new is left unplayed.

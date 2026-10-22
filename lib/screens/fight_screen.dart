@@ -161,9 +161,8 @@ const double _banterChance = 0.35;
 /// fight winnable for a party at the pack's own chapter level (unscaled,
 /// three chapter-2 heavies were a 0% fight at level 3; at 0.85/0.75 a pair
 /// of mid-tier enemies was still the worst random fight in the game).
-/// Solo fights are never scaled. Wave 17 took them from 0.8/0.7 to 0.7/0.6
-/// when the clash rules stopped ending pack fights early (fight_length.dart).
-const Map<int, double> _packStatMultipliers = {2: 0.7, 3: 0.6};
+/// Solo fights are never scaled.
+const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
 /// A Defend face rolled by the party member an enemy is visibly (see
 /// [telegraphTierFor]) about to hit blocks this many times its face value
