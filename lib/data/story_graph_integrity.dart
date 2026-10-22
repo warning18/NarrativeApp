@@ -86,10 +86,23 @@ StoryGraphReport checkStoryGraphIntegrity(
         node,
   ];
 
+  // Every camp offers the camp errands (see camp_errands.dart), and a way
+  // back to the camp (returnToCamp) reaches whichever camp is current: any
+  // of them.
+  final camps = [
+    for (final node in nodes.values)
+      if (node.settlement?.isCamp ?? false) node.id,
+  ];
+  final errands = [
+    for (final node in nodes.values)
+      if (node.campErrand) node.id,
+  ];
+
   while (queue.isNotEmpty) {
     final id = queue.removeFirst();
     if (!visited.add(id)) continue;
     final node = nodes[id]!;
+    if (node.settlement?.isCamp ?? false) queue.addAll(errands);
 
     final campChapter =
         node.settlement?.isCamp == true ? node.settlement!.chapter : null;
@@ -105,6 +118,10 @@ StoryGraphReport checkStoryGraphIntegrity(
     var hasEnding = false;
     var hasForwardPath = false;
     for (final choice in node.choices) {
+      if (choice.returnToCamp && camps.isNotEmpty) {
+        hasForwardPath = true;
+        queue.addAll(camps);
+      }
       if (choice.isEnding) {
         hasEnding = true;
         hasForwardPath = true;

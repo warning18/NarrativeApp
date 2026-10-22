@@ -59,6 +59,7 @@ class StoryChoice {
     this.noHeal = false,
     this.tutorialFight = false,
     this.luckyDieReveal = false,
+    this.returnToCamp = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -142,6 +143,7 @@ class StoryChoice {
       noHeal: json['noHeal'] as bool? ?? false,
       tutorialFight: json['tutorialFight'] as bool? ?? false,
       luckyDieReveal: json['luckyDieReveal'] as bool? ?? false,
+      returnToCamp: json['returnToCamp'] as bool? ?? false,
     );
   }
 
@@ -388,6 +390,12 @@ class StoryChoice {
 
   bool get travels => travelPlaceId != null && travelPlaceId!.isNotEmpty;
 
+  /// Goes back to the camp the party stands for (a companion's camp errand
+  /// ends with it, see camp_errands.dart): taken, the story goes to the
+  /// current camp of the chapter the party is in, and [nextId] (kept for
+  /// the editor) only when no camp is current yet.
+  final bool returnToCamp;
+
   bool isHiddenFor(Iterable<String> flags) =>
       hideIfFlags.any((flag) => flags.contains(flag)) ||
       showIfFlags.any((flag) => !flags.contains(flag));
@@ -481,6 +489,7 @@ class StoryChoice {
         if (noHeal) 'noHeal': noHeal,
         if (tutorialFight) 'tutorialFight': tutorialFight,
         if (luckyDieReveal) 'luckyDieReveal': luckyDieReveal,
+        if (returnToCamp) 'returnToCamp': returnToCamp,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -570,6 +579,11 @@ class StoryNode {
     this.prompt = '',
     this.promptFr = '',
     this.aboutLabels = const {},
+    this.campErrand = false,
+    this.showIfFlags = const [],
+    this.hideIfFlags = const [],
+    this.campErrandText,
+    this.campErrandTextFr,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -621,8 +635,33 @@ class StoryNode {
                 fr: value['fr']?.toString() ?? '',
               ),
       },
+      campErrand: json['campErrand'] as bool? ?? false,
+      showIfFlags:
+          (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      hideIfFlags:
+          (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      campErrandText: json['campErrandText']?.toString(),
+      campErrandTextFr: json['campErrandText_fr']?.toString(),
     );
   }
+
+  /// A camp errand (a companion's loyalty errand, see camp_errands.dart):
+  /// every chapter camp offers it, after the camp's own choices, while
+  /// [showIfFlags] and [hideIfFlags] let it show. No camp lists it in its
+  /// choices.
+  final bool campErrand;
+
+  /// The flags a [campErrand] waits for, all of them, and the flags that
+  /// retire it, any of them (as a choice's showIfFlags and hideIfFlags).
+  final List<String> showIfFlags;
+  final List<String> hideIfFlags;
+
+  /// What the camp's button for a [campErrand] says; without one, the
+  /// first line of the scene.
+  final String? campErrandText;
+  final String? campErrandTextFr;
 
   /// Where this scene happens (v1.197): a location or district id of
   /// geography.json (see geography.dart), the most specific place there
@@ -908,6 +947,13 @@ class StoryNode {
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
+        if (campErrand) 'campErrand': campErrand,
+        if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,
+        if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
+        if (campErrandText != null && campErrandText!.isNotEmpty)
+          'campErrandText': campErrandText,
+        if (campErrandTextFr != null && campErrandTextFr!.isNotEmpty)
+          'campErrandText_fr': campErrandTextFr,
         if (politicsOnEnter != null)
           'politicsOnEnter': politicsOnEnter!.toJson(),
         if (alignmentEpilogues.isNotEmpty)
