@@ -19,6 +19,27 @@ Wave 16 UX: the ward card and the Journey mark, on Core's warding rules (v1.508)
 ### Touches another session's area
 - None beyond widgets: `roll_power_row.dart` and `weather_chip.dart` are UX's. `test/roll_power_row_test.dart` overrides `wardTargetsProvider` with an empty list.
 
+## [1.512.0+548]
+
+Land crossings for the middle chapters, shaped by who holds the land (wave 16).
+
+### Added
+- **Three new crossings:** the fen after landing at the Drowned Stair (chapter 4), the frost road from the reliquary to the heart (chapter 5), and the climb up the Lantern Cliffs to Candlehold's gates (chapter 7).
+- **The land's ruler:** on the chapter 4 and 5 roads, about one day in three brings the event of the clan that holds the land, as a friend, a neutral or a foe by your standing with it. The road changes hands when the towns around it do. Chapter 7's cliffs stay mild: only the salt wind and the tide stair.
+- A crossing costs about 2–10% health; attempt wins by chapter move by under 1.5 points, every boss inside its band.
+
+### Changed
+- When leaving camp by sea for a place with a crossing, the crossing now plays after the landing.
+
+## [1.511.0+547]
+
+Thirty events for the roads of the middle chapters (not drawn yet).
+
+### Added
+- **18 ruler events** (English and French), one for each main clan and each band of your standing with it (Friend and up, Neutral, Hostile and down): the Dominion’s Writ toll, the Vigil’s checkpoint, the Compact’s forge-cart, the Mire’s reed guide, the Crows’ marked crate, the Penitents’ name wall. Each carries a `ruler` and a `band` for Core’s land routes to pick by.
+- **12 biome events:** frost (the pilgrim’s cairn, the rime fall, the hound track, the bell on the road), fen (the reed lantern, the sucking mud, the drowned cart, the child in the reeds) and sea cliffs (the wrecker’s lamp, the salt wind, the gull colony, the tide stair).
+- Data only: the routes that draw them are Core’s (next).
+
 ## [1.510.0+546]
 
 Wave 16 UX: the land crossing has a backdrop for frost, fen and sea cliffs.

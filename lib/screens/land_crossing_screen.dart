@@ -14,8 +14,10 @@ import '../l10n/app_strings.dart';
 import '../providers/aftermath_provider.dart'
     show lastFightOutcomeProvider, lastFightRetreatedProvider;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/clans_provider.dart' show loadClanData, politicsProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart' show loadGeography;
 import '../providers/player_session_provider.dart';
 import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -57,14 +59,32 @@ Future<bool> runLandCrossing(
   final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
   if (route == null) return true;
+  final known = landEventsFrom(events);
+  final ruler = await crossingRulerOf(ref, route);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
         route: route,
-        events: landEventsFrom(events),
+        events: known,
+        ruler: ruler.clanId,
+        rulers: rulerPool(known, ruler.clanId, ruler.band),
         random: ref.read(landCrossingRandomProvider)),
   ));
   return arrived == true;
+}
+
+/// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
+/// and the band the party's standing with them puts it in.
+Future<({String clanId, RulerBand band})> crossingRulerOf(
+    WidgetRef ref, LandRoute route) async {
+  final geography = await loadGeography(ref);
+  final clans = await loadClanData(ref);
+  final politics = ref.read(politicsProvider);
+  final clanId = landRouteRuler(route, geography, politics);
+  return (
+    clanId: clanId,
+    band: rulerBandFor(politics.tierOf(clanId, clans)),
+  );
 }
 
 /// A land crossing (land_crossing.dart): an event a day, each asking what
@@ -125,11 +145,20 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     super.key,
     required this.route,
     required this.events,
+    this.ruler = '',
+    this.rulers = const [],
     this.random,
   });
 
   final LandRoute route;
   final Map<String, LandEvent> events;
+
+  /// The clan that holds the land crossed (landRouteRuler), '' for no one:
+  /// for the header's colour.
+  final String ruler;
+
+  /// The ruler's events the crossing may meet (rulerPool).
+  final List<String> rulers;
 
   /// Injectable for tests; a fresh stream otherwise.
   final Random? random;
@@ -145,8 +174,9 @@ enum _Phase { event, result, arrived, failed, turnedBack }
 
 class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   late final Random _random = widget.random ?? Random();
-  late final List<String> _drawn =
-      drawCrossing(widget.route, widget.events.keys, random: _random);
+  late final List<String> _drawn = drawCrossing(
+      widget.route, widget.events.keys,
+      random: _random, rulers: widget.rulers);
   var _day = 0;
   var _phase = _Phase.event;
   var _daysSpent = 0;
