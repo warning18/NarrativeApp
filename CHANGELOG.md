@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.515.0+551]
+
+Wave 16 UX: the town at the hour, on Core's `dayPhaseProvider` (v1.506).
+
+### Added
+- **The city plan and the district view follow the hour** (`city_chart_painter.dart`): a warm wash at dawn, none at noon, a dusk glow, a cold night wash. At dusk and night the windows and lanterns of the buildings are lit, and the pins of services that are open glow.
+- The phase comes from `dayPhaseProvider` (the saved watch) through `city_chart_screen.dart` and `journey_screen.dart` (`phase:`); a chart given no phase stays at noon.
+- Picture: `docs/ux-shots/town-at-the-hour.png`. Test: `test/city_hour_test.dart`.
+
+### Touches another session's area
+- `lib/screens/city_chart_screen.dart` and `lib/screens/journey_screen.dart` (shared): one `phase: ref.watch(dayPhaseProvider)` line and its import each.
+
 ## [1.514.0+550]
 
 Wave 16 UX: the ward card and the Journey mark, on Core's warding rules (v1.508).

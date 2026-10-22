@@ -21,6 +21,7 @@ import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/day_phase_provider.dart';
 import '../providers/town_rulers_provider.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_view.dart';
@@ -169,6 +170,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
                   explored: ref.watch(foundDistrictsProvider),
                   rulers: cityChartRulersOf(
                       live.chart, ref.watch(townRulersProvider)),
+                  phase: ref.watch(dayPhaseProvider),
                   onWay: (way) {
                     final i = int.tryParse(way.id);
                     if (i != null && i < live.choices.length) {

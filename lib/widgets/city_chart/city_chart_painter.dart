@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../../data/map_charts.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
 import '../journey_banner_pin.dart' show PinBanner, paintBannerPin;
+import '../../data/journey_rules.dart' show DayPhase;
 import 'city_chart.dart';
 
 /// How far in (the view's scale over the fitted one) the lots grow roofs,
@@ -37,6 +38,7 @@ class CityChartPainter extends CustomPainter {
     this.banners = const {},
     this.bannersDark = true,
     this.pulse = 0,
+    this.phase = DayPhase.day,
   });
 
   final CityChart chart;
@@ -79,6 +81,10 @@ class CityChartPainter extends CustomPainter {
 
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
+
+  /// The part of the day (the world clock): dawn and dusk wash the town in
+  /// warm light, night in deep blue with its windows and lanterns lit.
+  final DayPhase phase;
 
   double get zoom => scale / fitted;
   bool get detailed => zoom >= cityChartDetailZoom;
@@ -321,11 +327,48 @@ class CityChartPainter extends CustomPainter {
       canvas.drawRect(Rect.fromCenter(center: t, width: 10, height: 10), fill);
     }
 
+    // The hour: a wash over the town, and its lights at dusk and night.
+    _hour(canvas);
+
     // Names and pins sit on the plan but are drawn at the screen's size.
     _labels(canvas);
     _services(canvas);
     _pins(canvas);
     canvas.restore();
+  }
+
+  /// The town at the hour: nothing by day; a warm thin wash at dawn, a
+  /// violet one at dusk, a deep blue one at night. Dusk and night light some
+  /// of the windows (most at night) and the lanterns.
+  void _hour(Canvas canvas) {
+    if (phase == DayPhase.day) return;
+    final wash = switch (phase) {
+      DayPhase.dawn => const Color(0xFFF2A36B).withValues(alpha: 0.10),
+      DayPhase.dusk => const Color(0xFF7A4A7C).withValues(alpha: 0.20),
+      _ => const Color(0xFF0B1230).withValues(alpha: 0.42),
+    };
+    canvas.drawRect(chart.bounds.inflate(4000), Paint()..color = wash);
+    if (phase == DayPhase.dawn) return;
+    final night = phase == DayPhase.night;
+    const warm = Color(0xFFFFD27A);
+    final glow = Paint()..color = warm.withValues(alpha: night ? 0.28 : 0.16);
+    final lit = Paint()..color = warm.withValues(alpha: 0.95);
+    for (final l in chart.lanterns) {
+      canvas.drawCircle(l, night ? 11 : 8, glow);
+      canvas.drawCircle(l, 1.8, lit);
+    }
+    var i = 0;
+    for (final b in chart.buildings) {
+      if (b.quiet) continue;
+      i++;
+      // Dusk: one house in three has a light; night: two in three.
+      if (!(night ? i % 3 != 0 : i % 3 == 0)) continue;
+      if (!_known(chart.districts[b.district].id)) continue;
+      canvas.drawRect(
+          Rect.fromCenter(
+              center: b.at.translate(0, 1), width: 3.6, height: 4.4),
+          lit);
+    }
   }
 
   void _marks(Canvas canvas, Paint fill, Paint stroke, bool dark) {
@@ -522,6 +565,15 @@ class CityChartPainter extends CustomPainter {
               width: serviceRadius * 2,
               height: serviceRadius * 2),
           const Radius.circular(5));
+      // An open service glows at dusk and night.
+      if (s.opens && (phase == DayPhase.dusk || phase == DayPhase.night)) {
+        canvas.drawCircle(
+            Offset.zero,
+            serviceRadius + 9,
+            Paint()
+              ..color = const Color(0xFFFFD27A)
+                  .withValues(alpha: phase == DayPhase.night ? 0.38 : 0.22));
+      }
       canvas.drawRRect(
           box.shift(const Offset(0, 1.5)), Paint()..color = Colors.black26);
       canvas.drawRRect(box,
@@ -727,5 +779,6 @@ class CityChartPainter extends CustomPainter {
       old.numbers != numbers ||
       !mapEquals(old.banners, banners) ||
       old.bannersDark != bannersDark ||
-      old.pulse != pulse;
+      old.pulse != pulse ||
+      old.phase != phase;
 }

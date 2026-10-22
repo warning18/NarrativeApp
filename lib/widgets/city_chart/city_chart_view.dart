@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/journey_rules.dart' show DayPhase;
 import '../../data/map_charts.dart';
 import '../../data/world_map.dart' show MapLook;
 import '../journey_banner_pin.dart' show PinBanner;
@@ -78,6 +79,7 @@ class CityChartView extends StatefulWidget {
     this.numbers = const {},
     this.banners = const {},
     this.bannersDark = true,
+    this.phase = DayPhase.day,
   });
 
   /// A number on each pin by way id (the host's list rows carry the same).
@@ -86,6 +88,9 @@ class CityChartView extends StatefulWidget {
   /// Ways that hang as a banner (by way id) rather than a round pin.
   final Map<String, PinBanner> banners;
   final bool bannersDark;
+
+  /// The part of the day the town is drawn at (the world clock's).
+  final DayPhase phase;
 
   /// A district to open on (and to frame again whenever [focus] or
   /// [focusToken] changes); null shows the whole city. The Journey hosts the
@@ -322,6 +327,7 @@ class _CityChartViewState extends State<CityChartView>
         banners: widget.banners,
         bannersDark: widget.bannersDark,
         pulse: pulse,
+        phase: widget.phase,
       );
 
   void _tap(Offset at) {
