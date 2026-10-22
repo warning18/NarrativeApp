@@ -11,8 +11,12 @@ import 'dart:math';
 
 import 'camp_rolls.dart';
 import 'offers.dart';
+import 'road_wards.dart';
 import 'signs.dart' show SignRarity;
 import 'training.dart';
+
+/// How long the walk wards the nemesis: 6 roads, 2 charges.
+const int simWardRoads = 6;
 
 class SimRolls {
   SimRolls(this.random);
@@ -27,9 +31,14 @@ class SimRolls {
   int raiseProgress = 0;
   List<RollBan> bans = const [];
 
-  /// What the walk used: `rerolls`, `bans`, `raises` (the sim JSON's
-  /// `campRolls`).
-  final Map<String, int> used = {'rerolls': 0, 'bans': 0, 'raises': 0};
+  /// What the walk used: `rerolls`, `bans`, `raises`, and `wards` (the
+  /// road's, road_wards.dart; the sim JSON's `campRolls`).
+  final Map<String, int> used = {
+    'rerolls': 0,
+    'bans': 0,
+    'raises': 0,
+    'wards': 0,
+  };
 
   void _use(String key) => used[key] = (used[key] ?? 0) + 1;
 
@@ -72,6 +81,35 @@ class SimRolls {
   }
 
   Set<String> banned(RollBanOn on) => bannedIdsOf(bans, on);
+
+  // --- The road's wards (road_wards.dart) ---------------------------------
+
+  /// The policy on a road at rest, before the hunters roll: with 2 Banish
+  /// charges or more, the [nemesis] (when it is among the [hunting] clans
+  /// and not warded yet) warded for [simWardRoads] roads.
+  void wardNemesis(String nemesis, Iterable<String> hunting) {
+    final cost = wardCostOf(simWardRoads);
+    if (!built.contains(RollPower.banish) ||
+        banish < 2 ||
+        banish < cost ||
+        nemesis.isEmpty ||
+        !hunting.contains(nemesis) ||
+        warded.contains(nemesis)) {
+      return;
+    }
+    bans = withWard(bans, nemesis, simWardRoads);
+    banish -= cost;
+    _use('wards');
+  }
+
+  /// The clans warded now.
+  Set<String> get warded => wardedClansOf(bans);
+
+  /// A road at rest gone by: the wards count down.
+  void roadAtRest() {
+    if (!bans.any((b) => b.on == RollBanOn.road)) return;
+    bans = afterRoadAtRest(bans).bans;
+  }
 
   // --- Stat picks ------------------------------------------------------------
 

@@ -30,9 +30,18 @@ const double rivalHunterChanceHunted = 0.08;
 /// sworn clan's rivals, a Hostile one [rivalHunterChanceHostile], a
 /// Hunted one [rivalHunterChanceHunted]; and the nemesis, sworn or not,
 /// at [rivalHunterChanceHunted] ([rivalHunterChanceHostile] for the
-/// story's own, [PoliticsState.isStoryNemesis]).
-Map<String, double> rivalHunts(PoliticsState state, ClanData data) {
+/// story's own, [PoliticsState.isStoryNemesis]). The clans [warded] at
+/// the Warding Cairn (road_wards.dart) hunt nobody while their ward holds.
+Map<String, double> rivalHunts(PoliticsState state, ClanData data,
+    {Set<String> warded = const {}}) {
   final sworn = state.swornFactionId;
+  return {
+    for (final MapEntry(:key, :value) in _hunts(state, data, sworn).entries)
+      if (!warded.contains(key)) key: value,
+  };
+}
+
+Map<String, double> _hunts(PoliticsState state, ClanData data, String sworn) {
   return {
     if (sworn.isNotEmpty)
       for (final rival in rivalsOf(sworn, state, data))
@@ -54,10 +63,14 @@ Map<String, double> rivalHunts(PoliticsState state, ClanData data) {
 }
 
 /// The odds a rival's hunter comes on a road: [rivalHunts] summed, up to
-/// [hunterChanceCap].
-double rivalHunterChance(PoliticsState state, ClanData data) => min(
-    hunterChanceCap,
-    rivalHunts(state, data).values.fold(0.0, (sum, chance) => sum + chance));
+/// [hunterChanceCap], the [warded] clans left out.
+double rivalHunterChance(PoliticsState state, ClanData data,
+        {Set<String> warded = const {}}) =>
+    min(
+        hunterChanceCap,
+        rivalHunts(state, data, warded: warded)
+            .values
+            .fold(0.0, (sum, chance) => sum + chance));
 
 /// [clanId]'s hunters in [enemies] for [chapter]: tier 1 through chapter
 /// 2, either tier from chapter 3, none before its `minChapter`.
@@ -140,7 +153,8 @@ StoryNode? buildRivalAmbushNode({
 /// A rival's hunter on this road, or null (the common case): sworn, at
 /// [rivalHunterChance], a fighter of one of the [rivalHunts] (drawn by
 /// their odds). Rolled where an alignment hunter is, after it, and
-/// sharing its [enabled] toggle and cooldown ([cooledDown]).
+/// sharing its [enabled] toggle and cooldown ([cooledDown]). A clan
+/// [warded] at the Warding Cairn has no roll while its ward holds.
 List<StoryNode>? maybeRivalHunter({
   required PoliticsState politics,
   required ClanData data,
@@ -150,11 +164,15 @@ List<StoryNode>? maybeRivalHunter({
   bool enabled = true,
   bool cooledDown = true,
   Iterable<String> flags = const [],
+  Set<String> warded = const {},
 }) {
   if (!enabled || !cooledDown) return null;
-  final hunts = rivalHunts(politics, data);
+  final hunts = rivalHunts(politics, data, warded: warded);
   if (hunts.isEmpty) return null;
-  if (random.nextDouble() >= rivalHunterChance(politics, data)) return null;
+  if (random.nextDouble() >=
+      rivalHunterChance(politics, data, warded: warded)) {
+    return null;
+  }
   final total = hunts.values.fold(0.0, (sum, chance) => sum + chance);
   var pick = random.nextDouble() * total;
   var clanId = hunts.keys.last;
