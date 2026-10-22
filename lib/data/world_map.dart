@@ -396,6 +396,12 @@ final List<Landmark> worldMapLandmarks = [
       'loyal_grosh',
       'loyal_tobin',
       'loyal_malrik',
+      'names_clerk',
+      'names_throne',
+      'names_host',
+      'names_kin',
+      'names_debate',
+      'names_choice',
     ],
   ),
   const Landmark(

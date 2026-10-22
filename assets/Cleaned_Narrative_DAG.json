@@ -9495,6 +9495,21 @@
         "flag": "stitcher_kept",
         "en": "There was a second way back through the tear, a doorframe of glowing thread at the edge of the grey, sewn by a woman I had not given away. I did not need it. I knew where it was.",
         "fr": "Il y avait un second chemin de retour à travers la déchirure, un chambranle de fil luisant au bord du gris, cousu par une femme que je n’avais pas dénoncée. Je n’en avais pas besoin. Je savais où il était."
+      },
+      {
+        "flag": "names_read",
+        "en": "Every name of the taken had been read aloud on the shingle, and I carried them in my ears like the sound of the tide.",
+        "fr": "Chaque nom des disparus avait été lu à voix haute sur les galets, et je les portais dans mes oreilles comme le bruit de la marée."
+      },
+      {
+        "flag": "names_burned",
+        "en": "The pages were ash in the cove’s brazier and the names were still cut into the stone behind the Throne. Nobody owed the dead, and nobody had forgotten them.",
+        "fr": "Les pages étaient en cendres dans le brasero de la crique et les noms restaient taillés dans la pierre derrière le Trône. Nul ne devait rien aux morts, et nul ne les avait oubliés."
+      },
+      {
+        "flag": "names_carried",
+        "en": "The list was in my coat, unread. It weighed what the dead weigh.",
+        "fr": "La liste était dans mon manteau, sans avoir été lue. Elle pesait ce que pèsent les morts."
       }
     ],
     "noDetour": true,
@@ -27495,5 +27510,415 @@
     ],
     "prompt": "What do you do with Malrik’s book?",
     "prompt_fr": "Que faites-vous du livre de Malrik ?"
+  },
+  "names_clerk": {
+    "id": "names_clerk",
+    "campErrand": true,
+    "showIfFlags": [
+      "banner_five"
+    ],
+    "hideIfFlags": [
+      "plot_names_1"
+    ],
+    "campErrandText": "Meet the clerk with the satchel of names",
+    "campErrandText_fr": "Rencontrer le clerc à la sacoche de noms",
+    "description": "A clerk had come down from Candlehold to the cove, thin, ink to the wrists, with a satchel on his back that he carried in front of him through the camp like a man carrying a child. He asked for the one who led the Eel, and when I came he did not bow. He opened the satchel on a barrel.\n\nPages. Hundreds of them, copied close, in a hand that never wavered. **Names, and nothing else**: a column, a line, a column. Three thousand nine hundred and six, he said. He had been copying them for a year, from the back of the Lantern Throne, where somebody had cut them into the stone in an order no clerk could explain.\n\n“**They are the ones the tear took**,” he said. “Nobody remembers cutting them. I would like to read them aloud, once, before someone decides I should not.”",
+    "description_fr": "Un clerc était descendu de Candlehold jusqu’à la crique, maigre, de l’encre jusqu’aux poignets, avec sur le dos une sacoche qu’il portait devant lui à travers le camp comme un homme porte un enfant. Il demanda celui qui menait l’Eel, et quand j’arrivai il ne s’inclina pas. Il ouvrit la sacoche sur un tonneau.\n\nDes pages. Des centaines, copiées serré, d’une main qui ne tremblait jamais. **Des noms, rien d’autre** : une colonne, une ligne, une colonne. Trois mille neuf cent six, dit-il. Il les copiait depuis un an, sur le dos du Trône de la Lanterne, où quelqu’un les avait taillés dans la pierre dans un ordre qu’aucun clerc ne savait expliquer.\n\n« **Ce sont ceux que la déchirure a pris**, dit-il. Personne ne se souvient de les avoir taillés. J’aimerais les lire à voix haute, une fois, avant que quelqu’un décide que je ne le dois pas. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Give him a corner of the sail-loft to copy in",
+        "text_fr": "Lui donner un coin de la voilerie pour copier",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 1
+          },
+          "standing": {
+            "penitents": 5
+          }
+        }
+      },
+      {
+        "text": "Tell him the camp has dead enough already",
+        "text_fr": "Lui dire que le camp a déjà assez de morts",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 1
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you tell the clerk?",
+    "prompt_fr": "Que dites-vous au clerc ?"
+  },
+  "names_throne": {
+    "id": "names_throne",
+    "campErrand": true,
+    "showIfFlags": [
+      "plot_names_1"
+    ],
+    "hideIfFlags": [
+      "plot_names_2"
+    ],
+    "campErrandText": "Ask the clerk where the names end",
+    "campErrandText_fr": "Demander au clerc où s’arrêtent les noms",
+    "description": "The clerk had been at the sail-loft three days when he asked me to come and see the rubbing. He had pinned it to the wall, a sheet of sailcloth the length of a man, black with charcoal, and stood in front of it with his hands behind him as if it might bite.\n\n**The names ran down the sheet in the order the tear had taken them**, he said: the first, a Wickwarden, on the night of the Long Night itself, forty-nine years gone; then a few a year, then hundreds in a single autumn, and the last, a fisher's child, only this spring.\n\nHe put one finger below the last line. “**There is room after it**,” he said. “A hand's breadth of bare stone. Somebody left the place ready.”",
+    "description_fr": "Le clerc était à la voilerie depuis trois jours quand il me demanda de venir voir le frottis. Il l’avait épinglé au mur, une feuille de toile à voile longue comme un homme, noircie au charbon, et se tenait devant, les mains derrière le dos, comme si elle pouvait mordre.\n\n**Les noms descendaient la feuille dans l’ordre où la déchirure les avait pris**, dit-il : le premier, un Garde-Mèches, la nuit même de la Longue Nuit, il y a quarante-neuf ans ; puis quelques-uns par an, puis des centaines en un seul automne, et le dernier, l’enfant d’un pêcheur, ce printemps seulement.\n\nIl posa un doigt sous la dernière ligne. « **Il y a de la place après**, dit-il. Une largeur de main de pierre nue. Quelqu’un a laissé l’endroit prêt. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "uncanny",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Ask him to copy the bare stone too",
+        "text_fr": "Lui demander de copier aussi la pierre nue",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 2
+          },
+          "standing": {
+            "choir": 5
+          }
+        }
+      },
+      {
+        "text": "Tell him to stop at the last name",
+        "text_fr": "Lui dire de s’arrêter au dernier nom",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you ask the clerk to do?",
+    "prompt_fr": "Que demandez-vous au clerc ?",
+    "flag_callbacks": [
+      {
+        "flag": "plot_names_1",
+        "en": "The clerk had taken the corner of the sail-loft I offered and filled it with pages.",
+        "fr": "Le clerc avait pris le coin de la voilerie que je lui avais offert, et l’avait rempli de pages."
+      }
+    ]
+  },
+  "names_host": {
+    "id": "names_host",
+    "campErrand": true,
+    "showIfFlags": [
+      "on_throne",
+      "plot_names_2"
+    ],
+    "hideIfFlags": [
+      "plot_names_3"
+    ],
+    "campErrandText": "Hear the Host argue over the names",
+    "campErrandText_fr": "Entendre l’Ost débattre des noms",
+    "description": "The Host had learned of the list the way armies learn of everything: from a cook. By the second night it was the only thing anyone in the sail-loft wanted to argue about.\n\n**Should the names be read aloud before the crossing, or not**. The Penitents said the dead had waited forty-nine years to be heard and the Host would cross with their weight on it or not at all. The giants said a name read is a name bound, and that a thing bound was not easily put down. The Tide-Kin said nothing and kept their eyes on the clerk's satchel. The oni asked only whether any of the names was an oni's, which no one could answer.\n\nEveryone looked at me, because I held the Throne the names were cut into.",
+    "description_fr": "L’Ost avait appris l’existence de la liste comme les armées apprennent tout : par un cuisinier. Dès la deuxième nuit, c’était la seule chose dont on voulût discuter à la voilerie.\n\n**Fallait-il lire les noms à voix haute avant la traversée, ou non**. Les Pénitents disaient que les morts avaient attendu quarante-neuf ans d’être entendus et que l’Ost traverserait avec leur poids sur lui, ou ne traverserait pas. Les géants disaient qu’un nom lu est un nom lié, et qu’une chose liée ne se défait pas aisément. Les Gens de la Marée ne disaient rien et gardaient les yeux sur la sacoche du clerc. Les oni demandaient seulement si l’un des noms était celui d’un oni, ce que personne ne put dire.\n\nTout le monde me regarda, parce que je tenais le Trône dans lequel les noms étaient taillés.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Let the Host argue it out for a night",
+        "text_fr": "Laisser l’Ost en débattre une nuit",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 3
+          },
+          "standing": {
+            "giants": 5
+          }
+        }
+      },
+      {
+        "text": "Say the list is yours to decide, and only yours",
+        "text_fr": "Dire que la liste vous revient, à vous seul",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 3
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "prompt": "How do you answer the Host?",
+    "prompt_fr": "Que répondez-vous à l’Ost ?",
+    "flag_callbacks": [
+      {
+        "flag": "plot_names_2",
+        "en": "The clerk had been told what he was to copy, and had pinned the result to the wall.",
+        "fr": "On avait dit au clerc ce qu’il devait copier, et il en avait épinglé le résultat au mur."
+      }
+    ]
+  },
+  "names_kin": {
+    "id": "names_kin",
+    "campErrand": true,
+    "showIfFlags": [
+      "plot_names_3"
+    ],
+    "hideIfFlags": [
+      "plot_names_4"
+    ],
+    "campErrandText": "Stand with the Tide-Kin matriarch at the satchel",
+    "campErrandText_fr": "Rester auprès de la matriarche des Gens de la Marée",
+    "description": "The Tide-Kin matriarch came to the clerk's table in the morning, alone, in a drowned island's long grey coat, and stood in front of the satchel for as long as it takes a tide to turn. Nobody moved. The clerk had stopped writing.\n\nThen she asked, in a voice that was not hers, whether the list was in the order of the taking. He said it was. She asked for the autumn of the year the sea had risen over the low islands.\n\nHe found it. His finger went down the column and stopped, and I saw her read the name from where she stood, upside down, **the way you read the name of your own child on any page**. She did not touch it. “**Read it to me**,” she said to me. “Not to the Host. To me.”",
+    "description_fr": "La matriarche des Gens de la Marée vint à la table du clerc au matin, seule, dans le long manteau gris d’une île noyée, et resta devant la sacoche le temps qu’il faut à une marée pour tourner. Personne ne bougea. Le clerc avait cessé d’écrire.\n\nPuis elle demanda, d’une voix qui n’était pas la sienne, si la liste suivait l’ordre des prises. Il dit que oui. Elle demanda l’automne de l’année où la mer était montée sur les îles basses.\n\nIl le trouva. Son doigt descendit la colonne et s’arrêta, et je la vis lire le nom de là où elle se tenait, à l’envers, **comme on lit le nom de son propre enfant sur n’importe quelle page**. Elle n’y toucha pas. « **Lisez-le-moi**, me dit-elle. Pas à l’Ost. À moi. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Read her daughter’s name to her, alone",
+        "text_fr": "Lui lire le nom de sa fille, à elle seule",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 4
+          },
+          "standing": {
+            "tidekin": 5
+          }
+        }
+      },
+      {
+        "text": "Tell her it will be read for all, in its turn",
+        "text_fr": "Lui dire qu’il sera lu pour tous, à son tour",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 4
+          },
+          "standing": {
+            "penitents": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you do for the matriarch?",
+    "prompt_fr": "Que faites-vous pour la matriarche ?",
+    "flag_callbacks": [
+      {
+        "flag": "plot_names_3",
+        "en": "The Host had argued it out through the night, and the sail-loft smelled of cold tea and stubbornness.",
+        "fr": "L’Ost en avait débattu toute la nuit, et la voilerie sentait le thé froid et l’obstination."
+      }
+    ]
+  },
+  "names_debate": {
+    "id": "names_debate",
+    "campErrand": true,
+    "showIfFlags": [
+      "plot_names_4"
+    ],
+    "hideIfFlags": [
+      "plot_names_5"
+    ],
+    "campErrandText": "Settle the night’s quarrel over the list",
+    "campErrandText_fr": "Trancher la querelle de la nuit sur la liste",
+    "description": "By the last night before the crossing the quarrel had two sides and a brazier between them. The Penitents stood on one with their cloth of names; on the other, the Pit’s clause-keepers, who held that a name read aloud was a debt taken on, and that the Host owed the dead nothing it had not been billed for.\n\nThe clerk's satchel lay on a barrel between them and nobody had the courage to touch it. The brazier was lit. I did not need to ask what it was for.\n\n“We will cross either way,” said the Pit's oldest. “What we carry is the question. A list we have heard is a weight. A list we have burned is only ash.” The Penitents said nothing. They had carried ash before.",
+    "description_fr": "La dernière nuit avant la traversée, la querelle avait deux camps et un brasero entre eux. Les Pénitents se tenaient d’un côté avec leur étoffe de noms ; de l’autre, les gardiens de clauses de la Fosse, qui soutenaient qu’un nom lu à voix haute est une dette contractée, et que l’Ost ne devait aux morts rien qu’on ne lui ait facturé.\n\nLa sacoche du clerc reposait sur un tonneau entre eux, et nul n’avait le courage d’y toucher. Le brasero était allumé. Je n’eus pas besoin de demander à quoi il servait.\n\n« Nous traverserons de toute façon, dit le plus ancien de la Fosse. Ce que nous portons, voilà la question. Une liste entendue est un poids. Une liste brûlée n’est que de la cendre. » Les Pénitents ne dirent rien. Ils avaient déjà porté de la cendre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Hear the Penitents first",
+        "text_fr": "Entendre d’abord les Pénitents",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 5
+          },
+          "standing": {
+            "penitents": 5
+          }
+        }
+      },
+      {
+        "text": "Hear the Pit’s oldest first",
+        "text_fr": "Entendre d’abord le plus ancien de la Fosse",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "plot_names_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "stage": 5
+          },
+          "standing": {
+            "pit": 5
+          }
+        }
+      }
+    ],
+    "prompt": "Whom do you hear first?",
+    "prompt_fr": "Qui entendez-vous en premier ?",
+    "flag_callbacks": [
+      {
+        "flag": "plot_names_4",
+        "en": "The matriarch had left the sail-loft at dawn, her grey coat dark to the knee, and had not said whom she thanked.",
+        "fr": "La matriarche avait quitté la voilerie à l’aube, son manteau gris sombre jusqu’aux genoux, sans dire qui elle remerciait."
+      }
+    ]
+  },
+  "names_choice": {
+    "id": "names_choice",
+    "campErrand": true,
+    "showIfFlags": [
+      "plot_names_5"
+    ],
+    "hideIfFlags": [
+      "names_read",
+      "names_burned",
+      "names_carried"
+    ],
+    "campErrandText": "Decide what becomes of the names",
+    "campErrandText_fr": "Décider du sort des noms",
+    "description": "I stood at the barrel with the satchel under my hand and the whole Host watching, and for a moment I understood why the Throne had been carved with them. It was not a record. It was **a question left for whoever sat there**.\n\nIf I read them, it would take two days, and the Host would cross the second morning with every name of the taken in its ears. If I burned the pages, **nobody would owe the dead and nobody would be owed**. If I carried them across unread, I would be carrying a weight I could not weigh, to the one place where it might be weighed.\n\nThe clerk waited with his hands folded. He had waited a year already.",
+    "description_fr": "Je me tenais au tonneau, la sacoche sous la main et l’Ost entier qui regardait, et un instant je compris pourquoi on avait taillé les noms dans le Trône. Ce n’était pas un registre. C’était **une question laissée à celui qui s’y assiérait**.\n\nSi je les lisais, cela prendrait deux jours, et l’Ost traverserait le second matin avec tous les noms des disparus dans les oreilles. Si je brûlais les pages, **nul ne devrait rien aux morts et nul ne serait dû**. Si je les emportais sans les lire, je porterais un poids que je ne pouvais pas peser, vers le seul endroit où on le pèserait peut-être.\n\nLe clerc attendait, les mains jointes. Il attendait déjà depuis un an.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "cove_camp",
+    "choices": [
+      {
+        "text": "Read every name aloud before the crossing",
+        "text_fr": "Lire chaque nom à voix haute avant la traversée",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "names_read"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "outcome": 0
+          },
+          "power": {
+            "penitents": 4
+          }
+        }
+      },
+      {
+        "text": "Burn the pages in the brazier",
+        "text_fr": "Brûler les pages dans le brasero",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "names_burned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "outcome": 1
+          }
+        }
+      },
+      {
+        "text": "Carry the list across unread",
+        "text_fr": "Emporter la liste sans la lire",
+        "next_id": "4999_camp",
+        "returnToCamp": true,
+        "flagsToAdd": [
+          "names_carried"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "taken_names",
+            "outcome": 2
+          }
+        }
+      }
+    ],
+    "prompt": "What do you do with the list of the taken?",
+    "prompt_fr": "Que faites-vous de la liste des disparus ?",
+    "flag_callbacks": [
+      {
+        "flag": "plot_names_5",
+        "en": "The Penitents had their cloth, the Pit its clauses, and the brazier burned on between them.",
+        "fr": "Les Pénitents avaient leur étoffe, la Fosse ses clauses, et le brasero brûlait entre eux."
+      }
+    ]
   }
 }

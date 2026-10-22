@@ -267,8 +267,8 @@ void main() {
     }
   });
 
-  test('the nine intrigues: six stages each, outcomes that name real ids', () {
-    expect(data.intrigues, hasLength(9));
+  test('the ten intrigues: six stages each, outcomes that name real ids', () {
+    expect(data.intrigues, hasLength(10));
     for (final intrigue in data.intrigues.values) {
       final id = intrigue.id;
       expect(intriguesDb[id]['id'], id);
