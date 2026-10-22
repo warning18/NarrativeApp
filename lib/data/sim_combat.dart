@@ -48,9 +48,9 @@ import 'training.dart';
 /// - no affixes, Elites or battlefield conditions;
 /// - no chapter threat on the enemies, and no sellsword;
 /// - of the face keywords only the strike ones a sign may lend (Cleave,
-///   Pierce, Pain, Steady), no Hex, Silence or Curse (the enemy spends its
-///   turn and nothing else changes), no Luck nudges and no Hammersmith
-///   work on the die;
+///   Pierce, Pain, Steady), with the enemies' Hex, Silence and Curse on
+///   the die as the fight screen lays them; no Luck nudges and no
+///   Hammersmith work on the die;
 /// - of the signs (see signs.dart), everything but momentum and the
 ///   party's share (there is no party); no Titan's Blood; of the clans'
 ///   Sworn boons (v1.194) the Writ, the Compact edge, the Crow's Price and
@@ -624,6 +624,21 @@ class _SimEnemy {
 
   bool get isAlive => health > 0;
 
+  /// A `healsOnce` boss (the claimants, fight_length.dart) that has mended
+  /// itself once this fight; [skills] is the skill table its heal moves
+  /// are read from.
+  bool healSpent = false;
+  Map<String, dynamic> skills = const {};
+  bool get healBlocked => healSpent && healsOnce(data);
+
+  /// Notes a heal of this enemy: a `healsOnce` boss spends its one heal,
+  /// and its heal moves leave its list.
+  void noteHeal() {
+    if (!healsOnce(data)) return;
+    healSpent = true;
+    data = withoutHealMoves(data, skills);
+  }
+
   /// v1.215 squad role and answer, v1.212 captain mark, and the pack this
   /// enemy fights in (for a guard's cover and a reaction's spread).
   SquadRole? role;
@@ -755,10 +770,12 @@ class _SimEnemy {
       final phase = phases[phaseIndex];
       phaseIndex++;
       entered++;
-      health = healthAfterPhaseHeal(phase, health, maxHealth);
+      final before = health;
+      if (!healBlocked) health = healthAfterPhaseHeal(phase, health, maxHealth);
       if (phase.cleanse) statusEffects = [];
       damage = (damage * phase.damageMultiplier).round();
       data = enemyDataInPhase(data, phase);
+      if (health > before || healBlocked) noteHeal();
     }
     return entered;
   }
@@ -803,6 +820,13 @@ SimFightOutcome simulateSimFight({
   var writ = s.writFace;
   var edge = s.compactEdge;
   var crowsHits = 0;
+  // The enemies' tampering (dice_tamper.dart), as on the fight screen: a
+  // Silence laid in their turn hangs over the next round's dice, a Hex
+  // waits for the next roll, a Curse marks a face of the die for the rest
+  // of the fight (the Ember face lifts as many Curses as it has charges).
+  var silencePending = false, silenced = false, hexPending = false;
+  final cursedFaces = <int>{};
+  var emberCharges = s.emberFace;
   final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
   final thornsBank = ThornsBank();
@@ -927,6 +951,8 @@ SimFightOutcome simulateSimFight({
       random: random,
     );
   }
+  // A claimant's fight stops the enemies' Tide (fight_length.dart).
+  final tideCap = fightTideCap([for (final entry in enemies) entry.value]);
   final doctrine = on('writ')
       ? doctrineForFight(
           factions: [
@@ -976,6 +1002,7 @@ SimFightOutcome simulateSimFight({
           maxHealth: health,
           damage: damage,
         )
+          ..skills = skills
           ..role = roles[i]
           ..response = on('response') && chapter >= squadFirstChapter
               ? enemyResponseFromName(entry.value['reaction']?.toString())
@@ -1132,6 +1159,8 @@ SimFightOutcome simulateSimFight({
     rounds++;
     specRound = rounds;
     ctxRound = rounds;
+    silenced = silencePending;
+    silencePending = false;
     for (final e in ens) {
       e.damageThisRound = 0;
       e.topHit = 0;
@@ -1236,6 +1265,10 @@ SimFightOutcome simulateSimFight({
       var verdict = false, firstOfRun = false;
       var rolls = 0;
       var redraw = false;
+      // Whether [f] lands blank under the Curses and this round's Silence
+      // (a cursed blank strikes; a silenced skill face of its own is blank).
+      bool blank(DiceFaceResult f) =>
+          _tamperedFace(f, cursedFaces, silenced).type == 'Empty';
       do {
         rolls++;
         if (trail != null) {
@@ -1246,15 +1279,24 @@ SimFightOutcome simulateSimFight({
         } else {
           face = rollDie(c.diceFaces, random);
         }
+        // A Hex laid last turn rolls the first die to land again at once
+        // (a plain roll, the Trail's included), unless it landed Steady.
+        if (rolls == 1 && hexPending) {
+          hexPending = false;
+          final steady = _landsSteady(c, face, s, cursedFaces, silenced);
+          if (hexVictim({if (!steady) 'hero': 0}) != null) {
+            face = rollDie(c.diceFaces, random);
+          }
+        }
         // The Second Broadside: once a fight, a face that would not strike
         // goes back, and the Trail draws again.
         redraw = trail != null &&
             has(Spec.secondBroadside) &&
             !broadsideUsed &&
-            face.type != 'Empty' &&
+            !blank(face) &&
             !faceStrikes(face.type);
         if (redraw) broadsideUsed = true;
-      } while ((face.type == 'Empty' || redraw) && rolls < _maxRolls);
+      } while ((blank(face) || redraw) && rolls < _maxRolls);
       face = applyFaceAssignment(
         face,
         c.diceFaces[face.faceIndex],
@@ -1266,7 +1308,6 @@ SimFightOutcome simulateSimFight({
           face.type == 'Skill') {
         face = silencedFace(face);
       }
-      playedDefend = face.type == 'Defend';
       // The strike signs: an Attack face takes their keywords, and their
       // element when it has none of its own.
       if (face.type == 'Attack') {
@@ -1281,6 +1322,10 @@ SimFightOutcome simulateSimFight({
       if (has(Spec.berserker) && face.type == 'Attack') {
         face = face.withKeywords({...face.keywords, FaceKeyword.pain});
       }
+      // The enemies' tampering, last as on the fight screen: a Curse on the
+      // face, then the round's Silence.
+      face = _tamperedFace(face, cursedFaces, silenced);
+      playedDefend = face.type == 'Defend';
       final attack = face.type == 'Attack';
       if (face.hasKeyword(FaceKeyword.steady) &&
           (attack || face.type == 'Defend' || face.type == 'Heal')) {
@@ -1806,6 +1851,10 @@ SimFightOutcome simulateSimFight({
       if (held == null && move.intent != EnemyIntent.attack) {
         switch (move.intent) {
           case EnemyIntent.heal:
+            // A claimant's one heal (fight_length.dart): spent, its turn
+            // passes.
+            if (e.healBlocked) break;
+            final before = e.health;
             e.health = min(
               e.maxHealth,
               e.health +
@@ -1815,6 +1864,7 @@ SimFightOutcome simulateSimFight({
                     baseMaxHealth: baseMax,
                   ),
             );
+            if (e.health > before) e.noteHeal();
           case EnemyIntent.guard:
             e.guard = move.guardAmount;
           case EnemyIntent.charge:
@@ -1826,9 +1876,27 @@ SimFightOutcome simulateSimFight({
                   (other.damage * (1 + move.rallyPercent / 100)).round();
               other.rallies++;
             }
-          // A Hex, a Silence or a Curse (v1.182) isn't modelled here: the
-          // enemy spends its turn on it and nothing else changes.
+          // A Hex, a Silence or a Curse (v1.182) on the hero's die, as the
+          // fight screen lays it (fight_dice_rules `_applyTamper`).
           case EnemyIntent.tamper:
+            switch (move.tamper) {
+              case DiceTamper.hex:
+                hexPending = true;
+              case DiceTamper.silence:
+                silencePending = true;
+              case DiceTamper.curse:
+                final index =
+                    curseTargetFace(c.diceFaces.length, cursedFaces, random);
+                if (index == null) break;
+                if (emberCharges > 0) {
+                  emberCharges--;
+                } else {
+                  cursedFaces.add(index);
+                }
+              case DiceTamper.mirror:
+              case null:
+                break;
+            }
           case EnemyIntent.attack:
             break;
         }
@@ -1841,7 +1909,8 @@ SimFightOutcome simulateSimFight({
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
       }
-      if (move.healAmount > 0) {
+      if (move.healAmount > 0 && !e.healBlocked) {
+        final before = e.health;
         e.health = min(
           e.maxHealth,
           e.health +
@@ -1851,6 +1920,7 @@ SimFightOutcome simulateSimFight({
                 baseMaxHealth: baseMax,
               ),
         );
+        if (e.health > before) e.noteHeal();
       }
       // A Mirror sends back the round's best hit, as on the fight screen;
       // a pact's curse makes every blow harder while it runs.
@@ -1878,6 +1948,7 @@ SimFightOutcome simulateSimFight({
           byParty: false,
           element: move.element,
           bossFight: bossFlags.any((b) => b),
+          enemyTideCap: tideCap,
         );
       }
       // A beast tires (foe_kind.dart).
@@ -2272,4 +2343,30 @@ _SimEnemy? _focusTarget(List<_SimEnemy> ens) {
     if (e.isAlive) return e;
   }
   return null;
+}
+
+/// [face] under the enemies' tampering, as fight_dice_rules' `_tampered`
+/// lands it: a Curse on the face ([cursed] holds the cursed face indexes),
+/// then a Silence over the round.
+DiceFaceResult _tamperedFace(
+    DiceFaceResult face, Set<int> cursed, bool silenced) {
+  var landed = cursed.contains(face.faceIndex) ? cursedFace(face) : face;
+  if (silenced && landed.type == 'Skill') landed = silencedFace(landed);
+  return landed;
+}
+
+/// Whether the hero's [raw] roll lands Steady -- the die a Hex leaves
+/// alone: the face with its skill, the strike signs' keywords on an Attack
+/// face, then the tampering.
+bool _landsSteady(SimCharacter c, DiceFaceResult raw, SignEffects s,
+    Set<int> cursed, bool silenced) {
+  var face = applyFaceAssignment(
+    raw,
+    c.diceFaces[raw.faceIndex],
+    c.diceSkillAssignments[raw.faceIndex.toString()],
+  );
+  if (face.type == 'Attack' && s.strikeKeywords.isNotEmpty) {
+    face = face.withKeywords({...face.keywords, ...s.strikeKeywords});
+  }
+  return _tamperedFace(face, cursed, silenced).hasKeyword(FaceKeyword.steady);
 }
