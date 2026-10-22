@@ -95,7 +95,7 @@ upheavals that move power (`wrack_vote_result`, `conclave_counts`). With
 a choice's `event` fires too, and a choice's `control` gives the place
 through `givePlace`. Narrative's 19 choices with `power` (v1.509) were
 already applied. The events put the Dominion at War with the Mire and the
-Compact by chapter 3, so their seats fall far more often than the old
-simulator said: see [clan-power-50-v1.513.md](clan-power-50-v1.513.md). The
-balance tests don't load the table yet (with it, every bound holds; the
-figures are in that study).
+Compact by chapter 3 (before v1.513's softening, see the study), so their
+seats fell far more often than the old simulator said: see [clan-power-50-v1.513.md](clan-power-50-v1.513.md). The
+simulator tests load the table (`qa_sim_tables_test` requires it); only
+`clash_balance_test`'s fights-by-chapter walk runs without it.

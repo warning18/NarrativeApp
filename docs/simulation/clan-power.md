@@ -90,11 +90,25 @@ Per-profession win rates (100 runs, seed 11, no reinforcements), before → afte
 
 ## Clan power that moves (v1.513)
 
-The user's three levers (`docs/proposals/clan-power-story.md`): Narrative's 19 story choices with `power` and its two upheavals (`wrack_vote_result`, `conclave_counts`) were already live in the app; this adds the war turn and closes the simulator's gap. The 50-run study is [clan-power-50-v1.513.md](clan-power-50-v1.513.md).
+The user's three levers (`docs/proposals/clan-power-story.md`). Narrative's 19 story choices with `power` and its two upheavals (`wrack_vote_result`, `conclave_counts`) were already live in the app. This change adds the war rules below and makes the simulator fire the politics events. The 50-run study is [clan-power-50-v1.513.md](clan-power-50-v1.513.md).
 
-- **Wars swing harder.** A place taken in war: the taker +5 power (`warSpoils`), the loser −8 (`warLoss`) unless it falls. Taking a clan's seat in war needs a lead of 25 (`seatLead`), its other places 15 as before.
-- **The fallen regroup.** A fallen clan gains +5 a chapter (`fallenRegroup`) up to 20 (`fallenRegroupCap`), short of Rising: rising again still takes the character's help. Back at Rising, its seat rises for it unless the holder is 25 stronger (before: only from a weaker holder).
-- **The vote's result waits for a vote:** `wrack_vote_result` fires from chapter 5 once `vote_carried` or `vote_refused` is set (before, every run reaching chapter 5 got the "refused" variant).
-- **The simulator fires the politics events** as the app does, when its tables hold `politics_events` (the simulator screen and the clan study do; the balance tests don't yet).
+- **Wars swing harder.** A place taken in war: the taker gains 5 power (`warSpoils`), the loser loses 8 (`warLoss`) unless it falls.
+- **Seats hold longer.**
+  - Taking a seat in war needs a lead of 25 (`seatLead`); other places need 15.
+  - Seats fall to war only at the turns of chapters 6 and 7 (`seatWarFromChapter`, `seatWarToChapter`).
+  - **The Dominion never falls:** Candlehold is guarded from every claim and war (`guardedSeatClans`, `seatGuarded`). Empty the set to lift the guard.
+- **The fallen regroup.**
+  - A fallen clan gains 5 a chapter (`fallenRegroup`) up to 20 (`fallenRegroupCap`), short of Rising: rising again still takes the character's help.
+  - Back at Rising, its seat rises for it unless the holder is 25 stronger.
+- **Data (numbers only):**
+  - `wrack_vote_result` fires from chapter 5 once `vote_carried` or `vote_refused` is set (before, every run got the "refused" variant).
+  - `returned_taken` leaves the Dominion and the Mire Hostile instead of at War (relation step 0, was −1).
+- **The simulator fires the politics events** as the app does. Every simulator test loads `politics_events`, and `qa_sim_tables_test` requires it.
 
-In the 50 runs: the Mire at 0 at the end in 0 runs (35 at v1.509), 5.8 places change hands a run, the patron falls in 3 runs. The fights don't move: boss mean 51.5 → 51.5, the professions within 0.8 points.
+In the 50 runs:
+- the Mire's Court falls in 20 runs (34 at v1.512), Emberwick in 10, Candlehold never;
+- no clan ends at 0 but the Penitents in one run;
+- 5.0 places change hands a run;
+- the patron falls in 1 run.
+
+The fights hold: with the events, the boss mean is 50.1 (51.7 before), the professions are 5.9 points apart, and every band holds.

@@ -17,7 +17,8 @@
 //   - a main clan risen a tier above where it started takes its next
 //     claim, from no one or from a weaker holder;
 //   - at war (relation step [warStep] or below), a clan [warLead] stronger
-//     takes a place of the other's, its seat last ([seatLead] stronger),
+//     takes a place of the other's, its seat last ([seatLead] stronger;
+//     never a [guardedSeatClans] seat),
 //     gaining [warSpoils] power while the loser loses [warLoss];
 //   - politics events and story choices give places (`control`).
 //   Every change drops the old and new holders' relation a step and tells
@@ -70,6 +71,22 @@ const int warSpoils = 5;
 /// How much stronger a clan at war must be to take the other's seat (its
 /// last place standing): a seat holds longer than its lands.
 const int seatLead = 25;
+
+/// The chapters whose turn may take a clan's seat in war (v1.513): in
+/// chapters 3 to 5 the story names the seats and gives the character ways
+/// to save them, and chapter 8 is the last battle, so seats fall to war
+/// only at the turns of chapters 6 and 7.
+const int seatWarFromChapter = 6;
+const int seatWarToChapter = 7;
+
+/// The clans whose seat no claim or war at a chapter's turn takes (v1.513):
+/// the Dominion's Candlehold, which chapters 7 and 8 need standing. A story
+/// choice or an event may still give it. Empty the set to lift the guard.
+const Set<String> guardedSeatClans = {'dominion'};
+
+/// Whether [clanId]'s seat is kept from the chapter's turn
+/// ([guardedSeatClans]).
+bool seatGuarded(String clanId) => guardedSeatClans.contains(clanId);
 const int warLoss = 8;
 
 /// What a fallen clan's survivors win back at each chapter's turn, up to
@@ -385,6 +402,9 @@ PoliticsState givePlace(
       // A fallen clan's own seat rises for it unless its holder is
       // [seatLead] stronger; any other claim needs a weaker holder.
       final rising = next.fallen.contains(id) && placeId == faction.seat;
+      if (seatGuarded(holder) && placeId == data.faction(holder)?.seat) {
+        continue;
+      }
       if (holder.isNotEmpty &&
           (!free(holder) ||
               powerOf(next, holder, data) - powerOf(next, id, data) >=
@@ -439,9 +459,13 @@ PoliticsState givePlace(
         ...theirs.where((p) => !claims.contains(p) && p != seat),
         ...theirs.where((p) => p == seat),
       ];
-      // The seat needs [seatLead].
+      // The seat needs [seatLead], and a guarded one is never taken.
       if (ordered.first == seat &&
-          powerOf(next, id, data) - powerOf(next, other, data) < seatLead) {
+          (seatGuarded(other) ||
+              chapter < seatWarFromChapter ||
+              chapter > seatWarToChapter ||
+              powerOf(next, id, data) - powerOf(next, other, data) <
+                  seatLead)) {
         continue;
       }
       if (crisisFirst(ordered.first, other, id)) break;

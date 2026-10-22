@@ -144,18 +144,64 @@ void main() {
           state.copyWith(power: {...state.power, 'dominion': 46}),
           data: data,
           geography: geography,
-          chapter: 4);
+          chapter: 6);
       expect(close.changes.where((c) => c.cause == 'war'), isEmpty);
       // 35 ahead: it falls.
       final far = territoryTurn(
           state.copyWith(power: {...state.power, 'dominion': 61}),
           data: data,
           geography: geography,
-          chapter: 4);
+          chapter: 6);
       expect(far.changes.singleWhere((c) => c.cause == 'war').placeId,
           'saltmouth_wharf');
       expect(far.state.fallen, ['crows']);
       expect(powerOf(far.state, 'crows', data), 0);
+      // Outside chapters 6 and 7 the seat holds, however far ahead.
+      for (final chapter in [3, 4, 5, 8]) {
+        final early = territoryTurn(
+            state.copyWith(power: {...state.power, 'dominion': 90}),
+            data: data,
+            geography: geography,
+            chapter: chapter);
+        expect(early.changes.where((c) => c.cause == 'war'), isEmpty,
+            reason: 'chapter $chapter');
+      }
+      expect((seatWarFromChapter, seatWarToChapter), (6, 7));
+    });
+
+    test('the Dominion\'s seat is guarded: never taken at a turn', () {
+      expect(seatGuarded('dominion'), isTrue);
+      expect(data.faction('dominion')!.seat, 'candlehold');
+      // The Compact far stronger, at war, the Dominion left with Candlehold
+      // alone.
+      var state = PoliticsState.empty.copyWith(
+          power: {'compact': 100, 'dominion': 10},
+          helped: ['compact', 'dominion'],
+          relationSteps: {relationKey('dominion', 'compact'): 1});
+      for (final place in placesOf('dominion', geography, state)) {
+        if (place == 'candlehold') continue;
+        state = state.copyWith(control: {...state.control, place: 'tidekin'});
+      }
+      expect(placesOf('dominion', geography, state), ['candlehold']);
+      for (var chapter = 3; chapter <= 8; chapter++) {
+        state = territoryTurn(state,
+                data: data, geography: geography, chapter: chapter)
+            .state;
+        expect(holderOf('candlehold', geography, state), 'dominion',
+            reason: 'chapter $chapter');
+      }
+      expect(state.fallen, isNot(contains('dominion')));
+      // Another clan's seat has no guard.
+      expect(seatGuarded('compact'), isFalse);
+    });
+
+    test(
+        'the Inquisition taking the Returned leaves the Mire Hostile, not at '
+        'War', () {
+      final change = runDueEvents(
+          politics: PoliticsState.storyStart, flags: const [], world: world(3));
+      expect(change.fired, contains('returned_taken'));
+      expect(change.politics.relationStep('dominion', 'mire', data), 3);
     });
 
     test('a fallen clan regroups to fallenRegroupCap, then needs help', () {
