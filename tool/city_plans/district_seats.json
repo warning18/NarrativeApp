@@ -16,7 +16,8 @@
       "6100_charter_signing",
       "6100_clan_mire_2",
       "6100_clan_mire_2_found",
-      "6100_clan_mire_2_fourth"
+      "6100_clan_mire_2_fourth",
+      "6100_will_scribe"
     ],
     "rimewell_ridge_post": [
       "6100_clan_vigil_2",
@@ -37,7 +38,10 @@
       "7200_tide",
       "7200_tide_failed",
       "7200_relic",
-      "7200_ledger"
+      "7200_ledger",
+      "7200_will_courier",
+      "7200_will_houses",
+      "7200_will_choice"
     ],
     "greyhithe_moorings": [
       "7200_thieves_aboard",
@@ -53,7 +57,8 @@
       "7200_elder_later",
       "7200_reflection",
       "7200_stitcher_kin",
-      "7200_house_spire_fallen"
+      "7200_house_spire_fallen",
+      "7200_will_heir"
     ],
     "greyhithe_watch_stones": [
       "7200_clan_vigil_3",
