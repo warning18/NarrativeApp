@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.525.0+561]
+
+- Four events for the Glass Shore: the glassed dunes, a wrecked hull, a well from a drowned coast and the pull of the tear (not drawn yet).
+
 ## [1.519.0+555]
 
 - Your companions now have something to say at sea: each of the eight has three lines about the deck, the water and the crossing.
