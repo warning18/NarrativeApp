@@ -289,6 +289,7 @@ class PlayerSession {
     this.blessingFights = 0,
     this.blessingClan = '',
     this.templeMendDay = 0,
+    this.seaRemarkChapter = 0,
     this.templeStandingChapters = const {},
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.detourPacing = const DetourPacing(),
@@ -529,6 +530,11 @@ class PlayerSession {
   /// The day of the last Mending at a temple (0 never): once a day.
   final int templeMendDay;
 
+  /// The chapter a companion last spoke up at sea in (0 never, see
+  /// seaRemarkDue): once a chapter, on the first voyage someone has a sea
+  /// line for. An old save without the field has had none.
+  final int seaRemarkChapter;
+
   /// The chapter each clan's blessing last brought standing (clan ->
   /// chapter): once a chapter per clan.
   final Map<String, int> templeStandingChapters;
@@ -575,6 +581,12 @@ class PlayerSession {
       roadRulesApply(chapter) && clockChapter == chapter
           ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
+
+  /// The part of the day the clock is at (wave 16, see [dayPhaseOf]).
+  DayPhase get dayPhase => dayPhaseOf(watch);
+
+  /// The hour (0..23) the clock shows (see [hourOfWatch]).
+  int get hourOfDay => hourOfWatch(watch);
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -996,6 +1008,7 @@ class PlayerSession {
     int? blessingFights,
     String? blessingClan,
     int? templeMendDay,
+    int? seaRemarkChapter,
     Map<String, int>? templeStandingChapters,
     int? alignmentRollsSinceAmbush,
     DetourPacing? detourPacing,
@@ -1125,6 +1138,7 @@ class PlayerSession {
       blessingFights: blessingFights ?? this.blessingFights,
       blessingClan: blessingClan ?? this.blessingClan,
       templeMendDay: templeMendDay ?? this.templeMendDay,
+      seaRemarkChapter: seaRemarkChapter ?? this.seaRemarkChapter,
       templeStandingChapters:
           templeStandingChapters ?? this.templeStandingChapters,
       alignmentRollsSinceAmbush:
@@ -1352,6 +1366,7 @@ class PlayerSession {
         if (blessingFights != 0) 'blessingFights': blessingFights,
         if (blessingClan.isNotEmpty) 'blessingClan': blessingClan,
         if (templeMendDay != 0) 'templeMendDay': templeMendDay,
+        if (seaRemarkChapter != 0) 'seaRemarkChapter': seaRemarkChapter,
         if (templeStandingChapters.isNotEmpty)
           'templeStandingChapters': templeStandingChapters,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
@@ -1574,6 +1589,7 @@ class PlayerSession {
       blessingFights: (json['blessingFights'] as num?)?.toInt() ?? 0,
       blessingClan: json['blessingClan']?.toString() ?? '',
       templeMendDay: (json['templeMendDay'] as num?)?.toInt() ?? 0,
+      seaRemarkChapter: (json['seaRemarkChapter'] as num?)?.toInt() ?? 0,
       templeStandingChapters: {
         for (final e
             in ((json['templeStandingChapters'] as Map?) ?? const {}).entries)
@@ -5019,6 +5035,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> spendSellswordFight() async {
     if (state.sellswordFights <= 0) return;
     state = state.copyWith(sellswordFights: state.sellswordFights - 1);
+    await _persist();
+  }
+
+  /// Notes that a companion spoke up at sea in [chapter] (see
+  /// speakUpAtSea), so the next voyage of the chapter stays quiet.
+  Future<void> noteSeaRemark(int chapter) async {
+    if (state.seaRemarkChapter == chapter) return;
+    state = state.copyWith(seaRemarkChapter: chapter);
     await _persist();
   }
 

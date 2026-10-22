@@ -49,6 +49,8 @@ import 'throne.dart';
 ///   `chapterAtLeast`, `chapterAtMost`, `standingAtLeast`/`standingAtMost`
 ///   ({faction: n}), `relationAtLeast`/`relationAtMost` ({"a|b": step}),
 ///   `powerAtLeast`/`powerAtMost` ({clan: power}, clan_power.dart),
+///   `anyPowerAtLeast` (a number: some main clan's power is at least it,
+///   strongestPower),
 ///   `marks` ({sub-clan: friend|foe|none}); and (v1.196, see throne.dart)
 ///   `claim` (a faction id, `any` or `none`, or a list: any of them),
 ///   `rungAtLeast` ({faction: 1 House, 2 claim, 3 Throne}) and
@@ -170,6 +172,7 @@ class EventConditions {
     this.relationAtMost = const {},
     this.powerAtLeast = const {},
     this.powerAtMost = const {},
+    this.anyPowerAtLeast,
     this.marks = const {},
     this.claim = const [],
     this.rungAtLeast = const {},
@@ -193,6 +196,9 @@ class EventConditions {
   /// Each clan's power, at least or at most (clan_power.dart).
   final Map<String, num> powerAtLeast;
   final Map<String, num> powerAtMost;
+
+  /// Some main clan's power is at least it (wave 16; null: no condition).
+  final int? anyPowerAtLeast;
   final Map<String, String> marks;
 
   /// The claims any of which will do: faction ids, `any` (some claim) or
@@ -219,6 +225,7 @@ class EventConditions {
     'relationAtMost',
     'powerAtLeast',
     'powerAtMost',
+    'anyPowerAtLeast',
     'marks',
     'claim',
     'rungAtLeast',
@@ -243,6 +250,7 @@ class EventConditions {
         relationAtMost: _numbers(json['relationAtMost']),
         powerAtLeast: _numbers(json['powerAtLeast']),
         powerAtMost: _numbers(json['powerAtMost']),
+        anyPowerAtLeast: _optionalInt(json['anyPowerAtLeast']),
         marks: {
           if (json['marks'] is Map)
             for (final e in (json['marks'] as Map).entries)
@@ -295,6 +303,10 @@ class EventConditions {
     }
     for (final e in powerAtMost.entries) {
       if (powerOf(politics, e.key, world.data) > e.value) return false;
+    }
+    if (anyPowerAtLeast != null &&
+        strongestPower(politics, world.data) < anyPowerAtLeast!) {
+      return false;
     }
     for (final e in marks.entries) {
       final want = subclanMarkNamed(e.value) ?? SubclanMark.none;

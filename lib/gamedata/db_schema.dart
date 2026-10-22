@@ -1206,6 +1206,13 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',
         type: FieldType.boolean,
         defaultValue: false),
+    // Wave 16: the fight opens on this foe's entrance card (bosses always
+    // do, see hasEntranceCard).
+    FieldSchema(
+        key: 'entranceCard',
+        label: 'Entrance card (the fight opens on this foe; bosses always do)',
+        type: FieldType.boolean,
+        defaultValue: false),
     FieldSchema(
       key: 'hunterAlignment',
       label:
