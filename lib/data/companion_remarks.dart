@@ -86,7 +86,21 @@ enum RemarkKind {
 
   /// A Blessing bought at a temple (templeBless).
   templeBlessed,
+
+  // Wave 16.
+
+  /// A word at sea, as a voyage casts off: once a chapter, on its first
+  /// voyage someone in the party has a sea line for (see [seaRemarkDue],
+  /// speakUpAtSea). Silent until Narrative writes the lines.
+  atSea,
 }
+
+/// Whether a companion may speak up at sea on a voyage in [chapter], when
+/// the last chapter someone did is [lastSeaRemarkChapter] (0 never): once
+/// a chapter. A voyage nobody had a line for doesn't use the chapter's
+/// turn, so the next one tries again.
+bool seaRemarkDue(int chapter, int lastSeaRemarkChapter) =>
+    chapter != lastSeaRemarkChapter;
 
 /// The houses whose building the party remarks on, by houses.json id.
 const Map<String, RemarkKind> houseBuiltRemarkKinds = {

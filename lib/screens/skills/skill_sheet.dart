@@ -25,6 +25,7 @@ import '../../widgets/immersive_notice.dart';
 import '../../widgets/merge_skills_dialog.dart';
 import '../../widgets/moments.dart';
 import '../../widgets/pixel_banner.dart';
+import '../../widgets/sheet_kit.dart';
 import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
 
@@ -175,25 +176,13 @@ class _SkillSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                SkillPixelIcon(skillId, size: 36),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(skillDisplayName(skillId, language: lang),
-                          style: theme.textTheme.titleLarge
-                              ?.copyWith(fontFamily: InkFonts.display)),
-                      if (where.isNotEmpty)
-                        Text(where,
-                            style: theme.textTheme.labelMedium
-                                ?.copyWith(color: ink.ash)),
-                    ],
-                  ),
-                ),
-              ],
+            SheetHeader(
+              leading: SkillPixelIcon(skillId, size: 36),
+              title: skillDisplayName(skillId, language: lang),
+              titleStyle: theme.textTheme.titleLarge
+                  ?.copyWith(fontFamily: InkFonts.display),
+              subtitle: where,
+              padding: EdgeInsets.zero,
             ),
             const SizedBox(height: 10),
             Wrap(spacing: 6, runSpacing: 6, children: [

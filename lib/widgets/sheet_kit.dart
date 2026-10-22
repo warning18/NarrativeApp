@@ -8,43 +8,63 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 
-/// A sheet's title: [icon] (gold), [title], and under it one italic
-/// [caption] (a keeper's or a builder's word), when there is one.
+/// A sheet's title: [icon] (gold) or any [leading] widget (a skill's own
+/// pixel icon), [title] with a [subtitle] under it when there is one, and
+/// under that one italic [caption] (a keeper's or a builder's word).
 class SheetHeader extends StatelessWidget {
   const SheetHeader({
     super.key,
     required this.title,
     this.icon,
+    this.leading,
+    this.subtitle,
     this.caption,
+    this.titleStyle,
     this.titleKey,
     this.captionKey,
+    this.padding = const EdgeInsets.fromLTRB(8, 0, 8, 8),
   });
 
   final String title;
   final IconData? icon;
+  final Widget? leading;
+  final String? subtitle;
   final String? caption;
+  final TextStyle? titleStyle;
   final Key? titleKey;
   final Key? captionKey;
+
+  /// Around the header: the sheets that pad their own body pass zero.
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final word = caption;
+    final sub = subtitle;
+    final mark = leading ?? (icon == null ? null : Icon(icon, color: ink.gold));
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              if (icon != null) ...[
-                Icon(icon, color: ink.gold),
-                const SizedBox(width: 10),
-              ],
+              if (mark != null) ...[mark, const SizedBox(width: 10)],
               Expanded(
-                child: Text(title,
-                    key: titleKey, style: theme.textTheme.titleMedium),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        key: titleKey,
+                        style: titleStyle ?? theme.textTheme.titleMedium),
+                    if (sub != null && sub.isNotEmpty)
+                      Text(sub,
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: ink.ash)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -133,7 +153,12 @@ class SheetRow extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label!, style: theme.textTheme.labelSmall),
+                // The body face, not the pixel one: at small sizes the
+                // pixel face read "Blessing" as "Glessing".
+                Text(label!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: InkColors.of(context).ash,
+                        fontWeight: FontWeight.w600)),
                 Text(title, key: titleKey),
               ],
             ),

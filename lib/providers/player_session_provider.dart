@@ -41,6 +41,7 @@ import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/camp_rolls.dart';
+import '../data/road_wards.dart';
 import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
@@ -58,6 +59,7 @@ import '../data/throne.dart'
         onThroneFlag,
         pledgedFlag,
         throneWinnerFlag;
+import '../l10n/app_locale.dart';
 import '../models/ally_state.dart';
 import '../models/item_origin.dart';
 import '../models/story_node.dart' show placeFoundFlag;
@@ -289,6 +291,7 @@ class PlayerSession {
     this.blessingFights = 0,
     this.blessingClan = '',
     this.templeMendDay = 0,
+    this.seaRemarkChapter = 0,
     this.templeStandingChapters = const {},
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.detourPacing = const DetourPacing(),
@@ -529,6 +532,11 @@ class PlayerSession {
   /// The day of the last Mending at a temple (0 never): once a day.
   final int templeMendDay;
 
+  /// The chapter a companion last spoke up at sea in (0 never, see
+  /// seaRemarkDue): once a chapter, on the first voyage someone has a sea
+  /// line for. An old save without the field has had none.
+  final int seaRemarkChapter;
+
   /// The chapter each clan's blessing last brought standing (clan ->
   /// chapter): once a chapter per clan.
   final Map<String, int> templeStandingChapters;
@@ -575,6 +583,12 @@ class PlayerSession {
       roadRulesApply(chapter) && clockChapter == chapter
           ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
+
+  /// The part of the day the clock is at (wave 16, see [dayPhaseOf]).
+  DayPhase get dayPhase => dayPhaseOf(watch);
+
+  /// The hour (0..23) the clock shows (see [hourOfWatch]).
+  int get hourOfDay => hourOfWatch(watch);
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -996,6 +1010,7 @@ class PlayerSession {
     int? blessingFights,
     String? blessingClan,
     int? templeMendDay,
+    int? seaRemarkChapter,
     Map<String, int>? templeStandingChapters,
     int? alignmentRollsSinceAmbush,
     DetourPacing? detourPacing,
@@ -1125,6 +1140,7 @@ class PlayerSession {
       blessingFights: blessingFights ?? this.blessingFights,
       blessingClan: blessingClan ?? this.blessingClan,
       templeMendDay: templeMendDay ?? this.templeMendDay,
+      seaRemarkChapter: seaRemarkChapter ?? this.seaRemarkChapter,
       templeStandingChapters:
           templeStandingChapters ?? this.templeStandingChapters,
       alignmentRollsSinceAmbush:
@@ -1352,6 +1368,7 @@ class PlayerSession {
         if (blessingFights != 0) 'blessingFights': blessingFights,
         if (blessingClan.isNotEmpty) 'blessingClan': blessingClan,
         if (templeMendDay != 0) 'templeMendDay': templeMendDay,
+        if (seaRemarkChapter != 0) 'seaRemarkChapter': seaRemarkChapter,
         if (templeStandingChapters.isNotEmpty)
           'templeStandingChapters': templeStandingChapters,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
@@ -1574,6 +1591,7 @@ class PlayerSession {
       blessingFights: (json['blessingFights'] as num?)?.toInt() ?? 0,
       blessingClan: json['blessingClan']?.toString() ?? '',
       templeMendDay: (json['templeMendDay'] as num?)?.toInt() ?? 0,
+      seaRemarkChapter: (json['seaRemarkChapter'] as num?)?.toInt() ?? 0,
       templeStandingChapters: {
         for (final e
             in ((json['templeStandingChapters'] as Map?) ?? const {}).entries)
@@ -2833,6 +2851,62 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         banishCharges: s.banishCharges - cost);
     await _persist();
     return next;
+  }
+
+  /// Banish (the Warding Cairn) on the road (road_wards.dart): [clanId], a
+  /// clan hunting the character ([wardTargets] with [data]), kept off the
+  /// roads at rest for [roads] of them (3, 6 or 9, costing 1, 2 or 3
+  /// charges). Standing does not move. False, and nothing spent, when the
+  /// cairn isn't up, the charges fall short, the length is not one of
+  /// [wardLengths] or the clan isn't hunting. The line to show is
+  /// [wardSetLine].
+  Future<bool> wardRoad(String clanId, int roads, ClanData data) async {
+    final s = state;
+    final cost = wardCostOf(roads);
+    if (cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        !wardTargets(s.politics, data).contains(clanId)) {
+      return false;
+    }
+    state = s.copyWith(
+        rollBans: withWard(s.rollBans, clanId, roads),
+        banishCharges: s.banishCharges - cost);
+    await _persist();
+    return true;
+  }
+
+  /// A road at rest gone by, where the hunters roll: the wards count down
+  /// by one (road_wards.dart). A ward that runs out tells it in the coast's
+  /// news (`ward_end:<clan>`, Narrative's `ward_ended`, [data] naming the
+  /// clan, dated [chapter]). Returns the clans whose ward ended.
+  Future<List<String>> tickRoadWards({ClanData? data, int chapter = 0}) async {
+    final s = state;
+    if (!s.rollBans.any((b) => b.on == RollBanOn.road)) return const [];
+    final next = afterRoadAtRest(s.rollBans);
+    var politics = s.politics;
+    if (next.ended.isNotEmpty) {
+      final news = [
+        ...politics.news,
+        for (final clanId in next.ended)
+          CoastNews(
+            eventId: 'ward_end:$clanId',
+            chapter: chapter,
+            day: s.day,
+            text: wardLine('ward_ended', AppLanguage.en,
+                clanId: clanId, data: data),
+            textFr: wardLine('ward_ended', AppLanguage.fr,
+                clanId: clanId, data: data),
+          ),
+      ];
+      politics = politics.copyWith(
+          news: news.length <= maxCoastNews
+              ? news
+              : news.sublist(news.length - maxCoastNews));
+    }
+    state = s.copyWith(rollBans: next.bans, politics: politics);
+    await _persist();
+    return next.ended;
   }
 
   /// Whether the stat pick's card at [index] can be raised now: a Raise
@@ -5022,6 +5096,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Notes that a companion spoke up at sea in [chapter] (see
+  /// speakUpAtSea), so the next voyage of the chapter stays quiet.
+  Future<void> noteSeaRemark(int chapter) async {
+    if (state.seaRemarkChapter == chapter) return;
+    state = state.copyWith(seaRemarkChapter: chapter);
+    await _persist();
+  }
+
   // --- The temple (temple.dart) -------------------------------------------
 
   /// The offer of the temple [clanId] ('' neutral) keeps, to the party
@@ -5739,6 +5821,11 @@ CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
 /// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
 final campRollsProvider =
     Provider<CampRolls>((ref) => campRollsOf(ref.watch(playerSessionProvider)));
+
+/// The wards on the road running now, each clan with its roads left
+/// (road_wards.dart), for the Journey's mark (`ward_mark`).
+final roadWardsProvider = Provider<List<RoadWard>>(
+    (ref) => roadWardsOf(ref.watch(playerSessionProvider).rollBans));
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {
