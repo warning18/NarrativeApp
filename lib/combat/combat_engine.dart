@@ -959,6 +959,13 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
   return phases is List && phases.isNotEmpty;
 }
 
+/// Whether the fight opens on [enemy]'s entrance card (wave 16: its
+/// portrait, name and one line of the story slide in): every boss
+/// ([isBossEnemy]), and any foe enemies.json marks `entranceCard: true`
+/// (a named foe who is not a boss).
+bool hasEntranceCard(String enemyId, Map<String, dynamic> enemy) =>
+    enemy['entranceCard'] == true || isBossEnemy(enemyId, enemy);
+
 /// Enemy max-health multiplier by story chapter, applied on top of the
 /// player-level scaling above and before the Elite/pack multipliers.
 /// Level scaling alone let a chapter-5 boss meet a level-10 party as a
