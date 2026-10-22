@@ -75,7 +75,7 @@
     ],
     "days": 3,
     "biome": "fen",
-    "terrain": "marsh",
+    "terrain": "fen",
     "chapter": 4,
     "rulerOneIn": 3,
     "events": {
@@ -96,7 +96,7 @@
     ],
     "days": 3,
     "biome": "frost",
-    "terrain": "snow",
+    "terrain": "frost",
     "chapter": 5,
     "rulerOneIn": 3,
     "events": {
@@ -138,7 +138,7 @@
     ],
     "days": 2,
     "biome": "sea_cliffs",
-    "terrain": "mountain",
+    "terrain": "sea_cliffs",
     "chapter": 7,
     "rulerOneIn": 0,
     "events": {

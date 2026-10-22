@@ -18,6 +18,8 @@ import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/land_crossing.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
 import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/screens/land_crossing_screen.dart'
+    show crossingSceneTerrains;
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -69,6 +71,16 @@ void main() {
   final geography = Geography.parse(
       geography: _json('assets/gamedata/geography.json'),
       biomes: _json('assets/gamedata/biomes.json'));
+
+  // Every route's terrain is one the crossing screen draws a scene for
+  // (the wave 16 routes said marsh, snow and mountain, which drew none).
+  test('every route draws a side-view scene', () {
+    for (final id in routes.keys) {
+      final route = landRouteFor(routes, id)!;
+      expect(crossingSceneTerrains, contains(route.terrain), reason: id);
+      expect(landTerrains, contains(route.terrain), reason: id);
+    }
+  });
 
   group('the middle chapters\' routes', () {
     const expected = {
