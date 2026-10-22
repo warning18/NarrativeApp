@@ -3822,6 +3822,11 @@ final DbSchema landRoutesSchema = DbSchema(
       label: 'Events {land event id: draw weight}',
       type: FieldType.json,
     ),
+    FieldSchema(
+        key: 'rulerOneIn',
+        label: 'Ruler one day in (the road\'s ruler\'s events; 0: never)',
+        type: FieldType.integer,
+        defaultValue: 0),
   ],
 );
 
@@ -3847,6 +3852,16 @@ final DbSchema landEventsSchema = DbSchema(
           'Choices [{id, text, text_fr, check, dc, outcome | success, fail}]',
       type: FieldType.json,
       help: 'An outcome is {healthPct, gold, days, note, note_fr}.',
+    ),
+    FieldSchema(
+        key: 'ruler',
+        label: 'Ruler (a factions.json id; empty: a biome event)',
+        type: FieldType.text),
+    FieldSchema(
+      key: 'band',
+      label: 'Band (standing with the ruler)',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'friend', 'neutral', 'hostile'],
     ),
   ],
 );

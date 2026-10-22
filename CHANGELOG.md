@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.512.0+548]
+
+Land crossings for the middle chapters, shaped by who holds the land (wave 16).
+
+### Added
+- **Three new crossings:** the fen after landing at the Drowned Stair (chapter 4), the frost road from the reliquary to the heart (chapter 5), and the climb up the Lantern Cliffs to Candlehold's gates (chapter 7).
+- **The land's ruler:** on the chapter 4 and 5 roads, about one day in three brings the event of the clan that holds the land, as a friend, a neutral or a foe by your standing with it. The road changes hands when the towns around it do. Chapter 7's cliffs stay mild: only the salt wind and the tide stair.
+- A crossing costs about 2–10% health; attempt wins by chapter move by under 1.5 points, every boss inside its band.
+
+### Changed
+- When leaving camp by sea for a place with a crossing, the crossing now plays after the landing.
+
 ## [1.511.0+547]
 
 Thirty events for the roads of the middle chapters (not drawn yet).
