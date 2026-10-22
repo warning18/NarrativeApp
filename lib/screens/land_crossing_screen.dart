@@ -14,7 +14,8 @@ import '../l10n/app_strings.dart';
 import '../providers/aftermath_provider.dart'
     show lastFightOutcomeProvider, lastFightRetreatedProvider;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
-import '../providers/clans_provider.dart' show loadClanData, politicsProvider;
+import '../providers/clans_provider.dart'
+    show factionsProvider, loadClanData, politicsProvider;
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart' show loadGeography;
@@ -34,6 +35,7 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
+import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
 import 'fight_screen.dart';
 
@@ -556,52 +558,89 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final sky = ref.watch(skyHereProvider)?.today().kind;
     final particles =
         crossingParticles(terrain: terrain, storm: storm, sky: sky);
+    // The road's ruler (Core's v1.512): its colour under the title, and its
+    // name and flag on the screen, so the player sees why this road's events.
+    final rulerClan =
+        widget.ruler.isEmpty ? null : ref.watch(factionsProvider)[widget.ruler];
+    final rulerColour =
+        rulerClan == null ? null : Color(rulerClan.patron.color);
     final hud = Padding(
       padding: const EdgeInsets.all(8),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Text(
-                tr(ref, 'crossing_day')
-                    .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
-                    .replaceAll('{m}', '${_drawn.length}'),
-                style:
-                    theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+          Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text(
+                    tr(ref, 'crossing_day')
+                        .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
+                        .replaceAll('{m}', '${_drawn.length}'),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ),
               ),
-            ),
+              const Spacer(),
+              TutorialTarget(
+                id: 'crossing.health',
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.favorite, size: 16, color: Colors.white),
+                      const SizedBox(width: 6),
+                      SizedBox(
+                        width: 96,
+                        child: LinearProgressIndicator(
+                            key: const Key('crossing_health'), value: health),
+                      ),
+                      const SizedBox(width: 6),
+                      Text('${session.currentHealth}/${session.maxHealth}',
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: Colors.white)),
+                    ]),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          TutorialTarget(
-            id: 'crossing.health',
-            child: DecoratedBox(
+          if (rulerClan != null && rulerColour != null) ...[
+            const SizedBox(height: 6),
+            DecoratedBox(
+              key: const Key('crossing_ruler'),
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.55),
                 borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: rulerColour, width: 1.5),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.favorite, size: 16, color: Colors.white),
+                  ClanFlag(factionId: widget.ruler, height: 16),
                   const SizedBox(width: 6),
-                  SizedBox(
-                    width: 96,
-                    child: LinearProgressIndicator(
-                        key: const Key('crossing_health'), value: health),
+                  Text(
+                    tr(ref, 'crossing_ruler').replaceAll('{clan}',
+                        rulerClan.shortFor(ref.watch(appLanguageProvider))),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: Colors.white),
                   ),
-                  const SizedBox(width: 6),
-                  Text('${session.currentHealth}/${session.maxHealth}',
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: Colors.white)),
                 ]),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -615,6 +654,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(widget.route.nameFor(fr)),
+            bottom: rulerColour == null
+                ? null
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(3),
+                    child: ColoredBox(
+                      key: const Key('crossing_ruler_band'),
+                      color: rulerColour,
+                      child: const SizedBox(height: 3, width: double.infinity),
+                    ),
+                  ),
           ),
           body: Column(
             children: [

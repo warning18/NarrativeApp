@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../providers/map_look_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'chart_map_painter.dart' show ChartCalque;
+import 'handover_list.dart';
 
 /// The calques sheet: the sphere and the weather, then one calque over the
 /// chart at a time, or none. Shared by the Journey and the full map.
@@ -136,6 +137,7 @@ Future<void> showCalquesSheet(BuildContext context, WidgetRef ref) {
                       .read(chartCalqueProvider.notifier)
                       .choose(on ? calque : ChartCalque.none),
                 ),
+              const HandoverList(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
                 child: Text(trFor(lang, 'journey_calques_hint'),
