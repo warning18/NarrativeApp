@@ -83,6 +83,17 @@ bool isMainClan(String clanId, ClanData data) =>
 int powerOf(PoliticsState state, String clanId, ClanData data) =>
     state.power[clanId] ?? data.faction(clanId)?.startPower ?? 0;
 
+/// The power of the strongest main clan now ([isMainClan]; 0 with none):
+/// what an event's `anyPowerAtLeast` reads.
+int strongestPower(PoliticsState state, ClanData data) {
+  var best = 0;
+  for (final id in data.factions.keys) {
+    if (!isMainClan(id, data)) continue;
+    best = max(best, powerOf(state, id, data));
+  }
+  return best;
+}
+
 /// [state] with [clanId]'s power moved by [delta] (kept in 0..[maxPower]);
 /// [helped]: the character did it, which spares the clan this chapter's
 /// neglect. Unchanged for a faction with no power.
