@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.514.0+550]
+
+Wave 16 UX: the ward card and the Journey mark, on Core's warding rules (v1.508).
+
+### Added
+- **Ward the road from the Banish power** (`lib/widgets/ward_sheet.dart`): with a hunting clan to ward and charges to spend, Banish opens a sheet that lists the clans that hunt you and the lengths on offer (1, 2 or 3 charges, 3 / 6 / 9 roads); a length you cannot pay is dimmed. It works with no card selected, and the roll dialog gets a ward option under its divider. Banish stays greyed when there is no hunter and no card.
+- **A mark on the Journey** (`lib/widgets/ward_mark.dart`): a small chip under the level chip on both map placements while a ward runs, naming the clan and the roads left; it goes when the ward ends.
+
+### Touches another session's area
+- None beyond widgets: `roll_power_row.dart` and `weather_chip.dart` are UX's. `test/roll_power_row_test.dart` overrides `wardTargetsProvider` with an empty list.
+
 ## [1.512.0+548]
 
 Land crossings for the middle chapters, shaped by who holds the land (wave 16).

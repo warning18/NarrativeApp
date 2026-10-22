@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/camp_rolls.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/providers/clans_provider.dart'
+    show wardTargetsProvider;
 import 'package:narrative_data_app/widgets/roll_power_row.dart';
 
 void main() {
@@ -25,7 +27,10 @@ void main() {
     tester.view.physicalSize = Size(width, 600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final container = ProviderContainer();
+    // Nobody hunts the party here: Banish keeps to the cards (the ward is
+    // tested in ward_ui_test.dart).
+    final container = ProviderContainer(
+        overrides: [wardTargetsProvider.overrideWithValue(const [])]);
     addTearDown(container.dispose);
     await tester.runAsync(
         () => container.read(appLanguageProvider.notifier).setLanguage(lang));
