@@ -162,3 +162,28 @@ Core's part of `docs/proposals/lysa-arc.md`. Narrative's nodes set the flags (PR
 
   The bosses before chapter 6 don't move: Aurel Vane 78.7%, Void Archon 57.6%.
 - **Still to come (1.415):** the sacrifice's boon on the Shroud and the Void's mark.
+
+## Warding the road (wave 16, item 2)
+
+The rules are in `lib/data/road_wards.dart` (docs/proposals/wave16-core.md §2). The Warding Cairn's Banish can ward a hunting clan (a sworn clan's rival at Hostile or Hunted, or the nemesis): 1 / 2 / 3 charges for 3 / 6 / 9 roads at rest. While the ward holds, that clan's roll in `rival_hunters.dart` is skipped. The alignment hunters, the betrayals, the nemesis's champion and the seat's crisis still come, and standing does not move. The ward is saved as a `RollBan` with `on: road`, counts down on each road at rest where the hunters roll, and its end is a coast news line (`ward_end:<clan>`).
+
+**The simulator** wards the nemesis for 6 roads (2 charges) whenever it has 2 charges or more and the nemesis is hunting. The walk doesn't fight a road's hunter, so the fights only move through the Banish charges that no longer go to the stat picks.
+
+**Measured:** 400 runs (goals random, favorGood, favorEvil and maximizeGold, professions rotated), before → after. Attempt win by profession:
+
+| Seed | Cleric | Mage | Ranger | Rogue | Warrior | All |
+|---|---|---|---|---|---|---|
+| 7 | 37.7 → 37.1 | 35.5 → 36.3 | 34.3 → 34.7 | 35.8 → 36.0 | 32.2 → 31.9 | 35.1 → 35.1 |
+| 11 | 34.3 → 35.1 | 37.3 → 37.6 | 35.4 → 34.8 | 33.5 → 32.9 | 34.9 → 34.3 | 35.1 → 34.9 |
+| 23 | 35.6 → 35.6 | 34.5 → 34.9 | 32.1 → 32.7 | 35.2 → 34.9 | 33.0 → 33.5 | 34.0 → 34.3 |
+
+Every profession moves by 0.8 points or less. Hunters met per run:
+
+| Seed | All hunters | Nemesis hunters | Other clans' hunters | Alignment hunters | Betrayals | Wards / run | Stat-pick bans / run |
+|---|---|---|---|---|---|---|---|
+| 7 | 5.03 → 4.81 | 1.42 → 1.23 | 1.12 → 1.10 | 2.21 → 2.24 | 0.28 → 0.24 | 1.75 | 10.4 → 9.3 |
+| 11 | 5.01 → 4.84 | 1.45 → 1.18 | 1.06 → 1.17 | 2.25 → 2.25 | 0.25 → 0.26 | 1.65 | 10.4 → 9.2 |
+| 23 | 5.07 → 4.90 | 1.48 → 1.28 | 1.06 → 1.14 | 2.28 → 2.25 | 0.24 → 0.23 | 1.69 | 10.3 → 9.0 |
+
+- A ward removes about one nemesis hunter in six. The nemesis is warded for about 10 of the ~60 roads at rest, and the other hunters take part of the freed cooldown.
+- `boss_balance_test`, `nemesis_quests_test` and `clash_balance_test` pass with no bound changed.

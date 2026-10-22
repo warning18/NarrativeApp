@@ -5,7 +5,8 @@
 ///   [rerollMaxCharges] charges, full when built, +1 per level gained;
 /// - **Banish** (the Warding Cairn): ward a card's training path or gift
 ///   off for 5, 10 or 15 fresh draws ([banishLengths], 1 to 3 charges), up
-///   to [banishMaxCharges], full when built, +1 per level gained;
+///   to [banishMaxCharges], full when built, +1 per level gained; or ward
+///   the road against a hunting clan (road_wards.dart);
 /// - **Raise** (the Star Well): one card one rarity up, once per card, 1
 ///   charge when built then +1 every [raiseChargeEvery] fresh draws, up to
 ///   [raiseMaxCharges].
@@ -86,12 +87,14 @@ int chargesWhenBuilt(RollPower power) => switch (power) {
       RollPower.raise => 1,
     };
 
-/// Which draw a ban counts down on: the stat picks (a training path) or the
-/// offers (a gift).
-enum RollBanOn { pick, offer }
+/// Which draw a ban counts down on: the stat picks (a training path), the
+/// offers (a gift), or the roads at rest (a hunting clan's ward,
+/// road_wards.dart).
+enum RollBanOn { pick, offer, road }
 
-/// One ban: [id] (a path id, or a gift's `kind:id`, see [giftBanId]) kept
-/// off [on]'s draws for [left] more fresh draws.
+/// One ban: [id] (a path id, a gift's `kind:id`, see [giftBanId], or a
+/// warded clan's id) kept off [on]'s draws for [left] more fresh draws (or
+/// roads at rest).
 class RollBan {
   const RollBan({required this.on, required this.id, required this.left});
 
