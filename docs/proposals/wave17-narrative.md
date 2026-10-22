@@ -22,7 +22,7 @@ added that nobody has read as a whole:
   #467 did not carry it);
 - a read-through of the 30 land events against the routes that now draw
   them (chapters 4, 5 and 7), fixing any line that does not fit its road;
-- the news lines of the 21 politics events and the two upheaval events, now
+- the news lines of the 28 politics events (the two upheaval events included), now
   that they fire in the game and the simulator: tense, "Hostile" versus
   "War" wording, and the seat-fall lines for the Mire and Emberwick;
 - French lint sweep of the same files.
