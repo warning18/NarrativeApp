@@ -16,6 +16,16 @@ Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet
 - **Sea-fight entrance card:** `shipHasEntranceCard` is true for every sea beast, the void barge and named raiders (the corsair brig and the Inquisition cutter), false for skiffs; an `entranceCard` flag in enemy_ships.json overrides it.
 - **Loyalty flags:** `devoted_<companion>` is set the first time a companion's approval reaches Devoted and stays set; `ally_<companion>` is held while a companion is recruited. Old saves get both on load.
 
+## [1.521.0+557]
+
+Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large text.
+
+### Changed
+- **The land crossing's bar keeps its numbers whole** at large text on a narrow phone: the health bar shrinks (from up to 96 px) instead of pushing the figures off the edge at 320 px and text ×1.6. Nothing changes at normal text.
+
+### Added
+- **`test/ux_sweep_test.dart`:** the entrance card, the spoils strip, the deck crew with its speech bubble and the sea arrival, the land crossing, and the ward sheet with its mark and the Banish card, each at 320 and 390 px wide, text ×1 and ×1.6, in English and French, with and without reduced motion (the app's own fonts are loaded, as in `qa_fight_tips_real_font_test.dart`; the test font is far wider). No overflow in any; with reduced motion the entrance card shows none and the spoils are whole at once. The crossing's bar was the only thing that did not fit.
+
 ## [1.520.0+556]
 
 Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
