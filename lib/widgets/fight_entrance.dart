@@ -35,6 +35,7 @@ class FightEntrance extends StatefulWidget {
     this.line = '',
     this.boss = false,
     this.show = true,
+    this.art,
   });
 
   final String enemyId;
@@ -44,6 +45,10 @@ class FightEntrance extends StatefulWidget {
   final String line;
   final bool boss;
   final bool show;
+
+  /// What stands in the card in place of the foe's 96 px pixel portrait: a
+  /// sea fight's hull or beast (a small side-view of the waters).
+  final Widget? art;
   final Widget child;
 
   @override
@@ -145,15 +150,16 @@ class _FightEntranceState extends State<FightEntrance>
                   children: [
                     Transform.translate(
                       offset: Offset(90 * (1 - slide), 0),
-                      child: PixelEnemyPortrait(
-                        enemyId: widget.enemyId,
-                        alive: true,
-                        controller: _vfx,
-                        anchor: _anchor,
-                        boss: widget.boss,
-                        animate: false,
-                        size: 96,
-                      ),
+                      child: widget.art ??
+                          PixelEnemyPortrait(
+                            enemyId: widget.enemyId,
+                            alive: true,
+                            controller: _vfx,
+                            anchor: _anchor,
+                            boss: widget.boss,
+                            animate: false,
+                            size: 96,
+                          ),
                     ),
                     const SizedBox(height: 10),
                     Text(widget.name,

@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.528.0+564]
+
+Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasEntranceCard` (v1.522).
+
+### Added
+- **An entrance card before a sea fight** (`voyage_screen.dart`, `fight_entrance.dart`): a sea beast, the void barge, and any ship the data marks `entranceCard` (the corsair brig, the Inquisition cutter; the skiff has none) is announced before the fight: the hull or the beast sails in from the right over the waters of the crossing, with its name and the first sentence of its description, 1.2 s, a tap on the card ends it, reduced motion shows none. The card takes a picture of its own (`FightEntrance.art`) and the sea scene a `showShip` switch, so the card shows only what she meets, not the Eel.
+- **The spoils over the next day:** a won sea fight counts up its gold and XP and drops in the part taken by boarding and the chapter's rare material (the strip of the land fights, `fight_spoils_strip.dart`) above the route strip of the next day, and over the harbour at the end of a voyage. It clears when the next day is acted on.
+- Picture: `docs/ux-shots/sea-fight-entrance.png` (the Brinejaw, the Corsair Brig). Test: `test/sea_fight_entrance_test.dart`.
+
+### Not tested
+- The spoils strip is tested on its own (v1.517) but not through a whole won sea fight, which needs the ship battle played out; its wiring is the one place a bug could hide.
+
+### Touches another session's area
+- `lib/screens/voyage_screen.dart` (shared): the card around the battle panel, the spoils state and strip (about 70 lines). `ship_battle_panel.dart` is not touched.
 ## [1.527.0+563]
 
 Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
