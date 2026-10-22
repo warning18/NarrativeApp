@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.532.0+568]
+
+- A new intrigue, The Taken's Names: a clerk brings the names cut into the back of the Lantern Throne, and in the last two chapters you decide whether to read them aloud, burn them, or carry them across unread. Six scenes at camp.
+
 ## [1.531.0+567]
 
 Chapter 7's claimants stop walling the cleric and the warrior (wave 17).
