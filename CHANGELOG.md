@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.504.0+540]
+
+The three hardest late bosses lose a little health, so the boss curve is back on target with the simulator's honest gift picks (option B4, `docs/simulation/boss-mean-options.md`).
+
+### Changed
+- **The Sovereign** has 66 health (was 77), **the Tear-Herald** 52 (was 58) and **Claimant Morrow** 108 (was 121). Bosses won on average, seeds 7 / 11 / 23: 49.4 / 48.5 / 48.5% → 51.1 / 50.9 / 50.3%. The Sovereign is won 38–40% (was 25–29%, floor 23%). Every boss stays inside its band; chapters 1–6 and the champions are unchanged.
+
 ## [1.503.0+539]
 
 Wave 16 UX, item 4: a town changing hands is seen.
