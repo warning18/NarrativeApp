@@ -25,6 +25,7 @@ import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
+import '../data/camp_errands.dart' show storyChoiceTarget;
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
 import '../data/hunter_mercy.dart';
@@ -2141,7 +2142,8 @@ _SimResult _simulate(
     if (choice.isEnding) {
       return finish(endingText: choice.text, reachedStepCap: false);
     }
-    currentId = choice.nextId;
+    // A way back to the camp (a camp errand's end) goes to the last camp.
+    currentId = storyChoiceTarget(choice, campNodeId: campId);
     visited.add(currentId);
   }
 

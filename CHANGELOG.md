@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.527.0+563]
+
+Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
+
+### Added
+- **Camp errands:** a story node marked `campErrand` is listed on every chapter camp page, after the camp's own choices, whenever its show/hide flags pass. It does not count toward the camp's choice limit. Its label is `campErrandText` (`campErrandText_fr`).
+- **Back to camp:** a choice marked `returnToCamp` leads to the camp of the chapter the party is in.
+
 ## [1.526.0+562]
 
 - A new intrigue, The Lantern-Bearer's Will: a sealed page names an heir who is none of the three claimants. Six scenes from Rimewell to Greyhithe, and five ways to settle it.
