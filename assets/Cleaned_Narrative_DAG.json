@@ -3546,6 +3546,10 @@
           },
           "marks": {
             "keyholders": "foe"
+          },
+          "power": {
+            "crows": -4,
+            "dominion": 3
           }
         }
       }
@@ -5030,6 +5034,9 @@
         "politics": {
           "standing": {
             "vigil": 10
+          },
+          "power": {
+            "vigil": 3
           }
         }
       },
@@ -5048,6 +5055,9 @@
         "politics": {
           "standing": {
             "vigil": 10
+          },
+          "power": {
+            "vigil": 3
           }
         }
       }
@@ -5084,6 +5094,9 @@
         "politics": {
           "standing": {
             "vigil": 10
+          },
+          "power": {
+            "vigil": 3
           }
         }
       }
@@ -6801,6 +6814,9 @@
           "standing": {
             "penitents": 10,
             "dominion": -10
+          },
+          "power": {
+            "dominion": -4
           }
         }
       }
@@ -8610,6 +8626,10 @@
           "standing": {
             "dominion": -5,
             "vigil": 10
+          },
+          "power": {
+            "vigil": 4,
+            "dominion": -3
           }
         }
       },
@@ -8730,7 +8750,10 @@
           "standing": {
             "compact": 10
           },
-          "pledge": "compact"
+          "pledge": "compact",
+          "power": {
+            "compact": 8
+          }
         }
       }
     ],
@@ -10835,6 +10858,9 @@
           },
           "marks": {
             "order": "foe"
+          },
+          "power": {
+            "dominion": -6
           }
         }
       },
@@ -11056,6 +11082,9 @@
           "remembrance": 4,
           "standing": {
             "penitents": 5
+          },
+          "power": {
+            "penitents": 4
           }
         }
       },
@@ -12987,6 +13016,9 @@
         "politics": {
           "standing": {
             "crows": 10
+          },
+          "power": {
+            "crows": 4
           }
         }
       },
@@ -13002,6 +13034,9 @@
         "politics": {
           "standing": {
             "crows": 10
+          },
+          "power": {
+            "crows": 4
           }
         }
       },
@@ -14264,7 +14299,11 @@
             "mire": 15,
             "dominion": -5
           },
-          "offerFrom": "mire"
+          "offerFrom": "mire",
+          "power": {
+            "mire": 5,
+            "dominion": -2
+          }
         }
       },
       {
@@ -14282,6 +14321,9 @@
           "standing": {
             "mire": -20,
             "dominion": 10
+          },
+          "power": {
+            "mire": -6
           }
         }
       }
@@ -14360,7 +14402,10 @@
           "standing": {
             "penitents": 15
           },
-          "offerFrom": "penitents"
+          "offerFrom": "penitents",
+          "power": {
+            "penitents": 5
+          }
         }
       }
     ],
@@ -18634,6 +18679,9 @@
           },
           "standing": {
             "dominion": 10
+          },
+          "power": {
+            "dominion": 6
           }
         }
       },
@@ -18655,6 +18703,10 @@
           "standing": {
             "dominion": 5,
             "crows": 5
+          },
+          "power": {
+            "dominion": 4,
+            "crows": 3
           }
         }
       },
@@ -18675,6 +18727,11 @@
             "compact": 5,
             "penitents": 5,
             "dominion": -5
+          },
+          "power": {
+            "compact": 3,
+            "penitents": 3,
+            "dominion": -4
           }
         }
       }
@@ -18999,6 +19056,9 @@
           },
           "standing": {
             "crows": -5
+          },
+          "power": {
+            "crows": -4
           }
         }
       },
@@ -19019,6 +19079,9 @@
           },
           "standing": {
             "crows": 5
+          },
+          "power": {
+            "crows": 3
           }
         }
       },
