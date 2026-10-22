@@ -147,7 +147,7 @@ const int fullRosterCompanionCount = 6;
 
 /// The intrigues of intrigues.json: "settle them all" needs this many
 /// distinct ones (a test keeps the count in step with the file).
-const int intrigueCount = 8;
+const int intrigueCount = 9;
 
 /// How many of the six clans must trust the character at once for "A Hand
 /// at Four Doors": a clan's gains cost its rivals half, so all six is out of

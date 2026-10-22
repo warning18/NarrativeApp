@@ -16,6 +16,7 @@ import '../providers/aftermath_provider.dart'
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart'
     show factionsProvider, loadClanData, politicsProvider;
+import '../providers/day_phase_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart' show loadGeography;
@@ -32,6 +33,7 @@ import '../widgets/side_view/encounter_figure.dart';
 import '../widgets/side_view/cliffs_kit.dart';
 import '../widgets/side_view/fen_kit.dart';
 import '../widgets/side_view/frost_kit.dart';
+import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
@@ -554,6 +556,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             ? 0.0
             : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
                 .clamp(0.0, 1.0);
+    final phase = ref.watch(dayPhaseProvider);
     final storm = _phase == _Phase.event && crossingIsStorm(event?.id);
     final sky = ref.watch(skyHereProvider)?.today().kind;
     final particles =
@@ -684,7 +687,9 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: crossingSceneHeight,
-                      layers: crossingLayers(terrain, progress),
+                      layers: withHourStars(
+                          crossingLayers(terrain, progress), phase),
+                      overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),
                           moving: _phase == _Phase.result,

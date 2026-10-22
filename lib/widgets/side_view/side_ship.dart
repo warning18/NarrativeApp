@@ -226,6 +226,7 @@ void paintSideShip(
   bool rough = false,
   double condition = 1.0,
   List<DeckCrew> crew = const [],
+  bool lamp = false,
 }) {
   final pal = _Palette(form, dress);
   final len = sideShipLength(form);
@@ -270,7 +271,13 @@ void paintSideShip(
   }
   if (crew.isNotEmpty) {
     paintDeckCrew(canvas, u,
-        crew: crew, x: x, len: len, top: deck ?? top, t: t, rough: rough);
+        crew: crew,
+        x: x,
+        len: len,
+        top: deck ?? top,
+        t: t,
+        rough: rough,
+        lamp: lamp);
   }
   if (condition < 0.8) {
     _damage(canvas, u, x, base, len, form, pal, t, condition,

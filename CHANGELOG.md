@@ -8,6 +8,51 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.530.0+566]
+
+- Your Devoted companions now have a scene of their own at camp: eight short scenes, one each for Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik, offered once they have grown devoted to you. What you answer is remembered at the muster.
+
+## [1.527.0+563]
+
+Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
+
+### Added
+- **Camp errands:** a story node marked `campErrand` is listed on every chapter camp page, after the camp's own choices, whenever its show/hide flags pass. It does not count toward the camp's choice limit. Its label is `campErrandText` (`campErrandText_fr`).
+- **Back to camp:** a choice marked `returnToCamp` leads to the camp of the chapter the party is in.
+
+## [1.526.0+562]
+
+- A new intrigue, The Lantern-Bearer's Will: a sealed page names an heir who is none of the three claimants. Six scenes from Rimewell to Greyhithe, and five ways to settle it.
+
+## [1.525.0+561]
+
+- Four events for the Glass Shore: the glassed dunes, a wrecked hull, a well from a drowned coast and the pull of the tear (not drawn yet).
+
+## [1.524.0+560]
+
+Wave 17 UX, item 5: the party's own faces, as a stand-in until the user's sprite art arrives.
+
+### Added
+- **Each companion has a face of their own** on the land walk and on the Eel's deck (`lib/widgets/side_view/party_look.dart`), over the cloak colour they already had: the skin of their people, the hair, a hood, a veil or a helm, a dwarf's beard (Kelda and Brother Tobin), an orc's tusks (Grosh and Malrik), the elf's pointed ears (Liora), the voidkin's grey-violet skin and white hair (Vess), Sister Maren's white veil, Sable's black hood. A companion added later gets a face made from their id (the same each time) until the table names them. The hero is unchanged.
+- **No portrait art to crop:** the proposal said "crop the portraits", but the repository has no companion portraits (only the enemies' and the hero's walker); the looks are set here by race and profession instead. When the `companion_<id>` sprites come, this file is what they replace.
+- Picture: `docs/ux-shots/party-faces.png`. Test: `test/party_look_test.dart` (every companion distinct, the marks follow the race, the fallback is stable, every group paints on the land and the deck).
+
+## [1.523.0+559]
+
+Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.
+
+### Added
+- **The land crossing and the voyage follow the hour** (`lib/widgets/side_view/kit_hour.dart`): nothing by day; a thin warm wash at dawn, a violet one at dusk, a deep blue one at night, the same as the town plan's, so a place reads the same hour on the plan and on the road to it. Stars come out in the sky at dusk (a few) and at night, laid right behind the hills so none shines through a mountain or a headland. The wash is a new `overlay` of `SideViewScene` (painted over the actors, under the weather).
+- **The hero carries a lantern on the Eel's deck** after dark, with a small warm halo, on every hull.
+- The phase is read from `dayPhaseProvider` in `land_crossing_screen.dart` and `voyage_screen.dart` (the day's scene and the harbour); a scene given no phase stays at noon.
+- Picture: `docs/ux-shots/hour-on-roads-and-sea.png`. Test: `test/hour_roads_test.dart`.
+
+### Not done
+- The fen's lantern, the shelter's lit window and the lighthouse are drawn under the wash, so at night they are dimmed with the rest rather than burning brighter. They would need the kits to take the hour; left for a later pass. The sun (desert, ruins) is only dimmed at night, not removed.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` and `lib/screens/voyage_screen.dart` (shared): the phase read and its passing, about 8 lines.
+
 ## [1.522.0+558]
 
 Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet: UX and Narrative build on them next.

@@ -14008,6 +14008,17 @@
         "hideIfFlags": [
           "hub_6100_charter_signing"
         ]
+      },
+      {
+        "text": "Question the scribe at the chapel door",
+        "text_fr": "Interroger la scribe devant la chapelle",
+        "next_id": "6100_will_scribe",
+        "showIfFlags": [
+          "hub_3005_envoys"
+        ],
+        "hideIfFlags": [
+          "hub_6100_will_scribe"
+        ]
       }
     ],
     "prompt": "What do you do in Rimewell?",
@@ -15314,6 +15325,17 @@
         "hideIfFlags": [
           "hub_7100_charter_choice"
         ]
+      },
+      {
+        "text": "Look at the wax a wreck-wright has pressed",
+        "text_fr": "Regarder la cire qu’un ouvrier des épaves a pressée",
+        "next_id": "7100_will_seal",
+        "showIfFlags": [
+          "plot_will_1"
+        ],
+        "hideIfFlags": [
+          "hub_7100_will_seal"
+        ]
       }
     ],
     "prompt": "What do you do at the White Anchorage?",
@@ -16136,6 +16158,50 @@
           "throne_backed",
           "throne_filled",
           "on_throne"
+        ]
+      },
+      {
+        "text": "Ask the trimmer’s widow about a name",
+        "text_fr": "Interroger la veuve de l’allumeur sur un nom",
+        "next_id": "7200_will_heir",
+        "showIfFlags": [
+          "plot_will_2"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_heir"
+        ]
+      },
+      {
+        "text": "Meet the courier in the black crape",
+        "text_fr": "Rencontrer le courrier au crêpe noir",
+        "next_id": "7200_will_courier",
+        "showIfFlags": [
+          "plot_will_3"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_courier"
+        ]
+      },
+      {
+        "text": "See what the three boats are waiting for",
+        "text_fr": "Voir ce qu’attendent les trois bateaux",
+        "next_id": "7200_will_houses",
+        "showIfFlags": [
+          "plot_will_4"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_houses"
+        ]
+      },
+      {
+        "text": "Decide what to do with the sealed will",
+        "text_fr": "Décider du sort du testament scellé",
+        "next_id": "7200_will_choice",
+        "showIfFlags": [
+          "plot_will_5"
+        ],
+        "hideIfFlags": [
+          "hub_7200_will_choice"
         ]
       }
     ],
@@ -23342,6 +23408,21 @@
         "fr": "La personne vaincue à Candlehold avait été enterrée sous la falaise selon les rites du Dominion. Je n’avais pas assisté à l’enterrement."
       },
       {
+        "flag": "will_read",
+        "en": "Perrin Ash stood at the back of the muster in a trimmer’s apron, grey-faced, with the First Lantern’s wax on a string at his neck, and nobody who passed him failed to bow.",
+        "fr": "Perrin Ash se tenait au fond de la revue en tablier d’allumeur, le visage gris, la cire de la Première Lanterne pendue au cou par un cordon, et nul ne passait devant lui sans s’incliner."
+      },
+      {
+        "flag": "will_hidden",
+        "en": "I kept the ash of the will in the Eel’s chart-case. Every time a House asked after it, I felt the weight of what it did not say.",
+        "fr": "Je gardais la cendre du testament dans l’étui à cartes de l’Eel. Chaque fois qu’une Maison le réclamait, je sentais le poids de ce qu’il ne disait pas."
+      },
+      {
+        "flag": "will_given",
+        "en": "The House that had the will brought it in its own hand to the muster, and read my name beside the Throne’s, as if it had always been written there.",
+        "fr": "La Maison qui avait le testament l’apporta de sa propre main à la revue, et lut mon nom à côté de celui du Trône, comme s’il y avait toujours été écrit."
+      },
+      {
         "flag": "kelda_gate_held",
         "en": "Kelda still held the camp’s gate at night, and since the tags were buried under it, nobody had ever tried to rush it.",
         "fr": "Kelda tenait toujours la porte du camp la nuit, et depuis que les plaques étaient enterrées dessous, personne n’avait jamais tenté de la forcer."
@@ -26647,6 +26728,372 @@
     "prompt": "Ready for the Hall?",
     "prompt_fr": "La Salle, maintenant ?"
   },
+  "6100_will_scribe": {
+    "id": "6100_will_scribe",
+    "description": "A scribe had set a trestle up at the chapel door in Rimewell, copying pilgrims’ names into a ledger for a Reliquary that would never read it. She wrote in a long hand, with a tail on every *g* that I had seen only on the Throne’s old letters, and that no clerk of the Inquisition could fake.\n\nShe was not forging. She was finishing. A page had come up the pilgrims’ road in the lining of a dead man’s coat, folded small, and she was copying it out clean before the damp took the ink. When I asked, she turned it face down.\n\n**A will**, she said. **Sealed in the Lantern-Bearer’s last year, and it names neither Vane, nor Morrow, nor Tallis.** That was all she would say until I had decided what I was to her.",
+    "description_fr": "Une scribe avait dressé un tréteau devant la porte de la chapelle de Puits-de-Givre et y copiait des noms de pèlerins dans un registre destiné à un Reliquaire qui ne le lirait jamais. Elle écrivait d’une main longue, avec une queue à chaque *g* que je n’avais vue que sur les vieilles lettres du Trône, et qu’aucun clerc de l’Inquisition ne pouvait contrefaire.\n\nElle ne falsifiait pas. Elle achevait. Une page était remontée par la route des pèlerins dans la doublure du manteau d’un mort, pliée menu, et elle la recopiait au propre avant que l’humidité n’emporte l’encre. Quand je la questionnai, elle la retourna face contre la table.\n\n**Un testament**, dit-elle. **Scellé dans la dernière année du Porte-Lanterne, et il ne nomme ni Vane, ni Morrow, ni Tallis.** Elle n’en dit pas plus avant que j’aie décidé ce que j’étais pour elle.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "rimewell",
+    "choices": [
+      {
+        "text": "Ask for a clean copy, and pay for it",
+        "text_fr": "Demander une copie au propre, et la payer",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_will_scribe",
+          "plot_will_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 1
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Tell her to burn the page and say nothing",
+        "text_fr": "Lui dire de brûler la page et de se taire",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_will_scribe",
+          "plot_will_1"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 1
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": -1
+      }
+    ],
+    "prompt": "What do you ask of the scribe?",
+    "prompt_fr": "Que demandez-vous à la scribe ?"
+  },
+  "7100_will_seal": {
+    "id": "7100_will_seal",
+    "description": "The wreck-wrights had a trade in wax. A seal that had gone through salt water and sat three years in the stern-chapel still held its shape, and a man who made a living lifting impressions off drowned deeds had one pressed into a lump of beeswax on his bench.\n\n“A flame in a hand,” he said, and turned it for me to see. “**The First Lantern’s own device**. Nobody has cut it since the Long Night, and nobody could cut it now. I took this off a page the fleet’s chaplain carried ashore the week the Bearer failed.”\n\nHe named the page without my asking. **It was the will**. The chaplain had witnessed it, and had been sleeping badly ever since, because he had not known he was witnessing a Throne.",
+    "description_fr": "Les ouvriers des épaves avaient un commerce de cire. Un sceau qui avait traversé l’eau salée et dormi trois ans dans la chapelle de poupe gardait sa forme, et un homme qui vivait de lever des empreintes sur des actes noyés en avait une, pressée dans une motte de cire d’abeille, sur son établi.\n\n« Une flamme dans une main », dit-il en la tournant pour que je la voie. « **Le sceau même de la Première Lanterne**. Personne ne l’a taillé depuis la Longue Nuit, et personne ne saurait le tailler aujourd’hui. Je l’ai pris sur une page que l’aumônier de la flotte a rapportée à terre la semaine où le Porteur a décliné. »\n\nIl nomma la page sans que je le lui demande. **C’était le testament**. L’aumônier l’avait signé comme témoin, et dormait mal depuis, parce qu’il ne savait pas qu’il témoignait d’un Trône.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "white_anchorage_quay",
+    "choices": [
+      {
+        "text": "Take the impression to the chaplain",
+        "text_fr": "Porter l’empreinte à l’aumônier",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_will_seal",
+          "plot_will_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Pocket it and tell the wright to forget it",
+        "text_fr": "L’empocher et dire à l’ouvrier de l’oublier",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_will_seal",
+          "plot_will_2"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 2
+          },
+          "standing": {
+            "crows": 5
+          }
+        },
+        "alignmentMod": -1
+      }
+    ],
+    "prompt": "What do you do with the wax?",
+    "prompt_fr": "Que faites-vous de la cire ?"
+  },
+  "7200_will_heir": {
+    "id": "7200_will_heir",
+    "description": "The will named one man, and a trimmer’s widow in Greyhithe knew him by the name before I had finished asking. **Perrin Ash**. He had trimmed the First Lantern for nine years from a ledge no wider than a plank, and the old Bearer had trusted him with the wick and nothing else, because nothing else was ever his.\n\nHe had gone down the cliff the night the Bearer sickened, she said. The tear had taken the cliff-path that week, and a good many people with it.\n\n**She pointed at the nets**. A grey-faced fisher sat mending one, with the Wickwardens’ plain hands, and a habit of looking up at the sky when a wick guttered in the next house. He did not know his name. I thought he might be willing to learn it.",
+    "description_fr": "Le testament nommait un seul homme, et une veuve d’allumeur à Grisegrève le connaissait sous ce nom avant que j’aie fini de demander. **Perrin Ash**. Il avait taillé la Première Lanterne pendant neuf ans, depuis une corniche pas plus large qu’une planche, et le vieux Porteur ne lui avait confié que la mèche, parce que rien d’autre n’avait jamais été à lui.\n\nIl était descendu de la falaise la nuit où le Porteur avait décliné, dit-elle. La déchirure avait pris le sentier de la falaise cette semaine-là, et bien des gens avec lui.\n\n**Elle me montra les filets**. Un pêcheur au visage gris, assis, en raccommodait un, avec les mains simples des Garde-Mèches et l’habitude de lever les yeux au ciel quand une mèche vacillait dans la maison voisine. Il ne savait pas son nom. Je pensai qu’il serait peut-être prêt à l’apprendre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Tell him who he was, and what he was named",
+        "text_fr": "Lui dire qui il était, et ce qu’on avait fait de lui",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_heir",
+          "plot_will_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 3
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": 1
+      },
+      {
+        "text": "Let him mend the net, and watch from the quay",
+        "text_fr": "Le laisser raccommoder son filet, et l’observer du quai",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_heir",
+          "plot_will_3"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 3
+          },
+          "standing": {
+            "vigil": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you tell the grey fisher?",
+    "prompt_fr": "Que dites-vous au pêcheur gris ?"
+  },
+  "7200_will_courier": {
+    "id": "7200_will_courier",
+    "description": "The courier came down the shingle at dusk with a lantern hooded in black crape, and I knew the crape before I knew the man. The Dominion was still in mourning for a Bearer it had not yet buried.\n\nHe had a letter from each of the three. **Oriel offered a writ, Morrow a company of knights, Tallis a lamp**; they had written within a day of one another, in three hands, and all three asked the same question in the same politest words. Did I know of a will?\n\nSomeone in Candlehold had talked. **The Houses knew a page existed, and not whose name was on it**. That was the only thing that had kept the fleet in harbour, and it would not keep it there a week.",
+    "description_fr": "Le courrier descendit les galets à la tombée du jour avec une lanterne voilée de crêpe noir, et je reconnus le crêpe avant de reconnaître l’homme. Le Dominion portait encore le deuil d’un Porteur qu’il n’avait pas encore enterré.\n\nIl avait une lettre de chacun des trois. **Oriel offrait un décret, Morrow une compagnie de chevaliers, Tallis une lampe** ; ils avaient écrit à un jour d’intervalle, de trois mains, et tous trois posaient la même question dans les mêmes termes très polis. Connaissiez-vous un testament ?\n\nQuelqu’un à Candlehold avait parlé. **Les Maisons savaient qu’une page existait, et non le nom qu’elle portait**. C’était la seule chose qui avait retenu la flotte au port, et cela ne la retiendrait pas une semaine.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Answer no one, and let them wonder",
+        "text_fr": "Ne répondre à personne et les laisser s’interroger",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_courier",
+          "plot_will_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": -5
+          }
+        }
+      },
+      {
+        "text": "Answer all three: the page exists, and is safe",
+        "text_fr": "Répondre aux trois : la page existe, et elle est en sûreté",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_courier",
+          "plot_will_4"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you answer the three Houses?",
+    "prompt_fr": "Que répondez-vous aux trois Maisons ?"
+  },
+  "7200_will_houses": {
+    "id": "7200_will_houses",
+    "description": "The original came on the third night, in the scribe’s own satchel, with the scribe asleep on her feet beside it. **The seal was whole**. A flame in a hand, as the wright had said, and under it the long tail of a *g* where the Bearer had signed.\n\nI did not break it. I set it on the Eel’s chart-table and put a knife beside it, and the village felt the weight of it from the nets to the last door.\n\nBy morning there were three boats off the point, flying three banners, each a little closer than the one before. **None of them had come to ask**. They had come to be there when I decided, and to see which of them I looked at first.",
+    "description_fr": "L’original arriva la troisième nuit, dans la sacoche même de la scribe, la scribe endormie debout à côté. **Le sceau était intact**. Une flamme dans une main, comme l’avait dit l’ouvrier, et dessous la longue queue d’un *g* là où le Porteur avait signé.\n\nJe ne le brisai pas. Je le posai sur la table à cartes de l’Eel, avec un couteau à côté, et le village en sentit le poids des filets à la dernière porte.\n\nAu matin, il y avait trois bateaux au large de la pointe, sous trois bannières, chacun un peu plus près que le précédent. **Aucun n’était venu demander**. Ils étaient venus pour être là quand je déciderais, et voir lequel des trois je regarderais en premier.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Send for Perrin Ash to witness it",
+        "text_fr": "Faire venir Perrin Ash comme témoin",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_houses",
+          "plot_will_5",
+          "will_heir_present"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 5
+          },
+          "standing": {
+            "penitents": 5
+          }
+        },
+        "alignmentMod": 1
+      },
+      {
+        "text": "Put a guard on it and wait for the tide",
+        "text_fr": "Mettre une garde dessus et attendre la marée",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_houses",
+          "plot_will_5"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "stage": 5
+          },
+          "standing": {
+            "vigil": 5
+          }
+        }
+      }
+    ],
+    "prompt": "What do you do before you break the seal?",
+    "prompt_fr": "Que faites-vous avant de briser le sceau ?"
+  },
+  "7200_will_choice": {
+    "id": "7200_will_choice",
+    "description": "I stood with the seal under my thumb and the three boats at my back, and for once nobody on the shingle spoke.\n\nIf I read it, Perrin Ash would be named on the beach in front of the whole village: a grey man with a trimmer’s hands, and the First Lantern’s own wax beside his name. If I burned it, **the page would go on being a rumour, and the Houses would go on hunting it**. And if I gave it to a House, I would be giving that House the one thing the coast could not argue with.\n\nI had backed one claimant at the Anchorage. The page had not been written for any of them. **It had been written for whoever was left when the Houses had finished**.",
+    "description_fr": "Je me tenais le sceau sous le pouce et les trois bateaux dans le dos, et pour une fois personne sur les galets ne parla.\n\nSi je le lisais, Perrin Ash serait nommé sur la plage devant tout le village : un homme gris aux mains d’allumeur, et la cire même de la Première Lanterne à côté de son nom. Si je le brûlais, **la page resterait une rumeur, et les Maisons continueraient de la chercher**. Et si je le remettais à une Maison, je lui donnerais la seule chose que la côte ne pouvait pas contester.\n\nJ’avais soutenu un prétendant au Mouillage. La page n’avait été écrite pour aucun d’eux. **Elle l’avait été pour celui qui resterait quand les Maisons en auraient fini**.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "solemn",
+      "speaker": "Narrator"
+    },
+    "location": "greyhithe",
+    "choices": [
+      {
+        "text": "Break the seal and read it aloud",
+        "text_fr": "Briser le sceau et le lire à voix haute",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_read"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Burn it unread and tell the Houses it was lost",
+        "text_fr": "Le brûler sans le lire et dire aux Maisons qu’il est perdu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_hidden"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 1
+          }
+        }
+      },
+      {
+        "text": "Give it to Regent Oriel, whom you did not back",
+        "text_fr": "Le remettre au Régent Oriel, que vous n’avez pas soutenu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 2
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_vane"
+        ]
+      },
+      {
+        "text": "Give it to Grand Master Morrow, whom you did not back",
+        "text_fr": "Le remettre au Grand Maître Morrow, que vous n’avez pas soutenu",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 3
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_morrow"
+        ]
+      },
+      {
+        "text": "Give it to Eldest Tallis, whom you did not back",
+        "text_fr": "Le remettre à l’Aînée Tallis, que vous n’avez pas soutenue",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_will_choice",
+          "will_given"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "lanternbearers_will",
+            "outcome": 4
+          }
+        },
+        "hideIfFlags": [
+          "throne_backed_tallis"
+        ]
+      }
+    ],
+    "prompt": "What do you do with the Lantern-Bearer’s will?",
+    "prompt_fr": "Que faites-vous du testament du Porte-Lanterne ?",
+    "flag_callbacks": [
+      {
+        "flag": "will_heir_present",
+        "en": "Perrin Ash stood at the table in a borrowed apron, looking at the seal the way a man looks at a lamp he used to trim.",
+        "fr": "Perrin Ash se tenait à la table dans un tablier d’emprunt, regardant le sceau comme on regarde une lampe qu’on a longtemps taillée."
+      }
+    ]
+  },
   "loyal_kelda": {
     "id": "loyal_kelda",
     "campErrand": true,
@@ -26930,7 +27377,8 @@
         "approvalMods": {
           "grosh": 2
         },
-        "goldMod": -50
+        "goldMod": -50,
+        "pays": true
       },
       {
         "text": "Tell him to keep his coin and his pride",

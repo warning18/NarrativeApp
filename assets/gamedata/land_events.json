@@ -1764,5 +1764,156 @@
         }
       }
     ]
+  },
+  "glass_fulgurite": {
+    "id": "glass_fulgurite",
+    "name": "The glassed sand",
+    "name_fr": "Le sable vitrifié",
+    "text": "The dune is not sand underneath. Something once ran across it hot, and the grey grains fused into a crust of black glass, thin as ice, ringing under your boots like a bell with a crack in it.",
+    "text_fr": "Sous la dune, ce n’est plus du sable. Quelque chose l’a traversée brûlant, et les grains gris ont fondu en une croûte de verre noir, fine comme de la glace, qui résonne sous vos bottes comme une cloche fêlée.",
+    "choices": [
+      {
+        "id": "pick",
+        "text": "Pick your way across the thick patches",
+        "text_fr": "Passer en choisissant les plaques épaisses",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": 2,
+          "note": "You find a line where the glass holds, and cross without a sound.",
+          "note_fr": "Vous trouvez une ligne où le verre tient, et traversez sans un bruit."
+        },
+        "fail": {
+          "healthPct": -7,
+          "note": "The crust gives under your heel and the edges open your shin.",
+          "note_fr": "La croûte cède sous votre talon et les bords vous ouvrent le tibia."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Go round by the wet sand",
+        "text_fr": "Contourner par le sable mouillé",
+        "outcome": {
+          "healthPct": -2,
+          "note": "The tide has been at it. It costs you an hour and a boot full of water.",
+          "note_fr": "La marée est passée par là. Cela vous coûte une heure et une botte pleine d’eau."
+        }
+      }
+    ]
+  },
+  "glass_hull_shelter": {
+    "id": "glass_hull_shelter",
+    "name": "The hull in the dunes",
+    "name_fr": "La coque dans les dunes",
+    "text": "A White Fleet hull lies on its side behind the dune, a long way from any water, its ribs open like a hand. The wind off the tear is rising, and the dark between the ribs is out of it.",
+    "text_fr": "Une coque de la Flotte blanche gît sur le flanc derrière la dune, loin de toute eau, ses côtes ouvertes comme une main. Le vent de la déchirure se lève, et l’ombre entre les côtes est à l’abri.",
+    "choices": [
+      {
+        "id": "shelter",
+        "text": "Shelter inside and read the hull",
+        "text_fr": "S’abriter dedans et lire la coque",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 4,
+          "note": "Under the bench you find a logbook, dry. The last line is a date and a promise to come back for the rest. You rest, and keep the page.",
+          "note_fr": "Sous un banc, vous trouvez un journal de bord, sec. La dernière ligne est une date et la promesse de revenir chercher le reste. Vous vous reposez, et vous gardez la page."
+        },
+        "fail": {
+          "healthPct": -5,
+          "note": "The hull settles in the wind. You get out in time, but not clean.",
+          "note_fr": "La coque s’assoit dans le vent. Vous sortez à temps, mais pas indemne."
+        }
+      },
+      {
+        "id": "lee",
+        "text": "Sit in its lee and keep walking after",
+        "text_fr": "S’asseoir sous son vent et repartir ensuite",
+        "outcome": {
+          "healthPct": 0,
+          "note": "The wind drops a little. You let it blow itself out against a wreck that has heard worse.",
+          "note_fr": "Le vent faiblit un peu. Vous le laissez s’épuiser contre une épave qui en a entendu d’autres."
+        }
+      }
+    ]
+  },
+  "glass_drowned_well": {
+    "id": "glass_drowned_well",
+    "name": "The well from a drowned coast",
+    "name_fr": "Le puits d’une côte noyée",
+    "text": "A stone well stands alone on the sand, a ring of fitted blocks that do not belong to this shore. It is full to the lip, and the water is not salt. Something about that is worse.",
+    "text_fr": "Un puits de pierre se dresse seul sur le sable, une margelle de blocs ajustés qui n’appartient pas à cette côte. Il est plein à ras bord, et l’eau n’est pas salée. Cela n’en est que plus inquiétant.",
+    "choices": [
+      {
+        "id": "drink",
+        "text": "Drink, and trust your stomach",
+        "text_fr": "Boire, et faire confiance à votre estomac",
+        "check": "constitution",
+        "dc": 11,
+        "success": {
+          "healthPct": 3,
+          "note": "It is cold, clean and tastes of a village that was here once. You walk on lighter.",
+          "note_fr": "Elle est froide, claire, et a le goût d’un village qui fut là. Vous repartez d’un pas plus léger."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "It stays in you like a stone. You walk the afternoon bent over.",
+          "note_fr": "Elle vous reste dans le ventre comme une pierre. Vous marchez tout l’après-midi le dos courbé."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Fill nothing, leave a coin on the rim",
+        "text_fr": "Ne rien puiser, laisser une pièce sur la margelle",
+        "outcome": {
+          "healthPct": 0,
+          "note": "The coin does not ring when it lands. You go on a little thirsty, and not sorry.",
+          "note_fr": "La pièce ne tinte pas en tombant. Vous repartez avec un peu de soif, sans regret."
+        }
+      }
+    ]
+  },
+  "glass_tear_pull": {
+    "id": "glass_tear_pull",
+    "name": "The pull of the tear",
+    "name_fr": "L’appel de la déchirure",
+    "text": "Across the water the tear stands open like a door, and for a hundred steps your feet turn toward it by themselves. It is not a voice. It is the plain, patient sense of being expected.",
+    "text_fr": "Au-delà de l’eau, la déchirure se tient ouverte comme une porte, et pendant cent pas vos pieds se tournent d’eux-mêmes vers elle. Ce n’est pas une voix. C’est le sentiment simple et patient qu’on vous attend.",
+    "choices": [
+      {
+        "id": "hold",
+        "text": "Fix your eyes on the dune and hold your line",
+        "text_fr": "Fixer la dune des yeux et tenir votre cap",
+        "check": "wisdom",
+        "dc": 13,
+        "success": {
+          "healthPct": 2,
+          "note": "You hold. It lets you go the way a hand lets go of a sleeve.",
+          "note_fr": "Vous tenez bon. Elle vous lâche comme une main lâche une manche."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "You find yourself ankle deep in the surf with no memory of walking. You wade back shaking.",
+          "note_fr": "Vous vous retrouvez dans les vagues jusqu’aux chevilles sans souvenir d’avoir marché. Vous revenez en pataugeant, tremblant."
+        }
+      },
+      {
+        "id": "sing",
+        "text": "Walk backwards, singing something stupid",
+        "text_fr": "Marcher à reculons en chantant une bêtise",
+        "check": "charisma",
+        "dc": 11,
+        "success": {
+          "healthPct": 1,
+          "note": "It is hard to be expected by something you are rhyming at. The pull thins and goes.",
+          "note_fr": "Difficile pour quelque chose de vous attendre quand on lui fait des rimes. L’appel s’amenuise et s’en va."
+        },
+        "fail": {
+          "healthPct": -4,
+          "note": "You trip over your own verse and sit down hard in the glass.",
+          "note_fr": "Vous butez sur votre propre refrain et vous retrouvez par terre dans le verre."
+        }
+      }
+    ]
   }
 }

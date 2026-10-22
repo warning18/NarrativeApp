@@ -197,6 +197,7 @@ read (`flag_callbacks`).
 | `the_returned` | `2015_child_tongue` | `3005_spire_takings` | `5010_vigil_envoy` | `6010_returned_roll` | `7200_courts_children` | `7200_returned` |
 | `unwatched_hour` | `3100_new_moon` | `6010_count_short` | `6100_stitcher_door` | `7200_stitcher_kin` | `7200_followed` | `7200_stitcher` |
 | `broken_charter` | `2015_dominion_blades` | `3005_tribunal_gold` | `coal_stops` (event) | `5100_anvil_deaf_vote` | `6100_charter_signing` | `7100_charter_choice` |
+| `lanternbearers_will` | `6100_will_scribe` | `7100_will_seal` | `7200_will_heir` | `7200_will_courier` | `7200_will_houses` | `7200_will_choice` |
 
 The outcomes pay off in the closing scenes through callbacks: the Crows'
 brigs at `7810`, the Returned children at `7002_approach`, the second door at
