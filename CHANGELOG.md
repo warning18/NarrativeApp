@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.510.0+546]
+
+Wave 16 UX: the land crossing has a backdrop for frost, fen and sea cliffs.
+
+### Added
+- **Three new side-view scenes** for land crossings, keyed on the route's terrain (`frost`, `fen`, `sea_cliffs`, the biome ids): a pale cold dawn over white peaks and snowed pines with a pilgrims' cairn, ending at a shelter with a lit window and a thread of smoke; a grey-green dusk over black pools and reed with a boardwalk, ending at a lantern on a post that bobs; and a bright salt morning over headlands with gulls and the sea below, ending at a lighthouse. The goal comes nearer as the days pass, as in the desert and the ruins.
+- **Their weather:** snow falls over the frost, fog drifts over the fen and the cliffs; a sky's own weather still wins.
+- Core's routes for these biomes name their terrain exactly `frost`, `fen` or `sea_cliffs`; until a route exists the scenes are not seen.
+
 ## [1.507.0+543]
 
 Wave 16 UX, item 1, second step: two more sheets use the shared parts.
