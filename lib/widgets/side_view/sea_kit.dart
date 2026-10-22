@@ -16,6 +16,7 @@ import '../../combat/ship_battle.dart' show SeaWeather;
 import '../../data/ship_forms.dart' show ShipForm;
 import '../sea_battlefield.dart' show SeaLook, SeaWaters;
 import '../ship_dress.dart' show ShipDress;
+import 'deck_crew.dart';
 import 'side_ship.dart';
 import 'side_view.dart';
 
@@ -343,13 +344,15 @@ SideLayer seaActors({
   ShipForm? ship,
   ShipDress? dress,
   double condition = 1.0,
+  List<DeckCrew> crew = const [],
+  Animation<double>? arrival,
 }) =>
     SideLayer(0, (canvas, size, scroll, t, u) {
       final rough = weather == SeaWeather.squall;
       final w = size.width / u;
       final form = ship ?? _defaultForm;
       final len = sideShipLength(form);
-      final shipX = (w * 0.34 - len / 2 + 18).floorToDouble();
+      final shipX = seaShipX(len, w);
       final bob = math.sin(t * (rough ? 1.8 : 1.1)) * (rough ? 2.2 : 1.0);
       final lift = (flying || form.flying) ? 9.0 : 0.0;
       final sink = sideShipSink(condition);
@@ -362,7 +365,8 @@ SideLayer seaActors({
                 height: 3 * u),
             Paint()..color = Colors.black.withValues(alpha: 0.25));
       }
-      _drawMeeting(canvas, size, u, t, meeting, rough);
+      _drawMeeting(canvas, size, u, t, meeting, rough,
+          arrive: arrival?.value ?? 1);
       paintSideShip(canvas, u,
           x: shipX,
           base: base,
@@ -370,7 +374,8 @@ SideLayer seaActors({
           dress: dress,
           t: t,
           rough: rough,
-          condition: condition);
+          condition: condition,
+          crew: crew);
       // The wake: foam along the waterline.
       if (lift == 0) {
         final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
@@ -391,9 +396,26 @@ SideLayer seaActors({
 
 /// What the day meets, on the right of the box (the ship is on the left).
 void _drawMeeting(Canvas canvas, Size size, double u, double t,
-    SeaMeeting meeting, bool rough) {
+    SeaMeeting meeting, bool rough,
+    {double arrive = 1}) {
   final w = size.width / u;
   final bob = math.sin(t * 1.3 + 1.7).roundToDouble();
+  // What she meets comes in from the right edge, as the land's encounters
+  // walk in from the left; the gulls and the harbour stay where they are.
+  final sliding = arrive < 1 &&
+      meeting.kind != SeaMeetingKind.none &&
+      meeting.kind != SeaMeetingKind.harbour;
+  if (sliding) {
+    canvas.save();
+    final ease = Curves.easeOutCubic.transform(arrive.clamp(0.0, 1.0));
+    canvas.translate((1 - ease) * w * 0.55 * u, 0);
+  }
+  _paintMeeting(canvas, size, u, t, meeting, rough, w, bob);
+  if (sliding) canvas.restore();
+}
+
+void _paintMeeting(Canvas canvas, Size size, double u, double t,
+    SeaMeeting meeting, bool rough, double w, double bob) {
   switch (meeting.kind) {
     case SeaMeetingKind.none:
       // A pair of gulls crossing.
@@ -570,9 +592,19 @@ void _harbour(Canvas canvas, double u, double w, double t) {
       canvas, u, Paint()..color = const Color(0xFF2E2016), x0 - 3, 49, 2, 5);
 }
 
+/// The length in scene pixels of the ship the scene draws for [form] (the
+/// Eel's own sloop when null).
+double seaShipLength(ShipForm? form) => sideShipLength(form ?? _defaultForm);
+
+/// How long what she meets takes to come in from the right edge.
+const Duration seaArrivalTime = Duration(milliseconds: 1600);
+
 /// The scene over a voyage's day: a sea of [waters] in [weather], the ship
-/// in place, and [beside] (what she meets) on the right.
-class SeaSideScene extends StatelessWidget {
+/// in place with her [crew] on deck, and [beside] (what she meets) on the
+/// right. What she meets sails in from the right edge when the scene opens
+/// on a day with one (not with reduced motion), as the land's encounters
+/// walk in from the left.
+class SeaSideScene extends StatefulWidget {
   const SeaSideScene({
     super.key,
     required this.waters,
@@ -583,6 +615,7 @@ class SeaSideScene extends StatelessWidget {
     this.ship,
     this.dress,
     this.condition = 1.0,
+    this.crew = const [],
     this.beside,
     this.height = 140,
   });
@@ -601,8 +634,52 @@ class SeaSideScene extends StatelessWidget {
   /// The hull she has left, 0 to 1: below 0.8 she shows it (scorch, a hole,
   /// patched sails, smoke, fire, lower in the water).
   final double condition;
+
+  /// Who stands on her deck (see [deckCrewOf]); nobody when empty.
+  final List<DeckCrew> crew;
   final Widget? beside;
   final double height;
+
+  @override
+  State<SeaSideScene> createState() => _SeaSideSceneState();
+}
+
+class _SeaSideSceneState extends State<SeaSideScene>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _arrival =
+      AnimationController(vsync: this, duration: seaArrivalTime, value: 1);
+  bool _started = false;
+
+  bool get _arrives =>
+      widget.moving &&
+      widget.meeting.kind != SeaMeetingKind.none &&
+      widget.meeting.kind != SeaMeetingKind.harbour;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    if (_arrives && !MediaQuery.of(context).disableAnimations) {
+      _arrival.forward(from: 0);
+    }
+  }
+
+  @override
+  void didUpdateWidget(SeaSideScene old) {
+    super.didUpdateWidget(old);
+    if (old.meeting != widget.meeting &&
+        _arrives &&
+        !MediaQuery.of(context).disableAnimations) {
+      _arrival.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _arrival.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -612,21 +689,24 @@ class SeaSideScene extends StatelessWidget {
         children: [
           SideViewScene(
             key: const Key('sea_scene'),
-            layers: seaLayers(waters: waters, weather: weather),
+            layers: seaLayers(waters: widget.waters, weather: widget.weather),
             actors: seaActors(
-                flying: flying,
-                weather: weather,
-                meeting: meeting,
-                ship: ship,
-                dress: dress,
-                condition: condition),
-            particles: seaParticles(waters, weather),
-            intensity: weather == SeaWeather.squall ? 0.9 : 0.6,
-            pace: weather == SeaWeather.tailwind ? 56 : 30,
-            moving: moving,
-            height: height,
+                flying: widget.flying,
+                weather: widget.weather,
+                meeting: widget.meeting,
+                ship: widget.ship,
+                dress: widget.dress,
+                condition: widget.condition,
+                crew: widget.crew,
+                arrival: _arrival),
+            particles: seaParticles(widget.waters, widget.weather),
+            intensity: widget.weather == SeaWeather.squall ? 0.9 : 0.6,
+            pace: widget.weather == SeaWeather.tailwind ? 56 : 30,
+            moving: widget.moving,
+            height: widget.height,
           ),
-          if (beside != null) Positioned(right: 10, top: 8, child: beside!),
+          if (widget.beside != null)
+            Positioned(right: 10, top: 8, child: widget.beside!),
         ],
       ),
     );
