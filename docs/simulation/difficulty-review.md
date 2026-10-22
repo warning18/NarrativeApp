@@ -268,3 +268,54 @@ Encounters won within 3 tries by profession: before → after.
 | 23 | 68.2 → 64.8 | 66.0 → 66.3 | 66.7 → 68.0 | 66.3 → 67.3 | 66.0 → 64.2 |
 
 `clash_balance_test`, the largest gap: 0.077 (chapter 2) before, 0.072 (chapter 7) after, against 0.10. No test bound changed.
+
+## v1.524: the claimants and the clash rules on the real walk (wave 17)
+
+Three changes in one release, measured together on `boss_balance_test`'s
+plan (400 runs, seeds 7, 11 and 23):
+
+- **The simulator plays the enemies' Hex, Silence and Curse** (see
+  [sim-gaps.md](sim-gaps.md)). No game number changed.
+- **The clash rules are less kind on pack fights** (item 3a, see
+  [clash-balance-real-walk.md](clash-balance-real-walk.md)): pack goals
+  half as often, a Hold of foes + 4 turns, a Rout that routs half, the
+  execute line and the pack break leave the last of a pack standing, only
+  a lone foe wavers, a parry against a pack is worth its block alone; pack
+  stats 0.8/0.7 → 0.7/0.6. `clash_balance` now runs on the real walk and
+  passes (mean gap 0.116 → 0.027, chapter 2 0.232 → 0.067).
+- **The claimants, "C, complete"** (item 1C, see
+  [claimants-by-profession.md](claimants-by-profession.md)): their Tide
+  stops at level 6, they heal once, they have no resists, Tallis 72 → 77,
+  Morrow 108 → 128. The cleric wins them 30–42% (was 6–15) and the warrior
+  25–34% (was 16–32).
+
+The bosses, won %, main → v1.524 (band: target ±12):
+
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 79.1 → 79.1 | 82.7 → 83.1 | 83.5 → 84.0 |
+| Void Stalker | 65 | 67.7 → 69.1 | 69.9 → 63.6 | 65.5 → 65.1 |
+| Hollow Court Inquisitor | 55 | 59.1 → 52.9 | 57.1 → 56.1 | 59.8 → 54.9 |
+| Bone Warden | 55 | 55.0 → 51.9 | 56.3 → 51.9 | 54.1 → 47.7 |
+| Void Archon | 50 | 52.2 → 53.7 | 55.5 → 53.8 | 53.5 → 51.6 |
+| White Admiral | 45 | 38.9 → 40.9 | 37.7 → 41.5 | 42.9 → 44.9 |
+| Claimant Vane | 40 | 39.3 → 44.8 | 30.6 → 34.9 | 31.5 → 32.7 |
+| Claimant Tallis | 40 | 35.6 → 46.6 | 39.0 → 45.0 | 40.8 → 45.1 |
+| Claimant Morrow | 40 | 48.0 → 37.0 | 54.1 → 41.2 | 40.6 → 42.6 |
+| Tear-Herald | 35 | 39.0 → 42.5 | 37.0 → 41.0 | 37.5 → 40.8 |
+| Void Sovereign | 35 | 37.7 → 41.7 | 36.8 → 40.2 | 36.1 → 47.2 |
+| **Mean** | 42–58 | 50.1 → 50.9 | 50.6 → 50.2 | 49.6 → 50.6 |
+
+Professions (all fights, lowest / spread): 63.2 / 5.9 → 61.6 / 5.1 at
+seed 7, 64.7 / 5.3 → 61.9 / 2.9 at seed 11, 64.9 / 2.9 → 61.6 / 2.4 at
+seed 23. The clan champions (`nemesis_quests_test`, seed 7): 45.8% → 40.0%
+(band 38–62). Encounters won by chapter: chapters 3 to 5 are 3 to 7
+points harder (the pack fights), the rest within 3 points; table in
+clash-balance-real-walk.md.
+
+Every test bound holds unchanged: `boss_balance`, `nemesis_quests`,
+`clash_balance` (now on the real walk), `qa_sim_tables` and the simulator
+tests. The narrow ones: the lowest profession at 61.6 (floor 60), the
+champions at 40.0 (floor 38), chapter 6's clash gap at 0.089 (limit
+0.10).
+

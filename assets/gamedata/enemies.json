@@ -4821,9 +4821,9 @@
     "weakTo": [
       "Electricity"
     ],
-    "resists": [
-      "Fire"
-    ],
+    "resists": [],
+    "tideCap": 6,
+    "healsOnce": true,
     "xpReward": 220,
     "goldReward": 160,
     "lootTable": [
@@ -4950,7 +4950,7 @@
   "claimant_morrow": {
     "enemyName": "Hesk Morrow, Grand Master",
     "enemyName_fr": "Hesk Morrow, Grand Maître",
-    "maxHealth": 108,
+    "maxHealth": 128,
     "damage": 5,
     "guile": 9,
     "faction": "",
@@ -4958,9 +4958,9 @@
     "weakTo": [
       "Electricity"
     ],
-    "resists": [
-      "Earth"
-    ],
+    "resists": [],
+    "tideCap": 6,
+    "healsOnce": true,
     "xpReward": 220,
     "goldReward": 160,
     "lootTable": [
@@ -5087,7 +5087,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 72,
+    "maxHealth": 77,
     "damage": 5,
     "guile": 11,
     "faction": "",
@@ -5095,9 +5095,9 @@
     "weakTo": [
       "Void"
     ],
-    "resists": [
-      "Light"
-    ],
+    "resists": [],
+    "tideCap": 6,
+    "healsOnce": true,
     "xpReward": 220,
     "goldReward": 160,
     "lootTable": [

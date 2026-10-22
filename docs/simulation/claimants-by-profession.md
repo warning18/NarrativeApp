@@ -1,9 +1,10 @@
 # The claimants by profession (wave 17 item 1, the logging run)
 
-> If B or C is picked, the simulator models silence (`edict_of_silence`)
-> and the hex (`hex_of_ill_luck`) first. Today it skips tamper moves, so
-> it overrates the cleric against Oriel. The final numbers are re-measured
-> after that.
+> **Applied in v1.524: "C, complete"** (see the end), with the
+> simulator's silence, hex and curse ("With silence and the hex
+> modelled") and the clash rules' pack change
+> ([clash-balance-real-walk.md](clash-balance-real-walk.md)) in the same
+> release. The final numbers are under "v1.524: C, complete, applied".
 
 Measured on v1.516 with `boss_balance_test`'s plan (400 runs, politics
 events loaded), seed 7, checked at seeds 11 and 23. The fights were traced
@@ -66,6 +67,54 @@ Average round of a lost try: cleric 17.7, warrior 12.7, mage 9.6, ranger 14.0, r
 - **Statuses:** the only one the party suffers is the Stun from `radiant_judgment`. It is up 10–13% of rounds for the cleric and the warrior, and 6–11% for the others. That is a small factor.
 - **Mana:** the cleric is starved in under 1% of rounds. It spends its mana on heals: 7.5 Mending Light per try against 0.7 Smite the Wicked.
 - **No fight runs out of time:** every loss is a death.
+
+## With silence and the hex modelled
+
+`sim_combat` now lays the enemies' Hex, Silence and Curse on the hero's die
+as the fight screen does (see [sim-gaps.md](sim-gaps.md)). Same plan
+(400 runs, politics events), current `main`, before and after. Claimant
+columns are win % per try as in the table below; "Professions" is each
+profession's win % over all its fights.
+
+| Run (seed) | Cl | Wa | Ma | Ra | Ro | Claimants | Vane | Tallis | Morrow | Ch 7 | Boss mean | Spread |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| before (7) | 7.5 | 16.2 | 61.2 | 56.2 | 51.2 | 38.5 | 39.3 | 35.6 | 48.0 | 52.6 | 50.1 | 5.9 |
+| **after (7)** | 11.2 | 21.2 | 63.8 | 52.5 | 52.5 | 40.2 | 36.5 | 38.9 | 50.9 | 54.9 | 51.1 | 5.9 |
+| before (11) | 6.2 | 30.0 | 63.8 | 65.0 | 36.2 | 40.2 | 30.6 | 39.0 | 54.1 | 54.3 | 50.6 | 5.3 |
+| **after (11)** | 8.8 | 27.5 | 72.5 | 57.5 | 38.8 | 41.0 | 30.8 | 41.3 | 49.1 | 54.9 | 50.1 | 4.9 |
+| before (23) | 15.0 | 32.5 | 63.8 | 43.8 | 42.5 | 39.5 | 31.5 | 40.8 | 40.6 | 53.8 | 49.6 | 2.9 |
+| **after (23)** | 6.2 | 30.0 | 65.0 | 47.5 | 41.2 | 38.0 | 36.4 | 39.0 | 34.5 | 52.0 | 48.0 | 4.6 |
+
+| Professions, all fights (seed) | Cleric | Warrior | Mage | Ranger | Rogue |
+|---|---|---|---|---|---|
+| before (7 / 11 / 23) | 67.0 / 65.2 / 66.5 | 63.2 / 66.8 / 64.9 | 67.6 / 70.0 / 67.1 | 64.9 / 68.0 / 65.9 | 69.1 / 64.7 / 67.8 |
+| after (7 / 11 / 23) | 69.2 / 67.4 / 65.9 | 63.9 / 67.6 / 63.0 | 67.1 / 69.4 / 67.4 | 64.4 / 67.7 / 65.8 | 69.8 / 64.5 / 67.7 |
+
+The cleric against Oriel alone (tries won, tries met): before 0 (14) /
+9 (11) / 0 (8), after 23 (13) / 10 (10) / 6 (17).
+
+- **The effect is small and inside the seeds' noise.** Every number moves
+  by a few points either way; the runs part early (a hex or a curse in
+  chapters 2–4 changes the dice that follow), so a single cell is not a
+  measure of the tamper. The claimants' average moves −1.5 to +1.7, the
+  boss mean −1.6 to +1.0, the spread stays at 6 or less.
+- **The cleric is not measurably worse against Oriel.** Silence blanks
+  only the Skill faces of the round after it (a skill set on a basic face
+  falls back to it), and the simulated player rerolls a blank like any
+  blank, up to three rolls, so most silenced rounds still land a basic
+  face. The hex rolls one die again before the player's own rerolls,
+  which for a solo die that keeps any non-blank face is close to neutral.
+  Oriel's turns spent on them cost him more than they cost the party.
+- `boss_balance` and `nemesis_quests` pass with no bound changed.
+  **`clash_balance` fails:** at its seed (11) chapter 2 reads plain 0.395,
+  clash 0.525, a gap of 0.129 against its bound of 0.10 (before: 0.457 and
+  0.486). Over seeds 1–4 the chapter-2 gap is 0.05–0.10 (before
+  0.04–0.08): the tampering makes the plain rules' fights a little harder
+  (chapters 2, 4, 6, 8 by 1–5 points) and the clash rules' not, so the gap
+  widens a few points and seed 11 crosses the line. No single tamper does
+  it: with the hex off the gap is 0.02, with silence off 0.10, with the
+  curse off 0.08. Nothing was tuned. Root causes and fixes below stand as
+  measured.
 
 ## Root causes, ranked by impact
 
@@ -136,3 +185,77 @@ Variants that were rejected:
 **My advice is B or C.** B is one rule in `fight_length.dart`, read by the fight screen and `sim_combat`, keyed to the claimants or to a field in `enemies.json`. It fixes the cleric cleanly. C also fixes the warrior, but it changes three things in data.
 
 Separately, **silence and the hex need modelling in `sim_combat`** before any final tuning. Today they are free turns for the party, so the simulator overrates the cleric against Oriel.
+
+## v1.524: C, complete, applied
+
+The rules (fight_length.dart; the fight screen and `sim_combat` both play
+them, keyed to fields in `enemies.json`):
+
+- **`tideCap: 6`** on the three claimants: in a fight with one, the
+  enemies' Tide stops at level 6 (x2.08 from round 13 on, where it went on
+  to x3.0 by round 18). The party's Tide keeps rising. The fight screen's
+  Tide chip and log say the capped share (`fightTideCap`,
+  `enemyTideLevel`).
+- **`healsOnce: true`**: a claimant mends itself once a fight, by a phase
+  or by a move; then its heal moves leave its list and its later phases
+  heal nothing (`healsOnce`, `withoutHealMoves`).
+- **No resists** (`resists: []`): Oriel loses Fire, Tallis Light, Morrow
+  Earth. Their weaknesses stay.
+- **Health:** Tallis 72 → 77, Morrow 108 → 128.
+
+Measured on the final code (the tamper patch, the clash rules' pack
+change with pack stats 0.7/0.6, and C), `boss_balance_test`'s plan, 400
+runs, politics events loaded. Columns as in "Candidate fixes, measured"
+(claimant encounters won, by profession; each claimant's band is 28–52).
+
+| Run (seed) | Cl | Wa | Ma | Ra | Ro | Claimants | Vane | Tallis | Morrow | Ch 7 | Boss mean | Spread |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| main (7) | 7.5 | 16.2 | 61.2 | 56.2 | 51.2 | 38.5 | 39.3 | 35.6 | 48.0 | 52.6 | 50.1 | 5.9 |
+| **v1.524 (7)** | **42.5** | **25.0** | 61.2 | 56.2 | 40.0 | 45.0 | 44.8 | 46.6 | 37.0 | 53.3 | 50.9 | 5.1 |
+| main (11) | 6.2 | 30.0 | 63.8 | 65.0 | 36.2 | 40.2 | 30.6 | 39.0 | 54.1 | 54.3 | 50.6 | 5.3 |
+| **v1.524 (11)** | **30.0** | 32.5 | 52.5 | 70.0 | 31.2 | 43.2 | 34.9 | 45.0 | 41.2 | 54.2 | 50.2 | 2.9 |
+| main (23) | 15.0 | 32.5 | 63.8 | 43.8 | 42.5 | 39.5 | 31.5 | 40.8 | 40.6 | 53.8 | 49.6 | 2.9 |
+| **v1.524 (23)** | **38.8** | 33.8 | 53.8 | 53.8 | 35.0 | 43.0 | 32.7 | 45.1 | 42.6 | 51.6 | 50.6 | 2.4 |
+
+Every claimant is in band at every seed (Oriel 32.7–44.8, Tallis
+45.0–46.6, Morrow 37.0–42.6), and every profession wins the claimants 25%
+or more (the warrior is exactly 25.0 at seed 7). Morrow came out lower
+than in the harness (37–43 against 46–50), likely because the pack
+change brings the runs to chapter 7 a little weaker. It stays in band, so the health was not
+re-nudged.
+
+Each profession's encounters won, all fights (cleric / warrior / mage /
+ranger / rogue; `boss_balance` wants each at 60 or more, within 8 of each
+other):
+
+| Seed | main | v1.524 |
+|---|---|---|
+| 7 | 67.0 / 63.2 / 67.6 / 64.9 / 69.1 | 66.7 / 61.9 / 61.9 / 61.6 / 62.4 |
+| 11 | 65.2 / 66.8 / 70.0 / 68.0 / 64.7 | 64.2 / 61.9 / 64.8 / 63.1 / 63.7 |
+| 23 | 66.5 / 64.9 / 67.1 / 65.9 / 67.8 | 63.3 / 62.0 / 64.0 / 61.8 / 61.6 |
+
+The drop is the clash rules' pack change, not C: pack fights in chapters 3
+to 5 are harder (see clash-balance-real-walk.md).
+
+Each claimant by profession, won % (meetings), main → v1.524. Oriel and
+Morrow are met 5 to 18 times per profession, so a single cell moves 10
+points with one fight.
+
+| Seed | Claimant | Cleric | Warrior | Mage | Ranger | Rogue |
+|---|---|---|---|---|---|---|
+| 7 | Oriel | 0 → 42 | 0 → 13 | 62 → 69 | 62 → 64 | 69 → 38 |
+| 7 | Tallis | 5 → 44 | 23 → 31 | 51 → 55 | 60 → 57 | 45 → 44 |
+| 7 | Morrow | 33 → 33 | 0 → 14 | 100 → 88 | 45 → 46 | 55 → 20 |
+| 11 | Oriel | 9 → 21 | 25 → 40 | 75 → 40 | 29 → 67 | 27 → 0 |
+| 11 | Tallis | 7 → 39 | 32 → 33 | 52 → 45 | 73 → 73 | 33 → 36 |
+| 11 | Morrow | 0 → 0 | 25 → 20 | 94 → 87 | 50 → 60 | 64 → 25 |
+| 23 | Oriel | 0 → 11 | 17 → 56 | 56 → 50 | 25 → 60 | 40 → 23 |
+| 23 | Tallis | 16 → 52 | 38 → 33 | 56 → 45 | 56 → 58 | 44 → 37 |
+| 23 | Morrow | 25 → 20 | 20 → 23 | 100 → 82 | 12 → 31 | 40 → 40 |
+
+Tallis is two thirds of the meetings and carries the cleric's gain. The
+cleric against Morrow (0–33) and the rogue against Morrow at seeds 7 and
+11 (20–25) are the weak cells left; the samples are 9 to 16 meetings.
+
+Tests: `test/claimant_rules_test.dart` (the Tide cap, one heal in the
+simulator, no resists and the health in data).

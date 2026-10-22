@@ -330,7 +330,7 @@ extension _FightRounds on _FightScreenState {
       // A ward (Glacial Ward, Thornwall) wounds whoever strikes it.
       actor.reflect = result.blockAmount > 0 ? extras.reflect : null;
       if (parryEnemy != null) {
-        final amount = parryAmount(block);
+        final amount = parryAmount(block, foes: _enemies.length);
         parryEnemy.parryBlock += amount;
         newEntries.add(_LogEntry(
             trFor(lang, 'parry_set_log')
@@ -694,8 +694,7 @@ extension _FightRounds on _FightScreenState {
       newEntries.add(_LogEntry(
           trFor(lang, tide == 1 ? 'tide_turns_log' : 'tide_rises_log')
               .replaceAll('{party}', '${(tidePartyStep * tide * 100).round()}')
-              .replaceAll(
-                  '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
+              .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
           _LogKind.info));
     }
     // The place's rule (context_rules.dart): its omen, its rise, its toll,
@@ -1024,15 +1023,18 @@ extension _FightRounds on _FightScreenState {
   /// itself, raising its guard, winding up, or rallying its pack.
   void _resolveEnemyStance(
       _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay,
-      {required String targetId}) {
+      {required String targetId, required Map<String, dynamic> skills}) {
     final key = _enemyCardKey(enemy.key);
     switch (move.intent) {
       case EnemyIntent.tamper:
         _applyTamper(enemy, move, targetId, lang, delay);
       case EnemyIntent.heal:
+        // A claimant's one heal spent (fight_length.dart): its turn passes.
+        if (enemy.healBlocked) return;
         final amount = scaledEnemyHeal(move.healAmount,
             maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth);
         final healed = min(amount, enemy.maxHealth - enemy.currentHealth);
+        if (healed > 0) enemy.noteHeal(skills);
         _fx(VfxStyle.heal, key,
             delayMs: delay, text: '+$healed', textKind: VfxTextKind.heal);
         _update(() {
@@ -1107,13 +1109,17 @@ extension _FightRounds on _FightScreenState {
         enemy.phaseIndex++;
         entered = true;
         _phasesCrossed++;
-        final healed =
-            healthAfterPhaseHeal(phase, enemy.currentHealth, enemy.maxHealth) -
+        // A claimant mends itself once a fight (fight_length.dart).
+        final healed = enemy.healBlocked
+            ? 0
+            : healthAfterPhaseHeal(
+                    phase, enemy.currentHealth, enemy.maxHealth) -
                 enemy.currentHealth;
         enemy.currentHealth += healed;
         if (phase.cleanse) enemy.statusEffects = [];
         enemy.damage = (enemy.damage * phase.damageMultiplier).round();
         enemy.data = enemyDataInPhase(enemy.data, phase);
+        if (healed > 0 || enemy.healBlocked) enemy.noteHeal(skills);
         final details = <String>[
           if (healed > 0)
             '${trFor(lang, 'phase_heals_prefix')} $healed ${trFor(lang, 'hp_label')}',
@@ -1279,7 +1285,7 @@ extension _FightRounds on _FightScreenState {
       final move = pending.move;
       if (!pending.release && move.intent != EnemyIntent.attack) {
         _resolveEnemyStance(enemy, move, lang, fxDelay,
-            targetId: pending.targetId);
+            targetId: pending.targetId, skills: skills);
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         continue;
       }
@@ -1521,12 +1527,13 @@ extension _FightRounds on _FightScreenState {
         delayMs: fxDelay,
       );
       _resolveParry(enemy, moveDamage, parry, wasDodged, lang, skills);
-      if (move.healAmount > 0 && enemy.isAlive) {
+      if (move.healAmount > 0 && enemy.isAlive && !enemy.healBlocked) {
         final healed = min(
             scaledEnemyHeal(move.healAmount,
                 maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth),
             enemy.maxHealth - enemy.currentHealth);
         if (healed > 0) {
+          enemy.noteHeal(skills);
           _fx(VfxStyle.heal, _enemyCardKey(enemy.key),
               delayMs: fxDelay + 300,
               text: '+$healed',

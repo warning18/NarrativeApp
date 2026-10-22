@@ -20,6 +20,18 @@ enum FightGoalKind { slay, hold, rout, subdue }
 /// Odds an eligible fight asks for something other than a slaughter.
 const double fightGoalChance = 0.25;
 
+/// Odds an eligible pack fight (two foes or more) asks for a goal (wave 17:
+/// half the lone fighter's; a Hold or a Rout spared too many pack fights).
+const double packGoalChance = 0.125;
+
+/// The odds an eligible fight against [enemyCount] foes asks for a goal.
+double fightGoalChanceFor(int enemyCount) =>
+    enemyCount >= 2 ? packGoalChance : fightGoalChance;
+
+/// When a Rout's captain falls, each other foe flees at this chance (wave
+/// 17; it was every one); the rest fight on.
+const double routFleeChance = 0.5;
+
 /// The share of its health under which a [FightGoalKind.subdue] fighter
 /// yields.
 const double yieldHealthShare = 0.30;
@@ -66,22 +78,26 @@ class FightGoal {
 }
 
 /// The enemy turns a [FightGoalKind.hold] fight against [enemyCount]
-/// enemies asks the party to survive: four against a pair, five against
-/// three or more.
-int holdRoundsFor(int enemyCount) => enemyCount >= 3 ? 5 : 4;
+/// enemies asks the party to survive: four more than the foes (wave 17):
+/// six against a pair, seven against three.
+int holdRoundsFor(int enemyCount) => max(2, enemyCount) + 4;
 
 /// Rolls a fight's goal. [eligible] is the caller's verdict on the fight
 /// itself (never a lesson, a test, a boss, a hunt or an ambush);
 /// [enemyCount] is how many stand against the party and [canYield] whether
 /// a lone enemy is the kind that can be broken (a person, not a beast).
+/// [chance] defaults to [fightGoalChanceFor] the count.
 FightGoal rollFightGoal({
   required bool eligible,
   required int enemyCount,
   required bool canYield,
   required Random random,
-  double chance = fightGoalChance,
+  double? chance,
 }) {
-  if (!eligible || random.nextDouble() >= chance) return FightGoal.slay;
+  if (!eligible ||
+      random.nextDouble() >= (chance ?? fightGoalChanceFor(enemyCount))) {
+    return FightGoal.slay;
+  }
   if (enemyCount >= 2) {
     return random.nextBool()
         ? FightGoal(FightGoalKind.hold, rounds: holdRoundsFor(enemyCount))

@@ -8,16 +8,29 @@
 //   [healFatigueStep] less than the one before, never under
 //   [healFatigueFloor] (what made a healer's fights endless).
 // - Execute: a foe struck this round and left under [executeShare] of its
-//   health falls (never a boss).
+//   health falls (never a boss). In a pack fight only the last foe
+//   standing does ([executesInFight], wave 17).
 // - Morale: a hurt foe (under [moraleFleeShare]) may flee, at
 //   [moraleFleeChance] a round; a fled foe pays part of its spoils, as a
-//   Skittish one does.
+//   Skittish one does. Only a lone foe wavers: a pack holds its nerve
+//   ([moraleFleeChanceFor], wave 17).
 // - The pack breaks: when a pack's leader (its biggest, see
-//   [packLeaderIndex]) falls, each other foe flees at [packBreakChance].
+//   [packLeaderIndex]) falls, each other foe flees at [packBreakChance],
+//   but the last of the pack stands, cornered ([cornered], wave 17).
 //   Neither in a boss's fight: its escort stands by it.
+//
+// Wave 17 made those rules less kind on pack fights: on the real walk the
+// clash rules had made every chapter 10 to 23 points easier a try, most of
+// it pairs that fled or fell to the execute line before the party had
+// earned it (docs/simulation/clash-balance-real-walk.md).
 // - The Tide: from round [tideStartRound], blows grow each round, the
 //   party's by [tidePartyStep], the enemies' by [tideEnemyStep] (by
-//   [tideBossEnemyStep] in a boss's fight).
+//   [tideBossEnemyStep] in a boss's fight). A boss whose record sets
+//   `tideCap` (the claimants, wave 17) stops the enemies' share at that
+//   level ([fightTideCap]); the party's keeps rising.
+// - One heal: a boss whose record sets `healsOnce` (the claimants) mends
+//   itself once a fight, by a phase or a move; then its heal moves leave
+//   its list ([withoutHealMoves]) and its later phases heal nothing.
 //
 // Pure rules; the fight screen (fight_goals.dart, fight_rounds.dart) and
 // the playthrough simulator (sim_combat.dart) play them.
@@ -40,23 +53,70 @@ const double tideBossEnemyStep = 0.18;
 /// it, and one more each round after.
 int tideLevel(int round) => max(0, round - tideStartRound + 1);
 
+/// The enemies' Tide level in [round], stopped at [cap] when the fight has
+/// one (see [fightTideCap]).
+int enemyTideLevel(int round, {int? cap}) {
+  final level = tideLevel(round);
+  return cap == null ? level : min(level, cap);
+}
+
+/// The lowest `tideCap` among a fight's [enemies] records (claimants:
+/// wave 17), or null when none sets one: the level the enemies' Tide stops
+/// at in that fight.
+int? fightTideCap(Iterable<Map<String, dynamic>> enemies) {
+  int? cap;
+  for (final e in enemies) {
+    final c = (e['tideCap'] as num?)?.toInt();
+    if (c != null && (cap == null || c < cap)) cap = c;
+  }
+  return cap;
+}
+
 /// The factor on the party's blows in [round].
 double tidePartyMultiplier(int round) => 1 + tidePartyStep * tideLevel(round);
 
 /// The factor on the enemies' blows in [round] ([bossFight]: a boss is
-/// in the fight).
-double tideEnemyMultiplier(int round, {bool bossFight = false}) =>
-    1 + (bossFight ? tideBossEnemyStep : tideEnemyStep) * tideLevel(round);
+/// in the fight; [cap]: the fight's [fightTideCap]).
+double tideEnemyMultiplier(int round, {bool bossFight = false, int? cap}) =>
+    1 +
+    (bossFight ? tideBossEnemyStep : tideEnemyStep) *
+        enemyTideLevel(round, cap: cap);
 
 /// [damage] grown by the Tide in [round], for the party's blows or the
-/// enemies' ([bossFight]: a boss is in the fight).
+/// enemies' ([bossFight]: a boss is in the fight; [enemyCap]: the level
+/// the enemies' Tide stops at, see [fightTideCap]).
 int tideDamage(int damage, int round,
-    {required bool byParty, bool bossFight = false}) {
+    {required bool byParty, bool bossFight = false, int? enemyCap}) {
   if (damage <= 0 || tideLevel(round) == 0) return damage;
   final factor = byParty
       ? tidePartyMultiplier(round)
-      : tideEnemyMultiplier(round, bossFight: bossFight);
+      : tideEnemyMultiplier(round, bossFight: bossFight, cap: enemyCap);
   return (damage * factor).round();
+}
+
+/// Whether the enemy [record] mends itself only once a fight (`healsOnce`,
+/// the claimants since wave 17).
+bool healsOnce(Map<String, dynamic> record) => record['healsOnce'] == true;
+
+/// The enemy [record] without its heal moves: those whose skill in
+/// [skills] mends (`healAmount` above 0). What a [healsOnce] enemy keeps
+/// once its heal is spent.
+Map<String, dynamic> withoutHealMoves(
+    Map<String, dynamic> record, Map<String, dynamic> skills) {
+  final moves = (record['skillMoves'] as List?) ?? const [];
+  bool heals(Object? move) {
+    final id = move is Map ? move['skillID']?.toString() : null;
+    final skill = id == null ? null : skills[id];
+    return skill is Map && ((skill['healAmount'] as num?) ?? 0) > 0;
+  }
+
+  return {
+    ...record,
+    'skillMoves': [
+      for (final m in moves)
+        if (!heals(m)) m
+    ],
+  };
 }
 
 /// What each heal given before takes off the next one, and how low it goes.
@@ -84,10 +144,32 @@ bool executes(
         {required int health, required int maxHealth, bool boss = false}) =>
     !boss && health > 0 && health < maxHealth * executeShare;
 
+/// [executes], in a fight that began with [foes] foes of which [standing]
+/// still stand: in a pack fight only the last one standing falls to the
+/// line (wave 17).
+bool executesInFight(
+        {required int health,
+        required int maxHealth,
+        required int foes,
+        required int standing,
+        bool boss = false}) =>
+    (foes < 2 || standing <= 1) &&
+    executes(health: health, maxHealth: maxHealth, boss: boss);
+
 /// Under this share of its health, a foe that isn't a boss may flee, at
 /// [moraleFleeChance] each round.
 const double moraleFleeShare = 0.25;
 const double moraleFleeChance = 0.5;
+
+/// The chance a wavering foe flees each round, in a fight that began with
+/// [foes] foes: only a lone foe wavers; a pack holds its nerve (wave 17).
+double moraleFleeChanceFor(int foes) => foes >= 2 ? 0 : moraleFleeChance;
+
+/// Whether the foes of a fight that began with [foes] foes, [standing] of
+/// them still up, are down to the last of a pack: it is cornered, and
+/// neither breaks nor flees (wave 17).
+bool cornered({required int foes, required int standing}) =>
+    foes >= 2 && standing <= 1;
 
 /// Whether a foe at [health] of [maxHealth] wavers.
 bool wavers({required int health, required int maxHealth}) =>
