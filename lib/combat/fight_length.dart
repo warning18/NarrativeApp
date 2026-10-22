@@ -17,7 +17,12 @@
 //   Neither in a boss's fight: its escort stands by it.
 // - The Tide: from round [tideStartRound], blows grow each round, the
 //   party's by [tidePartyStep], the enemies' by [tideEnemyStep] (by
-//   [tideBossEnemyStep] in a boss's fight).
+//   [tideBossEnemyStep] in a boss's fight). A boss whose record sets
+//   `tideCap` (the claimants, wave 17) stops the enemies' share at that
+//   level ([fightTideCap]); the party's keeps rising.
+// - One heal: a boss whose record sets `healsOnce` (the claimants) mends
+//   itself once a fight, by a phase or a move; then its heal moves leave
+//   its list ([withoutHealMoves]) and its later phases heal nothing.
 //
 // Pure rules; the fight screen (fight_goals.dart, fight_rounds.dart) and
 // the playthrough simulator (sim_combat.dart) play them.
@@ -40,23 +45,70 @@ const double tideBossEnemyStep = 0.18;
 /// it, and one more each round after.
 int tideLevel(int round) => max(0, round - tideStartRound + 1);
 
+/// The enemies' Tide level in [round], stopped at [cap] when the fight has
+/// one (see [fightTideCap]).
+int enemyTideLevel(int round, {int? cap}) {
+  final level = tideLevel(round);
+  return cap == null ? level : min(level, cap);
+}
+
+/// The lowest `tideCap` among a fight's [enemies] records (claimants:
+/// wave 17), or null when none sets one: the level the enemies' Tide stops
+/// at in that fight.
+int? fightTideCap(Iterable<Map<String, dynamic>> enemies) {
+  int? cap;
+  for (final e in enemies) {
+    final c = (e['tideCap'] as num?)?.toInt();
+    if (c != null && (cap == null || c < cap)) cap = c;
+  }
+  return cap;
+}
+
 /// The factor on the party's blows in [round].
 double tidePartyMultiplier(int round) => 1 + tidePartyStep * tideLevel(round);
 
 /// The factor on the enemies' blows in [round] ([bossFight]: a boss is
-/// in the fight).
-double tideEnemyMultiplier(int round, {bool bossFight = false}) =>
-    1 + (bossFight ? tideBossEnemyStep : tideEnemyStep) * tideLevel(round);
+/// in the fight; [cap]: the fight's [fightTideCap]).
+double tideEnemyMultiplier(int round, {bool bossFight = false, int? cap}) =>
+    1 +
+    (bossFight ? tideBossEnemyStep : tideEnemyStep) *
+        enemyTideLevel(round, cap: cap);
 
 /// [damage] grown by the Tide in [round], for the party's blows or the
-/// enemies' ([bossFight]: a boss is in the fight).
+/// enemies' ([bossFight]: a boss is in the fight; [enemyCap]: the level
+/// the enemies' Tide stops at, see [fightTideCap]).
 int tideDamage(int damage, int round,
-    {required bool byParty, bool bossFight = false}) {
+    {required bool byParty, bool bossFight = false, int? enemyCap}) {
   if (damage <= 0 || tideLevel(round) == 0) return damage;
   final factor = byParty
       ? tidePartyMultiplier(round)
-      : tideEnemyMultiplier(round, bossFight: bossFight);
+      : tideEnemyMultiplier(round, bossFight: bossFight, cap: enemyCap);
   return (damage * factor).round();
+}
+
+/// Whether the enemy [record] mends itself only once a fight (`healsOnce`,
+/// the claimants since wave 17).
+bool healsOnce(Map<String, dynamic> record) => record['healsOnce'] == true;
+
+/// The enemy [record] without its heal moves: those whose skill in
+/// [skills] mends (`healAmount` above 0). What a [healsOnce] enemy keeps
+/// once its heal is spent.
+Map<String, dynamic> withoutHealMoves(
+    Map<String, dynamic> record, Map<String, dynamic> skills) {
+  final moves = (record['skillMoves'] as List?) ?? const [];
+  bool heals(Object? move) {
+    final id = move is Map ? move['skillID']?.toString() : null;
+    final skill = id == null ? null : skills[id];
+    return skill is Map && ((skill['healAmount'] as num?) ?? 0) > 0;
+  }
+
+  return {
+    ...record,
+    'skillMoves': [
+      for (final m in moves)
+        if (!heals(m)) m
+    ],
+  };
 }
 
 /// What each heal given before takes off the next one, and how low it goes.

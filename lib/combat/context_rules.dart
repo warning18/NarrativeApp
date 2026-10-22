@@ -99,15 +99,17 @@ extension ContextRuleEffects on ContextRule {
       };
 
   /// [damage] of [element], struck in [round] by the party ([byParty]) or
-  /// an enemy ([bossFight]: a boss is in the fight): the Tide's, then the
-  /// place's.
+  /// an enemy ([bossFight]: a boss is in the fight; [enemyTideCap]: the
+  /// level the enemies' Tide stops at, see fightTideCap): the Tide's, then
+  /// the place's.
   int blow(int damage, int round,
       {required bool byParty,
       String element = 'None',
-      bool bossFight = false}) {
+      bool bossFight = false,
+      int? enemyTideCap}) {
     if (damage <= 0) return damage;
-    final tided =
-        tideDamage(damage, round, byParty: byParty, bossFight: bossFight);
+    final tided = tideDamage(damage, round,
+        byParty: byParty, bossFight: bossFight, enemyCap: enemyTideCap);
     return switch (this) {
       ContextRule.risingWater => (tided *
               (1 +

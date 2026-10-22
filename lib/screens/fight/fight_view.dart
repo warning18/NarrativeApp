@@ -624,7 +624,7 @@ extension _FightView on _FightScreenState {
       chip = Tooltip(
         message: tr(ref, 'tide_mark_tip')
             .replaceAll('{party}', pct(tidePartyStep, level))
-            .replaceAll('{enemies}', pct(enemyStep, level)),
+            .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
         child: _stateChip(
             Icons.waves,
             tr(ref, 'tide_mark').replaceAll('{n}', '$level'),

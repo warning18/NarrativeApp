@@ -334,6 +334,19 @@ class _EnemyMember {
   /// The pack's captain, the mark of a Rout (v1.212, see fight_goal.dart).
   bool isCaptain = false;
 
+  /// A `healsOnce` boss (the claimants, see fight_length.dart) that has
+  /// mended itself once this fight: no more heals, by phase or by move.
+  bool healSpent = false;
+  bool get healBlocked => healSpent && healsOnce(data);
+
+  /// Notes a heal of this enemy: a `healsOnce` boss spends its one heal,
+  /// and its heal moves (read from [skills]) leave its list.
+  void noteHeal(Map<String, dynamic> skills) {
+    if (!healsOnce(data)) return;
+    healSpent = true;
+    data = withoutHealMoves(data, skills);
+  }
+
   /// True once a Subdue's fighter has broken and yielded: out of the
   /// fight like a defeated one, paying a ransom instead of its spoils.
   bool yielded = false;
