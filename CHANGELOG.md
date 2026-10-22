@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.511.0+547]
+
+Thirty events for the roads of the middle chapters (not drawn yet).
+
+### Added
+- **18 ruler events** (English and French), one for each main clan and each band of your standing with it (Friend and up, Neutral, Hostile and down): the Dominion’s Writ toll, the Vigil’s checkpoint, the Compact’s forge-cart, the Mire’s reed guide, the Crows’ marked crate, the Penitents’ name wall. Each carries a `ruler` and a `band` for Core’s land routes to pick by.
+- **12 biome events:** frost (the pilgrim’s cairn, the rime fall, the hound track, the bell on the road), fen (the reed lantern, the sucking mud, the drowned cart, the child in the reeds) and sea cliffs (the wrecker’s lamp, the salt wind, the gull colony, the tide stair).
+- Data only: the routes that draw them are Core’s (next).
+
 ## [1.508.0+544]
 
 Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
