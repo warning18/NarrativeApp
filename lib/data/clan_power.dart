@@ -17,11 +17,14 @@
 //   - a main clan risen a tier above where it started takes its next
 //     claim, from no one or from a weaker holder;
 //   - at war (relation step [warStep] or below), a clan [warLead] stronger
-//     takes a place of the other's, its seat last;
+//     takes a place of the other's, its seat last ([seatLead] stronger),
+//     gaining [warSpoils] power while the loser loses [warLoss];
 //   - politics events and story choices give places (`control`).
 //   Every change drops the old and new holders' relation a step and tells
 //   the news. A clan that loses its last place has fallen: its power goes
-//   to 0 until it takes a place again (its seat first).
+//   to 0, its survivors regroup ([fallenRegroup] a chapter, up to
+//   [fallenRegroupCap]), and it rises again by taking a place (its seat
+//   first, unless the holder is [seatLead] stronger).
 //
 // Pure rules; the session (a chapter reached) and the playthrough
 // simulator play them.
@@ -58,6 +61,23 @@ const int warStep = 2;
 
 /// How much stronger a clan at war must be to take a place.
 const int warLead = 15;
+
+/// What a place taken in war moves (v1.513, "clan power that moves"): the
+/// taker gains [warSpoils] power, the loser (unless it falls) loses
+/// [warLoss].
+const int warSpoils = 5;
+
+/// How much stronger a clan at war must be to take the other's seat (its
+/// last place standing): a seat holds longer than its lands.
+const int seatLead = 25;
+const int warLoss = 8;
+
+/// What a fallen clan's survivors win back at each chapter's turn, up to
+/// [fallenRegroupCap]: just short of Rising, from where it may take its
+/// seat again (claimsAllowed), so rising again takes the character's help
+/// (a gift, a quest, a choice).
+const int fallenRegroup = 5;
+const int fallenRegroupCap = 20;
 
 /// The relation step from which the nemesis fights your patron over
 /// places (3: Hostile).
@@ -306,7 +326,10 @@ PoliticsState givePlace(
     if (!hasPower(id, data)) continue;
     var value = powerOf(next, id, data);
     if (next.fallen.contains(id)) {
-      powers[id] = value;
+      // The survivors regroup ([fallenRegroup]).
+      powers[id] = value >= fallenRegroupCap
+          ? value
+          : min(fallenRegroupCap, value + fallenRegroup);
       continue;
     }
     value += holdingPower * held.values.where((h) => h == id).length;
@@ -359,9 +382,13 @@ PoliticsState givePlace(
     for (final placeId in wanted) {
       if (mine.contains(placeId) || geography.place(placeId) == null) continue;
       final holder = holdings(geography, next)[placeId] ?? '';
+      // A fallen clan's own seat rises for it unless its holder is
+      // [seatLead] stronger; any other claim needs a weaker holder.
+      final rising = next.fallen.contains(id) && placeId == faction.seat;
       if (holder.isNotEmpty &&
           (!free(holder) ||
-              powerOf(next, holder, data) >= powerOf(next, id, data))) {
+              powerOf(next, holder, data) - powerOf(next, id, data) >=
+                  (rising ? seatLead : 0))) {
         continue;
       }
       if (crisisFirst(placeId, holder, id)) break;
@@ -412,6 +439,11 @@ PoliticsState givePlace(
         ...theirs.where((p) => !claims.contains(p) && p != seat),
         ...theirs.where((p) => p == seat),
       ];
+      // The seat needs [seatLead].
+      if (ordered.first == seat &&
+          powerOf(next, id, data) - powerOf(next, other, data) < seatLead) {
+        continue;
+      }
       if (crisisFirst(ordered.first, other, id)) break;
       next = givePlace(next, ordered.first, id,
           cause: 'war',
@@ -420,6 +452,12 @@ PoliticsState givePlace(
           chapter: chapter,
           day: day,
           changes: changes);
+      // The spoils of war: the taker gains, the loser (still standing)
+      // bleeds.
+      next = addPower(next, id, warSpoils, data);
+      if (!next.fallen.contains(other)) {
+        next = addPower(next, other, -warLoss, data);
+      }
       moved
         ..add(id)
         ..add(other);

@@ -87,3 +87,14 @@ The rules are in `lib/data/clan_crisis.dart`, with Narrative's words from `terri
 - **The crisis paid in materials:** "Send timber and stone" (3 timber and 2 cut stone, Narrative's line) is offered when the pack holds them. It settles the crisis like the gold: the attacker takes a lesser place instead. A choice's negative `grantMaterials` now takes the materials from the pack.
 
 Per-profession win rates (100 runs, seed 11, no reinforcements), before → after: cleric 57.6 → 57.2, mage 81.9 → 81.5, ranger 75.1 → 74.9, rogue 74.3 → 73.7, warrior 70.2 → 69.9. All within 1 point, all slightly down (weaker signs from weak clans).
+
+## Clan power that moves (v1.513)
+
+The user's three levers (`docs/proposals/clan-power-story.md`): Narrative's 19 story choices with `power` and its two upheavals (`wrack_vote_result`, `conclave_counts`) were already live in the app; this adds the war turn and closes the simulator's gap. The 50-run study is [clan-power-50-v1.513.md](clan-power-50-v1.513.md).
+
+- **Wars swing harder.** A place taken in war: the taker +5 power (`warSpoils`), the loser −8 (`warLoss`) unless it falls. Taking a clan's seat in war needs a lead of 25 (`seatLead`), its other places 15 as before.
+- **The fallen regroup.** A fallen clan gains +5 a chapter (`fallenRegroup`) up to 20 (`fallenRegroupCap`), short of Rising: rising again still takes the character's help. Back at Rising, its seat rises for it unless the holder is 25 stronger (before: only from a weaker holder).
+- **The vote's result waits for a vote:** `wrack_vote_result` fires from chapter 5 once `vote_carried` or `vote_refused` is set (before, every run reaching chapter 5 got the "refused" variant).
+- **The simulator fires the politics events** as the app does, when its tables hold `politics_events` (the simulator screen and the clan study do; the balance tests don't yet).
+
+In the 50 runs: the Mire at 0 at the end in 0 runs (35 at v1.509), 5.8 places change hands a run, the patron falls in 3 runs. The fights don't move: boss mean 51.5 → 51.5, the professions within 0.8 points.

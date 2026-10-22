@@ -1302,9 +1302,20 @@
     "id": "wrack_vote_result",
     "name": "The vote reaches Candlehold",
     "name_fr": "Le vote arrive à Candlehold",
-    "trigger": {
-      "chapter": 5
-    },
+    "trigger": [
+      {
+        "chapter": 5,
+        "flags": [
+          "vote_carried"
+        ]
+      },
+      {
+        "chapter": 5,
+        "flags": [
+          "vote_refused"
+        ]
+      }
+    ],
     "once": true,
     "variants": [
       {
