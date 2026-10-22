@@ -61,7 +61,7 @@ void main() {
     expect(await newlyFor(baseSession()), isNot(contains('time_turned')));
   });
 
-  test('a settled intrigue is a thread; ten make the web', () async {
+  test('a settled intrigue is a thread; eleven make the web', () async {
     final ids = intrigues.keys.toList();
     expect(await newlyFor(withFlags(['intrigue_${ids[0]}_stage_2'])),
         isNot(contains('first_thread')));

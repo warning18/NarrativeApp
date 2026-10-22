@@ -402,6 +402,12 @@ final List<Landmark> worldMapLandmarks = [
       'names_kin',
       'names_debate',
       'names_choice',
+      'price_giants',
+      'price_tidekin',
+      'price_oni',
+      'price_kindly',
+      'price_ledger',
+      'price_choice',
     ],
   ),
   const Landmark(
