@@ -905,6 +905,18 @@ class PlayerSession {
 
   int get xpToNextLevel => level * 100;
 
+  /// This session with its companion flags (`ally_<id>`, `devoted_<id>`,
+  /// see approval.dart's withCompanionFlags) in step with the roster; this
+  /// very session when they already are. The notifier applies it to every
+  /// state it takes, a loaded save included, so an old save with a Devoted
+  /// companion gets its `devoted_` flag on load.
+  PlayerSession withCompanionFlagsSynced() {
+    final synced = withCompanionFlags(flags, {
+      for (final ally in recruitedAllies) ally.companionId: ally.approval,
+    });
+    return identical(synced, flags) ? this : copyWith(flags: synced);
+  }
+
   /// Who wears [itemId]: [playerWearerId] for the player and each recruited
   /// ally's companion id.
   List<String> wearersOf(String itemId) => [
@@ -1863,6 +1875,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         )) {
     _load();
   }
+
+  /// Every state the notifier takes keeps its companion flags in step with
+  /// the roster (wave 17: `ally_<id>` while recruited, `devoted_<id>` once
+  /// Devoted), whichever path moved approval or the roster.
+  @override
+  set state(PlayerSession value) =>
+      super.state = value.withCompanionFlagsSynced();
+
+  @override
+  PlayerSession get state => super.state;
 
   /// Completes once the saved session has been read (or found missing or
   /// unreadable). Nothing is written before then, so a change made in the
