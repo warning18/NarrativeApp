@@ -1390,6 +1390,16 @@ _SimResult _simulate(
       seed = (seed * 31 + unit) & 0x3fffffff;
     }
     final crossingRandom = Random(seed);
+    // Who holds the road, and how they take the party (wave 16).
+    final g = growth;
+    final geography = sim?.geography;
+    final ruler = g == null || geography == null
+        ? ''
+        : landRouteRuler(route, geography, g.politics);
+    final rulers = g == null
+        ? const <String>[]
+        : rulerPool(events, ruler,
+            rulerBandFor(g.politics.tierOf(ruler, g.tables.clans)));
     for (var i = 0; i < 3; i++) {
       final result = resolveCrossing(route, events,
           health: c.currentHealth,
@@ -1397,7 +1407,8 @@ _SimResult _simulate(
           gold: gold,
           modifierFor: c.abilityBonus,
           random: crossingRandom,
-          chapter: lastKnownChapter);
+          chapter: lastKnownChapter,
+          rulers: rulers);
       c.currentHealth = result.health;
       gold = (gold + result.gold).clamp(0, 1 << 30).toInt();
       steps.add(_SimStep(

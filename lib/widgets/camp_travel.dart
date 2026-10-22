@@ -210,17 +210,10 @@ Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
 /// as the story would take it (its expedition, its fight, its scene). On
 /// foot, the trip is the choice's own walk between places, taken with it
 /// (see takeStoryChoice); by sea, the voyage lands the party there, with
-/// no road left to walk.
+/// no road left to walk but a long land road from the landing.
 Future<void> setOutOnMainQuest(
     BuildContext context, WidgetRef ref, StoryChoice choice) async {
   var sailed = false;
-  // A long land road on the way (land_crossing.dart) is crossed first, as
-  // a voyage is sailed: lost or turned back from, the party stays.
-  if (choice.crossesLand && ref.read(appModeProvider) != AppMode.edit) {
-    if (!await runLandCrossing(context, ref, choice.landRouteId!)) return;
-    if (!context.mounted) return;
-    sailed = true;
-  }
   if (choice.travels) {
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
@@ -234,6 +227,16 @@ Future<void> setOutOnMainQuest(
       if (!arrived || !context.mounted) return;
       sailed = true;
     }
+  }
+  // A long land road on the way (land_crossing.dart) is crossed once
+  // landed, as a voyage is sailed: lost or turned back from, the party
+  // stays (wave 16: the fen to the Hollow Court and the Lantern Cliffs are
+  // crossed from where the ship puts in).
+  if (choice.crossesLand && ref.read(appModeProvider) != AppMode.edit) {
+    if (!context.mounted) return;
+    if (!await runLandCrossing(context, ref, choice.landRouteId!)) return;
+    if (!context.mounted) return;
+    sailed = true;
   }
   await takeStoryChoice(context, ref, choice, travelled: sailed);
 }

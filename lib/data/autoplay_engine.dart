@@ -20,6 +20,7 @@ import 'item_origin_here.dart';
 import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
+import '../providers/geography_provider.dart' show loadGeography;
 import '../gamedata/db_schema.dart'
     show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
@@ -831,6 +832,11 @@ Future<void> _crossLand(
       await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
   final notifier = ref.read(playerSessionProvider.notifier);
   final chapter = ref.read(reachedChapterProvider);
+  // Who holds the road, and how they take the party (wave 16).
+  final politics = ref.read(playerSessionProvider).politics;
+  final ruler = landRouteRuler(route, await loadGeography(ref), politics);
+  final rulers = rulerPool(events, ruler,
+      rulerBandFor(politics.tierOf(ruler, await loadClanData(ref))));
   for (var i = 0; i < _crossingTries; i++) {
     final session = ref.read(playerSessionProvider);
     final result = resolveCrossing(route, events,
@@ -839,7 +845,8 @@ Future<void> _crossLand(
         gold: session.gold,
         modifierFor: (ability) => abilityModifierFor(ability, session),
         random: random,
-        chapter: chapter);
+        chapter: chapter,
+        rulers: rulers);
     await notifier.applyChoiceEffects(
         goldMod: result.gold,
         healAmount: result.health - session.currentHealth,
