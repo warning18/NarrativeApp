@@ -46,7 +46,13 @@ class SimGrowthTables {
     this.clans = ClanData.empty,
     this.specs = const {},
     this.specVariants = const {},
+    this.events = const {},
   });
+
+  /// politics_events.json parsed: the events the coast fires by itself
+  /// ([SimGrowth.runEvents]) and a story choice's `event`. None, none
+  /// fire.
+  final Map<String, PoliticsEvent> events;
 
   /// specialisations.json parsed: the main clans' specialisations; and
   /// spec_variants.json, their sub-clans' variants and ranks II.
@@ -248,16 +254,41 @@ class SimGrowth {
     String cause = 'sim',
     Geography? geography,
   }) {
-    final change = coast.applyStoryPolitics(story,
+    return _take(coast.applyStoryPolitics(story,
         cause: cause,
         key: key,
         politics: politics,
         flags: flags.toList(),
-        world: CoastWorld(
-            data: tables.clans,
-            chapter: max(1, chapter),
-            signPatrons: patronsThisLife,
-            geography: geography));
+        world: _world(chapter, geography)));
+  }
+
+  CoastWorld _world(int chapter, Geography? geography) => CoastWorld(
+      data: tables.clans,
+      events: tables.events,
+      chapter: max(1, chapter),
+      signPatrons: patronsThisLife,
+      geography: geography);
+
+  /// The politics events due with [flags] held in [chapter] fired, as the
+  /// app fires them on a chapter change and a day's tick (runDueEvents,
+  /// politics_events.dart): their standing, power and places, flags and
+  /// titles. Returns the flags after; [PoliticsState.firedEvents] keeps
+  /// which fired, and how.
+  List<String> runEvents({
+    required Iterable<String> flags,
+    required int chapter,
+    Geography? geography,
+  }) {
+    if (tables.events.isEmpty) return flags.toList();
+    return _take(runDueEvents(
+        politics: politics,
+        flags: flags.toList(),
+        world: _world(chapter, geography)));
+  }
+
+  /// [change] taken: the politics, the titles it gave and those earned
+  /// (the Throne's worn); returns the flags after.
+  List<String> _take(CoastChange change) {
     politics = change.politics;
     final gained = [
       for (final id in change.titles)

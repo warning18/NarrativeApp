@@ -153,7 +153,7 @@ void main() {
         'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
         'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
         'expedition_steps', 'specialisations', 'spec_variants', //
-        'training_paths',
+        'training_paths', 'politics_events',
       ])
         name: _table(name),
     };

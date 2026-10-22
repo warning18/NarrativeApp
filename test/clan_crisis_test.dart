@@ -80,14 +80,16 @@ void main() {
   test('a chapter\'s turn holds your clan\'s seat for a crisis', () {
     final state = threatened();
     expect(mainClanOf(state), 'compact');
+    // Chapter 6: seats fall to war only at the turns of chapters 6 and 7
+    // (seatWarFromChapter, clan_power.dart).
     final turn = territoryTurn(state,
-        data: data, geography: geography, chapter: 4, protect: 'compact');
+        data: data, geography: geography, chapter: 6, protect: 'compact');
     expect(holderOf('emberwick', geography, turn.state), 'compact');
     expect(turn.state.crisis,
         {'clan': 'compact', 'attacker': 'dominion', 'place': 'emberwick'});
     // Without you to ask, it falls at once.
     final bare =
-        territoryTurn(state, data: data, geography: geography, chapter: 4);
+        territoryTurn(state, data: data, geography: geography, chapter: 6);
     expect(holderOf('emberwick', geography, bare.state), 'dominion');
     expect(bare.state.fallen, contains('compact'));
     expect(bare.state.fellTo['compact'], 'dominion');
@@ -95,7 +97,7 @@ void main() {
 
   test('the crisis scene: defend, pay, refuse (Narrative\'s words)', () {
     final state = territoryTurn(threatened(),
-            data: data, geography: geography, chapter: 4, protect: 'compact')
+            data: data, geography: geography, chapter: 6, protect: 'compact')
         .state;
     final node = buildCrisisNode(state,
         data: data,
@@ -145,7 +147,7 @@ void main() {
 
   PoliticsState fallenState() {
     final state = territoryTurn(threatened(),
-            data: data, geography: geography, chapter: 4, protect: 'compact')
+            data: data, geography: geography, chapter: 6, protect: 'compact')
         .state;
     final node = buildCrisisNode(state,
         data: data,

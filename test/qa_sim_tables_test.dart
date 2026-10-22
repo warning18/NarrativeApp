@@ -2,14 +2,16 @@
 // the simulator screen does. Without training_paths.json the simulated
 // levels never spend their stat picks, and the numbers come out inflated
 // (Core's finding on the v1.473 L3: the boss mean 60 instead of 52, the Archon
-// and Tallis well above their curve). A file that leaves one out on purpose
+// and Tallis well above their curve). Since v1.513 politics_events.json too:
+// without it no politics event fires (standing, relations, power, places).
+// A file that leaves one out on purpose
 // carries `// sim-tables-ok: <table>: <why>` on the line of the call.
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
 /// What the simulator reads from its `tables` and from the stat picks.
-const _required = ['expedition_steps', 'training_paths'];
+const _required = ['expedition_steps', 'training_paths', 'politics_events'];
 
 void main() {
   test('every simulator test loads the tables the simulator needs', () {
