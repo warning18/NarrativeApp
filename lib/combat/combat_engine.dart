@@ -966,6 +966,22 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
 bool hasEntranceCard(String enemyId, Map<String, dynamic> enemy) =>
     enemy['entranceCard'] == true || isBossEnemy(enemyId, enemy);
 
+/// Whether the sea fight against [ship] (an enemy_ships.json record, id
+/// [shipId]) opens on its entrance card (wave 17: the hull or the beast
+/// slides in with its name and the first line of its description). An
+/// explicit `entranceCard` in the record decides; otherwise every sea beast
+/// (a `beast` block) gets one, and so does a raider of the late waters
+/// (`minChapter` 4 or more: the void barge), while the common raiders do
+/// not. The named raiders (the corsair brig, the Crusade's cutter) carry
+/// `entranceCard: true` in the data; the skiff has none.
+bool shipHasEntranceCard(String shipId, Map<String, dynamic>? ship) {
+  if (ship == null) return false;
+  final explicit = ship['entranceCard'];
+  if (explicit is bool) return explicit;
+  if (ship['beast'] is Map) return true;
+  return ((ship['minChapter'] as num?)?.toInt() ?? 0) >= 4;
+}
+
 /// Enemy max-health multiplier by story chapter, applied on top of the
 /// player-level scaling above and before the Elite/pack multipliers.
 /// Level scaling alone let a chapter-5 boss meet a level-10 party as a
