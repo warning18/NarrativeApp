@@ -86,6 +86,11 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
+    final powerNodes = {
+      for (final node in story.nodes.values)
+        if (node.choices.any((c) => c.politics?.power.isNotEmpty ?? false))
+          node.id,
+    };
     final tables = {
       for (final name in [
         'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
@@ -93,7 +98,7 @@ void main() {
         'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
         'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
         'expedition_steps', 'training_paths', 'specialisations',
-        'spec_variants',
+        'spec_variants', 'politics_events',
       ])
         name: _table(name),
     };
@@ -350,6 +355,15 @@ void main() {
           'sworn': full.run.politics.swornFactionId,
           'nemeses': full.run.nemeses.toList()..sort(),
           'finalNemesis': full.run.politics.nemesis,
+          // The choices taken that move a clan's power (story_politics.dart).
+          'powerChoices': [
+            for (final key in full.run.choicesTaken)
+              if (powerNodes.contains(key.split('|').first)) key,
+          ],
+          'firedEvents': {
+            for (final e in full.run.politics.firedEvents.entries)
+              e.key: e.value.variant,
+          },
           'territory': [
             for (final c in full.run.territory)
               {

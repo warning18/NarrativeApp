@@ -47,7 +47,12 @@ import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/factions.dart';
 import '../data/expedition_steps.dart';
 import '../data/perks.dart';
-import '../data/politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
+import '../data/politics_events.dart'
+    show
+        PoliticsEvent,
+        choicePoliticsKey,
+        enterPoliticsKey,
+        parsePoliticsEvents;
 import '../data/materials.dart';
 import '../data/settlements.dart' show campFoundedFlag;
 import '../data/signs.dart';
@@ -414,7 +419,12 @@ class _SimContext {
     this.specs = const {},
     this.specVariants = const {},
     this.trainingPaths = const {},
+    this.politicsEvents = const {},
   });
+
+  /// politics_events.json parsed: the events the coast fires as the walk
+  /// reaches a chapter and moves on (SimGrowth.runEvents). None, none fire.
+  final Map<String, PoliticsEvent> politicsEvents;
 
   /// training_paths.json parsed: with them the levels' stat points are
   /// stat picks (SimCharacter.takeStatPicks).
@@ -519,6 +529,7 @@ class _SimContext {
         clans: clans,
         specs: specs,
         specVariants: specVariants,
+        events: politicsEvents,
       );
 }
 
@@ -1105,7 +1116,26 @@ _SimResult _simulate(
     final g = growth;
     if (g == null || politics == null || politics.isEmpty) return;
     final after = g.applyStoryPolitics(politics,
-        flags: flags, chapter: lastKnownChapter ?? 1, key: key, cause: cause);
+        flags: flags,
+        chapter: lastKnownChapter ?? 1,
+        key: key,
+        cause: cause,
+        geography: sim?.geography);
+    flags
+      ..clear()
+      ..addAll(after);
+  }
+
+  /// The politics events due now (politics_events.dart), as the app fires
+  /// them on a chapter change and a day's tick: here, at each scene the
+  /// walk enters, after a new chapter's turn.
+  void runEvents() {
+    final g = growth;
+    if (g == null) return;
+    final after = g.runEvents(
+        flags: flags,
+        chapter: lastKnownChapter ?? 1,
+        geography: sim?.geography);
     flags
       ..clear()
       ..addAll(after);
@@ -1775,6 +1805,10 @@ _SimResult _simulate(
         }
       }
     }
+    // The coast moves: the events a new chapter brings, and those the
+    // flags set on the way call for (the app's chapter change and day's
+    // tick).
+    runEvents();
 
     if (node.choices.isEmpty) {
       steps.add(_SimStep(
@@ -2228,6 +2262,7 @@ _SimContext _simContextOf(
     specs: specInfosFrom(table('specialisations')),
     specVariants: specVariantsFrom(table('spec_variants')),
     trainingPaths: trainingPathsFrom(table('training_paths')),
+    politicsEvents: parsePoliticsEvents(table('politics_events')),
   );
 }
 
@@ -2871,6 +2906,7 @@ class _PlaythroughSimulatorScreenState
       houses: await load(housesSchema),
       writtenSteps: await loadWrittenSteps(ref),
       trainingPaths: await ref.read(trainingPathsProvider.future),
+      politicsEvents: parsePoliticsEvents(await load(politicsEventsSchema)),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
