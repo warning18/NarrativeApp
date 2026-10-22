@@ -1443,6 +1443,15 @@ final DbSchema enemyShipsSchema = DbSchema(
           'Sea Beast {waters: [chapters], regen, diveEvery, breach, fleeShare, trophyPartId, omen, sighting, hunt (+ _fr)}: a beast, never a raider (see sea_beasts.dart)',
       type: FieldType.json,
     ),
+    // Wave 17: the sea fight opens on this ship's entrance card. Left
+    // empty, shipHasEntranceCard decides (every beast, and the raiders of
+    // chapter 4 on); true or false here overrides it.
+    FieldSchema(
+      key: 'entranceCard',
+      label:
+          'Entrance card (empty: beasts and chapter 4+ raiders get one; true/false overrides)',
+      type: FieldType.boolean,
+    ),
     visualAssetFieldSchema('enemy_ships'),
   ],
 );

@@ -26,6 +26,7 @@ import '../providers/chapter_loop_provider.dart'
     show chapterConditionProvider, reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
+import '../providers/day_phase_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/moment_remark_provider.dart' show speakUpAtSea;
 import '../providers/player_session_provider.dart';
@@ -1147,6 +1148,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     dress: ref.watch(shipDressProvider),
                     condition: _hullFraction,
                     crew: deckCrewOf(ref.watch(walkingPartyProvider)),
+                    phase: ref.watch(dayPhaseProvider),
                     height: 130,
                   ),
                 ),
@@ -1289,6 +1291,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     condition: _hullFraction,
                     meeting: _meetingFor(event),
                     crew: deckCrewOf(ref.watch(walkingPartyProvider)),
+                    phase: ref.watch(dayPhaseProvider),
                     height: 140,
                     beside: Icon(icon, size: 34, color: colour),
                   ),

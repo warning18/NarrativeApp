@@ -16,6 +16,7 @@ import '../providers/aftermath_provider.dart'
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart'
     show factionsProvider, loadClanData, politicsProvider;
+import '../providers/day_phase_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart' show loadGeography;
@@ -32,6 +33,7 @@ import '../widgets/side_view/encounter_figure.dart';
 import '../widgets/side_view/cliffs_kit.dart';
 import '../widgets/side_view/fen_kit.dart';
 import '../widgets/side_view/frost_kit.dart';
+import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
@@ -554,6 +556,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             ? 0.0
             : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
                 .clamp(0.0, 1.0);
+    final phase = ref.watch(dayPhaseProvider);
     final storm = _phase == _Phase.event && crossingIsStorm(event?.id);
     final sky = ref.watch(skyHereProvider)?.today().kind;
     final particles =
@@ -588,30 +591,41 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   ),
                 ),
               ),
-              const Spacer(),
-              TutorialTarget(
-                id: 'crossing.health',
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.55),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.favorite, size: 16, color: Colors.white),
-                      const SizedBox(width: 6),
-                      SizedBox(
-                        width: 96,
-                        child: LinearProgressIndicator(
-                            key: const Key('crossing_health'), value: health),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TutorialTarget(
+                    id: 'crossing.health',
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.55),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      const SizedBox(width: 6),
-                      Text('${session.currentHealth}/${session.maxHealth}',
-                          style: theme.textTheme.labelMedium
-                              ?.copyWith(color: Colors.white)),
-                    ]),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.favorite,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 6),
+                          // Shrinks with the screen and the text, so large text on
+                          // a narrow phone keeps the numbers whole.
+                          Flexible(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 96),
+                              child: LinearProgressIndicator(
+                                  key: const Key('crossing_health'),
+                                  value: health),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text('${session.currentHealth}/${session.maxHealth}',
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: Colors.white)),
+                        ]),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -673,7 +687,9 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: crossingSceneHeight,
-                      layers: crossingLayers(terrain, progress),
+                      layers: withHourStars(
+                          crossingLayers(terrain, progress), phase),
+                      overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),
                           moving: _phase == _Phase.result,
