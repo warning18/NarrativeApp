@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.509.0+545]
+
+Clan power moves with the story.
+
+### Changed
+- **19 story choices carry power** (3 to 8 points, `politics.power`): selling a Keyholder’s key, holding the Spire’s wall, cutting the Lantern-Bearer’s standard free, waking the Court, carrying or refusing the Tribunal’s vote, the Crows’ smuggler run, telling the truth about the Vigil’s spear, returning the master hammer, sheltering the Mire’s child or giving her up, breaking the relic, warning the Keyholders. The winners and losers on the same choice move opposite ways.
+- **Two upheaval events:** *The vote reaches Candlehold* (as chapter 5 opens: Cinder Row goes to the Dominion or the Spire Stair to the Compact, by what you did with the vote) and *The Conclave counts* (chapter 7: how you came up the cliff moves the Dominion, and by force, the clan behind your gate takes the Lantern Hall). The Conclave’s swings are full size while some clan stands at 50 power or more, and half size, with no place changing hands, when none does.
+
 ## [1.508.0+544]
 
 Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
