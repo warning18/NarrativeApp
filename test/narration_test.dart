@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/data/origin_stories.dart';
 import 'package:narrative_data_app/combat/combat_aftermath.dart';
 import 'package:narrative_data_app/data/ally_acknowledgments.dart';
+import 'package:narrative_data_app/data/approval.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/narration_tokens.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
@@ -407,7 +408,11 @@ void main() {
     final politicsEvents = _loadJson('assets/gamedata/politics_events.json');
     final factions = _loadJson('assets/gamedata/factions.json');
     final quests = _loadJson('assets/gamedata/quests.json');
+    final companions = _loadJson('assets/gamedata/companions.json');
     final settable = <String>{
+      // Kept by the engine (approval.dart, wave 17): `ally_<id>` while a
+      // companion is on the roster, `devoted_<id>` once they are Devoted.
+      for (final id in companions.keys) ...[allyFlag(id), devotedFlag(id)],
       // Set by a quest's turn-in choice (turn_in_choices.dart) or by one of
       // its own choices (v1.204: the side quests with a giver in a town).
       for (final quest in quests.values) ...[

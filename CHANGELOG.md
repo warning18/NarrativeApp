@@ -24,6 +24,14 @@ Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvide
 ### Touches another session's area
 - `lib/screens/land_crossing_screen.dart` and `lib/screens/voyage_screen.dart` (shared): the phase read and its passing, about 8 lines.
 
+## [1.522.0+558]
+
+Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Sea-fight entrance card:** `shipHasEntranceCard` is true for every sea beast, the void barge and named raiders (the corsair brig and the Inquisition cutter), false for skiffs; an `entranceCard` flag in enemy_ships.json overrides it.
+- **Loyalty flags:** `devoted_<companion>` is set the first time a companion's approval reaches Devoted and stays set; `ally_<companion>` is held while a companion is recruited. Old saves get both on load.
+
 ## [1.521.0+557]
 
 Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large text.
