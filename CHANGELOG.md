@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.510.0+546]
+
+Wave 16 UX: the land crossing has a backdrop for frost, fen and sea cliffs.
+
+### Added
+- **Three new side-view scenes** for land crossings, keyed on the route's terrain (`frost`, `fen`, `sea_cliffs`, the biome ids): a pale cold dawn over white peaks and snowed pines with a pilgrims' cairn, ending at a shelter with a lit window and a thread of smoke; a grey-green dusk over black pools and reed with a boardwalk, ending at a lantern on a post that bobs; and a bright salt morning over headlands with gulls and the sea below, ending at a lighthouse. The goal comes nearer as the days pass, as in the desert and the ruins.
+- **Their weather:** snow falls over the frost, fog drifts over the fen and the cliffs; a sky's own weather still wins.
+- Core's routes for these biomes name their terrain exactly `frost`, `fen` or `sea_cliffs`; until a route exists the scenes are not seen.
+
+## [1.509.0+545]
+
+Clan power moves with the story.
+
+### Changed
+- **19 story choices carry power** (3 to 8 points, `politics.power`): selling a Keyholder’s key, holding the Spire’s wall, cutting the Lantern-Bearer’s standard free, waking the Court, carrying or refusing the Tribunal’s vote, the Crows’ smuggler run, telling the truth about the Vigil’s spear, returning the master hammer, sheltering the Mire’s child or giving her up, breaking the relic, warning the Keyholders. The winners and losers on the same choice move opposite ways.
+- **Two upheaval events:** *The vote reaches Candlehold* (as chapter 5 opens: Cinder Row goes to the Dominion or the Spire Stair to the Compact, by what you did with the vote) and *The Conclave counts* (chapter 7: how you came up the cliff moves the Dominion, and by force, the clan behind your gate takes the Lantern Hall). The Conclave’s swings are full size while some clan stands at 50 power or more, and half size, with no place changing hands, when none does.
+
 ## [1.508.0+544]
 
 Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
