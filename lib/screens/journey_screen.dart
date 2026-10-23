@@ -1183,6 +1183,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
+      // A new game opens on its first scene's page, as any main-story
+      // scene arrived at does; the map comes after.
+      if (ref.read(appModeProvider) != AppMode.edit &&
+          isFreshStoryStart(play,
+              startedFresh:
+                  ref.read(storyPlayProvider.notifier).startedFresh)) {
+        _reading = true;
+        _arrival = false;
+      }
     }
 
     final tools = [

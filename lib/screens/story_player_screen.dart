@@ -428,8 +428,9 @@ class _StoryView extends ConsumerWidget {
     // Picking a saved story back up: a short recap, once per launch.
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
-        ref.read(storyPlayProvider.notifier).restoredFromAutosave &&
-        playState.history.isNotEmpty) {
+        hasRecapProgress(playState,
+            resumed:
+                ref.read(storyPlayProvider.notifier).restoredFromAutosave)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted || ref.read(_previouslyOfferedProvider)) return;
         ref.read(_previouslyOfferedProvider.notifier).state = true;
