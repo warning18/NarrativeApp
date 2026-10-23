@@ -117,6 +117,22 @@ class StoryPlayState {
   bool get isInExcursion => activeExcursionNode != null;
 }
 
+/// Whether the "Previously..." recap has anything to tell: only on a story
+/// picked back up from a save ([resumed]) that has gone past its first
+/// scene. A brand-new game, or one that only made its character on the
+/// first scene, has nothing to recap.
+bool hasRecapProgress(StoryPlayState play, {required bool resumed}) =>
+    resumed && play.history.any((id) => id != StoryRepository.startNodeId);
+
+/// Whether [play] stands on the first scene of a story just begun
+/// ([startedFresh], see [StoryPlayNotifier.restart]) with nothing chosen
+/// yet: a new game, which opens on that scene rather than on the map.
+bool isFreshStoryStart(StoryPlayState play, {required bool startedFresh}) =>
+    startedFresh &&
+    play.history.isEmpty &&
+    !play.isInExcursion &&
+    play.currentNodeId == StoryRepository.startNodeId;
+
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
       : super(StoryPlayState(
@@ -137,6 +153,9 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// continuously via PlayerSessionNotifier) still reflect real progress.
   Future<void> _loadAutosave() async {
     final prefs = await SharedPreferences.getInstance();
+    // A new game begun while this was loading wins: the old autosave must
+    // not come back over it.
+    if (startedFresh) return;
     final savedNodeId = prefs.getString(_autosaveNodePrefsKey);
     if (savedNodeId == null) return;
     final nodeId = liveNodeId(savedNodeId);
@@ -161,8 +180,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
 
   /// Whether this launch picked a story back up from the autosave (with at
   /// least one scene behind it) -- the story view then offers a
-  /// "Previously..." recap once.
+  /// "Previously..." recap once (see [hasRecapProgress]).
   bool restoredFromAutosave = false;
+
+  /// Whether the story was begun again from its first scene this launch
+  /// ([restart]: a new game) -- the Journey then opens on that scene's
+  /// page rather than on the map.
+  bool startedFresh = false;
 
   Future<void> _persistAutosave() async {
     // Snapshot everything from `state` before the first await -- this runs
@@ -224,6 +248,9 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// rather than silently reviving the position it just left. The map's
   /// fog of war resets with it: a fresh run starts fully unrevealed again.
   void restart(String startId) {
+    startedFresh = true;
+    // Nothing of the old story is left to recap.
+    restoredFromAutosave = false;
     state = StoryPlayState(
       currentNodeId: startId,
       history: const [],
@@ -239,6 +266,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// loading an earlier checkpoint doesn't re-shadow map ground already
   /// revealed past that point.
   void loadState(String savedNodeId, List<String> history) {
+    startedFresh = false;
     final nodeId = liveNodeId(savedNodeId);
     state = StoryPlayState(
       currentNodeId: nodeId,
