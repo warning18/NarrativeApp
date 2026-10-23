@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.534.0+570]
+
+A new game starts on its first scene.
+
+### Fixed
+- **New game:** it opens on "Choose who you are…" instead of the Journey map with the scene in a row at the bottom.
+- **"Previously…":** the recap no longer shows on a new game. It shows only when a saved game with progress past the start is picked back up.
+- **New game over a loading save:** starting a new game while the last save was still loading could bring the old save back; it no longer can.
+
 ## [1.533.0+569]
 
 - A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.
