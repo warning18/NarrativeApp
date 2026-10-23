@@ -21,6 +21,25 @@ GeoPlace? districtOfPlace(Geography geo, String? placeId) =>
 GeoPlace? districtOfNode(Geography geo, StoryNode? node) =>
     districtOfPlace(geo, geo.placeOfNode(node)?.id);
 
+/// The view of a town's plan a move shows (v1.534): the whole town, or the
+/// district.
+enum JourneyTownView { town, district }
+
+/// What the Journey shows after the party moves from place [fromId] to
+/// place [toId] (districts or buildings): a move inside one town with
+/// districts is a walk on its plan, on the whole town when it crosses into
+/// another district, on the district when it stays in the same one. Null
+/// for anything else (a journey between towns, a town with no districts,
+/// a first placing): the world's roads, or the view as it was.
+JourneyTownView? townMoveView(Geography geo, String? fromId, String? toId) {
+  if (fromId == null || toId == null) return null;
+  final from = geo.locationOf(fromId), to = geo.locationOf(toId);
+  if (from == null || to == null || from.id != to.id) return null;
+  final a = districtOfPlace(geo, fromId), b = districtOfPlace(geo, toId);
+  if (a == null || b == null) return null;
+  return a.id == b.id ? JourneyTownView.district : JourneyTownView.town;
+}
+
 /// [cityId]'s districts, in geography.json's order.
 List<GeoPlace> districtsOfCity(Geography geo, String cityId) => [
       for (final child in geo.childrenOf(cityId))

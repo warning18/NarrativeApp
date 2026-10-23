@@ -62,24 +62,22 @@ void main() {
   });
 
   test('a route walks its roads and names the stops in order', () {
-    final route = roadRoute('beggar', 'hold')!;
-    // beggar - alley - hovel - hold, or beggar - bridge - hovel - hold: one
-    // stop each, two roads to the hovel then the Warden's Lane.
-    expect(route.places.first, 'beggar');
-    expect(route.places.last, 'hold');
-    expect(route.places, contains('hovel'));
-    expect(route.stops.last.id, 'wardens_lane');
+    final route = roadRoute('alster', 'wells')!;
+    // Alster - the wreck - the sleeper's face - the White Wells: the sea
+    // road out of Alster, then the Dune Cairn and the Dry Wadi.
+    expect(route.places, ['alster', 'crash', 'sleeper', 'wells']);
+    expect(route.stops.last.id, 'dry_wadi');
     // The way back meets the same stops the other way round.
-    final back = roadRoute('hold', 'beggar')!;
+    final back = roadRoute('wells', 'alster')!;
     expect([for (final s in back.stops) s.id],
         [for (final s in route.stops.reversed) s.id]);
     expect(roadRoute('camp', 'camp')!.isEmpty, isTrue);
     // The longer road with two stops is read from either end.
-    final up = roadBetween('hovel', 'docks')!;
-    expect([for (final s in up.stopsFrom('hovel')) s.id],
-        ['fishmarket', 'chandlers_row']);
-    expect([for (final s in up.stopsFrom('docks')) s.id],
-        ['chandlers_row', 'fishmarket']);
+    final up = roadBetween('alster', 'crash')!;
+    expect([for (final s in up.stopsFrom('alster')) s.id],
+        ['harbour_chain', 'painted_sails']);
+    expect([for (final s in up.stopsFrom('crash')) s.id],
+        ['painted_sails', 'harbour_chain']);
   });
 
   test('every branch of the story between two landmarks follows a road', () {

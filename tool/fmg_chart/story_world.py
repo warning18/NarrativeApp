@@ -62,8 +62,8 @@ LANDS = {
 
 PLACES = {
     # the Old Continent: Alster in the south-west, the Waste, Saltmouth on the northern headland
-    'hovel': (87, 141), 'beggar': (73, 150), 'alley': (89, 152), 'bridge': (100, 138), 'hold': (78, 134),
-    'sewers': (102, 150), 'docks': (64, 141),
+    # Alster is one place (v1.534): its districts are walked on its own plan, not on the chart
+    'alster': (85, 144),
     'crash': (112, 128), 'sleeper': (125, 121), 'wells': (139, 128),
     'upper': (148, 112), 'wharf': (156, 101), 'tern': (168, 107), 'berths': (168, 119),
     # at sea
@@ -101,12 +101,11 @@ ZONES = [
 # and the crossing to the Cove Camp is about three weeks long (58 units).
 OLD_DY = -10
 LANDS['old'] = [(x, y + OLD_DY) for x, y in LANDS['old']]
-for _k in ('hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks', 'crash', 'sleeper', 'wells', 'upper',
-           'wharf', 'tern', 'berths'):
+for _k in ('alster', 'crash', 'sleeper', 'wells', 'upper', 'wharf', 'tern', 'berths'):
     PLACES[_k] = (PLACES[_k][0], PLACES[_k][1] + OLD_DY)
 
 PLACE_ZONE = {  # the zone each place belongs to (geography.json)
-    'The Alster Marches': ['hovel', 'beggar', 'alley', 'bridge', 'hold', 'sewers', 'docks'],
+    'The Alster Marches': ['alster'],
     'The Waste': ['crash', 'sleeper', 'wells'],
     'The Salt Coast': ['upper', 'wharf', 'tern', 'berths', 'alleys', 'cards'],
     'The Lantern Isles': ['candlehold'],

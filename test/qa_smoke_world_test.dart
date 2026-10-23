@@ -71,7 +71,7 @@ void main() {
         .runAsync(() => CityChart.load(rootBundle, CityChart.saltmouthStub));
     final wharf = chart!.districtById('wharf')!;
     final gate = chart.districtById('gate')!;
-    final move = worldLegPath(chartOf(MapShape.story), 'beggar', 'candlehold');
+    final move = worldLegPath(chartOf(MapShape.story), 'alster', 'candlehold');
     final clock = AnimationController(
         vsync: tester, duration: const Duration(seconds: 10))
       ..value = 0.5;

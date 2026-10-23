@@ -36,7 +36,7 @@
     "name_fr": "Alster",
     "blurb": "A river city whose harbor is watched by a stone giant older than its walls. It knelt to the Crusade in one evening; every chalked door on Tallow Street is a house emptied of its people.",
     "blurb_fr": "Une ville fluviale dont le port est veillé par un géant de pierre plus vieux que ses murs. Elle a plié le genou devant la Croisade en une soirée ; chaque porte marquée à la craie, rue du Suif, est une maison vidée de ses gens.",
-    "landmark": "",
+    "landmark": "alster",
     "water": "river"
   },
   "alster_lower_town": {
@@ -50,11 +50,7 @@
     "name_fr": "La Ville basse",
     "blurb": "Tallow Street, the Blind Beggar’s back room, Weaver’s Alley and the house you grew up in: the slums by the river, where it all began.",
     "blurb_fr": "La rue du Suif, l’arrière-salle du Mendiant Aveugle, la ruelle du Tisserand et la maison de votre enfance : les bas-quartiers au bord du fleuve, là où tout a commencé.",
-    "landmarks": [
-      "beggar",
-      "alley",
-      "hovel"
-    ],
+    "landmark": "",
     "glyph": "slum"
   },
   "blind_beggar": {
@@ -84,7 +80,7 @@
     "name_fr": "Le Pont de Pierre",
     "blurb": "The quick road across the river, where slum toughs in Inquisition armbands keep a toll booth made from a market stall.",
     "blurb_fr": "La route rapide par-dessus le fleuve, où des durs des bas-quartiers à brassard de l’Inquisition tiennent un péage fait d’un étal de marché.",
-    "landmark": "bridge",
+    "landmark": "",
     "glyph": "bridge"
   },
   "alster_black_hold": {
@@ -99,7 +95,7 @@
     "name_fr": "La Geôle Noire",
     "blurb": "The Inquisition’s prison in Alster: a torture chamber, Wardens built like doors, and the Corpse Chute down to the sewers.",
     "blurb_fr": "La prison de l’Inquisition à Alster : une chambre de torture, des Gardiens bâtis comme des portes, et la Goulotte aux Cadavres qui plonge vers les égouts.",
-    "landmark": "hold",
+    "landmark": "",
     "glyph": "keep"
   },
   "black_hold_cells": {
@@ -123,7 +119,7 @@
     "name_fr": "Les Souterrains",
     "blurb": "Alster’s sewers, waist-deep in rot, where a Rat Matriarch holds the main drainage pipe like a landlord.",
     "blurb_fr": "Les égouts d’Alster, de la pourriture jusqu’à la taille, où une Matriarche des rats tient le collecteur principal comme une propriétaire.",
-    "landmark": "sewers",
+    "landmark": "",
     "glyph": "cellar"
   },
   "alster_high_quay": {
@@ -134,7 +130,7 @@
     "name_fr": "Le Haut Quai",
     "blurb": "A quay on stone legs above the harbor, where vessels that should not float ride at their ropes, and where the Lark lifted on the third bell.",
     "blurb_fr": "Un quai sur des jambes de pierre au-dessus du port, où des vaisseaux qui ne devraient pas flotter se balancent au bout de leurs amarres, et d’où l’Alouette s’est élevée au troisième coup de cloche.",
-    "landmark": "docks",
+    "landmark": "",
     "glyph": "quay"
   },
   "the_waste": {
