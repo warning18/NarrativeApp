@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.535.0+571]
+
+Alster, the starting town, is one place on the world map.
+
+### Fixed
+- **Alster on the world map:** the Blind Beggar, Weaver's Alley, the family house and the town's other places were seven separate world places joined by roads. Alster is now one dot, like the later towns, and the world roads start from it.
+- **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
+- **The District tab after a move** shows the district, no longer the world map.
+
 ## [1.534.0+570]
 
 A new game starts on its first scene.
