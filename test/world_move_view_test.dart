@@ -21,8 +21,8 @@ void main() {
     final saved = worldMoveTimeScale;
     addTearDown(() => worldMoveTimeScale = saved);
     worldMoveTimeScale = 1;
-    final short = worldLegPath(chart, 'beggar', 'alley');
-    final long = worldLegPath(chart, 'beggar', 'candlehold');
+    final short = worldLegPath(chart, 'crash', 'sleeper');
+    final long = worldLegPath(chart, 'alster', 'candlehold');
     expect(worldMoveDuration(short),
         greaterThanOrEqualTo(const Duration(seconds: 6)));
     expect(worldMoveDuration(long),
@@ -32,7 +32,7 @@ void main() {
   });
 
   test('the walker takes the bends: smoothed, the ends kept', () {
-    final path = worldLegPath(chart, 'beggar', 'candlehold');
+    final path = worldLegPath(chart, 'alster', 'candlehold');
     final smooth = smoothedWalkPoints(path.points);
     expect(smooth.first, path.points.first);
     expect(smooth.last, path.points.last);
@@ -49,7 +49,7 @@ void main() {
     addTearDown(container.dispose);
     await tester.runAsync(
         () => container.read(chartGlobeProvider.notifier).choose(sphere));
-    final path = worldLegPath(chart, 'beggar', 'candlehold');
+    final path = worldLegPath(chart, 'alster', 'candlehold');
     final clock = AnimationController(
         vsync: tester, duration: const Duration(seconds: 10));
     addTearDown(clock.dispose);

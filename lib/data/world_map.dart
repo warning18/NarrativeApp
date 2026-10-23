@@ -110,92 +110,39 @@ class Landmark {
 
 /// Every landmark, in the order the story reaches them.
 final List<Landmark> worldMapLandmarks = [
+  // Alster, the starting city (v1.534): one place on the world chart, like
+  // every later town. Its districts (the Lower Town with the Blind Beggar,
+  // Weaver's Alley and the family house; the Stone Bridge; the Black Hold;
+  // the Undercroft; the High Quay) are geography.json's, walked on the
+  // town's own plan (city_plans.json), not along the world's roads.
   const Landmark(
-    id: 'beggar',
+    id: 'alster',
     chapter: 1,
-    nameEn: 'The Blind Beggar',
-    nameFr: 'Le Mendiant Aveugle',
+    nameEn: 'Alster',
+    nameFr: 'Alster',
     blurbEn:
-        'Where it starts. The prologue asks who you were; then a card game in the Blind Beggar’s back room ends when the wall comes in. Take back what the tables took, dig out the people under the fallen gallery, or take your stake and run: every way out begins with a fight, and with the old bone die you carry for luck.',
+        'Where it starts: the Dominion’s river city. A card game in the Blind Beggar ends when the wall comes in; the way home runs by Weaver’s Alley or the Stone Bridge to your family’s house, where the Inquisitor-General Aurel Vane is waiting. Then three days in the Black Hold, the sewers under its Corpse Chute, and the painted ships of the High Quay, the only way out.',
     blurbFr:
-        'Là où tout commence. Le prologue demande qui vous étiez\u00a0; puis une partie de cartes dans l’arrière-salle du Mendiant Aveugle s’achève quand le mur cède. Reprendre aux tables ce qu’elles ont pris, dégager les gens pris sous la galerie, ou reprendre votre mise et fuir\u00a0: chaque sortie commence par un combat, et par le vieux dé d’os que vous portez pour la chance.',
-    scenes: ['0', '100', '105', '106', '110', '115', '120', '125', '250'],
+        'Là où tout commence\u00a0: la ville fluviale du Dominion. Une partie de cartes au Mendiant Aveugle s’achève quand le mur cède\u00a0; le chemin de la maison passe par la Ruelle du Tisserand ou le Pont de Pierre jusqu’à la maison de famille, où attend l’Inquisiteur général Aurel Vane. Puis trois jours dans la Geôle Noire, les égouts sous sa Goulotte aux Cadavres, et les navires peints du Haut Quai, la seule issue.',
+    scenes: [
+      // The Lower Town: the Blind Beggar, Weaver's Alley, the family house.
+      '0', '100', '105', '106', '110', '115', '120', '125', '250', //
+      '270',
+      '300', '400', '400_lost', '450', '470',
+      // The Stone Bridge.
+      '260', '261',
+      // The Black Hold.
+      '800', '816', '820', '822', '822_lie_failed', '823',
+      // The Undercroft.
+      '840', '850', '850_fed_failed', '855',
+      // The High Quay.
+      '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
+      '960',
+    ],
     fights: [
       'den_bouncer', 'den_looter', 'sore_loser', 'street_bandit', //
-      'slum_thug', 'white_soldier',
-    ],
-  ),
-  const Landmark(
-    id: 'alley',
-    chapter: 1,
-    nameEn: 'Weaver’s Alley',
-    nameFr: 'La Ruelle du Tisserand',
-    blurbEn:
-        'The slow, dark road home. A starving warhound is caught in razor wire beside its murdered handler, an Inquisition dog-handler. Cut it free, strip the handler, or leave them both.',
-    blurbFr:
-        'La route lente et obscure vers la maison. Un chien de guerre affamé est pris dans des barbelés, à côté de son maître assassiné, un maître-chien de l’Inquisition. Le libérer, dépouiller le maître, ou les laisser tous les deux.',
-    scenes: ['270'],
-  ),
-  const Landmark(
-    id: 'bridge',
-    chapter: 1,
-    nameEn: 'The Stone Bridge',
-    nameFr: 'Le Pont de Pierre',
-    blurbEn:
-        'The quick, watched road home. Slum toughs with Inquisition armbands have built a toll booth out of a market stall. Pay 30 gold or fight your way across.',
-    blurbFr:
-        'La route rapide et surveillée vers la maison. Des durs des bas-quartiers à brassard de l’Inquisition ont fait d’un étal de marché un poste de péage. Payer 30 pièces d’or ou passer en force.',
-    scenes: ['260', '261'],
-    fights: ['slum_thug'],
-  ),
-  const Landmark(
-    id: 'hovel',
-    chapter: 1,
-    nameEn: 'Your family’s house',
-    nameFr: 'La maison de famille',
-    blurbEn:
-        'Inquisitors are tearing the house apart, looking for something. A ball from the white ships folds the wall, and the Inquisitor-General Aurel Vane walks out of the dust holding Lysa by one wrist: charge him, run, or kneel. When the searchers have gone, the ball has found what they could not: a trapdoor, and a cloth as big as a cape.',
-    blurbFr:
-        'Des inquisiteurs mettent la maison sens dessus dessous\u00a0: ils cherchent quelque chose. Un boulet des navires blancs plie le mur, et l’Inquisiteur général Aurel Vane sort de la poussière en tenant Lysa par un poignet\u00a0: le charger, fuir, ou s’agenouiller. Quand les fouilleurs sont partis, le boulet a trouvé ce qu’ils cherchaient en vain\u00a0: une trappe, et une étoffe grande comme une cape.',
-    scenes: ['300', '400', '400_lost', '450', '470'],
-    fights: ['aurel_vane'],
-  ),
-  const Landmark(
-    id: 'hold',
-    chapter: 1,
-    nameEn: 'The Black Hold',
-    nameFr: 'La Geôle Noire',
-    blurbEn:
-        'Three days of Brother Clement’s questions about a cloth you have never seen, then the resistance blows the wall in. On his table, a drawing of the cloth and your family’s name. Get past the Wardens, and choose the battlements or the Corpse Chute.',
-    blurbFr:
-        'Trois jours de questions de frère Clément sur une étoffe que vous n’avez jamais vue, puis la résistance fait sauter le mur. Sur sa table, un dessin de l’étoffe et le nom de votre famille. Passez les Gardiens, et choisissez les remparts ou la Goulotte aux Cadavres.',
-    scenes: ['800', '816', '820', '822', '822_lie_failed', '823'],
-    fights: ['inquisition_warden'],
-  ),
-  const Landmark(
-    id: 'sewers',
-    chapter: 1,
-    nameEn: 'The sewers',
-    nameFr: 'Les égouts',
-    blurbEn:
-        'Waist-deep rot below the Corpse Chute, and a Rat Matriarch squatting in the main drainage pipe.',
-    blurbFr:
-        'De la pourriture jusqu’à la taille sous la Goulotte aux Cadavres, et une Matriarche des Rats tapie dans le collecteur principal.',
-    scenes: ['840', '850', '850_fed_failed', '855'],
-    fights: ['rat_matriarch'],
-  ),
-  const Landmark(
-    id: 'docks',
-    chapter: 1,
-    nameEn: 'Alster’s high quay',
-    nameFr: 'Le haut quai d’Alster',
-    blurbEn:
-        'Vessels that should not float, their painted sails shining as the crews wet them. Talk your way aboard the Lark, pass as crew, or climb her line as she lifts; then the sign on her sail carries you up through the guns.',
-    blurbFr:
-        'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour un membre d’équipage, ou grimpez à son amarre au décollage\u00a0; puis le signe de sa voile vous emporte à travers les canons.',
-    scenes: [
-      '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
-      '960', //
+      'slum_thug', 'white_soldier', 'slum_thug', 'aurel_vane',
+      'inquisition_warden', 'rat_matriarch',
     ],
   ),
   const Landmark(

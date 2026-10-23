@@ -6,13 +6,7 @@ import 'map_charts.dart';
 
 final ChartGeography chartWorldA = ChartGeography(
   places: {
-    'beggar': Offset(28, 86),
-    'alley': Offset(40, 94),
-    'bridge': Offset(42, 68),
-    'hovel': Offset(28, 66),
-    'hold': Offset(36, 52),
-    'sewers': Offset(52, 62),
-    'docks': Offset(56, 84),
+    'alster': Offset(40.286, 73.143),
     'crash': Offset(60, 30),
     'sleeper': Offset(78, 22),
     'wells': Offset(89, 14),
@@ -255,13 +249,7 @@ final ChartGeography chartWorldA = ChartGeography(
 
 final ChartGeography chartWorldB = ChartGeography(
   places: {
-    'beggar': Offset(22, 84),
-    'alley': Offset(34, 92),
-    'bridge': Offset(36, 66),
-    'hovel': Offset(22, 64),
-    'hold': Offset(30, 50),
-    'sewers': Offset(46, 60),
-    'docks': Offset(50, 82),
+    'alster': Offset(34.286, 71.143),
     'crash': Offset(76, 24),
     'sleeper': Offset(94, 14),
     'wells': Offset(108, 22),
@@ -829,13 +817,7 @@ final ChartGeography chartWorldB = ChartGeography(
 
 final ChartGeography chartWorldC = ChartGeography(
   places: {
-    'beggar': Offset(60, 148),
-    'alley': Offset(72, 156),
-    'bridge': Offset(74, 130),
-    'hovel': Offset(60, 128),
-    'hold': Offset(68, 114),
-    'sewers': Offset(84, 124),
-    'docks': Offset(88, 146),
+    'alster': Offset(72.286, 135.143),
     'crash': Offset(104, 134),
     'sleeper': Offset(118, 118),
     'wells': Offset(112, 100),

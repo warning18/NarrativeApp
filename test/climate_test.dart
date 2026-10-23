@@ -26,7 +26,7 @@ void main() {
     expect(sea.sea, isTrue);
     expect(sea.elevation, 0);
     expect(sea.humidity, 1);
-    final alster = climate.sample(at('beggar'));
+    final alster = climate.sample(at('alster'));
     expect(alster.sea, isFalse);
     expect(alster.elevation, greaterThan(0));
     expect(alster.biome, 'temperate');
@@ -64,7 +64,7 @@ void main() {
 
   test('the frost is cold, the Alster vale mild, and height cools', () {
     final rimewell = climate.sample(at('rimewell'));
-    final alster = climate.sample(at('beggar'));
+    final alster = climate.sample(at('alster'));
     expect(rimewell.biome, 'frost');
     expect(rimewell.temperature, lessThan(4));
     expect(alster.temperature, greaterThan(rimewell.temperature + 8));
@@ -78,7 +78,7 @@ void main() {
   });
 
   test('the season turns over ninety days and a day is its own', () {
-    final p = at('beggar');
+    final p = at('alster');
     final spring = climate.temperatureAt(p, day: 22);
     final autumn = climate.temperatureAt(p, day: 67);
     expect(spring, greaterThan(autumn + 5));
@@ -87,7 +87,7 @@ void main() {
   });
 
   test('weather is the same for the same place and time, and moves', () {
-    final p = at('beggar');
+    final p = at('alster');
     final a = climate.weather(p, 12.25);
     final b = climate.weather(p, 12.25);
     expect(a.kind, b.kind);
@@ -118,7 +118,7 @@ void main() {
     final count = <String, Map<WeatherKind, int>>{};
     for (final (name, p) in [
       ('rimewell', at('rimewell')),
-      ('beggar', at('beggar')),
+      ('alster', at('alster')),
     ]) {
       for (var t = 0.0; t < 90; t += 0.25) {
         final kind = climate.weather(p, t).kind;
@@ -130,8 +130,8 @@ void main() {
     // the vale never sees snow.
     expect(count['rimewell']![WeatherKind.snow] ?? 0,
         greaterThan((count['rimewell']![WeatherKind.rain] ?? 0) * 3));
-    expect(count['beggar']![WeatherKind.rain] ?? 0, greaterThan(0));
-    expect(count['beggar']!.containsKey(WeatherKind.snow), isFalse);
+    expect(count['alster']![WeatherKind.rain] ?? 0, greaterThan(0));
+    expect(count['alster']!.containsKey(WeatherKind.snow), isFalse);
   });
 
   test('dust blows over the desert, never rain enough to drown it', () {

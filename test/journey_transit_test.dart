@@ -116,7 +116,9 @@ void main() {
     // From the wharf to the alley the party goes by the world's roads
     // (v1.254), and the words name the stops it passes.
     expect(find.byKey(_stop), findsNothing, reason: 'none passed yet');
-    await tester.pump(const Duration(seconds: 2));
+    // (Alster is one place since v1.535: the walk is shorter and ends
+    // before two seconds, so look while it is still under way.)
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(_stop), findsOneWidget);
     expect(
         tester.widget<Text>(find.byKey(_stop)).data, startsWith('You pass '));

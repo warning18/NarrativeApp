@@ -409,7 +409,7 @@ void main() {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    expect(landmarkOfScene('260')!.id, 'bridge');
+    expect(landmarkOfScene('260')!.id, 'alster');
     await tester.pumpWidget(ProviderScope(
       overrides: [geographyProvider.overrideWithValue(fixture())],
       child: const MaterialApp(home: WorldMapPage()),
@@ -427,9 +427,11 @@ void main() {
     // already name it.
     expect(find.descendant(of: crumbs, matching: find.text('Alster')),
         findsOneWidget);
-    final title = landmarkById('bridge')!.nameEn;
-    expect(
-        find.descendant(of: panel, matching: find.text(title)), findsOneWidget);
+    // The place is Alster itself (v1.534): its title and its crumb.
+    final title = landmarkById('alster')!.nameEn;
+    expect(title, 'Alster');
+    expect(find.descendant(of: panel, matching: find.text(title)),
+        findsNWidgets(2));
     expect(find.descendant(of: crumbs, matching: find.text('The Stone Bridge')),
         title == 'The Stone Bridge' ? findsNothing : findsOneWidget);
     expect(
@@ -437,6 +439,9 @@ void main() {
             of: find.byKey(const Key('world_map_biome')),
             matching: find.text('Temperate')),
         findsOneWidget);
+    // Alster's panel is a long one (v1.534): the crumb is scrolled to.
+    await tester.ensureVisible(find.byKey(const ValueKey('geo_crumb_alster')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('geo_crumb_alster')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('this_land_sheet')), findsOneWidget);
