@@ -19,6 +19,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
+import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 3; i++) {
@@ -194,8 +195,13 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_arriving')), findsOneWidget);
-    // Along the streets of one city nothing needs saying: no world transit.
-    expect(find.byKey(_transit), findsNothing);
+    // Along the streets of one city there is no road to draw, but the walk
+    // is told in a line (v1.537): no world map, only the words.
+    expect(find.byKey(_transit), findsOneWidget);
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    final walk = tester.widget<Text>(find.byKey(_caption)).data!;
+    expect(walk, anyOf(contains('the Undercroft'), contains('les Souterrains')),
+        reason: walk);
     await tester.pump(const Duration(seconds: 4));
     expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);
