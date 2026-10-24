@@ -164,9 +164,10 @@ void main() {
     await _settle(tester);
     final play = container.read(storyPlayProvider.notifier);
 
-    Future<void> moveTo(String nodeId) async {
+    Future<void> moveTo(String nodeId, {VoidCallback? whileWalking}) async {
       play.jumpTo(nodeId);
       await _settle(tester);
+      whileWalking?.call();
       await tester.pump(const Duration(seconds: 2));
       // What arriving opens over the game (a scene read full screen, a
       // place's card) is closed, back to the map.
@@ -192,7 +193,15 @@ void main() {
 
     final townRows = find.textContaining('THE DISTRICTS');
     // The Lower Town to the Stone Bridge: another district, the whole town.
-    await moveTo('260');
+    await moveTo('260', whileWalking: () {
+      // The walk between districts is told (v1.537).
+      expect(
+          tester
+              .widget<Text>(
+                  find.byKey(const ValueKey('journey_transit_caption')))
+              .data,
+          'You walk to the Stone Bridge\u2026');
+    });
     expect(container.read(partyDistrictProvider), 'alster_stone_bridge');
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(townRows, findsOneWidget);

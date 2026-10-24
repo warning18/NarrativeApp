@@ -84,6 +84,7 @@ import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
 import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
+import '../widgets/town_walk.dart';
 import 'journal_screen.dart';
 import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
@@ -356,6 +357,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// over the map until it ends or is tapped.
   _Transit? _transit;
 
+  /// Counts the words shown over the map, so each new one starts its own
+  /// timer (see _PartyTransit's key).
+  int _transitSerial = 0;
+
+  /// Whether the map showed a building's room at the last build, and the
+  /// doorway veil over the map as the party goes in or out (v1.537).
+  bool? _showedRoom;
+  IconData _doorIcon = Icons.login;
+  late final AnimationController _door = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 520), value: 1);
+
   /// The story carried the party to the scene it stands at now (a choice
   /// done here whose aftermath is elsewhere, or a one-tap return to a hub,
   /// see choice_flow.dart): the map plays the trip as for a lost fight. And
@@ -579,6 +591,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     _arrive.forward(from: 0);
   }
 
+  /// The doorway between a room and the streets: the map clears from a
+  /// veil and [text] is told over it (after this build, as it is asked
+  /// for while the map is built).
+  void _passDoor({required bool entering, required String text}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // A road the party is carried along keeps its words.
+      if (_transit?.flight ?? false) return;
+      setState(() {
+        _doorIcon = entering ? Icons.login : Icons.logout;
+        _transitSerial++;
+        _transit = _Transit.words(text, icon: _doorIcon);
+      });
+      _door.forward(from: 0);
+    });
+  }
+
   /// In through the door: the room grows in from the streets (v1.207).
   void _goInside() {
     setState(() {
@@ -670,6 +699,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   void dispose() {
     _jolt.dispose();
     _arrive.dispose();
+    _door.dispose();
     super.dispose();
   }
 
@@ -1536,6 +1566,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // by; the streets are one look out.
     final hereBuilding = herePlace?.isBuilding == true ? herePlace : null;
     _sceneInside = hereBuilding != null;
+    // The room and the streets round it are told apart by a doorway and a
+    // line of words, both ways (v1.537).
+    final showsRoom = hereBuilding != null && !_outside;
+    if (_showedRoom != null &&
+        _showedRoom != showsRoom &&
+        !play.isInExcursion &&
+        _level == JourneyMapLevel.place) {
+      _passDoor(
+          entering: showsRoom,
+          text: showsRoom
+              ? tr(ref, 'journey_step_in').replaceAll(
+                  '{place}', townNameInSentence(hereBuilding.nameFor(french)))
+              : tr(ref, 'journey_step_out'));
+    }
+    _showedRoom = showsRoom;
     RoomPlan? room;
     var hereSpot = '';
     final leavesRoom = <int>{};
@@ -1753,9 +1798,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A move inside one town (v1.534) is a walk on its plan, and the view
     // follows it: the whole town for another district, the district for the
     // same one.
+    String? townWalkTo;
     if (_placedFor != sceneKey && !play.isInExcursion) {
       final town = townMoveView(world, _partyTownSpot, herePlace?.id);
       if (town != null && _canTown) {
+        // Another district: the walk is told in words too (v1.537).
+        if (town == JourneyTownView.town && herePlace != null) {
+          townWalkTo = herePlace.nameFor(french);
+        }
         _level = JourneyMapLevel.place;
         _townView = town == JourneyTownView.town;
         _cityFocus = null;
@@ -1823,6 +1873,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             .replaceAll('{place}', hereName),
                   )
                 : null;
+        if (_transit == null && townWalkTo != null && !editorJump) {
+          _transit = _Transit.words(tr(ref, 'journey_walk_to')
+              .replaceAll('{place}', townNameInSentence(townWalkTo)));
+        }
         // Inside the place (v1.246): the party travels the streets, or the
         // room, from the district or spot it stood at.
         _arriveFrom = cause != null &&
@@ -2314,13 +2368,24 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         ? Stack(
                                             children: [
                                               Positioned.fill(child: map),
+                                              Positioned.fill(
+                                                child: TownDoorVeil(
+                                                  clock: _door,
+                                                  colour: Theme.of(context)
+                                                      .colorScheme
+                                                      .surface,
+                                                  icon: _doorIcon,
+                                                  still: MediaQuery.of(context)
+                                                      .disableAnimations,
+                                                ),
+                                              ),
                                               if (_transit != null &&
                                                   placeView != null &&
                                                   !ended)
                                                 Positioned.fill(
                                                   child: _PartyTransit(
                                                     key: ValueKey(
-                                                        'journey_transit_$sceneKey'),
+                                                        'journey_transit_$sceneKey$_transitSerial'),
                                                     transit: _transit!,
                                                     mapBuilder: (path, clock) =>
                                                         worldMapWith(
@@ -2525,7 +2590,28 @@ class _Transit {
     required this.forced,
     required this.caption,
     this.path,
-  });
+  })  : icon = null,
+        atTop = false;
+
+  /// Only [text] told over the map, no road: a walk inside a town, a door
+  /// gone through (v1.537).
+  _Transit.words(String text, {this.icon})
+      : from = Offset.zero,
+        to = Offset.zero,
+        fromName = '',
+        toName = '',
+        flight = false,
+        forced = false,
+        caption = text,
+        path = null,
+        atTop = true;
+
+  /// The icon beside the words (a walking figure when null).
+  final IconData? icon;
+
+  /// Whether the words sit at the top of the map: the map's own buttons are
+  /// at its foot, and a short word must not cover them.
+  final bool atTop;
 
   /// The two places on the region's chart.
   final Offset from;
@@ -2634,7 +2720,8 @@ class _PartyTransitState extends State<_PartyTransit>
             ),
           ],
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment:
+                transit.atTop ? Alignment.topCenter : Alignment.bottomCenter,
             child: GestureDetector(
               onTap: skip,
               child: Padding(
@@ -2652,7 +2739,7 @@ class _PartyTransitState extends State<_PartyTransit>
                         Icon(
                           transit.forced
                               ? Icons.warning_amber_rounded
-                              : Icons.directions_walk,
+                              : transit.icon ?? Icons.directions_walk,
                           size: 18,
                           color: transit.forced
                               ? scheme.error

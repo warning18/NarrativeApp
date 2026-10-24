@@ -98,6 +98,12 @@ void main() {
     // board 15), and the + brings the room back.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await _settle(tester);
+    // The doorway is told in words, both ways (v1.537).
+    expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('journey_transit_caption')))
+            .data,
+        'You step back out into the streets\u2026');
     await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_room')), findsNothing);
@@ -105,6 +111,7 @@ void main() {
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_go_inside')));
     await _settle(tester);
+    expect(find.text('You step inside the Blind Beggar\u2026'), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_room')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
 
