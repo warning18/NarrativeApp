@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.537.0+573]
+
+A dependency update, no gameplay change.
+
+### Changed
+- **open_filex** 4.7.0 to 5.0.0 (Dependabot), used to open a downloaded update and exported files.
+
 ## [1.536.0+572]
 
 Saltmouth is one place on the world map, like Alster.
