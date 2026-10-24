@@ -26,4 +26,33 @@ Limits: 0.25 for chapter 1, 0.10 for chapters 2 to 8, 0.08 for the mean. Each se
 - (b) Land the test with the proposal's 18-table loader. It passes (mean 0.069) but does not measure the game as played.
 - (c) Re-set the limits for the real walk. This loosens them.
 
-The rewritten test is kept as a patch (not committed) until the user picks.
+## Decision: option (c), no gameplay change (v1.535)
+
+The user chose **(c)**. The gap is the clash rules doing their job: goals
+(rout, subdue, hold), pack break, morale and parry end multi-foe fights before
+every foe is down, so those fights are kinder than under the plain rules. That
+is the game's design, not a bug to tune away.
+
+The rule changes of option (a), "3a" (clash-only pack rules, then lone foes
+not executed), and the pack-stat options (b) and (b+) were measured and
+dropped: they closed the gap but pushed professions under `boss_balance`'s
+60% floor or cost the player wins. See
+[What was changed (v1.524)](https://github.com/warning18/NarrativeApp/blob/ddfbc2c30bcd655976d12f84e76d04cc76e867d4/docs/simulation/clash-balance-real-walk.md#what-was-changed-v1524)
+and
+[The three options, measured on v1.531](https://github.com/warning18/NarrativeApp/blob/ddfbc2c30bcd655976d12f84e76d04cc76e867d4/docs/simulation/clash-balance-real-walk.md#the-three-options-measured-on-v1531-claudecore-6--main)
+(branch `claude/core-6`, not merged).
+
+`test/clash_balance_test.dart` now runs on the real walk (26 tables, seeds
+7/11/23 at 100 runs, pooled) and guards the gap against drifting further.
+Measured on v1.535:
+
+| Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 | Mean ch 2–8 |
+|---|---|---|---|---|---|---|---|---|
+| 0.032 | **0.230** | 0.139 | 0.112 | 0.136 | 0.178 | 0.138 | 0.124 | **0.151** |
+
+Limits (the user's guide is about 0.24 a chapter and 0.16 for the mean; both
+measured values sit within 0.02 of it, so each limit is the measured value
+plus 0.03 of seed room, rounded up): **0.26** for chapters 2 to 8, **0.25**
+for chapter 1 (unchanged since v1.429), **0.19** for the mean over chapters
+2 to 8, and the mean must stay **above 0** (the clash rules stay a net plus).
+The test body takes about two minutes locally.
