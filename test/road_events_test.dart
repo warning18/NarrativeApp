@@ -108,7 +108,7 @@ void main() {
 
     test('with the world known, a walk between districts of a city is no road',
         () {
-      // Saltmouth's landward gate (2005) to its wharf (2015): two
+      // The Black Reliquary's gate (6010_gate) to its Dead Heart (6003b): two
       // landmarks, one city.
       final world = Geography.parse(geography: {
         'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
@@ -130,34 +130,34 @@ void main() {
           'level': 'district',
           'parent': 'saltmouth',
           'name': 'Gate',
-          'landmark': 'upper'
+          'landmark': 'reliquary'
         },
-        'wharf': {
+        'heart': {
           'level': 'district',
           'parent': 'saltmouth',
-          'name': 'Wharf',
-          'landmark': 'wharf'
+          'name': 'Dead Heart',
+          'landmark': 'heart'
         },
       });
-      expect(isRoadStep('2005', '2015'), isTrue);
+      expect(isRoadStep('6010_gate', '6003b'), isTrue);
       var events = 0;
       for (var at = 0; at < 40; at++) {
         if (roadEventFor(
                 story: story,
-                fromNodeId: '2005',
-                toNodeId: '2015',
+                fromNodeId: '6010_gate',
+                toNodeId: '6003b',
                 historyLength: at,
-                chapter: 2) !=
+                chapter: 5) !=
             null) {
           events++;
         }
         expect(
             roadEventFor(
                 story: story,
-                fromNodeId: '2005',
-                toNodeId: '2015',
+                fromNodeId: '6010_gate',
+                toNodeId: '6003b',
                 historyLength: at,
-                chapter: 2,
+                chapter: 5,
                 world: world),
             isNull);
       }

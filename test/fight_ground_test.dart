@@ -122,7 +122,11 @@ void main() {
     // The setup screen shows where the party stands, and says nothing yet
     // of what is coming.
     expect(find.byKey(const Key('fight_ground_strip')), findsOneWidget);
-    expect(find.text('Sea cliffs'), findsOneWidget);
+    // The stage, then the day's sky if it isn't clear (which depends on
+    // where the party stands: Alster's one place since v1.535).
+    expect(
+        tester.widget<Text>(find.byKey(const Key('fight_ground_strip'))).data,
+        startsWith('Sea cliffs'));
     expect(find.byKey(const Key('fight_anomaly_chip')), findsNothing);
 
     await tester.tap(find.text('Enter Battle'));

@@ -47,7 +47,7 @@ void main() {
     at('candlehold', (-34, 8), 9);
     at('sleeper', (12, 134), -18);
     at('crash', (12, 134), -24);
-    at('hovel', (12, 134), -34);
+    at('alster', (12, 134), -36);
   });
 
   test('ten lands, a polar land over each pole, twelve archipelagos', () {
@@ -143,7 +143,8 @@ void main() {
     expect(t(northPole), lessThan(-5));
     expect(t(southPole), lessThan(-5));
     expect(t(chart.places['reliquary']!), lessThan(t(chart.places['camp']!)));
-    expect(t(chart.places['wharf']!), greaterThan(20));
-    expect(t(chart.places['sleeper']!), greaterThan(t(chart.places['hovel']!)));
+    expect(t(chart.places['saltmouth']!), greaterThan(20));
+    expect(
+        t(chart.places['sleeper']!), greaterThan(t(chart.places['alster']!)));
   });
 }

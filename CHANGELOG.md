@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.536.0+572]
+
+Saltmouth is one place on the world map, like Alster.
+
+### Changed
+- **Saltmouth on the world map:** its six districts were six world places joined by roads. Saltmouth is now one dot; the road from the White Wells and the sea lane to the storm leave from its edge.
+- **Moving around Saltmouth:** the map shows the Town view for another district and the District view within one, with no world-road journey.
+
+## [1.535.0+571]
+
+Alster, the starting town, is one place on the world map.
+
+### Fixed
+- **Alster on the world map:** the Blind Beggar, Weaver's Alley, the family house and the town's other places were seven separate world places joined by roads. Alster is now one dot, like the later towns, and the world roads start from it.
+- **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
+- **The District tab after a move** shows the district, no longer the world map.
+
+## [1.534.0+570]
+
+A new game starts on its first scene.
+
+### Fixed
+- **New game:** it opens on "Choose who you are…" instead of the Journey map with the scene in a row at the bottom.
+- **"Previously…":** the recap no longer shows on a new game. It shows only when a saved game with progress past the start is picked back up.
+- **New game over a loading save:** starting a new game while the last save was still loading could bring the old save back; it no longer can.
+
 ## [1.533.0+569]
 
 - A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.

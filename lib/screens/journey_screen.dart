@@ -11,7 +11,8 @@ import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
-import '../data/city_districts.dart' show districtOfPlace;
+import '../data/city_districts.dart'
+    show JourneyTownView, districtOfPlace, townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -388,6 +389,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// (set while building).
   bool _canTown = false;
 
+  /// The place (district or building) the party last stood at, for the
+  /// view an in-town move shows (see townMoveView).
+  String? _partyTownSpot;
+  bool _moveFraming = false;
+
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
   String _cityChartKey = '';
@@ -522,6 +528,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// A tab of the level strip (v1.350): the district, the whole town, or
   /// the world, in one tap.
   void _goLevel(_LevelTab tab) {
+    // A tab shows what it names: a move still playing over the map ends.
+    if (_transit != null) setState(() => _transit = null);
     switch (tab) {
       case _LevelTab.district:
         if (_level != JourneyMapLevel.place) {
@@ -1175,6 +1183,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
+      // A new game opens on its first scene's page, as any main-story
+      // scene arrived at does; the map comes after.
+      if (ref.read(appModeProvider) != AppMode.edit &&
+          isFreshStoryStart(play,
+              startedFresh:
+                  ref.read(storyPlayProvider.notifier).startedFresh)) {
+        _reading = true;
+        _arrival = false;
+      }
     }
 
     final tools = [
@@ -1733,6 +1750,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A city plan to look at whole (not from inside a room).
     _canTown = placeView?.plan != null && placeView?.room == null;
     if (!_canTown) _townView = false;
+    // A move inside one town (v1.534) is a walk on its plan, and the view
+    // follows it: the whole town for another district, the district for the
+    // same one.
+    if (_placedFor != sceneKey && !play.isInExcursion) {
+      final town = townMoveView(world, _partyTownSpot, herePlace?.id);
+      if (town != null && _canTown) {
+        _level = JourneyMapLevel.place;
+        _townView = town == JourneyTownView.town;
+        _cityFocus = null;
+        _cityFocusToken++;
+        // The chart's report of the district it framed before the move
+        // comes a frame late: it is not the player's pick.
+        _moveFraming = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) => WidgetsBinding
+            .instance
+            .addPostFrameCallback((_) => _moveFraming = false));
+      }
+      _partyTownSpot = herePlace?.id;
+    }
     final townView = _townView && _canTown;
     // A city with Core's stored plan is drawn as board 15's district view
     // (not in a detour, nor from inside a room).
@@ -1897,6 +1933,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             palette: palette,
             text: _cityText(),
             onFocus: (d) {
+              if (_moveFraming) return;
               if (d == null) {
                 if (!_townView) _setTown(true);
               } else if (_townView || _cityFocus != d) {
