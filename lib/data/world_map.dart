@@ -121,9 +121,9 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Alster',
     nameFr: 'Alster',
     blurbEn:
-        'Where it starts: the Dominion’s river city. A card game in the Blind Beggar ends when the wall comes in; the way home runs by Weaver’s Alley or the Stone Bridge to your family’s house, where the Inquisitor-General Aurel Vane is waiting. Then three days in the Black Hold, the sewers under its Corpse Chute, and the painted ships of the High Quay, the only way out.',
+        'The Dominion’s river city, where the story starts: the card tables of the Blind Beggar, Weaver’s Alley and the Stone Bridge, the family house where the Inquisitor-General waits, the Black Hold and the sewers under its Corpse Chute. The painted ships of the High Quay are the only way out.',
     blurbFr:
-        'Là où tout commence\u00a0: la ville fluviale du Dominion. Une partie de cartes au Mendiant Aveugle s’achève quand le mur cède\u00a0; le chemin de la maison passe par la Ruelle du Tisserand ou le Pont de Pierre jusqu’à la maison de famille, où attend l’Inquisiteur général Aurel Vane. Puis trois jours dans la Geôle Noire, les égouts sous sa Goulotte aux Cadavres, et les navires peints du Haut Quai, la seule issue.',
+        'La ville fluviale du Dominion, où tout commence\u00a0: les tables de cartes du Mendiant Aveugle, la Ruelle du Tisserand et le Pont de Pierre, la maison de famille où attend l’Inquisiteur général, la Geôle Noire et les égouts sous sa Goulotte aux Cadavres. Les navires peints du Haut Quai sont la seule issue.',
     scenes: [
       // The Lower Town: the Blind Beggar, Weaver's Alley, the family house.
       '0', '100', '105', '106', '110', '115', '120', '125', '250', //
@@ -190,9 +190,9 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Saltmouth',
     nameFr: 'Bouche-de-Sel',
     blurbEn:
-        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the landward gate. Inside, Chapter 2’s hub: Smugglers’ Wharf and its market, Tern Row and its paper boats, the Lantern Alleys, the card games of Card Row, and the ship-breaker’s yard, where the Rusty Eel waits for whoever can patch her and decide who sails.',
+        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the landward gate. Inside lie Smugglers’ Wharf and its market, Tern Row and its paper boats, the Lantern Alleys, the card games of Card Row, and the ship-breaker’s yard, where the Rusty Eel waits for someone to patch her.',
     blurbFr:
-        'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte de la terre. Dedans, le carrefour du chapitre 2\u00a0: le Quai des Contrebandiers et son marché, Tern Row et ses bateaux de papier, les Ruelles aux lanternes, les parties de cartes de la Rangée des cartes, et le chantier des démolisseurs, où le Rusty Eel attend qui saura le colmater et décider qui embarque.',
+        'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte de la terre. Dedans\u00a0: le Quai des Contrebandiers et son marché, Tern Row et ses bateaux de papier, les Ruelles aux lanternes, les parties de cartes de la Rangée des cartes, et le chantier des démolisseurs, où le Rusty Eel attend qu’on le colmate.',
     scenes: [
       // The Landward Gate.
       '2001', '2000', '2005', '2020', '2021', //

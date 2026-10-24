@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.539.0+575]
+
+- The blurbs for Alster and Saltmouth now describe the places themselves, in English and French.
+
 ## [1.538.0+574]
 
 Towns walked in words: the walk between districts, the doorway of a building, and the place panel's name once.
