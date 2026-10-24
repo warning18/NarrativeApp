@@ -18,8 +18,9 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 
 import 'geography_test.dart' show biomeJson;
 
-/// Saltmouth's landward gate (2005) and its wharf (2015): two landmarks,
-/// one city, on a headland whose roads hold a hazard.
+/// The Black Reliquary's gate (6010_gate) and its Dead Heart (6003b): two
+/// landmarks, one city (Saltmouth is one landmark since v1.536), here on a
+/// headland whose roads hold a hazard.
 Geography _world() => Geography.parse(geography: {
       'old': {'level': 'continent', 'parent': '', 'name': 'Old'},
       'coast': {'level': 'country', 'parent': 'old', 'name': 'Coast'},
@@ -40,13 +41,13 @@ Geography _world() => Geography.parse(geography: {
         'level': 'district',
         'parent': 'saltmouth',
         'name': 'Gate',
-        'landmark': 'upper'
+        'landmark': 'reliquary'
       },
-      'wharf': {
+      'heart': {
         'level': 'district',
         'parent': 'saltmouth',
-        'name': 'Wharf',
-        'landmark': 'wharf'
+        'name': 'Dead Heart',
+        'landmark': 'heart'
       },
     }, biomes: {
       'arid_coast':
@@ -79,15 +80,16 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 50));
       final story = await ref.read(storyDataProvider.future);
       final world = ref.read(geographyProvider);
-      expect(isRoadStep('2005', '2015'), isTrue);
-      expect(world.travelsBetween(story, '2005', '2015'), isFalse);
-      final share = hazardShareFor(world.roadBiome(story, '2005', '2015'));
+      expect(isRoadStep('6010_gate', '6003b'), isTrue);
+      expect(world.travelsBetween(story, '6010_gate', '6003b'), isFalse);
+      final share =
+          hazardShareFor(world.roadBiome(story, '6010_gate', '6003b'));
       expect(share, greaterThan(0));
 
       // Stand at the gate with a history long enough that the landmark
       // rule, on its own, would roll a hazard for this very step.
       final play = ref.read(storyPlayProvider.notifier);
-      play.jumpTo('2005');
+      play.jumpTo('6010_gate');
       final condition = ref.read(chapterConditionProvider);
       var found = false;
       for (var at = ref.read(storyPlayProvider).history.length;
@@ -95,8 +97,8 @@ void main() {
           at++) {
         if (roadEventFor(
               story: story,
-              fromNodeId: '2005',
-              toNodeId: '2015',
+              fromNodeId: '6010_gate',
+              toNodeId: '6003b',
               historyLength: at,
               chapter: ref.read(reachedChapterProvider),
               oddsFactor: condition?.roadEventOdds ?? 1,
@@ -108,14 +110,14 @@ void main() {
           found = true;
           break;
         }
-        play.jumpTo('2005');
+        play.jumpTo('6010_gate');
       }
       expect(found, isTrue);
       expect(ref.read(reachedChapterProvider), greaterThanOrEqualTo(2));
 
       final before = ref.read(playerSessionProvider);
       final taken = await meetRoadHazard(ref, story,
-          fromNodeId: '2005', toNodeId: '2015');
+          fromNodeId: '6010_gate', toNodeId: '6003b');
       expect(taken, isNull);
       final after = ref.read(playerSessionProvider);
       expect(after.currentHealth, before.currentHealth);

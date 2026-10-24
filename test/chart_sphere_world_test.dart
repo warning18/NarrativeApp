@@ -143,7 +143,7 @@ void main() {
     expect(t(northPole), lessThan(-5));
     expect(t(southPole), lessThan(-5));
     expect(t(chart.places['reliquary']!), lessThan(t(chart.places['camp']!)));
-    expect(t(chart.places['wharf']!), greaterThan(20));
+    expect(t(chart.places['saltmouth']!), greaterThan(20));
     expect(
         t(chart.places['sleeper']!), greaterThan(t(chart.places['alster']!)));
   });
