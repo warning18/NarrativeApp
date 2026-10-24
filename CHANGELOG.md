@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.538.0+574]
+
+Towns walked in words: the walk between districts, the doorway of a building, and the place panel's name once.
+
+### Added
+- **The walk between districts is told** (`journey_screen.dart`): crossing from one district of a town to another says "You walk to the Stone Bridge…" (FR "Vous marchez vers le Pont de Pierre…") in the road walk's bubble. It sits at the top of the map so it does not cover the zoom buttons; a tap skips it.
+- **A doorway between a room and the streets**, both ways (`town_walk.dart`): going into a building, or back out to its streets (by the story or by the look-out and go-inside buttons), fades from a veil with a door glyph and says "You step inside the Blind Beggar…" or "You step back out into the streets…". With reduced motion only the line shows.
+
+### Fixed
+- **The world map's place panel** no longer names a land twice: a breadcrumb that reads as the title (Alster, as the title and the last crumb) is left out.
+
+### Tests
+- New `test/town_walk_test.dart`; `alster_one_place`, `journey_inside`, `journey_transit` and `geography_widgets` tests updated for the new lines (the transit test said "nothing needs saying" along a city's streets).
+- Not done: no picture of the caption; the veil is tested on its own, not as a frame of the whole screen.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (~80 lines: the door state and veil, a words-only transit, the district caption) and `lib/screens/world_map_screen.dart` (5 lines, the crumbs filter). `app_strings.dart`: three new keys next to `journey_pass_stop`.
+
 ## [1.537.0+573]
 
 A dependency update, no gameplay change.
