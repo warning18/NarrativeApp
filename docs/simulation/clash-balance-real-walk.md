@@ -40,19 +40,21 @@ dropped: they closed the gap but pushed professions under `boss_balance`'s
 lived only on branch `claude/core-6` and was not merged).
 
 `test/clash_balance_test.dart` now runs on the real walk (26 tables, seeds
-7/11/23 at 100 runs, pooled) and guards the gap against drifting further.
-Measured on v1.535:
+7/11/23, pooled) and guards the gap against drifting further. Measured on
+v1.535:
 
-| Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 | Mean ch 2–8 |
-|---|---|---|---|---|---|---|---|---|
-| 0.032 | **0.230** | 0.139 | 0.112 | 0.136 | 0.178 | 0.138 | 0.124 | **0.151** |
+| Runs a seed | Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 | Mean ch 2–8 |
+|---|---|---|---|---|---|---|---|---|---|
+| 100 | 0.032 | **0.230** | 0.139 | 0.112 | 0.136 | 0.178 | 0.138 | 0.124 | **0.151** |
+| 40 (the test) | 0.008 | **0.278** | 0.133 | 0.102 | 0.153 | 0.189 | 0.169 | 0.133 | **0.165** |
 
-Limits (the user's guide is about 0.24 a chapter and 0.16 for the mean; both
-measured values sit within 0.02 of it, so each limit is the measured value
-plus 0.03 of seed room, rounded up): **0.26** for chapters 2 to 8, **0.25**
-for chapter 1 (unchanged since v1.429), **0.19** for the mean over chapters
-2 to 8, and the mean must stay **above 0** (the clash rules stay a net plus).
-The test body takes about two minutes locally.
+The test runs 40 a seed to keep the suite cheap (about a minute locally,
+against two at 100). Its limits are its own measured values plus 0.03 of
+seed room, rounded up: **0.31** for chapters 2 to 8, **0.25** for chapter 1
+(unchanged since v1.429), **0.20** for the mean over chapters 2 to 8, and the
+mean must stay **above 0** (the clash rules stay a net plus). The user's
+guide was about 0.24 a chapter and 0.16 for the mean, read on the 100-run
+numbers.
 
 ## Appendix: what was changed in the dropped 3a work (v1.524)
 

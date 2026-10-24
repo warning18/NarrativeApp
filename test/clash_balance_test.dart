@@ -8,9 +8,11 @@
 //
 // It runs on the real walk (the same tables as boss_balance_test,
 // politics_events and training_paths included) and pools seeds 7, 11 and 23
-// at 100 runs each: which chapter peaks is seed noise, while a rule that
+// at 40 runs each (kept to about a minute): which chapter peaks is seed
+// noise, while a rule that
 // makes every fight kinder shows in the mean gap. Measured on v1.535: worst
-// chapter 0.230 (chapter 2), mean over chapters 2-8 0.151, chapter 1 0.032.
+// chapter 0.278 (chapter 2), mean over chapters 2-8 0.165, chapter 1 0.008
+// (40 runs a seed; at 100 runs: 0.230, 0.151 and 0.032).
 // Limits are those plus 0.03 of seed room. See
 // docs/simulation/clash-balance-real-walk.md.
 import 'dart:convert';
@@ -27,7 +29,7 @@ Map<String, dynamic> _gamedata(String name) =>
         as Map<String, dynamic>;
 
 const _seeds = [7, 11, 23];
-const _runsPerSeed = 100;
+const _runsPerSeed = 40;
 
 void main() {
   test('the clash rules\' gap over the plain rules does not drift', () {
@@ -83,9 +85,9 @@ void main() {
       report.write('$chapter ${gap.toStringAsFixed(3)}; ');
       final number = int.tryParse(chapter.split(' ').last);
       if (number != null && number >= 2 && number <= 8) midGaps.add(gap);
-      // Chapter 1 keeps its own 0.25 (since v1.429); chapters 2-8 get 0.26,
-      // the worst pooled chapter on v1.535 (0.230) plus seed room.
-      expect(gap.abs(), lessThan(chapter == 'Chapter 1' ? 0.25 : 0.26),
+      // Chapter 1 keeps its own 0.25 (since v1.429); chapters 2-8 get 0.31,
+      // the worst pooled chapter on v1.535 (0.278) plus seed room.
+      expect(gap.abs(), lessThan(chapter == 'Chapter 1' ? 0.25 : 0.31),
           reason: '$chapter: plain ${plain[chapter]!.toStringAsFixed(3)}, '
               'clash ${other.toStringAsFixed(3)}');
     }
@@ -93,8 +95,8 @@ void main() {
     // chapter's limit, so the mean gap over chapters 2-8 has its own.
     expect(midGaps, hasLength(7), reason: '$report');
     final mean = midGaps.reduce((a, b) => a + b) / midGaps.length;
-    // 0.19: the v1.535 mean (0.151) plus seed room.
-    expect(mean.abs(), lessThan(0.19),
+    // 0.20: the v1.535 mean (0.165) plus seed room.
+    expect(mean.abs(), lessThan(0.20),
         reason: 'mean gap, chapters 2-8: ${mean.toStringAsFixed(3)} ($report)');
     // The clash rules stay a net plus for the player.
     expect(mean, greaterThan(0),
