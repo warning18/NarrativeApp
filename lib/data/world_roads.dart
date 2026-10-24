@@ -86,16 +86,7 @@ const _caravanFord =
     RoadStop('caravan_ford', 'The Caravan Ford', 'Le gué des caravanes');
 const _saltMarker =
     RoadStop('salt_marker', 'The Salt Marker', 'La borne de sel');
-const _tollhouse = RoadStop('tollhouse', 'The Tollhouse', 'Le poste de péage');
-const _tideWall = RoadStop('tide_wall', 'The Tide Wall', 'Le mur de marée');
-const _ropewalk = RoadStop('ropewalk', 'The Ropewalk', 'La corderie');
-const _breakersStair = RoadStop(
-    'breakers_stair', 'The Breakers’ Stair', 'L’escalier des démolisseurs');
 const _lastLight = RoadStop('last_light', 'The Last Light', 'Le dernier feu');
-const _lanternStair =
-    RoadStop('lantern_stair', 'The Lantern Stair', 'L’escalier aux lanternes');
-const _barrelRun =
-    RoadStop('barrel_run', 'The Barrel Run', 'L’enfilade des tonneaux');
 const _openWater = RoadStop('open_water', 'The Open Water', 'Le large');
 const _landfallRock =
     RoadStop('landfall_rock', 'Landfall Rock', 'Le rocher de l’arrivée');
@@ -155,14 +146,11 @@ const List<WorldRoad> worldRoads = [
       kind: RoadKind.sea),
   WorldRoad('crash_sleeper', 'crash', 'sleeper', [_duneCairn]),
   WorldRoad('sleeper_wells', 'sleeper', 'wells', [_dryWadi]),
-  WorldRoad('wells_upper', 'wells', 'upper', [_caravanFord, _saltMarker]),
-  // Saltmouth and the crossing.
-  WorldRoad('upper_wharf', 'upper', 'wharf', [_tollhouse, _tideWall]),
-  WorldRoad('wharf_tern', 'wharf', 'tern', [_ropewalk]),
-  WorldRoad('wharf_berths', 'wharf', 'berths', [_breakersStair]),
-  WorldRoad('wharf_alleys', 'wharf', 'alleys', [_lanternStair]),
-  WorldRoad('wharf_cards', 'wharf', 'cards', [_barrelRun]),
-  WorldRoad('berths_storm', 'berths', 'storm', [_lastLight],
+  WorldRoad(
+      'wells_saltmouth', 'wells', 'saltmouth', [_caravanFord, _saltMarker]),
+  // Saltmouth (v1.536: one place, its districts walked on its own plan, see
+  // city_plans.json) and the crossing: the Rusty Eel leaves the yard.
+  WorldRoad('saltmouth_storm', 'saltmouth', 'storm', [_lastLight],
       kind: RoadKind.sea),
   WorldRoad('storm_camp', 'storm', 'camp', [_openWater, _landfallRock],
       kind: RoadKind.sea),

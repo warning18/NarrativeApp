@@ -238,7 +238,7 @@
     "name_fr": "Bouche-de-Sel",
     "blurb": "Where the desert comes down to the sea and stops: white walls, a harbor bristling with masts, and a stone giant standing to its knees in the harbor mouth.",
     "blurb_fr": "Là où le désert descend jusqu’à la mer et s’arrête net : des murs blancs, un port hérissé de mâts, et un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port.",
-    "landmark": "",
+    "landmark": "saltmouth",
     "water": "shore"
   },
   "saltmouth_landward_gate": {
@@ -248,7 +248,7 @@
     "name_fr": "La Porte de la terre",
     "blurb": "Where the caravans queue in the heat to be searched by the Inquisition, wagon by wagon.",
     "blurb_fr": "Là où les caravanes font la queue sous la chaleur pour être fouillées par l’Inquisition, chariot après chariot.",
-    "landmark": "upper",
+    "landmark": "",
     "glyph": "gate"
   },
   "saltmouth_green_door": {
@@ -279,7 +279,7 @@
     "name_fr": "Tern Row",
     "blurb": "The Tide-Kin quarter over a footbridge, salt-scoured and hung with paper boats, each lit for someone the sea never gave back.",
     "blurb_fr": "Le quartier des Gens de la Marée, de l’autre côté d’une passerelle, rongé par le sel et pavoisé de bateaux de papier, chacun allumé pour quelqu’un que la mer n’a jamais rendu.",
-    "landmark": "tern",
+    "landmark": "",
     "glyph": "market"
   },
   "saltmouth_wharf": {
@@ -293,7 +293,7 @@
     "name_fr": "Le Quai des Contrebandiers",
     "blurb": "Saltmouth’s harbor quarter, slick with fish scales and black oil, its net-sheds, tanneries and lantern-lit docks still trading under the Inquisition’s nose.",
     "blurb_fr": "Le quartier du port de Bouche-de-Sel, glissant d’écailles et d’huile noire, dont les remises à filets, les tanneries et les quais aux lanternes commercent encore sous le nez de l’Inquisition.",
-    "landmark": "wharf",
+    "landmark": "",
     "glyph": "wharf"
   },
   "saltmouth_tide_cellar": {
@@ -314,7 +314,7 @@
     "name_fr": "Le Chantier des démolisseurs",
     "blurb": "A long shingle beach in the stone giant’s shadow, where Saltmouth takes ships apart and now and then puts one back together.",
     "blurb_fr": "Une longue grève de galets à l’ombre du géant de pierre, où Bouche-de-Sel démonte les navires, et de temps à autre en remonte un.",
-    "landmark": "berths",
+    "landmark": "",
     "glyph": "yard"
   },
   "saltmouth_lantern_alleys": {
@@ -325,7 +325,7 @@
     "name_fr": "Les Ruelles aux lanternes",
     "blurb": "The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.",
     "blurb_fr": "Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.",
-    "landmark": "alleys",
+    "landmark": "",
     "glyph": "market"
   },
   "saltmouth_card_row": {
@@ -337,7 +337,7 @@
     "name_fr": "La Rangée des cartes",
     "blurb": "A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.",
     "blurb_fr": "Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.",
-    "landmark": "cards",
+    "landmark": "",
     "glyph": "hall"
   },
   "the_seas": {
