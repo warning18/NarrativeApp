@@ -132,7 +132,7 @@ void main() {
     expect(
         lost.points.last, const Offset(worldMapWidth / 2, worldMapHeight / 2));
     // No move: one point.
-    expect(worldLegPath(chart, 'wharf', 'wharf').points, hasLength(1));
+    expect(worldLegPath(chart, 'saltmouth', 'saltmouth').points, hasLength(1));
   });
 
   test('by scenes: the landmarks the Journey moves between', () {

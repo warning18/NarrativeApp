@@ -14,10 +14,7 @@ final ChartGeography chartWorldStory = ChartGeography(
     'crash': Offset(174.808, 111.333),
     'sleeper': Offset(183.101, 105.889),
     'wells': Offset(192.031, 111.333),
-    'upper': Offset(197.773, 98.8889),
-    'wharf': Offset(202.876, 92.1333),
-    'tern': Offset(210.531, 95),
-    'berths': Offset(210.531, 104.333),
+    'saltmouth': Offset(207.002, 98.093),
     'storm': Offset(140.444, 73.3333),
     'wreck': Offset(147.556, 31.2889),
     'camp': Offset(77.8211, 53.7778),
@@ -38,8 +35,6 @@ final ChartGeography chartWorldStory = ChartGeography(
     'greyhithe': Offset(106.652, 36.6667),
     'anchorage': Offset(113.967, 35.8889),
     'candlehold': Offset(117.841, 79.4444),
-    'alleys': Offset(204.9, 98.6),
-    'cards': Offset(215.4, 99.6),
   },
   lands: [
     [

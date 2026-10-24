@@ -74,7 +74,11 @@ void main() {
     });
 
     test('a road step crosses the map, a move within a place does not', () {
-      expect(isRoadStep('2005', '2010'), isTrue);
+      // From the White Wells to Saltmouth: two places on the world map.
+      expect(isRoadStep('1200', '2001'), isTrue);
+      // Saltmouth is one place (v1.536): its districts are walked on the
+      // town's plan, not the world's roads.
+      expect(isRoadStep('2005', '2010'), isFalse);
       expect(isRoadStep('2001', '2005'), isFalse);
       expect(isRoadStep('5003', '5004'), isFalse);
       expect(isRoadStep('2015', '2015'), isFalse);

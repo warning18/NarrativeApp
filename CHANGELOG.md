@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.536.0+572]
+
+Saltmouth is one place on the world map, like Alster.
+
+### Changed
+- **Saltmouth on the world map:** its six districts were six world places joined by roads. Saltmouth is now one dot; the road from the White Wells and the sea lane to the storm leave from its edge.
+- **Moving around Saltmouth:** the map shows the Town view for another district and the District view within one, with no world-road journey.
+
 ## [1.535.0+571]
 
 Alster, the starting town, is one place on the world map.
