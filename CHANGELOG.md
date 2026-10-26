@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.547.0+583]
+
+- Reedholm's night: the old feud between the Mire and the Penitents now comes back unless someone walks out to meet the Mire with open hands, as the refugees you took aboard, an absolved Ember Sister or a Moss Choir singer can.
+
 ## [1.546.0+582]
 
 The Mire and the Penitents no longer start the game at war.
