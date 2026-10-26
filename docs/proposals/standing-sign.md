@@ -5,25 +5,27 @@ Picture: `docs/ux-shots/standing-sign-mock.png`. Mock test:
 
 ## What it is
 A small round sign, in the corner of a clan's banner and at the clan's point on the
-ring, that shows the clan's **standing step** with the player. It uses the steps
-the clan card already shows (`StandingTier`, `standing_tier_*` words) and the
-game's own tier colours (`tierColor`); no new numbers, no new thresholds.
+ring, that shows how the clan stands with the player **at a glance**: green heart,
+grey dot, red crossed blades. It reads the steps the clan card already shows
+(`StandingTier`, `standingTierFor`) with Core's three-way mapping, and the game's own
+step colours (`tierColor`); no new data, no new numbers.
 
-| Steps | Sign | Colour |
-|---|---|---|
-| Sworn | star, double ring | gold |
-| Trusted | shield | green |
-| Friend, Friendly | heart | green / teal |
-| Known | ring | teal |
-| Unknown | dot | grey |
-| Wary, Unfriendly, Resented | one blade | orange to red |
-| Hostile | crossed blades | red |
-| Hunted | crossed blades, double ring | dark red |
+| Reading | Steps | Sign | Colour |
+|---|---|---|---|
+| Friendly | Friendly, Friend, Trusted, Sworn | heart | green (the Friend step's) |
+| Neutral | Wary, Unknown, Known | dot | grey (the Unknown step's) |
+| Hostile | Unfriendly, Resented, Hostile, Hunted | crossed blades | red (the Hostile step's) |
 
-The signs are 7×7 pixel glyphs on a dark disc with a one-colour rim, hard edges,
-like the banners. Shape and colour both carry the step, so it also reads for a
-colour-blind player and at 16 px (the smallest size: the ring's crests and the
-Throne room's standards at half scale). Full size is 28 px on the offer's banners.
+The sign is a 7×7 pixel glyph on a dark disc with a one-colour rim, hard edges, like
+the banners. Shape and colour both carry the reading, so it works for a colour-blind
+player and at 16 px (the smallest size: the ring's crests and the Throne room's
+standards at half scale). Full size is 28 px on the offer's banners. The clan card
+keeps the exact step word; the sign is the glance.
+
+**A finer option, only if three is too coarse** (shown at the bottom of the picture):
+one sign per step (star for Sworn, shield for Trusted, heart for Friend/Friendly, ring
+for Known, dot for Unknown, one blade for Wary to Resented, crossed blades for
+Hostile, double-ringed for Hunted). I would start with the three-way.
 
 ## Where
 - **(a) Banners**: the offer sheet's banners, the ring's crests, the Throne room's
@@ -36,12 +38,13 @@ Throne room's standards at half scale). Full size is 28 px on the offer's banner
 1. I read "the radar between clans" as the **ring (`ClanCompass`)**. If it means the
    per-clan five-axis radar (`ClanRadarChart`), the sign would sit on its centre
    or title instead; say so.
-2. Trusted uses a shield and not an open hand: at 7×7 the hand read as a plug.
+2. Friendly is a heart and not an open hand: at 7×7 the hand read as a plug.
 3. The Open Hand clan (no standing of its own until the banner is raised) shows
    no sign until it has a standing.
 
 ## Build, if approved
-A `StandingSign` widget in `lib/widgets/` (UX), one optional `tier` parameter on
+A `StandingSign` widget in `lib/widgets/` (UX; it maps the tiers inline, or uses Core's
+`standingSignOf(StandingTier)` helper if Core's clan offer PR has it by then), one optional `tier` parameter on
 the banner widgets (`ClanFlag`, `ClanPeek`'s crests, the Throne room's standards)
 and the compass. The offer's and the ring's crests read the standing from
 `PoliticsState.tierOf`. Small: it can go in the next UX PR (v1.554 or later,

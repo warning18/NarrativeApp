@@ -177,27 +177,64 @@ class _SignPainter extends CustomPainter {
   bool shouldRepaint(_SignPainter old) => false;
 }
 
-/// The sign for [tier], [size] logical pixels across.
+/// Core's three-way reading of a step: friendly (Friendly, Friend, Trusted,
+/// Sworn), neutral (Wary, Unknown, Known), hostile (Unfriendly, Resented,
+/// Hostile, Hunted).
+enum Stance { friendly, neutral, hostile }
+
+Stance stanceOf(StandingTier t) => switch (t) {
+      StandingTier.friendly ||
+      StandingTier.friend ||
+      StandingTier.trusted ||
+      StandingTier.sworn =>
+        Stance.friendly,
+      StandingTier.wary ||
+      StandingTier.unknown ||
+      StandingTier.known =>
+        Stance.neutral,
+      _ => Stance.hostile,
+    };
+
+_Glyph glyphOfStance(Stance s) => switch (s) {
+      Stance.friendly => _Glyph.heart,
+      Stance.neutral => _Glyph.dot,
+      Stance.hostile => _Glyph.blades,
+    };
+
+/// The three-way sign's colours: the step colours of Friend, Unknown and
+/// Hostile, so they match the clan card.
+Color stanceColour(Stance s) => Color(tierColor(switch (s) {
+      Stance.friendly => StandingTier.friend,
+      Stance.neutral => StandingTier.unknown,
+      Stance.hostile => StandingTier.hostile,
+    }));
+
+/// The sign for [tier], [size] logical pixels across: the three-way sign,
+/// or with [fine] one sign per step.
 class StandingSign extends StatelessWidget {
-  const StandingSign(this.tier, {super.key, this.size = 18});
+  const StandingSign(this.tier, {super.key, this.size = 18, this.fine = false});
   final StandingTier tier;
   final double size;
+  final bool fine;
 
   @override
   Widget build(BuildContext context) => SizedBox(
         width: size,
         height: size,
         child: CustomPaint(
-          painter: _SignPainter(glyphOf(tier), Color(tierColor(tier)),
-              double_:
-                  tier == StandingTier.hunted || tier == StandingTier.sworn),
+          painter: fine
+              ? _SignPainter(glyphOf(tier), Color(tierColor(tier)),
+                  double_:
+                      tier == StandingTier.hunted || tier == StandingTier.sworn)
+              : _SignPainter(
+                  glyphOfStance(stanceOf(tier)), stanceColour(stanceOf(tier))),
         ),
       );
 }
 
 /// A banner with its sign in the top-right corner.
 Widget _bannerWithSign(String id, StandingTier tier,
-        {required double height, required double sign}) =>
+        {required double height, required double sign, bool fine = false}) =>
     SizedBox(
       width: height / 2 + sign * 0.4,
       height: height,
@@ -205,7 +242,9 @@ Widget _bannerWithSign(String id, StandingTier tier,
         Positioned(
             left: 0, top: 0, child: ClanFlag(factionId: id, height: height)),
         Positioned(
-            right: 0, top: -sign * 0.15, child: StandingSign(tier, size: sign)),
+            right: 0,
+            top: -sign * 0.15,
+            child: StandingSign(tier, size: sign, fine: fine)),
       ]),
     );
 
@@ -360,13 +399,43 @@ Widget _ring({required bool signs}) {
 
 Widget _legend() =>
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _title('The signs, by step (the game’s step names and colours)'),
+      _title('The sign: three readings of the 11 steps (Core’s mapping)'),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        for (final (st, name, steps) in const [
+          (Stance.friendly, 'Friendly', 'Friendly · Friend · Trusted · Sworn'),
+          (Stance.neutral, 'Neutral', 'Wary · Unknown · Known'),
+          (
+            Stance.hostile,
+            'Hostile',
+            'Unfriendly · Resented · Hostile · Hunted'
+          ),
+        ])
+          Padding(
+            padding: const EdgeInsets.only(right: 34),
+            child: Row(children: [
+              StandingSign(
+                  switch (st) {
+                    Stance.friendly => StandingTier.friend,
+                    Stance.neutral => StandingTier.unknown,
+                    Stance.hostile => StandingTier.hostile,
+                  },
+                  size: 30),
+              const SizedBox(width: 10),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(name, style: _t(14, c: stanceColour(st), bold: true)),
+                Text(steps, style: _t(11.5, c: _ash)),
+              ]),
+            ]),
+          ),
+      ]),
+      const SizedBox(height: 16),
+      _title('Finer, only if three reads as too coarse: one sign per step'),
       Wrap(spacing: 14, runSpacing: 10, children: [
         for (final t in StandingTier.values.reversed)
           SizedBox(
             width: 128,
             child: Row(children: [
-              StandingSign(t, size: 22),
+              StandingSign(t, size: 22, fine: true),
               const SizedBox(width: 8),
               Text(_word(t), style: _t(12.5, c: Color(tierColor(t)))),
             ]),
@@ -395,7 +464,7 @@ Widget _board() => Padding(
           ]),
           const SizedBox(width: 12),
           Column(children: [
-            _title('Ring with signs'),
+            _title('Ring with the three-way sign'),
             _ring(signs: true),
           ]),
         ]),
@@ -407,7 +476,8 @@ Widget _board() => Padding(
 void main() {
   setUpAll(_loadFonts);
 
-  test('every step has a sign, and colours are the game’s', () {
+  test('every step has a three-way reading and a fine sign', () {
+    expect(StandingTier.values.map(stanceOf).toSet(), Stance.values.toSet());
     for (final t in StandingTier.values) {
       expect(_bits[glyphOf(t)], isNotNull, reason: t.name);
     }
@@ -417,7 +487,7 @@ void main() {
       (tester) async {
     final dir = Platform.environment['UX_SHOTS'];
     if (dir == null) return;
-    tester.view.physicalSize = const Size(1280, 510);
+    tester.view.physicalSize = const Size(1280, 600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final key = GlobalKey();
