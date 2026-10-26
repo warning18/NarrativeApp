@@ -2567,35 +2567,42 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     continueLabel: tr(ref, 'journey_continue'),
                     closeTip: tr(ref, 'journey_continue'),
                     onContinue: continueFromScene,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          flex: 3,
-                          child: _ScenePanel(
-                            revealKey: revealKey,
-                            key: ValueKey('journey_arrival_$sceneKey'),
-                            story: story,
-                            node: node,
-                            french: french,
-                            folded: false,
-                            reading: false,
-                            onFold: (_) {},
-                            onReading: _read,
-                            detour: detour,
-                          ),
-                        ),
-                        // The choices acted out here, under the words.
-                        if (steps.any((s) => s.onCard) && textReady) ...[
-                          const SizedBox(height: 8),
+                    // The choices are whole, up to 70% of the room the sheet
+                    // gives; the words take the rest and scroll.
+                    child: LayoutBuilder(
+                      builder: (context, room) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // The words take what the choices leave and scroll
+                          // above them; the choices are shown whole.
                           Flexible(
-                            flex: 2,
-                            child: _choicePanel(
-                                steps, _pickedCard(selected), french, story,
-                                shrinkWrap: true),
+                            child: _ScenePanel(
+                              shrinkToText: true,
+                              revealKey: revealKey,
+                              key: ValueKey('journey_arrival_$sceneKey'),
+                              story: story,
+                              node: node,
+                              french: french,
+                              folded: false,
+                              reading: false,
+                              onFold: (_) {},
+                              onReading: _read,
+                              detour: detour,
+                            ),
                           ),
+                          // The choices acted out here, under the words.
+                          if (steps.any((s) => s.onCard) && textReady) ...[
+                            const SizedBox(height: 8),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: room.maxHeight * 0.7),
+                              child: _choicePanel(
+                                  steps, _pickedCard(selected), french, story,
+                                  shrinkWrap: true),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -2841,10 +2848,15 @@ class _ScenePanel extends ConsumerWidget {
     required this.onReading,
     this.detour,
     this.revealKey,
+    this.shrinkToText = false,
   });
 
   final StoryData story;
   final StoryNode node;
+
+  /// The panel is only as tall as its words, up to the room it is given,
+  /// and scrolls beyond it (the arrival sheet, v1.550); false fills it.
+  final bool shrinkToText;
 
   /// Names the scene for the typewriter (see StoryText); null shows its
   /// words at once.
@@ -3011,19 +3023,25 @@ class _ScenePanel extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onDoubleTap: () => onReading(!reading),
                 child: Scrollbar(
-                  child: SingleChildScrollView(
-                    padding: reading
-                        ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
-                        : const EdgeInsets.fromLTRB(14, 12, 40, 36),
-                    child: reading
-                        ? ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minHeight:
-                                    math.max(0, viewport.maxHeight - 40)),
-                            child: Center(child: body),
-                          )
-                        : body,
-                  ),
+                  child: shrinkToText && !reading
+                      ? ListView(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          children: [body],
+                        )
+                      : SingleChildScrollView(
+                          padding: reading
+                              ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
+                              : const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          child: reading
+                              ? ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          math.max(0, viewport.maxHeight - 40)),
+                                  child: Center(child: body),
+                                )
+                              : body,
+                        ),
                 ),
               ),
             ),
