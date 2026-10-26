@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.551.0+587]
+
+A walk along a world road now plays on the World map.
+
+### Fixed
+- **Road moves on the World view:** taking a way that leaves a place for another one used to draw the walk on the District tab: a bare grey region with the road's stops on it. One example is "Go the long way round" from the Sleeper's Face to the White Wells. The Journey now switches to the World view with the World tab lit and walks the road there, at the same pace as the road transit. Arriving at the next place shows that place's own view, as before. A tap on the walk skips it and lands the party at once.
+
 ## [1.548.0+584]
 
 A page whose only ways on are its own cards no longer offers "Back to the map".
