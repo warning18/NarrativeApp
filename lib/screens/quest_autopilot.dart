@@ -11,6 +11,10 @@ import '../widgets/quest_turn_in.dart';
 /// Whether [settleQuests] is at work (it shows dialogs: one run at a time).
 bool _settling = false;
 
+/// Whether [settleQuests] is showing its dialogs (the offers wait for it,
+/// see offer_autopilot.dart).
+bool get questsSettling => _settling;
+
 /// The quests the party need not act on (Wave 6): a main quest offered is
 /// taken on at once, never left for later; a quest whose objectives are all
 /// met completes on its own, with its rewards and level-up as a turn-in

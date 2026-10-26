@@ -44,32 +44,50 @@ const Color wayfarerColor = Color(0xFF8D6E63);
 const int _wayfarerGreetings = 4;
 
 /// Opens the offer when one is due (see offers.dart): after a level-up's
-/// dialog, after a boss, at a chapter's start, from the Character tab.
+/// dialog, after a boss, from the Character tab, and whenever one waits
+/// over the home screen (offer_autopilot.dart).
 /// The offer is drawn once and kept; it is never left for later (Wave 6):
 /// the dialog closes when a gift is taken. [sayWhenNone]: when nobody can come yet,
 /// say so (the Character tab's button) rather than nothing (after a
-/// fight).
-Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
+/// fight). True when an offer is on the table (shown here, or already open);
+/// false when none could be drawn.
+Future<bool> showOfferIfWaiting(BuildContext context, WidgetRef ref,
     {bool sayWhenNone = false}) async {
-  if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return;
-  final tables = await loadOfferTables(ref);
-  final offer = await ref
-      .read(playerSessionProvider.notifier)
-      .ensureOffer(tables, placeHolder: ref.read(holderHereProvider));
-  if (!context.mounted) return;
-  if (offer == null) {
-    if (sayWhenNone) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
+  if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return false;
+  // One offer dialog at a time, opened over the whole app: a fight left
+  // while the offer loads does not lose it.
+  final navigator = Navigator.of(context, rootNavigator: true);
+  if (offerOpenOn(navigator)) return true;
+  _offerOpen[navigator] = true;
+  try {
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final holder = ref.read(holderHereProvider);
+    final tables = await loadOfferTables(ref);
+    final offer = await notifier.ensureOffer(tables, placeHolder: holder);
+    if (!navigator.mounted) return offer != null;
+    if (offer == null) {
+      if (sayWhenNone && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
+      }
+      return false;
     }
-    return;
+    await showDialog<void>(
+      context: navigator.context,
+      barrierDismissible: false,
+      builder: (_) => OfferDialog(tables: tables),
+    );
+    return true;
+  } finally {
+    _offerOpen[navigator] = null;
   }
-  await showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => OfferDialog(tables: tables),
-  );
 }
+
+/// The navigators an offer dialog is open (or loading) over.
+final Expando<bool> _offerOpen = Expando<bool>('offerOpen');
+
+/// Whether an offer dialog is open, or about to be, over [navigator].
+bool offerOpenOn(NavigatorState navigator) => _offerOpen[navigator] ?? false;
 
 /// The suitor's name as the card says it: "The Emberwives of the Cinder
 /// Compact" for a clan's voice, the faction's name for the others, "The

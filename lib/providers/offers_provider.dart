@@ -34,20 +34,29 @@ final offerTablesProvider = Provider<OfferTables>((ref) {
 
 /// The offer tables once every one has loaded: for the code that draws or
 /// takes an offer and may be the first to ask (a level-up after a cold
-/// start), where [offerTablesProvider] could still be empty.
+/// start), where [offerTablesProvider] could still be empty. Every table is
+/// asked for before the first wait, so [ref]'s widget may go meanwhile (a
+/// fight left while the offer after its level-up loads).
 Future<OfferTables> loadOfferTables(WidgetRef ref) async {
   Future<Map<String, dynamic>> table(DbSchema schema) =>
       ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  final data = loadClanData(ref);
+  final signs = table(signsSchema);
+  final skills = table(skillsSchema);
+  final skillTrees = table(skillTreesSchema);
+  final items = table(itemsSchema);
+  final spells = table(spellsSchema);
+  final specs = table(specialisationsSchema);
+  final specVariants = table(specVariantsSchema);
   return OfferTables(
-    data: await loadClanData(ref),
-    signs: parseSigns(await table(signsSchema)),
-    skills:
-        withResolvedPlaceholders(skillsSchema.id, await table(skillsSchema)),
-    skillTrees: await table(skillTreesSchema),
-    items: await table(itemsSchema),
-    spells: parseSpells(await table(spellsSchema)),
-    specs: specInfosFrom(await table(specialisationsSchema)),
-    specVariants: specVariantsFrom(await table(specVariantsSchema)),
+    data: await data,
+    signs: parseSigns(await signs),
+    skills: withResolvedPlaceholders(skillsSchema.id, await skills),
+    skillTrees: await skillTrees,
+    items: await items,
+    spells: parseSpells(await spells),
+    specs: specInfosFrom(await specs),
+    specVariants: specVariantsFrom(await specVariants),
   );
 }
 
