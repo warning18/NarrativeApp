@@ -46,3 +46,21 @@ A `PowerPlate` widget in `lib/widgets/` (UX), one optional power tier on the sam
 banner wrapper the standing sign uses, and the compass's crest scale. The tier comes
 from `powerOf` and `powerTierFor` (the clan card already calls them), so no Core
 change. It rides in the same UX PR as the standing sign.
+
+## Round 2: smaller bars, and other ways (`docs/ux-shots/power-bars-mock.png`)
+The user found bars more visible than chevrons, and the chevrons too big. Test:
+`test/ux_power_bars_mock_test.dart`. Each way is shown at the ring's size (34 px, the
+four tiers, then the six clans mixed), the standard's size (64 px) and the offer's
+full size (128 px), with the standing disc on every banner.
+
+| Way | What it is | Reading at 34 px |
+|---|---|---|
+| A. Bars (round 1) | four 4 px bars under the hem | clear; the baseline |
+| B. Slim bars | four 2 px bars, 80% of the width | smallest, but faint at 34 px: the lit count is hard to read |
+| C. Rising steps | four bars of rising height (signal bars), centred under the hem | as small as A, and the count reads by height as well as colour |
+| D. A rim | none / bronze / silver / gold (double) rim round the banner, no extra room | clear in the six-clan row, heavy at 64 and 128, and it competes with the ring crest's own border |
+
+My read: **C** is the best compromise (no taller than A, the tiers read by height as
+well as colour, so it is not colour-only). B is the smallest but too faint to count.
+D is the "other way": it needs no room and shows well, but it is the loudest and
+colour-led (bronze/silver/gold), so it fights the standing disc for attention.
