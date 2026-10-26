@@ -302,6 +302,47 @@ class CityPlanRecord implements PlacePlan {
     return pool[_stableHash(sceneId) % pool.length];
   }
 
+  /// The districts a party in [districtId] can walk into straight away, in
+  /// the plan's order: the ones it shares a border with (two corners of
+  /// their shapes in common); a district standing apart (the yard across
+  /// the water) and the district nearest it are joined, both ways, by the
+  /// streets and bridges. Empty for a district not on the plan.
+  List<String> neighboursOf(String districtId) =>
+      _neighbours[districtId] ?? const [];
+
+  late final Map<String, List<String>> _neighbours = () {
+    bool near(Offset a, Offset b) => (a - b).distanceSquared <= 1;
+    int shared(CityDistrictShape a, CityDistrictShape b) =>
+        a.shape.where((p) => b.shape.any((q) => near(p, q))).length;
+    final ids = districts.keys.toList();
+    final links = {for (final id in ids) id: <String>{}};
+    for (final a in ids) {
+      for (final b in ids) {
+        if (a != b && shared(districts[a]!, districts[b]!) >= 2) {
+          links[a]!.add(b);
+        }
+      }
+    }
+    for (final a in ids) {
+      if (links[a]!.isNotEmpty || ids.length < 2) continue;
+      final from = districts[a]!.entry;
+      final nearest = (ids.where((b) => b != a).toList()
+            ..sort((x, y) => (districts[x]!.entry - from)
+                .distanceSquared
+                .compareTo((districts[y]!.entry - from).distanceSquared)))
+          .first;
+      links[a]!.add(nearest);
+      links[nearest]!.add(a);
+    }
+    return {
+      for (final a in ids)
+        a: [
+          for (final b in ids)
+            if (links[a]!.contains(b)) b
+        ],
+    };
+  }();
+
   // --- PlacePlan ------------------------------------------------------
 
   @override

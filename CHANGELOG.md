@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.555.0+591]
+
+A scene the story brings you to holds you on its page until you choose, and a district with no way of the story lets you walk on.
+
+### Changed
+- **The scene lock:** when the story brings the party to a scene (a pin or a card taken, a new game's first scene, or a save picked back up), and one of its ways is acted out there, the scene opens as its page and holds the party there. Every way shows as a card, roads included (a road keeps its glyph and says where it leads). The District, Town and World tabs, the map icon and "Back to the map" are greyed, with "Choose first". Taking a road card brings the map back and walks it, the world road included. A shop, or a fight fled, keeps the lock. Hubs, the camp, endings, Edit Mode and jumps never lock. A save on a locked scene reopens on its page, and the recap waits for the next scene with a map. Most story scenes lock, so the sheet over the map now shows only for scenes the story did not bring the party to. The pure rule is `lib/data/scene_lock.dart`.
+
+### Fixed
+- **Walk to a neighbouring district:** when the party's district has none of the scene's ways, the District view lists "Walk to <district>" for each district that borders it on the town plan. Saltmouth's Landward Gate is one such district. The walk is free: no story time, no ration, and the scene stays where it was. The district walked into counts as found.
+- **No stuck street view:** after walking away from a scene played at a building's doorstep, such as the informant's trap at the Landward Gate, the District view showed that empty street. It now shows the district the party walked to.
+
 ## [1.553.0+589]
 
 Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
@@ -30,6 +41,7 @@ The level-up stat pick shows on the ability radar.
 
 ### Tests
 - New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
+
 ## [1.551.0+587]
 
 A walk along a world road now plays on the World map.
