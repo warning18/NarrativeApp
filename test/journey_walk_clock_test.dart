@@ -181,11 +181,17 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
-    // The scene reached is read full screen; Continue brings the map back.
-    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('journey_continue')));
-    await tester.pump(const Duration(milliseconds: 300));
+    // The scene reached is read full screen. A card led to it and its ways
+    // are all cards too: no way back to the map, the cards go on (v1.548).
+    expect(
+        find.byWidgetPredicate((w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>)
+                .value
+                .startsWith('journey_reading_300')),
+        findsOneWidget);
     expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
 
     // Go, and Read while the party walks (a plain way on, a pin): the map
     // stays put (the party walks on it), and the step is taken.

@@ -663,6 +663,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// Whether the scene shown is a new game's first scene, opened as a page.
   bool _openedFresh = false;
 
+  /// The scene whose page the story opened by itself (v1.548): a new
+  /// game's first scene, or one a card on a page led to. When all its ways
+  /// are cards too, its page has no way back to the map.
+  String? _pageByCardAt;
+
   /// The scene of a place the party just arrived at, in a sheet over the map
   /// (S2, see arrival_sheet.dart); Continue closes it.
   bool _arrival = false;
@@ -816,6 +821,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               _arrival = !fresh && view == ArrivalView.sheet;
               // The view is chosen here: the next build keeps it.
               _openedFresh = fresh;
+              _pageByCardAt =
+                  _reading && (fresh || step.onCard) ? _sceneKeyOf(play) : null;
             }
           });
         }
@@ -848,6 +855,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     setState(() {
       _reading = reading;
       _arrival = false;
+      _pageByCardAt = null;
     });
   }
 
@@ -1228,10 +1236,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       if (fresh) {
         _reading = true;
         _arrival = false;
-      } else if (_openedFresh) {
-        // Moved on from it by other means than a way taken here (a jump, a
-        // save loaded): the map, as before.
+        _pageByCardAt = sceneKey;
+      } else if (_openedFresh ||
+          (_pageByCardAt != null && _pageByCardAt != sceneKey)) {
+        // Moved on from a page the story opened by other means than a way
+        // taken here (a jump, a save loaded): the map, as before.
         _reading = false;
+        _pageByCardAt = null;
       }
       _openedFresh = fresh;
     }
@@ -1730,6 +1741,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // party somewhere.
     if (_reading) {
       final here = steps.any((s) => s.onCard);
+      // A page the story opened by itself whose ways are all cards has no
+      // map to go back to (v1.548): the cards take the story on.
+      final toMap =
+          !here || steps.any((s) => !s.onCard) || _pageByCardAt != sceneKey;
       return SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
@@ -1744,8 +1759,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   french: french,
                   folded: false,
                   reading: true,
+                  toMap: toMap,
                   onFold: (_) {},
-                  onReading: _read,
+                  onReading: (r) {
+                    if (r || toMap) _read(r);
+                  },
                   detour: detour,
                 ),
               ),
@@ -1759,18 +1777,28 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       shrinkWrap: true),
                 ),
               ],
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  key: const ValueKey('journey_continue'),
-                  onPressed: continueFromScene,
-                  icon: Icon(here ? Icons.map_outlined : Icons.arrow_forward,
-                      size: 18),
-                  label: Text(tr(
-                      ref, here ? 'journey_reading_exit' : 'journey_continue')),
+              // Without a way back to the map, Continue only shows the words
+              // at once; the cards take the story on.
+              if (toMap || !textReady) ...[
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    key: const ValueKey('journey_continue'),
+                    onPressed: continueFromScene,
+                    icon: Icon(
+                        here && toMap
+                            ? Icons.map_outlined
+                            : Icons.arrow_forward,
+                        size: 18),
+                    label: Text(tr(
+                        ref,
+                        here && toMap
+                            ? 'journey_reading_exit'
+                            : 'journey_continue')),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
@@ -2849,6 +2877,7 @@ class _ScenePanel extends ConsumerWidget {
     this.detour,
     this.revealKey,
     this.shrinkToText = false,
+    this.toMap = true,
   });
 
   final StoryData story;
@@ -2857,6 +2886,9 @@ class _ScenePanel extends ConsumerWidget {
   /// The panel is only as tall as its words, up to the room it is given,
   /// and scrolls beyond it (the arrival sheet, v1.550); false fills it.
   final bool shrinkToText;
+
+  /// Read full screen, whether it has a way back to the map.
+  final bool toMap;
 
   /// Names the scene for the typewriter (see StoryText); null shows its
   /// words at once.
@@ -3051,7 +3083,7 @@ class _ScenePanel extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (reading)
+                if (reading && toMap)
                   IconButton(
                     key: const ValueKey('journey_reading_exit'),
                     icon: const Icon(Icons.map_outlined, size: 20),

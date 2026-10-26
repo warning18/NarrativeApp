@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.550.0+586]
+
+The place sheet is large enough to read.
+
+### Changed
+- **The sheet that opens on a place** (`arrival_sheet.dart`, the Journey's arrival): it opened at up to 62% of the screen, with the words and the choices each given a fixed share of it, so a long scene was clipped and the second choice was cut off behind Continue (the White Wells' "Sleep by the water", "Go south with Lysa and the caravan"). It now opens at up to 90% of the screen (a short scene keeps its own height); the words take what the choices leave and scroll above them; every choice is shown whole above Continue (up to 70% of the room the sheet gives them, then they scroll); and its handle can be dragged to make it smaller (down to 35%) and back up to the full height.
+
+### Tests
+- New `test/arrival_sheet_size_test.dart` (90% at 320 px, the choices whole above Continue with large text, a short scene, the handle). The arrival and scene-sheet tests pass unchanged.
+- Found while testing: at 320 px with text scaled to 1.6 the Journey's level tabs (`journey_level_tabs`) overflow by 116 px and a column in `story_player_screen.dart` by 58 px behind the sheet; neither is changed here.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (about 20 lines: a `shrinkToText` option on the scene panel and the choices' cap in the arrival sheet).
+
+## [1.549.0+585]
+
+The level-up stat pick shows on the ability radar (#510).
+
+## [1.548.0+584]
+
+A page whose only ways on are its own cards no longer offers "Back to the map".
+
+### Fixed
+- **No dead "Back to the map":** the Journey can open a scene's page by itself, on a new game's first scene or after a card is taken. If every way on is a card on that page, the "Back to the map" button and the map icon in the corner are gone, and the cards take the story on. The button stays when the map holds a way on, or when the player opened the page from the map. A jump or a loaded save away from such a page lands on the map, as before.
+
 ## [1.547.0+583]
 
 - Reedholm's night: the old feud between the Mire and the Penitents now comes back unless someone walks out to meet the Mire with open hands, as the refugees you took aboard, an absolved Ember Sister or a Moss Choir singer can.
