@@ -526,5 +526,127 @@
         "fr": "Le Quai des Ancres monte la garde, quel que soit le drapeau, et quelqu’un vient toujours la relever."
       }
     }
+  ],
+  "saltmouth_tags": [
+    {
+      "quest": "q_ch2_dockside_debts",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the harbor master's stores are the Crows' wharf"
+    },
+    {
+      "quest": "q_ch2_smugglers_favor",
+      "district": "saltmouth_wharf",
+      "faction": "compact",
+      "why": "the smuggler's forge and a fair price on steel"
+    },
+    {
+      "quest": "q_ch2_burning_manifest",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the manifests are the Crows' trail"
+    },
+    {
+      "quest": "q_ch2_captains_gambit",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the smuggler captain holds the last ferry"
+    },
+    {
+      "quest": "q_ch2_harbor_reckoning",
+      "district": "saltmouth_wharf",
+      "faction": "penitents",
+      "why": "the sick dragged from their beds are the Penitents' care"
+    },
+    {
+      "quest": "q_ch2_keldas_stand",
+      "district": "saltmouth_wharf",
+      "faction": "vigil",
+      "why": "holding the wharf gate is the Vigil's way"
+    },
+    {
+      "quest": "q_ch2_sables_wager",
+      "district": "saltmouth_card_row",
+      "faction": "crows",
+      "why": "the dockhands' barrel is Card Row"
+    },
+    {
+      "quest": "q_ch2_informants_tip",
+      "district": "saltmouth_landward_gate",
+      "faction": "crows",
+      "why": "the informant works for the smuggling network, against the Inquisition's warden"
+    },
+    {
+      "quest": "q_ch2_terns_toll",
+      "district": "saltmouth_tern_row",
+      "faction": "tidekin",
+      "why": "Nadira's extorted quarter"
+    },
+    {
+      "quest": "q_ch2_lioras_watch",
+      "district": "saltmouth_wharf",
+      "faction": "vigil",
+      "why": "Liora's refugees on the north pier"
+    }
+  ],
+  "locked_texts": [
+    {
+      "district": "saltmouth_lantern_alleys",
+      "quest": "q_ch2_informants_tip",
+      "opensOn": "done",
+      "lockedText": {
+        "en": "The lamps go out as you reach the first arch. Nobody here buys from a stranger the Inquisition’s informants have not named.",
+        "fr": "Les lampes s’éteignent quand vous atteignez la première arche. Ici, personne n’achète à un inconnu que les indicateurs de l’Inquisition n’ont pas nommé."
+      }
+    },
+    {
+      "district": "saltmouth_tern_row",
+      "quest": "q_ch2_terns_toll",
+      "opensOn": "done",
+      "lockedText": {
+        "en": "The footbridge is drawn up on the Tern Row side. The Tide-Kin will not take a stranger over until the toll on their quarter is lifted.",
+        "fr": "La passerelle est relevée du côté de Tern Row. Les Gens de la Marée ne laisseront passer personne tant que la rançon sur leur quartier ne sera pas levée."
+      }
+    }
+  ],
+  "door_scenes": [
+    {
+      "id": "saltmouth_lantern_alleys_door",
+      "district": "saltmouth_lantern_alleys",
+      "mood": "tense",
+      "description": {
+        "en": "The first arch of the Lantern Alleys was lit when I came up the steps from the wharf, and dark by the time I reached it. A woman in the shadow of the arch did not move. **Her hand was on a lamp she had not lit**.\n\n“We do not sell to people the Inquisition’s informants have not named,” she said, not unkindly. “It is not that we dislike you. It is that a name is the only thing that keeps the alleys open.”\n\nShe looked at the stair behind me. “Find the informant. Do what he asks. Then come back, and the lamps will have decided.”",
+        "fr": "Le premier porche des Ruelles aux lanternes était éclairé quand je montai les marches depuis le quai, et sombre quand j’y arrivai. Une femme dans l’ombre de l’arche ne bougea pas. **Sa main reposait sur une lampe qu’elle n’avait pas allumée**.\n\n« Nous ne vendons pas aux gens que les indicateurs de l’Inquisition n’ont pas nommés, dit-elle, sans dureté. Ce n’est pas que nous ne vous aimions pas. C’est qu’un nom est la seule chose qui garde les ruelles ouvertes. »\n\nElle regarda l’escalier derrière moi. « Trouvez l’indicateur. Faites ce qu’il demande. Puis revenez, et les lampes auront décidé. »"
+      },
+      "choices": [
+        {
+          "en": "Turn back and look for the informant",
+          "fr": "Faire demi-tour et chercher l’indicateur"
+        },
+        {
+          "en": "Leave a coin on the step and go",
+          "fr": "Laisser une pièce sur la marche et partir"
+        }
+      ]
+    },
+    {
+      "id": "saltmouth_tern_row_door",
+      "district": "saltmouth_tern_row",
+      "mood": "mournful",
+      "description": {
+        "en": "The footbridge to Tern Row had been drawn up on the far side, and a line of paper boats stood on the rail, each unlit. Nadira stood on the other end with her arms folded.\n\n“It is not you,” she said across the gap. “It is the overseer’s boot on every plank. Anyone who crosses brings his toll with them, and we cannot afford another.”\n\nA gull landed on the rail, looked at the boats, and left. **The Tide-Kin light a boat for each person the sea gave back**. She did not say how many were unlit. “Make him reconsider the arithmetic,” she said. “Then we will lower the bridge.”",
+        "fr": "La passerelle de Tern Row avait été relevée du côté opposé, et une rangée de bateaux de papier se tenait sur la rambarde, tous éteints. Nadira attendait à l’autre bout, les bras croisés.\n\n« Ce n’est pas vous, dit-elle par-dessus le vide. C’est la botte du contremaître sur chaque planche. Quiconque passe apporte son péage avec lui, et nous ne pouvons pas en payer un autre. »\n\nUne mouette se posa sur la rambarde, regarda les bateaux, et repartit. **Les Gens de la Marée allument un bateau pour chaque personne que la mer a rendue**. Elle ne dit pas combien restaient éteints. « Faites-lui revoir son arithmétique, dit-elle. Alors nous baisserons la passerelle. »"
+      },
+      "choices": [
+        {
+          "en": "Go and find the overseer",
+          "fr": "Aller trouver le contremaître"
+        },
+        {
+          "en": "Light one of the boats yourself and go",
+          "fr": "Allumer vous-même un des bateaux et partir"
+        }
+      ]
+    }
   ]
 }
