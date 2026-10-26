@@ -231,3 +231,13 @@ RoadRoute? roadRoute(String from, String to) {
   }
   return RoadRoute(legs.reversed.toList());
 }
+
+/// Whether a move from landmark [fromId] to [toId] is a leg of the world's
+/// roads, between two places (v1.548): the Journey walks it on the World
+/// view, never on a district or a town plan, which are for places only.
+bool isWorldRoadLeg(String? fromId, String? toId) =>
+    fromId != null &&
+    toId != null &&
+    fromId.isNotEmpty &&
+    toId.isNotEmpty &&
+    fromId != toId;

@@ -22,6 +22,7 @@ import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/road_chart.dart';
 import '../data/world_leg_path.dart';
+import '../data/world_roads.dart' show isWorldRoadLeg;
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
@@ -397,6 +398,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The whole town in view instead of the district (v1.350): the rung
   /// between the district and the world, for a place with a city plan.
   bool _townView = false;
+
+  /// The party is walking a world road out of the place (v1.548): the map
+  /// shows the World view, until the next scene.
+  bool _roadWalk = false;
 
   /// Whether the place the map shows has a city plan to look at whole
   /// (set while building).
@@ -787,6 +792,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             _partyPlan = homePlan;
             _partyDistrict = homeDistrict;
             _partyLandmark = homeLandmark;
+            _roadWalk = false;
           }
         }
         if (mounted) {
@@ -1854,6 +1860,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // list) is reached by the road from where it stood, and the map says why.
     if (_placedFor != sceneKey && !play.isInExcursion) {
       _placedFor = sceneKey;
+      _roadWalk = false;
       final carried = _carried;
       _carried = false;
       final to = placeView?.chartHere;
@@ -1981,7 +1988,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
     final levelTabs = _LevelTabs(
-      selected: _level != JourneyMapLevel.place
+      selected: _level != JourneyMapLevel.place || _roadWalk
           ? _LevelTab.world
           : townView
               ? _LevelTab.town
@@ -2224,6 +2231,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   place: placeView?.pinned(_pinIdx),
                                   arriveFrom: _arriveFrom,
                                   townView: townView,
+                                  // A way to another place walks the world
+                                  // road on the World view (v1.548).
+                                  roadLeg: (step) => isWorldRoadLeg(
+                                          standing?.id, step.targetLandmark)
+                                      ? worldLegPath(journeyChartOf(ref),
+                                          standing!.id, step.targetLandmark!,
+                                          language: language)
+                                      : null,
+                                  roadMap: (path, clock) => worldMapWith(
+                                      level: JourneyMapLevel.world,
+                                      move: path,
+                                      clock: clock),
+                                  onRoadWalk: () =>
+                                      setState(() => _roadWalk = true),
                                 ),
                               ),
                             ),
@@ -3284,10 +3305,19 @@ class _JourneyChart extends StatefulWidget {
     this.arriveFrom,
     this.townView = false,
     this.stepIds,
+    this.roadLeg,
+    this.roadMap,
+    this.onRoadWalk,
     this.rings = const [],
     this.ringLit,
     this.onRing,
   });
+
+  /// A way out to another place (v1.548): its world road, walked on the
+  /// world chart [roadMap] builds, and the word that the walk has begun.
+  final WorldLegPath? Function(_Step step)? roadLeg;
+  final Widget Function(WorldLegPath path, Animation<double> clock)? roadMap;
+  final VoidCallback? onRoadWalk;
 
   /// A hub's rings round the party's mark (v1.419, see choice_rings.dart),
   /// the one whose list is open ([ringLit]), and a tap on one.
@@ -3435,6 +3465,7 @@ class _JourneyChartState extends State<_JourneyChart>
     duration: const Duration(milliseconds: 1900),
   );
   int? _flying;
+  WorldLegPath? _flyingLeg;
 
   bool get _placeMode => widget.place != null;
 
@@ -3714,6 +3745,13 @@ class _JourneyChartState extends State<_JourneyChart>
         final stops = widget.steps[index].route?.stops.length ?? 0;
         _flight.duration =
             Duration(milliseconds: math.min(4500, 1900 + 350 * stops));
+        _flyingLeg = widget.roadMap == null
+            ? null
+            : widget.roadLeg?.call(widget.steps[index]);
+        if (_flyingLeg != null) {
+          _flight.duration = worldMoveDuration(_flyingLeg!);
+          widget.onRoadWalk?.call();
+        }
         setState(() => _flying = index);
         _wake();
         await _flight.forward(from: 0).orCancel;
@@ -3759,6 +3797,7 @@ class _JourneyChartState extends State<_JourneyChart>
     setState(() {
       _walking = null;
       _flying = null;
+      _flyingLeg = null;
     });
   }
 
@@ -4522,6 +4561,8 @@ class _JourneyChartState extends State<_JourneyChart>
               steps[flying].chartTarget == null) {
             return unrolled;
           }
+          // On a world road: the World view walks it (v1.548).
+          if (_flyingLeg case final leg?) return widget.roadMap!(leg, _flight);
           // On the road: the world chart, from here to where it leads.
           return Stack(
             children: [
