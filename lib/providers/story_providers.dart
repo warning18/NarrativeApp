@@ -124,14 +124,15 @@ class StoryPlayState {
 bool hasRecapProgress(StoryPlayState play, {required bool resumed}) =>
     resumed && play.history.any((id) => id != StoryRepository.startNodeId);
 
-/// Whether [play] stands on the first scene of a story just begun
-/// ([startedFresh], see [StoryPlayNotifier.restart]) with nothing chosen
-/// yet: a new game, which opens on that scene rather than on the map.
-bool isFreshStoryStart(StoryPlayState play, {required bool startedFresh}) =>
-    startedFresh &&
-    play.history.isEmpty &&
+/// Whether [play] stands on the story's first scene with nothing played
+/// yet: a new game, however it was begun (New Game, a first launch, a
+/// story begun again from its ending) or picked back up (a save left on
+/// that scene, the character not made). It opens on that scene rather
+/// than on the map.
+bool isFreshStoryStart(StoryPlayState play) =>
     !play.isInExcursion &&
-    play.currentNodeId == StoryRepository.startNodeId;
+    play.currentNodeId == StoryRepository.startNodeId &&
+    play.history.every((id) => id == StoryRepository.startNodeId);
 
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
@@ -184,8 +185,8 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   bool restoredFromAutosave = false;
 
   /// Whether the story was begun again from its first scene this launch
-  /// ([restart]: a new game) -- the Journey then opens on that scene's
-  /// page rather than on the map.
+  /// ([restart]: a new game) -- an autosave still loading then no longer
+  /// brings the old story back.
   bool startedFresh = false;
 
   Future<void> _persistAutosave() async {

@@ -659,6 +659,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The scene read full screen (double-tap on it, again to come back).
   bool _reading = false;
 
+  /// Whether the scene shown is a new game's first scene, opened as a page.
+  bool _openedFresh = false;
+
   /// The scene of a place the party just arrived at, in a sheet over the map
   /// (S2, see arrival_sheet.dart); Continue closes it.
   bool _arrival = false;
@@ -806,8 +809,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     true,
                 inExcursion: play.isInExcursion,
               );
-              _reading = view == ArrivalView.page;
-              _arrival = view == ArrivalView.sheet;
+              // The story begun again: its first scene, as a new game's.
+              final fresh = isFreshStoryStart(play);
+              _reading = fresh || view == ArrivalView.page;
+              _arrival = !fresh && view == ArrivalView.sheet;
             }
           });
         }
@@ -1215,13 +1220,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _outside = false;
       // A new game opens on its first scene's page, as any main-story
       // scene arrived at does; the map comes after.
-      if (ref.read(appModeProvider) != AppMode.edit &&
-          isFreshStoryStart(play,
-              startedFresh:
-                  ref.read(storyPlayProvider.notifier).startedFresh)) {
+      final fresh =
+          ref.read(appModeProvider) != AppMode.edit && isFreshStoryStart(play);
+      if (fresh) {
         _reading = true;
         _arrival = false;
+      } else if (_openedFresh) {
+        // Moved on from it by other means than a way taken here (a jump, a
+        // save loaded): the map, as before.
+        _reading = false;
       }
+      _openedFresh = fresh;
     }
 
     final tools = [
