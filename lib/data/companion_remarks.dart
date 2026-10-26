@@ -93,6 +93,16 @@ enum RemarkKind {
   /// voyage someone in the party has a sea line for (see [seaRemarkDue],
   /// speakUpAtSea). Silent until Narrative writes the lines.
   atSea,
+
+  // Wave 18.
+
+  /// A district of the town changed hands by influence (a quest turned
+  /// in, district_influence.dart), said once by one companion in the party.
+  districtFlipped,
+
+  /// A district of the town is attacked by a rival clan (wave 18 step 2;
+  /// nothing fires it yet).
+  districtAttacked,
 }
 
 /// Whether a companion may speak up at sea on a voyage in [chapter], when

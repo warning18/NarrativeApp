@@ -23,6 +23,8 @@ import '../data/clan_power.dart' show territoryTurn;
 import '../data/nemesis.dart'
     show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
+import '../data/district_influence.dart' as influence
+    show InfluenceResult, applyQuestInfluence, syncHeldFlags;
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
@@ -2646,6 +2648,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
           politics: updateNemesis(turned, data,
               chapter: chapter, day: state.day, flags: state.flags));
+      _syncHeld(geography);
       // A new nemesis opens its quest (nemesis.dart): beat its champion;
       // the story's own once its champion can come.
       final rose = state.politics.nemesis;
@@ -3510,6 +3513,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     // A standing, an oath or an intrigue's end may be what one asks for.
     await checkAchievements();
@@ -3533,6 +3537,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     return change;
   }
@@ -3554,8 +3559,60 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         force: true);
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     return change;
+  }
+
+  /// The `held_<district>_<clan>` flags brought in line with who holds
+  /// each district now (wave 18, see syncHeldFlags); nothing without the
+  /// geography. The caller persists.
+  void _syncHeld(Geography? geography) {
+    if (geography == null || geography.isEmpty) return;
+    final flags =
+        influence.syncHeldFlags(state.flags, geography, state.politics);
+    if (!identical(flags, state.flags)) {
+      state = state.copyWith(flags: flags);
+    }
+  }
+
+  /// The `held_` flags in sync (see [_syncHeld]), saved when they moved:
+  /// as a scene is entered (politics_provider.dart's applyEnterPolitics),
+  /// so a new game holds them before its first scene with a condition.
+  Future<void> syncHeldFlags(Geography geography) async {
+    final before = state.flags;
+    _syncHeld(geography);
+    if (!identical(before, state.flags)) await _persist();
+  }
+
+  /// [quest] (a quests.json record) turned in (wave 18, see
+  /// applyQuestInfluence in district_influence.dart): its influence for
+  /// the clan [picked] (the turn-in choice's politics) favours, else its
+  /// `faction`, in its district, while the party is in [cityHere]; a
+  /// district or a town changing hands with it. Saved when it counted.
+  Future<influence.InfluenceResult> applyQuestInfluence(
+    Map<String, dynamic> quest, {
+    required ClanData data,
+    required Geography geography,
+    StoryPolitics? picked,
+    String? cityHere,
+    String? partyDistrict,
+    int chapter = 0,
+  }) async {
+    final result = influence.applyQuestInfluence(state.politics, quest,
+        flags: state.flags,
+        data: data,
+        geography: geography,
+        picked: picked,
+        cityHere: cityHere,
+        partyDistrict: partyDistrict,
+        chapter: chapter,
+        day: state.day);
+    if (!result.counted) return result;
+    state = _withTitles(
+        state.copyWith(politics: result.state, flags: result.flags), data);
+    await _persist();
+    return result;
   }
 
   /// Edit Mode's Throne tab (v1.196, see throne.dart): [politics] (a

@@ -123,8 +123,8 @@ void main() {
           data: data, geography: geography, chapter: 3);
       final war = turn.changes.singleWhere((c) => c.cause == 'war');
       expect((war.from, war.to), ('crows', 'dominion'));
-      // Holdings first (the Dominion's five places, the Crows' three).
-      expect(powerOf(turn.state, 'dominion', data), 60 + 5 + warSpoils);
+      // Holdings first (the Dominion's six places, the Crows' three).
+      expect(powerOf(turn.state, 'dominion', data), 60 + 6 + warSpoils);
       expect(powerOf(turn.state, 'crows', data), 30 + 3 - warLoss);
       expect(warSpoils, 5);
       expect(warLoss, 8);
@@ -204,8 +204,15 @@ void main() {
       expect(change.politics.relationStep('dominion', 'mire', data), 3);
     });
 
+    // The Mire's places but its seat gone first (Saltmouth's Lantern
+    // Alleys, wave 18), so its seat is its last.
+    final seatOnly = givePlace(
+        PoliticsState.empty, 'saltmouth_lantern_alleys', 'crows',
+        cause: 'claim', data: data, geography: geography, chapter: 2);
+
     test('a fallen clan regroups to fallenRegroupCap, then needs help', () {
-      var state = givePlace(PoliticsState.empty, 'mire_court', 'dominion',
+      expect(placesOf('mire', geography, seatOnly), ['mire_court']);
+      var state = givePlace(seatOnly, 'mire_court', 'dominion',
           cause: 'war', data: data, geography: geography, chapter: 3);
       expect(state.fallen, ['mire']);
       final seen = <int>[];
@@ -221,7 +228,7 @@ void main() {
     });
 
     test('its seat rises for it unless the holder is seatLead stronger', () {
-      final fallen = givePlace(PoliticsState.empty, 'mire_court', 'penitents',
+      final fallen = givePlace(seatOnly, 'mire_court', 'penitents',
           cause: 'war', data: data, geography: geography, chapter: 3);
       // Back at Rising (26), the Penitents 15 stronger: the seat rises.
       final close = territoryTurn(
@@ -235,7 +242,7 @@ void main() {
       expect(back.placeId, 'mire_court');
       expect(close.state.fallen, isNot(contains('mire')));
       // The Dominion 40 stronger keeps it: the Mire takes a free claim.
-      final held = givePlace(PoliticsState.empty, 'mire_court', 'dominion',
+      final held = givePlace(seatOnly, 'mire_court', 'dominion',
           cause: 'war', data: data, geography: geography, chapter: 3);
       final far = territoryTurn(
           held.copyWith(power: {...held.power, 'mire': 26}),

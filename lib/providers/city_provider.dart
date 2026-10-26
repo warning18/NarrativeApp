@@ -74,7 +74,23 @@ final foundDistrictsProvider = Provider<Set<String>>((ref) {
     visitedNodeIds: play.visitedNodeIds,
     currentNodeId: play.currentNodeId,
     flags: ref.watch(playerSessionProvider.select((s) => s.flags)),
+    completedQuestIds:
+        ref.watch(playerSessionProvider.select((s) => s.completedQuestIds)),
   );
+});
+
+/// The locked districts of the party's city (wave 18, see districtLocked):
+/// shown on the plan with their lock and lockedText, never found, never
+/// walked into. Empty outside a city with districts.
+final lockedDistrictsProvider = Provider<Set<String>>((ref) {
+  final city = ref.watch(currentCityProvider);
+  if (city == null) return const {};
+  return lockedDistrictsOf(
+    ref.watch(geographyProvider),
+    city,
+    ref.watch(playerSessionProvider.select((s) => s.flags)),
+    ref.watch(playerSessionProvider.select((s) => s.completedQuestIds)),
+  ).toSet();
 });
 
 /// The ways of the scene the story is at that lead into the party's
@@ -92,14 +108,35 @@ final partyDistrictWaysProvider = Provider<List<int>>((ref) {
   return waysInDistrict(ref.watch(geographyProvider), story!, node, district);
 });
 
+/// The districts the party can walk into from its own (see
+/// CityPlanRecord.neighboursOf): the Journey offers a walk to each when no
+/// way of the scene stands in the party's district. Empty outside a city
+/// with a stored plan.
+final partyDistrictNeighboursProvider = Provider<List<String>>((ref) {
+  final city = ref.watch(currentCityProvider);
+  final here = ref.watch(partyDistrictProvider);
+  if (city == null || here == null) return const [];
+  final record = ref.watch(cityPlanRecordsProvider).value?[city];
+  // A locked district (wave 18) is no way to walk: its open neighbours, or
+  // the nearest open district when all of them are locked.
+  return record?.walkableFrom(here, ref.watch(lockedDistrictsProvider)) ??
+      const [];
+});
+
 /// Free walking (board 15): the party walks to [districtId] of the city it
 /// is in, with no story choice, no time and no road. A district not found
 /// yet is found by walking in (and stays found, see districtFoundFlag).
-/// Nothing happens for a district of another city.
-Future<void> walkToDistrict(WidgetRef ref, String districtId) async {
+/// Nothing happens for a district of another city, or a locked one (wave
+/// 18, see districtLocked). Returns whether the party walked.
+Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
   final city = ref.read(currentCityProvider);
   final geo = ref.read(geographyProvider);
-  if (city == null || geo.locationOf(districtId)?.id != city) return;
+  if (city == null || geo.locationOf(districtId)?.id != city) return false;
+  final session = ref.read(playerSessionProvider);
+  if (districtLocked(
+      geo, districtId, session.flags, session.completedQuestIds)) {
+    return false;
+  }
   final nodeId = ref.read(storyPlayProvider).currentNodeId;
   ref.read(walkedDistrictProvider.notifier).state =
       (nodeId: nodeId, districtId: districtId);
@@ -109,4 +146,5 @@ Future<void> walkToDistrict(WidgetRef ref, String districtId) async {
         .read(playerSessionProvider.notifier)
         .applyChoiceEffects(flagsToAdd: [flag], goldIsProfit: false);
   }
+  return true;
 }

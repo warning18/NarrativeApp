@@ -8,6 +8,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../theme/stitched_ink.dart';
@@ -123,6 +124,14 @@ Future<void> turnInQuest(
     );
     if (!context.mounted) return;
   }
+  // Its influence in the town's district (wave 18): a district changing
+  // hands gets a companion's word.
+  final swayed =
+      await applyQuestInfluenceNow(ref, quest, picked: picked?.politics);
+  if (!context.mounted) return;
+  final flipRemark = swayed.flipped == null
+      ? null
+      : speakUpOnMoment(ref, RemarkKind.districtFlipped);
   String? recruitedName;
   if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
     final companion = companions[rewardAllyId] as Map<String, dynamic>?;
@@ -223,7 +232,10 @@ Future<void> turnInQuest(
   );
   // What the party says about how it was settled (see
   // companion_remarks.dart) comes after the notice, in speech bubbles.
-  final remarks = speakUpAbout(ref, reactions: reactions, deed: deed);
+  final remarks = [
+    ...speakUpAbout(ref, reactions: reactions, deed: deed),
+    if (flipRemark != null) flipRemark,
+  ];
   // The quest sealed, and each achievement announced up top.
   showQuestSeal(context);
   if (achievementNames.isNotEmpty) {

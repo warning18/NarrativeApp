@@ -73,8 +73,12 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // White Wells' road south is open: slept there, a way on is left.
+          'flags': ['lysa_survived'],
+        })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);
@@ -143,6 +147,21 @@ void main() {
     await _settle(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
+    // The road walked in, White Wells holds the party on its page (v1.553,
+    // scene_lock.dart): "Sleep by the water" is acted out here, and no
+    // World view is left. Slept, nothing holds it there any more.
+    expect(find.byKey(const ValueKey('journey_choose_first')), findsOneWidget);
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    final sleep = find.byKey(const ValueKey('journey_choice_card_0'));
+    expect(find.descendant(of: sleep, matching: find.textContaining('Sleep')),
+        findsOneWidget);
+    await tester.tap(sleep);
+    await tester.pump();
+    if (sleep.evaluate().isNotEmpty) await tester.tap(sleep);
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 4));
+    await clearCards();
+    expect(find.byKey(const ValueKey('journey_choose_first')), findsNothing);
     final back = find.byKey(const ValueKey('journey_continue'));
     if (back.evaluate().isNotEmpty) {
       await tester.tap(back);

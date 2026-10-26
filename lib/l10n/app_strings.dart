@@ -101,6 +101,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'journey_city_walk_to': {
+    AppLanguage.en: 'Walk to {district}',
+    AppLanguage.fr: 'Marcher vers {district}',
+  },
   'town_ruled_by': {
     AppLanguage.en: 'Held by {clan}',
     AppLanguage.fr: 'Tenu par {clan}',
@@ -245,6 +249,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  // A scene the story brought the party to holds it on its page (v1.553).
+  'journey_choose_first': {
+    AppLanguage.en: 'Choose first',
+    AppLanguage.fr: 'Choisissez d\'abord',
+  },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
@@ -12818,6 +12827,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'coast_news_when': {
     AppLanguage.en: 'Chapter {c}, day {d}',
     AppLanguage.fr: 'Chapitre {c}, jour {d}',
+  },
+  // Wave 18: a district changing hands by influence (district_influence.dart):
+  // the district, the new holder (clan) and the old (from). Placeholder.
+  'district_flipped': {
+    AppLanguage.en: '{district} has changed hands: {from} out, {clan} in.',
+    AppLanguage.fr:
+        '{district} a changé de mains\u00a0: dehors {from}, place à {clan}.',
   },
   'journal_news_tab': {
     AppLanguage.en: 'News',

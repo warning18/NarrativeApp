@@ -83,10 +83,22 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '965');
 
     // The wreck is read full screen, with its own choices under its words.
-    // A card led there and its ways are all cards: no way back to the map,
-    // the cards are the way on (v1.548).
-    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    // A card led there and its ways are acted out there: it holds the party
+    // on its page, the way back to the map greyed, the cards are the way on
+    // (v1.553, scene_lock.dart).
+    expect(find.byKey(const ValueKey('journey_choose_first')), findsOneWidget);
+    expect(
+        tester
+            .widget<ButtonStyleButton>(
+                find.byKey(const ValueKey('journey_continue')))
+            .onPressed,
+        isNull);
+    expect(
+        tester
+            .widget<IconButton>(
+                find.byKey(const ValueKey('journey_reading_exit')))
+            .onPressed,
+        isNull);
     final mast = find.byKey(const ValueKey('journey_choice_card_0'));
     expect(
         find.descendant(

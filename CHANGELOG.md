@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.558.0+594]
+
+Wave 18, step 1: Saltmouth's districts can be locked, and the clans fight over them with influence.
+
+### Added
+- **Locked districts:** a district in `geography.json` may carry `"lock": {"quest", "opensOn": "accepted" | "done"}` and a one-line `lockedText` (EN/FR). While locked, the party can't walk in and the district never counts as found. The story's own ways into it stay open. The free "Walk to" rows skip a locked district; if every neighbour is locked, they offer the nearest open district, so the party is never stuck. Step 1 locks the Lantern Alleys (until *The Informant's Tip* is done) and Tern Row (until *Tern's Toll* is done).
+- **Influence:** each district keeps its clans' influence (0–100, saved), and its holder starts at 20. A quest done while the party is in Saltmouth adds +15 (side) or +25 (Main), or the quest's own `influence`, in the quest's `district`, or where the party stands. It goes to the clan the chosen turn-in raises most, else to the quest's `faction`.
+- **Flips:** a clan whose influence passes the holder's by 15 takes the district, through the same hand-over as war (news, clan log, relations). A news line `district_flipped` names the district and both clans, `flipped_<district>` is set, and the companions' `districtFlipped` remark can fire. A clan holding 4 of Saltmouth's 6 districts holds the town, and loses it below that. Seats never change hands by influence.
+- **For scenes:** `held_<district>_<clan>` flags follow every holder in every town. The `attack` camp-errand kind and the `districtAttacked` remark kind are ready for step 2.
+- **Saltmouth's holders:** Landward Gate (Dominion), Ship-breaker's Yard (Compact), Lantern Alleys (Mire), Wharf and Card Row (Crows), Tern Row (Tide-Kin).
+- **Simulator:** it applies quest influence at turn-in.
+
+## [1.556.0+592]
+
+The clans' gift no longer waits behind a button: it opens on its own, and a gift must be taken.
+
+### Fixed
+- **The clans' offer opens by itself:** a gift offer only opened by itself after a level-up or a boss win. Every other offer waited behind "Choose a gift": from a chapter, a quest, an intrigue, a story change or a Tome, carried over from a save, or queued on the feature ladder while the clans were locked. They piled up. Now, whenever an offer waits and the player is on the home screen in play (no fight running, no quests being settled, the clans open), the offer opens. Each offer waiting comes up in turn, until none is left. As before, the sheet can't be dismissed (no tap outside, no back, no "later"), and its confirmation is unchanged. Edit Mode, and the ladder before the clans open, open nothing.
+- **A fight no longer loses its offer:** a level-up in a fight that closed itself while the offer was loading kept the offer pending. It now opens over the home screen.
+
+## [1.555.0+591]
+
+A scene the story brings you to holds you on its page until you choose, and a district with no way of the story lets you walk on.
+
+### Changed
+- **The scene lock:** when the story brings the party to a scene (a pin or a card taken, a new game's first scene, or a save picked back up), and one of its ways is acted out there, the scene opens as its page and holds the party there. Every way shows as a card, roads included (a road keeps its glyph and says where it leads). The District, Town and World tabs, the map icon and "Back to the map" are greyed, with "Choose first". Taking a road card brings the map back and walks it, the world road included. A shop, or a fight fled, keeps the lock. Hubs, the camp, endings, Edit Mode and jumps never lock. A save on a locked scene reopens on its page, and the recap waits for the next scene with a map. Most story scenes lock, so the sheet over the map now shows only for scenes the story did not bring the party to. The pure rule is `lib/data/scene_lock.dart`.
+
+### Fixed
+- **Walk to a neighbouring district:** when the party's district has none of the scene's ways, the District view lists "Walk to <district>" for each district that borders it on the town plan. Saltmouth's Landward Gate is one such district. The walk is free: no story time, no ration, and the scene stays where it was. The district walked into counts as found.
+- **No stuck street view:** after walking away from a scene played at a building's doorstep, such as the informant's trap at the Landward Gate, the District view showed that empty street. It now shows the district the party walked to.
+
 ## [1.553.0+589]
 
 Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
@@ -30,6 +61,7 @@ The level-up stat pick shows on the ability radar.
 
 ### Tests
 - New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
+
 ## [1.551.0+587]
 
 A walk along a world road now plays on the World map.

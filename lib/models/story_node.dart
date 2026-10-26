@@ -546,6 +546,14 @@ class StoryChoice {
   bool affordableWith(int gold) => goldMod >= 0 || gold >= -goldMod;
 }
 
+/// A camp errand that is an alert (wave 18): a district of the town under
+/// attack (see [StoryNode.campErrandKind]).
+const String campErrandAttack = 'attack';
+
+/// The kinds a camp errand may name instead of `true` (see
+/// [StoryNode.campErrandKind]).
+const Set<String> campErrandKinds = {campErrandAttack};
+
 class StoryNode {
   const StoryNode({
     required this.id,
@@ -580,6 +588,7 @@ class StoryNode {
     this.promptFr = '',
     this.aboutLabels = const {},
     this.campErrand = false,
+    this.campErrandKind = '',
     this.showIfFlags = const [],
     this.hideIfFlags = const [],
     this.campErrandText,
@@ -635,7 +644,12 @@ class StoryNode {
                 fr: value['fr']?.toString() ?? '',
               ),
       },
-      campErrand: json['campErrand'] as bool? ?? false,
+      // `true`, or a kind's name (campErrandKinds): `"attack"`.
+      campErrand: json['campErrand'] == true ||
+          campErrandKinds.contains(json['campErrand']),
+      campErrandKind: campErrandKinds.contains(json['campErrand'])
+          ? json['campErrand'] as String
+          : '',
       showIfFlags:
           (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -652,6 +666,12 @@ class StoryNode {
   /// [showIfFlags] and [hideIfFlags] let it show. No camp lists it in its
   /// choices.
   final bool campErrand;
+
+  /// What kind of [campErrand] it is: '' for a companion's loyalty errand,
+  /// or one of [campErrandKinds] ([campErrandAttack]: an alert, a district
+  /// of the town under attack, wave 18 step 2; nothing sets it off yet).
+  /// Written `"campErrand": "attack"`.
+  final String campErrandKind;
 
   /// The flags a [campErrand] waits for, all of them, and the flags that
   /// retire it, any of them (as a choice's showIfFlags and hideIfFlags).
@@ -947,7 +967,8 @@ class StoryNode {
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
-        if (campErrand) 'campErrand': campErrand,
+        if (campErrand)
+          'campErrand': campErrandKind.isEmpty ? campErrand : campErrandKind,
         if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,
         if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
         if (campErrandText != null && campErrandText!.isNotEmpty)
