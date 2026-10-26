@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.545.0+581]
+
+A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events (wave 17).
+
+### Added
+- **The Glass Shoals** (chapter 6): after landing at the White Anchorage, the party crosses the glass shore to the White Fleet's Grave, with Narrative's four glass-shore events. Once a clan holds the Anchorage, about one day in three brings that clan's event too. A crossing costs about 2–4% health.
+- **The Lantern Cliffs** (chapter 7) also draw the wrecker's lamp and the gulls. Each has a way through that costs nothing.
+
+### Fixed
+- **The fen, frost and sea-cliffs crossings** (chapters 4, 5 and 7) now show their side-view scenes; they showed none before.
+
 ## [1.544.0+580]
 
 A street-view kit for scenes played outside a building, the room kits' counterpart for the outside.
@@ -106,7 +117,7 @@ Alster, the starting town, is one place on the world map.
 - **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
 - **The District tab after a move** shows the district, no longer the world map.
 
-## [1.534.0+570]
+## [1.545.0+581]
 
 A new game starts on its first scene.
 

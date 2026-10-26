@@ -75,7 +75,7 @@
     ],
     "days": 3,
     "biome": "fen",
-    "terrain": "marsh",
+    "terrain": "fen",
     "chapter": 4,
     "rulerOneIn": 3,
     "events": {
@@ -96,7 +96,7 @@
     ],
     "days": 3,
     "biome": "frost",
-    "terrain": "snow",
+    "terrain": "frost",
     "chapter": 5,
     "rulerOneIn": 3,
     "events": {
@@ -104,6 +104,27 @@
       "frost_cairn": 1,
       "frost_hound_track": 1,
       "frost_bell": 1
+    }
+  },
+  "anchorage_to_grave": {
+    "id": "anchorage_to_grave",
+    "name": "Over the Grey Sands to the White Fleet’s Grave",
+    "name_fr": "Par les Sables gris jusqu’au Tombeau de la Flotte Blanche",
+    "from": "anchorage",
+    "to": "wreck",
+    "roads": [
+      "anchorage_wreck"
+    ],
+    "days": 2,
+    "biome": "tear",
+    "terrain": "desert",
+    "chapter": 6,
+    "rulerOneIn": 3,
+    "events": {
+      "glass_fulgurite": 2,
+      "glass_hull_shelter": 1,
+      "glass_drowned_well": 1,
+      "glass_tear_pull": 1
     }
   },
   "lantern_cliffs": {
@@ -117,12 +138,14 @@
     ],
     "days": 2,
     "biome": "sea_cliffs",
-    "terrain": "mountain",
+    "terrain": "sea_cliffs",
     "chapter": 7,
     "rulerOneIn": 0,
     "events": {
       "cliff_salt_wind": 1,
-      "cliff_tide_stair": 1
+      "cliff_tide_stair": 1,
+      "cliff_wrecker_lamp": 1,
+      "cliff_gulls": 1
     }
   }
 }
