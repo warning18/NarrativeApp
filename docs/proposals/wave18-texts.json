@@ -364,29 +364,29 @@
     }
   ],
   "notices": {
-    "flip_news": {
-      "en": "The {clan} banner went up over {district} at dawn, and the {rival} banner came down.",
-      "fr": "La bannière {clan} a été hissée sur {district} à l’aube, et la bannière {rival} a été abattue."
+    "district_flipped": {
+      "en": "The {clan} banner went up over {district} at dawn, and the {from} banner came down.",
+      "fr": "La bannière {clan} a été hissée sur {district} à l’aube, et la bannière {from} a été abattue."
     },
     "flip_town_line": {
       "en": "{district} is held by the {clan} now.",
       "fr": "{district} est tenu désormais par la bannière {clan}."
     },
     "attack_alert": {
-      "en": "{district} is under attack by the {rival}.",
-      "fr": "{district} est attaqué par la bannière {rival}."
+      "en": "{district} is under attack by the {clan}.",
+      "fr": "{district} est attaqué par la bannière {clan}."
     },
     "attack_defended": {
-      "en": "You held {district}. The {rival} riders left before dawn.",
-      "fr": "Vous avez tenu {district}. Les cavaliers de la bannière {rival} sont partis avant l’aube."
+      "en": "You held {district}. The {clan} riders left before dawn.",
+      "fr": "Vous avez tenu {district}. Les cavaliers de la bannière {clan} sont partis avant l’aube."
     },
     "attack_joined": {
-      "en": "You rode with the {rival} on {district}. By morning the street had a new name for you.",
-      "fr": "Vous avez chevauché avec la bannière {rival} contre {district}. Au matin, la rue avait un nouveau nom pour vous."
+      "en": "You rode with the {clan} on {district}. By morning the street had a new name for you.",
+      "fr": "Vous avez chevauché avec la bannière {clan} contre {district}. Au matin, la rue avait un nouveau nom pour vous."
     },
     "attack_ignored": {
-      "en": "Nobody answered for {district}. The {rival} took what they wanted from it and left the rest.",
-      "fr": "Personne n’a répondu pour {district}. La bannière {rival} a pris ce qu’elle voulait et laissé le reste."
+      "en": "Nobody answered for {district}. The {clan} took what they wanted from it and left the rest.",
+      "fr": "Personne n’a répondu pour {district}. La bannière {clan} a pris ce qu’elle voulait et laissé le reste."
     },
     "locked_reason": {
       "en": "The way into {district} stays shut until you have done what its people ask.",
@@ -396,88 +396,88 @@
   "companion_remarks": [
     {
       "companion": "kelda",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "A street that changes hands should have a gate it can close. Make sure one stays shut for those who need it.",
         "fr": "Une rue qui change de mains devrait avoir une porte qu’on puisse fermer. Veillez à ce qu’une reste close pour ceux qui en ont besoin."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "Hold the line or leave it. Do not stand about.",
         "fr": "Tenez la ligne ou quittez-la. Ne restez pas à regarder."
       }
     },
     {
       "companion": "sable",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "A pennant down, a pennant up. The street never loses, it only changes the odds.",
         "fr": "Une bannière baissée, une bannière hissée. La rue ne perd jamais, elle change seulement les cotes."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "An attack is only a very loud bet. Which side are we backing?",
         "fr": "Une attaque n’est qu’un pari très bruyant. Quel camp soutenons-nous ?"
       }
     },
     {
       "companion": "maren",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "Another banner. I wonder whose names are written under it.",
         "fr": "Encore une bannière. Je me demande quels noms sont écrits dessous."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "Whoever attacks, someone will be carried out. See that it is not the innocent.",
         "fr": "Quel que soit l’attaquant, on emportera quelqu’un. Veillez à ce que ce ne soient pas les innocents."
       }
     },
     {
       "companion": "liora",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "I watched the roofs the night it turned. Quiet, until it was not.",
         "fr": "J’ai surveillé les toits la nuit où cela a basculé. Tranquille, jusqu’à ce que ça ne le soit plus."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "Riders on the east road. I counted nine and stopped.",
         "fr": "Des cavaliers sur la route de l’est. J’en ai compté neuf et j’ai arrêté."
       }
     },
     {
       "companion": "vess",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "The place feels different. As if it were holding its breath under a new hand.",
         "fr": "L’endroit est différent. Comme s’il retenait son souffle sous une main nouvelle."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "Something in the street is afraid. I can hear it from here.",
         "fr": "Quelque chose dans la rue a peur. Je l’entends d’ici."
       }
     },
     {
       "companion": "grosh",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "New flag, same prices. Wake me when the coin changes.",
         "fr": "Nouveau drapeau, mêmes prix. Réveillez-moi quand l’or change."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "A raid pays whoever shows up. Say the word.",
         "fr": "Un raid paie celui qui se montre. Dites un mot."
       }
     },
     {
       "companion": "tobin",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "I have seen a banner come down on a burning street. I did not like what flew next.",
         "fr": "J’ai vu une bannière tomber sur une rue en flammes. Je n’ai pas aimé ce qui a été hissé ensuite."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "Not again. Not on a street where children still live.",
         "fr": "Pas encore. Pas dans une rue où vivent encore des enfants."
       }
     },
     {
       "companion": "malrik",
-      "districtFlipped": {
+      "district_flipped": {
         "en": "A change of owner is an opportunity for those who were not on the old books.",
         "fr": "Un changement de propriétaire est une aubaine pour qui n’était pas sur les anciens livres."
       },
-      "districtAttacked": {
+      "district_attacked": {
         "en": "An attack is a disruption. Disruptions have an exchange rate.",
         "fr": "Une attaque est une perturbation. Les perturbations ont un taux de change."
       }
