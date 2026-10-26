@@ -7,7 +7,6 @@
 // the age rail kept small under the picture. The words are the real memories'.
 // UX_SHOTS=<folder> takes docs/ux-shots/life-scenes-mock.png.
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
