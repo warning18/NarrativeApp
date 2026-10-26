@@ -30,7 +30,6 @@ import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
 import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
-import 'gift_confirm.dart';
 import 'companion_remark_bubble.dart';
 import 'item_stats.dart';
 import 'pixel_banner.dart';
@@ -261,21 +260,10 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
     final name = giftName(suitor.gift,
         tables: tables, localizedItems: items, lang: lang);
-    // What it does and who it moves, for the confirmation (gift_confirm.dart).
-    final session = ref.read(playerSessionProvider);
-    final changes = clanChangesOf(suitor, offer.ticket,
-        politics: session.politics,
-        data: tables.data,
-        lang: lang,
-        flags: session.flags);
-    final effect = giftEffectLine(suitor.gift,
-        tables: tables,
-        items: items,
-        skills: ref.read(localizedDbProvider(skillsSchema)).value ?? const {},
-        lang: lang);
-    // The standing line the reward card keeps (afterwards).
     final preview = standingPreviewParts(suitor, offer.ticket,
-        politics: session.politics, data: tables.data, lang: lang);
+        politics: ref.read(playerSessionProvider).politics,
+        data: tables.data,
+        lang: lang);
     final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
     final confirmed = await showDialog<bool>(
       context: context,
@@ -294,12 +282,9 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                     .replaceAll('{who}', suitorName(suitor, tables.data, lang)),
                 padding: const EdgeInsets.only(bottom: 12),
               ),
-              GiftConfirmBody(
-                effect: effect,
-                changes: changes,
-                lang: lang,
-                noStanding: trFor(lang, 'offer_no_standing'),
-              ),
+              Text(preview.isEmpty
+                  ? trFor(lang, 'offer_no_standing')
+                  : preview.map((p) => p.text).join(' · ')),
               if (suitor.risky) ...[
                 const SizedBox(height: 8),
                 Text(trFor(lang, 'offer_risky_hint')),

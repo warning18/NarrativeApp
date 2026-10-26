@@ -429,35 +429,6 @@ void main() {
     expect(find.text('Take Iron Stance?'), findsOneWidget);
     expect(find.text('Offered by: The Emberwives of the Cinder Compact'),
         findsOneWidget);
-    // The body is the gift in its own words, then who gets closer and who
-    // further, in whole numbers (never "+1.5").
-    expect(find.byKey(const Key('gift_effect_line')), findsOneWidget);
-    expect(find.byKey(const Key('offer_confirm_closer')), findsOneWidget);
-    expect(find.byKey(const Key('offer_confirm_further')), findsOneWidget);
-    expect(
-        tester
-            .widget<Text>(find.byKey(const Key('gift_change_text_compact')))
-            .data,
-        '+6');
-    expect(
-        tester
-            .widget<Text>(find.byKey(const Key('gift_change_text_vigil')))
-            .data,
-        '+2',
-        reason: '1.5 reads as 2');
-    expect(
-        tester
-            .widget<Text>(find.byKey(const Key('gift_change_text_penitents')))
-            .data,
-        '−3');
-    expect(
-        find.descendant(
-            of: find.byKey(const Key('gift_change_vigil')),
-            matching: find.textContaining(RegExp(r'\d[.,]\d'))),
-        findsNothing,
-        reason: 'no decimals on the chips');
-    expect(find.byKey(const Key('offer_confirm_accept')), findsOneWidget);
-    await _shot(tester, 'gift_confirm');
     await tester.tap(find.byKey(const Key('offer_confirm_accept')));
     for (var i = 0; i < 3; i++) {
       await tester.runAsync(
