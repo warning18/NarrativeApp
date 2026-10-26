@@ -4317,10 +4317,12 @@ String? _moodLabel(WidgetRef ref, String? mood) {
   return label == key ? null : label;
 }
 
-/// A line an earlier choice earned, under a small caption naming the
-/// choice ("Because you chose “Spare him”"), set off by a thread in the
-/// scene's colour so it reads as the story answering the player.
-class EchoLine extends StatelessWidget {
+/// A line an earlier choice earned (see echoes.dart). In play it is set
+/// into the story as ordinary prose, with nothing to say where it came
+/// from; in Edit Mode (the story node editor's preview) it stays under a
+/// small caption naming the choice ("Because you chose “Spare him”"), set
+/// off by a thread in the scene's colour, so the author sees what earned it.
+class EchoLine extends ConsumerWidget {
   const EchoLine({
     super.key,
     required this.echo,
@@ -4335,7 +4337,10 @@ class EchoLine extends StatelessWidget {
   final TextStyle style;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(appModeProvider) != AppMode.edit) {
+      return StoryText(text: echo.line, style: style, firstSentenceBold: false);
+    }
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
