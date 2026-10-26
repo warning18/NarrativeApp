@@ -101,6 +101,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'journey_city_walk_to': {
+    AppLanguage.en: 'Walk to {district}',
+    AppLanguage.fr: 'Marcher vers {district}',
+  },
   'town_ruled_by': {
     AppLanguage.en: 'Held by {clan}',
     AppLanguage.fr: 'Tenu par {clan}',

@@ -5770,6 +5770,32 @@ class _CityDistrictView extends ConsumerWidget {
           ),
         ));
       }
+      // No way in the party's own district: a free walk (no time, no
+      // story) to each district it borders.
+      if (shown.isEmpty && focus == hereDistrict) {
+        for (final id in ref.watch(partyDistrictNeighboursProvider)) {
+          final d = chart.districts.where((d) => d.id == id).firstOrNull;
+          if (d == null) continue;
+          rows.add(InkWell(
+            key: ValueKey('journey_city_walk_$id'),
+            onTap: () => onWalk(id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                Icon(Icons.directions_walk, size: 20, color: d.colour),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(
+                        tr(ref, 'journey_city_walk_to').replaceAll(
+                            '{district}', townNameInSentence(d.name)),
+                        style: theme.textTheme.bodyMedium)),
+              ]),
+            ),
+          ));
+        }
+      }
     } else {
       rows.add(Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -5826,7 +5852,11 @@ class _CityDistrictView extends ConsumerWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                if (street != null && focus != null)
+                // Walked off to another district, the street is left.
+                if (street != null &&
+                    focus != null &&
+                    focus == hereDistrict &&
+                    street!.parent == hereDistrict)
                   StreetViewScene(
                     kind: street!.kind,
                     name: street!.name,
