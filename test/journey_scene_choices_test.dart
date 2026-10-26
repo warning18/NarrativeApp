@@ -83,19 +83,16 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '965');
 
     // The wreck is read full screen, with its own choices under its words.
-    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    // A card led there and its ways are all cards: no way back to the map,
+    // the cards are the way on (v1.548).
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
     final mast = find.byKey(const ValueKey('journey_choice_card_0'));
     expect(
         find.descendant(
             of: mast, matching: find.textContaining('Lash yourself')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('journey_choice_card_1')), findsOneWidget);
-
-    // Back to the map: no card there, only the button that reopens them.
-    await tester.tap(find.byKey(const ValueKey('journey_continue')));
-    await tester.pump(const Duration(milliseconds: 500));
-    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
