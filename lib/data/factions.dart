@@ -1576,6 +1576,7 @@ class PoliticsState {
     this.host = Host.none,
     this.power = const {},
     this.control = const {},
+    this.influence = const {},
     this.helped = const [],
     this.fallen = const [],
     this.nemesis = '',
@@ -1602,6 +1603,12 @@ class PoliticsState {
   /// The places that changed hands (place id -> clan), over the holders
   /// geography.json writes (see holderOf in clan_power.dart).
   final Map<String, String> control;
+
+  /// Each clan's influence in a district (wave 18, district_influence.dart):
+  /// district id -> clan -> 0..100. A district is here only once its
+  /// influence moved; before, its holder stands at holderStartInfluence and
+  /// every other clan at 0.
+  final Map<String, Map<String, int>> influence;
 
   /// The main clans the character did something for this chapter (a gift
   /// taken, a quest, a fight in their lands): spared the chapter's neglect.
@@ -1743,6 +1750,7 @@ class PoliticsState {
     Host? host,
     Map<String, int>? power,
     Map<String, String>? control,
+    Map<String, Map<String, int>>? influence,
     List<String>? helped,
     List<String>? fallen,
     String? nemesis,
@@ -1770,6 +1778,7 @@ class PoliticsState {
         host: host ?? this.host,
         power: power ?? this.power,
         control: control ?? this.control,
+        influence: influence ?? this.influence,
         helped: helped ?? this.helped,
         fallen: fallen ?? this.fallen,
         nemesis: nemesis ?? this.nemesis,
@@ -1807,6 +1816,7 @@ class PoliticsState {
         if (host.mustered) 'host': host.toJson(),
         if (power.isNotEmpty) 'power': power,
         if (control.isNotEmpty) 'control': control,
+        if (influence.isNotEmpty) 'influence': influence,
         if (helped.isNotEmpty) 'helped': helped,
         if (fallen.isNotEmpty) 'fallen': fallen,
         if (nemesis.isNotEmpty) 'nemesis': nemesis,
@@ -1879,6 +1889,11 @@ class PoliticsState {
           for (final e in (json['control'] as Map).entries)
             if (_text(e.value).trim().isNotEmpty)
               e.key.toString(): _text(e.value).trim(),
+      },
+      influence: {
+        if (json['influence'] is Map)
+          for (final e in (json['influence'] as Map).entries)
+            if (e.value is Map) e.key.toString(): _ints(e.value),
       },
       helped: _strings(json['helped']).toSet().toList(),
       fallen: _strings(json['fallen']).toSet().toList(),

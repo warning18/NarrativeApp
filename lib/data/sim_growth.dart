@@ -6,6 +6,7 @@ import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
 import '../models/story_node.dart';
 import 'clan_power.dart';
+import 'district_influence.dart' as influence show applyQuestInfluence;
 import 'factions.dart';
 import 'feature_unlocks.dart';
 import 'geography.dart';
@@ -260,6 +261,31 @@ class SimGrowth {
         politics: politics,
         flags: flags.toList(),
         world: _world(chapter, geography)));
+  }
+
+  /// [quest] (a quests.json record) turned in with [flags] held in
+  /// [chapter], as the app does (wave 18, applyQuestInfluence): its
+  /// influence in its district while the walk is in [cityHere], the
+  /// district or the town changing hands with it. Returns the flags after.
+  List<String> applyQuestInfluence(
+    Map<String, dynamic> quest, {
+    required Iterable<String> flags,
+    required Geography geography,
+    required int chapter,
+    StoryPolitics? picked,
+    String? cityHere,
+    String? partyDistrict,
+  }) {
+    final result = influence.applyQuestInfluence(politics, quest,
+        flags: flags.toList(),
+        data: tables.clans,
+        geography: geography,
+        picked: picked,
+        cityHere: cityHere,
+        partyDistrict: partyDistrict,
+        chapter: max(1, chapter));
+    politics = result.state;
+    return result.flags;
   }
 
   CoastWorld _world(int chapter, Geography? geography) => CoastWorld(
