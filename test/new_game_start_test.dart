@@ -196,13 +196,8 @@ void main() {
       await tester.tap(confirm);
       await _settle(tester);
     }
-    final page = find.byKey(const ValueKey('journey_continue'));
-    await _pumpUntilFound(tester, page);
-
-    expect(container.read(storyPlayProvider).currentNodeId, '0');
-    expect(container.read(homeTabIndexProvider), journeyTabIndex);
-    // The first scene, read as a page: not the map.
-    expect(page, findsOneWidget);
+    await _pumpUntilFound(tester, _readingPage);
+    _expectFirstScenePage(tester, container);
     await _settle(tester);
     expect(_previously, findsNothing);
     expect(tester.takeException(), isNull);
@@ -339,6 +334,11 @@ void main() {
     // The way on is a card on the page, not a step on the map.
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await _pumpUntilFound(tester, card);
+    // It is the only way on, and the story opened the page: no way back to
+    // a map (v1.548), neither the button under the cards nor the corner's.
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.text('Back to the map'), findsNothing);
     expect(
         find.descendant(
             of: card, matching: find.textContaining('Choose who you are')),
