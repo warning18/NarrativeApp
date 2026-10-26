@@ -145,8 +145,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.textContaining(' · '), findsWidgets);
 
-    // A long press on a clan's standard shows the clan's details for as long
-    // as it is held; the Shroud's pieces have none.
+    // A long press on a clan's standard opens the clan's details, which stay
+    // open when the finger lifts; the Shroud's pieces have none.
     final hold = await tester.startGesture(
         tester.getCenter(find.byKey(const Key('throne_banner_clan_vigil'))));
     await tester.pump(const Duration(milliseconds: 700));
@@ -154,9 +154,16 @@ void main() {
     expect(find.byKey(const Key('clan_peek_intro_vigil')), findsOneWidget,
         reason: 'a recap of its story');
     await hold.up();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_vigil')), findsOneWidget,
+        reason: 'letting go leaves it open');
+    await tester.tapAt(const Offset(4, 4));
+    // The dialog's exit takes a few frames.
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.byKey(const Key('clan_details_vigil')), findsNothing,
-        reason: 'letting go closes it');
+        reason: 'a tap outside closes it');
     final shroud = await tester.startGesture(tester
         .getCenter(find.byKey(const Key('throne_banner_heirloom_shroud'))));
     await tester.pump(const Duration(milliseconds: 700));
