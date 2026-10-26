@@ -61,7 +61,8 @@
     "name_fr": "Le Mendiant Aveugle",
     "blurb": "A tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the dice, a counting-room and a gallery over the floor. The story begins at its tables.",
     "blurb_fr": "Une taverne devant et autre chose derrière : une salle sans enseigne, quatre tables, une cage pour les dés, un comptoir des comptes et une galerie au-dessus. L’histoire commence à ses tables.",
-    "landmark": ""
+    "landmark": "",
+    "doorstep": ["125"]
   },
   "alster_family_house": {
     "level": "building",
@@ -71,7 +72,8 @@
     "name_fr": "La maison de famille",
     "blurb": "The house you grew up in, on a quiet street of the Lower Town: a kitchen door, shutters, a back room over packed earth, and under the boards a trapdoor nobody knew was there.",
     "blurb_fr": "La maison de votre enfance, dans une rue tranquille de la Ville basse : une porte de cuisine, des volets, une arrière-salle sur la terre battue, et sous le plancher une trappe que personne ne savait là.",
-    "landmark": ""
+    "landmark": "",
+    "doorstep": ["300", "400", "400_lost", "450"]
   },
   "alster_stone_bridge": {
     "level": "district",
@@ -269,7 +271,8 @@
     "name_fr": "L’entrepôt de l’indicateur",
     "blurb": "A warehouse behind the landward gate, named by an informant who sold more than gossip: the shadows here have opinions about visitors, and the warden waits in the doorway.",
     "blurb_fr": "Un entrepôt derrière la porte de terre, désigné par un indicateur qui vendait plus que des ragots : les ombres y ont leur avis sur les visiteurs, et le gardien attend dans l’embrasure.",
-    "landmark": ""
+    "landmark": "",
+    "doorstep": ["2015_informant_trap"]
   },
   "saltmouth_tern_row": {
     "level": "district",

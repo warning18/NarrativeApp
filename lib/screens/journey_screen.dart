@@ -12,7 +12,7 @@ import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
 import '../data/city_districts.dart'
-    show JourneyTownView, districtOfPlace, townMoveView;
+    show JourneyTownView, districtOfPlace, sceneDoorstep, townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -1532,6 +1532,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final ownDistrict = record.districts.containsKey(hereDistrictOf)
             ? hereDistrictOf
             : null;
+        // A scene played at a building's doorstep (v1.542): the party at
+        // its door, the ways that stay there in the street round it.
+        final doorstep = sceneDoorstep(world, record, node, waysHere: [
+          for (var i = 0; i < rawSteps.length; i++)
+            if (!districtOfStep.containsKey(i)) i,
+        ]);
         for (var i = 0; i < rawSteps.length; i++) {
           final d = districtOfStep[i];
           final pinned = d != null && record.districts.containsKey(d)
@@ -1562,10 +1568,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   kind: _cityWayKindOf(rawSteps[e.key].kind),
                   name: rawSteps[e.key].label,
                   sceneId: rawSteps[e.key].choice.nextId,
+                  at: doorstep?.spotOfWay[e.key],
                 ),
             ],
             french: french,
             name: hereLocation.nameFor(french),
+            doorstep: doorstep?.buildingId,
           );
         }
         cityChart = _cityChart;
@@ -1575,7 +1583,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Inside a building (v1.207): the room's plan, the party at its spot
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
-    final hereBuilding = herePlace?.isBuilding == true ? herePlace : null;
+    // A scene played at its building's doorstep (v1.542) is on the streets.
+    final hereBuilding = herePlace?.isBuilding == true &&
+            !herePlace!.doorstep.contains(play.currentNodeId)
+        ? herePlace
+        : null;
     _sceneInside = hereBuilding != null;
     // The room and the streets round it are told apart by a doorway and a
     // line of words, both ways (v1.537).

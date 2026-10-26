@@ -325,6 +325,7 @@ class GeoPlace {
     this.tags = const [],
     this.watches = 0,
     this.landmarks = const [],
+    this.doorstep = const [],
   });
 
   /// [raw] as a place, or null when its level is not one of the five.
@@ -364,6 +365,12 @@ class GeoPlace {
       ],
       watches: (raw['watches'] is num) ? (raw['watches'] as num).toInt() : 0,
       landmarks: landmarks.toList(),
+      doorstep: level == GeoLevel.building && raw['doorstep'] is List
+          ? [
+              for (final id in raw['doorstep'] as List)
+                if (id.toString().trim().isNotEmpty) id.toString().trim(),
+            ]
+          : const [],
     );
   }
 
@@ -425,6 +432,14 @@ class GeoPlace {
 
   /// The world_map.dart landmarks that lie here.
   final List<String> landmarks;
+
+  /// A building's scenes that play outside it, at its doorstep (v1.542):
+  /// the story's ids of the scenes whose `location` is this building but
+  /// which happen in the street before its door (the family house watched
+  /// from across the street, the alley behind the Blind Beggar). The
+  /// Journey opens them on the district's streets at the building's spot,
+  /// not in its room (see [Geography.roomOfNode]).
+  final List<String> doorstep;
 
   String nameFor(bool french) => _either(french, nameFr, name);
   String blurbFor(bool french) => _either(french, blurbFr, blurb);
@@ -610,6 +625,24 @@ class Geography {
     final location = node.location;
     if (location != null && location.isEmpty) return null;
     return place(location) ?? placeOfLandmark(landmarkOfScene(node.id)?.id);
+  }
+
+  /// The building whose doorstep [node] plays at (v1.542): its place is a
+  /// building that lists it in [GeoPlace.doorstep]; null for any other
+  /// scene.
+  GeoPlace? doorstepOfNode(StoryNode? node) {
+    final here = placeOfNode(node);
+    if (here == null || !here.isBuilding) return null;
+    return here.doorstep.contains(node!.id) ? here : null;
+  }
+
+  /// The building whose room the Journey draws for [node] (v1.207): its
+  /// place when that is a building, unless the scene plays at the
+  /// building's doorstep (v1.542, then it is drawn on the streets).
+  GeoPlace? roomOfNode(StoryNode? node) {
+    final here = placeOfNode(node);
+    if (here == null || !here.isBuilding) return null;
+    return here.doorstep.contains(node!.id) ? null : here;
   }
 
   /// The places the story has been to: each one where a scene of

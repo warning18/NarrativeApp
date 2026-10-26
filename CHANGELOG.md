@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.542.0+578]
+
+Some scenes now play in the street in front of a building, not inside it.
+
+### Changed
+- **Doorstep scenes:** a building in `geography.json` can now list scenes under `"doorstep"`. These scenes play in the street at its door. The Journey shows them on the district plan, with the party at the building's door and the scene's ways on the streets around it. Before, they were shown inside the building's room. Tagged so far:
+  - the Alster family house: scenes 300, 400, 400_lost and 450;
+  - the blind beggar: 125;
+  - the Saltmouth landward warehouse: 2015_informant_trap.
+
 ## [1.541.0+577]
 
 A new game no longer shows the map before the story starts.
