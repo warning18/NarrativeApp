@@ -2,6 +2,7 @@
 // page, not on the Journey map; and the "Previously…" recap shows only
 // over a resumed story that has gone past its first scene.
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,11 +10,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/choice_shape.dart';
+import 'package:narrative_data_app/data/geography.dart';
+import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/race_profession_screen.dart';
 
 Future<void> _settle(WidgetTester tester, {int rounds = 4}) async {
   for (var i = 0; i < rounds; i++) {
@@ -57,6 +64,13 @@ Future<void> _launch(WidgetTester tester) async {
 final _readingPage = find.byWidgetPredicate((w) =>
     w.key is ValueKey<String> &&
     (w.key! as ValueKey<String>).value.startsWith('journey_reading_0_'));
+
+/// A way on drawn as a step on the Journey's map.
+final _mapStep = find.byWidgetPredicate(
+    (w) =>
+        w.key is ValueKey<String> &&
+        (w.key! as ValueKey<String>).value.startsWith('journey_step_'),
+    skipOffstage: false);
 
 Future<ProviderContainer> _english(WidgetTester tester) async {
   final container =
@@ -275,6 +289,83 @@ void main() {
     await _settle(tester);
     await _pumpUntilFound(tester, _readingPage);
     _expectFirstScenePage(tester, container);
+    expect(tester.takeException(), isNull);
+  });
+
+  test(
+      'the prologue\'s way on is acted out on its page; a way across the '
+      'town stays a step on the map', () {
+    Map<String, dynamic> table(String name) =>
+        jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync())
+        as Map<String, dynamic>;
+    final story = StoryData({
+      for (final e in raw.entries)
+        e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
+    });
+    final geography =
+        Geography.parse(geography: table('geography'), biomes: table('biomes'));
+    final start = story.nodeFor(StoryRepository.startNodeId)!;
+    for (final choice in start.choices) {
+      expect(
+          choiceShape(start, choice, story: story, geography: geography).here,
+          isTrue);
+    }
+    // Every other way somewhere is still a step on the map.
+    var ways = 0;
+    for (final node in story.nodes.values) {
+      for (final choice in node.choices) {
+        if (choice.opensCharacterCreation) continue;
+        final shape =
+            choiceShape(node, choice, story: story, geography: geography);
+        if (shape.action != ChoiceAction.go) continue;
+        ways++;
+        expect(shape.here, isFalse, reason: '${node.id} ${choice.text}');
+      }
+    }
+    expect(ways, greaterThan(50));
+  });
+
+  testWidgets(
+      'a new game makes its character from the first page and reads on '
+      'into the Blind Beggar, with no map', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await _launch(tester);
+    final container = await _english(tester);
+    await _enter(tester, 'menu_new_game');
+    _expectFirstScenePage(tester, container);
+    expect(_mapStep, findsNothing);
+    // The way on is a card on the page, not a step on the map.
+    final card = find.byKey(const ValueKey('journey_choice_card_0'));
+    await _pumpUntilFound(tester, card);
+    expect(
+        find.descendant(
+            of: card, matching: find.textContaining('Choose who you are')),
+        findsOneWidget);
+    // Its one way on is picked already: one tap takes it.
+    await tester.tap(card);
+    // The character made (its screen stood in for), the story reads on.
+    final making = find.byType(RaceProfessionScreen);
+    await _pumpUntilFound(tester, making);
+    expect(making, findsOneWidget);
+    // Under the character's screen, the Journey is still on the page.
+    expect(_mapStep, findsNothing);
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson(
+            {'raceId': 'human', 'professionId': 'warrior'})));
+    Navigator.of(tester.element(making)).pop(true);
+    final beggar = find.byWidgetPredicate((w) =>
+        w.key is ValueKey<String> &&
+        (w.key! as ValueKey<String>).value.startsWith('journey_reading_100_'));
+    await _pumpUntilFound(tester, beggar);
+    expect(container.read(storyPlayProvider).currentNodeId, '100');
+    // The Blind Beggar's page: no map, no Lower Town step.
+    expect(beggar, findsOneWidget);
+    expect(_mapStep, findsNothing);
+    expect(find.textContaining('Choose who you are'), findsNothing);
+    await _settle(tester);
     expect(tester.takeException(), isNull);
   });
 

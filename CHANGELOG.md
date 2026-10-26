@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.541.0+577]
+
+A new game no longer shows the map before the story starts.
+
+### Changed
+- **The first scene's way is a card:** on a new game, "Choose who you are…" is a card on the first scene's page, not a step on the Lower Town map. Taking it opens character creation; the story then goes straight to the Blind Beggar's page. Later ways across town are still map steps.
+
 ## [1.540.0+576]
 
 A game picked up on its first scene opens on that scene.
