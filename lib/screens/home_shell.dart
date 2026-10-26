@@ -31,6 +31,7 @@ import 'character_screen.dart';
 import 'clans_politics_screen.dart';
 import 'game_data_home_screen.dart';
 import 'journey_screen.dart';
+import 'offer_autopilot.dart';
 import 'play_screen.dart';
 import 'quest_autopilot.dart';
 import 'settings_screen.dart';
@@ -292,7 +293,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final window = MediaQuery.sizeOf(context);
     final wide =
         window.width >= wideShellWidth && window.height >= wideShellHeight;
-    final pages = Stack(
+    // The clans' offers open on their own while one waits (never later).
+    final pages = OfferAutopilot(
+        child: Stack(
       fit: StackFit.expand,
       children: [
         IndexedStack(index: index, children: screens),
@@ -303,7 +306,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             s.currentHealth * 10 <= s.maxHealth * 3)))
           const LowHealthEdge(),
       ],
-    );
+    ));
     final rail = TutorialTarget(
       id: 'home.nav',
       child: NavigationRail(
