@@ -8,13 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.553.0+589]
+## [1.555.0+591]
 
-A district with no way of the story in it now lets you walk on to the districts beside it.
+A scene the story brings you to holds you on its page until you choose, and a district with no way of the story lets you walk on.
+
+### Changed
+- **The scene lock:** when the story brings the party to a scene (a pin or a card taken, a new game's first scene, or a save picked back up), and one of its ways is acted out there, the scene opens as its page and holds the party there. Every way shows as a card, roads included (a road keeps its glyph and says where it leads). The District, Town and World tabs, the map icon and "Back to the map" are greyed, with "Choose first". Taking a road card brings the map back and walks it, the world road included. A shop, or a fight fled, keeps the lock. Hubs, the camp, endings, Edit Mode and jumps never lock. A save on a locked scene reopens on its page, and the recap waits for the next scene with a map. Most story scenes lock, so the sheet over the map now shows only for scenes the story did not bring the party to. The pure rule is `lib/data/scene_lock.dart`.
 
 ### Fixed
 - **Walk to a neighbouring district:** when the party's district has none of the scene's ways, the District view lists "Walk to <district>" for each district that borders it on the town plan. Saltmouth's Landward Gate is one such district. The walk is free: no story time, no ration, and the scene stays where it was. The district walked into counts as found.
 - **No stuck street view:** after walking away from a scene played at a building's doorstep, such as the informant's trap at the Landward Gate, the District view showed that empty street. It now shows the district the party walked to.
+
+## [1.553.0+589]
+
+Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
+
+### Changed
+- **The place sheet** (`arrival_sheet.dart`, `journey_screen.dart`): the words scroll above the whole choices, the sheet grows to 90% of the screen, and its handle can be dragged to make it shorter (down to about a third). The choices are capped at 70% of the room left so a small sheet never overflows.
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner opened the card only for as long as the finger was down. It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; the "Let go to close" and "Tap to close" lines are gone. The other hold-to-open popins already stayed open; a test now says so.
+
+### Tests
+- `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
+
+
+## [1.552.0+588]
+
+The level-up stat pick shows on the ability radar.
+
+### Changed
+- **A pick is drawn on the radar** (`stat_pick_picker.dart`, `ability_radar.dart`): picking a stat card no longer opens the detail block under the cards (the path's name, each gain from where it stood to where it goes, the effect lines). The ability radar takes its place: the hero's shape as it stands in gold, the shape the pick would give round it in green, and each corner the pick moves shows its new value highlighted with the gain under it ("CON 7, +1"). The shape grows from the current one over a third of a second; with reduced motion it is there at once. A pick worth more than one point still says "Worth n points" under the radar. "Take this pick", the roll powers and the cards (with the path, each gain and what it does for the hero) are unchanged.
+- `RadarAxis` takes a `valueColor` and `AbilityRadar` a `preview` shape.
+
+### Tests
+- New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
 
 ## [1.551.0+587]
 

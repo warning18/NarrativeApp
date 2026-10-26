@@ -679,14 +679,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Your nemesis',
     AppLanguage.fr: 'Votre némésis',
   },
-  'clan_peek_tap_close': {
-    AppLanguage.en: 'Tap to close',
-    AppLanguage.fr: 'Touchez pour fermer',
-  },
-  'clan_peek_release': {
-    AppLanguage.en: 'Let go to close',
-    AppLanguage.fr: 'Relâchez pour fermer',
-  },
   'geo_this_land': {
     AppLanguage.en: 'This land',
     AppLanguage.fr: 'Cette contrée',
