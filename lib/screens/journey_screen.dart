@@ -22,6 +22,7 @@ import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/road_chart.dart';
 import '../data/world_leg_path.dart';
+import '../data/world_roads.dart' show isWorldRoadLeg;
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
@@ -397,6 +398,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The whole town in view instead of the district (v1.350): the rung
   /// between the district and the world, for a place with a city plan.
   bool _townView = false;
+
+  /// The party is walking a world road out of the place (v1.548): the map
+  /// shows the World view, until the next scene.
+  bool _roadWalk = false;
 
   /// Whether the place the map shows has a city plan to look at whole
   /// (set while building).
@@ -792,6 +797,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             _partyPlan = homePlan;
             _partyDistrict = homeDistrict;
             _partyLandmark = homeLandmark;
+            _roadWalk = false;
           }
         }
         if (mounted) {
@@ -1882,6 +1888,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // list) is reached by the road from where it stood, and the map says why.
     if (_placedFor != sceneKey && !play.isInExcursion) {
       _placedFor = sceneKey;
+      _roadWalk = false;
       final carried = _carried;
       _carried = false;
       final to = placeView?.chartHere;
@@ -2009,7 +2016,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
     final levelTabs = _LevelTabs(
-      selected: _level != JourneyMapLevel.place
+      selected: _level != JourneyMapLevel.place || _roadWalk
           ? _LevelTab.world
           : townView
               ? _LevelTab.town
@@ -2252,6 +2259,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   place: placeView?.pinned(_pinIdx),
                                   arriveFrom: _arriveFrom,
                                   townView: townView,
+                                  // A way to another place walks the world
+                                  // road on the World view (v1.548).
+                                  roadLeg: (step) => isWorldRoadLeg(
+                                          standing?.id, step.targetLandmark)
+                                      ? worldLegPath(journeyChartOf(ref),
+                                          standing!.id, step.targetLandmark!,
+                                          language: language)
+                                      : null,
+                                  roadMap: (path, clock) => worldMapWith(
+                                      level: JourneyMapLevel.world,
+                                      move: path,
+                                      clock: clock),
+                                  onRoadWalk: () =>
+                                      setState(() => _roadWalk = true),
                                 ),
                               ),
                             ),
@@ -2595,35 +2616,42 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     continueLabel: tr(ref, 'journey_continue'),
                     closeTip: tr(ref, 'journey_continue'),
                     onContinue: continueFromScene,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          flex: 3,
-                          child: _ScenePanel(
-                            revealKey: revealKey,
-                            key: ValueKey('journey_arrival_$sceneKey'),
-                            story: story,
-                            node: node,
-                            french: french,
-                            folded: false,
-                            reading: false,
-                            onFold: (_) {},
-                            onReading: _read,
-                            detour: detour,
-                          ),
-                        ),
-                        // The choices acted out here, under the words.
-                        if (steps.any((s) => s.onCard) && textReady) ...[
-                          const SizedBox(height: 8),
+                    // The choices are whole, up to 70% of the room the sheet
+                    // gives; the words take the rest and scroll.
+                    child: LayoutBuilder(
+                      builder: (context, room) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // The words take what the choices leave and scroll
+                          // above them; the choices are shown whole.
                           Flexible(
-                            flex: 2,
-                            child: _choicePanel(
-                                steps, _pickedCard(selected), french, story,
-                                shrinkWrap: true),
+                            child: _ScenePanel(
+                              shrinkToText: true,
+                              revealKey: revealKey,
+                              key: ValueKey('journey_arrival_$sceneKey'),
+                              story: story,
+                              node: node,
+                              french: french,
+                              folded: false,
+                              reading: false,
+                              onFold: (_) {},
+                              onReading: _read,
+                              detour: detour,
+                            ),
                           ),
+                          // The choices acted out here, under the words.
+                          if (steps.any((s) => s.onCard) && textReady) ...[
+                            const SizedBox(height: 8),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: room.maxHeight * 0.7),
+                              child: _choicePanel(
+                                  steps, _pickedCard(selected), french, story,
+                                  shrinkWrap: true),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -2869,11 +2897,16 @@ class _ScenePanel extends ConsumerWidget {
     required this.onReading,
     this.detour,
     this.revealKey,
+    this.shrinkToText = false,
     this.toMap = true,
   });
 
   final StoryData story;
   final StoryNode node;
+
+  /// The panel is only as tall as its words, up to the room it is given,
+  /// and scrolls beyond it (the arrival sheet, v1.550); false fills it.
+  final bool shrinkToText;
 
   /// Read full screen, whether it has a way back to the map.
   final bool toMap;
@@ -3043,19 +3076,25 @@ class _ScenePanel extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onDoubleTap: () => onReading(!reading),
                 child: Scrollbar(
-                  child: SingleChildScrollView(
-                    padding: reading
-                        ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
-                        : const EdgeInsets.fromLTRB(14, 12, 40, 36),
-                    child: reading
-                        ? ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minHeight:
-                                    math.max(0, viewport.maxHeight - 40)),
-                            child: Center(child: body),
-                          )
-                        : body,
-                  ),
+                  child: shrinkToText && !reading
+                      ? ListView(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          children: [body],
+                        )
+                      : SingleChildScrollView(
+                          padding: reading
+                              ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
+                              : const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          child: reading
+                              ? ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          math.max(0, viewport.maxHeight - 40)),
+                                  child: Center(child: body),
+                                )
+                              : body,
+                        ),
                 ),
               ),
             ),
@@ -3316,10 +3355,19 @@ class _JourneyChart extends StatefulWidget {
     this.arriveFrom,
     this.townView = false,
     this.stepIds,
+    this.roadLeg,
+    this.roadMap,
+    this.onRoadWalk,
     this.rings = const [],
     this.ringLit,
     this.onRing,
   });
+
+  /// A way out to another place (v1.548): its world road, walked on the
+  /// world chart [roadMap] builds, and the word that the walk has begun.
+  final WorldLegPath? Function(_Step step)? roadLeg;
+  final Widget Function(WorldLegPath path, Animation<double> clock)? roadMap;
+  final VoidCallback? onRoadWalk;
 
   /// A hub's rings round the party's mark (v1.419, see choice_rings.dart),
   /// the one whose list is open ([ringLit]), and a tap on one.
@@ -3467,6 +3515,7 @@ class _JourneyChartState extends State<_JourneyChart>
     duration: const Duration(milliseconds: 1900),
   );
   int? _flying;
+  WorldLegPath? _flyingLeg;
 
   bool get _placeMode => widget.place != null;
 
@@ -3746,6 +3795,13 @@ class _JourneyChartState extends State<_JourneyChart>
         final stops = widget.steps[index].route?.stops.length ?? 0;
         _flight.duration =
             Duration(milliseconds: math.min(4500, 1900 + 350 * stops));
+        _flyingLeg = widget.roadMap == null
+            ? null
+            : widget.roadLeg?.call(widget.steps[index]);
+        if (_flyingLeg != null) {
+          _flight.duration = worldMoveDuration(_flyingLeg!);
+          widget.onRoadWalk?.call();
+        }
         setState(() => _flying = index);
         _wake();
         await _flight.forward(from: 0).orCancel;
@@ -3791,6 +3847,7 @@ class _JourneyChartState extends State<_JourneyChart>
     setState(() {
       _walking = null;
       _flying = null;
+      _flyingLeg = null;
     });
   }
 
@@ -4553,6 +4610,26 @@ class _JourneyChartState extends State<_JourneyChart>
               flying >= steps.length ||
               steps[flying].chartTarget == null) {
             return unrolled;
+          }
+          // On a world road: the World view walks it (v1.548); a tap lands
+          // the party at once, as the transit's does.
+          if (_flyingLeg case final leg?) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                widget.roadMap!(leg, _flight),
+                Positioned.fill(
+                  child: GestureDetector(
+                    key: const ValueKey('journey_road_skip'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _flight.stop(canceled: false);
+                      _flight.value = 1;
+                    },
+                  ),
+                ),
+              ],
+            );
           }
           // On the road: the world chart, from here to where it leads.
           return Stack(

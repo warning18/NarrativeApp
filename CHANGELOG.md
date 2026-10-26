@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.553.0+589]
+
+Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
+
+### Changed
+- **The place sheet** (`arrival_sheet.dart`, `journey_screen.dart`): the words scroll above the whole choices, the sheet grows to 90% of the screen, and its handle can be dragged to make it shorter (down to about a third). The choices are capped at 70% of the room left so a small sheet never overflows.
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner opened the card only for as long as the finger was down. It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; the "Let go to close" and "Tap to close" lines are gone. The other hold-to-open popins already stayed open; a test now says so.
+
+### Tests
+- `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
+
+
+## [1.552.0+588]
+
+The level-up stat pick shows on the ability radar.
+
+### Changed
+- **A pick is drawn on the radar** (`stat_pick_picker.dart`, `ability_radar.dart`): picking a stat card no longer opens the detail block under the cards (the path's name, each gain from where it stood to where it goes, the effect lines). The ability radar takes its place: the hero's shape as it stands in gold, the shape the pick would give round it in green, and each corner the pick moves shows its new value highlighted with the gain under it ("CON 7, +1"). The shape grows from the current one over a third of a second; with reduced motion it is there at once. A pick worth more than one point still says "Worth n points" under the radar. "Take this pick", the roll powers and the cards (with the path, each gain and what it does for the hero) are unchanged.
+- `RadarAxis` takes a `valueColor` and `AbilityRadar` a `preview` shape.
+
+### Tests
+- New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
+## [1.551.0+587]
+
+A walk along a world road now plays on the World map.
+
+### Fixed
+- **Road moves on the World view:** taking a way that leaves a place for another one used to draw the walk on the District tab: a bare grey region with the road's stops on it. One example is "Go the long way round" from the Sleeper's Face to the White Wells. The Journey now switches to the World view with the World tab lit and walks the road there, at the same pace as the road transit. Arriving at the next place shows that place's own view, as before. A tap on the walk skips it and lands the party at once.
+
 ## [1.548.0+584]
 
 A page whose only ways on are its own cards no longer offers "Back to the map".

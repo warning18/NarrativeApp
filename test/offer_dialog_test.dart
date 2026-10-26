@@ -214,7 +214,7 @@ void main() {
       'a long press on a banner or a crest shows the clan\u2019s details',
       (tester) async {
     await _open(tester, french: false);
-    // The banner row: held, the card shows the clan; let go, it is gone.
+    // The banner row: held, the card shows the clan; let go, it stays (v1.555).
     final hold = await tester.startGesture(
         tester.getCenter(find.byKey(const Key('offer_banner_compact'))));
     await tester.pump(const Duration(milliseconds: 700));
@@ -231,7 +231,15 @@ void main() {
     expect(find.byKey(const Key('clan_radar_compact')), findsOneWidget);
     await _shot(tester, 'clan_details');
     await hold.up();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_compact')), findsOneWidget,
+        reason: 'it stays open when the finger lifts');
+    // No "let go" line: a tap outside, or the close button, closes it.
+    expect(find.textContaining('Let go'), findsNothing);
+    await tester.tapAt(const Offset(4, 4));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     // The long press did not pick the banner.
     expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
@@ -242,7 +250,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     expect(find.byKey(const Key('clan_details_mire')), findsOneWidget);
     await crest.up();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_mire')), findsOneWidget);
+    // The close button closes it, as does the back gesture.
+    await tester.tap(find.byKey(const Key('clan_details_close')));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.byKey(const Key('clan_details_mire')), findsNothing);
 
     // The Wayfarer is no clan: nothing opens.
@@ -254,23 +268,41 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('a tap outside closes the clan\u2019s details', (tester) async {
+  testWidgets(
+      'a tap outside, or the back gesture, closes the clan\u2019s details',
+      (tester) async {
     await _open(tester, french: false);
     final hold = await tester.startGesture(
         tester.getCenter(find.byKey(const Key('offer_banner_penitents'))));
     await tester.pump(const Duration(milliseconds: 700));
     expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
     await hold.up();
-    await tester.pump(const Duration(milliseconds: 100));
-    // Held through a tap elsewhere: the layer's barrier closes it.
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
+    // A tap on the card does not close it (it scrolls).
+    await tester.tap(find.byKey(const Key('clan_details_penitents')),
+        warnIfMissed: false);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
+    // A tap outside closes it.
+    await tester.tapAt(const Offset(4, 4));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.byKey(const Key('clan_details_penitents')), findsNothing);
+
+    // Opened again: the back gesture closes it.
     final again = await tester.startGesture(
         tester.getCenter(find.byKey(const Key('offer_banner_penitents'))));
     await tester.pump(const Duration(milliseconds: 700));
-    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
-    await tester.tapAt(const Offset(4, 4));
-    await tester.pump(const Duration(milliseconds: 100));
-    expect(find.byKey(const Key('clan_details_penitents')), findsNothing);
     await again.up();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const Key('clan_details_penitents')), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.byKey(const Key('clan_details_penitents')), findsNothing);
   });
 
   testWidgets('three suitors stacked at 360 px; one taken, the next kept',
