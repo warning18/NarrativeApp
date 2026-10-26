@@ -5,7 +5,10 @@
 // (no story choice, no time, no road): the screen sets the party's district
 // (see city_provider.dart), and a district walked into is found for good
 // through a flag (see districtFoundFlag).
+import 'dart:ui' show Offset;
+
 import '../models/story_node.dart';
+import 'city_plan_record.dart';
 import 'geography.dart';
 import 'story_repository.dart' show StoryData;
 
@@ -20,6 +23,77 @@ GeoPlace? districtOfPlace(Geography geo, String? placeId) =>
 /// The district scene [node] happens in, or null.
 GeoPlace? districtOfNode(Geography geo, StoryNode? node) =>
     districtOfPlace(geo, geo.placeOfNode(node)?.id);
+
+/// Where a scene played at a building's doorstep (v1.542, see
+/// GeoPlace.doorstep) stands on its town's stored plan: the building on
+/// the plan, the party's spot at its door, and a spot in the street round
+/// it for each of the scene's ways that stay there.
+class SceneDoorstep {
+  const SceneDoorstep({
+    required this.buildingId,
+    required this.districtId,
+    required this.at,
+    required this.spotOfWay,
+  });
+
+  /// The building on the plan (city_plans.json's id): the scene's own
+  /// anchor when it has one in the district, else one picked for it.
+  final String buildingId;
+  final String districtId;
+
+  /// The party's spot: the street before the building's door.
+  final Offset at;
+
+  /// By way index, where the pin of a way that stays at the door stands.
+  final Map<int, Offset> spotOfWay;
+}
+
+/// [node]'s doorstep on [record] (see [SceneDoorstep]), or null when the
+/// scene is not played at a building's doorstep, or the building's district
+/// is not on the plan. [waysHere] are the indices of the scene's ways that
+/// stay where the party stands (no other building or district of the town).
+SceneDoorstep? sceneDoorstep(
+  Geography geo,
+  CityPlanRecord record,
+  StoryNode? node, {
+  Iterable<int> waysHere = const [],
+}) {
+  final building = geo.doorstepOfNode(node);
+  if (building == null) return null;
+  final district = districtOfPlace(geo, building.id)?.id;
+  if (district == null || !record.districts.containsKey(district)) {
+    return null;
+  }
+  final onPlan = record.buildingOfWay(node!.id, district);
+  if (onPlan == null) return null;
+  final ways = waysHere.toList();
+  final spots = record.streetSpotsAround(onPlan.id, ways.length);
+  return SceneDoorstep(
+    buildingId: onPlan.id,
+    districtId: district,
+    at: record.doorstepOf(onPlan.id),
+    spotOfWay: {for (final (k, i) in ways.indexed) i: spots[k]},
+  );
+}
+
+/// The view of a town's plan a move shows (v1.534): the whole town, or the
+/// district.
+enum JourneyTownView { town, district }
+
+/// What the Journey shows after the party moves from place [fromId] to
+/// place [toId] (districts or buildings): a move inside one town with
+/// districts is a walk on its plan, on the whole town when it crosses into
+/// another district, on the district when it stays in the same one. Null
+/// for anything else (a journey between towns, a town with no districts,
+/// a first placing): the world's roads, or the view as it was.
+JourneyTownView? townMoveView(Geography geo, String? fromId, String? toId) {
+  if (fromId == null || toId == null) return null;
+  final from = geo.locationOf(fromId), to = geo.locationOf(toId);
+  if (from == null || to == null || from.id != to.id) return null;
+  final a = districtOfPlace(geo, fromId), b = districtOfPlace(geo, toId);
+  if (a == null || b == null) return null;
+  return a.id == b.id ? JourneyTownView.district : JourneyTownView.town;
+}
 
 /// [cityId]'s districts, in geography.json's order.
 List<GeoPlace> districtsOfCity(Geography geo, String cityId) => [

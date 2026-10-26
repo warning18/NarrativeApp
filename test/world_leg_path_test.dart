@@ -21,35 +21,35 @@ void main() {
   final chart = chartOf(MapShape.story);
 
   test('one road: from A\'s spot to B\'s, as the full map draws it', () {
-    final path = worldLegPath(chart, 'beggar', 'alley');
+    final path = worldLegPath(chart, 'crash', 'sleeper');
     expect(path.routed, isTrue);
     expect(path.kind, WorldLegKind.road);
-    expect(path.points.first, chart.places['beggar']);
-    expect(path.points.last, chart.places['alley']);
-    expect(path.segments.single.roadId, 'beggar_alley');
-    // The full map's road for a leg walked beggar -> alley.
+    expect(path.points.first, chart.places['crash']);
+    expect(path.points.last, chart.places['sleeper']);
+    expect(path.segments.single.roadId, 'crash_sleeper');
+    // The full map's road for a leg walked crash -> sleeper.
     expect(
         path.points,
-        windingRoad(chart.places['beggar']!, chart.places['alley']!,
-            seed: chartSeed('beggar-alley'), bends: 3, amp: 0.16));
-    expect(path.stops.single.name, 'Tallow Steps');
+        windingRoad(chart.places['crash']!, chart.places['sleeper']!,
+            seed: chartSeed('crash-sleeper'), bends: 3, amp: 0.16));
+    expect(path.stops.single.name, 'The Dune Cairn');
     expect(path.stops.single.along, inExclusiveRange(0, 1));
     final french =
-        worldLegPath(chart, 'beggar', 'alley', language: AppLanguage.fr);
-    expect(french.stops.single.name, 'Les marches du Suif');
+        worldLegPath(chart, 'crash', 'sleeper', language: AppLanguage.fr);
+    expect(french.stops.single.name, 'Le cairn des dunes');
   });
 
   test('a sea lane is a sea leg; a road then a lane is a crossing', () {
-    final sail = worldLegPath(chart, 'docks', 'crash');
+    final sail = worldLegPath(chart, 'alster', 'crash');
     expect(sail.kind, WorldLegKind.sea);
     expect(sail.segments.single.kind, WorldLegKind.sea);
     expect(sail.stops.map((s) => s.name),
         ['The Harbour Chain', 'The Painted Sails']);
 
-    final far = worldLegPath(chart, 'docks', 'sleeper');
+    final far = worldLegPath(chart, 'alster', 'sleeper');
     expect(far.kind, WorldLegKind.crossing);
     expect([for (final s in far.segments) s.roadId],
-        ['docks_crash', 'crash_sleeper']);
+        ['alster_crash', 'crash_sleeper']);
     expect([for (final s in far.segments) s.kind],
         [WorldLegKind.sea, WorldLegKind.road]);
     // The roads join end to end, through the landmark between.
@@ -83,8 +83,8 @@ void main() {
   });
 
   test('a long way follows the roads, landmark after landmark', () {
-    final route = roadRoute('beggar', 'camp')!;
-    final path = worldLegPath(chart, 'beggar', 'camp');
+    final route = roadRoute('alster', 'camp')!;
+    final path = worldLegPath(chart, 'alster', 'camp');
     expect([for (final s in path.segments) s.roadId],
         [for (final l in route.legs) l.road.id]);
     expect(path.kind, WorldLegKind.crossing);
@@ -127,12 +127,12 @@ void main() {
     expect(landmarkById('storm')!.atSea, isTrue);
     expect(worldLegPath(toy, 'here', 'storm').kind, WorldLegKind.sea);
     // A place no chart knows stands at the chart's middle.
-    final lost = worldLegPath(chart, 'beggar', 'nowhere');
+    final lost = worldLegPath(chart, 'alster', 'nowhere');
     expect(lost.routed, isFalse);
     expect(
         lost.points.last, const Offset(worldMapWidth / 2, worldMapHeight / 2));
     // No move: one point.
-    expect(worldLegPath(chart, 'wharf', 'wharf').points, hasLength(1));
+    expect(worldLegPath(chart, 'saltmouth', 'saltmouth').points, hasLength(1));
   });
 
   test('by scenes: the landmarks the Journey moves between', () {
@@ -150,9 +150,9 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final path =
-        container.read(worldLegPathProvider((from: 'docks', to: 'crash')));
+        container.read(worldLegPathProvider((from: 'alster', to: 'crash')));
     expect(
-        path.points.first, container.read(storyChartProvider).places['docks']);
+        path.points.first, container.read(storyChartProvider).places['alster']);
     expect(path.kind, WorldLegKind.sea);
     await Future<void>.delayed(const Duration(milliseconds: 50));
   });

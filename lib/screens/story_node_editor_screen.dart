@@ -637,6 +637,7 @@ class _ChoiceEditState {
         forcedStage: _original.forcedStage,
         spot: _original.spot,
         approvalMods: _original.approvalMods,
+        returnToCamp: _original.returnToCamp,
         grantMaterials: _original.grantMaterials,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,

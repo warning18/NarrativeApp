@@ -75,22 +75,6 @@ class RoadRoute {
   bool get isEmpty => legs.isEmpty;
 }
 
-const _tallowSteps =
-    RoadStop('tallow_steps', 'Tallow Steps', 'Les marches du Suif');
-const _cobblersRow =
-    RoadStop('cobblers_row', 'Cobblers’ Row', 'La rue des Cordonniers');
-const _dyersGate =
-    RoadStop('dyers_gate', 'The Dyers’ Gate', 'La porte des Teinturiers');
-const _menderStall =
-    RoadStop('mender_stall', 'The Mender’s Stall', 'L’étal du Rapetasseur');
-const _wardensLane =
-    RoadStop('wardens_lane', 'The Warden’s Lane', 'La ruelle du Gardien');
-const _ironGrate = RoadStop('iron_grate', 'The Iron Grate', 'La grille de fer');
-const _cisternSteps =
-    RoadStop('cistern_steps', 'The Cistern Steps', 'Les marches de la citerne');
-const _fishmarket = RoadStop('fishmarket', 'The Fishmarket', 'La criée');
-const _chandlersRow =
-    RoadStop('chandlers_row', 'Chandlers’ Row', 'La rue des Chandeliers');
 const _harbourChain =
     RoadStop('harbour_chain', 'The Harbour Chain', 'La chaîne du port');
 const _paintedSails =
@@ -102,16 +86,7 @@ const _caravanFord =
     RoadStop('caravan_ford', 'The Caravan Ford', 'Le gué des caravanes');
 const _saltMarker =
     RoadStop('salt_marker', 'The Salt Marker', 'La borne de sel');
-const _tollhouse = RoadStop('tollhouse', 'The Tollhouse', 'Le poste de péage');
-const _tideWall = RoadStop('tide_wall', 'The Tide Wall', 'Le mur de marée');
-const _ropewalk = RoadStop('ropewalk', 'The Ropewalk', 'La corderie');
-const _breakersStair = RoadStop(
-    'breakers_stair', 'The Breakers’ Stair', 'L’escalier des démolisseurs');
 const _lastLight = RoadStop('last_light', 'The Last Light', 'Le dernier feu');
-const _lanternStair =
-    RoadStop('lantern_stair', 'The Lantern Stair', 'L’escalier aux lanternes');
-const _barrelRun =
-    RoadStop('barrel_run', 'The Barrel Run', 'L’enfilade des tonneaux');
 const _openWater = RoadStop('open_water', 'The Open Water', 'Le large');
 const _landfallRock =
     RoadStop('landfall_rock', 'Landfall Rock', 'Le rocher de l’arrivée');
@@ -164,27 +139,18 @@ const _lastMile = RoadStop('last_mile', 'The Last Mile', 'Le dernier mille');
 /// `world_roads_test.dart` keeps it so), and every landmark is on a road
 /// that leads to every other.
 const List<WorldRoad> worldRoads = [
-  // Alster: the slums, the quay, and the way out through the Waste.
-  WorldRoad('beggar_alley', 'beggar', 'alley', [_tallowSteps]),
-  WorldRoad('beggar_bridge', 'beggar', 'bridge', [_cobblersRow]),
-  WorldRoad('alley_hovel', 'alley', 'hovel', [_dyersGate]),
-  WorldRoad('bridge_hovel', 'bridge', 'hovel', [_menderStall]),
-  WorldRoad('hovel_hold', 'hovel', 'hold', [_wardensLane]),
-  WorldRoad('hold_sewers', 'hold', 'sewers', [_ironGrate]),
-  WorldRoad('sewers_hovel', 'sewers', 'hovel', [_cisternSteps]),
-  WorldRoad('hovel_docks', 'hovel', 'docks', [_fishmarket, _chandlersRow]),
-  WorldRoad('docks_crash', 'docks', 'crash', [_harbourChain, _paintedSails],
+  // Alster, where the roads start (v1.534: one place, its districts walked
+  // on its own plan, see city_plans.json), and the way out through the
+  // Waste: the Lark lifts off the High Quay.
+  WorldRoad('alster_crash', 'alster', 'crash', [_harbourChain, _paintedSails],
       kind: RoadKind.sea),
   WorldRoad('crash_sleeper', 'crash', 'sleeper', [_duneCairn]),
   WorldRoad('sleeper_wells', 'sleeper', 'wells', [_dryWadi]),
-  WorldRoad('wells_upper', 'wells', 'upper', [_caravanFord, _saltMarker]),
-  // Saltmouth and the crossing.
-  WorldRoad('upper_wharf', 'upper', 'wharf', [_tollhouse, _tideWall]),
-  WorldRoad('wharf_tern', 'wharf', 'tern', [_ropewalk]),
-  WorldRoad('wharf_berths', 'wharf', 'berths', [_breakersStair]),
-  WorldRoad('wharf_alleys', 'wharf', 'alleys', [_lanternStair]),
-  WorldRoad('wharf_cards', 'wharf', 'cards', [_barrelRun]),
-  WorldRoad('berths_storm', 'berths', 'storm', [_lastLight],
+  WorldRoad(
+      'wells_saltmouth', 'wells', 'saltmouth', [_caravanFord, _saltMarker]),
+  // Saltmouth (v1.536: one place, its districts walked on its own plan, see
+  // city_plans.json) and the crossing: the Rusty Eel leaves the yard.
+  WorldRoad('saltmouth_storm', 'saltmouth', 'storm', [_lastLight],
       kind: RoadKind.sea),
   WorldRoad('storm_camp', 'storm', 'camp', [_openWater, _landfallRock],
       kind: RoadKind.sea),

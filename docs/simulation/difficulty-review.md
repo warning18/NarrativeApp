@@ -268,3 +268,55 @@ Encounters won within 3 tries by profession: before → after.
 | 23 | 68.2 → 64.8 | 66.0 → 66.3 | 66.7 → 68.0 | 66.3 → 67.3 | 66.0 → 64.2 |
 
 `clash_balance_test`, the largest gap: 0.077 (chapter 2) before, 0.072 (chapter 7) after, against 0.10. No test bound changed.
+
+## v1.531: the claimants (wave 17 item 1C)
+
+Two changes, measured together on `boss_balance_test`'s plan (400 runs,
+seeds 7, 11 and 23), main = v1.530:
+
+- **The simulator plays the enemies' Hex, Silence and Curse** (see
+  [sim-gaps.md](sim-gaps.md)). No game number changed.
+- **The claimants, "C, complete"** (see
+  [claimants-by-profession.md](claimants-by-profession.md)): their Tide
+  stops at level 6, they heal once, they have no resists, Tallis 72 → 77,
+  Morrow 108 → 148. The cleric wins them 31–38% (was 8–18), the warrior
+  30–36% (was 18–35).
+
+The bosses, won %, main → v1.531 (band: target ±12):
+
+| Boss | Target | Seed 7 | Seed 11 | Seed 23 |
+|---|---|---|---|---|
+| Aurel Vane | 75 | 79.1 → 79.1 | 82.7 → 82.7 | 83.5 → 83.5 |
+| Void Stalker | 65 | 67.7 → 70.3 | 69.9 → 68.3 | 65.5 → 63.0 |
+| Hollow Court Inquisitor | 55 | 59.1 → 57.2 | 57.1 → 54.2 | 59.8 → 56.6 |
+| Bone Warden | 55 | 55.0 → 53.2 | 56.3 → 56.2 | 54.1 → 50.2 |
+| Void Archon | 50 | 52.7 → 51.0 | 57.7 → 53.8 | 55.2 → 53.7 |
+| White Admiral | 45 | 40.9 → 44.4 | 37.7 → 40.4 | 42.7 → 42.6 |
+| Claimant Vane | 40 | 33.9 → 40.0 | 26.5 → 38.5 | 36.2 → 42.3 |
+| Claimant Tallis | 40 | 35.6 → 46.4 | 38.4 → 48.3 | 41.8 → 46.5 |
+| Claimant Morrow | 40 | 47.3 → 47.4 | 52.5 → 48.2 | 40.0 → 40.0 |
+| Tear-Herald | 35 | 37.5 → 34.8 | 36.2 → 38.5 | 37.8 → 36.0 |
+| Void Sovereign | 35 | 37.5 → 41.9 | 38.9 → 38.7 | 35.7 → 38.0 |
+| **Mean** | 42–58 | 49.7 → 51.4 | 50.4 → 51.6 | 50.2 → 50.2 |
+
+Encounters won within 3 tries, by chapter, main → v1.531:
+
+| Seed | Ch 1 | Ch 2 | Ch 3 | Ch 4 | Ch 5 | Ch 6 | Ch 7 | Ch 8 |
+|---|---|---|---|---|---|---|---|---|
+| 7 | 93.5 → 93.5 | 86.8 → 86.8 | 66.1 → 67.5 | 57.7 → 57.5 | 66.9 → 66.0 | 56.9 → 58.3 | 51.9 → 57.8 | 48.8 → 51.9 |
+| 11 | 93.7 → 93.7 | 88.1 → 88.1 | 67.6 → 67.3 | 58.8 → 58.2 | 65.4 → 66.7 | 56.6 → 59.0 | 53.4 → 58.3 | 51.7 → 53.8 |
+| 23 | 94.8 → 94.8 | 86.8 → 86.8 | 66.1 → 66.2 | 56.9 → 56.5 | 65.6 → 66.0 | 59.3 → 56.9 | 55.4 → 56.0 | 52.5 → 49.6 |
+
+Chapter 7 gains 1–6 points (the claimants). Chapters 3 to 6 and 8 move
+within 3 points with the tamper and the seeded stream.
+
+Professions (all fights, lowest / spread): 63.0 / 6.1 → 63.8 / 5.8 at
+seed 7, 64.3 / 5.6 → 64.7 / 5.0 at seed 11, 65.0 / 2.7 → 63.2 / 5.1 at
+seed 23. The clan champions (`nemesis_quests_test`, seed 7): 45.8% →
+39.9% (band 38–62). The drop is the tamper alone (39.9% with main's
+enemies.json too): the champions lay Silence, Hex and Curse, which the
+simulator used to skip. It sits 1.9 points over the floor.
+
+Every test bound holds unchanged: `boss_balance`, `nemesis_quests`,
+`clash_balance` (the existing 18-table, seed-11 test), `qa_sim_tables`
+and the simulator tests.

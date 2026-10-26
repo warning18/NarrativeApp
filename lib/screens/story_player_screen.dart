@@ -42,6 +42,7 @@ import '../data/quest_tracking.dart' show isMainQuest;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/turn_in_choices.dart';
+import '../data/camp_errands.dart' show storyChoiceTarget;
 import '../data/scene_flow.dart';
 import '../data/place_pools.dart';
 import '../data/sub_node_engine.dart';
@@ -427,8 +428,9 @@ class _StoryView extends ConsumerWidget {
     // Picking a saved story back up: a short recap, once per launch.
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
-        ref.read(storyPlayProvider.notifier).restoredFromAutosave &&
-        playState.history.isNotEmpty) {
+        hasRecapProgress(playState,
+            resumed:
+                ref.read(storyPlayProvider.notifier).restoredFromAutosave)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted || ref.read(_previouslyOfferedProvider)) return;
         ref.read(_previouslyOfferedProvider.notifier).state = true;
@@ -1706,6 +1708,10 @@ Future<void> _selectChoice({
     return;
   }
 
+  // A way back to the camp goes to the camp the party stands for (see
+  // camp_errands.dart).
+  final nextId = storyChoiceTarget(choice,
+      campNodeId: ref.read(currentCampNodeIdProvider));
   // Landed where the choice goes: the voyage was the way there, with its
   // days and its sea, and no road after it.
   if (travelled) {
@@ -1713,13 +1719,13 @@ Future<void> _selectChoice({
     // waits off the quay, the chapter's landmark among it.
     final started = await startRoadEncounter(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: ref.read(storyPlayProvider).history.length,
         travels: true,
         origin: choice.text,
         originFr: choice.textFr);
     if (!context.mounted || started) return;
-    await _arriveAt(ref, story, choice.nextId);
+    await _arriveAt(ref, story, nextId);
     return;
   }
 
@@ -1732,8 +1738,7 @@ Future<void> _selectChoice({
   final historyBefore = ref.read(storyPlayProvider).history.length;
   final world = await loadGeography(ref);
   final walks = !choice.opensCharacterCreation &&
-      (choice.travels ||
-          world.travelsBetween(story, currentNodeId, choice.nextId));
+      (choice.travels || world.travelsBetween(story, currentNodeId, nextId));
   // A walk between places takes the watches of where it goes (a far place
   // can take a day, see GeoPlace.watches).
   final watches = choice.travels
@@ -1746,18 +1751,18 @@ Future<void> _selectChoice({
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: historyBefore);
     if (!context.mounted) return;
     if (event != null) {
       await startRoadEncounter(ref, story,
           fromNodeId: currentNodeId,
-          toNodeId: choice.nextId,
+          toNodeId: nextId,
           historyLength: historyBefore,
           travels: choice.travels,
           watches: watches,
           taken: true);
-      playNotifier.startExcursion(event, choice.nextId,
+      playNotifier.startExcursion(event, nextId,
           origin: choice.text, originFr: choice.textFr);
       return;
     }
@@ -1768,7 +1773,7 @@ Future<void> _selectChoice({
   if (!choice.opensCharacterCreation) {
     final started = await startRoadEncounter(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: historyBefore,
         travels: choice.travels,
         watches: walks ? watches : 1,
@@ -1777,7 +1782,7 @@ Future<void> _selectChoice({
     if (!context.mounted) return;
     if (started) return;
   }
-  await _arriveAt(ref, story, choice.nextId);
+  await _arriveAt(ref, story, nextId);
 }
 
 /// Remembers [echoes] as read once they are on screen (see
@@ -4312,10 +4317,12 @@ String? _moodLabel(WidgetRef ref, String? mood) {
   return label == key ? null : label;
 }
 
-/// A line an earlier choice earned, under a small caption naming the
-/// choice ("Because you chose “Spare him”"), set off by a thread in the
-/// scene's colour so it reads as the story answering the player.
-class EchoLine extends StatelessWidget {
+/// A line an earlier choice earned (see echoes.dart). In play it is set
+/// into the story as ordinary prose, with nothing to say where it came
+/// from; in Edit Mode (the story node editor's preview) it stays under a
+/// small caption naming the choice ("Because you chose “Spare him”"), set
+/// off by a thread in the scene's colour, so the author sees what earned it.
+class EchoLine extends ConsumerWidget {
   const EchoLine({
     super.key,
     required this.echo,
@@ -4330,7 +4337,10 @@ class EchoLine extends StatelessWidget {
   final TextStyle style;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(appModeProvider) != AppMode.edit) {
+      return StoryText(text: echo.line, style: style, firstSentenceBold: false);
+    }
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(

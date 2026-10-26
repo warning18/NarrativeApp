@@ -188,13 +188,21 @@ void main() {
     });
 
     test('a way on that takes the road to another place is a stop', () {
-      // The wharf's way to the berths is a step on the road: a ration, a
-      // watch and what the road holds, never a page turned.
+      // A way from the White Wells (1200) on to Saltmouth (2001) is a step
+      // on the road: a ration, a watch and what the road holds, never a
+      // page turned.
+      final leaving = _node('1200', [
+        {'text': 'On to the coast', 'next_id': '2001'}
+      ]);
+      expect(isPlainGoOn(leaving.choices.single), isTrue);
+      expect(isRoadStep('1200', '2001'), isTrue);
+      expect(passThroughChoiceOf(leaving, const []), isNull);
+      // Saltmouth is one place since v1.536: the wharf's way to the Eel's
+      // berth is a walk in its streets, read through.
       final story = _story();
       final paid = story.nodeFor('2040_paid')!;
       expect(paid.choices.single.nextId, '2900');
-      expect(isPlainGoOn(paid.choices.single), isTrue);
-      expect(passThroughChoiceOf(paid, const []), isNull);
+      expect(passThroughChoiceOf(paid, const [])?.nextId, '2900');
       for (final node in story.nodes.values) {
         final way = passThroughChoiceOf(node, const []);
         if (way == null) continue;
@@ -205,16 +213,17 @@ void main() {
     test(
         'with the world known, a way to another district of the same city '
         'reads through; one that leaves the city is a stop (v1.209)', () {
-      // Saltmouth's landward gate (2005, the Upper City landmark) and its
-      // wharf (2015_dockside, the wharf landmark): two landmarks, one city.
-      final gate = _node('2005', [
+      // A gate scene filed under the White Wells' landmark (1200) and
+      // Saltmouth's wharf (2015_dockside): two landmarks, which the
+      // world's places below may put in one city or two.
+      final gate = _node('1200', [
         {'text': 'Down to the wharf', 'next_id': '2015_dockside'}
       ], {
         'location': 'gate'
       });
       expect(isPlainGoOn(gate.choices.single), isTrue);
       // By landmark alone, a change of landmark is the road: a stop.
-      expect(isRoadStep('2005', '2015_dockside'), isTrue);
+      expect(isRoadStep('1200', '2015_dockside'), isTrue);
       expect(passThroughChoiceOf(gate, const []), isNull);
       // With the world's places, the wharf is a district of the same
       // city: a walk through its streets, read through.

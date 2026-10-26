@@ -10,6 +10,19 @@ extension _FightQueries on _FightScreenState {
   String _actorPrefix(_PartyMember actor) =>
       _party.length > 1 ? '${actor.displayName}: ' : '';
 
+  /// The level the enemies' Tide stops at in this fight (a claimant's,
+  /// see fight_length.dart), or null.
+  int? get _tideCap => fightTideCap([for (final e in _enemies) e.data]);
+
+  /// What the Tide adds to the enemies' blows in [round], in percent.
+  int _tideEnemyPercent(int round) => ((tideEnemyMultiplier(round,
+                  bossFight:
+                      _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
+                  cap: _tideCap) -
+              1) *
+          100)
+      .round();
+
   /// The highest Perception among currently-conscious party members — feeds
   /// [telegraphTierFor] for every enemy's telegraph badge. A
   /// Perception-built ally can carry the party's tactical read even if the
@@ -175,7 +188,8 @@ extension _FightQueries on _FightScreenState {
     return foeBlow(
         _length.rule.blow(_signs.enemyDamage(damage), _roundsStarted,
             byParty: false,
-            bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data))),
+            bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
+            enemyTideCap: _tideCap),
         enemy.data,
         _roundsStarted,
         boss: isBossEnemy(enemy.enemyId, enemy.data));

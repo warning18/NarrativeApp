@@ -99,19 +99,22 @@ void main() {
 
   group('what the map shows', () {
     test('a place shows once one of its scenes has been read', () {
-      expect(discoveredLandmarkIds({'0'}), {'beggar'});
-      expect(discoveredLandmarkIds({'0', '100', '270', '300'}),
-          {'beggar', 'alley', 'hovel'});
+      expect(discoveredLandmarkIds({'0'}), {'alster'});
+      // Alster is one place (v1.534), whichever of its districts is read.
+      expect(discoveredLandmarkIds({'0', '100', '270', '300'}), {'alster'});
       expect(discoveredLandmarkIds({'1130', '1200'}), {'sleeper', 'wells'});
-      expect(discoveredLandmarkIds({'2900'}), {'berths'});
+      expect(discoveredLandmarkIds({'2900'}), {'saltmouth'});
+      // So is Saltmouth (v1.536).
+      expect(discoveredLandmarkIds({'2001', '2015_ternrow', '2900'}),
+          {'saltmouth'});
     });
 
     test('each scene stands at its own place', () {
-      expect(landmarkOfScene('2001')!.id, 'upper');
-      expect(landmarkOfScene('470')!.id, 'hovel');
+      expect(landmarkOfScene('2001')!.id, 'saltmouth');
+      expect(landmarkOfScene('470')!.id, 'alster');
       expect(landmarkOfScene('1100')!.id, 'crash');
-      expect(landmarkOfScene('2900')!.id, 'berths');
-      expect(landmarkOfScene('2015_kelda')!.id, 'upper');
+      expect(landmarkOfScene('2900')!.id, 'saltmouth');
+      expect(landmarkOfScene('2015_kelda')!.id, 'saltmouth');
     });
 
     test('every scene of every landmark resolves to it (v1.209: one lookup)',
@@ -143,42 +146,44 @@ void main() {
 
   group('the player\'s journey', () {
     test('the journey follows the story, one entry per stay', () {
-      // Taken, then home again for the cloth: the house is two stays.
+      // All of Alster is one stay (v1.534: its districts are walked on its
+      // plan); the wreck, the face and the wells are one each.
       final journey = journeyOf([
         '0', '100', '105', '250', '260', 'sub_260_1', '300', '400', //
-        '800', '816', '820', '840', '850', '855', '470', '891',
-      ], '960');
+        '800', '816', '820', '840', '850', '855', '470', '891', '960',
+        '965', '1100', '1120', '1125',
+      ], '1200');
       expect([for (final l in journey) l.id],
-          ['beggar', 'bridge', 'hovel', 'hold', 'sewers', 'hovel', 'docks']);
+          ['alster', 'crash', 'sleeper', 'wells']);
       expect(journeyOf(const [], 'nowhere'), isEmpty);
     });
 
     test('the road is the legs walked, each once', () {
-      final there = landmarkById('wharf')!, back = landmarkById('tern')!;
-      final legs = roadLegs([there, back, there, back], {'wharf', 'tern'});
+      final there = landmarkById('wells')!, back = landmarkById('saltmouth')!;
+      final legs = roadLegs([there, back, there, back], {'wells', 'saltmouth'});
       expect(legs.length, 1);
       // With no journey, the reached places in story order.
-      final road = roadLegs(const [], {'beggar', 'bridge', 'hovel'});
+      final road = roadLegs(const [], {'alster', 'crash', 'sleeper'});
       expect([for (final (a, b) in road) '${a.id}-${b.id}'],
-          ['beggar-bridge', 'bridge-hovel']);
+          ['alster-crash', 'crash-sleeper']);
     });
 
     test('the walk starts where the map last left off', () {
       final journey = [
-        for (final id in ['beggar', 'alley', 'hovel', 'hold', 'sewers'])
+        for (final id in ['alster', 'crash', 'sleeper', 'wells', 'saltmouth'])
           landmarkById(id)!,
       ];
       // First look: the last leg.
       expect(journeyWalkStart(journey), 3);
-      // Seen up to the house: walk on from there.
-      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'hovel'), 2);
+      // Seen up to the sleeper's face: walk on from there.
+      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'sleeper'), 2);
       // Nothing new since.
-      expect(journeyWalkStart(journey, seenSteps: 5, seenLast: 'sewers'), 4);
+      expect(journeyWalkStart(journey, seenSteps: 5, seenLast: 'saltmouth'), 4);
       // Another game's record: the last leg.
-      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'docks'), 3);
+      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'wells'), 3);
       // Never more than the last few legs.
       final long = [for (var i = 0; i < 20; i++) journey[i % 5]];
-      expect(journeyWalkStart(long, seenSteps: 1, seenLast: 'beggar'),
+      expect(journeyWalkStart(long, seenSteps: 1, seenLast: 'alster'),
           19 - maxWalkLegs);
       expect(journeyWalkStart([journey.first]), 0);
     });
@@ -247,9 +252,9 @@ void main() {
     await openOldMap(tester);
     expect(find.byType(WorldMapPage), findsOneWidget);
 
-    // The story stands at the wharf; its panel says so.
+    // The story stands at the wharf, in Saltmouth; its panel says so.
     final panel = find.byKey(const Key('world_map_panel'));
-    expect(find.descendant(of: panel, matching: find.text('Smugglers’ Wharf')),
+    expect(find.descendant(of: panel, matching: find.text('Saltmouth')),
         findsOneWidget);
     expect(find.text('You are here'), findsOneWidget);
     // 42 with the old sign-painter who names the Open Hand (v1.195); 46
@@ -261,10 +266,12 @@ void main() {
     // the Lantern Alleys and Card Row take the other 29); 18 with the Tide
     // Cellar's line about a girl from Tallow Street (v1.414); 19 with the
     // Crow tally-girl who says the clans will make an offer (v1.422).
-    expect(find.text('Scenes read: 3 / 19'), findsOneWidget);
+    // 61 once Saltmouth is one place, its six districts' scenes together
+    // (v1.536): the gate's and the wharf's read.
+    expect(find.text('Scenes read: 5 / 61'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
-    expect(find.text('???'), findsNWidgets(4));
+    expect(find.text('???'), findsNWidgets(5));
     // Next on the road, the ship-breaker's yard is not reached yet.
     expect(find.text('Next: ???'), findsOneWidget);
     // Chapters 1 and 2 have been reached.
@@ -272,14 +279,7 @@ void main() {
     expect(find.byKey(const Key('world_map_chip_2')), findsOneWidget);
     expect(find.byKey(const Key('world_map_chip_3')), findsNothing);
 
-    // Back along the road (past Tern Row, never visited) to the landward
-    // gate and the White Wells, then a tap on the Blind Beggar itself.
-    await tester.tap(find.byKey(const Key('world_map_back')));
-    await tester.pump();
-    expect(
-        find.descendant(
-            of: panel, matching: find.text('Saltmouth’s landward gate')),
-        findsOneWidget);
+    // Back along the road to the White Wells, then a tap on Alster itself.
     await tester.tap(find.byKey(const Key('world_map_back')));
     await tester.pump();
     expect(find.descendant(of: panel, matching: find.text('The White Wells')),
@@ -288,16 +288,16 @@ void main() {
     final box = tester.getRect(canvas);
     final scale = box.width / worldMapWidth;
     // A single tap waits to be sure it isn't the first of a double tap.
-    final beggar = chartOf(MapShape.archipelago).places['beggar']!;
-    await tester.tapAt(box.topLeft + beggar * scale);
+    final alster = chartOf(MapShape.archipelago).places['alster']!;
+    await tester.tapAt(box.topLeft + alster * scale);
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
+    expect(find.descendant(of: panel, matching: find.text('Alster')),
         findsOneWidget);
     // An unreached place can't be picked.
     final reliquary = chartOf(MapShape.archipelago).places['reliquary']!;
     await tester.tapAt(box.topLeft + reliquary * scale);
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
+    expect(find.descendant(of: panel, matching: find.text('Alster')),
         findsOneWidget);
 
     // In French.
@@ -307,8 +307,7 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     await tester.pump();
-    expect(
-        find.descendant(of: panel, matching: find.text('Le Mendiant Aveugle')),
+    expect(find.descendant(of: panel, matching: find.text('Alster')),
         findsOneWidget);
     expect(find.text('Chapitre 1'), findsOneWidget);
     await tester.runAsync(() => container
@@ -374,7 +373,7 @@ void main() {
     await _settle(tester);
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(json.decode(prefs!.getString(worldMapSeenPrefsKey)!),
-        {'steps': 3, 'last': 'hovel'});
+        {'steps': 1, 'last': 'alster'});
 
     double scale() => tester
         .widget<InteractiveViewer>(find.byType(InteractiveViewer))

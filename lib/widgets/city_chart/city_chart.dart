@@ -100,6 +100,7 @@ class CityChartWay {
     required this.kind,
     required this.name,
     required this.building,
+    this.at,
   });
 
   final String id;
@@ -109,6 +110,10 @@ class CityChartWay {
 
   /// The building's key.
   final String building;
+
+  /// Where the pin stands when not on its building (v1.542): a spot in the
+  /// street round the doorstep of a scene played outside.
+  final Offset? at;
 }
 
 /// The colours of the clan that rules a district (wave 15, townRulersProvider):
@@ -183,6 +188,7 @@ class CityWayInput {
     required this.kind,
     required this.name,
     required this.sceneId,
+    this.at,
   });
 
   final String id;
@@ -190,6 +196,9 @@ class CityWayInput {
   final CityWayKind kind;
   final String name;
   final String sceneId;
+
+  /// A spot on the plan for the pin instead of its building (v1.542).
+  final Offset? at;
 }
 
 class CityChart {
@@ -218,6 +227,7 @@ class CityChart {
     this.waterways = const [],
     this.roads = const [],
     this.islands,
+    this.here,
   });
 
   final String name;
@@ -252,6 +262,10 @@ class CityChart {
 
   /// Islands in the water, drawn over it.
   final Path? islands;
+
+  /// Where the party stands when the scene plays outside a building
+  /// (v1.542): the building's doorstep; null to mark its district.
+  final Offset? here;
 
   CityChartDistrict? districtById(String id) {
     for (final d in districts) {
@@ -300,6 +314,7 @@ class CityChart {
     List<CityWayInput> ways = const [],
     bool french = false,
     String name = '',
+    String? doorstep,
   }) {
     Path polygon(List<Offset> pts, [Path? into]) {
       final path = into ?? Path();
@@ -325,7 +340,10 @@ class CityChart {
     final index = {for (final (i, id) in ids.indexed) id: i};
 
     // The ways, each on its building.
-    final pinned = <String, String>{};
+    final pinned = <String, String>{
+      // A scene played at a building's doorstep (v1.542) shows the building.
+      if (doorstep != null && record.building(doorstep) != null) doorstep: '',
+    };
     final chartWays = <CityChartWay>[];
     for (final w in ways) {
       final d = index[w.districtId];
@@ -334,7 +352,12 @@ class CityChart {
       if (b == null) continue;
       pinned[b.id] = w.name;
       chartWays.add(CityChartWay(
-          id: w.id, district: d, kind: w.kind, name: w.name, building: b.id));
+          id: w.id,
+          district: d,
+          kind: w.kind,
+          name: w.name,
+          building: b.id,
+          at: w.at));
     }
 
     // The buildings: the story's own, and the lots of the rest.
@@ -458,6 +481,9 @@ class CityChart {
       boats: const [],
       trees: const [],
       piers: const [],
+      here: doorstep == null || record.building(doorstep) == null
+          ? null
+          : record.doorstepOf(doorstep),
       waterways: [
         for (final r in [...record.rivers, ...record.canals])
           CityChartStroke(line(r.points), r.width),

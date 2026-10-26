@@ -8,6 +8,172 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.544.0+580]
+
+A street-view kit for scenes played outside a building, the room kits' counterpart for the outside.
+
+### Added
+- **The street before a building** (`lib/widgets/street_view/`): where a scene plays at a building's doorstep (Core's v1.542: the family house's 300, 400, 400_lost and 450; the Blind Beggar's 125; the informant's warehouse), the district view shows the building's front, the street in front of it in cobbles, and the party at its door, in the side-view engine's pixel style. Six fronts by what the building is (a house, an inn or den, a warehouse, a shop or forge, a temple, a hall or keep), read from its kind and name as the room kits do.
+- **The day's weather and hour on it:** rain falls and wets the stones, snow whitens the roof and the kerb, fog and ash drift over; the sky takes the hour (dawn, day, dusk, night with stars) and the windows and a lantern by the door light warm at dusk and night, over the wash so they are not dimmed with the evening.
+- **The choices are pins on the street** (the banners and discs the Journey draws everywhere else, with their labels), in two rows when there are more than four; a tap opens the way's sheet as before. The rows under the picture and the buttons over it are unchanged.
+
+### Changed
+- The Town tab and the zoom-out button still show the town's plan with the party at the door; only the district view is the street.
+
+### Tests
+- New `test/street_view_test.dart` (the front by building, every front at every hour and weather, pins at 320 px, reduced motion; `UX_SHOTS=<folder>` takes `docs/ux-shots/street-view-fronts.png`); `doorstep_scenes_test.dart` now expects the street in the district view and the plan under Town.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (`_CityDistrictView`: an optional `street` building, the street scene in place of the plan's picture when set, and the pin builder; about 40 lines, the rest of the diff is the formatter re-indenting the plan view).
+## [1.543.0+579]
+
+The story reader: the echoed lines are prose, and the text writes itself out more slowly.
+
+### Changed
+- **"Because you chose …" only in Edit Mode** (`story_player_screen.dart`, `EchoLine`): in play, a line an earlier choice earned is set into the story as ordinary prose, with no caption, clock icon or side rule. The story node editor's preview (Edit Mode) keeps the label, icon and rule as before. The Journey's scene panel uses the same widget, so it follows.
+- **The text reveal is a third slower** (`story_text.dart`): about 175 characters a second instead of 260, between 0.6 s and 6 s (was 0.4 s and 4 s). A tap still shows it all, and reduced motion still shows it at once.
+
+### Tests
+- New `test/echo_line_test.dart` (play and Edit Mode, and the reveal's speed); `scene_flow_play_test` now expects no caption in play.
+
+## [1.542.0+578]
+
+Some scenes now play in the street in front of a building, not inside it.
+
+### Changed
+- **Doorstep scenes:** a building in `geography.json` can now list scenes under `"doorstep"`. These scenes play in the street at its door. The Journey shows them on the district plan, with the party at the building's door and the scene's ways on the streets around it. Before, they were shown inside the building's room. Tagged so far:
+  - the Alster family house: scenes 300, 400, 400_lost and 450;
+  - the blind beggar: 125;
+  - the Saltmouth landward warehouse: 2015_informant_trap.
+
+## [1.541.0+577]
+
+A new game no longer shows the map before the story starts.
+
+### Changed
+- **The first scene's way is a card:** on a new game, "Choose who you are…" is a card on the first scene's page, not a step on the Lower Town map. Taking it opens character creation; the story then goes straight to the Blind Beggar's page. Later ways across town are still map steps.
+
+## [1.540.0+576]
+
+A game picked up on its first scene opens on that scene.
+
+### Fixed
+- **Continue on a game never started:** creating a character and leaving before the first step left a save on the first scene; Continue opened it on the Journey map with "Choose who you are…" in a row at the bottom. It now opens on the first scene's page, as New Game does. The rule is now the story's state (on the first scene, nothing played yet), whatever way the game was opened.
+
+## [1.539.0+575]
+
+- The blurbs for Alster and Saltmouth now describe the places themselves, in English and French.
+
+## [1.538.0+574]
+
+Towns walked in words: the walk between districts, the doorway of a building, and the place panel's name once.
+
+### Added
+- **The walk between districts is told** (`journey_screen.dart`): crossing from one district of a town to another says "You walk to the Stone Bridge…" (FR "Vous marchez vers le Pont de Pierre…") in the road walk's bubble. It sits at the top of the map so it does not cover the zoom buttons; a tap skips it.
+- **A doorway between a room and the streets**, both ways (`town_walk.dart`): going into a building, or back out to its streets (by the story or by the look-out and go-inside buttons), fades from a veil with a door glyph and says "You step inside the Blind Beggar…" or "You step back out into the streets…". With reduced motion only the line shows.
+
+### Fixed
+- **The world map's place panel** no longer names a land twice: a breadcrumb that reads as the title (Alster, as the title and the last crumb) is left out.
+
+### Tests
+- New `test/town_walk_test.dart`; `alster_one_place`, `journey_inside`, `journey_transit` and `geography_widgets` tests updated for the new lines (the transit test said "nothing needs saying" along a city's streets).
+- Not done: no picture of the caption; the veil is tested on its own, not as a frame of the whole screen.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (~80 lines: the door state and veil, a words-only transit, the district caption) and `lib/screens/world_map_screen.dart` (5 lines, the crumbs filter). `app_strings.dart`: three new keys next to `journey_pass_stop`.
+
+## [1.537.0+573]
+
+A dependency update, no gameplay change.
+
+### Changed
+- **open_filex** 4.7.0 to 5.0.0 (Dependabot), used to open a downloaded update and exported files.
+
+## [1.536.0+572]
+
+Saltmouth is one place on the world map, like Alster.
+
+### Changed
+- **Saltmouth on the world map:** its six districts were six world places joined by roads. Saltmouth is now one dot; the road from the White Wells and the sea lane to the storm leave from its edge.
+- **Moving around Saltmouth:** the map shows the Town view for another district and the District view within one, with no world-road journey.
+
+## [1.535.0+571]
+
+Alster, the starting town, is one place on the world map.
+
+### Fixed
+- **Alster on the world map:** the Blind Beggar, Weaver's Alley, the family house and the town's other places were seven separate world places joined by roads. Alster is now one dot, like the later towns, and the world roads start from it.
+- **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
+- **The District tab after a move** shows the district, no longer the world map.
+
+## [1.534.0+570]
+
+A new game starts on its first scene.
+
+### Fixed
+- **New game:** it opens on "Choose who you are…" instead of the Journey map with the scene in a row at the bottom.
+- **"Previously…":** the recap no longer shows on a new game. It shows only when a saved game with progress past the start is picked back up.
+- **New game over a loading save:** starting a new game while the last save was still loading could bring the old save back; it no longer can.
+
+## [1.533.0+569]
+
+- A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.
+
+## [1.532.0+568]
+
+- A new intrigue, The Taken's Names: a clerk brings the names cut into the back of the Lantern Throne, and in the last two chapters you decide whether to read them aloud, burn them, or carry them across unread. Six scenes at camp.
+
+## [1.531.0+567]
+
+Chapter 7's claimants stop walling the cleric and the warrior (wave 17).
+
+### Changed
+- **The claimant fights** (Vane, Tallis, Morrow): the enemies' Tide stops at level 6, each claimant heals itself at most once, and the claimants lose their resists (they keep their weaknesses). Tallis has 77 health (was 72), Morrow 148 (was 108). Claimants won by the cleric: 8–18% → 31–38%; by the warrior 18–35% → 30–36%; every claimant inside its band. Chapter 7 is won 56–58% (was 52–55%).
+- **The playthrough simulator** now plays the enemies' Silence, Hex and Curse as the fight screen does (it skipped them before). With them counted, the clan champions read 39.9% won in the simulator (45.8% before; floor 38%): that is the honest figure, not a change to the champions.
+
+## [1.530.0+566]
+
+- Your Devoted companions now have a scene of their own at camp: eight short scenes, one each for Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik, offered once they have grown devoted to you. What you answer is remembered at the muster.
+
+## [1.528.0+564]
+
+Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasEntranceCard` (v1.522).
+
+### Added
+- **An entrance card before a sea fight** (`voyage_screen.dart`, `fight_entrance.dart`): a sea beast, the void barge, and any ship the data marks `entranceCard` (the corsair brig, the Inquisition cutter; the skiff has none) is announced before the fight: the hull or the beast sails in from the right over the waters of the crossing, with its name and the first sentence of its description, 1.2 s, a tap on the card ends it, reduced motion shows none. The card takes a picture of its own (`FightEntrance.art`) and the sea scene a `showShip` switch, so the card shows only what she meets, not the Eel.
+- **The spoils over the next day:** a won sea fight counts up its gold and XP and drops in the part taken by boarding and the chapter's rare material (the strip of the land fights, `fight_spoils_strip.dart`) above the route strip of the next day, and over the harbour at the end of a voyage. It clears when the next day is acted on.
+- Picture: `docs/ux-shots/sea-fight-entrance.png` (the Brinejaw, the Corsair Brig). Test: `test/sea_fight_entrance_test.dart`.
+
+### Not tested
+- The spoils strip is tested on its own (v1.517) but not through a whole won sea fight, which needs the ship battle played out; its wiring is the one place a bug could hide.
+
+### Touches another session's area
+- `lib/screens/voyage_screen.dart` (shared): the card around the battle panel, the spoils state and strip (about 70 lines). `ship_battle_panel.dart` is not touched.
+## [1.527.0+563]
+
+Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
+
+### Added
+- **Camp errands:** a story node marked `campErrand` is listed on every chapter camp page, after the camp's own choices, whenever its show/hide flags pass. It does not count toward the camp's choice limit. Its label is `campErrandText` (`campErrandText_fr`).
+- **Back to camp:** a choice marked `returnToCamp` leads to the camp of the chapter the party is in.
+
+## [1.526.0+562]
+
+- A new intrigue, The Lantern-Bearer's Will: a sealed page names an heir who is none of the three claimants. Six scenes from Rimewell to Greyhithe, and five ways to settle it.
+
+## [1.525.0+561]
+
+- Four events for the Glass Shore: the glassed dunes, a wrecked hull, a well from a drowned coast and the pull of the tear (not drawn yet).
+
+## [1.524.0+560]
+
+Wave 17 UX, item 5: the party's own faces, as a stand-in until the user's sprite art arrives.
+
+### Added
+- **Each companion has a face of their own** on the land walk and on the Eel's deck (`lib/widgets/side_view/party_look.dart`), over the cloak colour they already had: the skin of their people, the hair, a hood, a veil or a helm, a dwarf's beard (Kelda and Brother Tobin), an orc's tusks (Grosh and Malrik), the elf's pointed ears (Liora), the voidkin's grey-violet skin and white hair (Vess), Sister Maren's white veil, Sable's black hood. A companion added later gets a face made from their id (the same each time) until the table names them. The hero is unchanged.
+- **No portrait art to crop:** the proposal said "crop the portraits", but the repository has no companion portraits (only the enemies' and the hero's walker); the looks are set here by race and profession instead. When the `companion_<id>` sprites come, this file is what they replace.
+- Picture: `docs/ux-shots/party-faces.png`. Test: `test/party_look_test.dart` (every companion distinct, the marks follow the race, the fallback is stable, every group paints on the land and the deck).
+
 ## [1.523.0+559]
 
 Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.

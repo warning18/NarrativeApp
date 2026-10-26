@@ -61,15 +61,15 @@ void main() {
     expect(await newlyFor(baseSession()), isNot(contains('time_turned')));
   });
 
-  test('a settled intrigue is a thread; eight make the web', () async {
+  test('a settled intrigue is a thread; eleven make the web', () async {
     final ids = intrigues.keys.toList();
     expect(await newlyFor(withFlags(['intrigue_${ids[0]}_stage_2'])),
         isNot(contains('first_thread')));
     final one = await newlyFor(withFlags(['intrigue_${ids[0]}_outcome_1']));
     expect(one, contains('first_thread'));
     expect(one, isNot(contains('whole_web')));
-    final seven = [for (final id in ids.skip(1)) 'intrigue_${id}_outcome_0'];
-    expect(await newlyFor(withFlags(seven)), isNot(contains('whole_web')));
+    final others = [for (final id in ids.skip(1)) 'intrigue_${id}_outcome_0'];
+    expect(await newlyFor(withFlags(others)), isNot(contains('whole_web')));
     final all = [for (final id in ids) 'intrigue_${id}_outcome_0'];
     expect(await newlyFor(withFlags(all)), contains('whole_web'));
   });

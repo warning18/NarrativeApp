@@ -11,7 +11,8 @@ import '../data/clan_power.dart' show holderOf;
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
-import '../data/city_districts.dart' show districtOfPlace;
+import '../data/city_districts.dart'
+    show JourneyTownView, districtOfPlace, sceneDoorstep, townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -83,6 +84,8 @@ import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
 import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
+import '../widgets/street_view/street_view.dart';
+import '../widgets/town_walk.dart';
 import 'journal_screen.dart';
 import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
@@ -355,6 +358,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// over the map until it ends or is tapped.
   _Transit? _transit;
 
+  /// Counts the words shown over the map, so each new one starts its own
+  /// timer (see _PartyTransit's key).
+  int _transitSerial = 0;
+
+  /// Whether the map showed a building's room at the last build, and the
+  /// doorway veil over the map as the party goes in or out (v1.537).
+  bool? _showedRoom;
+  IconData _doorIcon = Icons.login;
+  late final AnimationController _door = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 520), value: 1);
+
   /// The story carried the party to the scene it stands at now (a choice
   /// done here whose aftermath is elsewhere, or a one-tap return to a hub,
   /// see choice_flow.dart): the map plays the trip as for a lost fight. And
@@ -387,6 +401,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// Whether the place the map shows has a city plan to look at whole
   /// (set while building).
   bool _canTown = false;
+
+  /// The place (district or building) the party last stood at, for the
+  /// view an in-town move shows (see townMoveView).
+  String? _partyTownSpot;
+  bool _moveFraming = false;
 
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
@@ -522,6 +541,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// A tab of the level strip (v1.350): the district, the whole town, or
   /// the world, in one tap.
   void _goLevel(_LevelTab tab) {
+    // A tab shows what it names: a move still playing over the map ends.
+    if (_transit != null) setState(() => _transit = null);
     switch (tab) {
       case _LevelTab.district:
         if (_level != JourneyMapLevel.place) {
@@ -569,6 +590,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _outside = _sceneInside;
     });
     _arrive.forward(from: 0);
+  }
+
+  /// The doorway between a room and the streets: the map clears from a
+  /// veil and [text] is told over it (after this build, as it is asked
+  /// for while the map is built).
+  void _passDoor({required bool entering, required String text}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // A road the party is carried along keeps its words.
+      if (_transit?.flight ?? false) return;
+      setState(() {
+        _doorIcon = entering ? Icons.login : Icons.logout;
+        _transitSerial++;
+        _transit = _Transit.words(text, icon: _doorIcon);
+      });
+      _door.forward(from: 0);
+    });
   }
 
   /// In through the door: the room grows in from the streets (v1.207).
@@ -622,6 +660,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The scene read full screen (double-tap on it, again to come back).
   bool _reading = false;
 
+  /// Whether the scene shown is a new game's first scene, opened as a page.
+  bool _openedFresh = false;
+
   /// The scene of a place the party just arrived at, in a sheet over the map
   /// (S2, see arrival_sheet.dart); Continue closes it.
   bool _arrival = false;
@@ -662,6 +703,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   void dispose() {
     _jolt.dispose();
     _arrive.dispose();
+    _door.dispose();
     super.dispose();
   }
 
@@ -768,8 +810,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     true,
                 inExcursion: play.isInExcursion,
               );
-              _reading = view == ArrivalView.page;
-              _arrival = view == ArrivalView.sheet;
+              // The story begun again: its first scene, as a new game's.
+              final fresh = isFreshStoryStart(play);
+              _reading = fresh || view == ArrivalView.page;
+              _arrival = !fresh && view == ArrivalView.sheet;
+              // The view is chosen here: the next build keeps it.
+              _openedFresh = fresh;
             }
           });
         }
@@ -1175,6 +1221,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
+      // A new game opens on its first scene's page, as any main-story
+      // scene arrived at does; the map comes after.
+      final fresh =
+          ref.read(appModeProvider) != AppMode.edit && isFreshStoryStart(play);
+      if (fresh) {
+        _reading = true;
+        _arrival = false;
+      } else if (_openedFresh) {
+        // Moved on from it by other means than a way taken here (a jump, a
+        // save loaded): the map, as before.
+        _reading = false;
+      }
+      _openedFresh = fresh;
     }
 
     final tools = [
@@ -1474,6 +1533,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final ownDistrict = record.districts.containsKey(hereDistrictOf)
             ? hereDistrictOf
             : null;
+        // A scene played at a building's doorstep (v1.542): the party at
+        // its door, the ways that stay there in the street round it.
+        final doorstep = sceneDoorstep(world, record, node, waysHere: [
+          for (var i = 0; i < rawSteps.length; i++)
+            if (!districtOfStep.containsKey(i)) i,
+        ]);
         for (var i = 0; i < rawSteps.length; i++) {
           final d = districtOfStep[i];
           final pinned = d != null && record.districts.containsKey(d)
@@ -1504,10 +1569,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   kind: _cityWayKindOf(rawSteps[e.key].kind),
                   name: rawSteps[e.key].label,
                   sceneId: rawSteps[e.key].choice.nextId,
+                  at: doorstep?.spotOfWay[e.key],
                 ),
             ],
             french: french,
             name: hereLocation.nameFor(french),
+            doorstep: doorstep?.buildingId,
           );
         }
         cityChart = _cityChart;
@@ -1517,8 +1584,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Inside a building (v1.207): the room's plan, the party at its spot
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
-    final hereBuilding = herePlace?.isBuilding == true ? herePlace : null;
+    // A scene played at its building's doorstep (v1.542) is on the streets.
+    final hereBuilding = herePlace?.isBuilding == true &&
+            !herePlace!.doorstep.contains(play.currentNodeId)
+        ? herePlace
+        : null;
     _sceneInside = hereBuilding != null;
+    // The room and the streets round it are told apart by a doorway and a
+    // line of words, both ways (v1.537).
+    final showsRoom = hereBuilding != null && !_outside;
+    if (_showedRoom != null &&
+        _showedRoom != showsRoom &&
+        !play.isInExcursion &&
+        _level == JourneyMapLevel.place) {
+      _passDoor(
+          entering: showsRoom,
+          text: showsRoom
+              ? tr(ref, 'journey_step_in').replaceAll(
+                  '{place}', townNameInSentence(hereBuilding.nameFor(french)))
+              : tr(ref, 'journey_step_out'));
+    }
+    _showedRoom = showsRoom;
     RoomPlan? room;
     var hereSpot = '';
     final leavesRoom = <int>{};
@@ -1733,6 +1819,30 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A city plan to look at whole (not from inside a room).
     _canTown = placeView?.plan != null && placeView?.room == null;
     if (!_canTown) _townView = false;
+    // A move inside one town (v1.534) is a walk on its plan, and the view
+    // follows it: the whole town for another district, the district for the
+    // same one.
+    String? townWalkTo;
+    if (_placedFor != sceneKey && !play.isInExcursion) {
+      final town = townMoveView(world, _partyTownSpot, herePlace?.id);
+      if (town != null && _canTown) {
+        // Another district: the walk is told in words too (v1.537).
+        if (town == JourneyTownView.town && herePlace != null) {
+          townWalkTo = herePlace.nameFor(french);
+        }
+        _level = JourneyMapLevel.place;
+        _townView = town == JourneyTownView.town;
+        _cityFocus = null;
+        _cityFocusToken++;
+        // The chart's report of the district it framed before the move
+        // comes a frame late: it is not the player's pick.
+        _moveFraming = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) => WidgetsBinding
+            .instance
+            .addPostFrameCallback((_) => _moveFraming = false));
+      }
+      _partyTownSpot = herePlace?.id;
+    }
     final townView = _townView && _canTown;
     // A city with Core's stored plan is drawn as board 15's district view
     // (not in a detour, nor from inside a room).
@@ -1787,6 +1897,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             .replaceAll('{place}', hereName),
                   )
                 : null;
+        if (_transit == null && townWalkTo != null && !editorJump) {
+          _transit = _Transit.words(tr(ref, 'journey_walk_to')
+              .replaceAll('{place}', townNameInSentence(townWalkTo)));
+        }
         // Inside the place (v1.246): the party travels the streets, or the
         // room, from the district or spot it stood at.
         _arriveFrom = cause != null &&
@@ -1897,6 +2011,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             palette: palette,
             text: _cityText(),
             onFocus: (d) {
+              if (_moveFraming) return;
               if (d == null) {
                 if (!_townView) _setTown(true);
               } else if (_townView || _cityFocus != d) {
@@ -1906,6 +2021,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 });
               }
             },
+            street: cityChart.here != null
+                ? world.doorstepOfNode(story.nodeFor(play.currentNodeId))
+                : null,
             onOpen: (i) => _openWay(i, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
@@ -2277,13 +2395,24 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         ? Stack(
                                             children: [
                                               Positioned.fill(child: map),
+                                              Positioned.fill(
+                                                child: TownDoorVeil(
+                                                  clock: _door,
+                                                  colour: Theme.of(context)
+                                                      .colorScheme
+                                                      .surface,
+                                                  icon: _doorIcon,
+                                                  still: MediaQuery.of(context)
+                                                      .disableAnimations,
+                                                ),
+                                              ),
                                               if (_transit != null &&
                                                   placeView != null &&
                                                   !ended)
                                                 Positioned.fill(
                                                   child: _PartyTransit(
                                                     key: ValueKey(
-                                                        'journey_transit_$sceneKey'),
+                                                        'journey_transit_$sceneKey$_transitSerial'),
                                                     transit: _transit!,
                                                     mapBuilder: (path, clock) =>
                                                         worldMapWith(
@@ -2488,7 +2617,28 @@ class _Transit {
     required this.forced,
     required this.caption,
     this.path,
-  });
+  })  : icon = null,
+        atTop = false;
+
+  /// Only [text] told over the map, no road: a walk inside a town, a door
+  /// gone through (v1.537).
+  _Transit.words(String text, {this.icon})
+      : from = Offset.zero,
+        to = Offset.zero,
+        fromName = '',
+        toName = '',
+        flight = false,
+        forced = false,
+        caption = text,
+        path = null,
+        atTop = true;
+
+  /// The icon beside the words (a walking figure when null).
+  final IconData? icon;
+
+  /// Whether the words sit at the top of the map: the map's own buttons are
+  /// at its foot, and a short word must not cover them.
+  final bool atTop;
 
   /// The two places on the region's chart.
   final Offset from;
@@ -2597,7 +2747,8 @@ class _PartyTransitState extends State<_PartyTransit>
             ),
           ],
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment:
+                transit.atTop ? Alignment.topCenter : Alignment.bottomCenter,
             child: GestureDetector(
               onTap: skip,
               child: Padding(
@@ -2615,7 +2766,7 @@ class _PartyTransitState extends State<_PartyTransit>
                         Icon(
                           transit.forced
                               ? Icons.warning_amber_rounded
-                              : Icons.directions_walk,
+                              : transit.icon ?? Icons.directions_walk,
                           size: 18,
                           color: transit.forced
                               ? scheme.error
@@ -5358,9 +5509,14 @@ class _CityDistrictView extends ConsumerWidget {
     required this.onWalk,
     required this.overlays,
     required this.tabs,
+    this.street,
   });
 
   final CityChart chart;
+
+  /// The building a scene is played outside of (v1.544): the district view
+  /// is its street (see street_view.dart), not the town's plan.
+  final GeoPlace? street;
   final MapLook look;
   final Set<String>? explored;
   final String? hereDistrict;
@@ -5450,6 +5606,20 @@ class _CityDistrictView extends ConsumerWidget {
                   height: 1,
                   color: const Color(0xFF17151B))),
         );
+
+    // A way's pin in the street (v1.544): its banner, else its kind's disc.
+    Widget streetPinOf(int i) {
+      final banner = banners['$i'];
+      return banner == null
+          ? kindDisc(steps[i], size: 28)
+          : BannerPin(
+              cat: banner.cat,
+              color: banner.color,
+              dark: chartDark,
+              icon: steps[i].locked ? Icons.lock_outline : null,
+              scale: 0.8,
+            );
+    }
 
     // Who rules the town and its districts (wave 15, townRulersProvider): the
     // blocks take the clan's colour, and a line under the plan names it, so two
@@ -5624,40 +5794,58 @@ class _CityDistrictView extends ConsumerWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                CityChartView(
-                  key: const ValueKey('journey_city_chart'),
-                  chart: chart,
-                  look: look,
-                  text: text,
-                  explored: explored,
-                  hereDistrict: hereDistrict,
-                  focus: focus,
-                  focusToken: focusToken,
-                  controls: false,
-                  cards: false,
-                  numbers: numbers,
-                  banners: banners,
-                  bannersDark: chartDark,
-                  onFocus: onFocus,
-                  onPick: (w) {
-                    final i = int.tryParse(w.id);
-                    if (i != null && i < steps.length) onOpen(i);
-                  },
-                  onPickFog: (_) {},
-                  rulers: rulers,
-                  phase: ref.watch(dayPhaseProvider),
-                  services: [
-                    for (final s in townServices)
-                      CityChartService(
-                          id: s.id,
-                          kind: s.kind,
-                          at: s.pin.at,
-                          district: s.pin.district,
-                          opens: s.opensSomething),
-                  ],
-                  onService: (picked) => showTownServiceSheet(context,
-                      townServices.firstWhere((s) => s.id == picked.id)),
-                ),
+                if (street != null && focus != null)
+                  StreetViewScene(
+                    kind: street!.kind,
+                    name: street!.name,
+                    phase: ref.watch(dayPhaseProvider),
+                    sky: ref.watch(skyHereProvider)?.today().kind,
+                    pins: [
+                      for (final i in shown)
+                        StreetPin(
+                          index: i,
+                          label: steps[i].label,
+                          locked: steps[i].locked,
+                          child: streetPinOf(i),
+                        ),
+                    ],
+                    onPick: onOpen,
+                  )
+                else
+                  CityChartView(
+                    key: const ValueKey('journey_city_chart'),
+                    chart: chart,
+                    look: look,
+                    text: text,
+                    explored: explored,
+                    hereDistrict: hereDistrict,
+                    focus: focus,
+                    focusToken: focusToken,
+                    controls: false,
+                    cards: false,
+                    numbers: numbers,
+                    banners: banners,
+                    bannersDark: chartDark,
+                    onFocus: onFocus,
+                    onPick: (w) {
+                      final i = int.tryParse(w.id);
+                      if (i != null && i < steps.length) onOpen(i);
+                    },
+                    onPickFog: (_) {},
+                    rulers: rulers,
+                    phase: ref.watch(dayPhaseProvider),
+                    services: [
+                      for (final s in townServices)
+                        CityChartService(
+                            id: s.id,
+                            kind: s.kind,
+                            at: s.pin.at,
+                            district: s.pin.district,
+                            opens: s.opensSomething),
+                    ],
+                    onService: (picked) => showTownServiceSheet(context,
+                        townServices.firstWhere((s) => s.id == picked.id)),
+                  ),
                 ...overlays,
               ],
             ),

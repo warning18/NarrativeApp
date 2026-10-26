@@ -110,92 +110,39 @@ class Landmark {
 
 /// Every landmark, in the order the story reaches them.
 final List<Landmark> worldMapLandmarks = [
+  // Alster, the starting city (v1.534): one place on the world chart, like
+  // every later town. Its districts (the Lower Town with the Blind Beggar,
+  // Weaver's Alley and the family house; the Stone Bridge; the Black Hold;
+  // the Undercroft; the High Quay) are geography.json's, walked on the
+  // town's own plan (city_plans.json), not along the world's roads.
   const Landmark(
-    id: 'beggar',
+    id: 'alster',
     chapter: 1,
-    nameEn: 'The Blind Beggar',
-    nameFr: 'Le Mendiant Aveugle',
+    nameEn: 'Alster',
+    nameFr: 'Alster',
     blurbEn:
-        'Where it starts. The prologue asks who you were; then a card game in the Blind Beggar’s back room ends when the wall comes in. Take back what the tables took, dig out the people under the fallen gallery, or take your stake and run: every way out begins with a fight, and with the old bone die you carry for luck.',
+        'The Dominion’s river city, where the story starts: the card tables of the Blind Beggar, Weaver’s Alley and the Stone Bridge, the family house where the Inquisitor-General waits, the Black Hold and the sewers under its Corpse Chute. The painted ships of the High Quay are the only way out.',
     blurbFr:
-        'Là où tout commence. Le prologue demande qui vous étiez\u00a0; puis une partie de cartes dans l’arrière-salle du Mendiant Aveugle s’achève quand le mur cède. Reprendre aux tables ce qu’elles ont pris, dégager les gens pris sous la galerie, ou reprendre votre mise et fuir\u00a0: chaque sortie commence par un combat, et par le vieux dé d’os que vous portez pour la chance.',
-    scenes: ['0', '100', '105', '106', '110', '115', '120', '125', '250'],
+        'La ville fluviale du Dominion, où tout commence\u00a0: les tables de cartes du Mendiant Aveugle, la Ruelle du Tisserand et le Pont de Pierre, la maison de famille où attend l’Inquisiteur général, la Geôle Noire et les égouts sous sa Goulotte aux Cadavres. Les navires peints du Haut Quai sont la seule issue.',
+    scenes: [
+      // The Lower Town: the Blind Beggar, Weaver's Alley, the family house.
+      '0', '100', '105', '106', '110', '115', '120', '125', '250', //
+      '270',
+      '300', '400', '400_lost', '450', '470',
+      // The Stone Bridge.
+      '260', '261',
+      // The Black Hold.
+      '800', '816', '820', '822', '822_lie_failed', '823',
+      // The Undercroft.
+      '840', '850', '850_fed_failed', '855',
+      // The High Quay.
+      '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
+      '960',
+    ],
     fights: [
       'den_bouncer', 'den_looter', 'sore_loser', 'street_bandit', //
-      'slum_thug', 'white_soldier',
-    ],
-  ),
-  const Landmark(
-    id: 'alley',
-    chapter: 1,
-    nameEn: 'Weaver’s Alley',
-    nameFr: 'La Ruelle du Tisserand',
-    blurbEn:
-        'The slow, dark road home. A starving warhound is caught in razor wire beside its murdered handler, an Inquisition dog-handler. Cut it free, strip the handler, or leave them both.',
-    blurbFr:
-        'La route lente et obscure vers la maison. Un chien de guerre affamé est pris dans des barbelés, à côté de son maître assassiné, un maître-chien de l’Inquisition. Le libérer, dépouiller le maître, ou les laisser tous les deux.',
-    scenes: ['270'],
-  ),
-  const Landmark(
-    id: 'bridge',
-    chapter: 1,
-    nameEn: 'The Stone Bridge',
-    nameFr: 'Le Pont de Pierre',
-    blurbEn:
-        'The quick, watched road home. Slum toughs with Inquisition armbands have built a toll booth out of a market stall. Pay 30 gold or fight your way across.',
-    blurbFr:
-        'La route rapide et surveillée vers la maison. Des durs des bas-quartiers à brassard de l’Inquisition ont fait d’un étal de marché un poste de péage. Payer 30 pièces d’or ou passer en force.',
-    scenes: ['260', '261'],
-    fights: ['slum_thug'],
-  ),
-  const Landmark(
-    id: 'hovel',
-    chapter: 1,
-    nameEn: 'Your family’s house',
-    nameFr: 'La maison de famille',
-    blurbEn:
-        'Inquisitors are tearing the house apart, looking for something. A ball from the white ships folds the wall, and the Inquisitor-General Aurel Vane walks out of the dust holding Lysa by one wrist: charge him, run, or kneel. When the searchers have gone, the ball has found what they could not: a trapdoor, and a cloth as big as a cape.',
-    blurbFr:
-        'Des inquisiteurs mettent la maison sens dessus dessous\u00a0: ils cherchent quelque chose. Un boulet des navires blancs plie le mur, et l’Inquisiteur général Aurel Vane sort de la poussière en tenant Lysa par un poignet\u00a0: le charger, fuir, ou s’agenouiller. Quand les fouilleurs sont partis, le boulet a trouvé ce qu’ils cherchaient en vain\u00a0: une trappe, et une étoffe grande comme une cape.',
-    scenes: ['300', '400', '400_lost', '450', '470'],
-    fights: ['aurel_vane'],
-  ),
-  const Landmark(
-    id: 'hold',
-    chapter: 1,
-    nameEn: 'The Black Hold',
-    nameFr: 'La Geôle Noire',
-    blurbEn:
-        'Three days of Brother Clement’s questions about a cloth you have never seen, then the resistance blows the wall in. On his table, a drawing of the cloth and your family’s name. Get past the Wardens, and choose the battlements or the Corpse Chute.',
-    blurbFr:
-        'Trois jours de questions de frère Clément sur une étoffe que vous n’avez jamais vue, puis la résistance fait sauter le mur. Sur sa table, un dessin de l’étoffe et le nom de votre famille. Passez les Gardiens, et choisissez les remparts ou la Goulotte aux Cadavres.',
-    scenes: ['800', '816', '820', '822', '822_lie_failed', '823'],
-    fights: ['inquisition_warden'],
-  ),
-  const Landmark(
-    id: 'sewers',
-    chapter: 1,
-    nameEn: 'The sewers',
-    nameFr: 'Les égouts',
-    blurbEn:
-        'Waist-deep rot below the Corpse Chute, and a Rat Matriarch squatting in the main drainage pipe.',
-    blurbFr:
-        'De la pourriture jusqu’à la taille sous la Goulotte aux Cadavres, et une Matriarche des Rats tapie dans le collecteur principal.',
-    scenes: ['840', '850', '850_fed_failed', '855'],
-    fights: ['rat_matriarch'],
-  ),
-  const Landmark(
-    id: 'docks',
-    chapter: 1,
-    nameEn: 'Alster’s high quay',
-    nameFr: 'Le haut quai d’Alster',
-    blurbEn:
-        'Vessels that should not float, their painted sails shining as the crews wet them. Talk your way aboard the Lark, pass as crew, or climb her line as she lifts; then the sign on her sail carries you up through the guns.',
-    blurbFr:
-        'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour un membre d’équipage, ou grimpez à son amarre au décollage\u00a0; puis le signe de sa voile vous emporte à travers les canons.',
-    scenes: [
-      '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
-      '960', //
+      'slum_thug', 'white_soldier', 'slum_thug', 'aurel_vane',
+      'inquisition_warden', 'rat_matriarch',
     ],
   ),
   const Landmark(
@@ -232,64 +179,32 @@ final List<Landmark> worldMapLandmarks = [
         'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine\u00a0: Gardien, Rat ou Brisé.',
     scenes: ['1200', '1210', '1000', '1001', '1002'],
   ),
+  // Saltmouth (v1.536): one place on the world chart, like Alster. Its
+  // districts (the Landward Gate, Tern Row, Smugglers' Wharf, the
+  // ship-breaker's yard, the Lantern Alleys, Card Row) are geography.json's,
+  // walked on the town's own plan (city_plans.json), not along the world's
+  // roads.
   const Landmark(
-    id: 'upper',
+    id: 'saltmouth',
     chapter: 2,
-    nameEn: 'Saltmouth’s landward gate',
-    nameFr: 'La porte de la terre de Bouche-de-Sel',
+    nameEn: 'Saltmouth',
+    nameFr: 'Bouche-de-Sel',
     blurbEn:
-        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the gate. Go in with the caravan, or hidden in a salt wagon.',
+        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the landward gate. Inside lie Smugglers’ Wharf and its market, Tern Row and its paper boats, the Lantern Alleys, the card games of Card Row, and the ship-breaker’s yard, where the Rusty Eel waits for someone to patch her.',
     blurbFr:
-        'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou sous les sacs d’un chariot de sel.',
+        'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte de la terre. Dedans\u00a0: le Quai des Contrebandiers et son marché, Tern Row et ses bateaux de papier, les Ruelles aux lanternes, les parties de cartes de la Rangée des cartes, et le chantier des démolisseurs, où le Rusty Eel attend qu’on le colmate.',
     scenes: [
-      '2001',
-      '2000',
-      '2005',
-      '2020',
-      '2021',
-      '2015_dominion_blades',
-      '2015_kelda',
-      '2015_informant',
-      '2015_house_salt_ledger',
-      '2015_bundle',
-      '2015_house_keyholders',
-      '2015_informant_exposed',
-      '2015_informant_trap',
-      '2015_informant_caught',
-      '2015_house_keyholders_turned',
-    ],
-    fights: ['harbor_rat', 'inquisition_soldier'],
-  ),
-  const Landmark(
-    id: 'tern',
-    chapter: 2,
-    nameEn: 'Tern Row',
-    nameFr: 'Tern Row',
-    blurbEn:
-        'The Tide-Kin quarter of paper boats. Nadira asks for help against Renn, a customs officer charging a toll that exists in no ledger. Talk him down or fight.',
-    blurbFr:
-        'Le quartier des Gens de la Marée et de leurs bateaux de papier. Nadira demande de l’aide contre Renn, un douanier qui perçoit un péage qui ne figure dans aucun registre. Le raisonner ou se battre.',
-    scenes: [
-      '2015_ternrow',
-      '2015_ternrow_talked',
-      '2015_ternrow_fight',
-      '2015_child_tongue',
-      '2015_survivor',
-      '2015_house_drowned_debt',
+      // The Landward Gate.
+      '2001', '2000', '2005', '2020', '2021', //
+      '2015_dominion_blades', '2015_kelda', '2015_informant',
+      '2015_house_salt_ledger', '2015_bundle', '2015_house_keyholders',
+      '2015_informant_exposed', '2015_informant_trap',
+      '2015_informant_caught', '2015_house_keyholders_turned',
+      // Tern Row.
+      '2015_ternrow', '2015_ternrow_talked', '2015_ternrow_fight',
+      '2015_child_tongue', '2015_survivor', '2015_house_drowned_debt',
       '2015_drawer',
-    ],
-    fights: ['dock_overseer'],
-  ),
-  const Landmark(
-    id: 'wharf',
-    chapter: 2,
-    nameEn: 'Smugglers’ Wharf',
-    nameFr: 'Le Quai des Contrebandiers',
-    blurbEn:
-        'Chapter 2’s hub, Saltmouth’s harbor quarter. A quartermaster called Vane, no kin to the Inquisitor-General, holds the gate to the shipyards; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, Liora on the rooftop, and Vess, who follows the Bundle.',
-    blurbFr:
-        'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals\u00a0; autour de lui, le marché regorge de travail\u00a0: le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
-    scenes: [
+      // Smugglers' Wharf.
       '2010', '2010_crane', '2010_liora', '2011', //
       '2015', '2015_lysa_line', '2015_crow_offer', '2015_bandits',
       '2015_dockside', '2015_rats',
@@ -297,68 +212,20 @@ final List<Landmark> worldMapLandmarks = [
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
       '2015_route_sold',
+      // The ship-breaker's yard.
+      '2900', '2900_boat_fixed', '2015_dorran', '2015_scaffold_clerk',
+      '2015_scaffold_clerk_fight', '2015_liora', '2015_hound',
+      '2015_liora_won', '2015_liora_refused',
+      // The Lantern Alleys.
+      '2015_bazaar', '2015_apothecary', '2015_vess',
+      // Card Row.
+      '2015_cards', '2015_cards_won', '2015_sable', '2015_cards_lost',
+      '2015_sable_bought', '2015_sable_lifted', '2015_sable_caught',
+      '2015_sable_talk_failed',
     ],
     fights: [
-      'harbor_rat', 'smuggler_captain', 'plague_hound', 'street_bandit', //
-      'inquisition_soldier',
-    ],
-  ),
-  const Landmark(
-    id: 'berths',
-    chapter: 2,
-    nameEn: 'The ship-breaker’s yard',
-    nameFr: 'Le chantier des démolisseurs',
-    blurbEn:
-        'The one hull the yard will sell a stranger: the Rusty Eel, holed and torn. Buy her or work off her price, patch the hull and mend the sail, then decide who sails: everyone, the twenty who can fight, or no one.',
-    blurbFr:
-        'La seule coque que le chantier accepte de vendre à un inconnu\u00a0: le Rusty Eel, troué et déchiré. Achetez-le ou payez-le de votre travail, colmatez la coque et réparez la voile, puis décidez qui embarque\u00a0: tout le monde, les vingt qui savent se battre, ou personne.',
-    scenes: [
-      '2900',
-      '2900_boat_fixed',
-      '2015_dorran',
-      '2015_scaffold_clerk',
-      '2015_scaffold_clerk_fight',
-      '2015_liora',
-      '2015_hound',
-      '2015_liora_won',
-      '2015_liora_refused',
-    ],
-  ),
-  // Saltmouth's two later districts (board 15): their scenes come with
-  // Narrative's re-tag of the hub's ways (docs/proposals/city-districts.md).
-  const Landmark(
-    id: 'alleys',
-    chapter: 2,
-    nameEn: 'The Lantern Alleys',
-    nameFr: 'Les Ruelles aux lanternes',
-    blurbEn:
-        'The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.',
-    blurbFr:
-        'Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.',
-    scenes: [
-      '2015_bazaar',
-      '2015_apothecary',
-      '2015_vess',
-    ],
-  ),
-  const Landmark(
-    id: 'cards',
-    chapter: 2,
-    nameEn: 'Card Row',
-    nameFr: 'La Rangée des cartes',
-    blurbEn:
-        'A run of barrels and crates at the head of the wharf where the dockhands play from the evening shift to dawn.',
-    blurbFr:
-        'Une enfilade de tonneaux et de caisses en haut du quai, où les dockers jouent de la relève du soir jusqu’à l’aube.',
-    scenes: [
-      '2015_cards',
-      '2015_cards_won',
-      '2015_sable',
-      '2015_cards_lost',
-      '2015_sable_bought',
-      '2015_sable_lifted',
-      '2015_sable_caught',
-      '2015_sable_talk_failed',
+      'harbor_rat', 'inquisition_soldier', 'dock_overseer', //
+      'smuggler_captain', 'plague_hound', 'street_bandit',
     ],
   ),
   const Landmark(
@@ -387,7 +254,27 @@ final List<Landmark> worldMapLandmarks = [
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
       '7400_reed', '7400_reed_later', '7400_herald', '7400_herald_later', //
       '7400_chain', '7400_chain_later',
-      '7800', '7800_council', '7800_lines', '7800_nkem_later',
+      '7800', '7800_council', '7800_lines', '7800_nkem_later', //
+      'loyal_kelda',
+      'loyal_sable',
+      'loyal_maren',
+      'loyal_liora',
+      'loyal_vess',
+      'loyal_grosh',
+      'loyal_tobin',
+      'loyal_malrik',
+      'names_clerk',
+      'names_throne',
+      'names_host',
+      'names_kin',
+      'names_debate',
+      'names_choice',
+      'price_giants',
+      'price_tidekin',
+      'price_oni',
+      'price_kindly',
+      'price_ledger',
+      'price_choice',
     ],
   ),
   const Landmark(
@@ -624,7 +511,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier\u00a0: une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
     scenes: [
-      '6100', '6100_charter_signing', '6100_bell', '6100_bell_failed',
+      '6100', '6100_will_scribe', '6100_charter_signing', '6100_bell',
+      '6100_bell_failed',
       '6100_road', //
       '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
       '6100_house_scorched_choir',
@@ -689,7 +577,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués\u00a0: un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
     scenes: [
-      '7100', '7100_charter_choice', '7100_chaplain', '7100_chandlery',
+      '7100', '7100_will_seal', '7100_charter_choice', '7100_chaplain',
+      '7100_chandlery',
       '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
       '7100_helmsman_later', '7100_cutter', '7100_cutter_lost', '7100_log',
@@ -721,6 +610,8 @@ final List<Landmark> worldMapLandmarks = [
         'Un village de pêcheurs que la déchirure a dévoré ailleurs et recraché sur la Rive Creuse, visages gris compris, où l’aînée ne se rappelle pas le nom de sa fille.',
     scenes: [
       '7200', '7200_nets', '7200_reflection', '7200_elder', //
+      '7200_will_heir', '7200_will_courier', '7200_will_houses',
+      '7200_will_choice', //
       '7200_elder_later', '7200_tide', '7200_tide_failed',
       '7200_house_spire_fallen',
       '7200_clan_vigil_3',
