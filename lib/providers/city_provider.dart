@@ -117,7 +117,10 @@ final partyDistrictNeighboursProvider = Provider<List<String>>((ref) {
   final here = ref.watch(partyDistrictProvider);
   if (city == null || here == null) return const [];
   final record = ref.watch(cityPlanRecordsProvider).value?[city];
-  return record?.neighboursOf(here) ?? const [];
+  // A locked district (wave 18) is no way to walk: its open neighbours, or
+  // the nearest open district when all of them are locked.
+  return record?.walkableFrom(here, ref.watch(lockedDistrictsProvider)) ??
+      const [];
 });
 
 /// Free walking (board 15): the party walks to [districtId] of the city it

@@ -310,6 +310,27 @@ class CityPlanRecord implements PlacePlan {
   List<String> neighboursOf(String districtId) =>
       _neighbours[districtId] ?? const [];
 
+  /// The districts the party can walk to from [districtId] while [locked]
+  /// are shut (wave 18): its open neighbours, or, when every neighbour is
+  /// locked, the open district whose entry is nearest, so a party is never
+  /// left with nowhere to go. Empty for a district not on the plan.
+  List<String> walkableFrom(String districtId, Set<String> locked) {
+    final here = districts[districtId];
+    if (here == null) return const [];
+    final open = [
+      for (final b in neighboursOf(districtId))
+        if (!locked.contains(b)) b
+    ];
+    if (open.isNotEmpty) return open;
+    final rest = [
+      for (final b in districts.keys)
+        if (b != districtId && !locked.contains(b)) b
+    ]..sort((x, y) => (districts[x]!.entry - here.entry)
+        .distanceSquared
+        .compareTo((districts[y]!.entry - here.entry).distanceSquared));
+    return rest.isEmpty ? const [] : [rest.first];
+  }
+
   late final Map<String, List<String>> _neighbours = () {
     bool near(Offset a, Offset b) => (a - b).distanceSquared <= 1;
     int shared(CityDistrictShape a, CityDistrictShape b) =>
