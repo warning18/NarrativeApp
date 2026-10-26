@@ -813,6 +813,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               final fresh = isFreshStoryStart(play);
               _reading = fresh || view == ArrivalView.page;
               _arrival = !fresh && view == ArrivalView.sheet;
+              // The view is chosen here: the next build keeps it.
+              _openedFresh = fresh;
             }
           });
         }
