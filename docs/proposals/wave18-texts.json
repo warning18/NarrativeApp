@@ -396,88 +396,88 @@
   "companion_remarks": [
     {
       "companion": "kelda",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "A street that changes hands should have a gate it can close. Make sure one stays shut for those who need it.",
         "fr": "Une rue qui change de mains devrait avoir une porte qu’on puisse fermer. Veillez à ce qu’une reste close pour ceux qui en ont besoin."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "Hold the line or leave it. Do not stand about.",
         "fr": "Tenez la ligne ou quittez-la. Ne restez pas à regarder."
       }
     },
     {
       "companion": "sable",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "A pennant down, a pennant up. The street never loses, it only changes the odds.",
         "fr": "Une bannière baissée, une bannière hissée. La rue ne perd jamais, elle change seulement les cotes."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "An attack is only a very loud bet. Which side are we backing?",
         "fr": "Une attaque n’est qu’un pari très bruyant. Quel camp soutenons-nous ?"
       }
     },
     {
       "companion": "maren",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "Another banner. I wonder whose names are written under it.",
         "fr": "Encore une bannière. Je me demande quels noms sont écrits dessous."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "Whoever attacks, someone will be carried out. See that it is not the innocent.",
         "fr": "Quel que soit l’attaquant, on emportera quelqu’un. Veillez à ce que ce ne soient pas les innocents."
       }
     },
     {
       "companion": "liora",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "I watched the roofs the night it turned. Quiet, until it was not.",
         "fr": "J’ai surveillé les toits la nuit où cela a basculé. Tranquille, jusqu’à ce que ça ne le soit plus."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "Riders on the east road. I counted nine and stopped.",
         "fr": "Des cavaliers sur la route de l’est. J’en ai compté neuf et j’ai arrêté."
       }
     },
     {
       "companion": "vess",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "The place feels different. As if it were holding its breath under a new hand.",
         "fr": "L’endroit est différent. Comme s’il retenait son souffle sous une main nouvelle."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "Something in the street is afraid. I can hear it from here.",
         "fr": "Quelque chose dans la rue a peur. Je l’entends d’ici."
       }
     },
     {
       "companion": "grosh",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "New flag, same prices. Wake me when the coin changes.",
         "fr": "Nouveau drapeau, mêmes prix. Réveillez-moi quand l’or change."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "A raid pays whoever shows up. Say the word.",
         "fr": "Un raid paie celui qui se montre. Dites un mot."
       }
     },
     {
       "companion": "tobin",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "I have seen a banner come down on a burning street. I did not like what flew next.",
         "fr": "J’ai vu une bannière tomber sur une rue en flammes. Je n’ai pas aimé ce qui a été hissé ensuite."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "Not again. Not on a street where children still live.",
         "fr": "Pas encore. Pas dans une rue où vivent encore des enfants."
       }
     },
     {
       "companion": "malrik",
-      "district_flipped": {
+      "districtFlipped": {
         "en": "A change of owner is an opportunity for those who were not on the old books.",
         "fr": "Un changement de propriétaire est une aubaine pour qui n’était pas sur les anciens livres."
       },
-      "district_attacked": {
+      "districtAttacked": {
         "en": "An attack is a disruption. Disruptions have an exchange rate.",
         "fr": "Une attaque est une perturbation. Les perturbations ont un taux de change."
       }
