@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.546.0+582]
+
+The Mire and the Penitents no longer start the game at war.
+
+### Changed
+- **The Mire and the Penitents start at Hostile**, not at Blood feud (wave 17 item 2). Only the number in `relations.json` changes. With Narrative's Reedholm beat (next release), the feud comes back in chapter 5 unless the party made peace possible. Over 50 simulated runs with the beat, the Mire's Court falls in 10, down from 20. Fight win rates move by 0.3 points or less. The study is in `docs/simulation/clan-power-50-v1.526.md`.
+
 ## [1.545.0+581]
 
 A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events (wave 17).
