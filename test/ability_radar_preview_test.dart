@@ -3,7 +3,6 @@
 // showing the new value (highlighted) and the gain. The shape grows from the
 // current one; with reduced motion it is there at once.
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
