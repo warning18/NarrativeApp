@@ -1839,16 +1839,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           child: Column(
             children: [
               if (locked) ...[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: _LevelTabs(
-                    selected: _LevelTab.district,
-                    townEnabled: false,
-                    busy: true,
-                    enabled: false,
-                    palette: palette,
-                    onPick: (_) {},
-                  ),
+                // The greyed tabs, and the followed quest: its goal stays
+                // in sight while the player chooses.
+                Row(
+                  children: [
+                    _LevelTabs(
+                      selected: _LevelTab.district,
+                      townEnabled: false,
+                      busy: true,
+                      enabled: false,
+                      palette: palette,
+                      onPick: (_) {},
+                    ),
+                    const Spacer(),
+                    const QuestTrackerBar(compact: true),
+                  ],
                 ),
                 const SizedBox(height: 8),
               ],
