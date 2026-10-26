@@ -1521,7 +1521,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final ownDistrict = record.districts.containsKey(hereDistrictOf)
             ? hereDistrictOf
             : null;
-        // A scene played at a building's doorstep (v1.543): the party at
+        // A scene played at a building's doorstep (v1.541): the party at
         // its door, the ways that stay there in the street round it.
         final doorstep = sceneDoorstep(world, record, node, waysHere: [
           for (var i = 0; i < rawSteps.length; i++)
@@ -1572,7 +1572,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Inside a building (v1.207): the room's plan, the party at its spot
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
-    // A scene played at its building's doorstep (v1.543) is on the streets.
+    // A scene played at its building's doorstep (v1.541) is on the streets.
     final hereBuilding = herePlace?.isBuilding == true &&
             !herePlace!.doorstep.contains(play.currentNodeId)
         ? herePlace

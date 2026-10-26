@@ -100,7 +100,7 @@ The record can grow fields the painter needs (trees, fields outside the wall,
 roof colours by kind). Ask through the manager; Core adds them to the
 generator and the record.
 
-## Doorstep scenes (v1.543)
+## Doorstep scenes (v1.541)
 
 A building in `geography.json` may list `"doorstep": ["300", ...]`: scenes
 whose `location` is the building but which play in the street before its

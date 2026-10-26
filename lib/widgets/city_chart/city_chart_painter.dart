@@ -621,7 +621,7 @@ class CityChartPainter extends CustomPainter {
     for (final w in chart.ways) {
       if (w.id == hereWayId) here = pinAt(w);
     }
-    // At a building's doorstep (v1.543), the party stands at its door.
+    // At a building's doorstep (v1.541), the party stands at its door.
     here ??= chart.here;
     if (here == null && hereDistrict != null) {
       final d = chart.districtById(hereDistrict!);

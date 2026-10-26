@@ -111,7 +111,7 @@ class CityChartWay {
   /// The building's key.
   final String building;
 
-  /// Where the pin stands when not on its building (v1.543): a spot in the
+  /// Where the pin stands when not on its building (v1.541): a spot in the
   /// street round the doorstep of a scene played outside.
   final Offset? at;
 }
@@ -197,7 +197,7 @@ class CityWayInput {
   final String name;
   final String sceneId;
 
-  /// A spot on the plan for the pin instead of its building (v1.543).
+  /// A spot on the plan for the pin instead of its building (v1.541).
   final Offset? at;
 }
 
@@ -264,7 +264,7 @@ class CityChart {
   final Path? islands;
 
   /// Where the party stands when the scene plays outside a building
-  /// (v1.543): the building's doorstep; null to mark its district.
+  /// (v1.541): the building's doorstep; null to mark its district.
   final Offset? here;
 
   CityChartDistrict? districtById(String id) {
@@ -341,7 +341,7 @@ class CityChart {
 
     // The ways, each on its building.
     final pinned = <String, String>{
-      // A scene played at a building's doorstep (v1.543) shows the building.
+      // A scene played at a building's doorstep (v1.541) shows the building.
       if (doorstep != null && record.building(doorstep) != null) doorstep: '',
     };
     final chartWays = <CityChartWay>[];
