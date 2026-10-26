@@ -84,6 +84,7 @@ import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
 import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
+import '../widgets/street_view/street_view.dart';
 import '../widgets/town_walk.dart';
 import 'journal_screen.dart';
 import 'city_chart_screen.dart';
@@ -2020,6 +2021,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 });
               }
             },
+            street: cityChart.here != null
+                ? world.doorstepOfNode(story.nodeFor(play.currentNodeId))
+                : null,
             onOpen: (i) => _openWay(i, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
@@ -5505,9 +5509,14 @@ class _CityDistrictView extends ConsumerWidget {
     required this.onWalk,
     required this.overlays,
     required this.tabs,
+    this.street,
   });
 
   final CityChart chart;
+
+  /// The building a scene is played outside of (v1.544): the district view
+  /// is its street (see street_view.dart), not the town's plan.
+  final GeoPlace? street;
   final MapLook look;
   final Set<String>? explored;
   final String? hereDistrict;
@@ -5597,6 +5606,20 @@ class _CityDistrictView extends ConsumerWidget {
                   height: 1,
                   color: const Color(0xFF17151B))),
         );
+
+    // A way's pin in the street (v1.544): its banner, else its kind's disc.
+    Widget streetPinOf(int i) {
+      final banner = banners['$i'];
+      return banner == null
+          ? kindDisc(steps[i], size: 28)
+          : BannerPin(
+              cat: banner.cat,
+              color: banner.color,
+              dark: chartDark,
+              icon: steps[i].locked ? Icons.lock_outline : null,
+              scale: 0.8,
+            );
+    }
 
     // Who rules the town and its districts (wave 15, townRulersProvider): the
     // blocks take the clan's colour, and a line under the plan names it, so two
@@ -5771,40 +5794,58 @@ class _CityDistrictView extends ConsumerWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                CityChartView(
-                  key: const ValueKey('journey_city_chart'),
-                  chart: chart,
-                  look: look,
-                  text: text,
-                  explored: explored,
-                  hereDistrict: hereDistrict,
-                  focus: focus,
-                  focusToken: focusToken,
-                  controls: false,
-                  cards: false,
-                  numbers: numbers,
-                  banners: banners,
-                  bannersDark: chartDark,
-                  onFocus: onFocus,
-                  onPick: (w) {
-                    final i = int.tryParse(w.id);
-                    if (i != null && i < steps.length) onOpen(i);
-                  },
-                  onPickFog: (_) {},
-                  rulers: rulers,
-                  phase: ref.watch(dayPhaseProvider),
-                  services: [
-                    for (final s in townServices)
-                      CityChartService(
-                          id: s.id,
-                          kind: s.kind,
-                          at: s.pin.at,
-                          district: s.pin.district,
-                          opens: s.opensSomething),
-                  ],
-                  onService: (picked) => showTownServiceSheet(context,
-                      townServices.firstWhere((s) => s.id == picked.id)),
-                ),
+                if (street != null && focus != null)
+                  StreetViewScene(
+                    kind: street!.kind,
+                    name: street!.name,
+                    phase: ref.watch(dayPhaseProvider),
+                    sky: ref.watch(skyHereProvider)?.today().kind,
+                    pins: [
+                      for (final i in shown)
+                        StreetPin(
+                          index: i,
+                          label: steps[i].label,
+                          locked: steps[i].locked,
+                          child: streetPinOf(i),
+                        ),
+                    ],
+                    onPick: onOpen,
+                  )
+                else
+                  CityChartView(
+                    key: const ValueKey('journey_city_chart'),
+                    chart: chart,
+                    look: look,
+                    text: text,
+                    explored: explored,
+                    hereDistrict: hereDistrict,
+                    focus: focus,
+                    focusToken: focusToken,
+                    controls: false,
+                    cards: false,
+                    numbers: numbers,
+                    banners: banners,
+                    bannersDark: chartDark,
+                    onFocus: onFocus,
+                    onPick: (w) {
+                      final i = int.tryParse(w.id);
+                      if (i != null && i < steps.length) onOpen(i);
+                    },
+                    onPickFog: (_) {},
+                    rulers: rulers,
+                    phase: ref.watch(dayPhaseProvider),
+                    services: [
+                      for (final s in townServices)
+                        CityChartService(
+                            id: s.id,
+                            kind: s.kind,
+                            at: s.pin.at,
+                            district: s.pin.district,
+                            opens: s.opensSomething),
+                    ],
+                    onService: (picked) => showTownServiceSheet(context,
+                        townServices.firstWhere((s) => s.id == picked.id)),
+                  ),
                 ...overlays,
               ],
             ),

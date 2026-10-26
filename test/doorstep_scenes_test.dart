@@ -199,8 +199,19 @@ void main() {
 
     // The district's streets, not the house's room, and no way back in.
     expect(find.byKey(const ValueKey('journey_room')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const Key('journey_go_inside')), findsNothing);
+    // The district view is the building's street (v1.544): its front, the
+    // street before it, and the three ways as pins on the stones.
+    expect(find.byKey(const ValueKey('journey_street_scene')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
+    for (var i = 0; i < 3; i++) {
+      expect(find.byKey(ValueKey('street_pin_$i')), findsOneWidget);
+    }
+    // The Town tab still shows the town's plan with the party at the door.
+    await tester.tap(find.byKey(const Key('journey_tab_town')));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const ValueKey('journey_street_scene')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     final chart = tester
         .widget<CityChartView>(find.byKey(const ValueKey('journey_city_chart')))
         .chart;

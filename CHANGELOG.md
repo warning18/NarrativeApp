@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.544.0+580]
+
+A street-view kit for scenes played outside a building, the room kits' counterpart for the outside.
+
+### Added
+- **The street before a building** (`lib/widgets/street_view/`): where a scene plays at a building's doorstep (Core's v1.542: the family house's 300, 400, 400_lost and 450; the Blind Beggar's 125; the informant's warehouse), the district view shows the building's front, the street in front of it in cobbles, and the party at its door, in the side-view engine's pixel style. Six fronts by what the building is (a house, an inn or den, a warehouse, a shop or forge, a temple, a hall or keep), read from its kind and name as the room kits do.
+- **The day's weather and hour on it:** rain falls and wets the stones, snow whitens the roof and the kerb, fog and ash drift over; the sky takes the hour (dawn, day, dusk, night with stars) and the windows and a lantern by the door light warm at dusk and night, over the wash so they are not dimmed with the evening.
+- **The choices are pins on the street** (the banners and discs the Journey draws everywhere else, with their labels), in two rows when there are more than four; a tap opens the way's sheet as before. The rows under the picture and the buttons over it are unchanged.
+
+### Changed
+- The Town tab and the zoom-out button still show the town's plan with the party at the door; only the district view is the street.
+
+### Tests
+- New `test/street_view_test.dart` (the front by building, every front at every hour and weather, pins at 320 px, reduced motion; `UX_SHOTS=<folder>` takes `docs/ux-shots/street-view-fronts.png`); `doorstep_scenes_test.dart` now expects the street in the district view and the plan under Town.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (`_CityDistrictView`: an optional `street` building, the street scene in place of the plan's picture when set, and the pin builder; about 40 lines, the rest of the diff is the formatter re-indenting the plan view).
 ## [1.543.0+579]
 
 The story reader: the echoed lines are prose, and the text writes itself out more slowly.
