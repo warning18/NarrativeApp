@@ -4593,8 +4593,26 @@ class _JourneyChartState extends State<_JourneyChart>
               steps[flying].chartTarget == null) {
             return unrolled;
           }
-          // On a world road: the World view walks it (v1.548).
-          if (_flyingLeg case final leg?) return widget.roadMap!(leg, _flight);
+          // On a world road: the World view walks it (v1.548); a tap lands
+          // the party at once, as the transit's does.
+          if (_flyingLeg case final leg?) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                widget.roadMap!(leg, _flight),
+                Positioned.fill(
+                  child: GestureDetector(
+                    key: const ValueKey('journey_road_skip'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _flight.stop(canceled: false);
+                      _flight.value = 1;
+                    },
+                  ),
+                ),
+              ],
+            );
+          }
           // On the road: the world chart, from here to where it leads.
           return Stack(
             children: [

@@ -121,10 +121,15 @@ void main() {
     expect(map.move, isNotNull);
     expect(map.move!.stops.map((s) => s.name), contains('The Dry Wadi'));
 
-    // The walk done, the road's crossing is played (its own screen, crossed
-    // here at once), and the party is at the White Wells.
+    // A tap on the walk lands the party at once (v1.551): the road's
+    // crossing comes at once, not after the walk's seconds.
+    final skip = find.byKey(const ValueKey('journey_road_skip'));
+    expect(skip, findsOneWidget);
+    await tester.tap(skip);
+    // The walk skipped, the road's crossing is played (its own screen,
+    // crossed here at once), and the party is at the White Wells.
     final crossing = find.byType(LandCrossingScreen);
-    for (var i = 0; i < 40 && crossing.evaluate().isEmpty; i++) {
+    for (var i = 0; i < 5 && crossing.evaluate().isEmpty; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 50)));
       await tester.pump(const Duration(milliseconds: 100));
