@@ -30,7 +30,7 @@ Influence is a number per clan per district, so it needs a shape the player can 
 A rival attack is something that happens on the plan, so it is drawn there and said in words:
 - **Before:** a pulsing arrow in the attacker's colour from its nearest district to the target, a crossed-swords mark on the shared border, and the target's row says "Under attack by the Crows: 2 days".
 - **While:** the target's ring flickers; the Town tab carries a red dot (as the Camp tab does for what waits) so it is seen from elsewhere.
-- **After:** the result is a short sequence: the block colour wipes to the winner's, the crest swaps, and a toast says who took what; the handover list (v1.521) gains the line with the old and new flag. A defended attack shows a shield mark for a day.
+- **After:** the result is a short sequence: the block colour wipes to the winner's, the crest swaps, and a toast says who took what; the handover list (wave 17) gains the line with the old and new flag. A defended attack shows a shield mark for a day.
 - It is also a **Journal entry** and a **Journey banner** on the district's pin, so the player who is on the road knows.
 
 ## What I need from Core and Narrative
@@ -47,7 +47,7 @@ Core: the data for 1, 3 and 4 (an `open` flag and the unlocking side quest per d
 - **Districts as a ladder in the sheet:** one list with crest, influence bar and lock state, as the pins' list is grouped.
 - A **clans' legend** on the town plan (flag, colour, share of districts) that doubles as a filter ("show only the Compact's districts").
 - **Night and attack together:** an attack at night lights its border in the attacker's colour.
-- The **ward marks** (v1.52x) on a district's crest when the hero is warded there.
+- The **ward marks** (wave 16) on a district's crest when the hero is warded there.
 - **A district's history** under its sheet: who held it and when, as a small timeline of flags.
 - **Companions remark** on a flip they care about, as the speech bubble over the party does at sea.
 - **A quest tracker bar over the plan** showing the side quest that opens the nearest locked district.
