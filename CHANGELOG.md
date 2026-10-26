@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.543.0+579]
+
+The story reader: the echoed lines are prose, and the text writes itself out more slowly.
+
+### Changed
+- **"Because you chose …" only in Edit Mode** (`story_player_screen.dart`, `EchoLine`): in play, a line an earlier choice earned is set into the story as ordinary prose, with no caption, clock icon or side rule. The story node editor's preview (Edit Mode) keeps the label, icon and rule as before. The Journey's scene panel uses the same widget, so it follows.
+- **The text reveal is a third slower** (`story_text.dart`): about 175 characters a second instead of 260, between 0.6 s and 6 s (was 0.4 s and 4 s). A tap still shows it all, and reduced motion still shows it at once.
+
+### Tests
+- New `test/echo_line_test.dart` (play and Edit Mode, and the reveal's speed); `scene_flow_play_test` now expects no caption in play.
+
 ## [1.542.0+578]
 
 Some scenes now play in the street in front of a building, not inside it.
