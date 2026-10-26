@@ -24,7 +24,7 @@ GeoPlace? districtOfPlace(Geography geo, String? placeId) =>
 GeoPlace? districtOfNode(Geography geo, StoryNode? node) =>
     districtOfPlace(geo, geo.placeOfNode(node)?.id);
 
-/// Where a scene played at a building's doorstep (v1.541, see
+/// Where a scene played at a building's doorstep (v1.542, see
 /// GeoPlace.doorstep) stands on its town's stored plan: the building on
 /// the plan, the party's spot at its door, and a spot in the street round
 /// it for each of the scene's ways that stay there.

@@ -402,7 +402,7 @@ class CityPlanRecord implements PlacePlan {
     return [from, ...path.reversed, to];
   }
 
-  // --- Doorsteps (v1.541) ----------------------------------------------
+  // --- Doorsteps (v1.542) ----------------------------------------------
 
   /// Points along every avenue and street, a few units apart.
   late final List<Offset> _streetSamples = [
@@ -436,7 +436,7 @@ class CityPlanRecord implements PlacePlan {
   }
 
   /// [count] spots on the street round building [buildingId]'s doorstep,
-  /// for the ways of a scene played outside it (v1.541): each at least
+  /// for the ways of a scene played outside it (v1.542): each at least
   /// [gap] from the doorstep and from one another, the nearest first, so
   /// the pins stand in the street around the door and not on one point.
   /// Where the streets near it give too few, the rest ring the doorstep.

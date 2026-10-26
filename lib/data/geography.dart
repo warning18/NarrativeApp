@@ -433,7 +433,7 @@ class GeoPlace {
   /// The world_map.dart landmarks that lie here.
   final List<String> landmarks;
 
-  /// A building's scenes that play outside it, at its doorstep (v1.541):
+  /// A building's scenes that play outside it, at its doorstep (v1.542):
   /// the story's ids of the scenes whose `location` is this building but
   /// which happen in the street before its door (the family house watched
   /// from across the street, the alley behind the Blind Beggar). The
@@ -627,7 +627,7 @@ class Geography {
     return place(location) ?? placeOfLandmark(landmarkOfScene(node.id)?.id);
   }
 
-  /// The building whose doorstep [node] plays at (v1.541): its place is a
+  /// The building whose doorstep [node] plays at (v1.542): its place is a
   /// building that lists it in [GeoPlace.doorstep]; null for any other
   /// scene.
   GeoPlace? doorstepOfNode(StoryNode? node) {
@@ -638,7 +638,7 @@ class Geography {
 
   /// The building whose room the Journey draws for [node] (v1.207): its
   /// place when that is a building, unless the scene plays at the
-  /// building's doorstep (v1.541, then it is drawn on the streets).
+  /// building's doorstep (v1.542, then it is drawn on the streets).
   GeoPlace? roomOfNode(StoryNode? node) {
     final here = placeOfNode(node);
     if (here == null || !here.isBuilding) return null;
