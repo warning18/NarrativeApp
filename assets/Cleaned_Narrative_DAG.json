@@ -28530,12 +28530,13 @@
     "location": "saltmouth_wharf",
     "choices": [
       {
-        "text": "Go and find the overseer",
-        "text_fr": "Aller trouver le contremaître",
+        "text": "Ask Nadira what the overseer wants",
+        "text_fr": "Demander à Nadira ce que veut le contremaître",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_ternrow_door"
-        ]
+        ],
+        "unlockQuestId": "q_ch2_terns_toll"
       },
       {
         "text": "Light one of the boats yourself and go",
