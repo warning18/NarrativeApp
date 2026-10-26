@@ -1,9 +1,9 @@
 // The stat pick a level's points bring (docs/proposals/stat-picks.md): each
 // point earned is one pick of three offers, taken one at a time. Laid out
 // like the clans' gift choice (banner-choice-unified.md): the offers in a row
-// on top, the picked one ringed in gold and the others dimmed, its detail
-// under them (the path it comes from, each gain from where it stands to where
-// it goes) and "Take this pick" at the bottom. The three offers share the
+// on top, the picked one ringed in gold and the others dimmed, the pick drawn
+// on the ability radar under them (the hero's shape, and the shape the pick
+// gives over it in a second colour) and "Take this pick" at the bottom. The three offers share the
 // pick's rarity (Common, Rare, Epic, Heroic: the signs' colours): a frame in
 // its colour that gets thicker and brighter with it, a rarity chip on the
 // rarer ones, and under each gain what it does for this hero.
@@ -28,6 +28,7 @@ import '../screens/training_picker.dart'
         trainingStatNow;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
+import 'ability_radar.dart';
 import 'roll_power_row.dart';
 import 'sign_widgets.dart' show SignRarityChip, signRarityColor;
 
@@ -136,12 +137,10 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
         ),
         const SizedBox(height: 10),
         if (chosen != null)
-          _OfferDetail(
+          _PickRadar(
             key: Key('stat_pick_detail_${chosen.pathId}'),
             offer: chosen,
-            path: paths[chosen.pathId],
             session: session,
-            fr: fr,
           )
         else if (offer.isNotEmpty)
           Padding(
@@ -362,142 +361,45 @@ class _OfferBanner extends ConsumerWidget {
   }
 }
 
-/// The picked offer, in full: the path it comes from, and each gain from
-/// where the stat stands to where it goes.
-class _OfferDetail extends ConsumerWidget {
-  const _OfferDetail({
-    super.key,
-    required this.offer,
-    required this.path,
-    required this.session,
-    required this.fr,
-  });
+/// The picked offer, on the radar (v1.549): the hero's shape as it stands and
+/// the shape the pick would give, drawn over it in a second colour, the
+/// corners it moves showing the new value and the gain. A pick worth more
+/// than one point says so under it. (The path it comes from and what each
+/// gain does for the hero are on the offer's own banner.)
+class _PickRadar extends ConsumerWidget {
+  const _PickRadar({super.key, required this.offer, required this.session});
 
   final StatPickOffer offer;
-  final TrainingPath? path;
   final PlayerSession session;
-  final bool fr;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final blurb = path?.blurbFor(fr) ?? '';
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: ink.gold.withValues(alpha: 0.6)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(path?.nameFor(fr) ?? offer.pathId,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontFamily: InkFonts.display)),
-              ),
-              if (offer.rare)
-                Text(
-                  tr(ref, 'stat_pick_worth')
-                      .replaceAll('{n}', '${offer.points}'),
-                  key: const Key('stat_pick_worth'),
-                  style: theme.textTheme.labelMedium?.copyWith(color: ink.gold),
-                ),
-            ],
+    final values = {
+      for (final k in abilityRadarOrder) k: trainingStatNow(session, k),
+    };
+    final after = {
+      for (final k in abilityRadarOrder) k: values[k]! + (offer.gains[k] ?? 0),
+    };
+    return Column(
+      children: [
+        AbilityRadar(
+          key: const Key('stat_pick_radar'),
+          size: 220,
+          t: (key) => tr(ref, key),
+          values: values,
+          preview: after,
+        ),
+        // The corner labels hang below the radar's own box.
+        const SizedBox(height: 14),
+        if (offer.rare)
+          Text(
+            tr(ref, 'stat_pick_worth').replaceAll('{n}', '${offer.points}'),
+            key: const Key('stat_pick_worth'),
+            style: theme.textTheme.labelMedium?.copyWith(color: ink.gold),
           ),
-          if (blurb.isNotEmpty) ...[
-            const SizedBox(height: 2),
-            Text(blurb,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(fontStyle: FontStyle.italic, color: ink.ash)),
-          ],
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final MapEntry(:key, :value) in offer.gains.entries)
-                _GainTile(
-                  key: Key('stat_pick_gain_$key'),
-                  label: tr(ref, trainingStatLabelKey(key)),
-                  gain: value,
-                  before: trainingStatNow(session, key),
-                  color: trainingStatColor(key, ink),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          for (final MapEntry(:key, :value) in offer.gains.entries)
-            Text(
-              statPickEffect(key, session.professionId, value,
-                  fr ? AppLanguage.fr : AppLanguage.en),
-              key: Key('stat_pick_line_$key'),
-              style: theme.textTheme.bodySmall,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// One gain: the stat, the big "+n", and where the stat goes.
-class _GainTile extends StatelessWidget {
-  const _GainTile({
-    super.key,
-    required this.label,
-    required this.gain,
-    required this.before,
-    required this.color,
-  });
-
-  final String label;
-  final int gain;
-  final int before;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    return Container(
-      constraints: const BoxConstraints(minWidth: 96),
-      padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label,
-              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text('+$gain',
-                  style: TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: 20,
-                      height: 1.2,
-                      color: color)),
-              const SizedBox(width: 6),
-              Text('$before',
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-              Icon(Icons.arrow_right_alt, size: 14, color: ink.ash),
-              Text('${before + gain}',
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-            ],
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

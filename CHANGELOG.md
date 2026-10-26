@@ -20,6 +20,17 @@ Three sheets and dialogs, in one release: the place sheet's height, the clan pop
 ### Tests
 - `arrival_sheet_size_test`, `popins_stay_open_test` and `gift_confirm_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet, popin and confirmation.
 
+
+## [1.552.0+588]
+
+The level-up stat pick shows on the ability radar.
+
+### Changed
+- **A pick is drawn on the radar** (`stat_pick_picker.dart`, `ability_radar.dart`): picking a stat card no longer opens the detail block under the cards (the path's name, each gain from where it stood to where it goes, the effect lines). The ability radar takes its place: the hero's shape as it stands in gold, the shape the pick would give round it in green, and each corner the pick moves shows its new value highlighted with the gain under it ("CON 7, +1"). The shape grows from the current one over a third of a second; with reduced motion it is there at once. A pick worth more than one point still says "Worth n points" under the radar. "Take this pick", the roll powers and the cards (with the path, each gain and what it does for the hero) are unchanged.
+- `RadarAxis` takes a `valueColor` and `AbilityRadar` a `preview` shape.
+
+### Tests
+- New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
 ## [1.551.0+587]
 
 A walk along a world road now plays on the World map.

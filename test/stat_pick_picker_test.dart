@@ -19,6 +19,7 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/training_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/ability_radar.dart';
 import 'package:narrative_data_app/widgets/sign_widgets.dart'
     show signRarityColor;
 import 'package:narrative_data_app/widgets/stat_pick_picker.dart';
@@ -163,19 +164,20 @@ void main() {
       await _save(
           tester, 'stat-pick-${tier.name}-${french ? 'fr' : 'en'}-none');
 
-      // The third offer picked: its detail, with the full line.
+      // The third offer picked: the pick on the radar (the detail block is
+      // gone), the hero's shape and the one the pick gives over it, the
+      // changed corner showing the gain.
       await tester.tap(find.byKey(const Key('stat_pick_offer_2')));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.byKey(const Key('stat_pick_detail_hunter')), findsOneWidget);
+      expect(find.byKey(const Key('stat_pick_gain_perception')), findsNothing);
+      expect(find.byKey(const Key('stat_pick_line_perception')), findsNothing);
+      final radar =
+          tester.widget<AbilityRadar>(find.byKey(const Key('stat_pick_radar')));
+      expect(radar.preview, isNotNull);
       expect(
-          find.byKey(const Key('stat_pick_gain_perception')), findsOneWidget);
-      expect(
-          find.byKey(const Key('stat_pick_line_perception')), findsOneWidget);
-      expect(
-          tester
-              .widget<Text>(find.byKey(const Key('stat_pick_line_perception')))
-              .data,
-          startsWith('+$points'));
+          radar.preview!['perception'], radar.values['perception']! + points);
+      expect(find.text('+$points'), findsWidgets);
       expect(find.byKey(const Key('stat_pick_worth')),
           tier == SignRarity.common ? findsNothing : findsOneWidget);
       expect(
