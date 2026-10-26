@@ -32,7 +32,7 @@ A headless walk takes the way round: at chapter 7 the cliffs' checks are DC 18, 
 
 Chapters 1 to 3 do not move. By profession (seed 7): cleric 38.0 → 37.9, mage 37.4 → 37.6, ranger 36.5 → 36.4, rogue 34.7 → 35.0, warrior 35.2 → 35.6. Chapter 7 moves −1.4 to +0.2 across the seeds (noise: the crossing's rolls come from their own stream but the walk diverges after it). `boss_balance`, `nemesis_quests` and `clash_balance` stay green with no bound changed.
 
-## v1.534: the Grey Sands, and the cliffs' last two events (wave 17 item 4)
+## v1.545: the Grey Sands, and the cliffs' last two events (wave 17 item 4)
 
 Core's part of `docs/proposals/wave17-core.md` §4, on Narrative's four `glass_*` events (`wave17-glass-shore.md`, numbers as written).
 

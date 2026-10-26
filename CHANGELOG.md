@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.534.0+570]
+## [1.545.0+581]
 
 A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events (wave 17).
 
@@ -18,6 +18,85 @@ A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events
 
 ### Fixed
 - **The fen, frost and sea-cliffs crossings** (chapters 4, 5 and 7) now show their side-view scenes; they showed none before.
+
+## [1.542.0+578]
+
+Some scenes now play in the street in front of a building, not inside it.
+
+### Changed
+- **Doorstep scenes:** a building in `geography.json` can now list scenes under `"doorstep"`. These scenes play in the street at its door. The Journey shows them on the district plan, with the party at the building's door and the scene's ways on the streets around it. Before, they were shown inside the building's room. Tagged so far:
+  - the Alster family house: scenes 300, 400, 400_lost and 450;
+  - the blind beggar: 125;
+  - the Saltmouth landward warehouse: 2015_informant_trap.
+
+## [1.541.0+577]
+
+A new game no longer shows the map before the story starts.
+
+### Changed
+- **The first scene's way is a card:** on a new game, "Choose who you are…" is a card on the first scene's page, not a step on the Lower Town map. Taking it opens character creation; the story then goes straight to the Blind Beggar's page. Later ways across town are still map steps.
+
+## [1.540.0+576]
+
+A game picked up on its first scene opens on that scene.
+
+### Fixed
+- **Continue on a game never started:** creating a character and leaving before the first step left a save on the first scene; Continue opened it on the Journey map with "Choose who you are…" in a row at the bottom. It now opens on the first scene's page, as New Game does. The rule is now the story's state (on the first scene, nothing played yet), whatever way the game was opened.
+
+## [1.539.0+575]
+
+- The blurbs for Alster and Saltmouth now describe the places themselves, in English and French.
+
+## [1.538.0+574]
+
+Towns walked in words: the walk between districts, the doorway of a building, and the place panel's name once.
+
+### Added
+- **The walk between districts is told** (`journey_screen.dart`): crossing from one district of a town to another says "You walk to the Stone Bridge…" (FR "Vous marchez vers le Pont de Pierre…") in the road walk's bubble. It sits at the top of the map so it does not cover the zoom buttons; a tap skips it.
+- **A doorway between a room and the streets**, both ways (`town_walk.dart`): going into a building, or back out to its streets (by the story or by the look-out and go-inside buttons), fades from a veil with a door glyph and says "You step inside the Blind Beggar…" or "You step back out into the streets…". With reduced motion only the line shows.
+
+### Fixed
+- **The world map's place panel** no longer names a land twice: a breadcrumb that reads as the title (Alster, as the title and the last crumb) is left out.
+
+### Tests
+- New `test/town_walk_test.dart`; `alster_one_place`, `journey_inside`, `journey_transit` and `geography_widgets` tests updated for the new lines (the transit test said "nothing needs saying" along a city's streets).
+- Not done: no picture of the caption; the veil is tested on its own, not as a frame of the whole screen.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (~80 lines: the door state and veil, a words-only transit, the district caption) and `lib/screens/world_map_screen.dart` (5 lines, the crumbs filter). `app_strings.dart`: three new keys next to `journey_pass_stop`.
+
+## [1.537.0+573]
+
+A dependency update, no gameplay change.
+
+### Changed
+- **open_filex** 4.7.0 to 5.0.0 (Dependabot), used to open a downloaded update and exported files.
+
+## [1.536.0+572]
+
+Saltmouth is one place on the world map, like Alster.
+
+### Changed
+- **Saltmouth on the world map:** its six districts were six world places joined by roads. Saltmouth is now one dot; the road from the White Wells and the sea lane to the storm leave from its edge.
+- **Moving around Saltmouth:** the map shows the Town view for another district and the District view within one, with no world-road journey.
+
+## [1.535.0+571]
+
+Alster, the starting town, is one place on the world map.
+
+### Fixed
+- **Alster on the world map:** the Blind Beggar, Weaver's Alley, the family house and the town's other places were seven separate world places joined by roads. Alster is now one dot, like the later towns, and the world roads start from it.
+- **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
+- **The District tab after a move** shows the district, no longer the world map.
+
+## [1.545.0+581]
+
+A new game starts on its first scene.
+
+### Fixed
+- **New game:** it opens on "Choose who you are…" instead of the Journey map with the scene in a row at the bottom.
+- **"Previously…":** the recap no longer shows on a new game. It shows only when a saved game with progress past the start is picked back up.
+- **New game over a loading save:** starting a new game while the last save was still loading could bring the old save back; it no longer can.
 
 ## [1.533.0+569]
 

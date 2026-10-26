@@ -174,8 +174,9 @@ void main() {
     });
 
     test('the Blind Beggar is in the game\'s geography, at its tables', () {
-      // Read straight from the asset, as the game does.
-      expect(worldMapLandmarks.any((l) => l.id == 'beggar'), isTrue);
+      // Read straight from the asset, as the game does: in Alster, one
+      // place on the world chart (v1.534).
+      expect(worldMapLandmarks.any((l) => l.id == 'alster'), isTrue);
     });
   });
 

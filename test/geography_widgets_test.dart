@@ -409,7 +409,7 @@ void main() {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    expect(landmarkOfScene('260')!.id, 'bridge');
+    expect(landmarkOfScene('260')!.id, 'alster');
     await tester.pumpWidget(ProviderScope(
       overrides: [geographyProvider.overrideWithValue(fixture())],
       child: const MaterialApp(home: WorldMapPage()),
@@ -423,21 +423,26 @@ void main() {
     expect(panel, findsOneWidget);
     final crumbs = find.byKey(const Key('world_map_crumbs'));
     expect(crumbs, findsOneWidget);
-    // The lands it lies in; the place itself only when the title does not
-    // already name it.
-    expect(find.descendant(of: crumbs, matching: find.text('Alster')),
-        findsOneWidget);
-    final title = landmarkById('bridge')!.nameEn;
+    // The lands it lies in, less the one the title names: Alster is in the
+    // title once (v1.537), not again as the last crumb.
+    final title = landmarkById('alster')!.nameEn;
+    expect(title, 'Alster');
     expect(
         find.descendant(of: panel, matching: find.text(title)), findsOneWidget);
+    expect(
+        find.descendant(of: crumbs, matching: find.text(title)), findsNothing);
     expect(find.descendant(of: crumbs, matching: find.text('The Stone Bridge')),
-        title == 'The Stone Bridge' ? findsNothing : findsOneWidget);
+        findsOneWidget);
     expect(
         find.descendant(
             of: find.byKey(const Key('world_map_biome')),
             matching: find.text('Temperate')),
         findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('geo_crumb_alster')));
+    // Alster's panel is a long one (v1.534): the crumb is scrolled to.
+    await tester
+        .ensureVisible(find.byKey(const ValueKey('geo_crumb_stone_bridge')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('geo_crumb_stone_bridge')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('this_land_sheet')), findsOneWidget);
     expect(tester.takeException(), isNull);

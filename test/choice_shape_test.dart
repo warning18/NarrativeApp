@@ -62,11 +62,14 @@ void main() {
         actions[s.action] = (actions[s.action] ?? 0) + 1;
         total++;
         // A choice that stays never reads as going somewhere, and only a
-        // way somewhere is not acted out here.
+        // way somewhere is not acted out here (but the making of the
+        // character, on the first scene's page).
         if (s.move == ChoiceMove.stay) {
           expect(s.action, isNot(ChoiceAction.go), reason: node.id);
         }
-        expect(s.here, s.action != ChoiceAction.go, reason: node.id);
+        expect(s.here,
+            s.action != ChoiceAction.go || choice.opensCharacterCreation,
+            reason: node.id);
         if (s.here) here++;
       }
     }

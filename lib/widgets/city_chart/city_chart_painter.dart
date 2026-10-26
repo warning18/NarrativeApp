@@ -607,7 +607,7 @@ class CityChartPainter extends CustomPainter {
 
   /// Where a way's pin sits: on its building.
   Offset pinAt(CityChartWay w) =>
-      chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
+      w.at ?? chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
 
   /// The pins' radius on the screen.
   static const double pinRadius = 12;
@@ -621,6 +621,8 @@ class CityChartPainter extends CustomPainter {
     for (final w in chart.ways) {
       if (w.id == hereWayId) here = pinAt(w);
     }
+    // At a building's doorstep (v1.542), the party stands at its door.
+    here ??= chart.here;
     if (here == null && hereDistrict != null) {
       final d = chart.districtById(hereDistrict!);
       if (d != null && _known(d.id)) here = d.centre.translate(0, 22 * inv);

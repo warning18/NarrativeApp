@@ -37,6 +37,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You pass {stop}.',
     AppLanguage.fr: 'Vous passez {stop}.',
   },
+  'journey_walk_to': {
+    AppLanguage.en: 'You walk to {place}…',
+    AppLanguage.fr: 'Vous marchez vers {place}…',
+  },
+  'journey_step_in': {
+    AppLanguage.en: 'You step inside {place}…',
+    AppLanguage.fr: 'Vous entrez dans {place}…',
+  },
+  'journey_step_out': {
+    AppLanguage.en: 'You step back out into the streets…',
+    AppLanguage.fr: 'Vous ressortez dans les rues…',
+  },
   'journey_you_are_here': {
     AppLanguage.en: 'You are here',
     AppLanguage.fr: 'Vous êtes ici',

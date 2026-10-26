@@ -99,3 +99,20 @@ In `lib/data/city_districts.dart` and `lib/providers/city_provider.dart`:
 The record can grow fields the painter needs (trees, fields outside the wall,
 roof colours by kind). Ask through the manager; Core adds them to the
 generator and the record.
+
+## Doorstep scenes (v1.542)
+
+A building in `geography.json` may list `"doorstep": ["300", ...]`: scenes
+whose `location` is the building but which play in the street before its
+door (the family house watched from across the street). The Journey draws
+them on the district plan, not in the building's room:
+
+- `Geography.doorstepOfNode(node)` / `roomOfNode(node)` say which.
+- `sceneDoorstep(geo, record, node, waysHere: [...])`
+  (`lib/data/city_districts.dart`) gives the building on the plan, the
+  party's spot at its door (`CityPlanRecord.doorstepOf`, the nearest street
+  point) and a street spot for each way that stays there
+  (`CityPlanRecord.streetSpotsAround`).
+- The chart carries them as `CityChart.here` (the party's ring) and
+  `CityChartWay.at` (a pin off its building). A street-view kit can key on
+  `CityChart.here != null`.
