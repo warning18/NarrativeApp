@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.542.0+578
+version: 1.545.0+581
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -16,7 +16,7 @@ dependencies:
   graphview: ^1.2.0
   shared_preferences: ^2.5.6
   path_provider: ^2.1.6
-  open_filex: ^5.0.0
+  open_filex: ^4.7.0
   flutter_tts: ^4.2.5
   audioplayers: ^6.1.0
 

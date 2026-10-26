@@ -238,6 +238,9 @@ const List<String> landTerrains = [
   'marsh',
   'snow',
   'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
 ];
 
 /// [routes]' record [id] (land_routes.json), or null.

@@ -96,7 +96,9 @@ void main() {
     // remembered for the journal.
     expect(find.byKey(const ValueKey('echo_5004_altar|court_fled')),
         findsOneWidget);
-    expect(find.text('Because you chose “Confront them”'), findsOneWidget);
+    // In play the line is plain prose: no caption says why (Edit Mode's
+    // preview keeps it, see test/echo_line_test.dart).
+    expect(find.text('Because you chose “Confront them”'), findsNothing);
     // So does the flight's own memory of the floorboard, read on the way.
     expect(find.byKey(const ValueKey('echo_5004|origin_board_good')),
         findsOneWidget);
