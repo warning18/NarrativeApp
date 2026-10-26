@@ -401,6 +401,65 @@ class CityPlanRecord implements PlacePlan {
     }
     return [from, ...path.reversed, to];
   }
+
+  // --- Doorsteps (v1.543) ----------------------------------------------
+
+  /// Points along every avenue and street, a few units apart.
+  late final List<Offset> _streetSamples = [
+    for (final path in [...avenues, ...streets])
+      for (var i = 1; i < path.points.length; i++)
+        for (var k = 0,
+                n = math.max(
+                    1,
+                    ((path.points[i] - path.points[i - 1]).distance / 4)
+                        .ceil());
+            k < n;
+            k++)
+          Offset.lerp(path.points[i - 1], path.points[i], k / n)!,
+  ];
+
+  /// Where a scene that plays outside building [buildingId] stands (see
+  /// GeoPlace.doorstep): the point of the streets nearest the building's
+  /// middle, its door on the street; the building's middle when the plan
+  /// has no street, and the market square's for a building not on it.
+  Offset doorstepOf(String buildingId) {
+    final b = building(buildingId);
+    if (b == null) return anchorOf('');
+    if (_streetSamples.isEmpty) return b.centre;
+    var best = _streetSamples.first;
+    for (final p in _streetSamples) {
+      if ((p - b.centre).distanceSquared < (best - b.centre).distanceSquared) {
+        best = p;
+      }
+    }
+    return best;
+  }
+
+  /// [count] spots on the street round building [buildingId]'s doorstep,
+  /// for the ways of a scene played outside it (v1.543): each at least
+  /// [gap] from the doorstep and from one another, the nearest first, so
+  /// the pins stand in the street around the door and not on one point.
+  /// Where the streets near it give too few, the rest ring the doorstep.
+  List<Offset> streetSpotsAround(String buildingId, int count,
+      {double gap = 22}) {
+    if (count <= 0) return const [];
+    final door = doorstepOf(buildingId);
+    final near = [
+      for (final p in _streetSamples)
+        if ((p - door).distance >= gap && (p - door).distance <= gap * 6) p
+    ]..sort((a, b) =>
+        (a - door).distanceSquared.compareTo((b - door).distanceSquared));
+    final picked = <Offset>[];
+    for (final p in near) {
+      if (picked.length == count) break;
+      if (picked.every((q) => (q - p).distance >= gap)) picked.add(p);
+    }
+    for (var k = 0; picked.length < count; k++) {
+      final a = k * 2 * math.pi / math.max(count, 3);
+      picked.add(door + Offset(math.cos(a), math.sin(a)) * gap * 1.5);
+    }
+    return picked;
+  }
 }
 
 /// Every record of city_plans.json, by city id.

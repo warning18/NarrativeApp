@@ -3724,6 +3724,15 @@ final DbSchema geographySchema = DbSchema(
       type: FieldType.stringList,
       help: 'Several landmark ids, one per line.',
     ),
+    FieldSchema(
+      key: 'doorstep',
+      label: 'Doorstep scenes (buildings only, v1.543)',
+      type: FieldType.stringList,
+      help: 'Story scene ids, one per line, whose location is this building '
+          'but which play outside it, in the street at its door. The '
+          'Journey opens them on the district\'s streets at the building, '
+          'not in its room.',
+    ),
   ],
 );
 
