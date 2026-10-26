@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.549.0+585]
+
+The level-up stat pick shows on the ability radar.
+
+### Changed
+- **A pick is drawn on the radar** (`stat_pick_picker.dart`, `ability_radar.dart`): picking a stat card no longer opens the detail block under the cards (the path's name, each gain from where it stood to where it goes, the effect lines). The ability radar takes its place: the hero's shape as it stands in gold, the shape the pick would give round it in green, and each corner the pick moves shows its new value highlighted with the gain under it ("CON 7, +1"). The shape grows from the current one over a third of a second; with reduced motion it is there at once. A pick worth more than one point still says "Worth n points" under the radar. "Take this pick", the roll powers and the cards (with the path, each gain and what it does for the hero) are unchanged.
+- `RadarAxis` takes a `valueColor` and `AbilityRadar` a `preview` shape.
+
+### Tests
+- New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
+
 ## [1.548.0+584]
 
 A page whose only ways on are its own cards no longer offers "Back to the map".
