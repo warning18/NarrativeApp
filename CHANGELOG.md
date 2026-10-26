@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.553.0+589]
+
+Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
+
+### Changed
+- **The place sheet** (`arrival_sheet.dart`, `journey_screen.dart`): the words scroll above the whole choices, the sheet grows to 90% of the screen, and its handle can be dragged to make it shorter (down to about a third). The choices are capped at 70% of the room left so a small sheet never overflows.
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner opened the card only for as long as the finger was down. It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; the "Let go to close" and "Tap to close" lines are gone. The other hold-to-open popins already stayed open; a test now says so.
+
+### Tests
+- `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
+
+
 ## [1.552.0+588]
 
 The level-up stat pick shows on the ability radar.
