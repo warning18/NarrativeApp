@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.555.0+591]
+
+The clan's card (and the pop-ups like it) stays open until it is closed.
+
+### Changed
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner (the offer's banner row, the ring's crests, the Throne room's standards) opened the card only for as long as the finger was down ("Let go to close"). It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; a tap on the card itself does not close it (it scrolls). The "Let go to close" and "Tap to close" lines are gone (their strings with them). The offer's (i) button opens the same dialog, with the clan's greeting.
+- **The other hold-to-open popins** (the stat popin, the item, skill and title popins) were checked: they are dialogs and sheets that already stay open and close on a tap outside or the back gesture; a test now says so.
+
+### Tests
+- `offer_dialog_test` and `throne_room_test` now hold, let go, find the card still open, and close it by a tap outside, the close button and the back gesture; new `test/popins_stay_open_test.dart` for the stat sheet and the detail dialog.
+
 ## [1.551.0+587]
 
 A walk along a world road now plays on the World map.
