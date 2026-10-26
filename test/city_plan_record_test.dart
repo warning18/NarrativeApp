@@ -465,19 +465,18 @@ void main() {
     expect(ref.read(currentCityProvider), 'saltmouth');
     expect(ref.read(partyDistrictProvider), 'saltmouth_wharf');
     final gold = ref.read(playerSessionProvider).gold;
-    await tester
-        .runAsync(() => walkToDistrict(ref, 'saltmouth_lantern_alleys'));
+    // (The Lantern Alleys are locked until the Informant's Tip is done,
+    // wave 18: the Yard.)
+    await tester.runAsync(() => walkToDistrict(ref, 'saltmouth_yard'));
     await tester.pump();
-    expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
+    expect(ref.read(partyDistrictProvider), 'saltmouth_yard');
     expect(ref.read(foundDistrictsProvider),
-        containsAll(['saltmouth_wharf', 'saltmouth_lantern_alleys']));
+        containsAll(['saltmouth_wharf', 'saltmouth_yard']));
     expect(ref.read(playerSessionProvider).gold, gold);
-    expect(
-        ref.read(partyDistrictWaysProvider),
-        waysInDistrict(
-            geo, story, story.nodeFor('2015')!, 'saltmouth_lantern_alleys'));
+    expect(ref.read(partyDistrictWaysProvider),
+        waysInDistrict(geo, story, story.nodeFor('2015')!, 'saltmouth_yard'));
     // Another city's district: no walk.
     await tester.runAsync(() => walkToDistrict(ref, 'alster_lower_town'));
-    expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
+    expect(ref.read(partyDistrictProvider), 'saltmouth_yard');
   });
 }

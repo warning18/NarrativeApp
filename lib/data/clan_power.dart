@@ -33,6 +33,7 @@ import 'dart:math';
 
 import '../combat/context_rules.dart' show Reinforcement;
 import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart' show trFor;
 import 'factions.dart';
 import 'geography.dart';
 import 'patron_stats.dart' show statPatron;
@@ -216,12 +217,14 @@ class TerritoryChange {
   final String from;
   final String to;
 
-  /// 'claim', 'war' or 'event'.
+  /// 'claim', 'war', 'event', 'influence' (a district, wave 18) or 'town'
+  /// (a town taken with its districts).
   final String cause;
 }
 
 /// [state] with [placeId] given to [to] ([cause]: 'claim', 'war',
-/// 'event'), its news told and logged, the old holder's relation with the
+/// 'event', 'influence', 'town'), its news told (for 'influence', the
+/// `district_flipped` line) and logged, the old holder's relation with the
 /// new one a step down, and the fallen kept: a clan left with no place
 /// falls (its power to 0); one taking a place rises again. Unchanged when
 /// [to] holds it already.
@@ -253,15 +256,20 @@ PoliticsState givePlace(
         .state;
   }
   final variant = placeId.codeUnits.fold(0, (a, b) => a + b) % 2;
-  String told(AppLanguage language) => territoryNews(
-        language,
-        place: place.nameFor(language == AppLanguage.fr),
-        to: data.faction(to),
-        from: data.faction(from),
-        fromClan: from.isNotEmpty && isMainClan(from, data),
-        war: cause == 'war',
-        variant: variant,
-      );
+  String told(AppLanguage language) => cause == 'influence'
+      ? districtFlippedNews(language,
+          district: place.nameFor(language == AppLanguage.fr),
+          to: data.faction(to),
+          from: data.faction(from))
+      : territoryNews(
+          language,
+          place: place.nameFor(language == AppLanguage.fr),
+          to: data.faction(to),
+          from: data.faction(from),
+          fromClan: from.isNotEmpty && isMainClan(from, data),
+          war: cause == 'war',
+          variant: variant,
+        );
 
   next = next.copyWith(news: [
     ...next.news,
@@ -555,6 +563,19 @@ String territoryNews(
           : 'Les bannières ont changé sur $place\u00a0: c’est ${_to(to)} '
               'désormais.');
 }
+
+/// The news of a district taken by influence (wave 18): app_strings'
+/// `district_flipped`, with {district}, {clan} ([to]) and {from}.
+String districtFlippedNews(
+  AppLanguage language, {
+  required String district,
+  required Faction? to,
+  required Faction? from,
+}) =>
+    trFor(language, 'district_flipped')
+        .replaceAll('{district}', district)
+        .replaceAll('{clan}', _name(to, language))
+        .replaceAll('{from}', _name(from, language));
 
 /// The news of [clan] falling: [winner] took its last place, [seat].
 String fallenNews(

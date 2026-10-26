@@ -47,6 +47,17 @@ void main() {
     expect(salt.neighboursOf('saltmouth_tern_row'),
         containsAll(['saltmouth_landward_gate', 'saltmouth_wharf']));
     expect(salt.neighboursOf('nowhere'), isEmpty);
+    // A locked district (wave 18) is no way to walk; when every neighbour
+    // is locked, the nearest open district is, so the party is never stuck.
+    const locked = {'saltmouth_lantern_alleys', 'saltmouth_tern_row'};
+    final fromGate = salt.walkableFrom('saltmouth_landward_gate', locked);
+    expect(fromGate, hasLength(1));
+    expect(fromGate.single, isNot(isIn(locked)));
+    expect(fromGate.single, isNot('saltmouth_landward_gate'));
+    expect(salt.walkableFrom('saltmouth_landward_gate', const {}),
+        salt.neighboursOf('saltmouth_landward_gate'));
+    expect(salt.walkableFrom('saltmouth_wharf', locked),
+        isNot(contains('saltmouth_tern_row')));
     // Every district of every plan has a neighbour, the links go both ways,
     // and the whole town is reached from any district.
     for (final record in records.values) {
@@ -96,8 +107,13 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // The two quests that open the alleys and Tern Row (wave 18):
+          // done, so both are open to walk into.
+          'completedQuestIds': ['q_ch2_informants_tip', 'q_ch2_terns_toll'],
+        })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);

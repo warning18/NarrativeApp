@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.558.0+594]
+
+Wave 18, step 1: Saltmouth's districts can be locked, and the clans fight over them with influence.
+
+### Added
+- **Locked districts:** a district in `geography.json` may carry `"lock": {"quest", "opensOn": "accepted" | "done"}` and a one-line `lockedText` (EN/FR). While locked, the party can't walk in and the district never counts as found. The story's own ways into it stay open. The free "Walk to" rows skip a locked district; if every neighbour is locked, they offer the nearest open district, so the party is never stuck. Step 1 locks the Lantern Alleys (until *The Informant's Tip* is done) and Tern Row (until *Tern's Toll* is done).
+- **Influence:** each district keeps its clans' influence (0–100, saved), and its holder starts at 20. A quest done while the party is in Saltmouth adds +15 (side) or +25 (Main), or the quest's own `influence`, in the quest's `district`, or where the party stands. It goes to the clan the chosen turn-in raises most, else to the quest's `faction`.
+- **Flips:** a clan whose influence passes the holder's by 15 takes the district, through the same hand-over as war (news, clan log, relations). A news line `district_flipped` names the district and both clans, `flipped_<district>` is set, and the companions' `districtFlipped` remark can fire. A clan holding 4 of Saltmouth's 6 districts holds the town, and loses it below that. Seats never change hands by influence.
+- **For scenes:** `held_<district>_<clan>` flags follow every holder in every town. The `attack` camp-errand kind and the `districtAttacked` remark kind are ready for step 2.
+- **Saltmouth's holders:** Landward Gate (Dominion), Ship-breaker's Yard (Compact), Lantern Alleys (Mire), Wharf and Card Row (Crows), Tern Row (Tide-Kin).
+- **Simulator:** it applies quest influence at turn-in.
+
 ## [1.556.0+592]
 
 The clans' gift no longer waits behind a button: it opens on its own, and a gift must be taken.

@@ -68,6 +68,7 @@ import '../data/sub_node_engine.dart';
 import '../data/training.dart' show TrainingPath, trainingPathsFrom;
 import '../data/zone_gating.dart' show meetsRequiredFlags, zoneIsMain;
 import '../data/clan_power.dart' show TerritoryChange;
+import '../data/city_districts.dart' show districtOfNode;
 import '../data/geography.dart';
 import '../data/nemesis.dart'
     show
@@ -1187,6 +1188,22 @@ _SimResult _simulate(
       // it raises by questPowerStanding gains questPower and is spared
       // this chapter's neglect.
       applyPolitics(pay.politics, pay.politicsKey, cause: 'quest:$id');
+      // Its influence in the town's district (wave 18), as in the app.
+      final world = sim?.geography;
+      final quest = sim?.quests[id];
+      if (growth != null && world != null && quest is Map<String, dynamic>) {
+        final here = story.nodeFor(currentId);
+        final after = growth.applyQuestInfluence(quest,
+            flags: flags,
+            geography: world,
+            chapter: lastKnownChapter ?? 1,
+            picked: pay.politics,
+            cityHere: world.locationOfNode(here)?.id,
+            partyDistrict: districtOfNode(world, here)?.id);
+        flags
+          ..clear()
+          ..addAll(after);
+      }
       final c = character;
       if (c != null) {
         final before = c.level;

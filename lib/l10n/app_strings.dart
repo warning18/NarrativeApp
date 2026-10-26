@@ -12828,6 +12828,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Chapter {c}, day {d}',
     AppLanguage.fr: 'Chapitre {c}, jour {d}',
   },
+  // Wave 18: a district changing hands by influence (district_influence.dart):
+  // the district, the new holder (clan) and the old (from). Placeholder.
+  'district_flipped': {
+    AppLanguage.en: '{district} has changed hands: {from} out, {clan} in.',
+    AppLanguage.fr:
+        '{district} a changé de mains\u00a0: dehors {from}, place à {clan}.',
+  },
   'journal_news_tab': {
     AppLanguage.en: 'News',
     AppLanguage.fr: 'Nouvelles',

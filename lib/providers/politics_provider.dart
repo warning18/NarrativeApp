@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../data/district_influence.dart' show InfluenceResult;
 import '../data/factions.dart';
 import '../data/politics_events.dart';
 import '../gamedata/db_schema.dart';
 import '../models/story_node.dart';
 import 'chapter_loop_provider.dart';
+import 'city_provider.dart';
 import 'clans_provider.dart';
 import 'game_db_providers.dart';
 import 'geography_provider.dart';
@@ -89,6 +91,29 @@ Future<CoastChange> applyStoryPoliticsNow(
   return change;
 }
 
+/// [quest] (a quests.json record) turned in, its turn-in choice's
+/// politics [picked] (wave 18, see applyQuestInfluence): its influence in
+/// its district while the party is in the town, counted in the chapter
+/// reached. The caller tells a district that changed hands
+/// ([InfluenceResult.flipped]).
+Future<InfluenceResult> applyQuestInfluenceNow(
+  WidgetRef ref,
+  Map<String, dynamic> quest, {
+  StoryPolitics? picked,
+}) async {
+  final data = await loadClanData(ref);
+  final geography = await loadGeography(ref);
+  return ref.read(playerSessionProvider.notifier).applyQuestInfluence(
+        quest,
+        data: data,
+        geography: geography,
+        picked: picked,
+        cityHere: ref.read(currentCityProvider),
+        partyDistrict: ref.read(partyDistrictProvider),
+        chapter: ref.read(reachedChapterProvider),
+      );
+}
+
 /// Edit Mode's Throne tab (v1.196): [politics] (a claim, a pledge, the
 /// Throne, the muster) applied now, every time.
 Future<CoastChange> applyThroneEditNow(
@@ -102,6 +127,11 @@ Future<CoastChange> applyThroneEditNow(
 /// The politics scene [nodeId] carries on entry (StoryNode.politicsOnEnter),
 /// applied once: entering it again, or coming back to it, does nothing.
 Future<void> applyEnterPolitics(WidgetRef ref, String nodeId) async {
+  // Who holds each district, as flags a scene can ask for (wave 18).
+  final geography = ref.read(geographyProvider);
+  if (!geography.isEmpty) {
+    await ref.read(playerSessionProvider.notifier).syncHeldFlags(geography);
+  }
   final node = ref.read(storyDataProvider).value?.nodeFor(nodeId);
   final politics = node?.politicsOnEnter;
   if (politics == null || politics.isEmpty) return;
