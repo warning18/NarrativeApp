@@ -249,6 +249,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  // A scene the story brought the party to holds it on its page (v1.553).
+  'journey_choose_first': {
+    AppLanguage.en: 'Choose first',
+    AppLanguage.fr: 'Choisissez d\'abord',
+  },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',

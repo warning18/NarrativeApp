@@ -37,7 +37,9 @@ import '../data/narration_tokens.dart';
 import '../data/politics_events.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
+import '../data/choice_shape.dart';
 import '../data/quest_hints.dart';
+import '../data/scene_lock.dart';
 import '../data/quest_tracking.dart' show isMainQuest;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
@@ -425,9 +427,12 @@ class _StoryView extends ConsumerWidget {
         !(ref.watch(partyAtCampProvider) &&
             ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
-    // Picking a saved story back up: a short recap, once per launch.
+    // Picking a saved story back up: a short recap, once per launch. A
+    // save on a scene that holds the party on its page (scene_lock.dart)
+    // has it on the next scene with a map.
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
+        !storySceneLocked(ref, node, story) &&
         hasRecapProgress(playState,
             resumed:
                 ref.read(storyPlayProvider.notifier).restoredFromAutosave)) {
@@ -1106,6 +1111,32 @@ bool isStoryChoiceLocked(
         StoryChoice choice, StoryData story, PlayerSession session,
         {bool isExcursion = false, CoastWorld? world}) =>
     _isChoiceLocked(choice, story, session, isExcursion, world: world);
+
+/// Whether [node]'s page holds the party until one of its ways is taken
+/// (the scene lock, see scene_lock.dart), for the play state now: never on
+/// a detour, whose own view has no map to leave by.
+bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story) {
+  if (ref.watch(storyPlayProvider).isInExcursion) return false;
+  final session = ref.watch(playerSessionProvider);
+  final world = ref.watch(coastGateWorldProvider);
+  final geography = ref.watch(geographyProvider);
+  final mainQuestOpen =
+      ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
+  return sceneLocked(
+    ways: [
+      for (final c in node.choices)
+        if (!choiceHiddenFor(c, session, world))
+          (
+            here: choiceShape(node, c, story: story, geography: geography).here,
+            takeable: !(c.mainQuest && !mainQuestOpen) &&
+                !isStoryChoiceLocked(c, story, session, world: world),
+          ),
+    ],
+    hub: isHubScene(node),
+    ending: isStoryEnding(node),
+    editMode: ref.watch(appModeProvider) == AppMode.edit,
+  );
+}
 
 /// What a shut [choice] reads as instead of its text: why it is shut (see
 /// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for

@@ -96,6 +96,7 @@ import 'story_player_screen.dart'
         EchoLine,
         composeNarrationParts,
         isStoryChoiceLocked,
+        storySceneLocked,
         noteShownEchoes,
         storyChoiceLockedText,
         takeStoryChoice;
@@ -668,10 +669,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// Whether the scene shown is a new game's first scene, opened as a page.
   bool _openedFresh = false;
 
-  /// The scene whose page the story opened by itself (v1.548): a new
-  /// game's first scene, or one a card on a page led to. When all its ways
-  /// are cards too, its page has no way back to the map.
-  String? _pageByCardAt;
+  /// The scene the story brought the party to (v1.553, scene_lock.dart):
+  /// a way taken into it (a pin or a card), a new game's first scene, or a
+  /// save picked back up on it. While it holds a way acted out here, its
+  /// page holds the party: every way is a card and the map waits.
+  String? _lockedAt;
+
+  /// The play state the last new scene was shown for: a scene reached
+  /// otherwise than by a step from it (a save loaded) is one the story
+  /// brought the party to; a jump (a step) is not.
+  StoryPlayState? _shownPlay;
+
+  /// A road card taken on a locked page: the map comes back and walks it.
+  StoryChoice? _walkOn;
 
   /// The scene of a place the party just arrived at, in a sheet over the map
   /// (S2, see arrival_sheet.dart); Continue closes it.
@@ -827,8 +837,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               _arrival = !fresh && view == ArrivalView.sheet;
               // The view is chosen here: the next build keeps it.
               _openedFresh = fresh;
-              _pageByCardAt =
-                  _reading && (fresh || step.onCard) ? _sceneKeyOf(play) : null;
+              // The story brought the party here: its page holds it if a
+              // way is acted out here (see the build).
+              _lockedAt = ref.read(appModeProvider) == AppMode.edit
+                  ? null
+                  : _sceneKeyOf(play);
             }
           });
         }
@@ -861,7 +874,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     setState(() {
       _reading = reading;
       _arrival = false;
-      _pageByCardAt = null;
+      _lockedAt = null;
+    });
+  }
+
+  /// A road card taken on a locked page (v1.553): the lock lifts, the map
+  /// comes back and the party walks the way as a step on it.
+  void _leaveByRoad(int index, _Step step) {
+    if (_busy || step.locked) return;
+    setState(() {
+      _lockedAt = null;
+      _reading = false;
+      _arrival = false;
+      _selected = index;
+      _walkOn = step.choice;
     });
   }
 
@@ -986,17 +1012,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// which has no pins).
   Widget _choicePanel(
       List<_Step> steps, _Step? selected, bool french, StoryData story,
-      {bool shrinkWrap = false}) {
+      {bool shrinkWrap = false, bool all = false}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
-    final hub = _isHub(steps);
+    // A locked page ([all], v1.553) lists every way as a card: the ways
+    // somewhere as road cards, which go back to the map and walk them.
+    final hub = !all && _isHub(steps);
     return ListView(
       key: const ValueKey('journey_choice_cards'),
       padding: EdgeInsets.zero,
       shrinkWrap: shrinkWrap,
       children: [
-        if (selected != null && !selected.onCard) ...[
+        if (!all && selected != null && !selected.onCard) ...[
           _StepDetail(
             step: selected,
             busy: _busy,
@@ -1032,11 +1060,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           ),
         ] else
           for (var i = 0; i < steps.length; i++)
-            if (steps[i].onCard)
+            if (steps[i].onCard || (all && steps[i].shape.here))
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: _cardFor(i, steps[i], french, ink, palette, enemies,
                     identical(selected, steps[i])),
+              )
+            else if (all)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                    identical(selected, steps[i]),
+                    onTap: () => _selected == i && !steps[i].locked
+                        ? _leaveByRoad(i, steps[i])
+                        : setState(() => _selected = i),
+                    onGo: () => _leaveByRoad(i, steps[i])),
               ),
       ],
     );
@@ -1237,18 +1275,31 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _outside = false;
       // A new game opens on its first scene's page, as any main-story
       // scene arrived at does; the map comes after.
-      final fresh =
-          ref.read(appModeProvider) != AppMode.edit && isFreshStoryStart(play);
+      final editing = ref.read(appModeProvider) == AppMode.edit;
+      final fresh = !editing && isFreshStoryStart(play);
+      // The scene the Journey first shows, or one the story was put back
+      // on (a save loaded): not a step from the last scene shown.
+      final shown = _shownPlay;
+      final stepped = shown != null &&
+          (shown.isInExcursion ||
+              play.isInExcursion ||
+              (play.history.length == shown.history.length + 1 &&
+                  play.history.last == shown.currentNodeId));
+      _shownPlay = play;
       if (fresh) {
         _reading = true;
         _arrival = false;
-        _pageByCardAt = sceneKey;
-      } else if (_openedFresh ||
-          (_pageByCardAt != null && _pageByCardAt != sceneKey)) {
+        _lockedAt = sceneKey;
+      } else if (!editing && !stepped) {
+        // A save picked back up: its page holds the party if its scene
+        // locks (see below), the map otherwise.
+        if (_lockedAt != null) _reading = false;
+        _lockedAt = sceneKey;
+      } else if (_openedFresh || (_lockedAt != null && _lockedAt != sceneKey)) {
         // Moved on from a page the story opened by other means than a way
-        // taken here (a jump, a save loaded): the map, as before.
+        // taken here (a jump): the map, as before.
         _reading = false;
-        _pageByCardAt = null;
+        _lockedAt = null;
       }
       _openedFresh = fresh;
     }
@@ -1745,17 +1796,62 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // choices acted out here (cards, or a chip for each kind in a hub), then
     // the way back to the map. The map keeps only the ways that carry the
     // party somewhere.
+    // A scene the story brought the party to, with a way acted out here,
+    // holds it on its page (v1.553, scene_lock.dart): every way is a card,
+    // the map waits. A written detour has no map to leave already.
+    final locked = _lockedAt == sceneKey &&
+        !_writtenDetour &&
+        storySceneLocked(ref, node, story);
+    if (locked) {
+      _reading = true;
+      _arrival = false;
+    }
+    // A road card taken on a locked page: the map is back, the party walks.
+    if (_walkOn != null && !_reading) {
+      final way = _walkOn;
+      _walkOn = null;
+      final i = steps.indexWhere((s) => identical(s.choice, way));
+      if (i >= 0) {
+        final step = steps[i];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _take(i, step);
+        });
+      }
+    }
     if (_reading) {
-      final here = steps.any((s) => s.onCard);
-      // A page the story opened by itself whose ways are all cards has no
-      // map to go back to (v1.548): the cards take the story on.
-      final toMap =
-          !here || steps.any((s) => !s.onCard) || _pageByCardAt != sceneKey;
+      final here = locked || steps.any((s) => s.onCard);
+      // A locked page has no way back to the map: the cards take the story
+      // on, and the map's tabs and buttons wait, greyed ("Choose first").
+      final toMap = !locked;
+      // The button names the map: the way back to it, or, locked, the way
+      // that waits.
+      final toMapLabel = here && (toMap || textReady);
+      final waitLine = Text(
+        tr(ref, 'journey_choose_first'),
+        key: const ValueKey('journey_choose_first'),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: InkColors.of(context).ash, fontStyle: FontStyle.italic),
+      );
       return SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
           child: Column(
             children: [
+              if (locked) ...[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: _LevelTabs(
+                    selected: _LevelTab.district,
+                    townEnabled: false,
+                    busy: true,
+                    enabled: false,
+                    palette: palette,
+                    onPick: (_) {},
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
               Expanded(
                 child: _ScenePanel(
                   revealKey: revealKey,
@@ -1766,6 +1862,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   folded: false,
                   reading: true,
                   toMap: toMap,
+                  locked: locked,
                   onFold: (_) {},
                   onReading: (r) {
                     if (r || toMap) _read(r);
@@ -1778,32 +1875,34 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 ConstrainedBox(
                   constraints: BoxConstraints(
                       maxHeight: MediaQuery.sizeOf(context).height * 0.42),
-                  child: _choicePanel(
-                      steps, _pickedCard(selected), french, story,
-                      shrinkWrap: true),
+                  child: _choicePanel(steps,
+                      locked ? selected : _pickedCard(selected), french, story,
+                      shrinkWrap: true, all: locked),
                 ),
               ],
-              // Without a way back to the map, Continue only shows the words
-              // at once; the cards take the story on.
-              if (toMap || !textReady) ...[
+              // On a locked page, Continue only shows the words at once;
+              // then the way back to the map waits, greyed.
+              if (toMap || !textReady || locked) ...[
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
                     key: const ValueKey('journey_continue'),
-                    onPressed: continueFromScene,
+                    onPressed: locked && textReady ? null : continueFromScene,
                     icon: Icon(
-                        here && toMap
-                            ? Icons.map_outlined
-                            : Icons.arrow_forward,
+                        toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
                         size: 18),
                     label: Text(tr(
                         ref,
-                        here && toMap
+                        toMapLabel
                             ? 'journey_reading_exit'
                             : 'journey_continue')),
                   ),
                 ),
+                if (locked && textReady) ...[
+                  const SizedBox(height: 4),
+                  waitLine,
+                ],
               ],
             ],
           ),
@@ -2891,6 +2990,7 @@ class _ScenePanel extends ConsumerWidget {
     this.detour,
     this.revealKey,
     this.toMap = true,
+    this.locked = false,
   });
 
   final StoryData story;
@@ -2898,6 +2998,9 @@ class _ScenePanel extends ConsumerWidget {
 
   /// Read full screen, whether it has a way back to the map.
   final bool toMap;
+
+  /// A locked page (v1.553): the corner's map button waits, greyed.
+  final bool locked;
 
   /// Names the scene for the typewriter (see StoryText); null shows its
   /// words at once.
@@ -3086,13 +3189,18 @@ class _ScenePanel extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (reading && toMap)
+                if (reading && (toMap || locked))
                   IconButton(
                     key: const ValueKey('journey_reading_exit'),
                     icon: const Icon(Icons.map_outlined, size: 20),
-                    tooltip: tr(ref, 'journey_reading_exit'),
+                    // A locked page's map waits (v1.553): greyed.
+                    tooltip: tr(
+                        ref,
+                        locked
+                            ? 'journey_choose_first'
+                            : 'journey_reading_exit'),
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => onReading(false),
+                    onPressed: locked ? null : () => onReading(false),
                   )
                 else ...[
                   if (folded)
@@ -5510,26 +5618,31 @@ class _LevelTabs extends ConsumerWidget {
     required this.busy,
     required this.palette,
     required this.onPick,
+    this.enabled = true,
   });
 
   final _LevelTab selected;
   final bool townEnabled;
   final bool busy;
+
+  /// False on a locked page (v1.553): every tab greyed, none lit.
+  final bool enabled;
   final ChartPalette palette;
   final ValueChanged<_LevelTab> onPick;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Widget tab(_LevelTab t, String label, {bool enabled = true}) {
-      final on = t == selected;
+      final open = enabled && this.enabled;
+      final on = this.enabled && t == selected;
       final colour = on
           ? palette.mark
-          : enabled
+          : open
               ? palette.place
               : palette.label.withValues(alpha: 0.5);
       return InkWell(
         key: Key('journey_tab_${t.name}'),
-        onTap: enabled && !busy && !on ? () => onPick(t) : null,
+        onTap: open && !busy && !on ? () => onPick(t) : null,
         child: Container(
           height: 28,
           padding: const EdgeInsets.symmetric(horizontal: 9),
