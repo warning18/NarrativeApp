@@ -50,7 +50,14 @@ class AbilityRadar extends StatelessWidget {
     this.size = 320,
     this.compact = false,
     this.onAxisTap,
+    this.preview,
   });
+
+  /// A pick that is being looked at (v1.549): the shape [values] would take,
+  /// drawn over the current one in a second colour, its changed corners
+  /// showing the new value and the change. It grows from the current shape
+  /// (not with reduced motion).
+  final Map<String, int>? preview;
 
   /// A tap on an ability's corner (its key, as in [abilityRadarOrder]); null
   /// for a radar that only shows.
@@ -82,21 +89,38 @@ class AbilityRadar extends StatelessWidget {
     final was = before == null
         ? null
         : [for (final k in abilityRadarOrder) (before![k] ?? 0).toDouble()];
-    final highest = [...now, ...?was].fold(0.0, (m, v) => v > m ? v : m);
+    final after = preview == null
+        ? null
+        : [
+            for (final k in abilityRadarOrder)
+              (preview![k] ?? values[k] ?? 0).toDouble()
+          ];
+    final highest =
+        [...now, ...?was, ...?after].fold(0.0, (m, v) => v > m ? v : m);
     final max = chartScaleFor(highest.ceil(), floor: 6, step: 3);
     final axes = [
       for (final (i, k) in abilityRadarOrder.indexed)
-        RadarAxis(
-          label: compact
-              ? '${t(abilityAbbrevKey(k))} ${now[i].round()}'
-              : t(abilityAbbrevKey(k)),
-          value: compact ? null : '${now[i].round()}',
-          sub: was != null && now[i] != was[i]
-              ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
-              : null,
-          subColor: was != null && now[i] < was[i] ? radarLess : radarMore,
-          onTap: onAxisTap == null ? null : () => onAxisTap!(k),
-        ),
+        () {
+          // A corner the pick would change shows the new value and the
+          // gain, in the pick's colour.
+          final picked = after != null && after[i] != now[i];
+          return RadarAxis(
+            label: compact
+                ? '${t(abilityAbbrevKey(k))} ${(picked ? after[i] : now[i]).round()}'
+                : t(abilityAbbrevKey(k)),
+            value: compact ? null : '${(picked ? after[i] : now[i]).round()}',
+            valueColor: picked ? radarMore : null,
+            sub: picked
+                ? '+${(after[i] - now[i]).round()}'
+                : was != null && now[i] != was[i]
+                    ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
+                    : null,
+            subColor: !picked && was != null && now[i] < was[i]
+                ? radarLess
+                : radarMore,
+            onTap: onAxisTap == null ? null : () => onAxisTap!(k),
+          );
+        }(),
     ];
     Widget legend(Color c, String label, {bool dashed = false}) => Row(
           mainAxisSize: MainAxisSize.min,
@@ -118,10 +142,8 @@ class AbilityRadar extends StatelessWidget {
                     ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.8))),
           ],
         );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        RadarChart(
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    Widget chart(double grown) => RadarChart(
           compact: compact,
           size: size,
           max: max,
@@ -134,13 +156,42 @@ class AbilityRadar extends StatelessWidget {
                   fill: 0,
                   dashed: true,
                   width: 2),
+            // The pick's shape under the current one, wider: the current
+            // outline stays whole over it, and the pick shows where it goes
+            // past it.
+            if (after != null)
+              RadarLayer(
+                values: [
+                  for (var i = 0; i < now.length; i++)
+                    now[i] + (after[i] - now[i]) * grown
+                ],
+                color: radarMore,
+                fill: 0.2,
+                width: 5,
+                dots: false,
+              ),
             RadarLayer(values: now, color: color),
           ],
           semanticsLabel: [
             for (final (i, k) in abilityRadarOrder.indexed)
-              '${t('${k}_label')} ${now[i].round()}',
+              '${t('${k}_label')} ${now[i].round()}'
+                  '${after != null && after[i] != now[i] ? ' → ${after[i].round()}' : ''}',
           ].join(', '),
-        ),
+        );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (after == null || still)
+          chart(1)
+        else
+          TweenAnimationBuilder<double>(
+            // A new pick grows from the current shape again.
+            key: ValueKey(after.join(',')),
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 320),
+            curve: Curves.easeOutCubic,
+            builder: (context, grown, _) => chart(grown),
+          ),
         if (beforeLabel != null && nowLabel != null) ...[
           const SizedBox(height: 4),
           Wrap(

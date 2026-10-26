@@ -15,12 +15,16 @@ class RadarAxis {
     this.color,
     this.sub,
     this.subColor,
+    this.valueColor,
     this.onTap,
   });
 
   final String label;
   final String? value;
   final Color? color;
+
+  /// The value's colour when it stands out (a value a pick would change).
+  final Color? valueColor;
   final String? sub;
   final Color? subColor;
 
@@ -151,8 +155,11 @@ class RadarChart extends StatelessWidget {
                           scheme.onSurface.withValues(alpha: 0.8))),
               if (axis.value != null)
                 Text(axis.value!,
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontSize: 16, color: scheme.onSurface)),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                        fontSize: 16,
+                        fontWeight:
+                            axis.valueColor == null ? null : FontWeight.w700,
+                        color: axis.valueColor ?? scheme.onSurface)),
               if (axis.sub != null)
                 Text(axis.sub!,
                     style: theme.textTheme.labelSmall?.copyWith(
