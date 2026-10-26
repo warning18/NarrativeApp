@@ -108,6 +108,18 @@ final partyDistrictWaysProvider = Provider<List<int>>((ref) {
   return waysInDistrict(ref.watch(geographyProvider), story!, node, district);
 });
 
+/// The districts the party can walk into from its own (see
+/// CityPlanRecord.neighboursOf): the Journey offers a walk to each when no
+/// way of the scene stands in the party's district. Empty outside a city
+/// with a stored plan.
+final partyDistrictNeighboursProvider = Provider<List<String>>((ref) {
+  final city = ref.watch(currentCityProvider);
+  final here = ref.watch(partyDistrictProvider);
+  if (city == null || here == null) return const [];
+  final record = ref.watch(cityPlanRecordsProvider).value?[city];
+  return record?.neighboursOf(here) ?? const [];
+});
+
 /// Free walking (board 15): the party walks to [districtId] of the city it
 /// is in, with no story choice, no time and no road. A district not found
 /// yet is found by walking in (and stays found, see districtFoundFlag).

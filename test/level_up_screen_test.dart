@@ -84,11 +84,12 @@ void main() {
         isNull);
 
     final offer = container.read(playerSessionProvider).statPickOffer.first;
-    // An offer is picked first: its detail shows, and nothing is spent until
-    // it is taken.
+    // An offer is picked first: it shows on the radar, and nothing is spent
+    // until it is taken.
     await tester.tap(find.byKey(const Key('stat_pick_offer_0')));
     await settle(tester);
     expect(find.byKey(Key('stat_pick_detail_${offer.pathId}')), findsOneWidget);
+    expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
     expect(container.read(playerSessionProvider).statPoints, 5);
     await tester.tap(find.byKey(const Key('stat_pick_take')));
     await settle(tester);
