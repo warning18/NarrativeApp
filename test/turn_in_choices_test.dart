@@ -59,8 +59,9 @@ void main() {
           entry.key,
     ];
     // 15, and the six nemesis quests (v5.2 step 6), which close on one
-    // beat: the champion beaten, the hunt broken.
-    expect(asking, hasLength(21));
+    // beat: the champion beaten, the hunt broken; and the two district
+    // quests of Saltmouth (wave 18: Card Row and Tern Row).
+    expect(asking, hasLength(23));
     final flags = <String>{};
     for (final id in asking) {
       final raw = (quests[id] as Map)['turnInChoices'] as List;

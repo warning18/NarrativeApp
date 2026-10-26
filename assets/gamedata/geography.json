@@ -286,8 +286,8 @@
     "landmark": "",
     "glyph": "market",
     "lock": {"quest": "q_ch2_terns_toll", "opensOn": "done"},
-    "lockedText": "The Tide-Kin keep the footbridge shut to strangers.",
-    "lockedText_fr": "Les Gens de la Marée gardent la passerelle fermée aux étrangers."
+    "lockedText": "The footbridge is drawn up. The Tide-Kin will let no stranger over while an overseer’s boot is on their planks.",
+    "lockedText_fr": "La passerelle est relevée. Les Gens de la Marée ne laisseront passer aucun inconnu tant que la botte d’un contremaître foulera leurs planches."
   },
   "saltmouth_wharf": {
     "level": "district",
@@ -337,8 +337,8 @@
     "landmark": "",
     "glyph": "market",
     "lock": {"quest": "q_ch2_informants_tip", "opensOn": "done"},
-    "lockedText": "The lamp-men don’t know you yet.",
-    "lockedText_fr": "Les hommes aux lanternes ne vous connaissent pas encore."
+    "lockedText": "The lamps go out at the first arch. Nobody here buys from a stranger the informants have not named.",
+    "lockedText_fr": "Les lampes s’éteignent à la première arche. Ici, personne n’achète à un inconnu que les indicateurs n’ont pas nommé."
   },
   "saltmouth_card_row": {
     "level": "district",

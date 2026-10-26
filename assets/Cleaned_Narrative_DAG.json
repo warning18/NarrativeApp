@@ -3306,6 +3306,60 @@
         "hideIfFlags": [
           "hub_2015_lysa_line"
         ]
+      },
+      {
+        "text": "Try the first arch of the Lantern Alleys",
+        "text_fr": "Tenter la première arche des Ruelles aux lanternes",
+        "next_id": "2015_alleys_door",
+        "hideIfFlags": [
+          "hub_2015_alleys_door"
+        ]
+      },
+      {
+        "text": "Look across the footbridge to Tern Row",
+        "text_fr": "Regarder de l’autre côté de la passerelle, vers Tern Row",
+        "next_id": "2015_ternrow_door",
+        "hideIfFlags": [
+          "hub_2015_ternrow_door"
+        ]
+      },
+      {
+        "text": "Hear the tally-man out at Card Row",
+        "text_fr": "Écouter le pointeur de la Rangée des cartes",
+        "next_id": "2015_cardrow_tally",
+        "hideIfFlags": [
+          "hub_2015_cardrow_tally"
+        ]
+      },
+      {
+        "text": "Count the crates at Card Row",
+        "text_fr": "Compter les caisses de la Rangée des cartes",
+        "next_id": "2015_cardrow_count",
+        "showIfFlags": [
+          "hub_2015_cardrow_tally"
+        ],
+        "hideIfFlags": [
+          "card_row_counted"
+        ]
+      },
+      {
+        "text": "Hear out the lantern-maker on Tern Row",
+        "text_fr": "Écouter la fabricante de lanternes de Tern Row",
+        "next_id": "2015_ternrow_buyer",
+        "hideIfFlags": [
+          "hub_2015_ternrow_buyer"
+        ]
+      },
+      {
+        "text": "Take the buyer’s boats down to the water",
+        "text_fr": "Descendre à l’eau les bateaux de l’acheteur",
+        "next_id": "2015_ternrow_boats",
+        "showIfFlags": [
+          "hub_2015_ternrow_buyer"
+        ],
+        "hideIfFlags": [
+          "tern_boats_done"
+        ]
       }
     ],
     "prompt": "What do you do on the Wharf?",
@@ -28432,5 +28486,186 @@
         "fr": "La quartier-maîtresse avait sorti la bourse, effacé la somme à la craie et l’avait réécrite, et personne à la voilerie ne regardait personne."
       }
     ]
+  },
+  "2015_alleys_door": {
+    "id": "2015_alleys_door",
+    "description": "The first arch of the Lantern Alleys was lit when I came up the steps from the wharf, and dark by the time I reached it. A woman in the shadow of the arch did not move. **Her hand was on a lamp she had not lit**.\n\n“We do not sell to people the Inquisition’s informants have not named,” she said, not unkindly. “It is not that we dislike you. It is that a name is the only thing that keeps the alleys open.”\n\nShe looked at the stair behind me. “Find the informant. Do what he asks. Then come back, and the lamps will have decided.”",
+    "description_fr": "Le premier porche des Ruelles aux lanternes était éclairé quand je montai les marches depuis le quai, et sombre quand j’y arrivai. Une femme dans l’ombre de l’arche ne bougea pas. **Sa main reposait sur une lampe qu’elle n’avait pas allumée**.\n\n« Nous ne vendons pas aux gens que les indicateurs de l’Inquisition n’ont pas nommés, dit-elle, sans dureté. Ce n’est pas que nous ne vous aimions pas. C’est qu’un nom est la seule chose qui garde les ruelles ouvertes. »\n\nElle regarda l’escalier derrière moi. « Trouvez l’indicateur. Faites ce qu’il demande. Puis revenez, et les lampes auront décidé. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Turn back and look for the informant",
+        "text_fr": "Faire demi-tour et chercher l’indicateur",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_alleys_door"
+        ]
+      },
+      {
+        "text": "Leave a coin on the step and go",
+        "text_fr": "Laisser une pièce sur la marche et partir",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_alleys_door"
+        ]
+      }
+    ],
+    "prompt": "What do you do at the arch?",
+    "prompt_fr": "Que faites-vous à l’arche ?"
+  },
+  "2015_ternrow_door": {
+    "id": "2015_ternrow_door",
+    "description": "The footbridge to Tern Row had been drawn up on the far side, and a line of paper boats stood on the rail, each unlit. Nadira stood on the other end with her arms folded.\n\n“It is not you,” she said across the gap. “It is the overseer’s boot on every plank. Anyone who crosses brings his toll with them, and we cannot afford another.”\n\nA gull landed on the rail, looked at the boats, and left. **The Tide-Kin light a boat for each person the sea gave back**. She did not say how many were unlit. “Make him reconsider the arithmetic,” she said. “Then we will lower the bridge.”",
+    "description_fr": "La passerelle de Tern Row avait été relevée du côté opposé, et une rangée de bateaux de papier se tenait sur la rambarde, tous éteints. Nadira attendait à l’autre bout, les bras croisés.\n\n« Ce n’est pas vous, dit-elle par-dessus le vide. C’est la botte du contremaître sur chaque planche. Quiconque passe apporte son péage avec lui, et nous ne pouvons pas en payer un autre. »\n\nUne mouette se posa sur la rambarde, regarda les bateaux, et repartit. **Les Gens de la Marée allument un bateau pour chaque personne que la mer a rendue**. Elle ne dit pas combien restaient éteints. « Faites-lui revoir son arithmétique, dit-elle. Alors nous baisserons la passerelle. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Ask Nadira what the overseer wants",
+        "text_fr": "Demander à Nadira ce que veut le contremaître",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_ternrow_door"
+        ],
+        "unlockQuestId": "q_ch2_terns_toll"
+      },
+      {
+        "text": "Light one of the boats yourself and go",
+        "text_fr": "Allumer vous-même un des bateaux et partir",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_ternrow_door"
+        ]
+      }
+    ],
+    "prompt": "What do you do at the footbridge?",
+    "prompt_fr": "Que faites-vous à la passerelle ?"
+  },
+  "2015_cardrow_tally": {
+    "id": "2015_cardrow_tally",
+    "description": "Voss kept the tally on a slate nailed to the nearest barrel, and the slate and the stack disagreed. He did not look up when I came over. **Forty crates counted onto the quay, thirty-one on the quay**, and every dockhand at Card Row carrying them a little too slowly.\n\n“The Crows will want to know who is skimming,” he said, to the slate. “I would like to know before they do. I have a family, and the Crows ask their questions at the end of a pier.”\n\nHe held the chalk out. It was an honest hand, shaking a little. “Count with me,” he said. “Someone should.”",
+    "description_fr": "Voss tenait le compte sur une ardoise clouée au tonneau le plus proche, et l’ardoise et la pile ne s’accordaient pas. Il ne leva pas les yeux quand je m’approchai. **Quarante caisses comptées sur le quai, trente et une sur le quai**, et chaque docker de la Rangée des cartes les portait un peu trop lentement.\n\n« Les Corbeaux voudront savoir qui écrème, dit-il à l’ardoise. J’aimerais le savoir avant eux. J’ai une famille, et les Corbeaux posent leurs questions au bout d’un ponton. »\n\nIl tendit la craie. C’était une main honnête, qui tremblait un peu. « Comptez avec moi, dit-il. Quelqu’un doit le faire. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_card_row",
+    "choices": [
+      {
+        "text": "Take the chalk and start counting",
+        "text_fr": "Prendre la craie et se mettre à compter",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_cardrow_tally"
+        ],
+        "unlockQuestId": "q_ch2_card_row_short_count"
+      }
+    ],
+    "prompt": "Will you count with him?",
+    "prompt_fr": "Compterez-vous avec lui ?",
+    "flag_callbacks": [
+      {
+        "flag": "held_saltmouth_card_row_crows",
+        "en": "Voss said, “Count it twice, friend. The Crows count it three times.”",
+        "fr": "Voss dit : « Comptez-le deux fois, l’ami. Les Corbeaux le comptent trois fois. »"
+      },
+      {
+        "flag": "flipped_saltmouth_card_row",
+        "en": "Voss said, “New pennant, same tally. Nobody told the crates.”",
+        "fr": "Voss dit : « Nouvelle bannière, même compte. Personne ne l’a dit aux caisses. »"
+      }
+    ]
+  },
+  "2015_cardrow_count": {
+    "id": "2015_cardrow_count",
+    "description": "I counted until the lanterns burned down, crate by crate, with Voss calling the numbers from the slate. At the thirty-first I stopped, and Voss looked at the stack and then at me. **The nine missing crates were under a tarpaulin at the end of the row**, stencilled for a ship that had left on Tuesday.\n\nThe dockhand who stood nearest the tarpaulin did not run. He only looked at the Crows' pennant over the barrels, and then at me, and I understood that he had been waiting for someone to ask him.\n\nVoss wrote the number down. Forty. **It agreed with the slate**.",
+    "description_fr": "Je comptai jusqu’à ce que les lanternes s’éteignent, caisse par caisse, Voss annonçant les chiffres depuis l’ardoise. À la trente et unième, je m’arrêtai, et Voss regarda la pile puis moi. **Les neuf caisses manquantes étaient sous une bâche au bout de la rangée**, marquées pour un navire parti le mardi.\n\nLe docker le plus proche de la bâche ne s’enfuit pas. Il regarda seulement la bannière des Corbeaux au-dessus des tonneaux, puis moi, et je compris qu’il attendait depuis longtemps que quelqu’un lui pose la question.\n\nVoss écrivit le chiffre. Quarante. **Il s’accordait avec l’ardoise**.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_card_row",
+    "choices": [
+      {
+        "text": "Close the book and go back to the stalls",
+        "text_fr": "Fermer le registre et retourner aux étals",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "card_row_counted"
+        ]
+      }
+    ],
+    "prompt": "What do you do with the count?",
+    "prompt_fr": "Que faites-vous du compte ?"
+  },
+  "2015_ternrow_buyer": {
+    "id": "2015_ternrow_buyer",
+    "description": "Dunn made lanterns for the paper boats, and she made them slowly, the way you make something that has to be right once. She had one half-built on her bench when I came to the stall, and she did not look at it. **A buyer had been to the row**, she said, and he had lit eleven boats in two nights, one for every name he gave.\n\n“None of them are names the sea took,” she said. “He gave them to me so the lanterns would be in his hand, not to remember anyone. The Tide-Kin do not light a boat for a lie. The water knows. **It keeps its own accounts**.”\n\nShe put the half-built lantern down. “I would like the boats brought down from the quay and set where the water can read them. I cannot carry that many.”",
+    "description_fr": "Dunn faisait les lanternes des bateaux de papier, et elle les faisait lentement, comme on fait ce qui doit être juste une seule fois. Elle en avait une à moitié montée sur son établi quand j’arrivai à l’étal, et elle ne la regardait pas. **Un acheteur était venu sur la rangée**, dit-elle, et il avait allumé onze bateaux en deux nuits, un pour chaque nom qu’il donnait.\n\n« Aucun n’est un nom que la mer a pris, dit-elle. Il me les donnait pour avoir les lanternes dans sa main, pas pour se souvenir de quelqu’un. Les Gens de la Marée n’allument pas de bateau pour un mensonge. L’eau le sait. **Elle tient ses propres comptes**. »\n\nElle posa la lanterne à moitié montée. « Je voudrais qu’on descende les bateaux du quai et qu’on les mette là où l’eau peut les lire. Je ne peux pas en porter autant. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_tern_row",
+    "choices": [
+      {
+        "text": "Take Dunn’s errand",
+        "text_fr": "Accepter la commission de Dunn",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_ternrow_buyer"
+        ],
+        "unlockQuestId": "q_ch2_tern_row_wrong_name"
+      }
+    ],
+    "prompt": "Will you take the boats down?",
+    "prompt_fr": "Descendrez-vous les bateaux ?",
+    "flag_callbacks": [
+      {
+        "flag": "held_saltmouth_tern_row_tidekin",
+        "en": "Dunn said, “Every boat lit for someone. Mind where you set your feet.”",
+        "fr": "Dunn dit : « Chaque bateau est allumé pour quelqu’un. Regardez où vous posez les pieds. »"
+      },
+      {
+        "flag": "flipped_saltmouth_tern_row",
+        "en": "Dunn said, “Others hold the footbridge now. The boats still go out.”",
+        "fr": "Dunn dit : « D’autres tiennent la passerelle maintenant. Les bateaux partent toujours. »"
+      }
+    ]
+  },
+  "2015_ternrow_boats": {
+    "id": "2015_ternrow_boats",
+    "description": "I carried the buyer's boats down in three trips, eleven small lit lies in my two hands, and set them on the water at the bottom of the footbridge steps where the tide turns. **The tide took four**. It looked at the rest for a long moment, and then it went out without them.\n\nOne boat lay on the sand, still lit, with a name inked on its side. I knew it. **It was the buyer's own**.\n\nDunn came down the steps and stood beside me, and for a while neither of us said who should pick it up.",
+    "description_fr": "Je descendis les bateaux de l’acheteur en trois voyages, onze petits mensonges allumés dans mes deux mains, et les posai sur l’eau au bas des marches de la passerelle, là où la marée tourne. **La marée en prit quatre**. Elle regarda longuement les autres, puis se retira sans eux.\n\nUn bateau reposait sur le sable, encore allumé, avec un nom à l’encre sur le flanc. Je le connaissais. **C’était celui de l’acheteur lui-même**.\n\nDunn descendit les marches et se tint à côté de moi, et un moment ni l’un ni l’autre ne dit qui devait le ramasser.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "mournful",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_tern_row",
+    "choices": [
+      {
+        "text": "Go back up and tell Dunn it is done",
+        "text_fr": "Remonter dire à Dunn que c’est fait",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "tern_boats_done"
+        ]
+      }
+    ],
+    "prompt": "What do you do with the last boat?",
+    "prompt_fr": "Que faites-vous du dernier bateau ?"
   }
 }
