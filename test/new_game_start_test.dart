@@ -34,6 +34,8 @@ Future<void> _pumpUntilFound(WidgetTester tester, Finder found) async {
 const _start =
     StoryPlayState(currentNodeId: '0', history: [], visitedNodeIds: {'0'});
 
+const _ending = '7005';
+
 final _previously = find.text(trFor(AppLanguage.en, 'previously_title'));
 
 Future<void> _launch(WidgetTester tester) async {
@@ -49,6 +51,39 @@ Future<void> _launch(WidgetTester tester) async {
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
   await tester.pumpWidget(const ProviderScope(child: MyApp()));
   await _settle(tester, rounds: 6);
+}
+
+/// The Journey reading a scene full screen (its page), not the map.
+final _readingPage = find.byWidgetPredicate((w) =>
+    w.key is ValueKey<String> &&
+    (w.key! as ValueKey<String>).value.startsWith('journey_reading_0_'));
+
+Future<ProviderContainer> _english(WidgetTester tester) async {
+  final container =
+      ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+  await tester.runAsync(() =>
+      container.read(appLanguageProvider.notifier).setLanguage(AppLanguage.en));
+  return container;
+}
+
+/// Taps [key] on the main menu, confirms if asked, and waits for the game.
+Future<void> _enter(WidgetTester tester, String key) async {
+  await tester.tap(find.byKey(Key(key)));
+  await _settle(tester);
+  final confirm = find.descendant(
+      of: find.byType(AlertDialog), matching: find.byType(FilledButton));
+  if (confirm.evaluate().isNotEmpty) {
+    await tester.tap(confirm);
+    await _settle(tester);
+  }
+  await _pumpUntilFound(tester, _readingPage);
+}
+
+void _expectFirstScenePage(WidgetTester tester, ProviderContainer container) {
+  expect(container.read(storyPlayProvider).currentNodeId, '0');
+  expect(container.read(homeTabIndexProvider), journeyTabIndex);
+  // The first scene, read as a page: not the map.
+  expect(_readingPage, findsOneWidget);
 }
 
 void main() {
@@ -77,16 +112,25 @@ void main() {
     });
   });
 
-  test('a fresh story start is the first scene of a restarted story', () {
-    expect(isFreshStoryStart(_start, startedFresh: true), isTrue);
-    expect(isFreshStoryStart(_start, startedFresh: false), isFalse);
+  test('a fresh story start is the first scene with nothing played', () {
+    expect(isFreshStoryStart(_start), isTrue);
+    // However it was reached: a save left on the first scene too.
     expect(
-        isFreshStoryStart(
-            const StoryPlayState(
-                currentNodeId: '100',
-                history: ['0'],
-                visitedNodeIds: {'0', '100'}),
-            startedFresh: true),
+        isFreshStoryStart(const StoryPlayState(
+            currentNodeId: '0', history: ['0'], visitedNodeIds: {'0'})),
+        isTrue);
+    expect(
+        isFreshStoryStart(const StoryPlayState(
+            currentNodeId: '100',
+            history: ['0'],
+            visitedNodeIds: {'0', '100'})),
+        isFalse);
+    // Back on the first scene after playing on: not a new game.
+    expect(
+        isFreshStoryStart(const StoryPlayState(
+            currentNodeId: '0',
+            history: ['0', '100'],
+            visitedNodeIds: {'0', '100'})),
         isFalse);
   });
 
@@ -150,6 +194,90 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+      'first launch of a fresh install: New Game opens on the first '
+      'scene', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await _launch(tester);
+    final container = await _english(tester);
+    await _enter(tester, 'menu_new_game');
+    _expectFirstScenePage(tester, container);
+    await _settle(tester);
+    expect(_previously, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'a save that never left the first scene opens on it, '
+      'not on the map', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'player_session':
+          json.encode({'raceId': 'human', 'professionId': 'warrior'}),
+      'autosave_story_node': '0',
+      'autosave_story_history': json.encode([]),
+      'autosave_story_visited': json.encode(['0']),
+    });
+    await _launch(tester);
+    final container = await _english(tester);
+    await _enter(tester, 'menu_continue');
+    _expectFirstScenePage(tester, container);
+    expect(_previously, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('New Game after a finished story opens on the first scene',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'player_session':
+          json.encode({'raceId': 'human', 'professionId': 'warrior'}),
+      'autosave_story_node': _ending,
+      'autosave_story_history': json.encode(['0', '100', '250']),
+      'autosave_story_visited': json.encode(['0', '100', '250', _ending]),
+    });
+    await _launch(tester);
+    final container = await _english(tester);
+    await _enter(tester, 'menu_new_game');
+    _expectFirstScenePage(tester, container);
+    await _settle(tester);
+    expect(_previously, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'beginning again from an ending on the Journey opens on the first '
+      'scene', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'player_session':
+          json.encode({'raceId': 'human', 'professionId': 'warrior'}),
+      'autosave_story_node': _ending,
+      'autosave_story_history': json.encode(['0', '100', '250']),
+      'autosave_story_visited': json.encode(['0', '100', '250', _ending]),
+    });
+    await _launch(tester);
+    final container = await _english(tester);
+    await tester.tap(find.byKey(const Key('menu_continue')));
+    await _settle(tester);
+    // The Journey's ending opens the story, whose ending begins again.
+    final open = find.byKey(const ValueKey('journey_open_story'));
+    await _pumpUntilFound(tester, open);
+    // The recap first.
+    await _pumpUntilFound(tester, _previously);
+    await tester.tap(find.text('Go on'));
+    await _settle(tester);
+    expect(container.read(storyPlayProvider).currentNodeId, _ending);
+    await tester.tap(open);
+    await _settle(tester);
+    final again = find.text('Begin again, changed');
+    await _pumpUntilFound(tester, again);
+    await tester.tap(again.last);
+    await _settle(tester);
+    await tester.pageBack();
+    await _settle(tester);
+    await _pumpUntilFound(tester, _readingPage);
+    _expectFirstScenePage(tester, container);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('a resumed story with progress shows the recap, on the map',
       (tester) async {
     SharedPreferences.setMockInitialValues({
@@ -171,6 +299,12 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     // A resumed story opens as before: not on the first scene's page.
     expect(container.read(storyPlayProvider.notifier).startedFresh, isFalse);
+    expect(
+        find.byWidgetPredicate((w) =>
+            w.key is ValueKey<String> &&
+            RegExp(r'^journey_reading_\d')
+                .hasMatch((w.key! as ValueKey<String>).value)),
+        findsNothing);
     expect(tester.takeException(), isNull);
     // Let the recap's and the scene's timers run out.
     await tester.pumpWidget(const SizedBox());

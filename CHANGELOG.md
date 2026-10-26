@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.540.0+576]
+
+A game picked up on its first scene opens on that scene.
+
+### Fixed
+- **Continue on a game never started:** creating a character and leaving before the first step left a save on the first scene; Continue opened it on the Journey map with "Choose who you are…" in a row at the bottom. It now opens on the first scene's page, as New Game does. The rule is now the story's state (on the first scene, nothing played yet), whatever way the game was opened.
+
 ## [1.539.0+575]
 
 - The blurbs for Alster and Saltmouth now describe the places themselves, in English and French.
