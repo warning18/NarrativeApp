@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.556.0+592]
+
+The clans' gift no longer waits behind a button: it opens on its own, and a gift must be taken.
+
+### Fixed
+- **The clans' offer opens by itself:** a gift offer only opened by itself after a level-up or a boss win. Every other offer waited behind "Choose a gift": from a chapter, a quest, an intrigue, a story change or a Tome, carried over from a save, or queued on the feature ladder while the clans were locked. They piled up. Now, whenever an offer waits and the player is on the home screen in play (no fight running, no quests being settled, the clans open), the offer opens. Each offer waiting comes up in turn, until none is left. As before, the sheet can't be dismissed (no tap outside, no back, no "later"), and its confirmation is unchanged. Edit Mode, and the ladder before the clans open, open nothing.
+- **A fight no longer loses its offer:** a level-up in a fight that closed itself while the offer was loading kept the offer pending. It now opens over the home screen.
+
 ## [1.555.0+591]
 
 A scene the story brings you to holds you on its page until you choose, and a district with no way of the story lets you walk on.

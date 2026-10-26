@@ -62,6 +62,32 @@ Future<void> _waitOutNotices(WidgetTester tester) async {
     await tester.tap(find.byKey(const Key('reward_button')));
     await _settle(tester);
   }
+  // A clans' offer waiting opens on its own and must be taken (v1.556):
+  // the first suitor that is not a risky card, as a player would.
+  final container =
+      ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+  for (var i = 0; i < 10; i++) {
+    final offer = container.read(playerSessionProvider).clanOffer;
+    final banners = find.byWidgetPredicate((w) =>
+        w.key is ValueKey<String> &&
+        (w.key as ValueKey<String>).value.startsWith('offer_suitor_'));
+    if (offer == null || banners.evaluate().isEmpty) break;
+    final suitor = offer.suitors.firstWhere((s) => !s.risky);
+    final banner = find.byKey(Key('offer_suitor_${suitor.factionId}'));
+    await tester.ensureVisible(banner);
+    await tester.tap(banner);
+    await tester.pump();
+    final take = find.byKey(const Key('offer_take_button'));
+    await tester.ensureVisible(take);
+    await tester.tap(take);
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+    await _settle(tester);
+    while (find.byKey(const Key('reward_button')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('reward_button')));
+      await _settle(tester);
+    }
+  }
 }
 
 Finder _tab(String label) =>

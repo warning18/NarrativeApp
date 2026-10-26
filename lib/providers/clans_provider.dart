@@ -31,14 +31,22 @@ final clanDataProvider = Provider<ClanData>((ref) {
 /// and may be the first to ask (an offer after a cold start), where
 /// [clanDataProvider] could still be empty.
 Future<ClanData> loadClanData(WidgetRef ref) async {
+  // Every table asked for before the first wait: [ref] is not read again
+  // once this awaits, so the widget that asked may go (a fight left while
+  // the offer after its level-up loads).
   Future<Map<String, dynamic>> table(DbSchema schema) =>
       ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  final factions = table(factionsSchema);
+  final subclans = table(subclansSchema);
+  final relations = table(relationsSchema);
+  final titles = table(titlesSchema);
+  final intrigues = table(intriguesSchema);
   return ClanData.fromTables(
-    factions: await table(factionsSchema),
-    subclans: await table(subclansSchema),
-    relations: await table(relationsSchema),
-    titles: await table(titlesSchema),
-    intrigues: await table(intriguesSchema),
+    factions: await factions,
+    subclans: await subclans,
+    relations: await relations,
+    titles: await titles,
+    intrigues: await intrigues,
   );
 }
 
