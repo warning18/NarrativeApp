@@ -8,16 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.555.0+591]
+## [1.553.0+589]
 
-The clan's card (and the pop-ups like it) stays open until it is closed.
+Three sheets and dialogs, in one release: the place sheet's height, the clan popins that stay open, and a gift's confirmation that says what it changes.
 
 ### Changed
-- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner (the offer's banner row, the ring's crests, the Throne room's standards) opened the card only for as long as the finger was down ("Let go to close"). It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; a tap on the card itself does not close it (it scrolls). The "Let go to close" and "Tap to close" lines are gone (their strings with them). The offer's (i) button opens the same dialog, with the clan's greeting.
-- **The other hold-to-open popins** (the stat popin, the item, skill and title popins) were checked: they are dialogs and sheets that already stay open and close on a tap outside or the back gesture; a test now says so.
+- **The place sheet** (`arrival_sheet.dart`, `journey_screen.dart`): the words scroll above the whole choices, the sheet grows to 90% of the screen, and its handle can be dragged to make it shorter (down to about a third). The choices are capped at 70% of the room left so a small sheet never overflows.
+- **The gift's confirmation** (`gift_confirm.dart`, `offer_dialog.dart`): "Take {gift}?" now shows one line for what the gift does, in its own words (its sign's or skill's effect), then two short groups, "Closer" and "Further", with a chip for each clan: its crest, its name and the change, green up and red down, in whole numbers ("a little" under one, never "+1,5"). The step word shows only where a relation crosses a step ("Unknown → Known"). Accept and Back are unchanged; other gift confirmations can use the same body. New strings in English and French.
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner opened the card only for as long as the finger was down. It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; the "Let go to close" and "Tap to close" lines are gone. The other hold-to-open popins already stayed open; a test now says so.
 
 ### Tests
-- `offer_dialog_test` and `throne_room_test` now hold, let go, find the card still open, and close it by a tap outside, the close button and the back gesture; new `test/popins_stay_open_test.dart` for the stat sheet and the detail dialog.
+- `arrival_sheet_size_test`, `popins_stay_open_test` and `gift_confirm_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet, popin and confirmation.
 
 ## [1.551.0+587]
 
