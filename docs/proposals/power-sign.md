@@ -64,3 +64,28 @@ My read: **C** is the best compromise (no taller than A, the tiers read by heigh
 well as colour, so it is not colour-only). B is the smallest but too faint to count.
 D is the "other way": it needs no room and shows well, but it is the loudest and
 colour-led (bronze/silver/gold), so it fights the standing disc for attention.
+
+## Round 3: the rising steps, and their colour grows with the tier (`docs/ux-shots/power-colour-mock.png`)
+The user chose C (rising steps) and wants the bars to change colour as the tier grows.
+Test: `test/ux_power_colour_mock_test.dart`, which also checks that every ramp gets
+lighter with the tier, so the tier reads by lightness and height, not by hue alone
+(colour-blind safe). Four ramps, the same four sizes as round 2:
+
+| Ramp | Colours (Minor → Ascendant) | How the lit bars are coloured |
+|---|---|---|
+| P1. Metals | bronze · steel-silver · gold · white-gold (a soft glow at Ascendant) | every lit bar wears the tier's colour |
+| P2. Cool to warm | steel blue · violet · amber · gold | every lit bar wears the tier's colour |
+| P3. One gold that brightens | dim gold · gold · bright gold · pale gold | every lit bar wears the tier's colour |
+| P4. Gradient by position | bar 1 bronze, 2 silver, 3 gold, 4 white-gold | each bar always wears its own colour |
+
+My read: **P1** is the most intuitive (bronze, silver and gold are read as ranks
+everywhere) and the tier shows in colour, height and count. Its one risk is that the
+silver step is near the grey of the standing sign's "neutral" dot; the steel tint and
+the position (under the hem, not a disc in the corner) keep them apart, but **P2**
+avoids any overlap (it uses no green, no red and no grey) at the price of a less
+obvious order. P3 is too subtle at 34 px. P4 mixes colours inside one banner, which
+is busy at 34 px and gives a Rising clan a silver bar next to a bronze one.
+
+Smallest size: at 34 px the steps are about 6 px tall; if that is too small once seen
+on a phone, bars of 3 px (about 8 px tall) are the next step up, before the plate or
+chevrons come back.
