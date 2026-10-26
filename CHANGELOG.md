@@ -25,6 +25,16 @@ A street-view kit for scenes played outside a building, the room kits' counterpa
 
 ### Touches another session's area
 - `lib/screens/journey_screen.dart` (`_CityDistrictView`: an optional `street` building, the street scene in place of the plan's picture when set, and the pin builder; about 40 lines, the rest of the diff is the formatter re-indenting the plan view).
+## [1.543.0+579]
+
+The story reader: the echoed lines are prose, and the text writes itself out more slowly.
+
+### Changed
+- **"Because you chose …" only in Edit Mode** (`story_player_screen.dart`, `EchoLine`): in play, a line an earlier choice earned is set into the story as ordinary prose, with no caption, clock icon or side rule. The story node editor's preview (Edit Mode) keeps the label, icon and rule as before. The Journey's scene panel uses the same widget, so it follows.
+- **The text reveal is a third slower** (`story_text.dart`): about 175 characters a second instead of 260, between 0.6 s and 6 s (was 0.4 s and 4 s). A tap still shows it all, and reduced motion still shows it at once.
+
+### Tests
+- New `test/echo_line_test.dart` (play and Edit Mode, and the reveal's speed); `scene_flow_play_test` now expects no caption in play.
 
 ## [1.542.0+578]
 

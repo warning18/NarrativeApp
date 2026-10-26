@@ -28,9 +28,10 @@ Color storyNameColor(StoryNameKind kind, InkColors ink) => switch (kind) {
     };
 
 /// How long a text of [length] characters takes to write itself out: about
-/// 260 characters a second, never under 0.4 s nor over 4 s.
+/// 175 characters a second (a third slower than the first 260), never under
+/// 0.6 s nor over 6 s.
 Duration storyTypeDuration(int length) =>
-    Duration(milliseconds: (length * 1000 / 260).clamp(400, 4000).round());
+    Duration(milliseconds: (length * 1000 / 175).clamp(600, 6000).round());
 
 class StoryText extends ConsumerStatefulWidget {
   const StoryText({
