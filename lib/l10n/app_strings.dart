@@ -12209,6 +12209,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Back',
     AppLanguage.fr: 'Retour',
   },
+  'offer_confirm_closer': {
+    AppLanguage.en: 'Closer',
+    AppLanguage.fr: 'Plus proches',
+  },
+  'offer_confirm_further': {
+    AppLanguage.en: 'Further',
+    AppLanguage.fr: 'Plus éloignés',
+  },
+  'offer_delta_little': {
+    AppLanguage.en: 'a little',
+    AppLanguage.fr: 'un peu',
+  },
   'offer_no_standing': {
     AppLanguage.en: 'No faction: standing doesn’t move.',
     AppLanguage.fr: 'Sans faction\u00a0: la réputation ne bouge pas.',
