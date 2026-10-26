@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.559.0+595]
+
+- Saltmouth's side quests now belong to a district and a clan, so what you do on the wharf, at Card Row and on Tern Row changes who holds them. Two new district quests (The Short Count at Card Row, A Boat for the Wrong Name on Tern Row), a door scene and a reason for each locked district, and a line when a district changes hands.
+
 ## [1.558.0+594]
 
 Wave 18, step 1: Saltmouth's districts can be locked, and the clans fight over them with influence.
