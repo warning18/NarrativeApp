@@ -101,6 +101,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'journey_city_walk_to': {
+    AppLanguage.en: 'Walk to {district}',
+    AppLanguage.fr: 'Marcher vers {district}',
+  },
   'town_ruled_by': {
     AppLanguage.en: 'Held by {clan}',
     AppLanguage.fr: 'Tenu par {clan}',
@@ -245,6 +249,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  // A scene the story brought the party to holds it on its page (v1.553).
+  'journey_choose_first': {
+    AppLanguage.en: 'Choose first',
+    AppLanguage.fr: 'Choisissez d\'abord',
+  },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
@@ -669,14 +678,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'clan_nemesis_tag': {
     AppLanguage.en: 'Your nemesis',
     AppLanguage.fr: 'Votre némésis',
-  },
-  'clan_peek_tap_close': {
-    AppLanguage.en: 'Tap to close',
-    AppLanguage.fr: 'Touchez pour fermer',
-  },
-  'clan_peek_release': {
-    AppLanguage.en: 'Let go to close',
-    AppLanguage.fr: 'Relâchez pour fermer',
   },
   'geo_this_land': {
     AppLanguage.en: 'This land',

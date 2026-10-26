@@ -32,6 +32,14 @@ ArrivalView arrivalViewOf(
   return inExcursion || mainStory ? ArrivalView.page : ArrivalView.sheet;
 }
 
+/// How much of the screen the sheet opens at (v1.550): the words above, every
+/// choice below them, Continue under both. It was 62%, which cut the choices
+/// off on a small phone.
+const double arrivalSheetShare = 0.9;
+
+/// The smallest the handle drags it to.
+const double arrivalSheetMinShare = 0.35;
+
 class ArrivalSheet extends StatefulWidget {
   const ArrivalSheet({
     super.key,
@@ -62,6 +70,11 @@ class _ArrivalSheetState extends State<ArrivalSheet>
     duration: const Duration(milliseconds: 260),
   );
 
+  /// How much of the screen the sheet may take: nearly all of it, so the
+  /// words and every choice can be read; the handle drags it smaller (or
+  /// back up to the full height).
+  double _share = arrivalSheetShare;
+
   @override
   void initState() {
     super.initState();
@@ -87,17 +100,31 @@ class _ArrivalSheetState extends State<ArrivalSheet>
         elevation: 8,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: box.maxHeight * 0.62),
+          constraints: BoxConstraints(maxHeight: box.maxHeight * _share),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(top: 8, bottom: 6),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
+              // The handle: a drag on it makes the sheet smaller or larger.
+              GestureDetector(
+                key: const Key('journey_arrival_handle'),
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragUpdate: (d) => setState(() {
+                  _share = (_share - d.delta.dy / box.maxHeight)
+                      .clamp(arrivalSheetMinShare, 1.0);
+                }),
+                child: SizedBox(
+                  width: 120,
+                  height: 26,
+                  child: Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               if (widget.title.isNotEmpty)
