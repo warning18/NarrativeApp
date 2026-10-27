@@ -10,7 +10,14 @@
 // base, edge, pattern, glow) painted by its own DiePatternPainter, so any
 // skin goes on any shape; the shapes are new, flat-shaded polygons (cheap on
 // a phone). The d6 is today's Die3D in the fight.
-// UX_SHOTS=<folder> takes the three pictures.
+// Two more pictures (the user: every die has as many faces as its size and
+// each face is a slot to equip; every die has dedicated art):
+//   dice-equip-mock.png   equipping the faces of a d12, and one die of each
+//                         other size with its faces laid out
+//   dice-art-mock.png     the four six-faced dice that share a cube today,
+//                         each given its own look, one die of each size, the
+//                         legendary d12 and the coin
+// UX_SHOTS=<folder> takes the five pictures.
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
@@ -64,6 +71,11 @@ TextStyle _t(double size, {Color? c, bool bold = false, bool italic = false}) =>
         color: c ?? const Color(0xFFEDE6DC),
         fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
         fontStyle: italic ? FontStyle.italic : FontStyle.normal);
+
+TextStyle _px(double size, {Color? c}) => TextStyle(
+    fontFamily: 'PixelifySans',
+    fontSize: size,
+    color: c ?? const Color(0xFFEDE6DC));
 
 // ------------------------------------------------------------- the shapes
 
@@ -964,6 +976,555 @@ Widget _ui() => Padding(
       ]),
     );
 
+// -------------------------------------------- picture 4: equipping the faces
+
+const _faceIcons = <IconData>[
+  Icons.flash_on,
+  Icons.shield_outlined,
+  Icons.favorite_border,
+  Icons.bolt,
+  Icons.water_drop_outlined,
+  Icons.air,
+  Icons.local_fire_department_outlined,
+  Icons.auto_awesome,
+];
+
+/// A face slot: filled with a skill's icon, or empty ("+"); [lit] is the one
+/// chosen; [n] is its number on the die.
+Widget _faceSlot(int n, double size, {bool filled = true, bool lit = false}) =>
+    Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: filled ? const Color(0xFF26232E) : Colors.transparent,
+        border: Border.all(
+            color: lit
+                ? const Color(0xFFF2C14E)
+                : filled
+                    ? const Color(0xFF8A7F96)
+                    : const Color(0xFF4A4455),
+            width: lit ? 2.4 : 1.2),
+      ),
+      child: Stack(alignment: Alignment.center, children: [
+        Icon(filled ? _faceIcons[n % _faceIcons.length] : Icons.add,
+            size: size * 0.5,
+            color: filled ? const Color(0xFFEDE6DC) : const Color(0xFF6A6478)),
+        Positioned(
+          right: 0,
+          bottom: -1,
+          child: Text('${n + 1}',
+              style: TextStyle(
+                  fontFamily: 'PixelifySans',
+                  fontSize: math.max(8.0, size * 0.28),
+                  color: lit ? const Color(0xFFF2C14E) : _ash)),
+        ),
+      ]),
+    );
+
+/// The die in the middle of a ring of its face slots (a grid when there are
+/// too many for a ring).
+Widget _faceRingFor(_Shape? s, DieSkin skin, int count,
+    {required double width,
+    int lit = 0,
+    Set<int> empty = const {},
+    bool coin = false,
+    Widget? centre}) {
+  if (count > 12) {
+    // A grid: five across.
+    const cols = 5;
+    final slot = (width - 24) / cols - 6;
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      centre ?? _die(s!, skin, '$count', width * 0.34),
+      const SizedBox(height: 6),
+      Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          alignment: WrapAlignment.center,
+          children: [
+            for (var i = 0; i < count; i++)
+              _faceSlot(i, slot, filled: !empty.contains(i), lit: i == lit),
+          ]),
+    ]);
+  }
+  final r = width * 0.36;
+  final slot = math.min(40.0, 2 * math.pi * r / count * 0.8);
+  final h = width * 0.9;
+  return SizedBox(
+    width: width,
+    height: h,
+    child: Stack(alignment: Alignment.center, children: [
+      centre ??
+          (coin
+              ? _coin(skin, width * 0.36)
+              : _die(s!, skin, '$count', width * 0.42)),
+      for (var i = 0; i < count; i++)
+        Positioned(
+          left: width / 2 +
+              math.cos(-math.pi / 2 + i * 2 * math.pi / count) * r -
+              slot / 2,
+          top: h / 2 +
+              math.sin(-math.pi / 2 + i * 2 * math.pi / count) * r * 0.95 -
+              slot / 2,
+          child: _faceSlot(i, slot, filled: !empty.contains(i), lit: i == lit),
+        ),
+    ]),
+  );
+}
+
+Widget _equip() {
+  final gold = _skin('holy_die');
+  // The big one: the legendary d12, its 12 faces.
+  final big = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    Container(
+        height: 50,
+        color: const Color(0xFF1B1A21),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        alignment: Alignment.centerLeft,
+        child: const Text('Sovereign’s Die',
+            style: TextStyle(
+                fontFamily: 'IMFellEnglishSC',
+                fontSize: 20,
+                color: Color(0xFFEDE6DC)))),
+    Padding(
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
+      child: Row(children: [
+        Text('d12 · legendary · 9 of 12 faces set', style: _t(12, c: _ash)),
+      ]),
+    ),
+    _faceRingFor(_shapes[4], gold, 12,
+        width: 320,
+        lit: 6,
+        empty: const {3, 9, 10},
+        centre: _art('sovereign', 130)),
+    Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1D1B22),
+          borderRadius: BorderRadius.circular(10),
+          border:
+              Border.all(color: const Color(0xFFF2C14E).withValues(alpha: 0.5)),
+        ),
+        child: Row(children: [
+          _faceSlot(6, 40, lit: true),
+          const SizedBox(width: 12),
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Face 7 · Burning Strike', style: _t(14, bold: true)),
+              Text('Hits for 6 and sets the foe alight',
+                  style: _t(11.5, c: _ash)),
+            ]),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+                color: const Color(0xFFB794F6),
+                borderRadius: BorderRadius.circular(8)),
+            child: Text('Change', style: _px(12.5, c: Colors.black)),
+          ),
+        ]),
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+      child: Text(
+          'Tap a face to choose it; the die turns to show it. A “+” is a face with nothing on it yet.',
+          style: _t(11, c: _ash, italic: true)),
+    ),
+  ]);
+  Widget small(String title, String note, Widget body) => Container(
+        width: 210,
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF121116),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _line),
+        ),
+        child: Column(children: [
+          Text(title, style: _t(13, bold: true)),
+          Text(note, style: _t(10, c: _ash)),
+          body,
+        ]),
+      );
+  final bone = _skin('starter_die');
+  return Padding(
+    padding: const EdgeInsets.all(22),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Equipping a die: one slot for each of its faces', style: _t(19)),
+      const SizedBox(height: 4),
+      _note(
+          'A d12 has 12 face slots, a d8 eight, a d4 four, the coin two. The die sits in the middle, its faces round it as a ring (a grid of five across at d20, where a ring would be too tight); a tap on a slot picks that face. Nothing is a form: a face is a round slot with the skill’s icon and its number.',
+          w: 1000),
+      const SizedBox(height: 14),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          width: 340,
+          height: 640,
+          decoration: BoxDecoration(
+            color: const Color(0xFF121116),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: _line),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: big,
+        ),
+        const SizedBox(width: 22),
+        Column(children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            small(
+                'd4',
+                '4 faces',
+                _faceRingFor(_shapes[0], bone, 4,
+                    width: 190, lit: 1, empty: const {2})),
+            const SizedBox(width: 10),
+            small('d6', '6 faces',
+                _faceRingFor(_shapes[1], bone, 6, width: 190, lit: 0)),
+          ]),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            small(
+                'd8',
+                '8 faces',
+                _faceRingFor(_shapes[2], _skin('arcane_die'), 8,
+                    width: 190, lit: 4, empty: const {7})),
+            const SizedBox(width: 10),
+            small(
+                'd10',
+                '10 faces',
+                _faceRingFor(_shapes[3], _skin('huntsman_die'), 10,
+                    width: 190, lit: 2)),
+          ]),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            small(
+                'coin',
+                '2 faces',
+                _faceRingFor(null, _skin('tobin_die'), 2,
+                    width: 190, coin: true, lit: 0)),
+            const SizedBox(width: 10),
+            small(
+                'd20',
+                '20 faces, a grid',
+                _faceRingFor(_shapes[5], _skin('sage_die'), 20,
+                    width: 190, lit: 12, empty: const {3, 4, 15})),
+          ]),
+        ]),
+      ]),
+    ]),
+  );
+}
+
+// ------------------------------------------------------ picture 5: dedicated art
+
+/// What a die gets beyond its skin: its own pieces drawn over and round the
+/// shape (spikes, vines, bolts, a crown, an eye), in the unit disc of the die.
+class _ArtPainter extends CustomPainter {
+  _ArtPainter(this.art, this.skin);
+  final String art;
+  final DieSkin skin;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = size.shortestSide / 2 * 0.9;
+    final c = size.center(Offset.zero);
+    canvas.save();
+    canvas.translate(c.dx, c.dy);
+    canvas.scale(r, r);
+    final hair = 1.6 / r;
+    Paint stroke(Color col, [double w = 1.0]) => Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = hair * w
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = col;
+    Paint fill(Color col) => Paint()..color = col;
+    // The hexagon's outer corners (the cube and the d20 share them).
+    final hexOut = _ring(6, 1.0, -math.pi / 2);
+
+    switch (art) {
+      case 'stone': // chipped corners and a cut rune
+        for (final v in [hexOut[0], hexOut[2], hexOut[4]]) {
+          canvas.drawPath(
+              Path()
+                ..moveTo(v.dx * 0.86, v.dy * 0.86)
+                ..lineTo(v.dx * 1.02 + 0.06, v.dy * 1.02 + 0.02)
+                ..lineTo(v.dx * 0.9, v.dy * 0.7)
+                ..close(),
+              fill(const Color(0xFF2A241D)));
+        }
+        canvas.drawPath(
+            Path()
+              ..moveTo(0.3, -0.1)
+              ..lineTo(0.52, -0.1)
+              ..moveTo(0.41, -0.1)
+              ..lineTo(0.41, 0.3),
+            stroke(skin.edge, 1.4));
+      case 'storm': // a crackle of lightning over the faces
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.5, -0.8)
+              ..lineTo(-0.1, -0.3)
+              ..lineTo(-0.3, -0.2)
+              ..lineTo(0.2, 0.4)
+              ..lineTo(0.0, 0.45)
+              ..lineTo(0.35, 0.95),
+            stroke(const Color(0xFFDDEBFF), 1.6));
+        canvas.drawPath(
+            Path()
+              ..moveTo(0.45, -0.6)
+              ..lineTo(0.62, -0.3)
+              ..lineTo(0.5, -0.25),
+            stroke(const Color(0xFF8FB4FF), 1.2));
+      case 'liora': // vines and leaves
+        final vine = stroke(const Color(0xFF95D16F), 1.6);
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.87, 0.5)
+              ..quadraticBezierTo(-0.5, 0.2, -0.3, 0.55)
+              ..quadraticBezierTo(0.0, 0.9, 0.35, 0.7),
+            vine);
+        for (final (x, y, a) in [
+          (-0.5, 0.32, -0.8),
+          (-0.1, 0.78, 0.6),
+          (0.3, 0.72, -0.4),
+          (0.74, -0.45, 0.9)
+        ]) {
+          canvas.save();
+          canvas.translate(x, y);
+          canvas.rotate(a);
+          canvas.drawOval(const Rect.fromLTWH(-0.04, -0.12, 0.09, 0.24),
+              fill(const Color(0xFF6FBF4E)));
+          canvas.restore();
+        }
+      case 'grosh': // tusk spikes at the corners and notches
+        for (final v in hexOut) {
+          final n = v / v.distance;
+          final perp = Offset(-n.dy, n.dx);
+          canvas.drawPath(
+              Path()
+                ..moveTo(v.dx - perp.dx * 0.1, v.dy - perp.dy * 0.1)
+                ..lineTo(v.dx + n.dx * 0.26, v.dy + n.dy * 0.26)
+                ..lineTo(v.dx + perp.dx * 0.1, v.dy + perp.dy * 0.1)
+                ..close(),
+              fill(const Color(0xFFE9E0C2)));
+        }
+        for (var i = 0; i < 4; i++) {
+          canvas.drawLine(
+              Offset(0.2 + i * 0.1, 0.45),
+              Offset(0.2 + i * 0.1, 0.62),
+              stroke(const Color(0xFF8F8771), 1.2));
+        }
+      case 'fang': // curved fangs for tips (the d4)
+        for (final v in [
+          const _P(0, -1),
+          const _P(0.9, 0.62),
+          const _P(-0.9, 0.62)
+        ]) {
+          final n = v / v.distance;
+          final perp = Offset(-n.dy, n.dx);
+          canvas.drawPath(
+              Path()
+                ..moveTo(v.dx - perp.dx * 0.09, v.dy - perp.dy * 0.09)
+                ..quadraticBezierTo(
+                    v.dx + n.dx * 0.18 + perp.dx * 0.1,
+                    v.dy + n.dy * 0.18 + perp.dy * 0.1,
+                    v.dx + n.dx * 0.3 + perp.dx * 0.18,
+                    v.dy + n.dy * 0.3 + perp.dy * 0.18)
+                ..lineTo(v.dx + perp.dx * 0.09, v.dy + perp.dy * 0.09)
+                ..close(),
+              fill(const Color(0xFFF0EAD6)));
+        }
+      case 'crystal': // a sparkle and inner facet lines (the d8)
+        canvas.drawLine(const Offset(-0.45, 0.0), const Offset(0.0, 0.2),
+            stroke(const Color(0x88FFFFFF), 1));
+        canvas.drawLine(const Offset(0.0, -0.55), const Offset(0.0, 0.2),
+            stroke(const Color(0x88FFFFFF), 1));
+        final sp = Path()
+          ..moveTo(0.5, -0.5)
+          ..lineTo(0.55, -0.35)
+          ..lineTo(0.7, -0.3)
+          ..lineTo(0.55, -0.25)
+          ..lineTo(0.5, -0.1)
+          ..lineTo(0.45, -0.25)
+          ..lineTo(0.3, -0.3)
+          ..lineTo(0.45, -0.35)
+          ..close();
+        canvas.drawPath(sp, fill(Colors.white));
+      case 'antler': // antler tines from the top (the d10)
+        final a = stroke(const Color(0xFFB5935F), 2.2);
+        for (final sx in [-1.0, 1.0]) {
+          canvas.drawPath(
+              Path()
+                ..moveTo(0, -0.98)
+                ..lineTo(sx * 0.18, -1.2)
+                ..lineTo(sx * 0.32, -1.5)
+                ..moveTo(sx * 0.18, -1.2)
+                ..lineTo(sx * 0.46, -1.24)
+                ..moveTo(sx * 0.3, -1.42)
+                ..lineTo(sx * 0.12, -1.55),
+              a);
+        }
+      case 'sovereign': // the legendary d12: a crown and a gold edge
+        final g = const Color(0xFFF2C14E);
+        final outer = _ring(5, 1.0, -math.pi / 2);
+        // A crown of five points over the top.
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.5, -1.0)
+              ..lineTo(-0.55, -1.38)
+              ..lineTo(-0.25, -1.16)
+              ..lineTo(0, -1.5)
+              ..lineTo(0.25, -1.16)
+              ..lineTo(0.55, -1.38)
+              ..lineTo(0.5, -1.0)
+              ..close(),
+            fill(g));
+        for (final v in outer.skip(1)) {
+          canvas.drawCircle(v, 0.05, fill(g));
+        }
+        canvas.drawPath(Path()..addPolygon(outer, true), stroke(g, 2.4));
+      case 'eye': // an eye on the front face (the d20)
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.3, 0.1)
+              ..quadraticBezierTo(0, -0.22, 0.3, 0.1)
+              ..quadraticBezierTo(0, 0.4, -0.3, 0.1),
+            stroke(skin.edge, 1.4));
+        canvas.drawCircle(const Offset(0, 0.1), 0.1, fill(skin.edge));
+        canvas.drawCircle(
+            const Offset(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
+      case 'coin': // the sovereign coin: a ring of beads
+        canvas.scale(1, 1);
+        for (var i = 0; i < 18; i++) {
+          final a = i * 2 * math.pi / 18;
+          canvas.drawCircle(Offset(math.cos(a) * 0.78, math.sin(a) * 0.78),
+              0.04, fill(skin.edge.withValues(alpha: 0.9)));
+        }
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_ArtPainter old) => false;
+}
+
+const _artSpec = <String, (int, String)>{
+  // art id: (shape index, skin id); the coin and the legendary d12 below
+  'stone': (1, 'stone_die'),
+  'storm': (1, 'storm_die'),
+  'liora': (1, 'liora_die'),
+  'grosh': (1, 'grosh_die'),
+  'fang': (0, 'twinfang_die'),
+  'crystal': (2, 'arcane_die'),
+  'antler': (3, 'huntsman_die'),
+  'sovereign': (4, 'holy_die'),
+  'eye': (5, 'sage_die'),
+  'coin': (-1, 'tobin_die'),
+};
+
+Widget _art(String id, double size, {String value = '5'}) {
+  final (si, skinId) = _artSpec[id]!;
+  final skin = _skin(skinId);
+  final coin = si < 0;
+  final glowing = id == 'sovereign';
+  return SizedBox(
+    width: size,
+    height: size,
+    child: Stack(alignment: Alignment.center, children: [
+      if (glowing)
+        // A halo of rays behind the legendary d12.
+        CustomPaint(size: Size(size, size), painter: _RaysPainter()),
+      coin
+          ? _coin(skin, size)
+          : _die(_shapes[si], skin, id == 'coin' ? '' : value, size),
+      CustomPaint(size: Size(size, size), painter: _ArtPainter(id, skin)),
+    ]),
+  );
+}
+
+class _RaysPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final r = size.shortestSide / 2;
+    final p = Paint()..color = const Color(0xFFF2C14E).withValues(alpha: 0.22);
+    for (var i = 0; i < 12; i++) {
+      final a = i * math.pi / 6;
+      canvas.drawPath(
+          Path()
+            ..moveTo(c.dx, c.dy)
+            ..lineTo(c.dx + math.cos(a - 0.1) * r * 1.25,
+                c.dy + math.sin(a - 0.1) * r * 1.25)
+            ..lineTo(c.dx + math.cos(a + 0.1) * r * 1.25,
+                c.dy + math.sin(a + 0.1) * r * 1.25)
+            ..close(),
+          p);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_RaysPainter old) => false;
+}
+
+Widget _artBoard() {
+  Widget item(String id, String name, String note,
+          {double size = 100, String value = '5'}) =>
+      Padding(
+        padding: const EdgeInsets.only(right: 22, bottom: 14),
+        child: SizedBox(
+          width: 136,
+          child: Column(children: [
+            SizedBox(
+                height: size + 20,
+                child: Center(child: _art(id, size, value: value))),
+            Text(name, style: _t(13, bold: true)),
+            Text(note, style: _t(10.5, c: _ash), textAlign: TextAlign.center),
+          ]),
+        ),
+      );
+  return Padding(
+    padding: const EdgeInsets.all(22),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Dedicated art: a die is more than its colour', style: _t(19)),
+      const SizedBox(height: 4),
+      _note(
+          'Today four dice share the same cube and differ only in colour. Each gets pieces of its own (spikes, vines, a crackle, chips of stone) drawn over its shape, on top of its skin. Then one die for each size, the legendary d12, and the coin. Each art is a handful of paths: no new image files.',
+          w: 1000),
+      const SizedBox(height: 14),
+      _title('The four six-faced dice that share a cube today'),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        item('stone', 'Dwarven stone', 'chipped corners, a cut rune',
+            size: 110),
+        item('storm', 'Stormcast', 'a crackle of lightning over the faces',
+            size: 110),
+        item('liora', 'Liora’s', 'vines and leaves growing over it', size: 110),
+        item('grosh', 'Grosh’s tusk', 'tusk spikes at the corners, notches',
+            size: 110),
+      ]),
+      _title('One die of each size, with a look of its own'),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        item('fang', 'd4 · Twin-fang', 'curved fangs for its tips', value: '3'),
+        item('crystal', 'd8 · Rune crystal', 'a sparkle, inner facets',
+            value: '7'),
+        item('antler', 'd10 · Antler and oak', 'antler tines from its top',
+            value: '9'),
+        item('eye', 'd20 · Sky-glass eye', 'an eye on its front face',
+            value: '17'),
+      ]),
+      _title('The legendary d12, and the coin'),
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        item('sovereign', 'd12 · Sovereign’s Die',
+            'a crown, a gold edge, a halo of rays',
+            size: 120, value: '11'),
+        item('coin', 'Coin · Sovereign’s coin', 'a ring of beads, the crown',
+            size: 120),
+      ]),
+    ]),
+  );
+}
+
 void main() {
   setUpAll(_loadFonts);
 
@@ -975,6 +1536,16 @@ void main() {
       expect(s.faces.length, lessThanOrEqualTo(20),
           reason: 'a die is at most 20 polygons: cheap on a phone');
     }
+  });
+
+  test('a die has a slot for each of its faces, and each art has a skin', () {
+    expect(_shapes.map((s) => s.sides).toList(), [4, 6, 8, 10, 12, 20]);
+    for (final e in _artSpec.entries) {
+      expect(dieSkins.containsKey(e.value.$2), isTrue, reason: e.key);
+    }
+    expect(_artSpec.length, 10,
+        reason:
+            'four sixes, one for each other size, the legendary d12, the coin');
   });
 
   test('every style of the picture is a skin the game already has', () {
@@ -1034,6 +1605,14 @@ void main() {
 
   testWidgets('the roll (UX_SHOTS=<folder>)', (tester) async {
     await shoot(tester, _roll(), const Size(1000, 1330), 'dice-roll-mock.png');
+  });
+
+  testWidgets('equipping the faces (UX_SHOTS=<folder>)', (tester) async {
+    await shoot(tester, _equip(), const Size(1000, 720), 'dice-equip-mock.png');
+  });
+
+  testWidgets('the dedicated art (UX_SHOTS=<folder>)', (tester) async {
+    await shoot(tester, _artBoard(), const Size(900, 900), 'dice-art-mock.png');
   });
 
   testWidgets('the dice in the UI (UX_SHOTS=<folder>)', (tester) async {

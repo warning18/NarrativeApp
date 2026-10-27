@@ -53,3 +53,33 @@ Seven beats: **the throw** (small, up, a ghost trail), **the tumble** (turning, 
 1. Which sizes first (my guess: d8 and d20, since the forge already has a d20)?
 2. Should a clan-marked die be a reward (a clan's gift) or a style the player picks?
 3. Is the 1 s roll too short for a d20, which a check shows large (the forge's cast is 1 s)?
+
+## Update: a slot for every face, and art for every die (the user's words)
+"The 12-faced die should have 12 faces to equip and a dedicated art."
+
+### Equipping the faces (`docs/ux-shots/dice-equip-mock.png`)
+Every die has as many face slots as its size: **d4 four, d6 six, d8 eight, d10 ten, d12 twelve,
+d20 twenty, the coin two**. The die sits in the middle of a **ring** of round slots (a face
+is its skill's icon and its number; a "+" is a face with nothing on it yet); a tap on a slot
+chooses that face, and a small panel under the ring says what it does with one **Change**
+button. At the d20 the ring would be too tight at 320 px, so it becomes a **grid five across**.
+Nothing is a form: no fields, no labels per slot, the slot is the thing. The big picture is
+the legendary d12 (12 slots, "9 of 12 faces set"); the others are one die of each size.
+Needs from Core: a die's face list (`faces` in dice.json already is one, of any length) and
+a skill for each face; the equip screen draws what is there.
+
+### Dedicated art (`docs/ux-shots/dice-art-mock.png`)
+A die gets pieces of its own drawn over and round its shape, on top of its skin (a handful of
+paths, no new image files):
+- **The four six-faced dice that share a cube today**: Dwarven stone (chipped corners, a cut
+  rune), Stormcast (a crackle of lightning over the faces), Liora's (vines and leaves),
+  Grosh's tusk (tusk spikes at the corners, notches).
+- **One die for each other size**: d4 Twin-fang (curved fangs for its tips), d8 Rune crystal
+  (a sparkle, inner facets), d10 Antler and oak (tines from its top), d20 Sky-glass eye (an eye
+  on its front face).
+- **The legendary d12, the Sovereign's Die**: a crown, a gold edge, a halo of rays.
+- **The coin, the Sovereign's coin**: a ring of beads and a crown.
+The art ids are keyed to the existing skins (`stone_die`, `storm_die`, `liora_die`,
+`grosh_die`, `twinfang_die`, `arcane_die`, `huntsman_die`, `sage_die`, `holy_die`,
+`tobin_die`), so a die's dedicated art is a field next to its skin in the same table.
+The roll storyboard (`dice-roll-mock.png`) stays as drawn.
