@@ -83,28 +83,36 @@ TextStyle _serif(double size,
     TextStyle(
         fontFamily: 'Spectral', fontSize: size, color: color, fontStyle: style);
 
-/// The place for one of Narrative's lines: where it types itself out, over
-/// the picture, in the story's own text.
+/// One of Narrative's lines (set A, "Grim", English): where it types
+/// itself out over the picture, in the story's own text.
 class _LineSlot extends StatelessWidget {
-  const _LineSlot(this.n);
+  const _LineSlot(this.n, this.text);
   final int n;
+  final String text;
   @override
   Widget build(BuildContext context) => Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: const Color(0xAA000000),
-            border: Border.all(color: _gold.withValues(alpha: 0.7)),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text('LINE $n · Narrative’s text goes here',
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(14, 26, 14, 14),
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x00000000), Color(0xDD000000)])),
+          child: Text(text,
               textAlign: TextAlign.center,
-              style: _serif(11, style: FontStyle.italic)),
+              style: _serif(13.5, style: FontStyle.italic)),
         ),
       );
 }
+
+const _lines = {
+  1: 'Alster at dusk. The ash had already begun to fall.',
+  2: 'The bell rang for the Inquisition. Nobody on Tallow Street looked up.',
+  3: 'Every clan wanted the city. None of them wanted you in it.',
+  4: 'Tonight it burns. First, decide who you are.',
+};
 
 class _Bell extends CustomPainter {
   const _Bell(this.swing);
@@ -221,7 +229,7 @@ Widget _frame(int n, _Beat b) => SizedBox(
             borderRadius: BorderRadius.circular(10),
             child: Stack(fit: StackFit.expand, children: [
               ColoredBox(color: Colors.black, child: b.scene),
-              if (b.line != null) _LineSlot(b.line!),
+              if (b.line != null) _LineSlot(b.line!, _lines[b.line!]!),
               Positioned(
                   left: 8,
                   top: 8,
@@ -321,9 +329,9 @@ void main() {
 
     final beats = <_Beat>[
       _Beat(
-          '0.0 – 2.5 s',
+          '0.0 – 3.0 s',
           'Alster at dusk, ash falling',
-          'Fades up from black; the rooftops, the chapel, the quay. No sound, or one low bell.',
+          'Fades up from black; the rooftops, the chapel, the quay. Line 1 types itself out.',
           Stack(fit: StackFit.expand, children: [
             _street('temple', 'The Inquisition chapel'),
             Align(
@@ -338,9 +346,9 @@ void main() {
           ]),
           line: 1),
       _Beat(
-          '2.5 – 4.5 s',
+          '3.0 – 6.0 s',
           'The bell tolls',
-          'The chapel’s bell swings; rings spread over the rooftops; the ash shivers.',
+          'Just a bell: it swings, rings spread over the rooftops, the ash shivers. Line 2.',
           Stack(fit: StackFit.expand, children: [
             _street('temple', 'The Inquisition chapel'),
             Align(
@@ -350,9 +358,10 @@ void main() {
                     height: 130,
                     child: CustomPaint(painter: const _Bell(0.28)))),
           ]),
+          line: 2,
           isNew: 'a pixel bell and its rings (about 30 lines)'),
       _Beat(
-          '4.5 – 6.5 s',
+          '6.0 – 7.5 s',
           'The Inquisition’s banners',
           'The Dominion’s standards hang along the quay, blowing in the wind.',
           Stack(fit: StackFit.expand, children: [
@@ -369,18 +378,33 @@ void main() {
                             scale: 2,
                             phase: i * 0.31),
                     ]))),
-          ]),
-          line: 2),
+          ])),
       _Beat(
-          '6.5 – 8.5 s',
-          'One walker on the quay',
-          'The ronin crosses left to right in silhouette against the dusk.',
+          '7.5 – 10.0 s',
+          'The clans, one after another',
+          'The thirteen clans’ banners light up in turn (dark ones still to come). Line 3.',
+          Container(
+              color: const Color(0xFF17151B),
+              padding: const EdgeInsets.fromLTRB(18, 90, 18, 120),
+              child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  runSpacing: 14,
+                  children: [
+                    for (var i = 0; i < clanIds.length; i++)
+                      ClanFlag(factionId: clanIds[i], height: 56, found: i < 9),
+                  ])),
+          line: 3),
+      _Beat(
+          '10.0 – 11.5 s',
+          'One of the town walks home',
+          'The ronin, a local, crosses the quay in silhouette against the dusk.',
           Stack(fit: StackFit.expand, children: [
             _street('warehouse', 'The quay'),
             fill(CustomPaint(painter: const _Walker(18, 0.3))),
           ])),
       _Beat(
-          '8.5 – 10.0 s',
+          '11.5 – 12.5 s',
           'The shroud',
           'A grey cloth falls over the picture; the Void’s standard shows through it.',
           Stack(fit: StackFit.expand, children: [
@@ -390,27 +414,11 @@ void main() {
                 alignment: const Alignment(0, 0.05),
                 child: WindBanner(id: titleBannerId, scale: 3)),
           ]),
-          line: 3,
           isNew: 'the falling cloth (one painter, a slide and a fade)'),
       _Beat(
-          '10.0 – 11.5 s',
-          'The clans, one after another',
-          'The thirteen clans’ banners light up in turn along the grey (dark ones are still to come).',
-          Container(
-              color: const Color(0xFF17151B),
-              padding: const EdgeInsets.fromLTRB(18, 110, 18, 120),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 8,
-                  runSpacing: 14,
-                  children: [
-                    for (var i = 0; i < clanIds.length; i++)
-                      ClanFlag(factionId: clanIds[i], height: 56, found: i < 9),
-                  ]))),
-      _Beat(
-          '11.5 – 13.0 s',
+          '12.5 – 13.5 s',
           'The title',
-          'Black. The title in the game’s pixel face; the Void’s standard small above it.',
+          'Black. The title in the game’s pixel face; the Void’s standard small above it. (The still frame with reduced motion.)',
           Container(
               color: Colors.black,
               child: Column(
@@ -429,22 +437,22 @@ void main() {
                             textAlign: TextAlign.center,
                             style: _serif(12,
                                 color: _ash, style: FontStyle.italic))),
-                  ])),
-          line: 4),
+                  ]))),
       _Beat(
-          '13.0 – 14.0 s',
+          '13.5 – 15.0 s',
           'On to the choice',
-          'The title melts into the real “choose your race and profession” screen.',
+          'The title melts into the real “choose your race and profession” screen; line 4 holds there while the player picks.',
           lastImage == null
               ? const ColoredBox(color: Color(0xFFF3EAD7))
               : RawImage(
                   image: lastImage,
                   fit: BoxFit.cover,
-                  alignment: Alignment.topCenter)),
+                  alignment: Alignment.topCenter),
+          line: 4),
     ];
 
     // The timeline under the frames: each beat to scale, the skip marker.
-    const spans = [2.5, 2.0, 2.0, 2.0, 1.5, 1.5, 1.5, 1.0];
+    const spans = [3.0, 3.0, 1.5, 2.5, 1.5, 1.0, 1.0, 1.5];
     final total = spans.fold<double>(0, (a, b) => a + b);
     const boardW = 4 * (_frameW + 16) + 16;
     final key = GlobalKey();
@@ -467,11 +475,11 @@ void main() {
             padding: const EdgeInsets.all(16),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('The first-launch intro · storyboard (14 s)',
+              Text('The first-launch intro · storyboard (15 s)',
                   style: _px(22, w: FontWeight.w600)),
               const SizedBox(height: 4),
               Text(
-                  'Plays once, before the race and profession choice. A tap anywhere skips it; with reduced motion it shows frame 7 still, then goes on. Replayable from Settings. Drawn from the game’s own widgets.',
+                  'Plays once, before the race and profession choice. Lines: Narrative\u2019s set A (Grim). A tap anywhere skips it; with reduced motion it shows frame 7 still, then frame 8 with line 4 shown at once. Replayable from Settings. Drawn from the game’s own widgets.',
                   style: _serif(12.5, color: _ash)),
               const SizedBox(height: 14),
               Wrap(spacing: 16, runSpacing: 14, children: [
@@ -505,9 +513,9 @@ void main() {
               Text('What it is made of', style: _px(14, color: _gold)),
               const SizedBox(height: 6),
               chip(
-                  'Reused as it is: the street-view kit at dusk with ash (frames 1 \u2013 4), the ronin walker sprite (4), the banners and the clans\u2019 flags, dark ones as silhouettes (3, 5, 6, 7), the title screen\u2019s words (7), the story\u2019s typewriter for the four lines, the real Race & Profession screen (8), and the reduced-motion check.'),
+                  'Reused as it is: the street-view kit at dusk with ash (frames 1, 2, 3, 5, 6), the ronin walker sprite (5), the banners and the clans\u2019 flags, dark ones as silhouettes (3, 4, 6, 7), the title screen\u2019s words (7), the story\u2019s typewriter for the four lines, the real Race & Profession screen (8), and the reduced-motion check.'),
               chip(
-                  'New: a pixel bell with its rings (2), the falling cloth (5), one small intro screen that runs the eight beats on a clock and ends on a tap, a \u201cseen\u201d flag and a Replay row in Settings, the four line strings (English and French).',
+                  'New: a pixel bell with its rings (2), the falling cloth (6), one small intro screen that runs the eight beats on a clock and ends on a tap, a \u201cseen\u201d flag and a Replay row in Settings, Narrative\u2019s four lines (EN and FR).',
                   c: const Color(0xFFE08A6A)),
               chip(
                   'Build: about a day, one PR, about 350 lines and a test (the beats in order, a tap skips, reduced motion shows frame 7, the flag is set once). No new art files.',
