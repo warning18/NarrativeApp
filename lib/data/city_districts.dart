@@ -190,7 +190,8 @@ List<int> waysInDistrict(
 
 /// The districts of [cityId] the party has found: one a scene it played
 /// stands in ([visitedNodeIds]), one it walked into ([flags], see
-/// [districtFoundFlag]), and the one it stands in now ([currentNodeId]).
+/// [districtFoundFlag]), and the one it stands in now ([currentNodeId]); the
+/// first open district when none of those is a district at all.
 /// A locked district (see [districtLocked], with [completedQuestIds]) is
 /// never found, whatever says so.
 Set<String> foundDistricts(
@@ -208,7 +209,7 @@ Set<String> foundDistricts(
     for (final d in districtsOfCity(geo, cityId))
       if (!districtLocked(geo, d.id, held, done)) d.id,
   };
-  return {
+  final found = {
     for (final id in [...visitedNodeIds, currentNodeId])
       if (districtOfNode(geo, story.nodeFor(id))?.id case final d?
           when ids.contains(d))
@@ -216,4 +217,22 @@ Set<String> foundDistricts(
     for (final d in ids)
       if (held.contains(districtFoundFlag(d))) d,
   };
+  // Arriving in a town never leaves the whole plan fogged: a scene played in
+  // the town itself (in no district) finds the first open district, where the
+  // party comes in, and it stays found as the party walks on.
+  final atTown = [...visitedNodeIds, currentNodeId].any((id) {
+    final node = story.nodeFor(id);
+    return node != null &&
+        geo.locationOfNode(node)?.id == cityId &&
+        districtOfNode(geo, node) == null;
+  });
+  if (atTown) {
+    for (final d in districtsOfCity(geo, cityId)) {
+      if (ids.contains(d.id)) {
+        found.add(d.id);
+        break;
+      }
+    }
+  }
+  return found;
 }

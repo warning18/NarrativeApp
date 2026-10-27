@@ -53,7 +53,7 @@ import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../data/stat_ledger.dart';
 import '../data/dice_sizes_save.dart';
 import '../data/dice_weave.dart' show canWeaveDice, tallyDieId;
-import '../data/fate_coin.dart' show withFateCoinSpent;
+import '../data/fate_coin.dart' show reforgedRoll, withFateCoinSpent;
 import '../data/stat_scale_save.dart';
 import '../data/temple.dart';
 import '../data/training.dart';
@@ -4237,6 +4237,27 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     await _persist();
     return roll;
+  }
+
+  /// Flips a fate coin on the forge [roll] that made [pieceId] (a Flawed
+  /// one, fate_coin.dart): the coin is spent, the forge's d20 rolls once
+  /// more on [random] with the same modifiers, and the piece in the pack
+  /// takes the new tier's id. Returns the new roll, or null when the pack
+  /// holds no coin or no such piece.
+  Future<ForgeRoll?> reforgeWithFateCoin(String pieceId, ForgeRoll roll,
+      {Random? random}) async {
+    final left = withFateCoinSpent(state.inventoryItemIds);
+    if (left == null || !left.contains(pieceId)) return null;
+    final again = reforgedRoll(roll, random ?? Random());
+    final newId = forgedVariantId(baseItemIdOf(pieceId), again.tier);
+    left[left.indexOf(pieceId)] = newId;
+    state = state.copyWith(
+      inventoryItemIds: left,
+      itemOrigins: withItemOrigins(
+          state.itemOrigins, [newId], state.itemOrigins[pieceId]),
+    );
+    await _persist();
+    return again;
   }
 
   /// Whether the pack and purse cover [cost] (see face_smithing.dart).

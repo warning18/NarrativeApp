@@ -3,12 +3,15 @@
 // gold) or found among the Wayfarer's common objects. Flipped on a check
 // outside fights, it rolls that check once more and is spent.
 //
-// Wired into the land crossing's d20 check (land_crossing_screen.dart): a
-// failed check offers the coin when the hero carries one. The camp's fate
-// roll and the forge roll are follow-ups.
+// Wired into three rolls, each offering the coin when the hero carries
+// one: the land crossing's failed d20 check (land_crossing_screen.dart),
+// the camp fate's failed check (the thief's Perception, the peace's
+// Charisma; camp_fate_dialog.dart), and a forge roll that came out Flawed
+// (shop_trade_sheets.dart), which the coin forges once more.
 import 'dart:math';
 
 import 'ability_check.dart';
+import 'forge_roll.dart';
 
 /// The coin's item id (items.json).
 const String fateCoinId = 'fate_coin';
@@ -45,3 +48,12 @@ AbilityCheckResult rerolledCheck(AbilityCheckResult check, Random random) =>
       modifier: check.modifier,
       dc: check.dc,
     );
+
+/// Whether the coin may be offered on a forge [roll]: a Flawed piece, the
+/// forge's failed check.
+bool fateCoinWorthFlippingForge(ForgeRoll roll) =>
+    roll.tier == ForgeTier.flawed;
+
+/// [roll] forged once more with [random]: a new d20, the same modifiers.
+ForgeRoll reforgedRoll(ForgeRoll roll, Random random) =>
+    rollForge(random: random, modifiers: roll.modifiers);

@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.575.0+611]
+
+The fate coin now also works at the camp's fire and at the forge.
+
+- **At the camp:** when a check fails at the fire (catching the thief, making peace in a quarrel) and the pack holds a fate coin, the game offers it. Flipped, the coin is spent and the check is rolled once more.
+- **At the forge:** a piece that comes out Flawed offers the coin too. Flipped, the forge's d20 rolls again with the same bonuses, and the piece takes the new result (Sound, Fine or Masterwork, or Flawed again).
+- The land crossing's coin is unchanged.
+
+## [1.574.0+610]
+
+Arriving in a town never leaves its whole plan fogged.
+
+### Fixed
+- **A town's first district is found on arrival** (`city_districts.dart`, `foundDistricts`): at the White Wells (and every town with districts) the scene the party arrives at is in the town itself, in none of its districts, so the Town view showed every district as "?" with nothing to start from and the player had to guess which to enter. Now a scene played in the town itself finds the first open district of geography.json's order (the Pool at the White Wells), named on the plan and in the list, with its ways; it stays found as the party walks on. A scene in a district finds that district only, as before. A locked district is never the one found.
+
+### Tests
+- New `test/town_arrival_test.dart` (every town with a town-level scene opens on its first open district, the White Wells' Pool, a walked-into district joins it, a district scene is unchanged) and `test/ux_arrival_shot_test.dart` (the real screen as a picture with `UX_SHOTS`, `docs/ux-shots/town-arrival.png`).
+
 ## [1.573.0+609]
 
 The dice loadout shows a die as a ring of slots, one per face.
