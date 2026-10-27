@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.584.0+620]
+
+Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
+
 ## [1.583.0+619]
 
 The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
@@ -21,10 +25,6 @@ The first-launch intro: the Great Shroud burning, six embers, the ashen city, do
 ## [1.582.0+618]
 
 Seven buildings of the Smugglers' Wharf have names, so the district view and the ways show where things happen: Vane's barrel, Vane's guard corner, the wet boards, the loading crane, the old customs house (Liora's skiff), the wharf steps, and the shipyard gate. English and French.
-
-## [1.584.0+620]
-
-Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
 
 ## [1.581.0+617]
 
