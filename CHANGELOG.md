@@ -20,6 +20,24 @@ The district view as places, map first: the map has the room, its pins carry no 
 - Fixed: a chart built after a camera shot replayed it (`CityChartCamera.pending`).
 - Tests: `district_places_test.dart`, `district_places_view_test.dart`; `test/district_places_steps.dart` holds the steps. Pictures in `docs/ux-shots/places-build-*.png`.
 
+## [1.585.0+621]
+
+Tern's Toll can be finished by talking Renn down, not only by fighting him. The quest now asks the player to deal with the overseer, and either way ends it.
+
+## [1.583.0+619]
+
+The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
+
+### Added
+- **The intro** (`intro_screen.dart`, `intro_art.dart`): 15 seconds over eight beats. The Shroud burns over Alster, leaves six embers (one falls toward the city), the calm streets wait with the Inquisition's white ships far off (no shell yet), the camera pushes down to the Blind Beggar, the bone die falls, bounces and rolls to the middle, slows and stops on a six (the first shell lands only then), the title rises over it and the room fades into the game. Narrative's four lines (set A) write themselves over it, in order, English and French.
+- **Plays once**, at the first New Game (the `intro_seen` flag); a tap goes to the last beat, a second tap ends it. With reduced motion it shows the title over the die, then the last line.
+- **Replay the intro** in Settings, under the tutorial's replay.
+- Tests: `test/intro_screen_test.dart` (the lines in order, tap to skip, reduced motion, the flag, the Settings row); `test/flutter_test_config.dart` keeps the intro off elsewhere. Pictures of every beat in `docs/ux-shots/intro-build/`; the earlier storyboards A to C are kept under `docs/proposals/` as history.
+
+## [1.582.0+618]
+
+Seven buildings of the Smugglers' Wharf have names, so the district view and the ways show where things happen: Vane's barrel, Vane's guard corner, the wet boards, the loading crane, the old customs house (Liora's skiff), the wharf steps, and the shipyard gate. English and French.
+
 ## [1.581.0+617]
 
 The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
