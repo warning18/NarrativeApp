@@ -33,7 +33,7 @@ The hero is a local, so nothing shows a stranger arriving, and the bell is just
 a bell (not a named tower).
 
 ## Reused as it is
-- `StreetViewScene` (street-view kit) at dusk with ash: frames 1 to 5 backdrops
+- `StreetViewScene` (street-view kit) at dusk with ash: frames 1, 2, 3, 5, 6 backdrops
 - `SideSprites` (the ronin): frame 4
 - `WindBanner`, `ClanFlag` (`found: false` is the dark silhouette): 3, 4, 7
 - the six Shroud pieces (`shroudPieceIds`, `PixelBanner`, found or dark, as the character screen's `_ShroudCard` draws them): 6, 7
