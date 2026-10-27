@@ -218,6 +218,28 @@ Widget _placeRow(_Place p, {bool dim = false, bool hot = false}) {
   );
 }
 
+/// "Here": the party's own place, always the first entry; the on-the-spot
+/// choices (a fight, a check, a payment, a way with no place) are its things.
+Widget _hereRow(int things, String where) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      child: Row(children: [
+        const SizedBox(
+            width: 30, child: Icon(Icons.my_location, size: 20, color: _gold)),
+        const SizedBox(width: 10),
+        Expanded(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Here, on $where', style: _serif(16.5)),
+            Text('Whistle for the hound',
+                style: _serif(11.5, color: _inkSoft, style: FontStyle.italic)),
+          ]),
+        ),
+        _count(things),
+        const SizedBox(width: 4),
+        const Icon(Icons.chevron_right, size: 18, color: _inkSoft),
+      ]),
+    );
+
 Widget _section(String s) => Padding(
     padding: const EdgeInsets.only(top: 14, bottom: 4),
     child: Text(s, style: _px(11.5, color: _inkSoft)));
@@ -397,18 +419,18 @@ void main() {
 
     final phone1 = _phone(
       caption:
-          '1. The district as places. The pins and the rows are the same places, in the same order. A row says its place, a small count of what there is to do there, a flag for where the story goes on, and a padlock (greyed, with its reason) for a place you cannot enter yet. No choice text.',
+          '1. The district as places, in Core\u2019s order: HERE first (the party\u2019s own place, holding what is done on the spot), then the place where the story goes on (the flag), then the others by distance, a locked one greyed last. A row says its place, a count of what there is to do there, and a padlock with its reason. No choice text. (As drawn this needs a place for each way: today the High Quay\u2019s five ways all lead back to the building the party stands at, so all five would sit under HERE until the places are named.)',
       top: top(over: [
         for (final w in mapPins) w,
       ]),
       children: [
         ...list.take(3),
+        _hereRow(1, 'the quay'),
+        const Divider(height: 1, color: _line),
         for (final p in _places) ...[
           _placeRow(p),
           const Divider(height: 1, color: _line),
         ],
-        _section('AROUND YOU'),
-        _plainRow(Icons.pets_outlined, 'Whistle for the hound', 'here, 1'),
         _section('WAYS OUT'),
         _plainRow(Icons.signpost_outlined, 'The Stone Bridge', 'walk'),
         _plainRow(Icons.sailing_outlined, 'Aboard the Lark', 'sail'),
@@ -576,21 +598,21 @@ void main() {
       children: [
         const SizedBox(height: 14),
         kindCard(Icons.signpost_outlined, 'A road, a gate, a way out',
-            'Not a place of the district: a row under WAYS OUT with where it leads and how (walk, sail). The pin stands on the district’s edge, at the gate. It is what the walk-to-a-neighbour rows already are.'),
+            'Not a place of the district: one row under WAYS OUT for each gate or road, with where it leads and how (walk, sail). The pin stands on the district’s edge, never on a building. It is what the walk-to-a-neighbour rows already are.'),
         kindCard(Icons.pets_outlined, 'A thing done where you stand',
-            '"Whistle for the hound" has no building: it goes under AROUND YOU, a row with no pin, opened by a tap as the sheet over the map (no walk). Same for a roll or a stall with no spot.'),
-        kindCard(Icons.gavel_outlined, 'A fight or a roll at a place',
-            'It is one of the place’s things like any other: counted, and on the street its pin carries a small crossed-blades badge (the fight disc the pins already use).'),
+            'It is a thing of HERE, the first entry: no walk, opened by a tap as the sheet over the map. Fights, checks and payments always go here.'),
+        kindCard(Icons.gavel_outlined, 'A fight or a roll',
+            'Always a thing of HERE: counted there, and on the street its pin carries a small crossed-blades badge (the fight disc the pins already use).'),
         kindCard(Icons.lock_outline, 'A place you cannot enter yet',
             'Its row and pin are greyed with a padlock and say why, as the shut districts already do; it is not counted among the things to do.'),
-        kindCard(Icons.help_outline, 'A way whose place is not known',
-            'Until Core’s anchors cover every scene (401 of 421 do; a choice’s own spot only 12) it falls into AROUND YOU, never into a place it does not belong to.'),
+        kindCard(Icons.help_outline, 'A way with only a stand-in building',
+            'About 329 ways today have only a random stand-in building: they go to HERE, never to a place they do not belong to, until each gets a real one.'),
       ],
     );
 
     const boardW = 4 * (_phoneW + 20) + 20;
     final key = GlobalKey();
-    tester.view.physicalSize = const Size(boardW, 1320);
+    tester.view.physicalSize = const Size(boardW, 1480);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);

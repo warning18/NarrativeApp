@@ -35,10 +35,20 @@ places in the mock are read off the ways' own words; nothing in the data names t
 |---|---|
 | a place (a building, a spot) | a row and a pin, counted with the place's other things |
 | a road, a gate, a way out | a row under WAYS OUT with where it leads and how; the pin on the district's edge (what the walk-to-a-neighbour rows already are) |
-| a thing done where you stand, no building ("Whistle for the hound") | a row under AROUND YOU with no pin, opened as the sheet over the map, no walk |
-| a fight or a roll at a place | one of that place's things, counted; its street pin carries a small crossed-blades badge |
+| a thing done where you stand, no building ("Whistle for the hound") | a thing of HERE, the first entry (the party's own place), opened as the sheet over the map, no walk |
+| a fight, a check or a payment | always a thing of HERE, counted there; its street pin carries a small crossed-blades badge |
 | a place you cannot enter yet | greyed row and pin with a padlock and the reason; not counted |
-| an unknown place (anchors cover 401 of 421 scenes, a choice's own spot 12) | AROUND YOU, never a wrong place |
+| only a stand-in building (about 329 ways today are hashed to a random one) | HERE, never a wrong place, until it gets a real one |
+
+## Core's rules (§6 of `presentation-contract.md`), which the mock follows
+- One entry per place, with its name (the plan's `names`, else the geography building's) and a count.
+- **HERE is one entry, first:** the party's own place, holding the on-the-spot choices.
+- **The main mark** goes to an entry holding a way to a spine beat or a main-story scene; main entries sort first after HERE, the rest by distance; a locked one greyed last.
+- **Leaving the city:** one entry per district gate or road, at the district's edge, never on a building.
+- **The 329 hashed ways go to HERE** until they get a real place.
+- **Flow:** tap an entry, the party walks there (the existing city walk), that place's ways show (street pins or cards), taking one opens the next scene in its own view. On Core's side it is a view state (the place the party stands at), not saved.
+
+Caveat the mock states: at the High Quay all five ways of scene 891 lead back to the building the party stands at (254 ways are "here" choices like this), so with today's data they would all sit under HERE. The places in the picture (the sailcloth rigging, the looted armory, the shieldwright's cart) exist only once Narrative names a place for each choice.
 
 ## What it needs
 - **Core:** a name for each way's place (a place id on the way, or derive it from the anchor
