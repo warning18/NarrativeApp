@@ -1,9 +1,8 @@
 // A skill takes no more faces of a die than its rarity allows: common 3,
 // uncommon and rare 2, epic and legendary 1; and no more than one copy per
 // four faces of the die (dice sizes: a d4 one, a d6 two, a d8 two, a d12
-// three). The
-// loadout's picker holds to it, and a fight keeps a save from before the
-// limits to it. The rarity checks run on dice wide enough for the rarity
+// three). The loadout's picker holds to it, and a fight keeps a save from
+// before the limits to it. The rarity checks run on dice wide enough for the rarity
 // to be what limits.
 import 'dart:convert';
 import 'dart:io';
