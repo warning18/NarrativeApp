@@ -11,7 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
+import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/widgets/arrival_sheet.dart';
 import 'package:narrative_data_app/widgets/scene_band.dart';
@@ -25,11 +27,13 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 /// The Journey at [scene], in English.
-Future<ProviderContainer> _journeyAt(WidgetTester tester, String scene) async {
+Future<ProviderContainer> _journeyAt(WidgetTester tester, String scene,
+    {bool closeCards = true}) async {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
-  SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
+  SharedPreferences.setMockInitialValues(
+      closeCards ? {'tutorial_enabled': false} : {});
   tester.view.physicalSize = const Size(400, 860);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
@@ -53,11 +57,22 @@ Future<ProviderContainer> _journeyAt(WidgetTester tester, String scene) async {
   await _settle(tester);
   await tester.tap(find.text('Journey'));
   await _settle(tester);
-  await tester.pump(const Duration(seconds: 1));
+  await tester.pump(Duration(seconds: closeCards ? 6 : 1));
+  // What arriving somewhere opens over the game (a new place's card) is
+  // closed.
+  for (var i = 0; closeCards && i < 3; i++) {
+    Navigator.of(tester.element(find.byType(JourneyScreen)))
+        .popUntil(isGameRoute);
+    await tester.pump(const Duration(seconds: 1));
+  }
   return container;
 }
 
 void main() {
+  // An asset load cached by an earlier test belongs to that test's fake
+  // clock and would never finish in this one.
+  setUp(() => rootBundle.clear());
+
   group('bandTextOf', () {
     test('takes the first paragraph, on one line', () {
       expect(bandTextOf('The quay stood\nquiet.\n\nA second paragraph.'),
@@ -135,7 +150,7 @@ void main() {
 
   testWidgets('a scene at a doorstep is its street with four lines',
       (tester) async {
-    await _journeyAt(tester, '300');
+    await _journeyAt(tester, '300', closeCards: false);
     expect(find.byKey(const ValueKey('journey_street_scene')), findsOneWidget);
     expect(find.byKey(const Key('scene_band')), findsOneWidget);
     expect(
