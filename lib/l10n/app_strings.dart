@@ -1260,6 +1260,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Grey Shroud',
     AppLanguage.fr: 'Le Linceul gris',
   },
+  // The first-launch intro (v1.583): Narrative's four lines (set A).
+  'intro_line_1': {
+    AppLanguage.en: 'Alster at dusk. The ash had already begun to fall.',
+    AppLanguage.fr:
+        'Alster au crépuscule. La cendre avait déjà commencé à tomber.',
+  },
+  'intro_line_2': {
+    AppLanguage.en:
+        'The bell rang for the Inquisition. Nobody on Tallow Street looked up.',
+    AppLanguage.fr:
+        'La cloche sonna pour l’Inquisition. Personne, rue du Suif, ne leva les yeux.',
+  },
+  'intro_line_3': {
+    AppLanguage.en:
+        'Every clan wanted the city. None of them wanted you in it.',
+    AppLanguage.fr:
+        'Chaque clan voulait la ville. Aucun ne voulait de vous dedans.',
+  },
+  'intro_line_4': {
+    AppLanguage.en: 'Tonight it burns. First, decide who you are.',
+    AppLanguage.fr: 'Ce soir, elle brûle. D’abord, décidez qui vous êtes.',
+  },
+  'intro_skip': {
+    AppLanguage.en: 'Tap to skip',
+    AppLanguage.fr: 'Touchez pour passer',
+  },
+  'intro_replay_title': {
+    AppLanguage.en: 'Replay the intro',
+    AppLanguage.fr: 'Revoir l’introduction',
+  },
+  'intro_replay_desc': {
+    AppLanguage.en: 'The Shroud burning, the die, the title (15 seconds).',
+    AppLanguage.fr: 'Le Linceul qui brûle, le dé, le titre (15 secondes).',
+  },
   'menu_subtitle': {
     AppLanguage.en: 'A tale of dice, debts and a shroud that should not exist',
     AppLanguage.fr:
