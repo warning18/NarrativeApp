@@ -18,6 +18,27 @@ The first-launch intro: the Great Shroud burning, six embers, the ashen city, do
 - **Replay the intro** in Settings, under the tutorial's replay.
 - Tests: `test/intro_screen_test.dart` (the lines in order, tap to skip, reduced motion, the flag, the Settings row); `test/flutter_test_config.dart` keeps the intro off elsewhere. Pictures of every beat in `docs/ux-shots/intro-build/`; the earlier storyboards A to C are kept under `docs/proposals/` as history.
 
+## [1.580.0+616]
+
+The groundwork for the district view as places, its camera, and the view each scene opens in. Nothing on screen changes yet: UX builds the places list, the labels-off map and the arrival ease on top of this.
+
+- **Places:** each way of a scene in a town now has a place where it is taken.
+  - It is the party's own place ("here") for things done on the spot: fights, checks, payments and decisions.
+  - It is a building of the town's plan for a way to a scene there.
+  - It is a way out for a road, gate or harbour.
+  - A way whose building was only a stand-in now counts as "here" rather than a random building.
+  - Story data can set a choice's place directly with the new `place` field.
+- **The district list:** it groups the ways by place, with a count. "Here" comes first, then the places holding the main story, then the rest, then the ways out; a place that is shut comes last.
+- **The party's place:** the game now remembers which place the party has walked to within a district. It is not saved: a game picked back up opens on the list.
+- **Arrivals:** a new arrival is signalled each time the party arrives in a district.
+- **The camera:** the Journey can now set the district map's zoom and centre.
+  - The arrival shot is the district 25% closer, centred on the party, over 0.6 s.
+  - The map reports when it reaches its full zoom.
+- **The view each scene opens in:** page, sheet over the map, street, room, the place's map, or ending.
+  - The rule follows the approved presentation contract: town and camp scenes on their map, chapter beats on the page, scenes inside buildings in the room, scenes at a door in the street (unless they continue a main scene there), other main scenes on the page and side scenes in a sheet.
+  - A two-page scene's first page opens in the view of its second.
+  - Narrative's `scene` block (`view`, `weight`) wins over the rule and is kept when the scene is saved.
+
 ## [1.577.0+613]
 
 Three scenes of chapter 1 are told in two pages: the Blind Beggar's evening, then the wall coming in; the walk to the family house, then the cannonball; the Lark lifting off, then the guns. A Continue on the calm page; the choices come with the shock. English and French.

@@ -8,7 +8,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
+import '../../data/city_camera.dart';
 import '../../data/journey_rules.dart' show DayPhase;
 import '../../data/map_charts.dart';
 import '../../data/world_map.dart' show MapLook;
@@ -83,7 +85,12 @@ class CityChartView extends StatefulWidget {
     this.banners = const {},
     this.bannersDark = true,
     this.phase = DayPhase.day,
+    this.camera,
   });
+
+  /// The Journey's hold on the view (v1.580, city_camera.dart): a shot it
+  /// asks for moves the view, and the view reports its zoom back.
+  final CityChartCamera? camera;
 
   /// A number on each pin by way id (the host's list rows carry the same).
   final Map<String, int> numbers;
@@ -188,6 +195,10 @@ class _CityChartViewState extends State<CityChartView>
   @override
   void didUpdateWidget(covariant CityChartView old) {
     super.didUpdateWidget(old);
+    if (old.camera != widget.camera) {
+      old.camera?.removeListener(_onCamera);
+      widget.camera?.addListener(_onCamera);
+    }
     if (old.focus != widget.focus || old.focusToken != widget.focusToken) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || !_placed) return;
@@ -206,12 +217,14 @@ class _CityChartViewState extends State<CityChartView>
   @override
   void initState() {
     super.initState();
+    widget.camera?.addListener(_onCamera);
     _move.addListener(_tick);
     if (widget.animate) _breath.repeat();
   }
 
   @override
   void dispose() {
+    widget.camera?.removeListener(_onCamera);
     _move.dispose();
     _breath.dispose();
     super.dispose();
@@ -225,6 +238,65 @@ class _CityChartViewState extends State<CityChartView>
     });
   }
 
+  /// The camera's shot (city_camera.dart), taken once the view has its
+  /// size: the district's frame (the city's when none) times the shot's
+  /// zoom, or the closest zoom for a full shot, on its centre.
+  void _onCamera() {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
+    } else {
+      _takeShot();
+    }
+  }
+
+  void _takeShot() {
+    final shot = widget.camera?.shot;
+    if (!mounted || !_placed || shot == null) return;
+    final d = shot.districtId == null
+        ? null
+        : widget.chart.districtById(shot.districtId!);
+    final box = d?.box ?? widget.chart.bounds;
+    final frame = math.min(_size.width / box.width, _size.height / box.height);
+    final scale = shot.full ? _maxScale : frame * shot.zoom;
+    final centre = shot.centre ?? box.center;
+    final offset = Offset(_size.width / 2, _size.height / 2) - centre * scale;
+    if (shot.jump || !widget.animate) {
+      final s = scale.clamp(_minScale, _maxScale);
+      setState(() {
+        _scale = s;
+        _offset = _clamped(offset, s);
+      });
+    } else {
+      _move.duration = shot.duration;
+      _animateTo(scale, offset);
+      _move
+        ..removeStatusListener(_restoreMove)
+        ..addStatusListener(_restoreMove);
+    }
+    if (d != null) setState(() => _focus = d.id);
+  }
+
+  void _restoreMove(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    _move.removeStatusListener(_restoreMove);
+    _move.duration = const Duration(milliseconds: 420);
+  }
+
+  double? _reportedZoom;
+
+  /// Tells the camera the view's zoom once it changed.
+  void _reportZoom() {
+    final camera = widget.camera;
+    if (camera == null || !_placed || _scale == _reportedZoom) return;
+    _reportedZoom = _scale;
+    final zoom = _scale / _fitted;
+    final full = _scale >= _maxScale * fullZoomShare;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) camera.report(zoom: zoom, full: full);
+    });
+  }
+
   double get _minScale => _fitted * 0.85;
   double get _maxScale => _fitted * 9;
 
@@ -234,6 +306,10 @@ class _CityChartViewState extends State<CityChartView>
     _fitted = math.min(size.width / b.width, size.height / b.height);
     if (!_placed) {
       _placed = true;
+      // A shot asked for before the view had its size.
+      if (widget.camera?.shot != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
+      }
       _scale = _fitted;
       _offset = Offset((size.width - b.width * _fitted) / 2,
           (size.height - b.height * _fitted) / 2);
@@ -424,6 +500,7 @@ class _CityChartViewState extends State<CityChartView>
     final text = widget.text;
     return LayoutBuilder(builder: (context, box) {
       _fit(Size(box.maxWidth, box.maxHeight));
+      _reportZoom();
       final focus = _focus == null ? null : widget.chart.districtById(_focus!);
       final zoomed = _scale / _fitted > 1.05;
       if (_focus != _reportedFocus) {
