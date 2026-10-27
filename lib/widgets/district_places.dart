@@ -1,4 +1,4 @@
-// The district view as places (v1.583; the mocks district-places.md and
+// The district view as places (v1.586; the mocks district-places.md and
 // map-first.md): the list under the district's map holds the places, one row
 // each, the map's pins carry no words and a tap on one shows a small card
 // with its place, and a handle at the foot of the map says there is a list.

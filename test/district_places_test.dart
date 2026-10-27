@@ -1,4 +1,4 @@
-// The district as places on the Journey's view (v1.583,
+// The district as places on the Journey's view (v1.586,
 // lib/widgets/district_places.dart): Core's entries matched to the steps
 // that are drawn, the rows, the pin card and the handle.
 import 'package:flutter/material.dart';

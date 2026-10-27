@@ -1,4 +1,4 @@
-// The district view as places (v1.583) on the Journey, at the Landward Gate
+// The district view as places (v1.586) on the Journey, at the Landward Gate
 // (scene 2015_informant: the party's own place and a building's): the map
 // alone with its handle, the arrival's ease, a pin's card, the list rising at
 // full zoom, a place's ways, the way back.

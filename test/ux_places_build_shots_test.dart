@@ -1,4 +1,4 @@
-// Pictures of the district view as places (v1.583), drawn only with UX_SHOTS (a
+// Pictures of the district view as places (v1.586), drawn only with UX_SHOTS (a
 // folder): UX_SHOTS=docs/ux-shots flutter test test/ux_places_build_shots_test.dart
 import 'dart:io';
 import 'dart:ui' as ui;

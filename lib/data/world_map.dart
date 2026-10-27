@@ -221,7 +221,8 @@ final List<Landmark> worldMapLandmarks = [
       '2015_bazaar', '2015_apothecary', '2015_vess',
       // Card Row.
       '2015_cards', '2015_cards_won', '2015_sable', '2015_cards_lost',
-      '2015_alleys_door', '2015_ternrow_door', '2015_cardrow_tally',
+      '2015_alleys_door', '2015_ternrow_door', '2015_doors', '2015_vane',
+      '2015_cardrow_tally',
       '2015_cardrow_count', '2015_ternrow_buyer', '2015_ternrow_boats',
       '2015_sable_bought', '2015_sable_lifted', '2015_sable_caught',
       '2015_sable_talk_failed',

@@ -1,4 +1,4 @@
-// The district as places (v1.583): the steps a test takes to reach a way's
+// The district as places (v1.586): the steps a test takes to reach a way's
 // row on the Journey's District view: raise the list under the map, then
 // go to a place.
 import 'package:flutter/widgets.dart';

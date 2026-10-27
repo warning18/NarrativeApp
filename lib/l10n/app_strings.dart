@@ -101,7 +101,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
-  // The district as places (v1.583, docs/proposals/district-places.md).
+  // The district as places (v1.586, docs/proposals/district-places.md).
   'district_places_title': {
     AppLanguage.en: 'Places · tap one to go there',
     AppLanguage.fr: 'Lieux · touchez-en un pour y aller',

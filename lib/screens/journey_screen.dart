@@ -429,7 +429,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   late final AnimationController _cityWalk = AnimationController(vsync: this);
   bool _cityWalkable = false;
 
-  /// The district as places (v1.583, district_places.dart): the map's camera
+  /// The district as places (v1.586, district_places.dart): the map's camera
   /// and the pin card, where the party's mark stands once it has gone to a
   /// place of the list (null: at its own mark), and the arrival last eased.
   final DistrictPlacesController _places = DistrictPlacesController();
@@ -978,7 +978,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   Offset? get _markAtPlace =>
       ref.read(partyPlaceProvider) == null ? null : _placeMark;
 
-  /// The party goes to a place of the district's list (v1.583): its mark
+  /// The party goes to a place of the district's list (v1.586): its mark
   /// walks to the place's pin (a tap skips the walk), then the place's ways
   /// show. `Here` and a way out have no pin to walk to.
   Future<void> _goPlace(PlaceInfo place) async {
@@ -2311,7 +2311,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
-    // An arrival in a district: the map eases in on the party (v1.583).
+    // An arrival in a district: the map eases in on the party (v1.586).
     final arrival = ref.watch(districtArrivalProvider);
     // (Not on the Town view a move to another district frames: that view is
     // the one asked for.)
@@ -5985,7 +5985,7 @@ class _CityDistrictView extends ConsumerWidget {
   /// mark), see _walkCity.
   final ValueNotifier<Offset?> partyWalk;
 
-  /// The district as places (v1.583): the map's camera and pin card, where
+  /// The district as places (v1.586): the map's camera and pin card, where
   /// the party's mark stands at the place it went to, and the way there and
   /// back.
   final DistrictPlacesController places;
@@ -6086,7 +6086,7 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
-    // In the party's own district the ways are taken at places (v1.583,
+    // In the party's own district the ways are taken at places (v1.586,
     // way_places.dart): a list of places, pins without words and a card.
     // (Not in a building's street: its own view, see street_view.dart.)
     final inStreet = street != null &&
@@ -6465,7 +6465,7 @@ class _CityDistrictView extends ConsumerWidget {
     }
 
     // With places, the map has the room alone until it is fully zoomed (the
-    // handle, or a pinch): then the list rises under it (v1.583).
+    // handle, or a pinch): then the list rises under it (v1.586).
     Widget layout(bool full) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

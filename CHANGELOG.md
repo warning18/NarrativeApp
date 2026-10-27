@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.583.0+619]
+## [1.586.0+622]
 
 The district view as places, map first: the map has the room, its pins carry no words, a tap shows the place, and the list of places rises when the map is fully zoomed.
 
@@ -19,6 +19,10 @@ The district view as places, map first: the map has the room, its pins carry no 
 - **The arrival:** on arriving in a district the map eases in 25% and centres on the party's mark in 0.6 s (a jump with reduced motion; not on the Town view a move to another district frames).
 - Fixed: a chart built after a camera shot replayed it (`CityChartCamera.pending`).
 - Tests: `district_places_test.dart`, `district_places_view_test.dart`; `test/district_places_steps.dart` holds the steps. Pictures in `docs/ux-shots/places-build-*.png`.
+
+## [1.581.0+617]
+
+The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
 
 ## [1.580.0+616]
 
