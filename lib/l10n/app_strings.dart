@@ -7120,9 +7120,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'Your mark, with a step round it for each thing to do here; the ways to other places sit at the edge, in their true direction. A step’s icon and colour say what it holds. The road behind you is below.',
+        'The District view: your mark stands where the party is, and each pin is a way you can take from here; the list under the map repeats them. Tap a pin or a row, and your mark walks to it. The road behind you is below.',
     AppLanguage.fr:
-        'Votre repère, entouré d’une étape pour chaque chose à faire ici\u00a0; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
+        'La vue Quartier\u00a0: votre repère est là où se tient le groupe, et chaque épingle est un chemin à prendre d’ici\u00a0; la liste sous la carte les reprend. Touchez une épingle ou une ligne, et votre repère s’y rend à pied. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
