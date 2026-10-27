@@ -70,33 +70,38 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
           ),
         );
 
+    // While a pick waits, the picker's own radar is the one on the page (it
+    // draws the pick over the hero's shape): this one is for when none waits.
+    final showRadar = session.pendingStatPicks <= 0;
     final radar = Column(
       children: [
-        Center(
-          child: AbilityRadar(
-            key: const Key('level_up_radar'),
-            size: 230,
-            t: (key) => tr(ref, key),
-            values: {
-              'strength': session.strength,
-              'dexterity': session.dexterity,
-              'constitution': session.constitution,
-              'intelligence': session.intelligence,
-              'wisdom': session.wisdom,
-              'perception': session.perception,
-              'luck': session.luck,
-              'charisma': session.charisma,
-            },
-            onAxisTap: (ability) => showStatSheet(context, ability),
+        if (showRadar) ...[
+          Center(
+            child: AbilityRadar(
+              key: const Key('level_up_radar'),
+              size: 230,
+              t: (key) => tr(ref, key),
+              values: {
+                'strength': session.strength,
+                'dexterity': session.dexterity,
+                'constitution': session.constitution,
+                'intelligence': session.intelligence,
+                'wisdom': session.wisdom,
+                'perception': session.perception,
+                'luck': session.luck,
+                'charisma': session.charisma,
+              },
+              onAxisTap: (ability) => showStatSheet(context, ability),
+            ),
           ),
-        ),
-        // The corner labels hang below the radar's own box.
-        const SizedBox(height: 14),
-        Text(tr(ref, 'stat_radar_hint'),
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
-        const SizedBox(height: 10),
+          // The corner labels hang below the radar's own box.
+          const SizedBox(height: 14),
+          Text(tr(ref, 'stat_radar_hint'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 10),
+        ],
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
