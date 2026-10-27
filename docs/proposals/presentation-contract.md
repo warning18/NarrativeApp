@@ -250,3 +250,5 @@ What the default rule (§4) does with each first page:
 - **100_dice:** a main scene in the Blind Beggar room that is not a beat. Rule 4 gives it the **room**, but as the calm first page of beat 100 it should read as the **page**.
 
 **One more rule, before rule 4:** a page turn (one Continue, to a scene at the same place) opens in the view of the scene it turns to. So 100_dice takes 100's view (a beat, the page), and the two pages never switch views halfway through a scene.
+
+**A fact the rule relies on (#541):** a page turn is never read through. A node with `page_turn: true` stops `passThroughChoiceOf` (scene_flow.dart). Without that flag, a scene whose only way is a plain Continue is folded into the next scene as its prelude and never opens as a page of its own.
