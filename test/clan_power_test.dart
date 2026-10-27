@@ -87,14 +87,15 @@ void main() {
     // The lantern hall keeps its own holder; a place under Candlehold with
     // none takes the city's.
     expect(holderOf('candlehold_lantern_hall', geography, moved), 'dominion');
-    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(5));
+    // (Six with Saltmouth's Landward Gate, wave 18.)
+    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(6));
   });
 
   test('a chapter: holdings bring power, neglect takes it, never too far', () {
     final turn = territoryTurn(PoliticsState.empty.copyWith(helped: ['crows']),
         data: data, geography: geography, chapter: 2);
-    // The Dominion: +5 for its five places, -5 neglected.
-    expect(powerOf(turn.state, 'dominion', data), 60);
+    // The Dominion: +6 for its six places, -5 neglected.
+    expect(powerOf(turn.state, 'dominion', data), 61);
     // The Crows, helped: +3 for three places.
     expect(powerOf(turn.state, 'crows', data), 48);
     // The Vigil, nothing held: -5.

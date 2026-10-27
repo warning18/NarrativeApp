@@ -303,6 +303,12 @@ class Biome {
   String blurbFor(bool french) => _either(french, blurbFr, blurb);
 }
 
+/// A district's lock opens when its quest is taken (its `_accepted` flag).
+const String geoLockOpensOnAccepted = 'accepted';
+
+/// A district's lock opens when its quest is done (the default).
+const String geoLockOpensOnDone = 'done';
+
 /// One place, at any of the five levels.
 class GeoPlace {
   const GeoPlace({
@@ -326,6 +332,10 @@ class GeoPlace {
     this.watches = 0,
     this.landmarks = const [],
     this.doorstep = const [],
+    this.lockQuest = '',
+    this.lockOpensOn = '',
+    this.lockedText = '',
+    this.lockedTextFr = '',
   });
 
   /// [raw] as a place, or null when its level is not one of the five.
@@ -371,7 +381,22 @@ class GeoPlace {
                 if (id.toString().trim().isNotEmpty) id.toString().trim(),
             ]
           : const [],
+      lockQuest: level == GeoLevel.district ? _lockText(raw, 'quest') : '',
+      lockOpensOn: level == GeoLevel.district
+          ? (_lockText(raw, 'opensOn') == geoLockOpensOnAccepted
+              ? geoLockOpensOnAccepted
+              : geoLockOpensOnDone)
+          : '',
+      lockedText: level == GeoLevel.district ? _text(raw, 'lockedText') : '',
+      lockedTextFr:
+          level == GeoLevel.district ? _text(raw, 'lockedText_fr') : '',
     );
+  }
+
+  /// A field of [raw]'s `lock` (wave 18), '' with none.
+  static String _lockText(Map<dynamic, dynamic> raw, String key) {
+    final lock = raw['lock'];
+    return lock is Map ? (lock[key]?.toString() ?? '').trim() : '';
   }
 
   final String id;
@@ -441,8 +466,27 @@ class GeoPlace {
   /// not in its room (see [Geography.roomOfNode]).
   final List<String> doorstep;
 
+  /// A district's lock (wave 18, see districtLocked in
+  /// city_districts.dart): the quest that opens it, '' for none. Written
+  /// `"lock": {"quest": "<questId>", "opensOn": "accepted" | "done"}`.
+  final String lockQuest;
+
+  /// When [lockQuest] opens it: [geoLockOpensOnAccepted] (the quest's
+  /// `<quest>_accepted` flag) or [geoLockOpensOnDone] (the quest done, the
+  /// default); '' with no lock.
+  final String lockOpensOn;
+
+  /// The one line the plan shows on a locked district, why it is shut
+  /// (Narrative's).
+  final String lockedText;
+  final String lockedTextFr;
+
+  bool get hasLock => lockQuest.isNotEmpty;
+
   String nameFor(bool french) => _either(french, nameFr, name);
   String blurbFor(bool french) => _either(french, blurbFr, blurb);
+  String lockedTextFor(bool french) =>
+      _either(french, lockedTextFr, lockedText);
 
   /// Where a story node can happen: a location, a district, or the
   /// inside of a building.

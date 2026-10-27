@@ -12,6 +12,65 @@ import 'city_plan_record.dart';
 import 'geography.dart';
 import 'story_repository.dart' show StoryData;
 
+/// The flag a quest taken sets (quests.json's Accept choice).
+String questAcceptedFlag(String questId) => '${questId}_accepted';
+
+/// Whether district [districtId] is locked (wave 18): it has a `lock` in
+/// geography.json whose quest has not reached its stage yet, taken
+/// ([geoLockOpensOnAccepted], its `<quest>_accepted` flag among [flags])
+/// or done ([geoLockOpensOnDone], among [completedQuestIds]). A locked
+/// district shows on the plan with its lock and lockedText, is never
+/// found, and the party can't walk into it. No timeout: a quest that can
+/// no longer be taken leaves it locked.
+bool districtLocked(
+  Geography geo,
+  String? districtId,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) {
+  final place = geo.place(districtId);
+  if (place == null || !place.hasLock) return false;
+  if (completedQuestIds.contains(place.lockQuest)) return false;
+  if (place.lockOpensOn == geoLockOpensOnAccepted &&
+      flags.contains(questAcceptedFlag(place.lockQuest))) {
+    return false;
+  }
+  return true;
+}
+
+/// The locked districts of [cityId] (see [districtLocked]), in
+/// geography.json's order.
+List<String> lockedDistrictsOf(
+  Geography geo,
+  String cityId,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) =>
+    [
+      for (final d in districtsOfCity(geo, cityId))
+        if (districtLocked(geo, d.id, flags, completedQuestIds)) d.id,
+    ];
+
+/// The ways of [node] that lead into a locked district other than the one
+/// [node] stands in (see [wayDistricts], [districtLocked]), as indices
+/// into [StoryNode.choices], in order: the ways a screen may show greyed.
+List<int> lockedWays(
+  Geography geo,
+  StoryData story,
+  StoryNode node,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) {
+  final own = districtOfNode(geo, node)?.id;
+  return [
+    for (final MapEntry(:key, :value) in wayDistricts(geo, story, node).entries)
+      if (value != null &&
+          value != own &&
+          districtLocked(geo, value, flags, completedQuestIds))
+        key,
+  ]..sort();
+}
+
 /// The flag a district walked into is remembered by (found, unfogged).
 String districtFoundFlag(String districtId) => 'district_found:$districtId';
 
@@ -132,6 +191,8 @@ List<int> waysInDistrict(
 /// The districts of [cityId] the party has found: one a scene it played
 /// stands in ([visitedNodeIds]), one it walked into ([flags], see
 /// [districtFoundFlag]), and the one it stands in now ([currentNodeId]).
+/// A locked district (see [districtLocked], with [completedQuestIds]) is
+/// never found, whatever says so.
 Set<String> foundDistricts(
   Geography geo,
   StoryData story, {
@@ -139,9 +200,14 @@ Set<String> foundDistricts(
   required Iterable<String> visitedNodeIds,
   required String currentNodeId,
   required Iterable<String> flags,
+  Iterable<String> completedQuestIds = const [],
 }) {
-  final ids = {for (final d in districtsOfCity(geo, cityId)) d.id};
   final held = flags.toSet();
+  final done = completedQuestIds.toSet();
+  final ids = {
+    for (final d in districtsOfCity(geo, cityId))
+      if (!districtLocked(geo, d.id, held, done)) d.id,
+  };
   return {
     for (final id in [...visitedNodeIds, currentNodeId])
       if (districtOfNode(geo, story.nodeFor(id))?.id case final d?

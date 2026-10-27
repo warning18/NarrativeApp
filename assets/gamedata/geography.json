@@ -245,6 +245,7 @@
   },
   "saltmouth_landward_gate": {
     "level": "district",
+    "controller": "dominion",
     "parent": "saltmouth",
     "name": "The Landward Gate",
     "name_fr": "La Porte de la terre",
@@ -283,7 +284,10 @@
     "blurb": "The Tide-Kin quarter over a footbridge, salt-scoured and hung with paper boats, each lit for someone the sea never gave back.",
     "blurb_fr": "Le quartier des Gens de la Marée, de l’autre côté d’une passerelle, rongé par le sel et pavoisé de bateaux de papier, chacun allumé pour quelqu’un que la mer n’a jamais rendu.",
     "landmark": "",
-    "glyph": "market"
+    "glyph": "market",
+    "lock": {"quest": "q_ch2_terns_toll", "opensOn": "done"},
+    "lockedText": "The footbridge is drawn up. The Tide-Kin will let no stranger over while an overseer’s boot is on their planks.",
+    "lockedText_fr": "La passerelle est relevée. Les Gens de la Marée ne laisseront passer aucun inconnu tant que la botte d’un contremaître foulera leurs planches."
   },
   "saltmouth_wharf": {
     "level": "district",
@@ -311,6 +315,7 @@
   },
   "saltmouth_yard": {
     "level": "district",
+    "controller": "compact",
     "tags": ["sea"],
     "parent": "saltmouth",
     "name": "The Ship-breaker’s Yard",
@@ -322,6 +327,7 @@
   },
   "saltmouth_lantern_alleys": {
     "level": "district",
+    "controller": "mire",
     "light": "night",
     "parent": "saltmouth",
     "name": "The Lantern Alleys",
@@ -329,7 +335,10 @@
     "blurb": "The back ways above the wharf, strung with lanterns for the buyers who would rather not be seen buying.",
     "blurb_fr": "Les ruelles au-dessus du quai, guirlandées de lanternes pour les acheteurs qui préfèrent qu’on ne les voie pas acheter.",
     "landmark": "",
-    "glyph": "market"
+    "glyph": "market",
+    "lock": {"quest": "q_ch2_informants_tip", "opensOn": "done"},
+    "lockedText": "The lamps go out at the first arch. Nobody here buys from a stranger the informants have not named.",
+    "lockedText_fr": "Les lampes s’éteignent à la première arche. Ici, personne n’achète à un inconnu que les indicateurs n’ont pas nommé."
   },
   "saltmouth_card_row": {
     "level": "district",

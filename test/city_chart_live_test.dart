@@ -126,7 +126,7 @@ void main() {
           .whenLoaded();
       await container.read(gameDbProvider(biomesSchema).notifier).whenLoaded();
       await container.read(playerSessionProvider.notifier).applyChoiceEffects(
-          flagsToAdd: [districtFoundFlag('saltmouth_tern_row')],
+          flagsToAdd: [districtFoundFlag('saltmouth_yard')],
           goldIsProfit: false);
     });
     container.read(storyPlayProvider.notifier).jumpTo('2015');
@@ -156,14 +156,15 @@ void main() {
     expect(find.byKey(const Key('city_chart_fog_card')), findsOneWidget);
     expect(find.byKey(const Key('city_chart_walk')), findsNothing);
 
-    // Tern Row was found by a flag: walking there moves the party.
-    await tester.tapAt(at('saltmouth_tern_row'));
+    // The Yard was found by a flag: walking there moves the party (Tern
+    // Row is locked until Tern's Toll is done, wave 18).
+    await tester.tapAt(at('saltmouth_yard'));
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pump(const Duration(milliseconds: 600));
     final walk = find.byKey(const Key('city_chart_walk'));
     expect(walk, findsOneWidget);
     await tester.tap(walk);
     await tester.pump(const Duration(milliseconds: 300));
-    expect(container.read(partyDistrictProvider), 'saltmouth_tern_row');
+    expect(container.read(partyDistrictProvider), 'saltmouth_yard');
   });
 }
