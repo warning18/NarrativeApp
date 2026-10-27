@@ -114,6 +114,13 @@ void main() {
       if (choices.length == 1) {
         final only = choices.single;
         if (only.isEnding) continue;
+        if (node.pageTurn) {
+          // A page turn: the same place, the next page of the scene.
+          expect(only.text, 'Continue', reason: node.id);
+          expect(nodes[only.nextId]!.location, node.location,
+              reason: '${node.id} turns the page in another place');
+          continue;
+        }
         expect(_hasImpact(only), isTrue,
             reason: '${node.id} is a padding node: ${only.text}');
         continue;

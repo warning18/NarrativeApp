@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.577.0+613]
+
+Three scenes of chapter 1 are told in two pages: the Blind Beggar's evening, then the wall coming in; the walk to the family house, then the cannonball; the Lark lifting off, then the guns. A Continue on the calm page; the choices come with the shock. English and French.
+
 ## [1.576.0+612]
 
 A clan at a glance: its standing with you as a disc, its power as the cloth.

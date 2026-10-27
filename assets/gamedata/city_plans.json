@@ -6791,6 +6791,7 @@
     "anchors": {
       "0": "alster_b001",
       "100": "alster_b000",
+      "100_dice": "alster_b000",
       "105": "alster_b000",
       "106": "alster_b000",
       "110": "alster_b000",
@@ -6801,6 +6802,7 @@
       "270": "alster_b008",
       "300": "alster_b005",
       "400": "alster_b005",
+      "400_hold": "alster_b005",
       "400_lost": "alster_b005",
       "450": "alster_b005",
       "470": "alster_b005",
@@ -6822,6 +6824,7 @@
       "897_failed": "alster_b189",
       "898_failed": "alster_b177",
       "960": "alster_b187",
+      "960_lift": "alster_b187",
       "890_trainer": "alster_b175"
     },
     "names": {

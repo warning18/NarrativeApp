@@ -80,8 +80,8 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 48 scenes, all reachable', () {
-    expect(chapterOne.length, 48);
+  test('chapter 1 has no padding: 51 scenes, all reachable', () {
+    expect(chapterOne.length, 51);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -162,6 +162,13 @@ void main() {
       final choices = node.choices;
       if (choices.isEmpty) continue;
       if (choices.length == 1) {
+        if (node.pageTurn) {
+          // A page turn: the same place, the next page of the scene.
+          expect(choices.single.text, 'Continue', reason: node.id);
+          expect(nodes[choices.single.nextId]!.location, node.location,
+              reason: '${node.id} turns the page in another place');
+          continue;
+        }
         expect(_hasImpact(choices.single), isTrue,
             reason: '${node.id} is a padding node: ${choices.single.text}');
         continue;
@@ -349,10 +356,10 @@ void main() {
     expect(mate.choices.map((c) => c.checkAbility).toSet(),
         {'charisma', 'intelligence', 'dexterity'});
     for (final way in mate.choices) {
-      expect(way.nextId, '960', reason: way.text);
+      expect(way.nextId, '960_lift', reason: way.text);
       final failed = nodes[way.failNextId]!;
       final board = failed.choices.single;
-      expect(board.nextId, '960', reason: failed.id);
+      expect(board.nextId, '960_lift', reason: failed.id);
       if (way.checkAbility == 'dexterity') {
         expect(board.healAmount, lessThan(0), reason: failed.id);
       } else {
