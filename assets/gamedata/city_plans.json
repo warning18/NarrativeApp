@@ -3392,6 +3392,34 @@
       "saltmouth_b059": {
         "en": "The corner table",
         "fr": "La table du coin"
+      },
+      "saltmouth_b157": {
+        "en": "Vane’s barrel",
+        "fr": "Le tonneau de Vane"
+      },
+      "saltmouth_b171": {
+        "en": "Vane’s guard corner",
+        "fr": "Le coin des gardes de Vane"
+      },
+      "saltmouth_b149": {
+        "en": "The wet boards",
+        "fr": "Les planches mouillées"
+      },
+      "saltmouth_b168": {
+        "en": "The loading crane",
+        "fr": "La grue de chargement"
+      },
+      "saltmouth_b147": {
+        "en": "The old customs house",
+        "fr": "L’ancienne douane"
+      },
+      "saltmouth_b158": {
+        "en": "The wharf steps",
+        "fr": "Les marches du quai"
+      },
+      "saltmouth_b163": {
+        "en": "The shipyard gate",
+        "fr": "La porte des chantiers"
       }
     },
     "services": [

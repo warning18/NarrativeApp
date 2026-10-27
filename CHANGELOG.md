@@ -18,6 +18,10 @@ The first-launch intro: the Great Shroud burning, six embers, the ashen city, do
 - **Replay the intro** in Settings, under the tutorial's replay.
 - Tests: `test/intro_screen_test.dart` (the lines in order, tap to skip, reduced motion, the flag, the Settings row); `test/flutter_test_config.dart` keeps the intro off elsewhere. Pictures of every beat in `docs/ux-shots/intro-build/`; the earlier storyboards A to C are kept under `docs/proposals/` as history.
 
+## [1.582.0+618]
+
+Seven buildings of the Smugglers' Wharf have names, so the district view and the ways show where things happen: Vane's barrel, Vane's guard corner, the wet boards, the loading crane, the old customs house (Liora's skiff), the wharf steps, and the shipyard gate. English and French.
+
 ## [1.581.0+617]
 
 The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
