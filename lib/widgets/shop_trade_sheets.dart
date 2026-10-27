@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/forge_roll.dart' show forgedNameFor;
 import '../data/item_origin_here.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/forge_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
@@ -220,15 +222,20 @@ class _ForgeSheet extends ConsumerWidget {
                                 onPressed: !notifier.canCraft(item)
                                     ? null
                                     : () async {
-                                        final made = await notifier.craftItem(
+                                        final roll = await notifier.craftItem(
                                             id, item,
-                                            origin: itemOriginHere(ref));
-                                        if (!made || !context.mounted) return;
+                                            origin: itemOriginHere(ref),
+                                            modifiers: ref
+                                                .read(forgeModifiersProvider));
+                                        if (roll == null || !context.mounted) {
+                                          return;
+                                        }
                                         showImmersiveNotice(
                                           context,
                                           icon: Icons.hardware,
                                           message:
-                                              '${trFor(lang, 'forged_prefix')} $name',
+                                              '${trFor(lang, 'forged_prefix')} '
+                                              '${forgedNameFor(name, roll.tier, lang)}',
                                         );
                                       },
                                 child: Text(trFor(lang, 'forge_button')),

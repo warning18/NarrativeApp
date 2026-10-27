@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/description_text.dart';
+import '../data/forge_roll.dart' show withForgedVariants;
 import '../gamedata/db_schema.dart';
 import '../gamedata/game_db_repository.dart';
 import '../l10n/app_locale.dart';
@@ -12,6 +13,16 @@ final gameDbRepositoryProvider =
     Provider.family<GameDbRepository, DbSchema>((ref, schema) {
   return GameDbRepository(schema);
 });
+
+/// [records] as [schema]'s table is read: the items table resolves forged
+/// variants (`<baseId>@fine`, forge_roll.dart's ForgedItems); [french] when
+/// its English fields already hold the French text. Other tables as they
+/// are.
+Map<String, dynamic> readableTable(
+        DbSchema schema, Map<String, dynamic> records, {bool french = false}) =>
+    schema.id == itemsSchema.id
+        ? withForgedVariants(records, french: french)
+        : records;
 
 class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   GameDbNotifier(this._repository) : super(const AsyncValue.loading()) {
@@ -26,7 +37,8 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
     if (_loaded.isCompleted) _loaded = Completer();
     final loaded = _loaded;
     try {
-      final records = await _repository.loadRecords();
+      final records =
+          readableTable(_repository.schema, await _repository.loadRecords());
       state = AsyncValue.data(records);
       if (!loaded.isCompleted) loaded.complete(records);
     } catch (error, stackTrace) {
@@ -51,7 +63,7 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
         Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current[key] = record;
     await _repository.saveRecords(current);
-    state = AsyncValue.data(current);
+    state = AsyncValue.data(readableTable(_repository.schema, current));
   }
 
   Future<void> deleteRecord(String key) async {
@@ -59,12 +71,12 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
         Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current.remove(key);
     await _repository.saveRecords(current);
-    state = AsyncValue.data(current);
+    state = AsyncValue.data(readableTable(_repository.schema, current));
   }
 
   Future<void> replaceAll(Map<String, dynamic> records) async {
     await _repository.saveRecords(records);
-    state = AsyncValue.data(records);
+    state = AsyncValue.data(readableTable(_repository.schema, records));
   }
 
   Future<void> resetToDefaults() async {
@@ -87,8 +99,8 @@ Future<Map<String, dynamic>> loadedGameDb(
   final records = withResolvedPlaceholders(
       schema.id, await ref.read(gameDbProvider(schema).notifier).whenLoaded());
   return ref.read(appLanguageProvider) == AppLanguage.fr
-      ? frenchOverlay(records)
-      : records;
+      ? readableTable(schema, frenchOverlay(records), french: true)
+      : readableTable(schema, records);
 }
 
 /// A copy of [records] with every French field laid over its English
@@ -130,9 +142,9 @@ dynamic _overlaid(dynamic value) {
 /// placeholder.
 final localizedDbProvider =
     Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
-  final raw = ref
-      .watch(gameDbProvider(schema))
-      .whenData((records) => withResolvedPlaceholders(schema.id, records));
+  final raw = ref.watch(gameDbProvider(schema)).whenData((records) =>
+      readableTable(schema, withResolvedPlaceholders(schema.id, records)));
   if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
-  return raw.whenData(frenchOverlay);
+  return raw.whenData(
+      (records) => readableTable(schema, frenchOverlay(records), french: true));
 });
