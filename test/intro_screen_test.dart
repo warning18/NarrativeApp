@@ -1,4 +1,4 @@
-// The first-launch intro (v1.579, lib/screens/intro_screen.dart): four lines
+// The first-launch intro (v1.582, lib/screens/intro_screen.dart): four lines
 // over eight beats, a tap skips, reduced motion shows the title over the die
 // and then the last line, it is remembered once played, and Settings replays
 // it.

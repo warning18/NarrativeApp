@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.579.0+615]
+## [1.582.0+618]
 
 The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
 
