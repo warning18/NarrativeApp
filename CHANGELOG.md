@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.586.0+622]
+
+The district view as places, map first: the map has the room, its pins carry no words, a tap shows the place, and the list of places rises when the map is fully zoomed.
+
+### Added
+- **The list is places** (`district_places.dart`): in a scene with two places or more, the list under the district's map has a row per place (the party's own place first, "Here"; the story's main place with its flag; a way out under its own title; a shut place greyed with its reason), with how many things there are to do there. A scene with one place keeps its ways as the list.
+- **Go to a place:** a tap on a row (or Go on a pin's card) walks the party's mark to the place (a tap skips the walk) and shows that place's ways, with a way back to the list. `Here` and a way out do not walk; a way out with one way to take opens it at once.
+- **Map first:** no list until the map is fully zoomed. The pins carry no words and the story's building names are off the plan; a tap on a pin shows a small card (the place's name, how many things, Go; a second tap folds it). A "Places · N" handle at the foot of the map zooms it to its full zoom (the list rises, the handle reads "Map" and folds it back); a pinch to full zoom does the same.
+- **The arrival:** on arriving in a district the map eases in 25% and centres on the party's mark in 0.6 s (a jump with reduced motion; not on the Town view a move to another district frames).
+- Fixed: a chart built after a camera shot replayed it (`CityChartCamera.pending`).
+- Tests: `district_places_test.dart`, `district_places_view_test.dart`; `test/district_places_steps.dart` holds the steps. Pictures in `docs/ux-shots/places-build-*.png`.
+
 ## [1.585.0+621]
 
 Tern's Toll can be finished by talking Renn down, not only by fighting him. The quest now asks the player to deal with the overseer, and either way ends it.

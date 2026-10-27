@@ -42,6 +42,7 @@ class CityChartPainter extends CustomPainter {
     this.bannersDark = true,
     this.pulse = 0,
     this.phase = DayPhase.day,
+    this.buildingNames = true,
   });
 
   final CityChart chart;
@@ -96,6 +97,10 @@ class CityChartPainter extends CustomPainter {
   /// The part of the day (the world clock): dawn and dusk wash the town in
   /// warm light, night in deep blue with its windows and lanterns lit.
   final DayPhase phase;
+
+  /// Whether the names of the story's buildings are written on the plan (the
+  /// district view as places takes them off: a pin's card names its place).
+  final bool buildingNames;
 
   double get zoom => scale / fitted;
   bool get detailed => zoom >= cityChartDetailZoom;
@@ -663,7 +668,7 @@ class CityChartPainter extends CustomPainter {
     if (!detailed) return;
     // Building names, in the district being looked at.
     for (final b in chart.buildings) {
-      if (b.quiet || !b.story || b.name.isEmpty) continue;
+      if (!buildingNames || b.quiet || !b.story || b.name.isEmpty) continue;
       final d = chart.districts[b.district];
       if (focusDistrict != null && d.id != focusDistrict) continue;
       if (!_known(d.id)) continue;
@@ -988,5 +993,6 @@ class CityChartPainter extends CustomPainter {
       !mapEquals(old.banners, banners) ||
       old.bannersDark != bannersDark ||
       old.pulse != pulse ||
-      old.phase != phase;
+      old.phase != phase ||
+      old.buildingNames != buildingNames;
 }
