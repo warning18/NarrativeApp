@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/forge_roll.dart' show forgedNameFor;
+import '../data/fate_coin.dart';
+import '../data/forge_roll.dart'
+    show baseItemIdOf, forgedNameFor, forgedVariantId;
 import '../data/item_origin_here.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -9,6 +13,7 @@ import '../l10n/app_strings.dart';
 import '../providers/forge_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../screens/fate_coin_offer.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'immersive_notice.dart';
 import 'item_stats.dart';
@@ -222,7 +227,7 @@ class _ForgeSheet extends ConsumerWidget {
                                 onPressed: !notifier.canCraft(item)
                                     ? null
                                     : () async {
-                                        final roll = await notifier.craftItem(
+                                        var roll = await notifier.craftItem(
                                             id, item,
                                             origin: itemOriginHere(ref),
                                             modifiers: ref
@@ -230,10 +235,36 @@ class _ForgeSheet extends ConsumerWidget {
                                         if (roll == null || !context.mounted) {
                                           return;
                                         }
+                                        // A Flawed piece, and a fate coin in
+                                        // the pack: the coin may forge it
+                                        // once more (fate_coin.dart).
+                                        var coinLine = '';
+                                        if (fateCoinWorthFlippingForge(roll) &&
+                                            carriesFateCoin(ref
+                                                .read(playerSessionProvider)
+                                                .inventoryItemIds) &&
+                                            await offerFateCoin(context, lang,
+                                                messageKey:
+                                                    'forge_coin_offer')) {
+                                          final random = Random();
+                                          final again = await notifier
+                                              .reforgeWithFateCoin(
+                                                  forgedVariantId(
+                                                      baseItemIdOf(id),
+                                                      roll.tier),
+                                                  roll,
+                                                  random: random);
+                                          if (again != null) {
+                                            coinLine =
+                                                '${fateCoinLandedLine(flipFateCoin(random), lang)} ';
+                                            roll = again;
+                                          }
+                                        }
+                                        if (!context.mounted) return;
                                         showImmersiveNotice(
                                           context,
                                           icon: Icons.hardware,
-                                          message:
+                                          message: '$coinLine'
                                               '${trFor(lang, 'forged_prefix')} '
                                               '${forgedNameFor(name, roll.tier, lang)}',
                                         );

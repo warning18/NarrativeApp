@@ -9,6 +9,7 @@ import '../data/approval.dart';
 import '../data/camp_fate.dart';
 import '../data/chapter_conditions.dart';
 import '../data/chapter_loop.dart';
+import '../data/fate_coin.dart';
 import '../data/journey_rules.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -19,6 +20,7 @@ import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../screens/fate_coin_offer.dart';
 import 'approval_notice.dart';
 
 /// The camp's fate die (see camp_fate.dart) after a night's rest at the
@@ -119,6 +121,9 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
   /// The night is being played out: a second tap on a choice does nothing.
   bool _resolving = false;
 
+  /// The face a fate coin flipped on the night's failed check landed on.
+  FateCoinFace? _coinFace;
+
   late final List<FateFace> _die = fateDieFor(widget.fateContext);
 
   @override
@@ -172,6 +177,19 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
         session: session,
         random: widget.random,
       );
+      // A failed check, and a fate coin in the pack: the player may flip it
+      // to roll the check once more (fate_coin.dart).
+      if (fateCoinWorthFlipping(check) &&
+          carriesFateCoin(session.inventoryItemIds)) {
+        final lang = ref.read(appLanguageProvider);
+        if (await offerFateCoin(context, lang) &&
+            mounted &&
+            await ref.read(playerSessionProvider.notifier).spendFateCoin()) {
+          _coinFace = flipFateCoin(widget.random);
+          check = rerolledCheck(check, widget.random);
+        }
+        if (!mounted) return;
+      }
     }
     final outcome = fateOutcome(
       widget.roll,
@@ -390,7 +408,11 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
     final lang = ref.watch(appLanguageProvider);
     final choices = fateChoicesFor(widget.roll);
     final showEvent = _stage.index >= _Stage.landed.index;
-    final result = _resultText(lang);
+    final told = _resultText(lang);
+    final coin = _coinFace;
+    final result = coin == null || told == null
+        ? told
+        : '${fateCoinLandedLine(coin, lang)} $told';
     final effects = _effectLines(lang);
     final body = theme.textTheme.bodyLarge?.copyWith(height: 1.5);
     // Back neither skips the roll nor the night's choice: once the night
