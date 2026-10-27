@@ -8,9 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.578.0+614]
+## [1.581.0+617]
 
 The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
+
+## [1.580.0+616]
+
+The groundwork for the district view as places, its camera, and the view each scene opens in. Nothing on screen changes yet: UX builds the places list, the labels-off map and the arrival ease on top of this.
+
+- **Places:** each way of a scene in a town now has a place where it is taken.
+  - It is the party's own place ("here") for things done on the spot: fights, checks, payments and decisions.
+  - It is a building of the town's plan for a way to a scene there.
+  - It is a way out for a road, gate or harbour.
+  - A way whose building was only a stand-in now counts as "here" rather than a random building.
+  - Story data can set a choice's place directly with the new `place` field.
+- **The district list:** it groups the ways by place, with a count. "Here" comes first, then the places holding the main story, then the rest, then the ways out; a place that is shut comes last.
+- **The party's place:** the game now remembers which place the party has walked to within a district. It is not saved: a game picked back up opens on the list.
+- **Arrivals:** a new arrival is signalled each time the party arrives in a district.
+- **The camera:** the Journey can now set the district map's zoom and centre.
+  - The arrival shot is the district 25% closer, centred on the party, over 0.6 s.
+  - The map reports when it reaches its full zoom.
+- **The view each scene opens in:** page, sheet over the map, street, room, the place's map, or ending.
+  - The rule follows the approved presentation contract: town and camp scenes on their map, chapter beats on the page, scenes inside buildings in the room, scenes at a door in the street (unless they continue a main scene there), other main scenes on the page and side scenes in a sheet.
+  - A two-page scene's first page opens in the view of its second.
+  - Narrative's `scene` block (`view`, `weight`) wins over the rule and is kept when the scene is saved.
 
 ## [1.577.0+613]
 

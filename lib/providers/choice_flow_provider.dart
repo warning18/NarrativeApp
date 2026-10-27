@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/choice_flow.dart';
+import '../data/scene_presentation.dart';
 import '../gamedata/db_schema.dart';
 import 'city_provider.dart';
 import 'game_db_providers.dart';
@@ -21,6 +22,16 @@ final storyStopsProvider = Provider<StoryStops?>((ref) {
     cityPlans: ref.watch(cityPlanRecordsProvider).value ?? const {},
     ports: ref.watch(gameDbProvider(portsSchema)).value ?? const {},
   );
+});
+
+/// The view each scene opens in (scene_presentation.dart): null until the
+/// story's stops are known.
+final scenePresentationProvider = Provider<ScenePresentation?>((ref) {
+  final stops = ref.watch(storyStopsProvider);
+  final story = ref.watch(storyDataProvider).value;
+  if (stops == null || story == null) return null;
+  return ScenePresentation.of(
+      story: story, geography: ref.watch(geographyProvider), stops: stops);
 });
 
 /// The last one-tap return to a town hub (see FlowReturnToHub): the hub's
