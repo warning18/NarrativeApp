@@ -262,10 +262,31 @@ void main() {
         final (fought, lost) = tally[boss] ?? (0, 0);
         expect(fought, greaterThanOrEqualTo(40), reason: 'too few met');
         final rate = (fought - lost) / fought;
-        expect(rate, closeTo(target, 0.12),
+        expect(rate, closeTo(target, _band(target, fought)),
             reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
       });
     }
+
+    // The three claimants are met one per run (whichever claim the run
+    // backed), so each is met only about 50 to 80 times in the 400 runs:
+    // their own bands are wide (see _band). Together they are met in every
+    // run that gets that far, and held to the plain 12 points.
+    test('the claimants together are won about 40% of the time', () {
+      var fought = 0, lost = 0;
+      for (final boss in const [
+        'claimant_vane',
+        'claimant_tallis',
+        'claimant_morrow',
+      ]) {
+        final (f, l) = tally[boss] ?? (0, 0);
+        fought += f;
+        lost += l;
+      }
+      expect(fought, greaterThanOrEqualTo(300), reason: 'too few met');
+      final rate = (fought - lost) / fought;
+      expect(rate, closeTo(0.40, 0.12),
+          reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
+    });
 
     test(
         'the bosses are won about half the time on average, early ones '
@@ -306,3 +327,13 @@ void main() {
     });
   });
 }
+
+/// The band a boss's win rate is held to around [target], met [fought]
+/// times in the seeded runs: 12 points, or three standard errors of a rate
+/// measured on that few meetings when that is wider. A boss met 60 times
+/// moves by 6 points for one standard error when another part of the story
+/// shifts the seeded stream (Narrative's Wharf fold moved Morrow from 46%
+/// to 54% with the game unchanged at Morrow; over three seeds it averages
+/// 47% before and 46% after), so 12 points was a two-sigma band there.
+double _band(double target, int fought) =>
+    max(0.12, 3 * sqrt(target * (1 - target) / fought));
