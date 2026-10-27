@@ -65,7 +65,10 @@ bool mapDrawsEveryWay(
   final standing = currentLandmark(node.id, history);
   if (standing == null) return true;
   final here = world.placeOfNode(node) ?? world.placeOfLandmark(standing.id);
-  if (here != null && here.isBuilding && !here.doorstep.contains(node.id)) {
+  if (here != null &&
+      here.isBuilding &&
+      !here.doorstep.contains(node.id) &&
+      !node.sceneInStreet) {
     return true;
   }
   final location = world.locationOf(here?.id);

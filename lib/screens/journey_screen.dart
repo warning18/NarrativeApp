@@ -14,7 +14,12 @@ import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
 import '../data/city_districts.dart'
-    show JourneyTownView, districtOfPlace, sceneDoorstep, townMoveView;
+    show
+        JourneyTownView,
+        districtOfPlace,
+        sceneDoorstep,
+        sceneStreetOf,
+        townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -31,6 +36,7 @@ import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
+import '../data/scene_presentation.dart' show SceneView;
 import '../data/way_places.dart' show wayPlaceName;
 import '../data/world_map.dart';
 import '../gamedata/db_schema.dart';
@@ -78,6 +84,7 @@ import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
 import '../widgets/journey_glyph.dart';
 import '../widgets/arrival_sheet.dart';
+import '../widgets/scene_band.dart';
 import '../widgets/district_places.dart';
 import '../widgets/journey_banner_pin.dart';
 import '../widgets/return_notice.dart';
@@ -435,6 +442,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   final DistrictPlacesController _places = DistrictPlacesController();
   Offset? _placeMark;
   String? _arrivedAt;
+
+  /// The scene's band over the map or the street was tapped open: its
+  /// sheet stays until Continue (a street scene opens as the band, not as
+  /// the sheet, see the build).
+  bool _bandOpened = false;
 
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
@@ -1016,6 +1028,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// party walks, whose map would go from under it.
   void _read(bool reading) {
     if (_busy) return;
+    _bandOpened = false;
     setState(() {
       _reading = reading;
       _arrival = false;
@@ -1732,6 +1745,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // the ways are laid on and the chart drawn under them.
     PlacePlan? cityPlan = plan;
     final cityDistrictOf = <int, String>{};
+    // The building whose street the scene plays in (v1.589, sceneStreetOf).
+    GeoPlace? sceneStreet;
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
@@ -1748,6 +1763,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             : null;
         // A scene played at a building's doorstep (v1.542): the party at
         // its door, the ways that stay there in the street round it.
+        sceneStreet = sceneStreetOf(world, record, node);
         final doorstep = sceneDoorstep(world, record, node, waysHere: [
           for (var i = 0; i < rawSteps.length; i++)
             if (!districtOfStep.containsKey(i)) i,
@@ -1799,7 +1815,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // by; the streets are one look out.
     // A scene played at its building's doorstep (v1.542) is on the streets.
     final hereBuilding = herePlace?.isBuilding == true &&
-            !herePlace!.doorstep.contains(play.currentNodeId)
+            !herePlace!.doorstep.contains(play.currentNodeId) &&
+            !(story.nodeFor(play.currentNodeId)?.sceneInStreet ?? false)
         ? herePlace
         : null;
     _sceneInside = hereBuilding != null;
@@ -2311,6 +2328,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
+    // The scene's words as a band over the map: a hub opens as its map with
+    // three lines of its prose, a scene at a doorstep as its street with
+    // four over the sky; a tap opens the sheet (v1.588).
+    final viewOfScene = ref.watch(scenePresentationProvider)?.viewOf(node.id);
+    final streetShown =
+        cityChart != null && cityChart.here != null && !play.isInExcursion;
+    final bandLines = !hostedCity || ended || townView || _reading
+        ? 0
+        : viewOfScene == SceneView.street && streetShown
+            ? streetBandLines
+            : viewOfScene == SceneView.map
+                ? hubBandLines
+                : 0;
+    // A street scene arrived at is the street, not the sheet over it.
+    if (_arrival && !_bandOpened && bandLines == streetBandLines) {
+      _arrival = false;
+    }
+    final bandText = bandLines == 0
+        ? ''
+        : stripStoryMarkup(
+            composeNarrationParts(node, session, story, french: french).text);
     // An arrival in a district: the map eases in on the party (v1.586). Read
     // from the party's district here, not from districtArrivalProvider,
     // whose state is set by a listener (a provider changed while building).
@@ -2365,9 +2403,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 });
               }
             },
-            street: cityChart.here != null
-                ? world.doorstepOfNode(story.nodeFor(play.currentNodeId))
-                : null,
+            street: cityChart.here != null ? sceneStreet : null,
             onOpen: (i) => _openWay(i, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
@@ -2375,6 +2411,22 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               _setTown(false);
             },
             overlays: [
+              if (bandLines > 0 && !_arrival && bandText.trim().isNotEmpty)
+                Positioned(
+                  left: 8,
+                  right: 56,
+                  top: 8,
+                  child: SceneBand(
+                    text: bandText,
+                    lines: bandLines,
+                    title: hereName,
+                    openTip: tr(ref, 'scene_band_open'),
+                    onOpen: () => setState(() {
+                      _arrival = true;
+                      _bandOpened = true;
+                    }),
+                  ),
+                ),
               Positioned(
                 left: 8,
                 right: 56,

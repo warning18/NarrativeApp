@@ -12,6 +12,24 @@ isn't reconstructable from git history alone.
 
 Lysa's turn in the chair chapel of the Reliquary Quarter (her death, her rescue, the oath, the mercy, the sacrifice, and Clement's refusal) opens as a full page, as the story's turn for her, not as a room.
 
+## [1.589.0+625]
+
+The street view now follows Narrative's scene tags.
+
+- **Tagged scenes:** a scene tagged as played in the street, with a building of the town's plan, plays at that building's door. The party stands at its door on the plan, the district view shows that building's street, and the scene opens in the street view.
+- **Concerned now:** the toll on Alster's Stone Bridge (260), the drill on the High Quay (890_trainer) and the shipyard gate on the Smugglers' Wharf (2010).
+- **Untagged scenes:** a scene without a tag keeps the doorstep lists as before, such as the family house's street (300).
+
+## [1.588.0+624]
+
+A hub opens as its map and a scene at a doorstep as its street, with the scene's words as a band over them.
+
+### Added
+- **The scene band** (`scene_band.dart`): three lines of the scene's prose over the top of a hub's map, four over the sky of a street (a scene played at a building's doorstep), with the place's name above them. A tap, or a drag down, opens the whole scene in the arrival sheet; Continue folds it back to the band. It shows where Core's view rule (`viewOf`) says the scene opens as its map or its street.
+- **A street scene is the street, not the sheet:** arriving at a doorstep no longer opens the sheet over the street; its band does, on a tap, with the choices acted out there.
+- Tests: `scene_band_test.dart`. Pictures in `docs/ux-shots/scene-band-*.png`.
+- Not yet: a tagged scene's street from `scene.building` (Core's part: the street still comes from the scene's doorstep).
+
 ## [1.587.0+623]
 
 Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
