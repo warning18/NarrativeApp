@@ -431,10 +431,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// The district as places (v1.586, district_places.dart): the map's camera
   /// and the pin card, where the party's mark stands once it has gone to a
-  /// place of the list (null: at its own mark), and the arrival last eased.
+  /// place of the list (null: at its own mark), and the district whose arrival was last eased.
   final DistrictPlacesController _places = DistrictPlacesController();
   Offset? _placeMark;
-  int _arrivalEased = 0;
+  String? _arrivedAt;
 
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
@@ -2311,22 +2311,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
-    // An arrival in a district: the map eases in on the party (v1.586).
-    final arrival = ref.watch(districtArrivalProvider);
+    // An arrival in a district: the map eases in on the party (v1.586). Read
+    // from the party's district here, not from districtArrivalProvider,
+    // whose state is set by a listener (a provider changed while building).
     // (Not on the Town view a move to another district frames: that view is
     // the one asked for.)
-    if (hostedCity &&
-        !townView &&
-        arrival != null &&
-        arrival.count != _arrivalEased) {
-      _arrivalEased = arrival.count;
+    final hereDistrictNow = ref.watch(partyDistrictProvider);
+    if (!hostedCity || hereDistrictNow == null) {
+      _arrivedAt = null;
+    } else if (!townView && hereDistrictNow != _arrivedAt) {
+      _arrivedAt = hereDistrictNow;
       final at =
-          cityChart.here ?? cityChart.districtById(arrival.districtId)?.centre;
+          cityChart.here ?? cityChart.districtById(hereDistrictNow)?.centre;
       final jump = MediaQuery.of(context).disableAnimations;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        _places.camera.show(CityCameraShot.arrival(arrival.districtId,
-            partyAt: at, jump: jump));
+        _places.camera.show(
+            CityCameraShot.arrival(hereDistrictNow, partyAt: at, jump: jump));
       });
     }
     final cityView = hostedCity && !ended
