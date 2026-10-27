@@ -7134,9 +7134,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'The District view: your mark stands where the party is, and each pin is a place with ways to take from here; the list under the map repeats them, a pin with several ways as one row to open. Take a way, and your mark walks to its pin. The road behind you is below.',
+        'The District view: your mark is where the party stands; each pin holds ways to take, listed under the map too. Take one, and your mark walks to its pin. The road behind you is below.',
     AppLanguage.fr:
-        'La vue Quartier\u00a0: votre repère est là où se tient le groupe, et chaque épingle est un lieu aux chemins à prendre d’ici\u00a0; la liste sous la carte les reprend, une épingle à plusieurs chemins étant une seule ligne à ouvrir. Prenez un chemin, et votre repère marche jusqu’à son épingle. Plus bas, la route parcourue.',
+        'La vue Quartier\u00a0: votre repère est là où se tient le groupe\u00a0; chaque épingle porte des chemins, listés aussi sous la carte. Prenez-en un, et le repère marche jusqu’à son épingle. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
