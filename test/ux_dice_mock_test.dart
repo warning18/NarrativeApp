@@ -27,6 +27,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/combat/dice_faces.dart' show dieDisplayName;
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
@@ -1096,7 +1097,7 @@ Widget _equip() {
         width: 320,
         lit: 6,
         empty: const {3, 9, 10},
-        centre: _art('sovereign', 130)),
+        centre: _dieArt('tearglass_die', 130, value: '12')),
     Padding(
       padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
       child: Container(
@@ -1216,14 +1217,107 @@ Widget _equip() {
   );
 }
 
-// ------------------------------------------------------ picture 5: dedicated art
+// ----------------------------------------- picture 5: a look for each of the 31
 
-/// What a die gets beyond its skin: its own pieces drawn over and round the
-/// shape (spikes, vines, bolts, a crown, an eye), in the unit disc of the die.
+/// Core's proposed sizes (docs/proposals/dice-sizes.md on claude/core-dice-sizes),
+/// by size; the coin last.
+const _bySize = <int, List<String>>{
+  4: [
+    'void_die',
+    'stone_die',
+    'berserker_die',
+    'shadow_die',
+    'twinfang_die',
+    'headsman_die'
+  ],
+  6: [
+    'starter_die',
+    'apprentice_die',
+    'iron_die',
+    'holy_die',
+    'bulwark_die',
+    'pilgrim_die',
+    'liora_die',
+    'grosh_die',
+    'tobin_die',
+    'malrik_die'
+  ],
+  8: [
+    'flame_die',
+    'tide_die',
+    'huntsman_die',
+    'vess_die',
+    'frost_die',
+    'greenwood_die',
+    'vigil_die'
+  ],
+  10: ['storm_die', 'arcane_die', 'sage_die', 'ossuary_die'],
+  12: ['tempest_die', 'chorus_die', 'tearglass_die'],
+  20: ['gambler_die'],
+};
+
+/// What each die adds to its skin: a few words, for the sheet.
+const _artNotes = <String, String>{
+  'void_die': 'stars and a dark swirl',
+  'stone_die': 'chipped corners, a cut rune',
+  'berserker_die': 'spikes, blood running',
+  'shadow_die': 'a crescent moon cut in',
+  'twinfang_die': 'curved fangs for tips',
+  'headsman_die': 'an axe blade at its side',
+  'starter_die': 'plain bone, the first die',
+  'apprentice_die': 'a chalk star doodle',
+  'iron_die': 'riveted bands',
+  'holy_die': 'a cross and rays',
+  'bulwark_die': 'battlements on top',
+  'pilgrim_die': 'a scallop shell',
+  'liora_die': 'vines and leaves',
+  'grosh_die': 'tusk spikes, notches',
+  'tobin_die': 'a reliquary cross, brass caps',
+  'malrik_die': 'rust and a crack',
+  'flame_die': 'flame tongues rising',
+  'tide_die': 'a wave curling over',
+  'huntsman_die': 'an arrow through it',
+  'vess_die': 'an ink drop, ripples',
+  'frost_die': 'icicles hanging',
+  'greenwood_die': 'a crown of leaves',
+  'vigil_die': 'a candle flame, wax',
+  'storm_die': 'lightning over the faces',
+  'arcane_die': 'a ring of runes',
+  'sage_die': 'an eye on its face',
+  'ossuary_die': 'a small skull',
+  'tempest_die': 'thunder bolt, a cloud',
+  'chorus_die': 'sound rings, a bell',
+  'tearglass_die': 'THE LEGENDARY D12: a crown, a tear, a halo',
+  'gambler_die': 'suits and red pips',
+};
+
+int _sidesOf(String id) {
+  for (final e in _bySize.entries) {
+    if (e.value.contains(id)) return e.key;
+  }
+  return 6;
+}
+
+_Shape _shapeFor(int sides) => _shapes.firstWhere((s) => s.sides == sides);
+
+/// The outermost points of a shape (where spikes and crowns go).
+List<_P> _corners(_Shape s) {
+  final out = <_P>[];
+  for (final f in s.faces) {
+    for (final p in f) {
+      if (p.distance > 0.82 && !out.any((q) => (q - p).distance < 0.1))
+        out.add(p);
+    }
+  }
+  return out;
+}
+
+/// The art of die [id], drawn over its shape and skin in the unit disc.
 class _ArtPainter extends CustomPainter {
-  _ArtPainter(this.art, this.skin);
-  final String art;
+  _ArtPainter(this.id, this.skin, this.shape);
+  final String id;
   final DieSkin skin;
+  final _Shape shape;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1240,12 +1334,188 @@ class _ArtPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..color = col;
     Paint fill(Color col) => Paint()..color = col;
-    // The hexagon's outer corners (the cube and the d20 share them).
-    final hexOut = _ring(6, 1.0, -math.pi / 2);
+    final corners = _corners(shape);
+    const bone = Color(0xFFF0EAD6);
 
-    switch (art) {
-      case 'stone': // chipped corners and a cut rune
-        for (final v in [hexOut[0], hexOut[2], hexOut[4]]) {
+    void spikes(Color col, double len, double half) {
+      for (final v in corners) {
+        final n = v / v.distance;
+        final perp = Offset(-n.dy, n.dx);
+        canvas.drawPath(
+            Path()
+              ..moveTo(v.dx - perp.dx * half, v.dy - perp.dy * half)
+              ..lineTo(v.dx + n.dx * len, v.dy + n.dy * len)
+              ..lineTo(v.dx + perp.dx * half, v.dy + perp.dy * half)
+              ..close(),
+            fill(col));
+      }
+    }
+
+    void leaf(double x, double y, double a, Color col, [double s = 1]) {
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(a);
+      canvas.drawOval(
+          Rect.fromLTWH(-0.045 * s, -0.12 * s, 0.09 * s, 0.24 * s), fill(col));
+      canvas.restore();
+    }
+
+    void drop(double x, double y, double s, Color col) {
+      canvas.drawPath(
+          Path()
+            ..moveTo(x, y - s * 1.3)
+            ..quadraticBezierTo(x + s * 0.9, y, x, y + s * 0.5)
+            ..quadraticBezierTo(x - s * 0.9, y, x, y - s * 1.3)
+            ..close(),
+          fill(col));
+    }
+
+    void flame(double x, double y, double s, Color a, Color b) {
+      canvas.drawPath(
+          Path()
+            ..moveTo(x, y)
+            ..quadraticBezierTo(
+                x - s * 0.7, y - s * 0.5, x - s * 0.2, y - s * 1.3)
+            ..quadraticBezierTo(
+                x + s * 0.1, y - s * 0.7, x + s * 0.3, y - s * 0.9)
+            ..quadraticBezierTo(x + s * 0.8, y - s * 0.3, x, y)
+            ..close(),
+          fill(a));
+      canvas.drawPath(
+          Path()
+            ..moveTo(x, y)
+            ..quadraticBezierTo(x - s * 0.3, y - s * 0.3, x, y - s * 0.7)
+            ..quadraticBezierTo(x + s * 0.3, y - s * 0.3, x, y)
+            ..close(),
+          fill(b));
+    }
+
+    void crown(Color col, double y0) {
+      canvas.drawPath(
+          Path()
+            ..moveTo(-0.5, y0)
+            ..lineTo(-0.55, y0 - 0.38)
+            ..lineTo(-0.25, y0 - 0.16)
+            ..lineTo(0, y0 - 0.5)
+            ..lineTo(0.25, y0 - 0.16)
+            ..lineTo(0.55, y0 - 0.38)
+            ..lineTo(0.5, y0)
+            ..close(),
+          fill(col));
+    }
+
+    switch (id) {
+      case 'starter_die':
+        break;
+      case 'apprentice_die': // a chalk star
+        final star = Path();
+        for (var i = 0; i < 10; i++) {
+          final a = -math.pi / 2 + i * math.pi / 5;
+          final rr = i.isEven ? 0.2 : 0.08;
+          final p = _P(0.38 + math.cos(a) * rr, -0.05 + math.sin(a) * rr);
+          i == 0 ? star.moveTo(p.dx, p.dy) : star.lineTo(p.dx, p.dy);
+        }
+        canvas.drawPath(star..close(), stroke(const Color(0xFF7C8CFF), 1.4));
+      case 'iron_die': // riveted bands
+        canvas.drawLine(const _P(-0.87, -0.5), const _P(0, 0),
+            stroke(const Color(0xFF2B2F35), 3));
+        canvas.drawLine(const _P(0, 0), const _P(0.87, -0.5),
+            stroke(const Color(0xFF2B2F35), 3));
+        for (final p in const [
+          _P(-0.55, -0.32),
+          _P(-0.2, -0.12),
+          _P(0.25, -0.15),
+          _P(0.6, -0.35),
+          _P(0.45, 0.45)
+        ]) {
+          canvas.drawCircle(p, 0.05, fill(const Color(0xFFC4CBD3)));
+        }
+      case 'holy_die': // a cross, rays about it
+        for (var i = 0; i < 12; i++) {
+          final a = i * math.pi / 6;
+          canvas.drawLine(
+              _P(math.cos(a) * 1.05, math.sin(a) * 1.05),
+              _P(math.cos(a) * 1.3, math.sin(a) * 1.3),
+              stroke(const Color(0xFFF2C14E), 1.6));
+        }
+        canvas.drawLine(const _P(0.45, -0.3), const _P(0.45, 0.35),
+            stroke(const Color(0xFFF2C14E), 2));
+        canvas.drawLine(const _P(0.3, -0.05), const _P(0.6, -0.05),
+            stroke(const Color(0xFFF2C14E), 2));
+      case 'bulwark_die': // battlements
+        for (final x in [-0.35, -0.05, 0.25]) {
+          canvas.drawRect(
+              Rect.fromLTWH(x, -1.2, 0.2, 0.2), fill(const Color(0xFF8E96A2)));
+        }
+      case 'pilgrim_die': // a scallop shell
+        for (var i = 0; i < 6; i++) {
+          final a = -math.pi + 0.35 + i * 0.5;
+          canvas.drawLine(
+              const _P(0.42, 0.4),
+              _P(0.42 + math.cos(a) * 0.3, 0.4 + math.sin(a) * 0.3),
+              stroke(const Color(0xFFDCCB9F), 1.3));
+        }
+        canvas.drawArc(
+            Rect.fromCircle(center: const _P(0.42, 0.4), radius: 0.3),
+            -math.pi,
+            math.pi,
+            false,
+            stroke(const Color(0xFFDCCB9F), 1.3));
+      case 'liora_die':
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.87, 0.5)
+              ..quadraticBezierTo(-0.5, 0.2, -0.3, 0.55)
+              ..quadraticBezierTo(0.0, 0.9, 0.35, 0.7),
+            stroke(const Color(0xFF95D16F), 1.6));
+        leaf(-0.5, 0.32, -0.8, const Color(0xFF6FBF4E));
+        leaf(-0.1, 0.78, 0.6, const Color(0xFF6FBF4E));
+        leaf(0.3, 0.72, -0.4, const Color(0xFF6FBF4E));
+        leaf(0.74, -0.45, 0.9, const Color(0xFF6FBF4E));
+      case 'grosh_die':
+        spikes(const Color(0xFFE9E0C2), 0.26, 0.1);
+        for (var i = 0; i < 4; i++) {
+          canvas.drawLine(_P(0.2 + i * 0.1, 0.45), _P(0.2 + i * 0.1, 0.62),
+              stroke(const Color(0xFF8F8771), 1.2));
+        }
+      case 'tobin_die': // a reliquary cross, brass caps
+        canvas.drawLine(const _P(0.45, -0.3), const _P(0.45, 0.35),
+            stroke(const Color(0xFFE5B566), 2.4));
+        canvas.drawLine(const _P(0.3, -0.05), const _P(0.6, -0.05),
+            stroke(const Color(0xFFE5B566), 2.4));
+        for (final v in corners) {
+          canvas.drawCircle(v * 0.95, 0.06, fill(const Color(0xFFE5B566)));
+        }
+      case 'malrik_die': // rust and a crack
+        for (final (x, y, s) in const [
+          (-0.5, -0.3, 0.11),
+          (0.45, 0.2, 0.09),
+          (-0.3, 0.5, 0.08),
+          (0.55, -0.4, 0.07)
+        ]) {
+          canvas.drawCircle(_P(x, y), s, fill(const Color(0x99CC8250)));
+        }
+        canvas.drawPath(
+            Path()
+              ..moveTo(0.1, -0.6)
+              ..lineTo(0.0, -0.2)
+              ..lineTo(0.2, 0.1),
+            stroke(const Color(0xFF2B1A12), 1.2));
+      case 'void_die': // stars and a dark swirl
+        canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: 0.3), 0.3,
+            4.2, false, stroke(const Color(0xFF8D6CFF), 1.6));
+        canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: 0.15), 3.4,
+            4.2, false, stroke(const Color(0xFF8D6CFF), 1.4));
+        for (final p in const [
+          _P(-1.1, -0.7),
+          _P(1.1, -0.4),
+          _P(0.9, 0.9),
+          _P(-0.9, 0.8)
+        ]) {
+          canvas.drawCircle(p, 0.04, fill(Colors.white));
+        }
+      case 'stone_die': // chipped corners, a cut rune
+        for (final v in corners) {
           canvas.drawPath(
               Path()
                 ..moveTo(v.dx * 0.86, v.dy * 0.86)
@@ -1256,12 +1526,102 @@ class _ArtPainter extends CustomPainter {
         }
         canvas.drawPath(
             Path()
-              ..moveTo(0.3, -0.1)
-              ..lineTo(0.52, -0.1)
-              ..moveTo(0.41, -0.1)
-              ..lineTo(0.41, 0.3),
+              ..moveTo(0.3, 0.2)
+              ..lineTo(0.52, 0.2)
+              ..moveTo(0.41, 0.2)
+              ..lineTo(0.41, 0.5),
             stroke(skin.edge, 1.4));
-      case 'storm': // a crackle of lightning over the faces
+      case 'berserker_die': // spikes, blood running
+        spikes(const Color(0xFFE8473F), 0.22, 0.09);
+        for (final x in [-0.3, 0.05, 0.4]) {
+          drop(x, 0.0, 0.06, const Color(0xFFE8473F));
+          canvas.drawLine(
+              _P(x, -0.4), _P(x, -0.1), stroke(const Color(0xFFE8473F), 1.6));
+        }
+      case 'shadow_die': // a crescent
+        canvas.drawPath(
+            Path.combine(
+                PathOperation.difference,
+                Path()
+                  ..addOval(Rect.fromCircle(
+                      center: const _P(0.2, 0.2), radius: 0.28)),
+                Path()
+                  ..addOval(Rect.fromCircle(
+                      center: const _P(0.3, 0.12), radius: 0.24))),
+            fill(const Color(0xFFD7DAEA)));
+      case 'twinfang_die':
+        spikes(bone, 0.3, 0.09);
+      case 'headsman_die': // an axe blade at its side
+        canvas.drawLine(const _P(1.0, -1.1), const _P(1.0, 0.1),
+            stroke(const Color(0xFF8A6A48), 2.4));
+        canvas.drawPath(
+            Path()
+              ..moveTo(1.0, -1.0)
+              ..quadraticBezierTo(1.5, -0.8, 1.45, -0.35)
+              ..quadraticBezierTo(1.3, -0.3, 1.0, -0.4)
+              ..close(),
+            fill(const Color(0xFFCF3E2F)));
+      case 'flame_die':
+        flame(
+            -0.3, -0.9, 0.3, const Color(0xFFFF8A3D), const Color(0xFFFFD27A));
+        flame(
+            0.0, -0.95, 0.42, const Color(0xFFFF6A1F), const Color(0xFFFFD27A));
+        flame(0.3, -0.9, 0.3, const Color(0xFFFF8A3D), const Color(0xFFFFD27A));
+      case 'tide_die': // a wave curling
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.7, 0.75)
+              ..quadraticBezierTo(-0.3, 0.2, 0.15, 0.55)
+              ..quadraticBezierTo(0.5, 0.8, 0.7, 0.4)
+              ..quadraticBezierTo(0.5, 0.15, 0.35, 0.35),
+            stroke(const Color(0xFFA6F5EC), 1.8));
+      case 'huntsman_die': // an arrow through it
+        canvas.drawLine(const _P(-1.15, 0.9), const _P(1.15, -0.9),
+            stroke(const Color(0xFFB5935F), 1.8));
+        canvas.drawPath(
+            Path()
+              ..moveTo(1.2, -1.0)
+              ..lineTo(0.92, -0.9)
+              ..lineTo(1.08, -0.72)
+              ..close(),
+            fill(const Color(0xFFDCCB9F)));
+        for (final d in [0.0, 0.1]) {
+          canvas.drawLine(
+              _P(-1.15 + d, 0.9 - d * 0.8),
+              _P(-1.3 + d, 0.8 - d * 0.8),
+              stroke(const Color(0xFFDCCB9F), 1.4));
+        }
+      case 'vess_die': // an ink drop and ripples
+        drop(0.0, -1.2, 0.14, const Color(0xFF86D6FF));
+        canvas.drawOval(
+            Rect.fromCenter(
+                center: const _P(0, 0.28), width: 0.6, height: 0.18),
+            stroke(const Color(0xFF86D6FF), 1.2));
+        canvas.drawOval(
+            Rect.fromCenter(
+                center: const _P(0, 0.28), width: 0.34, height: 0.1),
+            stroke(const Color(0xFF86D6FF), 1.2));
+      case 'frost_die': // icicles
+        for (final x in [-0.5, -0.15, 0.2, 0.55]) {
+          canvas.drawPath(
+              Path()
+                ..moveTo(x - 0.08, 0.78)
+                ..lineTo(x + 0.08, 0.78)
+                ..lineTo(x, 1.1 + (x.abs() < 0.3 ? 0.12 : 0))
+                ..close(),
+              fill(const Color(0xFFC4EBFF)));
+        }
+      case 'greenwood_die': // a crown of leaves
+        for (var i = 0; i < 5; i++) {
+          leaf(-0.5 + i * 0.25, -1.0 - (i == 2 ? 0.1 : 0.0), -0.6 + i * 0.3,
+              const Color(0xFFA8D96D), 1.2);
+        }
+      case 'vigil_die': // a candle flame and wax
+        canvas.drawRect(Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
+            fill(const Color(0xFFE8DFC4)));
+        flame(0, -1.25, 0.2, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
+        drop(0.5, 0.0, 0.06, const Color(0xFFE8DFC4));
+      case 'storm_die':
         canvas.drawPath(
             Path()
               ..moveTo(-0.5, -0.8)
@@ -1271,136 +1631,81 @@ class _ArtPainter extends CustomPainter {
               ..lineTo(0.0, 0.45)
               ..lineTo(0.35, 0.95),
             stroke(const Color(0xFFDDEBFF), 1.6));
-        canvas.drawPath(
-            Path()
-              ..moveTo(0.45, -0.6)
-              ..lineTo(0.62, -0.3)
-              ..lineTo(0.5, -0.25),
-            stroke(const Color(0xFF8FB4FF), 1.2));
-      case 'liora': // vines and leaves
-        final vine = stroke(const Color(0xFF95D16F), 1.6);
-        canvas.drawPath(
-            Path()
-              ..moveTo(-0.87, 0.5)
-              ..quadraticBezierTo(-0.5, 0.2, -0.3, 0.55)
-              ..quadraticBezierTo(0.0, 0.9, 0.35, 0.7),
-            vine);
-        for (final (x, y, a) in [
-          (-0.5, 0.32, -0.8),
-          (-0.1, 0.78, 0.6),
-          (0.3, 0.72, -0.4),
-          (0.74, -0.45, 0.9)
-        ]) {
-          canvas.save();
-          canvas.translate(x, y);
-          canvas.rotate(a);
-          canvas.drawOval(const Rect.fromLTWH(-0.04, -0.12, 0.09, 0.24),
-              fill(const Color(0xFF6FBF4E)));
-          canvas.restore();
-        }
-      case 'grosh': // tusk spikes at the corners and notches
-        for (final v in hexOut) {
-          final n = v / v.distance;
-          final perp = Offset(-n.dy, n.dx);
-          canvas.drawPath(
-              Path()
-                ..moveTo(v.dx - perp.dx * 0.1, v.dy - perp.dy * 0.1)
-                ..lineTo(v.dx + n.dx * 0.26, v.dy + n.dy * 0.26)
-                ..lineTo(v.dx + perp.dx * 0.1, v.dy + perp.dy * 0.1)
-                ..close(),
-              fill(const Color(0xFFE9E0C2)));
-        }
-        for (var i = 0; i < 4; i++) {
+      case 'arcane_die': // a ring of runes
+        for (var i = 0; i < 8; i++) {
+          final a = i * math.pi / 4;
+          final p = _P(math.cos(a) * 1.15, math.sin(a) * 1.15);
           canvas.drawLine(
-              Offset(0.2 + i * 0.1, 0.45),
-              Offset(0.2 + i * 0.1, 0.62),
-              stroke(const Color(0xFF8F8771), 1.2));
+              p, p + _P(0.0, 0.1), stroke(const Color(0xFF8E9CFF), 1.6));
+          canvas.drawLine(p + const _P(-0.05, 0.03), p + const _P(0.05, 0.06),
+              stroke(const Color(0xFF8E9CFF), 1.4));
         }
-      case 'fang': // curved fangs for tips (the d4)
-        for (final v in [
-          const _P(0, -1),
-          const _P(0.9, 0.62),
-          const _P(-0.9, 0.62)
-        ]) {
-          final n = v / v.distance;
-          final perp = Offset(-n.dy, n.dx);
-          canvas.drawPath(
-              Path()
-                ..moveTo(v.dx - perp.dx * 0.09, v.dy - perp.dy * 0.09)
-                ..quadraticBezierTo(
-                    v.dx + n.dx * 0.18 + perp.dx * 0.1,
-                    v.dy + n.dy * 0.18 + perp.dy * 0.1,
-                    v.dx + n.dx * 0.3 + perp.dx * 0.18,
-                    v.dy + n.dy * 0.3 + perp.dy * 0.18)
-                ..lineTo(v.dx + perp.dx * 0.09, v.dy + perp.dy * 0.09)
-                ..close(),
-              fill(const Color(0xFFF0EAD6)));
-        }
-      case 'crystal': // a sparkle and inner facet lines (the d8)
-        canvas.drawLine(const Offset(-0.45, 0.0), const Offset(0.0, 0.2),
-            stroke(const Color(0x88FFFFFF), 1));
-        canvas.drawLine(const Offset(0.0, -0.55), const Offset(0.0, 0.2),
-            stroke(const Color(0x88FFFFFF), 1));
-        final sp = Path()
-          ..moveTo(0.5, -0.5)
-          ..lineTo(0.55, -0.35)
-          ..lineTo(0.7, -0.3)
-          ..lineTo(0.55, -0.25)
-          ..lineTo(0.5, -0.1)
-          ..lineTo(0.45, -0.25)
-          ..lineTo(0.3, -0.3)
-          ..lineTo(0.45, -0.35)
-          ..close();
-        canvas.drawPath(sp, fill(Colors.white));
-      case 'antler': // antler tines from the top (the d10)
-        final a = stroke(const Color(0xFFB5935F), 2.2);
-        for (final sx in [-1.0, 1.0]) {
-          canvas.drawPath(
-              Path()
-                ..moveTo(0, -0.98)
-                ..lineTo(sx * 0.18, -1.2)
-                ..lineTo(sx * 0.32, -1.5)
-                ..moveTo(sx * 0.18, -1.2)
-                ..lineTo(sx * 0.46, -1.24)
-                ..moveTo(sx * 0.3, -1.42)
-                ..lineTo(sx * 0.12, -1.55),
-              a);
-        }
-      case 'sovereign': // the legendary d12: a crown and a gold edge
-        final g = const Color(0xFFF2C14E);
-        final outer = _ring(5, 1.0, -math.pi / 2);
-        // A crown of five points over the top.
-        canvas.drawPath(
-            Path()
-              ..moveTo(-0.5, -1.0)
-              ..lineTo(-0.55, -1.38)
-              ..lineTo(-0.25, -1.16)
-              ..lineTo(0, -1.5)
-              ..lineTo(0.25, -1.16)
-              ..lineTo(0.55, -1.38)
-              ..lineTo(0.5, -1.0)
-              ..close(),
-            fill(g));
-        for (final v in outer.skip(1)) {
-          canvas.drawCircle(v, 0.05, fill(g));
-        }
-        canvas.drawPath(Path()..addPolygon(outer, true), stroke(g, 2.4));
-      case 'eye': // an eye on the front face (the d20)
+      case 'sage_die': // an eye
         canvas.drawPath(
             Path()
               ..moveTo(-0.3, 0.1)
               ..quadraticBezierTo(0, -0.22, 0.3, 0.1)
               ..quadraticBezierTo(0, 0.4, -0.3, 0.1),
             stroke(skin.edge, 1.4));
-        canvas.drawCircle(const Offset(0, 0.1), 0.1, fill(skin.edge));
+        canvas.drawCircle(const _P(0, 0.1), 0.1, fill(skin.edge));
         canvas.drawCircle(
-            const Offset(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
-      case 'coin': // the sovereign coin: a ring of beads
-        canvas.scale(1, 1);
-        for (var i = 0; i < 18; i++) {
-          final a = i * 2 * math.pi / 18;
-          canvas.drawCircle(Offset(math.cos(a) * 0.78, math.sin(a) * 0.78),
-              0.04, fill(skin.edge.withValues(alpha: 0.9)));
+            const _P(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
+      case 'ossuary_die': // a skull
+        canvas.drawCircle(const _P(0.4, 0.0), 0.2, fill(bone));
+        canvas.drawRect(Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
+        canvas.drawCircle(
+            const _P(0.34, 0.0), 0.05, fill(const Color(0xFF3A3328)));
+        canvas.drawCircle(
+            const _P(0.46, 0.0), 0.05, fill(const Color(0xFF3A3328)));
+      case 'tempest_die': // a thunder bolt, a cloud
+        canvas.drawCircle(
+            const _P(-0.3, -1.05), 0.2, fill(const Color(0xFF6B7487)));
+        canvas.drawCircle(
+            const _P(0.0, -1.12), 0.26, fill(const Color(0xFF7C869B)));
+        canvas.drawCircle(
+            const _P(0.3, -1.05), 0.2, fill(const Color(0xFF6B7487)));
+        canvas.drawPath(
+            Path()
+              ..moveTo(0.15, -0.9)
+              ..lineTo(-0.1, -0.35)
+              ..lineTo(0.1, -0.35)
+              ..lineTo(-0.15, 0.2),
+            stroke(const Color(0xFFFFE48A), 2.4));
+      case 'chorus_die': // sound rings and a bell
+        for (final k in [1.12, 1.3]) {
+          canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: k), -0.5,
+              1.0, false, stroke(const Color(0xFFF5F7FB), 1.3));
+          canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: k),
+              math.pi - 0.5, 1.0, false, stroke(const Color(0xFFF5F7FB), 1.3));
+        }
+        canvas.drawPath(
+            Path()
+              ..moveTo(-0.14, 0.2)
+              ..quadraticBezierTo(-0.16, -0.12, 0, -0.14)
+              ..quadraticBezierTo(0.16, -0.12, 0.14, 0.2)
+              ..close(),
+            fill(const Color(0xFFF5F7FB)));
+      case 'tearglass_die': // THE LEGENDARY D12: a crown, a tear
+        crown(const Color(0xFFA0F5E8), -1.0);
+        drop(0.0, 0.1, 0.16, const Color(0xFFA0F5E8));
+        for (final v in _corners(shape).skip(1)) {
+          canvas.drawCircle(v, 0.05, fill(const Color(0xFFF2C14E)));
+        }
+      case 'gambler_die': // suits and red pips
+        canvas.drawPath(
+            Path()
+              ..moveTo(0.0, -0.1)
+              ..lineTo(0.1, 0.0)
+              ..lineTo(0.0, 0.1)
+              ..lineTo(-0.1, 0.0)
+              ..close(),
+            fill(const Color(0xFFC0392B)));
+        for (final p in const [
+          _P(-0.55, -0.15),
+          _P(0.55, 0.45),
+          _P(-0.2, 0.6)
+        ]) {
+          canvas.drawCircle(p, 0.06, fill(const Color(0xFFC0392B)));
         }
     }
     canvas.restore();
@@ -1410,36 +1715,20 @@ class _ArtPainter extends CustomPainter {
   bool shouldRepaint(_ArtPainter old) => false;
 }
 
-const _artSpec = <String, (int, String)>{
-  // art id: (shape index, skin id); the coin and the legendary d12 below
-  'stone': (1, 'stone_die'),
-  'storm': (1, 'storm_die'),
-  'liora': (1, 'liora_die'),
-  'grosh': (1, 'grosh_die'),
-  'fang': (0, 'twinfang_die'),
-  'crystal': (2, 'arcane_die'),
-  'antler': (3, 'huntsman_die'),
-  'sovereign': (4, 'holy_die'),
-  'eye': (5, 'sage_die'),
-  'coin': (-1, 'tobin_die'),
-};
-
-Widget _art(String id, double size, {String value = '5'}) {
-  final (si, skinId) = _artSpec[id]!;
-  final skin = _skin(skinId);
-  final coin = si < 0;
-  final glowing = id == 'sovereign';
+/// Die [id] with its art, at [size] px.
+Widget _dieArt(String id, double size, {String? value}) {
+  final skin = _skin(id);
+  final sides = _sidesOf(id);
+  final shape = _shapeFor(sides);
+  final legend = id == 'tearglass_die';
   return SizedBox(
     width: size,
     height: size,
     child: Stack(alignment: Alignment.center, children: [
-      if (glowing)
-        // A halo of rays behind the legendary d12.
-        CustomPaint(size: Size(size, size), painter: _RaysPainter()),
-      coin
-          ? _coin(skin, size)
-          : _die(_shapes[si], skin, id == 'coin' ? '' : value, size),
-      CustomPaint(size: Size(size, size), painter: _ArtPainter(id, skin)),
+      if (legend) CustomPaint(size: Size(size, size), painter: _RaysPainter()),
+      _die(shape, skin, value ?? '${math.max(1, (sides * 0.6).round())}', size),
+      CustomPaint(
+          size: Size(size, size), painter: _ArtPainter(id, skin, shape)),
     ]),
   );
 }
@@ -1449,7 +1738,7 @@ class _RaysPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
     final r = size.shortestSide / 2;
-    final p = Paint()..color = const Color(0xFFF2C14E).withValues(alpha: 0.22);
+    final p = Paint()..color = const Color(0xFF38D6C0).withValues(alpha: 0.2);
     for (var i = 0; i < 12; i++) {
       final a = i * math.pi / 6;
       canvas.drawPath(
@@ -1468,60 +1757,88 @@ class _RaysPainter extends CustomPainter {
   bool shouldRepaint(_RaysPainter old) => false;
 }
 
-Widget _artBoard() {
-  Widget item(String id, String name, String note,
-          {double size = 100, String value = '5'}) =>
-      Padding(
-        padding: const EdgeInsets.only(right: 22, bottom: 14),
-        child: SizedBox(
-          width: 136,
-          child: Column(children: [
-            SizedBox(
-                height: size + 20,
-                child: Center(child: _art(id, size, value: value))),
-            Text(name, style: _t(13, bold: true)),
-            Text(note, style: _t(10.5, c: _ash), textAlign: TextAlign.center),
-          ]),
+String _dieName(String id) => dieDisplayName(id);
+
+Widget _sheet() {
+  Widget item(String id) => Container(
+        width: 150,
+        margin: const EdgeInsets.only(right: 8, bottom: 8),
+        padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1D1B22),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: id == 'tearglass_die' ? const Color(0xFFF2C14E) : _line),
         ),
+        child: Column(children: [
+          SizedBox(
+            height: 90,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              _dieArt(id, 76),
+              const SizedBox(width: 10),
+              // At the fight's size.
+              _dieArt(id, 34),
+            ]),
+          ),
+          const SizedBox(height: 4),
+          Text(_dieName(id),
+              style: _t(12.5, bold: true), textAlign: TextAlign.center),
+          Text(_artNotes[id] ?? '',
+              style: _t(10, c: _ash), textAlign: TextAlign.center),
+        ]),
+      );
+  Widget group(String title, List<String> ids) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _title(title),
+          Wrap(children: [for (final id in ids) item(id)]),
+        ]),
       );
   return Padding(
     padding: const EdgeInsets.all(22),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('Dedicated art: a die is more than its colour', style: _t(19)),
-      const SizedBox(height: 4),
-      _note(
-          'Today four dice share the same cube and differ only in colour. Each gets pieces of its own (spikes, vines, a crackle, chips of stone) drawn over its shape, on top of its skin. Then one die for each size, the legendary d12, and the coin. Each art is a handful of paths: no new image files.',
-          w: 1000),
-      const SizedBox(height: 14),
-      _title('The four six-faced dice that share a cube today'),
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        item('stone', 'Dwarven stone', 'chipped corners, a cut rune',
-            size: 110),
-        item('storm', 'Stormcast', 'a crackle of lightning over the faces',
-            size: 110),
-        item('liora', 'Liora’s', 'vines and leaves growing over it', size: 110),
-        item('grosh', 'Grosh’s tusk', 'tusk spikes at the corners, notches',
-            size: 110),
+    child: SizedBox(
+      width: 1010,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('A look for each of the 31 dice', style: _t(19)),
+        const SizedBox(height: 4),
+        _note(
+            'Grouped by size (Core’s table in dice-sizes.md); each die at the size it shows on the slot (76 px) and in the fight (34 px). Its skin is the one it has today; the art is pieces of its own drawn over it (a handful of paths each, no image files). The legendary d12 is the rarest late die, the Tear-glass.',
+            w: 1000),
+        const SizedBox(height: 12),
+        group('d4 · six dice', _bySize[4]!),
+        group(
+            'd6 · ten dice (the four that shared a cube now each have their own)',
+            _bySize[6]!),
+        group('d8 · seven dice', _bySize[8]!),
+        group('d10 · four dice', _bySize[10]!),
+        group('d12 · three dice, and the legendary one', _bySize[12]!),
+        group('d20 · one die, and the coin', [..._bySize[20]!]),
+        Row(children: [
+          Container(
+            width: 150,
+            padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1D1B22),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: _line),
+            ),
+            child: Column(children: [
+              SizedBox(
+                height: 90,
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  _coin(_skin('holy_die'), 76),
+                  const SizedBox(width: 10),
+                  _coin(_skin('holy_die'), 34),
+                ]),
+              ),
+              Text('Fate coin', style: _t(12.5, bold: true)),
+              Text('gold, a crown; heads or tails', style: _t(10, c: _ash)),
+            ]),
+          ),
+        ]),
       ]),
-      _title('One die of each size, with a look of its own'),
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        item('fang', 'd4 · Twin-fang', 'curved fangs for its tips', value: '3'),
-        item('crystal', 'd8 · Rune crystal', 'a sparkle, inner facets',
-            value: '7'),
-        item('antler', 'd10 · Antler and oak', 'antler tines from its top',
-            value: '9'),
-        item('eye', 'd20 · Sky-glass eye', 'an eye on its front face',
-            value: '17'),
-      ]),
-      _title('The legendary d12, and the coin'),
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        item('sovereign', 'd12 · Sovereign’s Die',
-            'a crown, a gold edge, a halo of rays',
-            size: 120, value: '11'),
-        item('coin', 'Coin · Sovereign’s coin', 'a ring of beads, the crown',
-            size: 120),
-      ]),
-    ]),
+    ),
   );
 }
 
@@ -1538,14 +1855,17 @@ void main() {
     }
   });
 
-  test('a die has a slot for each of its faces, and each art has a skin', () {
-    expect(_shapes.map((s) => s.sides).toList(), [4, 6, 8, 10, 12, 20]);
-    for (final e in _artSpec.entries) {
-      expect(dieSkins.containsKey(e.value.$2), isTrue, reason: e.key);
+  test('the 31 dice of Core\u2019s table: a size, a skin and an art note each',
+      () {
+    final all = [for (final l in _bySize.values) ...l];
+    expect(all.length, 31);
+    expect(all.toSet().length, 31);
+    expect(_bySize.map((k, v) => MapEntry(k, v.length)),
+        {4: 6, 6: 10, 8: 7, 10: 4, 12: 3, 20: 1});
+    for (final id in all) {
+      expect(dieSkins.containsKey(id), isTrue, reason: id);
+      expect(_artNotes.containsKey(id), isTrue, reason: id);
     }
-    expect(_artSpec.length, 10,
-        reason:
-            'four sixes, one for each other size, the legendary d12, the coin');
   });
 
   test('every style of the picture is a skin the game already has', () {
@@ -1611,8 +1931,9 @@ void main() {
     await shoot(tester, _equip(), const Size(1000, 720), 'dice-equip-mock.png');
   });
 
-  testWidgets('the dedicated art (UX_SHOTS=<folder>)', (tester) async {
-    await shoot(tester, _artBoard(), const Size(900, 900), 'dice-art-mock.png');
+  testWidgets('the sheet of the 31 dice (UX_SHOTS=<folder>)', (tester) async {
+    await shoot(
+        tester, _sheet(), const Size(1100, 1500), 'dice-sheet-mock.png');
   });
 
   testWidgets('the dice in the UI (UX_SHOTS=<folder>)', (tester) async {

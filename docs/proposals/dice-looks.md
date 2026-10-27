@@ -68,18 +68,19 @@ the legendary d12 (12 slots, "9 of 12 faces set"); the others are one die of eac
 Needs from Core: a die's face list (`faces` in dice.json already is one, of any length) and
 a skill for each face; the equip screen draws what is there.
 
-### Dedicated art (`docs/ux-shots/dice-art-mock.png`)
-A die gets pieces of its own drawn over and round its shape, on top of its skin (a handful of
-paths, no new image files):
-- **The four six-faced dice that share a cube today**: Dwarven stone (chipped corners, a cut
-  rune), Stormcast (a crackle of lightning over the faces), Liora's (vines and leaves),
-  Grosh's tusk (tusk spikes at the corners, notches).
-- **One die for each other size**: d4 Twin-fang (curved fangs for its tips), d8 Rune crystal
-  (a sparkle, inner facets), d10 Antler and oak (tines from its top), d20 Sky-glass eye (an eye
-  on its front face).
-- **The legendary d12, the Sovereign's Die**: a crown, a gold edge, a halo of rays.
-- **The coin, the Sovereign's coin**: a ring of beads and a crown.
-The art ids are keyed to the existing skins (`stone_die`, `storm_die`, `liora_die`,
-`grosh_die`, `twinfang_die`, `arcane_die`, `huntsman_die`, `sage_die`, `holy_die`,
-`tobin_die`), so a die's dedicated art is a field next to its skin in the same table.
-The roll storyboard (`dice-roll-mock.png`) stays as drawn.
+### A look for each of the 31 dice (`docs/ux-shots/dice-sheet-mock.png`)
+One picture, grouped by size as in Core's table (`dice-sizes.md` on `claude/core-dice-sizes`):
+d4 (6 dice), d6 (10), d8 (7), d10 (4), d12 (3), d20 (1), and the fate coin. Each die is drawn at
+the size it shows on its slot (76 px) and in the fight (34 px), in the skin it has today, with
+pieces of its own drawn over it (a handful of paths each, no image files). For example: the
+four sixes that shared a cube are now Dwarven stone (chipped corners, a cut rune), Stormcast
+is a d10 (lightning), Liora's (vines), Grosh's (tusk spikes), and the rest of the d6s each have
+their own (a chalk star, riveted bands, a cross and rays, battlements, a scallop shell, a
+reliquary cross, rust). The d4s are fanged, spiked, crescent-marked or axe-edged; the d8s
+flame, wave, arrow, ink drop, icicles, leaves, candle; the d10s lightning, runes, an eye, a
+skull; the d12s thunder, sound rings and **the legendary Tear-glass: a crown, a tear and a halo**;
+the d20 (the gambler's) suits and red pips; the coin is gold with a crown. Each die's note is on
+the sheet. The art is keyed to the die's id, so it is a field next to its skin in the same
+table. It arrives in a later PR; the data PR meanwhile reuses the existing icons.
+The roll storyboard (`dice-roll-mock.png`) and the equipping screen (`dice-equip-mock.png`,
+n face slots from a d4 to a d20 and the coin) stand as drawn.
