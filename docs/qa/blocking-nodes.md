@@ -88,9 +88,9 @@ Severity "retry only" means: a forced fight whose loss retries it; stuck only if
 | `3005_oath` | cultist_acolyte | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
 | `3005_relic` | void_wisp | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
 | `3005_wall_fight` | inquisition_auxiliary | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
-| `3030` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; no boss band for this enemy | rule 5 | retry only | Core (numbers) |
-| `3040` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; no boss band for this enemy | rule 5 | retry only | Core (numbers) |
-| `3050` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; no boss band for this enemy | rule 5 | retry only | Core (numbers) |
+| `3030` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; banded in boss_balance_test | rule 5 | retry only | Core (numbers) |
+| `3040` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; banded in boss_balance_test | rule 5 | retry only | Core (numbers) |
+| `3050` | inquisition_high_warden | Forced fight, no defeat branch (a loss retries it); the chapter's finale, three ways to it; banded in boss_balance_test | rule 5 | retry only | Core (numbers) |
 | `q_ch3_inquisition_ledger` | Fetch the sealed letter (a quest, not a node) | The letter drops only from the High Warden of `3030`/`3040`/`3050`, the chapter's finale (100%), so the quest can be handed in only after it; the chapter's quest goal (2 of 9) is met by the others | rule 7 | longer path (one quest) | Narrative / Core |
 
 ### Chapter 4 (the Drowned Stair)
@@ -106,7 +106,7 @@ Severity "retry only" means: a forced fight whose loss retries it; stuck only if
 | Node | The fight or test | What blocks or detours | How found | Severity | Owner |
 |---|---|---|---|---|---|
 | `6002_siege_breach` | void_hound | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
-| `6003b` | void_manifestation | Forced fight, no defeat branch (a loss retries it); no boss band for this enemy | rule 5 | retry only | Core (numbers) |
+| `6003b` | void_manifestation | Forced fight, no defeat branch (a loss retries it); banded in boss_balance_test | rule 5 | retry only | Core (numbers) |
 | `6010_candle_walk_fight` | tear_spawn | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
 | `6010_clan_compact_3_seen` | inquisition_penitent, inquisition_soldier | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
 | `6010_malrik` | void_hound | Forced fight, no defeat branch (a loss retries it) | rule 5 | retry only | Core (numbers) |
