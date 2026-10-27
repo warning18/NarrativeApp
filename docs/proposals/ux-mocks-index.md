@@ -20,3 +20,7 @@ Wave 18 (one page): `wave18-ux.md`. Its build is v1.560, after Core's step 1 (v1
 (Saltmouth: locked districts, clan-held districts, flips).
 
 To regenerate a picture: `UX_SHOTS=<dir> flutter test test/ux_<name>_mock_test.dart`.
+
+## After the user's answers (branch `claude/ux-redraw-2`)
+
+See `redraw-2.md`: the power sign redrawn without bars (`power-ways-mock.png`), the Forge sheet with tabs (`forge-tabs-mock.png`) and two tutorial ideas (`tutorial-ideas-mock.png`). The standing sign is dropped.
