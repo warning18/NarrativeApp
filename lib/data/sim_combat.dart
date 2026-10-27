@@ -26,6 +26,8 @@ import 'perks.dart';
 import 'shop_stock.dart';
 import 'camp_rolls.dart' show RollBanOn;
 import 'signs.dart';
+import 'sim_companions.dart';
+import 'sim_policy.dart';
 import 'sim_rolls.dart';
 import 'training.dart';
 
@@ -38,9 +40,10 @@ import 'training.dart';
 /// profession starts with or buys, and a Mirror sending back the round's
 /// best hit. Deliberate simplifications, so the numbers read as "a solo
 /// player of this build" rather than a full party:
-/// - no companions, so no party combos or duo techniques (nor the
-///   dexterity order, Quick Resolve or a loadout swap, which only matter
-///   with one);
+/// - companions only for the competent player ([allies], see
+///   sim_companions.dart): their signature dice, approval and knock-outs,
+///   but no party combos or duo techniques (nor the dexterity order, Quick
+///   Resolve, momentum's surge or the hunt-the-healer retarget);
 /// - of the clash rules (v1.212-v1.215) the goals (hold, rout, subdue), the
 ///   Writ, squad roles, the enemies' answers (counter, press), parries and
 ///   element reactions are played when `clash` is on; the thieves' purse,
@@ -133,7 +136,7 @@ class SimCharacter {
         if (spells[id.toString()] != null) spells[id.toString()]!,
     ];
     final preferred = damageStatOf(professionId);
-    return SimCharacter._(
+    final character = SimCharacter._(
       raceId: raceId,
       professionId: professionId,
       preferredStat: preferred.isEmpty ? 'wisdom' : preferred,
@@ -167,6 +170,9 @@ class SimCharacter {
           bonus(race, 'startingGoldBonus') +
           bonus(profession, 'startingGoldBonus'),
     );
+    return character
+      ..diceId = dieId
+      ..ownedDice[dieId] = faces;
   }
 
   final String raceId;
@@ -228,6 +234,47 @@ class SimCharacter {
 
   /// equipSlot -> item id.
   final Map<String, String> equippedBySlot = {};
+
+  /// How the player plays its choices (sim_policy.dart): the competent
+  /// one keeps what it owns ([ownedItemIds], [ownedDice]) and wears and
+  /// rolls the best of it.
+  SimPolicy policy = SimPolicy.naive;
+
+  /// The gear the competent player owns, worn or in the pack.
+  final Set<String> ownedItemIds = {};
+
+  /// The die in play's id, and the dice owned (id -> faces): the
+  /// profession's own (its signature die) from the start, and those the
+  /// competent player buys.
+  String diceId = '';
+  final Map<String, List<Map<String, dynamic>>> ownedDice = {};
+
+  /// The best die owned for the competent player (simDieValue, its skills
+  /// best placed by simSkillAssignments) rolled from now on, when it beats
+  /// the one in play.
+  void rollBestDie(Map<String, dynamic> skills) {
+    final caster = knownSpells.isNotEmpty;
+    var bestValue = simDieValue(diceFaces, diceSkillAssignments, skills,
+            damage: baseDamage, caster: caster) +
+        0.01;
+    for (final id in ownedDice.keys.toList()..sort()) {
+      if (id == diceId) continue;
+      final faces = ownedDice[id]!;
+      final placed = simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      final v = simDieValue(faces, placed, skills,
+          damage: baseDamage, caster: caster);
+      if (v > bestValue) {
+        bestValue = v;
+        diceId = id;
+        diceFaces = faces;
+        diceSkillAssignments = placed;
+      }
+    }
+  }
 
   /// Poison/Stun/Weaken on the character -- fight-scoped, cleared when a
   /// fight ends either way.
@@ -453,8 +500,14 @@ class SimCharacter {
     Map<String, dynamic> items,
     Map<String, dynamic> dice,
     Map<String, SpellSpec> spells,
-    int gold,
-  ) {
+    int gold, {
+    Map<String, dynamic> skills = const {},
+    Map<String, ItemSet> itemSets = const {},
+  }) {
+    if (policy == SimPolicy.competent) {
+      return _visitShopCompetent(shop, items, dice, spells, gold,
+          skills: skills, itemSets: itemSets);
+    }
     var purse = gold;
     int scoreOf(String? itemId) {
       final item = items[itemId] as Map<String, dynamic>?;
@@ -563,7 +616,167 @@ class SimCharacter {
     }
     return purse;
   }
+
+  /// The competent player's visit (sim_policy.dart): the profession's own
+  /// spellbook; potions up to [_potionsKept] charges; the best die the
+  /// shop sells it may roll, when it beats the one in play; then gear,
+  /// one piece at a time, the one that raises its best loadout most
+  /// (simBestLoadout, sets weighed) while the purse lasts; the change on
+  /// more potions, up to [_potionsStocked]. Returns the gold left.
+  int _visitShopCompetent(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> items,
+    Map<String, dynamic> dice,
+    Map<String, SpellSpec> spells,
+    int gold, {
+    required Map<String, dynamic> skills,
+    required Map<String, ItemSet> itemSets,
+  }) {
+    var purse = gold;
+    int costOf(Map<String, dynamic> item) =>
+        (item['cost'] as num?)?.toInt() ?? 0;
+    final quantities = (shop['stockQuantities'] as Map?)?.map(
+          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
+        ) ??
+        const <String, int>{};
+    final stock = <MapEntry<String, Map<String, dynamic>>>[
+      for (final raw in allShopStock(shop))
+        if (items[raw] is Map<String, dynamic>)
+          MapEntry(raw, items[raw] as Map<String, dynamic>),
+    ];
+
+    for (final entry in stock) {
+      final taughtSpellId = spellbookSpellIdFor(entry.value);
+      if (taughtSpellId == null) continue;
+      final spell = spells[taughtSpellId];
+      if (spell == null ||
+          purse < costOf(entry.value) ||
+          knownSpells.any((s) => s.id == spell.id) ||
+          !canLearnSpell(
+            spell,
+            professionId: professionId,
+            knownSpellIds: [for (final s in knownSpells) s.id],
+          )) {
+        continue;
+      }
+      purse -= costOf(entry.value);
+      knownSpells.add(spell);
+      spellbooksBought.add(spell.id);
+    }
+
+    void buyPotions(int upTo) {
+      for (final entry in stock) {
+        if (entry.value['itemType']?.toString() != 'Potion' ||
+            entry.key == 'antidote') {
+          continue;
+        }
+        final cost = costOf(entry.value);
+        final limit = quantities[entry.key] ?? 1;
+        var bought = 0;
+        while (potions < upTo && bought < limit && cost > 0 && purse >= cost) {
+          purse -= cost;
+          bought++;
+          potions += entry.key == 'potion_major' ? 2 : 1;
+        }
+      }
+    }
+
+    buyPotions(_potionsKept);
+
+    // The die: the best of the shop's it may roll, if it beats its own.
+    final caster = knownSpells.isNotEmpty;
+    final dieNow = simDieValue(diceFaces, diceSkillAssignments, skills,
+        damage: baseDamage, caster: caster);
+    String? dieId;
+    var dieBest = dieNow + 0.1;
+    for (final raw in (shop['diceStock'] as List?) ?? const []) {
+      final id = raw.toString();
+      final die = dice[id] as Map<String, dynamic>?;
+      final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+      if (die == null ||
+          faces == null ||
+          faces.isEmpty ||
+          ownedDice.containsKey(id) ||
+          purse < ((die['cost'] as num?)?.toInt() ?? 0) ||
+          !simCanUseDie(die, professionId: professionId, raceId: raceId)) {
+        continue;
+      }
+      final v = simDieValue(
+          faces,
+          simSkillAssignments(
+              faces: faces,
+              current: const {},
+              unlocked: unlockedSkillIds,
+              skills: skills),
+          skills,
+          damage: baseDamage,
+          caster: caster);
+      if (v > dieBest) {
+        dieBest = v;
+        dieId = id;
+      }
+    }
+    if (dieId != null) {
+      final die = dice[dieId] as Map<String, dynamic>;
+      purse -= (die['cost'] as num?)?.toInt() ?? 0;
+      ownedDice[dieId] = (die['faces'] as List).cast<Map<String, dynamic>>();
+      rollBestDie(skills);
+    }
+
+    // Gear, the best gain first, while the purse lasts.
+    bool canWear(Map<String, dynamic> item) => meetsItemStatRequirement(
+          item,
+          strength: strength,
+          dexterity: dexterity,
+          constitution: constitution,
+          intelligence: intelligence,
+        );
+    Map<String, String> bestWith(Iterable<String> extra) => simBestLoadout(
+        worn: equippedBySlot,
+        owned: {...ownedItemIds, ...extra},
+        items: items,
+        sets: itemSets,
+        canWear: canWear,
+        caster: caster);
+    double valueOf(Map<String, String> loadout) =>
+        simLoadoutValue(loadout.values, items, itemSets, caster: caster);
+    while (true) {
+      final now = valueOf(bestWith(const []));
+      String? pick;
+      var gain = 0.05;
+      for (final entry in stock) {
+        final item = entry.value;
+        if (item['isEquippable'] != true ||
+            ownedItemIds.contains(entry.key) ||
+            equippedBySlot.containsValue(entry.key) ||
+            purse < costOf(item) ||
+            !canWear(item)) {
+          continue;
+        }
+        final g = valueOf(bestWith([entry.key])) - now;
+        if (g > gain) {
+          gain = g;
+          pick = entry.key;
+        }
+      }
+      if (pick == null) break;
+      purse -= costOf(items[pick] as Map<String, dynamic>);
+      ownedItemIds.add(pick);
+      final best = bestWith(const []);
+      equippedBySlot
+        ..clear()
+        ..addAll(best);
+    }
+
+    buyPotions(_potionsStocked);
+    return purse;
+  }
 }
+
+/// The potion charges the competent player keeps before buying gear, and
+/// tops up to with the change.
+const int _potionsKept = 3;
+const int _potionsStocked = 5;
 
 /// One simulated fight's result, for the run's telemetry.
 class SimFightOutcome {
@@ -805,6 +1018,7 @@ SimFightOutcome simulateSimFight({
   num Function(String clanId)? clanStanding,
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
+  List<SimAlly> allies = const [],
 }) {
   final c = character;
   // Which of the clash rules are in play.
@@ -1177,6 +1391,19 @@ SimFightOutcome simulateSimFight({
     if (c.isKnockedOut) return finish(false);
     final stunned = isStunned(c.statusEffects);
     if (stunned) c.statusEffects = tickStatusEffects(c.statusEffects);
+    // The companions' round start, as the hero's: poison, then a stun.
+    for (final a in allies) {
+      a.block = 0;
+      a.stunned = false;
+      if (a.isKnockedOut) continue;
+      final aPoison = poisonDamageFor(a.statusEffects);
+      if (aPoison > 0) a.currentHealth = max(0, a.currentHealth - aPoison);
+      if (a.isKnockedOut) continue;
+      if (isStunned(a.statusEffects)) {
+        a.stunned = true;
+        a.statusEffects = tickStatusEffects(a.statusEffects);
+      }
+    }
 
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
@@ -1695,6 +1922,94 @@ SimFightOutcome simulateSimFight({
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
+    // The companions' turns (sim_companions.dart), as the fight screen
+    // plays an auto-aiming party: each rolls their signature die (again on
+    // a blank face, as the hero), the face cast with their own skills at
+    // their damage on the enemy the hero aims at; a Heal mends them, a
+    // Defend guards them, a Mana face fills the shared pool.
+    var alliesActing = 0, alliesDefending = 0;
+    SimAlly? guardian;
+    for (final a in allies) {
+      if (a.isKnockedOut || a.stunned || a.faces.isEmpty) continue;
+      alliesActing++;
+      var face = rollDie(a.faces, random);
+      for (var r = 1; face.type == 'Empty' && r < _maxRolls; r++) {
+        face = rollDie(a.faces, random);
+      }
+      face = applyFaceAssignment(face, a.faces[face.faceIndex], null);
+      if (doctrine?.rule == DoctrineRule.writ &&
+          writSilencesRound(rounds) &&
+          face.type == 'Skill') {
+        face = silencedFace(face);
+      }
+      a.facesPlayed[face.type] = (a.facesPlayed[face.type] ?? 0) + 1;
+      final skillId =
+          face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
+      var element = face.element;
+      if (face.type == 'Skill') {
+        element = (a.skills[skillId] as Map<String, dynamic>?)?['element']
+                ?.toString() ??
+            'None';
+        a.skillsCast[skillId] = (a.skillsCast[skillId] ?? 0) + 1;
+      }
+      final result = resolvePlayerFace(
+        face,
+        a.skills,
+        a.damage,
+        activeEffects: a.statusEffects,
+        wisdomHealBonus: wisdomHealBonusFor(a.wisdom),
+        wisdomManaBonus: wisdomManaBonusFor(a.wisdom),
+        luck: a.luck,
+        random: random,
+        critChanceBonus: perceptionCritBonus(a.professionId, a.perception),
+        armor: a.armor,
+      );
+      var dealt = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0
+          ? result.damageDealt * painDamageMultiplier
+          : result.damageDealt;
+      if (ctx != null) {
+        dealt = ctx.blow(dealt, rounds,
+            byParty: true,
+            element: element,
+            bossFight: bossFlags.any((b) => b));
+      }
+      final target = on('squad') ? _focusTarget(ens) : firstLiving();
+      if (target != null && dealt > 0) {
+        final pierce = face.hasKeyword(FaceKeyword.pierce);
+        final landed = clash
+            ? target.landHit(dealt, element, rounds,
+                pierce: pierce, react: on('reaction'))
+            : target.takeHit(dealt, element, pierce: pierce);
+        if (!clash) target.health = max(0, target.health - landed);
+        a.damageDealt += landed;
+        bestHit = max(bestHit, landed);
+        if (element != 'None') target.elementsHit.add(element);
+      }
+      final inflicted = result.inflictedStatus;
+      if (target != null && inflicted != null && target.isAlive) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, inflicted);
+      }
+      var heal = ctx?.heal(result.healingDone, rounds) ?? result.healingDone;
+      if (on('fatigue') && heal > 0) heal = fatiguedHeal(heal, a.healsGiven++);
+      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+      a.block += result.blockAmount;
+      if (face.type == 'Defend' && result.blockAmount > 0) {
+        alliesDefending++;
+        if (guardian == null || a.block > guardian.block) guardian = a;
+      }
+      if (result.manaGained > 0) {
+        final before = c.mana;
+        c.mana = min(c.maxMana, c.mana + result.manaGained);
+        manaGained += c.mana - before;
+      }
+      a.statusEffects = tickStatusEffects(a.statusEffects);
+    }
+    // Taunt: whoever kept the biggest Defend face draws the blows aimed at
+    // the others while their guard holds (enemy_intent.dart).
+    final heroGuards =
+        allies.isNotEmpty && playedDefend && block > (guardian?.block ?? 0);
+    if (heroGuards) guardian = null;
     // The fight-length rules after the hero's blows (fight_length.dart):
     // the execute line, the pack's leader, a hurt foe's nerve.
     if (on('execute')) {
@@ -1757,8 +2072,8 @@ SimFightOutcome simulateSimFight({
             }
           case EnemyResponse.press:
             if (provokesPress(
-              defenders: playedDefend ? 1 : 0,
-              acting: acted ? 1 : 0,
+              defenders: (playedDefend ? 1 : 0) + alliesDefending,
+              acting: (acted ? 1 : 0) + alliesActing,
             )) {
               e.pressing = true;
             }
@@ -1903,8 +2218,34 @@ SimFightOutcome simulateSimFight({
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
       }
-      // The Lantern's Writ cancels the first blows outright.
-      if (writ > 0) {
+      // A party fight: the blow is aimed at a member standing, drawn at
+      // random (the fight screen's _rollMoveAndTargetFor; null: the hero),
+      // and taken by the guardian while their guard holds.
+      SimAlly? struck;
+      if (allies.isNotEmpty) {
+        final standing = <SimAlly?>[
+          null,
+          ...allies.where((a) => !a.isKnockedOut),
+        ];
+        struck = standing[random.nextInt(standing.length)];
+        final keeper = guardian;
+        if (heroGuards) {
+          if (guardianTakesBlow(
+              guardianStanding: !c.isKnockedOut,
+              guardianBlock: block,
+              aimedAtGuardian: struck == null)) {
+            struck = null;
+          }
+        } else if (keeper != null &&
+            guardianTakesBlow(
+                guardianStanding: !keeper.isKnockedOut,
+                guardianBlock: keeper.block,
+                aimedAtGuardian: identical(struck, keeper))) {
+          struck = keeper;
+        }
+      }
+      // The Lantern's Writ cancels the first blows aimed at the hero.
+      if (struck == null && writ > 0) {
         writ--;
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
@@ -1954,6 +2295,24 @@ SimFightOutcome simulateSimFight({
       // A beast tires (foe_kind.dart).
       if (on('kinds')) {
         moveDamage = foeBlow(moveDamage, e.data, rounds, boss: boss(e));
+      }
+      // A companion struck: their dodge, their guard and armor, the
+      // affliction past their Wisdom; knocked out at 0, the fight goes on.
+      if (struck != null) {
+        final a = struck;
+        final dodged = random.nextDouble() * 100 <
+            dodgeChanceFor(a.dexterity,
+                perception: a.perception, professionId: a.professionId);
+        final taken = dodged ? 0 : max(0, moveDamage - a.block - a.armor);
+        a.block = 0;
+        a.currentHealth = max(0, a.currentHealth - taken);
+        final inflicted = move.inflictedStatus;
+        if (!dodged && inflicted != null && !a.isKnockedOut) {
+          a.statusEffects = applyStatusEffect(
+              a.statusEffects, applyWisdomResistance(inflicted, a.wisdom));
+        }
+        e.statusEffects = tickStatusEffects(e.statusEffects);
+        continue;
       }
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).

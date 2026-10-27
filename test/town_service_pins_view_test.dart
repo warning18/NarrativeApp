@@ -74,6 +74,54 @@ void main() {
     expect(tapped?.id, 'market');
   });
 
+  testWidgets(
+      'the notice board\u2019s pin is a board with a count, red when '
+      'something can be claimed', (tester) async {
+    tester.view.physicalSize = const Size(390, 760);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final wharf = chart.districtById('wharf')!;
+    final services = [
+      CityChartService(
+          id: 'board',
+          kind: 'notice_board',
+          at: wharf.centre,
+          district: 'wharf',
+          badge: 3,
+          urgent: true),
+      CityChartService(
+          id: 'board2',
+          kind: 'notice_board',
+          at: wharf.centre.translate(40, 0),
+          district: 'wharf',
+          badge: 12),
+    ];
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: CityChartView(
+          chart: chart,
+          look: MapLook.night,
+          animate: false,
+          focus: 'wharf',
+          services: services,
+        ),
+      ),
+    ));
+    await tester.pump(const Duration(milliseconds: 600));
+    final painter = tester
+        .widgetList<CustomPaint>(find.descendant(
+            of: find.byKey(const Key('city_chart')),
+            matching: find.byType(CustomPaint)))
+        .map((c) => c.painter)
+        .whereType<CityChartPainter>()
+        .first;
+    expect(painter.services.first.badge, 3);
+    expect(painter.services.first.urgent, isTrue);
+    expect(painter.serviceShown(services.first), isTrue);
+    expect(tester.takeException(), isNull,
+        reason: 'the board and its count paint');
+  });
+
   testWidgets('the whole city shows no signs, only the districts',
       (tester) async {
     tester.view.physicalSize = const Size(390, 760);
@@ -127,6 +175,26 @@ void main() {
   }
 
   const pin = CityServicePin('t_temple', 'temple', Offset(10, 10), 'wharf');
+
+  testWidgets('the notice board opens the board itself, not a sheet with a row',
+      (tester) async {
+    await openSheet(
+        tester,
+        const TownService(
+            CityServicePin('t_board', 'notice_board', Offset(10, 10), 'wharf'),
+            [
+              (
+                action: TownServiceAction.bountyBoard,
+                id: 'bounty_board',
+                unlocked: true
+              )
+            ]));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byType(NoticeBoardPage), findsOneWidget);
+    expect(find.byKey(const Key('town_service_title')), findsNothing);
+    expect(
+        find.byKey(const Key('town_service_open_bounty_board')), findsNothing);
+  });
 
   testWidgets('a temple has nothing to open yet; a tavern offers the night',
       (tester) async {

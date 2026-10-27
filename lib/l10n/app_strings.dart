@@ -101,6 +101,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'journey_city_pins_ways': {
+    AppLanguage.en: '{p} pins · {n} ways · tap a pin to open it',
+    AppLanguage.fr:
+        '{p} épingles · {n} chemins · touchez une épingle pour l’ouvrir',
+  },
   'journey_city_walk_to': {
     AppLanguage.en: 'Walk to {district}',
     AppLanguage.fr: 'Marcher vers {district}',
@@ -4133,6 +4138,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap one of the three to see what it brings.',
     AppLanguage.fr: 'Touchez l’un des trois pour voir ce qu’il apporte.',
   },
+  'stat_picks_count': {
+    AppLanguage.en: '{n} picks',
+    AppLanguage.fr: '{n} choix',
+  },
   'stat_pick_take': {
     AppLanguage.en: 'Take this pick',
     AppLanguage.fr: 'Prendre ce choix',
@@ -4141,14 +4150,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'stat_pick_worth': {
     AppLanguage.en: 'Worth {n} points',
     AppLanguage.fr: 'Vaut {n} points',
-  },
-  'stat_picks_left': {
-    AppLanguage.en: 'Stat picks left',
-    AppLanguage.fr: 'Choix de stats restants',
-  },
-  'level_up_gives': {
-    AppLanguage.en: 'Each level also gives +4 max health.',
-    AppLanguage.fr: 'Chaque niveau donne aussi +4 de santé max.',
   },
   // A pick's rarity (training.dart) and what each ability does for the
   // hero (stat_pick_text.dart), for the pick cards.
@@ -5827,6 +5828,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vaincre {n} ennemis marqués (un trait ou une élite)',
   },
   'contract_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Réclamer'},
+  'contract_paid': {AppLanguage.en: 'PAID', AppLanguage.fr: 'PAYÉ'},
+  'contract_progress_of': {
+    AppLanguage.en: '{a} of {b}',
+    AppLanguage.fr: '{a} sur {b}',
+  },
+  'board_header_claim': {
+    AppLanguage.en: 'Chapter {n} · {k} to claim',
+    AppLanguage.fr: 'Chapitre {n} · {k} à réclamer',
+  },
+  'board_header_open': {
+    AppLanguage.en: 'Chapter {n} · {k} notices up',
+    AppLanguage.fr: 'Chapitre {n} · {k} affiches',
+  },
   'contract_claimed': {
     AppLanguage.en: 'Contract paid:',
     AppLanguage.fr: 'Contrat payé :',
@@ -7120,9 +7134,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'The District view: your mark stands where the party is, and each pin is a way you can take from here; the list under the map repeats them. Tap a pin or a row, and your mark walks to it. The road behind you is below.',
+        'The District view: your mark stands where the party is, and each pin is a place with ways to take from here; the list under the map repeats them, a pin with several ways as one row to open. Take a way, and your mark walks to its pin. The road behind you is below.',
     AppLanguage.fr:
-        'La vue Quartier\u00a0: votre repère est là où se tient le groupe, et chaque épingle est un chemin à prendre d’ici\u00a0; la liste sous la carte les reprend. Touchez une épingle ou une ligne, et votre repère s’y rend à pied. Plus bas, la route parcourue.',
+        'La vue Quartier\u00a0: votre repère est là où se tient le groupe, et chaque épingle est un lieu aux chemins à prendre d’ici\u00a0; la liste sous la carte les reprend, une épingle à plusieurs chemins étant une seule ligne à ouvrir. Prenez un chemin, et votre repère marche jusqu’à son épingle. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
@@ -12577,11 +12591,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offers_waiting_label': {
     AppLanguage.en: 'Offers waiting',
     AppLanguage.fr: 'Offres en attente',
-  },
-  'level_up_offer_note': {
-    AppLanguage.en: 'The clans come to you once this closes: an offer waits.',
-    AppLanguage.fr:
-        'Les clans viennent à vous une fois ceci fermé\u00a0: une offre vous attend.',
   },
   'purse_offers_note': {
     AppLanguage.en: 'skills come in the clans’ offers',

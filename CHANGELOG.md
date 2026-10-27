@@ -8,9 +8,80 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.566.0+602]
+## [1.570.0+606]
 
 Chapters 1–3 read the same in English and French: names, titles and times of day agree between scenes, and the paragraph breaks match in both languages. Wording only.
+
+## [1.569.0+605]
+
+The Journey's ways are grouped by pin, and the notice board is a board you read.
+
+### Changed
+- **The list of ways under the district map** (`way_pin_groups.dart`, `journey_screen.dart`): the ways that hang at the same pin (a building, or a spot) on the map are one row: the pin's own banner or disc, the name of the way that leads it, a count and a chevron. It is closed until tapped; a tap opens it in place to its ways, each the row it always was, indented, and a tap on one does what a row's tap did (the way's sheet). Only one pin is open at a time. A pin with one way stays a plain row, and a district with no such pin looks exactly as before. The header reads "2 pins · 5 ways · tap a pin to open it" when there are grouped pins. (The opened state is built as mocked so a row can open; say if you want it otherwise.)
+- **The notice board** (`bounty_board.dart`, `town_service_sheet.dart`, `city_chart_painter.dart`): the contracts are pinned on a wooden board as slightly tilted parchment notes, each with a stamp-ring for its kind, its goal, how far along it is as pips and "2 of 3", its pay as two chips (gold, essence), and a wax seal that is the Claim: flat and grey while the note is open, red and glowing once it is met. A claimed note is stamped PAID and drops off; a new board's notes pin up one after another (with reduced motion: no pin-up, no stamp, the note is simply gone). The header says the chapter and what waits ("Chapter 2 · 1 to claim"). The notice board's pin on the district map is a little board with a count of the notices up, red when one can be claimed, and a tap on it opens the board itself instead of a sheet with one row. The contracts, the claim and the posting are unchanged; the camp's board looks the same way.
+
+### Removed
+- **On the level-up pop-up and the Level Up screen** (`level_up_dialog.dart`, `level_up_screen.dart`): the "Stat picks left: 1" box, the line "Each level also gives +4 max health.", the line "The clans come to you once this closes: an offer waits." (pop-up only) and the line "Hold a stat to see what it does". The header, the cards, the radar and the Close or Take this pick button stay, and the hold-to-peek on a stat still works, it is just not announced. When more than one pick waits, a small quiet count ("2 picks") shows so the player knows another round follows; with one pick, nothing. **One radar:** while a pick waits, the Level Up screen's own plain radar (and its "tap a corner" line) is gone, in the pop-up and on the screen: the picker's radar (the hero's shape, with the pick in green once one is chosen; before any is chosen, the shape alone) is the only one. With no pick waiting, the plain radar is shown as before. The strings `stat_picks_left`, `level_up_gives` and `level_up_offer_note` are gone; `hold_stat_for_details_hint` stays (the character creation screen uses it).
+
+### Tests
+- `level_up_screen_test` (the removed texts are gone, the quiet count shows for several picks) and `qa_real_font_layout_test` (it checked the removed points box; it now checks the pop-up is up). New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
+## [1.568.0+604]
+
+The competent simulated player recruits companions and fights beside them.
+
+### Added
+- **Companions in the simulator** (`lib/data/sim_companions.dart`, competent profile only; naive is unchanged and stays the default for every CI band test).
+  - **Recruiting.** A companion joins as in the game: when their quest is handed in, once only, never after they leave or the story takes them. Tobin's and Malrik's quests keep their Good and Evil gates.
+  - **Seats.** The party holds 2, or 3 once the Barracks Annex stands; Kelda sits once her hall is built.
+  - **Story choices.** With companions on, the competent player takes a story choice that offers a companion quest it may take.
+- **The pick rule.**
+  - Seats go to the companions worth most in a fight: their die's average roll at their damage, plus 0.1 per health and 0.8 per armour.
+  - A tie (within 1) goes to higher approval, then to the companion whose approvals fit the player's alignment, then to the earlier recruit.
+  - A better recruit takes the weakest seat. The rule runs again at every recruit, departure, house built and chapter rest.
+- **In fights.**
+  - Each seated companion rolls their signature die through the same dice code as the hero. Their approval tier scales their damage and health.
+  - Enemies hit a random standing party member, and the biggest block draws the blows.
+  - A knocked-out companion comes back at 30% health after a won fight. A rest or a level-up heals everyone.
+- **Approval.** A choice's alignment, its gold and its `approvalMods` move approval for seated companions. At −12 a companion leaves and the best benched one takes the seat. `loseAllyId` takes one for good.
+- **The run report** lists every seek, recruit, pick, bench, swap, leave, loss and move into devoted or wary, each with its reason, then the final party.
+- **No dice cup.** The game has one die in play, swapped between fights, and the competent player already rolls its best.
+- **Measurement.** `docs/simulation/companions-v1.568.md` covers 10 runs per profile. From chapter 3 on, a competent party wins 0.98–1.00 of encounters, against 0.86–0.90 alone and 0.54–0.69 for naive.
+
+## [1.567.0+603]
+
+Chapter 1's first step outside opens the Journey and its tour; the party walks to a pin; "Back to the map" goes where the cards hold every move.
+
+### Changed
+- **The first step outside:** in a new game, the first way out of the Blind Beggar lands on the Journey map of the Lower Town (scene 250, the proclamation, with "1 way here"), not on 250's page. It happens once (`journey_first_shown`).
+- **The Journey tour starts there,** not on the Beggar's room map, and still only once. A pending "New:" card waits until the tour is skipped or finished. The tour's "tap a step" line now points at the District view's list of ways.
+- **The party walks to the pin:** taking a way on the District view (its pin or its row) walks the party marker to the pin, then opens the scene. The walk takes 0.6 s next door and up to 1.2 s from half the town away. A tap anywhere lands the party at once; with reduced motion there's no walk.
+- **No "Back to the map" when the page holds every move:** on a page with a way to take, the button and the corner map icon go when every way on the map leads to a place one of the page's cards also reaches. Those ways show as cards on the page, so none is lost. Example: the warhound in the alley (270), where all three ways lead to the family house. The button stays where the map has another move, and on hubs, endings, a page opened with Read, and a new game's first page. The scene lock (v1.563) is unchanged.
+
+## [1.564.0+600]
+
+The playthrough simulator can play like a competent player.
+
+### Added
+- **Two player profiles** (`SimPolicy` in `lib/data/sim_policy.dart`):
+  - **`naive`** is the simulator as it always played. Every CI band test (boss_balance, clash_balance, qa_clan_power_50, nemesis_quests, sim_playthroughs, sim_coverage, sim_houses) still uses it, and its results are unchanged.
+  - **`competent`**, used by the simulator screen's runs:
+    - Before every fight it wears the best loadout it owns: loot, quest rewards and scene grants included. It weighs elemental bonuses, uniques and set bonuses, and respects stat requirements.
+    - It shops for potions, a better die and gear by how much each improves its loadout.
+    - It keeps its signature die, rolls the best die it owns, and crafts a skill merge when that improves its die.
+    - Clan offers: it takes the gift that raises its power most, gives ties to the clan it stands closest to, and never takes a banner that turns its main clan or an ally Hostile.
+- **The run report:** both profiles record every clan offer (chapter, source, banners, the one taken and why). The transcript prints these, with the gear worn and the die.
+- **Measurement:** `docs/simulation/competent-player-v1.564.md` compares the two profiles over 10 runs each. From chapter 3 on, the competent player wins about 0.88 of encounters against 0.62 for the naive one.
+
+## [1.563.0+599]
+
+The scene lock only holds a scene whose ways are all on the spot. Any way with a place on the map is taken from the map again.
+
+### Fixed
+- **Map movement is back:** v1.555 locked any scene the story led to that had one choice made on the spot. It turned every way into a text card and greyed the map, even ways that already had a place on it. A scene now locks only when none of its ways is drawn on any map: the place's pins, the town plan, a room's spots, a road or the world. A scene with both kinds no longer locks: its mapped ways stay on the map, and its on-the-spot choices stay in the scene view or the sheet over the map.
+- **The sheet over the map is back** for every scene that does not lock, as before v1.555.
+- **Fewer scenes lock:** over the whole story, 52 scenes lock instead of 361. The House's Bouncer's aftermath (106) and all of chapter 1's opening (0–400) no longer lock. The wreck (965) still does.
+- **No lock before the map is ready:** a save reopened before the map and town plans have loaded no longer locks on its first screen.
 
 ## [1.562.0+598]
 

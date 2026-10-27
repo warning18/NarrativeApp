@@ -136,23 +136,28 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
           ),
         ),
         const SizedBox(height: 10),
+        // The one radar on the page while a pick waits (v1.565): the hero's
+        // shape, with the pick drawn over it once one is chosen.
         if (chosen != null)
           _PickRadar(
             key: Key('stat_pick_detail_${chosen.pathId}'),
             offer: chosen,
             session: session,
           )
-        else if (offer.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Text(
-              tr(ref, 'stat_pick_hint'),
-              key: const Key('stat_pick_hint'),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic),
+        else ...[
+          _PickRadar(offer: null, session: session),
+          if (offer.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(
+                tr(ref, 'stat_pick_hint'),
+                key: const Key('stat_pick_hint'),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic),
+              ),
             ),
-          ),
+        ],
         if (offer.isNotEmpty)
           RollPowerRow(
             keyPrefix: 'stat_pick',
@@ -369,7 +374,9 @@ class _OfferBanner extends ConsumerWidget {
 class _PickRadar extends ConsumerWidget {
   const _PickRadar({super.key, required this.offer, required this.session});
 
-  final StatPickOffer offer;
+  /// The pick drawn over the hero's shape; null while none is chosen: the
+  /// shape alone.
+  final StatPickOffer? offer;
   final PlayerSession session;
 
   @override
@@ -379,9 +386,13 @@ class _PickRadar extends ConsumerWidget {
     final values = {
       for (final k in abilityRadarOrder) k: trainingStatNow(session, k),
     };
-    final after = {
-      for (final k in abilityRadarOrder) k: values[k]! + (offer.gains[k] ?? 0),
-    };
+    final pick = offer;
+    final after = pick == null
+        ? null
+        : {
+            for (final k in abilityRadarOrder)
+              k: values[k]! + (pick.gains[k] ?? 0),
+          };
     return Column(
       children: [
         AbilityRadar(
@@ -393,9 +404,9 @@ class _PickRadar extends ConsumerWidget {
         ),
         // The corner labels hang below the radar's own box.
         const SizedBox(height: 14),
-        if (offer.rare)
+        if (pick != null && pick.rare)
           Text(
-            tr(ref, 'stat_pick_worth').replaceAll('{n}', '${offer.points}'),
+            tr(ref, 'stat_pick_worth').replaceAll('{n}', '${pick.points}'),
             key: const Key('stat_pick_worth'),
             style: theme.textTheme.labelMedium?.copyWith(color: ink.gold),
           ),

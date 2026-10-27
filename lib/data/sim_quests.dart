@@ -35,7 +35,18 @@ class SimQuestPayout {
     required this.turnIn,
     this.politics,
     this.politicsKey = '',
+    this.allyId = '',
+    this.profit = 0,
+    this.approvalMods = const {},
   });
+
+  /// The companion the quest recruits (`rewardAllyId`), '' for none.
+  final String allyId;
+
+  /// What the companions see of the turn-in (quest_turn_in.dart's deed):
+  /// the gold it took over the quest's own, and its `approvalMods`.
+  final int profit;
+  final Map<String, int> approvalMods;
 
   final String questId;
   final String name;
@@ -250,6 +261,9 @@ class SimQuestLog {
       politicsKey: picked == null
           ? ''
           : questTurnInPoliticsKey(questId, choices.indexOf(picked)),
+      allyId: q['rewardAllyId']?.toString() ?? '',
+      profit: picked?.profitOver(gold0) ?? 0,
+      approvalMods: picked?.approvalMods ?? const {},
     );
     records[questId]
       ?..completedAtStep = step

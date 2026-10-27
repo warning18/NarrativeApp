@@ -334,22 +334,23 @@ void main() {
     // The way on is a card on the page, not a step on the map.
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await _pumpUntilFound(tester, card);
-    // It is the only way on, and the story opened the page: it holds the
-    // party there (v1.553, scene_lock.dart), its way back to the map greyed,
-    // the button under the cards and the corner's.
-    expect(find.byKey(const ValueKey('journey_choose_first')), findsOneWidget);
+    // It is on Alster's city chart too, so the page does not hold the
+    // party (scene_lock.dart): its way back to the map is open, the button
+    // under the cards and the corner's.
+    expect(find.byKey(const ValueKey('journey_choose_first')), findsNothing);
     expect(
         tester
             .widget<ButtonStyleButton>(
                 find.byKey(const ValueKey('journey_continue')))
             .onPressed,
-        isNull);
+        isNotNull);
+    expect(find.text('Back to the map'), findsOneWidget);
     expect(
         tester
             .widget<IconButton>(
                 find.byKey(const ValueKey('journey_reading_exit')))
             .onPressed,
-        isNull);
+        isNotNull);
     expect(
         find.descendant(
             of: card, matching: find.textContaining('Choose who you are')),
@@ -385,11 +386,9 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'player_session':
           json.encode({'raceId': 'human', 'professionId': 'warrior'}),
-      // A town's square (a hub): a scene that holds the party on its page
-      // (scene_lock.dart) has the recap wait for the next map.
-      'autosave_story_node': '2015',
+      'autosave_story_node': '300',
       'autosave_story_history': json.encode(['0', '100', '250', '270']),
-      'autosave_story_visited': json.encode(['0', '100', '250', '270', '2015']),
+      'autosave_story_visited': json.encode(['0', '100', '250', '270', '300']),
     });
     await _launch(tester);
     final container =
@@ -400,7 +399,7 @@ void main() {
     await tester.tap(find.byKey(const Key('menu_continue')));
     await _pumpUntilFound(tester, _previously);
     expect(_previously, findsOneWidget);
-    expect(container.read(storyPlayProvider).currentNodeId, '2015');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     // A resumed story opens as before: not on the first scene's page.
     expect(container.read(storyPlayProvider.notifier).startedFresh, isFalse);
     expect(
