@@ -19,6 +19,31 @@ The Journey's ways are grouped by pin, and the notice board is a board you read.
 ### Tests
 - New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
 
+## [1.564.0+600]
+
+The playthrough simulator can play like a competent player.
+
+### Added
+- **Two player profiles** (`SimPolicy` in `lib/data/sim_policy.dart`):
+  - **`naive`** is the simulator as it always played. Every CI band test (boss_balance, clash_balance, qa_clan_power_50, nemesis_quests, sim_playthroughs, sim_coverage, sim_houses) still uses it, and its results are unchanged.
+  - **`competent`**, used by the simulator screen's runs:
+    - Before every fight it wears the best loadout it owns: loot, quest rewards and scene grants included. It weighs elemental bonuses, uniques and set bonuses, and respects stat requirements.
+    - It shops for potions, a better die and gear by how much each improves its loadout.
+    - It keeps its signature die, rolls the best die it owns, and crafts a skill merge when that improves its die.
+    - Clan offers: it takes the gift that raises its power most, gives ties to the clan it stands closest to, and never takes a banner that turns its main clan or an ally Hostile.
+- **The run report:** both profiles record every clan offer (chapter, source, banners, the one taken and why). The transcript prints these, with the gear worn and the die.
+- **Measurement:** `docs/simulation/competent-player-v1.564.md` compares the two profiles over 10 runs each. From chapter 3 on, the competent player wins about 0.88 of encounters against 0.62 for the naive one.
+
+## [1.563.0+599]
+
+The scene lock only holds a scene whose ways are all on the spot. Any way with a place on the map is taken from the map again.
+
+### Fixed
+- **Map movement is back:** v1.555 locked any scene the story led to that had one choice made on the spot. It turned every way into a text card and greyed the map, even ways that already had a place on it. A scene now locks only when none of its ways is drawn on any map: the place's pins, the town plan, a room's spots, a road or the world. A scene with both kinds no longer locks: its mapped ways stay on the map, and its on-the-spot choices stay in the scene view or the sheet over the map.
+- **The sheet over the map is back** for every scene that does not lock, as before v1.555.
+- **Fewer scenes lock:** over the whole story, 52 scenes lock instead of 361. The House's Bouncer's aftermath (106) and all of chapter 1's opening (0–400) no longer lock. The wreck (965) still does.
+- **No lock before the map is ready:** a save reopened before the map and town plans have loaded no longer locks on its first screen.
+
 ## [1.562.0+598]
 
 Forging rolls a d20 for the piece's quality.

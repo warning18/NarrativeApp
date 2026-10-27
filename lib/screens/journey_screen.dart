@@ -1800,9 +1800,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A scene the story brought the party to, with a way acted out here,
     // holds it on its page (v1.553, scene_lock.dart): every way is a card,
     // the map waits. A written detour has no map to leave already.
+    // Only a scene none of whose ways the map draws locks (a pin, a way on
+    // the city chart, a spot in a room). Before the places or a city's
+    // plans have loaded, every way counts as drawn: nothing locks before
+    // the map knows where its ways are.
+    final cityLoading = world.isEmpty ||
+        plan != null && ref.watch(cityPlanRecordsProvider).value == null;
+    final mapped = Map<StoryChoice, bool>.identity()
+      ..addAll({
+        for (var i = 0; i < steps.length; i++)
+          steps[i].choice: !steps[i].onCard ||
+              room != null ||
+              cityDistrictOf.containsKey(i) ||
+              cityLoading,
+      });
     final locked = _lockedAt == sceneKey &&
         !_writtenDetour &&
-        storySceneLocked(ref, node, story);
+        storySceneLocked(ref, node, story, mapped: (c) => mapped[c] ?? true);
     if (locked) {
       _reading = true;
       _arrival = false;
