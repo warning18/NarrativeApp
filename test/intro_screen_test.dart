@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
+import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/screens/intro_screen.dart';
 import 'package:narrative_data_app/screens/settings_screen.dart';
 
@@ -165,5 +166,59 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.byKey(const Key('intro')), findsOneWidget);
+  });
+
+  group('at the first New Game', () {
+    Future<void> openMenuAndStart(WidgetTester tester) async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+              const MethodChannel('flutter_tts'), (call) async => 1);
+      tester.view.physicalSize = const Size(420, 1400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(const ProviderScope(child: MyApp()));
+      for (var i = 0; i < 6; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 150)));
+        await tester.pump(const Duration(milliseconds: 150));
+      }
+      await tester.tap(find.byKey(const Key('menu_new_game')));
+      await tester.pump();
+      for (var i = 0; i < 4; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 100)));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    testWidgets('the intro plays once, then is not shown again',
+        (tester) async {
+      introOnNewGame = true;
+      addTearDown(() => introOnNewGame = false);
+      await openMenuAndStart(tester);
+      expect(find.byKey(const Key('intro')), findsOneWidget);
+      // Tap through it (the first tap goes to the last beat, the second
+      // ends it): the game's first page follows.
+      for (var i = 0;
+          i < 8 && find.byKey(const Key('intro')).evaluate().isNotEmpty;
+          i++) {
+        await tester.tap(find.byKey(const Key('intro_tap')));
+        await tester.pump(const Duration(milliseconds: 500));
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 100)));
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+      expect(find.byKey(const Key('intro')), findsNothing);
+      expect(await tester.runAsync(introSeen), isTrue);
+    });
+
+    testWidgets('an intro already seen is skipped', (tester) async {
+      SharedPreferences.setMockInitialValues({introSeenKey: true});
+      introOnNewGame = true;
+      addTearDown(() => introOnNewGame = false);
+      await openMenuAndStart(tester);
+      expect(find.byKey(const Key('intro')), findsNothing);
+    });
   });
 }
