@@ -58,6 +58,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
+import '../providers/city_provider.dart' show cityPlanRecordsProvider;
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
@@ -429,9 +430,11 @@ class _StoryView extends ConsumerWidget {
         (ModalRoute.of(context)?.isCurrent ?? true);
     // Picking a saved story back up: a short recap, once per launch. A
     // save on a scene that holds the party on its page (scene_lock.dart)
-    // has it on the next scene with a map.
+    // has it on the next scene with a map; whether it does waits for the
+    // places and the cities' plans the map lays its ways on.
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
+        storyMapPlacementsKnown(ref) &&
         !storySceneLocked(ref, node, story) &&
         hasRecapProgress(playState,
             resumed:
@@ -1114,29 +1117,52 @@ bool isStoryChoiceLocked(
 
 /// Whether [node]'s page holds the party until one of its ways is taken
 /// (the scene lock, see scene_lock.dart), for the play state now: never on
-/// a detour, whose own view has no map to leave by.
-bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story) {
-  if (ref.watch(storyPlayProvider).isInExcursion) return false;
+/// a detour, whose own view has no map to leave by. [mapped] says which
+/// ways a map view draws (the Journey's placements, once its map is
+/// built); without it, the same data the chart uses decides
+/// ([mapDrawsEveryWay]).
+bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
+    {bool Function(StoryChoice choice)? mapped}) {
+  final play = ref.watch(storyPlayProvider);
+  if (play.isInExcursion) return false;
   final session = ref.watch(playerSessionProvider);
   final world = ref.watch(coastGateWorldProvider);
   final geography = ref.watch(geographyProvider);
   final mainQuestOpen =
       ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
+  final everyWayMapped = mapped == null &&
+      mapDrawsEveryWay(node,
+          history: play.history,
+          world: geography,
+          cityPlans: ref.watch(cityPlanRecordsProvider).value?.keys.toSet());
   return sceneLocked(
     ways: [
       for (final c in node.choices)
         if (!choiceHiddenFor(c, session, world))
-          (
-            here: choiceShape(node, c, story: story, geography: geography).here,
-            takeable: !(c.mainQuest && !mainQuestOpen) &&
-                !isStoryChoiceLocked(c, story, session, world: world),
-          ),
+          () {
+            final here =
+                choiceShape(node, c, story: story, geography: geography).here;
+            return (
+              here: here,
+              takeable: !(c.mainQuest && !mainQuestOpen) &&
+                  !isStoryChoiceLocked(c, story, session, world: world),
+              mapped: mapped?.call(c) ?? (everyWayMapped || !here),
+            );
+          }(),
     ],
     hub: isHubScene(node),
     ending: isStoryEnding(node),
     editMode: ref.watch(appModeProvider) == AppMode.edit,
   );
 }
+
+/// Whether the data the map lays the ways on has loaded (the places and
+/// biomes, the cities' stored plans): until then [storySceneLocked] can't
+/// tell a scene the map draws from one it doesn't, and says unlocked.
+bool storyMapPlacementsKnown(WidgetRef ref) =>
+    !ref.watch(gameDbProvider(geographySchema)).isLoading &&
+    !ref.watch(gameDbProvider(biomesSchema)).isLoading &&
+    !ref.watch(cityPlanRecordsProvider).isLoading;
 
 /// What a shut [choice] reads as instead of its text: why it is shut (see
 /// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for
