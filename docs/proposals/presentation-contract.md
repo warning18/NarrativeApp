@@ -166,10 +166,26 @@ Steps 2 and 3 can run in parallel once step 1's answers are in. Step 2 lands fir
 1. **Hubs on the map.** Should a hub (a town's or the camp's scene) open as its map, with the prose as a header, instead of a sheet?
 2. **Approach scenes.** Should all "approach" scenes (the toll at 260, the Landward Gate at 2001) open as the street, as 300 would?
 
-**For Narrative:**
-1. Is `present` (view and weight) on the node right, or should it live in node-context's `scene` block?
-2. Which of the approach scenes (3, and the 4 beats) are streets?
+**For Narrative:** answered, see below.
 
 **For UX:**
 1. Where does the text go on the street view: a band above, or a sheet that collapses?
 2. How many street pins fit before the street gives way to the page? I assumed about 5.
+
+## Narrative's answers (27 Oct)
+
+1. **Where the fields live.** Inside node-context's `scene` block, not on the node, so a scene has one block: `scene.view` and `scene.weight`, with the values in §3. A scene with `scene.kind: street` and a `building` replaces the doorstep lists, and `scene` wins. Core reads both until Narrative has filled every chapter. `actedAt` stays on the choice. All of these are ids, so they need no French twin.
+2. **Approach scenes.**
+   - **Street:** 260 (the toll), 890_trainer (the quay drill) and 2010 (the Wharf approach, a beat, so this is a tag against rule 3).
+   - **Not street:** 840 (a slide down a chute into the Undercroft), 2001 (it opens chapter 2), 2050 (one way, a drop through a drain).
+3. **The 12 main scenes in rooms.**
+   - **Room:** 106 and 115 (the Blind Beggar's floor), and the Black Hold run 816, 820, 822, 822_lie_failed and 823 (the cells have spots).
+   - **Page:** 800 (the Lysa-is-dead reveal), 4999_standard and 4999_drawn (the chapter 3 ceremony), 3010_rope_fail (one way, a fall) and 6010_thread (the fourth-piece revelation).
+
+**The tags this makes:**
+- **`scene.view: street`:** 260, 890_trainer, 2010.
+- **`scene.view: page`:** 800, 4999_standard, 4999_drawn, 3010_rope_fail, 6010_thread, and 400_lost (a lose branch, which the script can't see).
+- **Room by default:** the other seven main scenes in rooms.
+
+Narrative tags them once the manager and the user say go.
+
