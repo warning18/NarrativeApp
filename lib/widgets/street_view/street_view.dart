@@ -244,7 +244,12 @@ class StreetViewScene extends StatelessWidget {
     this.sky,
     this.pins = const [],
     this.onPick,
+    this.party = true,
   });
+
+  /// Whether the party stands at the door: a memory of a childhood (see
+  /// origin_scene_backdrop.dart) has none.
+  final bool party;
 
   /// The building's kind and name (see facadeStyleOf).
   final String kind;
@@ -277,7 +282,7 @@ class StreetViewScene extends StatelessWidget {
           SideViewScene(
             key: const ValueKey('journey_street_scene'),
             layers: streetLayers(style: style, phase: phase, sky: sky),
-            actors: streetParty(style: style),
+            actors: party ? streetParty(style: style) : null,
             overlay: streetOverlay(style: style, phase: phase),
             particles: streetParticles(sky),
             intensity: sky == WeatherKind.fog ? 0.7 : 0.8,
