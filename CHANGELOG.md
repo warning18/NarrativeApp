@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.575.0+611]
+
+The fate coin now also works at the camp's fire and at the forge.
+
+- **At the camp:** when a check fails at the fire (catching the thief, making peace in a quarrel) and the pack holds a fate coin, the game offers it. Flipped, the coin is spent and the check is rolled once more.
+- **At the forge:** a piece that comes out Flawed offers the coin too. Flipped, the forge's d20 rolls again with the same bonuses, and the piece takes the new result (Sound, Fine or Masterwork, or Flawed again).
+- The land crossing's coin is unchanged.
+
 ## [1.573.0+609]
 
 The dice loadout shows a die as a ring of slots, one per face.
