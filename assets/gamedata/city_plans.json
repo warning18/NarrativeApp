@@ -3420,6 +3420,62 @@
       "saltmouth_b163": {
         "en": "The shipyard gate",
         "fr": "La porte des chantiers"
+      },
+      "saltmouth_b003": {
+        "en": "The salt road’s end",
+        "fr": "Le bout de la route du sel"
+      },
+      "saltmouth_b004": {
+        "en": "The courier’s place in line",
+        "fr": "La place du courrier dans la file"
+      },
+      "saltmouth_b005": {
+        "en": "The grain wagon",
+        "fr": "Le chariot de grain"
+      },
+      "saltmouth_b010": {
+        "en": "The shadow by the gate",
+        "fr": "L’ombre près de la porte"
+      },
+      "saltmouth_b015": {
+        "en": "The salt wagon",
+        "fr": "Le chariot de sel"
+      },
+      "saltmouth_b102": {
+        "en": "Renn’s toll post",
+        "fr": "Le poste de péage de Renn"
+      },
+      "saltmouth_b125": {
+        "en": "The suspended toll",
+        "fr": "Le péage suspendu"
+      },
+      "saltmouth_b145": {
+        "en": "The purse on the boards",
+        "fr": "La bourse sur les planches"
+      },
+      "saltmouth_b152": {
+        "en": "The rotten gutter",
+        "fr": "La gouttière pourrie"
+      },
+      "saltmouth_b165": {
+        "en": "The storm drain ladder",
+        "fr": "L’échelle de l’égout"
+      },
+      "saltmouth_b167": {
+        "en": "The thugs’ lantern",
+        "fr": "La lanterne des brutes"
+      },
+      "saltmouth_b169": {
+        "en": "Vane’s tally",
+        "fr": "Le décompte de Vane"
+      },
+      "saltmouth_b184": {
+        "en": "The Rusty Eel’s slip",
+        "fr": "La cale du Rusty Eel"
+      },
+      "saltmouth_b186": {
+        "en": "The Rusty Eel at her berth",
+        "fr": "Le Rusty Eel à quai"
       }
     },
     "services": [
