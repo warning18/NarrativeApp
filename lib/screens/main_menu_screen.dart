@@ -20,6 +20,7 @@ import '../widgets/moments.dart';
 import '../widgets/pixel_banner.dart';
 import '../widgets/wind_banner.dart';
 import 'home_shell.dart';
+import 'intro_screen.dart';
 import 'settings_screen.dart';
 
 /// Opens the game (HomeShell) over the menu in [mode], on the Story tab.
@@ -360,6 +361,15 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
         .resetSession(keepLegacy: false);
     ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
     if (!context.mounted) return;
+    // The first New Game plays the intro once; Settings can replay it.
+    final playIntro = introOnNewGame && !await introSeen();
+    if (!context.mounted) return;
+    if (playIntro) {
+      await Navigator.of(context).push(
+        MaterialPageRoute<bool>(builder: (_) => const IntroScreen()),
+      );
+      if (!context.mounted) return;
+    }
     await enterGame(context, ref, AppMode.inGame);
   }
 
