@@ -54,6 +54,7 @@ class StoryChoice {
     this.shipBattleId,
     this.politics,
     this.spot,
+    this.place,
     this.politicsIf = const {},
     this.hostFight = false,
     this.noHeal = false,
@@ -66,6 +67,7 @@ class StoryChoice {
     return StoryChoice(
       text: json['text'] as String? ?? '',
       spot: json['spot']?.toString(),
+      place: json['place']?.toString(),
       nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID'])
               as String? ??
           '',
@@ -183,6 +185,12 @@ class StoryChoice {
   /// room_plan.dart): a spot of its plan; null places it where its scene
   /// is, or at the door when it leads outside.
   final String? spot;
+
+  /// Where in the town this way is taken (v1.580, see way_places.dart): a
+  /// building of the city's plan (city_plans.json, `saltmouth_b157`), or
+  /// `here` for a thing done where the party stands. Null derives it from
+  /// the scene the way leads to.
+  final String? place;
 
   bool get hasPolitics => politics != null && !politics!.isEmpty;
 
@@ -418,6 +426,7 @@ class StoryChoice {
         if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
         'next_id': nextId,
         if (spot != null) 'spot': spot,
+        if (place != null) 'place': place,
         if (goldMod != 0) 'goldMod': goldMod,
         if (alignmentMod != 0) 'alignmentMod': alignmentMod,
         if (healAmount != 0) 'healAmount': healAmount,
@@ -581,6 +590,7 @@ class StoryNode {
     this.timeoutChoice = 0,
     this.noDetour = false,
     this.pageTurn = false,
+    this.scene = const {},
     this.politicsOnEnter,
     this.location,
     this.spot,
@@ -630,6 +640,9 @@ class StoryNode {
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
       pageTurn: json['page_turn'] as bool? ?? false,
+      scene: json['scene'] is Map
+          ? Map<String, dynamic>.from(json['scene'] as Map)
+          : const {},
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
       location: json['location']?.toString(),
       spot: json['spot']?.toString(),
@@ -711,6 +724,20 @@ class StoryNode {
   /// Continue the story does not read through but stops on, so the player
   /// turns the page (see passThroughChoiceOf).
   final bool pageTurn;
+
+  /// Narrative's `scene` block (docs/proposals/node-context.md): where,
+  /// when and who, and the view the scene opens in. Kept as written, so a
+  /// save of the scene keeps it; scene_presentation.dart reads its `view`
+  /// and `weight` (presentation-contract.md).
+  final Map<String, dynamic> scene;
+
+  /// The view the `scene` block asks for (`page`, `sheet`, `street`,
+  /// `room`, `map`), or null for the default rule's.
+  String? get sceneView => scene['view']?.toString();
+
+  /// The weight the `scene` block gives (`main`, `side`, `ambient`), or
+  /// null for the default.
+  String? get sceneWeight => scene['weight']?.toString();
 
   /// Seconds the player has to choose (a chase, a wave coming over the
   /// wall), or null for all the time in the world. When they run out the
@@ -975,6 +1002,7 @@ class StoryNode {
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
         if (pageTurn) 'page_turn': pageTurn,
+        if (scene.isNotEmpty) 'scene': scene,
         if (campErrand)
           'campErrand': campErrandKind.isEmpty ? campErrand : campErrandKind,
         if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,

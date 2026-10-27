@@ -118,6 +118,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       timeoutChoice: widget.node.timeoutChoice,
       noDetour: widget.node.noDetour,
       pageTurn: widget.node.pageTurn,
+      scene: widget.node.scene,
       politicsOnEnter: politicsFromEditorText(
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
       location: locationFromEditorText(
@@ -637,6 +638,7 @@ class _ChoiceEditState {
         forcedAnomaly: _original.forcedAnomaly,
         forcedStage: _original.forcedStage,
         spot: _original.spot,
+        place: _original.place,
         approvalMods: _original.approvalMods,
         returnToCamp: _original.returnToCamp,
         grantMaterials: _original.grantMaterials,
