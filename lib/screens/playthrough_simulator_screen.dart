@@ -58,6 +58,7 @@ import '../data/materials.dart';
 import '../data/settlements.dart' show campFoundedFlag;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
+import '../data/sim_companions.dart';
 import '../data/sim_growth.dart';
 import '../data/sim_policy.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
@@ -270,7 +271,17 @@ class _SimResult {
     this.gear = const {},
     this.die = '',
     this.merged = const [],
+    this.companionLog = const [],
+    this.companions = const [],
+    this.companionKnockouts = const {},
   });
+
+  /// The competent player's companions (sim_companions.dart): every
+  /// recruit, pick, swap and loss with its reason; the party at the end;
+  /// and how often each was knocked out.
+  final List<SimCompanionEvent> companionLog;
+  final List<String> companions;
+  final Map<String, int> companionKnockouts;
 
   /// Every clan offer taken: the banners offered, the one taken and why
   /// (SimGrowth.offerPicks).
@@ -440,7 +451,12 @@ class _SimContext {
     this.politicsEvents = const {},
     this.policy = SimPolicy.naive,
     this.merges = const {},
+    this.companions = const {},
   });
+
+  /// companions.json: whom the competent player recruits and seats
+  /// (sim_companions.dart). None, or the naive player: a solo run.
+  final Map<String, dynamic> companions;
 
   /// How the simulated player plays its choices (sim_policy.dart): naive,
   /// the CI bands' measure, or competent, a real player's.
@@ -688,6 +704,22 @@ _SimResult _simulate(
           ladder: sim.featureLadder,
           policy: sim.policy,
         )..passives = !sim.clashOff.contains('passives'));
+  // The competent player's companions (sim_companions.dart): recruited by
+  // their quests, seated by the pick rule, in every fight.
+  final party = character == null ||
+          sim == null ||
+          sim.policy != SimPolicy.competent ||
+          sim.companions.isEmpty
+      ? null
+      : SimParty(
+          companions: sim.companions,
+          races: sim.races,
+          professions: sim.professions,
+          gameConfig: sim.gameConfig,
+          dice: sim.dice,
+          skills: sim.skills,
+          houses: sim.houses,
+        );
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
   // things are left to do there).
@@ -1004,6 +1036,9 @@ _SimResult _simulate(
       gear: Map.unmodifiable(character?.equippedBySlot ?? const {}),
       die: character?.diceId ?? '',
       merged: List.unmodifiable(growth?.merged ?? const <String>[]),
+      companionLog: List.unmodifiable(party?.log ?? const []),
+      companions: List.unmodifiable(party?.active ?? const <String>[]),
+      companionKnockouts: Map.unmodifiable(party?.knockouts ?? const {}),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1020,6 +1055,34 @@ _SimResult _simulate(
   }
 
   StoryChoice pickAmong(List<StoryChoice> pool) {
+    // The competent player who keeps companions takes the way that offers
+    // a companion's quest it may take (quests.json `rewardAllyId`): the
+    // first such way, before its strategy speaks.
+    final p = party, log = questLog;
+    if (p != null && log != null && pool.length > 1) {
+      for (final c in pool) {
+        final id = c.unlockQuestId ?? '';
+        final ally = id.isEmpty
+            ? ''
+            : (sim?.quests[id] as Map?)?['rewardAllyId']?.toString() ?? '';
+        if (ally.isEmpty ||
+            p.roster.containsKey(ally) ||
+            p.lost.contains(ally) ||
+            p.departed.contains(ally) ||
+            !log.canTake(id,
+                flags: flags,
+                gold: gold,
+                alignmentLabel: _alignmentLabelOf(alignment))) {
+          continue;
+        }
+        p.log.add(SimCompanionEvent(
+            chapter: lastKnownChapter ?? 1,
+            kind: 'seek',
+            companionId: ally,
+            reason: 'took the way offering $id at $currentId'));
+        return c;
+      }
+    }
     if (strategy == SimStrategy.random || pool.length == 1) {
       return pool[random.nextInt(pool.length)];
     }
@@ -1198,6 +1261,9 @@ _SimResult _simulate(
     gold = g.gold;
   }
 
+  // The camp's works (buildHouses), which a recruit may open (Kelda's Hall).
+  late final void Function() buildHousesNow;
+
   /// Hands in every quest whose objectives are met (the player does it at
   /// once): talks to the people they ask for, takes the pay, the XP, the
   /// item and the follow-up quest, and settles a quest that offers a choice
@@ -1243,6 +1309,25 @@ _SimResult _simulate(
         final before = c.level;
         c.gainXp(pay.xp);
         growth?.levelsReached(before, c.level);
+        party?.levelIs(c.level);
+      }
+      // A companion's quest recruits them; then the party sees how it was
+      // settled, the newcomer too (quest_turn_in.dart).
+      final p = party;
+      if (p != null) {
+        final ch = lastKnownChapter ?? 1;
+        if (pay.allyId.isNotEmpty &&
+            p.recruit(pay.allyId,
+                chapter: ch, cause: 'quest $id', alignment: alignment)) {
+          buildHousesNow();
+        }
+        p.react(
+            chapter: ch,
+            cause: 'quest $id',
+            alignmentMod: pay.alignment,
+            goldMod: pay.profit,
+            approvalMods: pay.approvalMods,
+            alignment: alignment);
       }
       steps.add(_SimStep(
         nodeId: 'quest:$id',
@@ -1326,9 +1411,12 @@ _SimResult _simulate(
         skillwright: skillCraftOpen(housesBuilt.keys));
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
+    party?.levelIs(c.level);
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;
+      final allies =
+          party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -1346,7 +1434,9 @@ _SimResult _simulate(
         clanStanding: growth == null
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
+        allies: allies,
       );
+      party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
       if (blessingFights > 0 && --blessingFights == 0) blessingClan = '';
@@ -1364,6 +1454,7 @@ _SimResult _simulate(
         c.gainXp(
             (xp * chapterRewardMultiplier(chapter) * lostFightXpShare).round());
         growth?.levelsReached(levelBefore, c.level);
+        party?.levelIs(c.level);
       }
       if (outcome.won) {
         questLog?.recordKills(entries.map((e) => e.key));
@@ -1392,6 +1483,7 @@ _SimResult _simulate(
         c.gainXp(perks.scaleXp(
             signs.scaleXp((xp * chapterRewardMultiplier(chapter)).round())));
         growth?.levelsReached(levelBefore, c.level);
+        party?.levelIs(c.level);
         if (entries.any((e) =>
             isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key))) {
           growth?.bossBeaten();
@@ -1575,8 +1667,8 @@ _SimResult _simulate(
   /// which the walk builds first) has them bought first. Measured, not felt: the gold it
   /// costs comes out of a purse of its own (what the walk has, less what
   /// the works took), so the walk shops as it did, and the houses' bonuses
-  /// are not played. A companion's house is never built (the walk keeps no
-  /// companions).
+  /// are not played, but for the companions' seats and Kelda's Hall (built
+  /// once she is recruited) when the competent player keeps companions.
   void buildHouses() {
     final houses = sim?.houses ?? const <String, dynamic>{};
     final chapter = lastKnownChapter;
@@ -1593,7 +1685,7 @@ _SimResult _simulate(
         gold: gold - houseGoldSpent,
         inventory: materials,
         builtHouseIds: housesBuilt.keys,
-        recruitedAllyIds: const [],
+        recruitedAllyIds: party?.roster.keys.toList() ?? const <String>[],
       );
       int costOf(String id) =>
           ((houses[id] as Map?)?['buildCost'] as num?)?.toInt() ?? 0;
@@ -1643,12 +1735,16 @@ _SimResult _simulate(
       }
       final id = ready.first;
       housesBuilt[id] = chapter;
+      party?.housesBuilt(housesBuilt.keys,
+          chapter: chapter, alignment: alignment);
       character?.rolls?.build(rollPowerOf(houses[id] as Map<String, dynamic>));
       houseGoldSpent += costOf(id);
       materials = withoutMaterials(materials,
           materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'));
     }
   }
+
+  buildHousesNow = buildHouses;
 
   /// The expedition [zoneId] launches, played out: each of its events a
   /// fight at [_expeditionFightShare] odds (a pair from the pack pool some
@@ -1775,8 +1871,10 @@ _SimResult _simulate(
           continue;
         }
         final pack = packPool.isNotEmpty && random.nextDouble() < 0.3;
-        final size =
-            pack ? SubNodeEngine.maxPackSizeFor(zoneChapter, partySize: 1) : 1;
+        final size = pack
+            ? SubNodeEngine.maxPackSizeFor(zoneChapter,
+                partySize: 1 + (party?.active.length ?? 0))
+            : 1;
         final from = pack ? packPool : pool;
         if (!fightAt([
           for (var n = 0; n < size; n++) from[random.nextInt(from.length)],
@@ -1836,6 +1934,9 @@ _SimResult _simulate(
     // reaching it brings the clans' offer (see SimGrowth.chapterReached).
     if (character != null && lastKnownChapter != restedChapter) {
       character.rest();
+      party
+        ?..rest()
+        ..arrange(chapter: lastKnownChapter ?? 1, alignment: alignment);
       restedChapter = lastKnownChapter;
       final reached = lastKnownChapter;
       if (reached != null) {
@@ -2112,6 +2213,30 @@ _SimResult _simulate(
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
+    // The party sees the choice (applyChoiceEffects): who the story takes
+    // is settled first, and does not stay to react.
+    final p = party;
+    if (p != null) {
+      final ch = lastKnownChapter ?? 1;
+      final loses = choice.loseAllyId ?? '';
+      final lostId = loses.isEmpty
+          ? null
+          : loses == '*'
+              ? p.active.firstOrNull
+              : loses;
+      p.react(
+          chapter: ch,
+          cause: 'choice at $currentId',
+          alignmentMod: choice.alignmentMod,
+          goldMod: choice.goldMod,
+          approvalMods: choice.approvalMods,
+          exclude: lostId,
+          alignment: alignment);
+      if (lostId != null) {
+        p.lose(lostId,
+            chapter: ch, cause: 'taken at $currentId', alignment: alignment);
+      }
+    }
     // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
     if (sim?.featureLadder == true) {
       if (choice.flagsToAdd.contains(trainerStrikeFlag)) {
@@ -2330,6 +2455,7 @@ _SimContext _simContextOf(
     politicsEvents: parsePoliticsEvents(table('politics_events')),
     policy: policy,
     merges: table('skill_merges'),
+    companions: table('companions'),
   );
 }
 
@@ -2411,6 +2537,9 @@ typedef SimRunSummary = ({
   Map<String, String> gear,
   String die,
   List<String> merged,
+  List<SimCompanionEvent> companionLog,
+  List<String> companions,
+  Map<String, int> companionKnockouts,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2555,6 +2684,9 @@ List<SimRunSummary> simulatePlaythroughs(
       gear: result.gear,
       die: result.die,
       merged: result.merged,
+      companionLog: result.companionLog,
+      companions: result.companions,
+      companionKnockouts: result.companionKnockouts,
     ));
   }
   return out;
@@ -2988,6 +3120,10 @@ class _PlaythroughSimulatorScreenState
       // bands keep the naive player.
       policy: SimPolicy.competent,
       merges: await load(skillMergesSchema),
+      // Its companions come with their quests (sim_companions.dart).
+      companions: await load(companionsSchema),
+      quests: await load(questsSchema),
+      npcs: await load(npcsSchema),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
@@ -3381,6 +3517,16 @@ String _runTranscript(_SimResult result, String strategyLabel,
       for (final pick in result.offerPicks) {
         b.writeln(pick.line);
       }
+    }
+    if (result.companionLog.isNotEmpty) {
+      b.writeln();
+      b.writeln('--- Companions (recruits, picks, swaps, losses, why) ---');
+      for (final event in result.companionLog) {
+        b.writeln(event.line);
+      }
+      b.writeln('Party at the end: '
+          '${result.companions.isEmpty ? 'none' : result.companions.join(', ')}'
+          '${result.companionKnockouts.isEmpty ? '' : ' | Knock-outs: ${result.companionKnockouts.entries.map((e) => '${e.key} ${e.value}').join(', ')}'}');
     }
   }
   b.writeln();

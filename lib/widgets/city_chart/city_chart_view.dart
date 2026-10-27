@@ -61,6 +61,7 @@ class CityChartView extends StatefulWidget {
     this.explored,
     this.hereDistrict,
     this.hereWayId,
+    this.partyAt,
     this.goalWayId,
     this.text = const CityChartText(),
     this.onWay,
@@ -126,6 +127,9 @@ class CityChartView extends StatefulWidget {
   final Set<String>? explored;
   final String? hereDistrict;
   final String? hereWayId;
+
+  /// Where the party's mark is while the host walks it to a way.
+  final Offset? partyAt;
 
   /// The goal the player set, if any (nothing is marked on its own).
   final String? goalWayId;
@@ -317,6 +321,7 @@ class _CityChartViewState extends State<CityChartView>
         explored: widget.explored,
         hereDistrict: widget.hereDistrict,
         hereWayId: widget.hereWayId,
+        partyAt: widget.partyAt,
         goalWayId: widget.goalWayId,
         selectedWayId: _pickedWay?.id,
         services: widget.services,

@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.565.0+601]
+## [1.569.0+605]
 
 The Journey's ways are grouped by pin, and the notice board is a board you read.
 
@@ -21,6 +21,38 @@ The Journey's ways are grouped by pin, and the notice board is a board you read.
 
 ### Tests
 - `level_up_screen_test` (the removed texts are gone, the quiet count shows for several picks) and `qa_real_font_layout_test` (it checked the removed points box; it now checks the pop-up is up). New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
+## [1.568.0+604]
+
+The competent simulated player recruits companions and fights beside them.
+
+### Added
+- **Companions in the simulator** (`lib/data/sim_companions.dart`, competent profile only; naive is unchanged and stays the default for every CI band test).
+  - **Recruiting.** A companion joins as in the game: when their quest is handed in, once only, never after they leave or the story takes them. Tobin's and Malrik's quests keep their Good and Evil gates.
+  - **Seats.** The party holds 2, or 3 once the Barracks Annex stands; Kelda sits once her hall is built.
+  - **Story choices.** With companions on, the competent player takes a story choice that offers a companion quest it may take.
+- **The pick rule.**
+  - Seats go to the companions worth most in a fight: their die's average roll at their damage, plus 0.1 per health and 0.8 per armour.
+  - A tie (within 1) goes to higher approval, then to the companion whose approvals fit the player's alignment, then to the earlier recruit.
+  - A better recruit takes the weakest seat. The rule runs again at every recruit, departure, house built and chapter rest.
+- **In fights.**
+  - Each seated companion rolls their signature die through the same dice code as the hero. Their approval tier scales their damage and health.
+  - Enemies hit a random standing party member, and the biggest block draws the blows.
+  - A knocked-out companion comes back at 30% health after a won fight. A rest or a level-up heals everyone.
+- **Approval.** A choice's alignment, its gold and its `approvalMods` move approval for seated companions. At −12 a companion leaves and the best benched one takes the seat. `loseAllyId` takes one for good.
+- **The run report** lists every seek, recruit, pick, bench, swap, leave, loss and move into devoted or wary, each with its reason, then the final party.
+- **No dice cup.** The game has one die in play, swapped between fights, and the competent player already rolls its best.
+- **Measurement.** `docs/simulation/companions-v1.568.md` covers 10 runs per profile. From chapter 3 on, a competent party wins 0.98–1.00 of encounters, against 0.86–0.90 alone and 0.54–0.69 for naive.
+
+## [1.567.0+603]
+
+Chapter 1's first step outside opens the Journey and its tour; the party walks to a pin; "Back to the map" goes where the cards hold every move.
+
+### Changed
+- **The first step outside:** in a new game, the first way out of the Blind Beggar lands on the Journey map of the Lower Town (scene 250, the proclamation, with "1 way here"), not on 250's page. It happens once (`journey_first_shown`).
+- **The Journey tour starts there,** not on the Beggar's room map, and still only once. A pending "New:" card waits until the tour is skipped or finished. The tour's "tap a step" line now points at the District view's list of ways.
+- **The party walks to the pin:** taking a way on the District view (its pin or its row) walks the party marker to the pin, then opens the scene. The walk takes 0.6 s next door and up to 1.2 s from half the town away. A tap anywhere lands the party at once; with reduced motion there's no walk.
+- **No "Back to the map" when the page holds every move:** on a page with a way to take, the button and the corner map icon go when every way on the map leads to a place one of the page's cards also reaches. Those ways show as cards on the page, so none is lost. Example: the warhound in the alley (270), where all three ways lead to the family house. The button stays where the map has another move, and on hubs, endings, a page opened with Read, and a new game's first page. The scene lock (v1.563) is unchanged.
 
 ## [1.564.0+600]
 
