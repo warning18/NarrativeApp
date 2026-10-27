@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.564.0+600]
+
+The playthrough simulator can play like a competent player.
+
+### Added
+- **Two player profiles** (`SimPolicy` in `lib/data/sim_policy.dart`):
+  - **`naive`** is the simulator as it always played. Every CI band test (boss_balance, clash_balance, qa_clan_power_50, nemesis_quests, sim_playthroughs, sim_coverage, sim_houses) still uses it, and its results are unchanged.
+  - **`competent`**, used by the simulator screen's runs:
+    - Before every fight it wears the best loadout it owns: loot, quest rewards and scene grants included. It weighs elemental bonuses, uniques and set bonuses, and respects stat requirements.
+    - It shops for potions, a better die and gear by how much each improves its loadout.
+    - It keeps its signature die, rolls the best die it owns, and crafts a skill merge when that improves its die.
+    - Clan offers: it takes the gift that raises its power most, gives ties to the clan it stands closest to, and never takes a banner that turns its main clan or an ally Hostile.
+- **The run report:** both profiles record every clan offer (chapter, source, banners, the one taken and why). The transcript prints these, with the gear worn and the die.
+- **Measurement:** `docs/simulation/competent-player-v1.564.md` compares the two profiles over 10 runs each. From chapter 3 on, the competent player wins about 0.88 of encounters against 0.62 for the naive one.
+
 ## [1.563.0+599]
 
 The scene lock only holds a scene whose ways are all on the spot. Any way with a place on the map is taken from the map again.
