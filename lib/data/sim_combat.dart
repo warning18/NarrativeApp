@@ -26,6 +26,7 @@ import 'perks.dart';
 import 'shop_stock.dart';
 import 'camp_rolls.dart' show RollBanOn;
 import 'signs.dart';
+import 'sim_policy.dart';
 import 'sim_rolls.dart';
 import 'training.dart';
 
@@ -133,7 +134,7 @@ class SimCharacter {
         if (spells[id.toString()] != null) spells[id.toString()]!,
     ];
     final preferred = damageStatOf(professionId);
-    return SimCharacter._(
+    final character = SimCharacter._(
       raceId: raceId,
       professionId: professionId,
       preferredStat: preferred.isEmpty ? 'wisdom' : preferred,
@@ -167,6 +168,9 @@ class SimCharacter {
           bonus(race, 'startingGoldBonus') +
           bonus(profession, 'startingGoldBonus'),
     );
+    return character
+      ..diceId = dieId
+      ..ownedDice[dieId] = faces;
   }
 
   final String raceId;
@@ -228,6 +232,47 @@ class SimCharacter {
 
   /// equipSlot -> item id.
   final Map<String, String> equippedBySlot = {};
+
+  /// How the player plays its choices (sim_policy.dart): the competent
+  /// one keeps what it owns ([ownedItemIds], [ownedDice]) and wears and
+  /// rolls the best of it.
+  SimPolicy policy = SimPolicy.naive;
+
+  /// The gear the competent player owns, worn or in the pack.
+  final Set<String> ownedItemIds = {};
+
+  /// The die in play's id, and the dice owned (id -> faces): the
+  /// profession's own (its signature die) from the start, and those the
+  /// competent player buys.
+  String diceId = '';
+  final Map<String, List<Map<String, dynamic>>> ownedDice = {};
+
+  /// The best die owned for the competent player (simDieValue, its skills
+  /// best placed by simSkillAssignments) rolled from now on, when it beats
+  /// the one in play.
+  void rollBestDie(Map<String, dynamic> skills) {
+    final caster = knownSpells.isNotEmpty;
+    var bestValue = simDieValue(diceFaces, diceSkillAssignments, skills,
+            damage: baseDamage, caster: caster) +
+        0.01;
+    for (final id in ownedDice.keys.toList()..sort()) {
+      if (id == diceId) continue;
+      final faces = ownedDice[id]!;
+      final placed = simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      final v = simDieValue(faces, placed, skills,
+          damage: baseDamage, caster: caster);
+      if (v > bestValue) {
+        bestValue = v;
+        diceId = id;
+        diceFaces = faces;
+        diceSkillAssignments = placed;
+      }
+    }
+  }
 
   /// Poison/Stun/Weaken on the character -- fight-scoped, cleared when a
   /// fight ends either way.
@@ -453,8 +498,14 @@ class SimCharacter {
     Map<String, dynamic> items,
     Map<String, dynamic> dice,
     Map<String, SpellSpec> spells,
-    int gold,
-  ) {
+    int gold, {
+    Map<String, dynamic> skills = const {},
+    Map<String, ItemSet> itemSets = const {},
+  }) {
+    if (policy == SimPolicy.competent) {
+      return _visitShopCompetent(shop, items, dice, spells, gold,
+          skills: skills, itemSets: itemSets);
+    }
     var purse = gold;
     int scoreOf(String? itemId) {
       final item = items[itemId] as Map<String, dynamic>?;
@@ -563,7 +614,167 @@ class SimCharacter {
     }
     return purse;
   }
+
+  /// The competent player's visit (sim_policy.dart): the profession's own
+  /// spellbook; potions up to [_potionsKept] charges; the best die the
+  /// shop sells it may roll, when it beats the one in play; then gear,
+  /// one piece at a time, the one that raises its best loadout most
+  /// (simBestLoadout, sets weighed) while the purse lasts; the change on
+  /// more potions, up to [_potionsStocked]. Returns the gold left.
+  int _visitShopCompetent(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> items,
+    Map<String, dynamic> dice,
+    Map<String, SpellSpec> spells,
+    int gold, {
+    required Map<String, dynamic> skills,
+    required Map<String, ItemSet> itemSets,
+  }) {
+    var purse = gold;
+    int costOf(Map<String, dynamic> item) =>
+        (item['cost'] as num?)?.toInt() ?? 0;
+    final quantities = (shop['stockQuantities'] as Map?)?.map(
+          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
+        ) ??
+        const <String, int>{};
+    final stock = <MapEntry<String, Map<String, dynamic>>>[
+      for (final raw in allShopStock(shop))
+        if (items[raw] is Map<String, dynamic>)
+          MapEntry(raw, items[raw] as Map<String, dynamic>),
+    ];
+
+    for (final entry in stock) {
+      final taughtSpellId = spellbookSpellIdFor(entry.value);
+      if (taughtSpellId == null) continue;
+      final spell = spells[taughtSpellId];
+      if (spell == null ||
+          purse < costOf(entry.value) ||
+          knownSpells.any((s) => s.id == spell.id) ||
+          !canLearnSpell(
+            spell,
+            professionId: professionId,
+            knownSpellIds: [for (final s in knownSpells) s.id],
+          )) {
+        continue;
+      }
+      purse -= costOf(entry.value);
+      knownSpells.add(spell);
+      spellbooksBought.add(spell.id);
+    }
+
+    void buyPotions(int upTo) {
+      for (final entry in stock) {
+        if (entry.value['itemType']?.toString() != 'Potion' ||
+            entry.key == 'antidote') {
+          continue;
+        }
+        final cost = costOf(entry.value);
+        final limit = quantities[entry.key] ?? 1;
+        var bought = 0;
+        while (potions < upTo && bought < limit && cost > 0 && purse >= cost) {
+          purse -= cost;
+          bought++;
+          potions += entry.key == 'potion_major' ? 2 : 1;
+        }
+      }
+    }
+
+    buyPotions(_potionsKept);
+
+    // The die: the best of the shop's it may roll, if it beats its own.
+    final caster = knownSpells.isNotEmpty;
+    final dieNow = simDieValue(diceFaces, diceSkillAssignments, skills,
+        damage: baseDamage, caster: caster);
+    String? dieId;
+    var dieBest = dieNow + 0.1;
+    for (final raw in (shop['diceStock'] as List?) ?? const []) {
+      final id = raw.toString();
+      final die = dice[id] as Map<String, dynamic>?;
+      final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+      if (die == null ||
+          faces == null ||
+          faces.isEmpty ||
+          ownedDice.containsKey(id) ||
+          purse < ((die['cost'] as num?)?.toInt() ?? 0) ||
+          !simCanUseDie(die, professionId: professionId, raceId: raceId)) {
+        continue;
+      }
+      final v = simDieValue(
+          faces,
+          simSkillAssignments(
+              faces: faces,
+              current: const {},
+              unlocked: unlockedSkillIds,
+              skills: skills),
+          skills,
+          damage: baseDamage,
+          caster: caster);
+      if (v > dieBest) {
+        dieBest = v;
+        dieId = id;
+      }
+    }
+    if (dieId != null) {
+      final die = dice[dieId] as Map<String, dynamic>;
+      purse -= (die['cost'] as num?)?.toInt() ?? 0;
+      ownedDice[dieId] = (die['faces'] as List).cast<Map<String, dynamic>>();
+      rollBestDie(skills);
+    }
+
+    // Gear, the best gain first, while the purse lasts.
+    bool canWear(Map<String, dynamic> item) => meetsItemStatRequirement(
+          item,
+          strength: strength,
+          dexterity: dexterity,
+          constitution: constitution,
+          intelligence: intelligence,
+        );
+    Map<String, String> bestWith(Iterable<String> extra) => simBestLoadout(
+        worn: equippedBySlot,
+        owned: {...ownedItemIds, ...extra},
+        items: items,
+        sets: itemSets,
+        canWear: canWear,
+        caster: caster);
+    double valueOf(Map<String, String> loadout) =>
+        simLoadoutValue(loadout.values, items, itemSets, caster: caster);
+    while (true) {
+      final now = valueOf(bestWith(const []));
+      String? pick;
+      var gain = 0.05;
+      for (final entry in stock) {
+        final item = entry.value;
+        if (item['isEquippable'] != true ||
+            ownedItemIds.contains(entry.key) ||
+            equippedBySlot.containsValue(entry.key) ||
+            purse < costOf(item) ||
+            !canWear(item)) {
+          continue;
+        }
+        final g = valueOf(bestWith([entry.key])) - now;
+        if (g > gain) {
+          gain = g;
+          pick = entry.key;
+        }
+      }
+      if (pick == null) break;
+      purse -= costOf(items[pick] as Map<String, dynamic>);
+      ownedItemIds.add(pick);
+      final best = bestWith(const []);
+      equippedBySlot
+        ..clear()
+        ..addAll(best);
+    }
+
+    buyPotions(_potionsStocked);
+    return purse;
+  }
 }
+
+/// The potion charges the competent player keeps before buying gear, and
+/// tops up to with the change.
+const int _potionsKept = 3;
+const int _potionsStocked = 5;
 
 /// One simulated fight's result, for the run's telemetry.
 class SimFightOutcome {
