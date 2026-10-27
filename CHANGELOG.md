@@ -12,6 +12,10 @@ isn't reconstructable from git history alone.
 
 Seven buildings of the Smugglers' Wharf have names, so the district view and the ways show where things happen: Vane's barrel, Vane's guard corner, the wet boards, the loading crane, the old customs house (Liora's skiff), the wharf steps, and the shipyard gate. English and French.
 
+## [1.584.0+620]
+
+Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
+
 ## [1.581.0+617]
 
 The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.

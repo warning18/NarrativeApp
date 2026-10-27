@@ -101,21 +101,23 @@ void main() {
     expect(counts[SceneView.street], isNotNull);
   });
 
+  // 270 and 106 are scenes the story file does not tag (Narrative's own tags
+  // are in scene_tags_ch13_test.dart), so the rule's view shows against it.
   test('the scene block wins, and a save keeps it', () {
     final raw = _rawStory();
-    (raw['260'] as Map<String, dynamic>)['scene'] = {
+    (raw['270'] as Map<String, dynamic>)['scene'] = {
       'view': 'street',
       'weight': 'side',
       'kind': 'street',
     };
-    (raw['800'] as Map<String, dynamic>)['scene'] = {'view': 'page'};
+    (raw['106'] as Map<String, dynamic>)['scene'] = {'view': 'page'};
     final tagged = _of(raw, geography);
-    expect(present.viewOf('260'), SceneView.page);
-    expect(tagged.viewOf('260'), SceneView.street);
-    expect(tagged.weightOf('260'), SceneWeight.side);
-    expect(present.viewOf('800'), SceneView.room);
-    expect(tagged.viewOf('800'), SceneView.page);
-    final node = StoryNode.fromJson('260', raw['260'] as Map<String, dynamic>);
+    expect(present.viewOf('270'), SceneView.page);
+    expect(tagged.viewOf('270'), SceneView.street);
+    expect(tagged.weightOf('270'), SceneWeight.side);
+    expect(present.viewOf('106'), SceneView.room);
+    expect(tagged.viewOf('106'), SceneView.page);
+    final node = StoryNode.fromJson('270', raw['270'] as Map<String, dynamic>);
     expect(node.sceneView, 'street');
     expect(node.toJson()['scene'], {
       'view': 'street',
