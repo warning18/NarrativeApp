@@ -16,10 +16,10 @@ Replayable from Settings.
 | 1 | 0.0 to 3.0 s | Alster at dusk, ash falling; fades up from black | 1 |
 | 2 | 3.0 to 6.0 s | Just a bell: it swings, rings spread over the rooftops | 2 |
 | 3 | 6.0 to 7.5 s | The Inquisition's banners along the quay | |
-| 4 | 7.5 to 10.0 s | The thirteen clans' banners light up in turn | 3 |
+| 4 | 7.5 to 10.0 s | The thirteen clans' banners (the rivals who want the city) light up in turn; the last slot stays dark: the player's own | 3 |
 | 5 | 10.0 to 11.5 s | The ronin, a local, crosses the quay in silhouette | |
-| 6 | 11.5 to 12.5 s | A grey cloth falls; the Void's standard shows through | |
-| 7 | 12.5 to 13.5 s | The title in the pixel face | |
+| 6 | 11.5 to 12.5 s | A grey cloth falls and shows the player's own standard torn into its six pieces, hanging in shreds | |
+| 7 | 12.5 to 13.5 s | The title in the pixel face; the Shroud small above it, torn: six dark slots, one faintly lit | |
 | 8 | 13.5 to 15.0 s | Melts into the Race & Profession screen; line 4 holds | 4 |
 
 Lines (EN; FR in `docs/proposals/intro-lines.md` on `claude/narrative-intro`):
@@ -35,19 +35,26 @@ a bell (not a named tower).
 ## Reused as it is
 - `StreetViewScene` (street-view kit) at dusk with ash: frames 1 to 5 backdrops
 - `SideSprites` (the ronin): frame 4
-- `WindBanner`, `ClanFlag` (`found: false` is the dark silhouette): 3, 5, 6, 7
+- `WindBanner`, `ClanFlag` (`found: false` is the dark silhouette): 3, 4, 7
+- the six Shroud pieces (`shroudPieceIds`, `PixelBanner`, found or dark, as the character screen's `_ShroudCard` draws them): 6, 7
 - the title screen's words (`menu_title`, `menu_subtitle`): 7
 - `StoryText` typewriter and `storyTextShownAtOnce` (reduced motion): the lines
 - `RaceProfessionScreen`: frame 8
 
 ## New
 - a pixel bell with its rings (`CustomPainter`, about 30 lines): frame 2
-- the falling grey cloth (one painter, a slide and a fade): frame 5
+- the falling grey cloth (one painter, a slide and a fade) with the pieces hanging torn on it, each tilted a little: frame 6
 - `IntroScreen`: a clock over the eight beats; tap anywhere or reduced motion
   jump to the end
 - a `intro_seen` flag (shared preferences), set when it ends or is skipped, and
   a "Replay the intro" row in Settings
 - the four line strings (EN and FR, Narrative's) and the Settings label, next to `menu_title`
+
+## Lore
+The Shroud is the player's own clan banner (`void_standard`), restored by its
+own six pieces, not by collecting the other clans' banners: those are the
+rivals in the city. So frame 4 ends on the dark slot that is the player's, and
+frames 6 and 7 show the Shroud torn into its six pieces.
 
 ## Where it plugs in
 `MainMenuScreen._newGame`: when `intro_seen` is not set, push `IntroScreen`

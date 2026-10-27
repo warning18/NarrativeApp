@@ -382,7 +382,7 @@ void main() {
       _Beat(
           '7.5 – 10.0 s',
           'The clans, one after another',
-          'The thirteen clans’ banners light up in turn (dark ones still to come). Line 3.',
+          'The thirteen clans’ banners light up in turn: the rivals who want the city. The last slot stays dark: yours. Line 3.',
           Container(
               color: const Color(0xFF17151B),
               padding: const EdgeInsets.fromLTRB(18, 90, 18, 120),
@@ -391,8 +391,13 @@ void main() {
                   spacing: 8,
                   runSpacing: 14,
                   children: [
-                    for (var i = 0; i < clanIds.length; i++)
-                      ClanFlag(factionId: clanIds[i], height: 56, found: i < 9),
+                    for (final id in clanIds)
+                      ClanFlag(factionId: id, height: 56),
+                    SizedBox(
+                        height: 56,
+                        child: FittedBox(
+                            child: PixelBanner(
+                                id: titleBannerId, scale: 1, found: false))),
                   ])),
           line: 3),
       _Beat(
@@ -405,26 +410,60 @@ void main() {
           ])),
       _Beat(
           '11.5 – 12.5 s',
-          'The shroud',
-          'A grey cloth falls over the picture; the Void’s standard shows through it.',
+          'The Shroud, in six pieces',
+          'A grey cloth falls over the picture and shows the player’s own standard torn into its six pieces, hanging in shreds.',
           Stack(fit: StackFit.expand, children: [
             dimmed(_street('temple', 'The Inquisition chapel'), 0.35),
             const CustomPaint(painter: _Cloth()),
             Align(
-                alignment: const Alignment(0, 0.05),
-                child: WindBanner(id: titleBannerId, scale: 3)),
+                alignment: const Alignment(0, -0.2),
+                child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 10,
+                    runSpacing: 4,
+                    children: [
+                      for (final (i, id) in shroudPieceIds.indexed)
+                        Padding(
+                            padding: EdgeInsets.only(top: i.isEven ? 0 : 14),
+                            child: Transform.rotate(
+                                angle: (i - 2.5) * 0.045,
+                                child: ColorFiltered(
+                                    colorFilter: const ColorFilter.mode(
+                                        Color(0x66404048), BlendMode.srcATop),
+                                    child: SizedBox(
+                                        width: 50,
+                                        height: 100,
+                                        child: FittedBox(
+                                            child: PixelBanner(
+                                                id: id, scale: 1)))))),
+                    ])),
           ]),
-          isNew: 'the falling cloth (one painter, a slide and a fade)'),
+          isNew:
+              'the falling cloth (one painter, a slide and a fade); the six pieces as the character screen draws them'),
       _Beat(
           '12.5 – 13.5 s',
           'The title',
-          'Black. The title in the game’s pixel face; the Void’s standard small above it. (The still frame with reduced motion.)',
+          'Black. The title in the game’s pixel face; the Shroud small above it, still torn: six dark slots, one faintly lit. “Mine, to restore.” (The still frame with reduced motion.)',
           Container(
               color: Colors.black,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    WindBanner(id: titleBannerId, scale: 1),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      for (final (i, id) in shroudPieceIds.indexed)
+                        Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            child: SizedBox(
+                                width: 28,
+                                height: 56,
+                                child: Opacity(
+                                    opacity: i == 0 ? 0.55 : 1,
+                                    child: FittedBox(
+                                        child: PixelBanner(
+                                            id: id,
+                                            scale: 1,
+                                            found: i == 0))))),
+                    ]),
                     const SizedBox(height: 18),
                     Text('The Grey Shroud',
                         textAlign: TextAlign.center,
@@ -513,9 +552,9 @@ void main() {
               Text('What it is made of', style: _px(14, color: _gold)),
               const SizedBox(height: 6),
               chip(
-                  'Reused as it is: the street-view kit at dusk with ash (frames 1, 2, 3, 5, 6), the ronin walker sprite (5), the banners and the clans\u2019 flags, dark ones as silhouettes (3, 4, 6, 7), the title screen\u2019s words (7), the story\u2019s typewriter for the four lines, the real Race & Profession screen (8), and the reduced-motion check.'),
+                  'Reused as it is: the street-view kit at dusk with ash (frames 1, 2, 3, 5, 6), the ronin walker sprite (5), the banners and the clans\u2019 flags, dark ones as silhouettes (3, 4, 7), the six Shroud pieces as the character screen draws them (6, 7), the title screen\u2019s words (7), the story\u2019s typewriter for the four lines, the real Race & Profession screen (8), and the reduced-motion check.'),
               chip(
-                  'New: a pixel bell with its rings (2), the falling cloth (6), one small intro screen that runs the eight beats on a clock and ends on a tap, a \u201cseen\u201d flag and a Replay row in Settings, Narrative\u2019s four lines (EN and FR).',
+                  'New: a pixel bell with its rings (2), the falling cloth (6), the pieces hanging torn on it (6), one small intro screen that runs the eight beats on a clock and ends on a tap, a \u201cseen\u201d flag and a Replay row in Settings, Narrative\u2019s four lines (EN and FR).',
                   c: const Color(0xFFE08A6A)),
               chip(
                   'Build: about a day, one PR, about 350 lines and a test (the beats in order, a tap skips, reduced motion shows frame 7, the flag is set once). No new art files.',
