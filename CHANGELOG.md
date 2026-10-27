@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.563.0+599]
+## [1.565.0+601]
 
 The Journey's ways are grouped by pin, and the notice board is a board you read.
 
