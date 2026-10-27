@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/forge_roll.dart' show baseItemIdOf;
 import '../game_icons.dart';
 import 'enemy_icons.dart';
 import 'item_icons.dart';
@@ -20,7 +21,8 @@ class ItemPixelIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = itemId;
+    // A forged piece (`<baseId>@fine`) wears its base item's icon.
+    final id = itemId == null ? null : baseItemIdOf(itemId!);
     if (id != null && ItemIcons.allIds.contains(id)) {
       return PixelIcon(ItemIcons.pathFor(id), size: size);
     }

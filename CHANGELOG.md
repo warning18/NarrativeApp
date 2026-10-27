@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.562.0+598]
+
+Forging rolls a d20 for the piece's quality.
+
+### Changed
+- **The forge rolls:** forging spends its gold and materials as before, then rolls a d20 plus its modifiers. The total sets the piece's tier: 1–4 Flawed, 5–14 Sound, 15–19 Fine, 20 or more Masterwork. With no modifier, the odds are 20 / 50 / 25 / 5%.
+  - The modifiers: a dwarf hero +2, at any forge; standing with the clan holding the forge's place, +1 at Friendly or better and −1 at Unfriendly or worse.
+  - A Flawed piece has −1 to its main number (never below 0), a Fine one +1, and a Masterwork one +2. The main number is armour for armour, damage for a weapon. Resale is −25%, +25% or +50%.
+  - The tier is kept in the piece's id (`boots_iron_shod@fine`) and its name ("Fine Iron-Shod Boots"). It survives saves, and every item lookup reads it.
+  - Until the new forge sheet comes, the Forge button names what was made: "Forged: Fine Iron-Shod Boots".
+
 ## [1.560.0+596]
 
 "A Life Before This One" is played as scene pages.

@@ -1764,7 +1764,37 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu :'},
   'forge_title': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
   'forge_button': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forger'},
-  'forged_prefix': {AppLanguage.en: 'Forged', AppLanguage.fr: 'Forgé :'},
+  'forged_prefix': {AppLanguage.en: 'Forged:', AppLanguage.fr: 'Forgé :'},
+  // The forge's roll (forge_roll.dart): its tiers, what moves it, and a
+  // forged piece's name around the base item's.
+  'forge_tier_flawed': {AppLanguage.en: 'Flawed', AppLanguage.fr: 'Défectueux'},
+  'forge_tier_sound': {AppLanguage.en: 'Sound', AppLanguage.fr: 'Solide'},
+  'forge_tier_fine': {AppLanguage.en: 'Fine', AppLanguage.fr: 'Fin'},
+  'forge_tier_masterwork': {
+    AppLanguage.en: 'Masterwork',
+    AppLanguage.fr: 'De maître',
+  },
+  'forge_mod_dwarf': {AppLanguage.en: 'Dwarf', AppLanguage.fr: 'Nain'},
+  'forge_mod_friends': {
+    AppLanguage.en: 'Friends {of}',
+    AppLanguage.fr: 'Amis {of}',
+  },
+  'forge_mod_distrust': {
+    AppLanguage.en: '{clan} distrusts you',
+    AppLanguage.fr: '{clan} se méfie de vous',
+  },
+  'forged_name_flawed': {
+    AppLanguage.en: 'Flawed {item}',
+    AppLanguage.fr: '{item} (facture défectueuse)',
+  },
+  'forged_name_fine': {
+    AppLanguage.en: 'Fine {item}',
+    AppLanguage.fr: '{item} (belle facture)',
+  },
+  'forged_name_masterwork': {
+    AppLanguage.en: 'Masterwork {item}',
+    AppLanguage.fr: '{item} de maître',
+  },
   'forge_needs_label': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
   'forge_hint': {
     AppLanguage.en:
