@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../combat/dice_faces.dart' show isAssignableFace;
+import '../combat/dice_faces.dart' show isOpenSkillFace;
 import '../combat/gear_effects.dart' show ItemSet;
 import '../models/ally_state.dart' show meetsItemStatRequirement;
 import '../combat/spec_variants.dart' show SpecVariantInfo;
@@ -521,9 +521,7 @@ class SimGrowth {
   /// the basic strike), where a learned skill can go.
   List<int> get _openSkillFaces => [
         for (var i = 0; i < character.diceFaces.length; i++)
-          if (character.diceFaces[i]['type'] == 'Skill' &&
-              isAssignableFace(character.diceFaces[i]))
-            i,
+          if (isOpenSkillFace(character.diceFaces[i])) i,
       ];
 
   /// Whether [skillId], learned now, would go on an empty face of the die.

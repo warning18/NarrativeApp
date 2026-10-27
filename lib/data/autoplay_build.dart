@@ -139,7 +139,7 @@ Map<String, String>? _bestFaces(
       0;
   final open = [
     for (var i = 0; i < faces.length; i++)
-      if (faces[i]['type'] == 'Skill' && isAssignableFace(faces[i])) i,
+      if (isOpenSkillFace(faces[i])) i,
   ];
   final assignments = <String, String>{
     ...?session.diceSkillAssignments[dieId],

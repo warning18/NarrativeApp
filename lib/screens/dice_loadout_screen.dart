@@ -168,6 +168,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       // basic face takes any skill.
       return isAssignableFace(face) &&
               face['type'] == 'Skill' &&
+              !isSignatureFace(face) &&
               element != 'None'
           ? element
           : null;
@@ -374,7 +375,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                         skillId: id,
                         label: onDie == 0
                             ? name
-                            : '$name · $onDie/${maxFacesForSkill(skill)}',
+                            : '$name · $onDie/${maxFacesForSkill(skill, faceCount: faces.length)}',
                         rarity: skillRarity(skill),
                         kind: skillKind(skill),
                         element: skill?['element']?.toString(),
@@ -1054,7 +1055,9 @@ class _DieStage extends StatelessWidget {
     final overSkill = picked != null && assigned != picked ? picked : null;
     final element = face['element']?.toString() ?? 'None';
     final restriction =
-        face['type'] == 'Skill' && element != 'None' ? element : null;
+        face['type'] == 'Skill' && !isSignatureFace(face) && element != 'None'
+            ? element
+            : null;
     String t(String key) => trFor(language, key);
     final weight = (face['weight'] as num?)?.toDouble() ?? 1.0;
     return Padding(

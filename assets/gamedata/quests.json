@@ -2088,7 +2088,7 @@
         "buttonText_fr": "Accepter"
       }
     ],
-    "rewardDiceID": "",
+    "rewardDiceID": "tally_die",
     "rewardAllyId": "",
     "questName_fr": "Le Compte des chandelles",
     "npcDialogueText_fr": "« Quatre cent onze, gravés dans une pierre au-delà du givre, parce que le Dominion les inscrit comme absents et que les absents n’ont pas besoin de chandelles », dit Orsabet. « Mes jambes se sont arrêtées à la ligne de givre il y a un mois. Rapportez-moi le compte, et je choisirai qui le gardera. »",

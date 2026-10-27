@@ -179,9 +179,10 @@ void main() {
     expect(numbers('starter_die'), everyElement(1));
     expect(numbers('apprentice_die'), everyElement(1));
     // The Stone Die (7, 7, 9 before the small scale) is no longer the
-    // Twinfang's (4, 4, 4) equal.
-    expect(numbers('stone_die'), [2, 2, 2]);
-    expect(numbers('twinfang_die'), [1, 1, 1]);
+    // Twinfang's (4, 4, 4) equal. Both are d4s since the dice sizes, each
+    // left with its strongest plain face.
+    expect(numbers('stone_die'), [2]);
+    expect(numbers('twinfang_die'), [1]);
     for (final id in dice.keys) {
       for (final n in numbers(id)) {
         expect(n, inInclusiveRange(1, 5), reason: id);

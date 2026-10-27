@@ -58,7 +58,7 @@ void main() {
         .loadSession(PlayerSession.fromJson({
           'raceId': 'human',
           'professionId': 'rogue',
-          'ownedDiceIds': ['shadow_die'],
+          'ownedDiceIds': ['shadow_die', 'liora_die'],
           'equippedDiceId': 'shadow_die',
           'gold': 1000,
           'inventoryItemIds': ['material_iron_ore', 'material_iron_ore'],
@@ -92,8 +92,13 @@ void main() {
     expect(_inSheet('Electricity'), findsNothing);
     expect(_inSheet('Elec'), findsNothing);
 
-    // Its Heal 2 recast: an Attack 2 at most (the die's best strike), a
-    // Guard 1 (its best guard).
+    // A Heal 2 recast: an Attack 2 at most (the die's best strike), a
+    // Guard 1 (its best guard). The Shadow Die is a d4 with no Heal face
+    // since the dice sizes: the player's Liora Die (Attack 2, Guard 1,
+    // Heal 2) shows it.
+    await tester.runAsync(() =>
+        container.read(playerSessionProvider.notifier).equipDice('liora_die'));
+    await _settle(tester);
     await tester.tap(_inSheet('Soin'));
     await _settle(tester);
     expect(_inSheet('Attaque 2'), findsOneWidget);

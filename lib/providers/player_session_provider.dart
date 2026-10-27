@@ -51,6 +51,9 @@ import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../data/stat_ledger.dart';
+import '../data/dice_sizes_save.dart';
+import '../data/dice_weave.dart' show canWeaveDice, tallyDieId;
+import '../data/fate_coin.dart' show withFateCoinSpent;
 import '../data/stat_scale_save.dart';
 import '../data/temple.dart';
 import '../data/training.dart';
@@ -1328,6 +1331,7 @@ class PlayerSession {
 
   Map<String, dynamic> toJson() => {
         'saveVersion': playerSessionSaveVersion,
+        diceDataVersionKey: diceDataVersion,
         'level': level,
         'currentXP': currentXP,
         'gold': gold,
@@ -1470,6 +1474,10 @@ class PlayerSession {
     // A save from before the stat scale, once on the small scale
     // (stat_scale_save.dart).
     json = rescaledSave(json, allyFullHealth: AllyState.fullHealthSentinel);
+    // A save from before the dice sizes: picks and Hammersmith work on a
+    // die that shrank move with their faces, or come back
+    // (dice_sizes_save.dart).
+    json = resizedDiceSave(json);
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -4025,6 +4033,66 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(equippedDiceId: diceId);
     await _persist();
+  }
+
+  /// Recuts [first] and [second], two d8s the player owns, into the tally
+  /// die at the Skillwright (dice_weave.dart): both are spent, their face
+  /// picks with them, and the Hammersmith's work on them is paid back
+  /// (smithingRefundFor). The tally die is equipped when one of the two
+  /// was. False, and nothing done, when [canWeaveDice] says no.
+  Future<bool> weaveDice(String first, String second,
+      {required Map<String, dynamic> dice}) async {
+    if (!canWeaveDice(first, second,
+        owned: state.ownedDiceIds,
+        builtHouseIds: state.builtHouseIds,
+        dice: dice)) {
+      return false;
+    }
+    final spent = {first, second};
+    var gold = state.gold;
+    final inventory = [...state.inventoryItemIds];
+    for (final id in spent) {
+      for (final work in (state.diceUpgrades[id] ?? const {}).values) {
+        final refund = smithingRefundFor(work);
+        gold += refund.gold;
+        for (var i = 0; i < refund.iron; i++) {
+          inventory.add(ironOreId);
+        }
+        for (var i = 0; i < refund.trophies; i++) {
+          inventory.add(eliteTrophyId);
+        }
+      }
+    }
+    state = state.copyWith(
+      gold: gold,
+      inventoryItemIds: inventory,
+      ownedDiceIds: [
+        for (final id in state.ownedDiceIds)
+          if (!spent.contains(id)) id,
+        tallyDieId,
+      ],
+      equippedDiceId: spent.contains(state.equippedDiceId) ? tallyDieId : null,
+      diceSkillAssignments: {
+        for (final entry in state.diceSkillAssignments.entries)
+          if (!spent.contains(entry.key)) entry.key: entry.value,
+      },
+      diceUpgrades: {
+        for (final entry in state.diceUpgrades.entries)
+          if (!spent.contains(entry.key)) entry.key: entry.value,
+      },
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Spends one fate coin from the pack (fate_coin.dart), for a check
+  /// rolled again. False when the pack holds none.
+  Future<bool> spendFateCoin() async {
+    final left = withFateCoinSpent(state.inventoryItemIds);
+    if (left == null) return false;
+    state = state.copyWith(inventoryItemIds: left);
+    await _persist();
+    return true;
   }
 
   /// Buys [itemId] from [shopId]. Shops have a fixed stock per item

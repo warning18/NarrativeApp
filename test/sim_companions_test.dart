@@ -124,12 +124,14 @@ void main() {
 
   group('the pick rule', () {
     test('two seats go to the two worth most in a fight', () {
+      // Three companions more than a point apart, so no tie rule decides
+      // (Liora and Vess, a d8 since the dice sizes, are within one).
       final p = _party();
-      for (final id in ['vess', 'liora', 'maren']) {
+      for (final id in ['vess', 'sable', 'maren']) {
         p.recruit(id, chapter: 3, cause: 'quest');
       }
       expect(p.capacity, 2);
-      final ranked = ['vess', 'liora', 'maren']
+      final ranked = ['vess', 'sable', 'maren']
         ..sort((a, b) => p.valueOf(b).compareTo(p.valueOf(a)));
       expect(p.active.toSet(), ranked.take(2).toSet());
       // A third seat (the Barracks Annex) seats the third.
@@ -166,7 +168,7 @@ void main() {
     test('a better companion joining a full party takes the weakest seat', () {
       final p = _party();
       p.recruit('vess', chapter: 2, cause: 'quest');
-      p.recruit('liora', chapter: 2, cause: 'quest');
+      p.recruit('sable', chapter: 2, cause: 'quest');
       expect(p.active, hasLength(2));
       final weakest =
           p.active.reduce((a, b) => p.valueOf(a) <= p.valueOf(b) ? a : b);

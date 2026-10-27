@@ -164,7 +164,7 @@
   },
   "flame_die": {
     "diceName": "flame_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [
       "mage"
     ],
@@ -220,6 +220,22 @@
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 110,
@@ -227,7 +243,7 @@
   },
   "tide_die": {
     "diceName": "tide_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [
       "cleric"
     ],
@@ -280,6 +296,22 @@
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 110,
@@ -287,7 +319,7 @@
   },
   "storm_die": {
     "diceName": "storm_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 10,
     "professions": [
       "ranger"
     ],
@@ -343,6 +375,38 @@
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 100,
@@ -350,7 +414,7 @@
   },
   "stone_die": {
     "diceName": "stone_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "professions": [],
     "races": [
       "dwarf"
@@ -365,15 +429,12 @@
         "element": "Earth"
       },
       {
-        "faceName": "Granite Guard",
-        "type": "Defend",
-        "value": 2,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "Earth",
-        "keywords": [
-          "steady"
-        ]
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
       },
       {
         "faceName": "Hammer Blow",
@@ -390,22 +451,6 @@
         "linkedSkillID": "dwarf_forgeheart",
         "weight": 0.4,
         "element": "Fire"
-      },
-      {
-        "faceName": "Iron Resolve",
-        "type": "Heal",
-        "value": 2,
-        "linkedSkillID": "",
-        "weight": 0.6,
-        "element": "None"
-      },
-      {
-        "faceName": "Heavy Strike",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
-        "element": "None"
       }
     ],
     "cost": 95,
@@ -413,7 +458,7 @@
   },
   "shadow_die": {
     "diceName": "shadow_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "professions": [
       "rogue"
     ],
@@ -431,12 +476,12 @@
         ]
       },
       {
-        "faceName": "Fade",
-        "type": "Defend",
-        "value": 1,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "Wind"
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
       },
       {
         "faceName": "Backstab",
@@ -453,22 +498,6 @@
         "linkedSkillID": "void_blast",
         "weight": 0.4,
         "element": "Void"
-      },
-      {
-        "faceName": "Quick Recovery",
-        "type": "Heal",
-        "value": 2,
-        "linkedSkillID": "",
-        "weight": 0.6,
-        "element": "None"
-      },
-      {
-        "faceName": "Heavy Strike",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
-        "element": "None"
       }
     ],
     "cost": 115,
@@ -539,7 +568,7 @@
   },
   "berserker_die": {
     "diceName": "berserker_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "professions": [],
     "races": [
       "orc"
@@ -579,22 +608,6 @@
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
-      },
-      {
-        "faceName": "Thick Hide",
-        "type": "Defend",
-        "value": 1,
-        "linkedSkillID": "",
-        "weight": 0.6,
-        "element": "None"
-      },
-      {
-        "faceName": "Brace for Blood",
-        "type": "Defend",
-        "value": 1,
-        "linkedSkillID": "",
-        "weight": 0.6,
-        "element": "None"
       }
     ],
     "cost": 100,
@@ -602,7 +615,7 @@
   },
   "arcane_die": {
     "diceName": "arcane_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 10,
     "professions": [
       "mage"
     ],
@@ -658,6 +671,38 @@
         "linkedSkillID": "",
         "weight": 0.8,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 130,
@@ -665,7 +710,7 @@
   },
   "huntsman_die": {
     "diceName": "huntsman_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [
       "ranger"
     ],
@@ -718,6 +763,22 @@
         "linkedSkillID": "ranger_beast_bond",
         "weight": 0.4,
         "element": "Earth"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 105,
@@ -788,7 +849,7 @@
   },
   "vess_die": {
     "diceName": "vess_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [
       "mage"
     ],
@@ -844,6 +905,22 @@
         "linkedSkillID": "",
         "weight": 0.5,
         "element": "Void"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 120,
@@ -976,7 +1053,7 @@
   "sage_die": {
     "diceName": "sage_die",
     "cost": 150,
-    "numberOfFaces": 6,
+    "numberOfFaces": 10,
     "professions": [
       "mage",
       "cleric"
@@ -1029,6 +1106,38 @@
         "value": 3,
         "linkedSkillID": "",
         "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
         "element": "None"
       }
     ],
@@ -1162,7 +1271,7 @@
   },
   "gambler_die": {
     "diceName": "gambler_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 20,
     "professions": [],
     "races": [],
     "faces": [
@@ -1216,14 +1325,126 @@
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
-    "cost": 85,
+    "cost": 200,
     "diceName_fr": "Dé du joueur"
   },
   "frost_die": {
     "diceName": "frost_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [],
     "races": [],
     "faces": [
@@ -1274,6 +1495,22 @@
         "linkedSkillID": "",
         "weight": 0.5,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 115,
@@ -1281,7 +1518,7 @@
   },
   "twinfang_die": {
     "diceName": "twinfang_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "professions": [
       "rogue"
     ],
@@ -1299,15 +1536,12 @@
         ]
       },
       {
-        "faceName": "Right Fang",
-        "type": "Attack",
-        "value": 1,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "None",
-        "keywords": [
-          "growth"
-        ]
+        "faceName": "Precision Thrust",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "precision_thrust",
+        "weight": 0.4,
+        "element": "None"
       },
       {
         "faceName": "Poison Blade",
@@ -1323,22 +1557,6 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.6,
-        "element": "None"
-      },
-      {
-        "faceName": "Sidestep",
-        "type": "Defend",
-        "value": 1,
-        "linkedSkillID": "",
-        "weight": 0.8,
-        "element": "Wind"
-      },
-      {
-        "faceName": "Precision Thrust",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "precision_thrust",
-        "weight": 0.4,
         "element": "None"
       }
     ],
@@ -1468,7 +1686,7 @@
   },
   "tempest_die": {
     "diceName": "tempest_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 12,
     "professions": [],
     "races": [],
     "faces": [
@@ -1522,6 +1740,54 @@
         "linkedSkillID": "steady_aim",
         "weight": 0.4,
         "element": "Wind"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "cost": 125,
@@ -1530,7 +1796,7 @@
   "ossuary_die": {
     "diceName": "ossuary_die",
     "cost": 220,
-    "numberOfFaces": 6,
+    "numberOfFaces": 10,
     "professions": [],
     "races": [],
     "faces": [
@@ -1584,6 +1850,38 @@
         "linkedSkillID": "",
         "weight": 0.7,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "diceName_fr": "Dé de l’ossuaire"
@@ -1591,7 +1889,7 @@
   "vigil_die": {
     "diceName": "vigil_die",
     "cost": 250,
-    "numberOfFaces": 7,
+    "numberOfFaces": 8,
     "professions": [],
     "races": [],
     "faces": [
@@ -1653,6 +1951,14 @@
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "diceName_fr": "Dé de la veillée"
@@ -1660,7 +1966,7 @@
   "tearglass_die": {
     "diceName": "tearglass_die",
     "cost": 290,
-    "numberOfFaces": 6,
+    "numberOfFaces": 12,
     "professions": [],
     "races": [],
     "faces": [
@@ -1717,6 +2023,54 @@
         "keywords": [
           "pain"
         ]
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ],
     "diceName_fr": "Dé de verre-larme"
@@ -1725,7 +2079,7 @@
     "diceName": "headsman_die",
     "diceName_fr": "Dé du bourreau",
     "cost": 180,
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "professions": [],
     "races": [],
     "faces": [
@@ -1772,25 +2126,6 @@
         "keywords": [
           "steady"
         ]
-      },
-      {
-        "faceName": "Neck Strike",
-        "type": "Attack",
-        "value": 2,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "None",
-        "keywords": [
-          "pierce"
-        ]
-      },
-      {
-        "faceName": "Rest the Axe",
-        "type": "Heal",
-        "value": 2,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "None"
       }
     ]
   },
@@ -1798,7 +2133,7 @@
     "diceName": "greenwood_die",
     "diceName_fr": "Dé du bois vert",
     "cost": 140,
-    "numberOfFaces": 6,
+    "numberOfFaces": 8,
     "professions": [],
     "races": [],
     "faces": [
@@ -1861,6 +2196,22 @@
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ]
   },
@@ -1868,7 +2219,7 @@
     "diceName": "chorus_die",
     "diceName_fr": "Dé du chœur",
     "cost": 160,
-    "numberOfFaces": 6,
+    "numberOfFaces": 12,
     "professions": [],
     "races": [],
     "faces": [
@@ -1934,7 +2285,161 @@
         "keywords": [
           "echo"
         ]
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
       }
     ]
+  },
+  "tally_die": {
+    "diceName": "tally_die",
+    "numberOfFaces": 12,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ],
+    "cost": 150,
+    "diceName_fr": "Dé du décompte"
   }
 }

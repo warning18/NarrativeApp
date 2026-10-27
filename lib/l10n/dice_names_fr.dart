@@ -26,6 +26,7 @@ const Map<String, String> diceNamesFr = {
   'starter_die': 'Dé porte-bonheur',
   'stone_die': 'Dé de pierre',
   'storm_die': 'Dé d’orage',
+  'tally_die': 'Dé du décompte',
   'tearglass_die': 'Dé de verre-larme',
   'tempest_die': 'Dé de tempête',
   'tide_die': 'Dé de marée',
