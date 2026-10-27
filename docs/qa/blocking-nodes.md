@@ -2,6 +2,12 @@
 
 Read from the graph, not played: `assets/Cleaned_Narrative_DAG.json` (472 nodes, 1,141 choices) with the quests, zones, coast events and companions around it, at v1.564.0 (2026-10-27). Nothing was run in the simulator. The analysis is [`blocking_nodes.py`](blocking_nodes.py) (about 40 s, no dependencies); the fast part of it is a guard, `test/qa_story_blocking_test.dart` (about 1 s, five tests, passes today).
 
+## What to do next (for the owners)
+
+1. **Core**: decide whether the 38 forced fights without a defeat branch (tables below) should keep "retry, no cost" or get a `loseNextId`. Give a boss band in `boss_balance_test` to `inquisition_high_warden` (chapter 3 finale) and `void_manifestation` (`6003b`).
+2. **Narrative**: `q_ch3_inquisition_ledger` can only be handed in after the chapter 3 finale (`3030/3040/3050`), as the sealed letter drops from the High Warden. Say if that is intended, or move the drop.
+3. **Narrative**: node `400` loss goes the long way round (`400_lost`, `800`, back at `470`, 4 nodes longer). It is by design; confirm it still is.
+
 ## Result
 
 **Nothing blocks the player.** By the severities of the brief:
