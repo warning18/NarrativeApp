@@ -55,11 +55,18 @@ void main() {
         'linkedSkillID': 'fireball',
         'faceName': 'Fireball'
       };
+      // Every face is a slot (dice sizes): a pick replaces a signature
+      // skill; only a face the die marks fixed ignores it.
       expect(
           faceDisplayName(fireball,
               assignedSkillId: 'power_strike', language: AppLanguage.en),
+          'Power Strike');
+      expect(faceDisplayName(fireball, language: AppLanguage.en), 'Fireball');
+      expect(
+          faceDisplayName({...fireball, 'fixed': true},
+              assignedSkillId: 'power_strike', language: AppLanguage.en),
           'Fireball',
-          reason: 'a signature face ignores a stale pick');
+          reason: 'a fixed face ignores a stale pick');
       expect(
           faceDisplayName({'type': 'Defend', 'value': 5},
               language: AppLanguage.fr),
@@ -68,7 +75,7 @@ void main() {
   });
 
   group('which faces are open', () {
-    test('basic faces and generic skill faces are open; signatures fixed', () {
+    test('every face is open but a fixed one', () {
       expect(isAssignableFace({'type': 'Attack', 'value': 5}), isTrue);
       expect(isAssignableFace({'type': 'Defend', 'value': 5}), isTrue);
       expect(isAssignableFace({'type': 'Heal', 'value': 8}), isTrue);
@@ -77,9 +84,23 @@ void main() {
           isAssignableFace({'type': 'Skill', 'linkedSkillID': 'heavy_attack'}),
           isTrue);
       expect(isAssignableFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
-          isFalse);
-      expect(isAssignableFace({'type': 'Mana', 'value': 2}), isFalse);
+          isTrue);
+      expect(isAssignableFace({'type': 'Mana', 'value': 2}), isTrue);
       expect(isAssignableFace({'type': 'Attack', 'value': 5, 'fixed': true}),
+          isFalse);
+      expect(
+          isAssignableFace(
+              {'type': 'Skill', 'linkedSkillID': 'fireball', 'fixed': true}),
+          isFalse);
+      expect(isAssignableFace({'type': 'Empty', 'value': 0}), isFalse);
+      // A signature face is still told apart from an open Skill face.
+      expect(isSignatureFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
+          isTrue);
+      expect(
+          isSignatureFace({'type': 'Skill', 'linkedSkillID': 'heavy_attack'}),
+          isFalse);
+      expect(isOpenSkillFace({'type': 'Skill', 'linkedSkillID': ''}), isTrue);
+      expect(isOpenSkillFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
           isFalse);
     });
 
@@ -111,9 +132,20 @@ void main() {
     });
 
     test('a fixed face ignores a pick and a bare face keeps its action', () {
-      final fixed = applyFaceAssignment(_face('Skill', 0, 'fireball'),
-          {'type': 'Skill', 'linkedSkillID': 'fireball'}, 'power_strike');
+      final fixed = applyFaceAssignment(
+          _face('Skill', 0, 'fireball'),
+          {'type': 'Skill', 'linkedSkillID': 'fireball', 'fixed': true},
+          'power_strike');
       expect(fixed.linkedSkillID, 'fireball');
+      // A signature face that isn't fixed takes the pick at full power.
+      final signature = applyFaceAssignment(_face('Skill', 0, 'fireball'),
+          {'type': 'Skill', 'linkedSkillID': 'fireball'}, 'power_strike');
+      expect(signature.linkedSkillID, 'power_strike');
+      expect(signature.isChanneled, isFalse);
+      // A Mana face channels it, as the other plain faces do.
+      final mana = applyFaceAssignment(
+          _face('Mana', 2), {'type': 'Mana', 'value': 2}, 'heavy_attack');
+      expect(mana.channeledFrom, 'Mana');
       final bare = applyFaceAssignment(
           _face('Defend', 5), {'type': 'Defend', 'value': 5}, null);
       expect(bare.type, 'Defend');

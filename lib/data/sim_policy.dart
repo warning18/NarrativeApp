@@ -7,7 +7,7 @@
 // competent real player would, so its numbers read as "the game for
 // someone who plays it well".
 import '../combat/combat_engine.dart' show elementFieldPrefixes;
-import '../combat/dice_faces.dart' show isAssignableFace;
+import '../combat/dice_faces.dart' show isOpenSkillFace;
 import '../combat/gear_effects.dart';
 import '../models/ally_state.dart' show equipmentBonusFor;
 import 'sim_growth.dart' show simSkillScore;
@@ -161,7 +161,7 @@ Map<String, String> simSkillAssignments({
 }) {
   final open = [
     for (var i = 0; i < faces.length; i++)
-      if (faces[i]['type'] == 'Skill' && isAssignableFace(faces[i])) i,
+      if (isOpenSkillFace(faces[i])) i,
   ];
   final assignments = <String, String>{};
   final placed = <String>{};

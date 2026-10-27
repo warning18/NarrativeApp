@@ -2611,6 +2611,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No merge recipes defined yet.',
     AppLanguage.fr: 'Aucune recette de fusion définie pour le moment.',
   },
+  // Two d8s recut into the tally die at the Skillwright (dice_weave.dart).
+  'weave_title': {
+    AppLanguage.en: 'Recut two d8s into a tally die',
+    AppLanguage.fr: 'Retailler deux d8 en dé du décompte',
+  },
+  'weave_intro': {
+    AppLanguage.en:
+        'Pick two eight-faced dice you own. Both are spent, with the skills set on them; Hammersmith work on them is paid back. The tally die has twelve plain faces to fill.',
+    AppLanguage.fr:
+        'Choisissez deux dés à huit faces que vous possédez. Les deux sont perdus, avec les compétences posées dessus ; le travail du Maître-forgeron vous est rendu. Le dé du décompte a douze faces simples à garnir.',
+  },
+  'weave_button': {
+    AppLanguage.en: 'Recut',
+    AppLanguage.fr: 'Retailler',
+  },
+  'weave_need_two': {
+    AppLanguage.en: 'You need two eight-faced dice.',
+    AppLanguage.fr: 'Il vous faut deux dés à huit faces.',
+  },
+  'weave_owned': {
+    AppLanguage.en: 'You already own a tally die.',
+    AppLanguage.fr: 'Vous possédez déjà un dé du décompte.',
+  },
   'skills_reset_label': {
     AppLanguage.en: 'Skills Reset',
     AppLanguage.fr: 'Compétences réinitialisées',
@@ -3445,6 +3468,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'crossing_fight_lost': {
     AppLanguage.en: 'You go down, and are left where you lie.',
     AppLanguage.fr: 'Vous tombez, et l’on vous laisse sur place.',
+  },
+  // The fate coin on a failed crossing check (fate_coin.dart).
+  'fate_coin_offer': {
+    AppLanguage.en: 'The check fails. Flip your fate coin to roll it again?',
+    AppLanguage.fr:
+        'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
+  },
+  'fate_coin_flip_button': {
+    AppLanguage.en: 'Flip the fate coin',
+    AppLanguage.fr: 'Lancer la pièce du destin',
+  },
+  'fate_coin_keep_button': {
+    AppLanguage.en: 'Let it stand',
+    AppLanguage.fr: 'En rester là',
+  },
+  'fate_coin_landed': {
+    AppLanguage.en: 'The coin lands {face}, and is spent.',
+    AppLanguage.fr: 'La pièce tombe sur {face}, et elle est dépensée.',
+  },
+  'fate_coin_heads': {
+    AppLanguage.en: 'heads',
+    AppLanguage.fr: 'face',
+  },
+  'fate_coin_tails': {
+    AppLanguage.en: 'tails',
+    AppLanguage.fr: 'pile',
   },
   // The full map's places only heard of (heard_of.dart).
   'heard_reason_storyOnly': {

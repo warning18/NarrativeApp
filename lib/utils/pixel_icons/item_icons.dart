@@ -9,6 +9,7 @@ class ItemIcons {
   /// beast's trophy as an elite's.
   static const Map<String, String> _borrowed = {
     'boss_trophy': 'elite_trophy',
+    'fate_coin': 'charm_lucky_coin',
   };
 
   static const List<String> allIds = [
@@ -46,6 +47,7 @@ class ItemIcons {
     'dagger_t9',
     'dawnward_shield',
     'elite_trophy',
+    'fate_coin',
     'greaves_bone_plated',
     'greaves_hide',
     'greaves_iron',

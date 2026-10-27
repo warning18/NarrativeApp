@@ -144,7 +144,8 @@ FaceSkillChoice faceSkillChoice({
       baseDamage: baseDamage, armor: armor);
   final used = facesCastingSkill(candidateId, faces, assignments, skills,
       exceptIndex: faceIndex);
-  final max = maxFacesForSkill(skills[candidateId] as Map<String, dynamic>?);
+  final max = maxFacesForSkill(skills[candidateId] as Map<String, dynamic>?,
+      faceCount: faces.length);
   final FaceChoiceBlock? block;
   if (!isAssignableFace(faces[faceIndex])) {
     block = FaceChoiceBlock.notOpen;

@@ -44,15 +44,23 @@ const _skills = <String, dynamic>{
   'channel': {'rarity': 'common', 'damageMultiplier': 0},
 };
 
+const _d6Faces = [
+  {'type': 'Attack'},
+  {'type': 'Skill', 'linkedSkillID': ''},
+  {'type': 'Skill', 'linkedSkillID': ''},
+  {'type': 'Skill', 'linkedSkillID': ''},
+  {'type': 'Skill', 'linkedSkillID': ''},
+  {'type': 'Skill', 'linkedSkillID': 'heavy_attack', 'fixed': true},
+];
+
+// A d8 (the d6 above and two Attack faces): two copies of a skill fit on
+// it (maxCopiesOnDie), so the rarity limits decide.
 const _dice = <String, dynamic>{
   'test_die': {
     'faces': [
+      ..._d6Faces,
       {'type': 'Attack'},
-      {'type': 'Skill', 'linkedSkillID': ''},
-      {'type': 'Skill', 'linkedSkillID': ''},
-      {'type': 'Skill', 'linkedSkillID': ''},
-      {'type': 'Skill', 'linkedSkillID': ''},
-      {'type': 'Skill', 'linkedSkillID': 'heavy_attack', 'fixed': true},
+      {'type': 'Attack'},
     ],
   },
 };
@@ -116,6 +124,17 @@ void main() {
     // The mana skill keeps face 1; the legendary goes on one face only,
     // the rare on two, the common fills what is left.
     expect(faces, {'1': 'channel', '2': 'doom', '3': 'cleave', '4': 'cleave'});
+    // On a d6 one copy of a skill fits (dice sizes' guard): the rare goes
+    // on one face, and the common takes the last.
+    final d6 = planAutoplayBuild(_session(),
+        items: _items,
+        skills: _skills,
+        dice: const {
+          'test_die': {'faces': _d6Faces},
+        },
+        professions: _professions);
+    expect(d6.faceAssignments,
+        {'1': 'channel', '2': 'doom', '3': 'cleave', '4': 'jab'});
   });
 
   test('the same session always gets the same build', () {

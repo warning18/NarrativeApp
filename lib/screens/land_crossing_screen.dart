@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/ability_check.dart';
+import '../data/fate_coin.dart';
 import '../data/journey_rules.dart' show watchesPerDay;
 import '../data/land_crossing.dart';
 import '../gamedata/db_schema.dart';
@@ -275,33 +276,67 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     var outcome = choice.outcome;
     var checkLine = '';
     if (choice.hasCheck) {
-      final result = rollAbilityCheck(
+      var result = rollAbilityCheck(
         ability: choice.check!,
         dc: landCheckDc(choice.dc, _chapter),
         session: ref.read(playerSessionProvider),
         random: _random,
       );
-      outcome = result.success ? choice.success : choice.fail;
-      checkLine = '${trFor(lang, '${result.ability}_label')} '
-          '${trFor(lang, 'check_label')}: '
-          '${result.roll} + ${result.modifier} = ${result.total} '
-          '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
-          '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
-      // The die rolls under the choices; the outcome follows once it has
-      // landed and the sum has been read.
-      final landing = Completer<void>();
-      setState(() {
-        _roll = result;
-        _landed = false;
-        _landing = landing;
-        _checkLine = checkLine;
-      });
-      // A die that never tumbles (motion reduced) lands all the same.
-      Future.delayed(d20RollDuration + _rollLinger * 2, _onLanded);
-      await landing.future;
+      checkLine = await _showRoll(result, lang);
       if (!mounted) return;
+      // A failed check, and a fate coin in the pack: the player may flip it
+      // to roll the check once more (fate_coin.dart).
+      if (fateCoinWorthFlipping(result) &&
+          carriesFateCoin(ref.read(playerSessionProvider).inventoryItemIds)) {
+        final offer = Completer<bool>();
+        setState(() => _coinOffer = offer);
+        final flip = await offer.future;
+        if (!mounted) return;
+        setState(() => _coinOffer = null);
+        if (flip &&
+            await ref.read(playerSessionProvider.notifier).spendFateCoin()) {
+          final face = flipFateCoin(_random);
+          result = rerolledCheck(result, _random);
+          checkLine =
+              '${trFor(lang, 'fate_coin_landed').replaceAll('{face}', trFor(lang, 'fate_coin_${face.name}'))} '
+              '${await _showRoll(result, lang)}';
+          if (!mounted) return;
+        }
+      }
+      outcome = result.success ? choice.success : choice.fail;
     }
     await _settle(outcome, checkLine);
+  }
+
+  /// A fate coin offered on the failed check: completes with whether the
+  /// player flips it.
+  Completer<bool>? _coinOffer;
+
+  /// The checks rolled so far: a second roll (the fate coin's) tumbles anew.
+  var _rolls = 0;
+
+  /// Rolls [result]'s die under the choices and waits for it to land and
+  /// its sum to be read; returns the check's line.
+  Future<String> _showRoll(AbilityCheckResult result, AppLanguage lang) async {
+    final checkLine = '${trFor(lang, '${result.ability}_label')} '
+        '${trFor(lang, 'check_label')}: '
+        '${result.roll} + ${result.modifier} = ${result.total} '
+        '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
+        '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
+    // The die rolls under the choices; the outcome follows once it has
+    // landed and the sum has been read.
+    final landing = Completer<void>();
+    setState(() {
+      _roll = result;
+      _rolls++;
+      _landed = false;
+      _landing = landing;
+      _checkLine = checkLine;
+    });
+    // A die that never tumbles (motion reduced) lands all the same.
+    Future.delayed(d20RollDuration + _rollLinger * 2, _onLanded);
+    await landing.future;
+    return checkLine;
   }
 
   /// A fight on the road (the scavengers, v1.305.0): played on the battle
@@ -392,13 +427,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       padding: const EdgeInsets.only(top: 12),
       child: Column(
         children: [
-          D20Roll(
-            key: const Key('crossing_roll'),
-            roll: roll.roll,
-            success: roll.success,
-            size: rolling ? 120 : 64,
-            rolling: rolling,
-            onLanded: rolling ? _onLanded : null,
+          KeyedSubtree(
+            key: ValueKey('crossing_roll_$_rolls'),
+            child: D20Roll(
+              key: const Key('crossing_roll'),
+              roll: roll.roll,
+              success: roll.success,
+              size: rolling ? 120 : 64,
+              rolling: rolling,
+              onLanded: rolling ? _onLanded : null,
+            ),
           ),
           const SizedBox(height: 8),
           AnimatedOpacity(
@@ -490,6 +528,23 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                 ),
               ),
             if (_roll != null) _rollView(theme, rolling: true),
+            if (_coinOffer case final offer?) ...[
+              const SizedBox(height: 8),
+              Text(tr(ref, 'fate_coin_offer'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 4),
+              FilledButton(
+                key: const Key('crossing_fate_coin'),
+                onPressed: () => offer.complete(true),
+                child: Text(tr(ref, 'fate_coin_flip_button')),
+              ),
+              TextButton(
+                key: const Key('crossing_fate_coin_keep'),
+                onPressed: () => offer.complete(false),
+                child: Text(tr(ref, 'fate_coin_keep_button')),
+              ),
+            ],
             const SizedBox(height: 8),
             TextButton(
               key: const Key('crossing_turn_back'),

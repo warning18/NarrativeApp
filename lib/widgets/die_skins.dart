@@ -112,6 +112,8 @@ const Map<String, DieSkin> dieSkins = {
       'Greenwood', Color(0xFF2B4B2D), Color(0xFFA8D96D), DiePattern.leaf),
   'chorus_die': DieSkin(
       'Silver bell', Color(0xFFAEB4BE), Color(0xFFF5F7FB), DiePattern.waves),
+  // The built d12 (Core, dice sizes): bone until UX draws its own.
+  'tally_die': boneSkin,
 };
 
 /// A pattern cut into one face, drawn over its unit square: faint, so the
