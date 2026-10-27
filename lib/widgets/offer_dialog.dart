@@ -32,6 +32,7 @@ import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
 import 'companion_remark_bubble.dart';
 import 'item_stats.dart';
+import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
@@ -685,13 +686,17 @@ class _OfferBanner extends ConsumerWidget {
     final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
     final Widget inner = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
-        : SizedBox(
-            key: Key('offer_banner_${suitor.factionId}'),
-            width: bannerBox,
-            height: pixelBannerSize.height.toDouble(),
-            child: selected
-                ? WindBanner(id: bannerId, scale: 1)
-                : Center(child: PixelBanner(id: bannerId, scale: 1)),
+        : ClanMarks(
+            factionId: suitor.factionId,
+            discSize: 34,
+            child: SizedBox(
+              key: Key('offer_banner_${suitor.factionId}'),
+              width: bannerBox,
+              height: pixelBannerSize.height.toDouble(),
+              child: selected
+                  ? WindBanner(id: bannerId, scale: 1)
+                  : Center(child: PixelBanner(id: bannerId, scale: 1)),
+            ),
           );
     final Widget flag = SizedBox(
       width: bannerBox * 0.75,

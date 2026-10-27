@@ -17,6 +17,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
+import 'clan_glance.dart' show ClanMarks;
 import 'clan_peek.dart';
 import 'clan_power_block.dart' show powerTierKey;
 import 'pixel_banner.dart';
@@ -268,6 +269,11 @@ class _ThroneRoomState extends State<ThroneRoom>
   Widget _standard(int index, double pole) {
     final banner = widget.banners[index];
     final height = _standardTop + 128 + pole + _standardFoot;
+    // A clan's standard wears its two marks (the clan glance); a piece of the
+    // Shroud is not a clan's.
+    Widget marked(Widget cloth) => banner.factionId == null
+        ? cloth
+        : ClanMarks(factionId: banner.factionId!, discSize: 28, child: cloth);
     return SizedBox(
       width: _standardWidth,
       height: height,
@@ -336,7 +342,7 @@ class _ThroneRoomState extends State<ThroneRoom>
                             ]
                           : null,
                     ),
-                    child: CustomPaint(
+                    child: marked(CustomPaint(
                       size: const Size(_standardWidth, 128),
                       painter: WindPainter(
                         id: banner.id,
@@ -344,7 +350,7 @@ class _ThroneRoomState extends State<ThroneRoom>
                         phase: index * 1.7,
                         still: _still,
                       ),
-                    ),
+                    )),
                   ),
                 ),
               ),
