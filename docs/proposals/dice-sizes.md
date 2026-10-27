@@ -1,73 +1,67 @@
 # More dice sizes (Core, proposal)
 
-Design only. Written on v1.567. This note covers sizes, odds and data. UX proposes the styles and the roll animations, and the manager puts the two together.
+Design only. Written on v1.567, revised after the user's answer: "The 12-faced die should have 12 faces to equip and a dedicated art". This note covers sizes, odds and data; UX proposes the art and the roll animations.
 
-## 1. Today
+## The rule
 
-- **How a die works.** A die is a list of faces in `dice.json`. Each face has a type (Attack, Defend, Heal, Mana, Skill), a value and a `weight`, and a roll picks one face by weight. So a die's **size** is its face count, and its odds come from the weights.
-- **Skill faces.** A Skill face holds a skill (`linkedSkillID`). The skill tree places the hero's skills on the die's Skill faces.
-- **Crits.** No die has a crit or fumble range. Crits come from Luck (1.5% a point, capped at 35%), and Perception for a ranger or rogue.
-- **One die in play.** The hero rolls one die (`equippedDiceId`). It can be swapped for another owned die before a fight.
+**A die has as many faces as its size, and every face can be equipped.** A d4 has 4 slots, a d6 has 6, a d8 has 8, a d12 has 12, and the coin has 2. Each slot holds one face, either a plain number (Attack, Defend, Heal, Mana) or a skill. There is no cap on skill faces below the face count.
 
-| Size | Dice | Where they come from | Price |
-|---|---|---|---|
-| 4 | `void_die` (2 Skill, 1 Heal, 1 Attack) | shop | 120 |
-| 6 | `starter_die` | the start of the game | 0 |
-| 6 | the profession dice: iron, flame, tide, storm, shadow, holy, arcane, huntsman, bulwark, twinfang, apprentice, sage | shops | 60–150 |
-| 6 | the open dice: stone, berserker, gambler, frost, pilgrim, tempest | shops | 85–125 |
-| 6 | the companion signature dice: liora, vess, grosh, tobin, malrik | the companion joins | (100–120) |
-| 6 | the late dice: greenwood, chorus, headsman, ossuary, tearglass | late shops | 140–290 |
-| 7 | `vigil_die` (3 Skill, 1 each of Attack, Defend, Heal, Mana) | late shop | 250 |
+On the equipping screen, the die shows as *n* slots in a ring, one per face. The player drops a skill or a numbered face into each slot. A roll picks one slot, by the face weights as today.
 
-That is 31 dice: 29 with six faces, one with four and one with seven. Most six-sided dice have 2–4 Skill faces.
+## Today
 
-**What the competent simulator rolls** (v1.564, 10 runs): non-casters kept their starting die, because no die they may roll beats it. 3 of 4 casters bought a better one (tearglass twice, ossuary once).
+- **Faces.** A die is a list of weighted faces in `dice.json`. Only the faces marked Skill take a skill today. The others are fixed numbers.
+- **Crits** come from Luck, not from the die. Only one die is in play at a time.
+- **The 31 existing dice:**
+  - 29 have six faces;
+  - `void_die` has four;
+  - `vigil_die` has seven.
+- **Where they come from:**
+  - `starter_die` from the start;
+  - shops, 60–290 gold;
+  - five companion dice, given when the companion joins.
 
-## 2. Sizes worth adding
+**How they map to the new rule.** Every existing die keeps its faces, weights and skill faces as they are. Its non-skill faces simply become slots the player may re-equip too. The new dice start with plain numbered faces in every slot.
 
-Here a d*N* means a die with *N* faces. A smaller die repeats its faces more often, so it is steady. A bigger die holds more skills, but each one comes up less often.
+## The sizes
 
-| Size | Chance of one face (equal weights) | Skill faces it holds | Feel and build | How it is obtained | Price |
+| Size | Slots | Chance per face (equal weights) | What a full die feels like | How it is obtained | Price |
 |---|---|---|---|---|---|
-| **d4** | 25% | 1–2 | Steady: one strong skill comes up every 4th roll. For a single-skill build (Berserker, Heavy Blow). | Shop, clan gift (Sign/Object) | 90–140 |
-| **d6** (today) | ~17% | 2–4 | The all-rounder. | As today | 0–290 |
-| **d8** | 12.5% | 3–5 | Versatile: room for a second skill line or an element. For a hybrid: a cleric healer and striker, a spellblade. | Forge (v1.562 roll), merge, clan gift | 160–220 |
-| **d10** | 10% | 4–6 | A deep kit, each skill rarer. For a caster with many spells and Mana faces. | Quest reward or merge only (one per chapter at most) | n/a |
-| **d12** | ~8% | 5–7 | The legendary die: many skills, but none can be relied on. Its weights must stay tight. | One per run: a boss or the chapter 7 throne | n/a |
-| coin (d2) | 50% | 0–1 | Not a fight die. A **Fate coin** for checks outside fights (camp fate, crossings, the forge reroll), heads or tails. | Camp house or a consumable | 30 |
-| d3 | 33% | 1 | Too close to the d4. Not worth a size of its own. | — | — |
-| d20 | 5% | — | Already used as the *check* die (crossings, the forge, ability checks). Keep it for checks, not fights. | — | — |
+| Coin | 2 | 50% | Outside fights only: heads or tails for a check | One-use consumable, bought or found | 30 |
+| **d4** | 4 | 25% | Few slots, so each one comes up often. Easy to fill, very steady. | Shop | 90–140 |
+| **d6** (today) | 6 | ~17% | The all-rounder | As today | 0–290 |
+| **d8** | 8 | 12.5% | Room for a full build: two skill lines and the numbers they need | Forge, merge, clan gift | 160–220 |
+| **d12** | 12 | ~8% | The largest kit, but any one face comes up rarely | Built (see below) | — |
 
-**Crit and fumble.** I would keep crits on Luck, as today, so that every size reads the same. The one exception I'd suggest: a d12's top face could crit on its own. That needs a test before deciding.
+**Odds and average.** With every face equippable, the average of a die is the average of what the player puts on it.
+- A bigger die isn't stronger on its own. It holds more different things, and each one comes up less often.
+- A small die filled with the best faces is the most reliable.
+- A big die is the most varied, and the strongest once it has many good faces to fill it with.
 
-## 3. Balance risk (for the simulator to measure)
+**The d12: built, not a boss drop.** The player earns its 12 slots over the run.
+- **Where the first one comes from:** a chapter 5 quest reward, or a merge of two d8s at the Skillwright.
+- **How it fills:** it starts with plain numbered faces, and skills are placed as they are unlocked.
 
-| Size | What can go wrong | Bands it could move |
+This fits "12 faces to equip" better than a trophy that arrives already filled.
+
+## Balance risk (for the simulator to measure before any build)
+
+| Change | What can go wrong | Tests it could move |
 |---|---|---|
-| d4 | One strong skill every 4th roll could make a boss trivial. | `boss_balance` (most likely the High Warden and void_manifestation), `clash_balance` |
-| d8 | More skills on one die raises the skill rate, and most of all a caster's damage. | `boss_balance` profession floor (60), `clash_balance` chapter 3–6 |
-| d10 | Late power creep. | `boss_balance` late cases, `nemesis_quests` (champions floor 0.38) |
-| d12 | A legendary late die makes chapters 7–8 easy. The competent player already wins 0.87–0.90 there. | `boss_balance`, the chapter 7–8 win rate |
-| coin | Cheap rerolls on checks could flatten the crossings' health loss. | `land_rulers` crossing loss (about 1.5–3.5%) |
+| Every face equippable (all sizes) | A die filled with nothing but its best skill: many more skill outcomes, fewer plain numbers | `boss_balance` (profession floor 60, the boss means), `clash_balance` |
+| d4 | Four copies of one strong skill comes up every roll | `boss_balance` (most likely the High Warden and void_manifestation) |
+| d8 | More skill faces per die, most of all for casters | `clash_balance` chapters 3–6 |
+| d12 | Late power once it is full; the competent player already wins 0.87–0.90 in chapters 7–8 | `boss_balance` late cases, `nemesis_quests` |
+| Coin | Cheap rerolls on checks | `land_rulers` crossing health loss (about 1.5–3.5%) |
 
-Each size could be measured with the competent simulator (about 10 runs) against today before it is built.
+**One guard to test first:** at most one copy of the same skill per die, or per four slots. That limits the "same skill on every face" risk without capping how many skill faces a die can hold.
 
-## 4. What is worth the screen space
+## What is worth the screen space
 
-The user wants fewer, better dice. My pick is **four sizes and about eight dice in all**:
+Four fight sizes (d4, d6, d8, d12) and the coin. Each new size needs only a couple of dice to start: one or two d4s, two d8s, and the d12 the player builds.
 
-| Keep | Why |
-|---|---|
-| **d6** (today's, trimmed) | The base. Merge look-alikes: stone, storm, liora and grosh have the same 1/1/3/1 shape. |
-| **d4** × 2 (one blade, one ward) | A clear "steady" choice, and very readable on screen. |
-| **d8** × 2 (one per hybrid: martial and arcane) | The "build" choice, earned at the forge or by a merge. |
-| **d12** × 1 | The rare trophy: one per run, from a boss. |
-| **Fate coin** | Outside fights only. It gives the forge and the crossings a small, clear roll. |
+## Calls (the user can reverse these)
 
-I'd drop the d10 (it sits between the d8 and d12 with no clear role) and the d3. Profession dice could then shrink to one d6 per profession, with the companion dice kept as they are, since they are characters.
-
-## Open questions for the user
-
-1. **Trim the d6s?** 29 six-sided dice could become about 10 (one per profession, the companions', two open).
-2. **d12 crit:** should the d12's top face crit on its own, or should crits stay on Luck only?
-3. **Fate coin:** a camp house, or a consumable bought in towns?
+1. **All 29 six-sided dice stay.** None is merged or removed. Those that share a face shape get their own look instead (UX), because players already own them and each one belongs to a profession or a companion.
+2. **The d12 has no crit bonus of its own; crits stay on Luck.** That way every die reads the same, and a crit always means the hero's Luck, not the die.
+3. **The fate coin is a one-use consumable,** bought or found, not a permanent camp upgrade. A coin that is spent stays a small, rare choice, not a free reroll every time.
