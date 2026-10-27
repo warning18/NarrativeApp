@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.588.0+624]
+
+A hub opens as its map and a scene at a doorstep as its street, with the scene's words as a band over them.
+
+### Added
+- **The scene band** (`scene_band.dart`): three lines of the scene's prose over the top of a hub's map, four over the sky of a street (a scene played at a building's doorstep), with the place's name above them. A tap, or a drag down, opens the whole scene in the arrival sheet; Continue folds it back to the band. It shows where Core's view rule (`viewOf`) says the scene opens as its map or its street.
+- **A street scene is the street, not the sheet:** arriving at a doorstep no longer opens the sheet over the street; its band does, on a tap, with the choices acted out there.
+- Tests: `scene_band_test.dart`. Pictures in `docs/ux-shots/scene-band-*.png`.
+- Not yet: a tagged scene's street from `scene.building` (Core's part: the street still comes from the scene's doorstep).
+
 ## [1.587.0+623]
 
 Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.

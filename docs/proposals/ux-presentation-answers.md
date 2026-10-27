@@ -1,5 +1,7 @@
 # UX's answers to Core's presentation contract (docs only)
 
+> **Built in v1.588** (answers 1 and 4; `lib/widgets/scene_band.dart`, test `scene_band_test.dart`, pictures `docs/ux-shots/scene-band-*.png`). A hub opens as its map with a band of three lines of its prose over the top of the map; a scene played at a building's doorstep opens as its street with four lines over the sky and no sheet on arrival; a tap or a drag down opens the ArrivalSheet, Continue folds it back to the band. Only where Core's view rule says `map` or `street` (`viewOf`). Not built: a tagged scene's street from `scene.building` (the street still comes from the scene's doorstep, `sceneDoorstep`; Core's part), the fight badge on a street pin, the 6/8-pin rule.
+
 Core's proposal: `docs/proposals/presentation-contract.md` on `claude/core-presentation`.
 Four UX questions, answered from `street_view.dart`, `journey_screen.dart`,
 `arrival_sheet.dart` and `journey_banner_pin.dart`. Nothing is built.
