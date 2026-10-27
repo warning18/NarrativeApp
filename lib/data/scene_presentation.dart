@@ -21,6 +21,7 @@ import '../models/story_node.dart';
 import 'chapter_spine.dart';
 import 'choice_flow.dart';
 import 'choice_shape.dart';
+import 'city_districts.dart';
 import 'geography.dart';
 import 'story_repository.dart';
 
@@ -131,7 +132,7 @@ class ScenePresentation {
     }
     if (chapterForNode(nodeId) != null) return SceneView.page;
     final place = _geography.placeOfNode(node);
-    final doorstep = _geography.doorstepOfNode(node) != null;
+    final doorstep = scenePlaysInStreet(_geography, node);
     if (place != null && place.isBuilding && !doorstep) return SceneView.room;
     final main = weightOf(nodeId) == SceneWeight.main;
     if (doorstep) {

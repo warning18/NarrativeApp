@@ -107,6 +107,37 @@ class SceneDoorstep {
   final Map<int, Offset> spotOfWay;
 }
 
+/// The building whose street [node] plays in (v1.589), as a building place
+/// of [record]'s town: the plan building its `scene` block names when the
+/// block says `kind: street` (Narrative's tags, presentation-contract.md;
+/// it wins), else the geography building that lists [node] in its
+/// `doorstep` (v1.542, the fallback until every chapter is tagged). A
+/// tagged building comes back with its plan id, district, kind and name.
+/// Null for a scene played anywhere else.
+GeoPlace? sceneStreetOf(
+    Geography geo, CityPlanRecord? record, StoryNode? node) {
+  if (node == null) return null;
+  final tagged = node.sceneInStreet ? node.sceneBuilding : null;
+  final building = tagged == null ? null : record?.building(tagged);
+  if (building != null) {
+    return GeoPlace(
+      id: building.id,
+      level: GeoLevel.building,
+      parent: building.district,
+      kind: building.kind,
+      name: record!.nameOf(building.id, french: false),
+      nameFr: record.nameOf(building.id, french: true),
+      doorstep: [node.id],
+    );
+  }
+  return geo.doorstepOfNode(node);
+}
+
+/// Whether [node] plays outside, in a building's street (see
+/// [sceneStreetOf]): tagged so, or on a geography doorstep list.
+bool scenePlaysInStreet(Geography geo, StoryNode? node) =>
+    (node?.sceneInStreet ?? false) || geo.doorstepOfNode(node) != null;
+
 /// [node]'s doorstep on [record] (see [SceneDoorstep]), or null when the
 /// scene is not played at a building's doorstep, or the building's district
 /// is not on the plan. [waysHere] are the indices of the scene's ways that
@@ -117,13 +148,14 @@ SceneDoorstep? sceneDoorstep(
   StoryNode? node, {
   Iterable<int> waysHere = const [],
 }) {
-  final building = geo.doorstepOfNode(node);
+  final building = sceneStreetOf(geo, record, node);
   if (building == null) return null;
-  final district = districtOfPlace(geo, building.id)?.id;
+  final tagged = record.building(building.id);
+  final district = tagged?.district ?? districtOfPlace(geo, building.id)?.id;
   if (district == null || !record.districts.containsKey(district)) {
     return null;
   }
-  final onPlan = record.buildingOfWay(node!.id, district);
+  final onPlan = tagged ?? record.buildingOfWay(node!.id, district);
   if (onPlan == null) return null;
   final ways = waysHere.toList();
   final spots = record.streetSpotsAround(onPlan.id, ways.length);

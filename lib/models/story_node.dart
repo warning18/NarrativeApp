@@ -739,6 +739,17 @@ class StoryNode {
   /// null for the default.
   String? get sceneWeight => scene['weight']?.toString();
 
+  /// Whether the `scene` block plays the scene in the street (`kind:
+  /// street`): outside, before the building it names (see sceneStreetOf).
+  bool get sceneInStreet => scene['kind']?.toString() == 'street';
+
+  /// The building of the town's plan the `scene` block names
+  /// (city_plans.json, `alster_b032`), or null.
+  String? get sceneBuilding {
+    final id = scene['building']?.toString() ?? '';
+    return id.isEmpty ? null : id;
+  }
+
   /// Seconds the player has to choose (a chase, a wave coming over the
   /// wall), or null for all the time in the world. When they run out the
   /// story takes the choice at [timeoutChoice] (an index into [choices]).
