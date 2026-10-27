@@ -18,7 +18,7 @@ The playthrough simulator now has two player profiles (`SimPolicy` in
 | Dice | The starting die, or the sage die (which wipes its skill faces). | Owns its signature die from the start, buys better ones and rolls the best die it owns, with its skills placed best. At the Skillwright it crafts a `skill_merges.json` recipe when the die gets better for it. |
 | Clan offers | 25% of the time the clan it stands best with, otherwise the best gift, keeping to its main clan and allies. | Takes the gift that raises its power most. A tie (within 1 point) goes to the clan it stands closest to. It never takes a banner whose standing would turn its main clan or an ally Hostile. |
 | Stat picks, skill faces, potions in a fight | Already planned (damage stat / Constitution / secondary shares, `simSkillScore` faces, drinks below 40% health) | Same |
-| Companions | Not modelled by the simulator | Not modelled |
+| Companions | Not modelled by the simulator | Not modelled (since v1.568, see `companions-v1.568.md`) |
 
 Both profiles record every offer: chapter, source, the banners offered, the
 one taken and why. The run transcript prints these under "Clan offers", with
