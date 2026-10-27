@@ -143,6 +143,51 @@ Map<String, CityChartRuler> cityChartRulersOf(
           d.id: CityChartRuler(fill: Color(r.color), accent: Color(r.accent)),
     };
 
+/// Who holds a district and how firmly (wave 18): the holding clan's colours,
+/// its [hold] of the district (0 to 1, its influence over 100), the strongest
+/// rival's [rival] with the [flipAt] level it must reach to take it, and
+/// whether the district [flipped] to its holder. Drawn on the whole-town plan
+/// as a flag in a ring (the crest), the ring filled by the hold.
+class CityChartHold {
+  const CityChartHold({
+    required this.fill,
+    required this.accent,
+    this.hold,
+    this.rival = 0,
+    this.rivalFill,
+    this.flipAt = 0,
+    this.flipped = false,
+  });
+
+  final Color fill;
+  final Color accent;
+
+  /// The holder's influence as a share of 1; null: no influence is counted
+  /// here (a flag alone).
+  final double? hold;
+  final double rival;
+  final Color? rivalFill;
+
+  /// The share of 1 the rival must reach to take the district.
+  final double flipAt;
+  final bool flipped;
+
+  @override
+  bool operator ==(Object other) =>
+      other is CityChartHold &&
+      other.fill == fill &&
+      other.accent == accent &&
+      other.hold == hold &&
+      other.rival == rival &&
+      other.rivalFill == rivalFill &&
+      other.flipAt == flipAt &&
+      other.flipped == flipped;
+
+  @override
+  int get hashCode =>
+      Object.hash(fill, accent, hold, rival, rivalFill, flipAt, flipped);
+}
+
 /// A service of the town pinned on its plan (wave 14): a notice board, the
 /// market, a tavern, a temple, a forge, a harbour. Fixed, not a way of the
 /// story; its [opens] says whether anything opens there yet.

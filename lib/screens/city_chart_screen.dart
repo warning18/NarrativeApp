@@ -170,6 +170,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
                   explored: ref.watch(foundDistrictsProvider),
                   rulers: cityChartRulersOf(
                       live.chart, ref.watch(townRulersProvider)),
+                  locked: ref.watch(lockedDistrictsProvider),
                   phase: ref.watch(dayPhaseProvider),
                   onWay: (way) {
                     final i = int.tryParse(way.id);

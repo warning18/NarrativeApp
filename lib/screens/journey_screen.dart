@@ -41,7 +41,8 @@ import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
 import '../providers/city_provider.dart';
-import '../providers/clans_provider.dart' show factionsProvider;
+import '../providers/clans_provider.dart'
+    show clanDataProvider, factionsProvider;
 import '../providers/day_phase_provider.dart';
 import '../providers/town_rulers_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -88,6 +89,7 @@ import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import '../widgets/street_view/street_view.dart';
+import '../widgets/district_standing.dart';
 import '../widgets/town_walk.dart';
 import '../widgets/way_pin_groups.dart';
 import 'journal_screen.dart';
@@ -6024,6 +6026,38 @@ class _CityDistrictView extends ConsumerWidget {
     final factions = ref.watch(factionsProvider);
     final language = ref.watch(appLanguageProvider);
     final rulers = cityChartRulersOf(chart, townRulers);
+    // Wave 18: the districts a side quest keeps shut, and who holds the rest
+    // and how firmly (district_standing.dart).
+    final session18 = ref.watch(playerSessionProvider);
+    final standings = districtStandingsOf(
+      districtIds: [for (final d in chart.districts) d.id],
+      cityId: ref.watch(currentCityProvider),
+      geography: ref.watch(geographyProvider),
+      politics: session18.politics,
+      flags: session18.flags,
+      completedQuestIds: session18.completedQuestIds,
+      data: ref.watch(clanDataProvider),
+      rulers: townRulers,
+      language: language,
+    );
+    final shutDistricts = {
+      for (final e in standings.entries)
+        if (e.value.locked) e.key,
+    };
+    final holds = {
+      for (final e in standings.entries)
+        if (e.value.crest case final crest?) e.key: crest,
+    };
+    // A shut district is explained, not entered.
+    void focusOrExplain(String? id) {
+      if (id != null && shutDistricts.contains(id)) {
+        showLockedDistrictSheet(context, standings[id]!,
+            name: chart.districts.firstWhere((d) => d.id == id).name);
+        return;
+      }
+      onFocus(id);
+    }
+
     final lookedAt = focus == null
         ? townRulers[chart.districts
                 .map((d) => townRulers[d.id]?.cityId)
@@ -6220,37 +6254,54 @@ class _CityDistrictView extends ConsumerWidget {
                 ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
       ));
       for (final d in chart.districts) {
-        final known = explored == null || explored!.contains(d.id);
+        final standing = standings[d.id]!;
+        // A shut district is named (a rumour), never "?".
+        final known =
+            standing.locked || explored == null || explored!.contains(d.id);
         final n = byDistrict[d.id]?.length ?? 0;
         rows.add(InkWell(
           key: ValueKey('journey_city_district_${d.id}'),
           // A district not yet found is walked into (and so found), not
-          // looked at under its fog.
-          onTap: () => known ? onFocus(d.id) : onWalk(d.id),
+          // looked at under its fog; a shut one is explained.
+          onTap: () => standing.locked
+              ? focusOrExplain(d.id)
+              : known
+                  ? onFocus(d.id)
+                  : onWalk(d.id),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
-              Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: known ? d.colour : Colors.transparent,
-                      border: Border.all(color: d.colour))),
+              DistrictLead(
+                standing,
+                plain: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: known ? d.colour : Colors.transparent,
+                        border: Border.all(color: d.colour))),
+              ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(known ? d.name : '?',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: known ? null : ink.ash)),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(known ? d.name : '?',
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(color: known ? null : ink.ash)),
+                      DistrictStandingLine(standing),
+                    ]),
               ),
               Text(
                   d.id == hereDistrict
                       ? text.here
-                      : !known
-                          ? text.unexplored
-                          : (n == 0 ? '' : text.ways(n)),
+                      : standing.locked
+                          ? ''
+                          : !known
+                              ? text.unexplored
+                              : (n == 0 ? '' : text.ways(n)),
                   style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
             ]),
           ),
@@ -6307,7 +6358,9 @@ class _CityDistrictView extends ConsumerWidget {
                       numbers: numbers,
                       banners: banners,
                       bannersDark: chartDark,
-                      onFocus: onFocus,
+                      onFocus: focusOrExplain,
+                      locked: shutDistricts,
+                      holds: holds,
                       onPick: (w) {
                         final i = int.tryParse(w.id);
                         if (i != null && i < steps.length) onOpen(i);

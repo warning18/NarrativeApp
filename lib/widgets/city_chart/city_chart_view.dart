@@ -75,6 +75,8 @@ class CityChartView extends StatefulWidget {
     this.services = const [],
     this.onService,
     this.rulers = const {},
+    this.locked = const {},
+    this.holds = const {},
     this.controls = true,
     this.cards = true,
     this.numbers = const {},
@@ -113,6 +115,12 @@ class CityChartView extends StatefulWidget {
 
   /// The ruling clan's colours by district id.
   final Map<String, CityChartRuler> rulers;
+
+  /// The districts a side quest keeps shut (wave 18): shuttered on the plan.
+  final Set<String> locked;
+
+  /// Who holds a district and how firmly, by district id: its crest.
+  final Map<String, CityChartHold> holds;
   final void Function(CityChartService service)? onService;
 
   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
@@ -326,6 +334,8 @@ class _CityChartViewState extends State<CityChartView>
         selectedWayId: _pickedWay?.id,
         services: widget.services,
         rulers: widget.rulers,
+        locked: widget.locked,
+        holds: widget.holds,
         selectedServiceId: _pickedService?.id,
         focusDistrict: _focus,
         numbers: widget.numbers,

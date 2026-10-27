@@ -12874,6 +12874,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         '{district} a un nouveau maître\u00a0: {clan}. Avant\u00a0: {from}.',
   },
+  // The Town view (v1.572): a district that changed hands, and what opens a
+  // shut one.
+  'district_changed_hands': {
+    AppLanguage.en: 'changed hands',
+    AppLanguage.fr: 'a chang\u00e9 de mains',
+  },
+  'district_locked_by': {
+    AppLanguage.en: 'Opens with: {quest}',
+    AppLanguage.fr: 'S\u2019ouvre avec\u00a0: {quest}',
+  },
   'journal_news_tab': {
     AppLanguage.en: 'News',
     AppLanguage.fr: 'Nouvelles',
