@@ -30,6 +30,7 @@ import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
 import '../data/forge_roll.dart';
 import '../data/feature_unlocks.dart';
+import '../data/first_journey.dart' show journeyFirstShownFlag;
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
@@ -2678,6 +2679,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (state.acknowledgedFeatures.contains(featureId)) return;
     state = state.copyWith(
         acknowledgedFeatures: [...state.acknowledgedFeatures, featureId]);
+    await _persist();
+  }
+
+  /// The Journey opened on its map for the party's first step outside
+  /// (first_journey.dart): once a game.
+  Future<void> markJourneyFirstShown() async {
+    if (state.flags.contains(journeyFirstShownFlag)) return;
+    state = state.copyWith(flags: [...state.flags, journeyFirstShownFlag]);
     await _persist();
   }
 

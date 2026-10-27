@@ -28,6 +28,7 @@ class CityChartPainter extends CustomPainter {
     this.explored,
     this.hereDistrict,
     this.hereWayId,
+    this.partyAt,
     this.goalWayId,
     this.selectedWayId,
     this.services = const [],
@@ -56,6 +57,10 @@ class CityChartPainter extends CustomPainter {
   final Set<String>? explored;
   final String? hereDistrict;
   final String? hereWayId;
+
+  /// Where the party's mark is while it walks to a way (the host's walk):
+  /// over every other rule.
+  final Offset? partyAt;
   final String? goalWayId;
   final String? selectedWayId;
 
@@ -627,6 +632,8 @@ class CityChartPainter extends CustomPainter {
       final d = chart.districtById(hereDistrict!);
       if (d != null && _known(d.id)) here = d.centre.translate(0, 22 * inv);
     }
+    // Walking to a way (the host's walk), the mark is where the walk is.
+    here = partyAt ?? here;
     if (here != null) {
       canvas.save();
       canvas.translate(here.dx, here.dy);
@@ -772,6 +779,7 @@ class CityChartPainter extends CustomPainter {
       old.explored != explored ||
       old.hereDistrict != hereDistrict ||
       old.hereWayId != hereWayId ||
+      old.partyAt != partyAt ||
       old.goalWayId != goalWayId ||
       old.selectedWayId != selectedWayId ||
       old.selectedServiceId != selectedServiceId ||
