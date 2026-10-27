@@ -704,7 +704,7 @@ Widget _roll() {
                   glow: 0.9),
             ],
             ember,
-            '★',
+            '!',
             'existing: the bigger burst of a skill face',
           ),
         ])
@@ -827,7 +827,7 @@ Widget _fightDice() {
         const SizedBox(height: 8),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           slot(_shapes[1], bone, '5'),
-          slot(_shapes[2], ember, '★', lit: true, tag: 'd8 · a skill face'),
+          slot(_shapes[2], ember, '!', lit: true, tag: 'd8 · a skill face'),
           slot(_shapes[5], glass, '17', held: true, tag: 'd20 · kept'),
           slot(_shapes[1], bone, '?', dim: true, tag: 'd6 · not rolled'),
         ]),
