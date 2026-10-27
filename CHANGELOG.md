@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.561.0+597]
+## [1.563.0+599]
 
 The Journey's ways are grouped by pin, and the notice board is a board you read.
 
@@ -18,6 +18,17 @@ The Journey's ways are grouped by pin, and the notice board is a board you read.
 
 ### Tests
 - New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
+## [1.560.0+596]
+
+"A Life Before This One" is played as scene pages.
+
+### Changed
+- **The memories** (`origin_stories_screen.dart`): each of the six memories is a page like the story reader's. A side-view picture of the memory's place fades into the page with the age, the stage and the title over its foot; the age rail is small under it; the memory's words are set in the reader's prose (no card) and write themselves out the first time (a tap finishes them; with reduced motion they are there at once); the answers come when the words have been written. After an answer, what came of it is written out on the same page, then its two tags (what it teaches, how it leans) and "Next memory". The recall line, the three answers with their stat chip, "Choose my whole life at random" and "Choose again at random", the summary and every word are as before.
+- **The fourteen places** (`origin_scene_backdrop.dart`): each memory has a backdrop read off its own words: the rope-walk in the rain (the sparrow), the chapel, the market awning in the rain, the smithy, the street, the frozen well (frost), the tavern on Tallow Street in the snow, the docks (sea), the chandler's, the back alley at night, the Drowned Saint's shrine at night, the marsh (fen), Old Hesk's house, and the parents' house in the snow. The street kit's party at the door is left out of them (`StreetViewScene.party`).
+
+### Tests
+- New `test/origin_scene_backdrop_test.dart` (each of the fourteen memories has a place, and every place draws at 320 and 390 px); `origin_stories_test` checks the picture, and that the answers wait for the words.
 
 ## [1.559.0+595]
 
