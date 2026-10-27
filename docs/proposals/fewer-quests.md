@@ -127,6 +127,6 @@ At the start the player sees 5 rows (1, 2, 4, 5, 6; the fence and Liora appear o
 
 What the player experiences: the harbor master is one person with one standing job. They take it, finish it, return, and the next piece of work is on offer, as the quest chain already says. Everything that happened before still happens; only the list is shorter.
 
-New scenes to write: the entry scene of the harbor master's work (one short page, EN/FR), the "two doors" scene, the "Vane at the gate" scene. The five errands' own text and choices do not change. Net: 10 old rows (2, 3, 5, 6, 32, 33, 26, 27, 28) become 3 new rows, so 13 rows become 7 (six fewer); three short scenes are new.
+New scenes to write: the entry scene of the harbor master's work (one short page, EN/FR), the "two doors" scene, the "Vane at the gate" scene. The errands' own text and choices do not change. Net: 9 old rows (2, 3, 5, 6, 32, 33, 26, 27, 28) become 3 new rows, so 13 rows become 7 (six fewer); three short scenes are new.
 
 **Asks for the manager, if the user approves:** which Core numbers I touch (none in this pilot); the simulator re-pin after the fold; and the order of the other towns (Ash Market next, then the Drowned Cloister).
