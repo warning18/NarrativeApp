@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.578.0+614]
+
+The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
+
 ## [1.577.0+613]
 
 Three scenes of chapter 1 are told in two pages: the Blind Beggar's evening, then the wall coming in; the walk to the family house, then the cannonball; the Lark lifting off, then the guns. A Continue on the calm page; the choices come with the shock. English and French.
