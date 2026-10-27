@@ -54,7 +54,7 @@ I did not recount the 1,030 "ways in the planned cities" (the manager's figure, 
 ## 2. What can fold, what must stay
 
 **Can fold without losing content**
-- **A quest chain at one giver** into one entry. The Wharf's harbor master has five quests that already chain (`q_ch2_dockside_debts` → `smugglers_favor` → `burning_manifest` → `captains_gambit` → `harbor_reckoning`), and the hub shows four rows for them (the job, the captain, the bounty on the bandits, the hound), plus the rats. One entry, "The harbor master's work", opens the step the party is on.
+- **A quest chain at one giver** into one entry. The Wharf's harbor master has quests that already chain (`q_ch2_dockside_debts` → `smugglers_favor` → `burning_manifest` → `captains_gambit` → `harbor_reckoning`), and the Wharf shows three rows for them (the job, the captain, the bounty on the bandits), plus the rats. One entry, "The harbor master's work", opens the step the party is on. (The last quest's row, the plague hound, is at the Yard, another district, and stays there.)
 - **Doors and looks**: "try the first arch of the Lantern Alleys", "look across the footbridge to Tern Row" are two doors off one wharf. One scene, two ways.
 - **The ways of one confrontation shown as hub rows**: "Bribe Vane", "Threaten him", "Push past him" are three choices of one scene; the hub can show one row, "Deal with Vane at the gate", and the three ways move into a scene.
 - **Flavour looks with no flag** ("Look at the blades on the Inquisitors' belts", "Follow the child who is talking to the gulls") when two or three share a district: one "Walk the wharf" scene, each look a way inside it that plays its own text.
@@ -109,13 +109,13 @@ I did not recount the 1,030 "ways in the planned cities" (the manager's figure, 
 | 29 | Force the loading crane's jammed winch open | `2010_crane` | story way, a roll |
 | 30 | Follow Liora to the captain's raiding skiff | `2010_liora` | story way, if Liora was met |
 
-(The hound row, 4, belongs to `q_ch2_harbor_reckoning`, the last of the harbor master's chain; the chain is five quests, four rows.)
+(The hound row, 4, `q_ch2_harbor_reckoning`, is at the Ship-breaker's Yard, not here.)
 
 ### After (7 rows at the start, 5 open)
 
 | # | Row | What it opens | Content kept |
 |---|---|---|---|
-| 1 | **The harbor master's work** | the step the party is on: the job (`2015_dockside`) → the rats (`2015_rats`) → the captain (`2015_smuggler`) → the bounty (`2015_bandits`) → the hound (`2015_hound`) | all five scenes and fights, all five quests and their order, flags `hub_2015_*` |
+| 1 | **The harbor master's work** | the step the party is on: the job (`2015_dockside`) → the rats (`2015_rats`) → the captain (`2015_smuggler`) → the bounty (`2015_bandits`) | all four scenes and fights, the three quests they open and their order, flags `hub_2015_*` |
 | 2 | Buy a quiet route from a Crow tout | `2015_route_sold`, unchanged | the intrigue stage, the Crow standing, `plot_ledger_1` |
 | 3 | Ask the Tide Cellar's fence about the girl | `2015_lysa_line`, unchanged, only if Lysa was lost | `lysa_trail_ledger`, the gold, the alignment |
 | 4 | **Two doors off the wharf** | one scene: the first arch of the Lantern Alleys, the footbridge to Tern Row | both doors, `q_ch2_terns_toll`, both `hub_2015_*_door` flags |
@@ -127,6 +127,6 @@ At the start the player sees 5 rows (1, 2, 4, 5, 6; the fence and Liora appear o
 
 What the player experiences: the harbor master is one person with one standing job. They take it, finish it, return, and the next piece of work is on offer, as the quest chain already says. Everything that happened before still happens; only the list is shorter.
 
-New scenes to write: the entry scene of the harbor master's work (one short page, EN/FR), the "two doors" scene, the "Vane at the gate" scene. The five errands' own text and choices do not change. Estimated: three short scenes and 8 hub rows removed (the old rows 2, 3, 4, 5, 6, 32, 33, 26, 27, 28 become 3 new rows).
+New scenes to write: the entry scene of the harbor master's work (one short page, EN/FR), the "two doors" scene, the "Vane at the gate" scene. The five errands' own text and choices do not change. Net: 10 old rows (2, 3, 5, 6, 32, 33, 26, 27, 28) become 3 new rows, so 13 rows become 7 (six fewer); three short scenes are new.
 
 **Asks for the manager, if the user approves:** which Core numbers I touch (none in this pilot); the simulator re-pin after the fold; and the order of the other towns (Ash Market next, then the Drowned Cloister).
