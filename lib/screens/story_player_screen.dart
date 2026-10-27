@@ -430,12 +430,16 @@ class _StoryView extends ConsumerWidget {
         (ModalRoute.of(context)?.isCurrent ?? true);
     // Picking a saved story back up: a short recap, once per launch. A
     // save on a scene that holds the party on its page (scene_lock.dart)
-    // has it on the next scene with a map; whether it does waits for the
-    // places and the cities' plans the map lays its ways on.
+    // has it on the next scene with a map. Only a scene that could lock
+    // (every way to take is acted out on the spot) waits for the places
+    // and the cities' plans the map lays its ways on; any other shows its
+    // recap at once.
+    final mayLock = storyMapPlacementsKnown(ref)
+        ? storySceneLocked(ref, node, story)
+        : storySceneLocked(ref, node, story, mapped: (_) => false);
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
-        storyMapPlacementsKnown(ref) &&
-        !storySceneLocked(ref, node, story) &&
+        !mayLock &&
         hasRecapProgress(playState,
             resumed:
                 ref.read(storyPlayProvider.notifier).restoredFromAutosave)) {
