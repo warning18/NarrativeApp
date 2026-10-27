@@ -70,7 +70,12 @@ void main() {
     // No stat is raised by hand any more, and no pool of points is shown.
     expect(find.text('+1 Point'), findsNothing);
     expect(find.text('Stat Points Available: 5'), findsNothing);
-    expect(find.text('Stat picks left: 5'), findsOneWidget);
+    expect(find.text('5 picks'), findsOneWidget);
+    // One radar while a pick waits: the picker's, the plain one is gone.
+    expect(find.byKey(const Key('level_up_radar')), findsNothing);
+    expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
+    expect(find.textContaining('Stat picks left'), findsNothing);
+    expect(find.text('Hold a stat to see what it does'), findsNothing);
     expect(find.text('Pick a gain'), findsOneWidget);
     for (var i = 0; i < 3; i++) {
       expect(find.byKey(Key('stat_pick_offer_$i')), findsOneWidget);
@@ -98,9 +103,34 @@ void main() {
     final after = container.read(playerSessionProvider);
     expect(after.statPoints, 4);
     expect(after.trainingTaken, {offer.pathId: 1});
-    expect(find.text('Stat picks left: 4'), findsOneWidget);
+    expect(find.text('4 picks'), findsOneWidget);
     expect(find.byKey(const Key('stat_pick_picker')), findsOneWidget);
     expect(find.byType(SnackBar), findsNothing);
+  });
+
+  testWidgets('with no pick waiting the plain radar is the only one',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(420, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(ProviderScope(
+      overrides: overrides,
+      child: const MaterialApp(home: LevelUpScreen()),
+    ));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(LevelUpScreen)));
+    container.read(playerSessionProvider);
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson(
+            {'statPoints': 0, 'professionId': 'warrior'})));
+    await settle(tester);
+    expect(find.byKey(const Key('level_up_radar')), findsOneWidget);
+    expect(find.byKey(const Key('stat_pick_radar')), findsNothing);
+    expect(find.textContaining('picks'), findsNothing);
   });
 
   testWidgets('the level-up pop-up shows the points and the grouped stats',
@@ -148,9 +178,10 @@ void main() {
     expect(find.text('Level Up! Level 4'), findsOneWidget);
     expect(find.byKey(const Key('level_up_points')), findsOneWidget);
     expect(find.byKey(const Key('level_up_burst')), findsOneWidget);
-    // The stats open as the radar and the fight numbers; the Detail tab
-    // under them opens the list of rows.
-    expect(find.byKey(const Key('level_up_radar')), findsOneWidget);
+    // The stats open as the fight numbers; while picks wait the picker's own
+    // radar is the only one on the page (v1.565), the plain one is gone.
+    expect(find.byKey(const Key('level_up_radar')), findsNothing);
+    expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
     expect(find.byKey(const Key('level_up_fight_damage')), findsOneWidget);
     expect(find.byKey(const Key('stat_row_strength')), findsNothing);
     await tester.ensureVisible(find.byKey(const Key('level_up_detail_tab')));
@@ -166,7 +197,12 @@ void main() {
     // Two picks wait. No "decide later": the pop-up stays until both are
     // taken. It says what a level gives by itself.
     expect(find.text('Pick a gain'), findsOneWidget);
-    expect(find.byKey(const Key('level_up_gives')), findsOneWidget);
+    expect(find.byKey(const Key('level_up_gives')), findsNothing);
+    expect(find.text('Each level also gives +4 max health.'), findsNothing);
+    expect(find.byKey(const Key('level_up_offer_note')), findsNothing);
+    expect(find.text('Hold a stat to see what it does'), findsNothing);
+    expect(find.text('2 picks'), findsOneWidget,
+        reason: 'two picks wait: a quiet count');
     expect(find.text('Decide later'), findsNothing);
     await tester.tap(find.byKey(const Key('level_up_close')));
     await tester.pump(const Duration(milliseconds: 100));

@@ -21,7 +21,6 @@ class LevelUpScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final canSpend = session.statPoints > 0;
 
     final xpRatio = session.xpToNextLevel == 0
         ? 0.0
@@ -73,28 +72,22 @@ class LevelUpScreen extends ConsumerWidget {
                       backgroundColor: ink.seam,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  // With more than one pick waiting, a quiet count; with one,
+                  // nothing (the tour's first line still points here).
                   TutorialTarget(
                     id: 'levelUp.points',
-                    child: Row(
-                      children: [
-                        Icon(Icons.star_outline,
-                            size: 18, color: canSpend ? ink.gold : ink.ash),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            '${tr(ref, 'stat_picks_left')}: ${session.pendingStatPicks}',
-                            style: theme.textTheme.titleMedium
-                                ?.copyWith(color: canSpend ? ink.gold : null),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    tr(ref, 'hold_stat_for_details_hint'),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+                    child: session.pendingStatPicks > 1
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              tr(ref, 'stat_picks_count').replaceAll(
+                                  '{n}', '${session.pendingStatPicks}'),
+                              key: const Key('level_up_points'),
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(color: ink.ash),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

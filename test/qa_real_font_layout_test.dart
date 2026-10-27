@@ -113,7 +113,9 @@ void main() {
         for (var i = 0; i < 8; i++) {
           await tester.pump(const Duration(milliseconds: 100));
         }
-        expect(find.byKey(const Key('level_up_points')), findsOneWidget);
+        // The pop-up is up (its points box is gone: v1.565 shows only a quiet
+        // count when more than one pick waits).
+        expect(find.byKey(const Key('level_up_close')), findsOneWidget);
         expect(overflows, isEmpty, reason: overflows.toSet().join('\n'));
       });
     }

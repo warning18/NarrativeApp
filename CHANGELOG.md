@@ -23,6 +23,24 @@ The dice come in real sizes, d4 to d20, and every face of a die is a slot to equ
 - **The tally die** (d12, 12 plain faces to fill): the reward of *The Candle Count* (chapter 5), or woven at the Skillwright from two d8s you own (both are spent, and their Hammersmith work is refunded). Only one can be owned.
 - **The fate coin** (30 gold, one use): when a land-crossing check fails, flip it to roll the check again.
 
+## [1.570.0+606]
+
+Chapters 1–3 read the same in English and French: names, titles and times of day agree between scenes, and the paragraph breaks match in both languages. Wording only.
+
+## [1.569.0+605]
+
+The Journey's ways are grouped by pin, and the notice board is a board you read.
+
+### Changed
+- **The list of ways under the district map** (`way_pin_groups.dart`, `journey_screen.dart`): the ways that hang at the same pin (a building, or a spot) on the map are one row: the pin's own banner or disc, the name of the way that leads it, a count and a chevron. It is closed until tapped; a tap opens it in place to its ways, each the row it always was, indented, and a tap on one does what a row's tap did (the way's sheet). Only one pin is open at a time. A pin with one way stays a plain row, and a district with no such pin looks exactly as before. The header reads "2 pins · 5 ways · tap a pin to open it" when there are grouped pins. (The opened state is built as mocked so a row can open; say if you want it otherwise.)
+- **The notice board** (`bounty_board.dart`, `town_service_sheet.dart`, `city_chart_painter.dart`): the contracts are pinned on a wooden board as slightly tilted parchment notes, each with a stamp-ring for its kind, its goal, how far along it is as pips and "2 of 3", its pay as two chips (gold, essence), and a wax seal that is the Claim: flat and grey while the note is open, red and glowing once it is met. A claimed note is stamped PAID and drops off; a new board's notes pin up one after another (with reduced motion: no pin-up, no stamp, the note is simply gone). The header says the chapter and what waits ("Chapter 2 · 1 to claim"). The notice board's pin on the district map is a little board with a count of the notices up, red when one can be claimed, and a tap on it opens the board itself instead of a sheet with one row. The contracts, the claim and the posting are unchanged; the camp's board looks the same way.
+
+### Removed
+- **On the level-up pop-up and the Level Up screen** (`level_up_dialog.dart`, `level_up_screen.dart`): the "Stat picks left: 1" box, the line "Each level also gives +4 max health.", the line "The clans come to you once this closes: an offer waits." (pop-up only) and the line "Hold a stat to see what it does". The header, the cards, the radar and the Close or Take this pick button stay, and the hold-to-peek on a stat still works, it is just not announced. When more than one pick waits, a small quiet count ("2 picks") shows so the player knows another round follows; with one pick, nothing. **One radar:** while a pick waits, the Level Up screen's own plain radar (and its "tap a corner" line) is gone, in the pop-up and on the screen: the picker's radar (the hero's shape, with the pick in green once one is chosen; before any is chosen, the shape alone) is the only one. With no pick waiting, the plain radar is shown as before. The strings `stat_picks_left`, `level_up_gives` and `level_up_offer_note` are gone; `hold_stat_for_details_hint` stays (the character creation screen uses it).
+
+### Tests
+- `level_up_screen_test` (the removed texts are gone, the quiet count shows for several picks) and `qa_real_font_layout_test` (it checked the removed points box; it now checks the pop-up is up). New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
 ## [1.568.0+604]
 
 The competent simulated player recruits companions and fights beside them.

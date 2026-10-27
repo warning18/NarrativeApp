@@ -2021,9 +2021,9 @@
     "chapter": 4,
     "kind": "healer",
     "description": "An elf healer of the Barkbleeders who treats the Drowned Cloister’s sick with fever-bark bled from the fen, until the Keyholders lifted his whole season’s tithe and cached it for sale. Without the bark he has candles, prayers and nothing that works.",
-    "description_fr": "Un guérisseur elfe des Saigne-Écorce qui soigne les malades du Cloître noyé avec l’écorce-fièvre saignée dans le marais, jusqu’à ce que les Porte-Clés lui prennent la dîme de toute une saison et la cachent pour la vendre. Sans l’écorce, il lui reste des chandelles, des prières, et rien qui agisse.",
+    "description_fr": "Un guérisseur elfe des Saigne-Écorce qui soigne les malades du Cloître noyé avec l’écorce-fièvre saignée dans le marais, jusqu’à ce que les Porte-Clefs lui prennent la dîme de toute une saison et la cachent pour la vendre. Sans l’écorce, il lui reste des chandelles, des prières, et rien qui agisse.",
     "want": "His season’s bark back from the Keyholders’ cache, before the fever takes the cloister.",
-    "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clés, avant que la fièvre n’emporte le cloître.",
+    "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clefs, avant que la fièvre n’emporte le cloître.",
     "metNodes": [
       "5010_brannoc",
       "6010_brannoc_later"
@@ -2037,14 +2037,14 @@
         "andFlags": [],
         "unlessFlags": [],
         "line": "You lifted the Keyholders’ cache and returned the bark to Brannoc; the Barkbleeders count you a friend of the fen.",
-        "line_fr": "Vous avez vidé la cache des Porte-Clés et rendu l’écorce à Brannoc ; les Saigne-Écorce vous comptent parmi les amis du marais."
+        "line_fr": "Vous avez vidé la cache des Porte-Clefs et rendu l’écorce à Brannoc ; les Saigne-Écorce vous comptent parmi les amis du marais."
       },
       {
         "flag": "bark_sold",
         "andFlags": [],
         "unlessFlags": [],
         "line": "You sold the recovered bark back to the Keyholders; Brannoc’s sick went without, and he did not forget who put a price on them.",
-        "line_fr": "Vous avez revendu l’écorce récupérée aux Porte-Clés ; les malades de Brannoc s’en sont passés, et il n’a pas oublié qui leur avait mis un prix."
+        "line_fr": "Vous avez revendu l’écorce récupérée aux Porte-Clefs ; les malades de Brannoc s’en sont passés, et il n’a pas oublié qui leur avait mis un prix."
       },
       {
         "flag": "bark_kept",
@@ -2411,9 +2411,9 @@
     "chapter": 2,
     "kind": "keeper",
     "description": "The Keyholders’ hand under the rusty pier, who has never given a name and never asked for one. Everything on the shelves came off a boat the Dominion never logged.",
-    "description_fr": "La main des Porte-Clés sous la jetée rouillée, qui n’a jamais donné de nom et n’en a jamais demandé. Tout ce qui garnit les rayons est sorti d’un bateau que le Dominion n’a jamais enregistré.",
+    "description_fr": "La main des Porte-Clefs sous la jetée rouillée, qui n’a jamais donné de nom et n’en a jamais demandé. Tout ce qui garnit les rayons est sorti d’un bateau que le Dominion n’a jamais enregistré.",
     "want": "To move the Keyholders’ cargo without a single question asked.",
-    "want_fr": "Écouler la cargaison des Porte-Clés sans qu’une seule question soit posée.",
+    "want_fr": "Écouler la cargaison des Porte-Clefs sans qu’une seule question soit posée.",
     "metNodes": [],
     "metFlags": [],
     "shopId": "black_market_docks",
@@ -2652,7 +2652,7 @@
   "keeper_smugglers_vault": {
     "npcID": "keeper_smugglers_vault",
     "npcName": "The Keyholder",
-    "npcName_fr": "Le Porte-Clés",
+    "npcName_fr": "Le Porte-Clef",
     "role": "Keeper of the Vault",
     "role_fr": "Garde du Coffre",
     "faction": "keyholders",
@@ -2660,9 +2660,9 @@
     "chapter": 3,
     "kind": "keeper",
     "description": "The Keyholder who follows the Crusade’s supply ships and set up the Vault’s counter in a dry cellar under the camp’s standing wall. One of everything, nothing with a receipt, and the door opens exactly as wide as the Ledger says you pay.",
-    "description_fr": "Le Porte-Clés qui suit les navires de ravitaillement de la Croisade et a installé le comptoir du Coffre dans une cave sèche sous le mur du camp. Un seul de chaque, rien avec un reçu, et la porte s’ouvre exactement aussi grand que le Registre dit que vous payez.",
+    "description_fr": "Le Porte-Clef qui suit les navires de ravitaillement de la Croisade et a installé le comptoir du Coffre dans une cave sèche sous le mur du camp. Un seul de chaque, rien avec un reçu, et la porte s’ouvre exactement aussi grand que le Registre dit que vous payez.",
     "want": "To keep the Vault’s door open and its shelves off every ledger but the Keyholders’ own.",
-    "want_fr": "Garder la porte du Coffre ouverte et ses rayons hors de tout registre, sauf celui des Porte-Clés.",
+    "want_fr": "Garder la porte du Coffre ouverte et ses rayons hors de tout registre, sauf celui des Porte-Clefs.",
     "metNodes": [],
     "metFlags": [],
     "shopId": "smugglers_vault",
@@ -2698,7 +2698,7 @@
     "clan": "crows",
     "rank": 4,
     "title": "Second Keyholder, keeper of the Vault",
-    "title_fr": "Second Porte-Clés, garde du Coffre",
+    "title_fr": "Second Porte-Clef, garde du Coffre",
     "stanceLeader": "wavering",
     "stancePlayer": "neutral"
   },
