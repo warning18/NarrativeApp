@@ -55,7 +55,9 @@ void main() {
     }
   });
 
-  test('the cells, the ceremony, the fall and the chart-keeper\'s thread open as the page', () {
+  test(
+      'the cells, the ceremony, the fall and the chart-keeper\'s thread open as the page',
+      () {
     for (final id in [
       '800',
       '4999_standard',
