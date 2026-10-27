@@ -190,6 +190,8 @@ const _hiddenInChapters1to3 = <String>[
   '2015_crow_offer',
   '2015_alleys_door',
   '2015_ternrow_door',
+  '2015_doors',
+  '2015_vane',
 ];
 
 Future<void> _settle(WidgetTester tester, {int rounds = 3}) async {

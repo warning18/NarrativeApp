@@ -268,8 +268,9 @@ void main() {
     // Crow tally-girl who says the clans will make an offer (v1.422).
     // 61 once Saltmouth is one place, its six districts' scenes together
     // (v1.536): the gate's and the wharf's read. 67 with Card Row's and Tern
-    // Row's district quests and the two locked doors (wave 18).
-    expect(find.text('Scenes read: 5 / 67'), findsOneWidget);
+    // Row's district quests and the two locked doors (wave 18). 69 with the wharf's
+    // stair and Vane's gate (v1.578).
+    expect(find.text('Scenes read: 5 / 69'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(5));
