@@ -24,3 +24,5 @@ To regenerate a picture: `UX_SHOTS=<dir> flutter test test/ux_<name>_mock_test.d
 ## After the user's answers (branch `claude/ux-redraw-2`)
 
 See `redraw-2.md`: the power sign redrawn without bars (`power-ways-mock.png`), the Forge sheet with tabs (`forge-tabs-mock.png`) and two tutorial ideas (`tutorial-ideas-mock.png`). The standing sign is dropped.
+
+Also: the inventory review (`inventory-review.md`, `inventory-mock.png`, `test/ux_inventory_mock_test.dart`), branch `claude/ux-inventory-mock`.
