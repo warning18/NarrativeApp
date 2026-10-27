@@ -55,12 +55,13 @@ void main() {
     }
   });
 
-  test('the cells, the ceremony and the fall open as the page', () {
+  test('the cells, the ceremony, the fall and the chart-keeper\'s thread open as the page', () {
     for (final id in [
       '800',
       '4999_standard',
       '4999_drawn',
       '3010_rope_fail',
+      '6010_thread',
     ]) {
       expect(present.viewOf(id), SceneView.page, reason: id);
       expect(story.nodeFor(id)!.sceneView, 'page', reason: id);

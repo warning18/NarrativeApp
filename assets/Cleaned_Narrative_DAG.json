@@ -11284,6 +11284,9 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chartkeeper_chapel",
+    "scene": {
+      "view": "page"
+    },
     "choices": [
       {
         "text": "Open the reliquary yourself",
