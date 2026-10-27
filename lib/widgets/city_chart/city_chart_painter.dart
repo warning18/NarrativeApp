@@ -593,21 +593,66 @@ class CityChartPainter extends CustomPainter {
                 : s.opens
                     ? p.label
                     : p.label.withValues(alpha: 0.45));
-      final icon = serviceIcon(s.kind);
-      final tp = TextPainter(
-        text: TextSpan(
-            text: String.fromCharCode(icon.codePoint),
-            style: TextStyle(
-                fontFamily: icon.fontFamily,
-                package: icon.fontPackage,
-                fontSize: 15,
-                height: 1,
-                color: s.opens ? p.label : p.label.withValues(alpha: 0.5))),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
+      if (s.kind == 'notice_board') {
+        _noticeBoardGlyph(canvas, s.opens);
+      } else {
+        _serviceIcon(canvas, s, p);
+      }
+      if (s.badge > 0) _serviceBadge(canvas, s, p);
       canvas.restore();
     }
+  }
+
+  /// A small board with notes pinned on it: the notice board's pin.
+  void _noticeBoardGlyph(Canvas canvas, bool opens) {
+    final a = opens ? 1.0 : 0.5;
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
+            const Radius.circular(1.5)),
+        Paint()..color = const Color(0xFF7A5B3A).withValues(alpha: a));
+    final note = Paint()..color = const Color(0xFFEADFC2).withValues(alpha: a);
+    canvas.drawRect(const Rect.fromLTWH(-7, -5.5, 6, 5), note);
+    canvas.drawRect(const Rect.fromLTWH(0, -5, 6, 4), note);
+    canvas.drawRect(const Rect.fromLTWH(-5.5, 0.5, 7, 5), note);
+    canvas.drawRect(const Rect.fromLTWH(3, 1, 3, 4), note);
+  }
+
+  /// The count on a pin: round, red when something can be claimed.
+  void _serviceBadge(Canvas canvas, CityChartService s, ChartPalette p) {
+    const centre = Offset(serviceRadius - 1, -serviceRadius + 1);
+    canvas.drawCircle(centre, 7.5, Paint()..color = Colors.black45);
+    canvas.drawCircle(centre, 6.5,
+        Paint()..color = s.urgent ? const Color(0xFFC0392B) : p.label);
+    final tp = TextPainter(
+      text: TextSpan(
+          text: s.badge > 9 ? '9+' : '${s.badge}',
+          style: TextStyle(
+              fontFamily: 'PixelifySans',
+              fontSize: 9,
+              height: 1,
+              fontWeight: FontWeight.w700,
+              color: s.urgent ? Colors.white : p.fog)),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, centre - Offset(tp.width / 2, tp.height / 2));
+  }
+
+  /// A service pin's icon (the ones that are not drawn).
+  void _serviceIcon(Canvas canvas, CityChartService s, ChartPalette p) {
+    final icon = serviceIcon(s.kind);
+    final tp = TextPainter(
+      text: TextSpan(
+          text: String.fromCharCode(icon.codePoint),
+          style: TextStyle(
+              fontFamily: icon.fontFamily,
+              package: icon.fontPackage,
+              fontSize: 15,
+              height: 1,
+              color: s.opens ? p.label : p.label.withValues(alpha: 0.5))),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
   }
 
   /// Where a way's pin sits: on its building.

@@ -153,9 +153,16 @@ class CityChartService {
     required this.at,
     required this.district,
     this.opens = true,
+    this.badge = 0,
+    this.urgent = false,
   });
 
   final String id;
+
+  /// A count on the pin (the notice board's notices up); 0 shows none. It
+  /// is red when [urgent] (a contract can be claimed).
+  final int badge;
+  final bool urgent;
 
   /// notice_board, market, tavern, temple, forge or harbour.
   final String kind;
