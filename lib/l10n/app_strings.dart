@@ -1260,7 +1260,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Grey Shroud',
     AppLanguage.fr: 'Le Linceul gris',
   },
-  // The first-launch intro (v1.582): Narrative's four lines (set A).
+  // The first-launch intro (v1.583): Narrative's four lines (set A).
   'intro_line_1': {
     AppLanguage.en: 'Alster at dusk. The ash had already begun to fall.',
     AppLanguage.fr:

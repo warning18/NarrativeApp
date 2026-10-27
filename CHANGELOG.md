@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.582.0+618]
+## [1.583.0+619]
 
 The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
 
@@ -17,6 +17,10 @@ The first-launch intro: the Great Shroud burning, six embers, the ashen city, do
 - **Plays once**, at the first New Game (the `intro_seen` flag); a tap goes to the last beat, a second tap ends it. With reduced motion it shows the title over the die, then the last line.
 - **Replay the intro** in Settings, under the tutorial's replay.
 - Tests: `test/intro_screen_test.dart` (the lines in order, tap to skip, reduced motion, the flag, the Settings row); `test/flutter_test_config.dart` keeps the intro off elsewhere. Pictures of every beat in `docs/ux-shots/intro-build/`; the earlier storyboards A to C are kept under `docs/proposals/` as history.
+
+## [1.581.0+617]
+
+The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
 
 ## [1.580.0+616]
 

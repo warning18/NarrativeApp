@@ -173,6 +173,10 @@ void main() {
           wharf.choices
               .where((c) => !isLocalChoice(c, wharf.id, story))
               .map((c) => c.nextId),
+          containsAll(['2010_crane', '2010_liora']));
+      // The three ways past Vane are one step in (v1.581): the hub's
+      // "Deal with Vane at the gate" opens a scene that holds them.
+      expect(story.nodeFor('2015_vane')!.choices.map((c) => c.nextId),
           containsAll(['2030', '2040', '2011']));
     });
   });

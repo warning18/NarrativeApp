@@ -1,6 +1,6 @@
 # The first-launch intro, version D: the burning Shroud, the die, the title (proposal, nothing built)
 
-> **Built in v1.582** (`lib/screens/intro_screen.dart`, `lib/widgets/intro_art.dart`, test `test/intro_screen_test.dart`; pictures in `docs/ux-shots/intro-build/`). The earlier versions A, B and C are kept here as history, with their pictures.
+> **Built in v1.583** (`lib/screens/intro_screen.dart`, `lib/widgets/intro_art.dart`, test `test/intro_screen_test.dart`; pictures in `docs/ux-shots/intro-build/`). The earlier versions A, B and C are kept here as history, with their pictures.
 
 The user's own idea for the intro (the manager called it "version C"; C is already the
 text-led storyboard of #537, so this one is D). Picture: `docs/ux-shots/intro-storyboard-d.png`

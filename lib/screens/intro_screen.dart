@@ -1,4 +1,4 @@
-// The first-launch intro (v1.582, docs/proposals/intro-animation-d.md): the
+// The first-launch intro (v1.583, docs/proposals/intro-animation-d.md): the
 // Great Shroud burning over Alster in ashes, the camera pushing down to the
 // Blind Beggar, the old bone die falling, bouncing and rolling to the middle,
 // slowing and stopping on a six, the title over it, and a slow fade into the

@@ -79,7 +79,12 @@ void main() {
         wharf.choices.where((c) => !isLocalChoice(c, wharf.id)).toList();
     expect(local.map((c) => c.nextId),
         containsAll(['2015_bazaar', '2015_apothecary', '2015_ternrow']));
-    expect(onward.map((c) => c.nextId), containsAll(['2030', '2040', '2011']));
+    expect(
+        onward.map((c) => c.nextId), containsAll(['2010_crane', '2010_liora']));
+    // The three ways past Vane are one step in (v1.581): the hub's "Deal
+    // with Vane at the gate" opens a scene that holds them.
+    expect(story.nodeFor('2015_vane')!.choices.map((c) => c.nextId),
+        containsAll(['2030', '2040', '2011']));
     expect(onward.every((c) => !c.nextId.startsWith('2015')), isTrue);
   });
 

@@ -1,4 +1,4 @@
-// The art of the first-launch intro (v1.582, docs/proposals/intro-animation-d.md):
+// The art of the first-launch intro (v1.583, docs/proposals/intro-animation-d.md):
 // Alster in ashes drawn in pixel art on a 70 x 124 grid (the burning skyline
 // and its smoke, the broken tower and its bell, Tallow Street with its
 // chalked doors, the harbor with its stone giant and the white ships), the
