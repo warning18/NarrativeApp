@@ -2,11 +2,11 @@
 
 Read from the graph, not played: `assets/Cleaned_Narrative_DAG.json` (472 nodes, 1,141 choices) with the quests, zones, coast events and companions around it, at v1.564.0 (2026-10-27). Nothing was run in the simulator. The analysis is [`blocking_nodes.py`](blocking_nodes.py) (about 40 s, no dependencies); the fast part of it is a guard, `test/qa_story_blocking_test.dart` (about 1 s, five tests, passes today).
 
-## What to do next (for the owners)
+## What to do next (answered by the owners)
 
-1. **Core**: decide whether the 38 forced fights without a defeat branch (tables below) should keep "retry, no cost" or get a `loseNextId`. Give a boss band in `boss_balance_test` to `inquisition_high_warden` (chapter 3 finale) and `void_manifestation` (`6003b`).
-2. **Narrative**: `q_ch3_inquisition_ledger` can only be handed in after the chapter 3 finale (`3030/3040/3050`), as the sealed letter drops from the High Warden. Say if that is intended, or move the drop.
-3. **Narrative**: node `400` loss goes the long way round (`400_lost`, `800`, back at `470`, 4 nodes longer). It is by design; confirm it still is.
+1. **Core**: nothing to do. The two bosses already have bands in `test/boss_balance_test.dart` (`inquisition_high_warden` level 3, 0.20-0.65; `void_manifestation` level 4, 0.15-0.55, with a rising-with-level check). The 36 other forced fights retry at no cost, and the per-chapter clash and boss bands catch an unwinnable one. Chapters 3 to 6 are covered by `sim_playthroughs_test` and `sim_coverage_test` (every goal and profession plays to a real ending through the loop engine).
+2. **Narrative**: nothing to do. `q_ch3_inquisition_ledger` is the chapter 3 main quest; its letter drops from the finale warden by design, so the hand-in after the finale stays. The user can ask for it earlier.
+3. **Narrative**: nothing to do. Node `400`'s long path (Black Hold, +4 nodes) is by design.
 
 ## Result
 
@@ -20,7 +20,7 @@ Read from the graph, not played: `assets/Cleaned_Narrative_DAG.json` (472 nodes,
 | dead ends, unreachable nodes, broken references | **0** |
 | combat or reward referencing something missing | **0** |
 
-One more class is listed for the owners, not a block: **38 forced fights have no defeat branch** (80 choices, tables below). A lost fight there is retried, with no cost (`StoryChoice.loseNextId` doc: "Null keeps today's behavior, the fight can be retried"), so the player is stuck only if the fight cannot be won at the level they have; the simulator's L3 on v1.501 reached the ending in 900 runs of 900 and the eleven bosses are banded in `boss_balance_test`. Two forced fights that look like bosses have no band: `inquisition_high_warden` (the chapter 3 finale) and `void_manifestation` (`6003b`).
+One more class is listed for the owners, not a block: **38 forced fights have no defeat branch** (80 choices, tables below). A lost fight there is retried, with no cost (`StoryChoice.loseNextId` doc: "Null keeps today's behavior, the fight can be retried"), so the player is stuck only if the fight cannot be won at the level they have; the simulator's L3 on v1.501 reached the ending in 900 runs of 900 and the eleven bosses are banded in `boss_balance_test`. The two that look like bosses, `inquisition_high_warden` (the chapter 3 finale) and `void_manifestation` (`6003b`), do have bands in `boss_balance_test` (see the list above).
 
 No GitHub issue was opened: there is no "stuck" finding.
 
