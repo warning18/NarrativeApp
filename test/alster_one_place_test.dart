@@ -29,6 +29,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
+import 'package:narrative_data_app/widgets/street_view/street_view.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -193,7 +194,9 @@ void main() {
 
     final townRows = find.textContaining('THE DISTRICTS');
     // The Lower Town to the Stone Bridge: another district, the whole town.
-    await moveTo('260', whileWalking: () {
+    // (261, the toll paid: 260, the toll itself, is played in the toll
+    // booth's street since Narrative's scene tags, v1.589; see below.)
+    await moveTo('261', whileWalking: () {
       // The walk between districts is told (v1.537).
       expect(
           tester
@@ -213,6 +216,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
     expect(townRows, findsNothing);
     expect(find.byType(JourneyWorldMap), findsNothing);
+
+    // At the toll (tagged to the toll booth's street, v1.589): the party at
+    // its door, the Stone Bridge's street, not the whole town.
+    await moveTo('260');
+    expect(container.read(partyDistrictProvider), 'alster_stone_bridge');
+    expect(find.byType(StreetViewScene), findsOneWidget);
+    expect(townRows, findsNothing);
 
     // Back to the Lower Town (another district again), then a move within
     // it: the district.
