@@ -1,5 +1,7 @@
 # The district view, map first (wave 19 "What opens where", UX mock, nothing built)
 
+> **Built in v1.583** (see `district-places.md`). The pins carry no words on the map where places are listed (the story's building names are off too), a tap on a pin shows its card (name, count, Go; a second tap folds it), the "Places · N" handle zooms the map to its full zoom and the list rises (the handle reads "Map" and folds it), a pinch to full zoom does the same, and an arrival eases the camera in 25% on the party's mark in 0.6 s (a jump with reduced motion; not on the Town view a move frames). Not built: the gold ring on the pin where the story goes on (the main banner already says it) and the padlock on a shut one beyond the banner's own; the Town view is unchanged. Core's `CityChartCamera` got a `pending` flag so a chart built later does not replay an old shot.
+
 Picture: `docs/ux-shots/map-first-mock.png`. Mock test: `test/ux_map_first_mock_test.dart`.
 The map is the app's own `CityChartView` on Saltmouth's stored plan with Smugglers' Quay's
 real ways (scene 2015, the user's screenshot); the real screen today is a capture

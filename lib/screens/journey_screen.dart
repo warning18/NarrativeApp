@@ -9,6 +9,7 @@ import '../data/chapter_grid_layout.dart';
 import '../data/encounter_text.dart';
 import '../data/first_journey.dart';
 import '../data/clan_power.dart' show holderOf;
+import '../data/city_camera.dart';
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
@@ -30,6 +31,7 @@ import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
+import '../data/way_places.dart' show wayPlaceName;
 import '../data/world_map.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -76,6 +78,7 @@ import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
 import '../widgets/journey_glyph.dart';
 import '../widgets/arrival_sheet.dart';
+import '../widgets/district_places.dart';
 import '../widgets/journey_banner_pin.dart';
 import '../widgets/return_notice.dart';
 import '../widgets/city_chart/city_chart.dart';
@@ -426,6 +429,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   late final AnimationController _cityWalk = AnimationController(vsync: this);
   bool _cityWalkable = false;
 
+  /// The district as places (v1.582, district_places.dart): the map's camera
+  /// and the pin card, where the party's mark stands once it has gone to a
+  /// place of the list (null: at its own mark), and the arrival last eased.
+  final DistrictPlacesController _places = DistrictPlacesController();
+  Offset? _placeMark;
+  int _arrivalEased = 0;
+
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
   String _cityChartKey = '';
@@ -739,6 +749,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     _door.dispose();
     _cityWalk.dispose();
     _cityWalkAt.dispose();
+    _places.dispose();
     super.dispose();
   }
 
@@ -842,6 +853,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             if (_takingFrom == before) _takingFrom = null;
             _pressed = null;
             _cityWalkAt.value = null;
+            _placeMark = null;
             // The choice moved the story on. A main-story scene is read full
             // screen (S1); any other scene opens in a sheet over the map (S2);
             // Continue brings the map back (and plays a carry). A one-tap
@@ -931,11 +943,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     if (chart == null) return;
     final way = chart.ways.where((w) => w.id == '$index').firstOrNull;
     if (way == null) return;
-    final to = way.at ??
-        chart.buildingOf(way)?.at ??
-        chart.districts[way.district].centre;
+    final to = _wayPin(chart, way);
     final district = ref.read(partyDistrictProvider);
-    final from = chart.here ??
+    final from = _markAtPlace ??
+        chart.here ??
         (district == null ? null : chart.districtById(district)?.centre);
     if (from == null) return;
     final span = cityWalkDuration((to - from).distance);
@@ -954,6 +965,44 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     } finally {
       _cityWalk.removeListener(follow);
     }
+  }
+
+  /// Where way [way]'s pin is on the plan.
+  Offset _wayPin(CityChart chart, CityChartWay way) =>
+      way.at ??
+      chart.buildingOf(way)?.at ??
+      chart.districts[way.district].centre;
+
+  /// Where the party's mark stands at the place it went to, while it stays
+  /// there (null: at its own mark).
+  Offset? get _markAtPlace =>
+      ref.read(partyPlaceProvider) == null ? null : _placeMark;
+
+  /// The party goes to a place of the district's list (v1.582): its mark
+  /// walks to the place's pin (a tap skips the walk), then the place's ways
+  /// show. `Here` and a way out have no pin to walk to.
+  Future<void> _goPlace(PlaceInfo place) async {
+    final chart = _cityChart;
+    if (_busy || chart == null || place.steps.isEmpty) return;
+    _places.card.value = null;
+    final walks = !place.here && !place.wayOut;
+    final first = chart.ways.where((w) => w.id == '${place.steps.first}');
+    final pin = walks && first.isNotEmpty ? _wayPin(chart, first.first) : null;
+    if (pin != null &&
+        _cityWalkable &&
+        !MediaQuery.of(context).disableAnimations) {
+      await _walkCity(place.steps.first);
+      if (!mounted) return;
+    }
+    _cityWalkAt.value = null;
+    setState(() => _placeMark = pin);
+    standAtPlace(ref, place.id);
+  }
+
+  /// The party back at the district's list of places.
+  void _leavePlace() {
+    setState(() => _placeMark = null);
+    leavePlace(ref);
   }
 
   /// A tap during the walk on the town's chart: the party is there at once.
@@ -2262,11 +2311,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
+    // An arrival in a district: the map eases in on the party (v1.582).
+    final arrival = ref.watch(districtArrivalProvider);
+    // (Not on the Town view a move to another district frames: that view is
+    // the one asked for.)
+    if (hostedCity &&
+        !townView &&
+        arrival != null &&
+        arrival.count != _arrivalEased) {
+      _arrivalEased = arrival.count;
+      final at =
+          cityChart.here ?? cityChart.districtById(arrival.districtId)?.centre;
+      final jump = MediaQuery.of(context).disableAnimations;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _places.camera.show(CityCameraShot.arrival(arrival.districtId,
+            partyAt: at, jump: jump));
+      });
+    }
     final cityView = hostedCity && !ended
         ? _CityDistrictView(
             chart: cityChart,
             look: look,
             partyWalk: _cityWalkAt,
+            places: _places,
+            placeMark: _placeMark,
+            onGoPlace: _goPlace,
+            onLeavePlace: _leavePlace,
             explored: ref.watch(foundDistrictsProvider),
             hereDistrict: ref.watch(partyDistrictProvider),
             focus: townView
@@ -5888,6 +5959,10 @@ class _CityDistrictView extends ConsumerWidget {
     required this.chart,
     required this.look,
     required this.partyWalk,
+    required this.places,
+    required this.placeMark,
+    required this.onGoPlace,
+    required this.onLeavePlace,
     required this.explored,
     required this.hereDistrict,
     required this.focus,
@@ -5909,6 +5984,14 @@ class _CityDistrictView extends ConsumerWidget {
   /// Where the party's mark is while it walks to a way (null: at its own
   /// mark), see _walkCity.
   final ValueNotifier<Offset?> partyWalk;
+
+  /// The district as places (v1.582): the map's camera and pin card, where
+  /// the party's mark stands at the place it went to, and the way there and
+  /// back.
+  final DistrictPlacesController places;
+  final Offset? placeMark;
+  final void Function(PlaceInfo place) onGoPlace;
+  final VoidCallback onLeavePlace;
 
   /// The building a scene is played outside of (v1.544): the district view
   /// is its street (see street_view.dart), not the town's plan.
@@ -5932,6 +6015,38 @@ class _CityDistrictView extends ConsumerWidget {
   final void Function(String districtId) onWalk;
   final List<Widget> overlays;
   final Widget tabs;
+
+  /// The district's places for the steps [shown] (see placeInfosOf); null
+  /// when the plan or the scene is not one to list places of, or a way
+  /// would be left out of them.
+  List<PlaceInfo>? _placeInfos(WidgetRef ref, List<int> shown) {
+    final city = ref.watch(currentCityProvider);
+    final record =
+        city == null ? null : ref.watch(cityPlanRecordsProvider).value?[city];
+    final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
+    final node = ref.watch(storyDataProvider).value?.nodeFor(nodeId);
+    if (record == null || node == null) return null;
+    final geography = ref.watch(geographyProvider);
+    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final infos = placeInfosOf(
+      entries: ref.watch(districtPlacesProvider),
+      nodeChoices: node.choices,
+      stepChoices: [for (final s in steps) s.choice],
+      stepLocked: [for (final s in steps) s.locked],
+      stepLabels: [for (final s in steps) s.label],
+      shown: shown,
+      nameOf: (place) => place.isHere
+          ? tr(ref, 'place_here')
+          : wayPlaceName(place,
+              record: record,
+              geography: geography,
+              french: french,
+              fallback: ''),
+    );
+    // A scene with one place at most has no places to list: its ways are the
+    // list, as before.
+    return infos == null || infos.length < 2 ? null : infos;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -5971,6 +6086,34 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
+    // In the party's own district the ways are taken at places (v1.582,
+    // way_places.dart): a list of places, pins without words and a card.
+    // (Not in a building's street: its own view, see street_view.dart.)
+    final inStreet = street != null &&
+        focus != null &&
+        focus == hereDistrict &&
+        street!.parent == hereDistrict;
+    final infos = focus != null && focus == hereDistrict && !inStreet
+        ? _placeInfos(ref, shown)
+        : null;
+    final standingId = infos == null ? null : ref.watch(partyPlaceProvider);
+    final standing = standingId == null
+        ? null
+        : infos?.where((p) => p.id == standingId).firstOrNull;
+    // Go to a place of the list: a way out with one way to take is taken at
+    // once, any other place is walked to.
+    void goPlace(PlaceInfo p) {
+      final open = [
+        for (final i in p.steps)
+          if (!steps[i].locked) i
+      ];
+      if (p.wayOut && open.length == 1) {
+        onOpen(open.first);
+      } else {
+        onGoPlace(p);
+      }
+    }
+
     // The town's own signs (wave 14): a notice board, the market, a tavern...
     final townServices = ref.watch(currentTownServicesProvider);
     final boardContracts =
@@ -6116,22 +6259,24 @@ class _CityDistrictView extends ConsumerWidget {
           ),
       ]);
       final pins = pinsWithManyWays(groups);
-      rows.add(Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 4),
-        child: Text(
-          (pins > 0
-                  ? tr(ref, 'journey_city_pins_ways')
-                      .replaceAll('{p}', '${groups.length}')
-                      .replaceAll('{n}', '$n')
-                  : n == 1
-                      ? tr(ref, 'journey_city_ways_one')
-                      : tr(ref, 'journey_city_ways_many')
-                          .replaceAll('{n}', '$n'))
-              .toUpperCase(),
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: ink.ash, letterSpacing: 0.8),
-        ),
-      ));
+      if (infos == null) {
+        rows.add(Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          child: Text(
+            (pins > 0
+                    ? tr(ref, 'journey_city_pins_ways')
+                        .replaceAll('{p}', '${groups.length}')
+                        .replaceAll('{n}', '$n')
+                    : n == 1
+                        ? tr(ref, 'journey_city_ways_one')
+                        : tr(ref, 'journey_city_ways_many')
+                            .replaceAll('{n}', '$n'))
+                .toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8),
+          ),
+        ));
+      }
       // One way's row; [indent] pixels in when it is inside a pin.
       Widget wayRow(int i, {double indent = 0}) {
         final s = steps[i];
@@ -6207,7 +6352,17 @@ class _CityDistrictView extends ConsumerWidget {
         );
       }
 
-      if (pins == 0) {
+      if (infos != null) {
+        rows.addAll(placesRows(
+          context,
+          ref,
+          infos: infos,
+          standing: standing,
+          wayRow: wayRow,
+          onGo: goPlace,
+          onLeave: onLeavePlace,
+        ));
+      } else if (pins == 0) {
         for (final i in shown) {
           rows.add(wayRow(i));
         }
@@ -6309,105 +6464,135 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          flex: 11,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Walked off to another district, the street is left.
-                if (street != null &&
-                    focus != null &&
-                    focus == hereDistrict &&
-                    street!.parent == hereDistrict)
-                  StreetViewScene(
-                    kind: street!.kind,
-                    name: street!.name,
-                    phase: ref.watch(dayPhaseProvider),
-                    sky: ref.watch(skyHereProvider)?.today().kind,
-                    pins: [
-                      for (final i in shown)
-                        StreetPin(
-                          index: i,
-                          label: steps[i].label,
-                          locked: steps[i].locked,
-                          child: streetPinOf(i),
+    // With places, the map has the room alone until it is fully zoomed (the
+    // handle, or a pinch): then the list rises under it (v1.582).
+    Widget layout(bool full) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              flex: 11,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Walked off to another district, the street is left.
+                    if (inStreet)
+                      StreetViewScene(
+                        kind: street!.kind,
+                        name: street!.name,
+                        phase: ref.watch(dayPhaseProvider),
+                        sky: ref.watch(skyHereProvider)?.today().kind,
+                        pins: [
+                          for (final i in shown)
+                            StreetPin(
+                              index: i,
+                              label: steps[i].label,
+                              locked: steps[i].locked,
+                              child: streetPinOf(i),
+                            ),
+                        ],
+                        onPick: onOpen,
+                      )
+                    else
+                      ValueListenableBuilder<Offset?>(
+                        valueListenable: partyWalk,
+                        builder: (context, walkAt, _) => CityChartView(
+                          key: const ValueKey('journey_city_chart'),
+                          camera: places.camera,
+                          buildingNames: infos == null,
+                          partyAt:
+                              walkAt ?? (standing == null ? null : placeMark),
+                          chart: chart,
+                          look: look,
+                          text: text,
+                          explored: explored,
+                          hereDistrict: hereDistrict,
+                          focus: focus,
+                          focusToken: focusToken,
+                          controls: false,
+                          cards: false,
+                          numbers: numbers,
+                          banners: banners,
+                          bannersDark: chartDark,
+                          onFocus: focusOrExplain,
+                          locked: shutDistricts,
+                          holds: holds,
+                          onPick: (w) {
+                            final i = int.tryParse(w.id);
+                            if (i == null || i >= steps.length) return;
+                            // With places, a pin shows its place's card (a
+                            // second tap folds it); Go takes the party there.
+                            final place =
+                                infos?.where((p) => p.steps.contains(i));
+                            if (place == null || place.isEmpty) {
+                              onOpen(i);
+                            } else {
+                              final id = place.first.id;
+                              places.card.value =
+                                  places.card.value == id ? null : id;
+                            }
+                          },
+                          onPickFog: (_) {},
+                          rulers: rulers,
+                          phase: ref.watch(dayPhaseProvider),
+                          services: [
+                            for (final s in townServices)
+                              CityChartService(
+                                  id: s.id,
+                                  kind: s.kind,
+                                  at: s.pin.at,
+                                  district: s.pin.district,
+                                  opens: s.opensSomething,
+                                  // The notice board says what waits on it.
+                                  badge: s.kind == 'notice_board'
+                                      ? boardContracts.length
+                                      : 0,
+                                  urgent: boardContracts.any((c) => c.done)),
+                          ],
+                          onService: (picked) => showTownServiceSheet(
+                              context,
+                              townServices
+                                  .firstWhere((s) => s.id == picked.id)),
                         ),
-                    ],
-                    onPick: onOpen,
-                  )
-                else
-                  ValueListenableBuilder<Offset?>(
-                    valueListenable: partyWalk,
-                    builder: (context, walkAt, _) => CityChartView(
-                      key: const ValueKey('journey_city_chart'),
-                      partyAt: walkAt,
-                      chart: chart,
-                      look: look,
-                      text: text,
-                      explored: explored,
-                      hereDistrict: hereDistrict,
-                      focus: focus,
-                      focusToken: focusToken,
-                      controls: false,
-                      cards: false,
-                      numbers: numbers,
-                      banners: banners,
-                      bannersDark: chartDark,
-                      onFocus: focusOrExplain,
-                      locked: shutDistricts,
-                      holds: holds,
-                      onPick: (w) {
-                        final i = int.tryParse(w.id);
-                        if (i != null && i < steps.length) onOpen(i);
-                      },
-                      onPickFog: (_) {},
-                      rulers: rulers,
-                      phase: ref.watch(dayPhaseProvider),
-                      services: [
-                        for (final s in townServices)
-                          CityChartService(
-                              id: s.id,
-                              kind: s.kind,
-                              at: s.pin.at,
-                              district: s.pin.district,
-                              opens: s.opensSomething,
-                              // The notice board says what waits on it.
-                              badge: s.kind == 'notice_board'
-                                  ? boardContracts.length
-                                  : 0,
-                              urgent: boardContracts.any((c) => c.done)),
-                      ],
-                      onService: (picked) => showTownServiceSheet(context,
-                          townServices.firstWhere((s) => s.id == picked.id)),
-                    ),
+                      ),
+                    ...overlays,
+                    if (infos != null && hereDistrict != null)
+                      PlacesMapLayer(
+                        controller: places,
+                        infos: infos,
+                        districtId: hereDistrict!,
+                        partyAt: standing == null ? chart.here : placeMark,
+                        showHandle: standing == null,
+                        onGo: goPlace,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Align(alignment: Alignment.centerLeft, child: tabs),
+            ),
+            if (infos == null || standing != null || full)
+              Expanded(
+                flex: 9,
+                // The Journey's tour shows the rows as the ways to pick (v1.565).
+                child: TutorialTarget(
+                  id: 'journey.pick',
+                  child: ListView(
+                    key: const ValueKey('journey_city_list'),
+                    padding: EdgeInsets.zero,
+                    children: rows,
                   ),
-                ...overlays,
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 6),
-          child: Align(alignment: Alignment.centerLeft, child: tabs),
-        ),
-        Expanded(
-          flex: 9,
-          // The Journey's tour shows the rows as the ways to pick (v1.565).
-          child: TutorialTarget(
-            id: 'journey.pick',
-            child: ListView(
-              key: const ValueKey('journey_city_list'),
-              padding: EdgeInsets.zero,
-              children: rows,
-            ),
-          ),
-        ),
-      ],
+                ),
+              ),
+          ],
+        );
+    if (infos == null) return layout(true);
+    return ValueListenableBuilder<bool>(
+      valueListenable: places.camera.fullZoom,
+      builder: (context, full, _) => layout(full),
     );
   }
 }

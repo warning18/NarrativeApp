@@ -69,6 +69,15 @@ class CityChartCamera extends ChangeNotifier {
   CityCameraShot? get shot => _shot;
   int get shots => _shots;
 
+  /// Whether the last shot has not been taken by any chart yet (a chart
+  /// built after it takes it; one built after it was taken does not replay
+  /// it).
+  bool get pending => _pending;
+  bool _pending = false;
+
+  /// A chart took the last shot.
+  void taken() => _pending = false;
+
   /// Whether the chart stands at its full zoom.
   final ValueNotifier<bool> fullZoom = ValueNotifier(false);
 
@@ -79,6 +88,7 @@ class CityChartCamera extends ChangeNotifier {
   void show(CityCameraShot shot) {
     _shot = shot;
     _shots++;
+    _pending = true;
     notifyListeners();
   }
 
