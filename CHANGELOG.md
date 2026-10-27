@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.576.0+612]
+
+A clan at a glance: its standing with you as a disc, its power as the cloth.
+
+### Added
+- **The standing disc** (`standing_sign.dart`): a small disc at the top-right corner of a clan's banner, one design for each of the eleven standing steps, each in the game's own colour for it (the clan card's), so the shape carries the level too: a skull (Hunted), crossed blades (Hostile), one blade (Resented), a frown (Unfriendly), a watching eye (Wary), a dot (Unknown), a ringed dot (Known), a hollow heart (Friendly), a heart (Friend), a shield (Trusted), a crowned heart (Sworn). Hunted and Sworn wear a double rim.
+- **The power cloth** (`clan_glance.dart`): the banner is dark above the level of the clan's power tier and in its own colours below it, a quarter for each of Minor, Rising, Dominant and Ascendant, with a gold hairline at the level (none when full). Clans with no power of their own keep their banner whole.
+- Both marks read the tiers the clan card already shows (`PoliticsState.tierOf`, `powerTierFor`): no new numbers. They stand on the offer's banners, the clan card's banner (the long press), the ring's crests (the cloth fills the round crest from its foot; the disc is at its top-left, clear of the number), the Throne room's standards (a clan's, not a piece of the Shroud) and the Clans screen's cards.
+
+### Tests
+- New `test/clan_glance_test.dart`: every step has its own distinct shape (also mirrored) and its own colour, the sign draws for each tier, the cloth fills a quarter a tier with its hairline, a clan's banner wears both marks, the disc alone without the cloth, a faction not on file keeps its banner. The offer, compass, throne and clans tests are unchanged and pass.
+- Pictures of the real screens: `docs/ux-shots/clan-glance-offer.png`, `clan-glance-ring.png`; the discs: `standing-discs-mock.png` (PR #534).
+
+## [1.575.0+611]
+
+The fate coin now also works at the camp's fire and at the forge.
+
+- **At the camp:** when a check fails at the fire (catching the thief, making peace in a quarrel) and the pack holds a fate coin, the game offers it. Flipped, the coin is spent and the check is rolled once more.
+- **At the forge:** a piece that comes out Flawed offers the coin too. Flipped, the forge's d20 rolls again with the same bonuses, and the piece takes the new result (Sound, Fine or Masterwork, or Flawed again).
+- The land crossing's coin is unchanged.
+
 ## [1.574.0+610]
 
 Arriving in a town never leaves its whole plan fogged.
