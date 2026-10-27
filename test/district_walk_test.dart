@@ -91,7 +91,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
+    tester.view.physicalSize = const Size(400, 1000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);

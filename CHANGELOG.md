@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.572.0+608]
+
+The Town view shows the shut districts, who holds the others, and how firmly (wave 18).
+
+### Added
+- **Shut districts** (`city_chart_painter.dart`, `district_standing.dart`, `journey_screen.dart`): a district a side quest keeps locked is shuttered on the town plan (fog, a hatch and a dashed outline, a padlock over its name) and in the list under the plan: a padlock, its name (never "?") and the reason, its rumour, in two lines. A tap on it, on the plan or in the list, opens a small sheet with the reason and "Opens with: <quest name>" instead of zooming into it.
+- **Holders and influence** (`district_standing.dart`): every district with a holder shows its clan's flag in the list, the holder's name with its influence there ("Dominion 48"), a two-colour bar (the holder's from the left, the strongest rival's from the right) and the rival's name and number under it. On the plan each district's label has a small crest above it: a ring filled by the holder's influence, the rival's share inside it, a tick at the point where the rival would take the district, and the holder's flag. A district that changed hands by influence gets a gold star and "changed hands" on its line and on its crest. Influence is shown only in a town where it counts (Saltmouth, for now); elsewhere the holder's flag alone.
+- The city chart screen (`city_chart_screen.dart`) shuts the same districts.
+- Strings `district_changed_hands` and `district_locked_by` (EN/FR).
+
+### Tests
+- New `test/district_standing_test.dart` (the standings from the rules, the rows, the strings) and `test/ux_town_shot_test.dart` (the real screen as pictures with `UX_SHOTS`, see `docs/ux-shots/town-view-*.png`). `district_walk_test` uses a taller screen: the list rows are a line taller.
+
 ## [1.571.0+607]
 
 The dice come in real sizes, d4 to d20, and every face of a die is a slot to equip.
