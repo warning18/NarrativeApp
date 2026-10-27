@@ -81,3 +81,40 @@ bool mapDrawsEveryWay(
 /// Its choices are things to do there, in any order: it never locks.
 bool isHubScene(StoryNode node) =>
     node.settlement != null || node.choices.length > hubChoiceCount;
+
+/// One way out of a scene, as the page's way back to the map weighs it:
+/// whether the page lists it as a card ([card]), whether it can be taken
+/// now ([takeable]), and the place it leads to ([to]: its geography id,
+/// null when the world doesn't know it).
+typedef ExitWay = ({bool card, bool takeable, String? to});
+
+/// Whether the page of a scene the story brought the party to has nothing
+/// to go back to the map for (the user's call, v1.565): its cards hold every
+/// move the map would offer. That is: something can be taken as a card, and
+/// every takeable way that is not one (a pin on the map) leads to a place a
+/// card leads to as well ("Cut it free" and "Leave them both" in the
+/// Weaver's Alley both end at the family house). Its "Back to the map" (and
+/// the corner map button) go; the pins are listed as road cards under the
+/// others, so no way is lost. A pin to a place no card reaches, or one the
+/// world doesn't place, keeps the button; so does a hub (its ways are things
+/// to do in any order), an ending, Edit Mode. A walk to another district
+/// of the town is no way of the scene's and doesn't count. A scene that
+/// locks ([sceneLocked]) has no way back already.
+bool pageExitHidden({
+  required List<ExitWay> ways,
+  required bool hub,
+  required bool ending,
+  required bool editMode,
+}) {
+  if (editMode || hub || ending) return false;
+  final open = [
+    for (final w in ways)
+      if (w.takeable) w,
+  ];
+  final reached = {
+    for (final w in open)
+      if (w.card && w.to != null) w.to,
+  };
+  if (!open.any((w) => w.card)) return false;
+  return open.every((w) => w.card || (w.to != null && reached.contains(w.to)));
+}
