@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/city_districts.dart';
 import '../data/city_plan_record.dart';
+import '../data/way_places.dart';
+import 'choice_flow_provider.dart';
 import 'geography_provider.dart';
 import 'player_session_provider.dart';
 import 'story_providers.dart';
@@ -147,4 +149,96 @@ Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
         .applyChoiceEffects(flagsToAdd: [flag], goldIsProfit: false);
   }
   return true;
+}
+
+/// The place of the district the party stands at (v1.580, see
+/// way_places.dart): picked from the district's list and walked to, it
+/// holds while the story stays at that scene and the party in that
+/// district; the story moving on, or a walk to another district, puts the
+/// party back at the list. Not saved: a game picked back up opens on the
+/// list of places.
+final standingAtPlaceProvider =
+    StateProvider<({String nodeId, String districtId, String placeId})?>(
+        (ref) => null);
+
+/// The id of the place (WayPlace.id) the party stands at in its district
+/// (see [standingAtPlaceProvider]), or null when it is at the list.
+final partyPlaceProvider = Provider<String?>((ref) {
+  final standing = ref.watch(standingAtPlaceProvider);
+  if (standing == null) return null;
+  final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
+  final district = ref.watch(partyDistrictProvider);
+  if (standing.nodeId != nodeId || standing.districtId != district) {
+    return null;
+  }
+  return standing.placeId;
+});
+
+/// The party walks to the place [placeId] of its district (the list's
+/// entry, see way_places.dart): no story choice, no time. Nothing happens
+/// outside a city with districts.
+void standAtPlace(WidgetRef ref, String placeId) {
+  final district = ref.read(partyDistrictProvider);
+  if (district == null) return;
+  ref.read(standingAtPlaceProvider.notifier).state = (
+    nodeId: ref.read(storyPlayProvider).currentNodeId,
+    districtId: district,
+    placeId: placeId,
+  );
+}
+
+/// The party back at the district's list of places.
+void leavePlace(WidgetRef ref) =>
+    ref.read(standingAtPlaceProvider.notifier).state = null;
+
+/// The list under the district's map (v1.580, see districtPlaces): the
+/// scene's ways in the party's district, one entry per place, `here`
+/// first. Empty outside a city with a stored plan.
+final districtPlacesProvider = Provider<List<WayPlaceEntry>>((ref) {
+  final city = ref.watch(currentCityProvider);
+  final district = ref.watch(partyDistrictProvider);
+  if (city == null || district == null) return const [];
+  final record = ref.watch(cityPlanRecordsProvider).value?[city];
+  final story = ref.watch(storyDataProvider).value;
+  final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
+  final node = story?.nodeFor(nodeId);
+  if (record == null || node == null) return const [];
+  final geo = ref.watch(geographyProvider);
+  final session = ref.watch(playerSessionProvider);
+  return districtPlaces(
+    node,
+    story: story!,
+    geography: geo,
+    record: record,
+    stops: ref.watch(storyStopsProvider),
+    ways: ref.watch(partyDistrictWaysProvider),
+    lockedWays:
+        lockedWays(geo, story, node, session.flags, session.completedQuestIds)
+            .toSet(),
+  );
+});
+
+/// A party arriving in a district (v1.580): the district, and how many
+/// arrivals came before it ([count] tells two arrivals in the same district
+/// apart). The district view's camera eases in on one (see city_camera.dart).
+typedef DistrictArrival = ({String districtId, int count});
+
+/// The party's last arrival in a district: a new value each time
+/// [partyDistrictProvider] changes to a district (a walk, the story moving
+/// the party, a city entered), the first district the party stands in
+/// counting as one. Walking between the places of a district is no arrival.
+final districtArrivalProvider =
+    NotifierProvider<DistrictArrivalNotifier, DistrictArrival?>(
+        DistrictArrivalNotifier.new);
+
+class DistrictArrivalNotifier extends Notifier<DistrictArrival?> {
+  @override
+  DistrictArrival? build() {
+    ref.listen<String?>(partyDistrictProvider, (previous, next) {
+      if (next == null || next == previous) return;
+      state = (districtId: next, count: (state?.count ?? 0) + 1);
+    });
+    final here = ref.read(partyDistrictProvider);
+    return here == null ? null : (districtId: here, count: 1);
+  }
 }
