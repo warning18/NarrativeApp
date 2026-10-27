@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.590.0+626]
+
+Lysa's turn in the chair chapel of the Reliquary Quarter (her death, her rescue, the oath, the mercy, the sacrifice, and Clement's refusal) opens as a full page, as the story's turn for her, not as a room.
+
 ## [1.589.0+625]
 
 The street view now follows Narrative's scene tags.

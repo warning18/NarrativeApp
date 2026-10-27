@@ -11605,6 +11605,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "choices": [
       {
         "text": "Close her eyes and walk back among the chapels",
@@ -26459,6 +26463,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "spot": "altar",
     "automations": {},
     "choices": [
@@ -26483,6 +26491,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "spot": "altar",
     "automations": {},
     "choices": [
@@ -26533,6 +26545,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "spot": "door",
     "automations": {},
     "choices": [
@@ -26575,6 +26591,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "spot": "altar",
     "automations": {},
     "choices": [
@@ -26627,6 +26647,10 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chair_chapel",
+    "scene": {
+      "view": "page",
+      "weight": "main"
+    },
     "spot": "altar",
     "automations": {},
     "choices": [

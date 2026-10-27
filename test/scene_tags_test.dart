@@ -1,4 +1,4 @@
-// Narrative's scene tags for chapters 1 to 3 (v1.584, presentation-contract.md):
+// Narrative's scene tags (v1.584 chapters 1 to 3, v1.589 chapter 5; presentation-contract.md):
 // only the scenes the default rule gets wrong carry a `scene.view`. The three
 // approach scenes the user named (the toll at 260, the quay drill at 890_trainer
 // and the Wharf's approach at 2010) open as the street; the Black Hold's cells
@@ -82,6 +82,22 @@ void main() {
     ]) {
       expect(present.viewOf(id), SceneView.room, reason: id);
       expect(story.nodeFor(id)!.sceneView, isNull, reason: id);
+    }
+  });
+
+  test('Lysa\'s resolution in the chair chapel opens as a main page', () {
+    // Chapter 5 (v1.589): the rule gives these a room, being inside the
+    // chapel; they are the story's turn for Lysa, one way on each.
+    for (final id in [
+      '6010_lysa_dead',
+      '6010_lysa_rescued',
+      '6010_lysa_sworn',
+      '6010_lysa_mercy',
+      '6010_lysa_sacrifice',
+      '6010_clement_refused',
+    ]) {
+      expect(present.viewOf(id), SceneView.page, reason: id);
+      expect(present.weightOf(id), SceneWeight.main, reason: id);
     }
   });
 

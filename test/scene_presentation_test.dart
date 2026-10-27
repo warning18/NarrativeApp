@@ -102,7 +102,7 @@ void main() {
   });
 
   // 270 and 106 are scenes the story file does not tag (Narrative's own tags
-  // are in scene_tags_ch13_test.dart), so the rule's view shows against it.
+  // are in scene_tags_test.dart), so the rule's view shows against it.
   test('the scene block wins, and a save keeps it', () {
     final raw = _rawStory();
     (raw['270'] as Map<String, dynamic>)['scene'] = {
