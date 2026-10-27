@@ -811,6 +811,11 @@
       "speaker": "Narrator"
     },
     "location": "alster_stone_bridge",
+    "scene": {
+      "view": "street",
+      "kind": "street",
+      "building": "alster_b032"
+    },
     "automations": {
       "script_trigger": "on_load_node_260"
     },
@@ -1370,6 +1375,9 @@
       "speaker": "Narrator"
     },
     "location": "black_hold_cells",
+    "scene": {
+      "view": "page"
+    },
     "spot": "cells",
     "automations": {
       "script_trigger": "on_load_node_800"
@@ -2978,6 +2986,11 @@
       "speaker": "Narrator"
     },
     "location": "saltmouth_wharf",
+    "scene": {
+      "view": "street",
+      "kind": "street",
+      "building": "saltmouth_b163"
+    },
     "automations": {
       "script_trigger": "on_load_node_2010"
     },
@@ -10959,6 +10972,9 @@
       "speaker": "Narrator"
     },
     "location": "spire_cathedral",
+    "scene": {
+      "view": "page"
+    },
     "spot": "altar",
     "choices": [
       {
@@ -11268,6 +11284,9 @@
       "speaker": "Narrator"
     },
     "location": "reliquary_chartkeeper_chapel",
+    "scene": {
+      "view": "page"
+    },
     "choices": [
       {
         "text": "Open the reliquary yourself",
@@ -18112,6 +18131,9 @@
       "speaker": "Narrator"
     },
     "location": "spire_cathedral",
+    "scene": {
+      "view": "page"
+    },
     "choices": [
       {
         "text": "Get up before anyone looks",
@@ -18295,6 +18317,9 @@
       "speaker": "Narrator"
     },
     "location": "spire_cathedral",
+    "scene": {
+      "view": "page"
+    },
     "spot": "altar",
     "choices": [
       {
@@ -26719,6 +26744,11 @@
       "speaker": "Narrator"
     },
     "location": "alster_high_quay",
+    "scene": {
+      "view": "street",
+      "kind": "street",
+      "building": "alster_b175"
+    },
     "automations": {},
     "choices": [
       {
