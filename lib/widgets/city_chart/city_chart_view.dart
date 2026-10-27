@@ -86,11 +86,15 @@ class CityChartView extends StatefulWidget {
     this.bannersDark = true,
     this.phase = DayPhase.day,
     this.camera,
+    this.buildingNames = true,
   });
 
   /// The Journey's hold on the view (v1.580, city_camera.dart): a shot it
   /// asks for moves the view, and the view reports its zoom back.
   final CityChartCamera? camera;
+
+  /// Whether the story's buildings are named on the plan.
+  final bool buildingNames;
 
   /// A number on each pin by way id (the host's list rows carry the same).
   final Map<String, int> numbers;
@@ -253,6 +257,7 @@ class _CityChartViewState extends State<CityChartView>
   void _takeShot() {
     final shot = widget.camera?.shot;
     if (!mounted || !_placed || shot == null) return;
+    widget.camera!.taken();
     final d = shot.districtId == null
         ? null
         : widget.chart.districtById(shot.districtId!);
@@ -307,7 +312,7 @@ class _CityChartViewState extends State<CityChartView>
     if (!_placed) {
       _placed = true;
       // A shot asked for before the view had its size.
-      if (widget.camera?.shot != null) {
+      if (widget.camera?.pending ?? false) {
         WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
       }
       _scale = _fitted;
@@ -419,6 +424,7 @@ class _CityChartViewState extends State<CityChartView>
         bannersDark: widget.bannersDark,
         pulse: pulse,
         phase: widget.phase,
+        buildingNames: widget.buildingNames,
       );
 
   void _tap(Offset at) {

@@ -1,5 +1,7 @@
 # The district view as places, not choices (UX mock, nothing built)
 
+> **Built in v1.586** (`lib/widgets/district_places.dart`, the Journey's District view; tests `district_places_test.dart`, `district_places_view_test.dart`; pictures `docs/ux-shots/places-build-*.png`). The rows, the card and the flow follow this mock: tap a row (or a pin's card, Go), the party's mark walks to the pin (a tap skips), the place's ways show with a way back. Where it differs: a scene with one place at most keeps its plain list of ways (a list of one is no list); `Here` and a way out do not walk; a way out with one way to take opens it at once; the places are the party's own district's (another district looked at keeps today's rows); the street view of a place waits for the scene views (presentOf).
+
 Picture: `docs/ux-shots/places-mock.png`. Mock test: `test/ux_places_mock_test.dart`.
 The header and the map are the real screen at the High Quay (`docs/ux-shots/places-today.png`,
 scene 891); the pins, rows and the street view are drawn with the app's own widgets

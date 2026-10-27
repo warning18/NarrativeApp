@@ -836,14 +836,14 @@
     "objectives": [
       {
         "description": "Deal with the overseer extorting Tern Row",
-        "type": "Kill",
-        "targetEnemyID": "dock_overseer",
+        "type": "Flag",
+        "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du contremaître qui rançonne Tern Row",
-        "countFromAccept": true
+        "targetFlag": "hub_2015_ternrow",
+        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
       }
     ],
     "rewardGold": 40,

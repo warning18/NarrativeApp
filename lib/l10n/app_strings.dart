@@ -101,6 +101,51 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  // The district as places (v1.586, docs/proposals/district-places.md).
+  'district_places_title': {
+    AppLanguage.en: 'Places · tap one to go there',
+    AppLanguage.fr: 'Lieux · touchez-en un pour y aller',
+  },
+  'places_ways_out': {
+    AppLanguage.en: 'Ways out',
+    AppLanguage.fr: 'Sorties',
+  },
+  'places_handle': {
+    AppLanguage.en: 'Places · {n}',
+    AppLanguage.fr: 'Lieux · {n}',
+  },
+  'places_handle_map': {
+    AppLanguage.en: 'Map',
+    AppLanguage.fr: 'Carte',
+  },
+  'place_here': {
+    AppLanguage.en: 'Here',
+    AppLanguage.fr: 'Ici',
+  },
+  'place_no_name': {
+    AppLanguage.en: '(no name yet)',
+    AppLanguage.fr: '(pas encore de nom)',
+  },
+  'place_story_goes_on': {
+    AppLanguage.en: 'The story goes on here',
+    AppLanguage.fr: 'L’histoire continue ici',
+  },
+  'place_things_one': {
+    AppLanguage.en: '1 thing to do',
+    AppLanguage.fr: '1 chose à faire',
+  },
+  'place_things_many': {
+    AppLanguage.en: '{n} things to do',
+    AppLanguage.fr: '{n} choses à faire',
+  },
+  'place_go': {
+    AppLanguage.en: 'Go',
+    AppLanguage.fr: 'Y aller',
+  },
+  'place_back': {
+    AppLanguage.en: 'Back to the places',
+    AppLanguage.fr: 'Retour aux lieux',
+  },
   'journey_city_pins_ways': {
     AppLanguage.en: '{p} pins · {n} ways · tap a pin to open it',
     AppLanguage.fr:
