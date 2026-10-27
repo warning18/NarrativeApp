@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.571.0+607]
+
+The dice come in real sizes, d4 to d20, and every face of a die is a slot to equip.
+
+### Changed
+- **31 dice, new sizes** (`docs/proposals/dice-sizes.md` §1): 10 stay d6. Stone, berserker, shadow, twinfang and headsman become d4 (void already was). Flame, tide, huntsman, Vess's, frost, greenwood and vigil become d8 (vigil was a d7). Storm, arcane, sage and ossuary become d10. Tempest, chorus and tearglass become d12. Gambler becomes a d20 at 200 gold, sold only at the Last Lantern.
+  - A die that grows keeps its faces and weights. The new faces are plain Strike, Guard and Mend at the die's own average.
+  - A die that shrinks to a d4 keeps its skill faces and drops its two weakest plain faces.
+- **Every face is a slot:** any face of a die can hold a skill, signature and Mana faces included (Mana channels it at 70%). No die holds more copies of one skill than one per four faces: 1 on a d4 or d6, 2 on a d8 or d10, 3 on a d12, 5 on a d20.
+- **Saves move over:** placed skills and Hammersmith work follow their faces. A skill on a dropped face goes back to the skill list, and Hammersmith work on it is refunded in full (gold, iron ore, an elite trophy). Saves record `diceDataVersion: 2`.
+
+### Added
+- **The tally die** (d12, 12 plain faces to fill): the reward of *The Candle Count* (chapter 5), or woven at the Skillwright from two d8s you own (both are spent, and their Hammersmith work is refunded). Only one can be owned.
+- **The fate coin** (30 gold, one use): when a land-crossing check fails, flip it to roll the check again.
+
 ## [1.568.0+604]
 
 The competent simulated player recruits companions and fights beside them.
