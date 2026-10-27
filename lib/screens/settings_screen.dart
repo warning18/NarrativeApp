@@ -20,6 +20,7 @@ import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/elevenlabs_voice_settings.dart';
+import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -133,6 +134,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
                 icon: const Icon(Icons.replay),
                 label: Text(tr(ref, 'tutorial_replay_button')),
+              ),
+            ),
+            ListTile(
+              key: const Key('intro_replay'),
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.movie_outlined),
+              title: Text(tr(ref, 'intro_replay_title')),
+              subtitle: Text(tr(ref, 'intro_replay_desc')),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<bool>(builder: (_) => const IntroScreen()),
               ),
             ),
             const SizedBox(height: 24),
