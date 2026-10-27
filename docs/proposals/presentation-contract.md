@@ -239,3 +239,14 @@ The list shows **places**. Each entry is a place where at least one of the scene
 - The Journey needs to remember **which place the party is standing at** within the scene, so it can show that place's ways and walk back. This is session state beside `walkedDistrictProvider` (city_provider.dart): `standingAtPlace`, cleared when the scene changes or the district changes. It doesn't need to be saved: a reloaded save opens on the list of places, which is a safe default.
 - Taking a way at the place is the normal `_take`. The next scene opens in its own view (§4), so a way to 400 still opens the page.
 - For the presentation rule, this makes the place's ways the **street** view of that building. The "street with choices" the user described for the family house becomes the general case for any place on the district list.
+
+## 7. Page turns (Narrative's #541, v1.577)
+
+Narrative's page-turn pilot splits three scenes into two pages each. The first page is new, calm, and has one Continue to the second at the same place: `100_dice` → 100, `400_hold` → 400, `960_lift` → 960.
+
+What the default rule (§4) does with each first page:
+- **400_hold:** a doorstep scene reached by a card from 300 at the same stop, and a main scene. Rule 5 gives it the **page**, which is right.
+- **960_lift:** a main scene on the High Quay that is not a beat. Rule 6 gives it the **page**.
+- **100_dice:** a main scene in the Blind Beggar room that is not a beat. Rule 4 gives it the **room**, but as the calm first page of beat 100 it should read as the **page**.
+
+**One more rule, before rule 4:** a page turn (one Continue, to a scene at the same place) opens in the view of the scene it turns to. So 100_dice takes 100's view (a beat, the page), and the two pages never switch views halfway through a scene.
