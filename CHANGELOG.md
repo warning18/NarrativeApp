@@ -30,6 +30,16 @@ The competent simulated player recruits companions and fights beside them.
 - **No dice cup.** The game has one die in play, swapped between fights, and the competent player already rolls its best.
 - **Measurement.** `docs/simulation/companions-v1.568.md` covers 10 runs per profile. From chapter 3 on, a competent party wins 0.98–1.00 of encounters, against 0.86–0.90 alone and 0.54–0.69 for naive.
 
+## [1.567.0+603]
+
+Chapter 1's first step outside opens the Journey and its tour; the party walks to a pin; "Back to the map" goes where the cards hold every move.
+
+### Changed
+- **The first step outside:** in a new game, the first way out of the Blind Beggar lands on the Journey map of the Lower Town (scene 250, the proclamation, with "1 way here"), not on 250's page. It happens once (`journey_first_shown`).
+- **The Journey tour starts there,** not on the Beggar's room map, and still only once. A pending "New:" card waits until the tour is skipped or finished. The tour's "tap a step" line now points at the District view's list of ways.
+- **The party walks to the pin:** taking a way on the District view (its pin or its row) walks the party marker to the pin, then opens the scene. The walk takes 0.6 s next door and up to 1.2 s from half the town away. A tap anywhere lands the party at once; with reduced motion there's no walk.
+- **No "Back to the map" when the page holds every move:** on a page with a way to take, the button and the corner map icon go when every way on the map leads to a place one of the page's cards also reaches. Those ways show as cards on the page, so none is lost. Example: the warhound in the alley (270), where all three ways lead to the family house. The button stays where the map has another move, and on hubs, endings, a page opened with Read, and a new game's first page. The scene lock (v1.563) is unchanged.
+
 ## [1.564.0+600]
 
 The playthrough simulator can play like a competent player.
