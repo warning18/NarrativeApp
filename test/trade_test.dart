@@ -1,9 +1,12 @@
 // Selling back and forging: a copy nobody wears sells for two fifths of
 // its price (or its own sale value) and goes back on the shelf it came
 // from; the forge turns iron ore and gold into gear.
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/forge_roll.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Future<PlayerSessionNotifier> _notifierWith(Map<String, dynamic> json) async {
@@ -92,10 +95,15 @@ void main() {
           'material_iron_ore',
         ],
       });
-      expect(await notifier.craftItem('greaves_iron', recipe), isTrue);
+      // The piece takes its tier's id (forge_roll_test covers the tiers).
+      final roll = await notifier.craftItem('greaves_iron', recipe,
+          random: Random(0), modifiers: const []);
+      expect(roll, isNotNull);
       expect(notifier.state.gold, 40);
-      expect(notifier.state.inventoryItemIds,
-          ['material_iron_ore', 'greaves_iron']);
+      expect(notifier.state.inventoryItemIds, [
+        'material_iron_ore',
+        forgedVariantId('greaves_iron', roll!.tier),
+      ]);
     });
 
     test('nothing is forged without enough ore or gold', () async {
@@ -104,7 +112,7 @@ void main() {
         'inventoryItemIds': ['material_iron_ore', 'material_iron_ore'],
       });
       expect(notifier.canCraft(recipe), isFalse);
-      expect(await notifier.craftItem('greaves_iron', recipe), isFalse);
+      expect(await notifier.craftItem('greaves_iron', recipe), isNull);
       expect(notifier.state.gold, 100);
 
       final poor = await _notifierWith({

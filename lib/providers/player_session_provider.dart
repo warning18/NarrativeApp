@@ -28,6 +28,7 @@ import '../data/district_influence.dart' as influence
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
+import '../data/forge_roll.dart';
 import '../data/feature_unlocks.dart';
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
@@ -4129,12 +4130,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         state.inventoryItemIds.where((id) => id == m.key).length >= m.value);
   }
 
-  /// Forges [itemId] from [item]'s recipe: its gold and materials leave
-  /// the pack and the piece enters it. Returns false if something is
+  /// Forges [itemId] from [item]'s recipe (docs/proposals/forge-roll.md):
+  /// its gold and materials leave the pack, the forge rolls its d20 on
+  /// [random] with [modifiers] (forgeModifiersProvider's; a dwarf's +2
+  /// alone when null), and the piece enters the pack under the tier's id
+  /// (forgedVariantId: `<itemId>@fine`, the plain id for Sound). A flawed
+  /// roll costs nothing more. Returns the roll, or null if something is
   /// missing.
-  Future<bool> craftItem(String itemId, Map<String, dynamic>? item,
-      {ItemOrigin? origin}) async {
-    if (!canCraft(item)) return false;
+  Future<ForgeRoll?> craftItem(String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin,
+      Random? random,
+      List<ForgeModifier>? modifiers}) async {
+    if (!canCraft(item)) return null;
+    final roll = rollForge(
+      random: random ?? Random(),
+      modifiers: modifiers ?? forgeModifiersFor(raceId: state.raceId),
+    );
+    final pieceId = forgedVariantId(baseItemIdOf(itemId), roll.tier);
     final remaining = [...state.inventoryItemIds];
     for (final m in craftMaterialsFor(item).entries) {
       for (var i = 0; i < m.value; i++) {
@@ -4143,11 +4155,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
-      inventoryItemIds: [...remaining, itemId],
-      itemOrigins: withItemOrigins(state.itemOrigins, [itemId], origin),
+      inventoryItemIds: [...remaining, pieceId],
+      itemOrigins: withItemOrigins(state.itemOrigins, [pieceId], origin),
     );
     await _persist();
-    return true;
+    return roll;
   }
 
   /// Whether the pack and purse cover [cost] (see face_smithing.dart).
