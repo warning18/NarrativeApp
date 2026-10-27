@@ -1,6 +1,7 @@
 // A skill takes no more faces of a die than its rarity allows: common 3,
 // uncommon and rare 2, epic and legendary 1; and no more than one copy per
-// four faces of the die (dice sizes: a d6 one, a d8 two, a d12 three). The
+// four faces of the die (dice sizes: a d4 one, a d6 two, a d8 two, a d12
+// three). The
 // loadout's picker holds to it, and a fight keeps a save from before the
 // limits to it. The rarity checks run on dice wide enough for the rarity
 // to be what limits.
@@ -60,8 +61,9 @@ void main() {
     expect(maxFacesForSkill(skills['warrior_shield_bash']), 2);
     expect(maxFacesForSkill(skills['fireball']), 2);
     expect(maxFacesForSkill(skills['final_stand']), 1);
-    // One copy per four faces, the rarity's limit above it.
-    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 6), 1);
+    // One copy per four faces (two on a d6), the rarity's limit above it.
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 4), 1);
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 6), 2);
     expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 8), 2);
     expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 12), 3);
     expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 20), 3);
@@ -87,30 +89,38 @@ void main() {
       '4': 'warrior_shield_bash',
       '1': 'final_stand',
     });
-    // On the d6 itself, one copy of each.
+    // On the d6 itself, two copies of Shield Bash still fit.
     expect(
         limitedFaceAssignments(
           starter,
           const {
             '0': 'warrior_shield_bash',
             '4': 'warrior_shield_bash',
+            '5': 'warrior_shield_bash',
             '1': 'final_stand',
           },
           skills,
         ),
-        {'0': 'warrior_shield_bash', '1': 'final_stand'});
+        {
+          '0': 'warrior_shield_bash',
+          '4': 'warrior_shield_bash',
+          '1': 'final_stand',
+        });
   });
 
   test('a die\'s fixed faces count first; its open faces don\'t', () {
-    // Kelda's iron die has Shield Bash on face 5, its signature: widened to
-    // a d8, one more fits; on the d6 none does.
+    // Kelda's iron die has Shield Bash on face 5, its signature: on the d6
+    // and widened to a d8, one more fits, and no third.
     final ironD6 =
         (dice['iron_die']['faces'] as List).cast<Map<String, dynamic>>();
     final iron = widened(ironD6, 8);
     expect(
         limitedFaceAssignments(
-            ironD6, const {'0': 'warrior_shield_bash'}, skills),
-        isEmpty);
+          ironD6,
+          const {'0': 'warrior_shield_bash', '3': 'warrior_shield_bash'},
+          skills,
+        ),
+        {'0': 'warrior_shield_bash'});
     expect(
         limitedFaceAssignments(
           iron,
@@ -149,10 +159,12 @@ void main() {
         canSetSkillOnFace(
             'final_stand', 5, starterD8, const {'4': 'final_stand'}, skills),
         isFalse);
-    // On the d6, one copy: a second Shield Bash fits nowhere.
+    // On the d6, two copies: a second Shield Bash fits, a third doesn't.
     expect(
         canSetSkillOnFace('warrior_shield_bash', 4, starter,
             const {'0': 'warrior_shield_bash'}, skills),
+        isTrue);
+    expect(canSetSkillOnFace('warrior_shield_bash', 5, starter, two, skills),
         isFalse);
   });
 

@@ -124,9 +124,11 @@ SkillRarity skillRarity(Map<String, dynamic>? skill) {
 }
 
 /// The copies of one skill a die of [faceCount] faces may hold: one per
-/// four slots, at least one (a d4 to d6 one, a d8 two, a d12 three, a d20
-/// five). Keeps a die from being the same skill on every face.
-int maxCopiesOnDie(int faceCount) => max(1, faceCount ~/ 4);
+/// four slots from the d8 up (a d8 two, a d12 three, a d20 five), two on a
+/// d6 so today's dice stay varied, one on a d4. Keeps a die from being the
+/// same skill on every face.
+int maxCopiesOnDie(int faceCount) =>
+    faceCount == 6 ? 2 : max(1, faceCount ~/ 4);
 
 /// Faces of one die [skill] may take: its rarity's limit, and on a die of
 /// [faceCount] faces no more than [maxCopiesOnDie].
@@ -201,7 +203,7 @@ int facesCastingSkill(
 
 /// Whether [skillId] may go on face [faceIndex]: an open face, and the
 /// skill on fewer of the die's other faces than [maxFacesForSkill] allows
-/// (its rarity, and one copy per four faces).
+/// (its rarity, and one copy per four faces, two on a d6).
 bool canSetSkillOnFace(
   String skillId,
   int faceIndex,

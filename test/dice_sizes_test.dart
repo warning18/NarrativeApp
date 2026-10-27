@@ -380,9 +380,9 @@ void main() {
       expect(faceSkillId(holy[3], null), 'cleric_smite');
     });
 
-    test('one copy of a skill per four faces', () {
+    test('one copy of a skill per four faces, two on a d6', () {
       for (final MapEntry(:key, :value)
-          in {4: 1, 6: 1, 8: 2, 10: 2, 12: 3, 20: 5}.entries) {
+          in {4: 1, 6: 2, 8: 2, 10: 2, 12: 3, 20: 5}.entries) {
         expect(maxCopiesOnDie(key), value, reason: 'd$key');
       }
       // A common skill (three faces by rarity) on dice of each size.
@@ -398,18 +398,22 @@ void main() {
       }
 
       expect(placed('void_die'), 1);
-      expect(placed('iron_die'), 1);
+      expect(placed('iron_die'), 2);
       expect(placed('flame_die'), 2);
       expect(placed('tally_die'), 3);
       // The d20's five are held to the common skill's three.
       expect(placed('gambler_die'), 3);
-      // A signature skill counts: the iron die's Shield Bash leaves no room
-      // for a second one on a d6.
+      // A signature skill counts: the iron die's Shield Bash leaves room
+      // for one more on a d6, and no third.
       final iron = _facesOf(dice, 'iron_die');
       expect(
           canSetSkillOnFace('warrior_shield_bash', 0, iron, const {}, skills),
+          isTrue);
+      expect(
+          canSetSkillOnFace('warrior_shield_bash', 1, iron,
+              const {'0': 'warrior_shield_bash'}, skills),
           isFalse);
-      // Placed over the signature face itself, it is the one copy.
+      // Placed over the signature face itself, it is one of the copies.
       expect(
           canSetSkillOnFace('warrior_shield_bash', 5, iron, const {}, skills),
           isTrue);

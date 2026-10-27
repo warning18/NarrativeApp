@@ -16,7 +16,7 @@ The dice come in real sizes, d4 to d20, and every face of a die is a slot to equ
 - **31 dice, new sizes** (`docs/proposals/dice-sizes.md` §1): 10 stay d6. Stone, berserker, shadow, twinfang and headsman become d4 (void already was). Flame, tide, huntsman, Vess's, frost, greenwood and vigil become d8 (vigil was a d7). Storm, arcane, sage and ossuary become d10. Tempest, chorus and tearglass become d12. Gambler becomes a d20 at 200 gold, sold only at the Last Lantern.
   - A die that grows keeps its faces and weights. The new faces are plain Strike, Guard and Mend at the die's own average.
   - A die that shrinks to a d4 keeps its skill faces and drops its two weakest plain faces.
-- **Every face is a slot:** any face of a die can hold a skill, signature and Mana faces included (Mana channels it at 70%). No die holds more copies of one skill than one per four faces: 1 on a d4 or d6, 2 on a d8 or d10, 3 on a d12, 5 on a d20.
+- **Every face is a slot:** any face of a die can hold a skill, signature and Mana faces included (Mana channels it at 70%). No die holds more copies of one skill than one per four faces from the d8 up: 1 on a d4, 2 on a d6, d8 or d10, 3 on a d12, 5 on a d20.
 - **Saves move over:** placed skills and Hammersmith work follow their faces. A skill on a dropped face goes back to the skill list, and Hammersmith work on it is refunded in full (gold, iron ore, an elite trophy). Saves record `diceDataVersion: 2`.
 
 ### Added
