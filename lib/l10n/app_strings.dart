@@ -3480,6 +3480,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
   },
+  'forge_coin_offer': {
+    AppLanguage.en:
+        'The piece comes out flawed. Flip your fate coin to forge it again?',
+    AppLanguage.fr:
+        'La pièce sort défectueuse. Lancer votre pièce du destin pour la forger de nouveau ?',
+  },
   'fate_coin_flip_button': {
     AppLanguage.en: 'Flip the fate coin',
     AppLanguage.fr: 'Lancer la pièce du destin',
