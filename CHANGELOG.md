@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.585.0+621]
+
+Tern's Toll can be finished by talking Renn down, not only by fighting him. The quest now asks the player to deal with the overseer, and either way ends it.
+
 ## [1.583.0+619]
 
 The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
