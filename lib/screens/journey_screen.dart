@@ -14,7 +14,12 @@ import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
 import '../data/city_districts.dart'
-    show JourneyTownView, districtOfPlace, sceneDoorstep, townMoveView;
+    show
+        JourneyTownView,
+        districtOfPlace,
+        sceneDoorstep,
+        sceneStreetOf,
+        townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
@@ -1740,6 +1745,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // the ways are laid on and the chart drawn under them.
     PlacePlan? cityPlan = plan;
     final cityDistrictOf = <int, String>{};
+    // The building whose street the scene plays in (v1.589, sceneStreetOf).
+    GeoPlace? sceneStreet;
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
@@ -1756,6 +1763,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             : null;
         // A scene played at a building's doorstep (v1.542): the party at
         // its door, the ways that stay there in the street round it.
+        sceneStreet = sceneStreetOf(world, record, node);
         final doorstep = sceneDoorstep(world, record, node, waysHere: [
           for (var i = 0; i < rawSteps.length; i++)
             if (!districtOfStep.containsKey(i)) i,
@@ -1807,7 +1815,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // by; the streets are one look out.
     // A scene played at its building's doorstep (v1.542) is on the streets.
     final hereBuilding = herePlace?.isBuilding == true &&
-            !herePlace!.doorstep.contains(play.currentNodeId)
+            !herePlace!.doorstep.contains(play.currentNodeId) &&
+            !(story.nodeFor(play.currentNodeId)?.sceneInStreet ?? false)
         ? herePlace
         : null;
     _sceneInside = hereBuilding != null;
@@ -2394,9 +2403,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 });
               }
             },
-            street: cityChart.here != null
-                ? world.doorstepOfNode(story.nodeFor(play.currentNodeId))
-                : null,
+            street: cityChart.here != null ? sceneStreet : null,
             onOpen: (i) => _openWay(i, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
