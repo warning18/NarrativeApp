@@ -22,6 +22,10 @@ Map<String, dynamic> _loadJson(String relative) {
   fail('could not find $relative under ${Directory.current.path}');
 }
 
+/// The scenes split into two pages (the user's call, v1.577): a calm page with
+/// one Continue, then the page with the turn and the choices. Same place.
+const _pageTurns = {'100_dice', '400_hold', '960_lift'};
+
 bool _hasImpact(StoryChoice c) =>
     c.goldMod != 0 ||
     c.alignmentMod != 0 ||
@@ -114,6 +118,13 @@ void main() {
       if (choices.length == 1) {
         final only = choices.single;
         if (only.isEnding) continue;
+        if (_pageTurns.contains(node.id)) {
+          // A page turn: the same place, the next page of the scene.
+          expect(only.text, 'Continue', reason: node.id);
+          expect(nodes[only.nextId]!.location, node.location,
+              reason: '${node.id} turns the page in another place');
+          continue;
+        }
         expect(_hasImpact(only), isTrue,
             reason: '${node.id} is a padding node: ${only.text}');
         continue;

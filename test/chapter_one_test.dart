@@ -27,6 +27,10 @@ Map<String, dynamic> _loadJson(String relative) {
 
 /// A choice does something: it changes the character, starts a fight, a
 /// check, a quest or a shop, or hands over a piece of the Shroud.
+/// The scenes split into two pages (the user's call, v1.577): a calm page with
+/// one Continue, then the page with the turn and the choices. Same place.
+const _pageTurns = {'100_dice', '400_hold', '960_lift'};
+
 bool _hasImpact(StoryChoice c) =>
     c.goldMod != 0 ||
     c.alignmentMod != 0 ||
@@ -80,8 +84,8 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 48 scenes, all reachable', () {
-    expect(chapterOne.length, 48);
+  test('chapter 1 has no padding: 51 scenes, all reachable', () {
+    expect(chapterOne.length, 51);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -162,6 +166,13 @@ void main() {
       final choices = node.choices;
       if (choices.isEmpty) continue;
       if (choices.length == 1) {
+        if (_pageTurns.contains(node.id)) {
+          // A page turn: the same place, the next page of the scene.
+          expect(choices.single.text, 'Continue', reason: node.id);
+          expect(nodes[choices.single.nextId]!.location, node.location,
+              reason: '${node.id} turns the page in another place');
+          continue;
+        }
         expect(_hasImpact(choices.single), isTrue,
             reason: '${node.id} is a padding node: ${choices.single.text}');
         continue;
@@ -349,10 +360,10 @@ void main() {
     expect(mate.choices.map((c) => c.checkAbility).toSet(),
         {'charisma', 'intelligence', 'dexterity'});
     for (final way in mate.choices) {
-      expect(way.nextId, '960', reason: way.text);
+      expect(way.nextId, '960_lift', reason: way.text);
       final failed = nodes[way.failNextId]!;
       final board = failed.choices.single;
-      expect(board.nextId, '960', reason: failed.id);
+      expect(board.nextId, '960_lift', reason: failed.id);
       if (way.checkAbility == 'dexterity') {
         expect(board.healAmount, lessThan(0), reason: failed.id);
       } else {

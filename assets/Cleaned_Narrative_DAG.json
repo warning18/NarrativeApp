@@ -16,15 +16,34 @@
       {
         "text": "Choose who you are...",
         "text_fr": "Choisissez qui vous êtes...",
-        "next_id": "100",
+        "next_id": "100_dice",
         "opensCharacterCreation": true
+      }
+    ]
+  },
+  "100_dice": {
+    "id": "100_dice",
+    "description": "The Blind Beggar on Tallow Street was a tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the house’s money, and a rule about knives that nobody had kept since I was old enough to break it.\n\nI had been losing there since supper with the steady, almost restful competence of a professional, and when the house dice went cold I took out my own, **the old bone one**, and rolled it once for luck, the way I always did.",
+    "description_fr": "Le Mendiant Aveugle, rue du Suif, était une taverne par-devant et autre chose par-derrière : une salle sans enseigne à la porte, quatre tables, une cage pour l’argent de la maison, et une règle sur les couteaux que personne n’avait respectée depuis que j’étais en âge de l’enfreindre.\n\nJ’y perdais depuis le souper avec la compétence régulière, presque reposante, d’un professionnel, et quand les dés de la maison refroidirent, je sortis les miens, **le vieux dé d’os**, et le lançai une fois pour la chance, comme toujours.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "location": "blind_beggar",
+    "spot": "floor",
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "100"
       }
     ]
   },
   "100": {
     "id": "100",
-    "description": "The Blind Beggar on Tallow Street was a tavern at the front and something else at the back: a room with no sign on its door, four tables, a cage for the house’s money, and a rule about knives that nobody had kept since I was old enough to break it.\n\nI had been losing there since supper with the steady, almost restful competence of a professional, and when the house dice went cold I took out my own, **the old bone one**, and rolled it once for luck, the way I always did.\n\nIt came up six. Then the wall came in. There is no better way to say it: one moment there was a wall, and the next there was a great breath of brick and fire, and the floor was where the ceiling should have been, and the blast had thrown me on my back under a card table with my ears full of bells.\n\nWhen I could stand, there was a hole where the street side of the room had been, and through it Alster was burning. White masks were in the street. They went from door to door with lanterns and chalk, and when they came out again they were dragging people by the arms.\n\nThe Inquisition had come for the city, all at once, and from the sky. Nearer, under the bar, a woman lay pinned beneath a fallen beam, calling for anyone at all. Two thoughts arrived together and would not take turns. Lysa, my little sister, **was at home on her own**.\n\nAnd under our house lay **the one thing our mother had made us both swear never to dig for**.",
-    "description_fr": "Le Mendiant Aveugle, rue du Suif, était une taverne par-devant et autre chose par-derrière : une salle sans enseigne à la porte, quatre tables, une cage pour l’argent de la maison, et une règle sur les couteaux que personne n’avait respectée depuis que j’étais en âge de l’enfreindre.\n\nJ’y perdais depuis le souper avec la compétence régulière, presque reposante, d’un professionnel, et quand les dés de la maison refroidirent, je sortis les miens, **le vieux dé d’os**, et le lançai une fois pour la chance, comme toujours.\n\nIl fit six. Puis le mur entra. Il n’y a pas de meilleure façon de le dire : un instant il y eut un mur, et l’instant d’après un grand souffle de brique et de feu, et le plancher se trouva là où aurait dû être le plafond, et le souffle me jeta sur le dos sous une table de cartes, les oreilles pleines de cloches.\n\nQuand je pus me relever, il y avait un trou à la place du côté rue de la salle, et par ce trou, Alster brûlait. Des masques blancs étaient dans la rue. Ils allaient de porte en porte avec des lanternes et de la craie, et quand ils ressortaient, ils traînaient des gens par les bras.\n\nL’Inquisition était venue prendre la ville, d’un seul coup, et par le ciel. Tout près, sous le comptoir, une femme gisait coincée sous une poutre et appelait n’importe qui. Deux pensées arrivèrent ensemble et refusèrent d’attendre leur tour. Lysa, ma petite sœur, **était à la maison, sans personne**.\n\nEt sous notre maison dormait **la seule chose que notre mère nous avait fait jurer, à tous les deux, de ne jamais déterrer**.",
+    "description": "It came up six. Then the wall came in. There is no better way to say it: one moment there was a wall, and the next there was a great breath of brick and fire, and the floor was where the ceiling should have been, and the blast had thrown me on my back under a card table with my ears full of bells.\n\nWhen I could stand, there was a hole where the street side of the room had been, and through it Alster was burning. White masks were in the street. They went from door to door with lanterns and chalk, and when they came out again they were dragging people by the arms.\n\nThe Inquisition had come for the city, all at once, and from the sky. Nearer, under the bar, a woman lay pinned beneath a fallen beam, calling for anyone at all. Two thoughts arrived together and would not take turns. Lysa, my little sister, **was at home on her own**.\n\nAnd under our house lay **the one thing our mother had made us both swear never to dig for**.",
+    "description_fr": "Il fit six. Puis le mur entra. Il n’y a pas de meilleure façon de le dire : un instant il y eut un mur, et l’instant d’après un grand souffle de brique et de feu, et le plancher se trouva là où aurait dû être le plafond, et le souffle me jeta sur le dos sous une table de cartes, les oreilles pleines de cloches.\n\nQuand je pus me relever, il y avait un trou à la place du côté rue de la salle, et par ce trou, Alster brûlait. Des masques blancs étaient dans la rue. Ils allaient de porte en porte avec des lanternes et de la craie, et quand ils ressortaient, ils traînaient des gens par les bras.\n\nL’Inquisition était venue prendre la ville, d’un seul coup, et par le ciel. Tout près, sous le comptoir, une femme gisait coincée sous une poutre et appelait n’importe qui. Deux pensées arrivèrent ensemble et refusèrent d’attendre leur tour. Lysa, ma petite sœur, **était à la maison, sans personne**.\n\nEt sous notre maison dormait **la seule chose que notre mère nous avait fait jurer, à tous les deux, de ne jamais déterrer**.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "action",
@@ -917,7 +936,7 @@
       {
         "text": "Watch from across the street",
         "text_fr": "Observer depuis l’autre côté de la rue",
-        "next_id": "400",
+        "next_id": "400_hold",
         "flagsToAdd": [
           "saw_sketch"
         ]
@@ -925,7 +944,7 @@
       {
         "text": "Slip round to the back",
         "text_fr": "Se glisser par l’arrière",
-        "next_id": "400",
+        "next_id": "400_hold",
         "flagsToAdd": [
           "back_way"
         ]
@@ -933,7 +952,7 @@
       {
         "text": "Run straight for the door",
         "text_fr": "Courir droit à la porte",
-        "next_id": "400",
+        "next_id": "400_hold",
         "flagsToAdd": [
           "ran_in"
         ]
@@ -958,6 +977,24 @@
     ],
     "prompt": "How do you approach the house?",
     "prompt_fr": "Comment approchez-vous de la maison ?"
+  },
+  "400_hold": {
+    "id": "400_hold",
+    "description": "Whatever I had decided on the way, I had only a few steps left to decide it in. Lamps moved behind our shutters. The sergeant on the step did not look up, and the whole street seemed to be holding its breath with me.",
+    "description_fr": "Quoi que j’aie décidé en chemin, il ne me restait que quelques pas pour le décider. Des lampes passaient derrière nos volets. Le sergent sur le seuil ne leva pas les yeux, et la rue entière semblait retenir son souffle avec moi.",
+    "context_taxonomy": {
+      "ui_theme": "hovel",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "alster_family_house",
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "400"
+      }
+    ]
   },
   "400": {
     "id": "400",
@@ -1844,7 +1881,7 @@
       {
         "text": "Talk your way aboard",
         "text_fr": "Plaider sa place à bord",
-        "next_id": "960",
+        "next_id": "960_lift",
         "checkAbility": "charisma",
         "checkDC": 12,
         "failNextId": "896_failed",
@@ -1855,7 +1892,7 @@
       {
         "text": "Pass as crew from the manifest",
         "text_fr": "Se faire passer pour l’équipage",
-        "next_id": "960",
+        "next_id": "960_lift",
         "checkAbility": "intelligence",
         "checkDC": 12,
         "failNextId": "897_failed",
@@ -1866,7 +1903,7 @@
       {
         "text": "Climb the line as she lifts",
         "text_fr": "Grimper à l’amarre au décollage",
-        "next_id": "960",
+        "next_id": "960_lift",
         "checkAbility": "dexterity",
         "checkDC": 12,
         "failNextId": "898_failed",
@@ -1899,7 +1936,7 @@
       {
         "text": "Pay, and climb aboard",
         "text_fr": "Payer, et monter à bord",
-        "next_id": "960",
+        "next_id": "960_lift",
         "goldMod": -40,
         "flagsToAdd": [
           "boarded_fined"
@@ -1921,7 +1958,7 @@
       {
         "text": "Pay the bribe and board",
         "text_fr": "Payer le pot-de-vin et embarquer",
-        "next_id": "960",
+        "next_id": "960_lift",
         "goldMod": -25,
         "flagsToAdd": [
           "boarded_bribed"
@@ -1943,7 +1980,7 @@
       {
         "text": "Haul yourself to your feet",
         "text_fr": "Se remettre debout",
-        "next_id": "960",
+        "next_id": "960_lift",
         "healAmount": -3,
         "flagsToAdd": [
           "boarded_fell"
@@ -1951,10 +1988,28 @@
       }
     ]
   },
+  "960_lift": {
+    "id": "960_lift",
+    "description": "The third bell rang, and the Lark let go of the world. There was no lurch. The quay simply went down and away, and the sign painted across our mainsail woke as it went — a long shape like a wing drawn in one stroke — burning from the inside the way the wet ones had on the quay, and she rose on it as if she had been waiting all her life to be asked.",
+    "description_fr": "La troisième cloche sonna, et l’Alouette lâcha le monde. Il n’y eut pas de secousse. Le quai descendit simplement et s’éloigna, et le signe peint sur notre grand-voile s’éveilla à mesure — une longue forme comme une aile tracée d’un seul trait — brûlant de l’intérieur comme les voiles mouillées du quai, et le navire monta dessus comme s’il avait attendu toute sa vie qu’on le lui demande.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tender",
+      "speaker": "Narrator"
+    },
+    "location": "alster_high_quay",
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "960"
+      }
+    ]
+  },
   "960": {
     "id": "960",
-    "description": "The third bell rang, and the Lark let go of the world. There was no lurch. The quay simply went down and away, and the sign painted across our mainsail woke as it went — a long shape like a wing drawn in one stroke — burning from the inside the way the wet ones had on the quay, and she rose on it as if she had been waiting all her life to be asked.\n\nFor the length of a breath Alster lay under us like a map someone had set fire to. Then **the guns on the harbor walls found us**. The first ball went under our keel. The second took the stern lantern and half the rail with it, and **fire ran along the deck where the lamp-oil spilled, toward the sail**.\n\nThe crew went for it with buckets and coats and bare hands. The sign on the sail flickered, the way a candle flickers when a door opens somewhere in the house.",
-    "description_fr": "La troisième cloche sonna, et l’Alouette lâcha le monde. Il n’y eut pas de secousse. Le quai descendit simplement et s’éloigna, et le signe peint sur notre grand-voile s’éveilla à mesure — une longue forme comme une aile tracée d’un seul trait — brûlant de l’intérieur comme les voiles mouillées du quai, et le navire monta dessus comme s’il avait attendu toute sa vie qu’on le lui demande.\n\nLe temps d’un souffle, Alster s’étendit sous nous comme une carte à laquelle quelqu’un aurait mis le feu. Puis **les canons des remparts du port nous trouvèrent**. Le premier boulet passa sous notre quille. Le deuxième emporta la lanterne de poupe et la moitié du bastingage, et **le feu courut sur le pont, là où l’huile des lampes s’était répandue, vers la voile**.\n\nL’équipage s’y jeta avec des seaux, des manteaux et ses mains nues. Le signe de la voile vacilla, comme vacille une chandelle quand une porte s’ouvre quelque part dans la maison.",
+    "description": "For the length of a breath Alster lay under us like a map someone had set fire to. Then **the guns on the harbor walls found us**. The first ball went under our keel. The second took the stern lantern and half the rail with it, and **fire ran along the deck where the lamp-oil spilled, toward the sail**.\n\nThe crew went for it with buckets and coats and bare hands. The sign on the sail flickered, the way a candle flickers when a door opens somewhere in the house.",
+    "description_fr": "Le temps d’un souffle, Alster s’étendit sous nous comme une carte à laquelle quelqu’un aurait mis le feu. Puis **les canons des remparts du port nous trouvèrent**. Le premier boulet passa sous notre quille. Le deuxième emporta la lanterne de poupe et la moitié du bastingage, et **le feu courut sur le pont, là où l’huile des lampes s’était répandue, vers la voile**.\n\nL’équipage s’y jeta avec des seaux, des manteaux et ses mains nues. Le signe de la voile vacilla, comme vacille une chandelle quand une porte s’ouvre quelque part dans la maison.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "action",
