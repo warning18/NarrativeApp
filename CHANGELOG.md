@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.563.0+599]
+
+The scene lock only holds a scene whose ways are all on the spot. Any way with a place on the map is taken from the map again.
+
+### Fixed
+- **Map movement is back:** v1.555 locked any scene the story led to that had one choice made on the spot. It turned every way into a text card and greyed the map, even ways that already had a place on it. A scene now locks only when none of its ways is drawn on any map: the place's pins, the town plan, a room's spots, a road or the world. A scene with both kinds no longer locks: its mapped ways stay on the map, and its on-the-spot choices stay in the scene view or the sheet over the map.
+- **The sheet over the map is back** for every scene that does not lock, as before v1.555.
+- **Fewer scenes lock:** over the whole story, 52 scenes lock instead of 361. The House's Bouncer's aftermath (106) and all of chapter 1's opening (0–400) no longer lock. The wreck (965) still does.
+- **No lock before the map is ready:** a save reopened before the map and town plans have loaded no longer locks on its first screen.
+
 ## [1.562.0+598]
 
 Forging rolls a d20 for the piece's quality.
