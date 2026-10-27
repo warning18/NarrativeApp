@@ -15,6 +15,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'clan_power_block.dart';
 import 'clan_radar_chart.dart';
+import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 
 /// Wraps [child] so a long press opens the details of [factionId] (see
@@ -110,8 +111,11 @@ class ClanDetailsCard extends ConsumerWidget {
                     SizedBox(
                       width: 52,
                       height: 76,
-                      child:
-                          FittedBox(child: PixelBanner(id: bannerId, scale: 1)),
+                      child: FittedBox(
+                          child: ClanMarks(
+                              factionId: factionId,
+                              discSize: 30,
+                              child: PixelBanner(id: bannerId, scale: 1))),
                     ),
                   if (bannerId != null) const SizedBox(width: 12),
                   Expanded(
