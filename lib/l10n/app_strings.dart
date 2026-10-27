@@ -101,6 +101,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} ways here · tap a pin or a row',
     AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
   },
+  'journey_city_pins_ways': {
+    AppLanguage.en: '{p} pins · {n} ways · tap a pin to open it',
+    AppLanguage.fr:
+        '{p} épingles · {n} chemins · touchez une épingle pour l’ouvrir',
+  },
   'journey_city_walk_to': {
     AppLanguage.en: 'Walk to {district}',
     AppLanguage.fr: 'Marcher vers {district}',
@@ -5797,6 +5802,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vaincre {n} ennemis marqués (un trait ou une élite)',
   },
   'contract_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Réclamer'},
+  'contract_paid': {AppLanguage.en: 'PAID', AppLanguage.fr: 'PAYÉ'},
+  'contract_progress_of': {
+    AppLanguage.en: '{a} of {b}',
+    AppLanguage.fr: '{a} sur {b}',
+  },
+  'board_header_claim': {
+    AppLanguage.en: 'Chapter {n} · {k} to claim',
+    AppLanguage.fr: 'Chapitre {n} · {k} à réclamer',
+  },
+  'board_header_open': {
+    AppLanguage.en: 'Chapter {n} · {k} notices up',
+    AppLanguage.fr: 'Chapitre {n} · {k} affiches',
+  },
   'contract_claimed': {
     AppLanguage.en: 'Contract paid:',
     AppLanguage.fr: 'Contrat payé :',

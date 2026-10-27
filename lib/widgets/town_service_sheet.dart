@@ -33,8 +33,31 @@ import 'sheet_kit.dart';
 /// The name of a service's kind, in the player's language.
 String townServiceName(WidgetRef ref, String kind) => tr(ref, 'service_$kind');
 
-/// Opens the sheet of [service].
+/// The notice board's page: the board, straight from its pin (v1.561).
+class NoticeBoardPage extends ConsumerWidget {
+  const NoticeBoardPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Scaffold(
+        appBar: AppBar(title: Text(tr(ref, 'service_bounty_board'))),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: const [BountyBoard()],
+        ),
+      );
+}
+
+/// Opens the sheet of [service]; the notice board, which only opens the
+/// bounty board, opens the board itself.
 Future<void> showTownServiceSheet(BuildContext context, TownService service) {
+  if (service.opens.length == 1 &&
+      service.opens.first.action == TownServiceAction.bountyBoard) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+          builder: (_) => const NoticeBoardPage(),
+          settings: const RouteSettings(name: 'notice_board')),
+    );
+  }
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
@@ -91,13 +114,7 @@ class _TownServiceSheet extends ConsumerWidget {
             leading: const Icon(Icons.assignment_outlined),
             title: tr(ref, 'service_bounty_board'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => push(Scaffold(
-              appBar: AppBar(title: Text(tr(ref, 'service_bounty_board'))),
-              body: ListView(
-                padding: const EdgeInsets.all(16),
-                children: const [BountyBoard()],
-              ),
-            )),
+            onTap: () => push(const NoticeBoardPage()),
           );
         case TownServiceAction.rest:
           return SheetRow(

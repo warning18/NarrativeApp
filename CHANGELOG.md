@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.561.0+597]
+
+The Journey's ways are grouped by pin, and the notice board is a board you read.
+
+### Changed
+- **The list of ways under the district map** (`way_pin_groups.dart`, `journey_screen.dart`): the ways that hang at the same pin (a building, or a spot) on the map are one row: the pin's own banner or disc, the name of the way that leads it, a count and a chevron. It is closed until tapped; a tap opens it in place to its ways, each the row it always was, indented, and a tap on one does what a row's tap did (the way's sheet). Only one pin is open at a time. A pin with one way stays a plain row, and a district with no such pin looks exactly as before. The header reads "2 pins · 5 ways · tap a pin to open it" when there are grouped pins. (The opened state is built as mocked so a row can open; say if you want it otherwise.)
+- **The notice board** (`bounty_board.dart`, `town_service_sheet.dart`, `city_chart_painter.dart`): the contracts are pinned on a wooden board as slightly tilted parchment notes, each with a stamp-ring for its kind, its goal, how far along it is as pips and "2 of 3", its pay as two chips (gold, essence), and a wax seal that is the Claim: flat and grey while the note is open, red and glowing once it is met. A claimed note is stamped PAID and drops off; a new board's notes pin up one after another (with reduced motion: no pin-up, no stamp, the note is simply gone). The header says the chapter and what waits ("Chapter 2 · 1 to claim"). The notice board's pin on the district map is a little board with a count of the notices up, red when one can be claimed, and a tap on it opens the board itself instead of a sheet with one row. The contracts, the claim and the posting are unchanged; the camp's board looks the same way.
+
+### Tests
+- New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
 ## [1.559.0+595]
 
 - Saltmouth's side quests now belong to a district and a clan, so what you do on the wharf, at Card Row and on Tern Row changes who holds them. Two new district quests (The Short Count at Card Row, A Boat for the Wrong Name on Tern Row), a door scene and a reason for each locked district, and a line when a district changes hands.

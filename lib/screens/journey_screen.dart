@@ -87,6 +87,7 @@ import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
 import '../widgets/street_view/street_view.dart';
 import '../widgets/town_walk.dart';
+import '../widgets/way_pin_groups.dart';
 import 'journal_screen.dart';
 import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
@@ -5804,6 +5805,8 @@ class _CityDistrictView extends ConsumerWidget {
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
     // The town's own signs (wave 14): a notice board, the market, a tavern...
     final townServices = ref.watch(currentTownServicesProvider);
+    final boardContracts =
+        ref.watch(playerSessionProvider.select((s) => s.contracts));
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5897,27 +5900,49 @@ class _CityDistrictView extends ConsumerWidget {
     }
     if (focus != null) {
       final n = shown.length;
+      // The ways hang at pins on the map (a building, or a spot): a pin with
+      // several ways is one closed row with a count (way_pin_groups.dart).
+      final groups = groupWaysByPin([
+        for (final i in shown)
+          WayPinEntry(
+            i,
+            switch (chart.ways.where((w) => w.id == '$i').firstOrNull) {
+              final way? when way.at != null =>
+                'at:${way.at!.dx.round()},${way.at!.dy.round()}',
+              final way? => 'b:${way.building}',
+              null => 'step:$i',
+            },
+            leads: banners['$i'] != null,
+          ),
+      ]);
+      final pins = pinsWithManyWays(groups);
       rows.add(Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 4),
         child: Text(
-          (n == 1
-                  ? tr(ref, 'journey_city_ways_one')
-                  : tr(ref, 'journey_city_ways_many').replaceAll('{n}', '$n'))
+          (pins > 0
+                  ? tr(ref, 'journey_city_pins_ways')
+                      .replaceAll('{p}', '${groups.length}')
+                      .replaceAll('{n}', '$n')
+                  : n == 1
+                      ? tr(ref, 'journey_city_ways_one')
+                      : tr(ref, 'journey_city_ways_many')
+                          .replaceAll('{n}', '$n'))
               .toUpperCase(),
           style: theme.textTheme.labelSmall
               ?.copyWith(color: ink.ash, letterSpacing: 0.8),
         ),
       ));
-      for (final i in shown) {
+      // One way's row; [indent] pixels in when it is inside a pin.
+      Widget wayRow(int i, {double indent = 0}) {
         final s = steps[i];
         final way = chart.ways.where((w) => w.id == '$i').firstOrNull;
         final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
         final target = building == s.label ? '' : building;
-        rows.add(InkWell(
+        return InkWell(
           key: ValueKey('journey_city_row_$i'),
           onTap: () => onOpen(i),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 7),
+            padding: EdgeInsets.fromLTRB(indent, 7, 0, 7),
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
@@ -5963,6 +5988,36 @@ class _CityDistrictView extends ConsumerWidget {
               ],
             ]),
           ),
+        );
+      }
+
+      // A pin's mark: its way's banner, else its kind's disc.
+      Widget pinLead(int i) {
+        final banner = banners['$i'];
+        if (banner == null) return kindDisc(steps[i]);
+        return BannerPin(
+          cat: banner.cat,
+          color: steps[i].locked
+              ? banner.color
+              : banner.cat
+                  .colorOn(ink, dark: theme.brightness == Brightness.dark),
+          dark: theme.brightness == Brightness.dark,
+          icon: steps[i].locked ? Icons.lock_outline : null,
+          scale: 0.8,
+        );
+      }
+
+      if (pins == 0) {
+        for (final i in shown) {
+          rows.add(wayRow(i));
+        }
+      } else {
+        rows.add(WayPinList(
+          key: ValueKey('journey_city_pins_$focus'),
+          groups: groups,
+          rowOf: wayRow,
+          leadOf: pinLead,
+          titleOf: (i) => steps[i].label,
         ));
       }
       // No way in the party's own district: a free walk (no time, no
@@ -6098,7 +6153,12 @@ class _CityDistrictView extends ConsumerWidget {
                             kind: s.kind,
                             at: s.pin.at,
                             district: s.pin.district,
-                            opens: s.opensSomething),
+                            opens: s.opensSomething,
+                            // The notice board says what waits on it.
+                            badge: s.kind == 'notice_board'
+                                ? boardContracts.length
+                                : 0,
+                            urgent: boardContracts.any((c) => c.done)),
                     ],
                     onService: (picked) => showTownServiceSheet(context,
                         townServices.firstWhere((s) => s.id == picked.id)),
