@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import '../combat/dice_faces.dart' show isAssignableFace;
+import '../combat/gear_effects.dart' show ItemSet;
+import '../models/ally_state.dart' show meetsItemStatRequirement;
 import '../combat/spec_variants.dart' show SpecVariantInfo;
 import '../combat/specialisations.dart' show SpecInfo;
 import '../combat/spells.dart';
@@ -21,6 +23,7 @@ import 'clan_crisis.dart' show buildCrisisNode, mainClanOf;
 import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
+import 'sim_policy.dart';
 import 'skill_tree.dart';
 import 'throne.dart';
 
@@ -48,7 +51,14 @@ class SimGrowthTables {
     this.specs = const {},
     this.specVariants = const {},
     this.events = const {},
+    this.itemSets = const {},
+    this.merges = const {},
   });
+
+  /// item_sets.json parsed and skill_merges.json: what the competent
+  /// player weighs its gear by and crafts at the Skillwright.
+  final Map<String, ItemSet> itemSets;
+  final Map<String, dynamic> merges;
 
   /// politics_events.json parsed: the events the coast fires by itself
   /// ([SimGrowth.runEvents]) and a story choice's `event`. None, none
@@ -126,6 +136,7 @@ class SimGrowth {
     required this.character,
     int startingSkillPoints = 0,
     this.ladder = false,
+    this.policy = SimPolicy.naive,
   }) {
     if (mode == SimProgression.legacy) {
       skillPoints = startingSkillPoints;
@@ -140,6 +151,17 @@ class SimGrowth {
   final SimProgression mode;
   final SimGrowthTables tables;
   final SimCharacter character;
+
+  /// How the player plays its choices (sim_policy.dart).
+  final SimPolicy policy;
+  bool get competent => policy == SimPolicy.competent;
+
+  /// Every clan offer taken, in order: the banners offered, the one taken
+  /// and why (both policies).
+  final List<SimOfferPick> offerPicks = [];
+
+  /// The skills crafted at the Skillwright (competent): result ids.
+  final List<String> merged = [];
 
   /// The game's feature ladder (feature_unlocks.dart): no starting offer,
   /// the offers waiting for the clans, the trainer's skill.
@@ -504,12 +526,6 @@ class SimGrowth {
             i,
       ];
 
-  /// The mana skill's face, kept as it is (a caster's pool lives on it).
-  bool _isManaSkill(String skillId) {
-    final skill = tables.skills[skillId] as Map<String, dynamic>?;
-    return ((skill?['damageMultiplier'] as num?)?.toDouble() ?? 1) <= 0;
-  }
-
   /// Whether [skillId], learned now, would go on an empty face of the die.
   bool fillsEmptyFace(String skillId) {
     if (character.unlockedSkillIds.contains(skillId)) return false;
@@ -523,34 +539,12 @@ class SimGrowth {
   /// Every learned skill to the die's open Skill faces, the best on them:
   /// the mana skill keeps its face, the rest go by [simSkillScore].
   void assignSkills() {
-    final open = _openSkillFaces;
-    final assignments = <String, String>{};
-    final placed = <String>{};
-    for (final i in open) {
-      final current = character.diceSkillAssignments['$i'];
-      if (current != null && _isManaSkill(current)) {
-        assignments['$i'] = current;
-        placed.add(current);
-      }
-    }
-    final ranked = [
-      for (final id in character.unlockedSkillIds)
-        if (!placed.contains(id) &&
-            !_isManaSkill(id) &&
-            tables.skills[id] is Map<String, dynamic>)
-          id,
-    ]..sort((a, b) {
-        final byScore = simSkillScore(tables.skills[b] as Map<String, dynamic>)
-            .compareTo(simSkillScore(tables.skills[a] as Map<String, dynamic>));
-        return byScore != 0 ? byScore : a.compareTo(b);
-      });
-    var next = 0;
-    for (final i in open) {
-      if (assignments.containsKey('$i')) continue;
-      if (next >= ranked.length) break;
-      assignments['$i'] = ranked[next++];
-    }
-    character.diceSkillAssignments = assignments;
+    character.diceSkillAssignments = simSkillAssignments(
+      faces: character.diceFaces,
+      current: character.diceSkillAssignments,
+      unlocked: character.unlockedSkillIds,
+      skills: tables.skills,
+    );
   }
 
   void _learn(String skillId) {
@@ -663,7 +657,9 @@ class SimGrowth {
           for (final e in tables.skills.entries)
             if (e.value is Map && (e.value as Map)['isUnlocked'] == true) e.key,
         },
-        ownedItemIds: character.equippedItemIds,
+        ownedItemIds: competent
+            ? {...character.equippedItemIds, ...character.ownedItemIds}.toList()
+            : character.equippedItemIds,
         knownSpellIds: [for (final s in character.knownSpells) s.id],
         flags: flags,
         alignment: alignment,
@@ -704,17 +700,32 @@ class SimGrowth {
       final keepTo = main.isEmpty
           ? null
           : {main, ...alliesOf(main, politics, tables.clans)};
-      Suitor? choose(ClanOffer o) => preferredSuitor(
-            o,
-            fillsEmptyFace: fillsEmptyFace,
-            heldSigns: character.heldSigns,
-            signs: tables.signs,
-            favourBest: favourBest,
-            politics: politics,
-            data: tables.clans,
-            healthy: character.currentHealth * 2 > character.maxHealth,
-            keepTo: keepTo,
-          );
+      // Why the banner taken was taken, for the run's report.
+      var why = '';
+      Suitor? choose(ClanOffer o) {
+        if (competent) {
+          final pick = competentSuitor(o, ticket);
+          why = pick.reason;
+          return pick.suitor;
+        }
+        why = favourBest
+            ? 'favour-best'
+            : keepTo == null
+                ? 'best gift'
+                : 'best gift, kept to $main and allies';
+        return preferredSuitor(
+          o,
+          fillsEmptyFace: fillsEmptyFace,
+          heldSigns: character.heldSigns,
+          signs: tables.signs,
+          favourBest: favourBest,
+          politics: politics,
+          data: tables.clans,
+          healthy: character.currentHealth * 2 > character.maxHealth,
+          keepTo: keepTo,
+        );
+      }
+
       var chosen = choose(offer);
       // The camp's roll houses (sim_rolls.dart), on their own draw.
       final rolls = character.rolls;
@@ -733,6 +744,15 @@ class SimGrowth {
       final suitor = chosen;
       if (suitor == null) return next;
       pending.removeAt(0);
+      offerPicks.add(SimOfferPick(
+        chapter: chapter,
+        source: ticket.detail.isEmpty
+            ? ticket.source.name
+            : '${ticket.source.name}:${ticket.detail}',
+        offered: [for (final s in offer.suitors) _label(s)],
+        taken: _label(suitor),
+        reason: why,
+      ));
       for (final s in offer.suitors) {
         if (!patronsMet.contains(s.factionId)) patronsMet.add(s.factionId);
       }
@@ -786,6 +806,230 @@ class SimGrowth {
       giftsTaken[suitor.gift.kind] = (giftsTaken[suitor.gift.kind] ?? 0) + 1;
     }
     return next;
+  }
+
+  static String _label(Suitor s) =>
+      '${s.factionId}:${s.gift.kind.name}:${s.gift.id}';
+
+  // --- The competent player (sim_policy.dart) -------------------------------
+
+  /// The die's worth (simDieValue) with [unlocked] known, best placed.
+  double _dieValueWith(Iterable<String> unlocked) {
+    final c = character;
+    return simDieValue(
+        c.diceFaces,
+        simSkillAssignments(
+            faces: c.diceFaces,
+            current: c.diceSkillAssignments,
+            unlocked: unlocked,
+            skills: tables.skills),
+        tables.skills,
+        damage: c.baseDamage,
+        caster: c.knownSpells.isNotEmpty);
+  }
+
+  bool _canWear(Map<String, dynamic> item) => meetsItemStatRequirement(item,
+      strength: character.strength,
+      dexterity: character.dexterity,
+      constitution: character.constitution,
+      intelligence: character.intelligence);
+
+  /// The best loadout's worth (simLoadoutValue) with [extra] owned too.
+  double _bestGearValue([Iterable<String> extra = const []]) {
+    final c = character;
+    final best = simBestLoadout(
+        worn: c.equippedBySlot,
+        owned: {...c.ownedItemIds, ...extra},
+        items: tables.items,
+        sets: tables.itemSets,
+        canWear: _canWear,
+        caster: c.knownSpells.isNotEmpty);
+    return simLoadoutValue(best.values, tables.items, tables.itemSets,
+        caster: c.knownSpells.isNotEmpty);
+  }
+
+  /// What [gift] adds to the build's power, the competent player's
+  /// measure (about ten to a point of damage on every roll): a skill by
+  /// what it adds to the die, gear by what it adds to the best loadout,
+  /// potions and a spellbook by what they heal or teach, a
+  /// specialisation, a sign, a boon, a perk and a title by fixed worths
+  /// (a sign more for an empty slot, little for a slot holding as good).
+  double giftPower(OfferGift gift) {
+    final c = character;
+    switch (gift.kind) {
+      case GiftKind.skill:
+        if (tables.skills[gift.id] is! Map<String, dynamic>) return 0;
+        return (_dieValueWith({...c.unlockedSkillIds, gift.id}) -
+                    _dieValueWith(c.unlockedSkillIds)) *
+                10 +
+            1;
+      case GiftKind.object:
+        final item = tables.items[gift.id] as Map<String, dynamic>?;
+        if (item == null) return 0;
+        if (item['itemType']?.toString() == 'Potion') {
+          return gift.id == 'antidote'
+              ? 0
+              : (gift.id == 'potion_major' ? 6 : 3);
+        }
+        final spellId = spellbookSpellIdFor(item);
+        if (spellId != null) {
+          final spell = tables.spells[spellId];
+          return spell != null &&
+                  canLearnSpell(spell,
+                      professionId: c.professionId,
+                      knownSpellIds: [for (final s in c.knownSpells) s.id])
+              ? 15
+              : 0;
+        }
+        if (item['isEquippable'] != true) return 1;
+        return (_bestGearValue([gift.id]) - _bestGearValue()) * 7;
+      case GiftKind.spec:
+        return 25;
+      case GiftKind.sign:
+        final sign = tables.signs[gift.id];
+        if (sign == null) return 0;
+        final held = heldInSlot(sign.slot, c.heldSigns, tables.signs);
+        var worth = 4.0 + gift.rarity.index * 6;
+        if (held == null) {
+          worth += 5;
+        } else if (held.rarity.index >= gift.rarity.index) {
+          worth -= 6;
+        }
+        return max(0.5, worth);
+      case GiftKind.sworn:
+        return 20.0 + gift.rarity.index * 4;
+      case GiftKind.perk:
+        final perk = perkFromName(gift.id);
+        if (perk == null) return 0;
+        if ((perkRanks[perk.name] ?? 0) >= perkInfo[perk]!.maxRank) return 0;
+        final rank = simPerkPreference.indexOf(perk);
+        return 2.0 + (rank < 0 ? 0 : simPerkPreference.length - rank);
+      case GiftKind.title:
+        return 3.0 + gift.rarity.index * 3;
+    }
+  }
+
+  /// The competent banner (sim_policy.dart's rule): never one whose
+  /// standing would turn a clan the character needs (its main clan or an
+  /// ally) Hostile; of the rest the gift that raises its power most
+  /// ([giftPower]; a risky card at 60%, none at half health or less), a
+  /// tie (within a point) to the clan it stands closest to. Every offer is
+  /// taken: when every banner would hurt, the best of them all.
+  ({Suitor? suitor, String reason}) competentSuitor(
+      ClanOffer offer, OfferTicket ticket) {
+    if (offer.suitors.isEmpty) return (suitor: null, reason: '');
+    final data = tables.clans;
+    final main = mainClanOf(politics);
+    final needed =
+        main.isEmpty ? <String>{} : {main, ...alliesOf(main, politics, data)};
+    String? turnsHostile(Suitor s) {
+      if (needed.isEmpty || s.isWayfarer) return null;
+      final after =
+          acceptPolitics(s, ticket, politics: politics, data: data).politics;
+      for (final id in needed.toList()..sort()) {
+        if (politics.tierOf(id, data).isAtLeast(StandingTier.resented) &&
+            !after.tierOf(id, data).isAtLeast(StandingTier.resented)) {
+          return id;
+        }
+      }
+      return null;
+    }
+
+    final skipped = <String>[];
+    final safe = <Suitor>[];
+    for (final s in offer.suitors) {
+      final hurt = turnsHostile(s);
+      if (hurt == null) {
+        safe.add(s);
+      } else {
+        skipped.add('${s.factionId} would turn $hurt Hostile');
+      }
+    }
+    var pool = safe.isEmpty ? offer.suitors : safe;
+    final healthy = character.currentHealth * 2 > character.maxHealth;
+    if (!healthy && pool.any((s) => !s.risky)) {
+      pool = [
+        for (final s in pool)
+          if (!s.risky) s
+      ];
+    }
+    double power(Suitor s) => giftPower(s.gift) * (s.risky ? 0.6 : 1);
+    double standing(Suitor s) =>
+        s.isWayfarer || (data.faction(s.factionId)?.isLost ?? true)
+            ? double.negativeInfinity
+            : politics.standingOf(s.factionId, data);
+    final powers = [for (final s in pool) power(s)];
+    final top = powers.reduce(max);
+    final tied = [
+      for (var i = 0; i < pool.length; i++)
+        if (powers[i] >= top - 1) pool[i],
+    ];
+    final pick = tied.reduce((a, b) => standing(b) > standing(a) ? b : a);
+    final parts = [
+      tied.length == 1
+          ? 'most power +${top.toStringAsFixed(1)}'
+          : 'tie at +${top.toStringAsFixed(1)}, closest clan',
+      if (skipped.isNotEmpty) 'skipped ${skipped.join(', ')}',
+      if (safe.isEmpty) 'every banner hurt a needed clan',
+    ];
+    return (suitor: pick, reason: parts.join('; '));
+  }
+
+  /// The competent player's gear: the best loadout (simBestLoadout) out of
+  /// what it owns, [extra] (the pack: loot, rewards, what a scene gave)
+  /// counted as owned.
+  void equipBest({Iterable<String> extra = const []}) {
+    final c = character;
+    for (final id in extra) {
+      final item = tables.items[id];
+      if (item is Map<String, dynamic> && item['isEquippable'] == true) {
+        c.ownedItemIds.add(id);
+      }
+    }
+    final best = simBestLoadout(
+        worn: c.equippedBySlot,
+        owned: c.ownedItemIds,
+        items: tables.items,
+        sets: tables.itemSets,
+        canWear: _canWear,
+        caster: c.knownSpells.isNotEmpty);
+    c.equippedBySlot
+      ..clear()
+      ..addAll(best);
+  }
+
+  /// The competent player before a fight: the best gear it owns (with
+  /// [inventory], the pack); at the Skillwright ([skillwright]) every
+  /// skill merge worth crafting (simMergeWorthIt); then the best die it
+  /// owns (the dice it has bought and its own) with its skills best
+  /// placed. Nothing for the naive player.
+  void prepareForFight({
+    Iterable<String> inventory = const [],
+    bool skillwright = false,
+  }) {
+    if (!competent) return;
+    final c = character;
+    equipBest(extra: inventory);
+    if (skillwright && tables.merges.isNotEmpty) {
+      while (true) {
+        final merge = simMergeWorthIt(
+            merges: tables.merges,
+            unlocked: c.unlockedSkillIds,
+            faces: c.diceFaces,
+            current: c.diceSkillAssignments,
+            skills: tables.skills,
+            damage: c.baseDamage,
+            caster: c.knownSpells.isNotEmpty);
+        if (merge == null) break;
+        c.unlockedSkillIds
+          ..removeAll(merge.inputs)
+          ..add(merge.result);
+        merged.add(merge.result);
+        assignSkills();
+      }
+    }
+    c.rollBestDie(tables.skills);
+    assignSkills();
   }
 
   void _crisis(String key) =>
@@ -854,6 +1098,11 @@ class SimGrowth {
     if (item['isEquippable'] != true) return;
     final slot = item['equipSlot']?.toString() ?? '';
     if (slot.isEmpty) return;
+    if (competent) {
+      c.ownedItemIds.add(itemId);
+      equipBest();
+      return;
+    }
     int score(String? id) {
       final record = tables.items[id] as Map<String, dynamic>?;
       if (record == null) return -1;

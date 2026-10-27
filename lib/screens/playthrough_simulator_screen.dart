@@ -59,6 +59,8 @@ import '../data/settlements.dart' show campFoundedFlag;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_growth.dart';
+import '../data/sim_policy.dart';
+import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/sim_quests.dart';
 import '../data/temple.dart';
 import '../data/town_rulers.dart' show townRulers;
@@ -264,7 +266,21 @@ class _SimResult {
     this.territory = const [],
     this.politics = PoliticsState.empty,
     this.nemeses = const {},
+    this.offerPicks = const [],
+    this.gear = const {},
+    this.die = '',
+    this.merged = const [],
   });
+
+  /// Every clan offer taken: the banners offered, the one taken and why
+  /// (SimGrowth.offerPicks).
+  final List<SimOfferPick> offerPicks;
+
+  /// The gear worn at the end (slot -> item), the die in play and the
+  /// skills crafted at the Skillwright (the competent player's).
+  final Map<String, String> gear;
+  final String die;
+  final List<String> merged;
 
   /// The specialisations the character held at the end, in the order
   /// taken (specialisations.dart).
@@ -422,7 +438,17 @@ class _SimContext {
     this.specVariants = const {},
     this.trainingPaths = const {},
     this.politicsEvents = const {},
+    this.policy = SimPolicy.naive,
+    this.merges = const {},
   });
+
+  /// How the simulated player plays its choices (sim_policy.dart): naive,
+  /// the CI bands' measure, or competent, a real player's.
+  final SimPolicy policy;
+
+  /// skill_merges.json: what the competent player crafts at the
+  /// Skillwright.
+  final Map<String, dynamic> merges;
 
   /// politics_events.json parsed: the events the coast fires as the walk
   /// reaches a chapter and moves on (SimGrowth.runEvents). None, none fire.
@@ -532,6 +558,8 @@ class _SimContext {
         specs: specs,
         specVariants: specVariants,
         events: politicsEvents,
+        itemSets: itemSets,
+        merges: merges,
       );
 }
 
@@ -615,6 +643,7 @@ _SimResult _simulate(
       ..specIds = [...sim.startSpecs]
       ..trainingPaths = sim.trainingPaths
       ..pickRandom = Random(detourSalt * 31 + 17)
+      ..policy = sim.policy
       // The camp's roll houses draw on their own (sim_rolls.dart).
       ..rolls = SimRolls(Random(detourSalt * 31 + 29));
   }
@@ -657,6 +686,7 @@ _SimResult _simulate(
                   as Map<String, dynamic>?)?['startingSkillPoints'] as int? ??
               0,
           ladder: sim.featureLadder,
+          policy: sim.policy,
         )..passives = !sim.clashOff.contains('passives'));
   // The open chapters' loop: the camp the story stands at, the places
   // already toured from it, and the place being toured now (with how many
@@ -970,6 +1000,10 @@ _SimResult _simulate(
       territory: List.unmodifiable(growth?.territoryChanges ?? const []),
       politics: growth?.politics ?? PoliticsState.empty,
       nemeses: Set.unmodifiable(growth?.nemeses ?? const <String>{}),
+      offerPicks: List.unmodifiable(growth?.offerPicks ?? const []),
+      gear: Map.unmodifiable(character?.equippedBySlot ?? const {}),
+      die: character?.diceId ?? '',
+      merged: List.unmodifiable(growth?.merged ?? const <String>[]),
       transcript: transcribe
           ? [
               for (final (i, step) in steps.indexed) ...[
@@ -1285,6 +1319,11 @@ _SimResult _simulate(
       );
     }
     if (entries.isEmpty) return none;
+    // The competent player readies itself: its best gear (the pack's
+    // loot and rewards counted), the merges worth crafting, its best die.
+    growth?.prepareForFight(
+        inventory: questLog?.inventory ?? const <String>{},
+        skillwright: skillCraftOpen(housesBuilt.keys));
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -2096,6 +2135,8 @@ _SimResult _simulate(
           sim.dice,
           sim.spells,
           gold,
+          skills: sim.skills,
+          itemSets: sim.itemSets,
         );
       }
     }
@@ -2191,10 +2232,14 @@ _SimResult _simulate(
   SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
+  SimPolicy policy = SimPolicy.naive,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final sim = _simContextOf(tables, gameConfig,
-      progression: progression, clash: clash, clashOff: clashOff);
+      progression: progression,
+      clash: clash,
+      clashOff: clashOff,
+      policy: policy);
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
@@ -2237,6 +2282,7 @@ _SimContext _simContextOf(
   Reinforcement reinforcement = Reinforcement.none,
   bool championFights = false,
   bool featureLadder = false,
+  SimPolicy policy = SimPolicy.naive,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -2282,6 +2328,8 @@ _SimContext _simContextOf(
     specVariants: specVariantsFrom(table('spec_variants')),
     trainingPaths: trainingPathsFrom(table('training_paths')),
     politicsEvents: parsePoliticsEvents(table('politics_events')),
+    policy: policy,
+    merges: table('skill_merges'),
   );
 }
 
@@ -2359,6 +2407,10 @@ typedef SimRunSummary = ({
   List<TerritoryChange> territory,
   PoliticsState politics,
   Set<String> nemeses,
+  List<SimOfferPick> offerPicks,
+  Map<String, String> gear,
+  String die,
+  List<String> merged,
 });
 
 /// Full playthroughs, one per entry of [plan] (a strategy and, optionally,
@@ -2382,6 +2434,7 @@ List<SimRunSummary> simulatePlaythroughs(
   Reinforcement reinforcement = Reinforcement.none,
   bool championFights = false,
   bool featureLadder = false,
+  SimPolicy policy = SimPolicy.naive,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
@@ -2389,7 +2442,8 @@ List<SimRunSummary> simulatePlaythroughs(
       context: context,
       reinforcement: reinforcement,
       championFights: championFights,
-      featureLadder: featureLadder);
+      featureLadder: featureLadder,
+      policy: policy);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -2497,6 +2551,10 @@ List<SimRunSummary> simulatePlaythroughs(
       territory: result.territory,
       politics: result.politics,
       nemeses: result.nemeses,
+      offerPicks: result.offerPicks,
+      gear: result.gear,
+      die: result.die,
+      merged: result.merged,
     ));
   }
   return out;
@@ -2926,6 +2984,10 @@ class _PlaythroughSimulatorScreenState
       writtenSteps: await loadWrittenSteps(ref),
       trainingPaths: await ref.read(trainingPathsProvider.future),
       politicsEvents: parsePoliticsEvents(await load(politicsEventsSchema)),
+      // The screen plays as a real player would (sim_policy.dart); the CI
+      // bands keep the naive player.
+      policy: SimPolicy.competent,
+      merges: await load(skillMergesSchema),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
@@ -3309,6 +3371,17 @@ String _runTranscript(_SimResult result, String strategyLabel,
     b.writeln(
         'Offers taken: ${result.offersTaken} | Skills learned: ${result.skillsLearned} | '
         'Signs taken: ${result.signsTaken.isEmpty ? 'none' : result.signsTaken.join(', ')}');
+    b.writeln(
+        'Gear worn: ${result.gear.isEmpty ? 'none' : (result.gear.entries.toList()..sort((a, b) => a.key.compareTo(b.key))).map((e) => '${e.key} ${e.value}').join(', ')}'
+        '${result.die.isEmpty ? '' : ' | Die: ${result.die}'}'
+        '${result.merged.isEmpty ? '' : ' | Crafted: ${result.merged.join(', ')}'}');
+    if (result.offerPicks.isNotEmpty) {
+      b.writeln();
+      b.writeln('--- Clan offers (banners offered -> taken, why) ---');
+      for (final pick in result.offerPicks) {
+        b.writeln(pick.line);
+      }
+    }
   }
   b.writeln();
   b.writeln('--- Steps ---');
