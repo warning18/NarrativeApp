@@ -166,68 +166,22 @@ class _LevelUpDialog extends ConsumerWidget {
                           fontFamily: InkFonts.display, color: ink.gold),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Container(
-                    key: const Key('level_up_points'),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: ink.seam),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.star_outline,
-                            size: 20, color: hasPoints ? ink.gold : ink.ash),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            '${tr(ref, 'stat_picks_left')}: ${session.pendingStatPicks}',
-                            style: theme.textTheme.titleMedium
-                                ?.copyWith(color: hasPoints ? ink.gold : null),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    tr(ref, 'level_up_gives'),
-                    key: const Key('level_up_gives'),
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  ),
-                  // What the patron gave with this level (patron_stats.dart).
-                  ..._patronLine(context, ref, theme, ink),
-                  // The clans come once this closes (see offers.dart).
-                  if (session.pendingOffers.isNotEmpty)
-                    FlipIn(
-                      flipKey: 'offers',
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Row(
-                          children: [
-                            Icon(Icons.diversity_3,
-                                size: 18, color: ink.voidColor),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                tr(ref, 'level_up_offer_note'),
-                                key: const Key('level_up_offer_note'),
-                                style: theme.textTheme.bodySmall
-                                    ?.copyWith(color: ink.ash),
-                              ),
-                            ),
-                          ],
-                        ),
+                  // Only when more than one pick waits, a quiet count, so the
+                  // player knows another round follows.
+                  if (session.pendingStatPicks > 1)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        tr(ref, 'stat_picks_count')
+                            .replaceAll('{n}', '${session.pendingStatPicks}'),
+                        key: const Key('level_up_points'),
+                        textAlign: TextAlign.center,
+                        style:
+                            theme.textTheme.bodySmall?.copyWith(color: ink.ash),
                       ),
                     ),
-                  const SizedBox(height: 6),
-                  Text(
-                    tr(ref, 'hold_stat_for_details_hint'),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  ),
+                  // What the patron gave with this level (patron_stats.dart).
+                  ..._patronLine(context, ref, theme, ink),
                 ],
               ),
             ),
