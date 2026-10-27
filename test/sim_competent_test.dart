@@ -340,7 +340,8 @@ void main() {
     });
 
     test('naive is unchanged: the run before the policy existed', () {
-      // v1.562's numbers for this seed, before sim_policy.dart.
+      // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
+      // v1.577 when three scenes became two pages each (the run's dice move).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -352,12 +353,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        24,
-        5142,
-        54,
-        77,
-        54,
-        302,
+        19,
+        2808,
+        21,
+        89,
+        33,
+        295,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -385,5 +386,6 @@ void main() {
   });
 }
 
-/// _stableHash of the naive warrior's ways taken (seed 7), from v1.562.
-const int _naiveChoicesHash = 2858517595;
+/// _stableHash of the naive warrior's ways taken (seed 7), from v1.562;
+/// re-pinned at v1.577 (three scenes became two pages each).
+const int _naiveChoicesHash = 1567212901;

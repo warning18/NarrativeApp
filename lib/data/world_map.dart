@@ -126,9 +126,10 @@ final List<Landmark> worldMapLandmarks = [
         'La ville fluviale du Dominion, où tout commence\u00a0: les tables de cartes du Mendiant Aveugle, la Ruelle du Tisserand et le Pont de Pierre, la maison de famille où attend l’Inquisiteur général, la Geôle Noire et les égouts sous sa Goulotte aux Cadavres. Les navires peints du Haut Quai sont la seule issue.',
     scenes: [
       // The Lower Town: the Blind Beggar, Weaver's Alley, the family house.
-      '0', '100', '105', '106', '110', '115', '120', '125', '250', //
+      '0', '100_dice', '100', '105', '106', '110', '115', '120', '125',
+      '250', //
       '270',
-      '300', '400', '400_lost', '450', '470',
+      '300', '400_hold', '400', '400_lost', '450', '470',
       // The Stone Bridge.
       '260', '261',
       // The Black Hold.
@@ -137,7 +138,7 @@ final List<Landmark> worldMapLandmarks = [
       '840', '850', '850_fed_failed', '855',
       // The High Quay.
       '890_trainer', '891', '895', '896_failed', '897_failed', '898_failed',
-      '960',
+      '960_lift', '960',
     ],
     fights: [
       'den_bouncer', 'den_looter', 'sore_loser', 'street_bandit', //

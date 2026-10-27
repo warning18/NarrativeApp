@@ -117,6 +117,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       timeLimit: widget.node.timeLimit,
       timeoutChoice: widget.node.timeoutChoice,
       noDetour: widget.node.noDetour,
+      pageTurn: widget.node.pageTurn,
       politicsOnEnter: politicsFromEditorText(
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
       location: locationFromEditorText(

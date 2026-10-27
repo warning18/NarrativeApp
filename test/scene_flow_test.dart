@@ -146,6 +146,15 @@ void main() {
         }
       ]);
       expect(passThroughChoiceOf(plain, const [])?.nextId, 'b');
+      // A page of a scene told in two pages is a stop: the player turns it.
+      final page = _node('a', [
+        {'text': 'Continue', 'next_id': 'b'}
+      ], {
+        'page_turn': true
+      });
+      expect(page.pageTurn, isTrue);
+      expect(passThroughChoiceOf(page, const []), isNull);
+      expect(StoryNode.fromJson('a', page.toJson()).pageTurn, isTrue);
       expect(
           passThroughChoiceOf(
               _node('a', [

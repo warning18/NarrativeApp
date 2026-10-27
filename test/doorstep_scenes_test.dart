@@ -41,7 +41,7 @@ Future<void> _settle(WidgetTester tester) async {
 
 /// The scenes tagged, by building.
 const _tagged = {
-  'alster_family_house': ['300', '400', '400_lost', '450'],
+  'alster_family_house': ['300', '400_hold', '400', '400_lost', '450'],
   'blind_beggar': ['125'],
   'saltmouth_landward_warehouse': ['2015_informant_trap'],
 };

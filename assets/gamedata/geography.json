@@ -73,7 +73,7 @@
     "blurb": "The house you grew up in, on a quiet street of the Lower Town: a kitchen door, shutters, a back room over packed earth, and under the boards a trapdoor nobody knew was there.",
     "blurb_fr": "La maison de votre enfance, dans une rue tranquille de la Ville basse : une porte de cuisine, des volets, une arrière-salle sur la terre battue, et sous le plancher une trappe que personne ne savait là.",
     "landmark": "",
-    "doorstep": ["300", "400", "400_lost", "450"]
+    "doorstep": ["300", "400_hold", "400", "400_lost", "450"]
   },
   "alster_stone_bridge": {
     "level": "district",

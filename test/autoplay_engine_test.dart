@@ -10,7 +10,7 @@
 //
 // This pumps the real widget tree (same as widget_test.dart) to get a
 // genuine WidgetRef, then drives autoplayToNode from the very start of the
-// game to node "100" -- the node immediately past node 0's
+// game to node "100_dice" -- the node immediately past node 0's
 // opensCharacterCreation choice, reached in a single hop with no combat
 // along the way -- and asserts a character actually gets created. An
 // earlier version of this test targeted a whole chapter via
@@ -91,7 +91,7 @@ void main() {
       final result = await autoplayToNode(
         capturedRef,
         story: story,
-        targetNodeId: '100',
+        targetNodeId: '100_dice',
         dice: dice,
         skills: skills,
         items: items,
