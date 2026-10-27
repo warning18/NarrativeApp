@@ -3093,7 +3093,10 @@
         "hideIfFlags": [
           "hub_2015_smuggler"
         ],
-        "unlockQuestId": "q_ch2_captains_gambit"
+        "unlockQuestId": "q_ch2_captains_gambit",
+        "showIfFlags": [
+          "hub_2015_bandits"
+        ]
       },
       {
         "text": "Fend off a plague hound",
@@ -3115,6 +3118,9 @@
         ],
         "hideIfFlags": [
           "hub_2015_rats"
+        ],
+        "showIfFlags": [
+          "hub_2015_dockside"
         ]
       },
       {
@@ -3128,6 +3134,9 @@
         "unlockQuestId": "q_ch2_burning_manifest",
         "hideIfFlags": [
           "hub_2015_bandits"
+        ],
+        "showIfFlags": [
+          "hub_2015_rats"
         ]
       },
       {
@@ -3323,19 +3332,9 @@
         ]
       },
       {
-        "text": "Bribe Vane with information",
-        "text_fr": "Soudoyer Vane avec des informations",
-        "next_id": "2030"
-      },
-      {
-        "text": "Threaten him to clear the path",
-        "text_fr": "Le menacer pour dégager le passage",
-        "next_id": "2040"
-      },
-      {
-        "text": "Push past him toward the exit",
-        "text_fr": "Le bousculer pour atteindre la sortie",
-        "next_id": "2011",
+        "text": "Deal with Vane at the gate",
+        "text_fr": "Traiter avec Vane à la porte",
+        "next_id": "2015_vane",
         "about": "vane_quartermaster"
       },
       {
@@ -3366,19 +3365,11 @@
         ]
       },
       {
-        "text": "Try the first arch of the Lantern Alleys",
-        "text_fr": "Tenter la première arche des Ruelles aux lanternes",
-        "next_id": "2015_alleys_door",
+        "text": "Climb the steps off the wharf",
+        "text_fr": "Monter les marches hors du quai",
+        "next_id": "2015_doors",
         "hideIfFlags": [
-          "hub_2015_alleys_door"
-        ]
-      },
-      {
-        "text": "Look across the footbridge to Tern Row",
-        "text_fr": "Regarder de l’autre côté de la passerelle, vers Tern Row",
-        "next_id": "2015_ternrow_door",
-        "hideIfFlags": [
-          "hub_2015_ternrow_door"
+          "wharf_doors_done"
         ]
       },
       {
@@ -28559,9 +28550,35 @@
       {
         "text": "Turn back and look for the informant",
         "text_fr": "Faire demi-tour et chercher l’indicateur",
-        "next_id": "2015",
+        "next_id": "2015_doors",
         "flagsToAdd": [
           "hub_2015_alleys_door"
+        ],
+        "hideIfFlags": [
+          "hub_2015_ternrow_door"
+        ]
+      },
+      {
+        "text": "Turn back and look for the informant",
+        "text_fr": "Faire demi-tour et chercher l’indicateur",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_alleys_door",
+          "wharf_doors_done"
+        ],
+        "showIfFlags": [
+          "hub_2015_ternrow_door"
+        ]
+      },
+      {
+        "text": "Leave a coin on the step and go",
+        "text_fr": "Laisser une pièce sur la marche et partir",
+        "next_id": "2015_doors",
+        "flagsToAdd": [
+          "hub_2015_alleys_door"
+        ],
+        "hideIfFlags": [
+          "hub_2015_ternrow_door"
         ]
       },
       {
@@ -28569,7 +28586,11 @@
         "text_fr": "Laisser une pièce sur la marche et partir",
         "next_id": "2015",
         "flagsToAdd": [
-          "hub_2015_alleys_door"
+          "hub_2015_alleys_door",
+          "wharf_doors_done"
+        ],
+        "showIfFlags": [
+          "hub_2015_ternrow_door"
         ]
       }
     ],
@@ -28590,23 +28611,126 @@
       {
         "text": "Ask Nadira what the overseer wants",
         "text_fr": "Demander à Nadira ce que veut le contremaître",
-        "next_id": "2015",
+        "next_id": "2015_doors",
         "flagsToAdd": [
           "hub_2015_ternrow_door"
         ],
-        "unlockQuestId": "q_ch2_terns_toll"
+        "unlockQuestId": "q_ch2_terns_toll",
+        "hideIfFlags": [
+          "hub_2015_alleys_door"
+        ]
+      },
+      {
+        "text": "Ask Nadira what the overseer wants",
+        "text_fr": "Demander à Nadira ce que veut le contremaître",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_ternrow_door",
+          "wharf_doors_done"
+        ],
+        "unlockQuestId": "q_ch2_terns_toll",
+        "showIfFlags": [
+          "hub_2015_alleys_door"
+        ]
+      },
+      {
+        "text": "Light one of the boats yourself and go",
+        "text_fr": "Allumer vous-même un des bateaux et partir",
+        "next_id": "2015_doors",
+        "flagsToAdd": [
+          "hub_2015_ternrow_door"
+        ],
+        "hideIfFlags": [
+          "hub_2015_alleys_door"
+        ]
       },
       {
         "text": "Light one of the boats yourself and go",
         "text_fr": "Allumer vous-même un des bateaux et partir",
         "next_id": "2015",
         "flagsToAdd": [
-          "hub_2015_ternrow_door"
+          "hub_2015_ternrow_door",
+          "wharf_doors_done"
+        ],
+        "showIfFlags": [
+          "hub_2015_alleys_door"
         ]
       }
     ],
     "prompt": "What do you do at the footbridge?",
     "prompt_fr": "Que faites-vous à la passerelle ?"
+  },
+  "2015_doors": {
+    "id": "2015_doors",
+    "description": "Two stairs climbed off the wharf a few paces apart, and each had someone waiting at the top.\n\nOne ended under the first arch of the Lantern Alleys, where a woman stood with her hand on a lamp she had not lit. The other ended at the rail of a footbridge, drawn up on the far side, with a line of unlit paper boats along it: Tern Row.",
+    "description_fr": "Deux escaliers montaient du quai à quelques pas l’un de l’autre, et chacun avait quelqu’un qui attendait en haut.\n\nL’un finissait sous la première arche des Ruelles aux lanternes, où une femme se tenait la main sur une lampe qu’elle n’avait pas allumée. L’autre finissait à la rambarde d’une passerelle relevée du côté opposé, une rangée de bateaux de papier éteints le long de la rampe : Tern Row.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Try the first arch of the Lantern Alleys",
+        "text_fr": "Tenter la première arche des Ruelles aux lanternes",
+        "next_id": "2015_alleys_door",
+        "hideIfFlags": [
+          "hub_2015_alleys_door"
+        ]
+      },
+      {
+        "text": "Look across the footbridge to Tern Row",
+        "text_fr": "Regarder de l’autre côté de la passerelle, vers Tern Row",
+        "next_id": "2015_ternrow_door",
+        "hideIfFlags": [
+          "hub_2015_ternrow_door"
+        ]
+      },
+      {
+        "text": "Go back down to the wharf",
+        "text_fr": "Redescendre sur le quai",
+        "next_id": "2015"
+      }
+    ],
+    "prompt": "Which stair do you climb?",
+    "prompt_fr": "Quel escalier montez-vous ?"
+  },
+  "2015_vane": {
+    "id": "2015_vane",
+    "description": "Vane still held the gate to the shipyards, the scarred quartermaster with a crossbow within reach and a rusty iron key on his belt, and he watched me come the way a man watches a debt he has already priced.\n\nThere were three ways past him, and he knew all of them.",
+    "description_fr": "Vane tenait toujours la porte des chantiers navals, l’intendant balafré, une arbalète à portée de main et une clef de fer rouillée à la ceinture, et il me regarda venir comme on regarde une dette dont on a déjà fixé le prix.\n\nIl y avait trois façons de passer, et il les connaissait toutes.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_wharf",
+    "choices": [
+      {
+        "text": "Bribe Vane with information",
+        "text_fr": "Soudoyer Vane avec des informations",
+        "next_id": "2030"
+      },
+      {
+        "text": "Threaten him to clear the path",
+        "text_fr": "Le menacer pour dégager le passage",
+        "next_id": "2040"
+      },
+      {
+        "text": "Push past him toward the exit",
+        "text_fr": "Le bousculer pour atteindre la sortie",
+        "next_id": "2011"
+      },
+      {
+        "text": "Not yet; back to the wharf",
+        "text_fr": "Pas encore ; retour sur le quai",
+        "next_id": "2015"
+      }
+    ],
+    "facing": "vane_quartermaster",
+    "prompt": "How do you get past Vane?",
+    "prompt_fr": "Comment passez-vous Vane ?"
   },
   "2015_cardrow_tally": {
     "id": "2015_cardrow_tally",

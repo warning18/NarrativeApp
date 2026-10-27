@@ -353,12 +353,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        19,
-        2808,
-        21,
-        89,
-        33,
-        295,
+        20,
+        3709,
+        40,
+        64,
+        46,
+        296,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -387,5 +387,6 @@ void main() {
 }
 
 /// _stableHash of the naive warrior's ways taken (seed 7), from v1.562;
-/// re-pinned at v1.577 (three scenes became two pages each).
-const int _naiveChoicesHash = 1567212901;
+/// re-pinned at v1.577 (three scenes became two pages each) and at v1.578
+/// (the Wharf lists fewer entries).
+const int _naiveChoicesHash = 1858145717;

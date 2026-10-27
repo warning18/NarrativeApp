@@ -290,7 +290,7 @@ void main() {
     });
 
     test('naive is unchanged with companions.json loaded', () {
-      // sim_competent_test.dart's pin (re-pinned at v1.577 with it).
+      // sim_competent_test.dart's pin (re-pinned at v1.577 and v1.578 with it).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -302,15 +302,15 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        19,
-        2808,
-        21,
-        89,
-        33,
-        295,
+        20,
+        3709,
+        40,
+        64,
+        46,
+        296,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 1567212901);
+      expect(_stableHash(naive.choicesTaken), 1858145717);
       expect(naive.companionLog, isEmpty);
       expect(naive.companions, isEmpty);
     });
