@@ -4322,6 +4322,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
   'skill_faces_title': {AppLanguage.en: 'Faces', AppLanguage.fr: 'Faces'},
+  'die_ring_skill_faces': {
+    AppLanguage.en: '{n}/{max} with a skill',
+    AppLanguage.fr: '{n}/{max} avec une compétence',
+  },
   'skill_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
   'skill_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commune'},
   'skill_rarity_uncommon': {
@@ -4336,9 +4340,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'skill_faces_limit_hint': {
     AppLanguage.en:
-        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary.',
+        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary. A die also holds one copy of a skill per four faces: 1 on a d4, 2 on a d6 or d8, 3 on a d12.',
     AppLanguage.fr:
-        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire.',
+        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire. Un dé porte aussi un exemplaire d’une compétence par quatre faces : 1 sur un d4, 2 sur un d6 ou un d8, 3 sur un d12.',
   },
   'skill_faces_count': {
     AppLanguage.en: '{rarity} · on {n}/{max} faces',

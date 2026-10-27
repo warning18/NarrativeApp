@@ -1,4 +1,4 @@
-// Arriving at the White Wells (v1.573) as the app draws it, in French: the
+// Arriving at the White Wells (v1.574) as the app draws it, in French: the
 // scene is in the town itself, and its first district is already found.
 // With UX_SHOTS (a folder) set it saves the real screen as pictures.
 //   UX_SHOTS=docs/ux-shots flutter test test/ux_arrival_shot_test.dart

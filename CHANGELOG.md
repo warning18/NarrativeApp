@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.573.0+609]
+## [1.574.0+610]
 
 Arriving in a town never leaves its whole plan fogged.
 
@@ -17,6 +17,15 @@ Arriving in a town never leaves its whole plan fogged.
 
 ### Tests
 - New `test/town_arrival_test.dart` (every town with a town-level scene opens on its first open district, the White Wells' Pool, a walked-into district joins it, a district scene is unchanged) and `test/ux_arrival_shot_test.dart` (the real screen as a picture with `UX_SHOTS`, `docs/ux-shots/town-arrival.png`).
+
+## [1.573.0+609]
+
+The dice loadout shows a die as a ring of slots, one per face.
+
+- **The ring:** every face of the selected die is a round slot on a ring, the first at the top and the rest clockwise. A d4 has 4 slots and a d20 has 20. The middle names the size (d8) and how many faces hold a skill (3/8 with a skill).
+- **Slot size:** slots shrink as the die grows, so a d20 still fits a 320 px phone. Below 70 px (a d12 or a d20) a slot shows only its icon. The die card above names the picked face and has the button to choose its skill.
+- Dragging a skill onto a slot, tapping to turn the die, double-tapping to choose and the cross to clear all work as before.
+- The faces help now also gives the copies rule: one copy of a skill per four faces, 2 on a d6.
 
 ## [1.572.0+608]
 
