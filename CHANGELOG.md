@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.568.0+604]
+
+The competent simulated player recruits companions and fights beside them.
+
+### Added
+- **Companions in the simulator** (`lib/data/sim_companions.dart`, competent profile only; naive is unchanged and stays the default for every CI band test).
+  - **Recruiting.** A companion joins as in the game: when their quest is handed in, once only, never after they leave or the story takes them. Tobin's and Malrik's quests keep their Good and Evil gates.
+  - **Seats.** The party holds 2, or 3 once the Barracks Annex stands; Kelda sits once her hall is built.
+  - **Story choices.** With companions on, the competent player takes a story choice that offers a companion quest it may take.
+- **The pick rule.**
+  - Seats go to the companions worth most in a fight: their die's average roll at their damage, plus 0.1 per health and 0.8 per armour.
+  - A tie (within 1) goes to higher approval, then to the companion whose approvals fit the player's alignment, then to the earlier recruit.
+  - A better recruit takes the weakest seat. The rule runs again at every recruit, departure, house built and chapter rest.
+- **In fights.**
+  - Each seated companion rolls their signature die through the same dice code as the hero. Their approval tier scales their damage and health.
+  - Enemies hit a random standing party member, and the biggest block draws the blows.
+  - A knocked-out companion comes back at 30% health after a won fight. A rest or a level-up heals everyone.
+- **Approval.** A choice's alignment, its gold and its `approvalMods` move approval for seated companions. At −12 a companion leaves and the best benched one takes the seat. `loseAllyId` takes one for good.
+- **The run report** lists every seek, recruit, pick, bench, swap, leave, loss and move into devoted or wary, each with its reason, then the final party.
+- **No dice cup.** The game has one die in play, swapped between fights, and the competent player already rolls its best.
+- **Measurement.** `docs/simulation/companions-v1.568.md` covers 10 runs per profile. From chapter 3 on, a competent party wins 0.98–1.00 of encounters, against 0.86–0.90 alone and 0.54–0.69 for naive.
+
 ## [1.564.0+600]
 
 The playthrough simulator can play like a competent player.

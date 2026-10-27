@@ -1,4 +1,4 @@
-# The competent player's companions (v1.567)
+# The competent player's companions (v1.568)
 
 The competent simulator profile (`SimPolicy.competent`, see
 `competent-player-v1.564.md`) now recruits companions, picks the party and
