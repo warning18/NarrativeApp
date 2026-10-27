@@ -31,6 +31,7 @@
       "speaker": "Narrator"
     },
     "location": "blind_beggar",
+    "page_turn": true,
     "spot": "floor",
     "choices": [
       {
@@ -988,6 +989,7 @@
       "speaker": "Narrator"
     },
     "location": "alster_family_house",
+    "page_turn": true,
     "choices": [
       {
         "text": "Continue",
@@ -1998,6 +2000,7 @@
       "speaker": "Narrator"
     },
     "location": "alster_high_quay",
+    "page_turn": true,
     "choices": [
       {
         "text": "Continue",

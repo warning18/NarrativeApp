@@ -372,7 +372,7 @@ void main() {
         w.key is ValueKey<String> &&
         (w.key! as ValueKey<String>).value.startsWith('journey_reading_100_'));
     await _pumpUntilFound(tester, beggar);
-    expect(container.read(storyPlayProvider).currentNodeId, '100');
+    expect(container.read(storyPlayProvider).currentNodeId, '100_dice');
     // The Blind Beggar's page: no map, no Lower Town step.
     expect(beggar, findsOneWidget);
     expect(_mapStep, findsNothing);

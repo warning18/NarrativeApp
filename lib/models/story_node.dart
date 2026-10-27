@@ -580,6 +580,7 @@ class StoryNode {
     this.timeLimit,
     this.timeoutChoice = 0,
     this.noDetour = false,
+    this.pageTurn = false,
     this.politicsOnEnter,
     this.location,
     this.spot,
@@ -628,6 +629,7 @@ class StoryNode {
       timeLimit: (json['time_limit'] as num?)?.toInt(),
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
+      pageTurn: json['page_turn'] as bool? ?? false,
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
       location: json['location']?.toString(),
       spot: json['spot']?.toString(),
@@ -704,6 +706,11 @@ class StoryNode {
   /// on the way into or out of it. What the road held waits for the next
   /// scene at rest.
   final bool noDetour;
+
+  /// A page of a scene told in two (v1.577): the calm page, whose one plain
+  /// Continue the story does not read through but stops on, so the player
+  /// turns the page (see passThroughChoiceOf).
+  final bool pageTurn;
 
   /// Seconds the player has to choose (a chase, a wave coming over the
   /// wall), or null for all the time in the world. When they run out the
@@ -967,6 +974,7 @@ class StoryNode {
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
+        if (pageTurn) 'page_turn': pageTurn,
         if (campErrand)
           'campErrand': campErrandKind.isEmpty ? campErrand : campErrandKind,
         if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,

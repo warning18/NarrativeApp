@@ -27,10 +27,6 @@ Map<String, dynamic> _loadJson(String relative) {
 
 /// A choice does something: it changes the character, starts a fight, a
 /// check, a quest or a shop, or hands over a piece of the Shroud.
-/// The scenes split into two pages (the user's call, v1.577): a calm page with
-/// one Continue, then the page with the turn and the choices. Same place.
-const _pageTurns = {'100_dice', '400_hold', '960_lift'};
-
 bool _hasImpact(StoryChoice c) =>
     c.goldMod != 0 ||
     c.alignmentMod != 0 ||
@@ -166,7 +162,7 @@ void main() {
       final choices = node.choices;
       if (choices.isEmpty) continue;
       if (choices.length == 1) {
-        if (_pageTurns.contains(node.id)) {
+        if (node.pageTurn) {
           // A page turn: the same place, the next page of the scene.
           expect(choices.single.text, 'Continue', reason: node.id);
           expect(nodes[choices.single.nextId]!.location, node.location,
