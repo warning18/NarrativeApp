@@ -7,6 +7,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart' show localizedDbProvider;
 import '../providers/player_session_provider.dart';
+import '../screens/skills/dice_weave_card.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 
@@ -75,6 +76,8 @@ class _CraftSheet extends ConsumerWidget {
                             onMerge: () => _confirmAndMerge(context, ref,
                                 recipe: recipe, language: lang),
                           ),
+                        // Two d8s recut into the tally die (Core).
+                        const DiceWeaveCard(),
                       ],
                     ),
             ),

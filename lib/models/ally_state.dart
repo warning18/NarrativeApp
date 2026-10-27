@@ -51,10 +51,10 @@ class AllyState {
   /// keeps pace without a separate ally leveling system.
   final int skillPoints;
 
-  /// faceIndex (as string) -> skillId, for the one open "Skill" face on the
-  /// companion's fixed signature die (their locked, thematic faces already
-  /// have a hardcoded linkedSkillID and can't be reassigned — see
-  /// `dice_loadout_screen.dart`'s `_isFixedSkillFace`). Flat, unlike
+  /// faceIndex (as string) -> skillId, for the faces of the companion's
+  /// signature die. Every face is a slot since the dice sizes (see
+  /// dice_faces.dart's isAssignableFace): a pick on a thematic face replaces
+  /// its hardcoded linkedSkillID while it stays. Flat, unlike
   /// [PlayerSession.diceSkillAssignments]' dice-keyed nested map, because an
   /// ally only ever has the one die.
   final Map<String, String> diceSkillAssignments;

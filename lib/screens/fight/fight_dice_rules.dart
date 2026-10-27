@@ -259,13 +259,16 @@ extension _FightDiceRules on _FightScreenState {
       );
 
   /// Whether the face [actor] rolled this round is one of their die's own
-  /// signature skill faces (and still casts it).
+  /// signature skill faces (and still casts it: a skill set over it since
+  /// every face is a slot doesn't count).
   bool _onSignatureFace(_PartyMember actor) {
     final face = _currentFaces[actor.id];
     if (face == null || face.type != 'Skill') return false;
     if (face.faceIndex >= actor.dieFaces.length) return false;
     final raw = actor.dieFaces[face.faceIndex];
-    return raw['type'] == 'Skill' && !isAssignableFace(raw);
+    return raw['type'] == 'Skill' &&
+        (isSignatureFace(raw) || !isAssignableFace(raw)) &&
+        face.linkedSkillID == (raw['linkedSkillID']?.toString() ?? '');
   }
 
   /// The duo techniques the acting companions' faces would fire now.

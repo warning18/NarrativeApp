@@ -10,17 +10,17 @@
       },
       "premise": {
         "en": "A tally-man at Card Row has counted forty crates onto a quay that holds thirty-one. The Crows want to know who is skimming; the dockhands want to know who is asking.",
-        "fr": "Un pointeur de la Rangée des cartes a compté quarante caisses sur un quai qui n’en tient que trente et une. Les Corbeaux veulent savoir qui écrème ; les dockers veulent savoir qui demande."
+        "fr": "Un pointeur de la Rangée des cartes a compté quarante caisses sur un quai qui n’en tient que trente et une. Les Corneilles veulent savoir qui écrème ; les dockers veulent savoir qui demande."
       },
       "choices": [
         {
           "text": {
             "en": "Name the skimmer to the Crows",
-            "fr": "Donner l’écrémeur aux Corbeaux"
+            "fr": "Donner l’écrémeur aux Corneilles"
           },
           "result": {
             "en": "The Crows pay on the nail, and the dockhand is not seen again at Card Row.",
-            "fr": "Les Corbeaux paient comptant, et le docker ne reparaît plus à la Rangée des cartes."
+            "fr": "Les Corneilles paient comptant, et le docker ne reparaît plus à la Rangée des cartes."
           }
         },
         {
@@ -225,7 +225,7 @@
       "barks": {
         "held": {
           "en": "Count it twice, friend. The Crows count it three times.",
-          "fr": "Comptez-le deux fois, l’ami. Les Corbeaux le comptent trois fois."
+          "fr": "Comptez-le deux fois, l’ami. Les Corneilles le comptent trois fois."
         },
         "flipped": {
           "en": "New pennant, same tally. Nobody told the crates.",
