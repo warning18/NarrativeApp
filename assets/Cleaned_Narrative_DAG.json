@@ -168,8 +168,8 @@
       },
       {
         "flag": "casino_fled",
-        "en": "A man I had taken eleven silver off an hour before had decided that the door was his, and that the blast had been a sign. He wanted his eleven silver back, and the rest.",
-        "fr": "Un homme à qui j’avais pris onze pièces d’argent une heure plus tôt avait décidé que la porte lui appartenait, et que l’explosion était un signe. Il voulait ses onze pièces, et le reste."
+        "en": "A man I had won eleven silver off between two losses had decided that the door was his, and that the blast had been a sign. He wanted his eleven silver back, and the rest.",
+        "fr": "Un homme à qui j’avais gagné onze pièces d’argent entre deux pertes avait décidé que la porte lui appartenait, et que l’explosion était un signe. Il voulait ses onze pièces, et le reste."
       }
     ],
     "prompt": "Who stands in your way?",
@@ -623,7 +623,7 @@
   },
   "250": {
     "id": "250",
-    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people.\n\nA proclamation was nailed to the well-head with the ink still wet, **against unlicensed drawers of every clan and of none**, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap.\n\nAnd above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps. Two roads went home, neither pretending to be the good one: the Stone Bridge, quick and watched; or the Weaver’s Alley, slow, dark, and twisty enough to hide either a way through or a knife.\n\nSomeone had chalked a list on the brick by the stairs: **jobs, names, a price for each**. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.",
+    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people.\n\nA proclamation was nailed to the well-head with the ink still wet, **against unlicensed drawers of every clan and of none**, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap.\n\nAnd above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps.\n\nTwo roads went home, neither pretending to be the good one: the Stone Bridge, quick and watched; or the Weaver’s Alley, slow, dark, and twisty enough to hide either a way through or a knife.\n\nSomeone had chalked a list on the brick by the stairs: **jobs, names, a price for each**. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.",
     "description_fr": "Alster avait été mise à genoux en une seule soirée, et s’y résignait avec la mauvaise grâce d’une ville à qui on ne l’avait jamais demandé. Chaque porte de la rue du Suif avait été marquée à la craie : un signe blanc haut d’une main au-dessus du loquet, tracé vite, le même sur chaque porte, et derrière chaque porte marquée, la maison avait été vidée de ses gens.\n\nUne proclamation était clouée à la margelle du puits, l’encre encore fraîche, **contre les traceurs sans licence de tous les clans et d’aucun**, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée comme il l’avait toujours fait, plus vieux que la ville et réclamé par personne, du feu sur les genoux.\n\nEt au-dessus du géant, plus bas que des nuages n’ont le droit de l’être, flottaient les navires. Ils étaient blancs, ils étaient dans les airs, et leurs voiles étaient peintes de signes qui brûlaient comme des lampes.\n\nDeux routes menaient à la maison, sans qu’aucune ne feignît d’être la bonne : le Pont de Pierre, rapide et surveillé ; ou la Ruelle du Tisserand, lente, sombre, et assez sinueuse pour cacher aussi bien un passage qu’un couteau.\n\nQuelqu’un avait tracé à la craie une liste sur la brique, près de l’escalier : **des travaux, des noms, un prix pour chacun**. L’Inquisition n’avait pas encore trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.",
     "context_taxonomy": {
       "ui_theme": "bridge",
@@ -1323,7 +1323,7 @@
   },
   "800": {
     "id": "800",
-    "description": "Captured, then. I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. **They told me Lysa was dead**. For three days a man in a porcelain mask, whom the guards called Brother Clement, took me apart with the patient, faintly bored thoroughness of someone doing accounts he would rather not be doing.\n\nHe wanted to know about a cloth. The cloth my mother kept, he said, as if I ought to know which: how long it was, what was drawn on it, where she had hidden it, who else had seen it; and most of all the hands — **how many fingers, and whether they were open or shut**.\n\nI had never seen any such cloth. I told him so, which cost me considerably, chiefly because it happened to be the truth, and the truth, I have since learned, satisfies an interrogator far less than a good lie. **On the fourth day** the world exploded, which I took, under the circumstances, as an improvement.\n\nThe wall went in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer’s assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it.\n\nI was unshackled, stripped to my shirt, and free, and you can build quite a lot on that particular foundation.",
+    "description": "Captured, then. I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. **They told me Lysa was dead**. For three days a man in a porcelain mask, whom the guards called Brother Clement, took me apart with the patient, faintly bored thoroughness of someone doing accounts he would rather not be doing.\n\nHe wanted to know about a cloth. The cloth my mother kept, he said, as if I ought to know which: how long it was, what was drawn on it, where she had hidden it, who else had seen it; and most of all the hands — **how many fingers, and whether they were open or shut**.\n\nI had never seen any such cloth. I told him so, which cost me considerably, chiefly because it happened to be the truth, and the truth, I have since learned, satisfies an interrogator far less than a good lie. **On the fourth day** the world exploded, which I took, under the circumstances, as an improvement.\n\nThe wall went in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to.\n\nOne of my torturer’s assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it.\n\nI was unshackled, stripped to my shirt, and free, and you can build quite a lot on that particular foundation.",
     "description_fr": "La capture, donc. Je me réveillai dans la Geôle Noire, un nom que je n’ai pas choisi et que ma conscience ne saurait améliorer. **On me dit que Lysa était morte**. Pendant trois jours, un homme au masque de porcelaine, que les gardes appelaient frère Clément, me démonta pièce à pièce avec la minutie patiente et vaguement lassée de quelqu’un qui tient une comptabilité qu’il préférerait ne pas tenir.\n\nIl voulait savoir des choses sur une étoffe. L’étoffe que gardait ma mère, disait-il, comme si je devais savoir laquelle : sa longueur, ce qui était dessiné dessus, l’endroit où elle l’avait cachée, qui d’autre l’avait vue ; et surtout les mains — **combien de doigts, et si elles étaient ouvertes ou fermées**.\n\nJe n’avais jamais vu pareille étoffe. Je le lui dis, ce qui me coûta considérablement, principalement parce que c’était la vérité, et la vérité, je l’ai appris depuis, satisfait bien moins un interrogateur qu’un bon mensonge. **Le quatrième jour**, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration.\n\nLe mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n’avais, sur l’instant, aucun besoin de connaître.\n\nL’un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j’y trouvai, malgré tout, quelque chose proche de la satisfaction.\n\nOn m’avait ôté mes chaînes, je n’avais plus qu’une chemise sur le dos, et j’étais libre, et on peut bâtir bien des choses sur ce genre de fondation.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
@@ -1829,8 +1829,8 @@
   },
   "895": {
     "id": "895",
-    "description": "The mate did not look up from his manifest. \"Crew and paid passage,\" he said, \"and we are full of both. **The Lark lifts on the third bell**. Stand back from the line.\" Behind me a family was being turned away with the dull courtesy of a man who had done it forty times that evening and would do it forty more.\n\nThe second bell rang. Above us the Lark swung at her ropes, her painted sail beginning to shine as the crew wet it, and I could see **three ways onto her deck**, and none of them was the gangway.",
-    "description_fr": "Le second ne leva pas les yeux de son manifeste. « Équipage et passage payé, dit-il, et nous sommes pleins des deux. **L’Alouette décolle au troisième coup de cloche**. Écartez-vous de l’amarre. » Derrière moi, on refoulait une famille avec la politesse lasse d’un homme qui l’avait fait quarante fois ce soir-là et le ferait quarante fois encore.\n\nLa deuxième cloche sonna. Au-dessus de nous, l’Alouette se balançait à ses amarres, sa voile peinte commençant à briller à mesure que l’équipage la mouillait, et je voyais **trois façons de monter sur son pont**, dont aucune n’était la passerelle.",
+    "description": "The mate did not look up from his manifest. \"Crew and paid passage,\" he said, \"and we are full of both. **The Lark lifts on the third bell**. Stand back from the line.\" Behind me a family was being turned away with the dull courtesy of a man who had done it forty times that morning and would do it forty more.\n\nThe second bell rang. Above us the Lark swung at her ropes, her painted sail beginning to shine as the crew wet it, and I could see **three ways onto her deck**, and none of them was the gangway.",
+    "description_fr": "Le second ne leva pas les yeux de son manifeste. « Équipage et passage payé, dit-il, et nous sommes pleins des deux. **L’Alouette décolle au troisième coup de cloche**. Écartez-vous de l’amarre. » Derrière moi, on refoulait une famille avec la politesse lasse d’un homme qui l’avait fait quarante fois ce matin-là et le ferait quarante fois encore.\n\nLa deuxième cloche sonna. Au-dessus de nous, l’Alouette se balançait à ses amarres, sa voile peinte commençant à briller à mesure que l’équipage la mouillait, et je voyais **trois façons de monter sur son pont**, dont aucune n’était la passerelle.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "suspense",
@@ -2300,8 +2300,8 @@
       },
       {
         "flag": "tear_refused",
-        "en": "I had left the tear’s ring untouched. Whatever had looked at me out of it, I had given it nothing to hold on to.",
-        "fr": "J’avais laissé intact le cercle de la déchirure. Quoi qui eût posé les yeux sur moi par elle, je ne lui avais rien laissé à quoi s’accrocher."
+        "en": "I had left whatever lay under the tear untouched. Whatever had looked at me out of it, I had given it nothing to hold on to.",
+        "fr": "J’avais laissé intact ce qui gisait sous la déchirure. Quoi qui eût posé les yeux sur moi par elle, je ne lui avais rien laissé à quoi s’accrocher."
       },
       {
         "flag": "void_marked",
@@ -2744,7 +2744,7 @@
   },
   "1002": {
     "id": "1002",
-    "description": "[ORIGIN: THE BROKEN] No one slept beside me at the White Wells, and nothing had survived the last days with me except the parts of me too stubborn to know when to stop. What remained was scar tissue and a hatred that had, by then, matured past anger into something closer to a profession: considerable pain resistance, considerable endurance, a body slow and marked enough that strangers no longer met my eyes.\n\nAnd the Grey Shroud, as the old woman had called it, which, the first time I unfolded it by the water, went for my scars like water into a crack. **It would not come off**. It had burned itself into the scars and stayed: what the Inquisition calls **a Void Banner, or a piece of one**, worn the way the Broken wear everything, as a wound. I would find the rest of it. It had already taken everything else.",
+    "description": "[ORIGIN: THE BROKEN] No one slept beside me at the White Wells, and nothing had survived the last days with me except the parts of me too stubborn to know when to stop.\n\nWhat remained was scar tissue and a hatred that had, by then, matured past anger into something closer to a profession: considerable pain resistance, considerable endurance, a body slow and marked enough that strangers no longer met my eyes.\n\nAnd the Grey Shroud, as the old woman had called it, which, the first time I unfolded it by the water, went for my scars like water into a crack. **It would not come off**. It had burned itself into the scars and stayed: what the Inquisition calls **a Void Banner, or a piece of one**, worn the way the Broken wear everything, as a wound. I would find the rest of it. It had already taken everything else.",
     "description_fr": "[ORIGINE : LE BRISÉ] Personne ne dormait près de moi aux Puits blancs, et rien n’avait survécu à ces derniers jours avec moi, hormis les parties de moi trop têtues pour savoir s’arrêter.\n\nCe qu’il restait, c’était de la cicatrice et une haine ayant, à ce stade, dépassé la colère pour devenir quelque chose de plus proche d’une profession : une résistance considérable à la douleur, une endurance considérable, un corps assez lent et marqué pour que les inconnus n’osent plus croiser mon regard.\n\nEt le Linceul Gris, comme l’avait appelé la vieille femme, qui, la première fois que je le dépliai au bord de l’eau, se jeta sur mes cicatrices comme l’eau dans une fissure. **Il ne s’enlevait plus**. Il s’était brûlé dans les cicatrices et y était resté : ce que l’Inquisition appelle **une Bannière du Néant, ou un morceau d’une**, porté comme les Brisés portent tout : comme une plaie. Je trouverais le reste. Il avait déjà pris tout le reste.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
@@ -2858,7 +2858,7 @@
   },
   "2005": {
     "id": "2005",
-    "description": "The queue at the landward gate moved at the speed of the Inquisition’s patience, which was to say not at all, and then all at once. Two places ahead of us a Dominion courier was waiting too, his lantern hooded in black crape, and a crier with him was telling the queue what the crape meant: **the Lantern-Bearer was failing, and the faithful were asked to pray**.\n\nNobody in the queue looked up. They had prayers of their own to be getting on with. The gate offered **two ways into Saltmouth**, neither one advertising itself as the wiser. Saltmouth belonged to someone, and the gate made a point of saying whom: the Inquisition’s masks on the wall, the Crows’ tally-boys down the queue, the Compact’s marks on the carts. I began, without meaning to, to keep a tally of who held what.",
+    "description": "The queue at the landward gate moved at the speed of the Inquisition’s patience, which was to say not at all, and then all at once. Two places ahead of us a Dominion courier was waiting too, his lantern hooded in black crape, and a crier with him was telling the queue what the crape meant: **the Lantern-Bearer was failing, and the faithful were asked to pray**.\n\nNobody in the queue looked up. They had prayers of their own to be getting on with. The gate offered **two ways into Saltmouth**, neither one advertising itself as the wiser.\n\nSaltmouth belonged to someone, and the gate made a point of saying whom: the Inquisition’s masks on the wall, the Crows’ tally-boys down the queue, the Compact’s marks on the carts. I began, without meaning to, to keep a tally of who held what.",
     "description_fr": "La file à la porte de la terre avançait à la vitesse de la patience de l’Inquisition, c’est-à-dire pas du tout, puis d’un coup. Deux places devant nous attendait aussi un courrier du Dominion, sa lanterne voilée de crêpe noir, et un crieur qui l’accompagnait expliquait à la file ce que signifiait ce crêpe : **le Porte-Lanterne déclinait, et l’on priait les fidèles de prier**.\n\nPersonne dans la file ne leva les yeux. Chacun avait ses propres prières en cours. La porte offrait **deux façons d’entrer dans Bouche-de-Sel**, aucune des deux ne se présentant comme la plus sage.\n\nSaltmouth appartenait à quelqu’un, et la porte tenait à le dire : les masques de l’Inquisition sur le mur, les gamins à tablettes des Corneilles le long de la file, les marques du Pacte sur les charrettes. Je me mis, sans l’avoir voulu, à tenir le compte de qui tenait quoi.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -2912,7 +2912,7 @@
   },
   "2010": {
     "id": "2010",
-    "description": "Inside the walls the road ran steeply down to Saltmouth’s harbor quarter, the Smugglers’ Wharf, the caravan master called it, slick with fish scales and black oil, a combination that made every step a small negotiation with gravity. Smugglers bartered in hushed, businesslike tones under the flickering amber glow of lanterns that seemed, on principle, to illuminate as little as possible.\n\n**A scarred quartermaster blocked the gate to the shipyards**. Vane, the porters called him, and the name went through me like a nail; but **this Vane had a ledger and a scar, not a lantern**, and he had never heard of me. He sized up my gear with the frank, appraising interest of a man calculating exactly how much of it he could relieve me of before I noticed.",
+    "description": "Inside the walls the road ran steeply down to Saltmouth’s harbor quarter, the Smugglers’ Wharf, the caravan master called it, slick with fish scales and black oil, a combination that made every step a small negotiation with gravity.\n\nSmugglers bartered in hushed, businesslike tones under the flickering amber glow of lanterns that seemed, on principle, to illuminate as little as possible.\n\n**A scarred quartermaster blocked the gate to the shipyards**. Vane, the porters called him, and the name went through me like a nail; but **this Vane had a ledger and a scar, not a lantern**, and he had never heard of me. He sized up my gear with the frank, appraising interest of a man calculating exactly how much of it he could relieve me of before I noticed.",
     "description_fr": "Passé les murs, la route descendait en pente raide vers le quartier du port de Bouche-de-Sel, le Quai des Contrebandiers, comme l’appelait le chef de caravane, glissant d’écailles de poisson et d’huile noire, une combinaison qui transformait chaque pas en une petite négociation avec la gravité.\n\nDes contrebandiers marchandaient à voix basse, sur un ton d’affaires, sous la lueur ambrée et vacillante de lanternes semblant, par principe, éclairer le moins possible.\n\n**Un intendant balafré bloquait la porte des chantiers navals**. Vane, l’appelaient les porteurs, et le nom me traversa comme un clou ; mais **ce Vane-là avait un registre et une balafre, pas une lanterne**, et il n’avait jamais entendu parler de moi. Il jaugeait mon équipement avec l’intérêt franc et évaluateur d’un homme calculant précisément combien il pourrait m’en soulager avant que je ne m’en aperçoive.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -2951,7 +2951,7 @@
   },
   "2011": {
     "id": "2011",
-    "description": "I shoved past Vane before he could properly react, which is generally the only window one gets with men who make their living reacting to things, boots slapping wet boards as I pushed deeper into the docks without the customary courtesy of an explanation. Something skittered underfoot in the dark — more than one something, judging by the sound, and none of it inclined to move out of my way.",
+    "description": "I shoved past Vane before he could properly react, which is generally the only window one gets with men who make their living reacting to things, boots slapping wet boards as I pushed deeper into the docks without the customary courtesy of an explanation.\n\nSomething skittered underfoot in the dark — more than one something, judging by the sound, and none of it inclined to move out of my way.",
     "description_fr": "Je bousculai Vane avant qu’il ne puisse proprement réagir, ce qui constitue en général l’unique fenêtre dont on dispose avec les hommes qui gagnent leur vie à réagir aux choses, mes bottes claquant sur les planches mouillées tandis que je m’enfonçais dans les docks sans la courtoisie coutumière d’une explication.\n\nQuelque chose détala sous mes pieds dans le noir — plus d’une chose, à en juger par le bruit, et aucune ne semblait disposée à me céder le passage.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3378,7 +3378,7 @@
       {
         "flag": "lysa_survived",
         "en": "Lysa had found the wharf’s sick before I had found its market, and by the time I came back she had a corner of a fish-shed, three patients and a Tide-Kin girl fetching water for her without having been asked.",
-        "fr": "Lysa avait trouvé les malades du quai avant que je trouve son marché, et à mon retour elle avait un coin de hangar à poisson, trois patients et une fillette des Enfants-de-Marée qui lui apportait de l’eau sans qu’on le lui demande."
+        "fr": "Lysa avait trouvé les malades du quai avant que je trouve son marché, et à mon retour elle avait un coin de hangar à poisson, trois patients et une fillette des Gens de la Marée qui lui apportait de l’eau sans qu’on le lui demande."
       },
       {
         "flag": "wharf_scouted",
@@ -3484,7 +3484,7 @@
   },
   "2015_house_drowned_debt": {
     "id": "2015_house_drowned_debt",
-    "description": "He was chained to a bollard by the ankle, loosely, the way you tie up a boat you mean to come back for, and the link branded on the back of his hand said why. The Drowned Debt, the wharf calls people like him: Crows who borrowed from Crows and could not pay, whose debts are sold on from captain to captain with the debtor still attached.\n\nThis one was to be sold **at the turn of the tide** to a corsair brig, to work off **thirty gold** in the rigging, which on a brig is a life sentence with a view. He did not ask me for anything. He was counting the gulls. The man holding his chain, a Keyholder’s collector with a ledger and two large friends, named the price without being asked: thirty gold, and the debtor walked away with nothing but his brand.\n\n“Or you walk on,” he said. “Most do.”",
+    "description": "He was chained to a bollard by the ankle, loosely, the way you tie up a boat you mean to come back for, and the link branded on the back of his hand said why. The Drowned Debt, the wharf calls people like him: Crows who borrowed from Crows and could not pay, whose debts are sold on from captain to captain with the debtor still attached.\n\nThis one was to be sold **at the turn of the tide** to a corsair brig, to work off **thirty gold** in the rigging, which on a brig is a life sentence with a view. He did not ask me for anything. He was counting the gulls.\n\nThe man holding his chain, a Keyholder’s collector with a ledger and two large friends, named the price without being asked: thirty gold, and the debtor walked away with nothing but his brand.\n\n“Or you walk on,” he said. “Most do.”",
     "description_fr": "Il était enchaîné par la cheville à une bitte d’amarrage, sans serrer, comme on attache une barque qu’on compte bien reprendre, et le maillon marqué au fer sur le dos de sa main disait pourquoi. La Dette Noyée, appelle-t-on ses pareils sur le quai : des Corneilles qui ont emprunté à des Corneilles sans pouvoir rendre, et dont la dette passe de capitaine en capitaine, le débiteur avec.\n\nCelui-ci serait vendu **à la renverse de la marée** à un brick corsaire, pour rembourser **trente pièces d’or** dans le gréement, ce qui, sur un brick, revient à la perpétuité avec vue sur la mer. Il ne me demanda rien. Il comptait les mouettes.\n\nL’homme qui tenait sa chaîne, un collecteur au service d’une Porte-Clef, avec un registre et deux amis de belle taille, m’annonça le prix sans que je le demande : trente pièces d’or, et le débiteur s’en allait sans rien d’autre que sa marque.\n\n« Ou alors vous passez votre chemin, dit-il. La plupart le font. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3640,7 +3640,7 @@
   },
   "2015_house_salt_ledger": {
     "id": "2015_house_salt_ledger",
-    "description": "The Salt Ledger’s clerk had set his scales on an upturned crate at the head of the wharf, where the carts came in from the salt pans on the flats, and he weighed every sack twice: once for the merchant and once for the Crusade. **The tithe is one sack in ten**, in salt or in silver.\n\nIt pays for the war and, he admitted after I bought him a drink, for the Salt Crows as well, though the Throne denies that and so would he, sober. His trouble was the pan-workers. They had come in with **six sacks between them and no silver at all**, and he could not leave the wharf without his tenth, or his ledger would not close; and the Salt Ledger forgives almost anything sooner than an open ledger.\n\n“Collect it for me and I will cut you in,” he said. “Or pay it for them, if you are that sort of fool. Either way it closes.”",
+    "description": "The Salt Ledger’s clerk had set his scales on an upturned crate at the head of the wharf, where the carts came in from the salt pans on the flats, and he weighed every sack twice: once for the merchant and once for the Crusade. **The tithe is one sack in ten**, in salt or in silver.\n\nIt pays for the war and, he admitted after I bought him a drink, for the Salt Crows as well, though the Throne denies that and so would he, sober. His trouble was the pan-workers.\n\nThey had come in with **six sacks between them and no silver at all**, and he could not leave the wharf without his tenth, or his ledger would not close; and the Salt Ledger forgives almost anything sooner than an open ledger.\n\n“Collect it for me and I will cut you in,” he said. “Or pay it for them, if you are that sort of fool. Either way it closes.”",
     "description_fr": "Le greffier du Registre du Sel avait posé sa balance sur une caisse retournée à l’entrée du quai, là où arrivaient les charrettes des salines, et il pesait chaque sac deux fois : une fois pour le marchand, une fois pour la Croisade. **La dîme est d’un sac sur dix**, en sel ou en argent.\n\nElle paie la guerre et, m’avoua-t-il après que je lui eus offert à boire, les Corneilles de Sel aussi, même si le Trône le nie, et lui aussi le nierait, à jeun. Son problème, c’étaient les sauniers.\n\nIls étaient arrivés avec **six sacs à eux tous et pas une pièce d’argent**, et il ne pouvait pas quitter le quai sans son dixième, sinon son registre ne fermerait pas ; et le Registre du Sel pardonne presque tout plus volontiers qu’un registre ouvert.\n\n« Prélevez-le pour moi, et vous aurez votre part, dit-il. Ou payez-le pour eux, si vous êtes ce genre d’imbécile. Dans les deux cas, ça ferme. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3700,7 +3700,7 @@
   },
   "2015_bazaar": {
     "id": "2015_bazaar",
-    "description": "The Arcane Bazaar turned out to be less a market than a running argument between several dozen people who each firmly believed their particular brand of forbidden knowledge was the only honest one for sale. I came away with my purse lighter and my sense of what was moving through this district considerably better informed — roughly the exchange rate I’d expected going in. Vane, I suspected, would find some of it interesting.",
+    "description": "The Arcane Bazaar turned out to be less a market than a running argument between several dozen people who each firmly believed their particular brand of forbidden knowledge was the only honest one for sale.\n\nI came away with my purse lighter and my sense of what was moving through this district considerably better informed — roughly the exchange rate I’d expected going in. Vane, I suspected, would find some of it interesting.",
     "description_fr": "Le Bazar Arcanique se révéla moins un marché qu’une dispute permanente entre plusieurs dizaines de personnes toutes convaincues que leur savoir interdit particulier était le seul honnête à la vente.\n\nJ’en repartis la bourse plus légère et la compréhension de ce qui circulait dans ce quartier nettement meilleure — à peu près le taux de change auquel je m’attendais en y entrant. Vane, soupçonnai-je, trouverait une partie de cela intéressante.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3721,7 +3721,7 @@
   },
   "2015_apothecary": {
     "id": "2015_apothecary",
-    "description": "Apothecary Row smelled like an argument between medicine and poison that neither side had yet won, which struck me as an honest advertisement for the trade rather than a warning against it. Between the tinctures and the professionally vague answers to direct questions, I picked up rather more about the district’s shipping routes than any apothecary had intended to sell me. Vane would want to hear about that.",
+    "description": "Apothecary Row smelled like an argument between medicine and poison that neither side had yet won, which struck me as an honest advertisement for the trade rather than a warning against it.\n\nBetween the tinctures and the professionally vague answers to direct questions, I picked up rather more about the district’s shipping routes than any apothecary had intended to sell me. Vane would want to hear about that.",
     "description_fr": "La Rue des Apothicaires sentait comme une dispute entre la médecine et le poison qu’aucun des deux camps n’avait encore remportée, ce qui me frappa comme une publicité honnête pour ce commerce plutôt qu’une mise en garde contre lui.\n\nEntre les teintures et les réponses professionnellement vagues à des questions directes, j’appris bien plus sur les routes d’approvisionnement du quartier qu’aucun apothicaire n’avait eu l’intention de m’en vendre. Vane voudrait en entendre parler.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3808,7 +3808,7 @@
   "2015_rats": {
     "id": "2015_rats",
     "description": "Two harbor rats, considerably larger and considerably more committed to violence than their name suggested, had staked a claim on a crate of spoiled fish and were unwilling to discuss the matter further.\n\nI settled it the way most disagreements on this wharf eventually got settled, and left both of them a good deal less interested in cargo disputes than they’d been a minute earlier. The crate, for what it was worth, remained thoroughly spoiled.",
-    "description_fr": "Deux rats des quais, sensiblement plus gros et bien plus enclins à la violence que leur nom ne le laissait supposer, avaient revendiqué une caisse de poisson avarié et refusaient d’en discuter davantage. Je réglai l’affaire comme se réglaient la plupart des différends sur ce quai, et laissai les deux bien moins intéressés par les litiges de cargaison qu’une minute plus tôt. La caisse, quant à elle, resta pleinement avariée.",
+    "description_fr": "Deux rats des quais, sensiblement plus gros et bien plus enclins à la violence que leur nom ne le laissait supposer, avaient revendiqué une caisse de poisson avarié et refusaient d’en discuter davantage.\n\nJe réglai l’affaire comme se réglaient la plupart des différends sur ce quai, et laissai les deux bien moins intéressés par les litiges de cargaison qu’une minute plus tôt. La caisse, quant à elle, resta pleinement avariée.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "action",
@@ -4126,7 +4126,7 @@
   },
   "2050": {
     "id": "2050",
-    "description": "I rolled off the back of the wagon into a storm drain under the gate, cold enough to make me reconsider every decision that had led me to it, and squeezed along it through an iron grate that had clearly not been designed with adult shoulders in mind. The drain, showing more consideration for my plans than anything else had that month, ran down under the walls and the streets and let me out, more or less intact, beneath the wharf itself.\n\nThere, a rusted ladder climbed toward the noise of a market that had plainly decided the Inquisition was somebody else’s problem. At the far end of it the porters were cursing a scarred quartermaster named Vane — **not that Vane**, I told my heart, which had stopped; a man with a ledger — who held the gate to the shipyards as though it were his by birthright.",
+    "description": "I rolled off the back of the wagon into a storm drain under the gate, cold enough to make me reconsider every decision that had led me to it, and squeezed along it through an iron grate that had clearly not been designed with adult shoulders in mind.\n\nThe drain, showing more consideration for my plans than anything else had that month, ran down under the walls and the streets and let me out, more or less intact, beneath the wharf itself.\n\nThere, a rusted ladder climbed toward the noise of a market that had plainly decided the Inquisition was somebody else’s problem. At the far end of it the porters were cursing a scarred quartermaster named Vane — **not that Vane**, I told my heart, which had stopped; a man with a ledger — who held the gate to the shipyards as though it were his by birthright.",
     "description_fr": "Je roulai à l’arrière du chariot jusque dans une bouche d’égout sous la porte, assez froide pour me faire reconsidérer chaque décision prise jusque-là, et m’y faufilai à travers une grille de fer manifestement pas conçue en pensant aux épaules d’une personne adulte.\n\nL’égout, montrant plus d’égard pour mes projets que quoi que ce fût d’autre ce mois-là, descendait sous les murs et les rues, et me rendit, plus ou moins d’un seul morceau, sous le quai lui-même.\n\nLà, une échelle rouillée grimpait vers le vacarme d’un marché qui avait manifestement décidé que l’Inquisition était le problème de quelqu’un d’autre. Tout au bout, les porteurs maudissaient un intendant balafré du nom de Vane — **pas ce Vane-là**, dis-je à mon cœur, qui s’était arrêté ; un homme à registre — qui tenait la porte des chantiers navals comme si elle lui revenait de naissance.",
     "context_taxonomy": {
       "ui_theme": "sewers",
@@ -4287,7 +4287,7 @@
       {
         "flag": "tern_row_spared",
         "en": "Word of Tern Row had gone up the wharf ahead of me: a Tide-Kin boy ran alongside for the length of a street and pressed a paper lantern into my hand before peeling off, and I carried it, absurdly, all the way to the Eel’s slip, and hung it from her stern.",
-        "fr": "La nouvelle de Tern Row avait remonté le quai avant moi : un gamin des Enfants-de-Marée courut à mes côtés le temps d’une rue et me fourra une lanterne de papier dans la main avant de disparaître, et je la portai, absurdement, jusqu’à la cale de l’Eel, et la suspendis à sa poupe."
+        "fr": "La nouvelle de Tern Row avait remonté le quai avant moi : un gamin des Gens de la Marée courut à mes côtés le temps d’une rue et me fourra une lanterne de papier dans la main avant de disparaître, et je la portai, absurdement, jusqu’à la cale de l’Eel, et la suspendis à sa poupe."
       },
       {
         "flag": "void_marked",
@@ -4607,7 +4607,7 @@
   },
   "3005": {
     "id": "3005",
-    "description": "The Ashen Quarter lay at the Spire’s foot, **a day’s walk inland from the camp**: what the Inquisition had left of a town after burning it itself. I would cross the flats between the two more times than I cared to count, and the Quarter offered a few things worth the walk and rather more worth avoiding, in roughly the proportion I had come to expect from every district since this business began.\n\nPast its last street the Spire’s gates stood shut, and **nobody in the Quarter would show a stranger the way in: I would have to earn that from them first**.",
+    "description": "The Ashen Quarter lay at the Spire’s foot, **a day’s walk inland from the camp**: what the Inquisition had left of a town after burning it itself.\n\nI would cross the flats between the two more times than I cared to count, and the Quarter offered a few things worth the walk and rather more worth avoiding, in roughly the proportion I had come to expect from every district since this business began.\n\nPast its last street the Spire’s gates stood shut, and **nobody in the Quarter would show a stranger the way in: I would have to earn that from them first**.",
     "description_fr": "Le Quartier des Cendres s’étendait au pied de la Flèche, **à une journée de marche du camp** : ce que l’Inquisition avait laissé d’une ville après l’avoir brûlée elle-même.\n\nJ’allais traverser les plaines entre les deux plus souvent que je n’aurais aimé le compter, et le Quartier offrait quelques occasions qui valaient la marche, et bien davantage de dangers à éviter, dans à peu près les proportions que j’avais appris à attendre de chaque quartier depuis le début de cette affaire.\n\nPassé sa dernière rue, les portes de la Flèche restaient closes, et **personne au Quartier ne montrerait le chemin à un inconnu : il faudrait d’abord le mériter auprès des gens d’ici**.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -4999,7 +4999,7 @@
   },
   "3005_house_tribunal": {
     "id": "3005_house_tribunal",
-    "description": "The Tribunal still came down from the Spire to hear cases in the Quarter, because the Quarter was the last place it could sentence anyone without a riot, and because a law that is not seen to be done, the clerk told me, is only a rumour. They sat under an awning by the gate: three judges in violet, a clerk, and **a rope already looped over the gate-beam for the next case**, which I thought presumptuous of the rope.\n\nThe accused was a refugee called Tamsin who had taken a loaf from the relief tent. The Tribunal wanted a witness who was not of the Quarter, since the Quarter lies for its own, and I had come from further off than anyone within a hundred yards. She had taken the loaf.\n\nAs far as I could see, **she had taken it for the boy hiding behind her skirts, who was not hers**.\n\n“Speak to what you saw,” said the eldest judge. “The Tribunal values a witness. It remembers one.”",
+    "description": "The Tribunal still came down from the Spire to hear cases in the Quarter, because the Quarter was the last place it could sentence anyone without a riot, and because a law that is not seen to be done, the clerk told me, is only a rumour.\n\nThey sat under an awning by the gate: three judges in violet, a clerk, and **a rope already looped over the gate-beam for the next case**, which I thought presumptuous of the rope.\n\nThe accused was a refugee called Tamsin who had taken a loaf from the relief tent. The Tribunal wanted a witness who was not of the Quarter, since the Quarter lies for its own, and I had come from further off than anyone within a hundred yards. She had taken the loaf.\n\nAs far as I could see, **she had taken it for the boy hiding behind her skirts, who was not hers**.\n\n“Speak to what you saw,” said the eldest judge. “The Tribunal values a witness. It remembers one.”",
     "description_fr": "Le Tribunal descendait encore de la Flèche pour juger au Quartier, parce que le Quartier était le dernier endroit où il pouvait condamner sans déclencher d’émeute, et parce qu’une loi qu’on ne voit pas appliquer, m’expliqua le greffier, n’est qu’une rumeur.\n\nIls siégeaient sous un auvent près de la porte : trois juges en violet, un greffier, et **une corde déjà passée par-dessus la poutre de la porte pour l’affaire suivante**, ce que je trouvai bien présomptueux de la part d’une corde.\n\nL’accusée était une réfugiée nommée Tamsin, qui avait pris une miche à la tente de secours. Le Tribunal voulait un témoin étranger au Quartier, puisque le Quartier ment pour les siens, et je venais de plus loin que quiconque à cent pas à la ronde. Elle avait bien pris la miche.\n\nAutant que je pouvais en juger, **elle l’avait prise pour le garçon caché derrière ses jupes, qui n’était pas le sien**.\n\n« Témoignez de ce que vous avez vu, dit le plus âgé des juges. Le Tribunal estime les témoins. Il s’en souvient. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -5062,7 +5062,7 @@
   },
   "3005_clan_vigil_1": {
     "id": "3005_clan_vigil_1",
-    "description": "The Last Watch kept six spears in the Quarter, and a stretch of rubble wall on its northern edge, where the ash gave onto the Spire’s grounds. Since the Inquisition had begun whatever it was doing up the hill, things had been coming down off it on the new moon: not many, the Watch said, and not large, but enough that **somebody had to stand on the rubble all night with a spear and not look away**.\n\nTheir sergeant was an orc with one ear and the patience of a headstone. She did not ask why I had come; one of the Vigil’s Houses had spoken for me, and that would do for one night, she said, and the rest was up to me. **The moon was gone by the second bell**. By the third, something grey came over the rubble on more legs than it needed, and something else came after it.",
+    "description": "The Last Watch kept six spears in the Quarter, and a stretch of rubble wall on its northern edge, where the ash gave onto the Spire’s grounds.\n\nSince the Inquisition had begun whatever it was doing up the hill, things had been coming down off it on the new moon: not many, the Watch said, and not large, but enough that **somebody had to stand on the rubble all night with a spear and not look away**.\n\nTheir sergeant was an orc with one ear and the patience of a headstone. She did not ask why I had come; one of the Vigil’s Houses had spoken for me, and that would do for one night, she said, and the rest was up to me. **The moon was gone by the second bell**. By the third, something grey came over the rubble on more legs than it needed, and something else came after it.",
     "description_fr": "La Dernière Veille entretenait six lances au Quartier, et un pan de mur de gravats sur son bord nord, là où la cendre donnait sur les terres de la Flèche.\n\nDepuis que l’Inquisition avait commencé là-haut ce qu’elle y faisait, des choses descendaient de la colline les nuits de nouvelle lune : pas beaucoup, disait la Veille, et pas bien grosses, mais assez pour qu’**il faille quelqu’un sur les gravats toute la nuit, une lance à la main, sans détourner le regard**.\n\nLeur sergente était une orque à une seule oreille, avec la patience d’une pierre tombale. Elle ne me demanda pas pourquoi j’étais là ; une Maison de la Veille avait parlé pour moi, cela suffirait pour une nuit, dit-elle, et le reste dépendrait de moi. **La lune avait disparu au deuxième coup de cloche**. Au troisième, une chose grise franchit les gravats sur plus de pattes qu’il ne lui en fallait, et une autre la suivit.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -5265,7 +5265,7 @@
   },
   "3005_oath": {
     "id": "3005_oath",
-    "description": "The Oath, when I found the shrine offering it, asked for exactly the kind of commitment I generally try to avoid making to institutions I don’t yet understand — **silence a cultist still chanting in the ashes**, and mean it. I signed on anyway, on the theory that an oath sworn to ash and ruin was at least being honest about what it expected of me. The Spire, I decided, could wait until I’d settled the matter properly.",
+    "description": "The Oath, when I found the shrine offering it, asked for exactly the kind of commitment I generally try to avoid making to institutions I don’t yet understand — **silence a cultist still chanting in the ashes**, and mean it.\n\nI signed on anyway, on the theory that an oath sworn to ash and ruin was at least being honest about what it expected of me. The Spire, I decided, could wait until I’d settled the matter properly.",
     "description_fr": "Le Serment, une fois trouvé le sanctuaire qui le proposait, exigeait exactement le genre d’engagement que j’essaie généralement d’éviter envers des institutions que je ne comprends pas encore — **faire taire un cultiste qui psalmodiait encore parmi les cendres**, et le penser vraiment.\n\nJe m’engageai tout de même, partant du principe qu’un serment prêté aux cendres et aux ruines avait au moins l’honnêteté de dire ce qu’il attendait de moi. La Flèche, décidai-je, pouvait attendre que j’en aie fini proprement avec cette affaire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -5288,7 +5288,7 @@
   },
   "3005_acolyte": {
     "id": "3005_acolyte",
-    "description": "The acolyte kept chanting even as the fight turned against him, which I found less admirable than simply exhausting — conviction is a fine thing right up until it’s the only weapon left in your hand. He stopped chanting when he stopped doing anything else. I left him among the ashes he’d been so devoted to and walked back into the Quarter, no wiser about his cause and considerably less patient with it.",
+    "description": "The acolyte kept chanting even as the fight turned against him, which I found less admirable than simply exhausting — conviction is a fine thing right up until it’s the only weapon left in your hand.\n\nHe stopped chanting when he stopped doing anything else. I left him among the ashes he’d been so devoted to and walked back into the Quarter, no wiser about his cause and considerably less patient with it.",
     "description_fr": "L’acolyte continua de psalmodier même quand le combat tourna en ma faveur, ce que je trouvai moins admirable que simplement épuisant — la conviction est une belle chose jusqu’au moment où elle devient la seule arme qu’il vous reste.\n\nIl cessa de psalmodier quand il cessa de faire quoi que ce soit d’autre. Je le laissai parmi les cendres auxquelles il s’était tant dévoué et regagnai le Quartier, sans rien comprendre de plus à sa cause, et avec bien moins de patience à son égard.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -5416,7 +5416,7 @@
   },
   "3005_maren": {
     "id": "3005_maren",
-    "description": "She spoke with the particular clarity of someone who’d spent a long time rehearsing a confession she’d never quite worked up the nerve to make to anyone who mattered, and had apparently decided I would do. I didn’t have an answer ready for her, not one I trusted anyway, but I told her I’d hear the rest of it when there was time. The Spire, at least, would still be there when I was done being someone’s confessor.",
+    "description": "She spoke with the particular clarity of someone who’d spent a long time rehearsing a confession she’d never quite worked up the nerve to make to anyone who mattered, and had apparently decided I would do.\n\nI didn’t have an answer ready for her, not one I trusted anyway, but I told her I’d hear the rest of it when there was time. The Spire, at least, would still be there when I was done being someone’s confessor.",
     "description_fr": "Elle parlait avec la clarté particulière de quelqu’un qui avait longtemps répété une confession qu’elle n’avait jamais tout à fait eu le courage de faire à quiconque qui comptât, et avait apparemment décidé que je ferais l’affaire.\n\nJe n’avais pas de réponse toute prête pour elle, pas une en laquelle j’avais confiance en tout cas, mais je lui dis que j’entendrais la suite quand j’en aurais le temps. La Flèche, au moins, serait encore là une fois que j’aurais fini de servir de confesseur à quelqu’un.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -6521,7 +6521,7 @@
   },
   "2015_informant": {
     "id": "2015_informant",
-    "description": "Most of the crowd was exactly what it appeared to be, which is to say uninteresting, but one man’s stillness gave him away — the particular stillness of someone working very hard not to be noticed noticing things. He didn’t want coin so much as an audience, and once I gave him one, he **named a warden skimming smuggled goods off the top** with a confidence that suggested he’d been waiting a long time for someone worth telling.",
+    "description": "Most of the crowd was exactly what it appeared to be, which is to say uninteresting, but one man’s stillness gave him away — the particular stillness of someone working very hard not to be noticed noticing things.\n\nHe didn’t want coin so much as an audience, and once I gave him one, he **named a warden skimming smuggled goods off the top** with a confidence that suggested he’d been waiting a long time for someone worth telling.",
     "description_fr": "La majeure partie de la foule était exactement ce qu’elle paraissait, c’est-à-dire sans intérêt, mais l’immobilité d’un homme le trahit — cette immobilité particulière de quelqu’un qui s’efforce de ne pas se faire remarquer en train de remarquer les choses.\n\nIl ne voulait pas tant de l’argent qu’un auditoire, et une fois que je lui en offris un, il **désigna un gardien qui détournait des marchandises de contrebande**, avec l’assurance de quelqu’un qui avait longtemps attendu quelqu’un à qui parler.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -6650,8 +6650,8 @@
   },
   "2015_ternrow": {
     "id": "2015_ternrow",
-    "description": "The lanterns led to a footbridge, and the footbridge led to a quarter the map I’d been given hadn’t bothered to name. It was narrow, salt-scoured, hung with **more paper boats than living people**, each one lit and set adrift at dusk for someone the sea hadn’t given back.\n\nTern Row, the woman who caught me staring called it, in the layered, call-and-response cadence of the Tide-Kin, a people who’d come up the coast one drowned island at a time and never quite been asked to stay. Her name was Nadira, and she had the particular tiredness of someone explaining, again, to someone who might finally listen.\n\nAn Inquisition customs officer named Renn had taken to charging Tern Row a ’landing toll’ that existed nowhere in the city’s actual ledgers, and had lately taken to using the word ’deportation’ the way other men use a fist.",
-    "description_fr": "Les lanternes menaient à une passerelle, et la passerelle menait à un quartier que la carte qu’on m’avait donnée n’avait pas jugé bon de nommer. Il était étroit, rongé par le sel, hérissé de **plus de bateaux de papier que d’habitants vivants**, chacun allumé et lâché à la dérive chaque soir pour quelqu’un que la mer n’avait pas rendu.\n\nTern Row, m’apprit la femme qui me surprit à la fixer, dans la cadence en écho des Gens de la Marée, un peuple remonté la côte une île engloutie après l’autre, sans qu’on ne lui ait jamais vraiment demandé de rester. Elle s’appelait Nadira, et elle avait la lassitude particulière de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.\n\nUn douanier de l’Inquisition nommé Renn avait pris l’habitude de faire payer à Tern Row un « péage de débarquement » qui n’existait dans aucun registre réel de la ville, et employait depuis peu le mot « expulsion » comme d’autres emploient un poing.",
+    "description": "The lanterns led to a footbridge, and the footbridge led to a quarter the map I’d been given hadn’t bothered to name. It was narrow, salt-scoured, hung with **more paper boats than living people**, each one lit and set adrift at dusk for someone the sea hadn’t given back.\n\nTern Row, the woman who caught me staring called it, in the layered, call-and-response cadence of the Tide-Kin, a people who’d come up the coast one drowned island at a time and never quite been asked to stay. Her name was Nadira, and she had the particular tiredness of someone explaining, again, to someone who might finally listen.\n\nAn Inquisition customs overseer named Renn had taken to charging Tern Row a ‘landing toll’ that existed nowhere in the city’s actual ledgers, and had lately taken to using the word ‘deportation’ the way other men use a fist.",
+    "description_fr": "Les lanternes menaient à une passerelle, et la passerelle menait à un quartier que la carte qu’on m’avait donnée n’avait pas jugé bon de nommer. Il était étroit, rongé par le sel, hérissé de **plus de bateaux de papier que d’habitants vivants**, chacun allumé et lâché à la dérive chaque soir pour quelqu’un que la mer n’avait pas rendu.\n\nTern Row, m’apprit la femme qui me surprit à la fixer, dans la cadence en écho des Gens de la Marée, un peuple remonté la côte une île engloutie après l’autre, sans qu’on ne lui ait jamais vraiment demandé de rester. Elle s’appelait Nadira, et elle avait la lassitude particulière de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.\n\nUn contremaître des douanes de l’Inquisition nommé Renn avait pris l’habitude de faire payer à Tern Row un « péage de débarquement » qui n’existait dans aucun registre réel de la ville, et employait depuis peu le mot « expulsion » comme d’autres emploient un poing.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -6661,7 +6661,7 @@
     "choices": [
       {
         "text": "Offer to reason with the overseer first",
-        "text_fr": "Proposer de raisonner d’abord l’inspecteur",
+        "text_fr": "Proposer de raisonner d’abord le contremaître",
         "next_id": "2015_ternrow_talked",
         "checkAbility": "charisma",
         "checkDC": 13,
@@ -6909,7 +6909,7 @@
   },
   "2015_cards": {
     "id": "2015_cards",
-    "description": "Four dockhands had claimed a barrel as a card table, playing a game I half-recognized from a dozen worse taverns — stakes modest enough that losing wouldn’t ruin anyone, large enough that winning would be worth the trouble. One of them waved me toward the last open stool with the easy hospitality of a man who has never once, in his life, actually lost at cards, and has long since stopped expecting to start.",
+    "description": "Four dockhands had claimed a barrel as a card table, playing a game I half-recognized from a dozen worse taverns — stakes modest enough that losing wouldn’t ruin anyone, large enough that winning would be worth the trouble.\n\nOne of them waved me toward the last open stool with the easy hospitality of a man who has never once, in his life, actually lost at cards, and has long since stopped expecting to start.",
     "description_fr": "Quatre dockers avaient réquisitionné un tonneau en guise de table de jeu, disputant une partie que je reconnus à moitié pour l’avoir vue dans une douzaine de tavernes pires que celle-ci — des mises assez modestes pour que perdre ne ruine personne, assez conséquentes pour que gagner en vaille la peine.\n\nL’un d’eux m’indiqua le dernier tabouret libre avec l’hospitalité facile d’un homme qui n’a, de toute sa vie, jamais perdu une seule fois aux cartes, et qui a depuis longtemps cessé de s’y attendre.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -6943,7 +6943,7 @@
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "goldMod": 35,
         "flagsToAdd": [
@@ -7004,7 +7004,7 @@
     "reqFlags": [
       "lysa_survived"
     ],
-    "description": "The refugee runners worked the ash-choked quarter in relays, children mostly, paid in bread and the specific kind of respect adults reserve for people who can get somewhere they can’t. I gave the smallest of them a coin and a message for Lysa at the camp, kept short because the girl would have to remember it and because there was not, when it came to it, much I trusted myself to say.\n\nWhere I was. That I was still standing. That the thing I had carried out of the slums had turned out to be a great deal more than an heirloom, and that she should not wait for me to come back with it. She repeated it back to me twice, word for word (\"**Still standing. More than an heirloom. Don’t wait.**\"), and was gone before I could change my mind about the last part.",
+    "description": "The refugee runners worked the ash-choked quarter in relays, children mostly, paid in bread and the specific kind of respect adults reserve for people who can get somewhere they can’t.\n\nI gave the smallest of them a coin and a message for Lysa at the camp, kept short because the girl would have to remember it and because there was not, when it came to it, much I trusted myself to say.\n\nWhere I was. That I was still standing. That the thing I had carried out of the slums had turned out to be a great deal more than an heirloom, and that she should not wait for me to come back with it. She repeated it back to me twice, word for word (\"**Still standing. More than an heirloom. Don’t wait.**\"), and was gone before I could change my mind about the last part.",
     "description_fr": "Les coursiers des réfugiés arpentaient le quartier étouffé de cendres par relais, des enfants pour la plupart, payés en pain et de ce respect particulier que les adultes réservent à ceux qui peuvent aller là où eux ne le peuvent pas.\n\nJe donnai à la plus petite une pièce et un message pour Lysa, au camp, bref parce que la gamine devrait le retenir, et parce qu’il n’y avait pas, tout compte fait, grand-chose que je me sentais capable de dire.\n\nOù j’étais. Que je tenais encore debout. Que la chose que j’avais emportée hors des taudis s’était révélée être bien plus qu’un héritage, et qu’elle ne devait pas m’attendre pour la rapporter. Elle me le répéta deux fois, mot pour mot (« **Toujours debout. Plus qu’un héritage. Ne pas attendre.** »), et disparut avant que je puisse changer d’avis sur la dernière partie.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -7373,7 +7373,7 @@
       },
       {
         "text": "Lift the Keyholders’ cache of fever-bark",
-        "text_fr": "Vider la cache d’écorce-fièvre des Porte-Clés",
+        "text_fr": "Vider la cache d’écorce-fièvre des Porte-Clefs",
         "next_id": "5010_bark_cache",
         "checkAbility": "dexterity",
         "checkDC": 12,
@@ -8464,7 +8464,7 @@
       {
         "flag": "bark_sold",
         "en": "The fever-bark the Keyholders had sold on reached the Quarter by way of the Court, in a Keyholder’s pack at a Keyholder’s price, and the penitents could not pay it.",
-        "fr": "L’écorce-fièvre que les Porte-Clés avaient revendue atteignit le Quartier par la Cour, dans le sac d’un Porte-Clé et au prix d’un Porte-Clé, et les pénitents ne pouvaient pas le payer."
+        "fr": "L’écorce-fièvre que les Porte-Clefs avaient revendue atteignit le Quartier par la Cour, dans le sac d’un Porte-Clé et au prix d’un Porte-Clé, et les pénitents ne pouvaient pas le payer."
       },
       {
         "flag": "bark_kept",
@@ -11906,7 +11906,7 @@
   },
   "3100_house_emberwives": {
     "id": "3100_house_emberwives",
-    "description": "Emberwick’s kilns make charcoal, and the Emberwives make it into something a forge can trust: they bank the clamps, read the smoke, and drive the coal down the Run to whoever they have decided deserves it. This season nobody did. They had let the Run go cold to starve the Tribunal’s forges, and the Tribunal’s buyers had taken to waiting on the slag road to take by force what the Emberwives would not sell.\n\nThe only buyers the Emberwives still served were the widows of the hollow, at a price of nothing, and the widows’ kilns were across the slag road. An Emberwife with a cart, a mule and a short pipe looked me over and said, round the pipe, that she could use **a second pair of hands that did not mind getting dirty**.",
+    "description": "Emberwick’s kilns make charcoal, and the Emberwives make it into something a forge can trust: they bank the clamps, read the smoke, and drive the coal down the Run to whoever they have decided deserves it.\n\nThis season nobody did. They had let the Run go cold to starve the Tribunal’s forges, and the Tribunal’s buyers had taken to waiting on the slag road to take by force what the Emberwives would not sell.\n\nThe only buyers the Emberwives still served were the widows of the hollow, at a price of nothing, and the widows’ kilns were across the slag road. An Emberwife with a cart, a mule and a short pipe looked me over and said, round the pipe, that she could use **a second pair of hands that did not mind getting dirty**.",
     "description_fr": "Les fours de Braiseval font du charbon de bois, et les Charbonnières en font quelque chose à quoi une forge peut se fier : elles couvrent les meules, lisent la fumée, et descendent le charbon par la Course jusqu’à qui elles ont jugé digne de le recevoir.\n\nCette saison, personne ne l’était. Elles avaient laissé refroidir la Course pour affamer les forges du Tribunal, et les acheteurs du Tribunal avaient pris l’habitude de guetter sur la route des terrils pour prendre de force ce que les Charbonnières refusaient de vendre.\n\nLes seules qu’elles servaient encore étaient les veuves du creux, pour rien, et les fours des veuves se trouvaient de l’autre côté de la route des terrils. Une Charbonnière, avec une charrette, une mule et une pipe courte, me jaugea et dit, sans lâcher sa pipe, qu’**une deuxième paire de mains qui n’avait pas peur de se salir** ne serait pas de trop.",
     "context_taxonomy": {
       "ui_theme": "slums",
@@ -11969,7 +11969,7 @@
   },
   "3100_house_anvil_deaf": {
     "id": "3100_house_anvil_deaf",
-    "description": "The oldest smith in Emberwick had not heard a hammer in thirty years, and still could not keep away from one. He sat by the forge that was not lit and talked with his hands to anyone who would watch them: the signs of the Anvil-Deaf, which the Compact’s council speaks to this day, since a council of smiths is a council of the half-deaf, and since a sign, he told me through a boy who translated, cannot be overheard through a door.\n\n**He would teach me ten**. Ten were enough to be rude in, he said, and rudeness is where every language starts. He showed me the first, an open hand laid flat on a closed fist, for anvil, and waited to see whether I would laugh.",
+    "description": "The oldest smith in Emberwick had not heard a hammer in thirty years, and still could not keep away from one.\n\nHe sat by the forge that was not lit and talked with his hands to anyone who would watch them: the signs of the Anvil-Deaf, which the Compact’s council speaks to this day, since a council of smiths is a council of the half-deaf, and since a sign, he told me through a boy who translated, cannot be overheard through a door.\n\n**He would teach me ten**. Ten were enough to be rude in, he said, and rudeness is where every language starts. He showed me the first, an open hand laid flat on a closed fist, for anvil, and waited to see whether I would laugh.",
     "description_fr": "Le plus vieux forgeron de Braiseval n’avait pas entendu un marteau depuis trente ans, et ne pouvait toujours pas s’en tenir éloigné.\n\nIl était assis près de la forge éteinte et parlait avec les mains à qui voulait bien les regarder : les signes des Sourds de l’Enclume, que le conseil du Pacte parle encore aujourd’hui, puisqu’un conseil de forgerons est un conseil de demi-sourds, et puisqu’un signe, me dit-il par l’intermédiaire d’un garçon qui traduisait, ne s’entend pas à travers une porte.\n\n**Il m’en apprendrait dix**. Dix suffisaient pour dire des grossièretés, dit-il, et la grossièreté est le début de toute langue. Il me montra le premier, une main ouverte posée à plat sur un poing fermé, pour dire enclume, et attendit de voir si j’allais rire.",
     "context_taxonomy": {
       "ui_theme": "slums",
@@ -12426,7 +12426,7 @@
   },
   "3200_clan_penitents_1": {
     "id": "3200_clan_penitents_1",
-    "description": "The Penitents stitch onto their banner, in brown thread, the name of everyone the Spire hanged, as each name is found. Four hundred were hanged. **The cloth holds a little over three hundred names**, because the Spire wrote down crimes, not people. The Penitent who had climbed to Akagiri was looking for one of the missing.\n\nIn the year of the Four Hundred the Spire had hanged a horned man and written him down as a beast, which is why no list had him; his family still lived on the terraces, and had never once said his name to a human since. She could not ask them. She had worn the Dominion’s white on the day it happened.\n\n“They might tell you,” she said. “You are nobody’s. **Bring me his name**, and it goes on the cloth, and the cloth goes in front of us wherever we walk.”",
+    "description": "The Penitents stitch onto their banner, in brown thread, the name of everyone the Spire hanged, as each name is found. Four hundred were hanged. **The cloth holds a little over three hundred names**, because the Spire wrote down crimes, not people.\n\nThe Penitent who had climbed to Akagiri was looking for one of the missing. In the year of the Four Hundred the Spire had hanged a horned man and written him down as a beast, which is why no list had him; his family still lived on the terraces, and had never once said his name to a human since.\n\nShe could not ask them. She had worn the Dominion’s white on the day it happened.\n\n“They might tell you,” she said. “You are nobody’s. **Bring me his name**, and it goes on the cloth, and the cloth goes in front of us wherever we walk.”",
     "description_fr": "Les Pénitents brodent sur leur bannière, en fil brun, le nom de chaque personne que la Flèche a pendue, à mesure qu’on retrouve les noms. Quatre cents personnes furent pendues. **L’étoffe porte un peu plus de trois cents noms**, parce que la Flèche notait des crimes, pas des gens.\n\nLa Pénitente montée jusqu’à Akagiri cherchait l’un des noms manquants. L’année des Quatre Cents, la Flèche avait pendu un homme à cornes et l’avait inscrit comme une bête, si bien qu’aucune liste ne le connaissait ; sa famille vivait toujours sur les terrasses, et n’avait plus jamais prononcé son nom devant un humain.\n\nElle ne pouvait pas le leur demander. Elle portait le blanc du Dominion, le jour où c’était arrivé.\n\n« Ils vous le diront peut-être, dit-elle. Vous n’appartenez à personne. **Rapportez-moi son nom**, il ira sur l’étoffe, et l’étoffe marche devant nous partout où nous allons. »",
     "context_taxonomy": {
       "ui_theme": "slums",
@@ -17712,7 +17712,7 @@
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -17730,7 +17730,7 @@
   },
   "2015_sable_caught": {
     "id": "2015_sable_caught",
-    "description": "His hand closed on my wrist before mine had closed on anything. He was faster than he looked, and considerably less drunk. It cost me **twenty gold** and a good deal of dignity to walk away without the harbor watch hearing about it. Sable had watched the whole thing from across the wharf, and when I came back she was laughing. \"Cards, then,\" she said. \"The honest way. Heaven help us.\"",
+    "description": "His hand closed on my wrist before mine had closed on anything. He was faster than he looked, and considerably less drunk. It cost me **twenty gold** and a good deal of dignity to walk away without the harbor watch hearing about it.\n\nSable had watched the whole thing from across the wharf, and when I came back she was laughing. \"Cards, then,\" she said. \"The honest way. Heaven help us.\"",
     "description_fr": "Sa main se referma sur mon poignet avant que la mienne se soit refermée sur quoi que ce soit. Il était plus rapide qu’il n’en avait l’air, et nettement moins ivre. Il m’en coûta **vingt pièces d’or** et une bonne part de ma dignité pour repartir sans que la garde du port en entende parler.\n\nSable avait suivi toute la scène depuis l’autre bout du quai, et à mon retour elle riait. « Les cartes, alors, dit-elle. À la loyale. Que le ciel nous vienne en aide. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -17741,7 +17741,7 @@
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -17763,7 +17763,7 @@
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -17785,7 +17785,7 @@
     "choices": [
       {
         "text": "Head back toward the harbor master’s post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -17846,7 +17846,7 @@
   },
   "2015_liora_won": {
     "id": "2015_liora_won",
-    "description": "Whatever I did, it landed better than I expected. She came down without lowering the bow first, which I took as roughly the elvish equivalent of a handshake. \"Liora,\" she said. \"The captain running boats out of the north pier **sells refugees a passage he never delivers**. I have been counting his men for a week. Help me end him, and **my bow is yours for as long as you are worth covering**.\"",
+    "description": "Whatever I did, it landed better than I expected. She came down without lowering the bow first, which I took as roughly the elvish equivalent of a handshake.\n\n\"Liora,\" she said. \"The captain running boats out of the north pier **sells refugees a passage he never delivers**. I have been counting his men for a week. Help me end him, and **my bow is yours for as long as you are worth covering**.\"",
     "description_fr": "Quoi que j’aie fait, cela porta mieux que je ne l’espérais. Elle descendit sans baisser son arc au préalable, ce que je pris pour l’équivalent elfique approximatif d’une poignée de main.\n\n« Liora, dit-elle. Le capitaine qui fait partir des bateaux de la jetée nord **vend aux réfugiés une traversée qu’il ne fait jamais**. Je compte ses hommes depuis une semaine. Aidez-moi à en finir avec lui, et **mon arc est à vous tant que vous vaudrez la peine qu’on vous couvre**. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -17905,7 +17905,7 @@
   },
   "2015_vess": {
     "id": "2015_vess",
-    "description": "She had been two streets behind me since the harbor gate. When I finally stopped and waited, she stopped too, then came the rest of the way as if the distance had been a question and my waiting the answer. Up close I felt it before I saw it: a thread of the same cold, patient wrongness that hummed in the Bundle on my back, worn on her like a garment she had long since stopped trying to take off.\n\n\"You carry a piece of it,\" she said, looking at the Bundle and not at me. \"**It remembers everyone who carries it**. I would rather you heard what that means from me than from it.\"",
+    "description": "She had been two streets behind me since the harbor gate. When I finally stopped and waited, she stopped too, then came the rest of the way as if the distance had been a question and my waiting the answer.\n\nUp close I felt it before I saw it: a thread of the same cold, patient wrongness that hummed in the Bundle on my back, worn on her like a garment she had long since stopped trying to take off.\n\n\"You carry a piece of it,\" she said, looking at the Bundle and not at me. \"**It remembers everyone who carries it**. I would rather you heard what that means from me than from it.\"",
     "description_fr": "Elle me suivait à deux rues de distance depuis la porte du port. Quand je m’arrêtai enfin pour l’attendre, elle s’arrêta aussi, puis franchit le reste de la distance comme si celle-ci avait été une question et mon attente la réponse.\n\nDe près, je le sentis avant de le voir : un fil de cette même étrangeté froide et patiente qui bourdonnait dans le Balluchon sur mon dos, qu’elle portait comme un vêtement qu’elle avait depuis longtemps cessé d’essayer d’ôter.\n\n« Vous en portez un morceau, dit-elle en regardant le Balluchon et non moi. **Il se souvient de tous ceux qui le portent**. Je préfère que vous appreniez ce que cela signifie de ma bouche plutôt que de la sienne. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -24006,7 +24006,7 @@
   },
   "2015_scaffold_clerk": {
     "id": "2015_scaffold_clerk",
-    "description": "The clerk kept the crew’s pay in a strongbox under his scales, a soldier of the Inquisition at his elbow and the ledger open to the page that said why, and I put Dorran’s tally on the table beside it. He found, after a page and a half, that **the tithe had been assessed on the yard’s owner and not on the men who rigged it**, which he had known all along and had hoped nobody else would read.\n\nThe strongbox came open. The soldier looked at the ceiling, which is where Inquisition soldiers keep their opinions.",
+    "description": "The clerk kept the crew’s pay in a strongbox under his scales, a soldier of the Inquisition at his elbow and the ledger open to the page that said why, and I put Dorran’s tally on the table beside it.\n\nHe found, after a page and a half, that **the tithe had been assessed on the yard’s owner and not on the men who rigged it**, which he had known all along and had hoped nobody else would read.\n\nThe strongbox came open. The soldier looked at the ceiling, which is where Inquisition soldiers keep their opinions.",
     "description_fr": "Le clerc gardait la paie de l’équipe dans un coffre sous sa balance, un soldat de l’Inquisition au coude et le registre ouvert à la page qui en donnait la raison, et je posai le compte de Dorran sur la table, à côté.\n\nIl découvrit, au bout d’une page et demie, que **la dîme avait été fixée sur le propriétaire du chantier et non sur les hommes qui l’avaient gréé**, ce qu’il savait depuis le début et avait espéré que personne d’autre ne lirait.\n\nLe coffre s’ouvrit. Le soldat regarda le plafond, là où les soldats de l’Inquisition rangent leurs opinions.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -24310,8 +24310,8 @@
   },
   "2015_dominion_blades": {
     "id": "2015_dominion_blades",
-    "description": "A file of Inquisition guards stood waiting at the customs steps, and **every sword on every hip had the Compact’s anvil stamped at the ricasso**: the hammer-and-chisel mark of the Cinder Row smiths, who had sworn in a charter older than the Dominion never to forge for a hand that held a writ.\n\nA dock clerk with ink on his thumb said the blades came in by the crate, paid for in coin, with the Row’s own bills of lading. The Row denied it, he said. The Row always denied it, and the crates always came.",
-    "description_fr": "Une file de gardes de l’Inquisition attendait aux marches de la douane, et **chaque épée à chaque hanche portait l’enclume du Pacte estampée au talon** : la marque du marteau et du ciseau des forgerons de la Rue des Braises, qui avaient juré, dans une charte plus vieille que le Dominion, de ne jamais forger pour une main qui tient un mandat.\n\nUn commis des quais, de l’encre sur le pouce, dit que les lames arrivaient par caisses, payées en monnaie, avec les propres lettres de voiture de la Rue. La Rue le niait, dit-il. La Rue le niait toujours, et les caisses arrivaient toujours.",
+    "description": "A file of Inquisition guards stood waiting at the customs steps, and **every sword on every hip had the Compact’s anvil stamped at the ricasso**: the hammer-and-chisel mark of the Cinder Row smiths, who had sworn in a charter older than anyone now living never to forge for a hand that held a writ.\n\nA dock clerk with ink on his thumb said the blades came in by the crate, paid for in coin, with the Row’s own bills of lading. The Row denied it, he said. The Row always denied it, and the crates always came.",
+    "description_fr": "Une file de gardes de l’Inquisition attendait aux marches de la douane, et **chaque épée à chaque hanche portait l’enclume du Pacte estampée au talon** : la marque du marteau et du ciseau des forgerons de la Rue des Braises, qui avaient juré, dans une charte plus vieille que toute mémoire vivante, de ne jamais forger pour une main qui tient un mandat.\n\nUn commis des quais, de l’encre sur le pouce, dit que les lames arrivaient par caisses, payées en monnaie, avec les propres lettres de voiture de la Rue. La Rue le niait, dit-il. La Rue le niait toujours, et les caisses arrivaient toujours.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -24374,7 +24374,7 @@
   },
   "3005_imeh": {
     "id": "3005_imeh",
-    "description": "She had set her stall where the ash was thinnest, a plank on two barrels and a hundred pieces of terrace glass on it, green and gold with the spring-water still in them, and it was the only thing in the quarter that caught the light. Imeh had come down from the terraces to sell, and the Scorched Choir had come to burn whatever it called unclean, and glass from an oni kiln was on its list.\n\n“**Glass tempered in the springs does not break in fire**,” she said. “They do not believe it. I need someone they will believe.”",
+    "description": "She had set her stall where the ash was thinnest, a plank on two barrels and a hundred pieces of terrace glass on it, green and gold with the spring-water still in them, and it was the only thing in the quarter that caught the light.\n\nImeh had come down from the terraces to sell, and the Scorched Choir had come to burn whatever it called unclean, and glass from an oni kiln was on its list.\n\n“**Glass tempered in the springs does not break in fire**,” she said. “They do not believe it. I need someone they will believe.”",
     "description_fr": "Elle avait dressé son étal là où la cendre était la plus mince, une planche sur deux tonneaux et dessus une centaine de pièces de verre des terrasses, vert et or, l’eau des sources encore dedans, et c’était la seule chose du quartier qui accrochât la lumière.\n\nImeh était descendue des terrasses pour vendre, et le Chœur Calciné était venu brûler tout ce qu’il appelait impur, et le verre d’un four oni figurait sur sa liste.\n\n« **Le verre trempé aux sources ne casse pas au feu**, dit-elle. Ils ne le croient pas. Il me faut quelqu’un qu’ils croiront. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -24442,7 +24442,7 @@
   "5010_brannoc": {
     "id": "5010_brannoc",
     "description": "The cloister’s healer worked on the driest ledge with no medicine at all, an elf with the Barkbleeders’ cut scars up both forearms and a row of patients he could do nothing for but pray over. His fever-bark, a season of it, bled from the fen trees by hand, had been lifted at the Drowned Stair by the Keyholders as a tithe, and sat in one of their caches below the waterline waiting for a buyer.\n\n“They will sell it to the Court,” Brannoc said. “The Court will burn it, because it works. **Bring it up before either happens**.”",
-    "description_fr": "Le guérisseur du cloître travaillait sur la corniche la plus sèche sans le moindre remède, un elfe avec les cicatrices d’entaille des Saigne-Écorce sur les deux avant-bras et une rangée de malades pour lesquels il ne pouvait rien, sinon prier.\n\nSon écorce-fièvre, une saison entière, saignée à la main sur les arbres du marais, avait été saisie à l’Escalier Noyé par les Porte-Clés au titre d’une dîme, et dormait dans l’une de leurs caches sous la ligne d’eau en attendant un acheteur.\n\n« Ils la vendront à la Cour, dit Brannoc. La Cour la brûlera, parce qu’elle agit. **Remontez-la avant l’un ou l’autre**. »",
+    "description_fr": "Le guérisseur du cloître travaillait sur la corniche la plus sèche sans le moindre remède, un elfe avec les cicatrices d’entaille des Saigne-Écorce sur les deux avant-bras et une rangée de malades pour lesquels il ne pouvait rien, sinon prier.\n\nSon écorce-fièvre, une saison entière, saignée à la main sur les arbres du marais, avait été saisie à l’Escalier Noyé par les Porte-Clefs au titre d’une dîme, et dormait dans l’une de leurs caches sous la ligne d’eau en attendant un acheteur.\n\n« Ils la vendront à la Cour, dit Brannoc. La Cour la brûlera, parce qu’elle agit. **Remontez-la avant l’un ou l’autre**. »",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -24465,7 +24465,7 @@
   "5010_bark_cache": {
     "id": "5010_bark_cache",
     "description": "The Keyholders’ cache was a dry cell behind a drowned door, locked with one of their keys and watched by two of their hired blades, with the bark inside in oilcloth bundles. The lock gave under the water with a sound the water swallowed, and I had the bundles out and up the ledge while the two blades were still arguing about whose watch it was.\n\nBrannoc counted the bark by touch before he said anything. Then he started tearing it into doses with his teeth.",
-    "description_fr": "La cache des Porte-Clés était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure céda sous l’eau avec un bruit que l’eau avala, et j’avais sorti les ballots et gagné la corniche pendant que les deux lames se disputaient encore pour savoir à qui revenait le tour de garde.\n\nBrannoc compta l’écorce au toucher avant de dire un mot. Puis il se mit à la déchirer en doses avec les dents.",
+    "description_fr": "La cache des Porte-Clefs était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure céda sous l’eau avec un bruit que l’eau avala, et j’avais sorti les ballots et gagné la corniche pendant que les deux lames se disputaient encore pour savoir à qui revenait le tour de garde.\n\nBrannoc compta l’écorce au toucher avant de dire un mot. Puis il se mit à la déchirer en doses avec les dents.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "neutral",
@@ -24486,7 +24486,7 @@
   "5010_bark_cache_fight": {
     "id": "5010_bark_cache_fight",
     "description": "The Keyholders’ cache was a dry cell behind a drowned door, locked with one of their keys and watched by two of their hired blades, with the bark inside in oilcloth bundles. The lock held and my hand slipped, and the door, which had been drowned for a century, chose that moment to groan.\n\nThe two blades stopped arguing. They had been paid to guard a cache and not to think about it, and a stranger with wet hands at its door was the simplest thing they had seen all week.",
-    "description_fr": "La cache des Porte-Clés était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure tint, ma main glissa, et la porte, noyée depuis un siècle, choisit ce moment pour gémir.\n\nLes deux lames cessèrent de se disputer. On les payait pour garder une cache et non pour y réfléchir, et quelqu’un aux mains mouillées devant sa porte était la chose la plus simple qu’elles eussent vue de la semaine.",
+    "description_fr": "La cache des Porte-Clefs était une cellule sèche derrière une porte noyée, fermée par l’une de leurs clefs et surveillée par deux lames à leur solde, l’écorce à l’intérieur en ballots de toile cirée. La serrure tint, ma main glissa, et la porte, noyée depuis un siècle, choisit ce moment pour gémir.\n\nLes deux lames cessèrent de se disputer. On les payait pour garder une cache et non pour y réfléchir, et quelqu’un aux mains mouillées devant sa porte était la chose la plus simple qu’elles eussent vue de la semaine.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "tense",
@@ -24718,7 +24718,7 @@
   },
   "3005_dorran_later": {
     "id": "3005_dorran_later",
-    "description": "News from the wharf travelled up the coast the way the Scaffolders’ news always did, hand to hand, and it found me in the Quarter in the shape of a rigger with rope-burn across both palms. She had walked the whole road with a message learnt by heart, and she stood in the ash with her feet planted, as if the ground might shift while she said it. “Dorran Quill sent me,” she said. “About the yard.”",
+    "description": "News from the wharf travelled up the coast the way the Scaffolders’ news always did, hand to hand, and it found me in the Quarter in the shape of a rigger with rope-burn across both palms.\n\nShe had walked the whole road with a message learnt by heart, and she stood in the ash with her feet planted, as if the ground might shift while she said it. “Dorran Quill sent me,” she said. “About the yard.”",
     "description_fr": "Les nouvelles du quai remontaient la côte comme toujours celles des Échafaudeurs, de main en main, et celles-ci me trouvèrent au Quartier sous la forme d’une gréeuse aux deux paumes brûlées par la corde.\n\nElle avait fait toute la route avec un message appris par cœur, et se tenait dans la cendre, les pieds bien plantés, comme si le sol pouvait bouger pendant qu’elle parlait. « C’est Dorran Quill qui m’envoie, dit-elle. À propos du chantier. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -24848,7 +24848,7 @@
   },
   "3005_logbook_gap": {
     "id": "3005_logbook_gap",
-    "description": "The Quarter’s archive was a cellar of what the Spire had thrown out in a hurry: ledgers, deeds, a rack of ship’s logs with the Admiralty’s anchor stamped on every spine. The clerk, a refugee with a candle-end and a squint, found the place on the rack in under a minute.\n\nHe could not find the log. **The White Fleet’s last log was not on the shelf** where the Spire’s catalogue said it stood, and where it should have been the dust had been wiped in a neat rectangle, the way you wipe a place for a thing you mean to put back. Somebody had taken it, before the Spire fell, and carefully.\n\n“Not stolen,” said the clerk. “**Borrowed, by someone with a key**.”",
+    "description": "The Quarter’s archive was a cellar of what the Spire had thrown out in a hurry: ledgers, deeds, a rack of ship’s logs with the Admiralty’s anchor stamped on every spine. The clerk, a refugee with a candle-end and a squint, found the place on the rack in under a minute.\n\nHe could not find the log. **The White Fleet’s last log was not on the shelf** where the Spire’s catalogue said it stood, and where it should have been the dust had been wiped in a neat rectangle, the way you wipe a place for a thing you mean to put back.\n\nSomebody had taken it, before the Spire fell, and carefully.\n\n“Not stolen,” said the clerk. “**Borrowed, by someone with a key**.”",
     "description_fr": "Les archives du Quartier étaient une cave de ce que la Flèche avait jeté à la hâte : registres, actes, un râtelier de journaux de bord portant l’ancre de l’Amirauté sur chaque dos. Le commis, un réfugié à la chandelle écourtée et au regard louche, trouva l’endroit sur le râtelier en moins d’une minute.\n\nIl ne trouva pas le journal. **Le dernier journal de la Flotte Blanche n’était pas sur le rayon** où le catalogue de la Flèche le plaçait, et là où il aurait dû être la poussière avait été essuyée en un rectangle net, comme on essuie la place d’une chose qu’on compte remettre.\n\nQuelqu’un l’avait pris, avant la chute de la Flèche, et avec soin.\n\n« Pas volé, dit le commis. **Emprunté, par quelqu’un qui avait une clef**. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -25069,7 +25069,7 @@
   },
   "3005_tribunal_gold": {
     "id": "3005_tribunal_gold",
-    "description": "The Tribunal’s purser came down the Spire stair with a strongbox on a porter’s back and set it on the Scaffolders’ trestle with the lid open, so that the yard could see the coin. It was a year’s back wages for every hand who had rigged the gallows the Inquisition tore down in the riots, and the price of it was a gallows: **the Tribunal wanted its scaffold rebuilt on the Spire’s old forecourt before the next feast**.\n\nDorran Quill stood with his arms folded and his crew behind him, looking at the money the way a man looks at a rope held out to him in a well. Beside the strongbox the purser had laid a second paper, folded small, with an anvil on its seal. He did not mention it, and neither did Dorran, which was how I knew it mattered.",
+    "description": "The Tribunal’s purser came down the Spire stair with a strongbox on a porter’s back and set it on the Scaffolders’ trestle with the lid open, so that the yard could see the coin.\n\nIt was a year’s back wages for every hand who had rigged the gallows the Inquisition tore down in the riots, and the price of it was a gallows: **the Tribunal wanted its scaffold rebuilt on the Spire’s old forecourt before the next feast**.\n\nDorran Quill stood with his arms folded and his crew behind him, looking at the money the way a man looks at a rope held out to him in a well. Beside the strongbox the purser had laid a second paper, folded small, with an anvil on its seal. He did not mention it, and neither did Dorran, which was how I knew it mattered.",
     "description_fr": "Le boursier du Tribunal descendit l’escalier de la Flèche, un coffre sur le dos d’un portefaix, et le posa sur le tréteau des Échafaudeurs, couvercle ouvert, pour que le chantier voie la monnaie.\n\nC’était une année d’arriérés pour chaque main qui avait gréé les gibets que l’Inquisition avait abattus pendant les émeutes, et le prix en était un gibet : **le Tribunal voulait son échafaud rebâti sur le vieux parvis de la Flèche avant la prochaine fête**.\n\nDorran Quill se tenait bras croisés, son équipe derrière lui, et regardait l’argent comme un homme regarde la corde qu’on lui tend au fond d’un puits. À côté du coffre, le boursier avait posé un second papier, plié petit, dont le sceau portait une enclume. Il n’en dit rien, et Dorran non plus, ce qui me fit comprendre qu’il comptait.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -26662,7 +26662,7 @@
   },
   "890_trainer": {
     "id": "890_trainer",
-    "description": "A drill-sergeant of the Crusade’s old militia was running the morning line on the quay approach, thirty people in odd armour hitting sandbags, because the Inquisition did not shoot anyone who was doing something so plainly useful. She looked at the way I stood. “Somebody taught you the first half,” she said. “I have time to show you the second, and **the Lark will not lift for another hour**.”",
+    "description": "A drill-sergeant of the Crusade’s old militia was running the morning line on the quay approach, thirty people in odd armour hitting sandbags, because the Inquisition did not shoot anyone who was doing something so plainly useful.\n\nShe looked at the way I stood. “Somebody taught you the first half,” she said. “I have time to show you the second, and **the Lark will not lift for another hour**.”",
     "description_fr": "Une sergente de l’ancienne milice de la Croisade menait la ligne du matin sur l’approche du quai, trente personnes en armures dépareillées frappant des sacs de sable, car l’Inquisition ne tirait sur personne qui faisait quelque chose d’aussi manifestement utile.\n\nElle regarda ma façon de me tenir. « Quelqu’un vous a appris la première moitié, dit-elle. J’ai le temps de vous montrer la seconde, et **l’Alouette ne lèvera pas avant une heure**. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -26705,7 +26705,7 @@
   },
   "2015_crow_offer": {
     "id": "2015_crow_offer",
-    "description": "A Crow tally-boy had been following me down the Wharf with a slate, not hiding it.\n\n“You have the look of someone who is about to be asked,” she said. “It is our custom to say so first. The clans watch what a stranger does, and when you have done enough of it, **one of them will make you an offer: a gift, a way of fighting, a name to carry**. Not today. When you have earned it. You should know the offer is coming, and that **you may say no**.”",
+    "description": "A Crow tally-girl had been following me down the Wharf with a slate, not hiding it.\n\n“You have the look of someone who is about to be asked,” she said. “It is our custom to say so first. The clans watch what a stranger does, and when you have done enough of it, **one of them will make you an offer: a gift, a way of fighting, a name to carry**. Not today. When you have earned it. You should know the offer is coming, and that **you may say no**.”",
     "description_fr": "Une gamine des Corneilles, une ardoise à la main, me suivait le long du Quai sans s’en cacher.\n\n« Vous avez l’air de quelqu’un à qui on va faire une proposition, dit-elle. Chez nous, on le dit d’abord. Les clans regardent ce qu’un étranger fait, et quand vous en aurez fait assez, **l’un d’eux vous fera une offre : un don, une façon de combattre, un nom à porter**. Pas aujourd’hui. Quand vous l’aurez méritée. Il faut que vous sachiez qu’elle viendra, et que **vous pouvez refuser**. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -28553,7 +28553,7 @@
   "2015_cardrow_tally": {
     "id": "2015_cardrow_tally",
     "description": "Voss kept the tally on a slate nailed to the nearest barrel, and the slate and the stack disagreed. He did not look up when I came over. **Forty crates counted onto the quay, thirty-one on the quay**, and every dockhand at Card Row carrying them a little too slowly.\n\n“The Crows will want to know who is skimming,” he said, to the slate. “I would like to know before they do. I have a family, and the Crows ask their questions at the end of a pier.”\n\nHe held the chalk out. It was an honest hand, shaking a little. “Count with me,” he said. “Someone should.”",
-    "description_fr": "Voss tenait le compte sur une ardoise clouée au tonneau le plus proche, et l’ardoise et la pile ne s’accordaient pas. Il ne leva pas les yeux quand je m’approchai. **Quarante caisses comptées sur le quai, trente et une sur le quai**, et chaque docker de la Rangée des cartes les portait un peu trop lentement.\n\n« Les Corbeaux voudront savoir qui écrème, dit-il à l’ardoise. J’aimerais le savoir avant eux. J’ai une famille, et les Corbeaux posent leurs questions au bout d’un ponton. »\n\nIl tendit la craie. C’était une main honnête, qui tremblait un peu. « Comptez avec moi, dit-il. Quelqu’un doit le faire. »",
+    "description_fr": "Voss tenait le compte sur une ardoise clouée au tonneau le plus proche, et l’ardoise et la pile ne s’accordaient pas. Il ne leva pas les yeux quand je m’approchai. **Quarante caisses comptées sur le quai, trente et une sur le quai**, et chaque docker de la Rangée des cartes les portait un peu trop lentement.\n\n« Les Corneilles voudront savoir qui écrème, dit-il à l’ardoise. J’aimerais le savoir avant eux. J’ai une famille, et les Corneilles posent leurs questions au bout d’un ponton. »\n\nIl tendit la craie. C’était une main honnête, qui tremblait un peu. « Comptez avec moi, dit-il. Quelqu’un doit le faire. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -28577,7 +28577,7 @@
       {
         "flag": "held_saltmouth_card_row_crows",
         "en": "Voss said, “Count it twice, friend. The Crows count it three times.”",
-        "fr": "Voss dit : « Comptez-le deux fois, l’ami. Les Corbeaux le comptent trois fois. »"
+        "fr": "Voss dit : « Comptez-le deux fois, l’ami. Les Corneilles le comptent trois fois. »"
       },
       {
         "flag": "flipped_saltmouth_card_row",
@@ -28589,7 +28589,7 @@
   "2015_cardrow_count": {
     "id": "2015_cardrow_count",
     "description": "I counted until the lanterns burned down, crate by crate, with Voss calling the numbers from the slate. At the thirty-first I stopped, and Voss looked at the stack and then at me. **The nine missing crates were under a tarpaulin at the end of the row**, stencilled for a ship that had left on Tuesday.\n\nThe dockhand who stood nearest the tarpaulin did not run. He only looked at the Crows' pennant over the barrels, and then at me, and I understood that he had been waiting for someone to ask him.\n\nVoss wrote the number down. Forty. **It agreed with the slate**.",
-    "description_fr": "Je comptai jusqu’à ce que les lanternes s’éteignent, caisse par caisse, Voss annonçant les chiffres depuis l’ardoise. À la trente et unième, je m’arrêtai, et Voss regarda la pile puis moi. **Les neuf caisses manquantes étaient sous une bâche au bout de la rangée**, marquées pour un navire parti le mardi.\n\nLe docker le plus proche de la bâche ne s’enfuit pas. Il regarda seulement la bannière des Corbeaux au-dessus des tonneaux, puis moi, et je compris qu’il attendait depuis longtemps que quelqu’un lui pose la question.\n\nVoss écrivit le chiffre. Quarante. **Il s’accordait avec l’ardoise**.",
+    "description_fr": "Je comptai jusqu’à ce que les lanternes s’éteignent, caisse par caisse, Voss annonçant les chiffres depuis l’ardoise. À la trente et unième, je m’arrêtai, et Voss regarda la pile puis moi. **Les neuf caisses manquantes étaient sous une bâche au bout de la rangée**, marquées pour un navire parti le mardi.\n\nLe docker le plus proche de la bâche ne s’enfuit pas. Il regarda seulement la bannière des Corneilles au-dessus des tonneaux, puis moi, et je compris qu’il attendait depuis longtemps que quelqu’un lui pose la question.\n\nVoss écrivit le chiffre. Quarante. **Il s’accordait avec l’ardoise**.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",

@@ -1774,7 +1774,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "scaffold_clerk_faced",
-        "description_fr": "Affronter le clerc du Registre du Sel pour les gages des Échafaudeurs",
+        "description_fr": "Affronter le greffier du Registre du Sel pour les gages des Échafaudeurs",
         "targetNPCName_fr": "Dorran Quill"
       }
     ],
@@ -1801,7 +1801,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "L’Échafaud impayé",
-    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le clerc du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
+    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le greffier du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
     "detourEligible": false,
     "turnInChoices": [
       {
@@ -1967,7 +1967,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "bark_recovered",
-        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clés",
+        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clefs",
         "targetNPCName_fr": "Brannoc Reedtithe"
       }
     ],
@@ -1994,7 +1994,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Dîme d’écorce",
-    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clés l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
+    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clefs l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
     "detourEligible": false,
     "turnInChoices": [
       {
@@ -2017,12 +2017,12 @@
       },
       {
         "choiceText": "Sell the bark back to the Keyholders",
-        "choiceText_fr": "Revendre l’écorce aux Porte-Clés",
+        "choiceText_fr": "Revendre l’écorce aux Porte-Clefs",
         "rewardGold": 110,
         "alignmentChange": -5,
         "flag": "bark_sold",
         "resultText": "The Keyholders pay in good coin and ask no questions. Brannoc asks one, and you do not answer it.",
-        "resultText_fr": "Les Porte-Clés paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
+        "resultText_fr": "Les Porte-Clefs paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
         "politics": {
           "standing": {
             "crows": 10,
@@ -3057,17 +3057,17 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le compte qui manque",
-    "npcDialogueText_fr": "Voss, le pointeur de la Rangée des cartes, dit que les Corbeaux veulent savoir qui écrème. Il ne dit pas qu’il veut le savoir aussi.",
+    "npcDialogueText_fr": "Voss, le pointeur de la Rangée des cartes, dit que les Corneilles veulent savoir qui écrème. Il ne dit pas qu’il veut le savoir aussi.",
     "detourEligible": false,
     "turnInChoices": [
       {
         "choiceText": "Name the skimmer to the Crows",
-        "choiceText_fr": "Donner l’écrémeur aux Corbeaux",
+        "choiceText_fr": "Donner l’écrémeur aux Corneilles",
         "rewardGold": 25,
         "alignmentChange": 0,
         "flag": "card_row_named",
         "resultText": "The Crows pay on the nail, and the dockhand is not seen again at Card Row.",
-        "resultText_fr": "Les Corbeaux paient comptant, et le docker ne reparaît plus à la Rangée des cartes.",
+        "resultText_fr": "Les Corneilles paient comptant, et le docker ne reparaît plus à la Rangée des cartes.",
         "politics": {
           "standing": {
             "crows": 6,

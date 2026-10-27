@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.570.0+606]
+
+Chapters 1–3 read the same in English and French: names, titles and times of day agree between scenes, and the paragraph breaks match in both languages. Wording only.
+
 ## [1.569.0+605]
 
 The Journey's ways are grouped by pin, and the notice board is a board you read.
