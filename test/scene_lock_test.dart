@@ -1,9 +1,12 @@
-// The scene lock (v1.553, scene_lock.dart): a scene the story brought the
-// party to, with a way acted out there, holds the Journey on its page until
-// a way is taken. Every way is a card there (the ways somewhere as road
-// cards), the map's tabs and buttons wait, greyed ("Choose first"); a road
-// card goes back to the map and walks it; a card acted out here goes on,
-// and the next lockable scene holds the party in turn.
+// The scene lock (v1.553, scene_lock.dart), narrowed: a scene the story
+// brought the party to holds the Journey on its page until a way is taken
+// only when no takeable way has a place on the map (a pin, a way on the
+// city chart, a spot in a room, a road or a World move). Its ways are cards
+// there, the map's tabs and buttons wait, greyed ("Choose first"). A way
+// the map draws stays on the map: a scene with one never locks, and its
+// on-the-spot choices stay cards under the scene, as before v1.553. The
+// House's Bouncer aftermath (106, in the gambling hall's room) is the
+// user's case: every way a spot in the room, no lock.
 import 'dart:convert';
 import 'dart:io';
 
@@ -41,15 +44,21 @@ final _story = () {
 final _geography =
     Geography.parse(geography: _table('geography'), biomes: _table('biomes'));
 
-/// [id]'s ways as the lock weighs them, every one takeable.
+final _cityPlans = _table('city_plans').keys.toSet();
+
+/// [id]'s ways as the lock weighs them, every one takeable, placed on the
+/// map as the Journey's fallback reads them (mapDrawsEveryWay).
 List<LockWay> _ways(String id, {bool takeable = true}) {
   final node = _story.nodeFor(id)!;
+  final all = mapDrawsEveryWay(node,
+      history: const [], world: _geography, cityPlans: _cityPlans);
   return [
     for (final c in node.choices)
-      (
-        here: choiceShape(node, c, story: _story, geography: _geography).here,
-        takeable: takeable,
-      ),
+      () {
+        final here =
+            choiceShape(node, c, story: _story, geography: _geography).here;
+        return (here: here, takeable: takeable, mapped: all || !here);
+      }(),
   ];
 }
 
@@ -143,24 +152,116 @@ void main() {
   setUp(() => rootBundle.clear());
 
   group('sceneLocked', () {
-    test('scene 250 locks: the Weaver\'s Alley is here, the bridge a road', () {
-      final node = _story.nodeFor('250')!;
+    test('the Bouncer\'s aftermath does not lock: its ways are room spots', () {
+      final hits = [
+        for (final e in _story.nodes.entries)
+          if (e.value.description.contains('on my knees in the sawdust')) e.key,
+      ];
+      expect(hits, ['106']);
+      final node = _story.nodeFor('106')!;
+      expect(
+          node.choices.map((c) => c.text),
+          containsAll(
+              ['Work the next table', 'Out the back, into the streets']));
+      // Inside the Blind Beggar: the room's plan draws every way.
+      expect(
+          mapDrawsEveryWay(node,
+              history: const ['0', '100', '105'],
+              world: _geography,
+              cityPlans: _cityPlans),
+          isTrue);
+      expect(_locks('106'), isFalse);
+    });
+
+    // Chapter 1's opening chain and a few others: v1.553 locked every one
+    // with a way acted out here; now only the wreck, whose ways are all
+    // acted out on the deck with no city chart or room to draw them.
+    const expected = {
+      '0': false, // v1.553: locked
+      '100': false, // v1.553: locked
+      '105': false, // v1.553: locked
+      '106': false, // v1.553: locked
+      '110': false, // v1.553: locked
+      '115': false, // v1.553: locked
+      '120': false, // v1.553: locked
+      '125': false, // v1.553: locked
+      '250': false, // v1.553: locked
+      '260': false, // v1.553: locked
+      '270': false, // v1.553: locked
+      '300': false, // v1.553: locked
+      '400': false, // v1.553: locked
+      '960': false, // v1.553: locked
+      '965': true, // v1.553: locked
+      '1200': false, // v1.553: locked
+      '2015_dockside': false, // v1.553: locked
+    };
+    for (final e in expected.entries) {
+      test('scene ${e.key} ${e.value ? 'locks' : 'does not lock'}', () {
+        expect(_locks(e.key), e.value);
+      });
+    }
+
+    test('a way on the map keeps a scene unlocked: mixed scenes do not lock',
+        () {
+      // 250: the Weaver's Alley is acted out here, the bridge a road; both
+      // are ways on Alster's city chart.
       final ways = _ways('250');
-      expect(node.choices[0].text, contains('Stone Bridge'));
       expect(ways[0].here, isFalse);
-      expect(node.choices[1].text, contains('Weaver'));
       expect(ways[1].here, isTrue);
-      expect(_locks('250'), isTrue);
+      expect(ways.every((w) => w.mapped), isTrue);
+      expect(_locks('250'), isFalse);
+      // A pure choice beside a way on the map: no lock.
+      expect(
+          sceneLocked(ways: const [
+            (here: true, takeable: true, mapped: false),
+            (here: false, takeable: true, mapped: true),
+          ], hub: false, ending: false, editMode: false),
+          isFalse);
+      // A choice acted out here that the city chart or a room draws: no
+      // lock either.
+      expect(
+          sceneLocked(ways: const [
+            (here: true, takeable: true, mapped: true),
+          ], hub: false, ending: false, editMode: false),
+          isFalse);
+    });
+
+    test('only pure choices: the scene locks', () {
+      expect(
+          sceneLocked(ways: const [
+            (here: true, takeable: true, mapped: false),
+            (here: true, takeable: true, mapped: false),
+          ], hub: false, ending: false, editMode: false),
+          isTrue);
+      // A way on the map that can't be taken yet doesn't free the party.
+      expect(
+          sceneLocked(ways: const [
+            (here: true, takeable: true, mapped: false),
+            (here: false, takeable: false, mapped: true),
+          ], hub: false, ending: false, editMode: false),
+          isTrue);
+    });
+
+    test('a city whose plans still load draws every way: nothing locks', () {
+      final node = _story.nodeFor('250')!;
+      expect(
+          mapDrawsEveryWay(node,
+              history: const [], world: _geography, cityPlans: null),
+          isTrue);
+      expect(
+          mapDrawsEveryWay(node,
+              history: const [], world: _geography, cityPlans: const {}),
+          isFalse);
     });
 
     test('a hub does not lock', () {
       final camp = _story.nodeFor('4999_camp')!;
       expect(isHubScene(camp), isTrue);
       expect(_locks('4999_camp'), isFalse);
-      // Even with a way acted out there.
+      // Even with a pure choice.
       expect(
           sceneLocked(
-              ways: const [(here: true, takeable: true)],
+              ways: const [(here: true, takeable: true, mapped: false)],
               hub: true,
               ending: false,
               editMode: false),
@@ -172,30 +273,110 @@ void main() {
       expect(_locks('7005'), isFalse);
       expect(
           sceneLocked(
+              ways: const [(here: true, takeable: true, mapped: false)],
+              hub: false,
+              ending: true,
+              editMode: false),
+          isFalse);
+      expect(
+          sceneLocked(
               ways: const [], hub: false, ending: false, editMode: false),
           isFalse);
     });
 
     test('a scene with no takeable way does not lock', () {
-      expect(_locks('250', takeable: false), isFalse);
-      // Only the road can be taken: nothing is acted out here.
+      expect(_locks('965', takeable: false), isFalse);
       expect(
           sceneLocked(ways: const [
-            (here: false, takeable: true),
-            (here: true, takeable: false),
+            (here: true, takeable: false, mapped: false),
           ], hub: false, ending: false, editMode: false),
           isFalse);
     });
 
     test('Edit Mode does not lock', () {
-      expect(_locks('250', editMode: true), isFalse);
+      expect(_locks('965', editMode: true), isFalse);
     });
   });
 
   testWidgets(
-      'a card into a lockable scene holds the party on its page, a road card '
-      'walks it from the map, and the chain of cards stays locked',
+      'a save on the Bouncer\'s aftermath opens on the map, its ways spots '
+      'in the room; the next table opens with its way back to the map',
       (tester) async {
+    await _setUp(tester);
+    SharedPreferences.setMockInitialValues({
+      'tutorial_enabled': false,
+      'player_session': json.encode({
+        'raceId': 'human',
+        'professionId': 'warrior',
+        'gold': 80,
+        // The gambling hall's tables are open ("Work the next table").
+        'flags': ['casino_tables'],
+      }),
+      'autosave_story_node': '106',
+      'autosave_story_history': json.encode(['0', '100', '105']),
+      'autosave_story_visited': json.encode(['0', '100', '105', '106']),
+    });
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await _settle(tester, rounds: 6);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    await tester.tap(find.byKey(const Key('menu_continue')));
+    await _settle(tester, rounds: 6);
+    await tester.pump(const Duration(seconds: 3));
+    expect(container.read(storyPlayProvider).currentNodeId, '106');
+    if (find.text('Journey').evaluate().isNotEmpty &&
+        find.byKey(const Key('journey_level_tabs')).evaluate().isEmpty) {
+      await tester.tap(find.text('Journey').last);
+      await _settle(tester);
+    }
+    // Not locked: the map, its tabs open, no "Choose first".
+    expect(_page('106'), findsNothing);
+    expect(_chooseFirst, findsNothing);
+    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
+    final world =
+        tester.widget<InkWell>(find.byKey(const Key('journey_tab_world')));
+    expect(world.onTap, isNotNull);
+
+    // "Work the next table" is a spot in the room, taken from the map.
+    // (Called, not tapped: the room's spots may lie over each other.)
+    final step = find.byWidgetPredicate((w) =>
+        w is Semantics &&
+        (w.properties.label ?? '').contains('next table') &&
+        w.child is GestureDetector);
+    expect(step, findsOneWidget);
+    void tapStep() =>
+        (tester.widget<Semantics>(step).child! as GestureDetector).onTap!();
+    tapStep();
+    await tester.pump();
+    tapStep();
+    await tester.pump();
+    await _pumpUntil(
+        tester, () => container.read(storyPlayProvider).currentNodeId == '110');
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 3));
+    expect(container.read(storyPlayProvider).currentNodeId, '110');
+    // The dice tables: its ways are spots in the room too, so it does not
+    // lock. Read as its page, the way back to the map is open.
+    expect(_chooseFirst, findsNothing);
+    final back = find.byKey(const ValueKey('journey_continue'));
+    if (_page('110').evaluate().isNotEmpty) {
+      expect(tester.widget<ButtonStyleButton>(back).onPressed, isNotNull);
+      await tester.tap(back);
+      await _settle(tester);
+    }
+    expect(_page('110'), findsNothing);
+    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
+  });
+
+  testWidgets(
+      'a card into the wreck holds the party on its page; a card taken '
+      'there lifts the lock', (tester) async {
     await _setUp(tester);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
@@ -209,109 +390,44 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson({
-          'raceId': 'human',
-          'professionId': 'warrior',
-          'gold': 80,
-          // The gambling hall's tables are open ("Work the next table").
-          'flags': ['casino_tables'],
-        })));
+        .loadSession(PlayerSession.fromJson(
+            {'raceId': 'human', 'professionId': 'warrior', 'gold': 80})));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);
     await tester.tap(find.text('Journey'));
     await _settle(tester);
 
-    // A jump (as in Edit Mode) never locks: the map, as before.
-    container.read(storyPlayProvider.notifier).jumpTo('106');
+    // A jump never locks: the high quay's map, its choices behind the
+    // button that opens them (a mixed scene in Alster: no lock).
+    container.read(storyPlayProvider.notifier).jumpTo('960');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 3));
-    expect(_page('106'), findsNothing);
     expect(_chooseFirst, findsNothing);
-
-    // Its page, opened from the map, has its way back: not locked.
-    await tester.tap(find.byKey(const ValueKey('journey_read')));
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 500));
+    await _take(tester, 0);
+    await _pumpUntil(tester, () => _page('965').evaluate().isNotEmpty);
     await _settle(tester);
-    expect(_page('106'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
+    expect(container.read(storyPlayProvider).currentNodeId, '965');
+    // Every way of the wreck is acted out on the deck, none on a map: its
+    // page holds the party.
+    expect(_page('965'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: _card(0), matching: find.textContaining('Lash yourself')),
+        findsOneWidget);
+    _expectLocked(tester);
+
+    // A card taken: the story moves on, the lock lifts.
+    await _take(tester, 0);
+    await _pumpUntil(tester,
+        () => container.read(storyPlayProvider).currentNodeId == '1100');
+    await _settle(tester);
+    await tester.pump(const Duration(seconds: 3));
+    expect(container.read(storyPlayProvider).currentNodeId, '1100');
     expect(_chooseFirst, findsNothing);
-    final back = find.byKey(const ValueKey('journey_continue'));
-    expect(tester.widget<ButtonStyleButton>(back).onPressed, isNotNull);
-    await tester.tap(back);
-    await _settle(tester);
-    expect(_page('106'), findsNothing);
-
-    // "Work the next table", a step on the map of the gambling hall (a
-    // room: its ways are spots), leads to the dice tables: locked.
-    // (Called, not tapped: the room's spots may lie over each other.)
-    final step = find.byWidgetPredicate((w) =>
-        w is Semantics &&
-        (w.properties.label ?? '').contains('next table') &&
-        w.child is GestureDetector);
-    expect(step, findsOneWidget);
-    void tapStep() =>
-        (tester.widget<Semantics>(step).child! as GestureDetector).onTap!();
-    tapStep();
-    await tester.pump();
-    tapStep();
-    await tester.pump();
-    await _pumpUntil(tester, () => _page('110').evaluate().isNotEmpty);
-    await _settle(tester);
-    await tester.pump(const Duration(seconds: 3));
-    expect(container.read(storyPlayProvider).currentNodeId, '110');
-    expect(_page('110'), findsOneWidget);
-    // Every way is a card, the road out too: "Rob the dice table" (the
-    // other tables wait on it) and "Out before the roof goes".
-    await _seeCard(tester, 0);
-    expect(find.descendant(of: _card(0), matching: find.textContaining('dice')),
-        findsOneWidget);
-    await _seeCard(tester, 1);
-    expect(
-        find.descendant(
-            of: _card(1), matching: find.textContaining('Out before the roof')),
-        findsOneWidget);
-    expect(_card(2), findsNothing);
-    _expectLocked(tester);
-
-    // The road card: the map comes back and the party walks the way, to
-    // the street outside (scene 250), where the story's step holds it on
-    // that scene's page in turn.
-    await tester.tap(_card(1));
-    await tester.pump();
-    await tester.tap(_card(1));
-    await tester.pump();
-    // The page gave way to the map.
-    expect(_page('110'), findsNothing);
-    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
-    await _pumpUntil(tester, () => _page('250').evaluate().isNotEmpty);
-    await _settle(tester);
-    await tester.pump(const Duration(seconds: 3));
-    expect(container.read(storyPlayProvider).currentNodeId, '250');
-    expect(container.read(storyPlayProvider).history.last, '110');
-    expect(_page('250'), findsOneWidget);
-    expect(
-        find.descendant(
-            of: _card(0), matching: find.text('Take the Stone Bridge')),
-        findsOneWidget);
-    _expectLocked(tester);
-
-    // The Weaver's Alley, a card acted out here, leads to another lockable
-    // scene: still locked, every way a card, the road on too ("Leave them
-    // both").
-    await _take(tester, 1);
-    await _pumpUntil(tester, () => _page('270').evaluate().isNotEmpty);
-    await _settle(tester);
-    await tester.pump(const Duration(seconds: 3));
-    expect(container.read(storyPlayProvider).currentNodeId, '270');
-    expect(_page('270'), findsOneWidget);
-    for (var i = 0; i < 3; i++) {
-      await _seeCard(tester, i);
-      expect(_card(i), findsOneWidget);
-    }
-    expect(
-        find.descendant(
-            of: _card(2), matching: find.textContaining('Leave them both')),
-        findsOneWidget);
-    _expectLocked(tester);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));
@@ -324,9 +440,9 @@ void main() {
       'tutorial_enabled': false,
       'player_session': json
           .encode({'raceId': 'human', 'professionId': 'warrior', 'gold': 80}),
-      'autosave_story_node': '250',
-      'autosave_story_history': json.encode(['0', '100', '105', '106']),
-      'autosave_story_visited': json.encode(['0', '100', '105', '106', '250']),
+      'autosave_story_node': '965',
+      'autosave_story_history': json.encode(['0', '100', '250', '960']),
+      'autosave_story_visited': json.encode(['0', '100', '250', '960', '965']),
     });
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester, rounds: 6);
@@ -336,12 +452,12 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
     await tester.tap(find.byKey(const Key('menu_continue')));
-    await _pumpUntil(tester, () => _page('250').evaluate().isNotEmpty);
+    await _pumpUntil(tester, () => _page('965').evaluate().isNotEmpty);
     await _settle(tester);
     await tester.pump(const Duration(seconds: 3));
-    expect(container.read(storyPlayProvider).currentNodeId, '250');
+    expect(container.read(storyPlayProvider).currentNodeId, '965');
     // Its page, with no map and no recap: the recap waits for a map.
-    expect(_page('250'), findsOneWidget);
+    expect(_page('965'), findsOneWidget);
     expect(find.text(trFor(AppLanguage.en, 'previously_title')), findsNothing);
     expect(_card(0), findsOneWidget);
     expect(_card(1), findsOneWidget);

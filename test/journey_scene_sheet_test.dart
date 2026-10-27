@@ -1,7 +1,7 @@
-// A hub's errand (here one of the wharf's) holds its own choices under its
-// words (v1.465). It holds a way acted out there, so since v1.553 (the
-// scene lock, scene_lock.dart) it opens as its page, not as a sheet over
-// the map: its way is a card, the map waits. At phone width and in French.
+// The arrival sheet holds the scene's own choices too (v1.465): a hub's
+// errand (here one of the wharf's) rises as a sheet over the map
+// with its words, and the ways of that scene are cards under them; the map
+// beneath keeps no card. At phone width and in French.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,33 +89,35 @@ void main() {
     final here = container.read(storyPlayProvider).currentNodeId;
     expect(here, '2015_dockside');
 
-    // The errand holds a way acted out there (its fight back to the
-    // wharf): since v1.553 (scene_lock.dart) it opens as its page, locked,
-    // with that way as a card under its words, not as a sheet over the map.
+    // The errand is not the main story: a sheet over the map, with its own
+    // choice as a card under its words, and none on the map.
     final sheet = find.byKey(const Key('journey_arrival_sheet'));
-    expect(sheet, findsNothing);
-    final page = find.byWidgetPredicate((w) =>
-        w.key is ValueKey<String> &&
-        (w.key! as ValueKey<String>)
-            .value
-            .startsWith('journey_reading_2015_dockside'));
-    expect(page, findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_choose_first')), findsOneWidget);
+    expect(sheet, findsOneWidget);
+    expect(
+        find.descendant(
+            of: sheet,
+            matching: find.byKey(const ValueKey('journey_choice_card_0'))),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    // French, and the narrowest phone: the page still fits its card.
+    // French, and the narrowest phone: the sheet still fits.
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     tester.view.physicalSize = const Size(320, 568);
     await _settle(tester);
-    expect(page, findsOneWidget);
+    expect(sheet, findsOneWidget);
     expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
-    expect(find.text('Choisissez d\'abord'), findsOneWidget);
-    // The way back to the map waits until the errand's way is taken.
-    final back = find.byKey(const ValueKey('journey_continue'));
-    expect(tester.widget<ButtonStyleButton>(back).onPressed, isNull);
+
+    // Continue closes the sheet (what arriving opens over the game, the new
+    // place's card, is closed first); the map has no card.
+    Navigator.of(tester.element(find.byType(JourneyScreen)))
+        .popUntil(isGameRoute);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(sheet, findsNothing);
+    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }
