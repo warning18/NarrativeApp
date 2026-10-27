@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.589.0+625]
+
+The street view now follows Narrative's scene tags.
+
+- **Tagged scenes:** a scene tagged as played in the street, with a building of the town's plan, plays at that building's door. The party stands at its door on the plan, the district view shows that building's street, and the scene opens in the street view.
+- **Concerned now:** the toll on Alster's Stone Bridge (260), the drill on the High Quay (890_trainer) and the shipyard gate on the Smugglers' Wharf (2010).
+- **Untagged scenes:** a scene without a tag keeps the doorstep lists as before, such as the family house's street (300).
+
 ## [1.587.0+623]
 
 Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
