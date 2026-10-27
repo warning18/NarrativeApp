@@ -189,3 +189,53 @@ Steps 2 and 3 can run in parallel once step 1's answers are in. Step 2 lands fir
 
 Narrative tags them once the manager and the user say go.
 
+
+## 6. The district list: places, not choices (the user's feedback, 27 Oct)
+
+The user's screenshot shows Alster's High Quay. The list under the map shows ways as text: "Talk to the mate at the gangway", "Bind your wounds with sailcloth (3)". The user's call: *the player first chooses where to go; once there, the choices show. The list names places, not scenes.*
+
+### (1) What the data gives today for "the place of a way"
+
+A way's pin on the district map is `buildingOfWay(next scene, district)` (city_plan_record.dart:291):
+- the anchor of the scene the way **leads to**, when that anchor lies in the district;
+- otherwise a free building of the district, picked by a hash of the scene id: a stand-in with no meaning.
+
+A doorstep scene's ways that stay put go to spots in the street around its door instead. Node `spot` and choice `spot` only work inside rooms, never on the district map.
+
+Measured over the 1,030 ways of the scenes in the 16 planned cities:
+
+| What places the way | Ways | Notes |
+|---|---|---|
+| The next scene's anchor, in the district, **with a name** (`city_plans.names`) | 552 | 254 of them lead to a scene at **the same building the party stands at**. These are choices acted out here, like the High Quay's 891 → 891 or 895. |
+| The next scene's anchor, **with no name** | 110 | 18 buildings have no name. Narrative, or the geography building, can give one. |
+| **None: a hashed stand-in** | 329 | 297 of them come from scenes tagged with a whole village or the camp rather than a district: cove_camp 80, greyhithe 73, wracks_end 53, rimewell 46, emberwick 21, highhearth 20, akagiri 17, white_wells 9, kindly_hill 9. The other 32 are in the Reliquary quarter (17), Emberwick's Smithy Lane (7) and four more districts. |
+| Leaves the city (a road, a gate, a voyage) | 33 | Drawn where the party stands. |
+| Street spots around a doorstep | 6 | |
+
+So about two thirds of the ways have a real, named place. A third land on a building chosen at random. That is the "for now it doesn't match" the user saw.
+
+### (2) The rule: one entry per place
+
+The list shows **places**. Each entry is a place where at least one of the scene's ways stands:
+
+1. **A way's place:**
+   - the next scene's building on the plan (its anchor in the district);
+   - else the geography building of the next scene (`location` at building level), placed by its anchor;
+   - else **here**, the place the party stands at.
+
+   A way leading back to the current scene, or to a scene at the same stop, is **here**.
+2. **Grouping:** ways with the same place make one entry: the place's name (`city_plans.names`, else the geography building's name) and a count ("The Gangway · 3"). This is UX's `groupWaysByPin` (v1.561), keyed on the place instead of the pin, with the place's name instead of the first way's label.
+3. **The main mark:** an entry holds a main-story way when one of its ways leads to a spine beat, or to a main-story scene that is not a hub errand (`isMainStoryScene`). The entry carries the main mark, and the main way sorts first inside it. Entries sort main first, then by distance from the party.
+4. **"Here" is one entry,** first in the list, named after the party's own place ("The High Quay"). Opening it shows the scene's own on-the-spot choices: fights, checks, payments, decisions. A fight, roll or payment way has no place of its own and always belongs to **here**.
+5. **Fallbacks for ways with no place:**
+   - **Leaving the city** (road, gate, harbour): one entry per district gate, named after the road or the gate ("The Landward Gate · road to the Ashen Quarter"), at the district's edge. It is never hashed to a building.
+   - **The 329 hashed ways:** they go to **here**, not to a random building, until Narrative or Core gives them a place. For the village and camp scenes that means an anchor per scene, or `scene.building` in node-context: Core places them, Narrative names them. Here they are honest, if crowded, and a random building is worse than none.
+   - **The 18 unnamed buildings:** the entry takes the next scene's place name from geography, else the district's name.
+
+### (3) State or view
+
+**A view change and one piece of play state that isn't saved.**
+- The story doesn't move when the player walks to a place: no story choice is taken and no node changes. The walk already exists (`_walkCity`), so the flow is: tap an entry → the party walks to the place → that place's ways show, as the street view's pins or as cards.
+- The Journey needs to remember **which place the party is standing at** within the scene, so it can show that place's ways and walk back. This is session state beside `walkedDistrictProvider` (city_provider.dart): `standingAtPlace`, cleared when the scene changes or the district changes. It doesn't need to be saved: a reloaded save opens on the list of places, which is a safe default.
+- Taking a way at the place is the normal `_take`. The next scene opens in its own view (§4), so a way to 400 still opens the page.
+- For the presentation rule, this makes the place's ways the **street** view of that building. The "street with choices" the user described for the family house becomes the general case for any place on the district list.
