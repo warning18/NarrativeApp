@@ -142,7 +142,15 @@ void main() {
         expect(run.politics.applied(questTurnInPoliticsKey(record.questId, i)),
             isTrue,
             reason: '${record.questId} settled "${record.turnIn}"');
-        if (choices[i].politics!.standing.isNotEmpty) {
+        // A clan already at its bound moves no further (the Dominion at
+        // -100 answered with a snub), so the turn-in logs nothing for it.
+        final standing = choices[i].politics!.standing;
+        bool pinned(MapEntry<String, num> e) {
+          final now = run.politics.standings[e.key] ?? 0;
+          return e.value < 0 ? now <= minStanding : now >= maxStanding;
+        }
+
+        if (standing.isNotEmpty && !standing.entries.every(pinned)) {
           expect(
               run.politics.standingLog
                   .any((e) => e.cause == 'quest:${record.questId}'),
