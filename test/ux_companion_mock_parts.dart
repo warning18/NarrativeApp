@@ -782,11 +782,15 @@ class BPage extends StatelessWidget {
           ]),
           sectionTitle(context, 'Not with you'),
           Column(children: [
-            for (final c in unmet.take(2))
+            for (final c in unmet.take(1))
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: ghost('???', 'Find them: ${questOf(c)}'),
               ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: ghost('???', 'Find him: Wick’s Walk, in Saltmouth'),
+            ),
             ghost('Malrik Sarn', 'Left when your choices turned him away',
                 lost: true),
           ]),
@@ -1030,7 +1034,7 @@ class CompanionPage extends StatelessWidget {
 }
 
 /// The guide dog's page, as it would stand once earned: the sprite from the
-/// tutorial, a placeholder die and skills (Core's to define).
+/// tutorial, with the numbers of Core's note (#568).
 class DogPage extends StatelessWidget {
   const DogPage({super.key});
 
@@ -1061,17 +1065,17 @@ class DogPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('The guide dog',
+                Text('Wick',
                     style: theme.textTheme.titleLarge
                         ?.copyWith(fontFamily: InkFonts.display)),
-                Text('Companion · earned in the second town',
+                Text('Guide dog · found in Saltmouth',
                     style:
                         theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
                 const SizedBox(height: 4),
                 Row(children: [
-                  const Expanded(child: HpBar(hp: 30, max: 30, height: 7)),
+                  const Expanded(child: HpBar(hp: 42, max: 42, height: 7)),
                   const SizedBox(width: 6),
-                  Text('30/30',
+                  Text('42/42',
                       style:
                           theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
                 ]),
@@ -1102,7 +1106,7 @@ class DogPage extends StatelessWidget {
         const ApprovalMeter(approval: startingApproval),
         const SizedBox(height: 6),
         Text(
-            'Placeholder: likes, dislikes, die, skills and stats are Core’s to set. The dog is a companion like the others: it takes a seat, can be benched or replaced.',
+            'Wick is a companion like the others: he takes a seat, can be benched or replaced. His numbers and die come from Core’s note (#568), his quest from Narrative’s (#569); his likes are not set yet.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
         sectionTitle(context, 'Their die'),
@@ -1117,15 +1121,15 @@ class DogPage extends StatelessWidget {
                 width: 44,
                 child: Center(
                     child: InventoryDieTile(
-                        dieId: 'twinfang_die', faces: 6, size: 40))),
+                        dieId: 'hound_die', faces: 6, size: 40))),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('A dog’s die (placeholder)',
+                  Text(dieDisplayName('hound_die'),
                       style: theme.textTheme.titleSmall),
-                  Text('Bite, bark, guard',
+                  Text('d6 · a hound\u2019s die (new)',
                       style:
                           theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
                 ],

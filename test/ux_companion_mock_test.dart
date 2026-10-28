@@ -304,12 +304,12 @@ void main() {
           'Approval as a meter with its thresholds named (leaves at −12, wary, friendly at 5, devoted at 12), what the tier does, what they like and dislike as chips, and the rule that benched companions do not see your choices. Then their die (look and name), skills, gear, and the seat button.'
         ),
         (
-          'The guide dog',
-          'A companion like the others: its sprite from the tutorial, a seat, a bench, a replacement. Stats, die, skills and likes are placeholders; Core sets them.'
+          'The guide dog (Wick)',
+          'A companion like the others: his sprite from the tutorial, a seat, a bench, a replacement. Health (about 42 at level 8) and the Hound Die are Core’s note (#568); his quest, Wick’s Walk in Saltmouth, is Narrative’s (#569). His likes are not set yet.'
         ),
         (
           'Needs from Core',
-          'Nothing for the screens. For the dog: a companion record (die, starter skills, likes) and a quest in the second town.'
+          'Nothing for the screens. The dog is already in Core’s note (#568): no race, class ranger, hound_die. Open: his likes and dislikes.'
         ),
         (
           'Needs from UX',

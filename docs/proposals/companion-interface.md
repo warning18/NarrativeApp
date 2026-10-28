@@ -58,15 +58,17 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
   thresholds named** (leaves at −12, wary at −5, friendly at 5, devoted at 12), what the tier
   does, likes and dislikes as chips, and the line that benched companions do not see your choices; then
   their die (look and name, a tap opens the ring), skills, gear.
-- **The guide dog's page** (last frame): its sprite from the tutorial, "Companion · earned in the
-  second town", a seat, a bench. Its stats, die, skills and likes are placeholders.
+- **The guide dog's page** (last frame): Wick, his sprite from the tutorial, "Guide dog · found in
+  Saltmouth", a seat, a bench, the Hound Die. His numbers and die are Core's (#568), his quest (Wick's
+  Walk) Narrative's (#569); his likes and dislikes are not set yet.
 - Cost: a new page and a rebuilt Party tab: about two days of UX, more than A.
 
 ## What each needs from Core
 - **A:** nothing.
-- **B:** nothing for the screens. For the dog: a companion record in `companions.json` (die, starter
-  skills, likes) and its quest in the second town; whether it has the class-less look (no profession
-  mark) is UX's. For "Not with you": whether to show a companion not yet met as a "???" (a spoiler
+- **B:** nothing for the screens. The dog is in Core's note (#568: no race, class ranger, `hound_die`,
+  about 42 health at level 8) and Narrative's (#569: Wick's Walk, Saltmouth); what is still open for
+  Core is his likes and dislikes (approval weights) and whether his page shows a class at all (the
+  picture shows none, only "Guide dog"). For "Not with you": whether to show a companion not yet met as a "???" (a spoiler
   question for the story) and a record of who left (today `loseAlly` drops them; a list of the lost,
   with the reason, would feed the "left" row).
 - **UX:** a portrait per companion. Today only the class mark exists; the dog has its sprite.
