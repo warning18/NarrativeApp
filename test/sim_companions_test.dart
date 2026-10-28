@@ -302,15 +302,15 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        20,
-        3709,
-        40,
-        64,
-        46,
-        296,
+        17,
+        2460,
+        26,
+        78,
+        34,
+        319,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 1858145717);
+      expect(_stableHash(naive.choicesTaken), 1696383323);
       expect(naive.companionLog, isEmpty);
       expect(naive.companions, isEmpty);
     });

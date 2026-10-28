@@ -19,8 +19,14 @@ import 'sim_growth.dart' show simSkillScore;
 /// - [competent]: the best loadout per slot for the build (sets weighed),
 ///   the best die it owns with the signature skills placed, the merges
 ///   worth crafting, and the banner that raises its power most without
-///   turning a clan it needs Hostile.
-enum SimPolicy { naive, competent }
+///   turning a clan it needs Hostile;
+/// - [stubborn]: the player who never adapts (docs/proposals/
+///   difficulty-pass.md): it recruits and seats companions as the
+///   competent one does, takes the naive banners, buys spellbooks and
+///   potions, but keeps its starting die and its starting gear for the
+///   whole run (no piece worn, no die bought). The gap between it and
+///   [competent] is what the gear and the dice are worth.
+enum SimPolicy { naive, competent, stubborn }
 
 /// One clan offer as the run took it: when ([chapter], [source]: level,
 /// boss, chapter, tome...), the banners offered (`clan:kind:gift`), the one

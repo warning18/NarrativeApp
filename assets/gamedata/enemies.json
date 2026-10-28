@@ -868,7 +868,7 @@
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
-    "maxHealth": 34,
+    "maxHealth": 38,
     "damage": 4,
     "guile": 5,
     "faction": "",
@@ -3886,7 +3886,7 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 72,
+    "maxHealth": 62,
     "damage": 7,
     "guile": 11,
     "faction": "",
@@ -5526,7 +5526,7 @@
   },
   "aurel_vane": {
     "enemyName": "Inquisitor-General Aurel Vane",
-    "maxHealth": 22,
+    "maxHealth": 29,
     "damage": 3,
     "guile": 5,
     "faction": "dominion",

@@ -147,8 +147,8 @@ void main() {
   group('weaknesses and resistances', () {
     final ghoul = enemies['catacomb_ghoul'] as Map<String, dynamic>;
 
-    test('a weakness lands ×1.5, a resistance ×½, anything else as is', () {
-      expect(damageAfterElement(20, ghoul, 'Light'), 30);
+    test('a weakness lands ×2, a resistance ×½, anything else as is', () {
+      expect(damageAfterElement(20, ghoul, 'Light'), 40);
       expect(damageAfterElement(20, ghoul, 'Ice'), 10);
       expect(damageAfterElement(20, ghoul, 'Earth'), 20);
       expect(damageAfterElement(20, ghoul, 'None'), 20);

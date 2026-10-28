@@ -881,8 +881,11 @@ const double chapterDifficultyStep = 0.15;
 /// and chapters 3-8 9% heavier in health. Wave 16 (QA's L3 on v1.489)
 /// lightened chapter 2 (1.98 -> 1.80); chapter 7 kept its floor, whose
 /// cut moved nothing once the claimants (their own floor) were counted.
+/// The difficulty pass (v1.597, docs/proposals/difficulty-pass.md) cut
+/// chapters 2-8 by 10% with the hero's own health (3 a level, 3 a point
+/// of Constitution), the naive player's encounters won as before.
 const List<double> enemyHealthFloorByChapter = [
-  1.36, 1.80, 3.02, 3.02, 3.17, 2.36, 2.28, 2.22, //
+  1.36, 1.62, 2.72, 2.72, 2.85, 2.12, 2.05, 2.00, //
 ];
 const List<double> enemyDamageFloorByChapter = [
   1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
@@ -905,8 +908,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// Sovereign at the first try on this floor; the stat scale raised it a
 /// little (1.10/1.05 to 1.15/1.08) for the abilities that now count, and
 /// the stronger mages and rogues after v1.490 its health to 1.21 (the boss
-/// mean back to about 51%, docs/simulation/difficulty-review.md).
-const double bossHealthBaseMultiplier = 1.21;
+/// mean back to about 51%, docs/simulation/difficulty-review.md). The
+/// difficulty pass (v1.597) brought it to 1.13 for the hero's smaller
+/// health, the curve's targets kept.
+const double bossHealthBaseMultiplier = 1.13;
 const double bossDamageBaseMultiplier = 1.08;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND

@@ -172,7 +172,7 @@ String? consumableNote(
 }
 
 /// HP a healing potion restores (the fight screen reads the same value).
-const int potionHealAmount = 6;
+const int potionHealAmount = 8;
 
 /// A row's stats at a glance: each stat as a chip, with a green or red
 /// difference against the item worn in the same slot, so an item can be
