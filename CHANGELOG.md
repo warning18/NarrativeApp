@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.606.0+642]
+
+- **UX: the Party tab as a formation, and a page for each companion** (the
+  Companion review's version B, #570).
+  - The seats are large portraits with health and the approval tier, an open
+    seat that says what it is for, and the seat a house would add, locked and
+    named by the house; the bench is a small grid.
+  - One plain line, "Other companions are still out there.", replaces the
+    list of companions to find: no names, no quest hints, no count.
+  - A tap on any companion opens their page: health, the seat button, how they
+    feel about you (a meter with its thresholds named, read from the approval
+    rules), what they like and dislike, a drink to share once a chapter, and
+    their die, skills and gear.
+  - **Vica** shows her own dog sprite in the formation and on her page, in the
+    look her hero's alignment gives her, as in the tutorial; she stays seated
+    while she is the only one, and her page says so.
+  - The seat, join and bench rules are Core's, unchanged (moved to
+    `lib/widgets/party_actions.dart`).
+- Tests: `companion_party_test.dart` (seats, bench, locked seat, the line,
+  Vica alone, a page, 320 px in French).
+
 ## [1.604.0+640]
 
 - **UX: the dog no longer trots across the story page.** The little companion
