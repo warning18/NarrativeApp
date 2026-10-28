@@ -199,7 +199,8 @@ const List<DuoTechnique> duoTechniques = [
     descriptionFr:
         'Une vieille promesse orque, tenue à deux mains : un coup lourd, '
         'dont la moitié soigne les deux.',
-  ),  DuoTechnique(
+  ),
+  DuoTechnique(
     id: 'the_hunt',
     first: 'liora',
     second: 'vica',

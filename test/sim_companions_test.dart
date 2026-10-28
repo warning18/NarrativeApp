@@ -289,7 +289,7 @@ void main() {
       competent = _warriorRun(SimPolicy.competent);
     });
 
-    test('naive is unchanged with companions.json loaded', () {
+    test('naive with companions.json loaded: Vica only (v1.601)', () {
       // sim_competent_test.dart's pin (re-pinned at v1.577 and v1.578 with it).
       expect((
         naive.raceId,
@@ -302,17 +302,22 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        17,
-        2460,
-        26,
-        78,
-        34,
-        319,
+        18,
+        2135,
+        24,
+        92,
+        32,
+        283,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 1696383323);
-      expect(naive.companionLog, isEmpty);
-      expect(naive.companions, isEmpty);
+      expect(_stableHash(naive.choicesTaken), 3755158147);
+      // The naive player recruits no one; the story gives it Vica (v1.601).
+      expect(
+          naive.companionLog
+              .where((e) => e.kind == 'recruit')
+              .map((e) => e.companionId),
+          ['vica']);
+      expect(naive.companions, ['vica']);
     });
 
     test('the competent player recruits, and logs every step with a reason',
@@ -323,12 +328,17 @@ void main() {
         expect(event.reason, isNotEmpty);
         expect(event.line, startsWith('Ch${event.chapter} ${event.kind}'));
       }
-      // Every recruit came from its own quest, handed in.
+      // Every recruit came from its own quest, handed in; Vica from the
+      // story (v1.601).
       final done = {
         for (final q in competent.questRecords)
           if (q.completedAtStep != null) q.questId,
       };
       for (final event in log.where((e) => e.kind == 'recruit')) {
+        if (event.companionId == 'vica') {
+          expect(event.reason, 'the story');
+          continue;
+        }
         expect(done, contains(event.reason.replaceFirst('quest ', '')));
       }
       expect(competent.companions, isNotEmpty);

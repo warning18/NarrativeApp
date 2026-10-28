@@ -13,6 +13,7 @@ const Map<String, String> diceNamesFr = {
   'gambler_die': 'Dé du joueur',
   'greenwood_die': 'Dé du bois vert',
   'grosh_die': 'Dé de Grosh',
+  'hound_die': 'Dé de Vica',
   'headsman_die': 'Dé du bourreau',
   'holy_die': 'Dé sacré',
   'huntsman_die': 'Dé du chasseur',

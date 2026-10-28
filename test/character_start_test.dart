@@ -65,9 +65,9 @@ void main() {
     final mage = presetBonuses(professions['mage'] as Map<String, dynamic>,
         withOffers: true);
     expect(mage.last.key, 'offer_bonus_label');
-    // The mage starts with no health change since v1.497, so none is listed.
-    expect(mage.map((e) => e.key), isNot(contains('hp_label')));
-    expect(mage.first.key, 'str_abbrev');
+    // The mage starts 5 health short since v1.601 (Vica guards her best).
+    expect(mage.first.key, 'hp_label');
+    expect(mage.first.value, -5);
     final rogue = presetBonuses(professions['rogue'] as Map<String, dynamic>);
     expect(rogue.first.key, 'hp_label');
     expect(rogue.first.value, 6);

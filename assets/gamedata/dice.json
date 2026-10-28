@@ -2483,17 +2483,17 @@
         "element": "None"
       },
       {
-        "faceName": "Lunge",
+        "faceName": "Instinct",
         "type": "Skill",
         "value": 0,
-        "linkedSkillID": "heavy_attack",
+        "linkedSkillID": "ranger_beast_bond",
         "weight": 1.0,
         "element": "None"
       },
       {
-        "faceName": "Distracted",
-        "type": "Empty",
-        "value": 0,
+        "faceName": "Lick Wounds",
+        "type": "Heal",
+        "value": 1,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"

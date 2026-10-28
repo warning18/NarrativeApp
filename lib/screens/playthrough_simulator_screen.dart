@@ -59,6 +59,7 @@ import '../data/settlements.dart' show campFoundedFlag;
 import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_companions.dart';
+import '../data/story_companions.dart';
 import '../data/sim_growth.dart';
 import '../data/sim_policy.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
@@ -704,13 +705,10 @@ _SimResult _simulate(
           ladder: sim.featureLadder,
           policy: sim.policy,
         )..passives = !sim.clashOff.contains('passives'));
-  // The competent (and the stubborn) player's companions
-  // (sim_companions.dart): recruited by their quests, seated by the pick
-  // rule, in every fight.
-  final party = character == null ||
-          sim == null ||
-          sim.policy == SimPolicy.naive ||
-          sim.companions.isEmpty
+  // The companions (sim_companions.dart): the story's own (Vica) for every
+  // policy; the competent and the stubborn player's recruited by their
+  // quests too. Seated by the pick rule, in every fight.
+  final party = character == null || sim == null || sim.companions.isEmpty
       ? null
       : SimParty(
           companions: sim.companions,
@@ -1318,6 +1316,7 @@ _SimResult _simulate(
       if (p != null) {
         final ch = lastKnownChapter ?? 1;
         if (pay.allyId.isNotEmpty &&
+            sim?.policy != SimPolicy.naive &&
             p.recruit(pay.allyId,
                 chapter: ch, cause: 'quest $id', alignment: alignment)) {
           buildHousesNow();
@@ -1412,6 +1411,8 @@ _SimResult _simulate(
         skillwright: skillCraftOpen(housesBuilt.keys));
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
+    // Vica joins at her scene (story_companions.dart), whatever the policy.
+    party?.joinFromStory(visited, chapter: chapter, alignment: alignment);
     party?.levelIs(c.level);
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
@@ -2219,12 +2220,11 @@ _SimResult _simulate(
     final p = party;
     if (p != null) {
       final ch = lastKnownChapter ?? 1;
-      final loses = choice.loseAllyId ?? '';
-      final lostId = loses.isEmpty
-          ? null
-          : loses == '*'
-              ? p.active.firstOrNull
-              : loses;
+      // Vica joins at her scene, before its choices (story_companions.dart).
+      p.joinFromStory(visited, chapter: ch, alignment: alignment);
+      // Never a permanent companion (Vica): `*` the first other seated.
+      final lostId = storyLossOf(choice.loseAllyId,
+          active: p.active, companions: p.companions);
       p.react(
           chapter: ch,
           cause: 'choice at $currentId',

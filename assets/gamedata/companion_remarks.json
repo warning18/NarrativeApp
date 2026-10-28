@@ -3316,5 +3316,109 @@
       "L’Eel est lente, mais elle est payée. On n’en dit pas autant de la plupart des navires.",
       "L’air de la mer donne faim de contrats. Je l’ai remarqué. Notez-le."
     ]
+  },
+  "vica_kindApproved": {
+    "remarkID": "vica_kindApproved",
+    "companionID": "vica",
+    "trigger": "kindApproved",
+    "lines": [
+      "Vica presses against your leg and does not move for a while.",
+      "Vica’s tail goes once, twice, and she trots a little closer."
+    ],
+    "lines_fr": [
+      "Vica se serre contre votre jambe et ne bouge plus pendant un moment.",
+      "La queue de Vica bat une fois, deux fois, et elle trottine un peu plus près."
+    ]
+  },
+  "vica_cruelDisapproved": {
+    "remarkID": "vica_cruelDisapproved",
+    "companionID": "vica",
+    "trigger": "cruelDisapproved",
+    "lines": [
+      "Vica stops three paces ahead and will not walk on until you look at her.",
+      "Vica flattens her ears and keeps to the far side of the road."
+    ],
+    "lines_fr": [
+      "Vica s’arrête trois pas devant et ne repart pas avant que vous la regardiez.",
+      "Vica couche les oreilles et reste de l’autre côté du chemin."
+    ]
+  },
+  "vica_approved": {
+    "remarkID": "vica_approved",
+    "companionID": "vica",
+    "trigger": "approved",
+    "lines": [
+      "A short bark, once, like a lamp being lit.",
+      "Vica bumps your hand with her nose."
+    ],
+    "lines_fr": [
+      "Un aboiement bref, une fois, comme une lampe qu’on allume.",
+      "Vica vous pousse la main du bout du museau."
+    ]
+  },
+  "vica_disapproved": {
+    "remarkID": "vica_disapproved",
+    "companionID": "vica",
+    "trigger": "disapproved",
+    "lines": [
+      "Vica turns away to watch the road behind.",
+      "Vica sighs through her nose and lies down."
+    ],
+    "lines_fr": [
+      "Vica se détourne pour guetter la route derrière vous.",
+      "Vica souffle par le nez et se couche."
+    ]
+  },
+  "vica_checkPassed": {
+    "remarkID": "vica_checkPassed",
+    "companionID": "vica",
+    "trigger": "checkPassed",
+    "lines": [
+      "Vica had already turned her head toward the right door.",
+      "Vica wags, as if she knew all along."
+    ],
+    "lines_fr": [
+      "Vica avait déjà tourné la tête vers la bonne porte.",
+      "Vica remue la queue, comme si elle l’avait toujours su."
+    ]
+  },
+  "vica_checkFailed": {
+    "remarkID": "vica_checkFailed",
+    "companionID": "vica",
+    "trigger": "checkFailed",
+    "lines": [
+      "Vica sat down in the road and looked at you, patiently.",
+      "Vica licks your hand. Next time."
+    ],
+    "lines_fr": [
+      "Vica s’assit en travers du chemin et vous regarda, patiemment.",
+      "Vica vous lèche la main. La prochaine fois."
+    ]
+  },
+  "vica_sneakedPast": {
+    "remarkID": "vica_sneakedPast",
+    "companionID": "vica",
+    "trigger": "sneakedPast",
+    "lines": [
+      "Vica moves without a sound, belly low, at your heel.",
+      "Not one claw on the stones: Vica knows this game."
+    ],
+    "lines_fr": [
+      "Vica avance sans un bruit, ventre à terre, sur vos talons.",
+      "Pas une griffe sur les pierres : Vica connaît ce jeu."
+    ]
+  },
+  "vica_drink": {
+    "remarkID": "vica_drink",
+    "companionID": "vica",
+    "trigger": "drink",
+    "lines": [
+      "Vica laps the water noisily and looks up, dripping.",
+      "Vica drinks, then shakes herself all over you."
+    ],
+    "lines_fr": [
+      "Vica lape l’eau bruyamment et relève la tête, ruisselante.",
+      "Vica boit, puis s’ébroue sur vous."
+    ]
   }
 }

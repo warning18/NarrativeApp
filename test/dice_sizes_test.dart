@@ -40,6 +40,7 @@ const Map<String, int> _sizes = {
   'grosh_die': 6,
   'tobin_die': 6,
   'malrik_die': 6,
+  'hound_die': 6, // Vica's (v1.601)
   'void_die': 4,
   'stone_die': 4,
   'berserker_die': 4,
@@ -275,7 +276,8 @@ void main() {
       for (final size in _sizes.values) {
         bySize[size] = (bySize[size] ?? 0) + 1;
       }
-      expect(bySize, {6: 10, 4: 6, 8: 7, 10: 4, 12: 4, 20: 1});
+      // Vica's die (v1.601) is an eleventh d6.
+      expect(bySize, {6: 11, 4: 6, 8: 7, 10: 4, 12: 4, 20: 1});
     });
 
     test('a grown die keeps its faces where they were, and adds plain ones',

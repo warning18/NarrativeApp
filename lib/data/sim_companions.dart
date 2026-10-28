@@ -37,6 +37,7 @@ import 'approval.dart';
 import 'perks.dart';
 import 'signs.dart';
 import 'sim_policy.dart' show simDieValue;
+import 'story_companions.dart';
 
 /// A knocked-out companion is back at this share of their health after a
 /// won fight (fight_screen.dart's `_reviveHealthFraction`).
@@ -390,7 +391,8 @@ class SimParty {
           alignmentMod: alignmentMod,
           goldMod: goldMod,
           explicit: explicitApprovalFor(approvalMods, id));
-      final after = approvalAfter(member.approval, delta);
+      final after = permanentApprovalFloor(
+          _record(id), approvalAfter(member.approval, delta));
       if (after == member.approval) continue;
       final change = ApprovalChange(
           companionId: id, before: member.approval, after: after);
@@ -416,11 +418,24 @@ class SimParty {
     if (leaving.isNotEmpty) arrange(chapter: chapter, alignment: alignment);
   }
 
+  /// The story's own companions (story_companions.dart: Vica) join once the
+  /// walk has [visited] one of their scenes, whatever the policy. Returns
+  /// who joined.
+  List<String> joinFromStory(Iterable<String> visited,
+      {required int chapter, int alignment = 0}) {
+    final due = storyRecruitsDue(companions,
+        visited: visited, recruited: roster.keys, gone: [...departed, ...lost]);
+    for (final id in due) {
+      recruit(id, chapter: chapter, cause: 'the story', alignment: alignment);
+    }
+    return due;
+  }
+
   /// The story takes [companionId] (a choice's `loseAllyId`; `*` the first
-  /// seated) for good.
+  /// seated) for good; never a permanent one (Vica).
   void lose(String companionId,
       {required int chapter, required String cause, int alignment = 0}) {
-    final id = companionId == '*' ? active.firstOrNull : companionId;
+    final id = storyLossOf(companionId, active: active, companions: companions);
     if (id == null || !roster.containsKey(id)) return;
     _remove(id, lost: true, chapter: chapter, reason: cause);
     arrange(chapter: chapter, alignment: alignment);
