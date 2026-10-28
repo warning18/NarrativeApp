@@ -18,6 +18,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart'
     show PresetMark;
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/speech_bubble.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/inventory_parts.dart'
     show InventoryDieTile;
@@ -40,7 +41,11 @@ class AllyInfo {
     required this.likes,
     required this.dislikes,
     required this.record,
+    this.portraitAsset,
   });
+
+  /// A picture instead of the class mark (the guide dog's sprite).
+  final String? portraitAsset;
 
   final String id;
   final String name;
@@ -248,10 +253,17 @@ class Portrait extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           border: Border.all(color: ring, width: 2.4),
         ),
-        child: PresetMark(
-            folder: 'professions',
-            preset: info.professionRecord,
-            size: size * 0.62),
+        child: info.portraitAsset != null
+            ? ClipOval(
+                child: Image.asset(info.portraitAsset!,
+                    width: size * 0.8,
+                    height: size * 0.8,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.none))
+            : PresetMark(
+                folder: 'professions',
+                preset: info.professionRecord,
+                size: size * 0.62),
       ),
     );
   }
@@ -640,16 +652,52 @@ class SwapSheet extends StatelessWidget {
 // (or no longer) with you.
 // ---------------------------------------------------------------------------
 
+const String dogDir = 'assets/visuals/companion/dog_companion_animations';
+const String dogSit = '$dogDir/Sitting_down/rotations/south.png';
+const String dogWalk = '$dogDir/Walking/east/frame_000.png';
+
+/// Wick, as the camp would hold him: no race, class ranger (Core's note,
+/// #568), about 42 health at level 8, the dog's own picture.
+AllyInfo wickInfo(Map<String, dynamic> professions, {bool active = false}) =>
+    AllyInfo(
+      id: 'wick',
+      name: 'Wick',
+      race: '',
+      profession: 'Guide dog',
+      professionRecord:
+          professions['ranger'] as Map<String, dynamic>? ?? const {},
+      hp: 42,
+      maxHp: 42,
+      approval: startingApproval,
+      active: active,
+      dieId: 'hound_die',
+      skills: const [],
+      points: 0,
+      likes: const [],
+      dislikes: const [],
+      record: const {},
+      portraitAsset: dogSit,
+    );
+
 class BPage extends StatelessWidget {
-  const BPage({super.key});
+  const BPage({super.key, this.withWick = false});
+
+  /// Wick on the bench, and the note that he waits at camp (the frame after
+  /// a stronger companion took his seat).
+  final bool withWick;
 
   @override
   Widget build(BuildContext context) {
     return WithAllies((context, ref, allies, unmet, quests) {
       final theme = Theme.of(context);
       final ink = InkColors.of(context);
+      final professions =
+          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
       final seated = allies.where((a) => a.active).toList();
-      final bench = allies.where((a) => !a.active).toList();
+      final bench = [
+        if (withWick) wickInfo(professions),
+        ...allies.where((a) => !a.active),
+      ];
       Widget bigSeat(AllyInfo a) => Expanded(
             child: Container(
               padding: const EdgeInsets.fromLTRB(6, 10, 6, 8),
@@ -1181,5 +1229,204 @@ class NotesPanel extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The guide dog's moments: the tutorial, joining at Saltmouth, the swap.
+// ---------------------------------------------------------------------------
+
+/// A dimmed page under a moment.
+Widget dimmed(Widget page, {double alpha = 0.62}) => Stack(children: [
+      Positioned.fill(child: page),
+      Positioned.fill(child: Container(color: Color.fromRGBO(0, 0, 0, alpha))),
+    ]);
+
+/// The dog and its bubble, as the tutorial draws them (SpeechBubble is the
+/// real widget), over the camp's Party tab.
+class DogMoment extends ConsumerWidget {
+  const DogMoment({
+    super.key,
+    required this.speaker,
+    required this.text,
+    this.counter,
+    this.nextLabel = 'Next',
+    this.walking = false,
+    this.tag,
+  });
+  final String speaker;
+  final String text;
+  final String? counter;
+  final String nextLabel;
+  final bool walking;
+
+  /// A small gold tag over the dog ("New companion").
+  final String? tag;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ink = InkColors.of(context);
+    return dimmed(
+      const APage(),
+      alpha: 0.5,
+    ).wrapped(
+      Stack(children: [
+        Positioned(
+          left: 16,
+          right: 16,
+          top: 150,
+          child: SpeechBubble(
+            speaker: speaker,
+            fullText: text,
+            shown: text,
+            counter: counter,
+            nextLabel: nextLabel,
+            onNext: () {},
+            tailX: 70,
+            tailDown: true,
+          ),
+        ),
+        Positioned(
+          left: 38,
+          top: 330,
+          child: Column(children: [
+            if (tag != null)
+              Container(
+                margin: const EdgeInsets.only(bottom: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: ink.gold,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(tag!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(color: Colors.white)),
+              ),
+            Image.asset(walking ? dogWalk : dogSit,
+                width: 104,
+                height: 104,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.none),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+extension on Widget {
+  /// [this] with [over] on top, filling the same box.
+  Widget wrapped(Widget over) => Stack(children: [
+        Positioned.fill(child: this),
+        Positioned.fill(child: over),
+      ]);
+}
+
+/// A stronger companion arrives and the seats are full: who walks with you?
+class ArrivalSheet extends StatelessWidget {
+  const ArrivalSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return WithAllies((context, ref, allies, unmet, quests) {
+      final theme = Theme.of(context);
+      final ink = InkColors.of(context);
+      final professions =
+          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
+      final kelda = allies.firstWhere((a) => a.id == 'kelda');
+      final sable = allies.firstWhere((a) => a.id == 'sable');
+      final wick = wickInfo(professions, active: true);
+      Widget option(AllyInfo out, String line, {required bool primary}) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: primary ? ink.gold.withValues(alpha: 0.08) : null,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: primary ? ink.gold : ink.seam),
+          ),
+          child: Row(children: [
+            Portrait(kelda, size: 34),
+            Icon(Icons.swap_horiz, size: 18, color: ink.ash),
+            Portrait(out, size: 34),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Kelda for ${out.name}',
+                      style: theme.textTheme.titleSmall),
+                  Text(line,
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                ],
+              ),
+            ),
+          ]),
+        );
+      }
+
+      return dimmed(const APage(), alpha: 0.6).wrapped(Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+            border: Border.all(color: ink.seam),
+          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                    color: ink.seam, borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: 12),
+            Row(children: [
+              Portrait(kelda, size: 46),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text('Kelda joins your party. The seats are full.',
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontFamily: InkFonts.display)),
+              ),
+            ]),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Who walks with you? 61 health, a warrior.',
+                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            ),
+            const SizedBox(height: 10),
+            option(
+                wick, '${wick.hp} health · waits at camp, ready to come back',
+                primary: true),
+            option(sable, '${sable.hp}/${sable.maxHp} health · waits at camp',
+                primary: false),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: ink.seam),
+              ),
+              child: Row(children: [
+                Icon(Icons.chair_outlined, color: ink.ash),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text('Kelda waits at camp, for now',
+                        style: theme.textTheme.titleSmall)),
+              ]),
+            ),
+            const SizedBox(height: 10),
+            Text(
+                'Whoever waits keeps their health and gear, does not see your choices, and can come back from the Party tab.',
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+          ]),
+        ),
+      ));
+    });
   }
 }

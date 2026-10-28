@@ -10,6 +10,7 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
 |---|---|
 | `docs/ux-shots/companion-today.png` | The real Party tab of the camp at 320 and 412 px, the top and the end (four companions: devoted, friendly, neutral, wary; two seated, two benched). |
 | `docs/ux-shots/companion-a.png` | A: the same list, calmer, with a seat strip and a one-tap swap. |
+| `docs/ux-shots/companion-dog.png` | The guide dog's moments: the tutorial, joining at Saltmouth, a stronger companion arriving, and the bench after. |
 | `docs/ux-shots/companion-b.png` | B: a different shape: the party as a formation, a page for each companion, who is not (or no longer) with you; the guide dog's page. |
 
 ## What is hard, ranked by how much it hurts the player
@@ -62,6 +63,29 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
   Saltmouth", a seat, a bench, the Hound Die. His numbers and die are Core's (#568), his quest (Wick's
   Walk) Narrative's (#569); his likes and dislikes are not set yet.
 - Cost: a new page and a rebuilt Party tab: about two days of UX, more than A.
+
+## The guide dog: from the tutorial to the bench (`companion-dog.png`)
+From Core's note (#568: the dog joins at Saltmouth as a normal ranger-class companion, weaker than Kelda
+and Sable, benched once a stronger one joins) and Narrative's (#569: Wick, Wick's Walk).
+- **The tutorial guide today:** a walking and sitting dog with the speech bubble (the real
+  `SpeechBubble`), named by the player in Settings (`companionNameProvider`, default "your
+  companion"), and a different look for a good or an evil hero (angel or demon). It is not on the Party
+  tab.
+- **The handover at Saltmouth (one small moment):** when Wick's Walk ends, the same dog, with the same
+  bubble, says one line, and the Party tab gets his card with a "New companion" tag. He keeps the name
+  the player gave the guide (Wick when they never named it) and his look. Narrative writes the line.
+- **The swap moment (a stronger companion arrives):** today a recruit is seated only up to capacity, so
+  Kelda, arriving with the seats full, lands on the bench **without a word**, and nothing tells the
+  player who is now benched. The proposal: a sheet, "Kelda joins your party. The seats are full. Who
+  walks with you?", with one row per choice ("Kelda for Wick", "Kelda for Sable", "Kelda waits at camp,
+  for now"), each saying who waits at camp, and one line on what waiting means: they keep their health
+  and gear, do not see your choices, and can come back from the Party tab.
+- **After:** the bench shows Wick, and a gold note says it once: "Wick waits at camp. Kelda walks with
+  you. He keeps his health and his gear; he does not see your choices. Tap him to bring him back."
+- **Needs:** Narrative: the one line at the handover, the dog taking the player's name for the guide
+  (`companionNameProvider`) as his companion name, his look following the hero's alignment as the guide
+  does. Core: the arrival rule (ask when the seats are full, instead of benching silently); this is
+  behaviour in `recruitAlly` / `_setAllyInParty`, so Core's.
 
 ## What each needs from Core
 - **A:** nothing.

@@ -317,5 +317,65 @@ void main() {
         ),
       ]),
     );
+
+    await board(
+      tester,
+      'companion-dog.png',
+      [
+        (
+          412,
+          'Tutorial: the guide, named by the player',
+          const DogMoment(
+            speaker: 'Wick',
+            text:
+                'Party: companions you recruit rest here. Choose who fights at your side.',
+            counter: '4 / 6',
+          )
+        ),
+        (
+          412,
+          'Saltmouth: the guide joins, same sprite, same name',
+          const DogMoment(
+            speaker: 'Wick',
+            text: 'Wick falls in beside you, nose to your heel.',
+            nextLabel: 'Walk on',
+            walking: true,
+            tag: 'New companion',
+          )
+        ),
+        (412, 'Kelda arrives, the seats are full', const ArrivalSheet()),
+        (
+          412,
+          'After: Wick waits at camp, and it says so',
+          const BPage(withWick: true)
+        ),
+      ],
+      container: container,
+      notes: const NotesPanel(
+        title: 'The dog: from the tutorial to the bench',
+        sections: [
+          (
+            'The tutorial guide',
+            'Today the guide is a walking and sitting dog with a speech bubble, named by the player in Settings (default "your companion"), and it looks different for a good or an evil hero (an angel or a demon). It is not on the Party tab.'
+          ),
+          (
+            'The handover at Saltmouth',
+            'When the quest ends, the same dog, with the same bubble, says one line, and the Party tab gets his card with a "New companion" tag. He keeps the name the player gave him (Wick when they never named him) and his look (neutral, angel or demon). One moment, one tap.'
+          ),
+          (
+            'The swap moment',
+            'Kelda arrives and the seats are full. Today she lands on the bench without a word (a recruit is seated only up to capacity). The proposal: a sheet that says who joins and asks who walks with you; each choice says who waits at camp, and what waiting means.'
+          ),
+          (
+            'After',
+            'The bench shows Wick with a note: he waits at camp, keeps his health and gear, does not see your choices, and can come back. Nothing is lost, so replacing him costs no regret.'
+          ),
+          (
+            'Needs from Narrative and Core',
+            'Narrative: the one line at the handover; the dog carrying the player\u2019s name for him (companionNameProvider) into his companion name; his look following the hero\u2019s alignment as the guide does. Core: the arrival rule (ask when the seats are full instead of benching silently).'
+          ),
+        ],
+      ),
+    );
   });
 }
