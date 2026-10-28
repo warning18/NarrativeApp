@@ -3316,5 +3316,334 @@
       "L’Eel est lente, mais elle est payée. On n’en dit pas autant de la plupart des navires.",
       "L’air de la mer donne faim de contrats. Je l’ai remarqué. Notez-le."
     ]
+  },
+  "vica_kindApproved": {
+    "remarkID": "vica_kindApproved",
+    "companionID": "vica",
+    "trigger": "kindApproved",
+    "lines": [
+      "Presses against your leg and does not move for a while.",
+      "Looks up at you, and keeps looking."
+    ],
+    "lines_fr": [
+      "Se serre contre votre jambe et ne bouge plus pendant un moment.",
+      "Lève les yeux vers vous et ne les baisse plus."
+    ]
+  },
+  "vica_kindDisapproved": {
+    "remarkID": "vica_kindDisapproved",
+    "companionID": "vica",
+    "trigger": "kindDisapproved",
+    "lines": [
+      "Ears go flat. A small, puzzled sound.",
+      "Looks at the one you wronged, then at you."
+    ],
+    "lines_fr": [
+      "Les oreilles se couchent. Un petit son perplexe.",
+      "Regarde celui que vous avez lésé, puis vous."
+    ]
+  },
+  "vica_cruelApproved": {
+    "remarkID": "vica_cruelApproved",
+    "companionID": "vica",
+    "trigger": "cruelApproved",
+    "lines": [
+      "Watches without a sound, and does not wag.",
+      "A low breath through the nose, neither yes nor no."
+    ],
+    "lines_fr": [
+      "Regarde sans un bruit, et ne remue pas la queue.",
+      "Un souffle bas par le nez, ni oui ni non."
+    ]
+  },
+  "vica_cruelDisapproved": {
+    "remarkID": "vica_cruelDisapproved",
+    "companionID": "vica",
+    "trigger": "cruelDisapproved",
+    "lines": [
+      "Stops three paces ahead and will not walk on until you look at her.",
+      "Backs away a step, and stays there."
+    ],
+    "lines_fr": [
+      "S’arrête trois pas devant et ne repart pas avant que vous la regardiez.",
+      "Recule d’un pas, et y reste."
+    ]
+  },
+  "vica_profitApproved": {
+    "remarkID": "vica_profitApproved",
+    "companionID": "vica",
+    "trigger": "profitApproved",
+    "lines": [
+      "Sniffs the purse, finds nothing to eat, and sighs.",
+      "A short bark: the coin is all very well, but where is the bread?"
+    ],
+    "lines_fr": [
+      "Flaire la bourse, n’y trouve rien à manger, et soupire.",
+      "Un aboiement bref : la pièce, soit, mais où est le pain ?"
+    ]
+  },
+  "vica_profitDisapproved": {
+    "remarkID": "vica_profitDisapproved",
+    "companionID": "vica",
+    "trigger": "profitDisapproved",
+    "lines": [
+      "Looks at the coins, then at you, with great patience.",
+      "Sits on your boot until you put them away."
+    ],
+    "lines_fr": [
+      "Regarde les pièces, puis vous, avec une grande patience.",
+      "S’assoit sur votre botte jusqu’à ce que vous les rangiez."
+    ]
+  },
+  "vica_approved": {
+    "remarkID": "vica_approved",
+    "companionID": "vica",
+    "trigger": "approved",
+    "lines": [
+      "A short bark, once, like a lamp being lit.",
+      "Her tail goes once from side to side, and stops, as if she had said too much."
+    ],
+    "lines_fr": [
+      "Un aboiement bref, une fois, comme une lampe qu’on allume.",
+      "Sa queue passe une fois d’un côté à l’autre, et s’arrête, comme si elle en avait trop dit."
+    ]
+  },
+  "vica_disapproved": {
+    "remarkID": "vica_disapproved",
+    "companionID": "vica",
+    "trigger": "disapproved",
+    "lines": [
+      "Turns away to watch the road behind.",
+      "Sits with her back to you for exactly three breaths."
+    ],
+    "lines_fr": [
+      "Se détourne pour guetter la route derrière vous.",
+      "S’assoit dos à vous pendant exactement trois souffles."
+    ]
+  },
+  "vica_checkPassed": {
+    "remarkID": "vica_checkPassed",
+    "companionID": "vica",
+    "trigger": "checkPassed",
+    "lines": [
+      "Had already turned her head toward the right door.",
+      "Looks at you as if it had been obvious, which, to her, it had."
+    ],
+    "lines_fr": [
+      "Avait déjà tourné la tête vers la bonne porte.",
+      "Vous regarde comme si c’était évident, ce qui, pour elle, l’était."
+    ]
+  },
+  "vica_checkFailed": {
+    "remarkID": "vica_checkFailed",
+    "companionID": "vica",
+    "trigger": "checkFailed",
+    "lines": [
+      "Sat down in the road and looked at you, patiently.",
+      "Sneezes, once, on purpose."
+    ],
+    "lines_fr": [
+      "S’est assise en travers du chemin et vous a regardé, patiemment.",
+      "Éternue, une fois, exprès."
+    ]
+  },
+  "vica_sneakedPast": {
+    "remarkID": "vica_sneakedPast",
+    "companionID": "vica",
+    "trigger": "sneakedPast",
+    "lines": [
+      "Walks on tiptoe, which she has never once done in her life.",
+      "Holds her breath, and her ears, perfectly still."
+    ],
+    "lines_fr": [
+      "Marche sur la pointe des pattes, ce qu’elle n’a jamais fait de sa vie.",
+      "Retient son souffle, et ses oreilles, parfaitement immobiles."
+    ]
+  },
+  "vica_atSea": {
+    "remarkID": "vica_atSea",
+    "companionID": "vica",
+    "trigger": "atSea",
+    "lines": [
+      "Sits in the middle of the deck with all four paws braced, looking betrayed by the floor.",
+      "Watches the waves the way she watched the dunes: for whatever is about to go wrong."
+    ],
+    "lines_fr": [
+      "Reste au milieu du pont, les quatre pattes arc-boutées, trahie par le sol.",
+      "Observe les vagues comme elle observait les dunes : pour ce qui s’apprête à mal tourner."
+    ]
+  },
+  "vica_builtBoneCastersHut": {
+    "remarkID": "vica_builtBoneCastersHut",
+    "companionID": "vica",
+    "trigger": "builtBoneCastersHut",
+    "lines": [
+      "Sniffs the new hut from corner to corner, and sneezes at the bones.",
+      "Will not go in, and will not leave the door."
+    ],
+    "lines_fr": [
+      "Flaire la nouvelle hutte d’un coin à l’autre, et éternue devant les os.",
+      "Ne veut pas entrer, et ne veut pas quitter la porte."
+    ]
+  },
+  "vica_builtParleyTent": {
+    "remarkID": "vica_builtParleyTent",
+    "companionID": "vica",
+    "trigger": "builtParleyTent",
+    "lines": [
+      "Walks the tent’s edge twice, and lies across the entrance.",
+      "Waits at the flap, ears up, for the first guest."
+    ],
+    "lines_fr": [
+      "Fait deux fois le tour de la tente, et se couche en travers de l’entrée.",
+      "Attend à la toile, les oreilles dressées, le premier invité."
+    ]
+  },
+  "vica_builtStarWell": {
+    "remarkID": "vica_builtStarWell",
+    "companionID": "vica",
+    "trigger": "builtStarWell",
+    "lines": [
+      "Drinks first, and looks pleased with herself.",
+      "Sits at the well’s edge and watches the stars as if one of them were late."
+    ],
+    "lines_fr": [
+      "Boit la première, et paraît très contente d’elle.",
+      "S’assoit au bord du puits et guette les étoiles comme si l’une d’elles était en retard."
+    ]
+  },
+  "vica_builtWardingCairn": {
+    "remarkID": "vica_builtWardingCairn",
+    "companionID": "vica",
+    "trigger": "builtWardingCairn",
+    "lines": [
+      "Circles the cairn three times, nose down, and approves.",
+      "Lays one paw on the lowest stone and does not take it off."
+    ],
+    "lines_fr": [
+      "Fait trois fois le tour du cairn, le nez au sol, et approuve.",
+      "Pose une patte sur la pierre la plus basse et ne la retire plus."
+    ]
+  },
+  "vica_drink": {
+    "remarkID": "vica_drink",
+    "companionID": "vica",
+    "trigger": "drink",
+    "lines": [
+      "Wants some. Is told no. Wants some.",
+      "Lies under the table, in case."
+    ],
+    "lines_fr": [
+      "En veut. On lui dit non. En veut.",
+      "Se couche sous la table, au cas où."
+    ]
+  },
+  "vica_riskyLostCurse": {
+    "remarkID": "vica_riskyLostCurse",
+    "companionID": "vica",
+    "trigger": "riskyLostCurse",
+    "lines": [
+      "Whines, once, at the thing in your hand.",
+      "Backs away from it, and will not come near."
+    ],
+    "lines_fr": [
+      "Gémit, une fois, devant ce que vous tenez.",
+      "Recule devant la chose, et refuse de s’approcher."
+    ]
+  },
+  "vica_riskyLostGold": {
+    "remarkID": "vica_riskyLostGold",
+    "companionID": "vica",
+    "trigger": "riskyLostGold",
+    "lines": [
+      "Watches the coins go, and looks at you with great patience.",
+      "Sits on your boot."
+    ],
+    "lines_fr": [
+      "Regarde partir les pièces, et vous regarde avec une grande patience.",
+      "S’assoit sur votre botte."
+    ]
+  },
+  "vica_riskyLostHealth": {
+    "remarkID": "vica_riskyLostHealth",
+    "companionID": "vica",
+    "trigger": "riskyLostHealth",
+    "lines": [
+      "Licks your hand, once, and does not leave it.",
+      "Presses her whole side against you, and stays there."
+    ],
+    "lines_fr": [
+      "Vous lèche la main, une fois, et ne la quitte plus.",
+      "Se serre de tout son flanc contre vous, et y reste."
+    ]
+  },
+  "vica_riskyTaken": {
+    "remarkID": "vica_riskyTaken",
+    "companionID": "vica",
+    "trigger": "riskyTaken",
+    "lines": [
+      "Sniffs it twice, and sits back, undecided.",
+      "Wears the look of someone who has seen this go badly."
+    ],
+    "lines_fr": [
+      "La flaire deux fois, et se rassoit, indécise.",
+      "A l’air de quelqu’un qui a déjà vu cela mal tourner."
+    ]
+  },
+  "vica_riskyWon": {
+    "remarkID": "vica_riskyWon",
+    "companionID": "vica",
+    "trigger": "riskyWon",
+    "lines": [
+      "A short bark, and the tail goes round twice.",
+      "Trots a small lap around you, and looks smug."
+    ],
+    "lines_fr": [
+      "Un aboiement bref, et la queue fait deux tours.",
+      "Trottine autour de vous, et a l’air contente d’elle."
+    ]
+  },
+  "vica_templeBlessed": {
+    "remarkID": "vica_templeBlessed",
+    "companionID": "vica",
+    "trigger": "templeBlessed",
+    "lines": [
+      "Sits very straight, and seems to shine a little.",
+      "Lowers her head, then, quite seriously, sneezes."
+    ],
+    "lines_fr": [
+      "Se tient très droite, et semble luire un peu.",
+      "Baisse la tête, puis, très sérieusement, éternue."
+    ]
+  },
+  "vica_templeMended": {
+    "remarkID": "vica_templeMended",
+    "companionID": "vica",
+    "trigger": "templeMended",
+    "lines": [
+      "Presses her nose to the place that hurt, and breathes on it.",
+      "Lies down across your feet until it stops."
+    ],
+    "lines_fr": [
+      "Pose son nez là où cela faisait mal, et souffle dessus.",
+      "Se couche en travers de vos pieds jusqu’à ce que cela passe."
+    ]
+  },
+  "vica_walk": {
+    "remarkID": "vica_walk",
+    "companionID": "vica",
+    "trigger": "walk",
+    "lines": [
+      "Keeps her pace to yours, a hand’s breadth from your knee.",
+      "Stops at every corner and waits for you to choose.",
+      "Sniffs the air and looks at you.",
+      "Takes the lead for ten steps, then drops back, as if to be polite."
+    ],
+    "lines_fr": [
+      "Règle son pas sur le vôtre, à un souffle de votre genou.",
+      "S’arrête à chaque angle et attend que vous choisissiez.",
+      "Hume l’air et vous regarde.",
+      "Prend la tête pendant dix pas, puis se laisse distancer, comme par politesse."
+    ]
   }
 }

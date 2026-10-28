@@ -2621,8 +2621,7 @@
         "next_id": "1200",
         "flagsToAdd": [
           "vica_follow"
-        ],
-        "recruitAllyId": "vica"
+        ]
       },
       {
         "text": "Pour what is left in your flask into your hand for her",
@@ -2631,7 +2630,9 @@
         "flagsToAdd": [
           "vica_shared"
         ],
-        "recruitAllyId": "vica"
+        "approvalMods": {
+          "vica": 9
+        }
       },
       {
         "text": "Count some coins into the sand for her (10 gold)",
@@ -2642,7 +2643,9 @@
         "flagsToAdd": [
           "vica_paid"
         ],
-        "recruitAllyId": "vica"
+        "approvalMods": {
+          "vica": -8
+        }
       }
     ],
     "prompt": "What do you do for her?",

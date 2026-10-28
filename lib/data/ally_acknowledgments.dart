@@ -23,6 +23,8 @@ const Map<String, Map<String, String>> _acksEn = {
         "attention of someone comparing them to others. \"They are "
         "everywhere,\" she said. \"That is not the same as being "
         "everything.\"",
+    'vica':
+        ' Vica sat at the roadside and looked at the white masks on the gate for a long moment, then, with great dignity, at nothing at all.',
   },
   '2015': {
     '*': ' Whoever was walking with me kept a hand near a weapon and an '
@@ -35,6 +37,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'when I looked at her.',
     'liora': ' Liora counted the rooftops as we went, and named two she '
         'would have chosen, and one she would have avoided.',
+    'vica':
+        ' Vica worked the wharf nose-first, from stall to stall, and came back with the air of a dog who had learned something about the fish trade.',
   },
   '2900': {
     '*': ' Whoever had come down to the yards with me looked at the Eel '
@@ -54,6 +58,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'the pike had gone through, and held it there, and when she took it '
         'away the wood was dry. "Not for long," she said. "But long enough '
         'to get to the pitch."',
+    'vica':
+        ' Vica boarded the Eel before anyone had said she could, and sat in the bow facing the sea, as if she had always been the figurehead.',
   },
   '2900_boat_fixed': {
     '*': ' The crew stood along the rail and looked at the wharf and did '
@@ -71,6 +77,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'vess': ' Vess stood at the gangway with her hood back so the wharf '
         'could see what she was, and the ones who stepped back from her '
         'were, she told me later, the ones she would have left.',
+    'vica':
+        ' Vica walked the length of the mended hull once, nose to the planks, and lay down in the stern: it would do.',
   },
   '2999': {
     '*': ' The crew looked at me across the tilted deck the way a crew '
@@ -89,6 +97,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'vess': ' The thread in Vess had gone white in the storm-light, and she '
         'was talking to the sea, quietly, in a language it seemed to be '
         'listening to.',
+    'vica':
+        ' Vica did not look at the crew. She looked at me, and waited, and I found that I could say it.',
   },
   '4999_standard': {
     '*': ' The ones who had come into the sanctum with me stood back from '
@@ -105,6 +115,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'vess': ' Vess could not take her eyes off the grey in the standard. '
         '"It is the same cloth," she said. "It knows what you are going to '
         'do. It is waiting to see how."',
+    'vica':
+        ' Vica sat down at the edge of the sanctum and did not take her eyes off the grey in the standard.',
   },
   '5004_altar': {
     '*': ' Nobody who had come down with me said anything at the altar. '
@@ -189,6 +201,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'kelda': ' Kelda had a wall marked out before the kettle boiled, and '
         'two refugees carrying stone for it before she had finished '
         'explaining why.',
+    'vica':
+        ' Vica made the rounds of the new fires before she lay down, and was greeted at every one, as if the camp had been waiting for the last of its company.',
   },
   '4999_camp': {
     '*': ' The ones who had walked back from the Spire with me went '
@@ -202,6 +216,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'tobin': ' Brother Tobin heard the Court\'s name at the fires and set '
         'his jaw. "I sang for them," he said. "Once. Whatever they say '
         'about the Court, believe it."',
+    'vica':
+        ' Vica went straight to my bedroll, turned around three times, and lay across my boots: home.',
   },
   '6002_camp': {
     '*': ' Whoever had come back to the cove with me slept like the dead '
@@ -219,6 +235,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'of them.',
     'grosh': ' Grosh walked the quarter like a man returning to a job he '
         'had left unfinished, and the ash did not argue with him.',
+    'vica':
+        ' Vica kept a pace ahead of me in the quarter, nose up, and twice turned me aside from a street before I knew why.',
   },
   '3002': {
     '*': ' Two passages, and for once I was not the only one to weigh '
@@ -227,6 +245,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'vess': ' Vess tilted her head at the left-hand passage the way one '
         'listens to a sound nobody else can hear. "That one is older," she '
         'said. "Older is not the same as safer."',
+    'vica':
+        ' Vica looked at one passage, then at the other, then at me, which was no help at all, and exactly what I needed.',
   },
   '4999': {
     '*': ' Whoever had come down into that cathedral at my back was still '
@@ -239,6 +259,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'kelda': ' Kelda leaned on her shield and looked at the fallen Warden '
         'with something close to respect. "He held," she said. "Wrong '
         'thing, but he held."',
+    'vica':
+        ' Vica was still beside me when the dust settled, filthy, one ear torn, wagging as if the cathedral had been a game she had finally been allowed to win.',
   },
   '5010': {
     '*': ' The refugees in the cloister looked past me to whoever stood '
@@ -252,6 +274,8 @@ const Map<String, Map<String, String>> _acksEn = {
         'courtesy.',
     'malrik': ' Malrik priced the reliquaries with his eyes and kept his '
         'hands in plain sight, which for him was practically piety.',
+    'vica':
+        ' The refugees in the cloister crowded around Vica before they looked at me, and some of them, for the first time in days, laughed.',
   },
   '6001': {
     '*': ' Daylight found more than one of us blinking at it, and the '
@@ -259,6 +283,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'liora': ' Liora put her back to the doorway without being asked and '
         'watched the street while I read, which is the kindest thing '
         'anyone has done for a book in my presence.',
+    'vica':
+        ' Vica had slept through the whole reading, and woke at the last page, as if she had been listening after all.',
   },
   '6004': {
     '*': " I was, at least, not the only one who heard it. Whoever had "
@@ -325,6 +351,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'malrik': ' "Very moving," Malrik said. "I get first pick of the '
         'throne room." I told him he could have the throne. He said he '
         'would think about it.',
+    'vica':
+        ' Vica stood in the half-ring with the crew, and when I finished she stepped forward and sat at my side, and that was her answer.',
   },
   '7003': {
     '*': ' We stood in the wreck of the throne room together, and I '
@@ -369,6 +397,8 @@ const Map<String, Map<String, String>> _acksEn = {
     'malrik': ' Malrik looked at the Host from end to end and whistled. '
         '"I was born on a brig," he said. "I never thought I would see a '
         'fleet that was on my side."',
+    'vica':
+        ' Vica walked through the Host at my heel, and every banner dipped toward her, which she took, correctly, as no more than her due.',
   },
 };
 
@@ -386,6 +416,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'vess': " Vess regardait les masques blancs à la porte avec l'attention "
         "plate de qui les compare à d'autres. « Ils sont partout, dit-elle. "
         "Ce n'est pas la même chose qu'être tout. »",
+    'vica':
+        ' Vica s’assit au bord de la route et regarda longuement les masques blancs de la porte, puis, avec beaucoup de dignité, rien du tout.',
   },
   '2015': {
     '*': " Qui marchait avec moi gardait une main près d'une arme et un œil "
@@ -398,6 +430,8 @@ const Map<String, Map<String, String>> _acksFr = {
         "quand je la fixai.",
     'liora': " Liora comptait les toits en chemin, en nomma deux qu'elle "
         "aurait choisis, et un qu'elle aurait évité.",
+    'vica':
+        ' Vica fit le quai le nez au sol, d’étal en étal, et revint avec l’air d’une chienne qui avait appris quelque chose sur le commerce du poisson.',
   },
   '2900': {
     '*': " Qui était descendu aux chantiers avec moi regardait l'Eel comme "
@@ -416,6 +450,8 @@ const Map<String, Map<String, String>> _acksFr = {
         "flottaison, là où la pique était passée, et l'y laissa, et quand "
         "elle la retira le bois était sec. « Pas pour longtemps, dit-elle. "
         "Mais assez pour aller jusqu'à la poix. »",
+    'vica':
+        ' Vica monta à bord de l’Eel avant que personne ne l’y ait autorisée, et s’assit à la proue, face à la mer, comme si elle avait toujours été la figure de proue.',
   },
   '2900_boat_fixed': {
     '*': " L'équipage se tenait le long du bastingage et regardait le quai "
@@ -433,6 +469,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'vess': " Vess se tenait à la passerelle, capuche rabattue pour que le "
         "quai voie ce qu'elle était, et ceux qui reculèrent devant elle "
         "étaient, me dit-elle plus tard, ceux qu'elle aurait laissés.",
+    'vica':
+        ' Vica parcourut une fois la coque réparée, le nez sur les planches, et se coucha à l’arrière : cela ferait l’affaire.',
   },
   '2999': {
     '*': " L'équipage me regardait à travers le pont incliné comme un "
@@ -451,6 +489,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'vess': " Le fil en Vess était devenu blanc dans la lumière de la "
         "tempête, et elle parlait à la mer, tout bas, dans une langue que "
         "celle-ci semblait écouter.",
+    'vica':
+        ' Vica ne regarda pas l’équipage. Elle me regarda, et attendit, et je découvris que je pouvais le dire.',
   },
   '4999_standard': {
     '*': " Ceux qui étaient entrés dans le sanctuaire avec moi reculèrent "
@@ -469,6 +509,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'vess': " Vess ne pouvait détacher les yeux du gris dans l'étendard. "
         "« C'est la même étoffe, dit-elle. Elle sait ce que vous allez faire. "
         "Elle attend de voir comment. »",
+    'vica':
+        ' Vica s’assit au bord du sanctuaire et ne quitta pas des yeux le gris de l’étendard.',
   },
   '5004_altar': {
     '*': " Personne de ceux qui étaient descendus avec moi ne dit rien à "
@@ -552,6 +594,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'kelda': " Kelda avait tracé un mur avant que la bouilloire ne chante, et "
         "deux réfugiés portaient déjà des pierres avant qu'elle ait fini "
         "d'expliquer pourquoi.",
+    'vica':
+        ' Vica fit la ronde des nouveaux feux avant de se coucher, et fut saluée à chacun, comme si le camp avait attendu le dernier de ses membres.',
   },
   '4999_camp': {
     '*': " Ceux qui étaient revenus de la Flèche avec moi allèrent droit aux "
@@ -565,6 +609,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'tobin': " Frère Tobin entendit le nom de la Cour près des feux et serra "
         "la mâchoire. « J'ai chanté pour eux, dit-il. Une fois. Quoi qu'on "
         "dise de la Cour, croyez-le. »",
+    'vica':
+        ' Vica alla droit à mon lit de camp, tourna trois fois sur elle-même, et se coucha en travers de mes bottes : chez elle.',
   },
   '6002_camp': {
     '*': " Ceux qui étaient revenus à la crique avec moi dormirent comme des "
@@ -583,6 +629,8 @@ const Map<String, Map<String, String>> _acksFr = {
         "deux d'entre elles.",
     'grosh': " Grosh traversait le quartier comme un homme revenant à un "
         "travail laissé inachevé, et la cendre ne discutait pas avec lui.",
+    'vica':
+        ' Vica garda un pas d’avance dans le quartier, le nez en l’air, et deux fois me détourna d’une rue avant que je sache pourquoi.',
   },
   '3002': {
     '*': " Deux passages, et pour une fois nous étions plusieurs à les "
@@ -591,6 +639,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'vess': " Vess pencha la tête vers le passage de gauche comme on écoute "
         "un son que personne d'autre n'entend. « Celui-là est plus vieux, "
         "dit-elle. Plus vieux n'est pas plus sûr. »",
+    'vica':
+        ' Vica regarda un passage, puis l’autre, puis moi, ce qui n’aidait en rien, et c’était exactement ce qu’il me fallait.',
   },
   '4999': {
     '*': " Quiconque était descendu dans cette cathédrale à mes côtés se "
@@ -604,6 +654,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'kelda': " Kelda s'appuya sur son bouclier et regarda le Gardien tombé "
         "avec quelque chose proche du respect. « Il a tenu, dit-elle. Pour la "
         "mauvaise cause, mais il a tenu. »",
+    'vica':
+        ' Vica était toujours à mes côtés quand la poussière retomba, couverte de crasse, une oreille déchirée, remuant la queue comme si la cathédrale était un jeu qu’on l’avait enfin laissée gagner.',
   },
   '5010': {
     '*': " Les réfugiés du cloître regardaient derrière moi qui s'y tenait, "
@@ -617,6 +669,8 @@ const Map<String, Map<String, String>> _acksFr = {
             "courtoisies.",
     'malrik': " Malrik estimait les reliquaires des yeux et gardait les mains "
         "bien en vue, ce qui chez lui tenait pratiquement de la piété.",
+    'vica':
+        ' Les réfugiés du cloître se pressèrent autour de Vica avant de me regarder, et certains, pour la première fois depuis des jours, rirent.',
   },
   '6001': {
     '*': " Le jour trouva plus d'un d'entre nous à cligner des yeux, et le "
@@ -624,6 +678,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'liora': " Liora se posta dos à l'embrasure sans qu'on le lui demande et "
         "surveilla la rue pendant que je lisais, ce qui est la chose la plus "
         "aimable qu'on ait faite pour un livre en ma présence.",
+    'vica':
+        ' Vica avait dormi pendant toute la lecture, et se réveilla à la dernière page, comme si elle avait écouté malgré tout.',
   },
   '6004': {
     '*': " Du moins, je ne fus pas la seule personne à l'entendre. "
@@ -695,6 +751,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'malrik': " « Très émouvant, dit Malrik. J'ai la priorité sur la salle du "
         "trône. » Je lui dis qu'il pouvait garder le trône. Il dit qu'il y "
         "réfléchirait.",
+    'vica':
+        ' Vica se tenait dans le demi-cercle avec l’équipage, et quand j’eus fini elle s’avança et s’assit à mon côté, et ce fut sa réponse.',
   },
   '7003': {
     '*': " Nous nous tenions ensemble dans les ruines de la salle du trône, "
@@ -741,6 +799,8 @@ const Map<String, Map<String, String>> _acksFr = {
     'malrik': ' Malrik regarda l’Ost d’un bout à l’autre et siffla. « Je '
         'suis né sur un brick, dit-il. Je n’aurais jamais cru voir une '
         'flotte qui soit de mon côté. »',
+    'vica':
+        ' Vica traversa l’Armée à mon talon, et chaque bannière s’inclina vers elle, ce qu’elle prit, à juste titre, pour son dû.',
   },
 };
 

@@ -414,15 +414,15 @@ void main() {
     expect(coins.goldMod, -10);
     expect(coins.pays, isTrue);
     expect(coins.flagsToAdd, ['vica_paid']);
-    expect([
-      for (final c
-          in (dag['1150_vica'] as Map<String, dynamic>)['choices'] as List)
-        (c as Map<String, dynamic>)['recruitAllyId'],
-    ], [
-      'vica',
-      'vica',
-      'vica'
-    ]);
+    // Her starting mood is the choice's own: devoted when the water is shared,
+    // wary of the coins, steady otherwise (Core's party rule seats her on
+    // arriving here; her entry says `permanent`).
+    expect(
+        vica.choices
+            .singleWhere((c) => c.flagsToAdd.contains('vica_shared'))
+            .approvalMods,
+        {'vica': 9});
+    expect(coins.approvalMods, {'vica': -8});
     // The Wells: rest, and the three ways chapter 1 ends.
     expect(nodes['1200']!.description, contains('Saltmouth'));
     for (final ending in ['1000', '1001', '1002']) {
