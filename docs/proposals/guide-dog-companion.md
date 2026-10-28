@@ -39,7 +39,7 @@ All three end with **Vica joining the party** at the choice, then 2001:
 
 Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines, no cost, no check.
 
-## 4. Chapter 1 loses its dog: two ways (no hawks)
+## 4. Chapter 1 loses its dog: two ways
 
 There is **one dog**. Chapter 1 has a second one today: the grey warhound caught in razor wire in Weaver's Alley (`companion_hound`), who follows the hero and is whistled for in 820, 823 and 891. It must stop being a dog, with every choice, outcome and flag still working, text only. Both ways below edit the same five scenes and keep the flags' ids (`companion_hound`, `hound_left`, `hound_wardens`, `hub_891_hound`) with a new meaning: renaming would break old saves and the two tests that read `companion_hound` as a string.
 
@@ -109,7 +109,7 @@ The player's own name for her still applies to the tutorial and the walking stri
 
 ## 7. Scenes that show Vica beside the hero (for UX)
 
-None before `1005_vica` (chapter 1 has no dog; the war-hawk of 270 is a bird). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
+None before `1005_vica` (chapter 1 has no dog; scene 270 holds a lantern or a courier, see section 4). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
 
 ## 8. Risks
 
