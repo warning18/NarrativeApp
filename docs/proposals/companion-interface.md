@@ -1,4 +1,6 @@
-# The camp's Companion interface: a review and two versions (UX, nothing built)
+# The camp's Companion interface: a review and two versions (UX; version B built in v1.606)
+
+> **Built in v1.606:** version B (the party as a formation, a page for each companion, Vica with her dog sprite), with one plain line, "Other companions are still out there.", instead of the "Not with you" list (the user's call: no names, no quest hints, no count). Code: `lib/widgets/party_formation.dart`, `lib/screens/companion_page.dart`, `lib/widgets/companion_parts.dart`; Core's seat rules (`setAllyInParty`, `allyJoinState`, `canBench`) moved unchanged to `lib/widgets/party_actions.dart`. Test: `test/companion_party_test.dart`.
 
 The user: "Could you review the UX of the Companion interface in the camp?" Context: a guide dog (the
 sprite of the tutorial) is **Vica, the one companion every hero has**: she joins automatically before
