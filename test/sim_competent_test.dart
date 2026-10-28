@@ -357,12 +357,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        18,
-        2135,
-        24,
-        92,
-        32,
-        283,
+        15,
+        1172,
+        21,
+        74,
+        28,
+        259,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -404,4 +404,4 @@ void main() {
 /// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
 /// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
 /// every hero).
-const int _naiveChoicesHash = 3755158147;
+const int _naiveChoicesHash = 2866742764;
