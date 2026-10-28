@@ -142,7 +142,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       ActionChip(
         key: const Key('rp_compare'),
         avatar: Icon(Icons.compare_arrows, size: 16, color: ink.tide),
-        label: Text(tr(ref, 'rp_compare')),
+        label: Text(tr(ref, 'rp_compare'), style: TextStyle(color: ink.tide)),
         visualDensity: VisualDensity.compact,
         onPressed: () => showCompareSheet(context, ref, book,
             folder: folder,

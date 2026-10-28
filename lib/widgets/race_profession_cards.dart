@@ -807,7 +807,8 @@ Future<void> showCompareSheet(
                   if (id != first)
                     ChoiceChip(
                       key: Key('compare_with_$id'),
-                      label: Text(book.nameOfChoice(folder, id)),
+                      label: Text(book.nameOfChoice(folder, id),
+                          style: TextStyle(color: theme.colorScheme.onSurface)),
                       selected: second == id,
                       visualDensity: VisualDensity.compact,
                       onSelected: (_) => setState(() => second = id),

@@ -127,7 +127,7 @@ void main() {
         // The ways on sit under the scene: scroll down to them.
         for (var i = 0; i < 12; i++) {
           await tester.dragFrom(
-              Offset(size.width / 2, size.height * 0.7), const Offset(0, -300));
+              Offset(size.width / 2, size.height * 0.3), const Offset(0, -300));
           await tester.pump(const Duration(milliseconds: 200));
         }
         expect(

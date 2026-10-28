@@ -18,7 +18,6 @@ import '../providers/theme_mode_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
-import '../providers/walk_companion_provider.dart';
 import '../widgets/elevenlabs_voice_settings.dart';
 import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
@@ -73,7 +72,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
     final companionAutoTarget = ref.watch(companionAutoTargetProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
-    final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final tutorial = ref.watch(tutorialProvider);
     final appMode = ref.watch(appModeProvider);
     final isEditMode = appMode == AppMode.edit;
@@ -402,15 +400,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(tr(ref, 'walk_companion_setting_title')),
-              subtitle: Text(tr(ref, 'walk_companion_setting_desc')),
-              value: walkCompanionEnabled,
-              onChanged: (value) => ref
-                  .read(walkCompanionEnabledProvider.notifier)
-                  .setEnabled(value),
-            ),
             SwitchListTile(
               key: const Key('politics_hints_setting'),
               contentPadding: EdgeInsets.zero,
