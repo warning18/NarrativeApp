@@ -48,12 +48,35 @@ The dog cannot speak; the remark panel can show an action line. Samples for the 
 
 Leave/warn/devoted lines (`leaveLine` and the others) would also be actions.
 
-## 6. What it needs from Core
+## 6. Its entry, in line with Core's note (#568)
 
-- A companion without a `raceId`/`professionId` (a dog), or a flag on the record. `requiredHouseId` is empty.
-- Numbers and fight build; Core may pick a build that complements the hero's profession.
-- The sprite: the existing dog; UX decides whether it is the grey of the hound or the neutral one.
-- A quest entry (`q_ch2_wicks_walk`), a hub row and two to three scenes: mine, after the user's OK.
+Core's part gives the dog `raceId: ""`, `professionId: ranger` and its own **hound die**, so no companion without a profession is needed (I had asked; withdrawn). `approvesGood / approvesEvil / approvesProfit` are 1 / −1 / 0, so Wick rarely leaves. Core also builds a duo technique with **Liora** (the ranger, "the hunt"); I name it **The Hunt / La Battue**. Liora is also at Saltmouth, so the two can be found within the same chapter.
+
+Name: `companionName` Wick / Wick (the same in French). Quest `q_ch2_wicks_walk` (`recruitQuestId`); its numbers and the reward ally id are Core's.
+
+### The lines the entry needs (all as action beats, EN / FR)
+
+| Field | EN | FR |
+|---|---|---|
+| `critLine` | Wick lunges, jaws closing on the gap. | Wick bondit, les mâchoires se referment sur la brèche. |
+| `dodgeLine` | Wick is already three paces to the left. | Wick est déjà trois pas plus loin sur la gauche. |
+| `fightStartLine` | Wick drops low and watches the foe, not you. | Wick se tapit et guette l’ennemi, pas vous. |
+| `packLine` | Wick counts them with its nose, then stands beside you. | Wick les compte au flair, puis se place à vos côtés. |
+| `koLine` | Wick drags itself between you and the next blow. | Wick se traîne entre vous et le prochain coup. |
+| `chestLine` | Wick sniffs the lid and sits, waiting for you to open it. | Wick flaire le couvercle et s’assoit, attendant que vous l’ouvriez. |
+| `devotedLine` | Wick walks ahead for the first time, and looks back to see you follow. | Wick marche devant pour la première fois et se retourne pour voir si vous suivez. |
+| `warnLine` | Wick stops three paces ahead and will not walk on until you look at it. | Wick s’arrête trois pas devant et ne repart pas avant que vous le regardiez. |
+| `leaveLine` | Wick sits down in the road, and does not follow. | Wick s’assoit au milieu de la route et ne suit plus. |
+
+### Walk lines (the dog crossing the screen, one per mood)
+
+- "Wick keeps its pace to yours, a hand’s breadth from your knee." / « Wick règle son pas sur le vôtre, à un souffle de votre genou. »
+- "Wick stops at every corner and waits for you to choose." / « Wick s’arrête à chaque angle et attend que vous choisissiez. »
+- "Wick sniffs the air and looks at you." / « Wick hume l’air et vous regarde. »
+
+### Remarks (`companion_remarks.json`)
+
+The six in section 5, plus `kindApproved` and `cruelDisapproved` which are already there; Core's approval tuning needs nothing else from me.
 
 ## 7. Decisions for the user
 
