@@ -404,6 +404,8 @@ void main() {
       final enemies = _loadJson('assets/gamedata/enemies.json');
       final companions = _loadJson('assets/gamedata/companions.json');
       for (final id in companions.keys) {
+        // Vica (permanent, v1.601) is never turned: the pact skips her.
+        if ((companions[id] as Map)['permanent'] == true) continue;
         final turned = enemies['${id}_turned'] as Map<String, dynamic>?;
         expect(turned, isNotNull, reason: id);
         expect(turned!['minChapter'], 6);

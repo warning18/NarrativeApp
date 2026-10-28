@@ -25,7 +25,7 @@ Map<String, dynamic> _companions() =>
 void main() {
   test('every companion has a look of their own', () {
     final ids = _companions().keys.toList();
-    expect(ids.length, 8);
+    expect(ids.length, 9); // Vica since v1.601
     final looks = {for (final id in ids) id: partyLookFor(id)};
     expect(looks.values.toSet().length, ids.length);
   });

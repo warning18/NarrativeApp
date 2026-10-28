@@ -888,7 +888,7 @@ const List<double> enemyHealthFloorByChapter = [
   1.36, 1.62, 2.72, 2.72, 2.85, 2.12, 2.05, 2.00, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.25, 1.67, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+  1.25, 2.00, 2.74, 2.74, 2.88, 2.16, 2.09, 2.02, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
@@ -911,8 +911,8 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// mean back to about 51%, docs/simulation/difficulty-review.md). The
 /// difficulty pass (v1.597) brought it to 1.13 for the hero's smaller
 /// health, the curve's targets kept.
-const double bossHealthBaseMultiplier = 1.13;
-const double bossDamageBaseMultiplier = 1.08;
+const double bossHealthBaseMultiplier = 1.25;
+const double bossDamageBaseMultiplier = 1.24;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A

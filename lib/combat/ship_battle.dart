@@ -265,7 +265,8 @@ enum CrewOrder {
   /// Tobin: the bulwark mended and a layer raised.
   shoreUp,
 
-  /// Malrik: the enemy's helmsman marked; it slips nothing this turn.
+  /// Malrik (and Vica, who barks him off his line): the enemy's helmsman
+  /// marked; it slips nothing this turn.
   markHelm,
 
   /// Sable: the enemy's rigging cut; every weapon loses a step of charge.
@@ -287,6 +288,7 @@ const Map<String, CrewOrder> companionOrders = {
   'sable': CrewOrder.cutRigging,
   'liora': CrewOrder.eagleEye,
   'vess': CrewOrder.voidWard,
+  'vica': CrewOrder.markHelm,
 };
 
 CrewOrder? orderFor(ShipCrew crew) =>

@@ -154,6 +154,7 @@ void main() {
         'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
         'expedition_steps', 'specialisations', 'spec_variants', //
         'training_paths', 'politics_events',
+        'companions', // Vica joins every hero (v1.601)
       ])
         name: _table(name),
     };

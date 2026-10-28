@@ -80,6 +80,9 @@ const Map<String, DieSkin> dieSkins = {
       DiePattern.ink, Color(0xFF6A8CFF)),
   'grosh_die':
       DieSkin('Tusk', Color(0xFF8F8771), Color(0xFFE0D6B6), DiePattern.cracks),
+  // Vica's die (v1.601): her black and white coat.
+  'hound_die': DieSkin('Black and white coat', Color(0xFF1E1E1E),
+      Color(0xFFF2F0EA), DiePattern.scratch),
   'apprentice_die':
       DieSkin('Chalk', Color(0xFFD8D4C6), Color(0xFF7C8CFF), DiePattern.chalk),
   'sage_die': DieSkin('Sky-glass', Color(0xFF21324D), Color(0xFF96D9FF),
