@@ -1,144 +1,298 @@
-# Vica, the guide dog: the companion every hero gets (Narrative, proposal)
+# The guide dog as a companion (Core's part)
 
-Status: **proposal, no data change.** Docs only; built after the user's OK on this note. Settled by the user: the dog is **Vica**, she is the tutorial's guide and **the only dog of the game** (she does not appear in chapter 1 outside the tutorial animations), and she is **the mandatory companion**: every hero gets her, there is no quest and no way to refuse her, and she is how the game guarantees a party (difficulty is balanced for "hero plus Vica"). Other companions are bonuses that replace her later; she is always there if the party would otherwise be empty. Core's part (#568): `ranger` class, her own hound die, approval 1 / −1 / 0, a duo with Liora; Core's entry says she joins automatically.
+> **Superseded in part by §6 (the user's change).** Vica is now the
+> companion every hero gets, from the story, not a quest. §1–§5 below are
+> kept for the record; §6 says what changes.
 
-## 1. What the tutorial's dog is
+The user decided that the guide dog of the tutorial becomes a normal
+companion. It is earned by a quest in the second big town and can be swapped
+out like the others. Narrative proposes the quest. This note covers what the
+dog's entry needs, its numbers, whether it should change with the hero's
+profession, and the risks for the simulator. This is docs only; nothing is
+built yet.
 
-She speaks in the first person, cheerfully ("Woof! I'm {name}… I trot along each time the story moves on"), and is unnamed by default: `{name}` is the name the player sets in Settings, falling back to "your companion". So Vica is a friendly, show-you-around dog.
+**The second big town is Saltmouth (chapter 2).** Alster is the first (nodes
+0–960); Saltmouth holds nodes 2000–2900. A party reaches Saltmouth at about
+level 2–3 and leaves it at about 4. Kelda, Sable and Liora are recruited in
+chapter 2 too, so the dog competes with them for the two seats.
 
-**Her sprite** (`assets/visuals/companion/dog_companion_animations`): a **small, sturdy, flat-faced dog, white with black patches, black upright ears**, short legs: a bulldog or terrier type. The story must not contradict it, so Vica is exactly that, not a lean or sand-coloured hunting dog.
+## 1. Its entry in companions.json
 
-## 2. When she arrives: the end of the desert walk after the crash
+Same fields as the other eight:
 
-The user's wish: she appears **at the end of the desert walk after the Lark crashes**: a few steps off, the hero is lost, nearly dies, and she shows the way. The flow, read from the story file:
-
-1. 965 → **1100** (the wreck), then the land crossing `crash_to_sleeper` → **1120**, 1125, 1130 (the Sleeper's Face), **1140** (the looters' camp; also **1140_spotted**).
-2. The choices of 1140 (three) and 1140_spotted (two) take the land crossing `sleeper_to_wells` and arrive at **1200, the White Wells** ("The lights were an oasis").
-3. At the Wells, the origin endings **1000 / 1001 / 1002** ("Proceed to Chapter 2"), then 2001 and Saltmouth.
-
-The arrival is one new scene, **`1150_vica`**, at the **end of the second crossing**: the five choices of 1140 and 1140_spotted point to it instead of 1200 (their `landRouteId: sleeper_to_wells`, flags and text are unchanged; the crossing plays, then this scene), and `1150_vica` leads to 1200. It is in the id space of chapter 1, location `white_wells` (the dunes at the Wells' edge). **She joins on its closing choice, so she is in the party for the White Wells, Vess's meeting, the origin endings and everything after.** The origin endings and 2001 are untouched (the earlier plan for `1150_vica` before 2001 is withdrawn).
-
-## 3. The scene `1150_vica` (6 beats; grim, then warm)
-
-1. I left the Face with the first stars, and had gone perhaps two hundred paces when the dunes closed behind me like a door. The wind had already taken my tracks.
-2. I do not know how long. The sun was a white coin, then it was not there. Every dune was the same dune and my mouth was sand. I sat down, because walking in circles cost more than sitting.
-3. *(the turn)* Something moved at the edge of my eye: a dog, small and square, white with black patches under the dust, flat-faced, ears standing up like a bat's. She looked at me the way you look at a decision. She turned, took three steps, and looked back.
-4. I followed because I had nothing left to argue with. She stopped at every crest and waited for me, and she did not once look at the sky.
-5. *(warm)* The lights came up out of the dark all at once: a hollow in the dunes, palms, and a scatter of white clay huts glowing like loaves in an oven. She sat down at the edge of the light and would not go any further without me.
-6. I called her Vica. I could not have told you why; the word came up out of the heat like the name of an old friend, and she turned her head as if it had been said before.
-
-### What the player chooses (no way to refuse)
-
-All three end with **Vica joining the party**, then 1200:
-
-- **"Follow her down."** She starts steady.
-- **"Pour what is left in your flask into your hand for her."** She starts devoted (`vica_shared`).
-- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She bites a coin, finds it is not food, and looks at the hero with great patience: she keeps her but starts **wary of the hero's stupidity** (flag `vica_paid`), a gently comic beat. **The money is really lost: 10 gold**, a fixed cost (`goldMod: -10`, `pays: true`). Ten is the size of chapter 1's small purses (the quay's +10, the strip-the-handler +15), so it stings without hurting a poor hero; Core confirms. A hero with less than 10 gold simply does not see this choice (the `pays` rule) and still has the other two.
-
-Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines.
-
-## 4. Chapter 1 loses its dog: two ways
-
-There is **one dog**. Chapter 1 has a second one today: the grey warhound caught in razor wire in Weaver's Alley (`companion_hound`), who follows the hero and is whistled for in 820, 823 and 891. It must stop being a dog, with every choice, outcome and flag still working, text only. Both ways below edit the same five scenes and keep the flags' ids (`companion_hound`, `hound_left`, `hound_wardens`, `hub_891_hound`) with a new meaning: renaming would break old saves and the two tests that read `companion_hound` as a string.
-
-### A. A signal-lantern in the wire (recommended)
-
-**In the wire:** a **Dominion signal-lantern**, a hooded brass lantern with a shuttered flare, still burning, caught in the razor wire beside its dead bearer (an Inquisition signaller, white on his sleeve). **Cut it free** = take it; it hangs on the hero's belt. **The whistle becomes raising the lantern**: the shutter opens on a white flare that dazzles.
-
-| Scene | The one-line change (EN and FR; no choice, outcome or flag changes) |
-|---|---|
-| **270** | "a lean grey warhound, one ear in ribbons, foam at its jaws" → "a hooded brass lantern, its shutter bent, still burning in the wire"; the handler becomes "an Inquisition signaller"; "a leash" → "a lanyard"; "its eyes found mine… the patience of something starved" → "its small flame held steady, patient as something that has been left burning". The prompt "What becomes of the beast and its handler?" → "of the lantern and its bearer"; the choice lines keep their words ("Cut it free" works for a lantern). `facing: plague_hound` removed: no portrait. |
-| **300** (2 callbacks) | `companion_hound`: "gave up the dog… had fallen into step three paces behind me" → "gave up the lantern… hung from my belt, still warm"; `hound_left`: "the wire had sung once as the dog tested it again" → "a small light still burned in the alley behind me". |
-| **820** | "Whistle for the hound" → "Raise the lantern" / « Lever la lanterne ». Same `showIfFlags`, same `hound_wardens`. |
-| **823** (callback) | "a grey blur taking the nearest Warden by the throat" → "a white flare that took the nearest Warden full in the eyes"; "the dog sat afterward, panting" → "the lantern hung from my belt, ticking as it cooled". |
-| **891** | choice "Whistle for the hound" → "Raise the lantern"; its callback: "the hound had gone ahead into the crowd… trip a porter" → "the flare opened the crowd on the steps like a hand through water; I relieved a dropped purse of its previous owner's claim". |
-
-It is a lantern, which the Dominion world already has everywhere (Vane's hooded black one is the Inquisitor's; this is a signaller's), and it cannot be mistaken for Vica.
-
-### B. A wounded courier in the wire
-
-**In the wire:** a young **Inquisition courier** (a runner, hurt, not hostile), caught in the razor wire with her escort dead beside her. **Cut her free**: she owes the hero and **walks three paces behind**, as couriers walk behind the one they carry for. **The whistle** is the courier's own brass signal whistle: **blow it** and she comes.
-
-| Scene | The one-line change (EN and FR; no choice, outcome or flag changes) |
-|---|---|
-| **270** | "a lean grey warhound… foam at its jaws" → "a young Inquisition courier, a runner, her coat torn on the wire, hurt but awake"; the handler becomes "her escort, a sergeant of the Inquisition"; "a leash" stays a "strap". `facing` removed. The prompt: "What becomes of the girl and her escort?" The choices keep their words. |
-| **300** (2 callbacks) | `companion_hound`: "had fallen into step three paces behind me, where some dead handler had trained it to walk" → "…where couriers are taught to walk behind whoever they carry for. I had no name for her yet"; `hound_left`: "the wire had sung once as the dog tested it again" → "somewhere in the alley a voice had said one word, and I had not looked back". |
-| **820** | "Whistle for the hound" → "Blow the courier's whistle" / « Souffler dans le sifflet du courrier ». Same flags. |
-| **823** (callback) | "taking the nearest Warden by the throat" → "…shouting that the Inquisitor-General wanted the Wardens at the north stair; the nearest turned, and my dagger did the rest"; "the dog sat afterward" → "she waited afterward, breathing hard". |
-| **891** | choice "Whistle for the courier" with her callback: "she went ahead through the queue on the steps with a courier's pass and came back with a purse". |
-
-It keeps the whistle literally and makes the helper a person, but it is **a second character** the player may expect to meet again (the hub flag line), and it needs the most rewriting.
-
-### Which I recommend
-
-**A, the signal-lantern.** It changes the fewest *meanings* (an object has no future in the story, so nothing is promised), cannot be confused with Vica, and fits the Dominion's lanterns. B keeps the whistle but creates a person the story would owe a return.
-
-**Risk (both):** text only. No choice, flag, reward or number moves, so **no story pin, simulator tuple or test count changes** (Core has nothing to re-pin for this part). The two tests that mention `companion_hound` read only the flag's id. The French lint and `qa_story_fr` run on the new text. The tutorial's walking dog is UI and is not touched.
-
-### Why chapter 1 changes at all (three lines for the user)
-
-Scene 270 **as written today already has a dog**: the grey warhound caught in razor wire (cutting it free sets the flag `companion_hound`), who then follows the hero through scenes 300, 820, 823 and 891. Since the user wants **one dog only, and none in chapter 1**, those five scenes must stop showing a dog; that is the whole reason chapter 1 is touched, and no scene is added there. **The cheapest honest answer is still A** (the lantern): about ten phrases in five scenes, text only, no choice, flag or outcome changes. Deleting the warhound would be dearer: scene 270 would lose its three-way choice (its flags are read in four other scenes and two tests).
-
-## 4b. One companion at the start: Vess moves to chapter 2
-
-Today Vess is recruited at the end of chapter 1. The data: her quest `q_ch1_vess_in_the_dark` (a Flag objective on `void_banner_bearer`, which the three origin endings set) is unlocked either at the Wells (`1210`, a cloaked woman by the far well, for a hero with the tear's mark) or in Saltmouth (`2015_vess`, from the hub row "Face the cloaked figure trailing you"). Unlocked at the Wells, it completes at the origin endings: she joins the party at the end of chapter 1. Unlocked in Saltmouth, it completes at once: she joins in chapter 2.
-
-**The smallest change: only the Saltmouth path unlocks the quest.**
-
-| Where | The change |
-|---|---|
-| `1210` ("Go back to the fire") | remove `unlockQuestId: q_ch1_vess_in_the_dark`; keep `met_vess`. She still says "I will find you on the other side of the sand"; nothing joins. |
-| hub `2015`, row "Face the cloaked figure trailing you" | `hideIfFlags` loses `met_vess` (it keeps `hub_2015_vess`), so a hero who met her at the Wells also gets the scene. `showIfFlags: void_banner_bearer` stays. |
-| `2015_vess` "Hear her out" | unchanged: it unlocks the quest, and with `void_banner_bearer` already held the objective completes at once: Vess joins in chapter 2, after Saltmouth is reached, like Kelda, Sable and Liora. |
-| `quests.json` | `q_ch1_vess_in_the_dark`: `chapter` 1 → 2 (the id stays, so saves and the simulator keep working). |
-
-**What reads Vess in chapter 1:** `1200` (the row "Answer the cloaked woman" hides on `met_vess`), `1210`, `2001` (a line: she "had joined the caravan on the second night", flavour that still reads true: she walks apart from it), `3002` (a line on his name). No chapter spine beat, world-map scene or story pin reads her in chapter 1. **The ally acknowledgment lines** (`lib/data/ally_acknowledgments.dart`, Core's file) have a Vess line for several scenes; they only fire when she is in the party, so they simply start later.
-
-**Old saves:** a save where the quest was already taken keeps its quest and companion, and the objective is unchanged. A save that met her at the Wells and has not taken the quest sees the Saltmouth row now (previously hidden). A save that took her at the Wells and is still in chapter 1 would, if it later reaches Saltmouth, see the row and "Hear her out" again: the quest unlock is a no-op, the +5 Vigil standing would repeat (small; Core may guard it).
-
-**What Core must change:** the party rule (the party starts with Vica only, Vica is guaranteed when the party would be empty); the simulator's competent policy and `sim_companions_test` / `sim_competent_test` pins (Vess now joins in chapter 2: the tuple moves); any test that expects Vess's chapter. **Vica needs ally acknowledgment lines** in the same file (one per scene where the others have one, from chapter 2 on): I can write them in the build PR.
-
-## 5. The Settings name
-
-The player's own name for her still applies to the tutorial and the walking strip; in the story she is Vica (a clash only shows for a player who renamed her, and the story's name is the salt-cutters' name for her). **Approved:** `tut_guide_default_name` = **Vica / Vica** (one string, EN and FR), so the unnamed tutorial dog is already Vica. No `{dog}` token.
-
-## 6. What Core's entry needs from me
-
-`companionName`: **Vica** / **Vica**; no `recruitQuestId`; `requiredHouseId`: empty; approval 1 / −1 / 0; a duo with Liora: **The Hunt / La Battue**. The join is on the closing choice of `1150_vica` (any of the three).
-
-### The lines (action beats, EN / FR)
-
-| Field | EN | FR |
+| Field | Value | Who |
 |---|---|---|
-| `critLine` | Vica lunges, jaws closing on the gap. | Vica bondit, les mâchoires se referment sur la brèche. |
-| `dodgeLine` | Vica is already three paces to the left. | Vica est déjà trois pas plus loin sur la gauche. |
-| `fightStartLine` | Vica drops low and watches the foe, not you. | Vica se tapit et guette l’ennemi, pas vous. |
-| `packLine` | Vica counts them with her nose, then stands beside you. | Vica les compte au flair, puis se place à vos côtés. |
-| `koLine` | Vica drags herself between you and the next blow. | Vica se traîne entre vous et le prochain coup. |
-| `chestLine` | Vica sniffs the lid and sits, waiting for you to open it. | Vica flaire le couvercle et s’assoit, attendant que vous l’ouvriez. |
-| `devotedLine` | Vica walks ahead for the first time, and looks back to see you follow. | Vica marche devant pour la première fois et se retourne pour voir si vous suivez. |
-| `warnLine` | Vica stops three paces ahead and will not walk on until you look at her. | Vica s’arrête trois pas devant et ne repart pas avant que vous la regardiez. |
-| `leaveLine` | Vica sits down in the road, and does not follow. | Vica s’assoit au milieu de la route et ne suit plus. |
+| `companionID` | `guide_dog` (or the name Narrative gives it) | Narrative |
+| `companionName`, `_fr` | Narrative | Narrative |
+| `raceId` | `""`: no race. The game falls back to no race bonus everywhere it reads one (fight, simulator, camp, inventory, expedition). A "hound" race would show up in character creation. | Core |
+| `professionId` | `ranger` | Core |
+| `signatureDiceId` | `hound_die` (new) | Core |
+| `recruitQuestId` | the Saltmouth quest | Narrative (Core sets its numbers) |
+| `requiredHouseId` | `""` | — |
+| `approvesGood` / `approvesEvil` / `approvesProfit` | a dog doesn't judge much: 1 / −1 / 0, so it rarely leaves | Narrative proposes, Core checks |
+| the remark lines | every line field the others have | Narrative |
 
-**Walk lines:** "Vica keeps her pace to yours, a hand’s breadth from your knee." / « Vica règle son pas sur le vôtre, à un souffle de votre genou. » · "Vica stops at every corner and waits for you to choose." / « Vica s’arrête à chaque angle et attend que vous choisissiez. » · "Vica sniffs the air and looks at you." / « Vica hume l’air et vous regarde. »
+**Why `ranger`:**
 
-**Remarks:** kindApproved "Vica presses against your leg and does not move for a while." / « Vica se serre contre votre jambe et ne bouge plus pendant un moment. » · cruelDisapproved "Vica stops three paces ahead and will not walk on until you look at her." · checkPassed "Vica had already turned her head toward the right door." / « Vica avait déjà tourné la tête vers la bonne porte. » · checkFailed "Vica sat down in the road and looked at you, patiently." / « Vica s’assit en travers du chemin et vous regarda, patiemment. » · approved "A short bark, once, like a lamp being lit." / « Un aboiement bref, une fois, comme une lampe qu’on allume. » · disapproved "Vica turns away to watch the road behind." / « Vica se détourne pour guetter la route derrière vous. »
+- It gives +3 health, +2 Dexterity (dodge), +2 Wisdom and +1 Perception. The
+  Perception sharpens the whole party's read of the foe's next move: the dog
+  smells it coming.
+- It does not out-tank Kelda or Grosh, and does not out-hit anyone.
 
-### A loyalty scene idea (the camp, once her standing is high)
+**Other data the dog needs:**
 
-*The wind.* One dusk at the cove the wind comes up off the sand-road. Vica goes still, faces it, and walks out; she comes back with a lost camp child (or a goat), the mirror of the hero's desert. She walks **ahead** of the hero to the fire for the first time.
+- **A duo technique** in `lib/combat/duo_techniques.dart`. A test wants every
+  companion to have one, and the test that expects exactly 8 duos goes to 9.
+  The pair could be with Liora, the ranger ("the hunt"). Core builds it;
+  Narrative names it.
+- **Its lines** in `companion_remarks.json` and its walk lines, as for the
+  others (Narrative).
 
-## 7. Scenes that show Vica beside the hero (for UX)
+## 2. Its numbers
 
-None before `1150_vica` (chapter 1 has no dog; scene 270 holds a lantern or a courier, see section 4). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
+These are the same rules as any companion. Health and damage grow from the
+profession's base with the hero's level (+12% and +8% a level), and change
+with approval.
 
-## 8. Risks
+| Party level | Health | Damage |
+|---|---|---|
+| 3, joining at Saltmouth | 29 | 2 |
+| 9, chapter 4 | 45 | 3 |
+| 16, chapter 6 | 64 | 4 |
 
-- `1150_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The chapter 1 edits (either way) move no pin.
-- The three origin endings change their `next_id` only; their banner grants are untouched.
-- Core: the guarantee that she is in the party when it would be empty, her fight and duo, and the join on a choice. None of it is Narrative's.
+The base is 20 + 3 = 23 health and 2 damage. For comparison, Kelda (dwarf
+warrior) starts at 33 health and has 41 at level 3; Sable (human rogue) has
+32.
 
-## 9. Decisions for the user
+**`hound_die`, a d6 (new):**
 
-1. **Chapter 1's creature** (section 4): the signal-lantern (A, recommended) or the wounded courier (B)?
-2. **The coin choice** (section 3): 10 gold really lost, with Vica wary of the hero's stupidity. Fine, or another amount?
+| Face | Effect |
+|---|---|
+| Bite | Attack 2 |
+| Snap | Attack 1 |
+| Guard | Defend 2. The largest block draws the blows, so a guarding dog takes a hit for the hero. |
+| Stand fast | Defend 1 |
+| Lunge | Skill: `heavy_attack` |
+| Empty | Nothing. The dog gets distracted. |
+
+It carries no element, so it never takes a foe's weakness away from the hero.
+On the simulator's worth scale, `simCompanionValue` reads it below Kelda,
+Liora and Sable. The pick rule therefore benches it once a stronger companion
+joins, which is what "replaceable" should mean.
+
+## 3. A build that matches the hero's profession? Not worth it now
+
+The idea: five variants of the dog, one picked from the hero's profession
+when it joins. For example, a guard dog for a mage and a hunting dog for a
+warrior.
+
+**Why not:**
+
+- **About 12 places read a companion's profession or die straight from
+  `companions.json`:**
+  - the fight setup;
+  - the simulator (twice);
+  - the skills screen and skill sheet (the companion's skill tree comes from
+    its profession);
+  - the dice loadout;
+  - the camp, the inventory and the expedition screen;
+  - the ship battle panel;
+  - the save's dice sizes;
+  - clan affinity.
+
+  A variant means a new field on the save (or a helper every one of those
+  places calls instead), half of them UX's files. If even one place misses
+  it, the dog shows one profession and fights as another.
+- **Five dice and five builds to balance and test, for one companion.**
+- **The gain is small.** Two seats and nine companions already let a player
+  build around their hero. The dog's Perception (the party's read of the
+  foe) helps every profession the same.
+
+**If the user wants a little of it later,** one face of the hound die could
+change with the hero's profession, decided in one place (the die's
+resolution, used by both the fight and the simulator). For example:
+
+- a mage's dog guards: Defend 3;
+- a warrior's dog harries: the foe −1 damage this round;
+- a cleric's dog stays close: heals the hero 2.
+
+That touches two files and no save field. It is a later step if the user
+asks.
+
+## 4. Risks for the simulator
+
+- **The competent profile will seek the quest.** It already takes the way
+  that offers a companion's quest when it can. The dog then joins most
+  competent runs in chapter 2 and takes a seat until Kelda's Hall or a
+  stronger recruit benches it.
+  - The competent and stubborn profiles win a little more in chapters 2–3.
+  - The naive profile has no companions and is unchanged, so the CI bands
+    (`boss_balance`, `clash_balance`, the champions) do not move.
+- **Tests that move:**
+  - `dice_rules_test` (8 duos → 9);
+  - the tests that walk every companion's lines (`companion_remarks_test`,
+    `approval_test`), which pass once Narrative's lines are in;
+  - `sim_companions_test`, whose numbers compare profiles rather than pin
+    them. The naive run there is pinned and does not move.
+- **The difficulty question (§7 of `difficulty-pass.md`) gets one more
+  companion to weigh.** A dog in chapter 2 makes the early party
+  stronger, so the stubborn profile wins more there. I will measure the dog
+  in when it is built, before the user is asked about §7 again.
+- **The tutorial dog and the companion dog are the same animal.** If the
+  guide still shows during the tutorial and the dog later walks with the
+  party (`walking_companion_strip.dart`), UX decides how the guide hands over
+  to the companion (sprite, name). That is not Core's part.
+
+## 5. What Core builds once Narrative's quest is in
+
+1. The `companions.json` entry: the race, profession, die and approval
+   numbers above, with Narrative's text.
+2. `hound_die` in `dice.json`.
+3. The duo in `duo_techniques.dart`.
+4. The quest's reward numbers (gold, XP, `rewardAllyId: guide_dog`).
+5. A 10-run measure of the competent and stubborn profiles with the dog,
+   added to `difficulty-pass.md`.
+6. The tests above re-pinned.
+
+## 6. Update: Vica is the companion every hero gets
+
+The user's change: Vica, the tutorial's guide dog, joins every hero
+automatically, just before the city after the desert. Narrative pins the
+scene. Difficulty is then tuned for "hero plus Vica", even for a player who
+finds no other companion. Other companions replace her in the party later.
+
+### Where and when
+
+- **When she joins:** the city after the desert is Saltmouth. The crossing
+  runs from the wreck of the Lark (`1100`) to the White Wells (`1200`), and
+  Saltmouth starts at `2000`. So she joins at the end of the chapter 1 → 2
+  road, at about **level 2–3**. Narrative picks the scene; anywhere between
+  `1200` and `2000` changes nothing below.
+- **Her numbers there:** the §2 table.
+  - Level 3: 29 health, 2 damage.
+  - Level 9: 45 health, 3 damage.
+  - Level 16: 64 health, 4 damage.
+  - `hound_die` as in §2.
+
+### Her entry, changed from §1
+
+| Field | Value |
+|---|---|
+| `companionID` | `vica` |
+| `companionName` | Vica (Narrative's lines, already written on `claude/narrative-dog`) |
+| `raceId` / `professionId` / `signatureDiceId` | `""` / `ranger` / `hound_die` (unchanged) |
+| `recruitQuestId` | `""`: no quest, and no Good or Evil gate |
+| `storyRecruit` (new) | `true`. The scene Narrative picks carries `recruitAllyId: "vica"` on its way on, and the session recruits her there. This is the quest's `rewardAllyId`, put on a choice. |
+| `permanent` (new) | `true`. She never leaves at low approval, and `loseAllyId` skips her. A knock-out in a fight lasts only for that fight, as for everyone. |
+| approval | 1 / −1 / 0. Her approval still moves her lines and her devoted/wary tier (±10% health and damage). |
+
+### The rules Core adds
+
+1. **Recruit from the story.** A choice field `recruitAllyId` calls the same
+   `recruitAlly` a quest uses. The simulator's walk does the same.
+2. **Always seated when the party would be empty.** After a recruit,
+   departure, loss or bench, if no companion is seated and Vica is
+   recruited, she takes a seat.
+   - In the camp, the player can bench her only by seating someone else. UX
+     greys the "bench" control when she is the last one seated; Core gives
+     them `canBench(id)`.
+3. **She never leaves.** The leave line at −12 approval and `loseAllyId`
+   skip a `permanent` companion.
+4. **Old saves.** A save already past the join scene gets her on load: Core
+   checks the scene's flag, or the furthest chapter ≥ 2. Without that,
+   today's players would never meet her.
+5. **The duo with Liora** (The Hunt / La Battue), as in §1.
+
+### A face that changes with the hero's profession: still no, but measured
+
+Because she is guaranteed, I measured the cheaper option from §3: her
+"Distracted" face (empty) becomes a face that depends on the hero's
+profession:
+
+- warrior: Lick wounds, heal 2;
+- rogue: Lick wounds, heal 2;
+- mage: Shield, Defend 3;
+- ranger: Shield, Defend 3;
+- cleric: Harry, Attack 3.
+
+**How it was measured:** one human hero per profession, no gear, at each
+chapter's usual level, with Vica, against six foes of chapters 3–6, 60
+fights each.
+
+| Hero + Vica, won | Warrior | Mage | Rogue | Cleric | Ranger | All |
+|---|---|---|---|---|---|---|
+| Her plain die | 0.31 | 0.48 | 0.40 | 0.28 | 0.20 | 0.34 |
+| With the profession face | 0.34 | 0.48 | 0.34 | 0.31 | 0.20 | 0.34 |
+
+**It changes almost nothing.** It does not close the gap it was meant to
+close:
+
+- the ranger stays the weakest, at 0.20;
+- the rogue loses with a heal in place of a chance at nothing.
+
+A face is one sixth of her rolls, and her damage is small, so no single face
+covers a hero's weakness. Compensating the hero's weakness would need her
+whole build to change with the hero, which is the five-variant cost of §3.
+**My call: plain Vica.** If the user wants her to feel tailored, her lines
+can follow the hero's profession at no balance cost. That is Narrative's
+part.
+
+### The simulator: every profile has her
+
+The naive profile becomes "hero + Vica, little gear, the starter die".
+That is the baseline the user asked to tune for. The competent and stubborn
+profiles get her too and may bench her for stronger recruits. The pick rule
+already benches the weakest seat.
+
+**What moves:**
+
+| Test | Today (naive = no companion) | With Vica | Re-pin |
+|---|---|---|---|
+| `boss_balance` boss curve (11 bosses, the claimants pooled, the mean, professions within 8 points) | targets 0.75 → 0.35 | everyone wins more from chapter 2 on | **Keep the targets** (they are the design). Raise the foes so hero + Vica meets them: regular health floors for chapters 2–8, the boss floor, and per-boss health where one strays. Aurel Vane (chapter 1) does not move. |
+| `nemesis_quests` champions' curve (about 0.5) | 0.53 | higher | the champions' health, as at v1.597 |
+| `clash_balance` (a gap between two rule sets) | both sides naive | both sides move together | run once; expected to hold |
+| `chapter_one_fights` | chapter 1 | before Vica joins | unchanged |
+| `sim_competent_test`, `sim_companions_test` (the pinned naive run: numbers and choices hash) | pinned | moves | re-pin both, once |
+| `sim_quest_politics_test`, `stat_*`, `character_start` | logic | | unchanged |
+| new: `vica_test` | | | she joins at the scene, is seated when the party is empty, never leaves, an old save gets her, and the sim seats her for every profile |
+
+All of this is one build PR (the entry, the rules, the simulator, the
+re-sizing), running only these band tests. No broad batch.
+
+## 7. Built (v1.601)
+
+The user approved §6, and Narrative's story PR follows mine.
+
+**Data**
+- **`companions.json` `vica`:**
+  - `raceId ""`, `professionId ranger`, `hound_die`, approval 1 / −1 / 0.
+  - `storyRecruit`, `permanent`, `joinNodeIds: ["1150_vica", "1200"]`.
+  - The lines are Narrative's, from their note.
+- **`hound_die`**, a d6:
+
+  | Face | Effect |
+  |---|---|
+  | Bite | Attack 2 |
+  | Snap | Attack 1 |
+  | Guard | Defend 2 |
+  | Stand Fast | Defend 1 |
+  | Instinct | Skill `ranger_beast_bond`, her signature face for duos |
+  | Lick Wounds | Heal 1 |
+
+  - The planned empty "Distracted" face became Lick Wounds. The dice rules allow no Empty face, and every face must take a skill.
+  - Lunge became Instinct, because a duo needs a signature face that isn't `heavy_attack`.
+- **The duo `the_hunt`** (Liora and Vica): a stun blow.
+- **Her remark lines** in `companion_remarks.json`: the lines of Narrative's note, plus a second line for each moment, because the remark test wants two. Narrative may reword them.
+
+**Rules** (`lib/data/story_companions.dart`)
+- **When she joins:** at the first join scene the story reaches. In the game, `storyRecruitsProvider` watches the visited scenes. A save already past the White Wells gets her at once, or at its next step.
+- **She can't leave:**
+  - she never falls to −12 approval (she stays wary at worst);
+  - `loseAllyId` skips her, and `*` takes the first other companion seated.
+- **She keeps the party from going empty:**
+  - when a bench would empty the party, she sits down in it;
+  - `canBench(id)` refuses to bench her when she is the last one seated.
+- **The simulator** gives her to every policy at the same scenes. The naive player recruits no one else.
+
+**Balance**
+All bands are sized for "hero + Vica"; their targets are kept. `difficulty-pass.md` §9 has the numbers.

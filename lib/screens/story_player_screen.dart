@@ -43,6 +43,7 @@ import '../data/scene_lock.dart';
 import '../data/quest_tracking.dart' show isMainQuest;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
+import '../data/story_companions.dart';
 import '../data/turn_in_choices.dart';
 import '../data/camp_errands.dart' show storyChoiceTarget;
 import '../data/scene_flow.dart';
@@ -2266,7 +2267,8 @@ Future<bool> startRoadEncounter(
   return true;
 }
 
-/// `@first_ally` among a choice's enemies is the first active companion,
+/// `@first_ally` among a choice's enemies is the first active companion
+/// (never Vica, v1.601),
 /// turned: they leave the party for good before the fight and stand across
 /// the sand as `<id>_turned`; with no one left to turn, the Inquisition's
 /// own champion takes the field. The flags `companion_turned` /
@@ -2275,12 +2277,13 @@ Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
   if (!ids.contains('@first_ally')) return ids;
   final notifier = ref.read(playerSessionProvider.notifier);
   final session = ref.read(playerSessionProvider);
+  final companions =
+      ref.read(gameDbProvider(companionsSchema)).value ?? const {};
+  // Never Vica, who cannot be taken (story_companions.dart).
   final allyId =
-      session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
+      storyLossOf('*', active: session.activeAllyIds, companions: companions);
   if (allyId != null) {
-    notifier.loseAlly(allyId,
-        companions:
-            ref.read(gameDbProvider(companionsSchema)).value ?? const {});
+    notifier.loseAlly(allyId, companions: companions);
     await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
   } else {
     await notifier.applyChoiceEffects(flagsToAdd: const ['legate_fought']);

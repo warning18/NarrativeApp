@@ -145,6 +145,7 @@ final _tables = {
     'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
     'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
     'expedition_steps', 'training_paths', 'politics_events',
+    'companions', // Vica joins every hero (v1.601)
   ])
     name: _table(name),
 };
@@ -344,7 +345,7 @@ void main() {
     test('naive is unchanged: the run before the policy existed', () {
       // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
       // v1.577 when three scenes became two pages each (the run's dice move),
-      // and at v1.597 (the difficulty pass).
+      // at v1.597 (the difficulty pass) and at v1.601 (Vica, with her table).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -356,12 +357,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        17,
-        2460,
-        26,
-        78,
-        34,
-        319,
+        15,
+        1172,
+        21,
+        74,
+        28,
+        259,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -401,5 +402,6 @@ void main() {
 /// _stableHash of the naive warrior's ways taken (seed 7), from v1.562;
 /// re-pinned at v1.577 (three scenes became two pages each) and at v1.578
 /// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
-/// smaller health on both sides, a weakness ×2).
-const int _naiveChoicesHash = 1696383323;
+/// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
+/// every hero).
+const int _naiveChoicesHash = 2866742764;

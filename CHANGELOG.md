@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.603.0+639]
+
+- **UX: choosing your people and your calling.** The new-game picker is now
+  two steps, People then Calling, with one card each: its mark, name, the way
+  it plays (the playstyle line) and its four biggest numbers.
+  - A tap opens the card: the lore (first sentence, "more" for the rest), the
+    clans that will court you (tap one for its banner, motto and what it
+    stands for), what it unlocks, and its starting skill and spells.
+  - **Compare** sets two side by side and picks one; the dice still
+    randomises both.
+  - Once both are chosen a summary card shows the pair, the clans that come
+    first and what you will play, above Start.
+  - The radar that sat above the rails is gone; the intro flow is untouched.
+- Tests: `race_profession_choice_test.dart` replaces `preset_rail_test.dart`
+  (five cards at 360 px in French, names whole, open card, compare, summary).
+
+## [1.602.0+638]
+
+Vica finds every hero at the end of the desert walk after the crash: lost a few hundred paces from the Sleeper's Face, nearly dead, the hero is led to the lights of the White Wells by a small black-and-white dog, and is her companion from then on (the three small ways to treat her set how she starts). Chapter 1 has no other dog: the grey warhound of Weaver's Alley is a signal-lantern now, raised in the Black Hold and on the quay. Vess joins in Saltmouth, in chapter 2, like Kelda, Sable and Liora. The unnamed tutorial dog is Vica. Her remarks and her lines at fifteen scenes are in both languages.
+
+## [1.601.0+637]
+
+- **Core: Vica, the companion every hero gets** (docs/proposals/
+  guide-dog-companion.md §6–§7). Vica is the tutorial's guide dog. She joins
+  every hero at her scene (Narrative's `1150_vica`, the next release), or at
+  the White Wells for a save or a path that skips it.
+  - She never leaves: low approval leaves her wary, not gone, and no story
+    choice takes her.
+  - She sits down in the party whenever it would be empty. The camp can
+    bench her only by seating someone else.
+  - Her die, the hound die (a d6), has Bite, Snap, Guard, Stand Fast,
+    Instinct and Lick Wounds.
+  - A new duo with Liora: The Hunt.
+- **Fights sized for hero + Vica** (difficulty-pass.md §9). The targets stay
+  the same, and the foes hit 20% harder from chapter 2. Several numbers were
+  re-sized to keep each boss on its curve:
+  - the bosses' own floor and a few bosses' health;
+  - the champions;
+  - the mage's and cleric's starting numbers.
+  Chapter 1 plays as before.
+- **The simulator** gives Vica to every player profile, the "naive" one
+  included.
+
+## [1.598.0+634]
+
+Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
+
 ## [1.597.0+633]
 
 - **Core: the difficulty pass** (docs/proposals/difficulty-pass.md, without the

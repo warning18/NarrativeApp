@@ -138,9 +138,28 @@ void main() {
     Navigator.of(tester.element(crossing)).pop(true);
     await _settle(tester);
 
-    // Arrived at the White Wells, a place: its own view again.
-    expect(container.read(storyPlayProvider).currentNodeId, '1200');
+    // Arrived at the White Wells, a place: the end of the walk is Vica's
+    // scene (v1.602), at the Wells' edge; its first choice leads on to the
+    // Wells' own scene, which is the view again.
+    expect(container.read(storyPlayProvider).currentNodeId, '1150_vica');
     await _settle(tester);
+    final follow = find.byKey(const ValueKey('journey_choice_card_0'));
+    for (var i = 0; i < 5 && follow.evaluate().isEmpty; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(follow, findsOneWidget);
+    // A card picks the way; a second tap takes it.
+    await tester.tap(follow);
+    await tester.pump();
+    await tester.tap(follow);
+    await tester.pump();
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+    await _settle(tester);
+    expect(container.read(storyPlayProvider).currentNodeId, '1200');
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     final back = find.byKey(const ValueKey('journey_continue'));

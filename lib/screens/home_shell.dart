@@ -19,6 +19,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/story_recruits_provider.dart';
 import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
@@ -128,6 +129,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ref.listen<bool>(hostMusteredNoticeProvider, (previous, next) {
       if (next && !ref.read(combatActiveProvider)) _showMusteredHost();
     });
+    // Vica joins when the story reaches her scene (story_recruits_provider).
+    ref.watch(storyRecruitsProvider);
     // The story coming to the camp brings the party home, the Rusty Eel
     // with it; the camp then opens in the Story tab's place, and the story
     // comes back when the party leaves.

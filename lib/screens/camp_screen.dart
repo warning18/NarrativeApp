@@ -985,7 +985,10 @@ Future<void> _setAllyInParty(
 }) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   await notifier.setAllyActive(companionId, active,
-      partyCapacity: partyCapacity, requiredHouseId: requiredHouseId);
+      partyCapacity: partyCapacity,
+      requiredHouseId: requiredHouseId,
+      companions:
+          ref.read(localizedDbProvider(companionsSchema)).value ?? const {});
   if (!active) return;
   final earned = await notifier.checkAchievements();
   if (earned.isEmpty || !context.mounted) return;
