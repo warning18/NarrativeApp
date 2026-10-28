@@ -276,3 +276,59 @@ the user's choice below.
 
 Either is measured the same way (the stubborn profile toward 45–55% at the
 first try) before the `adapt_gap_test` guard is added.
+
+## 8. Re-measured: hero + Vica (the companion every hero now gets)
+
+The user made Vica the companion every hero gets (see
+`guide-dog-companion.md` §6). So the baseline is now "hero + Vica", and the
+§7 question is re-asked on it.
+
+**How it was measured:**
+
+- One human hero per profession, alone or with Vica.
+- No gear, at each chapter's usual level (5, 9, 12, 16).
+- Six foes of chapters 3–6, each weak to an element: Void Wisp, Inquisition
+  Auxiliary, Deaf Tove, Catacomb Ghoul, Drowned Pilgrim, Kraken Arm.
+- 60 fights per cell, 1,800 per column, about a minute in all.
+- "Matching die": a die carrying the foe's weak element (Pilgrim, Tempest,
+  Tide, Flame), with the hero's skills placed on it the way the competent
+  simulator places them.
+
+| Won, chapters 3–6 | Alone, own die | + Vica, own die | + Vica, matching die |
+|---|---|---|---|
+| All professions | 0.06 | **0.34** | **0.22** |
+| Warrior | 0.03 | 0.31 | 0.18 |
+| Mage | 0.16 | 0.48 | 0.23 |
+| Rogue | 0.04 | 0.40 | 0.18 |
+| Cleric | 0.06 | 0.28 | **0.44** |
+| Ranger | 0.01 | 0.20 | 0.08 |
+
+**What it says:**
+
+1. **Vica alone makes chapters 3–6 playable without gear:** 6% → 34%. Gear
+   then decides the rest. Two foes (Deaf Tove at chapter 3, the Drowned
+   Pilgrim at chapter 5) stay near 0 with no gear at all. That is the
+   "you must equip" the user asked for.
+2. **Swapping to the foe's weak element does not pay today. It costs.** The
+   dice that carry an element carry it on only 1–2 of their 6–12 faces, and
+   they lose the hero's own die, whose Skill faces hold the profession's
+   skills. Only the cleric gains, because its own apprentice die is weak.
+   The ×2 weakness (v1.597) is not enough on its own: too few hits carry the
+   element.
+
+**So the §7 question changes.** With Vica guaranteed and other companions
+optional, the companions no longer carry every fight, so §7's two options
+matter less. "Change your die for the foe" needs the dice themselves to
+change. A third option, for the user:
+
+3. **Make the element dice worth swapping in.** On each elemental die, the
+   die's element goes on all its Attack faces, and on its Skill faces when
+   their skill has none. Then most of its hits take the ×2 against a weak
+   foe, and the ×0.5 against one that resists, so the wrong die costs too.
+   - This is a data change in `dice.json` and touches no code.
+   - It is measured the same way: a matching die should win clearly more
+     than the hero's own die against a weak foe, and clearly less against a
+     resisting one.
+
+I recommend 3, with Vica as the baseline, before §7's options 1 and 2. I will
+measure 3 here when the user picks it.
