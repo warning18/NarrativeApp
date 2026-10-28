@@ -332,3 +332,37 @@ change. A third option, for the user:
 
 I recommend 3, with Vica as the baseline, before §7's options 1 and 2. I will
 measure 3 here when the user picks it.
+
+## 9. Sized for hero + Vica (v1.601)
+
+The bands are now measured with Vica in every run. She joins at the White
+Wells, so chapter 1 has no Vica.
+
+**What Vica did before any re-sizing:**
+- Every boss of chapters 3–8 was won 20–30 points more often.
+- Encounters won within 3 tries rose to 75–90% by profession.
+
+The targets stay, so the foes were raised to meet hero + Vica. Health went
+up only where a boss strayed from its band; the damage floors carry the rest.
+
+| Number | v1.597 | v1.601 |
+|---|---|---|
+| Regular damage floors, chapters 2–8 | 1.67 / 2.28 / 2.28 / 2.40 / 1.80 / 1.74 / 1.68 | 2.00 / 2.74 / 2.74 / 2.88 / 2.16 / 2.09 / 2.02 (×1.2) |
+| Regular health floors | unchanged | unchanged |
+| Boss floors, health / damage | 1.13 / 1.08 | 1.25 / 1.24 |
+| Aurel Vane (chapter 1, before Vica) | 29 health | 22 health, so he keeps his 75% on the higher boss floor |
+| Void Stalker / Hollow Court Inquisitor / Bone Warden | 38 / 41 / 56 | 44 / 46 / 63 |
+| Tear-Herald | 52 | 57 |
+| Clans' champions | 36–38 | 46–48 (their curve, 53%) |
+| Mage starting health | 0 | −5 (Vica's guard helps a caster most) |
+| Cleric starting health / damage | +7 / +4 | +10 / +6 (helped least) |
+
+**Results:**
+- **Boss curve** (400 runs): every boss is within its band, the three
+  claimants pooled at about 0.35, Aurel Vane 0.78.
+- **Professions:** each wins 68.5–74.9% of its encounters within 3 tries,
+  6.4 points apart (the limit is 8).
+- **Clash gap and chapter-1 fights:** unchanged, both pass.
+
+The element-dice change (option 3 of §8) is not in this; it waits for the
+user.

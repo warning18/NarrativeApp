@@ -204,6 +204,7 @@ void main() {
           'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
           'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
           'expedition_steps', 'training_paths', 'politics_events',
+          'companions', // Vica joins every hero (v1.601)
         ])
           name: table(name),
       };

@@ -258,3 +258,41 @@ already benches the weakest seat.
 
 All of this is one build PR (the entry, the rules, the simulator, the
 re-sizing), running only these band tests. No broad batch.
+
+## 7. Built (v1.601)
+
+The user approved §6, and Narrative's story PR follows mine.
+
+**Data**
+- **`companions.json` `vica`:**
+  - `raceId ""`, `professionId ranger`, `hound_die`, approval 1 / −1 / 0.
+  - `storyRecruit`, `permanent`, `joinNodeIds: ["1150_vica", "1200"]`.
+  - The lines are Narrative's, from their note.
+- **`hound_die`**, a d6:
+
+  | Face | Effect |
+  |---|---|
+  | Bite | Attack 2 |
+  | Snap | Attack 1 |
+  | Guard | Defend 2 |
+  | Stand Fast | Defend 1 |
+  | Instinct | Skill `ranger_beast_bond`, her signature face for duos |
+  | Lick Wounds | Heal 1 |
+
+  - The planned empty "Distracted" face became Lick Wounds. The dice rules allow no Empty face, and every face must take a skill.
+  - Lunge became Instinct, because a duo needs a signature face that isn't `heavy_attack`.
+- **The duo `the_hunt`** (Liora and Vica): a stun blow.
+- **Her remark lines** in `companion_remarks.json`: the lines of Narrative's note, plus a second line for each moment, because the remark test wants two. Narrative may reword them.
+
+**Rules** (`lib/data/story_companions.dart`)
+- **When she joins:** at the first join scene the story reaches. In the game, `storyRecruitsProvider` watches the visited scenes. A save already past the White Wells gets her at once, or at its next step.
+- **She can't leave:**
+  - she never falls to −12 approval (she stays wary at worst);
+  - `loseAllyId` skips her, and `*` takes the first other companion seated.
+- **She keeps the party from going empty:**
+  - when a bench would empty the party, she sits down in it;
+  - `canBench(id)` refuses to bench her when she is the last one seated.
+- **The simulator** gives her to every policy at the same scenes. The naive player recruits no one else.
+
+**Balance**
+All bands are sized for "hero + Vica"; their targets are kept. `difficulty-pass.md` §9 has the numbers.
