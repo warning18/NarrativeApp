@@ -304,12 +304,12 @@ void main() {
           'Approval as a meter with its thresholds named (leaves at −12, wary, friendly at 5, devoted at 12), what the tier does, what they like and dislike as chips, and the rule that benched companions do not see your choices. Then their die (look and name), skills, gear, and the seat button.'
         ),
         (
-          'The guide dog (Wick)',
-          'A companion like the others: his sprite from the tutorial, a seat, a bench, a replacement. Health (about 42 at level 8) and the Hound Die are Core’s note (#568); his quest, Wick’s Walk in Saltmouth, is Narrative’s (#569). His likes are not set yet.'
+          'The guide dog (Vica)',
+          'A companion like the others: her sprite from the tutorial, a seat, a bench, a replacement. Health (about 42 at level 8) and the Hound Die are Core’s note (#568); her quest, Vica’s Walk in Saltmouth, is Narrative’s (#569). Her likes are not set yet.'
         ),
         (
           'Needs from Core',
-          'Nothing for the screens. The dog is already in Core’s note (#568): no race, class ranger, hound_die. Open: his likes and dislikes.'
+          'Nothing for the screens. The dog is already in Core’s note (#568): no race, class ranger, hound_die. Open: her likes and dislikes.'
         ),
         (
           'Needs from UX',
@@ -326,7 +326,7 @@ void main() {
           412,
           'Tutorial: the guide, named by the player',
           const DogMoment(
-            speaker: 'Wick',
+            speaker: 'Vica',
             text:
                 'Party: companions you recruit rest here. Choose who fights at your side.',
             counter: '4 / 6',
@@ -336,8 +336,8 @@ void main() {
           412,
           'Saltmouth: the guide joins, same sprite, same name',
           const DogMoment(
-            speaker: 'Wick',
-            text: 'Wick falls in beside you, nose to your heel.',
+            speaker: 'Vica',
+            text: 'Vica falls in beside you, nose to your heel.',
             nextLabel: 'Walk on',
             walking: true,
             tag: 'New companion',
@@ -346,8 +346,8 @@ void main() {
         (412, 'Kelda arrives, the seats are full', const ArrivalSheet()),
         (
           412,
-          'After: Wick waits at camp, and it says so',
-          const BPage(withWick: true)
+          'After: Vica waits at camp, and it says so',
+          const BPage(withVica: true)
         ),
       ],
       container: container,
@@ -360,7 +360,7 @@ void main() {
           ),
           (
             'The handover at Saltmouth',
-            'When the quest ends, the same dog, with the same bubble, says one line, and the Party tab gets his card with a "New companion" tag. He keeps the name the player gave him (Wick when they never named him) and his look (neutral, angel or demon). One moment, one tap.'
+            'When the quest ends, the same dog, with the same bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name the player gave her (Vica when they never named her) and her look (neutral, angel or demon). One moment, one tap.'
           ),
           (
             'The swap moment',
@@ -368,11 +368,11 @@ void main() {
           ),
           (
             'After',
-            'The bench shows Wick with a note: he waits at camp, keeps his health and gear, does not see your choices, and can come back. Nothing is lost, so replacing him costs no regret.'
+            'The bench shows Vica with a note: she waits at camp, keeps her health and gear, does not see your choices, and can come back. Nothing is lost, so replacing her costs no regret.'
           ),
           (
             'Needs from Narrative and Core',
-            'Narrative: the one line at the handover; the dog carrying the player\u2019s name for him (companionNameProvider) into his companion name; his look following the hero\u2019s alignment as the guide does. Core: the arrival rule (ask when the seats are full instead of benching silently).'
+            'Narrative: the one line at the handover; the dog carrying the player\u2019s name for her (companionNameProvider) into her companion name; her look following the hero\u2019s alignment as the guide does. Core: the arrival rule (ask when the seats are full instead of benching silently).'
           ),
         ],
       ),

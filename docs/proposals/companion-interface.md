@@ -59,39 +59,39 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
   thresholds named** (leaves at −12, wary at −5, friendly at 5, devoted at 12), what the tier
   does, likes and dislikes as chips, and the line that benched companions do not see your choices; then
   their die (look and name, a tap opens the ring), skills, gear.
-- **The guide dog's page** (last frame): Wick, his sprite from the tutorial, "Guide dog · found in
-  Saltmouth", a seat, a bench, the Hound Die. His numbers and die are Core's (#568), his quest (Wick's
-  Walk) Narrative's (#569); his likes and dislikes are not set yet.
+- **The guide dog's page** (last frame): Vica, her sprite from the tutorial, "Guide dog · found in
+  Saltmouth", a seat, a bench, the Hound Die. Her numbers and die are Core's (#568), her quest (Vica's
+  Walk) Narrative's (#569); her likes and dislikes are not set yet.
 - Cost: a new page and a rebuilt Party tab: about two days of UX, more than A.
 
 ## The guide dog: from the tutorial to the bench (`companion-dog.png`)
 From Core's note (#568: the dog joins at Saltmouth as a normal ranger-class companion, weaker than Kelda
-and Sable, benched once a stronger one joins) and Narrative's (#569: Wick, Wick's Walk).
+and Sable, benched once a stronger one joins) and Narrative's (#569: Vica, Vica's Walk).
 - **The tutorial guide today:** a walking and sitting dog with the speech bubble (the real
   `SpeechBubble`), named by the player in Settings (`companionNameProvider`, default "your
   companion"), and a different look for a good or an evil hero (angel or demon). It is not on the Party
   tab.
-- **The handover at Saltmouth (one small moment):** when Wick's Walk ends, the same dog, with the same
-  bubble, says one line, and the Party tab gets his card with a "New companion" tag. He keeps the name
-  the player gave the guide (Wick when they never named it) and his look. Narrative writes the line.
+- **The handover at Saltmouth (one small moment):** when Vica's Walk ends, the same dog, with the same
+  bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name
+  the player gave the guide (Vica when they never named it) and her look. Narrative writes the line.
 - **The swap moment (a stronger companion arrives):** today a recruit is seated only up to capacity, so
   Kelda, arriving with the seats full, lands on the bench **without a word**, and nothing tells the
   player who is now benched. The proposal: a sheet, "Kelda joins your party. The seats are full. Who
-  walks with you?", with one row per choice ("Kelda for Wick", "Kelda for Sable", "Kelda waits at camp,
+  walks with you?", with one row per choice ("Kelda for Vica", "Kelda for Sable", "Kelda waits at camp,
   for now"), each saying who waits at camp, and one line on what waiting means: they keep their health
   and gear, do not see your choices, and can come back from the Party tab.
-- **After:** the bench shows Wick, and a gold note says it once: "Wick waits at camp. Kelda walks with
-  you. He keeps his health and his gear; he does not see your choices. Tap him to bring him back."
+- **After:** the bench shows Vica, and a gold note says it once: "Vica waits at camp. Kelda walks with
+  you. Vica keeps her health and her gear, does not see your choices, and can come back: tap her."
 - **Needs:** Narrative: the one line at the handover, the dog taking the player's name for the guide
-  (`companionNameProvider`) as his companion name, his look following the hero's alignment as the guide
+  (`companionNameProvider`) as her companion name, her look following the hero's alignment as the guide
   does. Core: the arrival rule (ask when the seats are full, instead of benching silently); this is
   behaviour in `recruitAlly` / `_setAllyInParty`, so Core's.
 
 ## What each needs from Core
 - **A:** nothing.
 - **B:** nothing for the screens. The dog is in Core's note (#568: no race, class ranger, `hound_die`,
-  about 42 health at level 8) and Narrative's (#569: Wick's Walk, Saltmouth); what is still open for
-  Core is his likes and dislikes (approval weights) and whether his page shows a class at all (the
+  about 42 health at level 8) and Narrative's (#569: Vica's Walk, Saltmouth); what is still open for
+  Core is her likes and dislikes (approval weights) and whether her page shows a class at all (the
   picture shows none, only "Guide dog"). For "Not with you": whether to show a companion not yet met as a "???" (a spoiler
   question for the story) and a record of who left (today `loseAlly` drops them; a list of the lost,
   with the reason, would feed the "left" row).
@@ -105,3 +105,10 @@ approval meter, the die and the dog live (fixes 4 and 7).
 1. A, B, or A now and B's page later?
 2. Should companions not yet met show as a "???" with their quest, or stay hidden until found?
 3. Should a lost companion stay on the page (greyed, with why)?
+
+## Vica in the scenes
+
+The dog is named **Vica** (the same dog as the tutorial's guide). Once she is seated in the party
+she should also follow the hero's sprite in the scenes: the street at the door, the land walk, the
+story page. Pictures, what draws the hero today and what it would take are in
+[vica-follows.md](vica-follows.md) (picture `docs/ux-shots/vica-follows.png`).

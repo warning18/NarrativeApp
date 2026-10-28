@@ -656,12 +656,12 @@ const String dogDir = 'assets/visuals/companion/dog_companion_animations';
 const String dogSit = '$dogDir/Sitting_down/rotations/south.png';
 const String dogWalk = '$dogDir/Walking/east/frame_000.png';
 
-/// Wick, as the camp would hold him: no race, class ranger (Core's note,
+/// Vica, as the camp would hold her: no race, class ranger (Core's note,
 /// #568), about 42 health at level 8, the dog's own picture.
 AllyInfo wickInfo(Map<String, dynamic> professions, {bool active = false}) =>
     AllyInfo(
       id: 'wick',
-      name: 'Wick',
+      name: 'Vica',
       race: '',
       profession: 'Guide dog',
       professionRecord:
@@ -680,11 +680,11 @@ AllyInfo wickInfo(Map<String, dynamic> professions, {bool active = false}) =>
     );
 
 class BPage extends StatelessWidget {
-  const BPage({super.key, this.withWick = false});
+  const BPage({super.key, this.withVica = false});
 
-  /// Wick on the bench, and the note that he waits at camp (the frame after
-  /// a stronger companion took his seat).
-  final bool withWick;
+  /// Vica on the bench, and the note that she waits at camp (the frame after
+  /// a stronger companion took her seat).
+  final bool withVica;
 
   @override
   Widget build(BuildContext context) {
@@ -695,7 +695,7 @@ class BPage extends StatelessWidget {
           ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
       final seated = allies.where((a) => a.active).toList();
       final bench = [
-        if (withWick) wickInfo(professions),
+        if (withVica) wickInfo(professions),
         ...allies.where((a) => !a.active),
       ];
       Widget bigSeat(AllyInfo a) => Expanded(
@@ -837,7 +837,7 @@ class BPage extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: ghost('???', 'Find him: Wick’s Walk, in Saltmouth'),
+              child: ghost('???', 'Find her: Vica’s Walk, in Saltmouth'),
             ),
             ghost('Malrik Sarn', 'Left when your choices turned him away',
                 lost: true),
@@ -1113,7 +1113,7 @@ class DogPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Wick',
+                Text('Vica',
                     style: theme.textTheme.titleLarge
                         ?.copyWith(fontFamily: InkFonts.display)),
                 Text('Guide dog · found in Saltmouth',
@@ -1154,7 +1154,7 @@ class DogPage extends StatelessWidget {
         const ApprovalMeter(approval: startingApproval),
         const SizedBox(height: 6),
         Text(
-            'Wick is a companion like the others: he takes a seat, can be benched or replaced. His numbers and die come from Core’s note (#568), his quest from Narrative’s (#569); his likes are not set yet.',
+            'Vica is a companion like the others: she takes a seat, can be benched or replaced. Her numbers and die come from Core’s note (#568), her quest from Narrative’s (#569); her likes are not set yet.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
         sectionTitle(context, 'Their die'),
