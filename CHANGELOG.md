@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.595.0+631]
+
+- **UX: the Dice tab in the inventory.** When you own more than one die, the
+  inventory has a Dice tab: the die in your hand lit gold (its own look, name,
+  "d6 · 6 faces · Bone"), the other dice below it with one Equip button each,
+  and a die made for another class dimmed with a padlock and who it is for.
+  Equip swaps the die in hand at once. The Dice tile in the slots goes to the
+  tab, and a tap on a die opens the dice screen (the ring of face slots) on
+  that die. `DiceLoadoutScreen` takes an optional `initialDieId` for it.
+
 ## [1.594.0+630]
 
 - **UX: the inventory with tabs.** The bag has a tab for each kind it holds
