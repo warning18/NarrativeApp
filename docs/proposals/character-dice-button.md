@@ -1,4 +1,35 @@
-# A quick way to the dice from the Character tab (UX mock, nothing built)
+# The die on the Character tab's portrait (UX mock, nothing built)
+
+## Round 2 (the user's answer): on the portrait square, where its face is
+
+Picture: `docs/ux-shots/character-dice-badge-mock.png`. Mock test:
+`test/ux_character_dice_badge_mock_test.dart`. Real capture of the Character tab header at 412
+and 320 px; the same header with the die drawn in two ways. This **replaces the card under the
+tabs** (round 1, below, kept for the record).
+
+The user: the dice "seen next to or on the character square, where its face is". The die in hand
+is shown in its own look (stone, edge, glow; the Bulwark die in the 320 row is the dark one), with
+the **+N** of the dice in the bag; **one tap opens the dice screen on that die**
+(`DiceLoadoutScreen(initialDieId: ...)`, already built in v1.595).
+
+| Placement | What it is | What it costs |
+|---|---|---|
+| **On the corner** | A 34 px round badge on the portrait's lower right corner, ringed in the page colour so it lies on the square; the +N pill on its lower left, over the empty part of the square. | Nothing moves: the header keeps its height. The badge is small (28 px die) and touches the name column's left edge at 320 px. |
+| **Beside it** | A 56 px square in the portrait's own frame, to its right, holding the die at 36 px with the +N on its corner. | The name column loses 64 px; at 320 px the name, "Human Warrior" and the level bar still fit but are tighter, and the header is about 12 px shorter than today (the vitals move up). |
+
+**My lean: on the corner**, the same at every width. It reads as part of the character ("the die
+this face rolls") and moves nothing. If a 34 px tap target is too small, take the square beside
+(56 px). Either is hidden while the dice feature is closed (the Pages tile's
+`GameFeature.inventory` gate) and for a character with no die.
+
+Build (after the user picks, as v1.596): a small widget in `lib/widgets/` (the badge or the
+square) and the few lines in `_CharacterHeader` (`character_screen.dart`, Core's file for
+behaviour, layout only); one string for the tooltip ("Your dice", EN/FR). No new data.
+
+---
+
+# Round 1 (replaced): a quick way to the dice from the Character tab
+
 
 Picture: `docs/ux-shots/character-dice-mock.png` (left: the real Character tab today; right: the
 same capture with the card drawn in). Mock test: `test/ux_character_dice_mock_test.dart`.
