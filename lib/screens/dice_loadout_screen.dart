@@ -30,7 +30,11 @@ import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
-  const DiceLoadoutScreen({super.key, this.allyId});
+  const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
+
+  /// The die the screen opens on (the inventory's Dice tab); the first of
+  /// the dice owned when null or not owned.
+  final String? initialDieId;
 
   /// When set, this screen manages the named companion's signature die
   /// instead of the player's own dice collection — same screen, pointed at
@@ -43,7 +47,7 @@ class DiceLoadoutScreen extends ConsumerStatefulWidget {
 }
 
 class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
-  String? _selectedDiceId;
+  late String? _selectedDiceId = widget.initialDieId;
 
   /// The face of the die the player has turned to (v1.241), by its index.
   int _faceSel = 0;
