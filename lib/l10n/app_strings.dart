@@ -2011,14 +2011,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Show legend',
     AppLanguage.fr: 'Afficher la légende'
   },
-  'hide_companion': {
-    AppLanguage.en: 'Hide companion',
-    AppLanguage.fr: 'Masquer le compagnon'
-  },
-  'show_companion': {
-    AppLanguage.en: 'Show companion',
-    AppLanguage.fr: 'Afficher le compagnon'
-  },
   'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'map_theme_description': {
     AppLanguage.en:
@@ -2892,16 +2884,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'interface_section_title': {
     AppLanguage.en: 'Interface',
     AppLanguage.fr: 'Interface'
-  },
-  'walk_companion_setting_title': {
-    AppLanguage.en: 'Walking companion',
-    AppLanguage.fr: 'Compagnon qui marche',
-  },
-  'walk_companion_setting_desc': {
-    AppLanguage.en:
-        'A little companion walks across the page whenever the story moves to a new node.',
-    AppLanguage.fr:
-        "Un petit compagnon traverse la page à chaque fois que l'histoire passe à un nouveau nœud.",
   },
   'companion_name_label': {
     AppLanguage.en: 'Companion name',
@@ -7479,12 +7461,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Choose what you do. Tags show what a choice costs or brings. A padlock means you can’t take it yet.",
     AppLanguage.fr:
         'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas\u00a0: pas encore possible.',
-  },
-  'tut_story_6': {
-    AppLanguage.en:
-        "And that’s me! I trot along each time the story moves on. The arrow tucks me away.",
-    AppLanguage.fr:
-        "Et ça, c’est moi\u00a0! Je trottine à chaque fois que l’histoire avance. La flèche me range.",
   },
   'tut_story_7': {
     AppLanguage.en: 'The map shows every place the story has reached.',

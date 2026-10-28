@@ -84,7 +84,6 @@ import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
-import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/reward_card.dart';
@@ -103,7 +102,6 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/narration_recording_dialogs.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_tracker.dart';
-import '../widgets/walking_companion_strip.dart';
 import '../widgets/zone_card.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
@@ -134,21 +132,13 @@ final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
 /// a per-session reading preference, not a persisted setting.
 final _statusBarCollapsedProvider = StateProvider<bool>((ref) => false);
 
-/// What the story text keeps on a small phone before the dog's strip and the
-/// choices take any more: about four lines of the prose with the card's
-/// padding, and room for about two choices.
+/// What the story text keeps on a small phone before the choices take any
+/// more: about four lines of the prose with the card's padding.
 const double storyTextMinHeight = 150;
-const double storyChoicesMinHeight = 130;
-
-/// Whether the walking companion strip is collapsed. Independent from
-/// [walkCompanionEnabledProvider] (the permanent Settings toggle that
-/// disables the feature outright) — this is a quick per-session way to
-/// hide the dog without turning the feature off.
-final _companionCollapsedProvider = StateProvider<bool>((ref) => false);
 
 /// Whether the story text is showing in distraction-free fullscreen —
 /// toggled by double-tapping the narration itself, hiding everything else
-/// (status bar, header row, companion strip, choices) so only the prose
+/// (status bar, header row, choices) so only the prose
 /// remains. Resets on app restart, same as the other reading-view toggles
 /// above.
 final _fullscreenReadingProvider = StateProvider<bool>((ref) => false);
@@ -270,9 +260,7 @@ class _StoryView extends ConsumerWidget {
     final epilogue = node?.epilogueFor(session.alignmentLabel, french);
     final pendingAftermath = ref.watch(pendingAftermathProvider);
     final speakerLabel = speakerLabelFor(node?.speaker, french: french);
-    final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
-    final companionCollapsed = ref.watch(_companionCollapsedProvider);
     final fullscreenReading = ref.watch(_fullscreenReadingProvider);
 
     // Stop any in-progress narration when the story moves to a different
@@ -701,36 +689,14 @@ class _StoryView extends ConsumerWidget {
                   child: LayoutBuilder(builder: (context, area) {
                     // A folded town scene leaves the rest of the screen to the
                     // place itself.
-                    // The companion shrinks on a short screen, and the choices
-                    // leave room for it and for about four lines of the story
-                    // ([storyTextMinHeight]). A screen too short for the dog's
-                    // strip beside four lines and two choices goes without
-                    // it, so the story keeps its room (QA's L3 finding at
-                    // 320 x 568, where one line was left).
-                    // An open town gives the dog's strip to its own lists.
-                    final wantedStrip =
-                        (area.maxHeight * 0.18).clamp(56.0, 125.0);
-                    final companionShown = !fullscreenReading &&
-                        walkCompanionEnabled &&
-                        !narrationFolded &&
-                        area.maxHeight >=
-                            wantedStrip +
-                                40 +
-                                storyTextMinHeight +
-                                storyChoicesMinHeight;
-                    final stripHeight = companionShown && !companionCollapsed
-                        ? wantedStrip
-                        : 0.0;
+                    // The choices leave room for about four lines of the story
+                    // ([storyTextMinHeight]).
                     final choiceBudget = narrationFolded
                         ? area.maxHeight
                         : max(
                             0.0,
-                            min(
-                                area.maxHeight * 0.6,
-                                area.maxHeight -
-                                    stripHeight -
-                                    (companionShown ? 40 : 16) -
-                                    storyTextMinHeight));
+                            min(area.maxHeight * 0.6,
+                                area.maxHeight - 16 - storyTextMinHeight));
                     Widget fillBelow(Widget child) => narrationFolded
                         ? Expanded(
                             child: Align(
@@ -761,11 +727,11 @@ class _StoryView extends ConsumerWidget {
                           )
                         else if (!narrationFolded)
                           Expanded(
-                            // Scrolling down into the narration gives the status bar and
-                            // companion collapse toggles above/below no purpose (they'd
-                            // just be pushed off-screen anyway), so collapse both
-                            // automatically the moment the player starts reading down the
-                            // page. The manual chevrons stay available to re-expand.
+                            // Scrolling down into the narration gives the status bar
+                            // above no purpose (it'd just be pushed off-screen anyway),
+                            // so collapse it automatically the moment the player starts
+                            // reading down the page. The manual chevron stays available
+                            // to re-expand.
                             child: LayoutBuilder(
                               // Captured here, above the SingleChildScrollView, because
                               // that view gives its child unbounded height on the scroll
@@ -783,12 +749,6 @@ class _StoryView extends ConsumerWidget {
                                         if (!statusBarCollapsed) {
                                           ref
                                               .read(_statusBarCollapsedProvider
-                                                  .notifier)
-                                              .state = true;
-                                        }
-                                        if (!companionCollapsed) {
-                                          ref
-                                              .read(_companionCollapsedProvider
                                                   .notifier)
                                               .state = true;
                                         }
@@ -811,7 +771,7 @@ class _StoryView extends ConsumerWidget {
                                           key: ValueKey(
                                               '${node.id}_${playState.isInExcursion}_text'),
                                           // Short narration otherwise leaves the freed-up
-                                          // space (status bar, node header, companion strip,
+                                          // space (status bar, node header,
                                           // choices all hidden) as dead blank area below the
                                           // text card, which reads as "nothing happened"
                                           // rather than an actual fullscreen mode. Centering
@@ -903,42 +863,7 @@ class _StoryView extends ConsumerWidget {
                             ),
                           ),
                         if (!fullscreenReading) ...[
-                          if (companionShown) ...[
-                            if (!companionCollapsed)
-                              TutorialTarget(
-                                id: 'story.companion',
-                                child: WalkingCompanionStrip(
-                                  height: stripHeight,
-                                  trigger:
-                                      '${node.id}_${playState.isInExcursion}',
-                                  fightAvailable: node.choices.any(
-                                    (c) =>
-                                        c.triggersCombat &&
-                                        !_isChoiceLocked(c, story, session,
-                                            playState.isInExcursion,
-                                            world: gateWorld),
-                                  ),
-                                ),
-                              ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(companionCollapsed
-                                    ? Icons.expand_more
-                                    : Icons.expand_less),
-                                tooltip: tr(
-                                    ref,
-                                    companionCollapsed
-                                        ? 'show_companion'
-                                        : 'hide_companion'),
-                                visualDensity: VisualDensity.compact,
-                                onPressed: () => ref
-                                    .read(_companionCollapsedProvider.notifier)
-                                    .state = !companionCollapsed,
-                              ),
-                            ),
-                          ] else
-                            const SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           // A timed scene's clock (see TimedChoiceBar).
                           if (node.isTimed &&
                               !playState.isInExcursion &&

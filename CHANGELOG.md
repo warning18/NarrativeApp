@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.604.0+640]
+
+- **UX: the dog no longer trots across the story page.** The little companion
+  that walked across the page each time the story moved on is gone from the
+  story steps; the guide dog of the tutorials is unchanged (its name setting
+  stays).
+  - The story page keeps the room the strip took (more of the text and the
+    choices on a small phone).
+  - Removed with it: the "Walking companion" switch in Settings, the strip's
+    hide/show arrow, and the Story tour's "that's me" line (its step).
+- **Fix:** the race and profession picker's "Compare" button and the compare
+  sheet's people/calling chips drew their words in the pale default colour,
+  white on cream; they are now dark.
+- Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
+  layout under it moved); the walking-companion setting test is gone.
+
 ## [1.603.0+639]
 
 - **UX: choosing your people and your calling.** The new-game picker is now
