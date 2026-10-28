@@ -1883,6 +1883,78 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Masterwork {item}',
     AppLanguage.fr: '{item} de maître',
   },
+  // The Forge sheet with tabs and the forging moment (v1.593).
+  'forge_slot_Head': {AppLanguage.en: 'Head', AppLanguage.fr: 'Tête'},
+  'forge_slot_Top': {AppLanguage.en: 'Body', AppLanguage.fr: 'Corps'},
+  'forge_slot_Bottom': {AppLanguage.en: 'Legs', AppLanguage.fr: 'Jambes'},
+  'forge_slot_Foot': {AppLanguage.en: 'Feet', AppLanguage.fr: 'Pieds'},
+  'forge_slot_Weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'forge_roll_line': {
+    AppLanguage.en: 'Roll d20 {mod}',
+    AppLanguage.fr: 'Jet de d20 {mod}',
+  },
+  'forge_odds_open': {AppLanguage.en: 'odds', AppLanguage.fr: 'chances'},
+  'forge_odds_close': {AppLanguage.en: 'hide', AppLanguage.fr: 'masquer'},
+  'forge_odds_note': {
+    AppLanguage.en:
+        'A flawed piece is −1 on its main number and loses nothing else; Fine is +1, Masterwork +2.',
+    AppLanguage.fr:
+        'Une pièce défectueuse perd 1 sur son chiffre principal et rien d’autre ; belle facture : +1, de maître : +2.',
+  },
+  'forge_hint_tip': {
+    AppLanguage.en: 'Where to find the ore',
+    AppLanguage.fr: 'Où trouver le minerai',
+  },
+  'forge_have_need': {
+    AppLanguage.en: '{item} have {have} · need {need}',
+    AppLanguage.fr: '{item} : {have} en main · {need} requis',
+  },
+  'forge_short_of': {
+    AppLanguage.en: 'Short of {n} {item}',
+    AppLanguage.fr: 'Il manque {n} {item}',
+  },
+  'forge_short_gold': {
+    AppLanguage.en: 'Short of {n} gold',
+    AppLanguage.fr: 'Il manque {n} d’or',
+  },
+  'forge_cast': {
+    AppLanguage.en: 'The forge rolls its own d20…',
+    AppLanguage.fr: 'La forge lance son propre d20…',
+  },
+  'forge_die': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
+  'forge_total': {AppLanguage.en: 'Total', AppLanguage.fr: 'Total'},
+  'forge_effect_flawed': {
+    AppLanguage.en: '1–4 · −1 to the main number',
+    AppLanguage.fr: '1–4 · −1 au chiffre principal',
+  },
+  'forge_effect_sound': {
+    AppLanguage.en: '5–14 · as listed',
+    AppLanguage.fr: '5–14 · comme indiqué',
+  },
+  'forge_effect_fine': {
+    AppLanguage.en: '15–19 · +1 to the main number',
+    AppLanguage.fr: '15–19 · +1 au chiffre principal',
+  },
+  'forge_effect_masterwork': {
+    AppLanguage.en: '20+ · +2 to the main number',
+    AppLanguage.fr: '20+ · +2 au chiffre principal',
+  },
+  'forge_flaw_note': {
+    AppLanguage.en:
+        'A flawed roll loses nothing more: the piece is made, weaker, and can be sold.',
+    AppLanguage.fr:
+        'Un jet défectueux ne coûte rien de plus : la pièce est faite, plus faible, et peut se vendre.',
+  },
+  'forge_sells_for': {AppLanguage.en: 'Sells for', AppLanguage.fr: 'Se vend'},
+  'forge_spent': {
+    AppLanguage.en: 'Spent: {list}',
+    AppLanguage.fr: 'Dépensé : {list}',
+  },
+  'forge_take_it': {AppLanguage.en: 'Take it', AppLanguage.fr: 'La prendre'},
+  'forge_another': {
+    AppLanguage.en: 'Forge another',
+    AppLanguage.fr: 'En forger une autre',
+  },
   'forge_needs_label': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
   'forge_hint': {
     AppLanguage.en:

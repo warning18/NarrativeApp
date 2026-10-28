@@ -353,17 +353,20 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
     await tester.runAsync(() async {
-      await tester.tap(find.widgetWithText(FilledButton, 'Forge'));
+      await tester.tap(find.byKey(const ValueKey('forge_go_boots_iron_shod')));
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(
-        find.textContaining(
-            RegExp(r'^Forged: (Flawed |Fine |Masterwork )?Iron-Shod Boots$')),
-        findsOneWidget);
+    // The forging moment (v1.593) takes the place of the notice: a tap
+    // goes to its last beat, which names the piece with its tier.
+    await tester.tap(find.byKey(const Key('forge_moment')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.widget<Text>(find.byKey(const Key('forge_piece_name'))).data,
+        matches(RegExp(r'^(Flawed |Fine |Masterwork )?Iron-Shod Boots$')));
     expect(
         notifier!.state.inventoryItemIds.last, startsWith('boots_iron_shod'));
+    await tester.tap(find.byKey(const Key('forge_take_it')));
     await tester.pumpAndSettle(const Duration(seconds: 5));
   });
 }
