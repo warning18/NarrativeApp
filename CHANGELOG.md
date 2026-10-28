@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.605.0+641]
+
+- **UX: the die in hand on the Character portrait.** A round badge on the
+  portrait square's lower right corner shows the die you hold, in its own look,
+  with a pill for the number of other dice in your bag (+2); one tap opens the
+  dice screen on that die. It stays hidden while the dice are not yet open and
+  for a character with no die. (The user's pick of two placements drawn in
+  `docs/proposals/character-dice-button.md`.)
+- Tests: `character_die_badge_test.dart`.
+
 ## [1.604.0+640]
 
 - **UX: the dog no longer trots across the story page.** The little companion
