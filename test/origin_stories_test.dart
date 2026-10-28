@@ -533,15 +533,12 @@ void main() {
     await _until(tester, find.text('Human'));
     final container = ProviderScope.containerOf(
         tester.element(find.byType(RaceProfessionScreen)));
-    await tester.tap(find.text('Human').first);
+    await tester.tap(find.byKey(const Key('choice_card_human')));
     await tester.pump();
-    await tester.scrollUntilVisible(find.text('Warrior'), 300,
-        scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('Warrior').first);
+    await tester.tap(find.byKey(const Key('rp_step_calling')));
     await tester.pump();
-    await tester.scrollUntilVisible(
-        find.text('Start New Game With This Character'), 300,
-        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.byKey(const Key('choice_card_warrior')));
+    await tester.pump();
     await tester.tap(find.text('Start New Game With This Character'));
     await _settle(tester);
     await tester.tap(find.text('Start'));

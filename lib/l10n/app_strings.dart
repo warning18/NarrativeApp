@@ -4109,6 +4109,102 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Choisissez qui vous êtes. Ceci définit vos statistiques de départ et démarre une nouvelle partie.',
   },
+  // The race and profession choice (v1.599, UX): two steps of cards, the
+  // clans behind each, what it unlocks, Compare, and the summary.
+  'rp_step_people': {
+    AppLanguage.en: '1 · People',
+    AppLanguage.fr: '1 · Peuple'
+  },
+  'rp_step_calling': {
+    AppLanguage.en: '2 · Calling',
+    AppLanguage.fr: '2 · Vocation'
+  },
+  'rp_choose': {AppLanguage.en: 'Choose', AppLanguage.fr: 'Choisir'},
+  'rp_hint_people': {
+    AppLanguage.en:
+        'Who are your people? The clans behind them will court you.',
+    AppLanguage.fr:
+        'Qui sont les vôtres\u00a0? Les clans qui les soutiennent vous courtiseront.',
+  },
+  'rp_hint_calling': {
+    AppLanguage.en:
+        'How will you fight? Your calling opens three branches of skills.',
+    AppLanguage.fr:
+        'Comment combattrez-vous\u00a0? Votre vocation ouvre trois branches de compétences.',
+  },
+  'rp_compare': {AppLanguage.en: 'Compare', AppLanguage.fr: 'Comparer'},
+  'rp_clans_count': {AppLanguage.en: '{n} clans', AppLanguage.fr: '{n} clans'},
+  'rp_clans_court': {
+    AppLanguage.en: 'These clans will court you',
+    AppLanguage.fr: 'Ces clans vous courtiseront',
+  },
+  'rp_unlocks': {AppLanguage.en: 'It unlocks', AppLanguage.fr: 'Cela ouvre'},
+  'rp_sponsors_heritage': {
+    AppLanguage.en: 'Sponsors your heritage: {names}',
+    AppLanguage.fr: 'Parraine votre héritage\u00a0: {names}',
+  },
+  'rp_offers_branch': {
+    AppLanguage.en: 'Offers the {branch} branch',
+    AppLanguage.fr: 'Offre la branche {branch}',
+  },
+  'rp_heritage_branch': {
+    AppLanguage.en: 'Heritage branch: {names}',
+    AppLanguage.fr: 'Branche d’héritage\u00a0: {names}',
+  },
+  'rp_power_medium': {
+    AppLanguage.en: 'Power medium: {name}',
+    AppLanguage.fr: 'Support de pouvoir\u00a0: {name}',
+  },
+  'rp_three_branches': {
+    AppLanguage.en: 'Branches: {names}',
+    AppLanguage.fr: 'Branches\u00a0: {names}',
+  },
+  'rp_scales_with': {
+    AppLanguage.en: 'Its gear scales with {stat}',
+    AppLanguage.fr: 'Son équipement dépend de {stat}',
+  },
+  'rp_casts': {
+    AppLanguage.en: 'Starts with a die and spells',
+    AppLanguage.fr: 'Commence avec un dé et des sorts',
+  },
+  'rp_starting_skill': {
+    AppLanguage.en: 'Starting skill: {skill}',
+    AppLanguage.fr: 'Compétence de départ\u00a0: {skill}',
+  },
+  'rp_clan_offers': {
+    AppLanguage.en: 'What it offers you',
+    AppLanguage.fr: 'Ce qu’il vous offre',
+  },
+  'rp_next_calling': {
+    AppLanguage.en: 'Next: your calling',
+    AppLanguage.fr: 'Suite\u00a0: votre vocation',
+  },
+  'rp_next_people': {
+    AppLanguage.en: 'Next: your people',
+    AppLanguage.fr: 'Suite\u00a0: votre peuple',
+  },
+  'rp_you_will_play': {
+    AppLanguage.en: 'You will play as',
+    AppLanguage.fr: 'Vous jouerez',
+  },
+  'rp_first_clans': {
+    AppLanguage.en: 'The clans that will come first',
+    AppLanguage.fr: 'Les clans qui viendront d’abord',
+  },
+  'rp_back_both': {
+    AppLanguage.en: '{n} back both',
+    AppLanguage.fr: '{n} soutiennent les deux'
+  },
+  'rp_pick_the': {
+    AppLanguage.en: 'Pick the {name}',
+    AppLanguage.fr: 'Choisir\u00a0: {name}'
+  },
+  'rp_compare_with': {
+    AppLanguage.en: 'Compare with',
+    AppLanguage.fr: 'Comparer avec'
+  },
+  'rp_branches_title': {AppLanguage.en: 'Branches', AppLanguage.fr: 'Branches'},
+  'rp_clans_title': {AppLanguage.en: 'Clans', AppLanguage.fr: 'Clans'},
   'lore_more': {AppLanguage.en: 'more', AppLanguage.fr: 'plus'},
   'lore_less': {AppLanguage.en: 'less', AppLanguage.fr: 'moins'},
   'randomize_character_button': {

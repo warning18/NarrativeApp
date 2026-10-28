@@ -21,6 +21,22 @@ isn't reconstructable from git history alone.
 - Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
   layout under it moved); the walking-companion setting test is gone.
 
+## [1.603.0+639]
+
+- **UX: choosing your people and your calling.** The new-game picker is now
+  two steps, People then Calling, with one card each: its mark, name, the way
+  it plays (the playstyle line) and its four biggest numbers.
+  - A tap opens the card: the lore (first sentence, "more" for the rest), the
+    clans that will court you (tap one for its banner, motto and what it
+    stands for), what it unlocks, and its starting skill and spells.
+  - **Compare** sets two side by side and picks one; the dice still
+    randomises both.
+  - Once both are chosen a summary card shows the pair, the clans that come
+    first and what you will play, above Start.
+  - The radar that sat above the rails is gone; the intro flow is untouched.
+- Tests: `race_profession_choice_test.dart` replaces `preset_rail_test.dart`
+  (five cards at 360 px in French, names whole, open card, compare, summary).
+
 ## [1.602.0+638]
 
 Vica finds every hero at the end of the desert walk after the crash: lost a few hundred paces from the Sleeper's Face, nearly dead, the hero is led to the lights of the White Wells by a small black-and-white dog, and is her companion from then on (the three small ways to treat her set how she starts). Chapter 1 has no other dog: the grey warhound of Weaver's Alley is a signal-lantern now, raised in the Black Hold and on the quay. Vess joins in Saltmouth, in chapter 2, like Kelda, Sable and Liora. The unnamed tutorial dog is Vica. Her remarks and her lines at fifteen scenes are in both languages.
