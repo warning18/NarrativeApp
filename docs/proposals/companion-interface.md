@@ -1,8 +1,9 @@
 # The camp's Companion interface: a review and two versions (UX, nothing built)
 
 The user: "Could you review the UX of the Companion interface in the camp?" Context: a guide dog (the
-sprite of the tutorial) becomes a normal, replaceable companion earned through a quest in the second
-big town, so the roster and the seat swap matter more. Seats today: two; a third with the Barracks
+sprite of the tutorial) is **Vica, the one companion every hero has**: she joins automatically before
+the city after the desert (Narrative pins the scene), and stronger companions replace her in the party
+later, so the Party tab always has at least her, and the seat swap matters more. Seats today: two; a third with the Barracks
 Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_test.dart` (parts in
 `test/ux_companion_mock_parts.dart`).
 
@@ -10,7 +11,7 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
 |---|---|
 | `docs/ux-shots/companion-today.png` | The real Party tab of the camp at 320 and 412 px, the top and the end (four companions: devoted, friendly, neutral, wary; two seated, two benched). |
 | `docs/ux-shots/companion-a.png` | A: the same list, calmer, with a seat strip and a one-tap swap. |
-| `docs/ux-shots/companion-dog.png` | The guide dog's moments: the tutorial, joining at Saltmouth, a stronger companion arriving, and the bench after. |
+| `docs/ux-shots/companion-dog.png` | The guide dog's moments: the tutorial, joining every hero, the camp with only her, a stronger companion arriving, and the bench after. |
 | `docs/ux-shots/companion-b.png` | B: a different shape: the party as a formation, a page for each companion, who is not (or no longer) with you; the guide dog's page. |
 
 ## What is hard, ranked by how much it hurts the player
@@ -54,25 +55,27 @@ Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_t
 ## B. A formation and a page each (`companion-b.png`)
 - **The party screen:** the seats as large portraits with health and tier; the bench as a small grid
   (tap to open); below, **"Not with you"**: a "???" with the quest to find them (from
-  `recruitQuestId`), and who left.
+  `recruitQuestId`; Vica is not one of them, she comes to every hero), and who left.
 - **A companion's page:** their portrait, health, the seat button; approval as a **meter with its
   thresholds named** (leaves at −12, wary at −5, friendly at 5, devoted at 12), what the tier
   does, likes and dislikes as chips, and the line that benched companions do not see your choices; then
   their die (look and name, a tap opens the ring), skills, gear.
-- **The guide dog's page** (last frame): Vica, her sprite from the tutorial, "Guide dog · found in
-  Saltmouth", a seat, a bench, the Hound Die. Her numbers and die are Core's (#568), her quest (Vica's
-  Walk) Narrative's (#569); her likes and dislikes are not set yet.
+- **The guide dog's page** (last frame): Vica, her sprite from the tutorial, "Guide dog · walks
+  with every hero", the first seat, a bench when a stronger companion comes, the Hound Die. Her numbers
+  and die are Core's (#568); her joining scene is Narrative's; her likes and dislikes are not set yet.
 - Cost: a new page and a rebuilt Party tab: about two days of UX, more than A.
 
 ## The guide dog: from the tutorial to the bench (`companion-dog.png`)
-From Core's note (#568: the dog joins at Saltmouth as a normal ranger-class companion, weaker than Kelda
-and Sable, benched once a stronger one joins) and Narrative's (#569: Vica, Vica's Walk).
+From Core's note (#568: the dog is a ranger-class companion, weaker than Kelda and Sable, benched once a
+stronger one joins) and the user's later word: she is **mandatory**, every hero gets her automatically
+before the city after the desert (Narrative pins the scene), and other companions replace her in the
+party later.
 - **The tutorial guide today:** a walking and sitting dog with the speech bubble (the real
   `SpeechBubble`), named by the player in Settings (`companionNameProvider`, default "your
   companion"), and a different look for a good or an evil hero (angel or demon). It is not on the Party
   tab.
-- **The handover at Saltmouth (one small moment):** when Vica's Walk ends, the same dog, with the same
-  bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name
+- **The handover (one small moment):** when the scene Narrative pins plays (before the city after the
+  desert), the same dog, with the same bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name
   the player gave the guide (Vica when they never named it) and her look. Narrative writes the line.
 - **The swap moment (a stronger companion arrives):** today a recruit is seated only up to capacity, so
   Kelda, arriving with the seats full, lands on the bench **without a word**, and nothing tells the
@@ -80,6 +83,10 @@ and Sable, benched once a stronger one joins) and Narrative's (#569: Vica, Vica'
   walks with you?", with one row per choice ("Kelda for Vica", "Kelda for Sable", "Kelda waits at camp,
   for now"), each saying who waits at camp, and one line on what waiting means: they keep their health
   and gear, do not see your choices, and can come back from the Party tab.
+- **The camp with only Vica (third frame):** every hero has her, so the Party tab is never empty. She
+  holds the first seat; the second is an **open seat** that says what it is for ("Companions you
+  recruit sit here"); the third stays locked until the Barracks Annex; the bench is empty; "Not with
+  you" lists the companions still to find.
 - **After:** the bench shows Vica, and a gold note says it once: "Vica waits at camp. Kelda walks with
   you. Vica keeps her health and her gear, does not see your choices, and can come back: tap her."
 - **Needs:** Narrative: the one line at the handover, the dog taking the player's name for the guide
@@ -89,8 +96,8 @@ and Sable, benched once a stronger one joins) and Narrative's (#569: Vica, Vica'
 
 ## What each needs from Core
 - **A:** nothing.
-- **B:** nothing for the screens. The dog is in Core's note (#568: no race, class ranger, `hound_die`,
-  about 42 health at level 8) and Narrative's (#569: Vica's Walk, Saltmouth); what is still open for
+- **B:** nothing for the screens. One question: can the player bench Vica at once, or only when a stronger companion needs her seat? (The frames assume the second.) The dog is in Core's note (#568: no race, class ranger, `hound_die`,
+  about 42 health at level 8); her joining scene is Narrative's; what is still open for
   Core is her likes and dislikes (approval weights) and whether her page shows a class at all (the
   picture shows none, only "Guide dog"). For "Not with you": whether to show a companion not yet met as a "???" (a spoiler
   question for the story) and a record of who left (today `loseAlly` drops them; a list of the lost,

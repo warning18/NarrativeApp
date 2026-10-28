@@ -297,7 +297,7 @@ void main() {
           const NotesPanel(title: 'B · A formation and a page each', sections: [
         (
           'The party screen',
-          'The seats are large portraits with health and tier; the bench is a small grid; below, who is not with you: a "???" with the quest to find them, and who left. A tap on any companion opens their page.'
+          'The seats are large portraits with health and tier; the bench is a small grid; below, who is not with you: a "???" with the quest to find them (Vica is not one of them: she comes to every hero), and who left. A tap on any companion opens their page.'
         ),
         (
           'A companion’s page',
@@ -305,7 +305,7 @@ void main() {
         ),
         (
           'The guide dog (Vica)',
-          'A companion like the others: her sprite from the tutorial, a seat, a bench, a replacement. Health (about 42 at level 8) and the Hound Die are Core’s note (#568); her quest, Vica’s Walk in Saltmouth, is Narrative’s (#569). Her likes are not set yet.'
+          'The one companion every hero has: her sprite from the tutorial, the first seat, a bench when a stronger companion comes, a replacement. She joins by herself before the city after the desert (Narrative pins the scene). Health (about 42 at level 8) and the Hound Die are Core’s note (#568). Her likes are not set yet.'
         ),
         (
           'Needs from Core',
@@ -334,7 +334,7 @@ void main() {
         ),
         (
           412,
-          'Saltmouth: the guide joins, same sprite, same name',
+          'Every hero: the guide joins, same sprite, same name',
           const DogMoment(
             speaker: 'Vica',
             text: 'Vica falls in beside you, nose to your heel.',
@@ -343,13 +343,23 @@ void main() {
             tag: 'New companion',
           )
         ),
-        (412, 'Kelda arrives, the seats are full', const ArrivalSheet()),
+        (
+          412,
+          'The camp with only Vica: first seat, an open one',
+          const BPage(onlyVica: true)
+        ),
+        (
+          412,
+          'A stronger companion arrives, the seats are full',
+          const ArrivalSheet()
+        ),
         (
           412,
           'After: Vica waits at camp, and it says so',
           const BPage(withVica: true)
         ),
       ],
+      height: 860,
       container: container,
       notes: const NotesPanel(
         title: 'The dog: from the tutorial to the bench',
@@ -359,8 +369,12 @@ void main() {
             'Today the guide is a walking and sitting dog with a speech bubble, named by the player in Settings (default "your companion"), and it looks different for a good or an evil hero (an angel or a demon). It is not on the Party tab.'
           ),
           (
-            'The handover at Saltmouth',
-            'When the quest ends, the same dog, with the same bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name the player gave her (Vica when they never named her) and her look (neutral, angel or demon). One moment, one tap.'
+            'The handover (before the city after the desert)',
+            'When the scene Narrative pins plays, the same dog, with the same bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name the player gave her (Vica when they never named her) and her look (neutral, angel or demon). One moment, one tap.'
+          ),
+          (
+            'The camp with only Vica',
+            'Every hero has her, so the Party tab is never empty: she holds the first seat, the second is an open seat that says what it is for, the third is locked until the Barracks Annex. The bench is empty and "Not with you" lists the companions still to find.'
           ),
           (
             'The swap moment',

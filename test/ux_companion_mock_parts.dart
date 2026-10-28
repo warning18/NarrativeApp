@@ -680,11 +680,15 @@ AllyInfo wickInfo(Map<String, dynamic> professions, {bool active = false}) =>
     );
 
 class BPage extends StatelessWidget {
-  const BPage({super.key, this.withVica = false});
+  const BPage({super.key, this.withVica = false, this.onlyVica = false});
 
   /// Vica on the bench, and the note that she waits at camp (the frame after
   /// a stronger companion took her seat).
   final bool withVica;
+
+  /// The hero with only Vica: she is the one seated companion, the second
+  /// seat is open, the bench is empty.
+  final bool onlyVica;
 
   @override
   Widget build(BuildContext context) {
@@ -693,10 +697,12 @@ class BPage extends StatelessWidget {
       final ink = InkColors.of(context);
       final professions =
           ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
-      final seated = allies.where((a) => a.active).toList();
+      final seated = onlyVica
+          ? [wickInfo(professions, active: true)]
+          : allies.where((a) => a.active).toList();
       final bench = [
         if (withVica) wickInfo(professions),
-        ...allies.where((a) => !a.active),
+        if (!onlyVica) ...allies.where((a) => !a.active),
       ];
       Widget bigSeat(AllyInfo a) => Expanded(
             child: Container(
@@ -793,6 +799,32 @@ class BPage extends StatelessWidget {
               trailing: '${seated.length} / 2 seats'),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             for (final a in seated) ...[bigSeat(a), const SizedBox(width: 8)],
+            if (onlyVica) ...[
+              Expanded(
+                child: Container(
+                  height: 150,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: ink.gold.withValues(alpha: 0.5)),
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, color: ink.gold),
+                        const SizedBox(height: 4),
+                        Text('Open seat',
+                            style: theme.textTheme.labelMedium
+                                ?.copyWith(color: ink.gold)),
+                        Text('Companions you recruit sit here',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
+                      ]),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
             Expanded(
               child: Container(
                 height: 150,
@@ -835,10 +867,6 @@ class BPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: ghost('???', 'Find them: ${questOf(c)}'),
               ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: ghost('???', 'Find her: Vica’s Walk, in Saltmouth'),
-            ),
             ghost('Malrik Sarn', 'Left when your choices turned him away',
                 lost: true),
           ]),
@@ -1116,7 +1144,7 @@ class DogPage extends StatelessWidget {
                 Text('Vica',
                     style: theme.textTheme.titleLarge
                         ?.copyWith(fontFamily: InkFonts.display)),
-                Text('Guide dog · found in Saltmouth',
+                Text('Guide dog · walks with every hero',
                     style:
                         theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
                 const SizedBox(height: 4),
@@ -1154,7 +1182,7 @@ class DogPage extends StatelessWidget {
         const ApprovalMeter(approval: startingApproval),
         const SizedBox(height: 6),
         Text(
-            'Vica is a companion like the others: she takes a seat, can be benched or replaced. Her numbers and die come from Core’s note (#568), her quest from Narrative’s (#569); her likes are not set yet.',
+            'Vica is the one companion every hero has: she joins by herself before the city after the desert (Narrative pins the scene), takes the first seat, and a stronger companion can later take her place; she then waits at camp. Her numbers and die come from Core’s note (#568); her likes are not set yet.',
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
         sectionTitle(context, 'Their die'),
@@ -1233,7 +1261,7 @@ class NotesPanel extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// The guide dog's moments: the tutorial, joining at Saltmouth, the swap.
+// The guide dog's moments: the tutorial, joining every hero, the swap.
 // ---------------------------------------------------------------------------
 
 /// A dimmed page under a moment.
