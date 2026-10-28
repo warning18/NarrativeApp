@@ -40,24 +40,27 @@ void main() {
     expect(find.text('Alster'), findsOneWidget);
   });
 
-  testWidgets('the inventory lays its slots out in boxes at phone width',
+  testWidgets('the inventory lays its slots out as tiles at phone width',
       (tester) async {
     tester.view.physicalSize = const Size(360, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(const ProviderScope(
-      child: MaterialApp(home: InventoryScreen()),
-    ));
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(InventoryScreen)));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson({
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    // The notifier reads its saved game first; the session loads after.
+    final notifier = container.read(playerSessionProvider.notifier);
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 300)));
+    await tester.runAsync(() => notifier.loadSession(PlayerSession.fromJson({
           'raceId': 'human',
           'professionId': 'warrior',
           'inventoryItemIds': ['sword_001', 'armor_leather'],
           'equippedItemIds': ['sword_001'],
         })));
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: InventoryScreen()),
+    ));
     for (var i = 0; i < 10; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 200)));
@@ -66,10 +69,10 @@ void main() {
     expect(find.byKey(const Key('slot_Weapon')), findsOneWidget);
     expect(find.byKey(const Key('slot_Top')), findsOneWidget);
     expect(find.text('EQUIPMENT'), findsOneWidget);
-    expect(
-        find.textContaining(RegExp('equipped', caseSensitive: false),
-            skipOffstage: false),
-        findsWidgets);
+    // The worn sword says where it is worn, and offers to be taken off.
+    expect(find.byKey(const Key('slot_Dice')), findsOneWidget);
+    expect(find.byKey(const Key('inv_action_sword_001')), findsOneWidget);
+    expect(find.text('Take off'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

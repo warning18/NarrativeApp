@@ -2377,6 +2377,70 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Équipement'
   },
   'dice_label': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dé'},
+  // The inventory's tabs, rows and slots (v1.594, UX).
+  'inv_title': {AppLanguage.en: 'Inventory', AppLanguage.fr: 'Inventaire'},
+  'inv_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
+  'inv_tab_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'inv_tab_charms': {AppLanguage.en: 'Charms', AppLanguage.fr: 'Charmes'},
+  'inv_tab_potions': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'inv_tab_materials': {
+    AppLanguage.en: 'Materials',
+    AppLanguage.fr: 'Matériaux'
+  },
+  'inv_tab_books': {AppLanguage.en: 'Books', AppLanguage.fr: 'Livres'},
+  'inv_tab_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'inv_tab_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'inv_sort_newest': {AppLanguage.en: 'Newest', AppLanguage.fr: 'Récents'},
+  'inv_sort_rarity': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
+  'inv_sort_name': {AppLanguage.en: 'Name', AppLanguage.fr: 'Nom'},
+  'inv_take_off': {AppLanguage.en: 'Take off', AppLanguage.fr: 'Retirer'},
+  'inv_new': {AppLanguage.en: 'New', AppLanguage.fr: 'Nouveau'},
+  'inv_goes_on': {
+    AppLanguage.en: 'goes on the {slot}',
+    AppLanguage.fr: 'se porte : {slot}',
+  },
+  'inv_worn_on': {
+    AppLanguage.en: 'worn on the {slot}',
+    AppLanguage.fr: 'porté : {slot}',
+  },
+  'inv_instead_of': {
+    AppLanguage.en: 'Instead of {name} (worn)',
+    AppLanguage.fr: 'À la place de {name} (porté)',
+  },
+  'inv_compare_hold': {
+    AppLanguage.en: 'Hold a row to compare',
+    AppLanguage.fr: 'Maintenez une ligne pour comparer',
+  },
+  'inv_in_hand': {AppLanguage.en: 'In your hand', AppLanguage.fr: 'En main'},
+  'inv_in_bag': {AppLanguage.en: 'In the bag', AppLanguage.fr: 'Dans le sac'},
+  'inv_die_line': {
+    AppLanguage.en: 'd{n} · {n} faces · {material}',
+    AppLanguage.fr: 'd{n} · {n} faces · {material}',
+  },
+  'inv_die_made_for': {
+    AppLanguage.en: 'Made for the {who}',
+    AppLanguage.fr: 'Conçu pour : {who}',
+  },
+  'inv_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'inv_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'inv_type_artifact': {AppLanguage.en: 'Artifact', AppLanguage.fr: 'Artéfact'},
+  'inv_type_charm': {AppLanguage.en: 'Charm', AppLanguage.fr: 'Charme'},
+  'inv_type_potion': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'inv_type_material': {AppLanguage.en: 'Material', AppLanguage.fr: 'Matériau'},
+  'inv_type_spellbook': {
+    AppLanguage.en: 'Spellbook',
+    AppLanguage.fr: 'Grimoire'
+  },
+  'inv_type_tome': {AppLanguage.en: 'Tome', AppLanguage.fr: 'Tome'},
+  'inv_type_scroll': {AppLanguage.en: 'Scroll', AppLanguage.fr: 'Parchemin'},
+  'inv_type_quest': {
+    AppLanguage.en: 'Quest item',
+    AppLanguage.fr: 'Objet de quête'
+  },
+  'inv_empty_tab': {
+    AppLanguage.en: 'Nothing of this kind in the bag.',
+    AppLanguage.fr: 'Rien de ce genre dans le sac.',
+  },
   'wisdom_mana_bonus_line': {
     AppLanguage.en: 'Wisdom {wis}: +{n} mana on every Mana face and mana '
         'skill (1 more per 3 Wisdom).',
