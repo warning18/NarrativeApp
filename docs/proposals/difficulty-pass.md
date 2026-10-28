@@ -205,7 +205,8 @@ from §2, as the measures below show.
 
 **Re-sized for the bands:**
 
-- Bosses: Void Stalker 34 → 38 HP and White Admiral 72 → 62 HP.
+- Bosses: Void Stalker 34 → 38 HP and White Admiral 72 → 62 HP; the clans'
+  champions 43–45 → 36–38 HP (their curve, about half won, holds).
 - Professions:
   - warrior health +5 → +9;
   - rogue +3 → +6;

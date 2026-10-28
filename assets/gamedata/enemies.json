@@ -5981,7 +5981,7 @@
   },
   "champion_dominion": {
     "enemyName": "High Lantern-Bearer Orsolya Keld",
-    "maxHealth": 43,
+    "maxHealth": 36,
     "damage": 5,
     "guile": 9,
     "faction": "",
@@ -6112,7 +6112,7 @@
   },
   "champion_vigil": {
     "enemyName": "Watch-Captain Edda Grey",
-    "maxHealth": 45,
+    "maxHealth": 38,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6243,7 +6243,7 @@
   },
   "champion_compact": {
     "enemyName": "Master Hollis Reck",
-    "maxHealth": 45,
+    "maxHealth": 38,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6374,7 +6374,7 @@
   },
   "champion_mire": {
     "enemyName": "The Heron Queen's Hand",
-    "maxHealth": 45,
+    "maxHealth": 38,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6505,7 +6505,7 @@
   },
   "champion_crows": {
     "enemyName": "Captain Mireille Sorrel",
-    "maxHealth": 45,
+    "maxHealth": 38,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6636,7 +6636,7 @@
   },
   "champion_penitents": {
     "enemyName": "The Ash Confessor",
-    "maxHealth": 45,
+    "maxHealth": 38,
     "damage": 6,
     "guile": 9,
     "faction": "",

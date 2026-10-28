@@ -25,6 +25,7 @@ isn't reconstructable from git history alone.
 - **Re-sized so the boss curve and the professions' spread hold:**
   - Void Stalker 34 → 38 health;
   - White Admiral 72 → 62;
+  - the clans' champions 43–45 → 36–38 health, to keep their 50%;
   - warrior +9 starting health, rogue +6, ranger +3;
   - cleric +4 damage instead of +5.
 - **A new simulator profile, "stubborn":** companions, but the starter die and
