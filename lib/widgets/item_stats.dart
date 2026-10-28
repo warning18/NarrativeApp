@@ -185,6 +185,8 @@ class ItemStatChips extends StatelessWidget {
     this.equipped,
     this.equippedName,
     this.compact = false,
+    this.maxChips,
+    this.deltaVsEmpty = true,
   });
 
   final Map<String, dynamic>? item;
@@ -192,6 +194,14 @@ class ItemStatChips extends StatelessWidget {
   final String? equippedName;
   final AppLanguage language;
   final bool compact;
+
+  /// Shows only the first [maxChips] stats (the most telling come first in
+  /// [gearStatKeys]); null for all.
+  final int? maxChips;
+
+  /// Whether a slot with nothing worn still shows the "+n" of each stat
+  /// (the whole stat against nothing); a row of the bag turns it off.
+  final bool deltaVsEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -204,8 +214,11 @@ class ItemStatChips extends StatelessWidget {
       for (final line in lines)
         if (line.value != 0 || line.delta != 0)
           _chip(context, line.label, _fmt(line.value),
-              equipped == null && !gear ? null : line.delta),
+              equipped == null && (!gear || !deltaVsEmpty) ? null : line.delta),
     ];
+    if (maxChips != null && chips.length > maxChips!) {
+      chips.removeRange(maxChips!, chips.length);
+    }
     if (chips.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

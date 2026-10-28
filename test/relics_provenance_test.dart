@@ -199,10 +199,14 @@ void main() {
           () => Future<void>.delayed(const Duration(milliseconds: 300)));
       await tester.pumpAndSettle();
 
-      // The tile carries the rarity tag.
-      expect(find.byKey(const Key('rarity_tag_saint_bone')), findsOneWidget);
-      expect(find.text('Relic'), findsOneWidget);
+      // The row says the rarity in its one quiet line.
+      expect(
+          find.descendant(
+              of: find.byKey(const Key('inv_row_saint_bone')),
+              matching: find.textContaining('Relic')),
+          findsOneWidget);
       await tester.ensureVisible(find.text('Saint’s Knucklebone'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Saint’s Knucklebone'));
       await tester.pumpAndSettle();
       expect(find.text('A finger-bone the Reliquary swore it had burned.'),
@@ -210,7 +214,7 @@ void main() {
       expect(find.byKey(const Key('item_origin')), findsOneWidget);
       expect(
           find.text('Yours since the Lower Town, chapter 1'), findsOneWidget);
-      expect(find.text('Relic'), findsNWidgets(2), reason: 'tile and sheet');
+      expect(find.text('Relic'), findsOneWidget, reason: 'the sheet\'s tag');
       expect(tester.takeException(), isNull);
     });
   });
