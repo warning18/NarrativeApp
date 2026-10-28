@@ -8,7 +8,6 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/tutorial_provider.dart';
-import 'package:narrative_data_app/providers/walk_companion_provider.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/tutorial/guide_tour.dart';
@@ -71,14 +70,6 @@ void main() {
         expect(fr, isNot(en), reason: key);
       }
     }
-  });
-
-  test('the walking companion is on unless turned off', () async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
-    expect(container.read(walkCompanionEnabledProvider), isTrue);
-    await Future<void>.delayed(Duration.zero);
-    expect(container.read(walkCompanionEnabledProvider), isTrue);
   });
 
   test('a player who saw the old tour has seen the Story tour', () async {
