@@ -337,3 +337,37 @@ ForgedPieceChange forgedPieceBeforeAfter(
         : forgedResalePrice(base, tier),
   );
 }
+
+/// What the forge's sheet tells before the roll (v1.592, UX's forge sheet):
+/// the [modifiers] (each with its label key, value and source), their
+/// [modifierTotal], the [odds] of each tier on the d20 with them, and the
+/// piece as listed and as each tier would leave it ([pieceAt]).
+class ForgeSheet {
+  ForgeSheet._(this.modifiers, this.modifierTotal, this.odds, this.pieceAt);
+
+  final List<ForgeModifier> modifiers;
+  final int modifierTotal;
+  final Map<ForgeTier, double> odds;
+  final Map<ForgeTier, ForgedPieceChange> pieceAt;
+
+  /// The tier a d20 [face] gives with these modifiers.
+  ForgeTier tierOf(int face) => forgeTierFor(face + modifierTotal);
+}
+
+/// The sheet for forging [base] (the item's record) with [modifiers]
+/// (forgeModifiersProvider's).
+ForgeSheet forgeSheetFor(Map<String, dynamic> base,
+    {List<ForgeModifier> modifiers = const []}) {
+  final total = modifiers.fold(0, (n, m) => n + m.value);
+  return ForgeSheet._(
+    List.unmodifiable(modifiers),
+    total,
+    forgeOdds(total),
+    {for (final t in ForgeTier.values) t: forgedPieceBeforeAfter(base, t)},
+  );
+}
+
+/// [roll] made once more with [random] (a camp house's reroll, a fate
+/// coin): a new d20, the same modifiers.
+ForgeRoll rerolledForge(ForgeRoll roll, Random random) =>
+    rollForge(random: random, modifiers: roll.modifiers);
