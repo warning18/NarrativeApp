@@ -87,7 +87,8 @@ class DuoTechnique {
 
 /// Every duo, one per pair that fights well together: the two warriors,
 /// the two rogues, the two clerics, the two dwarves, the two orcs, and the
-/// pairs the Void, the woods and the dawn bring together. Tobin and Malrik
+/// pairs the Void, the woods and the dawn bring together, and the hunt
+/// (Liora and Vica, the dog every hero has since v1.601). Tobin and Malrik
 /// never share a party (their alignments part them), so neither pair
 /// needs the other.
 const List<DuoTechnique> duoTechniques = [
@@ -198,6 +199,19 @@ const List<DuoTechnique> duoTechniques = [
     descriptionFr:
         'Une vieille promesse orque, tenue à deux mains : un coup lourd, '
         'dont la moitié soigne les deux.',
+  ),  DuoTechnique(
+    id: 'the_hunt',
+    first: 'liora',
+    second: 'vica',
+    effect: DuoEffect.stunBlow,
+    nameEn: 'The Hunt',
+    nameFr: 'La Battue',
+    descriptionEn:
+        'Vica drives the quarry into the open and Liora is waiting: the '
+        'target is struck and pinned for a turn.',
+    descriptionFr:
+        'Vica rabat la proie à découvert et Liora l’attend : la cible est '
+        'frappée et clouée sur place pour un tour.',
   ),
 ];
 

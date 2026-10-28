@@ -196,7 +196,7 @@ void main() {
       for (final id in companions.keys) {
         expect(duosOf(id), isNotEmpty, reason: id);
       }
-      expect(duoTechniques.map((d) => d.id).toSet(), hasLength(8));
+      expect(duoTechniques.map((d) => d.id).toSet(), hasLength(9));
     });
 
     test('Tobin and Malrik, who never share a party, share no duo', () {

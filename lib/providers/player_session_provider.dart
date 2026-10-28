@@ -17,6 +17,7 @@ import '../combat/stat_rules.dart';
 import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
+import '../data/story_companions.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
@@ -2294,11 +2295,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     // Who the story takes is settled by the party as it stands in the
     // scene, before anyone reacts: a companion walking out over this very
     // choice must not leave `*` to take whoever steps into their seat.
-    final lostId = loseAllyId == null || loseAllyId.isEmpty
-        ? null
-        : loseAllyId == '*'
-            ? state.activeAllyIds.firstOrNull
-            : loseAllyId;
+    // Never a permanent companion (story_companions.dart): `*` takes the
+    // first other one seated.
+    final lostId = storyLossOf(loseAllyId,
+        active: state.activeAllyIds, companions: companions);
     final reactions = _reactToDeed(
       companions: companions,
       alignmentMod: alignmentMod,
@@ -2417,7 +2417,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         goldMod: goldMod,
         explicit: explicitApprovalFor(approvalMods, ally.companionId),
       );
-      final after = approvalAfter(ally.approval, delta);
+      // Vica (a permanent companion) never falls far enough to walk out.
+      final after = permanentApprovalFloor(
+          companions[ally.companionId] as Map<String, dynamic>?,
+          approvalAfter(ally.approval, delta));
       if (after == ally.approval) continue;
       reactions.add(ApprovalChange(
           companionId: ally.companionId, before: ally.approval, after: after));
@@ -4507,6 +4510,45 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Whether the camp may bench [companionId] ([companions]: the
+  /// companions.json table): not Vica when she is the last one seated.
+  bool canBench(String companionId, Map<String, dynamic> companions) =>
+      canBenchCompanion(companionId,
+          active: state.activeAllyIds, companions: companions);
+
+  /// Recruits the story's companions (story_companions.dart) the story has
+  /// reached: one of their join scenes is in [visited]. A save already past
+  /// Vica's scene gets her this way too, on load. [races], [professions],
+  /// [dice] and [houses] as for [recruitAlly]. Returns who joined.
+  Future<List<String>> recruitStoryCompanions(
+    Iterable<String> visited, {
+    required Map<String, dynamic> companions,
+    Map<String, dynamic> races = const {},
+    Map<String, dynamic> professions = const {},
+    Map<String, dynamic> dice = const {},
+    Map<String, dynamic> houses = const {},
+  }) async {
+    final due = storyRecruitsDue(companions,
+        visited: visited,
+        recruited: [for (final a in state.recruitedAllies) a.companionId],
+        gone: [...state.lostAllyIds, ...state.departedAllyIds]);
+    for (final id in due) {
+      final companion = companions[id] as Map<String, dynamic>?;
+      await recruitAlly(
+        id,
+        race: races[companion?['raceId']?.toString() ?? '']
+            as Map<String, dynamic>?,
+        profession: professions[companion?['professionId']?.toString() ?? '']
+            as Map<String, dynamic>?,
+        companion: companion,
+        dice: dice,
+        houses: houses,
+        requiredHouseId: companion?['requiredHouseId']?.toString(),
+      );
+    }
+    return due;
+  }
+
   /// Adds or removes [companionId] from the active fight party.
   /// [partyCapacity] and [requiredHouseId] (that companion's own gate, if
   /// any, from companions.json) are enforced here as well as in the Camp
@@ -4516,13 +4558,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     bool active, {
     required int partyCapacity,
     String? requiredHouseId,
+    Map<String, dynamic> companions = const {},
   }) async {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (!active) {
       if (!state.activeAllyIds.contains(companionId)) return;
+      // Vica is benched only by seating someone else; anyone else benched
+      // to an empty party leaves her seat to her (story_companions.dart).
+      if (!canBench(companionId, companions)) return;
       state = state.copyWith(
-        activeAllyIds:
-            state.activeAllyIds.where((id) => id != companionId).toList(),
+        activeAllyIds: withPermanentSeated(
+          state.activeAllyIds.where((id) => id != companionId).toList(),
+          recruited: [
+            for (final a in state.recruitedAllies)
+              if (a.companionId != companionId) a.companionId,
+          ],
+          companions: companions,
+        ),
       );
       await _persist();
       return;
