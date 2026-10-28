@@ -178,7 +178,7 @@ final List<Landmark> worldMapLandmarks = [
         'An oasis of white clay huts round a green pool, a salt caravan and a few merchants. Rest, and hear of a city to the south where the Waste meets the sea. Who walks south with you sets your origin: Guardian, Rat or Broken.',
     blurbFr:
         'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine\u00a0: Gardien, Rat ou Brisé.',
-    scenes: ['1200', '1210', '1000', '1001', '1002'],
+    scenes: ['1150_vica', '1200', '1210', '1000', '1001', '1002'],
   ),
   // Saltmouth (v1.536): one place on the world chart, like Alster. Its
   // districts (the Landward Gate, Tern Row, Smugglers' Wharf, the
