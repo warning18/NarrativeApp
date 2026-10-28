@@ -565,6 +565,9 @@ class SimCharacter {
       }
     }
 
+    // The stubborn player keeps its starting gear and die.
+    if (policy == SimPolicy.stubborn) return purse;
+
     // 3. Gear: per slot, the best affordable piece that beats what is worn.
     final bySlot = <String, MapEntry<String, Map<String, dynamic>>>{};
     for (final entry in stock) {
@@ -810,7 +813,7 @@ class SimFightOutcome {
 /// Pack-size stat multipliers, the fight screen's own.
 const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
-const int _potionHeal = 6;
+const int _potionHeal = 8; // potionHealAmount (item_stats.dart)
 const int _maxRolls = 3;
 
 class _SimEnemy {

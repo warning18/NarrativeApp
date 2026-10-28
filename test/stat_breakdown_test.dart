@@ -175,7 +175,7 @@ void main() {
     expect(amountOf(breakdown(s, 'charisma'), 'patron', 'dominion'), 1);
     // Strength is a warrior's damage.
     expect(amountOf(breakdown(s, 'baseDamage'), 'patron', 'dominion'), 1);
-    expect(amountOf(breakdown(s, 'maxHealth'), 'level'), 4 * 4);
+    expect(amountOf(breakdown(s, 'maxHealth'), 'level'), 4 * 3);
   });
 
   test('the formative memories show as the origin', () async {
@@ -188,7 +188,7 @@ void main() {
     expectSums(s);
     expect(amountOf(breakdown(s, 'wisdom'), 'origin'), 1);
     expect(amountOf(breakdown(s, 'constitution'), 'origin'), 1);
-    expect(amountOf(breakdown(s, 'maxHealth'), 'origin'), 5);
+    expect(amountOf(breakdown(s, 'maxHealth'), 'origin'), 3);
   });
 
   test('gear, a sign and a title are lent on top', () async {
@@ -236,7 +236,7 @@ void main() {
     // A level-9 human warrior of 38 health: 20 + 5 (warrior) + 8 levels of
     // 4 + 3 (Vigor) is 60; the rescale took the rest away.
     final health = breakdown(s, 'maxHealth');
-    expect(amountOf(health, 'level'), 32);
+    expect(amountOf(health, 'level'), 24);
     expect(amountOf(health, 'perk', 'vigor'), 3);
     expect(health.ofKind('earlier'), hasLength(1));
     expect(health.storedTotal, 38);

@@ -319,7 +319,7 @@ void main() {
       expect(await n.ensureStatPick(paths), hasLength(3));
     });
 
-    test('a level brings one pick and +4 health, no damage by itself',
+    test('a level brings one pick and +3 health, no damage by itself',
         () async {
       final n = await notifierWith({
         'level': 1,
@@ -332,13 +332,13 @@ void main() {
       await n.applyCombatResult(hpAfter: 10, xpGain: 10);
       expect(n.state.level, 2);
       expect(n.state.baseDamage, 3);
-      expect(n.state.maxHealth, 20 + 4);
+      expect(n.state.maxHealth, 20 + 3);
       expect(n.state.statPoints, 1);
       // Two levels at once from a quest's XP: twice as much.
       await n.completeQuest('q_test', rewardXP: 200 + 300);
       expect(n.state.level, 4);
       expect(n.state.baseDamage, 3);
-      expect(n.state.maxHealth, 20 + 3 * 4);
+      expect(n.state.maxHealth, 20 + 3 * 3);
       expect(n.state.statPoints, 3);
     });
 
@@ -383,7 +383,7 @@ void main() {
     expect(c.trainingTaken.values.fold<int>(0, (a, b) => a + b), 1);
     // One pick, Common to Heroic.
     expect(points() - before, inInclusiveRange(1, 4));
-    expect(c.maxHealth, greaterThanOrEqualTo(health + 4));
+    expect(c.maxHealth, greaterThanOrEqualTo(health + 3));
     // A mage's damage moves only with its Intelligence.
     expect(c.baseDamage - damage, c.pickedPoints['intelligence'] ?? 0);
     expect(c.currentHealth, c.maxHealth);

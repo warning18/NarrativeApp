@@ -334,14 +334,17 @@ void main() {
   group('whole runs (seed 7, one warrior)', () {
     late SimRunSummary naive;
     late SimRunSummary competent;
+    late SimRunSummary stubborn;
     setUpAll(() {
       naive = _warriorRun(SimPolicy.naive).single;
       competent = _warriorRun(SimPolicy.competent).single;
+      stubborn = _warriorRun(SimPolicy.stubborn).single;
     });
 
     test('naive is unchanged: the run before the policy existed', () {
       // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
-      // v1.577 when three scenes became two pages each (the run's dice move).
+      // v1.577 when three scenes became two pages each (the run's dice move),
+      // and at v1.597 (the difficulty pass).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -353,12 +356,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        20,
-        3709,
-        40,
-        64,
-        46,
-        296,
+        17,
+        2460,
+        26,
+        78,
+        34,
+        319,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -383,10 +386,20 @@ void main() {
       expect(competent.gear, isNotEmpty);
       expect(competent.die, isNotEmpty);
     });
+
+    test('the stubborn player keeps its starting gear and die', () {
+      // A warrior starts with nothing worn and the starter die: the naive
+      // player wears what it is given, the stubborn one never does.
+      expect(naive.gear, isNotEmpty);
+      expect(stubborn.gear, isEmpty);
+      expect(stubborn.die, 'starter_die');
+      expect(stubborn.offerPicks, hasLength(stubborn.offers));
+    });
   });
 }
 
 /// _stableHash of the naive warrior's ways taken (seed 7), from v1.562;
 /// re-pinned at v1.577 (three scenes became two pages each) and at v1.578
-/// (the Wharf lists fewer entries).
-const int _naiveChoicesHash = 1858145717;
+/// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
+/// smaller health on both sides, a weakness ×2).
+const int _naiveChoicesHash = 1696383323;

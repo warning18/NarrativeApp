@@ -4,8 +4,9 @@ The user asked to "decrease HP and strength numbers and adapt the overall
 difficulty. It doesn't seem for now that the user struggles or really needs
 to equip or change their dice."
 
-**This is a proposal only; nothing is changed yet.** The build comes after
-the user's OK, as v1.597.0+633.
+**Built as v1.597.0+633, without E.** The user's answers: 1 OK (A, B, C),
+2 not OK (E dropped: companions stay as they are), 3 OK (D), 4 OK (F),
+5 OK (target, G). §6 says what was built and what the simulator measured.
 
 ## In plain words (for the user)
 
@@ -24,8 +25,8 @@ The proposal:
 1. **Smaller numbers on both sides.** Foes get about 40% less health, and you
    gain less health per level, so a fight is 150–250 health against your
    15–25 damage, not 500.
-2. **Companions help but don't carry.** They grow more slowly and take fewer
-   blows, and the foe aims at you at least half the time.
+2. ~~**Companions help but don't carry.**~~ **Dropped by the user:**
+   companions stay as they are.
 3. **The right die wins.** Almost every foe from chapter 2 on (70 of 78) has
    a weakness and most have a resist. A hit on the weakness goes from ×1.5 to
    ×2, and a resisted hit stays at ×0.5. The starter die has no element, so
@@ -122,7 +123,7 @@ change.
 | C | Foe damage | unchanged | unchanged (it now hits a smaller HP pool, so each blow weighs more) | – |
 | D | Weakness | ×1.5 | **×2.0** | `enemy_intent.dart` |
 | D | Resist | ×0.5 | ×0.5 (unchanged) | – |
-| E | Companion HP per level | +12% | +8% | `scaledMaxHealth` for allies |
+| E (dropped) | Companion HP per level | +12% | +8% | `scaledMaxHealth` for allies |
 | E | Companion damage | ×1.0 | ×0.8 | `fight_setup.dart` ally setup |
 | E | Who the foe hits | random member | the hero at least 50% of blows; the rest at random (Defend still draws) | `fight_rounds.dart` + `sim_combat.dart` |
 | F | Potion heal | 6 | 8 (the hero's pool is smaller, but a potion still matters) | `item_stats.dart` |
@@ -183,3 +184,95 @@ Only these files run locally; CI runs the rest.
 
 Narrative's story data is untouched. If a quest's reward needs a number, I set
 it as usual.
+
+## 6. What was built (v1.597), and what it measured
+
+E was dropped. The rest of the proposal was built, with two numbers moved
+from §2, as the measures below show.
+
+**Built:**
+
+| # | Change | Built |
+|---|---|---|
+| A | Hero HP per level / per CON point | 4 → 3 / 5 → 3 |
+| B | Regular foe HP floors, ch2–8 | ×0.9 each (1.62 / 2.72 / 2.72 / 2.85 / 2.12 / 2.05 / 2.00), not ×0.6 |
+| B | Foe HP per level | kept at +16%, not 12% |
+| B | Boss HP floor | 1.21 → 1.13 |
+| C | Foe damage | unchanged |
+| D | Weakness | ×1.5 → ×2 (and the fight card says ×2) |
+| F | Potion | heals 6 → 8 |
+| G | Chapter 1 | floors untouched; Aurel Vane 22 → 29 HP to keep its 75% |
+
+**Re-sized for the bands:**
+
+- Bosses: Void Stalker 34 → 38 HP and White Admiral 72 → 62 HP; the clans'
+  champions 43–45 → 36–38 HP (their curve, about half won, holds).
+- Professions:
+  - warrior health +5 → +9;
+  - rogue +3 → +6;
+  - ranger 0 → +3;
+  - cleric damage +5 → +4.
+- The profession changes keep the five professions within 8 points of each
+  other: they now sit within about 4.
+
+**Why not ×0.6.** With ×0.6 floors and +12% a level, every fight got much
+easier:
+
+- the naive player rose from 0.62 to 0.82 won in chapters 3–8;
+- the stubborn player rose from 0.80 to 0.97 at the first try.
+
+The hero's smaller health did not make up for foes with 40% less. ×0.9 with
++16% keeps the naive player where it was, with smaller numbers on both
+sides.
+
+**The simulator** (10 runs per profile, seed 7, as v1.564: the five
+professions twice, 5 random and 5 favour-good walks, with `skill_merges` and
+`companions`). Chapters 3–8 encounters:
+
+| Profile | Before: won / 1st try | v1.597: won / 1st try |
+|---|---|---|
+| Naive (no companions, starter die, wears little) | 0.62 / 0.40 | 0.59 / 0.42 |
+| Stubborn (companions, starter die, starting gear) | 0.93 / 0.80 | 0.92 / 0.81 |
+| Competent (companions, best die and gear) | 0.99 / 0.96 | 1.00 / 0.99 |
+
+**The target is not met, because the companions carry the fights.** The
+stubborn player still wins about 81% at the first try, against 45–55% asked.
+
+- The gap between it and the competent player is 18 points, up from 16.
+- The ×2 weakness widens it, but two or three companions win the fight
+  whatever die the hero rolls.
+
+**A solo check** (one hero alone at the chapter's level, no gear, 60 fights
+each):
+
+- **Chapters 3–6:** the hero loses almost every fight with any die. Without
+  gear and companions these fights are beyond a hero alone.
+- **Where it is close, the right die decides.** Against the Void Wisp (weak
+  to Light, chapter 3):
+
+| Hero | Starter die | Pilgrim die (Light) | Pilgrim die, elements stripped |
+|---|---|---|---|
+| Warrior | 0.10 | 0.30 | 0.02 |
+| Cleric | 0.40 | 0.83 | 0.57 |
+
+So the drafted guard (`adapt_gap_test`) is not added yet. A solo hero
+without gear loses whatever the die, so it has nothing to pin. It waits for
+the user's choice below.
+
+**The two options for the user (§7).**
+
+## 7. Options for the companions (the user's choice)
+
+1. **Stronger foes, the same companions.** Foes in a party fight grow with
+   the party's size: each seated companion adds about +35% health and +20%
+   damage to the foes. The fight a hero meets alone stays as it is. The
+   companions keep their numbers, but they no longer win the fight for you,
+   so the right die and gear decide it again.
+2. **A milder companion change.** Companions keep their health and damage,
+   but the foe aims at the hero half the time (today it picks a party member
+   at random, and the companions draw most blows). The hero's own health,
+   die and gear then matter in every party fight. This is one rule, not the
+   three changes of E.
+
+Either is measured the same way (the stubborn profile toward 45–55% at the
+first try) before the `adapt_gap_test` guard is added.

@@ -319,7 +319,7 @@ extension _FightCards on _FightScreenState {
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 
-  /// The elements [enemy] is known to be weak to (green, ×1.5) and to
+  /// The elements [enemy] is known to be weak to (green, ×2) and to
   /// resist (grey, ×½) -- see [_knownElementsFor].
   List<Widget> _elementChips(_EnemyMember enemy) {
     if (!enemy.isAlive) return const [];
@@ -330,7 +330,7 @@ extension _FightCards on _FightScreenState {
         Tooltip(
           message:
               '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×1.5', Colors.green.shade700),
+          child: _miniStat(elementIcon(element), '×2', Colors.green.shade700),
         ),
       for (final element in known.resist)
         Tooltip(
@@ -1082,7 +1082,7 @@ extension _FightCards on _FightScreenState {
     final elementLine = [
       if (known.weak.isNotEmpty)
         '${trFor(lang, 'weak_to_label')} '
-            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} (×1.5)',
+            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} (×2)',
       if (known.resist.isNotEmpty)
         '${trFor(lang, 'resists_label')} '
             '${known.resist.map((e) => elementLabel(e, lang)).join(', ')} (×½)',

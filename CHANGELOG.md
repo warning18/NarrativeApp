@@ -12,6 +12,37 @@ isn't reconstructable from git history alone.
 
 Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
 
+## [1.597.0+633]
+
+- **Core: the difficulty pass** (docs/proposals/difficulty-pass.md, without the
+  companion change the user turned down).
+- **Smaller numbers on both sides:**
+  - a level brings +3 health instead of +4, and a point of Constitution +3
+    instead of +5;
+  - common foes have 10% less health from chapter 2 on;
+  - bosses' health floor is 1.21 → 1.13.
+- **The die that matches the foe is worth swapping in:** a hit on a weakness
+  does ×2 instead of ×1.5, and the fight card says so.
+- **A potion heals 8 instead of 6.**
+- **Chapter 1 plays as before.** Aurel Vane has 29 health instead of 22, to
+  keep its 75%.
+- **Re-sized so the boss curve and the professions' spread hold:**
+  - Void Stalker 34 → 38 health;
+  - White Admiral 72 → 62;
+  - the clans' champions 43–45 → 36–38 health, to keep their 50%;
+  - warrior +9 starting health, rogue +6, ranger +3;
+  - cleric +4 damage instead of +5.
+- **A new simulator profile, "stubborn":** companions, but the starter die and
+  the starting gear for the whole run. It shows what the gear and the dice
+  are worth.
+- **Measured** (10 runs per profile, chapters 3–8, won at the first try):
+  - naive player 0.40 → 0.42;
+  - stubborn 0.80 → 0.81;
+  - competent 0.96 → 0.99.
+- **The 45–55% target for the stubborn player is not reached:** two or three
+  companions still win the fight whatever die the hero rolls. The proposal's
+  §7 has two options for the user.
+
 ## [1.595.0+631]
 
 - **UX: the Dice tab in the inventory.** When you own more than one die, the
