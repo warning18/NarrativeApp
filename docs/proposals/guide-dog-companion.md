@@ -8,36 +8,34 @@ She speaks in the first person, cheerfully ("Woof! I'm {name}… I trot along ea
 
 **Her sprite** (`assets/visuals/companion/dog_companion_animations`): a **small, sturdy, flat-faced dog, white with black patches, black upright ears**, short legs: a bulldog or terrier type. The story must not contradict it, so Vica is exactly that, not a lean or sand-coloured hunting dog.
 
-## 2. When she arrives: the end of the desert, before Saltmouth
+## 2. When she arrives: the end of the desert walk after the crash
 
-The flow, read from the story file:
+The user's wish: she appears **at the end of the desert walk after the Lark crashes**: a few steps off, the hero is lost, nearly dies, and she shows the way. The flow, read from the story file:
 
-1. The Lark crashes in the Waste (965 → 1100), then two land crossings (the wreck → the Sleeper's Face → the White Wells).
-2. At the White Wells the hero chooses a road south (`1000`, `1001` or `1002`, the origin endings; each "Proceed to Chapter 2", each grants the heirloom piece).
-3. **2001, "[CHAPTER 2: SALTMOUTH]":** "Ten days with the salt caravan… On the eleventh morning the dunes gave up, and Saltmouth came up out of the haze."
+1. 965 → **1100** (the wreck), then the land crossing `crash_to_sleeper` → **1120**, 1125, 1130 (the Sleeper's Face), **1140** (the looters' camp; also **1140_spotted**).
+2. The choices of 1140 (three) and 1140_spotted (two) take the land crossing `sleeper_to_wells` and arrive at **1200, the White Wells** ("The lights were an oasis").
+3. At the Wells, the origin endings **1000 / 1001 / 1002** ("Proceed to Chapter 2"), then 2001 and Saltmouth.
 
-**Saltmouth is the city after the desert.** "Just before reaching the city, almost dead from being lost" is the last leg of those ten days: the caravan's tenth day. The arrival is therefore one new scene **between the origin endings and 2001**, in the id space of chapter 1: **`1005_vica`**. The three origin endings point to it instead of 2001 (links only; their text, flags and banner grants are unchanged), and it leads to 2001, whose opening still reads true (the caravan, ten days, the eleventh morning).
+The arrival is one new scene, **`1150_vica`**, at the **end of the second crossing**: the five choices of 1140 and 1140_spotted point to it instead of 1200 (their `landRouteId: sleeper_to_wells`, flags and text are unchanged; the crossing plays, then this scene), and `1150_vica` leads to 1200. It is in the id space of chapter 1, location `white_wells` (the dunes at the Wells' edge). **She joins on its closing choice, so she is in the party for the White Wells, Vess's meeting, the origin endings and everything after.** The origin endings and 2001 are untouched (the earlier plan for `1150_vica` before 2001 is withdrawn).
 
-## 3. The scene `1005_vica` (6 beats; grim, then warm)
+## 3. The scene `1150_vica` (6 beats; grim, then warm)
 
-1. On the tenth day the south wind stood up and the dunes began to move. The camels bolted and the water-skins went with them; I ran after the nearest, and the sand closed behind me like a door.
-2. I do not know how long. The sun was a white coin. Every dune was the same dune and my own tracks were gone. I sat down, because walking in circles cost more than sitting.
+1. I left the Face with the first stars, and had gone perhaps two hundred paces when the dunes closed behind me like a door. The wind had already taken my tracks.
+2. I do not know how long. The sun was a white coin, then it was not there. Every dune was the same dune and my mouth was sand. I sat down, because walking in circles cost more than sitting.
 3. *(the turn)* Something moved at the edge of my eye: a dog, small and square, white with black patches under the dust, flat-faced, ears standing up like a bat's. She looked at me the way you look at a decision. She turned, took three steps, and looked back.
-4. I followed because I had nothing left to argue with. She stopped at every crest and waited for me, and at dusk, on the last ridge, she sat.
-5. *(warm)* Below us were the caravan's fires, and past them a line of white walls and a stone giant standing in the sea. The caravan master was shouting a word into the wind: "**Vica!** Vica, the sand's guide; she comes to whoever the storm is about to bury."
-6. She came down the ridge to him, and then she turned and came back to me. Whatever the salt-cutters say about her, she had made up her own mind.
-
-For a hero whose sister lived (`lysa_survived`), one extra line: Lysa's voice somewhere behind the wall of sand, calling a name; for one who lost her (`lysa_lost`), none.
+4. I followed because I had nothing left to argue with. She stopped at every crest and waited for me, and she did not once look at the sky.
+5. *(warm)* The lights came up out of the dark all at once: a hollow in the dunes, palms, and a scatter of white clay huts glowing like loaves in an oven. She sat down at the edge of the light and would not go any further without me.
+6. I called her Vica. I could not have told you why; the word came up out of the heat like the name of an old friend, and she turned her head as if it had been said before.
 
 ### What the player chooses (no way to refuse)
 
-All three end with **Vica joining the party** at the choice, then 2001:
+All three end with **Vica joining the party**, then 1200:
 
 - **"Follow her down."** She starts steady.
 - **"Pour what is left in your flask into your hand for her."** She starts devoted (`vica_shared`).
-- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She bites a coin, finds it is not food, and looks at the hero with great patience: she keeps her but starts **wary of the hero's stupidity** (flag `vica_paid`), a gently comic beat. **The money is really lost: 10 gold**, a fixed cost (`goldMod: -10`, `pays: true`). Ten is the size of chapter 1's small purses (the quay's +10, the strip-the-handler +15), so it stings without hurting a poor hero; Core confirms. A hero with less than 10 gold simply does not see this choice (the `pays` rule), and still has the other two.
+- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She bites a coin, finds it is not food, and looks at the hero with great patience: she keeps her but starts **wary of the hero's stupidity** (flag `vica_paid`), a gently comic beat. **The money is really lost: 10 gold**, a fixed cost (`goldMod: -10`, `pays: true`). Ten is the size of chapter 1's small purses (the quay's +10, the strip-the-handler +15), so it stings without hurting a poor hero; Core confirms. A hero with less than 10 gold simply does not see this choice (the `pays` rule) and still has the other two.
 
-Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines, no cost, no check.
+Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines.
 
 ## 4. Chapter 1 loses its dog: two ways
 
@@ -77,13 +75,36 @@ It keeps the whistle literally and makes the helper a person, but it is **a seco
 
 **Risk (both):** text only. No choice, flag, reward or number moves, so **no story pin, simulator tuple or test count changes** (Core has nothing to re-pin for this part). The two tests that mention `companion_hound` read only the flag's id. The French lint and `qa_story_fr` run on the new text. The tutorial's walking dog is UI and is not touched.
 
+### Why chapter 1 changes at all (three lines for the user)
+
+Scene 270 **as written today already has a dog**: the grey warhound caught in razor wire (cutting it free sets the flag `companion_hound`), who then follows the hero through scenes 300, 820, 823 and 891. Since the user wants **one dog only, and none in chapter 1**, those five scenes must stop showing a dog; that is the whole reason chapter 1 is touched, and no scene is added there. **The cheapest honest answer is still A** (the lantern): about ten phrases in five scenes, text only, no choice, flag or outcome changes. Deleting the warhound would be dearer: scene 270 would lose its three-way choice (its flags are read in four other scenes and two tests).
+
+## 4b. One companion at the start: Vess moves to chapter 2
+
+Today Vess is recruited at the end of chapter 1. The data: her quest `q_ch1_vess_in_the_dark` (a Flag objective on `void_banner_bearer`, which the three origin endings set) is unlocked either at the Wells (`1210`, a cloaked woman by the far well, for a hero with the tear's mark) or in Saltmouth (`2015_vess`, from the hub row "Face the cloaked figure trailing you"). Unlocked at the Wells, it completes at the origin endings: she joins the party at the end of chapter 1. Unlocked in Saltmouth, it completes at once: she joins in chapter 2.
+
+**The smallest change: only the Saltmouth path unlocks the quest.**
+
+| Where | The change |
+|---|---|
+| `1210` ("Go back to the fire") | remove `unlockQuestId: q_ch1_vess_in_the_dark`; keep `met_vess`. She still says "I will find you on the other side of the sand"; nothing joins. |
+| hub `2015`, row "Face the cloaked figure trailing you" | `hideIfFlags` loses `met_vess` (it keeps `hub_2015_vess`), so a hero who met her at the Wells also gets the scene. `showIfFlags: void_banner_bearer` stays. |
+| `2015_vess` "Hear her out" | unchanged: it unlocks the quest, and with `void_banner_bearer` already held the objective completes at once: Vess joins in chapter 2, after Saltmouth is reached, like Kelda, Sable and Liora. |
+| `quests.json` | `q_ch1_vess_in_the_dark`: `chapter` 1 → 2 (the id stays, so saves and the simulator keep working). |
+
+**What reads Vess in chapter 1:** `1200` (the row "Answer the cloaked woman" hides on `met_vess`), `1210`, `2001` (a line: she "had joined the caravan on the second night", flavour that still reads true: she walks apart from it), `3002` (a line on his name). No chapter spine beat, world-map scene or story pin reads her in chapter 1. **The ally acknowledgment lines** (`lib/data/ally_acknowledgments.dart`, Core's file) have a Vess line for several scenes; they only fire when she is in the party, so they simply start later.
+
+**Old saves:** a save where the quest was already taken keeps its quest and companion, and the objective is unchanged. A save that met her at the Wells and has not taken the quest sees the Saltmouth row now (previously hidden). A save that took her at the Wells and is still in chapter 1 would, if it later reaches Saltmouth, see the row and "Hear her out" again: the quest unlock is a no-op, the +5 Vigil standing would repeat (small; Core may guard it).
+
+**What Core must change:** the party rule (the party starts with Vica only, Vica is guaranteed when the party would be empty); the simulator's competent policy and `sim_companions_test` / `sim_competent_test` pins (Vess now joins in chapter 2: the tuple moves); any test that expects Vess's chapter. **Vica needs ally acknowledgment lines** in the same file (one per scene where the others have one, from chapter 2 on): I can write them in the build PR.
+
 ## 5. The Settings name
 
 The player's own name for her still applies to the tutorial and the walking strip; in the story she is Vica (a clash only shows for a player who renamed her, and the story's name is the salt-cutters' name for her). **Approved:** `tut_guide_default_name` = **Vica / Vica** (one string, EN and FR), so the unnamed tutorial dog is already Vica. No `{dog}` token.
 
 ## 6. What Core's entry needs from me
 
-`companionName`: **Vica** / **Vica**; no `recruitQuestId`; `requiredHouseId`: empty; approval 1 / −1 / 0; a duo with Liora: **The Hunt / La Battue**. The join is on the closing choice of `1005_vica` (any of the three).
+`companionName`: **Vica** / **Vica**; no `recruitQuestId`; `requiredHouseId`: empty; approval 1 / −1 / 0; a duo with Liora: **The Hunt / La Battue**. The join is on the closing choice of `1150_vica` (any of the three).
 
 ### The lines (action beats, EN / FR)
 
@@ -109,11 +130,11 @@ The player's own name for her still applies to the tutorial and the walking stri
 
 ## 7. Scenes that show Vica beside the hero (for UX)
 
-None before `1005_vica` (chapter 1 has no dog; scene 270 holds a lantern or a courier, see section 4). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
+None before `1150_vica` (chapter 1 has no dog; scene 270 holds a lantern or a courier, see section 4). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
 
 ## 8. Risks
 
-- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The chapter 1 edits (either way) move no pin.
+- `1150_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The chapter 1 edits (either way) move no pin.
 - The three origin endings change their `next_id` only; their banner grants are untouched.
 - Core: the guarantee that she is in the party when it would be empty, her fight and duo, and the join on a choice. None of it is Narrative's.
 
