@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.594.0+630]
+
+- **UX: the inventory with tabs.** The bag has a tab for each kind it holds
+  (All, Gear, Charms, Potions, Materials, Books, Quest), each with its count;
+  the last tab and sort are remembered, and a quiet sort button (Newest,
+  Rarity, Name) sits under them. The six slots are small tiles with their own
+  icons, the die by its name (no more "starter_die"), and an empty slot lit
+  when something in the bag fits it. Each row says one quiet line ("Rare ·
+  goes on the Head"), shows up to three stat chips with the change against the
+  piece worn, and has one labelled button (Equip, Take off, Read); a gold dot
+  marks what came since the last visit. A tap opens the piece against the worn
+  one as before; a long press on a gear row starts the manual compare. The
+  title reads "Inventory". The new pieces are in
+  `lib/widgets/inventory_parts.dart`.
+
 ## [1.593.0+629]
 
 - **UX: the Forge sheet with tabs and the forging moment.** The Forge opens on
