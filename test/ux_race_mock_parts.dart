@@ -18,20 +18,24 @@ import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
 
-/// PLACEHOLDERS for the one-line way of playing (Narrative's wording; the
-/// field is `playstyle` / `playstyleFr` on races.json and professions.json).
+/// Narrative's `playstyle` lines (v1.598, PR #566), kept here until that
+/// field is on main; the cards read the record's own `playstyle` first.
 const Map<String, String> wayOfPlaying = {
-  'dwarf': 'Shrugs off blows, hits solid. Slow to anger, slower to fall.',
-  'elf': 'Quick and sharp-eyed, hard to hit; a frail frame.',
-  'human': 'Adaptable: coin, charm and friends in every port.',
-  'orc': 'Hits hard and fast; little finesse, less charm.',
-  'voidkin': 'Shroud-touched: devastating, but breaks easily.',
-  'warrior': 'Tank who soaks hits and bashes.',
-  'mage': 'Casts from a distance; frail up close.',
-  'rogue': 'Fast striker living on luck and coin.',
-  'cleric': 'Heals and shields, hits with restraint.',
-  'ranger': 'Skirmisher: scouts, traps, aimed shots.',
+  'dwarf': 'Hard to kill: extra life, armor and a stone-skin heal',
+  'elf': 'Quick and lucky, strikes sharp; fragile if caught',
+  'human': 'Coin and charm first; a small heal when pressed',
+  'orc': 'Raw strength and a rage strike; poor talker',
+  'voidkin': 'Sharp-minded but brittle; the Shroud shields it',
+  'warrior': 'Front line: soaks hits, stuns with the shield',
+  'mage': 'Casts from mana: bolts and wards; weak up close',
+  'rogue': 'Fast and lucky: a backstab that weakens the foe',
+  'cleric': 'Heals and purges, sturdy in a fight; prayer for mana',
+  'ranger': 'Takes careful aim for sharp shots; no extra life',
 };
+
+/// The one line on how [id] plays: the record's own, else the line above.
+String playstyleOf(Map<String, dynamic> record, String id) =>
+    record['playstyle']?.toString() ?? wayOfPlaying[id] ?? '';
 
 const List<(String, String)> _bonusFields = [
   ('bonusMaxHealth', 'HP'),
@@ -314,7 +318,7 @@ class ChoiceCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 if (tag.isNotEmpty) InkTag(label: tag, color: ink.gold),
               ]),
-              Text(wayOfPlaying[id] ?? '',
+              Text(playstyleOf(record, id),
                   maxLines: compact ? 1 : 2,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
@@ -737,7 +741,7 @@ class SummaryCard extends StatelessWidget {
                       ?.copyWith(fontFamily: InkFonts.display)),
             ),
           ]),
-          Text(wayOfPlaying[professionId] ?? '',
+          Text(playstyleOf(profession, professionId),
               style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           const SizedBox(height: 8),
           Text(
@@ -794,7 +798,7 @@ class CompareSheet extends StatelessWidget {
                 child: InkTag(
                     label: record['tag']?.toString() ?? '', color: ink.gold)),
             const SizedBox(height: 8),
-            Text(wayOfPlaying[id] ?? '',
+            Text(playstyleOf(record, id),
                 style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
             const SizedBox(height: 8),
             Wrap(spacing: 4, runSpacing: 4, children: [

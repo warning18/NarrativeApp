@@ -250,7 +250,7 @@ void main() {
         ),
         (
           'Fields needed from Narrative',
-          '`playstyle` and `playstyleFr` on every race and profession: one short line each. The mock uses placeholders.'
+          '`playstyle` and `playstyleFr` on every race and profession: one short line each. They now exist (Narrative\u2019s PR #566); the mock shows those lines.'
         ),
       ]),
     );

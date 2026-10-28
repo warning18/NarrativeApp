@@ -39,9 +39,9 @@ card now says what matters in words.
   Start new game.
 
 ## What it needs
-- **Narrative:** one short line of how each choice plays, on every race and profession:
-  `playstyle` and `playstyleFr` (races.json, professions.json). The mock uses placeholders written by
-  UX ("Tank who soaks hits and bashes", "Casts from a distance; frail up close").
+- **Narrative:** done: `playstyle` / `playstyle_fr` on every race and profession (PR #566, v1.598,
+  at most 60 characters). The mock shows those real lines ("Front line: soaks hits, stuns with the
+  shield"); the cards read the record's own `playstyle`.
 - **Core:** nothing. Everything else is already data: `clansOfRace` / `clansOfProfession`
   (clan_affinity.dart), `tag`, `powerMedium`, `standardSkillID`, `preferredScalingStat`,
   `startingSpellIds`, the skill trees and each faction's `sponsors`. "Come first" is a UX ordering (a
