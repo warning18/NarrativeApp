@@ -1940,4 +1940,113 @@ void main() {
   testWidgets('the dice in the UI (UX_SHOTS=<folder>)', (tester) async {
     await shoot(tester, _ui(), const Size(900, 780), 'dice-ui-mock.png');
   });
+
+  // The roll as moving frames (UX_ANIM=<folder>): the storyboard's poses
+  // interpolated at 30 frames a second, five dice thrown 70 ms apart and a
+  // coin; the frames are written as PNGs and joined into an animated GIF.
+  testWidgets('the roll, animated (UX_ANIM=<folder>)', (tester) async {
+    final dir = Platform.environment['UX_ANIM'];
+    if (dir == null) return;
+    const keys = [0.0, 0.15, 0.35, 0.55, 0.70, 0.85, 1.0];
+    _Frame pose(double t) {
+      if (t <= 0) return _tumble.first;
+      if (t >= 1.0) return _tumble.last;
+      var i = 0;
+      while (i < keys.length - 2 && t > keys[i + 1]) {
+        i++;
+      }
+      final k = (t - keys[i]) / (keys[i + 1] - keys[i]);
+      final a = _tumble[i];
+      final b = _tumble[i + 1];
+      double l(double x, double y) =>
+          x + (y - x) * Curves.easeInOut.transform(k);
+      return _Frame('', '', l(a.angle, b.angle), l(a.sx, b.sx), l(a.sy, b.sy),
+          l(a.dy, b.dy),
+          glow: l(a.glow, b.glow), ghost: t < 0.55);
+    }
+
+    final kinds = <(int, String, String, String)>[
+      (0, 'd4', '3', 'starter_die'),
+      (2, 'd8', '7', 'flame_die'),
+      (3, 'd10', '9', 'shadow_die'),
+      (4, 'd12', '11', 'tearglass_die'),
+      (5, 'd20', '17', 'starter_die'),
+    ];
+    Widget board(double t) {
+      return Container(
+        width: 640,
+        height: 250,
+        color: _bg,
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+              'The roll, about 1 s  ·  ${(t.clamp(0, 1.5)).toStringAsFixed(2)} s',
+              style: _t(14, c: _gold, bold: true)),
+          const SizedBox(height: 6),
+          Row(children: [
+            for (var n = 0; n < kinds.length; n++)
+              Column(children: [
+                _cell(_shapes[kinds[n].$1], _skin(kinds[n].$4), kinds[n].$3,
+                    pose(t - n * 0.07)),
+                Text(kinds[n].$2, style: _t(11, c: _ash)),
+              ]),
+            Column(children: [
+              Builder(builder: (context) {
+                final tc = t - 5 * 0.07;
+                final flip = tc >= 0.8 || tc < 0
+                    ? 1.0
+                    : math.cos(tc * 16).abs().clamp(0.12, 1.0);
+                final fr = _Frame('', '', 0, flip, 1,
+                    tc < 0 || tc > 0.8 ? 0 : math.sin(tc / 0.8 * math.pi));
+                return _cell(null, _skin('starter_die'), '', fr, coin: true);
+              }),
+              Text('coin', style: _t(11, c: _ash)),
+            ]),
+          ]),
+        ]),
+      );
+    }
+
+    tester.view.physicalSize = const Size(640, 250);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    Directory(dir).createSync(recursive: true);
+    final key = GlobalKey();
+    const fps = 30;
+    const total = 45;
+    for (var f = 0; f < total; f++) {
+      await tester.pumpWidget(MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: buildAppTheme(const ColorScheme.dark()),
+        home: Scaffold(
+          backgroundColor: _bg,
+          body: RepaintBoundary(key: key, child: board(f / fps)),
+        ),
+      ));
+      await tester.pump();
+      await tester.runAsync(() async {
+        final b =
+            key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+        final image = await b.toImage(pixelRatio: 1.5);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        File('$dir/f_${f.toString().padLeft(3, '0')}.png')
+            .writeAsBytesSync(bytes!.buffer.asUint8List());
+      });
+    }
+    await tester.runAsync(() async {
+      final r = await Process.run('ffmpeg', [
+        '-y',
+        '-framerate',
+        '$fps',
+        '-i',
+        '$dir/f_%03d.png',
+        '-vf',
+        'split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse',
+        '-loop',
+        '0',
+        '$dir/dice-roll-anim.gif',
+      ]);
+      expect(r.exitCode, 0, reason: '${r.stderr}');
+    });
+  });
 }

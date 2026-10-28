@@ -19,6 +19,7 @@ Mock test: `test/ux_dice_mock_test.dart`. Nothing is built. Core writes the size
   looks, not what it does; the size changes the face count and how it is read (Core's rule).
 
 ## 2. The roll (`dice-roll-mock.png`): about 1 s, tap to skip
+Moving: `docs/ux-shots/dice-roll-anim.gif` (the storyboard's poses interpolated at 30 frames a second: a d4, d8, d10, d12, d20 thrown 70 ms apart, and the coin; drawn by the last test of `test/ux_dice_mock_test.dart` with `UX_ANIM=<folder>`, joined by ffmpeg).
 Seven beats: **the throw** (small, up, a ghost trail), **the tumble** (turning, foreshortened),
 **the bounce** (a squash on first touch, a small bounce), **the settle** (a rock), **the read**
 (the face lit). A tap shows the result at once; with reduced motion only the last frame.
