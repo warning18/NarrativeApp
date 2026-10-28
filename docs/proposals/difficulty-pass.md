@@ -299,7 +299,7 @@ The user made Vica the companion every hero gets (see
 | All professions | 0.06 | **0.34** | **0.22** |
 | Warrior | 0.03 | 0.31 | 0.18 |
 | Mage | 0.16 | 0.48 | 0.23 |
-| Rogue | 0.04 | 0.40 | 0.18 |
+| Rogue | 0.05 | 0.40 | 0.18 |
 | Cleric | 0.06 | 0.28 | **0.44** |
 | Ranger | 0.01 | 0.20 | 0.08 |
 
