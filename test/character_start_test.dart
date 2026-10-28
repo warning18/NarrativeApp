@@ -17,12 +17,12 @@ void main() {
   final races = _json('races');
   final professions = _json('professions');
 
-  test('a dwarf warrior starts at 29 HP, 2 damage, 1 armour', () {
+  test('a dwarf warrior starts at 33 HP, 2 damage, 1 armour', () {
     final t = startingTotals(
         defaults: defaults,
         race: races['dwarf'] as Map<String, dynamic>,
         profession: professions['warrior'] as Map<String, dynamic>);
-    expect(t.maxHealth, 29);
+    expect(t.maxHealth, 33);
     expect(t.baseDamage, 2);
     expect(t.baseArmor, 1);
     expect(t.gold, 100);
@@ -70,7 +70,7 @@ void main() {
     expect(mage.first.key, 'str_abbrev');
     final rogue = presetBonuses(professions['rogue'] as Map<String, dynamic>);
     expect(rogue.first.key, 'hp_label');
-    expect(rogue.first.value, 3);
+    expect(rogue.first.value, 6);
   });
 
   test('the granted skill drops its preset\'s name', () {
