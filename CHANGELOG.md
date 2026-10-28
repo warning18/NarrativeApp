@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.600.0+636]
+## [1.604.0+640]
 
 - **UX: the dog no longer trots across the story page.** The little companion
   that walked across the page each time the story moved on is gone from the
@@ -20,6 +20,33 @@ isn't reconstructable from git history alone.
     hide/show arrow, and the Story tour's "that's me" line (its step).
 - Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
   layout under it moved); the walking-companion setting test is gone.
+
+## [1.602.0+638]
+
+Vica finds every hero at the end of the desert walk after the crash: lost a few hundred paces from the Sleeper's Face, nearly dead, the hero is led to the lights of the White Wells by a small black-and-white dog, and is her companion from then on (the three small ways to treat her set how she starts). Chapter 1 has no other dog: the grey warhound of Weaver's Alley is a signal-lantern now, raised in the Black Hold and on the quay. Vess joins in Saltmouth, in chapter 2, like Kelda, Sable and Liora. The unnamed tutorial dog is Vica. Her remarks and her lines at fifteen scenes are in both languages.
+
+## [1.601.0+637]
+
+- **Core: Vica, the companion every hero gets** (docs/proposals/
+  guide-dog-companion.md §6–§7). Vica is the tutorial's guide dog. She joins
+  every hero at her scene (Narrative's `1150_vica`, the next release), or at
+  the White Wells for a save or a path that skips it.
+  - She never leaves: low approval leaves her wary, not gone, and no story
+    choice takes her.
+  - She sits down in the party whenever it would be empty. The camp can
+    bench her only by seating someone else.
+  - Her die, the hound die (a d6), has Bite, Snap, Guard, Stand Fast,
+    Instinct and Lick Wounds.
+  - A new duo with Liora: The Hunt.
+- **Fights sized for hero + Vica** (difficulty-pass.md §9). The targets stay
+  the same, and the foes hit 20% harder from chapter 2. Several numbers were
+  re-sized to keep each boss on its curve:
+  - the bosses' own floor and a few bosses' health;
+  - the champions;
+  - the mage's and cleric's starting numbers.
+  Chapter 1 plays as before.
+- **The simulator** gives Vica to every player profile, the "naive" one
+  included.
 
 ## [1.598.0+634]
 

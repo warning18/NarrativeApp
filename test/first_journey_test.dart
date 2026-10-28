@@ -112,6 +112,7 @@ const _hiddenInChapters1to3 = <String>[
   '1130',
   '1140',
   '1140_spotted',
+  '1150_vica',
   '1200',
   '1210',
   '2000',

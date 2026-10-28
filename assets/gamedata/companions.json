@@ -240,5 +240,42 @@
     "warnLineFr": "La pitié ne rapporte rien, et je ne travaille pas gratuitement.",
     "leaveLine": "Nothing personal. Nothing profitable, either. Goodbye.",
     "leaveLineFr": "Rien de personnel. Rien de rentable non plus. Adieu."
+  },
+  "vica": {
+    "companionID": "vica",
+    "companionName": "Vica",
+    "raceId": "",
+    "professionId": "ranger",
+    "signatureDiceId": "hound_die",
+    "recruitQuestId": "",
+    "requiredHouseId": "",
+    "storyRecruit": true,
+    "permanent": true,
+    "joinNodeIds": [
+      "1150_vica",
+      "1200"
+    ],
+    "critLine": "Vica lunges, jaws closing on the gap.",
+    "critLineFr": "Vica bondit, les mâchoires se referment sur la brèche.",
+    "dodgeLine": "Vica is already three paces to the left.",
+    "dodgeLineFr": "Vica est déjà trois pas plus loin sur la gauche.",
+    "fightStartLine": "Vica drops low and watches the foe, not you.",
+    "fightStartLineFr": "Vica se tapit et guette l’ennemi, pas vous.",
+    "packLine": "Vica counts them with her nose, then stands beside you.",
+    "packLineFr": "Vica les compte au flair, puis se place à vos côtés.",
+    "koLine": "Vica drags herself between you and the next blow.",
+    "koLineFr": "Vica se traîne entre vous et le prochain coup.",
+    "chestLine": "Vica sniffs the lid and sits, waiting for you to open it.",
+    "chestLineFr": "Vica flaire le couvercle et s’assoit, attendant que vous l’ouvriez.",
+    "companionName_fr": "Vica",
+    "approvesGood": 1,
+    "approvesEvil": -1,
+    "approvesProfit": 0,
+    "devotedLine": "Vica walks ahead for the first time, and looks back to see you follow.",
+    "devotedLineFr": "Vica marche devant pour la première fois et se retourne pour voir si vous suivez.",
+    "warnLine": "Vica stops three paces ahead and will not walk on until you look at her.",
+    "warnLineFr": "Vica s’arrête trois pas devant et ne repart pas avant que vous la regardiez.",
+    "leaveLine": "Vica sits down in the road, and does not follow.",
+    "leaveLineFr": "Vica s’assoit au milieu de la route et ne suit plus."
   }
 }

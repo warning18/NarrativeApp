@@ -1,5 +1,9 @@
 # The guide dog as a companion (Core's part)
 
+> **Superseded in part by §6 (the user's change).** Vica is now the
+> companion every hero gets, from the story, not a quest. §1–§5 below are
+> kept for the record; §6 says what changes.
+
 The user decided that the guide dog of the tutorial becomes a normal
 companion. It is earned by a quest in the second big town and can be swapped
 out like the others. Narrative proposes the quest. This note covers what the
@@ -149,3 +153,146 @@ asks.
 5. A 10-run measure of the competent and stubborn profiles with the dog,
    added to `difficulty-pass.md`.
 6. The tests above re-pinned.
+
+## 6. Update: Vica is the companion every hero gets
+
+The user's change: Vica, the tutorial's guide dog, joins every hero
+automatically, just before the city after the desert. Narrative pins the
+scene. Difficulty is then tuned for "hero plus Vica", even for a player who
+finds no other companion. Other companions replace her in the party later.
+
+### Where and when
+
+- **When she joins:** the city after the desert is Saltmouth. The crossing
+  runs from the wreck of the Lark (`1100`) to the White Wells (`1200`), and
+  Saltmouth starts at `2000`. So she joins at the end of the chapter 1 → 2
+  road, at about **level 2–3**. Narrative picks the scene; anywhere between
+  `1200` and `2000` changes nothing below.
+- **Her numbers there:** the §2 table.
+  - Level 3: 29 health, 2 damage.
+  - Level 9: 45 health, 3 damage.
+  - Level 16: 64 health, 4 damage.
+  - `hound_die` as in §2.
+
+### Her entry, changed from §1
+
+| Field | Value |
+|---|---|
+| `companionID` | `vica` |
+| `companionName` | Vica (Narrative's lines, already written on `claude/narrative-dog`) |
+| `raceId` / `professionId` / `signatureDiceId` | `""` / `ranger` / `hound_die` (unchanged) |
+| `recruitQuestId` | `""`: no quest, and no Good or Evil gate |
+| `storyRecruit` (new) | `true`. The scene Narrative picks carries `recruitAllyId: "vica"` on its way on, and the session recruits her there. This is the quest's `rewardAllyId`, put on a choice. |
+| `permanent` (new) | `true`. She never leaves at low approval, and `loseAllyId` skips her. A knock-out in a fight lasts only for that fight, as for everyone. |
+| approval | 1 / −1 / 0. Her approval still moves her lines and her devoted/wary tier (±10% health and damage). |
+
+### The rules Core adds
+
+1. **Recruit from the story.** A choice field `recruitAllyId` calls the same
+   `recruitAlly` a quest uses. The simulator's walk does the same.
+2. **Always seated when the party would be empty.** After a recruit,
+   departure, loss or bench, if no companion is seated and Vica is
+   recruited, she takes a seat.
+   - In the camp, the player can bench her only by seating someone else. UX
+     greys the "bench" control when she is the last one seated; Core gives
+     them `canBench(id)`.
+3. **She never leaves.** The leave line at −12 approval and `loseAllyId`
+   skip a `permanent` companion.
+4. **Old saves.** A save already past the join scene gets her on load: Core
+   checks the scene's flag, or the furthest chapter ≥ 2. Without that,
+   today's players would never meet her.
+5. **The duo with Liora** (The Hunt / La Battue), as in §1.
+
+### A face that changes with the hero's profession: still no, but measured
+
+Because she is guaranteed, I measured the cheaper option from §3: her
+"Distracted" face (empty) becomes a face that depends on the hero's
+profession:
+
+- warrior: Lick wounds, heal 2;
+- rogue: Lick wounds, heal 2;
+- mage: Shield, Defend 3;
+- ranger: Shield, Defend 3;
+- cleric: Harry, Attack 3.
+
+**How it was measured:** one human hero per profession, no gear, at each
+chapter's usual level, with Vica, against six foes of chapters 3–6, 60
+fights each.
+
+| Hero + Vica, won | Warrior | Mage | Rogue | Cleric | Ranger | All |
+|---|---|---|---|---|---|---|
+| Her plain die | 0.31 | 0.48 | 0.40 | 0.28 | 0.20 | 0.34 |
+| With the profession face | 0.34 | 0.48 | 0.34 | 0.31 | 0.20 | 0.34 |
+
+**It changes almost nothing.** It does not close the gap it was meant to
+close:
+
+- the ranger stays the weakest, at 0.20;
+- the rogue loses with a heal in place of a chance at nothing.
+
+A face is one sixth of her rolls, and her damage is small, so no single face
+covers a hero's weakness. Compensating the hero's weakness would need her
+whole build to change with the hero, which is the five-variant cost of §3.
+**My call: plain Vica.** If the user wants her to feel tailored, her lines
+can follow the hero's profession at no balance cost. That is Narrative's
+part.
+
+### The simulator: every profile has her
+
+The naive profile becomes "hero + Vica, little gear, the starter die".
+That is the baseline the user asked to tune for. The competent and stubborn
+profiles get her too and may bench her for stronger recruits. The pick rule
+already benches the weakest seat.
+
+**What moves:**
+
+| Test | Today (naive = no companion) | With Vica | Re-pin |
+|---|---|---|---|
+| `boss_balance` boss curve (11 bosses, the claimants pooled, the mean, professions within 8 points) | targets 0.75 → 0.35 | everyone wins more from chapter 2 on | **Keep the targets** (they are the design). Raise the foes so hero + Vica meets them: regular health floors for chapters 2–8, the boss floor, and per-boss health where one strays. Aurel Vane (chapter 1) does not move. |
+| `nemesis_quests` champions' curve (about 0.5) | 0.53 | higher | the champions' health, as at v1.597 |
+| `clash_balance` (a gap between two rule sets) | both sides naive | both sides move together | run once; expected to hold |
+| `chapter_one_fights` | chapter 1 | before Vica joins | unchanged |
+| `sim_competent_test`, `sim_companions_test` (the pinned naive run: numbers and choices hash) | pinned | moves | re-pin both, once |
+| `sim_quest_politics_test`, `stat_*`, `character_start` | logic | | unchanged |
+| new: `vica_test` | | | she joins at the scene, is seated when the party is empty, never leaves, an old save gets her, and the sim seats her for every profile |
+
+All of this is one build PR (the entry, the rules, the simulator, the
+re-sizing), running only these band tests. No broad batch.
+
+## 7. Built (v1.601)
+
+The user approved §6, and Narrative's story PR follows mine.
+
+**Data**
+- **`companions.json` `vica`:**
+  - `raceId ""`, `professionId ranger`, `hound_die`, approval 1 / −1 / 0.
+  - `storyRecruit`, `permanent`, `joinNodeIds: ["1150_vica", "1200"]`.
+  - The lines are Narrative's, from their note.
+- **`hound_die`**, a d6:
+
+  | Face | Effect |
+  |---|---|
+  | Bite | Attack 2 |
+  | Snap | Attack 1 |
+  | Guard | Defend 2 |
+  | Stand Fast | Defend 1 |
+  | Instinct | Skill `ranger_beast_bond`, her signature face for duos |
+  | Lick Wounds | Heal 1 |
+
+  - The planned empty "Distracted" face became Lick Wounds. The dice rules allow no Empty face, and every face must take a skill.
+  - Lunge became Instinct, because a duo needs a signature face that isn't `heavy_attack`.
+- **The duo `the_hunt`** (Liora and Vica): a stun blow.
+- **Her remark lines** in `companion_remarks.json`: the lines of Narrative's note, plus a second line for each moment, because the remark test wants two. Narrative may reword them.
+
+**Rules** (`lib/data/story_companions.dart`)
+- **When she joins:** at the first join scene the story reaches. In the game, `storyRecruitsProvider` watches the visited scenes. A save already past the White Wells gets her at once, or at its next step.
+- **She can't leave:**
+  - she never falls to −12 approval (she stays wary at worst);
+  - `loseAllyId` skips her, and `*` takes the first other companion seated.
+- **She keeps the party from going empty:**
+  - when a bench would empty the party, she sits down in it;
+  - `canBench(id)` refuses to bench her when she is the last one seated.
+- **The simulator** gives her to every policy at the same scenes. The naive player recruits no one else.
+
+**Balance**
+All bands are sized for "hero + Vica"; their targets are kept. `difficulty-pass.md` §9 has the numbers.

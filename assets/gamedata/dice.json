@@ -2441,5 +2441,65 @@
     ],
     "cost": 150,
     "diceName_fr": "Dé du décompte"
+  },
+  "hound_die": {
+    "diceName": "hound_die",
+    "numberOfFaces": 6,
+    "professions": [
+      "ranger"
+    ],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Bite",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Snap",
+        "type": "Attack",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Stand Fast",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Instinct",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_beast_bond",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Lick Wounds",
+        "type": "Heal",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ],
+    "cost": 0,
+    "diceName_fr": "Dé de Vica"
   }
 }
