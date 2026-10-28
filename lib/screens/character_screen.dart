@@ -17,6 +17,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../data/offers.dart' show OfferSource;
+import '../widgets/character_die_badge.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/perk_list.dart';
 import '../widgets/pixel_banner.dart';
@@ -139,20 +140,31 @@ class _CharacterHeader extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: ink.gold, width: 2),
-                    ),
-                    child: Text(
-                      name.characters.first.toUpperCase(),
-                      style: theme.textTheme.headlineMedium
-                          ?.copyWith(color: ink.gold),
-                    ),
+                  // The portrait square, with the die in hand on its corner.
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: ink.gold, width: 2),
+                        ),
+                        child: Text(
+                          name.characters.first.toUpperCase(),
+                          style: theme.textTheme.headlineMedium
+                              ?.copyWith(color: ink.gold),
+                        ),
+                      ),
+                      const Positioned(
+                        right: -CharacterDieBadge.overhang,
+                        bottom: -CharacterDieBadge.overhang,
+                        child: CharacterDieBadge(),
+                      ),
+                    ],
                   ),
                   const SizedBox(width: 14),
                   Expanded(
