@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.598.0+634]
+
+Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
+
 ## [1.595.0+631]
 
 - **UX: the Dice tab in the inventory.** When you own more than one die, the

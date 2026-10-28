@@ -935,6 +935,12 @@ final DbSchema racesSchema = DbSchema(
         type: FieldType.text),
     FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'playstyle',
+        label: 'Playstyle (one line, how it plays, ~60 characters)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle_fr', label: 'Playstyle (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
         type: FieldType.multilineText),
@@ -1004,6 +1010,12 @@ final DbSchema professionsSchema = DbSchema(
         label: 'Tag (the role on the picker: Bulwark, Caster…)',
         type: FieldType.text),
     FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle',
+        label: 'Playstyle (one line, how it plays, ~60 characters)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle_fr', label: 'Playstyle (FR)', type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',
