@@ -35,27 +35,47 @@ All three end with **Vica joining the party** at the choice, then 2001:
 
 - **"Follow her down."** She starts steady.
 - **"Pour what is left in your flask into your hand for her."** She starts devoted (`vica_shared`).
-- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She looks at the coins, looks at the hero, and sits down on them, as one sits on a fool's argument, with a sigh through her nose. She starts **wary of the hero's stupidity** (`vica_paid`), a gently comic beat. No coin is actually spent (no `goldMod`); the line is only flavour.
+- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She bites a coin, finds it is not food, and looks at the hero with great patience: she keeps her but starts **wary of the hero's stupidity** (flag `vica_paid`), a gently comic beat. **The money is really lost: 10 gold**, a fixed cost (`goldMod: -10`, `pays: true`). Ten is the size of chapter 1's small purses (the quay's +10, the strip-the-handler +15), so it stings without hurting a poor hero; Core confirms. A hero with less than 10 gold simply does not see this choice (the `pays` rule), and still has the other two.
 
 Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines, no cost, no check.
 
-## 4. Chapter 1 loses its dog: the warhound of scene 270 becomes a war-hawk
+## 4. Chapter 1 loses its dog: two ways (no hawks)
 
-There is **one dog**. Chapter 1 has a second one today: the grey warhound caught in razor wire in Weaver's Alley (`companion_hound`), who follows the hero and is whistled for in 820, 823 and 891. It must stop being a dog, with every choice, outcome and flag still working. The smallest rewrite: **it becomes an Inquisition war-hawk**, and its dead handler a falconer. A bird is freed from wire, hops to a shoulder, answers a whistle, takes a Warden across the eyes, and dives at a porter's hat; every beat of the hound is kept, and nobody mistakes it for Vica.
+There is **one dog**. Chapter 1 has a second one today: the grey warhound caught in razor wire in Weaver's Alley (`companion_hound`), who follows the hero and is whistled for in 820, 823 and 891. It must stop being a dog, with every choice, outcome and flag still working, text only. Both ways below edit the same five scenes and keep the flags' ids (`companion_hound`, `hound_left`, `hound_wardens`, `hub_891_hound`) with a new meaning: renaming would break old saves and the two tests that read `companion_hound` as a string.
 
-**The flags keep their ids and change meaning** (`companion_hound`, `hound_left`, `hound_wardens`, `hub_891_hound`). Renaming would break any save that already holds them and two tests that read `companion_hound` as a string; the ids are internal.
+### A. A signal-lantern in the wire (recommended)
+
+**In the wire:** a **Dominion signal-lantern**, a hooded brass lantern with a shuttered flare, still burning, caught in the razor wire beside its dead bearer (an Inquisition signaller, white on his sleeve). **Cut it free** = take it; it hangs on the hero's belt. **The whistle becomes raising the lantern**: the shutter opens on a white flare that dazzles.
 
 | Scene | The one-line change (EN and FR; no choice, outcome or flag changes) |
 |---|---|
-| **270** | "a lean grey warhound, one ear reduced to ribbons, foam at its jaws" → "a grey war-hawk, one wing torn, its beak open"; the handler becomes "an Inquisition falconer, white on his sleeve", "a leash gone slack" → "a jess"; "hound/dog" → "hawk/bird"; the prompt "What becomes of the beast and its handler?" keeps its words. The three choices' texts do not change. `facing: plague_hound` (the dog portrait) is removed: no portrait. |
-| **300** (two callbacks) | `companion_hound`: "had fallen into step three paces behind me" → "had hopped to my shoulder, where some dead falconer had trained it to ride"; `hound_left`: "the dog tested it again" → "the bird". |
-| **820** | choice "Whistle for the hound" → "Whistle for the hawk" / « Siffler le faucon ». Same `showIfFlags`, same `hound_wardens`. |
-| **823** (callback) | "a grey blur taking the nearest Warden by the throat" → "…across the eyes"; "the dog sat afterward, panting" → "the hawk perched afterward on a broken rail". |
-| **891** | choice "Whistle for the hound" → "Whistle for the hawk"; its callback: "the hound had gone ahead into the crowd… nosing at my hand… trip a porter" → "the hawk had gone ahead over the crowd… came back to my glove, dived once at a porter's hat, and settled on my shoulder". |
+| **270** | "a lean grey warhound, one ear in ribbons, foam at its jaws" → "a hooded brass lantern, its shutter bent, still burning in the wire"; the handler becomes "an Inquisition signaller"; "a leash" → "a lanyard"; "its eyes found mine… the patience of something starved" → "its small flame held steady, patient as something that has been left burning". The prompt "What becomes of the beast and its handler?" → "of the lantern and its bearer"; the choice lines keep their words ("Cut it free" works for a lantern). `facing: plague_hound` removed: no portrait. |
+| **300** (2 callbacks) | `companion_hound`: "gave up the dog… had fallen into step three paces behind me" → "gave up the lantern… hung from my belt, still warm"; `hound_left`: "the wire had sung once as the dog tested it again" → "a small light still burned in the alley behind me". |
+| **820** | "Whistle for the hound" → "Raise the lantern" / « Lever la lanterne ». Same `showIfFlags`, same `hound_wardens`. |
+| **823** (callback) | "a grey blur taking the nearest Warden by the throat" → "a white flare that took the nearest Warden full in the eyes"; "the dog sat afterward, panting" → "the lantern hung from my belt, ticking as it cooled". |
+| **891** | choice "Whistle for the hound" → "Raise the lantern"; its callback: "the hound had gone ahead into the crowd… trip a porter" → "the flare opened the crowd on the steps like a hand through water; I relieved a dropped purse of its previous owner's claim". |
 
-Nothing else in chapters 1 to 3 mentions the dog (105 and 2001 have a simile each; Saltmouth's "plague hound" is an enemy, not a companion).
+It is a lantern, which the Dominion world already has everywhere (Vane's hooded black one is the Inquisitor's; this is a signaller's), and it cannot be mistaken for Vica.
 
-**Risk:** text only. No choice, flag, reward or number moves, so **no story pin, no simulator tuple and no test count changes** (Core has nothing to re-pin for this part). The two tests that mention `companion_hound` only read the flag's id. The French lint and `qa_story_fr` run on the new text. The tutorial's walking dog is UI and is not touched.
+### B. A wounded courier in the wire
+
+**In the wire:** a young **Inquisition courier** (a runner, hurt, not hostile), caught in the razor wire with her escort dead beside her. **Cut her free**: she owes the hero and **walks three paces behind**, as couriers walk behind the one they carry for. **The whistle** is the courier's own brass signal whistle: **blow it** and she comes.
+
+| Scene | The one-line change (EN and FR; no choice, outcome or flag changes) |
+|---|---|
+| **270** | "a lean grey warhound… foam at its jaws" → "a young Inquisition courier, a runner, her coat torn on the wire, hurt but awake"; the handler becomes "her escort, a sergeant of the Inquisition"; "a leash" stays a "strap". `facing` removed. The prompt: "What becomes of the girl and her escort?" The choices keep their words. |
+| **300** (2 callbacks) | `companion_hound`: "had fallen into step three paces behind me, where some dead handler had trained it to walk" → "…where couriers are taught to walk behind whoever they carry for. I had no name for her yet"; `hound_left`: "the wire had sung once as the dog tested it again" → "somewhere in the alley a voice had said one word, and I had not looked back". |
+| **820** | "Whistle for the hound" → "Blow the courier's whistle" / « Souffler dans le sifflet du courrier ». Same flags. |
+| **823** (callback) | "taking the nearest Warden by the throat" → "…shouting that the Inquisitor-General wanted the Wardens at the north stair; the nearest turned, and my dagger did the rest"; "the dog sat afterward" → "she waited afterward, breathing hard". |
+| **891** | choice "Whistle for the courier" with her callback: "she went ahead through the queue on the steps with a courier's pass and came back with a purse". |
+
+It keeps the whistle literally and makes the helper a person, but it is **a second character** the player may expect to meet again (the hub flag line), and it needs the most rewriting.
+
+### Which I recommend
+
+**A, the signal-lantern.** It changes the fewest *meanings* (an object has no future in the story, so nothing is promised), cannot be confused with Vica, and fits the Dominion's lanterns. B keeps the whistle but creates a person the story would owe a return.
+
+**Risk (both):** text only. No choice, flag, reward or number moves, so **no story pin, simulator tuple or test count changes** (Core has nothing to re-pin for this part). The two tests that mention `companion_hound` read only the flag's id. The French lint and `qa_story_fr` run on the new text. The tutorial's walking dog is UI and is not touched.
 
 ## 5. The Settings name
 
@@ -93,11 +113,11 @@ None before `1005_vica` (chapter 1 has no dog; the war-hawk of 270 is a bird). F
 
 ## 8. Risks
 
-- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The hawk edits move no pin.
+- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The chapter 1 edits (either way) move no pin.
 - The three origin endings change their `next_id` only; their banner grants are untouched.
 - Core: the guarantee that she is in the party when it would be empty, her fight and duo, and the join on a choice. None of it is Narrative's.
 
 ## 9. Decisions for the user
 
-1. **The war-hawk** (section 4): the freed creature of Weaver's Alley becomes an Inquisition hawk and its handler a falconer, in five scenes, text only. Or another creature (a ferret, a cat)? A hawk answers a whistle, which keeps 820 and 891 as they are.
-2. **The third desert choice** (section 3): coins for a dog; she starts wary of the hero's stupidity. Fine?
+1. **Chapter 1's creature** (section 4): the signal-lantern (A, recommended) or the wounded courier (B)?
+2. **The coin choice** (section 3): 10 gold really lost, with Vica wary of the hero's stupidity. Fine, or another amount?
