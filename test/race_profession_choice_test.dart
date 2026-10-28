@@ -124,9 +124,18 @@ void main() {
   testWidgets('compare sets two peoples side by side and picks one',
       (tester) async {
     await _open(tester);
+    final compareWords = tester.widget<Text>(find.descendant(
+        of: find.byKey(const Key('rp_compare')),
+        matching: find.text('Compare')));
+    expect(compareWords.style?.color, isNotNull);
     await tester.tap(find.byKey(const Key('rp_compare')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('compare_pick_dwarf')), findsWidgets);
+    // The chips' words are drawn in a real colour, never the pale default.
+    final chipWords = tester.widget<Text>(find.descendant(
+        of: find.byKey(const Key('compare_with_elf')),
+        matching: find.text('Elf')));
+    expect(chipWords.style?.color, isNotNull);
     await tester.tap(find.byKey(const Key('compare_with_elf')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('compare_pick_elf')));

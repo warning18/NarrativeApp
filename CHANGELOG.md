@@ -18,6 +18,9 @@ isn't reconstructable from git history alone.
     choices on a small phone).
   - Removed with it: the "Walking companion" switch in Settings, the strip's
     hide/show arrow, and the Story tour's "that's me" line (its step).
+- **Fix:** the race and profession picker's "Compare" button and the compare
+  sheet's people/calling chips drew their words in the pale default colour,
+  white on cream; they are now dark.
 - Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
   layout under it moved); the walking-companion setting test is gone.
 
