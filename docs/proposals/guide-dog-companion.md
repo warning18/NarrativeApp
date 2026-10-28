@@ -1,10 +1,12 @@
 # Vica, the guide dog: the companion every hero gets (Narrative, proposal)
 
-Status: **proposal, no data change.** Docs only; built after the user's OK on this note. Settled by the user: the dog is **Vica**, she is the tutorial's guide, and she is **the mandatory companion**: every hero gets her, there is no quest and no way to refuse her, and she is how the game guarantees a party (difficulty is balanced for "hero plus Vica"). Other companions are bonuses that replace her later; she is always there if the party would otherwise be empty. Core's part (#568): `ranger` class, her own hound die, approval 1 / −1 / 0, a duo with Liora; Core's entry says she joins automatically.
+Status: **proposal, no data change.** Docs only; built after the user's OK on this note. Settled by the user: the dog is **Vica**, she is the tutorial's guide and **the only dog of the game** (she does not appear in chapter 1 outside the tutorial animations), and she is **the mandatory companion**: every hero gets her, there is no quest and no way to refuse her, and she is how the game guarantees a party (difficulty is balanced for "hero plus Vica"). Other companions are bonuses that replace her later; she is always there if the party would otherwise be empty. Core's part (#568): `ranger` class, her own hound die, approval 1 / −1 / 0, a duo with Liora; Core's entry says she joins automatically.
 
 ## 1. What the tutorial's dog is
 
 She speaks in the first person, cheerfully ("Woof! I'm {name}… I trot along each time the story moves on"), and is unnamed by default: `{name}` is the name the player sets in Settings, falling back to "your companion". So Vica is a friendly, show-you-around dog.
+
+**Her sprite** (`assets/visuals/companion/dog_companion_animations`): a **small, sturdy, flat-faced dog, white with black patches, black upright ears**, short legs: a bulldog or terrier type. The story must not contradict it, so Vica is exactly that, not a lean or sand-coloured hunting dog.
 
 ## 2. When she arrives: the end of the desert, before Saltmouth
 
@@ -20,7 +22,7 @@ The flow, read from the story file:
 
 1. On the tenth day the south wind stood up and the dunes began to move. The camels bolted and the water-skins went with them; I ran after the nearest, and the sand closed behind me like a door.
 2. I do not know how long. The sun was a white coin. Every dune was the same dune and my own tracks were gone. I sat down, because walking in circles cost more than sitting.
-3. *(the turn)* Something moved at the edge of my eye: a dog, sand-coloured and all ribs and ears, tail low. She looked at me the way you look at a decision. She turned, took three steps, and looked back.
+3. *(the turn)* Something moved at the edge of my eye: a dog, small and square, white with black patches under the dust, flat-faced, ears standing up like a bat's. She looked at me the way you look at a decision. She turned, took three steps, and looked back.
 4. I followed because I had nothing left to argue with. She stopped at every crest and waited for me, and at dusk, on the last ridge, she sat.
 5. *(warm)* Below us were the caravan's fires, and past them a line of white walls and a stone giant standing in the sea. The caravan master was shouting a word into the wind: "**Vica!** Vica, the sand's guide; she comes to whoever the storm is about to bury."
 6. She came down the ridge to him, and then she turned and came back to me. Whatever the salt-cutters say about her, she had made up her own mind.
@@ -33,22 +35,31 @@ All three end with **Vica joining the party** at the choice, then 2001:
 
 - **"Follow her down."** She starts steady.
 - **"Pour what is left in your flask into your hand for her."** She starts devoted (`vica_shared`).
-- **"Tell her to go; you will manage."** She sits down and does not go; she starts wary (`vica_pushed`).
+- **"Count some coins into the sand for her."** The hero gives her money, which a dog cannot use. She looks at the coins, looks at the hero, and sits down on them, as one sits on a fool's argument, with a sigh through her nose. She starts **wary of the hero's stupidity** (`vica_paid`), a gently comic beat. No coin is actually spent (no `goldMod`); the line is only flavour.
 
 Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines, no cost, no check.
 
-## 4. The warhound of scene 270
+## 4. Chapter 1 loses its dog: the warhound of scene 270 becomes a war-hawk
 
-The user has not said the two are one dog, so I take the simplest road.
+There is **one dog**. Chapter 1 has a second one today: the grey warhound caught in razor wire in Weaver's Alley (`companion_hound`), who follows the hero and is whistled for in 820, 823 and 891. It must stop being a dog, with every choice, outcome and flag still working. The smallest rewrite: **it becomes an Inquisition war-hawk**, and its dead handler a falconer. A bird is freed from wire, hops to a shoulder, answers a whistle, takes a Warden across the eyes, and dives at a porter's hat; every beat of the hound is kept, and nobody mistakes it for Vica.
 
-| | Cost |
+**The flags keep their ids and change meaning** (`companion_hound`, `hound_left`, `hound_wardens`, `hub_891_hound`). Renaming would break any save that already holds them and two tests that read `companion_hound` as a string; the ids are internal.
+
+| Scene | The one-line change (EN and FR; no choice, outcome or flag changes) |
 |---|---|
-| **Separate dogs (recommended).** The hound of Weaver's Alley stays a one-chapter beat; Vica is a new, sand-coloured desert dog. | **Zero edits to chapter 1** (the "it → she" and rabies edits I had proposed are dropped; 960 untouched). A player may notice two grey dogs, so Vica is sand-coloured, not grey. |
-| **One dog.** The warhound is Vica, found again in the desert. | About **seven text edits** in chapter 1 (270, 300, 820, 823, 891 "it" → "she"; the foam softened; a callback in 960 for a hound left on the quay) and a recognition line in `1005_vica`; the tone must carry a rabid-looking hound to a cheerful guide, and "how did she cross the Waste" needs one mythic line (it could be the point: she is the dog who finds you). |
+| **270** | "a lean grey warhound, one ear reduced to ribbons, foam at its jaws" → "a grey war-hawk, one wing torn, its beak open"; the handler becomes "an Inquisition falconer, white on his sleeve", "a leash gone slack" → "a jess"; "hound/dog" → "hawk/bird"; the prompt "What becomes of the beast and its handler?" keeps its words. The three choices' texts do not change. `facing: plague_hound` (the dog portrait) is removed: no portrait. |
+| **300** (two callbacks) | `companion_hound`: "had fallen into step three paces behind me" → "had hopped to my shoulder, where some dead falconer had trained it to ride"; `hound_left`: "the dog tested it again" → "the bird". |
+| **820** | choice "Whistle for the hound" → "Whistle for the hawk" / « Siffler le faucon ». Same `showIfFlags`, same `hound_wardens`. |
+| **823** (callback) | "a grey blur taking the nearest Warden by the throat" → "…across the eyes"; "the dog sat afterward, panting" → "the hawk perched afterward on a broken rail". |
+| **891** | choice "Whistle for the hound" → "Whistle for the hawk"; its callback: "the hound had gone ahead into the crowd… nosing at my hand… trip a porter" → "the hawk had gone ahead over the crowd… came back to my glove, dived once at a porter's hat, and settled on my shoulder". |
+
+Nothing else in chapters 1 to 3 mentions the dog (105 and 2001 have a simile each; Saltmouth's "plague hound" is an enemy, not a companion).
+
+**Risk:** text only. No choice, flag, reward or number moves, so **no story pin, no simulator tuple and no test count changes** (Core has nothing to re-pin for this part). The two tests that mention `companion_hound` only read the flag's id. The French lint and `qa_story_fr` run on the new text. The tutorial's walking dog is UI and is not touched.
 
 ## 5. The Settings name
 
-The player's own name for her still applies to the tutorial and the walking strip; in the story she is Vica. A clash only shows if the player renamed her ("Rex" in the tutorial, "Vica" in the story). Two cheap options: **(a)** leave it, the story's name is a salt-cutters' name for her; **(b)** a `{dog}` token in story text that reads the Settings name when set (Core, one substitution). Suggested either way: `tut_guide_default_name` = **Vica / Vica** (one string, Core), so the unnamed tutorial dog is already Vica.
+The player's own name for her still applies to the tutorial and the walking strip; in the story she is Vica (a clash only shows for a player who renamed her, and the story's name is the salt-cutters' name for her). **Approved:** `tut_guide_default_name` = **Vica / Vica** (one string, EN and FR), so the unnamed tutorial dog is already Vica. No `{dog}` token.
 
 ## 6. What Core's entry needs from me
 
@@ -78,16 +89,15 @@ The player's own name for her still applies to the tutorial and the walking stri
 
 ## 7. Scenes that show Vica beside the hero (for UX)
 
-None before `1005_vica` (chapter 1 has the separate warhound, if the first option holds). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
+None before `1005_vica` (chapter 1 has no dog; the war-hawk of 270 is a bird). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
 
 ## 8. Risks
 
-- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns.
+- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns. The hawk edits move no pin.
 - The three origin endings change their `next_id` only; their banner grants are untouched.
 - Core: the guarantee that she is in the party when it would be empty, her fight and duo, and the join on a choice. None of it is Narrative's.
 
 ## 9. Decisions for the user
 
-1. **One dog or two** (section 4): I recommend two, to keep chapter 1 untouched.
-2. **The choices in the desert** (section 3): three small ways to treat her, which only set how she starts. Fine?
-3. **The Settings name** (section 5): leave it, or a `{dog}` token?
+1. **The war-hawk** (section 4): the freed creature of Weaver's Alley becomes an Inquisition hawk and its handler a falconer, in five scenes, text only. Or another creature (a ferret, a cat)? A hawk answers a whistle, which keeps 820 and 891 as they are.
+2. **The third desert choice** (section 3): coins for a dog; she starts wary of the hero's stupidity. Fine?
