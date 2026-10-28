@@ -16,9 +16,10 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 
 /// The inventory's tabs, in the order they are drawn.
-enum InventoryTab { all, gear, charms, potions, materials, books, quest }
+enum InventoryTab { all, gear, charms, potions, materials, books, quest, dice }
 
-/// The tab an item of [item]'s type belongs to (never [InventoryTab.all]); null for a type the bag has no tab for, which then
+/// The tab an item of [item]'s type belongs to (never [InventoryTab.all] or
+/// [InventoryTab.dice]); null for a type the bag has no tab for, which then
 /// shows under All only. Gear is what is worn: Weapon, Armor and Artifact;
 /// Books are what is read: Spellbook, Tome and Scroll.
 InventoryTab? inventoryKindOf(Map<String, dynamic>? item) =>
@@ -570,6 +571,113 @@ class InventoryDieTile extends StatelessWidget {
                 color: dark ? const Color(0xFF1B1710) : skin.edge,
                 fontWeight: FontWeight.w600)),
       ]),
+    );
+  }
+}
+
+/// A die of the bag: in hand it is lit gold with a chevron; in the bag it
+/// has one labelled button; one made for another class is dimmed with a
+/// padlock and who it is for.
+class InventoryDieRow extends StatelessWidget {
+  const InventoryDieRow({
+    super.key,
+    required this.dieId,
+    required this.name,
+    required this.faces,
+    required this.language,
+    this.inHand = false,
+    this.madeFor = '',
+    this.locked = false,
+    this.onOpen,
+    this.onEquip,
+  });
+
+  final String dieId;
+  final String name;
+  final int faces;
+  final AppLanguage language;
+  final bool inHand;
+  final String madeFor;
+  final bool locked;
+
+  /// Opens the dice screen on this die.
+  final VoidCallback? onOpen;
+  final VoidCallback? onEquip;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final skin = dieSkinOf(dieId);
+    return Opacity(
+      opacity: locked ? 0.6 : 1,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 6),
+        color: inHand
+            ? ink.gold.withValues(alpha: 0.12)
+            : theme.colorScheme.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+              color: inHand ? ink.gold : ink.seam, width: inHand ? 1.6 : 1),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onOpen,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+            child: Row(children: [
+              SizedBox(
+                  width: 52,
+                  child: Center(
+                      child: InventoryDieTile(
+                          dieId: dieId, faces: faces, lit: inHand))),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(fontFamily: InkFonts.display)),
+                    Text(
+                        trFor(language, 'inv_die_line')
+                            .replaceAll('{n}', '$faces')
+                            .replaceAll('{material}', skin.material),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: ink.ash)),
+                    if (inHand)
+                      Text(trFor(language, 'inv_in_hand'),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: ink.gold, fontStyle: FontStyle.italic))
+                    else if (locked && madeFor.isNotEmpty)
+                      Text(
+                          trFor(language, 'inv_die_made_for')
+                              .replaceAll('{who}', madeFor),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: ink.ash, fontStyle: FontStyle.italic)),
+                  ],
+                ),
+              ),
+              if (inHand)
+                Icon(Icons.chevron_right, color: ink.ash)
+              else if (locked)
+                Icon(Icons.lock_outline, color: ink.ash)
+              else if (onEquip != null)
+                FilledButton(
+                  key: Key('inv_equip_die_$dieId'),
+                  style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 12)),
+                  onPressed: onEquip,
+                  child: Text(trFor(language, 'equip_button')),
+                ),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }
