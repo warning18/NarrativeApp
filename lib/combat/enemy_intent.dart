@@ -87,8 +87,9 @@ const int defaultRallyPercent = 20;
 const int maxRallyStacks = 2;
 
 /// Damage multiplier for a hit of the element an enemy is weak to, and for
-/// one it resists.
-const double weaknessMultiplier = 1.5;
+/// one it resists. A weakness was ×1.5 until the difficulty pass (v1.597):
+/// the die that matches the foe is worth swapping in.
+const double weaknessMultiplier = 2.0;
 const double resistanceMultiplier = 0.5;
 
 List<String> enemyWeaknesses(Map<String, dynamic> enemy) =>

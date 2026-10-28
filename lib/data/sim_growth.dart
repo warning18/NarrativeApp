@@ -1096,6 +1096,8 @@ class SimGrowth {
     if (item['isEquippable'] != true) return;
     final slot = item['equipSlot']?.toString() ?? '';
     if (slot.isEmpty) return;
+    // The stubborn player keeps its starting gear.
+    if (policy == SimPolicy.stubborn) return;
     if (competent) {
       c.ownedItemIds.add(itemId);
       equipBest();

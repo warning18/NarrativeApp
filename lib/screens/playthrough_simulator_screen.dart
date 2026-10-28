@@ -704,11 +704,12 @@ _SimResult _simulate(
           ladder: sim.featureLadder,
           policy: sim.policy,
         )..passives = !sim.clashOff.contains('passives'));
-  // The competent player's companions (sim_companions.dart): recruited by
-  // their quests, seated by the pick rule, in every fight.
+  // The competent (and the stubborn) player's companions
+  // (sim_companions.dart): recruited by their quests, seated by the pick
+  // rule, in every fight.
   final party = character == null ||
           sim == null ||
-          sim.policy != SimPolicy.competent ||
+          sim.policy == SimPolicy.naive ||
           sim.companions.isEmpty
       ? null
       : SimParty(

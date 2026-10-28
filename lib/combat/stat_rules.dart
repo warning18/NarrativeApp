@@ -11,11 +11,12 @@
 // and the simulator read the chances.
 import 'dart:math';
 
-/// The health one point of Constitution gives.
-const int healthPerConstitution = 5;
+/// The health one point of Constitution gives (5 until the difficulty
+/// pass, v1.597: smaller numbers on both sides).
+const int healthPerConstitution = 3;
 
-/// The max health each level brings by itself.
-const int levelHealthGain = 4;
+/// The max health each level brings by itself (4 until v1.597).
+const int levelHealthGain = 3;
 
 /// The stat picks each level brings (docs/proposals/stat-scale.md: one a
 /// level, its rarity drawn, see drawStatPick).

@@ -156,8 +156,8 @@ void main() {
       // A level brings an offer from the clans (it was a skill point).
       expect(notifier.state.pendingOffers.map((t) => t.source),
           [OfferSource.level]);
-      expect(notifier.state.maxHealth, 104); // +4 per level
-      expect(notifier.state.currentHealth, 104); // full-healed on level-up
+      expect(notifier.state.maxHealth, 103); // +3 per level
+      expect(notifier.state.currentHealth, 103); // full-healed on level-up
     });
 
     test('grantsBannerPieceId adds the piece once, even if called again',

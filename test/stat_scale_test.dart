@@ -32,7 +32,7 @@ void main() {
 
     test('the damage stat is base damage, Constitution health', () {
       expect(abilityGainEffects({'strength': 2, 'constitution': 1}, 'warrior'),
-          (baseDamage: 2, maxHealth: 5));
+          (baseDamage: 2, maxHealth: 3));
       // Strength is not a rogue's damage.
       expect(abilityGainEffects({'strength': 2}, 'rogue'),
           (baseDamage: 0, maxHealth: 0));
@@ -64,8 +64,8 @@ void main() {
       expect(after.strength, 6);
       expect(after.constitution, 1);
       expect(after.baseDamage, 5);
-      expect(after.maxHealth, 31);
-      expect(after.currentHealth, 25);
+      expect(after.maxHealth, 29);
+      expect(after.currentHealth, 23);
       // A mage's Wisdom is its mana, not its damage.
       final mage = PlayerSession.fromJson({'professionId': 'mage'})
           .withAbilityGains({'wisdom': 3});
@@ -84,7 +84,7 @@ void main() {
       expect(en('strength', 'warrior'), '+1 STR: +1 damage');
       expect(en('strength', 'mage'), '+1 STR: story checks');
       expect(en('intelligence', 'cleric'), '+1 INT: +1 damage');
-      expect(en('constitution', 'mage'), '+1 CON: +5 health');
+      expect(en('constitution', 'mage'), '+1 CON: +3 health');
       expect(en('wisdom', 'cleric'), '+1 WIS: +1 mana');
       expect(
           en('perception', 'warrior'), '+1 PER: +3% block, reads foes better');
@@ -100,7 +100,7 @@ void main() {
       expect(
           statPickOfferEffect(
               {'strength': 2, 'constitution': 1}, 'warrior', AppLanguage.en),
-          '+2 STR: +2 damage · +1 CON: +5 health');
+          '+2 STR: +2 damage · +1 CON: +3 health');
     });
 
     test('in French', () {
