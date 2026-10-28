@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.593.0+629]
+
+- **UX: the Forge sheet with tabs and the forging moment.** The Forge opens on
+  tabs for the slots it has recipes for (Head, Body, Legs, Feet), a gold dot on
+  a tab where something can be forged now, one line for the roll with its odds
+  behind a tap, the ore hint behind (i), the smith's line, and a compact card
+  for each piece whose button says what it lacks ("Short of 1 iron ore"). The
+  forging is four beats: the strike, the d20 landing, the tier, the piece
+  (tap to skip to the last; reduced motion shows the last at once), with
+  "Forge another" when it can be paid again. `lib/widgets/forge_sheet.dart`
+  and `forge_moment.dart` replace the sheet in `shop_trade_sheets.dart`.
+
 ## [1.592.0+628]
 
 What the forge sheet needs, ready for UX's forge tabs. Nothing on screen changes yet.

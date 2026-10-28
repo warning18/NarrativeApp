@@ -67,7 +67,7 @@ Future<ProviderContainer> _open(
         data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
         child: child!,
       ),
-      home: const Scaffold(body: ForgeSheet(shopId: 'hammersmith_forge')),
+      home: const Scaffold(body: ForgeSheetView(shopId: 'hammersmith_forge')),
     ),
   ));
   final container =

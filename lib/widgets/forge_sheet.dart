@@ -38,7 +38,7 @@ Future<void> showForgeSheet(BuildContext context, {required String shopId}) {
     showDragHandle: true,
     builder: (_) => FractionallySizedBox(
       heightFactor: 0.8,
-      child: ForgeSheet(shopId: shopId),
+      child: ForgeSheetView(shopId: shopId),
     ),
   );
 }
@@ -55,16 +55,16 @@ String _nameOf(Map<String, dynamic>? item, String id, AppLanguage lang) {
 String _capital(String s) =>
     s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
-class ForgeSheet extends ConsumerStatefulWidget {
-  const ForgeSheet({super.key, required this.shopId});
+class ForgeSheetView extends ConsumerStatefulWidget {
+  const ForgeSheetView({super.key, required this.shopId});
 
   final String shopId;
 
   @override
-  ConsumerState<ForgeSheet> createState() => _ForgeSheetState();
+  ConsumerState<ForgeSheetView> createState() => _ForgeSheetViewState();
 }
 
-class _ForgeSheetState extends ConsumerState<ForgeSheet> {
+class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
   String? _slot;
   bool _odds = false;
   bool _hint = false;

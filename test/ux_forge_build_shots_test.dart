@@ -91,7 +91,8 @@ void main() {
           debugShowCheckedModeBanner: false,
           theme:
               buildAppTheme(AppPalette.stitchedInk.schemeFor(Brightness.light)),
-          home: const Scaffold(body: ForgeSheet(shopId: 'hammersmith_forge')),
+          home:
+              const Scaffold(body: ForgeSheetView(shopId: 'hammersmith_forge')),
         ),
       ),
     ));
