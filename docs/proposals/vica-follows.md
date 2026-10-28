@@ -5,8 +5,9 @@ Picture: [vica-follows.png](../ux-shots/vica-follows.png). Mock test:
 land walk's side view, the story page's strip); only the follower layer is drawn in, from the
 dog's own frames (`assets/visuals/companion/dog_companion_animations`: 8 walking frames, the
 sitting pose, the bark). The user's rule, as the manager relayed it: the dog is **Vica**, the same
-dog as in the tutorial; she follows the hero once she is seated in the party (Saltmouth, chapter 2),
-none before. Pictures only.
+dog as in the tutorial; she is the **mandatory companion** (every hero gets her before the city after
+the desert, Narrative pins the scene; other companions replace her in the party later) and she follows
+the hero's sprite once she has joined, none before. Pictures only.
 
 ## Which components draw the hero today
 
@@ -15,7 +16,7 @@ none before. Pictures only.
 | **Street** (journey door scene; intro memories draw it with `party: false`) | `streetParty` in `lib/widgets/street_view/street_view.dart`, the actors layer of `StreetViewScene`: a 6x9 pixel figure with the red cloak and pale hat, beside the door. | procedural pixels |
 | **Land walk** (desert, cliffs, fen, frost, ruins kits) | `desertActors` and the other kits' actors layers; the ronin is `SideSprites.paint` (`side_sprite.dart`, `assets/visuals/walker`). | the user's ronin sprite |
 | **Ship deck** | `deck_crew.dart`: cloaked figures, the hero with a pale hat. | procedural pixels |
-| **Story page** | no hero. `WalkingCompanionStrip` (`lib/widgets/walking_companion_strip.dart`, in `story_player_screen.dart`) draws **the dog alone**, sitting at the left edge, walking off and back on each page. | the dog's frames |
+| **Story page** | no hero. The strip that drew the trotting dog (`WalkingCompanionStrip`) is **removed in v1.600** (the tutorial guide stays), so the page has no figure at all. | none |
 | **Rooms** | a plan (`RoomPlanPainter`), no figures. | none |
 
 ## What it takes
@@ -31,27 +32,22 @@ none before. Pictures only.
    get today (left picture of the road row). `hasWalkSprite('companion_vica')` returns true and
    the follower layer replaces the placeholder in each kit's actors layer.
 4. **Deck**: the same layer in `deck_crew.dart` if she should stand on the Eel's deck.
-5. **Story page**: see the question below.
+5. **Story page**: nothing to follow once the strip is gone; see the option below.
 6. **Assets**: the walking frames exist for east, west, north and south; only east is used. A west
    cycle would let her face the hero when the walk turns back. Each leaf folder needs its entry in
    `pubspec.yaml`.
 7. **Gate**: show her only when `activeAllyIds` holds her id and she is not lost or departed
-   (the same test as `walkingPartyOf`); the Settings toggle for the page strip stays an off switch.
+   (the same test as `walkingPartyOf`). When a stronger companion takes her seat she stays at camp,
+   and so does the follower.
 
 No logic or data is needed from Core beyond her companion id (`vica` once Narrative renames the
 dog). Size: one new file, about 80 lines, and one line in each scene.
 
-## Question: the story page strip
+## Option: a still band on the story page
 
-Today the strip shows the dog from the first page of the game, because it is the tutorial's guide
-and the Settings toggle is on by default. The rule says none before Saltmouth. Options:
-
-- **A**: keep the strip as the tutorial dog until the tutorial ends, then hide it until Vica is
-  seated; then show her with the hero beside her (right picture of the page row).
-- **B**: leave the strip as it is (the dog is the page's mascot, not Vica) and let Vica follow only
-  in the street and the walk.
-
-I lean to A: one dog, one story.
+With the trotting dog gone, the page has no figure. If a figure is wanted, a still band under the text
+with the hero and Vica standing together once she has joined (right picture of the page row): no
+trotting, no toggle. It is not part of any build; say if you want it.
 
 ## Rooms
 

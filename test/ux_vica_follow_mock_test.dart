@@ -220,45 +220,36 @@ void main() {
                     style: theme.textTheme.bodyMedium),
               ),
             ),
-            Container(
-              height: 118,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: const Color(0xFF3A3642))),
-              ),
-              child: proposed
-                  ? Stack(children: [
-                      Positioned(
-                        left: 40,
-                        bottom: 0,
-                        child: RawImage(
-                            image: dog.hero,
-                            width: dog.hero.width * 2.6,
-                            height: dog.hero.height * 2.6,
-                            filterQuality: FilterQuality.none),
-                      ),
-                      Positioned(
-                        left: 40 + dog.hero.width * 2.6 + 2,
-                        bottom: 10,
-                        child: RawImage(
-                            image: dog.sit,
-                            width: dog.sit.width * 1.36,
-                            height: dog.sit.height * 1.36,
-                            filterQuality: FilterQuality.none),
-                      ),
-                    ])
-                  : Stack(children: [
-                      Positioned(
-                        left: 14,
-                        bottom: 6,
-                        child: RawImage(
-                            image: dog.sit,
-                            width: dog.sit.width * 1.36,
-                            height: dog.sit.height * 1.36,
-                            filterQuality: FilterQuality.none),
-                      ),
-                    ]),
-            ),
+            if (proposed)
+              Container(
+                height: 118,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(color: Color(0xFF3A3642))),
+                ),
+                child: Stack(children: [
+                  Positioned(
+                    left: 40,
+                    bottom: 0,
+                    child: RawImage(
+                        image: dog.hero,
+                        width: dog.hero.width * 2.6,
+                        height: dog.hero.height * 2.6,
+                        filterQuality: FilterQuality.none),
+                  ),
+                  Positioned(
+                    left: 40 + dog.hero.width * 2.6 + 2,
+                    bottom: 10,
+                    child: RawImage(
+                        image: dog.sit,
+                        width: dog.sit.width * 1.36,
+                        height: dog.sit.height * 1.36,
+                        filterQuality: FilterQuality.none),
+                  ),
+                ]),
+              )
+            else
+              const SizedBox(height: 118),
           ]),
         );
 
@@ -308,20 +299,20 @@ void main() {
                       walk(moving: false, dogSprite: true)),
                 ]),
                 const SizedBox(height: 16),
-                _title('The story page (the strip under the text)'),
+                _title('The story page (the trotting dog is removed, v1.600)'),
                 Row(children: [
-                  _panel('Today: the dog alone, from the first page', width,
-                      230, pageStrip(false)),
+                  _panel('v1.600: the page without the dog', width, 230,
+                      pageStrip(false)),
                   const SizedBox(width: 20),
-                  _panel('Seated: the hero and Vica together', width, 230,
-                      pageStrip(true)),
+                  _panel('Option: a still band, the hero and Vica together',
+                      width, 230, pageStrip(true)),
                 ]),
               ]),
               const SizedBox(width: 24),
               const NotesPanel(title: 'Vica follows', sections: [
                 (
                   'What it is',
-                  'Once Vica is seated in the party (Saltmouth, chapter 2) she sits, stands or trots beside the hero in the scenes that draw the hero, in her own frames. Before that, no follower.'
+                  'Vica is the mandatory companion: every hero has her before the city after the desert. From then on she sits, stands or trots beside the hero in the scenes that draw the hero, in her own frames. Before that, no follower. Another companion can replace her in the party later; she then stays at camp and the follower goes with her.'
                 ),
                 (
                   'The street',
@@ -333,7 +324,7 @@ void main() {
                 ),
                 (
                   'The story page',
-                  'The strip under the text already draws the dog, from the first page, whenever the Settings toggle is on (it is also the tutorial’s guide). To follow the story rule she would only show once seated, with the hero standing beside her; the toggle stays as the off switch. Needs a decision.'
+                  'The trotting dog on the page is removed in v1.600 (the tutorial guide stays). Right: an option, not part of any build: a still band under the text with the hero and Vica standing together once she has joined, no trotting. Without it the page has no figure to follow.'
                 ),
                 (
                   'Rooms',
