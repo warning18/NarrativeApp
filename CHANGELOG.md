@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.600.0+636]
+
+- **UX: the dog no longer trots across the story page.** The little companion
+  that walked across the page each time the story moved on is gone from the
+  story steps; the guide dog of the tutorials is unchanged (its name setting
+  stays).
+  - The story page keeps the room the strip took (more of the text and the
+    choices on a small phone).
+  - Removed with it: the "Walking companion" switch in Settings, the strip's
+    hide/show arrow, and the Story tour's "that's me" line (its step).
+- Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
+  layout under it moved); the walking-companion setting test is gone.
+
 ## [1.598.0+634]
 
 Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
