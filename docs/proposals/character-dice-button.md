@@ -19,7 +19,7 @@ the main Character tab (Overview) they are two taps away, and the tile says noth
 - It is hidden while the dice feature is closed (the Pages tile's `GameFeature.inventory` gate) and
   for a character with no die.
 - It is a new widget in `lib/widgets/` plus one line in `_OverviewTab` (`character_screen.dart`,
-  Core's file for behaviour); no new data, three strings ("Your dice", the +N tag has none).
+  Core's file for behaviour); no new data, one new string ("Your dice", EN/FR).
 
 ## Other placements considered
 - Under the radar, above Skills: the radar stays the first thing seen, but the card is below the
