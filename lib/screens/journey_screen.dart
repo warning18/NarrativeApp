@@ -6351,7 +6351,7 @@ class _CityDistrictView extends ConsumerWidget {
             leads: banners['$i'] != null,
           ),
       ]);
-      if (infos == null) {
+      if (infos == null && groups.isNotEmpty) {
         rows.add(Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
           child: Text(
