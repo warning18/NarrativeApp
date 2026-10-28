@@ -3806,6 +3806,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
       return null;
     }
+    // Vica (a permanent companion) is never taken (story_companions.dart).
+    if (isPermanentCompanion(
+        companions[companionId] as Map<String, dynamic>?)) {
+      return null;
+    }
     final replacement =
         _removeAlly(companionId, lost: true, companions: companions);
     if (persist) _persist();
