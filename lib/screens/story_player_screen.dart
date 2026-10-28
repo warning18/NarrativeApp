@@ -2280,8 +2280,8 @@ Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
   final companions =
       ref.read(gameDbProvider(companionsSchema)).value ?? const {};
   // Never Vica, who cannot be taken (story_companions.dart).
-  final allyId = storyLossOf('*',
-      active: session.activeAllyIds, companions: companions);
+  final allyId =
+      storyLossOf('*', active: session.activeAllyIds, companions: companions);
   if (allyId != null) {
     notifier.loseAlly(allyId, companions: companions);
     await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
