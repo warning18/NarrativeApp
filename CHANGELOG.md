@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.599.0+635]
+
+- **UX: choosing your people and your calling.** The new-game picker is now
+  two steps, People then Calling, with one card each: its mark, name, the way
+  it plays (the playstyle line) and its four biggest numbers.
+  - A tap opens the card: the lore (first sentence, "more" for the rest), the
+    clans that will court you (tap one for its banner, motto and what it
+    stands for), what it unlocks, and its starting skill and spells.
+  - **Compare** sets two side by side and picks one; the dice still
+    randomises both.
+  - Once both are chosen a summary card shows the pair, the clans that come
+    first and what you will play, above Start.
+  - The radar that sat above the rails is gone; the intro flow is untouched.
+- Tests: `race_profession_choice_test.dart` replaces `preset_rail_test.dart`
+  (five cards at 360 px in French, names whole, open card, compare, summary).
+
 ## [1.598.0+634]
 
 Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
