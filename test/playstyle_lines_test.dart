@@ -49,12 +49,16 @@ void main() {
     expect(bonus(races, 'human', 'Charisma'), greaterThan(0));
     expect((races['human'] as Map)['startingGoldBonus'], greaterThan(0));
     // Classes: the warrior is the tank, the rogue fast and lucky, the cleric
-    // healed and hardy, the ranger without extra life.
+    // healed and hardy, the ranger the lightest build of the fighters.
     expect(bonus(professions, 'warrior', 'MaxHealth'), greaterThan(0));
     expect(bonus(professions, 'rogue', 'Dexterity'), greaterThan(0));
     expect(bonus(professions, 'rogue', 'Luck'), greaterThan(0));
     expect(bonus(professions, 'cleric', 'MaxHealth'), greaterThan(0));
-    expect(bonus(professions, 'ranger', 'MaxHealth'), 0);
+    for (final heavier in ['warrior', 'rogue', 'cleric']) {
+      expect(bonus(professions, 'ranger', 'MaxHealth'),
+          lessThan(bonus(professions, heavier, 'MaxHealth')),
+          reason: heavier);
+    }
     expect((professions['mage'] as Map)['startingSpellIds'], isNotEmpty);
   });
 }
