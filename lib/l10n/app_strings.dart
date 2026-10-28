@@ -2389,7 +2389,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'inv_tab_books': {AppLanguage.en: 'Books', AppLanguage.fr: 'Livres'},
   'inv_tab_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
-  'inv_tab_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'inv_sort_newest': {AppLanguage.en: 'Newest', AppLanguage.fr: 'Récents'},
   'inv_sort_rarity': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
   'inv_sort_name': {AppLanguage.en: 'Name', AppLanguage.fr: 'Nom'},
@@ -2410,16 +2409,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'inv_compare_hold': {
     AppLanguage.en: 'Hold a row to compare',
     AppLanguage.fr: 'Maintenez une ligne pour comparer',
-  },
-  'inv_in_hand': {AppLanguage.en: 'In your hand', AppLanguage.fr: 'En main'},
-  'inv_in_bag': {AppLanguage.en: 'In the bag', AppLanguage.fr: 'Dans le sac'},
-  'inv_die_line': {
-    AppLanguage.en: 'd{n} · {n} faces · {material}',
-    AppLanguage.fr: 'd{n} · {n} faces · {material}',
-  },
-  'inv_die_made_for': {
-    AppLanguage.en: 'Made for the {who}',
-    AppLanguage.fr: 'Conçu pour : {who}',
   },
   'inv_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
   'inv_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},

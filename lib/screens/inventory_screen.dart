@@ -21,7 +21,6 @@ import '../widgets/item_detail_view.dart';
 import '../widgets/inventory_parts.dart';
 import '../widgets/item_lore.dart';
 import '../widgets/item_stats.dart';
-import 'dice_loadout_screen.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -473,8 +472,6 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         : null;
     final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()
       ..sort();
-    // The Dice tab: only when the bag holds more than the die in hand.
-    final showDiceTab = allyId == null && ownedDiceIds.length > 1;
 
     // The tabs: only the kinds the bag holds, each with its count.
     final kindCounts = <InventoryTab, int>{};
@@ -486,7 +483,6 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
       if (ownedIds.isNotEmpty) (InventoryTab.all, ownedIds.length),
       for (final kind in InventoryTab.values)
         if ((kindCounts[kind] ?? 0) > 0) (kind, kindCounts[kind]!),
-      if (showDiceTab) (InventoryTab.dice, ownedDiceIds.length),
     ];
     final tab = tabs.any((t) => t.$1 == _tab) ? _tab : InventoryTab.all;
 
@@ -530,9 +526,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         tip: tr(ref, 'choose_die'),
         onTap: allyId != null || ownedDiceIds.isEmpty
             ? null
-            : showDiceTab
-                ? () => _setTab(InventoryTab.dice)
-                : () => _openDice(context, equippedDiceId),
+            : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
       ),
       for (final slot in equipSlotOptions)
         () {
@@ -562,14 +556,12 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         }(),
     ];
 
-    final shown = tab == InventoryTab.dice
-        ? const <String>[]
-        : sortInventoryIds([
-            for (final id in ownedIds)
-              if (tab == InventoryTab.all ||
-                  inventoryKindOf(items[id] as Map<String, dynamic>?) == tab)
-                id
-          ], items, _sort, session.inventoryItemIds);
+    final shown = sortInventoryIds([
+      for (final id in ownedIds)
+        if (tab == InventoryTab.all ||
+            inventoryKindOf(items[id] as Map<String, dynamic>?) == tab)
+          id
+    ], items, _sort, session.inventoryItemIds);
 
     Widget row(String id) {
       final item = items[id] as Map<String, dynamic>?;
@@ -676,46 +668,6 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
       );
     }
 
-    Widget diceRows() {
-      final professions =
-          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
-      final races =
-          ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
-      Widget dieRow(String id, {required bool inHand}) {
-        final die = dice[id] as Map<String, dynamic>?;
-        final usable = dieUsableBy(die,
-            professionId: session.professionId, raceId: session.raceId);
-        return InventoryDieRow(
-          key: Key('inv_die_$id'),
-          dieId: id,
-          name: dieDisplayName(id, language: lang),
-          faces: (die?['numberOfFaces'] as num?)?.toInt() ??
-              (die?['faces'] as List?)?.length ??
-              6,
-          language: lang,
-          inHand: inHand,
-          locked: !usable,
-          madeFor: dieMadeForLabel(die, professions, races),
-          onOpen: () => _openDice(context, id),
-          onEquip: usable && !inHand
-              ? () => ref.read(playerSessionProvider.notifier).equipDice(id)
-              : null,
-        );
-      }
-
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (equippedDiceId != null &&
-            ownedDiceIds.contains(equippedDiceId)) ...[
-          caption(tr(ref, 'inv_in_hand')),
-          dieRow(equippedDiceId, inHand: true),
-        ],
-        const SizedBox(height: 6),
-        caption(tr(ref, 'inv_in_bag')),
-        for (final id in ownedDiceIds)
-          if (id != equippedDiceId) dieRow(id, inHand: false),
-      ]);
-    }
-
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -742,28 +694,23 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
             onSelect: _setTab,
             language: lang,
           ),
-          if (tab != InventoryTab.dice)
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 6),
-              child: Row(children: [
-                Expanded(
-                  child: tab == InventoryTab.gear || tab == InventoryTab.all
-                      ? Text(tr(ref, 'inv_compare_hold'),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                              color: ink.ash, fontStyle: FontStyle.italic))
-                      : const SizedBox.shrink(),
-                ),
-                InventorySortButton(
-                    sort: _sort, onChanged: _setSort, language: lang),
-              ]),
-            )
-          else
-            const SizedBox(height: 10),
-          if (tab == InventoryTab.dice)
-            diceRows()
-          else if (shown.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            child: Row(children: [
+              Expanded(
+                child: tab == InventoryTab.gear || tab == InventoryTab.all
+                    ? Text(tr(ref, 'inv_compare_hold'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: ink.ash, fontStyle: FontStyle.italic))
+                    : const SizedBox.shrink(),
+              ),
+              InventorySortButton(
+                  sort: _sort, onChanged: _setSort, language: lang),
+            ]),
+          ),
+          if (shown.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Text(tr(ref, 'inv_empty_tab')),
@@ -775,10 +722,54 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
     );
   }
 
-  /// The dice screen, opened on [dieId].
-  void _openDice(BuildContext context, String? dieId) {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-        builder: (_) => DiceLoadoutScreen(initialDieId: dieId)));
+  Future<void> _pickDice(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> ownedDiceIds,
+    String? currentlyEquippedId,
+  ) {
+    final facesLabel = trFor(ref.read(appLanguageProvider), 'faces_label');
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: ownedDiceIds.map((id) {
+            final die = widget.dice[id] as Map<String, dynamic>?;
+            final faceCount = (die?['faces'] as List?)?.length ?? 0;
+            final session = ref.read(playerSessionProvider);
+            // A die made for another class (a New Game+ legacy, say) stays
+            // in the bag but can't be rolled.
+            final usable = dieUsableBy(die,
+                professionId: session.professionId, raceId: session.raceId);
+            final madeFor = dieMadeForLabel(
+                die,
+                ref.read(localizedDbProvider(professionsSchema)).value ??
+                    const {},
+                ref.read(localizedDbProvider(racesSchema)).value ?? const {});
+            final lang = ref.read(appLanguageProvider);
+            return ListTile(
+              enabled: usable,
+              leading: const Icon(Icons.casino),
+              title: Text(dieDisplayName(id, language: lang)),
+              subtitle: Text([
+                '$faceCount $facesLabel · ${dieFacesSummary(die, lang)}',
+                if (madeFor.isNotEmpty)
+                  '${trFor(lang, 'die_made_for_prefix')} $madeFor',
+              ].join('\n')),
+              trailing:
+                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              onTap: !usable
+                  ? null
+                  : () {
+                      ref.read(playerSessionProvider.notifier).equipDice(id);
+                      Navigator.of(sheetContext).pop();
+                    },
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   Future<void> _pickForSlot(

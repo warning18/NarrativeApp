@@ -132,10 +132,6 @@ void main() {
     await tester.tap(find.byKey(const Key('inv_tab_gear')));
     await tester.pump();
     await shot('2-gear');
-    await tester.ensureVisible(find.byKey(const Key('inv_tab_dice')));
-    await tester.tap(find.byKey(const Key('inv_tab_dice')));
-    await tester.pump();
-    await shot('3-dice');
     await tester.ensureVisible(find.byKey(const Key('inv_tab_gear')));
     await tester.tap(find.byKey(const Key('inv_tab_gear')));
     await tester.pump();

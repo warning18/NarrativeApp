@@ -1,8 +1,8 @@
 // The inventory with tabs (v1.594, lib/widgets/inventory_parts.dart,
 // lib/screens/inventory_screen.dart): tabs only for the kinds the bag holds,
 // six slot tiles with the die by its name, one quiet line and one labelled
-// button on a row, a gold dot for what is new, the Dice tab, and the compare
-// behind a long press.
+// button on a row, a gold dot for what is new, and the compare behind a long
+// press.
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
-import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/screens/inventory_screen.dart';
 import 'package:narrative_data_app/widgets/inventory_parts.dart';
 
@@ -74,7 +73,7 @@ void main() {
       for (final type in types) {
         final kind = inventoryKindOf({'itemType': type});
         expect(kind, isNotNull, reason: '$type has a tab');
-        expect([InventoryTab.all, InventoryTab.dice], isNot(contains(kind)));
+        expect(kind, isNot(InventoryTab.all));
       }
       // Every tab has strings in both languages.
       for (final tab in InventoryTab.values) {
@@ -111,8 +110,6 @@ void main() {
       expect(find.byKey(const Key('inv_tab_potions')), findsOneWidget);
       expect(find.byKey(const Key('inv_tab_charms')), findsNothing);
       expect(find.byKey(const Key('inv_tab_books')), findsNothing);
-      expect(find.byKey(const Key('inv_tab_dice')), findsNothing,
-          reason: 'one die only: it is in its slot');
       expect(
           find.descendant(
               of: find.byKey(const Key('inv_tab_all')),
@@ -190,35 +187,19 @@ void main() {
           reason: 'no buttons while comparing');
     });
 
-    testWidgets('the Dice tab lists the dice; Equip swaps the one in hand',
+    testWidgets('the Dice tile picks among the dice owned, by name',
         (tester) async {
       final c = await _mount(tester,
-          bag: ['sword_001'], dice: ['starter_die', 'iron_die', 'arcane_die']);
-      expect(find.byKey(const Key('inv_tab_dice')), findsOneWidget);
-      await tester.tap(find.byKey(const Key('slot_Dice')));
-      await tester.pump();
-      expect(find.byKey(const Key('inv_die_starter_die')), findsOneWidget);
-      expect(find.text('In your hand'), findsWidgets);
-      expect(find.byKey(const Key('inv_equip_die_iron_die')), findsOneWidget);
-      expect(find.byKey(const Key('inv_equip_die_arcane_die')), findsNothing,
-          reason: 'a mage\'s die is not for this hero');
-      await tester.tap(find.byKey(const Key('inv_equip_die_iron_die')));
-      await tester.pump();
-      expect(c.read(playerSessionProvider).equippedDiceId, 'iron_die');
-    });
-
-    testWidgets('a tap on a die opens the dice screen on that die',
-        (tester) async {
-      await _mount(tester,
           bag: ['sword_001'], dice: ['starter_die', 'iron_die']);
-      await tester.tap(find.byKey(const Key('inv_tab_dice')));
-      await tester.pump();
-      await tester.tap(find.byKey(const Key('inv_die_iron_die')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      final screen =
-          tester.widget<DiceLoadoutScreen>(find.byType(DiceLoadoutScreen));
-      expect(screen.initialDieId, 'iron_die');
+      expect(find.byKey(const Key('inv_tab_dice')), findsNothing,
+          reason: 'dice are in their slot, not in the bag');
+      await tester.tap(find.byKey(const Key('slot_Dice')));
+      await tester.pumpAndSettle();
+      expect(find.text('Iron Die'), findsOneWidget);
+      await tester.tap(find.text('Iron Die'));
+      await tester.pumpAndSettle();
+      expect(c.read(playerSessionProvider).equippedDiceId, 'iron_die');
+      expect(find.text('Iron Die'), findsOneWidget, reason: 'now in its slot');
     });
 
     testWidgets('French tabs and lines', (tester) async {
