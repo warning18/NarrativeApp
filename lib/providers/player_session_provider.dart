@@ -4249,15 +4249,47 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final left = withFateCoinSpent(state.inventoryItemIds);
     if (left == null || !left.contains(pieceId)) return null;
     final again = reforgedRoll(roll, random ?? Random());
-    final newId = forgedVariantId(baseItemIdOf(pieceId), again.tier);
-    left[left.indexOf(pieceId)] = newId;
-    state = state.copyWith(
-      inventoryItemIds: left,
-      itemOrigins: withItemOrigins(
-          state.itemOrigins, [newId], state.itemOrigins[pieceId]),
-    );
+    state = _withPieceReforged(
+        state.copyWith(inventoryItemIds: left), pieceId, again.tier);
     await _persist();
     return again;
+  }
+
+  /// Whether a camp house can roll the forge again now: the Bone-Caster's
+  /// Hut stands and has a Reroll charge (camp_rolls.dart).
+  bool get canRerollForge => _has(RollPower.reroll, state.rerollCharges);
+
+  /// The Bone-Caster's Hut's Reroll on the forge [roll] that made [pieceId]
+  /// (docs/proposals/forge-roll.md, "the camp's roll houses"): one charge
+  /// spent, the forge's d20 rolled once more on [random] with the same
+  /// modifiers, and the piece in the pack takes the new tier's id. Returns
+  /// the new roll, or null with no charge or no such piece.
+  Future<ForgeRoll?> rerollForge(String pieceId, ForgeRoll roll,
+      {Random? random}) async {
+    if (!canRerollForge || !state.inventoryItemIds.contains(pieceId)) {
+      return null;
+    }
+    final again = rerolledForge(roll, random ?? Random());
+    state = _withPieceReforged(
+        state.copyWith(rerollCharges: state.rerollCharges - 1),
+        pieceId,
+        again.tier);
+    await _persist();
+    return again;
+  }
+
+  /// [s] with the piece [pieceId] in its pack swapped for the same base
+  /// forged at [tier] (its origin kept).
+  PlayerSession _withPieceReforged(
+      PlayerSession s, String pieceId, ForgeTier tier) {
+    final pack = [...s.inventoryItemIds];
+    final newId = forgedVariantId(baseItemIdOf(pieceId), tier);
+    pack[pack.indexOf(pieceId)] = newId;
+    return s.copyWith(
+      inventoryItemIds: pack,
+      itemOrigins:
+          withItemOrigins(s.itemOrigins, [newId], s.itemOrigins[pieceId]),
+    );
   }
 
   /// Whether the pack and purse cover [cost] (see face_smithing.dart).

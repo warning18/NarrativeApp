@@ -56,4 +56,4 @@ bool fateCoinWorthFlippingForge(ForgeRoll roll) =>
 
 /// [roll] forged once more with [random]: a new d20, the same modifiers.
 ForgeRoll reforgedRoll(ForgeRoll roll, Random random) =>
-    rollForge(random: random, modifiers: roll.modifiers);
+    rerolledForge(roll, random);

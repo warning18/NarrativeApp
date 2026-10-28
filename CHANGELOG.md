@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.592.0+628]
+
+What the forge sheet needs, ready for UX's forge tabs. Nothing on screen changes yet.
+
+- **The sheet's numbers:** a piece about to be forged now comes with everything the sheet shows:
+  - the bonuses on the roll, each with its label, value and source (a dwarf hero +2; standing with the clan holding the forge's place, +1 or −1);
+  - their total;
+  - the chance of each result (Flawed, Sound, Fine, Masterwork) on the forge's d20;
+  - the piece's main number and resale price as listed and after each result;
+  - the result a given d20 face gives.
+- **The camp's Bone-Caster's Hut on the forge:** while the hut stands and has a Reroll charge, it can roll a forged piece once more. That spends one charge; the piece takes the new result, with the same bonuses.
+
 ## [1.591.0+627]
 
 Fourteen more buildings of Saltmouth have names, so the district view shows where each scene happens: at the Landward Gate (the salt road's end, the courier's place in line, the grain wagon, the shadow by the gate, the salt wagon), on Tern Row (Renn's toll post, the suspended toll), on the Wharf (the purse on the boards, the rotten gutter, the storm drain ladder, the thugs' lantern, Vane's tally) and at the Yard (the Rusty Eel's slip, the Rusty Eel at her berth). English and French.
