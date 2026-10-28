@@ -109,8 +109,8 @@
   },
   "105": {
     "id": "105",
-    "description": "The room had not finished falling. Beams came down one at a time behind me with the unhurried thump of things that had all night, and the smoke came in through the hole in the wall in long grey rolls and lay along the floor like a dog. People were climbing out over the rubble, or not climbing out.\n\nI had taken three steps when someone stepped into my way, the way someone always does in that room, and I knew from the set of his shoulders that he was not going to step out of it again.",
-    "description_fr": "La salle n’avait pas fini de tomber. Les poutres descendaient une à une derrière moi avec le choc sans hâte de choses qui avaient toute la nuit, et la fumée entrait par le trou du mur en longs rouleaux gris et s’étendait sur le plancher comme un chien. Des gens escaladaient les décombres pour sortir, ou ne les escaladaient pas.\n\nJ’avais fait trois pas quand quelqu’un se planta en travers de mon chemin, comme il arrive toujours dans cette salle, et je sus, à la façon dont il tenait les épaules, qu’il ne s’en écarterait plus.",
+    "description": "The room had not finished falling. Beams came down one at a time behind me with the unhurried thump of things that had all night, and the smoke came in through the hole in the wall in long grey rolls and lay along the floor like a sleeper. People were climbing out over the rubble, or not climbing out.\n\nI had taken three steps when someone stepped into my way, the way someone always does in that room, and I knew from the set of his shoulders that he was not going to step out of it again.",
+    "description_fr": "La salle n’avait pas fini de tomber. Les poutres descendaient une à une derrière moi avec le choc sans hâte de choses qui avaient toute la nuit, et la fumée entrait par le trou du mur en longs rouleaux gris et s’étendait sur le plancher comme un dormeur. Des gens escaladaient les décombres pour sortir, ou ne les escaladaient pas.\n\nJ’avais fait trois pas quand quelqu’un se planta en travers de mon chemin, comme il arrive toujours dans cette salle, et je sus, à la façon dont il tenait les épaules, qu’il ne s’en écarterait plus.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "action",
@@ -867,8 +867,8 @@
   },
   "270": {
     "id": "270",
-    "description": "The alley swallowed what light the fires threw and, I suspected, had every intention of keeping it. Halfway down, something thrashed in a coil of razor wire strung low across the passage with the particular cruelty of a trap someone had made time for, even tonight.\n\nIt was **a lean grey warhound**, one ear reduced to ribbons, foam gathering at its jaws in a way that argued either rabies or several very bad days.\n\nIts handler lay face-down a few feet further on, an Inquisition dog-handler by the white on his sleeve, throat opened with the kind of thoroughness that suggests the killer had opinions about the man beyond simply wanting him dead, one gauntleted hand still closed around a leash gone slack in every sense that mattered.\n\nThe dog’s eyes found mine and held there. It did not whimper. It did not growl. It only watched, with the particular patience of something that has learned starvation teaches better manners than any master ever could.",
-    "description_fr": "La ruelle avalait la lumière que jetaient les incendies et, je le soupçonnais, comptait bien la garder. À mi-chemin, quelque chose se débattait dans un rouleau de fil barbelé tendu bas en travers du passage, avec la cruauté particulière d’un piège auquel quelqu’un avait pris le temps de penser, même cette nuit.\n\nC’était **un chien de guerre gris et efflanqué**, une oreille réduite en lambeaux, de l’écume s’amassant à ses babines d’une façon qui suggérait la rage ou plusieurs très mauvaises journées.\n\nSon maître gisait face contre terre un peu plus loin, un maître-chien de l’Inquisition, à en juger par le blanc de sa manche, la gorge ouverte avec une minutie qui laissait penser que le tueur avait des opinions sur cet homme au-delà du simple désir de le voir mort, une main gantelée encore refermée sur une laisse relâchée dans tous les sens qui comptaient.\n\nLes yeux du chien trouvèrent les miens et s’y attardèrent. Il ne gémit pas. Il ne gronda pas. Il se contenta de regarder, avec cette patience particulière des êtres qui ont appris que la faim enseigne de meilleures manières qu’aucun maître ne le pourrait.",
+    "description": "The alley swallowed what light the fires threw and, I suspected, had every intention of keeping it. Halfway down, something thrashed in a coil of razor wire strung low across the passage with the particular cruelty of a trap someone had made time for, even tonight.\n\nIt was **a signal-lantern of the Inquisition**, a hooded brass thing with its shutter bent, still burning, its small flame leaning in the wire’s draught in a way that argued either a broken wick or several very bad days.\n\nIts bearer lay face-down a few feet further on, an Inquisition signaller by the white on his sleeve, throat opened with the kind of thoroughness that suggests the killer had opinions about the man beyond simply wanting him dead, one gauntleted hand still closed around a lanyard gone slack in every sense that mattered.\n\nThe flame did not gutter. It did not flare. It only burned on, with the particular patience of something that has learned a dead man’s duty is the only one it has left.",
+    "description_fr": "La ruelle avalait la lumière que jetaient les incendies et, je le soupçonnais, comptait bien la garder. À mi-chemin, quelque chose se débattait dans un rouleau de fil barbelé tendu bas en travers du passage, avec la cruauté particulière d’un piège auquel quelqu’un avait pris le temps de penser, même cette nuit.\n\nC’était **une lanterne de signal de l’Inquisition**, une chose de cuivre à capuchon, l’obturateur tordu, brûlant encore, sa petite flamme penchée dans le courant d’air du fil d’une façon qui suggérait une mèche abîmée ou plusieurs très mauvaises journées.\n\nSon porteur gisait face contre terre un peu plus loin, un signaleur de l’Inquisition, à en juger par le blanc de sa manche, la gorge ouverte avec une minutie qui laissait penser que le tueur avait des opinions sur cet homme au-delà du simple désir de le voir mort, une main gantelée encore refermée sur une dragonne relâchée dans tous les sens qui comptaient.\n\nLa flamme ne vacilla pas. Elle ne jaillit pas. Elle se contenta de brûler, avec cette patience particulière des choses qui ont appris que le devoir d’un mort est le seul qui leur reste.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "tense",
@@ -889,8 +889,8 @@
         ]
       },
       {
-        "text": "Strip the handler’s gear and go",
-        "text_fr": "Dépouiller le maître-chien et partir",
+        "text": "Strip the bearer’s gear and go",
+        "text_fr": "Dépouiller le signaleur et partir",
         "next_id": "300",
         "goldMod": 15,
         "alignmentMod": -3
@@ -904,7 +904,6 @@
         ]
       }
     ],
-    "facing": "plague_hound",
     "flag_callbacks": [
       {
         "flag": "origin_sparrow_good",
@@ -922,8 +921,8 @@
         "fr": "À six ans, j’avais vendu un moineau à l’aile brisée pour un sou. Ici, personne n’en offrait."
       }
     ],
-    "prompt": "What becomes of the beast and its handler?",
-    "prompt_fr": "Que deviennent la bête et son dresseur ?"
+    "prompt": "What becomes of the lantern and its bearer?",
+    "prompt_fr": "Que deviennent la lanterne et son porteur ?"
   },
   "300": {
     "id": "300",
@@ -972,13 +971,13 @@
       },
       {
         "flag": "companion_hound",
-        "en": "The wire had bitten my palms before it gave up the dog. It had fallen into step three paces behind me, where some dead handler had trained it to walk. I had no name for it yet.",
-        "fr": "Le fil m’avait mordu les paumes avant de lâcher le chien. Il s’était mis à marcher trois pas derrière moi, là où quelque maître mort l’avait dressé à se tenir. Je n’avais pas encore de nom pour lui."
+        "en": "The wire had bitten my palms before it gave up the lantern. It hung from my belt now, still warm, where some dead signaller had worn it. I had no use for it yet.",
+        "fr": "Le fil m’avait mordu les paumes avant de lâcher la lanterne. Elle pendait maintenant à ma ceinture, encore tiède, là où quelque signaleur mort la portait. Je n’en avais pas encore l’usage."
       },
       {
         "flag": "hound_left",
-        "en": "Somewhere behind me, in the alley, the wire had sung once as the dog tested it again. I had not looked back.",
-        "fr": "Quelque part derrière moi, dans la ruelle, le fil avait chanté une fois, le chien l’éprouvant encore. Je n’avais pas regardé en arrière."
+        "en": "Somewhere behind me, in the alley, a small light still burned in the wire. I had not looked back.",
+        "fr": "Quelque part derrière moi, dans la ruelle, une petite lumière brûlait encore dans le fil. Je n’avais pas regardé en arrière."
       }
     ],
     "prompt": "How do you approach the house?",
@@ -1489,8 +1488,8 @@
   },
   "820": {
     "id": "820",
-    "description": "The hallway had the general architecture and evident purpose of a meat grinder, and I do not use the comparison lightly. **Two Wardens blocked the only exit**, men built along the lines of doors themselves, doors that had somehow acquired opinions.\n\nBehind them, halfway up the stair with his ring of keys, Brother Clement had stopped to watch, the way a man watches a dog he has money on; he would not come down himself, I understood, while there were others to do it for him.\n\nThe Wardens saw me. They smiled, in the manner of men who had been promised entertainment and were pleased to find it delivered on time.",
-    "description_fr": "Le couloir avait l’architecture générale et le dessein manifeste d’un hachoir à viande, et je n’emploie pas la comparaison à la légère. **Deux Gardiens bloquaient l’unique sortie**, bâtis dans les mêmes proportions que des portes, des portes qui auraient d’une manière ou d’une autre acquis des opinions.\n\nDerrière eux, à mi-hauteur de l’escalier, son trousseau de clés à la main, frère Clément s’était arrêté pour regarder, comme on regarde un chien sur lequel on a parié ; il ne descendrait pas lui-même, je le compris, tant que d’autres pouvaient le faire à sa place.\n\nLes Gardiens me virent. Ils sourirent, à la manière d’hommes à qui l’on avait promis un divertissement et qui étaient satisfaits de le voir livré à l’heure.",
+    "description": "The hallway had the general architecture and evident purpose of a meat grinder, and I do not use the comparison lightly. **Two Wardens blocked the only exit**, men built along the lines of doors themselves, doors that had somehow acquired opinions.\n\nBehind them, halfway up the stair with his ring of keys, Brother Clement had stopped to watch, the way a man watches a fighter he has money on; he would not come down himself, I understood, while there were others to do it for him.\n\nThe Wardens saw me. They smiled, in the manner of men who had been promised entertainment and were pleased to find it delivered on time.",
+    "description_fr": "Le couloir avait l’architecture générale et le dessein manifeste d’un hachoir à viande, et je n’emploie pas la comparaison à la légère. **Deux Gardiens bloquaient l’unique sortie**, bâtis dans les mêmes proportions que des portes, des portes qui auraient d’une manière ou d’une autre acquis des opinions.\n\nDerrière eux, à mi-hauteur de l’escalier, son trousseau de clés à la main, frère Clément s’était arrêté pour regarder, comme on regarde un combattant sur lequel on a parié ; il ne descendrait pas lui-même, je le compris, tant que d’autres pouvaient le faire à sa place.\n\nLes Gardiens me virent. Ils sourirent, à la manière d’hommes à qui l’on avait promis un divertissement et qui étaient satisfaits de le voir livré à l’heure.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -1524,8 +1523,8 @@
         ]
       },
       {
-        "text": "Whistle for the hound",
-        "text_fr": "Siffler le chien",
+        "text": "Raise the lantern",
+        "text_fr": "Lever la lanterne",
         "next_id": "823",
         "showIfFlags": [
           "companion_hound"
@@ -1622,8 +1621,8 @@
       },
       {
         "flag": "hound_wardens",
-        "en": "I had not known whether it still remembered its old handler’s whistle. It came in through the breach behind the resistance, a grey blur taking the nearest Warden by the throat before he could shout; the second turned just in time to receive my dagger. The dog sat afterward, panting, waiting for whatever came next.",
-        "fr": "Je ne savais pas s’il se souvenait encore du sifflement de son ancien maître. Il arriva par la brèche derrière la résistance, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu’il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s’assit ensuite, haletant, attendant ce qui viendrait."
+        "en": "I had not known whether the shutter would still open. It did, with a flare like a slammed door, white and total, and the nearest Warden clawed at his eyes before he could shout; the second turned just in time to receive my dagger. The lantern hung from my belt afterward, ticking as it cooled.",
+        "fr": "Je ne savais pas si l’obturateur s’ouvrirait encore. Il s’ouvrit, avec un éclat de porte claquée, blanc et total, et le Gardien le plus proche se griffa les yeux avant de pouvoir crier ; le second se retourna juste à temps pour recevoir ma dague. La lanterne pendait ensuite à ma ceinture, cliquetant en refroidissant."
       },
       {
         "flag": "wardens_fooled",
@@ -1794,8 +1793,8 @@
         ]
       },
       {
-        "text": "Whistle for the hound",
-        "text_fr": "Siffler le chien",
+        "text": "Raise the lantern",
+        "text_fr": "Lever la lanterne",
         "next_id": "891",
         "goldMod": 10,
         "showIfFlags": [
@@ -1842,8 +1841,8 @@
       },
       {
         "flag": "hub_891_hound",
-        "en": "The hound had gone ahead into the crowd on the steps and came back nosing at my hand, trotted off again to trip a porter, and fell back into step while I relieved a dropped purse of its previous owner’s claim.",
-        "fr": "Le chien était parti devant dans la foule des marches et revint frotter son museau contre ma main, repartit trotter pour faire trébucher un porteur, et se recolla à mes talons pendant que je soulageais une bourse tombée de la prétention de son ancien propriétaire."
+        "en": "The flare opened the crowd on the steps like a hand through water; I relieved a dropped purse of its previous owner’s claim, and the lantern was warm at my hip.",
+        "fr": "L’éclat ouvrit la foule des marches comme une main dans l’eau ; je soulageai une bourse tombée de la prétention de son ancien propriétaire, et la lanterne était tiède contre ma hanche."
       },
       {
         "flag": "trainer_strike",
@@ -2494,7 +2493,7 @@
       {
         "text": "Take back what they stole",
         "text_fr": "Reprendre ce qu’ils ont volé",
-        "next_id": "1200",
+        "next_id": "1150_vica",
         "landRouteId": "sleeper_to_wells",
         "triggerEnemyIds": [
           "wreck_scavenger",
@@ -2509,7 +2508,7 @@
       {
         "text": "Slip past them in the dark",
         "text_fr": "Les contourner dans le noir",
-        "next_id": "1200",
+        "next_id": "1150_vica",
         "landRouteId": "sleeper_to_wells",
         "checkAbility": "dexterity",
         "checkDC": 12,
@@ -2529,7 +2528,7 @@
       {
         "text": "Go the long way round",
         "text_fr": "Faire le grand détour",
-        "next_id": "1200",
+        "next_id": "1150_vica",
         "landRouteId": "sleeper_to_wells",
         "healAmount": -2,
         "flagsToAdd": [
@@ -2576,7 +2575,7 @@
       {
         "text": "Fight them off",
         "text_fr": "Les repousser",
-        "next_id": "1200",
+        "next_id": "1150_vica",
         "landRouteId": "sleeper_to_wells",
         "triggerEnemyIds": [
           "wreck_scavenger",
@@ -2592,7 +2591,7 @@
       {
         "text": "Run, and leave them the dark",
         "text_fr": "Fuir, et leur laisser le noir",
-        "next_id": "1200",
+        "next_id": "1150_vica",
         "landRouteId": "sleeper_to_wells",
         "healAmount": -4,
         "flagsToAdd": [
@@ -2604,6 +2603,50 @@
     "facing": "wreck_scavenger",
     "prompt": "Fight them, or run?",
     "prompt_fr": "Les combattre, ou fuir ?"
+  },
+  "1150_vica": {
+    "id": "1150_vica",
+    "description": "I left the Face with the first stars, and had gone perhaps two hundred paces when the dunes closed behind me like a door. The wind had already taken my tracks.\n\nI do not know how long. The sun was a white coin, then it was not there. Every dune was the same dune and my mouth was sand. I sat down, because walking in circles cost more than sitting.\n\nSomething moved at the edge of my eye: **a dog**, small and square, white with black patches under the dust, flat-faced, her ears standing up like a bat’s. She looked at me the way you look at a decision. She turned, took three steps, and looked back.\n\nI followed because I had nothing left to argue with. She stopped at every crest and waited for me, and she did not once look at the sky.\n\nThe lights came up out of the dark all at once: a hollow in the dunes, palms, and a scatter of white clay huts glowing like loaves in an oven. She sat down at the edge of the light and would not go any further without me.\n\nI called her **Vica**. I could not have told you why; the word came up out of the heat like the name of an old friend, and she turned her head as if it had been said before.",
+    "description_fr": "Je quittai le Visage avec les premières étoiles, et j’avais fait peut-être deux cents pas quand les dunes se refermèrent derrière moi comme une porte. Le vent avait déjà pris mes traces.\n\nJe ne sais pas combien de temps. Le soleil fut une pièce blanche, puis il n’y fut plus. Toutes les dunes étaient la même dune et ma bouche était de sable. Je m’assis, parce que tourner en rond coûtait plus que rester assis.\n\nQuelque chose bougea au bord de mon regard : **un chien**, petit et carré, blanc taché de noir sous la poussière, le museau plat, les oreilles dressées comme celles d’une chauve-souris. Elle me regarda comme on regarde une décision. Elle se détourna, fit trois pas, et regarda en arrière.\n\nJe la suivis parce qu’il ne me restait plus rien à lui opposer. Elle s’arrêtait à chaque crête pour m’attendre, et elle ne leva pas une fois les yeux vers le ciel.\n\nLes lumières surgirent de la nuit d’un seul coup : un creux dans les dunes, des palmiers, et un semis de huttes d’argile blanche qui luisaient comme des pains dans un four. Elle s’assit au bord de la lumière et refusa d’aller plus loin sans moi.\n\nJe l’appelai **Vica**. Je n’aurais pas su dire pourquoi : le mot monta de la chaleur comme le nom d’un vieil ami, et elle tourna la tête comme s’il avait déjà été dit.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tender",
+      "speaker": "Narrator"
+    },
+    "location": "white_wells",
+    "choices": [
+      {
+        "text": "Follow her down",
+        "text_fr": "La suivre",
+        "next_id": "1200",
+        "flagsToAdd": [
+          "vica_follow"
+        ],
+        "recruitAllyId": "vica"
+      },
+      {
+        "text": "Pour what is left in your flask into your hand for her",
+        "text_fr": "Verser dans votre main ce qui reste de votre gourde, pour elle",
+        "next_id": "1200",
+        "flagsToAdd": [
+          "vica_shared"
+        ],
+        "recruitAllyId": "vica"
+      },
+      {
+        "text": "Count some coins into the sand for her (10 gold)",
+        "text_fr": "Compter quelques pièces dans le sable, pour elle (10 pièces d’or)",
+        "next_id": "1200",
+        "goldMod": -10,
+        "pays": true,
+        "flagsToAdd": [
+          "vica_paid"
+        ],
+        "recruitAllyId": "vica"
+      }
+    ],
+    "prompt": "What do you do for her?",
+    "prompt_fr": "Que faites-vous pour elle ?"
   },
   "1200": {
     "id": "1200",
@@ -2714,6 +2757,21 @@
         "flag": "met_vess",
         "en": "Somewhere past the last of the huts, I knew, the cloaked woman was watching the dark the way other people watch a door.",
         "fr": "Quelque part au-delà des dernières cases, je le savais, la femme encapuchonnée surveillait le noir comme d’autres surveillent une porte."
+      },
+      {
+        "flag": "vica_follow",
+        "en": "Vica lay at my feet by the water, ears up, watching the huts the way she had watched the dunes: for whatever was about to go wrong.",
+        "fr": "Vica était couchée à mes pieds près de l’eau, les oreilles dressées, et surveillait les huttes comme elle avait surveillé les dunes : pour ce qui s’apprêtait à mal tourner."
+      },
+      {
+        "flag": "vica_shared",
+        "en": "Vica had drunk from my hand before she drank from the pool, and she lay against my boot now with her whole weight, as if she had decided something.",
+        "fr": "Vica avait bu dans ma main avant de boire à la mare, et elle s’appuyait contre ma botte de tout son poids, comme si elle avait décidé quelque chose."
+      },
+      {
+        "flag": "vica_paid",
+        "en": "Vica had bitten one of my coins, found it was not food, and had not forgiven me; she lay a careful two paces off and looked at me with great patience.",
+        "fr": "Vica avait mordu une de mes pièces, constaté que ce n’était pas de la nourriture, et ne me l’avait pas pardonné ; elle était couchée à deux pas bien comptés et me regardait avec une grande patience."
       }
     ],
     "prompt": "What do you do at the Wells?",
@@ -2740,7 +2798,6 @@
         "text": "Go back to the fire",
         "text_fr": "Retourner près du feu",
         "next_id": "1200",
-        "unlockQuestId": "q_ch1_vess_in_the_dark",
         "flagsToAdd": [
           "met_vess"
         ],
@@ -3238,7 +3295,6 @@
           "void_banner_bearer"
         ],
         "hideIfFlags": [
-          "met_vess",
           "hub_2015_vess"
         ],
         "flagsToAdd": [

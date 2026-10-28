@@ -970,7 +970,7 @@
   "q_ch1_vess_in_the_dark": {
     "questID": "q_ch1_vess_in_the_dark",
     "questName": "Vess in the Dark",
-    "chapter": 1,
+    "chapter": 2,
     "category": "Side",
     "difficulty": "2",
     "requiredAlignment": "Neutral",

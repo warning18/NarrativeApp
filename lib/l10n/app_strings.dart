@@ -7273,8 +7273,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Arrêter la lecture',
   },
   'tut_guide_default_name': {
-    AppLanguage.en: 'your companion',
-    AppLanguage.fr: 'votre compagnon',
+    AppLanguage.en: 'Vica',
+    AppLanguage.fr: 'Vica',
   },
   'tut_story_title': {
     AppLanguage.en: 'The story',

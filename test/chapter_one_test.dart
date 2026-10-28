@@ -80,8 +80,8 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 51 scenes, all reachable', () {
-    expect(chapterOne.length, 51);
+  test('chapter 1 has no padding: 52 scenes, all reachable', () {
+    expect(chapterOne.length, 52);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -384,8 +384,12 @@ void main() {
     expect(nodes['1101_scarred']!.choices.single.flagsToAdd,
         contains('void_marked'));
     expect(nodes['1210']!.reqFlags, ['void_marked']);
-    expect(
-        nodes['1210']!.choices.single.unlockQuestId, 'q_ch1_vess_in_the_dark');
+    // Vess is met at the Wells but joins in Saltmouth (v1.602): the Wells no
+    // longer take her quest; the Saltmouth hub's scene does.
+    expect(nodes['1210']!.choices.single.unlockQuestId, isNull);
+    expect(nodes['1210']!.choices.single.flagsToAdd, contains('met_vess'));
+    expect(nodes['2015_vess']!.choices.first.unlockQuestId,
+        'q_ch1_vess_in_the_dark');
     // The heat is a Constitution challenge.
     final heat = nodes['1120']!.choices.singleWhere((c) => c.hasSkillChallenge);
     expect(heat.checkAbility, 'constitution');
@@ -399,7 +403,26 @@ void main() {
     final spotted = nodes['1140_spotted']!.choices;
     expect(
         spotted.singleWhere((c) => c.triggersCombat).forcedCondition, 'ambush');
-    expect(spotted.map((c) => c.nextId).toSet(), {'1200'});
+    expect(spotted.map((c) => c.nextId).toSet(), {'1150_vica'});
+    expect(looters.map((c) => c.nextId).toSet(), {'1150_vica'});
+    // The end of the crossing: Vica finds the lost hero and joins, whatever
+    // the hero does (no way to refuse her); the coins really cost 10 gold.
+    final vica = nodes['1150_vica']!;
+    expect(vica.choices.map((c) => c.nextId).toSet(), {'1200'});
+    expect(vica.choices, hasLength(3));
+    final coins = vica.choices.singleWhere((c) => c.goldMod != 0);
+    expect(coins.goldMod, -10);
+    expect(coins.pays, isTrue);
+    expect(coins.flagsToAdd, ['vica_paid']);
+    expect([
+      for (final c
+          in (dag['1150_vica'] as Map<String, dynamic>)['choices'] as List)
+        (c as Map<String, dynamic>)['recruitAllyId'],
+    ], [
+      'vica',
+      'vica',
+      'vica'
+    ]);
     // The Wells: rest, and the three ways chapter 1 ends.
     expect(nodes['1200']!.description, contains('Saltmouth'));
     for (final ending in ['1000', '1001', '1002']) {
