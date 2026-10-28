@@ -1,59 +1,58 @@
-# Vica, the guide dog, as a companion (Narrative, proposal)
+# Vica, the guide dog: the companion every hero gets (Narrative, proposal)
 
-Status: **proposal, no data change.** Docs only; built after the user's OK on this note. Settled by the user: the dog is named **Vica**, she is **the same dog as the tutorial's guide**, and she is a normal companion found in Saltmouth (the second big town) through a quest, replaceable by the story's other companions, no alignment gate. Core's part (#568): `ranger` class, her own hound die, approval 1 / −1 / 0, a duo with Liora. Quest numbers and the ally id stay Core's.
+Status: **proposal, no data change.** Docs only; built after the user's OK on this note. Settled by the user: the dog is **Vica**, she is the tutorial's guide, and she is **the mandatory companion**: every hero gets her, there is no quest and no way to refuse her, and she is how the game guarantees a party (difficulty is balanced for "hero plus Vica"). Other companions are bonuses that replace her later; she is always there if the party would otherwise be empty. Core's part (#568): `ranger` class, her own hound die, approval 1 / −1 / 0, a duo with Liora; Core's entry says she joins automatically.
 
-## 1. What the tutorial's dog is today
+## 1. What the tutorial's dog is
 
-- She **speaks in the first person**, cheerfully: "Woof! I'm {name}. The first time you find something new, I'll show you around." … "And that's me! I trot along each time the story moves on. The arrow tucks me away."
-- She is **unnamed by default**: `{name}` is the player-set `companionNameProvider` (Settings), and `tut_guide_default_name` falls back to "your companion" / « votre compagnon ». She is a guide first, by voice.
-- She trots across the screen (the walking strip) from the first page of the game.
+She speaks in the first person, cheerfully ("Woof! I'm {name}… I trot along each time the story moves on"), and is unnamed by default: `{name}` is the name the player sets in Settings, falling back to "your companion". So Vica is a friendly, show-you-around dog.
 
-So Vica must be a friendly, eager, show-you-around dog, and her name is Vica unless the player renamed her in Settings.
+## 2. When she arrives: the end of the desert, before Saltmouth
 
-## 2. One dog: the grey warhound of Weaver's Alley
+The flow, read from the story file:
 
-The story already has a dog (scene 270): *a lean grey warhound*, one ear in ribbons, caught in razor wire beside her dead Inquisition handler. "Cut it free" sets `companion_hound`; she walks three paces behind, fights the Wardens on a whistle (820/823) and works the quay crowd (891). Then nothing, once the Lark lifts (960). **That dog is Vica.** The tutorial's cheerful guide is what she is once she is fed and trusted; the wire is the worst day of her life.
+1. The Lark crashes in the Waste (965 → 1100), then two land crossings (the wreck → the Sleeper's Face → the White Wells).
+2. At the White Wells the hero chooses a road south (`1000`, `1001` or `1002`, the origin endings; each "Proceed to Chapter 2", each grants the heirloom piece).
+3. **2001, "[CHAPTER 2: SALTMOUTH]":** "Ten days with the salt caravan… On the eleventh morning the dunes gave up, and Saltmouth came up out of the haze."
 
-### The line of her story
+**Saltmouth is the city after the desert.** "Just before reaching the city, almost dead from being lost" is the last leg of those ten days: the caravan's tenth day. The arrival is therefore one new scene **between the origin endings and 2001**, in the id space of chapter 1: **`1005_vica`**. The three origin endings point to it instead of 2001 (links only; their text, flags and banner grants are unchanged), and it leads to 2001, whose opening still reads true (the caravan, ten days, the eleventh morning).
 
-1. **Alster (270):** freed (`companion_hound`), left (`hound_left`) or her handler stripped. Unchanged, except she is a *she*, and the foam is hunger and thirst, not rabies (see the edits).
-2. **The Lark lifts (960):** a new line for a player who freed her: she does not come aboard; "the dog sat at the foot of the gangway and watched the sky". Whoever freed her or not, the Inquisition holds the quay that night.
-3. **Saltmouth:** the Inquisition ships its tracker hounds down the coast; Renn keeps a grey warhound with a ribbon ear in the **rotting hulk** at the Ship-breaker's Yard, chained, used to find "deportees". Her brass collar tag reads VICA.
-4. **The quest:** the player gets her out. A player who freed her in Alster is **recognised**: she answers the dead handler's whistle (the same whistle as 820). Anyone else gets a fresh start with a stranger.
+## 3. The scene `1005_vica` (6 beats; grim, then warm)
 
-Whether the player freed her in Alster or never met her, Vica ends up the same dog in the same camp.
+1. On the tenth day the south wind stood up and the dunes began to move. The camels bolted and the water-skins went with them; I ran after the nearest, and the sand closed behind me like a door.
+2. I do not know how long. The sun was a white coin. Every dune was the same dune and my own tracks were gone. I sat down, because walking in circles cost more than sitting.
+3. *(the turn)* Something moved at the edge of my eye: a dog, sand-coloured and all ribs and ears, tail low. She looked at me the way you look at a decision. She turned, took three steps, and looked back.
+4. I followed because I had nothing left to argue with. She stopped at every crest and waited for me, and at dusk, on the last ridge, she sat.
+5. *(warm)* Below us were the caravan's fires, and past them a line of white walls and a stone giant standing in the sea. The caravan master was shouting a word into the wind: "**Vica!** Vica, the sand's guide; she comes to whoever the storm is about to bury."
+6. She came down the ridge to him, and then she turned and came back to me. Whatever the salt-cutters say about her, she had made up her own mind.
 
-## 3. Where, and the 5-open rule
+For a hero whose sister lived (`lysa_survived`), one extra line: Lysa's voice somewhere behind the wall of sand, calling a name; for one who lost her (`lysa_lost`), none.
 
-**The Ship-breaker's Yard**, in the rotting hulk. The Yard has 4 entries (3 open) today; Vica's quest makes it 4 open, inside "at most 5 open quests per place". It appears after the Wharf's first job is taken (`showIfFlags: hub_2015_dockside`) so it never competes with the opening list.
+### What the player chooses (no way to refuse)
 
-## 4. The quest `q_ch2_vicas_walk` (side, short, a Flag objective)
+All three end with **Vica joining the party** at the choice, then 2001:
 
-1. **Hear:** the yard hands say Renn's men keep a grey tracker in the rotting hulk and never feed her.
-2. **Go in.** Three ways, no fight:
-   - **Pay the guard** (a little gold): she is handed over on a short chain.
-   - **Slip the chain at night:** no gold, a flag that Renn's men may notice (read by nothing else).
-   - **Show the dead handler's whistle** (only if `companion_hound`): she comes at once; the guard does not stop her.
-3. **Read the tag:** VICA. The player says it; she looks up.
-4. **She joins.** The player may fold a paper boat with the Tide-Kin for the handler she lost (optional, in the camp loyalty scene).
-5. **No alignment gate.** The way chosen only sets how she starts: devoted (the whistle, or the paid way), steady, wary.
+- **"Follow her down."** She starts steady.
+- **"Pour what is left in your flask into your hand for her."** She starts devoted (`vica_shared`).
+- **"Tell her to go; you will manage."** She sits down and does not go; she starts wary (`vica_pushed`).
 
-## 5. The small edits to chapter 1 (all text and one callback; no choice, outcome or flag changes)
+Nothing else differs; the starting standing is Core's number, set by these flags. The choices are short lines, no cost, no check.
 
-| Scene | Edit |
+## 4. The warhound of scene 270
+
+The user has not said the two are one dog, so I take the simplest road.
+
+| | Cost |
 |---|---|
-| 270 | "it" → "she" / « elle », EN and FR; "foam gathering at its jaws in a way that argued either rabies or several very bad days" → hunger and thirst (not a disease), so the cheerful guide is not a rabid dog; the callback "I had no name for it yet" → "for her". The `companion_hound` / `hound_left` flags and choices are unchanged. |
-| 300, 820, 823, 891 | "the dog / the hound" → "she"; no text otherwise. |
-| 960 | one new `flag_callback` on `companion_hound`: she does not board; the quay. |
-| 2015 (Saltmouth hub) | one new row for the quest (replaces nothing; the Yard stays at 4 open). |
-| new scenes | `2015_vica` (the hulk), `2015_vica_pay`, `2015_vica_slip`, `2015_vica_whistle`: three to four, one page each. |
-| `hound_left` | read by the new quest only as a recognition line ("I had not looked back"); no other effect. |
+| **Separate dogs (recommended).** The hound of Weaver's Alley stays a one-chapter beat; Vica is a new, sand-coloured desert dog. | **Zero edits to chapter 1** (the "it → she" and rabies edits I had proposed are dropped; 960 untouched). A player may notice two grey dogs, so Vica is sand-coloured, not grey. |
+| **One dog.** The warhound is Vica, found again in the desert. | About **seven text edits** in chapter 1 (270, 300, 820, 823, 891 "it" → "she"; the foam softened; a callback in 960 for a hound left on the quay) and a recognition line in `1005_vica`; the tone must carry a rabid-looking hound to a cheerful guide, and "how did she cross the Waste" needs one mythic line (it could be the point: she is the dog who finds you). |
+
+## 5. The Settings name
+
+The player's own name for her still applies to the tutorial and the walking strip; in the story she is Vica. A clash only shows if the player renamed her ("Rex" in the tutorial, "Vica" in the story). Two cheap options: **(a)** leave it, the story's name is a salt-cutters' name for her; **(b)** a `{dog}` token in story text that reads the Settings name when set (Core, one substitution). Suggested either way: `tut_guide_default_name` = **Vica / Vica** (one string, Core), so the unnamed tutorial dog is already Vica.
 
 ## 6. What Core's entry needs from me
 
-- `companionName`: **Vica** / **Vica**. `recruitQuestId`: `q_ch2_vicas_walk`. `requiredHouseId`: empty. Approval 1 / −1 / 0.
-- A duo technique with Liora: **The Hunt / La Battue**.
-- The default for `tut_guide_default_name` and the unnamed dog: **Vica / Vica** (Core's call, one string). A player who typed another name in Settings keeps it for the tutorial and the strip; the story always says Vica.
+`companionName`: **Vica** / **Vica**; no `recruitQuestId`; `requiredHouseId`: empty; approval 1 / −1 / 0; a duo with Liora: **The Hunt / La Battue**. The join is on the closing choice of `1005_vica` (any of the three).
 
 ### The lines (action beats, EN / FR)
 
@@ -71,22 +70,24 @@ Whether the player freed her in Alster or never met her, Vica ends up the same d
 
 **Walk lines:** "Vica keeps her pace to yours, a hand’s breadth from your knee." / « Vica règle son pas sur le vôtre, à un souffle de votre genou. » · "Vica stops at every corner and waits for you to choose." / « Vica s’arrête à chaque angle et attend que vous choisissiez. » · "Vica sniffs the air and looks at you." / « Vica hume l’air et vous regarde. »
 
-**Remarks** (`companion_remarks.json`): kindApproved "Vica presses against your leg and does not move for a while." / « Vica se serre contre votre jambe et ne bouge plus pendant un moment. » · cruelDisapproved "Vica stops three paces ahead and will not walk on until you look at her." · checkPassed "Vica had already turned her head toward the right door." / « Vica avait déjà tourné la tête vers la bonne porte. » · checkFailed "Vica sat down in the road and looked at you, patiently." / « Vica s’assit en travers du chemin et vous regarda, patiemment. » · approved "A short bark, once, like a lamp being lit." / « Un aboiement bref, une fois, comme une lampe qu’on allume. » · disapproved "Vica turns away to watch the road behind." / « Vica se détourne pour guetter la route derrière vous. »
+**Remarks:** kindApproved "Vica presses against your leg and does not move for a while." / « Vica se serre contre votre jambe et ne bouge plus pendant un moment. » · cruelDisapproved "Vica stops three paces ahead and will not walk on until you look at her." · checkPassed "Vica had already turned her head toward the right door." / « Vica avait déjà tourné la tête vers la bonne porte. » · checkFailed "Vica sat down in the road and looked at you, patiently." / « Vica s’assit en travers du chemin et vous regarda, patiemment. » · approved "A short bark, once, like a lamp being lit." / « Un aboiement bref, une fois, comme une lampe qu’on allume. » · disapproved "Vica turns away to watch the road behind." / « Vica se détourne pour guetter la route derrière vous. »
 
 ### A loyalty scene idea (the camp, once her standing is high)
 
-*The whistle.* At dusk at the cove Vica sits at the water as she sat on the quay. The player whistles the dead handler's call, and instead of coming back she **walks ahead** and stops at the edge of the camp, the guide she was trained to be. It is the first time she leads; the player follows her to the fire. Optional: fold a paper boat for the handler with the Tide-Kin.
+*The wind.* One dusk at the cove the wind comes up off the sand-road. Vica goes still, faces it, and walks out; she comes back with a lost camp child (or a goat), the mirror of the hero's desert. She walks **ahead** of the hero to the fire for the first time.
 
-## 7. Scenes that show Vica beside the hero (for UX, once she is seated)
+## 7. Scenes that show Vica beside the hero (for UX)
 
-None before she joins, except in chapter 1 for a player who freed her.
+None before `1005_vica` (chapter 1 has the separate warhound, if the first option holds). From her arrival: every scene that opens as the **street** or a **room**, the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), in **fights** and the **camp** as any companion. **Absent (to confirm with UX and Core):** the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), and the ending.
 
-- **Chapter 1, only with `companion_hound`:** 270 (when freed), 300 (the street), 820 and 823 (the cells), 891 (the quay). She is absent from 960 (she stays on the quay).
-- **After `q_ch2_vicas_walk`, while she is in the party:** every scene that opens as the **street** or a **room**, and the **page** scenes of chapters 2 to 8 and the hub maps (as the mark's companion), with these **exceptions where she is absent**: the Black Hold cells (800–823; the story is past them, but note the hound is in 820/823 as a flag-only beat), the cathedral ceremony (`4999_standard`, `4999_drawn`), the chair chapel of the Reliquary Quarter (`6010_lysa_*`, `6010_clement_refused`), the Candlehold throne scenes (`7520_*`, `7590_*`), the ending. These are to confirm with UX and Core.
-- In **fights** and the **camp**, her place is the companion's, as for the others.
+## 8. Risks
 
-## 8. Decisions for the user (the wording, not the premise)
+- `1005_vica` is a new scene: `chapter_one_test` (the scene count and the White Wells links), the world map's scene list, the city-plan and the simulator pins (it moves the dice, as every added scene has) all need the usual updates, as with the page turns.
+- The three origin endings change their `next_id` only; their banner grants are untouched.
+- Core: the guarantee that she is in the party when it would be empty, her fight and duo, and the join on a choice. None of it is Narrative's.
 
-1. **Vica is cheerful in the tutorial and starved in the wire.** The edits above make 270 soft enough (hunger, not rabies) for one dog; does the user want her grimmer in Alster and warmer in Saltmouth, as written, or warmer from the start?
-2. **A player who renamed her in Settings:** the story says Vica; the tutorial and the strip keep the player's name. Fine?
-3. **The quest in the rotting hulk, tied to Renn's pound,** or a gentler find (a stray at the Yard, no Renn)?
+## 9. Decisions for the user
+
+1. **One dog or two** (section 4): I recommend two, to keep chapter 1 untouched.
+2. **The choices in the desert** (section 3): three small ways to treat her, which only set how she starts. Fine?
+3. **The Settings name** (section 5): leave it, or a `{dog}` token?
