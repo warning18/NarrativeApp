@@ -4796,6 +4796,88 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Active party is full',
     AppLanguage.fr: 'Le groupe actif est complet',
   },
+  'party_open_seat': {
+    AppLanguage.en: 'Open seat',
+    AppLanguage.fr: 'Place libre',
+  },
+  'party_open_seat_empty': {
+    AppLanguage.en: 'Companions you recruit sit here',
+    AppLanguage.fr: 'Les compagnons recrutés s’assoient ici',
+  },
+  'party_open_seat_bench': {
+    AppLanguage.en: 'Seat one from the bench',
+    AppLanguage.fr: 'Asseyez-en un depuis le banc',
+  },
+  'party_locked_seat': {
+    AppLanguage.en: 'Another seat',
+    AppLanguage.fr: 'Une place de plus',
+  },
+  'party_bench_title': {
+    AppLanguage.en: 'On the bench',
+    AppLanguage.fr: 'Sur le banc',
+  },
+  'party_bench_hint': {
+    AppLanguage.en: 'tap to see them',
+    AppLanguage.fr: 'touchez pour les voir',
+  },
+  'party_still_out_there': {
+    AppLanguage.en: 'Other companions are still out there.',
+    AppLanguage.fr: 'D’autres compagnons sont encore là-bas.',
+  },
+  'companion_guide_dog': {
+    AppLanguage.en: 'Guide dog',
+    AppLanguage.fr: 'Chien guide',
+  },
+  'companion_seat_take': {
+    AppLanguage.en: 'Take a seat',
+    AppLanguage.fr: 'Prendre une place',
+  },
+  'companion_seat_bench': {
+    AppLanguage.en: 'Seated: move to the bench',
+    AppLanguage.fr: 'Assis : mettre sur le banc',
+  },
+  'companion_stays_alone': {
+    AppLanguage.en: 'Stays seated while no one else is.',
+    AppLanguage.fr: 'Reste assis tant que personne d’autre ne l’est.',
+  },
+  'companion_how_they_feel': {
+    AppLanguage.en: 'How they feel about you',
+    AppLanguage.fr: 'Ce qu’ils pensent de vous',
+  },
+  'companion_no_bonus': {
+    AppLanguage.en: 'No bonus yet',
+    AppLanguage.fr: 'Pas encore de bonus',
+  },
+  'companion_leaves_mark': {
+    AppLanguage.en: 'leaves',
+    AppLanguage.fr: 'part',
+  },
+  'companion_bench_note': {
+    AppLanguage.en:
+        'Your choices move it while they are in the party. Benched, they do not see them.',
+    AppLanguage.fr:
+        'Vos choix la font bouger tant qu’ils sont dans le groupe. Sur le banc, ils ne les voient pas.',
+  },
+  'companion_their_die': {
+    AppLanguage.en: 'Their die',
+    AppLanguage.fr: 'Leur dé',
+  },
+  'companion_to_learn': {
+    AppLanguage.en: '{n} to learn',
+    AppLanguage.fr: '{n} à apprendre',
+  },
+  'companion_starter_only': {
+    AppLanguage.en: 'Starter skills only.',
+    AppLanguage.fr: 'Compétences de départ seulement.',
+  },
+  'companion_gear_line': {
+    AppLanguage.en: 'Open their inventory',
+    AppLanguage.fr: 'Ouvrir leur inventaire',
+  },
+  'companion_dice_line': {
+    AppLanguage.en: 'Open their dice',
+    AppLanguage.fr: 'Ouvrir leurs dés',
+  },
   'active_label': {AppLanguage.en: 'Active', AppLanguage.fr: 'Actif'},
   'benched_label': {AppLanguage.en: 'Benched', AppLanguage.fr: 'Sur le banc'},
   'houses_section': {AppLanguage.en: 'Houses', AppLanguage.fr: 'Maisons'},
