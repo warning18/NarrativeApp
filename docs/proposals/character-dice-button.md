@@ -17,10 +17,9 @@ the **+N** of the dice in the bag; **one tap opens the dice screen on that die**
 | **On the corner** | A 34 px round badge on the portrait's lower right corner, ringed in the page colour so it lies on the square; the +N pill on its lower left, over the empty part of the square. | Nothing moves: the header keeps its height. The badge is small (28 px die) and touches the name column's left edge at 320 px. |
 | **Beside it** | A 56 px square in the portrait's own frame, to its right, holding the die at 36 px with the +N on its corner. | The name column loses 64 px; at 320 px the name, "Human Warrior" and the level bar still fit but are tighter, and the header is about 12 px shorter than today (the vitals move up). |
 
-**My lean: on the corner at 412 and the square beside at 320?** No: one placement everywhere is
-simpler. The corner reads as part of the character ("the die this face rolls") and moves nothing;
-the square beside is a bigger tap target (56 px against 34). If a tap target of 34 px is too
-small, take the square beside. Hidden while the dice feature is closed (the Pages tile's
+**My lean: on the corner**, the same at every width. It reads as part of the character ("the die
+this face rolls") and moves nothing. If a 34 px tap target is too small, take the square beside
+(56 px). Either is hidden while the dice feature is closed (the Pages tile's
 `GameFeature.inventory` gate) and for a character with no die.
 
 Build (after the user picks, as v1.596): a small widget in `lib/widgets/` (the badge or the
