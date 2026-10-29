@@ -1,0 +1,114 @@
+1053 Dart files, 339397 lines; 51 over 1000 lines
+ 13700 lib/l10n/app_strings.dart  (0 classes)
+  6710 lib/screens/journey_screen.dart  (21 classes)
+  6132 lib/providers/player_session_provider.dart  (3 classes)
+  4674 lib/screens/playthrough_simulator_screen.dart  (15 classes)
+  4367 lib/screens/story_player_screen.dart  (21 classes)
+  3993 lib/gamedata/db_schema.dart  (1 classes)
+  3980 lib/screens/ship_battle_panel.dart  (9 classes)
+  2735 lib/data/sim_combat.dart  (3 classes)
+  2588 lib/data/factions.dart  (28 classes)
+  2422 lib/widgets/chart_map_painter.dart  (3 classes)
+  2106 lib/combat/ship_battle.dart  (11 classes)
+  2053 test/ux_dice_mock_test.dart  (6 classes)
+  2034 lib/data/offers.dart  (9 classes)
+  1923 lib/screens/voyage_screen.dart  (3 classes)
+  1888 lib/widgets/combat_vfx.dart  (13 classes)
+  1884 lib/data/signs.dart  (14 classes)
+  1830 lib/widgets/sea_battlefield.dart  (9 classes)
+  1768 test/ux_journey_pins_mockups_test.dart  (10 classes)
+  1754 lib/screens/fight/fight_rounds.dart  (1 classes)
+  1708 lib/screens/clans_politics_screen.dart  (15 classes)
+  1578 lib/widgets/offer_dialog.dart  (11 classes)
+  1536 lib/data/chart_story.dart  (0 classes)
+  1461 test/ux_companion_mock_parts.dart  (17 classes)
+  1392 lib/screens/fight/fight_view.dart  (1 classes)
+  1290 lib/screens/race_profession_screen.dart  (10 classes)
+  1278 lib/models/story_node.dart  (8 classes)
+  1266 lib/screens/dice_loadout_screen.dart  (7 classes)
+  1257 lib/screens/expedition_screen.dart  (3 classes)
+  1247 lib/data/room_plan.dart  (7 classes)
+  1201 lib/data/city_plan.dart  (9 classes)
+  1199 test/player_session_provider_test.dart  (0 classes)
+  1199 lib/screens/fight/fight_dice_rules.dart  (2 classes)
+  1196 lib/screens/fight/fight_cards.dart  (1 classes)
+  1192 lib/combat/ship_combat.dart  (12 classes)
+  1179 lib/combat/combat_engine.dart  (7 classes)
+  1120 lib/screens/harbor_screen.dart  (6 classes)
+  1118 lib/data/sim_growth.dart  (3 classes)
+  1117 lib/data/origin_stories.dart  (4 classes)
+  1108 lib/screens/story_graph_screen.dart  (12 classes)
+  1103 lib/widgets/ship_dress.dart  (4 classes)
+  1091 lib/widgets/fight_backdrop.dart  (5 classes)
+  1089 test/combat_engine_test.dart  (1 classes)
+  1089 lib/screens/character_screen.dart  (14 classes)
+  1083 lib/data/politics_events.dart  (10 classes)
+  1081 lib/screens/play_screen.dart  (8 classes)
+  1076 lib/data/autoplay_engine.dart  (3 classes)
+  1071 lib/widgets/journey_world_map.dart  (6 classes)
+  1047 lib/screens/world_map_screen.dart  (7 classes)
+  1029 lib/data/chart_worlds.dart  (0 classes)
+  1019 lib/widgets/moments.dart  (20 classes)
+  1015 lib/screens/story_node_editor_screen.dart  (6 classes)
+
+353 functions over 150 lines
+ 1621 lib/screens/journey_screen.dart:1453 build
+ 1462 lib/data/sim_combat.dart:1021 Function
+ 1084 test/player_session_provider_test.dart:115 main
+ 1058 test/combat_engine_test.dart:31 main
+  808 test/ship_combat_test.dart:4 main
+  796 lib/screens/story_player_screen.dart:236 build
+  792 lib/screens/journey_screen.dart:4292 build
+  713 test/ship_battle_test.dart:99 main
+  682 test/politics_events_test.dart:143 main
+  670 test/ship_dynamics_test.dart:106 main
+  657 lib/screens/shop_detail_screen.dart:55 build
+  622 test/narration_test.dart:34 main
+  590 lib/screens/settings_screen.dart:61 build
+  580 test/story_direction_test.dart:41 main
+  579 lib/screens/journey_screen.dart:6129 build
+  576 test/ship_customisation_test.dart:46 main
+  575 test/camp_roll_buildings_test.dart:119 main
+  570 test/throne_test.dart:146 main
+  549 lib/screens/playthrough_simulator_screen.dart:3895 build
+  548 test/sea_beasts_test.dart:92 main
+  547 test/qa_autoplay_build_test.dart:31 main
+  544 lib/widgets/journey_place.dart:73 paint
+  542 test/origin_stories_test.dart:83 main
+  540 test/ship_hulls_test.dart:40 main
+  499 lib/widgets/chart_map_painter.dart:1918 paint
+  498 test/companion_remarks_test.dart:34 main
+  485 test/land_crossing_test.dart:44 main
+  471 test/dice_sizes_test.dart:258 main
+  470 lib/screens/fight/fight_rounds.dart:183 _confirmRoll
+  466 test/camp_flow_test.dart:103 main
+  457 test/offers_test.dart:197 main
+  455 test/city_plan_record_test.dart:28 main
+  444 test/chapter_one_test.dart:46 main
+  440 lib/screens/story_player_screen.dart:2379 build
+  439 test/sign_fight_hooks_test.dart:38 main
+  434 test/land_rulers_test.dart:68 main
+  431 lib/data/room_plan.dart:275 _lay
+  430 test/signs_test.dart:114 main
+  429 test/risky_gifts_test.dart:181 main
+  421 lib/screens/race_profession_screen.dart:783 build
+  417 test/factions_test.dart:58 main
+  416 test/qa_harbour_crossing_test.dart:42 main
+  415 test/elevenlabs_voice_test.dart:82 main
+  415 lib/screens/fight/fight_rounds.dart:1205 _takeEnemyTurn
+  414 test/detour_engine_test.dart:39 main
+  411 lib/screens/inventory_screen.dart:365 build
+  407 test/combat_engine_test.dart:454 group
+  407 lib/screens/world_map_screen.dart:298 build
+  405 test/geography_widgets_test.dart:82 main
+  399 test/offer_dialog_test.dart:191 main
+  391 test/people_codex_test.dart:223 main
+  390 test/ux_dice_mock_test.dart:1323 paint
+  385 test/clan_affinity_test.dart:122 main
+  378 test/world_map_test.dart:44 main
+  375 test/clans_politics_screen_test.dart:110 main
+  374 test/combat_engine_test.dart:79 group
+  371 test/vfx_power_test.dart:16 main
+  370 test/ux_map_first_mock_test.dart:338 main
+  370 test/contracts_test.dart:34 main
+  369 test/dice_rules_test.dart:34 main
