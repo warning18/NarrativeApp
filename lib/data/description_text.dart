@@ -16,7 +16,7 @@ const Map<String, List<String>> placeholderTextFields = {
 
 /// The numbers record [id] of table [schemaId] offers its texts (see
 /// [placeholderTextFields]); for item_sets, [record] is one bonus tier.
-Map<String, num> placeholderValuesFor(
+Map<String, num> _placeholderValuesFor(
     String schemaId, String id, Map<String, dynamic> record) {
   switch (schemaId) {
     case 'spells':
@@ -50,7 +50,7 @@ Map<String, dynamic> withResolvedPlaceholders(
       return record;
     }
     changed = true;
-    final values = placeholderValuesFor(schemaId, id, record);
+    final values = _placeholderValuesFor(schemaId, id, record);
     return {
       ...record,
       for (final field in fields)
@@ -85,7 +85,7 @@ List<String> unresolvedPlaceholdersIn(
   final fields = placeholderTextFields[schemaId] ?? const [];
   final found = <String>[];
   void check(String id, Map<String, dynamic> record) {
-    final values = placeholderValuesFor(schemaId, id, record);
+    final values = _placeholderValuesFor(schemaId, id, record);
     for (final field in fields) {
       if (record[field] case final String text) {
         for (final name in unresolvedPlaceholders(text, values)) {

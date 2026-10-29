@@ -7,16 +7,16 @@
 //   (or its last place), the change waits ([PoliticsState.crisis]) and a
 //   scene comes on the next road at rest. Defend it (a fight with the
 //   attacker's hunter: won, the seat holds, the attacker loses
-//   [defendAttackerPower] power, your clan gains [defendClanPower] and
+//   [_defendAttackerPower] power, your clan gains [_defendClanPower] and
 //   [defendStanding] standing; lost, you may still pay or refuse), pay
-//   ([crisisGoldPerChapter] gold a chapter: the attacker takes a lesser
-//   place of your clan instead, when it has one; or [crisisMaterialsPrice]
+//   ([_crisisGoldPerChapter] gold a chapter: the attacker takes a lesser
+//   place of your clan instead, when it has one; or [_crisisMaterialsPrice]
 //   in timber and stone, the same), or refuse
-//   ([refuseStanding] standing: the seat falls).
+//   ([_refuseStanding] standing: the seat falls).
 // - The fall: your main clan left with no place (crisis or not), a scene
 //   asks you to choose. Bend the knee: your standing with the fallen clan
 //   moves to the winner (sworn to it when it was Sworn), the fallen clan
-//   drops to Resented, and the winner takes a tithe ([titheShare] of your
+//   drops to Resented, and the winner takes a tithe ([_titheShare] of your
 //   gold). Or stay of the fallen clan: no new oath and no patron's
 //   stats, its gifts kept, the winner your nemesis, until you raise a
 //   banner of your own (the Open Hand's: the fallen clan pledges to your
@@ -34,23 +34,23 @@ import 'geography.dart';
 import 'patron_stats.dart' show statPatron;
 import 'rival_hunters.dart' show rivalHunterPool;
 
-const int defendAttackerPower = 10;
-const int defendClanPower = 5;
+const int _defendAttackerPower = 10;
+const int _defendClanPower = 5;
 const int defendStanding = 5;
-const int refuseStanding = -10;
-const int crisisGoldPerChapter = 40;
-const double titheShare = 0.2;
+const int _refuseStanding = -10;
+const int _crisisGoldPerChapter = 40;
+const double _titheShare = 0.2;
 
 /// The crisis paid in materials instead of gold (the clan's buildings
 /// mended): its item ids and counts.
-const Map<String, int> crisisMaterialsPrice = {
+const Map<String, int> _crisisMaterialsPrice = {
   'material_timber': 3,
   'material_cut_stone': 2,
 };
 
-/// Whether [materials] (counts by item id) hold [crisisMaterialsPrice].
-bool holdsCrisisMaterials(Map<String, int> materials) =>
-    crisisMaterialsPrice.entries
+/// Whether [materials] (counts by item id) hold [_crisisMaterialsPrice].
+bool _holdsCrisisMaterials(Map<String, int> materials) =>
+    _crisisMaterialsPrice.entries
         .every((e) => (materials[e.key] ?? 0) >= e.value);
 
 /// The standing the fallen clan drops to when you bend the knee: Resented.
@@ -136,7 +136,7 @@ String _name(ClanData data, String id, bool fr) =>
 
 /// The crisis scene for [state]'s crisis (Narrative's 3), or null for
 /// none: Defend (a fight with a hunter of the attacker, [enemies] for
-/// [chapter]), Pay ([crisisGoldPerChapter] a chapter, when [gold] holds
+/// [chapter]), Pay ([_crisisGoldPerChapter] a chapter, when [gold] holds
 /// it) and Refuse.
 StoryNode? buildCrisisNode(
   PoliticsState state, {
@@ -157,12 +157,12 @@ StoryNode? buildCrisisNode(
       .replaceAll('{clan}', _name(data, clan, fr))
       .replaceAll('{attacker}', _name(data, attacker, fr))
       .replaceAll('{seat}', place.nameFor(fr))
-      .replaceAll('{gold}', '${crisisGoldPerChapter * max(1, chapter)}');
+      .replaceAll('{gold}', '${_crisisGoldPerChapter * max(1, chapter)}');
   // The attacker's hunter, or any of its fighters met on the roads.
   final pool = rivalHunterPool(
       enemies: enemies, clanId: attacker, chapter: max(chapter, 3));
   final defender = pool.isEmpty ? null : pool[random.nextInt(pool.length)];
-  final int price = crisisGoldPerChapter * (chapter < 1 ? 1 : chapter);
+  final int price = _crisisGoldPerChapter * (chapter < 1 ? 1 : chapter);
   // A lesser place the attacker takes when paid off, if the clan has one.
   final lesser =
       placesOf(clan, geography, state).where((p) => p != placeId).toList();
@@ -181,7 +181,7 @@ StoryNode? buildCrisisNode(
           triggerEnemyId: defender,
           politics: StoryPolitics(
             standing: {clan: defendStanding},
-            power: {clan: defendClanPower, attacker: -defendAttackerPower},
+            power: {clan: _defendClanPower, attacker: -_defendAttackerPower},
             settleCrisis: 'held',
           ),
         ),
@@ -196,13 +196,13 @@ StoryNode? buildCrisisNode(
             settleCrisis: 'paid',
           ),
         ),
-      if (holdsCrisisMaterials(materials))
+      if (_holdsCrisisMaterials(materials))
         StoryChoice(
           text: 'Send timber and stone',
           textFr: 'Envoyer bois et pierre',
           nextId: '',
           grantMaterials: {
-            for (final e in crisisMaterialsPrice.entries) e.key: -e.value,
+            for (final e in _crisisMaterialsPrice.entries) e.key: -e.value,
           },
           politics: StoryPolitics(
             control: {if (lesser.isNotEmpty) lesser.last: attacker},
@@ -214,7 +214,7 @@ StoryNode? buildCrisisNode(
         textFr: 'Refuser',
         nextId: '',
         politics: StoryPolitics(
-          standing: {clan: refuseStanding},
+          standing: {clan: _refuseStanding},
           control: {placeId: attacker},
           settleCrisis: 'refused',
         ),
@@ -224,7 +224,7 @@ StoryNode? buildCrisisNode(
 }
 
 /// The fall's scene for [state] (Narrative's 4b), or null when no fall
-/// waits: bend the knee to the winner (its tithe, [titheShare] of [gold])
+/// waits: bend the knee to the winner (its tithe, [_titheShare] of [gold])
 /// or stay of the fallen clan.
 StoryNode? buildFallNode(
   PoliticsState state, {
@@ -254,7 +254,7 @@ StoryNode? buildFallNode(
           text: fill('Bend the knee to {winner}', false),
           textFr: fill('Plier le genou devant {winner}', true),
           nextId: '',
-          goldMod: -(gold * titheShare).floor(),
+          goldMod: -(gold * _titheShare).floor(),
           politics: StoryPolitics(bendKnee: fall.winner),
         ),
       StoryChoice(

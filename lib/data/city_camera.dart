@@ -8,10 +8,10 @@ import 'package:flutter/widgets.dart' show Offset;
 
 /// How much closer than the district's own frame the camera stands after
 /// an arrival: 25% in (map-first.md, "the arrival").
-const double arrivalZoomIn = 1.25;
+const double _arrivalZoomIn = 1.25;
 
 /// How long the arrival's ease takes.
-const Duration arrivalEase = Duration(milliseconds: 600);
+const Duration _arrivalEase = Duration(milliseconds: 600);
 
 /// The share of the chart's closest zoom from which it counts as fully
 /// zoomed (the list of places shows).
@@ -26,7 +26,7 @@ class CityCameraShot {
     this.districtId,
     this.zoom = 1,
     this.centre,
-    this.duration = arrivalEase,
+    this.duration = _arrivalEase,
     this.jump = false,
     this.full = false,
   });
@@ -37,7 +37,7 @@ class CityCameraShot {
       {Offset? partyAt, bool jump = false})
       : this(
             districtId: districtId,
-            zoom: arrivalZoomIn,
+            zoom: _arrivalZoomIn,
             centre: partyAt,
             jump: jump);
 

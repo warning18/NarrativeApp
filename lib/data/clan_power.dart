@@ -18,12 +18,12 @@
 //     claim, from no one or from a weaker holder;
 //   - at war (relation step [warStep] or below), a clan [warLead] stronger
 //     takes a place of the other's, its seat last ([seatLead] stronger;
-//     never a [guardedSeatClans] seat),
+//     never a [_guardedSeatClans] seat),
 //     gaining [warSpoils] power while the loser loses [warLoss];
 //   - politics events and story choices give places (`control`).
 //   Every change drops the old and new holders' relation a step and tells
 //   the news. A clan that loses its last place has fallen: its power goes
-//   to 0, its survivors regroup ([fallenRegroup] a chapter, up to
+//   to 0, its survivors regroup ([_fallenRegroup] a chapter, up to
 //   [fallenRegroupCap]), and it rises again by taking a place (its seat
 //   first, unless the holder is [seatLead] stronger).
 //
@@ -115,23 +115,23 @@ const int seatWarToChapter = 7;
 /// the Penitents' Wall of Names (wave 18 step 2: their first land, and
 /// chapter 3's scenes stand there). A story choice or an event may still
 /// give it. Empty the set to lift the guard.
-const Set<String> guardedSeatClans = {'dominion', 'penitents'};
+const Set<String> _guardedSeatClans = {'dominion', 'penitents'};
 
 /// Whether [clanId]'s seat is kept from the chapter's turn
-/// ([guardedSeatClans]).
-bool seatGuarded(String clanId) => guardedSeatClans.contains(clanId);
+/// ([_guardedSeatClans]).
+bool seatGuarded(String clanId) => _guardedSeatClans.contains(clanId);
 const int warLoss = 8;
 
 /// What a fallen clan's survivors win back at each chapter's turn, up to
 /// [fallenRegroupCap]: just short of Rising, from where it may take its
 /// seat again (claimsAllowed), so rising again takes the character's help
 /// (a gift, a quest, a choice).
-const int fallenRegroup = 5;
+const int _fallenRegroup = 5;
 const int fallenRegroupCap = 20;
 
 /// The relation step from which the nemesis fights your patron over
 /// places (3: Hostile).
-const int nemesisWarStep = 3;
+const int _nemesisWarStep = 3;
 
 PowerTier powerTierFor(int power) => power >= ascendantPower
     ? PowerTier.ascendant
@@ -345,7 +345,7 @@ PoliticsState givePlace(
   }
   final variant = placeId.codeUnits.fold(0, (a, b) => a + b) % 2;
   String told(AppLanguage language) => cause == 'influence'
-      ? districtFlippedNews(language,
+      ? _districtFlippedNews(language,
           district: place.nameFor(language == AppLanguage.fr),
           to: data.faction(to),
           from: data.faction(from))
@@ -446,10 +446,10 @@ PoliticsState givePlace(
     if (!hasPower(id, data)) continue;
     var value = powerOf(next, id, data);
     if (next.fallen.contains(id)) {
-      // The survivors regroup ([fallenRegroup]).
+      // The survivors regroup ([_fallenRegroup]).
       powers[id] = value >= fallenRegroupCap
           ? value
-          : min(fallenRegroupCap, value + fallenRegroup);
+          : min(fallenRegroupCap, value + _fallenRegroup);
       continue;
     }
     value += holdingPower * held.values.where((h) => h == id).length;
@@ -531,7 +531,7 @@ PoliticsState givePlace(
 
   // Wars: the stronger takes a place, its claims first, the seat last.
   // The nemesis (nemesis.dart) goes first, and wars on your patron from
-  // Hostile ([nemesisWarStep]); not the story's own (the Dominion as a
+  // Hostile ([_nemesisWarStep]); not the story's own (the Dominion as a
   // game opens), which wars as any clan.
   final nemesis = next.isStoryNemesis ? '' : next.nemesis;
   final patron = statPatron(next);
@@ -548,7 +548,8 @@ PoliticsState givePlace(
     ]) {
       if (other == id || !free(other)) continue;
       final step = next.relationStep(id, other, data);
-      final limit = id == nemesis && other == patron ? nemesisWarStep : warStep;
+      final limit =
+          id == nemesis && other == patron ? _nemesisWarStep : warStep;
       if (step == null || step > limit) continue;
       if (powerOf(next, id, data) - powerOf(next, other, data) < warLead) {
         continue;
@@ -663,7 +664,7 @@ String territoryNews(
 
 /// The news of a district taken by influence (wave 18): app_strings'
 /// `district_flipped`, with {district}, {clan} ([to]) and {from}.
-String districtFlippedNews(
+String _districtFlippedNews(
   AppLanguage language, {
   required String district,
   required Faction? to,

@@ -198,7 +198,7 @@ Map<String, dynamic> zonesWithWrittenCounts(
 /// The material a discovery turns up: the step's hint when it is one of
 /// [rewardMaterials] (the zone's), else one of those at random; null for a
 /// zone that names none.
-String? discoveryMaterialFor(
+String? _discoveryMaterialFor(
   WrittenStep step,
   Map<String, int> rewardMaterials,
   Random random,
@@ -213,7 +213,7 @@ String? discoveryMaterialFor(
 /// follows (SubNodeEngine.filterPackPool, maxPackSizeFor): two or more only
 /// from the pack tier (`packEligible`), at most the chapter's pack size; a
 /// heavy fights alone. Foes [enemies] doesn't know are dropped.
-List<String> writtenFoes(
+List<String> _writtenFoes(
   List<String> ids, {
   required Map<String, dynamic> enemies,
   required int chapter,
@@ -246,7 +246,7 @@ ExpeditionStep buildWrittenStep(
   final dc = SubNodeEngine.detourCheckDc(chapter);
   final heal = SubNodeEngine.restHealFor(chapter);
   final found = step.type == 'discovery'
-      ? discoveryMaterialFor(step, rewardMaterials, random)
+      ? _discoveryMaterialFor(step, rewardMaterials, random)
       : null;
   final choices = step.choices.isEmpty
       ? [
@@ -260,7 +260,7 @@ ExpeditionStep buildWrittenStep(
   final nodes = <StoryChoice>[];
   final outcomes = <StepOutcome>[];
   for (final (i, choice) in choices.indexed) {
-    final foes = writtenFoes(choice.fight, enemies: enemies, chapter: chapter);
+    final foes = _writtenFoes(choice.fight, enemies: enemies, chapter: chapter);
     final first = i == 0;
     final gold = (choice.outcome?.gold ?? 0) +
         (choice.success?.gold ?? 0) +
