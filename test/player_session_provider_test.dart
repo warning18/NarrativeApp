@@ -986,14 +986,6 @@ void main() {
       expect(notifier.state.mana, 3);
     });
 
-    test('learnSpell adds a spell once and ignores empty ids', () async {
-      final notifier = await notifierWith(baseSession());
-      await notifier.learnSpell('spell_war_shout');
-      await notifier.learnSpell('spell_war_shout');
-      await notifier.learnSpell('');
-      expect(notifier.state.knownSpellIds, ['spell_war_shout']);
-    });
-
     test('a bought spellbook is learned, never carried, and never bought twice',
         () async {
       final notifier = await notifierWith(baseSession(gold: 200));

@@ -99,8 +99,7 @@
     "rank": 3,
     "title": "Inquisitor-General",
     "title_fr": "Inquisiteur général",
-    "stanceLeader": "scheming",
-    "stancePlayer": "hostile"
+    "stanceLeader": "scheming"
   },
   "cassian_oriel": {
     "npcID": "cassian_oriel",
@@ -178,8 +177,7 @@
     "rank": 2,
     "title": "Regent of the Lantern",
     "title_fr": "Régent de la Lanterne",
-    "stanceLeader": "scheming",
-    "stancePlayer": "hostile"
+    "stanceLeader": "scheming"
   },
   "vane_quartermaster": {
     "npcID": "vane_quartermaster",
@@ -438,8 +436,7 @@
     "rank": 9,
     "title": "Overseer, Inquisition customs",
     "title_fr": "Douanier de l’Inquisition",
-    "stanceLeader": "wavering",
-    "stancePlayer": "wary"
+    "stanceLeader": "wavering"
   },
   "nadira": {
     "npcID": "nadira",
@@ -633,8 +630,7 @@
     "rank": 5,
     "title": "Eldest Wickwarden",
     "title_fr": "Aînée des Garde-Mèches",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "hesk_morrow": {
     "npcID": "hesk_morrow",
@@ -724,8 +720,7 @@
     "rank": 4,
     "title": "Grand Master of the Order",
     "title_fr": "Grand Maître de l’Ordre",
-    "stanceLeader": "scheming",
-    "stancePlayer": "wary"
+    "stanceLeader": "scheming"
   },
   "old_hesk": {
     "npcID": "old_hesk",
@@ -938,8 +933,7 @@
     "rank": 3,
     "title": "First Keyholder",
     "title_fr": "Première Porte-Clef",
-    "stanceLeader": "loyal",
-    "stancePlayer": "neutral"
+    "stanceLeader": "loyal"
   },
   "chart_keeper": {
     "npcID": "chart_keeper",
@@ -1128,8 +1122,7 @@
     "rank": 5,
     "title": "Acolyte of the Quarter’s shrine",
     "title_fr": "Acolyte du sanctuaire du Quartier",
-    "stanceLeader": "wavering",
-    "stancePlayer": "open"
+    "stanceLeader": "wavering"
   },
   "high_warden": {
     "npcID": "high_warden",
@@ -1195,8 +1188,7 @@
     "rank": 7,
     "title": "Commander of the Crusade",
     "title_fr": "Commandant de la Croisade",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "rat_matriarch": {
     "npcID": "rat_matriarch",
@@ -1925,8 +1917,7 @@
     "rank": 5,
     "title": "Master of the Scaffolders",
     "title_fr": "Maître des Échafaudeurs",
-    "stanceLeader": "scheming",
-    "stancePlayer": "open"
+    "stanceLeader": "scheming"
   },
   "imeh": {
     "npcID": "imeh",
@@ -2095,8 +2086,7 @@
     "rank": 6,
     "title": "Healer of the Barkbleeders",
     "title_fr": "Guérisseur Saigne-Écorce",
-    "stanceLeader": "wavering",
-    "stancePlayer": "open"
+    "stanceLeader": "wavering"
   },
   "orsabet_vell": {
     "npcID": "orsabet_vell",
@@ -2183,8 +2173,7 @@
     "rank": 6,
     "title": "Candlebearer widow",
     "title_fr": "Veuve porte-chandelle",
-    "stanceLeader": "wavering",
-    "stancePlayer": "open"
+    "stanceLeader": "wavering"
   },
   "ghrem_stonebrow": {
     "npcID": "ghrem_stonebrow",
@@ -2353,8 +2342,7 @@
     "rank": 7,
     "title": "Brig-Born salvager",
     "title_fr": "Récupérateur des Enfants du Brick",
-    "stanceLeader": "wavering",
-    "stancePlayer": "open"
+    "stanceLeader": "wavering"
   },
   "keeper_blind_beggar_stall": {
     "npcID": "keeper_blind_beggar_stall",
@@ -2450,8 +2438,7 @@
     "rank": 8,
     "title": "Fence of the Tide Cellar",
     "title_fr": "Receleur de la Cave des Marées",
-    "stanceLeader": "loyal",
-    "stancePlayer": "neutral"
+    "stanceLeader": "loyal"
   },
   "keeper_weaponsmith_forge": {
     "npcID": "keeper_weaponsmith_forge",
@@ -2503,8 +2490,7 @@
     "rank": 3,
     "title": "Master smith",
     "title_fr": "Maître forgeron",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "keeper_shieldwrights_hall": {
     "npcID": "keeper_shieldwrights_hall",
@@ -2556,8 +2542,7 @@
     "rank": 4,
     "title": "Master of the Quarrymen",
     "title_fr": "Maîtresse des Carriers",
-    "stanceLeader": "wavering",
-    "stancePlayer": "open"
+    "stanceLeader": "wavering"
   },
   "keeper_arcane_bazaar": {
     "npcID": "keeper_arcane_bazaar",
@@ -2646,8 +2631,7 @@
     "rank": 5,
     "title": "Apothecary of the Courts",
     "title_fr": "Apothicaire des Cours",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "keeper_smugglers_vault": {
     "npcID": "keeper_smugglers_vault",
@@ -2699,8 +2683,7 @@
     "rank": 4,
     "title": "Second Keyholder, keeper of the Vault",
     "title_fr": "Second Porte-Clef, garde du Coffre",
-    "stanceLeader": "wavering",
-    "stancePlayer": "neutral"
+    "stanceLeader": "wavering"
   },
   "keeper_hammersmith_forge": {
     "npcID": "keeper_hammersmith_forge",
@@ -2752,8 +2735,7 @@
     "rank": 6,
     "title": "Master of the Anvil-Deaf",
     "title_fr": "Maîtresse des Sourds de l’Enclume",
-    "stanceLeader": "loyal",
-    "stancePlayer": "neutral"
+    "stanceLeader": "loyal"
   },
   "keeper_arcane_academy": {
     "npcID": "keeper_arcane_academy",
@@ -2805,8 +2787,7 @@
     "rank": 8,
     "title": "Magister of the Cantors, keeper of the tithe",
     "title_fr": "Magister des Chantres, gardien de la dîme",
-    "stanceLeader": "loyal",
-    "stancePlayer": "wary"
+    "stanceLeader": "loyal"
   },
   "keeper_sharpweave_den": {
     "npcID": "keeper_sharpweave_den",
@@ -2858,8 +2839,7 @@
     "rank": 6,
     "title": "Keeper of the Whisper Ledger",
     "title_fr": "Garde du Registre des Murmures",
-    "stanceLeader": "scheming",
-    "stancePlayer": "wary"
+    "stanceLeader": "scheming"
   },
   "keeper_ossuary_relics": {
     "npcID": "keeper_ossuary_relics",
@@ -2894,8 +2874,7 @@
     "rank": 6,
     "title": "Trader of relics",
     "title_fr": "Marchand de reliques",
-    "stanceLeader": "scheming",
-    "stancePlayer": "neutral"
+    "stanceLeader": "scheming"
   },
   "keeper_last_lantern": {
     "npcID": "keeper_last_lantern",
@@ -2942,8 +2921,7 @@
     "rank": 3,
     "title": "Keeper of the Last Lantern",
     "title_fr": "Gardienne de la Dernière Lanterne",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "keeper_anchorage_chandlery": {
     "npcID": "keeper_anchorage_chandlery",
@@ -3215,8 +3193,7 @@
     "rank": 10,
     "title": "Courier of the crape",
     "title_fr": "Courrier du crêpe",
-    "stanceLeader": "loyal",
-    "stancePlayer": "neutral"
+    "stanceLeader": "loyal"
   },
   "frozen_pilgrim": {
     "npcID": "frozen_pilgrim",
@@ -3371,8 +3348,7 @@
     "rank": 1,
     "title": "Voice of the First Lantern",
     "title_fr": "Voix de la Première Lanterne",
-    "stanceLeader": "",
-    "stancePlayer": "unseen"
+    "stanceLeader": ""
   },
   "orsolya_keld": {
     "npcID": "orsolya_keld",
@@ -3403,8 +3379,7 @@
     "rank": 6,
     "title": "High Lantern-Bearer, Keeper of the List",
     "title_fr": "Haute Porte-Lanterne, Gardienne du Registre",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "joss_harrow": {
     "npcID": "joss_harrow",
@@ -3435,8 +3410,7 @@
     "rank": 1,
     "title": "Warden-in-Chief",
     "title_fr": "Garde-en-chef",
-    "stanceLeader": "",
-    "stancePlayer": "wary"
+    "stanceLeader": ""
   },
   "edda_grey": {
     "npcID": "edda_grey",
@@ -3467,8 +3441,7 @@
     "rank": 2,
     "title": "Watch-Captain of the Ridge",
     "title_fr": "Capitaine du Guet de la Crête",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "halvard": {
     "npcID": "halvard",
@@ -3499,8 +3472,7 @@
     "rank": 4,
     "title": "Spearman of the Last Watch",
     "title_fr": "Lancier de la Dernière Veille",
-    "stanceLeader": "wavering",
-    "stancePlayer": "hostile"
+    "stanceLeader": "wavering"
   },
   "ysel": {
     "npcID": "ysel",
@@ -3531,8 +3503,7 @@
     "rank": 5,
     "title": "Candlebearer, keeper of the count",
     "title_fr": "Porte-Chandelle, gardienne du compte",
-    "stanceLeader": "loyal",
-    "stancePlayer": "wary"
+    "stanceLeader": "loyal"
   },
   "cade_rowan": {
     "npcID": "cade_rowan",
@@ -3563,8 +3534,7 @@
     "rank": 7,
     "title": "Watch-Lieutenant",
     "title_fr": "Lieutenant du Guet",
-    "stanceLeader": "scheming",
-    "stancePlayer": "neutral"
+    "stanceLeader": "scheming"
   },
   "tam_lamp": {
     "npcID": "tam_lamp",
@@ -3595,8 +3565,7 @@
     "rank": 8,
     "title": "Lamp-boy of the ridge post",
     "title_fr": "Garçon de lampe du poste de la crête",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "odalys_fenn": {
     "npcID": "odalys_fenn",
@@ -3627,8 +3596,7 @@
     "rank": 1,
     "title": "Speaker of the Table",
     "title_fr": "Oratrice de la Table",
-    "stanceLeader": "",
-    "stancePlayer": "wary"
+    "stanceLeader": ""
   },
   "hollis_reck": {
     "npcID": "hollis_reck",
@@ -3659,8 +3627,7 @@
     "rank": 2,
     "title": "Master of the Charter",
     "title_fr": "Maître de la Charte",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "corin_ashdown": {
     "npcID": "corin_ashdown",
@@ -3691,8 +3658,7 @@
     "rank": 7,
     "title": "Tally-Master of the Table",
     "title_fr": "Maître des Comptes de la Table",
-    "stanceLeader": "scheming",
-    "stancePlayer": "wary"
+    "stanceLeader": "scheming"
   },
   "kit_emberly": {
     "npcID": "kit_emberly",
@@ -3723,8 +3689,7 @@
     "rank": 8,
     "title": "Coal-runner of Cinder Row",
     "title_fr": "Porteur de charbon de la Rue des Braises",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "heron_queen": {
     "npcID": "heron_queen",
@@ -3755,8 +3720,7 @@
     "rank": 1,
     "title": "The Heron Queen",
     "title_fr": "La Reine-Héron",
-    "stanceLeader": "",
-    "stancePlayer": "unseen"
+    "stanceLeader": ""
   },
   "herons_hand": {
     "npcID": "herons_hand",
@@ -3787,8 +3751,7 @@
     "rank": 2,
     "title": "The Queen’s Hand",
     "title_fr": "La Main de la Reine",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "hesper_mere": {
     "npcID": "hesper_mere",
@@ -3819,8 +3782,7 @@
     "rank": 3,
     "title": "Seneschal of Favours",
     "title_fr": "Sénéchale des Faveurs",
-    "stanceLeader": "loyal",
-    "stancePlayer": "wary"
+    "stanceLeader": "loyal"
   },
   "perrin_mere": {
     "npcID": "perrin_mere",
@@ -3851,8 +3813,7 @@
     "rank": 4,
     "title": "Heir of the House of Mere",
     "title_fr": "Héritière de la Maison de Mere",
-    "stanceLeader": "scheming",
-    "stancePlayer": "neutral"
+    "stanceLeader": "scheming"
   },
   "wen_wake": {
     "npcID": "wen_wake",
@@ -3883,8 +3844,7 @@
     "rank": 7,
     "title": "Guide of the Heron’s Wake",
     "title_fr": "Guide du Sillage du Héron",
-    "stanceLeader": "loyal",
-    "stancePlayer": "wary"
+    "stanceLeader": "loyal"
   },
   "sedge_returned": {
     "npcID": "sedge_returned",
@@ -3915,8 +3875,7 @@
     "rank": 8,
     "title": "One of the Returned",
     "title_fr": "Un des Revenus",
-    "stanceLeader": "loyal",
-    "stancePlayer": "wary"
+    "stanceLeader": "loyal"
   },
   "tamsin_brask": {
     "npcID": "tamsin_brask",
@@ -3947,8 +3906,7 @@
     "rank": 1,
     "title": "First Captain",
     "title_fr": "Première Capitaine",
-    "stanceLeader": "",
-    "stancePlayer": "wary"
+    "stanceLeader": ""
   },
   "mireille_sable": {
     "npcID": "mireille_sable",
@@ -3979,8 +3937,7 @@
     "rank": 2,
     "title": "Collector of the Syndicate",
     "title_fr": "Percepteuse du Syndicat",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "brine_jack": {
     "npcID": "brine_jack",
@@ -4011,8 +3968,7 @@
     "rank": 5,
     "title": "Captain of the Wreckers",
     "title_fr": "Capitaine des Naufrageurs",
-    "stanceLeader": "scheming",
-    "stancePlayer": "hostile"
+    "stanceLeader": "scheming"
   },
   "aldith_crowe": {
     "npcID": "aldith_crowe",
@@ -4043,8 +3999,7 @@
     "rank": 1,
     "title": "Eldest of the Ashen Penitents",
     "title_fr": "Aînée des Pénitents de Cendre",
-    "stanceLeader": "",
-    "stancePlayer": "wary"
+    "stanceLeader": ""
   },
   "ash_confessor": {
     "npcID": "ash_confessor",
@@ -4075,8 +4030,7 @@
     "rank": 2,
     "title": "The Ash Confessor",
     "title_fr": "La Confesseuse de Cendre",
-    "stanceLeader": "loyal",
-    "stancePlayer": "hostile"
+    "stanceLeader": "loyal"
   },
   "masked_penitent": {
     "npcID": "masked_penitent",
@@ -4107,8 +4061,7 @@
     "rank": 3,
     "title": "The Masked Penitent",
     "title_fr": "Le Pénitent masqué",
-    "stanceLeader": "wavering",
-    "stancePlayer": "hostile"
+    "stanceLeader": "wavering"
   },
   "anselm_voe": {
     "npcID": "anselm_voe",
@@ -4139,8 +4092,7 @@
     "rank": 4,
     "title": "Knight of the Spire-Fallen",
     "title_fr": "Chevalier des Déchus de la Flèche",
-    "stanceLeader": "scheming",
-    "stancePlayer": "neutral"
+    "stanceLeader": "scheming"
   },
   "odile_ember": {
     "npcID": "odile_ember",
@@ -4171,8 +4123,7 @@
     "rank": 7,
     "title": "Ember Sister, nurse of the Quarter",
     "title_fr": "Sœur de Braise, infirmière du Quartier",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   },
   "wick_sweeper": {
     "npcID": "wick_sweeper",
@@ -4203,7 +4154,6 @@
     "rank": 8,
     "title": "Ash-sweeper of the Wall of Names",
     "title_fr": "Balayeur de cendre du Mur des Noms",
-    "stanceLeader": "loyal",
-    "stancePlayer": "open"
+    "stanceLeader": "loyal"
   }
 }

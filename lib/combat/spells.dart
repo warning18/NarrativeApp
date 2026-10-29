@@ -197,16 +197,6 @@ class SpellSpec {
       language == AppLanguage.fr && battleMessageFr.isNotEmpty
           ? battleMessageFr
           : battleMessage;
-
-  /// True for a spell aimed at enemies (one or all).
-  bool get hitsEnemies =>
-      target == SpellTarget.enemy || target == SpellTarget.allEnemies;
-
-  /// True when the caster has to pick exactly one enemy.
-  bool get needsEnemyPick => target == SpellTarget.enemy;
-
-  /// True when the caster has to pick exactly one party member.
-  bool get needsAllyPick => target == SpellTarget.ally;
 }
 
 /// Parses a whole spells.json table.

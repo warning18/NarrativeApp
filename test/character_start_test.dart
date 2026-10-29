@@ -19,43 +19,60 @@ void main() {
   final races = _json('races');
   final professions = _json('professions');
 
-  test('a dwarf warrior starts at 33 HP, 2 damage, 1 armour', () {
-    final t = startingTotals(
-        defaults: defaults,
-        race: races['dwarf'] as Map<String, dynamic>,
-        profession: professions['warrior'] as Map<String, dynamic>);
-    expect(t.maxHealth, 33);
-    expect(t.baseDamage, 2);
-    expect(t.baseArmor, 1);
-    expect(t.gold, 100);
-    expect(t.abilities, {'str_abbrev': 6, 'con_abbrev': 6, 'per_abbrev': 1});
-  });
-
-  test('no race and profession start below 0 armour (an Orc Mage: 0, not -4)',
-      () async {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    for (final MapEntry(key: raceId, value: race) in races.entries) {
-      if (race is! Map<String, dynamic>) continue;
-      for (final MapEntry(key: professionId, value: profession)
-          in professions.entries) {
-        if (profession is! Map<String, dynamic>) continue;
-        final t = startingTotals(
-            defaults: defaults, race: race, profession: profession);
-        expect(t.baseArmor, greaterThanOrEqualTo(0),
-            reason: '$raceId $professionId');
-      }
-    }
-    // And the game itself starts them there.
+  Future<PlayerSessionNotifier> startGame(
+      String raceId, String professionId) async {
     SharedPreferences.setMockInitialValues(
         {'gamedb_game_config': jsonEncode(defaults)});
     final notifier = PlayerSessionNotifier();
     await Future<void>.delayed(const Duration(milliseconds: 200));
     await notifier.startNewGame(
-        raceId: 'orc',
-        race: races['orc'] as Map<String, dynamic>,
-        professionId: 'mage',
-        profession: professions['mage'] as Map<String, dynamic>);
-    expect(notifier.state.baseArmor, 0);
+        raceId: raceId,
+        race: races[raceId] as Map<String, dynamic>,
+        professionId: professionId,
+        profession: professions[professionId] as Map<String, dynamic>);
+    return notifier;
+  }
+
+  test('a dwarf warrior starts at 33 HP, 2 damage, 1 armour', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    final state = (await startGame('dwarf', 'warrior')).state;
+    expect(state.maxHealth, 33);
+    expect(state.baseDamage, 2);
+    expect(state.baseArmor, 1);
+    expect(state.gold, 100);
+    expect([
+      state.strength,
+      state.dexterity,
+      state.constitution,
+      state.intelligence,
+      state.wisdom,
+      state.perception
+    ], [
+      6,
+      0,
+      6,
+      0,
+      0,
+      1
+    ]);
+  });
+
+  test('no race and profession start below 0 armour (an Orc Mage: 0, not -4)',
+      () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    for (final raceId in races.keys) {
+      for (final professionId in professions.keys) {
+        if (races[raceId] is! Map<String, dynamic> ||
+            professions[professionId] is! Map<String, dynamic>) {
+          continue;
+        }
+        final notifier = await startGame(raceId, professionId);
+        expect(notifier.state.baseArmor, greaterThanOrEqualTo(0),
+            reason: '$raceId $professionId');
+      }
+    }
+    // And the game itself starts them there.
+    expect((await startGame('orc', 'mage')).state.baseArmor, 0);
     expect(startingArmor(-4), 0);
     expect(startingArmor(6), 6);
   });

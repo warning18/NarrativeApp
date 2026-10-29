@@ -12,7 +12,8 @@ import 'city_plan_record.dart';
 import 'geography.dart';
 import 'story_repository.dart' show StoryData;
 
-/// The flag a quest taken sets (quests.json's Accept choice).
+/// The flag a quest taken sets (PlayerSessionNotifier.acceptQuest, or a
+/// scene's questIDToProgress).
 String questAcceptedFlag(String questId) => '${questId}_accepted';
 
 /// Whether district [districtId] is locked (wave 18): it has a `lock` in
