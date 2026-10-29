@@ -670,6 +670,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Power',
     AppLanguage.fr: 'Puissance',
   },
+  'rank_legend': {
+    AppLanguage.en:
+        'Rank among the clans, and how it moved since the last chapter. Ticks: Rising {rising}, Dominant {dominant}, Ascendant {ascendant}. Dashed: the {attack} power a clan needs to attack.',
+    AppLanguage.fr:
+        'Rang parmi les clans, et son évolution depuis le dernier chapitre. Repères : Montante {rising}, Dominante {dominant}, Ascendante {ascendant}. Pointillés : les {attack} de puissance qu’il faut à un clan pour attaquer.',
+  },
   'power_tier_minor': {
     AppLanguage.en: 'Minor',
     AppLanguage.fr: 'Mineure',

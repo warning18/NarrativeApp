@@ -138,7 +138,11 @@ void main() {
     expect(held, isNotEmpty);
 
     expect(find.byKey(const Key('clan_power_crows')), findsOneWidget);
-    expect(find.byKey(const Key('power_bar')), findsOneWidget);
+    // The ranking: every clan's bar, this one framed, the plate and the legend.
+    expect(find.byKey(const Key('ranked_bars')), findsOneWidget);
+    expect(find.byKey(const Key('ranked_row_crows')), findsOneWidget);
+    expect(find.byKey(const Key('rank_plate_crows')), findsWidgets);
+    expect(find.byKey(const Key('rank_legend')), findsOneWidget);
     expect(
         tester
             .widget<Text>(find.byKey(const Key('clan_power_tier_crows')))

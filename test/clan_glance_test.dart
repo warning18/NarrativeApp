@@ -1,7 +1,7 @@
 // A clan at a glance (v1.576): the standing sign has its own disc for each of
-// the eleven steps, and a clan's banner wears the sign and the power cloth
-// where the offer, the clan card, the ring, the Throne room and the Clans
-// list draw it.
+// the eleven steps, and a clan's banner wears it where the offer, the clan
+// card, the ring, the Throne room and the Clans list draw it. (How strong a
+// clan is is the rank plate's, clan_rank.dart.)
 import 'dart:convert';
 import 'dart:io';
 
@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:narrative_data_app/data/clan_power.dart';
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/providers/clans_provider.dart';
 import 'package:narrative_data_app/widgets/clan_glance.dart';
@@ -81,48 +80,6 @@ void main() {
     });
   });
 
-  group('the power cloth', () {
-    test('a quarter of the cloth for each tier', () {
-      expect([for (final t in PowerTier.values) powerClothShare(t)],
-          [0.25, 0.5, 0.75, 1.0]);
-    });
-
-    testWidgets('it darkens above the level, with a hairline unless full',
-        (tester) async {
-      Future<void> show(PowerTier tier) => tester.pumpWidget(Directionality(
-            textDirection: TextDirection.ltr,
-            child: Center(
-              child: SizedBox(
-                width: 64,
-                height: 128,
-                child: PowerCloth(
-                    tier: tier,
-                    child: const ColoredBox(color: Color(0xFFAA3333))),
-              ),
-            ),
-          ));
-      for (final tier in PowerTier.values) {
-        await show(tier);
-        expect(find.byKey(Key('power_cloth_${tier.name}')), findsOneWidget);
-        // The banner is drawn once, whatever the tier.
-        expect(find.byType(ColoredBox), findsWidgets);
-        final full = tier == PowerTier.ascendant;
-        expect(find.byType(ShaderMask), full ? findsNothing : findsOneWidget,
-            reason: tier.name);
-        // A hairline marks the level, except when the cloth is full.
-        final hair = find.byWidgetPredicate(
-            (w) => w is Container && w.color == const Color(0xFFF2C14E));
-        expect(hair, full ? findsNothing : findsOneWidget, reason: tier.name);
-        if (!full) {
-          final top = tester.getTopLeft(hair).dy -
-              tester.getTopLeft(find.byType(PowerCloth)).dy;
-          expect(top, closeTo(128 * (1 - powerClothShare(tier)), 0.5),
-              reason: tier.name);
-        }
-      }
-    });
-  });
-
   group('on a banner', () {
     Widget host(PoliticsState politics, Widget child) => ProviderScope(
           overrides: [
@@ -133,9 +90,7 @@ void main() {
               textDirection: TextDirection.ltr, child: Center(child: child)),
         );
 
-    testWidgets(
-        'a clan wears the disc of its standing and the cloth of its power',
-        (tester) async {
+    testWidgets('a clan wears the disc of its standing', (tester) async {
       const id = 'vigil';
       final politics = PoliticsState.empty.copyWith(
         standings: {...PoliticsState.empty.standings, id: 30},
@@ -147,20 +102,8 @@ void main() {
       expect(find.byKey(const Key('clan_marks_vigil')), findsOneWidget);
       final tier = politics.tierOf(id, data);
       expect(find.byKey(Key('standing_sign_${tier.name}')), findsOneWidget);
-      final power = powerTierFor(powerOf(politics, id, data));
-      expect(find.byKey(Key('power_cloth_${power.name}')), findsOneWidget);
-    });
-
-    testWidgets('the disc alone when the cloth is not asked for',
-        (tester) async {
-      await tester.pumpWidget(host(
-          PoliticsState.empty,
-          const ClanMarks(
-              factionId: 'vigil',
-              cloth: false,
-              child: SizedBox(width: 64, height: 128))));
-      expect(find.byType(StandingSign), findsOneWidget);
-      expect(find.byType(PowerCloth), findsNothing);
+      // No power on the banner: that is the rank plate's.
+      expect(find.byType(ShaderMask), findsNothing);
     });
 
     testWidgets('a faction not on file keeps its banner as it was',
@@ -172,7 +115,6 @@ void main() {
               child: SizedBox(key: Key('plain'), width: 64, height: 128))));
       expect(find.byKey(const Key('plain')), findsOneWidget);
       expect(find.byType(StandingSign), findsNothing);
-      expect(find.byType(PowerCloth), findsNothing);
     });
   });
 }

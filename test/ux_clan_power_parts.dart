@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 
 import 'package:narrative_data_app/data/clan_power.dart';
 import 'package:narrative_data_app/data/factions.dart';
-import 'package:narrative_data_app/widgets/clan_glance.dart' show PowerCloth;
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
 import 'package:narrative_data_app/widgets/standing_sign.dart';
 
@@ -78,6 +77,66 @@ const List<String> tierNames = ['Minor', 'Rising', 'Dominant', 'Ascendant'];
 String tierName(int power) => tierNames[powerTierFor(power).index];
 
 enum Idea { cloth, ranking, torches, skyline }
+
+// Today's power cloth (v1.576, retired for the rank plate), kept here as the
+// reference the mock draws against.
+/// How much of the cloth a power tier fills, from the foot: a quarter a tier.
+double powerClothShare(PowerTier tier) => (tier.index + 1) / 4;
+
+const Color _hairline = Color(0xFFF2C14E);
+
+/// The cloth above the level: the banner's own colours nearly all hidden.
+const Color _emptyCloth = Color(0xE0151319);
+
+/// [child] (a banner) drawn as the power cloth of [tier]: dark above the
+/// level, in its own colours from the foot up to it, a gold hairline at the
+/// level. The banner is drawn once (a shader darkens the part above the
+/// level), so its key and its animation stay single.
+class PowerCloth extends StatelessWidget {
+  const PowerCloth({super.key, required this.tier, required this.child});
+
+  final PowerTier tier;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final share = powerClothShare(tier);
+    final level = 1 - share;
+    return LayoutBuilder(builder: (context, box) {
+      final h = box.maxHeight.isFinite ? box.maxHeight : 0.0;
+      return Stack(
+        key: Key('power_cloth_${tier.name}'),
+        clipBehavior: Clip.none,
+        children: [
+          share >= 1
+              ? child
+              : ShaderMask(
+                  blendMode: BlendMode.srcATop,
+                  shaderCallback: (rect) => LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: const [
+                      _emptyCloth,
+                      _emptyCloth,
+                      Color(0x00000000),
+                      Color(0x00000000)
+                    ],
+                    stops: [0, level, level + 0.0001, 1],
+                  ).createShader(rect),
+                  child: child,
+                ),
+          if (share < 1 && h > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: h * level,
+              child: Container(height: h < 60 ? 1 : 1.6, color: _hairline),
+            ),
+        ],
+      );
+    });
+  }
+}
 
 // ---------------------------------------------------------------- pieces
 
