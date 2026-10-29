@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.644.0+680]
+
+- **Cleanup: the quests' unread `flagToAdd` is removed**
+  Taking a quest sets its `<id>_accepted` flag in code (v1.639), so the
+  field (51 records, and the unused `has_void_banner` value) and its name in
+  the editor label go; the two story tests now read the code path. No
+  behaviour change.
+
 ## [1.639.0+675]
 
 - **Core: taking a quest marks it taken, so the Spire Stair opens on the
