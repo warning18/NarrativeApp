@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.642.0+678]
+
+- **Narrative: the signal-lantern alley is back, as a Saltmouth street scene.**
+  The Weaver's Alley (`270`, parked in v1.620) returns in the Lantern Alleys
+  as `2015_signaller`, in the percussive style, English and French.
+  - Where: after the Arcane Bazaar has been visited, the Saltmouth hub offers
+    "Look into the alley where a signal-lantern still burns". A dead
+    Inquisition signaller, his lantern still alight in razor wire; three ways
+    out, all back to the hub: cut it free (+2 alignment), strip the bearer
+    (+15 gold, -2 alignment), or leave them both. The three origin callbacks
+    (the sparrow) are kept. No lantern flags are needed or set.
+  - `270` stays parked and untouched, so the Alster tests and the opening are
+    as they were. `q_retrieve_banner` is unaffected.
+  - Touches Core's files in a few lines: the scene's building in
+    `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
+    scene count in `test/world_map_test.dart` (69 to 70).
 ## [1.641.0+677]
 
 - **Dice: every die has its own art**
