@@ -131,29 +131,41 @@ extension _FightCards on _FightScreenState {
             const SizedBox(height: 5),
             _buildPartyHp(member, items),
             ..._coreMarks(member),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 4,
-              runSpacing: 2,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                _miniStat(Icons.bolt, '$damage', Colors.deepOrange),
-                _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
-                if (member.block > 0)
-                  _miniStat(Icons.shield, '+${member.block}', Colors.blue),
-                if (_canParry(member)) _buildParryChip(member),
-                for (final effect in member.statusEffects)
-                  _StatusEffectChip(effect: effect),
-                if (member.isKnockedOut)
-                  Text(
-                    tr(ref, 'knocked_out_label'),
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: colorScheme.error,
-                        fontWeight: FontWeight.bold),
-                  ),
-              ],
-            ),
+            // An ally's card is slim (v1.612, fight-fixed-sizes.md): name, die
+            // and health, and the row of numbers only for what is going on
+            // (block, a parry, a status, knocked out); the stage keeps the
+            // fight's height fixed, so the cards are what gives.
+            if (member.isPlayer ||
+                member.block > 0 ||
+                _canParry(member) ||
+                member.statusEffects.isNotEmpty ||
+                member.isKnockedOut) ...[
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 4,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (member.isPlayer) ...[
+                    _miniStat(Icons.bolt, '$damage', Colors.deepOrange),
+                    _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
+                  ],
+                  if (member.block > 0)
+                    _miniStat(Icons.shield, '+${member.block}', Colors.blue),
+                  if (_canParry(member)) _buildParryChip(member),
+                  for (final effect in member.statusEffects)
+                    _StatusEffectChip(effect: effect),
+                  if (member.isKnockedOut)
+                    Text(
+                      tr(ref, 'knocked_out_label'),
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: colorScheme.error,
+                          fontWeight: FontWeight.bold),
+                    ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

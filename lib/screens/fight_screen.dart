@@ -14,6 +14,7 @@ import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
 import '../widgets/fight_figure.dart';
+import '../widgets/fight_stage_parts.dart';
 import '../widgets/fight_sprites.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
@@ -715,38 +716,44 @@ class _FightScreenState extends ConsumerState<FightScreen>
       );
     }
 
-    _itemSets = parseItemSets(itemSetsDb);
-    final clanData = ClanData(
-        factions: parseFactions(factionsDb),
-        subclans: parseSubclans(subclansDb),
-        titles: parseTitles(titlesDb));
-    // One of the last battles (v1.196, see throne.dart): the Host fights
-    // beside the party, its effects through the signs' machinery.
-    if (!_partyBuilt && widget.modifiers.hostFight) {
-      _hostData = clanData;
-      _host = fieldedHost(
-          politics: session.politics,
+    // The tables are parsed and the party built once, on the first build
+    // with every table in: the fight rebuilds on every roll and log line,
+    // and none of this changes during it (_ensurePartyBuilt keeps the
+    // first party).
+    if (!_partyBuilt) {
+      _itemSets = parseItemSets(itemSetsDb);
+      final clanData = ClanData(
+          factions: parseFactions(factionsDb),
+          subclans: parseSubclans(subclansDb),
+          titles: parseTitles(titlesDb));
+      // One of the last battles (v1.196, see throne.dart): the Host fights
+      // beside the party, its effects through the signs' machinery.
+      if (widget.modifiers.hostFight) {
+        _hostData = clanData;
+        _host = fieldedHost(
+            politics: session.politics,
+            data: clanData,
+            signPatrons: session.signPatronsThisLife);
+      }
+      _ensurePartyBuilt(session, companions, races, professions, gameConfig,
+          items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
+        ...clanEffectsFor(
+          activeTitleId: session.activeTitleId,
+          heldTitleIds: session.heldTitleIds,
+          swornBoonIds: session.swornBoonIds,
+          swornFactionId: session.politics.swornFactionId,
           data: clanData,
-          signPatrons: session.signPatronsThisLife);
+        ),
+        ...hostEffects(_host, clanData),
+        // A temple's blessing (temple.dart), a fight of it spent at the start.
+        if (!widget.modifiers.isTest)
+          ...activeBlessingEffects(
+              blessingFights: session.blessingFights,
+              blessingClan: session.blessingClan,
+              data: clanData),
+      ]);
+      _spells = parseSpells(spellsDb);
     }
-    _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
-      ...clanEffectsFor(
-        activeTitleId: session.activeTitleId,
-        heldTitleIds: session.heldTitleIds,
-        swornBoonIds: session.swornBoonIds,
-        swornFactionId: session.politics.swornFactionId,
-        data: clanData,
-      ),
-      ...hostEffects(_host, clanData),
-      // A temple's blessing (temple.dart), a fight of it spent at the start.
-      if (!widget.modifiers.isTest)
-        ...activeBlessingEffects(
-            blessingFights: session.blessingFights,
-            blessingClan: session.blessingClan,
-            data: clanData),
-    ]);
-    _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in
     // progress must be finished, and a finished one is left through

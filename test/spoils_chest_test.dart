@@ -104,4 +104,19 @@ void main() {
     expect(find.text('Iron Chest'), findsOneWidget);
     expect(_hidden, findsNothing);
   });
+
+  test('the health still missing counts each drink with its bonus', () {
+    // 8 from the potion, as ever.
+    expect(healthStillMissing(maxHealth: 30, currentHealth: 10, drinks: 2), 4);
+    // With a perk and a sign adding 3, two drinks heal 22: nothing is left
+    // to mend, so a third potion is not offered.
+    expect(
+        healthStillMissing(
+            maxHealth: 30, currentHealth: 10, drinks: 2, potionBonus: 3),
+        lessThanOrEqualTo(0));
+    expect(
+        healthStillMissing(
+            maxHealth: 30, currentHealth: 10, drinks: 1, potionBonus: 3),
+        9);
+  });
 }
