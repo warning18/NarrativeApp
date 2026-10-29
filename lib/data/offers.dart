@@ -1657,13 +1657,6 @@ bool ownHandComes(Iterable<String> flags, Random random) {
   return random.nextDouble() < ownHandChance;
 }
 
-/// Whether anyone at all could come now (an offer waiting with nobody to
-/// bring it stays waiting, unannounced).
-bool anySuitorCanCome(OfferContext c) =>
-    eligibleSuitors(c).isNotEmpty ||
-    perksAvailable(c.perkRanks).isNotEmpty ||
-    wayfarerObjectsFor(c).isNotEmpty;
-
 // --- Taking a suitor --------------------------------------------------------
 
 /// The standing a suitor taken for [ticket] brings: [offerStandingGain],

@@ -119,13 +119,3 @@ class QuestReadiness {
                   id,
             ];
 }
-
-final questReadinessProvider = Provider<QuestReadiness>((ref) {
-  final session = ref.watch(playerSessionProvider);
-  final quests = ref.watch(gameDbProvider(questsSchema)).value;
-  if (quests == null) return const QuestReadiness(loaded: false);
-  return QuestReadiness(
-    active: session.activeQuestIds.toSet(),
-    ready: questsReadyToTurnIn(session, quests).toSet(),
-  );
-});

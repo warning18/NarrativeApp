@@ -111,18 +111,12 @@ class DetourScene {
 
   String titleFor(bool french) =>
       french && titleFr.isNotEmpty ? titleFr : title;
-  String rumourFor(bool french) =>
-      french && rumourFr.isNotEmpty ? rumourFr : rumour;
 
   /// The chapter's memorable detour (see detour_pacing.dart).
   bool get isLandmark => tags.contains(detourLandmarkTag);
 
   /// A short scene inside a city, walked between its districts.
   bool get isCity => tags.contains(detourCityTag);
-
-  /// Whether a beat asks a roll or starts a fight: such a scene takes a
-  /// watch of the day.
-  bool get isDangerous => beats.any((b) => b.type == 'fight');
 
   bool get hasCheckOrFight =>
       beats.any((b) => b.type == 'check' || b.type == 'fight') ||
@@ -141,7 +135,6 @@ class DetourScene {
 
 const String detourLandmarkTag = 'landmark';
 const String detourCityTag = 'city';
-const String detourStopTag = 'stop';
 
 /// What a scene with a check or a fight takes of the day (the user's
 /// decision on #279: one watch; a simple stop costs nothing).

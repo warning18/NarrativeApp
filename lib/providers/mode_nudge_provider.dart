@@ -19,13 +19,4 @@ class ModeNudgeNotifier extends StateNotifier<bool> {
     final prefs = await SharedPreferences.getInstance();
     state = prefs.getBool(_seenModeNudgePrefsKey) ?? false;
   }
-
-  Future<void> dismiss() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_seenModeNudgePrefsKey, true);
-    state = true;
-  }
 }
-
-final hasSeenModeNudgeProvider = StateNotifierProvider<ModeNudgeNotifier, bool>(
-    (ref) => ModeNudgeNotifier());

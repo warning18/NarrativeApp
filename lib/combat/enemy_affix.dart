@@ -65,9 +65,6 @@ const double frenziedHealthThreshold = 0.5;
 const double packLeaderAllyDamageMultiplier = 1.25;
 const double packLeaderHealthMultiplier = 1.2;
 
-/// Added to the spoils-chest fortune roll per affixed enemy defeated.
-const int affixFortuneBonus = 10;
-
 /// l10n key of the affix's one-word display name ("Venomous").
 String affixLabelKey(EnemyAffix affix) => switch (affix) {
       EnemyAffix.venomous => 'affix_venomous',
