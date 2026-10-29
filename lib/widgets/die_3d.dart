@@ -22,6 +22,9 @@ import '../combat/face_keywords.dart';
 import '../utils/face_style.dart';
 import 'die_skins.dart';
 import 'pixel_sprite.dart';
+import 'poly_die.dart';
+
+export 'poly_die.dart' show DieShape, dieShapeOf;
 
 /// One side of the cube: what it shows, and the colour it is tinted.
 class DieCubeFace {
@@ -76,6 +79,7 @@ class Die3D extends StatefulWidget {
     this.element = 'None',
     this.surge = false,
     this.cursed = false,
+    this.shape = DieShape.d6,
   }) : assert(faces.length == 6);
 
   /// The six sides, the front one (the face that lands) first.
@@ -124,6 +128,10 @@ class Die3D extends StatefulWidget {
 
   /// A curse lies on the landed face: chains.
   final bool cursed;
+
+  /// What the die is drawn as: the cube for a d6, a flat polyhedron (see
+  /// poly_die.dart) for the other sizes. Its front face is [faces]'s first.
+  final DieShape shape;
 
   @override
   State<Die3D> createState() => _Die3DState();
@@ -320,13 +328,24 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              for (final p in placed)
-                if (p.visible)
-                  Transform(
-                    alignment: Alignment.center,
-                    transform: p.matrix,
-                    child: _face(widget.faces[p.slot], p),
-                  ),
+              if (widget.shape != DieShape.d6)
+                PolyDie(
+                  shape: widget.shape,
+                  size: size,
+                  skin: _skin,
+                  glyph: widget.faces.first.glyph,
+                  progress: t,
+                  still: true,
+                  glowing: false,
+                )
+              else
+                for (final p in placed)
+                  if (p.visible)
+                    Transform(
+                      alignment: Alignment.center,
+                      transform: p.matrix,
+                      child: _face(widget.faces[p.slot], p),
+                    ),
             ],
           ),
         ),

@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.638.0+674]
+## [1.643.0+679]
 
 - **The realm, at the end: who holds each town, on the world chart**
   A button on the story's ending opens a screen with the real world chart
@@ -22,6 +22,68 @@ isn't reconstructable from git history alone.
   of its districts are held by others, a tag ("3 districts differ") that opens
   their list. `epilogueHoldings` takes the list of towns (`epilogueBigTowns`
   for the seven). Real screens at 412 and 320 px in `docs/ux-shots/`.
+
+## [1.640.0+676]
+
+- **Dice: a shape for every size, and the die in the ring rolls**
+  A d4, d8, d10, d12, d20 and the coin are drawn as flat-shaded polyhedra in
+  the die's own skin (stone, edge, mark, glow), with the number or skill icon
+  on the front facet. They show in the fight's row of party dice, the loadout's
+  rail and, large, in the middle of the loadout's ring of face slots, which
+  replaces the draggable cube: tapping a face slot rolls that die to the face
+  (a tap on the die skips the roll). Bigger dice roll longer: a coin 0.6 s, a d4
+  0.7 s, a d12 1.3 s, a d20 1.5 s (the check's d20 was 1 s). A die with a
+  `clan` field wears that clan's banner (the field is Core's; no die has one
+  yet). `InteractiveDie` and its drag tests are gone.
+
+## [1.639.0+675]
+
+- **Core: taking a quest marks it taken, so the Spire Stair opens on the
+  Ashen Oath.**
+  - Taking a quest (from its offer or in a scene) now sets its
+    `<quest>_accepted` flag. Before, nothing set it (quests.json's
+    `flagToAdd` is never read), so a district locked "until the quest is
+    taken" stayed shut until the quest was done.
+  - A save whose quest was already taken gets the flag on load.
+  - Tests: `quest_tracking_test` (the accepted flag).
+
+## [1.634.0+670]
+
+- **Core: "Play to chapter" (the simulator screen) takes options, leaves
+  the character as a player would, and reports what it did.**
+  - **Options:**
+    - start a new game;
+    - its race and profession (random by default);
+    - a seed (random by default; the same seed now gives the same run,
+      the character's own seed included);
+    - the player's style (the strategy chips, as before).
+  - **The end of the walk:**
+    - every clan offer (banner) due is taken, kept to the main clan and
+      its allies, as the competent simulator does;
+    - then the gear is equipped, the die is set, the harbour is built and
+      the recruited companions are seated, up to the party's room.
+    - Offers still wait while the clans are not open yet (the game's own
+      rule).
+  - **A summary pop-in with six tabs:**
+    - State: level, gold, chapter, scene, standing with each clan;
+    - Choices: in order, with their scene ids;
+    - Items: equipped, came into the pack, left it;
+    - Banners: the one carried, those taken, any still waiting;
+    - Fights: won, lost, pushed through;
+    - Companions: seated, recruited.
+- **Core: the first banner comes when the clans are met** (the user's
+  rule).
+  - On the feature ladder, level-ups, bosses and chapter turns bring no
+    clan offer before the clans are met.
+  - Meeting them brings exactly one, the first banner: the Crow at the
+    Wharf (`feat_clans`), or the story past chapter 2.
+  - After that, offers come as before.
+  - A save that already piled offers up keeps them, and gets no extra.
+  - Games off the ladder are unchanged.
+  - The simulator follows the same rule.
+  - Tests: `autoplay_engine_test` (the picks, no banner left, the party
+    seated, the log) and `autoplay_summary_test`;
+    `offers_session_test` (the first banner).
 
 ## [1.633.0+669]
 
@@ -293,8 +355,6 @@ isn't reconstructable from git history alone.
     `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
     since that test is about the walk.
 
-
-
 ## [1.615.0+651]
 
 - **Core: the element dice** (the user's option B;
@@ -358,7 +418,6 @@ isn't reconstructable from git history alone.
   - Tests: `boss_balance_test` measures the full world, and its professions'
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
-
 
 ## [1.612.0+648]
 
@@ -965,7 +1024,6 @@ Two sheets and dialogs, in one release: the place sheet's height and the clan po
 
 ### Tests
 - `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
-
 
 ## [1.552.0+588]
 
@@ -3327,7 +3385,6 @@ Twelve story achievements.
   (an oath, a standing, an intrigue's end), so taking the Throne unlocks
   its achievement at once. "Hunted" counts the six coast clans, not the
   tribes. `test/achievements_story_test.dart` covers each.
-
 
 ## [1.278.0+314]
 
