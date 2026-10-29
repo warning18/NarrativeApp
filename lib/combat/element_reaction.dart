@@ -5,17 +5,17 @@
 /// of play matters: the bigger hit belongs second, since most reactions
 /// scale with the hit that springs them.
 ///
-/// - [conduct] (Water + Electricity): the hit does [conductBonusShare] more
+/// - [conduct] (Water + Electricity): the hit does [_conductBonusShare] more
 ///   and arcs to every other enemy for [conductChainShare].
-/// - [shatter] (Fire + Ice): the hit does [shatterBonusShare] more and
+/// - [shatter] (Fire + Ice): the hit does [_shatterBonusShare] more and
 ///   breaks the enemy's raised guard.
-/// - [firestorm] (Fire + Wind): the hit does [firestormBonusShare] more and
-///   the blaze catches every other enemy for [firestormSplashShare].
+/// - [firestorm] (Fire + Wind): the hit does [_firestormBonusShare] more and
+///   the blaze catches every other enemy for [_firestormSplashShare].
 /// - [freeze] (Water + Ice): the enemy is stunned for a turn (a boss
 ///   shrugs it off).
 /// - [sandblast] (Earth + Wind): the enemy is weakened for [weakenTurns]
 ///   turns.
-/// - [eclipse] (Light + Void): the hit does [eclipseBonusShare] more.
+/// - [eclipse] (Light + Void): the hit does [_eclipseBonusShare] more.
 ///
 /// Everything here is pure, like enemy_affix.dart.
 enum ElementReaction {
@@ -29,14 +29,14 @@ enum ElementReaction {
 
 /// How many rounds after the priming hit a partner still springs it: the
 /// same round and the next.
-const int reactionWindowRounds = 1;
+const int _reactionWindowRounds = 1;
 
-const double conductBonusShare = 0.5;
+const double _conductBonusShare = 0.5;
 const double conductChainShare = 0.25;
-const double shatterBonusShare = 0.6;
-const double firestormBonusShare = 0.25;
-const double firestormSplashShare = 0.5;
-const double eclipseBonusShare = 1.0;
+const double _shatterBonusShare = 0.6;
+const double _firestormBonusShare = 0.25;
+const double _firestormSplashShare = 0.5;
+const double _eclipseBonusShare = 1.0;
 
 /// The turns a Sandblast weakens for, and the percent it weakens by.
 const int weakenTurns = 2;
@@ -60,7 +60,7 @@ ElementReaction? reactionBetween(String a, String b) {
 /// to the round it was struck in.
 List<String> activeMarks(Map<String, int> marks, int round) => [
       for (final entry in marks.entries)
-        if (round - entry.value <= reactionWindowRounds) entry.key,
+        if (round - entry.value <= _reactionWindowRounds) entry.key,
     ]..sort();
 
 /// What a hit of [element] springs on an enemy primed with [marks] in
@@ -78,10 +78,10 @@ List<String> activeMarks(Map<String, int> marks, int round) => [
 /// The extra damage a reaction adds to the hit [landed] that sprang it.
 int reactionBonus(ElementReaction reaction, int landed) {
   final share = switch (reaction) {
-    ElementReaction.conduct => conductBonusShare,
-    ElementReaction.shatter => shatterBonusShare,
-    ElementReaction.firestorm => firestormBonusShare,
-    ElementReaction.eclipse => eclipseBonusShare,
+    ElementReaction.conduct => _conductBonusShare,
+    ElementReaction.shatter => _shatterBonusShare,
+    ElementReaction.firestorm => _firestormBonusShare,
+    ElementReaction.eclipse => _eclipseBonusShare,
     ElementReaction.freeze || ElementReaction.sandblast => 0.0,
   };
   return share <= 0 || landed <= 0
@@ -92,7 +92,7 @@ int reactionBonus(ElementReaction reaction, int landed) {
 /// The share of the hit that reaches every other enemy, or 0.
 double reactionSpreadShare(ElementReaction reaction) => switch (reaction) {
       ElementReaction.conduct => conductChainShare,
-      ElementReaction.firestorm => firestormSplashShare,
+      ElementReaction.firestorm => _firestormSplashShare,
       _ => 0.0,
     };
 

@@ -29,7 +29,7 @@ enum BattlefieldCondition {
 }
 
 /// Odds any given fight opens under a condition at all.
-const double battlefieldConditionChance = 0.25;
+const double _battlefieldConditionChance = 0.25;
 
 const int crampedMaxActingEnemies = 2;
 const double highGroundBlockMultiplier = 1.5;
@@ -71,7 +71,7 @@ BattlefieldCondition? battlefieldConditionFromName(String? name) {
 BattlefieldCondition? rollBattlefieldCondition({
   required int enemyCount,
   required Random random,
-  double chance = battlefieldConditionChance,
+  double chance = _battlefieldConditionChance,
   String light = '',
 }) {
   final odds = switch (light) {

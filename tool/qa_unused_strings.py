@@ -34,7 +34,9 @@ testtext = '\n'.join(v for k, v in others.items() if not k.startswith('lib/'))
 # the table's own helpers read keys too (trAlignmentLabel etc.): text after the table
 tail = src[end:]
 prefixes = set()
-for m in re.finditer(r"['\"]([A-Za-z0-9_.]*)\$(?:\{[^}]*\}|\w+)", alltext + tail):
+# a lookahead, so a key built inside an interpolated string ('${tr(r, 'a_$x')}')
+# is seen: the outer match would swallow the inner quote
+for m in re.finditer(r"(?=['\"]([A-Za-z0-9_.]*)\$(?:\{[^}]*\}|\w+))", alltext + tail):
     if m.group(1):
         prefixes.add(m.group(1))
 for m in re.finditer(r"['\"]([A-Za-z0-9_.]+)['\"]\s*\+", alltext + tail):

@@ -27,6 +27,31 @@ isn't reconstructable from git history alone.
     person in `names_throne` and `price_kindly`, a clearer "marked by the
     rift" in the four journey endings (`7005` and its variants), and the
     Candlehold gate line in the `7400` callbacks.
+## [1.630.0+666]
+
+- **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
+  choice: the Penitents "could shrink but not disappear").
+  - The district attacks (v1.617) skipped no seat, so the Penitents could
+    still lose the Wall of Names to a siege and fall.
+  - Now no rival attacks a guarded seat (the Penitents', as Candlehold).
+    A siege of one saved before this update breaks, and nothing is taken.
+  - The Penitents can still lose Last Lantern Street.
+  - Tests: `district_attacks_test`. Through chapters 2 to 8, every attack
+    is rolled and every siege lost: the Penitents keep the Wall and never
+    fall.
+
+## [1.629.0+665]
+
+- **Cleanup: 120 file-only names in lib/combat are private**
+  Classes, functions, constants and enums of `lib/combat` that only their
+  own file uses are now private, so the analyzer watches them (renames inside
+  one file, 327 lines). No behaviour change.
+
+## [1.628.0+664]
+
+- **Cleanup: 68 UI strings that nothing reads are removed**
+  Keys of `app_strings.dart` that no `tr()` call, built key name or test
+  used (202 lines). No behaviour change.
 
 ## [1.627.0+663]
 

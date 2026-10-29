@@ -27,10 +27,10 @@ enum EnemyAffix {
 }
 
 /// Odds a solo, non-boss, non-Elite enemy spawns with one affix.
-const double affixChanceSolo = 0.20;
+const double _affixChanceSolo = 0.20;
 
 /// Odds each member of a pack spawns with one affix, rolled independently.
-const double affixChancePackMember = 0.15;
+const double _affixChancePackMember = 0.15;
 
 /// Flat damage an [EnemyAffix.armored] enemy ignores from each Attack face
 /// (never below 1 damage dealt).
@@ -102,8 +102,8 @@ List<List<EnemyAffix>> rollEncounterAffixes({
   required List<String> enemyIds,
   required bool isElite,
   required Random random,
-  double soloChance = affixChanceSolo,
-  double packChance = affixChancePackMember,
+  double soloChance = _affixChanceSolo,
+  double packChance = _affixChancePackMember,
   List<List<EnemyAffix>>? tastes,
   double tasteBoost = 0.20,
   double tasteShare = 0.7,
