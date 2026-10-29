@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.607.0+643]
+
+- **UX: the Journey map is clear, and its list names places.** (The user's
+  correction.)
+  - **No text over the map.** The dark box with the scene's first lines
+    laid over the Journey map (a hub or a street) is gone; the words are
+    behind **Read**, as before.
+  - **The list under the map names destinations**, one row for each pin of the
+    district (its building, or the place a way out leads to), with no count, no
+    chevron and nothing that opens in place; the heading reads "Places here ·
+    tap one". The ways show after a tap on a place, as after a tap on its pin: a
+    pin with one way opens that way, a pin with several opens a sheet that names
+    them (a tap on the pin on the map does the same).
+- Tests: `journey_no_pop_in_test.dart` and `journey_places_list_test.dart` (the
+  band's and the pin list's old tests are gone); before and after pictures at
+  320 and 412 px in `docs/ux-shots/journey-fix/`.
+
 ## [1.606.0+642]
 
 - **UX: the Party tab as a formation, and a page for each companion** (the

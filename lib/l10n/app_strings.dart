@@ -89,23 +89,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Pincez pour zoomer, glissez pour regarder ; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
   },
+  'journey_city_places_here': {
+    AppLanguage.en: 'Places here · tap one',
+    AppLanguage.fr: 'Lieux ici · touchez-en un',
+  },
   'journey_go_inside': {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
-  'journey_city_ways_one': {
-    AppLanguage.en: '1 way here · tap a pin or a row',
-    AppLanguage.fr: '1 chemin ici · touchez une épingle ou une ligne',
-  },
-  'journey_city_ways_many': {
-    AppLanguage.en: '{n} ways here · tap a pin or a row',
-    AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
-  },
   // The district as places (v1.586, docs/proposals/district-places.md).
-  'scene_band_open': {
-    AppLanguage.en: 'Read the whole scene',
-    AppLanguage.fr: 'Lire toute la scène',
-  },
   'district_places_title': {
     AppLanguage.en: 'Places · tap one to go there',
     AppLanguage.fr: 'Lieux · touchez-en un pour y aller',
@@ -149,11 +141,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'place_back': {
     AppLanguage.en: 'Back to the places',
     AppLanguage.fr: 'Retour aux lieux',
-  },
-  'journey_city_pins_ways': {
-    AppLanguage.en: '{p} pins · {n} ways · tap a pin to open it',
-    AppLanguage.fr:
-        '{p} épingles · {n} chemins · touchez une épingle pour l’ouvrir',
   },
   'journey_city_walk_to': {
     AppLanguage.en: 'Walk to {district}',
