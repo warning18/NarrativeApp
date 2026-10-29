@@ -54,8 +54,12 @@ void main() {
     expect(now['saltmouth']!.clanId, 'crows');
     expect(now['saltmouth']!.source, TownRulerSource.districts);
     expect(now['saltmouth']!.mixed, isTrue);
-    // A tie between districts (Cinder Row, Spire Stair) is neutral.
-    expect(now['ashen_quarter']!.isNeutral, isTrue);
+    // The Ash-Market and Cinder Row put the Compact ahead in the Quarter
+    // (wave 18 step 2); a tie between districts (the Reliquary's four
+    // clans) is neutral.
+    expect(now['ashen_quarter']!.clanId, 'compact');
+    expect(now['ashen_quarter']!.source, TownRulerSource.districts);
+    expect(now['black_reliquary']!.isNeutral, isTrue);
     expect(now['greyhithe']!.isNeutral, isTrue);
   });
 
@@ -81,21 +85,23 @@ void main() {
     expect(cinder.clanId, 'compact');
     expect(cinder.source, TownRulerSource.own);
     expect(now['ashen_quarter_spire_stair']!.clanId, 'dominion');
-    // The Spire Stair changes hands; the quarter now leans compact.
+    // The Spire Stair changes hands; the Compact leads the more.
     final moved = rulers(PoliticsState.empty
         .copyWith(control: {'ashen_quarter_spire_stair': 'compact'}));
     expect(moved['ashen_quarter_spire_stair']!.clanId, 'compact');
     expect(moved['ashen_quarter']!.clanId, 'compact');
-    expect(moved['ashen_quarter']!.mixed, isTrue); // the gate etc. are unheld
-    // A town held outright: its unheld districts take its ruler.
+    expect(moved['ashen_quarter']!.mixed, isTrue); // the Gate is the Vigil's
+    // A town held outright: its unheld district (the Reliquary's Dead
+    // Heart) takes its ruler.
     final held = rulers(
-        PoliticsState.empty.copyWith(control: {'ashen_quarter': 'vigil'}));
-    expect(held['ashen_quarter']!.clanId, 'vigil');
-    expect(held['ashen_quarter_cinder_row']!.clanId, 'compact');
+        PoliticsState.empty.copyWith(control: {'black_reliquary': 'vigil'}));
+    expect(held['black_reliquary']!.clanId, 'vigil');
+    expect(held['reliquary_chapels']!.clanId, 'compact');
     final unheld = held.values.firstWhere((r) =>
-        r.cityId == 'ashen_quarter' &&
+        r.cityId == 'black_reliquary' &&
         r.isDistrict &&
         r.source.name == 'above');
+    expect(unheld.placeId, 'dead_heart');
     expect(unheld.clanId, 'vigil');
   });
 

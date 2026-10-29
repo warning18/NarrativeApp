@@ -3666,14 +3666,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [quest] (a quests.json record) turned in (wave 18, see
   /// applyQuestInfluence in district_influence.dart): its influence for
   /// the clan [picked] (the turn-in choice's politics) favours, else its
-  /// `faction`, in its district, while the party is in [cityHere]; a
-  /// district or a town changing hands with it. Saved when it counted.
+  /// `faction`, in its district, wherever the party is; a district or a
+  /// town changing hands with it. Saved when it counted.
   Future<influence.InfluenceResult> applyQuestInfluence(
     Map<String, dynamic> quest, {
     required ClanData data,
     required Geography geography,
     StoryPolitics? picked,
-    String? cityHere,
     String? partyDistrict,
     int chapter = 0,
   }) async {
@@ -3682,7 +3681,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         data: data,
         geography: geography,
         picked: picked,
-        cityHere: cityHere,
         partyDistrict: partyDistrict,
         chapter: chapter,
         day: state.day);

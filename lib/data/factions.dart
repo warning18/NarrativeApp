@@ -1267,6 +1267,8 @@ class StandingLogEntry {
     this.released = '',
     this.note = '',
     this.noteFr = '',
+    this.placeId = '',
+    this.how = '',
   });
 
   final int chapter;
@@ -1286,6 +1288,11 @@ class StandingLogEntry {
   final String noteFr;
 
   String noteFor(AppLanguage language) => _pick(language, note, noteFr);
+
+  /// A place changing hands (cause 'territory', wave 18 step 2): the place
+  /// and how ([givePlace]'s cause: 'war', 'influence', 'town', 'claim'…).
+  final String placeId;
+  final String how;
 
   /// [factionId]'s own change (0 for a mark alone).
   double get mainDelta => deltas[factionId] ?? 0;
@@ -1309,6 +1316,8 @@ class StandingLogEntry {
         if (released.isNotEmpty) 'released': released,
         if (note.isNotEmpty) 'note': note,
         if (noteFr.isNotEmpty) 'note_fr': noteFr,
+        if (placeId.isNotEmpty) 'place': placeId,
+        if (how.isNotEmpty) 'how': how,
       };
 
   factory StandingLogEntry.fromJson(Map<String, dynamic> json) =>
@@ -1325,6 +1334,8 @@ class StandingLogEntry {
         released: _text(json['released']),
         note: _text(json['note']),
         noteFr: _text(json['note_fr']),
+        placeId: _text(json['place']),
+        how: _text(json['how']),
       );
 }
 

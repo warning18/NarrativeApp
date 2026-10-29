@@ -761,9 +761,12 @@ class _Coast {
   /// The Host mustered now (see hostFor): kept, and its flags set in
   /// place of an earlier muster's.
   void muster() {
-    final host =
-        hostFor(politics: politics, data: data, signPatrons: world.signPatrons)
-            .musteredOn(world.chapter, world.day);
+    final host = hostFor(
+            politics: politics,
+            data: data,
+            signPatrons: world.signPatrons,
+            geography: world.geography)
+        .musteredOn(world.chapter, world.day);
     politics = politics.copyWith(host: host);
     flags.removeWhere((f) => isMusterFlag(f, data.factions.keys));
     hostFlagsFor(host).forEach(addFlag);

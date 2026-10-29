@@ -193,10 +193,15 @@ void main() {
         // The suggested controllers are not holdings yet (v1.433): clan
         // power and territory count only the places they were tuned on, so a
         // new district holds none (an existing one keeps its own).
+        // Wave 18 step 2 (v1.618) gave the Reliquary's districts Narrative's
+        // holders on purpose, the curves measured again with them.
         const existing = {
           'reliquary_quarter',
           'candlehold_gates',
           'candlehold_lantern_hall',
+          'reliquary_chapels',
+          'reliquary_last_lantern',
+          'reliquary_frost_line',
         };
         if (!existing.contains(id)) {
           expect(here.controller, isEmpty, reason: id);

@@ -153,7 +153,8 @@ void main() {
       expect(record['resists'] ?? const [], isEmpty, reason: id);
       expect(record['weakTo'], isNotEmpty, reason: id);
     }
-    expect((enemies['claimant_tallis'] as Map)['maxHealth'], 88);
+    // 96 since v1.618 (the big towns' holders moved his curve to 54%).
+    expect((enemies['claimant_tallis'] as Map)['maxHealth'], 96);
     expect((enemies['claimant_morrow'] as Map)['maxHealth'], 148);
   });
 }

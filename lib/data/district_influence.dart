@@ -11,8 +11,8 @@
 //   [mainQuestInfluence] for a Main quest, [sideQuestInfluence] for the
 //   rest) to the clan the player favoured at its turn-in (the clan the
 //   choice taken raises most), else to the quest's own `faction`, in its
-//   `district` (else the district the party stands in). Step 1 counts it
-//   only in a town of [influenceTowns] while the party is in it.
+//   `district` (else the district the party stands in), wherever the
+//   party is (step 2; step 1 counted it only in town).
 // - A clan's seat never flips by influence (only by war or the crisis).
 // - The flags: `held_<district>_<clan>` for every district with a holder
 //   (kept in sync, see [syncHeldFlags]) and `flipped_<district>` once a
@@ -39,9 +39,14 @@ const int flipMargin = 15;
 
 const int maxInfluence = 100;
 
-/// The towns where influence counts (step 1: Saltmouth), each with how
-/// many of its districts a clan must hold to take the town itself.
-const Map<String, int> influenceTowns = {'saltmouth': 4};
+/// The towns a clan takes with their districts, each with how many of its
+/// districts the clan must hold (step 2 adds the Ashen Quarter and the
+/// Black Reliquary, whose Dead Heart no clan holds: 3 of the other 4).
+const Map<String, int> influenceTowns = {
+  'saltmouth': 4,
+  'ashen_quarter': 3,
+  'black_reliquary': 3,
+};
 
 /// The flag a district held by [clanId] keeps up (see [syncHeldFlags]).
 String heldFlag(String districtId, String clanId) =>
@@ -219,9 +224,8 @@ InfluenceResult addInfluence(
 
 /// [quest] (a quests.json record, [questId]) done: its influence (see the
 /// notes above) for the clan [picked] favours, else its `faction`, in its
-/// `district` (else [partyDistrict]), counted only when that district lies
-/// in [cityHere], the town the party is in, and that town is one of
-/// [influenceTowns]. Nothing counted otherwise ([InfluenceResult.counted]).
+/// `district` (else [partyDistrict]), wherever the party is. Nothing
+/// counted without a clan or a district ([InfluenceResult.counted]).
 InfluenceResult applyQuestInfluence(
   PoliticsState state,
   Map<String, dynamic> quest, {
@@ -229,15 +233,11 @@ InfluenceResult applyQuestInfluence(
   required ClanData data,
   required Geography geography,
   StoryPolitics? picked,
-  String? cityHere,
   String? partyDistrict,
   int chapter = 0,
   int day = 0,
 }) {
   final nothing = InfluenceResult(state: state, flags: flags);
-  if (cityHere == null || !influenceTowns.containsKey(cityHere)) {
-    return nothing;
-  }
   final favoured = favouredClanOf(picked, data);
   final clan =
       favoured.isNotEmpty ? favoured : quest['faction']?.toString() ?? '';
@@ -246,7 +246,6 @@ InfluenceResult applyQuestInfluence(
   if (clan.isEmpty || data.faction(clan) == null || district.isEmpty) {
     return nothing;
   }
-  if (geography.locationOf(district)?.id != cityHere) return nothing;
   return addInfluence(state, district, clan, questInfluenceAmount(quest),
       flags: flags,
       data: data,
