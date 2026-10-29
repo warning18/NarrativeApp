@@ -20,7 +20,7 @@ Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   testWidgets('every weather paints over the desert kit', (tester) async {
     for (final kind in SideParticles.values) {

@@ -79,14 +79,14 @@ void main() {
     tester.view.physicalSize = const Size(300, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: AbilityRadar(
             size: 320,
             t: t,
-            values: const {'strength': 3, 'luck': 5},
+            values: {'strength': 3, 'luck': 5},
           ),
         ),
       ),
@@ -109,7 +109,7 @@ void main() {
     };
 
     testWidgets('each corner shows its short name and value', (tester) async {
-      await tester.pumpWidget(host(AbilityRadar(values: values, t: t)));
+      await tester.pumpWidget(host(const AbilityRadar(values: values, t: t)));
       for (final label in [
         'STR',
         'DEX',
@@ -134,6 +134,8 @@ void main() {
 
     testWidgets('what changed shows at its corner, with a legend',
         (tester) async {
+      // `const` would make 'dexterity' a duplicate key of the const `values`.
+      // ignore: prefer_const_constructors
       await tester.pumpWidget(host(AbilityRadar(
         values: {...values, 'dexterity': 5, 'wisdom': 1},
         before: values,

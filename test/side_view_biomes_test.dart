@@ -24,7 +24,7 @@ Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   final kits = <String, List<SideLayer> Function(double)>{
     'frost': (p) => frostLayers(progress: p),

@@ -45,8 +45,8 @@ const _bayer = [
 /// The layers, back to front. [progress] brings the goal's silhouette
 /// nearer as the days go.
 List<SideLayer> desertLayers({double progress = 0}) => [
-      SideLayer(0, _sky),
-      SideLayer(0.05, _sun),
+      const SideLayer(0, _sky),
+      const SideLayer(0.05, _sun),
       SideLayer(0.15, (c, s, scroll, t, u) {
         // Far mesas, and the goal standing among them.
         sideHills(c, s, u, scroll,
@@ -86,7 +86,7 @@ List<SideLayer> desertLayers({double progress = 0}) => [
             rim: DesertLook.nearRim);
         _props(c, s, u, scroll);
       }),
-      SideLayer(1.0, _path),
+      const SideLayer(1.0, _path),
     ];
 
 /// Where the hero's feet stand, in scene pixels: the party's head.
@@ -164,7 +164,7 @@ SideLayer desertActors({
 void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
   // Dithered bands from the top to the horizon.
   const horizon = 50;
-  final bands = DesertLook.sky;
+  const bands = DesertLook.sky;
   final cols = (size.width / u).ceil();
   final paint = Paint();
   for (var y = 0; y < horizon; y++) {

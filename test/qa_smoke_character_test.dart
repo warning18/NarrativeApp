@@ -135,12 +135,12 @@ void main() {
           session: withPolitics(const PoliticsState(power: {'compact': 51})),
           prepare: _loadClans,
         ),
-        SmokeCase(
+        const SmokeCase(
           'clan_radar',
-          const ClanRadarChart(factionId: 'vigil', color: Colors.indigo),
+          ClanRadarChart(factionId: 'vigil', color: Colors.indigo),
           prepare: _loadClans,
         ),
-        SmokeCase('clan_compass_card', const ClanCompassCard(),
+        const SmokeCase('clan_compass_card', ClanCompassCard(),
             prepare: _loadClans),
         SmokeCase('stat_pick_rare', const StatPickPicker(),
             session: pickOffer(SignRarity.rare, 2)),

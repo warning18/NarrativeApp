@@ -512,7 +512,7 @@ class ChartMapPainter extends CustomPainter {
   /// ochre to a wet blue-green; warmth from the blue of the frost to the
   /// red of the hottest noon.
   static Color climateTint(ChartCalque calque, double value) {
-    List<(double, Color)> stops = switch (calque) {
+    final List<(double, Color)> stops = switch (calque) {
       ChartCalque.height => const [
           (0.0, Color(0xFF3F7A4E)),
           (0.18, Color(0xFF7FA05A)),
@@ -1326,7 +1326,7 @@ class ChartMapPainter extends CustomPainter {
   }
 
   void _terrain(Canvas canvas, ChartRelief relief, {bool fine = false}) {
-    final shadow = const Color(0xFF17151B);
+    const shadow = Color(0xFF17151B);
     for (final m in fine ? relief.fineTerrain : relief.terrain) {
       if (!_vis(m.at)) continue;
       final colours = chartBiome(geography.zones[m.zone].biome);
@@ -1436,9 +1436,9 @@ class ChartMapPainter extends CustomPainter {
             ..strokeWidth = 0.3;
           canvas.drawLine(p, p + Offset(0, -s), paint);
           canvas.drawLine(
-              p + Offset(-0.6, 0.2), p + Offset(-0.6, -s * 0.7), paint);
+              p + const Offset(-0.6, 0.2), p + Offset(-0.6, -s * 0.7), paint);
           canvas.drawLine(
-              p + Offset(0.6, 0.2), p + Offset(0.6, -s * 0.8), paint);
+              p + const Offset(0.6, 0.2), p + Offset(0.6, -s * 0.8), paint);
         case TerrainKind.dune:
           final w = s;
           final path = Path()
@@ -2195,9 +2195,9 @@ class ChartMapPainter extends CustomPainter {
           r,
           Paint()
             ..blendMode = BlendMode.dstOut
-            ..shader = RadialGradient(
-              colors: const [Colors.black, Colors.black, Colors.transparent],
-              stops: const [0, 0.5, 1],
+            ..shader = const RadialGradient(
+              colors: [Colors.black, Colors.black, Colors.transparent],
+              stops: [0, 0.5, 1],
             ).createShader(Rect.fromCircle(center: p, radius: r)),
         );
       }
@@ -2399,7 +2399,7 @@ class ChartMapPainter extends CustomPainter {
             ..lineTo(x, y - 4.6)
             ..close(),
           cloak);
-      canvas.drawCircle(Offset(x, y - 5.4), 1.2, cloak);
+      canvas.drawCircle(const Offset(x, y - 5.4), 1.2, cloak);
       if (!walking) {
         final bob = f % 4 < 2 ? 0.0 : 0.8;
         canvas.drawPath(

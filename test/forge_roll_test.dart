@@ -144,7 +144,7 @@ void main() {
         },
         'town_free': {'level': 'district', 'parent': 'town', 'name': 'Free'},
       });
-      final politics = const PoliticsState(standings: {'compact': 14.0});
+      const politics = PoliticsState(standings: {'compact': 14.0});
       const clans = ClanData();
       List<ForgeModifier> at(String placeId) {
         final holder = holderOf(placeId, geo, politics);
