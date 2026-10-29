@@ -46,7 +46,6 @@ isn't reconstructable from git history alone.
     seated, the log) and `autoplay_summary_test`;
     `offers_session_test` (the first banner).
 
-
 ## [1.632.0+668]
 
 - **Cleanup: unused Core symbols and their tests are removed**
