@@ -18,6 +18,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 
 import 'player_session_provider_test.dart' show baseSession, notifierWith;
+import 'support/pump.dart';
 
 const _bounty = <String, dynamic>{
   'questName': 'The Ossuary Bounty',
@@ -247,10 +248,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1400));
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester);

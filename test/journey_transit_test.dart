@@ -5,29 +5,17 @@
 // the world's own (v1.254): the stops it passes are named on the way.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 const _transit = ValueKey('journey_transit');
 const _caption = ValueKey('journey_transit_caption');
@@ -40,38 +28,12 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 800);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 800));
 
-    await tester.pumpWidget(
-      ProviderScope(
-          // These test the streets' marks: the generated plan, not the stored
-          // city chart (board 15, v1.355).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
-          child: const MyApp()),
-    );
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester, overrides: [noCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
-    await _settle(tester);
+    await settleApp(tester);
 
     // What arriving somewhere opens over the game (a new place's card, a
     // chapter's notice) is closed.
@@ -85,7 +47,7 @@ void main() {
 
     // Stands at the yard, where the first roll is taken.
     play.jumpTo('2070');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(_transit), findsNothing);
@@ -93,7 +55,7 @@ void main() {
     // The roll fails: the story sets the party down on the wharf. The map
     // tells the author's words, and shows the road.
     play.choose('2070_cut_failed');
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(_transit), findsOneWidget);
     expect(
       tester.widget<Text>(find.byKey(_caption)).data,
@@ -110,7 +72,7 @@ void main() {
     // A jump along no choice (here, to the alley) tells it in plain words,
     // then the walk ends by itself.
     play.jumpTo('270');
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(_transit), findsOneWidget);
     expect(tester.widget<Text>(find.byKey(_caption)).data,
         startsWith('You make your way to'));
@@ -132,15 +94,15 @@ void main() {
 
     // Back at the yard, the same failed roll tells the author's French.
     play.jumpTo('2070');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
-    await _settle(tester);
+    await settleApp(tester);
     play.choose('2070_cut_failed');
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(_transit), findsOneWidget);
     expect(
       tester.widget<Text>(find.byKey(_caption)).data,
@@ -154,7 +116,7 @@ void main() {
     // A fight is acted out where the party stands (a card in the scene view,
     // no road to walk), and one turned back from leaves it on its mark.
     play.jumpTo('2011');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
@@ -187,7 +149,7 @@ void main() {
     // where it stood and is home after. (From the street, 250: the family
     // house, 470, is a building of its own since the scene-or-map rule.)
     play.jumpTo('250');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
@@ -210,13 +172,13 @@ void main() {
     // A way out to another place says by which road it goes (v1.256): the
     // stops it passes, under where it leads.
     play.jumpTo('960');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
     await clearCards();
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
-    await _settle(tester);
+    await settleApp(tester);
     // The stops of every way out, read in the language of the moment.
     Future<List<String>> roadLines(String label) async {
       final lines = <String>[];
@@ -241,7 +203,7 @@ void main() {
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
-    await _settle(tester);
+    await settleApp(tester);
     final routes = await roadLines('Route\u00a0: ');
     expect(routes, isNotEmpty, reason: 'the road is named in French too');
     expect(

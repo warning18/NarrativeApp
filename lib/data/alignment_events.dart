@@ -18,8 +18,8 @@ import '../models/story_node.dart';
 const double hunterBaseChance = 0.06;
 const double hunterChancePerAlignmentPoint = 0.0015;
 const double hunterChanceCap = 0.15;
-const double neutralHunterChance = 0.02;
-const double neutralHunterChancePerPoint = 0.002;
+const double _neutralHunterChance = 0.02;
+const double _neutralHunterChancePerPoint = 0.002;
 const double temptationChance = 0.10;
 
 /// Rolls after an ambush before the next one can come: the hunted get a
@@ -54,13 +54,13 @@ String? huntedSideFor({
 
 /// Odds a hunter ambushes this transition -- rises with how far the score
 /// sits past the threshold, capped. Under it (v5.2 step 6, the user: "a
-/// neutral player should be hunted lightly by both"), [neutralHunterChance]
-/// and [neutralHunterChancePerPoint] a point, meeting the curve at the
+/// neutral player should be hunted lightly by both"), [_neutralHunterChance]
+/// and [_neutralHunterChancePerPoint] a point, meeting the curve at the
 /// threshold.
 double hunterChanceFor(int alignmentScore) {
   final lean = alignmentScore.abs();
   if (lean < alignmentThreshold) {
-    return neutralHunterChance + lean * neutralHunterChancePerPoint;
+    return _neutralHunterChance + lean * _neutralHunterChancePerPoint;
   }
   final past = lean - alignmentThreshold;
   return min(
@@ -546,7 +546,7 @@ StoryNode? buildTemptationNode({
 /// the last ambush (see PlayerSession.alignmentRollsSinceAmbush): within
 /// [hunterCooldownRolls] of one, no hunter comes.
 /// The first chapter a hunter or a temptation can find the party in.
-const int firstHuntChapter = 2;
+const int _firstHuntChapter = 2;
 
 List<StoryNode>? maybeAlignmentEvent({
   required int alignmentScore,
@@ -560,7 +560,7 @@ List<StoryNode>? maybeAlignmentEvent({
 }) {
   // Chapter 1 is the flight from the city: nobody has caught the scent
   // yet, whatever the character's past.
-  if (!enabled || chapter < firstHuntChapter) return null;
+  if (!enabled || chapter < _firstHuntChapter) return null;
   final side = huntedSideFor(
       alignmentScore: alignmentScore, activeQuestIds: activeQuestIds);
   if (side != null) {

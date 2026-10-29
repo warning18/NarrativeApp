@@ -20,14 +20,7 @@ import 'package:narrative_data_app/providers/permadeath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/death_screen.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
@@ -41,15 +34,12 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     Future<void> character({required int health}) =>
@@ -81,19 +71,19 @@ void main() {
                 lossContinues: true,
               ),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text('Lucky Die'), findsOneWidget);
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.textContaining('Roll it.'), findsWidgets);
     expect(find.textContaining('Elite'), findsNothing);
     await tester.pump(const Duration(seconds: 3));
     // A lesson can still be walked away from.
     await tester.tap(find.byTooltip('Retreat'));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.descendant(
         of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsNothing);
     // The die's blow wounded, it did not fell.
     final wounded = container.read(playerSessionProvider).currentHealth;
@@ -123,17 +113,17 @@ void main() {
                   forcedCondition: BattlefieldCondition.ambush,
                 ),
               )));
-      await _settle(tester);
+      await settleApp(tester);
       // Three foes push the setup's button below the fold.
       await tester.ensureVisible(find.text('Enter Battle'));
       await tester.pump();
       await tester.tap(find.text('Enter Battle'));
-      await _settle(tester);
+      await settleApp(tester);
       await tester.pump(const Duration(seconds: 3));
-      await _settle(tester);
+      await settleApp(tester);
       await tester.tap(find.widgetWithText(
           ElevatedButton, storyBranch ? 'Face what comes' : 'Retreat'));
-      await _settle(tester);
+      await settleApp(tester);
       return result;
     }
 
@@ -144,7 +134,7 @@ void main() {
 
     // Without one, permadeath still takes the character.
     await loseAnAmbush(storyBranch: false);
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(DeathScreen), findsOneWidget);
   });
 }

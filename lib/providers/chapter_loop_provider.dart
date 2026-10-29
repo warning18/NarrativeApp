@@ -19,9 +19,16 @@ final chapterLoopsProvider = Provider<List<ChapterLoop>>((ref) {
   return chapterLoopsFrom(chapters);
 });
 
+/// Where the story stands: its scene and the scenes behind it, and nothing
+/// else of the story's state (an excursion queued doesn't move a chapter).
+final _storyPlaceProvider =
+    Provider<({String currentNodeId, List<String> history})>((ref) => ref.watch(
+        storyPlayProvider.select(
+            (p) => (currentNodeId: p.currentNodeId, history: p.history))));
+
 /// The open chapter the story is in (see [currentLoop]), if any.
 final currentLoopProvider = Provider<ChapterLoop?>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return currentLoop(
     currentNodeId: play.currentNodeId,
     history: play.history,
@@ -31,7 +38,7 @@ final currentLoopProvider = Provider<ChapterLoop?>((ref) {
 
 /// The camp the story comes back to (see [currentCampNodeId]).
 final currentCampNodeIdProvider = Provider<String?>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return currentCampNodeId(
     currentNodeId: play.currentNodeId,
     history: play.history,
@@ -50,7 +57,7 @@ final campErrandChoicesProvider = Provider<List<StoryChoice>>((ref) {
 /// The chapter the party has reached (see [reachedChapter]): what the
 /// chart, the expeditions and the places open to.
 final reachedChapterProvider = Provider<int>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return reachedChapter(
     currentNodeId: play.currentNodeId,
     history: play.history,
@@ -61,7 +68,7 @@ final reachedChapterProvider = Provider<int>((ref) {
 
 /// The level advice for [chapter] at the party's level (see
 /// [chapterLevelAdvice]), null when that chapter recommends none.
-final chapterLevelAdviceProvider =
+final _chapterLevelAdviceProvider =
     Provider.family<ChapterLevelAdvice?, int>((ref, chapter) {
   return chapterLevelAdvice(
     chapter: chapter,
@@ -73,8 +80,8 @@ final chapterLevelAdviceProvider =
 /// The level advice for the chapter the party is heading to: the one
 /// after [reachedChapterProvider]'s.
 final nextChapterLevelAdviceProvider = Provider<ChapterLevelAdvice?>((ref) {
-  return ref
-      .watch(chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
+  return ref.watch(
+      _chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
 });
 
 /// The condition of the chapter the party has reached (see
@@ -93,8 +100,8 @@ final chapterConditionProvider = Provider<ChapterCondition?>((ref) {
 
 /// Where the open chapter stands: its activities done, its goal, and
 /// whether its main quest is open.
-class ChapterProgress {
-  const ChapterProgress({
+class _ChapterProgress {
+  const _ChapterProgress({
     required this.loop,
     required this.done,
     required this.missingPlaceIds,
@@ -118,7 +125,7 @@ class ChapterProgress {
       done >= goal && questsDone >= questGoal && missingPlaceIds.isEmpty;
 }
 
-final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
+final chapterProgressProvider = Provider<_ChapterProgress?>((ref) {
   final loop = ref.watch(currentLoopProvider);
   final story = ref.watch(storyDataProvider).value;
   if (loop == null || story == null) return null;
@@ -130,7 +137,7 @@ final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
   final completedQuestIds =
       ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
-  return ChapterProgress(
+  return _ChapterProgress(
     loop: loop,
     done: chapterActivityCount(
       story: story,

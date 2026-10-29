@@ -689,6 +689,7 @@ class _OfferBanner extends ConsumerWidget {
         : ClanMarks(
             factionId: suitor.factionId,
             discSize: 34,
+            plate: true,
             child: SizedBox(
               key: Key('offer_banner_${suitor.factionId}'),
               width: bannerBox,

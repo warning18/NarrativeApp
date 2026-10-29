@@ -13,6 +13,7 @@ import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
@@ -29,10 +30,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1200);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1200));
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);

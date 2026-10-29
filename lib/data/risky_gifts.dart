@@ -30,12 +30,12 @@ const double riskyGiftChance = 0.30;
 
 /// The health penalty: this share of max health, taken from current
 /// health, never below 1.
-const double riskyHealthShare = 0.40;
+const double _riskyHealthShare = 0.40;
 
 /// The gold penalty: this share of the purse, at least
-/// [riskyGoldPerChapter] a chapter, never more than the purse.
-const double riskyGoldShare = 0.25;
-const int riskyGoldPerChapter = 10;
+/// [_riskyGoldPerChapter] a chapter, never more than the purse.
+const double _riskyGoldShare = 0.25;
+const int _riskyGoldPerChapter = 10;
 
 /// The curse: this many points off the clan's stat, for this many levels.
 const int riskyCurseAmount = 2;
@@ -47,7 +47,7 @@ bool riskyGiftsOpen(Iterable<String> builtHouseIds) =>
 
 /// The alignment word of [score]: Good from 20, Evil to -20 (as
 /// PlayerSession.alignmentLabel).
-String riskyAlignmentLabel(int score) => score >= 20
+String _riskyAlignmentLabel(int score) => score >= 20
     ? 'Good'
     : score <= -20
         ? 'Evil'
@@ -57,12 +57,12 @@ String riskyAlignmentLabel(int score) => score >= 20
 /// [score]: a lean +1 clan and an Evil character, a lean -1 clan and a Good
 /// one. A Neutral character or a lean 0 clan is never opposite.
 bool alignmentOpposite(int lean, int score) {
-  final label = riskyAlignmentLabel(score);
+  final label = _riskyAlignmentLabel(score);
   return lean > 0 && label == 'Evil' || lean < 0 && label == 'Good';
 }
 
 /// The tiers counted as "uneasy".
-const Set<StandingTier> uneasyTiers = {
+const Set<StandingTier> _uneasyTiers = {
   StandingTier.wary,
   StandingTier.unfriendly,
   StandingTier.resented,
@@ -72,7 +72,7 @@ const Set<StandingTier> uneasyTiers = {
 /// character of alignment [alignment], [nemesis] being the clan that hunts
 /// them ('' for none): a faction with a curse stat (never the Choir or the
 /// Pit), neither Hostile nor Hunted, not the nemesis, and either uneasy
-/// ([uneasyTiers]) or of the opposite alignment. Being a suitor at all,
+/// ([_uneasyTiers]) or of the opposite alignment. Being a suitor at all,
 /// and not the Wayfarer, the ticket's own faction or the home seat, is
 /// drawOffer's to check.
 bool riskyEligible(
@@ -85,7 +85,7 @@ bool riskyEligible(
     faction.kind != FactionKind.otherworld &&
     tier.isAtLeast(StandingTier.resented) &&
     faction.id != nemesis &&
-    (uneasyTiers.contains(tier) || alignmentOpposite(faction.lean, alignment));
+    (_uneasyTiers.contains(tier) || alignmentOpposite(faction.lean, alignment));
 
 /// The bonus Luck adds to the roll: +1 at 5, +2 at 10 or more.
 int riskyLuckBonus(int luck) => min(2, max(0, luck ~/ 5));
@@ -167,16 +167,16 @@ class RiskyResult {
 }
 
 /// The health penalty on a character at [currentHealth] of [maxHealth]:
-/// [riskyHealthShare] of the max, never below 1 health.
-int riskyHealthLoss({required int maxHealth, required int currentHealth}) =>
-    max(0, min((maxHealth * riskyHealthShare).round(), currentHealth - 1));
+/// [_riskyHealthShare] of the max, never below 1 health.
+int _riskyHealthLoss({required int maxHealth, required int currentHealth}) =>
+    max(0, min((maxHealth * _riskyHealthShare).round(), currentHealth - 1));
 
-/// The gold penalty on a purse of [gold] in [chapter]: [riskyGoldShare] of
-/// it, at least [riskyGoldPerChapter] a chapter, never more than the purse.
-int riskyGoldLoss({required int gold, required int chapter}) => max(
+/// The gold penalty on a purse of [gold] in [chapter]: [_riskyGoldShare] of
+/// it, at least [_riskyGoldPerChapter] a chapter, never more than the purse.
+int _riskyGoldLoss({required int gold, required int chapter}) => max(
     0,
     min(gold,
-        max((gold * riskyGoldShare).round(), riskyGoldPerChapter * chapter)));
+        max((gold * _riskyGoldShare).round(), _riskyGoldPerChapter * chapter)));
 
 /// What the die [roll] means for the character now, with the fallbacks:
 /// an empty purse turns the gold penalty into the health penalty, and a
@@ -194,13 +194,13 @@ RiskyResult riskyResultFor({
   var outcome = riskyBandFor(roll, luck);
   if (outcome == RiskyOutcome.gift) return const RiskyResult(RiskyOutcome.gift);
   if (outcome == RiskyOutcome.gold) {
-    final lost = riskyGoldLoss(gold: gold, chapter: max(1, chapter));
+    final lost = _riskyGoldLoss(gold: gold, chapter: max(1, chapter));
     if (lost > 0) return RiskyResult(RiskyOutcome.gold, amount: lost);
     outcome = RiskyOutcome.health;
   }
   if (outcome == RiskyOutcome.health) {
     final lost =
-        riskyHealthLoss(maxHealth: maxHealth, currentHealth: currentHealth);
+        _riskyHealthLoss(maxHealth: maxHealth, currentHealth: currentHealth);
     if (lost > 0) return RiskyResult(RiskyOutcome.health, amount: lost);
   }
   return RiskyResult(RiskyOutcome.curse,

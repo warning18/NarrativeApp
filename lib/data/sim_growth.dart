@@ -93,7 +93,7 @@ class SimGrowthTables {
 
 /// The perks the simulator takes, best first: what a fight model without a
 /// party, rerolls or momentum feels most.
-const List<Perk> simPerkPreference = [
+const List<Perk> _simPerkPreference = [
   Perk.heavyHand,
   Perk.ironHide,
   Perk.vigor,
@@ -111,7 +111,7 @@ const List<Perk> simPerkPreference = [
 
 /// The odds the offers' policy takes the suitor of the faction the
 /// character stands best with, rather than the best gift.
-const double simFavourBestChance = 0.25;
+const double _simFavourBestChance = 0.25;
 
 /// A skill's worth on a die face, for the simulator's assignment: what it
 /// hits for over a plain blow, what it heals, a status it carries.
@@ -576,7 +576,7 @@ class SimGrowth {
         perkPicks--;
         final offer = rollPerkOffer(perkRanks, random);
         if (offer.isEmpty) break;
-        final perk = simPerkPreference.firstWhere(offer.contains);
+        final perk = _simPerkPreference.firstWhere(offer.contains);
         _takePerk(perk);
       }
       next = _takeSigns(next, flags, random);
@@ -777,7 +777,7 @@ class SimGrowth {
       var offer = drawOffer(ticket, context, random,
           riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
-      final favourBest = random.nextDouble() < simFavourBestChance;
+      final favourBest = random.nextDouble() < _simFavourBestChance;
       // Keeping to the patron and its allies (a card of another clan only
       // for an empty die face), as a player who backs a clan would.
       final main = mainClanOf(politics);
@@ -986,8 +986,8 @@ class SimGrowth {
         final perk = perkFromName(gift.id);
         if (perk == null) return 0;
         if ((perkRanks[perk.name] ?? 0) >= perkInfo[perk]!.maxRank) return 0;
-        final rank = simPerkPreference.indexOf(perk);
-        return 2.0 + (rank < 0 ? 0 : simPerkPreference.length - rank);
+        final rank = _simPerkPreference.indexOf(perk);
+        return 2.0 + (rank < 0 ? 0 : _simPerkPreference.length - rank);
       case GiftKind.title:
         return 3.0 + gift.rarity.index * 3;
     }

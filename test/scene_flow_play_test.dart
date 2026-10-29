@@ -19,14 +19,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/road_random_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 /// A road where nothing waits: every roll comes up empty.
 class _QuietRoad implements Random {
@@ -45,18 +38,15 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 900));
 
     await tester.pumpWidget(ProviderScope(
       overrides: [roadRandomProvider.overrideWithValue(_QuietRoad.new)],
       child: const MyApp(),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -72,7 +62,7 @@ void main() {
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     PlayerSession session() => container.read(playerSessionProvider);
 
@@ -80,13 +70,13 @@ void main() {
     // setting court_fled) and the story opens straight onto the altar,
     // with the flight read above it.
     play.jumpTo('5003');
-    await _settle(tester);
+    await settleApp(tester);
     // The reader is read over the game (v1.201: no Story tab in play).
     final journey = tester.element(find.byType(JourneyScreen));
     openStoryReader(journey, journey as WidgetRef);
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Confront them'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '5004_altar');
     expect(session().flags, contains('court_fled'));
     final preludes = container.read(pendingPreludeProvider);
@@ -103,7 +93,7 @@ void main() {
     expect(find.byKey(const ValueKey('echo_5004|origin_board_good')),
         findsOneWidget);
     expect(preludes.single.body, isNot(contains('I had waited up')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(session().seenEchoKeys,
         containsAll(['5004_altar|court_fled', '5004|origin_board_good']));
     expect(tester.takeException(), isNull);
@@ -111,22 +101,22 @@ void main() {
     // 2. From Saltmouth's landward gate to its wharf is a walk inside the
     // city (v1.197.1): no ration eaten, no watch of the day gone.
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(session().copyWith(provisions: 1, watch: 0)));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Go in with the caravan'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(session().provisions, 1);
     expect(session().watch, 0);
     expect(container.read(pendingRoadNoteProvider), isNull);
     // Sailing from the Hollow Court's steps home to the camp is a road: it
     // eats the last ration, and is a watch of the day.
     play.jumpTo('6002');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Sail home to the camp at once'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(session().provisions, 0);
     expect(session().watch, 1);
     expect(container.read(pendingRoadNoteProvider),
@@ -136,12 +126,12 @@ void main() {
     // 3. On the Journey map a scene's lone way on is picked already: one
     // tap on Go.
     play.jumpTo('5006_cornered');
-    await _settle(tester);
+    await settleApp(tester);
     Navigator.of(
             tester.element(find.byType(JourneyScreen, skipOffstage: false)))
         .popUntil(isGameRoute);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(JourneyScreen), findsOneWidget);
     final go =
         tester.widget<FilledButton>(find.byKey(const ValueKey('journey_go')));

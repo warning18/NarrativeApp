@@ -63,7 +63,7 @@ class FateContext {
 
 /// Whether [face] can happen at the camp as [context] finds it: a rumor
 /// needs a place left to find, a quarrel two companions.
-bool fateFaceAvailable(FateFace face, FateContext context) => switch (face) {
+bool _fateFaceAvailable(FateFace face, FateContext context) => switch (face) {
       FateFace.rumor => context.rumorPlaceIds.isNotEmpty,
       FateFace.quarrel => context.companionIds.length >= 2,
       _ => true,
@@ -73,7 +73,7 @@ bool fateFaceAvailable(FateFace face, FateContext context) => switch (face) {
 /// as a quiet night instead, so the die never promises what it can't give.
 List<FateFace> fateDieFor(FateContext context) => [
       for (final face in fateDieFaces)
-        fateFaceAvailable(face, context) ? face : FateFace.quiet,
+        _fateFaceAvailable(face, context) ? face : FateFace.quiet,
     ];
 
 /// The random draw for the night of [day] in the run of [seed]: the same
@@ -111,7 +111,7 @@ int fateCheckDc(int chapter) => 10 + max(1, chapter);
 
 /// The gold a thief who isn't caught takes: a tenth of the purse, at most
 /// 30 per chapter.
-int theftGold({required int gold, required int chapter}) =>
+int _theftGold({required int gold, required int chapter}) =>
     max(0, min(gold, min((gold * 0.1).round(), 30 * max(1, chapter))));
 
 /// The ability each check of the night rolls.
@@ -128,10 +128,10 @@ const int pilgrimRations = 2;
 int deserterBounty(int chapter) => 20 * max(1, chapter);
 
 /// The approval a quarrel moves: [quarrelSideApproval] up for the one
-/// sided with and down for the other, [quarrelPeaceApproval] both ways
+/// sided with and down for the other, [_quarrelPeaceApproval] both ways
 /// for a peace made or failed.
 const int quarrelSideApproval = 2;
-const int quarrelPeaceApproval = 1;
+const int _quarrelPeaceApproval = 1;
 
 /// The approval of each companion at the camp after the storyteller's
 /// tale.
@@ -140,7 +140,7 @@ const int storytellerApproval = 1;
 /// The alignment of the visitors' choices.
 const int pilgrimShareAlignment = 3;
 const int pilgrimRefuseAlignment = -1;
-const int deserterHideAlignment = 2;
+const int _deserterHideAlignment = 2;
 const int deserterHandOverAlignment = -3;
 
 /// Where the die landed and what it drew with it.
@@ -322,7 +322,7 @@ FateOutcome fateOutcome(
       if (passed(total)) {
         return FateOutcome(checkRoll: total, checkPassed: true);
       }
-      final taken = theftGold(gold: context.gold, chapter: chapter);
+      final taken = _theftGold(gold: context.gold, chapter: chapter);
       if (taken > 0) {
         return FateOutcome(gold: -taken, checkRoll: total, checkPassed: false);
       }
@@ -337,7 +337,7 @@ FateOutcome fateOutcome(
         FateChoice.sendOn =>
           const FateOutcome(alignment: pilgrimRefuseAlignment),
         FateChoice.hideDeserter =>
-          const FateOutcome(alignment: deserterHideAlignment),
+          const FateOutcome(alignment: _deserterHideAlignment),
         FateChoice.handOver => FateOutcome(
             gold: deserterBounty(chapter),
             alignment: deserterHandOverAlignment),
@@ -363,7 +363,7 @@ FateOutcome fateOutcome(
         case FateChoice.makePeace:
           final total = checkTotal ?? 0;
           final peace = passed(total);
-          final delta = peace ? quarrelPeaceApproval : -quarrelPeaceApproval;
+          final delta = peace ? _quarrelPeaceApproval : -_quarrelPeaceApproval;
           return FateOutcome(
             approval: {first: delta, second: delta},
             checkRoll: total,

@@ -46,7 +46,9 @@ import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
+import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/strike_damage.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -130,7 +132,7 @@ const int _potionHealAmount = potionHealAmount;
 
 /// A knocked-out ally is revived at this fraction of their (live-derived)
 /// max health after a won fight — see [_FightScreenState._finishFight].
-const double _reviveHealthFraction = 0.3;
+const double _reviveHealthFraction = reviveHealthFraction;
 
 /// Odds a solo fight against an enemy not in [soloOnlyEnemyIds] is promoted
 /// to an Elite encounter — see [_FightScreenState._isElite]. Never rolled
@@ -157,14 +159,9 @@ const double _eliteRewardMultiplier = 1.5;
 /// every single time.
 const double _banterChance = 0.35;
 
-/// Per-member hp/damage multiplier for a multi-enemy pack, by pack size. A
-/// pack's threat is its action economy -- two or three hits a round against
-/// one party's worth of rolls -- so each member is scaled down to keep the
-/// fight winnable for a party at the pack's own chapter level (unscaled,
-/// three chapter-2 heavies were a 0% fight at level 3; at 0.85/0.75 a pair
-/// of mid-tier enemies was still the worst random fight in the game).
-/// Solo fights are never scaled.
-const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
+/// Per-member hp/damage multiplier for a multi-enemy pack, by pack size
+/// (see packStatMultipliers).
+const Map<int, double> _packStatMultipliers = packStatMultipliers;
 
 /// A Defend face rolled by the party member an enemy is visibly (see
 /// [telegraphTierFor]) about to hit blocks this many times its face value
@@ -195,7 +192,7 @@ const int _ironSkinArmorBonus = 1;
 const StatusEffect _venomousPoison = StatusEffect(
     type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
 
-const int _maxRolls = 3;
+const int _maxRolls = maxRollsPerTurn;
 
 class FightScreen extends ConsumerStatefulWidget {
   const FightScreen({

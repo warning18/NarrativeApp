@@ -221,13 +221,13 @@ ChartGeography chartOf(MapShape shape) => switch (shape) {
       MapShape.continental => chartWorldA,
       MapShape.archipelago => chartWorldB,
       MapShape.delta => chartWorldC,
-      MapShape.story => chartWorldStoryFull,
+      MapShape.story => _chartWorldStoryFull,
     };
 
 /// The story world with the features that have a story role: chart B's
 /// (names, notes, clans), each where the story world puts it
 /// ([storyFeatureAt]); the rest of chart B's stay off it.
-final ChartGeography chartWorldStoryFull = () {
+final ChartGeography _chartWorldStoryFull = () {
   final g = chartWorldStory;
   final seen = <String>{};
   return ChartGeography(

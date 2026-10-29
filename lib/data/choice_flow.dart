@@ -122,7 +122,7 @@ typedef PlaceService = ({
 });
 
 /// The scenes the trainer stands at (only chapter 1's today).
-const Set<String> trainerSceneIds = {'890_trainer'};
+const Set<String> _trainerSceneIds = {'890_trainer'};
 
 /// The story's stops, hubs and errands, worked out once: the queries of
 /// the scene-or-map rule.
@@ -292,7 +292,7 @@ class StoryStops {
     }
 
     for (final node in _story.nodes.values) {
-      if (trainerSceneIds.contains(node.id)) {
+      if (_trainerSceneIds.contains(node.id)) {
         add(PlaceServiceKind.trainer, node.id, node.id, null);
       }
       final settlement = node.settlement;

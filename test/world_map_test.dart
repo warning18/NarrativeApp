@@ -18,6 +18,7 @@ import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/screens/story_graph_screen.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
+import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
 /// ones only let the screen catch up.
@@ -220,10 +221,7 @@ void main() {
         '1000', '2001', '2005', '2010', '2015', '2015_rats',
       ]),
     });
-    tester.view.physicalSize = const Size(420, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1600));
 
     // The main menu's Shroud drifts for ever; still, it lets the test settle.
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -345,10 +343,7 @@ void main() {
       'autosave_story_history': json.encode(['0', '100', '250', '270']),
       'autosave_story_visited': json.encode(['0', '100', '250', '270', '300']),
     });
-    tester.view.physicalSize = const Size(420, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1600));
 
     // The main menu's Shroud drifts for ever; still, it lets the test settle.
     tester.platformDispatcher.accessibilityFeaturesTestValue =

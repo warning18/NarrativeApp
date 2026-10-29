@@ -4,29 +4,16 @@
 // the map that opens its page.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/map_look_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journal_screen.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 void main() {
   testWidgets('the Journey reads, looks out at the world and keeps the story',
@@ -37,42 +24,16 @@ void main() {
     // The flat chart first: the sphere is the default now (v1.350), and the
     // test turns it on from the Layers sheet further down.
     SharedPreferences.setMockInitialValues({chartGlobePrefsKey: false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(
-      ProviderScope(
-          // The generated plan under the marks (the stored city chart has its
-          // own test: journey_city_view_test).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
-          child: const MyApp()),
-    );
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester, overrides: [noCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
-    await _settle(tester);
+    await settleApp(tester);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // No scene over the map: Read opens it full screen, the map button
     // brings the map back.
@@ -105,7 +66,7 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     final after = container.read(storyPlayProvider);
     expect(after.isInExcursion || after.currentNodeId != '2005', isTrue);
     expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
@@ -120,21 +81,21 @@ void main() {
             find.byKey(const Key('journey_detour_scene')).evaluate().length,
         1);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
 
     // The story so far opens from the journal button by the stats: where
     // the party stands, now, the threads (v1.201: no strip under the map).
     expect(find.byKey(const ValueKey('journey_sofar')), findsNothing);
     expect(find.byKey(const Key('journey_level_place')), findsNothing);
     await tester.tap(find.byTooltip('The story so far'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(JournalScreen), findsOneWidget);
     expect(find.byKey(const ValueKey('sofar_page')), findsOneWidget);
     expect(find.byKey(const ValueKey('sofar_where')), findsOneWidget);
     expect(find.byKey(const ValueKey('sofar_now')), findsOneWidget);
     expect(find.text('The Landward Gate'), findsWidgets);
     await tester.pageBack();
-    await _settle(tester);
+    await settleApp(tester);
 
     // The − button on a district looks out at the whole town first
     // (v1.350), with its three level tabs; the world comes next.
@@ -210,15 +171,15 @@ void main() {
     // The calques: the clans' influence over the lands, with its legend;
     // the choice is kept.
     await tester.tap(find.byKey(const Key('journey_layers')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('calque_clans')), findsOneWidget);
     await tester.tap(find.byKey(const Key('calque_clans')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(chartCalqueProvider), ChartCalque.clans);
     // The sheet closed (it can fill the screen, so a tap above it
     // would land on it).
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('journey_clan_legend')), findsOneWidget);
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(prefs!.getString(chartCalquePrefsKey), 'clans');
@@ -226,13 +187,13 @@ void main() {
     // The world as a sphere: turned with a drag, closer with +, a tap
     // picks a place on it; the choice is kept.
     await tester.tap(find.byKey(const Key('journey_layers')));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('journey_globe')));
-    await _settle(tester);
+    await settleApp(tester);
     // The sheet closed (it can fill the screen, so a tap above it
     // would land on it).
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(chartGlobeProvider), isTrue);
     expect(prefs.getBool(chartGlobePrefsKey), isTrue);
     final globe = find.byKey(const ValueKey('journey_globe_canvas'));
@@ -262,7 +223,7 @@ void main() {
     expect(globe, findsOneWidget);
     await tester.runAsync(
         () => container.read(chartGlobeProvider.notifier).choose(false));
-    await _settle(tester);
+    await settleApp(tester);
     expect(globe, findsNothing);
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_recentre')));

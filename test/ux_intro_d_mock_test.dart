@@ -18,7 +18,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
@@ -27,23 +26,8 @@ import 'package:narrative_data_app/widgets/die_3d.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
 import 'package:narrative_data_app/widgets/street_view/street_view.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(
-          ByteData.view(File('assets/fonts/$f').readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 const _bg = Color(0xFF0B0A0D);
 const _cream = Color(0xFFEDE3C8);
@@ -684,7 +668,7 @@ void main() {
   }
 
   testWidgets('storyboard D', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     ui.Image? lastImage;
     if (last != null && File(last).existsSync()) {
       lastImage = await tester.runAsync(() async {
@@ -852,10 +836,7 @@ void main() {
     final total = spans.fold<double>(0, (a, b) => a + b);
     const boardW = 4 * (_frameW + 16) + 16;
     final key = GlobalKey();
-    tester.view.physicalSize = const Size(boardW, 1560);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(boardW, 1560));
     Widget chip(String t, {Color c = _cream}) => Padding(
         padding: const EdgeInsets.only(bottom: 3),
         child: Text(t, style: _serif(12, color: c)));

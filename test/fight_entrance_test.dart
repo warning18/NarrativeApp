@@ -21,18 +21,11 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/widgets/fight_entrance.dart';
 import 'package:narrative_data_app/widgets/fight_spoils_strip.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
         as Map<String, dynamic>)[id] as Map<String, dynamic>;
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
 
 Widget _entrance({bool reduced = false}) => MaterialApp(
       home: MediaQuery(
@@ -135,14 +128,11 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(390, 844));
       await tester.pumpWidget(ProviderScope(
           overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
           child: const MyApp()));
-      await _settle(tester);
+      await settleApp(tester);
       final container =
           ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
       await tester.runAsync(() => container
@@ -164,25 +154,25 @@ void main() {
       navigator.push(MaterialPageRoute<bool>(
           builder: (_) => FightScreen(
               enemyId: 'rat_matriarch', enemy: _enemy('rat_matriarch'))));
-      await _settle(tester);
+      await settleApp(tester);
       expect(find.byKey(const Key('fight_entrance_card')), findsOneWidget);
       expect(find.byKey(const Key('fight_entrance_name')), findsOneWidget);
       await tester.pump(fightEntranceTime);
       await tester.pump();
       expect(find.byKey(const Key('fight_entrance_card')), findsNothing);
       navigator.pop();
-      await _settle(tester);
+      await settleApp(tester);
 
       navigator.push(MaterialPageRoute<bool>(
           builder: (_) =>
               FightScreen(enemyId: 'harbor_rat', enemy: _enemy('harbor_rat'))));
-      await _settle(tester);
+      await settleApp(tester);
       expect(find.byKey(const Key('fight_entrance_card')), findsNothing);
       await tester.tap(find.text('Enter Battle'));
-      await _settle(tester);
+      await settleApp(tester);
       expect(find.byKey(const Key('fight_spoils_strip')), findsNothing);
       await tester.tap(find.byTooltip('Win this fight (edit mode)'));
-      await _settle(tester);
+      await settleApp(tester);
       for (var i = 0;
           i < 80 &&
               find.byKey(const Key('fight_spoils_strip')).evaluate().isEmpty;
@@ -195,7 +185,7 @@ void main() {
                     .onPressed !=
                 null) {
           await tester.tap(find.text('Take'));
-          await _settle(tester);
+          await settleApp(tester);
         }
       }
       expect(find.byKey(const Key('fight_spoils_strip')), findsOneWidget);

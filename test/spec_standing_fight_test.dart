@@ -20,6 +20,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
 import 'skill_fight_harness.dart';
+import 'support/pump.dart';
 
 /// One round of a warrior holding [specIds], with [standings] with the
 /// clans, whose only face is an Attack, against a sturdy thug; then the log.
@@ -46,10 +47,7 @@ Future<void> _playAttackRound(WidgetTester tester, List<String> specIds,
       },
     }),
   });
-  tester.view.physicalSize = const Size(600, 1600);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(600, 1600));
 
   await tester.pumpWidget(ProviderScope(
       overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],

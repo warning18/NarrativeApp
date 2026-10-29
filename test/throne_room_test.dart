@@ -20,6 +20,7 @@ import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/throne_room.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/pump.dart';
 
 Map<String, dynamic> _json(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -60,10 +61,7 @@ void main() {
       {required String language, required PlayerSession session}) async {
     SharedPreferences.setMockInitialValues(
         {'app_language': language, 'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 780);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 780));
     final container = ProviderContainer();
     addTearDown(container.dispose);
     container.read(appLanguageProvider);

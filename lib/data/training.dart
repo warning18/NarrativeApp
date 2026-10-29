@@ -14,7 +14,7 @@ import 'dart:math';
 import 'signs.dart' show SignRarity;
 
 /// How many offers a pick brings.
-const int statPickOfferCount = 3;
+const int _statPickOfferCount = 3;
 
 /// The abilities a path's gains may name (the session's own names). Base
 /// damage and health are not offered: the damage stat and Constitution
@@ -152,7 +152,7 @@ List<TrainingPath> _drawThree({
 int statPickPointsOf(SignRarity tier) => tier.index + 1;
 
 /// The odds (out of 100) of each rarity of a pick, before Luck.
-const Map<SignRarity, double> statPickBaseOdds = {
+const Map<SignRarity, double> _statPickBaseOdds = {
   SignRarity.common: 90,
   SignRarity.rare: 8,
   SignRarity.epic: 1.6,
@@ -160,9 +160,9 @@ const Map<SignRarity, double> statPickBaseOdds = {
 };
 
 /// Each point of Luck, up to this many, moves 1% of a pick's odds from
-/// Common up: [statPickLuckShares] of it to each rarer tier.
+/// Common up: [_statPickLuckShares] of it to each rarer tier.
 const int statPickLuckCap = 15;
-const Map<SignRarity, double> statPickLuckShares = {
+const Map<SignRarity, double> _statPickLuckShares = {
   SignRarity.rare: 0.6,
   SignRarity.epic: 0.3,
   SignRarity.heroic: 0.1,
@@ -173,9 +173,9 @@ const Map<SignRarity, double> statPickLuckShares = {
 Map<SignRarity, double> statPickOdds(int luck) {
   final l = luck.clamp(0, statPickLuckCap).toDouble();
   return {
-    SignRarity.common: statPickBaseOdds[SignRarity.common]! - l,
+    SignRarity.common: _statPickBaseOdds[SignRarity.common]! - l,
     for (final tier in [SignRarity.rare, SignRarity.epic, SignRarity.heroic])
-      tier: statPickBaseOdds[tier]! + l * statPickLuckShares[tier]!,
+      tier: _statPickBaseOdds[tier]! + l * _statPickLuckShares[tier]!,
   };
 }
 
@@ -185,7 +185,7 @@ double statPickExpectedPoints(int luck) => statPickOdds(luck)
     .fold(0.0, (sum, e) => sum + e.value / 100 * statPickPointsOf(e.key));
 
 /// A pick's rarity, drawn for a character with [luck].
-SignRarity drawStatPickTier(int luck, Random random) {
+SignRarity _drawStatPickTier(int luck, Random random) {
   final odds = statPickOdds(luck);
   var roll = random.nextDouble() * 100;
   for (final tier in [SignRarity.heroic, SignRarity.epic, SignRarity.rare]) {
@@ -296,7 +296,7 @@ List<StatPickOffer> drawStatPick({
     for (final p in paths.values)
       if (p.gains.isNotEmpty) p
   ];
-  if (usable.length < statPickOfferCount) return const [];
+  if (usable.length < _statPickOfferCount) return const [];
   // The paths warded at the Warding Cairn (camp_rolls.dart) are left out,
   // unless too few would be left to draw from.
   if (bannedPaths.isNotEmpty) {
@@ -304,7 +304,7 @@ List<StatPickOffer> drawStatPick({
       for (final p in usable)
         if (!bannedPaths.contains(p.id)) p
     ];
-    if (open.length >= statPickOfferCount) usable = open;
+    if (open.length >= _statPickOfferCount) usable = open;
   }
   final chosen = _drawThree(
       paths: usable,
@@ -338,7 +338,7 @@ List<StatPickOffer> drawStatPick({
     picked.add(path);
     gainOf.add(gain.key);
   }
-  final rarity = tier ?? drawStatPickTier(luck, random);
+  final rarity = tier ?? _drawStatPickTier(luck, random);
   return [
     for (var i = 0; i < picked.length; i++)
       _offerOf(picked[i], gainOf[i], rarity, random),

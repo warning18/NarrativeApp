@@ -212,3 +212,26 @@ Estimate: waves 0 to 2b are about 1,500 lines removed and about 750 changed in a
 ## 5. What QA added to the repository
 
 `tool/qa_unused.py`, `qa_unused_strings.py`, `qa_unused_assets.py`, `qa_unused_fields.py`, `qa_duplicates.py`, `qa_size.py` and their shared `qa_dart_scan.py` (read-only analysis, run from the repo root), and the raw outputs in `docs/qa/code-cleanup/`. The extra lint run was a throwaway `analysis_options.yaml` and was reverted; its counts are in section 2.1 and 2.5.
+
+## 6. Status after the cleanup session (v1.650.0; lists in `code-cleanup/` refreshed)
+
+What the cleanup session did, by wave (all without a behaviour change; the version is the release that carried it):
+
+| Wave | Done | Version |
+|---|---|---|
+| 1 | seven lints fixed by `dart fix` (277 sites in 118 files) and enabled in `analysis_options.yaml`; the three generated chart tables are exempt from `prefer_const_constructors` (const would make their lists unmodifiable: Core's call) | v1.646 |
+| 2, dead symbols | 26 in Core's files, 6 in UX's | v1.623, v1.624 |
+| 2, test-only symbols | Core's, decided symbol by symbol: `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`, `QuestReadiness`, `learnSpell`, `startingTotals`, the three `SpellSpec` target getters, `briarReflect`, `longVigilMend`, `censerBurn`, `ModeNudgeNotifier`, `dayPhase`, `hourOfDay`, `hourOfDayProvider` (tests moved onto the live code, none weakened) | v1.632, v1.650 |
+| 2, strings | 68 keys (the first scan said 71; the 3 `patron_kind_*` are built inside an interpolated string, and the scanner is fixed) | v1.628 |
+| 2, gamedata fields | `actionType`, `locationID`, `stancePlayer`, then `flagToAdd` once Core set the `<quest>_accepted` flag in code (v1.639) | v1.633, v1.644 |
+| 2, images | none: the `chests/*_open.png` icons are loaded at run time (a false positive) | |
+| 2b, file-only names made private | `lib/combat` (120), `lib/data` (74 + 124), `lib/providers`, `gamedata`, `models` (58) | v1.629, v1.647, v1.648, v1.649 |
+
+Findings the cleanup turned up: the `<quest>_accepted` flag was never set by the game (fixed by Core, v1.639); a scanner blind spot for keys built inside an interpolated string (fixed); a scanner false positive on the opened-chest icons.
+
+What is left (the raw lists show it):
+- **2b in `lib/widgets`, `lib/screens`, `lib/utils`** (about 120 names): held while UX has open work in those folders.
+- **Test-only symbols still waiting for an owner**: UX's `SuitorCard`, `TitlesSection`, `ClansSection`; the rest of the list in `test-only-symbols.md` (61 rows) was not decided.
+- **Dead symbols**: `projectileStyles`, `scalingStatAbbrev`, `costLabel` (shared files), `SubClan.favourFor`, `EventVariant.newsFor`, `SimGrowthTables.offerTables`, and two new providers (`clanPowerRankingProvider`, `regionHoldersProvider`, waiting for UX's chips) are for their owners.
+- **`lib/data` still lists about 60 file-only names**: they are exposed by a public signature (the `library_private_types_in_public_api` lint) or kept for a test, so they stay public.
+- Waves 3 to 5 (test boilerplate, UI duplicates, simulator constants, big files, performance) belong to their owners and are untouched.

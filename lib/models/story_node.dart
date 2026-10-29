@@ -570,7 +570,7 @@ const String campErrandAttack = 'attack';
 
 /// The kinds a camp errand may name instead of `true` (see
 /// [StoryNode.campErrandKind]).
-const Set<String> campErrandKinds = {campErrandAttack};
+const Set<String> _campErrandKinds = {campErrandAttack};
 
 class StoryNode {
   const StoryNode({
@@ -670,8 +670,8 @@ class StoryNode {
       },
       // `true`, or a kind's name (campErrandKinds): `"attack"`.
       campErrand: json['campErrand'] == true ||
-          campErrandKinds.contains(json['campErrand']),
-      campErrandKind: campErrandKinds.contains(json['campErrand'])
+          _campErrandKinds.contains(json['campErrand']),
+      campErrandKind: _campErrandKinds.contains(json['campErrand'])
           ? json['campErrand'] as String
           : '',
       showIfFlags:
@@ -692,7 +692,7 @@ class StoryNode {
   final bool campErrand;
 
   /// What kind of [campErrand] it is: '' for a companion's loyalty errand,
-  /// or one of [campErrandKinds] ([campErrandAttack]: an alert, a district
+  /// or one of [_campErrandKinds] ([campErrandAttack]: an alert, a district
   /// of the town under attack, wave 18 step 2; nothing sets it off yet).
   /// Written `"campErrand": "attack"`.
   final String campErrandKind;

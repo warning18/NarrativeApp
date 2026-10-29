@@ -287,13 +287,13 @@ StoryChoice _plain(String text, String textFr,
     );
 
 /// A toll or a bribe in [chapter].
-int tollFor(int chapter) => 15 * max(1, chapter);
+int _tollFor(int chapter) => 15 * max(1, chapter);
 
 /// A guide's price in [chapter].
-int guideFeeFor(int chapter) => 10 * max(1, chapter);
+int _guideFeeFor(int chapter) => 10 * max(1, chapter);
 
 /// What a thief's cache holds in [chapter].
-int thiefCacheFor(int chapter) => 20 * max(1, chapter);
+int _thiefCacheFor(int chapter) => 20 * max(1, chapter);
 
 final List<_Scene> _escortScenes = [
   _Scene(
@@ -368,9 +368,9 @@ final List<_Scene> _escortScenes = [
       'Une chaîne en travers de la route, une cabane, et quatre hommes qui ont décidé que la route était à eux. Ils fixent un prix par chariot.',
     ],
     [
-      _Option((ch, foes) => _plain('Pay the toll (${tollFor(ch)} gold)',
-          'Payer le péage (${tollFor(ch)} or)',
-          goldMod: -tollFor(ch))),
+      _Option((ch, foes) => _plain('Pay the toll (${_tollFor(ch)} gold)',
+          'Payer le péage (${_tollFor(ch)} or)',
+          goldMod: -_tollFor(ch))),
       _Option(
           (ch, foes) => _sneak('Talk them out of it (Charisma)',
               'Les en dissuader (Charisme)', 'charisma', _dc(ch), foes()),
@@ -395,7 +395,7 @@ final List<_Scene> _escortScenes = [
               'Les suivre jusqu’à leur camp (Perception)',
               'perception',
               _dc(ch),
-              goldMod: thiefCacheFor(ch)),
+              goldMod: _thiefCacheFor(ch)),
           const StepOutcome(failCargo: -15)),
       _Option((ch, foes) => _plain('Raise the alarm', 'Donner l’alarme'),
           const StepOutcome(cargo: -5)),
@@ -481,9 +481,9 @@ final List<_Scene> _deliveryScenes = [
               'Passer au bagout (Charisme)', 'charisma', _dc(ch)),
           const StepOutcome(failDays: 1)),
       _Option((ch, foes) => _plain(
-          'Pay them to look away (${tollFor(ch)} gold)',
-          'Les payer pour qu’ils regardent ailleurs (${tollFor(ch)} or)',
-          goldMod: -tollFor(ch))),
+          'Pay them to look away (${_tollFor(ch)} gold)',
+          'Les payer pour qu’ils regardent ailleurs (${_tollFor(ch)} or)',
+          goldMod: -_tollFor(ch))),
       _Option(
           (ch, foes) =>
               _plain('Wait your turn (a day)', 'Attendre votre tour (un jour)'),
@@ -538,9 +538,9 @@ final List<_Scene> _deliveryScenes = [
     [
       _Option(
           (ch, foes) => _plain(
-              'Pay the guide (${guideFeeFor(ch)} gold, saves a day)',
-              'Payer le guide (${guideFeeFor(ch)} or, un jour gagné)',
-              goldMod: -guideFeeFor(ch)),
+              'Pay the guide (${_guideFeeFor(ch)} gold, saves a day)',
+              'Payer le guide (${_guideFeeFor(ch)} or, un jour gagné)',
+              goldMod: -_guideFeeFor(ch)),
           const StepOutcome(days: -1)),
       _Option((ch, foes) =>
           _plain('Find your own way', 'Trouver votre propre chemin')),

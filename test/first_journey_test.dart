@@ -29,6 +29,7 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/tutorial_provider.dart';
 import 'package:narrative_data_app/tutorial/guide_tour.dart';
 import 'package:narrative_data_app/tutorial/tutorial_topics.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -232,10 +233,7 @@ Future<ProviderContainer> _continueSave(
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
-  tester.view.physicalSize = const Size(420, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(420, 900));
   if (!animate) {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);

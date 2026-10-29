@@ -17,14 +17,7 @@ import 'package:narrative_data_app/providers/home_tab_provider.dart'
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/choice_card.dart' show ChoiceCard;
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('an errand opens as a sheet that holds its own choices',
@@ -33,18 +26,15 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 740);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 740));
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -55,15 +45,15 @@ void main() {
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The wharf, a hub: its errands are in the scene view, under a chip for
     // each kind.
     play.jumpTo('2015');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 3));
     // What arriving opens over the game (the new place's card) is closed.
     for (var i = 0; i < 3; i++) {
@@ -85,7 +75,7 @@ void main() {
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     final here = container.read(storyPlayProvider).currentNodeId;
     expect(here, '2015_dockside');
 
@@ -105,7 +95,7 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     tester.view.physicalSize = const Size(320, 568);
-    await _settle(tester);
+    await settleApp(tester);
     expect(sheet, findsOneWidget);
     expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
 

@@ -16,18 +16,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/combat/dice_faces.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -173,10 +166,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1600));
 
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -184,7 +174,7 @@ void main() {
       container: container,
       child: const MaterialApp(home: DiceLoadoutScreen()),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
@@ -205,12 +195,12 @@ void main() {
             },
           },
         })));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The third Shield Bash (face 5) is past its limit: the square carries a
     // warning, and the die's panel says it in full once the face is picked.
     await tester.tap(find.byKey(const Key('face_slot_5')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.textContaining('Over its limit'), findsOneWidget);
 
     // Face 3 (Guard) can't take a third Shield Bash; Stoneskin it can. A
@@ -218,7 +208,7 @@ void main() {
     await tester.tap(find.byKey(const Key('face_slot_3')));
     await tester.pump(const Duration(milliseconds: 60));
     await tester.tap(find.byKey(const Key('face_slot_3')));
-    await _settle(tester);
+    await settleApp(tester);
     final bash = tester.widget<ListTile>(
         find.byKey(const Key('pick_skill_warrior_shield_bash')));
     expect(bash.enabled, isFalse);
@@ -241,7 +231,7 @@ void main() {
             .diceSkillAssignments['starter_die']?['3'],
         isNull);
     await tester.tap(find.byKey(const Key('face_set_button')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(
         container
             .read(playerSessionProvider)

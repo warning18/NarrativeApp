@@ -115,27 +115,21 @@ extension _FightQueries on _FightScreenState {
   ) {
     final availableSkills = _availableSkillsFor(actor, skills);
     final element = _elementFor(face, availableSkills);
-    final elementalBonus =
-        _elementalDamageBonus(element, actor.equippedItemIds, items);
-    final scalingBonus = equipmentScalingBonusFor(
-      actor.equippedItemIds,
-      items,
-      strength: actor.strength,
-      dexterity: actor.dexterity,
-      constitution: actor.constitution,
-      intelligence: actor.intelligence,
-    );
-    final alignedBonus =
-        alignmentGearBonusFor(actor.equippedItemIds, items, _alignmentLabel);
     // The day's sky and the ground's anomaly dampen or feed the element
     // (v1.208, v1.241).
     return _groundDamage(
-        actor.baseDamage +
-            equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-            scalingBonus.damageBonus +
-            alignedBonus.damageBonus +
-            actor.gear.attackDamage +
-            elementalBonus,
+        strikeDamageFor(
+          baseDamage: actor.baseDamage,
+          equippedItemIds: actor.equippedItemIds,
+          items: items,
+          element: element,
+          gearAttack: actor.gear.attackDamage,
+          strength: actor.strength,
+          dexterity: actor.dexterity,
+          constitution: actor.constitution,
+          intelligence: actor.intelligence,
+          alignmentLabel: _alignmentLabel,
+        ),
         element,
         byParty: true);
   }

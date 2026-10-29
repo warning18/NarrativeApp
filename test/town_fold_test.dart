@@ -13,21 +13,14 @@ import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Future<void> _closeDialogs(WidgetTester tester) async {
   final button = find.descendant(
       of: find.byType(AlertDialog), matching: find.byType(FilledButton));
   while (button.evaluate().isNotEmpty) {
     await tester.tap(button.first, warnIfMissed: false);
-    await _settle(tester);
+    await settleApp(tester);
   }
 }
 
@@ -45,9 +38,9 @@ void main() {
     tester.view.physicalSize = const Size(390, 844);
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     final play = container.read(storyPlayProvider.notifier);
@@ -60,13 +53,13 @@ void main() {
           'professionId': 'warrior',
           'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
         })));
-    await _settle(tester);
+    await settleApp(tester);
     final scene = find.textContaining('self-satisfied ranks');
     final unfold = find.text('Read the scene again');
 
     Future<void> goTo(String nodeId) async {
       play.jumpTo(nodeId);
-      await _settle(tester);
+      await settleApp(tester);
       await _closeDialogs(tester);
     }
 
@@ -85,7 +78,7 @@ void main() {
 
     // Entering opens the town: its card, its tabs and its lists.
     await tester.tap(enter);
-    await _settle(tester);
+    await settleApp(tester);
     expect(scene, findsNothing);
     expect(card, findsOneWidget);
     expect(bazaar, findsOneWidget);
@@ -101,12 +94,12 @@ void main() {
     // One tab at a time: the townsfolk, without the shops.
     await tester.ensureVisible(find.byKey(const Key('hub_tab_people')));
     await tester.tap(find.byKey(const Key('hub_tab_people')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(bazaar, findsNothing);
     expect(find.text('Take the harbor master’s job'), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('hub_tab_all')));
     await tester.tap(find.byKey(const Key('hub_tab_all')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(bazaar, findsOneWidget);
 
     // Back from one of the town's scenes: straight onto the town.
@@ -119,11 +112,11 @@ void main() {
 
     // Reread opens the scene again, and one tap goes back in.
     await tester.tap(find.byKey(const Key('hub_reread')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(scene, findsOneWidget);
     expect(find.text('Back to Smugglers’ Wharf'), findsOneWidget);
     await tester.tap(enter);
-    await _settle(tester);
+    await settleApp(tester);
     expect(scene, findsNothing);
     expect(card, findsOneWidget);
 
@@ -132,7 +125,7 @@ void main() {
     container.read(pendingAftermathProvider.notifier).state =
         'The dust settled over the stalls.';
     play.jumpTo('2015');
-    await _settle(tester);
+    await settleApp(tester);
     await _closeDialogs(tester);
     expect(unfold, findsOneWidget);
     expect(find.text('The dust settled over the stalls.'), findsOneWidget);

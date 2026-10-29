@@ -19,14 +19,7 @@ import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/expedition_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _zone(String id) =>
     (jsonDecode(File('assets/gamedata/zones.json').readAsStringSync())
@@ -59,13 +52,10 @@ void main() {
     // The drawn stages, not the zones' written roads (expedition_steps.json),
     // whatever that file holds: an empty saved copy of it.
     SharedPreferences.setMockInitialValues({'gamedb_expedition_steps': '{}'});
-    tester.view.physicalSize = const Size(420, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 900));
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -92,20 +82,20 @@ void main() {
               zone: _zone('z_fever_bark'),
               random: Random(deliverySeed),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('expedition_deadline_gauge')),
         findsOneWidget);
     expect(find.text('Days on the road: 0 of 6'), findsOneWidget);
     expect(
         find.textContaining('Destination: the Reckoning Wall'), findsOneWidget);
     await tester.tap(find.textContaining('(a day)').first);
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text('Days on the road: 2 of 6'), findsOneWidget);
     expect(find.textContaining('That cost a day: 2 of 6 days gone.'),
         findsOneWidget);
     expect(tester.takeException(), isNull);
     navigator.pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // An escort: the wagons' load, and what a choice cost it.
     final escortSeed =
@@ -116,7 +106,7 @@ void main() {
               zone: _zone('z_salt_road'),
               random: Random(escortSeed),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     expect(
         find.byKey(const ValueKey('expedition_cargo_gauge')), findsOneWidget);
     expect(find.text('Wagons’ load 100%'), findsOneWidget);
@@ -125,13 +115,13 @@ void main() {
             ? find.text('Make room for them (a crate left)')
             : find.text('Raise the alarm');
     await tester.tap(costly);
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text('Wagons’ load 95%'), findsOneWidget);
     expect(find.text('The wagons lost 5% of their load (95% left).'),
         findsOneWidget);
     expect(tester.takeException(), isNull);
     navigator.pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // An empty purse at the checkpoint or the shepherd's: the payment is
     // shut and says why; the other ways stay open.
@@ -146,7 +136,7 @@ void main() {
               zone: _zone('z_fever_bark'),
               random: Random(paidSeed),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     final shut = find.textContaining('not enough gold (0 in the purse)');
     expect(shut, findsOneWidget);
     ElevatedButton button(Finder label) => tester.widget<ElevatedButton>(
@@ -166,7 +156,7 @@ void main() {
 
     final before = clock();
     await tester.binding.handlePopRoute();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text(trFor(AppLanguage.en, 'expedition_retreat_message')),
         findsOneWidget);
     expect(clock(), before + 2);

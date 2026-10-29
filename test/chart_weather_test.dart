@@ -4,36 +4,24 @@
 // the sky, and a town is laid out for its climate.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/data/chart_globe.dart';
 import 'package:narrative_data_app/data/city_plan.dart';
 import 'package:narrative_data_app/data/climate.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/climate_provider.dart';
 import 'package:narrative_data_app/providers/map_look_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart';
 import 'package:narrative_data_app/widgets/chart_weather.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 ChartMapPainter _painter(ChartCalque calque, {GlobeView? globe}) =>
     ChartMapPainter(
@@ -286,42 +274,16 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(
-      ProviderScope(
-          // These test the streets' marks: the generated plan, not the stored
-          // city chart (board 15, v1.355).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
-          child: const MyApp()),
-    );
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester, overrides: [noCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
-    await _settle(tester);
+    await settleApp(tester);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
 
     // The sky over the party, named in a chip on the place map.
@@ -335,26 +297,26 @@ void main() {
     // Out to the world: the weather layer moves over the chart until it
     // is turned off, and the choice is kept.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await _settle(tester);
+    await settleApp(tester);
     // A city looked out from shows the whole town first (v1.350), then the
     // land.
     if (find.byKey(const Key('journey_town_zoom_in')).evaluate().isNotEmpty) {
       await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-      await _settle(tester);
+      await settleApp(tester);
     }
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byType(ChartWeather), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_layers')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_weather')), findsOneWidget);
     // With the weather on, it can be kept to the world zoom; the choice
     // is kept.
     expect(find.byKey(const Key('journey_weather_world_only')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_weather_world_only')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(chartWeatherWorldOnlyProvider), isTrue);
     await tester.tap(find.byKey(const Key('journey_weather')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(chartWeatherProvider), isFalse);
     expect(find.byKey(const Key('journey_weather_world_only')), findsNothing);
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
@@ -364,12 +326,12 @@ void main() {
     await tester.scrollUntilVisible(find.byKey(const Key('calque_height')), 80,
         scrollable: find.byType(Scrollable).last);
     await tester.tap(find.byKey(const Key('calque_height')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(chartCalqueProvider), ChartCalque.height);
     // The sheet closed (it can fill the screen, so a tap above it
     // would land on it).
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(ChartWeather), findsNothing);
     expect(tester.takeException(), isNull);
   });

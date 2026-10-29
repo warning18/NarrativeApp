@@ -7,7 +7,7 @@ const String campFoundedFlag = 'camp_founded';
 
 /// Whether [nodeId] is the place [placeNodeId] itself or one of its own
 /// scenes ("2015_kelda" belongs to "2015"), which all lead back to it.
-bool isWithinPlace(String nodeId, String placeNodeId) =>
+bool _isWithinPlace(String nodeId, String placeNodeId) =>
     nodeId == placeNodeId || nodeId.startsWith('${placeNodeId}_');
 
 /// Whether reaching the settlement at [settlementNodeId] from
@@ -19,7 +19,7 @@ bool isWithinPlace(String nodeId, String placeNodeId) =>
 bool isSettlementArrival(String settlementNodeId, String? previousNodeId,
         {List<String>? history}) =>
     previousNodeId != null &&
-    (!isWithinPlace(previousNodeId, settlementNodeId) ||
+    (!_isWithinPlace(previousNodeId, settlementNodeId) ||
         (history != null && !history.contains(settlementNodeId)));
 
 /// The town or camp node the player stands in at [currentNodeId]: the node
@@ -39,14 +39,14 @@ StoryNode? settlementNodeAt(String currentNodeId, StoryData story) {
 /// its way out, like the Reliquary Quarter's thread); by the scene's name
 /// otherwise.
 bool isLocalChoice(StoryChoice choice, String hubNodeId, [StoryData? story]) {
-  if (story == null) return isWithinPlace(choice.nextId, hubNodeId);
-  return leadsBackTo(choice.nextId, hubNodeId, story);
+  if (story == null) return _isWithinPlace(choice.nextId, hubNodeId);
+  return _leadsBackTo(choice.nextId, hubNodeId, story);
 }
 
 /// Whether the story from [startId] comes back to [hubNodeId] within
 /// [depth] scenes, following every way on (success, failure and defeat
 /// branches alike).
-bool leadsBackTo(String startId, String hubNodeId, StoryData story,
+bool _leadsBackTo(String startId, String hubNodeId, StoryData story,
     {int depth = 6}) {
   if (startId == hubNodeId) return true;
   final seen = <String>{startId};

@@ -10,14 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('a companion learns from their own list', (tester) async {
@@ -34,7 +27,7 @@ void main() {
       container: container,
       child: const MaterialApp(home: SkillsScreen(allyId: 'sable')),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
@@ -46,7 +39,7 @@ void main() {
                 .toJson(),
           ],
         })));
-    await _settle(tester);
+    await settleApp(tester);
     // No tabs, no essence: their points and their class's skills.
     expect(find.byKey(const Key('skills_tab_tree')), findsNothing);
     expect(find.byKey(const Key('purse_essence')), findsNothing);
@@ -55,7 +48,7 @@ void main() {
     expect(learn, findsOneWidget);
     const id = 'rogue_backstab';
     await tester.tap(learn.first);
-    await _settle(tester);
+    await settleApp(tester);
     final ally = container
         .read(playerSessionProvider)
         .recruitedAllies

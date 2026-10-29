@@ -20,42 +20,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'support/fonts.dart';
 
 const smokeSizes = [Size(360, 740), Size(320, 568)];
 
-/// The bundled fonts, and the SDK's Material icons when they can be found (a
-/// test font draws them as boxes), loaded once.
-Future<void> loadSmokeFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final root = Platform.environment['FLUTTER_ROOT'] ??
-      '${Platform.environment['HOME']}/flutter';
-  final icons = File(
-      '$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
-}
+/// The bundled fonts, and the SDK's Material icons when they can be found.
+Future<void> loadSmokeFonts() => loadAppFonts();
 
 /// One thing to show.
 class SmokeCase {

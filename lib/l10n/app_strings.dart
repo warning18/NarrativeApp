@@ -670,6 +670,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Power',
     AppLanguage.fr: 'Puissance',
   },
+  'rank_plate_label': {
+    AppLanguage.en: 'Rank {rank}, {arrow}',
+    AppLanguage.fr: 'Rang {rank}, {arrow}',
+  },
+  'rank_arrow_up': {
+    AppLanguage.en: 'climbing since the last chapter',
+    AppLanguage.fr: 'en hausse depuis le dernier chapitre',
+  },
+  'rank_arrow_down': {
+    AppLanguage.en: 'falling since the last chapter',
+    AppLanguage.fr: 'en baisse depuis le dernier chapitre',
+  },
+  'rank_arrow_steady': {
+    AppLanguage.en: 'steady since the last chapter',
+    AppLanguage.fr: 'stable depuis le dernier chapitre',
+  },
+  'rank_of_total': {
+    AppLanguage.en: 'Rank {rank} of {total} in power',
+    AppLanguage.fr: 'Rang {rank} sur {total} en puissance',
+  },
+  'rank_power_change': {
+    AppLanguage.en: '{delta} power since the last chapter',
+    AppLanguage.fr: '{delta} de puissance depuis le dernier chapitre',
+  },
+
   'power_tier_minor': {
     AppLanguage.en: 'Minor',
     AppLanguage.fr: 'Mineure',

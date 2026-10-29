@@ -31,10 +31,10 @@ enum PatronKind { clan, tribe, otherworld, lost }
 /// many passives as come.
 enum SignSlot { strike, guard, mend, spell, passive }
 
-/// How strong a sign was drawn (see [signRarityMultipliers]).
+/// How strong a sign was drawn (see [_signRarityMultipliers]).
 enum SignRarity { common, rare, epic, heroic }
 
-const Map<SignRarity, double> signRarityMultipliers = {
+const Map<SignRarity, double> _signRarityMultipliers = {
   SignRarity.common: 1.0,
   SignRarity.rare: 1.5,
   SignRarity.epic: 2.0,
@@ -62,7 +62,7 @@ const int favourRarityCap = 5;
 const int maxSignLevel = 5;
 
 /// Each level past the first adds this share of the sign's value again.
-const double signLevelStep = 0.5;
+const double _signLevelStep = 0.5;
 
 /// However rare and raised, a chance on a sign never passes this.
 const int signChanceCap = 60;
@@ -82,7 +82,7 @@ const double returningPatronChance = 0.6;
 const double tribeOfferWeight = 0.5;
 
 /// Signs taken from a patron for each favour level with them.
-const int favourPerLevel = 3;
+const int _favourPerLevel = 3;
 const int maxFavourLevel = 5;
 
 /// The Choir (angels) and the Pit (demons): their signs are vows and pacts.
@@ -93,14 +93,14 @@ const String pitPatronId = 'pit';
 const int otherworldAlignmentShift = 3;
 
 /// A Choir vow falls silent below this alignment score.
-const int vowAlignmentFloor = 0;
+const int _vowAlignmentFloor = 0;
 
 /// A pact's curse lasts this many fights when its record names none.
 const int defaultPactFights = 3;
 
 /// A low-health sign's bonus holds while health is under this share of
 /// the maximum.
-const double signLowHealthShare = 0.35;
+const double _signLowHealthShare = 0.35;
 
 /// Odds a won Elite fight leaves a drop of Titan's Blood (a hunt always
 /// does).
@@ -276,7 +276,7 @@ enum SignEffectKind {
 /// [SignEffectKind.crowsPrice]).
 const int crowsPriceMaxHits = 10;
 
-SignEffectKind? signEffectKindNamed(String? name) {
+SignEffectKind? _signEffectKindNamed(String? name) {
   for (final kind in SignEffectKind.values) {
     if (kind.name == name) return kind;
   }
@@ -362,7 +362,7 @@ class SignEffect {
 
   /// [json] read, or null when its kind isn't one the game knows.
   static SignEffect? tryParse(Map<String, dynamic> json) {
-    final kind = signEffectKindNamed(json['kind']?.toString());
+    final kind = _signEffectKindNamed(json['kind']?.toString());
     if (kind == null) return null;
     int number(String key) => (json[key] as num?)?.round() ?? 0;
     final status = _statusNamed(json['status']?.toString()) ??
@@ -421,8 +421,8 @@ class SignEffect {
 /// A sign's worth at [rarity] and [level]: the rarity's multiplier, then
 /// half the value again for each level past the first.
 double signPower(SignRarity rarity, int level) =>
-    signRarityMultipliers[rarity]! *
-    (1 + signLevelStep * (level.clamp(1, maxSignLevel) - 1));
+    _signRarityMultipliers[rarity]! *
+    (1 + _signLevelStep * (level.clamp(1, maxSignLevel) - 1));
 
 // --- Pacts ----------------------------------------------------------------
 
@@ -431,7 +431,7 @@ double signPower(SignRarity rarity, int level) =>
 /// good.
 enum PactCurse { enemyDamagePercent, startHealthPercentLoss, goldPercentLoss }
 
-PactCurse? pactCurseNamed(String? name) {
+PactCurse? _pactCurseNamed(String? name) {
   for (final curse in PactCurse.values) {
     if (curse.name == name) return curse;
   }
@@ -453,7 +453,7 @@ class SignPact {
   /// editor leaves, an unknown curse).
   static SignPact? tryParse(Object? raw) {
     if (raw is! Map) return null;
-    final curse = pactCurseNamed(raw['curse']?.toString());
+    final curse = _pactCurseNamed(raw['curse']?.toString());
     if (curse == null) return null;
     return SignPact(
       curse: curse,
@@ -830,7 +830,7 @@ int signPicksFor(int levelBefore, int levelAfter) {
 
 /// The favour level [favour] signs taken from a patron add up to.
 int favourLevelFor(int favour) =>
-    min(maxFavourLevel, max(0, favour) ~/ favourPerLevel);
+    min(maxFavourLevel, max(0, favour) ~/ _favourPerLevel);
 
 /// One card's odds of each rarity (out of 100): each point of [luck] moves
 /// 1% from Common to Rare (up to [luckRarityCap]), each [favourLevel] 1%
@@ -941,16 +941,16 @@ bool closedThisLife(
 
 /// The Shroud's boon (Lysa's arc, docs/proposals/lysa-arc.md): her blood
 /// on the piece wakes it. Given, not drawn ([SignDef.storyOnly]), at
-/// [shroudBloodRarity], once [shroudBloodFlag] is set; its own cost is the
+/// [shroudBloodRarity], once [_shroudBloodFlag] is set; its own cost is the
 /// Void's hold on the character (the sign's negative max health).
 const String shroudBloodSignId = 'open_hand_passive_shroud_blood';
-const String shroudBloodFlag = 'lysa_sacrificed';
+const String _shroudBloodFlag = 'lysa_sacrificed';
 const SignRarity shroudBloodRarity = SignRarity.heroic;
 
 /// [held] with the Shroud's boon given when [flags] call for it and it is
 /// not held yet.
 List<HeldSign> withStoryBoons(List<HeldSign> held, Iterable<String> flags) =>
-    flags.contains(shroudBloodFlag) &&
+    flags.contains(_shroudBloodFlag) &&
             !held.any((h) => h.signId == shroudBloodSignId)
         ? [
             ...held,
@@ -1114,13 +1114,13 @@ int alignmentShiftFor(SignDef sign) => switch (sign.patronId) {
     };
 
 /// A Choir vow keeps only while the alignment score is at or above
-/// [vowAlignmentFloor]; below it, the sign falls silent.
+/// [_vowAlignmentFloor]; below it, the sign falls silent.
 bool vowSilent(SignDef sign, int alignment) =>
-    sign.patronId == choirPatronId && alignment < vowAlignmentFloor;
+    sign.patronId == choirPatronId && alignment < _vowAlignmentFloor;
 
 /// Whether [held]'s gift works now: not a silent vow, no pact still
 /// running.
-bool signGiftActive(HeldSign held, SignDef sign, int alignment) =>
+bool _signGiftActive(HeldSign held, SignDef sign, int alignment) =>
     !vowSilent(sign, alignment) && !held.pactPending;
 
 /// [held] one fight on: every running pact one fight shorter.
@@ -1404,7 +1404,7 @@ class SignEffects {
 
   /// The damage bonus (%) on the player's strikes this moment: the
   /// Attack-face bonus when [attackFace], a low-health sign under
-  /// [signLowHealthShare] of [maxHealth], a first-round sign in round 1.
+  /// [_signLowHealthShare] of [maxHealth], a first-round sign in round 1.
   int strikePercentFor({
     required bool attackFace,
     required int currentHealth,
@@ -1412,7 +1412,7 @@ class SignEffects {
     required bool firstRound,
   }) =>
       (attackFace ? strikeDamagePercent : 0) +
-      (currentHealth < maxHealth * signLowHealthShare
+      (currentHealth < maxHealth * _signLowHealthShare
           ? lowHealthDamagePercent
           : 0) +
       (firstRound ? firstRoundDamagePercent : 0);
@@ -1743,7 +1743,7 @@ SignEffects signEffectsFor(
       }
     }
     if (vowSilent(sign, alignment)) silentVows++;
-    if (!signGiftActive(h, sign, alignment)) continue;
+    if (!_signGiftActive(h, sign, alignment)) continue;
     for (final raw in sign.effects) {
       add(raw.scaled(h.rarity, h.level), sign.id);
     }
@@ -1837,7 +1837,7 @@ String _statName(String stat, AppLanguage language) {
 
 /// [text] with its `{v}` filled by [value]: a `+{v}` takes the value's own
 /// sign, so a brand's -10 reads "-10% gold", never "+-10%".
-String fillSignedValue(String text, num value) => text
+String _fillSignedValue(String text, num value) => text
     .replaceAll('+{v}', value < 0 ? '$value' : '+$value')
     .replaceAll('{v}', '$value');
 
@@ -1850,7 +1850,7 @@ String signEffectText(SignEffect effect, AppLanguage language) {
   final key = effect.kind == SignEffectKind.strikeElement && effect.value == 0
       ? 'sign_fx_strikeElement_plain'
       : signEffectKey(effect.kind);
-  return fillSignedValue(trFor(language, key), effect.value)
+  return _fillSignedValue(trFor(language, key), effect.value)
       .replaceAll('{c}', '${effect.chance}')
       .replaceAll('{e}', _elementName(effect.element, language))
       .replaceAll('{s}', status == null ? '' : _statusText(status, language))
@@ -1873,5 +1873,5 @@ List<String> signEffectLines(
 
 /// A pact's curse as the player reads it, for [fights] more fights.
 String pactCurseText(SignPact pact, AppLanguage language, {int? fights}) =>
-    fillSignedValue(trFor(language, pactCurseKey(pact.curse)), pact.value)
+    _fillSignedValue(trFor(language, pactCurseKey(pact.curse)), pact.value)
         .replaceAll('{n}', '${fights ?? pact.fights}');

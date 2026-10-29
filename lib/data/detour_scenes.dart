@@ -116,7 +116,7 @@ class DetourScene {
   bool get isLandmark => tags.contains(detourLandmarkTag);
 
   /// A short scene inside a city, walked between its districts.
-  bool get isCity => tags.contains(detourCityTag);
+  bool get isCity => tags.contains(_detourCityTag);
 
   bool get hasCheckOrFight =>
       beats.any((b) => b.type == 'check' || b.type == 'fight') ||
@@ -134,7 +134,7 @@ class DetourScene {
 }
 
 const String detourLandmarkTag = 'landmark';
-const String detourCityTag = 'city';
+const String _detourCityTag = 'city';
 
 /// What a scene with a check or a fight takes of the day (the user's
 /// decision on #279: one watch; a simple stop costs nothing).

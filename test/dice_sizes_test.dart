@@ -23,6 +23,7 @@ import 'package:narrative_data_app/data/skill_craft.dart'
     show skillwrightHouseId;
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -660,10 +661,7 @@ void main() {
         'terrain': 'desert',
         'events': {'scavengers': 1},
       });
-      tester.view.physicalSize = const Size(800, 2400);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(800, 2400));
       SharedPreferences.setMockInitialValues({
         'player_session': jsonEncode({
           'raceId': 'human',

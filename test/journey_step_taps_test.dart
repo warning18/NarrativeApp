@@ -6,27 +6,15 @@
 // (hub 2015), with nothing picked and with each step picked in turn.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 Finder _step(int i) => find.byKey(ValueKey('journey_step_$i'));
 
@@ -74,38 +62,12 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 640));
 
-    await tester.pumpWidget(
-      ProviderScope(
-          // These test the streets' marks: the generated plan, not the stored
-          // city chart (board 15, v1.355).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
-          child: const MyApp()),
-    );
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester, overrides: [noCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
-    await _settle(tester);
+    await settleApp(tester);
 
     // Taps step [i]'s mark at its centre, the map scrolled to it first.
     Future<void> tapMark(int i) async {
@@ -133,7 +95,7 @@ void main() {
       tester.view.physicalSize = size;
       for (final id in ['1101', '2015']) {
         play.jumpTo(id);
-        await _settle(tester);
+        await settleApp(tester);
         // Past the map inking in (and a new chapter's burning open), and
         // the new place's card, and the road walked to it.
         await tester.pump(const Duration(seconds: 6));
@@ -171,7 +133,7 @@ void main() {
     // gold taken from its handler.
     tester.view.physicalSize = const Size(360, 640);
     play.jumpTo('270');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
     await clearCards();
     final gold = container.read(playerSessionProvider).gold;
@@ -189,7 +151,7 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).gold, gold);
     expect(tester.takeException(), isNull);

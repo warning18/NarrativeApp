@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/clan_power.dart';
 import '../data/factions.dart';
 import '../providers/clans_provider.dart';
+import 'clan_rank_plate.dart';
 import 'standing_sign.dart';
 
 /// What a clan's banner says of it at a glance.
@@ -131,6 +132,7 @@ class ClanMarks extends ConsumerWidget {
     this.discSize = 24,
     this.cloth = true,
     this.atLeft = false,
+    this.plate = false,
   });
 
   final String factionId;
@@ -144,6 +146,10 @@ class ClanMarks extends ConsumerWidget {
   /// Whether the disc stands at the top-left corner instead (a crest that
   /// already wears a number at its right).
   final bool atLeft;
+
+  /// Whether the rank plate ("#2 ▲", clan_rank_plate.dart) hangs under the
+  /// banner: the chips and the Clans page.
+  final bool plate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -161,6 +167,13 @@ class ClanMarks extends ConsumerWidget {
           top: -discSize * 0.2,
           child: StandingSign(glance.standing, size: discSize),
         ),
+        if (plate && glance.power != null)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: -4,
+            child: Center(child: ClanRankPlate(clanId: factionId)),
+          ),
       ],
     );
   }

@@ -1,7 +1,7 @@
 // Clan influence in a town's districts (wave 18 step 1, docs/proposals/
 // wave18-core.md §4): quests done in a district build a clan's influence
 // there; a clan [flipMargin] ahead of the holder takes the district
-// (givePlace, cause 'influence'), and a clan holding [influenceTowns]'
+// (givePlace, cause 'influence'), and a clan holding [_influenceTowns]'
 // threshold of a town's districts takes the town (cause 'town').
 //
 // - Influence runs 0..100 per district and clan ([PoliticsState.influence]).
@@ -42,7 +42,7 @@ const int maxInfluence = 100;
 /// The towns a clan takes with their districts, each with how many of its
 /// districts the clan must hold (step 2 adds the Ashen Quarter and the
 /// Black Reliquary, whose Dead Heart no clan holds: 3 of the other 4).
-const Map<String, int> influenceTowns = {
+const Map<String, int> _influenceTowns = {
   'saltmouth': 4,
   'ashen_quarter': 3,
   'black_reliquary': 3,
@@ -67,7 +67,7 @@ int influenceIn(PoliticsState state, Geography geography, String districtId,
 
 /// The clan [picked] (a turn-in choice's politics) favours: the faction of
 /// [data] whose standing it raises most; '' when it raises none.
-String favouredClanOf(StoryPolitics? picked, ClanData data) {
+String _favouredClanOf(StoryPolitics? picked, ClanData data) {
   var best = '';
   num most = 0;
   for (final e in picked?.standing.entries ?? <MapEntry<String, num>>[]) {
@@ -81,7 +81,7 @@ String favouredClanOf(StoryPolitics? picked, ClanData data) {
 
 /// What [quest] (a quests.json record) done brings: its `influence`, else
 /// [mainQuestInfluence] or [sideQuestInfluence] by its category.
-int questInfluenceAmount(Map<String, dynamic> quest) {
+int _questInfluenceAmount(Map<String, dynamic> quest) {
   final own = quest['influence'];
   if (own is num) return own.round();
   return quest['category']?.toString() == 'Main'
@@ -123,7 +123,7 @@ class InfluenceResult {
 /// [state] with [amount] influence for [clanId] in [districtId] (kept
 /// within 0..[maxInfluence]); the district flips to it when it stands
 /// [flipMargin] or more over the holder (not a holder's seat), and the town
-/// with it at [influenceTowns]' threshold. [flags] come back with the held
+/// with it at [_influenceTowns]' threshold. [flags] come back with the held
 /// flags in sync and `flipped_<district>` set on a flip.
 InfluenceResult addInfluence(
   PoliticsState state,
@@ -182,7 +182,7 @@ InfluenceResult addInfluence(
   );
 }
 
-/// [cityId] (one of [influenceTowns]) after its districts changed hands: a
+/// [cityId] (one of [_influenceTowns]) after its districts changed hands: a
 /// clan holding its threshold of them takes it (givePlace, cause 'town'); a
 /// clan that took it and dropped below loses it back to no one.
 ({PoliticsState state, String takenBy}) townTurn(
@@ -193,7 +193,7 @@ InfluenceResult addInfluence(
   int chapter = 0,
   int day = 0,
 }) {
-  final threshold = influenceTowns[cityId];
+  final threshold = _influenceTowns[cityId];
   if (threshold == null) return (state: state, takenBy: '');
   final counts = <String, int>{};
   for (final d in geography.childrenOf(cityId)) {
@@ -238,7 +238,7 @@ InfluenceResult applyQuestInfluence(
   int day = 0,
 }) {
   final nothing = InfluenceResult(state: state, flags: flags);
-  final favoured = favouredClanOf(picked, data);
+  final favoured = _favouredClanOf(picked, data);
   final clan =
       favoured.isNotEmpty ? favoured : quest['faction']?.toString() ?? '';
   final own = quest['district']?.toString() ?? '';
@@ -246,7 +246,7 @@ InfluenceResult applyQuestInfluence(
   if (clan.isEmpty || data.faction(clan) == null || district.isEmpty) {
     return nothing;
   }
-  return addInfluence(state, district, clan, questInfluenceAmount(quest),
+  return addInfluence(state, district, clan, _questInfluenceAmount(quest),
       flags: flags,
       data: data,
       geography: geography,

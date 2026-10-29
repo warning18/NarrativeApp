@@ -12,14 +12,7 @@ import 'package:narrative_data_app/providers/chapter_loop_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/player_stats_bar.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('the day shows once, red while the chapter\'s enemies gather',
@@ -28,10 +21,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 640));
 
     final container = ProviderContainer(
         overrides: [reachedChapterProvider.overrideWithValue(3)]);
@@ -56,7 +46,7 @@ void main() {
             'clockChapter': 3,
             'chapterStartDay': from,
           })));
-      await _settle(tester);
+      await settleApp(tester);
     }
 
     final scheme =

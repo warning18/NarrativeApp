@@ -22,14 +22,7 @@ import 'package:narrative_data_app/providers/chapter_loop_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
@@ -42,15 +35,12 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -58,7 +48,7 @@ void main() {
         .setLanguage(AppLanguage.en));
     // Chapter 3, twenty days in: well past the grace.
     container.read(storyPlayProvider.notifier).jumpTo('3002');
-    await _settle(tester);
+    await settleApp(tester);
     final chapter = container.read(reachedChapterProvider);
     expect(chapter, 3);
     await tester.runAsync(() => container
@@ -89,15 +79,15 @@ void main() {
                   forcedCondition: BattlefieldCondition.ambush,
                   forcedGoal: FightGoal.slay),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 3));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The whole log, a tap on its ticker away.
     await tester.tap(find.byIcon(Icons.unfold_more));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.textContaining('gathered strength while you lingered (+30%)'),
         findsWidgets);
     expect(find.textContaining('Your sellsword strikes'), findsWidgets);

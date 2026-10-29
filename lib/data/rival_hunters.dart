@@ -101,7 +101,7 @@ const String _reasonFr =
 
 /// A one-node ambush by a hunter of [clanId] (drawn from
 /// [rivalHunterPool]), or null when it has none for [chapter].
-StoryNode? buildRivalAmbushNode({
+StoryNode? _buildRivalAmbushNode({
   required Map<String, dynamic> enemies,
   required String clanId,
   required String swornId,
@@ -184,7 +184,7 @@ List<StoryNode>? maybeRivalHunter({
     }
   }
   final coming = pendingBetrayals(flags);
-  final node = buildRivalAmbushNode(
+  final node = _buildRivalAmbushNode(
       enemies: enemies,
       clanId: clanId,
       swornId: politics.swornFactionId,

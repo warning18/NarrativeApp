@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/gear_effects.dart';
 import 'package:narrative_data_app/combat/spells.dart';
+import 'package:narrative_data_app/combat/strike_damage.dart';
 import 'package:narrative_data_app/data/sim_combat.dart';
 
 Map<String, dynamic> _loadGamedata(String name) {
@@ -233,6 +234,31 @@ void main() {
         phases += outcome.phasesEntered;
       }
       expect(phases, greaterThan(0));
+    });
+
+    // C6 (chapter 1 review): the simulator's strike is the fight screen's
+    // own sum (strike_damage.dart), aligned gear included.
+    test('aligned gear hits harder for a hero of its alignment, as in a fight',
+        () {
+      final c = warrior();
+      c.equippedBySlot['Weapon'] = 'halo_lance';
+      final neutral = c.casterDamage(items, 'None');
+      c.alignmentLabel = 'Good';
+      expect(c.casterDamage(items, 'None'), neutral + 1);
+      expect(
+          c.casterDamage(items, 'None'),
+          strikeDamageFor(
+            baseDamage: c.baseDamage,
+            equippedItemIds: c.equippedItemIds,
+            items: items,
+            element: 'None',
+            gearAttack: 0,
+            strength: c.strength,
+            dexterity: c.dexterity,
+            constitution: c.constitution,
+            intelligence: c.intelligence,
+            alignmentLabel: 'Good',
+          ));
     });
 
     test('worn gear feeds the character\'s numbers', () {

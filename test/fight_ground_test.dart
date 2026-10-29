@@ -18,6 +18,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 8; i++) {
@@ -66,10 +67,7 @@ Future<ProviderContainer> _start(
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
   SharedPreferences.setMockInitialValues({});
-  tester.view.physicalSize = const Size(600, 1600);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(600, 1600));
 
   await tester.pumpWidget(ProviderScope(
       overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
