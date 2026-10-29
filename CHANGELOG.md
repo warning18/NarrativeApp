@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.627.0+663]
+
+- **Narrative: chapters 4 and 5 in the percussive style**, and four small
+  French fixes in chapter 1.
+  - All 75 scenes of the Hollow Court (chapter 4: 4, chapter 5: 71) and their
+    65 flag callbacks are rewritten in English and French: the clues, names,
+    **bold** phrases, numbers and the words later scenes and tests pick up
+    are kept; no choice, label, flag, reward, number or scene link changed.
+  - Scene text: 7,953 to 6,954 words in English (-13%), 8,178 to 7,330 in
+    French (-10%). Callbacks: 1,819 to 1,507 words (-17%) in English, 1,804
+    to 1,510 (-16%) in French.
+  - French read line by line: a repeated "tiède / tiédie" in `106`, a stray
+    colon in `1002`, and "huttes" for "cases" in `1150_vica` and its `1200`
+    callback; "trois mots" before the Seal's name in `5004` and `5004b`
+    (the English says two) is now "quelques mots"; "parenté" in
+    `5100_anvil_deaf_vote`.
+
 ## [1.626.0+662]
 
 - **Narrative: chapters 2 and 3 in the percussive style** (the pilot
