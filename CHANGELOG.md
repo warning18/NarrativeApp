@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.621.0+657]
+
+- **Narrative: the siege scene's words, and a line from each companion.**
+  - The siege scene reads "Siege of {district}." / « Siège de {district}. »
+    with a short body and a "Defend {district}" choice; "Join {attacker}" and
+    "Stand aside" keep their words. The text has no gender or number
+    agreement to get wrong for a clan or a district.
+  - `districtAttacked`: two short lines for each of the nine companions
+    (Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin, Malrik, Vica), EN and FR;
+    not fired yet.
+  - The Spire Stair's locked line (it opens once the Ashen Oath is taken at the
+    Quarter Gate) is reworded, EN and FR. Every route to the Stair passes the
+    Gate hub, where "Take up the Ashen Oath" is always offered.
+  - Touches another session's area: `lib/data/district_attacks.dart` and
+    `geography.json` (wording only; no choice, number or key changed).
 ## [1.620.0+656]
 
 - **Narrative: the Weaver's Alley is out of chapter 1** (the opening run is shorter).
