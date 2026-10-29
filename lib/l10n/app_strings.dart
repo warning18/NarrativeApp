@@ -81,8 +81,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_read': {AppLanguage.en: 'Read', AppLanguage.fr: 'Lire'},
   'journey_level_place': {AppLanguage.en: 'Here', AppLanguage.fr: 'Ici'},
-  'journey_level_land': {AppLanguage.en: 'Land', AppLanguage.fr: 'Pays'},
-  'journey_level_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
   'journey_level_hint': {
     AppLanguage.en:
         'Pinch to zoom, drag to look about; tap a place you have reached to read of it. Zoom in on your own place, or tap it, to come back to its streets.',
@@ -253,10 +251,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'No clan rules here, so the blessing is small and plain: +3% party max health, and a block of 1 at the start, for 3 fights.',
     AppLanguage.fr:
         'Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3 % de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats.',
-  },
-  'temple_blessing_active': {
-    AppLanguage.en: 'Blessing: {clan} ({n} fights)',
-    AppLanguage.fr: 'Bénédiction : {clan} ({n} combats)',
   },
   'temple_blessing_standing': {
     AppLanguage.en: '+1 standing, once a chapter',
@@ -565,10 +559,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sofar_main': {AppLanguage.en: 'Main', AppLanguage.fr: 'Principale'},
   'sofar_followed': {AppLanguage.en: 'Followed', AppLanguage.fr: 'Suivie'},
-  'sofar_all_scenes': {
-    AppLanguage.en: 'All scenes',
-    AppLanguage.fr: 'Toutes les scènes'
-  },
   'sofar_day_chapter': {
     AppLanguage.en: 'Day {day} · Chapter {chapter}',
     AppLanguage.fr: 'Jour {day} · Chapitre {chapter}',
@@ -601,10 +591,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_open_story': {
     AppLanguage.en: 'Open the story',
     AppLanguage.fr: 'Ouvrir l’histoire',
-  },
-  'journey_read_in_story': {
-    AppLanguage.en: 'Read the scene in the Story tab',
-    AppLanguage.fr: 'Lire la scène dans l’onglet Histoire',
   },
   'journey_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
   'journey_reading_exit': {
@@ -739,18 +725,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'geo_level_country': {
     AppLanguage.en: 'Country',
     AppLanguage.fr: 'Pays',
-  },
-  'geo_level_zone': {
-    AppLanguage.en: 'Region',
-    AppLanguage.fr: 'Région',
-  },
-  'geo_level_location': {
-    AppLanguage.en: 'Place',
-    AppLanguage.fr: 'Lieu',
-  },
-  'geo_level_district': {
-    AppLanguage.en: 'District',
-    AppLanguage.fr: 'Quartier',
   },
   'geo_ruler': {
     AppLanguage.en: 'Ruled by {ruler}',
@@ -1091,16 +1065,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'À terre : {port}',
   },
   'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
-  'harbor_open_button': {
-    AppLanguage.en: 'Go to the Harbor',
-    AppLanguage.fr: 'Aller au port',
-  },
-  'harbor_unlocks_note': {
-    AppLanguage.en: 'refits the Rusty Eel: repairs and ship parts',
-    AppLanguage.fr: 'radoube le Rusty Eel : réparations et pièces de navire',
-  },
   'ally_gear_button': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
-  'ally_dice_button': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'badge_points_waiting': {
     AppLanguage.en: 'points to spend',
@@ -1369,7 +1334,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
-  'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
@@ -1512,7 +1476,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'quests': {AppLanguage.en: 'Quests', AppLanguage.fr: 'Quêtes'},
   'shops': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Boutiques'},
   'bestiary': {AppLanguage.en: 'Bestiary', AppLanguage.fr: 'Bestiaire'},
-  'npcs_section': {AppLanguage.en: 'NPCs', AppLanguage.fr: 'PNJ'},
   'character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'language': {AppLanguage.en: 'Language', AppLanguage.fr: 'Langue'},
   'legend_title': {AppLanguage.en: 'Legend', AppLanguage.fr: 'Légende'},
@@ -2167,18 +2130,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Non découverte — trouvez cette boutique au cours de l'histoire.",
   },
-  'shop_left_behind': {
-    AppLanguage.en: 'Unavailable — return to the node that unlocked it.',
-    AppLanguage.fr: 'Indisponible — retournez au nœud qui l\'a débloquée.',
-  },
   'not_yet_encountered': {
     AppLanguage.en: 'Not yet encountered.',
     AppLanguage.fr: 'Pas encore rencontré.',
-  },
-  'npc_not_yet_met': {
-    AppLanguage.en: 'Not yet met — find them during the story.',
-    AppLanguage.fr:
-        'Pas encore rencontré — trouvez-les au cours de l\'histoire.',
   },
   'npc_talked_message': {
     AppLanguage.en: 'Conversation recorded.',
@@ -2192,14 +2146,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'hp_label': {AppLanguage.en: 'HP', AppLanguage.fr: 'PV'},
   'damage_label': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
   'luck_label': {AppLanguage.en: 'Luck', AppLanguage.fr: 'Chance'},
-  'strength_abbr': {AppLanguage.en: 'STR', AppLanguage.fr: 'FOR'},
-  'dexterity_abbr': {AppLanguage.en: 'DEX', AppLanguage.fr: 'DEX'},
-  'constitution_abbr': {AppLanguage.en: 'CON', AppLanguage.fr: 'CON'},
-  'intelligence_abbr': {AppLanguage.en: 'INT', AppLanguage.fr: 'INT'},
-  'wisdom_abbr': {AppLanguage.en: 'WIS', AppLanguage.fr: 'SAG'},
-  'charisma_abbr': {AppLanguage.en: 'CHA', AppLanguage.fr: 'CHA'},
-  'luck_abbr': {AppLanguage.en: 'LCK', AppLanguage.fr: 'CHN'},
-  'perception_abbr': {AppLanguage.en: 'PER', AppLanguage.fr: 'PER'},
   'charisma_label': {AppLanguage.en: 'Charisma', AppLanguage.fr: 'Charisme'},
   'strength_label': {AppLanguage.en: 'Strength', AppLanguage.fr: 'Force'},
   'dexterity_label': {AppLanguage.en: 'Dexterity', AppLanguage.fr: 'Dextérité'},
@@ -2333,10 +2279,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Race & Profession',
     AppLanguage.fr: 'Race et profession',
   },
-  'inventory_equipment': {
-    AppLanguage.en: 'Inventory & Equipment',
-    AppLanguage.fr: 'Inventaire et équipement',
-  },
   'skills': {AppLanguage.en: 'Skills', AppLanguage.fr: 'Compétences'},
   'level_up': {AppLanguage.en: 'Level Up', AppLanguage.fr: 'Monter de niveau'},
   'dice_loadout': {
@@ -2381,10 +2323,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'inv_worn_on': {
     AppLanguage.en: 'worn on the {slot}',
     AppLanguage.fr: 'porté : {slot}',
-  },
-  'inv_instead_of': {
-    AppLanguage.en: 'Instead of {name} (worn)',
-    AppLanguage.fr: 'À la place de {name} (porté)',
   },
   'inv_compare_hold': {
     AppLanguage.en: 'Hold a row to compare',
@@ -2465,25 +2403,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'joins you',
     AppLanguage.fr: 'vous rejoint',
   },
-  'quest_ready_notice': {
-    AppLanguage.en: 'Goal reached: {quest}. Turn it in from the quest above '
-        'the story.',
-    AppLanguage.fr: 'Objectif atteint : {quest}. Rendez-la depuis la quête '
-        'affichée au-dessus du récit.',
-  },
   'quests_section_following': {
     AppLanguage.en: 'Followed',
     AppLanguage.fr: 'Suivie',
   },
-  'quests_section_active': {
-    AppLanguage.en: 'In progress',
-    AppLanguage.fr: 'En cours',
-  },
-  'quests_section_available': {
-    AppLanguage.en: 'Offered',
-    AppLanguage.fr: 'Proposées',
-  },
-  'quests_section_done': {AppLanguage.en: 'Done', AppLanguage.fr: 'Terminées'},
   'quests_none_found': {
     AppLanguage.en: 'No quest yet. People and places in the story will ask '
         'things of you.',
@@ -2635,25 +2558,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le {die} est fait pour une autre classe : vous en '
         'avez pris le prix en or.',
   },
-  'none_equipped': {
-    AppLanguage.en: '(none equipped)',
-    AppLanguage.fr: '(aucun équipé)'
-  },
   'choose_die': {AppLanguage.en: 'Choose die', AppLanguage.fr: 'Choisir un dé'},
   'unequip': {AppLanguage.en: 'Unequip', AppLanguage.fr: 'Déséquiper'},
   'choose_item': {
     AppLanguage.en: 'Choose item',
     AppLanguage.fr: 'Choisir un objet'
   },
-  'all_items': {AppLanguage.en: 'All Items', AppLanguage.fr: 'Tous les objets'},
   'inventory_empty': {
     AppLanguage.en: 'Your inventory is empty. Buy or loot some gear!',
     AppLanguage.fr:
         "Votre inventaire est vide. Achetez ou pillez de l'équipement !",
   },
   'faces_label': {AppLanguage.en: 'faces', AppLanguage.fr: 'faces'},
-  'skill_tree_view': {AppLanguage.en: 'Tree', AppLanguage.fr: 'Arbre'},
-  'skill_list_view': {AppLanguage.en: 'List', AppLanguage.fr: 'Liste'},
   'skill_tree_intro': {
     AppLanguage.en:
         'Skills are no longer bought with points: the clans offer them. Each branch is sponsored by a clan, and a clan offers a branch’s skills from the top down, deeper as it trusts you more: the first at Unknown, the second at Known, the third at Trusted, the fourth at Sworn. Learn a whole branch of your class to master it with essence: its skills then fight a tier higher.',
@@ -2681,14 +2597,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'skill_points_needed': {
     AppLanguage.en: 'Needs {n} skill points',
     AppLanguage.fr: 'Il faut {n} points de compétence',
-  },
-  'skill_point_cost_one': {
-    AppLanguage.en: '1 skill point',
-    AppLanguage.fr: '1 point de compétence',
-  },
-  'skill_point_cost_many': {
-    AppLanguage.en: '{n} skill points',
-    AppLanguage.fr: '{n} points de compétence',
   },
   'no_skill_points': {
     AppLanguage.en: 'No skill point to spend',
@@ -2730,11 +2638,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'filter_heal': {AppLanguage.en: 'Healing', AppLanguage.fr: 'Soin'},
   'filter_mana': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
   'filter_status': {AppLanguage.en: 'Status', AppLanguage.fr: 'Altération'},
-  'filter_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connues'},
-  'filter_learnable': {
-    AppLanguage.en: 'Can learn',
-    AppLanguage.fr: 'À apprendre',
-  },
   'filter_nothing': {
     AppLanguage.en: 'No skill matches these filters.',
     AppLanguage.fr: 'Aucune compétence ne correspond à ces filtres.',
@@ -2753,10 +2656,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Failed to load skills',
     AppLanguage.fr: 'Échec du chargement des compétences',
   },
-  'no_skills_defined': {
-    AppLanguage.en: 'No skills defined yet.',
-    AppLanguage.fr: 'Aucune compétence définie pour le moment.',
-  },
   'unlocked_prefix': {AppLanguage.en: 'Unlocked', AppLanguage.fr: 'Débloqué'},
   'unlock_button': {AppLanguage.en: 'Unlock', AppLanguage.fr: 'Débloquer'},
   'reserved_prefix': {AppLanguage.en: 'Reserved', AppLanguage.fr: 'Réservé'},
@@ -2773,10 +2672,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "Essence de compétence",
   },
   'tier_label': {AppLanguage.en: 'Tier', AppLanguage.fr: 'Niveau'},
-  'upgrade_button': {
-    AppLanguage.en: 'Upgrade',
-    AppLanguage.fr: 'Améliorer',
-  },
   'craft_skill_button': {
     AppLanguage.en: 'Craft a Skill',
     AppLanguage.fr: 'Fusionner une compétence',
@@ -4499,10 +4394,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'empty_slot_label': {AppLanguage.en: '(empty)', AppLanguage.fr: '(vide)'},
   'xp_label': {AppLanguage.en: 'XP', AppLanguage.fr: 'XP'},
-  'stat_points_available': {
-    AppLanguage.en: 'Stat Points Available',
-    AppLanguage.fr: 'Points de statistique disponibles',
-  },
   'max_health_label': {
     AppLanguage.en: 'Max Health',
     AppLanguage.fr: 'Santé max.'
@@ -4521,10 +4412,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'inventory_slots_hint': {
     AppLanguage.en: 'Tap a slot to choose what goes there.',
     AppLanguage.fr: 'Touchez un emplacement pour choisir ce qui y va.',
-  },
-  'distribute_later_button': {
-    AppLanguage.en: 'Decide later',
-    AppLanguage.fr: 'Décider plus tard',
   },
   'stat_pick_title': {
     AppLanguage.en: 'Pick a gain',
@@ -4546,15 +4433,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'stat_pick_worth': {
     AppLanguage.en: 'Worth {n} points',
     AppLanguage.fr: 'Vaut {n} points',
-  },
-  // A pick's rarity (training.dart) and what each ability does for the
-  // hero (stat_pick_text.dart), for the pick cards.
-  'stat_pick_tier_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},
-  'stat_pick_tier_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
-  'stat_pick_tier_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
-  'stat_pick_tier_heroic': {
-    AppLanguage.en: 'Heroic',
-    AppLanguage.fr: 'Héroïque',
   },
   // A stat's popin on the Character radar (stat_sheet.dart).
   'stat_sheet_does': {
@@ -4737,7 +4615,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Déposez une compétence ici'
   },
   'custom_label': {AppLanguage.en: 'Custom', AppLanguage.fr: 'Personnalisé'},
-  'skill_singular': {AppLanguage.en: 'Skill', AppLanguage.fr: 'Compétence'},
   'fight_begins_prefix': {
     AppLanguage.en: 'The fight begins!',
     AppLanguage.fr: 'Le combat commence !'
@@ -5002,9 +4879,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Touchez pour voir où il ira'
   },
   'town_need': {AppLanguage.en: 'need', AppLanguage.fr: 'manque'},
-  'town_materials': {AppLanguage.en: 'materials', AppLanguage.fr: 'matériaux'},
   'town_ready': {AppLanguage.en: 'Ready', AppLanguage.fr: 'Prêt'},
-  'town_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillé'},
   'town_limit_short': {AppLanguage.en: 'Limit', AppLanguage.fr: 'Limite'},
   'town_slot_hint': {
     AppLanguage.en: 'Built / limit',
@@ -5040,10 +4915,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'town_limit_reached': {
     AppLanguage.en: 'Limit reached: {built} of {limit}',
     AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',
-  },
-  'town_built_note': {
-    AppLanguage.en: 'Standing on the cliff.',
-    AppLanguage.fr: 'Debout sur la falaise.',
   },
   'town_ready_count': {
     AppLanguage.en: '{n} ready to build',
@@ -5135,10 +5006,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zones_cleared_label': {
     AppLanguage.en: 'Zones Cleared',
     AppLanguage.fr: 'Zones nettoyées'
-  },
-  'basic_shops_section': {
-    AppLanguage.en: 'Basic Shops',
-    AppLanguage.fr: 'Commerces de base'
   },
   'zones_section': {AppLanguage.en: 'Zones', AppLanguage.fr: 'Zones'},
   'no_zones_available': {
@@ -5648,10 +5515,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'die_keywords_label': {
     AppLanguage.en: 'Keywords',
     AppLanguage.fr: 'Mots-clés',
-  },
-  'item_picked_up': {
-    AppLanguage.en: 'Picked up: {item}',
-    AppLanguage.fr: 'Ramassé : {item}',
   },
   'lose_ally_id': {
     AppLanguage.en: 'Companion lost for good (id, or * for the first active)',
@@ -7047,10 +6910,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap two items to compare them.',
     AppLanguage.fr: 'Touchez deux objets pour les comparer.',
   },
-  'compare_hint_skills': {
-    AppLanguage.en: 'Tap two skills to compare them.',
-    AppLanguage.fr: 'Touchez deux compétences pour les comparer.',
-  },
   'compare_first_selected': {
     AppLanguage.en: 'Selected. Now tap a second one to compare.',
     AppLanguage.fr: 'Sélectionné. Touchez-en un second pour comparer.',
@@ -7403,20 +7262,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'edit_mode_label': {AppLanguage.en: 'Edit', AppLanguage.fr: 'Édition'},
   'in_game_mode_label': {AppLanguage.en: 'In-Game', AppLanguage.fr: 'En jeu'},
-  'mode_nudge_message': {
-    AppLanguage.en:
-        "You're in Edit Mode, which shows story/data-editing tools alongside the "
-            'game. Just here to play? Switch to In-Game Mode in Settings for a clean, '
-            'player-only view.',
-    AppLanguage.fr:
-        "Vous êtes en mode Édition, qui affiche les outils d'édition de l'histoire "
-            'et des données en plus du jeu. Juste ici pour jouer ? Passez en mode En jeu dans les '
-            "paramètres pour une vue réservée au joueur.",
-  },
-  'switch_to_in_game_mode_button': {
-    AppLanguage.en: 'Switch to In-Game Mode',
-    AppLanguage.fr: 'Passer en mode En jeu',
-  },
   'tutorial_setting_title': {
     AppLanguage.en: 'Tutorials',
     AppLanguage.fr: 'Tutoriels',
@@ -9435,10 +9280,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Rejects your alignment',
     AppLanguage.fr: 'Rejette votre alignement',
   },
-  'aligned_skill_note': {
-    AppLanguage.en: '+25% for a matching alignment, -25% for the opposite',
-    AppLanguage.fr: "+25 % pour un alignement assorti, -25 % pour l'opposé",
-  },
   'launch_zone_id': {
     AppLanguage.en: 'Launch zone (expedition cleared before continuing)',
     AppLanguage.fr: 'Zone lancée (expédition à terminer avant de continuer)',
@@ -9806,7 +9647,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Le Rusty Eel a embarqué trop d'eau. Vous regagnez le port que vous aviez quitté, la coque tenant à peine.",
   },
-  'sail_on_button': {AppLanguage.en: 'Sail on', AppLanguage.fr: 'Poursuivre'},
   'go_ashore_button': {
     AppLanguage.en: 'Go ashore',
     AppLanguage.fr: 'Descendre à terre'
@@ -10858,10 +10698,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Harbor trade',
     AppLanguage.fr: 'Commerce du port'
   },
-  'port_sail_subtitle': {
-    AppLanguage.en: 'Other ports, other expeditions',
-    AppLanguage.fr: "D'autres ports, d'autres expéditions"
-  },
   'home_port_label': {
     AppLanguage.en: 'Home port',
     AppLanguage.fr: "Port d'attache"
@@ -11270,14 +11106,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fate_alignment': {
     AppLanguage.en: 'Alignment {n}',
     AppLanguage.fr: 'Alignement {n}',
-  },
-  'fate_approval_up': {
-    AppLanguage.en: '{name} approves',
-    AppLanguage.fr: '{name} approuve',
-  },
-  'fate_approval_down': {
-    AppLanguage.en: '{name} disapproves',
-    AppLanguage.fr: '{name} désapprouve',
   },
   'fate_place_found': {
     AppLanguage.en: 'New place: {place}',
@@ -11935,28 +11763,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} sign(s) to choose',
     AppLanguage.fr: '{n}\u00a0Signe(s) à choisir',
   },
-  'sign_open_offer_button': {
-    AppLanguage.en: 'Choose a sign',
-    AppLanguage.fr: 'Choisir un Signe',
-  },
-  'sign_none_to_offer': {
-    AppLanguage.en: 'No patron has a sign to offer you yet.',
-    AppLanguage.fr: 'Aucun protecteur n’a encore de Signe à vous offrir.',
-  },
   'sign_choose_hint': {
     AppLanguage.en: 'Choose one sign.',
     AppLanguage.fr: 'Choisissez un Signe.',
   },
-  'sign_take_button': {
-    AppLanguage.en: 'Take this sign',
-    AppLanguage.fr: 'Prendre ce Signe',
-  },
-  'sign_later_button': {AppLanguage.en: 'Later', AppLanguage.fr: 'Plus tard'},
   'sign_replaces': {
     AppLanguage.en: 'Replaces: {name}',
     AppLanguage.fr: 'Remplace\u00a0: {name}',
   },
-  'sign_duo_badge': {AppLanguage.en: 'Duo', AppLanguage.fr: 'Duo'},
   'sign_level': {AppLanguage.en: 'Lv {n}', AppLanguage.fr: 'Niv.\u00a0{n}'},
   'sign_vow_silent': {
     AppLanguage.en: 'Silent: your alignment is below 0.',
@@ -12374,10 +12188,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Les Signes de frappe, de garde, de soin et de sort en tiennent un chacun\u00a0; les plus rares sont plus forts, et le Sang de Titan en élève un d’un niveau. La mort les emporte tous\u00a0; les protecteurs se souviennent de votre faveur.',
   },
-  'debug_offer_sign': {
-    AppLanguage.en: 'Offer a sign now',
-    AppLanguage.fr: 'Offrir un Signe maintenant',
-  },
   'debug_titan_blood': {
     AppLanguage.en: '+1 Titan’s Blood',
     AppLanguage.fr: '+1 Sang de Titan',
@@ -12718,10 +12528,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Take this gift',
     AppLanguage.fr: 'Prendre ce don',
   },
-  'offer_later_button': {
-    AppLanguage.en: 'Later',
-    AppLanguage.fr: 'Plus tard',
-  },
   'offer_confirm_title': {
     AppLanguage.en: 'Take {gift}?',
     AppLanguage.fr: 'Prendre {gift}\u00a0?',
@@ -12760,10 +12566,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'radar_axis_arcana': {AppLanguage.en: 'Arcana', AppLanguage.fr: 'Arcane'},
   'radar_axis_fortune': {AppLanguage.en: 'Fortune', AppLanguage.fr: 'Fortune'},
   'offer_stands_for': {AppLanguage.en: 'Stands for', AppLanguage.fr: 'Défend'},
-  'offer_wayfarer_stands': {
-    AppLanguage.en: 'No clan, no debt',
-    AppLanguage.fr: 'Aucun clan, aucune dette',
-  },
   'offer_align_good': {
     AppLanguage.en: 'toward Good',
     AppLanguage.fr: 'vers le Bon',
@@ -13202,10 +13004,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offers_row_none': {
     AppLanguage.en: 'No offer waiting',
     AppLanguage.fr: 'Aucune offre en attente',
-  },
-  'recap_who_you_are': {
-    AppLanguage.en: 'Who you are',
-    AppLanguage.fr: 'Qui vous êtes',
   },
   'titles_section': {
     AppLanguage.en: 'Titles',
