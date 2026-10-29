@@ -87,6 +87,7 @@ import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
+import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -571,6 +572,39 @@ class _StoryView extends ConsumerWidget {
               french: french, opening: opening),
           language: language),
     ];
+
+    // The first scene is told as an animation, ending on its choice (see
+    // prologue_opening.dart).
+    if (!isEditMode &&
+        !playState.isInExcursion &&
+        parts.text.isNotEmpty &&
+        isPrologueOpening(node)) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: PrologueOpening(
+            text: parts.text,
+            choices: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final choice in visibleChoices)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _ChoiceButton(
+                      choice: choice,
+                      story: story,
+                      session: session,
+                      currentNodeId: playState.currentNodeId,
+                      isExcursion: false,
+                      french: french,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     // The reader's own tour plays only while it is on screen (v1.201: in
     // play it is pushed over the game for the ending, never a tab).
