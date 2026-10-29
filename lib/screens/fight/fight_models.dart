@@ -497,6 +497,13 @@ class _FightLength {
     _heals[memberId] = before + 1;
     return fatiguedHeal(amount, before);
   }
+
+  /// What [fatigued] would heal, nothing counted: the round's preview.
+  int previewed(String memberId, int amount, {int round = 0}) {
+    amount = rule.heal(amount, round);
+    if (amount <= 0) return amount;
+    return fatiguedHeal(amount, _heals[memberId] ?? 0);
+  }
 }
 
 /// The hero's profession core over a fight (profession_cores.dart): Fury
