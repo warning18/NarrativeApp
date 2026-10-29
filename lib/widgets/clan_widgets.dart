@@ -434,6 +434,7 @@ class _WithBanner extends StatelessWidget {
           child: ClanMarks(
             factionId: factionId,
             discSize: 30,
+            plate: true,
             child: PixelBanner(
                 key: Key('clan_banner_$factionId'),
                 id: id,
