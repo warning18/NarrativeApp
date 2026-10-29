@@ -24,6 +24,17 @@ isn't reconstructable from git history alone.
     simulator tests pass unchanged.
   - Tests: `sim_combat_test` (aligned gear, the shared sum).
 
+## [1.652.0+688]
+
+- **Core: chapter 1 review cleanup (C4, C5, S2).**
+  - C4: the chapter providers (the open chapter, its camp, the chapter
+    reached) watch the story's scene and history only, so an excursion
+    queued no longer rebuilds them.
+  - C5: the story's stops are worked out once, after the city plans load,
+    not once without them and again with them.
+  - S2: `road_hazards_test` measures the road events' mix on the 35 roads
+    of v1.646, so its cost and noise no longer grow with the story.
+
 ## [1.651.0+687]
 
 - **Clan power sign: a rank plate with an arrow**

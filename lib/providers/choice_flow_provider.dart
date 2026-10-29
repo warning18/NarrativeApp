@@ -10,16 +10,18 @@ import 'geography_provider.dart';
 import 'story_providers.dart';
 
 /// The story's stops, hubs and errands (see choice_flow.dart), worked out
-/// once per story, geography and city plans; null until the story and the
-/// geography have loaded.
+/// once per story, geography and city plans; null until the story, the
+/// geography and the city plans have loaded (built once, not once without
+/// the plans and again with them).
 final storyStopsProvider = Provider<StoryStops?>((ref) {
   final story = ref.watch(storyDataProvider).value;
   final geography = ref.watch(geographyProvider);
-  if (story == null || geography.isEmpty) return null;
+  final cityPlans = ref.watch(cityPlanRecordsProvider).value;
+  if (story == null || geography.isEmpty || cityPlans == null) return null;
   return StoryStops.of(
     story: story,
     geography: geography,
-    cityPlans: ref.watch(cityPlanRecordsProvider).value ?? const {},
+    cityPlans: cityPlans,
     ports: ref.watch(gameDbProvider(portsSchema)).value ?? const {},
   );
 });

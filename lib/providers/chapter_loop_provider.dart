@@ -19,9 +19,16 @@ final chapterLoopsProvider = Provider<List<ChapterLoop>>((ref) {
   return chapterLoopsFrom(chapters);
 });
 
+/// Where the story stands: its scene and the scenes behind it, and nothing
+/// else of the story's state (an excursion queued doesn't move a chapter).
+final _storyPlaceProvider =
+    Provider<({String currentNodeId, List<String> history})>((ref) => ref.watch(
+        storyPlayProvider.select(
+            (p) => (currentNodeId: p.currentNodeId, history: p.history))));
+
 /// The open chapter the story is in (see [currentLoop]), if any.
 final currentLoopProvider = Provider<ChapterLoop?>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return currentLoop(
     currentNodeId: play.currentNodeId,
     history: play.history,
@@ -31,7 +38,7 @@ final currentLoopProvider = Provider<ChapterLoop?>((ref) {
 
 /// The camp the story comes back to (see [currentCampNodeId]).
 final currentCampNodeIdProvider = Provider<String?>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return currentCampNodeId(
     currentNodeId: play.currentNodeId,
     history: play.history,
@@ -50,7 +57,7 @@ final campErrandChoicesProvider = Provider<List<StoryChoice>>((ref) {
 /// The chapter the party has reached (see [reachedChapter]): what the
 /// chart, the expeditions and the places open to.
 final reachedChapterProvider = Provider<int>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(_storyPlaceProvider);
   return reachedChapter(
     currentNodeId: play.currentNodeId,
     history: play.history,
