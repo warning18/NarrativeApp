@@ -1267,6 +1267,8 @@ class StandingLogEntry {
     this.released = '',
     this.note = '',
     this.noteFr = '',
+    this.placeId = '',
+    this.how = '',
   });
 
   final int chapter;
@@ -1286,6 +1288,11 @@ class StandingLogEntry {
   final String noteFr;
 
   String noteFor(AppLanguage language) => _pick(language, note, noteFr);
+
+  /// A place changing hands (cause 'territory', wave 18 step 2): the place
+  /// and how ([givePlace]'s cause: 'war', 'influence', 'town', 'claim'…).
+  final String placeId;
+  final String how;
 
   /// [factionId]'s own change (0 for a mark alone).
   double get mainDelta => deltas[factionId] ?? 0;
@@ -1309,6 +1316,8 @@ class StandingLogEntry {
         if (released.isNotEmpty) 'released': released,
         if (note.isNotEmpty) 'note': note,
         if (noteFr.isNotEmpty) 'note_fr': noteFr,
+        if (placeId.isNotEmpty) 'place': placeId,
+        if (how.isNotEmpty) 'how': how,
       };
 
   factory StandingLogEntry.fromJson(Map<String, dynamic> json) =>
@@ -1325,6 +1334,8 @@ class StandingLogEntry {
         released: _text(json['released']),
         note: _text(json['note']),
         noteFr: _text(json['note_fr']),
+        placeId: _text(json['place']),
+        how: _text(json['how']),
       );
 }
 
@@ -1583,6 +1594,7 @@ class PoliticsState {
     this.nemesisReason = '',
     this.nemesisCooldown = const {},
     this.crisis = const {},
+    this.sieges = const {},
     this.fellTo = const {},
     this.fallenOf = '',
     this.fallenWinner = '',
@@ -1638,6 +1650,11 @@ class PoliticsState {
   /// Your clan's seat threatened (clan_crisis.dart): `clan`, `attacker`,
   /// `place`; empty for none.
   final Map<String, String> crisis;
+
+  /// The districts under siege (district_attacks.dart): district id ->
+  /// `attacker`, `holder`, `city`, `until` (the day it runs out) and `met`
+  /// (the party stood aside).
+  final Map<String, Map<String, String>> sieges;
 
   /// Each fallen clan's last place taker (clan -> clan).
   final Map<String, String> fellTo;
@@ -1757,6 +1774,7 @@ class PoliticsState {
     String? nemesisReason,
     Map<String, int>? nemesisCooldown,
     Map<String, String>? crisis,
+    Map<String, Map<String, String>>? sieges,
     Map<String, String>? fellTo,
     String? fallenOf,
     String? fallenWinner,
@@ -1789,6 +1807,7 @@ class PoliticsState {
                 : ''),
         nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
         crisis: crisis ?? this.crisis,
+        sieges: sieges ?? this.sieges,
         fellTo: fellTo ?? this.fellTo,
         fallenOf: fallenOf ?? this.fallenOf,
         fallenWinner: fallenWinner ?? this.fallenWinner,
@@ -1825,6 +1844,7 @@ class PoliticsState {
         'nemesisReason': nemesisReason,
         if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
         if (crisis.isNotEmpty) 'crisis': crisis,
+        if (sieges.isNotEmpty) 'sieges': sieges,
         if (fellTo.isNotEmpty) 'fellTo': fellTo,
         if (fallenOf.isNotEmpty) 'fallenOf': fallenOf,
         if (fallenWinner.isNotEmpty) 'fallenWinner': fallenWinner,
@@ -1901,6 +1921,11 @@ class PoliticsState {
       nemesisReason: _text(json['nemesisReason']).trim(),
       nemesisCooldown: _ints(json['nemesisCooldown']),
       crisis: _texts(json['crisis']),
+      sieges: {
+        if (json['sieges'] is Map)
+          for (final e in (json['sieges'] as Map).entries)
+            if (e.value is Map) e.key.toString(): _texts(e.value),
+      },
       fellTo: _texts(json['fellTo']),
       fallenOf: _text(json['fallenOf']).trim(),
       fallenWinner: _text(json['fallenWinner']).trim(),

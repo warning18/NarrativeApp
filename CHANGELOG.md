@@ -35,6 +35,71 @@ isn't reconstructable from git history alone.
   `skill_tree_test.dart` follows the sky (the clan is read on the
   constellation, not under each skill). Pictures:
   `docs/ux-shots/star-chart/`.
+## [1.618.0+654]
+
+- **Core: the big towns, influence that pays off, clan roads, the
+  epilogue's holdings** (wave 18, step 2, items 2 to 5).
+  - **The Ashen Quarter and the Black Reliquary** take Narrative's holders.
+    - The Quarter Gate goes to the Grey Vigil, the Ash-Market to the Cinder
+      Compact and the Wall of Names to the Ashen Penitents. The Compact
+      leads the Quarter.
+    - In the Reliquary, the Dominion, the Compact, the Penitents and the
+      Vigil hold one district each.
+    - The Dead Heart is held by no one and can never be taken (`unheld`).
+  - **The Spire Stair** opens once the Ashen Oath is taken. Narrative's
+    first choice, the Reckoning Wall, can be skipped by a won argument,
+    which would shut the Stair and the main quest inside it for good.
+  - **The Penitents' seat is guarded**, as Candlehold is. With land for the
+    first time, they would otherwise fall to the Dominion by chapter 6 in
+    every run.
+  - **Influence counts in every town**, not only Saltmouth. A clan holding
+    3 of the Quarter's or the Reliquary's districts takes the town.
+  - **In a war for a rival's seat** (chapters 6 and 7), each district held
+    by the party's main clan or an ally takes 1 off the lead it needs, up
+    to 5.
+  - **The Host also musters the clans holding the most districts**, unless
+    Hostile or worse.
+  - **Clan roads:** a land route whose two ends one clan holds is its road.
+    - Its clan comes one day in two (one in three on other roads).
+    - It is friendly from Friend and hard from Unfriendly down.
+    - A route that never meets its ruler still never does.
+  - **The epilogue:** `epilogueHoldings` gives, for each big town, who holds
+    it and its districts, and how: war, influence, its seat, or no one.
+    Narrative's lines come with it, in English and French. UX draws the
+    map.
+  - **The clan log** keeps the place and the cause of each change of
+    hands.
+  - **Tuning:** the claimant Tallis's max health goes from 88 to 96.
+    Narrative's holders moved his win rate to 54.1% of 292 fights, against
+    a band of 40 ± 12. Now 47.9% (47.0% with #609). With #609 the White
+    Admiral is won 53.0% (band 45 ± 12).
+  - Tests: `wave18_step2_test` (new). The clan power, crisis, town ruler
+    and district standing tests follow the new holders. Where a test is
+    about other clans, the Dominion's new war on the Penitents is kept out.
+
+## [1.617.0+653]
+
+- **Core: rival clans attack districts** (wave 18, step 2, item 1).
+  - At each chapter's turn, a main clan with 10 power or more may attack a
+    district held by a clan it is at odds with: 35% a chapter for a blood
+    feud, 20% for a war, 10% if hostile. Tense or warmer, never. At most one
+    attack a town, none while the town is under siege.
+  - A siege lasts two days and is told as news ("{clan} marches on
+    {district}. {holder} has two days.", Narrative's lines).
+  - In the town (a road at rest into or out of it), the party meets it:
+    hold the district for its holder (a fight with the attacker's hunter),
+    join the attackers (the district is theirs), or stand aside.
+  - Otherwise, when it runs out, the siege is settled on the two clans'
+    power and influence (15% to 85%): taken, with war's spoils and losses,
+    or held, each told as news.
+  - Flags for the story: `attack_<district>`, `attack_<district>_by_<clan>`
+    while it lasts, then `attack_<district>_defended`, `_joined` or
+    `_ignored`.
+  - The simulator plays them: it defends its own clan's and allies'
+    districts, and the clan table counts the sieges.
+  - Tests: `district_attacks_test`. `boss_balance_test`: each claimant must
+    now be met 30 times (was 40), since attacks move which claim a run
+    backs; the three together still need 300.
 
 ## [1.616.0+652]
 

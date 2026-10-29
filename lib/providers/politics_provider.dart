@@ -93,7 +93,7 @@ Future<CoastChange> applyStoryPoliticsNow(
 
 /// [quest] (a quests.json record) turned in, its turn-in choice's
 /// politics [picked] (wave 18, see applyQuestInfluence): its influence in
-/// its district while the party is in the town, counted in the chapter
+/// its district wherever the party is, counted in the chapter
 /// reached. The caller tells a district that changed hands
 /// ([InfluenceResult.flipped]).
 Future<InfluenceResult> applyQuestInfluenceNow(
@@ -108,7 +108,6 @@ Future<InfluenceResult> applyQuestInfluenceNow(
         data: data,
         geography: geography,
         picked: picked,
-        cityHere: ref.read(currentCityProvider),
         partyDistrict: ref.read(partyDistrictProvider),
         chapter: ref.read(reachedChapterProvider),
       );

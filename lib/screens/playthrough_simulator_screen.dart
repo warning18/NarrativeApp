@@ -335,7 +335,9 @@ class _SimResult {
   final Map<String, int> riskyOutcomes;
 
   /// The seat crises played (SimGrowth.crisisOutcomes): `held`, `lost`,
-  /// `paid`, `refused`.
+  /// `paid`, `refused`; and the districts' sieges (SimGrowth.siegeOutcomes,
+  /// district_attacks.dart): `siege_defended`, `siege_defence_lost`,
+  /// `siege_taken`, `siege_held`.
   final Map<String, int> crises;
 
   /// The camp's roll houses (sim_rolls.dart): the `rerolls`, `bans` and
@@ -1022,7 +1024,12 @@ _SimResult _simulate(
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
       riskyOutcomes: Map.unmodifiable(growth?.riskyOutcomes ?? const {}),
-      crises: Map.unmodifiable(growth?.crisisOutcomes ?? const {}),
+      crises: Map.unmodifiable({
+        ...?growth?.crisisOutcomes,
+        for (final e
+            in growth?.siegeOutcomes.entries ?? const <MapEntry<String, int>>[])
+          'siege_${e.key}': e.value,
+      }),
       campRolls: Map.unmodifiable(character?.rolls?.used ?? const {}),
       temple: (blessings: blessingsBought, gold: blessingGold),
       roads: List.unmodifiable(roads),
@@ -1288,7 +1295,7 @@ _SimResult _simulate(
       // it raises by questPowerStanding gains questPower and is spared
       // this chapter's neglect.
       applyPolitics(pay.politics, pay.politicsKey, cause: 'quest:$id');
-      // Its influence in the town's district (wave 18), as in the app.
+      // Its influence in its district (wave 18 step 2: anywhere), as in the app.
       final world = sim?.geography;
       final quest = sim?.quests[id];
       if (growth != null && world != null && quest is Map<String, dynamic>) {
@@ -1298,7 +1305,6 @@ _SimResult _simulate(
             geography: world,
             chapter: lastKnownChapter ?? 1,
             picked: pay.politics,
-            cityHere: world.locationOfNode(here)?.id,
             partyDistrict: districtOfNode(world, here)?.id);
         flags
           ..clear()
@@ -1551,6 +1557,37 @@ _SimResult _simulate(
     ));
   }
 
+  /// The chapter's attacks on districts (district_attacks.dart), rolled
+  /// and played at once the simulated player's way (SimGrowth.playSieges):
+  /// the defence fought once as the app's scene does, its dice its own.
+  void playSieges(int chapter) {
+    final g = growth;
+    final geography = sim?.geography;
+    if (g == null || geography == null) return;
+    final before = g.siegeOutcomes.values.fold<int>(0, (a, b) => a + b);
+    final after = g.playSieges(
+      geography: geography,
+      enemies: enemies,
+      chapter: chapter,
+      flags: flags,
+      random: Random(detourSalt * 37 + chapter * 104729 + steps.length),
+      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+    );
+    flags
+      ..clear()
+      ..addAll(after);
+    final played = g.siegeOutcomes.values.fold<int>(0, (a, b) => a + b);
+    if (played == before) return;
+    steps.add(_SimStep(
+      nodeId: 'road:district_siege',
+      chapter: chapter,
+      mood: null,
+      uiTheme: null,
+      description: 'District sieges: ${played - before} '
+          '(${g.siegeOutcomes})',
+    ));
+  }
+
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
   /// when it is marked so (v1.196).
   ({
@@ -1584,15 +1621,15 @@ _SimResult _simulate(
     // Who holds the road, and how they take the party (wave 16).
     final g = growth;
     final geography = sim?.geography;
-    final ruler = g == null || geography == null
-        ? ''
-        : landRouteRuler(route, geography, g.politics);
-    final rulers = g == null
+    // A clan's own road meets it more often (wave 18 step 2).
+    final road = g == null || geography == null
+        ? null
+        : crossingRuler(route, geography, g.politics, g.tables.clans);
+    final rulers = road == null
         ? const <String>[]
-        : rulerPool(events, ruler,
-            rulerBandFor(g.politics.tierOf(ruler, g.tables.clans)));
+        : rulerPool(events, road.clanId, road.band);
     for (var i = 0; i < 3; i++) {
-      final result = resolveCrossing(route, events,
+      final result = resolveCrossing(road?.route ?? route, events,
           health: c.currentHealth,
           maxHealth: c.maxHealth,
           gold: gold,
@@ -1949,6 +1986,7 @@ _SimResult _simulate(
         settle();
         buildHouses();
         playCrisis(reached);
+        playSieges(reached);
         blessAtHub(node, reached);
         if (transcribe) {
           final standings = growth?.politics.standings ?? const {};

@@ -55,7 +55,7 @@ class DistrictStanding {
   final Color holderAccent;
 
   /// The holder's influence here (0..100), or null where influence is not
-  /// counted (a town outside [influenceTowns]).
+  /// counted (outside a town).
   final int? influence;
 
   /// The strongest other clan with influence here, and how much.
@@ -99,7 +99,8 @@ Map<String, DistrictStanding> districtStandingsOf({
   required AppLanguage language,
 }) {
   final french = language == AppLanguage.fr;
-  final counted = cityId != null && influenceTowns.containsKey(cityId);
+  // Influence counts in every town (wave 18 step 2).
+  final counted = cityId != null;
   Color colour(String clan) {
     final f = data.faction(clan);
     return f == null ? const Color(0xFF7C766B) : Color(f.color | 0xFF000000);
