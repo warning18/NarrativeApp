@@ -348,7 +348,8 @@ void main() {
       // at v1.597 (the difficulty pass), at v1.601 (Vica, with her table) and at
       // v1.610 (the failed boardings carry the lift: the hash only) and at
       // v1.613 (the bosses in the full world: Aurel Vane is no longer a wall)
-      // and at v1.614 (the specialisations pass).
+      // at v1.614 (the specialisations pass) and at v1.615 (the element
+      // dice, weakness ×3).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -360,12 +361,12 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        19,
-        3323,
-        33,
-        85,
-        37,
-        271,
+        16,
+        2412,
+        27,
+        62,
+        32,
+        269,
         8
       ));
       expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
@@ -407,4 +408,4 @@ void main() {
 /// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
 /// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
 /// every hero).
-const int _naiveChoicesHash = 944296541;
+const int _naiveChoicesHash = 2643919658;

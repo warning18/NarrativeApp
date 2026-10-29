@@ -342,7 +342,8 @@ extension _FightCards on _FightScreenState {
         Tooltip(
           message:
               '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×2', Colors.green.shade700),
+          child: _miniStat(elementIcon(element),
+              '×${weaknessMultiplier.round()}', Colors.green.shade700),
         ),
       for (final element in known.resist)
         Tooltip(
@@ -1094,7 +1095,8 @@ extension _FightCards on _FightScreenState {
     final elementLine = [
       if (known.weak.isNotEmpty)
         '${trFor(lang, 'weak_to_label')} '
-            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} (×2)',
+            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} '
+            '(×${weaknessMultiplier.round()})',
       if (known.resist.isNotEmpty)
         '${trFor(lang, 'resists_label')} '
             '${known.resist.map((e) => elementLabel(e, lang)).join(', ')} (×½)',

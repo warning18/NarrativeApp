@@ -291,7 +291,7 @@ void main() {
     });
 
     test('naive with companions.json loaded: Vica only (v1.601)', () {
-      // sim_competent_test.dart's pin (re-pinned at v1.577, v1.578, v1.602, v1.610, v1.613 and v1.614 with it).
+      // sim_competent_test.dart's pin (re-pinned at v1.577, v1.578, v1.602, v1.610, v1.613, v1.614 and v1.615 with it).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -303,15 +303,15 @@ void main() {
         naive.furthestChapter,
       ), (
         'dwarf',
-        19,
-        3323,
-        33,
-        85,
-        37,
-        271,
+        16,
+        2412,
+        27,
+        62,
+        32,
+        269,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 944296541);
+      expect(_stableHash(naive.choicesTaken), 2643919658);
       // The naive player recruits no one; the story gives it Vica (v1.601).
       expect(
           naive.companionLog
