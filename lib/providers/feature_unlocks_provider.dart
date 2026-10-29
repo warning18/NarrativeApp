@@ -7,7 +7,7 @@ import '../data/feature_unlocks.dart';
 import 'player_session_provider.dart';
 
 /// The ids of the features open now.
-final unlockedFeaturesProvider = Provider<Set<String>>((ref) {
+final _unlockedFeaturesProvider = Provider<Set<String>>((ref) {
   final ladder = ref.watch(playerSessionProvider.select((s) => s.ladder));
   return {for (final f in unlockedFeatures(ladder)) f.id};
 });
@@ -26,4 +26,4 @@ final newlyUnlockedProvider = Provider<List<String>>((ref) {
 /// Whether the feature [id] is open (an unknown id is).
 bool isFeatureUnlocked(WidgetRef ref, String id) =>
     gameFeatureNamed(id) == null ||
-    ref.watch(unlockedFeaturesProvider).contains(id);
+    ref.watch(_unlockedFeaturesProvider).contains(id);

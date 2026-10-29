@@ -18,14 +18,14 @@ final gameDbRepositoryProvider =
 /// variants (`<baseId>@fine`, forge_roll.dart's ForgedItems); [french] when
 /// its English fields already hold the French text. Other tables as they
 /// are.
-Map<String, dynamic> readableTable(
+Map<String, dynamic> _readableTable(
         DbSchema schema, Map<String, dynamic> records, {bool french = false}) =>
     schema.id == itemsSchema.id
         ? withForgedVariants(records, french: french)
         : records;
 
-class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
-  GameDbNotifier(this._repository) : super(const AsyncValue.loading()) {
+class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
+  _GameDbNotifier(this._repository) : super(const AsyncValue.loading()) {
     _load();
   }
 
@@ -38,7 +38,7 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
     final loaded = _loaded;
     try {
       final records =
-          readableTable(_repository.schema, await _repository.loadRecords());
+          _readableTable(_repository.schema, await _repository.loadRecords());
       state = AsyncValue.data(records);
       if (!loaded.isCompleted) loaded.complete(records);
     } catch (error, stackTrace) {
@@ -63,7 +63,7 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
         Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current[key] = record;
     await _repository.saveRecords(current);
-    state = AsyncValue.data(readableTable(_repository.schema, current));
+    state = AsyncValue.data(_readableTable(_repository.schema, current));
   }
 
   Future<void> deleteRecord(String key) async {
@@ -71,12 +71,12 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
         Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current.remove(key);
     await _repository.saveRecords(current);
-    state = AsyncValue.data(readableTable(_repository.schema, current));
+    state = AsyncValue.data(_readableTable(_repository.schema, current));
   }
 
   Future<void> replaceAll(Map<String, dynamic> records) async {
     await _repository.saveRecords(records);
-    state = AsyncValue.data(readableTable(_repository.schema, records));
+    state = AsyncValue.data(_readableTable(_repository.schema, records));
   }
 
   Future<void> resetToDefaults() async {
@@ -85,22 +85,22 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   }
 }
 
-final gameDbProvider = StateNotifierProvider.family<GameDbNotifier,
+final gameDbProvider = StateNotifierProvider.family<_GameDbNotifier,
     AsyncValue<Map<String, dynamic>>, DbSchema>(
   (ref, schema) {
     final repository = ref.watch(gameDbRepositoryProvider(schema));
-    return GameDbNotifier(repository);
+    return _GameDbNotifier(repository);
   },
 );
 
-/// [GameDbNotifier.whenLoaded] for [schema]'s table.
+/// [_GameDbNotifier.whenLoaded] for [schema]'s table.
 Future<Map<String, dynamic>> loadedGameDb(
     WidgetRef ref, DbSchema schema) async {
   final records = withResolvedPlaceholders(
       schema.id, await ref.read(gameDbProvider(schema).notifier).whenLoaded());
   return ref.read(appLanguageProvider) == AppLanguage.fr
-      ? readableTable(schema, frenchOverlay(records), french: true)
-      : readableTable(schema, records);
+      ? _readableTable(schema, frenchOverlay(records), french: true)
+      : _readableTable(schema, records);
 }
 
 /// A copy of [records] with every French field laid over its English
@@ -143,8 +143,8 @@ dynamic _overlaid(dynamic value) {
 final localizedDbProvider =
     Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
   final raw = ref.watch(gameDbProvider(schema)).whenData((records) =>
-      readableTable(schema, withResolvedPlaceholders(schema.id, records)));
+      _readableTable(schema, withResolvedPlaceholders(schema.id, records)));
   if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
-  return raw.whenData(
-      (records) => readableTable(schema, frenchOverlay(records), french: true));
+  return raw.whenData((records) =>
+      _readableTable(schema, frenchOverlay(records), french: true));
 });

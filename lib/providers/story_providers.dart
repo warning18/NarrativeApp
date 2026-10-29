@@ -19,7 +19,7 @@ const String _autosaveVisitedPrefsKey = 'autosave_story_visited';
 /// last stalls (v1.196) give way to the house being searched, the
 /// smuggler's three doors to the lift-off, and Clement's anchor chain to
 /// the storm.
-const Map<String, String> retiredNodeIds = {
+const Map<String, String> _retiredNodeIds = {
   '5001': '4999_camp',
   '5002': '4999_camp',
   '151': '300',
@@ -36,8 +36,8 @@ const Map<String, String> retiredNodeIds = {
   '965_vengeance': '965',
 };
 
-/// [nodeId], or the scene that replaced it (see [retiredNodeIds]).
-String liveNodeId(String nodeId) => retiredNodeIds[nodeId] ?? nodeId;
+/// [nodeId], or the scene that replaced it (see [_retiredNodeIds]).
+String liveNodeId(String nodeId) => _retiredNodeIds[nodeId] ?? nodeId;
 
 final storyRepositoryProvider = Provider<StoryRepository>((ref) {
   return StoryRepository();

@@ -63,8 +63,8 @@ List<String> questsReadyToTurnIn(
 /// Which in-game tabs have something waiting: a dot on Character for
 /// unspent points, on Camp for a house the purse covers (while the party
 /// is at the camp), on Other for a quest ready to turn in.
-class TabBadges {
-  const TabBadges({
+class _TabBadges {
+  const _TabBadges({
     this.character = false,
     this.camp = false,
     this.readyQuestCount = 0,
@@ -77,12 +77,12 @@ class TabBadges {
   bool get other => readyQuestCount > 0;
 }
 
-final tabBadgesProvider = Provider<TabBadges>((ref) {
+final tabBadgesProvider = Provider<_TabBadges>((ref) {
   final session = ref.watch(playerSessionProvider);
   final atCamp = ref.watch(campPresenceProvider) == CampPresence.atCamp;
   final houses = ref.watch(gameDbProvider(housesSchema)).value ?? const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-  return TabBadges(
+  return _TabBadges(
     character: hasPointsToSpend(session) || hasSignWaiting(session),
     camp: atCamp && affordableHouseIds(session, houses).isNotEmpty,
     readyQuestCount: questsReadyToTurnIn(session, quests).length,
