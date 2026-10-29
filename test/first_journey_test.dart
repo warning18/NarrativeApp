@@ -4,7 +4,7 @@
 // starts there, once, before any "New:" card; a way taken on a town's
 // District view walks the party's mark to its pin before its scene opens
 // (a tap skips the walk); and a page whose cards hold every move the map
-// would offer (the Weaver's Alley, 270) has no "Back to the map".
+// would offer (the parked Weaver's Alley, 270) has no "Back to the map".
 import 'dart:convert';
 import 'dart:io';
 
@@ -29,7 +29,6 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/tutorial_provider.dart';
 import 'package:narrative_data_app/tutorial/guide_tour.dart';
 import 'package:narrative_data_app/tutorial/tutorial_topics.dart';
-import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -468,7 +467,9 @@ void main() {
       expect(alley.map((w) => w.card), [true, true, false]);
       expect(alley.map((w) => w.to).toSet(), {'alster_family_house'});
       expect(_hidden('270'), isTrue);
-      // 250: the Weaver's Alley a card, the Stone Bridge a pin elsewhere.
+      // 250: the Stone Bridge its one way on (the alley is parked, v1.620);
+      // the walk to a pin inside a district is district_walk_test's.
+      expect(_exitWays(_story.nodeFor('250')!), hasLength(1));
       expect(_hidden('250'), isFalse);
       // The Beggar's room: its ways are spots, no cards.
       expect(_hidden('110'), isFalse);
@@ -565,78 +566,6 @@ void main() {
     // Seen: not again.
     await tester.pump(const Duration(seconds: 2));
     expect(find.byType(GuideTour), findsNothing);
-    await _done(tester);
-  });
-
-  testWidgets(
-      'a way taken on the District view walks the party to its pin first '
-      '(a tap skips it); the Weaver\'s Alley\'s page has no way back to the '
-      'map, "Leave them both" a road card on it', (tester) async {
-    final container = await _continueSave(tester,
-        node: '250',
-        history: const ['0', '100', '105', '106'],
-        flags: const [featureLadderFlag, journeyFirstShownFlag],
-        animate: true);
-    await _closeRecap(tester);
-    await tester.pump(const Duration(seconds: 1));
-    expect(_cityChart, findsOneWidget);
-    Offset? partyAt() =>
-        tester.widget<CityChartView>(find.byType(CityChartView)).partyAt;
-    expect(partyAt(), isNull);
-    // The Weaver's Alley, the one way in the Lower Town: its row, then Go.
-    final row = find.byKey(const ValueKey('journey_city_row_1'));
-    expect(row, findsOneWidget);
-    await tester.tap(row);
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 400));
-    final go = find.byKey(const ValueKey('journey_go'));
-    await tester.ensureVisible(go);
-    await tester.pump();
-    await tester.tap(go);
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.pump(const Duration(milliseconds: 100));
-    // The mark walks; the scene waits for it.
-    final skip = find.byKey(const ValueKey('journey_city_walk_skip'));
-    expect(skip, findsOneWidget);
-    final early = partyAt();
-    expect(early, isNotNull);
-    await tester.pump(const Duration(milliseconds: 250));
-    final later = partyAt();
-    expect(later, isNotNull);
-    expect(later, isNot(early));
-    expect(container.read(storyPlayProvider).currentNodeId, '250');
-    // A tap lands it: the scene opens.
-    await tester.tap(skip);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
-    // Well before the walk's own end (0.6 s at the least, 0.35 s gone).
-    expect(container.read(storyPlayProvider).currentNodeId, '270');
-    await _pumpUntil(
-        tester, () => container.read(storyPlayProvider).currentNodeId == '270');
-    expect(container.read(storyPlayProvider).currentNodeId, '270');
-    await _pumpUntil(tester, () => _page('270').evaluate().isNotEmpty);
-    expect(_page('270'), findsOneWidget);
-    expect(skip, findsNothing);
-    // Its words shown at once (Continue), then no way back to the map.
-    if (_backToMap.evaluate().isNotEmpty) {
-      await tester.tap(_backToMap);
-      await tester.pump(const Duration(milliseconds: 400));
-      await tester.pump(const Duration(milliseconds: 400));
-    }
-    expect(_page('270'), findsOneWidget);
-    expect(_backToMap, findsNothing);
-    expect(_cornerMap, findsNothing);
-    // Every way a card: "Leave them both", a pin on the map to the same
-    // house, too.
-    for (final i in [0, 1, 2]) {
-      expect(find.byKey(ValueKey('journey_choice_card_$i')), findsOneWidget,
-          reason: '$i');
-    }
-    expect(
-        find.descendant(
-            of: find.byKey(const ValueKey('journey_choice_card_2')),
-            matching: find.textContaining('Leave them both')),
-        findsOneWidget);
     await _done(tester);
   });
 }

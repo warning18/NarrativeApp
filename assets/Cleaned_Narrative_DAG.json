@@ -643,8 +643,8 @@
   },
   "250": {
     "id": "250",
-    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people.\n\nA proclamation was nailed to the well-head with the ink still wet, **against unlicensed drawers of every clan and of none**, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap.\n\nAnd above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps.\n\nTwo roads went home, neither pretending to be the good one: the Stone Bridge, quick and watched; or the Weaver’s Alley, slow, dark, and twisty enough to hide either a way through or a knife.\n\nSomeone had chalked a list on the brick by the stairs: **jobs, names, a price for each**. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.",
-    "description_fr": "Alster avait été mise à genoux en une seule soirée, et s’y résignait avec la mauvaise grâce d’une ville à qui on ne l’avait jamais demandé. Chaque porte de la rue du Suif avait été marquée à la craie : un signe blanc haut d’une main au-dessus du loquet, tracé vite, le même sur chaque porte, et derrière chaque porte marquée, la maison avait été vidée de ses gens.\n\nUne proclamation était clouée à la margelle du puits, l’encre encore fraîche, **contre les traceurs sans licence de tous les clans et d’aucun**, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée comme il l’avait toujours fait, plus vieux que la ville et réclamé par personne, du feu sur les genoux.\n\nEt au-dessus du géant, plus bas que des nuages n’ont le droit de l’être, flottaient les navires. Ils étaient blancs, ils étaient dans les airs, et leurs voiles étaient peintes de signes qui brûlaient comme des lampes.\n\nDeux routes menaient à la maison, sans qu’aucune ne feignît d’être la bonne : le Pont de Pierre, rapide et surveillé ; ou la Ruelle du Tisserand, lente, sombre, et assez sinueuse pour cacher aussi bien un passage qu’un couteau.\n\nQuelqu’un avait tracé à la craie une liste sur la brique, près de l’escalier : **des travaux, des noms, un prix pour chacun**. L’Inquisition n’avait pas encore trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.",
+    "description": "Alster had been made to kneel in a single evening, and it was doing so with the bad grace of a city that had never been asked to before. Every door on Tallow Street had been chalked: a white sign a hand high above the latch, drawn quickly, the same on every door, and behind every chalked door the house had been emptied of its people.\n\nA proclamation was nailed to the well-head with the ink still wet, **against unlicensed drawers of every clan and of none**, and against whoever sheltered them. Over the roofs the harbor’s old stone giant stood up out of the smoke the way it always had, older than the city and claimed by nobody, with fire in its lap.\n\nAnd above the giant, lower than clouds have any business being, hung the ships. They were white, and they were in the air, and their sails were painted with signs that burned like lamps.\n\nOne road went home, and it was not a good one: the Stone Bridge, quick and watched.\n\nSomeone had chalked a list on the brick by the stairs: **jobs, names, a price for each**. The Inquisition had not found the time to scrub it. I took the list for something I would be coming back to.",
+    "description_fr": "Alster avait été mise à genoux en une seule soirée, et s’y résignait avec la mauvaise grâce d’une ville à qui on ne l’avait jamais demandé. Chaque porte de la rue du Suif avait été marquée à la craie : un signe blanc haut d’une main au-dessus du loquet, tracé vite, le même sur chaque porte, et derrière chaque porte marquée, la maison avait été vidée de ses gens.\n\nUne proclamation était clouée à la margelle du puits, l’encre encore fraîche, **contre les traceurs sans licence de tous les clans et d’aucun**, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée comme il l’avait toujours fait, plus vieux que la ville et réclamé par personne, du feu sur les genoux.\n\nEt au-dessus du géant, plus bas que des nuages n’ont le droit de l’être, flottaient les navires. Ils étaient blancs, ils étaient dans les airs, et leurs voiles étaient peintes de signes qui brûlaient comme des lampes.\n\nUne seule route menait à la maison, et elle n’avait rien de bon : le Pont de Pierre, rapide et surveillé.\n\nQuelqu’un avait tracé à la craie une liste sur la brique, près de l’escalier : **des travaux, des noms, un prix pour chacun**. L’Inquisition n’avait pas encore trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "tense",
@@ -659,15 +659,6 @@
         "text": "Take the Stone Bridge",
         "text_fr": "Prendre le Pont de Pierre",
         "next_id": "260",
-        "unlockQuestId": "q_retrieve_banner",
-        "flagsToAdd": [
-          "feat_quests"
-        ]
-      },
-      {
-        "text": "Take the Weaver’s Alley",
-        "text_fr": "Prendre la Ruelle du Tisserand",
-        "next_id": "270",
         "unlockQuestId": "q_retrieve_banner",
         "flagsToAdd": [
           "feat_quests"
@@ -798,8 +789,8 @@
         "fr": "Le fil en moi, la {sigil} que personne n’avait choisie, tira vers la maison avant moi."
       }
     },
-    "prompt": "Which way across the river?",
-    "prompt_fr": "Quelle route pour traverser ?"
+    "prompt": "Cross the river?",
+    "prompt_fr": "Traverser la rivière ?"
   },
   "260": {
     "id": "260",
@@ -883,10 +874,7 @@
         "text": "Cut it free",
         "text_fr": "Le libérer",
         "next_id": "300",
-        "alignmentMod": 2,
-        "flagsToAdd": [
-          "companion_hound"
-        ]
+        "alignmentMod": 2
       },
       {
         "text": "Strip the bearer’s gear and go",
@@ -898,10 +886,7 @@
       {
         "text": "Leave them both",
         "text_fr": "Les laisser tous les deux",
-        "next_id": "300",
-        "flagsToAdd": [
-          "hound_left"
-        ]
+        "next_id": "300"
       }
     ],
     "flag_callbacks": [
@@ -968,16 +953,6 @@
         "flag": "toll_refused",
         "en": "The man at the booth had worn his authority like a borrowed costume, and I had left him on the bridge without it.",
         "fr": "L’homme du péage portait son autorité comme un costume d’emprunt, et je l’avais laissé sur le pont sans elle."
-      },
-      {
-        "flag": "companion_hound",
-        "en": "The wire had bitten my palms before it gave up the lantern. It hung from my belt now, still warm, where some dead signaller had worn it. I had no use for it yet.",
-        "fr": "Le fil m’avait mordu les paumes avant de lâcher la lanterne. Elle pendait maintenant à ma ceinture, encore tiède, là où quelque signaleur mort la portait. Je n’en avais pas encore l’usage."
-      },
-      {
-        "flag": "hound_left",
-        "en": "Somewhere behind me, in the alley, a small light still burned in the wire. I had not looked back.",
-        "fr": "Quelque part derrière moi, dans la ruelle, une petite lumière brûlait encore dans le fil. Je n’avais pas regardé en arrière."
       }
     ],
     "prompt": "How do you approach the house?",
@@ -1521,17 +1496,6 @@
         "flagsToAdd": [
           "pushed_past"
         ]
-      },
-      {
-        "text": "Raise the lantern",
-        "text_fr": "Lever la lanterne",
-        "next_id": "823",
-        "showIfFlags": [
-          "companion_hound"
-        ],
-        "flagsToAdd": [
-          "hound_wardens"
-        ]
       }
     ],
     "facing": "inquisition_warden",
@@ -1618,11 +1582,6 @@
         "flag": "pushed_past",
         "en": "I had gone through them rather than over them, and had the bruises to show for the difference. They were still on their feet when I reached the stair, which was their problem now.",
         "fr": "Je les avais traversés plutôt qu’enjambés, et j’en portais les bleus. Ils tenaient encore debout quand j’atteignis l’escalier, ce qui était désormais leur problème."
-      },
-      {
-        "flag": "hound_wardens",
-        "en": "I had not known whether the shutter would still open. It did, with a flare like a slammed door, white and total, and the nearest Warden clawed at his eyes before he could shout; the second turned just in time to receive my dagger. The lantern hung from my belt afterward, ticking as it cooled.",
-        "fr": "Je ne savais pas si l’obturateur s’ouvrirait encore. Il s’ouvrit, avec un éclat de porte claquée, blanc et total, et le Gardien le plus proche se griffa les yeux avant de pouvoir crier ; le second se retourna juste à temps pour recevoir ma dague. La lanterne pendait ensuite à ma ceinture, cliquetant en refroidissant."
       },
       {
         "flag": "wardens_fooled",
@@ -1791,21 +1750,6 @@
         "flagsToAdd": [
           "hub_891_armory"
         ]
-      },
-      {
-        "text": "Raise the lantern",
-        "text_fr": "Lever la lanterne",
-        "next_id": "891",
-        "goldMod": 10,
-        "showIfFlags": [
-          "companion_hound"
-        ],
-        "hideIfFlags": [
-          "hub_891_hound"
-        ],
-        "flagsToAdd": [
-          "hub_891_hound"
-        ]
       }
     ],
     "flag_callbacks": [
@@ -1838,11 +1782,6 @@
         "flag": "ruins_searched",
         "en": "What the searchers had missed in the ruins clinked in my pockets: a little of my mother’s silver, and the spoons.",
         "fr": "Ce que les fouilleurs avaient laissé dans les ruines tintait dans mes poches : un peu de l’argenterie de ma mère, et les cuillères."
-      },
-      {
-        "flag": "hub_891_hound",
-        "en": "The flare opened the crowd on the steps like a hand through water; I relieved a dropped purse of its previous owner’s claim, and the lantern was warm at my hip.",
-        "fr": "L’éclat ouvrit la foule des marches comme une main dans l’eau ; je soulageai une bourse tombée de la prétention de son ancien propriétaire, et la lanterne était tiède contre ma hanche."
       },
       {
         "flag": "trainer_strike",

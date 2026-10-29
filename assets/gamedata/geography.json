@@ -568,8 +568,8 @@
     "landmark": "",
     "glyph": "temple",
     "lock": {"quest": "q_ch3_ashen_oath", "opensOn": "accepted"},
-    "lockedText": "The Tribunal’s guards turn back anyone who has not sworn the Ashen Oath at the Quarter Gate.",
-    "lockedText_fr": "Les gardes du Tribunal refoulent quiconque n’a pas d’abord prêté le Serment de Cendres à la Porte du Quartier."
+    "lockedText": "The Tribunal’s guards bar the stair to anyone who has not taken up the Ashen Oath at the Quarter Gate.",
+    "lockedText_fr": "Les gardes du Tribunal barrent l’escalier à quiconque n’a pas prêté le Serment de Cendres à la Porte du Quartier."
   },
   "ashen_quarter_archive": {
     "level": "building",

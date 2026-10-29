@@ -1,4 +1,6 @@
-# Skills tab: three new ideas (UX pictures, nothing built)
+# Skills tab: three new ideas (UX pictures; idea 1, the star chart, built in v1.619)
+
+> **Built (v1.619):** the user chose **idea 1, the star chart**. Only the Tree tab's body changed (`lib/screens/skills/star_chart.dart`); the info sheet, Raise tier, Merge and Craft, My skills, Spells and the two pills are as before. A class with five branches (the mage, the cleric) puts the fifth across the last row. Pictures of the build, 412 and 320 px, level 1, mid game and a French mage: `docs/ux-shots/star-chart/star-chart-built.png`.
 
 The user keeps today's tab and asked for **three other designs, totally different** from A, B, C, A2, A3,
 A4 and from each other. None is a tree, a rail or a grid. Each is drawn on the real skills data (the
