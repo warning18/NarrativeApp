@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.624.0+656]
+
+- **Cleanup: 6 unused symbols removed from UX's files**
+  `elementColor`, `adventureNodeCategoryIcon`, `campRouteLabel`,
+  `itemRarityLabel`, `RoomArtPainter` and a hull shade that nothing used
+  (162 lines). No behaviour change.
+
 ## [1.618.0+654]
 
 - **Core: the big towns, influence that pays off, clan roads, the
