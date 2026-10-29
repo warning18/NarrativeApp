@@ -60,6 +60,7 @@ import '../data/signs.dart';
 import '../data/sim_combat.dart';
 import '../data/sim_companions.dart';
 import '../data/story_companions.dart';
+import '../data/story_prices.dart';
 import '../data/sim_growth.dart';
 import '../data/sim_policy.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
@@ -2212,6 +2213,14 @@ _SimResult _simulate(
       spellsCast: fightResult.casts,
     ));
 
+    // A forced price the purse can't make is taken in health (#583).
+    final c0 = character;
+    if (choice.shortfallWounds && c0 != null) {
+      c0.currentHealth = max(
+          1,
+          c0.currentHealth +
+              shortfallWound(gold: gold, goldMod: effectiveGoldMod));
+    }
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);

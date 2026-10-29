@@ -43,6 +43,7 @@ class StoryChoice {
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
+    this.shortfallWounds = false,
     this.about = '',
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
@@ -117,6 +118,7 @@ class StoryChoice {
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       pays: json['pays'] as bool? ?? false,
+      shortfallWounds: json['shortfallWounds'] as bool? ?? false,
       about: json['about']?.toString() ?? '',
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
@@ -385,6 +387,12 @@ class StoryChoice {
   /// other prices lock through the next scene's gold requirement.
   final bool pays;
 
+  /// A price the story forces (the only way on, after a failed check):
+  /// the purse pays what it holds and the rest is taken as a wound, health
+  /// for gold (story_prices.dart), never the last point. A choice that
+  /// [pays] instead stays shut to a short purse.
+  final bool shortfallWounds;
+
   /// A hub's grouping key for this choice (Narrative's in-place data,
   /// docs/proposals/inplace-choices.md): who or what it is about, an NPC
   /// id, a place id or a slug of its node's [StoryNode.aboutLabels]; ''
@@ -479,6 +487,7 @@ class StoryChoice {
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
         if (pays) 'pays': pays,
+        if (shortfallWounds) 'shortfallWounds': shortfallWounds,
         if (about.isNotEmpty) 'about': about,
         if (travels) 'travelPlaceId': travelPlaceId,
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
