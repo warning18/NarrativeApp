@@ -3090,6 +3090,17 @@
         ]
       },
       {
+        "text": "Look into the alley where a signal-lantern still burns",
+        "text_fr": "Regarder dans la ruelle où brûle encore une lanterne de signal",
+        "next_id": "2015_signaller",
+        "hideIfFlags": [
+          "hub_2015_signaller"
+        ],
+        "showIfFlags": [
+          "hub_2015_bazaar"
+        ]
+      },
+      {
         "text": "Take the harbor master’s job",
         "text_fr": "Accepter la mission du maître du port",
         "next_id": "2015_dockside",
@@ -3801,6 +3812,65 @@
         ]
       }
     ]
+  },
+  "2015_signaller": {
+    "id": "2015_signaller",
+    "description": "The alley swallowed the lantern light and meant to keep it. Halfway down, something rattled in razor wire strung low across the passage. Someone had found time for a trap, even tonight.\n\nIt was **a signal-lantern of the Inquisition**: hooded brass, shutter bent, still burning, its flame leaning in the draught of the wire.\n\nIts bearer lay face-down a little further on. A signaller, by the white on his sleeve. Throat opened with a thoroughness that suggested opinions. One gauntlet still gripped a slack lanyard.\n\nThe flame did not gutter. It burned on, patient as a thing whose last duty is a dead man’s.",
+    "description_fr": "La ruelle avalait la lumière des lanternes et comptait bien la garder. À mi-chemin, quelque chose cliquetait dans un fil barbelé tendu bas en travers du passage. Quelqu’un avait trouvé le temps de poser un piège, même cette nuit.\n\nC’était **une lanterne de signal de l’Inquisition** : cuivre à capuchon, obturateur tordu, encore allumée, sa flamme penchée dans le courant d’air du fil.\n\nSon porteur gisait face contre terre un peu plus loin. Un signaleur, au blanc de sa manche. La gorge ouverte avec une minutie qui laissait penser à des opinions. Une main gantelée serrait encore une dragonne relâchée.\n\nLa flamme ne vacilla pas. Elle brûlait, patiente comme les choses dont le dernier devoir est celui d’un mort.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "location": "saltmouth_lantern_alleys",
+    "choices": [
+      {
+        "text": "Cut it free",
+        "text_fr": "Le libérer",
+        "next_id": "2015",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_2015_signaller"
+        ]
+      },
+      {
+        "text": "Strip the bearer’s gear and go",
+        "text_fr": "Dépouiller le signaleur et partir",
+        "next_id": "2015",
+        "goldMod": 15,
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_2015_signaller"
+        ]
+      },
+      {
+        "text": "Leave them both",
+        "text_fr": "Les laisser tous les deux",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_signaller"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_sparrow_good",
+        "en": "It looked at me the way a sparrow once looked up from a gutter, and my hands remembered before I did.",
+        "fr": "Il me regardait comme un moineau, un jour, depuis un caniveau, et mes mains se souvinrent avant moi."
+      },
+      {
+        "flag": "origin_sparrow_neutral",
+        "en": "At six I had wrung a sparrow’s neck because it was kinder. My hands remembered, and I made them wait.",
+        "fr": "À six ans, j’avais tordu le cou d’un moineau parce que c’était plus doux. Mes mains s’en souvenaient, et je les fis attendre."
+      },
+      {
+        "flag": "origin_sparrow_evil",
+        "en": "At six I had sold a sparrow with a broken wing for a copper. Nobody here was offering one.",
+        "fr": "À six ans, j’avais vendu un moineau à l’aile brisée pour un sou. Ici, personne n’en offrait."
+      }
+    ],
+    "prompt": "What becomes of the lantern and its bearer?",
+    "prompt_fr": "Que deviennent la lanterne et son porteur ?"
   },
   "2015_dockside": {
     "id": "2015_dockside",
