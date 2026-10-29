@@ -5820,7 +5820,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
-    var newBaseDamage = state.baseDamage;
+    final newBaseDamage = state.baseDamage;
     var newStatPoints = state.statPoints;
     var leveledUp = false;
     var levelsGained = 0;

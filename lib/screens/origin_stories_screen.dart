@@ -889,7 +889,7 @@ class _AlignmentGauge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final at = ((score.clamp(-_range, _range) + _range) / (2 * _range));
+    final at = (score.clamp(-_range, _range) + _range) / (2 * _range);
     return SizedBox(
       height: 18,
       child: LayoutBuilder(

@@ -309,7 +309,7 @@ class SeaSurfacePainter extends CustomPainter {
     final centre = Offset(size.width * 0.5, size.height * 0.5);
     final maxR = size.longestSide * 0.75;
     for (var i = 0; i < 6; i++) {
-      final r = ((t * 14 * rough + i * maxR / 6) % maxR);
+      final r = (t * 14 * rough + i * maxR / 6) % maxR;
       final fade = 1 - r / maxR;
       canvas.drawCircle(
         centre,

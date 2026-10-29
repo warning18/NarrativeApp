@@ -485,7 +485,7 @@ class CityChart {
           matrix4: m.storage);
     }
 
-    var islands = Path();
+    final islands = Path();
     for (final i in record.islands) {
       polygon(i, islands);
     }

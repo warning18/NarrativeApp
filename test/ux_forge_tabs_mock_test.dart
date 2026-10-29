@@ -228,7 +228,7 @@ Widget _rollLine({required bool open}) {
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: Row(children: const [
+            child: const Row(children: [
               Expanded(
                   flex: 5,
                   child: SizedBox(

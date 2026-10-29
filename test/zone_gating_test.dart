@@ -97,7 +97,7 @@ void main() {
         expect(bossId, isNotEmpty, reason: '${entry.key} has no boss');
         final boss = enemies[bossId] as Map<String, dynamic>?;
         expect(boss, isNotNull, reason: '${entry.key} boss $bossId missing');
-        expect((boss!['hunterAlignment']?.toString() ?? ''), isEmpty,
+        expect(boss!['hunterAlignment']?.toString() ?? '', isEmpty,
             reason: '${entry.key} boss is an alignment hunter');
         expect(zone['bossFlavorText']?.toString() ?? '', isNotEmpty,
             reason: '${entry.key} has no boss narration');

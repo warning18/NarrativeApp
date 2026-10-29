@@ -4127,7 +4127,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                                 spells: widget.spells),
                             'playthrough_batch_${batch.id}.txt',
                           );
-                          break;
                         case 'csv':
                           _exportToFile(
                             context,
@@ -4135,7 +4134,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                             _batchResultsCsv(results),
                             'playthrough_batch_${batch.id}.csv',
                           );
-                          break;
                         case 'json':
                           _exportToFile(
                             context,
@@ -4143,7 +4141,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                             _batchResultsJson(strategyLabel, results),
                             'playthrough_batch_${batch.id}.json',
                           );
-                          break;
                       }
                     },
                     itemBuilder: (context) => [

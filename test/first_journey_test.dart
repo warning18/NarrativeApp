@@ -320,7 +320,7 @@ Future<void> _done(WidgetTester tester) async {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   group('firstStepOutside', () {
     const ladder = [featureLadderFlag];

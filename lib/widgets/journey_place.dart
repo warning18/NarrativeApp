@@ -73,7 +73,7 @@ class PlacePlanPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rng = math.Random(seed);
-    final dark = const Color(0xFF17151B);
+    const dark = Color(0xFF17151B);
     if (kind == PlaceKind.sea) {
       canvas.drawRect(Offset.zero & size, Paint()..color = palette.sea);
       final wave = Paint()
