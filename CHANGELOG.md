@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.634.0+670]
+
+- **Core: "Play to chapter" (the simulator screen) takes options, leaves
+  the character as a player would, and reports what it did.**
+  - **Options:**
+    - start a new game;
+    - its race and profession (random by default);
+    - a seed (random by default; the same seed now gives the same run,
+      the character's own seed included);
+    - the player's style (the strategy chips, as before).
+  - **The end of the walk:**
+    - every clan offer (banner) due is taken, kept to the main clan and
+      its allies, as the competent simulator does;
+    - then the gear is equipped, the die is set, the harbour is built and
+      the recruited companions are seated, up to the party's room.
+    - Offers still wait while the clans are not open yet (the game's own
+      rule).
+  - **A summary pop-in with six tabs:**
+    - State: level, gold, chapter, scene, standing with each clan;
+    - Choices: in order, with their scene ids;
+    - Items: equipped, came into the pack, left it;
+    - Banners: the one carried, those taken, any still waiting;
+    - Fights: won, lost, pushed through;
+    - Companions: seated, recruited.
+  - Tests: `autoplay_engine_test` (the picks, no banner left, the party
+    seated, the log) and `autoplay_summary_test`.
+
 ## [1.629.0+665]
 
 - **Cleanup: 120 file-only names in lib/combat are private**
