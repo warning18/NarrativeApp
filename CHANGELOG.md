@@ -24,6 +24,12 @@ isn't reconstructable from git history alone.
     the rhythm more than the length.
   - Tests: none changed; two tests that pin phrases (`story_direction_test`)
     keep their phrases.
+## [1.623.0+659]
+
+- **Cleanup: 26 unused symbols removed from Core's files**
+  Dead helpers, constants and providers in `lib/combat`, `lib/data`,
+  `lib/providers` and `lib/gamedata` that nothing called (136 lines). No
+  behaviour change.
 
 ## [1.622.0+658]
 

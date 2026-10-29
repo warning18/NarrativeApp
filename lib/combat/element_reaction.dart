@@ -100,10 +100,6 @@ double reactionSpreadShare(ElementReaction reaction) => switch (reaction) {
 String reactionLabelKey(ElementReaction reaction) =>
     'reaction_${reaction.name}';
 
-/// l10n key of the reaction's one-line rules text.
-String reactionDescriptionKey(ElementReaction reaction) =>
-    '${reactionLabelKey(reaction)}_desc';
-
 /// Every element a strike can carry, in the order the game lists them.
 const List<String> strikeElements = [
   'Fire',

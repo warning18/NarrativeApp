@@ -400,10 +400,6 @@ const int relicSureCritMana = 3;
 /// Corsair's Eye: what the Verdict counts.
 const double verdictMultiplier = 1.6;
 
-/// The Trapwright's stun.
-const StatusEffect trapStun =
-    StatusEffect(type: StatusEffectType.stun, remainingTurns: 1);
-
 /// The Fen Guide's poison: [fenPoisonShare] of the strike a turn, for
 /// [fenPoisonTurns] turns.
 const double fenPoisonShare = 0.25;
@@ -529,18 +525,3 @@ List<SpecInfo> specsOfferedBy(
         if (info.factionId == factionId && info.professionId == professionId)
           info,
     ]..sort((a, b) => a.id.compareTo(b.id));
-
-/// [r] with its damage, healing or status changed (a specialisation's
-/// work on the face).
-PlayerActionResult specResult(PlayerActionResult r,
-        {int? damage, int? healing, StatusEffect? status}) =>
-    PlayerActionResult(
-      damageDealt: damage ?? r.damageDealt,
-      healingDone: healing ?? r.healingDone,
-      blockAmount: r.blockAmount,
-      message: r.message,
-      inflictedStatus: status ?? r.inflictedStatus,
-      isCritical: r.isCritical,
-      manaGained: r.manaGained,
-      extras: r.extras,
-    );

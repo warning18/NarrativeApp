@@ -49,7 +49,3 @@ double responseDamageMultiplier(
         : pressing
             ? pressDamageMultiplier
             : 1.0;
-
-/// l10n key of the response's chip.
-String enemyResponseLabelKey(EnemyResponse response) =>
-    'response_${response.name}';

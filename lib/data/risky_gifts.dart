@@ -105,9 +105,6 @@ enum RiskyOutcome {
   curse,
 }
 
-RiskyOutcome? riskyOutcomeNamed(String? name) =>
-    RiskyOutcome.values.where((o) => o.name == name).firstOrNull;
-
 /// The band [roll] (a d20, 1-20) and [luck] fall in: a natural 1, or 2,
 /// the health penalty; 3-4 gold; 5 the curse; 6 or more the gift (the
 /// Luck bonus added).
@@ -224,9 +221,6 @@ class RiskCurse {
   final String stat;
   final int amount;
   final int untilLevel;
-
-  /// How many levels it still lasts at [level].
-  int levelsLeftAt(int level) => max(0, untilLevel - level);
 
   Map<String, dynamic> toJson() => {
         'clan': clan,
