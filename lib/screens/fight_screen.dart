@@ -20,6 +20,7 @@ import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
+import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/duo_techniques.dart';
