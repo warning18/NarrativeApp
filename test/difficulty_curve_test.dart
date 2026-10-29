@@ -64,7 +64,9 @@ void main() {
       final boss = difficultyCurveFor(chapter: 1, isBoss: true);
       expect(boss.health, bossHealthBaseMultiplier);
       expect(boss.damage, bossDamageBaseMultiplier);
-      expect(bossHealthBaseMultiplier, lessThan(enemyHealthBaseMultiplier(1)));
+      // From chapter 2 on (v1.613: chapter 1's one boss, Aurel Vane, is
+      // sized by his own health under the higher boss floor).
+      expect(bossHealthBaseMultiplier, lessThan(enemyHealthBaseMultiplier(2)));
       expect(bossDamageBaseMultiplier, lessThan(enemyDamageBaseMultiplier(1)));
       expect(
           difficultyCurveFor(chapter: 4, isBoss: true).health,

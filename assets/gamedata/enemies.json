@@ -2585,7 +2585,7 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 66,
+    "maxHealth": 80,
     "damage": 6,
     "guile": 12,
     "faction": "",
@@ -3886,7 +3886,7 @@
   "white_admiral": {
     "enemyName": "The White Admiral",
     "enemyName_fr": "L’Amiral Blanc",
-    "maxHealth": 62,
+    "maxHealth": 68,
     "damage": 7,
     "guile": 11,
     "faction": "",
@@ -5213,7 +5213,7 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 57,
+    "maxHealth": 61,
     "damage": 5,
     "guile": 12,
     "faction": "",
@@ -5526,7 +5526,7 @@
   },
   "aurel_vane": {
     "enemyName": "Inquisitor-General Aurel Vane",
-    "maxHealth": 22,
+    "maxHealth": 19,
     "damage": 3,
     "guile": 5,
     "faction": "dominion",
@@ -5981,7 +5981,7 @@
   },
   "champion_dominion": {
     "enemyName": "High Lantern-Bearer Orsolya Keld",
-    "maxHealth": 46,
+    "maxHealth": 42,
     "damage": 5,
     "guile": 9,
     "faction": "",
@@ -6112,7 +6112,7 @@
   },
   "champion_vigil": {
     "enemyName": "Watch-Captain Edda Grey",
-    "maxHealth": 48,
+    "maxHealth": 44,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6243,7 +6243,7 @@
   },
   "champion_compact": {
     "enemyName": "Master Hollis Reck",
-    "maxHealth": 48,
+    "maxHealth": 44,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6374,7 +6374,7 @@
   },
   "champion_mire": {
     "enemyName": "The Heron Queen's Hand",
-    "maxHealth": 48,
+    "maxHealth": 44,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6505,7 +6505,7 @@
   },
   "champion_crows": {
     "enemyName": "Captain Mireille Sorrel",
-    "maxHealth": 48,
+    "maxHealth": 44,
     "damage": 6,
     "guile": 9,
     "faction": "",
@@ -6636,7 +6636,7 @@
   },
   "champion_penitents": {
     "enemyName": "The Ash Confessor",
-    "maxHealth": 48,
+    "maxHealth": 44,
     "damage": 6,
     "guile": 9,
     "faction": "",

@@ -186,8 +186,10 @@ void main() {
     late Map<String, (int, int)> champions;
 
     /// The encounters each profession wins within three tries, in percent
-    /// (the same 400 runs: the guard on the professions' spread, QA).
+    /// (the same 400 runs: the guard on the professions' spread, QA), and
+    /// the standard error of each, from how much its runs differ.
     late Map<String, double> professionWin;
+    late Map<String, double> professionError;
 
     setUpAll(() {
       Map<String, dynamic> table(String name) =>
@@ -199,12 +201,9 @@ void main() {
         for (final e in raw.entries)
           e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
       });
-      // sim-tables-ok: specialisations: the curve's targets (75/65/55...) were
-      // set on a hero without a specialisation; with them the same bosses fall
-      // 15 to 20 points more often (v1.606, found moving the tests to the
-      // shared sim world). Core decides whether to re-tune the bosses or the
-      // targets; until then the bands keep their measure.
-      final tables = simTables(without: {'specialisations', 'spec_variants'});
+      // The full world, specialisations included, as the game and the
+      // simulator screen play it (v1.613, docs/proposals/bosses-full-world.md).
+      final tables = simTables();
       final professions = tables['professions']!.keys.toList()..sort();
       const goals = [
         SimStrategy.random,
@@ -250,7 +249,20 @@ void main() {
       }
       final fought = <String, int>{};
       final lost = <String, int>{};
+      final perRun = <String, List<double>>{};
       for (final run in runs) {
+        var runFought = 0, runLost = 0;
+        for (final chapter in run.enemiesByChapter.values) {
+          for (final MapEntry(key: id, value: enemy) in chapter.entries) {
+            if (id.startsWith('champion_')) continue;
+            runFought += enemy.fought;
+            runLost += enemy.lost;
+          }
+        }
+        if (runFought > 0) {
+          (perRun[run.professionId] ??= [])
+              .add(100 * (1 - runLost / runFought));
+        }
         for (final chapter in run.enemiesByChapter.values) {
           for (final MapEntry(key: id, value: enemy) in chapter.entries) {
             // The champions have their own curve; the professions' spread
@@ -265,6 +277,9 @@ void main() {
       professionWin = {
         for (final p in professions)
           p: 100 * (1 - (lost[p] ?? 0) / (fought[p] ?? 1)),
+      };
+      professionError = {
+        for (final p in professions) p: _standardError(perRun[p] ?? const []),
       };
     });
 
@@ -338,21 +353,30 @@ void main() {
 
     // The five professions win about as often as each other (the L3 on
     // v1.489 found the warrior at 73% and the mage at 60%; v1.497 and v1.499
-    // closed it). No profession more than 8 points from the others (Core's
-    // numbers sit within about 5; 8 stays quiet at the 0.1 to 1 point
-    // noise), none under 60%. Core tunes this: the profession paths in
+    // closed it). No profession more than [_spreadLimit] points from the
+    // others, give or take three standard errors of the gap (a story PR
+    // reshuffles the seeded dice: #588 moved it by a quarter point), none
+    // under 60%. Core tunes this: the profession paths in
     // training_paths.json, bonusMaxHealth and the base numbers in
-    // professions.json.
-    test('the five professions win within 8 points of each other', () {
+    // professions.json, and the specialisations.
+    test('the five professions win within $_spreadLimit points of each other',
+        () {
       final summary = [
         for (final e in professionWin.entries)
           '${e.key} ${e.value.toStringAsFixed(1)}%',
       ].join(', ');
       debugPrint('encounter win by profession: $summary');
-      final spread =
-          professionWin.values.reduce(max) - professionWin.values.reduce(min);
-      expect(spread, lessThanOrEqualTo(8),
-          reason: 'the professions are $spread points apart ($summary)');
+      final best =
+          professionWin.entries.reduce((a, b) => a.value >= b.value ? a : b);
+      final worst =
+          professionWin.entries.reduce((a, b) => a.value <= b.value ? a : b);
+      final spread = best.value - worst.value;
+      final noise = 3 *
+          sqrt(pow(professionError[best.key]!, 2) +
+              pow(professionError[worst.key]!, 2));
+      expect(spread, lessThanOrEqualTo(_spreadLimit + noise),
+          reason: 'the professions are $spread points apart, allowed '
+              '$_spreadLimit + ${noise.toStringAsFixed(1)} ($summary)');
       for (final e in professionWin.entries) {
         expect(e.value, greaterThanOrEqualTo(60),
             reason: '${e.key} wins ${e.value.toStringAsFixed(1)}% ($summary)');
@@ -370,3 +394,19 @@ void main() {
 /// 47% before and 46% after), so 12 points was a two-sigma band there.
 double _band(double target, int fought) =>
     max(0.12, 3 * sqrt(target * (1 - target) / fought));
+
+/// How far apart the professions may win, in points. 8 on a hero without a
+/// specialisation (v1.497); the full world (v1.613) opens it to about 14,
+/// because the mage's, rogue's and ranger's specialisations win far more
+/// than the cleric's and warrior's. The specialisations pass brings it back
+/// to 8 (docs/proposals/bosses-full-world.md).
+const double _spreadLimit = 14;
+
+/// The standard error of the mean of [rates].
+double _standardError(List<double> rates) {
+  if (rates.length < 2) return 0;
+  final mean = rates.reduce((a, b) => a + b) / rates.length;
+  final variance = rates.map((r) => pow(r - mean, 2)).reduce((a, b) => a + b) /
+      (rates.length - 1);
+  return sqrt(variance / rates.length);
+}

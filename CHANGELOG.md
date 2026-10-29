@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.613.0+649]
+
+- **Core: the bosses in the full world** (QA's finding, #591;
+  docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with the clans' specialisations in play, as in the
+    game, the bosses were won 15–20 points more often than their targets
+    (a mean of 64% against about 50%).
+  - **The targets stay; the bosses get harder:**
+    - the boss health floor goes from 1.25 to 1.45;
+    - the void sovereign has 80 health (was 66), the white admiral 68 (was
+      62) and the Tear-Herald 61 (was 57);
+    - the nemeses' champions have 4 less health each;
+    - Aurel Vane drops from 22 to 19 health, so chapter 1 keeps its 75%.
+  - **Now:** every boss is inside its band, and the mean is 53%.
+  - **Found on the way:** with their specialisations, the mage, rogue and
+    ranger win 78–80% of their encounters, the cleric and warrior 67%. A
+    specialisations pass follows.
+  - Tests: `boss_balance_test` measures the full world, and its professions'
+    spread band allows three standard errors. `difficulty_curve_test` and
+    the frozen naive run are re-pinned.
+
 ## [1.608.0+644]
 
 - **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).
