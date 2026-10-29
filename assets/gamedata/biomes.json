@@ -6,10 +6,10 @@
     "blurb_fr": "Des collines vertes, des champs bordés de haies et des rivières vives sous un ciel doux : le pays que la Croisade a brûlé en premier, et le plus facile à traverser.",
     "fauna": [
       {
-        "name": "Warhound",
-        "name_fr": "Chien de guerre",
-        "note": "Bred by Inquisition dog-handlers; since the burning, a few run loose in the alleys.",
-        "note_fr": "Race des maîtres-chiens de l’Inquisition ; depuis l’incendie, quelques-uns errent dans les ruelles."
+        "name": "Lantern moth",
+        "name_fr": "Phalène des lanternes",
+        "note": "Circles the signal lanterns of the high quay; a lamp with no moths is not one to follow.",
+        "note_fr": "Tournoie autour des lanternes du haut quai ; une lampe sans phalènes n’est pas à suivre."
       },
       {
         "name": "Sewer rat",

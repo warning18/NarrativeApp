@@ -359,7 +359,10 @@ void main() {
       expect(way.nextId, '960_lift', reason: way.text);
       final failed = nodes[way.failNextId]!;
       final board = failed.choices.single;
-      expect(board.nextId, '960_lift', reason: failed.id);
+      // The failure page carries the lift's paragraph itself, so a failed
+      // boarding is one page, not two Continues in a row.
+      expect(board.nextId, '960', reason: failed.id);
+      expect(failed.description, contains(nodes['960_lift']!.description));
       if (way.checkAbility == 'dexterity') {
         expect(board.healAmount, lessThan(0), reason: failed.id);
       } else {
@@ -455,5 +458,32 @@ void main() {
     for (final repair in yard.choices.where((c) => c.launchesZone)) {
       expect(repair.showIfFlags, ['eel_owned'], reason: repair.text);
     }
+  });
+
+  test('Vica is a surprise at 1150_vica; Vess is met once (v1.610)', () {
+    // The name comes out of the heat at 1150: nothing read before it says it.
+    for (final node in chapterOne.values) {
+      if (node.id == '1150_vica' || node.id == '1200') continue;
+      for (final text in [node.description, node.descriptionFr ?? '']) {
+        expect(text, isNot(contains('Vica')), reason: node.id);
+      }
+    }
+    // The tutorial's guide is unnamed until the player names it.
+    final strings = File('lib/l10n/app_strings.dart').readAsStringSync();
+    for (final key in ['tut_guide_default_name', 'tut_story_1']) {
+      final start = strings.indexOf("'$key': {");
+      final block = strings.substring(start, strings.indexOf('},', start));
+      expect(block, isNot(contains('Vica')), reason: key);
+    }
+    final arrival = nodes['1150_vica']!;
+    expect(arrival.uiTheme, 'desert');
+    expect(arrival.flagCallbacks.map((c) => c.flag), ['lysa_survived']);
+    // The +5 Vigil and the Stitchers' friendship are paid once, at the
+    // hearing in Saltmouth, not also at the Wells.
+    expect(nodes['1210']!.choices.single.politics, isNull);
+    final vess =
+        nodes['2015']!.choices.singleWhere((c) => c.nextId == '2015_vess');
+    expect(vess.hideIfFlags, contains('q_ch1_vess_in_the_dark_accepted'));
+    expect(vess.hideIfFlags, isNot(contains('met_vess')));
   });
 }

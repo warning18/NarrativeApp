@@ -17,9 +17,7 @@ import 'package:narrative_data_app/data/clan_power.dart';
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/data/nemesis.dart';
 import 'package:narrative_data_app/data/politics_events.dart';
-import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
-import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -139,62 +137,6 @@ void main() {
         change.politics.news.last.text, data.faction('dominion')!.brokenNews);
   });
 
-  test('the champions\' curve: about half won where they come', () {
-    final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync())
-        as Map<String, dynamic>;
-    final story = StoryData({
-      for (final e in raw.entries)
-        e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
-    });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'specialisations', 'spec_variants', //
-        'training_paths', 'politics_events',
-        'companions', // Vica joins every hero (v1.601)
-      ])
-        name: _table(name),
-    };
-    final runs =
-        int.tryParse(Platform.environment['CHAMPION_RUNS'] ?? '') ?? 200;
-    final professions = tables['professions']!.keys.toList()..sort();
-    final summaries = simulatePlaythroughs(story,
-        tables: tables,
-        gameConfig: _table('game_config'),
-        plan: [
-          for (var i = 0; i < runs; i++)
-            (
-              strategy: SimStrategy.values[i % 4],
-              raceId: null,
-              professionId: professions[(i ~/ 4) % professions.length],
-            ),
-        ],
-        seed: 7,
-        championFights: true);
-    final fought = <String, int>{};
-    final lost = <String, int>{};
-    for (final r in summaries) {
-      for (final byChapter in r.enemiesByChapter.values) {
-        for (final e in byChapter.entries) {
-          if (!e.key.startsWith('champion_')) continue;
-          fought[e.key] = (fought[e.key] ?? 0) + e.value.fought;
-          lost[e.key] = (lost[e.key] ?? 0) + e.value.lost;
-        }
-      }
-    }
-    final all = fought.values.fold(0, (a, b) => a + b);
-    final allLost = lost.values.fold(0, (a, b) => a + b);
-    final rate = all == 0 ? 0.0 : (all - allLost) / all;
-    // ignore: avoid_print
-    print('champions: ${(100 * rate).toStringAsFixed(1)}% of $all '
-        '(${[
-      for (final e in fought.entries)
-        '${e.key} ${e.value - (lost[e.key] ?? 0)}/${e.value}'
-    ].join(', ')})');
-    expect(all, greaterThanOrEqualTo(40), reason: 'too few met');
-    expect(rate, closeTo(0.5, 0.12));
-  });
+  // The champions' curve is measured in boss_balance_test.dart, on the boss
+  // curve's own run (one walk of 400 runs instead of two).
 }

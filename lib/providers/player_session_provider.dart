@@ -18,6 +18,7 @@ import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/story_companions.dart';
+import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
@@ -2281,6 +2282,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int goldMod = 0,
     int alignmentMod = 0,
     int healAmount = 0,
+    bool shortfallWounds = false,
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
     String? bannerPieceId,
@@ -2340,7 +2342,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newBannerPieces = [...newBannerPieces, bannerPieceId];
     }
     final newGoldRaw = state.gold + goldMod;
-    final newHealthRaw = state.currentHealth + healAmount;
+    // A forced price the purse can't make is taken in health (#583).
+    final newHealthRaw = state.currentHealth +
+        healAmount +
+        (shortfallWounds
+            ? shortfallWound(gold: state.gold, goldMod: goldMod)
+            : 0);
     state = state.copyWith(
       gold: newGoldRaw < 0 ? 0 : newGoldRaw,
       alignmentScore: state.alignmentScore + alignmentMod,

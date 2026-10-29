@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/sim_quests.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -50,16 +51,16 @@ StoryData _story() {
   });
 }
 
-final _runTables = {
-  for (final name in [
-    'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-    'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-    'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-    'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-    'expedition_steps', 'training_paths', 'politics_events', 'companions',
-  ])
-    name: _table(name),
-};
+// sim-tables-ok: specialisations: the frozen run's tuple and hash (S1 of
+// docs/qa/chapter1-core.md) were pinned on the world before these five; Core
+// replaces the pin with property checks, and the world goes with it.
+final _runTables = simTables(without: {
+  'specialisations',
+  'spec_variants',
+  'skill_merges',
+  'detour_scenes',
+  'ports'
+});
 
 SimRunSummary _warriorRun(SimPolicy policy) => simulatePlaythroughs(
       _story(),
@@ -290,7 +291,7 @@ void main() {
     });
 
     test('naive with companions.json loaded: Vica only (v1.601)', () {
-      // sim_competent_test.dart's pin (re-pinned at v1.577, v1.578 and v1.602 with it).
+      // sim_competent_test.dart's pin (re-pinned at v1.577, v1.578, v1.602 and v1.610 with it).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -310,7 +311,7 @@ void main() {
         259,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 2866742764);
+      expect(_stableHash(naive.choicesTaken), 1843503464);
       // The naive player recruits no one; the story gives it Vica (v1.601).
       expect(
           naive.companionLog

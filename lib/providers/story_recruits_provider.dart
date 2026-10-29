@@ -1,7 +1,9 @@
 // The story's own companions joining (v1.601, story_companions.dart): Vica
 // joins every hero when the story reaches her scene (or the White Wells),
-// and a save already past it gets her on its next step. Watched once by the
-// home shell; it listens to the story's visited scenes.
+// and a save already past it gets her on its next step. What counts is the
+// save's own path (its history and current scene), never the visited set
+// a loaded save inherits from the run before it. Watched once by the
+// home shell; it listens to the story's current scene.
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +34,11 @@ final storyRecruitsProvider = Provider<void>((ref) {
     final notifier = ref.read(playerSessionProvider.notifier);
     if (busy || !notifier.isLoaded) return;
     final session = ref.read(playerSessionProvider);
-    final visited = ref.read(storyPlayProvider).visitedNodeIds;
+    // The path this save has walked, not the fog of war: a loaded save's
+    // visited set keeps the scenes of the run before it (story_providers
+    // loadState), and Vica must not join a hero who never met her.
+    final play = ref.read(storyPlayProvider);
+    final visited = walkedScenes(play.history, play.currentNodeId);
     final due = storyRecruitsDue(companions,
         visited: visited,
         recruited: [for (final a in session.recruitedAllies) a.companionId],
@@ -49,7 +55,7 @@ final storyRecruitsProvider = Provider<void>((ref) {
         .whenComplete(() => busy = false));
   }
 
-  ref.listen(storyPlayProvider.select((p) => p.visitedNodeIds),
+  ref.listen(storyPlayProvider.select((p) => p.currentNodeId),
       (previous, next) => check());
   // A save already past her scene: once the tables are in.
   Future.microtask(check);

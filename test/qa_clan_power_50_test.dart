@@ -24,6 +24,7 @@ import 'package:narrative_data_app/data/nemesis.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -91,17 +92,7 @@ void main() {
         if (node.choices.any((c) => c.politics?.power.isNotEmpty ?? false))
           node.id,
     };
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'training_paths', 'specialisations',
-        'spec_variants', 'politics_events',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     final data = ClanData.fromTables(
       factions: tables['factions']!,
       subclans: tables['subclans']!,

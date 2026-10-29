@@ -20,6 +20,7 @@ import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -337,17 +338,7 @@ void main() {
     setUpAll(() {
       Map<String, dynamic> table(String name) =>
           _json('assets/gamedata/$name.json');
-      final tables = {
-        for (final name in [
-          'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-          'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-          'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-          'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-          'expedition_steps', 'training_paths', 'politics_events',
-          'detour_scenes', 'ports',
-        ])
-          name: table(name),
-      };
+      final tables = simTables();
       final professions = tables['professions']!.keys.toList()..sort();
       const goals = [
         SimStrategy.random,
