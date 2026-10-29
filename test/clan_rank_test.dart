@@ -61,7 +61,7 @@ void main() {
     expect(of('crows').rankChange, greaterThan(0));
     expect(of('vigil').rankChange, lessThan(0));
 
-    await tester.pumpWidget(host(Column(children: const [
+    await tester.pumpWidget(host(const Column(children: [
       ClanRankPlate(clanId: 'dominion'),
       ClanRankPlate(clanId: 'crows'),
       ClanRankPlate(clanId: 'vigil'),
