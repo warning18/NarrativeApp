@@ -156,7 +156,8 @@ void main() {
 
     await tester.tap(find.byKey(const Key('journey_tab_district')));
     await tester.pump(const Duration(milliseconds: 600));
-    expect(find.textContaining('0 WAYS HERE'), findsOneWidget);
+    // No ways here: no "places here" heading over an empty list.
+    expect(find.textContaining('PLACES HERE'), findsNothing);
     final toTern =
         find.byKey(const ValueKey('journey_city_walk_saltmouth_tern_row'));
     expect(toTern, findsOneWidget);
