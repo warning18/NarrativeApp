@@ -534,6 +534,6 @@ class _CostChip extends StatelessWidget {
                 ?.copyWith(color: short ? ink.ember : ink.ash)),
       ],
     );
-    return tooltip == null ? chip : Tooltip(message: tooltip!, child: chip);
+    return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 }

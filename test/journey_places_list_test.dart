@@ -24,7 +24,7 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   testWidgets('the High Quay lists its places, and a place opens its ways',
       (tester) async {

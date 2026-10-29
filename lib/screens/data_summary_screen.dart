@@ -96,7 +96,7 @@ class DataSummaryScreen extends ConsumerWidget {
                         : Icons.error_outline,
                 label: 'Reachability Issues',
                 value: balanceIssues == null ? '…' : '${balanceIssues.length}',
-                warning: (balanceIssues?.isNotEmpty ?? false),
+                warning: balanceIssues?.isNotEmpty ?? false,
               ),
             ],
           ),

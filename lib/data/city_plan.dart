@@ -1055,14 +1055,14 @@ class CityPlan implements PlacePlan {
           final side = Offset(-out.dy, out.dx);
           for (final k in const [-30.0, 0.0, 30.0]) {
             final c = l.at - out * 34 + side * k;
-            final w = 24.0, h = 14.0;
+            const w = 24.0, h = 14.0;
             final ok = !inWater(c, 8) &&
                 buildings.every((b) =>
                     (b.centre - c).distance >
                     (math.max(b.size.width, b.size.height) + w) / 2 + 2);
             if (!ok) continue;
-            buildings.add(CityBuilding(c, Size(w, h), l.angle + math.pi / 2,
-                CityBuildingKind.warehouse));
+            buildings.add(CityBuilding(c, const Size(w, h),
+                l.angle + math.pi / 2, CityBuildingKind.warehouse));
           }
         case CityLandmarkKind.market:
           for (var i = 0; i < 7; i++) {

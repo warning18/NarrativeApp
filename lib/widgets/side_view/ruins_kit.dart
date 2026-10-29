@@ -42,8 +42,8 @@ const _bayer = [
 /// The layers, back to front. [progress] brings the goal's tower nearer as
 /// the days go.
 List<SideLayer> ruinsLayers({double progress = 0}) => [
-      SideLayer(0, _sky),
-      SideLayer(0.05, _sun),
+      const SideLayer(0, _sky),
+      const SideLayer(0.05, _sun),
       SideLayer(0.12, (c, s, scroll, t, u) {
         sideHills(c, s, u, scroll,
             base: 40,
@@ -75,13 +75,13 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
             rim: RuinsLook.nearRim);
         _rubble(c, s, u, scroll);
       }),
-      SideLayer(1.0, _path),
+      const SideLayer(1.0, _path),
     ];
 
 void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
   // Dithered bands from the top to the horizon.
   const horizon = 48;
-  final bands = RuinsLook.sky;
+  const bands = RuinsLook.sky;
   final cols = (size.width / u).ceil();
   final paint = Paint();
   for (var y = 0; y < horizon; y++) {

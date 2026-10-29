@@ -323,7 +323,7 @@ void main() {
       expect(fight.huntName, isNotEmpty);
       expect(fight.huntAffixes.length, 2);
       expect(fight.chestFloor, 'gold');
-      expect(nodes.last.description, contains(fight.huntName!));
+      expect(nodes.last.description, contains(fight.huntName));
     });
 
     test('withHunts splices a hunt right after the first pack fight', () {

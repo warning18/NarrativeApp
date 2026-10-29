@@ -349,7 +349,7 @@ class _BannerPainter extends CustomPainter {
     const h = 38.0;
     final surface = dark ? const Color(0xFF141218) : const Color(0xFFFAF3E2);
     final rod = Color.lerp(color, Colors.black, 0.45)!;
-    final cord = const Color(0xFFEFE3C8);
+    const cord = Color(0xFFEFE3C8);
     // The cloth: straight sides, a swallow-tail hem.
     final cloth = Path()
       ..moveTo(3, 9)

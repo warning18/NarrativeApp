@@ -517,7 +517,7 @@ class HullThumb extends StatelessWidget {
         height: height + 10,
         child: Stack(
           children: [
-            Positioned.fill(
+            const Positioned.fill(
               child: CustomPaint(
                 painter: SeaSurfacePainter(
                     waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),

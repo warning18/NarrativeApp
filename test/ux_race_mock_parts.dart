@@ -94,9 +94,9 @@ class Choices {
   List<SkillBranch> branchesOf(String folder, String id) => [
         for (final e in trees.entries)
           if (e.value is Map<String, dynamic> &&
-              ((folder == 'races'
+              (folder == 'races'
                   ? (e.value['raceId']?.toString() ?? '') == id
-                  : (e.value['professionId']?.toString() ?? '') == id)))
+                  : (e.value['professionId']?.toString() ?? '') == id))
             SkillBranch.fromRecord(e.key, e.value as Map<String, dynamic>),
       ]..sort((a, b) => a.order.compareTo(b.order));
 

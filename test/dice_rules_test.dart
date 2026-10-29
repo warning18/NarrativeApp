@@ -228,9 +228,11 @@ void main() {
 
     test('a companion takes part in one duo a round', () {
       final firing = duosFiring([
-        DuoCandidate(companionId: 'grosh', approval: 12, onSignatureFace: true),
-        DuoCandidate(companionId: 'kelda', approval: 12, onSignatureFace: true),
-        DuoCandidate(
+        const DuoCandidate(
+            companionId: 'grosh', approval: 12, onSignatureFace: true),
+        const DuoCandidate(
+            companionId: 'kelda', approval: 12, onSignatureFace: true),
+        const DuoCandidate(
             companionId: 'malrik', approval: 12, onSignatureFace: true),
       ]);
       expect(firing, hasLength(1));

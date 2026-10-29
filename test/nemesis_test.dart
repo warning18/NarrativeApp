@@ -158,7 +158,7 @@ void main() {
         'masked_penitent',
       ]) {
         expect((enemies[id] as Map)['hunterAlignment'], 'Evil', reason: id);
-        expect(((enemies[id] as Map)['alignment'] as num), greaterThan(19),
+        expect((enemies[id] as Map)['alignment'] as num, greaterThan(19),
             reason: '$id reads Good');
       }
       for (final id in [
