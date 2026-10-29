@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.641.0+677]
+
+- **Dice: every die has its own art**
+  Thirty-two dice now carry pieces of their own over their skin, a handful of
+  paths each and no image files (`lib/widgets/die_art.dart`): the Void die's
+  stars and swirl, the Berserker's spikes and blood, the Flame die's tongues,
+  the Huntsman's arrow, the Tearglass d12's crown, tear and halo, the Gambler's
+  suits and pips, a paw print for Vica's hound and tally marks on the built
+  d12. The art turns and squeezes with the die, and shows in the loadout's ring,
+  its rail and the fight's dice row (the fight's d6 stays the cube, without it).
+  Only the plain first die has none. Pictures in `docs/ux-shots/dice-built/`.
+
 ## [1.640.0+676]
 
 - **Dice: a shape for every size, and the die in the ring rolls**
