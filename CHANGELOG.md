@@ -25,6 +25,22 @@ isn't reconstructable from git history alone.
     (the English says two) is now "quelques mots"; "parenté" in
     `5100_anvil_deaf_vote`.
 
+## [1.626.0+662]
+
+- **Narrative: chapters 2 and 3 in the percussive style** (the pilot
+  approved for the whole game, `docs/proposals/percussive-style.md`).
+  - All 136 scenes of Saltmouth and the Spire (chapter 2: 70, chapter 3: 66)
+    and 85 flag callbacks are rewritten in English and French: sentences
+    break from 20 words to 13 on average, one beat per paragraph. The clues,
+    names, **bold** phrases, numbers and the words later scenes and tests pick
+    up are kept; no choice, label, flag, reward, number or scene link changed.
+  - Scene text: 13,921 to 12,409 words in English (-11%), 14,332 to 12,933
+    in French (-10%). Callbacks: 2,337 to 1,937 words (-17%) in English,
+    2,427 to 2,059 (-15%) in French. The cut is lighter than chapter 1's
+    (-19%) because most of these scenes were already short; the change is in
+    the rhythm more than the length.
+  - Tests: none changed; two tests that pin phrases (`story_direction_test`)
+    keep their phrases.
 ## [1.624.0+660]
 
 - **Cleanup: 6 unused symbols removed from UX's files**

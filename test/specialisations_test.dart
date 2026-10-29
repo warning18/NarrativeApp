@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/profession_cores.dart';
+import 'package:narrative_data_app/combat/spec_variants.dart' show SpecMods;
 import 'package:narrative_data_app/combat/specialisations.dart';
 import 'package:narrative_data_app/combat/status_effect.dart';
 import 'package:narrative_data_app/data/factions.dart';
@@ -62,11 +63,13 @@ void main() {
   });
 
   test('the numbers', () {
-    expect(briarReflect(40), 32);
-    expect(briarReflect(0), 0);
-    expect(longVigilMend(80, 100), 15);
-    expect(longVigilMend(50, 100), 0);
-    expect(longVigilMend(100, 100), 0);
+    // The fight's own rules (spec_variants.dart), with no variant held.
+    final mods = SpecMods.none;
+    expect(mods.briarBack(40), 32);
+    expect(mods.briarBack(0), 0);
+    expect(mods.vigilMend(80, 100), 15);
+    expect(mods.vigilMend(50, 100), 0);
+    expect(mods.vigilMend(100, 100), 0);
     expect(
         fireAfterHeal(
             fire: 0,
@@ -83,7 +86,7 @@ void main() {
             maxHealth: 100,
             beacon: false),
         50);
-    expect(censerBurn(3, 20), 180);
+    expect(mods.censerBurnFor(3, 20), 180);
     expect(ledgerCritical(30), 35);
     // An Evil foe is told by its kind (foe_kind.dart), not by Light.
     expect(isEvilFoe({'kind': 'undead'}), isTrue);
