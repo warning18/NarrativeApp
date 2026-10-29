@@ -16,6 +16,31 @@ isn't reconstructable from git history alone.
   the editor label go; the two story tests now read the code path. No
   behaviour change.
 
+## [1.641.0+677]
+
+- **Dice: every die has its own art**
+  Thirty-two dice now carry pieces of their own over their skin, a handful of
+  paths each and no image files (`lib/widgets/die_art.dart`): the Void die's
+  stars and swirl, the Berserker's spikes and blood, the Flame die's tongues,
+  the Huntsman's arrow, the Tearglass d12's crown, tear and halo, the Gambler's
+  suits and pips, a paw print for Vica's hound and tally marks on the built
+  d12. The art turns and squeezes with the die, and shows in the loadout's ring,
+  its rail and the fight's dice row (the fight's d6 stays the cube, without it).
+  Only the plain first die has none. Pictures in `docs/ux-shots/dice-built/`.
+
+## [1.640.0+676]
+
+- **Dice: a shape for every size, and the die in the ring rolls**
+  A d4, d8, d10, d12, d20 and the coin are drawn as flat-shaded polyhedra in
+  the die's own skin (stone, edge, mark, glow), with the number or skill icon
+  on the front facet. They show in the fight's row of party dice, the loadout's
+  rail and, large, in the middle of the loadout's ring of face slots, which
+  replaces the draggable cube: tapping a face slot rolls that die to the face
+  (a tap on the die skips the roll). Bigger dice roll longer: a coin 0.6 s, a d4
+  0.7 s, a d12 1.3 s, a d20 1.5 s (the check's d20 was 1 s). A die with a
+  `clan` field wears that clan's banner (the field is Core's; no die has one
+  yet). `InteractiveDie` and its drag tests are gone.
+
 ## [1.639.0+675]
 
 - **Core: taking a quest marks it taken, so the Spire Stair opens on the

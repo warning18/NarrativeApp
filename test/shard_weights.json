@@ -139,7 +139,7 @@
  "hunter_icons_test.dart": 0.6,
  "hunter_mercy_test.dart": 1.0,
  "inplace_fields_test.dart": 0.6,
- "interactive_die_test.dart": 3.9,
+ "dice_loadout_test.dart": 3.9,
  "ios_platform_test.dart": 3.2,
  "item_detail_view_test.dart": 11.9,
  "item_stats_test.dart": 0.6,
