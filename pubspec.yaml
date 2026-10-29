@@ -114,6 +114,7 @@ flutter:
     - assets/visuals/pixel_fx/
     - assets/visuals/city/
     - assets/visuals/banners/
+    - assets/visuals/chapters/
     - assets/visuals/throne/
     - assets/visuals/walker/
     - assets/visuals/fighters/

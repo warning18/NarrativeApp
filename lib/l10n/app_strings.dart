@@ -3668,6 +3668,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
   },
+  'forge_hut_offer': {
+    AppLanguage.en:
+        'The piece comes out flawed. The Bone-Caster’s Hut can roll it again ({n} left). Spend a charge?',
+    AppLanguage.fr:
+        'La pièce sort défectueuse. La Hutte du jeteur d’os peut la relancer ({n} restant). Dépenser une charge ?',
+  },
+  'forge_hut_rolled': {
+    AppLanguage.en: 'The Bone-Caster’s Hut rolled it again.',
+    AppLanguage.fr: 'La Hutte du jeteur d’os l’a relancée.',
+  },
   'forge_coin_offer': {
     AppLanguage.en:
         'The piece comes out flawed. Flip your fate coin to forge it again?',

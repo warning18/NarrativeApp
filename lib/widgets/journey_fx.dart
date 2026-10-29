@@ -656,39 +656,3 @@ class JourneyBurnClipper extends CustomClipper<Path> {
   bool shouldReclip(JourneyBurnClipper old) =>
       old.t != t || old.centre != centre;
 }
-
-/// Text coming out of the ink, top to bottom (the Journey tab's scene).
-class InkReveal extends StatelessWidget {
-  const InkReveal({super.key, required this.child, required this.animate});
-
-  final Widget child;
-  final bool animate;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!animate) return child;
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 1100),
-      curve: Curves.easeOut,
-      child: child,
-      builder: (context, t, child) {
-        if (t >= 1) return child!;
-        return ShaderMask(
-          blendMode: BlendMode.dstIn,
-          shaderCallback: (rect) => LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: const [Colors.white, Colors.white, Colors.transparent],
-            stops: [
-              0,
-              (t * 1.2 - 0.2).clamp(0.0, 1.0),
-              (t * 1.2).clamp(0.0, 1.0)
-            ],
-          ).createShader(rect),
-          child: Opacity(opacity: (0.35 + t).clamp(0.0, 1.0), child: child),
-        );
-      },
-    );
-  }
-}

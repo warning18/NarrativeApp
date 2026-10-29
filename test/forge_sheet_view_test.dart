@@ -29,6 +29,15 @@ class _Face implements Random {
   bool nextBool() => true;
 }
 
+/// A random that lands the d20 on each of [faces] in turn.
+class _Faces extends _Face {
+  _Faces(this.faces) : super(0);
+  final List<int> faces;
+  int _next = 0;
+  @override
+  int nextInt(int max) => faces[_next++ % faces.length] - 1;
+}
+
 Future<void> _settle(WidgetTester tester, {int n = 4}) async {
   for (var i = 0; i < n; i++) {
     await tester.runAsync(
@@ -52,6 +61,7 @@ Future<ProviderContainer> _open(
   String race = 'dwarf',
   bool reduced = false,
   AppLanguage language = AppLanguage.en,
+  Map<String, dynamic> extra = const {},
 }) async {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -83,6 +93,7 @@ Future<ProviderContainer> _open(
         'professionId': 'warrior',
         'gold': gold,
         'inventoryItemIds': [for (var i = 0; i < ore; i++) 'material_iron_ore'],
+        ...extra,
       })));
   await _settle(tester);
   return container;
@@ -329,5 +340,73 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('forge_tab_Bottom')));
     await tester.pump();
     expect(find.textContaining('Il manque 1'), findsOneWidget);
+  });
+
+  group('the Bone-Caster\'s Hut on a flawed piece', () {
+    const hut = {
+      'builtHouseIds': ['bone_casters_hut'],
+      'rerollCharges': 1,
+    };
+
+    Future<void> forgeBoots(WidgetTester tester) async {
+      await tester.tap(find.byKey(const ValueKey('forge_tab_Foot')));
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('forge_go_boots_iron_shod')));
+      await tester.pump();
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+
+    testWidgets('it offers a reroll; a charge rolls the forge again',
+        (tester) async {
+      // 1 + 2 = 3: Flawed; the hut's roll, 18 + 2 = 20: Masterwork.
+      forgeRandomForTest = () => _Faces([1, 18]);
+      final container = await _open(tester, extra: hut);
+      await forgeBoots(tester);
+      expect(find.byKey(const Key('forge_hut_offer')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('forge_hut_reroll')));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.byKey(const Key('forge_moment')));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(
+          tester.widget<Text>(find.byKey(const Key('forge_piece_name'))).data,
+          'Masterwork Iron-Shod Boots');
+      await _takeIt(tester);
+      final session = container.read(playerSessionProvider);
+      expect(session.rerollCharges, 0);
+      expect(session.inventoryItemIds, contains('boots_iron_shod@masterwork'));
+    });
+
+    testWidgets('letting it stand keeps the flawed piece and the charge',
+        (tester) async {
+      forgeRandomForTest = () => _Faces([1, 18]);
+      final container = await _open(tester, extra: hut);
+      await forgeBoots(tester);
+      await tester.tap(find.byKey(const Key('forge_hut_keep')));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.byKey(const Key('forge_moment')));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(
+          tester.widget<Text>(find.byKey(const Key('forge_piece_name'))).data,
+          'Flawed Iron-Shod Boots');
+      await _takeIt(tester);
+      final session = container.read(playerSessionProvider);
+      expect(session.rerollCharges, 1);
+      expect(session.inventoryItemIds, contains('boots_iron_shod@flawed'));
+    });
+
+    testWidgets('no hut, or no charge: no offer', (tester) async {
+      forgeRandomForTest = () => _Face(1);
+      await _open(tester);
+      await forgeBoots(tester);
+      expect(find.byKey(const Key('forge_hut_offer')), findsNothing);
+      expect(find.byKey(const Key('forge_moment')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('forge_moment')));
+      await tester.pump(const Duration(milliseconds: 300));
+      await _takeIt(tester);
+    });
   });
 }
