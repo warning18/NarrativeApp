@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.648.0+684]
+
+- **Cleanup: 124 file-only names in lib/data (g to z) are private**
+  Classes, functions, constants and enums that only their own file uses
+  are now private, so the analyzer watches them (renames inside one file,
+  332 lines). No behaviour change.
+
 ## [1.646.0+682]
 
 - **Cleanup: mechanical lint fixes, and the lints stay on**
