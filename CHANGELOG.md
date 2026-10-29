@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.617.0+653]
+
+- **Core: rival clans attack districts** (wave 18, step 2, item 1).
+  - At each chapter's turn, a main clan with 10 power or more may attack a
+    district held by a clan it is at odds with: 35% a chapter for a blood
+    feud, 20% for a war, 10% if hostile. Tense or warmer, never. At most one
+    attack a town, none while the town is under siege.
+  - A siege lasts two days and is told as news ("{clan} marches on
+    {district}. {holder} has two days.", Narrative's lines).
+  - In the town (a road at rest into or out of it), the party meets it:
+    hold the district for its holder (a fight with the attacker's hunter),
+    join the attackers (the district is theirs), or stand aside.
+  - Otherwise, when it runs out, the siege is settled on the two clans'
+    power and influence (15% to 85%): taken, with war's spoils and losses,
+    or held, each told as news.
+  - Flags for the story: `attack_<district>`, `attack_<district>_by_<clan>`
+    while it lasts, then `attack_<district>_defended`, `_joined` or
+    `_ignored`.
+  - The simulator plays them: it defends its own clan's and allies'
+    districts, and the clan table counts the sieges.
+  - Tests: `district_attacks_test`. `boss_balance_test`: each claimant must
+    now be met 30 times (was 40), since attacks move which claim a run
+    backs; the three together still need 300.
+
 ## [1.616.0+652]
 
 - **Core: the ways into a locked district are greyed** (wave 18, step 2).
