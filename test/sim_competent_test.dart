@@ -15,6 +15,7 @@ import 'package:narrative_data_app/data/sim_policy.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -138,17 +139,16 @@ StoryData _story() {
   });
 }
 
-final _tables = {
-  for (final name in [
-    'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-    'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-    'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-    'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-    'expedition_steps', 'training_paths', 'politics_events',
-    'companions', // Vica joins every hero (v1.601)
-  ])
-    name: _table(name),
-};
+// sim-tables-ok: specialisations: the frozen run's tuple and hash (S1 of
+// docs/qa/chapter1-core.md) were pinned on the world before these five; Core
+// replaces the pin with property checks, and the world goes with it.
+final _tables = simTables(without: {
+  'specialisations',
+  'spec_variants',
+  'skill_merges',
+  'detour_scenes',
+  'ports'
+});
 
 List<SimRunSummary> _warriorRun(SimPolicy policy) => simulatePlaythroughs(
       _story(),
@@ -345,7 +345,8 @@ void main() {
     test('naive is unchanged: the run before the policy existed', () {
       // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
       // v1.577 when three scenes became two pages each (the run's dice move),
-      // at v1.597 (the difficulty pass) and at v1.601 (Vica, with her table).
+      // at v1.597 (the difficulty pass), at v1.601 (Vica, with her table) and at
+      // v1.610 (the failed boardings carry the lift: the hash only).
       expect((
         naive.raceId,
         naive.finalLevel,
@@ -404,4 +405,4 @@ void main() {
 /// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
 /// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
 /// every hero).
-const int _naiveChoicesHash = 2866742764;
+const int _naiveChoicesHash = 1843503464;

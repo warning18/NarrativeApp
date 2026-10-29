@@ -167,7 +167,17 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
   final story = ref.watch(storyDataProvider).value;
   if (story == null) return const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-  final session = ref.watch(playerSessionProvider);
+  // Only what the leads read: a purse, a potion or the clock changing
+  // recomputes nothing (the camp watches this).
+  final session = ref.watch(playerSessionProvider.select((s) => (
+        recruitedAllies: s.recruitedAllies,
+        lostAllyIds: s.lostAllyIds,
+        departedAllyIds: s.departedAllyIds,
+        flags: s.flags,
+        alignmentScore: s.alignmentScore,
+        charisma: s.charisma,
+        politics: s.politics,
+      )));
   final unavailable = [
     for (final ally in session.recruitedAllies) ally.companionId,
     ...session.lostAllyIds,
