@@ -29,6 +29,14 @@ isn't reconstructable from git history alone.
     `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
   - Tests: `region_holders_test`.
 
+## [1.644.0+680]
+
+- **Cleanup: the quests' unread `flagToAdd` is removed**
+  Taking a quest sets its `<id>_accepted` flag in code (v1.639), so the
+  field (51 records, and the unused `has_void_banner` value) and its name in
+  the editor label go; the two story tests now read the code path. No
+  behaviour change.
+
 ## [1.643.0+679]
 
 - **The realm, at the end: who holds each town, on the world chart**

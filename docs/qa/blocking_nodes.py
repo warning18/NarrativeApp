@@ -124,7 +124,8 @@ def dataflow():
     return P, D, reach
 
 def sources_of_flags():
-    """Every flag something can set: choices, quests (flagToAdd), zones
+    """Every flag something can set: choices, quests (<id>_accepted, set by
+    acceptQuest), zones
     (rewardFlag), the coast's events (flags), plus the game's own prefixes."""
     def walk(o, key, acc):
         if isinstance(o, dict):
@@ -136,7 +137,8 @@ def sources_of_flags():
         elif isinstance(o, list):
             for v in o: walk(v, key, acc)
     acc = set(f for v in G.values() for c in v['choices'] for f in c.get('flagsToAdd', []))
-    for fn, key in (('quests', 'flagToAdd'), ('zones', 'rewardFlag'),
+    acc.update(f'{qid}_accepted' for qid in table('quests'))
+    for fn, key in (('zones', 'rewardFlag'),
                     ('politics_events', 'flags'), ('detour_scenes', 'flag')):
         walk(table(fn), key, acc)
     return acc
