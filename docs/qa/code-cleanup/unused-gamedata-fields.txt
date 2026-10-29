@@ -1,7 +1,1 @@
-4 fields in 2 files that no string in lib/ names
-
-assets/gamedata/npcs.json: 1
-   stancePlayer (50)
-
-assets/gamedata/quests.json: 3
-   locationID (59), flagToAdd (51), actionType (51)
+0 fields in 0 files that no string in lib/ names
