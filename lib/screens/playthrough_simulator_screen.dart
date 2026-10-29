@@ -1425,6 +1425,8 @@ _SimResult _simulate(
     // Vica joins at her scene (story_companions.dart), whatever the policy.
     party?.joinFromStory(visited, chapter: chapter, alignment: alignment);
     party?.levelIs(c.level);
+    // Aligned gear answers to the walk's alignment, as in the game.
+    c.alignmentLabel = _alignmentLabelOf(alignment);
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;

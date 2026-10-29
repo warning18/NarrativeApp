@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../combat/fight_numbers.dart' show potionHealAmount;
 import '../combat/gear_effects.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+
+// HP a healing potion restores: the fight's own number.
+export '../combat/fight_numbers.dart' show potionHealAmount;
 
 /// Gear stats in display order, each with its label key.
 const List<(String, String)> gearStatKeys = [
@@ -170,9 +174,6 @@ String? consumableNote(
   }
   return null;
 }
-
-/// HP a healing potion restores (the fight screen reads the same value).
-const int potionHealAmount = 8;
 
 /// A row's stats at a glance: each stat as a chip, with a green or red
 /// difference against the item worn in the same slot, so an item can be
