@@ -16,6 +16,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'clan_glance.dart' show ClanMarks;
+import 'clan_rank.dart' show ClanRankPlate;
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
 import 'throne_widgets.dart';
@@ -431,14 +432,23 @@ class _WithBanner extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 10),
-          child: ClanMarks(
-            factionId: factionId,
-            discSize: 30,
-            child: PixelBanner(
-                key: Key('clan_banner_$factionId'),
-                id: id,
-                scale: 1,
-                found: found),
+          // The banner with its standing disc, and under it the clan's
+          // strength: its place in the line and an arrow.
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClanMarks(
+                factionId: factionId,
+                discSize: 30,
+                child: PixelBanner(
+                    key: Key('clan_banner_$factionId'),
+                    id: id,
+                    scale: 1,
+                    found: found),
+              ),
+              const SizedBox(height: 6),
+              ClanRankPlate(clanId: factionId, compact: true),
+            ],
           ),
         ),
         Expanded(child: child),

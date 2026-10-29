@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import '../data/factions.dart';
 import '../l10n/app_locale.dart';
 import '../theme/stitched_ink.dart';
-import 'clan_glance.dart' show ClanCloth, ClanMarks;
+import 'clan_glance.dart' show ClanMarks;
 import 'clan_peek.dart';
 import 'pixel_banner.dart';
 
@@ -312,21 +312,18 @@ class _Crest extends StatelessWidget {
       child: ClipOval(
         child: bannerId == null
             ? Icon(Icons.flag, size: d * 0.55, color: color)
-            : ClanCloth(
-                factionId: faction.patron.id,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: 0.5,
-                  child: Image.asset(
-                    'assets/visuals/banners/$bannerId.png',
-                    width: d,
-                    height: d * 2,
-                    fit: BoxFit.fill,
-                    filterQuality: FilterQuality.none,
-                    isAntiAlias: false,
-                    gaplessPlayback: true,
-                    errorBuilder: (_, __, ___) => SizedBox(width: d, height: d),
-                  ),
+            : Align(
+                alignment: Alignment.topCenter,
+                heightFactor: 0.5,
+                child: Image.asset(
+                  'assets/visuals/banners/$bannerId.png',
+                  width: d,
+                  height: d * 2,
+                  fit: BoxFit.fill,
+                  filterQuality: FilterQuality.none,
+                  isAntiAlias: false,
+                  gaplessPlayback: true,
+                  errorBuilder: (_, __, ___) => SizedBox(width: d, height: d),
                 ),
               ),
       ),
@@ -335,7 +332,6 @@ class _Crest extends StatelessWidget {
     final marked = ClanMarks(
       factionId: faction.patron.id,
       discSize: 18,
-      cloth: false,
       atLeft: true,
       child: disc,
     );

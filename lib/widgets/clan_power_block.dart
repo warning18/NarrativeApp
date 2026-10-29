@@ -14,6 +14,7 @@ import '../providers/clans_provider.dart';
 import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'clan_rank.dart';
 
 /// The nemesis' red (the mark on its card, its standard and its places).
 const Color nemesisRed = Color(0xFFD1453B);
@@ -120,10 +121,21 @@ class ClanPowerBlock extends ConsumerWidget {
                     key: Key('clan_power_value_$factionId'),
                     style:
                         theme.textTheme.labelMedium?.copyWith(color: ink.ash)),
+                const SizedBox(width: 8),
+                ClanRankPlate(clanId: factionId),
               ],
             ),
           ),
-          _PowerBar(power: power, color: accent),
+          // Every clan with power in bars, this one framed, and what the
+          // ticks and the arrows mean.
+          LayoutBuilder(
+            builder: (context, box) =>
+                RankedBars(highlight: factionId, width: box.maxWidth),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: RankLegend(),
+          ),
         ],
         Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -160,63 +172,5 @@ class ClanPowerBlock extends ConsumerWidget {
           ),
       ],
     );
-  }
-}
-
-/// The power bar: 0 to [maxPower], ticks where the tiers begin (25, 50, 75).
-class _PowerBar extends StatelessWidget {
-  const _PowerBar({required this.power, required this.color});
-
-  final int power;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final ink = InkColors.of(context);
-    return LayoutBuilder(builder: (context, box) {
-      final width = box.maxWidth;
-      return SizedBox(
-        key: const Key('power_bar'),
-        height: 12,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              top: 3,
-              bottom: 3,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: ink.seam.withValues(alpha: 0.5),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              top: 3,
-              bottom: 3,
-              width: width * power.clamp(0, maxPower) / maxPower,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: color,
-                ),
-              ),
-            ),
-            for (final tick in const [
-              risingPower,
-              dominantPower,
-              ascendantPower
-            ])
-              Positioned(
-                left: width * tick / maxPower - 1,
-                top: 0,
-                bottom: 0,
-                width: 2,
-                child: ColoredBox(color: ink.voidColor.withValues(alpha: 0.7)),
-              ),
-          ],
-        ),
-      );
-    });
   }
 }
