@@ -1908,7 +1908,7 @@
   },
   "bone_warden": {
     "enemyName": "Bone Warden",
-    "maxHealth": 63,
+    "maxHealth": 75,
     "damage": 6,
     "guile": 6,
     "faction": "",
@@ -2397,7 +2397,7 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 80,
+    "maxHealth": 92,
     "damage": 5,
     "guile": 10,
     "faction": "",
@@ -2585,7 +2585,7 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 80,
+    "maxHealth": 95,
     "damage": 6,
     "guile": 12,
     "faction": "",
@@ -5213,7 +5213,7 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 64,
+    "maxHealth": 75,
     "damage": 5,
     "guile": 12,
     "faction": "",

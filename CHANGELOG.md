@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.615.0+651]
+
+- **Core: the element dice** (the user's option B;
+  docs/proposals/difficulty-pass.md §8 and §10).
+  - **Elemental dice carry their element on every hit.** Each of the 16
+    elemental dice has its element on all its Attack faces, and on its
+    Skill faces whose skill has none.
+  - **A weakness is ×3** (was ×2). The fight card shows ×3.
+  - **What it changes:** the die that matches a foe's weakness now clearly
+    beats the starter die against it, 34% against 23% in the six set fights
+    of chapters 3–6. Before, it lost: 16% against 23%.
+  - **Bosses re-sized** for the stronger weakness hits:
+    - the bone warden has 75 health (was 63);
+    - the void archon 92 (was 80);
+    - the Tear-Herald 75 (was 64);
+    - the void sovereign 95 (was 80).
+  - Tests: new `adapt_gap_test` guard. `enemy_intent_test` (×3) and the
+    frozen naive run are re-pinned.
+
 ## [1.614.0+650]
 
 - **Core: the specialisations pass** (docs/proposals/bosses-full-world.md).
