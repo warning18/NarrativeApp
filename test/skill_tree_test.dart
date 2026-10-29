@@ -259,17 +259,16 @@ void main() {
     expect(find.byKey(const Key('purse_points')), findsNothing);
     expect(find.byKey(const Key('purse_offers')), findsOneWidget);
     expect(find.byKey(const Key('branch_warrior_vanguard')), findsOneWidget);
-    // Vanguard is the Dominion's: its skills say so on the tree.
+    // Vanguard is the Dominion's: its constellation says so, with the
+    // standing the character has with it (the sky, v1.619).
     expect(
         tester
-            .widget<Text>(find.byKey(const Key('tree_sponsor_power_strike')))
+            .widget<Text>(find.byKey(const Key('star_clan_warrior_vanguard')))
             .data,
-        'Dominion');
-    // ... and the Dominion's banner hangs from the ring, small; a skill
-    // already known has none.
-    expect(find.byKey(const Key('tree_flag_power_strike')), findsOneWidget);
-    expect(
-        find.byKey(const Key('tree_flag_warrior_shield_bash')), findsNothing);
+        startsWith('Dominion'));
+    // The card under the sky reads the first constellation whose clan can
+    // offer its next skill now.
+    expect(find.byKey(const Key('star_card')), findsOneWidget);
     await tester.tap(find.byKey(const Key('tree_node_power_strike')));
     await _settle(tester);
     expect(find.byKey(const Key('tree_learn')), findsNothing);

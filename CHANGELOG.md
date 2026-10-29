@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.619.0+655]
+
+- **UX: the Skills tab's tree is a sky of constellations** (the user's pick,
+  idea 1 of `docs/proposals/skills-ideas.md`). Only the Tree tab's body
+  changed; the info sheet, Raise tier, Merge and Craft, My skills, Spells, the
+  essence and offer pills are as they were.
+  - **Each class branch is a constellation** on one night sky: a star for each
+    skill and a crown for Mastery. A star lights gold once the skill is
+    learned; the lines light up to the last learned star; the **ringed star is
+    the next one, bright when its clan can offer it now** (the standing reaches
+    its depth). Each constellation carries its name, its count and its clan
+    with your standing.
+  - **The card under the sky** reads the focused constellation's next skill:
+    its name, what it does, and who offers it ("Compact can offer it now" or
+    "Waits for “Trusted” with Compact (you are: Friendly)"). A tap on a
+    constellation's name changes the focus; a tap on a star opens that skill's
+    sheet, the crown opens the mastery's, the card opens the next skill's.
+  - **A class with five branches** (the mage, the cleric) puts the fifth across
+    the last row; the cells are lower at 320 px. French strings sit beside the
+    skills' strings (`star_*`).
+  - The heritage's skills and the reputation's stay as rings under the sky;
+    the old branch columns are gone.
+- Tests: `star_chart_test.dart` (the layout, the standing read, a tap opens)
+  and `star_chart_five_test.dart` (five constellations at 320 px);
+  `skill_tree_test.dart` follows the sky (the clan is read on the
+  constellation, not under each skill). Pictures:
+  `docs/ux-shots/star-chart/`.
 ## [1.618.0+654]
 
 - **Core: the big towns, influence that pays off, clan roads, the
