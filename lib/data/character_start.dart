@@ -1,40 +1,3 @@
-/// What a race and a profession add up to at the start (v1.198), the sum
-/// PlayerSessionNotifier.startNewGame writes: the New Game Defaults
-/// (game_config.json) plus each preset's bonuses. The picker shows it
-/// before the choice is made.
-class StartingTotals {
-  const StartingTotals({
-    required this.maxHealth,
-    required this.baseDamage,
-    required this.baseArmor,
-    required this.gold,
-    required this.luck,
-    required this.charisma,
-    required this.strength,
-    required this.dexterity,
-    required this.constitution,
-    required this.intelligence,
-    required this.wisdom,
-    required this.perception,
-  });
-
-  final int maxHealth, baseDamage, baseArmor, gold, luck, charisma;
-  final int strength, dexterity, constitution, intelligence, wisdom, perception;
-
-  /// The six abilities by their short l10n key, zeros left out.
-  Map<String, int> get abilities => {
-        for (final e in {
-          'str_abbrev': strength,
-          'dex_abbrev': dexterity,
-          'con_abbrev': constitution,
-          'int_abbrev': intelligence,
-          'wis_abbrev': wisdom,
-          'per_abbrev': perception,
-        }.entries)
-          if (e.value != 0) e.key: e.value,
-      };
-}
-
 /// A starting character's base armor: what its race and profession add to
 /// the defaults, never below 0. Frail pairs (an Orc Mage: -2 and -2) start
 /// at 0 instead of showing a negative armor that reads as a bug.
@@ -42,31 +5,6 @@ int startingArmor(int sum) => sum < 0 ? 0 : sum;
 
 int presetBonus(Map<String, dynamic>? preset, String key) =>
     (preset?[key] as num?)?.toInt() ?? 0;
-
-StartingTotals startingTotals({
-  required Map<String, dynamic> defaults,
-  Map<String, dynamic>? race,
-  Map<String, dynamic>? profession,
-}) {
-  int sum(String key, String bonusKey, int fallback) =>
-      ((defaults[key] as num?)?.toInt() ?? fallback) +
-      presetBonus(race, bonusKey) +
-      presetBonus(profession, bonusKey);
-  return StartingTotals(
-    maxHealth: sum('maxHealth', 'bonusMaxHealth', 100),
-    baseDamage: sum('baseDamage', 'bonusBaseDamage', 10),
-    baseArmor: startingArmor(sum('baseArmor', 'bonusBaseArmor', 0)),
-    gold: sum('gold', 'startingGoldBonus', 0),
-    luck: sum('luck', 'bonusLuck', 0),
-    charisma: sum('charisma', 'bonusCharisma', 0),
-    strength: sum('strength', 'bonusStrength', 0),
-    dexterity: sum('dexterity', 'bonusDexterity', 0),
-    constitution: sum('constitution', 'bonusConstitution', 0),
-    intelligence: sum('intelligence', 'bonusIntelligence', 0),
-    wisdom: sum('wisdom', 'bonusWisdom', 0),
-    perception: sum('perception', 'bonusPerception', 0),
-  );
-}
 
 /// A preset's non-zero bonuses as (l10n key, value) pairs: the body first
 /// (HP, damage, armour, gold, luck, charisma), then the abilities.
