@@ -61,7 +61,7 @@ void main() {
           'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
         })));
     await _settle(tester);
-    final scene = find.textContaining('Even with the Inquisition patrolling');
+    final scene = find.textContaining('self-satisfied ranks');
     final unfold = find.text('Read the scene again');
 
     Future<void> goTo(String nodeId) async {
