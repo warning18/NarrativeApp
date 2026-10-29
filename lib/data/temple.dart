@@ -50,7 +50,7 @@ int templeBlessingPrice(int chapter) => 30 + 30 * max(chapter, 1);
 
 /// Whether Mending is offered in [chapter] (in chapter 1 the night costs
 /// nothing, so the row is hidden).
-bool templeMendOffered(int chapter) => roadRulesApply(chapter);
+bool _templeMendOffered(int chapter) => roadRulesApply(chapter);
 
 /// What a blessing of [clanId]'s temple ('' neutral) adds to a fight,
 /// through the Signs pipeline (signEffectsFor's `extra`): the clan's
@@ -81,7 +81,7 @@ List<SignEffect> activeBlessingEffects(
 /// [templeStandingGain] standing: a clan (not neutral, not lost) not
 /// already counted this chapter ([standingChapters]: clan -> the chapter
 /// it last gave it), and not of the opposite alignment to [alignment].
-bool templeBlessingGivesStanding(
+bool _templeBlessingGivesStanding(
   String clanId, {
   required ClanData data,
   required int chapter,
@@ -201,7 +201,7 @@ TempleOffer templeOfferFor({
     clanId: ruler,
     tier: tier,
     chapter: chapter,
-    mendOffered: templeMendOffered(chapter),
+    mendOffered: _templeMendOffered(chapter),
     mendPrice: mendPrice,
     mendBlock: blockFor(mendPrice,
         mendedToday: templeMendDay > 0 && templeMendDay == day),
@@ -210,7 +210,7 @@ TempleOffer templeOfferFor({
     blessingEffects: templeBlessingEffects(ruler, data),
     blessingReplaces: blessingFights > 0,
     blessingStanding: !hunted &&
-        templeBlessingGivesStanding(ruler,
+        _templeBlessingGivesStanding(ruler,
             data: data,
             chapter: chapter,
             alignment: alignment,

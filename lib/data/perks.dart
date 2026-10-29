@@ -55,20 +55,20 @@ String perkNameKey(Perk perk) => 'perk_${perk.name}';
 String perkDescKey(Perk perk) => 'perk_${perk.name}_desc';
 
 /// Per rank of each perk.
-const int potionBonusPerRank = 2;
-const double critPerRank = 5;
-const double dodgePerRank = 4;
-const int damagePerRank = 1;
+const int _potionBonusPerRank = 2;
+const double _critPerRank = 5;
+const double _dodgePerRank = 4;
+const int _damagePerRank = 1;
 
 /// Iron Hide's block chance a rank (%): a blocked blow loses half, as a
 /// warrior's Perception block does. It was +2 armor a rank before the small
 /// scale, which at a fifth of the numbers would have been a fifth of every
 /// blow (docs/proposals/stat-scale.md, "Effects at 1").
-const double blockPerRank = 10;
+const double _blockPerRank = 10;
 const int vigorHealthPerRank = 3;
-const int goldPercentPerRank = 10;
-const int xpPercentPerRank = 10;
-const int leaderPercentPerRank = 5;
+const int _goldPercentPerRank = 10;
+const int _xpPercentPerRank = 10;
+const int _leaderPercentPerRank = 5;
 const int manaPerRank = 2;
 
 /// How many perks a level-up offers to choose from.
@@ -132,16 +132,16 @@ PerkEffects perkEffectsFor(Map<String, int> ranks) {
       min(perkInfo[perk]!.maxRank, max(0, ranks[perk.name] ?? 0));
   return PerkEffects(
     extraRolls: rank(Perk.steadyHands),
-    potionBonus: potionBonusPerRank * rank(Perk.apothecary),
-    critChance: critPerRank * rank(Perk.keenEye),
-    dodgeChance: dodgePerRank * rank(Perk.lightFeet),
-    attackDamage: damagePerRank * rank(Perk.heavyHand),
-    blockChance: blockPerRank * rank(Perk.ironHide),
+    potionBonus: _potionBonusPerRank * rank(Perk.apothecary),
+    critChance: _critPerRank * rank(Perk.keenEye),
+    dodgeChance: _dodgePerRank * rank(Perk.lightFeet),
+    attackDamage: _damagePerRank * rank(Perk.heavyHand),
+    blockChance: _blockPerRank * rank(Perk.ironHide),
     maxHealth: vigorHealthPerRank * rank(Perk.vigor),
     momentumDrop: rank(Perk.battleRhythm),
-    goldPercent: goldPercentPerRank * rank(Perk.plunderer),
-    xpPercent: xpPercentPerRank * rank(Perk.quickStudy),
-    allyDamagePercent: leaderPercentPerRank * rank(Perk.leader),
+    goldPercent: _goldPercentPerRank * rank(Perk.plunderer),
+    xpPercent: _xpPercentPerRank * rank(Perk.quickStudy),
+    allyDamagePercent: _leaderPercentPerRank * rank(Perk.leader),
     maxMana: manaPerRank * rank(Perk.deepWell),
     secondWind: rank(Perk.lastStand) > 0,
   );
@@ -157,15 +157,15 @@ List<Perk> perksAvailable(Map<String, int> ranks) => [
 List<Perk> rollPerkOffer(Map<String, int> ranks, Random random) =>
     (perksAvailable(ranks)..shuffle(random)).take(perkOfferSize).toList();
 
-/// Levels that bring a perk to choose: every [perkLevelStep]th.
-const int perkLevelStep = 2;
+/// Levels that bring a perk to choose: every [_perkLevelStep]th.
+const int _perkLevelStep = 2;
 
 /// Perk picks a level-up from [levelBefore] to [levelAfter] brings: one per
-/// perk level (see [perkLevelStep]) reached on the way.
+/// perk level (see [_perkLevelStep]) reached on the way.
 int perkPicksFor(int levelBefore, int levelAfter) {
   var picks = 0;
   for (var level = max(1, levelBefore) + 1; level <= levelAfter; level++) {
-    if (level % perkLevelStep == 0) picks++;
+    if (level % _perkLevelStep == 0) picks++;
   }
   return picks;
 }

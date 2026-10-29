@@ -19,7 +19,7 @@
 //   won fight, and a rest or a level-up heals everyone.
 //
 // The pick rule (what the competent player decides): the seats go to the
-// companions worth most in a fight ([simCompanionValue]: their die's
+// companions worth most in a fight ([_simCompanionValue]: their die's
 // average roll at their damage, plus their health and armor as survival);
 // a companion within one point of the best left is a tie, settled toward
 // the higher approval, then the one whose weights fit the player's
@@ -133,7 +133,7 @@ class SimAlly {
 /// player's [level] and their [approval], in the units of simDieValue: the
 /// signature die's average roll at their damage, plus a tenth of their
 /// health and most of their armor (what keeps them standing).
-double simCompanionValue(
+double _simCompanionValue(
   Map<String, dynamic> companion, {
   required int level,
   required int approval,
@@ -247,7 +247,7 @@ class SimParty {
   double valueOf(String id, {int? level}) {
     final record = _record(id);
     if (record == null) return 0;
-    return simCompanionValue(record,
+    return _simCompanionValue(record,
         level: level ?? _level,
         approval: roster[id]?.approval ?? startingApproval,
         races: races,
