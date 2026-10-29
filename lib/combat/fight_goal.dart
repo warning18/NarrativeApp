@@ -142,7 +142,7 @@ String goalDescriptionKey(FightGoalKind kind) => '${goalLabelKey(kind)}_desc';
 
 /// The factions whose fighters can be broken: people, not beasts, angels
 /// or the Pit's things. A lone enemy of one of them may be [subdue]d.
-const Set<String> yieldingFactions = {
+const Set<String> _yieldingFactions = {
   'dominion',
   'vigil',
   'compact',
@@ -156,4 +156,4 @@ const Set<String> yieldingFactions = {
 
 /// True when an enemy of [factionId] is a person who can yield.
 bool canYieldFaction(String? factionId) =>
-    factionId != null && yieldingFactions.contains(factionId);
+    factionId != null && _yieldingFactions.contains(factionId);

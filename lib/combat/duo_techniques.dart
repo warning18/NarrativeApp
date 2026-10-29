@@ -1,7 +1,7 @@
 import '../data/approval.dart';
 
 /// Duo techniques (v1.182): two companions who get along fight as one. When
-/// both are in the fight with at least [duoApprovalNeeded] approval, and
+/// both are in the fight with at least [_duoApprovalNeeded] approval, and
 /// both keep a signature face (one of their die's own skill faces) in the
 /// same round, their named move fires after the round's dice, on top of
 /// what the two faces do. A companion takes part in one duo a round.
@@ -38,7 +38,7 @@ enum DuoEffect {
 }
 
 /// The approval both companions need (the friendly tier, see approval.dart).
-const int duoApprovalNeeded = friendlyApproval;
+const int _duoApprovalNeeded = friendlyApproval;
 
 const double duoHealShare = 0.2;
 const double duoVolleyShare = 0.75;
@@ -229,7 +229,7 @@ class DuoCandidate {
   final int approval;
   final bool onSignatureFace;
 
-  bool get ready => onSignatureFace && approval >= duoApprovalNeeded;
+  bool get ready => onSignatureFace && approval >= _duoApprovalNeeded;
 }
 
 /// The duos that fire this round among [candidates] (the acting
