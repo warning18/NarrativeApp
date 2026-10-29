@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.653.0+689]
+
+- **Core: the simulator plays by the fight's own numbers (chapter 1 review
+  C6, C7).**
+  - C6: one sum for a strike's damage before the dice
+    (`strikeDamageFor`, `lib/combat/strike_damage.dart`), used by the fight
+    screen and the simulator. The simulator now counts aligned gear's bonus
+    (the five Good and Evil relics) for a hero of that alignment.
+  - C7: the potion's heal, the rolls a turn, the revive share and the pack
+    multipliers live in `lib/combat/fight_numbers.dart`, read by the fight
+    and the simulator alike. The simulator still models no battlefield
+    conditions, so a shrine's ×1.5 stays out of it.
+  - No band moved: boss_balance, clash_balance, profession_cores and the
+    simulator tests pass unchanged.
+  - Tests: `sim_combat_test` (aligned gear, the shared sum).
+
+## [1.652.0+688]
+
+- **Core: chapter 1 review cleanup (C4, C5, S2).**
+  - C4: the chapter providers (the open chapter, its camp, the chapter
+    reached) watch the story's scene and history only, so an excursion
+    queued no longer rebuilds them.
+  - C5: the story's stops are worked out once, after the city plans load,
+    not once without them and again with them.
+  - S2: `road_hazards_test` measures the road events' mix on the 35 roads
+    of v1.646, so its cost and noise no longer grow with the story.
+
+## [1.651.0+687]
+
+- **Clan power sign: a rank plate with an arrow**
+  Each clan with power wears a small plate with its rank and an arrow for how it moved since the
+  last chapter ("#2 ▲": up, down or steady) on the offer chip, the clan card, the clan peek and
+  the Clans page cards. A clan's power block adds a line ("Rang 2 sur 10 en puissance · +3 de
+  puissance depuis le dernier chapitre"). UX only; reads Core's `clanPowerRankingProvider`.
+
 ## [1.650.0+686]
 
 - **Cleanup: the mode-nudge provider and the day-phase helpers nothing used are removed**

@@ -107,9 +107,7 @@ int _elementalDamageBonus(
   List<String> equippedItemIds,
   Map<String, dynamic> items,
 ) {
-  final prefix = elementFieldPrefixes[element];
-  if (prefix == null) return 0;
-  return equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
+  return elementalDamageBonusFor(element, equippedItemIds, items);
 }
 
 /// The equipment resist for [element] off [equippedItemIds] — 0 for 'None'
