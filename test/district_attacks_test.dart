@@ -267,7 +267,7 @@ void main() {
         isNot('penitents'));
 
     // A siege of the seat saved before the guard breaks, with nothing taken.
-    final old = DistrictSiege(
+    const old = DistrictSiege(
         districtId: wall,
         attacker: 'dominion',
         holder: 'penitents',

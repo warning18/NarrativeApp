@@ -149,7 +149,7 @@ Future<void> _take(WidgetTester tester, int i) async {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   group('sceneLocked', () {
     test('the Bouncer\'s aftermath does not lock: its ways are room spots', () {

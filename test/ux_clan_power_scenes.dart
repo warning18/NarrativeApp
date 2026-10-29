@@ -595,7 +595,7 @@ Widget board(BuildContext context, Idea idea, String title, String note) =>
 /// The compare board: today's cloth at three sizes with what is unclear
 /// about it, then four clans four ways.
 Widget compareBoard(BuildContext context) {
-  final note = const TextStyle(
+  const note = TextStyle(
       fontFamily: 'Spectral', fontSize: 13, height: 1.35, color: _boardInk);
   Widget sizes() => Row(
         crossAxisAlignment: CrossAxisAlignment.end,

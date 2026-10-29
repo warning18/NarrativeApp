@@ -4285,7 +4285,7 @@ Future<void> _showDiscoveryModal(
         ),
       ],
       extraActionLabel: questEligible ? trFor(lang, 'accept') : null,
-      onExtraAction: questEligible ? () => acceptDiscoveredQuest() : null,
+      onExtraAction: questEligible ? acceptDiscoveredQuest : null,
     );
   }
 

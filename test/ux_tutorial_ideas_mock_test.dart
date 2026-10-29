@@ -189,9 +189,9 @@ Widget _dog(String asset, {double size = 70, bool flip = false}) =>
               Icon(Icons.pets, size: size * 0.6, color: _gold)),
     );
 
-final String _walkEast = '$companionAssetsRoot/Walking/east/frame_002.png';
-final String _walkEast2 = '$companionAssetsRoot/Walking/east/frame_005.png';
-final String _sit = '$companionAssetsRoot/Sitting_down/rotations/south.png';
+const String _walkEast = '$companionAssetsRoot/Walking/east/frame_002.png';
+const String _walkEast2 = '$companionAssetsRoot/Walking/east/frame_005.png';
+const String _sit = '$companionAssetsRoot/Sitting_down/rotations/south.png';
 
 Widget _bubble(String text) => Container(
       padding: const EdgeInsets.fromLTRB(9, 6, 9, 7),
@@ -537,7 +537,7 @@ Widget _ideaB() {
             title: 'New: Journey',
             text:
                 'Your story on a map. Follow the route; tap a pin to see what waits there.',
-            p: (v) => _RoutePainter(v),
+            p: _RoutePainter.new,
             caption: 'a route is drawn across the map'),
         const SizedBox(width: 12),
       ],
@@ -553,7 +553,7 @@ Widget _ideaB() {
             title: 'New: Character',
             text:
                 'Your abilities, your gear and how you lean. It grows as you do.',
-            p: (v) => _RadarDemo(v),
+            p: _RadarDemo.new,
             caption: 'the radar grows with a level'),
         const SizedBox(width: 12),
       ],

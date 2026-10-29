@@ -97,7 +97,7 @@ void main() {
       counts.update(present.viewOf(id), (n) => n + 1, ifAbsent: () => 1);
     }
     expect(counts.values.fold(0, (a, b) => a + b), _rawStory().length);
-    expect(counts[SceneView.sheet]!, greaterThan(counts[SceneView.page]!));
+    expect(counts[SceneView.sheet], greaterThan(counts[SceneView.page]!));
     expect(counts[SceneView.street], isNotNull);
   });
 

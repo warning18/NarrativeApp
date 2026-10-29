@@ -311,7 +311,7 @@ class Skyline extends StatelessWidget {
               bottom: 0,
               width: hPrev / 2 + 2,
               height: hPrev,
-              child: CustomPaint(painter: _Dashed(fallBlue)),
+              child: const CustomPaint(painter: _Dashed(fallBlue)),
             ),
           // What it gained: a gold bar up the flag's side from the old height.
           if (c.delta > 0)

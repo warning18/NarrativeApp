@@ -302,7 +302,7 @@ void main() {
         builder: (context, child) => SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: child!,
+            child: child,
           ),
         ),
         home: const _Page(),

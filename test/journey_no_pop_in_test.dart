@@ -69,7 +69,7 @@ Future<ProviderContainer> _journeyAt(WidgetTester tester, String scene,
 void main() {
   // An asset load cached by an earlier test belongs to that test's fake
   // clock and would never finish in this one.
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   testWidgets(
       'a hub opens as its map with no text over it; Read opens the scene',
