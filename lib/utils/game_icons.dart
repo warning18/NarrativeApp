@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../combat/skill_vfx.dart' show paletteForElement;
-
 import '../combat/spells.dart';
 
 IconData itemTypeIcon(String? itemType) {
@@ -66,16 +64,6 @@ IconData elementIcon(String? element) {
   }
 }
 
-/// The colour of [element], as its skills' effects are drawn (see
-/// skill_vfx.dart); a skill with no element takes [plain]. On a light
-/// page, pass its text colour as [ink]: the pale elements (Light, Ice,
-/// Wind) are darkened toward it so they still show.
-Color elementColor(String? element, {required Color plain, Color? ink}) {
-  if (element == null || element == 'None') return plain;
-  final color = Color(paletteForElement(element).primary);
-  return ink == null ? color : Color.lerp(ink, color, 0.6)!;
-}
-
 IconData questCategoryIcon(String? category) {
   switch (category) {
     case 'Main':
@@ -106,27 +94,6 @@ IconData questIcon(String? category, String? firstObjectiveType) {
       return Icons.chat_bubble_outline;
     default:
       return questCategoryIcon(category);
-  }
-}
-
-IconData adventureNodeCategoryIcon(String? category) {
-  switch (category) {
-    case 'Combat':
-      return Icons.sports_martial_arts;
-    case 'Event':
-      return Icons.celebration;
-    case 'Shop':
-      return Icons.storefront;
-    case 'Rest':
-      return Icons.hotel;
-    case 'Treasure':
-      return Icons.diamond;
-    case 'Puzzle':
-      return Icons.extension;
-    case 'Travel':
-      return Icons.explore;
-    default:
-      return Icons.place;
   }
 }
 
