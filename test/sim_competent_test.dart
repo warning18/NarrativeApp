@@ -346,6 +346,7 @@ void main() {
       // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
       // v1.577 when three scenes became two pages each (the run's dice move),
       // at v1.597 (the difficulty pass), at v1.601 (Vica, with her table) and at
+      // v1.610 (the failed boardings carry the lift: the hash only) and at
       // v1.613 (the bosses in the full world: Aurel Vane is no longer a wall).
       expect((
         naive.raceId,
@@ -405,4 +406,4 @@ void main() {
 /// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
 /// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
 /// every hero).
-const int _naiveChoicesHash = 1081060117;
+const int _naiveChoicesHash = 4244321393;

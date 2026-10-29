@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/dice_faces.dart';
 import 'package:narrative_data_app/data/character_start.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _json(String name) =>
@@ -73,11 +75,18 @@ void main() {
     expect(rogue.first.value, 6);
   });
 
-  test('the granted skill drops its preset\'s name', () {
-    expect(grantedSkillName('dwarf_stoneskin', presetId: 'dwarf'), 'Stoneskin');
-    expect(grantedSkillName('warrior_shield_bash', presetId: 'warrior'),
-        'Shield Bash');
-    expect(grantedSkillName('human_resolve'), 'Human Resolve');
+  test('every starting skill has a French name, not its id in English', () {
+    for (final db in [races, professions]) {
+      for (final e in db.entries) {
+        final id = (e.value as Map)['standardSkillID']?.toString() ?? '';
+        if (id.isEmpty) continue;
+        expect(skillDisplayName(id, language: AppLanguage.fr),
+            isNot(skillDisplayName(id)),
+            reason: '${e.key} grants $id');
+      }
+    }
+    expect(skillDisplayName('human_resolve', language: AppLanguage.fr),
+        'Détermination');
   });
 
   test('every race and profession has a mark and a tag', () {

@@ -3668,6 +3668,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
   },
+  'forge_hut_offer': {
+    AppLanguage.en:
+        'The piece comes out flawed. The Bone-Caster’s Hut can roll it again ({n} left). Spend a charge?',
+    AppLanguage.fr:
+        'La pièce sort défectueuse. La Hutte du jeteur d’os peut la relancer ({n} restant). Dépenser une charge ?',
+  },
+  'forge_hut_rolled': {
+    AppLanguage.en: 'The Bone-Caster’s Hut rolled it again.',
+    AppLanguage.fr: 'La Hutte du jeteur d’os l’a relancée.',
+  },
   'forge_coin_offer': {
     AppLanguage.en:
         'The piece comes out flawed. Flip your fate coin to forge it again?',
@@ -7420,8 +7430,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Arrêter la lecture',
   },
   'tut_guide_default_name': {
-    AppLanguage.en: 'Vica',
-    AppLanguage.fr: 'Vica',
+    AppLanguage.en: 'Your companion',
+    AppLanguage.fr: 'Votre compagnon',
   },
   'tut_story_title': {
     AppLanguage.en: 'The story',
@@ -7505,9 +7515,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_story_1': {
     AppLanguage.en:
-        "Woof! I’m {name}. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
+        "Woof! I’ll be your guide. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
     AppLanguage.fr:
-        "Wouf\u00a0! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
+        "Wouf\u00a0! Je serai votre guide. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
   },
   'tut_story_2': {
     AppLanguage.en: 'This is the chapter you are in.',
