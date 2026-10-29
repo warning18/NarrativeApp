@@ -58,6 +58,6 @@ void main() {
   test('a French reader gets the French lines', () {
     final story = _story();
     final entries = storySoFar(story, const [], '2015', french: true);
-    expect(entries.single.opening, startsWith('Même'));
+    expect(entries.single.opening, startsWith('L’Inquisition patrouillait'));
   });
 }
