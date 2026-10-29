@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.640.0+676]
+
+- **Dice: a shape for every size, and the die in the ring rolls**
+  A d4, d8, d10, d12, d20 and the coin are drawn as flat-shaded polyhedra in
+  the die's own skin (stone, edge, mark, glow), with the number or skill icon
+  on the front facet. They show in the fight's row of party dice, the loadout's
+  rail and, large, in the middle of the loadout's ring of face slots, which
+  replaces the draggable cube: tapping a face slot rolls that die to the face
+  (a tap on the die skips the roll). Bigger dice roll longer: a coin 0.6 s, a d4
+  0.7 s, a d12 1.3 s, a d20 1.5 s (the check's d20 was 1 s). A die with a
+  `clan` field wears that clan's banner (the field is Core's; no die has one
+  yet). `InteractiveDie` and its drag tests are gone.
+
 ## [1.639.0+675]
 
 - **Core: taking a quest marks it taken, so the Spire Stair opens on the
