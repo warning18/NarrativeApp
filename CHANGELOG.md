@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.651.0+687]
+
+- **Clan power sign: a rank plate with an arrow**
+  Each clan with power wears a small plate with its rank and an arrow for how it moved since the
+  last chapter ("#2 ▲": up, down or steady) on the offer chip, the clan card, the clan peek and
+  the Clans page cards. A clan's power block adds a line ("Rang 2 sur 10 en puissance · +3 de
+  puissance depuis le dernier chapitre"). UX only; reads Core's `clanPowerRankingProvider`.
+
 ## [1.650.0+686]
 
 - **Cleanup: the mode-nudge provider and the day-phase helpers nothing used are removed**
