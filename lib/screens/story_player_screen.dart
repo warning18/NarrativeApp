@@ -1503,6 +1503,7 @@ Future<void> _selectChoice({
               goldMod: choice.goldMod,
               alignmentMod: choice.alignmentMod,
               healAmount: choice.healAmount,
+              shortfallWounds: choice.shortfallWounds,
               flagsToAdd: choice.flagsToAdd,
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,

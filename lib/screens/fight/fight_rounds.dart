@@ -3,6 +3,31 @@ part of '../fight_screen.dart';
 /// Rolling and confirming the party's dice, the party's round and the
 /// enemies' turn.
 extension _FightRounds on _FightScreenState {
+  /// What [raw] healing from [actor]'s [face] heals this round: the
+  /// Anvil-Deaf's wall takes no Heal faces (spec_variants.dart), a shrine
+  /// heals more, each heal a member gives this fight heals a little less,
+  /// and the cleric's Watchfire doesn't tire, it burns
+  /// (profession_cores.dart). [count] false: the round's preview, which
+  /// counts no heal (fight_dice_rules.dart).
+  int _healDealt(_PartyMember actor, DiceFaceResult face, int raw,
+      {bool count = true}) {
+    var healing = actor.isPlayer &&
+            face.type == 'Heal' &&
+            _core.has(Spec.briarGuard) &&
+            _core.mods.noHealFaces
+        ? 0
+        : raw;
+    if (_condition == BattlefieldCondition.shrine && healing > 0) {
+      healing = (healing * shrineHealMultiplier).round();
+    }
+    if (actor.isPlayer && _core.core == ProfessionCore.watchfire) {
+      return _length.rule.heal(healing, _roundsStarted);
+    }
+    return count
+        ? _length.fatigued(actor.id, healing, round: _roundsStarted)
+        : _length.previewed(actor.id, healing, round: _roundsStarted);
+  }
+
   /// Milliseconds between one party member's effect and the next, so a
   /// round of dice reads as a sequence rather than one flash.
   static const int _fxStagger = 160;
@@ -231,23 +256,9 @@ extension _FightRounds on _FightScreenState {
         _momentum = 0;
         _surgeActorId = null;
       }
-      // The Anvil-Deaf's wall takes no Heal faces (spec_variants.dart).
-      var healing = actor.isPlayer &&
-              face.type == 'Heal' &&
-              _core.has(Spec.briarGuard) &&
-              _core.mods.noHealFaces
-          ? 0
-          : result.healingDone;
-      if (_condition == BattlefieldCondition.shrine && healing > 0) {
-        healing = (healing * shrineHealMultiplier).round();
-      }
-      // Each heal a member gives this fight heals a little less; the
-      // cleric's Watchfire doesn't tire, it burns (profession_cores.dart).
+      final healing = _healDealt(actor, face, result.healingDone);
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
-      healing = watchfire
-          ? _length.rule.heal(healing, _roundsStarted)
-          : _length.fatigued(actor.id, healing, round: _roundsStarted);
       if (watchfire && healing > 0) {
         _watchfireOnHeal(actor, healing, newEntries, lang);
       }
