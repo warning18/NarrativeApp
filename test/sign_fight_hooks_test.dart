@@ -270,6 +270,11 @@ void main() {
       int offersTaken,
       int skillsLearned,
     }) walk({required bool signs, required SimProgression progression}) =>
+        // The walk's tables are the point here: signs off means no clan tables.
+        // sim-tables-ok: expedition_steps: a minimal world on purpose
+        // sim-tables-ok: training_paths: a minimal world on purpose
+        // sim-tables-ok: politics_events: a minimal world on purpose
+        // sim-tables-ok: companions: a minimal world on purpose
         simulateFightsByChapter(
           story,
           tables: {
