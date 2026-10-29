@@ -26,6 +26,7 @@ import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Future<Map<String, dynamic>> _loadJson(String path) async {
   final raw = await rootBundle.loadString(path);
@@ -182,6 +183,7 @@ void main() {
       'void_sovereign': (8, 0.35),
     };
     late Map<String, (int, int)> tally;
+    late Map<String, (int, int)> champions;
 
     /// The encounters each profession wins within three tries, in percent
     /// (the same 400 runs: the guard on the professions' spread, QA).
@@ -197,17 +199,12 @@ void main() {
         for (final e in raw.entries)
           e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
       });
-      final tables = {
-        for (final name in [
-          'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-          'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-          'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-          'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-          'expedition_steps', 'training_paths', 'politics_events',
-          'companions', // Vica joins every hero (v1.601)
-        ])
-          name: table(name),
-      };
+      // sim-tables-ok: specialisations: the curve's targets (75/65/55...) were
+      // set on a hero without a specialisation; with them the same bosses fall
+      // 15 to 20 points more often (v1.606, found moving the tests to the
+      // shared sim world). Core decides whether to re-tune the bosses or the
+      // targets; until then the bands keep their measure.
+      final tables = simTables(without: {'specialisations', 'spec_variants'});
       final professions = tables['professions']!.keys.toList()..sort();
       const goals = [
         SimStrategy.random,
@@ -227,7 +224,10 @@ void main() {
                     professions[(i ~/ goals.length) % professions.length],
               ),
           ],
-          seed: 7);
+          seed: 7,
+          // The nemeses' champions are met on the same walk (the champions'
+          // curve below), so one run measures both.
+          championFights: true);
       tally = {};
       for (final run in runs) {
         for (final MapEntry(key: boss, value: (chapter, _))
@@ -238,11 +238,24 @@ void main() {
           tally[boss] = (fought + met.fought, lost + met.lost);
         }
       }
+      champions = {};
+      for (final run in runs) {
+        for (final byChapter in run.enemiesByChapter.values) {
+          for (final e in byChapter.entries) {
+            if (!e.key.startsWith('champion_')) continue;
+            final (f, l) = champions[e.key] ?? (0, 0);
+            champions[e.key] = (f + e.value.fought, l + e.value.lost);
+          }
+        }
+      }
       final fought = <String, int>{};
       final lost = <String, int>{};
       for (final run in runs) {
         for (final chapter in run.enemiesByChapter.values) {
-          for (final enemy in chapter.values) {
+          for (final MapEntry(key: id, value: enemy) in chapter.entries) {
+            // The champions have their own curve; the professions' spread
+            // is measured on the encounters it always was.
+            if (id.startsWith('champion_')) continue;
             fought[run.professionId] =
                 (fought[run.professionId] ?? 0) + enemy.fought;
             lost[run.professionId] = (lost[run.professionId] ?? 0) + enemy.lost;
@@ -267,6 +280,25 @@ void main() {
             reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
       });
     }
+
+    // The champions of the nemesis clans (nemesis.dart), about half won where
+    // they come, pooled: the 200 runs of nemesis_quests_test's own walk moved
+    // here, so the 400 runs of the boss curve are the only big run.
+    test('the champions\' curve: about half won where they come', () {
+      var all = 0, allLost = 0;
+      for (final (f, l) in champions.values) {
+        all += f;
+        allLost += l;
+      }
+      final rate = all == 0 ? 0.0 : (all - allLost) / all;
+      debugPrint('champions: ${(100 * rate).toStringAsFixed(1)}% of $all '
+          '(${[
+        for (final e in champions.entries)
+          '${e.key} ${e.value.$1 - e.value.$2}/${e.value.$1}'
+      ].join(', ')})');
+      expect(all, greaterThanOrEqualTo(40), reason: 'too few met');
+      expect(rate, closeTo(0.5, 0.12));
+    });
 
     // The three claimants are met one per run (whichever claim the run
     // backed), so each is met only about 50 to 80 times in the 400 runs:

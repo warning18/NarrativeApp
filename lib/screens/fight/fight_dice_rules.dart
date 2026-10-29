@@ -313,10 +313,8 @@ extension _FightDiceRules on _FightScreenState {
               ? dealt
               : strikeDamageAfterAffixes(dealt, face.type,
                   armored: target.hasAffix(EnemyAffix.armored));
-      var healing = result.healingDone;
-      if (_condition == BattlefieldCondition.shrine && healing > 0) {
-        healing = (healing * shrineHealMultiplier).round();
-      }
+      // As the round will heal it, nothing counted (_healDealt).
+      final healing = _healDealt(actor, face, result.healingDone, count: false);
       var block = result.blockAmount;
       if (block > 0 && _isTelegraphedTarget(actor)) {
         block *= _telegraphBraceMultiplier;

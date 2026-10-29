@@ -1949,7 +1949,8 @@
         "goldMod": -40,
         "flagsToAdd": [
           "boarded_fined"
-        ]
+        ],
+        "shortfallWounds": true
       }
     ]
   },
@@ -1971,7 +1972,8 @@
         "goldMod": -25,
         "flagsToAdd": [
           "boarded_bribed"
-        ]
+        ],
+        "shortfallWounds": true
       }
     ]
   },
