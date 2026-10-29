@@ -3,7 +3,8 @@
 // may attack a district it doesn't hold, and the district is under siege.
 //
 // - Who attacks: a main clan with [attackMinPower] power or more, against
-//   a district held by a clan it is at odds with: a blood feud
+//   a district (never a guarded seat, clan_power.dart's seatGuarded) held
+//   by a clan it is at odds with: a blood feud
 //   ([attackOdds]: 35% a chapter), a war (20%) or hostile (10%); tense or
 //   warmer, never. At most one attack a town a chapter, and none while the
 //   town is under siege.
@@ -133,6 +134,9 @@ String _cityOf(Geography geography, String districtId) =>
     if (place == null || place.level != GeoLevel.district) continue;
     final city = _cityOf(geography, placeId);
     if (city.isEmpty || besieged.contains(city)) continue;
+    // A guarded seat (the Penitents' Wall of Names) is never attacked: its
+    // clan may shrink but not fall to the turns.
+    if (seatGuarded(holder) && placeId == data.faction(holder)?.seat) continue;
     for (final clan in data.factions.keys) {
       if (clan == holder || !isMainClan(clan, data)) continue;
       if (state.fallen.contains(clan)) continue;
@@ -258,6 +262,11 @@ PoliticsState settleSiegeAway(
   // The holder may have changed since (an event, influence): the siege is
   // over with nothing to take.
   if (holderOf(siege.districtId, geography, next) != siege.holder) {
+    return next;
+  }
+  // A guarded seat holds (a siege saved before the guard).
+  if (seatGuarded(siege.holder) &&
+      siege.districtId == data.faction(siege.holder)?.seat) {
     return next;
   }
   final won = random.nextDouble() <
