@@ -8,26 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.645.0+681]
+## [1.641.0+677]
 
-- **Core: the data for the clan power sign (option A, a ranking with
-  arrows).**
-  - Each chapter's turn keeps every clan's power as it begins
-    (`PoliticsState.powerAtTurn`, saved).
-  - `clanPowerRanking` / `clanPowerRankingProvider`: the ten clans with
-    power, strongest first, each with its rank and power now and at the
-    last turn (`rankChange`, `powerChange` for the arrow). Equal powers
-    share a rank. No number changes; UX draws the sign.
-  - Tests: `clan_power_test` (the ranking).
-- **Core: who holds a region, for the world map's Clans layer** (the
-  user's feedback: tint the whole region, not a halo around a clan's
-  mark).
-  - `regionHolders` / `regionHoldersProvider`: each region (the Salt
-    Coast, the Grey Fen…) and the clans holding its places, strongest
-    first, each with its share against the strongest (two at 1: contested).
-  - `chartZoneHolders(chart, …)`: the same for each of a chart's lands, in
-    `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
-  - Tests: `region_holders_test`.
+- **Dice: every die has its own art**
+  Thirty-two dice now carry pieces of their own over their skin, a handful of
+  paths each and no image files (`lib/widgets/die_art.dart`): the Void die's
+  stars and swirl, the Berserker's spikes and blood, the Flame die's tongues,
+  the Huntsman's arrow, the Tearglass d12's crown, tear and halo, the Gambler's
+  suits and pips, a paw print for Vica's hound and tally marks on the built
+  d12. The art turns and squeezes with the die, and shows in the loadout's ring,
+  its rail and the fight's dice row (the fight's d6 stays the cube, without it).
+  Only the plain first die has none. Pictures in `docs/ux-shots/dice-built/`.
 
 ## [1.640.0+676]
 

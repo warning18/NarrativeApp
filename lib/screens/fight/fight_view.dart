@@ -830,6 +830,7 @@ extension _FightView on _FightScreenState {
       // adds to the burst: its rule words, its element, a surge, a curse.
       skin: dieSkinOf(actor.equippedDiceId),
       shape: dieShapeOf(actor.dieFaces.length),
+      artId: actor.equippedDiceId,
       held: locked,
       keywords: face?.keywords ?? const {},
       element: face == null ? 'None' : _elementFor(face, skills),

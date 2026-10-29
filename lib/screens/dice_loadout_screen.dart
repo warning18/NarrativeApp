@@ -695,6 +695,7 @@ class _RingCenter extends StatelessWidget {
             face: face,
             size: size,
             skin: dieSkinOf(dieId),
+            dieId: dieId,
             clan: clan,
             still: still,
           ),

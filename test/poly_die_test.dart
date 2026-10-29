@@ -2,6 +2,7 @@
 // the clan's banner, and a skin on any shape. Drawn only with UX_SHOTS (a
 // folder) for the family picture:
 //   UX_SHOTS=docs/ux-shots/dice-built flutter test test/poly_die_test.dart
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -11,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/die_3d.dart';
+import 'package:narrative_data_app/widgets/die_art.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
 
@@ -29,6 +31,10 @@ Future<void> _loadFonts() async {
     await loader.load();
   }
 }
+
+final Map<String, dynamic> _dice =
+    jsonDecode(File('assets/gamedata/dice.json').readAsStringSync())
+        as Map<String, dynamic>;
 
 void main() {
   test('every die size has its shape, a d7 reads as the next size up', () {
@@ -153,6 +159,35 @@ void main() {
     }
   });
 
+  testWidgets('every die with art paints in its shape, at both sizes',
+      (tester) async {
+    for (final id in ['starter_die', ...dieArtNotes.keys]) {
+      for (final size in [76.0, 34.0]) {
+        await tester.pumpWidget(MaterialApp(
+          home: Center(
+            child: PolyDie(
+              shape: dieShapeOf((_dice[id]['faces'] as List).length),
+              size: size,
+              dieId: id,
+              label: '3',
+              skin: dieSkinOf(id),
+            ),
+          ),
+        ));
+        expect(tester.takeException(), isNull, reason: '$id at $size');
+      }
+    }
+    expect(dieHasArt('starter_die'), isFalse);
+    expect(dieHasArt('tearglass_die'), isTrue);
+    // Every die of dice.json has art, bar the plain first one.
+    final ids = _dice.keys;
+    final missing = [
+      for (final id in ids)
+        if (!dieHasArt(id)) id,
+    ];
+    expect(missing, ['starter_die']);
+  });
+
   final shots = Platform.environment['UX_SHOTS'];
   testWidgets('the family, drawn (UX_SHOTS)', (tester) async {
     if (shots != null && shots.isNotEmpty) await _loadFonts();
@@ -219,6 +254,86 @@ void main() {
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       Directory(shots).createSync(recursive: true);
       File('$shots/dice-family-built.png')
+          .writeAsBytesSync(bytes!.buffer.asUint8List());
+    });
+  });
+
+  testWidgets('the sheet of the 31 dice, drawn (UX_SHOTS)', (tester) async {
+    if (shots == null || shots.isEmpty) return;
+    await _loadFonts();
+    tester.view.physicalSize = const Size(1300, 1250);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final key = GlobalKey();
+    final bySize = <int, List<String>>{};
+    for (final e in _dice.entries) {
+      bySize
+          .putIfAbsent((e.value['faces'] as List).length, () => [])
+          .add(e.key);
+    }
+    Widget cell(String id) => Container(
+          width: 150,
+          margin: const EdgeInsets.all(5),
+          padding: const EdgeInsets.fromLTRB(4, 14, 4, 8),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFF3A3642)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              PolyDie(
+                  shape: dieShapeOf((_dice[id]['faces'] as List).length),
+                  size: 76,
+                  dieId: id,
+                  label: '4',
+                  skin: dieSkinOf(id)),
+              const SizedBox(width: 14),
+              PolyDie(
+                  shape: dieShapeOf((_dice[id]['faces'] as List).length),
+                  size: 34,
+                  dieId: id,
+                  label: '4',
+                  skin: dieSkinOf(id)),
+            ]),
+            const SizedBox(height: 10),
+            Text(id.replaceAll('_die', ''),
+                style: const TextStyle(
+                    fontFamily: 'Spectral',
+                    fontSize: 13,
+                    color: Color(0xFFEDE6DC))),
+            Text(dieArtNotes[id] ?? 'plain',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontFamily: 'Spectral',
+                    fontSize: 10,
+                    color: Color(0xFF9A93A6))),
+          ]),
+        );
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        type: MaterialType.transparency,
+        child: RepaintBoundary(
+          key: key,
+          child: Container(
+            color: const Color(0xFF17151B),
+            padding: const EdgeInsets.all(12),
+            child: Wrap(children: [
+              for (final n in bySize.keys.toList()..sort())
+                for (final id in bySize[n]!) cell(id),
+            ]),
+          ),
+        ),
+      ),
+    ));
+    await tester.pump();
+    await tester.runAsync(() async {
+      final boundary =
+          key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 1.5);
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      Directory(shots).createSync(recursive: true);
+      File('$shots/dice-sheet-built.png')
           .writeAsBytesSync(bytes!.buffer.asUint8List());
     });
   });

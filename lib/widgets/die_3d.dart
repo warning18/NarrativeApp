@@ -80,6 +80,8 @@ class Die3D extends StatefulWidget {
     this.surge = false,
     this.cursed = false,
     this.shape = DieShape.d6,
+    this.artId,
+    this.flat = false,
   }) : assert(faces.length == 6);
 
   /// The six sides, the front one (the face that lands) first.
@@ -132,6 +134,13 @@ class Die3D extends StatefulWidget {
   /// What the die is drawn as: the cube for a d6, a flat polyhedron (see
   /// poly_die.dart) for the other sizes. Its front face is [faces]'s first.
   final DieShape shape;
+
+  /// The die's id: its art (see die_art.dart) is drawn on a flat die.
+  final String? artId;
+
+  /// A d6 drawn flat like the other shapes (with its art) rather than as the
+  /// tumbling cube.
+  final bool flat;
 
   @override
   State<Die3D> createState() => _Die3DState();
@@ -328,7 +337,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              if (widget.shape != DieShape.d6)
+              if (widget.shape != DieShape.d6 || widget.flat)
                 PolyDie(
                   shape: widget.shape,
                   size: size,
@@ -337,6 +346,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   progress: t,
                   still: true,
                   glowing: false,
+                  dieId: widget.artId,
                 )
               else
                 for (final p in placed)

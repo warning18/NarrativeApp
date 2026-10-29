@@ -18,6 +18,7 @@ class RollingDie extends StatefulWidget {
     this.size = 56,
     this.skin,
     this.clan,
+    this.dieId,
     this.still = false,
   });
 
@@ -30,6 +31,9 @@ class RollingDie extends StatefulWidget {
   final double size;
   final DieSkin? skin;
   final DieClan? clan;
+
+  /// The die's id, for its art.
+  final String? dieId;
 
   /// Reduced motion: no roll.
   final bool still;
@@ -107,6 +111,7 @@ class _RollingDieState extends State<RollingDie>
                     size: size,
                     skin: widget.skin,
                     clan: widget.clan,
+                    dieId: widget.dieId,
                     label: '${widget.face + 1}',
                     progress: t,
                     still: true,
