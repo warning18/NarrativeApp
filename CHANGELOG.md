@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.611.0+647]
+
+- **UX: fixes from the chapter 1 reviews.**
+  - **The race and profession screen** shows the starting skills' names in the
+    player's language (the French names were there; the screen built the name
+    from the skill's id, so French players read "Resolve" and "Shield Bash").
+    The id-based helper `grantedSkillName` is gone.
+  - **The spoils chest's "health still missing"** counts each potion with the
+    perk's and the signs' bonus, as the fight will heal it, so a potion is no
+    longer offered that would heal nothing (`healthStillMissing`).
+  - **The Bone-Caster's Hut reroll is on the Forge sheet.** A Flawed piece, the
+    hut standing and a Reroll charge left: the forge asks whether to spend the
+    charge and rolls the d20 again (Core's `canRerollForge` and `rerollForge`,
+    built in v1.592 and until now reachable from no screen); the fate coin can
+    still be offered after it.
+  - **Quest reward cards show their chapter art.** `assets/visuals/chapters/`
+    was not listed in `pubspec.yaml`, so it was not in the build and the
+    card's art strip was always a flat colour.
+  - **The inventory's tabs at 320 px** sit closer, with smaller names, so the
+    Dice tab is on screen (it was half off the edge in French).
+  - **Cleanup:** `InkReveal` (no user) is removed.
+- Tests: `spoils_chest_test.dart` (health still missing),
+  `character_start_test.dart` (every starting skill has a French name),
+  `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
+  Picture: `docs/ux-shots/fixes-611/`.
+
 ## [1.607.0+643]
 
 - **UX: the Journey map is clear, and its list names places.** (The user's
