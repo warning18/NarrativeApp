@@ -28,7 +28,7 @@ enum HullKind {
   bone,
 }
 
-HullKind hullKindFrom(Object? name) {
+HullKind _hullKindFrom(Object? name) {
   for (final kind in HullKind.values) {
     if (kind.name == name) return kind;
   }
@@ -47,7 +47,7 @@ enum SailKind {
   lateen,
 }
 
-SailKind sailKindFrom(Object? name) {
+SailKind _sailKindFrom(Object? name) {
   for (final kind in SailKind.values) {
     if (kind.name == name) return kind;
   }
@@ -89,7 +89,7 @@ class ShipForm {
         (outline[key] as num?)?.toDouble() ?? fallback;
     return ShipForm(
       id: id,
-      kind: hullKindFrom(record['kind']),
+      kind: _hullKindFrom(record['kind']),
       length: (record['length'] as num?)?.toDouble() ?? 1.0,
       beam: (record['beam'] as num?)?.toDouble() ?? 0.24,
       u0: d('u0', 0.5),
@@ -101,7 +101,7 @@ class ShipForm {
         for (final raw in (record['sailPlan'] as List?) ?? const [])
           if (raw is Map)
             ShipMast(
-              sailKindFrom(raw['kind']),
+              _sailKindFrom(raw['kind']),
               (raw['at'] as num?)?.toDouble() ?? 0.5,
               (raw['size'] as num?)?.toDouble() ?? 1.0,
             ),

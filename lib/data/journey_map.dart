@@ -61,12 +61,12 @@ JourneyStepKind journeyStepKindOf(StoryChoice choice) {
 }
 
 /// The most steps side by side in one row of the map.
-const int journeyStepsPerRow = 3;
+const int _journeyStepsPerRow = 3;
 
 /// How many steps each row of the map holds, the row nearest the current
 /// scene first: as few rows as [perRow] allows, filled as evenly as they
 /// can be, the fuller rows nearest (5 steps: 3 then 2).
-List<int> journeyRowSizes(int count, {int perRow = journeyStepsPerRow}) {
+List<int> journeyRowSizes(int count, {int perRow = _journeyStepsPerRow}) {
   if (count <= 0) return const [];
   final rows = (count + perRow - 1) ~/ perRow;
   final base = count ~/ rows;
@@ -99,7 +99,7 @@ class JourneySlot {
 /// the map. Rows after the first lean half a step to one side and then
 /// the other, so a far row's steps sit between the nearer ones and the
 /// roads to them pass through the gaps.
-List<JourneySlot> journeySlots(int count, {int perRow = journeyStepsPerRow}) {
+List<JourneySlot> journeySlots(int count, {int perRow = _journeyStepsPerRow}) {
   final slots = <JourneySlot>[];
   final sizes = journeyRowSizes(count, perRow: perRow);
   for (var row = 0; row < sizes.length; row++) {

@@ -54,7 +54,7 @@ class ChartRoute {
 /// [route] laid on [geography]: each landmark where the chart puts it, each
 /// stop spread along the leg that holds it, a little to one side and the
 /// other so the road bends instead of running ruler-straight.
-ChartRoute? chartRouteFor(
+ChartRoute? _chartRouteFor(
     ChartGeography geography, RoadRoute route, AppLanguage language) {
   if (route.isEmpty) return null;
   final points = <Offset>[];
@@ -94,5 +94,5 @@ ChartRoute? chartRouteFor(
 ChartRoute? chartRoadsBetween(ChartGeography geography, String fromId,
     String toId, AppLanguage language) {
   final route = roadRoute(fromId, toId);
-  return route == null ? null : chartRouteFor(geography, route, language);
+  return route == null ? null : _chartRouteFor(geography, route, language);
 }
