@@ -1,5 +1,3 @@
-import 'dart:math';
-
 /// What a fight left behind, for the story to react to -- published by
 /// FightScreen (see `lastFightOutcomeProvider`) and turned into one
 /// paragraph by [aftermathLineFor], which the next scene opens with.
@@ -292,6 +290,3 @@ List<({List<String> en, List<String> fr})> get aftermathPoolsForTest => [
       ])
         (en: pool.en, fr: pool.fr),
     ];
-
-/// A fight-scoped seed for [aftermathLineFor].
-int aftermathSeed(Random random) => random.nextInt(1 << 20);

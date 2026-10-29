@@ -6,7 +6,7 @@ import 'enemy_affix.dart';
 /// announced on the fight's setup screen:
 ///
 /// - a taste for certain [EnemyAffix]es (its fighters spawn with them
-///   likelier, see [doctrineAffixBoost]);
+///   likelier);
 /// - at most one signature [DoctrineRule].
 ///
 /// A fight against a boss or a unique is never under a doctrine: those are
@@ -30,13 +30,6 @@ enum DoctrineRule {
 
 /// The Writ falls on every third round: rounds 3, 6, 9...
 const int writPeriod = 3;
-
-/// Added to the odds an enemy of a doctrine's faction spawns with an affix,
-/// on top of the usual solo or pack odds.
-const double doctrineAffixBoost = 0.20;
-
-/// The share of the time such an affix is one of the doctrine's own taste.
-const double doctrineAffixTasteShare = 0.7;
 
 /// The share of an enemy's gold reward each hit it lands as a thief lifts,
 /// and the most a thief carries, as a multiple of that reward.
