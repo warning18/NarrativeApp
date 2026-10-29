@@ -25,15 +25,15 @@ import 'alignment_events.dart' show alignmentThreshold;
 const int spareStanding = 3;
 const int finishStanding = -2;
 
-const double betrayalBase = 0.10;
-const double betrayalPerPoint = 0.004;
+const double _betrayalBase = 0.10;
+const double _betrayalPerPoint = 0.004;
 const double betrayalMax = 0.60;
 
 /// The Perception that reads a hunter's alignment.
 const int readAlignmentPerception = 5;
 
 /// Within this much of yours, a hunter's alignment reads "close".
-const int closeAlignment = 30;
+const int _closeAlignment = 30;
 
 const int betrayalMinRoads = 1;
 const int betrayalMaxRoads = 4;
@@ -44,8 +44,8 @@ int hunterAlignmentOf(Map<String, dynamic>? enemy) =>
 
 /// The chance a hunter of [hunter] alignment spared by a character of
 /// [player] alignment comes back to stab them.
-double betrayalChance(int hunter, int player) =>
-    min(betrayalMax, betrayalBase + betrayalPerPoint * (hunter - player).abs());
+double betrayalChance(int hunter, int player) => min(
+    betrayalMax, _betrayalBase + _betrayalPerPoint * (hunter - player).abs());
 
 /// How a high Perception reads a hunter: its side ('good', 'neutral',
 /// 'evil') and whether it is close to the reader's alignment.
@@ -55,7 +55,7 @@ double betrayalChance(int hunter, int player) =>
           : hunter <= -alignmentThreshold
               ? 'evil'
               : 'neutral',
-      close: (hunter - player).abs() <= closeAlignment,
+      close: (hunter - player).abs() <= _closeAlignment,
     );
 
 String betrayerFlag(String enemyId) => 'betrayer_$enemyId';

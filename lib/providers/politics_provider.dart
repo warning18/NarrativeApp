@@ -25,7 +25,7 @@ final politicsEventsProvider = Provider<Map<String, PoliticsEvent>>((ref) =>
 
 /// The politics events once the table has loaded: for code that acts on
 /// them and may be the first to ask.
-Future<Map<String, PoliticsEvent>> loadPoliticsEvents(WidgetRef ref) async =>
+Future<Map<String, PoliticsEvent>> _loadPoliticsEvents(WidgetRef ref) async =>
     parsePoliticsEvents(await ref
         .read(gameDbProvider(politicsEventsSchema).notifier)
         .whenLoaded());
@@ -71,7 +71,7 @@ Future<CoastChange> applyStoryPoliticsNow(
   String? cause,
 }) async {
   final data = await loadClanData(ref);
-  final events = await loadPoliticsEvents(ref);
+  final events = await _loadPoliticsEvents(ref);
   final companions = await _companions(ref);
   final change =
       await ref.read(playerSessionProvider.notifier).applyStoryPolitics(
@@ -118,7 +118,7 @@ Future<InfluenceResult> applyQuestInfluenceNow(
 Future<CoastChange> applyThroneEditNow(
     WidgetRef ref, StoryPolitics politics) async {
   final data = await loadClanData(ref);
-  final events = await loadPoliticsEvents(ref);
+  final events = await _loadPoliticsEvents(ref);
   return ref.read(playerSessionProvider.notifier).applyThroneEdit(politics,
       data: data, events: events, chapter: ref.read(reachedChapterProvider));
 }
@@ -147,7 +147,7 @@ Future<void> applyEnterPolitics(WidgetRef ref, String nodeId) async {
 /// null, at least the world clock's) and today: on a chapter change and a
 /// day's tick. Returns the news they told, oldest first.
 Future<List<CoastNews>> runCoastEvents(WidgetRef ref, {int? chapter}) async {
-  final events = await loadPoliticsEvents(ref);
+  final events = await _loadPoliticsEvents(ref);
   if (events.isEmpty) return const [];
   final data = await loadClanData(ref);
   final companions = await _companions(ref);
@@ -167,7 +167,7 @@ Future<List<CoastNews>> runCoastEvents(WidgetRef ref, {int? chapter}) async {
 /// Edit Mode's "Fire now": [eventId] fires at once, in the chapter
 /// reached.
 Future<CoastChange> fireCoastEventNow(WidgetRef ref, String eventId) async {
-  final events = await loadPoliticsEvents(ref);
+  final events = await _loadPoliticsEvents(ref);
   final data = await loadClanData(ref);
   final companions = await _companions(ref);
   return ref.read(playerSessionProvider.notifier).firePoliticsEvent(

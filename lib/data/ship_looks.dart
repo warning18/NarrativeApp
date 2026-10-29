@@ -122,7 +122,7 @@ Map<String, ShipLook> shipLooksFrom(Map<String, dynamic> records) => {
     };
 
 /// The default look of [category]: the one the data marks, else the first.
-ShipLook? defaultLookOf(Map<String, ShipLook> looks, String category) {
+ShipLook? _defaultLookOf(Map<String, ShipLook> looks, String category) {
   ShipLook? first;
   for (final look in looks.values) {
     if (look.category != category) continue;
@@ -147,7 +147,7 @@ ShipLook? wornLook(
       (look.isDefault || owned.contains(id))) {
     return look;
   }
-  return defaultLookOf(looks, category);
+  return _defaultLookOf(looks, category);
 }
 
 /// Whether [look] is on offer: a trophy once its beast is slain (or the

@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _permadeathPrefsKey = 'permadeath_enabled';
 
-class PermadeathNotifier extends StateNotifier<bool> {
-  PermadeathNotifier() : super(false) {
+class _PermadeathNotifier extends StateNotifier<bool> {
+  _PermadeathNotifier() : super(false) {
     _load();
   }
 
@@ -24,5 +24,5 @@ class PermadeathNotifier extends StateNotifier<bool> {
 /// (keeping level/stats/skills, losing items). Off by default; persisted
 /// via [SharedPreferences].
 final permadeathEnabledProvider =
-    StateNotifierProvider<PermadeathNotifier, bool>(
-        (ref) => PermadeathNotifier());
+    StateNotifierProvider<_PermadeathNotifier, bool>(
+        (ref) => _PermadeathNotifier());

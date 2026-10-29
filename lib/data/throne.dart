@@ -33,7 +33,7 @@ import 'signs.dart';
 
 /// The rungs of the climb.
 const int rungHouse = 1;
-const int rungClan = 2;
+const int _rungClan = 2;
 const int rungThrone = 3;
 
 /// The steps of a clan's quest; the last makes the character its head.
@@ -55,23 +55,23 @@ const String onThroneFlag = 'on_throne';
 
 /// The muster's flags: one per contingent, and how many Houses and how
 /// many in all came, each the one exact count (`host_houses_3`: three
-/// Houses), the Houses' counted up to [maxHostHousesFlag].
-String hostFlag(String factionId) => 'host_$factionId';
-String hostHousesFlag(int n) => 'host_houses_$n';
-String hostSizeFlag(int n) => 'host_size_$n';
+/// Houses), the Houses' counted up to [_maxHostHousesFlag].
+String _hostFlag(String factionId) => 'host_$factionId';
+String _hostHousesFlag(int n) => 'host_houses_$n';
+String _hostSizeFlag(int n) => 'host_size_$n';
 
 /// The most Houses a flag counts: more read as this many.
-const int maxHostHousesFlag = 20;
+const int _maxHostHousesFlag = 20;
 
 /// The source of the title the coronation gives (titles.json `source`).
-String throneTitleSource(String factionId) => 'throne:$factionId';
+String _throneTitleSource(String factionId) => 'throne:$factionId';
 
 /// The standing a renounced claim costs.
 const int renounceCost = 15;
 
 /// [factionId]'s sub-clans that are the character's friends: its Houses
 /// on the climb, in the data's order.
-List<SubClan> friendHousesOf(
+List<SubClan> _friendHousesOf(
         String factionId, PoliticsState politics, ClanData data) =>
     [
       for (final s in data.subclansOf(factionId))
@@ -83,8 +83,8 @@ List<SubClan> friendHousesOf(
 int rungFor(String factionId, PoliticsState politics, ClanData data) {
   if (factionId.isEmpty) return 0;
   if (politics.throneWinner == factionId) return rungThrone;
-  if (politics.claim == factionId) return rungClan;
-  return friendHousesOf(factionId, politics, data).isNotEmpty ? rungHouse : 0;
+  if (politics.claim == factionId) return _rungClan;
+  return _friendHousesOf(factionId, politics, data).isNotEmpty ? rungHouse : 0;
 }
 
 /// The steps of [factionId]'s clan quest done (0..3): the highest
@@ -124,7 +124,7 @@ class Climb {
   int get rung => crowned
       ? rungThrone
       : claimed
-          ? rungClan
+          ? _rungClan
           : hasHouse
               ? rungHouse
               : 0;
@@ -138,7 +138,7 @@ Climb climbFor(String factionId, PoliticsState politics, Iterable<String> flags,
         ClanData data) =>
     Climb(
       factionId: factionId,
-      houses: friendHousesOf(factionId, politics, data),
+      houses: _friendHousesOf(factionId, politics, data),
       steps: clanStepsFrom(flags, factionId),
       claimed: politics.claim == factionId,
       crowned: politics.throneWinner == factionId,
@@ -224,7 +224,7 @@ Host hostFor({
   ];
   final houses = <String>[];
   for (final faction in data.factions.values) {
-    for (final s in friendHousesOf(faction.id, politics, data)) {
+    for (final s in _friendHousesOf(faction.id, politics, data)) {
       if (!houses.contains(s.id)) houses.add(s.id);
     }
   }
@@ -237,10 +237,10 @@ Host hostFor({
 }
 
 /// The fewest districts a clan holds to come to the Host for them.
-const int hostDistrictMin = 2;
+const int _hostDistrictMin = 2;
 
 /// The clans holding the most districts now (all of them on a tie), at
-/// least [hostDistrictMin]: they answer the Host's call unless Hostile or
+/// least [_hostDistrictMin]: they answer the Host's call unless Hostile or
 /// worse (see [hostFor]).
 List<String> districtHostClans(PoliticsState politics, Geography geography) {
   final counts = <String, int>{};
@@ -250,7 +250,7 @@ List<String> districtHostClans(PoliticsState politics, Geography geography) {
     counts[holder] = (counts[holder] ?? 0) + 1;
   }
   final most = counts.values.fold(0, max);
-  if (most < hostDistrictMin) return const [];
+  if (most < _hostDistrictMin) return const [];
   return [
     for (final MapEntry(:key, :value) in counts.entries)
       if (value == most) key,
@@ -298,13 +298,13 @@ List<SignEffect> hostEffects(Host host, ClanData data) => [
       ...houseEffects(host.houses.length),
     ];
 
-/// The flags a muster of [host] sets (see [hostFlag]): no count flag for
+/// The flags a muster of [host] sets (see [_hostFlag]): no count flag for
 /// none.
 List<String> hostFlagsFor(Host host) => [
-      for (final id in host.contingents) hostFlag(id),
+      for (final id in host.contingents) _hostFlag(id),
       if (host.houses.isNotEmpty)
-        hostHousesFlag(min(host.houses.length, maxHostHousesFlag)),
-      if (host.size > 0) hostSizeFlag(host.size),
+        _hostHousesFlag(min(host.houses.length, _maxHostHousesFlag)),
+      if (host.size > 0) _hostSizeFlag(host.size),
     ];
 
 final RegExp _hostCount = RegExp(r'^host_(houses|size)_\d+$');
@@ -313,12 +313,12 @@ final RegExp _hostCount = RegExp(r'^host_(houses|size)_\d+$');
 /// a count -- which a muster again replaces; the story's other `host_`
 /// flags stay.
 bool isMusterFlag(String flag, Iterable<String> factionIds) =>
-    _hostCount.hasMatch(flag) || factionIds.any((id) => flag == hostFlag(id));
+    _hostCount.hasMatch(flag) || factionIds.any((id) => flag == _hostFlag(id));
 
 /// The titles the coronation of [factionId] gives (titles.json `source`
 /// `throne:<id>`).
 List<TitleDef> throneTitlesOf(String factionId, ClanData data) =>
-    data.titlesFor(source: throneTitleSource(factionId));
+    data.titlesFor(source: _throneTitleSource(factionId));
 
 // --- The words --------------------------------------------------------------
 

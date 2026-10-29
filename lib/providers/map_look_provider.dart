@@ -9,8 +9,8 @@ const String mapLookPrefsKey = 'world_map_look';
 
 /// Which of the world map's three looks the player chose; the night map
 /// until they choose.
-class MapLookNotifier extends StateNotifier<MapLook> {
-  MapLookNotifier() : super(MapLook.night) {
+class _MapLookNotifier extends StateNotifier<MapLook> {
+  _MapLookNotifier() : super(MapLook.night) {
     _load();
   }
 
@@ -33,15 +33,15 @@ class MapLookNotifier extends StateNotifier<MapLook> {
   }
 }
 
-final mapLookProvider =
-    StateNotifierProvider<MapLookNotifier, MapLook>((ref) => MapLookNotifier());
+final mapLookProvider = StateNotifierProvider<_MapLookNotifier, MapLook>(
+    (ref) => _MapLookNotifier());
 
-const String mapShapePrefsKey = 'world_map_shape';
+const String _mapShapePrefsKey = 'world_map_shape';
 
 /// Which of the chart's three geographies the player chose; the Ring
 /// (world B) until they choose.
-class MapShapeNotifier extends StateNotifier<MapShape> {
-  MapShapeNotifier() : super(MapShape.archipelago) {
+class _MapShapeNotifier extends StateNotifier<MapShape> {
+  _MapShapeNotifier() : super(MapShape.archipelago) {
     _load();
   }
 
@@ -49,7 +49,7 @@ class MapShapeNotifier extends StateNotifier<MapShape> {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    final name = prefs.getString(mapShapePrefsKey);
+    final name = prefs.getString(_mapShapePrefsKey);
     if (_chosen || name == null) return;
     for (final shape in mapLookShapes) {
       if (shape.name == name) state = shape;
@@ -60,19 +60,19 @@ class MapShapeNotifier extends StateNotifier<MapShape> {
     _chosen = true;
     state = shape;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(mapShapePrefsKey, shape.name);
+    await prefs.setString(_mapShapePrefsKey, shape.name);
   }
 }
 
-final mapShapeProvider = StateNotifierProvider<MapShapeNotifier, MapShape>(
-    (ref) => MapShapeNotifier());
+final mapShapeProvider = StateNotifierProvider<_MapShapeNotifier, MapShape>(
+    (ref) => _MapShapeNotifier());
 
 const String chartCalquePrefsKey = 'world_map_calque';
 
 /// Which calque lies over the chart (v1.199): none until the player picks
 /// one; the pick is kept.
-class ChartCalqueNotifier extends StateNotifier<ChartCalque> {
-  ChartCalqueNotifier() : super(ChartCalque.none) {
+class _ChartCalqueNotifier extends StateNotifier<ChartCalque> {
+  _ChartCalqueNotifier() : super(ChartCalque.none) {
     _load();
   }
 
@@ -96,16 +96,16 @@ class ChartCalqueNotifier extends StateNotifier<ChartCalque> {
 }
 
 final chartCalqueProvider =
-    StateNotifierProvider<ChartCalqueNotifier, ChartCalque>(
-        (ref) => ChartCalqueNotifier());
+    StateNotifierProvider<_ChartCalqueNotifier, ChartCalque>(
+        (ref) => _ChartCalqueNotifier());
 
 const String chartGlobePrefsKey = 'world_map_globe';
 
 /// Whether the Journey's world map is looked at as a sphere (v1.200): the
 /// sphere until the player asks for the flat chart (v1.350: zooming out
 /// from the Journey lands on it), and the pick is kept.
-class ChartGlobeNotifier extends StateNotifier<bool> {
-  ChartGlobeNotifier() : super(true) {
+class _ChartGlobeNotifier extends StateNotifier<bool> {
+  _ChartGlobeNotifier() : super(true) {
     _load();
   }
 
@@ -126,16 +126,16 @@ class ChartGlobeNotifier extends StateNotifier<bool> {
   }
 }
 
-final chartGlobeProvider = StateNotifierProvider<ChartGlobeNotifier, bool>(
-    (ref) => ChartGlobeNotifier());
+final chartGlobeProvider = StateNotifierProvider<_ChartGlobeNotifier, bool>(
+    (ref) => _ChartGlobeNotifier());
 
 const String chartWeatherPrefsKey = 'world_map_weather';
 
 /// Whether the weather moves over the world map (v1.204, see
 /// chart_weather.dart): on until the player turns it off, and the pick is
 /// kept.
-class ChartWeatherNotifier extends StateNotifier<bool> {
-  ChartWeatherNotifier() : super(true) {
+class _ChartWeatherNotifier extends StateNotifier<bool> {
+  _ChartWeatherNotifier() : super(true) {
     _load();
   }
 
@@ -156,15 +156,15 @@ class ChartWeatherNotifier extends StateNotifier<bool> {
   }
 }
 
-final chartWeatherProvider = StateNotifierProvider<ChartWeatherNotifier, bool>(
-    (ref) => ChartWeatherNotifier());
+final chartWeatherProvider = StateNotifierProvider<_ChartWeatherNotifier, bool>(
+    (ref) => _ChartWeatherNotifier());
 
 const String chartWeatherWorldOnlyPrefsKey = 'world_map_weather_world_only';
 
 /// Whether the weather shows only at the world zoom (v1.208): off until
 /// the player asks, and the pick is kept.
-class ChartWeatherWorldOnlyNotifier extends StateNotifier<bool> {
-  ChartWeatherWorldOnlyNotifier() : super(false) {
+class _ChartWeatherWorldOnlyNotifier extends StateNotifier<bool> {
+  _ChartWeatherWorldOnlyNotifier() : super(false) {
     _load();
   }
 
@@ -186,5 +186,5 @@ class ChartWeatherWorldOnlyNotifier extends StateNotifier<bool> {
 }
 
 final chartWeatherWorldOnlyProvider =
-    StateNotifierProvider<ChartWeatherWorldOnlyNotifier, bool>(
-        (ref) => ChartWeatherWorldOnlyNotifier());
+    StateNotifierProvider<_ChartWeatherWorldOnlyNotifier, bool>(
+        (ref) => _ChartWeatherWorldOnlyNotifier());

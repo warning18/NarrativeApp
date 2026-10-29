@@ -50,10 +50,10 @@ enum SceneView {
 /// How much a scene weighs in the story.
 enum SceneWeight { main, side, ambient }
 
-SceneView? sceneViewNamed(String? name) =>
+SceneView? _sceneViewNamed(String? name) =>
     SceneView.values.where((v) => v.name == name).firstOrNull;
 
-SceneWeight? sceneWeightNamed(String? name) =>
+SceneWeight? _sceneWeightNamed(String? name) =>
     SceneWeight.values.where((w) => w.name == name).firstOrNull;
 
 /// The views of the story's scenes, worked out once: who comes into each
@@ -100,7 +100,7 @@ class ScenePresentation {
   /// main-story scene, ambient for a hub or a camp scene, side otherwise.
   SceneWeight weightOf(String nodeId) {
     final node = _story.nodeFor(nodeId);
-    final tagged = sceneWeightNamed(node?.sceneWeight);
+    final tagged = _sceneWeightNamed(node?.sceneWeight);
     if (tagged != null) return tagged;
     if (chapterForNode(nodeId) != null) return SceneWeight.main;
     if (_stops.isHub(nodeId) || _stops.isCampScene(nodeId)) {
@@ -118,7 +118,7 @@ class ScenePresentation {
   SceneView _viewOf(String nodeId, Set<String> turning) {
     final node = _story.nodeFor(nodeId);
     if (node == null) return SceneView.page;
-    final tagged = sceneViewNamed(node.sceneView);
+    final tagged = _sceneViewNamed(node.sceneView);
     if (tagged != null) return tagged;
     if (isStoryEnding(node)) return SceneView.ending;
     if (node.pageTurn && node.choices.length == 1) {

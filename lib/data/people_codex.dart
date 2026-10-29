@@ -31,7 +31,7 @@ List<String> npcMetNodes(Map<String, dynamic> npc) =>
     _stringList(npc['metNodes']);
 
 /// The flags meeting [npc]: once one is held, they are known.
-List<String> npcMetFlags(Map<String, dynamic> npc) =>
+List<String> _npcMetFlags(Map<String, dynamic> npc) =>
     _stringList(npc['metFlags']);
 
 /// The shop [npc] keeps ('' for none): once found, they are known.
@@ -43,7 +43,7 @@ String npcShopId(Map<String, dynamic> npc) =>
 /// (see npcDiscovered).
 bool npcIsLegacy(Map<String, dynamic> npc) =>
     npcMetNodes(npc).isEmpty &&
-    npcMetFlags(npc).isEmpty &&
+    _npcMetFlags(npc).isEmpty &&
     npcShopId(npc).isEmpty;
 
 /// [npc]'s chapter (1 when unset).
@@ -115,7 +115,7 @@ List<String> npcStateLines(
 typedef NpcIntrigueLine = ({String intrigue, String stage, String text});
 
 /// [npc]'s id: the record's `npcID` (or `id`), '' when it has none.
-String npcRecordId(Map<String, dynamic> npc) =>
+String _npcRecordId(Map<String, dynamic> npc) =>
     (npc['npcID'] ?? npc['id'])?.toString().trim() ?? '';
 
 /// Where [npc] stands in the [intrigues] the story has reached, in the
@@ -130,7 +130,7 @@ List<NpcIntrigueLine> npcIntrigueLines(
   Iterable<String> flags,
   bool french,
 ) {
-  final id = npcRecordId(npc);
+  final id = _npcRecordId(npc);
   if (id.isEmpty) return const [];
   final held = flags is Set<String> ? flags : flags.toSet();
   final language = french ? AppLanguage.fr : AppLanguage.en;
