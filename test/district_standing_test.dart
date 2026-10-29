@@ -110,8 +110,11 @@ void main() {
       expect(c.flipAt, (holderStartInfluence + flipMargin) / maxInfluence);
     });
 
-    test('influence is counted only in a town where it counts', () {
-      final s = standings(cityId: 'ashford');
+    test('influence is counted in every town, not outside one', () {
+      // Wave 18 step 2: any town (step 1 counted it in Saltmouth only).
+      expect(standings(cityId: 'ashen_quarter')[_yard]!.influence,
+          holderStartInfluence);
+      final s = standings(cityId: null);
       expect(s[_yard]!.influence, isNull);
       expect(s[_yard]!.crest?.hold, isNull);
     });
@@ -160,7 +163,7 @@ void main() {
       expect(find.byKey(const Key('plain')), findsNothing);
       // A clan without a flag keeps the row's own marker.
       await tester.pumpWidget(
-          host(DistrictLead(const DistrictStanding(id: 'x'), plain: plain)));
+          host(const DistrictLead(DistrictStanding(id: 'x'), plain: plain)));
       expect(find.byKey(const Key('plain')), findsOneWidget);
     });
   });

@@ -8,10 +8,12 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
-import '../data/geography.dart' show GeoPlace;
+import '../data/geography.dart' show GeoPlace, Geography;
 import '../data/ability_check.dart';
 import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
+import '../data/district_attacks.dart'
+    show DistrictSiege, buildSiegeNode, isSiegeNode, siegeToMeet;
 import '../data/nemesis.dart' show maybeChampionRoad;
 import '../data/alignment_events.dart';
 import '../data/hunter_mercy.dart';
@@ -84,6 +86,7 @@ import '../providers/story_providers.dart';
 import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'epilogue_map_screen.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -1611,8 +1614,9 @@ Future<void> _selectChoice({
     }
   } else if (choice.hasPolitics &&
       isExcursion &&
-      isClanCrisisNode(detourNodeId)) {
-    // Your clan's crisis or fall, met on the road (clan_crisis.dart).
+      (isClanCrisisNode(detourNodeId) || isSiegeNode(detourNodeId))) {
+    // Your clan's crisis or fall, or a district's siege, met on the road
+    // (clan_crisis.dart, district_attacks.dart).
     await applyStoryPoliticsNow(ref, choice.politics!,
         nodeId: detourNodeId!, key: '');
   }
@@ -1998,6 +2002,25 @@ int storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
       c.textFr == choice.textFr);
 }
 
+/// The siege to meet on the road from [fromNodeId] to [toNodeId]
+/// (district_attacks.dart): the sieges run out settled away first, then
+/// one of the town either end stands in, or null.
+Future<DistrictSiege?> _siegeOnRoad(
+  WidgetRef ref,
+  StoryData story,
+  Geography geo, {
+  required String fromNodeId,
+  required String toNodeId,
+  required int chapter,
+}) async {
+  final session = ref.read(playerSessionProvider.notifier);
+  await session.settleExpiredSieges(
+      data: ref.read(clanDataProvider), geography: geo, chapter: chapter);
+  return siegeToMeet(ref.read(playerSessionProvider).politics,
+      fromCity: geo.locationOfNode(story.nodeFor(fromNodeId))?.id ?? '',
+      toCity: geo.locationOfNode(story.nodeFor(toNodeId))?.id ?? '');
+}
+
 /// What the road from [fromNodeId] to [toNodeId] holds (see
 /// detour_pacing.dart), started as the excursion the story plays before
 /// arriving; true when one was. Only a change of place (D1: never between
@@ -2061,6 +2084,21 @@ Future<bool> startRoadEncounter(
     final betrayer = await sessionNotifier.tickBetrayals();
     if (betrayer != null) {
       alignmentEvent = [betrayalAmbushNode(betrayer, enemies, dice())];
+    }
+    // A district of the town under siege (district_attacks.dart): the
+    // sieges run out are settled first, then the one of the town the road
+    // comes from or goes to is met, before your clan's crisis.
+    final siege = await _siegeOnRoad(ref, story, geo,
+        fromNodeId: fromNodeId, toNodeId: toNodeId, chapter: chapter);
+    if (siege != null) {
+      final node = buildSiegeNode(
+          ref.read(playerSessionProvider).politics, siege,
+          data: ref.read(clanDataProvider),
+          geography: geo,
+          enemies: enemies,
+          chapter: chapter,
+          random: dice());
+      if (node != null) alignmentEvent ??= [node];
     }
     // Your clan's seat threatened, or fallen (clan_crisis.dart): before
     // any hunter.
@@ -4053,6 +4091,17 @@ class _EndingView extends ConsumerWidget {
                 ),
               ),
             ],
+            if (recapSession != null) ...[
+              const SizedBox(height: 16),
+              // Who holds each town at the end (the epilogue map).
+              OutlinedButton.icon(
+                key: const Key('ending_realm_map'),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const EpilogueMapScreen())),
+                icon: const Icon(Icons.map_outlined),
+                label: Text(tr(ref, 'epilogue_map_button')),
+              ),
+            ],
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: onRestart,
@@ -4236,7 +4285,7 @@ Future<void> _showDiscoveryModal(
         ),
       ],
       extraActionLabel: questEligible ? trFor(lang, 'accept') : null,
-      onExtraAction: questEligible ? () => acceptDiscoveredQuest() : null,
+      onExtraAction: questEligible ? acceptDiscoveredQuest : null,
     );
   }
 

@@ -3,6 +3,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import 'clan_crisis.dart';
 import 'clan_power.dart';
+import 'district_attacks.dart' show applySiegeChoice;
 import 'factions.dart';
 import 'geography.dart';
 import 'nemesis.dart' show breakNemesis;
@@ -624,6 +625,10 @@ class _Coast {
     if (p.settleCrisis.isNotEmpty) {
       politics = settleCrisis(politics, p.settleCrisis);
     }
+    // A district's siege (district_attacks.dart).
+    if (p.settleSiege.isNotEmpty) {
+      politics = applySiegeChoice(politics, p.settleSiege);
+    }
     if (p.bendKnee.isNotEmpty) {
       politics = bendTheKnee(politics, p.bendKnee, data,
           chapter: world.chapter, day: world.day);
@@ -756,9 +761,12 @@ class _Coast {
   /// The Host mustered now (see hostFor): kept, and its flags set in
   /// place of an earlier muster's.
   void muster() {
-    final host =
-        hostFor(politics: politics, data: data, signPatrons: world.signPatrons)
-            .musteredOn(world.chapter, world.day);
+    final host = hostFor(
+            politics: politics,
+            data: data,
+            signPatrons: world.signPatrons,
+            geography: world.geography)
+        .musteredOn(world.chapter, world.day);
     politics = politics.copyWith(host: host);
     flags.removeWhere((f) => isMusterFlag(f, data.factions.keys));
     hostFlagsFor(host).forEach(addFlag);

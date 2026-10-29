@@ -51,16 +51,8 @@ StoryData _story() {
   });
 }
 
-// sim-tables-ok: specialisations: the frozen run's tuple and hash (S1 of
-// docs/qa/chapter1-core.md) were pinned on the world before these five; Core
-// replaces the pin with property checks, and the world goes with it.
-final _runTables = simTables(without: {
-  'specialisations',
-  'spec_variants',
-  'skill_merges',
-  'detour_scenes',
-  'ports'
-});
+// The full world, as the simulator screen and the game play it (v1.617).
+final _runTables = simTables();
 
 SimRunSummary _warriorRun(SimPolicy policy) => simulatePlaythroughs(
       _story(),
@@ -72,15 +64,6 @@ SimRunSummary _warriorRun(SimPolicy policy) => simulatePlaythroughs(
       seed: 7,
       policy: policy,
     ).single;
-
-/// The same stable hash as sim_competent_test.dart.
-int _stableHash(Iterable<String> parts) {
-  var h = 0x811c9dc5;
-  for (final unit in parts.join('\n').codeUnits) {
-    h = ((h ^ unit) * 0x01000193) & 0xffffffff;
-  }
-  return h;
-}
 
 void main() {
   group('recruiting', () {
@@ -291,27 +274,6 @@ void main() {
     });
 
     test('naive with companions.json loaded: Vica only (v1.601)', () {
-      // sim_competent_test.dart's pin (re-pinned at v1.577, v1.578, v1.602, v1.610, v1.613, v1.614 and v1.615 with it).
-      expect((
-        naive.raceId,
-        naive.finalLevel,
-        naive.finalGold,
-        naive.fightsWon,
-        naive.fightsLost,
-        naive.offers,
-        naive.steps,
-        naive.furthestChapter,
-      ), (
-        'dwarf',
-        16,
-        2412,
-        27,
-        62,
-        32,
-        269,
-        8
-      ));
-      expect(_stableHash(naive.choicesTaken), 2643919658);
       // The naive player recruits no one; the story gives it Vica (v1.601).
       expect(
           naive.companionLog

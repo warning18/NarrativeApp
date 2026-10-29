@@ -198,17 +198,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               switch (_sort) {
                 case _ShopSort.nameAsc:
                   sortedStock.sort((a, b) => nameFor(a).compareTo(nameFor(b)));
-                  break;
                 case _ShopSort.priceLow:
                   sortedStock.sort((a, b) => costFor(a).compareTo(costFor(b)));
-                  break;
                 case _ShopSort.priceHigh:
                   sortedStock.sort((a, b) => costFor(b).compareTo(costFor(a)));
-                  break;
                 case _ShopSort.stockLeft:
                   sortedStock.sort(
                       (a, b) => remainingFor(b).compareTo(remainingFor(a)));
-                  break;
               }
 
               return Column(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/geography.dart';
 import '../data/throne.dart' show midSentenceName;
@@ -19,10 +18,6 @@ String itemRarityLabelFor(AppLanguage language, String? rarity) {
   final label = trFor(language, key);
   return label == key ? raw : label;
 }
-
-/// See [itemRarityLabelFor], in the app's language.
-String itemRarityLabel(WidgetRef ref, String? rarity) =>
-    itemRarityLabelFor(ref.watch(appLanguageProvider), rarity);
 
 /// The colour of [rarity]'s tag on [scheme]: muted for a Common, the
 /// scheme's primary for an Uncommon, its tertiary for a Rare, gold for a

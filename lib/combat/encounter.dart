@@ -26,17 +26,17 @@ const double luckyDieStrikeShare = 0.4;
 
 /// The most of the player's health the opening blow of the lucky die's
 /// fight can take: a first wound, never a crippling one.
-const double luckyDieBlowShare = 0.2;
+const double _luckyDieBlowShare = 0.2;
 
 /// The enemy's opening blow in the lucky die's fight: its own damage, at
-/// most [luckyDieBlowShare] of the player's health, and never enough to
+/// most [_luckyDieBlowShare] of the player's health, and never enough to
 /// knock them down.
 int luckyDieOpeningBlow({
   required int enemyDamage,
   required int playerHealth,
   required int playerMaxHealth,
 }) {
-  final cap = max(1, (playerMaxHealth * luckyDieBlowShare).round());
+  final cap = max(1, (playerMaxHealth * _luckyDieBlowShare).round());
   return max(0, min(min(enemyDamage, cap), playerHealth - 1));
 }
 

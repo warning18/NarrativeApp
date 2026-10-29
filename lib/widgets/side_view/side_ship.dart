@@ -127,7 +127,7 @@ final Map<String, SideEnemy> _enemies = {
         trim: Color(0xFF7A55C8),
         cloth: Color(0xFF3A2A66),
         ensignColor: Color(0xFF9A6BFF)),
-    glow: Color(0xFF9A6BFF),
+    glow: const Color(0xFF9A6BFF),
   ),
 };
 
@@ -207,7 +207,6 @@ class _Palette {
   final Color mast;
 
   Color get hullDark => _shade(hull, 0.62);
-  Color get hullDeep => _shade(hull, 0.42);
   Color get clothShade => _shade(cloth, 0.84);
 }
 
@@ -764,7 +763,7 @@ void _ironclad(Canvas canvas, double u, double x, double base, double len,
     sidePixels(canvas, u, Paint()..color = const Color(0xFF3A3A44), fx,
         base - 20, 4, 1);
     for (var i = 0; i < 5; i++) {
-      final age = ((t * 0.7 + i / 5 + f) % 1.0);
+      final age = (t * 0.7 + i / 5 + f) % 1.0;
       final sx = fx + 1 - age * 18;
       final sy = base - 21 - age * 12;
       final a = (1 - age) * 0.55;
@@ -813,7 +812,7 @@ void _gasbag(Canvas canvas, double u, double x, double base, double len,
   sidePixels(
       canvas, u, Paint()..color = const Color(0xFF2A2A30), bx, base - 13, 3, 6);
   for (var i = 0; i < 4; i++) {
-    final age = ((t * 0.8 + i / 4) % 1.0);
+    final age = (t * 0.8 + i / 4) % 1.0;
     sidePixels(
         canvas,
         u,

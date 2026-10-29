@@ -1,17 +1,21 @@
 // The followed quest and its goal: which quest shows above the story, what
 // it waits on, how it moves on and is turned in, and which quests,
 // creatures and people a play-mode list may show.
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/city_districts.dart';
+import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/quest_tracking.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/providers/tab_badges_provider.dart';
 
 import 'player_session_provider_test.dart' show baseSession, notifierWith;
 
@@ -125,6 +129,41 @@ void main() {
     });
   });
 
+  // A quest taken sets its `<id>_accepted` flag, which opens a district
+  // locked until it is taken: the Spire Stair on the Ashen Oath (v1.639).
+  group('the accepted flag', () {
+    Map<String, dynamic> table(String name) =>
+        jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final geo =
+        Geography.parse(geography: table('geography'), biomes: table('biomes'));
+    const oath = 'q_ch3_ashen_oath';
+    const stair = 'ashen_quarter_spire_stair';
+    bool barred(PlayerSession s) =>
+        districtLocked(geo, stair, s.flags, s.completedQuestIds);
+
+    test('taking the Ashen Oath opens the Spire Stair', () async {
+      final notifier = await notifierWith(baseSession());
+      expect(barred(notifier.state), isTrue);
+      await notifier.acceptQuest(oath);
+      expect(notifier.state.flags, contains(questAcceptedFlag(oath)));
+      expect(barred(notifier.state), isFalse);
+    });
+
+    test('a quest taken in a scene is marked taken too', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.applyChoiceEffects(questIDToProgress: oath);
+      expect(barred(notifier.state), isFalse);
+    });
+
+    test('a save with the oath taken before the flag opens the Stair', () {
+      final json = baseSession(activeQuestIds: [oath]).toJson();
+      expect(json['flags'] as List, isNot(contains(questAcceptedFlag(oath))));
+      expect(barred(PlayerSession.fromJson(json)), isFalse);
+      expect(barred(PlayerSession.fromJson(baseSession().toJson())), isTrue);
+    });
+  });
+
   group('the goal', () {
     test('is the next objective with its progress, then ready', () {
       var s = baseSession().copyWith(
@@ -136,18 +175,6 @@ void main() {
       s = s.copyWith(enemyKillCounts: const {'catacomb_ghoul': 3});
       goal = questGoalFor('bounty', _bounty, s);
       expect(goal.ready, isTrue);
-    });
-
-    test('a goal reached is announced once, not on a loaded save', () {
-      const before = QuestReadiness(active: {'a', 'b'}, ready: {'b'});
-      const after =
-          QuestReadiness(active: {'a', 'b', 'c'}, ready: {'a', 'b', 'c'});
-      // 'a' was in progress and is now ready; 'c' only just appeared.
-      expect(QuestReadiness.newlyReady(before, after), ['a']);
-      // Nothing is known before the quests table loads.
-      expect(
-          QuestReadiness.newlyReady(const QuestReadiness(loaded: false), after),
-          isEmpty);
     });
   });
 

@@ -550,10 +550,8 @@ EnemyMoveResult resolveEnemyMove({
     switch (condition) {
       case 'Always':
         matches = true;
-        break;
       case 'Chance':
         matches = random.nextDouble() * 100 <= chance;
-        break;
       case 'OnLowHealth':
         // The health gate opens the move; `chance` (authored 40-60 on
         // every current entry) then decides whether it fires this turn,
@@ -561,14 +559,11 @@ EnemyMoveResult resolveEnemyMove({
         // every single turn regardless of what its data says.
         matches = healthPercent <= healthThreshold &&
             random.nextDouble() * 100 <= chance;
-        break;
       case 'OnHitByElement':
         matches = elementsHitThisRound
             .contains(move['requiredElement']?.toString() ?? '');
-        break;
       default:
         matches = false;
-        break;
     }
 
     if (!matches) continue;
@@ -846,13 +841,13 @@ int scaledMaxHealth(int base, int playerLevel) {
 /// The share of its health an enemy gains for each level of the hero it
 /// meets (docs/proposals/stat-scale.md: the hero's abilities now count,
 /// so the enemies grow faster than [scaledMaxHealth]'s 12%).
-const double enemyHealthPerLevel = 0.16;
+const double _enemyHealthPerLevel = 0.16;
 
 /// An enemy's max health against a hero of [playerLevel]: [base] and
-/// [enemyHealthPerLevel] of it a level past the first. [scaledMaxHealth]
+/// [_enemyHealthPerLevel] of it a level past the first. [scaledMaxHealth]
 /// keeps growing the rest (allies, heals and blocks, road foes).
 int enemyScaledMaxHealth(int base, int playerLevel) =>
-    (base * (1 + enemyHealthPerLevel * (playerLevel - 1))).round();
+    (base * (1 + _enemyHealthPerLevel * (playerLevel - 1))).round();
 
 int scaledDamage(int base, int playerLevel) {
   return (base * (1 + 0.08 * (playerLevel - 1))).round();
@@ -864,7 +859,7 @@ int scaledReward(int base, int playerLevel) {
 
 /// Per-chapter step of the chapter difficulty curve (see
 /// [chapterDifficultyMultiplier]).
-const double chapterDifficultyStep = 0.15;
+const double _chapterDifficultyStep = 0.15;
 
 /// The multipliers on a regular enemy's max health and damage, before the
 /// chapter curve -- the floor for everything that isn't a boss, one entry
@@ -1002,7 +997,7 @@ bool shipHasEntranceCard(String shipId, Map<String, dynamic>? ship) {
 /// flips -- and a steeper step alone turning the chapter 5-6 zone bosses
 /// into walls while chapters 1-4 stayed at 100%.
 double chapterDifficultyMultiplier(int chapter) =>
-    (1 + chapterDifficultyStep * (max(1, chapter) - 1)) *
+    (1 + _chapterDifficultyStep * (max(1, chapter) - 1)) *
     (chapter == 2 ? chapterTwoTeeth : 1.0);
 
 /// Chapter 2's own bite (the user's call, docs/simulation/difficulty-review.md

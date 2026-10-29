@@ -22,7 +22,16 @@ import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
 import '../providers/geography_provider.dart' show loadGeography;
 import '../gamedata/db_schema.dart'
-    show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
+    show
+        companionsSchema,
+        housesSchema,
+        landEventsSchema,
+        landRoutesSchema,
+        shopsSchema;
+import '../providers/offers_provider.dart' show loadOfferTables;
+import 'clan_crisis.dart' show mainClanOf;
+import 'factions.dart' show alliesOf;
+import 'offers.dart' show preferredSuitor;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
@@ -59,6 +68,23 @@ enum AutoplayStatus {
 /// statistics, though, never the real session, so its logic can't be reused
 /// directly here.
 enum AutoplayStrategy { random, favorGood, favorEvil, maximizeGold }
+
+/// What a "Play to chapter" walk did, for its report (the simulator
+/// screen's summary): the choices taken, in order, the fights and the
+/// banners (clan offers) taken. Only the walk that is kept counts: an
+/// attempt undone starts it afresh.
+class AutoplayLog {
+  final List<({String nodeId, String text})> choices = [];
+  final List<({String enemyId, String name, bool won, bool forced})> fights =
+      [];
+  final List<({int chapter, String factionId, String gift})> banners = [];
+
+  void clear() {
+    choices.clear();
+    fights.clear();
+    banners.clear();
+  }
+}
 
 class AutoplayResult {
   const AutoplayResult({
@@ -159,6 +185,9 @@ Future<void> _maybeCreateCharacter(
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
   Random? random,
+  String? raceId,
+  String? professionId,
+  int? runSeed,
 }) async {
   final session = ref.read(playerSessionProvider);
   if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) return;
@@ -166,14 +195,26 @@ Future<void> _maybeCreateCharacter(
   random ??= Random();
   final raceIds = races.keys.toList();
   final professionIds = professions.keys.toList();
-  final raceId = raceIds[random.nextInt(raceIds.length)];
-  final professionId = professionIds[random.nextInt(professionIds.length)];
+  // The simulator screen's pickers, else random as the live "Randomize".
+  raceId = races.containsKey(raceId)
+      ? raceId!
+      : raceIds[random.nextInt(raceIds.length)];
+  professionId = professions.containsKey(professionId)
+      ? professionId!
+      : professionIds[random.nextInt(professionIds.length)];
   await ref.read(playerSessionProvider.notifier).startNewGame(
         raceId: raceId,
         race: races[raceId] as Map<String, dynamic>,
         professionId: professionId,
         profession: professions[professionId] as Map<String, dynamic>,
       );
+  // A seeded walk keeps its character's own seed too (startNewGame draws
+  // one at random): the same seed, the same run, offers included.
+  if (runSeed != null) {
+    final notifier = ref.read(playerSessionProvider.notifier);
+    await notifier.loadSession(
+        ref.read(playerSessionProvider).copyWith(runSeed: runSeed));
+  }
 }
 
 /// Plays out one simulated fight against [enemy] for the player alone (an
@@ -612,6 +653,9 @@ Future<AutoplayResult> autoplayToChapter(
   Map<String, dynamic>? shops,
   Map<String, dynamic>? houses,
   void Function(int attempt)? onAttempt,
+  String? raceId,
+  String? professionId,
+  AutoplayLog? log,
 }) async {
   final startChapter =
       chapterForNode(ref.read(storyPlayProvider).currentNodeId);
@@ -631,6 +675,7 @@ Future<AutoplayResult> autoplayToChapter(
       ref.read(storyPlayProvider.notifier).restore(savedPlay);
     }
     onAttempt?.call(attempt);
+    log?.clear();
     final last = attempt == maxAttempts;
     result = await _playTowardChapter(
       ref,
@@ -649,6 +694,10 @@ Future<AutoplayResult> autoplayToChapter(
       maxCombatRetries: maxCombatRetries,
       forceWins: last,
       random: seed == null ? Random() : Random(seed * 1009 + attempt),
+      raceId: raceId,
+      professionId: professionId,
+      runSeed: seed == null ? null : 1 + seed * 7919,
+      log: log,
     );
     if (result.status == AutoplayStatus.reachedTarget) break;
   }
@@ -662,10 +711,77 @@ Future<AutoplayResult> autoplayToChapter(
                 .read(gameDbRepositoryProvider(shopsSchema))
                 .loadRecords());
   }
+  // Left as a player would leave it: the banners due taken, then the
+  // gear and the die set, the harbour built and the party seated.
+  await takeAutoplayOffers(ref,
+      log: log, random: seed == null ? Random() : Random(seed * 7919));
   await applyAutoplayBuild(ref,
       items: items, skills: skills, dice: dice, professions: professions);
   await buildAwaitedHarbour(ref, houses: houses);
+  await seatAutoplayParty(ref, houses: houses);
   return result._withAttempts(attempts);
+}
+
+/// Takes every clan offer due (the banners the live game would ask the
+/// player to pick, one card after another), the simulator's way
+/// (preferredSuitor): kept to the main clan and its allies when there is
+/// one. The offers wait while the clans are not open yet, as in the game.
+/// Returns how many were taken.
+Future<int> takeAutoplayOffers(WidgetRef ref,
+    {AutoplayLog? log, Random? random}) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final tables = await loadOfferTables(ref);
+  var taken = 0;
+  // A guard: each take removes one offer due.
+  for (var i = 0; i < 64; i++) {
+    final offer = await notifier.ensureOffer(tables, random: random);
+    if (offer == null) break;
+    final s = ref.read(playerSessionProvider);
+    final main = mainClanOf(s.politics);
+    final suitor = preferredSuitor(
+      offer,
+      fillsEmptyFace: (_) => false,
+      heldSigns: s.heldSigns,
+      signs: tables.signs,
+      politics: s.politics,
+      data: tables.data,
+      healthy: s.currentHealth * 2 > s.maxHealth,
+      keepTo: main.isEmpty
+          ? null
+          : {main, ...alliesOf(main, s.politics, tables.data)},
+    );
+    if (suitor == null) break;
+    if (!await notifier.acceptSuitor(suitor.factionId, tables: tables)) break;
+    taken++;
+    log?.banners.add((
+      chapter: ref.read(reachedChapterProvider),
+      factionId: suitor.factionId,
+      gift: suitor.gift.id,
+    ));
+  }
+  return taken;
+}
+
+/// Seats the recruited companions not yet in the party, up to the camp's
+/// party capacity (partyCapacityFor), as the Camp's party page would.
+Future<void> seatAutoplayParty(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final records = houses ??
+      await ref.read(gameDbRepositoryProvider(housesSchema)).loadRecords();
+  final companions =
+      await ref.read(gameDbRepositoryProvider(companionsSchema)).loadRecords();
+  for (final ally in ref.read(playerSessionProvider).recruitedAllies) {
+    final s = ref.read(playerSessionProvider);
+    final capacity = partyCapacityFor(s.builtHouseIds, records);
+    if (s.activeAllyIds.length >= capacity) break;
+    if (s.activeAllyIds.contains(ally.companionId)) continue;
+    final companion = companions[ally.companionId] as Map<String, dynamic>?;
+    await notifier.setAllyActive(ally.companionId, true,
+        partyCapacity: capacity,
+        requiredHouseId: companion?['requiredHouseId']?.toString(),
+        companions: companions);
+  }
 }
 
 /// Builds the camp's harbour when the walk has founded the camp without it
@@ -835,12 +951,12 @@ Future<void> _crossLand(
   final chapter = ref.read(reachedChapterProvider);
   // Who holds the road, and how they take the party (wave 16).
   final politics = ref.read(playerSessionProvider).politics;
-  final ruler = landRouteRuler(route, await loadGeography(ref), politics);
-  final rulers = rulerPool(events, ruler,
-      rulerBandFor(politics.tierOf(ruler, await loadClanData(ref))));
+  final road = crossingRuler(
+      route, await loadGeography(ref), politics, await loadClanData(ref));
+  final rulers = rulerPool(events, road.clanId, road.band);
   for (var i = 0; i < _crossingTries; i++) {
     final session = ref.read(playerSessionProvider);
-    final result = resolveCrossing(route, events,
+    final result = resolveCrossing(road.route, events,
         health: session.currentHealth,
         maxHealth: session.maxHealth,
         gold: session.gold,
@@ -875,6 +991,10 @@ Future<AutoplayResult> _playTowardChapter(
   required int maxCombatRetries,
   required bool forceWins,
   required Random random,
+  String? raceId,
+  String? professionId,
+  int? runSeed,
+  AutoplayLog? log,
 }) async {
   var forcedWins = 0;
   final sessionNotifier = ref.read(playerSessionProvider.notifier);
@@ -975,9 +1095,15 @@ Future<AutoplayResult> _playTowardChapter(
           forcedWins: forcedWins);
     }
 
+    log?.choices.add((nodeId: currentNodeId, text: choice.text));
     if (choice.opensCharacterCreation) {
       await _maybeCreateCharacter(ref,
-          races: races, professions: professions, random: random);
+          races: races,
+          professions: professions,
+          random: random,
+          raceId: raceId,
+          professionId: professionId,
+          runSeed: runSeed);
       playNotifier.choose(choice.nextId);
       stepsApplied += 1;
       continue;
@@ -996,6 +1122,7 @@ Future<AutoplayResult> _playTowardChapter(
       final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
         var won = false;
+        var forced = false;
         for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
           won = await _simulateFight(
             ref: ref,
@@ -1019,7 +1146,14 @@ Future<AutoplayResult> _playTowardChapter(
             forceWin: true,
           );
           forcedWins += 1;
+          forced = true;
         }
+        log?.fights.add((
+          enemyId: firstEnemyId!,
+          name: enemy['enemyName']?.toString() ?? firstEnemyId,
+          won: won,
+          forced: forced,
+        ));
         if (!won) {
           return AutoplayResult(
             status: AutoplayStatus.stuckInCombat,

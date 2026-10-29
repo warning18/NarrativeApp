@@ -8,6 +8,401 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.646.0+682]
+
+- **Cleanup: mechanical lint fixes, and the lints stay on**
+  `unnecessary_breaks`, `unnecessary_parenthesis`, `unnecessary_lambdas`,
+  `unnecessary_null_checks`, `prefer_final_locals`, `prefer_const_declarations`
+  and `prefer_const_constructors` fixed by the analyzer (277 sites in 118
+  files) and enabled in `analysis_options.yaml`; the three generated chart
+  tables are exempt from the last. No behaviour change.
+
+## [1.645.0+681]
+
+- **Core: the data for the clan power sign (option A, a ranking with
+  arrows).**
+  - Each chapter's turn keeps every clan's power as it begins
+    (`PoliticsState.powerAtTurn`, saved).
+  - `clanPowerRanking` / `clanPowerRankingProvider`: the ten clans with
+    power, strongest first, each with its rank and power now and at the
+    last turn (`rankChange`, `powerChange` for the arrow). Equal powers
+    share a rank. No number changes; UX draws the sign.
+  - Tests: `clan_power_test` (the ranking).
+- **Core: who holds a region, for the world map's Clans layer** (the
+  user's feedback: tint the whole region, not a halo around a clan's
+  mark).
+  - `regionHolders` / `regionHoldersProvider`: each region (the Salt
+    Coast, the Grey Fen…) and the clans holding its places, strongest
+    first, each with its share against the strongest (two at 1: contested).
+  - `chartZoneHolders(chart, …)`: the same for each of a chart's lands, in
+    `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
+  - Tests: `region_holders_test`.
+
+## [1.644.0+680]
+
+- **Cleanup: the quests' unread `flagToAdd` is removed**
+  Taking a quest sets its `<id>_accepted` flag in code (v1.639), so the
+  field (51 records, and the unused `has_void_banner` value) and its name in
+  the editor label go; the two story tests now read the code path. No
+  behaviour change.
+
+## [1.643.0+679]
+
+- **The realm, at the end: who holds each town, on the world chart**
+  A button on the story's ending opens a screen with the real world chart
+  (the one the Journey's World view draws), cropped to where the towns are:
+  every town a dot in its holder's colour, the clans' roads over it (a land
+  route whose two ends one clan holds, in its colour; the others grey and
+  dashed) and the seven big towns numbered. The words are under it, not on
+  it: a chip for each clan with how many towns it holds, then a line for each
+  big town (Narrative's epilogue line where there is one, else the holder and
+  how: held since the start, taken by force, won by influence) and, when some
+  of its districts are held by others, a tag ("3 districts differ") that opens
+  their list. `epilogueHoldings` takes the list of towns (`epilogueBigTowns`
+  for the seven). Real screens at 412 and 320 px in `docs/ux-shots/`.
+
+## [1.642.0+678]
+
+- **Narrative: the signal-lantern alley is back, as a Saltmouth street scene.**
+  The Weaver's Alley (`270`, parked in v1.620) returns in the Lantern Alleys
+  as `2015_signaller`, in the percussive style, English and French.
+  - Where: after the Arcane Bazaar has been visited, the Saltmouth hub offers
+    "Look into the alley where a signal-lantern still burns". A dead
+    Inquisition signaller, his lantern still alight in razor wire; three ways
+    out, all back to the hub: cut it free (+2 alignment), strip the bearer
+    (+15 gold, -2 alignment), or leave them both. The three origin callbacks
+    (the sparrow) are kept. No lantern flags are needed or set.
+  - `270` stays parked and untouched, so the Alster tests and the opening are
+    as they were. `q_retrieve_banner` is unaffected.
+  - Touches Core's files in a few lines: the scene's building in
+    `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
+    scene count in `test/world_map_test.dart` (69 to 70).
+## [1.641.0+677]
+
+- **Dice: every die has its own art**
+  Thirty-two dice now carry pieces of their own over their skin, a handful of
+  paths each and no image files (`lib/widgets/die_art.dart`): the Void die's
+  stars and swirl, the Berserker's spikes and blood, the Flame die's tongues,
+  the Huntsman's arrow, the Tearglass d12's crown, tear and halo, the Gambler's
+  suits and pips, a paw print for Vica's hound and tally marks on the built
+  d12. The art turns and squeezes with the die, and shows in the loadout's ring,
+  its rail and the fight's dice row (the fight's d6 stays the cube, without it).
+  Only the plain first die has none. Pictures in `docs/ux-shots/dice-built/`.
+
+## [1.640.0+676]
+
+- **Dice: a shape for every size, and the die in the ring rolls**
+  A d4, d8, d10, d12, d20 and the coin are drawn as flat-shaded polyhedra in
+  the die's own skin (stone, edge, mark, glow), with the number or skill icon
+  on the front facet. They show in the fight's row of party dice, the loadout's
+  rail and, large, in the middle of the loadout's ring of face slots, which
+  replaces the draggable cube: tapping a face slot rolls that die to the face
+  (a tap on the die skips the roll). Bigger dice roll longer: a coin 0.6 s, a d4
+  0.7 s, a d12 1.3 s, a d20 1.5 s (the check's d20 was 1 s). A die with a
+  `clan` field wears that clan's banner (the field is Core's; no die has one
+  yet). `InteractiveDie` and its drag tests are gone.
+
+## [1.639.0+675]
+
+- **Core: taking a quest marks it taken, so the Spire Stair opens on the
+  Ashen Oath.**
+  - Taking a quest (from its offer or in a scene) now sets its
+    `<quest>_accepted` flag. Before, nothing set it (quests.json's
+    `flagToAdd` is never read), so a district locked "until the quest is
+    taken" stayed shut until the quest was done.
+  - A save whose quest was already taken gets the flag on load.
+  - Tests: `quest_tracking_test` (the accepted flag).
+
+## [1.634.0+670]
+
+- **Core: "Play to chapter" (the simulator screen) takes options, leaves
+  the character as a player would, and reports what it did.**
+  - **Options:**
+    - start a new game;
+    - its race and profession (random by default);
+    - a seed (random by default; the same seed now gives the same run,
+      the character's own seed included);
+    - the player's style (the strategy chips, as before).
+  - **The end of the walk:**
+    - every clan offer (banner) due is taken, kept to the main clan and
+      its allies, as the competent simulator does;
+    - then the gear is equipped, the die is set, the harbour is built and
+      the recruited companions are seated, up to the party's room.
+    - Offers still wait while the clans are not open yet (the game's own
+      rule).
+  - **A summary pop-in with six tabs:**
+    - State: level, gold, chapter, scene, standing with each clan;
+    - Choices: in order, with their scene ids;
+    - Items: equipped, came into the pack, left it;
+    - Banners: the one carried, those taken, any still waiting;
+    - Fights: won, lost, pushed through;
+    - Companions: seated, recruited.
+- **Core: the first banner comes when the clans are met** (the user's
+  rule).
+  - On the feature ladder, level-ups, bosses and chapter turns bring no
+    clan offer before the clans are met.
+  - Meeting them brings exactly one, the first banner: the Crow at the
+    Wharf (`feat_clans`), or the story past chapter 2.
+  - After that, offers come as before.
+  - A save that already piled offers up keeps them, and gets no extra.
+  - Games off the ladder are unchanged.
+  - The simulator follows the same rule.
+  - Tests: `autoplay_engine_test` (the picks, no banner left, the party
+    seated, the log) and `autoplay_summary_test`;
+    `offers_session_test` (the first banner).
+
+## [1.633.0+669]
+
+- **Cleanup: three unread quest and NPC fields are removed**
+  `actionType` and `locationID` (quests.json) and `stancePlayer`
+  (npcs.json), which no code read, and their names in the editor's schema
+  labels. No behaviour change.
+
+## [1.632.0+668]
+
+- **Cleanup: unused Core symbols and their tests are removed**
+  `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`,
+  `QuestReadiness` (and its string), `learnSpell`, `startingTotals`, the three
+  `SpellSpec` target getters, and the stale `briarReflect`, `longVigilMend`
+  and `censerBurn`; the tests that used them now check the live code. No
+  behaviour change.
+
+## [1.631.0+667]
+
+- **Narrative: chapter 6 and everything after it in the percussive style**
+  (chapters 6 and 7, the throne endings, the loyalty and names scenes, the
+  prologue and the chapter 1 flight scenes still on the old text).
+  - 235 scenes and their 752 flag callbacks are rewritten in English and
+    French. The clues, names, **bold** phrases, numbers and the words later
+    scenes and tests pick up are kept; no choice, label, flag, reward,
+    number or scene link changed. Scenes were kept at their natural weight:
+    most of these were already short.
+  - Scene text: 26,528 to 24,477 words in English (-8%), 26,985 to 25,352 in
+    French (-6%). Callbacks: 22,778 to 20,164 words (-11%) in English,
+    22,900 to 20,833 (-9%) in French; every English callback is at or under
+    150 characters except the throne-ending payoffs.
+  - French read line by line: "Cela n'avait rien empêché" in `6010_thread`, a
+    clearer sentence about the frost in `6002_camp`, "Garde-Mèche" for one
+    person in `names_throne` and `price_kindly`, a clearer "marked by the
+    rift" in the four journey endings (`7005` and its variants), and the
+    Candlehold gate line in the `7400` callbacks.
+## [1.630.0+666]
+
+- **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
+  choice: the Penitents "could shrink but not disappear").
+  - The district attacks (v1.617) skipped no seat, so the Penitents could
+    still lose the Wall of Names to a siege and fall.
+  - Now no rival attacks a guarded seat (the Penitents', as Candlehold).
+    A siege of one saved before this update breaks, and nothing is taken.
+  - The Penitents can still lose Last Lantern Street.
+  - Tests: `district_attacks_test`. Through chapters 2 to 8, every attack
+    is rolled and every siege lost: the Penitents keep the Wall and never
+    fall.
+
+## [1.629.0+665]
+
+- **Cleanup: 120 file-only names in lib/combat are private**
+  Classes, functions, constants and enums of `lib/combat` that only their
+  own file uses are now private, so the analyzer watches them (renames inside
+  one file, 327 lines). No behaviour change.
+
+## [1.628.0+664]
+
+- **Cleanup: 68 UI strings that nothing reads are removed**
+  Keys of `app_strings.dart` that no `tr()` call, built key name or test
+  used (202 lines). No behaviour change.
+
+## [1.627.0+663]
+
+- **Narrative: chapters 4 and 5 in the percussive style**, and four small
+  French fixes in chapter 1.
+  - All 75 scenes of the Hollow Court (chapter 4: 4, chapter 5: 71) and their
+    65 flag callbacks are rewritten in English and French: the clues, names,
+    **bold** phrases, numbers and the words later scenes and tests pick up
+    are kept; no choice, label, flag, reward, number or scene link changed.
+  - Scene text: 7,953 to 6,954 words in English (-13%), 8,178 to 7,330 in
+    French (-10%). Callbacks: 1,819 to 1,507 words (-17%) in English, 1,804
+    to 1,510 (-16%) in French.
+  - French read line by line: a repeated "tiède / tiédie" in `106`, a stray
+    colon in `1002`, and "huttes" for "cases" in `1150_vica` and its `1200`
+    callback; "trois mots" before the Seal's name in `5004` and `5004b`
+    (the English says two) is now "quelques mots"; "parenté" in
+    `5100_anvil_deaf_vote`.
+
+## [1.626.0+662]
+
+- **Narrative: chapters 2 and 3 in the percussive style** (the pilot
+  approved for the whole game, `docs/proposals/percussive-style.md`).
+  - All 136 scenes of Saltmouth and the Spire (chapter 2: 70, chapter 3: 66)
+    and 85 flag callbacks are rewritten in English and French: sentences
+    break from 20 words to 13 on average, one beat per paragraph. The clues,
+    names, **bold** phrases, numbers and the words later scenes and tests pick
+    up are kept; no choice, label, flag, reward, number or scene link changed.
+  - Scene text: 13,921 to 12,409 words in English (-11%), 14,332 to 12,933
+    in French (-10%). Callbacks: 2,337 to 1,937 words (-17%) in English,
+    2,427 to 2,059 (-15%) in French. The cut is lighter than chapter 1's
+    (-19%) because most of these scenes were already short; the change is in
+    the rhythm more than the length.
+  - Tests: none changed; two tests that pin phrases (`story_direction_test`)
+    keep their phrases.
+## [1.624.0+660]
+
+- **Cleanup: 6 unused symbols removed from UX's files**
+  `elementColor`, `adventureNodeCategoryIcon`, `campRouteLabel`,
+  `itemRarityLabel`, `RoomArtPainter` and a hull shade that nothing used
+  (162 lines). No behaviour change.
+
+## [1.623.0+659]
+
+- **Cleanup: 26 unused symbols removed from Core's files**
+  Dead helpers, constants and providers in `lib/combat`, `lib/data`,
+  `lib/providers` and `lib/gamedata` that nothing called (136 lines). No
+  behaviour change.
+
+## [1.622.0+658]
+
+- **Narrative: chapter 1 in the percussive style** (the user's pilot, `docs/proposals/percussive-style.md`).
+  - All 52 chapter 1 scenes and 127 of their 139 flag callbacks are rewritten
+    in English and French: short sentences, one beat per paragraph, one dry
+    line per scene. The clues, names, **bold** phrases and every word later
+    scenes pick up are kept; no choice, label, flag, reward, number or scene
+    link changed.
+  - Scene text: 6,833 to 5,501 words in English (-19%), 6,893 to 5,782 in
+    French (-16%). Callbacks: 3,435 to 2,920 words (-15%) in English, 3,374 to
+    2,986 (-11%) in French. Sentences average 14 words (21 before).
+  - The failed-boarding pages still carry the Lark's lift word for word; the
+    parked Weaver's Alley (`270`) is rewritten too, for when it returns.
+  - Tests: none needed a change; the French lint and every phrase check hold.
+
+## [1.621.0+657]
+
+- **Narrative: the siege scene's words, and a line from each companion.**
+  - The siege scene reads "Siege of {district}." / « Siège de {district}. »
+    with a short body and a "Defend {district}" choice; "Join {attacker}" and
+    "Stand aside" keep their words. The text has no gender or number
+    agreement to get wrong for a clan or a district.
+  - `districtAttacked`: two short lines for each of the nine companions
+    (Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin, Malrik, Vica), EN and FR;
+    not fired yet.
+  - The Spire Stair's locked line (it opens once the Ashen Oath is taken at the
+    Quarter Gate) is reworded, EN and FR. Every route to the Stair passes the
+    Gate hub, where "Take up the Ashen Oath" is always offered.
+  - Touches another session's area: `lib/data/district_attacks.dart` and
+    `geography.json` (wording only; no choice, number or key changed).
+## [1.620.0+656]
+
+- **Narrative: the Weaver's Alley is out of chapter 1** (the opening run is shorter).
+  - The Lower Town (`250`) has one way on, the Stone Bridge; the family
+    heirloom quest still starts there (`unlockQuestId` and `feat_quests` kept).
+    The toll scenes `260` and `261` are unchanged.
+  - Scene `270` (the signal-lantern and its dead bearer) stays in the story
+    file, parked and unreachable, with a note on where it lands later
+    (`docs/proposals/weavers-alley-parked.md`: a Lantern Alleys street scene
+    in Saltmouth).
+  - The lantern thread went with it: `820` and `891` lose "Raise the lantern",
+    `823` and `891` their callbacks, `300` the `companion_hound` and
+    `hound_left` callbacks. No flag is left set and never read.
+  - Numbers: the opening run loses 270's "Strip the bearer's gear" (+15 gold),
+    "Cut it free" (+2 alignment) and 891's "Raise the lantern" (+10 gold)
+    options; no value changed.
+  - Tests: `story_graph_integrity_test` allows the parked scene;
+    `chapter_one_test`, `scene_lock_test`, the two journey tests and
+    `first_journey_test` follow the one-way route (the District-view
+    walk-to-pin test that used the alley is dropped: `district_walk_test`
+    covers the walk).
+## [1.619.0+655]
+
+- **UX: the Skills tab's tree is a sky of constellations** (the user's pick,
+  idea 1 of `docs/proposals/skills-ideas.md`). Only the Tree tab's body
+  changed; the info sheet, Raise tier, Merge and Craft, My skills, Spells, the
+  essence and offer pills are as they were.
+  - **Each class branch is a constellation** on one night sky: a star for each
+    skill and a crown for Mastery. A star lights gold once the skill is
+    learned; the lines light up to the last learned star; the **ringed star is
+    the next one, bright when its clan can offer it now** (the standing reaches
+    its depth). Each constellation carries its name, its count and its clan
+    with your standing.
+  - **The card under the sky** reads the focused constellation's next skill:
+    its name, what it does, and who offers it ("Compact can offer it now" or
+    "Waits for “Trusted” with Compact (you are: Friendly)"). A tap on a
+    constellation's name changes the focus; a tap on a star opens that skill's
+    sheet, the crown opens the mastery's, the card opens the next skill's.
+  - **A class with five branches** (the mage, the cleric) puts the fifth across
+    the last row; the cells are lower at 320 px. French strings sit beside the
+    skills' strings (`star_*`).
+  - The heritage's skills and the reputation's stay as rings under the sky;
+    the old branch columns are gone.
+- Tests: `star_chart_test.dart` (the layout, the standing read, a tap opens)
+  and `star_chart_five_test.dart` (five constellations at 320 px);
+  `skill_tree_test.dart` follows the sky (the clan is read on the
+  constellation, not under each skill). Pictures:
+  `docs/ux-shots/star-chart/`.
+## [1.618.0+654]
+
+- **Core: the big towns, influence that pays off, clan roads, the
+  epilogue's holdings** (wave 18, step 2, items 2 to 5).
+  - **The Ashen Quarter and the Black Reliquary** take Narrative's holders.
+    - The Quarter Gate goes to the Grey Vigil, the Ash-Market to the Cinder
+      Compact and the Wall of Names to the Ashen Penitents. The Compact
+      leads the Quarter.
+    - In the Reliquary, the Dominion, the Compact, the Penitents and the
+      Vigil hold one district each.
+    - The Dead Heart is held by no one and can never be taken (`unheld`).
+  - **The Spire Stair** opens once the Ashen Oath is taken. Narrative's
+    first choice, the Reckoning Wall, can be skipped by a won argument,
+    which would shut the Stair and the main quest inside it for good.
+  - **The Penitents' seat is guarded**, as Candlehold is. With land for the
+    first time, they would otherwise fall to the Dominion by chapter 6 in
+    every run.
+  - **Influence counts in every town**, not only Saltmouth. A clan holding
+    3 of the Quarter's or the Reliquary's districts takes the town.
+  - **In a war for a rival's seat** (chapters 6 and 7), each district held
+    by the party's main clan or an ally takes 1 off the lead it needs, up
+    to 5.
+  - **The Host also musters the clans holding the most districts**, unless
+    Hostile or worse.
+  - **Clan roads:** a land route whose two ends one clan holds is its road.
+    - Its clan comes one day in two (one in three on other roads).
+    - It is friendly from Friend and hard from Unfriendly down.
+    - A route that never meets its ruler still never does.
+  - **The epilogue:** `epilogueHoldings` gives, for each big town, who holds
+    it and its districts, and how: war, influence, its seat, or no one.
+    Narrative's lines come with it, in English and French. UX draws the
+    map.
+  - **The clan log** keeps the place and the cause of each change of
+    hands.
+  - **Tuning:** the claimant Tallis's max health goes from 88 to 96.
+    Narrative's holders moved his win rate to 54.1% of 292 fights, against
+    a band of 40 ± 12. Now 47.9% (47.0% with #609). With #609 the White
+    Admiral is won 53.0% (band 45 ± 12).
+  - Tests: `wave18_step2_test` (new). The clan power, crisis, town ruler
+    and district standing tests follow the new holders. Where a test is
+    about other clans, the Dominion's new war on the Penitents is kept out.
+
+## [1.617.0+653]
+
+- **Core: rival clans attack districts** (wave 18, step 2, item 1).
+  - At each chapter's turn, a main clan with 10 power or more may attack a
+    district held by a clan it is at odds with: 35% a chapter for a blood
+    feud, 20% for a war, 10% if hostile. Tense or warmer, never. At most one
+    attack a town, none while the town is under siege.
+  - A siege lasts two days and is told as news ("{clan} marches on
+    {district}. {holder} has two days.", Narrative's lines).
+  - In the town (a road at rest into or out of it), the party meets it:
+    hold the district for its holder (a fight with the attacker's hunter),
+    join the attackers (the district is theirs), or stand aside.
+  - Otherwise, when it runs out, the siege is settled on the two clans'
+    power and influence (15% to 85%): taken, with war's spoils and losses,
+    or held, each told as news.
+  - Flags for the story: `attack_<district>`, `attack_<district>_by_<clan>`
+    while it lasts, then `attack_<district>_defended`, `_joined` or
+    `_ignored`.
+  - The simulator plays them: it defends its own clan's and allies'
+    districts, and the clan table counts the sieges.
+  - Tests: `district_attacks_test`. `boss_balance_test`: each claimant must
+    now be met 30 times (was 40), since attacks move which claim a run
+    backs; the three together still need 300.
+
 ## [1.616.0+652]
 
 - **Core: the ways into a locked district are greyed** (wave 18, step 2).
@@ -25,8 +420,6 @@ isn't reconstructable from git history alone.
     district and line, and the provider read by both screens).
     `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
     since that test is about the walk.
-
-
 
 ## [1.615.0+651]
 
@@ -91,7 +484,6 @@ isn't reconstructable from git history alone.
   - Tests: `boss_balance_test` measures the full world, and its professions'
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
-
 
 ## [1.612.0+648]
 
@@ -698,7 +1090,6 @@ Two sheets and dialogs, in one release: the place sheet's height and the clan po
 
 ### Tests
 - `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
-
 
 ## [1.552.0+588]
 
@@ -3060,7 +3451,6 @@ Twelve story achievements.
   (an oath, a standing, an intrigue's end), so taking the Throne unlocks
   its achievement at once. "Hunted" counts the six coast clans, not the
   tribes. `test/achievements_story_test.dart` covers each.
-
 
 ## [1.278.0+314]
 

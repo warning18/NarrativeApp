@@ -51,6 +51,7 @@ class StoryPolitics {
     this.power = const {},
     this.control = const {},
     this.settleCrisis = '',
+    this.settleSiege = '',
     this.bendKnee = '',
     this.stayFallen = '',
     this.breakNemesis = '',
@@ -111,6 +112,11 @@ class StoryPolitics {
   /// 'refused'; '' for none.
   final String settleCrisis;
 
+  /// A district's siege settled by the party (district_attacks.dart): the
+  /// district id (held or joined: the siege lifted), or `<district>:aside`
+  /// (stood aside: it runs its course); '' for none.
+  final String settleSiege;
+
   /// Your fallen clan left: sworn to this clan, the winner, instead.
   final String bendKnee;
 
@@ -142,6 +148,7 @@ class StoryPolitics {
     'power',
     'control',
     'settleCrisis',
+    'settleSiege',
     'bendKnee',
     'stayFallen',
     'breakNemesis',
@@ -170,6 +177,7 @@ class StoryPolitics {
       power.isEmpty &&
       control.isEmpty &&
       settleCrisis.isEmpty &&
+      settleSiege.isEmpty &&
       bendKnee.isEmpty &&
       stayFallen.isEmpty &&
       breakNemesis.isEmpty;
@@ -263,6 +271,7 @@ class StoryPolitics {
             if (_text(e.value).isNotEmpty) e.key.toString(): _text(e.value),
       },
       settleCrisis: _text(json['settleCrisis']),
+      settleSiege: _text(json['settleSiege']),
       bendKnee: _text(json['bendKnee']),
       stayFallen: _text(json['stayFallen']),
       breakNemesis: _text(json['breakNemesis']),
@@ -298,6 +307,7 @@ class StoryPolitics {
         if (power.isNotEmpty) 'power': Map<String, int>.of(power),
         if (control.isNotEmpty) 'control': Map<String, String>.of(control),
         if (settleCrisis.isNotEmpty) 'settleCrisis': settleCrisis,
+        if (settleSiege.isNotEmpty) 'settleSiege': settleSiege,
         if (bendKnee.isNotEmpty) 'bendKnee': bendKnee,
         if (stayFallen.isNotEmpty) 'stayFallen': stayFallen,
         if (breakNemesis.isNotEmpty) 'breakNemesis': breakNemesis,

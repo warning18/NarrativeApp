@@ -182,9 +182,8 @@ void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       // A chimney on the roof.
       rect(p.shade, x0 + w * 0.74, box.top - 3, 4, 8);
       rect(roofColour, x0 + w * 0.74 - 1, box.top - 4, 6, 1);
-      break;
     case FacadeStyle.warehouse:
-      final roofH = 6.0;
+      const roofH = 6.0;
       final wallTop = box.top + roofH;
       rect(p.wall, x0, wallTop, w, base - wallTop);
       for (var y = wallTop + 3; y < base; y += 4) {
@@ -194,9 +193,8 @@ void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
         final inset = (roofH - 1 - i) * 1.4;
         rect(roofColour, x0 - 1 + inset, box.top + i, w + 2 - inset * 2, 1);
       }
-      break;
     case FacadeStyle.temple:
-      final roofH = 12.0;
+      const roofH = 12.0;
       final wallTop = box.top + roofH;
       rect(p.wall, x0, wallTop, w, base - wallTop);
       rect(p.shade, x0, wallTop, 3, base - wallTop);
@@ -208,7 +206,6 @@ void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       // A cross-gable's finial and a bell-opening under the ridge.
       rect(p.timber, x0 + w / 2 - 0.5, box.top - 5, 1, 6);
       rect(p.timber, x0 + w / 2 - 2, box.top - 3, 5, 1);
-      break;
     case FacadeStyle.fort:
       final wallTop = box.top + 4;
       rect(p.wall, x0, wallTop, w, base - wallTop);
@@ -222,7 +219,6 @@ void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       }
       rect(p.shade, x0, wallTop, 3, base - wallTop);
       rect(p.shade, x0 + w - 3, wallTop, 3, base - wallTop);
-      break;
   }
 
   _door(canvas, u, style, box, p);
@@ -353,7 +349,6 @@ void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       rect(const Color(0xFFB8893A), bx + 2, box.base - 18, 7, 5);
       rect(p.timber, bx + 2, box.base - 18, 7, 1);
       rect(p.door, bx + 4, box.base - 16, 3, 2);
-      break;
     case FacadeStyle.shop:
       // An awning in two colours over the shopfront.
       final y = box.base - 17;
@@ -362,7 +357,6 @@ void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
             box.left + i * 4, y, 4, 4);
       }
       rect(const Color(0x33000000), box.left, y + 4, box.width, 1);
-      break;
     case FacadeStyle.warehouse:
       // A hoist beam out of the loft, and crates by the door.
       final hx = box.left + box.width * 0.78;
@@ -374,20 +368,17 @@ void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       rect(const Color(0xFF6B4D30), box.left + 6, box.base - 10, 6, 4);
       rect(const Color(0xFF5E4630), box.left + box.width - 11, box.base - 7, 6,
           7);
-      break;
     case FacadeStyle.temple:
       // The rose window above the door.
       rect(p.glass, box.doorX - 3, box.base - 25, 6, 6);
       rect(p.timber, box.doorX - 4, box.base - 26, 8, 1);
       rect(p.timber, box.doorX - 4, box.base - 19, 8, 1);
       rect(p.timber, box.doorX - 0.5, box.base - 25, 1, 6);
-      break;
     case FacadeStyle.house:
       // A flower box under the upper windows.
       rect(p.timber, box.left + box.width * 0.2 - 1, box.base - 18, 8, 2);
       rect(const Color(0xFF5E8A4B), box.left + box.width * 0.2, box.base - 19,
           6, 1);
-      break;
     case FacadeStyle.fort:
       break;
   }

@@ -437,7 +437,7 @@ class RoomPlanPainter extends CustomPainter {
         }
       case FurnitureKind.rock:
         final path = Path();
-        final n = 7;
+        const n = 7;
         for (var i = 0; i < n; i++) {
           final a = i * 2 * math.pi / n;
           final rr = Offset(

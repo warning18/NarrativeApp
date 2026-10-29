@@ -266,12 +266,12 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     return Stack(fit: StackFit.expand, children: [
       const CustomPaint(painter: IntroCity('smoke')),
       ColoredBox(color: Colors.black.withValues(alpha: 0.72 - 0.4 * p)),
-      Align(
-        alignment: const Alignment(0, -0.1),
+      const Align(
+        alignment: Alignment(0, -0.1),
         child: SizedBox(
           height: 300,
           child: ColorFiltered(
-            colorFilter: const ColorFilter.matrix(<double>[
+            colorFilter: ColorFilter.matrix(<double>[
               0.7, 0.05, 0.02, 0, 0, //
               0.05, 0.55, 0.02, 0, 0,
               0.04, 0.04, 0.5, 0, 0,
@@ -295,12 +295,12 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
         Opacity(
           opacity: banner,
           child: Stack(fit: StackFit.expand, children: [
-            Align(
-              alignment: const Alignment(0, -0.1),
+            const Align(
+              alignment: Alignment(0, -0.1),
               child: SizedBox(
                 height: 300,
                 child: ColorFiltered(
-                  colorFilter: const ColorFilter.matrix(<double>[
+                  colorFilter: ColorFilter.matrix(<double>[
                     0.5, 0.05, 0.02, 0, 0, //
                     0.05, 0.35, 0.02, 0, 0,
                     0.04, 0.04, 0.3, 0, 0,

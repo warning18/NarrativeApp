@@ -289,7 +289,11 @@ void main() {
           '$boss (chapter $chapter) is won about ${(target * 100).round()}% '
           'of the time', () {
         final (fought, lost) = tally[boss] ?? (0, 0);
-        expect(fought, greaterThanOrEqualTo(40), reason: 'too few met');
+        // A claimant is met only in the runs that backed its claim, and
+        // the clans' attacks on districts (v1.617) move which claim that
+        // is: 30 each, the three held together below.
+        final least = boss.startsWith('claimant_') ? 30 : 40;
+        expect(fought, greaterThanOrEqualTo(least), reason: 'too few met');
         final rate = (fought - lost) / fought;
         expect(rate, closeTo(target, _band(target, fought)),
             reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');

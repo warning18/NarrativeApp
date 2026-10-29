@@ -186,8 +186,8 @@ bool partyAheadOnHealth({
 // In a place a clan holds (clan_power.dart's holderOf), from
 // [reinforceStartRound] its people join the fight: on the party's side when
 // the character stands Friend or better with the holder (each foe takes
-// [allyShare] of its max health a round), against it when the holder hunts
-// the character or is their nemesis (the party takes [foeShare] of its max
+// [_allyShare] of its max health a round), against it when the holder hunts
+// the character or is their nemesis (the party takes [_foeShare] of its max
 // health a round). On top of the fight's context rule; never in a boss's
 // fight, and never the finishing blow (the execute is). Measured in
 // docs/simulation/reinforcements.md.
@@ -196,8 +196,8 @@ bool partyAheadOnHealth({
 enum Reinforcement { none, allies, foes }
 
 const int reinforceStartRound = 8;
-const double allyShare = 0.05;
-const double foeShare = 0.05;
+const double _allyShare = 0.05;
+const double _foeShare = 0.05;
 
 /// Whether reinforcements come in [round] of a fight ([bossFight]: never).
 bool reinforcementsCome(int round, {bool bossFight = false}) =>
@@ -207,12 +207,12 @@ bool reinforcementsCome(int round, {bool bossFight = false}) =>
 /// before they come).
 int allyStrike(int enemyMax, int round, {bool bossFight = false}) =>
     reinforcementsCome(round, bossFight: bossFight)
-        ? max(1, (enemyMax * allyShare).round())
+        ? max(1, (enemyMax * _allyShare).round())
         : 0;
 
 /// What the holder's people strike a party member of [partyMax] health
 /// for in [round] (0 before they come).
 int foeStrike(int partyMax, int round, {bool bossFight = false}) =>
     reinforcementsCome(round, bossFight: bossFight)
-        ? max(1, (partyMax * foeShare).round())
+        ? max(1, (partyMax * _foeShare).round())
         : 0;

@@ -100,7 +100,7 @@ void main() {
     expect(find.text('+0 Gold'), findsOneWidget);
     await tester.pump(const Duration(milliseconds: 350));
     final mid = find.byKey(const Key('fight_spoils_gold'));
-    final midText = (tester.widget<Text>(mid).data ?? '');
+    final midText = tester.widget<Text>(mid).data ?? '';
     expect(midText, isNot('+0 Gold'));
     expect(midText, isNot('+120 Gold'));
     await tester.pump(const Duration(seconds: 2));

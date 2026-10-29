@@ -139,16 +139,9 @@ StoryData _story() {
   });
 }
 
-// sim-tables-ok: specialisations: the frozen run's tuple and hash (S1 of
-// docs/qa/chapter1-core.md) were pinned on the world before these five; Core
-// replaces the pin with property checks, and the world goes with it.
-final _tables = simTables(without: {
-  'specialisations',
-  'spec_variants',
-  'skill_merges',
-  'detour_scenes',
-  'ports'
-});
+// The full world, as the simulator screen and the game play it (v1.617: the
+// frozen run that held it back is gone, S1 of docs/qa/chapter1-core.md).
+final _tables = simTables();
 
 List<SimRunSummary> _warriorRun(SimPolicy policy) => simulatePlaythroughs(
       _story(),
@@ -342,34 +335,24 @@ void main() {
       stubborn = _warriorRun(SimPolicy.stubborn).single;
     });
 
-    test('naive is unchanged: the run before the policy existed', () {
-      // v1.562's numbers for this seed, before sim_policy.dart; re-pinned at
-      // v1.577 when three scenes became two pages each (the run's dice move),
-      // at v1.597 (the difficulty pass), at v1.601 (Vica, with her table) and at
-      // v1.610 (the failed boardings carry the lift: the hash only) and at
-      // v1.613 (the bosses in the full world: Aurel Vane is no longer a wall)
-      // at v1.614 (the specialisations pass) and at v1.615 (the element
-      // dice, weakness ×3).
-      expect((
-        naive.raceId,
-        naive.finalLevel,
-        naive.finalGold,
-        naive.fightsWon,
-        naive.fightsLost,
-        naive.offers,
-        naive.steps,
-        naive.furthestChapter,
-      ), (
-        'dwarf',
-        16,
-        2412,
-        27,
-        62,
-        32,
-        269,
-        8
-      ));
-      expect(_stableHash(naive.choicesTaken), _naiveChoicesHash);
+    // S1 (v1.617): the naive run is checked for what it must do, not
+    // pinned. A frozen tuple and hash broke on every new scene, story PRs
+    // included; what they guarded is kept: the run is whole, and the same
+    // seed plays the same run.
+    test('the naive run is whole: it reaches an ending, fights and grows', () {
+      expect(naive.endedHow, 'ending', reason: naive.ending);
+      expect(naive.furthestChapter, 8);
+      expect(naive.fightsWon, greaterThan(0));
+      expect(naive.finalLevel, greaterThan(1));
+      expect(naive.choicesTaken, isNotEmpty);
+      expect(naive.offers, greaterThan(0));
+    });
+
+    test('the same seed plays the same run', () {
+      final again = _warriorRun(SimPolicy.naive).single;
+      expect(_stableHash(again.choicesTaken), _stableHash(naive.choicesTaken));
+      expect((again.finalLevel, again.finalGold, again.fightsWon, again.steps),
+          (naive.finalLevel, naive.finalGold, naive.fightsWon, naive.steps));
     });
 
     test('every offer is taken, its banners and reason recorded', () {
@@ -402,10 +385,3 @@ void main() {
     });
   });
 }
-
-/// _stableHash of the naive warrior's ways taken (seed 7), from v1.562;
-/// re-pinned at v1.577 (three scenes became two pages each) and at v1.578
-/// (the Wharf lists fewer entries) and at v1.597 (the difficulty pass:
-/// smaller health on both sides, a weakness ×2) and at v1.601 (Vica joins
-/// every hero).
-const int _naiveChoicesHash = 2643919658;

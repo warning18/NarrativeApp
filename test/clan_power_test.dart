@@ -34,8 +34,10 @@ void main() {
       Geography.parse(geography: _table('geography'), biomes: _table('biomes'));
   const mains = ['dominion', 'vigil', 'compact', 'mire', 'crows', 'penitents'];
 
-  PoliticsState powered(Map<String, int> power) =>
-      PoliticsState.empty.copyWith(power: power);
+  // The Penitents' war kept out (wave 18 step 2 gives them land): the
+  // scenarios below are about other clans.
+  PoliticsState powered(Map<String, int> power) => PoliticsState.empty.copyWith(
+      power: power, relationSteps: {relationKey('dominion', 'penitents'): 4});
 
   test('every main clan has power, a seat and claims the world knows', () {
     for (final id in mains) {
@@ -88,22 +90,26 @@ void main() {
     // The lantern hall keeps its own holder; a place under Candlehold with
     // none takes the city's.
     expect(holderOf('candlehold_lantern_hall', geography, moved), 'dominion');
-    // (Six with Saltmouth's Landward Gate, wave 18.)
-    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(6));
+    // (Seven with Saltmouth's Landward Gate and the Reliquary Quarter,
+    // wave 18.)
+    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(7));
   });
 
   test('a chapter: holdings bring power, neglect takes it, never too far', () {
-    final turn = territoryTurn(PoliticsState.empty.copyWith(helped: ['crows']),
+    // The Penitents' war kept out (wave 18 step 2 gives them land).
+    final calm = PoliticsState.empty
+        .copyWith(relationSteps: {relationKey('dominion', 'penitents'): 4});
+    final turn = territoryTurn(calm.copyWith(helped: ['crows']),
         data: data, geography: geography, chapter: 2);
-    // The Dominion: +6 for its six places, -5 neglected.
-    expect(powerOf(turn.state, 'dominion', data), 61);
+    // The Dominion: +7 for its seven places, -5 neglected.
+    expect(powerOf(turn.state, 'dominion', data), 62);
     // The Crows, helped: +3 for three places.
     expect(powerOf(turn.state, 'crows', data), 48);
-    // The Vigil, nothing held: -5.
-    expect(powerOf(turn.state, 'vigil', data), 25);
+    // The Vigil, two districts held: +2, -5.
+    expect(powerOf(turn.state, 'vigil', data), 27);
     expect(turn.state.helped, isEmpty);
     // Never more than neglectFloor under its start.
-    var state = PoliticsState.empty;
+    var state = calm;
     for (var chapter = 2; chapter <= 9; chapter++) {
       state = territoryTurn(state,
               data: data, geography: geography, chapter: chapter)
@@ -147,7 +153,7 @@ void main() {
   });
 
   test('a clan that loses its last place falls, and rises again', () {
-    var state = PoliticsState.empty;
+    var state = powered(const {});
     for (final place in placesOf('compact', geography, state)) {
       state = givePlace(state, place, 'dominion',
           cause: 'war', data: data, geography: geography, chapter: 4);
@@ -157,7 +163,10 @@ void main() {
     expect(powerOf(state, 'compact', data), 0);
     expect(state.news.last.eventId, 'fallen:compact');
     // Back at Rising, it reaches for its seat first; the Dominion, far
-    // stronger, keeps it, so it takes a free claim.
+    // stronger, keeps it, so it takes a free claim (the Ash-Market, left
+    // to no one: wave 18 step 2 gave it the Compact at the start).
+    state = state
+        .copyWith(control: {...state.control, 'ashen_quarter_ash_market': ''});
     state = addPower(state, 'compact', 30, data, helped: true);
     expect(claimsAllowed(state, 'compact', data), 1);
     final turn =
@@ -316,5 +325,45 @@ void main() {
       'runs with no change: ${summaries.where((r) => r.territory.isEmpty).length} of ${summaries.length}',
       'max changes in a run: ${summaries.map((r) => r.territory.length).fold(0, max)}',
     ].join('\n'));
+  });
+
+  // The clan power sign (UX, option A): each clan's rank now and as the
+  // last chapter's turn began, for its arrow.
+  test('the ranking: now, at the last turn, and saved', () {
+    final start = clanPowerRanking(PoliticsState.empty, data);
+    expect(start.map((r) => r.clanId), [
+      'dominion',
+      'crows',
+      'compact',
+      'vigil',
+      'mire',
+      'penitents',
+      'giants',
+      'oni',
+      'tidekin',
+      'kindly'
+    ]);
+    // Equal powers share a rank; before any turn nothing has moved.
+    expect([for (final r in start) r.rank], [1, 2, 3, 4, 5, 5, 7, 8, 8, 10]);
+    expect(start.every((r) => r.rankChange == 0 && r.powerChange == 0), isTrue);
+
+    final turned = territoryTurn(powered({'mire': 50}),
+            data: data, geography: geography, chapter: 2)
+        .state;
+    // The turn keeps the powers it began with.
+    expect(turned.powerAtTurn['mire'], 50);
+    expect(turned.powerAtTurn['dominion'], 60);
+    final moved = turned.copyWith(power: {...turned.power, 'mire': 70});
+    final mire =
+        clanPowerRanking(moved, data).firstWhere((r) => r.clanId == 'mire');
+    expect(mire.rank, 1);
+    expect(mire.previousRank, 2);
+    expect(mire.rankChange, 1);
+    expect(mire.powerChange, 20);
+
+    final loaded = PoliticsState.fromJson(
+        jsonDecode(jsonEncode(moved.toJson())) as Map<String, dynamic>);
+    expect(loaded.powerAtTurn, moved.powerAtTurn);
+    expect(PoliticsState.empty.toJson().containsKey('powerAtTurn'), isFalse);
   });
 }

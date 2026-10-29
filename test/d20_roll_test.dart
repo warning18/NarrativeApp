@@ -29,8 +29,8 @@ void main() {
     expect(landed, 0);
     await tester.pump(const Duration(milliseconds: 400));
     expect(landed, 0);
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump(d20RollDuration - const Duration(milliseconds: 600));
+    await tester.pump(const Duration(milliseconds: 250));
     expect(landed, 1);
     expect(find.text('7'), findsOneWidget);
 
@@ -38,7 +38,7 @@ void main() {
     await tester.pumpWidget(die(7, true, 2));
     await tester.pump(const Duration(milliseconds: 200));
     expect(landed, 1);
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(d20RollDuration);
     expect(landed, 2);
     await tester.pump(const Duration(seconds: 1));
   });
@@ -72,7 +72,7 @@ void main() {
                 find.ancestor(of: line, matching: find.byType(AnimatedOpacity)))
             .opacity,
         0);
-    await tester.pump(const Duration(milliseconds: 1100));
+    await tester.pump(d20RollDuration + const Duration(milliseconds: 100));
     expect(
         tester
             .widget<AnimatedOpacity>(

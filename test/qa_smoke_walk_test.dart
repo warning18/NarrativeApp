@@ -60,11 +60,11 @@ void main() {
           LandCrossingScreen(route: route, events: events, random: Random(5)),
           bare: true,
         ),
-        SmokeCase(
+        const SmokeCase(
           'walk_bubbles',
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const WalkBubble(speaker: 'Maren', line: 'Quiet. Hear that?'),
-            const SizedBox(height: 12),
+            WalkBubble(speaker: 'Maren', line: 'Quiet. Hear that?'),
+            SizedBox(height: 12),
             WalkBubble(
               speaker: 'Malrik the Long-Named of the Ember Sisters',
               line: 'The last time we crossed these dunes, half the water was '

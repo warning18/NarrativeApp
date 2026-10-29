@@ -160,12 +160,6 @@ class NarrationRecordings {
     return File('${(await _dir(voiceId, language)).path}/$id.mp3');
   }
 
-  /// Whether [text] ships inside the app in [voiceId].
-  Future<bool> isBundled(String text,
-          {required String voiceId, required AppLanguage language}) async =>
-      (await bundled()).contains(
-          bundledNarrationPath(clipIdFor(text, voiceId: voiceId), language));
-
   /// What plays [text] without recording it: this device's recording, or
   /// the one shipped inside the app; null when there is neither.
   Future<Source?> sourceFor(String text,

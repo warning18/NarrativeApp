@@ -73,6 +73,36 @@ const int warSpoils = 5;
 /// last place standing): a seat holds longer than its lands.
 const int seatLead = 25;
 
+/// The most the districts ease the party's main clan's war for a rival's
+/// seat (wave 18 step 2, influence paying off at the endgame): each
+/// district it or an ally holds takes 1 off the [seatLead] it needs, up to
+/// this.
+const int seatBackingMax = 5;
+
+/// What the districts held by [clanId] and its allies take off the lead
+/// it needs to take a seat in war: 1 each, up to [seatBackingMax]; 0
+/// unless [clanId] is the party's main clan (sworn, else the patron).
+int seatBacking(
+  PoliticsState state,
+  String clanId, {
+  required ClanData data,
+  required Geography geography,
+}) {
+  final main = state.swornFactionId.isNotEmpty
+      ? state.swornFactionId
+      : statPatron(state);
+  if (clanId.isEmpty || clanId != main) return 0;
+  var held = 0;
+  for (final MapEntry(key: placeId, value: holder)
+      in holdings(geography, state).entries) {
+    if (geography.place(placeId)?.level != GeoLevel.district) continue;
+    final step =
+        holder == clanId ? null : state.relationStep(clanId, holder, data);
+    if (holder == clanId || (step != null && step >= maxRelationStep)) held++;
+  }
+  return min(held, seatBackingMax);
+}
+
 /// The chapters whose turn may take a clan's seat in war (v1.513): in
 /// chapters 3 to 5 the story names the seats and gives the character ways
 /// to save them, and chapter 8 is the last battle, so seats fall to war
@@ -81,9 +111,11 @@ const int seatWarFromChapter = 6;
 const int seatWarToChapter = 7;
 
 /// The clans whose seat no claim or war at a chapter's turn takes (v1.513):
-/// the Dominion's Candlehold, which chapters 7 and 8 need standing. A story
-/// choice or an event may still give it. Empty the set to lift the guard.
-const Set<String> guardedSeatClans = {'dominion'};
+/// the Dominion's Candlehold, which chapters 7 and 8 need standing, and
+/// the Penitents' Wall of Names (wave 18 step 2: their first land, and
+/// chapter 3's scenes stand there). A story choice or an event may still
+/// give it. Empty the set to lift the guard.
+const Set<String> guardedSeatClans = {'dominion', 'penitents'};
 
 /// Whether [clanId]'s seat is kept from the chapter's turn
 /// ([guardedSeatClans]).
@@ -130,6 +162,62 @@ int strongestPower(PoliticsState state, ClanData data) {
     best = max(best, powerOf(state, id, data));
   }
   return best;
+}
+
+/// A clan's place among the clans with power ([hasPower]: the six main
+/// clans and the four tribes) by power, now and as the last chapter's turn
+/// began (PoliticsState.powerAtTurn; the
+/// clan's start power before the first turn). Equal powers share a rank.
+class ClanPowerRank {
+  const ClanPowerRank({
+    required this.clanId,
+    required this.rank,
+    required this.previousRank,
+    required this.power,
+    required this.previousPower,
+  });
+
+  final String clanId;
+
+  /// 1 for the strongest.
+  final int rank;
+  final int previousRank;
+  final int power;
+  final int previousPower;
+
+  /// How many places the clan climbed since the last turn (negative: it
+  /// fell): the sign's arrow, up, down or steady.
+  int get rankChange => previousRank - rank;
+  int get powerChange => power - previousPower;
+}
+
+/// Every clan with power's [ClanPowerRank], strongest first (factions.json's
+/// order between equals).
+List<ClanPowerRank> clanPowerRanking(PoliticsState state, ClanData data) {
+  final ids = [
+    for (final id in data.factions.keys)
+      if (hasPower(id, data)) id,
+  ];
+  int previous(String id) =>
+      state.powerAtTurn[id] ?? data.faction(id)!.startPower;
+  Map<String, int> ranks(int Function(String id) powerOfClan) => {
+        for (final id in ids)
+          id: 1 + ids.where((o) => powerOfClan(o) > powerOfClan(id)).length,
+      };
+  final now = ranks((id) => powerOf(state, id, data));
+  final before = ranks(previous);
+  return [
+    for (final id in ids)
+      ClanPowerRank(
+        clanId: id,
+        rank: now[id]!,
+        previousRank: before[id]!,
+        power: powerOf(state, id, data),
+        previousPower: previous(id),
+      ),
+  ]..sort((a, b) => a.rank != b.rank
+      ? a.rank.compareTo(b.rank)
+      : ids.indexOf(a.clanId).compareTo(ids.indexOf(b.clanId)));
 }
 
 /// [state] with [clanId]'s power moved by [delta] (kept in 0..[maxPower]);
@@ -240,7 +328,7 @@ PoliticsState givePlace(
   List<TerritoryChange>? changes,
 }) {
   final place = geography.place(placeId);
-  if (place == null || to.isEmpty) return state;
+  if (place == null || to.isEmpty || place.unheld) return state;
   final from = _ownHolder(place, state);
   if (from == to) return state;
   var next = state.copyWith(
@@ -299,6 +387,8 @@ PoliticsState givePlace(
         factionId: to,
         note: logged(AppLanguage.en),
         noteFr: logged(AppLanguage.fr),
+        placeId: placeId,
+        how: cause,
       ));
   // The fallen: the old holder with nothing left falls; the new one rises.
   final fallen = [...next.fallen]..remove(to);
@@ -343,7 +433,12 @@ PoliticsState givePlace(
   int day = 0,
   String protect = '',
 }) {
-  var next = state;
+  // The powers as the turn begins: the clan power sign's arrow compares
+  // with them (clanPowerRanking).
+  var next = state.copyWith(powerAtTurn: {
+    for (final id in data.factions.keys)
+      if (hasPower(id, data)) id: powerOf(state, id, data),
+  });
   // Holdings and neglect.
   final held = holdings(geography, next);
   final powers = <String, int>{};
@@ -473,7 +568,9 @@ PoliticsState givePlace(
               chapter < seatWarFromChapter ||
               chapter > seatWarToChapter ||
               powerOf(next, id, data) - powerOf(next, other, data) <
-                  seatLead)) {
+                  seatLead -
+                      seatBacking(next, id,
+                          data: data, geography: geography))) {
         continue;
       }
       if (crisisFirst(ordered.first, other, id)) break;

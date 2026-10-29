@@ -350,12 +350,12 @@ void main() {
     });
 
     test('a banished card: the same clan with another gift, else another', () {
-      final offer = ClanOffer(ticket: _level, suitors: [
-        const Suitor(
+      const offer = ClanOffer(ticket: _level, suitors: [
+        Suitor(
             factionId: 'gold',
             gift: OfferGift(kind: GiftKind.object, id: 'blade'),
             greetingIndex: 2),
-        const Suitor(
+        Suitor(
             factionId: 'blue',
             gift: OfferGift(kind: GiftKind.object, id: 'dagger')),
       ]);
@@ -378,7 +378,7 @@ void main() {
           factionId: 'blue',
           gift: OfferGift(
               kind: GiftKind.sworn, id: 'blue', rarity: SignRarity.heroic));
-      final offer = ClanOffer(ticket: quest, suitors: const [gold, sworn]);
+      const offer = ClanOffer(ticket: quest, suitors: [gold, sworn]);
       expect(suitorBanishable(gold, offer), isFalse);
       expect(suitorBanishable(sworn, offer), isFalse);
       expect(

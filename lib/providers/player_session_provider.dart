@@ -22,6 +22,9 @@ import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/city_districts.dart' show questAcceptedFlag;
+import '../data/district_attacks.dart'
+    show expiredSieges, rollDistrictAttacks, settleSiegeAway, syncSiegeFlags;
 import '../data/nemesis.dart'
     show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
@@ -111,6 +114,17 @@ const int basePartyCapacity = 2;
 /// every built house's own bonus. Shared by [PlayerSessionNotifier
 /// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
 /// CampScreen's own roster display, so the two never drift apart.
+/// The flag set when the first banner (clan offer) is due: the clans met
+/// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
+const String firstBannerFlag = 'first_banner';
+
+/// Whether [session]'s level-ups, bosses and chapters bring no clan offer
+/// yet (the user's rule, v1.634): on the feature ladder, until the clans
+/// are met. Off the ladder they always do.
+bool offersWaitForClans(PlayerSession session) =>
+    session.flags.contains(featureLadderFlag) &&
+    !session.featureOpen(GameFeature.clans);
+
 int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
   return basePartyCapacity +
       houses.values.whereType<Map<String, dynamic>>().where((h) {
@@ -1516,6 +1530,9 @@ class PlayerSession {
         ...?(json['builtHouseIds'] as List?)
             ?.map((e) => houseFlag(e.toString())),
         if (legacyHarbourDue(json)) houseFlag(harborHouseId),
+        // Quests taken before the accepted flag was set (v1.639).
+        ...?(json['activeQuestIds'] as List?)
+            ?.map((e) => questAcceptedFlag(e.toString())),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -2309,7 +2326,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // Taken by the story: they don't stay to have an opinion.
       exclude: lostId,
     );
-    final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
+    final newFlags = <String>{
+      ...state.flags,
+      ...flagsToAdd,
+      // A quest taken in a scene is marked taken, as acceptQuest does.
+      if (questIDToProgress != null &&
+          questIDToProgress.isNotEmpty &&
+          !state.completedQuestIds.contains(questIDToProgress))
+        questAcceptedFlag(questIDToProgress),
+    }.toList();
     // The rest before the Lantern Hall (7515_rest, docs/simulation/
     // difficulty-review.md proposal 4): the provisions and the mana
     // refilled; the scene's own heal and potion come with its choice.
@@ -2376,6 +2401,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
     }
+    // The clans met (feat_clans): the first banner.
+    state = _withFirstBanner(state);
     await _persist();
     // A flag or a piece of the Shroud may be what an achievement asks for.
     if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
@@ -2668,6 +2695,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
           politics: updateNemesis(turned, data,
               chapter: chapter, day: state.day, flags: state.flags));
+      // The rival clans' attacks on districts (district_attacks.dart):
+      // the sieges run out settled, then the chapter's own rolled.
+      _settleExpiredSieges(data, geography, chapter);
+      state = state.copyWith(
+          politics: rollDistrictAttacks(state.politics,
+                  data: data,
+                  geography: geography,
+                  day: state.day,
+                  chapter: chapter,
+                  random: _siegeRandom(chapter))
+              .state);
       _syncHeld(geography);
       // A new nemesis opens its quest (nemesis.dart): beat its champion;
       // the story's own once its champion can come.
@@ -2681,13 +2719,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
       }
     }
-    state = state.copyWith(
+    state = _withFirstBanner(state.copyWith(
       chapterOffersThrough: chapter,
-      pendingOffers: [
-        ...state.pendingOffers,
-        OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
-      ],
-    );
+      // Before the clans are met, no offer piles up (offersWaitForClans).
+      pendingOffers: offersWaitForClans(state)
+          ? null
+          : [
+              ...state.pendingOffers,
+              OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
+            ],
+    ));
     await _persist();
     return true;
   }
@@ -3323,6 +3364,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           const OfferTicket(source: OfferSource.start),
       ];
 
+  /// [session] with its first banner (the user's rule, v1.634): on the
+  /// feature ladder, once the clans are met (feat_clans, or past chapter
+  /// 2), one offer is due, [firstBannerFlag] set; none when one is already
+  /// waiting (a save that piled offers up before this rule keeps them, they
+  /// are the player's). Off the ladder, nothing changes.
+  static PlayerSession _withFirstBanner(PlayerSession session) {
+    if (!session.flags.contains(featureLadderFlag) ||
+        session.flags.contains(firstBannerFlag) ||
+        !session.featureOpen(GameFeature.clans)) {
+      return session;
+    }
+    return session.copyWith(
+      flags: [...session.flags, firstBannerFlag],
+      pendingOffers: session.pendingOffers.isEmpty
+          ? const [OfferTicket(source: OfferSource.level, detail: 'first')]
+          : null,
+    );
+  }
+
   /// [levels] offers for the levels just reached.
   static List<OfferTicket> _levelOffers(int levels) => [
         for (var i = 0; i < levels; i++)
@@ -3597,11 +3657,48 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// geography. The caller persists.
   void _syncHeld(Geography? geography) {
     if (geography == null || geography.isEmpty) return;
-    final flags =
-        influence.syncHeldFlags(state.flags, geography, state.politics);
+    final flags = syncSiegeFlags(
+        influence.syncHeldFlags(state.flags, geography, state.politics),
+        state.politics);
     if (!identical(flags, state.flags)) {
       state = state.copyWith(flags: flags);
     }
+  }
+
+  /// The dice of the district attacks (district_attacks.dart) on [chapter]:
+  /// the run's own, so a run rolls the same.
+  Random _siegeRandom(int chapter) =>
+      Random(state.runSeed * 31 + chapter * 7919 + state.day * 104729);
+
+  /// The sieges run out by today (district_attacks.dart), settled away
+  /// from the party: the district taken or held, the news told. Returns
+  /// how many were settled.
+  int _settleExpiredSieges(ClanData data, Geography geography, int chapter) {
+    final expired = expiredSieges(state.politics, state.day);
+    if (expired.isEmpty) return 0;
+    final random = _siegeRandom(chapter);
+    var politics = state.politics;
+    for (final siege in expired) {
+      politics = settleSiegeAway(politics, siege,
+          data: data,
+          geography: geography,
+          random: random,
+          chapter: chapter,
+          day: state.day);
+    }
+    state = state.copyWith(politics: politics);
+    _syncHeld(geography);
+    return expired.length;
+  }
+
+  /// The sieges run out by today, settled and saved (a road's check, see
+  /// story_player_screen.dart's startRoadEncounter).
+  Future<void> settleExpiredSieges({
+    required ClanData data,
+    required Geography geography,
+    required int chapter,
+  }) async {
+    if (_settleExpiredSieges(data, geography, chapter) > 0) await _persist();
   }
 
   /// The `held_` flags in sync (see [_syncHeld]), saved when they moved:
@@ -3616,14 +3713,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [quest] (a quests.json record) turned in (wave 18, see
   /// applyQuestInfluence in district_influence.dart): its influence for
   /// the clan [picked] (the turn-in choice's politics) favours, else its
-  /// `faction`, in its district, while the party is in [cityHere]; a
-  /// district or a town changing hands with it. Saved when it counted.
+  /// `faction`, in its district, wherever the party is; a district or a
+  /// town changing hands with it. Saved when it counted.
   Future<influence.InfluenceResult> applyQuestInfluence(
     Map<String, dynamic> quest, {
     required ClanData data,
     required Geography geography,
     StoryPolitics? picked,
-    String? cityHere,
     String? partyDistrict,
     int chapter = 0,
   }) async {
@@ -3632,7 +3728,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         data: data,
         geography: geography,
         picked: picked,
-        cityHere: cityHere,
         partyDistrict: partyDistrict,
         chapter: chapter,
         day: state.day);
@@ -3824,7 +3919,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return replacement;
   }
 
-  /// Takes on [questId]. A bounty in [quest] (a `countFromAccept` Kill
+  /// Takes on [questId] and sets its `<id>_accepted` flag
+  /// (questAcceptedFlag). A bounty in [quest] (a `countFromAccept` Kill
   /// objective) remembers its foes' kill counts now, so only the kills
   /// made after count (see [questKillBaselines]); a quest with none stores
   /// nothing. Without [quest] the objectives can't be read, and every
@@ -3838,6 +3934,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      // Marked taken: a district lock that opens on it opens now
+      // (city_districts.dart).
+      flags: {...state.flags, questAcceptedFlag(questId)}.toList(),
       // A baseline already taken (see [noteQuestOfferedBeforeFight]) stands.
       questKillBaselines: baseline.isEmpty
           ? state.questKillBaselines
@@ -5702,14 +5801,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Adds [spellId] to [PlayerSession.knownSpellIds]; a no-op for a spell
-  /// already known or an empty id.
-  Future<void> learnSpell(String spellId) async {
-    if (spellId.isEmpty || state.knownSpellIds.contains(spellId)) return;
-    state = state.copyWith(knownSpellIds: [...state.knownSpellIds, spellId]);
-    await _persist();
-  }
-
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
   /// applying every level gained: [levelStatPicks] stat pick and
   /// [levelHealthGain] max health (stat_rules.dart; base damage grows only
@@ -5729,7 +5820,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
-    var newBaseDamage = state.baseDamage;
+    final newBaseDamage = state.baseDamage;
     var newStatPoints = state.statPoints;
     var leveledUp = false;
     var levelsGained = 0;
@@ -5924,9 +6015,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // pact one fight on.
       pendingOffers: [
         ...state.pendingOffers,
-        ..._levelOffers(leveled.levelsGained),
-        for (var i = 0; i < bossOffers; i++)
-          const OfferTicket(source: OfferSource.boss),
+        // Before the clans are met, levels and bosses bring none
+        // (offersWaitForClans); the first banner comes when they are.
+        if (!offersWaitForClans(state)) ...[
+          ..._levelOffers(leveled.levelsGained),
+          for (var i = 0; i < bossOffers; i++)
+            const OfferTicket(source: OfferSource.boss),
+        ],
         ...tomeOffers,
       ],
       rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
@@ -5959,6 +6054,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (leveled.leveledUp) {
       state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
+    state = _withFirstBanner(state);
     await _persist();
     return leveled.leveledUp;
   }

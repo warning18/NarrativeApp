@@ -110,7 +110,8 @@ void main() {
       () {
     for (final node in nodes.values) {
       final choices = node.choices;
-      if (choices.isEmpty) continue;
+      // 270, the Weaver's Alley, is parked (v1.620): no flags, no way in.
+      if (choices.isEmpty || node.id == '270') continue;
       if (choices.length == 1) {
         final only = choices.single;
         if (only.isEnding) continue;
@@ -142,7 +143,7 @@ void main() {
           // not by the story.
           final read = flagsRead.contains(flag) ||
               flag.startsWith('feat_') ||
-              hubPrefixes.any((p) => flag.startsWith(p));
+              hubPrefixes.any(flag.startsWith);
           expect(read, isTrue,
               reason: '${node.id} sets $flag, nobody reads it');
         }
