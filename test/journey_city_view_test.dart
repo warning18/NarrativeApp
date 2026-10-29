@@ -75,11 +75,11 @@ void main() {
     }
     expect(container.read(currentCityProvider), 'saltmouth');
 
-    // The district: the chart, the ways as rows (the one here, numbered),
+    // The district: the chart, its places as rows (one for each pin),
     // under the three tabs.
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(_rows, findsOneWidget);
-    expect(find.textContaining('WAY HERE'), findsOneWidget);
+    expect(find.textContaining('PLACES HERE'), findsOneWidget);
     // No "Walk on" chips: the other districts are the chart's and the
     // Town tab's to open.
     expect(find.textContaining('WALK ON'), findsNothing);
