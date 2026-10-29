@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.645.0+681]
+
+- **Core: the data for the clan power sign (option A, a ranking with
+  arrows).**
+  - Each chapter's turn keeps every clan's power as it begins
+    (`PoliticsState.powerAtTurn`, saved).
+  - `clanPowerRanking` / `clanPowerRankingProvider`: the ten clans with
+    power, strongest first, each with its rank and power now and at the
+    last turn (`rankChange`, `powerChange` for the arrow). Equal powers
+    share a rank. No number changes; UX draws the sign.
+  - Tests: `clan_power_test` (the ranking).
+
 ## [1.640.0+676]
 
 - **Dice: a shape for every size, and the die in the ring rolls**
