@@ -9,14 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_lab_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('the lab fits no more guns than the Eel has gun slots',
@@ -31,7 +24,7 @@ void main() {
 
     await tester.pumpWidget(
         const ProviderScope(child: MaterialApp(home: FightLabScreen())));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(FightLabScreen)));
     await tester.runAsync(() => container
@@ -41,12 +34,12 @@ void main() {
           'professionId': 'warrior',
           'shipPartIds': ['ballista'],
         })));
-    await _settle(tester);
+    await settleApp(tester);
 
     final pick = find.byKey(const Key('fight_lab_pick_parts'));
     await tester.ensureVisible(pick);
     await tester.tap(pick);
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('fight_lab_parts')), findsOneWidget);
 
     bool picked(String id) => tester

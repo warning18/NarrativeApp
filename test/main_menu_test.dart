@@ -14,6 +14,7 @@ import 'package:narrative_data_app/providers/finished_story_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/save_game_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
 /// ones only let the screen catch up.
@@ -110,10 +111,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(420, 1400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1400));
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester);
@@ -158,10 +156,7 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
-      tester.view.physicalSize = const Size(420, 1400);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(420, 1400));
       await tester.pumpWidget(const ProviderScope(child: MyApp()));
       await _settle(tester);
       return ProviderScope.containerOf(

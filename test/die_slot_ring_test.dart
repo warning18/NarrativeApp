@@ -11,14 +11,7 @@ import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/screens/skills/die_slot_ring.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -75,10 +68,7 @@ void main() {
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
       SharedPreferences.setMockInitialValues({});
-      tester.view.physicalSize = const Size(412, 2000);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(412, 2000));
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -86,7 +76,7 @@ void main() {
         container: container,
         child: const MaterialApp(home: DiceLoadoutScreen()),
       ));
-      await _settle(tester);
+      await settleApp(tester);
       await tester.runAsync(() => container
           .read(playerSessionProvider.notifier)
           .loadSession(PlayerSession.fromJson({
@@ -99,7 +89,7 @@ void main() {
               id: {'0': 'warrior_shield_bash'},
             },
           })));
-      await _settle(tester);
+      await settleApp(tester);
 
       expect(find.byKey(const Key('die_slot_ring')), findsOneWidget);
       final rects = [
@@ -130,7 +120,7 @@ void main() {
       // A tap on the last slot turns the die to it.
       await tester.tap(find.byKey(Key('face_slot_${n - 1}')),
           warnIfMissed: false);
-      await _settle(tester);
+      await settleApp(tester);
       expect(overflows, isEmpty, reason: overflows.join('\n'));
     });
   }

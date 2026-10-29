@@ -8,29 +8,14 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/die_3d.dart';
 import 'package:narrative_data_app/widgets/die_art.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    ('Spectral', ['Spectral-Regular.ttf', 'Spectral-Medium.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 final Map<String, dynamic> _dice =
     jsonDecode(File('assets/gamedata/dice.json').readAsStringSync())
@@ -190,11 +175,8 @@ void main() {
 
   final shots = Platform.environment['UX_SHOTS'];
   testWidgets('the family, drawn (UX_SHOTS)', (tester) async {
-    if (shots != null && shots.isNotEmpty) await _loadFonts();
-    tester.view.physicalSize = const Size(900, 560);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    if (shots != null && shots.isNotEmpty) await loadAppFonts();
+    usePhone(tester, const Size(900, 560));
     final key = GlobalKey();
     Widget cell(DieShape shape, String skin, String label,
             {double size = 84, DieClan? clan}) =>
@@ -260,11 +242,8 @@ void main() {
 
   testWidgets('the sheet of the 31 dice, drawn (UX_SHOTS)', (tester) async {
     if (shots == null || shots.isEmpty) return;
-    await _loadFonts();
-    tester.view.physicalSize = const Size(1300, 1250);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    await loadAppFonts();
+    usePhone(tester, const Size(1300, 1250));
     final key = GlobalKey();
     final bySize = <int, List<String>>{};
     for (final e in _dice.entries) {

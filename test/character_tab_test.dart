@@ -3,10 +3,8 @@
 // to a line each, the Mana card opening the skills on their Spells tab, and
 // the race and profession recap as one row per choice. Measured at phone
 // widths with the app's own fonts (Ahem is far too wide to say anything).
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,29 +22,7 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/title_detail_view.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
-
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 /// Collects the overflow reports instead of failing on the first.
 List<String> _collectOverflows() {
@@ -132,7 +108,7 @@ const _tab = Scaffold(body: CharacterScreen(embedded: true));
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await _loadFonts();
+    await loadAppFonts();
   });
 
   Future<void> openTab(WidgetTester tester, String key) async {

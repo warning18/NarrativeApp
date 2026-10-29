@@ -5,27 +5,16 @@
 // between district, town and world.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/city_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 /// The way rows under the map (keyed by the step they take).
 final _rows = find.byWidgetPredicate((w) =>
@@ -39,32 +28,14 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
     // What arriving somewhere opens over the game (a new place's card) is
     // closed.

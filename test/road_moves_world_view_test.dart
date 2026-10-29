@@ -4,28 +4,17 @@
 // views are for places: arriving at one shows its own view again.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 /// The level tab lit under the map.
 String? _lit(WidgetTester tester) {
@@ -54,33 +43,15 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
     // The world walk at a fifth of its pace.
     final pace = worldMoveTimeScale;
     addTearDown(() => worldMoveTimeScale = pace);
     worldMoveTimeScale = 0.2;
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester);
     final play = container.read(storyPlayProvider.notifier);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
-    await _settle(tester);
+    await settleApp(tester);
     Future<void> clearCards() async {
       for (var i = 0; i < 3; i++) {
         Navigator.of(tester.element(find.byType(JourneyScreen)))
@@ -91,9 +62,9 @@ void main() {
 
     // At the Sleeper's Face, a place: its own view.
     play.jumpTo('1130');
-    await _settle(tester);
+    await settleApp(tester);
     play.jumpTo('1140');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(_lit(tester), 'district');
@@ -136,13 +107,13 @@ void main() {
     }
     expect(crossing, findsOneWidget);
     Navigator.of(tester.element(crossing)).pop(true);
-    await _settle(tester);
+    await settleApp(tester);
 
     // Arrived at the White Wells, a place: the end of the walk is Vica's
     // scene (v1.602), at the Wells' edge; its first choice leads on to the
     // Wells' own scene, which is the view again.
     expect(container.read(storyPlayProvider).currentNodeId, '1150_vica');
-    await _settle(tester);
+    await settleApp(tester);
     final follow = find.byKey(const ValueKey('journey_choice_card_0'));
     for (var i = 0; i < 5 && follow.evaluate().isEmpty; i++) {
       await tester.runAsync(
@@ -158,7 +129,7 @@ void main() {
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '1200');
     await tester.pump(const Duration(seconds: 4));
     await clearCards();

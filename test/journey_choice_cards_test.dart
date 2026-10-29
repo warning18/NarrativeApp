@@ -26,43 +26,8 @@ import 'package:narrative_data_app/providers/city_provider.dart'
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
-import 'package:narrative_data_app/theme/stitched_ink.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 final _shotKey = GlobalKey();
 
@@ -94,10 +59,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
     await tester.pumpWidget(ProviderScope(
       overrides: [
@@ -106,10 +68,10 @@ void main() {
       ],
       child: RepaintBoundary(key: _shotKey, child: const MyApp()),
     ));
-    await tester.runAsync(_loadFonts);
-    await _settle(tester);
+    await tester.runAsync(loadAppFonts);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -124,7 +86,7 @@ void main() {
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     // A sheet opening or closing, over a map that never stops moving.
     Future<void> sheet() async {
@@ -133,13 +95,13 @@ void main() {
     }
 
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The Stone Bridge: a toll to pay or a fight, both done on the bridge.
     // They are not on the map (no way on, so no mark either): a button under
     // the map opens the scene view, where they are cards.
     play.jumpTo('260');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
     expect(_count('journey_step_'), 0, reason: 'no way on: no mark');
     expect(_count('journey_choice_card_'), 0,
@@ -176,7 +138,7 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     tester.view.physicalSize = const Size(320, 640);
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('journey_choice_card_1')), findsOneWidget);
     expect(tester.takeException(), isNull);
     await _shot(tester, 'choice-cards-bridge-fr-320');
@@ -184,7 +146,7 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
     tester.view.physicalSize = const Size(400, 860);
-    await _settle(tester);
+    await settleApp(tester);
     // Back to the map.
     await tester.tap(find.byKey(const ValueKey('journey_continue')));
     await tester.pump(const Duration(milliseconds: 500));
@@ -193,7 +155,7 @@ void main() {
     // The wharf, a hub: marks on the map for the ways on, and nothing else;
     // in the scene view, a chip for each kind of choice done here.
     play.jumpTo('2015');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
     // What arriving opens over the game (the new place's card) is closed.
     for (var i = 0; i < 3; i++) {

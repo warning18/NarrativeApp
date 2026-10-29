@@ -13,6 +13,7 @@ import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/screens/intro_screen.dart';
 import 'package:narrative_data_app/screens/settings_screen.dart';
+import 'support/pump.dart';
 
 String _line(int n) => trFor(AppLanguage.en, 'intro_line_$n');
 
@@ -173,10 +174,7 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
-      tester.view.physicalSize = const Size(420, 1400);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(420, 1400));
       await tester.pumpWidget(const ProviderScope(child: MyApp()));
       for (var i = 0; i < 6; i++) {
         await tester.runAsync(

@@ -19,41 +19,8 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(ByteData.view(
-          Uint8List.fromList(File('assets/fonts/$f').readAsBytesSync())
-              .buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(
-          ByteData.view(Uint8List.fromList(icons.readAsBytesSync()).buffer)));
-    await loader.load();
-  }
-}
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 void main() {
   final dir = Platform.environment['UX_SHOTS'];
@@ -73,9 +40,9 @@ void main() {
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
     await tester
         .pumpWidget(ProviderScope(key: UniqueKey(), child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -87,7 +54,7 @@ void main() {
             {'raceId': 'human', 'professionId': 'warrior'})));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     container.read(storyPlayProvider.notifier).jumpTo(node);
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 500));
@@ -155,7 +122,7 @@ void main() {
     for (final width in const [412.0, 320.0]) {
       if (onlyWidth != null && onlyWidth != width) continue;
       testWidgets('the Journey at $name, $width px', (tester) async {
-        await tester.runAsync(_loadFonts);
+        await tester.runAsync(loadAppFonts);
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
         await shoot(tester, node, name, width);

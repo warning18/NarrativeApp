@@ -12,14 +12,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
 import 'package:narrative_data_app/widgets/rolling_die.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,17 +24,14 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1600));
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
       child: const MaterialApp(home: DiceLoadoutScreen()),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
@@ -50,7 +40,7 @@ void main() {
           'ownedDiceIds': ['starter_die', 'iron_die'],
           'equippedDiceId': 'starter_die',
         })));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The die in the middle of the ring: a d6 here, at its first face.
     expect(find.byType(RollingDie), findsOneWidget);
@@ -66,7 +56,7 @@ void main() {
     // In-game, the numbers go.
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.textContaining('of rolls'), findsNothing);
 
     // A face tapped in the list is the one the die rolls to: it is mid-roll
@@ -83,7 +73,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('rolling_die')));
     await tester.pump();
     expect(progress(), 1);
-    await _settle(tester);
+    await settleApp(tester);
     final after = tester.widget<Text>(find.byKey(const Key('die_face_name')));
     expect(after.data, isNot(before.data));
 
@@ -92,7 +82,7 @@ void main() {
     await tester.tap(find.byKey(const Key('face_slot_3')));
     await tester.pump(const Duration(milliseconds: 60));
     await tester.tap(find.byKey(const Key('face_slot_3')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(BottomSheet), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

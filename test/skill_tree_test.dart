@@ -17,18 +17,11 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 
 import 'player_session_provider_test.dart' show baseSession, notifierWith;
+import 'support/pump.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -230,10 +223,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1600));
 
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -242,7 +232,7 @@ void main() {
       child: const MaterialApp(home: SkillsScreen()),
     ));
     // The saved session loads first; the test's own comes after it.
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({
@@ -253,7 +243,7 @@ void main() {
           ],
           'unlockedSkillIds': ['warrior_shield_bash', 'human_resolve'],
         })));
-    await _settle(tester);
+    await settleApp(tester);
 
     // No points to spend: the purse says what waits from the clans.
     expect(find.byKey(const Key('purse_points')), findsNothing);
@@ -270,31 +260,31 @@ void main() {
     // offer its next skill now.
     expect(find.byKey(const Key('star_card')), findsOneWidget);
     await tester.tap(find.byKey(const Key('tree_node_power_strike')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('tree_learn')), findsNothing);
     expect(find.byKey(const Key('skill_offered_flags')), findsOneWidget);
     expect(find.text('Offered by the Lantern Dominion'), findsOneWidget);
     Navigator.of(tester.element(find.byKey(const Key('skill_offered_by'))))
         .pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // Execute waits for the two before it.
     await tester.pump(const Duration(seconds: 3));
     await tester.tap(find.byKey(const Key('tree_node_warrior_execute')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('tree_learn')), findsNothing);
     expect(find.textContaining('After'), findsWidgets);
     Navigator.of(tester.element(find.textContaining('After').first)).pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // My skills, healing only: no strike in it, and Resolve (the human
     // heritage's first, known) there.
     await tester.tap(find.byKey(const Key('skills_tab_mine')));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.ensureVisible(find.byKey(const Key('skill_filter_heal')));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('skill_filter_heal')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('skill_row_power_strike')), findsNothing);
     expect(find.byKey(const Key('skill_row_human_resolve')), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));

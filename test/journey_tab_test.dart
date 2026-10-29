@@ -4,27 +4,15 @@
 // the party, and a double-tap reads the scene full screen.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 void main() {
   testWidgets('a step picked on the map takes the story there', (tester) async {
@@ -32,45 +20,19 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(
-      ProviderScope(
-          // These test the streets' marks: the generated plan, not the stored
-          // city chart (board 15, v1.355).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
-          child: const MyApp()),
-    );
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester, overrides: [noCityPlans]);
 
     // In play the Journey tab sits beside the Story tab.
     expect(find.text('Journey'), findsOneWidget);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
-    await _settle(tester);
+    await settleApp(tester);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(homeTabIndexProvider), journeyTabIndex);
     expect(find.byType(JourneyScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -118,7 +80,7 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     // The scene reached is read full screen first; Continue brings the
     // map back (v1.200.1).
     expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);

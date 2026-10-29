@@ -12,14 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/screens/skills/star_chart.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -30,10 +23,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(320, 1800);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(320, 1800));
 
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -41,12 +31,12 @@ void main() {
       container: container,
       child: const MaterialApp(home: SkillsScreen()),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(
             PlayerSession.fromJson({'raceId': 'elf', 'professionId': 'mage'})));
-    await _settle(tester);
+    await settleApp(tester);
 
     final names = find.byWidgetPredicate((w) =>
         w.key is ValueKey<String> &&

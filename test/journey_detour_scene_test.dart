@@ -10,55 +10,16 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/detour_scenes.dart';
 import 'package:narrative_data_app/data/expedition_steps.dart';
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/detour_scene_band.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 Future<void> _shot(WidgetTester tester, String name) async {
   final dir = Platform.environment['UX_SHOTS'];
@@ -128,40 +89,22 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('100');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_detour_scene')), findsNothing);
 
     // The fen scene: a tinted band, its title, beat 1 of 2, the beat's place.
     play.startScene(
         buildDetourScene(_fen, chapter: 3, random: Random(1)), '100',
         origin: 'The road south');
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_detour_scene')), findsOneWidget);
     expect(find.text('The Drowned Milestone'), findsOneWidget);
     expect(find.text('1 / 2'), findsOneWidget);
@@ -180,27 +123,27 @@ void main() {
 
     // The next beat: the band follows.
     play.advanceExcursion();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text('2 / 2'), findsOneWidget);
     expect(find.text('The milestone'), findsOneWidget);
     expect(find.textContaining('Under the moss, a purse.'), findsOneWidget);
 
     // Backed away from: the map is back.
     play.leaveExcursion();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_detour_scene')), findsNothing);
 
     // The ashlands scene wears the ruins kit and a landmark's star.
     play.startScene(
         buildDetourScene(_ash, chapter: 3, random: Random(2)), '100');
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_detour_scene')), findsOneWidget);
     expect(find.text('3 beats'), findsNothing);
     expect(find.text('1 / 3'), findsOneWidget);
     expect(find.byIcon(Icons.star_outline), findsOneWidget);
     await _shot(tester, 'detour-scene-ashlands');
     play.leaveExcursion();
-    await _settle(tester);
+    await settleApp(tester);
 
     final error = tester.takeException();
     expect(error, isNull,

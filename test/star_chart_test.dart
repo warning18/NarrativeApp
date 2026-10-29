@@ -12,14 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/screens/skills/star_chart.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 String _line(WidgetTester tester) =>
     tester.widget<Text>(find.byKey(const Key('star_card_line'))).data!;
@@ -73,10 +66,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1800);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1800));
 
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -84,12 +74,12 @@ void main() {
       container: container,
       child: const MaterialApp(home: SkillsScreen()),
     ));
-    await _settle(tester);
+    await settleApp(tester);
     Future<void> load(Map<String, dynamic> session) async {
       await tester.runAsync(() => container
           .read(playerSessionProvider.notifier)
           .loadSession(PlayerSession.fromJson(session)));
-      await _settle(tester);
+      await settleApp(tester);
     }
 
     // A new warrior: four constellations, the Dominion Wary (the story's
@@ -143,15 +133,15 @@ void main() {
 
     // A star opens its skill's sheet, the crown the mastery's.
     await tester.tap(find.byKey(const Key('tree_node_bulwark_stance')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(BottomSheet), findsOneWidget);
     Navigator.of(tester.element(find.byType(BottomSheet))).pop();
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('mastery_warrior_bulwark')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(BottomSheet), findsOneWidget);
     Navigator.of(tester.element(find.byType(BottomSheet))).pop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 3));
   });

@@ -12,14 +12,7 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('the camp\'s chapter card fits a small phone in French',
@@ -28,13 +21,10 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 640));
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -49,11 +39,11 @@ void main() {
           'flags': [campFoundedFlag],
         })));
     container.read(storyPlayProvider.notifier).jumpTo('3001_camp');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 3));
-    await _settle(tester);
+    await settleApp(tester);
 
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
     expect(find.textContaining('QUÊTE PRINCIPALE'), findsOneWidget);
