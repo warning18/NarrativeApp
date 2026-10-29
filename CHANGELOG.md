@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.608.0+644]
+
+- **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).
+  - **Vica joins only a hero who walked past her scene.** Loading an earlier
+    save after a later run no longer hands her over at once: her join now
+    reads the save's own path, not the visited set it inherits.
+  - **The rat matriarch is a chapter 1 foe** (`minChapter` 2 → 1). She is
+    fought in chapter 1.
+  - **The two boarding prices are paid for real** (#583). At 896_failed (40
+    gold) and 897_failed (25 gold), the only way on after a failed check, a
+    purse too short pays what it holds. The rest is taken as a wound, a point
+    of health per gold, never the last point. A new choice field,
+    `shortfallWounds`, marks such forced prices.
+  - **The heal preview matches the heal.** A round's preview now applies the
+    Briar-Guard rule (no heal from Heal faces) and heal fatigue, like the
+    round itself. Both now use the same helper.
+
 ## [1.606.0+642]
 
 - **UX: the Party tab as a formation, and a page for each companion** (the
