@@ -32,7 +32,7 @@ final cityPlanRecordsProvider =
 /// The district the party walked to (free walking, board 15) and the scene
 /// it walked from: it holds while the story stays at that scene; the story
 /// moving on puts the party where the new scene is.
-final walkedDistrictProvider =
+final _walkedDistrictProvider =
     StateProvider<({String nodeId, String districtId})?>((ref) => null);
 
 /// The city the story stands in, when it has districts (its geography id),
@@ -54,7 +54,7 @@ final partyDistrictProvider = Provider<String?>((ref) {
   final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
   final city = ref.watch(currentCityProvider);
   if (city == null) return null;
-  final walked = ref.watch(walkedDistrictProvider);
+  final walked = ref.watch(_walkedDistrictProvider);
   if (walked != null &&
       walked.nodeId == nodeId &&
       geo.locationOf(walked.districtId)?.id == city) {
@@ -162,7 +162,7 @@ Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
     return false;
   }
   final nodeId = ref.read(storyPlayProvider).currentNodeId;
-  ref.read(walkedDistrictProvider.notifier).state =
+  ref.read(_walkedDistrictProvider.notifier).state =
       (nodeId: nodeId, districtId: districtId);
   final flag = districtFoundFlag(districtId);
   if (!ref.read(playerSessionProvider).flags.contains(flag)) {
@@ -179,14 +179,14 @@ Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
 /// district; the story moving on, or a walk to another district, puts the
 /// party back at the list. Not saved: a game picked back up opens on the
 /// list of places.
-final standingAtPlaceProvider =
+final _standingAtPlaceProvider =
     StateProvider<({String nodeId, String districtId, String placeId})?>(
         (ref) => null);
 
 /// The id of the place (WayPlace.id) the party stands at in its district
-/// (see [standingAtPlaceProvider]), or null when it is at the list.
+/// (see [_standingAtPlaceProvider]), or null when it is at the list.
 final partyPlaceProvider = Provider<String?>((ref) {
-  final standing = ref.watch(standingAtPlaceProvider);
+  final standing = ref.watch(_standingAtPlaceProvider);
   if (standing == null) return null;
   final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
   final district = ref.watch(partyDistrictProvider);
@@ -202,7 +202,7 @@ final partyPlaceProvider = Provider<String?>((ref) {
 void standAtPlace(WidgetRef ref, String placeId) {
   final district = ref.read(partyDistrictProvider);
   if (district == null) return;
-  ref.read(standingAtPlaceProvider.notifier).state = (
+  ref.read(_standingAtPlaceProvider.notifier).state = (
     nodeId: ref.read(storyPlayProvider).currentNodeId,
     districtId: district,
     placeId: placeId,
@@ -211,7 +211,7 @@ void standAtPlace(WidgetRef ref, String placeId) {
 
 /// The party back at the district's list of places.
 void leavePlace(WidgetRef ref) =>
-    ref.read(standingAtPlaceProvider.notifier).state = null;
+    ref.read(_standingAtPlaceProvider.notifier).state = null;
 
 /// The list under the district's map (v1.580, see districtPlaces): the
 /// scene's ways in the party's district, one entry per place, `here`
@@ -251,10 +251,10 @@ typedef DistrictArrival = ({String districtId, int count});
 /// the party, a city entered), the first district the party stands in
 /// counting as one. Walking between the places of a district is no arrival.
 final districtArrivalProvider =
-    NotifierProvider<DistrictArrivalNotifier, DistrictArrival?>(
-        DistrictArrivalNotifier.new);
+    NotifierProvider<_DistrictArrivalNotifier, DistrictArrival?>(
+        _DistrictArrivalNotifier.new);
 
-class DistrictArrivalNotifier extends Notifier<DistrictArrival?> {
+class _DistrictArrivalNotifier extends Notifier<DistrictArrival?> {
   @override
   DistrictArrival? build() {
     ref.listen<String?>(partyDistrictProvider, (previous, next) {

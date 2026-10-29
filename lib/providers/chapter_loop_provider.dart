@@ -61,7 +61,7 @@ final reachedChapterProvider = Provider<int>((ref) {
 
 /// The level advice for [chapter] at the party's level (see
 /// [chapterLevelAdvice]), null when that chapter recommends none.
-final chapterLevelAdviceProvider =
+final _chapterLevelAdviceProvider =
     Provider.family<ChapterLevelAdvice?, int>((ref, chapter) {
   return chapterLevelAdvice(
     chapter: chapter,
@@ -73,8 +73,8 @@ final chapterLevelAdviceProvider =
 /// The level advice for the chapter the party is heading to: the one
 /// after [reachedChapterProvider]'s.
 final nextChapterLevelAdviceProvider = Provider<ChapterLevelAdvice?>((ref) {
-  return ref
-      .watch(chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
+  return ref.watch(
+      _chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
 });
 
 /// The condition of the chapter the party has reached (see
@@ -93,8 +93,8 @@ final chapterConditionProvider = Provider<ChapterCondition?>((ref) {
 
 /// Where the open chapter stands: its activities done, its goal, and
 /// whether its main quest is open.
-class ChapterProgress {
-  const ChapterProgress({
+class _ChapterProgress {
+  const _ChapterProgress({
     required this.loop,
     required this.done,
     required this.missingPlaceIds,
@@ -118,7 +118,7 @@ class ChapterProgress {
       done >= goal && questsDone >= questGoal && missingPlaceIds.isEmpty;
 }
 
-final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
+final chapterProgressProvider = Provider<_ChapterProgress?>((ref) {
   final loop = ref.watch(currentLoopProvider);
   final story = ref.watch(storyDataProvider).value;
   if (loop == null || story == null) return null;
@@ -130,7 +130,7 @@ final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
   final completedQuestIds =
       ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
-  return ChapterProgress(
+  return _ChapterProgress(
     loop: loop,
     done: chapterActivityCount(
       story: story,

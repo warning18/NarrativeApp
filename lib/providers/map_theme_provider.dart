@@ -9,8 +9,8 @@ const String _mapThemePrefsKey = 'map_theme';
 /// the excursion flavor to each story node's own [StoryNode.uiTheme] (see
 /// [mapThemeForUiTheme]) — the default, so a fresh install never needs one
 /// global setting to fit every chapter's very different scenery.
-class MapThemeNotifier extends StateNotifier<MapTheme?> {
-  MapThemeNotifier() : super(null) {
+class _MapThemeNotifier extends StateNotifier<MapTheme?> {
+  _MapThemeNotifier() : super(null) {
     _load();
   }
 
@@ -38,5 +38,5 @@ class MapThemeNotifier extends StateNotifier<MapTheme?> {
   }
 }
 
-final mapThemeProvider = StateNotifierProvider<MapThemeNotifier, MapTheme?>(
-    (ref) => MapThemeNotifier());
+final mapThemeProvider = StateNotifierProvider<_MapThemeNotifier, MapTheme?>(
+    (ref) => _MapThemeNotifier());

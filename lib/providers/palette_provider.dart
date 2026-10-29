@@ -70,8 +70,8 @@ enum AppPalette {
 
 const String _palettePrefsKey = 'app_palette';
 
-class AppPaletteNotifier extends StateNotifier<AppPalette> {
-  AppPaletteNotifier() : super(AppPalette.stitchedInk) {
+class _AppPaletteNotifier extends StateNotifier<AppPalette> {
+  _AppPaletteNotifier() : super(AppPalette.stitchedInk) {
     _load();
   }
 
@@ -90,5 +90,5 @@ class AppPaletteNotifier extends StateNotifier<AppPalette> {
 }
 
 final appPaletteProvider =
-    StateNotifierProvider<AppPaletteNotifier, AppPalette>(
-        (ref) => AppPaletteNotifier());
+    StateNotifierProvider<_AppPaletteNotifier, AppPalette>(
+        (ref) => _AppPaletteNotifier());
