@@ -4,6 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/widgets/fight_figure.dart';
+import 'package:narrative_data_app/widgets/fight_sprites.dart';
+
 import 'fight_hero_harness.dart';
 
 void main() {
@@ -18,6 +21,12 @@ void main() {
     final hero = tester.getRect(find.byKey(const Key('fight_hero_sprite')));
     expect(rect.center.dx, greaterThan(hero.center.dx),
         reason: 'on the right, across from the hero');
+    // Fixed boxes (v1.612): a foe stands in the foe box, the hero in its own.
+    final set = enemyFightSprite('inquisition_soldier')!;
+    expect(tester.getSize(figure),
+        FightFigure.sizeFor(set, FightBoxes.pixelFor(set, 96)));
+    expect(tester.getSize(find.byKey(const Key('fight_hero_sprite'))),
+        FightFigure.sizeFor(roninSprite, FightBoxes.pixelFor(roninSprite, 96)));
     expect(find.textContaining('Inquisition Soldier'), findsWidgets);
     expect(find.text('Roll Dice'), findsOneWidget);
     await saveFightShot(tester, 'fight-enemy-tall');
