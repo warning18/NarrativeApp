@@ -46,6 +46,19 @@ isn't reconstructable from git history alone.
     seated, the log) and `autoplay_summary_test`;
     `offers_session_test` (the first banner).
 
+## [1.630.0+666]
+
+- **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
+  choice: the Penitents "could shrink but not disappear").
+  - The district attacks (v1.617) skipped no seat, so the Penitents could
+    still lose the Wall of Names to a siege and fall.
+  - Now no rival attacks a guarded seat (the Penitents', as Candlehold).
+    A siege of one saved before this update breaks, and nothing is taken.
+  - The Penitents can still lose Last Lantern Street.
+  - Tests: `district_attacks_test`. Through chapters 2 to 8, every attack
+    is rolled and every siege lost: the Penitents keep the Wall and never
+    fall.
+
 ## [1.629.0+665]
 
 - **Cleanup: 120 file-only names in lib/combat are private**

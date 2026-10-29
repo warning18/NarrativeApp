@@ -234,4 +234,49 @@ void main() {
         [...flags, siegeOutcomeFlag(d, 'defended')], PoliticsState.empty);
     expect(over, ['other', siegeOutcomeFlag(d, 'defended')]);
   });
+
+  // The user's rule (wave 18 step 2, Q1 = A): a guarded clan may shrink but
+  // not disappear. The Penitents against everyone, at their worst: every
+  // chapter's turn, every attack rolled and every siege lost.
+  test('a guarded seat is never attacked: the Penitents shrink, never fall',
+      () {
+    const wall = 'ashen_quarter_wall_of_names';
+    expect(seatGuarded('penitents'), isTrue);
+    expect(data.faction('penitents')!.seat, wall);
+    var state = related(1).copyWith(power: {
+      for (final c in clans) c: 90,
+      'penitents': attackMinPower,
+    });
+    for (var chapter = 2; chapter <= 8; chapter++) {
+      state = territoryTurn(state,
+              data: data, geography: geography, chapter: chapter)
+          .state;
+      final rolled = rollDistrictAttacks(state,
+          data: data, geography: geography, day: chapter, random: _Fixed(0));
+      expect(rolled.begun.map((s) => s.districtId), isNot(contains(wall)));
+      state = rolled.state;
+      for (final siege in siegesOf(state)) {
+        state = settleSiegeAway(state, siege,
+            data: data, geography: geography, random: _Fixed(0));
+      }
+    }
+    expect(holderOf(wall, geography, state), 'penitents');
+    expect(state.fallen, isNot(contains('penitents')));
+    // They shrank: Last Lantern Street is gone.
+    expect(holderOf('reliquary_last_lantern', geography, state),
+        isNot('penitents'));
+
+    // A siege of the seat saved before the guard breaks, with nothing taken.
+    final old = DistrictSiege(
+        districtId: wall,
+        attacker: 'dominion',
+        holder: 'penitents',
+        cityId: 'ashen_quarter',
+        until: 1);
+    final settled = settleSiegeAway(
+        PoliticsState.empty.copyWith(sieges: {wall: old.toEntry()}), old,
+        data: data, geography: geography, random: _Fixed(0));
+    expect(settled.sieges, isEmpty);
+    expect(holderOf(wall, geography, settled), 'penitents');
+  });
 }
