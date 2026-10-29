@@ -219,8 +219,8 @@ const List<ChapterCondition> chapterConditions = [
 ];
 
 /// The chapters that have a condition.
-const int firstConditionChapter = 2;
-const int lastConditionChapter = 6;
+const int _firstConditionChapter = 2;
+const int _lastConditionChapter = 6;
 
 /// The seed a run's conditions are drawn from: its own, or, for a save
 /// made before runs had one, one made from the character.
@@ -240,13 +240,13 @@ int conditionSeedFor({
 /// five different conditions.
 ChapterCondition? chapterConditionFor(
     {required int seed, required int chapter}) {
-  if (chapter < firstConditionChapter || chapter > lastConditionChapter) {
+  if (chapter < _firstConditionChapter || chapter > _lastConditionChapter) {
     return null;
   }
   final random = Random(seed);
   final used = <ChapterConditionId>{};
   ChapterCondition? pick;
-  for (var c = firstConditionChapter; c <= chapter; c++) {
+  for (var c = _firstConditionChapter; c <= chapter; c++) {
     final pool = [
       for (final condition in chapterConditions)
         if (!used.contains(condition.id) && condition.chapters.contains(c))

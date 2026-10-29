@@ -40,7 +40,7 @@ const Map<String, String> shrunkCompanionDice = {'sable': 'shadow_die'};
 /// Whether [json] (a raw save) was written by the game before the dice took
 /// their sizes. A map without a save version (a session built in code, a
 /// test's) is taken as it is.
-bool diceResizeDue(Map<String, dynamic> json) =>
+bool _diceResizeDue(Map<String, dynamic> json) =>
     json['saveVersion'] is num &&
     ((json[diceDataVersionKey] as num?)?.toInt() ?? 1) < diceDataVersion;
 
@@ -109,7 +109,7 @@ String _dieOfUpgradesKey(String key) {
 /// [json] with its dice moved to their sizes (see the top of this file),
 /// and [diceDataVersionKey] set; [json] itself when it isn't due.
 Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
-  if (!diceResizeDue(json)) return json;
+  if (!_diceResizeDue(json)) return json;
   final out = Map<String, dynamic>.from(json);
   out[diceDataVersionKey] = diceDataVersion;
 
