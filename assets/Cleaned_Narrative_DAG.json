@@ -14,8 +14,8 @@
     },
     "choices": [
       {
-        "text": "Choose who you are...",
-        "text_fr": "Choisissez qui vous êtes...",
+        "text": "Choose who you are…",
+        "text_fr": "Choisissez qui vous êtes…",
         "next_id": "100_dice",
         "opensCharacterCreation": true
       }
@@ -1933,8 +1933,8 @@
   },
   "896_failed": {
     "id": "896_failed",
-    "description": "He let me finish, which was worse than being interrupted, and then he named a price for my nerve, and **the price was a good part of what I had left**. The third bell does not wait for pride. I paid.",
-    "description_fr": "Il me laissa finir, ce qui était pire qu’une interruption, puis il fixa un prix à mon aplomb, et **ce prix était une bonne partie de ce qui me restait**. La troisième cloche n’attend pas l’orgueil. Je payai.",
+    "description": "He let me finish, which was worse than being interrupted, and then he named a price for my nerve, and **the price was a good part of what I had left**. The third bell does not wait for pride. I paid.\n\nThe third bell rang, and the Lark let go of the world. There was no lurch. The quay simply went down and away, and the sign painted across our mainsail woke as it went — a long shape like a wing drawn in one stroke — burning from the inside the way the wet ones had on the quay, and she rose on it as if she had been waiting all her life to be asked.",
+    "description_fr": "Il me laissa finir, ce qui était pire qu’une interruption, puis il fixa un prix à mon aplomb, et **ce prix était une bonne partie de ce qui me restait**. La troisième cloche n’attend pas l’orgueil. Je payai.\n\nLa troisième cloche sonna, et l’Alouette lâcha le monde. Il n’y eut pas de secousse. Le quai descendit simplement et s’éloigna, et le signe peint sur notre grand-voile s’éveilla à mesure — une longue forme comme une aile tracée d’un seul trait — brûlant de l’intérieur comme les voiles mouillées du quai, et le navire monta dessus comme s’il avait attendu toute sa vie qu’on le lui demande.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -1943,9 +1943,9 @@
     "location": "alster_high_quay",
     "choices": [
       {
-        "text": "Pay, and climb aboard",
-        "text_fr": "Payer, et monter à bord",
-        "next_id": "960_lift",
+        "text": "Pay, and hold on",
+        "text_fr": "Payer, et s’accrocher",
+        "next_id": "960",
         "goldMod": -40,
         "flagsToAdd": [
           "boarded_fined"
@@ -1955,8 +1955,8 @@
   },
   "897_failed": {
     "id": "897_failed",
-    "description": "\"There is no Arno Kell on my manifest,\" the mate said, without looking up, \"because **Arno Kell is standing behind you, and he has been my bosun for eleven years**.\" He held out his hand, palm up, under the edge of the manifest where the crew could not see it. The bribe was smaller than the fine would have been. That is the only reason I paid it.",
-    "description_fr": "« Il n’y a pas d’Arno Kell sur mon manifeste, dit le second sans lever les yeux, parce qu’**Arno Kell se tient derrière vous, et qu’il est mon maître d’équipage depuis onze ans**. » Il tendit la main, paume en l’air, sous le bord du manifeste, là où l’équipage ne pouvait pas la voir. Le pot-de-vin coûtait moins cher que l’amende. C’est la seule raison pour laquelle je le payai.",
+    "description": "\"There is no Arno Kell on my manifest,\" the mate said, without looking up, \"because **Arno Kell is standing behind you, and he has been my bosun for eleven years**.\" He held out his hand, palm up, under the edge of the manifest where the crew could not see it. The bribe was smaller than the fine would have been. That is the only reason I paid it.\n\nThe third bell rang, and the Lark let go of the world. There was no lurch. The quay simply went down and away, and the sign painted across our mainsail woke as it went — a long shape like a wing drawn in one stroke — burning from the inside the way the wet ones had on the quay, and she rose on it as if she had been waiting all her life to be asked.",
+    "description_fr": "« Il n’y a pas d’Arno Kell sur mon manifeste, dit le second sans lever les yeux, parce qu’**Arno Kell se tient derrière vous, et qu’il est mon maître d’équipage depuis onze ans**. » Il tendit la main, paume en l’air, sous le bord du manifeste, là où l’équipage ne pouvait pas la voir. Le pot-de-vin coûtait moins cher que l’amende. C’est la seule raison pour laquelle je le payai.\n\nLa troisième cloche sonna, et l’Alouette lâcha le monde. Il n’y eut pas de secousse. Le quai descendit simplement et s’éloigna, et le signe peint sur notre grand-voile s’éveilla à mesure — une longue forme comme une aile tracée d’un seul trait — brûlant de l’intérieur comme les voiles mouillées du quai, et le navire monta dessus comme s’il avait attendu toute sa vie qu’on le lui demande.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -1965,9 +1965,9 @@
     "location": "alster_high_quay",
     "choices": [
       {
-        "text": "Pay the bribe and board",
-        "text_fr": "Payer le pot-de-vin et embarquer",
-        "next_id": "960_lift",
+        "text": "Pay the bribe and hold on",
+        "text_fr": "Payer le pot-de-vin et s’accrocher",
+        "next_id": "960",
         "goldMod": -25,
         "flagsToAdd": [
           "boarded_bribed"
@@ -1977,8 +1977,8 @@
   },
   "898_failed": {
     "id": "898_failed",
-    "description": "The line was wet and the Lark was rising faster than I could climb, and halfway up she gave a little lift, like a horse settling, and the rope went out of my hands. I hit the stones of the quay with the whole of my back.\n\nA deckhand leaned over the rail, looked down at me for a moment as if weighing something, and dropped a weighted net on my head; I came up her side in it like a sack of turnips, and was **tipped out on her deck at the third bell**.",
-    "description_fr": "L’amarre était mouillée et l’Alouette montait plus vite que je ne grimpais, et à mi-hauteur elle eut un petit sursaut, comme un cheval qui s’installe, et la corde m’échappa des mains. Je heurtai les pierres du quai de tout mon dos.\n\nUn matelot se pencha par-dessus le bastingage, me considéra un instant comme s’il pesait quelque chose, et me lâcha un filet lesté sur la tête ; je remontai le long de la coque dedans comme un sac de navets, et **l’on me vida sur le pont au troisième coup de cloche**.",
+    "description": "The line was wet and the Lark was rising faster than I could climb, and halfway up she gave a little lift, like a horse settling, and the rope went out of my hands. I hit the stones of the quay with the whole of my back.\n\nA deckhand leaned over the rail, looked down at me for a moment as if weighing something, and dropped a weighted net on my head; I came up her side in it like a sack of turnips, and was **tipped out on her deck at the third bell**.\n\nThe third bell rang, and the Lark let go of the world. There was no lurch. The quay simply went down and away, and the sign painted across our mainsail woke as it went — a long shape like a wing drawn in one stroke — burning from the inside the way the wet ones had on the quay, and she rose on it as if she had been waiting all her life to be asked.",
+    "description_fr": "L’amarre était mouillée et l’Alouette montait plus vite que je ne grimpais, et à mi-hauteur elle eut un petit sursaut, comme un cheval qui s’installe, et la corde m’échappa des mains. Je heurtai les pierres du quai de tout mon dos.\n\nUn matelot se pencha par-dessus le bastingage, me considéra un instant comme s’il pesait quelque chose, et me lâcha un filet lesté sur la tête ; je remontai le long de la coque dedans comme un sac de navets, et **l’on me vida sur le pont au troisième coup de cloche**.\n\nLa troisième cloche sonna, et l’Alouette lâcha le monde. Il n’y eut pas de secousse. Le quai descendit simplement et s’éloigna, et le signe peint sur notre grand-voile s’éveilla à mesure — une longue forme comme une aile tracée d’un seul trait — brûlant de l’intérieur comme les voiles mouillées du quai, et le navire monta dessus comme s’il avait attendu toute sa vie qu’on le lui demande.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -1989,7 +1989,7 @@
       {
         "text": "Haul yourself to your feet",
         "text_fr": "Se remettre debout",
-        "next_id": "960_lift",
+        "next_id": "960",
         "healAmount": -3,
         "flagsToAdd": [
           "boarded_fell"
@@ -2609,7 +2609,7 @@
     "description": "I left the Face with the first stars, and had gone perhaps two hundred paces when the dunes closed behind me like a door. The wind had already taken my tracks.\n\nI do not know how long. The sun was a white coin, then it was not there. Every dune was the same dune and my mouth was sand. I sat down, because walking in circles cost more than sitting.\n\nSomething moved at the edge of my eye: **a dog**, small and square, white with black patches under the dust, flat-faced, her ears standing up like a bat’s. She looked at me the way you look at a decision. She turned, took three steps, and looked back.\n\nI followed because I had nothing left to argue with. She stopped at every crest and waited for me, and she did not once look at the sky.\n\nThe lights came up out of the dark all at once: a hollow in the dunes, palms, and a scatter of white clay huts glowing like loaves in an oven. She sat down at the edge of the light and would not go any further without me.\n\nI called her **Vica**. I could not have told you why; the word came up out of the heat like the name of an old friend, and she turned her head as if it had been said before.",
     "description_fr": "Je quittai le Visage avec les premières étoiles, et j’avais fait peut-être deux cents pas quand les dunes se refermèrent derrière moi comme une porte. Le vent avait déjà pris mes traces.\n\nJe ne sais pas combien de temps. Le soleil fut une pièce blanche, puis il n’y fut plus. Toutes les dunes étaient la même dune et ma bouche était de sable. Je m’assis, parce que tourner en rond coûtait plus que rester assis.\n\nQuelque chose bougea au bord de mon regard : **un chien**, petit et carré, blanc taché de noir sous la poussière, le museau plat, les oreilles dressées comme celles d’une chauve-souris. Elle me regarda comme on regarde une décision. Elle se détourna, fit trois pas, et regarda en arrière.\n\nJe la suivis parce qu’il ne me restait plus rien à lui opposer. Elle s’arrêtait à chaque crête pour m’attendre, et elle ne leva pas une fois les yeux vers le ciel.\n\nLes lumières surgirent de la nuit d’un seul coup : un creux dans les dunes, des palmiers, et un semis de huttes d’argile blanche qui luisaient comme des pains dans un four. Elle s’assit au bord de la lumière et refusa d’aller plus loin sans moi.\n\nJe l’appelai **Vica**. Je n’aurais pas su dire pourquoi : le mot monta de la chaleur comme le nom d’un vieil ami, et elle tourna la tête comme s’il avait déjà été dit.",
     "context_taxonomy": {
-      "ui_theme": "docks",
+      "ui_theme": "desert",
       "mood": "tender",
       "speaker": "Narrator"
     },
@@ -2649,7 +2649,14 @@
       }
     ],
     "prompt": "What do you do for her?",
-    "prompt_fr": "Que faites-vous pour elle ?"
+    "prompt_fr": "Que faites-vous pour elle ?",
+    "flag_callbacks": [
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa came behind me through the whole of it, a dozen paces back, and did not ask about the dog; she only watched where I put my feet.",
+        "fr": "Lysa me suivit tout du long, à une douzaine de pas, et ne demanda rien au sujet du chien ; elle regardait seulement où je posais les pieds."
+      }
+    ]
   },
   "1200": {
     "id": "1200",
@@ -2803,15 +2810,7 @@
         "next_id": "1200",
         "flagsToAdd": [
           "met_vess"
-        ],
-        "politics": {
-          "standing": {
-            "vigil": 5
-          },
-          "marks": {
-            "stitchers": "friend"
-          }
-        }
+        ]
       }
     ]
   },
@@ -3298,7 +3297,8 @@
           "void_banner_bearer"
         ],
         "hideIfFlags": [
-          "hub_2015_vess"
+          "hub_2015_vess",
+          "q_ch1_vess_in_the_dark_accepted"
         ],
         "flagsToAdd": [
           "hub_2015_vess"

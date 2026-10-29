@@ -7433,8 +7433,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Arrêter la lecture',
   },
   'tut_guide_default_name': {
-    AppLanguage.en: 'Vica',
-    AppLanguage.fr: 'Vica',
+    AppLanguage.en: 'Your companion',
+    AppLanguage.fr: 'Votre compagnon',
   },
   'tut_story_title': {
     AppLanguage.en: 'The story',
@@ -7518,9 +7518,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_story_1': {
     AppLanguage.en:
-        "Woof! I’m {name}. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
+        "Woof! I’ll be your guide. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
     AppLanguage.fr:
-        "Wouf\u00a0! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
+        "Wouf\u00a0! Je serai votre guide. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
   },
   'tut_story_2': {
     AppLanguage.en: 'This is the chapter you are in.',
