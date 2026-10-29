@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +14,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -24,7 +27,8 @@ import '../widgets/detail_dialog.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/help_hint.dart';
-import '../widgets/interactive_die.dart';
+import '../widgets/poly_die.dart';
+import '../widgets/rolling_die.dart';
 import 'skills/die_slot_ring.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
@@ -52,6 +56,15 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   /// The face of the die the player has turned to (v1.241), by its index.
   int _faceSel = 0;
   String? _selDieFor;
+
+  /// The banner a clan's gift die wears: its `clan` field names the clan, the
+  /// clan's own colour paints it. (Core's field; no die carries one yet.)
+  DieClan? _clanOf(Map<String, dynamic> die) {
+    final id = die['clan']?.toString();
+    if (id == null || id.isEmpty) return null;
+    return DieClan(id,
+        Color(ref.watch(clanDataProvider).factions[id]?.color ?? 0xFFB08D3C));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,19 +207,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             .read(playerSessionProvider.notifier)
             .clearDiceFaceSkill(_selectedDiceId!, index);
 
-    bool dropOk(int index, String skillId) {
-      if (!isAssignableFace(faces[index])) return false;
-      if (!canSetSkillOnFace(skillId, index, faces, assignments, skills)) {
-        return false;
-      }
-      final restriction = restrictionOf(index);
-      return restriction == null ||
-          (skills[skillId] as Map<String, dynamic>?)?['element']?.toString() ==
-              restriction;
-    }
-
-    // A tap on a face picks it (the cube turns to it); a double tap, on its
-    // slot or on the cube, chooses its skill (v1.242).
+    // A tap on a face picks it (the die in the middle rolls to it); a double
+    // tap, or its pencil, chooses its skill (v1.242).
     void selectFace(int index) => setState(() => _faceSel = index);
     void pickFace(int index) {
       setState(() => _faceSel = index);
@@ -263,12 +265,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 selected: _faceSel.clamp(0, faces.length - 1),
                 showOdds: ref.watch(appModeProvider) == AppMode.edit,
                 totalWeight: totalWeight,
-                still: MediaQuery.of(context).disableAnimations,
-                onSelect: (i) => setState(() => _faceSel = i),
                 onActivate: pickFace,
                 picks: assignments,
-                accepts: (i, id) => dropOk(i, id),
-                onDrop: (i, id) => assignTo(i, id),
               ),
             ],
           ),
@@ -298,6 +296,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                   count: faces.length,
                   center: _RingCenter(
                     faceCount: faces.length,
+                    face: _faceSel.clamp(0, faces.length - 1),
+                    dieId: _selectedDiceId!,
+                    clan:
+                        _clanOf(dice[_selectedDiceId!] as Map<String, dynamic>),
+                    still: MediaQuery.of(context).disableAnimations,
                     withSkill: [
                       for (var i = 0; i < faces.length; i++)
                         if (faceSkillId(faces[i], limited[i.toString()]) !=
@@ -658,37 +661,65 @@ class _SkillChip extends StatelessWidget {
 class _RingCenter extends StatelessWidget {
   const _RingCenter({
     required this.faceCount,
+    required this.face,
+    required this.dieId,
     required this.withSkill,
     required this.language,
+    required this.still,
+    this.clan,
   });
 
   final int faceCount;
+
+  /// The picked face: the die rolls to it.
+  final int face;
+  final String dieId;
   final int withSkill;
   final AppLanguage language;
+  final bool still;
+  final DieClan? clan;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      key: const Key('die_ring_center'),
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text('d$faceCount',
-            style: theme.textTheme.headlineSmall
-                ?.copyWith(fontWeight: FontWeight.bold, height: 1)),
-        const SizedBox(height: 4),
-        Text(
-          trFor(language, 'die_ring_skill_faces')
-              .replaceAll('{n}', '$withSkill')
-              .replaceAll('{max}', '$faceCount'),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-        ),
-      ],
-    );
+    return LayoutBuilder(builder: (context, box) {
+      // The die takes what the middle leaves after its two lines of text.
+      final room = math.min(box.maxWidth, box.maxHeight);
+      final size = (room * 0.6).clamp(36.0, 100.0);
+      return Column(
+        key: const Key('die_ring_center'),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RollingDie(
+            faceCount: faceCount,
+            face: face,
+            size: size,
+            skin: dieSkinOf(dieId),
+            clan: clan,
+            still: still,
+          ),
+          const SizedBox(height: 4),
+          Text('d$faceCount',
+              style: theme.textTheme.labelLarge
+                  ?.copyWith(fontWeight: FontWeight.bold, height: 1)),
+          SizedBox(
+            width: room * 0.84,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                trFor(language, 'die_ring_skill_faces')
+                    .replaceAll('{n}', '$withSkill')
+                    .replaceAll('{max}', '$faceCount'),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -1031,6 +1062,7 @@ class _DieRail extends StatelessWidget {
                           size: 26,
                           still: true,
                           skin: dieSkinOf(id),
+                          shape: dieShapeOf((dice[id]['faces'] as List).length),
                         ),
                       ),
                       Text(
@@ -1067,11 +1099,7 @@ class _DieStage extends StatelessWidget {
     required this.selected,
     required this.showOdds,
     required this.totalWeight,
-    required this.still,
-    required this.onSelect,
     required this.onActivate,
-    required this.accepts,
-    required this.onDrop,
   });
 
   final String dieId;
@@ -1087,21 +1115,11 @@ class _DieStage extends StatelessWidget {
   final int selected;
   final bool showOdds;
   final double totalWeight;
-  final bool still;
-  final ValueChanged<int> onSelect;
   final ValueChanged<int> onActivate;
-  final bool Function(int index, String skillId) accepts;
-  final void Function(int index, String skillId) onDrop;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final n = faces.length;
-    // A die of seven faces shows six at a time: the window slides to keep the
-    // picked one on the cube.
-    final first = n > 6 ? (selected - 5).clamp(0, n - 6) : 0;
-    int slotOf(int index) => n >= 6 ? (index - first).clamp(0, 5) : index;
-    int indexOf(int slot) => n >= 6 ? first + slot : slot % n;
     final face = faces[selected];
     final assigned = assignments[selected.toString()];
     final skillId = faceSkillId(face, assigned);
@@ -1132,26 +1150,7 @@ class _DieStage extends StatelessWidget {
           height: _stageCardHeight,
           child: Row(
             children: [
-              DragTarget<String>(
-                onWillAcceptWithDetails: (d) => accepts(selected, d.data),
-                onAcceptWithDetails: (d) => onDrop(selected, d.data),
-                builder: (context, candidate, rejected) => SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Center(
-                    child: InteractiveDie(
-                      size: 78,
-                      still: still,
-                      skin: dieSkinOf(dieId),
-                      faces: _cubeSides(faces, assignments, skills, 78,
-                          first: first),
-                      selected: slotOf(selected),
-                      onSelect: (slot) => onSelect(indexOf(slot)),
-                      onActivate: (slot) => onActivate(indexOf(slot)),
-                    ),
-                  ),
-                ),
-              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
