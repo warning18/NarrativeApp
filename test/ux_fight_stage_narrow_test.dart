@@ -22,6 +22,7 @@ void main() {
     expect(hero,
         FightFigure.sizeFor(roninSprite, FightBoxes.pixelFor(roninSprite, 72)));
     expect(find.text('Roll Dice'), findsOneWidget);
+    await saveFightShot(tester, 'stage-soldier-320');
     expect(tester.takeException(), isNull);
   });
 }

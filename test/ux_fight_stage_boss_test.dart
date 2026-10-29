@@ -1,5 +1,7 @@
 // A boss stands in the bigger box and its fight reserves the taller stage
 // (v1.612): Aurel Vane against the hero at 412 px.
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,7 +14,8 @@ void main() {
   testWidgets('a boss stands in the boss box on the taller stage',
       (tester) async {
     await enterFight(tester,
-        size: const Size(412, 1000), enemyId: 'aurel_vane');
+        size: Size(412, Platform.environment['UX_SHOTS'] == null ? 1000 : 1500),
+        enemyId: 'aurel_vane');
     final stage = tester.getSize(find.byKey(const Key('fight_stage')));
     expect(stage.height, FightBoxes.wide.stageHeight(boss: true));
     final boss = tester.getSize(find.byWidgetPredicate((w) =>
@@ -24,6 +27,7 @@ void main() {
     final hero = tester.getSize(find.byKey(const Key('fight_hero_sprite')));
     expect(hero.height,
         roninSprite.frameHeight * FightBoxes.pixelFor(roninSprite, 96) + 6);
+    await saveFightShot(tester, 'stage-boss-412');
     expect(tester.takeException(), isNull);
   });
 }
