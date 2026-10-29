@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.624.0+660]
+
+- **Cleanup: 6 unused symbols removed from UX's files**
+  `elementColor`, `adventureNodeCategoryIcon`, `campRouteLabel`,
+  `itemRarityLabel`, `RoomArtPainter` and a hull shade that nothing used
+  (162 lines). No behaviour change.
+
 ## [1.623.0+659]
 
 - **Cleanup: 26 unused symbols removed from Core's files**
