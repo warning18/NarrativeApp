@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.646.0+682]
+
+- **Cleanup: mechanical lint fixes, and the lints stay on**
+  `unnecessary_breaks`, `unnecessary_parenthesis`, `unnecessary_lambdas`,
+  `unnecessary_null_checks`, `prefer_final_locals`, `prefer_const_declarations`
+  and `prefer_const_constructors` fixed by the analyzer (277 sites in 118
+  files) and enabled in `analysis_options.yaml`; the three generated chart
+  tables are exempt from the last. No behaviour change.
+
 ## [1.645.0+681]
 
 - **Core: the data for the clan power sign (option A, a ranking with
