@@ -16,8 +16,3 @@ final townRulersProvider = Provider<Map<String, TownRuler>>((ref) => townRulers(
       ref.watch(factionsProvider),
       planIds: ref.watch(cityPlanRecordsProvider).value?.keys ?? const [],
     ));
-
-/// Who rules [placeId] (a town or a district of one) now; null for a place
-/// that is neither.
-TownRuler? rulerOfTown(WidgetRef ref, String placeId) =>
-    ref.watch(townRulersProvider.select((rulers) => rulers[placeId]));

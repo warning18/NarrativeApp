@@ -47,16 +47,6 @@ class DbSchema {
 /// images dropped in are bundled without further wiring.
 String visualAssetFolder(DbSchema schema) => 'assets/visuals/${schema.id}/';
 
-/// Full asset path for [record]'s visual, or null if the schema has no
-/// visual field or the record hasn't set one.
-String? visualAssetPath(DbSchema schema, Map<String, dynamic> record) {
-  final field = schema.visualAssetField;
-  if (field == null) return null;
-  final filename = record[field]?.toString() ?? '';
-  if (filename.isEmpty) return null;
-  return '${visualAssetFolder(schema)}$filename';
-}
-
 FieldSchema visualAssetFieldSchema(String schemaId) => FieldSchema(
       key: 'visualAsset',
       label: 'Visual Asset (filename in assets/visuals/$schemaId/)',

@@ -270,10 +270,6 @@ class ShipState {
   /// Layers the bulwark can hold right now: its working pips.
   int get maxLayers => min(maxShieldLayers, room(ShipRoom.bulwark).working);
 
-  /// Evasion from the helm alone (see [evasionFor] for the helmsman's).
-  int get baseEvasion =>
-      min(maxEvasionPercent, room(ShipRoom.helm).working * evasionPerHelmLevel);
-
   ShipState copyWith({
     int? hull,
     int? layers,

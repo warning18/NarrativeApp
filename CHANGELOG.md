@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.623.0+659]
+
+- **Cleanup: 26 unused symbols removed from Core's files**
+  Dead helpers, constants and providers in `lib/combat`, `lib/data`,
+  `lib/providers` and `lib/gamedata` that nothing called (136 lines). No
+  behaviour change.
+
 ## [1.622.0+658]
 
 - **Narrative: chapter 1 in the percussive style** (the user's pilot, `docs/proposals/percussive-style.md`).

@@ -424,10 +424,6 @@ double signPower(SignRarity rarity, int level) =>
     signRarityMultipliers[rarity]! *
     (1 + signLevelStep * (level.clamp(1, maxSignLevel) - 1));
 
-/// [base] at [rarity] and [level] (see [SignEffect.scaled]).
-int scaleSignValue(int base, SignRarity rarity, int level) =>
-    base <= 0 ? base : max(1, (base * signPower(rarity, level)).round());
-
 // --- Pacts ----------------------------------------------------------------
 
 /// What a Pit sign costs first: for [SignPact.fights] fights after it is
@@ -626,8 +622,6 @@ class SignDef {
   bool get isDuo => requiresPatrons.isNotEmpty;
 
   String nameFor(AppLanguage language) => _pick(language, name, nameFr);
-  String flavourFor(AppLanguage language) =>
-      _pick(language, flavour, flavourFr);
 
   /// Whether [patronId] may offer this sign: its own patron, or one of a
   /// duo's two.
