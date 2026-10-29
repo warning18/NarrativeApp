@@ -60,7 +60,7 @@ import 'ship_combat.dart' as combat show endRound;
 enum SeaWeather { calm, tailwind, crosswind, squall, fog }
 
 /// How often each weather comes, out of their sum.
-const Map<SeaWeather, int> weatherWeights = {
+const Map<SeaWeather, int> _weatherWeights = {
   SeaWeather.calm: 40,
   SeaWeather.tailwind: 15,
   SeaWeather.crosswind: 15,
@@ -70,9 +70,9 @@ const Map<SeaWeather, int> weatherWeights = {
 
 /// The weather a [roll] in [0, 1) draws.
 SeaWeather weatherFor(double roll) {
-  final total = weatherWeights.values.fold<int>(0, (a, b) => a + b);
+  final total = _weatherWeights.values.fold<int>(0, (a, b) => a + b);
   var at = roll * total;
-  for (final entry in weatherWeights.entries) {
+  for (final entry in _weatherWeights.entries) {
     if (at < entry.value) return entry.key;
     at -= entry.value;
   }
@@ -136,9 +136,9 @@ EnemyHabit habitFromName(String? name) {
 }
 
 /// A fleeing ship turns tail at this share of its hull or less.
-const double fleeHullShare = 0.4;
+const double _fleeHullShare = 0.4;
 
-bool isFleeing(ShipState enemy) => enemy.hull <= enemy.maxHull * fleeHullShare;
+bool isFleeing(ShipState enemy) => enemy.hull <= enemy.maxHull * _fleeHullShare;
 
 /// The range an enemy with [habit] steers for: a raider closes to grapple
 /// until it is hurt, then runs; a marksman keeps its distance; a rammer
@@ -163,17 +163,17 @@ ShipRange stepToward(ShipRange from, ShipRange to) {
 }
 
 /// Far apart both ships are harder to hit; side by side, easier.
-const int rangeEvasionStep = 10;
+const int _rangeEvasionStep = 10;
 
-int rangeEvasion(ShipRange range) => switch (range) {
-      ShipRange.close => -rangeEvasionStep,
+int _rangeEvasion(ShipRange range) => switch (range) {
+      ShipRange.close => -_rangeEvasionStep,
       ShipRange.medium => 0,
-      ShipRange.long => rangeEvasionStep,
+      ShipRange.long => _rangeEvasionStep,
     };
 
-const int tailwindEvasion = 10;
-const int crosswindEvasion = 10;
-const int fogEvasion = 5;
+const int _tailwindEvasion = 10;
+const int _crosswindEvasion = 10;
+const int _fogEvasion = 5;
 
 /// A turn ended with at least half the clock left: the Eel is already
 /// turning when the volley comes.
@@ -189,14 +189,14 @@ bool tailwindFor(SeaWeather weather, {bool windKnot = false}) =>
     (windKnot && weather == SeaWeather.crosswind);
 
 /// Evasion the weather adds to one ship ([eel] for the player's).
-int weatherEvasion(SeaWeather weather,
+int _weatherEvasion(SeaWeather weather,
     {required bool eel, bool windKnot = false}) {
   if (tailwindFor(weather, windKnot: windKnot)) {
-    return eel ? tailwindEvasion : 0;
+    return eel ? _tailwindEvasion : 0;
   }
   return switch (weather) {
-    SeaWeather.crosswind => crosswindEvasion,
-    SeaWeather.fog => fogEvasion,
+    SeaWeather.crosswind => _crosswindEvasion,
+    SeaWeather.fog => _fogEvasion,
     _ => 0,
   };
 }
@@ -216,8 +216,8 @@ int battleEvasion(
 }) {
   if (ship.room(ShipRoom.helm).isDown) return 0;
   return (evasionFor(ship, helmsman: helmsman) +
-          rangeEvasion(range) +
-          weatherEvasion(weather, eel: eel, windKnot: windKnot) +
+          _rangeEvasion(range) +
+          _weatherEvasion(weather, eel: eel, windKnot: windKnot) +
           bonus)
       .clamp(0, maxBattleEvasion);
 }
@@ -238,12 +238,12 @@ AimResult aimResultFor(double position) {
 
 /// A critical shot (a perfect aim, or Liora's eagle eye): it cannot be
 /// slipped, does half again the hull and knocks an extra pip off.
-const ShotMods criticalMods =
+const ShotMods _criticalMods =
     ShotMods(damageFactor: 1.5, extraRoomDamage: 1, sure: true);
 
 /// A room already hit this turn loses this many extra pips per hit after
 /// the first.
-const int focusRoomDamage = 1;
+const int _focusRoomDamage = 1;
 
 /// Rounds a grapeshot hit costs the enemy's crew a repair.
 const int grapeRounds = 2;
@@ -310,12 +310,12 @@ const Map<CrewOrder, List<ShipRoom>> orderRooms = {
 };
 
 /// Health Maren's blessing gives each crew member.
-const int blessHeal = 10;
+const int _blessHeal = 10;
 
 /// What the sea throws in now and then, from the second round on.
-enum BattleSeaEvent { rogueWave, seaCreature, driftingWreck }
+enum _BattleSeaEvent { rogueWave, seaCreature, driftingWreck }
 
-const double seaEventChance = 0.10;
+const double _seaEventChance = 0.10;
 const int seaCreatureHull = 10;
 
 /// A rammer's prow: hull through any shield, and a leak.
@@ -324,8 +324,8 @@ const int ramHullDamage = 12;
 /// A boarder comes over the rail every this many rounds alongside (the
 /// third, the sixth…, counted only while the ships lie side by side),
 /// shields or not, this many times a battle at most.
-const int boarderEvery = 3;
-const int boarderMaxTries = 2;
+const int _boarderEvery = 3;
+const int _boarderMaxTries = 2;
 
 /// A marksman's shots go for the crew.
 const double marksmanInjuryFactor = 1.5;
@@ -356,12 +356,12 @@ enum ShipIntent {
   /// open (an eager boarder comes whatever the rail).
   board,
 
-  /// Every hand to the pumps and the fires: [mendExtraActions] more
+  /// Every hand to the pumps and the fires: [_mendExtraActions] more
   /// repairs, and its guns hold fire (they still charge).
   mend,
 
   /// Braced for the Eel's guns: this turn they do half the hull
-  /// ([braceDamageFactor]), and its own guns hold fire.
+  /// ([_braceDamageFactor]), and its own guns hold fire.
   brace,
 
   /// It runs: one range farther off, and away if already far.
@@ -372,32 +372,32 @@ enum ShipIntent {
 }
 
 /// A mending crew works this many repairs more than its usual.
-const int mendExtraActions = 2;
+const int _mendExtraActions = 2;
 
 /// A ship braces at most once in this many rounds, when the Eel's ready
-/// guns in reach would do [braceVolleyShare] of its hull or more and it is
-/// below [braceHullShare] of its hull; braced, it takes
-/// [braceDamageFactor] of the hull of every shot. (Holding its fire costs
+/// guns in reach would do [_braceVolleyShare] of its hull or more and it is
+/// below [_braceHullShare] of its hull; braced, it takes
+/// [_braceDamageFactor] of the hull of every shot. (Holding its fire costs
 /// a ship more than the half it saves, so it braces only against a volley
 /// that could all but sink it: tuned from 40% and 70% in the balance
 /// simulation.)
-const int braceEvery = 3;
-const double braceVolleyShare = 0.6;
-const double braceHullShare = 0.5;
-const double braceDamageFactor = 0.5;
+const int _braceEvery = 3;
+const double _braceVolleyShare = 0.6;
+const double _braceHullShare = 0.5;
+const double _braceDamageFactor = 0.5;
 
 /// The chance a step the enemy declared answers its helm: this, plus
-/// [intentHelmPerPip] a working helm pip, at most 1. Chain shot on its
+/// [_intentHelmPerPip] a working helm pip, at most 1. Chain shot on its
 /// helm makes it fail more.
-const double intentHelmBase = 0.5;
-const double intentHelmPerPip = 0.2;
+const double _intentHelmBase = 0.5;
+const double _intentHelmPerPip = 0.2;
 
-double intentHelmChance(ShipState enemy) => min(
-    1.0, intentHelmBase + intentHelmPerPip * enemy.room(ShipRoom.helm).working);
+double intentHelmChance(ShipState enemy) => min(1.0,
+    _intentHelmBase + _intentHelmPerPip * enemy.room(ShipRoom.helm).working);
 
 /// A raider that turns tail waits for a friend on the horizon unless it
 /// is below this share of its hull.
-const double fleeDespiteSailShare = 0.25;
+const double _fleeDespiteSailShare = 0.25;
 
 // --- Push (v1.190) ---------------------------------------------------------
 
@@ -407,47 +407,47 @@ const int pushEvasion = 15;
 /// Hull a pushed hold patches (and it bails a leak).
 const int pushHullPatch = 8;
 
-/// The chance in percent a push strains its room: [pushStrainBase], plus
-/// [pushStrainPerPush] for every push already made this battle, less
-/// [pushStrainManned] with a hand standing in the room, from
-/// [pushStrainMin] to [pushStrainMax]. Under a third of it, the room
+/// The chance in percent a push strains its room: [_pushStrainBase], plus
+/// [_pushStrainPerPush] for every push already made this battle, less
+/// [_pushStrainManned] with a hand standing in the room, from
+/// [_pushStrainMin] to [pushStrainMax]. Under a third of it, the room
 /// also catches fire. A push is a move for the turn that needs it: the
 /// second of a battle is already at even odds.
-const int pushStrainBase = 30;
-const int pushStrainPerPush = 20;
-const int pushStrainManned = 10;
-const int pushStrainMin = 10;
+const int _pushStrainBase = 30;
+const int _pushStrainPerPush = 20;
+const int _pushStrainManned = 10;
+const int _pushStrainMin = 10;
 const int pushStrainMax = 85;
 
 int pushStrainFor({required int pushes, required bool manned}) =>
-    (pushStrainBase +
-            pushStrainPerPush * pushes -
-            (manned ? pushStrainManned : 0))
-        .clamp(pushStrainMin, pushStrainMax);
+    (_pushStrainBase +
+            _pushStrainPerPush * pushes -
+            (manned ? _pushStrainManned : 0))
+        .clamp(_pushStrainMin, pushStrainMax);
 
 // --- The battle gets worse (v1.190) ----------------------------------------
 
 /// A room that burned at two round-ends running sets the room beside it
 /// alight this often.
-const double fireSpreadChance = 0.5;
+const double _fireSpreadChance = 0.5;
 
 /// Evasion each open leak costs its ship: she sits heavy in the water.
 const int leakEvasion = 5;
 
 /// From this round on a ship's friend may come over the horizon: each
-/// round-end [sailChance], then [sailRounds] round-ends to arrive, once
+/// round-end [_sailChance], then [sailRounds] round-ends to arrive, once
 /// a battle. A fight dragged out past the tenth round mostly has one.
 const int sailFromRound = 6;
-const double sailChance = 0.4;
+const double _sailChance = 0.4;
 const int sailRounds = 3;
 
-/// The consort's guns: [consortDamageShare] of the enemy's biggest gun, at
-/// least [consortMinDamage], reaching medium and long range; with them up,
+/// The consort's guns: [_consortDamageShare] of the enemy's biggest gun, at
+/// least [_consortMinDamage], reaching medium and long range; with them up,
 /// a ship that likes to close stands off where they reach (see
 /// ShipBattle.enemyIntentFor).
 const String consortWeaponId = 'consort_guns';
-const double consortDamageShare = 1.0;
-const int consortMinDamage = 5;
+const double _consortDamageShare = 1.0;
+const int _consortMinDamage = 5;
 
 ShipWeapon consortWeaponFor(ShipState enemy) {
   final biggest = enemy.weapons.fold<int>(0, (m, w) => max(m, w.damage));
@@ -455,7 +455,7 @@ ShipWeapon consortWeaponFor(ShipState enemy) {
     id: consortWeaponId,
     name: "Consort's guns",
     nameFr: 'Canons du renfort',
-    damage: max(consortMinDamage, (consortDamageShare * biggest).round()),
+    damage: max(_consortMinDamage, (_consortDamageShare * biggest).round()),
     chargeTurns: 2,
     ranges: const {ShipRange.medium, ShipRange.long},
   );
@@ -628,7 +628,7 @@ class ShipBattle {
   bool ran = false;
   bool fired = false;
 
-  /// Enemy room -> shots landed in it this turn (see [focusRoomDamage]).
+  /// Enemy room -> shots landed in it this turn (see [_focusRoomDamage]).
   final Map<ShipRoom, int> focus = {};
 
   // Across turns.
@@ -638,7 +638,7 @@ class ShipBattle {
   int enemyBoardTries = 0;
 
   /// Rounds the enemy has ended side by side with the Eel (see
-  /// [boarderEvery]).
+  /// [_boarderEvery]).
   int roundsAlongside = 0;
   bool boardingSpent = false;
   bool enemyBoardingSpent = false;
@@ -668,7 +668,7 @@ class ShipBattle {
   /// The enemy braced for this turn's guns (see [ShipIntent.brace]).
   bool enemyBraced = false;
   bool _braceLogged = false;
-  int lastBraceTurn = -braceEvery;
+  int lastBraceTurn = -_braceEvery;
   int lastMendTurn = -2;
 
   /// Boarding parties the Eel has thrown back this battle.
@@ -686,7 +686,7 @@ class ShipBattle {
 
   // The battle gets worse (v1.190).
   /// Rooms that burned at the last round-end, per side (see
-  /// [fireSpreadChance]).
+  /// [_fireSpreadChance]).
   final Map<BattleSide, Set<ShipRoom>> _burnedLast = {
     BattleSide.eel: {},
     BattleSide.enemy: {},
@@ -1003,11 +1003,11 @@ class ShipBattle {
       final tries = enemyBoardTries + (enemyBoardingSpent ? 1 : 0);
       final eager = rules.habits &&
           habit == EnemyHabit.boarder &&
-          (roundsAlongside + 1) % boarderEvery == 0 &&
-          tries < boarderMaxTries;
+          (roundsAlongside + 1) % _boarderEvery == 0 &&
+          tries < _boarderMaxTries;
       final nerve = !eager &&
           !enemyBoardingSpent &&
-          tries < boarderMaxTries &&
+          tries < _boarderMaxTries &&
           (boardRoll ?? random.nextDouble)() < boarding.chance;
       if (eager || nerve) {
         return (
@@ -1017,12 +1017,12 @@ class ShipBattle {
       }
     }
     // The Eel's ready guns would tear a hurt ship open: it braces.
-    if (turn - lastBraceTurn >= braceEvery &&
-        enemy.hull < enemy.maxHull * braceHullShare) {
+    if (turn - lastBraceTurn >= _braceEvery &&
+        enemy.hull < enemy.maxHull * _braceHullShare) {
       final ready = player.weapons
           .where((w) => w.isReady && inRange(w))
           .fold<int>(0, (sum, w) => sum + w.damage);
-      if (ready > 0 && ready >= enemy.hull * braceVolleyShare) {
+      if (ready > 0 && ready >= enemy.hull * _braceVolleyShare) {
         return (intent: ShipIntent.brace, toward: null);
       }
     }
@@ -1088,7 +1088,7 @@ class ShipBattle {
 
   /// A friend is on the horizon and the raider can hold till it comes.
   bool get _waitsForSail =>
-      sailIn > 0 && enemy.hull > enemy.maxHull * fleeDespiteSailShare;
+      sailIn > 0 && enemy.hull > enemy.maxHull * _fleeDespiteSailShare;
 
   /// What a beast is about to do, as it stands: turn for the deep, dive,
   /// ram, or lash out.
@@ -1156,9 +1156,9 @@ class ShipBattle {
       mods = mods.merge(const ShotMods(noFire: true));
     }
     if ((focus[room] ?? 0) > 0) {
-      mods = mods.merge(const ShotMods(extraRoomDamage: focusRoomDamage));
+      mods = mods.merge(const ShotMods(extraRoomDamage: _focusRoomDamage));
     }
-    if (eagleEye || aim == AimResult.perfect) mods = mods.merge(criticalMods);
+    if (eagleEye || aim == AimResult.perfect) mods = mods.merge(_criticalMods);
     final gunners = stationGunFactor;
     if (gunners != 1.0) mods = mods.merge(ShotMods(damageFactor: gunners));
     if (!rules.flooding) mods = mods.merge(const ShotMods(floods: false));
@@ -1168,7 +1168,7 @@ class ShipBattle {
     }
     // Braced for the volley: half the hull, the room's pips as ever.
     if (enemyBraced) {
-      mods = mods.merge(const ShotMods(damageFactor: braceDamageFactor));
+      mods = mods.merge(const ShotMods(damageFactor: _braceDamageFactor));
     }
     return mods;
   }
@@ -1500,7 +1500,7 @@ class ShipBattle {
           for (final entry in player.rooms.entries)
             entry.key: entry.value.copyWith(onFire: false),
         });
-        crew = [for (final c in crew) c.withHealth(c.health + blessHeal)];
+        crew = [for (final c in crew) c.withHealth(c.health + _blessHeal)];
       case CrewOrder.shoreUp:
         final bulwark = player.room(ShipRoom.bulwark);
         player = player.withRoom(ShipRoom.bulwark, bulwark.copyWith(damage: 0));
@@ -1605,7 +1605,7 @@ class ShipBattle {
     final mending = live && _intent == ShipIntent.mend;
     if (mending) _add('ship_log_intent_mend', side: BattleSide.enemy);
     final maintenance = enemyMaintenance(enemy,
-        penalty: grapeLeft > 0 ? 1 : 0, extra: mending ? mendExtraActions : 0);
+        penalty: grapeLeft > 0 ? 1 : 0, extra: mending ? _mendExtraActions : 0);
     enemy = maintenance.ship;
     for (final room in maintenance.firesOut) {
       _add('ship_log_enemy_fire_out', side: BattleSide.enemy, room: room);
@@ -1804,13 +1804,13 @@ class ShipBattle {
     final tries = enemyBoardTries + (enemyBoardingSpent ? 1 : 0);
     final eager = rules.habits &&
         habit == EnemyHabit.boarder &&
-        roundsAlongside % boarderEvery == 0 &&
-        tries < boarderMaxTries;
+        roundsAlongside % _boarderEvery == 0 &&
+        tries < _boarderMaxTries;
     if (eager) {
       enemyBoardTries++;
     } else {
       if (enemyBoardingSpent ||
-          tries >= boarderMaxTries ||
+          tries >= _boarderMaxTries ||
           !bulwarkOpen(player) ||
           random.nextDouble() >= boarding.chance) {
         return null;
@@ -1831,13 +1831,13 @@ class ShipBattle {
     final tries = enemyBoardTries + (enemyBoardingSpent ? 1 : 0);
     final eager = rules.habits &&
         habit == EnemyHabit.boarder &&
-        roundsAlongside % boarderEvery == 0 &&
-        tries < boarderMaxTries;
+        roundsAlongside % _boarderEvery == 0 &&
+        tries < _boarderMaxTries;
     if (eager) {
       enemyBoardTries++;
     } else {
       if (enemyBoardingSpent ||
-          tries >= boarderMaxTries ||
+          tries >= _boarderMaxTries ||
           !bulwarkOpen(player)) {
         _add('ship_log_intent_board_held', side: BattleSide.enemy);
         return null;
@@ -1909,7 +1909,7 @@ class ShipBattle {
       : weatherFor(random.nextDouble());
 
   /// A room of [side]'s ship that burned at this round-end and the last
-  /// sets the room beside it alight at [fireSpreadChance] (either side's,
+  /// sets the room beside it alight at [_fireSpreadChance] (either side's,
   /// at random, when both stand and neither burns). The squall's rain,
   /// burning nothing, breaks the run.
   void _spreadFire(BattleSide side, List<ShipRoom> burnedNow) {
@@ -1928,7 +1928,7 @@ class ShipBattle {
               !ship.room(ShipRoom.values[i]).onFire)
             ShipRoom.values[i]
       ];
-      if (beside.isEmpty || random.nextDouble() >= fireSpreadChance) continue;
+      if (beside.isEmpty || random.nextDouble() >= _fireSpreadChance) continue;
       final to = beside.length == 1 ? beside.single : beside[random.nextInt(2)];
       final lit = ship.withRoom(to, ship.room(to).copyWith(onFire: true));
       if (side == BattleSide.eel) {
@@ -1941,7 +1941,7 @@ class ShipBattle {
   }
 
   /// A ship's friend on the horizon: from [sailFromRound], each round-end
-  /// [sailChance] that a sail shows; [sailRounds] round-ends later it
+  /// [_sailChance] that a sail shows; [sailRounds] round-ends later it
   /// comes up and its guns join the enemy's (see [consortWeaponFor]).
   /// Once a battle.
   void _sailRound() {
@@ -1955,7 +1955,7 @@ class ShipBattle {
       return;
     }
     if (sailSighted || turn < sailFromRound) return;
-    if (random.nextDouble() >= sailChance) return;
+    if (random.nextDouble() >= _sailChance) return;
     sailSighted = true;
     sailIn = sailRounds;
     _add('ship_log_sail_sighted', side: BattleSide.enemy);
@@ -2005,17 +2005,17 @@ class ShipBattle {
 
   void _seaEvent() {
     if (!rules.seaEvents || turn < 2) return;
-    if (random.nextDouble() >= seaEventChance) return;
+    if (random.nextDouble() >= _seaEventChance) return;
     final kind =
-        BattleSeaEvent.values[random.nextInt(BattleSeaEvent.values.length)];
+        _BattleSeaEvent.values[random.nextInt(_BattleSeaEvent.values.length)];
     // Nothing else in the water comes near a beast.
-    if (beast != null && kind == BattleSeaEvent.seaCreature) return;
+    if (beast != null && kind == _BattleSeaEvent.seaCreature) return;
     switch (kind) {
-      case BattleSeaEvent.rogueWave:
+      case _BattleSeaEvent.rogueWave:
         player = player.copyWith(layers: max(0, player.layers - 1));
         enemy = enemy.copyWith(layers: max(0, enemy.layers - 1));
         _add('ship_event_rogue_wave');
-      case BattleSeaEvent.seaCreature:
+      case _BattleSeaEvent.seaCreature:
         // It goes for the ship lower in the water.
         final eelRatio = player.hull / max(1, player.maxHull);
         final theirRatio = enemy.hull / max(1, enemy.maxHull);
@@ -2035,7 +2035,7 @@ class ShipBattle {
           enemy = bitten(enemy);
           _add('ship_event_sea_creature', side: side, n: before - enemy.hull);
         }
-      case BattleSeaEvent.driftingWreck:
+      case _BattleSeaEvent.driftingWreck:
         wreck = true;
         _add('ship_event_wreck');
     }

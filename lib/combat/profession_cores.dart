@@ -9,13 +9,13 @@
 //   for its amount; healing past full feeds a fire (up to
 //   [watchfireCapShare] of max health) that takes blows first, and what is
 //   left of it at the round's end burns the enemy for
-//   [watchfireBurnMultiplier] times. Healing fatigue (fight_length.dart) is
+//   [_watchfireBurnMultiplier] times. Healing fatigue (fight_length.dart) is
 //   its cost.
 // - Mage, the Ash Well: the well starts each fight empty; mana from the
 //   die comes [ashWellManaMultiplier] times; spells cost
-//   [ashWellSpellDiscount] less (never under 1); mana left after a win
-//   heals [ashWellHealPerMana] of max health a point.
-// - Rogue, Flurry: a damaging face strikes twice at [flurryHitShare] each,
+//   [_ashWellSpellDiscount] less (never under 1); mana left after a win
+//   heals [_ashWellHealPerMana] of max health a point.
+// - Rogue, Flurry: a damaging face strikes twice at [_flurryHitShare] each,
 //   each strike rolling its own critical.
 // - Ranger, the Trail: the die is a deck: each run draws [trailDrawsPerRun]
 //   of its faces, one sitting out at random, and none comes twice in a
@@ -53,7 +53,7 @@ const double furyHeavyMultiplier = 2.5;
 const double watchfireCapShare = 0.5;
 
 /// What the fire left at the round's end burns for, times itself.
-const double watchfireBurnMultiplier = 2.0;
+const double _watchfireBurnMultiplier = 2.0;
 
 /// What a heal from the die burns the enemy for, as a share of it.
 const double watchfireHealBurnShare = 2.0;
@@ -72,29 +72,29 @@ int watchfireAfterHeal({
 }
 
 /// What the fire burns the enemy for at the round's end.
-int watchfireBurn(int fire) => (fire * watchfireBurnMultiplier).round();
+int watchfireBurn(int fire) => (fire * _watchfireBurnMultiplier).round();
 
 // --- The Ash Well ----------------------------------------------------------
 
 const int ashWellManaMultiplier = 2;
-const int ashWellSpellDiscount = 1;
-const double ashWellHealPerMana = 0.02;
+const int _ashWellSpellDiscount = 1;
+const double _ashWellHealPerMana = 0.02;
 
 /// A spell's cost under the Ash Well.
-int ashWellSpellCost(int cost) => max(1, cost - ashWellSpellDiscount);
+int ashWellSpellCost(int cost) => max(1, cost - _ashWellSpellDiscount);
 
 /// What [mana] left after a win heals a hero of [maxHealth].
 int ashWellHeal(int mana, int maxHealth) =>
-    mana <= 0 ? 0 : (mana * maxHealth * ashWellHealPerMana).round();
+    mana <= 0 ? 0 : (mana * maxHealth * _ashWellHealPerMana).round();
 
 // --- Flurry ----------------------------------------------------------------
 
 /// What each of a Flurry's two strikes is worth.
-const double flurryHitShare = 0.55;
+const double _flurryHitShare = 0.55;
 
 /// The damage of a Flurry's two strikes of [first] and [second].
 int flurryDamage(int first, int second) =>
-    ((first + second) * flurryHitShare).round();
+    ((first + second) * _flurryHitShare).round();
 
 // --- The Trail -------------------------------------------------------------
 

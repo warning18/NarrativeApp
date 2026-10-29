@@ -16,7 +16,7 @@ const double channeledSkillPower = channeledPower;
 /// The basic actions a face can carry on its own: the plain numbered
 /// faces. A skill set on one of them is channeled (see
 /// [channeledSkillPower]).
-const Set<String> basicFaceTypes = {'Attack', 'Defend', 'Heal', 'Mana'};
+const Set<String> _basicFaceTypes = {'Attack', 'Defend', 'Heal', 'Mana'};
 
 /// Race and profession prefixes on skill ids, dropped from the name shown
 /// to the player ("warrior_shield_bash" reads "Shield Bash").
@@ -68,7 +68,7 @@ String skillDisplayName(String skillId,
 bool isAssignableFace(Map<String, dynamic> face) {
   if (face['fixed'] == true) return false;
   final type = face['type']?.toString() ?? '';
-  return type == 'Skill' || basicFaceTypes.contains(type);
+  return type == 'Skill' || _basicFaceTypes.contains(type);
 }
 
 /// Whether [face] is a Skill face with a signature skill of its own (not
@@ -95,11 +95,11 @@ String? _ownCountedSkill(Map<String, dynamic> face) {
 }
 
 /// How rare a skill is: the rarer, the fewer faces of one die it may take
-/// (see [skillRarityFaceLimits]), so a die can't be six of the same skill.
+/// (see [_skillRarityFaceLimits]), so a die can't be six of the same skill.
 enum SkillRarity { common, uncommon, rare, epic, legendary }
 
 /// Faces of one die a skill of each rarity may take.
-const Map<SkillRarity, int> skillRarityFaceLimits = {
+const Map<SkillRarity, int> _skillRarityFaceLimits = {
   SkillRarity.common: 3,
   SkillRarity.uncommon: 2,
   SkillRarity.rare: 2,
@@ -133,7 +133,7 @@ int maxCopiesOnDie(int faceCount) =>
 /// Faces of one die [skill] may take: its rarity's limit, and on a die of
 /// [faceCount] faces no more than [maxCopiesOnDie].
 int maxFacesForSkill(Map<String, dynamic>? skill, {int? faceCount}) {
-  final byRarity = skillRarityFaceLimits[skillRarity(skill)]!;
+  final byRarity = _skillRarityFaceLimits[skillRarity(skill)]!;
   return faceCount == null
       ? byRarity
       : min(byRarity, maxCopiesOnDie(faceCount));
@@ -224,7 +224,7 @@ bool canSetSkillOnFace(
 
 /// Whether a skill on [face] works at [channeledSkillPower].
 bool isBasicFace(Map<String, dynamic> face) =>
-    basicFaceTypes.contains(face['type']?.toString() ?? '');
+    _basicFaceTypes.contains(face['type']?.toString() ?? '');
 
 /// The skill [face] casts once the player's pick ([assignedSkillId]) is
 /// applied, or null for a face that does a basic action.
@@ -286,7 +286,7 @@ DiceFaceResult applyFaceAssignment(
   if (open && assignedSkillId != null && assignedSkillId.isNotEmpty) {
     if (face.type == 'Skill') {
       result = face.withLinkedSkillID(assignedSkillId);
-    } else if (basicFaceTypes.contains(face.type)) {
+    } else if (_basicFaceTypes.contains(face.type)) {
       result = face.channeling(assignedSkillId);
     }
   }
@@ -353,14 +353,14 @@ List<String> dieSignatureSkillIds(Map<String, dynamic>? die) {
 /// Dice whose English name is not simply their id's words (see
 /// [dieDisplayName]): the starting die is the old bone die from the blind
 /// beggar's memory, the lucky charm the story's first fight reveals.
-const Map<String, String> diceNamesEn = {'starter_die': 'Lucky Die'};
+const Map<String, String> _diceNamesEn = {'starter_die': 'Lucky Die'};
 
 String dieDisplayName(String diceId, {AppLanguage language = AppLanguage.en}) {
   if (language == AppLanguage.fr) {
     final french = diceNamesFr[diceId];
     if (french != null) return french;
   }
-  final english = diceNamesEn[diceId];
+  final english = _diceNamesEn[diceId];
   if (english != null) return english;
   return diceId
       .split('_')

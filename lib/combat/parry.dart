@@ -3,30 +3,30 @@ import 'dart:math';
 /// Targeted defence (v1.214): a Defend face need not only guard its roller.
 /// The player may set it on one enemy's telegraphed blow instead: a parry.
 ///
-/// - The face's block counts [parryMultiplier] times, but only against that
+/// - The face's block counts [_parryMultiplier] times, but only against that
 ///   enemy's blow, and whoever the blow was aimed at.
 /// - A blow the parry stops outright is turned aside and answered: the
-///   enemy takes [parryCounterShare] of the parry back.
+///   enemy takes [_parryCounterShare] of the parry back.
 /// - A parry set on an enemy that does not attack that turn is wasted; the
 ///   roller's own guard is not raised either.
 ///
 /// Everything here is pure, like enemy_affix.dart.
-const double parryMultiplier = 1.5;
+const double _parryMultiplier = 1.5;
 
 /// The share of a parry that an outright stop answers with.
-const double parryCounterShare = 0.5;
+const double _parryCounterShare = 0.5;
 
 /// The strength of a parry made from a Defend face worth [block], rounded
 /// down: on the fight's small scale (docs/proposals/stat-scale.md) a guard
 /// of 1 parries 1, not 2.
 int parryAmount(int block) =>
-    block <= 0 ? 0 : (block * parryMultiplier).floor();
+    block <= 0 ? 0 : (block * _parryMultiplier).floor();
 
 /// True when a parry of [parry] stops a blow of [blow] outright.
 bool parryStopsBlow(int blow, int parry) => blow > 0 && parry >= blow;
 
 /// What an outright stop answers with, at least 1.
-int parryCounter(int parry) => max(1, (parry * parryCounterShare).round());
+int parryCounter(int parry) => max(1, (parry * _parryCounterShare).round());
 
 /// The damage of a blow of [blow] once a parry of [parry], the target's own
 /// [block] and the target's [mitigation] (armour and resist) have taken
