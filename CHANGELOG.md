@@ -33,6 +33,32 @@ isn't reconstructable from git history alone.
   `character_start_test.dart` (every starting skill has a French name),
   `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
   Picture: `docs/ux-shots/fixes-611/`.
+## [1.610.0+646]
+
+- **Narrative: the chapter 1 fixes from the review** (notes #581 and #584).
+  - **Vica is a surprise.** The tutorial's guide is no longer called Vica: its
+    speaker label reads "Your companion" / « Votre compagnon » until the
+    player names it in Settings, and its first line no longer says a name
+    ("Woof! I'll be your guide."). The name comes out of the heat at
+    `1150_vica` and nowhere before it.
+  - `1150_vica` has Lysa's line (she walks behind the hero through the dunes)
+    and the desert palette instead of the docks one.
+  - A failed boarding (`896_failed`, `897_failed`, `898_failed`) now carries the
+    Lark's lift on the same page, so there is one page, not two Continues in
+    a row; the first two buttons read "Pay, and hold on" and "Pay the bribe
+    and hold on". The success path is unchanged.
+  - The first prologue button ends in "…", not three dots.
+  - Codex: the temperate "Warhound" entry (dogs running loose in the alleys)
+    is now a lantern moth, which fits the signaller's lantern.
+  - **Vess** (the Void-marked hero): the +5 Vigil and the Stitchers' mark are
+    paid once, at the hearing in Saltmouth, not also at the Wells (`1210`
+    keeps only the met-her flag). An old save that already accepted her
+    quest no longer sees her row at Saltmouth again.
+  - Touches another session's area: `biomes.json` and the tutorial strings
+    (wording only); the tutorial line has no `{name}` any more.
+  - Tests: `chapter_one_test` (the failed boardings, the Vica and Vess
+    checks); the naive run's choice hash is re-pinned in `sim_competent_test`
+    and `sim_companions_test` (the tuple is unchanged).
 ## [1.609.0+645]
 
 - **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
