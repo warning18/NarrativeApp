@@ -32,8 +32,19 @@ isn't reconstructable from git history alone.
     - Banners: the one carried, those taken, any still waiting;
     - Fights: won, lost, pushed through;
     - Companions: seated, recruited.
+- **Core: the first banner comes when the clans are met** (the user's
+  rule).
+  - On the feature ladder, level-ups, bosses and chapter turns bring no
+    clan offer before the clans are met.
+  - Meeting them brings exactly one, the first banner: the Crow at the
+    Wharf (`feat_clans`), or the story past chapter 2.
+  - After that, offers come as before.
+  - A save that already piled offers up keeps them, and gets no extra.
+  - Games off the ladder are unchanged.
+  - The simulator follows the same rule.
   - Tests: `autoplay_engine_test` (the picks, no banner left, the party
-    seated, the log) and `autoplay_summary_test`.
+    seated, the log) and `autoplay_summary_test`;
+    `offers_session_test` (the first banner).
 
 ## [1.629.0+665]
 

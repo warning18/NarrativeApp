@@ -745,6 +745,9 @@ class SimGrowth {
         riskyGifts: riskyGifts,
       );
 
+  /// Whether the first banner came (see [_takeOffers]).
+  bool _firstBanner = false;
+
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
     var next = alignment;
     // On the ladder the offers wait for the clans (or the third chapter).
@@ -755,6 +758,18 @@ class SimGrowth {
           chapter: chapterOffersThrough,
         ))) {
       return next;
+    }
+    // The clans just met: the offers earned before them did not pile up,
+    // one comes, the first banner (the game's rule, v1.634:
+    // offersWaitForClans).
+    if (ladder && !_firstBanner) {
+      _firstBanner = true;
+      final first = pending.isEmpty
+          ? const OfferTicket(source: OfferSource.level, detail: 'first')
+          : pending.first;
+      pending
+        ..clear()
+        ..add(first);
     }
     while (pending.isNotEmpty) {
       final ticket = pending.first;

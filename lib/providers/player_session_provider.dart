@@ -113,6 +113,17 @@ const int basePartyCapacity = 2;
 /// every built house's own bonus. Shared by [PlayerSessionNotifier
 /// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
 /// CampScreen's own roster display, so the two never drift apart.
+/// The flag set when the first banner (clan offer) is due: the clans met
+/// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
+const String firstBannerFlag = 'first_banner';
+
+/// Whether [session]'s level-ups, bosses and chapters bring no clan offer
+/// yet (the user's rule, v1.634): on the feature ladder, until the clans
+/// are met. Off the ladder they always do.
+bool offersWaitForClans(PlayerSession session) =>
+    session.flags.contains(featureLadderFlag) &&
+    !session.featureOpen(GameFeature.clans);
+
 int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
   return basePartyCapacity +
       houses.values.whereType<Map<String, dynamic>>().where((h) {
@@ -2378,6 +2389,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
     }
+    // The clans met (feat_clans): the first banner.
+    state = _withFirstBanner(state);
     await _persist();
     // A flag or a piece of the Shroud may be what an achievement asks for.
     if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
@@ -2694,13 +2707,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
       }
     }
-    state = state.copyWith(
+    state = _withFirstBanner(state.copyWith(
       chapterOffersThrough: chapter,
-      pendingOffers: [
-        ...state.pendingOffers,
-        OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
-      ],
-    );
+      // Before the clans are met, no offer piles up (offersWaitForClans).
+      pendingOffers: offersWaitForClans(state)
+          ? null
+          : [
+              ...state.pendingOffers,
+              OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
+            ],
+    ));
     await _persist();
     return true;
   }
@@ -3335,6 +3351,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             i++)
           const OfferTicket(source: OfferSource.start),
       ];
+
+  /// [session] with its first banner (the user's rule, v1.634): on the
+  /// feature ladder, once the clans are met (feat_clans, or past chapter
+  /// 2), one offer is due, [firstBannerFlag] set; none when one is already
+  /// waiting (a save that piled offers up before this rule keeps them, they
+  /// are the player's). Off the ladder, nothing changes.
+  static PlayerSession _withFirstBanner(PlayerSession session) {
+    if (!session.flags.contains(featureLadderFlag) ||
+        session.flags.contains(firstBannerFlag) ||
+        !session.featureOpen(GameFeature.clans)) {
+      return session;
+    }
+    return session.copyWith(
+      flags: [...session.flags, firstBannerFlag],
+      pendingOffers: session.pendingOffers.isEmpty
+          ? const [OfferTicket(source: OfferSource.level, detail: 'first')]
+          : null,
+    );
+  }
 
   /// [levels] offers for the levels just reached.
   static List<OfferTicket> _levelOffers(int levels) => [
@@ -5972,9 +6007,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // pact one fight on.
       pendingOffers: [
         ...state.pendingOffers,
-        ..._levelOffers(leveled.levelsGained),
-        for (var i = 0; i < bossOffers; i++)
-          const OfferTicket(source: OfferSource.boss),
+        // Before the clans are met, levels and bosses bring none
+        // (offersWaitForClans); the first banner comes when they are.
+        if (!offersWaitForClans(state)) ...[
+          ..._levelOffers(leveled.levelsGained),
+          for (var i = 0; i < bossOffers; i++)
+            const OfferTicket(source: OfferSource.boss),
+        ],
         ...tomeOffers,
       ],
       rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
@@ -6007,6 +6046,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (leveled.leveledUp) {
       state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
+    state = _withFirstBanner(state);
     await _persist();
     return leveled.leveledUp;
   }
