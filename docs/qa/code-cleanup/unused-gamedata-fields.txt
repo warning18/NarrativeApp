@@ -1,13 +1,7 @@
-20 fields in 4 files that no string in lib/ names
+4 fields in 2 files that no string in lib/ names
 
-assets/gamedata/npcs.json: 2
-   stancePlayer (50), admiralty (3)
-
-assets/gamedata/politics_events.json: 1
-   candlehold_lantern_hall (6)
+assets/gamedata/npcs.json: 1
+   stancePlayer (50)
 
 assets/gamedata/quests.json: 3
    locationID (59), flagToAdd (51), actionType (51)
-
-assets/Cleaned_Narrative_DAG.json: 14
-   race:voidkin (8), race:dwarf (7), race:orc (7), * (7), race:elf (6), profession:cleric (5), race:human (3), profession:rogue (3), tribunal (3), scorched_choir (3), admiralty (3), drowned_debt (2), reliquary_thieves (2), emberwives (2)
