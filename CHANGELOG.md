@@ -46,6 +46,13 @@ isn't reconstructable from git history alone.
     seated, the log) and `autoplay_summary_test`;
     `offers_session_test` (the first banner).
 
+## [1.633.0+669]
+
+- **Cleanup: three unread quest and NPC fields are removed**
+  `actionType` and `locationID` (quests.json) and `stancePlayer`
+  (npcs.json), which no code read, and their names in the editor's schema
+  labels. No behaviour change.
+
 ## [1.632.0+668]
 
 - **Cleanup: unused Core symbols and their tests are removed**
@@ -309,8 +316,6 @@ isn't reconstructable from git history alone.
     `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
     since that test is about the walk.
 
-
-
 ## [1.615.0+651]
 
 - **Core: the element dice** (the user's option B;
@@ -374,7 +379,6 @@ isn't reconstructable from git history alone.
   - Tests: `boss_balance_test` measures the full world, and its professions'
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
-
 
 ## [1.612.0+648]
 
@@ -981,7 +985,6 @@ Two sheets and dialogs, in one release: the place sheet's height and the clan po
 
 ### Tests
 - `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
-
 
 ## [1.552.0+588]
 
@@ -3343,7 +3346,6 @@ Twelve story achievements.
   (an oath, a standing, an intrigue's end), so taking the Throne unlocks
   its achievement at once. "Hunted" counts the six coast clans, not the
   tribes. `test/achievements_story_test.dart` covers each.
-
 
 ## [1.278.0+314]
 
