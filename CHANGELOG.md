@@ -8,12 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.623.0+658]
+## [1.623.0+659]
 
 - **Cleanup: 26 unused symbols removed from Core's files**
   Dead helpers, constants and providers in `lib/combat`, `lib/data`,
   `lib/providers` and `lib/gamedata` that nothing called (136 lines). No
   behaviour change.
+
+## [1.622.0+658]
+
+- **Narrative: chapter 1 in the percussive style** (the user's pilot, `docs/proposals/percussive-style.md`).
+  - All 52 chapter 1 scenes and 127 of their 139 flag callbacks are rewritten
+    in English and French: short sentences, one beat per paragraph, one dry
+    line per scene. The clues, names, **bold** phrases and every word later
+    scenes pick up are kept; no choice, label, flag, reward, number or scene
+    link changed.
+  - Scene text: 6,833 to 5,501 words in English (-19%), 6,893 to 5,782 in
+    French (-16%). Callbacks: 3,435 to 2,920 words (-15%) in English, 3,374 to
+    2,986 (-11%) in French. Sentences average 14 words (21 before).
+  - The failed-boarding pages still carry the Lark's lift word for word; the
+    parked Weaver's Alley (`270`) is rewritten too, for when it returns.
+  - Tests: none needed a change; the French lint and every phrase check hold.
 
 ## [1.621.0+657]
 
