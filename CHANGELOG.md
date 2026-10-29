@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.637.0+673]
+## [1.642.0+678]
 
 - **Narrative: the signal-lantern alley is back, as a Saltmouth street scene.**
   The Weaver's Alley (`270`, parked in v1.620) returns in the Lantern Alleys
@@ -24,6 +24,17 @@ isn't reconstructable from git history alone.
   - Touches Core's files in a few lines: the scene's building in
     `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
     scene count in `test/world_map_test.dart` (69 to 70).
+## [1.639.0+675]
+
+- **Core: taking a quest marks it taken, so the Spire Stair opens on the
+  Ashen Oath.**
+  - Taking a quest (from its offer or in a scene) now sets its
+    `<quest>_accepted` flag. Before, nothing set it (quests.json's
+    `flagToAdd` is never read), so a district locked "until the quest is
+    taken" stayed shut until the quest was done.
+  - A save whose quest was already taken gets the flag on load.
+  - Tests: `quest_tracking_test` (the accepted flag).
+
 ## [1.634.0+670]
 
 - **Core: "Play to chapter" (the simulator screen) takes options, leaves
