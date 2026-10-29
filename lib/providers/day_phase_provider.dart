@@ -9,7 +9,3 @@ import 'player_session_provider.dart';
 /// changes only when the watch does, not on every save.
 final dayPhaseProvider = Provider<DayPhase>((ref) =>
     dayPhaseOf(ref.watch(playerSessionProvider.select((s) => s.watch))));
-
-/// The hour (0..23) the world clock shows (see [hourOfWatch]).
-final hourOfDayProvider = Provider<int>((ref) =>
-    hourOfWatch(ref.watch(playerSessionProvider.select((s) => s.watch))));

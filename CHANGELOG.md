@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.650.0+686]
+
+- **Cleanup: the mode-nudge provider and the day-phase helpers nothing used are removed**
+  `ModeNudgeNotifier` (nothing built it), `PlayerSession.dayPhase` and
+  `hourOfDay`, and `hourOfDayProvider`; the day-phase test reads
+  `dayPhaseOf` and `hourOfWatch` directly. `dayPhaseProvider` stays. No
+  behaviour change.
+
 ## [1.649.0+685]
 
 - **Cleanup: 58 file-only names in lib/providers, gamedata and models are private**
