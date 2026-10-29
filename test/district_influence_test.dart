@@ -212,15 +212,9 @@ void main() {
         };
 
     InfluenceResult done(PoliticsState state, Map<String, dynamic> quest,
-            {String? city = 'saltmouth',
-            List<String> flags = const [],
-            StoryPolitics? picked}) =>
+            {List<String> flags = const [], StoryPolitics? picked}) =>
         applyQuestInfluence(state, quest,
-            flags: flags,
-            data: data,
-            geography: geo,
-            picked: picked,
-            cityHere: city);
+            flags: flags, data: data, geography: geo, picked: picked);
 
     test('the holder starts at 20, others at 0', () {
       expect(influenceIn(PoliticsState.empty, geo, _yard, 'compact'),
@@ -228,15 +222,21 @@ void main() {
       expect(influenceIn(PoliticsState.empty, geo, _yard, 'dominion'), 0);
     });
 
-    test('a quest done in town adds its influence; outside town, none', () {
+    test('a quest done adds its influence, wherever the party is', () {
       final r = done(PoliticsState.empty, side());
       expect(r.counted, isTrue);
       expect(r.amount, sideQuestInfluence);
       expect(influenceIn(r.state, geo, _yard, 'dominion'), 15);
       expect(influenceIn(r.state, geo, _yard, 'compact'), 20);
-      expect(done(PoliticsState.empty, side(), city: null).counted, isFalse);
+      // Wave 18 step 2: in any town's district, the Ashen Quarter's too.
+      final ash = done(
+          PoliticsState.empty, {...side(), 'district': 'ashen_quarter_gate'});
+      expect(influenceIn(ash.state, geo, 'ashen_quarter_gate', 'dominion'), 15);
+      // No district: nothing.
       expect(
-          done(PoliticsState.empty, side(), city: 'alster').counted, isFalse);
+          done(PoliticsState.empty, {'category': 'Side', 'faction': 'mire'})
+              .counted,
+          isFalse);
       // A Main quest brings more; `influence` overrides.
       expect(done(PoliticsState.empty, {...side(), 'category': 'Main'}).amount,
           mainQuestInfluence);
@@ -247,7 +247,6 @@ void main() {
           flags: const [],
           data: data,
           geography: geo,
-          cityHere: 'saltmouth',
           partyDistrict: 'saltmouth_landward_gate');
       expect(
           influenceIn(here.state, geo, 'saltmouth_landward_gate', 'mire'), 15);

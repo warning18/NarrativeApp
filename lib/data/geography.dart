@@ -336,6 +336,7 @@ class GeoPlace {
     this.lockOpensOn = '',
     this.lockedText = '',
     this.lockedTextFr = '',
+    this.unheld = false,
   });
 
   /// [raw] as a place, or null when its level is not one of the five.
@@ -390,6 +391,7 @@ class GeoPlace {
       lockedText: level == GeoLevel.district ? _text(raw, 'lockedText') : '',
       lockedTextFr:
           level == GeoLevel.district ? _text(raw, 'lockedText_fr') : '',
+      unheld: raw['unheld'] == true,
     );
   }
 
@@ -482,6 +484,10 @@ class GeoPlace {
   final String lockedTextFr;
 
   bool get hasLock => lockQuest.isNotEmpty;
+
+  /// A place no clan holds or can take (wave 18 step 2: the Dead Heart,
+  /// where the tear hangs in the open). Written `"unheld": true`.
+  final bool unheld;
 
   String nameFor(bool french) => _either(french, nameFr, name);
   String blurbFor(bool french) => _either(french, blurbFr, blurb);

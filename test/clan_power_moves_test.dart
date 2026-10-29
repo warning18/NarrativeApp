@@ -115,17 +115,24 @@ void main() {
 
   group('(b) the war turn swings harder', () {
     PoliticsState atWar(Map<String, int> power) => PoliticsState.empty.copyWith(
-        power: power,
-        helped: ['crows', 'dominion'],
-        relationSteps: {relationKey('dominion', 'crows'): warStep});
+            power: power,
+            helped: [
+              'crows',
+              'dominion'
+            ],
+            // The Penitents' war kept out (wave 18 step 2 gives them land).
+            relationSteps: {
+              relationKey('dominion', 'crows'): warStep,
+              relationKey('dominion', 'penitents'): 4,
+            });
 
     test('a place taken in war: the taker gains, the loser bleeds', () {
       final turn = territoryTurn(atWar({'crows': 30}),
           data: data, geography: geography, chapter: 3);
       final war = turn.changes.singleWhere((c) => c.cause == 'war');
       expect((war.from, war.to), ('crows', 'dominion'));
-      // Holdings first (the Dominion's six places, the Crows' three).
-      expect(powerOf(turn.state, 'dominion', data), 60 + 6 + warSpoils);
+      // Holdings first (the Dominion's seven places, the Crows' three).
+      expect(powerOf(turn.state, 'dominion', data), 60 + 7 + warSpoils);
       expect(powerOf(turn.state, 'crows', data), 30 + 3 - warLoss);
       expect(warSpoils, 5);
       expect(warLoss, 8);
