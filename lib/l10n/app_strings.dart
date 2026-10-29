@@ -7054,6 +7054,120 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Play to Chapter',
     AppLanguage.fr: 'Jouer jusqu\'au chapitre',
   },
+  'ptc_new_game': {
+    AppLanguage.en: 'Start a new game',
+    AppLanguage.fr: 'Commencer une nouvelle partie',
+  },
+  'ptc_new_game_hint': {
+    AppLanguage.en: 'Race and profession apply to a new character only.',
+    AppLanguage.fr:
+        'La race et la profession ne valent que pour un nouveau personnage.',
+  },
+  'ptc_random': {
+    AppLanguage.en: 'Random',
+    AppLanguage.fr: 'Au hasard',
+  },
+  'ptc_seed_label': {
+    AppLanguage.en: 'Seed (empty: random)',
+    AppLanguage.fr: 'Graine (vide\u00a0: au hasard)',
+  },
+  'ptc_summary_title': {
+    AppLanguage.en: 'Where the walk left you',
+    AppLanguage.fr: 'Où la marche vous a laissé',
+  },
+  'ptc_tab_state': {
+    AppLanguage.en: 'State',
+    AppLanguage.fr: 'État',
+  },
+  'ptc_tab_choices': {
+    AppLanguage.en: 'Choices',
+    AppLanguage.fr: 'Choix',
+  },
+  'ptc_tab_items': {
+    AppLanguage.en: 'Items',
+    AppLanguage.fr: 'Objets',
+  },
+  'ptc_tab_banners': {
+    AppLanguage.en: 'Banners',
+    AppLanguage.fr: 'Bannières',
+  },
+  'ptc_tab_fights': {
+    AppLanguage.en: 'Fights',
+    AppLanguage.fr: 'Combats',
+  },
+  'ptc_tab_companions': {
+    AppLanguage.en: 'Companions',
+    AppLanguage.fr: 'Compagnons',
+  },
+  'ptc_level': {
+    AppLanguage.en: 'Level',
+    AppLanguage.fr: 'Niveau',
+  },
+  'ptc_gold': {
+    AppLanguage.en: 'Gold',
+    AppLanguage.fr: 'Or',
+  },
+  'ptc_chapter': {
+    AppLanguage.en: 'Chapter',
+    AppLanguage.fr: 'Chapitre',
+  },
+  'ptc_scene': {
+    AppLanguage.en: 'Scene',
+    AppLanguage.fr: 'Scène',
+  },
+  'ptc_standings': {
+    AppLanguage.en: 'Standing with the clans',
+    AppLanguage.fr: 'Réputation auprès des clans',
+  },
+  'ptc_gained': {
+    AppLanguage.en: 'Came into the pack',
+    AppLanguage.fr: 'Entré dans le sac',
+  },
+  'ptc_lost': {
+    AppLanguage.en: 'Left the pack (sold or spent)',
+    AppLanguage.fr: 'Sorti du sac (vendu ou dépensé)',
+  },
+  'ptc_equipped': {
+    AppLanguage.en: 'Equipped',
+    AppLanguage.fr: 'Équipé',
+  },
+  'ptc_carried_banner': {
+    AppLanguage.en: 'The banner you carry',
+    AppLanguage.fr: 'La bannière que vous portez',
+  },
+  'ptc_offers_waiting': {
+    AppLanguage.en: 'Offers still waiting (the clans are not met yet)',
+    AppLanguage.fr:
+        'Offres encore en attente (les clans ne sont pas encore rencontrés)',
+  },
+  'ptc_won': {
+    AppLanguage.en: 'won',
+    AppLanguage.fr: 'gagné',
+  },
+  'ptc_lost_fight': {
+    AppLanguage.en: 'lost',
+    AppLanguage.fr: 'perdu',
+  },
+  'ptc_forced': {
+    AppLanguage.en: 'pushed through',
+    AppLanguage.fr: 'forcé',
+  },
+  'ptc_seated': {
+    AppLanguage.en: 'In the party',
+    AppLanguage.fr: 'Dans le groupe',
+  },
+  'ptc_recruited': {
+    AppLanguage.en: 'Recruited',
+    AppLanguage.fr: 'Recrutés',
+  },
+  'ptc_none': {
+    AppLanguage.en: 'None.',
+    AppLanguage.fr: 'Aucun.',
+  },
+  'ptc_close': {
+    AppLanguage.en: 'Close',
+    AppLanguage.fr: 'Fermer',
+  },
   'sim_character_label': {
     AppLanguage.en: 'Character',
     AppLanguage.fr: 'Personnage'

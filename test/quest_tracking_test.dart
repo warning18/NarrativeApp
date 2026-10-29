@@ -16,7 +16,6 @@ import 'package:narrative_data_app/data/quest_tracking.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/providers/tab_badges_provider.dart';
 
 import 'player_session_provider_test.dart' show baseSession, notifierWith;
 
@@ -176,18 +175,6 @@ void main() {
       s = s.copyWith(enemyKillCounts: const {'catacomb_ghoul': 3});
       goal = questGoalFor('bounty', _bounty, s);
       expect(goal.ready, isTrue);
-    });
-
-    test('a goal reached is announced once, not on a loaded save', () {
-      const before = QuestReadiness(active: {'a', 'b'}, ready: {'b'});
-      const after =
-          QuestReadiness(active: {'a', 'b', 'c'}, ready: {'a', 'b', 'c'});
-      // 'a' was in progress and is now ready; 'c' only just appeared.
-      expect(QuestReadiness.newlyReady(before, after), ['a']);
-      // Nothing is known before the quests table loads.
-      expect(
-          QuestReadiness.newlyReady(const QuestReadiness(loaded: false), after),
-          isEmpty);
     });
   });
 

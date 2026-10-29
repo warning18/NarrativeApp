@@ -71,7 +71,7 @@ final chapterLevelAdviceProvider =
 });
 
 /// The level advice for the chapter the party is heading to: the one
-/// after [reachedChapterProvider]'s (see [nextChapterLevelAdvice]).
+/// after [reachedChapterProvider]'s.
 final nextChapterLevelAdviceProvider = Provider<ChapterLevelAdvice?>((ref) {
   return ref
       .watch(chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));

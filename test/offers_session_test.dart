@@ -72,6 +72,67 @@ List<OfferSource> _sources(PlayerSessionNotifier n) =>
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  // The user's rule (v1.634): on the feature ladder no banner piles up
+  // before the clans are met; meeting them brings one.
+  group('the first banner', () {
+    PlayerSession onLadder([List<String> more = const []]) =>
+        _warrior().copyWith(flags: [featureLadderFlag, ...more]);
+
+    test('before the clans, levels and bosses bring no offer', () async {
+      final notifier = await _notifierWith(onLadder());
+      expect(offersWaitForClans(notifier.state), isTrue);
+      await notifier.applyCombatResult(
+          hpAfter: 100, xpGain: 100 + 200, bossOffers: 1);
+      expect(notifier.state.level, 3);
+      expect(notifier.state.pendingOffers, isEmpty);
+      // Nor does chapter 2's turn.
+      await notifier.grantChapterOffer(2);
+      expect(notifier.state.pendingOffers, isEmpty);
+    });
+
+    test('meeting the clans brings exactly one, then as before', () async {
+      final notifier = await _notifierWith(onLadder());
+      await notifier.applyCombatResult(hpAfter: 100, xpGain: 300);
+      await notifier.applyChoiceEffects(flagsToAdd: const ['feat_clans']);
+      expect(notifier.state.pendingOffers.single.detail, 'first');
+      expect(notifier.state.flags, contains(firstBannerFlag));
+      // Once: another choice brings no second one.
+      await notifier.applyChoiceEffects(flagsToAdd: const ['other']);
+      expect(notifier.state.pendingOffers, hasLength(1));
+      // After that, a level brings its offer again.
+      await notifier.applyCombatResult(hpAfter: 100, xpGain: 1000);
+      expect(notifier.state.pendingOffers.length, greaterThan(1));
+    });
+
+    test('past chapter 2 the clans count as met: one offer', () async {
+      final notifier = await _notifierWith(onLadder());
+      await notifier.grantChapterOffer(2);
+      await notifier.grantChapterOffer(3);
+      expect(notifier.state.pendingOffers.single.detail, 'first');
+    });
+
+    test('a save that piled offers up keeps them, with none added', () async {
+      const piled = [
+        OfferTicket(source: OfferSource.level),
+        OfferTicket(source: OfferSource.level),
+        OfferTicket(source: OfferSource.boss),
+      ];
+      final notifier =
+          await _notifierWith(onLadder().copyWith(pendingOffers: piled));
+      await notifier.applyChoiceEffects(flagsToAdd: const ['feat_clans']);
+      expect(notifier.state.pendingOffers, piled);
+      expect(notifier.state.flags, contains(firstBannerFlag));
+    });
+
+    test('off the ladder nothing changes', () async {
+      final notifier = await _notifierWith(_warrior());
+      expect(offersWaitForClans(notifier.state), isFalse);
+      await notifier.applyCombatResult(hpAfter: 100, xpGain: 300);
+      expect(_sources(notifier), [OfferSource.level, OfferSource.level]);
+      expect(notifier.state.flags, isNot(contains(firstBannerFlag)));
+    });
+  });
+
   group('where offers come from', () {
     test('each level reached brings one; stat points and health stay',
         () async {
