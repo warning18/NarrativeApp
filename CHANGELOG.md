@@ -23,6 +23,34 @@ isn't reconstructable from git history alone.
   their list. `epilogueHoldings` takes the list of towns (`epilogueBigTowns`
   for the seven). Real screens at 412 and 320 px in `docs/ux-shots/`.
 
+## [1.642.0+678]
+
+- **Narrative: the signal-lantern alley is back, as a Saltmouth street scene.**
+  The Weaver's Alley (`270`, parked in v1.620) returns in the Lantern Alleys
+  as `2015_signaller`, in the percussive style, English and French.
+  - Where: after the Arcane Bazaar has been visited, the Saltmouth hub offers
+    "Look into the alley where a signal-lantern still burns". A dead
+    Inquisition signaller, his lantern still alight in razor wire; three ways
+    out, all back to the hub: cut it free (+2 alignment), strip the bearer
+    (+15 gold, -2 alignment), or leave them both. The three origin callbacks
+    (the sparrow) are kept. No lantern flags are needed or set.
+  - `270` stays parked and untouched, so the Alster tests and the opening are
+    as they were. `q_retrieve_banner` is unaffected.
+  - Touches Core's files in a few lines: the scene's building in
+    `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
+    scene count in `test/world_map_test.dart` (69 to 70).
+## [1.641.0+677]
+
+- **Dice: every die has its own art**
+  Thirty-two dice now carry pieces of their own over their skin, a handful of
+  paths each and no image files (`lib/widgets/die_art.dart`): the Void die's
+  stars and swirl, the Berserker's spikes and blood, the Flame die's tongues,
+  the Huntsman's arrow, the Tearglass d12's crown, tear and halo, the Gambler's
+  suits and pips, a paw print for Vica's hound and tally marks on the built
+  d12. The art turns and squeezes with the die, and shows in the loadout's ring,
+  its rail and the fight's dice row (the fight's d6 stays the cube, without it).
+  Only the plain first die has none. Pictures in `docs/ux-shots/dice-built/`.
+
 ## [1.640.0+676]
 
 - **Dice: a shape for every size, and the die in the ring rolls**

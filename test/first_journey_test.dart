@@ -120,6 +120,7 @@ const _hiddenInChapters1to3 = <String>[
   '2011',
   '2015_house_drowned_debt',
   '2015_house_salt_ledger',
+  '2015_signaller',
   '2015_dockside',
   '2015_smuggler',
   '2015_rats',

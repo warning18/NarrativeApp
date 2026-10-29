@@ -13,6 +13,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import 'die_art.dart';
 import 'die_skins.dart';
 
 /// The shapes of the family. The d6 is the cube of `Die3D`; it is here so a
@@ -184,6 +185,23 @@ _Solid _build(DieShape shape) {
   }
 }
 
+/// The outermost points of a shape in the art's unit disc (centre
+/// (0.5, 0.51), radius 0.49 of the die): where spikes and crowns go.
+final Map<DieShape, List<Offset>> _corners = {};
+
+List<Offset> _cornersOf(DieShape shape) => _corners.putIfAbsent(shape, () {
+      final out = <Offset>[];
+      for (final f in _solids[shape]!.facets) {
+        for (final p in f.points) {
+          final q = Offset((p.dx - 0.5) / 0.49, (p.dy - 0.51) / 0.49);
+          if (q.distance > 0.82 && !out.any((o) => (o - q).distance < 0.1)) {
+            out.add(q);
+          }
+        }
+      }
+      return out;
+    });
+
 final Map<DieShape, _Solid> _solids = {
   for (final s in DieShape.values) s: _build(s),
 };
@@ -209,6 +227,7 @@ class PolyDie extends StatelessWidget {
     this.still = false,
     this.dim = false,
     this.clan,
+    this.dieId,
     this.glowing = true,
   });
 
@@ -234,6 +253,9 @@ class PolyDie extends StatelessWidget {
   final bool still;
   final bool dim;
   final DieClan? clan;
+
+  /// The die's id (dice.json key): its art is drawn over it (see die_art.dart).
+  final String? dieId;
 
   /// Whether the die gives off its own light (a glow behind it). `Die3D`
   /// draws the glow itself and turns this off.
@@ -293,6 +315,7 @@ class PolyDie extends StatelessWidget {
       t: t,
       label: frontLabel,
       clan: clan,
+      dieId: dieId,
     );
     final spot = PolyDiePainter.frontSpot(shape);
     return SizedBox(
@@ -331,6 +354,7 @@ class PolyDiePainter extends CustomPainter {
     required this.t,
     this.label,
     this.clan,
+    this.dieId,
   });
 
   final DieShape shape;
@@ -340,6 +364,7 @@ class PolyDiePainter extends CustomPainter {
   final double t;
   final String? label;
   final DieClan? clan;
+  final String? dieId;
 
   static FrontSpot frontSpot(DieShape shape) {
     switch (shape) {
@@ -384,6 +409,7 @@ class PolyDiePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.save();
     canvas.transform(_motion(size).storage);
+    paintDieHalo(canvas, size, dieId);
     final unit = size.width;
     final line = (unit / 36).clamp(1.0, 2.4);
     Offset at(Offset p) => Offset(p.dx * size.width, p.dy * size.height);
@@ -422,6 +448,7 @@ class PolyDiePainter extends CustomPainter {
       canvas.drawPath(outline, edge..strokeWidth = line * 0.8);
       _paintOutline(canvas, size, solid, edge, line);
     }
+    paintDieArt(canvas, size, dieId, skin, _cornersOf(shape));
     final text = label;
     if (text != null && text.isNotEmpty) {
       final spot = frontSpot(shape);
@@ -565,5 +592,6 @@ class PolyDiePainter extends CustomPainter {
       old.skin != skin ||
       old.t != t ||
       old.label != label ||
-      old.clan != clan;
+      old.clan != clan ||
+      old.dieId != dieId;
 }
