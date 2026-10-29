@@ -5785,14 +5785,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Adds [spellId] to [PlayerSession.knownSpellIds]; a no-op for a spell
-  /// already known or an empty id.
-  Future<void> learnSpell(String spellId) async {
-    if (spellId.isEmpty || state.knownSpellIds.contains(spellId)) return;
-    state = state.copyWith(knownSpellIds: [...state.knownSpellIds, spellId]);
-    await _persist();
-  }
-
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
   /// applying every level gained: [levelStatPicks] stat pick and
   /// [levelHealthGain] max health (stat_rules.dart; base damage grows only

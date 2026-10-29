@@ -46,6 +46,35 @@ isn't reconstructable from git history alone.
     seated, the log) and `autoplay_summary_test`;
     `offers_session_test` (the first banner).
 
+
+## [1.632.0+668]
+
+- **Cleanup: unused Core symbols and their tests are removed**
+  `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`,
+  `QuestReadiness` (and its string), `learnSpell`, `startingTotals`, the three
+  `SpellSpec` target getters, and the stale `briarReflect`, `longVigilMend`
+  and `censerBurn`; the tests that used them now check the live code. No
+  behaviour change.
+
+## [1.631.0+667]
+
+- **Narrative: chapter 6 and everything after it in the percussive style**
+  (chapters 6 and 7, the throne endings, the loyalty and names scenes, the
+  prologue and the chapter 1 flight scenes still on the old text).
+  - 235 scenes and their 752 flag callbacks are rewritten in English and
+    French. The clues, names, **bold** phrases, numbers and the words later
+    scenes and tests pick up are kept; no choice, label, flag, reward,
+    number or scene link changed. Scenes were kept at their natural weight:
+    most of these were already short.
+  - Scene text: 26,528 to 24,477 words in English (-8%), 26,985 to 25,352 in
+    French (-6%). Callbacks: 22,778 to 20,164 words (-11%) in English,
+    22,900 to 20,833 (-9%) in French; every English callback is at or under
+    150 characters except the throne-ending payoffs.
+  - French read line by line: "Cela n'avait rien empêché" in `6010_thread`, a
+    clearer sentence about the frost in `6002_camp`, "Garde-Mèche" for one
+    person in `names_throne` and `price_kindly`, a clearer "marked by the
+    rift" in the four journey endings (`7005` and its variants), and the
+    Candlehold gate line in the `7400` callbacks.
 ## [1.630.0+666]
 
 - **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
