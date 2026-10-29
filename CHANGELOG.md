@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.612.0+648]
+
+- **UX: the fight at fixed sizes.** (The user's "the size of enemy or player
+  are fixed", approved as drawn in `docs/proposals/fight-fixed-sizes.md`.)
+  - **One box for each figure**, whatever the party and the pack are: hero 96,
+    ally 64, foe 96 and a **bigger box for a boss only** (144); under 360 px
+    the set is 72, 48, 72 and 108. The art is scaled to its box and every
+    figure stands on one ground line, so the hero is never huge, small or
+    missing from one fight to the next (with three allies it used to vanish).
+  - **A stage of fixed height under the cards** (the boss fight reserves the
+    taller one), so the dice and the controls never move; the cards above are
+    what gives, and they scroll as before.
+  - **Allies stand in a back row** behind the hero (a disc with their initial:
+    they have no sprite yet), the foes fill front-right, front-left, then the
+    back row, a foe with no art stands as its portrait in its box, and each
+    figure has its health bar over its box.
+  - **Slim ally cards:** an ally's card keeps its name, die and health bar, and
+    shows the attack/armour numbers only for the hero; block, a parry, a status
+    or a knockout still show.
+  - **Fixed (#598):** the guide dog's walk frames west and south
+    (`Walking/west`, `Walking/south`) were not listed in `pubspec.yaml`, so they
+    were not in the build: her walk had no frames in those two directions. Both
+    folders are listed now. (The Bark frames east, north and west and the Fight
+    rotations are listed nowhere and used by no code; left out of the build.)
+  - **Fixed:** a fighter's picture could stay a grey "not yet" mark when its
+    image arrived while it stood still (reduced motion); it now repaints when
+    the image is in.
+  - Not done (as the proposal said it would follow): damage numbers and effects
+    still rise from the cards, not from the boxes; pack foes' cards are not
+    slimmer.
+- Tests: `fight_stage_test.dart` (the boxes), `ux_fight_stage_boss_test.dart`,
+  `ux_fight_stage_narrow_test.dart`; `ux_fight_enemy_test.dart` and
+  `ux_fight_enemy_none_test.dart` follow the boxes. Pictures:
+  `docs/ux-shots/fight-built/`.
 ## [1.611.0+647]
 
 - **UX: fixes from the chapter 1 reviews.**
