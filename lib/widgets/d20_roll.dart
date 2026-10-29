@@ -11,8 +11,9 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 
-/// How long the tumble lasts before the die lands.
-const Duration d20RollDuration = Duration(milliseconds: 1000);
+/// How long the tumble lasts before the die lands: a d20 shown large takes
+/// longer than a small die (see dieRollDuration in poly_die.dart).
+const Duration d20RollDuration = Duration(milliseconds: 1500);
 
 class D20Roll extends StatefulWidget {
   const D20Roll({
