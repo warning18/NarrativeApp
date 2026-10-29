@@ -550,10 +550,8 @@ EnemyMoveResult resolveEnemyMove({
     switch (condition) {
       case 'Always':
         matches = true;
-        break;
       case 'Chance':
         matches = random.nextDouble() * 100 <= chance;
-        break;
       case 'OnLowHealth':
         // The health gate opens the move; `chance` (authored 40-60 on
         // every current entry) then decides whether it fires this turn,
@@ -561,14 +559,11 @@ EnemyMoveResult resolveEnemyMove({
         // every single turn regardless of what its data says.
         matches = healthPercent <= healthThreshold &&
             random.nextDouble() * 100 <= chance;
-        break;
       case 'OnHitByElement':
         matches = elementsHitThisRound
             .contains(move['requiredElement']?.toString() ?? '');
-        break;
       default:
         matches = false;
-        break;
     }
 
     if (!matches) continue;

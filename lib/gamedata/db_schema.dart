@@ -1946,7 +1946,7 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'questChoices',
       label:
-          'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, lockedText}]',
+          'Quest Choices [{buttonText, goldModifier, alignmentModifier, nextEventID, lockedText}]',
       type: FieldType.json,
     ),
     FieldSchema(

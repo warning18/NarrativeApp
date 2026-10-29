@@ -332,8 +332,7 @@ class _PortCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final home = portIsHome(port);
-    final zoneCount =
-        portZoneIds(port).where((id) => zones.containsKey(id)).length;
+    final zoneCount = portZoneIds(port).where(zones.containsKey).length;
     final details = [
       if (home) tr(ref, 'home_port_label'),
       '${portVoyageLength(port)} ${tr(ref, 'days_at_sea_label')}',
@@ -426,7 +425,7 @@ class ShipAtSea extends ConsumerWidget {
         height: height,
         child: Stack(
           children: [
-            Positioned.fill(
+            const Positioned.fill(
               child: CustomPaint(
                 painter: SeaSurfacePainter(
                     waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),

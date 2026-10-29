@@ -81,7 +81,7 @@ List<SideLayer> fenLayers({double progress = 0}) => [
             rim: FenLook.nearRim);
         _reeds(c, s, u, scroll);
       }),
-      SideLayer(1.0, _boardwalk),
+      const SideLayer(1.0, _boardwalk),
     ];
 
 /// The goal: a lantern hung from a post, its light bobbing, nearer with
@@ -149,7 +149,7 @@ void _reeds(Canvas canvas, Size size, double u, double scroll) {
   for (var i = 0; i < 8; i++) {
     final px = kitSlot(i, 4, span, offset, 12) + (i % 2) * 5;
     if (px < -8 || px > w + 4) continue;
-    final y = 60.0;
+    const y = 60.0;
     final h = 5.0 + (i % 3) * 2;
     for (var k = 0; k < 4; k++) {
       sidePixels(canvas, u, k.isEven ? reed : dark, px + k * 1.0,

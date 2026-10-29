@@ -8,6 +8,75 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.646.0+682]
+
+- **Cleanup: mechanical lint fixes, and the lints stay on**
+  `unnecessary_breaks`, `unnecessary_parenthesis`, `unnecessary_lambdas`,
+  `unnecessary_null_checks`, `prefer_final_locals`, `prefer_const_declarations`
+  and `prefer_const_constructors` fixed by the analyzer (277 sites in 118
+  files) and enabled in `analysis_options.yaml`; the three generated chart
+  tables are exempt from the last. No behaviour change.
+
+## [1.645.0+681]
+
+- **Core: the data for the clan power sign (option A, a ranking with
+  arrows).**
+  - Each chapter's turn keeps every clan's power as it begins
+    (`PoliticsState.powerAtTurn`, saved).
+  - `clanPowerRanking` / `clanPowerRankingProvider`: the ten clans with
+    power, strongest first, each with its rank and power now and at the
+    last turn (`rankChange`, `powerChange` for the arrow). Equal powers
+    share a rank. No number changes; UX draws the sign.
+  - Tests: `clan_power_test` (the ranking).
+- **Core: who holds a region, for the world map's Clans layer** (the
+  user's feedback: tint the whole region, not a halo around a clan's
+  mark).
+  - `regionHolders` / `regionHoldersProvider`: each region (the Salt
+    Coast, the Grey Fen…) and the clans holding its places, strongest
+    first, each with its share against the strongest (two at 1: contested).
+  - `chartZoneHolders(chart, …)`: the same for each of a chart's lands, in
+    `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
+  - Tests: `region_holders_test`.
+
+## [1.644.0+680]
+
+- **Cleanup: the quests' unread `flagToAdd` is removed**
+  Taking a quest sets its `<id>_accepted` flag in code (v1.639), so the
+  field (51 records, and the unused `has_void_banner` value) and its name in
+  the editor label go; the two story tests now read the code path. No
+  behaviour change.
+
+## [1.643.0+679]
+
+- **The realm, at the end: who holds each town, on the world chart**
+  A button on the story's ending opens a screen with the real world chart
+  (the one the Journey's World view draws), cropped to where the towns are:
+  every town a dot in its holder's colour, the clans' roads over it (a land
+  route whose two ends one clan holds, in its colour; the others grey and
+  dashed) and the seven big towns numbered. The words are under it, not on
+  it: a chip for each clan with how many towns it holds, then a line for each
+  big town (Narrative's epilogue line where there is one, else the holder and
+  how: held since the start, taken by force, won by influence) and, when some
+  of its districts are held by others, a tag ("3 districts differ") that opens
+  their list. `epilogueHoldings` takes the list of towns (`epilogueBigTowns`
+  for the seven). Real screens at 412 and 320 px in `docs/ux-shots/`.
+
+## [1.642.0+678]
+
+- **Narrative: the signal-lantern alley is back, as a Saltmouth street scene.**
+  The Weaver's Alley (`270`, parked in v1.620) returns in the Lantern Alleys
+  as `2015_signaller`, in the percussive style, English and French.
+  - Where: after the Arcane Bazaar has been visited, the Saltmouth hub offers
+    "Look into the alley where a signal-lantern still burns". A dead
+    Inquisition signaller, his lantern still alight in razor wire; three ways
+    out, all back to the hub: cut it free (+2 alignment), strip the bearer
+    (+15 gold, -2 alignment), or leave them both. The three origin callbacks
+    (the sparrow) are kept. No lantern flags are needed or set.
+  - `270` stays parked and untouched, so the Alster tests and the opening are
+    as they were. `q_retrieve_banner` is unaffected.
+  - Touches Core's files in a few lines: the scene's building in
+    `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
+    scene count in `test/world_map_test.dart` (69 to 70).
 ## [1.641.0+677]
 
 - **Dice: every die has its own art**

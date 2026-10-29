@@ -41,7 +41,8 @@ void main() {
           'raceId': 'human',
           'professionId': 'warrior',
           'recruitedAllies': [
-            AllyState(companionId: 'sable', currentHealth: 50, skillPoints: 1)
+            const AllyState(
+                    companionId: 'sable', currentHealth: 50, skillPoints: 1)
                 .toJson(),
           ],
         })));

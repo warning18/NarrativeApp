@@ -335,7 +335,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                     highlightIndex: _lastBuilt,
                     harborAction: widget.harborAction,
                     scrollController: _scroll,
-                    onPieceTap: (id) => _showInfo(id),
+                    onPieceTap: _showInfo,
                   ),
                   // The hour over the town (the world clock).
                   WatchSky(

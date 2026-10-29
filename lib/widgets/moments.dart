@@ -146,8 +146,8 @@ void showCoinFlight(BuildContext context,
         final e = Curves.easeInOutCubic.transform(local);
         final mid = Offset((from.dx + to.dx) / 2 + (i - count / 2) * 8,
             math.min(from.dy, to.dy) - 80 - i * 6);
-        final p = Offset.lerp(
-            Offset.lerp(from, mid, e)!, Offset.lerp(mid, to, e)!, e)!;
+        final p =
+            Offset.lerp(Offset.lerp(from, mid, e), Offset.lerp(mid, to, e), e)!;
         canvas.drawCircle(p, 5, Paint()..color = gold);
         canvas.drawCircle(
             p,

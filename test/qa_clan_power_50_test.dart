@@ -232,7 +232,7 @@ void main() {
         for (final id in clans) {
           if (s.fallen.contains(id)) continue;
           final places = held.values.where((h) => h == id).length;
-          var value = powerOf(s, id, data) + holdingPower * places;
+          final value = powerOf(s, id, data) + holdingPower * places;
           holding[id] = holdingPower * places;
           if (isMainClan(id, data) && !s.helped.contains(id)) {
             final floor = (data.faction(id)!.startPower - neglectFloor)

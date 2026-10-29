@@ -343,7 +343,7 @@ void main() {
 
     testWidgets('the ship is drawn on a grid of art pixels by default',
         (tester) async {
-      final look = TopShipLook.rustyEel;
+      const look = TopShipLook.rustyEel;
       final painter = TopShipPainter(
         look: look,
         flip: false,

@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 /// survive as one art pixel, a soft shadow does not.
 const double pixelAlphaCut = 0.3;
 
-final ColorFilter _cut = ColorFilter.matrix(<double>[
+const ColorFilter _cut = ColorFilter.matrix(<double>[
   1, 0, 0, 0, 0, //
   0, 1, 0, 0, 0, //
   0, 0, 1, 0, 0, //

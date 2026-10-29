@@ -23,7 +23,7 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   // The wreck of the Lark, the Sleeper's Face, the White Wells.
   final travels = travelHistoryOf(

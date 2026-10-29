@@ -101,7 +101,7 @@ void _expectFirstScenePage(WidgetTester tester, ProviderContainer container) {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   group('hasRecapProgress', () {
     test('nothing to recap on a fresh story', () {

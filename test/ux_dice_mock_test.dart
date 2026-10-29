@@ -101,7 +101,7 @@ List<_P> _ring(int n, double r, double start) => [
 
 _Shape _d4() {
   const a = _P(0, -1), b = _P(0.9, 0.62), c = _P(-0.9, 0.62), p = _P(0, 0.12);
-  return _Shape(
+  return const _Shape(
       'd4',
       4,
       [
@@ -141,7 +141,7 @@ _Shape _d8() {
       b = _P(0, 1),
       l = _P(-0.92, 0),
       m = _P(0, 0.2);
-  return _Shape(
+  return const _Shape(
       'd8',
       8,
       [
@@ -160,7 +160,7 @@ _Shape _d10() {
       b = _P(0, 1),
       l = _P(-0.82, -0.12),
       m = _P(0, 0.12);
-  return _Shape(
+  return const _Shape(
       'd10',
       10,
       [
@@ -499,7 +499,7 @@ Widget _family() {
               height: 92,
               child: Stack(alignment: Alignment.center, children: [
                 _die(_shapes[1], _skin('stone_die'), '', 92),
-                Positioned(
+                const Positioned(
                     top: 28,
                     right: 12,
                     child: SizedBox(
@@ -542,7 +542,7 @@ class _Frame {
 
 Widget _cell(_Shape? s, DieSkin skin, String v, _Frame f,
     {bool coin = false, double size = 60}) {
-  Widget body = coin
+  final Widget body = coin
       ? _coin(skin, size, sy: f.sx)
       : _die(s!, skin, v, size,
           angle: f.angle,
@@ -906,8 +906,8 @@ Widget _diceSlot() {
         color: const Color(0xFF1B1A21),
         padding: const EdgeInsets.symmetric(horizontal: 14),
         alignment: Alignment.centerLeft,
-        child: Text('Inventory',
-            style: const TextStyle(
+        child: const Text('Inventory',
+            style: TextStyle(
                 fontFamily: 'IMFellEnglishSC',
                 fontSize: 20,
                 color: Color(0xFFEDE6DC)))),
@@ -1618,7 +1618,7 @@ class _ArtPainter extends CustomPainter {
               const Color(0xFFA8D96D), 1.2);
         }
       case 'vigil_die': // a candle flame and wax
-        canvas.drawRect(Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
+        canvas.drawRect(const Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
             fill(const Color(0xFFE8DFC4)));
         flame(0, -1.25, 0.2, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
         drop(0.5, 0.0, 0.06, const Color(0xFFE8DFC4));
@@ -1637,7 +1637,7 @@ class _ArtPainter extends CustomPainter {
           final a = i * math.pi / 4;
           final p = _P(math.cos(a) * 1.15, math.sin(a) * 1.15);
           canvas.drawLine(
-              p, p + _P(0.0, 0.1), stroke(const Color(0xFF8E9CFF), 1.6));
+              p, p + const _P(0.0, 0.1), stroke(const Color(0xFF8E9CFF), 1.6));
           canvas.drawLine(p + const _P(-0.05, 0.03), p + const _P(0.05, 0.06),
               stroke(const Color(0xFF8E9CFF), 1.4));
         }
@@ -1653,7 +1653,7 @@ class _ArtPainter extends CustomPainter {
             const _P(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
       case 'ossuary_die': // a skull
         canvas.drawCircle(const _P(0.4, 0.0), 0.2, fill(bone));
-        canvas.drawRect(Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
+        canvas.drawRect(const Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
         canvas.drawCircle(
             const _P(0.34, 0.0), 0.05, fill(const Color(0xFF3A3328)));
         canvas.drawCircle(
@@ -1980,7 +1980,7 @@ void main() {
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-              'The roll, about 1 s  ·  ${(t.clamp(0, 1.5)).toStringAsFixed(2)} s',
+              'The roll, about 1 s  ·  ${t.clamp(0, 1.5).toStringAsFixed(2)} s',
               style: _t(14, c: _gold, bold: true)),
           const SizedBox(height: 6),
           Row(children: [

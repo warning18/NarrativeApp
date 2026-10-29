@@ -1522,7 +1522,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // way is picked (it comes back selected on the map) or the party walks
     // to another district.
     if (ref.watch(currentCityProvider) != null &&
-        !(ref.read(storyPlayProvider).isInExcursion)) {
+        !ref.read(storyPlayProvider).isInExcursion) {
       tools.add(IconButton(
         key: const ValueKey('journey_city_plan'),
         icon: const Icon(Icons.map_outlined, size: 20),
@@ -2499,7 +2499,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   icon: Icons.remove,
                   tip: tr(ref, 'journey_look_out'),
                   palette: palette,
-                  onTap: _busy ? null : () => _lookOut(),
+                  onTap: _busy ? null : _lookOut,
                 ),
               ),
             ],
@@ -2747,7 +2747,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               icon: Icons.remove,
                               tip: tr(ref, 'journey_look_out'),
                               palette: palette,
-                              onTap: _busy ? null : () => _lookOut(),
+                              onTap: _busy ? null : _lookOut,
                             ),
                           ),
                         ],
@@ -6221,11 +6221,11 @@ class _CityDistrictView extends ConsumerWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(shape: BoxShape.circle, color: ink.gold),
           child: Text('$n',
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: InkFonts.system,
                   fontSize: 11,
                   height: 1,
-                  color: const Color(0xFF17151B))),
+                  color: Color(0xFF17151B))),
         );
 
     // A way's pin in the street (v1.544): its banner, else its kind's disc.

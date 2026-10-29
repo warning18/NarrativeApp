@@ -158,7 +158,7 @@ void main() {
     // the enemy's turn can write more than that in one frame (the blow,
     // a status, the next round's lines), so the landing line is read from
     // the full log once the next round waits on the party.
-    await _pumpUntil(tester, () => _rollEnabled());
+    await _pumpUntil(tester, _rollEnabled);
     await tester.tap(find.byIcon(Icons.unfold_more));
     await tester.pump(const Duration(milliseconds: 600));
     expect(_logShows('comes crashing down') || _logShows('knocked off balance'),

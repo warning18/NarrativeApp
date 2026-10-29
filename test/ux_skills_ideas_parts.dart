@@ -437,7 +437,7 @@ class HandAndDecks extends ConsumerWidget {
           child: LayoutBuilder(builder: (context, c) {
             final four = c.maxWidth >= 380;
             final cols = four ? 4 : 2;
-            final gap = 10.0;
+            const gap = 10.0;
             final w = (c.maxWidth - gap * (cols - 1)) / cols;
             return Wrap(spacing: gap, runSpacing: 14, children: [
               for (final b in bs) SizedBox(width: w, child: _Deck(branch: b)),

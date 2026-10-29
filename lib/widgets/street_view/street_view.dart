@@ -210,7 +210,7 @@ SideLayer streetParty({required FacadeStyle style}) {
     final box = facadeBoxFor(style, size.width / u, streetKerb);
     // On the pavement beside the door, clear of the pin that stands before it.
     final x = (box.doorX - 14).floorToDouble();
-    final feet = streetKerb + 5;
+    const feet = streetKerb + 5;
     final paint = Paint();
     paint.color = const Color(0xFF2B2420);
     sidePixels(canvas, u, paint, x, feet - 2, 3, 2);

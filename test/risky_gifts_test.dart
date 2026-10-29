@@ -159,9 +159,9 @@ PlayerSession _warrior({int gold = 500, int? health}) =>
 
 /// A risky Dominion card (a sign) with [roll], alone on the table.
 PlayerSession _offeredRisky(PlayerSession session, int roll) {
-  final suitor = Suitor(
+  final suitor = const Suitor(
     factionId: 'dominion',
-    gift: const OfferGift(
+    gift: OfferGift(
         kind: GiftKind.title, id: 'no_such_title', rarity: SignRarity.epic),
   ).asRisky(roll);
   return session.copyWith(

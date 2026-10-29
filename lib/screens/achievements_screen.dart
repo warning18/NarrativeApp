@@ -33,9 +33,8 @@ class AchievementsScreen extends ConsumerWidget {
         body: achievementsAsync.when(
           data: (records) {
             final keys = records.keys.toList()..sort();
-            final unlockedCount = keys
-                .where((id) => session.unlockedAchievementIds.contains(id))
-                .length;
+            final unlockedCount =
+                keys.where(session.unlockedAchievementIds.contains).length;
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [

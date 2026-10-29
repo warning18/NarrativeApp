@@ -143,7 +143,7 @@ Widget _count(int n) => Container(
     );
 
 Widget _placeRow(_Place p) {
-  final ink = InkColors.light;
+  const ink = InkColors.light;
   final cat = p.main ? JourneyPinCat.main : JourneyPinCat.side;
   final named = p.name != null;
   return Padding(
@@ -678,7 +678,7 @@ void main() {
     // The party stays where it was under the pointer; bring it to the center.
     final nOrigin = tester.getTopLeft(find.byKey(nKey));
     await tester.dragFrom(
-        nOrigin + partyAtFit, Offset(_mapW / 2, aH * 0.5) - partyAtFit);
+        nOrigin + partyAtFit, const Offset(_mapW / 2, aH * 0.5) - partyAtFit);
     await tester.pump(const Duration(milliseconds: 600));
 
     // The full zoom: the zoom button twice.

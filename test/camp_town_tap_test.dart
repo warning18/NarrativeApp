@@ -14,7 +14,7 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/camp_town_section.dart';
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   testWidgets('a tap on a built building shows its name and what it gives',
       (tester) async {

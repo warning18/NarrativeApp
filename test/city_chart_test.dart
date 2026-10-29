@@ -87,7 +87,7 @@ void main() {
     final zoom = 390 / wharf.box.width < 760 / wharf.box.height
         ? 390 / wharf.box.width
         : 760 / wharf.box.height;
-    final pin = Offset(390 / 2, 760 * 0.42) +
+    final pin = const Offset(390 / 2, 760 * 0.42) +
         (b.at - wharf.box.center) * zoom +
         const Offset(0, -16);
     await tester.tapAt(topLeft + pin);

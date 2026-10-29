@@ -420,14 +420,14 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         meetsItemAlignment(
             items[itemId] as Map<String, dynamic>?, session.alignmentLabel);
 
-    void Function(String itemId, {String? slot}) equipFn = allyId != null
+    final void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipAllyItem(allyId, itemId, slot: slot, items: items)
         : (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipItem(itemId, slot: slot, items: items);
-    void Function(String itemId) unequipFn = allyId != null
+    final void Function(String itemId) unequipFn = allyId != null
         ? (itemId) => ref
             .read(playerSessionProvider.notifier)
             .unequipAllyItem(allyId, itemId)

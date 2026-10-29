@@ -118,7 +118,7 @@ void main() {
     for (final beast in TopBeast.values) {
       expect(SeaBeastSprites.of(beast), isNotNull, reason: '$beast');
     }
-    final look = TopShipLook.tideKraken;
+    const look = TopShipLook.tideKraken;
     final recorder = ui.PictureRecorder();
     TopShipPainter(
       look: look,

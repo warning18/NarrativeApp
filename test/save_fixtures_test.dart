@@ -124,18 +124,18 @@ void main() {
     expect(recent['clockChapter'], 4);
     expect(recent['level'], 9);
     expect((recent['recruitedAllies'] as List).length, 3);
-    expect((recent['equippedItemIds'] as List), isNotEmpty);
-    expect((recent['activeQuestIds'] as List), isNotEmpty);
-    expect((recent['completedQuestIds'] as List), isNotEmpty);
-    expect((recent['flags'] as List), isNotEmpty);
+    expect(recent['equippedItemIds'] as List, isNotEmpty);
+    expect(recent['activeQuestIds'] as List, isNotEmpty);
+    expect(recent['completedQuestIds'] as List, isNotEmpty);
+    expect(recent['flags'] as List, isNotEmpty);
     final politics = recent['politics'] as Map<String, dynamic>;
-    expect((politics['standings'] as Map), isNotEmpty);
-    expect((politics['marks'] as Map), isNotEmpty);
-    expect((politics['log'] as List), isNotEmpty);
-    expect((recent['heldTitleIds'] as List), isNotEmpty);
+    expect(politics['standings'] as Map, isNotEmpty);
+    expect(politics['marks'] as Map, isNotEmpty);
+    expect(politics['log'] as List, isNotEmpty);
+    expect(recent['heldTitleIds'] as List, isNotEmpty);
     expect(recent['activeTitleId'], isNotEmpty);
-    expect((recent['itemOrigins'] as Map), isNotEmpty);
-    expect((recent['seenNpcIds'] as List), isNotEmpty);
+    expect(recent['itemOrigins'] as Map, isNotEmpty);
+    expect(recent['seenNpcIds'] as List, isNotEmpty);
   });
 
   for (final fixture in fixtures.entries) {

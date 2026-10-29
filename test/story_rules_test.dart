@@ -143,7 +143,7 @@ void main() {
           // not by the story.
           final read = flagsRead.contains(flag) ||
               flag.startsWith('feat_') ||
-              hubPrefixes.any((p) => flag.startsWith(p));
+              hubPrefixes.any(flag.startsWith);
           expect(read, isTrue,
               reason: '${node.id} sets $flag, nobody reads it');
         }

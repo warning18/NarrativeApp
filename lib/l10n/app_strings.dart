@@ -10953,6 +10953,62 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   // --- Endings ---
   'epilogue_heading': {AppLanguage.en: 'Epilogue', AppLanguage.fr: 'Épilogue'},
+  // The epilogue map: who holds each town at the ending.
+  'epilogue_map_button': {
+    AppLanguage.en: 'The realm, at the end',
+    AppLanguage.fr: 'Le royaume, à la fin',
+  },
+  'epilogue_map_subtitle': {
+    AppLanguage.en: 'Who holds what, and how.',
+    AppLanguage.fr: 'Qui tient quoi, et comment.',
+  },
+  'epilogue_map_big_towns': {
+    AppLanguage.en: 'The big towns',
+    AppLanguage.fr: 'Les grandes villes',
+  },
+  'epilogue_map_semantics': {
+    AppLanguage.en: 'The world chart, each town in the colour of its holder',
+    AppLanguage.fr:
+        'La carte du monde, chaque ville aux couleurs de son maître',
+  },
+  'epilogue_map_none': {
+    AppLanguage.en: 'No clan holds it.',
+    AppLanguage.fr: 'Aucun clan ne la tient.',
+  },
+  'epilogue_how_seat': {
+    AppLanguage.en: 'held since the start',
+    AppLanguage.fr: 'tenue depuis le début',
+  },
+  'epilogue_how_war': {
+    AppLanguage.en: 'taken by force',
+    AppLanguage.fr: 'prise par la force',
+  },
+  'epilogue_how_influence': {
+    AppLanguage.en: 'won by influence',
+    AppLanguage.fr: 'gagnée par l’influence',
+  },
+  'epilogue_districts_differ_one': {
+    AppLanguage.en: '1 district differs',
+    AppLanguage.fr: '1 quartier diffère',
+  },
+  'epilogue_districts_differ_n': {
+    AppLanguage.en: '{n} districts differ',
+    AppLanguage.fr: '{n} quartiers diffèrent',
+  },
+  'epilogue_districts_title': {
+    AppLanguage.en: 'Districts of {town}',
+    AppLanguage.fr: 'Quartiers de {town}',
+  },
+  'epilogue_districts_with_town': {
+    AppLanguage.en: 'Like the town',
+    AppLanguage.fr: 'Comme la ville',
+  },
+  'epilogue_map_legend': {
+    AppLanguage.en:
+        'A town wears its holder’s colour. A road in a clan’s colour joins two towns of that clan; a grey dashed road joins towns of different holders. The numbers are the big towns.',
+    AppLanguage.fr:
+        'Une ville porte la couleur de son maître. Une route de la couleur d’un clan relie deux villes de ce clan ; une route grise en pointillés relie des villes de maîtres différents. Les numéros sont les grandes villes.',
+  },
   'aftermath_heading': {
     AppLanguage.en: 'After the fight',
     AppLanguage.fr: 'Après le combat',

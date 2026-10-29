@@ -281,12 +281,12 @@ class _ThroneRoomState extends State<ThroneRoom>
         clipBehavior: Clip.none,
         children: [
           // The pole, from the rod to the floor, behind the cloth.
-          Positioned(
+          const Positioned(
             left: (_standardWidth - 6) / 2,
             width: 6,
             top: _standardTop + 4,
             bottom: 6,
-            child: const DecoratedBox(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/visuals/throne/pole_tile.png'),
@@ -439,12 +439,12 @@ class _ThroneRoomState extends State<ThroneRoom>
           ),
           // The carpet down the middle of the long hall.
           if (rows > 0)
-            Positioned(
+            const Positioned(
               left: (throneSceneWidth - 72) / 2,
               width: 72,
               top: _throneSectionHeight,
               bottom: 0,
-              child: const DecoratedBox(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/visuals/throne/carpet_tile.png'),

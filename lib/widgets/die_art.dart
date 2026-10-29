@@ -369,7 +369,7 @@ void paintDieArt(
             const Color(0xFFA8D96D), 1.2);
       }
     case 'vigil_die': // a candle flame and wax
-      canvas.drawRect(Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
+      canvas.drawRect(const Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
           fill(const Color(0xFFE8DFC4)));
       flame(0, -1.25, 0.2, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
       drop(0.5, 0.0, 0.06, const Color(0xFFE8DFC4));
@@ -387,8 +387,8 @@ void paintDieArt(
       for (var i = 0; i < 8; i++) {
         final a = i * math.pi / 4;
         final p = Offset(math.cos(a) * 1.15, math.sin(a) * 1.15);
-        canvas.drawLine(
-            p, p + Offset(0.0, 0.1), stroke(const Color(0xFF8E9CFF), 1.6));
+        canvas.drawLine(p, p + const Offset(0.0, 0.1),
+            stroke(const Color(0xFF8E9CFF), 1.6));
         canvas.drawLine(p + const Offset(-0.05, 0.03),
             p + const Offset(0.05, 0.06), stroke(const Color(0xFF8E9CFF), 1.4));
       }
@@ -404,7 +404,7 @@ void paintDieArt(
           const Offset(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
     case 'ossuary_die': // a skull
       canvas.drawCircle(const Offset(0.4, 0.0), 0.2, fill(bone));
-      canvas.drawRect(Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
+      canvas.drawRect(const Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
       canvas.drawCircle(
           const Offset(0.34, 0.0), 0.05, fill(const Color(0xFF3A3328)));
       canvas.drawCircle(

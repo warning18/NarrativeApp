@@ -441,7 +441,7 @@ class _MapPainter extends CustomPainter {
         ..color = const Color(0xFFB08AD9)
         ..strokeWidth = 2.4
         ..strokeCap = StrokeCap.round;
-      final d = (to - from);
+      final d = to - from;
       final n = (d.distance / 9).floor();
       for (var i = 0; i < n; i += 2) {
         canvas.drawLine(from + d * (i / n), from + d * ((i + 1) / n), dash);

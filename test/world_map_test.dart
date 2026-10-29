@@ -270,7 +270,7 @@ void main() {
     // (v1.536): the gate's and the wharf's read. 67 with Card Row's and Tern
     // Row's district quests and the two locked doors (wave 18). 69 with the wharf's
     // stair and Vane's gate (v1.578).
-    expect(find.text('Scenes read: 5 / 69'), findsOneWidget);
+    expect(find.text('Scenes read: 5 / 70'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(5));

@@ -410,7 +410,7 @@ void main() {
         expect(turned, isNotNull, reason: id);
         expect(turned!['minChapter'], 6);
         expect(turned['packEligible'], isFalse);
-        expect((turned['phases'] as List), isNotEmpty);
+        expect(turned['phases'] as List, isNotEmpty);
         expect(soloOnlyEnemyIds, contains('${id}_turned'));
       }
       expect(enemies.containsKey('inquisition_legate'), isTrue);

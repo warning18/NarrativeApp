@@ -156,7 +156,7 @@ void main() {
     await tester.runAsync(_loadFonts);
     SharedPreferences.setMockInitialValues({});
     final dog = (await tester.runAsync(_loadDog))!;
-    await tester.runAsync(() => SideSprites.preload());
+    await tester.runAsync(SideSprites.preload);
     const width = 320.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);

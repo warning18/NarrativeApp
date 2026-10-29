@@ -51,9 +51,9 @@ void main() {
   test('the Crows lean on fortune, the Vigil on guard', () {
     final crows = clanRadarOf('crows', data: data, signs: signs);
     final vigil = clanRadarOf('vigil', data: data, signs: signs);
-    expect(crows.orientation[RadarAxis.fortune]!,
+    expect(crows.orientation[RadarAxis.fortune],
         greaterThan(vigil.orientation[RadarAxis.fortune]!));
-    expect(vigil.orientation[RadarAxis.guard]!,
+    expect(vigil.orientation[RadarAxis.guard],
         greaterThan(crows.orientation[RadarAxis.guard]!));
   });
 

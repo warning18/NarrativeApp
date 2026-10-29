@@ -95,9 +95,9 @@ void main() {
       final caravans = after[RoadEventKind.caravan]! / events;
       expect(shrines, closeTo(0.2, 0.04));
       expect(caravans, closeTo(0.2, 0.04));
-      expect(after[RoadEventKind.shrine]!,
-          lessThan(before[RoadEventKind.shrine]!));
-      expect(after[RoadEventKind.caravan]!,
+      expect(
+          after[RoadEventKind.shrine], lessThan(before[RoadEventKind.shrine]!));
+      expect(after[RoadEventKind.caravan],
           lessThan(before[RoadEventKind.caravan]!));
     });
 

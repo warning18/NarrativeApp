@@ -158,7 +158,7 @@ void main() {
 
     test('a save with the oath taken before the flag opens the Stair', () {
       final json = baseSession(activeQuestIds: [oath]).toJson();
-      expect((json['flags'] as List), isNot(contains(questAcceptedFlag(oath))));
+      expect(json['flags'] as List, isNot(contains(questAcceptedFlag(oath))));
       expect(barred(PlayerSession.fromJson(json)), isFalse);
       expect(barred(PlayerSession.fromJson(baseSession().toJson())), isTrue);
     });

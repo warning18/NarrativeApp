@@ -133,7 +133,8 @@ class _TempleState extends ConsumerState<_Temple> {
           .firstWhere((id) => ref.read(templeClanProvider(id)) == 'dominion');
       showTownServiceSheet(
           context,
-          TownService(CityServicePin('t_temple', 'temple', Offset.zero, ''), [
+          TownService(
+              const CityServicePin('t_temple', 'temple', Offset.zero, ''), [
             (action: TownServiceAction.temple, id: place, unlocked: true),
           ]));
     });

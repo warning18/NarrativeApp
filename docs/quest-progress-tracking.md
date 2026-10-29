@@ -42,7 +42,7 @@ normally.
 - A story choice with `unlockQuestId` offers the quest; one with
   `questIDToProgress` starts it (only `q_first_blood`, from node `260`, does
   this). A quest's `nextQuestID` chains the next one in.
-- The quest's own `questChoices` accept it (`flagToAdd` records that);
+- The quest's own `questChoices` accept it (taking it sets its `<id>_accepted` flag, in code);
   `turnInChoices`, where a quest has them (12 do), are the ways to hand it
   in, each with its own reward, alignment change, result text and `flag`
   (the flag is what later scenes and NPC `states` read).

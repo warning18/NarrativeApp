@@ -402,9 +402,9 @@ void _mount(Canvas canvas, ShipMount m, double t) {
             ..moveTo(-reach, -13)
             ..quadraticBezierTo(0, -19, reach, -13),
           arm);
-      canvas.drawLine(Offset(-reach, -13), Offset(0, -6),
+      canvas.drawLine(Offset(-reach, -13), const Offset(0, -6),
           _line(const Color(0xFFD7C9A6), 0.8));
-      canvas.drawLine(Offset(reach, -13), Offset(0, -6),
+      canvas.drawLine(Offset(reach, -13), const Offset(0, -6),
           _line(const Color(0xFFD7C9A6), 0.8));
       canvas.drawLine(
           const Offset(0, -6), const Offset(0, -30), _line(metal, 1.8));

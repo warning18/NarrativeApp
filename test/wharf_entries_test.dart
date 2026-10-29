@@ -26,8 +26,8 @@ void main() {
     for (final e in dag.entries)
       e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
   };
-  final plan = (_json('assets/gamedata/city_plans.json')['saltmouth']
-      as Map<String, dynamic>);
+  final plan = _json('assets/gamedata/city_plans.json')['saltmouth']
+      as Map<String, dynamic>;
   final anchors =
       (plan['anchors'] as Map<String, dynamic>).cast<String, String>();
   final district = {

@@ -92,7 +92,7 @@ class DetourSceneBand extends StatelessWidget {
     final biome = scene.where.biomes.isEmpty ? null : scene.where.biomes.first;
     final kit = detourKitOf(biome);
     final (top, ground, glyph) = detourBiomeLook(biome);
-    final ink = InkColors.dark;
+    const ink = InkColors.dark;
     final step = scene.beats.isEmpty ? null : scene.beats[at];
     final place = step == null
         ? ''

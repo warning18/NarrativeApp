@@ -232,9 +232,9 @@ void main() {
 
     final withCard = Column(mainAxisSize: MainAxisSize.min, children: [
       _Slice(today, scale, 0, cut),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
-        child: const _DiceCard(dieId: 'starter_die', faces: 6, more: 2),
+      const Padding(
+        padding: EdgeInsets.fromLTRB(16, 6, 16, 4),
+        child: _DiceCard(dieId: 'starter_die', faces: 6, more: 2),
       ),
       _Slice(today, scale, cut, height),
     ]);

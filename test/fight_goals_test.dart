@@ -220,11 +220,11 @@ void main() {
 
     test('every faction named by an enemy or a doctrine exists', () {
       final factions =
-          (jsonDecode(File('assets/gamedata/factions.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/factions.json').readAsStringSync())
+              as Map<String, dynamic>;
       final enemies =
-          (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
+              as Map<String, dynamic>;
       for (final entry in enemies.entries) {
         final faction =
             (entry.value as Map<String, dynamic>)['faction']?.toString() ?? '';
@@ -239,8 +239,8 @@ void main() {
 
     test('a boss or unique has no faction, so no doctrine', () {
       final enemies =
-          (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
+              as Map<String, dynamic>;
       // Uniques tuned one by one carry no faction in their own right.
       for (final id in ['void_sovereign', 'white_admiral', 'void_archon']) {
         expect((enemies[id] as Map<String, dynamic>)['faction'], '',

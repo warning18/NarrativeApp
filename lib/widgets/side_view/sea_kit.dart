@@ -300,7 +300,7 @@ void _carried(Canvas canvas, Size size, double u, double scroll, double t,
         ..style = PaintingStyle.stroke
         ..strokeWidth = u;
       for (var i = 0; i < 3; i++) {
-        final phase = ((t * 0.12 + i / 3) % 1.0);
+        final phase = (t * 0.12 + i / 3) % 1.0;
         final px = ((i * span / 3 + 20 - offset) % span + span) % span - 10;
         canvas.drawOval(
             Rect.fromCenter(

@@ -181,8 +181,8 @@ void sidePixels(Canvas canvas, double unit, Paint paint, double x, double y,
     double w, double h) {
   canvas.drawRect(
       Rect.fromLTWH(
-          (x).floorToDouble() * unit,
-          (y).floorToDouble() * unit,
+          x.floorToDouble() * unit,
+          y.floorToDouble() * unit,
           math.max(1, w.roundToDouble()) * unit,
           math.max(1, h.roundToDouble()) * unit),
       paint);

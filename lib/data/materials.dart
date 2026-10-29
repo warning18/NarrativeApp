@@ -9,7 +9,7 @@ library;
 
 /// The tier's chapters: tier 1 is chapters 1-2, tier 2 chapters 3-4,
 /// tier 3 chapters 5-6, tier 4 chapters 7-8.
-int materialTierForChapter(int chapter) => ((chapter.clamp(1, 8) + 1) ~/ 2);
+int materialTierForChapter(int chapter) => (chapter.clamp(1, 8) + 1) ~/ 2;
 
 /// Each tier's common material (the first) and its rare one (none for
 /// tier 1).
