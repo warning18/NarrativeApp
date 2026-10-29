@@ -1,0 +1,403 @@
+293 duplicated blocks of 15+ lines in test; 14288 lines repeated (copies beyond the first)
+
+120 lines x 2:
+   test/ux_skills_styles_mock_test.dart:77-205
+   test/ux_skills_combined_mock_test.dart:76-204
+
+102 lines x 3:
+   test/ux_skills_mock_test.dart:88-197
+   test/ux_skills_styles_mock_test.dart:92-201
+   test/ux_skills_combined_mock_test.dart:91-200
+
+57 lines x 2:
+   test/fight_windup_test.dart:80-144
+   test/fight_guard_test.dart:44-108
+
+54 lines x 2:
+   test/ux_places_mock_test.dart:315-370
+   test/ux_map_first_mock_test.dart:338-393
+
+53 lines x 2:
+   test/fight_echo_silence_test.dart:54-113
+   test/fight_opening_round_test.dart:55-113
+
+52 lines x 2:
+   test/ux_arrival_shot_test.dart:27-82
+   test/ux_town_shot_test.dart:25-80
+
+48 lines x 2:
+   test/journey_motion_still_test.dart:10-70
+   test/journey_motion_test.dart:11-72
+
+47 lines x 3:
+   test/journey_idle_test.dart:23-74
+   test/journey_motion_still_test.dart:19-70
+   test/journey_motion_test.dart:21-72
+
+44 lines x 2:
+   test/ux_character_dice_badge_mock_test.dart:43-94
+   test/ux_character_dice_mock_test.dart:45-96
+
+40 lines x 2:
+   test/spec_standing_fight_test.dart:29-69
+   test/specialisations_fight_test.dart:28-68
+
+40 lines x 2:
+   test/ux_companion_mock_parts.dart:1219-1261
+   test/ux_skills_mock_parts.dart:929-971
+
+38 lines x 3:
+   test/ux_race_mock_parts.dart:885-923
+   test/ux_companion_mock_parts.dart:1223-1261
+   test/ux_skills_mock_parts.dart:933-971
+
+38 lines x 2:
+   test/combat_engine_test.dart:478-519
+   test/combat_engine_test.dart:509-548
+
+36 lines x 2:
+   test/journey_step_taps_test.dart:70-108
+   test/journey_transit_test.dart:36-74
+
+36 lines x 2:
+   test/qa_real_font_cards_test.dart:97-136
+   test/qa_real_font_cards_test.dart:247-282
+
+34 lines x 2:
+   test/journey_detour_scene_test.dart:27-61
+   test/journey_choice_cards_test.dart:31-65
+
+33 lines x 3:
+   test/ux_skills_styles_mock_test.dart:43-78
+   test/ux_skills_combined_mock_test.dart:42-77
+   test/ux_skills_mock_test.dart:43-78
+
+32 lines x 4:
+   test/ux_race_mock_test.dart:147-178
+   test/ux_skills_styles_mock_test.dart:152-183
+   test/ux_skills_combined_mock_test.dart:151-182
+   test/ux_skills_mock_test.dart:148-179
+
+32 lines x 3:
+   test/fight_pack_echo_test.dart:30-70
+   test/fight_echo_silence_test.dart:30-70
+   test/fight_opening_round_test.dart:31-71
+
+32 lines x 2:
+   test/vfx_power_test.dart:164-196
+   test/combat_vfx_test.dart:170-202
+
+32 lines x 2:
+   test/qa_smoke_world_test.dart:174-207
+   test/qa_smoke_world_test.dart:216-249
+
+31 lines x 2:
+   test/ux_skills_mock_parts.dart:42-73
+   test/ux_race_mock_parts.dart:167-198
+
+31 lines x 2:
+   test/fight_hero_harness.dart:90-121
+   test/ux_fight_info_test.dart:85-116
+
+30 lines x 2:
+   test/land_crossing_test.dart:278-309
+   test/land_crossing_test.dart:373-403
+
+30 lines x 2:
+   test/sea_beast_outrun_test.dart:20-52
+   test/sea_beast_hunt_test.dart:23-56
+
+30 lines x 2:
+   test/town_fold_test.dart:19-52
+   test/companion_remark_story_test.dart:25-58
+
+29 lines x 4:
+   test/fight_pack_echo_test.dart:32-68
+   test/fight_echo_silence_test.dart:32-68
+   test/fight_opening_round_test.dart:33-69
+   test/fight_ground_test.dart:26-61
+
+29 lines x 3:
+   test/combat_vfx_test.dart:226-254
+   test/vfx_power_test.dart:168-196
+   test/combat_vfx_test.dart:174-202
+
+29 lines x 2:
+   test/ux_character_dice_badge_mock_test.dart:305-333
+   test/ux_character_dice_mock_test.dart:171-199
+
+29 lines x 2:
+   test/camp_town_section_test.dart:37-67
+   test/camp_town_section_test.dart:135-164
+
+29 lines x 2:
+   test/quest_politics_test.dart:123-151
+   test/quest_politics_test.dart:172-201
+
+29 lines x 2:
+   test/journey_city_view_test.dart:32-62
+   test/district_places_view_test.dart:33-63
+
+28 lines x 3:
+   test/fight_markers_harness.dart:25-52
+   test/spec_standing_fight_test.dart:35-63
+   test/specialisations_fight_test.dart:34-62
+
+28 lines x 2:
+   test/offer_dialog_test.dart:114-141
+   test/offer_mandatory_test.dart:35-63
+
+28 lines x 2:
+   test/journey_scene_sheet_test.dart:25-54
+   test/journey_scene_choices_test.dart:21-51
+
+28 lines x 2:
+   test/saltmouth_one_place_test.dart:164-193
+   test/alster_one_place_test.dart:137-166
+
+27 lines x 4:
+   test/qa_real_font_layout_test.dart:31-59
+   test/qa_ch7_hub_layout_test.dart:33-60
+   test/qa_full_map_test.dart:41-68
+   test/qa_real_font_cards_test.dart:30-57
+
+27 lines x 3:
+   test/journey_banner_pin_district_test.dart:30-57
+   test/journey_city_view_test.dart:35-62
+   test/district_places_view_test.dart:36-63
+
+27 lines x 3:
+   test/fight_pack_echo_test.dart:92-120
+   test/fight_echo_silence_test.dart:84-113
+   test/fight_opening_round_test.dart:85-113
+
+27 lines x 2:
+   test/story_graph_integrity_test.dart:103-130
+   test/story_graph_integrity_test.dart:175-202
+
+27 lines x 2:
+   test/chart_weather_test.dart:284-313
+   test/journey_read_through_test.dart:32-62
+
+27 lines x 2:
+   test/ux_forge_build_shots_test.dart:30-57
+   test/ux_places_build_shots_test.dart:31-58
+
+27 lines x 2:
+   test/hour_roads_test.dart:30-58
+   test/ruler_changes_test.dart:27-55
+
+27 lines x 2:
+   test/spec_standing_fight_test.dart:71-98
+   test/specialisations_fight_test.dart:69-96
+
+26 lines x 13:
+   test/ux_vica_follow_mock_test.dart:28-53
+   test/ux_forge_build_shots_test.dart:32-57
+   test/ux_skills_styles_mock_test.dart:24-49
+   test/ux_character_dice_badge_mock_test.dart:24-49
+   test/ux_character_dice_mock_test.dart:26-51
+   test/ux_skills_combined_mock_test.dart:23-48
+   test/ux_race_mock_test.dart:24-49
+   test/ux_companion_mock_test.dart:25-50
+   test/ux_skills_mock_test.dart:24-49
+   test/ux_places_build_shots_test.dart:33-58
+   test/ux_inventory_build_shots_test.dart:20-45
+   test/ux_intro_anim_test.dart:24-49
+   test/ux_fight_fixed_mock_test.dart:17-42
+
+26 lines x 8:
+   test/ux_inventory_mock_test.dart:36-61
+   test/ux_arrival_shot_test.dart:31-56
+   test/origin_scene_backdrop_test.dart:19-44
+   test/ux_places_mock_test.dart:34-59
+   test/ux_tutorial_ideas_mock_test.dart:24-49
+   test/ux_town_shot_test.dart:29-54
+   test/ux_dice_mock_test.dart:35-60
+   test/ux_journey_fix_shots_test.dart:23-48
+
+26 lines x 3:
+   test/journey_tab_test.dart:31-59
+   test/chart_weather_test.dart:285-313
+   test/journey_read_through_test.dart:33-62
+
+26 lines x 3:
+   test/clash_test.dart:26-54
+   test/squad_test.dart:23-51
+   test/fight_goals_test.dart:27-55
+
+25 lines x 4:
+   test/reward_card_test.dart:37-62
+   test/clan_power_block_test.dart:48-73
+   test/offer_dialog_test.dart:81-106
+   test/clan_compass_test.dart:45-70
+
+25 lines x 3:
+   test/journey_moves_test.dart:21-47
+   test/weather_chip_narrow_test.dart:20-46
+   test/journey_inside_test.dart:26-52
+
+25 lines x 2:
+   test/ship_battle_panel_test.dart:73-97
+   test/ship_turn_clock_test.dart:88-112
+
+24 lines x 4:
+   test/qa_fight_tips_real_font_test.dart:36-61
+   test/qa_story_text_real_font_test.dart:29-54
+   test/qa_smoke_harness.dart:35-58
+   test/ux_story_room_test.dart:29-54
+
+24 lines x 4:
+   test/ux_race_mock_test.dart:121-144
+   test/ux_skills_styles_mock_test.dart:126-149
+   test/ux_skills_combined_mock_test.dart:125-148
+   test/ux_skills_mock_test.dart:122-145
+
+24 lines x 3:
+   test/qa_fight_tips_real_font_test.dart:46-75
+   test/qa_story_text_real_font_test.dart:39-68
+   test/ux_story_room_test.dart:39-68
+
+24 lines x 2:
+   test/fight_dice_rules_test.dart:26-53
+   test/fight_mirror_spell_test.dart:32-59
+
+24 lines x 2:
+   test/skill_challenge_screen_test.dart:27-52
+   test/skill_challenge_screen_test.dart:98-121
+
+24 lines x 2:
+   test/ship_battle_test.dart:29-54
+   test/ship_dynamics_test.dart:31-56
+
+24 lines x 2:
+   test/item_detail_view_test.dart:94-120
+   test/title_detail_view_test.dart:79-104
+
+23 lines x 4:
+   test/rival_hunters_test.dart:133-156
+   test/nemesis_test.dart:235-258
+   test/clan_power_test.dart:254-277
+   test/hunter_mercy_test.dart:129-152
+
+23 lines x 3:
+   test/ship_boarding_retreat_test.dart:68-91
+   test/ship_battle_panel_test.dart:54-76
+   test/ship_fx_test.dart:17-39
+
+23 lines x 3:
+   test/camp_build_tray_test.dart:75-97
+   test/camp_town_section_test.dart:38-61
+   test/camp_town_section_test.dart:136-158
+
+23 lines x 2:
+   test/ship_battle_balance_test.dart:66-90
+   test/ship_battle_balance_test.dart:77-101
+
+23 lines x 2:
+   test/story_graph_integrity_test.dart:192-215
+   test/story_graph_integrity_test.dart:218-241
+
+23 lines x 2:
+   test/ux_forge_mock_test.dart:21-43
+   test/bounty_board_test.dart:40-62
+
+23 lines x 2:
+   test/qa_autoplay_build_test.dart:189-212
+   test/qa_autoplay_build_test.dart:239-263
+
+23 lines x 2:
+   test/risky_gifts_test.dart:123-150
+   test/camp_roll_buildings_test.dart:75-102
+
+23 lines x 2:
+   test/ux_places_mock_test.dart:267-289
+   test/ux_map_first_mock_test.dart:242-264
+
+23 lines x 2:
+   test/road_moves_world_view_test.dart:70-94
+   test/journey_transit_test.dart:61-88
+
+23 lines x 2:
+   test/story_rules_test.dart:15-38
+   test/chapter_one_test.dart:18-43
+
+23 lines x 2:
+   test/fight_echo_silence_test.dart:117-140
+   test/fight_opening_round_test.dart:117-140
+
+22 lines x 20:
+   test/item_detail_view_test.dart:27-49
+   test/feature_unlock_test.dart:57-78
+   test/stat_sheet_test.dart:25-46
+   test/zone_cleared_card_test.dart:23-44
+   test/craft_sheet_test.dart:33-54
+   test/fight_hero_harness.dart:100-121
+   test/stat_pick_picker_test.dart:32-53
+   test/reward_card_test.dart:26-47
+   test/ux_journey_pins_mockups_test.dart:122-143
+   test/title_detail_view_test.dart:27-48
+   test/clan_power_block_test.dart:37-58
+   test/offer_dialog_test.dart:70-91
+   test/level_signpost_test.dart:28-49
+   test/journey_detour_scene_test.dart:40-61
+   test/map_poi_zoom_test.dart:31-52
+   test/clan_compass_test.dart:34-55
+   test/journey_choice_cards_test.dart:44-65
+   test/ux_fight_info_test.dart:95-116
+   test/mercy_dialog_test.dart:32-53
+   test/ux_fight_size_shots_test.dart:36-57
+
+22 lines x 5:
+   test/item_detail_view_test.dart:18-40
+   test/sea_beast_outrun_test.dart:28-51
+   test/craft_sheet_test.dart:24-46
+   test/title_detail_view_test.dart:18-40
+   test/sea_beast_hunt_test.dart:31-55
+
+22 lines x 3:
+   test/fight_dice_rules_test.dart:87-109
+   test/fight_windup_test.dart:120-144
+   test/fight_guard_test.dart:84-108
+
+22 lines x 2:
+   test/ux_power_ways_mock_test.dart:340-361
+   test/ux_tutorial_ideas_mock_test.dart:609-630
+
+22 lines x 2:
+   test/forge_roll_test.dart:26-50
+   test/forge_sheet_test.dart:16-40
+
+22 lines x 2:
+   test/sea_boarding_test.dart:38-62
+   test/voyage_day_test.dart:43-66
+
+22 lines x 2:
+   test/fight_dice_rules_test.dart:63-85
+   test/fight_back_guard_test.dart:47-70
+
+21 lines x 10:
+   test/ux_forge_build_shots_test.dart:44-65
+   test/ux_skills_styles_mock_test.dart:36-57
+   test/ux_character_dice_badge_mock_test.dart:36-57
+   test/ux_character_dice_mock_test.dart:38-59
+   test/ux_skills_combined_mock_test.dart:35-56
+   test/ux_race_mock_test.dart:36-57
+   test/ux_companion_mock_test.dart:37-58
+   test/ux_skills_mock_test.dart:36-57
+   test/ux_inventory_build_shots_test.dart:32-53
+   test/ux_fight_fixed_mock_test.dart:29-50
+
+21 lines x 6:
+   test/fight_entrance_test.dart:135-155
+   test/fight_windup_test.dart:97-120
+   test/fight_dice_rules_test.dart:64-85
+   test/fight_guard_test.dart:61-84
+   test/fight_victory_auto_close_test.dart:38-58
+   test/fight_back_guard_test.dart:48-70
+
+21 lines x 4:
+   test/ux_arrival_shot_test.dart:43-64
+   test/ux_places_mock_test.dart:46-67
+   test/ux_town_shot_test.dart:41-62
+   test/ux_journey_fix_shots_test.dart:35-56

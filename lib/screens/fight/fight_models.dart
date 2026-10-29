@@ -91,18 +91,13 @@ class _FacePreview {
 String _effectiveSkillId(DiceFaceResult face) =>
     face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
 
-/// The element a rolled face actually hits with — the linked skill's own
-/// `element` for a Skill face (the skill is what's actually cast; the face
-/// is just its delivery), or the face's own `element` for a plain
-/// Attack/Defend/Heal face. Used to look up gear's `<prefix>DmgBonus` and
-/// to record what the enemy was just hit with for `OnHitByElement`.
-String _elementFor(DiceFaceResult face, Map<String, dynamic> skills) {
-  if (face.type == 'Skill') {
-    final skill = skills[_effectiveSkillId(face)] as Map<String, dynamic>?;
-    return skill?['element']?.toString() ?? 'None';
-  }
-  return face.element;
-}
+/// The element a rolled face actually hits with (faceHitElement): the
+/// linked skill's own `element` for a Skill face (the skill is what's
+/// actually cast), else the face's own -- an elemental die's element.
+/// Used to look up gear's `<prefix>DmgBonus` and to record what the enemy
+/// was just hit with for `OnHitByElement`.
+String _elementFor(DiceFaceResult face, Map<String, dynamic> skills) =>
+    faceHitElement(face.type, face.element, skills[_effectiveSkillId(face)]);
 
 /// The equipment bonus for [element] off [equippedItemIds] — 0 for 'None'
 /// or any element without a known item-field prefix (see

@@ -56,6 +56,46 @@ class FightSpriteSet {
   int get hashCode => id.hashCode;
 }
 
+/// The fixed boxes the fight's figures stand in (docs/proposals/
+/// fight-fixed-sizes.md): one size for the hero, one for an ally, one for a
+/// foe and a bigger one for a boss, whatever the party and the pack are.
+/// A figure's art is scaled to its box ([pixelFor]) and stands on the one
+/// ground line, so the hero is never huge, small or missing from one fight
+/// to the next. Phones under 360 px get the smaller set.
+@immutable
+class FightBoxes {
+  const FightBoxes._(this.hero, this.ally, this.foe, this.boss);
+
+  final double hero;
+  final double ally;
+  final double foe;
+  final double boss;
+
+  static const FightBoxes wide = FightBoxes._(96, 64, 96, 144);
+  static const FightBoxes narrow = FightBoxes._(72, 48, 72, 108);
+
+  /// The set for a stage [width] wide.
+  static FightBoxes forWidth(double width) => width < 360 ? narrow : wide;
+
+  /// The room over a box for its health bar, and under it for the ground.
+  static const double barRoom = 14;
+
+  /// How far the allies' back row (and a pack's third foe) stands above
+  /// the ground line.
+  static const double backLift = 10;
+
+  /// The stage's height: the tallest box that stands in it, its frame's
+  /// margin ([FightFigure.sizeFor]) and the bar over it. A fight with a
+  /// boss reserves the boss's, so nothing under the stage moves.
+  double stageHeight({required bool boss}) =>
+      (boss ? this.boss : hero) + 6 + barRoom + backLift;
+
+  /// The sprite pixel that fits [sprite]'s frame in a box [box] tall, in
+  /// quarter steps (a pixel of 2 or 3 draws even; 1.5 is the narrow set's).
+  static double pixelFor(FightSpriteSet sprite, double box) =>
+      (box / sprite.frameHeight * 4).floorToDouble() / 4;
+}
+
 /// The ronin of the side view (assets/visuals/walker): the placeholder hero,
 /// and what every missing set falls back to.
 const FightSpriteSet roninSprite = FightSpriteSet(

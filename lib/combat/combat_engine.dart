@@ -910,8 +910,10 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// the stronger mages and rogues after v1.490 its health to 1.21 (the boss
 /// mean back to about 51%, docs/simulation/difficulty-review.md). The
 /// difficulty pass (v1.597) brought it to 1.13 for the hero's smaller
-/// health, the curve's targets kept.
-const double bossHealthBaseMultiplier = 1.25;
+/// health, the curve's targets kept. Measured on the full world (the clans'
+/// specialisations in play, as in the game), v1.613 raised it to 1.45
+/// (docs/proposals/bosses-full-world.md).
+const double bossHealthBaseMultiplier = 1.45;
 const double bossDamageBaseMultiplier = 1.24;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND

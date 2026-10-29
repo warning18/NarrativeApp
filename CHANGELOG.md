@@ -27,6 +27,106 @@ isn't reconstructable from git history alone.
     since that test is about the walk.
 
 
+
+## [1.615.0+651]
+
+- **Core: the element dice** (the user's option B;
+  docs/proposals/difficulty-pass.md §8 and §10).
+  - **Elemental dice carry their element on every hit.** Each of the 16
+    elemental dice has its element on all its Attack faces, and on its
+    Skill faces whose skill has none.
+  - **A weakness is ×3** (was ×2). The fight card shows ×3.
+  - **What it changes:** the die that matches a foe's weakness now clearly
+    beats the starter die against it, 34% against 23% in the six set fights
+    of chapters 3–6. Before, it lost: 16% against 23%.
+  - **Bosses re-sized** for the stronger weakness hits:
+    - the bone warden has 75 health (was 63);
+    - the void archon 92 (was 80);
+    - the Tear-Herald 75 (was 64);
+    - the void sovereign 95 (was 80).
+  - Tests: new `adapt_gap_test` guard. `enemy_intent_test` (×3) and the
+    frozen naive run are re-pinned.
+
+## [1.614.0+650]
+
+- **Core: the specialisations pass** (docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with a clan's specialisation, the mage, rogue and
+    ranger won about 4 encounters in 5, the cleric and warrior about 2 in 3.
+  - **Now:** every class is within 7 points of the others (71–78%).
+  - **Stronger:**
+    - the cleric's Long Vigil mends 15% a round (was 5%; the
+      Candlebearers' 18%, was 7%);
+    - the warrior's Briar Guard sends back 80% of a stopped blow (was 25%;
+      the Anvil-Deaf's 100%, was 50%).
+  - **Weaker:**
+    - the mage's Burden-Bearer: a spell from a full Well hits ×1.4 (was
+      ×2.0; the Scorched Choir's ×1.6, was ×2.5; rank II +0.2, was +0.5);
+    - the rogue's Fever Blade: the Rot is 20% of a critical hit (was 40%);
+    - the ranger's Fen Guide: the first face's poison is 25% of the strike
+      (was 50%).
+  - **Bosses re-sized** for the stronger cleric and warrior: Claimant Vane
+    has 100 health (was 79), Claimant Tallis 88 (was 77), the void archon
+    80 (was 76), the Tear-Herald 64 (was 61).
+  - Tests: `boss_balance_test`'s professions spread is back to 8 points.
+    The specialisation numbers, the claimants' health and the frozen naive
+    run are re-pinned.
+
+## [1.613.0+649]
+
+- **Core: the bosses in the full world** (QA's finding, #591;
+  docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with the clans' specialisations in play, as in the
+    game, the bosses were won 15–20 points more often than their targets
+    (a mean of 64% against about 50%).
+  - **The targets stay; the bosses get harder:**
+    - the boss health floor goes from 1.25 to 1.45;
+    - the void sovereign has 80 health (was 66), the white admiral 68 (was
+      62) and the Tear-Herald 61 (was 57);
+    - the nemeses' champions have 4 less health each;
+    - Aurel Vane drops from 22 to 19 health, so chapter 1 keeps its 75%.
+  - **Now:** every boss is inside its band, and the mean is 53%.
+  - **Found on the way:** with their specialisations, the mage, rogue and
+    ranger win 78–80% of their encounters, the cleric and warrior 67%. A
+    specialisations pass follows.
+  - Tests: `boss_balance_test` measures the full world, and its professions'
+    spread band allows three standard errors. `difficulty_curve_test` and
+    the frozen naive run are re-pinned.
+
+
+## [1.612.0+648]
+
+- **UX: the fight at fixed sizes.** (The user's "the size of enemy or player
+  are fixed", approved as drawn in `docs/proposals/fight-fixed-sizes.md`.)
+  - **One box for each figure**, whatever the party and the pack are: hero 96,
+    ally 64, foe 96 and a **bigger box for a boss only** (144); under 360 px
+    the set is 72, 48, 72 and 108. The art is scaled to its box and every
+    figure stands on one ground line, so the hero is never huge, small or
+    missing from one fight to the next (with three allies it used to vanish).
+  - **A stage of fixed height under the cards** (the boss fight reserves the
+    taller one), so the dice and the controls never move; the cards above are
+    what gives, and they scroll as before.
+  - **Allies stand in a back row** behind the hero (a disc with their initial:
+    they have no sprite yet), the foes fill front-right, front-left, then the
+    back row, a foe with no art stands as its portrait in its box, and each
+    figure has its health bar over its box.
+  - **Slim ally cards:** an ally's card keeps its name, die and health bar, and
+    shows the attack/armour numbers only for the hero; block, a parry, a status
+    or a knockout still show.
+  - **Fixed (#598):** the guide dog's walk frames west and south
+    (`Walking/west`, `Walking/south`) were not listed in `pubspec.yaml`, so they
+    were not in the build: her walk had no frames in those two directions. Both
+    folders are listed now. (The Bark frames east, north and west and the Fight
+    rotations are listed nowhere and used by no code; left out of the build.)
+  - **Fixed:** a fighter's picture could stay a grey "not yet" mark when its
+    image arrived while it stood still (reduced motion); it now repaints when
+    the image is in.
+  - Not done (as the proposal said it would follow): damage numbers and effects
+    still rise from the cards, not from the boxes; pack foes' cards are not
+    slimmer.
+- Tests: `fight_stage_test.dart` (the boxes), `ux_fight_stage_boss_test.dart`,
+  `ux_fight_stage_narrow_test.dart`; `ux_fight_enemy_test.dart` and
+  `ux_fight_enemy_none_test.dart` follow the boxes. Pictures:
+  `docs/ux-shots/fight-built/`.
 ## [1.611.0+647]
 
 - **UX: fixes from the chapter 1 reviews.**
