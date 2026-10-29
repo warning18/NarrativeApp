@@ -20,6 +20,7 @@ import 'package:narrative_data_app/providers/road_random_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/camp_screen.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
@@ -36,10 +37,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1400));
 
     // The landing rolls as a road would (v1.361): a quiet one here.
     await tester.pumpWidget(ProviderScope(

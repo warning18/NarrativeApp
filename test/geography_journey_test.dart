@@ -28,6 +28,7 @@ import 'package:narrative_data_app/screens/story_player_screen.dart'
     show takeStoryChoice;
 
 import 'geography_test.dart' show biomeJson;
+import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
 /// ones only let the screen catch up.
@@ -99,10 +100,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 780);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 780));
 
     await tester.pumpWidget(ProviderScope(
       overrides: [

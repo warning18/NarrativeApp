@@ -25,6 +25,7 @@ import 'package:narrative_data_app/screens/land_crossing_screen.dart'
     show landCrossingRandomProvider;
 import 'package:narrative_data_app/screens/story_player_screen.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -211,10 +212,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(420, 1400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 1400));
 
     // The road's crossing (land_crossing.dart) goes the same way every run.
     await tester.pumpWidget(ProviderScope(overrides: [

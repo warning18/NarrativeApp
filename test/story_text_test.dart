@@ -15,6 +15,7 @@ import 'package:narrative_data_app/data/story_markup.dart';
 import 'package:narrative_data_app/providers/story_text_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/story_text.dart';
+import 'support/pump.dart';
 
 const _text =
     'Aurel Vane held **forty crowns** for the Lantern Dominion.\n\nIn Saltmouth, nobody asked why.';
@@ -178,10 +179,7 @@ void main() {
     }
     storyTypewriterOn = true;
     addTearDown(() => storyTypewriterOn = false);
-    tester.view.physicalSize = const Size(360, 520);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 520));
     const long =
         'The Eel came into **Saltmouth** on the evening tide, and **Aurel Vane** was waiting on the quay with the Lantern Dominion\'s seal.\n\nHe owed the crew **forty crowns** and a **debt of silence**. Nobody on the wharf asked which was worse.\n\n"Come ashore," he said. "Before the **third bell**."';
     final key = GlobalKey();

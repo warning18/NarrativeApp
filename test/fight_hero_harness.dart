@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,15 +20,15 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
-import 'package:narrative_data_app/theme/stitched_ink.dart';
-
 import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 Future<void> enterFight(WidgetTester tester,
     {required Size size,
     int perception = 8,
     String enemyId = 'slum_thug'}) async {
-  if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+  if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   SharedPreferences.setMockInitialValues({
     'gamedb_dice': jsonEncode({
       ...gamedata('dice.json'),
@@ -47,10 +46,7 @@ Future<void> enterFight(WidgetTester tester,
       },
     }),
   });
-  tester.view.physicalSize = size;
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, size);
   await tester.pumpWidget(ProviderScope(
       overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
       child: const MyApp()));
@@ -90,34 +86,6 @@ Future<void> enterFight(WidgetTester tester,
   await tester.tap(find.text('Enter Battle'));
   await settle(tester);
   await pumpUntil(tester, () => shows('Roll Dice'));
-}
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
 }
 
 /// UX_SHOTS (a folder): saves the screen as it is.

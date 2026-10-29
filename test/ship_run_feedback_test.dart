@@ -8,7 +8,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,33 +15,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 import 'package:narrative_data_app/screens/ship_battle_panel.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'support/fonts.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
-
-/// The app's own fonts, so the tiles and chips take the room they take on
-/// a phone.
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-}
 
 ShipCrew _hand(String id, {bool player = false}) => ShipCrew(
       id: id,
@@ -60,7 +37,7 @@ void main() {
   testWidgets('the turns still to run, and the warning when hull runs low',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     // A 360x640 phone, as the voyage shows a battle: its status bar, the
     // app's bottom margin, the voyage's bar.
     tester.view.physicalSize = const Size(360, 640);

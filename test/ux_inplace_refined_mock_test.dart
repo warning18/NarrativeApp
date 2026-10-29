@@ -9,40 +9,13 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/providers/palette_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 
 import 'ux_inplace_refined_parts.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 4; i++) {
@@ -130,7 +103,7 @@ void main() {
 
   testWidgets('the boards (UX_SHOTS)', (tester) async {
     if (shots == null || shots.isEmpty) return;
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1700, 1500);
     addTearDown(tester.view.resetPhysicalSize);

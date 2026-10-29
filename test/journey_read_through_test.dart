@@ -17,14 +17,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets(
@@ -34,10 +27,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
     await tester.pumpWidget(
       ProviderScope(
@@ -48,9 +38,9 @@ void main() {
           ],
           child: const MyApp()),
     );
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -63,12 +53,12 @@ void main() {
             {'raceId': 'human', 'professionId': 'warrior', 'gold': 100})));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
 
     container.read(storyPlayProvider.notifier).jumpTo('2040');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     // The jump set the party down here along no choice: the map walks it
     // by the road first (a tap would skip it).
     await tester.pump(const Duration(seconds: 6));
@@ -98,7 +88,7 @@ void main() {
     for (var i = 0; i < 12; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '2040_paid');
     final error = tester.takeException();
     expect(error, isNull,

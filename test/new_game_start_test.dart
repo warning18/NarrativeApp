@@ -21,6 +21,7 @@ import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester, {int rounds = 4}) async {
   for (var i = 0; i < rounds; i++) {
@@ -49,10 +50,7 @@ Future<void> _launch(WidgetTester tester) async {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
-  tester.view.physicalSize = const Size(420, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(420, 900));
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       const FakeAccessibilityFeatures(disableAnimations: true);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);

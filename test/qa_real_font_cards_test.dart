@@ -18,29 +18,8 @@ import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/widgets/camp_town_section.dart';
-
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 List<String> _collectOverflows(WidgetTester tester) {
   final seen = <String>[];
@@ -56,20 +35,12 @@ List<String> _collectOverflows(WidgetTester tester) {
   return seen;
 }
 
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
 const _sizes = [Size(360, 740), Size(320, 568)];
 
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await _loadFonts();
+    await loadAppFonts();
     // Read the data once, outside any test's fake clock: the bundle keeps the
     // first read, and one begun inside a test never finishes for the next.
     for (final schema in [
@@ -115,7 +86,7 @@ void main() {
             home: const DiceLoadoutScreen(),
           ),
         ));
-        await _settle(tester);
+        await settleApp(tester);
         // Faces: a plain one, three picks of a skill (the third is past its
         // limit), a locked-by-limit one, and a long-named skill.
         await tester.runAsync(() => container
@@ -139,8 +110,8 @@ void main() {
                 },
               },
             })));
-        await _settle(tester);
-        await _settle(tester);
+        await settleApp(tester);
+        await settleApp(tester);
 
         // Each face in turn is the picked one: the tile keeps its size.
         final sizes = <int, Set<Size>>{};
@@ -203,7 +174,7 @@ void main() {
             .read(playerSessionProvider.notifier)
             .loadSession(PlayerSession.fromJson(
                 {'gold': 400, 'builtHouseIds': <String>[]})));
-        await _settle(tester);
+        await settleApp(tester);
 
         // Every card of both trays, scrolled into view: a house (built,
         // buildable, locked or too dear) and an addition.
@@ -263,7 +234,7 @@ void main() {
             home: const DiceLoadoutScreen(),
           ),
         ));
-        await _settle(tester);
+        await settleApp(tester);
         await tester.runAsync(() => container
             .read(playerSessionProvider.notifier)
             .loadSession(PlayerSession.fromJson({
@@ -284,7 +255,7 @@ void main() {
                 },
               },
             })));
-        await _settle(tester);
+        await settleApp(tester);
         final heights = <int, double>{};
         final tiles = <int, Size>{};
         for (var pick = 0; pick < 6; pick++) {
@@ -361,7 +332,7 @@ void main() {
                     ],
                 })));
           }
-          await _settle(tester);
+          await settleApp(tester);
           final broken = <String>[];
           for (final tab in ['town_tab_houses', 'town_tab_additions']) {
             await tester.tap(find.byKey(Key(tab)));

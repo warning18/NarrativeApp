@@ -5,27 +5,16 @@
 // out) goes back in; a way that leaves the building sits at its door.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/room_plan.dart';
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/geography_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 import 'package:narrative_data_app/widgets/room_plan_painter.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 void main() {
   testWidgets('the Blind Beggar is drawn from inside, its ways at their spots',
@@ -34,27 +23,9 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester);
     // The geography knows the Blind Beggar as a den in the Lower Town.
     final geography = container.read(geographyProvider);
     final beggar = geography.place('blind_beggar')!;
@@ -64,9 +35,9 @@ void main() {
 
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('100');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The room, not the streets, with the three ways in it.
     expect(find.byKey(const ValueKey('journey_room')), findsOneWidget);
@@ -97,7 +68,7 @@ void main() {
     // A look out: the streets round the building (Alster's stored chart,
     // board 15), and the + brings the room back.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await _settle(tester);
+    await settleApp(tester);
     // The doorway is told in words, both ways (v1.537).
     expect(
         tester
@@ -110,19 +81,19 @@ void main() {
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_go_inside')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.text('You step inside the Blind Beggar\u2026'), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_room')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
 
     // Out again and further: the land.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await _settle(tester);
+    await settleApp(tester);
     // The streets round the building, then the town, then the land.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
     expect(find.byKey(const ValueKey('journey_world_map')), findsOneWidget);
 
@@ -131,17 +102,17 @@ void main() {
     await tester.pump();
     await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
     await tester.pump(const Duration(milliseconds: 300));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
 
     // After the fight, the way out the back sits at the back door, inside.
     play.jumpTo('106');
-    await _settle(tester);
+    await settleApp(tester);
     if (find.byKey(const ValueKey('journey_continue')).evaluate().isNotEmpty) {
       await tester.tap(find.byKey(const ValueKey('journey_continue')));
-      await _settle(tester);
+      await settleApp(tester);
     }
     expect(find.byKey(const ValueKey('journey_room')), findsOneWidget);
     final painter2 = tester
@@ -169,10 +140,10 @@ void main() {
     // And on the street after it, Alster's own plan (city_plans.json), with
     // no way back in.
     play.jumpTo('250');
-    await _settle(tester);
+    await settleApp(tester);
     if (find.byKey(const ValueKey('journey_continue')).evaluate().isNotEmpty) {
       await tester.tap(find.byKey(const ValueKey('journey_continue')));
-      await _settle(tester);
+      await settleApp(tester);
     }
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     expect(find.byKey(const Key('journey_go_inside')), findsNothing);

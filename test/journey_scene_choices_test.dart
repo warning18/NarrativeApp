@@ -13,14 +13,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   testWidgets('the wreck arrival: its choices are in the scene view',
@@ -29,19 +22,16 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
     // No walks to wait for.
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -53,14 +43,14 @@ void main() {
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The high quay: the choices are in the scene view, the map has no card.
     play.jumpTo('960');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.pump(const Duration(seconds: 3));
     expect(find.byKey(const ValueKey('journey_choice_card_0')), findsNothing);
     await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
@@ -79,7 +69,7 @@ void main() {
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '965');
 
     // The wreck is read full screen, with its own choices under its words.

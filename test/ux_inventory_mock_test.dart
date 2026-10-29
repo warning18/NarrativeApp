@@ -25,40 +25,13 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/utils/pixel_icons/game_pixel_icons.dart';
 import 'package:narrative_data_app/widgets/item_stats.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(ByteData.view(
-          Uint8List.fromList(File('assets/fonts/$f').readAsBytesSync())
-              .buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(
-          ByteData.view(Uint8List.fromList(icons.readAsBytesSync()).buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 const _pageBg = Color(0xFF17151B);
 const _ash = Color(0xFF9A93A6);
@@ -598,7 +571,7 @@ Widget _board(ThemeData theme) => Theme(
     );
 
 void main() {
-  setUpAll(_loadFonts);
+  setUpAll(loadAppFonts);
 
   test('the bag of the screenshot and the categories of items.json', () {
     expect(_signet['equipSlot'], 'Head');

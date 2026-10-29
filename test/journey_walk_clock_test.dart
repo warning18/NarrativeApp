@@ -19,14 +19,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/tutorial/guide_tour.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Finder _step(int i) => find.byKey(ValueKey('journey_step_$i'));
 
@@ -56,10 +49,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 640));
 
     await tester.pumpWidget(
       ProviderScope(
@@ -70,9 +60,9 @@ void main() {
           ],
           child: const MyApp()),
     );
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -89,7 +79,7 @@ void main() {
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     void show(int tab) =>
         container.read(homeTabIndexProvider.notifier).state = tab;
@@ -97,7 +87,7 @@ void main() {
     // chapter's notice) is closed.
     Future<void> arrive(String id, {int walk = 2}) async {
       play.jumpTo(id);
-      await _settle(tester);
+      await settleApp(tester);
       // The road walked to a place far off takes its time.
       await tester.pump(Duration(seconds: walk));
       for (var i = 0; i < 3; i++) {
@@ -182,7 +172,7 @@ void main() {
     expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
     // The beat at the party's mark, then the story goes on.
     await tester.pump(const Duration(milliseconds: 700));
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     // The scene reached is read full screen. A card led to it, its ways are
     // acted out here, and with no city chart in this test (the place view)
@@ -224,7 +214,7 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const ValueKey('journey_traveller')), findsNothing);
     expect(tester.takeException(), isNull);
     Navigator.of(tester.element(find.byType(JourneyScreen)))
@@ -248,7 +238,7 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    await _settle(tester);
+    await settleApp(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '2005');
     Navigator.of(tester.element(find.byType(JourneyScreen)))
         .popUntil(isGameRoute);

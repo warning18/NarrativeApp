@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/sea_events.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'support/fonts.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 40 && !done(); i++) {
@@ -28,28 +29,6 @@ Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
 Map<String, dynamic> _data(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
-
-/// The app's own fonts, so the words take the room they take on a phone.
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-}
 
 const _quiet = SeaEvent(
   kind: SeaEventKind.sighting,
@@ -66,7 +45,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     // A 360x640 phone: its status bar, and the app's own bottom margin.
     tester.view.physicalSize = const Size(360, 640);
     tester.view.devicePixelRatio = 1;
