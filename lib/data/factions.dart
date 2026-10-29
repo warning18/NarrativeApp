@@ -1583,6 +1583,7 @@ class PoliticsState {
     this.nemesisReason = '',
     this.nemesisCooldown = const {},
     this.crisis = const {},
+    this.sieges = const {},
     this.fellTo = const {},
     this.fallenOf = '',
     this.fallenWinner = '',
@@ -1638,6 +1639,11 @@ class PoliticsState {
   /// Your clan's seat threatened (clan_crisis.dart): `clan`, `attacker`,
   /// `place`; empty for none.
   final Map<String, String> crisis;
+
+  /// The districts under siege (district_attacks.dart): district id ->
+  /// `attacker`, `holder`, `city`, `until` (the day it runs out) and `met`
+  /// (the party stood aside).
+  final Map<String, Map<String, String>> sieges;
 
   /// Each fallen clan's last place taker (clan -> clan).
   final Map<String, String> fellTo;
@@ -1757,6 +1763,7 @@ class PoliticsState {
     String? nemesisReason,
     Map<String, int>? nemesisCooldown,
     Map<String, String>? crisis,
+    Map<String, Map<String, String>>? sieges,
     Map<String, String>? fellTo,
     String? fallenOf,
     String? fallenWinner,
@@ -1789,6 +1796,7 @@ class PoliticsState {
                 : ''),
         nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
         crisis: crisis ?? this.crisis,
+        sieges: sieges ?? this.sieges,
         fellTo: fellTo ?? this.fellTo,
         fallenOf: fallenOf ?? this.fallenOf,
         fallenWinner: fallenWinner ?? this.fallenWinner,
@@ -1825,6 +1833,7 @@ class PoliticsState {
         'nemesisReason': nemesisReason,
         if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
         if (crisis.isNotEmpty) 'crisis': crisis,
+        if (sieges.isNotEmpty) 'sieges': sieges,
         if (fellTo.isNotEmpty) 'fellTo': fellTo,
         if (fallenOf.isNotEmpty) 'fallenOf': fallenOf,
         if (fallenWinner.isNotEmpty) 'fallenWinner': fallenWinner,
@@ -1901,6 +1910,11 @@ class PoliticsState {
       nemesisReason: _text(json['nemesisReason']).trim(),
       nemesisCooldown: _ints(json['nemesisCooldown']),
       crisis: _texts(json['crisis']),
+      sieges: {
+        if (json['sieges'] is Map)
+          for (final e in (json['sieges'] as Map).entries)
+            if (e.value is Map) e.key.toString(): _texts(e.value),
+      },
       fellTo: _texts(json['fellTo']),
       fallenOf: _text(json['fallenOf']).trim(),
       fallenWinner: _text(json['fallenWinner']).trim(),

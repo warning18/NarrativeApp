@@ -3,6 +3,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import 'clan_crisis.dart';
 import 'clan_power.dart';
+import 'district_attacks.dart' show applySiegeChoice;
 import 'factions.dart';
 import 'geography.dart';
 import 'nemesis.dart' show breakNemesis;
@@ -623,6 +624,10 @@ class _Coast {
     // The crisis and the fall (clan_crisis.dart).
     if (p.settleCrisis.isNotEmpty) {
       politics = settleCrisis(politics, p.settleCrisis);
+    }
+    // A district's siege (district_attacks.dart).
+    if (p.settleSiege.isNotEmpty) {
+      politics = applySiegeChoice(politics, p.settleSiege);
     }
     if (p.bendKnee.isNotEmpty) {
       politics = bendTheKnee(politics, p.bendKnee, data,

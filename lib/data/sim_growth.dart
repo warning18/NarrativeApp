@@ -20,6 +20,8 @@ import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'camp_rolls.dart' show RollBanOn;
 import 'clan_crisis.dart' show buildCrisisNode, mainClanOf;
+import 'district_attacks.dart'
+    show buildSiegeNode, rollDistrictAttacks, settleSiegeAway;
 import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
@@ -490,6 +492,77 @@ class SimGrowth {
         flags: flags, chapter: chapter, cause: 'crisis', geography: geography);
     return (gold: gold + choice.goldMod, flags: after, how: how);
   }
+
+  /// The districts' sieges played ([playSieges]): `defended` (held for its
+  /// holder), `defence_lost` (defended, the fight lost, then settled),
+  /// `taken` (the attacker took it) and `held` (the holder kept it alone).
+  final Map<String, int> siegeOutcomes = {};
+
+  /// A chapter's attacks on districts (district_attacks.dart), rolled and
+  /// played at once the simulated player's way: when the holder is the
+  /// character's main clan or its ally (relation step [maxRelationStep], Allies) and the
+  /// character is healthy, it holds the district with the app's own scene
+  /// ([buildSiegeNode]) and [defend] (the walk's fight against the
+  /// attacker's hunter); otherwise, or when that fight is lost, the siege
+  /// is settled away ([settleSiegeAway]). Returns the flags after.
+  List<String> playSieges({
+    required Geography geography,
+    required Map<String, dynamic> enemies,
+    required int chapter,
+    required Iterable<String> flags,
+    required Random random,
+    required bool Function(String enemyId) defend,
+  }) {
+    var after = flags.toList();
+    final rolled = rollDistrictAttacks(politics,
+        data: tables.clans,
+        geography: geography,
+        day: 0,
+        chapter: chapter,
+        random: random);
+    politics = rolled.state;
+    final main = mainClanOf(politics);
+    for (final siege in rolled.begun) {
+      final step = main.isEmpty
+          ? null
+          : politics.relationStep(main, siege.holder, tables.clans);
+      final ours =
+          siege.holder == main || (step != null && step >= maxRelationStep);
+      final healthy = character.currentHealth * 2 > character.maxHealth;
+      if (ours && healthy) {
+        final node = buildSiegeNode(politics, siege,
+            data: tables.clans,
+            geography: geography,
+            enemies: enemies,
+            chapter: chapter,
+            random: random);
+        final hold =
+            node?.choices.where((c) => c.triggerEnemyId != null).firstOrNull;
+        if (hold != null && defend(hold.triggerEnemyId!)) {
+          after = applyStoryPolitics(hold.politics!,
+              flags: after,
+              chapter: chapter,
+              cause: 'siege',
+              geography: geography);
+          _siege('defended');
+          continue;
+        }
+        if (hold != null) _siege('defence_lost');
+      }
+      politics = settleSiegeAway(politics, siege,
+          data: tables.clans,
+          geography: geography,
+          random: random,
+          chapter: chapter,
+          changes: territoryChanges);
+      _siege(holderOf(siege.districtId, geography, politics) == siege.attacker
+          ? 'taken'
+          : 'held');
+    }
+    return after;
+  }
+
+  void _siege(String key) => siegeOutcomes[key] = (siegeOutcomes[key] ?? 0) + 1;
 
   /// Spends whatever waits, the simulator's way; returns the alignment
   /// after (vows, pacts and the clans' leans move it).
