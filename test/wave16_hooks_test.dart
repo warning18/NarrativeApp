@@ -56,12 +56,12 @@ void main() {
 
     test('the session shows it, saves it, and an old save is at day', () {
       final dusk = _session({'day': 4, 'watch': 2});
-      expect(dusk.dayPhase, DayPhase.dusk);
-      expect(dusk.hourOfDay, 18);
-      expect(_roundTrip(dusk).dayPhase, DayPhase.dusk);
+      expect(dayPhaseOf(dusk.watch), DayPhase.dusk);
+      expect(hourOfWatch(dusk.watch), 18);
+      expect(dayPhaseOf(_roundTrip(dusk).watch), DayPhase.dusk);
       final old = _session({});
-      expect(old.dayPhase, DayPhase.day);
-      expect(old.hourOfDay, 12);
+      expect(dayPhaseOf(old.watch), DayPhase.day);
+      expect(hourOfWatch(old.watch), 12);
     });
 
     test('the providers follow the clock', () async {
@@ -74,10 +74,11 @@ void main() {
       ]);
       addTearDown(container.dispose);
       expect(container.read(dayPhaseProvider), DayPhase.day);
-      expect(container.read(hourOfDayProvider), 12);
+      int hour() => hourOfWatch(container.read(playerSessionProvider).watch);
+      expect(hour(), 12);
       await notifier.passTime(2);
       expect(container.read(dayPhaseProvider), DayPhase.night);
-      expect(container.read(hourOfDayProvider), 0);
+      expect(hour(), 0);
       await notifier.restUntilDawn();
       expect(container.read(dayPhaseProvider), DayPhase.dawn);
     });
