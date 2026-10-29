@@ -27,6 +27,11 @@ isn't reconstructable from git history alone.
   - **Slim ally cards:** an ally's card keeps its name, die and health bar, and
     shows the attack/armour numbers only for the hero; block, a parry, a status
     or a knockout still show.
+  - **Fixed (#598):** the guide dog's walk frames west and south
+    (`Walking/west`, `Walking/south`) were not listed in `pubspec.yaml`, so they
+    were not in the build: her walk had no frames in those two directions. Both
+    folders are listed now. (The Bark frames east, north and west and the Fight
+    rotations are listed nowhere and used by no code; left out of the build.)
   - **Fixed:** a fighter's picture could stay a grey "not yet" mark when its
     image arrived while it stood still (reduced motion); it now repaints when
     the image is in.
