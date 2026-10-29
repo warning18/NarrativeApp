@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.647.0+683]
+
+- **Cleanup: 74 file-only names in lib/data (a to f) are private**
+  Classes, functions, constants and enums that only their own file uses
+  are now private, so the analyzer watches them (renames inside one file,
+  205 lines). No behaviour change.
+
 ## [1.645.0+681]
 
 - **Core: the data for the clan power sign (option A, a ranking with
