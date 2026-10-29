@@ -51,6 +51,16 @@ void main() {
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     final play = container.read(storyPlayProvider.notifier);
+    // Saltmouth's two locked districts open, so the bazaar's way is not
+    // greyed (v1.616): this test is about the scene's fold, not the locks.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
+        })));
+    await _settle(tester);
     final scene = find.textContaining('Even with the Inquisition patrolling');
     final unfold = find.text('Read the scene again');
 
