@@ -218,7 +218,7 @@ final List<Landmark> worldMapLandmarks = [
       '2015_scaffold_clerk_fight', '2015_liora', '2015_hound',
       '2015_liora_won', '2015_liora_refused',
       // The Lantern Alleys.
-      '2015_bazaar', '2015_apothecary', '2015_vess',
+      '2015_bazaar', '2015_apothecary', '2015_signaller', '2015_vess',
       // Card Row.
       '2015_cards', '2015_cards_won', '2015_sable', '2015_cards_lost',
       '2015_alleys_door', '2015_ternrow_door', '2015_doors', '2015_vane',

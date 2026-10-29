@@ -15,3 +15,7 @@ A **Lantern Alleys** street scene in Saltmouth (`saltmouth_wharf`, the district 
 - if the lantern thread returns, the three flags above and the two "Raise the lantern" choices (`820`, `891`) come back with it; they are in git history (v1.610, #588 and earlier).
 
 A separate PR when the user asks.
+
+## Update, v1.637
+
+The scene came back as `2015_signaller` in the Lantern Alleys (hub `2015`, shown after the Arcane Bazaar). `270` itself stays parked; the Alster tests still see it as before. The lantern thread did not return, and the new scene sets no lantern flag.

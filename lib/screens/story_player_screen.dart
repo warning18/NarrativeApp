@@ -86,6 +86,7 @@ import '../providers/story_providers.dart';
 import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'epilogue_map_screen.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -4088,6 +4089,17 @@ class _EndingView extends ConsumerWidget {
                     ],
                   ),
                 ),
+              ),
+            ],
+            if (recapSession != null) ...[
+              const SizedBox(height: 16),
+              // Who holds each town at the end (the epilogue map).
+              OutlinedButton.icon(
+                key: const Key('ending_realm_map'),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const EpilogueMapScreen())),
+                icon: const Icon(Icons.map_outlined),
+                label: Text(tr(ref, 'epilogue_map_button')),
               ),
             ],
             const SizedBox(height: 16),

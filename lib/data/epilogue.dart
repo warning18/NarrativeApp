@@ -24,6 +24,19 @@ const List<String> epilogueTowns = [
   'black_reliquary',
 ];
 
+/// The seven big towns of the world chart, in the story's order: what the
+/// epilogue map (UX) lists, one line each. Only [epilogueTowns] have a line
+/// of Narrative's; the others read a short tag for how.
+const List<String> epilogueBigTowns = [
+  'alster',
+  'saltmouth',
+  'ashen_quarter',
+  'drowned_cloister',
+  'black_reliquary',
+  'white_anchorage',
+  'candlehold',
+];
+
 /// How a town's holder came to hold it.
 enum EpilogueHow { war, influence, seat, none }
 
@@ -54,12 +67,12 @@ const Set<String> _byInfluence = {'influence', 'town'};
 
 /// Each of [epilogueTowns] in [geography] at the ending of [politics] (see
 /// the file's notes).
-List<EpilogueTown> epilogueHoldings(
-    PoliticsState politics, Geography geography) {
+List<EpilogueTown> epilogueHoldings(PoliticsState politics, Geography geography,
+    {List<String> towns = epilogueTowns}) {
   final now = townRulers(geography, politics, const {});
   final start = townRulers(geography, PoliticsState.empty, const {});
   return [
-    for (final townId in epilogueTowns)
+    for (final townId in towns)
       if (geography.place(townId) != null)
         _town(townId, politics, geography, now, start),
   ];
