@@ -38,7 +38,7 @@
 //     poison of [rotShare] of the hit that stacks and lasts the fight.
 //   - Ledger Knife (Crows): each hit that isn't critical raises the next
 //     one's chance by [ledgerChainStep] points; a critical resets it and
-//     hits [ledgerCriticalMultiplier] times instead of the usual.
+//     hits [_ledgerCriticalMultiplier] times instead of the usual.
 //   - Relicbreaker (Penitents): each critical hit gives 1 mana; at
 //     [relicSureCritMana], the next strike is a sure critical and spends it.
 // - Ranger (the Trail):
@@ -307,7 +307,7 @@ const double beaconBurnMultiplier = 1.5;
 const String beaconElement = 'Light';
 
 /// The Beacon's fire holds up to this share of max health.
-const double beaconCapShare = 1.0;
+const double _beaconCapShare = 1.0;
 
 /// The fire after healing, under the Beacon or not (see
 /// watchfireAfterHeal).
@@ -321,7 +321,7 @@ int fireAfterHeal({
   final over = currentHealth + healing - maxHealth;
   if (over <= 0) return fire;
   final cap =
-      (maxHealth * (beacon ? beaconCapShare : watchfireCapShare)).round();
+      (maxHealth * (beacon ? _beaconCapShare : watchfireCapShare)).round();
   return min(cap, fire + over);
 }
 
@@ -367,13 +367,13 @@ List<StatusEffect> withRot(List<StatusEffect> effects, int hit,
 /// The Ledger Knife: the chance each hit that isn't critical adds to the
 /// next (in points), and what a critical hit is worth.
 const double ledgerChainStep = 8;
-const double ledgerCriticalMultiplier = 1.75;
+const double _ledgerCriticalMultiplier = 1.75;
 
 /// A Ledger Knife's critical [damage] (dealt at the usual ×1.5): the same
-/// hit at [ledgerCriticalMultiplier].
+/// hit at [_ledgerCriticalMultiplier].
 int ledgerCritical(int damage) => damage <= 0
     ? damage
-    : (damage / criticalDamageMultiplier * ledgerCriticalMultiplier).round();
+    : (damage / criticalDamageMultiplier * _ledgerCriticalMultiplier).round();
 
 /// The Relicbreaker: mana that, gathered, makes the next strike a sure
 /// critical hit (and is spent on it): a rogue has no spell to spend it on.
@@ -385,15 +385,15 @@ const int relicSureCritMana = 3;
 const double verdictMultiplier = 1.6;
 
 /// The Fen Guide's poison: [fenPoisonShare] of the strike a turn, for
-/// [fenPoisonTurns] turns.
+/// [_fenPoisonTurns] turns.
 const double fenPoisonShare = 0.25;
-const int fenPoisonTurns = 3;
+const int _fenPoisonTurns = 3;
 
 /// The Fen Guide's poison for a ranger whose strike is [strike].
 StatusEffect fenPoison(int strike, {double share = fenPoisonShare}) =>
     StatusEffect(
         type: StatusEffectType.poison,
-        remainingTurns: fenPoisonTurns,
+        remainingTurns: _fenPoisonTurns,
         magnitude: max(1, (strike * share).round()));
 
 // --- The weak links (step 3c) -----------------------------------------------
@@ -404,25 +404,25 @@ StatusEffect fenPoison(int strike, {double share = fenPoisonShare}) =>
 //   Watchfire.
 // - Double Kindling (Compact, mage): a Fire spell's reaction counts twice.
 // - Lingering Hex (Mire, mage): a spell's status lasts
-//   [lingeringHexTurns] more.
+//   [_lingeringHexTurns] more.
 // - Stitch-Thrust (Vigil, rogue): healing past full strikes the foe for
-//   [stitchThrustShare] of it.
+//   [_stitchThrustShare] of it.
 // - Pitch Hand (Compact, rogue): Flurry's second hit slows its target
 //   ([pitchSlow]).
 // - Second Broadside (Dominion, ranger): once a fight, a face drawn that
 //   would not strike goes back, and the Trail draws again.
 
 /// The turns the Lingering Hex adds to a spell's status.
-const int lingeringHexTurns = 1;
+const int _lingeringHexTurns = 1;
 
-/// [status] as a Lingering Hex leaves it: [lingeringHexTurns] longer.
+/// [status] as a Lingering Hex leaves it: [_lingeringHexTurns] longer.
 StatusEffect lingered(StatusEffect status) => StatusEffect(
     type: status.type,
-    remainingTurns: status.remainingTurns + lingeringHexTurns,
+    remainingTurns: status.remainingTurns + _lingeringHexTurns,
     magnitude: status.magnitude);
 
 /// The share of healing past full the Stitch-Thrust sends at the foe.
-const double stitchThrustShare = 1.0;
+const double _stitchThrustShare = 1.0;
 
 /// What healing [healing] at [currentHealth] of [maxHealth] spills past
 /// full (0 when it doesn't).
@@ -431,7 +431,7 @@ int overheal(int healing, int currentHealth, int maxHealth) =>
 
 /// What a Stitch-Thrust strikes for, from [over] spilled past full.
 int stitchThrust(int over) =>
-    over <= 0 ? 0 : max(1, (over * stitchThrustShare).round());
+    over <= 0 ? 0 : max(1, (over * _stitchThrustShare).round());
 
 /// The Pitch Hand's slowing: a short, light Weaken.
 const StatusEffect pitchSlow = StatusEffect(

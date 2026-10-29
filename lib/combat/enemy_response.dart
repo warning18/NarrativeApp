@@ -2,7 +2,7 @@
 /// `reaction` in enemies.json watches the party's round and bends its next
 /// blow to it:
 ///
-/// - [EnemyResponse.counter]: a heavy blow, [counterHealthShare] of its
+/// - [EnemyResponse.counter]: a heavy blow, [_counterHealthShare] of its
 ///   health or more in one round, provokes it: its next blow lands
 ///   [counterDamageMultiplier] as hard, aimed at whoever hit it hardest.
 /// - [EnemyResponse.press]: when everyone able to act plays a Defend face,
@@ -16,7 +16,7 @@ enum EnemyResponse { none, counter, press, huntHealer }
 
 /// The share of its maximum health one round of blows must take off a
 /// counter-enemy to provoke it.
-const double counterHealthShare = 0.2;
+const double _counterHealthShare = 0.2;
 
 const double counterDamageMultiplier = 1.5;
 const double pressDamageMultiplier = 1.3;
@@ -32,7 +32,7 @@ EnemyResponse enemyResponseFromName(String? name) => switch (name) {
 
 /// True when [damageThisRound] provokes a counter-enemy of [maxHealth].
 bool provokesCounter(int damageThisRound, int maxHealth) =>
-    maxHealth > 0 && damageThisRound >= maxHealth * counterHealthShare;
+    maxHealth > 0 && damageThisRound >= maxHealth * _counterHealthShare;
 
 /// True when a round in which [defenders] of the [acting] members played a
 /// Defend face makes a press-enemy press: everyone defended, and somebody

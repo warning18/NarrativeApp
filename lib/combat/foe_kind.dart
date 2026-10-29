@@ -3,9 +3,9 @@
 // profession-clan-mechanics.md "Fight length: a menu tied to the world"):
 //
 // - Beasts tire: from [foeRuleStartRound], a beast strikes
-//   [beastTireStep] softer a round, down to [beastTireFloor] of its blow.
+//   [_beastTireStep] softer a round, down to [_beastTireFloor] of its blow.
 // - The dead crumble: from [foeRuleStartRound], an undead foe loses
-//   [undeadCrumbleShare] of its max health each round (never finishing it:
+//   [_undeadCrumbleShare] of its max health each round (never finishing it:
 //   the execute does).
 // Neither touches a boss, as the execute and morale don't: its fight is
 // its own (the Bone Warden and the White Admiral crumbling won them 74%
@@ -51,25 +51,26 @@ bool canWaver(Map<String, dynamic>? enemy) => switch (foeKindOf(enemy)) {
 /// The round the foe rules start in.
 const int foeRuleStartRound = 6;
 
-const double beastTireStep = 0.05;
-const double beastTireFloor = 0.5;
-const double undeadCrumbleShare = 0.03;
+const double _beastTireStep = 0.05;
+const double _beastTireFloor = 0.5;
+const double _undeadCrumbleShare = 0.03;
 
 /// The factor on a beast's blow in [round].
-double beastTireFactor(int round) => round < foeRuleStartRound
+double _beastTireFactor(int round) => round < foeRuleStartRound
     ? 1.0
-    : max(beastTireFloor, 1 - beastTireStep * (round - foeRuleStartRound + 1));
+    : max(
+        _beastTireFloor, 1 - _beastTireStep * (round - foeRuleStartRound + 1));
 
 /// [damage] struck by [enemy] in [round]: softer for a tiring beast.
 int foeBlow(int damage, Map<String, dynamic>? enemy, int round,
         {bool boss = false}) =>
     damage <= 0 || boss || foeKindOf(enemy) != FoeKind.beast
         ? damage
-        : (damage * beastTireFactor(round)).round();
+        : (damage * _beastTireFactor(round)).round();
 
 /// What [enemy] of [maxHealth] crumbles away in [round] (the dead only).
 int crumble(Map<String, dynamic>? enemy, int maxHealth, int round,
         {bool boss = false}) =>
     boss || foeKindOf(enemy) != FoeKind.undead || round < foeRuleStartRound
         ? 0
-        : max(1, (maxHealth * undeadCrumbleShare).round());
+        : max(1, (maxHealth * _undeadCrumbleShare).round());
