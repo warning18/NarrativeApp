@@ -276,6 +276,7 @@ extension _FightRewards on _FightScreenState {
               },
               currentHealth: player.currentHealth,
               maxHealth: player.maxHealth,
+              potionBonus: _potionBonus,
             );
       if (!mounted) return;
 

@@ -94,13 +94,3 @@ List<MapEntry<String, int>> presetBonuses(Map<String, dynamic> preset,
         MapEntry(label, presetBonus(preset, field)),
   ];
 }
-
-/// "Stoneskin" for `dwarf_stoneskin`: the granted skill's id, its
-/// preset's own name dropped, the rest in title case.
-String grantedSkillName(String skillId, {String? presetId}) {
-  final words = skillId.split('_').where((w) => w.isNotEmpty).toList();
-  if (presetId != null && words.length > 1 && words.first == presetId) {
-    words.removeAt(0);
-  }
-  return words.map((w) => '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
-}
