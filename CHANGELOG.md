@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.635.0+671]
+## [1.640.0+676]
 
 - **Dice: a shape for every size, and the die in the ring rolls**
   A d4, d8, d10, d12, d20 and the coin are drawn as flat-shaded polyhedra in
@@ -20,6 +20,17 @@ isn't reconstructable from git history alone.
   0.7 s, a d12 1.3 s, a d20 1.5 s (the check's d20 was 1 s). A die with a
   `clan` field wears that clan's banner (the field is Core's; no die has one
   yet). `InteractiveDie` and its drag tests are gone.
+
+## [1.639.0+675]
+
+- **Core: taking a quest marks it taken, so the Spire Stair opens on the
+  Ashen Oath.**
+  - Taking a quest (from its offer or in a scene) now sets its
+    `<quest>_accepted` flag. Before, nothing set it (quests.json's
+    `flagToAdd` is never read), so a district locked "until the quest is
+    taken" stayed shut until the quest was done.
+  - A save whose quest was already taken gets the flag on load.
+  - Tests: `quest_tracking_test` (the accepted flag).
 
 ## [1.634.0+670]
 

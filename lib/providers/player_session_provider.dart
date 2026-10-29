@@ -22,6 +22,7 @@ import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/city_districts.dart' show questAcceptedFlag;
 import '../data/district_attacks.dart'
     show expiredSieges, rollDistrictAttacks, settleSiegeAway, syncSiegeFlags;
 import '../data/nemesis.dart'
@@ -1529,6 +1530,9 @@ class PlayerSession {
         ...?(json['builtHouseIds'] as List?)
             ?.map((e) => houseFlag(e.toString())),
         if (legacyHarbourDue(json)) houseFlag(harborHouseId),
+        // Quests taken before the accepted flag was set (v1.639).
+        ...?(json['activeQuestIds'] as List?)
+            ?.map((e) => questAcceptedFlag(e.toString())),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -2322,7 +2326,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // Taken by the story: they don't stay to have an opinion.
       exclude: lostId,
     );
-    final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
+    final newFlags = <String>{
+      ...state.flags,
+      ...flagsToAdd,
+      // A quest taken in a scene is marked taken, as acceptQuest does.
+      if (questIDToProgress != null &&
+          questIDToProgress.isNotEmpty &&
+          !state.completedQuestIds.contains(questIDToProgress))
+        questAcceptedFlag(questIDToProgress),
+    }.toList();
     // The rest before the Lantern Hall (7515_rest, docs/simulation/
     // difficulty-review.md proposal 4): the provisions and the mana
     // refilled; the scene's own heal and potion come with its choice.
@@ -3907,7 +3919,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return replacement;
   }
 
-  /// Takes on [questId]. A bounty in [quest] (a `countFromAccept` Kill
+  /// Takes on [questId] and sets its `<id>_accepted` flag
+  /// (questAcceptedFlag). A bounty in [quest] (a `countFromAccept` Kill
   /// objective) remembers its foes' kill counts now, so only the kills
   /// made after count (see [questKillBaselines]); a quest with none stores
   /// nothing. Without [quest] the objectives can't be read, and every
@@ -3921,6 +3934,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      // Marked taken: a district lock that opens on it opens now
+      // (city_districts.dart).
+      flags: {...state.flags, questAcceptedFlag(questId)}.toList(),
       // A baseline already taken (see [noteQuestOfferedBeforeFight]) stands.
       questKillBaselines: baseline.isEmpty
           ? state.questKillBaselines
