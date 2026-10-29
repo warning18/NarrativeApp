@@ -46,15 +46,65 @@ const Biome _desert =
     Biome(id: 'desert', name: 'Desert', hazards: [_sandstorm, _heat]);
 const Biome _calm = Biome(id: 'calm', name: 'Calm');
 
+/// The story's roads as `from|to` at v1.646 (35): the fixed sample the
+/// mix is measured on, so its cost and its noise don't grow with the story.
+const Set<String> _sampleRoads = {
+  '1000|2001',
+  '1001|2001',
+  '1002|2001',
+  '1100|1120',
+  '1101_scarred|1120',
+  '1101|1120',
+  '1140_spotted|1150_vica',
+  '1140|1150_vica',
+  '2900_boat_fixed|2999',
+  '2999|3001',
+  '3001_camp|3002',
+  '4999_camp|5003',
+  '4999_standard|4999_camp',
+  '6002_camp|6010_thread',
+  '6002|6002_siege',
+  '6004|7001',
+  '6010_thread|6003',
+  '7001|7300',
+  '7002_alarm|7002_confront',
+  '7002_approach|7002_confront',
+  '7002_orders|7200',
+  '7002_throne|7200',
+  '7200|7002_orders',
+  '7200|7002_throne',
+  '7300|7400',
+  '7400|7500',
+  '7590_compact|7800',
+  '7590_crows|7800',
+  '7590_dominion|7800',
+  '7590_mire|7800',
+  '7590_open_hand|7800',
+  '7590_penitents|7800',
+  '7590_vigil|7800',
+  '7800|7810',
+  '960|965',
+};
+
 void main() {
   final story = _story();
   // Every road between two places the story takes.
-  final roads = [
+  final allRoads = [
     for (final node in story.nodes.values)
       for (final choice in node.choices)
         if (!choice.isEnding && isRoadStep(node.id, choice.nextId))
           (from: node.id, to: choice.nextId),
   ];
+  // The mix is measured on a fixed sample of them ([_sampleRoads]).
+  final roads = [
+    for (final road in allRoads)
+      if (_sampleRoads.contains('${road.from}|${road.to}')) road,
+  ];
+
+  test('the sample of roads still stands in the story', () {
+    expect(roads.length, greaterThanOrEqualTo(30),
+        reason: 're-pick _sampleRoads from the story\'s roads');
+  });
 
   group('the mix', () {
     Map<RoadEventKind?, int> tally({double hazardShare = 0}) {
