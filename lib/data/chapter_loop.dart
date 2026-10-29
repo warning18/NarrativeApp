@@ -94,15 +94,6 @@ int? _recommendedLevel(Object? raw) {
   return level == null || level <= 1 ? null : level;
 }
 
-/// The level [chapter]'s row in [loops] recommends (see
-/// [ChapterLoop.recommendedLevel]), if it names one.
-int? recommendedLevelFor(int chapter, List<ChapterLoop> loops) {
-  for (final loop in loops) {
-    if (loop.chapter == chapter) return loop.recommendedLevel;
-  }
-  return null;
-}
-
 /// A chapter's recommended level set against the party's: what the camp
 /// and the Journey say before the party sets out for it.
 class ChapterLevelAdvice {
@@ -124,9 +115,6 @@ class ChapterLevelAdvice {
 
   /// Whether the party is under the recommended level.
   bool get below => playerLevel < recommendedLevel;
-
-  /// Levels still short of it (0 when not below).
-  int get levelsShort => max(0, recommendedLevel - playerLevel);
 }
 
 /// The advice for [chapter] at [playerLevel], or null when the chapter
@@ -149,16 +137,6 @@ ChapterLevelAdvice? chapterLevelAdvice({
   }
   return null;
 }
-
-/// The advice for the chapter after [currentChapter]: the one the party is
-/// heading to (chapter 4's while it is still in chapter 3).
-ChapterLevelAdvice? nextChapterLevelAdvice({
-  required int currentChapter,
-  required int playerLevel,
-  required List<ChapterLoop> loops,
-}) =>
-    chapterLevelAdvice(
-        chapter: currentChapter + 1, playerLevel: playerLevel, loops: loops);
 
 /// Every loop in [chapters] (chapters.json), in chapter order.
 List<ChapterLoop> chapterLoopsFrom(Map<String, dynamic> chapters) {

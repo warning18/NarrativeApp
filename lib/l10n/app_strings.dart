@@ -2465,12 +2465,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'joins you',
     AppLanguage.fr: 'vous rejoint',
   },
-  'quest_ready_notice': {
-    AppLanguage.en: 'Goal reached: {quest}. Turn it in from the quest above '
-        'the story.',
-    AppLanguage.fr: 'Objectif atteint : {quest}. Rendez-la depuis la quête '
-        'affichée au-dessus du récit.',
-  },
   'quests_section_following': {
     AppLanguage.en: 'Followed',
     AppLanguage.fr: 'Suivie',
