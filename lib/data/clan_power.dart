@@ -164,6 +164,62 @@ int strongestPower(PoliticsState state, ClanData data) {
   return best;
 }
 
+/// A clan's place among the clans with power ([hasPower]: the six main
+/// clans and the four tribes) by power, now and as the last chapter's turn
+/// began (PoliticsState.powerAtTurn; the
+/// clan's start power before the first turn). Equal powers share a rank.
+class ClanPowerRank {
+  const ClanPowerRank({
+    required this.clanId,
+    required this.rank,
+    required this.previousRank,
+    required this.power,
+    required this.previousPower,
+  });
+
+  final String clanId;
+
+  /// 1 for the strongest.
+  final int rank;
+  final int previousRank;
+  final int power;
+  final int previousPower;
+
+  /// How many places the clan climbed since the last turn (negative: it
+  /// fell): the sign's arrow, up, down or steady.
+  int get rankChange => previousRank - rank;
+  int get powerChange => power - previousPower;
+}
+
+/// Every clan with power's [ClanPowerRank], strongest first (factions.json's
+/// order between equals).
+List<ClanPowerRank> clanPowerRanking(PoliticsState state, ClanData data) {
+  final ids = [
+    for (final id in data.factions.keys)
+      if (hasPower(id, data)) id,
+  ];
+  int previous(String id) =>
+      state.powerAtTurn[id] ?? data.faction(id)!.startPower;
+  Map<String, int> ranks(int Function(String id) powerOfClan) => {
+        for (final id in ids)
+          id: 1 + ids.where((o) => powerOfClan(o) > powerOfClan(id)).length,
+      };
+  final now = ranks((id) => powerOf(state, id, data));
+  final before = ranks(previous);
+  return [
+    for (final id in ids)
+      ClanPowerRank(
+        clanId: id,
+        rank: now[id]!,
+        previousRank: before[id]!,
+        power: powerOf(state, id, data),
+        previousPower: previous(id),
+      ),
+  ]..sort((a, b) => a.rank != b.rank
+      ? a.rank.compareTo(b.rank)
+      : ids.indexOf(a.clanId).compareTo(ids.indexOf(b.clanId)));
+}
+
 /// [state] with [clanId]'s power moved by [delta] (kept in 0..[maxPower]);
 /// [helped]: the character did it, which spares the clan this chapter's
 /// neglect. Unchanged for a faction with no power.
@@ -377,7 +433,12 @@ PoliticsState givePlace(
   int day = 0,
   String protect = '',
 }) {
-  var next = state;
+  // The powers as the turn begins: the clan power sign's arrow compares
+  // with them (clanPowerRanking).
+  var next = state.copyWith(powerAtTurn: {
+    for (final id in data.factions.keys)
+      if (hasPower(id, data)) id: powerOf(state, id, data),
+  });
   // Holdings and neglect.
   final held = holdings(geography, next);
   final powers = <String, int>{};

@@ -1586,6 +1586,7 @@ class PoliticsState {
     this.pledged = const [],
     this.host = Host.none,
     this.power = const {},
+    this.powerAtTurn = const {},
     this.control = const {},
     this.influence = const {},
     this.helped = const [],
@@ -1611,6 +1612,11 @@ class PoliticsState {
   /// Each main clan's power (0..100, clan_power.dart) once it has moved;
   /// a clan not here stands at its `startPower`.
   final Map<String, int> power;
+
+  /// Each clan's power as the last chapter's turn began (territoryTurn,
+  /// clan_power.dart): what the clan power sign's arrow compares with
+  /// (clanPowerRanking). Empty before the first turn.
+  final Map<String, int> powerAtTurn;
 
   /// The places that changed hands (place id -> clan), over the holders
   /// geography.json writes (see holderOf in clan_power.dart).
@@ -1766,6 +1772,7 @@ class PoliticsState {
     List<String>? pledged,
     Host? host,
     Map<String, int>? power,
+    Map<String, int>? powerAtTurn,
     Map<String, String>? control,
     Map<String, Map<String, int>>? influence,
     List<String>? helped,
@@ -1795,6 +1802,7 @@ class PoliticsState {
         pledged: pledged ?? this.pledged,
         host: host ?? this.host,
         power: power ?? this.power,
+        powerAtTurn: powerAtTurn ?? this.powerAtTurn,
         control: control ?? this.control,
         influence: influence ?? this.influence,
         helped: helped ?? this.helped,
@@ -1834,6 +1842,7 @@ class PoliticsState {
         if (pledged.isNotEmpty) 'pledged': pledged,
         if (host.mustered) 'host': host.toJson(),
         if (power.isNotEmpty) 'power': power,
+        if (powerAtTurn.isNotEmpty) 'powerAtTurn': powerAtTurn,
         if (control.isNotEmpty) 'control': control,
         if (influence.isNotEmpty) 'influence': influence,
         if (helped.isNotEmpty) 'helped': helped,
@@ -1904,6 +1913,7 @@ class PoliticsState {
       pledged: _strings(json['pledged']).toSet().toList(),
       host: Host.fromJson(json['host']),
       power: _ints(json['power']),
+      powerAtTurn: _ints(json['powerAtTurn']),
       control: {
         if (json['control'] is Map)
           for (final e in (json['control'] as Map).entries)
