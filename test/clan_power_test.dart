@@ -326,4 +326,44 @@ void main() {
       'max changes in a run: ${summaries.map((r) => r.territory.length).fold(0, max)}',
     ].join('\n'));
   });
+
+  // The clan power sign (UX, option A): each clan's rank now and as the
+  // last chapter's turn began, for its arrow.
+  test('the ranking: now, at the last turn, and saved', () {
+    final start = clanPowerRanking(PoliticsState.empty, data);
+    expect(start.map((r) => r.clanId), [
+      'dominion',
+      'crows',
+      'compact',
+      'vigil',
+      'mire',
+      'penitents',
+      'giants',
+      'oni',
+      'tidekin',
+      'kindly'
+    ]);
+    // Equal powers share a rank; before any turn nothing has moved.
+    expect([for (final r in start) r.rank], [1, 2, 3, 4, 5, 5, 7, 8, 8, 10]);
+    expect(start.every((r) => r.rankChange == 0 && r.powerChange == 0), isTrue);
+
+    final turned = territoryTurn(powered({'mire': 50}),
+            data: data, geography: geography, chapter: 2)
+        .state;
+    // The turn keeps the powers it began with.
+    expect(turned.powerAtTurn['mire'], 50);
+    expect(turned.powerAtTurn['dominion'], 60);
+    final moved = turned.copyWith(power: {...turned.power, 'mire': 70});
+    final mire =
+        clanPowerRanking(moved, data).firstWhere((r) => r.clanId == 'mire');
+    expect(mire.rank, 1);
+    expect(mire.previousRank, 2);
+    expect(mire.rankChange, 1);
+    expect(mire.powerChange, 20);
+
+    final loaded = PoliticsState.fromJson(
+        jsonDecode(jsonEncode(moved.toJson())) as Map<String, dynamic>);
+    expect(loaded.powerAtTurn, moved.powerAtTurn);
+    expect(PoliticsState.empty.toJson().containsKey('powerAtTurn'), isFalse);
+  });
 }

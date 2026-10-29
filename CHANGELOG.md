@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.645.0+681]
+
+- **Core: the data for the clan power sign (option A, a ranking with
+  arrows).**
+  - Each chapter's turn keeps every clan's power as it begins
+    (`PoliticsState.powerAtTurn`, saved).
+  - `clanPowerRanking` / `clanPowerRankingProvider`: the ten clans with
+    power, strongest first, each with its rank and power now and at the
+    last turn (`rankChange`, `powerChange` for the arrow). Equal powers
+    share a rank. No number changes; UX draws the sign.
+  - Tests: `clan_power_test` (the ranking).
+- **Core: who holds a region, for the world map's Clans layer** (the
+  user's feedback: tint the whole region, not a halo around a clan's
+  mark).
+  - `regionHolders` / `regionHoldersProvider`: each region (the Salt
+    Coast, the Grey Fen…) and the clans holding its places, strongest
+    first, each with its share against the strongest (two at 1: contested).
+  - `chartZoneHolders(chart, …)`: the same for each of a chart's lands, in
+    `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
+  - Tests: `region_holders_test`.
+
 ## [1.644.0+680]
 
 - **Cleanup: the quests' unread `flagToAdd` is removed**
