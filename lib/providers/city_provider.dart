@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/city_districts.dart';
 import '../data/city_plan_record.dart';
+import '../data/geography.dart' show GeoPlace;
 import '../data/way_places.dart';
 import 'choice_flow_provider.dart';
 import 'geography_provider.dart';
@@ -93,6 +94,27 @@ final lockedDistrictsProvider = Provider<Set<String>>((ref) {
     ref.watch(playerSessionProvider.select((s) => s.flags)),
     ref.watch(playerSessionProvider.select((s) => s.completedQuestIds)),
   ).toSet();
+});
+
+/// The ways of the scene the story is at that lead into a locked district
+/// (lockedWayDistricts, v1.616), by the scene they lead to: the story view
+/// and the Journey show them greyed, with the district's lockedText.
+final lockedStoryWaysProvider = Provider<Map<String, GeoPlace>>((ref) {
+  final story = ref.watch(storyDataProvider).value;
+  final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
+  final node = story?.nodeFor(nodeId);
+  if (story == null || node == null) return const {};
+  final shut = lockedWayDistricts(
+    ref.watch(geographyProvider),
+    story,
+    node,
+    ref.watch(playerSessionProvider.select((s) => s.flags)),
+    ref.watch(playerSessionProvider.select((s) => s.completedQuestIds)),
+  );
+  return {
+    for (final MapEntry(:key, :value) in shut.entries)
+      node.choices[key].nextId: value,
+  };
 });
 
 /// The ways of the scene the story is at that lead into the party's

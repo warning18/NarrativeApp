@@ -53,8 +53,23 @@ List<String> lockedDistrictsOf(
 
 /// The ways of [node] that lead into a locked district other than the one
 /// [node] stands in (see [wayDistricts], [districtLocked]), as indices
-/// into [StoryNode.choices], in order: the ways a screen may show greyed.
+/// into [StoryNode.choices], in order: the ways a screen shows greyed
+/// (v1.616, wave 18 step 2). A way to the scene where the district's own
+/// quest is offered stays open, so the lock can always be lifted (Tern's
+/// Toll is offered inside Tern Row).
 List<int> lockedWays(
+  Geography geo,
+  StoryData story,
+  StoryNode node,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) =>
+    lockedWayDistricts(geo, story, node, flags, completedQuestIds).keys.toList()
+      ..sort();
+
+/// [lockedWays] with the locked district each one leads into, by the way's
+/// index in [StoryNode.choices].
+Map<int, GeoPlace> lockedWayDistricts(
   Geography geo,
   StoryData story,
   StoryNode node,
@@ -62,14 +77,20 @@ List<int> lockedWays(
   Iterable<String> completedQuestIds,
 ) {
   final own = districtOfNode(geo, node)?.id;
-  return [
+  return {
     for (final MapEntry(:key, :value) in wayDistricts(geo, story, node).entries)
       if (value != null &&
           value != own &&
-          districtLocked(geo, value, flags, completedQuestIds))
-        key,
-  ]..sort();
+          districtLocked(geo, value, flags, completedQuestIds) &&
+          !offersQuest(story.nodeFor(node.choices[key].nextId),
+              geo.place(value)!.lockQuest))
+        key: geo.place(value)!,
+  };
 }
+
+/// Whether [node] offers [questId]: one of its choices unlocks it.
+bool offersQuest(StoryNode? node, String questId) =>
+    node != null && node.choices.any((c) => c.unlockQuestId == questId);
 
 /// The flag a district walked into is remembered by (found, unfogged).
 String districtFoundFlag(String districtId) => 'district_found:$districtId';

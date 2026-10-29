@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.616.0+652]
+
+- **Core: the ways into a locked district are greyed** (wave 18, step 2).
+  - In Saltmouth, Tern Row and the Lantern Alleys stay shut until their
+    quest is done. Until v1.615, only the free walk between districts was
+    refused.
+  - Now every story way into a shut district shows greyed, in the story view
+    and on the Journey, and reads as the district's own line, e.g. "The
+    footbridge is drawn up…".
+  - The one way to the scene where the district's own quest is offered
+    stays open, so the lock can always be lifted. Tern's Toll is offered
+    inside Tern Row.
+  - Card Row stays open, as Narrative asked.
+  - Tests: `district_influence_test` (the exception, each shut way's
+    district and line, and the provider read by both screens).
+    `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
+    since that test is about the walk.
+
+
+
 ## [1.615.0+651]
 
 - **Core: the element dice** (the user's option B;
