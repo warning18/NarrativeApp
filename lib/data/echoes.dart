@@ -50,7 +50,7 @@ final Expando<Map<String, StoryChoice>> _setters = Expando();
 /// a scene the story reads straight through (see scene_flow.dart) is
 /// credited to the choice that led into that scene: the one the player
 /// pressed.
-Map<String, StoryChoice> flagSetters(StoryData story) {
+Map<String, StoryChoice> _flagSetters(StoryData story) {
   final known = _setters[story];
   if (known != null) return known;
   final ledInto = <String, StoryChoice>{};
@@ -81,7 +81,7 @@ Map<String, StoryChoice> flagSetters(StoryData story) {
 /// flag (origin_stories.dart), the answer given -- or null when nothing
 /// the player chose does (a flag set by an expedition, a house, a quest).
 StoryChoice? echoCause(StoryData story, String flag) =>
-    flagSetters(story)[flag] ?? _originCause(flag);
+    _flagSetters(story)[flag] ?? _originCause(flag);
 
 final Map<String, StoryChoice?> _originCauses = {};
 

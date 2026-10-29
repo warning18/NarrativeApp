@@ -8,7 +8,7 @@
 /// - **Modifiers** ([forgeModifiersFor]): a dwarf hero +2 (at any forge);
 ///   standing with the clan holding the forge's place, +1 at Friendly or
 ///   better, -1 at Unfriendly or worse, nothing when no clan holds it.
-/// - **Variants** ([forgedVariantId], [ForgedItems]): a piece forged above
+/// - **Variants** ([forgedVariantId], [_ForgedItems]): a piece forged above
 ///   or below Sound keeps its tier in its id, `<baseId>@fine`; the items
 ///   table resolves such an id to the base item with the tier's change
 ///   ([forgedVariantOf]), so saves, equipping, the pack and the shop all
@@ -38,7 +38,7 @@ ForgeTier forgeTierFor(int total) {
 }
 
 /// What [tier] does to a piece's main number.
-int forgeStatChange(ForgeTier tier) => switch (tier) {
+int _forgeStatChange(ForgeTier tier) => switch (tier) {
       ForgeTier.flawed => -1,
       ForgeTier.sound => 0,
       ForgeTier.fine => 1,
@@ -46,7 +46,7 @@ int forgeStatChange(ForgeTier tier) => switch (tier) {
     };
 
 /// What [tier] does to a piece's resale price, as a factor.
-double forgeResaleFactor(ForgeTier tier) => switch (tier) {
+double _forgeResaleFactor(ForgeTier tier) => switch (tier) {
       ForgeTier.flawed => 0.75,
       ForgeTier.sound => 1.0,
       ForgeTier.fine => 1.25,
@@ -56,14 +56,14 @@ double forgeResaleFactor(ForgeTier tier) => switch (tier) {
 /// The string key of [tier]'s name ("Fine").
 String forgeTierLabelKey(ForgeTier tier) => 'forge_tier_${tier.name}';
 
-/// The race whose forge lore adds [dwarfForgeBonus].
-const String dwarfRaceId = 'dwarf';
-const int dwarfForgeBonus = 2;
+/// The race whose forge lore adds [_dwarfForgeBonus].
+const String _dwarfRaceId = 'dwarf';
+const int _dwarfForgeBonus = 2;
 
 /// Standing with the forge place's holder: [friendlyForgeBonus] at
-/// Friendly or better, [unfriendlyForgePenalty] at Unfriendly or worse.
+/// Friendly or better, [_unfriendlyForgePenalty] at Unfriendly or worse.
 const int friendlyForgeBonus = 1;
-const int unfriendlyForgePenalty = -1;
+const int _unfriendlyForgePenalty = -1;
 
 /// One thing added to the forge's d20: where it comes from ([source]:
 /// `dwarf`, `standing`), the string key naming it ([labelKey]), its
@@ -114,11 +114,11 @@ List<ForgeModifier> forgeModifiersFor({
   StandingTier? holderTier,
 }) =>
     [
-      if (raceId == dwarfRaceId)
+      if (raceId == _dwarfRaceId)
         const ForgeModifier(
             source: 'dwarf',
             labelKey: 'forge_mod_dwarf',
-            value: dwarfForgeBonus),
+            value: _dwarfForgeBonus),
       if (holderId.isNotEmpty && holderTier != null)
         if (holderTier.isAtLeast(StandingTier.friendly))
           ForgeModifier(
@@ -130,7 +130,7 @@ List<ForgeModifier> forgeModifiersFor({
           ForgeModifier(
               source: 'standing',
               labelKey: 'forge_mod_distrust',
-              value: unfriendlyForgePenalty,
+              value: _unfriendlyForgePenalty,
               clanId: holderId),
     ];
 
@@ -173,18 +173,18 @@ ForgeRoll rollForge({
 // --- Variants ------------------------------------------------------------
 
 /// The separator between a base id and its tier in a variant id.
-const String forgeVariantSeparator = '@';
+const String _forgeVariantSeparator = '@';
 
 /// The id a piece of [baseId] forged at [tier] takes: the base id for
 /// Sound, `<baseId>@<tier>` otherwise.
 String forgedVariantId(String baseId, ForgeTier tier) => tier == ForgeTier.sound
     ? baseId
-    : '$baseId$forgeVariantSeparator${tier.name}';
+    : '$baseId$_forgeVariantSeparator${tier.name}';
 
 /// [id] read as a forged piece: its base id and tier (Sound for a plain
 /// id), or null for an id with an unknown tier after the separator.
 ({String baseId, ForgeTier tier})? parseForgedId(String id) {
-  final at = id.lastIndexOf(forgeVariantSeparator);
+  final at = id.lastIndexOf(_forgeVariantSeparator);
   if (at < 0) return (baseId: id, tier: ForgeTier.sound);
   final name = id.substring(at + 1);
   final tier = ForgeTier.values.where((t) => t.name == name).firstOrNull;
@@ -215,12 +215,12 @@ String forgedNameFor(String name, ForgeTier tier, AppLanguage language) =>
             .replaceAll('{item}', name);
 
 /// What a shop pays for [base] forged at [tier] (sellPriceFor, by
-/// [forgeResaleFactor]), at least 1 gold.
-int forgedResalePrice(Map<String, dynamic>? base, ForgeTier tier) =>
-    max(1, (sellPriceFor(base) * forgeResaleFactor(tier)).round());
+/// [_forgeResaleFactor]), at least 1 gold.
+int _forgedResalePrice(Map<String, dynamic>? base, ForgeTier tier) =>
+    max(1, (sellPriceFor(base) * _forgeResaleFactor(tier)).round());
 
 /// [base] (item [baseId]) as forged at [tier]: its main number moved by
-/// [forgeStatChange] (never below 0), its name marked (English in
+/// [_forgeStatChange] (never below 0), its name marked (English in
 /// `itemName`, French in `itemName_fr`; [french] when [base] already
 /// carries its French text in `itemName`), its resale price in
 /// `sellValue`, and no recipe of its own.
@@ -242,19 +242,19 @@ Map<String, dynamic> forgedVariantOf(
     'id': forgedVariantId(baseId, tier),
     'forgedFrom': baseId,
     'forgeTier': tier.name,
-    stat: max(0, value + forgeStatChange(tier)),
+    stat: max(0, value + _forgeStatChange(tier)),
     'itemName':
         forgedNameFor(name, tier, french ? AppLanguage.fr : AppLanguage.en),
     'itemName_fr': forgedNameFor(nameFr, tier, AppLanguage.fr),
-    'sellValue': forgedResalePrice(base, tier),
+    'sellValue': _forgedResalePrice(base, tier),
   };
 }
 
 /// An items table (items.json) that also answers for forged variants: a
 /// lookup of `<baseId>@<tier>` gives [forgedVariantOf] its base. Its keys,
 /// and so any walk over it, are the base items only.
-class ForgedItems extends MapBase<String, dynamic> {
-  ForgedItems(this.base, {this.french = false});
+class _ForgedItems extends MapBase<String, dynamic> {
+  _ForgedItems(this.base, {this.french = false});
 
   final Map<String, dynamic> base;
 
@@ -303,11 +303,11 @@ class ForgedItems extends MapBase<String, dynamic> {
 }
 
 /// [records] as an items table that resolves forged variants (see
-/// [ForgedItems]); [french] when its English fields hold the French text.
+/// [_ForgedItems]); [french] when its English fields hold the French text.
 Map<String, dynamic> withForgedVariants(Map<String, dynamic> records,
     {bool french = false}) {
-  if (records is ForgedItems && records.french == french) return records;
-  return ForgedItems(records is ForgedItems ? records.base : records,
+  if (records is _ForgedItems && records.french == french) return records;
+  return _ForgedItems(records is _ForgedItems ? records.base : records,
       french: french);
 }
 
@@ -330,11 +330,11 @@ ForgedPieceChange forgedPieceBeforeAfter(
   return (
     stat: stat,
     before: before,
-    after: max(0, before + forgeStatChange(tier)),
+    after: max(0, before + _forgeStatChange(tier)),
     resaleBefore: sellPriceFor(base),
     resaleAfter: tier == ForgeTier.sound
         ? sellPriceFor(base)
-        : forgedResalePrice(base, tier),
+        : _forgedResalePrice(base, tier),
   );
 }
 

@@ -30,7 +30,7 @@ enum ContractKind {
   /// Take a ship by boarding her.
   takeShip,
 
-  /// Win a sea fight losing at most [intactHullShare] of the hull.
+  /// Win a sea fight losing at most [_intactHullShare] of the hull.
   keelIntact,
 
   /// Stand up to a sea beast and live (v1.185): posted while one is being
@@ -47,7 +47,7 @@ const Set<ContractKind> seaContractKinds = {
 
 /// The most of her hull the Eel may lose in a fight that keeps her keel
 /// intact.
-const double intactHullShare = 0.25;
+const double _intactHullShare = 0.25;
 
 /// A sea contract pays this share of a land one: a fight at sea comes
 /// along on every crossing, a pack or a marked foe has to be found.
@@ -138,7 +138,7 @@ class ContractTally {
         shipsBeaten: 1,
         shipsTaken: boarded ? 1 : 0,
         intactSeaWins:
-            hullBefore - hullAfter <= maxHull * intactHullShare ? 1 : 0,
+            hullBefore - hullAfter <= maxHull * _intactHullShare ? 1 : 0,
       );
 
   final List<String> defeatedEnemyIds;

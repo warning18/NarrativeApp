@@ -10,7 +10,7 @@ import 'signs.dart';
 enum RadarAxis { might, guard, mending, arcana, fortune }
 
 /// The axis [kind] counts on.
-RadarAxis radarAxisOf(SignEffectKind kind) => switch (kind) {
+RadarAxis _radarAxisOf(SignEffectKind kind) => switch (kind) {
       SignEffectKind.strikeDamagePercent ||
       SignEffectKind.strikeFlat ||
       SignEffectKind.strikeElement ||
@@ -93,12 +93,13 @@ ClanRadar clanRadarOf(
   for (final sign in signs.values) {
     if (sign.patronId != factionId || sign.storyOnly) continue;
     for (final effect in sign.effects) {
-      counts[radarAxisOf(effect.kind)] = counts[radarAxisOf(effect.kind)]! + 1;
+      counts[_radarAxisOf(effect.kind)] =
+          counts[_radarAxisOf(effect.kind)]! + 1;
     }
   }
   for (final effect
       in data.faction(factionId)?.sworn?.effects ?? const <SignEffect>[]) {
-    counts[radarAxisOf(effect.kind)] = counts[radarAxisOf(effect.kind)]! + 1;
+    counts[_radarAxisOf(effect.kind)] = counts[_radarAxisOf(effect.kind)]! + 1;
   }
   final top = counts.values.fold<double>(0, (a, b) => a > b ? a : b);
   final base = data.relations.baseSteps;

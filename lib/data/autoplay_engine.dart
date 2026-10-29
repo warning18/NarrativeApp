@@ -713,12 +713,12 @@ Future<AutoplayResult> autoplayToChapter(
   }
   // Left as a player would leave it: the banners due taken, then the
   // gear and the die set, the harbour built and the party seated.
-  await takeAutoplayOffers(ref,
+  await _takeAutoplayOffers(ref,
       log: log, random: seed == null ? Random() : Random(seed * 7919));
   await applyAutoplayBuild(ref,
       items: items, skills: skills, dice: dice, professions: professions);
   await buildAwaitedHarbour(ref, houses: houses);
-  await seatAutoplayParty(ref, houses: houses);
+  await _seatAutoplayParty(ref, houses: houses);
   return result._withAttempts(attempts);
 }
 
@@ -727,7 +727,7 @@ Future<AutoplayResult> autoplayToChapter(
 /// (preferredSuitor): kept to the main clan and its allies when there is
 /// one. The offers wait while the clans are not open yet, as in the game.
 /// Returns how many were taken.
-Future<int> takeAutoplayOffers(WidgetRef ref,
+Future<int> _takeAutoplayOffers(WidgetRef ref,
     {AutoplayLog? log, Random? random}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   final tables = await loadOfferTables(ref);
@@ -764,7 +764,7 @@ Future<int> takeAutoplayOffers(WidgetRef ref,
 
 /// Seats the recruited companions not yet in the party, up to the camp's
 /// party capacity (partyCapacityFor), as the Camp's party page would.
-Future<void> seatAutoplayParty(WidgetRef ref,
+Future<void> _seatAutoplayParty(WidgetRef ref,
     {Map<String, dynamic>? houses}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   final records = houses ??
