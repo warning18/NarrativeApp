@@ -22,6 +22,8 @@ import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/district_attacks.dart'
+    show expiredSieges, rollDistrictAttacks, settleSiegeAway, syncSiegeFlags;
 import '../data/nemesis.dart'
     show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
@@ -2668,6 +2670,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
           politics: updateNemesis(turned, data,
               chapter: chapter, day: state.day, flags: state.flags));
+      // The rival clans' attacks on districts (district_attacks.dart):
+      // the sieges run out settled, then the chapter's own rolled.
+      _settleExpiredSieges(data, geography, chapter);
+      state = state.copyWith(
+          politics: rollDistrictAttacks(state.politics,
+                  data: data,
+                  geography: geography,
+                  day: state.day,
+                  chapter: chapter,
+                  random: _siegeRandom(chapter))
+              .state);
       _syncHeld(geography);
       // A new nemesis opens its quest (nemesis.dart): beat its champion;
       // the story's own once its champion can come.
@@ -3597,11 +3610,48 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// geography. The caller persists.
   void _syncHeld(Geography? geography) {
     if (geography == null || geography.isEmpty) return;
-    final flags =
-        influence.syncHeldFlags(state.flags, geography, state.politics);
+    final flags = syncSiegeFlags(
+        influence.syncHeldFlags(state.flags, geography, state.politics),
+        state.politics);
     if (!identical(flags, state.flags)) {
       state = state.copyWith(flags: flags);
     }
+  }
+
+  /// The dice of the district attacks (district_attacks.dart) on [chapter]:
+  /// the run's own, so a run rolls the same.
+  Random _siegeRandom(int chapter) =>
+      Random(state.runSeed * 31 + chapter * 7919 + state.day * 104729);
+
+  /// The sieges run out by today (district_attacks.dart), settled away
+  /// from the party: the district taken or held, the news told. Returns
+  /// how many were settled.
+  int _settleExpiredSieges(ClanData data, Geography geography, int chapter) {
+    final expired = expiredSieges(state.politics, state.day);
+    if (expired.isEmpty) return 0;
+    final random = _siegeRandom(chapter);
+    var politics = state.politics;
+    for (final siege in expired) {
+      politics = settleSiegeAway(politics, siege,
+          data: data,
+          geography: geography,
+          random: random,
+          chapter: chapter,
+          day: state.day);
+    }
+    state = state.copyWith(politics: politics);
+    _syncHeld(geography);
+    return expired.length;
+  }
+
+  /// The sieges run out by today, settled and saved (a road's check, see
+  /// story_player_screen.dart's startRoadEncounter).
+  Future<void> settleExpiredSieges({
+    required ClanData data,
+    required Geography geography,
+    required int chapter,
+  }) async {
+    if (_settleExpiredSieges(data, geography, chapter) > 0) await _persist();
   }
 
   /// The `held_` flags in sync (see [_syncHeld]), saved when they moved:
