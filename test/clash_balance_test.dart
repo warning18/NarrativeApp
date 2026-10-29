@@ -23,6 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _gamedata(String name) =>
     jsonDecode(File('assets/gamedata/$name').readAsStringSync())
@@ -39,16 +40,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'training_paths', 'politics_events',
-      ])
-        name: _gamedata('$name.json'),
-    };
+    final tables = simTables();
     final gameConfig = _gamedata('game_config.json');
     Map<String, double> rates({required bool clash}) {
       final attempts = <String, int>{};

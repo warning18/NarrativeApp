@@ -24,6 +24,7 @@ import 'package:narrative_data_app/data/sim_growth.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -339,17 +340,7 @@ void main() {
       expect(flags, contains('vote_carried'));
       // And a whole run: chapter 2's events fire on the way.
       final run = simulatePlaythroughs(StoryData(story),
-              tables: {
-                for (final name in [
-                  'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-                  'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-                  'factions', 'signs', 'subclans', 'relations', 'titles',
-                  'geography', 'biomes', 'quests', 'npcs', 'land_routes',
-                  'land_events', 'houses', 'expedition_steps', 'training_paths',
-                  'politics_events',
-                ])
-                  name: _table(name),
-              },
+              tables: simTables(),
               gameConfig: _table('game_config'),
               plan: [
                 (
