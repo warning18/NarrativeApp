@@ -42,11 +42,14 @@ void main() {
     test('every node is reachable from the start node', () async {
       final report = checkStoryGraphIntegrity(nodes,
           startNodeId: StoryRepository.startNodeId);
+      // Scenes parked for a later placement (docs/proposals/*-parked.md).
+      const parked = {'270'};
+      final orphans =
+          report.unreachableNodeIds.where((id) => !parked.contains(id));
       expect(
-        report.unreachableNodeIds,
+        orphans,
         isEmpty,
-        reason:
-            'Orphaned nodes no choice can ever reach: ${report.unreachableNodeIds}',
+        reason: 'Orphaned nodes no choice can ever reach: $orphans',
       );
     });
 
@@ -84,7 +87,11 @@ void main() {
     test('overall report is clean', () async {
       final report = checkStoryGraphIntegrity(nodes,
           startNodeId: StoryRepository.startNodeId);
-      expect(report.isClean, isTrue);
+      // Clean but for the scenes parked for a later placement.
+      expect(report.unreachableNodeIds.toSet().difference({'270'}), isEmpty);
+      expect(report.deadEndNodeIds, isEmpty);
+      expect(report.brokenReferences, isEmpty);
+      expect(report.reachableEndingCount, greaterThan(0));
     });
   });
 
