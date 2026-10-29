@@ -149,7 +149,7 @@ List<ChapterLoop> chapterLoopsFrom(Map<String, dynamic> chapters) {
 }
 
 /// The loop whose camp is [campNodeId], if any.
-ChapterLoop? loopForCamp(String? campNodeId, List<ChapterLoop> loops) {
+ChapterLoop? _loopForCamp(String? campNodeId, List<ChapterLoop> loops) {
   if (campNodeId == null) return null;
   for (final loop in loops) {
     if (loop.campNodeId == campNodeId) return loop;
@@ -179,7 +179,7 @@ ChapterLoop? currentLoop({
   required List<String> history,
   required List<ChapterLoop> loops,
 }) =>
-    loopForCamp(
+    _loopForCamp(
         currentCampNodeId(
             currentNodeId: currentNodeId, history: history, loops: loops),
         loops);
@@ -254,7 +254,7 @@ int reachedChapter({
 
 /// Whether [place] is known to the party in [chapter]: one of the places
 /// of the chapters reached so far, found if it had to be.
-bool placeKnown(StoryNode place, int chapter, Iterable<String> flags) {
+bool _placeKnown(StoryNode place, int chapter, Iterable<String> flags) {
   final settlement = place.settlement;
   if (settlement == null || settlement.isCamp) return false;
   final placeChapter = settlement.chapter;
@@ -288,7 +288,7 @@ List<StoryNode> knownPlaces(
   final held = flags.toSet();
   return [
     for (final place in loopPlaces(story))
-      if (placeKnown(place, chapter, held)) place,
+      if (_placeKnown(place, chapter, held)) place,
   ];
 }
 
@@ -347,7 +347,7 @@ List<String> missingMainQuestPlaces(
   return [
     for (final id in loop.mainQuestNeedsPlaceIds)
       if (story.nodeFor(id) == null ||
-          !placeKnown(story.nodeFor(id)!, loop.chapter, held) ||
+          !_placeKnown(story.nodeFor(id)!, loop.chapter, held) ||
           !visited.contains(id))
         id,
   ];

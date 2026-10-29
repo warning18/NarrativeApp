@@ -5,7 +5,7 @@
 // - Who attacks: a main clan with [attackMinPower] power or more, against
 //   a district (never a guarded seat, clan_power.dart's seatGuarded) held
 //   by a clan it is at odds with: a blood feud
-//   ([attackOdds]: 35% a chapter), a war (20%) or hostile (10%); tense or
+//   ([_attackOdds]: 35% a chapter), a war (20%) or hostile (10%); tense or
 //   warmer, never. At most one attack a town a chapter, and none while the
 //   town is under siege.
 // - The siege lasts [siegeDays] days ([PoliticsState.sieges]), with its
@@ -35,7 +35,7 @@ import 'rival_hunters.dart' show rivalHunterPool;
 /// A clan's chance a chapter to attack a district held by a clan at
 /// [relation step](PoliticsState.relationStep): 1 a blood feud, 2 a war,
 /// 3 hostile.
-const Map<int, double> attackOdds = {1: 0.35, 2: 0.20, 3: 0.10};
+const Map<int, double> _attackOdds = {1: 0.35, 2: 0.20, 3: 0.10};
 
 /// The least power a clan attacks with.
 const int attackMinPower = 10;
@@ -142,7 +142,7 @@ String _cityOf(Geography geography, String districtId) =>
       if (state.fallen.contains(clan)) continue;
       if (powerOf(state, clan, data) < attackMinPower) continue;
       final step = state.relationStep(clan, holder, data);
-      final odds = step == null ? null : attackOdds[step];
+      final odds = step == null ? null : _attackOdds[step];
       if (odds == null) continue;
       (candidates[city] ??= []).add((
         district: placeId,
@@ -198,7 +198,7 @@ String _cityOf(Geography geography, String districtId) =>
 }
 
 /// [state] with [districtId]'s siege lifted (settled one way or another).
-PoliticsState clearSiege(PoliticsState state, String districtId) =>
+PoliticsState _clearSiege(PoliticsState state, String districtId) =>
     state.sieges.containsKey(districtId)
         ? state.copyWith(sieges: {...state.sieges}..remove(districtId))
         : state;
@@ -207,7 +207,7 @@ PoliticsState clearSiege(PoliticsState state, String districtId) =>
 /// district's siege lifted, or, for `<district>:aside`, marked met (it runs
 /// its course and is settled when it runs out).
 PoliticsState applySiegeChoice(PoliticsState state, String settle) {
-  if (!settle.endsWith(asideSuffix)) return clearSiege(state, settle);
+  if (!settle.endsWith(asideSuffix)) return _clearSiege(state, settle);
   final districtId = settle.substring(0, settle.length - asideSuffix.length);
   final entry = state.sieges[districtId];
   if (entry == null) return state;
@@ -256,7 +256,7 @@ PoliticsState settleSiegeAway(
   int day = 0,
   List<TerritoryChange>? changes,
 }) {
-  var next = clearSiege(state, siege.districtId);
+  var next = _clearSiege(state, siege.districtId);
   final place = geography.place(siege.districtId);
   if (place == null) return next;
   // The holder may have changed since (an event, influence): the siege is
@@ -368,7 +368,7 @@ StoryNode? buildSiegeNode(
   final defender = pool.isEmpty ? null : pool[random.nextInt(pool.length)];
   final d = siege.districtId;
   return StoryNode(
-    id: '$siegeNodePrefix${d}_${random.nextInt(1 << 30)}',
+    id: '$_siegeNodePrefix${d}_${random.nextInt(1 << 30)}',
     description: fill(_siegeBodyEn, false),
     descriptionFr: fill(_siegeBodyFr, true),
     contextNote: fill(_siegeTitleEn, false),
@@ -393,8 +393,8 @@ StoryNode? buildSiegeNode(
         nextId: '',
         politics: StoryPolitics(
           standing: {
-            siege.attacker: siegeJoinStanding,
-            siege.holder: -siegeJoinStanding,
+            siege.attacker: _siegeJoinStanding,
+            siege.holder: -_siegeJoinStanding,
           },
           control: {d: siege.attacker},
           flags: [siegeOutcomeFlag(d, 'joined')],
@@ -416,9 +416,9 @@ StoryNode? buildSiegeNode(
 
 /// The id prefix of the siege scenes, whose politics the story player
 /// applies though they are met on a road.
-const String siegeNodePrefix = 'district_siege_';
+const String _siegeNodePrefix = 'district_siege_';
 bool isSiegeNode(String? nodeId) =>
-    nodeId?.startsWith(siegeNodePrefix) ?? false;
+    nodeId?.startsWith(_siegeNodePrefix) ?? false;
 
 /// What holding a district against its attackers moves: the holder's
 /// standing up, the attacker's power down.
@@ -426,7 +426,7 @@ const int siegeDefendStanding = 5;
 const int siegeDefendAttackerPower = 5;
 
 /// What joining the attackers moves: their standing up, the holder's down.
-const int siegeJoinStanding = 5;
+const int _siegeJoinStanding = 5;
 
 /// The siege of the party's town to meet on a road at rest: one whose
 /// town [fromCity] or [toCity] is, not yet stood aside from.
