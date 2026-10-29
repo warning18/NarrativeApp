@@ -24,6 +24,59 @@ isn't reconstructable from git history alone.
   - Touches Core's files in a few lines: the scene's building in
     `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
     scene count in `test/world_map_test.dart` (69 to 70).
+## [1.634.0+670]
+
+- **Core: "Play to chapter" (the simulator screen) takes options, leaves
+  the character as a player would, and reports what it did.**
+  - **Options:**
+    - start a new game;
+    - its race and profession (random by default);
+    - a seed (random by default; the same seed now gives the same run,
+      the character's own seed included);
+    - the player's style (the strategy chips, as before).
+  - **The end of the walk:**
+    - every clan offer (banner) due is taken, kept to the main clan and
+      its allies, as the competent simulator does;
+    - then the gear is equipped, the die is set, the harbour is built and
+      the recruited companions are seated, up to the party's room.
+    - Offers still wait while the clans are not open yet (the game's own
+      rule).
+  - **A summary pop-in with six tabs:**
+    - State: level, gold, chapter, scene, standing with each clan;
+    - Choices: in order, with their scene ids;
+    - Items: equipped, came into the pack, left it;
+    - Banners: the one carried, those taken, any still waiting;
+    - Fights: won, lost, pushed through;
+    - Companions: seated, recruited.
+- **Core: the first banner comes when the clans are met** (the user's
+  rule).
+  - On the feature ladder, level-ups, bosses and chapter turns bring no
+    clan offer before the clans are met.
+  - Meeting them brings exactly one, the first banner: the Crow at the
+    Wharf (`feat_clans`), or the story past chapter 2.
+  - After that, offers come as before.
+  - A save that already piled offers up keeps them, and gets no extra.
+  - Games off the ladder are unchanged.
+  - The simulator follows the same rule.
+  - Tests: `autoplay_engine_test` (the picks, no banner left, the party
+    seated, the log) and `autoplay_summary_test`;
+    `offers_session_test` (the first banner).
+
+## [1.633.0+669]
+
+- **Cleanup: three unread quest and NPC fields are removed**
+  `actionType` and `locationID` (quests.json) and `stancePlayer`
+  (npcs.json), which no code read, and their names in the editor's schema
+  labels. No behaviour change.
+
+## [1.632.0+668]
+
+- **Cleanup: unused Core symbols and their tests are removed**
+  `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`,
+  `QuestReadiness` (and its string), `learnSpell`, `startingTotals`, the three
+  `SpellSpec` target getters, and the stale `briarReflect`, `longVigilMend`
+  and `censerBurn`; the tests that used them now check the live code. No
+  behaviour change.
 
 ## [1.631.0+667]
 
@@ -279,8 +332,6 @@ isn't reconstructable from git history alone.
     `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
     since that test is about the walk.
 
-
-
 ## [1.615.0+651]
 
 - **Core: the element dice** (the user's option B;
@@ -344,7 +395,6 @@ isn't reconstructable from git history alone.
   - Tests: `boss_balance_test` measures the full world, and its professions'
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
-
 
 ## [1.612.0+648]
 
@@ -951,7 +1001,6 @@ Two sheets and dialogs, in one release: the place sheet's height and the clan po
 
 ### Tests
 - `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
-
 
 ## [1.552.0+588]
 
@@ -3313,7 +3362,6 @@ Twelve story achievements.
   (an oath, a standing, an intrigue's end), so taking the Throne unlocks
   its achievement at once. "Hunted" counts the six coast clans, not the
   tribes. `test/achievements_story_test.dart` covers each.
-
 
 ## [1.278.0+314]
 
