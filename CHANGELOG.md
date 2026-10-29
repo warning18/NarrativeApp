@@ -24,6 +24,13 @@ isn't reconstructable from git history alone.
     the rhythm more than the length.
   - Tests: none changed; two tests that pin phrases (`story_direction_test`)
     keep their phrases.
+## [1.624.0+660]
+
+- **Cleanup: 6 unused symbols removed from UX's files**
+  `elementColor`, `adventureNodeCategoryIcon`, `campRouteLabel`,
+  `itemRarityLabel`, `RoomArtPainter` and a hull shade that nothing used
+  (162 lines). No behaviour change.
+
 ## [1.623.0+659]
 
 - **Cleanup: 26 unused symbols removed from Core's files**

@@ -71,18 +71,6 @@ String routeLabelTo(
   return tr(ref, 'camp_route_sail').replaceAll('{n}', '$days');
 }
 
-/// How far [settlement] is from the camp, as the player reads it.
-String campRouteLabel(
-  WidgetRef ref,
-  Settlement settlement,
-  Map<String, dynamic> ports,
-) {
-  final landing = landingPortIdFor(settlement, ports);
-  if (landing == null) return tr(ref, 'camp_route_walk');
-  return tr(ref, 'camp_route_sail').replaceAll(
-      '{n}', '${portVoyageLength(ports[landing] as Map<String, dynamic>)}');
-}
-
 /// Sails the party to [destinationPortId] (null: the camp's shore), a
 /// voyage played out on its own screen. True once it is there. (A walk is
 /// a step on the road, see [travelTo] and setOutOnMainQuest.)
