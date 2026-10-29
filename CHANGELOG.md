@@ -33,6 +33,35 @@ isn't reconstructable from git history alone.
   `character_start_test.dart` (every starting skill has a French name),
   `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
   Picture: `docs/ux-shots/fixes-611/`.
+## [1.609.0+645]
+
+- **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
+  is unchanged.
+  - **The fight parses its tables once.** Item sets, clans, sub-clans,
+    titles and spells used to be parsed again on every roll and log line;
+    now they are parsed on the first build with every table in.
+  - **The Journey's list of places reads only what the locks read**
+    (flags, quests done), not the whole session. A purse, a potion or the
+    clock changing no longer recomputes it.
+  - **The camp's companion leads read only what they need**: the
+    companions, flags, alignment, charisma and politics.
+
+## [1.608.0+644]
+
+- **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).
+  - **Vica joins only a hero who walked past her scene.** Loading an earlier
+    save after a later run no longer hands her over at once: her join now
+    reads the save's own path, not the visited set it inherits.
+  - **The rat matriarch is a chapter 1 foe** (`minChapter` 2 → 1). She is
+    fought in chapter 1.
+  - **The two boarding prices are paid for real** (#583). At 896_failed (40
+    gold) and 897_failed (25 gold), the only way on after a failed check, a
+    purse too short pays what it holds. The rest is taken as a wound, a point
+    of health per gold, never the last point. A new choice field,
+    `shortfallWounds`, marks such forced prices.
+  - **The heal preview matches the heal.** A round's preview now applies the
+    Briar-Guard rule (no heal from Heal faces) and heal fatigue, like the
+    round itself. Both now use the same helper.
 
 ## [1.607.0+643]
 

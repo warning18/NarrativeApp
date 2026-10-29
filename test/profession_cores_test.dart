@@ -12,6 +12,7 @@ import 'package:narrative_data_app/combat/profession_cores.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 void main() {
   test('each profession has its core', () {
@@ -77,16 +78,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'training_paths', 'politics_events',
-      ])
-        name: table(name),
-    };
+    final tables = simTables();
     final professions = tables['professions']!.keys.toList()..sort();
     final runs = int.tryParse(Platform.environment['CORES_RUNS'] ?? '') ??
         professions.length * 2;

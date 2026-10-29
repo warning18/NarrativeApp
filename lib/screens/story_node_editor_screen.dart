@@ -631,6 +631,7 @@ class _ChoiceEditState {
         hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
+        shortfallWounds: _original.shortfallWounds,
         about: _original.about,
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,

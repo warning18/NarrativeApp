@@ -16,6 +16,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -109,18 +110,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'training_paths', 'politics_events',
-        'specialisations',
-        'spec_variants',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     Map<String, ({int runs, int won, int fights, int level})> byPatron(
         bool on) {
       final summaries = simulatePlaythroughs(story,
