@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.638.0+674]
+
+- **The realm, at the end: who holds each town, on the world chart**
+  A button on the story's ending opens a screen with the real world chart
+  (the one the Journey's World view draws), cropped to where the towns are:
+  every town a dot in its holder's colour, the clans' roads over it (a land
+  route whose two ends one clan holds, in its colour; the others grey and
+  dashed) and the seven big towns numbered. The words are under it, not on
+  it: a chip for each clan with how many towns it holds, then a line for each
+  big town (Narrative's epilogue line where there is one, else the holder and
+  how: held since the start, taken by force, won by influence) and, when some
+  of its districts are held by others, a tag ("3 districts differ") that opens
+  their list. `epilogueHoldings` takes the list of towns (`epilogueBigTowns`
+  for the seven). Real screens at 412 and 320 px in `docs/ux-shots/`.
+
 ## [1.633.0+669]
 
 - **Cleanup: three unread quest and NPC fields are removed**
