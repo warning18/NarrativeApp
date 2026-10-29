@@ -4,7 +4,7 @@
 /// that doesn't. A lone fighter never makes one: it takes two acting
 /// members.
 ///
-/// - [flank]: exactly two strikes -- each hits [comboStrikeMultiplier]
+/// - [flank]: exactly two strikes -- each hits [_comboStrikeMultiplier]
 ///   harder.
 /// - [volley]: three strikes or more -- each hits as hard as a Flank and
 ///   also catches every other enemy standing for [volleySplashShare] of the
@@ -21,7 +21,7 @@ enum PartyCombo { flank, volley, shelter, shieldWall, wellspring }
 enum FaceRole { strike, defend, heal, mana, none }
 
 /// A Flank's (and a Volley's) damage multiplier on every strike.
-const double comboStrikeMultiplier = 1.15;
+const double _comboStrikeMultiplier = 1.15;
 
 /// The share of each Volley strike that catches the other enemies (a
 /// Cleave face splashes more, see cleaveSplashShare).
@@ -66,15 +66,15 @@ Set<PartyCombo> partyCombosFor(Iterable<FaceRole> roles) {
 }
 
 /// The multiplier [combos] put on every strike's damage.
-double comboDamageMultiplier(Set<PartyCombo> combos) =>
+double _comboDamageMultiplier(Set<PartyCombo> combos) =>
     combos.contains(PartyCombo.flank) || combos.contains(PartyCombo.volley)
-        ? comboStrikeMultiplier
+        ? _comboStrikeMultiplier
         : 1.0;
 
 /// [damage] after [combos]' multiplier.
 int comboDamage(int damage, Set<PartyCombo> combos) {
   if (damage <= 0) return damage;
-  final multiplier = comboDamageMultiplier(combos);
+  final multiplier = _comboDamageMultiplier(combos);
   return multiplier == 1.0 ? damage : (damage * multiplier).round();
 }
 
