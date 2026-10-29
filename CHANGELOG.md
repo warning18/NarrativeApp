@@ -72,6 +72,105 @@ isn't reconstructable from git history alone.
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
 
+
+## [1.612.0+648]
+
+- **UX: the fight at fixed sizes.** (The user's "the size of enemy or player
+  are fixed", approved as drawn in `docs/proposals/fight-fixed-sizes.md`.)
+  - **One box for each figure**, whatever the party and the pack are: hero 96,
+    ally 64, foe 96 and a **bigger box for a boss only** (144); under 360 px
+    the set is 72, 48, 72 and 108. The art is scaled to its box and every
+    figure stands on one ground line, so the hero is never huge, small or
+    missing from one fight to the next (with three allies it used to vanish).
+  - **A stage of fixed height under the cards** (the boss fight reserves the
+    taller one), so the dice and the controls never move; the cards above are
+    what gives, and they scroll as before.
+  - **Allies stand in a back row** behind the hero (a disc with their initial:
+    they have no sprite yet), the foes fill front-right, front-left, then the
+    back row, a foe with no art stands as its portrait in its box, and each
+    figure has its health bar over its box.
+  - **Slim ally cards:** an ally's card keeps its name, die and health bar, and
+    shows the attack/armour numbers only for the hero; block, a parry, a status
+    or a knockout still show.
+  - **Fixed (#598):** the guide dog's walk frames west and south
+    (`Walking/west`, `Walking/south`) were not listed in `pubspec.yaml`, so they
+    were not in the build: her walk had no frames in those two directions. Both
+    folders are listed now. (The Bark frames east, north and west and the Fight
+    rotations are listed nowhere and used by no code; left out of the build.)
+  - **Fixed:** a fighter's picture could stay a grey "not yet" mark when its
+    image arrived while it stood still (reduced motion); it now repaints when
+    the image is in.
+  - Not done (as the proposal said it would follow): damage numbers and effects
+    still rise from the cards, not from the boxes; pack foes' cards are not
+    slimmer.
+- Tests: `fight_stage_test.dart` (the boxes), `ux_fight_stage_boss_test.dart`,
+  `ux_fight_stage_narrow_test.dart`; `ux_fight_enemy_test.dart` and
+  `ux_fight_enemy_none_test.dart` follow the boxes. Pictures:
+  `docs/ux-shots/fight-built/`.
+## [1.611.0+647]
+
+- **UX: fixes from the chapter 1 reviews.**
+  - **The race and profession screen** shows the starting skills' names in the
+    player's language (the French names were there; the screen built the name
+    from the skill's id, so French players read "Resolve" and "Shield Bash").
+    The id-based helper `grantedSkillName` is gone.
+  - **The spoils chest's "health still missing"** counts each potion with the
+    perk's and the signs' bonus, as the fight will heal it, so a potion is no
+    longer offered that would heal nothing (`healthStillMissing`).
+  - **The Bone-Caster's Hut reroll is on the Forge sheet.** A Flawed piece, the
+    hut standing and a Reroll charge left: the forge asks whether to spend the
+    charge and rolls the d20 again (Core's `canRerollForge` and `rerollForge`,
+    built in v1.592 and until now reachable from no screen); the fate coin can
+    still be offered after it.
+  - **Quest reward cards show their chapter art.** `assets/visuals/chapters/`
+    was not listed in `pubspec.yaml`, so it was not in the build and the
+    card's art strip was always a flat colour.
+  - **The inventory's tabs at 320 px** sit closer, with smaller names, so the
+    Dice tab is on screen (it was half off the edge in French).
+  - **Cleanup:** `InkReveal` (no user) is removed.
+- Tests: `spoils_chest_test.dart` (health still missing),
+  `character_start_test.dart` (every starting skill has a French name),
+  `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
+  Picture: `docs/ux-shots/fixes-611/`.
+## [1.610.0+646]
+
+- **Narrative: the chapter 1 fixes from the review** (notes #581 and #584).
+  - **Vica is a surprise.** The tutorial's guide is no longer called Vica: its
+    speaker label reads "Your companion" / « Votre compagnon » until the
+    player names it in Settings, and its first line no longer says a name
+    ("Woof! I'll be your guide."). The name comes out of the heat at
+    `1150_vica` and nowhere before it.
+  - `1150_vica` has Lysa's line (she walks behind the hero through the dunes)
+    and the desert palette instead of the docks one.
+  - A failed boarding (`896_failed`, `897_failed`, `898_failed`) now carries the
+    Lark's lift on the same page, so there is one page, not two Continues in
+    a row; the first two buttons read "Pay, and hold on" and "Pay the bribe
+    and hold on". The success path is unchanged.
+  - The first prologue button ends in "…", not three dots.
+  - Codex: the temperate "Warhound" entry (dogs running loose in the alleys)
+    is now a lantern moth, which fits the signaller's lantern.
+  - **Vess** (the Void-marked hero): the +5 Vigil and the Stitchers' mark are
+    paid once, at the hearing in Saltmouth, not also at the Wells (`1210`
+    keeps only the met-her flag). An old save that already accepted her
+    quest no longer sees her row at Saltmouth again.
+  - Touches another session's area: `biomes.json` and the tutorial strings
+    (wording only); the tutorial line has no `{name}` any more.
+  - Tests: `chapter_one_test` (the failed boardings, the Vica and Vess
+    checks); the naive run's choice hash is re-pinned in `sim_competent_test`
+    and `sim_companions_test` (the tuple is unchanged).
+## [1.609.0+645]
+
+- **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
+  is unchanged.
+  - **The fight parses its tables once.** Item sets, clans, sub-clans,
+    titles and spells used to be parsed again on every roll and log line;
+    now they are parsed on the first build with every table in.
+  - **The Journey's list of places reads only what the locks read**
+    (flags, quests done), not the whole session. A purse, a potion or the
+    clock changing no longer recomputes it.
+  - **The camp's companion leads read only what they need**: the
+    companions, flags, alignment, charisma and politics.
+
 ## [1.608.0+644]
 
 - **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).

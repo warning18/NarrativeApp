@@ -1,0 +1,350 @@
+237 duplicated blocks of 15+ lines in lib; 7069 lines repeated (copies beyond the first)
+
+33 lines x 2:
+   lib/data/origin_stories.dart:711-743
+   lib/data/origin_stories.dart:767-799
+
+33 lines x 2:
+   lib/data/origin_stories.dart:387-419
+   lib/data/origin_stories.dart:612-644
+
+31 lines x 3:
+   lib/data/origin_stories.dart:389-419
+   lib/data/origin_stories.dart:614-644
+   lib/data/origin_stories.dart:667-697
+
+30 lines x 2:
+   lib/data/expedition_kinds.dart:322-351
+   lib/data/expedition_kinds.dart:341-370
+
+29 lines x 2:
+   lib/data/origin_stories.dart:224-252
+   lib/data/origin_stories.dart:737-765
+
+29 lines x 2:
+   lib/data/sim_combat.dart:519-549
+   lib/data/sim_combat.dart:639-668
+
+28 lines x 2:
+   lib/data/origin_stories.dart:189-216
+   lib/data/origin_stories.dart:361-388
+
+28 lines x 2:
+   lib/screens/story_player_screen.dart:3015-3044
+   lib/screens/story_player_screen.dart:3229-3259
+
+27 lines x 3:
+   lib/data/origin_stories.dart:428-454
+   lib/data/origin_stories.dart:599-625
+   lib/data/origin_stories.dart:990-1016
+
+27 lines x 3:
+   lib/data/origin_stories.dart:249-275
+   lib/data/origin_stories.dart:190-216
+   lib/data/origin_stories.dart:362-388
+
+27 lines x 2:
+   lib/data/chart_worlds.dart:199-225
+   lib/data/chart_worlds.dart:430-456
+
+26 lines x 2:
+   lib/data/origin_stories.dart:262-287
+   lib/data/origin_stories.dart:375-400
+
+26 lines x 2:
+   lib/l10n/app_strings.dart:1579-1604
+   lib/l10n/app_strings.dart:2972-2997
+
+26 lines x 2:
+   lib/data/autoplay_engine.dart:514-541
+   lib/data/autoplay_engine.dart:1022-1049
+
+26 lines x 2:
+   lib/data/chart_worlds.dart:155-180
+   lib/data/chart_worlds.dart:959-984
+
+25 lines x 2:
+   lib/l10n/app_strings.dart:1330-1354
+   lib/l10n/app_strings.dart:8709-8733
+
+24 lines x 3:
+   lib/data/origin_stories.dart:140-163
+   lib/data/origin_stories.dart:720-743
+   lib/data/origin_stories.dart:776-799
+
+24 lines x 3:
+   lib/data/chart_worlds.dart:412-435
+   lib/data/chart_worlds.dart:157-180
+   lib/data/chart_worlds.dart:961-984
+
+24 lines x 3:
+   lib/data/chart_worlds.dart:103-126
+   lib/data/chart_worlds.dart:362-385
+   lib/data/chart_worlds.dart:895-918
+
+24 lines x 2:
+   lib/data/origin_stories.dart:893-916
+   lib/data/origin_stories.dart:980-1003
+
+23 lines x 2:
+   lib/data/origin_stories.dart:309-331
+   lib/data/origin_stories.dart:501-523
+
+23 lines x 2:
+   lib/data/origin_stories.dart:239-261
+   lib/data/origin_stories.dart:295-317
+
+22 lines x 3:
+   lib/data/chart_worlds.dart:127-148
+   lib/data/chart_worlds.dart:384-405
+   lib/data/chart_worlds.dart:918-939
+
+22 lines x 2:
+   lib/screens/playthrough_simulator_screen.dart:4280-4301
+   lib/screens/playthrough_simulator_screen.dart:4307-4328
+
+22 lines x 2:
+   lib/l10n/app_strings.dart:5851-5872
+   lib/l10n/app_strings.dart:9749-9770
+
+22 lines x 2:
+   lib/screens/story_player_screen.dart:794-815
+   lib/screens/story_player_screen.dart:833-854
+
+22 lines x 2:
+   lib/data/origin_stories.dart:132-153
+   lib/data/origin_stories.dart:820-841
+
+22 lines x 2:
+   lib/data/origin_stories.dart:633-654
+   lib/data/origin_stories.dart:752-773
+
+22 lines x 2:
+   lib/l10n/app_strings.dart:2886-2907
+   lib/l10n/app_strings.dart:4331-4352
+
+22 lines x 2:
+   lib/data/chart_worlds.dart:422-443
+   lib/data/chart_worlds.dart:971-992
+
+21 lines x 4:
+   lib/data/origin_stories.dart:421-441
+   lib/data/origin_stories.dart:592-612
+   lib/data/origin_stories.dart:896-916
+   lib/data/origin_stories.dart:983-1003
+
+21 lines x 4:
+   lib/data/origin_stories.dart:658-678
+   lib/data/origin_stories.dart:143-163
+   lib/data/origin_stories.dart:723-743
+   lib/data/origin_stories.dart:779-799
+
+21 lines x 2:
+   lib/l10n/app_strings.dart:9620-9640
+   lib/l10n/app_strings.dart:12501-12521
+
+21 lines x 2:
+   lib/data/origin_stories.dart:322-342
+   lib/data/origin_stories.dart:907-927
+
+21 lines x 2:
+   lib/l10n/app_strings.dart:5131-5151
+   lib/l10n/app_strings.dart:5749-5769
+
+21 lines x 2:
+   lib/l10n/app_strings.dart:1371-1391
+   lib/l10n/app_strings.dart:9973-9993
+
+21 lines x 2:
+   lib/gamedata/db_schema.dart:744-764
+   lib/gamedata/db_schema.dart:774-794
+
+20 lines x 3:
+   lib/l10n/app_strings.dart:1372-1391
+   lib/l10n/app_strings.dart:6019-6038
+   lib/l10n/app_strings.dart:9974-9993
+
+20 lines x 3:
+   lib/l10n/app_strings.dart:8725-8744
+   lib/l10n/app_strings.dart:1335-1354
+   lib/l10n/app_strings.dart:8714-8733
+
+20 lines x 2:
+   lib/data/chart_worlds.dart:224-243
+   lib/data/chart_worlds.dart:1009-1028
+
+20 lines x 2:
+   lib/l10n/app_strings.dart:2955-2974
+   lib/l10n/app_strings.dart:6743-6762
+
+20 lines x 2:
+   lib/data/chart_worlds.dart:179-198
+   lib/data/chart_worlds.dart:460-479
+
+20 lines x 2:
+   lib/data/world_map.dart:332-351
+   lib/data/world_map.dart:597-616
+
+20 lines x 2:
+   lib/widgets/feature_unlock.dart:345-367
+   lib/widgets/return_notice.dart:94-116
+
+20 lines x 2:
+   lib/gamedata/db_schema.dart:283-304
+   lib/gamedata/db_schema.dart:1979-1998
+
+19 lines x 4:
+   lib/gamedata/db_schema.dart:1859-1877
+   lib/gamedata/db_schema.dart:2467-2485
+   lib/gamedata/db_schema.dart:2658-2676
+   lib/gamedata/db_schema.dart:2821-2839
+
+19 lines x 3:
+   lib/data/origin_stories.dart:209-227
+   lib/data/origin_stories.dart:310-328
+   lib/data/origin_stories.dart:502-520
+
+19 lines x 3:
+   lib/l10n/app_strings.dart:1789-1807
+   lib/l10n/app_strings.dart:5867-5885
+   lib/l10n/app_strings.dart:9417-9435
+
+19 lines x 3:
+   lib/data/chart_worlds.dart:990-1008
+   lib/data/chart_worlds.dart:207-225
+   lib/data/chart_worlds.dart:438-456
+
+19 lines x 2:
+   lib/gamedata/db_schema.dart:1375-1393
+   lib/gamedata/db_schema.dart:1564-1582
+
+19 lines x 2:
+   lib/l10n/app_strings.dart:1465-1483
+   lib/l10n/app_strings.dart:9812-9830
+
+19 lines x 2:
+   lib/gamedata/db_schema.dart:3035-3053
+   lib/gamedata/db_schema.dart:3312-3330
+
+19 lines x 2:
+   lib/data/origin_stories.dart:203-221
+   lib/data/origin_stories.dart:511-529
+
+19 lines x 2:
+   lib/l10n/app_strings.dart:4044-4063
+   lib/l10n/app_strings.dart:7069-7087
+
+19 lines x 2:
+   lib/data/alignment_events.dart:430-448
+   lib/data/alignment_events.dart:448-466
+
+19 lines x 2:
+   lib/gamedata/db_schema.dart:1732-1750
+   lib/gamedata/db_schema.dart:1804-1822
+
+19 lines x 2:
+   lib/gamedata/db_schema.dart:1441-1462
+   lib/gamedata/db_schema.dart:1539-1557
+
+19 lines x 2:
+   lib/l10n/app_strings.dart:4103-4123
+   lib/l10n/app_strings.dart:7094-7112
+
+19 lines x 2:
+   lib/gamedata/db_schema.dart:1493-1511
+   lib/gamedata/db_schema.dart:1727-1745
+
+19 lines x 2:
+   lib/l10n/app_strings.dart:8720-8738
+   lib/l10n/app_strings.dart:8731-8749
+
+18 lines x 6:
+   lib/l10n/app_strings.dart:391-408
+   lib/l10n/app_strings.dart:852-869
+   lib/l10n/app_strings.dart:1341-1358
+   lib/l10n/app_strings.dart:3765-3783
+   lib/l10n/app_strings.dart:5823-5840
+   lib/l10n/app_strings.dart:13594-13611
+
+18 lines x 4:
+   lib/l10n/app_strings.dart:386-403
+   lib/l10n/app_strings.dart:847-864
+   lib/l10n/app_strings.dart:1922-1939
+   lib/l10n/app_strings.dart:13589-13606
+
+18 lines x 3:
+   lib/data/chart_worlds.dart:195-212
+   lib/data/chart_worlds.dart:426-443
+   lib/data/chart_worlds.dart:975-992
+
+18 lines x 3:
+   lib/l10n/app_strings.dart:8721-8738
+   lib/l10n/app_strings.dart:8732-8749
+   lib/l10n/app_strings.dart:8840-8858
+
+18 lines x 3:
+   lib/data/chart_worlds.dart:955-972
+   lib/data/chart_worlds.dart:202-219
+   lib/data/chart_worlds.dart:433-450
+
+18 lines x 3:
+   lib/gamedata/db_schema.dart:482-499
+   lib/gamedata/db_schema.dart:1175-1196
+   lib/gamedata/db_schema.dart:1895-1912
+
+18 lines x 3:
+   lib/l10n/app_strings.dart:8752-8769
+   lib/l10n/app_strings.dart:9992-10009
+   lib/l10n/app_strings.dart:10895-10914
+
+18 lines x 2:
+   lib/gamedata/db_schema.dart:993-1010
+   lib/gamedata/db_schema.dart:2207-2224
+
+18 lines x 2:
+   lib/providers/player_session_provider.dart:978-995
+   lib/providers/player_session_provider.dart:5618-5635
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:9288-9305
+   lib/l10n/app_strings.dart:13508-13525
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:809-826
+   lib/l10n/app_strings.dart:2691-2708
+
+18 lines x 2:
+   lib/gamedata/db_schema.dart:1575-1592
+   lib/gamedata/db_schema.dart:1888-1905
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:3723-3741
+   lib/l10n/app_strings.dart:3946-3963
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:5706-5723
+   lib/l10n/app_strings.dart:9284-9301
+
+18 lines x 2:
+   lib/data/autoplay_engine.dart:496-514
+   lib/data/autoplay_engine.dart:991-1009
+
+18 lines x 2:
+   lib/gamedata/db_schema.dart:1716-1733
+   lib/gamedata/db_schema.dart:1795-1812
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:7084-7101
+   lib/l10n/app_strings.dart:8885-8902
+
+18 lines x 2:
+   lib/data/origin_stories.dart:468-485
+   lib/data/origin_stories.dart:688-705
+
+18 lines x 2:
+   lib/l10n/app_strings.dart:8163-8180
+   lib/l10n/app_strings.dart:8931-8948
+
+18 lines x 2:
+   lib/data/origin_stories.dart:733-750
+   lib/data/origin_stories.dart:1006-1023

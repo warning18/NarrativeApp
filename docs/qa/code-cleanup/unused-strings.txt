@@ -1,0 +1,203 @@
+3564 keys; 71 read nowhere; 2 read only by tests; 951 possibly built at run time (prefix match)
+
+== read nowhere
+lib/l10n/app_strings.dart:84 journey_level_land
+lib/l10n/app_strings.dart:85 journey_level_world
+lib/l10n/app_strings.dart:257 temple_blessing_active
+lib/l10n/app_strings.dart:568 sofar_all_scenes
+lib/l10n/app_strings.dart:605 journey_read_in_story
+lib/l10n/app_strings.dart:743 geo_level_zone
+lib/l10n/app_strings.dart:747 geo_level_location
+lib/l10n/app_strings.dart:751 geo_level_district
+lib/l10n/app_strings.dart:1094 harbor_open_button
+lib/l10n/app_strings.dart:1098 harbor_unlocks_note
+lib/l10n/app_strings.dart:1103 ally_dice_button
+lib/l10n/app_strings.dart:1372 nav_map
+lib/l10n/app_strings.dart:1515 npcs_section
+lib/l10n/app_strings.dart:2170 shop_left_behind
+lib/l10n/app_strings.dart:2178 npc_not_yet_met
+lib/l10n/app_strings.dart:2195 strength_abbr
+lib/l10n/app_strings.dart:2196 dexterity_abbr
+lib/l10n/app_strings.dart:2197 constitution_abbr
+lib/l10n/app_strings.dart:2198 intelligence_abbr
+lib/l10n/app_strings.dart:2199 wisdom_abbr
+lib/l10n/app_strings.dart:2200 charisma_abbr
+lib/l10n/app_strings.dart:2201 luck_abbr
+lib/l10n/app_strings.dart:2202 perception_abbr
+lib/l10n/app_strings.dart:2336 inventory_equipment
+lib/l10n/app_strings.dart:2385 inv_instead_of
+lib/l10n/app_strings.dart:2468 quest_ready_notice
+lib/l10n/app_strings.dart:2478 quests_section_active
+lib/l10n/app_strings.dart:2482 quests_section_available
+lib/l10n/app_strings.dart:2486 quests_section_done
+lib/l10n/app_strings.dart:2638 none_equipped
+lib/l10n/app_strings.dart:2648 all_items
+lib/l10n/app_strings.dart:2655 skill_tree_view
+lib/l10n/app_strings.dart:2656 skill_list_view
+lib/l10n/app_strings.dart:2685 skill_point_cost_one
+lib/l10n/app_strings.dart:2689 skill_point_cost_many
+lib/l10n/app_strings.dart:2733 filter_known
+lib/l10n/app_strings.dart:2734 filter_learnable
+lib/l10n/app_strings.dart:2756 no_skills_defined
+lib/l10n/app_strings.dart:2776 upgrade_button
+lib/l10n/app_strings.dart:4455 stat_points_available
+lib/l10n/app_strings.dart:4478 distribute_later_button
+lib/l10n/app_strings.dart:4505 stat_pick_tier_common
+lib/l10n/app_strings.dart:4506 stat_pick_tier_rare
+lib/l10n/app_strings.dart:4507 stat_pick_tier_epic
+lib/l10n/app_strings.dart:4508 stat_pick_tier_heroic
+lib/l10n/app_strings.dart:4693 skill_singular
+lib/l10n/app_strings.dart:4958 town_materials
+lib/l10n/app_strings.dart:4960 town_locked
+lib/l10n/app_strings.dart:4997 town_built_note
+lib/l10n/app_strings.dart:5092 basic_shops_section
+lib/l10n/app_strings.dart:5605 item_picked_up
+lib/l10n/app_strings.dart:7003 compare_hint_skills
+lib/l10n/app_strings.dart:7359 mode_nudge_message
+lib/l10n/app_strings.dart:7369 switch_to_in_game_mode_button
+lib/l10n/app_strings.dart:9391 aligned_skill_note
+lib/l10n/app_strings.dart:9762 sail_on_button
+lib/l10n/app_strings.dart:10814 port_sail_subtitle
+lib/l10n/app_strings.dart:11227 fate_approval_up
+lib/l10n/app_strings.dart:11231 fate_approval_down
+lib/l10n/app_strings.dart:11891 sign_open_offer_button
+lib/l10n/app_strings.dart:11895 sign_none_to_offer
+lib/l10n/app_strings.dart:11903 sign_take_button
+lib/l10n/app_strings.dart:11907 sign_later_button
+lib/l10n/app_strings.dart:11912 sign_duo_badge
+lib/l10n/app_strings.dart:12298 patron_kind_clan
+lib/l10n/app_strings.dart:12299 patron_kind_tribe
+lib/l10n/app_strings.dart:12300 patron_kind_otherworld
+lib/l10n/app_strings.dart:12330 debug_offer_sign
+lib/l10n/app_strings.dart:12674 offer_later_button
+lib/l10n/app_strings.dart:12716 offer_wayfarer_stands
+lib/l10n/app_strings.dart:13159 recap_who_you_are
+
+== read only by tests
+lib/l10n/app_strings.dart:83 journey_level_place
+lib/l10n/app_strings.dart:4498 stat_pick_rare
+
+== possibly dynamic (prefix)
+  49 sign_fx_*
+  39 *_label*
+  32 *_desc*
+  28 anomaly_*
+  27 *_title*
+  22 standing_cause_*
+  20 zone_flag_*
+  19 mood_*
+  19 context_*
+  19 ship_order_*
+  18 calque_*
+  18 ship_intent_*
+  18 feature_*
+  15 stat_src_*
+  15 tip_fight_*
+  14 place_*
+  14 doctrine_*
+  13 journey_pin_*
+  13 beast_*
+  12 perk_*
+  12 reaction_*
+  12 ship_room_*
+  12 tip_*
+  12 beast_room_*
+  11 *_hint*
+  11 stage_*
+  10 journey_kind_*
+  10 inv_type_*
+  10 contract_*
+  10 ship_weather_*
+  10 ship_habit_*
+  10 standing_tier_*
+  10 offer_source_*
+   9 ship_order_log_*
+   9 ship_range_*
+   9 fate_choice_*
+   8 compass_*
+   8 inv_tab_*
+   8 works_category_*
+   8 keyword_*
+   8 combo_*
+   8 smith_*
+   8 element_name_*
+   8 place_tag_*
+   7 weather_*
+   7 approval_*
+   7 sea_event_*
+   7 ship_dice_*
+   7 offer_gift_*
+   6 service_*
+   6 *refix*
+   6 banner_piece_*
+   6 squad_*
+   6 anomaly_omen_*
+   6 fate_face_*
+   6 fate_result_*
+   6 intrigue_stage_*
+   5 sea_waters_*
+   5 forge_slot_*
+   5 item_rarity_*
+   5 skill_rarity_*
+   5 *_omen_mark*
+   5 condition_*
+   5 rarity_*
+   5 sail_power_*
+   5 ship_log_weather_*
+   5 sign_slot_*
+   5 radar_axis_*
+   5 roll_*
+   4 weather_effect_*
+   4 journey_event_*
+   4 power_tier_*
+   4 place_kind_*
+   4 forge_tier_*
+   4 forge_effect_*
+   4 watch_*
+   4 origin_portrait_*
+   4 works_chip_*
+   4 *_name*
+   4 vfx_tier_*
+   4 place_light_*
+   4 look_category_*
+   4 ship_*
+   4 fate_quarrel_topic_*
+   4 ship_push_*
+   4 sign_rarity_*
+   4 offer_wayfarer_greeting_*
+   3 journey_move_*
+   3 choice_group_*
+   3 world_map_look_*
+   3 world_map_shape_*
+   3 forged_name_*
+   3 inv_sort_*
+   3 town_filter_*
+   3 tamper_*
+   3 mercy_read_*
+   3 anomaly_who_*
+   3 aimed_shots_*
+   3 fate_visitor_*
+   3 fate_quiet_*
+   3 sign_status_*
+   3 sign_curse_*
+   3 subclan_mark_*
+   3 intrigue_companion_*
+   3 politics_hint_mark_*
+   2 main_quest_*
+   2 merge_*
+   2 narration_language_*
+   2 *eady*
+   2 fate_coin_*
+   2 *eader*
+   2 expedition_kind_*
+   2 *ending*
+   2 *uffix*
+   1 *_line*
+   1 journey_pin_way_*
+   1 *aiting*
+   1 *aces*
+   1 *here*
+   1 *trike*
+   1 *ether*
+   1 *tartBlock*
+   1 *harge*

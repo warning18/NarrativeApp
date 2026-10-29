@@ -144,7 +144,9 @@ class InventoryMemory {
   }
 }
 
-/// The tabs: a chip for each kind the bag holds, with its count.
+/// The tabs: a chip for each kind the bag holds, with its count. On a narrow
+/// phone the chips sit closer and the names are smaller, so more of them (the
+/// Dice tab is the last) are on screen before the row scrolls.
 class InventoryTabBar extends StatelessWidget {
   const InventoryTabBar({
     super.key,
@@ -164,6 +166,7 @@ class InventoryTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
+    final narrow = MediaQuery.sizeOf(context).width < 360;
     return SizedBox(
       height: 36,
       child: SingleChildScrollView(
@@ -171,7 +174,7 @@ class InventoryTabBar extends StatelessWidget {
         child: Row(children: [
           for (final (tab, n) in counts)
             Padding(
-              padding: const EdgeInsets.only(right: 6),
+              padding: EdgeInsets.only(right: narrow ? 4 : 6),
               child: Semantics(
                 button: true,
                 selected: tab == selected,
@@ -180,8 +183,8 @@ class InventoryTabBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   onTap: () => onSelect(tab),
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: narrow ? 8 : 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: tab == selected
                           ? theme.colorScheme.primary.withValues(alpha: 0.2)
@@ -194,10 +197,13 @@ class InventoryTabBar extends StatelessWidget {
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Text(trFor(language, inventoryTabLabelKey(tab)),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                              color: tab == selected
-                                  ? theme.colorScheme.onSurface
-                                  : ink.ash)),
+                          style: (narrow
+                                  ? theme.textTheme.bodySmall
+                                  : theme.textTheme.bodyMedium)
+                              ?.copyWith(
+                                  color: tab == selected
+                                      ? theme.colorScheme.onSurface
+                                      : ink.ash)),
                       const SizedBox(width: 5),
                       Text('$n',
                           style: theme.textTheme.labelMedium?.copyWith(
