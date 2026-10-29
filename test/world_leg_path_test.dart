@@ -101,19 +101,19 @@ void main() {
       Offset(100, 100),
       Offset(0, 100)
     ];
-    final toy = ChartGeography(
-      places: const {
+    const toy = ChartGeography(
+      places: {
         'here': Offset(10, 10),
         'there': Offset(90, 90),
         'isle': Offset(200, 10),
         'storm': Offset(150, 150),
       },
-      lands: const [
+      lands: [
         land,
         [Offset(190, 0), Offset(210, 0), Offset(210, 20), Offset(190, 20)]
       ],
-      rivers: const [],
-      labels: const [],
+      rivers: [],
+      labels: [],
     );
     final walk = worldLegPath(toy, 'here', 'there');
     expect(walk.routed, isFalse);

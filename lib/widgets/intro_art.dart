@@ -361,7 +361,7 @@ class IntroFire extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final g = _Grid(canvas, size);
-    final base = _rows - 6.0;
+    const base = _rows - 6.0;
     final top = _rows * (1 - level);
     for (var x = from; x < to; x += 1) {
       final i = x.floor();

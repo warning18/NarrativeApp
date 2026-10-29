@@ -275,7 +275,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
     final theme = Theme.of(context);
     final landed = beat >= 1;
     final modStart = forgeBeatStarts[1] + 0.1;
-    double appear(int i) => ((_t - modStart - i * 0.3) / 0.3);
+    double appear(int i) => (_t - modStart - i * 0.3) / 0.3;
     return Column(
       key: const ValueKey('forge_beat_landing'),
       children: [

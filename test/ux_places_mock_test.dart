@@ -130,7 +130,7 @@ Widget _realTop(ui.Image image, double height) => SizedBox(
     );
 
 Widget _pinOnMap(_Place p, {bool lit = false, bool label = true}) {
-  final ink = InkColors.light;
+  const ink = InkColors.light;
   final cat = p.main ? JourneyPinCat.main : JourneyPinCat.side;
   return Positioned(
     left: p.pin.dx - 40,
@@ -172,7 +172,7 @@ Widget _count(int n) => Container(
     );
 
 Widget _placeRow(_Place p, {bool dim = false, bool hot = false}) {
-  final ink = InkColors.light;
+  const ink = InkColors.light;
   final locked = p.locked.isNotEmpty;
   final cat = p.main ? JourneyPinCat.main : JourneyPinCat.side;
   return Container(
@@ -387,7 +387,7 @@ void main() {
     // The top part of the capture: header, crumbs, map and the tabs.
     const topH = 516.0;
     final mapPins = [for (final p in _places) _pinOnMap(p)];
-    final partyAt = const Offset(307, 220);
+    const partyAt = Offset(307, 220);
 
     Widget top({List<Widget> over = const []}) => SizedBox(
           width: _phoneW,

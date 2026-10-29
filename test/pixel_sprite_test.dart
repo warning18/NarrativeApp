@@ -178,10 +178,10 @@ void main() {
     tester.view.physicalSize = const Size(600, 1400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: Scaffold(
         body: SpoilsChestDialog(
-          result: const LootBoxResult(
+          result: LootBoxResult(
             tier: ChestTier.gold,
             roll: 80,
             modifiers: [],
@@ -189,7 +189,7 @@ void main() {
             itemIds: [],
             extraSlot: false,
           ),
-          items: const {},
+          items: {},
           autoOpen: false,
           language: AppLanguage.en,
         ),

@@ -17,7 +17,7 @@ import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   final travels = travelHistoryOf(
     history: const ['965', '1100', '1120', '1130'],

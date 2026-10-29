@@ -11,7 +11,7 @@ import 'package:narrative_data_app/tutorial/tutorial_topics.dart';
 import 'package:narrative_data_app/widgets/help_hint.dart';
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   Widget app(Widget body) => ProviderScope(
         child: MaterialApp(
@@ -21,9 +21,9 @@ void main() {
             appBar: AppBar(actions: const [
               TourInfoButton(topic: TutorialTopic.dice),
             ]),
-            body: Padding(
-              padding: const EdgeInsets.all(16),
-              child: const HelpTitle(
+            body: const Padding(
+              padding: EdgeInsets.all(16),
+              child: HelpTitle(
                   key: Key('help'),
                   title: 'Faces',
                   help: 'Each face casts the skill it shows.'),

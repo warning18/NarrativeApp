@@ -148,7 +148,8 @@ void main() {
         theme: theme,
         home: RepaintBoundary(
           key: page,
-          child: OriginStoriesScreen(raceId: 'voidkin', professionId: 'ranger'),
+          child: const OriginStoriesScreen(
+              raceId: 'voidkin', professionId: 'ranger'),
         ),
       ),
     ));
