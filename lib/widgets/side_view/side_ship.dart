@@ -207,7 +207,6 @@ class _Palette {
   final Color mast;
 
   Color get hullDark => _shade(hull, 0.62);
-  Color get hullDeep => _shade(hull, 0.42);
   Color get clothShade => _shade(cloth, 0.84);
 }
 
