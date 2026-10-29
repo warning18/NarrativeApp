@@ -80,8 +80,13 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // Saltmouth's two locked districts open, so no way at its hub is
+          // greyed (v1.616): this test is about the walk, not the locks.
+          'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
+        })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);

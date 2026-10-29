@@ -2,7 +2,7 @@
 
 L3 for chapter 1 only, as the user asked: the intro and the race screen, Alster (scenes 100 to 960, the Black Hold, the quay, Weaver's Alley), the Lark, the Waste, `1150_vica`, the White Wells (`1200`, `1210`) and the origin endings `1000` to `1002`: 49 graph nodes. Nothing was run in the simulator: the graph was read by [`chapter1_audit.py`](chapter1_audit.py) (a second, quick script, no dependencies), the screens were pictured at 412, 360 and 320 px in English and French, and the existing chapter 1 tests were run.
 
-The other sessions' notes: Narrative's `docs/qa/chapter1-narrative.md` is merged into the list below (its numbers in brackets, "N1"...). The Core and UX notes were not on any branch when this was written; their findings go into the list when they land.
+The other sessions' notes: Narrative's `docs/qa/chapter1-narrative.md` is merged into the list below (its numbers in brackets, "N1"...). Core's (`chapter1-core.md`) and UX's (`chapter1-ux.md`) landed after this report; their findings are in the section "From the Core and UX notes" at the end, and most were fixed in v1.608 to v1.611.
 
 ## The short version
 
@@ -71,3 +71,23 @@ No new batch. The chapter 1 tests ran together (65 tests in 39 s on this machine
 ## Issues
 
 Opened with the label `qa`: #582 (finding 2, UX and Core) and #583 (finding 5, Core). The other findings are Narrative's and stay in this list.
+
+## From the Core and UX notes (added at v1.611)
+
+Their own tables rank them by size; here they are placed by what the player meets. Status is from the changelog at v1.611.
+
+| Where | What | Sev. | Fix | Status |
+|---|---|---|---|---|
+| Core R1 to R3, R6 (`chapter1-core.md`) | Vica joining early on a loaded save; Vess twice; the rat matriarch tagged chapter 2 though fought in chapter 1 | P | Core, Narrative | fixed v1.608, v1.610 |
+| Core C8 | the heal preview ignored the Briar-Guard no-heal and heal fatigue | W | Core | fixed v1.608 |
+| Core R7, R8 | permadeath replays chapter 1 with the run's state; the spread of starting heroes (HP 12 to 13 for casters) | design | the user | open, a design question |
+| Core C1 to C3 | the fight reparsed its tables each build; the Journey's places and the camp's leads rebuilt on every session change | W (performance) | Core | fixed v1.609 |
+| Core C4 to C7, S1, S2 | chapter providers watch the whole state; stops indexed twice; the simulator's damage and constants copied from the fight; the frozen naive run; a road sample that grows | cleanup | Core | open (see `code-cleanup-plan.md`) |
+| UX 1 | `assets/visuals/chapters/` was not in the build: the quest reward card painted a flat block | P | UX | fixed v1.611 |
+| UX 8 (this report's #582) | the race screen's skill names in English in French | P | UX, Core | fixed v1.611 |
+| UX 7 | the Dice tab is off-screen at 320 px in French | W | UX | open |
+| UX 9 | the fight is not fixed-size at 320 px (the proposal awaits three answers) | W | UX, the user | open |
+| UX 4 | the typewriter calls `setState` every 16 ms | cleanup | UX | open |
+| UX 2, 3, 5, 6, 10 to 13 | dead widgets, duplicate badges and tags, reduced motion unverified, the "Guide dog" label, the docs pictures weight, no `cacheWidth`, big files | cleanup | UX | open (see `code-cleanup-plan.md`) |
+
+New since this report was written, found by the cleanup analysis: the guide dog's walk frames west and south (`assets/visuals/companion/.../Walking/west` and `/south`, 16 files) are still not declared in `pubspec.yaml` and do not ship.

@@ -219,7 +219,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
-        "element": "None"
+        "element": "Fire"
       },
       {
         "faceName": "Strike",
@@ -227,7 +227,7 @@
         "value": 1,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Fire"
       },
       {
         "faceName": "Guard",
@@ -295,7 +295,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
-        "element": "None"
+        "element": "Water"
       },
       {
         "faceName": "Strike",
@@ -303,7 +303,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Water"
       },
       {
         "faceName": "Guard",
@@ -374,7 +374,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
-        "element": "None"
+        "element": "Wind"
       },
       {
         "faceName": "Strike",
@@ -382,7 +382,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Wind"
       },
       {
         "faceName": "Guard",
@@ -406,7 +406,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Wind"
       }
     ],
     "cost": 100,
@@ -434,7 +434,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Hammer Blow",
@@ -481,7 +481,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.5,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Backstab",
@@ -489,7 +489,7 @@
         "value": 0,
         "linkedSkillID": "rogue_backstab",
         "weight": 0.6,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Void Blast",
@@ -552,7 +552,7 @@
         "value": 0,
         "linkedSkillID": "cleric_revive_prayer",
         "weight": 0.3,
-        "element": "None"
+        "element": "Fire"
       },
       {
         "faceName": "Prayer",
@@ -730,7 +730,7 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.5,
-        "element": "None"
+        "element": "Wind"
       },
       {
         "faceName": "Camouflage",
@@ -770,7 +770,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Wind"
       },
       {
         "faceName": "Guard",
@@ -912,7 +912,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Guard",
@@ -1494,7 +1494,7 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.5,
-        "element": "None"
+        "element": "Ice"
       },
       {
         "faceName": "Strike",
@@ -1502,7 +1502,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Ice"
       },
       {
         "faceName": "Guard",
@@ -1747,7 +1747,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Electricity"
       },
       {
         "faceName": "Guard",
@@ -1771,7 +1771,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Electricity"
       },
       {
         "faceName": "Guard",
@@ -1833,7 +1833,7 @@
         "value": 0,
         "linkedSkillID": "final_stand",
         "weight": 0.5,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Ossuary Calm",
@@ -1849,7 +1849,7 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.7,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Strike",
@@ -1857,7 +1857,7 @@
         "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Guard",
@@ -1881,7 +1881,7 @@
         "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Earth"
       }
     ],
     "diceName_fr": "Dé de l’ossuaire"
@@ -1926,7 +1926,7 @@
         "value": 0,
         "linkedSkillID": "second_chance",
         "weight": 0.6,
-        "element": "None"
+        "element": "Light"
       },
       {
         "faceName": "Rallying Shout",
@@ -1934,7 +1934,7 @@
         "value": 0,
         "linkedSkillID": "rallying_shout",
         "weight": 0.5,
-        "element": "None"
+        "element": "Light"
       },
       {
         "faceName": "Keep the Flame",
@@ -1950,7 +1950,7 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.6,
-        "element": "None"
+        "element": "Light"
       },
       {
         "faceName": "Strike",
@@ -1958,7 +1958,7 @@
         "value": 3,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Light"
       }
     ],
     "diceName_fr": "Dé de la veillée"
@@ -2011,7 +2011,7 @@
         "value": 0,
         "linkedSkillID": "",
         "weight": 0.6,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Final Shard",
@@ -2030,7 +2030,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Guard",
@@ -2054,7 +2054,7 @@
         "value": 2,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Void"
       },
       {
         "faceName": "Guard",
@@ -2143,7 +2143,7 @@
         "value": 1,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None",
+        "element": "Earth",
         "keywords": [
           "growth"
         ]
@@ -2187,7 +2187,7 @@
         "value": 0,
         "linkedSkillID": "heavy_attack",
         "weight": 0.6,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Deep Roots",
@@ -2203,7 +2203,7 @@
         "value": 1,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "Earth"
       },
       {
         "faceName": "Guard",

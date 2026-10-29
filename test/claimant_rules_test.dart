@@ -153,7 +153,7 @@ void main() {
       expect(record['resists'] ?? const [], isEmpty, reason: id);
       expect(record['weakTo'], isNotEmpty, reason: id);
     }
-    expect((enemies['claimant_tallis'] as Map)['maxHealth'], 77);
+    expect((enemies['claimant_tallis'] as Map)['maxHealth'], 88);
     expect((enemies['claimant_morrow'] as Map)['maxHealth'], 148);
   });
 }

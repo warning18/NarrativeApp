@@ -1661,7 +1661,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           // the story (see isStoryChoiceLocked), and says why.
           final locked = shut ||
               isStoryChoiceLocked(choice, story, session,
-                  isExcursion: play.isInExcursion, world: gateWorld);
+                  isExcursion: play.isInExcursion,
+                  world: gateWorld,
+                  shutWays: ref.watch(lockedStoryWaysProvider));
           final lockedText = locked
               ? storyChoiceLockedText(ref, choice, session,
                   isExcursion: play.isInExcursion,

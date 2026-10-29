@@ -148,6 +148,12 @@ void main() {
     await tester.tap(find.text('Enter Battle'));
     await settle(tester);
     await pumpUntil(tester, () => shows('Roll Dice'));
+    // The sprites of a pack decode in the background: let them come in.
+    for (var i = 0; i < 4; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 300)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     await saveFightShot(tester, out);
   });
 }

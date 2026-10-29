@@ -21,6 +21,8 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/city_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/story_player_screen.dart'
+    show isStoryChoiceLocked;
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -110,7 +112,28 @@ void main() {
       final hub = story.nodeFor('2015')!;
       final locked = lockedWays(geo, story, hub, const [], const []);
       expect(locked, containsAll(waysInDistrict(geo, story, hub, _alleys)));
-      expect(locked, containsAll(waysInDistrict(geo, story, hub, _tern)));
+      // Every way into Tern Row is shut but the one to the scene where
+      // Tern's Toll is offered, so the lock can be lifted (v1.616).
+      final tern = waysInDistrict(geo, story, hub, _tern);
+      final offer = [
+        for (final i in tern)
+          if (offersQuest(
+              story.nodeFor(hub.choices[i].nextId), 'q_ch2_terns_toll'))
+            i,
+      ];
+      expect(offer, isNotEmpty);
+      expect(locked, containsAll(tern.where((i) => !offer.contains(i))));
+      for (final i in offer) {
+        expect(locked, isNot(contains(i)));
+      }
+      // Each shut way knows its district, and so its locked text.
+      final districts = lockedWayDistricts(geo, story, hub, const [], const []);
+      expect(districts.keys.toSet(), locked.toSet());
+      expect(districts.values.map((d) => d.id).toSet(), {_alleys, _tern});
+      for (final d in districts.values) {
+        expect(d.lockedTextFor(false), isNotEmpty);
+        expect(d.lockedTextFor(true), isNotEmpty);
+      }
       expect(
           lockedWays(geo, story, hub, const [],
               const ['q_ch2_informants_tip', 'q_ch2_terns_toll']),
@@ -147,6 +170,20 @@ void main() {
       expect(ref.read(playerSessionProvider).flags,
           isNot(contains(districtFoundFlag(_alleys))));
       expect(ref.read(foundDistrictsProvider), isNot(contains(_alleys)));
+      // The hub's ways into the two locked districts show shut (v1.616):
+      // the story view and the Journey grey them, with the district's line.
+      final hub = story.nodeFor('2015')!;
+      final shut = ref.read(lockedStoryWaysProvider);
+      final session = ref.read(playerSessionProvider);
+      final locked = lockedWays(geo, story, hub, const [], const []);
+      expect(
+          shut.keys.toSet(), {for (final i in locked) hub.choices[i].nextId});
+      for (final (i, choice) in hub.choices.indexed) {
+        expect(isStoryChoiceLocked(choice, story, session, shutWays: shut),
+            locked.contains(i) || isStoryChoiceLocked(choice, story, session),
+            reason: 'way $i');
+      }
+      expect(shut.values.map((d) => d.id).toSet(), {_alleys, _tern});
     });
   });
 

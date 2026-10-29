@@ -366,3 +366,41 @@ up only where a boss strayed from its band; the damage floors carry the rest.
 
 The element-dice change (option 3 of §8) is not in this; it waits for the
 user.
+
+## 10. The element dice, built (v1.615)
+
+The user chose option B: the element rule plus weakness ×3.
+
+**The rule:**
+- On each of the 16 dice whose Attack faces carry an element, that element
+  goes on all its Attack faces, and on its Skill faces whose skill has none
+  (32 faces).
+- A Skill face hits with its skill's element, else the face's. The fight,
+  the simulator and the loadout share this rule (`face_element.dart`).
+- A weakness takes ×3 (was ×2). The fight card shows the constant.
+
+**Measured** as §8 does it, in the full world: hero + Vica, 5 professions ×
+6 set fights (chapters 3–6), no gear, 60 fights each, each hero holding its
+most common specialisation.
+
+| Win rate | Starter die | Matching die | Matching die, element taken off |
+|---|---|---|---|
+| Before | 0.23 | 0.16 | 0.08 |
+| v1.615 | 0.23 | **0.34** | 0.08 |
+
+**The guard,** `adapt_gap_test`, runs the same fights. The matching die
+must win at least 8 points more than the starter die, and at least 10 more
+than itself with its element taken off. At ×2 it fails (0.22 against 0.23).
+
+**Bosses re-sized** (boss_balance, full world): the simulator's heroes
+exploit weaknesses at ×3.
+- The bone warden: 63 → 75 health.
+- The void archon: 80 → 92.
+- The Tear-Herald: 64 → 75.
+- The void sovereign: 80 → 95.
+
+Every boss is within its band, the champions win 52%, and the professions'
+spread is 7.8 points. clash_balance passes unchanged.
+
+**Follow-up, not built:** the cleric's own apprentice die is weak. The
+cleric wins 0.61 with the starter die and 0.26 with its own die.

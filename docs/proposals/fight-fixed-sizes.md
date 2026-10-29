@@ -1,4 +1,7 @@
-# The fight with fixed sizes (UX mock, nothing built)
+# The fight with fixed sizes (built in v1.612)
+
+> **Built (v1.612),** approved as drawn: bigger box for bosses only, allies in a back row, slim ally cards. Pictures of the build: `docs/ux-shots/fight-built/`. Still to follow: the damage numbers and effects anchor to the boxes (they still rise from the cards), and pack foes' cards are not yet slimmer.
+
 
 The user: "update the Fight interface so that the size of enemy or player are fixed." Pictures only:
 no build, no version. Mock test: `test/ux_fight_fixed_mock_test.dart`; the captures of the real fight

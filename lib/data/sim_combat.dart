@@ -8,6 +8,7 @@ import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
 import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
+import '../combat/face_element.dart';
 import '../combat/foe_kind.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
@@ -1572,11 +1573,8 @@ SimFightOutcome simulateSimFight({
       };
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
-      var element = face.element;
-      if (face.type == 'Skill') {
-        final skill = availableSkills[skillId] as Map<String, dynamic>?;
-        element = skill?['element']?.toString() ?? 'None';
-      }
+      var element =
+          faceHitElement(face.type, face.element, availableSkills[skillId]);
       var damageBase = c.casterDamage(items, element, itemSets: itemSets);
       if (attack || face.type == 'Skill') {
         damageBase = s.strikeBase(
@@ -1948,11 +1946,9 @@ SimFightOutcome simulateSimFight({
       a.facesPlayed[face.type] = (a.facesPlayed[face.type] ?? 0) + 1;
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
-      var element = face.element;
+      final element =
+          faceHitElement(face.type, face.element, a.skills[skillId]);
       if (face.type == 'Skill') {
-        element = (a.skills[skillId] as Map<String, dynamic>?)?['element']
-                ?.toString() ??
-            'None';
         a.skillsCast[skillId] = (a.skillsCast[skillId] ?? 0) + 1;
       }
       final result = resolvePlayerFace(

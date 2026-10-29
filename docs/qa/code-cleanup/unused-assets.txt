@@ -1,0 +1,25 @@
+620 png files, 5 with no mention of path, name or stem anywhere
+
+assets/icons/chests: 5 of 10
+    assets/icons/chests/gold_open.png
+    assets/icons/chests/iron_open.png
+    assets/icons/chests/silver_open.png
+    assets/icons/chests/void_open.png
+    assets/icons/chests/wooden_open.png
+
+== matched only by a name built at run time (check by hand)
+  32 assets/visuals/pixel_fx
+   8 assets/visuals/banners
+   7 assets/visuals/ship_cutaways
+   5 assets/visuals/fighters
+   5 assets/icons/chests
+
+== folders pubspec does not declare (files would not ship)
+   8 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/rotations
+   8 assets/visuals/companion/dog_companion_animations/Walking/west
+   8 assets/visuals/companion/dog_companion_animations/Walking/south
+   6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/west
+   6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/north
+   6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/east
+
+== pubspec entries matching no file

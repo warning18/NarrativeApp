@@ -157,6 +157,7 @@ class _FightFigureState extends State<FightFigure>
             size: size,
             painter: _FigurePainter(
               sprite: sprite,
+              ready: FightSpriteImages.idleOf(sprite) != null,
               pixel: widget.pixel,
               idle: _idle.value,
               cue: _cue.isAnimating ? _kind : null,
@@ -172,6 +173,7 @@ class _FightFigureState extends State<FightFigure>
 class _FigurePainter extends CustomPainter {
   _FigurePainter({
     required this.sprite,
+    required this.ready,
     required this.pixel,
     required this.idle,
     required this.cue,
@@ -179,6 +181,11 @@ class _FigurePainter extends CustomPainter {
   });
 
   final FightSpriteSet sprite;
+
+  /// Whether the image is in: the painter repaints when it arrives, even
+  /// with the figure standing still (reduced motion), so the quiet mark of
+  /// its absence never stays.
+  final bool ready;
   final double pixel;
   final double idle;
   final PortraitCue? cue;
@@ -257,6 +264,7 @@ class _FigurePainter extends CustomPainter {
   @override
   bool shouldRepaint(_FigurePainter old) =>
       old.sprite != sprite ||
+      old.ready != ready ||
       old.pixel != pixel ||
       old.idle != idle ||
       old.cue != cue ||

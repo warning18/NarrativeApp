@@ -179,7 +179,7 @@ class SpecMods {
 
   // Briar Guard
   double get briarShare =>
-      (has('anvil_deaf_briar_guard') ? 0.5 : briarReflectShare) *
+      (has('anvil_deaf_briar_guard') ? 1.0 : briarReflectShare) *
       _rank(Spec.briarGuard);
   bool get briarBreaksGuard => has('quarrymen_briar_guard');
   bool get noHealFaces => has('anvil_deaf_briar_guard');
@@ -194,7 +194,7 @@ class SpecMods {
 
   // Long Vigil
   double get vigilShare =>
-      (has('candlebearers_long_vigil') ? 0.07 : longVigilHealShare) *
+      (has('candlebearers_long_vigil') ? 0.18 : longVigilHealShare) *
       _rank(Spec.longVigil);
   int vigilMend(int health, int maxHealth) =>
       health * 2 > maxHealth && health < maxHealth
@@ -228,8 +228,8 @@ class SpecMods {
 
   // Burden-Bearer
   double get burdenMultiplier =>
-      (has('scorched_choir_burden_bearer') ? 2.5 : burdenFullWellMultiplier) +
-      (_two(Spec.burdenBearer) ? 0.5 : 0);
+      (has('scorched_choir_burden_bearer') ? 1.6 : burdenFullWellMultiplier) +
+      (_two(Spec.burdenBearer) ? 0.2 : 0);
   double get burdenHealShare => has('spire_fallen_burden_bearer') ? 0.25 : 0;
 
   // Tempest Toll
