@@ -1,7 +1,6 @@
-// The scene's words as a band over the map or the street (v1.588,
-// lib/widgets/scene_band.dart): a hub opens as its map with three lines of
-// prose, a scene at a doorstep as its street with four, a tap opens the
-// sheet with the whole scene.
+// No text laid over the Journey's map (v1.607: the band of v1.588 was never
+// validated): a hub opens as its map and a scene at a doorstep as its street,
+// with nothing over them; the words are behind Read.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +15,6 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/widgets/arrival_sheet.dart';
-import 'package:narrative_data_app/widgets/scene_band.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 3; i++) {
@@ -73,88 +71,21 @@ void main() {
   // clock and would never finish in this one.
   setUp(() => rootBundle.clear());
 
-  group('bandTextOf', () {
-    test('takes the first paragraph, on one line', () {
-      expect(bandTextOf('The quay stood\nquiet.\n\nA second paragraph.'),
-          'The quay stood quiet.');
-      expect(bandTextOf('  \n\n One.  '), 'One.');
-      expect(bandTextOf(''), '');
-    });
-  });
-
-  group('the band', () {
-    Widget host(Widget child) => MaterialApp(
-          home: Scaffold(
-              body: Align(alignment: Alignment.topCenter, child: child)),
-        );
-    const long =
-        'The harbor master’s office had shut its shutters at the first bell, '
-        'and the quay beneath it smelled of tar and old rope, of wet sailcloth '
-        'and the brine the tide left on every stone, of crates nobody claimed '
-        'and gulls that did not care who did.';
-
-    testWidgets('shows at most its lines, a tap opens the scene',
-        (tester) async {
-      var opened = 0;
-      await tester.pumpWidget(host(SizedBox(
-        width: 260,
-        child: SceneBand(text: long, lines: 3, onOpen: () => opened++),
-      )));
-      final text =
-          tester.widget<Text>(find.byKey(const Key('scene_band_text')));
-      expect(text.maxLines, 3);
-      expect(text.overflow, TextOverflow.ellipsis);
-      expect(find.text(long), findsOneWidget);
-      await tester.tap(find.byKey(const Key('scene_band')));
-      expect(opened, 1);
-    });
-
-    testWidgets('a drag down opens it too; no words, no band', (tester) async {
-      var opened = 0;
-      await tester.pumpWidget(host(SizedBox(
-        width: 260,
-        child: SceneBand(text: long, onOpen: () => opened++),
-      )));
-      await tester.fling(
-          find.byKey(const Key('scene_band')), const Offset(0, 120), 600);
-      expect(opened, 1);
-      await tester
-          .pumpWidget(host(SceneBand(text: '  ', onOpen: () => opened++)));
-      expect(find.byKey(const Key('scene_band')), findsNothing);
-    });
-  });
-
-  testWidgets('a hub opens as its map with the band; a tap opens the sheet',
+  testWidgets(
+      'a hub opens as its map with no text over it; Read opens the scene',
       (tester) async {
     await _journeyAt(tester, '2015');
-    // The map, and the band over it with three lines of the prose.
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
-    final band = find.byKey(const Key('scene_band'));
-    expect(band, findsOneWidget);
-    expect(
-        tester.widget<Text>(find.byKey(const Key('scene_band_text'))).maxLines,
-        hubBandLines);
-    expect(find.byType(ArrivalSheet), findsNothing);
-    // A tap on it opens the whole scene; Continue folds it back to the band.
-    await tester.tap(band);
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byType(ArrivalSheet), findsOneWidget);
     expect(find.byKey(const Key('scene_band')), findsNothing);
-    await tester.tap(find.text('Continue'));
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(ArrivalSheet), findsNothing);
-    expect(find.byKey(const Key('scene_band')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_read')), findsOneWidget);
   });
 
-  testWidgets('a scene at a doorstep is its street with four lines',
+  testWidgets('a scene at a doorstep is its street with no text over it',
       (tester) async {
     await _journeyAt(tester, '300', closeCards: false);
     expect(find.byKey(const ValueKey('journey_street_scene')), findsOneWidget);
-    expect(find.byKey(const Key('scene_band')), findsOneWidget);
-    expect(
-        tester.widget<Text>(find.byKey(const Key('scene_band_text'))).maxLines,
-        streetBandLines);
+    expect(find.byKey(const Key('scene_band')), findsNothing);
+    expect(find.byType(ArrivalSheet), findsNothing);
   });
 }

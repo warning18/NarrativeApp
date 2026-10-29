@@ -84,7 +84,6 @@ import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
 import '../widgets/journey_glyph.dart';
 import '../widgets/arrival_sheet.dart';
-import '../widgets/scene_band.dart';
 import '../widgets/district_places.dart';
 import '../widgets/journey_banner_pin.dart';
 import '../widgets/return_notice.dart';
@@ -443,11 +442,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   Offset? _placeMark;
   String? _arrivedAt;
 
-  /// The scene's band over the map or the street was tapped open: its
-  /// sheet stays until Continue (a street scene opens as the band, not as
-  /// the sheet, see the build).
-  bool _bandOpened = false;
-
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
   String _cityChartKey = '';
@@ -521,6 +515,58 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           ),
         ),
       ),
+    );
+  }
+
+  /// A pin with several ways (v1.607): its sheet is named by the place and
+  /// lists the ways; a tap on one opens it like a pin with that way alone.
+  void _openPin(List<int> ways, String name, List<_Step> steps, bool french) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheet) {
+        final theme = Theme.of(sheet);
+        final ink = InkColors.of(sheet);
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(name,
+                    key: const ValueKey('journey_pin_sheet_title'),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontFamily: InkFonts.display)),
+                const SizedBox(height: 6),
+                for (final i in ways)
+                  InkWell(
+                    key: ValueKey('journey_pin_way_$i'),
+                    onTap: () {
+                      Navigator.of(sheet).pop();
+                      _openWay(i, steps, french);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          border: Border(top: BorderSide(color: ink.seam))),
+                      child: Row(children: [
+                        Expanded(
+                          child: Text(steps[i].label,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: steps[i].locked ? ink.ash : null,
+                                  height: 1.2)),
+                        ),
+                        Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                      ]),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -1028,7 +1074,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// party walks, whose map would go from under it.
   void _read(bool reading) {
     if (_busy) return;
-    _bandOpened = false;
     setState(() {
       _reading = reading;
       _arrival = false;
@@ -2328,27 +2373,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
-    // The scene's words as a band over the map: a hub opens as its map with
-    // three lines of its prose, a scene at a doorstep as its street with
-    // four over the sky; a tap opens the sheet (v1.588).
+    // A scene at a doorstep is its street, not the sheet over it (the words
+    // are behind Read; no text is laid over the map, v1.607).
     final viewOfScene = ref.watch(scenePresentationProvider)?.viewOf(node.id);
     final streetShown =
         cityChart != null && cityChart.here != null && !play.isInExcursion;
-    final bandLines = !hostedCity || ended || townView || _reading
-        ? 0
-        : viewOfScene == SceneView.street && streetShown
-            ? streetBandLines
-            : viewOfScene == SceneView.map
-                ? hubBandLines
-                : 0;
-    // A street scene arrived at is the street, not the sheet over it.
-    if (_arrival && !_bandOpened && bandLines == streetBandLines) {
-      _arrival = false;
-    }
-    final bandText = bandLines == 0
-        ? ''
-        : stripStoryMarkup(
-            composeNarrationParts(node, session, story, french: french).text);
+    final streetScene = hostedCity &&
+        !ended &&
+        !townView &&
+        !_reading &&
+        viewOfScene == SceneView.street &&
+        streetShown;
+    if (_arrival && streetScene) _arrival = false;
     // An arrival in a district: the map eases in on the party (v1.586). Read
     // from the party's district here, not from districtArrivalProvider,
     // whose state is set by a listener (a provider changed while building).
@@ -2405,28 +2441,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             },
             street: cityChart.here != null ? sceneStreet : null,
             onOpen: (i) => _openWay(i, steps, french),
+            onOpenPin: (ways, name) => _openPin(ways, name, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
               walkToDistrict(ref, d);
               _setTown(false);
             },
             overlays: [
-              if (bandLines > 0 && !_arrival && bandText.trim().isNotEmpty)
-                Positioned(
-                  left: 8,
-                  right: 56,
-                  top: 8,
-                  child: SceneBand(
-                    text: bandText,
-                    lines: bandLines,
-                    title: hereName,
-                    openTip: tr(ref, 'scene_band_open'),
-                    onOpen: () => setState(() {
-                      _arrival = true;
-                      _bandOpened = true;
-                    }),
-                  ),
-                ),
               Positioned(
                 left: 8,
                 right: 56,
@@ -6026,6 +6047,7 @@ class _CityDistrictView extends ConsumerWidget {
     required this.text,
     required this.onFocus,
     required this.onOpen,
+    required this.onOpenPin,
     required this.onWalk,
     required this.overlays,
     required this.tabs,
@@ -6065,6 +6087,9 @@ class _CityDistrictView extends ConsumerWidget {
   final CityChartText text;
   final void Function(String? districtId) onFocus;
   final void Function(int step) onOpen;
+
+  /// A pin with several ways (v1.607): its sheet names them.
+  final void Function(List<int> ways, String name) onOpenPin;
   final void Function(String districtId) onWalk;
   final List<Widget> overlays;
   final Widget tabs;
@@ -6262,6 +6287,22 @@ class _CityDistrictView extends ConsumerWidget {
             '']
         : townRulers[focus];
     final rows = <Widget>[];
+    // The name of the place a way hangs at: its building, else the place
+    // it leads to (a way out), else the district; never a choice's text.
+    String pinName(int lead) {
+      final way = chart.ways.where((w) => w.id == '$lead').firstOrNull;
+      final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
+      if (building.isNotEmpty) return building;
+      final leads = steps[lead].leadsTo ?? '';
+      if (leads.isNotEmpty) return leads;
+      final district = way == null || way.district >= chart.districts.length
+          ? null
+          : chart.districts[way.district].name;
+      return district == null || district.isEmpty ? chart.name : district;
+    }
+
+    // The ways grouped by the pin they hang at (the list's destinations).
+    var groups = const <WayPinGroup>[];
     if (lookedAt != null) {
       final clan = lookedAt.isNeutral
           ? null
@@ -6295,10 +6336,9 @@ class _CityDistrictView extends ConsumerWidget {
       ));
     }
     if (focus != null) {
-      final n = shown.length;
       // The ways hang at pins on the map (a building, or a spot): a pin with
       // several ways is one closed row with a count (way_pin_groups.dart).
-      final groups = groupWaysByPin([
+      groups = groupWaysByPin([
         for (final i in shown)
           WayPinEntry(
             i,
@@ -6311,26 +6351,18 @@ class _CityDistrictView extends ConsumerWidget {
             leads: banners['$i'] != null,
           ),
       ]);
-      final pins = pinsWithManyWays(groups);
-      if (infos == null) {
+      if (infos == null && groups.isNotEmpty) {
         rows.add(Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
           child: Text(
-            (pins > 0
-                    ? tr(ref, 'journey_city_pins_ways')
-                        .replaceAll('{p}', '${groups.length}')
-                        .replaceAll('{n}', '$n')
-                    : n == 1
-                        ? tr(ref, 'journey_city_ways_one')
-                        : tr(ref, 'journey_city_ways_many')
-                            .replaceAll('{n}', '$n'))
-                .toUpperCase(),
+            tr(ref, 'journey_city_places_here').toUpperCase(),
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: ink.ash, letterSpacing: 0.8),
           ),
         ));
       }
-      // One way's row; [indent] pixels in when it is inside a pin.
+
+      // One way's row (inside a place's list), indented when [indent].
       Widget wayRow(int i, {double indent = 0}) {
         final s = steps[i];
         final way = chart.ways.where((w) => w.id == '$i').firstOrNull;
@@ -6394,6 +6426,7 @@ class _CityDistrictView extends ConsumerWidget {
         final banner = banners['$i'];
         if (banner == null) return kindDisc(steps[i]);
         return BannerPin(
+          key: ValueKey('journey_row_banner_$i'),
           cat: banner.cat,
           color: steps[i].locked
               ? banner.color
@@ -6415,18 +6448,36 @@ class _CityDistrictView extends ConsumerWidget {
           onGo: goPlace,
           onLeave: onLeavePlace,
         ));
-      } else if (pins == 0) {
-        for (final i in shown) {
-          rows.add(wayRow(i));
-        }
       } else {
-        rows.add(WayPinList(
-          key: ValueKey('journey_city_pins_$focus'),
-          groups: groups,
-          rowOf: wayRow,
-          leadOf: pinLead,
-          titleOf: (i) => steps[i].label,
-        ));
+        // The list names the places, one row each (no count, nothing to
+        // open in place); the ways show after a tap, as after a tap on the
+        // pin (v1.607).
+        for (final g in groups) {
+          final name = pinName(g.lead);
+          final allShut = g.members.every((i) => steps[i].locked);
+          rows.add(InkWell(
+            key: ValueKey(g.isPin
+                ? 'journey_city_pin_${g.lead}'
+                : 'journey_city_row_${g.lead}'),
+            onTap: () => g.isPin ? onOpenPin(g.members, name) : onOpen(g.lead),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                SizedBox(width: 30, child: Center(child: pinLead(g.lead))),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          color: allShut ? ink.ash : null, height: 1.2)),
+                ),
+              ]),
+            ),
+          ));
+        }
       }
       // No way in the party's own district: a free walk (no time, no
       // story) to each district it borders.
@@ -6579,7 +6630,14 @@ class _CityDistrictView extends ConsumerWidget {
                             final place =
                                 infos?.where((p) => p.steps.contains(i));
                             if (place == null || place.isEmpty) {
-                              onOpen(i);
+                              final group = groups
+                                  .where((g) => g.members.contains(i))
+                                  .firstOrNull;
+                              if (group != null && group.isPin) {
+                                onOpenPin(group.members, pinName(group.lead));
+                              } else {
+                                onOpen(i);
+                              }
                             } else {
                               final id = place.first.id;
                               places.card.value =
