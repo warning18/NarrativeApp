@@ -29,7 +29,7 @@ No GitHub issue was opened: there is no "stuck" finding.
 - A choice is **open** when all its `showIfFlags` are set and none of its `hideIfFlags` is, and its target's `reqFlags` are set. `reqGold`, `reqAlignment*` and the `pays` choices are checked apart (rule 6).
 - A **fight** won goes to `next_id`; lost, to `loseNextId`, else the fight is retried. A **check** passed goes to `next_id`; failed, to `failNextId`, else on to `next_id` without the choice's effects. Flags are added only by the choice taken (so nothing from a lost fight or a failed check).
 - A place's hub always offers the way back to the camp (`canReturnToCampFrom`, once the camp stands, from chapter 3), a camp offers its errands and the places of its chapters. So a place with every hub item done is not a trap.
-- Flags that only the game sets (an expedition cleared, `ally_*`, `devoted_*`, `host_*`, `found_*`, the coast's events, the quests' `flagToAdd`) are taken as obtainable wherever they are waited for; each does have a setter in the data.
+- Flags that only the game sets (an expedition cleared, `ally_*`, `devoted_*`, `host_*`, `found_*`, the coast's events, the quests' `<id>_accepted`) are taken as obtainable wherever they are waited for; each does have a setter in the data.
 
 ## What was checked
 

@@ -30,7 +30,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_first_blood_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -74,7 +73,6 @@
         "buttonText": "Go home",
         "goldModifier": 0,
         "alignmentModifier": 5,
-        "flagToAdd": "has_void_banner",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Rentrer à la maison"
@@ -141,7 +139,6 @@
         "buttonText": "Find a way out",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_leave_saltmouth_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Chercher une sortie"
@@ -185,7 +182,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_dockside_debts_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -229,7 +225,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_smugglers_favor_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -274,7 +269,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_burning_manifest_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -319,7 +313,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_captains_gambit_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -364,7 +357,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_harbor_reckoning_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -408,7 +400,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_ashen_oath_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -450,7 +441,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_inquisition_ledger_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -492,7 +482,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_void_relic_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -534,7 +523,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_the_high_wardens_fall_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -578,7 +566,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_alsters_dawn_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -623,7 +610,6 @@
         "buttonText": "Fight beside her",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_keldas_stand_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Combattre à ses côtés"
@@ -669,7 +655,6 @@
         "buttonText": "Take the wager",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_sables_wager_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Relever le pari"
@@ -714,7 +699,6 @@
         "buttonText": "Take her oath at her word",
         "goldModifier": 0,
         "alignmentModifier": 5,
-        "flagToAdd": "q_ch3_marens_penance_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "La croire sur parole"
@@ -757,7 +741,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_informants_tip_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -822,7 +805,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_terns_toll_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -888,7 +870,6 @@
         "buttonText": "Take the shot together",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_lioras_watch_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Tirer ensemble"
@@ -960,7 +941,6 @@
         "buttonText": "Listen",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch1_vess_in_the_dark_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Écouter"
@@ -1004,7 +984,6 @@
         "buttonText": "Hire him on the spot",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_groshs_price_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "L’engager sur-le-champ"
@@ -1047,7 +1026,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_reckoning_wall_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1126,7 +1104,6 @@
         "buttonText": "Take up the charge",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_temptation_light_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter la charge"
@@ -1173,7 +1150,6 @@
         "buttonText": "Strike the bargain",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_temptation_dark_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Conclure le marché"
@@ -1215,7 +1191,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch4_the_second_ledger_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1258,7 +1233,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch4_ossuary_bounty_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1320,7 +1294,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch5_the_dead_heart_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1363,7 +1336,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch5_penitents_confession_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1464,7 +1436,6 @@
         "buttonText_fr": "Accepter",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch7_lantern_throne_accepted",
         "nextEventID": "",
         "lockedText": ""
       }
@@ -1503,7 +1474,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch6_beyond_the_tear_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1546,7 +1516,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch6_faces_of_the_fallen_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1590,7 +1559,6 @@
         "buttonText": "Take the hammer’s side",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch4_tobins_vigil_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Se ranger du côté du marteau"
@@ -1634,7 +1602,6 @@
         "buttonText": "Shake on the cut",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch5_malriks_cut_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Toper pour la part"
@@ -1679,7 +1646,6 @@
         "buttonText_fr": "Accepter",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch6_the_white_fleet_accepted",
         "nextEventID": "",
         "lockedText": ""
       }
@@ -1720,7 +1686,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_unpaid_scaffold_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1815,7 +1780,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch3_glass_from_the_terraces_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -1909,7 +1873,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch4_bark_tithe_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2004,7 +1967,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch5_candle_count_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2103,7 +2065,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch5_hearth_stone_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2198,7 +2159,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch6_salvage_rights_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2296,7 +2256,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch7_reed_gate_grievance_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2371,7 +2330,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch7_heralds_errand_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2445,7 +2403,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch7_chain_masters_boy_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -2531,7 +2488,6 @@
         "buttonText": "Hear it out",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_dominion_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "L’écouter"
@@ -2601,7 +2557,6 @@
         "buttonText": "Meet her",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_vigil_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "La rencontrer"
@@ -2671,7 +2626,6 @@
         "buttonText": "Take up the quest",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_compact_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Relever le défi"
@@ -2741,7 +2695,6 @@
         "buttonText": "Accept the invitation",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_mire_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter l’invitation"
@@ -2811,7 +2764,6 @@
         "buttonText": "Hear the terms",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_crows_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Écouter ses conditions"
@@ -2881,7 +2833,6 @@
         "buttonText": "Hear her out",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_nemesis_penitents_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "L’entendre"
@@ -2940,7 +2891,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_card_row_short_count_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
@@ -3019,7 +2969,6 @@
         "buttonText": "Accept",
         "goldModifier": 0,
         "alignmentModifier": 0,
-        "flagToAdd": "q_ch2_tern_row_wrong_name_accepted",
         "nextEventID": "",
         "lockedText": "",
         "buttonText_fr": "Accepter"
