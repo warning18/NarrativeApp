@@ -53,9 +53,18 @@ void main() {
   // far stronger and at war with it.
   PoliticsState threatened() {
     var state = at({'compact': 30}).copyWith(
-        power: {'compact': 20},
-        helped: ['compact', 'dominion'],
-        relationSteps: {relationKey('dominion', 'compact'): 2});
+        power: {
+          'compact': 20
+        },
+        helped: [
+          'compact',
+          'dominion'
+        ],
+        // The Penitents' war kept out (wave 18 step 2 gives them land).
+        relationSteps: {
+          relationKey('dominion', 'compact'): 2,
+          relationKey('dominion', 'penitents'): 4,
+        });
     for (final place in placesOf('compact', geography, state)) {
       if (place != 'emberwick') {
         state = givePlace(state, place, 'crows',

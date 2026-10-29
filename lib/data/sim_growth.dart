@@ -289,15 +289,14 @@ class SimGrowth {
 
   /// [quest] (a quests.json record) turned in with [flags] held in
   /// [chapter], as the app does (wave 18, applyQuestInfluence): its
-  /// influence in its district while the walk is in [cityHere], the
-  /// district or the town changing hands with it. Returns the flags after.
+  /// influence in its district, wherever the walk is, the district or
+  /// the town changing hands with it. Returns the flags after.
   List<String> applyQuestInfluence(
     Map<String, dynamic> quest, {
     required Iterable<String> flags,
     required Geography geography,
     required int chapter,
     StoryPolitics? picked,
-    String? cityHere,
     String? partyDistrict,
   }) {
     final result = influence.applyQuestInfluence(politics, quest,
@@ -305,7 +304,6 @@ class SimGrowth {
         data: tables.clans,
         geography: geography,
         picked: picked,
-        cityHere: cityHere,
         partyDistrict: partyDistrict,
         chapter: max(1, chapter));
     politics = result.state;

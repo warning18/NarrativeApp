@@ -69,7 +69,7 @@ Future<bool> runLandCrossing(
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
-        route: route,
+        route: ruler.route,
         events: known,
         ruler: ruler.clanId,
         rulers: rulerPool(known, ruler.clanId, ruler.band),
@@ -79,17 +79,13 @@ Future<bool> runLandCrossing(
 }
 
 /// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
-/// and the band the party's standing with them puts it in.
-Future<({String clanId, RulerBand band})> crossingRulerOf(
-    WidgetRef ref, LandRoute route) async {
+/// the band the party's standing with them puts it in, and the route as
+/// crossed (a clan's own road meets it more often: crossingRuler).
+Future<({LandRoute route, String clanId, RulerBand band, bool clanRoad})>
+    crossingRulerOf(WidgetRef ref, LandRoute route) async {
   final geography = await loadGeography(ref);
   final clans = await loadClanData(ref);
-  final politics = ref.read(politicsProvider);
-  final clanId = landRouteRuler(route, geography, politics);
-  return (
-    clanId: clanId,
-    band: rulerBandFor(politics.tierOf(clanId, clans)),
-  );
+  return crossingRuler(route, geography, ref.read(politicsProvider), clans);
 }
 
 /// A land crossing (land_crossing.dart): an event a day, each asking what
