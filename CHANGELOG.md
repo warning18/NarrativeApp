@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.609.0+645]
+
+- **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
+  is unchanged.
+  - **The fight parses its tables once.** Item sets, clans, sub-clans,
+    titles and spells used to be parsed again on every roll and log line;
+    now they are parsed on the first build with every table in.
+  - **The Journey's list of places reads only what the locks read**
+    (flags, quests done), not the whole session. A purse, a potion or the
+    clock changing no longer recomputes it.
+  - **The camp's companion leads read only what they need**: the
+    companions, flags, alignment, charisma and politics.
+
 ## [1.608.0+644]
 
 - **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).
