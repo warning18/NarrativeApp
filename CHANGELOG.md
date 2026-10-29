@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.628.0+664]
+
+- **Cleanup: 68 UI strings that nothing reads are removed**
+  Keys of `app_strings.dart` that no `tr()` call, built key name or test
+  used (202 lines). No behaviour change.
+
 ## [1.627.0+663]
 
 - **Narrative: chapters 4 and 5 in the percussive style**, and four small
