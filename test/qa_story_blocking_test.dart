@@ -210,9 +210,10 @@ void main() {
           }
         }
       }
+      // 270, the Weaver's Alley, is parked off the run (v1.620).
       expect([
         for (final n in nodes.keys)
-          if (!may.containsKey(n)) n
+          if (!may.containsKey(n) && n != '270') n
       ], isEmpty);
     });
 

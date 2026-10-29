@@ -8,13 +8,76 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.624.0+656]
+## [1.624.0+659]
 
 - **Cleanup: 6 unused symbols removed from UX's files**
   `elementColor`, `adventureNodeCategoryIcon`, `campRouteLabel`,
   `itemRarityLabel`, `RoomArtPainter` and a hull shade that nothing used
   (162 lines). No behaviour change.
 
+## [1.621.0+657]
+
+- **Narrative: the siege scene's words, and a line from each companion.**
+  - The siege scene reads "Siege of {district}." / « Siège de {district}. »
+    with a short body and a "Defend {district}" choice; "Join {attacker}" and
+    "Stand aside" keep their words. The text has no gender or number
+    agreement to get wrong for a clan or a district.
+  - `districtAttacked`: two short lines for each of the nine companions
+    (Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin, Malrik, Vica), EN and FR;
+    not fired yet.
+  - The Spire Stair's locked line (it opens once the Ashen Oath is taken at the
+    Quarter Gate) is reworded, EN and FR. Every route to the Stair passes the
+    Gate hub, where "Take up the Ashen Oath" is always offered.
+  - Touches another session's area: `lib/data/district_attacks.dart` and
+    `geography.json` (wording only; no choice, number or key changed).
+## [1.620.0+656]
+
+- **Narrative: the Weaver's Alley is out of chapter 1** (the opening run is shorter).
+  - The Lower Town (`250`) has one way on, the Stone Bridge; the family
+    heirloom quest still starts there (`unlockQuestId` and `feat_quests` kept).
+    The toll scenes `260` and `261` are unchanged.
+  - Scene `270` (the signal-lantern and its dead bearer) stays in the story
+    file, parked and unreachable, with a note on where it lands later
+    (`docs/proposals/weavers-alley-parked.md`: a Lantern Alleys street scene
+    in Saltmouth).
+  - The lantern thread went with it: `820` and `891` lose "Raise the lantern",
+    `823` and `891` their callbacks, `300` the `companion_hound` and
+    `hound_left` callbacks. No flag is left set and never read.
+  - Numbers: the opening run loses 270's "Strip the bearer's gear" (+15 gold),
+    "Cut it free" (+2 alignment) and 891's "Raise the lantern" (+10 gold)
+    options; no value changed.
+  - Tests: `story_graph_integrity_test` allows the parked scene;
+    `chapter_one_test`, `scene_lock_test`, the two journey tests and
+    `first_journey_test` follow the one-way route (the District-view
+    walk-to-pin test that used the alley is dropped: `district_walk_test`
+    covers the walk).
+## [1.619.0+655]
+
+- **UX: the Skills tab's tree is a sky of constellations** (the user's pick,
+  idea 1 of `docs/proposals/skills-ideas.md`). Only the Tree tab's body
+  changed; the info sheet, Raise tier, Merge and Craft, My skills, Spells, the
+  essence and offer pills are as they were.
+  - **Each class branch is a constellation** on one night sky: a star for each
+    skill and a crown for Mastery. A star lights gold once the skill is
+    learned; the lines light up to the last learned star; the **ringed star is
+    the next one, bright when its clan can offer it now** (the standing reaches
+    its depth). Each constellation carries its name, its count and its clan
+    with your standing.
+  - **The card under the sky** reads the focused constellation's next skill:
+    its name, what it does, and who offers it ("Compact can offer it now" or
+    "Waits for “Trusted” with Compact (you are: Friendly)"). A tap on a
+    constellation's name changes the focus; a tap on a star opens that skill's
+    sheet, the crown opens the mastery's, the card opens the next skill's.
+  - **A class with five branches** (the mage, the cleric) puts the fifth across
+    the last row; the cells are lower at 320 px. French strings sit beside the
+    skills' strings (`star_*`).
+  - The heritage's skills and the reputation's stay as rings under the sky;
+    the old branch columns are gone.
+- Tests: `star_chart_test.dart` (the layout, the standing read, a tap opens)
+  and `star_chart_five_test.dart` (five constellations at 320 px);
+  `skill_tree_test.dart` follows the sky (the clan is read on the
+  constellation, not under each skill). Pictures:
+  `docs/ux-shots/star-chart/`.
 ## [1.618.0+654]
 
 - **Core: the big towns, influence that pays off, clan roads, the
