@@ -485,34 +485,35 @@ extension _FightView on _FightScreenState {
           ),
           const SizedBox(height: 6),
           Expanded(
-            // The hero stands on the ground under the party's cards, facing
-            // the enemies (fight_figure.dart): it takes no room.
+            // The cards above, the stage under them (_fightStage): its
+            // height is fixed, so the cards give way, never the stage.
             child: LayoutBuilder(
-              builder: (context, area) => Stack(
+              builder: (context, area) => Column(
                 children: [
-                  ..._heroOnGround(area),
-                  ..._enemiesOnGround(area),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: TutorialTarget(
-                              id: 'fight.party',
-                              child: _buildPartyColumn(items)),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          flex: 6,
-                          child: TutorialTarget(
-                              id: 'fight.enemies',
-                              child: _buildEnemyColumn(previews)),
-                        ),
-                      ],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: TutorialTarget(
+                                id: 'fight.party',
+                                child: _buildPartyColumn(items)),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 6,
+                            child: TutorialTarget(
+                                id: 'fight.enemies',
+                                child: _buildEnemyColumn(previews)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  _fightStage(area.maxWidth),
                 ],
               ),
             ),
