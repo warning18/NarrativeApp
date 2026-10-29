@@ -14,6 +14,7 @@ import '../providers/clans_provider.dart';
 import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'clan_rank_plate.dart';
 
 /// The nemesis' red (the mark on its card, its standard and its places).
 const Color nemesisRed = Color(0xFFD1453B);
@@ -124,6 +125,7 @@ class ClanPowerBlock extends ConsumerWidget {
             ),
           ),
           _PowerBar(power: power, color: accent),
+          ClanRankLine(clanId: factionId),
         ],
         Padding(
           padding: const EdgeInsets.only(top: 8),
