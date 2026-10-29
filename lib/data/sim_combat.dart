@@ -19,7 +19,9 @@ import '../combat/specialisations.dart';
 import '../combat/parry.dart';
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
+import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/strike_damage.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
@@ -330,23 +332,29 @@ class SimCharacter {
   ) =>
       gearEffectsFor(equippedItemIds, items, itemSets);
 
-  /// The total a face or spell of [element] hits with -- the same sum the
-  /// fight screen and the character screen use ([itemSets] adds a worn
-  /// set's flat attack).
+  /// The alignment the hero's gear answers to (an aligned item's bonus,
+  /// see alignmentGearBonusFor): the walk sets it from its alignment score.
+  String alignmentLabel = 'Neutral';
+
+  /// The total a face or spell of [element] hits with: the fight screen's
+  /// own sum (strikeDamageFor; [itemSets] adds a worn set's flat attack).
   int casterDamage(
     Map<String, dynamic> items,
     String element, {
     Map<String, ItemSet> itemSets = const {},
-  }) {
-    final prefix = elementFieldPrefixes[element];
-    final elemental = prefix == null
-        ? 0
-        : equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
-    return baseDamage +
-        equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
-        gearEffects(items, itemSets).attackDamage +
-        elemental;
-  }
+  }) =>
+      strikeDamageFor(
+        baseDamage: baseDamage,
+        equippedItemIds: equippedItemIds,
+        items: items,
+        element: element,
+        gearAttack: gearEffects(items, itemSets).attackDamage,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence,
+        alignmentLabel: alignmentLabel,
+      );
 
   int armor(
     Map<String, dynamic> items, {
@@ -811,11 +819,10 @@ class SimFightOutcome {
   int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
 }
 
-/// Pack-size stat multipliers, the fight screen's own.
-const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
-
-const int _potionHeal = 8; // potionHealAmount (item_stats.dart)
-const int _maxRolls = 3;
+// The fight screen's own numbers (fight_numbers.dart).
+const Map<int, double> _packStatMultipliers = packStatMultipliers;
+const int _potionHeal = potionHealAmount;
+const int _maxRolls = maxRollsPerTurn;
 
 class _SimEnemy {
   _SimEnemy({
