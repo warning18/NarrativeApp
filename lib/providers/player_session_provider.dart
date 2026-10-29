@@ -93,7 +93,7 @@ const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
 /// The flag of the rest before the Lantern Hall (7515_rest): the
 /// provisions and the mana refilled (applyChoiceEffects).
-const String restBeforeHallFlag = 'rest_before_hall';
+const String _restBeforeHallFlag = 'rest_before_hall';
 
 /// The starter die's face indexes reserved for the player's profession and
 /// race standard skills (see assets/gamedata/dice.json's starter_die).
@@ -175,7 +175,7 @@ const int intrigueCount = 11;
 /// How many of the six clans must trust the character at once for "A Hand
 /// at Four Doors": a clan's gains cost its rivals half, so all six is out of
 /// reach (QA's search never passed five).
-const int trustedClansForFriend = 4;
+const int _trustedClansForFriend = 4;
 
 /// The six clans a character can swear to (the ones with a Sworn boon).
 const List<String> coastClanIds = [
@@ -192,15 +192,15 @@ final RegExp _intrigueOutcomeFlag = RegExp(r'^intrigue_(.+)_outcome_\d+$');
 
 /// The share of the purse a retreat costs (see [retreatCostFor]); a
 /// potion, when the pack holds one, is dropped too.
-const double retreatGoldShare = 0.2;
+const double _retreatGoldShare = 0.2;
 
 /// The least a retreat costs, when the party has that much.
-const int retreatMinimumGold = 10;
+const int _retreatMinimumGold = 10;
 
 /// What getting away from a fight costs a party carrying [gold]: a
-/// share of it, at least [retreatMinimumGold], never more than it has.
+/// share of it, at least [_retreatMinimumGold], never more than it has.
 int retreatCostFor(int gold) =>
-    min(gold, max(retreatMinimumGold, (gold * retreatGoldShare).round()));
+    min(gold, max(_retreatMinimumGold, (gold * _retreatGoldShare).round()));
 
 /// What a shop pays for [item]: two fifths of its price, at least 1 gold.
 /// An item's own `sellValue` wins -- the Elite Mark is a trophy, worth
@@ -2332,8 +2332,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     // The rest before the Lantern Hall (7515_rest, docs/simulation/
     // difficulty-review.md proposal 4): the provisions and the mana
     // refilled; the scene's own heal and potion come with its choice.
-    final rested = flagsToAdd.contains(restBeforeHallFlag) &&
-        !state.flags.contains(restBeforeHallFlag);
+    final rested = flagsToAdd.contains(_restBeforeHallFlag) &&
+        !state.flags.contains(_restBeforeHallFlag);
     var newActiveQuests = state.activeQuestIds;
     var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
@@ -5187,7 +5187,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
                     .where((id) => standingTierFor(politics.standings[id] ?? 0)
                         .isAtLeast(StandingTier.trusted))
                     .length >=
-                trustedClansForFriend);
+                _trustedClansForFriend);
     check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
     check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
     check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));

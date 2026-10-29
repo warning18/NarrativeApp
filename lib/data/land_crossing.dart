@@ -412,20 +412,20 @@ int landCheckDc(int dc, int chapter) => dc + max(0, chapter - 1);
 
 /// The most of the party's health it is carried back with when a
 /// crossing fails: wounded, never better off than when it set out.
-const double turnBackHealthShare = 0.5;
+const double _turnBackHealthShare = 0.5;
 
 /// The least it is carried back with, whatever it set out with: enough to
 /// set out again and, as the simulator measures it (nearly every party
 /// crosses from a fifth of its health), not to be stuck at the start.
-const double turnBackHealthFloor = 0.25;
+const double _turnBackHealthFloor = 0.25;
 
 /// The health a party of [maxHealth] that set out with [departureHealth]
 /// is carried back with: what it set out with, at most half, at least a
 /// quarter (v1.287.0: a failed crossing was a free rest for a party that
 /// set out below half).
 int turnBackHealth(int maxHealth, {required int departureHealth}) {
-  final most = (maxHealth * turnBackHealthShare).round();
-  final least = max(1, (maxHealth * turnBackHealthFloor).round());
+  final most = (maxHealth * _turnBackHealthShare).round();
+  final least = max(1, (maxHealth * _turnBackHealthFloor).round());
   return max(least, min(departureHealth, most));
 }
 

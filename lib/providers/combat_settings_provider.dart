@@ -82,8 +82,8 @@ Duration aimSweepFor(AimedShots setting) => setting == AimedShots.slow
     ? const Duration(milliseconds: 1600)
     : const Duration(milliseconds: 900);
 
-class AimedShotsNotifier extends StateNotifier<AimedShots> {
-  AimedShotsNotifier() : super(AimedShots.normal) {
+class _AimedShotsNotifier extends StateNotifier<AimedShots> {
+  _AimedShotsNotifier() : super(AimedShots.normal) {
     _load();
   }
 
@@ -108,8 +108,8 @@ class AimedShotsNotifier extends StateNotifier<AimedShots> {
 
 /// How aimed shots play in ship battles (see [AimedShots]).
 final aimedShotsProvider =
-    StateNotifierProvider<AimedShotsNotifier, AimedShots>(
-        (ref) => AimedShotsNotifier());
+    StateNotifierProvider<_AimedShotsNotifier, AimedShots>(
+        (ref) => _AimedShotsNotifier());
 
 /// Whether a story choice that moves the clans says so, in a muted line
 /// under it: "Vigil +5 · Dominion −5" (v1.195, see politicsHint). A

@@ -39,11 +39,11 @@ double hazardShareFor(Biome? biome) =>
 
 /// The road event marks of a hazard's two choices (see
 /// StoryChoice.roadEvent): push on, or wait it out.
-const String hazardPushEvent = 'hazard_push';
-const String hazardWaitEvent = 'hazard_wait';
+const String _hazardPushEvent = 'hazard_push';
+const String _hazardWaitEvent = 'hazard_wait';
 
-bool isHazardPush(StoryChoice choice) => choice.roadEvent == hazardPushEvent;
-bool isHazardWait(StoryChoice choice) => choice.roadEvent == hazardWaitEvent;
+bool isHazardPush(StoryChoice choice) => choice.roadEvent == _hazardPushEvent;
+bool isHazardWait(StoryChoice choice) => choice.roadEvent == _hazardWaitEvent;
 
 /// What pushing on through a hazard costs each of the party in [chapter]:
 /// a shrine's prayer in reverse, smaller.
@@ -189,7 +189,7 @@ bool enemyLivesIn(Object? enemy, String biome) {
 /// costs and heals.
 int shrineHealFor(int chapter) => 25 + 10 * max(1, chapter);
 int shrineOfferingFor(int chapter) => 10 * max(1, chapter);
-int shrineOfferingHealFor(int chapter) => 2 * shrineHealFor(chapter);
+int _shrineOfferingHealFor(int chapter) => 2 * shrineHealFor(chapter);
 
 /// The scene [kind] plays as a detour on its road in [chapter]: one node
 /// with its choices. A champion is drawn from [enemyPool] (see
@@ -290,7 +290,7 @@ List<StoryNode> roadEventChain(
           textFr: 'Laisser une offrande ($offering or)',
           nextId: '',
           goldMod: -offering,
-          healAmount: shrineOfferingHealFor(chapter),
+          healAmount: _shrineOfferingHealFor(chapter),
           alignmentMod: 1,
           roadEvent: 'shrine',
         ),
@@ -325,13 +325,13 @@ StoryNode _hazardNode(String id, BiomeHazard hazard, {required int chapter}) {
         textFr: or(hazard.pushFr, _hazardPushFr),
         nextId: '',
         healAmount: -wound,
-        roadEvent: hazardPushEvent,
+        roadEvent: _hazardPushEvent,
       ),
       StoryChoice(
         text: or(hazard.wait, _hazardWaitEn),
         textFr: or(hazard.waitFr, _hazardWaitFr),
         nextId: '',
-        roadEvent: hazardWaitEvent,
+        roadEvent: _hazardWaitEvent,
       ),
     ],
   );
