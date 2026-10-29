@@ -271,7 +271,7 @@ Set<Spec> specsFor(Iterable<String> ids, ProfessionCore core) => {
 // --- Warrior ---------------------------------------------------------------
 
 /// The Briar Guard: the share of a stopped blow that goes back.
-const double briarReflectShare = 1 / 4;
+const double briarReflectShare = 0.8;
 
 /// What a Briar Guard sends back of [stopped] damage.
 int briarReflect(int stopped) =>
@@ -294,7 +294,7 @@ const String vanguardElement = 'Fire';
 // --- Cleric ----------------------------------------------------------------
 
 /// The Long Vigil: what is mended each round above half health.
-const double longVigilHealShare = 0.05;
+const double longVigilHealShare = 0.15;
 
 /// What the Long Vigil mends a cleric at [health] of [maxHealth] this
 /// round (nothing at or below half).
@@ -348,7 +348,7 @@ int censerBurn(int overflow, int strike) =>
     overflow <= 0 ? 0 : max(1, (overflow * strike * censerBurnPerMana).round());
 
 /// The Burden-Bearer: a spell cast from a full Well.
-const double burdenFullWellMultiplier = 2.0;
+const double burdenFullWellMultiplier = 1.4;
 
 /// The Tempest Toll: the share of a spell's damage it heals.
 const double tempestLifeShare = 0.06;
@@ -359,7 +359,7 @@ const String tempestSkillId = 'mage_teleport_strike';
 // --- Rogue -----------------------------------------------------------------
 
 /// The Fever Blade: the Rot a critical hit adds, as a share of the hit.
-const double rotShare = 0.4;
+const double rotShare = 0.2;
 
 /// The Rot lasts the fight.
 const int rotTurns = 99;
@@ -406,7 +406,7 @@ const StatusEffect trapStun =
 
 /// The Fen Guide's poison: [fenPoisonShare] of the strike a turn, for
 /// [fenPoisonTurns] turns.
-const double fenPoisonShare = 0.5;
+const double fenPoisonShare = 0.25;
 const int fenPoisonTurns = 3;
 
 /// The Fen Guide's poison for a ranger whose strike is [strike].

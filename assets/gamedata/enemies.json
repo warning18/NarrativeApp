@@ -2397,7 +2397,7 @@
   },
   "void_archon": {
     "enemyName": "Void Archon",
-    "maxHealth": 76,
+    "maxHealth": 80,
     "damage": 5,
     "guile": 10,
     "faction": "",
@@ -4813,7 +4813,7 @@
   "claimant_vane": {
     "enemyName": "Cassian Oriel, Regent of the Lantern",
     "enemyName_fr": "Cassian Oriel, Régent de la Lanterne",
-    "maxHealth": 79,
+    "maxHealth": 100,
     "damage": 6,
     "guile": 12,
     "faction": "dominion",
@@ -5087,7 +5087,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 77,
+    "maxHealth": 88,
     "damage": 5,
     "guile": 11,
     "faction": "",
@@ -5213,7 +5213,7 @@
   "tear_herald": {
     "enemyName": "The Tear-Herald",
     "enemyName_fr": "Le Héraut de la Déchirure",
-    "maxHealth": 61,
+    "maxHealth": 64,
     "damage": 5,
     "guile": 12,
     "faction": "",

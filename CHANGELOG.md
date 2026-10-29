@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.614.0+650]
+
+- **Core: the specialisations pass** (docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with a clan's specialisation, the mage, rogue and
+    ranger won about 4 encounters in 5, the cleric and warrior about 2 in 3.
+  - **Now:** every class is within 7 points of the others (71–78%).
+  - **Stronger:**
+    - the cleric's Long Vigil mends 15% a round (was 5%; the
+      Candlebearers' 18%, was 7%);
+    - the warrior's Briar Guard sends back 80% of a stopped blow (was 25%;
+      the Anvil-Deaf's 100%, was 50%).
+  - **Weaker:**
+    - the mage's Burden-Bearer: a spell from a full Well hits ×1.4 (was
+      ×2.0; the Scorched Choir's ×1.6, was ×2.5; rank II +0.2, was +0.5);
+    - the rogue's Fever Blade: the Rot is 20% of a critical hit (was 40%);
+    - the ranger's Fen Guide: the first face's poison is 25% of the strike
+      (was 50%).
+  - **Bosses re-sized** for the stronger cleric and warrior: Claimant Vane
+    has 100 health (was 79), Claimant Tallis 88 (was 77), the void archon
+    80 (was 76), the Tear-Herald 64 (was 61).
+  - Tests: `boss_balance_test`'s professions spread is back to 8 points.
+    The specialisation numbers, the claimants' health and the frozen naive
+    run are re-pinned.
+
 ## [1.613.0+649]
 
 - **Core: the bosses in the full world** (QA's finding, #591;

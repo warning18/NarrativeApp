@@ -304,14 +304,14 @@ void main() {
       ), (
         'dwarf',
         19,
-        3325,
+        3323,
         33,
         85,
         37,
-        272,
+        271,
         8
       ));
-      expect(_stableHash(naive.choicesTaken), 1081060117);
+      expect(_stableHash(naive.choicesTaken), 3183435985);
       // The naive player recruits no one; the story gives it Vica (v1.601).
       expect(
           naive.companionLog

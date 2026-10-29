@@ -53,14 +53,14 @@ void main() {
 
   test('the numbers they set', () {
     final none = SpecMods(const []);
-    expect(none.briarBack(40), 10);
-    expect(SpecMods(['anvil_deaf_briar_guard']).briarBack(40), 20);
-    expect(SpecMods(['briar_guard_ii']).briarBack(40), 15);
+    expect(none.briarBack(40), 32);
+    expect(SpecMods(['anvil_deaf_briar_guard']).briarBack(40), 40);
+    expect(SpecMods(['briar_guard_ii']).briarBack(40), 48);
     expect(SpecMods(['order_lantern_vanguard']).vanguardEvilHeal, 0.30);
-    expect(SpecMods(['candlebearers_long_vigil']).vigilMend(80, 100), 7);
+    expect(SpecMods(['candlebearers_long_vigil']).vigilMend(80, 100), 18);
     expect(SpecMods(['ember_sisters_ashen_hand']).ashenCleanse, 2);
     expect(SpecMods(['cantors_beacon']).beaconBurn, 1.875);
-    expect(SpecMods(['scorched_choir_burden_bearer']).burdenMultiplier, 2.5);
+    expect(SpecMods(['scorched_choir_burden_bearer']).burdenMultiplier, 1.6);
     expect(SpecMods(['keyholders_tempest_toll']).spellDiscount, 1);
     expect(SpecMods(['reliquary_thieves_relicbreaker']).relicMana, 2);
     expect(SpecMods(['relicbreaker_ii']).relicThreshold, 2);
@@ -73,7 +73,7 @@ void main() {
     expect(SpecMods(['fever_blade_ii']).rot, closeTo(rotShare * 1.5, 1e-9));
     expect(
         poisonDamageFor(SpecMods(['fever_blade_ii']).withRotOf(const [], 100)),
-        60);
+        30);
   });
 
   test('a variant from Trusted on a specialisation held, rank II at Sworn', () {
