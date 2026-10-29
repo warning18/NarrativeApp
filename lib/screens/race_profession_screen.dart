@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart' show skillDisplayName;
 import '../data/character_start.dart';
 import '../data/element_points.dart';
 import '../data/origin_stories.dart';
@@ -524,8 +525,10 @@ class _ChoiceRow extends ConsumerWidget {
 
   String get _skillId => preset?['standardSkillID']?.toString() ?? '';
 
-  String get _skillName => grantedSkillName(_skillId,
-      presetId: (preset?['raceID'] ?? preset?['professionID'])?.toString());
+  /// The granted skill's name in the player's language (French names are
+  /// in skill_names_fr.dart).
+  String _skillNameIn(AppLanguage language) =>
+      skillDisplayName(_skillId, language: language);
 
   void _read(BuildContext context, WidgetRef ref) {
     showModalBottomSheet<void>(
@@ -553,7 +556,7 @@ class _ChoiceRow extends ConsumerWidget {
                   _SkillCard(
                     label: tr(ref, 'granted_skill_label'),
                     skillId: _skillId,
-                    name: _skillName,
+                    name: _skillNameIn(ref.watch(appLanguageProvider)),
                     description: (skills[_skillId]
                                 as Map<String, dynamic>?)?['description']
                             ?.toString() ??
@@ -650,7 +653,9 @@ class _ChoiceRow extends ConsumerWidget {
                                 children: [
                                   SkillPixelIcon(_skillId, size: 14),
                                   const SizedBox(width: 4),
-                                  Text(_skillName,
+                                  Text(
+                                      _skillNameIn(
+                                          ref.watch(appLanguageProvider)),
                                       style: theme.textTheme.labelSmall
                                           ?.copyWith(
                                               color: scheme.onSurfaceVariant)),

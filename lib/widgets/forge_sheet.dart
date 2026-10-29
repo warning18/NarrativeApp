@@ -79,6 +79,33 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
         session.inventoryItemIds.where((i) => i == m.key).length >= m.value);
   }
 
+  /// Asks whether the Bone-Caster's Hut rolls the flawed piece again; true
+  /// when the player spends the charge.
+  Future<bool> _offerHutReroll(AppLanguage lang) async {
+    String t(String key) => trFor(lang, key);
+    final left = ref.read(playerSessionProvider).rerollCharges;
+    final reroll = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        key: const Key('forge_hut_offer'),
+        content: Text(t('forge_hut_offer').replaceAll('{n}', '$left')),
+        actions: [
+          TextButton(
+            key: const Key('forge_hut_keep'),
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(t('fate_coin_keep_button')),
+          ),
+          FilledButton(
+            key: const Key('forge_hut_reroll'),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(t('reroll_button')),
+          ),
+        ],
+      ),
+    );
+    return reroll ?? false;
+  }
+
   Future<void> _forge(String id, Map<String, dynamic> items) async {
     if (_busy) return;
     setState(() => _busy = true);
@@ -102,9 +129,23 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             random: random,
             modifiers: ref.read(forgeModifiersProvider));
         if (roll == null || !mounted) break;
+        // A Flawed piece, and the Bone-Caster's Hut standing with a Reroll
+        // charge: the hut may roll the forge's d20 again (camp_rolls.dart).
+        var coinLine = '';
+        if (roll.tier == ForgeTier.flawed &&
+            notifier.canRerollForge &&
+            await _offerHutReroll(lang)) {
+          final redo = await notifier.rerollForge(
+              forgedVariantId(baseItemIdOf(id), roll.tier), roll,
+              random: random);
+          if (redo != null) {
+            coinLine = '${trFor(lang, 'forge_hut_rolled')} ';
+            roll = redo;
+          }
+        }
+        if (!mounted) break;
         // A Flawed piece, and a fate coin in the pack: the coin may forge it
         // once more (fate_coin.dart).
-        var coinLine = '';
         if (fateCoinWorthFlippingForge(roll) &&
             carriesFateCoin(ref.read(playerSessionProvider).inventoryItemIds) &&
             await offerFateCoin(context, lang,
@@ -113,7 +154,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
               forgedVariantId(baseItemIdOf(id), roll.tier), roll,
               random: random);
           if (redo != null) {
-            coinLine = '${fateCoinLandedLine(flipFateCoin(random), lang)} ';
+            coinLine += '${fateCoinLandedLine(flipFateCoin(random), lang)} ';
             roll = redo;
           }
         }
