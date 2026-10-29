@@ -11,9 +11,10 @@ import 'dart:math';
 
 import 'ability_check.dart' show checkPasses;
 import 'clan_power.dart' show holderOf;
-import 'factions.dart' show PoliticsState, StandingTier, StandingTierOrder;
+import 'factions.dart'
+    show ClanData, PoliticsState, StandingTier, StandingTierOrder;
 import 'geography.dart';
-import 'town_rulers.dart' show townRulers;
+import 'town_rulers.dart' show TownRuler, townRulers;
 
 /// What one outcome of a crossing's choice does: health as a percent of
 /// the party's maximum (signed), gold (signed), and extra days lost. [note]
@@ -228,6 +229,22 @@ class LandRoute {
   final int rulerOneIn;
 
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
+
+  /// This route meeting its ruler one day in [oneIn] (see [crossingRuler]).
+  LandRoute withRulerOneIn(int oneIn) => LandRoute(
+        id: id,
+        name: name,
+        nameFr: nameFr,
+        from: from,
+        to: to,
+        roads: roads,
+        days: days,
+        biome: biome,
+        terrain: terrain,
+        chapter: chapter,
+        events: events,
+        rulerOneIn: oneIn,
+      );
 }
 
 /// The side view's scene kits: what a route's `terrain` may be.
@@ -269,10 +286,7 @@ String landRouteRuler(
     geography.placeOfLandmark(route.from)?.id,
   ];
   for (final id in ends) {
-    if (id == null) continue;
-    final town = towns[id]?.clanId ?? '';
-    if (town.isNotEmpty) return town;
-    final held = holderOf(id, geography, politics);
+    final held = _endRuler(id, towns, geography, politics);
     if (held.isNotEmpty) return held;
   }
   for (final id in ends) {
@@ -280,6 +294,62 @@ String landRouteRuler(
     if (ruler.isNotEmpty) return ruler;
   }
   return '';
+}
+
+/// Who holds one end of a route: its town's ruler, else its holder.
+String _endRuler(String? id, Map<String, TownRuler> towns, Geography geography,
+    PoliticsState politics) {
+  if (id == null) return '';
+  final town = towns[id]?.clanId ?? '';
+  return town.isNotEmpty ? town : holderOf(id, geography, politics);
+}
+
+/// How often a clan road meets its clan (wave 18 step 2): one day in this
+/// many, in place of its route's [LandRoute.rulerOneIn].
+const int clanRoadOneIn = 2;
+
+/// The clan whose road [route] is (wave 18 step 2): the one holding both
+/// its ends (see [landRouteRuler]'s ends), '' for none.
+String clanRoadOf(
+    LandRoute route, Geography geography, PoliticsState politics) {
+  final towns = townRulers(geography, politics, const {});
+  final to = _endRuler(
+      geography.placeOfLandmark(route.to)?.id, towns, geography, politics);
+  final from = _endRuler(
+      geography.placeOfLandmark(route.from)?.id, towns, geography, politics);
+  return to.isNotEmpty && to == from ? to : '';
+}
+
+/// The band of a party at [tier] on a clan's own road: friendlier from
+/// Friend, harder from Unfriendly down (wider than [rulerBandFor]).
+RulerBand clanRoadBandFor(StandingTier tier) =>
+    tier.isAtLeast(StandingTier.friend)
+        ? RulerBand.friend
+        : tier.isAtLeast(StandingTier.wary)
+            ? RulerBand.neutral
+            : RulerBand.hostile;
+
+/// Who meets the party on [route] now, and how: its ruler
+/// ([landRouteRuler]) at the band its standing puts it in, and the route
+/// as crossed. On a clan's road ([clanRoadOf]) the ruler comes one day in
+/// [clanRoadOneIn] and its bands are [clanRoadBandFor]'s; a route that
+/// never meets its ruler ([LandRoute.rulerOneIn] 0) still never does.
+({LandRoute route, String clanId, RulerBand band, bool clanRoad}) crossingRuler(
+    LandRoute route,
+    Geography geography,
+    PoliticsState politics,
+    ClanData data) {
+  final clanId = landRouteRuler(route, geography, politics);
+  final tier = politics.tierOf(clanId, data);
+  final own = route.rulerOneIn > 0 &&
+      clanId.isNotEmpty &&
+      clanRoadOf(route, geography, politics) == clanId;
+  return (
+    route: own ? route.withRulerOneIn(clanRoadOneIn) : route,
+    clanId: clanId,
+    band: own ? clanRoadBandFor(tier) : rulerBandFor(tier),
+    clanRoad: own,
+  );
 }
 
 /// The events of [events] a road's [ruler] meets the party with at

@@ -5087,7 +5087,7 @@
   "claimant_tallis": {
     "enemyName": "Maud Tallis, Eldest Wickwarden",
     "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
-    "maxHealth": 88,
+    "maxHealth": 96,
     "damage": 5,
     "guile": 11,
     "faction": "",

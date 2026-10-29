@@ -835,12 +835,12 @@ Future<void> _crossLand(
   final chapter = ref.read(reachedChapterProvider);
   // Who holds the road, and how they take the party (wave 16).
   final politics = ref.read(playerSessionProvider).politics;
-  final ruler = landRouteRuler(route, await loadGeography(ref), politics);
-  final rulers = rulerPool(events, ruler,
-      rulerBandFor(politics.tierOf(ruler, await loadClanData(ref))));
+  final road = crossingRuler(
+      route, await loadGeography(ref), politics, await loadClanData(ref));
+  final rulers = rulerPool(events, road.clanId, road.band);
   for (var i = 0; i < _crossingTries; i++) {
     final session = ref.read(playerSessionProvider);
-    final result = resolveCrossing(route, events,
+    final result = resolveCrossing(road.route, events,
         health: session.currentHealth,
         maxHealth: session.maxHealth,
         gold: session.gold,

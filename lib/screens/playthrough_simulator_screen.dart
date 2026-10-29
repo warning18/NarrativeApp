@@ -1295,7 +1295,7 @@ _SimResult _simulate(
       // it raises by questPowerStanding gains questPower and is spared
       // this chapter's neglect.
       applyPolitics(pay.politics, pay.politicsKey, cause: 'quest:$id');
-      // Its influence in the town's district (wave 18), as in the app.
+      // Its influence in its district (wave 18 step 2: anywhere), as in the app.
       final world = sim?.geography;
       final quest = sim?.quests[id];
       if (growth != null && world != null && quest is Map<String, dynamic>) {
@@ -1305,7 +1305,6 @@ _SimResult _simulate(
             geography: world,
             chapter: lastKnownChapter ?? 1,
             picked: pay.politics,
-            cityHere: world.locationOfNode(here)?.id,
             partyDistrict: districtOfNode(world, here)?.id);
         flags
           ..clear()
@@ -1622,15 +1621,15 @@ _SimResult _simulate(
     // Who holds the road, and how they take the party (wave 16).
     final g = growth;
     final geography = sim?.geography;
-    final ruler = g == null || geography == null
-        ? ''
-        : landRouteRuler(route, geography, g.politics);
-    final rulers = g == null
+    // A clan's own road meets it more often (wave 18 step 2).
+    final road = g == null || geography == null
+        ? null
+        : crossingRuler(route, geography, g.politics, g.tables.clans);
+    final rulers = road == null
         ? const <String>[]
-        : rulerPool(events, ruler,
-            rulerBandFor(g.politics.tierOf(ruler, g.tables.clans)));
+        : rulerPool(events, road.clanId, road.band);
     for (var i = 0; i < 3; i++) {
-      final result = resolveCrossing(route, events,
+      final result = resolveCrossing(road?.route ?? route, events,
           health: c.currentHealth,
           maxHealth: c.maxHealth,
           gold: gold,
