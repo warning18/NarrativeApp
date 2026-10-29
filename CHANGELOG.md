@@ -15,6 +15,13 @@ isn't reconstructable from git history alone.
   are now private, so the analyzer watches them (renames inside one file,
   213 lines). No behaviour change.
 
+## [1.648.0+684]
+
+- **Cleanup: 124 file-only names in lib/data (g to z) are private**
+  Classes, functions, constants and enums that only their own file uses
+  are now private, so the analyzer watches them (renames inside one file,
+  332 lines). No behaviour change.
+
 ## [1.647.0+683]
 
 - **Cleanup: 74 file-only names in lib/data (a to f) are private**

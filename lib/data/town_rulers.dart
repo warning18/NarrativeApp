@@ -20,13 +20,13 @@ import 'factions.dart';
 import 'geography.dart';
 
 /// The location kinds that count as a town.
-const Set<String> townKinds = {'city', 'town', 'village'};
+const Set<String> _townKinds = {'city', 'town', 'village'};
 
 /// The tint of a place no one rules (ARGB): a dull warm grey.
 const int townNeutralColor = 0xFF7C766B;
 
 /// How much darker the border of a tint is than its fill (0..1).
-const double townAccentShade = 0.35;
+const double _townAccentShade = 0.35;
 
 /// Why a place has the ruler it has.
 enum TownRulerSource {
@@ -73,7 +73,7 @@ class TownRuler {
   /// The fill (ARGB): the clan's colour, or [townNeutralColor].
   final int color;
 
-  /// The border (ARGB): [color] darkened by [townAccentShade].
+  /// The border (ARGB): [color] darkened by [_townAccentShade].
   final int accent;
 
   /// A town only: one of its districts has another ruler than it.
@@ -89,7 +89,7 @@ class TownRuler {
 }
 
 /// [argb] darkened by [shade] (0: unchanged, 1: black), alpha kept.
-int shadeColor(int argb, [double shade = townAccentShade]) {
+int shadeColor(int argb, [double shade = _townAccentShade]) {
   int channel(int shift) =>
       (((argb >> shift) & 0xFF) * (1 - shade)).round().clamp(0, 255);
   return (argb & 0xFF000000) |
@@ -104,7 +104,7 @@ int townColorOf(String clanId, Map<String, Faction> factions) => clanId.isEmpty
     ? townNeutralColor
     : factions[clanId]?.color ?? townNeutralColor;
 
-/// The towns of [geography], in its order: the locations of a [townKinds]
+/// The towns of [geography], in its order: the locations of a [_townKinds]
 /// kind and the places with a city plan ([planIds]).
 List<String> townIds(Geography geography,
     {Iterable<String> planIds = const []}) {
@@ -112,7 +112,7 @@ List<String> townIds(Geography geography,
   return [
     for (final place in geography.places.values)
       if ((place.level == GeoLevel.location &&
-              townKinds.contains(place.kind)) ||
+              _townKinds.contains(place.kind)) ||
           plans.contains(place.id))
         place.id,
   ];

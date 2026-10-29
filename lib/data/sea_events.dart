@@ -268,14 +268,14 @@ List<String> raiderPoolFor(Map<String, dynamic> enemyShips, int chapter) =>
       ..sort();
 
 /// A day's odds of raiders on waters the Rusty Eel has not sailed yet.
-const double raiderChance = 0.35;
+const double _raiderChance = 0.35;
 
 /// A day's odds of raiders on waters she has sailed before (a port she has
 /// put in at, or the way home): the party knows the route, and meets one
 /// raider a crossing at most there. The open chapters send the party back
 /// and forth between the camp and its places; the first crossing stays
 /// the dangerous one.
-const double knownWatersRaiderChance = 0.15;
+const double _knownWatersRaiderChance = 0.15;
 
 /// Draws a voyage of [length] days. Roughly a third of days bring a raider
 /// (when any ship may sail at [chapter]; fewer on [knownWaters]), a fifth a
@@ -294,17 +294,17 @@ List<SeaEvent> buildVoyage({
   double stormShift = 0,
 }) {
   final raiders = raiderPoolFor(enemyShips, chapter);
-  final chance = knownWaters ? knownWatersRaiderChance : raiderChance;
+  final chance = knownWaters ? _knownWatersRaiderChance : _raiderChance;
   final events = <SeaEvent>[];
   var raided = alreadyRaided;
   for (var i = 0; i < max(1, length); i++) {
     var roll = random.nextDouble();
     final canRaid = raiders.isNotEmpty && !(knownWaters && raided);
-    if (roll < raiderChance && (!canRaid || roll >= chance)) {
-      roll = raiderChance + roll; // no raider today
+    if (roll < _raiderChance && (!canRaid || roll >= chance)) {
+      roll = _raiderChance + roll; // no raider today
     }
     final SeaEventKind kind;
-    if (roll < raiderChance) {
+    if (roll < _raiderChance) {
       raided = true;
       kind = SeaEventKind.raider;
     } else if (roll < 0.55 + stormShift) {

@@ -72,9 +72,10 @@ Future<void> woundCompanionsOnRoad(WidgetRef ref, int wound) async {
 
 /// Waiting a hazard out in [chapter]: a whole day on the road, with the
 /// day's ration (or, with none left, hunger; see takeRoadStep).
-Future<RoadStep> waitOutRoadHazard(WidgetRef ref, {required int chapter}) => ref
-    .read(playerSessionProvider.notifier)
-    .takeRoadStep(chapter: chapter, watches: watchesPerDay);
+Future<RoadStep> _waitOutRoadHazard(WidgetRef ref, {required int chapter}) =>
+    ref
+        .read(playerSessionProvider.notifier)
+        .takeRoadStep(chapter: chapter, watches: watchesPerDay);
 
 /// What a party nobody steers did about a hazard (see [meetRoadHazard]).
 enum HazardTaken { pushedOn, waitedOut }
@@ -83,7 +84,7 @@ enum HazardTaken { pushedOn, waitedOut }
 /// autoplay (v1.197): met where the game would meet it (see roadEventFor,
 /// with the chapter's condition), and as the simulator takes it, pushed
 /// through above half health (the character and each companion wounded,
-/// see hazardWoundFor), waited out below (see [waitOutRoadHazard]). The
+/// see hazardWoundFor), waited out below (see [_waitOutRoadHazard]). The
 /// road's other events autoplay passes by, as it does detours. Null when
 /// the road holds no hazard.
 Future<HazardTaken?> meetRoadHazard(
@@ -124,6 +125,6 @@ Future<HazardTaken?> meetRoadHazard(
     await woundCompanionsOnRoad(ref, wound);
     return HazardTaken.pushedOn;
   }
-  await waitOutRoadHazard(ref, chapter: chapter);
+  await _waitOutRoadHazard(ref, chapter: chapter);
   return HazardTaken.waitedOut;
 }

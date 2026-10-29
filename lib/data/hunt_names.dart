@@ -5,7 +5,7 @@ import 'random_names.dart';
 /// Enemies that are creatures rather than people -- a hunt names them
 /// with a beast-name ("Old Scar") instead of a given name plus epithet
 /// ("Merrick the Half-Faced").
-const Set<String> beastEnemyIds = {
+const Set<String> _beastEnemyIds = {
   'harbor_rat',
   'rat_matriarch',
   'plague_hound',
@@ -47,7 +47,7 @@ const List<String> _epithets = [
 /// beast, "Merrick the Half-Faced" for a person. Never translated: a name
 /// is a name in either language, as with `random_names.dart`.
 String huntNameFor(String enemyId, Random random) {
-  if (beastEnemyIds.contains(enemyId)) {
+  if (_beastEnemyIds.contains(enemyId)) {
     return _beastNames[random.nextInt(_beastNames.length)];
   }
   final given = randomCharacterName('human', random);
