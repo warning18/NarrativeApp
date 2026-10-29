@@ -607,12 +607,6 @@ class PlayerSession {
           ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
 
-  /// The part of the day the clock is at (wave 16, see [dayPhaseOf]).
-  DayPhase get dayPhase => dayPhaseOf(watch);
-
-  /// The hour (0..23) the clock shows (see [hourOfWatch]).
-  int get hourOfDay => hourOfWatch(watch);
-
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
   /// [completedQuestIds]'s append-only pattern).
