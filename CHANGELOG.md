@@ -19,6 +19,15 @@ isn't reconstructable from git history alone.
     last turn (`rankChange`, `powerChange` for the arrow). Equal powers
     share a rank. No number changes; UX draws the sign.
   - Tests: `clan_power_test` (the ranking).
+- **Core: who holds a region, for the world map's Clans layer** (the
+  user's feedback: tint the whole region, not a halo around a clan's
+  mark).
+  - `regionHolders` / `regionHoldersProvider`: each region (the Salt
+    Coast, the Grey Fen…) and the clans holding its places, strongest
+    first, each with its share against the strongest (two at 1: contested).
+  - `chartZoneHolders(chart, …)`: the same for each of a chart's lands, in
+    `ChartZone.influence`'s shape, so the layer's tint and stripes read it.
+  - Tests: `region_holders_test`.
 
 ## [1.640.0+676]
 
