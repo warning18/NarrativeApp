@@ -193,12 +193,12 @@ void main() {
         key: key,
         child: MaterialApp(
           theme: buildAppTheme(ColorScheme.fromSeed(seedColor: Colors.brown)),
-          home: Scaffold(
+          home: const Scaffold(
             body: Padding(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(18),
               child: StoryText(
                 text: long,
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Spectral', fontSize: 17, height: 1.55),
                 revealKey: 'shot',
                 firstSentenceBold: false,

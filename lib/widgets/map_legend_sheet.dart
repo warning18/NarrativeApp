@@ -105,8 +105,8 @@ Future<void> showMapLegendSheet(
               if (calque == ChartCalque.shops) ...[
                 row(dot(10, const Color(0xFFF2C14E)), 'map_leg_shop'),
                 row(
-                    Icon(Icons.change_history,
-                        size: 18, color: const Color(0xFF7DBE6A)),
+                    const Icon(Icons.change_history,
+                        size: 18, color: Color(0xFF7DBE6A)),
                     'map_leg_camp'),
               ],
               const SizedBox(height: 8),

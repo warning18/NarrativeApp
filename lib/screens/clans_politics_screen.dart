@@ -1651,9 +1651,7 @@ class _IntrigueCard extends StatelessWidget {
                               color: i + 1 > stage
                                   ? theme.colorScheme.onSurfaceVariant
                                   : null)),
-                      if ((i < stage
-                              ? _faceName(intrigue.stages[i].npcId)
-                              : null)
+                      if (i < stage ? _faceName(intrigue.stages[i].npcId) : null
                           case final name?)
                         _face(theme, name,
                             Key('intrigue_face_${intrigue.id}_${i + 1}')),
@@ -1691,11 +1689,11 @@ class _IntrigueCard extends StatelessWidget {
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
-              if ((outcome != null &&
+              if (outcome != null &&
                           outcome! >= 0 &&
                           outcome! < intrigue.outcomes.length
                       ? _faceName(intrigue.outcomes[outcome!].npcId)
-                      : null)
+                      : null
                   case final name?)
                 _face(theme, name, Key('intrigue_face_${intrigue.id}_outcome')),
             ],

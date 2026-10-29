@@ -163,7 +163,7 @@ void main() {
       expect(find.byKey(const Key('plain')), findsNothing);
       // A clan without a flag keeps the row's own marker.
       await tester.pumpWidget(
-          host(DistrictLead(const DistrictStanding(id: 'x'), plain: plain)));
+          host(const DistrictLead(DistrictStanding(id: 'x'), plain: plain)));
       expect(find.byKey(const Key('plain')), findsOneWidget);
     });
   });

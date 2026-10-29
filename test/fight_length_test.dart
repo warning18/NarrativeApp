@@ -126,7 +126,7 @@ void main() {
         ', with ${withRules.winBy.map((k, v) => MapEntry(k, v.toStringAsFixed(1)))}');
     expect(withRules.rounds, lessThan(without.rounds));
     // The cleric's endless fights are the ones it ends.
-    expect(withRules.byProfession['cleric']!,
+    expect(withRules.byProfession['cleric'],
         lessThan(without.byProfession['cleric']!));
   });
 }

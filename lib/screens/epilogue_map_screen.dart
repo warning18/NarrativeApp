@@ -317,7 +317,7 @@ class _MapBox extends StatelessWidget {
       add(r.to);
     }
     if (minX > maxX) return const Rect.fromLTWH(0, 0, 256, 176);
-    final pad = 14.0;
+    const pad = 14.0;
     return Rect.fromLTRB(
       math.max(0, minX - pad),
       math.max(0, minY - pad),

@@ -78,7 +78,7 @@ void main() {
         (size.width - 1000 * scale) / 2, (size.height - 1000 * scale) / 2);
     Offset at(Offset plan) => topLeft + origin + plan * scale;
 
-    final wharf = 'saltmouth_wharf';
+    const wharf = 'saltmouth_wharf';
     expect(record.districts.containsKey(wharf), isTrue);
     await tester.tapAt(at(record.districts[wharf]!.label));
     await settle();

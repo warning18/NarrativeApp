@@ -405,7 +405,7 @@ class _Fire extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final g = _Grid(canvas, size);
-    final base = _rows - 6.0;
+    const base = _rows - 6.0;
     final top = _rows * (1 - level);
     for (var x = from; x < to; x += 1) {
       final i = x.floor();
@@ -703,12 +703,12 @@ void main() {
           Stack(fit: StackFit.expand, children: [
             _scene('smoke', 1),
             const ColoredBox(color: Color(0xB3000000)),
-            Align(
-                alignment: const Alignment(0, -0.1),
+            const Align(
+                alignment: Alignment(0, -0.1),
                 child: SizedBox(
                     height: 300,
                     child: ColorFiltered(
-                        colorFilter: const ColorFilter.matrix(<double>[
+                        colorFilter: ColorFilter.matrix(<double>[
                           0.7, 0.05, 0.02, 0, 0, //
                           0.05, 0.55, 0.02, 0, 0,
                           0.04, 0.04, 0.5, 0, 0,
@@ -717,7 +717,7 @@ void main() {
                         child: FittedBox(
                             child: PixelBanner(id: titleBannerId, scale: 1))))),
             const CustomPaint(painter: _Fire(0.55)),
-            CustomPaint(painter: _Ash(11)),
+            const CustomPaint(painter: _Ash(11)),
           ]),
           line: 1,
           isNew: 'the fire (one painter)'),
@@ -788,7 +788,7 @@ void main() {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [Color(0xEE2B2830), Color(0x002B2830)])))),
-            CustomPaint(painter: _Ash(23)),
+            const CustomPaint(painter: _Ash(23)),
           ]),
           line: 3),
       _Beat(

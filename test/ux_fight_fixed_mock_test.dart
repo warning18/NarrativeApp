@@ -311,7 +311,7 @@ class _DashedBox extends CustomPainter {
       ..strokeWidth = 1;
     const dash = 4.0;
     void line(Offset a, Offset b) {
-      final d = (b - a);
+      final d = b - a;
       final len = d.distance;
       final dir = d / len;
       for (var t = 0.0; t < len; t += dash * 2) {
