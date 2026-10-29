@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.654.0+690]
+
+- **The opening scene is told as an animation**
+  The first scene's text no longer stands as a wall: it arrives a sentence at a time, word by word,
+  the earlier sentences rising and dimming, the bold phrases in gold. As the last sentence ends the
+  Grey Shroud's sigil (the title's standard) rises faintly behind the text, the text folds into a
+  strip above the choice, and the sigil fades out as the choice settles. A tap finishes the
+  sentence, a second tap jumps to the end; with reduced motion the whole text shows at once and the
+  choice only fades in. Narrative's words are unchanged.
+
 ## [1.652.0+688]
 
 - **Core: chapter 1 review cleanup (C4, C5, S2).**
