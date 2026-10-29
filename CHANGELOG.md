@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.629.0+665]
+
+- **Cleanup: 120 file-only names in lib/combat are private**
+  Classes, functions, constants and enums of `lib/combat` that only their
+  own file uses are now private, so the analyzer watches them (renames inside
+  one file, 327 lines). No behaviour change.
+
 ## [1.628.0+664]
 
 - **Cleanup: 68 UI strings that nothing reads are removed**

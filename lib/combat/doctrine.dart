@@ -17,7 +17,7 @@ enum DoctrineRule {
   /// No signature rule: only the affix taste.
   none,
 
-  /// The Writ: every [writPeriod]th round, the party's skill faces fall
+  /// The Writ: every [_writPeriod]th round, the party's skill faces fall
   /// silent (the Silence of enemy_intent.dart, laid by decree).
   writ,
 
@@ -29,12 +29,12 @@ enum DoctrineRule {
 }
 
 /// The Writ falls on every third round: rounds 3, 6, 9...
-const int writPeriod = 3;
+const int _writPeriod = 3;
 
 /// The share of an enemy's gold reward each hit it lands as a thief lifts,
 /// and the most a thief carries, as a multiple of that reward.
-const double plunderHitShare = 0.35;
-const double plunderStashCap = 2.0;
+const double _plunderHitShare = 0.35;
+const double _plunderStashCap = 2.0;
 
 class Doctrine {
   const Doctrine(this.factionId, this.rule, this.affixes);
@@ -81,18 +81,18 @@ Doctrine? doctrineForFight({
 
 /// True when the Writ silences the party's skill faces in round [round]
 /// (1 is the first).
-bool writSilencesRound(int round) => round > 0 && round % writPeriod == 0;
+bool writSilencesRound(int round) => round > 0 && round % _writPeriod == 0;
 
 /// The gold one of a thief's hits lifts, given the thief's own gold
 /// [reward]: a share of it, at least 1 for any thief with a reward.
 int plunderPerHit(int reward) {
   if (reward <= 0) return 0;
-  final share = (reward * plunderHitShare).round();
+  final share = (reward * _plunderHitShare).round();
   return share < 1 ? 1 : share;
 }
 
 /// The most a thief with [reward] gold of its own carries.
-int plunderCap(int reward) => (reward * plunderStashCap).round();
+int plunderCap(int reward) => (reward * _plunderStashCap).round();
 
 /// What a thief with [stash] carries after one more hit that lifts [hit]:
 /// never past [cap].

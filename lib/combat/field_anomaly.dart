@@ -504,8 +504,8 @@ const double fieldAnomalyChance = 0.30;
 
 /// The earliest round an anomaly can break, so the first round is always
 /// read before it is changed; and the latest.
-const int anomalyEarliestOnset = 2;
-const int anomalyLatestOnset = 4;
+const int _anomalyEarliestOnset = 2;
+const int _anomalyLatestOnset = 4;
 
 /// The Perception that reads which side an omen falls on: below it the party
 /// feels that something is coming and not for whom.
@@ -671,8 +671,8 @@ FieldAnomalyPlan planFor(
                 ? AnomalySide.party
                 : AnomalySide.enemies),
     onset: onset ??
-        anomalyEarliestOnset +
-            random.nextInt(anomalyLatestOnset - anomalyEarliestOnset + 1),
+        _anomalyEarliestOnset +
+            random.nextInt(_anomalyLatestOnset - _anomalyEarliestOnset + 1),
     rounds: rounds ?? (random.nextInt(5) < 2 ? 3 : 2),
   );
 }
@@ -687,6 +687,6 @@ FieldAnomalyPlan? forcedFieldAnomaly(String? id,
   return planFor(anomaly,
       random: random ?? Random(),
       side: side,
-      onset: anomalyEarliestOnset,
+      onset: _anomalyEarliestOnset,
       rounds: 3);
 }

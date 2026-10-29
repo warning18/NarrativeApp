@@ -25,7 +25,7 @@ enum ShipRoom { helm, guns, bulwark, hold }
 /// at medium range. Some weapons reach only so far (a weapon's `ranges`).
 enum ShipRange { close, medium, long }
 
-ShipRange? rangeFromName(String name) {
+ShipRange? _rangeFromName(String name) {
   for (final range in ShipRange.values) {
     if (range.name == name) return range;
   }
@@ -39,8 +39,8 @@ Set<ShipRange> weaponRangesFrom(Object? raw) {
   final ranges = <ShipRange>{
     if (raw is List)
       for (final name in raw)
-        if (rangeFromName(name.toString()) != null)
-          rangeFromName(name.toString())!,
+        if (_rangeFromName(name.toString()) != null)
+          _rangeFromName(name.toString())!,
   };
   return ranges.isEmpty ? ShipRange.values.toSet() : ranges;
 }
@@ -71,7 +71,7 @@ ShipAmmo ammoFromName(Object? name) {
 const int maxShieldLayers = 3;
 
 /// Evasion percent per working Helm pip.
-const int evasionPerHelmLevel = 8;
+const int _evasionPerHelmLevel = 8;
 
 /// No ship, however light and however well helmed, slips more than this.
 const int maxEvasionPercent = 45;
@@ -80,7 +80,7 @@ const int maxEvasionPercent = 45;
 const int fireHullDamagePerRound = 3;
 
 /// The share of a landed shot's damage its room's crew member takes.
-const double crewInjuryShare = 0.5;
+const double _crewInjuryShare = 0.5;
 
 /// A shot that lands in the hold for this much hull or more opens a leak.
 const int leakHullThreshold = 8;
@@ -337,7 +337,7 @@ class ShipCrew {
 typedef Stations = Map<ShipRoom, ShipCrew>;
 
 /// A helmsman's evasion on top of the helm's own: a nimble one adds more.
-int crewEvasionBonus(ShipCrew crew) =>
+int _crewEvasionBonus(ShipCrew crew) =>
     (5 + max(0, crew.dexterity) ~/ 2).clamp(5, 15);
 
 /// Hull a hold hand patches per turn: more with a working hold and a
@@ -348,15 +348,15 @@ int crewHullRepair(ShipCrew crew, int holdWorking) => holdWorking <= 0
 
 /// What a shot that lands in a crewed room costs the crew member there.
 int crewInjuryFor(ShipWeapon weapon) =>
-    max(3, (weapon.damage * crewInjuryShare).round());
+    max(3, (weapon.damage * _crewInjuryShare).round());
 
 /// A ship's evasion percent this turn: the helm's pips plus its helmsman,
 /// none of it from a knocked-out helm.
 int evasionFor(ShipState ship, {ShipCrew? helmsman}) {
   final helm = ship.room(ShipRoom.helm);
   if (helm.isDown) return 0;
-  var evasion = helm.working * evasionPerHelmLevel;
-  if (helmsman != null) evasion += crewEvasionBonus(helmsman);
+  var evasion = helm.working * _evasionPerHelmLevel;
+  if (helmsman != null) evasion += _crewEvasionBonus(helmsman);
   return min(maxEvasionPercent, evasion);
 }
 
@@ -440,8 +440,8 @@ class ShotMods {
   final bool floods;
 
   /// The shield rules of v1.217: a layer that stops a shot still lets a
-  /// share of it through to the hull ([shieldChipShare]), a shot at the
-  /// bulwark itself or a heavy one ([heavyShotDamage]) strips more layers.
+  /// share of it through to the hull ([_shieldChipShare]), a shot at the
+  /// bulwark itself or a heavy one ([_heavyShotDamage]) strips more layers.
   final bool shieldBreak;
 
   /// A perfect aim finds the gap: with [shieldBreak] on, the shot passes
@@ -467,10 +467,10 @@ int scaledDamage(int damage, double factor) =>
     damage <= 0 ? 0 : max(1, (damage * factor).round());
 
 /// The share of a shot's hull damage that gets past a shield layer.
-const double shieldChipShare = 0.3;
+const double _shieldChipShare = 0.3;
 
 /// A weapon this heavy strips a second layer as it breaks on the shield.
-const int heavyShotDamage = 20;
+const int _heavyShotDamage = 20;
 
 /// Layers a shot that is stopped takes down: one, a second for a shot at
 /// the bulwark itself, another for a heavy weapon (never more than stand).
@@ -478,7 +478,7 @@ int layersStripped(ShipWeapon weapon, ShipRoom room, ShotMods mods) {
   if (!mods.shieldBreak) return 1;
   var n = 1;
   if (room == ShipRoom.bulwark) n++;
-  if (weapon.damage >= heavyShotDamage) n++;
+  if (weapon.damage >= _heavyShotDamage) n++;
   return n;
 }
 
@@ -509,7 +509,7 @@ ShotOutcome resolveShot({
         .withRoom(ShipRoom.bulwark, cracked);
     if (mods.shieldBreak) {
       final chip =
-          scaledDamage(weapon.damage, mods.damageFactor * shieldChipShare);
+          scaledDamage(weapon.damage, mods.damageFactor * _shieldChipShare);
       next = next.copyWith(hull: max(0, next.hull - chip));
     }
     next = next.copyWith(layers: min(next.layers, next.maxLayers));
@@ -596,8 +596,8 @@ ShipState chargeWeapons(ShipState ship, {bool gunnerAboard = false}) {
 }
 
 /// What a room's crew member did at the start of the turn.
-class CrewWork {
-  const CrewWork({
+class _CrewWork {
+  const _CrewWork({
     required this.crew,
     required this.room,
     this.fireOut = false,
@@ -622,10 +622,10 @@ class CrewWork {
 /// before mending the hold, and whose room is sound and dry patches the
 /// hull instead. Returns the ship, what each of them did, and the rooms
 /// whose hands are busy.
-({ShipState ship, List<CrewWork> work, Set<ShipRoom> busy}) crewTurn(
+({ShipState ship, List<_CrewWork> work, Set<ShipRoom> busy}) crewTurn(
     ShipState ship, Stations stations) {
   var next = ship;
-  final work = <CrewWork>[];
+  final work = <_CrewWork>[];
   final busy = <ShipRoom>{};
   for (final entry in stations.entries) {
     final room = entry.key;
@@ -633,19 +633,19 @@ class CrewWork {
     final state = next.room(room);
     if (state.onFire) {
       next = next.withRoom(room, state.copyWith(onFire: false));
-      work.add(CrewWork(crew: crew, room: room, fireOut: true));
+      work.add(_CrewWork(crew: crew, room: room, fireOut: true));
       busy.add(room);
       continue;
     }
     if (room == ShipRoom.hold && next.leaks > 0) {
       next = next.copyWith(leaks: next.leaks - 1);
-      work.add(CrewWork(crew: crew, room: room, leakBailed: true));
+      work.add(_CrewWork(crew: crew, room: room, leakBailed: true));
       busy.add(room);
       continue;
     }
     if (state.damage > 0) {
       next = next.withRoom(room, state.copyWith(damage: state.damage - 1));
-      work.add(CrewWork(crew: crew, room: room, roomRepaired: true));
+      work.add(_CrewWork(crew: crew, room: room, roomRepaired: true));
       busy.add(room);
       continue;
     }
@@ -654,7 +654,7 @@ class CrewWork {
           crewHullRepair(crew, next.room(ShipRoom.hold).working));
       if (hull > 0) {
         next = next.copyWith(hull: next.hull + hull);
-        work.add(CrewWork(crew: crew, room: room, hullRepaired: hull));
+        work.add(_CrewWork(crew: crew, room: room, hullRepaired: hull));
       }
     }
   }
@@ -680,7 +680,7 @@ class EnemyMaintenance {
 
 /// The order the enemy's crew tends its rooms in: its guns before all,
 /// since a silenced ship is a lost one.
-const List<ShipRoom> enemyRepairPriority = [
+const List<ShipRoom> _enemyRepairPriority = [
   ShipRoom.guns,
   ShipRoom.bulwark,
   ShipRoom.helm,
@@ -699,7 +699,7 @@ EnemyMaintenance enemyMaintenance(ShipState ship,
   final actions = max(0, max(1, ship.repairsPerRound) + extra - penalty);
   for (var action = 0; action < actions; action++) {
     ShipRoom? burning;
-    for (final room in enemyRepairPriority) {
+    for (final room in _enemyRepairPriority) {
       if (next.room(room).onFire) {
         burning = room;
         break;
@@ -716,7 +716,7 @@ EnemyMaintenance enemyMaintenance(ShipState ship,
       continue;
     }
     ShipRoom? damaged;
-    for (final room in enemyRepairPriority) {
+    for (final room in _enemyRepairPriority) {
       if (next.room(room).damage > 0) {
         damaged = room;
         break;
@@ -888,7 +888,7 @@ ShipState buildPlayerShip({
     final bonus = part['roomBonus'];
     if (bonus is Map) {
       for (final entry in bonus.entries) {
-        final room = roomFromName(entry.key.toString());
+        final room = _roomFromName(entry.key.toString());
         if (room == null) continue;
         final current = rooms[room]!;
         rooms[room] = current.copyWith(
@@ -975,7 +975,7 @@ Map<ShipRoom, RoomState> _roomsFrom(Object? raw) {
   };
   if (raw is Map) {
     for (final entry in raw.entries) {
-      final room = roomFromName(entry.key.toString());
+      final room = _roomFromName(entry.key.toString());
       if (room == null) continue;
       rooms[room] =
           RoomState(level: max(0, (entry.value as num?)?.toInt() ?? 1));
@@ -984,7 +984,7 @@ Map<ShipRoom, RoomState> _roomsFrom(Object? raw) {
   return rooms;
 }
 
-ShipRoom? roomFromName(String name) {
+ShipRoom? _roomFromName(String name) {
   for (final room in ShipRoom.values) {
     if (room.name == name) return room;
   }
@@ -1014,11 +1014,11 @@ bool bulwarkOpen(ShipState ship) =>
     ship.layers == 0 && ship.room(ShipRoom.bulwark).isDown;
 
 /// The share of max hull boarders wreck when they win the deck.
-const double boardersHullShare = 0.2;
+const double _boardersHullShare = 0.2;
 
 /// The share of max hull a boarding party thrown back costs the Eel: the
 /// grapple lines cut and the deck raked while they scramble home.
-const double repelledHullShare = 0.15;
+const double _repelledHullShare = 0.15;
 
 /// A deck fight is fought at this difficulty: a crew on its own pitching
 /// deck, at the rail, is far more than the same men met on a road.
@@ -1031,7 +1031,7 @@ bool grapplesHold(ShipState target, double roll) =>
 
 /// The Eel after her boarding party was thrown back.
 ShipState boardingRepelled(ShipState ship) => ship.copyWith(
-    hull: max(1, ship.hull - (ship.maxHull * repelledHullShare).round()));
+    hull: max(1, ship.hull - (ship.maxHull * _repelledHullShare).round()));
 
 /// Boarders who won the deck before they were driven off: the hold is
 /// wrecked (knocked out) and a share of the hull with it, never below one
@@ -1041,7 +1041,8 @@ ShipState boardersWreck(ShipState ship) {
   return ship
       .withRoom(ShipRoom.hold, hold.copyWith(damage: hold.level))
       .copyWith(
-          hull: max(1, ship.hull - (ship.maxHull * boardersHullShare).round()));
+          hull:
+              max(1, ship.hull - (ship.maxHull * _boardersHullShare).round()));
 }
 
 /// What an enemy ship brings to the rail: the crew it boards with (ids in
