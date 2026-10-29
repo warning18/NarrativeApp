@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
+import '../data/geography.dart' show GeoPlace;
 import '../data/ability_check.dart';
 import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
@@ -59,7 +60,8 @@ import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
-import '../providers/city_provider.dart' show cityPlanRecordsProvider;
+import '../providers/city_provider.dart'
+    show cityPlanRecordsProvider, lockedStoryWaysProvider;
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
@@ -1042,8 +1044,11 @@ class _StoryView extends ConsumerWidget {
 /// text).
 bool isStoryChoiceLocked(
         StoryChoice choice, StoryData story, PlayerSession session,
-        {bool isExcursion = false, CoastWorld? world}) =>
-    _isChoiceLocked(choice, story, session, isExcursion, world: world);
+        {bool isExcursion = false,
+        CoastWorld? world,
+        Map<String, GeoPlace> shutWays = const {}}) =>
+    _isChoiceLocked(choice, story, session, isExcursion,
+        world: world, shutWays: shutWays);
 
 /// Whether [node]'s page holds the party until one of its ways is taken
 /// (the scene lock, see scene_lock.dart), for the play state now: never on
@@ -1058,6 +1063,7 @@ bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
   final session = ref.watch(playerSessionProvider);
   final world = ref.watch(coastGateWorldProvider);
   final geography = ref.watch(geographyProvider);
+  final shutWays = ref.watch(lockedStoryWaysProvider);
   final mainQuestOpen =
       ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
   final everyWayMapped = mapped == null &&
@@ -1075,7 +1081,8 @@ bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
             return (
               here: here,
               takeable: !(c.mainQuest && !mainQuestOpen) &&
-                  !isStoryChoiceLocked(c, story, session, world: world),
+                  !isStoryChoiceLocked(c, story, session,
+                      world: world, shutWays: shutWays),
               mapped: mapped?.call(c) ?? (everyWayMapped || !here),
             );
           }(),
@@ -1109,6 +1116,10 @@ String? storyChoiceLockedText(
   if (_paymentShort(choice, session.gold, isExcursion)) {
     return _goldShortText(ref, choice, session.gold, french: french);
   }
+  // A way into a locked district reads as the district's own line.
+  final district =
+      isExcursion ? null : ref.watch(lockedStoryWaysProvider)[choice.nextId];
+  if (district != null) return district.lockedTextFor(french);
   return choice.lockedTextFor(french);
 }
 
@@ -1154,6 +1165,7 @@ bool _isChoiceLocked(
   PlayerSession session,
   bool isExcursion, {
   CoastWorld? world,
+  Map<String, GeoPlace> shutWays = const {},
 }) {
   // A payment on the road (an offering, a toll, a fine) waits for a purse
   // that holds it, and so does a story choice marked as one (a fee, a
@@ -1161,6 +1173,8 @@ bool _isChoiceLocked(
   // scene's gold requirement; gold it takes away unmarked is a loss.
   if (_paymentShort(choice, session.gold, isExcursion)) return true;
   if (isExcursion) return false;
+  // A way into a locked district (lockedStoryWaysProvider, v1.616).
+  if (shutWays.containsKey(choice.nextId)) return true;
   // A politics gate that fails, on a choice with a locked text to show
   // (v1.196); one without is hidden (see choiceHiddenFor).
   if (world != null &&
@@ -3032,7 +3046,8 @@ class _HubChoiceCard extends ConsumerWidget {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
         _isChoiceLocked(choice, story, session, isExcursion,
-            world: ref.watch(coastGateWorldProvider));
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
@@ -3246,7 +3261,8 @@ class _ChoiceButton extends ConsumerWidget {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
         _isChoiceLocked(choice, story, session, isExcursion,
-            world: ref.watch(coastGateWorldProvider));
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
 
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
