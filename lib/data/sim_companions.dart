@@ -28,6 +28,7 @@
 import 'dart:math';
 
 import '../combat/combat_engine.dart' show scaledDamage, scaledMaxHealth;
+import '../combat/fight_numbers.dart' show reviveHealthFraction;
 import '../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart' show deriveAllyBaseStats;
@@ -40,8 +41,8 @@ import 'sim_policy.dart' show simDieValue;
 import 'story_companions.dart';
 
 /// A knocked-out companion is back at this share of their health after a
-/// won fight (fight_screen.dart's `_reviveHealthFraction`).
-const double simReviveHealthFraction = 0.3;
+/// won fight (fight_numbers.dart).
+const double simReviveHealthFraction = reviveHealthFraction;
 
 /// One thing the party went through: [kind] is `recruit`, `pick` (seated),
 /// `bench`, `swap` ([companionId] seated for [other]), `leave` (walked out
