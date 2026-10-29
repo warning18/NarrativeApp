@@ -13,7 +13,6 @@
         "targetEnemyID": "slum_thug",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Vaincre le voyou des bas-quartiers"
       }
@@ -33,7 +32,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_first_blood_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -57,7 +55,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Lysa",
-        "locationID": "hovel",
         "requiredAmount": 1,
         "targetFlag": "void_banner_bearer",
         "description_fr": "Trouver ce que votre mère a caché sous la maison, et le sortir d’Alster",
@@ -79,7 +76,6 @@
         "alignmentModifier": 5,
         "flagToAdd": "has_void_banner",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Rentrer à la maison"
       }
@@ -104,7 +100,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "eel_owned",
         "description_fr": "Obtenir le Rusty Eel : l’acheter, ou en payer le prix au chantier",
@@ -116,7 +111,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hull_patched",
         "description_fr": "Rapiécer sa coque à l’Allée des Pêcheurs",
@@ -128,7 +122,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "sail_mended",
         "description_fr": "Réparer sa voile à la Cour des Tanneurs",
@@ -150,7 +143,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_leave_saltmouth_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Chercher une sortie"
       }
@@ -175,7 +167,6 @@
         "targetEnemyID": "harbor_rat",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Chasser les rats qui souillent les réserves du port",
         "countFromAccept": true
@@ -196,7 +187,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_dockside_debts_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -222,7 +212,6 @@
         "targetEnemyID": "",
         "targetItemID": "material_iron_ore",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Rapporter du minerai de fer pour la forge du contrebandier"
       }
@@ -242,7 +231,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_smugglers_favor_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -268,7 +256,6 @@
         "targetEnemyID": "street_bandit",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison",
         "countFromAccept": true
@@ -289,7 +276,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_burning_manifest_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -315,7 +301,6 @@
         "targetEnemyID": "smuggler_captain",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Affronter le capitaine contrebandier",
         "countFromAccept": true
@@ -336,7 +321,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_captains_gambit_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -362,7 +346,6 @@
         "targetEnemyID": "plague_hound",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre le chien pestiféré qui rôde sur le port",
         "countFromAccept": true
@@ -383,7 +366,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_harbor_reckoning_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -409,7 +391,6 @@
         "targetEnemyID": "cultist_acolyte",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Faire taire l’acolyte cultiste dans le Quartier des Cendres"
       }
@@ -429,7 +410,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_ashen_oath_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -453,7 +433,6 @@
         "targetEnemyID": "",
         "targetItemID": "quest_sealed_letter",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Récupérer la lettre scellée de l’Inquisition"
       }
@@ -473,7 +452,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_inquisition_ledger_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -497,7 +475,6 @@
         "targetEnemyID": "void_wisp",
         "targetItemID": "artifact_moon_shard",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Arracher l’éclat de lune à la chandelle grise"
       }
@@ -517,7 +494,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_void_relic_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -541,7 +517,6 @@
         "targetEnemyID": "inquisition_high_warden",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Vaincre le Haut Gardien de l’Inquisition"
       }
@@ -561,7 +536,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_the_high_wardens_fall_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -585,7 +559,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Lysa",
-        "locationID": "",
         "requiredAmount": 1,
         "targetNPCID": "lysa",
         "description_fr": "Porter au camp la nouvelle de la chute du Gardien",
@@ -607,7 +580,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_alsters_dawn_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -632,7 +604,6 @@
         "targetEnemyID": "inquisition_soldier",
         "targetItemID": "",
         "targetNPCName": "Kelda",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Kelda à tenir la porte du quai contre les hommes d’abordage",
         "targetNPCName_fr": "Kelda",
@@ -654,7 +625,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_keldas_stand_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Combattre à ses côtés"
       }
@@ -680,7 +650,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Sable",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Récupérer la reconnaissance de dette que Sable a perdue face au tricheur du tonneau des dockers",
         "targetNPCName_fr": "Sable",
@@ -702,7 +671,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_sables_wager_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Relever le pari"
       }
@@ -728,7 +696,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Maren",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Écouter Sœur Maren plaider l’abandon de ses vœux envers l’Inquisition",
         "targetNPCName_fr": "Maren"
@@ -749,7 +716,6 @@
         "alignmentModifier": 5,
         "flagToAdd": "q_ch3_marens_penance_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "La croire sur parole"
       }
@@ -773,7 +739,6 @@
         "targetEnemyID": "inquisition_warden",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "S’occuper du gardien désigné par l’indicateur",
         "countFromAccept": true
@@ -794,7 +759,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_informants_tip_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -840,7 +804,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_2015_ternrow",
         "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
@@ -861,7 +824,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_terns_toll_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -907,7 +869,6 @@
         "targetEnemyID": "smuggler_captain",
         "targetItemID": "",
         "targetNPCName": "Liora",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Aider Liora à mettre fin aux raids du capitaine contrebandier contre les bateaux de réfugiés",
         "targetNPCName_fr": "Liora",
@@ -929,7 +890,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_lioras_watch_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Tirer ensemble"
       }
@@ -981,7 +941,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Vess",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Rejoindre la mer en vie ; Vess vous retrouvera",
         "targetNPCName_fr": "Vess",
@@ -1003,7 +962,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch1_vess_in_the_dark_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Écouter"
       }
@@ -1027,7 +985,6 @@
         "targetEnemyID": "hollow_court_zealot",
         "targetItemID": "",
         "targetNPCName": "Grosh",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Prouver que votre argent est bon en abattant un zélote de la Cour Creuse avec Grosh",
         "targetNPCName_fr": "Grosh",
@@ -1049,7 +1006,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_groshs_price_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "L’engager sur-le-champ"
       }
@@ -1073,7 +1029,6 @@
         "targetEnemyID": "inquisition_auxiliary",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants",
         "countFromAccept": true
@@ -1094,7 +1049,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_reckoning_wall_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1155,7 +1109,6 @@
         "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre une créature de la Fosse"
       }
@@ -1175,7 +1128,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_temptation_light_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter la charge"
       }
@@ -1204,7 +1156,6 @@
         "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre un soldat du Chœur"
       }
@@ -1224,7 +1175,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_temptation_dark_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Conclure le marché"
       }
@@ -1248,7 +1198,6 @@
         "targetEnemyID": "hollow_court_inquisitor",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Vaincre l’Inquisiteur de la Cour Creuse qui tient le second registre"
       }
@@ -1268,7 +1217,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch4_the_second_ledger_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1292,7 +1240,6 @@
         "targetEnemyID": "catacomb_ghoul",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 2,
         "countFromAccept": true,
         "description_fr": "Débarrasser les galeries inondées de deux goules des catacombes"
@@ -1313,7 +1260,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch4_ossuary_bounty_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1357,7 +1303,6 @@
         "targetEnemyID": "void_archon",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Vaincre l’Archonte du Néant qui garde la veillée du Linceul"
       }
@@ -1377,7 +1322,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch5_the_dead_heart_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1401,7 +1345,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_6010_confession",
         "description_fr": "Entendre la confession de l’Inquisiteur pénitent"
@@ -1422,7 +1365,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch5_penitents_confession_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1503,7 +1445,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "on_throne"
       }
@@ -1525,7 +1466,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch7_lantern_throne_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": ""
       }
     ],
@@ -1546,7 +1486,6 @@
         "targetEnemyID": "void_sovereign",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Vaincre le Souverain au-delà de la déchirure"
       }
@@ -1566,7 +1505,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch6_beyond_the_tear_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1590,7 +1528,6 @@
         "targetEnemyID": "hollow_reflection",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 2,
         "countFromAccept": true,
         "description_fr": "Abattre les reflets creux qui portent les visages des vaincus"
@@ -1611,7 +1548,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch6_faces_of_the_fallen_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1635,7 +1571,6 @@
         "targetEnemyID": "catacomb_ghoul",
         "targetItemID": "",
         "targetNPCName": "Tobin",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Chasser une goule des catacombes loin des chandelles du cloître noyé avec Frère Tobin",
         "targetNPCName_fr": "Tobin",
@@ -1657,7 +1592,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch4_tobins_vigil_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Se ranger du côté du marteau"
       }
@@ -1681,7 +1615,6 @@
         "targetEnemyID": "void_hound",
         "targetItemID": "",
         "targetNPCName": "Malrik",
-        "locationID": "",
         "requiredAmount": 1,
         "description_fr": "Abattre un molosse du Néant avec Malrik et prouver que l’association paie",
         "targetNPCName_fr": "Malrik",
@@ -1703,7 +1636,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch5_malriks_cut_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Toper pour la part"
       }
@@ -1729,7 +1661,6 @@
         "targetEnemyID": "white_admiral",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1
       }
     ],
@@ -1750,7 +1681,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch6_the_white_fleet_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": ""
       }
     ],
@@ -1771,7 +1701,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Dorran Quill",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "scaffold_clerk_faced",
         "description_fr": "Affronter le greffier du Registre du Sel pour les gages des Échafaudeurs",
@@ -1793,7 +1722,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_unpaid_scaffold_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1868,7 +1796,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Imeh",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "glass_tested",
         "description_fr": "Éprouver le verre des terrasses d’Imeh avant que le feu du Chœur Calciné ne l’atteigne",
@@ -1890,7 +1817,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch3_glass_from_the_terraces_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -1964,7 +1890,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Brannoc Reedtithe",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "bark_recovered",
         "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clefs",
@@ -1986,7 +1911,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch4_bark_tithe_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2061,7 +1985,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Orsabet Vell",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "count_carried",
         "description_fr": "Rapporter le compte d’Orsabet depuis la pierre des noms, au-delà du givre",
@@ -2083,7 +2006,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch5_candle_count_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2162,7 +2084,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Ghrem Stonebrow",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "quarry_face_held",
         "description_fr": "Tenir le front de carrière de la pierre du foyer contre la taille des Carriers",
@@ -2184,7 +2105,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch5_hearth_stone_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2259,7 +2179,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Nkem Tallow",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "salvage_freed",
         "description_fr": "Libérer la prise de Nkem de la fourrière de l’Amirauté",
@@ -2281,7 +2200,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch6_salvage_rights_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2360,7 +2278,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_reed_later",
         "description_fr": "Lire la pétition"
@@ -2381,7 +2298,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch7_reed_gate_grievance_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2437,7 +2353,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_herald_later",
         "description_fr": "Lire les termes de Morrow"
@@ -2458,7 +2373,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch7_heralds_errand_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2513,7 +2427,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "hub_7400_chain_later",
         "description_fr": "Recopier la table des marées"
@@ -2534,7 +2447,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch7_chain_masters_boy_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -2589,7 +2501,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_dominion_trail",
         "description_fr": "Trouvez l’escalier sous la Salle de la Lanterne.",
@@ -2601,7 +2512,6 @@
         "targetEnemyID": "champion_dominion",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter la Porte-Lanterne",
@@ -2623,7 +2533,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_dominion_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "L’écouter"
       }
@@ -2662,7 +2571,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_vigil_trail",
         "description_fr": "Montez au poste de la crête, au-dessus de Rimewell.",
@@ -2674,7 +2582,6 @@
         "targetEnemyID": "champion_vigil",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter la Capitaine du Guet",
@@ -2696,7 +2603,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_vigil_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "La rencontrer"
       }
@@ -2735,7 +2641,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_compact_trail",
         "description_fr": "Trouvez la forge froide de la Rue des Braises.",
@@ -2747,7 +2652,6 @@
         "targetEnemyID": "champion_compact",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter le Dernier Marteau",
@@ -2769,7 +2673,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_compact_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Relever le défi"
       }
@@ -2808,7 +2711,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_mire_trail",
         "description_fr": "Suivez le héron dans le marais, et ne demandez pas où il va.",
@@ -2820,7 +2722,6 @@
         "targetEnemyID": "champion_mire",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter la Main",
@@ -2842,7 +2743,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_mire_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter l’invitation"
       }
@@ -2881,7 +2781,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_crows_trail",
         "description_fr": "Trouvez le bateau que la percepteuse garde au Quai des Contrebandiers.",
@@ -2893,7 +2792,6 @@
         "targetEnemyID": "champion_crows",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter la Percepteuse",
@@ -2915,7 +2813,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_crows_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Écouter ses conditions"
       }
@@ -2954,7 +2851,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "nemq_penitents_trail",
         "description_fr": "Parcourez la route des Exorcistes jusqu’au Mur des Noms.",
@@ -2966,7 +2862,6 @@
         "targetEnemyID": "champion_penitents",
         "targetItemID": "",
         "targetNPCName": "",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "",
         "description_fr": "Affronter la Confesseuse",
@@ -2988,7 +2883,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_nemesis_penitents_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "L’entendre"
       }
@@ -3027,7 +2921,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Pell Voss",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "card_row_counted",
         "description_fr": "Compter les caisses de la Rangée des cartes jusqu’à ce que le compte s’accorde",
@@ -3049,7 +2942,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_card_row_short_count_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }
@@ -3108,7 +3000,6 @@
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Ysa Dunn",
-        "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "tern_boats_done",
         "description_fr": "Descendre à l’eau les bateaux de papier de l’acheteur",
@@ -3130,7 +3021,6 @@
         "alignmentModifier": 0,
         "flagToAdd": "q_ch2_tern_row_wrong_name_accepted",
         "nextEventID": "",
-        "actionType": "Accept",
         "lockedText": "",
         "buttonText_fr": "Accepter"
       }

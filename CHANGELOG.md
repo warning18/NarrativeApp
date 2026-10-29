@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.633.0+669]
+
+- **Cleanup: three unread quest and NPC fields are removed**
+  `actionType` and `locationID` (quests.json) and `stancePlayer`
+  (npcs.json), which no code read, and their names in the editor's schema
+  labels. No behaviour change.
+
 ## [1.632.0+668]
 
 - **Cleanup: unused Core symbols and their tests are removed**
