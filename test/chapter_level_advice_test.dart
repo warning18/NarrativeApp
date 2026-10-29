@@ -25,9 +25,13 @@ void main() {
 
   group('parsing', () {
     test('chapter 4 recommends level 9; chapter 3 recommends none', () {
-      expect(recommendedLevelFor(4, loops), 9);
-      expect(recommendedLevelFor(3, loops), isNull);
-      expect(recommendedLevelFor(99, loops), isNull);
+      int? recommended(int chapter) => loops
+          .where((l) => l.chapter == chapter)
+          .map((l) => l.recommendedLevel)
+          .firstOrNull;
+      expect(recommended(4), 9);
+      expect(recommended(3), isNull);
+      expect(recommended(99), isNull);
     });
 
     test('an absent, empty or nonsense field is no recommendation', () {
@@ -69,7 +73,6 @@ void main() {
       expect(advice.recommendedLevel, 9);
       expect(advice.playerLevel, 6);
       expect(advice.below, isTrue);
-      expect(advice.levelsShort, 3);
     });
 
     test('at or over it is not below', () {
@@ -77,7 +80,6 @@ void main() {
         final advice =
             chapterLevelAdvice(chapter: 4, playerLevel: level, loops: loops)!;
         expect(advice.below, isFalse, reason: 'level $level');
-        expect(advice.levelsShort, 0);
       }
     });
 
@@ -85,18 +87,6 @@ void main() {
       expect(
           chapterLevelAdvice(chapter: 3, playerLevel: 1, loops: loops), isNull);
       expect(chapterLevelAdvice(chapter: 4, playerLevel: 1, loops: const []),
-          isNull);
-    });
-
-    test('in chapter 3 the advice is for chapter 4, the one ahead', () {
-      final ahead = nextChapterLevelAdvice(
-          currentChapter: 3, playerLevel: 7, loops: loops)!;
-      expect(ahead.chapter, 4);
-      expect(ahead.below, isTrue);
-      // Once in chapter 4, chapter 5 recommends nothing (yet).
-      expect(
-          nextChapterLevelAdvice(
-              currentChapter: 4, playerLevel: 7, loops: loops),
           isNull);
     });
   });

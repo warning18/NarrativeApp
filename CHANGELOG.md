@@ -15,6 +15,15 @@ isn't reconstructable from git history alone.
   (npcs.json), which no code read, and their names in the editor's schema
   labels. No behaviour change.
 
+## [1.632.0+668]
+
+- **Cleanup: unused Core symbols and their tests are removed**
+  `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`,
+  `QuestReadiness` (and its string), `learnSpell`, `startingTotals`, the three
+  `SpellSpec` target getters, and the stale `briarReflect`, `longVigilMend`
+  and `censerBurn`; the tests that used them now check the live code. No
+  behaviour change.
+
 ## [1.631.0+667]
 
 - **Narrative: chapter 6 and everything after it in the percussive style**
