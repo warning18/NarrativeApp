@@ -3838,7 +3838,7 @@
         "text_fr": "Dépouiller le signaleur et partir",
         "next_id": "2015",
         "goldMod": 15,
-        "alignmentMod": -3,
+        "alignmentMod": -2,
         "flagsToAdd": [
           "hub_2015_signaller"
         ]

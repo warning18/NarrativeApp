@@ -17,7 +17,7 @@ isn't reconstructable from git history alone.
     "Look into the alley where a signal-lantern still burns". A dead
     Inquisition signaller, his lantern still alight in razor wire; three ways
     out, all back to the hub: cut it free (+2 alignment), strip the bearer
-    (+15 gold, -3 alignment), or leave them both. The three origin callbacks
+    (+15 gold, -2 alignment), or leave them both. The three origin callbacks
     (the sparrow) are kept. No lantern flags are needed or set.
   - `270` stays parked and untouched, so the Alster tests and the opening are
     as they were. `q_retrieve_banner` is unaffected.
