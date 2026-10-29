@@ -1878,7 +1878,7 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'objectives',
       label:
-          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID (or targetEnemyIDs, any of which counts; countFromAccept: only kills after the quest is taken), targetItemID, targetNPCName, targetNPCID (npcs.json id, for Talk gating), locationID, requiredAmount}]',
+          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID (or targetEnemyIDs, any of which counts; countFromAccept: only kills after the quest is taken), targetItemID, targetNPCName, targetNPCID (npcs.json id, for Talk gating), requiredAmount}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -1946,7 +1946,7 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'questChoices',
       label:
-          'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, actionType, lockedText}]',
+          'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, lockedText}]',
       type: FieldType.json,
     ),
     FieldSchema(
