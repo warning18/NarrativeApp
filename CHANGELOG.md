@@ -10,9 +10,9 @@ isn't reconstructable from git history alone.
 
 ## [1.628.0+664]
 
-- **Cleanup: 71 UI strings that nothing reads are removed**
+- **Cleanup: 68 UI strings that nothing reads are removed**
   Keys of `app_strings.dart` that no `tr()` call, built key name or test
-  used (206 lines). No behaviour change.
+  used (202 lines). No behaviour change.
 
 ## [1.624.0+660]
 

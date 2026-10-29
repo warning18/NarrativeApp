@@ -65,9 +65,6 @@ lib/l10n/app_strings.dart:11895 sign_none_to_offer
 lib/l10n/app_strings.dart:11903 sign_take_button
 lib/l10n/app_strings.dart:11907 sign_later_button
 lib/l10n/app_strings.dart:11912 sign_duo_badge
-lib/l10n/app_strings.dart:12298 patron_kind_clan
-lib/l10n/app_strings.dart:12299 patron_kind_tribe
-lib/l10n/app_strings.dart:12300 patron_kind_otherworld
 lib/l10n/app_strings.dart:12330 debug_offer_sign
 lib/l10n/app_strings.dart:12674 offer_later_button
 lib/l10n/app_strings.dart:12716 offer_wayfarer_stands

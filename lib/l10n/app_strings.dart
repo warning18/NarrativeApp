@@ -12156,6 +12156,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Favour {n} · level {l}',
     AppLanguage.fr: 'Faveur {n} · niveau {l}',
   },
+  'patron_kind_clan': {AppLanguage.en: 'Clan', AppLanguage.fr: 'Clan'},
+  'patron_kind_tribe': {AppLanguage.en: 'Tribe', AppLanguage.fr: 'Tribu'},
+  'patron_kind_otherworld': {
+    AppLanguage.en: 'Otherworld',
+    AppLanguage.fr: 'Outre-monde',
+  },
   'patron_closed_life': {
     AppLanguage.en: 'Closed to you this life',
     AppLanguage.fr: 'Fermé pour vous dans cette vie',
