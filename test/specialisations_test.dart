@@ -62,9 +62,9 @@ void main() {
   });
 
   test('the numbers', () {
-    expect(briarReflect(40), 10);
+    expect(briarReflect(40), 32);
     expect(briarReflect(0), 0);
-    expect(longVigilMend(80, 100), 5);
+    expect(longVigilMend(80, 100), 15);
     expect(longVigilMend(50, 100), 0);
     expect(longVigilMend(100, 100), 0);
     expect(
@@ -97,9 +97,9 @@ void main() {
 
   test('the Rot stacks where poison refreshes, and lasts', () {
     var effects = withRot(const [], 100);
-    expect(poisonDamageFor(effects), 40);
+    expect(poisonDamageFor(effects), 20);
     effects = withRot(effects, 50);
-    expect(poisonDamageFor(effects), 60);
+    expect(poisonDamageFor(effects), 30);
     expect(effects.single.remainingTurns, rotTurns);
   });
 

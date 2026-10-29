@@ -359,7 +359,8 @@ void main() {
     // under 60%. Core tunes this: the profession paths in
     // training_paths.json, bonusMaxHealth and the base numbers in
     // professions.json, and the specialisations.
-    test('the five professions win within $_spreadLimit points of each other',
+    test(
+        'the five professions win within ${_spreadLimit.round()} points of each other',
         () {
       final summary = [
         for (final e in professionWin.entries)
@@ -395,12 +396,10 @@ void main() {
 double _band(double target, int fought) =>
     max(0.12, 3 * sqrt(target * (1 - target) / fought));
 
-/// How far apart the professions may win, in points. 8 on a hero without a
-/// specialisation (v1.497); the full world (v1.613) opens it to about 14,
-/// because the mage's, rogue's and ranger's specialisations win far more
-/// than the cleric's and warrior's. The specialisations pass brings it back
-/// to 8 (docs/proposals/bosses-full-world.md).
-const double _spreadLimit = 14;
+/// How far apart the professions may win, in points: 8, in the full world
+/// since the specialisations pass (v1.614; at v1.613 the mage's, rogue's
+/// and ranger's specialisations had opened it to about 14).
+const double _spreadLimit = 8;
 
 /// The standard error of the mean of [rates].
 double _standardError(List<double> rates) {

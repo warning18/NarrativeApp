@@ -121,3 +121,47 @@ The encounters each profession wins within three tries, same run:
   Aurel Vane, is sized by his own health.
 - The frozen naive run (`sim_competent_test`, `sim_companions_test`) is
   re-pinned. The naive warrior no longer stalls at Aurel Vane: level 15 → 19.
+
+## The specialisations pass (v1.614)
+
+The follow-up above. The same 400-run walk on the full world, split by the
+specialisation each run held. The cleric's and warrior's own specialisations
+are lifted, and the three strongest lines are trimmed. Each specialisation
+keeps what it does; only its number moves.
+
+| Specialisation | Number | Before | v1.614 |
+|---|---|---|---|
+| Long Vigil (cleric) | mended a round above half health | 5% | **15%** |
+| Long Vigil, the Candlebearers | the same | 7% | **18%** |
+| Briar Guard (warrior) | share of a stopped blow sent back | 25% | **80%** |
+| Briar Guard, the Anvil-Deaf | the same | 50% | **100%** |
+| Burden-Bearer (mage) | a spell from a full Well | ×2.0 | **×1.4** |
+| Burden-Bearer, the Scorched Choir | the same | ×2.5 | **×1.6** |
+| Burden-Bearer, rank II | added | +0.5 | **+0.2** |
+| Fever Blade (rogue) | the Rot, as a share of a critical hit | 40% | **20%** |
+| Fen Guide (ranger) | the first face's poison, as a share of the strike | 50% | **25%** |
+
+Lifting the cleric and warrior did most of the work. The trims barely moved
+the encounters (the Burden-Bearer line went from 90% to 84%). They are kept
+because without them the bosses fall to the mage and rogue again: five boss
+bands failed with the lifts alone.
+
+**Encounters won within three tries:**
+
+| | Cleric | Warrior | Ranger | Rogue | Mage | Spread |
+|---|---|---|---|---|---|---|
+| v1.613 | 67 | 67 | 78 | 80 | 80 | 13.6 |
+| v1.614 | 75 | 71 | 77 | 78 | 78 | **6.7** |
+
+The spread test is back to 8 points, three standard errors allowed.
+
+**Bosses re-sized for the stronger cleric and warrior:**
+- Claimant Vane: 79 → 100 health.
+- Claimant Tallis: 77 → 88.
+- The void archon: 76 → 80.
+- The Tear-Herald: 61 → 64.
+
+Every boss is within its band. Won (target): inquisitor 62 (55), bone
+warden 61 (55), void archon 55 (50), white admiral 48 (45), claimants
+45–54 (40), Tear-Herald 41 (35), void sovereign 39 (35), Aurel Vane 76 (75).
+The champions win 53%.
