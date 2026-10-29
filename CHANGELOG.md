@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.620.0+656]
+
+- **Narrative: the Weaver's Alley is out of chapter 1** (the opening run is shorter).
+  - The Lower Town (`250`) has one way on, the Stone Bridge; the family
+    heirloom quest still starts there (`unlockQuestId` and `feat_quests` kept).
+    The toll scenes `260` and `261` are unchanged.
+  - Scene `270` (the signal-lantern and its dead bearer) stays in the story
+    file, parked and unreachable, with a note on where it lands later
+    (`docs/proposals/weavers-alley-parked.md`: a Lantern Alleys street scene
+    in Saltmouth).
+  - The lantern thread went with it: `820` and `891` lose "Raise the lantern",
+    `823` and `891` their callbacks, `300` the `companion_hound` and
+    `hound_left` callbacks. No flag is left set and never read.
+  - Numbers: the opening run loses 270's "Strip the bearer's gear" (+15 gold),
+    "Cut it free" (+2 alignment) and 891's "Raise the lantern" (+10 gold)
+    options; no value changed.
+  - Tests: `story_graph_integrity_test` allows the parked scene;
+    `chapter_one_test`, `scene_lock_test`, the two journey tests and
+    `first_journey_test` follow the one-way route (the District-view
+    walk-to-pin test that used the alley is dropped: `district_walk_test`
+    covers the walk).
 ## [1.619.0+655]
 
 - **UX: the Skills tab's tree is a sky of constellations** (the user's pick,

@@ -184,8 +184,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await _settle(tester);
     expect(container.read(storyPlayProvider).currentNodeId, '300');
-    expect(container.read(playerSessionProvider).flags,
-        contains('companion_hound'));
     // The scene reached is read full screen. A card led to it, its ways are
     // acted out here, and with no city chart in this test (the place view)
     // no map draws them: it holds the party on its page, its way back to

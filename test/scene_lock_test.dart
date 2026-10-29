@@ -203,11 +203,11 @@ void main() {
 
     test('a way on the map keeps a scene unlocked: mixed scenes do not lock',
         () {
-      // 250: the Weaver's Alley is acted out here, the bridge a road; both
-      // are ways on Alster's city chart.
+      // 250: the bridge, its one way on (the alley is parked, v1.620), is a
+      // road on Alster's city chart.
       final ways = _ways('250');
+      expect(ways, hasLength(1));
       expect(ways[0].here, isFalse);
-      expect(ways[1].here, isTrue);
       expect(ways.every((w) => w.mapped), isTrue);
       expect(_locks('250'), isFalse);
       // A pure choice beside a way on the map: no lock.
