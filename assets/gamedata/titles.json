@@ -44,7 +44,7 @@
     "effects": [
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       }
     ]
   },
@@ -113,7 +113,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ]
   },
@@ -144,8 +144,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       }
     ]
   },
@@ -182,7 +182,7 @@
     "effects": [
       {
         "kind": "guardFlat",
-        "value": 2
+        "value": 1
       }
     ]
   },
@@ -198,7 +198,7 @@
     "effects": [
       {
         "kind": "stat",
-        "value": 2,
+        "value": 1,
         "stat": "strength"
       }
     ]
@@ -214,8 +214,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "thorns",
-        "value": 2
+        "kind": "thornsPercent",
+        "value": 10
       }
     ]
   },
@@ -246,8 +246,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       },
       {
         "kind": "guardFlat",
@@ -283,7 +283,7 @@
     "effects": [
       {
         "kind": "potionBonus",
-        "value": 10
+        "value": 2
       }
     ]
   },
@@ -302,7 +302,7 @@
         "status": "poison",
         "chance": 12,
         "duration": 2,
-        "magnitude": 2
+        "magnitude": 1
       }
     ]
   },
@@ -523,7 +523,7 @@
     "effects": [
       {
         "kind": "guardHeal",
-        "value": 2
+        "value": 1
       }
     ]
   },
@@ -539,7 +539,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ]
   },
@@ -571,7 +571,7 @@
     "effects": [
       {
         "kind": "maxHealth",
-        "value": -5
+        "value": -1
       }
     ]
   },
@@ -608,8 +608,12 @@
     "effects": [
       {
         "kind": "strikeElement",
-        "value": 2,
+        "value": 0,
         "element": "Fire"
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ]
   },
@@ -681,7 +685,7 @@
       },
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       }
     ]
   },
@@ -716,8 +720,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       },
       {
         "kind": "guardBlockPercent",
@@ -833,8 +837,8 @@
     "negative": false,
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       }
     ]
   },
@@ -871,7 +875,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": -3
+        "value": -1
       }
     ]
   },
@@ -1010,8 +1014,8 @@
         "stat": "strength"
       },
       {
-        "kind": "armor",
-        "value": -1
+        "kind": "dodgeChance",
+        "value": -3
       }
     ]
   },
@@ -1027,7 +1031,7 @@
     "effects": [
       {
         "kind": "potionBonus",
-        "value": 6
+        "value": 1
       }
     ]
   },
@@ -1059,7 +1063,7 @@
     "effects": [
       {
         "kind": "potionBonus",
-        "value": -6
+        "value": -1
       }
     ]
   },
@@ -1079,7 +1083,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": -3
+        "value": -1
       }
     ]
   },

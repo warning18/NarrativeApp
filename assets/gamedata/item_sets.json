@@ -6,17 +6,17 @@
     "bonuses": [
       {
         "pieces": 2,
-        "armor": 2,
+        "armor": 1,
         "dodgeChance": 5,
-        "description": "Two pieces: +2 armor and +5% dodge — the watch learned to keep its feet on wet stone.",
-        "descriptionFr": "Deux pièces : +2 armure et +5 % d’esquive — la garde a appris à tenir debout sur la pierre mouillée."
+        "description": "Two pieces: +{armor} armor and +{dodge}% dodge — the watch learned to keep its feet on wet stone.",
+        "descriptionFr": "Deux pièces : +{armor} armure et +{dodge} % d’esquive — la garde a appris à tenir debout sur la pierre mouillée."
       },
       {
         "pieces": 3,
-        "attackDamage": 4,
+        "attackDamage": 1,
         "critChance": 8,
-        "description": "Three pieces: +4 attack and +8% critical chance — lantern, coat and cutlass, the full watch.",
-        "descriptionFr": "Trois pièces : +4 attaque et +8 % de critique — lanterne, manteau et sabre, la garde au complet."
+        "description": "Three pieces: +{attack} attack and +{crit}% critical chance — lantern, coat and cutlass, the full watch.",
+        "descriptionFr": "Trois pièces : +{attack} attaque et +{crit} % de critique — lanterne, manteau et sabre, la garde au complet."
       }
     ]
   },
@@ -27,17 +27,17 @@
     "bonuses": [
       {
         "pieces": 2,
-        "armor": 5,
-        "thorns": 4,
-        "description": "Two pieces: +5 armor, and anything that strikes you takes 4 damage back.",
-        "descriptionFr": "Deux pièces : +5 armure, et tout ce qui vous frappe encaisse 4 dégâts en retour."
+        "armor": 1,
+        "thorns": 20,
+        "description": "Two pieces: +{armor} armor, and anything that strikes you takes {thorns}% of the blow back.",
+        "descriptionFr": "Deux pièces : +{armor} armure, et tout ce qui vous frappe encaisse {thorns} % du coup en retour."
       },
       {
         "pieces": 3,
-        "attackDamage": 8,
+        "attackDamage": 2,
         "lifestealPercent": 10,
-        "description": "Three pieces: +8 attack and every hit heals you for a tenth of its damage — the Court never fought fair.",
-        "descriptionFr": "Trois pièces : +8 attaque et chaque coup vous soigne d’un dixième de ses dégâts — la Cour n’a jamais combattu loyalement."
+        "description": "Three pieces: +{attack} attack and every hit heals you for {lifesteal}% of its damage — the Court never fought fair.",
+        "descriptionFr": "Trois pièces : +{attack} attaque et chaque coup vous soigne de {lifesteal} % de ses dégâts — la Cour n’a jamais combattu loyalement."
       }
     ]
   }

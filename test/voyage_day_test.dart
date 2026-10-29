@@ -3,6 +3,7 @@
 // with what it wins or costs -- and its odds when it is a check.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,8 +37,9 @@ void main() {
   test('the odds of a check: a d20 plus the bonus meets the DC', () {
     expect(checkChance(modifier: 0, dc: 11), 0.5);
     expect(checkChance(modifier: 1, dc: 16), 0.3);
-    expect(checkChance(modifier: 5, dc: 3), 1.0);
-    expect(checkChance(modifier: -2, dc: 30), 0.0);
+    // A natural 20 always passes, a natural 1 always fails.
+    expect(checkChance(modifier: 5, dc: 3), 0.95);
+    expect(checkChance(modifier: -2, dc: 30), 0.05);
   });
 
   testWidgets('each choice says its stake, the strip what the day cost',
@@ -71,6 +73,8 @@ void main() {
           fromPortId: 'port_ashen_landing',
           toPortId: 'port_smugglers_wharf',
           toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
+          // A natural 1 or 20 settles a check: seeded, so no run differs.
+          debugRandom: Random(1),
           debugEvents: const [_wreck, _wreck],
         ),
       ),

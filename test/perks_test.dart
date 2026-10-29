@@ -59,8 +59,8 @@ void main() {
         'ironHide': 9, // capped at 3
       });
       expect(effects.critChance, 10);
-      expect(effects.attackDamage, 6);
-      expect(effects.armor, 6);
+      expect(effects.attackDamage, 3);
+      expect(effects.blockChance, 30);
       expect(effects.extraRolls, 1);
       expect(effects.momentumDrop, 1);
       expect(effects.secondWind, isTrue);
@@ -70,12 +70,13 @@ void main() {
     });
 
     test('gear-like perks lay over the gear', () {
-      const gear = GearEffects(attackDamage: 3, critChance: 5, thorns: 2);
+      const gear =
+          GearEffects(attackDamage: 3, critChance: 5, thornsPercent: 20);
       final over =
           perkEffectsFor(const {'heavyHand': 1, 'keenEye': 1}).over(gear);
-      expect(over.attackDamage, 5);
+      expect(over.attackDamage, 4);
       expect(over.critChance, 10);
-      expect(over.thorns, 2);
+      expect(over.thornsPercent, 20);
       expect(over.secondWind, isFalse);
     });
 
@@ -132,9 +133,7 @@ void main() {
       expect(notifier.state.maxHealth, 100 + vigorHealthPerRank);
       expect(notifier.state.currentHealth, 60 + vigorHealthPerRank);
 
-      final base = maxManaFor(
-          intelligence: notifier.state.intelligence,
-          wisdom: notifier.state.wisdom);
+      final base = maxManaFor(wisdom: notifier.state.wisdom);
       await notifier.loadSession(_wayfarerOffers(notifier.state, 'deepWell'));
       expect(await notifier.acceptSuitor(wayfarerId, tables: _tables), isTrue);
       expect(notifier.state.maxMana, base + manaPerRank);

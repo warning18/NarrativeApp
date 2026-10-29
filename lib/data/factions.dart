@@ -346,9 +346,57 @@ class Faction {
     this.nameToFr = '',
     this.brokenNews = '',
     this.brokenNewsFr = '',
+    this.riskStat = '',
+    this.riskyOffer = '',
+    this.riskyOfferFr = '',
+    this.templeName = '',
+    this.templeNameFr = '',
+    this.blessingName = '',
+    this.blessingNameFr = '',
+    this.templeLine = '',
+    this.templeLineFr = '',
+    this.templeLineHunted = '',
+    this.templeLineHuntedFr = '',
+    this.blessingGrants = '',
+    this.blessingGrantsFr = '',
   });
 
   final Patron patron;
+
+  /// The ability its curse lowers when a risky gift goes wrong
+  /// (risky_gifts.dart); '' for a faction that never offers one.
+  final String riskStat;
+
+  /// What it says over a risky gift (Narrative's); '' for none.
+  final String riskyOffer;
+  final String riskyOfferFr;
+
+  String riskyOfferFor(AppLanguage language) =>
+      _pick(language, riskyOffer, riskyOfferFr);
+
+  // The temple (temple.dart, Narrative's texts): the temples it keeps, its
+  // blessing, what the keeper says (and says to a Hunted character), and a
+  // line of what the blessing grants; '' for none.
+  final String templeName;
+  final String templeNameFr;
+  final String blessingName;
+  final String blessingNameFr;
+  final String templeLine;
+  final String templeLineFr;
+  final String templeLineHunted;
+  final String templeLineHuntedFr;
+  final String blessingGrants;
+  final String blessingGrantsFr;
+  String templeNameFor(AppLanguage language) =>
+      _pick(language, templeName, templeNameFr);
+  String blessingNameFor(AppLanguage language) =>
+      _pick(language, blessingName, blessingNameFr);
+  String templeLineFor(AppLanguage language) =>
+      _pick(language, templeLine, templeLineFr);
+  String templeLineHuntedFor(AppLanguage language) =>
+      _pick(language, templeLineHunted, templeLineHuntedFr);
+  String blessingGrantsFor(AppLanguage language) =>
+      _pick(language, blessingGrants, blessingGrantsFr);
 
   /// Where its power starts (factions.json `power`, clan_power.dart); 0
   /// for a faction with none.
@@ -482,6 +530,19 @@ class Faction {
         nameToFr: _text(json['nameTo_fr']).trim(),
         brokenNews: _text(json['brokenNews']).trim(),
         brokenNewsFr: _text(json['brokenNews_fr']).trim(),
+        riskStat: _text(json['riskStat']).trim(),
+        riskyOffer: _text(json['riskyOffer']).trim(),
+        riskyOfferFr: _text(json['riskyOffer_fr']).trim(),
+        templeName: _text(json['templeName']).trim(),
+        templeNameFr: _text(json['templeName_fr']).trim(),
+        blessingName: _text(json['blessingName']).trim(),
+        blessingNameFr: _text(json['blessingName_fr']).trim(),
+        templeLine: _text(json['templeLine']).trim(),
+        templeLineFr: _text(json['templeLine_fr']).trim(),
+        templeLineHunted: _text(json['templeLineHunted']).trim(),
+        templeLineHuntedFr: _text(json['templeLineHunted_fr']).trim(),
+        blessingGrants: _text(json['blessingGrants']).trim(),
+        blessingGrantsFr: _text(json['blessingGrants_fr']).trim(),
       );
 }
 
@@ -1206,6 +1267,8 @@ class StandingLogEntry {
     this.released = '',
     this.note = '',
     this.noteFr = '',
+    this.placeId = '',
+    this.how = '',
   });
 
   final int chapter;
@@ -1225,6 +1288,11 @@ class StandingLogEntry {
   final String noteFr;
 
   String noteFor(AppLanguage language) => _pick(language, note, noteFr);
+
+  /// A place changing hands (cause 'territory', wave 18 step 2): the place
+  /// and how ([givePlace]'s cause: 'war', 'influence', 'town', 'claim'…).
+  final String placeId;
+  final String how;
 
   /// [factionId]'s own change (0 for a mark alone).
   double get mainDelta => deltas[factionId] ?? 0;
@@ -1248,6 +1316,8 @@ class StandingLogEntry {
         if (released.isNotEmpty) 'released': released,
         if (note.isNotEmpty) 'note': note,
         if (noteFr.isNotEmpty) 'note_fr': noteFr,
+        if (placeId.isNotEmpty) 'place': placeId,
+        if (how.isNotEmpty) 'how': how,
       };
 
   factory StandingLogEntry.fromJson(Map<String, dynamic> json) =>
@@ -1264,6 +1334,8 @@ class StandingLogEntry {
         released: _text(json['released']),
         note: _text(json['note']),
         noteFr: _text(json['note_fr']),
+        placeId: _text(json['place']),
+        how: _text(json['how']),
       );
 }
 
@@ -1515,12 +1587,14 @@ class PoliticsState {
     this.host = Host.none,
     this.power = const {},
     this.control = const {},
+    this.influence = const {},
     this.helped = const [],
     this.fallen = const [],
     this.nemesis = '',
     this.nemesisReason = '',
     this.nemesisCooldown = const {},
     this.crisis = const {},
+    this.sieges = const {},
     this.fellTo = const {},
     this.fallenOf = '',
     this.fallenWinner = '',
@@ -1541,6 +1615,12 @@ class PoliticsState {
   /// The places that changed hands (place id -> clan), over the holders
   /// geography.json writes (see holderOf in clan_power.dart).
   final Map<String, String> control;
+
+  /// Each clan's influence in a district (wave 18, district_influence.dart):
+  /// district id -> clan -> 0..100. A district is here only once its
+  /// influence moved; before, its holder stands at holderStartInfluence and
+  /// every other clan at 0.
+  final Map<String, Map<String, int>> influence;
 
   /// The main clans the character did something for this chapter (a gift
   /// taken, a quest, a fight in their lands): spared the chapter's neglect.
@@ -1570,6 +1650,11 @@ class PoliticsState {
   /// Your clan's seat threatened (clan_crisis.dart): `clan`, `attacker`,
   /// `place`; empty for none.
   final Map<String, String> crisis;
+
+  /// The districts under siege (district_attacks.dart): district id ->
+  /// `attacker`, `holder`, `city`, `until` (the day it runs out) and `met`
+  /// (the party stood aside).
+  final Map<String, Map<String, String>> sieges;
 
   /// Each fallen clan's last place taker (clan -> clan).
   final Map<String, String> fellTo;
@@ -1682,12 +1767,14 @@ class PoliticsState {
     Host? host,
     Map<String, int>? power,
     Map<String, String>? control,
+    Map<String, Map<String, int>>? influence,
     List<String>? helped,
     List<String>? fallen,
     String? nemesis,
     String? nemesisReason,
     Map<String, int>? nemesisCooldown,
     Map<String, String>? crisis,
+    Map<String, Map<String, String>>? sieges,
     Map<String, String>? fellTo,
     String? fallenOf,
     String? fallenWinner,
@@ -1709,6 +1796,7 @@ class PoliticsState {
         host: host ?? this.host,
         power: power ?? this.power,
         control: control ?? this.control,
+        influence: influence ?? this.influence,
         helped: helped ?? this.helped,
         fallen: fallen ?? this.fallen,
         nemesis: nemesis ?? this.nemesis,
@@ -1719,6 +1807,7 @@ class PoliticsState {
                 : ''),
         nemesisCooldown: nemesisCooldown ?? this.nemesisCooldown,
         crisis: crisis ?? this.crisis,
+        sieges: sieges ?? this.sieges,
         fellTo: fellTo ?? this.fellTo,
         fallenOf: fallenOf ?? this.fallenOf,
         fallenWinner: fallenWinner ?? this.fallenWinner,
@@ -1746,6 +1835,7 @@ class PoliticsState {
         if (host.mustered) 'host': host.toJson(),
         if (power.isNotEmpty) 'power': power,
         if (control.isNotEmpty) 'control': control,
+        if (influence.isNotEmpty) 'influence': influence,
         if (helped.isNotEmpty) 'helped': helped,
         if (fallen.isNotEmpty) 'fallen': fallen,
         if (nemesis.isNotEmpty) 'nemesis': nemesis,
@@ -1754,6 +1844,7 @@ class PoliticsState {
         'nemesisReason': nemesisReason,
         if (nemesisCooldown.isNotEmpty) 'nemesisCooldown': nemesisCooldown,
         if (crisis.isNotEmpty) 'crisis': crisis,
+        if (sieges.isNotEmpty) 'sieges': sieges,
         if (fellTo.isNotEmpty) 'fellTo': fellTo,
         if (fallenOf.isNotEmpty) 'fallenOf': fallenOf,
         if (fallenWinner.isNotEmpty) 'fallenWinner': fallenWinner,
@@ -1819,12 +1910,22 @@ class PoliticsState {
             if (_text(e.value).trim().isNotEmpty)
               e.key.toString(): _text(e.value).trim(),
       },
+      influence: {
+        if (json['influence'] is Map)
+          for (final e in (json['influence'] as Map).entries)
+            if (e.value is Map) e.key.toString(): _ints(e.value),
+      },
       helped: _strings(json['helped']).toSet().toList(),
       fallen: _strings(json['fallen']).toSet().toList(),
       nemesis: _text(json['nemesis']).trim(),
       nemesisReason: _text(json['nemesisReason']).trim(),
       nemesisCooldown: _ints(json['nemesisCooldown']),
       crisis: _texts(json['crisis']),
+      sieges: {
+        if (json['sieges'] is Map)
+          for (final e in (json['sieges'] as Map).entries)
+            if (e.value is Map) e.key.toString(): _texts(e.value),
+      },
       fellTo: _texts(json['fellTo']),
       fallenOf: _text(json['fallenOf']).trim(),
       fallenWinner: _text(json['fallenWinner']).trim(),

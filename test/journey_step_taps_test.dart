@@ -175,8 +175,11 @@ void main() {
     await tester.pump(const Duration(seconds: 6));
     await clearCards();
     final gold = container.read(playerSessionProvider).gold;
-    // A choice acted out here is a card under the map, not a mark on it.
+    // A choice acted out here is a card in the scene view, not a mark on the
+    // map.
     expect(_step(0), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 400));
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await tester.tap(card);
     await tester.pump();

@@ -24,6 +24,8 @@ import '../../widgets/compare_dialog.dart';
 import '../../widgets/immersive_notice.dart';
 import '../../widgets/merge_skills_dialog.dart';
 import '../../widgets/moments.dart';
+import '../../widgets/pixel_banner.dart';
+import '../../widgets/sheet_kit.dart';
 import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
 
@@ -174,25 +176,13 @@ class _SkillSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                SkillPixelIcon(skillId, size: 36),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(skillDisplayName(skillId, language: lang),
-                          style: theme.textTheme.titleLarge
-                              ?.copyWith(fontFamily: InkFonts.display)),
-                      if (where.isNotEmpty)
-                        Text(where,
-                            style: theme.textTheme.labelMedium
-                                ?.copyWith(color: ink.ash)),
-                    ],
-                  ),
-                ),
-              ],
+            SheetHeader(
+              leading: SkillPixelIcon(skillId, size: 36),
+              title: skillDisplayName(skillId, language: lang),
+              titleStyle: theme.textTheme.titleLarge
+                  ?.copyWith(fontFamily: InkFonts.display),
+              subtitle: where,
+              padding: EdgeInsets.zero,
             ),
             const SizedBox(height: 10),
             Wrap(spacing: 6, runSpacing: 6, children: [
@@ -508,6 +498,24 @@ class _Action extends ConsumerWidget {
             key: const Key('skill_offered_by'),
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (entry.sponsors.any(clanBannerFactionIds.contains))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    key: const Key('skill_offered_flags'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final id in entry.sponsors.take(3))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: ClanFlag(
+                              key: Key('skill_flag_$id'),
+                              factionId: id,
+                              height: 56),
+                        ),
+                    ],
+                  ),
+                ),
               note(offeredByLine(ref, entry)),
               const SizedBox(height: 2),
               Text(

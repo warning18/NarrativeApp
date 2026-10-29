@@ -8,14 +8,65 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chart_globe.dart';
 import '../data/map_charts.dart';
+import '../data/world_leg_path.dart';
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../providers/landmark_towns_provider.dart';
 import '../providers/map_look_provider.dart';
+import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/town_rulers_provider.dart';
 import 'chart_map_painter.dart';
 import 'chart_weather.dart';
+import 'journey_place.dart' show RegionFlightPainter;
+import 'town_handover.dart';
+
+/// The chart the Journey's world map draws now: the story's world on the
+/// sphere, else the shape picked in the map's look. A move's path
+/// (worldLegPath) is laid on this chart, so the walker follows its roads.
+ChartGeography journeyChartOf(WidgetRef ref) => ref.read(chartGlobeProvider)
+    ? chartOf(MapShape.story)
+    : chartOf(ref.read(mapShapeProvider));
+
+/// Scales the time a move takes: 1 in the app; the tests shorten it so a
+/// walk over the world chart does not make each wait longer.
+double worldMoveTimeScale = 1;
+
+/// How long a move over the world chart takes: slower than the Journey's
+/// own short walks (a tap skips it), longer for a longer road.
+Duration worldMoveDuration(WorldLegPath path) => Duration(
+    milliseconds: ((4200 + 45 * path.length).round().clamp(6000, 13000) *
+            worldMoveTimeScale)
+        .round());
+
+/// The walk's pace over a move's clock: the party stands while the camera
+/// closes in and again as it pulls back out.
+class _MoveWalkCurve extends Curve {
+  const _MoveWalkCurve();
+  @override
+  double transformInternal(double t) => RegionFlightPainter.walkAt(t);
+}
+
+/// A road's corners rounded as the chart's painter rounds them (two Chaikin
+/// passes), the ends kept, so the walker takes the bends and does not cut
+/// them.
+List<Offset> smoothedWalkPoints(List<Offset> points) {
+  var pts = points;
+  for (var pass = 0; pass < 2 && pts.length > 2; pass++) {
+    final next = <Offset>[pts.first];
+    for (var i = 0; i < pts.length - 1; i++) {
+      final a = pts[i], b = pts[i + 1];
+      next
+        ..add(Offset.lerp(a, b, 0.25)!)
+        ..add(Offset.lerp(a, b, 0.75)!);
+    }
+    next.add(pts.last);
+    pts = next;
+  }
+  return pts;
+}
 
 /// How far out the Journey's map is looked at.
 enum JourneyMapLevel { place, land, world }
@@ -66,7 +117,16 @@ class JourneyWorldMap extends ConsumerStatefulWidget {
     this.replayLegs,
     this.replayToken = 0,
     this.fog = ChartFog.uncharted,
+    this.move,
+    this.moveClock,
   });
+
+  /// A move to show (wave 14): the party walks (or sails) this path over the
+  /// chart while the camera closes in on it and follows, then pulls back out.
+  /// [moveClock] (0 to 1) is the move's time; whoever owns it (the Journey's
+  /// transit) also reads it for the words over the map and skips it on a tap.
+  final WorldLegPath? move;
+  final Animation<double>? moveClock;
 
   /// The "Full map" button among the chart's controls (board 8): shown
   /// only when the Journey gives a way to open the full-screen map.
@@ -134,7 +194,91 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   late final AnimationController _walk = AnimationController(vsync: this);
   List<(double, double)> _walkPath = const [];
   bool _walking = false;
-  late final Listenable _repaint = Listenable.merge([_view, _reveal, _walk]);
+  late final Listenable _repaint = Listenable.merge([
+    _view,
+    _reveal,
+    _walk,
+    _handoverFade,
+    if (widget.moveClock != null) widget.moveClock!,
+  ]);
+
+  /// A town that changed hands since the player last looked (wave 16): its
+  /// tint passes from the old ruler's colour over a second ([_handoverFade],
+  /// 0 to 1; a town not in [_fadeFrom] does not fade), and a toast says so.
+  late final AnimationController _handoverFade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1400), value: 1);
+  Map<String, ({Color fill, Color accent})?> _fadeFrom = const {};
+
+  /// Compares who rules each town with who ruled it when the world chart was
+  /// last looked at (the save's seenTownRulers); the first look, an old save
+  /// and a session not yet read just write down the present.
+  bool _handoverQueued = false;
+
+  /// Looks after the frame, never inside a listener: writing the save while
+  /// the providers are still notifying would rebuild them twice in a frame.
+  void _queueHandoverCheck() {
+    if (_handoverQueued) return;
+    _handoverQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handoverQueued = false;
+      _watchHandovers();
+    });
+  }
+
+  void _watchHandovers() {
+    if (!mounted) return;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final rulers = ref.read(townRulersProvider);
+    if (!notifier.isLoaded || rulers.isEmpty) return;
+    final changed =
+        townHandovers(ref.read(playerSessionProvider).seenTownRulers, rulers);
+    notifier.markTownRulersSeen(townRulerIds(rulers));
+    if (changed.isEmpty) return;
+    final recent = ref.read(recentHandoversProvider.notifier);
+    recent.state = withRecentHandovers(recent.state, changed);
+    final factions = ref.read(factionsProvider);
+    final colours = {
+      for (final e in factions.entries) e.key: e.value.color,
+    };
+    final changedTowns = {for (final h in changed) h.townId: h};
+    final from = <String, ({Color fill, Color accent})?>{};
+    for (final e in ref.read(landmarkRulersProvider).entries) {
+      final handover = changedTowns[e.value.placeId];
+      if (handover == null) continue;
+      final old = handoverFromColours(handover, colours);
+      from[e.key] = old == null
+          ? null
+          : (fill: Color(old.fill), accent: Color(old.accent));
+    }
+    final language = ref.read(appLanguageProvider);
+    final geography = ref.read(geographyProvider);
+    String townName(String id) =>
+        geography.places[id]?.nameFor(language == AppLanguage.fr) ?? id;
+    final text = changed.length == 1
+        ? changed.single.toClan.isEmpty
+            ? trFor(language, 'town_handover_none')
+                .replaceAll('{town}', townName(changed.single.townId))
+            : trFor(language, 'town_handover_to')
+                .replaceAll(
+                    '{clan}',
+                    factions[changed.single.toClan]?.shortFor(language) ??
+                        changed.single.toClan)
+                .replaceAll('{town}', townName(changed.single.townId))
+        : trFor(language, 'town_handover_many')
+            .replaceAll('{n}', '${changed.length}');
+    setState(() => _fadeFrom = from);
+    if (MediaQuery.of(context).disableAnimations) {
+      _handoverFade.value = 1;
+    } else {
+      _handoverFade.forward(from: 0);
+    }
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(key: const Key('town_handover_toast'), content: Text(text)));
+  }
+
+  /// The move's walk over its clock, and the box the camera frames it in.
+  Animation<double>? _moveWalk;
+  Size _box = Size.zero;
 
   /// Glides the chart (or the sphere) from one zoom to another, so a
   /// button or a change of level never jumps (v1.201.1).
@@ -198,6 +342,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   @override
   void initState() {
     super.initState();
+    _queueHandoverCheck();
     _glide.addListener(() {
       final view = _glideView;
       if (view != null) _view.value = view.value;
@@ -212,6 +357,64 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             _globe = g.copyWith(lon0: turn.$1.value, lat0: turn.$2.value));
       }
     });
+    final move = widget.move, clock = widget.moveClock;
+    if (move != null && clock != null) {
+      _walkPath = [
+        for (final p in smoothedWalkPoints(move.points)) (p.dx, p.dy),
+      ];
+      _walking = true;
+      _moveWalk = clock.drive(CurveTween(curve: const _MoveWalkCurve()));
+      clock
+        ..addListener(_followMove)
+        ..addStatusListener(_moveStatus);
+    }
+  }
+
+  void _moveStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed && mounted && _walking) {
+      setState(() => _walking = false);
+    }
+  }
+
+  /// How much the camera is on the party at [t] of the move: it closes in
+  /// over the first of the move, follows, and pulls out for the last.
+  static double _cameraAt(double t) =>
+      Curves.easeInOut.transform(math.min(1.0, math.min(t, 1 - t) / 0.18));
+
+  /// The player took the camera during the move (a drag, a pinch, a zoom
+  /// button): it stays theirs until they tap the recentre button.
+  bool _cameraFree = false;
+
+  void _takeCamera() {
+    if (_walking && widget.moveClock != null && !_cameraFree) {
+      setState(() => _cameraFree = true);
+    }
+  }
+
+  /// Frames the party as it walks: the whole chart at the ends, the land's
+  /// zoom on the party between. The sphere turns to the party instead of
+  /// sliding.
+  void _followMove() {
+    final clock = widget.moveClock;
+    if (clock == null ||
+        _cameraFree ||
+        _box == Size.zero ||
+        _walkPath.length < 2) {
+      return;
+    }
+    final w = _cameraAt(clock.value);
+    final (x, y) =
+        pointAlong(_walkPath, RegionFlightPainter.walkAt(clock.value));
+    const middle = Offset(worldMapWidth / 2, worldMapHeight / 2);
+    final centre = Offset.lerp(middle, Offset(x, y), w)!;
+    final zoom = 1 + (_landZoom - 1) * w;
+    if (ref.read(chartGlobeProvider)) {
+      final geo = _geoOf(true);
+      setState(() => _globe = geo.globeAt(centre, zoom, _globeCentre(_box)));
+      return;
+    }
+    _glide.stop();
+    _view.value = _framing(centre, zoom, _box);
   }
 
   final ValueNotifier<int> _frame = ValueNotifier(0);
@@ -269,11 +472,15 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   @override
   void dispose() {
+    widget.moveClock
+      ?..removeListener(_followMove)
+      ..removeStatusListener(_moveStatus);
     _walk.dispose();
     _glide.dispose();
     _view.dispose();
     _frame.dispose();
     _reveal.dispose();
+    _handoverFade.dispose();
     super.dispose();
   }
 
@@ -368,6 +575,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   /// A pinch or drag on the sphere: it turns, or comes closer.
   void _onGlobeScaleStart(ScaleStartDetails d) {
+    _takeCamera();
     _pinchStartZoom = _globe?.zoom ?? 1;
     _dragLast = d.focalPoint;
   }
@@ -523,16 +731,27 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final weatherOn = ref.watch(chartWeatherProvider);
     final weatherWorldOnly = ref.watch(chartWeatherWorldOnlyProvider);
     final day = ref.watch(playerSessionProvider.select((s) => s.day));
+    // The first look, a session read late, or a town changing hands while
+    // the chart is up: see who rules what against what was seen.
+    ref.listen(townRulersProvider, (_, __) => _queueHandoverCheck());
+    ref.listen(playerSessionProvider.select((s) => s.seenTownRulers),
+        (_, __) => _queueHandoverCheck());
+    // The ruling clan's tint under each town (wave 15).
+    final townTints = {
+      for (final e in ref.watch(landmarkRulersProvider).entries)
+        e.key: (fill: Color(e.value.color), accent: Color(e.value.accent)),
+    };
     return LayoutBuilder(builder: (context, box) {
       final boxSize = Size(box.maxWidth, box.maxHeight);
       // The chart fills the box's width; a tall box shows sea above and
       // below it, a wide one is scrolled.
       _size = Size(box.maxWidth, box.maxWidth * worldMapHeight / worldMapWidth);
       _childHeight = math.max(box.maxHeight, _size.height);
+      _box = boxSize;
       _frameFor(boxSize);
       ChartMapPainter painter(GlobeView? globe) => ChartMapPainter(
             frame: _frame,
-            walk: _walk,
+            walk: _moveWalk ?? _walk,
             geography: geo,
             palette: widget.palette,
             language: language,
@@ -555,6 +774,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,
+            townTints: townTints,
+            townTintsFrom: _fadeFrom,
+            townFade: _handoverFade,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
             globe: globe,
@@ -607,6 +829,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         minScale: 1,
         maxScale: _maxZoom,
         onInteractionStart: (_) {
+          _takeCamera();
           _glide.stop();
           _pinchFrom = _scale;
         },
@@ -696,6 +919,12 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                 ],
                 button('journey_recentre', Icons.my_location,
                     tr(ref, 'journey_recentre'), () {
+                  // Mid-move, the button gives the camera back to the party.
+                  if (_cameraFree && _walking) {
+                    setState(() => _cameraFree = false);
+                    _followMove();
+                    return;
+                  }
                   final here = widget.here;
                   if (here == null) return;
                   // Glides back to the party (v1.201.1).
@@ -708,36 +937,36 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                     _animateTo(_framing(geo.of(here),
                         math.max(_settledScale, _landZoom), boxSize));
                   }
-                }),
+                }, on: _cameraFree && _walking),
                 const SizedBox(height: 6),
                 // The poles (board 11): the sphere turns right over either,
                 // and the view comes round past the seam.
                 if (sphere && geo.wholeSphere) ...[
-                  button(
-                      'journey_pole_north',
-                      Icons.keyboard_double_arrow_up,
-                      tr(ref, 'world_map_pole_north'),
-                      () => _poleTurn(geo, north: true)),
+                  button('journey_pole_north', Icons.keyboard_double_arrow_up,
+                      tr(ref, 'world_map_pole_north'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: true);
+                  }),
                   const SizedBox(height: 6),
-                  button(
-                      'journey_pole_south',
-                      Icons.keyboard_double_arrow_down,
-                      tr(ref, 'world_map_pole_south'),
-                      () => _poleTurn(geo, north: false)),
+                  button('journey_pole_south', Icons.keyboard_double_arrow_down,
+                      tr(ref, 'world_map_pole_south'), () {
+                    _takeCamera();
+                    _poleTurn(geo, north: false);
+                  }),
                   const SizedBox(height: 6),
                 ],
                 button(
-                    'journey_zoom_in',
-                    Icons.add,
-                    tr(ref, 'world_map_zoom_in'),
-                    () => sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize)),
+                    'journey_zoom_in', Icons.add, tr(ref, 'world_map_zoom_in'),
+                    () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1.5) : _zoom(1.5, boxSize);
+                }),
                 const SizedBox(height: 6),
-                button(
-                    'journey_zoom_out',
-                    Icons.remove,
-                    tr(ref, 'world_map_zoom_out'),
-                    () =>
-                        sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize)),
+                button('journey_zoom_out', Icons.remove,
+                    tr(ref, 'world_map_zoom_out'), () {
+                  _takeCamera();
+                  sphere ? _globeZoom(1 / 1.5) : _zoom(1 / 1.5, boxSize);
+                }),
               ],
             ),
           ),

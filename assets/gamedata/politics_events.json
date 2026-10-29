@@ -160,7 +160,7 @@
             {
               "a": "dominion",
               "b": "mire",
-              "steps": -1
+              "steps": 0
             }
           ]
         },
@@ -294,17 +294,76 @@
         "news_fr": "La nuit de Reedholm, le Marais est venu au Quartier des Cendres avec des torches, et il est reparti sans les allumer : une Sœur de Braise et une chanteuse du Chœur de Mousse, venues du même navire, étaient sorties ensemble à sa rencontre."
       },
       {
+        "conditions": {
+          "flags": [
+            "maren_absolved"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": 1
+            }
+          ]
+        },
+        "news": "On Reedholm’s night the Mire came to the Ashen Quarter with torches, and went home without lighting them: an Ember Sister, absolved on the road, had walked out alone to meet them with her hands open.",
+        "news_fr": "La nuit de Reedholm, le Marais est venu au Quartier des Cendres avec des torches, et il est reparti sans les allumer : une Sœur de Braise, absoute sur la route, était sortie seule à sa rencontre, les mains ouvertes."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "liora_met"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": 1
+            }
+          ]
+        },
+        "news": "On Reedholm’s night the Mire came to the Ashen Quarter with torches, and went home without lighting them: a Moss Choir singer had walked out to meet them and sung the names the fen keeps.",
+        "news_fr": "La nuit de Reedholm, le Marais est venu au Quartier des Cendres avec des torches, et il est reparti sans les allumer : une chanteuse du Chœur de Mousse était sortie à sa rencontre et avait chanté les noms que garde le marais."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "refugees_aboard"
+          ]
+        },
+        "effects": {
+          "relations": [
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": 1
+            }
+          ]
+        },
+        "news": "On Reedholm’s night the Mire came to the Ashen Quarter with torches, and went home without lighting them: the fen-born refugees the Eel had taken off the skiff walked out to speak for the Mire, and were heard.",
+        "news_fr": "La nuit de Reedholm, le Marais est venu au Quartier des Cendres avec des torches, et il est reparti sans les allumer : les réfugiés du marais que l’Eel avait recueillis sur l’esquif étaient sortis parler pour lui, et on les avait entendus."
+      },
+      {
         "effects": {
           "relations": [
             {
               "a": "mire",
               "b": "vigil",
               "steps": -1
+            },
+            {
+              "a": "mire",
+              "b": "penitents",
+              "steps": -2
             }
           ]
         },
-        "news": "On Reedholm’s night the Mire burned the Penitents’ infirmary in the Ashen Quarter, as it has sworn to every year since the village burned. The Vigil took the Penitents’ wounded in, and the Mire has not forgiven that either.",
-        "news_fr": "La nuit de Reedholm, le Marais a brûlé le dispensaire des Pénitents dans le Quartier des Cendres, comme il en a fait le serment chaque année depuis que le village a brûlé. La Veille a recueilli les blessés des Pénitents, et le Marais ne lui a pas pardonné cela non plus."
+        "news": "On Reedholm’s night the Mire burned the Penitents’ infirmary in the Ashen Quarter, as it has sworn to every year since the village burned. The Vigil took the Penitents’ wounded in, and the Mire has not forgiven that either. Reedholm is a feud again.",
+        "news_fr": "La nuit de Reedholm, le Marais a brûlé le dispensaire des Pénitents dans le Quartier des Cendres, comme il en a fait le serment chaque année depuis que le village a brûlé. La Veille a recueilli les blessés des Pénitents, et le Marais ne lui a pas pardonné cela non plus. Reedholm redevient une vendetta."
       }
     ]
   },
@@ -380,8 +439,8 @@
             "throne_filled"
           ]
         },
-        "news": "The Houses would not wait for a Lantern-Bearer the Conclave had not finished naming. Grand Master Morrow has taken the Lantern Hall with the Order’s knights and refuses your claim; Aurel Vane and the Inquisition have come over to it, and call themselves your Hand.",
-        "news_fr": "Les Maisons n’ont pas voulu attendre un Porte-Lanterne que le Conclave n’avait pas fini de nommer. Le Grand Maître Morrow a pris la Salle de la Lanterne avec les chevaliers de l’Ordre et refuse votre prétention ; Aurel Vane et l’Inquisition s’y sont ralliés, et se disent votre Main."
+        "news": "The Houses would not wait for a Lantern-Bearer the Conclave had not finished naming. Grand Master Morrow has taken the Lantern Hall with the Order’s knights and refuses your claim; Regent Oriel and the Inquisition have come over to it, and call themselves your Hand.",
+        "news_fr": "Les Maisons n’ont pas voulu attendre un Porte-Lanterne que le Conclave n’avait pas fini de nommer. Le Grand Maître Morrow a pris la Salle de la Lanterne avec les chevaliers de l’Ordre et refuse votre prétention ; Le Régent Oriel et l’Inquisition s’y sont ralliés, et se disent votre Main."
       },
       {
         "conditions": {
@@ -398,8 +457,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Grand Master Morrow brought the Order over to you the night the Admiralty’s vote was read, and stands at your side as your Hand.",
-        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Le Grand Maître Morrow vous a rallié l’Ordre le soir où l’on a lu la voix de l’Amirauté, et se tient à vos côtés en Main."
+        "news": "Regent Oriel has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Grand Master Morrow brought the Order over to you the night the Admiralty’s vote was read, and stands at your side as your Hand.",
+        "news_fr": "Le Régent Oriel s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Le Grand Maître Morrow vous a rallié l’Ordre le soir où l’on a lu la voix de l’Amirauté, et se tient à vos côtés en Main."
       },
       {
         "conditions": {
@@ -416,8 +475,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Maud Tallis came down to the quay with one lamp and set it at your feet: your Hand, she says, while the lamps stay lit.",
-        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Maud Tallis est descendue sur le quai avec une seule lampe et l’a posée à vos pieds : votre Main, dit-elle, tant que les lampes resteront allumées."
+        "news": "Regent Oriel has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Maud Tallis came down to the quay with one lamp and set it at your feet: your Hand, she says, while the lamps stay lit.",
+        "news_fr": "Le Régent Oriel s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Maud Tallis est descendue sur le quai avec une seule lampe et l’a posée à vos pieds : votre Main, dit-elle, tant que les lampes resteront allumées."
       },
       {
         "conditions": {
@@ -467,8 +526,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane has taken the Lantern Hall with the Inquisition behind him and refuses the claim the Houses were naming you to. The Conclave sits on the cliff outside his door, waiting to see who opens it.",
-        "news_fr": "Aurel Vane a pris la Salle de la Lanterne, l’Inquisition derrière lui, et refuse la prétention que les Maisons vous reconnaissaient. Le Conclave siège sur la falaise devant sa porte, à attendre de voir qui l’ouvrira."
+        "news": "Regent Oriel has taken the Lantern Hall with the Inquisition behind him and refuses the claim the Houses were naming you to. The Conclave sits on the cliff outside his door, waiting to see who opens it.",
+        "news_fr": "Le Régent Oriel a pris la Salle de la Lanterne, l’Inquisition derrière lui, et refuse la prétention que les Maisons vous reconnaissaient. Le Conclave siège sur la falaise devant sa porte, à attendre de voir qui l’ouvrira."
       },
       {
         "conditions": {
@@ -500,8 +559,8 @@
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane sits the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic; his second shuts Candlehold’s gates against your banner.",
-        "news_fr": "Aurel Vane siège sur le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace ; le second ferme les portes de Candlehold à votre bannière."
+        "news": "Regent Oriel sits the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic; his second shuts Candlehold’s gates against your banner.",
+        "news_fr": "Le Régent Oriel siège sur le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace ; le second ferme les portes de Candlehold à votre bannière."
       },
       {
         "conditions": {
@@ -584,8 +643,8 @@
             "throne_filled"
           ]
         },
-        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Aurel Vane. The Dominion is an inquisition now, and its gates are shut against your banner.",
-        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne à Aurel Vane. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
+        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Regent Oriel. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne au Régent Oriel. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -617,8 +676,8 @@
             "throne_filled"
           ]
         },
-        "news": "The Houses gave the Lantern Throne to Aurel Vane, who had spent the most and remembered every coin. The Dominion is an inquisition now, and its gates are shut against your banner.",
-        "news_fr": "Les Maisons ont donné le Trône de la Lanterne à Aurel Vane, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
+        "news": "The Houses gave the Lantern Throne to Regent Oriel, who had spent the most and remembered every coin. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne au Régent Oriel, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -852,8 +911,8 @@
             "inquisition": "foe"
           }
         },
-        "news": "The Lantern Throne has declared the Open Hand hunted, with a price on everyone who draws for it and a higher one on the grey cloth. Aurel Vane signed the writ himself.",
-        "news_fr": "Le Trône de la Lanterne a déclaré la Main Ouverte traquée, avec une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise. Aurel Vane a signé le mandat de sa main."
+        "news": "The Lantern Throne has declared the Open Hand hunted, with a price on everyone who draws for it and a higher one on the grey cloth. Aurel Vane signed the writ in the Regent’s name.",
+        "news_fr": "Le Trône de la Lanterne a déclaré la Main Ouverte traquée, avec une prime sur quiconque trace pour elle, et une plus forte encore sur l’étoffe grise. Aurel Vane a signé le mandat au nom du Régent."
       },
       {
         "effects": {
@@ -1295,6 +1354,471 @@
       {
         "news": "The Admiralty sold Nkem Tallow’s impounded haul at auction as Crusade property; the Brig-Born have moved their salvage to a beach the fleet’s clerks cannot find, and the Anchorage has lost its only honest salvager.",
         "news_fr": "L’Amirauté a vendu aux enchères la prise de Nkem Tallow mise en fourrière, comme bien de la Croisade ; les Enfants du Brick ont déplacé leurs prises sur une plage que les clercs de la flotte ne trouvent pas, et le Mouillage a perdu son seul récupérateur honnête."
+      }
+    ]
+  },
+  "wrack_vote_result": {
+    "id": "wrack_vote_result",
+    "name": "The vote reaches Candlehold",
+    "name_fr": "Le vote arrive à Candlehold",
+    "trigger": [
+      {
+        "chapter": 5,
+        "flags": [
+          "vote_carried"
+        ]
+      },
+      {
+        "chapter": 5,
+        "flags": [
+          "vote_refused"
+        ]
+      }
+    ],
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "vote_carried",
+            "vote_read"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 8,
+            "compact": -4,
+            "crows": 4
+          },
+          "control": {
+            "ashen_quarter_cinder_row": "dominion"
+          }
+        },
+        "news": "The Tribunal’s vote reached Candlehold, and by the next tide the Salt Ledger had sold what it said. The Dominion took Cinder Row’s forges under its writ; the Row’s smiths were told to hand over their charter, and the Crows were paid for knowing first.",
+        "news_fr": "Le vote du Tribunal est arrivé à Candlehold, et à la marée suivante le Registre du Sel avait vendu ce qu’il disait. Le Dominion a mis les forges de la Rue des Braises sous son mandat ; on a ordonné aux forgerons de la Rue de rendre leur charte, et les Corneilles ont été payées pour l’avoir su les premières."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "vote_carried"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 8,
+            "compact": -4
+          },
+          "control": {
+            "ashen_quarter_cinder_row": "dominion"
+          }
+        },
+        "news": "The Tribunal’s vote reached Candlehold sealed, as it was written. The Dominion took Cinder Row’s forges under its writ, and the Row’s smiths were told to hand over their charter.",
+        "news_fr": "Le vote du Tribunal est arrivé à Candlehold sous scellés, tel qu’il avait été écrit. Le Dominion a mis les forges de la Rue des Braises sous son mandat, et l’on a ordonné aux forgerons de la Rue de rendre leur charte."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "vote_refused"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -8,
+            "compact": 4,
+            "penitents": 4
+          },
+          "control": {
+            "ashen_quarter_spire_stair": "compact"
+          }
+        },
+        "news": "The Tribunal’s vote never reached Candlehold. Four hundred names were read at the Row’s door instead, and the Compact took the Spire Stair while the Dominion argued over who had lost the vote.",
+        "news_fr": "Le vote du Tribunal n’est jamais arrivé à Candlehold. On a lu quatre cents noms à la porte de la Rue, et le Pacte a pris l’Escalier de la Flèche pendant que le Dominion cherchait qui avait perdu le vote."
+      }
+    ]
+  },
+  "conclave_counts": {
+    "id": "conclave_counts",
+    "name": "The Conclave counts",
+    "name_fr": "Le Conclave compte",
+    "trigger": [
+      {
+        "flags": [
+          "way_quiet"
+        ]
+      },
+      {
+        "flags": [
+          "way_force"
+        ]
+      },
+      {
+        "flags": [
+          "way_friends"
+        ]
+      },
+      {
+        "flags": [
+          "way_hard"
+        ]
+      }
+    ],
+    "once": true,
+    "variants": [
+      {
+        "conditions": {
+          "claim": [
+            "dominion"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "dominion": 5
+          }
+        },
+        "news": "The Houses came up the stair behind the new Lantern-Bearer’s lamp, and the Dominion stood stronger for it.",
+        "news_fr": "Les Maisons ont gravi l’escalier derrière la lampe du nouveau Porte-Lanterne, et le Dominion en est sorti plus fort."
+      },
+      {
+        "conditions": {
+          "claim": [
+            "dominion"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 3
+          }
+        },
+        "news": "The Houses came up the stair behind the new Lantern-Bearer’s lamp, and the Dominion stood stronger for it.",
+        "news_fr": "Les Maisons ont gravi l’escalier derrière la lampe du nouveau Porte-Lanterne, et le Dominion en est sorti plus fort."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "vigil"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "vigil": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "vigil"
+          }
+        },
+        "news": "The Houses counted their votes and found the Vigil already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la Veille déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "vigil"
+          ]
+        },
+        "effects": {
+          "power": {
+            "vigil": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Vigil already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la Veille déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "compact"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "compact": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "compact"
+          }
+        },
+        "news": "The Houses counted their votes and found the Compact already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Pacte déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "compact"
+          ]
+        },
+        "effects": {
+          "power": {
+            "compact": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Compact already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Pacte déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "mire"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "mire": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "mire"
+          }
+        },
+        "news": "The Houses counted their votes and found the Mire already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Marais déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "mire"
+          ]
+        },
+        "effects": {
+          "power": {
+            "mire": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Mire already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé le Marais déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "crows"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "crows": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "crows"
+          }
+        },
+        "news": "The Houses counted their votes and found the Crows already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Corneilles déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "crows"
+          ]
+        },
+        "effects": {
+          "power": {
+            "crows": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Crows already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Corneilles déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "penitents"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "penitents": 8,
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "penitents"
+          }
+        },
+        "news": "The Houses counted their votes and found the Penitents already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Pénitents déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "penitents"
+          ]
+        },
+        "effects": {
+          "power": {
+            "penitents": 4,
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the Penitents already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé les Pénitents déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "open_hand"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "dominion": -8
+          },
+          "control": {
+            "candlehold_lantern_hall": "open_hand"
+          }
+        },
+        "news": "The Houses counted their votes and found the grey hand already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la main grise déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_force"
+          ],
+          "claim": [
+            "open_hand"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -4
+          }
+        },
+        "news": "The Houses counted their votes and found the grey hand already in the Lantern Hall. The Dominion lost the Hall it had held for six hundred years.",
+        "news_fr": "Les Maisons ont compté leurs voix et trouvé la main grise déjà dans la Salle de la Lanterne. Le Dominion a perdu la Salle qu’il tenait depuis six cents ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_hard"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "dominion": -4
+          }
+        },
+        "news": "Candlehold’s stair ran with blood before the Conclave sat. The Dominion kept the Hall, and lost some of its name for it.",
+        "news_fr": "L’escalier de Candlehold a coulé de sang avant que le Conclave siège. Le Dominion a gardé la Salle, et y a perdu un peu de son nom."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_hard"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": -2
+          }
+        },
+        "news": "Candlehold’s stair ran with blood before the Conclave sat. The Dominion kept the Hall, and lost some of its name for it.",
+        "news_fr": "L’escalier de Candlehold a coulé de sang avant que le Conclave siège. Le Dominion a gardé la Salle, et y a perdu un peu de son nom."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_quiet"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "dominion": 5
+          }
+        },
+        "news": "The claimant spoke before the Houses and was heard. The Conclave named no one, and the Dominion, which likes to be asked, grew stronger.",
+        "news_fr": "Le prétendant a parlé devant les Maisons et a été entendu. Le Conclave n’a nommé personne, et le Dominion, qui aime qu’on le consulte, s’en est trouvé renforcé."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_quiet"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 3
+          }
+        },
+        "news": "The claimant spoke before the Houses and was heard. The Conclave named no one, and the Dominion, which likes to be asked, grew stronger.",
+        "news_fr": "Le prétendant a parlé devant les Maisons et a été entendu. Le Conclave n’a nommé personne, et le Dominion, qui aime qu’on le consulte, s’en est trouvé renforcé."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_friends"
+          ],
+          "anyPowerAtLeast": 50
+        },
+        "effects": {
+          "power": {
+            "dominion": 3,
+            "vigil": 3
+          }
+        },
+        "news": "The Wickwardens lit the cliff and the Vigil walked under the lamps. The Houses saw both, and the Dominion and the Vigil each came out a little stronger.",
+        "news_fr": "Les Garde-Mèches ont éclairé la falaise et la Veille a marché sous les lampes. Les Maisons ont vu l’un et l’autre, et le Dominion comme la Veille en sont sortis un peu plus forts."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "way_friends"
+          ]
+        },
+        "effects": {
+          "power": {
+            "dominion": 2,
+            "vigil": 2
+          }
+        },
+        "news": "The Wickwardens lit the cliff and the Vigil walked under the lamps. The Houses saw both, and the Dominion and the Vigil each came out a little stronger.",
+        "news_fr": "Les Garde-Mèches ont éclairé la falaise et la Veille a marché sous les lampes. Les Maisons ont vu l’un et l’autre, et le Dominion comme la Veille en sont sortis un peu plus forts."
       }
     ]
   }

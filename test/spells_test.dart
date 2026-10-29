@@ -32,11 +32,12 @@ const Map<String, dynamic> _frostBind = {
 
 void main() {
   group('maxManaFor', () {
-    test('base mana plus half the higher of Intelligence and Wisdom', () {
-      expect(maxManaFor(intelligence: 0, wisdom: 0), baseMana);
-      expect(maxManaFor(intelligence: 4, wisdom: 1), baseMana + 2);
-      expect(maxManaFor(intelligence: 1, wisdom: 5), baseMana + 2);
-      expect(maxManaFor(intelligence: 9, wisdom: 9), baseMana + 4);
+    test('base mana plus one a point of Wisdom', () {
+      expect(maxManaFor(wisdom: 0), baseMana);
+      expect(maxManaFor(wisdom: 1), baseMana + 1);
+      expect(maxManaFor(wisdom: 6), baseMana + 6);
+      // A Wisdom below zero takes nothing off.
+      expect(maxManaFor(wisdom: -2), baseMana);
     });
   });
 
@@ -94,10 +95,10 @@ void main() {
     final spell = SpellSpec.fromJson('spell_frost_bind', _frostBind);
 
     test('a damage spell rides the caster\'s own damage like a skill', () {
-      // (casterDamage 16 + amount 8 + intelligence 6 ~/ 2) x 1.5
+      // (casterDamage 16 + amount 8 + intelligence 6 ~/ 4) x 1.5
       expect(
           spellAmountFor(spell, intelligence: 6, wisdom: 20, casterDamage: 16),
-          41);
+          38);
       expect(
           spellAmountFor(spell, intelligence: 0, wisdom: 20, casterDamage: 0),
           12);
@@ -108,7 +109,7 @@ void main() {
       final wise =
           SpellSpec.fromJson('f', {..._frostBind, 'scalingStat': 'wisdom'});
       expect(spellAmountFor(wise, intelligence: 10, wisdom: 4, casterDamage: 0),
-          15);
+          14);
     });
 
     test('healing and block grow with level, never with caster damage', () {
@@ -120,11 +121,11 @@ void main() {
         'scalingStat': 'wisdom',
       });
       expect(spellAmountFor(heal, intelligence: 0, wisdom: 4, casterDamage: 99),
-          22);
+          21);
       expect(
           spellAmountFor(heal,
               intelligence: 0, wisdom: 4, level: 11, casterDamage: 99),
-          (22 * 2.2).round());
+          (21 * 2.2).round());
       final block = SpellSpec.fromJson('b', {
         ..._frostBind,
         'effect': 'Block',

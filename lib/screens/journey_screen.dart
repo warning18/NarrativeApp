@@ -7,23 +7,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
 import '../data/encounter_text.dart';
+import '../data/first_journey.dart';
 import '../data/clan_power.dart' show holderOf;
+import '../data/city_camera.dart';
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
+import '../data/city_districts.dart'
+    show
+        JourneyTownView,
+        districtOfPlace,
+        sceneDoorstep,
+        sceneStreetOf,
+        townMoveView;
 import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
 import '../data/scene_flow.dart';
+import '../data/scene_lock.dart' show isHubScene, pageExitHidden;
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/road_chart.dart';
+import '../data/world_leg_path.dart';
+import '../data/world_roads.dart' show isWorldRoadLeg;
 import '../data/narration_tokens.dart';
 import '../data/party_trail.dart';
 import '../data/quest_hints.dart' show mainQuestIdsOf;
 import '../data/road_events.dart';
 import '../data/story_repository.dart';
+import '../data/scene_presentation.dart' show SceneView;
+import '../data/way_places.dart' show wayPlaceName;
 import '../data/world_map.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -35,7 +49,10 @@ import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
 import '../providers/city_provider.dart';
-import '../providers/clans_provider.dart' show factionsProvider;
+import '../providers/clans_provider.dart'
+    show clanDataProvider, factionsProvider;
+import '../providers/day_phase_provider.dart';
+import '../providers/town_rulers_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -58,10 +75,16 @@ import '../widgets/room_plan_painter.dart';
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/calques_sheet.dart';
 import '../widgets/journey_world_map.dart';
+import '../widgets/town_service_sheet.dart';
+import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/story_text.dart';
+import '../providers/story_text_provider.dart'
+    show storyTextDoneProvider, storyTextSkipProvider;
 import '../widgets/journey_glyph.dart';
 import '../widgets/arrival_sheet.dart';
+import '../widgets/district_places.dart';
 import '../widgets/journey_banner_pin.dart';
 import '../widgets/return_notice.dart';
 import '../widgets/city_chart/city_chart.dart';
@@ -74,6 +97,10 @@ import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
 import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/timed_choice_bar.dart';
+import '../widgets/street_view/street_view.dart';
+import '../widgets/district_standing.dart';
+import '../widgets/town_walk.dart';
+import '../widgets/way_pin_groups.dart';
 import 'journal_screen.dart';
 import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
@@ -83,9 +110,11 @@ import 'story_player_screen.dart'
         EchoLine,
         composeNarrationParts,
         isStoryChoiceLocked,
+        storySceneLocked,
         noteShownEchoes,
         storyChoiceLockedText,
         takeStoryChoice;
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -345,6 +374,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// over the map until it ends or is tapped.
   _Transit? _transit;
 
+  /// Counts the words shown over the map, so each new one starts its own
+  /// timer (see _PartyTransit's key).
+  int _transitSerial = 0;
+
+  /// Whether the map showed a building's room at the last build, and the
+  /// doorway veil over the map as the party goes in or out (v1.537).
+  bool? _showedRoom;
+  IconData _doorIcon = Icons.login;
+  late final AnimationController _door = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 520), value: 1);
+
   /// The story carried the party to the scene it stands at now (a choice
   /// done here whose aftermath is elsewhere, or a one-tap return to a hub,
   /// see choice_flow.dart): the map plays the trip as for a lost fight. And
@@ -374,9 +414,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// between the district and the world, for a place with a city plan.
   bool _townView = false;
 
+  /// The party is walking a world road out of the place (v1.548): the map
+  /// shows the World view, until the next scene.
+  bool _roadWalk = false;
+
   /// Whether the place the map shows has a city plan to look at whole
   /// (set while building).
   bool _canTown = false;
+
+  /// The place (district or building) the party last stood at, for the
+  /// view an in-town move shows (see townMoveView).
+  String? _partyTownSpot;
+  bool _moveFraming = false;
+
+  /// The party's mark walking to a way's pin on a town's District view
+  /// (v1.565): where it is on the plan while it walks (null: it stands at
+  /// its own mark), the walk, and whether the District view shows the
+  /// town's chart to walk on (set while building).
+  final ValueNotifier<Offset?> _cityWalkAt = ValueNotifier(null);
+  late final AnimationController _cityWalk = AnimationController(vsync: this);
+  bool _cityWalkable = false;
+
+  /// The district as places (v1.586, district_places.dart): the map's camera
+  /// and the pin card, where the party's mark stands once it has gone to a
+  /// place of the list (null: at its own mark), and the district whose arrival was last eased.
+  final DistrictPlacesController _places = DistrictPlacesController();
+  Offset? _placeMark;
+  String? _arrivedAt;
 
   /// The chart of the city's stored plan, kept while its words hold.
   CityChart? _cityChart;
@@ -454,6 +518,58 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     );
   }
 
+  /// A pin with several ways (v1.607): its sheet is named by the place and
+  /// lists the ways; a tap on one opens it like a pin with that way alone.
+  void _openPin(List<int> ways, String name, List<_Step> steps, bool french) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheet) {
+        final theme = Theme.of(sheet);
+        final ink = InkColors.of(sheet);
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(name,
+                    key: const ValueKey('journey_pin_sheet_title'),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontFamily: InkFonts.display)),
+                const SizedBox(height: 6),
+                for (final i in ways)
+                  InkWell(
+                    key: ValueKey('journey_pin_way_$i'),
+                    onTap: () {
+                      Navigator.of(sheet).pop();
+                      _openWay(i, steps, french);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          border: Border(top: BorderSide(color: ink.seam))),
+                      child: Row(children: [
+                        Expanded(
+                          child: Text(steps[i].label,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: steps[i].locked ? ink.ash : null,
+                                  height: 1.2)),
+                        ),
+                        Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                      ]),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// The scale of a pinch on the place's map (see _lookOut): the streets
   /// shrink under the fingers, and the chart opens where they were left.
   double _pinch = 1;
@@ -512,6 +628,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// A tab of the level strip (v1.350): the district, the whole town, or
   /// the world, in one tap.
   void _goLevel(_LevelTab tab) {
+    // A tab shows what it names: a move still playing over the map ends.
+    if (_transit != null) setState(() => _transit = null);
     switch (tab) {
       case _LevelTab.district:
         if (_level != JourneyMapLevel.place) {
@@ -559,6 +677,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _outside = _sceneInside;
     });
     _arrive.forward(from: 0);
+  }
+
+  /// The doorway between a room and the streets: the map clears from a
+  /// veil and [text] is told over it (after this build, as it is asked
+  /// for while the map is built).
+  void _passDoor({required bool entering, required String text}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // A road the party is carried along keeps its words.
+      if (_transit?.flight ?? false) return;
+      setState(() {
+        _doorIcon = entering ? Icons.login : Icons.logout;
+        _transitSerial++;
+        _transit = _Transit.words(text, icon: _doorIcon);
+      });
+      _door.forward(from: 0);
+    });
   }
 
   /// In through the door: the room grows in from the streets (v1.207).
@@ -612,6 +747,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The scene read full screen (double-tap on it, again to come back).
   bool _reading = false;
 
+  /// Whether the scene shown is a new game's first scene, opened as a page.
+  bool _openedFresh = false;
+
+  /// The scene the story brought the party to (v1.553, scene_lock.dart):
+  /// a way taken into it (a pin or a card), a new game's first scene, or a
+  /// save picked back up on it. While it holds a way acted out here, its
+  /// page holds the party: every way is a card and the map waits.
+  String? _lockedAt;
+
+  /// The play state the last new scene was shown for: a scene reached
+  /// otherwise than by a step from it (a save loaded) is one the story
+  /// brought the party to; a jump (a step) is not.
+  StoryPlayState? _shownPlay;
+
+  /// A road card taken on a locked page: the map comes back and walks it.
+  StoryChoice? _walkOn;
+
   /// The scene of a place the party just arrived at, in a sheet over the map
   /// (S2, see arrival_sheet.dart); Continue closes it.
   bool _arrival = false;
@@ -652,6 +804,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   void dispose() {
     _jolt.dispose();
     _arrive.dispose();
+    _door.dispose();
+    _cityWalk.dispose();
+    _cityWalkAt.dispose();
+    _places.dispose();
     super.dispose();
   }
 
@@ -677,8 +833,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     Offset? walked;
     var taken = false;
     ChoiceFlow flow = const FlowStay();
+    String? fromId;
     try {
       final chart = _chartKey.currentState;
+      // On a town's District view (v1.565): the party's mark walks to the
+      // way's pin first, then its scene opens; a tap skips the walk.
+      if (chart == null &&
+          _cityWalkable &&
+          !MediaQuery.of(context).disableAnimations) {
+        await _walkCity(index);
+        if (!mounted || moved()) return;
+      }
       // A choice done here (a card) has a beat at the party's mark instead
       // of a walk: a ring in its kind's colour and its icon rising.
       if (chart != null &&
@@ -715,7 +880,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
         if (!mounted || moved()) return;
       }
-      final fromId = ref.read(storyPlayProvider).currentNodeId;
+      fromId = ref.read(storyPlayProvider).currentNodeId;
       await takeStoryChoice(context, ref, step.choice);
       taken = true;
       flow = _flowAfter(fromId, step.choice);
@@ -735,18 +900,24 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             _partyPlan = homePlan;
             _partyDistrict = homeDistrict;
             _partyLandmark = homeLandmark;
+            _roadWalk = false;
           }
         }
         if (mounted) {
+          // A new game's first step out of a building (first_journey.dart):
+          // the map, not the page, since the party has to move on.
+          final firstOut = taken && !stayed && _firstStepOutside(fromId);
           setState(() {
             if (_takingFrom == before) _takingFrom = null;
             _pressed = null;
+            _cityWalkAt.value = null;
+            _placeMark = null;
             // The choice moved the story on. A main-story scene is read full
             // screen (S1); any other scene opens in a sheet over the map (S2);
             // Continue brings the map back (and plays a carry). A one-tap
             // return lands on the hub's map, with its notice (return_notice).
-            // TODO(UX): the next scene's choices in the scene view on
-            // FlowStay, and the map offering only the FlowMap ways.
+            // Either view also holds the scene's own choices (the ones acted
+            // out here); the map keeps only the ways that carry the party.
             if (taken && !stayed) {
               _carried = flow is FlowTripThenArrive || flow is FlowReturnToHub;
               final play = ref.read(storyPlayProvider);
@@ -758,8 +929,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     true,
                 inExcursion: play.isInExcursion,
               );
-              _reading = view == ArrivalView.page;
-              _arrival = view == ArrivalView.sheet;
+              // The story begun again: its first scene, as a new game's.
+              final fresh = isFreshStoryStart(play);
+              _reading = fresh || view == ArrivalView.page;
+              _arrival = !fresh && view == ArrivalView.sheet;
+              if (firstOut && !fresh) {
+                _reading = false;
+                _arrival = false;
+              }
+              // The view is chosen here: the next build keeps it.
+              _openedFresh = fresh;
+              // The story brought the party here: its page holds it if a
+              // way is acted out here (see the build).
+              _lockedAt = ref.read(appModeProvider) == AppMode.edit
+                  ? null
+                  : _sceneKeyOf(play);
             }
           });
         }
@@ -785,6 +969,107 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     return flow;
   }
 
+  /// Whether the story just took the party from [fromId] out of a building
+  /// for the first time in a new game (see firstStepOutside); notes it in
+  /// the session when it did, so it happens once.
+  bool _firstStepOutside(String? fromId) {
+    final play = ref.read(storyPlayProvider);
+    if (fromId == null ||
+        play.isInExcursion ||
+        ref.read(appModeProvider) == AppMode.edit) {
+      return false;
+    }
+    final world = ref.read(geographyProvider);
+    final story = widget.story;
+    final out = firstStepOutside(
+      flags: ref.read(playerSessionProvider).flags,
+      from: world.placeOfNode(story.nodeFor(fromId)),
+      to: world.placeOfNode(story.nodeFor(play.currentNodeId)),
+      chapter: chapterOfNode(play.currentNodeId),
+    );
+    if (out) {
+      ref.read(playerSessionProvider.notifier).markJourneyFirstShown();
+    }
+    return out;
+  }
+
+  /// Walks the party's mark on the town's chart to the pin of way [index]
+  /// (v1.565): from its doorstep or its district, in a straight line, for
+  /// as long as cityWalkDuration says. A tap on the map skips to the end.
+  Future<void> _walkCity(int index) async {
+    final chart = _cityChart;
+    if (chart == null) return;
+    final way = chart.ways.where((w) => w.id == '$index').firstOrNull;
+    if (way == null) return;
+    final to = _wayPin(chart, way);
+    final district = ref.read(partyDistrictProvider);
+    final from = _markAtPlace ??
+        chart.here ??
+        (district == null ? null : chart.districtById(district)?.centre);
+    if (from == null) return;
+    final span = cityWalkDuration((to - from).distance);
+    if (span == Duration.zero) return;
+    void follow() => _cityWalkAt.value =
+        Offset.lerp(from, to, Curves.easeInOut.transform(_cityWalk.value));
+    _cityWalk
+      ..duration = span
+      ..value = 0
+      ..addListener(follow);
+    follow();
+    try {
+      await _cityWalk.forward(from: 0).orCancel;
+    } on TickerCanceled {
+      // The map went mid-walk: the scene is taken all the same.
+    } finally {
+      _cityWalk.removeListener(follow);
+    }
+  }
+
+  /// Where way [way]'s pin is on the plan.
+  Offset _wayPin(CityChart chart, CityChartWay way) =>
+      way.at ??
+      chart.buildingOf(way)?.at ??
+      chart.districts[way.district].centre;
+
+  /// Where the party's mark stands at the place it went to, while it stays
+  /// there (null: at its own mark).
+  Offset? get _markAtPlace =>
+      ref.read(partyPlaceProvider) == null ? null : _placeMark;
+
+  /// The party goes to a place of the district's list (v1.586): its mark
+  /// walks to the place's pin (a tap skips the walk), then the place's ways
+  /// show. `Here` and a way out have no pin to walk to.
+  Future<void> _goPlace(PlaceInfo place) async {
+    final chart = _cityChart;
+    if (_busy || chart == null || place.steps.isEmpty) return;
+    _places.card.value = null;
+    final walks = !place.here && !place.wayOut;
+    final first = chart.ways.where((w) => w.id == '${place.steps.first}');
+    final pin = walks && first.isNotEmpty ? _wayPin(chart, first.first) : null;
+    if (pin != null &&
+        _cityWalkable &&
+        !MediaQuery.of(context).disableAnimations) {
+      await _walkCity(place.steps.first);
+      if (!mounted) return;
+    }
+    _cityWalkAt.value = null;
+    setState(() => _placeMark = pin);
+    standAtPlace(ref, place.id);
+  }
+
+  /// The party back at the district's list of places.
+  void _leavePlace() {
+    setState(() => _placeMark = null);
+    leavePlace(ref);
+  }
+
+  /// A tap during the walk on the town's chart: the party is there at once.
+  void _skipCityWalk() {
+    if (!_cityWalk.isAnimating) return;
+    _cityWalk.stop(canceled: false);
+    _cityWalk.value = 1;
+  }
+
   /// Reads the scene full screen, or comes back to the map; not while the
   /// party walks, whose map would go from under it.
   void _read(bool reading) {
@@ -792,6 +1077,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     setState(() {
       _reading = reading;
       _arrival = false;
+      _lockedAt = null;
+    });
+  }
+
+  /// A road card taken on a locked page (v1.553): the lock lifts, the map
+  /// comes back and the party walks the way as a step on it.
+  void _leaveByRoad(int index, _Step step) {
+    if (_busy || step.locked) return;
+    setState(() {
+      _lockedAt = null;
+      _reading = false;
+      _arrival = false;
+      _selected = index;
+      _walkOn = step.choice;
     });
   }
 
@@ -813,9 +1112,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   double _panelHeight(double area, List<_Step> steps) {
     final plain = math.min(124.0, math.max(104.0, area * 0.26));
     final cards = steps.where((s) => s.onCard).length;
-    if ((_level != JourneyMapLevel.place && !_writtenDetour) || cards == 0) {
-      return plain;
-    }
+    if (!_writtenDetour || cards == 0) return plain;
     // On a short phone the map keeps its room and the cards scroll; a taller
     // one gives them more, up to three cards.
     final room = ((area - 430) * 0.4).clamp(0.0, 90.0);
@@ -903,25 +1200,34 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             ),
       ];
 
+  /// [selected] when it is a card (the scene view has no pins to show).
+  _Step? _pickedCard(_Step? selected) =>
+      selected != null && selected.onCard ? selected : null;
+
   bool _isHub(List<_Step> steps) =>
       steps.where((s) => s.onCard).length > _hubCards;
 
   /// The panel under the map in a place (design 1 of
   /// docs/proposals/inplace-choices.md): every choice acted out here is a
   /// card, the pin picked (if one is) leading with its own detail. A hub
-  /// (design 3) shows a chip for each ring instead, and a "Ways" chip for
-  /// the pins: a tap opens that list.
+  /// (design 3) shows a chip for each kind of choice instead: a tap opens
+  /// that list. In the scene view (and under the map of a written detour,
+  /// which has no pins).
   Widget _choicePanel(
-      List<_Step> steps, _Step? selected, bool french, StoryData story) {
+      List<_Step> steps, _Step? selected, bool french, StoryData story,
+      {bool shrinkWrap = false, bool all = false}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
-    final hub = _isHub(steps);
+    // A locked page ([all], v1.553) lists every way as a card: the ways
+    // somewhere as road cards, which go back to the map and walk them.
+    final hub = !all && _isHub(steps);
     return ListView(
       key: const ValueKey('journey_choice_cards'),
       padding: EdgeInsets.zero,
+      shrinkWrap: shrinkWrap,
       children: [
-        if (selected != null && !selected.onCard) ...[
+        if (!all && selected != null && !selected.onCard) ...[
           _StepDetail(
             step: selected,
             busy: _busy,
@@ -944,14 +1250,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   color: ring.color,
                   onTap: () => _openList(ring.id, steps, french, story),
                 ),
-              if (_ringSteps(steps, 'ways').isNotEmpty)
-                ChoiceGroupChip(
-                  key: const ValueKey('choice_chip_ways'),
-                  label: tr(ref, 'choice_ways_chip'),
-                  count: _ringSteps(steps, 'ways').length,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  onTap: () => _openList('ways', steps, french, story),
-                ),
             ],
           ),
           Padding(
@@ -965,11 +1263,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           ),
         ] else
           for (var i = 0; i < steps.length; i++)
-            if (steps[i].onCard)
+            if (steps[i].onCard || (all && steps[i].shape.here))
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: _cardFor(i, steps[i], french, ink, palette, enemies,
                     identical(selected, steps[i])),
+              )
+            else if (all)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                    identical(selected, steps[i]),
+                    onTap: () => _selected == i && !steps[i].locked
+                        ? _leaveByRoad(i, steps[i])
+                        : setState(() => _selected = i),
+                    onGo: () => _leaveByRoad(i, steps[i])),
               ),
       ],
     );
@@ -1168,6 +1476,35 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
+      // A new game opens on its first scene's page, as any main-story
+      // scene arrived at does; the map comes after.
+      final editing = ref.read(appModeProvider) == AppMode.edit;
+      final fresh = !editing && isFreshStoryStart(play);
+      // The scene the Journey first shows, or one the story was put back
+      // on (a save loaded): not a step from the last scene shown.
+      final shown = _shownPlay;
+      final stepped = shown != null &&
+          (shown.isInExcursion ||
+              play.isInExcursion ||
+              (play.history.length == shown.history.length + 1 &&
+                  play.history.last == shown.currentNodeId));
+      _shownPlay = play;
+      if (fresh) {
+        _reading = true;
+        _arrival = false;
+        _lockedAt = sceneKey;
+      } else if (!editing && !stepped) {
+        // A save picked back up: its page holds the party if its scene
+        // locks (see below), the map otherwise.
+        if (_lockedAt != null) _reading = false;
+        _lockedAt = sceneKey;
+      } else if (_openedFresh || (_lockedAt != null && _lockedAt != sceneKey)) {
+        // Moved on from a page the story opened by other means than a way
+        // taken here (a jump): the map, as before.
+        _reading = false;
+        _lockedAt = null;
+      }
+      _openedFresh = fresh;
     }
 
     final tools = [
@@ -1217,42 +1554,6 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             },
             if (node.contextNoteFor(french) case final note?) note,
           ].join(' ');
-
-    // Read full screen, the scene has the tab to itself.
-    if (_reading) {
-      return SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-          child: Column(
-            children: [
-              Expanded(
-                child: _ScenePanel(
-                  key: ValueKey('journey_reading_$sceneKey'),
-                  story: story,
-                  node: node,
-                  french: french,
-                  folded: false,
-                  reading: true,
-                  onFold: (_) {},
-                  onReading: _read,
-                  detour: detour,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  key: const ValueKey('journey_continue'),
-                  onPressed: () => _read(false),
-                  icon: const Icon(Icons.arrow_forward, size: 18),
-                  label: Text(tr(ref, 'journey_continue')),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
 
     // Where the party stands.
     final hereLandmark =
@@ -1360,7 +1661,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           // the story (see isStoryChoiceLocked), and says why.
           final locked = shut ||
               isStoryChoiceLocked(choice, story, session,
-                  isExcursion: play.isInExcursion, world: gateWorld);
+                  isExcursion: play.isInExcursion,
+                  world: gateWorld,
+                  shutWays: ref.watch(lockedStoryWaysProvider));
           final lockedText = locked
               ? storyChoiceLockedText(ref, choice, session,
                   isExcursion: play.isInExcursion,
@@ -1481,13 +1784,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final place = world.placeOfNode(story.nodeFor(ends[choices[i]]!));
         if (place == null || place.id == herePlace?.id) continue;
         if (world.locationOf(place.id)?.id != hereLocation.id) continue;
-        districtOfStep[i] = place.level == GeoLevel.district ? place.id : '';
+        // A way into a building stands in the building's district.
+        districtOfStep[i] = districtOfPlace(world, place.id)?.id ?? '';
       }
     }
     // The city's stored plan (Core's city_plans.json, board 15): the plan
     // the ways are laid on and the chart drawn under them.
     PlacePlan? cityPlan = plan;
     final cityDistrictOf = <int, String>{};
+    // The building whose street the scene plays in (v1.589, sceneStreetOf).
+    GeoPlace? sceneStreet;
     final hereDistrictOf = ref.watch(partyDistrictProvider);
     CityChart? cityChart;
     Set<String>? foundDistricts;
@@ -1502,6 +1808,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         final ownDistrict = record.districts.containsKey(hereDistrictOf)
             ? hereDistrictOf
             : null;
+        // A scene played at a building's doorstep (v1.542): the party at
+        // its door, the ways that stay there in the street round it.
+        sceneStreet = sceneStreetOf(world, record, node);
+        final doorstep = sceneDoorstep(world, record, node, waysHere: [
+          for (var i = 0; i < rawSteps.length; i++)
+            if (!districtOfStep.containsKey(i)) i,
+        ]);
         for (var i = 0; i < rawSteps.length; i++) {
           final d = districtOfStep[i];
           final pinned = d != null && record.districts.containsKey(d)
@@ -1532,10 +1845,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   kind: _cityWayKindOf(rawSteps[e.key].kind),
                   name: rawSteps[e.key].label,
                   sceneId: rawSteps[e.key].choice.nextId,
+                  at: doorstep?.spotOfWay[e.key],
                 ),
             ],
             french: french,
             name: hereLocation.nameFor(french),
+            doorstep: doorstep?.buildingId,
           );
         }
         cityChart = _cityChart;
@@ -1545,15 +1860,34 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // Inside a building (v1.207): the room's plan, the party at its spot
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
-    final hereBuilding = herePlace?.isBuilding == true ? herePlace : null;
+    // A scene played at its building's doorstep (v1.542) is on the streets.
+    final hereBuilding = herePlace?.isBuilding == true &&
+            !herePlace!.doorstep.contains(play.currentNodeId) &&
+            !(story.nodeFor(play.currentNodeId)?.sceneInStreet ?? false)
+        ? herePlace
+        : null;
     _sceneInside = hereBuilding != null;
+    // The room and the streets round it are told apart by a doorway and a
+    // line of words, both ways (v1.537).
+    final showsRoom = hereBuilding != null && !_outside;
+    if (_showedRoom != null &&
+        _showedRoom != showsRoom &&
+        !play.isInExcursion &&
+        _level == JourneyMapLevel.place) {
+      _passDoor(
+          entering: showsRoom,
+          text: showsRoom
+              ? tr(ref, 'journey_step_in').replaceAll(
+                  '{place}', townNameInSentence(hereBuilding.nameFor(french)))
+              : tr(ref, 'journey_step_out'));
+    }
+    _showedRoom = showsRoom;
     RoomPlan? room;
     var hereSpot = '';
     final leavesRoom = <int>{};
     if (hereBuilding != null && !_outside) {
-      room = RoomPlan.of(
-          seed: _stableSeed(hereBuilding.id),
-          kind: RoomKind.resolve(hereBuilding.kind, hereBuilding.name));
+      room = RoomPlan.ofBuilding(
+          hereBuilding.id, hereBuilding.kind, hereBuilding.name);
       final spot = node.spot ?? '';
       hereSpot = spot.isNotEmpty && room.has(spot) ? spot : 'floor';
       districtOfStep.clear();
@@ -1656,6 +1990,176 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
         : null;
+    // The words write themselves out when the scene is new (Edit Mode shows
+    // them at once); its choices come once they have, and a tap on Continue
+    // before that shows them all first.
+    final revealKey =
+        ref.watch(appModeProvider) == AppMode.edit ? null : 'journey|$sceneKey';
+    final textReady = revealKey == null ||
+        storyTextShownAtOnce(context) ||
+        ref.watch(storyTextDoneProvider).contains(revealKey);
+    void continueFromScene() => textReady
+        ? _read(false)
+        : ref.read(storyTextSkipProvider.notifier).state++;
+    // Read full screen, the scene has the tab to itself: its words, then the
+    // choices acted out here (cards, or a chip for each kind in a hub), then
+    // the way back to the map. The map keeps only the ways that carry the
+    // party somewhere.
+    // A scene the story brought the party to, with a way acted out here,
+    // holds it on its page (v1.553, scene_lock.dart): every way is a card,
+    // the map waits. A written detour has no map to leave already.
+    // Only a scene none of whose ways the map draws locks (a pin, a way on
+    // the city chart, a spot in a room). Before the places or a city's
+    // plans have loaded, every way counts as drawn: nothing locks before
+    // the map knows where its ways are.
+    final cityLoading = world.isEmpty ||
+        plan != null && ref.watch(cityPlanRecordsProvider).value == null;
+    final mapped = Map<StoryChoice, bool>.identity()
+      ..addAll({
+        for (var i = 0; i < steps.length; i++)
+          steps[i].choice: !steps[i].onCard ||
+              room != null ||
+              cityDistrictOf.containsKey(i) ||
+              cityLoading,
+      });
+    final locked = _lockedAt == sceneKey &&
+        !_writtenDetour &&
+        storySceneLocked(ref, node, story, mapped: (c) => mapped[c] ?? true);
+    if (locked) {
+      _reading = true;
+      _arrival = false;
+    }
+    // A road card taken on a locked page: the map is back, the party walks.
+    if (_walkOn != null && !_reading) {
+      final way = _walkOn;
+      _walkOn = null;
+      final i = steps.indexWhere((s) => identical(s.choice, way));
+      if (i >= 0) {
+        final step = steps[i];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _take(i, step);
+        });
+      }
+    }
+    if (_reading) {
+      // A page the story brought the party to whose cards hold every move
+      // the map would offer (scene_lock.dart's pageExitHidden, v1.565): no
+      // way back to the map; its pins are road cards under the others.
+      // A new game's first page keeps its way back (the map before the
+      // character is made).
+      final held = !locked &&
+          _lockedAt == sceneKey &&
+          !_openedFresh &&
+          !_writtenDetour &&
+          pageExitHidden(
+            ways: [
+              for (final s in steps)
+                (card: s.onCard, takeable: !s.locked, to: s.shape.to?.id),
+            ],
+            hub: isHubScene(node) || _isHub(steps),
+            ending: isStoryEnding(node),
+            editMode: ref.watch(appModeProvider) == AppMode.edit,
+          );
+      final here = locked || held || steps.any((s) => s.onCard);
+      // A locked page has no way back to the map: the cards take the story
+      // on, and the map's tabs and buttons wait, greyed ("Choose first").
+      final toMap = !locked && !held;
+      // The button names the map: the way back to it, or, locked, the way
+      // that waits.
+      final toMapLabel = here && (toMap || textReady);
+      final waitLine = Text(
+        tr(ref, 'journey_choose_first'),
+        key: const ValueKey('journey_choose_first'),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: InkColors.of(context).ash, fontStyle: FontStyle.italic),
+      );
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: Column(
+            children: [
+              if (locked) ...[
+                // The greyed tabs, and the followed quest: its goal stays
+                // in sight while the player chooses.
+                Row(
+                  children: [
+                    _LevelTabs(
+                      selected: _LevelTab.district,
+                      townEnabled: false,
+                      busy: true,
+                      enabled: false,
+                      palette: palette,
+                      onPick: (_) {},
+                    ),
+                    const Spacer(),
+                    const QuestTrackerBar(compact: true),
+                  ],
+                ),
+                const SizedBox(height: 8),
+              ],
+              Expanded(
+                child: _ScenePanel(
+                  revealKey: revealKey,
+                  key: ValueKey('journey_reading_$sceneKey'),
+                  story: story,
+                  node: node,
+                  french: french,
+                  folded: false,
+                  reading: true,
+                  toMap: toMap,
+                  locked: locked,
+                  onFold: (_) {},
+                  onReading: (r) {
+                    if (r || toMap) _read(r);
+                  },
+                  detour: detour,
+                ),
+              ),
+              if (here && textReady) ...[
+                const SizedBox(height: 8),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.sizeOf(context).height * 0.42),
+                  child: _choicePanel(
+                      steps,
+                      locked || held ? selected : _pickedCard(selected),
+                      french,
+                      story,
+                      shrinkWrap: true,
+                      all: locked || held),
+                ),
+              ],
+              // On a locked page, Continue only shows the words at once;
+              // then the way back to the map waits, greyed.
+              if (toMap || !textReady || locked) ...[
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    key: const ValueKey('journey_continue'),
+                    onPressed: locked && textReady ? null : continueFromScene,
+                    icon: Icon(
+                        toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
+                        size: 18),
+                    label: Text(tr(
+                        ref,
+                        toMapLabel
+                            ? 'journey_reading_exit'
+                            : 'journey_continue')),
+                  ),
+                ),
+                if (locked && textReady) ...[
+                  const SizedBox(height: 4),
+                  waitLine,
+                ],
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+
     final placeView = placeLandmark == null || chartHere == null
         ? null
         : _PlaceView(
@@ -1698,6 +2202,30 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A city plan to look at whole (not from inside a room).
     _canTown = placeView?.plan != null && placeView?.room == null;
     if (!_canTown) _townView = false;
+    // A move inside one town (v1.534) is a walk on its plan, and the view
+    // follows it: the whole town for another district, the district for the
+    // same one.
+    String? townWalkTo;
+    if (_placedFor != sceneKey && !play.isInExcursion) {
+      final town = townMoveView(world, _partyTownSpot, herePlace?.id);
+      if (town != null && _canTown) {
+        // Another district: the walk is told in words too (v1.537).
+        if (town == JourneyTownView.town && herePlace != null) {
+          townWalkTo = herePlace.nameFor(french);
+        }
+        _level = JourneyMapLevel.place;
+        _townView = town == JourneyTownView.town;
+        _cityFocus = null;
+        _cityFocusToken++;
+        // The chart's report of the district it framed before the move
+        // comes a frame late: it is not the player's pick.
+        _moveFraming = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) => WidgetsBinding
+            .instance
+            .addPostFrameCallback((_) => _moveFraming = false));
+      }
+      _partyTownSpot = herePlace?.id;
+    }
     final townView = _townView && _canTown;
     // A city with Core's stored plan is drawn as board 15's district view
     // (not in a detour, nor from inside a room).
@@ -1709,6 +2237,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // list) is reached by the road from where it stood, and the map says why.
     if (_placedFor != sceneKey && !play.isInExcursion) {
       _placedFor = sceneKey;
+      _roadWalk = false;
       final carried = _carried;
       _carried = false;
       final to = placeView?.chartHere;
@@ -1736,9 +2265,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     fromName: _partyName,
                     toName: hereName,
                     flight: far,
-                    route: far && _partyLandmark != null && standing != null
-                        ? chartRoadsBetween(
-                            geography, _partyLandmark!, standing.id, language)
+                    path: far &&
+                            _partyLandmark != null &&
+                            standing != null &&
+                            _partyLandmark != standing.id
+                        ? worldLegPath(
+                            journeyChartOf(ref), _partyLandmark!, standing.id,
+                            language: language)
                         : null,
                     forced: forced,
                     caption: partyMoveNote(
@@ -1748,6 +2281,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             .replaceAll('{place}', hereName),
                   )
                 : null;
+        if (_transit == null && townWalkTo != null && !editorJump) {
+          _transit = _Transit.words(tr(ref, 'journey_walk_to')
+              .replaceAll('{place}', townNameInSentence(townWalkTo)));
+        }
         // Inside the place (v1.246): the party travels the streets, or the
         // room, from the district or spot it stood at.
         _arriveFrom = cause != null &&
@@ -1783,36 +2320,43 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
-    final worldMap = ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: JourneyWorldMap(
-        key: const ValueKey('journey_world_map'),
-        level: _level,
-        palette: palette,
-        here: standing,
-        discovered: worldDiscovered,
-        legs: roadLegs(journeyWalked, worldDiscovered),
-        ahead: nextPlace,
-        shopPlaces: _shopsFor(story),
-        campPlaces: {
-          for (final entry in _kindsFor(story).entries)
-            if (entry.value == 'camp') entry.key,
-        },
-        chapterColor: (n) => switch (look) {
-          MapLook.night => mapChapter(n).dark,
-          MapLook.parchment => mapChapter(n).light,
-          MapLook.shroud => const Color(0xFFA3A3AA),
-        },
-        onLayers: _showCalques,
-        onSelect: (landmark) => setState(() => _lookedAt = landmark),
-        onZoomIn: _arriveAtStreets,
-        enterZoom: _enterZoom,
-        onFullMap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const FullMapScreen()),
-        ),
-        fog: editing ? ChartFog.none : ChartFog.uncharted,
-      ),
-    );
+    Widget worldMapWith(
+            {required JourneyMapLevel level,
+            WorldLegPath? move,
+            Animation<double>? clock}) =>
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: JourneyWorldMap(
+            key: move == null ? const ValueKey('journey_world_map') : null,
+            move: move,
+            moveClock: clock,
+            level: level,
+            palette: palette,
+            here: standing,
+            discovered: worldDiscovered,
+            legs: roadLegs(journeyWalked, worldDiscovered),
+            ahead: nextPlace,
+            shopPlaces: _shopsFor(story),
+            campPlaces: {
+              for (final entry in _kindsFor(story).entries)
+                if (entry.value == 'camp') entry.key,
+            },
+            chapterColor: (n) => switch (look) {
+              MapLook.night => mapChapter(n).dark,
+              MapLook.parchment => mapChapter(n).light,
+              MapLook.shroud => const Color(0xFFA3A3AA),
+            },
+            onLayers: _showCalques,
+            onSelect: (landmark) => setState(() => _lookedAt = landmark),
+            onZoomIn: _arriveAtStreets,
+            enterZoom: _enterZoom,
+            onFullMap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const FullMapScreen()),
+            ),
+            fog: editing ? ChartFog.none : ChartFog.uncharted,
+          ),
+        );
+    final worldMap = worldMapWith(level: _level);
 
     final travelsFromHere = !play.isInExcursion &&
         canReturnToCampFrom(node,
@@ -1821,7 +2365,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
     final levelTabs = _LevelTabs(
-      selected: _level != JourneyMapLevel.place
+      selected: _level != JourneyMapLevel.place || _roadWalk
           ? _LevelTab.world
           : townView
               ? _LevelTab.town
@@ -1831,10 +2375,46 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       palette: palette,
       onPick: _goLevel,
     );
+    // A scene at a doorstep is its street, not the sheet over it (the words
+    // are behind Read; no text is laid over the map, v1.607).
+    final viewOfScene = ref.watch(scenePresentationProvider)?.viewOf(node.id);
+    final streetShown =
+        cityChart != null && cityChart.here != null && !play.isInExcursion;
+    final streetScene = hostedCity &&
+        !ended &&
+        !townView &&
+        !_reading &&
+        viewOfScene == SceneView.street &&
+        streetShown;
+    if (_arrival && streetScene) _arrival = false;
+    // An arrival in a district: the map eases in on the party (v1.586). Read
+    // from the party's district here, not from districtArrivalProvider,
+    // whose state is set by a listener (a provider changed while building).
+    // (Not on the Town view a move to another district frames: that view is
+    // the one asked for.)
+    final hereDistrictNow = ref.watch(partyDistrictProvider);
+    if (!hostedCity || hereDistrictNow == null) {
+      _arrivedAt = null;
+    } else if (!townView && hereDistrictNow != _arrivedAt) {
+      _arrivedAt = hereDistrictNow;
+      final at =
+          cityChart.here ?? cityChart.districtById(hereDistrictNow)?.centre;
+      final jump = MediaQuery.of(context).disableAnimations;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _places.camera.show(
+            CityCameraShot.arrival(hereDistrictNow, partyAt: at, jump: jump));
+      });
+    }
     final cityView = hostedCity && !ended
         ? _CityDistrictView(
             chart: cityChart,
             look: look,
+            partyWalk: _cityWalkAt,
+            places: _places,
+            placeMark: _placeMark,
+            onGoPlace: _goPlace,
+            onLeavePlace: _leavePlace,
             explored: ref.watch(foundDistrictsProvider),
             hereDistrict: ref.watch(partyDistrictProvider),
             focus: townView
@@ -1851,6 +2431,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             palette: palette,
             text: _cityText(),
             onFocus: (d) {
+              if (_moveFraming) return;
               if (d == null) {
                 if (!_townView) _setTown(true);
               } else if (_townView || _cityFocus != d) {
@@ -1860,7 +2441,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 });
               }
             },
+            street: cityChart.here != null ? sceneStreet : null,
             onOpen: (i) => _openWay(i, steps, french),
+            onOpenPin: (ways, name) => _openPin(ways, name, steps, french),
             onWalk: (d) {
               setState(() => _cityFocus = d);
               walkToDistrict(ref, d);
@@ -1923,6 +2506,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             tabs: levelTabs,
           )
         : null;
+    // The party's mark walks to a way's pin on the town's chart (v1.565):
+    // on the District view, not at a doorstep (its street is drawn there).
+    _cityWalkable = cityView != null &&
+        _level == JourneyMapLevel.place &&
+        !townView &&
+        cityChart?.here == null;
+    // While it walks, a tap anywhere on the map lands it there at once.
+    final cityMap = cityView == null
+        ? null
+        : Stack(
+            fit: StackFit.expand,
+            children: [
+              cityView,
+              ValueListenableBuilder<Offset?>(
+                valueListenable: _cityWalkAt,
+                builder: (context, at, _) => at == null
+                    ? const SizedBox.shrink()
+                    : Positioned.fill(
+                        child: GestureDetector(
+                          key: const ValueKey('journey_city_walk_skip'),
+                          behavior: HitTestBehavior.opaque,
+                          onTap: _skipCityWalk,
+                        ),
+                      ),
+              ),
+            ],
+          );
 
     // A written detour plays over a scene of its own, not over the map
     // (see detour_scene_band.dart).
@@ -1941,7 +2551,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     .indexWhere((n) => n.id == play.activeExcursionNode?.id),
                 french: french,
                 detourLabel: tr(ref, 'detour'),
-                text: node.descriptionFor(french),
+                text: stripStoryMarkup(node.descriptionFor(french)),
                 note: node.contextNoteFor(french) ?? '',
               )
             : TutorialTarget(
@@ -1974,7 +2584,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                       ],
                     );
                   },
-                  child: cityView ??
+                  child: cityMap ??
                       Stack(
                         fit: StackFit.passthrough,
                         children: [
@@ -2051,19 +2661,29 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   unroll: _unroll,
                                   weather: journeyWeatherOf(sky?.kind, chapter),
                                   stepIds: _pinIdx,
-                                  rings: placeView != null && _isHub(steps)
-                                      ? _rings(
-                                          steps,
-                                          look == MapLook.parchment
-                                              ? InkColors.light
-                                              : InkColors.dark)
-                                      : const [],
+                                  // The choices acted out here are in the
+                                  // scene view, not on the map.
+                                  rings: const [],
                                   ringLit: _ringOpen,
                                   onRing: (id) =>
                                       _openList(id, steps, french, story),
                                   place: placeView?.pinned(_pinIdx),
                                   arriveFrom: _arriveFrom,
                                   townView: townView,
+                                  // A way to another place walks the world
+                                  // road on the World view (v1.548).
+                                  roadLeg: (step) => isWorldRoadLeg(
+                                          standing?.id, step.targetLandmark)
+                                      ? worldLegPath(journeyChartOf(ref),
+                                          standing!.id, step.targetLandmark!,
+                                          language: language)
+                                      : null,
+                                  roadMap: (path, clock) => worldMapWith(
+                                      level: JourneyMapLevel.world,
+                                      move: path,
+                                      clock: clock),
+                                  onRoadWalk: () =>
+                                      setState(() => _roadWalk = true),
                                 ),
                               ),
                             ),
@@ -2139,7 +2759,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // TutorialTopic.journey), once there is a character to follow.
     final screen = TutorialTrigger(
       topic: TutorialTopic.journey,
-      ready: session.raceId.isNotEmpty,
+      // In a new game it waits for the party's first step outside, where
+      // the map opens on its own (first_journey.dart).
+      ready: session.raceId.isNotEmpty &&
+          journeyTourDue(session.flags,
+              chapter: chapterOfNode(play.currentNodeId)),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
@@ -2189,6 +2813,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   // v1.213: the map keeps the room.
                                   if (!_reading)
                                     const QuestTrackerBar(compact: true),
+                                  // The choices acted out here are in the
+                                  // scene view: a button opens it.
+                                  if (!_writtenDetour &&
+                                      steps.any((s) => s.onCard))
+                                    IconButton.filledTonal(
+                                      key: const ValueKey(
+                                          'journey_open_choices'),
+                                      visualDensity: VisualDensity.compact,
+                                      tooltip: tr(ref, 'journey_choices_here')
+                                          .replaceAll('{n}',
+                                              '${steps.where((s) => s.onCard).length}'),
+                                      onPressed:
+                                          _busy ? null : () => _read(true),
+                                      icon: Badge(
+                                        label: Text(
+                                            '${steps.where((s) => s.onCard).length}'),
+                                        child: const Icon(
+                                            Icons.touch_app_outlined,
+                                            size: 20),
+                                      ),
+                                    ),
                                   TutorialTarget(
                                     id: 'journey.scene',
                                     child: TextButton.icon(
@@ -2214,18 +2859,32 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         ? Stack(
                                             children: [
                                               Positioned.fill(child: map),
+                                              Positioned.fill(
+                                                child: TownDoorVeil(
+                                                  clock: _door,
+                                                  colour: Theme.of(context)
+                                                      .colorScheme
+                                                      .surface,
+                                                  icon: _doorIcon,
+                                                  still: MediaQuery.of(context)
+                                                      .disableAnimations,
+                                                ),
+                                              ),
                                               if (_transit != null &&
                                                   placeView != null &&
                                                   !ended)
                                                 Positioned.fill(
                                                   child: _PartyTransit(
                                                     key: ValueKey(
-                                                        'journey_transit_$sceneKey'),
+                                                        'journey_transit_$sceneKey$_transitSerial'),
                                                     transit: _transit!,
-                                                    geography:
-                                                        placeView.geography,
-                                                    marks: placeView.marks,
-                                                    palette: palette,
+                                                    mapBuilder: (path, clock) =>
+                                                        worldMapWith(
+                                                            level:
+                                                                JourneyMapLevel
+                                                                    .world,
+                                                            move: path,
+                                                            clock: clock),
                                                     passText: tr(ref,
                                                         'journey_pass_stop'),
                                                     onDone: () {
@@ -2324,6 +2983,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                       maxHeight:
                                           _panelHeight(area.maxHeight, steps)),
                                   child: _level == JourneyMapLevel.place &&
+                                          _writtenDetour &&
                                           steps.any((s) => s.onCard)
                                       ? _choicePanel(
                                           steps, selected, french, story)
@@ -2370,17 +3030,43 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     title: hereName,
                     continueLabel: tr(ref, 'journey_continue'),
                     closeTip: tr(ref, 'journey_continue'),
-                    onContinue: () => _read(false),
-                    child: _ScenePanel(
-                      key: ValueKey('journey_arrival_$sceneKey'),
-                      story: story,
-                      node: node,
-                      french: french,
-                      folded: false,
-                      reading: false,
-                      onFold: (_) {},
-                      onReading: _read,
-                      detour: detour,
+                    onContinue: continueFromScene,
+                    // The choices are whole, up to 70% of the room the sheet
+                    // gives; the words take the rest and scroll.
+                    child: LayoutBuilder(
+                      builder: (context, room) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // The words take what the choices leave and scroll
+                          // above them; the choices are shown whole.
+                          Flexible(
+                            child: _ScenePanel(
+                              shrinkToText: true,
+                              revealKey: revealKey,
+                              key: ValueKey('journey_arrival_$sceneKey'),
+                              story: story,
+                              node: node,
+                              french: french,
+                              folded: false,
+                              reading: false,
+                              onFold: (_) {},
+                              onReading: _read,
+                              detour: detour,
+                            ),
+                          ),
+                          // The choices acted out here, under the words.
+                          if (steps.any((s) => s.onCard) && textReady) ...[
+                            const SizedBox(height: 8),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: room.maxHeight * 0.7),
+                              child: _choicePanel(
+                                  steps, _pickedCard(selected), french, story,
+                                  shrinkWrap: true),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -2401,10 +3087,31 @@ class _Transit {
     required this.flight,
     required this.forced,
     required this.caption,
-    this.route,
-  });
+    this.path,
+  })  : icon = null,
+        atTop = false;
 
-  /// The two places on the world chart.
+  /// Only [text] told over the map, no road: a walk inside a town, a door
+  /// gone through (v1.537).
+  _Transit.words(String text, {this.icon})
+      : from = Offset.zero,
+        to = Offset.zero,
+        fromName = '',
+        toName = '',
+        flight = false,
+        forced = false,
+        caption = text,
+        path = null,
+        atTop = true;
+
+  /// The icon beside the words (a walking figure when null).
+  final IconData? icon;
+
+  /// Whether the words sit at the top of the map: the map's own buttons are
+  /// at its foot, and a short word must not cover them.
+  final bool atTop;
+
+  /// The two places on the region's chart.
   final Offset from;
   final Offset to;
   final String fromName;
@@ -2419,15 +3126,18 @@ class _Transit {
   final bool forced;
   final String caption;
 
-  /// The roads and named stops between the two places (v1.254), when the
-  /// world's roads lead there.
-  final ChartRoute? route;
+  /// The road (or sea lane) from one place to the other over the world
+  /// chart, with the stops it passes (wave 14), when the world's roads lead
+  /// there; without one only the caption is told.
+  final WorldLegPath? path;
 
-  /// How long the walk takes: longer for a road with more to pass.
-  Duration get duration => Duration(
-      milliseconds: flight
-          ? math.min(5000, 2400 + 400 * (route?.stops.length ?? 0))
-          : 2000);
+  /// How long the move takes: slow, and longer for a longer road.
+  Duration get duration {
+    final path = this.path;
+    return flight && path != null
+        ? worldMoveDuration(path)
+        : const Duration(milliseconds: 2000);
+  }
 }
 
 /// The [_Transit] over the map: the world chart with the party walking the
@@ -2437,17 +3147,15 @@ class _PartyTransit extends StatefulWidget {
   const _PartyTransit({
     super.key,
     required this.transit,
-    required this.geography,
-    required this.marks,
-    required this.palette,
+    required this.mapBuilder,
     required this.passText,
     required this.onDone,
   });
 
   final _Transit transit;
-  final ChartGeography geography;
-  final List<ChartMark> marks;
-  final ChartPalette palette;
+
+  /// The world chart with the move on it, on the move's clock.
+  final Widget Function(WorldLegPath path, Animation<double> clock) mapBuilder;
 
   /// "You pass {stop}.", the words said of the stop the party has reached.
   final String passText;
@@ -2488,40 +3196,30 @@ class _PartyTransitState extends State<_PartyTransit>
       widget.onDone();
     }
 
-    final road = transit.flight && !still;
+    final path = transit.path;
+    final road = transit.flight && !still && path != null;
     return ClipRRect(
       key: const ValueKey('journey_transit'),
       borderRadius: BorderRadius.circular(10),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // The road over the whole map takes a tap to skip; a few words
-          // alone (the party moved inside its place) leave the map to be
-          // played with, and the map shows the move.
-          if (road)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: skip,
-              child: AnimatedBuilder(
-                animation: _c,
-                builder: (context, _) => CustomPaint(
-                  size: Size.infinite,
-                  painter: RegionFlightPainter(
-                    geography: widget.geography,
-                    from: transit.from,
-                    to: transit.to,
-                    marks: widget.marks,
-                    t: Curves.easeInOut.transform(_c.value),
-                    palette: widget.palette,
-                    fromName: transit.fromName,
-                    toName: transit.toName,
-                    route: transit.route,
-                  ),
-                ),
+          // The party's move over the world chart takes a tap to skip; a few
+          // words alone (the party moved inside its place) leave the map to
+          // be played with, and the map shows the move.
+          if (road) ...[
+            widget.mapBuilder(path, _c),
+            Positioned.fill(
+              child: GestureDetector(
+                key: const ValueKey('journey_transit_skip'),
+                behavior: HitTestBehavior.opaque,
+                onTap: skip,
               ),
             ),
+          ],
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment:
+                transit.atTop ? Alignment.topCenter : Alignment.bottomCenter,
             child: GestureDetector(
               onTap: skip,
               child: Padding(
@@ -2539,7 +3237,7 @@ class _PartyTransitState extends State<_PartyTransit>
                         Icon(
                           transit.forced
                               ? Icons.warning_amber_rounded
-                              : Icons.directions_walk,
+                              : transit.icon ?? Icons.directions_walk,
                           size: 18,
                           color: transit.forced
                               ? scheme.error
@@ -2558,14 +3256,16 @@ class _PartyTransitState extends State<_PartyTransit>
                               ),
                               // The stop the party has just passed on the
                               // way there (v1.254).
-                              if (road && transit.route != null)
+                              if (road)
                                 AnimatedBuilder(
                                   animation: _c,
                                   builder: (context, _) {
-                                    final stop = transit.route!.passed(
-                                        RegionFlightPainter.walkAt(Curves
-                                            .easeInOut
-                                            .transform(_c.value)));
+                                    final walked =
+                                        RegionFlightPainter.walkAt(_c.value);
+                                    ChartRouteStop? stop;
+                                    for (final s in path.stops) {
+                                      if (s.along <= walked) stop = s;
+                                    }
                                     if (stop == null) return const SizedBox();
                                     return Text(
                                       widget.passText
@@ -2611,10 +3311,28 @@ class _ScenePanel extends ConsumerWidget {
     required this.onFold,
     required this.onReading,
     this.detour,
+    this.revealKey,
+    this.shrinkToText = false,
+    this.toMap = true,
+    this.locked = false,
   });
 
   final StoryData story;
   final StoryNode node;
+
+  /// The panel is only as tall as its words, up to the room it is given,
+  /// and scrolls beyond it (the arrival sheet, v1.550); false fills it.
+  final bool shrinkToText;
+
+  /// Read full screen, whether it has a way back to the map.
+  final bool toMap;
+
+  /// A locked page (v1.553): the corner's map button waits, greyed.
+  final bool locked;
+
+  /// Names the scene for the typewriter (see StoryText); null shows its
+  /// words at once.
+  final String? revealKey;
   final bool french;
 
   /// Folded to its first lines, to leave the map the room.
@@ -2721,10 +3439,11 @@ class _ScenePanel extends ConsumerWidget {
           const SizedBox(height: 4),
         ],
         // A new scene's words come out of the ink, top to bottom.
-        InkReveal(
+        StoryText(
           key: ValueKey(text),
-          animate: !reading && !MediaQuery.of(context).disableAnimations,
-          child: Text(text, style: prose),
+          text: text,
+          style: prose ?? const TextStyle(),
+          revealKey: revealKey,
         ),
         for (final echo in parts.echoes) ...[
           const SizedBox(height: 10),
@@ -2759,7 +3478,7 @@ class _ScenePanel extends ConsumerWidget {
                     if (detour != null && detour!.isNotEmpty) detour!,
                     for (final prelude in preludes) prelude.text,
                     text,
-                  ].join(' '),
+                  ].map(stripStoryMarkup).join(' '),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: prose,
@@ -2776,19 +3495,25 @@ class _ScenePanel extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onDoubleTap: () => onReading(!reading),
                 child: Scrollbar(
-                  child: SingleChildScrollView(
-                    padding: reading
-                        ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
-                        : const EdgeInsets.fromLTRB(14, 12, 40, 36),
-                    child: reading
-                        ? ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minHeight:
-                                    math.max(0, viewport.maxHeight - 40)),
-                            child: Center(child: body),
-                          )
-                        : body,
-                  ),
+                  child: shrinkToText && !reading
+                      ? ListView(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          children: [body],
+                        )
+                      : SingleChildScrollView(
+                          padding: reading
+                              ? const EdgeInsets.fromLTRB(22, 20, 44, 20)
+                              : const EdgeInsets.fromLTRB(14, 12, 40, 36),
+                          child: reading
+                              ? ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          math.max(0, viewport.maxHeight - 40)),
+                                  child: Center(child: body),
+                                )
+                              : body,
+                        ),
                 ),
               ),
             ),
@@ -2798,13 +3523,18 @@ class _ScenePanel extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (reading)
+                if (reading && (toMap || locked))
                   IconButton(
                     key: const ValueKey('journey_reading_exit'),
                     icon: const Icon(Icons.map_outlined, size: 20),
-                    tooltip: tr(ref, 'journey_reading_exit'),
+                    // A locked page's map waits (v1.553): greyed.
+                    tooltip: tr(
+                        ref,
+                        locked
+                            ? 'journey_choose_first'
+                            : 'journey_reading_exit'),
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => onReading(false),
+                    onPressed: locked ? null : () => onReading(false),
                   )
                 else ...[
                   if (folded)
@@ -3049,10 +3779,19 @@ class _JourneyChart extends StatefulWidget {
     this.arriveFrom,
     this.townView = false,
     this.stepIds,
+    this.roadLeg,
+    this.roadMap,
+    this.onRoadWalk,
     this.rings = const [],
     this.ringLit,
     this.onRing,
   });
+
+  /// A way out to another place (v1.548): its world road, walked on the
+  /// world chart [roadMap] builds, and the word that the walk has begun.
+  final WorldLegPath? Function(_Step step)? roadLeg;
+  final Widget Function(WorldLegPath path, Animation<double> clock)? roadMap;
+  final VoidCallback? onRoadWalk;
 
   /// A hub's rings round the party's mark (v1.419, see choice_rings.dart),
   /// the one whose list is open ([ringLit]), and a tap on one.
@@ -3200,6 +3939,7 @@ class _JourneyChartState extends State<_JourneyChart>
     duration: const Duration(milliseconds: 1900),
   );
   int? _flying;
+  WorldLegPath? _flyingLeg;
 
   bool get _placeMode => widget.place != null;
 
@@ -3479,6 +4219,13 @@ class _JourneyChartState extends State<_JourneyChart>
         final stops = widget.steps[index].route?.stops.length ?? 0;
         _flight.duration =
             Duration(milliseconds: math.min(4500, 1900 + 350 * stops));
+        _flyingLeg = widget.roadMap == null
+            ? null
+            : widget.roadLeg?.call(widget.steps[index]);
+        if (_flyingLeg != null) {
+          _flight.duration = worldMoveDuration(_flyingLeg!);
+          widget.onRoadWalk?.call();
+        }
         setState(() => _flying = index);
         _wake();
         await _flight.forward(from: 0).orCancel;
@@ -3524,6 +4271,7 @@ class _JourneyChartState extends State<_JourneyChart>
     setState(() {
       _walking = null;
       _flying = null;
+      _flyingLeg = null;
     });
   }
 
@@ -4286,6 +5034,26 @@ class _JourneyChartState extends State<_JourneyChart>
               flying >= steps.length ||
               steps[flying].chartTarget == null) {
             return unrolled;
+          }
+          // On a world road: the World view walks it (v1.548); a tap lands
+          // the party at once, as the transit's does.
+          if (_flyingLeg case final leg?) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                widget.roadMap!(leg, _flight),
+                Positioned.fill(
+                  child: GestureDetector(
+                    key: const ValueKey('journey_road_skip'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _flight.stop(canceled: false);
+                      _flight.value = 1;
+                    },
+                  ),
+                ),
+              ],
+            );
           }
           // On the road: the world chart, from here to where it leads.
           return Stack(
@@ -5184,26 +5952,31 @@ class _LevelTabs extends ConsumerWidget {
     required this.busy,
     required this.palette,
     required this.onPick,
+    this.enabled = true,
   });
 
   final _LevelTab selected;
   final bool townEnabled;
   final bool busy;
+
+  /// False on a locked page (v1.553): every tab greyed, none lit.
+  final bool enabled;
   final ChartPalette palette;
   final ValueChanged<_LevelTab> onPick;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Widget tab(_LevelTab t, String label, {bool enabled = true}) {
-      final on = t == selected;
+      final open = enabled && this.enabled;
+      final on = this.enabled && t == selected;
       final colour = on
           ? palette.mark
-          : enabled
+          : open
               ? palette.place
               : palette.label.withValues(alpha: 0.5);
       return InkWell(
         key: Key('journey_tab_${t.name}'),
-        onTap: enabled && !busy && !on ? () => onPick(t) : null,
+        onTap: open && !busy && !on ? () => onPick(t) : null,
         child: Container(
           height: 28,
           padding: const EdgeInsets.symmetric(horizontal: 9),
@@ -5261,6 +6034,11 @@ class _CityDistrictView extends ConsumerWidget {
   const _CityDistrictView({
     required this.chart,
     required this.look,
+    required this.partyWalk,
+    required this.places,
+    required this.placeMark,
+    required this.onGoPlace,
+    required this.onLeavePlace,
     required this.explored,
     required this.hereDistrict,
     required this.focus,
@@ -5271,12 +6049,30 @@ class _CityDistrictView extends ConsumerWidget {
     required this.text,
     required this.onFocus,
     required this.onOpen,
+    required this.onOpenPin,
     required this.onWalk,
     required this.overlays,
     required this.tabs,
+    this.street,
   });
 
   final CityChart chart;
+
+  /// Where the party's mark is while it walks to a way (null: at its own
+  /// mark), see _walkCity.
+  final ValueNotifier<Offset?> partyWalk;
+
+  /// The district as places (v1.586): the map's camera and pin card, where
+  /// the party's mark stands at the place it went to, and the way there and
+  /// back.
+  final DistrictPlacesController places;
+  final Offset? placeMark;
+  final void Function(PlaceInfo place) onGoPlace;
+  final VoidCallback onLeavePlace;
+
+  /// The building a scene is played outside of (v1.544): the district view
+  /// is its street (see street_view.dart), not the town's plan.
+  final GeoPlace? street;
   final MapLook look;
   final Set<String>? explored;
   final String? hereDistrict;
@@ -5293,9 +6089,44 @@ class _CityDistrictView extends ConsumerWidget {
   final CityChartText text;
   final void Function(String? districtId) onFocus;
   final void Function(int step) onOpen;
+
+  /// A pin with several ways (v1.607): its sheet names them.
+  final void Function(List<int> ways, String name) onOpenPin;
   final void Function(String districtId) onWalk;
   final List<Widget> overlays;
   final Widget tabs;
+
+  /// The district's places for the steps [shown] (see placeInfosOf); null
+  /// when the plan or the scene is not one to list places of, or a way
+  /// would be left out of them.
+  List<PlaceInfo>? _placeInfos(WidgetRef ref, List<int> shown) {
+    final city = ref.watch(currentCityProvider);
+    final record =
+        city == null ? null : ref.watch(cityPlanRecordsProvider).value?[city];
+    final nodeId = ref.watch(storyPlayProvider.select((p) => p.currentNodeId));
+    final node = ref.watch(storyDataProvider).value?.nodeFor(nodeId);
+    if (record == null || node == null) return null;
+    final geography = ref.watch(geographyProvider);
+    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final infos = placeInfosOf(
+      entries: ref.watch(districtPlacesProvider),
+      nodeChoices: node.choices,
+      stepChoices: [for (final s in steps) s.choice],
+      stepLocked: [for (final s in steps) s.locked],
+      stepLabels: [for (final s in steps) s.label],
+      shown: shown,
+      nameOf: (place) => place.isHere
+          ? tr(ref, 'place_here')
+          : wayPlaceName(place,
+              record: record,
+              geography: geography,
+              french: french,
+              fallback: ''),
+    );
+    // A scene with one place at most has no places to list: its ways are the
+    // list, as before.
+    return infos == null || infos.length < 2 ? null : infos;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -5335,6 +6166,38 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
+    // In the party's own district the ways are taken at places (v1.586,
+    // way_places.dart): a list of places, pins without words and a card.
+    // (Not in a building's street: its own view, see street_view.dart.)
+    final inStreet = street != null &&
+        focus != null &&
+        focus == hereDistrict &&
+        street!.parent == hereDistrict;
+    final infos = focus != null && focus == hereDistrict && !inStreet
+        ? _placeInfos(ref, shown)
+        : null;
+    final standingId = infos == null ? null : ref.watch(partyPlaceProvider);
+    final standing = standingId == null
+        ? null
+        : infos?.where((p) => p.id == standingId).firstOrNull;
+    // Go to a place of the list: a way out with one way to take is taken at
+    // once, any other place is walked to.
+    void goPlace(PlaceInfo p) {
+      final open = [
+        for (final i in p.steps)
+          if (!steps[i].locked) i
+      ];
+      if (p.wayOut && open.length == 1) {
+        onOpen(open.first);
+      } else {
+        onGoPlace(p);
+      }
+    }
+
+    // The town's own signs (wave 14): a notice board, the market, a tavern...
+    final townServices = ref.watch(currentTownServicesProvider);
+    final boardContracts =
+        ref.watch(playerSessionProvider.select((s) => s.contracts));
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -5365,30 +6228,153 @@ class _CityDistrictView extends ConsumerWidget {
                   color: const Color(0xFF17151B))),
         );
 
+    // A way's pin in the street (v1.544): its banner, else its kind's disc.
+    Widget streetPinOf(int i) {
+      final banner = banners['$i'];
+      return banner == null
+          ? kindDisc(steps[i], size: 28)
+          : BannerPin(
+              cat: banner.cat,
+              color: banner.color,
+              dark: chartDark,
+              icon: steps[i].locked ? Icons.lock_outline : null,
+              scale: 0.8,
+            );
+    }
+
+    // Who rules the town and its districts (wave 15, townRulersProvider): the
+    // blocks take the clan's colour, and a line under the plan names it, so two
+    // clans of near colours are told apart by the words as well.
+    final townRulers = ref.watch(townRulersProvider);
+    final factions = ref.watch(factionsProvider);
+    final language = ref.watch(appLanguageProvider);
+    final rulers = cityChartRulersOf(chart, townRulers);
+    // Wave 18: the districts a side quest keeps shut, and who holds the rest
+    // and how firmly (district_standing.dart).
+    final session18 = ref.watch(playerSessionProvider);
+    final standings = districtStandingsOf(
+      districtIds: [for (final d in chart.districts) d.id],
+      cityId: ref.watch(currentCityProvider),
+      geography: ref.watch(geographyProvider),
+      politics: session18.politics,
+      flags: session18.flags,
+      completedQuestIds: session18.completedQuestIds,
+      data: ref.watch(clanDataProvider),
+      rulers: townRulers,
+      language: language,
+    );
+    final shutDistricts = {
+      for (final e in standings.entries)
+        if (e.value.locked) e.key,
+    };
+    final holds = {
+      for (final e in standings.entries)
+        if (e.value.crest case final crest?) e.key: crest,
+    };
+    // A shut district is explained, not entered.
+    void focusOrExplain(String? id) {
+      if (id != null && shutDistricts.contains(id)) {
+        showLockedDistrictSheet(context, standings[id]!,
+            name: chart.districts.firstWhere((d) => d.id == id).name);
+        return;
+      }
+      onFocus(id);
+    }
+
+    final lookedAt = focus == null
+        ? townRulers[chart.districts
+                .map((d) => townRulers[d.id]?.cityId)
+                .whereType<String>()
+                .firstOrNull ??
+            '']
+        : townRulers[focus];
     final rows = <Widget>[];
-    if (focus != null) {
-      final n = shown.length;
+    // The name of the place a way hangs at: its building, else the place
+    // it leads to (a way out), else the district; never a choice's text.
+    String pinName(int lead) {
+      final way = chart.ways.where((w) => w.id == '$lead').firstOrNull;
+      final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
+      if (building.isNotEmpty) return building;
+      final leads = steps[lead].leadsTo ?? '';
+      if (leads.isNotEmpty) return leads;
+      final district = way == null || way.district >= chart.districts.length
+          ? null
+          : chart.districts[way.district].name;
+      return district == null || district.isEmpty ? chart.name : district;
+    }
+
+    // The ways grouped by the pin they hang at (the list's destinations).
+    var groups = const <WayPinGroup>[];
+    if (lookedAt != null) {
+      final clan = lookedAt.isNeutral
+          ? null
+          : factions[lookedAt.clanId]?.shortFor(language);
       rows.add(Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 4),
-        child: Text(
-          (n == 1
-                  ? tr(ref, 'journey_city_ways_one')
-                  : tr(ref, 'journey_city_ways_many').replaceAll('{n}', '$n'))
-              .toUpperCase(),
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: ink.ash, letterSpacing: 0.8),
-        ),
+        key: const ValueKey('journey_city_ruler'),
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(children: [
+          Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(lookedAt.color),
+                  border:
+                      Border.all(color: Color(lookedAt.accent), width: 1.5))),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              [
+                clan == null
+                    ? tr(ref, 'town_ruled_none')
+                    : tr(ref, 'town_ruled_by').replaceAll('{clan}', clan),
+                if (lookedAt.mixed && focus == null)
+                  tr(ref, 'town_ruled_mixed'),
+              ].join(' · '),
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+            ),
+          ),
+        ]),
       ));
-      for (final i in shown) {
+    }
+    if (focus != null) {
+      // The ways hang at pins on the map (a building, or a spot): a pin with
+      // several ways is one closed row with a count (way_pin_groups.dart).
+      groups = groupWaysByPin([
+        for (final i in shown)
+          WayPinEntry(
+            i,
+            switch (chart.ways.where((w) => w.id == '$i').firstOrNull) {
+              final way? when way.at != null =>
+                'at:${way.at!.dx.round()},${way.at!.dy.round()}',
+              final way? => 'b:${way.building}',
+              null => 'step:$i',
+            },
+            leads: banners['$i'] != null,
+          ),
+      ]);
+      if (infos == null && groups.isNotEmpty) {
+        rows.add(Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          child: Text(
+            tr(ref, 'journey_city_places_here').toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8),
+          ),
+        ));
+      }
+
+      // One way's row (inside a place's list), indented when [indent].
+      Widget wayRow(int i, {double indent = 0}) {
         final s = steps[i];
         final way = chart.ways.where((w) => w.id == '$i').firstOrNull;
         final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
         final target = building == s.label ? '' : building;
-        rows.add(InkWell(
+        return InkWell(
           key: ValueKey('journey_city_row_$i'),
           onTap: () => onOpen(i),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 7),
+            padding: EdgeInsets.fromLTRB(indent, 7, 0, 7),
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
@@ -5434,7 +6420,92 @@ class _CityDistrictView extends ConsumerWidget {
               ],
             ]),
           ),
+        );
+      }
+
+      // A pin's mark: its way's banner, else its kind's disc.
+      Widget pinLead(int i) {
+        final banner = banners['$i'];
+        if (banner == null) return kindDisc(steps[i]);
+        return BannerPin(
+          key: ValueKey('journey_row_banner_$i'),
+          cat: banner.cat,
+          color: steps[i].locked
+              ? banner.color
+              : banner.cat
+                  .colorOn(ink, dark: theme.brightness == Brightness.dark),
+          dark: theme.brightness == Brightness.dark,
+          icon: steps[i].locked ? Icons.lock_outline : null,
+          scale: 0.8,
+        );
+      }
+
+      if (infos != null) {
+        rows.addAll(placesRows(
+          context,
+          ref,
+          infos: infos,
+          standing: standing,
+          wayRow: wayRow,
+          onGo: goPlace,
+          onLeave: onLeavePlace,
         ));
+      } else {
+        // The list names the places, one row each (no count, nothing to
+        // open in place); the ways show after a tap, as after a tap on the
+        // pin (v1.607).
+        for (final g in groups) {
+          final name = pinName(g.lead);
+          final allShut = g.members.every((i) => steps[i].locked);
+          rows.add(InkWell(
+            key: ValueKey(g.isPin
+                ? 'journey_city_pin_${g.lead}'
+                : 'journey_city_row_${g.lead}'),
+            onTap: () => g.isPin ? onOpenPin(g.members, name) : onOpen(g.lead),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                SizedBox(width: 30, child: Center(child: pinLead(g.lead))),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          color: allShut ? ink.ash : null, height: 1.2)),
+                ),
+              ]),
+            ),
+          ));
+        }
+      }
+      // No way in the party's own district: a free walk (no time, no
+      // story) to each district it borders.
+      if (shown.isEmpty && focus == hereDistrict) {
+        for (final id in ref.watch(partyDistrictNeighboursProvider)) {
+          final d = chart.districts.where((d) => d.id == id).firstOrNull;
+          if (d == null) continue;
+          rows.add(InkWell(
+            key: ValueKey('journey_city_walk_$id'),
+            onTap: () => onWalk(id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                Icon(Icons.directions_walk, size: 20, color: d.colour),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(
+                        tr(ref, 'journey_city_walk_to').replaceAll(
+                            '{district}', townNameInSentence(d.name)),
+                        style: theme.textTheme.bodyMedium)),
+              ]),
+            ),
+          ));
+        }
       }
     } else {
       rows.add(Padding(
@@ -5444,37 +6515,54 @@ class _CityDistrictView extends ConsumerWidget {
                 ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
       ));
       for (final d in chart.districts) {
-        final known = explored == null || explored!.contains(d.id);
+        final standing = standings[d.id]!;
+        // A shut district is named (a rumour), never "?".
+        final known =
+            standing.locked || explored == null || explored!.contains(d.id);
         final n = byDistrict[d.id]?.length ?? 0;
         rows.add(InkWell(
           key: ValueKey('journey_city_district_${d.id}'),
           // A district not yet found is walked into (and so found), not
-          // looked at under its fog.
-          onTap: () => known ? onFocus(d.id) : onWalk(d.id),
+          // looked at under its fog; a shut one is explained.
+          onTap: () => standing.locked
+              ? focusOrExplain(d.id)
+              : known
+                  ? onFocus(d.id)
+                  : onWalk(d.id),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration:
                 BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
             child: Row(children: [
-              Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: known ? d.colour : Colors.transparent,
-                      border: Border.all(color: d.colour))),
+              DistrictLead(
+                standing,
+                plain: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: known ? d.colour : Colors.transparent,
+                        border: Border.all(color: d.colour))),
+              ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(known ? d.name : '?',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: known ? null : ink.ash)),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(known ? d.name : '?',
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(color: known ? null : ink.ash)),
+                      DistrictStandingLine(standing),
+                    ]),
               ),
               Text(
                   d.id == hereDistrict
                       ? text.here
-                      : !known
-                          ? text.unexplored
-                          : (n == 0 ? '' : text.ways(n)),
+                      : standing.locked
+                          ? ''
+                          : !known
+                              ? text.unexplored
+                              : (n == 0 ? '' : text.ways(n)),
                   style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
             ]),
           ),
@@ -5482,55 +6570,142 @@ class _CityDistrictView extends ConsumerWidget {
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          flex: 11,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CityChartView(
-                  key: const ValueKey('journey_city_chart'),
-                  chart: chart,
-                  look: look,
-                  text: text,
-                  explored: explored,
-                  hereDistrict: hereDistrict,
-                  focus: focus,
-                  focusToken: focusToken,
-                  controls: false,
-                  cards: false,
-                  numbers: numbers,
-                  banners: banners,
-                  bannersDark: chartDark,
-                  onFocus: onFocus,
-                  onPick: (w) {
-                    final i = int.tryParse(w.id);
-                    if (i != null && i < steps.length) onOpen(i);
-                  },
-                  onPickFog: (_) {},
+    // With places, the map has the room alone until it is fully zoomed (the
+    // handle, or a pinch): then the list rises under it (v1.586).
+    Widget layout(bool full) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              flex: 11,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Walked off to another district, the street is left.
+                    if (inStreet)
+                      StreetViewScene(
+                        kind: street!.kind,
+                        name: street!.name,
+                        phase: ref.watch(dayPhaseProvider),
+                        sky: ref.watch(skyHereProvider)?.today().kind,
+                        pins: [
+                          for (final i in shown)
+                            StreetPin(
+                              index: i,
+                              label: steps[i].label,
+                              locked: steps[i].locked,
+                              child: streetPinOf(i),
+                            ),
+                        ],
+                        onPick: onOpen,
+                      )
+                    else
+                      ValueListenableBuilder<Offset?>(
+                        valueListenable: partyWalk,
+                        builder: (context, walkAt, _) => CityChartView(
+                          key: const ValueKey('journey_city_chart'),
+                          camera: places.camera,
+                          buildingNames: infos == null,
+                          partyAt:
+                              walkAt ?? (standing == null ? null : placeMark),
+                          chart: chart,
+                          look: look,
+                          text: text,
+                          explored: explored,
+                          hereDistrict: hereDistrict,
+                          focus: focus,
+                          focusToken: focusToken,
+                          controls: false,
+                          cards: false,
+                          numbers: numbers,
+                          banners: banners,
+                          bannersDark: chartDark,
+                          onFocus: focusOrExplain,
+                          locked: shutDistricts,
+                          holds: holds,
+                          onPick: (w) {
+                            final i = int.tryParse(w.id);
+                            if (i == null || i >= steps.length) return;
+                            // With places, a pin shows its place's card (a
+                            // second tap folds it); Go takes the party there.
+                            final place =
+                                infos?.where((p) => p.steps.contains(i));
+                            if (place == null || place.isEmpty) {
+                              final group = groups
+                                  .where((g) => g.members.contains(i))
+                                  .firstOrNull;
+                              if (group != null && group.isPin) {
+                                onOpenPin(group.members, pinName(group.lead));
+                              } else {
+                                onOpen(i);
+                              }
+                            } else {
+                              final id = place.first.id;
+                              places.card.value =
+                                  places.card.value == id ? null : id;
+                            }
+                          },
+                          onPickFog: (_) {},
+                          rulers: rulers,
+                          phase: ref.watch(dayPhaseProvider),
+                          services: [
+                            for (final s in townServices)
+                              CityChartService(
+                                  id: s.id,
+                                  kind: s.kind,
+                                  at: s.pin.at,
+                                  district: s.pin.district,
+                                  opens: s.opensSomething,
+                                  // The notice board says what waits on it.
+                                  badge: s.kind == 'notice_board'
+                                      ? boardContracts.length
+                                      : 0,
+                                  urgent: boardContracts.any((c) => c.done)),
+                          ],
+                          onService: (picked) => showTownServiceSheet(
+                              context,
+                              townServices
+                                  .firstWhere((s) => s.id == picked.id)),
+                        ),
+                      ),
+                    ...overlays,
+                    if (infos != null && hereDistrict != null)
+                      PlacesMapLayer(
+                        controller: places,
+                        infos: infos,
+                        districtId: hereDistrict!,
+                        partyAt: standing == null ? chart.here : placeMark,
+                        showHandle: standing == null,
+                        onGo: goPlace,
+                      ),
+                  ],
                 ),
-                ...overlays,
-              ],
+              ),
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 6),
-          child: Align(alignment: Alignment.centerLeft, child: tabs),
-        ),
-        Expanded(
-          flex: 9,
-          child: ListView(
-            key: const ValueKey('journey_city_list'),
-            padding: EdgeInsets.zero,
-            children: rows,
-          ),
-        ),
-      ],
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Align(alignment: Alignment.centerLeft, child: tabs),
+            ),
+            if (infos == null || standing != null || full)
+              Expanded(
+                flex: 9,
+                // The Journey's tour shows the rows as the ways to pick (v1.565).
+                child: TutorialTarget(
+                  id: 'journey.pick',
+                  child: ListView(
+                    key: const ValueKey('journey_city_list'),
+                    padding: EdgeInsets.zero,
+                    children: rows,
+                  ),
+                ),
+              ),
+          ],
+        );
+    if (infos == null) return layout(true);
+    return ValueListenableBuilder<bool>(
+      valueListenable: places.camera.fullZoom,
+      builder: (context, full, _) => layout(full),
     );
   }
 }

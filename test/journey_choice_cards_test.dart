@@ -1,9 +1,11 @@
 // Choices acted out where the party stands (v1.407, design 1 of
-// docs/proposals/inplace-choices.md): in a place, a fight, a payment, a check
-// or a decision is a card under the map -- the action's icon, its words, a
+// docs/proposals/inplace-choices.md; in the scene view since v1.465): in a
+// place, a fight, a payment, a check or a decision is a card in the scene view
+// (a button under the map opens it) -- the action's icon, its words, a
 // "→ destination" line and a tag (a price, a kind, an alignment shift) -- and
-// has no pin on the map; only the plain ways on keep their marks. At phone
-// width, in English and in French. UX_SHOTS (a folder) saves pictures.
+// has no pin on the map; only the plain ways on keep their marks, and a hub's
+// choices are a chip for each kind. At phone width, in English and in French.
+// UX_SHOTS (a folder) saves pictures.
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -86,7 +88,7 @@ int _count(String prefix) => find
     .length;
 
 void main() {
-  testWidgets('the cards hold what is done here, the map the ways on',
+  testWidgets('the scene view holds what is done here, the map the ways on',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -134,10 +136,18 @@ void main() {
     await _settle(tester);
 
     // The Stone Bridge: a toll to pay or a fight, both done on the bridge.
+    // They are not on the map (no way on, so no mark either): a button under
+    // the map opens the scene view, where they are cards.
     play.jumpTo('260');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 6));
     expect(_count('journey_step_'), 0, reason: 'no way on: no mark');
+    expect(_count('journey_choice_card_'), 0,
+        reason: 'the choices done here are not on the map');
+    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
+    await _shot(tester, 'choice-cards-bridge-map');
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 500));
     expect(_count('journey_choice_card_'), 2);
     final toll = find.byKey(const ValueKey('journey_choice_card_0'));
     expect(find.descendant(of: toll, matching: find.textContaining('Pay the')),
@@ -175,9 +185,13 @@ void main() {
         .setLanguage(AppLanguage.en));
     tester.view.physicalSize = const Size(400, 860);
     await _settle(tester);
+    // Back to the map.
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(_count('journey_choice_card_'), 0);
 
-    // The wharf, a hub: marks for the ways on, a ring and a chip for each
-    // kind of choice done here, and a "Ways" chip for the marks.
+    // The wharf, a hub: marks on the map for the ways on, and nothing else;
+    // in the scene view, a chip for each kind of choice done here.
     play.jumpTo('2015');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 6));
@@ -191,33 +205,34 @@ void main() {
     expect(pins, greaterThan(3));
     expect(_count('journey_choice_card_'), 0, reason: 'a hub shows chips');
     for (final id in ['fight', 'talkDecide', 'checksPay']) {
-      expect(find.byKey(ValueKey('choice_chip_$id')), findsOneWidget,
-          reason: id);
-      expect(find.byKey(ValueKey('choice_ring_chip_$id')), findsOneWidget,
+      expect(find.byKey(ValueKey('choice_chip_$id')), findsNothing,
+          reason: 'the map offers only the ways that move the party');
+      expect(find.byKey(ValueKey('choice_ring_chip_$id')), findsNothing,
           reason: id);
     }
-    expect(find.byKey(const ValueKey('choice_chip_ways')), findsOneWidget);
-    await _shot(tester, 'choice-rings-hub');
+    await _shot(tester, 'choice-hub-map');
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(_count('journey_choice_card_'), 0, reason: 'a hub shows chips');
+    for (final id in ['fight', 'talkDecide', 'checksPay']) {
+      expect(find.byKey(ValueKey('choice_chip_$id')), findsOneWidget,
+          reason: id);
+    }
+    expect(find.byKey(const ValueKey('choice_chip_ways')), findsNothing);
+    await _shot(tester, 'choice-hub-scene');
 
-    // A chip opens its list in a sheet; the ring stays lit on the map.
+    // A chip opens its list in a sheet.
     await tester.tap(find.byKey(const ValueKey('choice_chip_talkDecide')));
     await sheet();
     expect(find.byKey(const ValueKey('choice_sheet_close')), findsOneWidget);
     expect(_count('journey_choice_card_'), greaterThan(3));
-    await _shot(tester, 'choice-rings-hub-open');
+    await _shot(tester, 'choice-hub-scene-open');
     await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
     await sheet();
     expect(find.byKey(const ValueKey('choice_sheet_close')), findsNothing);
-
-    // The ring's own chip opens it too, and the "Ways" chip lists the marks.
-    await tester.tap(find.byKey(const ValueKey('choice_ring_chip_fight')));
+    await tester.tap(find.byKey(const ValueKey('choice_chip_fight')));
     await sheet();
     expect(_count('journey_choice_card_'), greaterThan(0));
-    await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
-    await sheet();
-    await tester.tap(find.byKey(const ValueKey('choice_chip_ways')));
-    await sheet();
-    expect(_count('journey_choice_card_'), greaterThan(2));
     await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
     await sheet();
     expect(tester.takeException(), isNull);

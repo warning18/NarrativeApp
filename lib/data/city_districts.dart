@@ -5,9 +5,92 @@
 // (no story choice, no time, no road): the screen sets the party's district
 // (see city_provider.dart), and a district walked into is found for good
 // through a flag (see districtFoundFlag).
+import 'dart:ui' show Offset;
+
 import '../models/story_node.dart';
+import 'city_plan_record.dart';
 import 'geography.dart';
 import 'story_repository.dart' show StoryData;
+
+/// The flag a quest taken sets (quests.json's Accept choice).
+String questAcceptedFlag(String questId) => '${questId}_accepted';
+
+/// Whether district [districtId] is locked (wave 18): it has a `lock` in
+/// geography.json whose quest has not reached its stage yet, taken
+/// ([geoLockOpensOnAccepted], its `<quest>_accepted` flag among [flags])
+/// or done ([geoLockOpensOnDone], among [completedQuestIds]). A locked
+/// district shows on the plan with its lock and lockedText, is never
+/// found, and the party can't walk into it. No timeout: a quest that can
+/// no longer be taken leaves it locked.
+bool districtLocked(
+  Geography geo,
+  String? districtId,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) {
+  final place = geo.place(districtId);
+  if (place == null || !place.hasLock) return false;
+  if (completedQuestIds.contains(place.lockQuest)) return false;
+  if (place.lockOpensOn == geoLockOpensOnAccepted &&
+      flags.contains(questAcceptedFlag(place.lockQuest))) {
+    return false;
+  }
+  return true;
+}
+
+/// The locked districts of [cityId] (see [districtLocked]), in
+/// geography.json's order.
+List<String> lockedDistrictsOf(
+  Geography geo,
+  String cityId,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) =>
+    [
+      for (final d in districtsOfCity(geo, cityId))
+        if (districtLocked(geo, d.id, flags, completedQuestIds)) d.id,
+    ];
+
+/// The ways of [node] that lead into a locked district other than the one
+/// [node] stands in (see [wayDistricts], [districtLocked]), as indices
+/// into [StoryNode.choices], in order: the ways a screen shows greyed
+/// (v1.616, wave 18 step 2). A way to the scene where the district's own
+/// quest is offered stays open, so the lock can always be lifted (Tern's
+/// Toll is offered inside Tern Row).
+List<int> lockedWays(
+  Geography geo,
+  StoryData story,
+  StoryNode node,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) =>
+    lockedWayDistricts(geo, story, node, flags, completedQuestIds).keys.toList()
+      ..sort();
+
+/// [lockedWays] with the locked district each one leads into, by the way's
+/// index in [StoryNode.choices].
+Map<int, GeoPlace> lockedWayDistricts(
+  Geography geo,
+  StoryData story,
+  StoryNode node,
+  Iterable<String> flags,
+  Iterable<String> completedQuestIds,
+) {
+  final own = districtOfNode(geo, node)?.id;
+  return {
+    for (final MapEntry(:key, :value) in wayDistricts(geo, story, node).entries)
+      if (value != null &&
+          value != own &&
+          districtLocked(geo, value, flags, completedQuestIds) &&
+          !offersQuest(story.nodeFor(node.choices[key].nextId),
+              geo.place(value)!.lockQuest))
+        key: geo.place(value)!,
+  };
+}
+
+/// Whether [node] offers [questId]: one of its choices unlocks it.
+bool offersQuest(StoryNode? node, String questId) =>
+    node != null && node.choices.any((c) => c.unlockQuestId == questId);
 
 /// The flag a district walked into is remembered by (found, unfogged).
 String districtFoundFlag(String districtId) => 'district_found:$districtId';
@@ -20,6 +103,109 @@ GeoPlace? districtOfPlace(Geography geo, String? placeId) =>
 /// The district scene [node] happens in, or null.
 GeoPlace? districtOfNode(Geography geo, StoryNode? node) =>
     districtOfPlace(geo, geo.placeOfNode(node)?.id);
+
+/// Where a scene played at a building's doorstep (v1.542, see
+/// GeoPlace.doorstep) stands on its town's stored plan: the building on
+/// the plan, the party's spot at its door, and a spot in the street round
+/// it for each of the scene's ways that stay there.
+class SceneDoorstep {
+  const SceneDoorstep({
+    required this.buildingId,
+    required this.districtId,
+    required this.at,
+    required this.spotOfWay,
+  });
+
+  /// The building on the plan (city_plans.json's id): the scene's own
+  /// anchor when it has one in the district, else one picked for it.
+  final String buildingId;
+  final String districtId;
+
+  /// The party's spot: the street before the building's door.
+  final Offset at;
+
+  /// By way index, where the pin of a way that stays at the door stands.
+  final Map<int, Offset> spotOfWay;
+}
+
+/// The building whose street [node] plays in (v1.589), as a building place
+/// of [record]'s town: the plan building its `scene` block names when the
+/// block says `kind: street` (Narrative's tags, presentation-contract.md;
+/// it wins), else the geography building that lists [node] in its
+/// `doorstep` (v1.542, the fallback until every chapter is tagged). A
+/// tagged building comes back with its plan id, district, kind and name.
+/// Null for a scene played anywhere else.
+GeoPlace? sceneStreetOf(
+    Geography geo, CityPlanRecord? record, StoryNode? node) {
+  if (node == null) return null;
+  final tagged = node.sceneInStreet ? node.sceneBuilding : null;
+  final building = tagged == null ? null : record?.building(tagged);
+  if (building != null) {
+    return GeoPlace(
+      id: building.id,
+      level: GeoLevel.building,
+      parent: building.district,
+      kind: building.kind,
+      name: record!.nameOf(building.id, french: false),
+      nameFr: record.nameOf(building.id, french: true),
+      doorstep: [node.id],
+    );
+  }
+  return geo.doorstepOfNode(node);
+}
+
+/// Whether [node] plays outside, in a building's street (see
+/// [sceneStreetOf]): tagged so, or on a geography doorstep list.
+bool scenePlaysInStreet(Geography geo, StoryNode? node) =>
+    (node?.sceneInStreet ?? false) || geo.doorstepOfNode(node) != null;
+
+/// [node]'s doorstep on [record] (see [SceneDoorstep]), or null when the
+/// scene is not played at a building's doorstep, or the building's district
+/// is not on the plan. [waysHere] are the indices of the scene's ways that
+/// stay where the party stands (no other building or district of the town).
+SceneDoorstep? sceneDoorstep(
+  Geography geo,
+  CityPlanRecord record,
+  StoryNode? node, {
+  Iterable<int> waysHere = const [],
+}) {
+  final building = sceneStreetOf(geo, record, node);
+  if (building == null) return null;
+  final tagged = record.building(building.id);
+  final district = tagged?.district ?? districtOfPlace(geo, building.id)?.id;
+  if (district == null || !record.districts.containsKey(district)) {
+    return null;
+  }
+  final onPlan = tagged ?? record.buildingOfWay(node!.id, district);
+  if (onPlan == null) return null;
+  final ways = waysHere.toList();
+  final spots = record.streetSpotsAround(onPlan.id, ways.length);
+  return SceneDoorstep(
+    buildingId: onPlan.id,
+    districtId: district,
+    at: record.doorstepOf(onPlan.id),
+    spotOfWay: {for (final (k, i) in ways.indexed) i: spots[k]},
+  );
+}
+
+/// The view of a town's plan a move shows (v1.534): the whole town, or the
+/// district.
+enum JourneyTownView { town, district }
+
+/// What the Journey shows after the party moves from place [fromId] to
+/// place [toId] (districts or buildings): a move inside one town with
+/// districts is a walk on its plan, on the whole town when it crosses into
+/// another district, on the district when it stays in the same one. Null
+/// for anything else (a journey between towns, a town with no districts,
+/// a first placing): the world's roads, or the view as it was.
+JourneyTownView? townMoveView(Geography geo, String? fromId, String? toId) {
+  if (fromId == null || toId == null) return null;
+  final from = geo.locationOf(fromId), to = geo.locationOf(toId);
+  if (from == null || to == null || from.id != to.id) return null;
+  final a = districtOfPlace(geo, fromId), b = districtOfPlace(geo, toId);
+  if (a == null || b == null) return null;
+  return a.id == b.id ? JourneyTownView.district : JourneyTownView.town;
+}
 
 /// [cityId]'s districts, in geography.json's order.
 List<GeoPlace> districtsOfCity(Geography geo, String cityId) => [
@@ -57,7 +243,10 @@ List<int> waysInDistrict(
 
 /// The districts of [cityId] the party has found: one a scene it played
 /// stands in ([visitedNodeIds]), one it walked into ([flags], see
-/// [districtFoundFlag]), and the one it stands in now ([currentNodeId]).
+/// [districtFoundFlag]), and the one it stands in now ([currentNodeId]); the
+/// first open district when none of those is a district at all.
+/// A locked district (see [districtLocked], with [completedQuestIds]) is
+/// never found, whatever says so.
 Set<String> foundDistricts(
   Geography geo,
   StoryData story, {
@@ -65,10 +254,15 @@ Set<String> foundDistricts(
   required Iterable<String> visitedNodeIds,
   required String currentNodeId,
   required Iterable<String> flags,
+  Iterable<String> completedQuestIds = const [],
 }) {
-  final ids = {for (final d in districtsOfCity(geo, cityId)) d.id};
   final held = flags.toSet();
-  return {
+  final done = completedQuestIds.toSet();
+  final ids = {
+    for (final d in districtsOfCity(geo, cityId))
+      if (!districtLocked(geo, d.id, held, done)) d.id,
+  };
+  final found = {
     for (final id in [...visitedNodeIds, currentNodeId])
       if (districtOfNode(geo, story.nodeFor(id))?.id case final d?
           when ids.contains(d))
@@ -76,4 +270,22 @@ Set<String> foundDistricts(
     for (final d in ids)
       if (held.contains(districtFoundFlag(d))) d,
   };
+  // Arriving in a town never leaves the whole plan fogged: a scene played in
+  // the town itself (in no district) finds the first open district, where the
+  // party comes in, and it stays found as the party walks on.
+  final atTown = [...visitedNodeIds, currentNodeId].any((id) {
+    final node = story.nodeFor(id);
+    return node != null &&
+        geo.locationOfNode(node)?.id == cityId &&
+        districtOfNode(geo, node) == null;
+  });
+  if (atTown) {
+    for (final d in districtsOfCity(geo, cityId)) {
+      if (ids.contains(d.id)) {
+        found.add(d.id);
+        break;
+      }
+    }
+  }
+  return found;
 }

@@ -8,19 +8,19 @@
     "initialStock": [
       "potion_minor",
       "antidote",
-      "boots_worn_leather"
+      "boots_worn_leather",
+      "fate_coin"
     ],
     "merchantSpecialties": [
       "Potion",
       "Armor"
     ],
-    "diceStock": [
-      "gambler_die"
-    ],
+    "diceStock": [],
     "stockQuantities": {
       "potion_minor": 2,
       "antidote": 2,
-      "boots_worn_leather": 1
+      "boots_worn_leather": 1,
+      "fate_coin": 2
     },
     "minChapter": 2,
     "detourEligible": false,
@@ -259,7 +259,8 @@
     "initialStock": [
       "potion_minor",
       "potion_major",
-      "antidote"
+      "antidote",
+      "fate_coin"
     ],
     "merchantSpecialties": [
       "Potion"
@@ -270,7 +271,8 @@
     "stockQuantities": {
       "potion_minor": 2,
       "potion_major": 2,
-      "antidote": 2
+      "antidote": 2,
+      "fate_coin": 2
     },
     "minChapter": 2,
     "detourEligible": true,
@@ -600,7 +602,8 @@
       "pilgrim_die",
       "vigil_die",
       "chorus_die",
-      "tearglass_die"
+      "tearglass_die",
+      "gambler_die"
     ],
     "stockQuantities": {
       "charm_lucky_coin": 1,

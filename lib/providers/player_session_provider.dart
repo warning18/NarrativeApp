@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
@@ -11,19 +13,28 @@ import '../combat/face_keywords.dart' show FaceKeyword;
 import '../combat/face_smithing.dart';
 import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../combat/stat_rules.dart';
 import '../data/cliff_town.dart' show townAdditionLimitOf;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
+import '../data/story_companions.dart';
+import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/district_attacks.dart'
+    show expiredSieges, rollDistrictAttacks, settleSiegeAway, syncSiegeFlags;
 import '../data/nemesis.dart'
     show championMinChapter, nemesisQuestIdOf, updateNemesis;
 import '../data/contracts.dart';
+import '../data/district_influence.dart' as influence
+    show InfluenceResult, applyQuestInfluence, syncHeldFlags;
 import '../data/detour_pacing.dart' show DetourPacing;
 import '../data/camp_state.dart' show harborHouseId;
 import '../data/factions.dart';
+import '../data/forge_roll.dart';
 import '../data/feature_unlocks.dart';
+import '../data/first_journey.dart' show journeyFirstShownFlag;
 import '../data/hunter_mercy.dart';
 import '../data/patron_stats.dart';
 import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
@@ -37,9 +48,18 @@ import '../data/perks.dart';
 import '../data/politics_events.dart';
 import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
+import '../data/camp_rolls.dart';
+import '../data/road_wards.dart';
+import '../data/risky_gifts.dart';
 import '../data/signs.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
+import '../data/stat_ledger.dart';
+import '../data/dice_sizes_save.dart';
+import '../data/dice_weave.dart' show canWeaveDice, tallyDieId;
+import '../data/fate_coin.dart' show reforgedRoll, withFateCoinSpent;
+import '../data/stat_scale_save.dart';
+import '../data/temple.dart';
 import '../data/training.dart';
 import '../data/throne.dart'
     show
@@ -50,10 +70,12 @@ import '../data/throne.dart'
         onThroneFlag,
         pledgedFlag,
         throneWinnerFlag;
+import '../l10n/app_locale.dart';
 import '../models/ally_state.dart';
 import '../models/item_origin.dart';
 import '../models/story_node.dart' show placeFoundFlag;
 import '../models/story_politics.dart';
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 const String _playerSessionPrefsKey = 'player_session';
 
@@ -64,7 +86,7 @@ const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
 /// The save format's version, written into every save. Bump it with a
 /// migration in [PlayerSession.fromJson] whenever a change to the format
 /// needs one; a save without it is version 1.
-const int playerSessionSaveVersion = harbourSaveVersion;
+const int playerSessionSaveVersion = statScaleSaveVersion;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -136,7 +158,7 @@ const int fullRosterCompanionCount = 6;
 
 /// The intrigues of intrigues.json: "settle them all" needs this many
 /// distinct ones (a test keeps the count in step with the file).
-const int intrigueCount = 8;
+const int intrigueCount = 11;
 
 /// How many of the six clans must trust the character at once for "A Hand
 /// at Four Doors": a clan's gains cost its rivals half, so all six is out of
@@ -209,7 +231,9 @@ String houseFlag(String houseId) => 'house_$houseId';
 /// changed scene reads as new.
 String sceneReadKey(String nodeId, String text) {
   var hash = 0x811c9dc5;
-  for (final unit in text.codeUnits) {
+  // The markup of the story text (`**`) is not part of the words: marking a
+  // scene up does not make a place read before look unread.
+  for (final unit in stripStoryMarkup(text).codeUnits) {
     hash = ((hash ^ unit) * 0x01000193) & 0xffffffff;
   }
   return '$nodeId#${hash.toRadixString(16)}';
@@ -267,12 +291,19 @@ class PlayerSession {
     this.seenNpcIds = const [],
     this.readSceneKeys = const [],
     this.seenEchoKeys = const [],
+    this.seenFightTipIds = const [],
+    this.seenTownRulers = const {},
     this.provisions = provisionsStart,
     this.day = 1,
     this.watch = 1,
     this.clockChapter = 0,
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
+    this.blessingFights = 0,
+    this.blessingClan = '',
+    this.templeMendDay = 0,
+    this.seaRemarkChapter = 0,
+    this.templeStandingChapters = const {},
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.detourPacing = const DetourPacing(),
     this.specIds = const [],
@@ -286,9 +317,17 @@ class PlayerSession {
     this.heldSigns = const [],
     this.pendingOffers = const [],
     this.clanOffer,
-    this.trainingOffer = const [],
     this.trainingTaken = const {},
     this.statPickOffer = const [],
+    this.rerollCharges = 0,
+    this.banishCharges = 0,
+    this.raiseCharges = 0,
+    this.raiseProgress = 0,
+    this.rollBans = const [],
+    this.rollNonce = 0,
+    this.statSources = const {},
+    this.riskCurses = const [],
+    this.tomePicks = const [],
     this.heldTitleIds = const [],
     this.activeTitleId = '',
     this.swornBoonIds = const [],
@@ -463,6 +502,17 @@ class PlayerSession {
   /// "What changed" page lists them.
   final List<String> seenEchoKeys;
 
+  /// The one-time fight tips this save has shown (see fight_tips.dart): a
+  /// goal, a doctrine or a situation is explained the first time a fight
+  /// shows it. An old save without the field has seen none.
+  final List<String> seenFightTipIds;
+
+  /// Who ruled each town (town id -> clan id, '' for none) when the player
+  /// last looked at the world chart: a town whose ruler is not the one
+  /// written here has changed hands since, and the chart says so. An old
+  /// save without the field has seen none (the first look just writes it).
+  final Map<String, String> seenTownRulers;
+
   /// Rations carried (see journey_rules.dart): one is eaten on each step
   /// of the road from chapter 2 on; with none left the party goes hungry.
   final int provisions;
@@ -483,6 +533,24 @@ class PlayerSession {
 
   /// Fights left on a hired sellsword's contract (see journey_rules.dart).
   final int sellswordFights;
+
+  /// A temple's blessing (see temple.dart): the fights it has left, and
+  /// the clan whose temple gave it ('' a neutral temple), its effects read
+  /// live from factions.json.
+  final int blessingFights;
+  final String blessingClan;
+
+  /// The day of the last Mending at a temple (0 never): once a day.
+  final int templeMendDay;
+
+  /// The chapter a companion last spoke up at sea in (0 never, see
+  /// seaRemarkDue): once a chapter, on the first voyage someone has a sea
+  /// line for. An old save without the field has had none.
+  final int seaRemarkChapter;
+
+  /// The chapter each clan's blessing last brought standing (clan ->
+  /// chapter): once a chapter per clan.
+  final Map<String, int> templeStandingChapters;
 
   /// Alignment events rolled since the last hunter's ambush: a hunter
   /// waits [hunterCooldownRolls] of them before the next (see
@@ -527,6 +595,12 @@ class PlayerSession {
           ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
 
+  /// The part of the day the clock is at (wave 16, see [dayPhaseOf]).
+  DayPhase get dayPhase => dayPhaseOf(watch);
+
+  /// The hour (0..23) the clock shows (see [hourOfWatch]).
+  int get hourOfDay => hourOfWatch(watch);
+
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
   /// [completedQuestIds]'s append-only pattern).
@@ -564,11 +638,8 @@ class PlayerSession {
   final List<OfferTicket> pendingOffers;
   final ClanOffer? clanOffer;
 
-  /// Training (Wave 7, see training.dart): the choices on the table for the
-  /// unspent [statPoints] (a full offer while five are there, a small one
-  /// below), drawn once and kept until one is taken; empty when none is
-  /// drawn. And the paths taken, with how many times.
-  final List<TrainingChoice> trainingOffer;
+  /// The training paths (training_paths.json) the stat picks have drawn
+  /// from, with how many times: they weigh the next picks' draw.
   final Map<String, int> trainingTaken;
 
   /// The stat pick on the table (docs/proposals/stat-picks.md): the three
@@ -578,6 +649,36 @@ class PlayerSession {
 
   /// The picks waiting: one per unspent stat point.
   int get pendingStatPicks => statPoints;
+
+  /// The camp's roll houses (camp_rolls.dart): the Reroll, Banish and
+  /// Raise charges left, the fresh draws toward the next Raise charge, the
+  /// bans running, and a count of the powers used, mixed into the stat
+  /// pick's seed so a redraw differs. Each written only when not its
+  /// default; an old save reads them all at it.
+  final int rerollCharges;
+  final int banishCharges;
+  final int raiseCharges;
+  final int raiseProgress;
+  final List<RollBan> rollBans;
+  final int rollNonce;
+
+  /// The stat ledger (stat_ledger.dart, v1.459): what raised a stat that
+  /// the data can't tell afterwards -- `kind:id` (a pick's path, a tome, the
+  /// patron, the formative memories) -> stat -> amount, the base damage and
+  /// max health those points brought included. Written by
+  /// [withSourcedGains]; read by statBreakdown. Empty in a save from before
+  /// it (statBreakdown then shows what it can't explain as "earlier").
+  final Map<String, Map<String, int>> statSources;
+
+  /// The clans' curses worn (risky_gifts.dart): each lowers a stat, written
+  /// in [statSources] as `curse:<clan>`, until its level is reached (see
+  /// [withCursesEnded]). Left out of the save when empty.
+  final List<RiskCurse> riskCurses;
+
+  /// The tomes whose pick still waits among the [pendingStatPicks], oldest
+  /// first: the next pick taken counts as the first one's (the ledger's
+  /// `tome:<id>`), the others as a level's.
+  final List<String> tomePicks;
 
   /// Titles held (titles.json): from offers, from the tiers reached with a
   /// faction, and "the Marked" while the Inquisition is a foe; the one
@@ -811,11 +912,21 @@ class PlayerSession {
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
-  int get maxMana =>
-      maxManaFor(intelligence: intelligence, wisdom: wisdom) +
-      perkEffects.maxMana;
+  int get maxMana => maxManaFor(wisdom: wisdom) + perkEffects.maxMana;
 
   int get xpToNextLevel => level * 100;
+
+  /// This session with its companion flags (`ally_<id>`, `devoted_<id>`,
+  /// see approval.dart's withCompanionFlags) in step with the roster; this
+  /// very session when they already are. The notifier applies it to every
+  /// state it takes, a loaded save included, so an old save with a Devoted
+  /// companion gets its `devoted_` flag on load.
+  PlayerSession withCompanionFlagsSynced() {
+    final synced = withCompanionFlags(flags, {
+      for (final ally in recruitedAllies) ally.companionId: ally.approval,
+    });
+    return identical(synced, flags) ? this : copyWith(flags: synced);
+  }
 
   /// Who wears [itemId]: [playerWearerId] for the player and each recruited
   /// ally's companion id.
@@ -911,12 +1022,19 @@ class PlayerSession {
     List<String>? seenNpcIds,
     List<String>? readSceneKeys,
     List<String>? seenEchoKeys,
+    List<String>? seenFightTipIds,
+    Map<String, String>? seenTownRulers,
     int? provisions,
     int? day,
     int? watch,
     int? clockChapter,
     int? chapterStartDay,
     int? sellswordFights,
+    int? blessingFights,
+    String? blessingClan,
+    int? templeMendDay,
+    int? seaRemarkChapter,
+    Map<String, int>? templeStandingChapters,
     int? alignmentRollsSinceAmbush,
     DetourPacing? detourPacing,
     List<String>? specIds,
@@ -931,9 +1049,17 @@ class PlayerSession {
     List<OfferTicket>? pendingOffers,
     ClanOffer? clanOffer,
     bool clearClanOffer = false,
-    List<TrainingChoice>? trainingOffer,
     Map<String, int>? trainingTaken,
     List<StatPickOffer>? statPickOffer,
+    int? rerollCharges,
+    int? banishCharges,
+    int? raiseCharges,
+    int? raiseProgress,
+    List<RollBan>? rollBans,
+    int? rollNonce,
+    Map<String, Map<String, int>>? statSources,
+    List<RiskCurse>? riskCurses,
+    List<String>? tomePicks,
     List<String>? heldTitleIds,
     String? activeTitleId,
     List<String>? swornBoonIds,
@@ -1026,12 +1152,20 @@ class PlayerSession {
       seenNpcIds: seenNpcIds ?? this.seenNpcIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
+      seenFightTipIds: seenFightTipIds ?? this.seenFightTipIds,
+      seenTownRulers: seenTownRulers ?? this.seenTownRulers,
       provisions: provisions ?? this.provisions,
       day: day ?? this.day,
       watch: watch ?? this.watch,
       clockChapter: clockChapter ?? this.clockChapter,
       chapterStartDay: chapterStartDay ?? this.chapterStartDay,
       sellswordFights: sellswordFights ?? this.sellswordFights,
+      blessingFights: blessingFights ?? this.blessingFights,
+      blessingClan: blessingClan ?? this.blessingClan,
+      templeMendDay: templeMendDay ?? this.templeMendDay,
+      seaRemarkChapter: seaRemarkChapter ?? this.seaRemarkChapter,
+      templeStandingChapters:
+          templeStandingChapters ?? this.templeStandingChapters,
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
       detourPacing: detourPacing ?? this.detourPacing,
@@ -1046,9 +1180,17 @@ class PlayerSession {
       heldSigns: heldSigns ?? this.heldSigns,
       pendingOffers: pendingOffers ?? this.pendingOffers,
       clanOffer: clearClanOffer ? null : clanOffer ?? this.clanOffer,
-      trainingOffer: trainingOffer ?? this.trainingOffer,
       trainingTaken: trainingTaken ?? this.trainingTaken,
       statPickOffer: statPickOffer ?? this.statPickOffer,
+      rerollCharges: rerollCharges ?? this.rerollCharges,
+      banishCharges: banishCharges ?? this.banishCharges,
+      raiseCharges: raiseCharges ?? this.raiseCharges,
+      raiseProgress: raiseProgress ?? this.raiseProgress,
+      rollBans: rollBans ?? this.rollBans,
+      rollNonce: rollNonce ?? this.rollNonce,
+      statSources: statSources ?? this.statSources,
+      riskCurses: riskCurses ?? this.riskCurses,
+      tomePicks: tomePicks ?? this.tomePicks,
       heldTitleIds: heldTitleIds ?? this.heldTitleIds,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       swornBoonIds: swornBoonIds ?? this.swornBoonIds,
@@ -1100,8 +1242,100 @@ class PlayerSession {
     );
   }
 
+  /// This session with [gains] (ability -> points) added: the abilities,
+  /// and what they bring (stat_rules.dart) -- +1 base damage a point of the
+  /// profession's damage stat, +5 max health (healed as much) a point of
+  /// Constitution. Every way an ability is gained goes through here: a
+  /// pick, the patron's gifts, the formative memories.
+  PlayerSession withAbilityGains(Map<String, int> gains) {
+    if (gains.isEmpty) return this;
+    int gain(String stat) => gains[stat] ?? 0;
+    final effects = abilityGainEffects(gains, professionId);
+    return copyWith(
+      strength: strength + gain('strength'),
+      dexterity: dexterity + gain('dexterity'),
+      constitution: constitution + gain('constitution'),
+      intelligence: intelligence + gain('intelligence'),
+      wisdom: wisdom + gain('wisdom'),
+      perception: perception + gain('perception'),
+      luck: luck + gain('luck'),
+      charisma: charisma + gain('charisma'),
+      baseDamage: baseDamage + effects.baseDamage,
+      maxHealth: max(1, maxHealth + effects.maxHealth),
+      currentHealth: max(1, currentHealth + effects.maxHealth),
+    );
+  }
+
+  /// [withAbilityGains] of [gains] and [maxHealth] more max health (healed
+  /// as much), written in the stat ledger ([statSources]) under [kind]
+  /// (stat_ledger.dart's ledgerKinds) and [id] -- with the base damage and
+  /// max health the points bring, so statBreakdown can tell them apart.
+  PlayerSession withSourcedGains(
+    String kind,
+    String id,
+    Map<String, int> gains, {
+    int maxHealth = 0,
+  }) {
+    final effects = abilityGainEffects(gains, professionId);
+    var s = withAbilityGains(gains);
+    if (maxHealth != 0) {
+      s = s.copyWith(
+        maxHealth: s.maxHealth + maxHealth,
+        currentHealth: s.currentHealth + maxHealth,
+      );
+    }
+    return s.copyWith(
+      statSources: ledgerWith(statSources, kind, id, {
+        ...gains,
+        'baseDamage': effects.baseDamage,
+        'maxHealth': effects.maxHealth + maxHealth,
+      }),
+    );
+  }
+
+  /// This session with [faction]'s curse (risky_gifts.dart): [amount]
+  /// points off [stat] for [riskyCurseLevels] levels, in the ledger as
+  /// `curse:<faction>`. A second curse from the same clan restarts the
+  /// count instead of stacking.
+  PlayerSession withCurse(String faction, String stat, int amount) {
+    final old = riskCurses.where((c) => c.clan == faction).firstOrNull;
+    var s = this;
+    if (old != null) {
+      s = s.withSourcedGains(ledgerCurse, faction, {old.stat: old.amount});
+    }
+    s = s.withSourcedGains(ledgerCurse, faction, {stat: -amount});
+    return s.copyWith(riskCurses: [
+      for (final c in s.riskCurses)
+        if (c.clan != faction) c,
+      RiskCurse(
+          clan: faction,
+          stat: stat,
+          amount: amount,
+          untilLevel: level + riskyCurseLevels),
+    ]);
+  }
+
+  /// This session with the curses whose level is reached lifted: their
+  /// points given back, the ledger's row cancelled.
+  PlayerSession withCursesEnded() {
+    final ended = [
+      for (final c in riskCurses)
+        if (level >= c.untilLevel) c,
+    ];
+    if (ended.isEmpty) return this;
+    var s = this;
+    for (final c in ended) {
+      s = s.withSourcedGains(ledgerCurse, c.clan, {c.stat: c.amount});
+    }
+    return s.copyWith(riskCurses: [
+      for (final c in riskCurses)
+        if (level < c.untilLevel) c,
+    ]);
+  }
+
   Map<String, dynamic> toJson() => {
         'saveVersion': playerSessionSaveVersion,
+        diceDataVersionKey: diceDataVersion,
         'level': level,
         'currentXP': currentXP,
         'gold': gold,
@@ -1147,12 +1381,20 @@ class PlayerSession {
         'seenNpcIds': seenNpcIds,
         'readSceneKeys': readSceneKeys,
         'seenEchoKeys': seenEchoKeys,
+        'seenFightTipIds': seenFightTipIds,
+        'seenTownRulers': seenTownRulers,
         'provisions': provisions,
         'day': day,
         'watch': watch,
         'clockChapter': clockChapter,
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
+        if (blessingFights != 0) 'blessingFights': blessingFights,
+        if (blessingClan.isNotEmpty) 'blessingClan': blessingClan,
+        if (templeMendDay != 0) 'templeMendDay': templeMendDay,
+        if (seaRemarkChapter != 0) 'seaRemarkChapter': seaRemarkChapter,
+        if (templeStandingChapters.isNotEmpty)
+          'templeStandingChapters': templeStandingChapters,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
         'detourPacing': detourPacing.toJson(),
         'specIds': specIds,
@@ -1166,10 +1408,20 @@ class PlayerSession {
         'heldSigns': [for (final h in heldSigns) h.toJson()],
         'pendingOffers': [for (final t in pendingOffers) t.toJson()],
         'clanOffer': clanOffer?.toJson(),
-        'trainingOffer': [for (final c in trainingOffer) c.toJson()],
         'trainingTaken': trainingTaken,
         if (statPickOffer.isNotEmpty)
           'statPickOffer': [for (final o in statPickOffer) o.toJson()],
+        if (rerollCharges != 0) 'rerollCharges': rerollCharges,
+        if (banishCharges != 0) 'banishCharges': banishCharges,
+        if (raiseCharges != 0) 'raiseCharges': raiseCharges,
+        if (raiseProgress != 0) 'raiseProgress': raiseProgress,
+        if (rollBans.isNotEmpty)
+          'rollBans': [for (final b in rollBans) b.toJson()],
+        if (rollNonce != 0) 'rollNonce': rollNonce,
+        if (statSources.isNotEmpty) 'statSources': statSources,
+        if (riskCurses.isNotEmpty)
+          'riskCurses': [for (final c in riskCurses) c.toJson()],
+        if (tomePicks.isNotEmpty) 'tomePicks': tomePicks,
         'heldTitleIds': heldTitleIds,
         'activeTitleId': activeTitleId,
         'swornBoonIds': swornBoonIds,
@@ -1223,6 +1475,13 @@ class PlayerSession {
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
+    // A save from before the stat scale, once on the small scale
+    // (stat_scale_save.dart).
+    json = rescaledSave(json, allyFullHealth: AllyState.fullHealthSentinel);
+    // A save from before the dice sizes: picks and Hammersmith work on a
+    // die that shrank move with their faces, or come back
+    // (dice_sizes_save.dart).
+    json = resizedDiceSave(json);
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -1238,9 +1497,9 @@ class PlayerSession {
       currentXP: (json['currentXP'] as num?)?.toInt() ?? 0,
       gold: (json['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: (json['alignmentScore'] as num?)?.toInt() ?? 0,
-      maxHealth: (json['maxHealth'] as num?)?.toInt() ?? 100,
-      currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 100,
-      baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 10,
+      maxHealth: (json['maxHealth'] as num?)?.toInt() ?? 20,
+      currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 20,
+      baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 2,
       baseArmor: (json['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (json['luck'] as num?)?.toInt() ?? 0,
       charisma: (json['charisma'] as num?)?.toInt() ?? 0,
@@ -1343,12 +1602,29 @@ class PlayerSession {
       seenEchoKeys:
           (json['seenEchoKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      seenFightTipIds: (json['seenFightTipIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      seenTownRulers: {
+        for (final e in ((json['seenTownRulers'] as Map?) ?? const {}).entries)
+          e.key.toString(): e.value.toString(),
+      },
       provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
       day: max(1, (json['day'] as num?)?.toInt() ?? 1),
       watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
       clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
       chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
       sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
+      blessingFights: (json['blessingFights'] as num?)?.toInt() ?? 0,
+      blessingClan: json['blessingClan']?.toString() ?? '',
+      templeMendDay: (json['templeMendDay'] as num?)?.toInt() ?? 0,
+      seaRemarkChapter: (json['seaRemarkChapter'] as num?)?.toInt() ?? 0,
+      templeStandingChapters: {
+        for (final e
+            in ((json['templeStandingChapters'] as Map?) ?? const {}).entries)
+          if (e.value is num) e.key.toString(): (e.value as num).toInt(),
+      },
       alignmentRollsSinceAmbush:
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
@@ -1396,21 +1672,28 @@ class PlayerSession {
               signPicks: (json['pendingSignPicks'] as num?)?.toInt() ?? 0,
             ),
       clanOffer: ClanOffer.tryParse(json['clanOffer']),
-      // A full (5-point) training offer left on the table is dropped: the
-      // points it was for are stat picks now (stat-picks.md).
-      trainingOffer: [
-        for (final c in (json['trainingOffer'] as List? ?? const []))
-          if (c is Map) TrainingChoice.fromJson(c),
-      ].where((c) => c.small).toList(),
+      // An old save's `trainingOffer` (the training offers before the stat
+      // picks) is ignored: its unspent points are stat picks now.
       statPickOffer: [
         for (final o in (json['statPickOffer'] as List? ?? const []))
           if (o is Map) StatPickOffer.fromJson(o),
       ],
+      rerollCharges: (json['rerollCharges'] as num?)?.toInt() ?? 0,
+      banishCharges: (json['banishCharges'] as num?)?.toInt() ?? 0,
+      raiseCharges: (json['raiseCharges'] as num?)?.toInt() ?? 0,
+      raiseProgress: (json['raiseProgress'] as num?)?.toInt() ?? 0,
+      rollBans: rollBansFromJson(json['rollBans']),
+      rollNonce: (json['rollNonce'] as num?)?.toInt() ?? 0,
       trainingTaken: {
         for (final MapEntry(:key, :value)
             in ((json['trainingTaken'] as Map?) ?? const {}).entries)
           if (value is num) key.toString(): value.toInt(),
       },
+      statSources: ledgerFromJson(json['statSources']),
+      riskCurses: riskCursesFromJson(json['riskCurses']),
+      tomePicks:
+          (json['tomePicks'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       heldTitleIds:
           (json['heldTitleIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -1544,7 +1827,6 @@ class PlayerSession {
       // same as a fresh character.
       mana: (json['mana'] as num?)?.toInt() ??
           maxManaFor(
-            intelligence: (json['intelligence'] as num?)?.toInt() ?? 0,
             wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
           ),
       knownSpellIds:
@@ -1577,9 +1859,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           currentXP: 0,
           gold: 0,
           alignmentScore: 0,
-          maxHealth: 100,
-          currentHealth: 100,
-          baseDamage: 10,
+          maxHealth: 20,
+          currentHealth: 20,
+          baseDamage: 2,
           baseArmor: 0,
           luck: 0,
           charisma: 0,
@@ -1609,6 +1891,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         )) {
     _load();
   }
+
+  /// Every state the notifier takes keeps its companion flags in step with
+  /// the roster (wave 17: `ally_<id>` while recruited, `devoted_<id>` once
+  /// Devoted), whichever path moved approval or the roster.
+  @override
+  set state(PlayerSession value) =>
+      super.state = value.withCompanionFlagsSynced();
+
+  @override
+  PlayerSession get state => super.state;
 
   /// Completes once the saved session has been read (or found missing or
   /// unreadable). Nothing is written before then, so a change made in the
@@ -1658,7 +1950,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
       defaults = json.decode(raw) as Map<String, dynamic>;
     }
-    final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 100;
+    final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 20;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       // The story's nemesis from the first page (nemesis.dart).
@@ -1668,7 +1960,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       alignmentScore: 0,
       maxHealth: maxHealth,
       currentHealth: maxHealth,
-      baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 10,
+      baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 2,
       baseArmor: (defaults['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (defaults['luck'] as num?)?.toInt() ?? 0,
       charisma: (defaults['charisma'] as num?)?.toInt() ?? 0,
@@ -1698,7 +1990,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       equippedDiceId: null,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
       mana: maxManaFor(
-        intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
         wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
       ),
       newGamePlusCycle: keepLegacy ? previous.newGamePlusCycle : 0,
@@ -1741,10 +2032,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int bonus(Map<String, dynamic> preset, String key) =>
         (preset[key] as num?)?.toInt() ?? 0;
 
-    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 100) +
+    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 20) +
         bonus(race, 'bonusMaxHealth') +
         bonus(profession, 'bonusMaxHealth');
-    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 10) +
+    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 2) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage');
     final baseArmor = startingArmor(
@@ -1844,7 +2135,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: [startingDiceId, ...legacyDice],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
-      mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
+      mana: maxManaFor(wisdom: wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
       // A new character starts with no signs, but the patrons remember.
@@ -1993,6 +2284,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int goldMod = 0,
     int alignmentMod = 0,
     int healAmount = 0,
+    bool shortfallWounds = false,
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
     String? bannerPieceId,
@@ -2007,11 +2299,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     // Who the story takes is settled by the party as it stands in the
     // scene, before anyone reacts: a companion walking out over this very
     // choice must not leave `*` to take whoever steps into their seat.
-    final lostId = loseAllyId == null || loseAllyId.isEmpty
-        ? null
-        : loseAllyId == '*'
-            ? state.activeAllyIds.firstOrNull
-            : loseAllyId;
+    // Never a permanent companion (story_companions.dart): `*` takes the
+    // first other one seated.
+    final lostId = storyLossOf(loseAllyId,
+        active: state.activeAllyIds, companions: companions);
     final reactions = _reactToDeed(
       companions: companions,
       alignmentMod: alignmentMod,
@@ -2053,7 +2344,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newBannerPieces = [...newBannerPieces, bannerPieceId];
     }
     final newGoldRaw = state.gold + goldMod;
-    final newHealthRaw = state.currentHealth + healAmount;
+    // A forced price the purse can't make is taken in health (#583).
+    final newHealthRaw = state.currentHealth +
+        healAmount +
+        (shortfallWounds
+            ? shortfallWound(gold: state.gold, goldMod: goldMod)
+            : 0);
     state = state.copyWith(
       gold: newGoldRaw < 0 ? 0 : newGoldRaw,
       alignmentScore: state.alignmentScore + alignmentMod,
@@ -2130,7 +2426,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         goldMod: goldMod,
         explicit: explicitApprovalFor(approvalMods, ally.companionId),
       );
-      final after = approvalAfter(ally.approval, delta);
+      // Vica (a permanent companion) never falls far enough to walk out.
+      final after = permanentApprovalFloor(
+          companions[ally.companionId] as Map<String, dynamic>?,
+          approvalAfter(ally.approval, delta));
       if (after == ally.approval) continue;
       reactions.add(ApprovalChange(
           companionId: ally.companionId, before: ally.approval, after: after));
@@ -2269,16 +2568,52 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       heldSpecIds: s.specIds,
       specVariants: tables.specVariants,
       // A lucky sign (or title) helps draw the next gift.
-      luck: s.luck +
-          signEffectsFor(s.heldSigns, tables.signs,
-              alignment: s.alignmentScore,
-              extra: clanEffectsFor(
-                activeTitleId: s.activeTitleId,
-                heldTitleIds: s.heldTitleIds,
-                swornBoonIds: s.swornBoonIds,
-                swornFactionId: s.politics.swornFactionId,
-                data: tables.data,
-              )).stat('luck'),
+      luck: _offerLuck(tables),
+      riskyGifts: riskyGiftsOpen(s.builtHouseIds),
+      // The gifts warded at the Warding Cairn (camp_rolls.dart).
+      bannedGifts: bannedIdsOf(s.rollBans, RollBanOn.offer),
+    );
+  }
+
+  /// The character's Luck as the offers read it: their own, with what the
+  /// signs, the title worn and the Sworn boon add.
+  int _offerLuck(OfferTables tables) {
+    final s = state;
+    return s.luck +
+        signEffectsFor(s.heldSigns, tables.signs,
+            alignment: s.alignmentScore,
+            extra: clanEffectsFor(
+              activeTitleId: s.activeTitleId,
+              heldTitleIds: s.heldTitleIds,
+              swornBoonIds: s.swornBoonIds,
+              swornFactionId: s.politics.swornFactionId,
+              data: tables.data,
+            )).stat('luck');
+  }
+
+  /// The Luck a risky card's roll reads now (see [_offerLuck]).
+  int riskyLuck(OfferTables tables) => _offerLuck(tables);
+
+  /// The odds a risky card shows now (risky_gifts.dart's riskyOddsFor, at
+  /// the character's Luck).
+  ({int gift, int price}) riskyOdds(OfferTables tables) =>
+      riskyOddsFor(_offerLuck(tables));
+
+  /// What taking [suitor]'s risky card would do now (its saved die, the
+  /// Luck, the purse and the health of this moment); null for a normal
+  /// card. [acceptSuitor] applies the same.
+  RiskyResult? riskyResultOf(Suitor suitor, OfferTables tables) {
+    if (!suitor.risky) return null;
+    final s = state;
+    return riskyResultFor(
+      roll: suitor.riskRoll,
+      luck: _offerLuck(tables),
+      gold: s.gold,
+      chapter: _politicsChapter(null),
+      maxHealth: s.maxHealth,
+      currentHealth: s.currentHealth,
+      curseStat: riskyCurseStatFor(
+          tables.data.faction(suitor.factionId), s.professionId),
     );
   }
 
@@ -2335,6 +2670,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
           politics: updateNemesis(turned, data,
               chapter: chapter, day: state.day, flags: state.flags));
+      // The rival clans' attacks on districts (district_attacks.dart):
+      // the sieges run out settled, then the chapter's own rolled.
+      _settleExpiredSieges(data, geography, chapter);
+      state = state.copyWith(
+          politics: rollDistrictAttacks(state.politics,
+                  data: data,
+                  geography: geography,
+                  day: state.day,
+                  chapter: chapter,
+                  random: _siegeRandom(chapter))
+              .state);
+      _syncHeld(geography);
       // A new nemesis opens its quest (nemesis.dart): beat its champion;
       // the story's own once its champion can come.
       final rose = state.politics.nemesis;
@@ -2366,6 +2713,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// The Journey opened on its map for the party's first step outside
+  /// (first_journey.dart): once a game.
+  Future<void> markJourneyFirstShown() async {
+    if (state.flags.contains(journeyFirstShownFlag)) return;
+    state = state.copyWith(flags: [...state.flags, journeyFirstShownFlag]);
+    await _persist();
+  }
+
   /// A fight won ([tutorial]: the lesson): the ladder's chest, then its
   /// place rules (feature_unlocks.dart).
   Future<void> noteFightWonOnLadder({required bool tutorial}) async {
@@ -2394,35 +2749,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return id;
   }
 
-  /// The training offer on the table for the unspent stat points (Wave 7,
-  /// see drawTraining): drawn once from [paths] and kept until a choice is
-  /// taken; a full offer while five points are there, a small one below.
-  /// Empty when no point is unspent.
-  Future<List<TrainingChoice>> ensureTraining(Map<String, TrainingPath> paths,
-      {Random? random}) async {
-    if (!trainingDue(state.statPoints)) return const [];
-    final waiting = state.trainingOffer;
-    final full = state.statPoints >= trainingFullPoints;
-    // A table of the wrong size (points spent or gained since) is drawn anew.
-    if (waiting.isNotEmpty && waiting.first.small == !full) return waiting;
-    final offer = drawTraining(
-      paths: paths,
-      points: state.statPoints,
-      random: random ?? Random(),
-      professionId: state.professionId,
-      raceId: state.raceId,
-      taken: state.trainingTaken,
-      stats: _trainingStatsOf(state),
-    );
-    state = state.copyWith(trainingOffer: offer);
-    await _persist();
-    return offer;
-  }
-
   static Map<String, int> _trainingStatsOf(PlayerSession s) => {
-        'baseDamage': s.baseDamage,
-        'baseArmor': s.baseArmor,
-        'maxHealth': s.maxHealth,
         'strength': s.strength,
         'dexterity': s.dexterity,
         'constitution': s.constitution,
@@ -2432,45 +2759,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         'luck': s.luck,
         'charisma': s.charisma,
       };
-
-  /// Takes the choice at [index] of the training offer on the table: its
-  /// gains (max health heals as much), its points spent, its path counted.
-  /// The offer is spent (the next is drawn by [ensureTraining]); false when
-  /// there is none, no such choice, or too few points.
-  Future<bool> takeTraining(int index) async {
-    final offer = state.trainingOffer;
-    if (index < 0 || index >= offer.length) return false;
-    final choice = offer[index];
-    if (state.statPoints < choice.points) return false;
-    int gain(String stat) => choice.gains[stat] ?? 0;
-    final s = state;
-    state = s.copyWith(
-      statPoints: s.statPoints - choice.points,
-      baseDamage: s.baseDamage + gain('baseDamage'),
-      baseArmor: s.baseArmor + gain('baseArmor'),
-      maxHealth: s.maxHealth + gain('maxHealth'),
-      currentHealth: s.currentHealth + gain('maxHealth'),
-      strength: s.strength + gain('strength'),
-      dexterity: s.dexterity + gain('dexterity'),
-      constitution: s.constitution + gain('constitution'),
-      intelligence: s.intelligence + gain('intelligence'),
-      wisdom: s.wisdom + gain('wisdom'),
-      perception: s.perception + gain('perception'),
-      luck: s.luck + gain('luck'),
-      charisma: s.charisma + gain('charisma'),
-      trainingOffer: const [],
-      // The points spent here leave no stale pick on the table.
-      statPickOffer: const [],
-      trainingTaken: choice.small
-          ? s.trainingTaken
-          : {
-              ...s.trainingTaken,
-              choice.pathId: (s.trainingTaken[choice.pathId] ?? 0) + 1,
-            },
-    );
-    await _persist();
-    return true;
-  }
 
   /// The stat pick on the table (docs/proposals/stat-picks.md, see
   /// drawStatPick): the three offers of the next pending pick, drawn once
@@ -2488,20 +2776,328 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return const [];
     }
     if (s.statPickOffer.isNotEmpty) return s.statPickOffer;
-    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
     final offer = drawStatPick(
       paths: paths,
-      random:
-          random ?? Random(s.level * 7919 + s.statPoints * 131 + takenTotal),
+      random: random ?? _statPickRandom(s),
       professionId: s.professionId,
       raceId: s.raceId,
+      luck: s.luck,
       taken: s.trainingTaken,
       stats: _trainingStatsOf(s),
+      bannedPaths: bannedIdsOf(s.rollBans, RollBanOn.pick),
     );
     if (offer.isEmpty) return offer;
-    state = s.copyWith(statPickOffer: offer);
+    state = _countFreshDraw(s.copyWith(statPickOffer: offer), RollBanOn.pick);
     await _persist();
     return offer;
+  }
+
+  /// The stat pick's seed (see [ensureStatPick]): the level, the points
+  /// left, the paths taken, and [PlayerSession.rollNonce], so a reroll, a
+  /// ban or a raise draws anew.
+  static Random _statPickRandom(PlayerSession s) {
+    final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
+    return Random(s.level * 7919 +
+        s.statPoints * 131 +
+        takenTotal +
+        s.rollNonce * 104729);
+  }
+
+  // --- The camp's roll houses (camp_rolls.dart) ---------------------------
+
+  /// [s] after a fresh draw of [on] (a stat pick or an offer drawn anew,
+  /// never a reroll or a ban's replacement): its bans count down, and the
+  /// Star Well's count moves on (see afterFreshDraw).
+  static PlayerSession _countFreshDraw(PlayerSession s, RollBanOn on) {
+    final raiseBuilt = rollPowersOf(s.builtHouseIds).contains(RollPower.raise);
+    if (s.rollBans.isEmpty && !raiseBuilt) return s;
+    final next = afterFreshDraw(
+        on: on,
+        bans: s.rollBans,
+        raiseBuilt: raiseBuilt,
+        raise: s.raiseCharges,
+        raiseProgress: s.raiseProgress);
+    return s.copyWith(
+        rollBans: next.bans,
+        raiseCharges: next.raise,
+        raiseProgress: next.raiseProgress);
+  }
+
+  /// [power]'s charges after [levels] levels gained: +1 a level, never above
+  /// its most, while its house stands (Reroll and Banish only).
+  int _levelCharges(RollPower power, int levels) {
+    final s = state;
+    final now = power == RollPower.reroll ? s.rerollCharges : s.banishCharges;
+    if (levels <= 0 || !rollPowersOf(s.builtHouseIds).contains(power)) {
+      return now;
+    }
+    final most =
+        power == RollPower.reroll ? rerollMaxCharges : banishMaxCharges;
+    return min(most, now + levels);
+  }
+
+  /// What the roll houses give now, read from houses.json's `rollPower`
+  /// ([houses]): each power's charges (null when its house isn't up) and
+  /// the bans running.
+  CampRolls campRolls(Map<String, dynamic> houses) =>
+      campRollsOf(state, powers: rollPowersBuilt(state.builtHouseIds, houses));
+
+  bool _has(RollPower power, int charges) =>
+      charges > 0 && rollPowersOf(state.builtHouseIds).contains(power);
+
+  /// The stat pick's tier as drawn: a raised card's is one step up.
+  static SignRarity _drawnTier(List<StatPickOffer> offer) {
+    final plain = offer.where((o) => !o.raised).firstOrNull;
+    if (plain != null) return plain.tier;
+    return SignRarity.values[max(0, offer.first.tier.index - 1)];
+  }
+
+  /// Reroll (the Bone-Caster's Hut): the stat pick on the table drawn
+  /// again, at the same tier, the warded paths left out; one charge. The
+  /// set unchanged when there is no charge or no pick on the table.
+  Future<List<StatPickOffer>> rerollStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (!_has(RollPower.reroll, s.rerollCharges) ||
+        s.statPickOffer.isEmpty ||
+        s.pendingStatPicks <= 0) {
+      return s.statPickOffer;
+    }
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final offer = drawStatPick(
+      paths: paths,
+      random: random ?? _statPickRandom(nonced),
+      professionId: s.professionId,
+      raceId: s.raceId,
+      luck: s.luck,
+      taken: s.trainingTaken,
+      stats: _trainingStatsOf(s),
+      tier: _drawnTier(s.statPickOffer),
+      bannedPaths: bannedIdsOf(s.rollBans, RollBanOn.pick),
+    );
+    if (offer.isEmpty) return s.statPickOffer;
+    state = nonced.copyWith(
+        statPickOffer: offer, rerollCharges: s.rerollCharges - 1);
+    await _persist();
+    return offer;
+  }
+
+  /// Banish (the Warding Cairn): the path of the stat pick's card at
+  /// [index] warded off for [draws] fresh picks (5, 10 or 15, costing 1, 2
+  /// or 3 charges), the card replaced at once by another path at the same
+  /// tier. The set unchanged when the charges fall short, the length is
+  /// not one of [banishLengths], or no path is left to replace it.
+  Future<List<StatPickOffer>> banishStatPickOffer(
+      int index, int draws, Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    final offer = s.statPickOffer;
+    final cost = banishCostOf(draws);
+    if (cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        index < 0 ||
+        index >= offer.length) {
+      return offer;
+    }
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.pick, id: offer[index].pathId, left: draws));
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final card = replaceStatPickOffer(
+        offer: offer,
+        index: index,
+        paths: paths,
+        random: random ?? _statPickRandom(nonced),
+        bannedPaths: bannedIdsOf(bans, RollBanOn.pick));
+    if (card == null) return offer;
+    final next = [...offer]..[index] = card;
+    state = nonced.copyWith(
+        statPickOffer: next,
+        rollBans: bans,
+        banishCharges: s.banishCharges - cost);
+    await _persist();
+    return next;
+  }
+
+  /// Banish (the Warding Cairn) on the road (road_wards.dart): [clanId], a
+  /// clan hunting the character ([wardTargets] with [data]), kept off the
+  /// roads at rest for [roads] of them (3, 6 or 9, costing 1, 2 or 3
+  /// charges). Standing does not move. False, and nothing spent, when the
+  /// cairn isn't up, the charges fall short, the length is not one of
+  /// [wardLengths] or the clan isn't hunting. The line to show is
+  /// [wardSetLine].
+  Future<bool> wardRoad(String clanId, int roads, ClanData data) async {
+    final s = state;
+    final cost = wardCostOf(roads);
+    if (cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        !wardTargets(s.politics, data).contains(clanId)) {
+      return false;
+    }
+    state = s.copyWith(
+        rollBans: withWard(s.rollBans, clanId, roads),
+        banishCharges: s.banishCharges - cost);
+    await _persist();
+    return true;
+  }
+
+  /// A road at rest gone by, where the hunters roll: the wards count down
+  /// by one (road_wards.dart). A ward that runs out tells it in the coast's
+  /// news (`ward_end:<clan>`, Narrative's `ward_ended`, [data] naming the
+  /// clan, dated [chapter]). Returns the clans whose ward ended.
+  Future<List<String>> tickRoadWards({ClanData? data, int chapter = 0}) async {
+    final s = state;
+    if (!s.rollBans.any((b) => b.on == RollBanOn.road)) return const [];
+    final next = afterRoadAtRest(s.rollBans);
+    var politics = s.politics;
+    if (next.ended.isNotEmpty) {
+      final news = [
+        ...politics.news,
+        for (final clanId in next.ended)
+          CoastNews(
+            eventId: 'ward_end:$clanId',
+            chapter: chapter,
+            day: s.day,
+            text: wardLine('ward_ended', AppLanguage.en,
+                clanId: clanId, data: data),
+            textFr: wardLine('ward_ended', AppLanguage.fr,
+                clanId: clanId, data: data),
+          ),
+      ];
+      politics = politics.copyWith(
+          news: news.length <= maxCoastNews
+              ? news
+              : news.sublist(news.length - maxCoastNews));
+    }
+    state = s.copyWith(rollBans: next.bans, politics: politics);
+    await _persist();
+    return next.ended;
+  }
+
+  /// Whether the stat pick's card at [index] can be raised now: a Raise
+  /// charge, the card neither raised yet nor Heroic.
+  bool canRaiseStatPickOffer(int index) {
+    final s = state;
+    if (!_has(RollPower.raise, s.raiseCharges)) return false;
+    if (index < 0 || index >= s.statPickOffer.length) return false;
+    final card = s.statPickOffer[index];
+    return !card.raised && card.tier != SignRarity.heroic;
+  }
+
+  /// Raise (the Star Well): the stat pick's card at [index] one tier up,
+  /// its gains rebuilt (see raisedStatPickOffer); one charge. The set
+  /// unchanged when it can't be ([canRaiseStatPickOffer]).
+  Future<List<StatPickOffer>> raiseStatPickOffer(
+      int index, Map<String, TrainingPath> paths,
+      {Random? random}) async {
+    final s = state;
+    if (!canRaiseStatPickOffer(index)) return s.statPickOffer;
+    final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
+    final card = raisedStatPickOffer(
+        s.statPickOffer[index], paths, random ?? _statPickRandom(nonced));
+    if (card == null) return s.statPickOffer;
+    final next = [...s.statPickOffer]..[index] = card;
+    state =
+        nonced.copyWith(statPickOffer: next, raiseCharges: s.raiseCharges - 1);
+    await _persist();
+    return next;
+  }
+
+  /// Reroll (the Bone-Caster's Hut): the offer on the table drawn again for
+  /// its ticket (its faction and the home seat still come; a risky card
+  /// drawn anew, with a new die), the warded gifts left out; one charge.
+  /// The offer unchanged when there is no charge or none on the table.
+  Future<ClanOffer?> rerollOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
+    final s = state;
+    final offer = s.clanOffer;
+    if (offer == null || !_has(RollPower.reroll, s.rerollCharges)) {
+      return offer;
+    }
+    final next = drawOffer(offer.ticket,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
+    if (next == null) return offer;
+    state = s.copyWith(
+      clanOffer: next,
+      rerollCharges: s.rerollCharges - 1,
+      rollNonce: s.rollNonce + 1,
+      patronsMet:
+          {...s.patronsMet, for (final x in next.suitors) x.factionId}.toList(),
+    );
+    await _persist();
+    return next;
+  }
+
+  /// Banish (the Warding Cairn): [factionId]'s gift on the offer warded off
+  /// for [draws] fresh offers (5, 10 or 15, costing 1, 2 or 3 charges), its
+  /// card replaced at once: the same clan with something else, else
+  /// another faction (see replacementSuitor). Never the Sworn boon nor the
+  /// ticket's own faction's card (suitorBanishable). The offer unchanged
+  /// when it can't be.
+  Future<ClanOffer?> banishSuitor(
+      String factionId, int draws, OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
+    final s = state;
+    final offer = s.clanOffer;
+    final suitor = offer?.suitorOf(factionId);
+    final cost = banishCostOf(draws);
+    if (offer == null ||
+        suitor == null ||
+        cost == 0 ||
+        !_has(RollPower.banish, s.banishCharges) ||
+        s.banishCharges < cost ||
+        !suitorBanishable(suitor, offer)) {
+      return offer;
+    }
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.offer, id: giftBanId(suitor.gift), left: draws));
+    final c = offerContextFor(tables, placeHolder: placeHolder)
+        .withBans(bannedIdsOf(bans, RollBanOn.offer));
+    final card = replacementSuitor(offer, factionId, c, random ?? Random());
+    if (card == null) return offer;
+    final next = offerWith(offer, factionId, card);
+    state = s.copyWith(
+      clanOffer: next,
+      rollBans: bans,
+      banishCharges: s.banishCharges - cost,
+      rollNonce: s.rollNonce + 1,
+      patronsMet: {...s.patronsMet, card.factionId}.toList(),
+    );
+    await _persist();
+    return next;
+  }
+
+  /// The seed of [factionId]'s raise, the same until a power is used: the
+  /// preview and the raise draw the same card.
+  Random _raiseRandom(String factionId) => Random(
+      state.rollNonce * 104729 + stableSeedOf('${state.level}:$factionId'));
+
+  /// What raising [factionId]'s card would give (raisedSuitor), drawn now
+  /// and the same when it is raised; null when there is no Raise charge or
+  /// no real step up (the button hides).
+  Suitor? raisePreview(String factionId, OfferTables tables) {
+    final s = state;
+    final suitor = s.clanOffer?.suitorOf(factionId);
+    if (suitor == null || !_has(RollPower.raise, s.raiseCharges)) return null;
+    return raisedSuitor(
+        suitor, offerContextFor(tables), _raiseRandom(factionId));
+  }
+
+  /// Raise (the Star Well): [factionId]'s card raised to its
+  /// [raisePreview]; one charge. The offer unchanged when there is none.
+  Future<ClanOffer?> raiseSuitor(String factionId, OfferTables tables) async {
+    final s = state;
+    final offer = s.clanOffer;
+    final raised = raisePreview(factionId, tables);
+    if (offer == null || raised == null) return offer;
+    final next = offerWith(offer, factionId, raised);
+    state = s.copyWith(
+        clanOffer: next,
+        raiseCharges: s.raiseCharges - 1,
+        rollNonce: s.rollNonce + 1);
+    await _persist();
+    return next;
   }
 
   /// Takes the offer at [index] of the stat pick on the table: its gains
@@ -2514,24 +3110,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (index < 0 || index >= offer.length) return false;
     if (s.pendingStatPicks <= 0) return false;
     final pick = offer[index];
-    int gain(String stat) => pick.gains[stat] ?? 0;
-    state = s.copyWith(
+    // A tome's pick waiting is the one taken (see [PlayerSession.tomePicks]).
+    final tomeId = s.tomePicks.firstOrNull;
+    final sourced = tomeId != null
+        ? s.withSourcedGains(ledgerTome, tomeId, pick.gains)
+        : s.withSourcedGains(ledgerPick, pick.pathId, pick.gains);
+    state = sourced.copyWith(
       statPoints: s.statPoints - 1,
-      baseDamage: s.baseDamage + gain('baseDamage'),
-      baseArmor: s.baseArmor + gain('baseArmor'),
-      maxHealth: s.maxHealth + gain('maxHealth'),
-      currentHealth: s.currentHealth + gain('maxHealth'),
-      strength: s.strength + gain('strength'),
-      dexterity: s.dexterity + gain('dexterity'),
-      constitution: s.constitution + gain('constitution'),
-      intelligence: s.intelligence + gain('intelligence'),
-      wisdom: s.wisdom + gain('wisdom'),
-      perception: s.perception + gain('perception'),
-      luck: s.luck + gain('luck'),
-      charisma: s.charisma + gain('charisma'),
       statPickOffer: const [],
-      // A small training table drawn for the old points is drawn anew.
-      trainingOffer: const [],
+      tomePicks: tomeId == null ? null : s.tomePicks.sublist(1),
       trainingTaken: {
         ...s.trainingTaken,
         pick.pathId: (s.trainingTaken[pick.pathId] ?? 0) + 1,
@@ -2555,13 +3142,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final offer = drawOffer(state.pendingOffers.first,
         offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (offer == null) return null;
-    state = state.copyWith(
-      clanOffer: offer,
-      patronsMet: {
-        ...state.patronsMet,
-        for (final s in offer.suitors) s.factionId,
-      }.toList(),
-    );
+    state = _countFreshDraw(
+        state.copyWith(
+          clanOffer: offer,
+          patronsMet: {
+            ...state.patronsMet,
+            for (final s in offer.suitors) s.factionId,
+          }.toList(),
+        ),
+        RollBanOn.offer);
     await _persist();
     return offer;
   }
@@ -2584,7 +3173,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
       return false;
     }
-    var next = _withGift(state, suitor, tables, origin: origin);
+    // A risky card: the die (rolled with the draw) gives the gift or names
+    // the price; standing rises either way.
+    final risk = riskyResultOf(suitor, tables);
+    var next = switch (risk?.outcome) {
+      null ||
+      RiskyOutcome.gift =>
+        _withGift(state, suitor, tables, origin: origin),
+      RiskyOutcome.health => state.copyWith(
+          currentHealth: max(1, state.currentHealth - risk!.amount)),
+      RiskyOutcome.gold =>
+        state.copyWith(gold: max(0, state.gold - risk!.amount)),
+      RiskyOutcome.curse =>
+        state.withCurse(suitor.factionId, risk!.stat, risk.amount),
+    };
     final politics = acceptPolitics(suitor, offer.ticket,
         politics: next.politics,
         data: tables.data,
@@ -2691,6 +3293,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (tome != null) {
       return session.copyWith(
         statPoints: session.statPoints + tome.statPoints,
+        tomePicks: _withTomePicks(session.tomePicks, itemId, tome.statPoints),
         pendingOffers: [...session.pendingOffers, ...tome.offers],
       );
     }
@@ -2951,6 +3554,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     // A standing, an oath or an intrigue's end may be what one asks for.
     await checkAchievements();
@@ -2974,6 +3578,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         world: _coastWorld(data, events, chapter, geography));
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     return change;
   }
@@ -2995,8 +3600,95 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         force: true);
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
+    _syncHeld(geography);
     await _persist();
     return change;
+  }
+
+  /// The `held_<district>_<clan>` flags brought in line with who holds
+  /// each district now (wave 18, see syncHeldFlags); nothing without the
+  /// geography. The caller persists.
+  void _syncHeld(Geography? geography) {
+    if (geography == null || geography.isEmpty) return;
+    final flags = syncSiegeFlags(
+        influence.syncHeldFlags(state.flags, geography, state.politics),
+        state.politics);
+    if (!identical(flags, state.flags)) {
+      state = state.copyWith(flags: flags);
+    }
+  }
+
+  /// The dice of the district attacks (district_attacks.dart) on [chapter]:
+  /// the run's own, so a run rolls the same.
+  Random _siegeRandom(int chapter) =>
+      Random(state.runSeed * 31 + chapter * 7919 + state.day * 104729);
+
+  /// The sieges run out by today (district_attacks.dart), settled away
+  /// from the party: the district taken or held, the news told. Returns
+  /// how many were settled.
+  int _settleExpiredSieges(ClanData data, Geography geography, int chapter) {
+    final expired = expiredSieges(state.politics, state.day);
+    if (expired.isEmpty) return 0;
+    final random = _siegeRandom(chapter);
+    var politics = state.politics;
+    for (final siege in expired) {
+      politics = settleSiegeAway(politics, siege,
+          data: data,
+          geography: geography,
+          random: random,
+          chapter: chapter,
+          day: state.day);
+    }
+    state = state.copyWith(politics: politics);
+    _syncHeld(geography);
+    return expired.length;
+  }
+
+  /// The sieges run out by today, settled and saved (a road's check, see
+  /// story_player_screen.dart's startRoadEncounter).
+  Future<void> settleExpiredSieges({
+    required ClanData data,
+    required Geography geography,
+    required int chapter,
+  }) async {
+    if (_settleExpiredSieges(data, geography, chapter) > 0) await _persist();
+  }
+
+  /// The `held_` flags in sync (see [_syncHeld]), saved when they moved:
+  /// as a scene is entered (politics_provider.dart's applyEnterPolitics),
+  /// so a new game holds them before its first scene with a condition.
+  Future<void> syncHeldFlags(Geography geography) async {
+    final before = state.flags;
+    _syncHeld(geography);
+    if (!identical(before, state.flags)) await _persist();
+  }
+
+  /// [quest] (a quests.json record) turned in (wave 18, see
+  /// applyQuestInfluence in district_influence.dart): its influence for
+  /// the clan [picked] (the turn-in choice's politics) favours, else its
+  /// `faction`, in its district, wherever the party is; a district or a
+  /// town changing hands with it. Saved when it counted.
+  Future<influence.InfluenceResult> applyQuestInfluence(
+    Map<String, dynamic> quest, {
+    required ClanData data,
+    required Geography geography,
+    StoryPolitics? picked,
+    String? partyDistrict,
+    int chapter = 0,
+  }) async {
+    final result = influence.applyQuestInfluence(state.politics, quest,
+        flags: state.flags,
+        data: data,
+        geography: geography,
+        picked: picked,
+        partyDistrict: partyDistrict,
+        chapter: chapter,
+        day: state.day);
+    if (!result.counted) return result;
+    state = _withTitles(
+        state.copyWith(politics: result.state, flags: result.flags), data);
+    await _persist();
+    return result;
   }
 
   /// Edit Mode's Throne tab (v1.196, see throne.dart): [politics] (a
@@ -3167,6 +3859,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, dynamic> companions = const {},
   }) {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
+      return null;
+    }
+    // Vica (a permanent companion) is never taken (story_companions.dart).
+    if (isPermanentCompanion(
+        companions[companionId] as Map<String, dynamic>?)) {
       return null;
     }
     final replacement =
@@ -3350,6 +4047,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ...state.pendingOffers,
         ..._levelOffers(leveled.levelsGained),
       ],
+      rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
+      banishCharges: _levelCharges(RollPower.banish, leveled.levelsGained),
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -3375,7 +4074,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;
@@ -3397,6 +4096,66 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(equippedDiceId: diceId);
     await _persist();
+  }
+
+  /// Recuts [first] and [second], two d8s the player owns, into the tally
+  /// die at the Skillwright (dice_weave.dart): both are spent, their face
+  /// picks with them, and the Hammersmith's work on them is paid back
+  /// (smithingRefundFor). The tally die is equipped when one of the two
+  /// was. False, and nothing done, when [canWeaveDice] says no.
+  Future<bool> weaveDice(String first, String second,
+      {required Map<String, dynamic> dice}) async {
+    if (!canWeaveDice(first, second,
+        owned: state.ownedDiceIds,
+        builtHouseIds: state.builtHouseIds,
+        dice: dice)) {
+      return false;
+    }
+    final spent = {first, second};
+    var gold = state.gold;
+    final inventory = [...state.inventoryItemIds];
+    for (final id in spent) {
+      for (final work in (state.diceUpgrades[id] ?? const {}).values) {
+        final refund = smithingRefundFor(work);
+        gold += refund.gold;
+        for (var i = 0; i < refund.iron; i++) {
+          inventory.add(ironOreId);
+        }
+        for (var i = 0; i < refund.trophies; i++) {
+          inventory.add(eliteTrophyId);
+        }
+      }
+    }
+    state = state.copyWith(
+      gold: gold,
+      inventoryItemIds: inventory,
+      ownedDiceIds: [
+        for (final id in state.ownedDiceIds)
+          if (!spent.contains(id)) id,
+        tallyDieId,
+      ],
+      equippedDiceId: spent.contains(state.equippedDiceId) ? tallyDieId : null,
+      diceSkillAssignments: {
+        for (final entry in state.diceSkillAssignments.entries)
+          if (!spent.contains(entry.key)) entry.key: entry.value,
+      },
+      diceUpgrades: {
+        for (final entry in state.diceUpgrades.entries)
+          if (!spent.contains(entry.key)) entry.key: entry.value,
+      },
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Spends one fate coin from the pack (fate_coin.dart), for a check
+  /// rolled again. False when the pack holds none.
+  Future<bool> spendFateCoin() async {
+    final left = withFateCoinSpent(state.inventoryItemIds);
+    if (left == null) return false;
+    state = state.copyWith(inventoryItemIds: left);
+    await _persist();
+    return true;
   }
 
   /// Buys [itemId] from [shopId]. Shops have a fixed stock per item
@@ -3438,6 +4197,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       state = state.copyWith(
         gold: state.gold - cost,
         statPoints: state.statPoints + tome.statPoints,
+        tomePicks: _withTomePicks(state.tomePicks, itemId, tome.statPoints),
         pendingOffers: [...state.pendingOffers, ...tome.offers],
         shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
       );
@@ -3510,12 +4270,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         state.inventoryItemIds.where((id) => id == m.key).length >= m.value);
   }
 
-  /// Forges [itemId] from [item]'s recipe: its gold and materials leave
-  /// the pack and the piece enters it. Returns false if something is
+  /// Forges [itemId] from [item]'s recipe (docs/proposals/forge-roll.md):
+  /// its gold and materials leave the pack, the forge rolls its d20 on
+  /// [random] with [modifiers] (forgeModifiersProvider's; a dwarf's +2
+  /// alone when null), and the piece enters the pack under the tier's id
+  /// (forgedVariantId: `<itemId>@fine`, the plain id for Sound). A flawed
+  /// roll costs nothing more. Returns the roll, or null if something is
   /// missing.
-  Future<bool> craftItem(String itemId, Map<String, dynamic>? item,
-      {ItemOrigin? origin}) async {
-    if (!canCraft(item)) return false;
+  Future<ForgeRoll?> craftItem(String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin,
+      Random? random,
+      List<ForgeModifier>? modifiers}) async {
+    if (!canCraft(item)) return null;
+    final roll = rollForge(
+      random: random ?? Random(),
+      modifiers: modifiers ?? forgeModifiersFor(raceId: state.raceId),
+    );
+    final pieceId = forgedVariantId(baseItemIdOf(itemId), roll.tier);
     final remaining = [...state.inventoryItemIds];
     for (final m in craftMaterialsFor(item).entries) {
       for (var i = 0; i < m.value; i++) {
@@ -3524,11 +4295,64 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
-      inventoryItemIds: [...remaining, itemId],
-      itemOrigins: withItemOrigins(state.itemOrigins, [itemId], origin),
+      inventoryItemIds: [...remaining, pieceId],
+      itemOrigins: withItemOrigins(state.itemOrigins, [pieceId], origin),
     );
     await _persist();
-    return true;
+    return roll;
+  }
+
+  /// Flips a fate coin on the forge [roll] that made [pieceId] (a Flawed
+  /// one, fate_coin.dart): the coin is spent, the forge's d20 rolls once
+  /// more on [random] with the same modifiers, and the piece in the pack
+  /// takes the new tier's id. Returns the new roll, or null when the pack
+  /// holds no coin or no such piece.
+  Future<ForgeRoll?> reforgeWithFateCoin(String pieceId, ForgeRoll roll,
+      {Random? random}) async {
+    final left = withFateCoinSpent(state.inventoryItemIds);
+    if (left == null || !left.contains(pieceId)) return null;
+    final again = reforgedRoll(roll, random ?? Random());
+    state = _withPieceReforged(
+        state.copyWith(inventoryItemIds: left), pieceId, again.tier);
+    await _persist();
+    return again;
+  }
+
+  /// Whether a camp house can roll the forge again now: the Bone-Caster's
+  /// Hut stands and has a Reroll charge (camp_rolls.dart).
+  bool get canRerollForge => _has(RollPower.reroll, state.rerollCharges);
+
+  /// The Bone-Caster's Hut's Reroll on the forge [roll] that made [pieceId]
+  /// (docs/proposals/forge-roll.md, "the camp's roll houses"): one charge
+  /// spent, the forge's d20 rolled once more on [random] with the same
+  /// modifiers, and the piece in the pack takes the new tier's id. Returns
+  /// the new roll, or null with no charge or no such piece.
+  Future<ForgeRoll?> rerollForge(String pieceId, ForgeRoll roll,
+      {Random? random}) async {
+    if (!canRerollForge || !state.inventoryItemIds.contains(pieceId)) {
+      return null;
+    }
+    final again = rerolledForge(roll, random ?? Random());
+    state = _withPieceReforged(
+        state.copyWith(rerollCharges: state.rerollCharges - 1),
+        pieceId,
+        again.tier);
+    await _persist();
+    return again;
+  }
+
+  /// [s] with the piece [pieceId] in its pack swapped for the same base
+  /// forged at [tier] (its origin kept).
+  PlayerSession _withPieceReforged(
+      PlayerSession s, String pieceId, ForgeTier tier) {
+    final pack = [...s.inventoryItemIds];
+    final newId = forgedVariantId(baseItemIdOf(pieceId), tier);
+    pack[pack.indexOf(pieceId)] = newId;
+    return s.copyWith(
+      inventoryItemIds: pack,
+      itemOrigins:
+          withItemOrigins(s.itemOrigins, [newId], s.itemOrigins[pieceId]),
+    );
   }
 
   /// Whether the pack and purse cover [cost] (see face_smithing.dart).
@@ -3654,6 +4478,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       inventoryItemIds: remaining,
       statPoints: state.statPoints + tome.statPoints,
+      tomePicks: _withTomePicks(state.tomePicks, itemId, tome.statPoints),
       pendingOffers: [...state.pendingOffers, ...tome.offers],
     );
     await _persist();
@@ -3745,6 +4570,45 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Whether the camp may bench [companionId] ([companions]: the
+  /// companions.json table): not Vica when she is the last one seated.
+  bool canBench(String companionId, Map<String, dynamic> companions) =>
+      canBenchCompanion(companionId,
+          active: state.activeAllyIds, companions: companions);
+
+  /// Recruits the story's companions (story_companions.dart) the story has
+  /// reached: one of their join scenes is in [visited]. A save already past
+  /// Vica's scene gets her this way too, on load. [races], [professions],
+  /// [dice] and [houses] as for [recruitAlly]. Returns who joined.
+  Future<List<String>> recruitStoryCompanions(
+    Iterable<String> visited, {
+    required Map<String, dynamic> companions,
+    Map<String, dynamic> races = const {},
+    Map<String, dynamic> professions = const {},
+    Map<String, dynamic> dice = const {},
+    Map<String, dynamic> houses = const {},
+  }) async {
+    final due = storyRecruitsDue(companions,
+        visited: visited,
+        recruited: [for (final a in state.recruitedAllies) a.companionId],
+        gone: [...state.lostAllyIds, ...state.departedAllyIds]);
+    for (final id in due) {
+      final companion = companions[id] as Map<String, dynamic>?;
+      await recruitAlly(
+        id,
+        race: races[companion?['raceId']?.toString() ?? '']
+            as Map<String, dynamic>?,
+        profession: professions[companion?['professionId']?.toString() ?? '']
+            as Map<String, dynamic>?,
+        companion: companion,
+        dice: dice,
+        houses: houses,
+        requiredHouseId: companion?['requiredHouseId']?.toString(),
+      );
+    }
+    return due;
+  }
+
   /// Adds or removes [companionId] from the active fight party.
   /// [partyCapacity] and [requiredHouseId] (that companion's own gate, if
   /// any, from companions.json) are enforced here as well as in the Camp
@@ -3754,13 +4618,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     bool active, {
     required int partyCapacity,
     String? requiredHouseId,
+    Map<String, dynamic> companions = const {},
   }) async {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (!active) {
       if (!state.activeAllyIds.contains(companionId)) return;
+      // Vica is benched only by seating someone else; anyone else benched
+      // to an empty party leaves her seat to her (story_companions.dart).
+      if (!canBench(companionId, companions)) return;
       state = state.copyWith(
-        activeAllyIds:
-            state.activeAllyIds.where((id) => id != companionId).toList(),
+        activeAllyIds: withPermanentSeated(
+          state.activeAllyIds.where((id) => id != companionId).toList(),
+          recruited: [
+            for (final a in state.recruitedAllies)
+              if (a.companionId != companionId) a.companionId,
+          ],
+          companions: companions,
+        ),
       );
       await _persist();
       return;
@@ -3799,7 +4673,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       Map<String, int> materialCost = const {},
       int fromChapter = 1,
       int? chapter,
-      String? requiredAllyId}) async {
+      String? requiredAllyId,
+      String? rollPower}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (chapter != null && chapter < fromChapter) return;
     if ((requiredAllyId ?? '').isNotEmpty &&
@@ -3823,6 +4698,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
       townOrder: [...state.townPieces, houseId],
     );
+    // A roll house (camp_rolls.dart) comes with its charges.
+    switch (rollPowerNamed(rollPower) ?? rollPowerHouses[houseId]) {
+      case RollPower.reroll:
+        state =
+            state.copyWith(rerollCharges: chargesWhenBuilt(RollPower.reroll));
+      case RollPower.banish:
+        state =
+            state.copyWith(banishCharges: chargesWhenBuilt(RollPower.banish));
+      case RollPower.raise:
+        state = state.copyWith(raiseCharges: chargesWhenBuilt(RollPower.raise));
+      case null:
+        break;
+    }
     await _persist();
     if (unlocksShopId != null && unlocksShopId.isNotEmpty) {
       await unlockContent(shopId: unlocksShopId);
@@ -4411,6 +5299,27 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Remembers the one-time fight tips [ids] (see fight_tips.dart) as shown
+  /// on this save.
+  Future<void> markFightTipsSeen(Iterable<String> ids) async {
+    final fresh = [
+      for (final id in {...ids})
+        if (!state.seenFightTipIds.contains(id)) id,
+    ];
+    if (fresh.isEmpty) return;
+    state =
+        state.copyWith(seenFightTipIds: [...state.seenFightTipIds, ...fresh]);
+    await _persist();
+  }
+
+  /// Remembers who rules each town ([rulers]: town id -> clan id) as the
+  /// player has now seen it on the world chart.
+  Future<void> markTownRulersSeen(Map<String, String> rulers) async {
+    if (mapEquals(state.seenTownRulers, rulers)) return;
+    state = state.copyWith(seenTownRulers: Map.unmodifiable(rulers));
+    await _persist();
+  }
+
   /// [session] with the clock counting [chapter]'s days, from today if it
   /// was counting another's.
   PlayerSession _clockedIn(PlayerSession session, int chapter) =>
@@ -4517,6 +5426,88 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> spendSellswordFight() async {
     if (state.sellswordFights <= 0) return;
     state = state.copyWith(sellswordFights: state.sellswordFights - 1);
+    await _persist();
+  }
+
+  /// Notes that a companion spoke up at sea in [chapter] (see
+  /// speakUpAtSea), so the next voyage of the chapter stays quiet.
+  Future<void> noteSeaRemark(int chapter) async {
+    if (state.seaRemarkChapter == chapter) return;
+    state = state.copyWith(seaRemarkChapter: chapter);
+    await _persist();
+  }
+
+  // --- The temple (temple.dart) -------------------------------------------
+
+  /// The offer of the temple [clanId] ('' neutral) keeps, to the party
+  /// now, in [chapter] ([busy]: a fight or an expedition under way).
+  TempleOffer templeOffer(String clanId,
+          {required ClanData data, required int chapter, bool busy = false}) =>
+      templeOfferFor(
+        clanId: clanId,
+        data: data,
+        politics: state.politics,
+        chapter: chapter,
+        day: state.day,
+        gold: state.gold,
+        alignment: state.alignmentScore,
+        templeMendDay: state.templeMendDay,
+        blessingFights: state.blessingFights,
+        standingChapters: state.templeStandingChapters,
+        busy: busy,
+      );
+
+  /// Mending at the temple [clanId] keeps: the whole party to full health,
+  /// mana unchanged, no time passing, for the offer's price. False, and
+  /// nothing done, when the offer is shut (Hunted, busy, too poor, mended
+  /// today, chapter 1).
+  Future<bool> templeMend(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
+    final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
+    if (!offer.canMend) return false;
+    state = state.copyWith(
+      gold: state.gold - offer.mendPrice,
+      templeMendDay: state.day,
+      currentHealth: state.maxHealth,
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          ally.copyWith(currentHealth: AllyState.fullHealthSentinel),
+      ],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// A blessing at the temple [clanId] keeps, for [templeBlessingFights]
+  /// fights, replacing any carried; the first of [chapter] from a clan
+  /// brings [templeStandingGain] standing with it. False, and nothing
+  /// done, when the offer is shut (Hunted, busy, too poor).
+  Future<bool> templeBless(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
+    final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
+    if (!offer.canBless) return false;
+    state = state.copyWith(
+      gold: state.gold - offer.blessingPrice,
+      blessingFights: templeBlessingFights,
+      blessingClan: offer.clanId,
+      templeStandingChapters: offer.blessingStanding
+          ? {...state.templeStandingChapters, offer.clanId: chapter}
+          : null,
+    );
+    if (offer.blessingStanding) {
+      await changeStanding(offer.clanId, templeStandingGain,
+          data: data, cause: 'temple', chapter: chapter);
+    }
+    await _persist();
+    return true;
+  }
+
+  /// One fight of the temple's blessing spent; the last ends it.
+  Future<void> spendBlessingFight() async {
+    if (state.blessingFights <= 0) return;
+    final left = state.blessingFights - 1;
+    state = state.copyWith(
+        blessingFights: left, blessingClan: left == 0 ? '' : null);
     await _persist();
   }
 
@@ -4651,78 +5642,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> spendStatPoint({required String stat}) async {
-    if (state.statPoints <= 0) return;
-    var newBaseDamage = state.baseDamage;
-    var newBaseArmor = state.baseArmor;
-    var newMaxHealth = state.maxHealth;
-    var newCurrentHealth = state.currentHealth;
-    var newLuck = state.luck;
-    var newCharisma = state.charisma;
-    var newStrength = state.strength;
-    var newDexterity = state.dexterity;
-    var newConstitution = state.constitution;
-    var newIntelligence = state.intelligence;
-    var newWisdom = state.wisdom;
-    var newPerception = state.perception;
-    switch (stat) {
-      case 'damage':
-        newBaseDamage += 1;
-        break;
-      case 'armor':
-        newBaseArmor += 1;
-        break;
-      case 'health':
-        newMaxHealth += 10;
-        newCurrentHealth += 10;
-        break;
-      case 'luck':
-        newLuck += 1;
-        break;
-      case 'charisma':
-        newCharisma += 1;
-        break;
-      case 'strength':
-        newStrength += 1;
-        break;
-      case 'dexterity':
-        newDexterity += 1;
-        break;
-      case 'constitution':
-        newConstitution += 1;
-        break;
-      case 'intelligence':
-        newIntelligence += 1;
-        break;
-      case 'wisdom':
-        newWisdom += 1;
-        break;
-      case 'perception':
-        newPerception += 1;
-        break;
-      default:
-        break;
-    }
-    state = state.copyWith(
-      statPoints: state.statPoints - 1,
-      // The point spent here leaves no stale pick on the table.
-      statPickOffer: const [],
-      baseDamage: newBaseDamage,
-      baseArmor: newBaseArmor,
-      maxHealth: newMaxHealth,
-      currentHealth: newCurrentHealth,
-      luck: newLuck,
-      charisma: newCharisma,
-      strength: newStrength,
-      dexterity: newDexterity,
-      constitution: newConstitution,
-      intelligence: newIntelligence,
-      wisdom: newWisdom,
-      perception: newPerception,
-    );
-    await _persist();
-  }
-
   /// What the formative memories left (origin_stories.dart): their
   /// [alignmentMod], a point in each ability of [abilities] per lesson, and
   /// their [flags] for the story's echoes. Applied once, as creation ends.
@@ -4731,19 +5650,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required Map<String, int> abilities,
     required List<String> flags,
   }) async {
-    int plus(String key, int value) => value + (abilities[key] ?? 0);
-    state = state.copyWith(
-      alignmentScore: state.alignmentScore + alignmentMod,
-      strength: plus('strength', state.strength),
-      dexterity: plus('dexterity', state.dexterity),
-      constitution: plus('constitution', state.constitution),
-      intelligence: plus('intelligence', state.intelligence),
-      wisdom: plus('wisdom', state.wisdom),
-      charisma: plus('charisma', state.charisma),
-      luck: plus('luck', state.luck),
-      perception: plus('perception', state.perception),
-      flags: <String>{...state.flags, ...flags}.toList(),
-    );
+    state = state.withSourcedGains(ledgerOrigin, '', abilities).copyWith(
+          alignmentScore: state.alignmentScore + alignmentMod,
+          flags: <String>{...state.flags, ...flags}.toList(),
+        );
     await _persist();
   }
 
@@ -4794,6 +5704,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       potionCount: potionCount,
       statPoints: statPoints,
       statPickOffer: statPoints == null ? null : const [],
+      tomePicks: statPoints == null
+          ? null
+          : state.tomePicks.take(max(0, statPoints)).toList(),
       antidoteCount: antidoteCount,
       mana: mana,
     );
@@ -4846,9 +5759,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
-  /// applying every level gained: +5 statPoints, +20 maxHealth and
-  /// [levelDamageGain] baseDamage (and an
-  /// offer, which the callers add: see [_levelOffers]). Shared by
+  /// applying every level gained: [levelStatPicks] stat pick and
+  /// [levelHealthGain] max health (stat_rules.dart; base damage grows only
+  /// with the damage stat), and an offer, which the callers add: see
+  /// [_levelOffers]. Shared by
   /// [applyCombatResult] and [completeQuest] so a quest's XP reward levels
   /// the player up exactly like combat XP does.
   ({
@@ -4871,9 +5785,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     while (newXp >= newLevel * 100) {
       newXp -= newLevel * 100;
       newLevel += 1;
-      newStatPoints += 5;
-      newMaxHealth += 20;
-      newBaseDamage += levelDamageGain;
+      newStatPoints += levelStatPicks;
+      newMaxHealth += levelHealthGain;
       leveledUp = true;
       levelsGained += 1;
     }
@@ -4905,23 +5818,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         'luck': s.luck,
         'perception': s.perception,
       };
+      final level = s.level - levels + i + 1;
       final gains = patronLevelGains(s.politics,
-          level: s.level - levels + i + 1,
-          stats: stats,
-          openHand: bannerRaisedIn(s.flags));
-      if (gains.stats.isEmpty && gains.maxHealth == 0) break;
-      int plus(String stat) => stats[stat]! + (gains.stats[stat] ?? 0);
+          level: level, stats: stats, openHand: bannerRaisedIn(s.flags));
+      if (gains.stats.isEmpty && gains.maxHealth == 0) continue;
+      // The ledger tells the patron's own gift from the open hand's point.
+      final patron = statPatron(s.politics);
+      final own = patronLevelGains(s.politics, level: level, stats: stats);
+      final openHand = {
+        for (final e in gains.stats.entries)
+          e.key: e.value - (own.stats[e.key] ?? 0),
+      }..removeWhere((_, v) => v == 0);
+      s = s.withSourcedGains(ledgerPatron, patron, own.stats,
+          maxHealth: gains.maxHealth);
+      s = s.withSourcedGains(ledgerPatron, openHandSourceId, openHand);
       s = s.copyWith(
-        strength: plus('strength'),
-        dexterity: plus('dexterity'),
-        constitution: plus('constitution'),
-        intelligence: plus('intelligence'),
-        wisdom: plus('wisdom'),
-        charisma: plus('charisma'),
-        luck: plus('luck'),
-        perception: plus('perception'),
-        maxHealth: s.maxHealth + gains.maxHealth,
-        currentHealth: s.currentHealth + gains.maxHealth,
         politics: logPatronGains(s.politics, statPatron(s.politics), gains,
             chapter: _politicsChapter(null), day: s.day),
       );
@@ -4987,6 +5898,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var potionsGained = 0;
     var antidotesGained = 0;
     var statPointsGained = 0;
+    var tomePicks = state.tomePicks;
     final tomeOffers = <OfferTicket>[];
     final carried = <String>[];
     final spellsLearned = <String>[];
@@ -4995,6 +5907,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final tome = tomeGrantFor(itemId, item);
       if (tome != null) {
         statPointsGained += tome.statPoints;
+        tomePicks = _withTomePicks(tomePicks, itemId, tome.statPoints);
         tomeOffers.addAll(tome.offers);
         continue;
       }
@@ -5052,6 +5965,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseDamage: leveled.baseDamage,
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
+      tomePicks: tomePicks,
       // Each level reached and a boss beaten bring an offer (see
       // offers.dart), a Tome of Mastery one too; a hunt (or, sometimes, an
       // Elite) a drop of Titan's Blood; a dice fight won or lost runs every
@@ -5063,6 +5977,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           const OfferTicket(source: OfferSource.boss),
         ...tomeOffers,
       ],
+      rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
+      banishCharges: _levelCharges(RollPower.banish, leveled.levelsGained),
       titanBlood: state.titanBlood + titanBlood,
       heldSigns: pactFight ? countDownPacts(state.heldSigns) : null,
       gold: state.gold + goldGain,
@@ -5089,11 +6005,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     // The patron's gifts at each level reached (patron_stats.dart).
     if (leveled.leveledUp) {
-      state = _withPatronGains(state, leveled.levelsGained);
+      state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
     await _persist();
     return leveled.leveledUp;
   }
+
+  /// [tomePicks] with [itemId] once per pick a tome of it grants
+  /// ([picks]), for the ledger (see [PlayerSession.tomePicks]).
+  static List<String> _withTomePicks(
+          List<String> tomePicks, String itemId, int picks) =>
+      picks <= 0
+          ? tomePicks
+          : [...tomePicks, for (var i = 0; i < picks; i++) itemId];
 
   /// What reading a looted tome grants on the spot -- a Tome-type item
   /// never enters the inventory, exactly like a potion becomes a charge.
@@ -5212,6 +6136,29 @@ class PermadeathResult {
   /// How many signs the life carried, all lost with it.
   final int signsLost;
 }
+
+/// What the camp's roll houses give [s] (camp_rolls.dart): the charges of
+/// each power whose house stands ([powers], else read from
+/// rollPowerHouses), and the bans running.
+CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
+  final built = powers ?? rollPowersOf(s.builtHouseIds);
+  return CampRolls(
+    reroll: built.contains(RollPower.reroll) ? s.rerollCharges : null,
+    banish: built.contains(RollPower.banish) ? s.banishCharges : null,
+    raise: built.contains(RollPower.raise) ? s.raiseCharges : null,
+    raiseProgress: s.raiseProgress,
+    bans: s.rollBans,
+  );
+}
+
+/// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
+final campRollsProvider =
+    Provider<CampRolls>((ref) => campRollsOf(ref.watch(playerSessionProvider)));
+
+/// The wards on the road running now, each clan with its roads left
+/// (road_wards.dart), for the Journey's mark (`ward_mark`).
+final roadWardsProvider = Provider<List<RoadWard>>(
+    (ref) => roadWardsOf(ref.watch(playerSessionProvider).rollBans));
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {

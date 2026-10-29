@@ -37,6 +37,13 @@ Finder _lastStep() => find.byKey(ValueKey(
 /// A choice acted out where the party stands is a card under the map.
 Finder _card(int i) => find.byKey(ValueKey('journey_choice_card_$i'));
 
+/// The choices acted out here are in the scene view, under the words; a
+/// button under the map opens it.
+Future<void> _openChoices(WidgetTester tester) async {
+  await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+  await tester.pump(const Duration(milliseconds: 400));
+}
+
 /// The part of the Journey tab the tour calls [id] (see TutorialTarget).
 Rect _target(WidgetTester tester, String id) => tester.getRect(
     find.byWidgetPredicate((w) => w is TutorialTarget && w.id == id).first);
@@ -73,8 +80,13 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // Saltmouth's two locked districts open, so no way at its hub is
+          // greyed (v1.616): this test is about the walk, not the locks.
+          'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
+        })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);
@@ -138,28 +150,30 @@ void main() {
     expect(int.parse(secondsLeft().replaceAll('s', '')),
         inInclusiveRange(onStory - 1, onStory));
 
-    // A choice picked on a short phone: the map keeps its room, and the
-    // choice's card, with Go, sits under it.
+    // On a short phone the map keeps its room: under it, a button opens the
+    // choices acted out here (they are in the scene view, not on the map).
     await tester.pump(const Duration(seconds: 1));
-    await tester.tap(_card(0));
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pump(const Duration(milliseconds: 100));
     final chart = _target(tester, 'journey.chart');
     expect(chart.height, greaterThanOrEqualTo(159.5));
     expect(_step(0), findsNothing, reason: 'a choice acted out here is no pin');
-    expect(find.byKey(const ValueKey('journey_go')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
+    expect(_card(0), findsNothing);
     expect(_target(tester, 'journey.pick').bottom,
         lessThanOrEqualTo(tester.getRect(find.byType(NavigationBar)).top));
     expect(tester.takeException(), isNull);
 
     // The alley: the same on a plain scene.
     await arrive('270', walk: 6);
-    await tester.tap(_card(0));
-    await tester.pump(const Duration(milliseconds: 500));
     expect(
         _target(tester, 'journey.chart').height, greaterThanOrEqualTo(159.5));
     expect(_target(tester, 'journey.pick').bottom,
         lessThanOrEqualTo(tester.getRect(find.byType(NavigationBar)).top));
+
+    // In the scene view, a card picked has its Go.
+    await _openChoices(tester);
+    await tester.tap(_card(0));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byKey(const ValueKey('journey_go')), findsOneWidget);
 
     // Go: a choice acted out here sends no one walking, and the step is
     // taken.
@@ -172,11 +186,32 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
-    // The scene reached is read full screen; Continue brings the map back.
-    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('journey_continue')));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    // The scene reached is read full screen. A card led to it, its ways are
+    // acted out here, and with no city chart in this test (the place view)
+    // no map draws them: it holds the party on its page, its way back to
+    // the map greyed, the cards go on (scene_lock.dart). With Alster's
+    // chart, its ways are on the map and it does not lock
+    // (scene_lock_test.dart).
+    expect(
+        find.byWidgetPredicate((w) =>
+            w.key is ValueKey<String> &&
+            (w.key! as ValueKey<String>)
+                .value
+                .startsWith('journey_reading_300')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_choose_first')), findsOneWidget);
+    expect(
+        tester
+            .widget<ButtonStyleButton>(
+                find.byKey(const ValueKey('journey_continue')))
+            .onPressed,
+        isNull);
+    expect(
+        tester
+            .widget<IconButton>(
+                find.byKey(const ValueKey('journey_reading_exit')))
+            .onPressed,
+        isNull);
 
     // Go, and Read while the party walks (a plain way on, a pin): the map
     // stays put (the party walks on it), and the step is taken.

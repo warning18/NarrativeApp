@@ -7,7 +7,7 @@ import '../providers/player_session_provider.dart';
 /// plus the pre-existing charisma). Kept as plain strings on
 /// [StoryChoice.checkAbility] rather than this enum — like every other
 /// gameplay-code string key in this codebase (quest objective `type`,
-/// `PlayerSessionNotifier.spendStatPoint`'s `stat`) — so story data never
+/// a stat pick's gains in training_paths.json) — so story data never
 /// needs to import gameplay code.
 const List<String> abilityScoreKeys = [
   'strength',
@@ -20,13 +20,29 @@ const List<String> abilityScoreKeys = [
   'perception',
 ];
 
-/// [session]'s current value for [ability] (one of [abilityScoreKeys]),
-/// used as a flat bonus on a d20 roll — not a D&D-style 8-20 score
-/// converted to a modifier, since every stat here already starts at 0 and
-/// grows in small increments (race/profession bonuses, stat points), the
-/// same way [PlayerSession.luck] already works as a direct bonus on the
-/// combat loot roll.
-int abilityModifierFor(String ability, PlayerSession session) {
+/// The bonus on a d20 an ability [score] gives a check, on the stat scale
+/// (docs/proposals/stat-scale.md, "Story checks on the small scale"): 2,
+/// and twice the square root of the score, rounded -- 0 gives 2, 1 gives
+/// 4, 4 gives 6, 9 gives 8, 16 gives 10. A score below zero takes from the
+/// 2. The root keeps a trained stat ahead of the story's DCs (10 to 16) as
+/// they climb without passing them all; a natural 1 still fails (see
+/// [checkPasses]).
+int checkBonusFor(int score) =>
+    score <= 0 ? 2 + score : 2 + (2 * sqrt(score)).round();
+
+/// Whether a d20 [roll] with [modifier] meets [dc]: a natural 20 always
+/// passes, a natural 1 always fails, any other roll when the total reaches
+/// the DC.
+bool checkPasses(int roll, int modifier, int dc) =>
+    roll == 20 || (roll != 1 && roll + modifier >= dc);
+
+/// [session]'s bonus on a d20 for [ability] (one of [abilityScoreKeys]):
+/// [checkBonusFor] its current value.
+int abilityModifierFor(String ability, PlayerSession session) =>
+    checkBonusFor(abilityScoreFor(ability, session));
+
+/// [session]'s current value for [ability] (one of [abilityScoreKeys]).
+int abilityScoreFor(String ability, PlayerSession session) {
   switch (ability) {
     case 'strength':
       return session.strength;
@@ -70,7 +86,7 @@ class AbilityCheckResult {
 
   int get total => roll + modifier;
 
-  bool get success => total >= dc;
+  bool get success => checkPasses(roll, modifier, dc);
 
   /// A natural 20 always succeeds and a natural 1 always fails, mirroring
   /// D&D's critical roll convention — checked separately from [success] so
@@ -99,7 +115,8 @@ AbilityCheckResult rollAbilityCheck({
   );
 }
 
-/// The chance a d20 plus [modifier] meets [dc], from 0 to 1 (a check
-/// succeeds when the total reaches the DC; see [AbilityCheckResult]).
+/// The chance a d20 plus [modifier] meets [dc], from 0.05 to 0.95 (a
+/// check succeeds when the total reaches the DC, a natural 20 always and a
+/// natural 1 never; see [checkPasses]).
 double checkChance({required int modifier, required int dc}) =>
-    (21 - (dc - modifier)).clamp(0, 20) / 20;
+    (21 - (dc - modifier)).clamp(1, 19) / 20;

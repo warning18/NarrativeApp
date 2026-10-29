@@ -1,0 +1,652 @@
+{
+  "district_quests": [
+    {
+      "id": "card_row_short_count",
+      "district": "saltmouth_card_row",
+      "faction": "crows",
+      "name": {
+        "en": "The Short Count",
+        "fr": "Le compte qui manque"
+      },
+      "premise": {
+        "en": "A tally-man at Card Row has counted forty crates onto a quay that holds thirty-one. The Crows want to know who is skimming; the dockhands want to know who is asking.",
+        "fr": "Un pointeur de la Rangée des cartes a compté quarante caisses sur un quai qui n’en tient que trente et une. Les Corneilles veulent savoir qui écrème ; les dockers veulent savoir qui demande."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Name the skimmer to the Crows",
+            "fr": "Donner l’écrémeur aux Corneilles"
+          },
+          "result": {
+            "en": "The Crows pay on the nail, and the dockhand is not seen again at Card Row.",
+            "fr": "Les Corneilles paient comptant, et le docker ne reparaît plus à la Rangée des cartes."
+          }
+        },
+        {
+          "text": {
+            "en": "Cover for the skimmer, take a cut",
+            "fr": "Couvrir l’écrémeur, prendre sa part"
+          },
+          "result": {
+            "en": "The cut is small and the silence is a debt the dockers will remember.",
+            "fr": "La part est petite et le silence est une dette dont les dockers se souviendront."
+          }
+        }
+      ]
+    },
+    {
+      "id": "tern_row_wrong_name",
+      "district": "saltmouth_tern_row",
+      "faction": "tidekin",
+      "name": {
+        "en": "A Boat for the Wrong Name",
+        "fr": "Une barque pour le mauvais nom"
+      },
+      "premise": {
+        "en": "A buyer at Tern Row is lighting paper boats for names that are not drowned: the Tide-Kin say that is a lie told to the sea, and the sea keeps its own accounts.",
+        "fr": "Un acheteur de Tern Row allume des bateaux de papier pour des noms qui ne sont pas noyés : les Gens de la Marée disent que c’est un mensonge fait à la mer, et la mer tient ses propres comptes."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Take the buyer’s boats down to the water yourself",
+            "fr": "Descendre vous-même les bateaux de l’acheteur à l’eau"
+          },
+          "result": {
+            "en": "The tide takes four and leaves one on the sand, with a name on it you know.",
+            "fr": "La marée en prend quatre et en laisse un sur le sable, avec un nom que vous connaissez."
+          }
+        },
+        {
+          "text": {
+            "en": "Let the buyer finish and watch who he lights for",
+            "fr": "Laisser l’acheteur finir et voir pour qui il allume"
+          },
+          "result": {
+            "en": "The last name he lights is his own, and the footbridge is very quiet.",
+            "fr": "Le dernier nom qu’il allume est le sien, et la passerelle est très silencieuse."
+          }
+        }
+      ]
+    },
+    {
+      "id": "cinder_row_first_coal",
+      "district": "ashen_quarter_cinder_row",
+      "faction": "compact",
+      "name": {
+        "en": "First Coal",
+        "fr": "Le premier charbon"
+      },
+      "premise": {
+        "en": "Cinder Row has been cold since the Emberwives starved the Tribunal’s forges. A smith wants one coal, one lit forge, so the street can say it burned again.",
+        "fr": "Cinder Row est froide depuis que les Sœurs de Braise ont affamé les forges du Tribunal. Un forgeron veut un charbon, une forge allumée, pour que la rue puisse dire qu’elle a de nouveau brûlé."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Carry the coal through the Tribunal’s watch",
+            "fr": "Porter le charbon à travers le guet du Tribunal"
+          },
+          "result": {
+            "en": "The forge lights at dusk, and every window on the Row opens at once.",
+            "fr": "La forge s’allume au crépuscule, et toutes les fenêtres de la Row s’ouvrent d’un coup."
+          }
+        },
+        {
+          "text": {
+            "en": "Pay the watch to look the other way",
+            "fr": "Payer le guet pour qu’il regarde ailleurs"
+          },
+          "result": {
+            "en": "The coal arrives, and the Tribunal remembers who it was paid by.",
+            "fr": "Le charbon arrive, et le Tribunal se souvient de qui l’a payé."
+          }
+        }
+      ]
+    },
+    {
+      "id": "spire_stair_clerk",
+      "district": "ashen_quarter_spire_stair",
+      "faction": "dominion",
+      "name": {
+        "en": "The Clerk Who Stopped Signing",
+        "fr": "Le clerc qui cessa de signer"
+      },
+      "premise": {
+        "en": "A Tribunal clerk at the foot of the Spire Stair has set down his pen mid-sentence, and the sentence was a hanging. He asks you to stand where the queue can see him.",
+        "fr": "Un clerc du Tribunal au pied de l’escalier de la Flèche a posé sa plume au milieu d’une phrase, et la phrase était une pendaison. Il vous demande de vous tenir là où la file peut le voir."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Stand beside him until the queue breaks",
+            "fr": "Rester à ses côtés jusqu’à ce que la file se rompe"
+          },
+          "result": {
+            "en": "The sentence is never signed, and the Dominion writes your name beside his.",
+            "fr": "La sentence n’est jamais signée, et le Dominion inscrit votre nom à côté du sien."
+          }
+        },
+        {
+          "text": {
+            "en": "Walk him out quietly before the guard comes",
+            "fr": "L’emmener discrètement avant l’arrivée de la garde"
+          },
+          "result": {
+            "en": "He lives, and the Spire has one fewer clerk and one more rumour.",
+            "fr": "Il vit, et la Flèche a un clerc de moins et une rumeur de plus."
+          }
+        }
+      ]
+    },
+    {
+      "id": "chapels_unburied_saint",
+      "district": "reliquary_chapels",
+      "faction": "penitents",
+      "name": {
+        "en": "The Unburied Saint",
+        "fr": "La sainte sans tombe"
+      },
+      "premise": {
+        "en": "In the Chapels of the Chair a saint’s body lies on a trestle, unburied for eleven years because no House will pay for the ground. The Penitents will bury her if you carry her.",
+        "fr": "Dans les Chapelles du Fauteuil, le corps d’une sainte repose sur un tréteau, sans sépulture depuis onze ans parce qu’aucune Maison ne veut payer la terre. Les Pénitents l’enterreront si vous la portez."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Carry her through the frost line yourself",
+            "fr": "La porter vous-même à travers la ligne de givre"
+          },
+          "result": {
+            "en": "She weighs what the frost weighs. The grave is shallow and the Penitents sing it full.",
+            "fr": "Elle pèse ce que pèse le givre. La tombe est peu profonde et les Pénitents la chantent pleine."
+          }
+        },
+        {
+          "text": {
+            "en": "Give her to the Reliquary for a price",
+            "fr": "La donner au Reliquaire contre un prix"
+          },
+          "result": {
+            "en": "The Reliquary keeps her in a case, which is the thing the Penitents feared.",
+            "fr": "Le Reliquaire la garde dans une vitrine, ce que redoutaient les Pénitents."
+          }
+        }
+      ]
+    },
+    {
+      "id": "anchor_quay_last_watch",
+      "district": "white_anchorage_quay",
+      "faction": "order",
+      "name": {
+        "en": "The Last Company’s Watch",
+        "fr": "La veille de la dernière compagnie"
+      },
+      "premise": {
+        "en": "The Order’s last company keeps the old watch on the Anchor Quay, and no one has relieved them since the Crusade. A boy has volunteered. They will not let him.",
+        "fr": "La dernière compagnie de l’Ordre monte la vieille garde sur le Quai des Ancres, et nul ne l’a relevée depuis la Croisade. Un garçon s’est porté volontaire. Ils ne veulent pas de lui."
+      },
+      "choices": [
+        {
+          "text": {
+            "en": "Speak for the boy to the captain of the watch",
+            "fr": "Plaider pour le garçon auprès du capitaine de la garde"
+          },
+          "result": {
+            "en": "The captain gives him the night’s first hour, and keeps the rest.",
+            "fr": "Le capitaine lui donne la première heure de la nuit, et garde le reste."
+          }
+        },
+        {
+          "text": {
+            "en": "Stand the watch yourself and let him sleep",
+            "fr": "Monter la garde vous-même et le laisser dormir"
+          },
+          "result": {
+            "en": "The company counts you one of them, which is the only honour they have left.",
+            "fr": "La compagnie vous compte parmi eux, ce qui est le seul honneur qu’il leur reste."
+          }
+        }
+      ]
+    }
+  ],
+  "district_keepers": [
+    {
+      "id": "card_row",
+      "name": {
+        "en": "Pell Voss",
+        "fr": "Pell Voss"
+      },
+      "role": {
+        "en": "Voss, the dockers’ tally-man",
+        "fr": "Voss, le pointeur des dockers"
+      },
+      "barks": {
+        "held": {
+          "en": "Count it twice, friend. The Crows count it three times.",
+          "fr": "Comptez-le deux fois, l’ami. Les Corneilles le comptent trois fois."
+        },
+        "flipped": {
+          "en": "New pennant, same tally. Nobody told the crates.",
+          "fr": "Nouvelle bannière, même compte. Personne ne l’a dit aux caisses."
+        },
+        "contested": {
+          "en": "Come back when someone owns the row. I am not paid to guess.",
+          "fr": "Revenez quand quelqu’un possédera la rangée. Je ne suis pas payé pour deviner."
+        }
+      }
+    },
+    {
+      "id": "tern_row",
+      "name": {
+        "en": "Ysa Dunn",
+        "fr": "Ysa Dunn"
+      },
+      "role": {
+        "en": "Dunn, the lantern-maker",
+        "fr": "Dunn, la fabricante de lanternes"
+      },
+      "barks": {
+        "held": {
+          "en": "Every boat lit for someone. Mind where you set your feet.",
+          "fr": "Chaque bateau est allumé pour quelqu’un. Regardez où vous posez les pieds."
+        },
+        "flipped": {
+          "en": "Others hold the footbridge now. The boats still go out.",
+          "fr": "D’autres tiennent la passerelle maintenant. Les bateaux partent toujours."
+        },
+        "contested": {
+          "en": "Nobody owns the water. They only think they do.",
+          "fr": "Personne ne possède l’eau. Ils croient seulement la posséder."
+        }
+      }
+    },
+    {
+      "id": "cinder_row",
+      "name": {
+        "en": "Hobb Kettle",
+        "fr": "Hobb Kettle"
+      },
+      "role": {
+        "en": "Kettle, the cold smith",
+        "fr": "Kettle, le forgeron éteint"
+      },
+      "barks": {
+        "held": {
+          "en": "The Row remembers. Bring coal and it will say so.",
+          "fr": "La Row se souvient. Apportez du charbon et elle vous le dira."
+        },
+        "flipped": {
+          "en": "New masters, same cold hearths. I will believe it when I see smoke.",
+          "fr": "Nouveaux maîtres, mêmes foyers froids. Je le croirai quand je verrai de la fumée."
+        },
+        "contested": {
+          "en": "Whoever holds the Row holds an empty street.",
+          "fr": "Qui tient la Row tient une rue vide."
+        }
+      }
+    },
+    {
+      "id": "spire_stair",
+      "name": {
+        "en": "Ansel Wray",
+        "fr": "Ansel Wray"
+      },
+      "role": {
+        "en": "Wray, the Spire clerk",
+        "fr": "Wray, le clerc de la Flèche"
+      },
+      "barks": {
+        "held": {
+          "en": "Write nothing here you would not sign.",
+          "fr": "N’écrivez rien ici que vous ne signeriez pas."
+        },
+        "flipped": {
+          "en": "The stair changed hands. The ink did not.",
+          "fr": "L’escalier a changé de mains. L’encre non."
+        },
+        "contested": {
+          "en": "There is no archive in a stair no one holds.",
+          "fr": "Il n’y a pas d’archive dans un escalier que personne ne tient."
+        }
+      }
+    },
+    {
+      "id": "chapels",
+      "name": {
+        "en": "Sister Orla",
+        "fr": "Sister Orla"
+      },
+      "role": {
+        "en": "Sister Orla, keeper of the chapels",
+        "fr": "Sœur Orla, gardienne des chapelles"
+      },
+      "barks": {
+        "held": {
+          "en": "Frost on the saints is only the weather. Frost on the faithful is a verdict.",
+          "fr": "Le givre sur les saints n’est que la météo. Le givre sur les fidèles est un verdict."
+        },
+        "flipped": {
+          "en": "They changed the keys. The saints did not change their minds.",
+          "fr": "Ils ont changé les clés. Les saints n’ont pas changé d’avis."
+        },
+        "contested": {
+          "en": "A chapel nobody holds still keeps its dead.",
+          "fr": "Une chapelle que nul ne tient garde encore ses morts."
+        }
+      }
+    },
+    {
+      "id": "anchor_quay",
+      "name": {
+        "en": "Captain Merrow",
+        "fr": "Captain Merrow"
+      },
+      "role": {
+        "en": "Captain Merrow, the last watch",
+        "fr": "Le capitaine Merrow, la dernière veille"
+      },
+      "barks": {
+        "held": {
+          "en": "The watch holds. It has held since the Crusade.",
+          "fr": "La garde tient. Elle tient depuis la Croisade."
+        },
+        "flipped": {
+          "en": "New flag on an old pier. The water has not noticed.",
+          "fr": "Nouveau drapeau sur un vieux ponton. L’eau ne l’a pas remarqué."
+        },
+        "contested": {
+          "en": "A pier with no flag is a pier for anyone. Stay sharp.",
+          "fr": "Un ponton sans drapeau est un ponton pour tout le monde. Restez sur vos gardes."
+        }
+      }
+    }
+  ],
+  "notices": {
+    "district_flipped": {
+      "en": "The {clan} banner went up over {district} at dawn, and the {from} banner came down.",
+      "fr": "La bannière {clan} a été hissée sur {district} à l’aube, et la bannière {from} a été abattue."
+    },
+    "flip_town_line": {
+      "en": "{district} is held by the {clan} now.",
+      "fr": "{district} est tenu désormais par la bannière {clan}."
+    },
+    "attack_alert": {
+      "en": "{district} is under attack by the {clan}.",
+      "fr": "{district} est attaqué par la bannière {clan}."
+    },
+    "attack_defended": {
+      "en": "You held {district}. The {clan} riders left before dawn.",
+      "fr": "Vous avez tenu {district}. Les cavaliers de la bannière {clan} sont partis avant l’aube."
+    },
+    "attack_joined": {
+      "en": "You rode with the {clan} on {district}. By morning the street had a new name for you.",
+      "fr": "Vous avez chevauché avec la bannière {clan} contre {district}. Au matin, la rue avait un nouveau nom pour vous."
+    },
+    "attack_ignored": {
+      "en": "Nobody answered for {district}. The {clan} took what they wanted from it and left the rest.",
+      "fr": "Personne n’a répondu pour {district}. La bannière {clan} a pris ce qu’elle voulait et laissé le reste."
+    },
+    "locked_reason": {
+      "en": "The way into {district} stays shut until you have done what its people ask.",
+      "fr": "Le chemin de {district} reste fermé tant que vous n’avez pas fait ce que ses habitants demandent."
+    }
+  },
+  "companion_remarks": [
+    {
+      "companion": "kelda",
+      "districtFlipped": {
+        "en": "A street that changes hands should have a gate it can close. Make sure one stays shut for those who need it.",
+        "fr": "Une rue qui change de mains devrait avoir une porte qu’on puisse fermer. Veillez à ce qu’une reste close pour ceux qui en ont besoin."
+      },
+      "districtAttacked": {
+        "en": "Hold the line or leave it. Do not stand about.",
+        "fr": "Tenez la ligne ou quittez-la. Ne restez pas à regarder."
+      }
+    },
+    {
+      "companion": "sable",
+      "districtFlipped": {
+        "en": "A pennant down, a pennant up. The street never loses, it only changes the odds.",
+        "fr": "Une bannière baissée, une bannière hissée. La rue ne perd jamais, elle change seulement les cotes."
+      },
+      "districtAttacked": {
+        "en": "An attack is only a very loud bet. Which side are we backing?",
+        "fr": "Une attaque n’est qu’un pari très bruyant. Quel camp soutenons-nous ?"
+      }
+    },
+    {
+      "companion": "maren",
+      "districtFlipped": {
+        "en": "Another banner. I wonder whose names are written under it.",
+        "fr": "Encore une bannière. Je me demande quels noms sont écrits dessous."
+      },
+      "districtAttacked": {
+        "en": "Whoever attacks, someone will be carried out. See that it is not the innocent.",
+        "fr": "Quel que soit l’attaquant, on emportera quelqu’un. Veillez à ce que ce ne soient pas les innocents."
+      }
+    },
+    {
+      "companion": "liora",
+      "districtFlipped": {
+        "en": "I watched the roofs the night it turned. Quiet, until it was not.",
+        "fr": "J’ai surveillé les toits la nuit où cela a basculé. Tranquille, jusqu’à ce que ça ne le soit plus."
+      },
+      "districtAttacked": {
+        "en": "Riders on the east road. I counted nine and stopped.",
+        "fr": "Des cavaliers sur la route de l’est. J’en ai compté neuf et j’ai arrêté."
+      }
+    },
+    {
+      "companion": "vess",
+      "districtFlipped": {
+        "en": "The place feels different. As if it were holding its breath under a new hand.",
+        "fr": "L’endroit est différent. Comme s’il retenait son souffle sous une main nouvelle."
+      },
+      "districtAttacked": {
+        "en": "Something in the street is afraid. I can hear it from here.",
+        "fr": "Quelque chose dans la rue a peur. Je l’entends d’ici."
+      }
+    },
+    {
+      "companion": "grosh",
+      "districtFlipped": {
+        "en": "New flag, same prices. Wake me when the coin changes.",
+        "fr": "Nouveau drapeau, mêmes prix. Réveillez-moi quand l’or change."
+      },
+      "districtAttacked": {
+        "en": "A raid pays whoever shows up. Say the word.",
+        "fr": "Un raid paie celui qui se montre. Dites un mot."
+      }
+    },
+    {
+      "companion": "tobin",
+      "districtFlipped": {
+        "en": "I have seen a banner come down on a burning street. I did not like what flew next.",
+        "fr": "J’ai vu une bannière tomber sur une rue en flammes. Je n’ai pas aimé ce qui a été hissé ensuite."
+      },
+      "districtAttacked": {
+        "en": "Not again. Not on a street where children still live.",
+        "fr": "Pas encore. Pas dans une rue où vivent encore des enfants."
+      }
+    },
+    {
+      "companion": "malrik",
+      "districtFlipped": {
+        "en": "A change of owner is an opportunity for those who were not on the old books.",
+        "fr": "Un changement de propriétaire est une aubaine pour qui n’était pas sur les anciens livres."
+      },
+      "districtAttacked": {
+        "en": "An attack is a disruption. Disruptions have an exchange rate.",
+        "fr": "Une attaque est une perturbation. Les perturbations ont un taux de change."
+      }
+    }
+  ],
+  "epilogue_lines": [
+    {
+      "district": "card_row",
+      "line": {
+        "en": "Card Row counts its crates under the pennant you left it, and the tally is honest or nobody has noticed.",
+        "fr": "La Rangée des cartes compte ses caisses sous la bannière que vous lui avez laissée, et le compte est honnête ou personne ne l’a remarqué."
+      }
+    },
+    {
+      "district": "tern_row",
+      "line": {
+        "en": "Tern Row lights a boat for every name, and the sea has stopped asking whose.",
+        "fr": "Tern Row allume un bateau pour chaque nom, et la mer a cessé de demander pour qui."
+      }
+    },
+    {
+      "district": "cinder_row",
+      "line": {
+        "en": "Cinder Row has smoke on its chimneys, and whoever holds it keeps the first coal on the sill.",
+        "fr": "Cinder Row a de la fumée aux cheminées, et celui qui la tient garde le premier charbon sur le rebord."
+      }
+    },
+    {
+      "district": "spire_stair",
+      "line": {
+        "en": "The Spire Stair has one clerk who signs slowly and a queue that has learned to wait.",
+        "fr": "L’escalier de la Flèche a un clerc qui signe lentement et une file qui a appris à attendre."
+      }
+    },
+    {
+      "district": "chapels",
+      "line": {
+        "en": "The Chapels of the Chair keep their saints, and the frost lies on them the right way round.",
+        "fr": "Les Chapelles du Fauteuil gardent leurs saints, et le givre y tombe enfin dans le bon sens."
+      }
+    },
+    {
+      "district": "anchor_quay",
+      "line": {
+        "en": "The Anchor Quay keeps the watch, under whatever flag, and someone always relieves it.",
+        "fr": "Le Quai des Ancres monte la garde, quel que soit le drapeau, et quelqu’un vient toujours la relever."
+      }
+    }
+  ],
+  "saltmouth_tags": [
+    {
+      "quest": "q_ch2_dockside_debts",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the harbor master's stores are the Crows' wharf"
+    },
+    {
+      "quest": "q_ch2_smugglers_favor",
+      "district": "saltmouth_wharf",
+      "faction": "compact",
+      "why": "the smuggler's forge and a fair price on steel"
+    },
+    {
+      "quest": "q_ch2_burning_manifest",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the manifests are the Crows' trail"
+    },
+    {
+      "quest": "q_ch2_captains_gambit",
+      "district": "saltmouth_wharf",
+      "faction": "crows",
+      "why": "the smuggler captain holds the last ferry"
+    },
+    {
+      "quest": "q_ch2_harbor_reckoning",
+      "district": "saltmouth_wharf",
+      "faction": "penitents",
+      "why": "the sick dragged from their beds are the Penitents' care"
+    },
+    {
+      "quest": "q_ch2_keldas_stand",
+      "district": "saltmouth_wharf",
+      "faction": "vigil",
+      "why": "holding the wharf gate is the Vigil's way"
+    },
+    {
+      "quest": "q_ch2_sables_wager",
+      "district": "saltmouth_card_row",
+      "faction": "crows",
+      "why": "the dockhands' barrel is Card Row"
+    },
+    {
+      "quest": "q_ch2_informants_tip",
+      "district": "saltmouth_landward_gate",
+      "faction": "crows",
+      "why": "the informant works for the smuggling network, against the Inquisition's warden"
+    },
+    {
+      "quest": "q_ch2_terns_toll",
+      "district": "saltmouth_tern_row",
+      "faction": "tidekin",
+      "why": "Nadira's extorted quarter"
+    },
+    {
+      "quest": "q_ch2_lioras_watch",
+      "district": "saltmouth_wharf",
+      "faction": "vigil",
+      "why": "Liora's refugees on the north pier"
+    }
+  ],
+  "locked_texts": [
+    {
+      "district": "saltmouth_lantern_alleys",
+      "quest": "q_ch2_informants_tip",
+      "opensOn": "done",
+      "lockedText": {
+        "en": "The lamps go out as you reach the first arch. Nobody here buys from a stranger the Inquisition’s informants have not named.",
+        "fr": "Les lampes s’éteignent quand vous atteignez la première arche. Ici, personne n’achète à un inconnu que les indicateurs de l’Inquisition n’ont pas nommé."
+      }
+    },
+    {
+      "district": "saltmouth_tern_row",
+      "quest": "q_ch2_terns_toll",
+      "opensOn": "done",
+      "lockedText": {
+        "en": "The footbridge is drawn up on the Tern Row side. The Tide-Kin will not take a stranger over until the toll on their quarter is lifted.",
+        "fr": "La passerelle est relevée du côté de Tern Row. Les Gens de la Marée ne laisseront passer personne tant que la rançon sur leur quartier ne sera pas levée."
+      }
+    }
+  ],
+  "door_scenes": [
+    {
+      "id": "saltmouth_lantern_alleys_door",
+      "district": "saltmouth_lantern_alleys",
+      "mood": "tense",
+      "description": {
+        "en": "The first arch of the Lantern Alleys was lit when I came up the steps from the wharf, and dark by the time I reached it. A woman in the shadow of the arch did not move. **Her hand was on a lamp she had not lit**.\n\n“We do not sell to people the Inquisition’s informants have not named,” she said, not unkindly. “It is not that we dislike you. It is that a name is the only thing that keeps the alleys open.”\n\nShe looked at the stair behind me. “Find the informant. Do what he asks. Then come back, and the lamps will have decided.”",
+        "fr": "Le premier porche des Ruelles aux lanternes était éclairé quand je montai les marches depuis le quai, et sombre quand j’y arrivai. Une femme dans l’ombre de l’arche ne bougea pas. **Sa main reposait sur une lampe qu’elle n’avait pas allumée**.\n\n« Nous ne vendons pas aux gens que les indicateurs de l’Inquisition n’ont pas nommés, dit-elle, sans dureté. Ce n’est pas que nous ne vous aimions pas. C’est qu’un nom est la seule chose qui garde les ruelles ouvertes. »\n\nElle regarda l’escalier derrière moi. « Trouvez l’indicateur. Faites ce qu’il demande. Puis revenez, et les lampes auront décidé. »"
+      },
+      "choices": [
+        {
+          "en": "Turn back and look for the informant",
+          "fr": "Faire demi-tour et chercher l’indicateur"
+        },
+        {
+          "en": "Leave a coin on the step and go",
+          "fr": "Laisser une pièce sur la marche et partir"
+        }
+      ]
+    },
+    {
+      "id": "saltmouth_tern_row_door",
+      "district": "saltmouth_tern_row",
+      "mood": "mournful",
+      "description": {
+        "en": "The footbridge to Tern Row had been drawn up on the far side, and a line of paper boats stood on the rail, each unlit. Nadira stood on the other end with her arms folded.\n\n“It is not you,” she said across the gap. “It is the overseer’s boot on every plank. Anyone who crosses brings his toll with them, and we cannot afford another.”\n\nA gull landed on the rail, looked at the boats, and left. **The Tide-Kin light a boat for each person the sea gave back**. She did not say how many were unlit. “Make him reconsider the arithmetic,” she said. “Then we will lower the bridge.”",
+        "fr": "La passerelle de Tern Row avait été relevée du côté opposé, et une rangée de bateaux de papier se tenait sur la rambarde, tous éteints. Nadira attendait à l’autre bout, les bras croisés.\n\n« Ce n’est pas vous, dit-elle par-dessus le vide. C’est la botte du contremaître sur chaque planche. Quiconque passe apporte son péage avec lui, et nous ne pouvons pas en payer un autre. »\n\nUne mouette se posa sur la rambarde, regarda les bateaux, et repartit. **Les Gens de la Marée allument un bateau pour chaque personne que la mer a rendue**. Elle ne dit pas combien restaient éteints. « Faites-lui revoir son arithmétique, dit-elle. Alors nous baisserons la passerelle. »"
+      },
+      "choices": [
+        {
+          "en": "Go and find the overseer",
+          "fr": "Aller trouver le contremaître"
+        },
+        {
+          "en": "Light one of the boats yourself and go",
+          "fr": "Allumer vous-même un des bateaux et partir"
+        }
+      ]
+    }
+  ]
+}

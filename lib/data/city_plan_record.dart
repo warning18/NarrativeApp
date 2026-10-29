@@ -86,6 +86,18 @@ class CityPlanBuilding {
   bool get notable => kind == 'hall' || kind == 'temple';
 }
 
+/// One of a town's services pinned on its plan (wave 14, see
+/// town_service_pins.dart): its [kind] (see townServiceKinds), where it
+/// stands ([at], on a square or a lot of the record) and the district that
+/// is in.
+class CityServicePin {
+  const CityServicePin(this.id, this.kind, this.at, this.district);
+  final String id;
+  final String kind;
+  final Offset at;
+  final String district;
+}
+
 /// One city's plan (see the file's header).
 class CityPlanRecord implements PlacePlan {
   CityPlanRecord({
@@ -106,6 +118,7 @@ class CityPlanRecord implements PlacePlan {
     this.buildings = const [],
     this.anchors = const {},
     this.names = const {},
+    this.services = const [],
   });
 
   factory CityPlanRecord.fromJson(String cityId, Map raw) {
@@ -176,6 +189,16 @@ class CityPlanRecord implements PlacePlan {
               fr: value['fr']?.toString() ?? ''
             ),
       },
+      services: [
+        for (final p in (raw['services'] as List? ?? const []))
+          if (p is Map)
+            CityServicePin(
+              p['id']?.toString() ?? '',
+              p['kind']?.toString() ?? '',
+              _point(p['at']),
+              p['district']?.toString() ?? '',
+            ),
+      ],
     );
   }
 
@@ -212,6 +235,11 @@ class CityPlanRecord implements PlacePlan {
 
   /// Narrative's names of the buildings, by building id.
   final Map<String, ({String en, String fr})> names;
+
+  /// The town's services on the plan (the notice board, the market…), in
+  /// the order of townServiceKinds; see town_services.dart for what each
+  /// opens.
+  final List<CityServicePin> services;
 
   late final Map<String, CityPlanBuilding> _byId = {
     for (final b in buildings) b.id: b,
@@ -273,6 +301,68 @@ class CityPlanRecord implements PlacePlan {
     final pool = free.isEmpty ? order : free;
     return pool[_stableHash(sceneId) % pool.length];
   }
+
+  /// The districts a party in [districtId] can walk into straight away, in
+  /// the plan's order: the ones it shares a border with (two corners of
+  /// their shapes in common); a district standing apart (the yard across
+  /// the water) and the district nearest it are joined, both ways, by the
+  /// streets and bridges. Empty for a district not on the plan.
+  List<String> neighboursOf(String districtId) =>
+      _neighbours[districtId] ?? const [];
+
+  /// The districts the party can walk to from [districtId] while [locked]
+  /// are shut (wave 18): its open neighbours, or, when every neighbour is
+  /// locked, the open district whose entry is nearest, so a party is never
+  /// left with nowhere to go. Empty for a district not on the plan.
+  List<String> walkableFrom(String districtId, Set<String> locked) {
+    final here = districts[districtId];
+    if (here == null) return const [];
+    final open = [
+      for (final b in neighboursOf(districtId))
+        if (!locked.contains(b)) b
+    ];
+    if (open.isNotEmpty) return open;
+    final rest = [
+      for (final b in districts.keys)
+        if (b != districtId && !locked.contains(b)) b
+    ]..sort((x, y) => (districts[x]!.entry - here.entry)
+        .distanceSquared
+        .compareTo((districts[y]!.entry - here.entry).distanceSquared));
+    return rest.isEmpty ? const [] : [rest.first];
+  }
+
+  late final Map<String, List<String>> _neighbours = () {
+    bool near(Offset a, Offset b) => (a - b).distanceSquared <= 1;
+    int shared(CityDistrictShape a, CityDistrictShape b) =>
+        a.shape.where((p) => b.shape.any((q) => near(p, q))).length;
+    final ids = districts.keys.toList();
+    final links = {for (final id in ids) id: <String>{}};
+    for (final a in ids) {
+      for (final b in ids) {
+        if (a != b && shared(districts[a]!, districts[b]!) >= 2) {
+          links[a]!.add(b);
+        }
+      }
+    }
+    for (final a in ids) {
+      if (links[a]!.isNotEmpty || ids.length < 2) continue;
+      final from = districts[a]!.entry;
+      final nearest = (ids.where((b) => b != a).toList()
+            ..sort((x, y) => (districts[x]!.entry - from)
+                .distanceSquared
+                .compareTo((districts[y]!.entry - from).distanceSquared)))
+          .first;
+      links[a]!.add(nearest);
+      links[nearest]!.add(a);
+    }
+    return {
+      for (final a in ids)
+        a: [
+          for (final b in ids)
+            if (links[a]!.contains(b)) b
+        ],
+    };
+  }();
 
   // --- PlacePlan ------------------------------------------------------
 
@@ -372,6 +462,65 @@ class CityPlanRecord implements PlacePlan {
       path.add(_nodes[v]);
     }
     return [from, ...path.reversed, to];
+  }
+
+  // --- Doorsteps (v1.542) ----------------------------------------------
+
+  /// Points along every avenue and street, a few units apart.
+  late final List<Offset> _streetSamples = [
+    for (final path in [...avenues, ...streets])
+      for (var i = 1; i < path.points.length; i++)
+        for (var k = 0,
+                n = math.max(
+                    1,
+                    ((path.points[i] - path.points[i - 1]).distance / 4)
+                        .ceil());
+            k < n;
+            k++)
+          Offset.lerp(path.points[i - 1], path.points[i], k / n)!,
+  ];
+
+  /// Where a scene that plays outside building [buildingId] stands (see
+  /// GeoPlace.doorstep): the point of the streets nearest the building's
+  /// middle, its door on the street; the building's middle when the plan
+  /// has no street, and the market square's for a building not on it.
+  Offset doorstepOf(String buildingId) {
+    final b = building(buildingId);
+    if (b == null) return anchorOf('');
+    if (_streetSamples.isEmpty) return b.centre;
+    var best = _streetSamples.first;
+    for (final p in _streetSamples) {
+      if ((p - b.centre).distanceSquared < (best - b.centre).distanceSquared) {
+        best = p;
+      }
+    }
+    return best;
+  }
+
+  /// [count] spots on the street round building [buildingId]'s doorstep,
+  /// for the ways of a scene played outside it (v1.542): each at least
+  /// [gap] from the doorstep and from one another, the nearest first, so
+  /// the pins stand in the street around the door and not on one point.
+  /// Where the streets near it give too few, the rest ring the doorstep.
+  List<Offset> streetSpotsAround(String buildingId, int count,
+      {double gap = 22}) {
+    if (count <= 0) return const [];
+    final door = doorstepOf(buildingId);
+    final near = [
+      for (final p in _streetSamples)
+        if ((p - door).distance >= gap && (p - door).distance <= gap * 6) p
+    ]..sort((a, b) =>
+        (a - door).distanceSquared.compareTo((b - door).distanceSquared));
+    final picked = <Offset>[];
+    for (final p in near) {
+      if (picked.length == count) break;
+      if (picked.every((q) => (q - p).distance >= gap)) picked.add(p);
+    }
+    for (var k = 0; picked.length < count; k++) {
+      final a = k * 2 * math.pi / math.max(count, 3);
+      picked.add(door + Offset(math.cos(a), math.sin(a)) * gap * 1.5);
+    }
+    return picked;
   }
 }
 

@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'ability_check.dart' show checkBonusFor;
+
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
 import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
+import '../combat/face_element.dart';
 import '../combat/foe_kind.dart';
 import '../combat/enemy_response.dart';
 import '../combat/fight_goal.dart';
@@ -22,7 +25,11 @@ import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
 import 'perks.dart';
 import 'shop_stock.dart';
+import 'camp_rolls.dart' show RollBanOn;
 import 'signs.dart';
+import 'sim_companions.dart';
+import 'sim_policy.dart';
+import 'sim_rolls.dart';
 import 'training.dart';
 
 /// A fight model for the in-app playthrough simulator: one simulated
@@ -34,9 +41,10 @@ import 'training.dart';
 /// profession starts with or buys, and a Mirror sending back the round's
 /// best hit. Deliberate simplifications, so the numbers read as "a solo
 /// player of this build" rather than a full party:
-/// - no companions, so no party combos or duo techniques (nor the
-///   dexterity order, Quick Resolve or a loadout swap, which only matter
-///   with one);
+/// - companions only for the competent player ([allies], see
+///   sim_companions.dart): their signature dice, approval and knock-outs,
+///   but no party combos or duo techniques (nor the dexterity order, Quick
+///   Resolve, momentum's surge or the hunt-the-healer retarget);
 /// - of the clash rules (v1.212-v1.215) the goals (hold, rout, subdue), the
 ///   Writ, squad roles, the enemies' answers (counter, press), parries and
 ///   element reactions are played when `clash` is on; the thieves' purse,
@@ -44,9 +52,9 @@ import 'training.dart';
 /// - no affixes, Elites or battlefield conditions;
 /// - no chapter threat on the enemies, and no sellsword;
 /// - of the face keywords only the strike ones a sign may lend (Cleave,
-///   Pierce, Pain, Steady), no Hex, Silence or Curse (the enemy spends its
-///   turn and nothing else changes), no Luck nudges and no Hammersmith
-///   work on the die;
+///   Pierce, Pain, Steady), with the enemies' Hex, Silence and Curse on
+///   the die as the fight screen lays them; no Luck nudges and no
+///   Hammersmith work on the die;
 /// - of the signs (see signs.dart), everything but momentum and the
 ///   party's share (there is no party); no Titan's Blood; of the clans'
 ///   Sworn boons (v1.194) the Writ, the Compact edge, the Crow's Price and
@@ -61,6 +69,17 @@ import 'training.dart';
 ///
 /// A lost fight refills health and mana like the app's own loss handling;
 /// a new chapter counts as a rest.
+/// How each profession's simulated build shares its picks (ability ->
+/// share of the points): mostly the damage stat, some Constitution, and
+/// what else the profession leans on (stat_rules.dart).
+const Map<String, Map<String, double>> simBuildShares = {
+  'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
+  'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
+  'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
+  'mage': {'intelligence': .6, 'wisdom': .2, 'constitution': .2},
+  'cleric': {'intelligence': .5, 'wisdom': .3, 'constitution': .2},
+};
+
 class SimCharacter {
   SimCharacter._({
     required this.raceId,
@@ -84,7 +103,7 @@ class SimCharacter {
     required this.potions,
     required this.startingGold,
   })  : currentHealth = maxHealth,
-        mana = maxManaFor(intelligence: intelligence, wisdom: wisdom);
+        mana = maxManaFor(wisdom: wisdom);
 
   /// Mirrors `PlayerSessionNotifier.startNewGame`: New Game Defaults plus
   /// the race's and profession's bonuses, the profession's starting die
@@ -117,8 +136,8 @@ class SimCharacter {
       for (final id in (profession['startingSpellIds'] as List?) ?? const [])
         if (spells[id.toString()] != null) spells[id.toString()]!,
     ];
-    final preferred = profession['preferredScalingStat']?.toString() ?? '';
-    return SimCharacter._(
+    final preferred = damageStatOf(professionId);
+    final character = SimCharacter._(
       raceId: raceId,
       professionId: professionId,
       preferredStat: preferred.isEmpty ? 'wisdom' : preferred,
@@ -152,13 +171,16 @@ class SimCharacter {
           bonus(race, 'startingGoldBonus') +
           bonus(profession, 'startingGoldBonus'),
     );
+    return character
+      ..diceId = dieId
+      ..ownedDice[dieId] = faces;
   }
 
   final String raceId;
   final String professionId;
 
   /// The ability score each level-up's assumed stat spend goes to -- the
-  /// profession's `preferredScalingStat`, or Wisdom for a Cleric.
+  /// profession's damage stat (stat_rules.dart), or Wisdom for none.
   final String preferredStat;
 
   int level = 1;
@@ -176,9 +198,13 @@ class SimCharacter {
   int charisma;
   int perception;
 
-  /// The flat bonus on a d20 for an ability check (see ability_check.dart):
-  /// the score itself. Equipment and level-up points are not counted.
-  int abilityBonus(String ability) => switch (ability) {
+  /// The bonus on a d20 for an ability check (see ability_check.dart's
+  /// checkBonusFor) from the score. Equipment and level-up points are not
+  /// counted.
+  int abilityBonus(String ability) => checkBonusFor(abilityScore(ability));
+
+  /// The character's score in [ability].
+  int abilityScore(String ability) => switch (ability) {
         'strength' => strength,
         'dexterity' => dexterity,
         'constitution' => constitution,
@@ -210,6 +236,47 @@ class SimCharacter {
   /// equipSlot -> item id.
   final Map<String, String> equippedBySlot = {};
 
+  /// How the player plays its choices (sim_policy.dart): the competent
+  /// one keeps what it owns ([ownedItemIds], [ownedDice]) and wears and
+  /// rolls the best of it.
+  SimPolicy policy = SimPolicy.naive;
+
+  /// The gear the competent player owns, worn or in the pack.
+  final Set<String> ownedItemIds = {};
+
+  /// The die in play's id, and the dice owned (id -> faces): the
+  /// profession's own (its signature die) from the start, and those the
+  /// competent player buys.
+  String diceId = '';
+  final Map<String, List<Map<String, dynamic>>> ownedDice = {};
+
+  /// The best die owned for the competent player (simDieValue, its skills
+  /// best placed by simSkillAssignments) rolled from now on, when it beats
+  /// the one in play.
+  void rollBestDie(Map<String, dynamic> skills) {
+    final caster = knownSpells.isNotEmpty;
+    var bestValue = simDieValue(diceFaces, diceSkillAssignments, skills,
+            damage: baseDamage, caster: caster) +
+        0.01;
+    for (final id in ownedDice.keys.toList()..sort()) {
+      if (id == diceId) continue;
+      final faces = ownedDice[id]!;
+      final placed = simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      final v = simDieValue(faces, placed, skills,
+          damage: baseDamage, caster: caster);
+      if (v > bestValue) {
+        bestValue = v;
+        diceId = id;
+        diceFaces = faces;
+        diceSkillAssignments = placed;
+      }
+    }
+  }
+
   /// Poison/Stun/Weaken on the character -- fight-scoped, cleared when a
   /// fight ends either way.
   List<StatusEffect> statusEffects = [];
@@ -231,6 +298,10 @@ class SimCharacter {
   Random pickRandom = Random(1);
   final Map<String, int> trainingTaken = {};
 
+  /// The camp's roll houses the walk built (sim_rolls.dart): null, or none
+  /// built, and the picks draw as they always did.
+  SimRolls? rolls;
+
   /// A sign's (or a perk's) extra mana, while a fight lasts.
   int signMaxMana = 0;
 
@@ -246,8 +317,7 @@ class SimCharacter {
   final Map<String, int> spellsCast = {};
   final List<String> spellbooksBought = [];
 
-  int get maxMana =>
-      maxManaFor(intelligence: intelligence, wisdom: wisdom) + signMaxMana;
+  int get maxMana => maxManaFor(wisdom: wisdom) + signMaxMana;
 
   List<String> get equippedItemIds => equippedBySlot.values.toList();
 
@@ -268,21 +338,12 @@ class SimCharacter {
     String element, {
     Map<String, ItemSet> itemSets = const {},
   }) {
-    final scaling = equipmentScalingBonusFor(
-      equippedItemIds,
-      items,
-      strength: strength,
-      dexterity: dexterity,
-      constitution: constitution,
-      intelligence: intelligence,
-    );
     final prefix = elementFieldPrefixes[element];
     final elemental = prefix == null
         ? 0
         : equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
     return baseDamage +
         equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
-        scaling.damageBonus +
         gearEffects(items, itemSets).attackDamage +
         elemental;
   }
@@ -291,17 +352,8 @@ class SimCharacter {
     Map<String, dynamic> items, {
     Map<String, ItemSet> itemSets = const {},
   }) {
-    final scaling = equipmentScalingBonusFor(
-      equippedItemIds,
-      items,
-      strength: strength,
-      dexterity: dexterity,
-      constitution: constitution,
-      intelligence: intelligence,
-    );
     return baseArmor +
         equipmentBonusFor(equippedItemIds, items, 'armor') +
-        scaling.armorBonus +
         gearEffects(items, itemSets).armor;
   }
 
@@ -319,11 +371,10 @@ class SimCharacter {
   }
 
   /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
-  /// level: +20 max health and +5 stat points -- with [trainingPaths], five
-  /// stat picks (see [takeStatPicks]) and the game's [levelDamageGain]
-  /// damage; else spent as +10 health, +2
-  /// damage, +1 armor and +1 to [preferredStat] (the simulator's old fixed
-  /// assumption) -- then a full heal like the app's own level-up.
+  /// level: [levelHealthGain] max health and [levelStatPicks] stat pick --
+  /// with [trainingPaths] drawn and taken (see [takeStatPicks]), else a
+  /// point to [preferredStat] (the simulator's fixed assumption) -- then a
+  /// full heal like the app's own level-up.
   bool gainXp(int gain) {
     xp += gain;
     var leveled = false;
@@ -331,26 +382,12 @@ class SimCharacter {
       xp -= level * 100;
       level++;
       leveled = true;
+      maxHealth += levelHealthGain;
+      rolls?.levels(1);
       if (trainingPaths.isNotEmpty) {
-        maxHealth += 20;
-        baseDamage += levelDamageGain;
-        takeStatPicks(5);
-        continue;
-      }
-      maxHealth += 30;
-      baseDamage += 2;
-      baseArmor += 1;
-      switch (preferredStat) {
-        case 'strength':
-          strength++;
-        case 'dexterity':
-          dexterity++;
-        case 'constitution':
-          constitution++;
-        case 'intelligence':
-          intelligence++;
-        default:
-          wisdom++;
+        takeStatPicks(levelStatPicks);
+      } else {
+        addAbilities({preferredStat: levelStatPicks});
       }
     }
     if (leveled) currentHealth = maxHealth;
@@ -358,59 +395,98 @@ class SimCharacter {
     return leveled;
   }
 
-  /// [count] stat picks (training.dart), each the offer statPickFor takes
-  /// for [preferredStat]; its gains applied, its path counted.
+  /// [gains] (ability -> points) added, with what they bring: the damage
+  /// stat's base damage, Constitution's health (stat_rules.dart), as
+  /// `PlayerSession.withAbilityGains`.
+  void addAbilities(Map<String, int> gains) {
+    for (final MapEntry(:key, :value) in gains.entries) {
+      switch (key) {
+        case 'strength':
+          strength += value;
+        case 'dexterity':
+          dexterity += value;
+        case 'constitution':
+          constitution += value;
+        case 'intelligence':
+          intelligence += value;
+        case 'wisdom':
+          wisdom += value;
+        case 'perception':
+          perception += value;
+        case 'luck':
+          luck += value;
+        case 'charisma':
+          charisma += value;
+      }
+    }
+    final effects = abilityGainEffects(gains, professionId);
+    baseDamage += effects.baseDamage;
+    maxHealth = max(1, maxHealth + effects.maxHealth);
+    currentHealth = max(1, currentHealth + effects.maxHealth);
+  }
+
+  /// The points this build has put into each ability through its picks.
+  final Map<String, int> pickedPoints = {};
+
+  /// [count] stat picks (training.dart), each the offer statPickForShares
+  /// takes for the profession's build (simBuildShares); its gains added,
+  /// its path counted.
   void takeStatPicks(int count) {
     for (var i = 0; i < count; i++) {
-      final offer = drawStatPick(
+      final stats = {
+        'strength': strength,
+        'dexterity': dexterity,
+        'constitution': constitution,
+        'intelligence': intelligence,
+        'wisdom': wisdom,
+        'perception': perception,
+        'luck': luck,
+        'charisma': charisma,
+      };
+      final roll = rolls;
+      var offer = drawStatPick(
         paths: trainingPaths,
         random: pickRandom,
         professionId: professionId,
         raceId: raceId,
+        luck: luck,
         taken: trainingTaken,
-        stats: {
-          'baseDamage': baseDamage,
-          'baseArmor': baseArmor,
-          'maxHealth': maxHealth,
-          'strength': strength,
-          'dexterity': dexterity,
-          'constitution': constitution,
-          'intelligence': intelligence,
-          'wisdom': wisdom,
-          'perception': perception,
-          'luck': luck,
-          'charisma': charisma,
-        },
+        stats: stats,
+        bannedPaths: roll?.banned(RollBanOn.pick) ?? const {},
       );
       if (offer.isEmpty) return;
-      final pick = offer[statPickFor(offer, preferredStat)];
-      trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
-      for (final MapEntry(:key, :value) in pick.gains.entries) {
-        switch (key) {
-          case 'baseDamage':
-            baseDamage += value;
-          case 'baseArmor':
-            baseArmor += value;
-          case 'maxHealth':
-            maxHealth += value;
-          case 'strength':
-            strength += value;
-          case 'dexterity':
-            dexterity += value;
-          case 'constitution':
-            constitution += value;
-          case 'intelligence':
-            intelligence += value;
-          case 'wisdom':
-            wisdom += value;
-          case 'perception':
-            perception += value;
-          case 'luck':
-            luck += value;
-          case 'charisma':
-            charisma += value;
+      final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
+      int choose(List<StatPickOffer> o) =>
+          statPickForShares(o, shares, pickedPoints);
+      if (roll != null) {
+        roll.freshDraw(RollBanOn.pick);
+        if (roll.built.isNotEmpty) {
+          final main =
+              shares.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+          offer = roll.workStatPick(offer,
+              wanted: shares.keys.toSet(),
+              mainStat: main,
+              paths: trainingPaths,
+              choose: choose,
+              redraw: (tier) => drawStatPick(
+                    paths: trainingPaths,
+                    random: roll.random,
+                    professionId: professionId,
+                    raceId: raceId,
+                    luck: luck,
+                    taken: trainingTaken,
+                    stats: stats,
+                    tier: tier,
+                    bannedPaths: roll.banned(RollBanOn.pick),
+                  ));
         }
       }
+      final pick = offer[choose(offer)];
+      trainingTaken[pick.pathId] = (trainingTaken[pick.pathId] ?? 0) + 1;
+      for (final MapEntry(:key, :value) in pick.gains.entries) {
+        pickedPoints[key] = (pickedPoints[key] ?? 0) + value;
+      }
+      addAbilities(pick.gains);
     }
   }
 
@@ -425,8 +501,14 @@ class SimCharacter {
     Map<String, dynamic> items,
     Map<String, dynamic> dice,
     Map<String, SpellSpec> spells,
-    int gold,
-  ) {
+    int gold, {
+    Map<String, dynamic> skills = const {},
+    Map<String, ItemSet> itemSets = const {},
+  }) {
+    if (policy == SimPolicy.competent) {
+      return _visitShopCompetent(shop, items, dice, spells, gold,
+          skills: skills, itemSets: itemSets);
+    }
     var purse = gold;
     int scoreOf(String? itemId) {
       final item = items[itemId] as Map<String, dynamic>?;
@@ -484,6 +566,9 @@ class SimCharacter {
       }
     }
 
+    // The stubborn player keeps its starting gear and die.
+    if (policy == SimPolicy.stubborn) return purse;
+
     // 3. Gear: per slot, the best affordable piece that beats what is worn.
     final bySlot = <String, MapEntry<String, Map<String, dynamic>>>{};
     for (final entry in stock) {
@@ -535,7 +620,167 @@ class SimCharacter {
     }
     return purse;
   }
+
+  /// The competent player's visit (sim_policy.dart): the profession's own
+  /// spellbook; potions up to [_potionsKept] charges; the best die the
+  /// shop sells it may roll, when it beats the one in play; then gear,
+  /// one piece at a time, the one that raises its best loadout most
+  /// (simBestLoadout, sets weighed) while the purse lasts; the change on
+  /// more potions, up to [_potionsStocked]. Returns the gold left.
+  int _visitShopCompetent(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> items,
+    Map<String, dynamic> dice,
+    Map<String, SpellSpec> spells,
+    int gold, {
+    required Map<String, dynamic> skills,
+    required Map<String, ItemSet> itemSets,
+  }) {
+    var purse = gold;
+    int costOf(Map<String, dynamic> item) =>
+        (item['cost'] as num?)?.toInt() ?? 0;
+    final quantities = (shop['stockQuantities'] as Map?)?.map(
+          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
+        ) ??
+        const <String, int>{};
+    final stock = <MapEntry<String, Map<String, dynamic>>>[
+      for (final raw in allShopStock(shop))
+        if (items[raw] is Map<String, dynamic>)
+          MapEntry(raw, items[raw] as Map<String, dynamic>),
+    ];
+
+    for (final entry in stock) {
+      final taughtSpellId = spellbookSpellIdFor(entry.value);
+      if (taughtSpellId == null) continue;
+      final spell = spells[taughtSpellId];
+      if (spell == null ||
+          purse < costOf(entry.value) ||
+          knownSpells.any((s) => s.id == spell.id) ||
+          !canLearnSpell(
+            spell,
+            professionId: professionId,
+            knownSpellIds: [for (final s in knownSpells) s.id],
+          )) {
+        continue;
+      }
+      purse -= costOf(entry.value);
+      knownSpells.add(spell);
+      spellbooksBought.add(spell.id);
+    }
+
+    void buyPotions(int upTo) {
+      for (final entry in stock) {
+        if (entry.value['itemType']?.toString() != 'Potion' ||
+            entry.key == 'antidote') {
+          continue;
+        }
+        final cost = costOf(entry.value);
+        final limit = quantities[entry.key] ?? 1;
+        var bought = 0;
+        while (potions < upTo && bought < limit && cost > 0 && purse >= cost) {
+          purse -= cost;
+          bought++;
+          potions += entry.key == 'potion_major' ? 2 : 1;
+        }
+      }
+    }
+
+    buyPotions(_potionsKept);
+
+    // The die: the best of the shop's it may roll, if it beats its own.
+    final caster = knownSpells.isNotEmpty;
+    final dieNow = simDieValue(diceFaces, diceSkillAssignments, skills,
+        damage: baseDamage, caster: caster);
+    String? dieId;
+    var dieBest = dieNow + 0.1;
+    for (final raw in (shop['diceStock'] as List?) ?? const []) {
+      final id = raw.toString();
+      final die = dice[id] as Map<String, dynamic>?;
+      final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+      if (die == null ||
+          faces == null ||
+          faces.isEmpty ||
+          ownedDice.containsKey(id) ||
+          purse < ((die['cost'] as num?)?.toInt() ?? 0) ||
+          !simCanUseDie(die, professionId: professionId, raceId: raceId)) {
+        continue;
+      }
+      final v = simDieValue(
+          faces,
+          simSkillAssignments(
+              faces: faces,
+              current: const {},
+              unlocked: unlockedSkillIds,
+              skills: skills),
+          skills,
+          damage: baseDamage,
+          caster: caster);
+      if (v > dieBest) {
+        dieBest = v;
+        dieId = id;
+      }
+    }
+    if (dieId != null) {
+      final die = dice[dieId] as Map<String, dynamic>;
+      purse -= (die['cost'] as num?)?.toInt() ?? 0;
+      ownedDice[dieId] = (die['faces'] as List).cast<Map<String, dynamic>>();
+      rollBestDie(skills);
+    }
+
+    // Gear, the best gain first, while the purse lasts.
+    bool canWear(Map<String, dynamic> item) => meetsItemStatRequirement(
+          item,
+          strength: strength,
+          dexterity: dexterity,
+          constitution: constitution,
+          intelligence: intelligence,
+        );
+    Map<String, String> bestWith(Iterable<String> extra) => simBestLoadout(
+        worn: equippedBySlot,
+        owned: {...ownedItemIds, ...extra},
+        items: items,
+        sets: itemSets,
+        canWear: canWear,
+        caster: caster);
+    double valueOf(Map<String, String> loadout) =>
+        simLoadoutValue(loadout.values, items, itemSets, caster: caster);
+    while (true) {
+      final now = valueOf(bestWith(const []));
+      String? pick;
+      var gain = 0.05;
+      for (final entry in stock) {
+        final item = entry.value;
+        if (item['isEquippable'] != true ||
+            ownedItemIds.contains(entry.key) ||
+            equippedBySlot.containsValue(entry.key) ||
+            purse < costOf(item) ||
+            !canWear(item)) {
+          continue;
+        }
+        final g = valueOf(bestWith([entry.key])) - now;
+        if (g > gain) {
+          gain = g;
+          pick = entry.key;
+        }
+      }
+      if (pick == null) break;
+      purse -= costOf(items[pick] as Map<String, dynamic>);
+      ownedItemIds.add(pick);
+      final best = bestWith(const []);
+      equippedBySlot
+        ..clear()
+        ..addAll(best);
+    }
+
+    buyPotions(_potionsStocked);
+    return purse;
+  }
 }
+
+/// The potion charges the competent player keeps before buying gear, and
+/// tops up to with the change.
+const int _potionsKept = 3;
+const int _potionsStocked = 5;
 
 /// One simulated fight's result, for the run's telemetry.
 class SimFightOutcome {
@@ -569,7 +814,7 @@ class SimFightOutcome {
 /// Pack-size stat multipliers, the fight screen's own.
 const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
-const int _potionHeal = 30;
+const int _potionHeal = 8; // potionHealAmount (item_stats.dart)
 const int _maxRolls = 3;
 
 class _SimEnemy {
@@ -595,6 +840,21 @@ class _SimEnemy {
   int phaseIndex = 0;
 
   bool get isAlive => health > 0;
+
+  /// A `healsOnce` boss (the claimants, fight_length.dart) that has mended
+  /// itself once this fight; [skills] is the skill table its heal moves
+  /// are read from.
+  bool healSpent = false;
+  Map<String, dynamic> skills = const {};
+  bool get healBlocked => healSpent && healsOnce(data);
+
+  /// Notes a heal of this enemy: a `healsOnce` boss spends its one heal,
+  /// and its heal moves leave its list.
+  void noteHeal() {
+    if (!healsOnce(data)) return;
+    healSpent = true;
+    data = withoutHealMoves(data, skills);
+  }
 
   /// v1.215 squad role and answer, v1.212 captain mark, and the pack this
   /// enemy fights in (for a guard's cover and a reaction's spread).
@@ -727,10 +987,12 @@ class _SimEnemy {
       final phase = phases[phaseIndex];
       phaseIndex++;
       entered++;
-      health = healthAfterPhaseHeal(phase, health, maxHealth);
+      final before = health;
+      if (!healBlocked) health = healthAfterPhaseHeal(phase, health, maxHealth);
       if (phase.cleanse) statusEffects = [];
       damage = (damage * phase.damageMultiplier).round();
       data = enemyDataInPhase(data, phase);
+      if (health > before || healBlocked) noteHeal();
     }
     return entered;
   }
@@ -760,6 +1022,7 @@ SimFightOutcome simulateSimFight({
   num Function(String clanId)? clanStanding,
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
+  List<SimAlly> allies = const [],
 }) {
   final c = character;
   // Which of the clash rules are in play.
@@ -775,8 +1038,20 @@ SimFightOutcome simulateSimFight({
   var writ = s.writFace;
   var edge = s.compactEdge;
   var crowsHits = 0;
+  // The enemies' tampering (dice_tamper.dart), as on the fight screen: a
+  // Silence laid in their turn hangs over the next round's dice, a Hex
+  // waits for the next roll, a Curse marks a face of the die for the rest
+  // of the fight (the Ember face lifts as many Curses as it has charges).
+  var silencePending = false, silenced = false, hexPending = false;
+  final cursedFaces = <int>{};
+  var emberCharges = s.emberFace;
   final lending = !s.isEmpty || perks.maxMana > 0;
   var secondWindAvailable = gear.secondWind;
+  final thornsBank = ThornsBank();
+  // What the strike, guard and mend signs' shares owe in fractions.
+  final strikeBank = FractionBank();
+  final guardBank = FractionBank();
+  final mendBank = FractionBank();
   var phasesEntered = 0;
   // The fight-length rules (fight_length.dart): the hero's heals so far,
   // and whether the pack has broken.
@@ -839,6 +1114,7 @@ SimFightOutcome simulateSimFight({
   // stays full, a running pact may take a share off the top) and mana.
   final baseMaxHealth = c.maxHealth;
   void lendStats(int sign) {
+    c.baseDamage += sign * s.stat(damageStatOf(c.professionId));
     c.strength += sign * s.stat('strength');
     c.dexterity += sign * s.stat('dexterity');
     c.constitution += sign * s.stat('constitution');
@@ -893,6 +1169,8 @@ SimFightOutcome simulateSimFight({
       random: random,
     );
   }
+  // A claimant's fight stops the enemies' Tide (fight_length.dart).
+  final tideCap = fightTideCap([for (final entry in enemies) entry.value]);
   final doctrine = on('writ')
       ? doctrineForFight(
           factions: [
@@ -908,7 +1186,7 @@ SimFightOutcome simulateSimFight({
         final entry = enemies[i];
         var health = max(
           1,
-          (scaledMaxHealth(
+          (enemyScaledMaxHealth(
                     (entry.value['maxHealth'] as num?)?.toInt() ?? 1,
                     c.level,
                   ) *
@@ -942,6 +1220,7 @@ SimFightOutcome simulateSimFight({
           maxHealth: health,
           damage: damage,
         )
+          ..skills = skills
           ..role = roles[i]
           ..response = on('response') && chapter >= squadFirstChapter
               ? enemyResponseFromName(entry.value['reaction']?.toString())
@@ -1098,6 +1377,8 @@ SimFightOutcome simulateSimFight({
     rounds++;
     specRound = rounds;
     ctxRound = rounds;
+    silenced = silencePending;
+    silencePending = false;
     for (final e in ens) {
       e.damageThisRound = 0;
       e.topHit = 0;
@@ -1114,6 +1395,19 @@ SimFightOutcome simulateSimFight({
     if (c.isKnockedOut) return finish(false);
     final stunned = isStunned(c.statusEffects);
     if (stunned) c.statusEffects = tickStatusEffects(c.statusEffects);
+    // The companions' round start, as the hero's: poison, then a stun.
+    for (final a in allies) {
+      a.block = 0;
+      a.stunned = false;
+      if (a.isKnockedOut) continue;
+      final aPoison = poisonDamageFor(a.statusEffects);
+      if (aPoison > 0) a.currentHealth = max(0, a.currentHealth - aPoison);
+      if (a.isKnockedOut) continue;
+      if (isStunned(a.statusEffects)) {
+        a.stunned = true;
+        a.statusEffects = tickStatusEffects(a.statusEffects);
+      }
+    }
 
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
@@ -1202,6 +1496,10 @@ SimFightOutcome simulateSimFight({
       var verdict = false, firstOfRun = false;
       var rolls = 0;
       var redraw = false;
+      // Whether [f] lands blank under the Curses and this round's Silence
+      // (a cursed blank strikes; a silenced skill face of its own is blank).
+      bool blank(DiceFaceResult f) =>
+          _tamperedFace(f, cursedFaces, silenced).type == 'Empty';
       do {
         rolls++;
         if (trail != null) {
@@ -1212,15 +1510,24 @@ SimFightOutcome simulateSimFight({
         } else {
           face = rollDie(c.diceFaces, random);
         }
+        // A Hex laid last turn rolls the first die to land again at once
+        // (a plain roll, the Trail's included), unless it landed Steady.
+        if (rolls == 1 && hexPending) {
+          hexPending = false;
+          final steady = _landsSteady(c, face, s, cursedFaces, silenced);
+          if (hexVictim({if (!steady) 'hero': 0}) != null) {
+            face = rollDie(c.diceFaces, random);
+          }
+        }
         // The Second Broadside: once a fight, a face that would not strike
         // goes back, and the Trail draws again.
         redraw = trail != null &&
             has(Spec.secondBroadside) &&
             !broadsideUsed &&
-            face.type != 'Empty' &&
+            !blank(face) &&
             !faceStrikes(face.type);
         if (redraw) broadsideUsed = true;
-      } while ((face.type == 'Empty' || redraw) && rolls < _maxRolls);
+      } while ((blank(face) || redraw) && rolls < _maxRolls);
       face = applyFaceAssignment(
         face,
         c.diceFaces[face.faceIndex],
@@ -1232,7 +1539,6 @@ SimFightOutcome simulateSimFight({
           face.type == 'Skill') {
         face = silencedFace(face);
       }
-      playedDefend = face.type == 'Defend';
       // The strike signs: an Attack face takes their keywords, and their
       // element when it has none of its own.
       if (face.type == 'Attack') {
@@ -1247,6 +1553,10 @@ SimFightOutcome simulateSimFight({
       if (has(Spec.berserker) && face.type == 'Attack') {
         face = face.withKeywords({...face.keywords, FaceKeyword.pain});
       }
+      // The enemies' tampering, last as on the fight screen: a Curse on the
+      // face, then the round's Silence.
+      face = _tamperedFace(face, cursedFaces, silenced);
+      playedDefend = face.type == 'Defend';
       final attack = face.type == 'Attack';
       if (face.hasKeyword(FaceKeyword.steady) &&
           (attack || face.type == 'Defend' || face.type == 'Heal')) {
@@ -1254,24 +1564,24 @@ SimFightOutcome simulateSimFight({
       }
       // The guard, mend and spell signs on the face's number.
       face = switch (face.type) {
-        'Defend' => face.withValue(s.guardValue(face.value)),
-        'Heal' => face.withValue(s.mendValue(face.value, c.wisdom ~/ 2)),
+        'Defend' => face.withValue(s.guardValue(face.value, bank: guardBank)),
+        'Heal' => face.withValue(s.mendValue(
+            face.value, wisdomHealBonusFor(c.wisdom),
+            bank: mendBank)),
         'Mana' => face.withValue(s.manaValue(face.value)),
         _ => face,
       };
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
-      var element = face.element;
-      if (face.type == 'Skill') {
-        final skill = availableSkills[skillId] as Map<String, dynamic>?;
-        element = skill?['element']?.toString() ?? 'None';
-      }
+      var element =
+          faceHitElement(face.type, face.element, availableSkills[skillId]);
       var damageBase = c.casterDamage(items, element, itemSets: itemSets);
       if (attack || face.type == 'Skill') {
         damageBase = s.strikeBase(
           damageBase,
           face.value,
           attackFace: attack,
+          bank: strikeBank,
           percent: s.strikePercentFor(
             attackFace: attack,
             currentHealth: c.currentHealth,
@@ -1290,11 +1600,13 @@ SimFightOutcome simulateSimFight({
             availableSkills,
             damageBase,
             activeEffects: c.statusEffects,
-            wisdomHealBonus: c.wisdom ~/ 2,
+            wisdomHealBonus: wisdomHealBonusFor(c.wisdom),
             wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
             luck: c.luck,
             random: random,
-            critChanceBonus: gear.critChance + ledgerChain,
+            critChanceBonus: gear.critChance +
+                perceptionCritBonus(c.professionId, c.perception) +
+                ledgerChain,
             forceCritical: sure,
           );
       var result = rollFace(sure: sureCrit);
@@ -1611,6 +1923,92 @@ SimFightOutcome simulateSimFight({
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
+    // The companions' turns (sim_companions.dart), as the fight screen
+    // plays an auto-aiming party: each rolls their signature die (again on
+    // a blank face, as the hero), the face cast with their own skills at
+    // their damage on the enemy the hero aims at; a Heal mends them, a
+    // Defend guards them, a Mana face fills the shared pool.
+    var alliesActing = 0, alliesDefending = 0;
+    SimAlly? guardian;
+    for (final a in allies) {
+      if (a.isKnockedOut || a.stunned || a.faces.isEmpty) continue;
+      alliesActing++;
+      var face = rollDie(a.faces, random);
+      for (var r = 1; face.type == 'Empty' && r < _maxRolls; r++) {
+        face = rollDie(a.faces, random);
+      }
+      face = applyFaceAssignment(face, a.faces[face.faceIndex], null);
+      if (doctrine?.rule == DoctrineRule.writ &&
+          writSilencesRound(rounds) &&
+          face.type == 'Skill') {
+        face = silencedFace(face);
+      }
+      a.facesPlayed[face.type] = (a.facesPlayed[face.type] ?? 0) + 1;
+      final skillId =
+          face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
+      final element =
+          faceHitElement(face.type, face.element, a.skills[skillId]);
+      if (face.type == 'Skill') {
+        a.skillsCast[skillId] = (a.skillsCast[skillId] ?? 0) + 1;
+      }
+      final result = resolvePlayerFace(
+        face,
+        a.skills,
+        a.damage,
+        activeEffects: a.statusEffects,
+        wisdomHealBonus: wisdomHealBonusFor(a.wisdom),
+        wisdomManaBonus: wisdomManaBonusFor(a.wisdom),
+        luck: a.luck,
+        random: random,
+        critChanceBonus: perceptionCritBonus(a.professionId, a.perception),
+        armor: a.armor,
+      );
+      var dealt = face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0
+          ? result.damageDealt * painDamageMultiplier
+          : result.damageDealt;
+      if (ctx != null) {
+        dealt = ctx.blow(dealt, rounds,
+            byParty: true,
+            element: element,
+            bossFight: bossFlags.any((b) => b));
+      }
+      final target = on('squad') ? _focusTarget(ens) : firstLiving();
+      if (target != null && dealt > 0) {
+        final pierce = face.hasKeyword(FaceKeyword.pierce);
+        final landed = clash
+            ? target.landHit(dealt, element, rounds,
+                pierce: pierce, react: on('reaction'))
+            : target.takeHit(dealt, element, pierce: pierce);
+        if (!clash) target.health = max(0, target.health - landed);
+        a.damageDealt += landed;
+        bestHit = max(bestHit, landed);
+        if (element != 'None') target.elementsHit.add(element);
+      }
+      final inflicted = result.inflictedStatus;
+      if (target != null && inflicted != null && target.isAlive) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, inflicted);
+      }
+      var heal = ctx?.heal(result.healingDone, rounds) ?? result.healingDone;
+      if (on('fatigue') && heal > 0) heal = fatiguedHeal(heal, a.healsGiven++);
+      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+      a.block += result.blockAmount;
+      if (face.type == 'Defend' && result.blockAmount > 0) {
+        alliesDefending++;
+        if (guardian == null || a.block > guardian.block) guardian = a;
+      }
+      if (result.manaGained > 0) {
+        final before = c.mana;
+        c.mana = min(c.maxMana, c.mana + result.manaGained);
+        manaGained += c.mana - before;
+      }
+      a.statusEffects = tickStatusEffects(a.statusEffects);
+    }
+    // Taunt: whoever kept the biggest Defend face draws the blows aimed at
+    // the others while their guard holds (enemy_intent.dart).
+    final heroGuards =
+        allies.isNotEmpty && playedDefend && block > (guardian?.block ?? 0);
+    if (heroGuards) guardian = null;
     // The fight-length rules after the hero's blows (fight_length.dart):
     // the execute line, the pack's leader, a hurt foe's nerve.
     if (on('execute')) {
@@ -1673,8 +2071,8 @@ SimFightOutcome simulateSimFight({
             }
           case EnemyResponse.press:
             if (provokesPress(
-              defenders: playedDefend ? 1 : 0,
-              acting: acted ? 1 : 0,
+              defenders: (playedDefend ? 1 : 0) + alliesDefending,
+              acting: (acted ? 1 : 0) + alliesActing,
             )) {
               e.pressing = true;
             }
@@ -1767,6 +2165,10 @@ SimFightOutcome simulateSimFight({
       if (held == null && move.intent != EnemyIntent.attack) {
         switch (move.intent) {
           case EnemyIntent.heal:
+            // A claimant's one heal (fight_length.dart): spent, its turn
+            // passes.
+            if (e.healBlocked) break;
+            final before = e.health;
             e.health = min(
               e.maxHealth,
               e.health +
@@ -1776,6 +2178,7 @@ SimFightOutcome simulateSimFight({
                     baseMaxHealth: baseMax,
                   ),
             );
+            if (e.health > before) e.noteHeal();
           case EnemyIntent.guard:
             e.guard = move.guardAmount;
           case EnemyIntent.charge:
@@ -1787,22 +2190,67 @@ SimFightOutcome simulateSimFight({
                   (other.damage * (1 + move.rallyPercent / 100)).round();
               other.rallies++;
             }
-          // A Hex, a Silence or a Curse (v1.182) isn't modelled here: the
-          // enemy spends its turn on it and nothing else changes.
+          // A Hex, a Silence or a Curse (v1.182) on the hero's die, as the
+          // fight screen lays it (fight_dice_rules `_applyTamper`).
           case EnemyIntent.tamper:
+            switch (move.tamper) {
+              case DiceTamper.hex:
+                hexPending = true;
+              case DiceTamper.silence:
+                silencePending = true;
+              case DiceTamper.curse:
+                final index =
+                    curseTargetFace(c.diceFaces.length, cursedFaces, random);
+                if (index == null) break;
+                if (emberCharges > 0) {
+                  emberCharges--;
+                } else {
+                  cursedFaces.add(index);
+                }
+              case DiceTamper.mirror:
+              case null:
+                break;
+            }
           case EnemyIntent.attack:
             break;
         }
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
       }
-      // The Lantern's Writ cancels the first blows outright.
-      if (writ > 0) {
+      // A party fight: the blow is aimed at a member standing, drawn at
+      // random (the fight screen's _rollMoveAndTargetFor; null: the hero),
+      // and taken by the guardian while their guard holds.
+      SimAlly? struck;
+      if (allies.isNotEmpty) {
+        final standing = <SimAlly?>[
+          null,
+          ...allies.where((a) => !a.isKnockedOut),
+        ];
+        struck = standing[random.nextInt(standing.length)];
+        final keeper = guardian;
+        if (heroGuards) {
+          if (guardianTakesBlow(
+              guardianStanding: !c.isKnockedOut,
+              guardianBlock: block,
+              aimedAtGuardian: struck == null)) {
+            struck = null;
+          }
+        } else if (keeper != null &&
+            guardianTakesBlow(
+                guardianStanding: !keeper.isKnockedOut,
+                guardianBlock: keeper.block,
+                aimedAtGuardian: identical(struck, keeper))) {
+          struck = keeper;
+        }
+      }
+      // The Lantern's Writ cancels the first blows aimed at the hero.
+      if (struck == null && writ > 0) {
         writ--;
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
       }
-      if (move.healAmount > 0) {
+      if (move.healAmount > 0 && !e.healBlocked) {
+        final before = e.health;
         e.health = min(
           e.maxHealth,
           e.health +
@@ -1812,6 +2260,7 @@ SimFightOutcome simulateSimFight({
                 baseMaxHealth: baseMax,
               ),
         );
+        if (e.health > before) e.noteHeal();
       }
       // A Mirror sends back the round's best hit, as on the fight screen;
       // a pact's curse makes every blow harder while it runs.
@@ -1839,16 +2288,37 @@ SimFightOutcome simulateSimFight({
           byParty: false,
           element: move.element,
           bossFight: bossFlags.any((b) => b),
+          enemyTideCap: tideCap,
         );
       }
       // A beast tires (foe_kind.dart).
       if (on('kinds')) {
         moveDamage = foeBlow(moveDamage, e.data, rounds, boss: boss(e));
       }
+      // A companion struck: their dodge, their guard and armor, the
+      // affliction past their Wisdom; knocked out at 0, the fight goes on.
+      if (struck != null) {
+        final a = struck;
+        final dodged = random.nextDouble() * 100 <
+            dodgeChanceFor(a.dexterity,
+                perception: a.perception, professionId: a.professionId);
+        final taken = dodged ? 0 : max(0, moveDamage - a.block - a.armor);
+        a.block = 0;
+        a.currentHealth = max(0, a.currentHealth - taken);
+        final inflicted = move.inflictedStatus;
+        if (!dodged && inflicted != null && !a.isKnockedOut) {
+          a.statusEffects = applyStatusEffect(
+              a.statusEffects, applyWisdomResistance(inflicted, a.wisdom));
+        }
+        e.statusEffects = tickStatusEffects(e.statusEffects);
+        continue;
+      }
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
-              dodgeChanceFor(c.dexterity) + gear.dodgeChance &&
+              dodgeChanceFor(c.dexterity,
+                      perception: c.perception, professionId: c.professionId) +
+                  gear.dodgeChance &&
           !has(Spec.briarGuard);
       var taken = dodged
           ? 0
@@ -1861,6 +2331,14 @@ SimFightOutcome simulateSimFight({
                   s.armor -
                   c.elementalResist(items, move.element),
             );
+      // A warrior's Perception blocks half a blow now and then.
+      final blockChance =
+          blockChanceWith(c.professionId, c.perception, gear.blockChance);
+      if (taken > 0 &&
+          blockChance > 0 &&
+          random.nextDouble() * 100 < blockChance) {
+        taken = blockedBlow(taken);
+      }
       if (taken >= c.currentHealth &&
           c.currentHealth > 0 &&
           secondWindAvailable) {
@@ -1894,8 +2372,9 @@ SimFightOutcome simulateSimFight({
         e.parryBlock = 0;
         if (e.isAlive) phasesEntered += e.advancePhases();
       }
-      if (taken > 0 && gear.thorns > 0) {
-        e.health = max(0, e.health - gear.thorns);
+      final thorns = thornsBank.answer(taken, gear.thornsPercent);
+      if (thorns > 0) {
+        e.health = max(0, e.health - thorns);
         phasesEntered += e.advancePhases();
       }
       block = 0;
@@ -2222,4 +2701,30 @@ _SimEnemy? _focusTarget(List<_SimEnemy> ens) {
     if (e.isAlive) return e;
   }
   return null;
+}
+
+/// [face] under the enemies' tampering, as fight_dice_rules' `_tampered`
+/// lands it: a Curse on the face ([cursed] holds the cursed face indexes),
+/// then a Silence over the round.
+DiceFaceResult _tamperedFace(
+    DiceFaceResult face, Set<int> cursed, bool silenced) {
+  var landed = cursed.contains(face.faceIndex) ? cursedFace(face) : face;
+  if (silenced && landed.type == 'Skill') landed = silencedFace(landed);
+  return landed;
+}
+
+/// Whether the hero's [raw] roll lands Steady -- the die a Hex leaves
+/// alone: the face with its skill, the strike signs' keywords on an Attack
+/// face, then the tampering.
+bool _landsSteady(SimCharacter c, DiceFaceResult raw, SignEffects s,
+    Set<int> cursed, bool silenced) {
+  var face = applyFaceAssignment(
+    raw,
+    c.diceFaces[raw.faceIndex],
+    c.diceSkillAssignments[raw.faceIndex.toString()],
+  );
+  if (face.type == 'Attack' && s.strikeKeywords.isNotEmpty) {
+    face = face.withKeywords({...face.keywords, ...s.strikeKeywords});
+  }
+  return _tamperedFace(face, cursed, silenced).hasKeyword(FaceKeyword.steady);
 }

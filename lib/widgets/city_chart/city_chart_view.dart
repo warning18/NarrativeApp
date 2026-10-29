@@ -8,7 +8,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
+import '../../data/city_camera.dart';
+import '../../data/journey_rules.dart' show DayPhase;
 import '../../data/map_charts.dart';
 import '../../data/world_map.dart' show MapLook;
 import '../journey_banner_pin.dart' show PinBanner;
@@ -60,6 +63,7 @@ class CityChartView extends StatefulWidget {
     this.explored,
     this.hereDistrict,
     this.hereWayId,
+    this.partyAt,
     this.goalWayId,
     this.text = const CityChartText(),
     this.onWay,
@@ -70,12 +74,27 @@ class CityChartView extends StatefulWidget {
     this.onFocus,
     this.onPick,
     this.onPickFog,
+    this.services = const [],
+    this.onService,
+    this.rulers = const {},
+    this.locked = const {},
+    this.holds = const {},
     this.controls = true,
     this.cards = true,
     this.numbers = const {},
     this.banners = const {},
     this.bannersDark = true,
+    this.phase = DayPhase.day,
+    this.camera,
+    this.buildingNames = true,
   });
+
+  /// The Journey's hold on the view (v1.580, city_camera.dart): a shot it
+  /// asks for moves the view, and the view reports its zoom back.
+  final CityChartCamera? camera;
+
+  /// Whether the story's buildings are named on the plan.
+  final bool buildingNames;
 
   /// A number on each pin by way id (the host's list rows carry the same).
   final Map<String, int> numbers;
@@ -83,6 +102,9 @@ class CityChartView extends StatefulWidget {
   /// Ways that hang as a banner (by way id) rather than a round pin.
   final Map<String, PinBanner> banners;
   final bool bannersDark;
+
+  /// The part of the day the town is drawn at (the world clock's).
+  final DayPhase phase;
 
   /// A district to open on (and to frame again whenever [focus] or
   /// [focusToken] changes); null shows the whole city. The Journey hosts the
@@ -99,6 +121,19 @@ class CityChartView extends StatefulWidget {
   final void Function(CityChartWay way)? onPick;
   final void Function(CityChartDistrict district)? onPickFog;
 
+  /// The town's service pins, and told when one is tapped.
+  final List<CityChartService> services;
+
+  /// The ruling clan's colours by district id.
+  final Map<String, CityChartRuler> rulers;
+
+  /// The districts a side quest keeps shut (wave 18): shuttered on the plan.
+  final Set<String> locked;
+
+  /// Who holds a district and how firmly, by district id: its crest.
+  final Map<String, CityChartHold> holds;
+  final void Function(CityChartService service)? onService;
+
   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
   /// off when a host has its own.
   final bool controls;
@@ -111,6 +146,9 @@ class CityChartView extends StatefulWidget {
   final Set<String>? explored;
   final String? hereDistrict;
   final String? hereWayId;
+
+  /// Where the party's mark is while the host walks it to a way.
+  final Offset? partyAt;
 
   /// The goal the player set, if any (nothing is marked on its own).
   final String? goalWayId;
@@ -154,12 +192,17 @@ class _CityChartViewState extends State<CityChartView>
   (DateTime, Offset)? _lastTap;
   String? _focus;
   CityChartWay? _pickedWay;
+  CityChartService? _pickedService;
   CityChartDistrict? _pickedFog;
   String? _reportedFocus;
 
   @override
   void didUpdateWidget(covariant CityChartView old) {
     super.didUpdateWidget(old);
+    if (old.camera != widget.camera) {
+      old.camera?.removeListener(_onCamera);
+      widget.camera?.addListener(_onCamera);
+    }
     if (old.focus != widget.focus || old.focusToken != widget.focusToken) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || !_placed) return;
@@ -178,12 +221,14 @@ class _CityChartViewState extends State<CityChartView>
   @override
   void initState() {
     super.initState();
+    widget.camera?.addListener(_onCamera);
     _move.addListener(_tick);
     if (widget.animate) _breath.repeat();
   }
 
   @override
   void dispose() {
+    widget.camera?.removeListener(_onCamera);
     _move.dispose();
     _breath.dispose();
     super.dispose();
@@ -197,6 +242,66 @@ class _CityChartViewState extends State<CityChartView>
     });
   }
 
+  /// The camera's shot (city_camera.dart), taken once the view has its
+  /// size: the district's frame (the city's when none) times the shot's
+  /// zoom, or the closest zoom for a full shot, on its centre.
+  void _onCamera() {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
+    } else {
+      _takeShot();
+    }
+  }
+
+  void _takeShot() {
+    final shot = widget.camera?.shot;
+    if (!mounted || !_placed || shot == null) return;
+    widget.camera!.taken();
+    final d = shot.districtId == null
+        ? null
+        : widget.chart.districtById(shot.districtId!);
+    final box = d?.box ?? widget.chart.bounds;
+    final frame = math.min(_size.width / box.width, _size.height / box.height);
+    final scale = shot.full ? _maxScale : frame * shot.zoom;
+    final centre = shot.centre ?? box.center;
+    final offset = Offset(_size.width / 2, _size.height / 2) - centre * scale;
+    if (shot.jump || !widget.animate) {
+      final s = scale.clamp(_minScale, _maxScale);
+      setState(() {
+        _scale = s;
+        _offset = _clamped(offset, s);
+      });
+    } else {
+      _move.duration = shot.duration;
+      _animateTo(scale, offset);
+      _move
+        ..removeStatusListener(_restoreMove)
+        ..addStatusListener(_restoreMove);
+    }
+    if (d != null) setState(() => _focus = d.id);
+  }
+
+  void _restoreMove(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    _move.removeStatusListener(_restoreMove);
+    _move.duration = const Duration(milliseconds: 420);
+  }
+
+  double? _reportedZoom;
+
+  /// Tells the camera the view's zoom once it changed.
+  void _reportZoom() {
+    final camera = widget.camera;
+    if (camera == null || !_placed || _scale == _reportedZoom) return;
+    _reportedZoom = _scale;
+    final zoom = _scale / _fitted;
+    final full = _scale >= _maxScale * fullZoomShare;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) camera.report(zoom: zoom, full: full);
+    });
+  }
+
   double get _minScale => _fitted * 0.85;
   double get _maxScale => _fitted * 9;
 
@@ -206,6 +311,10 @@ class _CityChartViewState extends State<CityChartView>
     _fitted = math.min(size.width / b.width, size.height / b.height);
     if (!_placed) {
       _placed = true;
+      // A shot asked for before the view had its size.
+      if (widget.camera?.pending ?? false) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
+      }
       _scale = _fitted;
       _offset = Offset((size.width - b.width * _fitted) / 2,
           (size.height - b.height * _fitted) / 2);
@@ -301,19 +410,42 @@ class _CityChartViewState extends State<CityChartView>
         explored: widget.explored,
         hereDistrict: widget.hereDistrict,
         hereWayId: widget.hereWayId,
+        partyAt: widget.partyAt,
         goalWayId: widget.goalWayId,
         selectedWayId: _pickedWay?.id,
+        services: widget.services,
+        rulers: widget.rulers,
+        locked: widget.locked,
+        holds: widget.holds,
+        selectedServiceId: _pickedService?.id,
         focusDistrict: _focus,
         numbers: widget.numbers,
         banners: widget.banners,
         bannersDark: widget.bannersDark,
         pulse: pulse,
+        phase: widget.phase,
+        buildingNames: widget.buildingNames,
       );
 
   void _tap(Offset at) {
     final chart = widget.chart;
     final plan = (at - _offset) / _scale;
     final painter = _painter();
+    // Services, when they are showing: a sign on a square or a lot.
+    for (final s in widget.services) {
+      if (!painter.serviceShown(s)) continue;
+      final pin = _offset + s.at * _scale;
+      if ((pin - at).distance <= CityChartPainter.serviceRadius + 8) {
+        setState(() {
+          _pickedService = s;
+          _pickedWay = null;
+          _pickedFog = null;
+        });
+        widget.onService?.call(s);
+        return;
+      }
+    }
+    _pickedService = null;
     // Pins first, when they are showing.
     if (painter.detailed) {
       for (final w in chart.ways) {
@@ -374,6 +506,7 @@ class _CityChartViewState extends State<CityChartView>
     final text = widget.text;
     return LayoutBuilder(builder: (context, box) {
       _fit(Size(box.maxWidth, box.maxHeight));
+      _reportZoom();
       final focus = _focus == null ? null : widget.chart.districtById(_focus!);
       final zoomed = _scale / _fitted > 1.05;
       if (_focus != _reportedFocus) {

@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,6 +26,7 @@ import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Future<Map<String, dynamic>> _loadJson(String path) async {
   final raw = await rootBundle.loadString(path);
@@ -50,9 +52,12 @@ double _winRate(
   int trials = 500,
 }) {
   var wins = 0;
-  final maxHealth = 120 + 20 * (level - 1);
-  final baseDamage = 13 + 3 * (level - 1);
-  final baseArmor = 3 + 2 * (level - 1);
+  // The fighter's numbers on the fight's small scale (stat-scale.md: a
+  // fifth of the 120 health + 20, 13 damage + 3, 3 armor + 2 a level; its
+  // armor rounded up, as the game's own armor reaches a whole point).
+  final maxHealth = 24 + 4 * (level - 1);
+  final baseDamage = ((13 + 3 * (level - 1)) / 5).round();
+  final baseArmor = ((3 + 2 * (level - 1)) / 5).ceil();
   final enemyMaxHealth =
       scaledMaxHealth((enemy['maxHealth'] as num).toInt(), level);
   final enemyDamage = scaledDamage((enemy['damage'] as num).toInt(), level);
@@ -178,6 +183,13 @@ void main() {
       'void_sovereign': (8, 0.35),
     };
     late Map<String, (int, int)> tally;
+    late Map<String, (int, int)> champions;
+
+    /// The encounters each profession wins within three tries, in percent
+    /// (the same 400 runs: the guard on the professions' spread, QA), and
+    /// the standard error of each, from how much its runs differ.
+    late Map<String, double> professionWin;
+    late Map<String, double> professionError;
 
     setUpAll(() {
       Map<String, dynamic> table(String name) =>
@@ -189,16 +201,9 @@ void main() {
         for (final e in raw.entries)
           e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
       });
-      final tables = {
-        for (final name in [
-          'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-          'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-          'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-          'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-          'expedition_steps', 'training_paths',
-        ])
-          name: table(name),
-      };
+      // The full world, specialisations included, as the game and the
+      // simulator screen play it (v1.613, docs/proposals/bosses-full-world.md).
+      final tables = simTables();
       final professions = tables['professions']!.keys.toList()..sort();
       const goals = [
         SimStrategy.random,
@@ -218,7 +223,10 @@ void main() {
                     professions[(i ~/ goals.length) % professions.length],
               ),
           ],
-          seed: 7);
+          seed: 7,
+          // The nemeses' champions are met on the same walk (the champions'
+          // curve below), so one run measures both.
+          championFights: true);
       tally = {};
       for (final run in runs) {
         for (final MapEntry(key: boss, value: (chapter, _))
@@ -229,6 +237,50 @@ void main() {
           tally[boss] = (fought + met.fought, lost + met.lost);
         }
       }
+      champions = {};
+      for (final run in runs) {
+        for (final byChapter in run.enemiesByChapter.values) {
+          for (final e in byChapter.entries) {
+            if (!e.key.startsWith('champion_')) continue;
+            final (f, l) = champions[e.key] ?? (0, 0);
+            champions[e.key] = (f + e.value.fought, l + e.value.lost);
+          }
+        }
+      }
+      final fought = <String, int>{};
+      final lost = <String, int>{};
+      final perRun = <String, List<double>>{};
+      for (final run in runs) {
+        var runFought = 0, runLost = 0;
+        for (final chapter in run.enemiesByChapter.values) {
+          for (final MapEntry(key: id, value: enemy) in chapter.entries) {
+            if (id.startsWith('champion_')) continue;
+            runFought += enemy.fought;
+            runLost += enemy.lost;
+          }
+        }
+        if (runFought > 0) {
+          (perRun[run.professionId] ??= [])
+              .add(100 * (1 - runLost / runFought));
+        }
+        for (final chapter in run.enemiesByChapter.values) {
+          for (final MapEntry(key: id, value: enemy) in chapter.entries) {
+            // The champions have their own curve; the professions' spread
+            // is measured on the encounters it always was.
+            if (id.startsWith('champion_')) continue;
+            fought[run.professionId] =
+                (fought[run.professionId] ?? 0) + enemy.fought;
+            lost[run.professionId] = (lost[run.professionId] ?? 0) + enemy.lost;
+          }
+        }
+      }
+      professionWin = {
+        for (final p in professions)
+          p: 100 * (1 - (lost[p] ?? 0) / (fought[p] ?? 1)),
+      };
+      professionError = {
+        for (final p in professions) p: _standardError(perRun[p] ?? const []),
+      };
     });
 
     for (final MapEntry(key: boss, value: (chapter, target))
@@ -237,12 +289,56 @@ void main() {
           '$boss (chapter $chapter) is won about ${(target * 100).round()}% '
           'of the time', () {
         final (fought, lost) = tally[boss] ?? (0, 0);
-        expect(fought, greaterThanOrEqualTo(40), reason: 'too few met');
+        // A claimant is met only in the runs that backed its claim, and
+        // the clans' attacks on districts (v1.617) move which claim that
+        // is: 30 each, the three held together below.
+        final least = boss.startsWith('claimant_') ? 30 : 40;
+        expect(fought, greaterThanOrEqualTo(least), reason: 'too few met');
         final rate = (fought - lost) / fought;
-        expect(rate, closeTo(target, 0.12),
+        expect(rate, closeTo(target, _band(target, fought)),
             reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
       });
     }
+
+    // The champions of the nemesis clans (nemesis.dart), about half won where
+    // they come, pooled: the 200 runs of nemesis_quests_test's own walk moved
+    // here, so the 400 runs of the boss curve are the only big run.
+    test('the champions\' curve: about half won where they come', () {
+      var all = 0, allLost = 0;
+      for (final (f, l) in champions.values) {
+        all += f;
+        allLost += l;
+      }
+      final rate = all == 0 ? 0.0 : (all - allLost) / all;
+      debugPrint('champions: ${(100 * rate).toStringAsFixed(1)}% of $all '
+          '(${[
+        for (final e in champions.entries)
+          '${e.key} ${e.value.$1 - e.value.$2}/${e.value.$1}'
+      ].join(', ')})');
+      expect(all, greaterThanOrEqualTo(40), reason: 'too few met');
+      expect(rate, closeTo(0.5, 0.12));
+    });
+
+    // The three claimants are met one per run (whichever claim the run
+    // backed), so each is met only about 50 to 80 times in the 400 runs:
+    // their own bands are wide (see _band). Together they are met in every
+    // run that gets that far, and held to the plain 12 points.
+    test('the claimants together are won about 40% of the time', () {
+      var fought = 0, lost = 0;
+      for (final boss in const [
+        'claimant_vane',
+        'claimant_tallis',
+        'claimant_morrow',
+      ]) {
+        final (f, l) = tally[boss] ?? (0, 0);
+        fought += f;
+        lost += l;
+      }
+      expect(fought, greaterThanOrEqualTo(300), reason: 'too few met');
+      final rate = (fought - lost) / fought;
+      expect(rate, closeTo(0.40, 0.12),
+          reason: 'won ${(rate * 100).toStringAsFixed(1)}% of $fought');
+    });
 
     test(
         'the bosses are won about half the time on average, early ones '
@@ -258,5 +354,62 @@ void main() {
       expect(rate('aurel_vane'), greaterThan(rate('void_archon')));
       expect(rate('void_archon'), greaterThan(rate('tear_herald')));
     });
+
+    // The five professions win about as often as each other (the L3 on
+    // v1.489 found the warrior at 73% and the mage at 60%; v1.497 and v1.499
+    // closed it). No profession more than [_spreadLimit] points from the
+    // others, give or take three standard errors of the gap (a story PR
+    // reshuffles the seeded dice: #588 moved it by a quarter point), none
+    // under 60%. Core tunes this: the profession paths in
+    // training_paths.json, bonusMaxHealth and the base numbers in
+    // professions.json, and the specialisations.
+    test(
+        'the five professions win within ${_spreadLimit.round()} points of each other',
+        () {
+      final summary = [
+        for (final e in professionWin.entries)
+          '${e.key} ${e.value.toStringAsFixed(1)}%',
+      ].join(', ');
+      debugPrint('encounter win by profession: $summary');
+      final best =
+          professionWin.entries.reduce((a, b) => a.value >= b.value ? a : b);
+      final worst =
+          professionWin.entries.reduce((a, b) => a.value <= b.value ? a : b);
+      final spread = best.value - worst.value;
+      final noise = 3 *
+          sqrt(pow(professionError[best.key]!, 2) +
+              pow(professionError[worst.key]!, 2));
+      expect(spread, lessThanOrEqualTo(_spreadLimit + noise),
+          reason: 'the professions are $spread points apart, allowed '
+              '$_spreadLimit + ${noise.toStringAsFixed(1)} ($summary)');
+      for (final e in professionWin.entries) {
+        expect(e.value, greaterThanOrEqualTo(60),
+            reason: '${e.key} wins ${e.value.toStringAsFixed(1)}% ($summary)');
+      }
+    });
   });
+}
+
+/// The band a boss's win rate is held to around [target], met [fought]
+/// times in the seeded runs: 12 points, or three standard errors of a rate
+/// measured on that few meetings when that is wider. A boss met 60 times
+/// moves by 6 points for one standard error when another part of the story
+/// shifts the seeded stream (Narrative's Wharf fold moved Morrow from 46%
+/// to 54% with the game unchanged at Morrow; over three seeds it averages
+/// 47% before and 46% after), so 12 points was a two-sigma band there.
+double _band(double target, int fought) =>
+    max(0.12, 3 * sqrt(target * (1 - target) / fought));
+
+/// How far apart the professions may win, in points: 8, in the full world
+/// since the specialisations pass (v1.614; at v1.613 the mage's, rogue's
+/// and ranger's specialisations had opened it to about 14).
+const double _spreadLimit = 8;
+
+/// The standard error of the mean of [rates].
+double _standardError(List<double> rates) {
+  if (rates.length < 2) return 0;
+  final mean = rates.reduce((a, b) => a + b) / rates.length;
+  final variance = rates.map((r) => pow(r - mean, 2)).reduce((a, b) => a + b) /
+      (rates.length - 1);
+  return sqrt(variance / rates.length);
 }

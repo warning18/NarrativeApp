@@ -95,7 +95,7 @@ void main() {
       final move = _useOnly('second_wind', skills);
       expect(move.intent, EnemyIntent.heal);
       expect(move.damage, 0);
-      expect(move.healAmount, 20);
+      expect(move.healAmount, 4);
       expect(categoryFor(move), MoveCategory.healSelf);
       // Enemy-voiced, not "You catch your breath."
       expect(move.message, isNot(startsWith('You')));
@@ -105,7 +105,7 @@ void main() {
       final move = _useOnly('shadow_step', skills);
       expect(move.intent, EnemyIntent.attack);
       expect(move.damage, greaterThan(0));
-      expect(move.healAmount, 10);
+      expect(move.healAmount, 2);
     });
 
     test('a guard raises block worth the enemy damage and does not hit', () {
@@ -119,7 +119,7 @@ void main() {
     test('a wind-up carries the doubled blow and its landing line', () {
       final move = _useOnly('heavy_windup', skills, damage: 10);
       expect(move.intent, EnemyIntent.charge);
-      expect(move.damage, (10 + 4) * 2);
+      expect(move.damage, (10 + 1) * 2);
       expect(move.releaseMessage, isNotEmpty);
       expect(categoryFor(move), MoveCategory.charge);
       final fr = _useOnly('heavy_windup', skills,
@@ -147,8 +147,8 @@ void main() {
   group('weaknesses and resistances', () {
     final ghoul = enemies['catacomb_ghoul'] as Map<String, dynamic>;
 
-    test('a weakness lands ×1.5, a resistance ×½, anything else as is', () {
-      expect(damageAfterElement(20, ghoul, 'Light'), 30);
+    test('a weakness lands ×3, a resistance ×½, anything else as is', () {
+      expect(damageAfterElement(20, ghoul, 'Light'), 60);
       expect(damageAfterElement(20, ghoul, 'Ice'), 10);
       expect(damageAfterElement(20, ghoul, 'Earth'), 20);
       expect(damageAfterElement(20, ghoul, 'None'), 20);

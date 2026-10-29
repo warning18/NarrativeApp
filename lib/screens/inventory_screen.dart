@@ -18,7 +18,10 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/item_detail_view.dart';
+import '../widgets/inventory_parts.dart';
 import '../widgets/item_lore.dart';
+import '../widgets/item_stats.dart';
+import 'dice_loadout_screen.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -38,6 +41,14 @@ class InventoryScreen extends ConsumerStatefulWidget {
 class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   bool _compareMode = false;
   String? _firstCompareId;
+
+  /// A long press on a piece: the manual compare, with it as the first.
+  void _startCompareFrom(String itemId) {
+    setState(() {
+      _compareMode = true;
+      _firstCompareId = itemId;
+    });
+  }
 
   void _toggleCompareMode() {
     setState(() {
@@ -86,7 +97,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
+        title: Text('${tr(ref, 'inv_title')}$titleSuffix'),
         actions: [
           const TourInfoButton(topic: TutorialTopic.inventory),
           TutorialTarget(
@@ -135,6 +146,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                       firstCompareId: _firstCompareId,
                       onCompareTap: (itemId) =>
                           _onCompareTap(context, items, itemId),
+                      onCompareStart: _startCompareFrom,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
@@ -272,7 +284,7 @@ String? scalingStatAbbrev(Map<String, dynamic>? item, AppLanguage lang) {
   return key == null ? null : trFor(lang, key);
 }
 
-class _InventoryBody extends ConsumerWidget {
+class _InventoryBody extends ConsumerStatefulWidget {
   const _InventoryBody({
     required this.items,
     required this.dice,
@@ -281,6 +293,7 @@ class _InventoryBody extends ConsumerWidget {
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
+    required this.onCompareStart,
     this.itemSets = const {},
   });
 
@@ -296,21 +309,72 @@ class _InventoryBody extends ConsumerWidget {
   final String? firstCompareId;
   final ValueChanged<String> onCompareTap;
 
+  /// A long press on a row: starts a manual compare from it.
+  final ValueChanged<String> onCompareStart;
+
+  @override
+  ConsumerState<_InventoryBody> createState() => _InventoryBodyState();
+}
+
+class _InventoryBodyState extends ConsumerState<_InventoryBody> {
+  InventoryTab _tab = InventoryTab.all;
+  InventorySort _sort = InventorySort.newest;
+
+  /// The pieces the bag held at the last visit (a piece not in it is new);
+  /// null on the first visit, and for a companion's gear.
+  Set<String>? _seenAtOpen;
+
+  @override
+  void initState() {
+    super.initState();
+    InventoryMemory.load().then((m) {
+      if (!mounted) return;
+      setState(() {
+        _tab = m.tab ?? _tab;
+        _sort = m.sort ?? _sort;
+        _seenAtOpen = widget.allyId == null ? m.seen : null;
+      });
+      _rememberSeen();
+    });
+  }
+
+  void _rememberSeen() {
+    if (widget.allyId != null) return;
+    InventoryMemory.saveSeen(ref.read(playerSessionProvider).inventoryItemIds);
+  }
+
+  void _setTab(InventoryTab tab) {
+    setState(() => _tab = tab);
+    InventoryMemory.saveView(tab, _sort);
+    _rememberSeen();
+  }
+
+  void _setSort(InventorySort sort) {
+    setState(() => _sort = sort);
+    InventoryMemory.saveView(_tab, sort);
+  }
+
   String? _equippedInSlot(List<String> equippedIds, String slot) {
     for (final id in equippedIds) {
-      final item = items[id] as Map<String, dynamic>?;
+      final item = widget.items[id] as Map<String, dynamic>?;
       if ((item?['equipSlot']?.toString() ?? '') == slot) return id;
     }
     return null;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final items = widget.items;
+    final dice = widget.dice;
+    final allyId = widget.allyId;
+    final companion = widget.companion;
     final session = ref.watch(playerSessionProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final geography = ref.watch(geographyProvider);
     final ally = allyId != null
         ? session.recruitedAllies.firstWhere(
             (a) => a.companionId == allyId,
-            orElse: () => AllyState(companionId: allyId!, currentHealth: 0),
+            orElse: () => AllyState(companionId: allyId, currentHealth: 0),
           )
         : null;
 
@@ -359,14 +423,14 @@ class _InventoryBody extends ConsumerWidget {
     void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
-            .equipAllyItem(allyId!, itemId, slot: slot, items: items)
+            .equipAllyItem(allyId, itemId, slot: slot, items: items)
         : (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipItem(itemId, slot: slot, items: items);
     void Function(String itemId) unequipFn = allyId != null
         ? (itemId) => ref
             .read(playerSessionProvider.notifier)
-            .unequipAllyItem(allyId!, itemId)
+            .unequipAllyItem(allyId, itemId)
         : (itemId) =>
             ref.read(playerSessionProvider.notifier).unequipItem(itemId);
 
@@ -409,6 +473,22 @@ class _InventoryBody extends ConsumerWidget {
         : null;
     final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()
       ..sort();
+    // The Dice tab: only when the bag holds more than the die in hand.
+    final showDiceTab = allyId == null && ownedDiceIds.length > 1;
+
+    // The tabs: only the kinds the bag holds, each with its count.
+    final kindCounts = <InventoryTab, int>{};
+    for (final id in ownedIds) {
+      final kind = inventoryKindOf(items[id] as Map<String, dynamic>?);
+      if (kind != null) kindCounts[kind] = (kindCounts[kind] ?? 0) + 1;
+    }
+    final tabs = <(InventoryTab, int)>[
+      if (ownedIds.isNotEmpty) (InventoryTab.all, ownedIds.length),
+      for (final kind in InventoryTab.values)
+        if ((kindCounts[kind] ?? 0) > 0) (kind, kindCounts[kind]!),
+      if (showDiceTab) (InventoryTab.dice, ownedDiceIds.length),
+    ];
+    final tab = tabs.any((t) => t.$1 == _tab) ? _tab : InventoryTab.all;
 
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
@@ -419,82 +499,40 @@ class _InventoryBody extends ConsumerWidget {
                   ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
         );
 
-    // A slot (v1.201, Stitched Ink): what is worn there, in a box; a tap
-    // chooses, the small cross takes it off.
-    Widget slotBox({
-      required String slot,
-      required Widget icon,
-      required String worn,
-      required bool filled,
-      required VoidCallback? onChoose,
-      required VoidCallback? onClear,
-      required String chooseTip,
-      Key? key,
-    }) {
-      return Material(
-        key: key,
-        color: theme.colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-          side: BorderSide(color: filled ? ink.gold : ink.seam),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: onChoose,
-          child: Tooltip(
-            message: chooseTip,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
-              child: Row(
-                children: [
-                  SizedBox(width: 28, child: Center(child: icon)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(slot.toUpperCase(),
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(color: ink.ash)),
-                        Text(worn,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                                color: filled ? null : ink.ash,
-                                fontStyle: filled ? null : FontStyle.italic)),
-                      ],
-                    ),
-                  ),
-                  if (onClear != null)
-                    IconButton(
-                      icon: const Icon(Icons.close, size: 16),
-                      tooltip: tr(ref, 'unequip'),
-                      visualDensity: VisualDensity.compact,
-                      onPressed: onClear,
-                    )
-                  else if (onChoose != null)
-                    Icon(Icons.chevron_right, size: 18, color: ink.ash),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+    // An empty slot a piece in the bag could go to is lit.
+    List<String> candidatesFor(String slot) => ownedIds.where((id) {
+          final item = items[id] as Map<String, dynamic>?;
+          return (item?['isEquippable'] as bool? ?? false) &&
+              (item?['equipSlot']?.toString() ?? '') == slot &&
+              hasFreeCopy(id);
+        }).toList();
 
-    final slotBoxes = [
+    final slotTiles = <Widget>[
       // An ally's signature die is fixed at recruitment and never
       // player-swappable, so no choosing in that case.
-      slotBox(
-        slot: tr(ref, 'dice_label'),
-        icon: Icon(Icons.casino, size: 20, color: ink.gold),
-        worn: equippedDie != null ? equippedDiceId! : tr(ref, 'none_equipped'),
-        filled: equippedDie != null,
-        chooseTip: tr(ref, 'choose_die'),
-        onChoose: allyId != null || ownedDiceIds.isEmpty
+      InventorySlotTile(
+        key: const Key('slot_Dice'),
+        slotLabel: tr(ref, 'dice_label'),
+        icon: equippedDiceId != null && equippedDie != null
+            ? SizedBox(
+                width: 26,
+                height: 26,
+                child: InventoryDieTile(
+                    dieId: equippedDiceId,
+                    faces: (equippedDie['numberOfFaces'] as num?)?.toInt() ??
+                        (equippedDie['faces'] as List?)?.length ??
+                        6,
+                    size: 26))
+            : Icon(Icons.casino, size: 24, color: ink.gold),
+        worn: equippedDiceId != null && equippedDie != null
+            ? dieDisplayName(equippedDiceId, language: lang)
+            : null,
+        tip: tr(ref, 'choose_die'),
+        onTap: allyId != null || ownedDiceIds.isEmpty
             ? null
-            : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
-        onClear: null,
+            : showDiceTab
+                ? () => _setTab(InventoryTab.dice)
+                : () => _openDice(context, equippedDiceId),
       ),
       for (final slot in equipSlotOptions)
         () {
@@ -502,23 +540,20 @@ class _InventoryBody extends ConsumerWidget {
           final equippedItem = equippedId != null
               ? items[equippedId] as Map<String, dynamic>?
               : null;
-          final candidates = ownedIds.where((id) {
-            final item = items[id] as Map<String, dynamic>?;
-            return (item?['isEquippable'] as bool? ?? false) &&
-                (item?['equipSlot']?.toString() ?? '') == slot &&
-                hasFreeCopy(id);
-          }).toList();
-          return slotBox(
+          final candidates = candidatesFor(slot);
+          return InventorySlotTile(
             key: Key('slot_$slot'),
-            slot: slot,
-            icon: ItemPixelIcon(
-                equippedId, equippedItem?['itemType']?.toString(),
-                size: 22),
-            worn: equippedItem?['itemName']?.toString() ??
-                tr(ref, 'empty_slot_label'),
-            filled: equippedItem != null,
-            chooseTip: tr(ref, 'choose_item'),
-            onChoose: candidates.isEmpty
+            slotLabel: inventorySlotName(lang, slot),
+            icon: equippedId != null
+                ? ItemPixelIcon(
+                    equippedId, equippedItem?['itemType']?.toString(),
+                    size: 24)
+                : Icon(inventorySlotIcon(slot), size: 24, color: ink.ash),
+            worn: equippedItem?['itemName']?.toString(),
+            lit: equippedId == null && candidates.isNotEmpty,
+            tip: tr(ref, 'choose_item'),
+            clearTip: tr(ref, 'unequip'),
+            onTap: candidates.isEmpty
                 ? null
                 : () => _pickForSlot(context, ref, slot, candidates, equippedId,
                     equipFn, canEquip),
@@ -527,134 +562,223 @@ class _InventoryBody extends ConsumerWidget {
         }(),
     ];
 
+    final shown = tab == InventoryTab.dice
+        ? const <String>[]
+        : sortInventoryIds([
+            for (final id in ownedIds)
+              if (tab == InventoryTab.all ||
+                  inventoryKindOf(items[id] as Map<String, dynamic>?) == tab)
+                id
+          ], items, _sort, session.inventoryItemIds);
+
+    Widget row(String id) {
+      final item = items[id] as Map<String, dynamic>?;
+      final isEquipped = equippedIds.contains(id);
+      final gear = isGear(item);
+      final equipSlot = item?['equipSlot']?.toString() ?? '';
+      final comparisonId =
+          gear && !isEquipped ? _equippedInSlot(equippedIds, equipSlot) : null;
+      final comparisonItem = comparisonId != null
+          ? items[comparisonId] as Map<String, dynamic>?
+          : null;
+      final set = setForItem(id, item, widget.itemSets);
+      final setPiecesWorn = set?.piecesWornIn(equippedIds) ?? 0;
+      final requirementUnmet = gear && !isEquipped && !canEquip(id);
+      final requirementText =
+          requirementUnmet ? requirementSummary(item, lang) : null;
+      final wornBy = gear && !isEquipped ? wornByOthers(id) : null;
+      final onEquip = (gear && !isEquipped && canEquip(id) && hasFreeCopy(id))
+          ? () => equipFn(id, slot: equipSlot)
+          : null;
+      final onUnequip = isEquipped ? () => unequipFn(id) : null;
+      final onRead = item?['itemType']?.toString() == 'Tome'
+          ? () => ref.read(playerSessionProvider.notifier).readTome(id, item)
+          : null;
+      final rarityWord = inventoryRarityWord(lang, item);
+      final slotName = inventorySlotName(lang, equipSlot);
+      String t(String key) => trFor(lang, key);
+      final unique = uniqueEffectOf(item);
+      final String detail;
+      if (gear) {
+        if (requirementUnmet) {
+          detail = (requirementText ?? '').isNotEmpty
+              ? '${t('stat_requirement_label')}: $requirementText'
+              : t('alignment_rejects_label');
+        } else if (wornBy != null) {
+          detail = '${t('worn_by_prefix')}: $wornBy';
+        } else {
+          detail = t(isEquipped ? 'inv_worn_on' : 'inv_goes_on')
+              .replaceAll('{slot}', slotName);
+        }
+      } else {
+        detail = [
+          inventoryTypeName(lang, item?['itemType']?.toString()),
+          if (unique != null)
+            t(uniqueEffectDescriptionKey(unique))
+                .replaceAll('{v}', '${uniqueValueOf(item)}'),
+        ].where((p) => p.isNotEmpty).join(' · ');
+      }
+      final fresh =
+          _seenAtOpen != null && !_seenAtOpen!.contains(id) && allyId == null;
+      return InventoryRow(
+        key: Key('inv_row_$id'),
+        itemId: id,
+        item: item,
+        language: lang,
+        line: [if (rarityWord.isNotEmpty) rarityWord, detail].join(' · '),
+        slot: gear ? equipSlot : null,
+        worn: comparisonItem,
+        isWorn: isEquipped,
+        fresh: fresh,
+        count: counts[id],
+        locked: requirementUnmet || wornBy != null,
+        selected: widget.firstCompareId == id,
+        actionLabel: widget.compareMode
+            ? null
+            : onRead != null
+                ? t('read_button')
+                : isEquipped
+                    ? t('inv_take_off')
+                    : onEquip != null
+                        ? t('equip_button')
+                        : null,
+        onAction: widget.compareMode ? null : (onRead ?? onUnequip ?? onEquip),
+        onLongPress: widget.compareMode || !gear
+            ? null
+            : () => widget.onCompareStart(id),
+        onTap: widget.compareMode
+            ? () => widget.onCompareTap(id)
+            : () => showItemDetailsSheet(
+                  context,
+                  itemId: id,
+                  item: item,
+                  language: lang,
+                  equipped: comparisonItem,
+                  equippedId: comparisonId,
+                  equippedName:
+                      comparisonItem?['itemName']?.toString() ?? comparisonId,
+                  priceLine: '${t('cost_label')}: ${item?['cost'] ?? 0}',
+                  unmetRequirement: requirementText,
+                  itemSet: set,
+                  setPiecesWorn: setPiecesWorn,
+                  originLine: itemOriginLineFor(
+                      session.itemOrigins[id], geography, lang),
+                  count: counts[id],
+                  wornBy: wornBy,
+                  isWorn: isEquipped,
+                  actionLabel: onUnequip != null
+                      ? t('inv_take_off')
+                      : onEquip != null
+                          ? t('equip_button')
+                          : null,
+                  onAction: onUnequip ?? onEquip,
+                ),
+      );
+    }
+
+    Widget diceRows() {
+      final professions =
+          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
+      final races =
+          ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
+      Widget dieRow(String id, {required bool inHand}) {
+        final die = dice[id] as Map<String, dynamic>?;
+        final usable = dieUsableBy(die,
+            professionId: session.professionId, raceId: session.raceId);
+        return InventoryDieRow(
+          key: Key('inv_die_$id'),
+          dieId: id,
+          name: dieDisplayName(id, language: lang),
+          faces: (die?['numberOfFaces'] as num?)?.toInt() ??
+              (die?['faces'] as List?)?.length ??
+              6,
+          language: lang,
+          inHand: inHand,
+          locked: !usable,
+          madeFor: dieMadeForLabel(die, professions, races),
+          onOpen: () => _openDice(context, id),
+          onEquip: usable && !inHand
+              ? () => ref.read(playerSessionProvider.notifier).equipDice(id)
+              : null,
+        );
+      }
+
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (equippedDiceId != null &&
+            ownedDiceIds.contains(equippedDiceId)) ...[
+          caption(tr(ref, 'inv_in_hand')),
+          dieRow(equippedDiceId, inHand: true),
+        ],
+        const SizedBox(height: 6),
+        caption(tr(ref, 'inv_in_bag')),
+        for (final id in ownedDiceIds)
+          if (id != equippedDiceId) dieRow(id, inHand: false),
+      ]);
+    }
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         caption(tr(ref, 'equipment_section')),
-        for (var i = 0; i < slotBoxes.length; i += 2)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: slotBoxes[i]),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: i + 1 < slotBoxes.length
-                          ? slotBoxes[i + 1]
-                          : const SizedBox.shrink()),
-                ],
-              ),
-            ),
-          ),
-        Text(tr(ref, 'inventory_slots_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
-        const SizedBox(height: 20),
-        caption('${tr(ref, 'all_items')} · ${ownedIds.length}'),
+        GridView.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.25,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: slotTiles,
+        ),
+        const SizedBox(height: 16),
         if (ownedIds.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(tr(ref, 'inventory_empty')),
           )
-        else
-          ...ownedIds.map((id) {
-            final item = items[id] as Map<String, dynamic>?;
-            final isEquipped = equippedIds.contains(id);
-            final isEquippable = item?['isEquippable'] as bool? ?? false;
-            final equipSlot = item?['equipSlot']?.toString() ?? '';
-            String? comparisonId;
-            if (isEquippable && !isEquipped && equipSlot.isNotEmpty) {
-              comparisonId = _equippedInSlot(equippedIds, equipSlot);
-            }
-            final comparisonItem = comparisonId != null
-                ? items[comparisonId] as Map<String, dynamic>?
-                : null;
-            final set = setForItem(id, item, itemSets);
-            return _ItemTile(
-              itemId: id,
-              item: item,
-              count: counts[id],
-              originLine: itemOriginLineFor(session.itemOrigins[id],
-                  ref.watch(geographyProvider), ref.watch(appLanguageProvider)),
-              itemSet: set,
-              setPiecesWorn: set?.piecesWornIn(equippedIds) ?? 0,
-              isEquipped: isEquipped,
-              language: ref.watch(appLanguageProvider),
-              comparisonItemId: comparisonId,
-              comparisonItem: comparisonItem,
-              compareMode: compareMode,
-              selectedForCompare: firstCompareId == id,
-              onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable &&
-                      !isEquipped &&
-                      canEquip(id) &&
-                      hasFreeCopy(id))
-                  ? () => equipFn(id, slot: equipSlot)
-                  : null,
-              onUnequip: isEquipped ? () => unequipFn(id) : null,
-              requirementUnmet: isEquippable && !isEquipped && !canEquip(id),
-              wornBy: isEquippable && !isEquipped ? wornByOthers(id) : null,
-              onRead: item?['itemType']?.toString() == 'Tome'
-                  ? () => ref
-                      .read(playerSessionProvider.notifier)
-                      .readTome(id, item)
-                  : null,
-            );
-          }),
+        else ...[
+          InventoryTabBar(
+            counts: tabs,
+            selected: tab,
+            onSelect: _setTab,
+            language: lang,
+          ),
+          if (tab != InventoryTab.dice)
+            Padding(
+              padding: const EdgeInsets.only(top: 4, bottom: 6),
+              child: Row(children: [
+                Expanded(
+                  child: tab == InventoryTab.gear || tab == InventoryTab.all
+                      ? Text(tr(ref, 'inv_compare_hold'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: ink.ash, fontStyle: FontStyle.italic))
+                      : const SizedBox.shrink(),
+                ),
+                InventorySortButton(
+                    sort: _sort, onChanged: _setSort, language: lang),
+              ]),
+            )
+          else
+            const SizedBox(height: 10),
+          if (tab == InventoryTab.dice)
+            diceRows()
+          else if (shown.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(tr(ref, 'inv_empty_tab')),
+            )
+          else
+            for (final id in shown) row(id),
+        ],
       ],
     );
   }
 
-  Future<void> _pickDice(
-    BuildContext context,
-    WidgetRef ref,
-    List<String> ownedDiceIds,
-    String? currentlyEquippedId,
-  ) {
-    final facesLabel = trFor(ref.read(appLanguageProvider), 'faces_label');
-    return showModalBottomSheet<void>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: ownedDiceIds.map((id) {
-            final die = dice[id] as Map<String, dynamic>?;
-            final faceCount = (die?['faces'] as List?)?.length ?? 0;
-            final session = ref.read(playerSessionProvider);
-            // A die made for another class (a New Game+ legacy, say) stays
-            // in the bag but can't be rolled.
-            final usable = dieUsableBy(die,
-                professionId: session.professionId, raceId: session.raceId);
-            final madeFor = dieMadeForLabel(
-                die,
-                ref.read(localizedDbProvider(professionsSchema)).value ??
-                    const {},
-                ref.read(localizedDbProvider(racesSchema)).value ?? const {});
-            final lang = ref.read(appLanguageProvider);
-            return ListTile(
-              enabled: usable,
-              leading: const Icon(Icons.casino),
-              title: Text(dieDisplayName(id, language: lang)),
-              subtitle: Text([
-                '$faceCount $facesLabel · ${dieFacesSummary(die, lang)}',
-                if (madeFor.isNotEmpty)
-                  '${trFor(lang, 'die_made_for_prefix')} $madeFor',
-              ].join('\n')),
-              trailing:
-                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
-              onTap: !usable
-                  ? null
-                  : () {
-                      ref.read(playerSessionProvider.notifier).equipDice(id);
-                      Navigator.of(sheetContext).pop();
-                    },
-            );
-          }).toList(),
-        ),
-      ),
-    );
+  /// The dice screen, opened on [dieId].
+  void _openDice(BuildContext context, String? dieId) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => DiceLoadoutScreen(initialDieId: dieId)));
   }
 
   Future<void> _pickForSlot(
@@ -673,7 +797,7 @@ class _InventoryBody extends ConsumerWidget {
         child: ListView(
           shrinkWrap: true,
           children: candidates.map((id) {
-            final item = items[id] as Map<String, dynamic>?;
+            final item = widget.items[id] as Map<String, dynamic>?;
             final itemName = item?['itemName']?.toString() ?? id;
             final equippable = canEquip(id);
             return ListTile(
@@ -697,215 +821,6 @@ class _InventoryBody extends ConsumerWidget {
             );
           }).toList(),
         ),
-      ),
-    );
-  }
-}
-
-class _ItemTile extends StatelessWidget {
-  const _ItemTile({
-    required this.itemId,
-    required this.item,
-    this.count,
-    required this.isEquipped,
-    required this.language,
-    this.comparisonItemId,
-    this.comparisonItem,
-    this.compareMode = false,
-    this.selectedForCompare = false,
-    this.onCompareTap,
-    this.onEquip,
-    this.onUnequip,
-    this.onRead,
-    this.requirementUnmet = false,
-    this.itemSet,
-    this.setPiecesWorn = 0,
-    this.wornBy,
-    this.originLine,
-  });
-
-  final String itemId;
-  final Map<String, dynamic>? item;
-  final int? count;
-
-  /// Where the item came from (v1.204, see itemOriginLineFor): a row of
-  /// the detail dialog; null when the pack has no record of it.
-  final String? originLine;
-
-  /// Who else wears every copy of this item, when no copy is free for the
-  /// character this inventory belongs to.
-  final String? wornBy;
-  final bool isEquipped;
-  final AppLanguage language;
-
-  /// The set this item belongs to, if any, and how many of its pieces the
-  /// equipping character currently wears -- shown as "Set: Name (2/3)".
-  final ItemSet? itemSet;
-  final int setPiecesWorn;
-
-  /// The item currently equipped in this item's slot, if any and if
-  /// different from this item — used to show a +/- stat delta.
-  final String? comparisonItemId;
-  final Map<String, dynamic>? comparisonItem;
-
-  final bool compareMode;
-  final bool selectedForCompare;
-  final VoidCallback? onCompareTap;
-  final VoidCallback? onEquip;
-  final VoidCallback? onUnequip;
-
-  /// Reads a carried tome (see PlayerSessionNotifier.readTome).
-  final VoidCallback? onRead;
-
-  /// True when this item is equippable, not already equipped, but the
-  /// equipping character's ability scores don't meet its
-  /// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate — shows
-  /// why the equip action is unavailable instead of just hiding it.
-  final bool requirementUnmet;
-
-  @override
-  Widget build(BuildContext context) {
-    final itemName = item?['itemName']?.toString() ?? itemId;
-    final itemType = item?['itemType']?.toString();
-    final equipSlot = item?['equipSlot']?.toString();
-    final attackDamage = (item?['attackDamage'] as num?)?.toInt() ?? 0;
-    final armor = (item?['armor'] as num?)?.toInt() ?? 0;
-    String t(String key) => trFor(language, key);
-    final colorScheme = Theme.of(context).colorScheme;
-    final scalingAbbrev = scalingStatAbbrev(item, language);
-    final requirementText =
-        requirementUnmet ? requirementSummary(item, language) : null;
-    final itemAlignment = item?['alignment']?.toString() ?? '';
-    final alignedAttack = (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
-    final alignedArmor = (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
-    final alignedParts = <String>[
-      if (alignedAttack > 0) '${t('atk_abbrev')} +$alignedAttack',
-      if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
-    ];
-    final unique = uniqueEffectOf(item);
-    final uniqueText = unique == null
-        ? null
-        : t(uniqueEffectDescriptionKey(unique))
-            .replaceAll('{v}', '${uniqueValueOf(item)}');
-    final set = itemSet;
-    final setText = set == null
-        ? null
-        : '${t('set_label')}: ${set.nameFor(language)} '
-            '($setPiecesWorn/${set.itemIds.length})';
-
-    final statsParts = <String>[
-      if (itemType != null) itemType,
-      if (isEquipped && equipSlot != null && equipSlot.isNotEmpty)
-        '${t('equipped_prefix')}: $equipSlot',
-      if (attackDamage > 0) '${t('atk_abbrev')} +$attackDamage',
-      if (armor > 0) '${t('arm_abbrev')} +$armor',
-      if (scalingAbbrev != null) '${t('scales_with_label')}: $scalingAbbrev',
-      if (requirementText != null && requirementText.isNotEmpty)
-        '${t('stat_requirement_label')}: $requirementText',
-      if (itemAlignment.isNotEmpty)
-        '${t('aligned_gear_label')}: ${itemAlignment == 'Good' ? t('alignment_good') : t('alignment_evil')}'
-            '${alignedParts.isNotEmpty ? ' (${alignedParts.join(', ')} ${t('aligned_bonus_suffix')})' : ''}',
-      if (itemAlignment.isNotEmpty &&
-          requirementUnmet &&
-          requirementText != null &&
-          requirementText.isEmpty)
-        t('alignment_rejects_label'),
-      if (uniqueText != null) '${t('unique_label')}: $uniqueText',
-      if (wornBy != null) '${t('worn_by_prefix')}: $wornBy',
-      if (setText != null) setText,
-      if (count != null && count! > 1) 'x$count',
-      if (comparisonItem != null)
-        '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',
-    ];
-
-    final ink = InkColors.of(context);
-    final theme = Theme.of(context);
-    final rarity = item?['rarity']?.toString() ?? '';
-    final rarityLabel = itemRarityLabelFor(language, rarity);
-    return Card(
-      margin: const EdgeInsets.only(bottom: 6),
-      color: selectedForCompare
-          ? colorScheme.tertiaryContainer
-          : colorScheme.surfaceContainer,
-      // A seam round every item; gold round the one worn (v1.201).
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-        side: BorderSide(
-            color: selectedForCompare
-                ? colorScheme.tertiary
-                : isEquipped
-                    ? ink.gold
-                    : ink.seam),
-      ),
-      child: ListTile(
-        leading: ItemPixelIcon(itemId, itemType),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(itemName,
-                  style: theme.textTheme.bodyLarge
-                      ?.copyWith(fontFamily: InkFonts.display)),
-            ),
-            // The rarity as a tag (v1.204): a Relic reads gold.
-            if (rarityLabel.isNotEmpty) ...[
-              InkTag(
-                  key: Key('rarity_tag_$itemId'),
-                  label: rarityLabel,
-                  color: itemRarityColor(colorScheme, rarity)),
-              const SizedBox(width: 4),
-            ],
-            if (isEquipped)
-              InkTag(label: t('equipped_prefix'), color: ink.gold)
-            else if (requirementUnmet)
-              InkTag(label: t('stat_requirement_label'), color: ink.ash),
-          ],
-        ),
-        subtitle: Text(statsParts.join(' · '),
-            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
-        trailing: compareMode
-            ? null
-            : onRead != null
-                ? TextButton(onPressed: onRead, child: Text(t('read_button')))
-                : (onEquip != null || onUnequip != null)
-                    ? IconButton(
-                        icon: Icon(onUnequip != null
-                            ? Icons.remove_circle_outline
-                            : Icons.add_circle_outline),
-                        tooltip: onUnequip != null
-                            ? t('unequip')
-                            : t('equip_button'),
-                        onPressed: onUnequip ?? onEquip,
-                      )
-                    : requirementUnmet
-                        ? Icon(Icons.lock_outline,
-                            color: colorScheme.onSurfaceVariant)
-                        : null,
-        onTap: compareMode
-            ? onCompareTap
-            : () => showItemDetailsSheet(
-                  context,
-                  itemId: itemId,
-                  item: item,
-                  language: language,
-                  equipped: comparisonItem,
-                  equippedId: comparisonItemId,
-                  equippedName: comparisonItem?['itemName']?.toString() ??
-                      comparisonItemId,
-                  priceLine: '${t('cost_label')}: ${item?['cost'] ?? 0}',
-                  unmetRequirement: requirementText,
-                  itemSet: set,
-                  setPiecesWorn: setPiecesWorn,
-                  originLine: originLine,
-                  count: count,
-                  wornBy: wornBy,
-                  isWorn: isEquipped,
-                  actionLabel: onUnequip != null
-                      ? t('unequip')
-                      : onEquip != null
-                          ? t('equip_button')
-                          : null,
-                  onAction: onUnequip ?? onEquip,
-                ),
       ),
     );
   }

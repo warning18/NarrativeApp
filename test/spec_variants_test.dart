@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -52,14 +53,14 @@ void main() {
 
   test('the numbers they set', () {
     final none = SpecMods(const []);
-    expect(none.briarBack(40), 10);
-    expect(SpecMods(['anvil_deaf_briar_guard']).briarBack(40), 20);
-    expect(SpecMods(['briar_guard_ii']).briarBack(40), 15);
+    expect(none.briarBack(40), 32);
+    expect(SpecMods(['anvil_deaf_briar_guard']).briarBack(40), 40);
+    expect(SpecMods(['briar_guard_ii']).briarBack(40), 48);
     expect(SpecMods(['order_lantern_vanguard']).vanguardEvilHeal, 0.30);
-    expect(SpecMods(['candlebearers_long_vigil']).vigilMend(80, 100), 7);
+    expect(SpecMods(['candlebearers_long_vigil']).vigilMend(80, 100), 18);
     expect(SpecMods(['ember_sisters_ashen_hand']).ashenCleanse, 2);
     expect(SpecMods(['cantors_beacon']).beaconBurn, 1.875);
-    expect(SpecMods(['scorched_choir_burden_bearer']).burdenMultiplier, 2.5);
+    expect(SpecMods(['scorched_choir_burden_bearer']).burdenMultiplier, 1.6);
     expect(SpecMods(['keyholders_tempest_toll']).spellDiscount, 1);
     expect(SpecMods(['reliquary_thieves_relicbreaker']).relicMana, 2);
     expect(SpecMods(['relicbreaker_ii']).relicThreshold, 2);
@@ -72,7 +73,7 @@ void main() {
     expect(SpecMods(['fever_blade_ii']).rot, closeTo(rotShare * 1.5, 1e-9));
     expect(
         poisonDamageFor(SpecMods(['fever_blade_ii']).withRotOf(const [], 100)),
-        60);
+        30);
   });
 
   test('a variant from Trusted on a specialisation held, rank II at Sworn', () {
@@ -123,16 +124,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     double win(String profession, List<String> held) {
       final summaries = simulatePlaythroughs(story,
           tables: tables,

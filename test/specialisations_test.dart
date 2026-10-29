@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -61,9 +62,9 @@ void main() {
   });
 
   test('the numbers', () {
-    expect(briarReflect(40), 10);
+    expect(briarReflect(40), 32);
     expect(briarReflect(0), 0);
-    expect(longVigilMend(80, 100), 5);
+    expect(longVigilMend(80, 100), 15);
     expect(longVigilMend(50, 100), 0);
     expect(longVigilMend(100, 100), 0);
     expect(
@@ -96,9 +97,9 @@ void main() {
 
   test('the Rot stacks where poison refreshes, and lasts', () {
     var effects = withRot(const [], 100);
-    expect(poisonDamageFor(effects), 40);
+    expect(poisonDamageFor(effects), 20);
     effects = withRot(effects, 50);
-    expect(poisonDamageFor(effects), 60);
+    expect(poisonDamageFor(effects), 30);
     expect(effects.single.remainingTurns, rotTurns);
   });
 
@@ -159,16 +160,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     final runs = int.tryParse(Platform.environment['SPECS_RUNS'] ?? '') ?? 2;
     final infos = specInfosFrom(_table('specialisations'));
     ({double win, double rounds}) measure(String profession,

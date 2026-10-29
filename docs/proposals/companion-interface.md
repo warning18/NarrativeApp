@@ -1,0 +1,123 @@
+# The camp's Companion interface: a review and two versions (UX; version B built in v1.606)
+
+> **Built in v1.606:** version B (the party as a formation, a page for each companion, Vica with her dog sprite), with one plain line, "Other companions are still out there.", instead of the "Not with you" list (the user's call: no names, no quest hints, no count). Code: `lib/widgets/party_formation.dart`, `lib/screens/companion_page.dart`, `lib/widgets/companion_parts.dart`; Core's seat rules (`setAllyInParty`, `allyJoinState`, `canBench`) moved unchanged to `lib/widgets/party_actions.dart`. Test: `test/companion_party_test.dart`.
+
+The user: "Could you review the UX of the Companion interface in the camp?" Context: a guide dog (the
+sprite of the tutorial) is **Vica, the one companion every hero has**: she joins automatically before
+the city after the desert (Narrative pins the scene), and stronger companions replace her in the party
+later, so the Party tab always has at least her, and the seat swap matters more. Seats today: two; a third with the Barracks
+Annex. Pictures only: no build, no version. Mock test: `test/ux_companion_mock_test.dart` (parts in
+`test/ux_companion_mock_parts.dart`).
+
+| Picture | What it is |
+|---|---|
+| `docs/ux-shots/companion-today.png` | The real Party tab of the camp at 320 and 412 px, the top and the end (four companions: devoted, friendly, neutral, wary; two seated, two benched). |
+| `docs/ux-shots/companion-a.png` | A: the same list, calmer, with a seat strip and a one-tap swap. |
+| `docs/ux-shots/companion-dog.png` | The guide dog's moments: the tutorial, joining every hero, the camp with only her, a stronger companion arriving, and the bench after. |
+| `docs/ux-shots/companion-b.png` | B: a different shape: the party as a formation, a page for each companion, who is not (or no longer) with you; the guide dog's page. |
+
+## What is hard, ranked by how much it hurts the player
+1. **Changing a seat is slow and silent.** With the seats full, every benched card shows a disabled
+   chip and the line "Active party is full"; nothing says how to swap. To swap you bench one companion
+   (a tap on a chip, in one card), scroll, then seat the other (a tap in another card). Two taps on two
+   cards, with a scroll between, for the action the page exists for.
+2. **The seats themselves are not shown.** "Active Party: 2 / 2" sits at the right of the heading; the
+   party as it will fight (who, their health) must be read off the cards. The roster is in id order
+   (Grosh, Kelda, Maren, Sable), so seated and benched are mixed.
+3. **The "Benched" chip cannot be read.** It is disabled when the party is full, and its text is
+   white-ish on light (the capture shows an empty pill). The most important state of a companion is the
+   least legible.
+4. **Approval: the effect is told, the cause is not.** A card has a word, a bar, an effect line and a
+   likes line: "Wary · −10% damage in fights; leaves if pushed further", "Likes: kindness".
+   Nothing says how far "further" is (it is −12), where the next tier is, or that **benched
+   companions do not see your choices** (approval.dart), which is the reason to bench a Devoted one.
+5. **A card is 330 px tall and repeats itself.** Four companions are about 1300 px; each card has the
+   same disabled "Share a drink (320 gold)" row and the same "Active party is full". At 320 px the
+   name, class and health wrap to three lines.
+6. **Nothing says what a companion has.** Their die, their skills, the points waiting to be spent and
+   their gear are behind three text buttons (Gear, Skills, Dice); the card shows none of it. A skill
+   point waiting is invisible.
+7. **Who is not here does not exist.** A companion not yet met, one locked behind a building (Kelda
+   needs her Hall, told only on a recruited card), and one who left or was lost have no trace on the
+   page. The dog, earned in the second town, will have no "to find" either. The third seat is not
+   hinted.
+8. **Health is a number** ("22 / 48 HP"), no bar; a hurt companion looks like a healthy one.
+
+## A. The same list, calmer (`companion-a.png`)
+- A **seat strip** on top: the party as it fights (portrait, health bar), the third seat locked with
+  its building. Seated companions first; the bench under its own heading ("they miss your choices").
+- **One tap to swap:** "Swap in" on a benched companion; with the seats full a sheet asks "Who steps
+  out?" (one more tap). The "Benched" chip becomes a readable button.
+- **A row says more in less:** the tier as a chip, health as a bar, the die by name, skills known and
+  "N to learn", Gear / Skills / Dice as three small buttons with a gold dot when a point waits. "Share
+  a drink" appears only when it can be done.
+- Cost: UX only (`camp_screen.dart`'s `_AllyCard`, Core's file for behaviour: the seat and drink logic
+  is kept, `_setAllyInParty`, `_joinState`).
+
+## B. A formation and a page each (`companion-b.png`)
+- **The party screen:** the seats as large portraits with health and tier; the bench as a small grid
+  (tap to open); below, **"Not with you"**: a "???" with the quest to find them (from
+  `recruitQuestId`; Vica is not one of them, she comes to every hero), and who left.
+- **A companion's page:** their portrait, health, the seat button; approval as a **meter with its
+  thresholds named** (leaves at −12, wary at −5, friendly at 5, devoted at 12), what the tier
+  does, likes and dislikes as chips, and the line that benched companions do not see your choices; then
+  their die (look and name, a tap opens the ring), skills, gear.
+- **The guide dog's page** (last frame): Vica, her sprite from the tutorial, "Guide dog · walks
+  with every hero", the first seat, a bench when a stronger companion comes, the Hound Die. Her numbers
+  and die are Core's (#568); her joining scene is Narrative's; her likes and dislikes are not set yet.
+- Cost: a new page and a rebuilt Party tab: about two days of UX, more than A.
+
+## The guide dog: from the tutorial to the bench (`companion-dog.png`)
+From Core's note (#568: the dog is a ranger-class companion, weaker than Kelda and Sable, benched once a
+stronger one joins) and the user's later word: she is **mandatory**, every hero gets her automatically
+before the city after the desert (Narrative pins the scene), and other companions replace her in the
+party later.
+- **The tutorial guide today:** a walking and sitting dog with the speech bubble (the real
+  `SpeechBubble`), named by the player in Settings (`companionNameProvider`, default "your
+  companion"), and a different look for a good or an evil hero (angel or demon). It is not on the Party
+  tab.
+- **The handover (one small moment):** when the scene Narrative pins plays (before the city after the
+  desert), the same dog, with the same bubble, says one line, and the Party tab gets her card with a "New companion" tag. She keeps the name
+  the player gave the guide (Vica when they never named it) and her look. Narrative writes the line.
+- **The swap moment (a stronger companion arrives):** today a recruit is seated only up to capacity, so
+  Kelda, arriving with the seats full, lands on the bench **without a word**, and nothing tells the
+  player who is now benched. The proposal: a sheet, "Kelda joins your party. The seats are full. Who
+  walks with you?", with one row per choice ("Kelda for Vica", "Kelda for Sable", "Kelda waits at camp,
+  for now"), each saying who waits at camp, and one line on what waiting means: they keep their health
+  and gear, do not see your choices, and can come back from the Party tab.
+- **The camp with only Vica (third frame):** every hero has her, so the Party tab is never empty. She
+  holds the first seat; the second is an **open seat** that says what it is for ("Companions you
+  recruit sit here"); the third stays locked until the Barracks Annex; the bench is empty; "Not with
+  you" lists the companions still to find.
+- **After:** the bench shows Vica, and a gold note says it once: "Vica waits at camp. Kelda walks with
+  you. Vica keeps her health and her gear, does not see your choices, and can come back: tap her."
+- **Needs:** Narrative: the one line at the handover, the dog taking the player's name for the guide
+  (`companionNameProvider`) as her companion name, her look following the hero's alignment as the guide
+  does. Core: the arrival rule (ask when the seats are full, instead of benching silently); this is
+  behaviour in `recruitAlly` / `_setAllyInParty`, so Core's.
+
+## What each needs from Core
+- **A:** nothing.
+- **B:** nothing for the screens. One question: can the player bench Vica at once, or only when a stronger companion needs her seat? (The frames assume the second.) The dog is in Core's note (#568: no race, class ranger, `hound_die`,
+  about 42 health at level 8); her joining scene is Narrative's; what is still open for
+  Core is her likes and dislikes (approval weights) and whether her page shows a class at all (the
+  picture shows none, only "Guide dog"). For "Not with you": whether to show a companion not yet met as a "???" (a spoiler
+  question for the story) and a record of who left (today `loseAlly` drops them; a list of the lost,
+  with the reason, would feed the "left" row).
+- **UX:** a portrait per companion. Today only the class mark exists; the dog has its sprite.
+
+## Recommendation
+Ship **A** first (small, fixes 1 to 3, 5, 6 and 8), then **B**'s page for a companion as the place the
+approval meter, the die and the dog live (fixes 4 and 7).
+
+## Questions for the user
+1. A, B, or A now and B's page later?
+2. Should companions not yet met show as a "???" with their quest, or stay hidden until found?
+3. Should a lost companion stay on the page (greyed, with why)?
+
+## Vica in the scenes
+
+The dog is named **Vica** (the same dog as the tutorial's guide). Once she is seated in the party
+she should also follow the hero's sprite in the scenes: the street at the door, the land walk, the
+story page. Pictures, what draws the hero today and what it would take are in
+[vica-follows.md](vica-follows.md) (picture `docs/ux-shots/vica-follows.png`).

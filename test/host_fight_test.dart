@@ -21,10 +21,16 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
+/// The first settle of a test waits for the game data to load; the later
+/// ones only let the screen catch up.
+final _warmed = Expando<bool>();
+
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 8; i++) {
+  final first = _warmed[tester] == null;
+  _warmed[tester] = true;
+  for (var i = 0; i < (first ? 8 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -109,8 +115,9 @@ void main() {
     await _settle(tester);
     expect(_inLog('Your Host fights beside you: Compact, Vigil, 4 Houses.'),
         findsOneWidget);
-    // Two Houses' worth of block for each member as the fight opens.
-    expect(_inLog('the party starts behind 2 block'), findsOneWidget);
+    // The Houses' block for each member as the fight opens (+1 from
+    // three Houses on the fight's small scale).
+    expect(_inLog('the party starts behind 1 block'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(20, 20));
     await _settle(tester);

@@ -1,3 +1,4 @@
+import '../data/text_placeholders.dart';
 import '../l10n/app_locale.dart';
 
 /// Item sets and unique effects -- the build-defining half of itemization
@@ -17,7 +18,8 @@ enum UniqueEffect {
   /// deals.
   lifesteal,
 
-  /// An enemy whose hit connects takes `uniqueValue` damage back.
+  /// An enemy whose hit connects takes `uniqueValue`% of it back (see
+  /// [ThornsBank]).
   thorns,
 
   /// Once per fight, a blow that would drop the wearer leaves them at 1 HP
@@ -49,7 +51,7 @@ UniqueEffect? uniqueEffectFromName(String? name) => switch (name) {
 /// placeholder, see [describeUniqueEffect]).
 String uniqueEffectDescriptionKey(UniqueEffect effect) => switch (effect) {
       UniqueEffect.lifesteal => 'unique_lifesteal_desc',
-      UniqueEffect.thorns => 'unique_thorns_desc',
+      UniqueEffect.thorns => 'unique_thorns_percent_desc',
       UniqueEffect.secondWind => 'unique_second_wind_desc',
       UniqueEffect.manaOnHit => 'unique_mana_on_hit_desc',
       UniqueEffect.critChance => 'unique_crit_desc',
@@ -89,10 +91,28 @@ class SetBonusTier {
   final String description;
   final String? descriptionFr;
 
-  String descriptionFor(AppLanguage language) =>
+  /// The description in [language], its placeholders filled (see
+  /// [placeholders]).
+  String descriptionFor(AppLanguage language) => resolvePlaceholders(
       language == AppLanguage.fr && (descriptionFr?.isNotEmpty ?? false)
           ? descriptionFr!
-          : description;
+          : description,
+      placeholders,
+      language);
+
+  /// The numbers a description may name (text_placeholders.dart): every
+  /// bonus of the tier, 0 when it has none.
+  Map<String, num> get placeholders => {
+        'pieces': pieces,
+        'attack': attackDamage,
+        'damage': attackDamage,
+        'armor': armor,
+        'crit': critChance,
+        'dodge': dodgeChance,
+        'thorns': thorns,
+        'lifesteal': lifestealPercent,
+        'mana': manaOnHit,
+      };
 
   factory SetBonusTier.fromJson(Map<String, dynamic> json) => SetBonusTier(
         pieces: (json['pieces'] as num?)?.toInt() ?? 2,
@@ -179,8 +199,9 @@ class GearEffects {
     this.armor = 0,
     this.critChance = 0,
     this.dodgeChance = 0,
+    this.blockChance = 0,
     this.lifestealPercent = 0,
-    this.thorns = 0,
+    this.thornsPercent = 0,
     this.manaOnHit = 0,
     this.secondWind = false,
   });
@@ -194,8 +215,15 @@ class GearEffects {
   final double critChance;
   final double dodgeChance;
 
+  /// Percentage points added to the block roll: a blocked blow loses half
+  /// (stat_rules.dart's blockedBlow; signs, titles and Iron Hide lend it).
+  final double blockChance;
+
   final int lifestealPercent;
-  final int thorns;
+
+  /// The share (%) of each blow that connects sent back at the one who
+  /// threw it (see [ThornsBank]).
+  final int thornsPercent;
   final int manaOnHit;
   final bool secondWind;
 
@@ -204,8 +232,9 @@ class GearEffects {
       armor == 0 &&
       critChance == 0 &&
       dodgeChance == 0 &&
+      blockChance == 0 &&
       lifestealPercent == 0 &&
-      thorns == 0 &&
+      thornsPercent == 0 &&
       manaOnHit == 0 &&
       !secondWind;
 
@@ -213,6 +242,43 @@ class GearEffects {
   int lifestealFor(int damage) => damage <= 0 || lifestealPercent <= 0
       ? 0
       : (damage * lifestealPercent / 100).round();
+}
+
+/// The fractions a fight owes (docs/proposals/stat-scale.md, "Effects at
+/// 1"): on the small scale a share of a small number is a fraction (10% of
+/// a blow of 3, 8% of a guard of 1), and rounding each one would turn most
+/// shares into nothing. A bank keeps what each one owes until it makes a
+/// whole point, so over a fight a share gives exactly its share. One bank
+/// per effect per combatant per fight.
+class FractionBank {
+  double owed = 0;
+
+  /// The whole points [amount] (a fraction) adds to what is owed: those
+  /// are paid, the rest kept. With [keep] false nothing is kept (a preview
+  /// of what the next one would pay).
+  int take(double amount, {bool keep = true}) {
+    if (amount <= 0) return 0;
+    final total = owed + amount;
+    // A hair under a whole point (0.1 + 0.2 + ... in floating point)
+    // counts as the whole point.
+    final whole = (total + 1e-9).floor();
+    if (keep) owed = total - whole;
+    return whole;
+  }
+
+  /// [percent]% of [value], through the bank (see [take]).
+  int share(int value, int percent, {bool keep = true}) =>
+      value <= 0 || percent <= 0 ? 0 : take(value * percent / 100, keep: keep);
+}
+
+/// Thorns: a share (GearEffects.thornsPercent) of each blow that connects
+/// goes back, what a blow of 3 owes in fractions kept for the next.
+class ThornsBank {
+  final FractionBank _bank = FractionBank();
+
+  /// The damage a blow that connected for [taken] sends back at
+  /// [percent]%.
+  int answer(int taken, int percent) => _bank.share(taken, percent);
 }
 
 /// One set with pieces currently worn, for the inventory and character
@@ -295,7 +361,7 @@ GearEffects gearEffectsFor(
     critChance: critChance,
     dodgeChance: dodgeChance,
     lifestealPercent: lifesteal,
-    thorns: thorns,
+    thornsPercent: thorns,
     manaOnHit: manaOnHit,
     secondWind: secondWind,
   );

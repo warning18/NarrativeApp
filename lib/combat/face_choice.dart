@@ -31,10 +31,10 @@ class FaceOutput {
 
   /// One number to compare two faces by, weighted as the playthrough
   /// simulator weighs skills (sim_growth.dart's simSkillScore): damage,
-  /// then healing at 0.7, a guard at 0.5, mana at 2 a point, and 4 for a
-  /// status.
+  /// then healing at 0.7, a guard at 0.5, mana at 2 a point, and 1 for a
+  /// status (a point of damage on the fight's small scale).
   double get score =>
-      damage + heal * 0.7 + block * 0.5 + mana * 2 + (status == null ? 0 : 4);
+      damage + heal * 0.7 + block * 0.5 + mana * 2 + (status == null ? 0 : 1);
 }
 
 /// Whether the candidate helps, hurts, or changes nothing (see
@@ -144,7 +144,8 @@ FaceSkillChoice faceSkillChoice({
       baseDamage: baseDamage, armor: armor);
   final used = facesCastingSkill(candidateId, faces, assignments, skills,
       exceptIndex: faceIndex);
-  final max = maxFacesForSkill(skills[candidateId] as Map<String, dynamic>?);
+  final max = maxFacesForSkill(skills[candidateId] as Map<String, dynamic>?,
+      faceCount: faces.length);
   final FaceChoiceBlock? block;
   if (!isAssignableFace(faces[faceIndex])) {
     block = FaceChoiceBlock.notOpen;

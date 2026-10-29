@@ -1,3 +1,5 @@
+import 'dart:math' show max, min;
+
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../l10n/dice_names_fr.dart';
@@ -11,8 +13,10 @@ import 'combat_engine.dart';
 /// die of six top skills outclass the dice built around them.
 const double channeledSkillPower = channeledPower;
 
-/// The basic actions a face can carry on its own.
-const Set<String> basicFaceTypes = {'Attack', 'Defend', 'Heal'};
+/// The basic actions a face can carry on its own: the plain numbered
+/// faces. A skill set on one of them is channeled (see
+/// [channeledSkillPower]).
+const Set<String> basicFaceTypes = {'Attack', 'Defend', 'Heal', 'Mana'};
 
 /// Race and profession prefixes on skill ids, dropped from the name shown
 /// to the player ("warrior_shield_bash" reads "Shield Bash").
@@ -56,16 +60,38 @@ String skillDisplayName(String skillId,
       .join(' ');
 }
 
-/// Whether the player may set a skill on [face]. Open: skill faces with no
-/// skill of their own or the generic Heavy Attack, and every basic face.
-/// Fixed: a skill face's signature skill, Mana and blank faces, and any
-/// face the die marks `fixed`.
+/// Whether the player may set a skill on [face] (docs/proposals/
+/// dice-sizes.md §2): every face of a die is a slot, a Skill face (its
+/// signature skill included, which the pick replaces) and every plain
+/// numbered face (Attack, Defend, Heal, Mana). Only a blank face and a face
+/// the die marks `fixed` stay as they are.
 bool isAssignableFace(Map<String, dynamic> face) {
   if (face['fixed'] == true) return false;
   final type = face['type']?.toString() ?? '';
+  return type == 'Skill' || basicFaceTypes.contains(type);
+}
+
+/// Whether [face] is a Skill face with a signature skill of its own (not
+/// empty, not the generic Heavy Attack): the die's identity, which a pick
+/// may replace and which casts while nothing is set on it.
+bool isSignatureFace(Map<String, dynamic> face) {
+  if (face['type'] != 'Skill') return false;
   final linked = face['linkedSkillID']?.toString() ?? '';
-  if (type == 'Skill') return linked.isEmpty || linked == 'heavy_attack';
-  return basicFaceTypes.contains(type);
+  return linked.isNotEmpty && linked != 'heavy_attack';
+}
+
+/// Whether [face] is an open Skill face: a Skill face with no skill of its
+/// own (or the generic Heavy Attack), not fixed. Where the simulator's
+/// players put their learned skills.
+bool isOpenSkillFace(Map<String, dynamic> face) =>
+    face['type'] == 'Skill' && face['fixed'] != true && !isSignatureFace(face);
+
+/// The skill [face] casts while nothing is set on it and that counts
+/// against the copy limits: its signature skill, or what a fixed Skill face
+/// casts. Null for an open face left as it is.
+String? _ownCountedSkill(Map<String, dynamic> face) {
+  if (!isAssignableFace(face)) return faceSkillId(face, null);
+  return isSignatureFace(face) ? face['linkedSkillID'].toString() : null;
 }
 
 /// How rare a skill is: the rarer, the fewer faces of one die it may take
@@ -97,34 +123,52 @@ SkillRarity skillRarity(Map<String, dynamic>? skill) {
   return SkillRarity.legendary;
 }
 
-/// Faces of one die [skill] may take.
-int maxFacesForSkill(Map<String, dynamic>? skill) =>
-    skillRarityFaceLimits[skillRarity(skill)]!;
+/// The copies of one skill a die of [faceCount] faces may hold: one per
+/// four slots from the d8 up (a d8 two, a d12 three, a d20 five), two on a
+/// d6 so today's dice stay varied, one on a d4. Keeps a die from being the
+/// same skill on every face.
+int maxCopiesOnDie(int faceCount) =>
+    faceCount == 6 ? 2 : max(1, faceCount ~/ 4);
+
+/// Faces of one die [skill] may take: its rarity's limit, and on a die of
+/// [faceCount] faces no more than [maxCopiesOnDie].
+int maxFacesForSkill(Map<String, dynamic>? skill, {int? faceCount}) {
+  final byRarity = skillRarityFaceLimits[skillRarity(skill)]!;
+  return faceCount == null
+      ? byRarity
+      : min(byRarity, maxCopiesOnDie(faceCount));
+}
 
 /// The player's picks that hold on a die of [faces], face by face: a skill
-/// already on as many faces as its rarity allows (the die's own fixed
-/// faces counted first, then the picks in face order) goes no further, and
-/// the faces past that do their own action. An open face left as it is
-/// (Heavy Blow) doesn't count. Keeps a save from before the limits to them.
+/// already on as many faces as [maxFacesForSkill] allows (the die's own
+/// signature and fixed faces left as they are counted first, then the picks
+/// in face order) goes no further, and the faces past that do their own
+/// action. An open face left as it is (Heavy Blow) doesn't count. Keeps a
+/// save from before the limits to them.
 Map<String, String> limitedFaceAssignments(
   List<Map<String, dynamic>> faces,
   Map<String, String> assignments,
   Map<String, dynamic> skills,
 ) {
+  bool hasPick(int i) {
+    final id = assignments[i.toString()];
+    return id != null && id.isNotEmpty && isAssignableFace(faces[i]);
+  }
+
   final counts = <String, int>{};
-  for (final face in faces) {
-    if (isAssignableFace(face)) continue;
-    final own = faceSkillId(face, null);
+  for (var i = 0; i < faces.length; i++) {
+    if (hasPick(i)) continue;
+    final own = _ownCountedSkill(faces[i]);
     if (own != null) counts[own] = (counts[own] ?? 0) + 1;
   }
   final kept = <String, String>{};
   for (var i = 0; i < faces.length; i++) {
-    final picked = assignments[i.toString()];
-    if (picked == null || picked.isEmpty || !isAssignableFace(faces[i])) {
-      continue;
-    }
+    if (!hasPick(i)) continue;
+    final picked = assignments[i.toString()]!;
     final used = counts[picked] ?? 0;
-    if (used >= maxFacesForSkill(skills[picked] as Map<String, dynamic>?)) {
+    if (used >=
+        maxFacesForSkill(skills[picked] as Map<String, dynamic>?,
+            faceCount: faces.length)) {
       continue;
     }
     counts[picked] = used + 1;
@@ -134,8 +178,8 @@ Map<String, String> limitedFaceAssignments(
 }
 
 /// Faces of a die of [faces] that count against [skillId]'s limit with
-/// [assignments]: its fixed faces and the picks that hold, leaving out
-/// face [exceptIndex] when given.
+/// [assignments]: its fixed and signature faces left as they are and the
+/// picks that hold, leaving out face [exceptIndex] when given.
 int facesCastingSkill(
   String skillId,
   List<Map<String, dynamic>> faces,
@@ -147,16 +191,19 @@ int facesCastingSkill(
   var count = 0;
   for (var i = 0; i < faces.length; i++) {
     if (i == exceptIndex) continue;
-    final counted = isAssignableFace(faces[i])
-        ? kept[i.toString()]
-        : faceSkillId(faces[i], null);
+    final counted = kept[i.toString()] ??
+        (assignments[i.toString()]?.isNotEmpty == true &&
+                isAssignableFace(faces[i])
+            ? null
+            : _ownCountedSkill(faces[i]));
     if (counted == skillId) count++;
   }
   return count;
 }
 
 /// Whether [skillId] may go on face [faceIndex]: an open face, and the
-/// skill on fewer of the die's other faces than its rarity allows.
+/// skill on fewer of the die's other faces than [maxFacesForSkill] allows
+/// (its rarity, and one copy per four faces, two on a d6).
 bool canSetSkillOnFace(
   String skillId,
   int faceIndex,
@@ -171,7 +218,8 @@ bool canSetSkillOnFace(
   }
   return facesCastingSkill(skillId, faces, assignments, skills,
           exceptIndex: faceIndex) <
-      maxFacesForSkill(skills[skillId] as Map<String, dynamic>?);
+      maxFacesForSkill(skills[skillId] as Map<String, dynamic>?,
+          faceCount: faces.length);
 }
 
 /// Whether a skill on [face] works at [channeledSkillPower].
@@ -294,7 +342,8 @@ List<String> dieSignatureSkillIds(Map<String, dynamic>? die) {
       const <Map<String, dynamic>>[];
   return [
     for (final face in faces)
-      if (face['type'] == 'Skill' && !isAssignableFace(face))
+      if (face['type'] == 'Skill' &&
+          (isSignatureFace(face) || !isAssignableFace(face)))
         face['linkedSkillID'].toString(),
   ];
 }

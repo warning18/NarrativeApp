@@ -19,6 +19,7 @@ import 'package:narrative_data_app/data/rival_hunters.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -242,16 +243,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'specialisations', 'spec_variants',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     final summaries = simulatePlaythroughs(story,
         tables: tables,
         gameConfig: _table('game_config'),

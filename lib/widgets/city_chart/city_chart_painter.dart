@@ -5,12 +5,13 @@
 // chart colours.
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show mapEquals;
+import 'package:flutter/foundation.dart' show mapEquals, setEquals;
 import 'package:flutter/material.dart';
 
 import '../../data/map_charts.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
 import '../journey_banner_pin.dart' show PinBanner, paintBannerPin;
+import '../../data/journey_rules.dart' show DayPhase;
 import 'city_chart.dart';
 
 /// How far in (the view's scale over the fitted one) the lots grow roofs,
@@ -27,13 +28,21 @@ class CityChartPainter extends CustomPainter {
     this.explored,
     this.hereDistrict,
     this.hereWayId,
+    this.partyAt,
     this.goalWayId,
     this.selectedWayId,
+    this.services = const [],
+    this.selectedServiceId,
+    this.rulers = const {},
+    this.locked = const {},
+    this.holds = const {},
     this.focusDistrict,
     this.numbers = const {},
     this.banners = const {},
     this.bannersDark = true,
     this.pulse = 0,
+    this.phase = DayPhase.day,
+    this.buildingNames = true,
   });
 
   final CityChart chart;
@@ -51,8 +60,25 @@ class CityChartPainter extends CustomPainter {
   final Set<String>? explored;
   final String? hereDistrict;
   final String? hereWayId;
+
+  /// Where the party's mark is while it walks to a way (the host's walk):
+  /// over every other rule.
+  final Offset? partyAt;
   final String? goalWayId;
   final String? selectedWayId;
+
+  /// The town's service pins (a notice board, the market...), and the one
+  /// picked.
+  final List<CityChartService> services;
+  final String? selectedServiceId;
+
+  /// The ruling clan's colours by district id (see [CityChartRuler]): the
+  /// wash and the outline of a ruled district take them.
+  final Map<String, CityChartRuler> rulers;
+
+  /// The districts shut by a side quest, and who holds the others.
+  final Set<String> locked;
+  final Map<String, CityChartHold> holds;
 
   /// The district being looked at: the others quieten.
   final String? focusDistrict;
@@ -67,6 +93,14 @@ class CityChartPainter extends CustomPainter {
 
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
+
+  /// The part of the day (the world clock): dawn and dusk wash the town in
+  /// warm light, night in deep blue with its windows and lanterns lit.
+  final DayPhase phase;
+
+  /// Whether the names of the story's buildings are written on the plan (the
+  /// district view as places takes them off: a pin's card names its place).
+  final bool buildingNames;
 
   double get zoom => scale / fitted;
   bool get detailed => zoom >= cityChartDetailZoom;
@@ -137,11 +171,54 @@ class CityChartPainter extends CustomPainter {
     // The blocks' wash, a district each.
     for (final d in chart.districts) {
       final dim = focusDistrict != null && focusDistrict != d.id ? 0.4 : 1.0;
+      final ruler = locked.contains(d.id) ? null : rulers[d.id];
       canvas.drawPath(
           d.blocks,
           fill
-            ..color =
-                d.colour.withValues(alpha: (dark ? 0.13 : 0.16) * dim + 0.02));
+            ..color = (ruler?.fill ?? d.colour).withValues(
+                alpha:
+                    ((dark ? 0.13 : 0.16) + (ruler == null ? 0 : 0.07)) * dim +
+                        0.02));
+      // The ruling clan's outline: a stronger border than the wash alone, so
+      // two clans of near colours (Vigil and Giants, Compact and Oni) read
+      // apart by their edges and by the name the card gives.
+      if (ruler != null && _known(d.id)) {
+        canvas.drawPath(
+            d.blocks,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeJoin = StrokeJoin.round
+              ..strokeWidth = math.max(1.4, 2.4 / scale)
+              ..color = ruler.accent.withValues(alpha: 0.85 * dim));
+      }
+    }
+
+    // A district a side quest keeps shut: shuttered (wave 18): a diagonal
+    // hatch over its blocks, a dashed outline, its colour drained.
+    for (final d in chart.districts) {
+      if (!locked.contains(d.id)) continue;
+      final dim = focusDistrict != null && focusDistrict != d.id ? 0.4 : 1.0;
+      canvas.drawPath(
+          d.blocks, Paint()..color = palette.fog.withValues(alpha: 0.55 * dim));
+      canvas.save();
+      canvas.clipPath(d.blocks);
+      final b = d.blocks.getBounds();
+      final hatch = Paint()
+        ..strokeWidth = math.max(0.8, 1.4 / scale)
+        ..color = palette.label.withValues(alpha: 0.42 * dim);
+      final gap = 7 / scale;
+      for (var x = b.left - b.height; x < b.right; x += gap) {
+        canvas.drawLine(
+            Offset(x, b.bottom), Offset(x + b.height, b.top), hatch);
+      }
+      canvas.restore();
+      _dashed(
+          canvas,
+          d.blocks,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = math.max(1.2, 2 / scale)
+            ..color = palette.label.withValues(alpha: 0.75 * dim));
     }
 
     // Avenues and squares, then the water and its bridges.
@@ -294,10 +371,48 @@ class CityChartPainter extends CustomPainter {
       canvas.drawRect(Rect.fromCenter(center: t, width: 10, height: 10), fill);
     }
 
+    // The hour: a wash over the town, and its lights at dusk and night.
+    _hour(canvas);
+
     // Names and pins sit on the plan but are drawn at the screen's size.
     _labels(canvas);
+    _services(canvas);
     _pins(canvas);
     canvas.restore();
+  }
+
+  /// The town at the hour: nothing by day; a warm thin wash at dawn, a
+  /// violet one at dusk, a deep blue one at night. Dusk and night light some
+  /// of the windows (most at night) and the lanterns.
+  void _hour(Canvas canvas) {
+    if (phase == DayPhase.day) return;
+    final wash = switch (phase) {
+      DayPhase.dawn => const Color(0xFFF2A36B).withValues(alpha: 0.10),
+      DayPhase.dusk => const Color(0xFF7A4A7C).withValues(alpha: 0.20),
+      _ => const Color(0xFF0B1230).withValues(alpha: 0.42),
+    };
+    canvas.drawRect(chart.bounds.inflate(4000), Paint()..color = wash);
+    if (phase == DayPhase.dawn) return;
+    final night = phase == DayPhase.night;
+    const warm = Color(0xFFFFD27A);
+    final glow = Paint()..color = warm.withValues(alpha: night ? 0.28 : 0.16);
+    final lit = Paint()..color = warm.withValues(alpha: 0.95);
+    for (final l in chart.lanterns) {
+      canvas.drawCircle(l, night ? 11 : 8, glow);
+      canvas.drawCircle(l, 1.8, lit);
+    }
+    var i = 0;
+    for (final b in chart.buildings) {
+      if (b.quiet) continue;
+      i++;
+      // Dusk: one house in three has a light; night: two in three.
+      if (!(night ? i % 3 != 0 : i % 3 == 0)) continue;
+      if (!_known(chart.districts[b.district].id)) continue;
+      canvas.drawRect(
+          Rect.fromCenter(
+              center: b.at.translate(0, 1), width: 3.6, height: 4.4),
+          lit);
+    }
   }
 
   void _marks(Canvas canvas, Paint fill, Paint stroke, bool dark) {
@@ -344,6 +459,114 @@ class CityChartPainter extends CustomPainter {
     }
   }
 
+  /// The padlock of a shut district, on a small round plate.
+  void _lockGlyph(Canvas canvas, Offset c) {
+    final p = palette;
+    canvas.drawCircle(c, 11, Paint()..color = p.fog.withValues(alpha: 0.9));
+    canvas.drawCircle(
+        c,
+        11,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..color = p.label.withValues(alpha: 0.8));
+    canvas.drawArc(
+        Rect.fromCenter(center: c + const Offset(0, -2), width: 7, height: 9),
+        math.pi,
+        math.pi,
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.8
+          ..color = p.label);
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(
+                center: c + const Offset(0, 2.5), width: 10, height: 7.5),
+            const Radius.circular(1.5)),
+        Paint()..color = p.label);
+  }
+
+  /// The holder's crest (wave 18): its flag in a ring; the ring is filled
+  /// by how firm the hold is, an inner ring by the strongest rival, with a
+  /// tick where the rival would take the district.
+  void _crest(Canvas canvas, Offset c, CityChartHold h) {
+    final p = palette;
+    canvas.drawCircle(c, 13, Paint()..color = p.fog.withValues(alpha: 0.9));
+    final hold = h.hold;
+    if (hold != null) {
+      final track = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3
+        ..color = h.accent.withValues(alpha: 0.28);
+      canvas.drawCircle(c, 11, track);
+      canvas.drawArc(
+          Rect.fromCircle(center: c, radius: 11),
+          -math.pi / 2,
+          2 * math.pi * hold.clamp(0.0, 1.0),
+          false,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 3
+            ..strokeCap = StrokeCap.butt
+            ..color = h.fill);
+      if (h.rival > 0 && h.rivalFill != null) {
+        canvas.drawArc(
+            Rect.fromCircle(center: c, radius: 7.2),
+            -math.pi / 2,
+            2 * math.pi * h.rival.clamp(0.0, 1.0),
+            false,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2
+              ..color = h.rivalFill!);
+      }
+      if (h.flipAt > 0 && h.flipAt < 1) {
+        final a = -math.pi / 2 + 2 * math.pi * h.flipAt;
+        canvas.drawLine(
+            c + Offset(math.cos(a), math.sin(a)) * 5.2,
+            c + Offset(math.cos(a), math.sin(a)) * 9.4,
+            Paint()
+              ..strokeWidth = 1.4
+              ..color = p.label);
+      }
+    } else {
+      canvas.drawCircle(
+          c,
+          11,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = h.accent.withValues(alpha: 0.8));
+    }
+    // The flag: a pole and a pennant in the holder's colours.
+    canvas.drawLine(
+        c + const Offset(-2.5, -5),
+        c + const Offset(-2.5, 5.5),
+        Paint()
+          ..strokeWidth = 1.4
+          ..color = h.accent);
+    canvas.drawPath(
+        Path()
+          ..moveTo(c.dx - 2.5, c.dy - 5)
+          ..lineTo(c.dx + 5, c.dy - 2)
+          ..lineTo(c.dx - 2.5, c.dy + 1)
+          ..close(),
+        Paint()..color = h.fill);
+    if (h.flipped) {
+      // A district that changed hands: a small gold star at the ring.
+      final st = c + const Offset(10, -10);
+      final star = Path();
+      for (var i = 0; i < 10; i++) {
+        final a = -math.pi / 2 + i * math.pi / 5;
+        final r = i.isEven ? 4.2 : 1.8;
+        final q = st + Offset(math.cos(a) * r, math.sin(a) * r);
+        i == 0 ? star.moveTo(q.dx, q.dy) : star.lineTo(q.dx, q.dy);
+      }
+      canvas.drawPath(star..close(), Paint()..color = const Color(0xFFF2C14E));
+    }
+  }
+
   void _dashed(Canvas canvas, Path path, Paint paint) {
     for (final m in path.computeMetrics()) {
       var d = 0.0;
@@ -379,7 +602,8 @@ class CityChartPainter extends CustomPainter {
     // height until it finds room (v1.425).
     final placed = <Rect>[];
     for (final d in chart.districts) {
-      final known = _known(d.id);
+      // A locked district shows its name (a rumour), shuttered.
+      final known = _known(d.id) || locked.contains(d.id);
       if (detailed && focusDistrict != d.id) continue;
       var shift = 0.0;
       if (known && focusDistrict == null) {
@@ -430,13 +654,21 @@ class CityChartPainter extends CustomPainter {
               ..strokeWidth = 1.2
               ..color = d.colour);
         tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
+        // Over its name: the padlock of a shut district, or the holder's
+        // crest (wave 18).
+        final above = Offset(0, -(tp.height / 2 + 15));
+        if (locked.contains(d.id)) {
+          _lockGlyph(canvas, above);
+        } else if (holds[d.id] case final h?) {
+          _crest(canvas, above, h);
+        }
       }
       canvas.restore();
     }
     if (!detailed) return;
     // Building names, in the district being looked at.
     for (final b in chart.buildings) {
-      if (b.quiet || !b.story || b.name.isEmpty) continue;
+      if (!buildingNames || b.quiet || !b.story || b.name.isEmpty) continue;
       final d = chart.districts[b.district];
       if (focusDistrict != null && d.id != focusDistrict) continue;
       if (!_known(d.id)) continue;
@@ -456,9 +688,132 @@ class CityChartPainter extends CustomPainter {
     }
   }
 
+  /// The icon of a service pin.
+  static IconData serviceIcon(String kind) => switch (kind) {
+        'notice_board' => Icons.assignment_outlined,
+        'market' => Icons.storefront_outlined,
+        'tavern' => Icons.local_bar_outlined,
+        'temple' => Icons.temple_buddhist_outlined,
+        'forge' => Icons.hardware_outlined,
+        'harbour' => Icons.anchor,
+        _ => Icons.place_outlined,
+      };
+
+  /// The pins' half-size on the screen.
+  static const double serviceRadius = 11;
+
+  /// Whether the service [s] is on show: in the district looked at, and found.
+  bool serviceShown(CityChartService s) {
+    if (!detailed) return false;
+    if (focusDistrict != null && s.district != focusDistrict) return false;
+    return _known(s.district);
+  }
+
+  /// The services' pins: a small rounded sign on its square or lot, quieter
+  /// than a way's pin, dimmer when nothing opens there yet.
+  void _services(Canvas canvas) {
+    final p = palette;
+    final inv = 1 / scale;
+    for (final s in services) {
+      if (!serviceShown(s)) continue;
+      final picked = s.id == selectedServiceId;
+      canvas.save();
+      canvas.translate(s.at.dx, s.at.dy);
+      canvas.scale(inv);
+      final box = RRect.fromRectAndRadius(
+          Rect.fromCenter(
+              center: Offset.zero,
+              width: serviceRadius * 2,
+              height: serviceRadius * 2),
+          const Radius.circular(5));
+      // An open service glows at dusk and night.
+      if (s.opens && (phase == DayPhase.dusk || phase == DayPhase.night)) {
+        canvas.drawCircle(
+            Offset.zero,
+            serviceRadius + 9,
+            Paint()
+              ..color = const Color(0xFFFFD27A)
+                  .withValues(alpha: phase == DayPhase.night ? 0.38 : 0.22));
+      }
+      canvas.drawRRect(
+          box.shift(const Offset(0, 1.5)), Paint()..color = Colors.black26);
+      canvas.drawRRect(box,
+          Paint()..color = s.opens ? p.fog : p.fog.withValues(alpha: 0.75));
+      canvas.drawRRect(
+          box,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = picked ? 2.4 : 1.4
+            ..color = picked
+                ? p.mark
+                : s.opens
+                    ? p.label
+                    : p.label.withValues(alpha: 0.45));
+      if (s.kind == 'notice_board') {
+        _noticeBoardGlyph(canvas, s.opens);
+      } else {
+        _serviceIcon(canvas, s, p);
+      }
+      if (s.badge > 0) _serviceBadge(canvas, s, p);
+      canvas.restore();
+    }
+  }
+
+  /// A small board with notes pinned on it: the notice board's pin.
+  void _noticeBoardGlyph(Canvas canvas, bool opens) {
+    final a = opens ? 1.0 : 0.5;
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
+            const Radius.circular(1.5)),
+        Paint()..color = const Color(0xFF7A5B3A).withValues(alpha: a));
+    final note = Paint()..color = const Color(0xFFEADFC2).withValues(alpha: a);
+    canvas.drawRect(const Rect.fromLTWH(-7, -5.5, 6, 5), note);
+    canvas.drawRect(const Rect.fromLTWH(0, -5, 6, 4), note);
+    canvas.drawRect(const Rect.fromLTWH(-5.5, 0.5, 7, 5), note);
+    canvas.drawRect(const Rect.fromLTWH(3, 1, 3, 4), note);
+  }
+
+  /// The count on a pin: round, red when something can be claimed.
+  void _serviceBadge(Canvas canvas, CityChartService s, ChartPalette p) {
+    const centre = Offset(serviceRadius - 1, -serviceRadius + 1);
+    canvas.drawCircle(centre, 7.5, Paint()..color = Colors.black45);
+    canvas.drawCircle(centre, 6.5,
+        Paint()..color = s.urgent ? const Color(0xFFC0392B) : p.label);
+    final tp = TextPainter(
+      text: TextSpan(
+          text: s.badge > 9 ? '9+' : '${s.badge}',
+          style: TextStyle(
+              fontFamily: 'PixelifySans',
+              fontSize: 9,
+              height: 1,
+              fontWeight: FontWeight.w700,
+              color: s.urgent ? Colors.white : p.fog)),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, centre - Offset(tp.width / 2, tp.height / 2));
+  }
+
+  /// A service pin's icon (the ones that are not drawn).
+  void _serviceIcon(Canvas canvas, CityChartService s, ChartPalette p) {
+    final icon = serviceIcon(s.kind);
+    final tp = TextPainter(
+      text: TextSpan(
+          text: String.fromCharCode(icon.codePoint),
+          style: TextStyle(
+              fontFamily: icon.fontFamily,
+              package: icon.fontPackage,
+              fontSize: 15,
+              height: 1,
+              color: s.opens ? p.label : p.label.withValues(alpha: 0.5))),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
+  }
+
   /// Where a way's pin sits: on its building.
   Offset pinAt(CityChartWay w) =>
-      chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
+      w.at ?? chart.buildingOf(w)?.at ?? chart.districts[w.district].centre;
 
   /// The pins' radius on the screen.
   static const double pinRadius = 12;
@@ -472,10 +827,14 @@ class CityChartPainter extends CustomPainter {
     for (final w in chart.ways) {
       if (w.id == hereWayId) here = pinAt(w);
     }
+    // At a building's doorstep (v1.542), the party stands at its door.
+    here ??= chart.here;
     if (here == null && hereDistrict != null) {
       final d = chart.districtById(hereDistrict!);
       if (d != null && _known(d.id)) here = d.centre.translate(0, 22 * inv);
     }
+    // Walking to a way (the host's walk), the mark is where the walk is.
+    here = partyAt ?? here;
     if (here != null) {
       canvas.save();
       canvas.translate(here.dx, here.dy);
@@ -621,11 +980,19 @@ class CityChartPainter extends CustomPainter {
       old.explored != explored ||
       old.hereDistrict != hereDistrict ||
       old.hereWayId != hereWayId ||
+      old.partyAt != partyAt ||
       old.goalWayId != goalWayId ||
       old.selectedWayId != selectedWayId ||
+      old.selectedServiceId != selectedServiceId ||
+      !identical(old.services, services) ||
+      !mapEquals(old.rulers, rulers) ||
+      !setEquals(old.locked, locked) ||
+      !mapEquals(old.holds, holds) ||
       old.focusDistrict != focusDistrict ||
       old.numbers != numbers ||
       !mapEquals(old.banners, banners) ||
       old.bannersDark != bannersDark ||
-      old.pulse != pulse;
+      old.pulse != pulse ||
+      old.phase != phase ||
+      old.buildingNames != buildingNames;
 }

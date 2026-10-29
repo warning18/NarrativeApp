@@ -63,5 +63,89 @@
       "feral_dogs": 1,
       "falling_wall": 1
     }
+  },
+  "stair_to_court": {
+    "id": "stair_to_court",
+    "name": "From the Drowned Cloister to the Hollow Court",
+    "name_fr": "Du Cloître noyé à la Cour Creuse",
+    "from": "cloister",
+    "to": "court",
+    "roads": [
+      "cloister_court"
+    ],
+    "days": 3,
+    "biome": "fen",
+    "terrain": "fen",
+    "chapter": 4,
+    "rulerOneIn": 3,
+    "events": {
+      "fen_mud": 2,
+      "fen_lantern": 1,
+      "fen_cart": 1,
+      "fen_child": 1
+    }
+  },
+  "reliquary_to_heart": {
+    "id": "reliquary_to_heart",
+    "name": "From the Black Reliquary down to the Dead Heart",
+    "name_fr": "Du Reliquaire Noir au Cœur mort",
+    "from": "reliquary",
+    "to": "heart",
+    "roads": [
+      "reliquary_heart"
+    ],
+    "days": 3,
+    "biome": "frost",
+    "terrain": "frost",
+    "chapter": 5,
+    "rulerOneIn": 3,
+    "events": {
+      "frost_rime_fall": 2,
+      "frost_cairn": 1,
+      "frost_hound_track": 1,
+      "frost_bell": 1
+    }
+  },
+  "anchorage_to_grave": {
+    "id": "anchorage_to_grave",
+    "name": "Over the Grey Sands to the White Fleet’s Grave",
+    "name_fr": "Par les Sables gris jusqu’au Tombeau de la Flotte Blanche",
+    "from": "anchorage",
+    "to": "wreck",
+    "roads": [
+      "anchorage_wreck"
+    ],
+    "days": 2,
+    "biome": "tear",
+    "terrain": "desert",
+    "chapter": 6,
+    "rulerOneIn": 3,
+    "events": {
+      "glass_fulgurite": 2,
+      "glass_hull_shelter": 1,
+      "glass_drowned_well": 1,
+      "glass_tear_pull": 1
+    }
+  },
+  "lantern_cliffs": {
+    "id": "lantern_cliffs",
+    "name": "Up the Lantern Cliffs to Candlehold",
+    "name_fr": "Par les Falaises de la Lanterne jusqu’à Candlehold",
+    "from": "camp",
+    "to": "candlehold",
+    "roads": [
+      "camp_candlehold"
+    ],
+    "days": 2,
+    "biome": "sea_cliffs",
+    "terrain": "sea_cliffs",
+    "chapter": 7,
+    "rulerOneIn": 0,
+    "events": {
+      "cliff_salt_wind": 1,
+      "cliff_tide_stair": 1,
+      "cliff_wrecker_lamp": 1,
+      "cliff_gulls": 1
+    }
   }
 }

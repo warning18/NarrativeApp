@@ -18,9 +18,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
     AppLanguage.fr:
-        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
+        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Go pour la prendre.',
   },
-  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
+  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Go'},
   'journey_move_lost': {
     AppLanguage.en: 'The fight is lost: you are taken to {place}.',
     AppLanguage.fr: 'Le combat est perdu\u00a0: on vous mène à {place}.',
@@ -36,6 +36,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_pass_stop': {
     AppLanguage.en: 'You pass {stop}.',
     AppLanguage.fr: 'Vous passez {stop}.',
+  },
+  'journey_walk_to': {
+    AppLanguage.en: 'You walk to {place}…',
+    AppLanguage.fr: 'Vous marchez vers {place}…',
+  },
+  'journey_step_in': {
+    AppLanguage.en: 'You step inside {place}…',
+    AppLanguage.fr: 'Vous entrez dans {place}…',
+  },
+  'journey_step_out': {
+    AppLanguage.en: 'You step back out into the streets…',
+    AppLanguage.fr: 'Vous ressortez dans les rues…',
   },
   'journey_you_are_here': {
     AppLanguage.en: 'You are here',
@@ -56,10 +68,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'choice_ways_chip': {AppLanguage.en: 'Ways', AppLanguage.fr: 'Voies'},
   'choice_hub_hint': {
-    AppLanguage.en:
-        'Tap a chip, on the ring or under the map, to open its list.',
-    AppLanguage.fr:
-        'Touchez une pastille, sur l’anneau ou sous la carte, pour ouvrir sa liste.',
+    AppLanguage.en: 'Tap a chip to open its list.',
+    AppLanguage.fr: 'Touchez une pastille pour ouvrir sa liste.',
+  },
+  'journey_choices_here': {
+    AppLanguage.en: 'Choices · {n}',
+    AppLanguage.fr: 'Choix · {n}',
   },
   'journey_by_road': {
     AppLanguage.en: 'Road: {stops}',
@@ -75,17 +89,192 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Pincez pour zoomer, glissez pour regarder ; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
   },
+  'journey_city_places_here': {
+    AppLanguage.en: 'Places here · tap one',
+    AppLanguage.fr: 'Lieux ici · touchez-en un',
+  },
   'journey_go_inside': {
     AppLanguage.en: 'Go back inside',
     AppLanguage.fr: 'Rentrer',
   },
-  'journey_city_ways_one': {
-    AppLanguage.en: '1 way here · tap a pin or a row',
-    AppLanguage.fr: '1 chemin ici · touchez une épingle ou une ligne',
+  // The district as places (v1.586, docs/proposals/district-places.md).
+  'district_places_title': {
+    AppLanguage.en: 'Places · tap one to go there',
+    AppLanguage.fr: 'Lieux · touchez-en un pour y aller',
   },
-  'journey_city_ways_many': {
-    AppLanguage.en: '{n} ways here · tap a pin or a row',
-    AppLanguage.fr: '{n} chemins ici · touchez une épingle ou une ligne',
+  'places_ways_out': {
+    AppLanguage.en: 'Ways out',
+    AppLanguage.fr: 'Sorties',
+  },
+  'places_handle': {
+    AppLanguage.en: 'Places · {n}',
+    AppLanguage.fr: 'Lieux · {n}',
+  },
+  'places_handle_map': {
+    AppLanguage.en: 'Map',
+    AppLanguage.fr: 'Carte',
+  },
+  'place_here': {
+    AppLanguage.en: 'Here',
+    AppLanguage.fr: 'Ici',
+  },
+  'place_no_name': {
+    AppLanguage.en: '(no name yet)',
+    AppLanguage.fr: '(pas encore de nom)',
+  },
+  'place_story_goes_on': {
+    AppLanguage.en: 'The story goes on here',
+    AppLanguage.fr: 'L’histoire continue ici',
+  },
+  'place_things_one': {
+    AppLanguage.en: '1 thing to do',
+    AppLanguage.fr: '1 chose à faire',
+  },
+  'place_things_many': {
+    AppLanguage.en: '{n} things to do',
+    AppLanguage.fr: '{n} choses à faire',
+  },
+  'place_go': {
+    AppLanguage.en: 'Go',
+    AppLanguage.fr: 'Y aller',
+  },
+  'place_back': {
+    AppLanguage.en: 'Back to the places',
+    AppLanguage.fr: 'Retour aux lieux',
+  },
+  'journey_city_walk_to': {
+    AppLanguage.en: 'Walk to {district}',
+    AppLanguage.fr: 'Marcher vers {district}',
+  },
+  'town_ruled_by': {
+    AppLanguage.en: 'Held by {clan}',
+    AppLanguage.fr: 'Tenu par {clan}',
+  },
+  'town_ruled_none': {
+    AppLanguage.en: 'No clan holds it',
+    AppLanguage.fr: 'Aucun clan ne le tient',
+  },
+  'town_ruled_mixed': {
+    AppLanguage.en: 'its districts differ',
+    AppLanguage.fr: 'ses quartiers diffèrent',
+  },
+  'town_handover_to': {
+    AppLanguage.en: '{clan} now holds {town}.',
+    AppLanguage.fr: '{clan} tient désormais {town}.',
+  },
+  'town_handover_none': {
+    AppLanguage.en: 'No clan holds {town} now.',
+    AppLanguage.fr: 'Plus aucun clan ne tient {town}.',
+  },
+  'town_handover_many': {
+    AppLanguage.en: '{n} towns changed hands.',
+    AppLanguage.fr: '{n} villes ont changé de mains.',
+  },
+  'town_handover_title': {
+    AppLanguage.en: 'Changed hands',
+    AppLanguage.fr: 'Passées de main',
+  },
+  'town_handover_no_one': {
+    AppLanguage.en: 'no one',
+    AppLanguage.fr: 'personne',
+  },
+  'service_notice_board': {
+    AppLanguage.en: 'Notice board',
+    AppLanguage.fr: 'Panneau d’affichage',
+  },
+  'service_market': {AppLanguage.en: 'Market', AppLanguage.fr: 'Marché'},
+  'service_tavern': {AppLanguage.en: 'Tavern', AppLanguage.fr: 'Taverne'},
+  'service_temple': {AppLanguage.en: 'Temple', AppLanguage.fr: 'Temple'},
+  'service_forge': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
+  'service_harbour': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
+  'service_nothing_yet': {
+    AppLanguage.en: 'Nothing to do here yet.',
+    AppLanguage.fr: 'Rien à faire ici pour l’instant.',
+  },
+  'service_shop_locked': {
+    AppLanguage.en: 'Not found yet',
+    AppLanguage.fr: 'Pas encore trouvée',
+  },
+  'service_bounty_board': {
+    AppLanguage.en: 'Bounties of the town',
+    AppLanguage.fr: 'Primes de la ville',
+  },
+  // The temple (temple.dart, docs/proposals/temple-service.md): Narrative's
+  // texts (docs/proposals/temple-service-texts.json).
+  'temple_mend_name': {
+    AppLanguage.en: 'Mending',
+    AppLanguage.fr: 'Guérison',
+  },
+  'temple_mend_desc': {
+    AppLanguage.en:
+        'Heals the whole party to full health, for gold. No day passes.',
+    AppLanguage.fr:
+        'Rend toute sa santé au groupe entier, contre de l’or. Aucun jour ne passe.',
+  },
+  'temple_blessing_name': {
+    AppLanguage.en: 'Blessing',
+    AppLanguage.fr: 'Bénédiction',
+  },
+  'temple_blessing_desc': {
+    AppLanguage.en:
+        'Lasts 3 fights: the ruling clan’s favour, and a block of 1 at the start.',
+    AppLanguage.fr:
+        'Dure 3 combats : la faveur du clan qui gouverne, et un blocage de 1 au départ.',
+  },
+  'temple_price': {
+    AppLanguage.en: '{gold} gold',
+    AppLanguage.fr: '{gold} or',
+  },
+  'temple_blessed_already': {
+    AppLanguage.en: 'You already carry a blessing. A new one replaces it.',
+    AppLanguage.fr:
+        'Vous portez déjà une bénédiction. Une nouvelle la remplace.',
+  },
+  'temple_mended_today': {
+    AppLanguage.en: 'Already mended today. A night’s rest opens it again.',
+    AppLanguage.fr: 'Déjà guéri aujourd’hui. Une nuit de repos la rouvre.',
+  },
+  'temple_refused_hunted': {
+    AppLanguage.en:
+        'The keeper will not take your coin: the clan that rules here hunts you.',
+    AppLanguage.fr:
+        'Le gardien refuse votre argent : le clan qui gouverne ici vous traque.',
+  },
+  'temple_mend_result': {
+    AppLanguage.en: 'Everyone stands whole again, and no time has passed.',
+    AppLanguage.fr: 'Chacun se relève entier, et le temps n’a pas passé.',
+  },
+  'temple_blessing_result': {
+    AppLanguage.en: 'The blessing settles on you: 3 fights.',
+    AppLanguage.fr: 'La bénédiction vous enveloppe : 3 combats.',
+  },
+  'temple_neutral_blessing_line': {
+    AppLanguage.en:
+        'No clan rules here, so the blessing is small and plain: +3% party max health, and a block of 1 at the start, for 3 fights.',
+    AppLanguage.fr:
+        'Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3 % de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats.',
+  },
+  'temple_blessing_active': {
+    AppLanguage.en: 'Blessing: {clan} ({n} fights)',
+    AppLanguage.fr: 'Bénédiction : {clan} ({n} combats)',
+  },
+  'temple_blessing_standing': {
+    AppLanguage.en: '+1 standing, once a chapter',
+    AppLanguage.fr: '+1 de réputation, une fois par chapitre',
+  },
+  'temple_neutral_name': {
+    AppLanguage.en: 'The town shrine',
+    AppLanguage.fr: 'Le sanctuaire de la ville',
+  },
+  'temple_neutral_line': {
+    AppLanguage.en:
+        'No clan keeps this shrine, and no clan will mind. A coin in the dish, a word to whoever is listening. Three fights.',
+    AppLanguage.fr:
+        'Aucun clan ne tient ce sanctuaire, et aucun ne s’en offusquera. Une pièce dans le plat, un mot à qui veut bien écouter. Trois combats.',
+  },
+  'temple_too_poor': {
+    AppLanguage.en: 'Not enough gold.',
+    AppLanguage.fr: 'Pas assez d’or.',
   },
   'journey_city_districts': {
     AppLanguage.en: 'The districts · tap one to go in',
@@ -101,6 +290,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  // A scene the story brought the party to holds it on its page (v1.553).
+  'journey_choose_first': {
+    AppLanguage.en: 'Choose first',
+    AppLanguage.fr: 'Choisissez d\'abord',
+  },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
     AppLanguage.fr: 'Regarder le pays',
@@ -525,14 +719,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'clan_nemesis_tag': {
     AppLanguage.en: 'Your nemesis',
     AppLanguage.fr: 'Votre némésis',
-  },
-  'clan_peek_tap_close': {
-    AppLanguage.en: 'Tap to close',
-    AppLanguage.fr: 'Touchez pour fermer',
-  },
-  'clan_peek_release': {
-    AppLanguage.en: 'Let go to close',
-    AppLanguage.fr: 'Relâchez pour fermer',
   },
   'geo_this_land': {
     AppLanguage.en: 'This land',
@@ -1110,6 +1296,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Grey Shroud',
     AppLanguage.fr: 'Le Linceul gris',
   },
+  // The first-launch intro (v1.583): Narrative's four lines (set A).
+  'intro_line_1': {
+    AppLanguage.en: 'Alster at dusk. The ash had already begun to fall.',
+    AppLanguage.fr:
+        'Alster au crépuscule. La cendre avait déjà commencé à tomber.',
+  },
+  'intro_line_2': {
+    AppLanguage.en:
+        'The bell rang for the Inquisition. Nobody on Tallow Street looked up.',
+    AppLanguage.fr:
+        'La cloche sonna pour l’Inquisition. Personne, rue du Suif, ne leva les yeux.',
+  },
+  'intro_line_3': {
+    AppLanguage.en:
+        'Every clan wanted the city. None of them wanted you in it.',
+    AppLanguage.fr:
+        'Chaque clan voulait la ville. Aucun ne voulait de vous dedans.',
+  },
+  'intro_line_4': {
+    AppLanguage.en: 'Tonight it burns. First, decide who you are.',
+    AppLanguage.fr: 'Ce soir, elle brûle. D’abord, décidez qui vous êtes.',
+  },
+  'intro_skip': {
+    AppLanguage.en: 'Tap to skip',
+    AppLanguage.fr: 'Touchez pour passer',
+  },
+  'intro_replay_title': {
+    AppLanguage.en: 'Replay the intro',
+    AppLanguage.fr: 'Revoir l’introduction',
+  },
+  'intro_replay_desc': {
+    AppLanguage.en: 'The Shroud burning, the die, the title (15 seconds).',
+    AppLanguage.fr: 'Le Linceul qui brûle, le dé, le titre (15 secondes).',
+  },
   'menu_subtitle': {
     AppLanguage.en: 'A tale of dice, debts and a shroud that should not exist',
     AppLanguage.fr:
@@ -1619,7 +1839,109 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu :'},
   'forge_title': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
   'forge_button': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forger'},
-  'forged_prefix': {AppLanguage.en: 'Forged', AppLanguage.fr: 'Forgé :'},
+  'forged_prefix': {AppLanguage.en: 'Forged:', AppLanguage.fr: 'Forgé :'},
+  // The forge's roll (forge_roll.dart): its tiers, what moves it, and a
+  // forged piece's name around the base item's.
+  'forge_tier_flawed': {AppLanguage.en: 'Flawed', AppLanguage.fr: 'Défectueux'},
+  'forge_tier_sound': {AppLanguage.en: 'Sound', AppLanguage.fr: 'Solide'},
+  'forge_tier_fine': {AppLanguage.en: 'Fine', AppLanguage.fr: 'Fin'},
+  'forge_tier_masterwork': {
+    AppLanguage.en: 'Masterwork',
+    AppLanguage.fr: 'De maître',
+  },
+  'forge_mod_dwarf': {AppLanguage.en: 'Dwarf', AppLanguage.fr: 'Nain'},
+  'forge_mod_friends': {
+    AppLanguage.en: 'Friends {of}',
+    AppLanguage.fr: 'Amis {of}',
+  },
+  'forge_mod_distrust': {
+    AppLanguage.en: '{clan} distrusts you',
+    AppLanguage.fr: '{clan} se méfie de vous',
+  },
+  'forged_name_flawed': {
+    AppLanguage.en: 'Flawed {item}',
+    AppLanguage.fr: '{item} (facture défectueuse)',
+  },
+  'forged_name_fine': {
+    AppLanguage.en: 'Fine {item}',
+    AppLanguage.fr: '{item} (belle facture)',
+  },
+  'forged_name_masterwork': {
+    AppLanguage.en: 'Masterwork {item}',
+    AppLanguage.fr: '{item} de maître',
+  },
+  // The Forge sheet with tabs and the forging moment (v1.593).
+  'forge_slot_Head': {AppLanguage.en: 'Head', AppLanguage.fr: 'Tête'},
+  'forge_slot_Top': {AppLanguage.en: 'Body', AppLanguage.fr: 'Corps'},
+  'forge_slot_Bottom': {AppLanguage.en: 'Legs', AppLanguage.fr: 'Jambes'},
+  'forge_slot_Foot': {AppLanguage.en: 'Feet', AppLanguage.fr: 'Pieds'},
+  'forge_slot_Weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'forge_roll_line': {
+    AppLanguage.en: 'Roll d20 {mod}',
+    AppLanguage.fr: 'Jet de d20 {mod}',
+  },
+  'forge_odds_open': {AppLanguage.en: 'odds', AppLanguage.fr: 'chances'},
+  'forge_odds_close': {AppLanguage.en: 'hide', AppLanguage.fr: 'masquer'},
+  'forge_odds_note': {
+    AppLanguage.en:
+        'A flawed piece is −1 on its main number and loses nothing else; Fine is +1, Masterwork +2.',
+    AppLanguage.fr:
+        'Une pièce défectueuse perd 1 sur son chiffre principal et rien d’autre ; belle facture : +1, de maître : +2.',
+  },
+  'forge_hint_tip': {
+    AppLanguage.en: 'Where to find the ore',
+    AppLanguage.fr: 'Où trouver le minerai',
+  },
+  'forge_have_need': {
+    AppLanguage.en: '{item} have {have} · need {need}',
+    AppLanguage.fr: '{item} : {have} en main · {need} requis',
+  },
+  'forge_short_of': {
+    AppLanguage.en: 'Short of {n} {item}',
+    AppLanguage.fr: 'Il manque {n} {item}',
+  },
+  'forge_short_gold': {
+    AppLanguage.en: 'Short of {n} gold',
+    AppLanguage.fr: 'Il manque {n} d’or',
+  },
+  'forge_cast': {
+    AppLanguage.en: 'The forge rolls its own d20…',
+    AppLanguage.fr: 'La forge lance son propre d20…',
+  },
+  'forge_die': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
+  'forge_total': {AppLanguage.en: 'Total', AppLanguage.fr: 'Total'},
+  'forge_effect_flawed': {
+    AppLanguage.en: '1–4 · −1 to the main number',
+    AppLanguage.fr: '1–4 · −1 au chiffre principal',
+  },
+  'forge_effect_sound': {
+    AppLanguage.en: '5–14 · as listed',
+    AppLanguage.fr: '5–14 · comme indiqué',
+  },
+  'forge_effect_fine': {
+    AppLanguage.en: '15–19 · +1 to the main number',
+    AppLanguage.fr: '15–19 · +1 au chiffre principal',
+  },
+  'forge_effect_masterwork': {
+    AppLanguage.en: '20+ · +2 to the main number',
+    AppLanguage.fr: '20+ · +2 au chiffre principal',
+  },
+  'forge_flaw_note': {
+    AppLanguage.en:
+        'A flawed roll loses nothing more: the piece is made, weaker, and can be sold.',
+    AppLanguage.fr:
+        'Un jet défectueux ne coûte rien de plus : la pièce est faite, plus faible, et peut se vendre.',
+  },
+  'forge_sells_for': {AppLanguage.en: 'Sells for', AppLanguage.fr: 'Se vend'},
+  'forge_spent': {
+    AppLanguage.en: 'Spent: {list}',
+    AppLanguage.fr: 'Dépensé : {list}',
+  },
+  'forge_take_it': {AppLanguage.en: 'Take it', AppLanguage.fr: 'La prendre'},
+  'forge_another': {
+    AppLanguage.en: 'Forge another',
+    AppLanguage.fr: 'En forger une autre',
+  },
   'forge_needs_label': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
   'forge_hint': {
     AppLanguage.en:
@@ -1675,14 +1997,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'show_legend': {
     AppLanguage.en: 'Show legend',
     AppLanguage.fr: 'Afficher la légende'
-  },
-  'hide_companion': {
-    AppLanguage.en: 'Hide companion',
-    AppLanguage.fr: 'Masquer le compagnon'
-  },
-  'show_companion': {
-    AppLanguage.en: 'Show companion',
-    AppLanguage.fr: 'Afficher le compagnon'
   },
   'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'map_theme_description': {
@@ -2042,6 +2356,70 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Équipement'
   },
   'dice_label': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dé'},
+  // The inventory's tabs, rows and slots (v1.594, UX).
+  'inv_title': {AppLanguage.en: 'Inventory', AppLanguage.fr: 'Inventaire'},
+  'inv_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
+  'inv_tab_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'inv_tab_charms': {AppLanguage.en: 'Charms', AppLanguage.fr: 'Charmes'},
+  'inv_tab_potions': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'inv_tab_materials': {
+    AppLanguage.en: 'Materials',
+    AppLanguage.fr: 'Matériaux'
+  },
+  'inv_tab_books': {AppLanguage.en: 'Books', AppLanguage.fr: 'Livres'},
+  'inv_tab_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'inv_tab_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'inv_sort_newest': {AppLanguage.en: 'Newest', AppLanguage.fr: 'Récents'},
+  'inv_sort_rarity': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
+  'inv_sort_name': {AppLanguage.en: 'Name', AppLanguage.fr: 'Nom'},
+  'inv_take_off': {AppLanguage.en: 'Take off', AppLanguage.fr: 'Retirer'},
+  'inv_new': {AppLanguage.en: 'New', AppLanguage.fr: 'Nouveau'},
+  'inv_goes_on': {
+    AppLanguage.en: 'goes on the {slot}',
+    AppLanguage.fr: 'se porte : {slot}',
+  },
+  'inv_worn_on': {
+    AppLanguage.en: 'worn on the {slot}',
+    AppLanguage.fr: 'porté : {slot}',
+  },
+  'inv_instead_of': {
+    AppLanguage.en: 'Instead of {name} (worn)',
+    AppLanguage.fr: 'À la place de {name} (porté)',
+  },
+  'inv_compare_hold': {
+    AppLanguage.en: 'Hold a row to compare',
+    AppLanguage.fr: 'Maintenez une ligne pour comparer',
+  },
+  'inv_in_hand': {AppLanguage.en: 'In your hand', AppLanguage.fr: 'En main'},
+  'inv_in_bag': {AppLanguage.en: 'In the bag', AppLanguage.fr: 'Dans le sac'},
+  'inv_die_line': {
+    AppLanguage.en: 'd{n} · {n} faces · {material}',
+    AppLanguage.fr: 'd{n} · {n} faces · {material}',
+  },
+  'inv_die_made_for': {
+    AppLanguage.en: 'Made for the {who}',
+    AppLanguage.fr: 'Conçu pour : {who}',
+  },
+  'inv_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'inv_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'inv_type_artifact': {AppLanguage.en: 'Artifact', AppLanguage.fr: 'Artéfact'},
+  'inv_type_charm': {AppLanguage.en: 'Charm', AppLanguage.fr: 'Charme'},
+  'inv_type_potion': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'inv_type_material': {AppLanguage.en: 'Material', AppLanguage.fr: 'Matériau'},
+  'inv_type_spellbook': {
+    AppLanguage.en: 'Spellbook',
+    AppLanguage.fr: 'Grimoire'
+  },
+  'inv_type_tome': {AppLanguage.en: 'Tome', AppLanguage.fr: 'Tome'},
+  'inv_type_scroll': {AppLanguage.en: 'Scroll', AppLanguage.fr: 'Parchemin'},
+  'inv_type_quest': {
+    AppLanguage.en: 'Quest item',
+    AppLanguage.fr: 'Objet de quête'
+  },
+  'inv_empty_tab': {
+    AppLanguage.en: 'Nothing of this kind in the bag.',
+    AppLanguage.fr: 'Rien de ce genre dans le sac.',
+  },
   'wisdom_mana_bonus_line': {
     AppLanguage.en: 'Wisdom {wis}: +{n} mana on every Mana face and mana '
         'skill (1 more per 3 Wisdom).',
@@ -2221,6 +2599,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'reward_gold_sub': {
     AppLanguage.en: 'Paid for the job',
     AppLanguage.fr: 'Le prix du travail',
+  },
+  'reward_gold_zone_sub': {
+    AppLanguage.en: 'The zone\u2019s reward',
+    AppLanguage.fr: 'La r\u00e9compense de la zone',
   },
   'reward_xp': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
   'reward_xp_sub': {
@@ -2432,6 +2814,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No merge recipes defined yet.',
     AppLanguage.fr: 'Aucune recette de fusion définie pour le moment.',
   },
+  // Two d8s recut into the tally die at the Skillwright (dice_weave.dart).
+  'weave_title': {
+    AppLanguage.en: 'Recut two d8s into a tally die',
+    AppLanguage.fr: 'Retailler deux d8 en dé du décompte',
+  },
+  'weave_intro': {
+    AppLanguage.en:
+        'Pick two eight-faced dice you own. Both are spent, with the skills set on them; Hammersmith work on them is paid back. The tally die has twelve plain faces to fill.',
+    AppLanguage.fr:
+        'Choisissez deux dés à huit faces que vous possédez. Les deux sont perdus, avec les compétences posées dessus ; le travail du Maître-forgeron vous est rendu. Le dé du décompte a douze faces simples à garnir.',
+  },
+  'weave_button': {
+    AppLanguage.en: 'Recut',
+    AppLanguage.fr: 'Retailler',
+  },
+  'weave_need_two': {
+    AppLanguage.en: 'You need two eight-faced dice.',
+    AppLanguage.fr: 'Il vous faut deux dés à huit faces.',
+  },
+  'weave_owned': {
+    AppLanguage.en: 'You already own a tally die.',
+    AppLanguage.fr: 'Vous possédez déjà un dé du décompte.',
+  },
   'skills_reset_label': {
     AppLanguage.en: 'Skills Reset',
     AppLanguage.fr: 'Compétences réinitialisées',
@@ -2466,16 +2871,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'interface_section_title': {
     AppLanguage.en: 'Interface',
     AppLanguage.fr: 'Interface'
-  },
-  'walk_companion_setting_title': {
-    AppLanguage.en: 'Walking companion',
-    AppLanguage.fr: 'Compagnon qui marche',
-  },
-  'walk_companion_setting_desc': {
-    AppLanguage.en:
-        'A little companion walks across the page whenever the story moves to a new node.',
-    AppLanguage.fr:
-        "Un petit compagnon traverse la page à chaque fois que l'histoire passe à un nouveau nœud.",
   },
   'companion_name_label': {
     AppLanguage.en: 'Companion name',
@@ -3224,6 +3619,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Le Rusty Eel est hissé sur les galets. Bâtissez le port en Ville ({cost}) et il reprend la mer, avec canons, plaques et voile à monter.',
   },
+  'crossing_ruler': {
+    AppLanguage.en: 'Held by {clan}',
+    AppLanguage.fr: 'Tenue par {clan}',
+  },
   'crossing_day': {
     AppLanguage.en: 'Day {n} of {m}',
     AppLanguage.fr: 'Jour {n} sur {m}',
@@ -3262,6 +3661,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'crossing_fight_lost': {
     AppLanguage.en: 'You go down, and are left where you lie.',
     AppLanguage.fr: 'Vous tombez, et l’on vous laisse sur place.',
+  },
+  // The fate coin on a failed crossing check (fate_coin.dart).
+  'fate_coin_offer': {
+    AppLanguage.en: 'The check fails. Flip your fate coin to roll it again?',
+    AppLanguage.fr:
+        'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
+  },
+  'forge_hut_offer': {
+    AppLanguage.en:
+        'The piece comes out flawed. The Bone-Caster’s Hut can roll it again ({n} left). Spend a charge?',
+    AppLanguage.fr:
+        'La pièce sort défectueuse. La Hutte du jeteur d’os peut la relancer ({n} restant). Dépenser une charge ?',
+  },
+  'forge_hut_rolled': {
+    AppLanguage.en: 'The Bone-Caster’s Hut rolled it again.',
+    AppLanguage.fr: 'La Hutte du jeteur d’os l’a relancée.',
+  },
+  'forge_coin_offer': {
+    AppLanguage.en:
+        'The piece comes out flawed. Flip your fate coin to forge it again?',
+    AppLanguage.fr:
+        'La pièce sort défectueuse. Lancer votre pièce du destin pour la forger de nouveau ?',
+  },
+  'fate_coin_flip_button': {
+    AppLanguage.en: 'Flip the fate coin',
+    AppLanguage.fr: 'Lancer la pièce du destin',
+  },
+  'fate_coin_keep_button': {
+    AppLanguage.en: 'Let it stand',
+    AppLanguage.fr: 'En rester là',
+  },
+  'fate_coin_landed': {
+    AppLanguage.en: 'The coin lands {face}, and is spent.',
+    AppLanguage.fr: 'La pièce tombe sur {face}, et elle est dépensée.',
+  },
+  'fate_coin_heads': {
+    AppLanguage.en: 'heads',
+    AppLanguage.fr: 'face',
+  },
+  'fate_coin_tails': {
+    AppLanguage.en: 'tails',
+    AppLanguage.fr: 'pile',
   },
   // The full map's places only heard of (heard_of.dart).
   'heard_reason_storyOnly': {
@@ -3381,13 +3822,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_0': {
     AppLanguage.en:
-        'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
+        'Next: what the chapter’s main quest still needs. Tap a place to find it on the Road.',
     AppLanguage.fr:
-        'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+        'Ensuite\u00a0: ce qu’il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
   },
   'tut_camp_harbour': {
     AppLanguage.en:
-        'First, the harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
+        'First, the Harbor. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
     AppLanguage.fr:
         'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
@@ -3395,7 +3836,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Road: the places you know, expeditions from the shore, and the bounty board.',
     AppLanguage.fr:
-        'Route : les lieux connus, les expéditions depuis la côte et le tableau des primes.',
+        'Route\u00a0: les lieux connus, les expéditions depuis la côte et le tableau des primes.',
   },
   'slots_filled': {
     AppLanguage.en: '{used} of {cap} filled',
@@ -3665,6 +4106,102 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Choisissez qui vous êtes. Ceci définit vos statistiques de départ et démarre une nouvelle partie.',
   },
+  // The race and profession choice (v1.599, UX): two steps of cards, the
+  // clans behind each, what it unlocks, Compare, and the summary.
+  'rp_step_people': {
+    AppLanguage.en: '1 · People',
+    AppLanguage.fr: '1 · Peuple'
+  },
+  'rp_step_calling': {
+    AppLanguage.en: '2 · Calling',
+    AppLanguage.fr: '2 · Vocation'
+  },
+  'rp_choose': {AppLanguage.en: 'Choose', AppLanguage.fr: 'Choisir'},
+  'rp_hint_people': {
+    AppLanguage.en:
+        'Who are your people? The clans behind them will court you.',
+    AppLanguage.fr:
+        'Qui sont les vôtres\u00a0? Les clans qui les soutiennent vous courtiseront.',
+  },
+  'rp_hint_calling': {
+    AppLanguage.en:
+        'How will you fight? Your calling opens three branches of skills.',
+    AppLanguage.fr:
+        'Comment combattrez-vous\u00a0? Votre vocation ouvre trois branches de compétences.',
+  },
+  'rp_compare': {AppLanguage.en: 'Compare', AppLanguage.fr: 'Comparer'},
+  'rp_clans_count': {AppLanguage.en: '{n} clans', AppLanguage.fr: '{n} clans'},
+  'rp_clans_court': {
+    AppLanguage.en: 'These clans will court you',
+    AppLanguage.fr: 'Ces clans vous courtiseront',
+  },
+  'rp_unlocks': {AppLanguage.en: 'It unlocks', AppLanguage.fr: 'Cela ouvre'},
+  'rp_sponsors_heritage': {
+    AppLanguage.en: 'Sponsors your heritage: {names}',
+    AppLanguage.fr: 'Parraine votre héritage\u00a0: {names}',
+  },
+  'rp_offers_branch': {
+    AppLanguage.en: 'Offers the {branch} branch',
+    AppLanguage.fr: 'Offre la branche {branch}',
+  },
+  'rp_heritage_branch': {
+    AppLanguage.en: 'Heritage branch: {names}',
+    AppLanguage.fr: 'Branche d’héritage\u00a0: {names}',
+  },
+  'rp_power_medium': {
+    AppLanguage.en: 'Power medium: {name}',
+    AppLanguage.fr: 'Support de pouvoir\u00a0: {name}',
+  },
+  'rp_three_branches': {
+    AppLanguage.en: 'Branches: {names}',
+    AppLanguage.fr: 'Branches\u00a0: {names}',
+  },
+  'rp_scales_with': {
+    AppLanguage.en: 'Its gear scales with {stat}',
+    AppLanguage.fr: 'Son équipement dépend de {stat}',
+  },
+  'rp_casts': {
+    AppLanguage.en: 'Starts with a die and spells',
+    AppLanguage.fr: 'Commence avec un dé et des sorts',
+  },
+  'rp_starting_skill': {
+    AppLanguage.en: 'Starting skill: {skill}',
+    AppLanguage.fr: 'Compétence de départ\u00a0: {skill}',
+  },
+  'rp_clan_offers': {
+    AppLanguage.en: 'What it offers you',
+    AppLanguage.fr: 'Ce qu’il vous offre',
+  },
+  'rp_next_calling': {
+    AppLanguage.en: 'Next: your calling',
+    AppLanguage.fr: 'Suite\u00a0: votre vocation',
+  },
+  'rp_next_people': {
+    AppLanguage.en: 'Next: your people',
+    AppLanguage.fr: 'Suite\u00a0: votre peuple',
+  },
+  'rp_you_will_play': {
+    AppLanguage.en: 'You will play as',
+    AppLanguage.fr: 'Vous jouerez',
+  },
+  'rp_first_clans': {
+    AppLanguage.en: 'The clans that will come first',
+    AppLanguage.fr: 'Les clans qui viendront d’abord',
+  },
+  'rp_back_both': {
+    AppLanguage.en: '{n} back both',
+    AppLanguage.fr: '{n} soutiennent les deux'
+  },
+  'rp_pick_the': {
+    AppLanguage.en: 'Pick the {name}',
+    AppLanguage.fr: 'Choisir\u00a0: {name}'
+  },
+  'rp_compare_with': {
+    AppLanguage.en: 'Compare with',
+    AppLanguage.fr: 'Comparer avec'
+  },
+  'rp_branches_title': {AppLanguage.en: 'Branches', AppLanguage.fr: 'Branches'},
+  'rp_clans_title': {AppLanguage.en: 'Clans', AppLanguage.fr: 'Clans'},
   'lore_more': {AppLanguage.en: 'more', AppLanguage.fr: 'plus'},
   'lore_less': {AppLanguage.en: 'less', AppLanguage.fr: 'moins'},
   'randomize_character_button': {
@@ -3942,18 +4479,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Decide later',
     AppLanguage.fr: 'Décider plus tard',
   },
-  'training_choose_title': {
-    AppLanguage.en: 'Choose your training',
-    AppLanguage.fr: 'Choisissez votre entraînement',
-  },
-  'training_small_title': {
-    AppLanguage.en: 'A moment of insight',
-    AppLanguage.fr: 'Un éclair de lucidité',
-  },
-  'training_take_button': {
-    AppLanguage.en: 'Take this training',
-    AppLanguage.fr: 'Suivre cet entraînement',
-  },
   'stat_pick_title': {
     AppLanguage.en: 'Pick a gain',
     AppLanguage.fr: 'Choisissez un gain',
@@ -3961,6 +4486,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'stat_pick_hint': {
     AppLanguage.en: 'Tap one of the three to see what it brings.',
     AppLanguage.fr: 'Touchez l’un des trois pour voir ce qu’il apporte.',
+  },
+  'stat_picks_count': {
+    AppLanguage.en: '{n} picks',
+    AppLanguage.fr: '{n} choix',
   },
   'stat_pick_take': {
     AppLanguage.en: 'Take this pick',
@@ -3971,14 +4500,111 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Worth {n} points',
     AppLanguage.fr: 'Vaut {n} points',
   },
-  'stat_picks_left': {
-    AppLanguage.en: 'Stat picks left',
-    AppLanguage.fr: 'Choix de stats restants',
+  // A pick's rarity (training.dart) and what each ability does for the
+  // hero (stat_pick_text.dart), for the pick cards.
+  'stat_pick_tier_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commun'},
+  'stat_pick_tier_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'stat_pick_tier_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'stat_pick_tier_heroic': {
+    AppLanguage.en: 'Heroic',
+    AppLanguage.fr: 'Héroïque',
   },
-  'level_up_gives': {
-    AppLanguage.en: 'Each level also gives +20 max health and +1 base damage.',
-    AppLanguage.fr:
-        'Chaque niveau donne aussi +20 de santé max. et +1 de dégâts de base.',
+  // A stat's popin on the Character radar (stat_sheet.dart).
+  'stat_sheet_does': {
+    AppLanguage.en: 'What a point does',
+    AppLanguage.fr: 'Ce que fait un point'
+  },
+  'stat_sheet_per_point': {
+    AppLanguage.en: 'Each point: {effects}',
+    AppLanguage.fr: 'Chaque point : {effects}',
+  },
+  'stat_sheet_from': {
+    AppLanguage.en: 'Where it comes from',
+    AppLanguage.fr: 'D’où elle vient'
+  },
+  'stat_sheet_total': {AppLanguage.en: 'Total', AppLanguage.fr: 'Total'},
+  'stat_sheet_lent': {
+    AppLanguage.en: 'Lent for a fight',
+    AppLanguage.fr: 'Prêté pour un combat'
+  },
+  'stat_sheet_in_fight': {
+    AppLanguage.en: 'In a fight: {n}',
+    AppLanguage.fr: 'En combat : {n}',
+  },
+  'stat_radar_hint': {
+    AppLanguage.en: 'Tap an ability to see where it comes from.',
+    AppLanguage.fr: 'Touchez une caractéristique pour voir d’où elle vient.',
+  },
+  'stat_src_base': {
+    AppLanguage.en: 'Starting score',
+    AppLanguage.fr: 'Score de départ'
+  },
+  'stat_src_race': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
+  'stat_src_profession': {
+    AppLanguage.en: 'Calling',
+    AppLanguage.fr: 'Vocation'
+  },
+  'stat_src_floor': {AppLanguage.en: 'Floor', AppLanguage.fr: 'Plancher'},
+  'stat_src_level': {AppLanguage.en: 'Levels', AppLanguage.fr: 'Niveaux'},
+  'stat_src_perk': {AppLanguage.en: 'Perks', AppLanguage.fr: 'Atouts'},
+  'stat_src_origin': {AppLanguage.en: 'Origin', AppLanguage.fr: 'Origine'},
+  'stat_src_pick': {AppLanguage.en: 'Picks', AppLanguage.fr: 'Choix'},
+  'stat_src_tome': {AppLanguage.en: 'Tomes', AppLanguage.fr: 'Livres'},
+  'stat_src_patron': {
+    AppLanguage.en: 'Patron clan',
+    AppLanguage.fr: 'Clan patron'
+  },
+  'stat_src_open_hand': {
+    AppLanguage.en: 'The Open Hand',
+    AppLanguage.fr: 'La Main ouverte'
+  },
+  'stat_src_earlier': {AppLanguage.en: 'Earlier', AppLanguage.fr: 'Avant'},
+  'stat_src_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'stat_src_sign': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
+  'stat_src_title': {AppLanguage.en: 'Titles', AppLanguage.fr: 'Titres'},
+  'stat_src_sworn': {
+    AppLanguage.en: 'Sworn boon',
+    AppLanguage.fr: 'Faveur du serment'
+  },
+  'stat_effect_damage': {
+    AppLanguage.en: '+{n} damage',
+    AppLanguage.fr: '+{n} dégâts',
+  },
+  'stat_effect_health': {
+    AppLanguage.en: '+{n} health',
+    AppLanguage.fr: '+{n} santé',
+  },
+  'stat_effect_dodge': {
+    AppLanguage.en: '+{n}% dodge',
+    AppLanguage.fr: '+{n} % d’esquive',
+  },
+  'stat_effect_crit': {
+    AppLanguage.en: '+{n}% crit',
+    AppLanguage.fr: '+{n} % de critique',
+  },
+  'stat_effect_block': {
+    AppLanguage.en: '+{n}% block',
+    AppLanguage.fr: '+{n} % de blocage',
+  },
+  'stat_effect_mana': {
+    AppLanguage.en: '+{n} mana',
+    AppLanguage.fr: '+{n} mana',
+  },
+  'stat_effect_read_foes': {
+    AppLanguage.en: 'reads foes better',
+    AppLanguage.fr: 'lit mieux l’ennemi',
+  },
+  'stat_effect_luckier_picks': {
+    AppLanguage.en: 'rarer picks',
+    AppLanguage.fr: 'choix plus rares',
+  },
+  'stat_effect_shop_prices': {
+    AppLanguage.en: '−{n}% shop prices',
+    AppLanguage.fr: '−{n} % en boutique',
+  },
+  'stat_effect_story_checks': {
+    AppLanguage.en: 'story checks',
+    AppLanguage.fr: 'épreuves du récit',
   },
   'training_taken_label': {
     AppLanguage.en: 'Training',
@@ -3996,6 +4622,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
   'skill_faces_title': {AppLanguage.en: 'Faces', AppLanguage.fr: 'Faces'},
+  'die_ring_skill_faces': {
+    AppLanguage.en: '{n}/{max} with a skill',
+    AppLanguage.fr: '{n}/{max} avec une compétence',
+  },
   'skill_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
   'skill_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commune'},
   'skill_rarity_uncommon': {
@@ -4010,9 +4640,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'skill_faces_limit_hint': {
     AppLanguage.en:
-        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary.',
+        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary. A die also holds one copy of a skill per four faces: 1 on a d4, 2 on a d6 or d8, 3 on a d12.',
     AppLanguage.fr:
-        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire.',
+        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire. Un dé porte aussi un exemplaire d’une compétence par quatre faces : 1 sur un d4, 2 sur un d6 ou un d8, 3 sur un d12.',
   },
   'skill_faces_count': {
     AppLanguage.en: '{rarity} · on {n}/{max} faces',
@@ -4162,6 +4792,88 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'party_at_capacity': {
     AppLanguage.en: 'Active party is full',
     AppLanguage.fr: 'Le groupe actif est complet',
+  },
+  'party_open_seat': {
+    AppLanguage.en: 'Open seat',
+    AppLanguage.fr: 'Place libre',
+  },
+  'party_open_seat_empty': {
+    AppLanguage.en: 'Companions you recruit sit here',
+    AppLanguage.fr: 'Les compagnons recrutés s’assoient ici',
+  },
+  'party_open_seat_bench': {
+    AppLanguage.en: 'Seat one from the bench',
+    AppLanguage.fr: 'Asseyez-en un depuis le banc',
+  },
+  'party_locked_seat': {
+    AppLanguage.en: 'Another seat',
+    AppLanguage.fr: 'Une place de plus',
+  },
+  'party_bench_title': {
+    AppLanguage.en: 'On the bench',
+    AppLanguage.fr: 'Sur le banc',
+  },
+  'party_bench_hint': {
+    AppLanguage.en: 'tap to see them',
+    AppLanguage.fr: 'touchez pour les voir',
+  },
+  'party_still_out_there': {
+    AppLanguage.en: 'Other companions are still out there.',
+    AppLanguage.fr: 'D’autres compagnons sont encore là-bas.',
+  },
+  'companion_guide_dog': {
+    AppLanguage.en: 'Guide dog',
+    AppLanguage.fr: 'Chien guide',
+  },
+  'companion_seat_take': {
+    AppLanguage.en: 'Take a seat',
+    AppLanguage.fr: 'Prendre une place',
+  },
+  'companion_seat_bench': {
+    AppLanguage.en: 'Seated: move to the bench',
+    AppLanguage.fr: 'Assis : mettre sur le banc',
+  },
+  'companion_stays_alone': {
+    AppLanguage.en: 'Stays seated while no one else is.',
+    AppLanguage.fr: 'Reste assis tant que personne d’autre ne l’est.',
+  },
+  'companion_how_they_feel': {
+    AppLanguage.en: 'How they feel about you',
+    AppLanguage.fr: 'Ce qu’ils pensent de vous',
+  },
+  'companion_no_bonus': {
+    AppLanguage.en: 'No bonus yet',
+    AppLanguage.fr: 'Pas encore de bonus',
+  },
+  'companion_leaves_mark': {
+    AppLanguage.en: 'leaves',
+    AppLanguage.fr: 'part',
+  },
+  'companion_bench_note': {
+    AppLanguage.en:
+        'Your choices move it while they are in the party. Benched, they do not see them.',
+    AppLanguage.fr:
+        'Vos choix la font bouger tant qu’ils sont dans le groupe. Sur le banc, ils ne les voient pas.',
+  },
+  'companion_their_die': {
+    AppLanguage.en: 'Their die',
+    AppLanguage.fr: 'Leur dé',
+  },
+  'companion_to_learn': {
+    AppLanguage.en: '{n} to learn',
+    AppLanguage.fr: '{n} à apprendre',
+  },
+  'companion_starter_only': {
+    AppLanguage.en: 'Starter skills only.',
+    AppLanguage.fr: 'Compétences de départ seulement.',
+  },
+  'companion_gear_line': {
+    AppLanguage.en: 'Open their inventory',
+    AppLanguage.fr: 'Ouvrir leur inventaire',
+  },
+  'companion_dice_line': {
+    AppLanguage.en: 'Open their dice',
+    AppLanguage.fr: 'Ouvrir leurs dés',
   },
   'active_label': {AppLanguage.en: 'Active', AppLanguage.fr: 'Actif'},
   'benched_label': {AppLanguage.en: 'Benched', AppLanguage.fr: 'Sur le banc'},
@@ -4651,9 +5363,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'keyword_steady_desc': {
     AppLanguage.en:
-        'the face can\'t be rerolled once it lands, and is worth 2 more.',
+        'the face can\'t be rerolled once it lands, and is worth 1 more.',
     AppLanguage.fr:
-        'la face ne peut pas être relancée une fois tombée, et vaut 2 de plus.',
+        'la face ne peut pas être relancée une fois tombée, et vaut 1 de plus.',
   },
   'combo_flank': {
     AppLanguage.en: 'Flank',
@@ -4816,9 +5528,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_hone_desc': {
     AppLanguage.en:
-        '+2 to an Attack, Guard or Heal face (three times at most).',
+        '+1 to an Attack, Guard or Heal face (three times at most).',
     AppLanguage.fr:
-        '+2 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
+        '+1 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
   },
   'smith_temper': {
     AppLanguage.en: 'Temper',
@@ -5009,7 +5721,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La manche du combat. À partir de la manche {n}, la Marée monte et chaque coup frappe plus fort, plus le combat dure.',
   },
   'roll_hint': {
-    AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
+    AppLanguage.en: 'Roll the party’s dice, then keep or reroll.',
     AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
   },
   'lock_hint': {
@@ -5551,6 +6263,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vaincre {n} ennemis marqués (un trait ou une élite)',
   },
   'contract_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Réclamer'},
+  'contract_paid': {AppLanguage.en: 'PAID', AppLanguage.fr: 'PAYÉ'},
+  'contract_progress_of': {
+    AppLanguage.en: '{a} of {b}',
+    AppLanguage.fr: '{a} sur {b}',
+  },
+  'board_header_claim': {
+    AppLanguage.en: 'Chapter {n} · {k} to claim',
+    AppLanguage.fr: 'Chapitre {n} · {k} à réclamer',
+  },
+  'board_header_open': {
+    AppLanguage.en: 'Chapter {n} · {k} notices up',
+    AppLanguage.fr: 'Chapitre {n} · {k} affiches',
+  },
   'contract_claimed': {
     AppLanguage.en: 'Contract paid:',
     AppLanguage.fr: 'Contrat payé :',
@@ -5605,8 +6330,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Apothicaire',
   },
   'perk_apothecary_desc': {
-    AppLanguage.en: 'Potions heal 10 more.',
-    AppLanguage.fr: 'Les potions soignent 10 de plus.',
+    AppLanguage.en: 'Potions heal 2 more.',
+    AppLanguage.fr: 'Les potions soignent 2 de plus.',
   },
   'perk_keenEye': {
     AppLanguage.en: 'Keen Eye',
@@ -5629,24 +6354,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Main lourde',
   },
   'perk_heavyHand_desc': {
-    AppLanguage.en: '+2 damage on every attack.',
-    AppLanguage.fr: '+2 dégâts à chaque attaque.',
+    AppLanguage.en: '+1 damage on every attack.',
+    AppLanguage.fr: '+1 dégât à chaque attaque.',
   },
   'perk_ironHide': {
     AppLanguage.en: 'Iron Hide',
     AppLanguage.fr: 'Cuir de fer',
   },
   'perk_ironHide_desc': {
-    AppLanguage.en: '+2 armor.',
-    AppLanguage.fr: '+2 d’armure.',
+    AppLanguage.en: '+10% chance to block a blow (it loses half).',
+    AppLanguage.fr: '+10 % de chances de bloquer un coup (il perd la moitié).',
   },
   'perk_vigor': {
     AppLanguage.en: 'Vigor',
     AppLanguage.fr: 'Vigueur',
   },
   'perk_vigor_desc': {
-    AppLanguage.en: '+15 max health.',
-    AppLanguage.fr: '+15 de santé maximale.',
+    AppLanguage.en: '+3 max health.',
+    AppLanguage.fr: '+3 de santé maximale.',
   },
   'perk_battleRhythm': {
     AppLanguage.en: 'Battle Rhythm',
@@ -6690,7 +7415,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_done': {
     AppLanguage.en: 'Got it!',
-    AppLanguage.fr: 'Compris !',
+    AppLanguage.fr: 'Compris\u00a0!',
   },
   'remark_done': {
     AppLanguage.en: 'Go on',
@@ -6705,12 +7430,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Arrêter la lecture',
   },
   'tut_guide_default_name': {
-    AppLanguage.en: 'your companion',
-    AppLanguage.fr: 'votre compagnon',
+    AppLanguage.en: 'Your companion',
+    AppLanguage.fr: 'Votre compagnon',
   },
   'tut_story_title': {
     AppLanguage.en: 'The story',
-    AppLanguage.fr: "L'histoire",
+    AppLanguage.fr: "L’histoire",
   },
   'tut_character_title': {
     AppLanguage.en: 'Your character',
@@ -6722,7 +7447,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_other_title': {
     AppLanguage.en: 'The Other tab',
-    AppLanguage.fr: "L'onglet Autre",
+    AppLanguage.fr: "L’onglet Autre",
   },
   'tut_map_title': {
     AppLanguage.en: 'The world map',
@@ -6790,9 +7515,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_story_1': {
     AppLanguage.en:
-        "Woof! I'm {name}. The first time you find something new, I'll show you around. Tap anywhere to go on, or Skip whenever you like.",
+        "Woof! I’ll be your guide. The first time you find something new, I’ll show you around. Tap anywhere to go on, or Skip whenever you like.",
     AppLanguage.fr:
-        "Wouf ! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l'écran pour continuer, ou Passer quand vous voulez.",
+        "Wouf\u00a0! Je serai votre guide. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l’écran pour continuer, ou Passer quand vous voulez.",
   },
   'tut_story_2': {
     AppLanguage.en: 'This is the chapter you are in.',
@@ -6802,29 +7527,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your level, health, mana and gold. Tap them for alignment, quests and more. The book opens your journal; the speaker reads the page aloud.',
     AppLanguage.fr:
-        "Votre niveau, votre santé, votre mana et votre or. Touchez-les pour l'alignement, les quêtes et plus encore. Le livre ouvre le journal ; le haut-parleur lit la page.",
+        "Votre niveau, votre santé, votre mana et votre or. Touchez-les pour l’alignement, les quêtes et plus encore. Le livre ouvre le journal\u00a0; le haut-parleur lit la page.",
   },
   'tut_story_4': {
     AppLanguage.en:
         'The story itself. Scroll to read on, or double-tap the text to read it full screen.',
     AppLanguage.fr:
-        "L'histoire elle-même. Faites défiler pour lire la suite, ou touchez deux fois le texte pour le lire en plein écran.",
+        "L’histoire elle-même. Faites défiler pour lire la suite, ou touchez deux fois le texte pour le lire en plein écran.",
   },
   'tut_story_5': {
     AppLanguage.en:
-        "Choose what you do. Tags show what a choice costs or brings. A padlock means you can't take it yet.",
+        "Choose what you do. Tags show what a choice costs or brings. A padlock means you can’t take it yet.",
     AppLanguage.fr:
-        'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas : pas encore possible.',
-  },
-  'tut_story_6': {
-    AppLanguage.en:
-        "And that's me! I trot along each time the story moves on. The arrow tucks me away.",
-    AppLanguage.fr:
-        "Et ça, c'est moi ! Je trottine à chaque fois que l'histoire avance. La flèche me range.",
+        'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas\u00a0: pas encore possible.',
   },
   'tut_story_7': {
     AppLanguage.en: 'The map shows every place the story has reached.',
-    AppLanguage.fr: "La carte montre chaque lieu atteint par l'histoire.",
+    AppLanguage.fr: "La carte montre chaque lieu atteint par l’histoire.",
   },
   'tut_journey_title': {
     AppLanguage.en: 'The Journey',
@@ -6834,31 +7553,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'This is the Journey: the story told on a map, so you can see where each way leads before you take it.',
     AppLanguage.fr:
-        'Voici le Parcours : l’histoire racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.',
+        'Voici le Parcours\u00a0: l’histoire racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.',
   },
   'tut_journey_2': {
     AppLanguage.en:
         'Read opens the scene you are in full screen; the map button brings the map back.',
     AppLanguage.fr:
-        'Lire ouvre la scène où vous êtes en plein écran ; le bouton carte ramène la carte.',
+        'Lire ouvre la scène où vous êtes en plein écran\u00a0; le bouton carte ramène la carte.',
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'Your mark, with a step round it for each thing to do here; the ways to other places sit at the edge, in their true direction. A step’s icon and colour say what it holds. The road behind you is below.',
+        'The District view: your mark is where the party stands; each pin holds ways to take, listed under the map too. Take one, and your mark walks to its pin. The road behind you is below.',
     AppLanguage.fr:
-        'Votre repère, entouré d’une étape pour chaque chose à faire ici ; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
+        'La vue Quartier\u00a0: votre repère est là où se tient le groupe\u00a0; chaque épingle porte des chemins, listés aussi sous la carte. Prenez-en un, et le repère marche jusqu’à son épingle. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
         'Tap a step to see what it costs or brings. Go, or a second tap on the step, walks the party there.',
     AppLanguage.fr:
-        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Partir », ou un second toucher sur l’étape, y mène le groupe.',
+        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Go », ou un second toucher sur l’étape, y mène le groupe.',
   },
   'tut_journey_5': {
     AppLanguage.en:
         'Each choice opens its scene full screen; Continue brings you back to the map. The story so far is a tap away, top right.',
     AppLanguage.fr:
-        'Chaque choix ouvre sa scène en plein écran ; Continuer ramène à la carte. L’histoire jusqu’ici est à portée de main, en haut à droite.',
+        'Chaque choix ouvre sa scène en plein écran\u00a0; Continuer ramène à la carte. L’histoire jusqu’ici est à portée de main, en haut à droite.',
   },
   'tut_story_8': {
     AppLanguage.en:
@@ -6870,17 +7589,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Sea: the Rusty Eel, the Harbor, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
-        'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
+        'Mer\u00a0: le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
   'tut_character_1': {
     AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
-    AppLanguage.fr: "C'est vous : niveau et expérience, santé, mana et or.",
+    AppLanguage.fr:
+        "C’est vous\u00a0: niveau et expérience, santé, mana et or.",
   },
   'tut_character_2': {
     AppLanguage.en:
         'Your choices tip you toward Good or Evil. Past either mark, the story changes, and so do I.',
     AppLanguage.fr:
-        "Vos choix vous font pencher vers le Bien ou le Mal. Au-delà d'une marque, l'histoire change, et moi aussi.",
+        "Vos choix vous font pencher vers le Bien ou le Mal. Au-delà d’une marque, l’histoire change, et moi aussi.",
   },
   'tut_character_3': {
     AppLanguage.en:
@@ -7006,13 +7726,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Town: your cliff town. Every house you build climbs the cliff, and its shops open here.',
     AppLanguage.fr:
-        'Ville : votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
+        'Ville\u00a0: votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
   },
   'tut_camp_2': {
     AppLanguage.en:
         'Pick a house or an addition to see where it would go, then build it with gold.',
     AppLanguage.fr:
-        "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l'or.",
+        "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l’or.",
   },
   'tut_camp_3': {
     AppLanguage.en:
@@ -7024,7 +7744,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Party: companions you recruit rest here. Choose who fights at your side.',
     AppLanguage.fr:
-        'Groupe : vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
+        'Groupe\u00a0: vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
   },
   'tut_other_1': {
     AppLanguage.en: 'Save your game here, or load another one.',
@@ -7032,12 +7752,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_other_2': {
     AppLanguage.en:
-        "The achievements you've earned, and the ones still waiting.",
+        "The achievements you’ve earned, and the ones still waiting.",
     AppLanguage.fr: 'Les succès obtenus, et ceux qui vous attendent.',
   },
   'tut_other_3': {
     AppLanguage.en:
-        "Quests, shops, the bestiary and the people you've met. New entries get a count.",
+        "Quests, shops, the bestiary and the people you’ve met. New entries get a count.",
     AppLanguage.fr:
         'Quêtes, boutiques, bestiaire et personnes rencontrées. Les nouveautés sont comptées.',
   },
@@ -7045,13 +7765,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'And here you can replay any of my tours, whenever you like.',
     AppLanguage.fr:
-        "Et ici, vous pouvez revoir n'importe laquelle de mes visites.",
+        "Et ici, vous pouvez revoir n’importe laquelle de mes visites.",
   },
   'tut_map_1': {
     AppLanguage.en:
         'The chart of your journey. Places appear as the story reaches them. Tap one to read about it; pinch to zoom.',
     AppLanguage.fr:
-        "La carte de votre voyage. Les lieux apparaissent quand l'histoire les atteint. Touchez-en un pour le découvrir ; pincez pour zoomer.",
+        "La carte de votre voyage. Les lieux apparaissent quand l’histoire les atteint. Touchez-en un pour le découvrir\u00a0; pincez pour zoomer.",
   },
   'tut_map_2': {
     AppLanguage.en:
@@ -7074,7 +7794,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Each branch is learned from the top down; a gold ring is known, a lit one is ready. Tap any skill to see what it does, learn it or raise it.',
     AppLanguage.fr:
-        'Chaque branche s\'apprend de haut en bas ; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu\'elle fait, l\'apprendre ou la monter.',
+        'Chaque branche s’apprend de haut en bas\u00a0; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu’elle fait, l’apprendre ou la monter.',
   },
   'tut_skills_5': {
     AppLanguage.en:
@@ -7086,7 +7806,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'In My skills, raise tiers with essence, and fuse two skills you know into a new one.',
     AppLanguage.fr:
-        'Dans Mes compétences, montez les rangs avec l\'essence et fusionnez deux compétences connues en une nouvelle.',
+        'Dans Mes compétences, montez les rangs avec l’essence et fusionnez deux compétences connues en une nouvelle.',
   },
   'tut_dice_1': {
     AppLanguage.en: 'Pick the die you want to set up.',
@@ -7096,7 +7816,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Its faces: attack, defend, heal and skill. In a fight, one lands at random.',
     AppLanguage.fr:
-        'Ses faces : attaque, défense, soin et compétence. En combat, l’une tombe au hasard.',
+        'Ses faces\u00a0: attaque, défense, soin et compétence. En combat, l’une tombe au hasard.',
   },
   'tut_dice_3': {
     AppLanguage.en:
@@ -7126,7 +7846,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_fight_1': {
     AppLanguage.en:
-        "A fight! Your die decides it. Here's how dice combat works.",
+        "A fight! Your die decides it. Here’s how dice combat works.",
     AppLanguage.fr:
         'Un combat\u00a0! Votre dé en décide. Voici comment marche le combat aux dés.',
   },
@@ -7144,7 +7864,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_fight_4': {
     AppLanguage.en: 'Your side: health, shields and effects.',
-    AppLanguage.fr: 'Votre camp : santé, boucliers et effets.',
+    AppLanguage.fr: 'Votre camp\u00a0: santé, boucliers et effets.',
   },
   'tut_fight_5': {
     AppLanguage.en:
@@ -7156,27 +7876,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The round and the battlefield. Momentum builds as you fight; when it is full, you can surge.',
     AppLanguage.fr:
-        'Le tour et le champ de bataille. L’élan monte au fil du combat ; plein, il permet un déferlement.',
+        'Le tour et le champ de bataille. L’élan monte au fil du combat\u00a0; plein, il permet un déferlement.',
   },
   'tut_skillChallenge_1': {
     AppLanguage.en:
         'A skill challenge: roll the d20 and add your ability. Meet the number to succeed.',
     AppLanguage.fr:
-        'Une épreuve : lancez le d20 et ajoutez votre caractéristique. Atteignez le seuil pour réussir.',
+        'Une épreuve\u00a0: lancez le d20 et ajoutez votre caractéristique. Atteignez le seuil pour réussir.',
   },
   'tut_skillChallenge_2': {
     AppLanguage.en: 'Get enough successes before too many failures.',
-    AppLanguage.fr: "Obtenez assez de succès avant trop d'échecs.",
+    AppLanguage.fr: "Obtenez assez de succès avant trop d’échecs.",
   },
   'tut_boat_1': {
     AppLanguage.en: 'The Rusty Eel on her slipway. Mend her hull here.',
-    AppLanguage.fr: 'La Rusty Eel sur sa cale. Réparez sa coque ici.',
+    AppLanguage.fr: 'Le Rusty Eel sur sa cale. Réparez sa coque ici.',
   },
   'tut_boat_2': {
     AppLanguage.en:
-        "Fit the shipwright's parts into her slots to make her stronger for the sea.",
+        "Fit the shipwright’s parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
-        'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+        'Installez les pièces du charpentier dans ses emplacements pour le renforcer en mer.',
   },
   'tut_landCrossing_1': {
     AppLanguage.en:
@@ -7188,37 +7908,37 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your health is what the road wears down. Run out and you are carried back to where you set out, wounded.',
     AppLanguage.fr:
-        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, blessé.',
+        'C’est votre santé que la route use. Si elle s’épuise, on vous ramène à votre point de départ, à bout de forces.',
   },
   'tut_voyage_1': {
     AppLanguage.en:
         'A crossing takes a few days at sea, and each day brings something: a calm, a storm, a wreck or raiders.',
     AppLanguage.fr:
-        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose : un calme plat, une tempête, une épave ou des pillards.',
+        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose\u00a0: un calme plat, une tempête, une épave ou des pillards.',
   },
   'tut_voyage_2': {
     AppLanguage.en:
         'Watch the hull. Storms and raiders wear it down, calm days let you mend it. If it gives out, the Rusty Eel limps back to the port she left.',
     AppLanguage.fr:
-        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, la Rusty Eel regagne tant bien que mal son port de départ.',
+        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, le Rusty Eel regagne tant bien que mal son port de départ.',
   },
   'tut_voyage_3': {
     AppLanguage.en:
         'Each day, choose what the crew does. Some choices roll one of your stats, named on the button: pushing through a storm, boarding a wreck, outrunning raiders.',
     AppLanguage.fr:
-        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton : forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
+        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton\u00a0: forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
   },
   'tut_voyage_4': {
     AppLanguage.en:
         'Raiders can be paid off or outrun. Fight them and it becomes a ship battle, with your party crewing the stations.',
     AppLanguage.fr:
-        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale : votre groupe tient les postes.',
+        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale\u00a0: votre groupe tient les postes.',
   },
   'tut_shipBattle_1': {
     AppLanguage.en:
         'A ship battle is fought room by room. Each ship has four: the helm dodges, the guns charge the weapons, the bulwark raises shields and the hold repairs the hull.',
     AppLanguage.fr:
-        'Une bataille navale se joue salle par salle. Chaque navire en a quatre : la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
+        'Une bataille navale se joue salle par salle. Chaque navire en a quatre\u00a0: la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
   },
   'tut_shipBattle_2': {
     AppLanguage.en:
@@ -7230,7 +7950,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'When a weapon is charged, tap it, then the enemy room to hit: the shot costs them hull and weakens that room. Hold the room instead to take aim, unless aiming is off in Settings.',
     AppLanguage.fr:
-        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper : le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
+        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper\u00a0: le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
@@ -7248,13 +7968,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left. The detailed tips will show again, one at a time, in your next ship battle.',
     AppLanguage.fr:
-        'Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ. Les conseils détaillés s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
+        'Coulez-le ou prenez son pont pour gagner\u00a0; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ. Les conseils détaillés s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
   },
   'tut_expedition_1': {
     AppLanguage.en:
         'An expedition is a chain of events in one zone. Clear them all to win its reward.',
     AppLanguage.fr:
-        "Une expédition est une suite d'événements dans une zone. Terminez-les tous pour gagner sa récompense.",
+        "Une expédition est une suite d’événements dans une zone. Terminez-les tous pour gagner sa récompense.",
   },
   'tut_expedition_2': {
     AppLanguage.en:
@@ -7266,29 +7986,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A port of call: rest, trade in its shops and set out on the expeditions nearby. The Rusty Eel takes you on to the next port.',
     AppLanguage.fr:
-        'Une escale : reposez-vous, commercez et partez pour les expéditions voisines. La Rusty Eel vous emmène au port suivant.',
+        'Une escale\u00a0: reposez-vous, commercez et partez pour les expéditions voisines. Le Rusty Eel vous emmène au port suivant.',
   },
   'tut_shop_1': {
-    AppLanguage.en: 'Buy what the merchant sells with your gold.',
-    AppLanguage.fr: 'Achetez ce que vend le marchand avec votre or.',
+    AppLanguage.en: 'Spend your gold on what the merchant sells.',
+    AppLanguage.fr: 'Dépensez votre or pour ce que vend le marchand.',
   },
   'tut_shop_2': {
     AppLanguage.en:
         'You can sell what you carry too: the tag at the top opens the sale.',
     AppLanguage.fr:
-        'Vous pouvez aussi vendre ce que vous portez : l’étiquette en haut ouvre la vente.',
+        'Vous pouvez aussi vendre ce que vous portez\u00a0: l’étiquette en haut ouvre la vente.',
   },
   'tut_journal_1': {
     AppLanguage.en:
         'The story so far, newest first: each scene and the choice that left it.',
     AppLanguage.fr:
-        "L'histoire jusqu'ici, la plus récente d'abord : chaque scène et le choix qui l'a conclue.",
+        "L’histoire jusqu’ici, la plus récente d’abord\u00a0: chaque scène et le choix qui l’a conclue.",
   },
   'tut_achievements_1': {
     AppLanguage.en:
         'Every achievement. The ones you have earned are lit; the rest are waiting.',
     AppLanguage.fr:
-        'Tous les succès. Ceux obtenus sont allumés ; les autres vous attendent.',
+        'Tous les succès. Ceux obtenus sont allumés\u00a0; les autres vous attendent.',
   },
   'hub_shops_section': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Commerces'},
   'hub_challenges_section': {
@@ -7307,6 +8027,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'review_comments_title': {
     AppLanguage.en: 'Review Comments',
     AppLanguage.fr: 'Commentaires de relecture',
+  },
+  'level_stats_detail': {
+    AppLanguage.en: 'Detail',
+    AppLanguage.fr: 'Détail',
   },
   'hold_stat_for_details_hint': {
     AppLanguage.en: 'Hold a stat to see what it does',
@@ -7429,9 +8153,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'affix_armored': {AppLanguage.en: 'Armored', AppLanguage.fr: 'Cuirassé'},
   'affix_armored_desc': {
     AppLanguage.en:
-        'Shrugs off 4 damage from every Attack face. Skills cut through.',
+        'Shrugs off 1 damage from every Attack face. Skills cut through.',
     AppLanguage.fr:
-        'Encaisse 4 dégâts de chaque face Attaque. Les compétences passent.',
+        'Encaisse 1 dégât de chaque face Attaque. Les compétences passent.',
   },
   'affix_skittish': {AppLanguage.en: 'Skittish', AppLanguage.fr: 'Craintif'},
   'affix_skittish_desc': {
@@ -8629,8 +9353,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Votre chance de coup critique augmente de 15 % ce combat.',
   },
   'charm_iron_skin_desc': {
-    AppLanguage.en: '+5 armor this fight.',
-    AppLanguage.fr: '+5 armure ce combat.',
+    AppLanguage.en: '+1 armor this fight.',
+    AppLanguage.fr: '+1 armure ce combat.',
   },
   'charm_warding_desc': {
     AppLanguage.en: 'The first hit you take this fight is negated.',
@@ -9351,6 +10075,100 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La mer a son mot à dire : de temps en temps, une lame de fond, une créature marine ou une épave à la dérive change le tour.',
   },
+  // One-time fight tips (fight_tips.dart): the first fight that shows a
+  // goal, a doctrine or a situation explains it. A hold's tip takes its
+  // turns, a subdue's its health line.
+  'tip_fight_next': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suivant'},
+  'tip_fight_goal_hold': {
+    AppLanguage.en:
+        'Survive {n} of their turns and you win, even if they are still standing. They press harder, since they need not fall, but the pay is better.',
+    AppLanguage.fr:
+        'Survivez à {n} de leurs tours et vous gagnez, même s’ils sont encore debout. Ils frappent plus fort, puisqu’ils n’ont pas à tomber, mais la paie est meilleure.',
+  },
+  'tip_fight_goal_rout': {
+    AppLanguage.en:
+        'Their sturdiest fighter is the Captain. Bring the Captain down and the rest flee: you win, though those who ran leave only part of their spoils. The pay is a little better.',
+    AppLanguage.fr:
+        'Leur combattant le plus robuste est le Capitaine. Abattez le Capitaine et les autres s’enfuient : vous gagnez, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
+  },
+  'tip_fight_goal_subdue': {
+    AppLanguage.en:
+        'Wear them down below {pct}% health and they yield and pay a ransom, more gold than their usual reward. A blow that kills outright leaves only the usual spoils.',
+    AppLanguage.fr:
+        'Usez-les jusque sous {pct} % de vie et ils se rendent et paient une rançon : plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
+  },
+  'tip_fight_doctrine_dominion': {
+    AppLanguage.en:
+        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: count on plain Attack and Defend then. The Dominion’s soldiers are often Armored and shrug off a little of each Attack hit; skills cut through.',
+    AppLanguage.fr:
+        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent un peu de chaque coup d’Attaque ; les compétences passent.',
+  },
+  'tip_fight_doctrine_crows': {
+    AppLanguage.en:
+        'Each hit a Salt Crow lands lifts some of your gold, and the Crow keeps it on itself (its card shows how much). Defeat it to win the gold back; whatever a Crow still carries when the fight ends, or takes when it runs, is lost.',
+    AppLanguage.fr:
+        'Chaque coup que porte une Corneille de Sel vous prend un peu d’or, qu’elle garde sur elle (sa carte montre combien). Battez-la pour le récupérer : ce qu’une Corneille porte encore à la fin du combat, ou emporte en fuyant, est perdu.',
+  },
+  'tip_fight_doctrine_penitents': {
+    AppLanguage.en:
+        'The Ashen Penitents are often Frenzied: once below half health they hit much harder. Finish a wounded one quickly.',
+    AppLanguage.fr:
+        'Les Pénitents de Cendre sont souvent Enragés : sous la moitié de leur vie, ils frappent bien plus fort. Achevez vite un blessé.',
+  },
+  'tip_fight_doctrine_choir': {
+    AppLanguage.en:
+        'The Choir’s sentinels are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
+    AppLanguage.fr:
+        'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
+  },
+  'tip_fight_doctrine_pit': {
+    AppLanguage.en:
+        'The Pit’s things are often Venomous: their attacks poison whoever they hit.',
+    AppLanguage.fr:
+        'Les créatures de la Fosse sont souvent Venimeuses : leurs attaques empoisonnent leur cible.',
+  },
+  'tip_fight_doctrine_giants': {
+    AppLanguage.en:
+        'The giants of Highhearth are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
+    AppLanguage.fr:
+        'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
+  },
+  'tip_fight_doctrine_tidekin': {
+    AppLanguage.en:
+        'The Tide-Kin are often Skittish: badly hurt, they flee and you get only part of their spoils. Finish them before they slip away.',
+    AppLanguage.fr:
+        'Les Gens de la Marée sont souvent Craintifs : gravement blessés, ils fuient et vous n’avez qu’une partie de leur butin. Achevez-les avant qu’ils filent.',
+  },
+  'tip_fight_situation_ambush': {
+    AppLanguage.en:
+        'They strike before your first roll, and in that opening round you cannot read what they plan. Winning an ambush improves the spoils chest.',
+    AppLanguage.fr:
+        'Ils frappent avant votre premier jet, et pendant ce premier tour vous ne pouvez pas lire leurs intentions. Gagner une embuscade améliore le coffre de butin.',
+  },
+  'tip_fight_situation_dark': {
+    AppLanguage.en:
+        'In the dark you read what each enemy plans one step less clearly than your Perception would allow. Winning in the dark improves the spoils chest.',
+    AppLanguage.fr:
+        'Dans le noir, vous lisez les intentions de chaque ennemi un cran moins bien que votre Perception ne le permettrait. Gagner dans le noir améliore le coffre de butin.',
+  },
+  'tip_fight_situation_cramped': {
+    AppLanguage.en:
+        'Only two enemies can reach you each round; the rest hold back until there is room. Winning in the press improves the spoils chest a little.',
+    AppLanguage.fr:
+        'Seuls deux ennemis peuvent vous atteindre chaque tour ; les autres attendent qu’une place se libère. Gagner dans la cohue améliore un peu le coffre de butin.',
+  },
+  'tip_fight_situation_high_ground': {
+    AppLanguage.en:
+        'You hold the high ground: every Defend face you roll blocks half again as much.',
+    AppLanguage.fr:
+        'Vous tenez la hauteur : chaque face Défense que vous obtenez bloque moitié plus.',
+  },
+  'tip_fight_situation_shrine': {
+    AppLanguage.en:
+        'A shrine stands here: every Heal face and every potion restores half again as much.',
+    AppLanguage.fr:
+        'Un sanctuaire se dresse ici : chaque face Soin et chaque potion soigne moitié plus.',
+  },
   'ship_fire_hint': {
     AppLanguage.en:
         'Tap a ready weapon, then the room to hit; hold the room to take aim.',
@@ -10043,6 +10861,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'unique_thorns_desc': {
     AppLanguage.en: 'whatever hits you takes {v} damage back',
     AppLanguage.fr: 'ce qui vous frappe encaisse {v} dégâts en retour',
+  },
+  'unique_thorns_percent_desc': {
+    AppLanguage.en: 'whatever hits you takes {v}% of the blow back',
+    AppLanguage.fr: 'ce qui vous frappe encaisse {v} % du coup en retour',
   },
   'unique_second_wind_desc': {
     AppLanguage.en: 'once per fight, a lethal blow leaves you at 1 HP',
@@ -11160,6 +11982,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Les faces Attaque prennent l’élément {e}, +{v}\u00a0dégâts.',
   },
+  'sign_fx_strikeElement_plain': {
+    AppLanguage.en: 'Attack faces strike with {e}.',
+    AppLanguage.fr: 'Les faces Attaque prennent l’élément {e}.',
+  },
   'sign_fx_strikeStatus': {
     AppLanguage.en: 'Attack faces: {c}% chance to inflict {s}.',
     AppLanguage.fr:
@@ -11244,6 +12070,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+{v}% chance to dodge.',
     AppLanguage.fr: '+{v}\u00a0% de chances d’esquive.',
   },
+  'sign_fx_blockChance': {
+    AppLanguage.en: '+{v}% chance to block a blow (it loses half).',
+    AppLanguage.fr:
+        '+{v}\u00a0% de chances de bloquer un coup (il perd la moitié).',
+  },
   'sign_fx_lifestealPercent': {
     AppLanguage.en: 'Your hits heal you {v}% of their damage.',
     AppLanguage.fr: 'Vos coups vous soignent de {v}\u00a0% de leurs dégâts.',
@@ -11252,6 +12083,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'An enemy whose hit lands takes {v} damage back.',
     AppLanguage.fr:
         'Un ennemi dont le coup porte subit {v}\u00a0dégâts en retour.',
+  },
+  'sign_fx_thornsPercent': {
+    AppLanguage.en: 'An enemy whose hit lands takes {v}% of it back.',
+    AppLanguage.fr:
+        'Un ennemi dont le coup porte en subit {v}\u00a0% en retour.',
   },
   'sign_fx_manaOnHit': {
     AppLanguage.en: 'Each hit you land gives {v} mana.',
@@ -12049,14 +12885,141 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Offer',
     AppLanguage.fr: 'Offre',
   },
+  // Risky gifts (risky_gifts.dart): Narrative's texts.
+  'offer_risky_badge': {
+    AppLanguage.en: 'Risky',
+    AppLanguage.fr: 'Risqué',
+  },
+  'offer_risky_hint': {
+    AppLanguage.en: 'A better gift, at their price: let the die decide.',
+    AppLanguage.fr:
+        'Un meilleur don, à leur prix\u00a0: laissez le dé décider.',
+  },
+  'offer_risky_odds': {
+    AppLanguage.en: 'Gift {gift}% · Price {price}%',
+    AppLanguage.fr: 'Don {gift} % · Prix {price} %',
+  },
+  'offer_risky_gift': {
+    AppLanguage.en: 'The die is kind. {clan} keeps its word.',
+    AppLanguage.fr: 'Le dé est clément. Parole tenue par {clan}.',
+  },
+  'offer_risky_health': {
+    AppLanguage.en: 'The price is paid in blood: −{n} health.',
+    AppLanguage.fr: 'Le prix se paie en sang\u00a0: −{n} points de vie.',
+  },
+  'offer_risky_gold': {
+    AppLanguage.en: 'The price is paid in coin: −{n} gold.',
+    AppLanguage.fr: 'Le prix se paie en pièces\u00a0: −{n} or.',
+  },
+  'offer_risky_curse': {
+    AppLanguage.en: 'The curse {clanOf}: −{n} {stat} for two levels.',
+    AppLanguage.fr:
+        'Malédiction {clanOf}\u00a0: −{n} {stat} pendant deux niveaux.',
+  },
+  'offer_risky_roll_title': {
+    AppLanguage.en: 'The die decides',
+    AppLanguage.fr: 'Le dé décide',
+  },
+  'offer_risky_roll_sum': {
+    AppLanguage.en: '{roll} + {bonus} Luck = {total}',
+    AppLanguage.fr: '{roll} + {bonus} Chance = {total}',
+  },
+  'offer_risky_roll_gift': {
+    AppLanguage.en: 'The gift is yours.',
+    AppLanguage.fr: 'Le don est à vous.',
+  },
+  'offer_risky_roll_price': {
+    AppLanguage.en: 'A price to pay.',
+    AppLanguage.fr: 'Un prix à payer.',
+  },
+  // The camp's roll houses (camp_rolls.dart): the Reroll, Banish and Raise
+  // buttons on the stat pick and the offer. Narrative's texts.
+  'roll_reroll': {
+    AppLanguage.en: 'Reroll ({left})',
+    AppLanguage.fr: 'Relancer ({left})',
+  },
+  'roll_reroll_done': {
+    AppLanguage.en: 'The bones are cast again.',
+    AppLanguage.fr: 'Les os sont jetés de nouveau.',
+  },
+  'roll_reroll_warning': {
+    AppLanguage.en: 'The raised card goes too.',
+    AppLanguage.fr: 'La carte haussée part aussi.',
+  },
+  'roll_banish': {
+    AppLanguage.en: 'Banish ({left})',
+    AppLanguage.fr: 'Écarter ({left})',
+  },
+  'roll_banish_length': {
+    AppLanguage.en: '{draws} draws · {cost} charges',
+    AppLanguage.fr: '{draws} tirages · {cost} charges',
+  },
+  'roll_banish_done': {
+    AppLanguage.en: '{name} is warded off for {draws} draws.',
+    AppLanguage.fr: 'On écarte {name} pour {draws} tirages.',
+  },
+  'roll_warded': {
+    AppLanguage.en: 'Warded, {n} draws',
+    AppLanguage.fr: 'À l’écart, {n} tirages',
+  },
+  'roll_raise': {
+    AppLanguage.en: 'Raise ({left})',
+    AppLanguage.fr: 'Hausser ({left})',
+  },
+  'roll_raise_done': {
+    AppLanguage.en: '{name} rises to {rarity}.',
+    AppLanguage.fr: '{name} monte au rang {rarity}.',
+  },
+  'roll_no_charge': {
+    AppLanguage.en: 'No charge left.',
+    AppLanguage.fr: 'Plus aucune charge.',
+  },
+  // Warding the road (road_wards.dart): the Warding Cairn's Banish keeps a
+  // hunting clan off the trail. Narrative's texts (ward-lines.json); the
+  // clan's placeholder is its name in English ("the Lantern Dominion") and
+  // its "du …" in French (factions.json nameOf_fr), see wardLine.
+  'ward_set': {
+    AppLanguage.en: 'The cairn hides your trail from {clan}.',
+    AppLanguage.fr: 'Le cairn cache votre piste à la chasse {clan}.',
+  },
+  'ward_set_nemesis': {
+    AppLanguage.en:
+        'The cairn hides your trail from {clan}’s ordinary hunters; its champion still comes.',
+    AppLanguage.fr:
+        'Le cairn cache votre piste aux chasseurs {clan} ; son champion, lui, vous trouvera.',
+  },
+  'ward_ended': {
+    AppLanguage.en: 'The ward on {clan}’s hunters has worn off.',
+    AppLanguage.fr: 'La garde contre la chasse {clan} s’est dissipée.',
+  },
+  'ward_choice': {
+    AppLanguage.en: 'Ward the road',
+    AppLanguage.fr: 'Garder la route',
+  },
+  'ward_choice_hint': {
+    AppLanguage.en: 'Keep a hunting clan off your trail for a few roads.',
+    AppLanguage.fr:
+        'Tenir à l’écart la chasse d’un clan pendant quelques routes.',
+  },
+  'ward_length': {
+    AppLanguage.en: '{roads} roads · {cost} charges',
+    AppLanguage.fr: '{roads} routes · {cost} charges',
+  },
+  'ward_mark': {
+    AppLanguage.en: 'Warded from {clan}: {n} roads',
+    AppLanguage.fr: 'Protection contre la chasse {clan} : {n} routes',
+  },
+  'ward_no_target': {
+    AppLanguage.en: 'No clan is hunting you.',
+    AppLanguage.fr: 'Aucun clan ne vous chasse.',
+  },
+  'ledger_curse': {
+    AppLanguage.en: 'Curse',
+    AppLanguage.fr: 'Malédiction',
+  },
   'offers_waiting_label': {
     AppLanguage.en: 'Offers waiting',
     AppLanguage.fr: 'Offres en attente',
-  },
-  'level_up_offer_note': {
-    AppLanguage.en: 'The clans come to you once this closes: an offer waits.',
-    AppLanguage.fr:
-        'Les clans viennent à vous une fois ceci fermé\u00a0: une offre vous attend.',
   },
   'purse_offers_note': {
     AppLanguage.en: 'skills come in the clans’ offers',
@@ -12332,6 +13295,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'coast_news_when': {
     AppLanguage.en: 'Chapter {c}, day {d}',
     AppLanguage.fr: 'Chapitre {c}, jour {d}',
+  },
+  // Wave 18: a district changing hands by influence (district_influence.dart):
+  // the district, the new holder (clan) and the old (from).
+  'district_flipped': {
+    AppLanguage.en: '{district} has a new master: {clan}. Before: {from}.',
+    AppLanguage.fr:
+        '{district} a un nouveau maître\u00a0: {clan}. Avant\u00a0: {from}.',
+  },
+  // The Town view (v1.572): a district that changed hands, and what opens a
+  // shut one.
+  'district_changed_hands': {
+    AppLanguage.en: 'changed hands',
+    AppLanguage.fr: 'a chang\u00e9 de mains',
+  },
+  'district_locked_by': {
+    AppLanguage.en: 'Opens with: {quest}',
+    AppLanguage.fr: 'S\u2019ouvre avec\u00a0: {quest}',
   },
   'journal_news_tab': {
     AppLanguage.en: 'News',

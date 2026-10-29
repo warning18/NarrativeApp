@@ -13,8 +13,8 @@
         "keyword": "steady"
       },
       {
-        "kind": "strikeFlat",
-        "value": 1
+        "kind": "strikeDamagePercent",
+        "value": 8
       }
     ],
     "requiresPatrons": [],
@@ -82,7 +82,7 @@
     "effects": [
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -138,7 +138,11 @@
       {
         "kind": "strikeElement",
         "element": "Wind",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ],
     "requiresPatrons": [],
@@ -268,7 +272,11 @@
       {
         "kind": "strikeElement",
         "element": "Earth",
-        "value": 1
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 8
       }
     ],
     "requiresPatrons": [],
@@ -289,7 +297,7 @@
       },
       {
         "kind": "guardRetaliate",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -306,7 +314,7 @@
     "effects": [
       {
         "kind": "mendShield",
-        "value": 4
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -339,8 +347,8 @@
     "flavour_fr": "Frappée à froid dans le plastron, et elle ne s’efface pas.",
     "effects": [
       {
-        "kind": "armor",
-        "value": 1
+        "kind": "blockChance",
+        "value": 8
       }
     ],
     "requiresPatrons": [],
@@ -356,8 +364,8 @@
     "flavour_fr": "Un cercle de petites dents gravé autour du gorgerin, brun de rouille au fond des rainures.",
     "effects": [
       {
-        "kind": "thorns",
-        "value": 2
+        "kind": "thornsPercent",
+        "value": 10
       }
     ],
     "requiresPatrons": [],
@@ -393,14 +401,18 @@
       {
         "kind": "strikeElement",
         "element": "Fire",
-        "value": 1
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 8
       },
       {
         "kind": "strikeStatus",
         "status": "poison",
         "chance": 15,
         "duration": 2,
-        "magnitude": 2
+        "magnitude": 1
       }
     ],
     "requiresPatrons": [],
@@ -417,7 +429,7 @@
     "effects": [
       {
         "kind": "guardHeal",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -454,7 +466,7 @@
         "status": "poison",
         "chance": 12,
         "duration": 3,
-        "magnitude": 3
+        "magnitude": 1
       }
     ],
     "requiresPatrons": [],
@@ -489,7 +501,7 @@
       {
         "kind": "stat",
         "stat": "strength",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -506,7 +518,7 @@
     "effects": [
       {
         "kind": "maxHealth",
-        "value": 9
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -524,7 +536,11 @@
       {
         "kind": "strikeElement",
         "element": "Electricity",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ],
     "requiresPatrons": [],
@@ -541,7 +557,7 @@
     "effects": [
       {
         "kind": "guardFlat",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -656,7 +672,11 @@
       {
         "kind": "strikeElement",
         "element": "Light",
-        "value": 1
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 8
       }
     ],
     "requiresPatrons": [],
@@ -698,7 +718,7 @@
       },
       {
         "kind": "mendShield",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -819,7 +839,7 @@
     "effects": [
       {
         "kind": "guardFlat",
-        "value": 2
+        "value": 1
       },
       {
         "kind": "guardStatus",
@@ -843,7 +863,7 @@
     "effects": [
       {
         "kind": "maxHealth",
-        "value": 12
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -877,7 +897,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -912,7 +932,11 @@
       {
         "kind": "strikeElement",
         "element": "Water",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ],
     "requiresPatrons": [],
@@ -1020,7 +1044,11 @@
       {
         "kind": "strikeElement",
         "element": "Light",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       }
     ],
     "requiresPatrons": [],
@@ -1058,7 +1086,7 @@
     "effects": [
       {
         "kind": "mendShield",
-        "value": 4
+        "value": 1
       },
       {
         "kind": "mendPercent",
@@ -1114,7 +1142,11 @@
       {
         "kind": "strikeElement",
         "element": "Void",
-        "value": 3
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 24
       }
     ],
     "requiresPatrons": [],
@@ -1177,7 +1209,7 @@
     "effects": [
       {
         "kind": "guardRetaliate",
-        "value": 4
+        "value": 1
       },
       {
         "kind": "guardBlockPercent",
@@ -1202,7 +1234,7 @@
     "effects": [
       {
         "kind": "killHeal",
-        "value": 5
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -1226,7 +1258,7 @@
         "status": "poison",
         "chance": 15,
         "duration": 3,
-        "magnitude": 4
+        "magnitude": 1
       },
       {
         "kind": "spellDamagePercent",
@@ -1255,7 +1287,11 @@
       {
         "kind": "strikeElement",
         "element": "Earth",
-        "value": 1
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 8
       }
     ],
     "requiresPatrons": [
@@ -1275,11 +1311,11 @@
     "effects": [
       {
         "kind": "partyStartBlock",
-        "value": 2
+        "value": 1
       },
       {
-        "kind": "thorns",
-        "value": 1
+        "kind": "thornsPercent",
+        "value": 10
       }
     ],
     "requiresPatrons": [
@@ -1303,7 +1339,7 @@
       },
       {
         "kind": "killHeal",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [
@@ -1373,7 +1409,11 @@
       {
         "kind": "strikeElement",
         "element": "Ice",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       },
       {
         "kind": "strikeStatus",
@@ -1401,7 +1441,11 @@
       {
         "kind": "strikeElement",
         "element": "Light",
-        "value": 2
+        "value": 0
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 16
       },
       {
         "kind": "strikeStatus",
@@ -1432,7 +1476,7 @@
       },
       {
         "kind": "killHeal",
-        "value": 3
+        "value": 1
       }
     ],
     "requiresPatrons": [
@@ -1502,7 +1546,7 @@
       },
       {
         "kind": "mendShield",
-        "value": 2
+        "value": 1
       }
     ],
     "requiresPatrons": [],
@@ -1544,7 +1588,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": 9
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -1594,7 +1638,7 @@
       },
       {
         "kind": "maxHealth",
-        "value": -12
+        "value": -2
       }
     ],
     "requiresPatrons": [],

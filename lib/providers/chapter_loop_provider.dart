@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/camp_errands.dart';
 import '../data/chapter_conditions.dart';
 import '../data/chapter_loop.dart';
 import '../data/politics_events.dart'
@@ -36,6 +37,14 @@ final currentCampNodeIdProvider = Provider<String?>((ref) {
     history: play.history,
     loops: ref.watch(chapterLoopsProvider),
   );
+});
+
+/// Every camp errand of the story, as the camp's way into each (see
+/// campErrandChoices), shown or not: the camp lists them after its own
+/// choices, under the same visibility as those.
+final campErrandChoicesProvider = Provider<List<StoryChoice>>((ref) {
+  final story = ref.watch(storyDataProvider).value;
+  return story == null ? const [] : campErrandChoices(story.nodes.values);
 });
 
 /// The chapter the party has reached (see [reachedChapter]): what the
@@ -158,7 +167,17 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
   final story = ref.watch(storyDataProvider).value;
   if (story == null) return const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-  final session = ref.watch(playerSessionProvider);
+  // Only what the leads read: a purse, a potion or the clock changing
+  // recomputes nothing (the camp watches this).
+  final session = ref.watch(playerSessionProvider.select((s) => (
+        recruitedAllies: s.recruitedAllies,
+        lostAllyIds: s.lostAllyIds,
+        departedAllyIds: s.departedAllyIds,
+        flags: s.flags,
+        alignmentScore: s.alignmentScore,
+        charisma: s.charisma,
+        politics: s.politics,
+      )));
   final unavailable = [
     for (final ally in session.recruitedAllies) ally.companionId,
     ...session.lostAllyIds,

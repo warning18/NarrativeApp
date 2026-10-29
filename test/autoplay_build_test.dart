@@ -92,11 +92,15 @@ AutoplayBuild _plan(PlayerSession session) => planAutoplayBuild(session,
     items: _items, skills: _skills, dice: _dice, professions: _professions);
 
 void main() {
-  test('stat points go to the profession\'s stat, Wisdom when it has none', () {
+  test(
+      'stat points go to the profession\'s damage stat, Wisdom when it has '
+      'none', () {
     final build = _plan(_session());
     expect(build.statToRaise, 'strength');
     expect(build.statPoints, 2);
-    expect(_plan(_session(profession: 'cleric')).statToRaise, 'wisdom');
+    // A cleric's damage stat is Intelligence (stat_rules.dart).
+    expect(_plan(_session(profession: 'cleric')).statToRaise, 'intelligence');
+    expect(_plan(_session(profession: '')).statToRaise, 'wisdom');
   });
 
   test('the best gear per slot, counting the points spent first', () {

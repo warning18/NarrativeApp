@@ -23,6 +23,9 @@ const int maxPassThrough = 2;
 /// are carried along.
 bool isPlainGoOn(StoryChoice choice) =>
     !choice.isEnding &&
+    // A way back to the camp leads where the party camps, not to its
+    // next_id: a stop (see camp_errands.dart).
+    !choice.returnToCamp &&
     choice.nextId.isNotEmpty &&
     choice.goldMod == 0 &&
     choice.alignmentMod == 0 &&
@@ -63,6 +66,8 @@ StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
     bool Function(String from, String to)? travels}) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
+  // A page turn is a stop of its own: the player turns the page.
+  if (node.pageTurn) return null;
   final held = flags.toSet();
   final ways = node.choices
       .where((c) => !(hidden?.call(c) ?? c.isHiddenFor(held)))

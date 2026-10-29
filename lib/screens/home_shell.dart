@@ -19,6 +19,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/story_recruits_provider.dart';
 import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
@@ -31,6 +32,7 @@ import 'character_screen.dart';
 import 'clans_politics_screen.dart';
 import 'game_data_home_screen.dart';
 import 'journey_screen.dart';
+import 'offer_autopilot.dart';
 import 'play_screen.dart';
 import 'quest_autopilot.dart';
 import 'settings_screen.dart';
@@ -127,6 +129,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ref.listen<bool>(hostMusteredNoticeProvider, (previous, next) {
       if (next && !ref.read(combatActiveProvider)) _showMusteredHost();
     });
+    // Vica joins when the story reaches her scene (story_recruits_provider).
+    ref.watch(storyRecruitsProvider);
     // The story coming to the camp brings the party home, the Rusty Eel
     // with it; the camp then opens in the Story tab's place, and the story
     // comes back when the party leaves.
@@ -292,7 +296,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final window = MediaQuery.sizeOf(context);
     final wide =
         window.width >= wideShellWidth && window.height >= wideShellHeight;
-    final pages = Stack(
+    // The clans' offers open on their own while one waits (never later).
+    final pages = OfferAutopilot(
+        child: Stack(
       fit: StackFit.expand,
       children: [
         IndexedStack(index: index, children: screens),
@@ -303,7 +309,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             s.currentHealth * 10 <= s.maxHealth * 3)))
           const LowHealthEdge(),
       ],
-    );
+    ));
     final rail = TutorialTarget(
       id: 'home.nav',
       child: NavigationRail(

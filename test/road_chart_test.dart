@@ -18,12 +18,12 @@ void main() {
     test('a route lies on chart ${entry.key} from landmark to landmark', () {
       final geography = entry.value;
       final route =
-          chartRoadsBetween(geography, 'beggar', 'hold', AppLanguage.en)!;
-      final roads = roadRoute('beggar', 'hold')!;
+          chartRoadsBetween(geography, 'alster', 'wells', AppLanguage.en)!;
+      final roads = roadRoute('alster', 'wells')!;
       // Every landmark passed, and every stop between, in order.
       expect(route.points.length, roads.places.length + roads.stops.length);
-      expect(route.points.first, geography.of(landmarkById('beggar')!));
-      expect(route.points.last, geography.of(landmarkById('hold')!));
+      expect(route.points.first, geography.of(landmarkById('alster')!));
+      expect(route.points.last, geography.of(landmarkById('wells')!));
       expect(route.stops.map((s) => s.name), roads.stops.map((s) => s.nameEn));
       // The stops come in order along the road, strictly inside it.
       var last = 0.0;
@@ -37,21 +37,21 @@ void main() {
 
   test('the stop passed is the last one the party has walked by', () {
     final route =
-        chartRoadsBetween(chartWorldB, 'hovel', 'sewers', AppLanguage.fr)!;
-    // The road to the sewers passes the Cistern Steps; the French names it.
-    expect(route.stops.single.name, 'Les marches de la citerne');
+        chartRoadsBetween(chartWorldB, 'crash', 'sleeper', AppLanguage.fr)!;
+    // The road to the sleeper's face passes the Dune Cairn; the French
+    // names it.
+    expect(route.stops.single.name, 'Le cairn des dunes');
     expect(route.passed(0), isNull);
     expect(route.passed(route.stops.single.along - 0.01), isNull);
-    expect(route.passed(route.stops.single.along)!.name,
-        'Les marches de la citerne');
-    expect(route.passed(1)!.name, 'Les marches de la citerne');
+    expect(route.passed(route.stops.single.along)!.name, 'Le cairn des dunes');
+    expect(route.passed(1)!.name, 'Le cairn des dunes');
   });
 
   test(
       'a route frames its bounds, and there is none between a place and itself',
       () {
     final route =
-        chartRoadsBetween(chartWorldB, 'beggar', 'camp', AppLanguage.en)!;
+        chartRoadsBetween(chartWorldB, 'alster', 'camp', AppLanguage.en)!;
     final (low, high) = route.bounds;
     for (final p in route.points) {
       expect(p.dx, inInclusiveRange(low.dx, high.dx));

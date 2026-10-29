@@ -60,7 +60,7 @@ enum ChoiceAction {
 /// the party stands. A fight, a payment, a check or a decision happens
 /// here even when its aftermath takes the party elsewhere ("Refuse and
 /// fight" at the Stone Bridge, then the lower town); only a [ChoiceAction.go]
-/// is a way somewhere.
+/// is a way somewhere, except the making of the character.
 typedef ChoiceShape = ({
   ChoiceMove move,
   ChoiceAction action,
@@ -99,7 +99,9 @@ ChoiceShape choiceShape(
     move: move,
     action: action,
     to: there,
-    here: action != ChoiceAction.go,
+    // The prologue's way on (making the character) is acted out on the
+    // first scene's page: a new game shows no map before the story moves.
+    here: action != ChoiceAction.go || choice.opensCharacterCreation,
   );
 }
 

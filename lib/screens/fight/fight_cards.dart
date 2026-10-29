@@ -131,29 +131,41 @@ extension _FightCards on _FightScreenState {
             const SizedBox(height: 5),
             _buildPartyHp(member, items),
             ..._coreMarks(member),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 4,
-              runSpacing: 2,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                _miniStat(Icons.bolt, '$damage', Colors.deepOrange),
-                _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
-                if (member.block > 0)
-                  _miniStat(Icons.shield, '+${member.block}', Colors.blue),
-                if (_canParry(member)) _buildParryChip(member),
-                for (final effect in member.statusEffects)
-                  _StatusEffectChip(effect: effect),
-                if (member.isKnockedOut)
-                  Text(
-                    tr(ref, 'knocked_out_label'),
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: colorScheme.error,
-                        fontWeight: FontWeight.bold),
-                  ),
-              ],
-            ),
+            // An ally's card is slim (v1.612, fight-fixed-sizes.md): name, die
+            // and health, and the row of numbers only for what is going on
+            // (block, a parry, a status, knocked out); the stage keeps the
+            // fight's height fixed, so the cards are what gives.
+            if (member.isPlayer ||
+                member.block > 0 ||
+                _canParry(member) ||
+                member.statusEffects.isNotEmpty ||
+                member.isKnockedOut) ...[
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 4,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (member.isPlayer) ...[
+                    _miniStat(Icons.bolt, '$damage', Colors.deepOrange),
+                    _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
+                  ],
+                  if (member.block > 0)
+                    _miniStat(Icons.shield, '+${member.block}', Colors.blue),
+                  if (_canParry(member)) _buildParryChip(member),
+                  for (final effect in member.statusEffects)
+                    _StatusEffectChip(effect: effect),
+                  if (member.isKnockedOut)
+                    Text(
+                      tr(ref, 'knocked_out_label'),
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: colorScheme.error,
+                          fontWeight: FontWeight.bold),
+                    ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -319,7 +331,7 @@ extension _FightCards on _FightScreenState {
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 
-  /// The elements [enemy] is known to be weak to (green, ×1.5) and to
+  /// The elements [enemy] is known to be weak to (green, ×2) and to
   /// resist (grey, ×½) -- see [_knownElementsFor].
   List<Widget> _elementChips(_EnemyMember enemy) {
     if (!enemy.isAlive) return const [];
@@ -330,7 +342,8 @@ extension _FightCards on _FightScreenState {
         Tooltip(
           message:
               '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×1.5', Colors.green.shade700),
+          child: _miniStat(elementIcon(element),
+              '×${weaknessMultiplier.round()}', Colors.green.shade700),
         ),
       for (final element in known.resist)
         Tooltip(
@@ -1082,7 +1095,8 @@ extension _FightCards on _FightScreenState {
     final elementLine = [
       if (known.weak.isNotEmpty)
         '${trFor(lang, 'weak_to_label')} '
-            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} (×1.5)',
+            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} '
+            '(×${weaknessMultiplier.round()})',
       if (known.resist.isNotEmpty)
         '${trFor(lang, 'resists_label')} '
             '${known.resist.map((e) => elementLabel(e, lang)).join(', ')} (×½)',

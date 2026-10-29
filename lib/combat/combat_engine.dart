@@ -6,8 +6,10 @@ import 'skill_extras.dart';
 import 'status_effect.dart';
 import 'enemy_intent.dart';
 import 'face_keywords.dart';
+import 'stat_rules.dart';
 
 export 'enemy_intent.dart';
+export 'stat_rules.dart';
 export 'face_keywords.dart';
 export 'skill_extras.dart';
 
@@ -202,15 +204,23 @@ class PlayerActionResult {
 }
 
 /// Critical-hit chance (0-100) for an attacker with the given Luck score --
-/// a flat 5% baseline (everyone gets the occasional lucky hit) plus 1.5
-/// points per Luck, capped at 35% so even a heavily luck-built character
-/// still lands a normal hit more often than not.
-double criticalChanceFor(int luck) => min(35, 5 + luck * 1.5);
+/// a flat 5% baseline (everyone gets the occasional lucky hit) plus
+/// [critPerLuck] points per Luck, capped at [critCap] so even a heavily
+/// luck-built character still lands a normal hit more often than not.
+double criticalChanceFor(int luck) => min(critCap, 5 + luck * critPerLuck);
 
-/// Dodge chance (0-100) for a defender with the given Dexterity score --
-/// same shape as [criticalChanceFor], capped a little lower (30%) since a
-/// dodge blocks 100% of the incoming hit rather than just adding a bonus.
-double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
+/// Dodge chance (0-100) for a defender with the given Dexterity score:
+/// [dodgePerDexterity] a point (stat_rules.dart), and for a ranger or a
+/// rogue ([professionId]) a smaller share of their [perception], capped at
+/// [dodgeCap] since a dodge blocks 100% of the incoming hit rather than
+/// just adding a bonus.
+double dodgeChanceFor(int dexterity,
+        {int perception = 0, String? professionId}) =>
+    min(
+        dodgeCap,
+        5 +
+            dexterity * dodgePerDexterity +
+            perceptionDodgeBonus(professionId, perception));
 
 /// A critical hit multiplies the face's already-computed damage by this
 /// much -- shared by every damaging face type so a crit means the same
@@ -833,6 +843,17 @@ int scaledMaxHealth(int base, int playerLevel) {
   return (base * (1 + 0.12 * (playerLevel - 1))).round();
 }
 
+/// The share of its health an enemy gains for each level of the hero it
+/// meets (docs/proposals/stat-scale.md: the hero's abilities now count,
+/// so the enemies grow faster than [scaledMaxHealth]'s 12%).
+const double enemyHealthPerLevel = 0.16;
+
+/// An enemy's max health against a hero of [playerLevel]: [base] and
+/// [enemyHealthPerLevel] of it a level past the first. [scaledMaxHealth]
+/// keeps growing the rest (allies, heals and blocks, road foes).
+int enemyScaledMaxHealth(int base, int playerLevel) =>
+    (base * (1 + enemyHealthPerLevel * (playerLevel - 1))).round();
+
 int scaledDamage(int base, int playerLevel) {
   return (base * (1 + 0.08 * (playerLevel - 1))).round();
 }
@@ -855,12 +876,19 @@ const double chapterDifficultyStep = 0.15;
 /// Chapters 3-5 are the heaviest, 6-8 lighter again because the chapter
 /// curve already climbs there and a heavier floor stopped most runs short
 /// of the late zones' bosses. Measured with the playthrough
-/// simulator (400 runs, docs/simulation/difficulty-review.md).
+/// simulator (400 runs, docs/simulation/difficulty-review.md). With the
+/// stat scale (docs/proposals/stat-scale.md) chapters 1-2 are 7% lighter
+/// and chapters 3-8 9% heavier in health. Wave 16 (QA's L3 on v1.489)
+/// lightened chapter 2 (1.98 -> 1.80); chapter 7 kept its floor, whose
+/// cut moved nothing once the claimants (their own floor) were counted.
+/// The difficulty pass (v1.597, docs/proposals/difficulty-pass.md) cut
+/// chapters 2-8 by 10% with the hero's own health (3 a level, 3 a point
+/// of Constitution), the naive player's encounters won as before.
 const List<double> enemyHealthFloorByChapter = [
-  1.46, 2.12, 2.77, 2.77, 2.90, 2.16, 2.09, 2.03, //
+  1.36, 1.62, 2.72, 2.72, 2.85, 2.12, 2.05, 2.00, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.34, 1.79, 2.28, 2.28, 2.40, 1.80, 1.74, 1.68, //
+  1.25, 2.00, 2.74, 2.74, 2.88, 2.16, 2.09, 2.02, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
@@ -877,9 +905,16 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 /// or a solo-only unique): most of its difficulty comes from its phases,
 /// and a steeper global curve once turned the chapter 5-6 bosses into
 /// walls. The same simulation had nine parties in ten beat the Void
-/// Sovereign at the first try on this floor.
-const double bossHealthBaseMultiplier = 1.10;
-const double bossDamageBaseMultiplier = 1.05;
+/// Sovereign at the first try on this floor; the stat scale raised it a
+/// little (1.10/1.05 to 1.15/1.08) for the abilities that now count, and
+/// the stronger mages and rogues after v1.490 its health to 1.21 (the boss
+/// mean back to about 51%, docs/simulation/difficulty-review.md). The
+/// difficulty pass (v1.597) brought it to 1.13 for the hero's smaller
+/// health, the curve's targets kept. Measured on the full world (the clans'
+/// specialisations in play, as in the game), v1.613 raised it to 1.45
+/// (docs/proposals/bosses-full-world.md).
+const double bossHealthBaseMultiplier = 1.45;
+const double bossDamageBaseMultiplier = 1.24;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A
@@ -929,6 +964,29 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
   if (soloOnlyEnemyIds.contains(enemyId)) return true;
   final phases = enemy['phases'];
   return phases is List && phases.isNotEmpty;
+}
+
+/// Whether the fight opens on [enemy]'s entrance card (wave 16: its
+/// portrait, name and one line of the story slide in): every boss
+/// ([isBossEnemy]), and any foe enemies.json marks `entranceCard: true`
+/// (a named foe who is not a boss).
+bool hasEntranceCard(String enemyId, Map<String, dynamic> enemy) =>
+    enemy['entranceCard'] == true || isBossEnemy(enemyId, enemy);
+
+/// Whether the sea fight against [ship] (an enemy_ships.json record, id
+/// [shipId]) opens on its entrance card (wave 17: the hull or the beast
+/// slides in with its name and the first line of its description). An
+/// explicit `entranceCard` in the record decides; otherwise every sea beast
+/// (a `beast` block) gets one, and so does a raider of the late waters
+/// (`minChapter` 4 or more: the void barge), while the common raiders do
+/// not. The named raiders (the corsair brig, the Crusade's cutter) carry
+/// `entranceCard: true` in the data; the skiff has none.
+bool shipHasEntranceCard(String shipId, Map<String, dynamic>? ship) {
+  if (ship == null) return false;
+  final explicit = ship['entranceCard'];
+  if (explicit is bool) return explicit;
+  if (ship['beast'] is Map) return true;
+  return ((ship['minChapter'] as num?)?.toInt() ?? 0) >= 4;
 }
 
 /// Enemy max-health multiplier by story chapter, applied on top of the

@@ -502,5 +502,1418 @@
         }
       }
     ]
+  },
+  "ruler_dominion_friend": {
+    "id": "ruler_dominion_friend",
+    "name": "The Writ toll",
+    "name_fr": "Le péage du Mandat",
+    "ruler": "dominion",
+    "band": "friend",
+    "text": "A Dominion post across the road, and a sergeant who knows the badge on your coat. He reads the Writ out of habit, and stops halfway.",
+    "text_fr": "Un poste du Dominion en travers de la route, et un sergent qui reconnaît l’insigne sur votre manteau. Il lit le Mandat par habitude, et s’arrête à mi-chemin.",
+    "choices": [
+      {
+        "id": "thanks",
+        "text": "Thank him and go on",
+        "text_fr": "Le remercier et poursuivre",
+        "outcome": {
+          "healthPct": 3,
+          "note": "He tells you which fords the Order is watching, and you go round them.",
+          "note_fr": "Il vous dit quels gués l’Ordre surveille, et vous les contournez."
+        }
+      },
+      {
+        "id": "share",
+        "text": "Share a cup with the post",
+        "text_fr": "Partager une tasse avec le poste",
+        "outcome": {
+          "healthPct": 8,
+          "note": "Nobody reads you a Writ while there is a kettle on. You leave warm.",
+          "note_fr": "Personne ne vous lit de Mandat tant qu’une bouilloire chauffe. Vous repartez au chaud."
+        }
+      }
+    ]
+  },
+  "ruler_dominion_neutral": {
+    "id": "ruler_dominion_neutral",
+    "name": "The Writ toll",
+    "name_fr": "Le péage du Mandat",
+    "ruler": "dominion",
+    "band": "neutral",
+    "text": "A Dominion post across the road. A clerk reads the Writ aloud, and asks for the Lantern’s tithe: a coin a head, or a look in your packs.",
+    "text_fr": "Un poste du Dominion en travers de la route. Un clerc lit le Mandat à voix haute et réclame la dîme de la Lanterne : une pièce par tête, ou un regard dans vos sacs.",
+    "choices": [
+      {
+        "id": "pay",
+        "text": "Pay the tithe",
+        "text_fr": "Verser la dîme",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -12,
+          "note": "He counts it twice, stamps nothing, and lets you by.",
+          "note_fr": "Il compte deux fois, ne tamponne rien, et vous laisse passer."
+        }
+      },
+      {
+        "id": "argue",
+        "text": "Argue that the road is free",
+        "text_fr": "Soutenir que la route est libre",
+        "check": "charisma",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "The clerk finds the page where it says so, and is unhappy about it.",
+          "note_fr": "Le clerc trouve la page qui le dit, et en est fort contrarié."
+        },
+        "fail": {
+          "healthPct": -6,
+          "gold": -12,
+          "note": "He finds the page that says otherwise, and a guard to read it to you.",
+          "note_fr": "Il trouve la page qui dit le contraire, et un garde pour vous la lire."
+        }
+      },
+      {
+        "id": "slip",
+        "text": "Go round by the field",
+        "text_fr": "Contourner par le champ",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "The ditch is deep, and nobody follows you down it.",
+          "note_fr": "Le fossé est profond, et personne ne vous y suit."
+        },
+        "fail": {
+          "healthPct": -10,
+          "note": "A spear-butt finds you in the ditch.",
+          "note_fr": "Un talon de lance vous trouve dans le fossé."
+        }
+      }
+    ]
+  },
+  "ruler_dominion_hostile": {
+    "id": "ruler_dominion_hostile",
+    "name": "The Writ toll",
+    "name_fr": "Le péage du Mandat",
+    "ruler": "dominion",
+    "band": "hostile",
+    "text": "A Dominion post across the road, and the sergeant has your description on a slate. He does not read you the Writ. He reads you your name.",
+    "text_fr": "Un poste du Dominion en travers de la route, et le sergent a votre signalement sur une ardoise. Il ne vous lit pas le Mandat. Il vous lit votre nom.",
+    "choices": [
+      {
+        "id": "pay",
+        "text": "Pay the “road tax”",
+        "text_fr": "Payer la « taxe de route »",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -30,
+          "note": "It is not on any list. It is very holy, and it is yours no longer.",
+          "note_fr": "Elle ne figure sur aucune liste. Elle est très sainte, et elle n’est plus à vous."
+        }
+      },
+      {
+        "id": "talk",
+        "text": "Talk the price down",
+        "text_fr": "Faire baisser le prix",
+        "check": "charisma",
+        "dc": 13,
+        "success": {
+          "healthPct": 0,
+          "gold": -15,
+          "note": "He wants the matter over more than he wants your purse. You pay half.",
+          "note_fr": "Il tient plus à en finir qu’à votre bourse. Vous payez moitié moins."
+        },
+        "fail": {
+          "healthPct": -10,
+          "gold": -30,
+          "note": "Your voice is the wrong one. They search you and keep what they like.",
+          "note_fr": "Votre voix n’est pas la bonne. Ils vous fouillent et gardent ce qui leur plaît."
+        }
+      },
+      {
+        "id": "cells",
+        "text": "Take a night in their cells",
+        "text_fr": "Passer une nuit dans leurs cellules",
+        "outcome": {
+          "healthPct": -4,
+          "days": 1,
+          "note": "The Order forgets to feed you, and remembers to let you go at dawn.",
+          "note_fr": "L’Ordre oublie de vous nourrir, et pense à vous relâcher à l’aube."
+        }
+      }
+    ]
+  },
+  "ruler_vigil_friend": {
+    "id": "ruler_vigil_friend",
+    "name": "The Watch checkpoint",
+    "name_fr": "Le point de garde de la Veille",
+    "ruler": "vigil",
+    "band": "friend",
+    "text": "Spears of the Last Watch stand in the road, eyes open. Their sergeant looks at you a long moment, and then, unexpectedly, at the fire behind her.",
+    "text_fr": "Des lances de la Dernière Veille se dressent sur la route, les yeux ouverts. Leur sergente vous regarde un long moment, puis, contre toute attente, le feu derrière elle.",
+    "choices": [
+      {
+        "id": "sit",
+        "text": "Sit at their fire",
+        "text_fr": "S’asseoir à leur feu",
+        "outcome": {
+          "healthPct": 10,
+          "note": "They tell you what moved in the frost last night, and where. You sleep an hour without watching.",
+          "note_fr": "Elles vous disent ce qui a bougé dans le givre cette nuit, et où. Vous dormez une heure sans veiller."
+        }
+      },
+      {
+        "id": "go",
+        "text": "Thank them and go on",
+        "text_fr": "Les remercier et poursuivre",
+        "outcome": {
+          "healthPct": 3,
+          "note": "“Eyes open,” she says, and means it kindly.",
+          "note_fr": "« Les yeux ouverts », dit-elle, et elle le dit avec bonté."
+        }
+      }
+    ]
+  },
+  "ruler_vigil_neutral": {
+    "id": "ruler_vigil_neutral",
+    "name": "The Watch checkpoint",
+    "name_fr": "Le point de garde de la Veille",
+    "ruler": "vigil",
+    "band": "neutral",
+    "text": "Spears of the Last Watch stand in the road, eyes open. They want to know what you looked at on the way here.",
+    "text_fr": "Des lances de la Dernière Veille se dressent sur la route, les yeux ouverts. Elles veulent savoir ce que vous avez regardé en chemin.",
+    "choices": [
+      {
+        "id": "tell",
+        "text": "Tell them everything you saw",
+        "text_fr": "Tout leur raconter",
+        "check": "wisdom",
+        "dc": 11,
+        "success": {
+          "healthPct": 2,
+          "note": "They nod at each part. The sergeant adds a line to the Watch’s tally and lets you by.",
+          "note_fr": "Elles hochent la tête à chaque partie. La sergente ajoute une ligne au registre de la Veille et vous laisse passer."
+        },
+        "fail": {
+          "healthPct": -5,
+          "note": "You remember the wrong half. They make you say it again, and again.",
+          "note_fr": "Vous vous rappelez la mauvaise moitié. Elles vous la font redire, encore et encore."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Offer a coin for the Watch’s fire",
+        "text_fr": "Offrir une pièce pour le feu de la Veille",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -8,
+          "note": "They take it for the lamp oil. It is the only toll they have ever charged.",
+          "note_fr": "Elles la prennent pour l’huile des lampes. C’est le seul péage qu’elles aient jamais prélevé."
+        }
+      }
+    ]
+  },
+  "ruler_vigil_hostile": {
+    "id": "ruler_vigil_hostile",
+    "name": "The Watch checkpoint",
+    "name_fr": "Le point de garde de la Veille",
+    "ruler": "vigil",
+    "band": "hostile",
+    "text": "Spears of the Last Watch stand in the road, eyes open, and they have been told your name. They do not ask what you saw. They ask what you did.",
+    "text_fr": "Des lances de la Dernière Veille se dressent sur la route, les yeux ouverts, et on leur a dit votre nom. Elles ne demandent pas ce que vous avez vu. Elles demandent ce que vous avez fait.",
+    "choices": [
+      {
+        "id": "swear",
+        "text": "Swear before the open eye",
+        "text_fr": "Jurer devant l’œil ouvert",
+        "check": "wisdom",
+        "dc": 13,
+        "success": {
+          "healthPct": 0,
+          "note": "The eye on the banner does not blink, and neither do you. They give you back your blade.",
+          "note_fr": "L’œil de la bannière ne cille pas, et vous non plus. Elles vous rendent votre lame."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "They believe you less each time you say it. Your weapons are kept until dawn, and the road is not kind to the unarmed.",
+          "note_fr": "Elles vous croient un peu moins à chaque fois. On garde vos armes jusqu’à l’aube, et la route est dure aux désarmés."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Go the long way round",
+        "text_fr": "Faire le grand détour",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "A day of ridge and wind, and the Watch watches you go the whole way.",
+          "note_fr": "Un jour de crête et de vent, et la Veille vous regarde partir tout du long."
+        }
+      }
+    ]
+  },
+  "ruler_compact_friend": {
+    "id": "ruler_compact_friend",
+    "name": "The forge-cart",
+    "name_fr": "La charrette-forge",
+    "ruler": "compact",
+    "band": "friend",
+    "text": "A Compact cart with a forge lit on its bed blocks the road. The smiths stop arguing when they see you. One of them signs something quick and glad.",
+    "text_fr": "Une charrette du Pacte, une forge allumée sur son plateau, barre la route. Les forgerons cessent de se disputer en vous voyant. L’un d’eux signe quelque chose de vif et de joyeux.",
+    "choices": [
+      {
+        "id": "mend",
+        "text": "Let them look at your gear",
+        "text_fr": "Les laisser examiner votre équipement",
+        "outcome": {
+          "healthPct": 7,
+          "note": "A buckle reset, a seam hammered flat. Nothing costs you a coin, and everything holds better.",
+          "note_fr": "Une boucle remise, une couture martelée. Rien ne vous coûte une pièce, et tout tient mieux."
+        }
+      },
+      {
+        "id": "go",
+        "text": "Thank them and go on",
+        "text_fr": "Les remercier et poursuivre",
+        "outcome": {
+          "healthPct": 2,
+          "note": "“Go well,” the smith signs, the way the Row says it.",
+          "note_fr": "« Allez bien », signe le forgeron, comme on le dit à la Rue."
+        }
+      }
+    ]
+  },
+  "ruler_compact_neutral": {
+    "id": "ruler_compact_neutral",
+    "name": "The forge-cart",
+    "name_fr": "La charrette-forge",
+    "ruler": "compact",
+    "band": "neutral",
+    "text": "A Compact cart with a forge lit on its bed has stuck its axle in the mud and blocked the road. Four smiths argue over who is to blame, in signs.",
+    "text_fr": "Une charrette du Pacte, une forge allumée sur son plateau, a enfoncé son essieu dans la boue et barre la route. Quatre forgerons se disputent, par signes, sur qui est fautif.",
+    "choices": [
+      {
+        "id": "haul",
+        "text": "Put your shoulder to the axle",
+        "text_fr": "Mettre l’épaule à l’essieu",
+        "check": "strength",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "note": "It comes out with a sound like a tooth. They sign you a long thanks, and a small gift of coal.",
+          "note_fr": "Il sort avec un bruit de dent. Ils vous signent un long merci, et un petit don de charbon."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "The axle wins, and a spoke catches your arm.",
+          "note_fr": "L’essieu gagne, et un rayon vous attrape le bras."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Pay them to hurry",
+        "text_fr": "Les payer pour se presser",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -12,
+          "note": "Coin changes hands, and the cart is out in the time it takes to count it.",
+          "note_fr": "La pièce change de mains, et la charrette est dégagée le temps de la compter."
+        }
+      },
+      {
+        "id": "wait",
+        "text": "Wait for them to settle it",
+        "text_fr": "Attendre qu’ils règlent ça",
+        "outcome": {
+          "healthPct": -2,
+          "days": 1,
+          "note": "It takes the rest of the afternoon. The smiths forget you are there.",
+          "note_fr": "Cela prend le reste de l’après-midi. Les forgerons oublient que vous êtes là."
+        }
+      }
+    ]
+  },
+  "ruler_compact_hostile": {
+    "id": "ruler_compact_hostile",
+    "name": "The forge-cart",
+    "name_fr": "La charrette-forge",
+    "ruler": "compact",
+    "band": "hostile",
+    "text": "A Compact cart with a forge lit on its bed blocks the road, and the smiths have stopped arguing. One of them has a hammer, and has noticed you.",
+    "text_fr": "Une charrette du Pacte, une forge allumée sur son plateau, barre la route, et les forgerons ont cessé de se disputer. L’un d’eux a un marteau, et vous a remarqué.",
+    "choices": [
+      {
+        "id": "earn",
+        "text": "Earn the road: haul the axle out",
+        "text_fr": "Gagner la route : tirer l’essieu",
+        "check": "strength",
+        "dc": 13,
+        "success": {
+          "healthPct": -4,
+          "note": "It takes everything you have. They watch, and then sign one word, grudgingly: “Pass.”",
+          "note_fr": "Il vous faut tout ce que vous avez. Ils regardent, puis signent un mot, à contrecœur : « Passez. »"
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "The axle breaks something in you. They sign nothing, and let you crawl off the road.",
+          "note_fr": "L’essieu brise quelque chose en vous. Ils ne signent rien, et vous laissent vous traîner hors de la route."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Pay the toll in gold",
+        "text_fr": "Payer le péage en or",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -22,
+          "note": "It is twice the going rate, and they count it slowly in front of you.",
+          "note_fr": "C’est le double du tarif, et ils le comptent lentement devant vous."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Go the long way round",
+        "text_fr": "Faire le grand détour",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "A day of ditches and wet boots.",
+          "note_fr": "Un jour de fossés et de bottes mouillées."
+        }
+      }
+    ]
+  },
+  "ruler_mire_friend": {
+    "id": "ruler_mire_friend",
+    "name": "The reed guide",
+    "name_fr": "Le guide des roseaux",
+    "ruler": "mire",
+    "band": "friend",
+    "text": "A Heron’s Wake guide waits at the edge of the fen with a lantern. She has been told you would come, and by whom.",
+    "text_fr": "Une guide du Sillage du Héron attend à la lisière du marais, une lanterne à la main. On lui a dit que vous viendriez, et par qui.",
+    "choices": [
+      {
+        "id": "follow",
+        "text": "Follow her by the dry way",
+        "text_fr": "La suivre par le chemin sec",
+        "outcome": {
+          "healthPct": 4,
+          "note": "Not a boot wet. She asks only for a name to remember, and you give her one.",
+          "note_fr": "Pas une botte mouillée. Elle ne demande qu’un nom à retenir, et vous lui en donnez un."
+        }
+      },
+      {
+        "id": "talk",
+        "text": "Ask her what the fen has been saying",
+        "text_fr": "Lui demander ce que dit le marais",
+        "outcome": {
+          "healthPct": 2,
+          "note": "“Not much,” she says. “That is the worry.” She walks you the long dry way anyway.",
+          "note_fr": "« Pas grand-chose, dit-elle. C’est ça qui inquiète. » Elle vous mène quand même par le long chemin sec."
+        }
+      }
+    ]
+  },
+  "ruler_mire_neutral": {
+    "id": "ruler_mire_neutral",
+    "name": "The reed guide",
+    "name_fr": "Le guide des roseaux",
+    "ruler": "mire",
+    "band": "neutral",
+    "text": "A Heron’s Wake guide waits at the edge of the fen with a lantern and a price. Behind her the reeds are the colour of old bone, and the path is not one you can see.",
+    "text_fr": "Une guide du Sillage du Héron attend à la lisière du marais, avec une lanterne et un prix. Derrière elle, les roseaux ont la couleur d’un vieil os, et le chemin ne se voit pas.",
+    "choices": [
+      {
+        "id": "pay",
+        "text": "Hire her for the crossing",
+        "text_fr": "L’engager pour la traversée",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -10,
+          "note": "She counts the coins, and does not take you the way you would have gone. It is drier.",
+          "note_fr": "Elle compte les pièces, et ne vous mène pas par où vous seriez allé. C’est plus sec."
+        }
+      },
+      {
+        "id": "own",
+        "text": "Find your own way",
+        "text_fr": "Trouver votre propre chemin",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "You read the reeds for a day. A heron lifts ahead of you, and you follow its line.",
+          "note_fr": "Vous lisez les roseaux tout un jour. Un héron s’envole devant vous, et vous suivez sa ligne."
+        },
+        "fail": {
+          "healthPct": -10,
+          "days": 1,
+          "note": "The mud takes you to the thigh. It lets go, eventually.",
+          "note_fr": "La vase vous prend jusqu’à la cuisse. Elle vous lâche, à la longue."
+        }
+      }
+    ]
+  },
+  "ruler_mire_hostile": {
+    "id": "ruler_mire_hostile",
+    "name": "The reed guide",
+    "name_fr": "Le guide des roseaux",
+    "ruler": "mire",
+    "band": "hostile",
+    "text": "A Heron’s Wake guide waits at the edge of the fen with a lantern. She is polite. She asks which way you would like to be taken, and smiles at the answer.",
+    "text_fr": "Une guide du Sillage du Héron attend à la lisière du marais, une lanterne à la main. Elle est polie. Elle demande par où vous voulez qu’on vous mène, et sourit à la réponse.",
+    "choices": [
+      {
+        "id": "trust",
+        "text": "Let her take you, and trust her",
+        "text_fr": "Vous laisser mener, avec confiance",
+        "outcome": {
+          "healthPct": -8,
+          "days": 1,
+          "note": "It is, by her account, an honest mistake. The long wet way, a night standing in water.",
+          "note_fr": "C’est, selon elle, une honnête erreur. Le long chemin mouillé, une nuit les pieds dans l’eau."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Pay to be told the truth",
+        "text_fr": "Payer pour qu’on vous dise la vérité",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -20,
+          "note": "For twenty coins she remembers the dry path very clearly.",
+          "note_fr": "Pour vingt pièces, elle se souvient très bien du chemin sec."
+        }
+      },
+      {
+        "id": "argue",
+        "text": "Tell her what you think of her honesty",
+        "text_fr": "Lui dire ce que vous pensez de son honnêteté",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "She laughs, which in the Mire is a form of respect, and points out the path.",
+          "note_fr": "Elle rit, ce qui dans le Marais est une forme de respect, et vous désigne le chemin."
+        },
+        "fail": {
+          "healthPct": -8,
+          "days": 1,
+          "note": "She takes the lantern, and her leave. You have the fen, and the dark.",
+          "note_fr": "Elle prend la lanterne, et congé. Il vous reste le marais, et l’obscurité."
+        }
+      }
+    ]
+  },
+  "ruler_crows_friend": {
+    "id": "ruler_crows_friend",
+    "name": "The marked crate",
+    "name_fr": "La caisse marquée",
+    "ruler": "crows",
+    "band": "friend",
+    "text": "A crate in the road with a Keyholder’s mark on its lid, and a Crow lookout in the rocks who steps out when he sees your face.",
+    "text_fr": "Une caisse sur la route, la marque d’un Porte-Clef sur le couvercle, et un guetteur des Corneilles dans les rochers qui sort en vous reconnaissant.",
+    "choices": [
+      {
+        "id": "trade",
+        "text": "Trade with the lookout",
+        "text_fr": "Marchander avec le guetteur",
+        "outcome": {
+          "healthPct": 0,
+          "gold": 15,
+          "note": "A map of the safe path for a favour owed. He writes it in the margin of a bill of lading, and it pays you back in a mile.",
+          "note_fr": "Une carte du chemin sûr contre une faveur due. Il l’écrit dans la marge d’un connaissement, et elle vous rembourse en une lieue."
+        }
+      },
+      {
+        "id": "share",
+        "text": "Share what is in the crate",
+        "text_fr": "Partager le contenu de la caisse",
+        "outcome": {
+          "healthPct": 2,
+          "note": "Salted fish, and a good bottle. He says the Ledger will never know.",
+          "note_fr": "Du poisson salé, et une bonne bouteille. Il dit que le Registre n’en saura rien."
+        }
+      }
+    ]
+  },
+  "ruler_crows_neutral": {
+    "id": "ruler_crows_neutral",
+    "name": "The marked crate",
+    "name_fr": "La caisse marquée",
+    "ruler": "crows",
+    "band": "neutral",
+    "text": "A crate in the road with a Keyholder’s mark on its lid, and a Crow lookout in the rocks watching who touches it. He does not say a word.",
+    "text_fr": "Une caisse sur la route, la marque d’un Porte-Clef sur le couvercle, et un guetteur des Corneilles dans les rochers qui regarde qui la touche. Il ne dit pas un mot.",
+    "choices": [
+      {
+        "id": "leave",
+        "text": "Leave it where it is",
+        "text_fr": "La laisser où elle est",
+        "outcome": {
+          "healthPct": 0,
+          "note": "The lookout nods, very slightly, and does not follow you.",
+          "note_fr": "Le guetteur hoche la tête, très légèrement, et ne vous suit pas."
+        }
+      },
+      {
+        "id": "open",
+        "text": "Open it",
+        "text_fr": "L’ouvrir",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "gold": 25,
+          "note": "The lid has a trick, and you find it. Inside, something worth a month of the Ledger’s patience.",
+          "note_fr": "Le couvercle a un truc, et vous le trouvez. Dedans, de quoi payer un mois de patience du Registre."
+        },
+        "fail": {
+          "healthPct": -10,
+          "note": "The trick finds you first. The lookout, in the rocks, claps once.",
+          "note_fr": "Le truc vous trouve d’abord. Le guetteur, dans les rochers, applaudit une fois."
+        }
+      }
+    ]
+  },
+  "ruler_crows_hostile": {
+    "id": "ruler_crows_hostile",
+    "name": "The marked crate",
+    "name_fr": "La caisse marquée",
+    "ruler": "crows",
+    "band": "hostile",
+    "text": "A crate in the road with a Keyholder’s mark on its lid, set where nobody could miss it. A Crow lookout in the rocks has already lifted a lamp. He wants you to touch it.",
+    "text_fr": "Une caisse sur la route, la marque d’un Porte-Clef sur le couvercle, posée là où nul ne peut la manquer. Un guetteur des Corneilles, dans les rochers, a déjà levé une lampe. Il veut que vous y touchiez.",
+    "choices": [
+      {
+        "id": "fight",
+        "text": "Face the cutthroats who come out",
+        "text_fr": "Affronter les coupe-jarrets qui sortent",
+        "fight": "street_bandit",
+        "success": {
+          "healthPct": 0,
+          "note": "The last of them goes back into the rocks. The crate is empty, and was always going to be.",
+          "note_fr": "Le dernier regagne les rochers. La caisse est vide, et l’a toujours été."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "You break off and get clear, a knife-cut to show for it.",
+          "note_fr": "Vous rompez et vous dégagez, avec une entaille de couteau pour tout souvenir."
+        }
+      },
+      {
+        "id": "pay",
+        "text": "Buy your way past",
+        "text_fr": "Acheter votre passage",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -25,
+          "note": "They would call it a courtesy. It is nothing of the kind.",
+          "note_fr": "Ils appelleraient cela une courtoisie. Ce n’en est rien."
+        }
+      },
+      {
+        "id": "slip",
+        "text": "Slip past in the dark",
+        "text_fr": "Se glisser dans l’obscurité",
+        "check": "dexterity",
+        "dc": 13,
+        "success": {
+          "healthPct": 0,
+          "note": "The lamp sweeps where you were a breath ago.",
+          "note_fr": "La lampe balaie l’endroit où vous étiez il y a un souffle."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "A crossbow bolt finds your pack, and then your arm.",
+          "note_fr": "Un carreau d’arbalète trouve votre sac, puis votre bras."
+        }
+      }
+    ]
+  },
+  "ruler_penitents_friend": {
+    "id": "ruler_penitents_friend",
+    "name": "The name wall",
+    "name_fr": "Le mur des noms",
+    "ruler": "penitents",
+    "band": "friend",
+    "text": "A roadside wall of names, a Penitent with chalk, and a line of people waiting to add one. The Penitent looks up, and puts the chalk behind her ear.",
+    "text_fr": "Un mur de noms au bord de la route, une Pénitente avec une craie, et une file de gens qui attendent d’en ajouter un. La Pénitente lève les yeux, et glisse la craie derrière son oreille.",
+    "choices": [
+      {
+        "id": "name",
+        "text": "Give her a name to add",
+        "text_fr": "Lui donner un nom à ajouter",
+        "outcome": {
+          "healthPct": 10,
+          "note": "She writes it small and straight, and presses a candle into your hand. You rest in its light for an hour.",
+          "note_fr": "Elle l’écrit petit et droit, et vous glisse un cierge dans la main. Vous vous reposez à sa lueur une heure durant."
+        }
+      },
+      {
+        "id": "go",
+        "text": "Bow your head and go on",
+        "text_fr": "Incliner la tête et poursuivre",
+        "outcome": {
+          "healthPct": 3,
+          "note": "“Walk lightly,” she says, as if she meant the dead.",
+          "note_fr": "« Marchez léger », dit-elle, comme si elle parlait des morts."
+        }
+      }
+    ]
+  },
+  "ruler_penitents_neutral": {
+    "id": "ruler_penitents_neutral",
+    "name": "The name wall",
+    "name_fr": "Le mur des noms",
+    "ruler": "penitents",
+    "band": "neutral",
+    "text": "A roadside wall of names, a Penitent with chalk, and a line of people waiting to add one. Everyone who passes is asked the same question: whose name are you carrying?",
+    "text_fr": "Un mur de noms au bord de la route, une Pénitente avec une craie, et une file de gens qui attendent d’en ajouter un. À tous ceux qui passent, on pose la même question : quel nom portez-vous ?",
+    "choices": [
+      {
+        "id": "name",
+        "text": "Add a name",
+        "text_fr": "Ajouter un nom",
+        "outcome": {
+          "healthPct": 3,
+          "note": "You give the first one that comes. She writes it, and the line moves a little.",
+          "note_fr": "Vous donnez le premier qui vient. Elle l’écrit, et la file avance un peu."
+        }
+      },
+      {
+        "id": "read",
+        "text": "Read some of the names aloud",
+        "text_fr": "Lire quelques noms à voix haute",
+        "check": "charisma",
+        "dc": 11,
+        "success": {
+          "healthPct": 5,
+          "note": "The line goes quiet around you. When you stop, somebody says, “thank you,” to no one.",
+          "note_fr": "La file se tait autour de vous. Quand vous vous arrêtez, quelqu’un dit « merci » à personne."
+        },
+        "fail": {
+          "healthPct": -3,
+          "note": "Your voice breaks on a name you did not know you knew.",
+          "note_fr": "Votre voix se brise sur un nom que vous ne saviez pas connaître."
+        }
+      },
+      {
+        "id": "pass",
+        "text": "Walk by in silence",
+        "text_fr": "Passer en silence",
+        "outcome": {
+          "healthPct": 0,
+          "note": "They let you, and do not look at you. It is worse.",
+          "note_fr": "Elles vous laissent faire, et ne vous regardent pas. C’est pire."
+        }
+      }
+    ]
+  },
+  "ruler_penitents_hostile": {
+    "id": "ruler_penitents_hostile",
+    "name": "The name wall",
+    "name_fr": "Le mur des noms",
+    "ruler": "penitents",
+    "band": "hostile",
+    "text": "A roadside wall of names, and a Penitent with chalk who steps into the road. She will not let anyone pass the wall who has not read the names. She says so as if it were a courtesy.",
+    "text_fr": "Un mur de noms au bord de la route, et une Pénitente avec une craie qui s’avance sur la route. Elle ne laissera passer personne qui n’ait lu les noms. Elle le dit comme une politesse.",
+    "choices": [
+      {
+        "id": "read",
+        "text": "Read the names aloud",
+        "text_fr": "Lire les noms à voix haute",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": -2,
+          "note": "It takes the afternoon. By the end you are hoarse, and she has stopped watching your hands.",
+          "note_fr": "Cela prend l’après-midi. À la fin votre voix est rauque, et elle a cessé de surveiller vos mains."
+        },
+        "fail": {
+          "healthPct": -8,
+          "days": 1,
+          "note": "You stumble on the same name three times. She makes you start again.",
+          "note_fr": "Vous butez trois fois sur le même nom. Elle vous fait recommencer."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Go the long way round",
+        "text_fr": "Faire le grand détour",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "A day through ditches, with the wall in sight the whole time.",
+          "note_fr": "Un jour dans les fossés, le mur en vue tout du long."
+        }
+      }
+    ]
+  },
+  "frost_cairn": {
+    "id": "frost_cairn",
+    "name": "The pilgrim’s cairn",
+    "name_fr": "Le cairn du pèlerin",
+    "text": "A cairn of coins and mittens on the verge, every stone with a name scratched into it. Someone has left a pair of mittens on top, still warm from a hand.",
+    "text_fr": "Un cairn de pièces et de mitaines au bord de la route, chaque pierre portant un nom gravé. Quelqu’un a laissé une paire de mitaines au sommet, encore chaude d’une main.",
+    "choices": [
+      {
+        "id": "coin",
+        "text": "Leave a coin and go on",
+        "text_fr": "Laisser une pièce et poursuivre",
+        "outcome": {
+          "healthPct": 2,
+          "gold": -3,
+          "note": "Nothing answers. You walk a little lighter anyway.",
+          "note_fr": "Rien ne répond. Vous marchez un peu plus léger quand même."
+        }
+      },
+      {
+        "id": "mittens",
+        "text": "Take the mittens",
+        "text_fr": "Prendre les mitaines",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 5,
+          "note": "Your hands warm at once. Nothing in the frost minds.",
+          "note_fr": "Vos mains se réchauffent aussitôt. Rien dans le givre ne s’en offusque."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "The cold takes your fingers for a mile, as a price, and then gives them back.",
+          "note_fr": "Le froid vous prend les doigts sur une lieue, en guise de prix, puis les rend."
+        }
+      }
+    ]
+  },
+  "frost_rime_fall": {
+    "id": "frost_rime_fall",
+    "name": "The rime fall",
+    "name_fr": "La chute du givre",
+    "text": "The trees let go of their frost all at once, a white hour that fills the air and the lungs. It is very beautiful, and it does not stop.",
+    "text_fr": "Les arbres lâchent tout leur givre d’un coup, une heure blanche qui remplit l’air et les poumons. C’est très beau, et cela ne s’arrête pas.",
+    "choices": [
+      {
+        "id": "push",
+        "text": "Push through it",
+        "text_fr": "Avancer à travers",
+        "check": "constitution",
+        "dc": 11,
+        "success": {
+          "healthPct": -5,
+          "note": "You come out the far side with ice in your hair, and a good deal to say about it.",
+          "note_fr": "Vous ressortez de l’autre côté, des cristaux dans les cheveux, et bien des choses à en dire."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "The cold gets into your chest and stays there for a mile.",
+          "note_fr": "Le froid entre dans votre poitrine et y reste une lieue."
+        }
+      },
+      {
+        "id": "shelter",
+        "text": "Wait it out in the lee of a rock",
+        "text_fr": "Attendre à l’abri d’un rocher",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "It is over in an hour, and the world is a different colour.",
+          "note_fr": "Tout est fini en une heure, et le monde a changé de couleur."
+        }
+      }
+    ]
+  },
+  "frost_hound_track": {
+    "id": "frost_hound_track",
+    "name": "The hound track",
+    "name_fr": "La piste du chien",
+    "text": "Paw-prints in the frost, going the same way you are, and a day old. Each one is a little too neat, as if it had been placed.",
+    "text_fr": "Des empreintes de pattes dans le givre, qui vont dans le même sens que vous, vieilles d’un jour. Chacune est un peu trop nette, comme si on l’avait posée.",
+    "choices": [
+      {
+        "id": "follow",
+        "text": "Follow them and see what made them",
+        "text_fr": "Les suivre pour voir ce qui les a faites",
+        "fight": "plague_hound",
+        "success": {
+          "healthPct": 0,
+          "note": "It dies the way the tear’s things do, all at once, and leaves nothing behind but a cold patch of ground.",
+          "note_fr": "Il meurt comme meurent les choses de la déchirure, d’un coup, ne laissant qu’un carré de sol glacé."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "You break off and get clear, the frost bitten into your arm.",
+          "note_fr": "Vous rompez et vous dégagez, le givre mordu jusque dans votre bras."
+        }
+      },
+      {
+        "id": "wisdom",
+        "text": "Read where they are going",
+        "text_fr": "Lire où elles mènent",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "They circle your camp, and then turn back. You go the other way.",
+          "note_fr": "Elles font le tour de votre camp, puis rebroussent. Vous partez de l’autre côté."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "They were leading you, and you followed all the way to the edge of something.",
+          "note_fr": "Elles vous guidaient, et vous les avez suivies jusqu’au bord de quelque chose."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Change road for a day",
+        "text_fr": "Changer de route pour un jour",
+        "outcome": {
+          "healthPct": -2,
+          "days": 1,
+          "note": "The tracks do not follow. That tells you something.",
+          "note_fr": "Les traces ne suivent pas. Cela vous apprend quelque chose."
+        }
+      }
+    ]
+  },
+  "frost_bell": {
+    "id": "frost_bell",
+    "name": "The bell on the road",
+    "name_fr": "La cloche de la route",
+    "text": "A bell on a post by the verge, ringing slowly by itself in no wind. It rings once for every few steps you take, and you begin to suspect what it is counting.",
+    "text_fr": "Une cloche sur un poteau au bord de la route, qui sonne lentement toute seule sans un souffle de vent. Elle sonne une fois tous les quelques pas, et vous commencez à soupçonner ce qu’elle compte.",
+    "choices": [
+      {
+        "id": "listen",
+        "text": "Stand and listen until you know",
+        "text_fr": "Rester à l’écouter jusqu’à savoir",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 3,
+          "note": "It counts the taken, one stroke each. You hear a name you know, and keep it.",
+          "note_fr": "Elle compte les disparus, un coup chacun. Vous entendez un nom que vous connaissez, et vous le gardez."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "It counts you, too. You walk on a little faster.",
+          "note_fr": "Elle vous compte aussi. Vous repartez un peu plus vite."
+        }
+      },
+      {
+        "id": "ears",
+        "text": "Walk past with your hands over your ears",
+        "text_fr": "Passer les mains sur les oreilles",
+        "outcome": {
+          "healthPct": -3,
+          "note": "It rings in your teeth for the rest of the day.",
+          "note_fr": "Elle vous sonne dans les dents le reste du jour."
+        }
+      }
+    ]
+  },
+  "fen_lantern": {
+    "id": "fen_lantern",
+    "name": "The reed lantern",
+    "name_fr": "La lanterne des roseaux",
+    "text": "A lantern hung on a reed at the water’s edge, lit, with nobody near it. Its light lies on the water in a line that looks very much like a path.",
+    "text_fr": "Une lanterne accrochée à un roseau au bord de l’eau, allumée, sans personne près d’elle. Sa lumière s’étend sur l’eau en une ligne qui ressemble fort à un chemin.",
+    "choices": [
+      {
+        "id": "follow",
+        "text": "Follow its line",
+        "text_fr": "Suivre sa ligne",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 2,
+          "note": "It is a guide’s lantern, left for whoever knows how to read it. The path is firm all the way.",
+          "note_fr": "C’est la lanterne d’un guide, laissée pour qui sait la lire. Le chemin est ferme d’un bout à l’autre."
+        },
+        "fail": {
+          "healthPct": -12,
+          "days": 1,
+          "note": "It was bait, and the fen does not like to waste it. You are a long time getting out.",
+          "note_fr": "C’était un appât, et le marais n’aime pas le gâcher. Vous mettez longtemps à en sortir."
+        }
+      },
+      {
+        "id": "own",
+        "text": "Keep to your own path",
+        "text_fr": "Garder votre propre chemin",
+        "outcome": {
+          "healthPct": -3,
+          "days": 1,
+          "note": "You leave the lantern burning. It does not seem to mind.",
+          "note_fr": "Vous laissez la lanterne brûler. Elle ne semble pas s’en soucier."
+        }
+      }
+    ]
+  },
+  "fen_mud": {
+    "id": "fen_mud",
+    "name": "The sucking mud",
+    "name_fr": "La vase qui aspire",
+    "text": "A crossing that looks dry. It is not. The reeds on either side lean towards it, the way they do when something is underneath.",
+    "text_fr": "Un passage qui a l’air sec. Il ne l’est pas. Les roseaux de chaque côté se penchent vers lui, comme ils le font quand quelque chose se trouve dessous.",
+    "choices": [
+      {
+        "id": "run",
+        "text": "Cross at a run",
+        "text_fr": "Traverser en courant",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "You are across before it makes up its mind.",
+          "note_fr": "Vous êtes de l’autre côté avant qu’elle se décide."
+        },
+        "fail": {
+          "healthPct": -10,
+          "note": "It takes you to the knee, then to the thigh. It is a long way out.",
+          "note_fr": "Elle vous prend au genou, puis à la cuisse. La sortie est longue."
+        }
+      },
+      {
+        "id": "boughs",
+        "text": "Lay boughs and cross slowly",
+        "text_fr": "Poser des branches et traverser lentement",
+        "outcome": {
+          "healthPct": -1,
+          "days": 1,
+          "note": "It takes the afternoon, and it holds.",
+          "note_fr": "Cela prend l’après-midi, et cela tient."
+        }
+      }
+    ]
+  },
+  "fen_cart": {
+    "id": "fen_cart",
+    "name": "The drowned cart",
+    "name_fr": "La charrette noyée",
+    "text": "The wreck of a pilgrim cart in the shallows, one wheel in the air, and a box still lashed to its bed. The water over it is very clear, and very cold.",
+    "text_fr": "L’épave d’une charrette de pèlerins dans les hauts-fonds, une roue en l’air, et un coffre toujours arrimé au plateau. L’eau au-dessus est très claire, et très froide.",
+    "choices": [
+      {
+        "id": "dive",
+        "text": "Dive for the box",
+        "text_fr": "Plonger pour le coffre",
+        "check": "strength",
+        "dc": 12,
+        "success": {
+          "healthPct": -3,
+          "gold": 30,
+          "note": "It comes up heavy, and someone’s savings are in it, and nobody’s name.",
+          "note_fr": "Il remonte lourd, les économies de quelqu’un dedans, et le nom de personne."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "The lashings hold, and the cold holds you.",
+          "note_fr": "Les sangles tiennent, et le froid vous tient."
+        }
+      },
+      {
+        "id": "cut",
+        "text": "Cut the lashings from the bank",
+        "text_fr": "Couper les sangles depuis la berge",
+        "check": "dexterity",
+        "dc": 11,
+        "success": {
+          "healthPct": 0,
+          "gold": 10,
+          "note": "The box floats free, lighter than you hoped, but dry inside.",
+          "note_fr": "Le coffre flotte libre, plus léger que vous l’espériez, mais sec à l’intérieur."
+        },
+        "fail": {
+          "healthPct": -4,
+          "note": "The knife slips, and the water takes it.",
+          "note_fr": "Le couteau glisse, et l’eau l’emporte."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Leave it for the fen",
+        "text_fr": "Le laisser au marais",
+        "outcome": {
+          "healthPct": 0,
+          "note": "Something has to be left for the water. You are glad it was a box.",
+          "note_fr": "Il faut bien laisser quelque chose à l’eau. Vous êtes content que ce soit un coffre."
+        }
+      }
+    ]
+  },
+  "fen_child": {
+    "id": "fen_child",
+    "name": "The child in the reeds",
+    "name_fr": "L’enfant des roseaux",
+    "text": "A child stands in the reeds with her hands folded, knowing your name. She is nine, or looks it. She is, quite possibly, not a child.",
+    "text_fr": "Une enfant se tient dans les roseaux, les mains jointes, et connaît votre nom. Elle a neuf ans, ou en a l’air. Elle n’est, très probablement, pas une enfant.",
+    "choices": [
+      {
+        "id": "kind",
+        "text": "Speak to her kindly",
+        "text_fr": "Lui parler avec bonté",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": 6,
+          "note": "She says something in a language nobody taught her, and you understand it. It is a blessing, or close.",
+          "note_fr": "Elle dit quelque chose dans une langue que personne ne lui a apprise, et vous le comprenez. C’est une bénédiction, ou presque."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "She goes on looking at you with her whole face. It is a long way back to the road.",
+          "note_fr": "Elle continue de vous regarder de tout son visage. Il y a loin jusqu’à la route."
+        }
+      },
+      {
+        "id": "bread",
+        "text": "Give her bread and go on",
+        "text_fr": "Lui donner du pain et poursuivre",
+        "outcome": {
+          "healthPct": 0,
+          "gold": -2,
+          "note": "She takes it with both hands. You do not look back, and you are glad.",
+          "note_fr": "Elle le prend à deux mains. Vous ne vous retournez pas, et vous en êtes heureux."
+        }
+      },
+      {
+        "id": "back",
+        "text": "Turn your back and walk",
+        "text_fr": "Lui tourner le dos et marcher",
+        "outcome": {
+          "healthPct": -8,
+          "days": 1,
+          "note": "The fen remembers a back turned. The water on the path is higher than it was.",
+          "note_fr": "Le marais se souvient d’un dos tourné. L’eau sur le chemin est plus haute qu’elle n’était."
+        }
+      }
+    ]
+  },
+  "cliff_wrecker_lamp": {
+    "id": "cliff_wrecker_lamp",
+    "name": "The wrecker’s lamp",
+    "name_fr": "La lampe du naufrageur",
+    "text": "A false light on the cliff top, set low and steady, the sort a ship takes for a harbour. Out on the water, a sail has begun, very slowly, to turn.",
+    "text_fr": "Une fausse lumière au sommet de la falaise, basse et fixe, de celles qu’un navire prend pour un port. Au large, une voile a commencé, très lentement, à virer.",
+    "choices": [
+      {
+        "id": "out",
+        "text": "Put the lamp out",
+        "text_fr": "Éteindre la lampe",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": 0,
+          "note": "You are down the path before anyone comes. The sail steadies, and then makes for the true light.",
+          "note_fr": "Vous êtes en bas du sentier avant que quiconque arrive. La voile se redresse, puis fait route vers la vraie lumière."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "The wreckers were nearer than you thought, and they did not like it.",
+          "note_fr": "Les naufrageurs étaient plus près que vous ne pensiez, et ils n’ont pas apprécié."
+        }
+      },
+      {
+        "id": "cut",
+        "text": "Take the wreckers’ cut",
+        "text_fr": "Prendre la part des naufrageurs",
+        "outcome": {
+          "healthPct": 0,
+          "gold": 25,
+          "note": "They share it out without a word. It does not feel like money.",
+          "note_fr": "Ils la partagent sans un mot. Cela n’a pas l’air de l’argent."
+        }
+      },
+      {
+        "id": "warn",
+        "text": "Signal the ship",
+        "text_fr": "Faire signe au navire",
+        "check": "charisma",
+        "dc": 12,
+        "success": {
+          "healthPct": 2,
+          "note": "A lantern answers from the water. They know a friend when one stands on a cliff.",
+          "note_fr": "Une lanterne répond depuis l’eau. Ils reconnaissent un ami quand il se tient sur une falaise."
+        },
+        "fail": {
+          "healthPct": -4,
+          "note": "They see a man on a cliff with a lamp, and they draw the wrong conclusion.",
+          "note_fr": "Ils voient un homme sur une falaise avec une lampe, et en tirent la mauvaise conclusion."
+        }
+      }
+    ]
+  },
+  "cliff_salt_wind": {
+    "id": "cliff_salt_wind",
+    "name": "The salt wind",
+    "name_fr": "Le vent de sel",
+    "text": "A gale off the water that makes the path a ledge. Salt gets into your eyes, and every step is a question.",
+    "text_fr": "Une bourrasque venue de l’eau qui fait du sentier une corniche. Le sel vous entre dans les yeux, et chaque pas est une question.",
+    "choices": [
+      {
+        "id": "edge",
+        "text": "Edge along it",
+        "text_fr": "Longer la corniche",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": -2,
+          "note": "You go a hand’s width at a time, and the cliff lets you.",
+          "note_fr": "Vous avancez d’une largeur de main à la fois, et la falaise vous laisse faire."
+        },
+        "fail": {
+          "healthPct": -14,
+          "note": "A gust takes your footing, and the ledge takes the rest.",
+          "note_fr": "Une rafale vous prend l’équilibre, et la corniche le reste."
+        }
+      },
+      {
+        "id": "inland",
+        "text": "Go inland for a day",
+        "text_fr": "Rentrer dans les terres pour un jour",
+        "outcome": {
+          "healthPct": -2,
+          "days": 1,
+          "note": "The long way, and the wind drops as you go.",
+          "note_fr": "Le long chemin, et le vent tombe à mesure que vous marchez."
+        }
+      }
+    ]
+  },
+  "cliff_gulls": {
+    "id": "cliff_gulls",
+    "name": "The gull colony",
+    "name_fr": "La colonie de goélands",
+    "text": "A cliff face white with nests, and eggs for the taking. The gulls have not seen you yet, or have, and have decided to wait.",
+    "text_fr": "Une paroi blanche de nids, et des œufs à prendre. Les goélands ne vous ont pas encore vu, ou bien si, et ont décidé d’attendre.",
+    "choices": [
+      {
+        "id": "climb",
+        "text": "Climb for the eggs",
+        "text_fr": "Escalader pour les œufs",
+        "check": "strength",
+        "dc": 12,
+        "success": {
+          "healthPct": 8,
+          "note": "A dozen eggs, and a fine hot meal. The gulls scream the whole way down.",
+          "note_fr": "Une douzaine d’œufs, et un excellent repas chaud. Les goélands hurlent pendant toute la descente."
+        },
+        "fail": {
+          "healthPct": -10,
+          "note": "The gulls have a great deal to say about it, and their beaks to say it with.",
+          "note_fr": "Les goélands ont beaucoup à en dire, et leurs becs pour le dire."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Leave them be",
+        "text_fr": "Les laisser tranquilles",
+        "outcome": {
+          "healthPct": 0,
+          "note": "You walk quietly past, and the colony does not so much as turn its head.",
+          "note_fr": "Vous passez sans bruit, et la colonie ne tourne même pas la tête."
+        }
+      },
+      {
+        "id": "stone",
+        "text": "Throw a stone to scatter them",
+        "text_fr": "Jeter une pierre pour les disperser",
+        "outcome": {
+          "healthPct": -4,
+          "note": "The cloud of wings is very loud, and very white, and it follows you for a mile.",
+          "note_fr": "Le nuage d’ailes est très bruyant, très blanc, et il vous suit pendant une lieue."
+        }
+      }
+    ]
+  },
+  "cliff_tide_stair": {
+    "id": "cliff_tide_stair",
+    "name": "The tide stair",
+    "name_fr": "L’escalier de la marée",
+    "text": "A stair cut in the rock that the tide covers twice a day. The tide is out, and the weed on the steps is still wet. You can hear it coming back.",
+    "text_fr": "Un escalier taillé dans le roc que la marée recouvre deux fois par jour. La marée est basse, et les algues sur les marches sont encore mouillées. On l’entend qui revient.",
+    "choices": [
+      {
+        "id": "run",
+        "text": "Run it before the tide",
+        "text_fr": "Le franchir avant la marée",
+        "check": "constitution",
+        "dc": 12,
+        "success": {
+          "healthPct": -3,
+          "note": "You reach the top as the first wave reaches the foot. It is a very near thing, and you will tell it well.",
+          "note_fr": "Vous atteignez le sommet quand la première vague atteint le pied. C’était très juste, et vous le raconterez bien."
+        },
+        "fail": {
+          "healthPct": -12,
+          "note": "The sea gets as far as your knees, and then your breath.",
+          "note_fr": "La mer vous monte aux genoux, puis au souffle."
+        }
+      },
+      {
+        "id": "wait",
+        "text": "Wait for the ebb",
+        "text_fr": "Attendre le reflux",
+        "outcome": {
+          "healthPct": -1,
+          "days": 1,
+          "note": "Six hours on a dry stone, watching the water go back out.",
+          "note_fr": "Six heures sur une pierre sèche, à regarder l’eau repartir."
+        }
+      }
+    ]
+  },
+  "glass_fulgurite": {
+    "id": "glass_fulgurite",
+    "name": "The glassed sand",
+    "name_fr": "Le sable vitrifié",
+    "text": "The dune is not sand underneath. Something once ran across it hot, and the grey grains fused into a crust of black glass, thin as ice, ringing under your boots like a bell with a crack in it.",
+    "text_fr": "Sous la dune, ce n’est plus du sable. Quelque chose l’a traversée brûlant, et les grains gris ont fondu en une croûte de verre noir, fine comme de la glace, qui résonne sous vos bottes comme une cloche fêlée.",
+    "choices": [
+      {
+        "id": "pick",
+        "text": "Pick your way across the thick patches",
+        "text_fr": "Passer en choisissant les plaques épaisses",
+        "check": "dexterity",
+        "dc": 12,
+        "success": {
+          "healthPct": 2,
+          "note": "You find a line where the glass holds, and cross without a sound.",
+          "note_fr": "Vous trouvez une ligne où le verre tient, et traversez sans un bruit."
+        },
+        "fail": {
+          "healthPct": -7,
+          "note": "The crust gives under your heel and the edges open your shin.",
+          "note_fr": "La croûte cède sous votre talon et les bords vous ouvrent le tibia."
+        }
+      },
+      {
+        "id": "round",
+        "text": "Go round by the wet sand",
+        "text_fr": "Contourner par le sable mouillé",
+        "outcome": {
+          "healthPct": -2,
+          "note": "The tide has been at it. It costs you an hour and a boot full of water.",
+          "note_fr": "La marée est passée par là. Cela vous coûte une heure et une botte pleine d’eau."
+        }
+      }
+    ]
+  },
+  "glass_hull_shelter": {
+    "id": "glass_hull_shelter",
+    "name": "The hull in the dunes",
+    "name_fr": "La coque dans les dunes",
+    "text": "A White Fleet hull lies on its side behind the dune, a long way from any water, its ribs open like a hand. The wind off the tear is rising, and the dark between the ribs is out of it.",
+    "text_fr": "Une coque de la Flotte blanche gît sur le flanc derrière la dune, loin de toute eau, ses côtes ouvertes comme une main. Le vent de la déchirure se lève, et l’ombre entre les côtes est à l’abri.",
+    "choices": [
+      {
+        "id": "shelter",
+        "text": "Shelter inside and read the hull",
+        "text_fr": "S’abriter dedans et lire la coque",
+        "check": "wisdom",
+        "dc": 12,
+        "success": {
+          "healthPct": 4,
+          "note": "Under the bench you find a logbook, dry. The last line is a date and a promise to come back for the rest. You rest, and keep the page.",
+          "note_fr": "Sous un banc, vous trouvez un journal de bord, sec. La dernière ligne est une date et la promesse de revenir chercher le reste. Vous vous reposez, et vous gardez la page."
+        },
+        "fail": {
+          "healthPct": -5,
+          "note": "The hull settles in the wind. You get out in time, but not clean.",
+          "note_fr": "La coque s’assoit dans le vent. Vous sortez à temps, mais pas indemne."
+        }
+      },
+      {
+        "id": "lee",
+        "text": "Sit in its lee and keep walking after",
+        "text_fr": "S’asseoir sous son vent et repartir ensuite",
+        "outcome": {
+          "healthPct": 0,
+          "note": "The wind drops a little. You let it blow itself out against a wreck that has heard worse.",
+          "note_fr": "Le vent faiblit un peu. Vous le laissez s’épuiser contre une épave qui en a entendu d’autres."
+        }
+      }
+    ]
+  },
+  "glass_drowned_well": {
+    "id": "glass_drowned_well",
+    "name": "The well from a drowned coast",
+    "name_fr": "Le puits d’une côte noyée",
+    "text": "A stone well stands alone on the sand, a ring of fitted blocks that do not belong to this shore. It is full to the lip, and the water is not salt. Something about that is worse.",
+    "text_fr": "Un puits de pierre se dresse seul sur le sable, une margelle de blocs ajustés qui n’appartient pas à cette côte. Il est plein à ras bord, et l’eau n’est pas salée. Cela n’en est que plus inquiétant.",
+    "choices": [
+      {
+        "id": "drink",
+        "text": "Drink, and trust your stomach",
+        "text_fr": "Boire, et faire confiance à votre estomac",
+        "check": "constitution",
+        "dc": 11,
+        "success": {
+          "healthPct": 3,
+          "note": "It is cold, clean and tastes of a village that was here once. You walk on lighter.",
+          "note_fr": "Elle est froide, claire, et a le goût d’un village qui fut là. Vous repartez d’un pas plus léger."
+        },
+        "fail": {
+          "healthPct": -6,
+          "note": "It stays in you like a stone. You walk the afternoon bent over.",
+          "note_fr": "Elle vous reste dans le ventre comme une pierre. Vous marchez tout l’après-midi le dos courbé."
+        }
+      },
+      {
+        "id": "leave",
+        "text": "Fill nothing, leave a coin on the rim",
+        "text_fr": "Ne rien puiser, laisser une pièce sur la margelle",
+        "outcome": {
+          "healthPct": 0,
+          "note": "The coin does not ring when it lands. You go on a little thirsty, and not sorry.",
+          "note_fr": "La pièce ne tinte pas en tombant. Vous repartez avec un peu de soif, sans regret."
+        }
+      }
+    ]
+  },
+  "glass_tear_pull": {
+    "id": "glass_tear_pull",
+    "name": "The pull of the tear",
+    "name_fr": "L’appel de la déchirure",
+    "text": "Across the water the tear stands open like a door, and for a hundred steps your feet turn toward it by themselves. It is not a voice. It is the plain, patient sense of being expected.",
+    "text_fr": "Au-delà de l’eau, la déchirure se tient ouverte comme une porte, et pendant cent pas vos pieds se tournent d’eux-mêmes vers elle. Ce n’est pas une voix. C’est le sentiment simple et patient qu’on vous attend.",
+    "choices": [
+      {
+        "id": "hold",
+        "text": "Fix your eyes on the dune and hold your line",
+        "text_fr": "Fixer la dune des yeux et tenir votre cap",
+        "check": "wisdom",
+        "dc": 13,
+        "success": {
+          "healthPct": 2,
+          "note": "You hold. It lets you go the way a hand lets go of a sleeve.",
+          "note_fr": "Vous tenez bon. Elle vous lâche comme une main lâche une manche."
+        },
+        "fail": {
+          "healthPct": -8,
+          "note": "You find yourself ankle deep in the surf with no memory of walking. You wade back shaking.",
+          "note_fr": "Vous vous retrouvez dans les vagues jusqu’aux chevilles sans souvenir d’avoir marché. Vous revenez en pataugeant, tremblant."
+        }
+      },
+      {
+        "id": "sing",
+        "text": "Walk backwards, singing something stupid",
+        "text_fr": "Marcher à reculons en chantant une bêtise",
+        "check": "charisma",
+        "dc": 11,
+        "success": {
+          "healthPct": 1,
+          "note": "It is hard to be expected by something you are rhyming at. The pull thins and goes.",
+          "note_fr": "Difficile pour quelque chose de vous attendre quand on lui fait des rimes. L’appel s’amenuise et s’en va."
+        },
+        "fail": {
+          "healthPct": -4,
+          "note": "You trip over your own verse and sit down hard in the glass.",
+          "note_fr": "Vous butez sur votre propre refrain et vous retrouvez par terre dans le verre."
+        }
+      }
+    ]
   }
 }

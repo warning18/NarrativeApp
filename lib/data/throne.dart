@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import '../l10n/app_locale.dart';
-import 'clan_power.dart' show powerOf;
+import 'clan_power.dart' show holdings, powerOf;
 import 'factions.dart';
+import 'geography.dart';
 import 'signs.dart';
 
 /// The climb to the Lantern Throne, and the Host (v1.196).
@@ -188,15 +189,21 @@ bool _hostile(String factionId, PoliticsState politics, ClanData data) =>
 /// of the otherworld (the Choir, the Pit) comes when one of their signs
 /// was taken this life ([signPatrons], PlayerSession.signPatronsThisLife)
 /// or it pledged; a clan or a tribe at Trusted or better, or pledged; the
-/// lost clan never as an ally; and none Hostile or worse.
+/// lost clan never as an ally; and none Hostile or worse. With
+/// [geography], the clans holding the most districts come too, from
+/// Resented up ([districtHostClans], wave 18 step 2).
 Host hostFor({
   required PoliticsState politics,
   required ClanData data,
   Iterable<String> signPatrons = const [],
+  Geography? geography,
 }) {
   final banner =
       politics.throneWinner.isNotEmpty ? politics.throneWinner : politics.claim;
   final otherworld = signPatrons.toSet();
+  final strong = geography == null
+      ? const <String>{}
+      : districtHostClans(politics, geography).toSet();
   final allies = <String>[
     for (final faction in data.factions.values)
       if (faction.id != banner &&
@@ -206,6 +213,8 @@ Host hostFor({
           (!politics.fallen.contains(faction.id) ||
               politics.hasPledged(faction.id)) &&
           (politics.hasPledged(faction.id) ||
+              (strong.contains(faction.id) &&
+                  !politics.fallen.contains(faction.id)) ||
               (faction.kind == PatronKind.otherworld
                   ? otherworld.contains(faction.id)
                   : politics
@@ -227,6 +236,27 @@ Host hostFor({
   return Host(banner: banner, allies: allies, houses: houses);
 }
 
+/// The fewest districts a clan holds to come to the Host for them.
+const int hostDistrictMin = 2;
+
+/// The clans holding the most districts now (all of them on a tie), at
+/// least [hostDistrictMin]: they answer the Host's call unless Hostile or
+/// worse (see [hostFor]).
+List<String> districtHostClans(PoliticsState politics, Geography geography) {
+  final counts = <String, int>{};
+  for (final MapEntry(key: placeId, value: holder)
+      in holdings(geography, politics).entries) {
+    if (geography.place(placeId)?.level != GeoLevel.district) continue;
+    counts[holder] = (counts[holder] ?? 0) + 1;
+  }
+  final most = counts.values.fold(0, max);
+  if (most < hostDistrictMin) return const [];
+  return [
+    for (final MapEntry(:key, :value) in counts.entries)
+      if (value == most) key,
+  ]..sort();
+}
+
 /// The Host the last battles field: the one mustered, else the one the
 /// character would muster now (see [hostFor]).
 Host fieldedHost({
@@ -241,8 +271,8 @@ Host fieldedHost({
 /// The Houses' bonus: +1 block for the whole party as a fight opens per
 /// [houseBlockPer] Houses (at most [houseBlockMax]), and +1 % max health
 /// for the whole party per House (at most [houseHealthMax]).
-const int houseBlockPer = 2;
-const int houseBlockMax = 3;
+const int houseBlockPer = 4;
+const int houseBlockMax = 1;
 const int houseHealthMax = 6;
 
 /// What [houses] Houses add (see [houseBlockPer]).

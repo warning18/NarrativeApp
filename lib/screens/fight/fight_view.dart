@@ -54,6 +54,15 @@ extension _FightView on _FightScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // What this fight's goal, doctrine and situation mean, the
+              // first time this save meets each (fight_tips.dart).
+              FightTipsCard(
+                shown: fightTipIdsFor(
+                    goal: _goal.kind,
+                    doctrineFactionId: _doctrine?.factionId,
+                    condition: condition),
+                holdRounds: _goal.rounds,
+              ),
               if (!_goal.isSlay) ...[
                 _buildGoalBanner(),
                 const SizedBox(height: 12),
@@ -476,23 +485,35 @@ extension _FightView on _FightScreenState {
           ),
           const SizedBox(height: 6),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            // The cards above, the stage under them (_fightStage): its
+            // height is fixed, so the cards give way, never the stage.
+            child: LayoutBuilder(
+              builder: (context, area) => Column(
                 children: [
                   Expanded(
-                    flex: 5,
-                    child: TutorialTarget(
-                        id: 'fight.party', child: _buildPartyColumn(items)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: TutorialTarget(
+                                id: 'fight.party',
+                                child: _buildPartyColumn(items)),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 6,
+                            child: TutorialTarget(
+                                id: 'fight.enemies',
+                                child: _buildEnemyColumn(previews)),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 6,
-                    child: TutorialTarget(
-                        id: 'fight.enemies',
-                        child: _buildEnemyColumn(previews)),
-                  ),
+                  _fightStage(area.maxWidth),
                 ],
               ),
             ),
@@ -503,6 +524,9 @@ extension _FightView on _FightScreenState {
             child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
+          if (_spoils != null)
+            FightSpoilsStrip(
+                spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
           _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
@@ -601,7 +625,7 @@ extension _FightView on _FightScreenState {
       chip = Tooltip(
         message: tr(ref, 'tide_mark_tip')
             .replaceAll('{party}', pct(tidePartyStep, level))
-            .replaceAll('{enemies}', pct(enemyStep, level)),
+            .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
         child: _stateChip(
             Icons.waves,
             tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
@@ -1119,7 +1143,7 @@ extension _FightView on _FightScreenState {
               _totalDamageFor(actor, face, skills, items),
               language: lang,
               activeEffects: actor.statusEffects,
-              wisdomHealBonus: actor.wisdom ~/ 2,
+              wisdomHealBonus: wisdomHealBonusFor(actor.wisdom),
               wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
               alignmentLabel: _alignmentLabel,
             ),

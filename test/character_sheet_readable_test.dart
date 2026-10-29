@@ -110,21 +110,21 @@ void main() {
     await tester.scrollUntilVisible(
         find.byKey(const Key('sheet_elements')), 300,
         scrollable: find.byType(Scrollable).first);
-    expect(find.text('Fire 12/0'), findsOneWidget); // +12 damage
-    expect(find.text('Ice 0/14'), findsOneWidget); // 14 resistance
+    expect(find.text('Fire 3/0'), findsOneWidget); // +3 damage
+    expect(find.text('Ice 0/3'), findsOneWidget); // 3 resistance
     expect(find.byKey(const Key('elements_view_0')), findsNothing);
     await tester.tap(find.byKey(const Key('sheet_elements_open')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_0')), findsOneWidget);
-    expect(find.text('12/0'), findsOneWidget);
-    expect(find.text('0/14'), findsOneWidget);
+    expect(find.text('3/0'), findsOneWidget);
+    expect(find.text('0/3'), findsOneWidget);
     await tester.tap(find.text('Rose'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('elements_view_2')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('choosing a race and a profession draws the shape they make',
+  testWidgets('choosing a race and a profession adds up in the summary',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -136,25 +136,27 @@ void main() {
     await tester.pumpWidget(const ProviderScope(
       child: MaterialApp(home: RaceProfessionScreen()),
     ));
-    for (var i = 0; i < 40 && find.text('Human').evaluate().isEmpty; i++) {
+    for (var i = 0;
+        i < 40 && find.byKey(const Key('choice_card_human')).evaluate().isEmpty;
+        i++) {
       await _settle(tester, 1);
     }
-    // The radar is there from the start, showing the plain start, and
-    // answers each pick.
-    expect(find.byKey(const Key('start_preview_radar')), findsOneWidget);
-    await tester.tap(find.text('Human').first);
+    // Nothing picked, no summary; a pick opens its card, and the second step
+    // completes the pair.
+    expect(find.byKey(const Key('rp_summary')), findsNothing);
+    await tester.tap(find.byKey(const Key('choice_card_human')));
     await tester.pump();
-    expect(find.byKey(const Key('preset_detail_human')), findsOneWidget);
-    await tester.tap(find.text('Warrior').first);
+    expect(find.byKey(const Key('open_choice_human')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('rp_step_calling')));
     await tester.pump();
-    // One detail card for the two: the profession's now, the race behind its tab.
-    expect(find.byKey(const Key('preset_detail_warrior')), findsOneWidget);
-    expect(find.byKey(const Key('preset_detail_human')), findsNothing);
-    expect(find.byKey(const Key('start_preview_name')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('detail_tab_race')));
+    await tester.tap(find.byKey(const Key('choice_card_warrior')));
     await tester.pump();
-    expect(find.byKey(const Key('preset_detail_human')), findsOneWidget);
-    expect(find.byKey(const Key('start_preview_radar')), findsOneWidget);
+    expect(find.byKey(const Key('open_choice_warrior')), findsOneWidget);
+    expect(find.byKey(const Key('rp_summary')), findsOneWidget);
+    // Back on the peoples, the human is still the one picked.
+    await tester.tap(find.byKey(const Key('rp_step_people')));
+    await tester.pump();
+    expect(find.byKey(const Key('open_choice_human')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -204,7 +204,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Dettes de quai",
-    "npcDialogueText_fr": "Le maître du port veut qu’on règle leur compte à ces rats avant l’arrivée de la cargaison."
+    "npcDialogueText_fr": "Le maître du port veut qu’on règle leur compte à ces rats avant l’arrivée de la cargaison.",
+    "district": "saltmouth_wharf",
+    "faction": "crows"
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
@@ -248,7 +250,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Une faveur de contrebandier",
-    "npcDialogueText_fr": "Rapportez-moi ce minerai, et je vous ferai un prix honnête sur l’acier."
+    "npcDialogueText_fr": "Rapportez-moi ce minerai, et je vous ferai un prix honnête sur l’acier.",
+    "district": "saltmouth_wharf",
+    "faction": "compact"
   },
   "q_ch2_burning_manifest": {
     "questID": "q_ch2_burning_manifest",
@@ -293,7 +297,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Manifeste en flammes",
-    "npcDialogueText_fr": "Si ces manifestes brûlent, nous perdons toutes les pistes que nous avons."
+    "npcDialogueText_fr": "Si ces manifestes brûlent, nous perdons toutes les pistes que nous avons.",
+    "district": "saltmouth_wharf",
+    "faction": "crows"
   },
   "q_ch2_captains_gambit": {
     "questID": "q_ch2_captains_gambit",
@@ -338,7 +344,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Gambit du capitaine",
-    "npcDialogueText_fr": "Le capitaine tient le dernier bac qui quitte ces quais. Convainquez-le, d’une manière ou d’une autre."
+    "npcDialogueText_fr": "Le capitaine tient le dernier bac qui quitte ces quais. Convainquez-le, d’une manière ou d’une autre.",
+    "district": "saltmouth_wharf",
+    "faction": "crows"
   },
   "q_ch2_harbor_reckoning": {
     "questID": "q_ch2_harbor_reckoning",
@@ -383,7 +391,9 @@
     "rewardDiceID": "storm_die",
     "rewardAllyId": "",
     "questName_fr": "Règlement de comptes au port",
-    "npcDialogueText_fr": "Cette bête arrache les malades à leur lit. Mettez-y fin."
+    "npcDialogueText_fr": "Cette bête arrache les malades à leur lit. Mettez-y fin.",
+    "district": "saltmouth_wharf",
+    "faction": "penitents"
   },
   "q_ch3_ashen_oath": {
     "questID": "q_ch3_ashen_oath",
@@ -652,7 +662,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "kelda",
     "questName_fr": "Kelda tient bon",
-    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
+    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre.",
+    "district": "saltmouth_wharf",
+    "faction": "vigil"
   },
   "q_ch2_sables_wager": {
     "questID": "q_ch2_sables_wager",
@@ -698,7 +710,9 @@
     "rewardDiceID": "",
     "rewardAllyId": "sable",
     "questName_fr": "Le Pari de Sable",
-    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
+    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit.",
+    "district": "saltmouth_card_row",
+    "faction": "crows"
   },
   "q_ch3_marens_penance": {
     "questID": "q_ch3_marens_penance",
@@ -808,7 +822,9 @@
         "resultText": "The dockhands don’t thank you out loud. They don’t have to.",
         "resultText_fr": "Les dockers ne vous remercient pas à voix haute. Ils n’en ont pas besoin."
       }
-    ]
+    ],
+    "district": "saltmouth_landward_gate",
+    "faction": "crows"
   },
   "q_ch2_terns_toll": {
     "questID": "q_ch2_terns_toll",
@@ -820,14 +836,14 @@
     "objectives": [
       {
         "description": "Deal with the overseer extorting Tern Row",
-        "type": "Kill",
-        "targetEnemyID": "dock_overseer",
+        "type": "Flag",
+        "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "S’occuper du contremaître qui rançonne Tern Row",
-        "countFromAccept": true
+        "targetFlag": "hub_2015_ternrow",
+        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
       }
     ],
     "rewardGold": 40,
@@ -873,7 +889,9 @@
         "resultText": "Nadira shares it out to the last copper, and sets one coin aside for you.",
         "resultText_fr": "Nadira le partage jusqu’au dernier sou, et met une pièce de côté pour vous."
       }
-    ]
+    ],
+    "district": "saltmouth_tern_row",
+    "faction": "tidekin"
   },
   "q_ch2_lioras_watch": {
     "questID": "q_ch2_lioras_watch",
@@ -945,12 +963,14 @@
         "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer.",
         "flag": "liora_fares_refunded"
       }
-    ]
+    ],
+    "district": "saltmouth_wharf",
+    "faction": "vigil"
   },
   "q_ch1_vess_in_the_dark": {
     "questID": "q_ch1_vess_in_the_dark",
     "questName": "Vess in the Dark",
-    "chapter": 1,
+    "chapter": 2,
     "category": "Side",
     "difficulty": "2",
     "requiredAlignment": "Neutral",
@@ -1754,7 +1774,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "scaffold_clerk_faced",
-        "description_fr": "Affronter le clerc du Registre du Sel pour les gages des Échafaudeurs",
+        "description_fr": "Affronter le greffier du Registre du Sel pour les gages des Échafaudeurs",
         "targetNPCName_fr": "Dorran Quill"
       }
     ],
@@ -1781,7 +1801,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "L’Échafaud impayé",
-    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le clerc du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
+    "npcDialogueText_fr": "« Trente gréeurs ont remis ce chantier debout, et le greffier du Registre garde leur paie dans un coffre sous sa balance, et appelle ça une dîme », dit Dorran, sans élever la voix. « Je grée des échafaudages. Je ne discute pas avec les clercs. Allez discuter avec lui, et rapportez ce qui restera quand il s’arrêtera. »",
     "detourEligible": false,
     "turnInChoices": [
       {
@@ -1947,7 +1967,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetFlag": "bark_recovered",
-        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clés",
+        "description_fr": "Récupérer l’écorce-fièvre de Brannoc dans la cache des Porte-Clefs",
         "targetNPCName_fr": "Brannoc Reedtithe"
       }
     ],
@@ -1974,7 +1994,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Dîme d’écorce",
-    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clés l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
+    "npcDialogueText_fr": "« Une saison d’écorce-fièvre, saignée à la main, et les Porte-Clefs l’ont prise à l’Escalier pour une dîme et mise en cache pour la vendre », dit Brannoc, les mains sur un malade qui ne va pas mieux. « Ici, j’ai des chandelles et des prières. L’écorce agit. Remontez-la. »",
     "detourEligible": false,
     "turnInChoices": [
       {
@@ -1997,12 +2017,12 @@
       },
       {
         "choiceText": "Sell the bark back to the Keyholders",
-        "choiceText_fr": "Revendre l’écorce aux Porte-Clés",
+        "choiceText_fr": "Revendre l’écorce aux Porte-Clefs",
         "rewardGold": 110,
         "alignmentChange": -5,
         "flag": "bark_sold",
         "resultText": "The Keyholders pay in good coin and ask no questions. Brannoc asks one, and you do not answer it.",
-        "resultText_fr": "Les Porte-Clés paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
+        "resultText_fr": "Les Porte-Clefs paient en bonne monnaie et ne posent pas de questions. Brannoc en pose une, et vous n’y répondez pas.",
         "politics": {
           "standing": {
             "crows": 10,
@@ -2068,7 +2088,7 @@
         "buttonText_fr": "Accepter"
       }
     ],
-    "rewardDiceID": "",
+    "rewardDiceID": "tally_die",
     "rewardAllyId": "",
     "questName_fr": "Le Compte des chandelles",
     "npcDialogueText_fr": "« Quatre cent onze, gravés dans une pierre au-delà du givre, parce que le Dominion les inscrit comme absents et que les absents n’ont pas besoin de chandelles », dit Orsabet. « Mes jambes se sont arrêtées à la ligne de givre il y a un mois. Rapportez-moi le compte, et je choisirai qui le gardera. »",
@@ -2992,5 +3012,166 @@
         }
       }
     ]
+  },
+  "q_ch2_card_row_short_count": {
+    "questID": "q_ch2_card_row_short_count",
+    "questName": "The Short Count",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Count the crates at Card Row until the tally agrees",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Pell Voss",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "card_row_counted",
+        "description_fr": "Compter les caisses de la Rangée des cartes jusqu’à ce que le compte s’accorde",
+        "targetNPCName_fr": "Pell Voss"
+      }
+    ],
+    "rewardGold": 30,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Voss, the tally-man at Card Row, says the Crows want to know who is skimming. He does not say he wants to know too.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_card_row_short_count_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Le compte qui manque",
+    "npcDialogueText_fr": "Voss, le pointeur de la Rangée des cartes, dit que les Corneilles veulent savoir qui écrème. Il ne dit pas qu’il veut le savoir aussi.",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Name the skimmer to the Crows",
+        "choiceText_fr": "Donner l’écrémeur aux Corneilles",
+        "rewardGold": 25,
+        "alignmentChange": 0,
+        "flag": "card_row_named",
+        "resultText": "The Crows pay on the nail, and the dockhand is not seen again at Card Row.",
+        "resultText_fr": "Les Corneilles paient comptant, et le docker ne reparaît plus à la Rangée des cartes.",
+        "politics": {
+          "standing": {
+            "crows": 6,
+            "compact": -2
+          }
+        }
+      },
+      {
+        "choiceText": "Cover for the skimmer and take a cut",
+        "choiceText_fr": "Couvrir l’écrémeur et prendre sa part",
+        "rewardGold": 55,
+        "alignmentChange": -4,
+        "flag": "card_row_covered",
+        "resultText": "The cut is small and the silence is a debt the dockers will remember.",
+        "resultText_fr": "La part est petite et le silence est une dette dont les dockers se souviendront.",
+        "politics": {
+          "standing": {
+            "crows": -4,
+            "dominion": 3
+          }
+        }
+      }
+    ],
+    "district": "saltmouth_card_row",
+    "faction": "crows"
+  },
+  "q_ch2_tern_row_wrong_name": {
+    "questID": "q_ch2_tern_row_wrong_name",
+    "questName": "A Boat for the Wrong Name",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Take the buyer’s paper boats down to the water",
+        "type": "Flag",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Ysa Dunn",
+        "locationID": "",
+        "requiredAmount": 1,
+        "targetFlag": "tern_boats_done",
+        "description_fr": "Descendre à l’eau les bateaux de papier de l’acheteur",
+        "targetNPCName_fr": "Ysa Dunn"
+      }
+    ],
+    "rewardGold": 30,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Dunn, the lantern-maker on Tern Row, says a buyer is lighting boats for names the sea never took, and the sea keeps its own accounts.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_tern_row_wrong_name_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "",
+    "questName_fr": "Une barque pour le mauvais nom",
+    "npcDialogueText_fr": "Dunn, la fabricante de lanternes de Tern Row, dit qu’un acheteur allume des bateaux pour des noms que la mer n’a jamais pris, et que la mer tient ses propres comptes.",
+    "detourEligible": false,
+    "turnInChoices": [
+      {
+        "choiceText": "Take the buyer’s boats down to the water yourself",
+        "choiceText_fr": "Descendre vous-même les bateaux de l’acheteur à l’eau",
+        "rewardGold": 10,
+        "alignmentChange": 2,
+        "flag": "tern_boats_taken",
+        "resultText": "The tide takes four and leaves one on the sand, with a name on it you know.",
+        "resultText_fr": "La marée en prend quatre et en laisse un sur le sable, avec un nom que vous connaissez.",
+        "politics": {
+          "standing": {
+            "tidekin": 6
+          }
+        }
+      },
+      {
+        "choiceText": "Let the buyer finish and watch who he lights for",
+        "choiceText_fr": "Laisser l’acheteur finir et voir pour qui il allume",
+        "rewardGold": 45,
+        "alignmentChange": 0,
+        "flag": "tern_boats_watched",
+        "resultText": "The last name he lights is his own, and the footbridge is very quiet.",
+        "resultText_fr": "Le dernier nom qu’il allume est le sien, et la passerelle est très silencieuse.",
+        "politics": {
+          "standing": {
+            "tidekin": 3,
+            "crows": 3
+          }
+        }
+      }
+    ],
+    "district": "saltmouth_tern_row",
+    "faction": "tidekin"
   }
 }

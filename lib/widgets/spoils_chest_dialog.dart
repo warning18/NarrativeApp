@@ -39,6 +39,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
   bool Function(String itemId)? canEquip,
   int currentHealth = 0,
   int maxHealth = 0,
+  int potionBonus = 0,
 }) async {
   final choices = await showDialog<SpoilsChoices>(
     context: context,
@@ -53,6 +54,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
       canEquip: canEquip,
       currentHealth: currentHealth,
       maxHealth: maxHealth,
+      potionBonus: potionBonus,
     ),
   );
   return choices ?? SpoilsChoices.none;
@@ -69,6 +71,16 @@ Color chestTierColor(ChestTier tier) => switch (tier) {
 String chestAssetPath(ChestTier tier, {required bool open}) =>
     'assets/icons/chests/${chestTierAssetName(tier)}_${open ? 'open' : 'closed'}.png';
 
+/// The health still missing once [drinks] potions are drunk, each healing
+/// [potionHealAmount] plus [potionBonus] (a perk's and a sign's).
+int healthStillMissing({
+  required int maxHealth,
+  required int currentHealth,
+  required int drinks,
+  int potionBonus = 0,
+}) =>
+    maxHealth - currentHealth - drinks * (potionHealAmount + potionBonus);
+
 class SpoilsChestDialog extends StatefulWidget {
   const SpoilsChestDialog({
     super.key,
@@ -81,6 +93,7 @@ class SpoilsChestDialog extends StatefulWidget {
     this.canEquip,
     this.currentHealth = 0,
     this.maxHealth = 0,
+    this.potionBonus = 0,
   });
 
   final LootBoxResult result;
@@ -104,6 +117,10 @@ class SpoilsChestDialog extends StatefulWidget {
   /// when it would heal something.
   final int currentHealth;
   final int maxHealth;
+
+  /// What a potion heals on top of its own (a perk's and a sign's), so the
+  /// health still missing counts each drink as the fight will.
+  final int potionBonus;
 
   @override
   State<SpoilsChestDialog> createState() => _SpoilsChestDialogState();
@@ -497,10 +514,12 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       (widget.canEquip?.call(_itemIdAt(slot)) ?? false);
 
   /// Health still missing once the potions already picked are drunk.
-  int get _missingHealth =>
-      widget.maxHealth -
-      widget.currentHealth -
-      _drinkSlots.length * potionHealAmount;
+  int get _missingHealth => healthStillMissing(
+        maxHealth: widget.maxHealth,
+        currentHealth: widget.currentHealth,
+        drinks: _drinkSlots.length,
+        potionBonus: widget.potionBonus,
+      );
 
   /// The item worn in this drop's slot -- or the drop already picked to be
   /// equipped in that slot, which is what it would really replace.

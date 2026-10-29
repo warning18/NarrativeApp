@@ -12,11 +12,18 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/widgets/dice_smithing_sheet.dart';
+import 'package:narrative_data_app/combat/face_smithing.dart' show honeStep;
+
+/// The first settle of a test waits for the game data to load; the later
+/// ones only let the screen catch up.
+final _warmed = Expando<bool>();
 
 Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 8; i++) {
+  final first = _warmed[tester] == null;
+  _warmed[tester] = true;
+  for (var i = 0; i < (first ? 8 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 100)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -51,7 +58,7 @@ void main() {
         .loadSession(PlayerSession.fromJson({
           'raceId': 'human',
           'professionId': 'rogue',
-          'ownedDiceIds': ['shadow_die'],
+          'ownedDiceIds': ['shadow_die', 'liora_die'],
           'equippedDiceId': 'shadow_die',
           'gold': 1000,
           'inventoryItemIds': ['material_iron_ore', 'material_iron_ore'],
@@ -85,19 +92,24 @@ void main() {
     expect(_inSheet('Electricity'), findsNothing);
     expect(_inSheet('Elec'), findsNothing);
 
-    // Its Heal 7 recast: an Attack 6 at most (the die's best strike), a
-    // Guard 5 (its best guard).
+    // A Heal 2 recast: an Attack 2 at most (the die's best strike), a
+    // Guard 1 (its best guard). The Shadow Die is a d4 with no Heal face
+    // since the dice sizes: the player's Liora Die (Attack 2, Guard 1,
+    // Heal 2) shows it.
+    await tester.runAsync(() =>
+        container.read(playerSessionProvider.notifier).equipDice('liora_die'));
+    await _settle(tester);
     await tester.tap(_inSheet('Soin'));
     await _settle(tester);
-    expect(_inSheet('Attaque 6'), findsOneWidget);
-    expect(_inSheet('Garde 5'), findsOneWidget);
+    expect(_inSheet('Attaque 2'), findsOneWidget);
+    expect(_inSheet('Garde 1'), findsOneWidget);
 
     // Sable's copy is honed; the player's isn't.
     await tester.tap(_inSheet('Sable'));
     await _settle(tester);
     await tester.tap(_inSheet('Attaque'));
     await _settle(tester);
-    await tester.tap(_inSheet('+2'));
+    await tester.tap(_inSheet('+$honeStep'));
     await _settle(tester);
     final session = container.read(playerSessionProvider);
     expect(session.gold, 920);

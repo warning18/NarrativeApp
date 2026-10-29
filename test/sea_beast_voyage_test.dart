@@ -3,6 +3,7 @@
 // still (a Wisdom check) lets it pass and leaves a sign of it for the hunt.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,6 +68,8 @@ void main() {
           fromPortId: 'port_ashen_landing',
           toPortId: 'port_smugglers_wharf',
           toPort: ports['port_smugglers_wharf'] as Map<String, dynamic>,
+          // A natural 1 or 20 settles a check: seeded, so no run differs.
+          debugRandom: Random(1),
           debugEvents:
               withBeastDay(const [_quiet, _quiet], 1, 'brinejaw', brinejaw),
         ),

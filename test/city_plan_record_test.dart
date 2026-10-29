@@ -193,10 +193,15 @@ void main() {
         // The suggested controllers are not holdings yet (v1.433): clan
         // power and territory count only the places they were tuned on, so a
         // new district holds none (an existing one keeps its own).
+        // Wave 18 step 2 (v1.618) gave the Reliquary's districts Narrative's
+        // holders on purpose, the curves measured again with them.
         const existing = {
           'reliquary_quarter',
           'candlehold_gates',
           'candlehold_lantern_hall',
+          'reliquary_chapels',
+          'reliquary_last_lantern',
+          'reliquary_frost_line',
         };
         if (!existing.contains(id)) {
           expect(here.controller, isEmpty, reason: id);
@@ -465,19 +470,18 @@ void main() {
     expect(ref.read(currentCityProvider), 'saltmouth');
     expect(ref.read(partyDistrictProvider), 'saltmouth_wharf');
     final gold = ref.read(playerSessionProvider).gold;
-    await tester
-        .runAsync(() => walkToDistrict(ref, 'saltmouth_lantern_alleys'));
+    // (The Lantern Alleys are locked until the Informant's Tip is done,
+    // wave 18: the Yard.)
+    await tester.runAsync(() => walkToDistrict(ref, 'saltmouth_yard'));
     await tester.pump();
-    expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
+    expect(ref.read(partyDistrictProvider), 'saltmouth_yard');
     expect(ref.read(foundDistrictsProvider),
-        containsAll(['saltmouth_wharf', 'saltmouth_lantern_alleys']));
+        containsAll(['saltmouth_wharf', 'saltmouth_yard']));
     expect(ref.read(playerSessionProvider).gold, gold);
-    expect(
-        ref.read(partyDistrictWaysProvider),
-        waysInDistrict(
-            geo, story, story.nodeFor('2015')!, 'saltmouth_lantern_alleys'));
+    expect(ref.read(partyDistrictWaysProvider),
+        waysInDistrict(geo, story, story.nodeFor('2015')!, 'saltmouth_yard'));
     // Another city's district: no walk.
     await tester.runAsync(() => walkToDistrict(ref, 'alster_lower_town'));
-    expect(ref.read(partyDistrictProvider), 'saltmouth_lantern_alleys');
+    expect(ref.read(partyDistrictProvider), 'saltmouth_yard');
   });
 }

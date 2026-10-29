@@ -276,6 +276,7 @@ extension _FightRewards on _FightScreenState {
               },
               currentHealth: player.currentHealth,
               maxHealth: player.maxHealth,
+              potionBonus: _potionBonus,
             );
       if (!mounted) return;
 
@@ -384,6 +385,15 @@ extension _FightRewards on _FightScreenState {
             outcome.withSpoils(victoryLine);
       }
       _update(() {
+        _spoils = FightSpoils(gold: goldGain, xp: xpGain, items: [
+          for (final id in loot)
+            SpoilItem(
+                id,
+                (items[id] as Map<String, dynamic>?)?['itemType']?.toString() ??
+                    '',
+                (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ??
+                    id),
+        ]);
         for (final line in defeatLines) {
           _log.add(_LogEntry(line, _LogKind.banter));
         }

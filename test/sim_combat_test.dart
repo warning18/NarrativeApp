@@ -62,8 +62,7 @@ void main() {
           (dice['apprentice_die'] as Map<String, dynamic>)['faces']);
       expect(c.knownSpells.map((s) => s.id),
           ['spell_arcane_bolt', 'spell_mana_ward']);
-      expect(c.maxMana,
-          maxManaFor(intelligence: c.intelligence, wisdom: c.wisdom));
+      expect(c.maxMana, maxManaFor(wisdom: c.wisdom));
       expect(c.mana, c.maxMana);
       expect(c.intelligence, greaterThanOrEqualTo(1));
       expect(c.diceSkillAssignments['4'], 'mage_arcane_missile');
@@ -246,8 +245,8 @@ void main() {
       expect(withSets, bare);
       c.equippedBySlot['Head'] = 'hollow_court_seal';
       expect(c.casterDamage(items, 'None', itemSets: sets),
-          c.casterDamage(items, 'None') + 8);
-      expect(c.armor(items, itemSets: sets), c.armor(items) + 5);
+          c.casterDamage(items, 'None') + 2);
+      expect(c.armor(items, itemSets: sets), c.armor(items) + 1);
       expect(c.gearEffects(items, sets).lifestealPercent, 10);
     });
 
@@ -288,9 +287,9 @@ void main() {
       // screen (between half and twice the enemy's own damage).
       Map<String, dynamic> enemy({required bool mirror}) => {
             ...enemies['slum_thug'] as Map<String, dynamic>,
-            'maxHealth': 150,
-            // A light blow after the chapter-1 floor (×1.87 since v1.425).
-            'damage': 5,
+            'maxHealth': 30,
+            // A light blow after the chapter-1 floor (the small scale).
+            'damage': 1,
             'skillMoves': [
               if (mirror)
                 {

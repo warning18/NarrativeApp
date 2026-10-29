@@ -266,7 +266,6 @@
       "scenes": [
         "5200_house_barkbleeders",
         "5200_house_barkbleeders_bled",
-        "5200_house_returned",
         "5200_clan_mire_1",
         "5200_clan_mire_1_edge",
         "5200_clan_mire_1_answered",
@@ -287,7 +286,8 @@
         "5200_riddles_failed",
         "5200_nell",
         "5200_nell_later",
-        "5200_sleep"
+        "5200_sleep",
+        "5200_house_returned"
       ]
     }
   ],
@@ -478,7 +478,7 @@
         "6010_lysa",
         "6010_lysa_later",
         "6010_brannoc_later",
-        "6010_record"
+        "6010_lysa_dead"
       ]
     },
     {
@@ -518,12 +518,12 @@
         "6010_clan_compact_3_seen",
         "6010_clan_compact_3_hammer",
         "6010_clan_dominion_2",
-        "6010_lysa_dead",
         "6010_masked",
         "6010_masked_after",
         "6010_confession",
         "6010_confession_later",
-        "6010_penitent"
+        "6010_penitent",
+        "6010_record"
       ]
     },
     {
@@ -576,7 +576,14 @@
       "scenes": [
         "7520_vane",
         "7520_morrow",
-        "7520_tallis"
+        "7520_tallis",
+        "7590_dominion",
+        "7590_vigil",
+        "7590_compact",
+        "7590_mire",
+        "7590_crows",
+        "7590_penitents",
+        "7590_open_hand"
       ]
     },
     {
@@ -587,15 +594,7 @@
       "blurb_fr": "La falaise sous la Première Lanterne, où les Maisons se rassemblent pour voir qui est couronné, et où chaque clan couronne à sa façon.",
       "controller": "dominion",
       "mood": "ceremonial",
-      "scenes": [
-        "7590_dominion",
-        "7590_vigil",
-        "7590_compact",
-        "7590_mire",
-        "7590_crows",
-        "7590_penitents",
-        "7590_open_hand"
-      ]
+      "scenes": []
     }
   ]
 }

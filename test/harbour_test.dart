@@ -118,7 +118,7 @@ void main() {
     final again = PlayerSession.fromJson(
         jsonDecode(jsonEncode(old.toJson())) as Map<String, dynamic>);
     expect(again.builtHouseIds, old.builtHouseIds);
-    expect(again.toJson()['saveVersion'], harbourSaveVersion);
+    expect(again.toJson()['saveVersion'], playerSessionSaveVersion);
     // Before the camp, or on the new version, it is the player's to build.
     expect(
         PlayerSession.fromJson({'saveVersion': materialsSaveVersion})

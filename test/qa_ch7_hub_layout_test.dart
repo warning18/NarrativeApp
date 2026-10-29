@@ -127,13 +127,21 @@ void main() {
         // The ways on sit under the scene: scroll down to them.
         for (var i = 0; i < 12; i++) {
           await tester.dragFrom(
-              Offset(size.width / 2, size.height * 0.7), const Offset(0, -300));
+              Offset(size.width / 2, size.height * 0.3), const Offset(0, -300));
           await tester.pump(const Duration(milliseconds: 200));
         }
         expect(
             find.textContaining(french ? 'Roseaux' : 'Reed Gate',
                 skipOffstage: false),
             findsWidgets);
+        // The visitors' ways on that are acted out at the camp are choices
+        // in the Journey's scene view (a button under its map opens it).
+        // They used to be found here only because the Journey tab, offstage,
+        // held them as cards under its map.
+        await tester.tap(find.text(french ? 'Parcours' : 'Journey').last);
+        await _settle(tester);
+        await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+        await _settle(tester);
         expect(
             find.textContaining(french ? 'héraut' : 'herald',
                 skipOffstage: false),

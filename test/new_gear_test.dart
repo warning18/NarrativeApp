@@ -96,6 +96,8 @@ void main() {
     }
 
     test('armor rises with the loot chapter along each new line', () {
+      // On the fight's small scale (docs/proposals/stat-scale.md) armor
+      // moves in whole points: a line never falls, and rises along it.
       for (final prefix in ['boots_', 'greaves_']) {
         final line = [
           for (final id in newArmorIds)
@@ -103,10 +105,13 @@ void main() {
         ]..sort((a, b) =>
             (a['lootChapter'] as int).compareTo(b['lootChapter'] as int));
         for (var i = 1; i < line.length; i++) {
-          expect(
-              line[i]['armor'] as int, greaterThan(line[i - 1]['armor'] as int),
+          expect(line[i]['armor'] as int,
+              greaterThanOrEqualTo(line[i - 1]['armor'] as int),
               reason: line[i]['id'].toString());
         }
+        expect(
+            line.last['armor'] as int, greaterThan(line.first['armor'] as int),
+            reason: prefix);
       }
     });
   });

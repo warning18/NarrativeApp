@@ -8,6 +8,1659 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.618.0+654]
+
+- **Core: the big towns, influence that pays off, clan roads, the
+  epilogue's holdings** (wave 18, step 2, items 2 to 5).
+  - **The Ashen Quarter and the Black Reliquary** take Narrative's holders.
+    - The Quarter Gate goes to the Grey Vigil, the Ash-Market to the Cinder
+      Compact and the Wall of Names to the Ashen Penitents. The Compact
+      leads the Quarter.
+    - In the Reliquary, the Dominion, the Compact, the Penitents and the
+      Vigil hold one district each.
+    - The Dead Heart is held by no one and can never be taken (`unheld`).
+  - **The Spire Stair** opens once the Ashen Oath is taken. Narrative's
+    first choice, the Reckoning Wall, can be skipped by a won argument,
+    which would shut the Stair and the main quest inside it for good.
+  - **The Penitents' seat is guarded**, as Candlehold is. With land for the
+    first time, they would otherwise fall to the Dominion by chapter 6 in
+    every run.
+  - **Influence counts in every town**, not only Saltmouth. A clan holding
+    3 of the Quarter's or the Reliquary's districts takes the town.
+  - **In a war for a rival's seat** (chapters 6 and 7), each district held
+    by the party's main clan or an ally takes 1 off the lead it needs, up
+    to 5.
+  - **The Host also musters the clans holding the most districts**, unless
+    Hostile or worse.
+  - **Clan roads:** a land route whose two ends one clan holds is its road.
+    - Its clan comes one day in two (one in three on other roads).
+    - It is friendly from Friend and hard from Unfriendly down.
+    - A route that never meets its ruler still never does.
+  - **The epilogue:** `epilogueHoldings` gives, for each big town, who holds
+    it and its districts, and how: war, influence, its seat, or no one.
+    Narrative's lines come with it, in English and French. UX draws the
+    map.
+  - **The clan log** keeps the place and the cause of each change of
+    hands.
+  - **Tuning:** the claimant Tallis's max health goes from 88 to 96.
+    Narrative's holders moved his win rate to 54.1% of 292 fights, against
+    a band of 40 ± 12. Now 47.9% (47.0% with #609). With #609 the White
+    Admiral is won 53.0% (band 45 ± 12).
+  - Tests: `wave18_step2_test` (new). The clan power, crisis, town ruler
+    and district standing tests follow the new holders. Where a test is
+    about other clans, the Dominion's new war on the Penitents is kept out.
+
+## [1.617.0+653]
+
+- **Core: rival clans attack districts** (wave 18, step 2, item 1).
+  - At each chapter's turn, a main clan with 10 power or more may attack a
+    district held by a clan it is at odds with: 35% a chapter for a blood
+    feud, 20% for a war, 10% if hostile. Tense or warmer, never. At most one
+    attack a town, none while the town is under siege.
+  - A siege lasts two days and is told as news ("{clan} marches on
+    {district}. {holder} has two days.", Narrative's lines).
+  - In the town (a road at rest into or out of it), the party meets it:
+    hold the district for its holder (a fight with the attacker's hunter),
+    join the attackers (the district is theirs), or stand aside.
+  - Otherwise, when it runs out, the siege is settled on the two clans'
+    power and influence (15% to 85%): taken, with war's spoils and losses,
+    or held, each told as news.
+  - Flags for the story: `attack_<district>`, `attack_<district>_by_<clan>`
+    while it lasts, then `attack_<district>_defended`, `_joined` or
+    `_ignored`.
+  - The simulator plays them: it defends its own clan's and allies'
+    districts, and the clan table counts the sieges.
+  - Tests: `district_attacks_test`. `boss_balance_test`: each claimant must
+    now be met 30 times (was 40), since attacks move which claim a run
+    backs; the three together still need 300.
+
+## [1.616.0+652]
+
+- **Core: the ways into a locked district are greyed** (wave 18, step 2).
+  - In Saltmouth, Tern Row and the Lantern Alleys stay shut until their
+    quest is done. Until v1.615, only the free walk between districts was
+    refused.
+  - Now every story way into a shut district shows greyed, in the story view
+    and on the Journey, and reads as the district's own line, e.g. "The
+    footbridge is drawn up…".
+  - The one way to the scene where the district's own quest is offered
+    stays open, so the lock can always be lifted. Tern's Toll is offered
+    inside Tern Row.
+  - Card Row stays open, as Narrative asked.
+  - Tests: `district_influence_test` (the exception, each shut way's
+    district and line, and the provider read by both screens).
+    `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
+    since that test is about the walk.
+
+
+
+## [1.615.0+651]
+
+- **Core: the element dice** (the user's option B;
+  docs/proposals/difficulty-pass.md §8 and §10).
+  - **Elemental dice carry their element on every hit.** Each of the 16
+    elemental dice has its element on all its Attack faces, and on its
+    Skill faces whose skill has none.
+  - **A weakness is ×3** (was ×2). The fight card shows ×3.
+  - **What it changes:** the die that matches a foe's weakness now clearly
+    beats the starter die against it, 34% against 23% in the six set fights
+    of chapters 3–6. Before, it lost: 16% against 23%.
+  - **Bosses re-sized** for the stronger weakness hits:
+    - the bone warden has 75 health (was 63);
+    - the void archon 92 (was 80);
+    - the Tear-Herald 75 (was 64);
+    - the void sovereign 95 (was 80).
+  - Tests: new `adapt_gap_test` guard. `enemy_intent_test` (×3) and the
+    frozen naive run are re-pinned.
+
+## [1.614.0+650]
+
+- **Core: the specialisations pass** (docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with a clan's specialisation, the mage, rogue and
+    ranger won about 4 encounters in 5, the cleric and warrior about 2 in 3.
+  - **Now:** every class is within 7 points of the others (71–78%).
+  - **Stronger:**
+    - the cleric's Long Vigil mends 15% a round (was 5%; the
+      Candlebearers' 18%, was 7%);
+    - the warrior's Briar Guard sends back 80% of a stopped blow (was 25%;
+      the Anvil-Deaf's 100%, was 50%).
+  - **Weaker:**
+    - the mage's Burden-Bearer: a spell from a full Well hits ×1.4 (was
+      ×2.0; the Scorched Choir's ×1.6, was ×2.5; rank II +0.2, was +0.5);
+    - the rogue's Fever Blade: the Rot is 20% of a critical hit (was 40%);
+    - the ranger's Fen Guide: the first face's poison is 25% of the strike
+      (was 50%).
+  - **Bosses re-sized** for the stronger cleric and warrior: Claimant Vane
+    has 100 health (was 79), Claimant Tallis 88 (was 77), the void archon
+    80 (was 76), the Tear-Herald 64 (was 61).
+  - Tests: `boss_balance_test`'s professions spread is back to 8 points.
+    The specialisation numbers, the claimants' health and the frozen naive
+    run are re-pinned.
+
+## [1.613.0+649]
+
+- **Core: the bosses in the full world** (QA's finding, #591;
+  docs/proposals/bosses-full-world.md).
+  - **What was wrong:** with the clans' specialisations in play, as in the
+    game, the bosses were won 15–20 points more often than their targets
+    (a mean of 64% against about 50%).
+  - **The targets stay; the bosses get harder:**
+    - the boss health floor goes from 1.25 to 1.45;
+    - the void sovereign has 80 health (was 66), the white admiral 68 (was
+      62) and the Tear-Herald 61 (was 57);
+    - the nemeses' champions have 4 less health each;
+    - Aurel Vane drops from 22 to 19 health, so chapter 1 keeps its 75%.
+  - **Now:** every boss is inside its band, and the mean is 53%.
+  - **Found on the way:** with their specialisations, the mage, rogue and
+    ranger win 78–80% of their encounters, the cleric and warrior 67%. A
+    specialisations pass follows.
+  - Tests: `boss_balance_test` measures the full world, and its professions'
+    spread band allows three standard errors. `difficulty_curve_test` and
+    the frozen naive run are re-pinned.
+
+
+## [1.612.0+648]
+
+- **UX: the fight at fixed sizes.** (The user's "the size of enemy or player
+  are fixed", approved as drawn in `docs/proposals/fight-fixed-sizes.md`.)
+  - **One box for each figure**, whatever the party and the pack are: hero 96,
+    ally 64, foe 96 and a **bigger box for a boss only** (144); under 360 px
+    the set is 72, 48, 72 and 108. The art is scaled to its box and every
+    figure stands on one ground line, so the hero is never huge, small or
+    missing from one fight to the next (with three allies it used to vanish).
+  - **A stage of fixed height under the cards** (the boss fight reserves the
+    taller one), so the dice and the controls never move; the cards above are
+    what gives, and they scroll as before.
+  - **Allies stand in a back row** behind the hero (a disc with their initial:
+    they have no sprite yet), the foes fill front-right, front-left, then the
+    back row, a foe with no art stands as its portrait in its box, and each
+    figure has its health bar over its box.
+  - **Slim ally cards:** an ally's card keeps its name, die and health bar, and
+    shows the attack/armour numbers only for the hero; block, a parry, a status
+    or a knockout still show.
+  - **Fixed (#598):** the guide dog's walk frames west and south
+    (`Walking/west`, `Walking/south`) were not listed in `pubspec.yaml`, so they
+    were not in the build: her walk had no frames in those two directions. Both
+    folders are listed now. (The Bark frames east, north and west and the Fight
+    rotations are listed nowhere and used by no code; left out of the build.)
+  - **Fixed:** a fighter's picture could stay a grey "not yet" mark when its
+    image arrived while it stood still (reduced motion); it now repaints when
+    the image is in.
+  - Not done (as the proposal said it would follow): damage numbers and effects
+    still rise from the cards, not from the boxes; pack foes' cards are not
+    slimmer.
+- Tests: `fight_stage_test.dart` (the boxes), `ux_fight_stage_boss_test.dart`,
+  `ux_fight_stage_narrow_test.dart`; `ux_fight_enemy_test.dart` and
+  `ux_fight_enemy_none_test.dart` follow the boxes. Pictures:
+  `docs/ux-shots/fight-built/`.
+## [1.611.0+647]
+
+- **UX: fixes from the chapter 1 reviews.**
+  - **The race and profession screen** shows the starting skills' names in the
+    player's language (the French names were there; the screen built the name
+    from the skill's id, so French players read "Resolve" and "Shield Bash").
+    The id-based helper `grantedSkillName` is gone.
+  - **The spoils chest's "health still missing"** counts each potion with the
+    perk's and the signs' bonus, as the fight will heal it, so a potion is no
+    longer offered that would heal nothing (`healthStillMissing`).
+  - **The Bone-Caster's Hut reroll is on the Forge sheet.** A Flawed piece, the
+    hut standing and a Reroll charge left: the forge asks whether to spend the
+    charge and rolls the d20 again (Core's `canRerollForge` and `rerollForge`,
+    built in v1.592 and until now reachable from no screen); the fate coin can
+    still be offered after it.
+  - **Quest reward cards show their chapter art.** `assets/visuals/chapters/`
+    was not listed in `pubspec.yaml`, so it was not in the build and the
+    card's art strip was always a flat colour.
+  - **The inventory's tabs at 320 px** sit closer, with smaller names, so the
+    Dice tab is on screen (it was half off the edge in French).
+  - **Cleanup:** `InkReveal` (no user) is removed.
+- Tests: `spoils_chest_test.dart` (health still missing),
+  `character_start_test.dart` (every starting skill has a French name),
+  `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
+  Picture: `docs/ux-shots/fixes-611/`.
+## [1.610.0+646]
+
+- **Narrative: the chapter 1 fixes from the review** (notes #581 and #584).
+  - **Vica is a surprise.** The tutorial's guide is no longer called Vica: its
+    speaker label reads "Your companion" / « Votre compagnon » until the
+    player names it in Settings, and its first line no longer says a name
+    ("Woof! I'll be your guide."). The name comes out of the heat at
+    `1150_vica` and nowhere before it.
+  - `1150_vica` has Lysa's line (she walks behind the hero through the dunes)
+    and the desert palette instead of the docks one.
+  - A failed boarding (`896_failed`, `897_failed`, `898_failed`) now carries the
+    Lark's lift on the same page, so there is one page, not two Continues in
+    a row; the first two buttons read "Pay, and hold on" and "Pay the bribe
+    and hold on". The success path is unchanged.
+  - The first prologue button ends in "…", not three dots.
+  - Codex: the temperate "Warhound" entry (dogs running loose in the alleys)
+    is now a lantern moth, which fits the signaller's lantern.
+  - **Vess** (the Void-marked hero): the +5 Vigil and the Stitchers' mark are
+    paid once, at the hearing in Saltmouth, not also at the Wells (`1210`
+    keeps only the met-her flag). An old save that already accepted her
+    quest no longer sees her row at Saltmouth again.
+  - Touches another session's area: `biomes.json` and the tutorial strings
+    (wording only); the tutorial line has no `{name}` any more.
+  - Tests: `chapter_one_test` (the failed boardings, the Vica and Vess
+    checks); the naive run's choice hash is re-pinned in `sim_competent_test`
+    and `sim_companions_test` (the tuple is unchanged).
+## [1.609.0+645]
+
+- **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
+  is unchanged.
+  - **The fight parses its tables once.** Item sets, clans, sub-clans,
+    titles and spells used to be parsed again on every roll and log line;
+    now they are parsed on the first build with every table in.
+  - **The Journey's list of places reads only what the locks read**
+    (flags, quests done), not the whole session. A purse, a potion or the
+    clock changing no longer recomputes it.
+  - **The camp's companion leads read only what they need**: the
+    companions, flags, alignment, charisma and politics.
+
+## [1.608.0+644]
+
+- **Core: chapter 1 fixes from the review** (docs/qa/chapter1-core.md).
+  - **Vica joins only a hero who walked past her scene.** Loading an earlier
+    save after a later run no longer hands her over at once: her join now
+    reads the save's own path, not the visited set it inherits.
+  - **The rat matriarch is a chapter 1 foe** (`minChapter` 2 → 1). She is
+    fought in chapter 1.
+  - **The two boarding prices are paid for real** (#583). At 896_failed (40
+    gold) and 897_failed (25 gold), the only way on after a failed check, a
+    purse too short pays what it holds. The rest is taken as a wound, a point
+    of health per gold, never the last point. A new choice field,
+    `shortfallWounds`, marks such forced prices.
+  - **The heal preview matches the heal.** A round's preview now applies the
+    Briar-Guard rule (no heal from Heal faces) and heal fatigue, like the
+    round itself. Both now use the same helper.
+
+## [1.607.0+643]
+
+- **UX: the Journey map is clear, and its list names places.** (The user's
+  correction.)
+  - **No text over the map.** The dark box with the scene's first lines
+    laid over the Journey map (a hub or a street) is gone; the words are
+    behind **Read**, as before.
+  - **The list under the map names destinations**, one row for each pin of the
+    district (its building, or the place a way out leads to), with no count, no
+    chevron and nothing that opens in place; the heading reads "Places here ·
+    tap one". The ways show after a tap on a place, as after a tap on its pin: a
+    pin with one way opens that way, a pin with several opens a sheet that names
+    them (a tap on the pin on the map does the same).
+- Tests: `journey_no_pop_in_test.dart` and `journey_places_list_test.dart` (the
+  band's and the pin list's old tests are gone); before and after pictures at
+  320 and 412 px in `docs/ux-shots/journey-fix/`.
+
+## [1.606.0+642]
+
+- **UX: the Party tab as a formation, and a page for each companion** (the
+  Companion review's version B, #570).
+  - The seats are large portraits with health and the approval tier, an open
+    seat that says what it is for, and the seat a house would add, locked and
+    named by the house; the bench is a small grid.
+  - One plain line, "Other companions are still out there.", replaces the
+    list of companions to find: no names, no quest hints, no count.
+  - A tap on any companion opens their page: health, the seat button, how they
+    feel about you (a meter with its thresholds named, read from the approval
+    rules), what they like and dislike, a drink to share once a chapter, and
+    their die, skills and gear.
+  - **Vica** shows her own dog sprite in the formation and on her page, in the
+    look her hero's alignment gives her, as in the tutorial; she stays seated
+    while she is the only one, and her page says so.
+  - The seat, join and bench rules are Core's, unchanged (moved to
+    `lib/widgets/party_actions.dart`).
+- Tests: `companion_party_test.dart` (seats, bench, locked seat, the line,
+  Vica alone, a page, 320 px in French).
+
+## [1.605.0+641]
+
+- **UX: the die in hand on the Character portrait.** A round badge on the
+  portrait square's lower right corner shows the die you hold, in its own look,
+  with a pill for the number of other dice in your bag (+2); one tap opens the
+  dice screen on that die. It stays hidden while the dice are not yet open and
+  for a character with no die. (The user's pick of two placements drawn in
+  `docs/proposals/character-dice-button.md`.)
+- Tests: `character_die_badge_test.dart`.
+
+## [1.604.0+640]
+
+- **UX: the dog no longer trots across the story page.** The little companion
+  that walked across the page each time the story moved on is gone from the
+  story steps; the guide dog of the tutorials is unchanged (its name setting
+  stays).
+  - The story page keeps the room the strip took (more of the text and the
+    choices on a small phone).
+  - Removed with it: the "Walking companion" switch in Settings, the strip's
+    hide/show arrow, and the Story tour's "that's me" line (its step).
+- **Fix:** the race and profession picker's "Compare" button and the compare
+  sheet's people/calling chips drew their words in the pale default colour,
+  white on cream; they are now dark.
+- Tests: `qa_ch7_hub_layout_test.dart` scrolls from higher on the page (the
+  layout under it moved); the walking-companion setting test is gone.
+
+## [1.603.0+639]
+
+- **UX: choosing your people and your calling.** The new-game picker is now
+  two steps, People then Calling, with one card each: its mark, name, the way
+  it plays (the playstyle line) and its four biggest numbers.
+  - A tap opens the card: the lore (first sentence, "more" for the rest), the
+    clans that will court you (tap one for its banner, motto and what it
+    stands for), what it unlocks, and its starting skill and spells.
+  - **Compare** sets two side by side and picks one; the dice still
+    randomises both.
+  - Once both are chosen a summary card shows the pair, the clans that come
+    first and what you will play, above Start.
+  - The radar that sat above the rails is gone; the intro flow is untouched.
+- Tests: `race_profession_choice_test.dart` replaces `preset_rail_test.dart`
+  (five cards at 360 px in French, names whole, open card, compare, summary).
+
+## [1.602.0+638]
+
+Vica finds every hero at the end of the desert walk after the crash: lost a few hundred paces from the Sleeper's Face, nearly dead, the hero is led to the lights of the White Wells by a small black-and-white dog, and is her companion from then on (the three small ways to treat her set how she starts). Chapter 1 has no other dog: the grey warhound of Weaver's Alley is a signal-lantern now, raised in the Black Hold and on the quay. Vess joins in Saltmouth, in chapter 2, like Kelda, Sable and Liora. The unnamed tutorial dog is Vica. Her remarks and her lines at fifteen scenes are in both languages.
+
+## [1.601.0+637]
+
+- **Core: Vica, the companion every hero gets** (docs/proposals/
+  guide-dog-companion.md §6–§7). Vica is the tutorial's guide dog. She joins
+  every hero at her scene (Narrative's `1150_vica`, the next release), or at
+  the White Wells for a save or a path that skips it.
+  - She never leaves: low approval leaves her wary, not gone, and no story
+    choice takes her.
+  - She sits down in the party whenever it would be empty. The camp can
+    bench her only by seating someone else.
+  - Her die, the hound die (a d6), has Bite, Snap, Guard, Stand Fast,
+    Instinct and Lick Wounds.
+  - A new duo with Liora: The Hunt.
+- **Fights sized for hero + Vica** (difficulty-pass.md §9). The targets stay
+  the same, and the foes hit 20% harder from chapter 2. Several numbers were
+  re-sized to keep each boss on its curve:
+  - the bosses' own floor and a few bosses' health;
+  - the champions;
+  - the mage's and cleric's starting numbers.
+  Chapter 1 plays as before.
+- **The simulator** gives Vica to every player profile, the "naive" one
+  included.
+
+## [1.598.0+634]
+
+Every people and every class has a one-line playstyle, in English and French, for the race and profession picker: how it really plays, from its stats and its first skill (for example the dwarf: extra life, armor and a stone-skin heal; the mage: bolts and wards from mana, weak up close). The database editor knows the two new fields.
+
+## [1.597.0+633]
+
+- **Core: the difficulty pass** (docs/proposals/difficulty-pass.md, without the
+  companion change the user turned down).
+- **Smaller numbers on both sides:**
+  - a level brings +3 health instead of +4, and a point of Constitution +3
+    instead of +5;
+  - common foes have 10% less health from chapter 2 on;
+  - bosses' health floor is 1.21 → 1.13.
+- **The die that matches the foe is worth swapping in:** a hit on a weakness
+  does ×2 instead of ×1.5, and the fight card says so.
+- **A potion heals 8 instead of 6.**
+- **Chapter 1 plays as before.** Aurel Vane has 29 health instead of 22, to
+  keep its 75%.
+- **Re-sized so the boss curve and the professions' spread hold:**
+  - Void Stalker 34 → 38 health;
+  - White Admiral 72 → 62;
+  - the clans' champions 43–45 → 36–38 health, to keep their 50%;
+  - warrior +9 starting health, rogue +6, ranger +3;
+  - cleric +4 damage instead of +5.
+- **A new simulator profile, "stubborn":** companions, but the starter die and
+  the starting gear for the whole run. It shows what the gear and the dice
+  are worth.
+- **Measured** (10 runs per profile, chapters 3–8, won at the first try):
+  - naive player 0.40 → 0.42;
+  - stubborn 0.80 → 0.81;
+  - competent 0.96 → 0.99.
+- **The 45–55% target for the stubborn player is not reached:** two or three
+  companions still win the fight whatever die the hero rolls. The proposal's
+  §7 has two options for the user.
+
+## [1.595.0+631]
+
+- **UX: the Dice tab in the inventory.** When you own more than one die, the
+  inventory has a Dice tab: the die in your hand lit gold (its own look, name,
+  "d6 · 6 faces · Bone"), the other dice below it with one Equip button each,
+  and a die made for another class dimmed with a padlock and who it is for.
+  Equip swaps the die in hand at once. The Dice tile in the slots goes to the
+  tab, and a tap on a die opens the dice screen (the ring of face slots) on
+  that die. `DiceLoadoutScreen` takes an optional `initialDieId` for it.
+
+## [1.594.0+630]
+
+- **UX: the inventory with tabs.** The bag has a tab for each kind it holds
+  (All, Gear, Charms, Potions, Materials, Books, Quest), each with its count;
+  the last tab and sort are remembered, and a quiet sort button (Newest,
+  Rarity, Name) sits under them. The six slots are small tiles with their own
+  icons, the die by its name (no more "starter_die"), and an empty slot lit
+  when something in the bag fits it. Each row says one quiet line ("Rare ·
+  goes on the Head"), shows up to three stat chips with the change against the
+  piece worn, and has one labelled button (Equip, Take off, Read); a gold dot
+  marks what came since the last visit. A tap opens the piece against the worn
+  one as before; a long press on a gear row starts the manual compare. The
+  title reads "Inventory". The new pieces are in
+  `lib/widgets/inventory_parts.dart`.
+
+## [1.593.0+629]
+
+- **UX: the Forge sheet with tabs and the forging moment.** The Forge opens on
+  tabs for the slots it has recipes for (Head, Body, Legs, Feet), a gold dot on
+  a tab where something can be forged now, one line for the roll with its odds
+  behind a tap, the ore hint behind (i), the smith's line, and a compact card
+  for each piece whose button says what it lacks ("Short of 1 iron ore"). The
+  forging is four beats: the strike, the d20 landing, the tier, the piece
+  (tap to skip to the last; reduced motion shows the last at once), with
+  "Forge another" when it can be paid again. `lib/widgets/forge_sheet.dart`
+  and `forge_moment.dart` replace the sheet in `shop_trade_sheets.dart`.
+
+## [1.592.0+628]
+
+What the forge sheet needs, ready for UX's forge tabs. Nothing on screen changes yet.
+
+- **The sheet's numbers:** a piece about to be forged now comes with everything the sheet shows:
+  - the bonuses on the roll, each with its label, value and source (a dwarf hero +2; standing with the clan holding the forge's place, +1 or −1);
+  - their total;
+  - the chance of each result (Flawed, Sound, Fine, Masterwork) on the forge's d20;
+  - the piece's main number and resale price as listed and after each result;
+  - the result a given d20 face gives.
+- **The camp's Bone-Caster's Hut on the forge:** while the hut stands and has a Reroll charge, it can roll a forged piece once more. That spends one charge; the piece takes the new result, with the same bonuses.
+
+## [1.591.0+627]
+
+Fourteen more buildings of Saltmouth have names, so the district view shows where each scene happens: at the Landward Gate (the salt road's end, the courier's place in line, the grain wagon, the shadow by the gate, the salt wagon), on Tern Row (Renn's toll post, the suspended toll), on the Wharf (the purse on the boards, the rotten gutter, the storm drain ladder, the thugs' lantern, Vane's tally) and at the Yard (the Rusty Eel's slip, the Rusty Eel at her berth). English and French.
+
+## [1.590.0+626]
+
+Lysa's turn in the chair chapel of the Reliquary Quarter (her death, her rescue, the oath, the mercy, the sacrifice, and Clement's refusal) opens as a full page, as the story's turn for her, not as a room.
+
+## [1.589.0+625]
+
+The street view now follows Narrative's scene tags.
+
+- **Tagged scenes:** a scene tagged as played in the street, with a building of the town's plan, plays at that building's door. The party stands at its door on the plan, the district view shows that building's street, and the scene opens in the street view.
+- **Concerned now:** the toll on Alster's Stone Bridge (260), the drill on the High Quay (890_trainer) and the shipyard gate on the Smugglers' Wharf (2010).
+- **Untagged scenes:** a scene without a tag keeps the doorstep lists as before, such as the family house's street (300).
+
+## [1.588.0+624]
+
+A hub opens as its map and a scene at a doorstep as its street, with the scene's words as a band over them.
+
+### Added
+- **The scene band** (`scene_band.dart`): three lines of the scene's prose over the top of a hub's map, four over the sky of a street (a scene played at a building's doorstep), with the place's name above them. A tap, or a drag down, opens the whole scene in the arrival sheet; Continue folds it back to the band. It shows where Core's view rule (`viewOf`) says the scene opens as its map or its street.
+- **A street scene is the street, not the sheet:** arriving at a doorstep no longer opens the sheet over the street; its band does, on a tap, with the choices acted out there.
+- Tests: `scene_band_test.dart`. Pictures in `docs/ux-shots/scene-band-*.png`.
+- Not yet: a tagged scene's street from `scene.building` (Core's part: the street still comes from the scene's doorstep).
+
+## [1.587.0+623]
+
+Three approach scenes of the first chapters open as the street before their building, as the user asked: the toll on the Stone Bridge, the drill on the quay approach and the Wharf's approach. The cells of the Black Hold, the chapter 3 ceremony and the fall in the cathedral open as full pages. The rest of the first three chapters follow the default rule.
+
+## [1.586.0+622]
+
+The district view as places, map first: the map has the room, its pins carry no words, a tap shows the place, and the list of places rises when the map is fully zoomed.
+
+### Added
+- **The list is places** (`district_places.dart`): in a scene with two places or more, the list under the district's map has a row per place (the party's own place first, "Here"; the story's main place with its flag; a way out under its own title; a shut place greyed with its reason), with how many things there are to do there. A scene with one place keeps its ways as the list.
+- **Go to a place:** a tap on a row (or Go on a pin's card) walks the party's mark to the place (a tap skips the walk) and shows that place's ways, with a way back to the list. `Here` and a way out do not walk; a way out with one way to take opens it at once.
+- **Map first:** no list until the map is fully zoomed. The pins carry no words and the story's building names are off the plan; a tap on a pin shows a small card (the place's name, how many things, Go; a second tap folds it). A "Places · N" handle at the foot of the map zooms it to its full zoom (the list rises, the handle reads "Map" and folds it back); a pinch to full zoom does the same.
+- **The arrival:** on arriving in a district the map eases in 25% and centres on the party's mark in 0.6 s (a jump with reduced motion; not on the Town view a move to another district frames).
+- Fixed: a chart built after a camera shot replayed it (`CityChartCamera.pending`).
+- Tests: `district_places_test.dart`, `district_places_view_test.dart`; `test/district_places_steps.dart` holds the steps. Pictures in `docs/ux-shots/places-build-*.png`.
+
+## [1.585.0+621]
+
+Tern's Toll can be finished by talking Renn down, not only by fighting him. The quest now asks the player to deal with the overseer, and either way ends it.
+
+## [1.583.0+619]
+
+The first-launch intro: the Great Shroud burning, six embers, the ashen city, down to the Blind Beggar, the old bone die falling and stopping on a six, the title over it, a slow fade into the game.
+
+### Added
+- **The intro** (`intro_screen.dart`, `intro_art.dart`): 15 seconds over eight beats. The Shroud burns over Alster, leaves six embers (one falls toward the city), the calm streets wait with the Inquisition's white ships far off (no shell yet), the camera pushes down to the Blind Beggar, the bone die falls, bounces and rolls to the middle, slows and stops on a six (the first shell lands only then), the title rises over it and the room fades into the game. Narrative's four lines (set A) write themselves over it, in order, English and French.
+- **Plays once**, at the first New Game (the `intro_seen` flag); a tap goes to the last beat, a second tap ends it. With reduced motion it shows the title over the die, then the last line.
+- **Replay the intro** in Settings, under the tutorial's replay.
+- Tests: `test/intro_screen_test.dart` (the lines in order, tap to skip, reduced motion, the flag, the Settings row); `test/flutter_test_config.dart` keeps the intro off elsewhere. Pictures of every beat in `docs/ux-shots/intro-build/`; the earlier storyboards A to C are kept under `docs/proposals/` as history.
+
+## [1.582.0+618]
+
+Seven buildings of the Smugglers' Wharf have names, so the district view and the ways show where things happen: Vane's barrel, Vane's guard corner, the wet boards, the loading crane, the old customs house (Liora's skiff), the wharf steps, and the shipyard gate. English and French.
+
+## [1.581.0+617]
+
+The Smugglers' Wharf lists fewer things at once. The harbor master's jobs come one at a time, in the order of their quests; the two stairs off the wharf (the Lantern Alleys, Tern Row) are one row that goes when both are seen; the three ways past Vane are one row. Every scene, quest and reward is still there; the first view of the Wharf shows five entries instead of eleven.
+
+## [1.580.0+616]
+
+The groundwork for the district view as places, its camera, and the view each scene opens in. Nothing on screen changes yet: UX builds the places list, the labels-off map and the arrival ease on top of this.
+
+- **Places:** each way of a scene in a town now has a place where it is taken.
+  - It is the party's own place ("here") for things done on the spot: fights, checks, payments and decisions.
+  - It is a building of the town's plan for a way to a scene there.
+  - It is a way out for a road, gate or harbour.
+  - A way whose building was only a stand-in now counts as "here" rather than a random building.
+  - Story data can set a choice's place directly with the new `place` field.
+- **The district list:** it groups the ways by place, with a count. "Here" comes first, then the places holding the main story, then the rest, then the ways out; a place that is shut comes last.
+- **The party's place:** the game now remembers which place the party has walked to within a district. It is not saved: a game picked back up opens on the list.
+- **Arrivals:** a new arrival is signalled each time the party arrives in a district.
+- **The camera:** the Journey can now set the district map's zoom and centre.
+  - The arrival shot is the district 25% closer, centred on the party, over 0.6 s.
+  - The map reports when it reaches its full zoom.
+- **The view each scene opens in:** page, sheet over the map, street, room, the place's map, or ending.
+  - The rule follows the approved presentation contract: town and camp scenes on their map, chapter beats on the page, scenes inside buildings in the room, scenes at a door in the street (unless they continue a main scene there), other main scenes on the page and side scenes in a sheet.
+  - A two-page scene's first page opens in the view of its second.
+  - Narrative's `scene` block (`view`, `weight`) wins over the rule and is kept when the scene is saved.
+
+## [1.577.0+613]
+
+Three scenes of chapter 1 are told in two pages: the Blind Beggar's evening, then the wall coming in; the walk to the family house, then the cannonball; the Lark lifting off, then the guns. A Continue on the calm page; the choices come with the shock. English and French.
+
+## [1.576.0+612]
+
+A clan at a glance: its standing with you as a disc, its power as the cloth.
+
+### Added
+- **The standing disc** (`standing_sign.dart`): a small disc at the top-right corner of a clan's banner, one design for each of the eleven standing steps, each in the game's own colour for it (the clan card's), so the shape carries the level too: a skull (Hunted), crossed blades (Hostile), one blade (Resented), a frown (Unfriendly), a watching eye (Wary), a dot (Unknown), a ringed dot (Known), a hollow heart (Friendly), a heart (Friend), a shield (Trusted), a crowned heart (Sworn). Hunted and Sworn wear a double rim.
+- **The power cloth** (`clan_glance.dart`): the banner is dark above the level of the clan's power tier and in its own colours below it, a quarter for each of Minor, Rising, Dominant and Ascendant, with a gold hairline at the level (none when full). Clans with no power of their own keep their banner whole.
+- Both marks read the tiers the clan card already shows (`PoliticsState.tierOf`, `powerTierFor`): no new numbers. They stand on the offer's banners, the clan card's banner (the long press), the ring's crests (the cloth fills the round crest from its foot; the disc is at its top-left, clear of the number), the Throne room's standards (a clan's, not a piece of the Shroud) and the Clans screen's cards.
+
+### Tests
+- New `test/clan_glance_test.dart`: every step has its own distinct shape (also mirrored) and its own colour, the sign draws for each tier, the cloth fills a quarter a tier with its hairline, a clan's banner wears both marks, the disc alone without the cloth, a faction not on file keeps its banner. The offer, compass, throne and clans tests are unchanged and pass.
+- Pictures of the real screens: `docs/ux-shots/clan-glance-offer.png`, `clan-glance-ring.png`; the discs: `standing-discs-mock.png` (PR #534).
+
+## [1.575.0+611]
+
+The fate coin now also works at the camp's fire and at the forge.
+
+- **At the camp:** when a check fails at the fire (catching the thief, making peace in a quarrel) and the pack holds a fate coin, the game offers it. Flipped, the coin is spent and the check is rolled once more.
+- **At the forge:** a piece that comes out Flawed offers the coin too. Flipped, the forge's d20 rolls again with the same bonuses, and the piece takes the new result (Sound, Fine or Masterwork, or Flawed again).
+- The land crossing's coin is unchanged.
+
+## [1.574.0+610]
+
+Arriving in a town never leaves its whole plan fogged.
+
+### Fixed
+- **A town's first district is found on arrival** (`city_districts.dart`, `foundDistricts`): at the White Wells (and every town with districts) the scene the party arrives at is in the town itself, in none of its districts, so the Town view showed every district as "?" with nothing to start from and the player had to guess which to enter. Now a scene played in the town itself finds the first open district of geography.json's order (the Pool at the White Wells), named on the plan and in the list, with its ways; it stays found as the party walks on. A scene in a district finds that district only, as before. A locked district is never the one found.
+
+### Tests
+- New `test/town_arrival_test.dart` (every town with a town-level scene opens on its first open district, the White Wells' Pool, a walked-into district joins it, a district scene is unchanged) and `test/ux_arrival_shot_test.dart` (the real screen as a picture with `UX_SHOTS`, `docs/ux-shots/town-arrival.png`).
+
+## [1.573.0+609]
+
+The dice loadout shows a die as a ring of slots, one per face.
+
+- **The ring:** every face of the selected die is a round slot on a ring, the first at the top and the rest clockwise. A d4 has 4 slots and a d20 has 20. The middle names the size (d8) and how many faces hold a skill (3/8 with a skill).
+- **Slot size:** slots shrink as the die grows, so a d20 still fits a 320 px phone. Below 70 px (a d12 or a d20) a slot shows only its icon. The die card above names the picked face and has the button to choose its skill.
+- Dragging a skill onto a slot, tapping to turn the die, double-tapping to choose and the cross to clear all work as before.
+- The faces help now also gives the copies rule: one copy of a skill per four faces, 2 on a d6.
+
+## [1.572.0+608]
+
+The Town view shows the shut districts, who holds the others, and how firmly (wave 18).
+
+### Added
+- **Shut districts** (`city_chart_painter.dart`, `district_standing.dart`, `journey_screen.dart`): a district a side quest keeps locked is shuttered on the town plan (fog, a hatch and a dashed outline, a padlock over its name) and in the list under the plan: a padlock, its name (never "?") and the reason, its rumour, in two lines. A tap on it, on the plan or in the list, opens a small sheet with the reason and "Opens with: <quest name>" instead of zooming into it.
+- **Holders and influence** (`district_standing.dart`): every district with a holder shows its clan's flag in the list, the holder's name with its influence there ("Dominion 48"), a two-colour bar (the holder's from the left, the strongest rival's from the right) and the rival's name and number under it. On the plan each district's label has a small crest above it: a ring filled by the holder's influence, the rival's share inside it, a tick at the point where the rival would take the district, and the holder's flag. A district that changed hands by influence gets a gold star and "changed hands" on its line and on its crest. Influence is shown only in a town where it counts (Saltmouth, for now); elsewhere the holder's flag alone.
+- The city chart screen (`city_chart_screen.dart`) shuts the same districts.
+- Strings `district_changed_hands` and `district_locked_by` (EN/FR).
+
+### Tests
+- New `test/district_standing_test.dart` (the standings from the rules, the rows, the strings) and `test/ux_town_shot_test.dart` (the real screen as pictures with `UX_SHOTS`, see `docs/ux-shots/town-view-*.png`). `district_walk_test` uses a taller screen: the list rows are a line taller.
+
+## [1.571.0+607]
+
+The dice come in real sizes, d4 to d20, and every face of a die is a slot to equip.
+
+### Changed
+- **31 dice, new sizes** (`docs/proposals/dice-sizes.md` §1): 10 stay d6. Stone, berserker, shadow, twinfang and headsman become d4 (void already was). Flame, tide, huntsman, Vess's, frost, greenwood and vigil become d8 (vigil was a d7). Storm, arcane, sage and ossuary become d10. Tempest, chorus and tearglass become d12. Gambler becomes a d20 at 200 gold, sold only at the Last Lantern.
+  - A die that grows keeps its faces and weights. The new faces are plain Strike, Guard and Mend at the die's own average.
+  - A die that shrinks to a d4 keeps its skill faces and drops its two weakest plain faces.
+- **Every face is a slot:** any face of a die can hold a skill, signature and Mana faces included (Mana channels it at 70%). No die holds more copies of one skill than one per four faces from the d8 up: 1 on a d4, 2 on a d6, d8 or d10, 3 on a d12, 5 on a d20.
+- **Saves move over:** placed skills and Hammersmith work follow their faces. A skill on a dropped face goes back to the skill list, and Hammersmith work on it is refunded in full (gold, iron ore, an elite trophy). Saves record `diceDataVersion: 2`.
+
+### Added
+- **The tally die** (d12, 12 plain faces to fill): the reward of *The Candle Count* (chapter 5), or woven at the Skillwright from two d8s you own (both are spent, and their Hammersmith work is refunded). Only one can be owned.
+- **The fate coin** (30 gold, one use): when a land-crossing check fails, flip it to roll the check again.
+
+## [1.570.0+606]
+
+Chapters 1–3 read the same in English and French: names, titles and times of day agree between scenes, and the paragraph breaks match in both languages. Wording only.
+
+## [1.569.0+605]
+
+The Journey's ways are grouped by pin, and the notice board is a board you read.
+
+### Changed
+- **The list of ways under the district map** (`way_pin_groups.dart`, `journey_screen.dart`): the ways that hang at the same pin (a building, or a spot) on the map are one row: the pin's own banner or disc, the name of the way that leads it, a count and a chevron. It is closed until tapped; a tap opens it in place to its ways, each the row it always was, indented, and a tap on one does what a row's tap did (the way's sheet). Only one pin is open at a time. A pin with one way stays a plain row, and a district with no such pin looks exactly as before. The header reads "2 pins · 5 ways · tap a pin to open it" when there are grouped pins. (The opened state is built as mocked so a row can open; say if you want it otherwise.)
+- **The notice board** (`bounty_board.dart`, `town_service_sheet.dart`, `city_chart_painter.dart`): the contracts are pinned on a wooden board as slightly tilted parchment notes, each with a stamp-ring for its kind, its goal, how far along it is as pips and "2 of 3", its pay as two chips (gold, essence), and a wax seal that is the Claim: flat and grey while the note is open, red and glowing once it is met. A claimed note is stamped PAID and drops off; a new board's notes pin up one after another (with reduced motion: no pin-up, no stamp, the note is simply gone). The header says the chapter and what waits ("Chapter 2 · 1 to claim"). The notice board's pin on the district map is a little board with a count of the notices up, red when one can be claimed, and a tap on it opens the board itself instead of a sheet with one row. The contracts, the claim and the posting are unchanged; the camp's board looks the same way.
+
+### Removed
+- **On the level-up pop-up and the Level Up screen** (`level_up_dialog.dart`, `level_up_screen.dart`): the "Stat picks left: 1" box, the line "Each level also gives +4 max health.", the line "The clans come to you once this closes: an offer waits." (pop-up only) and the line "Hold a stat to see what it does". The header, the cards, the radar and the Close or Take this pick button stay, and the hold-to-peek on a stat still works, it is just not announced. When more than one pick waits, a small quiet count ("2 picks") shows so the player knows another round follows; with one pick, nothing. **One radar:** while a pick waits, the Level Up screen's own plain radar (and its "tap a corner" line) is gone, in the pop-up and on the screen: the picker's radar (the hero's shape, with the pick in green once one is chosen; before any is chosen, the shape alone) is the only one. With no pick waiting, the plain radar is shown as before. The strings `stat_picks_left`, `level_up_gives` and `level_up_offer_note` are gone; `hold_stat_for_details_hint` stays (the character creation screen uses it).
+
+### Tests
+- `level_up_screen_test` (the removed texts are gone, the quiet count shows for several picks) and `qa_real_font_layout_test` (it checked the removed points box; it now checks the pop-up is up). New `test/way_pin_groups_test.dart` (the grouping, a closed pin with its count, opening, one open at a time); `bounty_board_test` (the header, the seals, PAID and the drop, reduced motion); `town_service_pins_view_test` (the notice board opens the board; the pin's count paints).
+
+## [1.568.0+604]
+
+The competent simulated player recruits companions and fights beside them.
+
+### Added
+- **Companions in the simulator** (`lib/data/sim_companions.dart`, competent profile only; naive is unchanged and stays the default for every CI band test).
+  - **Recruiting.** A companion joins as in the game: when their quest is handed in, once only, never after they leave or the story takes them. Tobin's and Malrik's quests keep their Good and Evil gates.
+  - **Seats.** The party holds 2, or 3 once the Barracks Annex stands; Kelda sits once her hall is built.
+  - **Story choices.** With companions on, the competent player takes a story choice that offers a companion quest it may take.
+- **The pick rule.**
+  - Seats go to the companions worth most in a fight: their die's average roll at their damage, plus 0.1 per health and 0.8 per armour.
+  - A tie (within 1) goes to higher approval, then to the companion whose approvals fit the player's alignment, then to the earlier recruit.
+  - A better recruit takes the weakest seat. The rule runs again at every recruit, departure, house built and chapter rest.
+- **In fights.**
+  - Each seated companion rolls their signature die through the same dice code as the hero. Their approval tier scales their damage and health.
+  - Enemies hit a random standing party member, and the biggest block draws the blows.
+  - A knocked-out companion comes back at 30% health after a won fight. A rest or a level-up heals everyone.
+- **Approval.** A choice's alignment, its gold and its `approvalMods` move approval for seated companions. At −12 a companion leaves and the best benched one takes the seat. `loseAllyId` takes one for good.
+- **The run report** lists every seek, recruit, pick, bench, swap, leave, loss and move into devoted or wary, each with its reason, then the final party.
+- **No dice cup.** The game has one die in play, swapped between fights, and the competent player already rolls its best.
+- **Measurement.** `docs/simulation/companions-v1.568.md` covers 10 runs per profile. From chapter 3 on, a competent party wins 0.98–1.00 of encounters, against 0.86–0.90 alone and 0.54–0.69 for naive.
+
+## [1.567.0+603]
+
+Chapter 1's first step outside opens the Journey and its tour; the party walks to a pin; "Back to the map" goes where the cards hold every move.
+
+### Changed
+- **The first step outside:** in a new game, the first way out of the Blind Beggar lands on the Journey map of the Lower Town (scene 250, the proclamation, with "1 way here"), not on 250's page. It happens once (`journey_first_shown`).
+- **The Journey tour starts there,** not on the Beggar's room map, and still only once. A pending "New:" card waits until the tour is skipped or finished. The tour's "tap a step" line now points at the District view's list of ways.
+- **The party walks to the pin:** taking a way on the District view (its pin or its row) walks the party marker to the pin, then opens the scene. The walk takes 0.6 s next door and up to 1.2 s from half the town away. A tap anywhere lands the party at once; with reduced motion there's no walk.
+- **No "Back to the map" when the page holds every move:** on a page with a way to take, the button and the corner map icon go when every way on the map leads to a place one of the page's cards also reaches. Those ways show as cards on the page, so none is lost. Example: the warhound in the alley (270), where all three ways lead to the family house. The button stays where the map has another move, and on hubs, endings, a page opened with Read, and a new game's first page. The scene lock (v1.563) is unchanged.
+
+## [1.564.0+600]
+
+The playthrough simulator can play like a competent player.
+
+### Added
+- **Two player profiles** (`SimPolicy` in `lib/data/sim_policy.dart`):
+  - **`naive`** is the simulator as it always played. Every CI band test (boss_balance, clash_balance, qa_clan_power_50, nemesis_quests, sim_playthroughs, sim_coverage, sim_houses) still uses it, and its results are unchanged.
+  - **`competent`**, used by the simulator screen's runs:
+    - Before every fight it wears the best loadout it owns: loot, quest rewards and scene grants included. It weighs elemental bonuses, uniques and set bonuses, and respects stat requirements.
+    - It shops for potions, a better die and gear by how much each improves its loadout.
+    - It keeps its signature die, rolls the best die it owns, and crafts a skill merge when that improves its die.
+    - Clan offers: it takes the gift that raises its power most, gives ties to the clan it stands closest to, and never takes a banner that turns its main clan or an ally Hostile.
+- **The run report:** both profiles record every clan offer (chapter, source, banners, the one taken and why). The transcript prints these, with the gear worn and the die.
+- **Measurement:** `docs/simulation/competent-player-v1.564.md` compares the two profiles over 10 runs each. From chapter 3 on, the competent player wins about 0.88 of encounters against 0.62 for the naive one.
+
+## [1.563.0+599]
+
+The scene lock only holds a scene whose ways are all on the spot. Any way with a place on the map is taken from the map again.
+
+### Fixed
+- **Map movement is back:** v1.555 locked any scene the story led to that had one choice made on the spot. It turned every way into a text card and greyed the map, even ways that already had a place on it. A scene now locks only when none of its ways is drawn on any map: the place's pins, the town plan, a room's spots, a road or the world. A scene with both kinds no longer locks: its mapped ways stay on the map, and its on-the-spot choices stay in the scene view or the sheet over the map.
+- **The sheet over the map is back** for every scene that does not lock, as before v1.555.
+- **Fewer scenes lock:** over the whole story, 52 scenes lock instead of 361. The House's Bouncer's aftermath (106) and all of chapter 1's opening (0–400) no longer lock. The wreck (965) still does.
+- **No lock before the map is ready:** a save reopened before the map and town plans have loaded no longer locks on its first screen.
+
+## [1.562.0+598]
+
+Forging rolls a d20 for the piece's quality.
+
+### Changed
+- **The forge rolls:** forging spends its gold and materials as before, then rolls a d20 plus its modifiers. The total sets the piece's tier: 1–4 Flawed, 5–14 Sound, 15–19 Fine, 20 or more Masterwork. With no modifier, the odds are 20 / 50 / 25 / 5%.
+  - The modifiers: a dwarf hero +2, at any forge; standing with the clan holding the forge's place, +1 at Friendly or better and −1 at Unfriendly or worse.
+  - A Flawed piece has −1 to its main number (never below 0), a Fine one +1, and a Masterwork one +2. The main number is armour for armour, damage for a weapon. Resale is −25%, +25% or +50%.
+  - The tier is kept in the piece's id (`boots_iron_shod@fine`) and its name ("Fine Iron-Shod Boots"). It survives saves, and every item lookup reads it.
+  - Until the new forge sheet comes, the Forge button names what was made: "Forged: Fine Iron-Shod Boots".
+
+## [1.560.0+596]
+
+"A Life Before This One" is played as scene pages.
+
+### Changed
+- **The memories** (`origin_stories_screen.dart`): each of the six memories is a page like the story reader's. A side-view picture of the memory's place fades into the page with the age, the stage and the title over its foot; the age rail is small under it; the memory's words are set in the reader's prose (no card) and write themselves out the first time (a tap finishes them; with reduced motion they are there at once); the answers come when the words have been written. After an answer, what came of it is written out on the same page, then its two tags (what it teaches, how it leans) and "Next memory". The recall line, the three answers with their stat chip, "Choose my whole life at random" and "Choose again at random", the summary and every word are as before.
+- **The fourteen places** (`origin_scene_backdrop.dart`): each memory has a backdrop read off its own words: the rope-walk in the rain (the sparrow), the chapel, the market awning in the rain, the smithy, the street, the frozen well (frost), the tavern on Tallow Street in the snow, the docks (sea), the chandler's, the back alley at night, the Drowned Saint's shrine at night, the marsh (fen), Old Hesk's house, and the parents' house in the snow. The street kit's party at the door is left out of them (`StreetViewScene.party`).
+
+### Tests
+- New `test/origin_scene_backdrop_test.dart` (each of the fourteen memories has a place, and every place draws at 320 and 390 px); `origin_stories_test` checks the picture, and that the answers wait for the words.
+
+## [1.559.0+595]
+
+- Saltmouth's side quests now belong to a district and a clan, so what you do on the wharf, at Card Row and on Tern Row changes who holds them. Two new district quests (The Short Count at Card Row, A Boat for the Wrong Name on Tern Row), a door scene and a reason for each locked district, and a line when a district changes hands.
+
+## [1.558.0+594]
+
+Wave 18, step 1: Saltmouth's districts can be locked, and the clans fight over them with influence.
+
+### Added
+- **Locked districts:** a district in `geography.json` may carry `"lock": {"quest", "opensOn": "accepted" | "done"}` and a one-line `lockedText` (EN/FR). While locked, the party can't walk in and the district never counts as found. The story's own ways into it stay open. The free "Walk to" rows skip a locked district; if every neighbour is locked, they offer the nearest open district, so the party is never stuck. Step 1 locks the Lantern Alleys (until *The Informant's Tip* is done) and Tern Row (until *Tern's Toll* is done).
+- **Influence:** each district keeps its clans' influence (0–100, saved), and its holder starts at 20. A quest done while the party is in Saltmouth adds +15 (side) or +25 (Main), or the quest's own `influence`, in the quest's `district`, or where the party stands. It goes to the clan the chosen turn-in raises most, else to the quest's `faction`.
+- **Flips:** a clan whose influence passes the holder's by 15 takes the district, through the same hand-over as war (news, clan log, relations). A news line `district_flipped` names the district and both clans, `flipped_<district>` is set, and the companions' `districtFlipped` remark can fire. A clan holding 4 of Saltmouth's 6 districts holds the town, and loses it below that. Seats never change hands by influence.
+- **For scenes:** `held_<district>_<clan>` flags follow every holder in every town. The `attack` camp-errand kind and the `districtAttacked` remark kind are ready for step 2.
+- **Saltmouth's holders:** Landward Gate (Dominion), Ship-breaker's Yard (Compact), Lantern Alleys (Mire), Wharf and Card Row (Crows), Tern Row (Tide-Kin).
+- **Simulator:** it applies quest influence at turn-in.
+
+## [1.556.0+592]
+
+The clans' gift no longer waits behind a button: it opens on its own, and a gift must be taken.
+
+### Fixed
+- **The clans' offer opens by itself:** a gift offer only opened by itself after a level-up or a boss win. Every other offer waited behind "Choose a gift": from a chapter, a quest, an intrigue, a story change or a Tome, carried over from a save, or queued on the feature ladder while the clans were locked. They piled up. Now, whenever an offer waits and the player is on the home screen in play (no fight running, no quests being settled, the clans open), the offer opens. Each offer waiting comes up in turn, until none is left. As before, the sheet can't be dismissed (no tap outside, no back, no "later"), and its confirmation is unchanged. Edit Mode, and the ladder before the clans open, open nothing.
+- **A fight no longer loses its offer:** a level-up in a fight that closed itself while the offer was loading kept the offer pending. It now opens over the home screen.
+
+## [1.555.0+591]
+
+A scene the story brings you to holds you on its page until you choose, and a district with no way of the story lets you walk on.
+
+### Changed
+- **The scene lock:** when the story brings the party to a scene (a pin or a card taken, a new game's first scene, or a save picked back up), and one of its ways is acted out there, the scene opens as its page and holds the party there. Every way shows as a card, roads included (a road keeps its glyph and says where it leads). The District, Town and World tabs, the map icon and "Back to the map" are greyed, with "Choose first". Taking a road card brings the map back and walks it, the world road included. A shop, or a fight fled, keeps the lock. Hubs, the camp, endings, Edit Mode and jumps never lock. A save on a locked scene reopens on its page, and the recap waits for the next scene with a map. Most story scenes lock, so the sheet over the map now shows only for scenes the story did not bring the party to. The pure rule is `lib/data/scene_lock.dart`.
+
+### Fixed
+- **Walk to a neighbouring district:** when the party's district has none of the scene's ways, the District view lists "Walk to <district>" for each district that borders it on the town plan. Saltmouth's Landward Gate is one such district. The walk is free: no story time, no ration, and the scene stays where it was. The district walked into counts as found.
+- **No stuck street view:** after walking away from a scene played at a building's doorstep, such as the informant's trap at the Landward Gate, the District view showed that empty street. It now shows the district the party walked to.
+
+## [1.553.0+589]
+
+Two sheets and dialogs, in one release: the place sheet's height and the clan popins that stay open.
+
+### Changed
+- **The place sheet** (`arrival_sheet.dart`, `journey_screen.dart`): the words scroll above the whole choices, the sheet grows to 90% of the screen, and its handle can be dragged to make it shorter (down to about a third). The choices are capped at 70% of the room left so a small sheet never overflows.
+- **The clan details popin** (`clan_peek.dart`): a long press on a clan's banner opened the card only for as long as the finger was down. It is now a dialog that stays open when the finger lifts, and closes on a tap outside it, on its close button, or on the back gesture; the "Let go to close" and "Tap to close" lines are gone. The other hold-to-open popins already stayed open; a test now says so.
+
+### Tests
+- `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
+
+
+## [1.552.0+588]
+
+The level-up stat pick shows on the ability radar.
+
+### Changed
+- **A pick is drawn on the radar** (`stat_pick_picker.dart`, `ability_radar.dart`): picking a stat card no longer opens the detail block under the cards (the path's name, each gain from where it stood to where it goes, the effect lines). The ability radar takes its place: the hero's shape as it stands in gold, the shape the pick would give round it in green, and each corner the pick moves shows its new value highlighted with the gain under it ("CON 7, +1"). The shape grows from the current one over a third of a second; with reduced motion it is there at once. A pick worth more than one point still says "Worth n points" under the radar. "Take this pick", the roll powers and the cards (with the path, each gain and what it does for the hero) are unchanged.
+- `RadarAxis` takes a `valueColor` and `AbilityRadar` a `preview` shape.
+
+### Tests
+- New `test/ability_radar_preview_test.dart` (the second shape, the corners, the growth, reduced motion, the scale; `UX_SHOTS=<folder>` takes `docs/ux-shots/level-up-pick-radar.png`); `stat_pick_picker_test` and `level_up_screen_test` now expect the radar where the detail block was.
+
+## [1.551.0+587]
+
+A walk along a world road now plays on the World map.
+
+### Fixed
+- **Road moves on the World view:** taking a way that leaves a place for another one used to draw the walk on the District tab: a bare grey region with the road's stops on it. One example is "Go the long way round" from the Sleeper's Face to the White Wells. The Journey now switches to the World view with the World tab lit and walks the road there, at the same pace as the road transit. Arriving at the next place shows that place's own view, as before. A tap on the walk skips it and lands the party at once.
+
+## [1.548.0+584]
+
+A page whose only ways on are its own cards no longer offers "Back to the map".
+
+### Fixed
+- **No dead "Back to the map":** the Journey can open a scene's page by itself, on a new game's first scene or after a card is taken. If every way on is a card on that page, the "Back to the map" button and the map icon in the corner are gone, and the cards take the story on. The button stays when the map holds a way on, or when the player opened the page from the map. A jump or a loaded save away from such a page lands on the map, as before.
+
+## [1.547.0+583]
+
+- Reedholm's night: the old feud between the Mire and the Penitents now comes back unless someone walks out to meet the Mire with open hands, as the refugees you took aboard, an absolved Ember Sister or a Moss Choir singer can.
+
+## [1.546.0+582]
+
+The Mire and the Penitents no longer start the game at war.
+
+### Changed
+- **The Mire and the Penitents start at Hostile**, not at Blood feud (wave 17 item 2). Only the number in `relations.json` changes. With Narrative's Reedholm beat (next release), the feud comes back in chapter 5 unless the party made peace possible. Over 50 simulated runs with the beat, the Mire's Court falls in 10, down from 20. Fight win rates move by 0.3 points or less. The study is in `docs/simulation/clan-power-50-v1.526.md`.
+
+## [1.545.0+581]
+
+A chapter 6 crossing on the Glass Shore, and the Lantern Cliffs' last two events (wave 17).
+
+### Added
+- **The Glass Shoals** (chapter 6): after landing at the White Anchorage, the party crosses the glass shore to the White Fleet's Grave, with Narrative's four glass-shore events. Once a clan holds the Anchorage, about one day in three brings that clan's event too. A crossing costs about 2–4% health.
+- **The Lantern Cliffs** (chapter 7) also draw the wrecker's lamp and the gulls. Each has a way through that costs nothing.
+
+### Fixed
+- **The fen, frost and sea-cliffs crossings** (chapters 4, 5 and 7) now show their side-view scenes; they showed none before.
+
+## [1.544.0+580]
+
+A street-view kit for scenes played outside a building, the room kits' counterpart for the outside.
+
+### Added
+- **The street before a building** (`lib/widgets/street_view/`): where a scene plays at a building's doorstep (Core's v1.542: the family house's 300, 400, 400_lost and 450; the Blind Beggar's 125; the informant's warehouse), the district view shows the building's front, the street in front of it in cobbles, and the party at its door, in the side-view engine's pixel style. Six fronts by what the building is (a house, an inn or den, a warehouse, a shop or forge, a temple, a hall or keep), read from its kind and name as the room kits do.
+- **The day's weather and hour on it:** rain falls and wets the stones, snow whitens the roof and the kerb, fog and ash drift over; the sky takes the hour (dawn, day, dusk, night with stars) and the windows and a lantern by the door light warm at dusk and night, over the wash so they are not dimmed with the evening.
+- **The choices are pins on the street** (the banners and discs the Journey draws everywhere else, with their labels), in two rows when there are more than four; a tap opens the way's sheet as before. The rows under the picture and the buttons over it are unchanged.
+
+### Changed
+- The Town tab and the zoom-out button still show the town's plan with the party at the door; only the district view is the street.
+
+### Tests
+- New `test/street_view_test.dart` (the front by building, every front at every hour and weather, pins at 320 px, reduced motion; `UX_SHOTS=<folder>` takes `docs/ux-shots/street-view-fronts.png`); `doorstep_scenes_test.dart` now expects the street in the district view and the plan under Town.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (`_CityDistrictView`: an optional `street` building, the street scene in place of the plan's picture when set, and the pin builder; about 40 lines, the rest of the diff is the formatter re-indenting the plan view).
+## [1.543.0+579]
+
+The story reader: the echoed lines are prose, and the text writes itself out more slowly.
+
+### Changed
+- **"Because you chose …" only in Edit Mode** (`story_player_screen.dart`, `EchoLine`): in play, a line an earlier choice earned is set into the story as ordinary prose, with no caption, clock icon or side rule. The story node editor's preview (Edit Mode) keeps the label, icon and rule as before. The Journey's scene panel uses the same widget, so it follows.
+- **The text reveal is a third slower** (`story_text.dart`): about 175 characters a second instead of 260, between 0.6 s and 6 s (was 0.4 s and 4 s). A tap still shows it all, and reduced motion still shows it at once.
+
+### Tests
+- New `test/echo_line_test.dart` (play and Edit Mode, and the reveal's speed); `scene_flow_play_test` now expects no caption in play.
+
+## [1.542.0+578]
+
+Some scenes now play in the street in front of a building, not inside it.
+
+### Changed
+- **Doorstep scenes:** a building in `geography.json` can now list scenes under `"doorstep"`. These scenes play in the street at its door. The Journey shows them on the district plan, with the party at the building's door and the scene's ways on the streets around it. Before, they were shown inside the building's room. Tagged so far:
+  - the Alster family house: scenes 300, 400, 400_lost and 450;
+  - the blind beggar: 125;
+  - the Saltmouth landward warehouse: 2015_informant_trap.
+
+## [1.541.0+577]
+
+A new game no longer shows the map before the story starts.
+
+### Changed
+- **The first scene's way is a card:** on a new game, "Choose who you are…" is a card on the first scene's page, not a step on the Lower Town map. Taking it opens character creation; the story then goes straight to the Blind Beggar's page. Later ways across town are still map steps.
+
+## [1.540.0+576]
+
+A game picked up on its first scene opens on that scene.
+
+### Fixed
+- **Continue on a game never started:** creating a character and leaving before the first step left a save on the first scene; Continue opened it on the Journey map with "Choose who you are…" in a row at the bottom. It now opens on the first scene's page, as New Game does. The rule is now the story's state (on the first scene, nothing played yet), whatever way the game was opened.
+
+## [1.539.0+575]
+
+- The blurbs for Alster and Saltmouth now describe the places themselves, in English and French.
+
+## [1.538.0+574]
+
+Towns walked in words: the walk between districts, the doorway of a building, and the place panel's name once.
+
+### Added
+- **The walk between districts is told** (`journey_screen.dart`): crossing from one district of a town to another says "You walk to the Stone Bridge…" (FR "Vous marchez vers le Pont de Pierre…") in the road walk's bubble. It sits at the top of the map so it does not cover the zoom buttons; a tap skips it.
+- **A doorway between a room and the streets**, both ways (`town_walk.dart`): going into a building, or back out to its streets (by the story or by the look-out and go-inside buttons), fades from a veil with a door glyph and says "You step inside the Blind Beggar…" or "You step back out into the streets…". With reduced motion only the line shows.
+
+### Fixed
+- **The world map's place panel** no longer names a land twice: a breadcrumb that reads as the title (Alster, as the title and the last crumb) is left out.
+
+### Tests
+- New `test/town_walk_test.dart`; `alster_one_place`, `journey_inside`, `journey_transit` and `geography_widgets` tests updated for the new lines (the transit test said "nothing needs saying" along a city's streets).
+- Not done: no picture of the caption; the veil is tested on its own, not as a frame of the whole screen.
+
+### Touches another session's area
+- `lib/screens/journey_screen.dart` (~80 lines: the door state and veil, a words-only transit, the district caption) and `lib/screens/world_map_screen.dart` (5 lines, the crumbs filter). `app_strings.dart`: three new keys next to `journey_pass_stop`.
+
+## [1.537.0+573]
+
+A dependency update, no gameplay change.
+
+### Changed
+- **open_filex** 4.7.0 to 5.0.0 (Dependabot), used to open a downloaded update and exported files.
+
+## [1.536.0+572]
+
+Saltmouth is one place on the world map, like Alster.
+
+### Changed
+- **Saltmouth on the world map:** its six districts were six world places joined by roads. Saltmouth is now one dot; the road from the White Wells and the sea lane to the storm leave from its edge.
+- **Moving around Saltmouth:** the map shows the Town view for another district and the District view within one, with no world-road journey.
+
+## [1.535.0+571]
+
+Alster, the starting town, is one place on the world map.
+
+### Fixed
+- **Alster on the world map:** the Blind Beggar, Weaver's Alley, the family house and the town's other places were seven separate world places joined by roads. Alster is now one dot, like the later towns, and the world roads start from it.
+- **Moving around Alster:** it no longer plays a world-road journey ("You pass Tallow Steps"). The map follows the move: the Town view when the place is in another district, the District view when it is in the same one.
+- **The District tab after a move** shows the district, no longer the world map.
+
+## [1.545.0+581]
+
+A new game starts on its first scene.
+
+### Fixed
+- **New game:** it opens on "Choose who you are…" instead of the Journey map with the scene in a row at the bottom.
+- **"Previously…":** the recap no longer shows on a new game. It shows only when a saved game with progress past the start is picked back up.
+- **New game over a loading save:** starting a new game while the last save was still loading could bring the old save back; it no longer can.
+
+## [1.533.0+569]
+
+- A new intrigue, The Host's Price: the giants, the Tide-Kin, the oni and the Kindly Ones each name what they want before the crossing, and you decide who gets paid, who does not, and what that costs. Six scenes at camp in the last chapter.
+
+## [1.532.0+568]
+
+- A new intrigue, The Taken's Names: a clerk brings the names cut into the back of the Lantern Throne, and in the last two chapters you decide whether to read them aloud, burn them, or carry them across unread. Six scenes at camp.
+
+## [1.531.0+567]
+
+Chapter 7's claimants stop walling the cleric and the warrior (wave 17).
+
+### Changed
+- **The claimant fights** (Vane, Tallis, Morrow): the enemies' Tide stops at level 6, each claimant heals itself at most once, and the claimants lose their resists (they keep their weaknesses). Tallis has 77 health (was 72), Morrow 148 (was 108). Claimants won by the cleric: 8–18% → 31–38%; by the warrior 18–35% → 30–36%; every claimant inside its band. Chapter 7 is won 56–58% (was 52–55%).
+- **The playthrough simulator** now plays the enemies' Silence, Hex and Curse as the fight screen does (it skipped them before). With them counted, the clan champions read 39.9% won in the simulator (45.8% before; floor 38%): that is the honest figure, not a change to the champions.
+
+## [1.530.0+566]
+
+- Your Devoted companions now have a scene of their own at camp: eight short scenes, one each for Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin and Malrik, offered once they have grown devoted to you. What you answer is remembered at the muster.
+
+## [1.528.0+564]
+
+Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasEntranceCard` (v1.522).
+
+### Added
+- **An entrance card before a sea fight** (`voyage_screen.dart`, `fight_entrance.dart`): a sea beast, the void barge, and any ship the data marks `entranceCard` (the corsair brig, the Inquisition cutter; the skiff has none) is announced before the fight: the hull or the beast sails in from the right over the waters of the crossing, with its name and the first sentence of its description, 1.2 s, a tap on the card ends it, reduced motion shows none. The card takes a picture of its own (`FightEntrance.art`) and the sea scene a `showShip` switch, so the card shows only what she meets, not the Eel.
+- **The spoils over the next day:** a won sea fight counts up its gold and XP and drops in the part taken by boarding and the chapter's rare material (the strip of the land fights, `fight_spoils_strip.dart`) above the route strip of the next day, and over the harbour at the end of a voyage. It clears when the next day is acted on.
+- Picture: `docs/ux-shots/sea-fight-entrance.png` (the Brinejaw, the Corsair Brig). Test: `test/sea_fight_entrance_test.dart`.
+
+### Not tested
+- The spoils strip is tested on its own (v1.517) but not through a whole won sea fight, which needs the ship battle played out; its wiring is the one place a bug could hide.
+
+### Touches another session's area
+- `lib/screens/voyage_screen.dart` (shared): the card around the battle panel, the spoils state and strip (about 70 lines). `ship_battle_panel.dart` is not touched.
+## [1.527.0+563]
+
+Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
+
+### Added
+- **Camp errands:** a story node marked `campErrand` is listed on every chapter camp page, after the camp's own choices, whenever its show/hide flags pass. It does not count toward the camp's choice limit. Its label is `campErrandText` (`campErrandText_fr`).
+- **Back to camp:** a choice marked `returnToCamp` leads to the camp of the chapter the party is in.
+
+## [1.526.0+562]
+
+- A new intrigue, The Lantern-Bearer's Will: a sealed page names an heir who is none of the three claimants. Six scenes from Rimewell to Greyhithe, and five ways to settle it.
+
+## [1.525.0+561]
+
+- Four events for the Glass Shore: the glassed dunes, a wrecked hull, a well from a drowned coast and the pull of the tear (not drawn yet).
+
+## [1.524.0+560]
+
+Wave 17 UX, item 5: the party's own faces, as a stand-in until the user's sprite art arrives.
+
+### Added
+- **Each companion has a face of their own** on the land walk and on the Eel's deck (`lib/widgets/side_view/party_look.dart`), over the cloak colour they already had: the skin of their people, the hair, a hood, a veil or a helm, a dwarf's beard (Kelda and Brother Tobin), an orc's tusks (Grosh and Malrik), the elf's pointed ears (Liora), the voidkin's grey-violet skin and white hair (Vess), Sister Maren's white veil, Sable's black hood. A companion added later gets a face made from their id (the same each time) until the table names them. The hero is unchanged.
+- **No portrait art to crop:** the proposal said "crop the portraits", but the repository has no companion portraits (only the enemies' and the hero's walker); the looks are set here by race and profession instead. When the `companion_<id>` sprites come, this file is what they replace.
+- Picture: `docs/ux-shots/party-faces.png`. Test: `test/party_look_test.dart` (every companion distinct, the marks follow the race, the fallback is stable, every group paints on the land and the deck).
+
+## [1.523.0+559]
+
+Wave 17 UX, item 1: the hour on the roads and at sea, on Core's `dayPhaseProvider`.
+
+### Added
+- **The land crossing and the voyage follow the hour** (`lib/widgets/side_view/kit_hour.dart`): nothing by day; a thin warm wash at dawn, a violet one at dusk, a deep blue one at night, the same as the town plan's, so a place reads the same hour on the plan and on the road to it. Stars come out in the sky at dusk (a few) and at night, laid right behind the hills so none shines through a mountain or a headland. The wash is a new `overlay` of `SideViewScene` (painted over the actors, under the weather).
+- **The hero carries a lantern on the Eel's deck** after dark, with a small warm halo, on every hull.
+- The phase is read from `dayPhaseProvider` in `land_crossing_screen.dart` and `voyage_screen.dart` (the day's scene and the harbour); a scene given no phase stays at noon.
+- Picture: `docs/ux-shots/hour-on-roads-and-sea.png`. Test: `test/hour_roads_test.dart`.
+
+### Not done
+- The fen's lantern, the shelter's lit window and the lighthouse are drawn under the wash, so at night they are dimmed with the rest rather than burning brighter. They would need the kits to take the hour; left for a later pass. The sun (desert, ruins) is only dimmed at night, not removed.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` and `lib/screens/voyage_screen.dart` (shared): the phase read and its passing, about 8 lines.
+
+## [1.522.0+558]
+
+Hooks for wave 17's sea fights and loyalty scenes. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Sea-fight entrance card:** `shipHasEntranceCard` is true for every sea beast, the void barge and named raiders (the corsair brig and the Inquisition cutter), false for skiffs; an `entranceCard` flag in enemy_ships.json overrides it.
+- **Loyalty flags:** `devoted_<companion>` is set the first time a companion's approval reaches Devoted and stays set; `ally_<companion>` is held while a companion is recruited. Old saves get both on load.
+
+## [1.521.0+557]
+
+Wave 17 UX, item 4: a sweep of the wave 16 screens at a narrow width and large text.
+
+### Changed
+- **The land crossing's bar keeps its numbers whole** at large text on a narrow phone: the health bar shrinks (from up to 96 px) instead of pushing the figures off the edge at 320 px and text ×1.6. Nothing changes at normal text.
+
+### Added
+- **`test/ux_sweep_test.dart`:** the entrance card, the spoils strip, the deck crew with its speech bubble and the sea arrival, the land crossing, and the ward sheet with its mark and the Banish card, each at 320 and 390 px wide, text ×1 and ×1.6, in English and French, with and without reduced motion (the app's own fonts are loaded, as in `qa_fight_tips_real_font_test.dart`; the test font is far wider). No overflow in any; with reduced motion the entrance card shows none and the spoils are whole at once. The crossing's bar was the only thing that did not fit.
+
+## [1.520.0+556]
+
+Wave 17 UX, item 3: the ruler's colour on the crossing, and a list of the towns that changed hands.
+
+### Added
+- **The crossing says who holds the road:** a crossing on land a clan holds (`LandCrossingScreen.ruler`, from Core's v1.512) wears the clan's colour in a band under its title and has a small "Held by the Compact" line, with the clan's flag, over the scene (also on a short phone, where the scene is left out). A road no one holds has neither.
+- **The layers sheet lists the towns that changed hands** (`lib/widgets/handover_list.dart`): the town, the old ruler's flag and name, an arrow, the new ruler's, for the player who missed the toast of v1.503. It keeps the last eight since the player last looked, newest first; it is this session's only (it is not saved), and draws nothing when nothing has changed.
+- Strings: `crossing_ruler`, `town_handover_title`, `town_handover_no_one`, EN and FR.
+- Picture: `docs/ux-shots/ruler-and-changes.png`. Test: `test/ruler_changes_test.dart`.
+
+### Touches another session's area
+- `lib/screens/land_crossing_screen.dart` (shared): the band, the line (about 40 lines). No other open PR touches it.
+
+## [1.519.0+555]
+
+- Your companions now have something to say at sea: each of the eight has three lines about the deck, the water and the crossing.
+
+## [1.518.0+554]
+
+Wave 16 UX: the sea as the land is now, on Core's `speakUpAtSea` (v1.506).
+
+### Added
+- **The party on the Eel's deck** (`lib/widgets/side_view/deck_crew.dart`): the hero and the companions of the party (the same `walkingPartyProvider` the land walk uses) stand on her deck in the sea side view, small, on the rail line of whatever hull she is (all fourteen), riding the swell with her. The hero is in red with a pale hat; each companion keeps the cloak colour they have on the land walk. They look round now and then, and crouch in a squall.
+- **A companion speaks up as a voyage casts off:** the voyage screen calls `speakUpAtSea` once the day's picture is on screen, and the words show as a bubble over that companion's figure for seven seconds. Core's rule keeps it to once a chapter; until Narrative writes the lines nobody speaks.
+- **What she meets sails in from the right edge** over a second and a half (a raider, a derelict, a beast, a sighting), as the land's encounters walk in from the left; the gulls and the harbour stay put, and reduced motion shows it in place at once.
+- Picture: `docs/ux-shots/sea-crew-on-deck.png`. Test: `test/sea_crew_test.dart` (every hull, the arrival, the bubble over a voyage).
+
+### Touches another session's area
+- `lib/screens/voyage_screen.dart` (shared): the crew passed to the two scenes, the `speakUpAtSea` call and its bubble (about 60 lines). No other open PR touches it.
+
+## [1.517.0+553]
+
+Wave 16 UX: the fight's entrance and finish, on Core's `hasEntranceCard` (v1.506).
+
+### Added
+- **An entrance card** (`lib/widgets/fight_entrance.dart`): a boss, or a foe `enemies.json` marks `entranceCard`, is announced before the fight opens. Its pixel portrait slides in from the right with its name and the first sentence of its description, holds, and fades away, 1.2 s in all; a tap on the card ends it. Reduced motion shows none; test fights and lessons show none. The card takes no touch outside itself, so the setup below is never kept waiting.
+- **A spoils strip** (`lib/widgets/fight_spoils_strip.dart`): once a fight is won, a strip over the log tallies the spoils as they land: the gold and the XP count up, then each item drops in. It shows the numbers the fight already settled; reduced motion shows it whole at once.
+- Picture: `docs/ux-shots/fight-entrance-finish.png`. Test: `test/fight_entrance_test.dart`.
+
+### Touches another session's area
+- `lib/screens/fight_screen.dart`, `lib/screens/fight/fight_view.dart` and `lib/screens/fight/fight_rewards.dart` (shared): a `_withEntrance` wrapper and its import, a `_spoils` field set where the victory is logged, and the strip placed above the log ticker (about 30 lines in all). No other open PR touches them.
+
+## [1.516.0+552]
+
+Clan power moves: wars swing harder, fallen clans regroup, and the story's choices and upheavals shift the map (wave 16).
+
+### Changed
+- **War swings:** taking a place in war gives the taker 5 power and costs the loser 8. Seats fall to war only at the turns of chapters 6 and 7, and only to a clan 25 stronger. The Dominion's seat, Candlehold, never falls (chapters 7 and 8 need it).
+- **Fallen clans regroup** 5 power a chapter, up to 20; one that rises back to Rising takes its seat back.
+- **The returned's taking** (chapter 3) leaves the Dominion and the Mire Hostile rather than at war.
+
+### Fixed
+- **The Wrack vote's result** now comes only to those who voted. Before, every player in chapter 5 got the "refused" result (the Dominion −8, the Spire Stair to the Compact).
+
+50-run clan study: the Mire ends a run at 0 in no run (34 before); its seat falls in 20 runs (34), Emberwick's in 10; the patron falls in 1; the lead clan changes in 41 of 50 runs. Fights hold: professions within 5.9 points, bosses won 50.1% on average, every boss inside its band.
+
+## [1.515.0+551]
+
+Wave 16 UX: the town at the hour, on Core's `dayPhaseProvider` (v1.506).
+
+### Added
+- **The city plan and the district view follow the hour** (`city_chart_painter.dart`): a warm wash at dawn, none at noon, a dusk glow, a cold night wash. At dusk and night the windows and lanterns of the buildings are lit, and the pins of services that are open glow.
+- The phase comes from `dayPhaseProvider` (the saved watch) through `city_chart_screen.dart` and `journey_screen.dart` (`phase:`); a chart given no phase stays at noon.
+- Picture: `docs/ux-shots/town-at-the-hour.png`. Test: `test/city_hour_test.dart`.
+
+### Touches another session's area
+- `lib/screens/city_chart_screen.dart` and `lib/screens/journey_screen.dart` (shared): one `phase: ref.watch(dayPhaseProvider)` line and its import each.
+
+## [1.514.0+550]
+
+Wave 16 UX: the ward card and the Journey mark, on Core's warding rules (v1.508).
+
+### Added
+- **Ward the road from the Banish power** (`lib/widgets/ward_sheet.dart`): with a hunting clan to ward and charges to spend, Banish opens a sheet that lists the clans that hunt you and the lengths on offer (1, 2 or 3 charges, 3 / 6 / 9 roads); a length you cannot pay is dimmed. It works with no card selected, and the roll dialog gets a ward option under its divider. Banish stays greyed when there is no hunter and no card.
+- **A mark on the Journey** (`lib/widgets/ward_mark.dart`): a small chip under the level chip on both map placements while a ward runs, naming the clan and the roads left; it goes when the ward ends.
+
+### Touches another session's area
+- None beyond widgets: `roll_power_row.dart` and `weather_chip.dart` are UX's. `test/roll_power_row_test.dart` overrides `wardTargetsProvider` with an empty list.
+
+## [1.512.0+548]
+
+Land crossings for the middle chapters, shaped by who holds the land (wave 16).
+
+### Added
+- **Three new crossings:** the fen after landing at the Drowned Stair (chapter 4), the frost road from the reliquary to the heart (chapter 5), and the climb up the Lantern Cliffs to Candlehold's gates (chapter 7).
+- **The land's ruler:** on the chapter 4 and 5 roads, about one day in three brings the event of the clan that holds the land, as a friend, a neutral or a foe by your standing with it. The road changes hands when the towns around it do. Chapter 7's cliffs stay mild: only the salt wind and the tide stair.
+- A crossing costs about 2–10% health; attempt wins by chapter move by under 1.5 points, every boss inside its band.
+
+### Changed
+- When leaving camp by sea for a place with a crossing, the crossing now plays after the landing.
+
+## [1.511.0+547]
+
+Thirty events for the roads of the middle chapters (not drawn yet).
+
+### Added
+- **18 ruler events** (English and French), one for each main clan and each band of your standing with it (Friend and up, Neutral, Hostile and down): the Dominion’s Writ toll, the Vigil’s checkpoint, the Compact’s forge-cart, the Mire’s reed guide, the Crows’ marked crate, the Penitents’ name wall. Each carries a `ruler` and a `band` for Core’s land routes to pick by.
+- **12 biome events:** frost (the pilgrim’s cairn, the rime fall, the hound track, the bell on the road), fen (the reed lantern, the sucking mud, the drowned cart, the child in the reeds) and sea cliffs (the wrecker’s lamp, the salt wind, the gull colony, the tide stair).
+- Data only: the routes that draw them are Core’s (next).
+
+## [1.510.0+546]
+
+Wave 16 UX: the land crossing has a backdrop for frost, fen and sea cliffs.
+
+### Added
+- **Three new side-view scenes** for land crossings, keyed on the route's terrain (`frost`, `fen`, `sea_cliffs`, the biome ids): a pale cold dawn over white peaks and snowed pines with a pilgrims' cairn, ending at a shelter with a lit window and a thread of smoke; a grey-green dusk over black pools and reed with a boardwalk, ending at a lantern on a post that bobs; and a bright salt morning over headlands with gulls and the sea below, ending at a lighthouse. The goal comes nearer as the days pass, as in the desert and the ruins.
+- **Their weather:** snow falls over the frost, fog drifts over the fen and the cliffs; a sky's own weather still wins.
+- Core's routes for these biomes name their terrain exactly `frost`, `fen` or `sea_cliffs`; until a route exists the scenes are not seen.
+
+## [1.509.0+545]
+
+Clan power moves with the story.
+
+### Changed
+- **19 story choices carry power** (3 to 8 points, `politics.power`): selling a Keyholder’s key, holding the Spire’s wall, cutting the Lantern-Bearer’s standard free, waking the Court, carrying or refusing the Tribunal’s vote, the Crows’ smuggler run, telling the truth about the Vigil’s spear, returning the master hammer, sheltering the Mire’s child or giving her up, breaking the relic, warning the Keyholders. The winners and losers on the same choice move opposite ways.
+- **Two upheaval events:** *The vote reaches Candlehold* (as chapter 5 opens: Cinder Row goes to the Dominion or the Spire Stair to the Compact, by what you did with the vote) and *The Conclave counts* (chapter 7: how you came up the cliff moves the Dominion, and by force, the clan behind your gate takes the Lantern Hall). The Conclave’s swings are full size while some clan stands at 50 power or more, and half size, with no place changing hands, when none does.
+
+## [1.508.0+544]
+
+Warding the road: the Warding Cairn's Banish can hide your trail from a clan that hunts you.
+
+### Added
+- **Ward the road:** spend 1 / 2 / 3 Banish charges to ward a hunting clan (a rival at Hostile or Hunted, or the nemesis) for 3 / 6 / 9 roads at rest. While warded, that clan's hunters don't roll on the road. Alignment hunters, betrayals, the nemesis's champion and the seat crisis are not wardable, and standing never changes. When a ward runs out, the coast news says so. The choice on the Banish card and the mark on the Journey come in UX's next PR.
+- **Simulator:** wards the nemesis for 6 roads when it has 2 charges or more. Nemesis hunters a run 1.42 → 1.23 (seed 7); attempt win rates move by under 1 point for every profession.
+
+## [1.507.0+543]
+
+Wave 16 UX, item 1, second step: two more sheets use the shared parts.
+
+### Changed
+- **The offer's confirm dialog** ("Take the gift?") is built from the shared sheet parts: the title, "Offered by" as its italic line, the standing and risk lines, and the main button with Back under it. Same words, same keys; it scrolls on a short phone.
+- **The skill sheet's header** (the skill's pixel icon, its name, "step 2 of 5 · known") uses the shared header.
+- **Three cosmetic notes from QA's v1.502 pictures.** The camp build sheet's title lines up with its text (it started 8 px in); the temple row's small "Blessing" label is set in the body face (the pixel face read "Glessing" at 320 px); and the build sheet's gold need reads "Or 900/1200" on one line.
+- Not moved: the face skill choice sheet keeps its own layout, since its pick-then-set bar does not fit the shared row.
+
+## [1.506.0+542]
+
+Hooks for wave 16's look and story work. Nothing changes on screen yet: UX and Narrative build on them next.
+
+### Added
+- **Hour of day:** `dayPhaseProvider` (dawn, day, dusk, night) and `hourOfDayProvider`, read from the saved world clock that the road, walks, voyages and rests already move.
+- **Fight entrance card:** `hasEntranceCard` is true for every boss and for any foe with the new optional `entranceCard` flag in enemies.json.
+- **Sea remark:** a new `atSea` remark kind and `speakUpAtSea`, at most once per chapter, silent until lines are written.
+- **`anyPowerAtLeast`:** a politics event condition that holds when any main clan's power is at least N.
+
+## [1.504.0+540]
+
+The three hardest late bosses lose a little health, so the boss curve is back on target with the simulator's honest gift picks (option B4, `docs/simulation/boss-mean-options.md`).
+
+### Changed
+- **The Sovereign** has 66 health (was 77), **the Tear-Herald** 52 (was 58) and **Claimant Morrow** 108 (was 121). Bosses won on average, seeds 7 / 11 / 23: 49.4 / 48.5 / 48.5% → 51.1 / 50.9 / 50.3%. The Sovereign is won 38–40% (was 25–29%, floor 23%). Every boss stays inside its band; chapters 1–6 and the champions are unchanged.
+
+## [1.503.0+539]
+
+Wave 16 UX, item 4: a town changing hands is seen.
+
+### Added
+- **Towns that change hands.** The world chart remembers, per save, who ruled each town when it was last looked at. When a town's ruler is another by the next look, its tint fades from the old ruler's colour to the new one's over a second and a toast says so ("The Compact now holds Candlehold.", "No clan holds White Wells now.", or "3 towns changed hands."). A first look, an old save and a town never seen before change nothing; with animations off the tint just changes.
+- English and French strings `town_handover_to`, `town_handover_none`, `town_handover_many`.
+
+### Changed
+- The save gains `seenTownRulers` (town id to clan id); old saves load with none.
+
+## [1.502.0+538]
+
+Wave 16 UX, item 1: one set of parts for the small sheets.
+
+### Changed
+- **Shared sheet parts.** The camp's build sheet, the town's service sheet and the temple rows now share a header (icon, title, one italic line), a row (icon, title with an optional small label, price, lines), a price chip and a button pair (`lib/widgets/sheet_kit.dart`), so a wrap bug on a 320 px phone is fixed once.
+- **Temple rows.** The price is a gold chip on the line under the name (it was a "75 gold" text line); a row that cannot be bought says why, as before.
+- **Camp build sheet.** A house you can build names its cost in the sheet (the same chips as its card) and the main button carries the price ("Build · 280 G").
+## [1.501.0+537]
+
+Chapter 2 gets a little easier, closer to the difficulty curve.
+
+### Changed
+- **Ordinary enemies' health floor** in chapter 2 is 1.80 (was 1.98). Bosses keep their own floor. Encounters won within three tries in chapter 2, averaged over seeds 7, 11 and 23: 86.0 → 87.2%. Every boss stays inside its band. Chapter 7 is unchanged: lightening its ordinary fights moved nothing, because its claimants decide it and sit on their target.
+
+## [1.500.0+536]
+
+The playthrough simulator plays the seat crisis and keeps its gifts to the patron, like a player would. No game numbers change.
+
+### Changed
+- **Simulator, seat crisis:** when the patron clan's seat is hunted, the simulated party defends it if healthy and wins the fight, pays if it has the gold, else refuses — through the same scene and rules as the app. Runs count crises held, lost, paid and refused.
+- **Simulator, gifts:** the party takes risky gifts from its patron and the patron's allies; another clan's card only when it fills an empty die face.
+- **Clan study (50 runs) before → after:** Vigil end power 31.6 → 46.0, Crows 65.3 → 45.0, Dominion 78.7 → 73.3; patron falls 3 → 3. Bosses won 48.4% on average (52.9% before), every boss inside its band. Full table in `docs/simulation/clan-power-50-v1.500.md`.
+
+## [1.499.0+535]
+
+The cleric catches up with the other professions.
+
+### Changed
+- **The cleric** deals 5 base damage instead of 3. Encounters won within three tries: 65.0 → 70.8 (seed 7), 63.4 → 69.0 (seed 11), 62.2 → 68.6 (seed 23); the other professions are unchanged, bosses are won 52.9% on average (51.4% before), every boss inside its band.
+
+## [1.498.0+534]
+
+Two small town and offer-hall touches from the read-throughs.
+
+### Changed
+- **Temple sheet.** A clan-ruled temple shows its keeper's line in italics under the title, and the blessing row is titled with the clan's blessing name ("The First Lantern's ward") with "Blessing" as the small label above it. The neutral shrine keeps the plain title. No new strings: both texts were already in the clans' data.
+- **Offer hall.** Between offers the hall kept an empty dark box with a bare spinner; it now keeps the last card, dimmed and not tappable, with the spinner over it. The first load, with no earlier card, still shows the bare spinner.
+
+## [1.497.0+533]
+
+The professions closer together, the bosses back to a fair fight.
+
+### Changed
+- **The mage's calling path (Arcanist)** gives INT 4 and CON 1 instead of INT 2, WIS 2 and PER 1; the mage starts with 2 more max health.
+- **The Skirmisher path** (rogue and ranger) gives DEX 3, PER 1 and CON 1 instead of DEX 2, PER 1, LUCK 1 and CON 1; the rogue starts with 5 more max health.
+- **Bosses** have about 5% more health (the shared boss health scale 1.15 → 1.21), and Claimant Vane 79 instead of 74.
+- Encounters won within three tries, seed 7: warrior 70.7 → 69.9, mage 60.1 → 65.8, rogue 59.9 → 66.1, cleric 66.4 → 65.0, ranger 69.0 → 68.7. Bosses are won 51.4% on average (51.1% before).
+
+## [1.496.0+532]
+
+Wave 14 remainder: the player can take the camera during a move.
+
+### Changed
+- **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+## [1.495.0+531]
+
+Wave 15 UX, part 2: towns wear their ruler's colour.
+
+### Added
+- **Town tints.** On the world chart each town gets a soft halo in its ruling clan's colour, with the clan's accent as a thin ring; on the city plan the districts take a faint wash of the ruler's colour and a stronger outline. Neutral and mixed towns stay plain. Colours come from Core's `townRulersProvider`.
+- **"Held by {clan}"** row on a town's Journey card (or "Held by no one" / "Held by several").
+- English and French strings `town_ruled_by`, `town_ruled_none`, `town_ruled_mixed`.
+- The Compact and the Crows read close in colour (measured in Lab); rather than change either clan's colour, the outline is stronger and the "Held by" line names the ruler.
+
+### Fixed
+- **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
+- **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+## [1.494.0+530]
+
+Companions react to the wave 15 moments.
+
+### Added
+- **Companion remarks (English and French):** two lines for each of the eight companions, in their own voice, for building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn and the Star Well; for accepting a risky gift and for winning it or losing it (health, gold or the stat curse); and for the temple's Mending and Blessing. 88 records, data only; the eleven kinds are Core's (v1.493).
+
+## [1.493.0+529]
+
+The party speaks up at wave 15's moments.
+
+### Added
+- **Eleven companion remark kinds:** building the Parley Tent, the Bone-Caster's Hut, the Warding Cairn or the Star Well; taking a risky gift, and the die's verdict (the gift, health, gold or the curse); mending and a blessing at a temple. One companion in the party with lines for the moment says one, the one who spoke least recently first, in the same bubble as a shared drink. The lines themselves are Narrative's, in the next release.
+
+## [1.492.0+528]
+
+Every indoor scene has its room (101 of 101).
+
+### Changed
+- **The last three seated in their buildings:** `5200_house_returned` (the long room under the hill), `2015_informant_trap` (the informant's warehouse) and `5100_clan_dominion_1_lit` (the cliff light's lamp-room), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that now move the party: reading the informant wrong, and the wind taking the flame on the climb.
+
+## [1.491.0+527]
+
+The roll buildings and the town sheets read alike in both languages.
+
+### Changed
+- **House names:** "Bone-Caster’s Hut" with a curly apostrophe, and the French names capitalised like the other houses (La Hutte du jeteur d’os, Le Cairn de garde, Le Puits aux étoiles, La Tente de pourparlers).
+- **Strings:** "Harbor" (not "Harbour") on the town sheet; the French "banish" lines no longer have to agree with the gender of the thing banished ("On écarte {name} pour {draws} tirages.", "À l’écart, {n} tirages"); a curly apostrophe in the Roll hint. Text only, keys unchanged.
+
+## [1.490.0+526]
+
+The town temple opens: mending and a clan's blessing.
+
+### Added
+- **Mending** (from chapter 2, once a day): the whole party back to full health, for 20 × the chapter in gold. Mana stays as it is and no day passes. The tavern stays the free rest, at the cost of a day.
+- **A blessing** (30 + 30 × the chapter in gold): for the next 3 fights, the ruling clan's host effects and a block of 1 for the whole party at the start; a temple no clan holds gives +3% max health instead. One at a time; the first blessing from a clan each chapter raises standing with it by 1.
+- Prices follow the standing with the temple's ruler, as clan shops do (×1.40 Hostile to ×0.75 Sworn); a clan that hunts you refuses you. No curse is lifted.
+- Each clan's temple name, blessing and lines (Narrative's texts, EN/FR).
+
+### Changed
+- **Claimant Morrow** has 121 max health instead of 112: the blessing could still be running when he is met after the chapter 7 hub.
+- **Forcing the way into a champion** leaves it at 80% health instead of 85% (the champions' curve sat on its floor).
+
+## [1.489.0+525]
+
+Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
+
+### Added
+- **The risky gift's d20 reveals itself.** After Accept, the die tumbles in a dialog, lands on the saved number, shows the sum with Luck and a verdict ("The gift is yours." / "A price to pay."); Next goes to the result card. With animations off the die is set down at once.
+- **The odds as a bar** on the risky card: gift in gold, price in red.
+
+### Changed
+- **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
+- English and French strings for the die dialog (`offer_risky_roll_*`).
+## [1.488.0+524]
+
+The last indoor scenes get their rooms on Core's side.
+
+### Added
+- **Two buildings:** the informant's warehouse behind Saltmouth's landward gate, and the lamp-room of the cliff light at Wrack's End (Narrative's names and blurbs, EN/FR).
+
+### Fixed
+- **Kindly Hill:** the way of `5200_house_returned` stands in the hall district, where its long room is.
+
+Narrative then seats `5200_house_returned`, `2015_informant_trap` and `5100_clan_dominion_1_lit` in their rooms.
+
+## [1.487.0+523]
+
+Four more indoor scenes have their rooms (98 of the 99).
+
+### Changed
+- **Seated in their buildings:** `6010_thread` and `6010_heist_night` (the chart-keeper's chapel), `3100_house_anvil_deaf_failed` (the cold forge) and `5200` (the long room under the hill), so the Journey opens on each room's plan.
+- **Two fail notes** (English and French) for the rolls that move the party: the tenth sign gone wrong at the cold forge, and the knife slipping on the bark-bleeder's tree.
+
+## [1.486.0+522]
+
+The story text keeps its room on a small phone.
+
+### Changed
+- **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
+## [1.485.0+521]
+
+Two bosses brought back to their curve.
+
+### Changed
+- **The Void Archon** has 76 max health instead of 73 (won about 53% at seed 7, now about 51%; target 50).
+- **Maud Tallis** deals 5 damage instead of 4 and has 72 max health instead of 81 (won about 49%, now about 40%; target 40). Health alone pushed chapter 7's clash gap over its bound.
+
+## [1.484.0+520]
+
+The tutorial strings polished, English and French.
+
+### Changed
+- **Typography:** curly apostrophes throughout the `tut_*` strings (English and French were mixed) and no-break spaces before `:` `;` `!` `?` in the French.
+- **The Rusty Eel** is masculine throughout the French tours (it was "la" in three places); "Harbor" is capitalised like the Harbor tour's title.
+- **A gendered participle** about the player is gone ("blessé" became "à bout de forces"), and the shop line reads "Spend your gold on what the merchant sells."
+- Text only: no key changes.
+- **Two more indoor scenes seated** (`6010_lysa_dead` in the chair chapel, `6010_record` in the muniment room), now that Core's v1.482 moved their ways on the city plan: 94 of the 99 indoor scenes stand in a building.
+
+## [1.483.0+519]
+
+Who rules each town, for the maps to tint it in its clan's colours. Data and a provider only; UX draws it (contract: `docs/proposals/town-ruler-colours.md`).
+
+### Added
+- **Town rulers** (`townRulersProvider`, `rulerOfTown`): the 16 towns with a city plan and their 59 districts, each with its ruling clan and that clan's colour (the `color` factions.json already has) plus a darker accent. A town takes the clan that holds it, else the clan holding most of its districts (neutral on a tie); a district takes its own holder, else its town's. Follows politics as places change hands.
+
+## [1.482.0+518]
+
+Three camp buildings that bend the rolls: reroll, banish and raise the level's stat pick and the clans' offers.
+
+### Added
+- **The Bone-Caster's Hut** (Reroll): up to 4 charges, full when built, +1 per level. Redraws the whole set of choices; a rerolled stat pick keeps its rarity.
+- **The Warding Cairn** (Banish): up to 3 charges, full when built, +1 per level. Bans a training path (stat pick) or a gift (offer) for 5, 10 or 15 draws, for 1, 2 or 3 charges; the card is replaced at once.
+- **The Star Well** (Raise, a great work): 1 charge when built, +1 every 15 draws, up to 5. Lifts one card one rarity, never above Heroic and never a risky card.
+- The powers never touch ability checks, combat dice, loot or the risky-gift die. Old saves load unchanged.
+
+### Fixed
+- **The Black Reliquary's plan:** the ways of `6010_lysa_dead` and `6010_record` stand in their building's district, so their scenes can open on their room.
+
+## [1.481.0+517]
+
+Wave 14: the move on the world chart, the town's service pins.
+
+### Added
+- **The move on the real world view:** when the story sets the party down far away, the Journey shows the walk on the world chart (the sphere or the flat chart): the traveller follows the road or sea lane between the two places, slowly (6 to 13 seconds by the length of the road) while the camera closes in on the party, follows it and pulls back out. **A tap skips it.** The words under the map (the caption and "You pass ...") stay.
+- **Service pins on the town plan:** once a district is looked at, its signs show (notice board, market, tavern, temple, forge, harbour), dim when nothing opens there yet; a tap opens a sheet of what the service opens (the shops of the market or the forge, the bounty board, a night's rest, the port, or "Nothing to do here yet." for the temple).
+- A scene set in one of Core's new buildings (the prison, the library, the forge) opens its own room; a test checks it.
+
+### Changed
+- Tests run a move at a third of its time (`worldMoveTimeScale`, set in `test/flutter_test_config.dart`) so the waits stay short.
+
+## [1.480.0+516]
+
+Wave 13: the road's party, clan banners on the skill tree, the level-up radar.
+
+### Added
+- **The walking party on the land walk:** the hero (the ronin) leads and up to two picked companions follow behind, as coloured placeholder figures until their art comes (a companion's colour stays the same every walk).
+- **A word on the road:** as a walk starts, a walking companion may speak, shown as a small bubble over their figure for a few seconds (Core's `speakUpOnWalk`, Narrative's walk remarks).
+- **Clan banners on the skill tree:** each skill not yet known hangs its offering clan's small banner from its ring (dim while locked); the skill sheet shows the banners of the clans that offer it.
+- **Level up as the ability radar:** the Level Up screen and the pop-up after a fight open on the radar of the eight abilities (a tap on a corner says where it comes from), with the fight numbers under it and a **Detail** tab that opens the full list of rows.
+
+### Changed
+- **The enemy or NPC met on a land walk comes in from the left**, behind the party, its art mirrored to face east; the party now stands further right to leave it room.
+- Tests: `walk_bubble_test`, `walk_party_view_test`, `encounter_figure_test` (left entry), `skill_tree_test`, `level_up_screen_test`.
+
+## [1.479.0+515]
+
+The new buildings' names and blurbs reworded.
+
+### Changed
+- **27 buildings** (the cells of the Black Hold, the green door, the Tide Cellar, the Reliquary chapels, the White Anchorage's hulls, the throne room and the rest) have their names and blurbs reworded in English and French. Text only: ids, kinds and parents are unchanged.
+- **16 indoor scenes seated in their rooms:** the 7 crownings (`7590_*`) in the throne room, on the dais, and 9 scenes of the Black Reliquary in their chapels (the muniment room, the Tribunal's, the Hammer's, the chart-keeper's, the parish's), so the Journey opens on each room's plan. The French follows the game's own words (Linceul, Porte-Clefs, marteau-maître, Le Coffre des Contrebandiers).
+
+## [1.478.0+514]
+
+Follow-up to the Journey's world data (v1.475): the crownings seat in the Lantern Hall, and the Black Reliquary's chapels count as part of the Reliquary.
+
+### Fixed
+- **The crowning scenes (7590_*)** were seated on the Lantern Cliff (`tool/city_plans/district_seats.json`); their way now stands in the throne room's lot of Candlehold's Lantern Hall, where their text sets them.
+- **The Black Reliquary's landmark** covers the whole city, not only the Reliquary Quarter, so the scenes in its Chapels and Frost Line districts stay on the same landmark (no world-chart trip between its districts).
+
+Once the story links those 18 scenes to their rooms (their `location`, Narrative's field), 94 of the 99 indoor scenes open on a room plan.
+
+## [1.477.0+513]
+
+Risky gifts: a clan that doesn't trust you may still offer a better gift, at a price the die names.
+
+### Added
+- **The Parley Tent** (camp, workshops): 250 gold, 2 timber, 2 cut stone. Once built, risky gifts can be offered.
+- **Risky gifts:** in about 3 in 10 offers where a suitor qualifies, at most one card is marked risky. The suitor must be a clan you stand Wary, Unfriendly or Resented with, or one whose alignment opposes yours; never a hostile clan or the nemesis. The gift is one rarity better than its roll. The card shows the odds (for example "Gift 80% · Price 20%").
+- **The roll:** a d20 plus up to +2 from Luck, rolled when the offer is drawn, so a reload can't change it.
+  - Usually the gift (75 to 85%).
+  - Otherwise a price: 40% of max health, a quarter of the purse, or −2 to the clan's stat for two levels, shown as a Curse in the stat breakdown. A natural 1 always costs the health.
+  - Each price falls back to another, so "nothing" never happens.
+  - Standing with the clan rises whatever the die says.
+- **Simulator:** about 3.2 risky cards seen per run and 1.1 taken, 72% of them the gift. A risky card is never taken at half health or less.
+
+### Changed
+- **The White Admiral** has 72 max health instead of 80. It sat at its band's floor (33%) and now wins about 40% at seed 7.
+
+## [1.476.0+512]
+
+Companions say a word on the road.
+
+### Added
+- **Walk remarks:** four short lines for each of the eight companions (English and French) for the new `walk` trigger, spoken once as a land walk starts by a companion in the walking party. Data only; the trigger is Core's (v1.474).
+
+## [1.475.0+511]
+
+The Journey's world data for wave 14: rooms when you walk into a building, service pins in towns, and the real road for a move on the world view. Data and providers only; UX draws them (contract: `docs/proposals/journey-world-data.md`).
+
+### Added
+- **Buildings on arrival:** 28 new buildings in geography.json (prison, temple, library, forge, hall, house, cellar, warehouse, shop), linked from the scenes that take place inside them, with a spot for the party where the text makes it clear. 76 of the story's 99 indoor scenes now open on the building's own room plan (7 before); 23 still wait at their district (listed in the contract).
+- **Service spots in towns:** every town with a city plan gets fixed pins for its notice board, market, tavern and temple, plus a harbour on a quay and a forge in 5 towns, each on a real lot or square. `townServicesProvider(cityId)` says what each opens (the town's shop, the bounty board, rest, the port); the temple has no screen yet.
+- **The move on the world view:** `worldLegPathProvider((from:, to:))` returns the polyline of a Journey leg in the world chart's coordinates along the world roads and sea lanes, its kind (road, sea, crossing) and stops; a straight line when no route connects the two places.
+
+## [1.474.0+510]
+
+The land walk knows who walks.
+
+### Added
+- **Walking party** (`walkingPartyProvider`, for UX's land walk side view): the hero first, then up to two of the companions picked for the party, in the order picked. With no companion picked, the hero walks alone. A benched, lost or departed companion does not walk. Each figure carries a sprite key (`hero`, `companion_<id>`); until the art arrives, UX draws a placeholder figure.
+- **A word on the road** (`RemarkKind.walk`, trigger `walk` in Companion Remarks): as a land walk starts, one walking companion with walk lines may say one, the one who spoke least recently first, never within 3 choices of another remark. UX calls `speakUpOnWalk(ref)` once per walk and shows it as a bubble over that companion.
+
+## [1.473.0+509]
+
+Chapters 5 to 8 read in short paragraphs, with the key facts in bold. Needs v1.472 (chapters 3 and 4) first.
+
+### Changed
+- **Shorter paragraphs:** the long scenes of chapters 5 onward (node ids 6000 and up) are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French) in 189 scenes: a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+
+## [1.472.0+508]
+
+Chapters 3 and 4 read in short paragraphs, with the key facts in bold. Needs v1.471 (chapters 1 and 2) first.
+
+## [1.471.0+507]
+
+Chapters 1 and 2 read in short paragraphs, with the key facts in bold. Needs v1.470 (the story text display) first.
+
+### Changed
+- **Shorter paragraphs:** 66 long scenes of chapters 1 and 2 are split into paragraphs of a few sentences, at a change of place, speaker or beat.
+- **Key facts in bold** (`**...**`, English and French): a number, an object that matters, a deadline, a promise, a few a scene. Names are coloured by the game, not marked.
+- **Fight tips polished** (the 16 one-time tips) and **`affix_armored_desc`** fixed: Armored shrugs off 1 damage, as the code does.
+
+## [1.470.0+506]
+
+The story text reads like a page: paragraphs, names in colour, key facts in bold, written out as you read.
+
+### Changed
+- **Names in colour:** the names of people (`npcs.json`, the companions), places (the geography) and clans (factions, sub-clans, and the clans' short names) are coloured wherever they appear in a scene's text, one colour for each kind (warm orange, teal, violet) in both themes. Found by the game from its own tables, in the language of the text, whole words and the longest first; Narrative marks nothing by hand. A description of someone ("The archivist") is not a name.
+- **Bold and paragraphs:** `**key facts**` are bold, and a blank line starts a paragraph (docs/proposals/story-markup.md). A text with no markup keeps the look it had (its first sentence in bold), and the voice, the journal and the folded lines read the words without the signs.
+- **A scene writes itself out, quickly** (about 260 characters a second, never over 4 s): one tap shows it all, the next goes on as before; the choices (and the Journey's Continue, which shows the rest first if pressed too early) come once the text is complete. A scene read before, Edit Mode, reduced motion and animations off show the text at once. In the story player and the Journey's scene view (page and sheet).
+- A place's read mark ignores the `**` signs, so marking a scene up does not make a place you have read look new.
+
+## [1.469.0+505]
+
+A stat's popin on the Character radar.
+
+### Added
+- **Tap an ability on the radar:** its name (STR, DEX...) opens a sheet with the exact number, what a point of it does for this hero's calling ("Each point: +1 damage, +2% dodge", from `statPickEffects`), and where it comes from, from Core's stat breakdown: the starting score, the race, the calling, the picks (the paths named), the patron clan, the tomes, the formative memories, and "Earlier" for an old save's unexplained rest; with a total that adds up to the number. What a fight lends on top (gear, signs, titles, the Sworn boon) is a section of its own, with "In a fight: N" under the number. A line under the radar says it can be tapped. EN and FR at 320 px.
+
+## [1.468.0+504]
+
+A fight explains its goal, its enemy's doctrine and its situation the first time a save meets each.
+
+### Added
+- **One-time fight tips:** the first fight that shows a goal (Hold the line, Rout, Subdue), an enemy doctrine (the Dominion's Writ, the Crows' Short Con, and the other clans' habits) or a situation (Ambush, Darkness, Cramped, High ground, Shrine) explains what it means for the player, in a sentence or two on the setup screen. Several appear in one card, one after another (1/3, Next). Each one shows once per save, and none show when tutorials are off in Settings. Old saves see them all as new. The texts are drafts in English and French.
+
+## [1.467.0+503]
+
+The Journey's step button reads "Go" in French too.
+
+### Changed
+- **"Partir" becomes "Go"** on the selected Journey step's button, and in the two lines that name it (the map hint and the Journey tutorial). The key is unchanged; "Set out" for expeditions keeps "Partir".
+
+## [1.466.0+502]
+
+A skill challenge's dice can be seeded in tests. Play is unchanged.
+
+### Changed
+- **`SkillChallengeScreen`** takes an optional `random`. The story player passes it its `storyCheckRandomProvider` (in `story_player_screen.dart`), so a test that overrides that provider settles a multi-round challenge the same way on every run. With no override, the rounds roll on a fresh `Random`, as before.
+
+## [1.465.0+501]
+
+A scene's choices are in the scene, and the map offers only the ways that move you.
+
+### Changed
+- **The scene view holds the scene's own choices:** when the party arrives (the full page for the main story, the sheet for a place's errand) the words are followed by the choices acted out here: a card for each (a fight, a payment, a check, a decision), or in a hub a chip for each kind that opens its list. The page's button reads "Back to the map" when it has choices. The wreck's "Lash yourself to the mast" is no longer under the map.
+- **The map keeps only the ways that carry the party:** pins for those, and nothing else under it. A button with a count next to Read ("Choices · 3") opens the scene view when you want its choices again. The rings on the party's mark are gone with the cards. A written detour has no map, so its cards stay under its scene.
+- Closes the open `TODO(UX)` of the arrival work. Building maps on arrival is not part of this; it keeps its own version.
+
+## [1.464.0+500]
+
+The simulator counts the politics of a quest's turn-in, and the ranger's first chapters get a little easier.
+
+### Changed
+- **Ranger** starts with 2 more max health (`bonusMaxHealth` -2 -> 0). Chapters 1-2 within three tries: 71% -> 75%; overall 74.8% (the 75% cap stops a bigger touch).
+- **Claimant Tallis** deals 4 damage instead of 5, back in her boss band (47%) with the ranger's extra health.
+
+### Fixed
+- **Playthrough simulator:** a turn-in choice's politics (standing, clan power) now apply through the app's own `applyStoryPolitics`, once per quest and choice, as in play (QA #378). Gaps the simulator still has are listed in `docs/simulation/sim-gaps.md`.
+- **sea_beast_outrun_test** no longer fails about one run in nine: the voyage's rolls are seeded.
+
+## [1.463.0+499]
+
+Descriptions stop quoting numbers that have moved.
+
+### Changed
+- **Placeholders** instead of literal numbers in 6 spells' texts (the multiplier, the turns, the weaken), the two sets' bonus lines, the two mana skills and 8 spec variants (the mana, the heal, the share, the cleanse, the faces, the round), English and French. They fill from the entry's own numbers, so the next rebalance cannot leave a stale text.
+- **Stale lines fixed** (v1.458 divided the numbers): Steady is worth 1 more, Hone gives +1, Heavy Hand +1 damage, Apothecary heals 2 more, Vigor gives +3 health, the Iron Skin charm gives +1 armor, and the Hollow Court set's thorns read as a share of the blow.
+- **Two Clan Host lines reworded** for what they now do: the Compact's smiths give the party a little more health, and the oni's blows drink a little of the enemy's life.
+
+## [1.462.0+498]
+
+The level-up pick is framed by its rarity.
+
+### Changed
+- **Rarity frames on the pick cards:** the three cards of a level's pick share its rarity, and now show it the way the signs do: a frame in the rarity's colour (Rare blue, Epic purple, Heroic orange; Common stays quiet) that gets thicker and brighter with it, a tint on the card, a glow on Heroic, and the rarity's chip on top of each rarer card. Under each gain, what it does for this hero ("+1 damage", "+2% dodge", from `statPickEffects`), and the picked card's detail spells the whole line out ("+4 PER: +4% crit, +4% dodge, reads foes better"). The gold ring still marks the card you picked.
+
+## [1.461.0+497]
+
+The small effects back in proportion, dice faces with their spread again, and descriptions that read their own numbers.
+
+### Changed
+- **Effects that stayed at 1 after the ÷5 are now shares:**
+  - **Strike:** an element strike gives +8% Attack damage per point.
+  - **Thorns:** they return 10–30% of a blow that lands.
+  - **+1 armour on a sign or title:** now +8% block chance. A blocked blow loses half. Block from every source is capped at 50%.
+  - **Iron Hide:** +10% block chance a rank.
+  - **Bull's Neck and Gallows Breaker:** +1 Strength (was +2).
+  - **Hone:** a face takes at most as many hones as its own number.
+  - **Small bonuses:** small percentage bonuses keep their fractions through a fight.
+- **Dice faces keep their spread:** faces 4–7 that had all become 1 now run 1–5 from their old values. Bought dice are a real upgrade over the starter again.
+
+### Added
+- **Descriptions can read their own numbers:** spells, set bonuses, skills and spec variants accept placeholders such as `{armor}`, `{dodge}`% or `{heal}`, filled from the entry's data in EN and FR. The names are in `docs/proposals/text-placeholders.md`, for Narrative's text pass.
+- **Seeded checks for tests:** story and expedition checks can be seeded in tests.
+
+Simulated over 400 runs, fights won within three tries stay at 72.0%, and every boss and the champions stay in band.
+
+## [1.459.0+495]
+
+The game now remembers where each point of a stat came from.
+
+### Added
+- **A stat ledger.** Every pick, tome, patron gift and origin memory records what it added, per stat. That includes the damage and health those points bring.
+- **`statBreakdown`.** It lists a stat by source: base, race, profession, level, perk, pick, tome, patron and origin. Then come the fight-only bonuses: gear, sets, signs, titles and the Sworn boon. The rows add up to the number shown. This is ready for the Character radar's stat popin, which is UX's.
+- **Old saves.** Whatever the record can't explain shows as one "earlier" row.
+
+## [1.458.0+494]
+
+Smaller numbers, so every point counts: every fight number is a fifth of what it was, each level brings one pick, and each ability has its job.
+
+### Changed
+- **A smaller scale.** Health, damage, armour, dice faces, heals and blocks, gear, skills, spells and enemies are all about a fifth of what they were. A starting hero has about 18 to 29 health and hits for 2 to 5.
+- **One pick a level, with a rarity:**
+  - Every pick rolls Common (+1), Rare (+2), Epic (+3) or Heroic (+4), at 90 / 8 / 1.6 / 0.4%.
+  - Each point of Luck raises the odds, up to Luck 15.
+  - Rare and better add a second ability from the same path.
+  - A level also gives +4 max health.
+- **Each ability has its job:**
+  - **The damage stat:** Strength for the warrior, Dexterity for the ranger and rogue, Intelligence for the mage and cleric. +1 of it is +1 damage. Base damage no longer grows by itself.
+  - **Constitution:** +5 max health.
+  - **Dexterity:** +2% dodge.
+  - **Perception:** +3% block for the warrior (a blocked blow loses half). For the ranger and rogue, +1% crit and +1% dodge. It still reads the enemy's intent.
+  - **Wisdom:** +1 mana (mana comes from Wisdom only); it still helps heals and shortens statuses.
+  - **Luck:** crit chance and better picks.
+- **Patron gifts** come every other level.
+- **Story checks:** a score adds 2 + 2 × √score to the d20. A natural 1 always fails and a natural 20 always passes. Narrative's DCs are unchanged.
+- **Old saves are rescaled once on load.**
+  - Health, damage and armour are divided by 5, and current health keeps its share.
+  - Abilities keep their first 5 points; every 5 above counts as one.
+  - Unspent points become picks.
+- Ship combat is unchanged.
+
+Simulated over 400 runs, the share of fights won within three tries is 72.0% (it was 73.6%):
+- **Chapters 1–2:** 86.3%.
+- **Chapters 3–8:** 68.9%.
+- **By profession:** 70 to 74%.
+- **Bosses and clan champions:** all still in their bands.
+
+## [1.457.0+493]
+
+The road's strangers walk in to meet the party.
+
+### Added
+- **Encounter figures on the land walk:** at a land-crossing event with someone on the road, their figure walks in from the right (the way the party walks; the art faces west), stops in front of the party facing it, and breathes while you choose. The Inquisition patrol is Inquisition soldiers (their art); the scavengers, whose enemy has no art yet, are a plain grey placeholder figure; storms, wells, springs, the dogs and the water seller put nobody on the road (the event data names no one). With animations off the figure is already in place. One resolver, `roadEncounterFigure` (`lib/widgets/fight_sprites.dart`), so more art is one line there.
+
+## [1.456.0+492]
+
+The Regent of the Lantern has a face.
+
+### Added
+- **The Regent's icon:** Cassian Oriel (`claimant_vane`, the chapter 7 boss of the Lantern clan) is no longer drawn with the Hollow Court Inquisitor's picture. He is a slight, bare-faced man in tide-blue and gold, silver at the temples, holding the great Hooded Lantern on a chain (black cowl, a gold eye where the flame should be), from the look in `docs/proposals/dominion-regent.md`: no mask, no white robe, no red, so he never reads as the Inquisition's soldiers or the White Soldier. Drawn by `tool/gen_hunter_icons.py` like the hunters.
+
+## [1.455.0+491]
+
+Enemies with art stand in the fight, facing the hero.
+
+### Added
+- **Enemy sprites in the fight:** the user's first PixelLab characters stand on the ground below the enemy cards, facing west toward the hero (who faces east): Inquisitor-General Aurel Vane, the Inquisition Warden, the White Soldier, and the two Inquisition soldier variants (worn by the Inquisition Soldier and the Inquisition Auxiliary). They breathe, step in with their blows (the lunge the enemy cards already play), flinch when hit and fade when beaten, and stay still with animations off. An enemy with no art keeps its portrait card alone. Which enemy wears which sprite is one data table (`enemyFightSprite`), so more of the user's art is a file and a line. The originals are kept in `art/pixellab/` (not bundled); the game uses `assets/visuals/fighters/`.
+
+## [1.454.0+490]
+
+The hero stands in the fight, facing the enemy.
+
+### Added
+- **The hero in the fight:** the ronin of the side view (the walker) stands on the ground below the party's cards, facing east toward the enemies. It breathes while the fight waits, steps in with its blow when the hero strikes, flinches red when a blow lands on the hero, and dims if the hero is knocked out. It stays still with animations off. The art is swappable: one resolver (`heroFightSprite`, in `lib/widgets/fight_sprites.dart`) says which sprite a hero gets, and the figure is sized from its frame, so later art (by profession or race) plugs in with no change to the fight; a missing file falls back to the ronin. It takes no room: it is drawn only where the cards leave the ground free, so the dice and the controls stay where they were on a small phone.
+
+## [1.453.0+489]
+
+A cleared zone pays out as a reward card.
+
+### Changed
+- **Zone cleared card:** the end of an expedition (a cleared zone, an escort, a delivery) is the reward card instead of centred lines: the header in the zone's chapter colour, one row per reward (gold, the item with its rarity, materials with their counts, a die, an ally), and what changed the outcome (the cargo that arrived, a late delivery, a place found, the chapter's condition, a lead, an achievement) as notes. One button takes the party back to town.
+
+## [1.452.0+488]
+
+The Lantern Dominion has a boss of its own, and the second Aurel Vane is gone.
+
+### Changed
+- **Regent Cassian Oriel** (`cassian_oriel`, Dominion rank 2) is the chapter 7 boss of the Lantern Hall. The `claimant_vane` enemy keeps its id and numbers and takes his name and lore; the chapter 1 Aurel Vane is unchanged and is now the Regent's Inquisitor-General.
+- **The story follows:** the Ashen Quarter's envoy, the Hollow Shore vote, the clans' arrivals, the Lantern Hall, the endings, the politics news, the Dominion intrigue and the staff's description now name the Regent. In the Hall Aurel Vane stands behind him, and kneels beside him or slips away by the back stair.
+- The Dominion's court ranks move down one under the Regent.
+
+## [1.450.0+486]
+
+The old ways of spending stat points are gone: the picks are the only one.
+
+### Removed
+- The free stat-point pool and the 5-point build cards (and their screen). The level's picks (v1.449) replace both.
+
+### Changed
+- An old save that still had a build card on the table loads as before: the card is dropped and its unspent points are pending picks.
+
 ## [1.449.0+485]
 
 The level's points are picks, three offers each, laid out like a clan's gift.

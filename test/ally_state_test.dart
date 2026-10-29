@@ -75,35 +75,17 @@ void main() {
           intelligence: intelligence,
         );
 
-    test('a sword scaling with strength adds stat ~/ 2 to damage', () {
-      final bonus = bonusFor(['sword'], strength: 9);
-      expect(bonus.damageBonus, 4);
-      expect(bonus.armorBonus, 0);
-    });
-
-    test(
-        'a shield scaling with constitution adds stat ~/ 2 to armor, not damage',
+    test('retired: an item\'s scalingStat adds nothing (the damage stat does)',
         () {
-      final bonus = bonusFor(['shield'], constitution: 7);
-      expect(bonus.armorBonus, 3);
-      expect(bonus.damageBonus, 0);
-    });
-
-    test('an item with no scalingStat never gets a bonus', () {
-      final bonus = bonusFor(['plain_dagger'], strength: 20);
-      expect(bonus.damageBonus, 0);
-      expect(bonus.armorBonus, 0);
-    });
-
-    test('a zero or negative stat never subtracts below the flat value', () {
-      final bonus = bonusFor(['sword'], strength: -4);
-      expect(bonus.damageBonus, 0);
-    });
-
-    test('multiple equipped items stack their scaling bonuses', () {
-      final bonus = bonusFor(['sword', 'shield'], strength: 9, constitution: 7);
-      expect(bonus.damageBonus, 4);
-      expect(bonus.armorBonus, 3);
+      for (final bonus in [
+        bonusFor(['sword'], strength: 9),
+        bonusFor(['shield'], constitution: 7),
+        bonusFor(['plain_dagger'], strength: 20),
+        bonusFor(['sword', 'shield'], strength: 9, constitution: 7),
+      ]) {
+        expect(bonus.damageBonus, 0);
+        expect(bonus.armorBonus, 0);
+      }
     });
   });
 

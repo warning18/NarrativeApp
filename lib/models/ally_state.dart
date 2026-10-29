@@ -51,10 +51,10 @@ class AllyState {
   /// keeps pace without a separate ally leveling system.
   final int skillPoints;
 
-  /// faceIndex (as string) -> skillId, for the one open "Skill" face on the
-  /// companion's fixed signature die (their locked, thematic faces already
-  /// have a hardcoded linkedSkillID and can't be reassigned — see
-  /// `dice_loadout_screen.dart`'s `_isFixedSkillFace`). Flat, unlike
+  /// faceIndex (as string) -> skillId, for the faces of the companion's
+  /// signature die. Every face is a slot since the dice sizes (see
+  /// dice_faces.dart's isAssignableFace): a pick on a thematic face replaces
+  /// its hardcoded linkedSkillID while it stays. Flat, unlike
   /// [PlayerSession.diceSkillAssignments]' dice-keyed nested map, because an
   /// ally only ever has the one die.
   final Map<String, String> diceSkillAssignments;
@@ -190,10 +190,10 @@ AllyBaseStats deriveAllyBaseStats({
   int bonus(Map<String, dynamic> preset, String key) =>
       (preset[key] as num?)?.toInt() ?? 0;
   return AllyBaseStats(
-    maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 100) +
+    maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 20) +
         bonus(race, 'bonusMaxHealth') +
         bonus(profession, 'bonusMaxHealth'),
-    baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 10) +
+    baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 2) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage'),
     baseArmor: startingArmor(((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
@@ -240,14 +240,11 @@ int equipmentBonusFor(
   return bonus;
 }
 
-/// The extra attackDamage/armor an equipped-item list contributes on top of
-/// its own flat bonuses, from each item's `scalingStat` (e.g. a staff
-/// scaling with Intelligence). Only ever adds — a low or negative stat never
-/// subtracts below an item's flat value, so picking up gear your build
-/// doesn't favor never actively hurts, it just doesn't reach its full
-/// potential. The modifier is the classic D&D-style ability-score halving
-/// (`stat ~/ 2`), matching the doc comment on [PlayerSession]'s ability
-/// scores.
+/// The extra attackDamage/armor an equipped-item list once drew from each
+/// item's `scalingStat`. Retired with the stat scale
+/// (docs/proposals/stat-scale.md): the profession's damage stat raises the
+/// hero's damage itself, so gear scaling with it would count it twice. The
+/// screens still add it; it is always zero, and a follow-up removes it.
 class EquipmentScalingBonus {
   const EquipmentScalingBonus({this.damageBonus = 0, this.armorBonus = 0});
 
@@ -255,6 +252,8 @@ class EquipmentScalingBonus {
   final int armorBonus;
 }
 
+/// Always [EquipmentScalingBonus] zero (see the class): an item's
+/// `scalingStat` now only steers the loot (loot_box.dart).
 EquipmentScalingBonus equipmentScalingBonusFor(
   List<String> equippedItemIds,
   Map<String, dynamic> items, {
@@ -262,28 +261,8 @@ EquipmentScalingBonus equipmentScalingBonusFor(
   required int dexterity,
   required int constitution,
   required int intelligence,
-}) {
-  var damageBonus = 0;
-  var armorBonus = 0;
-  for (final id in equippedItemIds) {
-    final item = items[id] as Map<String, dynamic>?;
-    final scalingStat = item?['scalingStat']?.toString() ?? '';
-    if (scalingStat.isEmpty) continue;
-    final statValue = switch (scalingStat) {
-      'strength' => strength,
-      'dexterity' => dexterity,
-      'constitution' => constitution,
-      'intelligence' => intelligence,
-      _ => 0,
-    };
-    final modifier = statValue ~/ 2;
-    if (modifier <= 0) continue;
-    if (((item?['attackDamage'] as num?) ?? 0) > 0) damageBonus += modifier;
-    if (((item?['armor'] as num?) ?? 0) > 0) armorBonus += modifier;
-  }
-  return EquipmentScalingBonus(
-      damageBonus: damageBonus, armorBonus: armorBonus);
-}
+}) =>
+    const EquipmentScalingBonus();
 
 /// Whether the equipping character's own ability scores meet [item]'s
 /// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate, if it has

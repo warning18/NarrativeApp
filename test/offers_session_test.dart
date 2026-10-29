@@ -79,8 +79,8 @@ void main() {
       await notifier.applyCombatResult(hpAfter: 100, xpGain: 100 + 200);
       expect(notifier.state.level, 3);
       expect(_sources(notifier), [OfferSource.level, OfferSource.level]);
-      expect(notifier.state.statPoints, 10);
-      expect(notifier.state.maxHealth, 140);
+      expect(notifier.state.statPoints, 2);
+      expect(notifier.state.maxHealth, 106);
     });
 
     test('a quest that levels brings them too; a boss and a tome one each',

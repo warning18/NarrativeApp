@@ -11,8 +11,10 @@ import '../data/weather_effects.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/climate_provider.dart';
+import '../providers/player_session_provider.dart' show roadWardsProvider;
 import '../theme/stitched_ink.dart';
 import 'level_signpost.dart';
+import 'ward_mark.dart';
 
 class WeatherChip extends ConsumerWidget {
   const WeatherChip({super.key, required this.palette, this.compact = false});
@@ -62,13 +64,22 @@ class WeatherChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sky = _sky(context, ref);
-    if (ref.watch(levelSignpostProvider) == null) return sky;
+    final signpost = ref.watch(levelSignpostProvider) != null;
+    final warded = ref.watch(roadWardsProvider).isNotEmpty;
+    if (!signpost && !warded) return sky;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        LevelSignpostChip(palette: palette, compact: compact),
-        const SizedBox(height: 4),
+        if (signpost) ...[
+          LevelSignpostChip(palette: palette, compact: compact),
+          const SizedBox(height: 4),
+        ],
+        // The Warding Cairn's wards (wave 16), above the sky.
+        if (warded) ...[
+          WardMark(palette: palette, compact: compact),
+          const SizedBox(height: 4),
+        ],
         sky,
       ],
     );

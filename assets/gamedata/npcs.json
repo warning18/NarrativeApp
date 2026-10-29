@@ -9,8 +9,8 @@
     "placeId": "alster_lower_town",
     "chapter": 1,
     "kind": "inquisitor",
-    "description": "The Inquisitor-General of the Lantern Dominion: tall, dressed in white, a small lantern hooded in black at his collar. He walked out of the ruin of your house in Alster holding your sister off the ground by one wrist, and he knew exactly who you were.",
-    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne : grand, vêtu de blanc, une petite lanterne voilée de noir au col. Il sortit des ruines de votre maison, à Alster, en tenant votre sœur au-dessus du sol par un poignet, et il savait exactement qui vous étiez.",
+    "description": "The Inquisitor-General of the Lantern Dominion, the Regent’s hunting hand: tall, in dark robes and a white mask, dark-haired, with red sashes at the waist and a small lantern hooded in black at his collar. He walked out of the ruin of your house in Alster holding your sister off the ground by one wrist, and he knew exactly who you were.",
+    "description_fr": "L’Inquisiteur général du Dominion de la Lanterne, la main de chasse du Régent : grand, en robe sombre et masque blanc, les cheveux noirs, des ceintures rouges à la taille et une petite lanterne voilée de noir au col. Il sortit des ruines de votre maison, à Alster, en tenant votre sœur au-dessus du sol par un poignet, et il savait exactement qui vous étiez.",
     "want": "Wants the tear for a door and your blood for its key.",
     "want_fr": "Veut la déchirure pour en faire une porte, et votre sang pour en faire la clef.",
     "metNodes": [
@@ -36,25 +36,11 @@
         "line_fr": "Il emporta votre sœur dans la poussière de votre propre rue, et vous n’avez pas pu l’en empêcher."
       },
       {
-        "flag": "envoy_gift_vane",
-        "andFlags": [],
-        "unlessFlags": [],
-        "line": "You took his purse from his envoy at the Ashen Quarter’s gate; it paid for half your road, and he kept the receipt.",
-        "line_fr": "Vous avez pris sa bourse des mains de son émissaire à la porte du Quartier des Cendres ; elle paya la moitié de votre route, et il en garda le reçu."
-      },
-      {
-        "flag": "throne_backed_vane",
-        "andFlags": [],
-        "unlessFlags": [],
-        "line": "You cast the Admiralty’s vote for him on the Hollow Shore: for an inquisition.",
-        "line_fr": "Vous avez donné la voix de l’Amirauté pour lui sur la Rive Creuse : pour une inquisition."
-      },
-      {
         "flag": "throne_vane",
         "andFlags": [],
         "unlessFlags": [],
-        "line": "The Houses gave him the Lantern Throne and the Dominion became an inquisition; he shut Candlehold’s gates against you.",
-        "line_fr": "Les Maisons lui donnèrent le Trône de la Lanterne et le Dominion devint une inquisition ; il ferma les portes de Candlehold devant vous."
+        "line": "The Houses gave his master the Lantern Throne, and he signs its writs.",
+        "line_fr": "Les Maisons donnèrent le Trône de la Lanterne à son maître, et il en signe les mandats."
       },
       {
         "flag": "rival_spared",
@@ -62,8 +48,8 @@
           "throne_vane"
         ],
         "unlessFlags": [],
-        "line": "You took him alive in the Lantern Hall and left him in chains at the foot of the Throne, for the Houses to judge.",
-        "line_fr": "Vous l’avez pris vivant dans la Salle de la Lanterne et laissé enchaîné au pied du Trône, pour que les Maisons le jugent."
+        "line": "You took the Regent alive in the Lantern Hall, and he knelt in chains beside him, for the Houses to judge.",
+        "line_fr": "Vous avez pris le Régent vivant dans la Salle de la Lanterne, et il s’est agenouillé enchaîné à ses côtés, pour que les Maisons les jugent."
       },
       {
         "flag": "rival_slain",
@@ -71,8 +57,8 @@
           "throne_vane"
         ],
         "unlessFlags": [],
-        "line": "You burned him with his own Hooded Lantern in the Lantern Hall, and nobody asked for the ashes.",
-        "line_fr": "Vous l’avez brûlé avec sa propre Lanterne encapuchonnée dans la Salle de la Lanterne, et personne ne réclama les cendres."
+        "line": "You burned the Regent in the Lantern Hall, and he slipped out by the back stair before the fire took; nobody went after him.",
+        "line_fr": "Vous avez brûlé le Régent dans la Salle de la Lanterne, et il s’est glissé dehors par l’escalier de service avant que le feu ne prenne ; personne ne l’a suivi."
       },
       {
         "flag": "",
@@ -110,9 +96,88 @@
       "« Ne courez pas. C’est une courtoisie que je n’accorde qu’une fois : je ne vous suivrai pas ce soir. »"
     ],
     "clan": "dominion",
-    "rank": 2,
+    "rank": 3,
     "title": "Inquisitor-General",
     "title_fr": "Inquisiteur général",
+    "stanceLeader": "scheming",
+    "stancePlayer": "hostile"
+  },
+  "cassian_oriel": {
+    "npcID": "cassian_oriel",
+    "npcName": "Cassian Oriel",
+    "npcName_fr": "Cassian Oriel",
+    "role": "Regent of the Lantern",
+    "role_fr": "Régent de la Lanterne",
+    "faction": "dominion",
+    "placeId": "candlehold_lantern_hall",
+    "chapter": 3,
+    "kind": "noble",
+    "description": "The Regent who has spoken in the Lantern-Bearer’s place since the Voice failed: slight, courteous, bare-faced, in the Dominion’s tide-blue and gold, the Hooded Lantern on a chain in his hand. His Inquisitor-General does his hunting; he keeps the Lantern Hall.",
+    "description_fr": "Le Régent qui parle à la place du Porte-Lanterne depuis que la Voix a failli : menu, courtois, le visage nu, vêtu du bleu marée et de l’or du Dominion, la Lanterne encapuchonnée au bout d’une chaîne à la main. Son Inquisiteur général fait sa chasse ; lui garde la Salle de la Lanterne.",
+    "want": "Wants the tear for a door and your blood for its key, and the Throne for whoever holds the door.",
+    "want_fr": "Veut la déchirure pour en faire une porte, et votre sang pour en faire la clef, et le Trône pour qui tient la porte.",
+    "metNodes": [
+      "3005_envoys",
+      "7520_vane"
+    ],
+    "metFlags": [],
+    "shopId": "",
+    "requiredFlag": "",
+    "states": [
+      {
+        "flag": "envoy_gift_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You took his purse from his Inquisitor-General’s envoy at the Ashen Quarter’s gate; he kept the receipt.",
+        "line_fr": "Vous avez pris sa bourse des mains de l’émissaire de son Inquisiteur général à la porte du Quartier des Cendres ; il en garda le reçu."
+      },
+      {
+        "flag": "throne_backed_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "You cast the Admiralty’s vote for him on the Hollow Shore: for an inquisition.",
+        "line_fr": "Vous avez donné la voix de l’Amirauté pour lui sur la Rive Creuse : pour une inquisition."
+      },
+      {
+        "flag": "throne_vane",
+        "andFlags": [],
+        "unlessFlags": [],
+        "line": "The Houses gave him the Lantern Throne and the Dominion became an inquisition; he shut Candlehold’s gates against you.",
+        "line_fr": "Les Maisons lui donnèrent le Trône de la Lanterne et le Dominion devint une inquisition ; il ferma les portes de Candlehold devant vous."
+      },
+      {
+        "flag": "rival_spared",
+        "andFlags": [
+          "throne_vane"
+        ],
+        "unlessFlags": [],
+        "line": "You took him alive in the Lantern Hall and left him in chains at the foot of the Throne, for the Houses to judge.",
+        "line_fr": "Vous l’avez pris vivant dans la Salle de la Lanterne et laissé enchaîné au pied du Trône, pour que les Maisons le jugent."
+      },
+      {
+        "flag": "rival_slain",
+        "andFlags": [
+          "throne_vane"
+        ],
+        "unlessFlags": [],
+        "line": "You burned him with his own Hooded Lantern in the Lantern Hall, and nobody asked for the ashes.",
+        "line_fr": "Vous l’avez brûlé avec sa propre Lanterne encapuchonnée dans la Salle de la Lanterne, et personne ne réclama les cendres."
+      }
+    ],
+    "dialogueLines": [
+      "\"The Voice failed, and someone had to speak. I have been speaking for eleven years. Nobody has complained.\"",
+      "\"A door that size needs a key that size. I regret that the key has a face.\"",
+      "\"Aurel hunts. I keep. It is a division of labour, and the Lantern has never had a better one.\""
+    ],
+    "dialogueLines_fr": [
+      "« La Voix s’est éteinte, et il fallait que quelqu’un parle. Je parle depuis onze ans. Personne ne s’est plaint. »",
+      "« Une porte de cette taille demande une clef de cette taille. Je regrette que la clef ait un visage. »",
+      "« Aurel chasse. Je garde. C’est une division du travail, et la Lanterne n’en a jamais eu de meilleure. »"
+    ],
+    "clan": "dominion",
+    "rank": 2,
+    "title": "Regent of the Lantern",
+    "title_fr": "Régent de la Lanterne",
     "stanceLeader": "scheming",
     "stancePlayer": "hostile"
   },
@@ -370,7 +435,7 @@
       "« Déportation est un vilain mot. Je l’emploie si rarement que les gens finissent par me croire. »"
     ],
     "clan": "dominion",
-    "rank": 8,
+    "rank": 9,
     "title": "Overseer, Inquisition customs",
     "title_fr": "Douanier de l’Inquisition",
     "stanceLeader": "wavering",
@@ -565,7 +630,7 @@
       "« Je suis assez vieille pour avoir allumé la Première Lanterne avec ma mère. J’aimerais l’allumer une dernière fois avant d’oublier comment on fait. »"
     ],
     "clan": "dominion",
-    "rank": 4,
+    "rank": 5,
     "title": "Eldest Wickwarden",
     "title_fr": "Aînée des Garde-Mèches",
     "stanceLeader": "loyal",
@@ -656,7 +721,7 @@
       "« Vous portez le gris comme un fardeau. Bien. Ce sont ceux qui le portent à la légère qui m’inquiètent. »"
     ],
     "clan": "dominion",
-    "rank": 3,
+    "rank": 4,
     "title": "Grand Master of the Order",
     "title_fr": "Grand Maître de l’Ordre",
     "stanceLeader": "scheming",
@@ -1127,7 +1192,7 @@
       "« Brûlez proprement. Une côte à demi brûlée est une côte qui se souvient. »"
     ],
     "clan": "dominion",
-    "rank": 6,
+    "rank": 7,
     "title": "Commander of the Crusade",
     "title_fr": "Commandant de la Croisade",
     "stanceLeader": "loyal",
@@ -1956,9 +2021,9 @@
     "chapter": 4,
     "kind": "healer",
     "description": "An elf healer of the Barkbleeders who treats the Drowned Cloister’s sick with fever-bark bled from the fen, until the Keyholders lifted his whole season’s tithe and cached it for sale. Without the bark he has candles, prayers and nothing that works.",
-    "description_fr": "Un guérisseur elfe des Saigne-Écorce qui soigne les malades du Cloître noyé avec l’écorce-fièvre saignée dans le marais, jusqu’à ce que les Porte-Clés lui prennent la dîme de toute une saison et la cachent pour la vendre. Sans l’écorce, il lui reste des chandelles, des prières, et rien qui agisse.",
+    "description_fr": "Un guérisseur elfe des Saigne-Écorce qui soigne les malades du Cloître noyé avec l’écorce-fièvre saignée dans le marais, jusqu’à ce que les Porte-Clefs lui prennent la dîme de toute une saison et la cachent pour la vendre. Sans l’écorce, il lui reste des chandelles, des prières, et rien qui agisse.",
     "want": "His season’s bark back from the Keyholders’ cache, before the fever takes the cloister.",
-    "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clés, avant que la fièvre n’emporte le cloître.",
+    "want_fr": "Retrouver l’écorce de sa saison dans la cache des Porte-Clefs, avant que la fièvre n’emporte le cloître.",
     "metNodes": [
       "5010_brannoc",
       "6010_brannoc_later"
@@ -1972,14 +2037,14 @@
         "andFlags": [],
         "unlessFlags": [],
         "line": "You lifted the Keyholders’ cache and returned the bark to Brannoc; the Barkbleeders count you a friend of the fen.",
-        "line_fr": "Vous avez vidé la cache des Porte-Clés et rendu l’écorce à Brannoc ; les Saigne-Écorce vous comptent parmi les amis du marais."
+        "line_fr": "Vous avez vidé la cache des Porte-Clefs et rendu l’écorce à Brannoc ; les Saigne-Écorce vous comptent parmi les amis du marais."
       },
       {
         "flag": "bark_sold",
         "andFlags": [],
         "unlessFlags": [],
         "line": "You sold the recovered bark back to the Keyholders; Brannoc’s sick went without, and he did not forget who put a price on them.",
-        "line_fr": "Vous avez revendu l’écorce récupérée aux Porte-Clés ; les malades de Brannoc s’en sont passés, et il n’a pas oublié qui leur avait mis un prix."
+        "line_fr": "Vous avez revendu l’écorce récupérée aux Porte-Clefs ; les malades de Brannoc s’en sont passés, et il n’a pas oublié qui leur avait mis un prix."
       },
       {
         "flag": "bark_kept",
@@ -2346,9 +2411,9 @@
     "chapter": 2,
     "kind": "keeper",
     "description": "The Keyholders’ hand under the rusty pier, who has never given a name and never asked for one. Everything on the shelves came off a boat the Dominion never logged.",
-    "description_fr": "La main des Porte-Clés sous la jetée rouillée, qui n’a jamais donné de nom et n’en a jamais demandé. Tout ce qui garnit les rayons est sorti d’un bateau que le Dominion n’a jamais enregistré.",
+    "description_fr": "La main des Porte-Clefs sous la jetée rouillée, qui n’a jamais donné de nom et n’en a jamais demandé. Tout ce qui garnit les rayons est sorti d’un bateau que le Dominion n’a jamais enregistré.",
     "want": "To move the Keyholders’ cargo without a single question asked.",
-    "want_fr": "Écouler la cargaison des Porte-Clés sans qu’une seule question soit posée.",
+    "want_fr": "Écouler la cargaison des Porte-Clefs sans qu’une seule question soit posée.",
     "metNodes": [],
     "metFlags": [],
     "shopId": "black_market_docks",
@@ -2587,7 +2652,7 @@
   "keeper_smugglers_vault": {
     "npcID": "keeper_smugglers_vault",
     "npcName": "The Keyholder",
-    "npcName_fr": "Le Porte-Clés",
+    "npcName_fr": "Le Porte-Clef",
     "role": "Keeper of the Vault",
     "role_fr": "Garde du Coffre",
     "faction": "keyholders",
@@ -2595,9 +2660,9 @@
     "chapter": 3,
     "kind": "keeper",
     "description": "The Keyholder who follows the Crusade’s supply ships and set up the Vault’s counter in a dry cellar under the camp’s standing wall. One of everything, nothing with a receipt, and the door opens exactly as wide as the Ledger says you pay.",
-    "description_fr": "Le Porte-Clés qui suit les navires de ravitaillement de la Croisade et a installé le comptoir du Coffre dans une cave sèche sous le mur du camp. Un seul de chaque, rien avec un reçu, et la porte s’ouvre exactement aussi grand que le Registre dit que vous payez.",
+    "description_fr": "Le Porte-Clef qui suit les navires de ravitaillement de la Croisade et a installé le comptoir du Coffre dans une cave sèche sous le mur du camp. Un seul de chaque, rien avec un reçu, et la porte s’ouvre exactement aussi grand que le Registre dit que vous payez.",
     "want": "To keep the Vault’s door open and its shelves off every ledger but the Keyholders’ own.",
-    "want_fr": "Garder la porte du Coffre ouverte et ses rayons hors de tout registre, sauf celui des Porte-Clés.",
+    "want_fr": "Garder la porte du Coffre ouverte et ses rayons hors de tout registre, sauf celui des Porte-Clefs.",
     "metNodes": [],
     "metFlags": [],
     "shopId": "smugglers_vault",
@@ -2633,7 +2698,7 @@
     "clan": "crows",
     "rank": 4,
     "title": "Second Keyholder, keeper of the Vault",
-    "title_fr": "Second Porte-Clés, garde du Coffre",
+    "title_fr": "Second Porte-Clef, garde du Coffre",
     "stanceLeader": "wavering",
     "stancePlayer": "neutral"
   },
@@ -2737,7 +2802,7 @@
     "dialogueLines": [],
     "dialogueLines_fr": [],
     "clan": "dominion",
-    "rank": 7,
+    "rank": 8,
     "title": "Magister of the Cantors, keeper of the tithe",
     "title_fr": "Magister des Chantres, gardien de la dîme",
     "stanceLeader": "loyal",
@@ -3147,7 +3212,7 @@
       "« Dites une prière ou écartez-vous. La file est longue, et les fidèles sont fatigués. »"
     ],
     "clan": "dominion",
-    "rank": 9,
+    "rank": 10,
     "title": "Courier of the crape",
     "title_fr": "Courrier du crêpe",
     "stanceLeader": "loyal",
@@ -3335,7 +3400,7 @@
       "« Un nom écrit dans le Registre n’est pas perdu. Il attend seulement qu’on l’appelle. »"
     ],
     "clan": "dominion",
-    "rank": 5,
+    "rank": 6,
     "title": "High Lantern-Bearer, Keeper of the List",
     "title_fr": "Haute Porte-Lanterne, Gardienne du Registre",
     "stanceLeader": "loyal",

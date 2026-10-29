@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/item_origin_here.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -9,8 +8,10 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'immersive_notice.dart';
-import 'item_stats.dart';
 import 'player_stats_bar.dart';
+
+// The forge's sheet lives in forge_sheet.dart (v1.593).
+export 'forge_sheet.dart' show showForgeSheet;
 
 /// Opens the pack at [shopId] to sell what nobody wears.
 Future<void> showSellSheet(BuildContext context, {required String shopId}) {
@@ -21,19 +22,6 @@ Future<void> showSellSheet(BuildContext context, {required String shopId}) {
     builder: (_) => FractionallySizedBox(
       heightFactor: 0.8,
       child: _SellSheet(shopId: shopId),
-    ),
-  );
-}
-
-/// Opens the forge's recipes at [shopId].
-Future<void> showForgeSheet(BuildContext context, {required String shopId}) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (_) => FractionallySizedBox(
-      heightFactor: 0.8,
-      child: _ForgeSheet(shopId: shopId),
     ),
   );
 }
@@ -143,113 +131,6 @@ class _SellSheet extends ConsumerWidget {
           child: Text(trFor(lang, 'sell_button')),
         ),
       ),
-    );
-  }
-}
-
-/// The pieces forged at this shop (items.json `craftedAt`): each with its
-/// stats, what it takes and whether the pack holds it.
-class _ForgeSheet extends ConsumerWidget {
-  const _ForgeSheet({required this.shopId});
-
-  final String shopId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final notifier = ref.read(playerSessionProvider.notifier);
-    final items = ref.watch(localizedDbProvider(itemsSchema)).value ??
-        const <String, dynamic>{};
-    final lang = ref.watch(appLanguageProvider);
-    final recipes = recipesAt(shopId, items);
-
-    int carried(String id) =>
-        session.inventoryItemIds.where((i) => i == id).length;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(tr(ref, 'forge_title'),
-                    style: Theme.of(context).textTheme.titleMedium),
-              ),
-              const GoldBadge(),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Text(tr(ref, 'forge_hint'),
-              style: Theme.of(context).textTheme.bodySmall),
-        ),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            children: [
-              for (final id in recipes)
-                Builder(builder: (context) {
-                  final item = items[id] as Map<String, dynamic>?;
-                  final name = _nameOf(item, id, lang);
-                  final gold = (item?['craftGold'] as num?)?.toInt() ?? 0;
-                  final needs = [
-                    for (final m in craftMaterialsFor(item).entries)
-                      '${_nameOf(items[m.key] as Map<String, dynamic>?, m.key, lang)} '
-                          '${carried(m.key)}/${m.value}',
-                    '$gold ${trFor(lang, 'gold_label')}',
-                  ].join(' · ');
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              ItemPixelIcon(id, item?['itemType']?.toString()),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(name,
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall),
-                              ),
-                              FilledButton(
-                                onPressed: !notifier.canCraft(item)
-                                    ? null
-                                    : () async {
-                                        final made = await notifier.craftItem(
-                                            id, item,
-                                            origin: itemOriginHere(ref));
-                                        if (!made || !context.mounted) return;
-                                        showImmersiveNotice(
-                                          context,
-                                          icon: Icons.hardware,
-                                          message:
-                                              '${trFor(lang, 'forged_prefix')} $name',
-                                        );
-                                      },
-                                child: Text(trFor(lang, 'forge_button')),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          ItemStatChips(
-                              item: item, language: lang, compact: true),
-                          const SizedBox(height: 4),
-                          Text('${trFor(lang, 'forge_needs_label')}: $needs',
-                              style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

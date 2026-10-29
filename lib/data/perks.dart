@@ -55,12 +55,17 @@ String perkNameKey(Perk perk) => 'perk_${perk.name}';
 String perkDescKey(Perk perk) => 'perk_${perk.name}_desc';
 
 /// Per rank of each perk.
-const int potionBonusPerRank = 10;
+const int potionBonusPerRank = 2;
 const double critPerRank = 5;
 const double dodgePerRank = 4;
-const int damagePerRank = 2;
-const int armorPerRank = 2;
-const int vigorHealthPerRank = 15;
+const int damagePerRank = 1;
+
+/// Iron Hide's block chance a rank (%): a blocked blow loses half, as a
+/// warrior's Perception block does. It was +2 armor a rank before the small
+/// scale, which at a fifth of the numbers would have been a fifth of every
+/// blow (docs/proposals/stat-scale.md, "Effects at 1").
+const double blockPerRank = 10;
+const int vigorHealthPerRank = 3;
 const int goldPercentPerRank = 10;
 const int xpPercentPerRank = 10;
 const int leaderPercentPerRank = 5;
@@ -77,7 +82,7 @@ class PerkEffects {
     this.critChance = 0,
     this.dodgeChance = 0,
     this.attackDamage = 0,
-    this.armor = 0,
+    this.blockChance = 0,
     this.maxHealth = 0,
     this.momentumDrop = 0,
     this.goldPercent = 0,
@@ -94,7 +99,7 @@ class PerkEffects {
   final double critChance;
   final double dodgeChance;
   final int attackDamage;
-  final int armor;
+  final double blockChance;
   final int maxHealth;
   final int momentumDrop;
   final int goldPercent;
@@ -107,15 +112,16 @@ class PerkEffects {
   int scaleXp(int xp) => xp * (100 + xpPercent) ~/ 100;
   int scaleAllyDamage(int damage) => damage * (100 + allyDamagePercent) ~/ 100;
 
-  /// [gear] with the perks that act like gear laid over it: damage, armor,
-  /// crit and dodge, and the last stand (a second wind).
+  /// [gear] with the perks that act like gear laid over it: damage, crit,
+  /// dodge and block, and the last stand (a second wind).
   GearEffects over(GearEffects gear) => GearEffects(
         attackDamage: gear.attackDamage + attackDamage,
-        armor: gear.armor + armor,
+        armor: gear.armor,
         critChance: gear.critChance + critChance,
         dodgeChance: gear.dodgeChance + dodgeChance,
+        blockChance: gear.blockChance + blockChance,
         lifestealPercent: gear.lifestealPercent,
-        thorns: gear.thorns,
+        thornsPercent: gear.thornsPercent,
         manaOnHit: gear.manaOnHit,
         secondWind: gear.secondWind || secondWind,
       );
@@ -130,7 +136,7 @@ PerkEffects perkEffectsFor(Map<String, int> ranks) {
     critChance: critPerRank * rank(Perk.keenEye),
     dodgeChance: dodgePerRank * rank(Perk.lightFeet),
     attackDamage: damagePerRank * rank(Perk.heavyHand),
-    armor: armorPerRank * rank(Perk.ironHide),
+    blockChance: blockPerRank * rank(Perk.ironHide),
     maxHealth: vigorHealthPerRank * rank(Perk.vigor),
     momentumDrop: rank(Perk.battleRhythm),
     goldPercent: goldPercentPerRank * rank(Perk.plunderer),

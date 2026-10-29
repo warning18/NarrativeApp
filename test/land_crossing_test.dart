@@ -23,6 +23,21 @@ import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
+/// The biome events of wave 16's routes that land_events.json gains with
+/// Narrative's PR (docs/proposals/wave16-land-events.md).
+const Set<String> _awaitingNarrative = {
+  'frost_cairn',
+  'frost_rime_fall',
+  'frost_hound_track',
+  'frost_bell',
+  'fen_lantern',
+  'fen_mud',
+  'fen_cart',
+  'fen_child',
+  'cliff_salt_wind',
+  'cliff_tide_stair',
+};
+
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
@@ -49,6 +64,11 @@ void main() {
       };
       expect(ends, containsAll([route.from, route.to]), reason: id);
       for (final event in route.events.keys) {
+        // Wave 16's frost, fen and cliff events are Narrative's, in their
+        // own PR: until it lands the draw skips them (land_rulers_test).
+        if (_awaitingNarrative.contains(event) && !events.containsKey(event)) {
+          continue;
+        }
         expect(events.containsKey(event), isTrue, reason: '$id: $event');
       }
     }

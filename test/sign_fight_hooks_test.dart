@@ -118,13 +118,14 @@ void main() {
     });
 
     test('gear-like signs lay over the gear', () {
-      const gear = GearEffects(armor: 2, critChance: 5, thorns: 1);
+      const gear = GearEffects(armor: 2, critChance: 5, thornsPercent: 10);
       const signs = SignEffects(
         armor: 1,
         critChance: 3,
         dodgeChance: 2,
+        blockChance: 8,
         lifestealPercent: 6,
-        thorns: 2,
+        thornsPercent: 20,
         manaOnHit: 1,
         secondWind: true,
       );
@@ -133,7 +134,8 @@ void main() {
       expect(over.critChance, 8);
       expect(over.dodgeChance, 2);
       expect(over.lifestealPercent, 6);
-      expect(over.thorns, 3);
+      expect(over.blockChance, 8);
+      expect(over.thornsPercent, 30);
       expect(over.manaOnHit, 1);
       expect(over.secondWind, isTrue);
     });
@@ -268,6 +270,11 @@ void main() {
       int offersTaken,
       int skillsLearned,
     }) walk({required bool signs, required SimProgression progression}) =>
+        // The walk's tables are the point here: signs off means no clan tables.
+        // sim-tables-ok: expedition_steps: a minimal world on purpose
+        // sim-tables-ok: training_paths: a minimal world on purpose
+        // sim-tables-ok: politics_events: a minimal world on purpose
+        // sim-tables-ok: companions: a minimal world on purpose
         simulateFightsByChapter(
           story,
           tables: {

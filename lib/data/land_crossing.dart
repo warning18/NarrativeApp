@@ -9,6 +9,13 @@ library;
 
 import 'dart:math';
 
+import 'ability_check.dart' show checkPasses;
+import 'clan_power.dart' show holderOf;
+import 'factions.dart'
+    show ClanData, PoliticsState, StandingTier, StandingTierOrder;
+import 'geography.dart';
+import 'town_rulers.dart' show TownRuler, townRulers;
+
 /// What one outcome of a crossing's choice does: health as a percent of
 /// the party's maximum (signed), gold (signed), and extra days lost. [note]
 /// is the line that tells it.
@@ -113,6 +120,8 @@ class LandEvent {
     this.text = '',
     this.textFr = '',
     this.choices = const [],
+    this.ruler = '',
+    this.band,
   });
 
   factory LandEvent.fromJson(String id, Map json) => LandEvent(
@@ -125,6 +134,10 @@ class LandEvent {
           for (final c in (json['choices'] as List? ?? const []))
             if (c is Map) LandChoice.fromJson(c),
         ],
+        ruler: json['ruler']?.toString() ?? '',
+        band: RulerBand.values
+            .where((b) => b.name == json['band']?.toString())
+            .firstOrNull,
       );
 
   final String id;
@@ -134,9 +147,30 @@ class LandEvent {
   final String textFr;
   final List<LandChoice> choices;
 
+  /// A ruler's event (wave 16): the clan (factions.json) whose land it is
+  /// met on, '' for a biome event; and the [band] of standing with that
+  /// clan it is met at.
+  final String ruler;
+  final RulerBand? band;
+
+  bool get isRulers => ruler.isNotEmpty;
+
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
   String textFor(bool fr) => fr && textFr.isNotEmpty ? textFr : text;
 }
+
+/// How a road's ruler meets the party (wave 16, docs/proposals/
+/// wave16-core.md §3), by its standing with them: Friend and up, let
+/// through or helped; Hostile and down, the hard version; between, the
+/// toll.
+enum RulerBand { friend, neutral, hostile }
+
+/// The band of a party at [tier] with a road's ruler.
+RulerBand rulerBandFor(StandingTier tier) => tier.isAtLeast(StandingTier.friend)
+    ? RulerBand.friend
+    : tier.isAtLeast(StandingTier.resented)
+        ? RulerBand.neutral
+        : RulerBand.hostile;
 
 /// A long land route (land_routes.json): from one landmark to another
 /// (world_roads.dart's place ids), over [days] days, an event a day drawn
@@ -154,6 +188,7 @@ class LandRoute {
     this.terrain = '',
     this.chapter = 1,
     this.events = const {},
+    this.rulerOneIn = 0,
   });
 
   factory LandRoute.fromJson(String id, Map json) => LandRoute(
@@ -172,6 +207,7 @@ class LandRoute {
               in ((json['events'] as Map?) ?? const {}).entries)
             key.toString(): (value as num?)?.toInt() ?? 0,
         },
+        rulerOneIn: (json['rulerOneIn'] as num?)?.toInt() ?? 0,
       );
 
   final String id;
@@ -188,7 +224,27 @@ class LandRoute {
   final int chapter;
   final Map<String, int> events;
 
+  /// One day in [rulerOneIn] meets the road's ruler (see [drawCrossing]);
+  /// 0, never (the crash's and the ashlands' routes).
+  final int rulerOneIn;
+
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
+
+  /// This route meeting its ruler one day in [oneIn] (see [crossingRuler]).
+  LandRoute withRulerOneIn(int oneIn) => LandRoute(
+        id: id,
+        name: name,
+        nameFr: nameFr,
+        from: from,
+        to: to,
+        roads: roads,
+        days: days,
+        biome: biome,
+        terrain: terrain,
+        chapter: chapter,
+        events: events,
+        rulerOneIn: oneIn,
+      );
 }
 
 /// The side view's scene kits: what a route's `terrain` may be.
@@ -199,6 +255,9 @@ const List<String> landTerrains = [
   'marsh',
   'snow',
   'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
 ];
 
 /// [routes]' record [id] (land_routes.json), or null.
@@ -213,18 +272,123 @@ Map<String, LandEvent> landEventsFrom(Map<String, dynamic> records) => {
         if (value is Map) key: LandEvent.fromJson(key, value),
     };
 
+/// The clan that holds the land [route] crosses, now (wave 16): the ruler
+/// of the place it leads to, else of the place it leaves (a town's ruler
+/// as townRulers reads it, its districts counted; any other place's
+/// holder, clan_power.dart's holderOf), else the ruler of the country it
+/// leads into, else of the one it leaves; '' for no one. It follows the
+/// politics, so a road changes hands with the land around it.
+String landRouteRuler(
+    LandRoute route, Geography geography, PoliticsState politics) {
+  final towns = townRulers(geography, politics, const {});
+  final ends = [
+    geography.placeOfLandmark(route.to)?.id,
+    geography.placeOfLandmark(route.from)?.id,
+  ];
+  for (final id in ends) {
+    final held = _endRuler(id, towns, geography, politics);
+    if (held.isNotEmpty) return held;
+  }
+  for (final id in ends) {
+    final ruler = geography.countryOf(id)?.ruler ?? '';
+    if (ruler.isNotEmpty) return ruler;
+  }
+  return '';
+}
+
+/// Who holds one end of a route: its town's ruler, else its holder.
+String _endRuler(String? id, Map<String, TownRuler> towns, Geography geography,
+    PoliticsState politics) {
+  if (id == null) return '';
+  final town = towns[id]?.clanId ?? '';
+  return town.isNotEmpty ? town : holderOf(id, geography, politics);
+}
+
+/// How often a clan road meets its clan (wave 18 step 2): one day in this
+/// many, in place of its route's [LandRoute.rulerOneIn].
+const int clanRoadOneIn = 2;
+
+/// The clan whose road [route] is (wave 18 step 2): the one holding both
+/// its ends (see [landRouteRuler]'s ends), '' for none.
+String clanRoadOf(
+    LandRoute route, Geography geography, PoliticsState politics) {
+  final towns = townRulers(geography, politics, const {});
+  final to = _endRuler(
+      geography.placeOfLandmark(route.to)?.id, towns, geography, politics);
+  final from = _endRuler(
+      geography.placeOfLandmark(route.from)?.id, towns, geography, politics);
+  return to.isNotEmpty && to == from ? to : '';
+}
+
+/// The band of a party at [tier] on a clan's own road: friendlier from
+/// Friend, harder from Unfriendly down (wider than [rulerBandFor]).
+RulerBand clanRoadBandFor(StandingTier tier) =>
+    tier.isAtLeast(StandingTier.friend)
+        ? RulerBand.friend
+        : tier.isAtLeast(StandingTier.wary)
+            ? RulerBand.neutral
+            : RulerBand.hostile;
+
+/// Who meets the party on [route] now, and how: its ruler
+/// ([landRouteRuler]) at the band its standing puts it in, and the route
+/// as crossed. On a clan's road ([clanRoadOf]) the ruler comes one day in
+/// [clanRoadOneIn] and its bands are [clanRoadBandFor]'s; a route that
+/// never meets its ruler ([LandRoute.rulerOneIn] 0) still never does.
+({LandRoute route, String clanId, RulerBand band, bool clanRoad}) crossingRuler(
+    LandRoute route,
+    Geography geography,
+    PoliticsState politics,
+    ClanData data) {
+  final clanId = landRouteRuler(route, geography, politics);
+  final tier = politics.tierOf(clanId, data);
+  final own = route.rulerOneIn > 0 &&
+      clanId.isNotEmpty &&
+      clanRoadOf(route, geography, politics) == clanId;
+  return (
+    route: own ? route.withRulerOneIn(clanRoadOneIn) : route,
+    clanId: clanId,
+    band: own ? clanRoadBandFor(tier) : rulerBandFor(tier),
+    clanRoad: own,
+  );
+}
+
+/// The events of [events] a road's [ruler] meets the party with at
+/// [band], in file order: none for '' or a clan with no events on file.
+List<String> rulerPool(
+        Map<String, LandEvent> events, String ruler, RulerBand band) =>
+    [
+      if (ruler.isNotEmpty)
+        for (final e in events.values)
+          if (e.ruler == ruler && e.band == band) e.id,
+    ];
+
 /// A crossing's events, one a day: drawn by [route]'s weights among the
 /// [known] events, never the same one two days running (when the route
-/// has another).
+/// has another). With a [rulers] pool (see [rulerPool]) and a route that
+/// meets its ruler ([LandRoute.rulerOneIn]), a day is the ruler's one
+/// time in [LandRoute.rulerOneIn], each of its events once at most. An
+/// event the route names that is not [known] is never drawn: a route
+/// whose events are all missing meets only its ruler, or nothing.
 List<String> drawCrossing(LandRoute route, Iterable<String> known,
-    {required Random random}) {
+    {required Random random, List<String> rulers = const []}) {
   final pool = {
     for (final MapEntry(:key, :value) in route.events.entries)
       if (value > 0 && known.contains(key)) key: value,
   };
-  if (pool.isEmpty) return const [];
+  final rulersLeft = [
+    if (route.rulerOneIn > 0)
+      for (final id in rulers)
+        if (known.contains(id) && !pool.containsKey(id)) id,
+  ];
+  if (pool.isEmpty && rulersLeft.isEmpty) return const [];
   final drawn = <String>[];
   for (var day = 0; day < route.days; day++) {
+    if (rulersLeft.isNotEmpty &&
+        (pool.isEmpty || random.nextInt(route.rulerOneIn) == 0)) {
+      drawn.add(rulersLeft.removeAt(random.nextInt(rulersLeft.length)));
+      continue;
+    }
+    if (pool.isEmpty) break;
     final options = {
       for (final MapEntry(:key, :value) in pool.entries)
         if (pool.length == 1 || drawn.isEmpty || drawn.last != key) key: value,
@@ -349,7 +513,8 @@ class CrossingResult {
 
 /// Plays [route] through without a player: each day's event by
 /// [pickLandChoice], each check rolled with [random] (a d20 plus
-/// [modifierFor]'s bonus against [landCheckDc]).
+/// [modifierFor]'s bonus against [landCheckDc]); [rulers], the road's
+/// ruler's events (see [drawCrossing]).
 CrossingResult resolveCrossing(
   LandRoute route,
   Map<String, LandEvent> events, {
@@ -359,9 +524,11 @@ CrossingResult resolveCrossing(
   required int Function(String ability) modifierFor,
   required Random random,
   int? chapter,
+  List<String> rulers = const [],
 }) {
   final inChapter = chapter ?? route.chapter;
-  final drawn = drawCrossing(route, events.keys, random: random);
+  final drawn =
+      drawCrossing(route, events.keys, random: random, rulers: rulers);
   var hp = health;
   var coin = 0;
   var days = 0;
@@ -377,8 +544,8 @@ CrossingResult resolveCrossing(
         ? choice.fail
         : !choice.hasCheck
             ? choice.outcome
-            : random.nextInt(20) + 1 + modifierFor(choice.check!) >=
-                    landCheckDc(choice.dc, inChapter)
+            : checkPasses(random.nextInt(20) + 1, modifierFor(choice.check!),
+                    landCheckDc(choice.dc, inChapter))
                 ? choice.success
                 : choice.fail;
     coin += outcome.gold;

@@ -18,6 +18,9 @@ import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/origin_stories_screen.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
+import 'package:narrative_data_app/widgets/origin_scene_backdrop.dart';
+import 'package:narrative_data_app/widgets/story_text.dart'
+    show storyTypewriterOn;
 
 String en(String key) => trFor(AppLanguage.en, key);
 
@@ -78,6 +81,18 @@ Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
 void main() {
+  // A memory's picture moves for ever (the side-view engine), so the page is
+  // read in reduced motion, where it holds still and the pages settle; the
+  // typewriter test turns motion back on.
+  setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized()
+            .platformDispatcher
+            .accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+  });
+  tearDown(() => TestWidgetsFlutterBinding.instance.platformDispatcher
+      .clearAccessibilityFeaturesTestValue());
+
   setUp(() {
     rootBundle.clear();
     SharedPreferences.setMockInitialValues({});
@@ -304,6 +319,51 @@ void main() {
 
     final memories = originMemoriesFor(raceId: 'dwarf', professionId: 'mage');
 
+    testWidgets('each memory is a scene page with the picture of its place',
+        (tester) async {
+      await pumpPage(tester);
+      expect(find.byKey(const Key('origin_scene_backdrop')), findsOneWidget);
+      expect(find.byType(OriginSceneBackdrop), findsOneWidget);
+      expect(find.text(memories[0].sceneEn), findsOneWidget,
+          reason:
+              'the words are the memory\u2019s own, in the reader\u2019s prose');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the words write themselves out first; the answers wait',
+        (tester) async {
+      storyTypewriterOn = true;
+      addTearDown(() => storyTypewriterOn = false);
+      tester.platformDispatcher.clearAccessibilityFeaturesTestValue();
+      tester.view.physicalSize = const Size(420, 1600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          home: _Opener<OriginResult>(
+            OriginStoriesScreen(
+                raceId: 'dwarf', professionId: 'mage', random: Random(7)),
+            (_) {},
+          ),
+        ),
+      ));
+      await tester.tap(find.text('open'));
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      final answer = memories[0].answers.first;
+      expect(find.text(answer.en), findsNothing,
+          reason: 'still writing: no answers yet');
+      expect(find.byKey(const Key('origin_random_one')), findsNothing);
+      // A tap finishes the words; the answers are there.
+      await tester.tap(find.byKey(const Key('origin_scene_text')));
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(find.text(answer.en), findsOneWidget);
+      expect(find.byKey(const Key('origin_random_one')), findsOneWidget);
+    });
+
     testWidgets('an answer tells what came of it; Back never skips a memory',
         (tester) async {
       final results = await pumpPage(tester);
@@ -473,15 +533,12 @@ void main() {
     await _until(tester, find.text('Human'));
     final container = ProviderScope.containerOf(
         tester.element(find.byType(RaceProfessionScreen)));
-    await tester.tap(find.text('Human').first);
+    await tester.tap(find.byKey(const Key('choice_card_human')));
     await tester.pump();
-    await tester.scrollUntilVisible(find.text('Warrior'), 300,
-        scrollable: find.byType(Scrollable).first);
-    await tester.tap(find.text('Warrior').first);
+    await tester.tap(find.byKey(const Key('rp_step_calling')));
     await tester.pump();
-    await tester.scrollUntilVisible(
-        find.text('Start New Game With This Character'), 300,
-        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.byKey(const Key('choice_card_warrior')));
+    await tester.pump();
     await tester.tap(find.text('Start New Game With This Character'));
     await _settle(tester);
     await tester.tap(find.text('Start'));

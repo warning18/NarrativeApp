@@ -13,11 +13,15 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
+import '../widgets/fight_figure.dart';
+import '../widgets/fight_stage_parts.dart';
+import '../widgets/fight_sprites.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
+import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/duo_techniques.dart';
@@ -34,6 +38,7 @@ import '../combat/quick_resolve.dart';
 import '../combat/turn_order.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/fight_goal.dart';
+import '../combat/fight_tips.dart';
 import '../combat/context_rules.dart';
 import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
@@ -51,6 +56,7 @@ import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
 import '../data/offers.dart' show clanEffectsFor;
+import '../data/temple.dart' show activeBlessingEffects;
 import '../data/throne.dart' show fieldedHost, hostEffects;
 import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
@@ -91,12 +97,15 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
+import '../widgets/fight_entrance.dart';
+import '../widgets/fight_spoils_strip.dart';
 import '../widgets/offer_dialog.dart';
 import '../widgets/pixel_sprite.dart';
 import '../widgets/pixel_portrait.dart';
 import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
+import 'fight/fight_tips.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_cards.dart';
@@ -180,11 +189,11 @@ const int _luckyCoinLuckBonus = 10;
 const Color _previewColor = Color(0xFF42A5F5);
 
 /// Armor added to the player for one fight by a `charm_iron_skin`.
-const int _ironSkinArmorBonus = 5;
+const int _ironSkinArmorBonus = 1;
 
 /// The Poison a Venomous enemy's plain attack carries (see [EnemyAffix]).
 const StatusEffect _venomousPoison = StatusEffect(
-    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 3);
+    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
 
 const int _maxRolls = 3;
 
@@ -246,6 +255,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// choices, the loss) -- only then can the fight be left.
   bool _settled = false;
   bool _leaving = false;
+
+  /// What the won fight brought, for the strip over the log (fight_spoils_strip.dart).
+  FightSpoils? _spoils;
 
   late int _playerLevel;
   int _lastDamageTaken = 0;
@@ -593,6 +605,24 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.dispose();
   }
 
+  /// [child] with the entrance card of the first boss or named foe in this
+  /// fight laid over it (hasEntranceCard); none in a test or a lesson.
+  Widget _withEntrance(Widget child) {
+    final named = widget.modifiers.isTest || widget.modifiers.tutorial
+        ? null
+        : widget._allEnemyEntries
+            .where((e) => hasEntranceCard(e.key, e.value))
+            .firstOrNull;
+    if (named == null) return child;
+    return FightEntrance(
+      enemyId: named.key,
+      name: named.value['enemyName']?.toString() ?? named.key,
+      line: entranceLine(named.value['description']?.toString() ?? ''),
+      boss: isBossEnemy(named.key, named.value),
+      child: child,
+    );
+  }
+
   /// [setState] for the part files: it is @protected, so the extensions
   /// on this state (see fight/) call this instead.
   void _update(VoidCallback fn) => setState(fn);
@@ -687,32 +717,44 @@ class _FightScreenState extends ConsumerState<FightScreen>
       );
     }
 
-    _itemSets = parseItemSets(itemSetsDb);
-    final clanData = ClanData(
-        factions: parseFactions(factionsDb),
-        subclans: parseSubclans(subclansDb),
-        titles: parseTitles(titlesDb));
-    // One of the last battles (v1.196, see throne.dart): the Host fights
-    // beside the party, its effects through the signs' machinery.
-    if (!_partyBuilt && widget.modifiers.hostFight) {
-      _hostData = clanData;
-      _host = fieldedHost(
-          politics: session.politics,
+    // The tables are parsed and the party built once, on the first build
+    // with every table in: the fight rebuilds on every roll and log line,
+    // and none of this changes during it (_ensurePartyBuilt keeps the
+    // first party).
+    if (!_partyBuilt) {
+      _itemSets = parseItemSets(itemSetsDb);
+      final clanData = ClanData(
+          factions: parseFactions(factionsDb),
+          subclans: parseSubclans(subclansDb),
+          titles: parseTitles(titlesDb));
+      // One of the last battles (v1.196, see throne.dart): the Host fights
+      // beside the party, its effects through the signs' machinery.
+      if (widget.modifiers.hostFight) {
+        _hostData = clanData;
+        _host = fieldedHost(
+            politics: session.politics,
+            data: clanData,
+            signPatrons: session.signPatronsThisLife);
+      }
+      _ensurePartyBuilt(session, companions, races, professions, gameConfig,
+          items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
+        ...clanEffectsFor(
+          activeTitleId: session.activeTitleId,
+          heldTitleIds: session.heldTitleIds,
+          swornBoonIds: session.swornBoonIds,
+          swornFactionId: session.politics.swornFactionId,
           data: clanData,
-          signPatrons: session.signPatronsThisLife);
+        ),
+        ...hostEffects(_host, clanData),
+        // A temple's blessing (temple.dart), a fight of it spent at the start.
+        if (!widget.modifiers.isTest)
+          ...activeBlessingEffects(
+              blessingFights: session.blessingFights,
+              blessingClan: session.blessingClan,
+              data: clanData),
+      ]);
+      _spells = parseSpells(spellsDb);
     }
-    _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
-      ...clanEffectsFor(
-        activeTitleId: session.activeTitleId,
-        heldTitleIds: session.heldTitleIds,
-        swornBoonIds: session.swornBoonIds,
-        swornFactionId: session.politics.swornFactionId,
-        data: clanData,
-      ),
-      ...hostEffects(_host, clanData),
-    ]);
-    _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in
     // progress must be finished, and a finished one is left through
@@ -752,9 +794,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ),
           ],
         ),
-        body: _victoryTapArea(!_started
+        body: _withEntrance(_victoryTapArea(!_started
             ? _buildSetup(dice, skills, items, session)
-            : _buildBattle(dice, skills, items, session)),
+            : _buildBattle(dice, skills, items, session))),
       ),
     );
   }

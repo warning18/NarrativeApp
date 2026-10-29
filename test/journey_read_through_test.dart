@@ -73,11 +73,14 @@ void main() {
     // by the road first (a tap would skip it).
     await tester.pump(const Duration(seconds: 6));
 
-    // The city's plan, with the fight and the payment as cards under it: a
-    // way acted out where the party stands has no mark of its own.
+    // The city's plan, with the fight and the payment as cards in the scene
+    // view (a button under the map opens it): a way acted out where the
+    // party stands has no mark of its own.
     expect(find.byKey(const ValueKey('journey_streets')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const ValueKey('journey_step_1')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
     final pay = find.byKey(const ValueKey('journey_choice_card_1'));
     expect(pay, findsOneWidget);

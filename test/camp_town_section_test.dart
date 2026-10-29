@@ -179,6 +179,9 @@ void main() {
     final first = find.byKey(const Key('works_first_need_keldas_hall'));
     expect(first, findsOneWidget);
     expect(tester.widget<Text>(first).data, contains('1/2'));
+    // The Parley Tent (v1.477) pushed Kelda's Hall below the window.
+    await tester.ensureVisible(find.byKey(const Key('town_card_keldas_hall')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('town_card_keldas_hall')));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pump(const Duration(milliseconds: 400));
@@ -205,6 +208,17 @@ void main() {
     await tester.pump();
     expect(
         find.descendant(of: chips, matching: find.text('2')), findsOneWidget);
+    // Ready: the sheet names the cost and the button carries the price.
+    await tester.tap(find.byKey(const Key('town_card_keldas_hall')));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(
+        find.byKey(const Key('works_sheet_cost_keldas_hall')), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('works_sheet_build')),
+            matching: find.textContaining(' G')),
+        findsOneWidget);
   });
 
   testWidgets('a missing material says in plain text where to find it',

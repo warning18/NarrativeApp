@@ -117,6 +117,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       timeLimit: widget.node.timeLimit,
       timeoutChoice: widget.node.timeoutChoice,
       noDetour: widget.node.noDetour,
+      pageTurn: widget.node.pageTurn,
+      scene: widget.node.scene,
       politicsOnEnter: politicsFromEditorText(
           _politicsOnEnterController.text, widget.node.politicsOnEnter),
       location: locationFromEditorText(
@@ -629,6 +631,7 @@ class _ChoiceEditState {
         hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
+        shortfallWounds: _original.shortfallWounds,
         about: _original.about,
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
@@ -636,7 +639,9 @@ class _ChoiceEditState {
         forcedAnomaly: _original.forcedAnomaly,
         forcedStage: _original.forcedStage,
         spot: _original.spot,
+        place: _original.place,
         approvalMods: _original.approvalMods,
+        returnToCamp: _original.returnToCamp,
         grantMaterials: _original.grantMaterials,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,

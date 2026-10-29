@@ -55,11 +55,18 @@ void main() {
         'linkedSkillID': 'fireball',
         'faceName': 'Fireball'
       };
+      // Every face is a slot (dice sizes): a pick replaces a signature
+      // skill; only a face the die marks fixed ignores it.
       expect(
           faceDisplayName(fireball,
               assignedSkillId: 'power_strike', language: AppLanguage.en),
+          'Power Strike');
+      expect(faceDisplayName(fireball, language: AppLanguage.en), 'Fireball');
+      expect(
+          faceDisplayName({...fireball, 'fixed': true},
+              assignedSkillId: 'power_strike', language: AppLanguage.en),
           'Fireball',
-          reason: 'a signature face ignores a stale pick');
+          reason: 'a fixed face ignores a stale pick');
       expect(
           faceDisplayName({'type': 'Defend', 'value': 5},
               language: AppLanguage.fr),
@@ -68,7 +75,7 @@ void main() {
   });
 
   group('which faces are open', () {
-    test('basic faces and generic skill faces are open; signatures fixed', () {
+    test('every face is open but a fixed one', () {
       expect(isAssignableFace({'type': 'Attack', 'value': 5}), isTrue);
       expect(isAssignableFace({'type': 'Defend', 'value': 5}), isTrue);
       expect(isAssignableFace({'type': 'Heal', 'value': 8}), isTrue);
@@ -77,9 +84,23 @@ void main() {
           isAssignableFace({'type': 'Skill', 'linkedSkillID': 'heavy_attack'}),
           isTrue);
       expect(isAssignableFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
-          isFalse);
-      expect(isAssignableFace({'type': 'Mana', 'value': 2}), isFalse);
+          isTrue);
+      expect(isAssignableFace({'type': 'Mana', 'value': 2}), isTrue);
       expect(isAssignableFace({'type': 'Attack', 'value': 5, 'fixed': true}),
+          isFalse);
+      expect(
+          isAssignableFace(
+              {'type': 'Skill', 'linkedSkillID': 'fireball', 'fixed': true}),
+          isFalse);
+      expect(isAssignableFace({'type': 'Empty', 'value': 0}), isFalse);
+      // A signature face is still told apart from an open Skill face.
+      expect(isSignatureFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
+          isTrue);
+      expect(
+          isSignatureFace({'type': 'Skill', 'linkedSkillID': 'heavy_attack'}),
+          isFalse);
+      expect(isOpenSkillFace({'type': 'Skill', 'linkedSkillID': ''}), isTrue);
+      expect(isOpenSkillFace({'type': 'Skill', 'linkedSkillID': 'fireball'}),
           isFalse);
     });
 
@@ -111,9 +132,20 @@ void main() {
     });
 
     test('a fixed face ignores a pick and a bare face keeps its action', () {
-      final fixed = applyFaceAssignment(_face('Skill', 0, 'fireball'),
-          {'type': 'Skill', 'linkedSkillID': 'fireball'}, 'power_strike');
+      final fixed = applyFaceAssignment(
+          _face('Skill', 0, 'fireball'),
+          {'type': 'Skill', 'linkedSkillID': 'fireball', 'fixed': true},
+          'power_strike');
       expect(fixed.linkedSkillID, 'fireball');
+      // A signature face that isn't fixed takes the pick at full power.
+      final signature = applyFaceAssignment(_face('Skill', 0, 'fireball'),
+          {'type': 'Skill', 'linkedSkillID': 'fireball'}, 'power_strike');
+      expect(signature.linkedSkillID, 'power_strike');
+      expect(signature.isChanneled, isFalse);
+      // A Mana face channels it, as the other plain faces do.
+      final mana = applyFaceAssignment(
+          _face('Mana', 2), {'type': 'Mana', 'value': 2}, 'heavy_attack');
+      expect(mana.channeledFrom, 'Mana');
       final bare = applyFaceAssignment(
           _face('Defend', 5), {'type': 'Defend', 'value': 5}, null);
       expect(bare.type, 'Defend');
@@ -124,16 +156,17 @@ void main() {
   group('channeled power', () {
     test('a channeled damage skill hits at 70%, never below the Attack face',
         () {
-      // heavy_attack: (10 + 6) * 1.4 = 22 at full power.
+      // heavy_attack: (10 + 1) * 1.4 = 15 at full power.
       final full = resolvePlayerFace(
           _face('Skill', 0, 'heavy_attack'), skills, 10,
           luck: -1000);
-      expect(full.damageDealt, 22);
+      expect(full.damageDealt, 15);
+      // On a bare Attack face (0) the 70% is above the face's own 10.
       final channeled = resolvePlayerFace(
-          _face('Attack', 5).channeling('heavy_attack'), skills, 10,
+          _face('Attack', 0).channeling('heavy_attack'), skills, 10,
           luck: -1000);
-      expect(channeled.damageDealt, (22 * channeledSkillPower).round());
-      // power_strike: (10 + 5) * 1.0 = 15 -> 70% is 11, but the Attack 8
+      expect(channeled.damageDealt, (15 * channeledSkillPower).round());
+      // power_strike: (10 + 1) * 1.0 = 11 -> 70% is 8, but the Attack 8
       // face alone would hit for 18, so the floor holds.
       final floored = resolvePlayerFace(
           _face('Attack', 8).channeling('power_strike'), skills, 10,
@@ -145,7 +178,7 @@ void main() {
         () {
       final guard = resolvePlayerFace(
           _face('Defend', 5).channeling('quick_heal'), skills, 10);
-      expect(guard.healingDone, (14 * channeledSkillPower).round());
+      expect(guard.healingDone, (3 * channeledSkillPower).round());
       expect(guard.blockAmount, 0);
       final heal = resolvePlayerFace(
           _face('Heal', 12).channeling('quick_heal'), skills, 10);

@@ -20,6 +20,7 @@ import 'item_origin_here.dart';
 import 'materials.dart' show materialCountsOf;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/clans_provider.dart' show loadClanData;
+import '../providers/geography_provider.dart' show loadGeography;
 import '../gamedata/db_schema.dart'
     show housesSchema, landEventsSchema, landRoutesSchema, shopsSchema;
 import '../providers/game_db_providers.dart' show gameDbRepositoryProvider;
@@ -39,7 +40,9 @@ import 'politics_events.dart'
 import 'story_repository.dart';
 import 'zone_gating.dart';
 import 'road_hazards.dart' show meetRoadHazard;
-import 'training.dart' show statPickFor;
+import 'camp_rolls.dart' show banishLengths;
+import 'training.dart'
+    show StatPickOffer, TrainingPath, statPickFor, statPickPriority;
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -362,7 +365,7 @@ Future<bool> _simulateFight({
           const <String, String>{},
       skills);
 
-  final enemyMaxHealth = scaledMaxHealth(
+  final enemyMaxHealth = enemyScaledMaxHealth(
       (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
   final enemyDamage =
       scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);
@@ -526,6 +529,7 @@ Future<AutoplayResult> autoplayToNode(
         goldMod: choice.goldMod,
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
+        shortfallWounds: choice.shortfallWounds,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,
@@ -745,7 +749,9 @@ Future<void> applyAutoplayBuild(
       final offer = await notifier.ensureStatPick(paths,
           random: Random(s.level * 31 + s.statPoints));
       if (offer.isEmpty) break;
-      if (!await notifier.takeStatPick(statPickFor(offer, build.statToRaise))) {
+      final pick = await _workStatPick(ref, offer, build.statToRaise, paths,
+          Random(s.level * 37 + s.statPoints));
+      if (!await notifier.takeStatPick(statPickFor(pick, build.statToRaise))) {
         break;
       }
     }
@@ -773,6 +779,41 @@ Future<void> applyAutoplayBuild(
   }
 }
 
+/// The camp's roll houses on a stat pick (camp_rolls.dart, the note's
+/// autoplay policy): Banish a card raising neither [stat] nor
+/// statPickPriority for 5 draws while 2 charges or more are left; Reroll
+/// while no card raises them; Raise the card taken when it raises [stat].
+/// [random] is the powers' own draw. Returns the pick on the table.
+Future<List<StatPickOffer>> _workStatPick(
+    WidgetRef ref,
+    List<StatPickOffer> offer,
+    String stat,
+    Map<String, TrainingPath> paths,
+    Random random) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  bool wants(StatPickOffer o) =>
+      o.gains.containsKey(stat) || statPickPriority.any(o.gains.containsKey);
+  var cards = offer;
+  for (var i = 0; i < cards.length; i++) {
+    final rolls = campRollsOf(ref.read(playerSessionProvider));
+    if ((rolls.banish ?? 0) < 2) break;
+    if (wants(cards[i])) continue;
+    cards = await notifier.banishStatPickOffer(i, banishLengths.first, paths,
+        random: random);
+  }
+  while ((campRollsOf(ref.read(playerSessionProvider)).reroll ?? 0) > 0 &&
+      !cards.any(wants)) {
+    final again = await notifier.rerollStatPick(paths, random: random);
+    if (identical(again, cards) || again.isEmpty) break;
+    cards = again;
+  }
+  final at = statPickFor(cards, stat);
+  if (cards[at].gains.containsKey(stat) && notifier.canRaiseStatPickOffer(at)) {
+    cards = await notifier.raiseStatPickOffer(at, paths, random: random);
+  }
+  return cards;
+}
+
 /// How many times a walk sets out on a land route it lost before it is
 /// let through (see [_crossLand]).
 const int _crossingTries = 3;
@@ -792,15 +833,21 @@ Future<void> _crossLand(
       await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
   final notifier = ref.read(playerSessionProvider.notifier);
   final chapter = ref.read(reachedChapterProvider);
+  // Who holds the road, and how they take the party (wave 16).
+  final politics = ref.read(playerSessionProvider).politics;
+  final road = crossingRuler(
+      route, await loadGeography(ref), politics, await loadClanData(ref));
+  final rulers = rulerPool(events, road.clanId, road.band);
   for (var i = 0; i < _crossingTries; i++) {
     final session = ref.read(playerSessionProvider);
-    final result = resolveCrossing(route, events,
+    final result = resolveCrossing(road.route, events,
         health: session.currentHealth,
         maxHealth: session.maxHealth,
         gold: session.gold,
         modifierFor: (ability) => abilityModifierFor(ability, session),
         random: random,
-        chapter: chapter);
+        chapter: chapter,
+        rulers: rulers);
     await notifier.applyChoiceEffects(
         goldMod: result.gold,
         healAmount: result.health - session.currentHealth,
@@ -990,6 +1037,7 @@ Future<AutoplayResult> _playTowardChapter(
         goldMod: choice.goldMod,
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
+        shortfallWounds: choice.shortfallWounds,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         itemId: choice.grantItemId,

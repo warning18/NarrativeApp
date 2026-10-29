@@ -1,6 +1,9 @@
 // A skill takes no more faces of a die than its rarity allows: common 3,
-// uncommon and rare 2, epic and legendary 1. The loadout's picker holds to
-// it, and a fight keeps a save from before the limits to it.
+// uncommon and rare 2, epic and legendary 1; and no more than one copy per
+// four faces of the die (dice sizes: a d4 one, a d6 two, a d8 two, a d12
+// three). The loadout's picker holds to it, and a fight keeps a save from
+// before the limits to it. The rarity checks run on dice wide enough for the rarity
+// to be what limits.
 import 'dart:convert';
 import 'dart:io';
 
@@ -34,6 +37,14 @@ void main() {
   // Attack, Attack, Skill (Heavy Blow), Guard, Skill, Skill.
   final starter =
       (dice['starter_die']['faces'] as List).cast<Map<String, dynamic>>();
+  // The same die with plain faces added after its own, to a d8 and a d12.
+  List<Map<String, dynamic>> widened(List<Map<String, dynamic>> faces, int n) =>
+      [
+        ...faces,
+        for (var i = faces.length; i < n; i++)
+          {'type': 'Attack', 'value': 1, 'linkedSkillID': '', 'weight': 1.0},
+      ];
+  final starterD8 = widened(starter, 8);
 
   test('every skill has a rarity, and the rarer the fewer faces', () {
     for (final entry in skills.entries) {
@@ -49,13 +60,20 @@ void main() {
     expect(maxFacesForSkill(skills['warrior_shield_bash']), 2);
     expect(maxFacesForSkill(skills['fireball']), 2);
     expect(maxFacesForSkill(skills['final_stand']), 1);
+    // One copy per four faces (two on a d6), the rarity's limit above it.
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 4), 1);
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 6), 2);
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 8), 2);
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 12), 3);
+    expect(maxFacesForSkill(skills['heavy_attack'], faceCount: 20), 3);
+    expect(maxFacesForSkill(skills['final_stand'], faceCount: 12), 1);
     // Without a rarity, a skill is rated by its cost.
     expect(skillRarity(const {'cost': 4}), SkillRarity.epic);
   });
 
   test('a save with too many copies keeps the first ones only', () {
     final kept = limitedFaceAssignments(
-      starter,
+      starterD8,
       const {
         '0': 'warrior_shield_bash',
         '4': 'warrior_shield_bash',
@@ -70,12 +88,38 @@ void main() {
       '4': 'warrior_shield_bash',
       '1': 'final_stand',
     });
+    // On the d6 itself, two copies of Shield Bash still fit.
+    expect(
+        limitedFaceAssignments(
+          starter,
+          const {
+            '0': 'warrior_shield_bash',
+            '4': 'warrior_shield_bash',
+            '5': 'warrior_shield_bash',
+            '1': 'final_stand',
+          },
+          skills,
+        ),
+        {
+          '0': 'warrior_shield_bash',
+          '4': 'warrior_shield_bash',
+          '1': 'final_stand',
+        });
   });
 
   test('a die\'s fixed faces count first; its open faces don\'t', () {
-    // Kelda's iron die has Shield Bash fixed on face 5: one more fits.
-    final iron =
+    // Kelda's iron die has Shield Bash on face 5, its signature: on the d6
+    // and widened to a d8, one more fits, and no third.
+    final ironD6 =
         (dice['iron_die']['faces'] as List).cast<Map<String, dynamic>>();
+    final iron = widened(ironD6, 8);
+    expect(
+        limitedFaceAssignments(
+          ironD6,
+          const {'0': 'warrior_shield_bash', '3': 'warrior_shield_bash'},
+          skills,
+        ),
+        {'0': 'warrior_shield_bash'});
     expect(
         limitedFaceAssignments(
           iron,
@@ -87,9 +131,10 @@ void main() {
         facesCastingSkill('warrior_shield_bash', iron,
             const {'0': 'warrior_shield_bash'}, skills),
         2);
-    // The starter's open faces left as Heavy Blow don't use its three.
+    // The starter's open faces left as Heavy Blow don't use the three a
+    // common skill takes (on the starter widened to a d12).
     final kept = limitedFaceAssignments(
-      starter,
+      widened(starter, 12),
       const {
         '0': 'heavy_attack',
         '1': 'heavy_attack',
@@ -104,14 +149,21 @@ void main() {
 
   test('a skill at its limit takes no other face, but keeps its own', () {
     const two = {'0': 'warrior_shield_bash', '4': 'warrior_shield_bash'};
-    expect(canSetSkillOnFace('warrior_shield_bash', 5, starter, two, skills),
+    expect(canSetSkillOnFace('warrior_shield_bash', 5, starterD8, two, skills),
         isFalse);
-    expect(canSetSkillOnFace('warrior_shield_bash', 4, starter, two, skills),
+    expect(canSetSkillOnFace('warrior_shield_bash', 4, starterD8, two, skills),
         isTrue);
-    expect(canSetSkillOnFace('final_stand', 5, starter, two, skills), isTrue);
+    expect(canSetSkillOnFace('final_stand', 5, starterD8, two, skills), isTrue);
     expect(
         canSetSkillOnFace(
-            'final_stand', 5, starter, const {'4': 'final_stand'}, skills),
+            'final_stand', 5, starterD8, const {'4': 'final_stand'}, skills),
+        isFalse);
+    // On the d6, two copies: a second Shield Bash fits, a third doesn't.
+    expect(
+        canSetSkillOnFace('warrior_shield_bash', 4, starter,
+            const {'0': 'warrior_shield_bash'}, skills),
+        isTrue);
+    expect(canSetSkillOnFace('warrior_shield_bash', 5, starter, two, skills),
         isFalse);
   });
 

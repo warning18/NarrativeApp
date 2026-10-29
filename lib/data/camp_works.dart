@@ -92,7 +92,11 @@ WorkCategory workCategoryOf(String houseId, Map<String, dynamic> house) {
   }
   if (houseId == 'harbor') return WorkCategory.sea;
   if ((house['unlocksShopId']?.toString() ?? '').isNotEmpty ||
-      house['unlocksCraft'] == true) {
+      house['unlocksCraft'] == true ||
+      house['unlocksRiskyGifts'] == true ||
+      // The Hut and the Cairn (camp_rolls.dart); the Star Well, the
+      // strongest, is a great work.
+      const {'reroll', 'banish'}.contains(house['rollPower'])) {
     return WorkCategory.workshops;
   }
   if ((house['requiredAllyId']?.toString() ?? '').isNotEmpty ||

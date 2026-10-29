@@ -3,6 +3,31 @@ part of '../fight_screen.dart';
 /// Rolling and confirming the party's dice, the party's round and the
 /// enemies' turn.
 extension _FightRounds on _FightScreenState {
+  /// What [raw] healing from [actor]'s [face] heals this round: the
+  /// Anvil-Deaf's wall takes no Heal faces (spec_variants.dart), a shrine
+  /// heals more, each heal a member gives this fight heals a little less,
+  /// and the cleric's Watchfire doesn't tire, it burns
+  /// (profession_cores.dart). [count] false: the round's preview, which
+  /// counts no heal (fight_dice_rules.dart).
+  int _healDealt(_PartyMember actor, DiceFaceResult face, int raw,
+      {bool count = true}) {
+    var healing = actor.isPlayer &&
+            face.type == 'Heal' &&
+            _core.has(Spec.briarGuard) &&
+            _core.mods.noHealFaces
+        ? 0
+        : raw;
+    if (_condition == BattlefieldCondition.shrine && healing > 0) {
+      healing = (healing * shrineHealMultiplier).round();
+    }
+    if (actor.isPlayer && _core.core == ProfessionCore.watchfire) {
+      return _length.rule.heal(healing, _roundsStarted);
+    }
+    return count
+        ? _length.fatigued(actor.id, healing, round: _roundsStarted)
+        : _length.previewed(actor.id, healing, round: _roundsStarted);
+  }
+
   /// Milliseconds between one party member's effect and the next, so a
   /// round of dice reads as a sequence rather than one flash.
   static const int _fxStagger = 160;
@@ -231,23 +256,9 @@ extension _FightRounds on _FightScreenState {
         _momentum = 0;
         _surgeActorId = null;
       }
-      // The Anvil-Deaf's wall takes no Heal faces (spec_variants.dart).
-      var healing = actor.isPlayer &&
-              face.type == 'Heal' &&
-              _core.has(Spec.briarGuard) &&
-              _core.mods.noHealFaces
-          ? 0
-          : result.healingDone;
-      if (_condition == BattlefieldCondition.shrine && healing > 0) {
-        healing = (healing * shrineHealMultiplier).round();
-      }
-      // Each heal a member gives this fight heals a little less; the
-      // cleric's Watchfire doesn't tire, it burns (profession_cores.dart).
+      final healing = _healDealt(actor, face, result.healingDone);
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
-      healing = watchfire
-          ? _length.rule.heal(healing, _roundsStarted)
-          : _length.fatigued(actor.id, healing, round: _roundsStarted);
       if (watchfire && healing > 0) {
         _watchfireOnHeal(actor, healing, newEntries, lang);
       }
@@ -694,8 +705,7 @@ extension _FightRounds on _FightScreenState {
       newEntries.add(_LogEntry(
           trFor(lang, tide == 1 ? 'tide_turns_log' : 'tide_rises_log')
               .replaceAll('{party}', '${(tidePartyStep * tide * 100).round()}')
-              .replaceAll(
-                  '{enemies}', '${(tideEnemyStep * tide * 100).round()}'),
+              .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
           _LogKind.info));
     }
     // The place's rule (context_rules.dart): its omen, its rise, its toll,
@@ -1024,15 +1034,18 @@ extension _FightRounds on _FightScreenState {
   /// itself, raising its guard, winding up, or rallying its pack.
   void _resolveEnemyStance(
       _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay,
-      {required String targetId}) {
+      {required String targetId, required Map<String, dynamic> skills}) {
     final key = _enemyCardKey(enemy.key);
     switch (move.intent) {
       case EnemyIntent.tamper:
         _applyTamper(enemy, move, targetId, lang, delay);
       case EnemyIntent.heal:
+        // A claimant's one heal spent (fight_length.dart): its turn passes.
+        if (enemy.healBlocked) return;
         final amount = scaledEnemyHeal(move.healAmount,
             maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth);
         final healed = min(amount, enemy.maxHealth - enemy.currentHealth);
+        if (healed > 0) enemy.noteHeal(skills);
         _fx(VfxStyle.heal, key,
             delayMs: delay, text: '+$healed', textKind: VfxTextKind.heal);
         _update(() {
@@ -1107,13 +1120,17 @@ extension _FightRounds on _FightScreenState {
         enemy.phaseIndex++;
         entered = true;
         _phasesCrossed++;
-        final healed =
-            healthAfterPhaseHeal(phase, enemy.currentHealth, enemy.maxHealth) -
+        // A claimant mends itself once a fight (fight_length.dart).
+        final healed = enemy.healBlocked
+            ? 0
+            : healthAfterPhaseHeal(
+                    phase, enemy.currentHealth, enemy.maxHealth) -
                 enemy.currentHealth;
         enemy.currentHealth += healed;
         if (phase.cleanse) enemy.statusEffects = [];
         enemy.damage = (enemy.damage * phase.damageMultiplier).round();
         enemy.data = enemyDataInPhase(enemy.data, phase);
+        if (healed > 0 || enemy.healBlocked) enemy.noteHeal(skills);
         final details = <String>[
           if (healed > 0)
             '${trFor(lang, 'phase_heals_prefix')} $healed ${trFor(lang, 'hp_label')}',
@@ -1279,7 +1296,7 @@ extension _FightRounds on _FightScreenState {
       final move = pending.move;
       if (!pending.release && move.intent != EnemyIntent.attack) {
         _resolveEnemyStance(enemy, move, lang, fxDelay,
-            targetId: pending.targetId);
+            targetId: pending.targetId, skills: skills);
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         continue;
       }
@@ -1336,7 +1353,10 @@ extension _FightRounds on _FightScreenState {
       // rather than just softening it further on top of block/armor/resist.
       // The Briar Guard can't dodge (specialisations.dart).
       final wasDodged = _random.nextDouble() * 100 <
-              dodgeChanceFor(target.dexterity) + target.gear.dodgeChance &&
+              dodgeChanceFor(target.dexterity,
+                      perception: target.perception,
+                      professionId: target.professionId) +
+                  target.gear.dodgeChance &&
           !(target.isPlayer && _core.has(Spec.briarGuard));
       // A parry (v1.214) takes its share of the blow first.
       final parry = enemy.parryBlock;
@@ -1348,6 +1368,16 @@ extension _FightRounds on _FightScreenState {
               parry: parry,
               block: target.block,
               mitigation: mitigation);
+      // A warrior's Perception blocks a blow now and then: half of it
+      // (stat_rules.dart); signs, titles and Iron Hide lend anyone a block.
+      final blockChance = blockChanceWith(
+          target.professionId, target.perception, target.gear.blockChance);
+      if (!wasDodged &&
+          damageTaken > 0 &&
+          blockChance > 0 &&
+          _random.nextDouble() * 100 < blockChance) {
+        damageTaken = blockedBlow(damageTaken);
+      }
       // The Briar Guard: what the guard stopped feeds Fury, and a part of
       // it goes back (specialisations.dart).
       final stopped = wasDodged ? 0 : moveDamage - damageTaken;
@@ -1378,9 +1408,11 @@ extension _FightRounds on _FightScreenState {
         damageTaken = target.currentHealth - 1;
         secondWind = true;
       }
-      // Thorns (a Thornmail Hauberk, the Hollow Court set) cut whatever
-      // actually connected.
-      final thorns = damageTaken > 0 ? target.gear.thorns : 0;
+      // Thorns (a Thornmail Hauberk, the Hollow Court set, a sign) send
+      // back their share of whatever actually connected (gear_effects.dart's
+      // ThornsBank keeps the fractions for the next blow).
+      final thorns =
+          target.thornsBank.answer(damageTaken, target.gear.thornsPercent);
       // A guard sign bites the enemy that hits the player's raised guard
       // (the block of a Defend face played this round, before this blow
       // takes it down).
@@ -1506,12 +1538,13 @@ extension _FightRounds on _FightScreenState {
         delayMs: fxDelay,
       );
       _resolveParry(enemy, moveDamage, parry, wasDodged, lang, skills);
-      if (move.healAmount > 0 && enemy.isAlive) {
+      if (move.healAmount > 0 && enemy.isAlive && !enemy.healBlocked) {
         final healed = min(
             scaledEnemyHeal(move.healAmount,
                 maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth),
             enemy.maxHealth - enemy.currentHealth);
         if (healed > 0) {
+          enemy.noteHeal(skills);
           _fx(VfxStyle.heal, _enemyCardKey(enemy.key),
               delayMs: fxDelay + 300,
               text: '+$healed',

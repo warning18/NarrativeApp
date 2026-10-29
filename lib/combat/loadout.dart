@@ -1,4 +1,5 @@
 import 'dice_faces.dart';
+import 'face_element.dart';
 
 /// Loadout by situation (v1.213): before a fight the player may swap the
 /// die they roll for another they own. These helpers say what a die would
@@ -17,11 +18,10 @@ Set<String> dieElements(
     final face = faces[i];
     final skillId = faceSkillId(face, assignments[i.toString()]);
     final skill = skillId == null ? null : skills[skillId];
-    final element = skill is Map<String, dynamic>
-        ? skill['element']?.toString()
-        : face['type'] == 'Attack'
-            ? face['element']?.toString()
-            : null;
+    final type = face['type']?.toString() ?? '';
+    final element = skill is Map<String, dynamic> || type == 'Attack'
+        ? faceHitElement(type, face['element']?.toString() ?? 'None', skill)
+        : null;
     if (element != null && element.isNotEmpty && element != 'None') {
       elements.add(element);
     }

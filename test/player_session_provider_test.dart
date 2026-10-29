@@ -152,12 +152,12 @@ void main() {
       expect(leveledUp, isTrue);
       expect(notifier.state.level, 2);
       expect(notifier.state.currentXP, 10); // 90 + 20 - 100
-      expect(notifier.state.statPoints, 5);
+      expect(notifier.state.statPoints, 1); // one stat pick a level
       // A level brings an offer from the clans (it was a skill point).
       expect(notifier.state.pendingOffers.map((t) => t.source),
           [OfferSource.level]);
-      expect(notifier.state.maxHealth, 120); // +20 per level
-      expect(notifier.state.currentHealth, 120); // full-healed on level-up
+      expect(notifier.state.maxHealth, 103); // +3 per level
+      expect(notifier.state.currentHealth, 103); // full-healed on level-up
     });
 
     test('grantsBannerPieceId adds the piece once, even if called again',
@@ -477,30 +477,6 @@ void main() {
       final notifier = await notifierWith(baseSession());
       await notifier.talkToNpc('');
       expect(notifier.state.talkedToNpcIds, isEmpty);
-    });
-  });
-
-  group('spendStatPoint', () {
-    test('luck increases luck by 1 and consumes a stat point', () async {
-      final notifier = await notifierWith(baseSession(statPoints: 1, luck: 2));
-      await notifier.spendStatPoint(stat: 'luck');
-      expect(notifier.state.luck, 3);
-      expect(notifier.state.statPoints, 0);
-    });
-
-    test('charisma increases charisma by 1 and consumes a stat point',
-        () async {
-      final notifier =
-          await notifierWith(baseSession(statPoints: 1, charisma: 4));
-      await notifier.spendStatPoint(stat: 'charisma');
-      expect(notifier.state.charisma, 5);
-      expect(notifier.state.statPoints, 0);
-    });
-
-    test('spending with no stat points available is a no-op', () async {
-      final notifier = await notifierWith(baseSession(statPoints: 0, luck: 2));
-      await notifier.spendStatPoint(stat: 'luck');
-      expect(notifier.state.luck, 2);
     });
   });
 
@@ -975,14 +951,15 @@ void main() {
   });
 
   group('mana and spells', () {
-    test('maxMana follows the higher of Intelligence and Wisdom', () {
+    test('maxMana follows Wisdom alone', () {
       expect(baseSession().maxMana, 4);
-      expect(baseSession(intelligence: 4).maxMana, 6);
-      expect(baseSession(wisdom: 6).maxMana, 7);
+      expect(baseSession(intelligence: 4).maxMana, 4);
+      expect(baseSession(wisdom: 2).maxMana, 6);
+      expect(baseSession(wisdom: 6).maxMana, 10);
     });
 
     test('mana and knownSpellIds round-trip through toJson/fromJson', () {
-      final session = baseSession(intelligence: 4)
+      final session = baseSession(wisdom: 2)
           .copyWith(mana: 3, knownSpellIds: const ['spell_arcane_bolt']);
       final restored = PlayerSession.fromJson(session.toJson());
       expect(restored.mana, 3);
@@ -991,7 +968,7 @@ void main() {
     });
 
     test('a save from before mana existed wakes up with a full pool', () {
-      final json = baseSession(intelligence: 4).toJson()
+      final json = baseSession(wisdom: 2).toJson()
         ..remove('mana')
         ..remove('knownSpellIds');
       final restored = PlayerSession.fromJson(json);
@@ -1000,7 +977,7 @@ void main() {
     });
 
     test('setMana clamps to the pool and persists', () async {
-      final notifier = await notifierWith(baseSession(intelligence: 4));
+      final notifier = await notifierWith(baseSession(wisdom: 2));
       await notifier.setMana(99);
       expect(notifier.state.mana, 6);
       await notifier.setMana(-2);
@@ -1035,7 +1012,7 @@ void main() {
 
     test('resting refills mana along with health', () async {
       final notifier = await notifierWith(
-          baseSession(intelligence: 4, currentHealth: 10).copyWith(mana: 1));
+          baseSession(wisdom: 2, currentHealth: 10).copyWith(mana: 1));
       await notifier.healPartyToFull();
       expect(notifier.state.mana, 6);
       expect(notifier.state.currentHealth, 100);
@@ -1045,7 +1022,7 @@ void main() {
         'applyCombatResult persists manaAfter clamped, and reads a looted '
         'spellbook', () async {
       final notifier =
-          await notifierWith(baseSession(intelligence: 4).copyWith(mana: 6));
+          await notifierWith(baseSession(wisdom: 2).copyWith(mana: 6));
       await notifier.applyCombatResult(
         hpAfter: 50,
         manaAfter: 2,
@@ -1078,6 +1055,7 @@ void main() {
           'standardSkillID': 'mage_arcane_missile',
           'manaSkillID': 'mage_channel',
           'bonusIntelligence': 4,
+          'bonusWisdom': 2,
           'startingDiceId': 'apprentice_die',
           'startingSpellIds': ['spell_arcane_bolt', 'spell_mana_ward'],
         },
@@ -1115,7 +1093,7 @@ void main() {
 
     test('permadeath resets spells to the starting ones and refills mana',
         () async {
-      final notifier = await notifierWith(baseSession(intelligence: 4).copyWith(
+      final notifier = await notifierWith(baseSession(wisdom: 2).copyWith(
           mana: 0,
           knownSpellIds: const ['spell_arcane_bolt', 'spell_ember_wave']));
       await notifier.applyPermadeath(

@@ -75,7 +75,7 @@ void main() {
 
   test('the day\'s weather is the same all day', () {
     final chart = chartOf(MapShape.archipelago);
-    final at = chart.of(worldMapLandmarks.firstWhere((l) => l.id == 'beggar'));
+    final at = chart.of(worldMapLandmarks.firstWhere((l) => l.id == 'alster'));
     final here = SkyHere(climate: ChartClimate.of(chart), at: at, day: 12);
     final a = here.today();
     final b = here.today();

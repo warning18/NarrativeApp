@@ -17,6 +17,7 @@ import 'package:narrative_data_app/data/politics_events.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -33,8 +34,10 @@ void main() {
       Geography.parse(geography: _table('geography'), biomes: _table('biomes'));
   const mains = ['dominion', 'vigil', 'compact', 'mire', 'crows', 'penitents'];
 
-  PoliticsState powered(Map<String, int> power) =>
-      PoliticsState.empty.copyWith(power: power);
+  // The Penitents' war kept out (wave 18 step 2 gives them land): the
+  // scenarios below are about other clans.
+  PoliticsState powered(Map<String, int> power) => PoliticsState.empty.copyWith(
+      power: power, relationSteps: {relationKey('dominion', 'penitents'): 4});
 
   test('every main clan has power, a seat and claims the world knows', () {
     for (final id in mains) {
@@ -87,21 +90,26 @@ void main() {
     // The lantern hall keeps its own holder; a place under Candlehold with
     // none takes the city's.
     expect(holderOf('candlehold_lantern_hall', geography, moved), 'dominion');
-    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(5));
+    // (Seven with Saltmouth's Landward Gate and the Reliquary Quarter,
+    // wave 18.)
+    expect(placesOf('dominion', geography, PoliticsState.empty), hasLength(7));
   });
 
   test('a chapter: holdings bring power, neglect takes it, never too far', () {
-    final turn = territoryTurn(PoliticsState.empty.copyWith(helped: ['crows']),
+    // The Penitents' war kept out (wave 18 step 2 gives them land).
+    final calm = PoliticsState.empty
+        .copyWith(relationSteps: {relationKey('dominion', 'penitents'): 4});
+    final turn = territoryTurn(calm.copyWith(helped: ['crows']),
         data: data, geography: geography, chapter: 2);
-    // The Dominion: +5 for its five places, -5 neglected.
-    expect(powerOf(turn.state, 'dominion', data), 60);
+    // The Dominion: +7 for its seven places, -5 neglected.
+    expect(powerOf(turn.state, 'dominion', data), 62);
     // The Crows, helped: +3 for three places.
     expect(powerOf(turn.state, 'crows', data), 48);
-    // The Vigil, nothing held: -5.
-    expect(powerOf(turn.state, 'vigil', data), 25);
+    // The Vigil, two districts held: +2, -5.
+    expect(powerOf(turn.state, 'vigil', data), 27);
     expect(turn.state.helped, isEmpty);
     // Never more than neglectFloor under its start.
-    var state = PoliticsState.empty;
+    var state = calm;
     for (var chapter = 2; chapter <= 9; chapter++) {
       state = territoryTurn(state,
               data: data, geography: geography, chapter: chapter)
@@ -145,7 +153,7 @@ void main() {
   });
 
   test('a clan that loses its last place falls, and rises again', () {
-    var state = PoliticsState.empty;
+    var state = powered(const {});
     for (final place in placesOf('compact', geography, state)) {
       state = givePlace(state, place, 'dominion',
           cause: 'war', data: data, geography: geography, chapter: 4);
@@ -155,7 +163,10 @@ void main() {
     expect(powerOf(state, 'compact', data), 0);
     expect(state.news.last.eventId, 'fallen:compact');
     // Back at Rising, it reaches for its seat first; the Dominion, far
-    // stronger, keeps it, so it takes a free claim.
+    // stronger, keeps it, so it takes a free claim (the Ash-Market, left
+    // to no one: wave 18 step 2 gave it the Compact at the start).
+    state = state
+        .copyWith(control: {...state.control, 'ashen_quarter_ash_market': ''});
     state = addPower(state, 'compact', 30, data, helped: true);
     expect(claimsAllowed(state, 'compact', data), 1);
     final turn =
@@ -260,16 +271,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'specialisations', 'spec_variants',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     final summaries = simulatePlaythroughs(story,
         tables: tables,
         gameConfig: _table('game_config'),

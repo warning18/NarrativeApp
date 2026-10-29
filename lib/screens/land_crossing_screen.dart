@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/ability_check.dart';
+import '../data/fate_coin.dart';
 import '../data/journey_rules.dart' show watchesPerDay;
 import '../data/land_crossing.dart';
 import '../gamedata/db_schema.dart';
@@ -14,17 +15,31 @@ import '../l10n/app_strings.dart';
 import '../providers/aftermath_provider.dart'
     show lastFightOutcomeProvider, lastFightRetreatedProvider;
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/clans_provider.dart'
+    show factionsProvider, loadClanData, politicsProvider;
+import '../providers/day_phase_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/geography_provider.dart' show loadGeography;
 import '../providers/player_session_provider.dart';
+import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/climate_provider.dart' show skyHereProvider;
+import '../widgets/companion_remark_bubble.dart' show SpokenLine, spokenRemarks;
+import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
+import '../widgets/side_view/encounter_figure.dart';
+import '../widgets/side_view/cliffs_kit.dart';
+import '../widgets/side_view/fen_kit.dart';
+import '../widgets/side_view/frost_kit.dart';
+import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
 import '../widgets/side_view/side_view.dart';
+import '../widgets/pixel_banner.dart' show ClanFlag;
+import '../widgets/walk_bubble.dart';
 import 'fight_screen.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
@@ -49,14 +64,28 @@ Future<bool> runLandCrossing(
   final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
   if (route == null) return true;
+  final known = landEventsFrom(events);
+  final ruler = await crossingRulerOf(ref, route);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
-        route: route,
-        events: landEventsFrom(events),
+        route: ruler.route,
+        events: known,
+        ruler: ruler.clanId,
+        rulers: rulerPool(known, ruler.clanId, ruler.band),
         random: ref.read(landCrossingRandomProvider)),
   ));
   return arrived == true;
+}
+
+/// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
+/// the band the party's standing with them puts it in, and the route as
+/// crossed (a clan's own road meets it more often: crossingRuler).
+Future<({LandRoute route, String clanId, RulerBand band, bool clanRoad})>
+    crossingRulerOf(WidgetRef ref, LandRoute route) async {
+  final geography = await loadGeography(ref);
+  final clans = await loadClanData(ref);
+  return crossingRuler(route, geography, ref.read(politicsProvider), clans);
 }
 
 /// A land crossing (land_crossing.dart): an event a day, each asking what
@@ -67,6 +96,27 @@ Future<bool> runLandCrossing(
 /// the ash squall among the ruins fill the scene with their dust or ash.
 bool crossingIsStorm(String? eventId) =>
     eventId == 'sandstorm' || eventId == 'ash_squall';
+
+/// The terrains a crossing draws a scene for (the route's `terrain`, which
+/// is a biome id).
+const crossingSceneTerrains = {
+  'desert',
+  'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
+};
+
+/// The layers of the scene for [terrain]; the goal comes forward with
+/// [progress] 0 to 1.
+List<SideLayer> crossingLayers(String terrain, double progress) =>
+    switch (terrain) {
+      'ruins' => ruinsLayers(progress: progress),
+      'frost' => frostLayers(progress: progress),
+      'fen' => fenLayers(progress: progress),
+      'sea_cliffs' => cliffsLayers(progress: progress),
+      _ => desertLayers(progress: progress),
+    };
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
@@ -82,7 +132,12 @@ SideParticles crossingParticles({
     WeatherKind.snow => SideParticles.snow,
     WeatherKind.ash => SideParticles.ash,
     WeatherKind.fog => SideParticles.fog,
-    _ => terrain == 'ruins' ? SideParticles.ash : SideParticles.shimmer,
+    _ => switch (terrain) {
+        'ruins' => SideParticles.ash,
+        'frost' => SideParticles.snow,
+        'fen' || 'sea_cliffs' => SideParticles.fog,
+        _ => SideParticles.shimmer,
+      },
   };
 }
 
@@ -91,11 +146,20 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     super.key,
     required this.route,
     required this.events,
+    this.ruler = '',
+    this.rulers = const [],
     this.random,
   });
 
   final LandRoute route;
   final Map<String, LandEvent> events;
+
+  /// The clan that holds the land crossed (landRouteRuler), '' for no one:
+  /// for the header's colour.
+  final String ruler;
+
+  /// The ruler's events the crossing may meet (rulerPool).
+  final List<String> rulers;
 
   /// Injectable for tests; a fresh stream otherwise.
   final Random? random;
@@ -104,12 +168,16 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
   ConsumerState<LandCrossingScreen> createState() => _LandCrossingScreenState();
 }
 
+/// The scene's height: the side view's own default.
+const double crossingSceneHeight = 190;
+
 enum _Phase { event, result, arrived, failed, turnedBack }
 
 class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   late final Random _random = widget.random ?? Random();
-  late final List<String> _drawn =
-      drawCrossing(widget.route, widget.events.keys, random: _random);
+  late final List<String> _drawn = drawCrossing(
+      widget.route, widget.events.keys,
+      random: _random, rulers: widget.rulers);
   var _day = 0;
   var _phase = _Phase.event;
   var _daysSpent = 0;
@@ -150,6 +218,50 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     super.initState();
     _departureHealth = ref.read(playerSessionProvider).currentHealth;
     if (_drawn.isEmpty) _phase = _Phase.arrived;
+    // A walking companion may say a word as the walk starts.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _speakUp());
+  }
+
+  /// A companion's word on the road (Core's speakUpOnWalk), as a bubble over
+  /// their figure for a few seconds.
+  SpokenLine? _spoken;
+  Timer? _spokenTimer;
+
+  void _speakUp() {
+    if (!mounted || _phase == _Phase.arrived) return;
+    final remark = speakUpOnWalk(ref);
+    if (remark == null) return;
+    final line = spokenRemarks(ref, [remark]).firstOrNull;
+    if (line == null) return;
+    setState(() => _spoken = line);
+    _spokenTimer = Timer(const Duration(seconds: 7), () {
+      if (mounted) setState(() => _spoken = null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _spokenTimer?.cancel();
+    super.dispose();
+  }
+
+  /// What stands on the road at the day's event, walking in from the left
+  /// (encounter_figure.dart); one walk per day, kept across rebuilds.
+  EncounterWalk? _walk;
+  int _walkDay = -1;
+
+  EncounterWalk? _encounterWalk(LandEvent? event) {
+    if (event == null || _phase != _Phase.event) return null;
+    if (_walkDay == _day) return _walk;
+    _walkDay = _day;
+    final fight = event.choices.where((c) => c.isFight).firstOrNull;
+    final figure =
+        roadEncounterFigure(event.id, fightEnemyId: fight?.fightEnemyId);
+    return _walk = figure == null
+        ? null
+        : EncounterWalk(
+            sprite: figure.sprite,
+            animate: !MediaQuery.of(context).disableAnimations);
   }
 
   Future<void> _choose(LandChoice choice) async {
@@ -160,33 +272,67 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     var outcome = choice.outcome;
     var checkLine = '';
     if (choice.hasCheck) {
-      final result = rollAbilityCheck(
+      var result = rollAbilityCheck(
         ability: choice.check!,
         dc: landCheckDc(choice.dc, _chapter),
         session: ref.read(playerSessionProvider),
         random: _random,
       );
-      outcome = result.success ? choice.success : choice.fail;
-      checkLine = '${trFor(lang, '${result.ability}_label')} '
-          '${trFor(lang, 'check_label')}: '
-          '${result.roll} + ${result.modifier} = ${result.total} '
-          '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
-          '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
-      // The die rolls under the choices; the outcome follows once it has
-      // landed and the sum has been read.
-      final landing = Completer<void>();
-      setState(() {
-        _roll = result;
-        _landed = false;
-        _landing = landing;
-        _checkLine = checkLine;
-      });
-      // A die that never tumbles (motion reduced) lands all the same.
-      Future.delayed(d20RollDuration + _rollLinger * 2, _onLanded);
-      await landing.future;
+      checkLine = await _showRoll(result, lang);
       if (!mounted) return;
+      // A failed check, and a fate coin in the pack: the player may flip it
+      // to roll the check once more (fate_coin.dart).
+      if (fateCoinWorthFlipping(result) &&
+          carriesFateCoin(ref.read(playerSessionProvider).inventoryItemIds)) {
+        final offer = Completer<bool>();
+        setState(() => _coinOffer = offer);
+        final flip = await offer.future;
+        if (!mounted) return;
+        setState(() => _coinOffer = null);
+        if (flip &&
+            await ref.read(playerSessionProvider.notifier).spendFateCoin()) {
+          final face = flipFateCoin(_random);
+          result = rerolledCheck(result, _random);
+          checkLine =
+              '${trFor(lang, 'fate_coin_landed').replaceAll('{face}', trFor(lang, 'fate_coin_${face.name}'))} '
+              '${await _showRoll(result, lang)}';
+          if (!mounted) return;
+        }
+      }
+      outcome = result.success ? choice.success : choice.fail;
     }
     await _settle(outcome, checkLine);
+  }
+
+  /// A fate coin offered on the failed check: completes with whether the
+  /// player flips it.
+  Completer<bool>? _coinOffer;
+
+  /// The checks rolled so far: a second roll (the fate coin's) tumbles anew.
+  var _rolls = 0;
+
+  /// Rolls [result]'s die under the choices and waits for it to land and
+  /// its sum to be read; returns the check's line.
+  Future<String> _showRoll(AbilityCheckResult result, AppLanguage lang) async {
+    final checkLine = '${trFor(lang, '${result.ability}_label')} '
+        '${trFor(lang, 'check_label')}: '
+        '${result.roll} + ${result.modifier} = ${result.total} '
+        '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
+        '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}';
+    // The die rolls under the choices; the outcome follows once it has
+    // landed and the sum has been read.
+    final landing = Completer<void>();
+    setState(() {
+      _roll = result;
+      _rolls++;
+      _landed = false;
+      _landing = landing;
+      _checkLine = checkLine;
+    });
+    // A die that never tumbles (motion reduced) lands all the same.
+    Future.delayed(d20RollDuration + _rollLinger * 2, _onLanded);
+    await landing.future;
+    return checkLine;
   }
 
   /// A fight on the road (the scavengers, v1.305.0): played on the battle
@@ -277,13 +423,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       padding: const EdgeInsets.only(top: 12),
       child: Column(
         children: [
-          D20Roll(
-            key: const Key('crossing_roll'),
-            roll: roll.roll,
-            success: roll.success,
-            size: rolling ? 120 : 64,
-            rolling: rolling,
-            onLanded: rolling ? _onLanded : null,
+          KeyedSubtree(
+            key: ValueKey('crossing_roll_$_rolls'),
+            child: D20Roll(
+              key: const Key('crossing_roll'),
+              roll: roll.roll,
+              success: roll.success,
+              size: rolling ? 120 : 64,
+              rolling: rolling,
+              onLanded: rolling ? _onLanded : null,
+            ),
           ),
           const SizedBox(height: 8),
           AnimatedOpacity(
@@ -297,6 +446,37 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// The bubble over the companion who spoke: above their head, kept in view.
+  Widget _walkBubble(SpokenLine line) {
+    final party = ref.read(walkingPartyProvider);
+    final index = party.indexWhere((m) => m.id == line.companionId);
+    final xs = walkingPartyXs(party.length);
+    const unit = crossingSceneHeight / sideViewRows;
+    final width = MediaQuery.sizeOf(context).width;
+    final bubbleWidth = min(300.0, width - 16);
+    final at = (index < 0 ? xs.first : xs[index]) * unit;
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    // Anchored just above the figure's head, under the HUD's row, scaled down
+    // a little when the words need more room than is left.
+    return Positioned(
+      left: left,
+      top: 34,
+      width: bubbleWidth,
+      bottom: crossingSceneHeight - 40 * unit,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomLeft,
+        child: WalkBubble(
+          key: const Key('walk_bubble'),
+          speaker: line.speaker,
+          line: line.line,
+          width: bubbleWidth,
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+        ),
       ),
     );
   }
@@ -344,6 +524,23 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                 ),
               ),
             if (_roll != null) _rollView(theme, rolling: true),
+            if (_coinOffer case final offer?) ...[
+              const SizedBox(height: 8),
+              Text(tr(ref, 'fate_coin_offer'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 4),
+              FilledButton(
+                key: const Key('crossing_fate_coin'),
+                onPressed: () => offer.complete(true),
+                child: Text(tr(ref, 'fate_coin_flip_button')),
+              ),
+              TextButton(
+                key: const Key('crossing_fate_coin_keep'),
+                onPressed: () => offer.complete(false),
+                child: Text(tr(ref, 'fate_coin_keep_button')),
+              ),
+            ],
             const SizedBox(height: 8),
             TextButton(
               key: const Key('crossing_turn_back'),
@@ -400,67 +597,115 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     }
 
     // The scene over the words (board 6), by the route's terrain: the
-    // desert kit while it crosses a desert, the ruins kit among ruins; a
-    // terrain with no kit yet keeps only the strip of day and health.
+    // desert, ruins, frost, fen or sea cliffs kit; a terrain with no kit
+    // yet keeps only the strip of day and health.
     final terrain = widget.route.terrain;
-    final scene = terrain == 'desert' || terrain == 'ruins';
-    final ruins = terrain == 'ruins';
+    final scene = crossingSceneTerrains.contains(terrain);
     final progress = _phase == _Phase.arrived
         ? 1.0
         : _drawn.isEmpty
             ? 0.0
             : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
                 .clamp(0.0, 1.0);
+    final phase = ref.watch(dayPhaseProvider);
     final storm = _phase == _Phase.event && crossingIsStorm(event?.id);
     final sky = ref.watch(skyHereProvider)?.today().kind;
     final particles =
         crossingParticles(terrain: terrain, storm: storm, sky: sky);
+    // The road's ruler (Core's v1.512): its colour under the title, and its
+    // name and flag on the screen, so the player sees why this road's events.
+    final rulerClan =
+        widget.ruler.isEmpty ? null : ref.watch(factionsProvider)[widget.ruler];
+    final rulerColour =
+        rulerClan == null ? null : Color(rulerClan.patron.color);
     final hud = Padding(
       padding: const EdgeInsets.all(8),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Text(
-                tr(ref, 'crossing_day')
-                    .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
-                    .replaceAll('{m}', '${_drawn.length}'),
-                style:
-                    theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+          Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.55),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text(
+                    tr(ref, 'crossing_day')
+                        .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
+                        .replaceAll('{m}', '${_drawn.length}'),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TutorialTarget(
+                    id: 'crossing.health',
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.55),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.favorite,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 6),
+                          // Shrinks with the screen and the text, so large text on
+                          // a narrow phone keeps the numbers whole.
+                          Flexible(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 96),
+                              child: LinearProgressIndicator(
+                                  key: const Key('crossing_health'),
+                                  value: health),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text('${session.currentHealth}/${session.maxHealth}',
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: Colors.white)),
+                        ]),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          TutorialTarget(
-            id: 'crossing.health',
-            child: DecoratedBox(
+          if (rulerClan != null && rulerColour != null) ...[
+            const SizedBox(height: 6),
+            DecoratedBox(
+              key: const Key('crossing_ruler'),
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.55),
                 borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: rulerColour, width: 1.5),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.favorite, size: 16, color: Colors.white),
+                  ClanFlag(factionId: widget.ruler, height: 16),
                   const SizedBox(width: 6),
-                  SizedBox(
-                    width: 96,
-                    child: LinearProgressIndicator(
-                        key: const Key('crossing_health'), value: health),
+                  Text(
+                    tr(ref, 'crossing_ruler').replaceAll('{clan}',
+                        rulerClan.shortFor(ref.watch(appLanguageProvider))),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: Colors.white),
                   ),
-                  const SizedBox(width: 6),
-                  Text('${session.currentHealth}/${session.maxHealth}',
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: Colors.white)),
                 ]),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -474,6 +719,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(widget.route.nameFor(fr)),
+            bottom: rulerColour == null
+                ? null
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(3),
+                    child: ColoredBox(
+                      key: const Key('crossing_ruler_band'),
+                      color: rulerColour,
+                      child: const SizedBox(height: 3, width: double.infinity),
+                    ),
+                  ),
           ),
           body: Column(
             children: [
@@ -482,15 +737,20 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   children: [
                     SideViewScene(
                       key: const Key('crossing_scene'),
-                      layers: ruins
-                          ? ruinsLayers(progress: progress)
-                          : desertLayers(progress: progress),
-                      actors: desertActors(moving: _phase == _Phase.result),
+                      height: crossingSceneHeight,
+                      layers: withHourStars(
+                          crossingLayers(terrain, progress), phase),
+                      overlay: hourWash(phase),
+                      actors: desertActors(
+                          party: ref.watch(walkingPartyProvider),
+                          moving: _phase == _Phase.result,
+                          encounter: _encounterWalk(event)),
                       particles: particles,
                       intensity: storm ? 1 : 0.6,
                       moving: _phase == _Phase.result,
                     ),
                     Positioned(left: 0, right: 0, top: 0, child: hud),
+                    if (_spoken != null) _walkBubble(_spoken!),
                   ],
                 )
               else

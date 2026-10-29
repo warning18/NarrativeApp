@@ -8,9 +8,12 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
+import '../data/geography.dart' show GeoPlace, Geography;
 import '../data/ability_check.dart';
 import '../data/feature_unlocks.dart' show trainerGuardFlag, trainerStrikeFlag;
 import '../data/clan_crisis.dart' show clanCrisisRoadEvent, isClanCrisisNode;
+import '../data/district_attacks.dart'
+    show DistrictSiege, buildSiegeNode, isSiegeNode, siegeToMeet;
 import '../data/nemesis.dart' show maybeChampionRoad;
 import '../data/alignment_events.dart';
 import '../data/hunter_mercy.dart';
@@ -28,6 +31,7 @@ import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
 import '../data/road_hazards.dart';
+import '../data/road_wards.dart' show wardedClansOf;
 import '../data/encounter_text.dart';
 import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
@@ -36,11 +40,15 @@ import '../data/narration_tokens.dart';
 import '../data/politics_events.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
+import '../data/choice_shape.dart';
 import '../data/quest_hints.dart';
+import '../data/scene_lock.dart';
 import '../data/quest_tracking.dart' show isMainQuest;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
+import '../data/story_companions.dart';
 import '../data/turn_in_choices.dart';
+import '../data/camp_errands.dart' show storyChoiceTarget;
 import '../data/scene_flow.dart';
 import '../data/place_pools.dart';
 import '../data/sub_node_engine.dart';
@@ -54,6 +62,8 @@ import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
+import '../providers/city_provider.dart'
+    show cityPlanRecordsProvider, lockedStoryWaysProvider;
 import '../providers/climate_provider.dart';
 import '../data/weather_effects.dart';
 import '../providers/clans_provider.dart';
@@ -73,10 +83,11 @@ import '../providers/politics_provider.dart';
 import '../providers/road_random_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
-import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/reward_card.dart';
@@ -95,7 +106,6 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/narration_recording_dialogs.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_tracker.dart';
-import '../widgets/walking_companion_strip.dart';
 import '../widgets/zone_card.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
@@ -106,6 +116,14 @@ import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
+import '../data/story_markup.dart' show stripStoryMarkup;
+
+/// The random stream a story choice's ability check (and a skill
+/// challenge's rounds) rolls with: a fresh one each time in play; a test
+/// overrides it with a seeded one so a check tapped through the app goes
+/// the same way every run (as landCrossingRandomProvider does for a
+/// crossing).
+final storyCheckRandomProvider = Provider<Random?>((ref) => null);
 
 /// Tracks the id of the last scene auto-read aloud, so the auto-read
 /// effect (see [_StoryView.build]) speaks each scene exactly once instead
@@ -118,15 +136,13 @@ final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
 /// a per-session reading preference, not a persisted setting.
 final _statusBarCollapsedProvider = StateProvider<bool>((ref) => false);
 
-/// Whether the walking companion strip is collapsed. Independent from
-/// [walkCompanionEnabledProvider] (the permanent Settings toggle that
-/// disables the feature outright) — this is a quick per-session way to
-/// hide the dog without turning the feature off.
-final _companionCollapsedProvider = StateProvider<bool>((ref) => false);
+/// What the story text keeps on a small phone before the choices take any
+/// more: about four lines of the prose with the card's padding.
+const double storyTextMinHeight = 150;
 
 /// Whether the story text is showing in distraction-free fullscreen —
 /// toggled by double-tapping the narration itself, hiding everything else
-/// (status bar, header row, companion strip, choices) so only the prose
+/// (status bar, header row, choices) so only the prose
 /// remains. Resets on app restart, same as the other reading-view toggles
 /// above.
 final _fullscreenReadingProvider = StateProvider<bool>((ref) => false);
@@ -248,9 +264,7 @@ class _StoryView extends ConsumerWidget {
     final epilogue = node?.epilogueFor(session.alignmentLabel, french);
     final pendingAftermath = ref.watch(pendingAftermathProvider);
     final speakerLabel = speakerLabelFor(node?.speaker, french: french);
-    final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
-    final companionCollapsed = ref.watch(_companionCollapsedProvider);
     final fullscreenReading = ref.watch(_fullscreenReadingProvider);
 
     // Stop any in-progress narration when the story moves to a different
@@ -333,7 +347,7 @@ class _StoryView extends ConsumerWidget {
       if (pendingAftermath != null && pendingAftermath.isNotEmpty)
         pendingAftermath,
       if (checkOutcome != null && checkOutcome.isNotEmpty) checkOutcome,
-      for (final prelude in preludes) prelude.text,
+      for (final prelude in preludes) stripStoryMarkup(prelude.text),
       for (final remark in remarks) '${remark.speaker}: ${remark.line}',
     ];
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
@@ -407,11 +421,21 @@ class _StoryView extends ConsumerWidget {
         !(ref.watch(partyAtCampProvider) &&
             ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
-    // Picking a saved story back up: a short recap, once per launch.
+    // Picking a saved story back up: a short recap, once per launch. A
+    // save on a scene that holds the party on its page (scene_lock.dart)
+    // has it on the next scene with a map. Only a scene that could lock
+    // (every way to take is acted out on the spot) waits for the places
+    // and the cities' plans the map lays its ways on; any other shows its
+    // recap at once.
+    final mayLock = storyMapPlacementsKnown(ref)
+        ? storySceneLocked(ref, node, story)
+        : storySceneLocked(ref, node, story, mapped: (_) => false);
     if (storyOnScreen &&
         !ref.watch(_previouslyOfferedProvider) &&
-        ref.read(storyPlayProvider.notifier).restoredFromAutosave &&
-        playState.history.isNotEmpty) {
+        !mayLock &&
+        hasRecapProgress(playState,
+            resumed:
+                ref.read(storyPlayProvider.notifier).restoredFromAutosave)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted || ref.read(_previouslyOfferedProvider)) return;
         ref.read(_previouslyOfferedProvider.notifier).state = true;
@@ -510,6 +534,17 @@ class _StoryView extends ConsumerWidget {
                 readNow: session.readSceneKeys.contains(sceneKey),
               );
     final narrationFolded = (hubFold?.folded ?? false) && !fullscreenReading;
+    // The scene's words write themselves out when it is new (Edit Mode shows
+    // them at once); the choices come once they have. A folded place shows
+    // no text, so its lists are there from the start.
+    final isEditing = ref.watch(appModeProvider) == AppMode.edit;
+    final revealKey = isEditing
+        ? null
+        : '${node.id}|${playState.history.length}|${playState.isInExcursion}';
+    final choicesReady = narrationFolded ||
+        revealKey == null ||
+        storyTextShownAtOnce(context) ||
+        ref.watch(storyTextDoneProvider).contains(revealKey);
     // Reading the place's scene: the place waits behind Enter.
     final readingScene = hubFold != null && !narrationFolded;
     void setNarrationFolded(bool folded) =>
@@ -658,25 +693,14 @@ class _StoryView extends ConsumerWidget {
                   child: LayoutBuilder(builder: (context, area) {
                     // A folded town scene leaves the rest of the screen to the
                     // place itself.
-                    // The companion shrinks on a short screen, and the choices
-                    // leave room for it and for a few lines of the story.
-                    // An open town gives the dog's strip to its own lists.
-                    final companionShown = !fullscreenReading &&
-                        walkCompanionEnabled &&
-                        !narrationFolded;
-                    final stripHeight = companionShown && !companionCollapsed
-                        ? (area.maxHeight * 0.18).clamp(56.0, 125.0)
-                        : 0.0;
+                    // The choices leave room for about four lines of the story
+                    // ([storyTextMinHeight]).
                     final choiceBudget = narrationFolded
                         ? area.maxHeight
                         : max(
                             0.0,
-                            min(
-                                area.maxHeight * 0.6,
-                                area.maxHeight -
-                                    stripHeight -
-                                    (companionShown ? 40 : 0) -
-                                    72));
+                            min(area.maxHeight * 0.6,
+                                area.maxHeight - 16 - storyTextMinHeight));
                     Widget fillBelow(Widget child) => narrationFolded
                         ? Expanded(
                             child: Align(
@@ -707,11 +731,11 @@ class _StoryView extends ConsumerWidget {
                           )
                         else if (!narrationFolded)
                           Expanded(
-                            // Scrolling down into the narration gives the status bar and
-                            // companion collapse toggles above/below no purpose (they'd
-                            // just be pushed off-screen anyway), so collapse both
-                            // automatically the moment the player starts reading down the
-                            // page. The manual chevrons stay available to re-expand.
+                            // Scrolling down into the narration gives the status bar
+                            // above no purpose (it'd just be pushed off-screen anyway),
+                            // so collapse it automatically the moment the player starts
+                            // reading down the page. The manual chevron stays available
+                            // to re-expand.
                             child: LayoutBuilder(
                               // Captured here, above the SingleChildScrollView, because
                               // that view gives its child unbounded height on the scroll
@@ -729,12 +753,6 @@ class _StoryView extends ConsumerWidget {
                                         if (!statusBarCollapsed) {
                                           ref
                                               .read(_statusBarCollapsedProvider
-                                                  .notifier)
-                                              .state = true;
-                                        }
-                                        if (!companionCollapsed) {
-                                          ref
-                                              .read(_companionCollapsedProvider
                                                   .notifier)
                                               .state = true;
                                         }
@@ -757,7 +775,7 @@ class _StoryView extends ConsumerWidget {
                                           key: ValueKey(
                                               '${node.id}_${playState.isInExcursion}_text'),
                                           // Short narration otherwise leaves the freed-up
-                                          // space (status bar, node header, companion strip,
+                                          // space (status bar, node header,
                                           // choices all hidden) as dead blank area below the
                                           // text card, which reads as "nothing happened"
                                           // rather than an actual fullscreen mode. Centering
@@ -777,6 +795,7 @@ class _StoryView extends ConsumerWidget {
                                                       .maxHeight,
                                                   child: Center(
                                                     child: _StoryText(
+                                                      revealKey: revealKey,
                                                       text: parts.text,
                                                       prelude: preludes,
                                                       echoes: parts.echoes,
@@ -815,6 +834,7 @@ class _StoryView extends ConsumerWidget {
                                                                 french),
                                                       ),
                                                     _StoryText(
+                                                      revealKey: revealKey,
                                                       text: parts.text,
                                                       prelude: preludes,
                                                       echoes: parts.echoes,
@@ -847,46 +867,12 @@ class _StoryView extends ConsumerWidget {
                             ),
                           ),
                         if (!fullscreenReading) ...[
-                          if (companionShown) ...[
-                            if (!companionCollapsed)
-                              TutorialTarget(
-                                id: 'story.companion',
-                                child: WalkingCompanionStrip(
-                                  height: stripHeight,
-                                  trigger:
-                                      '${node.id}_${playState.isInExcursion}',
-                                  fightAvailable: node.choices.any(
-                                    (c) =>
-                                        c.triggersCombat &&
-                                        !_isChoiceLocked(c, story, session,
-                                            playState.isInExcursion,
-                                            world: gateWorld),
-                                  ),
-                                ),
-                              ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(companionCollapsed
-                                    ? Icons.expand_more
-                                    : Icons.expand_less),
-                                tooltip: tr(
-                                    ref,
-                                    companionCollapsed
-                                        ? 'show_companion'
-                                        : 'hide_companion'),
-                                visualDensity: VisualDensity.compact,
-                                onPressed: () => ref
-                                    .read(_companionCollapsedProvider.notifier)
-                                    .state = !companionCollapsed,
-                              ),
-                            ),
-                          ] else
-                            const SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           // A timed scene's clock (see TimedChoiceBar).
                           if (node.isTimed &&
                               !playState.isInExcursion &&
                               !readingScene &&
+                              choicesReady &&
                               ref.watch(appModeProvider) != AppMode.edit)
                             TimedChoiceBar(
                               key: ValueKey(
@@ -911,116 +897,129 @@ class _StoryView extends ConsumerWidget {
                                   switchInCurve: Curves.easeOut,
                                   switchOutCurve: Curves.easeIn,
                                   transitionBuilder: _nodeTransition,
-                                  child: readingScene
-                                      ? _EnterPlaceButton(
-                                          key: ValueKey(
-                                              '${node.id}_${playState.isInExcursion}_enter'),
-                                          place: node.settlement!,
-                                          again: hubFold.readBefore,
-                                          french: french,
-                                          onEnter: enterPlace,
-                                        )
-                                      : isHubNode && !isStoryEnding(node)
-                                          ? KeyedSubtree(
+                                  child: !choicesReady
+                                      ? const SizedBox.shrink(
+                                          key: ValueKey('choices_waiting'))
+                                      : readingScene
+                                          ? _EnterPlaceButton(
                                               key: ValueKey(
-                                                  '${node.id}_${playState.isInExcursion}_choices'),
-                                              child: _HubSections(
-                                                node: node,
-                                                choices: visibleChoices,
-                                                done: doneChoices,
-                                                story: story,
-                                                session: session,
-                                                currentNodeId:
-                                                    playState.currentNodeId,
-                                                isExcursion:
-                                                    playState.isInExcursion,
-                                                french: french,
-                                                maxHeight: choiceBudget,
-                                                onReread: hubFold == null
-                                                    ? null
-                                                    : () => setNarrationFolded(
-                                                        false),
-                                              ),
+                                                  '${node.id}_${playState.isInExcursion}_enter'),
+                                              place: node.settlement!,
+                                              again: hubFold.readBefore,
+                                              french: french,
+                                              onEnter: enterPlace,
                                             )
-                                          : ConstrainedBox(
-                                              key: ValueKey(
-                                                  '${node.id}_${playState.isInExcursion}_choices'),
-                                              constraints: BoxConstraints(
-                                                  maxHeight: choiceBudget),
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: [
-                                                    if (node.choices.isEmpty ||
-                                                        isStoryEnding(node))
-                                                      _EndingView(
-                                                        title:
-                                                            tr(ref, 'the_end'),
-                                                        // A written ending (its only way on is "begin
-                                                        // again") closes the story; a node with no choice
-                                                        // at all is a branch left unfinished.
-                                                        message: tr(
-                                                            ref,
-                                                            isStoryEnding(node)
-                                                                ? 'story_end_message'
-                                                                : 'branch_end_message'),
-                                                        restartLabel: isStoryEnding(
-                                                                node)
-                                                            ? node.choices.first
-                                                                .textFor(french)
-                                                            : tr(ref,
-                                                                'restart_story'),
-                                                        onRestart: () =>
-                                                            notifier.restart(
-                                                                StoryRepository
-                                                                    .startNodeId),
-                                                        session: session,
-                                                        onNewGamePlus: session
-                                                                .raceId.isEmpty
-                                                            ? null
-                                                            : () =>
-                                                                _startNewGamePlus(
-                                                                    context,
-                                                                    ref),
-                                                      )
-                                                    else
-                                                      for (var i = 0;
-                                                          i <
-                                                              visibleChoices
-                                                                  .length;
-                                                          i++)
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom: 8),
-                                                          child:
-                                                              _StaggeredReveal(
-                                                            delay: Duration(
-                                                                milliseconds:
-                                                                    60 * i),
-                                                            child:
-                                                                _ChoiceButton(
-                                                              choice:
-                                                                  visibleChoices[
-                                                                      i],
-                                                              story: story,
-                                                              session: session,
-                                                              currentNodeId:
-                                                                  playState
-                                                                      .currentNodeId,
-                                                              isExcursion: playState
-                                                                  .isInExcursion,
-                                                              french: french,
+                                          : isHubNode && !isStoryEnding(node)
+                                              ? KeyedSubtree(
+                                                  key: ValueKey(
+                                                      '${node.id}_${playState.isInExcursion}_choices'),
+                                                  child: _HubSections(
+                                                    node: node,
+                                                    choices: visibleChoices,
+                                                    done: doneChoices,
+                                                    story: story,
+                                                    session: session,
+                                                    currentNodeId:
+                                                        playState.currentNodeId,
+                                                    isExcursion:
+                                                        playState.isInExcursion,
+                                                    french: french,
+                                                    maxHeight: choiceBudget,
+                                                    onReread: hubFold == null
+                                                        ? null
+                                                        : () =>
+                                                            setNarrationFolded(
+                                                                false),
+                                                  ),
+                                                )
+                                              : ConstrainedBox(
+                                                  key: ValueKey(
+                                                      '${node.id}_${playState.isInExcursion}_choices'),
+                                                  constraints: BoxConstraints(
+                                                      maxHeight: choiceBudget),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .stretch,
+                                                      children: [
+                                                        if (node.choices
+                                                                .isEmpty ||
+                                                            isStoryEnding(node))
+                                                          _EndingView(
+                                                            title: tr(
+                                                                ref, 'the_end'),
+                                                            // A written ending (its only way on is "begin
+                                                            // again") closes the story; a node with no choice
+                                                            // at all is a branch left unfinished.
+                                                            message: tr(
+                                                                ref,
+                                                                isStoryEnding(
+                                                                        node)
+                                                                    ? 'story_end_message'
+                                                                    : 'branch_end_message'),
+                                                            restartLabel: isStoryEnding(
+                                                                    node)
+                                                                ? node.choices
+                                                                    .first
+                                                                    .textFor(
+                                                                        french)
+                                                                : tr(ref,
+                                                                    'restart_story'),
+                                                            onRestart: () =>
+                                                                notifier.restart(
+                                                                    StoryRepository
+                                                                        .startNodeId),
+                                                            session: session,
+                                                            onNewGamePlus: session
+                                                                    .raceId
+                                                                    .isEmpty
+                                                                ? null
+                                                                : () =>
+                                                                    _startNewGamePlus(
+                                                                        context,
+                                                                        ref),
+                                                          )
+                                                        else
+                                                          for (var i = 0;
+                                                              i <
+                                                                  visibleChoices
+                                                                      .length;
+                                                              i++)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          8),
+                                                              child:
+                                                                  _StaggeredReveal(
+                                                                delay: Duration(
+                                                                    milliseconds:
+                                                                        60 * i),
+                                                                child:
+                                                                    _ChoiceButton(
+                                                                  choice:
+                                                                      visibleChoices[
+                                                                          i],
+                                                                  story: story,
+                                                                  session:
+                                                                      session,
+                                                                  currentNodeId:
+                                                                      playState
+                                                                          .currentNodeId,
+                                                                  isExcursion:
+                                                                      playState
+                                                                          .isInExcursion,
+                                                                  french:
+                                                                      french,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ),
-                                                  ],
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
                                 )),
                           )),
                         ],
@@ -1047,8 +1046,62 @@ class _StoryView extends ConsumerWidget {
 /// text).
 bool isStoryChoiceLocked(
         StoryChoice choice, StoryData story, PlayerSession session,
-        {bool isExcursion = false, CoastWorld? world}) =>
-    _isChoiceLocked(choice, story, session, isExcursion, world: world);
+        {bool isExcursion = false,
+        CoastWorld? world,
+        Map<String, GeoPlace> shutWays = const {}}) =>
+    _isChoiceLocked(choice, story, session, isExcursion,
+        world: world, shutWays: shutWays);
+
+/// Whether [node]'s page holds the party until one of its ways is taken
+/// (the scene lock, see scene_lock.dart), for the play state now: never on
+/// a detour, whose own view has no map to leave by. [mapped] says which
+/// ways a map view draws (the Journey's placements, once its map is
+/// built); without it, the same data the chart uses decides
+/// ([mapDrawsEveryWay]).
+bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
+    {bool Function(StoryChoice choice)? mapped}) {
+  final play = ref.watch(storyPlayProvider);
+  if (play.isInExcursion) return false;
+  final session = ref.watch(playerSessionProvider);
+  final world = ref.watch(coastGateWorldProvider);
+  final geography = ref.watch(geographyProvider);
+  final shutWays = ref.watch(lockedStoryWaysProvider);
+  final mainQuestOpen =
+      ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
+  final everyWayMapped = mapped == null &&
+      mapDrawsEveryWay(node,
+          history: play.history,
+          world: geography,
+          cityPlans: ref.watch(cityPlanRecordsProvider).value?.keys.toSet());
+  return sceneLocked(
+    ways: [
+      for (final c in node.choices)
+        if (!choiceHiddenFor(c, session, world))
+          () {
+            final here =
+                choiceShape(node, c, story: story, geography: geography).here;
+            return (
+              here: here,
+              takeable: !(c.mainQuest && !mainQuestOpen) &&
+                  !isStoryChoiceLocked(c, story, session,
+                      world: world, shutWays: shutWays),
+              mapped: mapped?.call(c) ?? (everyWayMapped || !here),
+            );
+          }(),
+    ],
+    hub: isHubScene(node),
+    ending: isStoryEnding(node),
+    editMode: ref.watch(appModeProvider) == AppMode.edit,
+  );
+}
+
+/// Whether the data the map lays the ways on has loaded (the places and
+/// biomes, the cities' stored plans): until then [storySceneLocked] can't
+/// tell a scene the map draws from one it doesn't, and says unlocked.
+bool storyMapPlacementsKnown(WidgetRef ref) =>
+    !ref.watch(gameDbProvider(geographySchema)).isLoading &&
+    !ref.watch(gameDbProvider(biomesSchema)).isLoading &&
+    !ref.watch(cityPlanRecordsProvider).isLoading;
 
 /// What a shut [choice] reads as instead of its text: why it is shut (see
 /// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for
@@ -1065,6 +1118,10 @@ String? storyChoiceLockedText(
   if (_paymentShort(choice, session.gold, isExcursion)) {
     return _goldShortText(ref, choice, session.gold, french: french);
   }
+  // A way into a locked district reads as the district's own line.
+  final district =
+      isExcursion ? null : ref.watch(lockedStoryWaysProvider)[choice.nextId];
+  if (district != null) return district.lockedTextFor(french);
   return choice.lockedTextFor(french);
 }
 
@@ -1110,6 +1167,7 @@ bool _isChoiceLocked(
   PlayerSession session,
   bool isExcursion, {
   CoastWorld? world,
+  Map<String, GeoPlace> shutWays = const {},
 }) {
   // A payment on the road (an offering, a toll, a fine) waits for a purse
   // that holds it, and so does a story choice marked as one (a fee, a
@@ -1117,6 +1175,8 @@ bool _isChoiceLocked(
   // scene's gold requirement; gold it takes away unmarked is a loss.
   if (_paymentShort(choice, session.gold, isExcursion)) return true;
   if (isExcursion) return false;
+  // A way into a locked district (lockedStoryWaysProvider, v1.616).
+  if (shutWays.containsKey(choice.nextId)) return true;
   // A politics gate that fails, on a choice with a locked text to show
   // (v1.196); one without is hidden (see choiceHiddenFor).
   if (world != null &&
@@ -1268,6 +1328,7 @@ Future<void> _selectChoice({
           dc: choice.checkDC ?? 10,
           successesNeeded: choice.challengeSuccessesNeeded!,
           maxFailures: choice.challengeMaxFailures!,
+          random: ref.read(storyCheckRandomProvider),
         ),
       ));
       if (!context.mounted) return;
@@ -1277,6 +1338,7 @@ Future<void> _selectChoice({
         ability: choice.checkAbility!,
         dc: choice.checkDC ?? 10,
         session: session,
+        random: ref.read(storyCheckRandomProvider),
       );
       final abilityLabel = tr(ref, '${result.ability}_label');
       final outcomeKey =
@@ -1457,6 +1519,7 @@ Future<void> _selectChoice({
               goldMod: choice.goldMod,
               alignmentMod: choice.alignmentMod,
               healAmount: choice.healAmount,
+              shortfallWounds: choice.shortfallWounds,
               flagsToAdd: choice.flagsToAdd,
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,
@@ -1550,8 +1613,9 @@ Future<void> _selectChoice({
     }
   } else if (choice.hasPolitics &&
       isExcursion &&
-      isClanCrisisNode(detourNodeId)) {
-    // Your clan's crisis or fall, met on the road (clan_crisis.dart).
+      (isClanCrisisNode(detourNodeId) || isSiegeNode(detourNodeId))) {
+    // Your clan's crisis or fall, or a district's siege, met on the road
+    // (clan_crisis.dart, district_attacks.dart).
     await applyStoryPoliticsNow(ref, choice.politics!,
         nodeId: detourNodeId!, key: '');
   }
@@ -1649,6 +1713,10 @@ Future<void> _selectChoice({
     return;
   }
 
+  // A way back to the camp goes to the camp the party stands for (see
+  // camp_errands.dart).
+  final nextId = storyChoiceTarget(choice,
+      campNodeId: ref.read(currentCampNodeIdProvider));
   // Landed where the choice goes: the voyage was the way there, with its
   // days and its sea, and no road after it.
   if (travelled) {
@@ -1656,13 +1724,13 @@ Future<void> _selectChoice({
     // waits off the quay, the chapter's landmark among it.
     final started = await startRoadEncounter(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: ref.read(storyPlayProvider).history.length,
         travels: true,
         origin: choice.text,
         originFr: choice.textFr);
     if (!context.mounted || started) return;
-    await _arriveAt(ref, story, choice.nextId);
+    await _arriveAt(ref, story, nextId);
     return;
   }
 
@@ -1675,8 +1743,7 @@ Future<void> _selectChoice({
   final historyBefore = ref.read(storyPlayProvider).history.length;
   final world = await loadGeography(ref);
   final walks = !choice.opensCharacterCreation &&
-      (choice.travels ||
-          world.travelsBetween(story, currentNodeId, choice.nextId));
+      (choice.travels || world.travelsBetween(story, currentNodeId, nextId));
   // A walk between places takes the watches of where it goes (a far place
   // can take a day, see GeoPlace.watches).
   final watches = choice.travels
@@ -1689,18 +1756,18 @@ Future<void> _selectChoice({
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: historyBefore);
     if (!context.mounted) return;
     if (event != null) {
       await startRoadEncounter(ref, story,
           fromNodeId: currentNodeId,
-          toNodeId: choice.nextId,
+          toNodeId: nextId,
           historyLength: historyBefore,
           travels: choice.travels,
           watches: watches,
           taken: true);
-      playNotifier.startExcursion(event, choice.nextId,
+      playNotifier.startExcursion(event, nextId,
           origin: choice.text, originFr: choice.textFr);
       return;
     }
@@ -1711,7 +1778,7 @@ Future<void> _selectChoice({
   if (!choice.opensCharacterCreation) {
     final started = await startRoadEncounter(ref, story,
         fromNodeId: currentNodeId,
-        toNodeId: choice.nextId,
+        toNodeId: nextId,
         historyLength: historyBefore,
         travels: choice.travels,
         watches: walks ? watches : 1,
@@ -1720,7 +1787,7 @@ Future<void> _selectChoice({
     if (!context.mounted) return;
     if (started) return;
   }
-  await _arriveAt(ref, story, choice.nextId);
+  await _arriveAt(ref, story, nextId);
 }
 
 /// Remembers [echoes] as read once they are on screen (see
@@ -1934,6 +2001,25 @@ int storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
       c.textFr == choice.textFr);
 }
 
+/// The siege to meet on the road from [fromNodeId] to [toNodeId]
+/// (district_attacks.dart): the sieges run out settled away first, then
+/// one of the town either end stands in, or null.
+Future<DistrictSiege?> _siegeOnRoad(
+  WidgetRef ref,
+  StoryData story,
+  Geography geo, {
+  required String fromNodeId,
+  required String toNodeId,
+  required int chapter,
+}) async {
+  final session = ref.read(playerSessionProvider.notifier);
+  await session.settleExpiredSieges(
+      data: ref.read(clanDataProvider), geography: geo, chapter: chapter);
+  return siegeToMeet(ref.read(playerSessionProvider).politics,
+      fromCity: geo.locationOfNode(story.nodeFor(fromNodeId))?.id ?? '',
+      toCity: geo.locationOfNode(story.nodeFor(toNodeId))?.id ?? '');
+}
+
 /// What the road from [fromNodeId] to [toNodeId] holds (see
 /// detour_pacing.dart), started as the excursion the story plays before
 /// arriving; true when one was. Only a change of place (D1: never between
@@ -1998,6 +2084,21 @@ Future<bool> startRoadEncounter(
     if (betrayer != null) {
       alignmentEvent = [betrayalAmbushNode(betrayer, enemies, dice())];
     }
+    // A district of the town under siege (district_attacks.dart): the
+    // sieges run out are settled first, then the one of the town the road
+    // comes from or goes to is met, before your clan's crisis.
+    final siege = await _siegeOnRoad(ref, story, geo,
+        fromNodeId: fromNodeId, toNodeId: toNodeId, chapter: chapter);
+    if (siege != null) {
+      final node = buildSiegeNode(
+          ref.read(playerSessionProvider).politics, siege,
+          data: ref.read(clanDataProvider),
+          geography: geo,
+          enemies: enemies,
+          chapter: chapter,
+          random: dice());
+      if (node != null) alignmentEvent ??= [node];
+    }
     // Your clan's seat threatened, or fallen (clan_crisis.dart): before
     // any hunter.
     alignmentEvent ??= clanCrisisRoadEvent(session.politics,
@@ -2043,10 +2144,14 @@ Future<bool> startRoadEncounter(
       enabled: ref.read(alignmentHuntersEnabledProvider),
       cooledDown: session.alignmentRollsSinceAmbush >= hunterCooldownRolls,
       flags: session.flags,
+      warded: wardedClansOf(session.rollBans),
     );
     await sessionNotifier.noteAlignmentRoll(
         ambushed:
             alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
+    // The Warding Cairn's wards count down (road_wards.dart).
+    await sessionNotifier.tickRoadWards(
+        data: ref.read(clanDataProvider), chapter: chapter);
   }
   // Someone met on an earlier road, when one may come.
   List<StoryNode>? familiarFace;
@@ -2139,7 +2244,8 @@ Future<bool> startRoadEncounter(
   return true;
 }
 
-/// `@first_ally` among a choice's enemies is the first active companion,
+/// `@first_ally` among a choice's enemies is the first active companion
+/// (never Vica, v1.601),
 /// turned: they leave the party for good before the fight and stand across
 /// the sand as `<id>_turned`; with no one left to turn, the Inquisition's
 /// own champion takes the field. The flags `companion_turned` /
@@ -2148,12 +2254,13 @@ Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
   if (!ids.contains('@first_ally')) return ids;
   final notifier = ref.read(playerSessionProvider.notifier);
   final session = ref.read(playerSessionProvider);
+  final companions =
+      ref.read(gameDbProvider(companionsSchema)).value ?? const {};
+  // Never Vica, who cannot be taken (story_companions.dart).
   final allyId =
-      session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
+      storyLossOf('*', active: session.activeAllyIds, companions: companions);
   if (allyId != null) {
-    notifier.loseAlly(allyId,
-        companions:
-            ref.read(gameDbProvider(companionsSchema)).value ?? const {});
+    notifier.loseAlly(allyId, companions: companions);
     await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
   } else {
     await notifier.applyChoiceEffects(flagsToAdd: const ['legate_fought']);
@@ -2976,7 +3083,8 @@ class _HubChoiceCard extends ConsumerWidget {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
         _isChoiceLocked(choice, story, session, isExcursion,
-            world: ref.watch(coastGateWorldProvider));
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
@@ -3190,7 +3298,8 @@ class _ChoiceButton extends ConsumerWidget {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
         _isChoiceLocked(choice, story, session, isExcursion,
-            world: ref.watch(coastGateWorldProvider));
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
 
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
@@ -3496,48 +3605,6 @@ class _RecordSceneButton extends ConsumerWidget {
   }
 }
 
-/// Builds the body's [TextSpan]s for quick skim-reading: the opening
-/// sentence (the scene's "hook") is bolded so a reader can tell what a
-/// passage is about at a glance, and any quoted dialogue is italicized so
-/// spoken lines stand out from surrounding narration. Every node's
-/// description in this game is one continuous block (no author-inserted
-/// paragraph breaks), so this only ever needs to highlight within a single
-/// run of text, not across paragraphs.
-List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
-  if (body.isEmpty) return const [];
-
-  final firstSentenceMatch = RegExp(r'[.!?]+(\s|$)').firstMatch(body);
-  final firstSentenceEnd = firstSentenceMatch?.end ?? 0;
-
-  final quoteRanges = <List<int>>[
-    for (final m in RegExp('["“][^"”]{3,}["”]').allMatches(body))
-      [m.start, m.end],
-  ];
-
-  final breakpoints = <int>{0, firstSentenceEnd, body.length};
-  for (final range in quoteRanges) {
-    breakpoints.addAll(range);
-  }
-  final sorted = breakpoints.toList()..sort();
-
-  final spans = <TextSpan>[];
-  for (var i = 0; i < sorted.length - 1; i++) {
-    final start = sorted[i];
-    final end = sorted[i + 1];
-    if (start >= end) continue;
-    final isBold = start < firstSentenceEnd;
-    final isDialogue = quoteRanges.any((r) => start >= r[0] && end <= r[1]);
-    spans.add(TextSpan(
-      text: body.substring(start, end),
-      style: baseStyle.copyWith(
-        fontWeight: isBold ? FontWeight.w700 : null,
-        fontStyle: isDialogue ? FontStyle.italic : null,
-      ),
-    ));
-  }
-  return spans;
-}
-
 /// A town or camp's scene the reader has already read, folded to one line
 /// that opens it again, with the last fight's aftermath under it when
 /// there is one -- so the place's own lists get the screen.
@@ -3673,9 +3740,14 @@ class _StoryText extends StatelessWidget {
     this.aftermath,
     this.aftermathHeading = '',
     this.outcome,
+    this.revealKey,
   });
 
   final String text;
+
+  /// Names the scene for the typewriter (see StoryText): the text writes
+  /// itself out the first time it is shown under it. Null: shown at once.
+  final String? revealKey;
 
   /// Plain scenes read on the way here (see scene_flow.dart): they open
   /// the page, the scene's own text after a small rule.
@@ -3866,11 +3938,9 @@ class _StoryText extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  Text.rich(
-                    TextSpan(
-                        children: _highlightedSpans(
-                            storyBodyFor(scene.body), baseStyle)),
-                    textAlign: TextAlign.start,
+                  StoryText(
+                    text: storyBodyFor(scene.body),
+                    style: baseStyle,
                   ),
                   for (final echo in scene.echoes) ...[
                     const SizedBox(height: 14),
@@ -3904,9 +3974,10 @@ class _StoryText extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                 ],
-                Text.rich(
-                  TextSpan(children: _highlightedSpans(body, baseStyle)),
-                  textAlign: TextAlign.start,
+                StoryText(
+                  text: body,
+                  style: baseStyle,
+                  revealKey: revealKey,
                 ),
                 for (final echo in echoes) ...[
                   const SizedBox(height: 14),
@@ -3937,10 +4008,10 @@ class _StoryText extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    epilogue!,
-                    textAlign: TextAlign.start,
+                  StoryText(
+                    text: epilogue!,
                     style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                    firstSentenceBold: false,
                   ),
                 ],
               ],
@@ -4289,10 +4360,12 @@ String? _moodLabel(WidgetRef ref, String? mood) {
   return label == key ? null : label;
 }
 
-/// A line an earlier choice earned, under a small caption naming the
-/// choice ("Because you chose “Spare him”"), set off by a thread in the
-/// scene's colour so it reads as the story answering the player.
-class EchoLine extends StatelessWidget {
+/// A line an earlier choice earned (see echoes.dart). In play it is set
+/// into the story as ordinary prose, with nothing to say where it came
+/// from; in Edit Mode (the story node editor's preview) it stays under a
+/// small caption naming the choice ("Because you chose “Spare him”"), set
+/// off by a thread in the scene's colour, so the author sees what earned it.
+class EchoLine extends ConsumerWidget {
   const EchoLine({
     super.key,
     required this.echo,
@@ -4307,7 +4380,10 @@ class EchoLine extends StatelessWidget {
   final TextStyle style;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(appModeProvider) != AppMode.edit) {
+      return StoryText(text: echo.line, style: style, firstSentenceBold: false);
+    }
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -4334,7 +4410,7 @@ class EchoLine extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text(echo.line, style: style),
+            StoryText(text: echo.line, style: style, firstSentenceBold: false),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/forge_roll.dart' show withForgedVariants;
 import 'db_schema.dart';
 
 class GameDbRepository {
@@ -12,7 +13,15 @@ class GameDbRepository {
 
   String get _prefsKey => 'gamedb_${schema.id}';
 
+  /// The table's records: the edited copy if one was saved, else the
+  /// asset's. The items table resolves forged variants (`<baseId>@fine`,
+  /// forge_roll.dart's ForgedItems), for every reader of it.
   Future<Map<String, dynamic>> loadRecords() async {
+    final records = await _loadRaw();
+    return schema.id == 'items' ? withForgedVariants(records) : records;
+  }
+
+  Future<Map<String, dynamic>> _loadRaw() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_prefsKey);
     if (saved != null) {

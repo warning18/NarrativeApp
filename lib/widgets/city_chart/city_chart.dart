@@ -14,6 +14,7 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 
 import '../../data/city_plan_record.dart';
+import '../../data/town_rulers.dart' show TownRuler;
 
 /// What a way does, as the pin on its building says it.
 enum CityWayKind { quest, fight, check, shop, road }
@@ -99,6 +100,7 @@ class CityChartWay {
     required this.kind,
     required this.name,
     required this.building,
+    this.at,
   });
 
   final String id;
@@ -108,6 +110,114 @@ class CityChartWay {
 
   /// The building's key.
   final String building;
+
+  /// Where the pin stands when not on its building (v1.542): a spot in the
+  /// street round the doorstep of a scene played outside.
+  final Offset? at;
+}
+
+/// The colours of the clan that rules a district (wave 15, townRulersProvider):
+/// [fill] washes its blocks, [accent] outlines them. A district no one rules
+/// has none, and keeps its own colour.
+class CityChartRuler {
+  const CityChartRuler({required this.fill, required this.accent});
+  final Color fill;
+  final Color accent;
+
+  @override
+  bool operator ==(Object other) =>
+      other is CityChartRuler && other.fill == fill && other.accent == accent;
+
+  @override
+  int get hashCode => Object.hash(fill, accent);
+}
+
+/// The ruling clan's colours for each district of [chart] that someone rules
+/// (a neutral district is left out and keeps its own colour), from
+/// townRulersProvider's [rulers].
+Map<String, CityChartRuler> cityChartRulersOf(
+        CityChart chart, Map<String, TownRuler> rulers) =>
+    {
+      for (final d in chart.districts)
+        if (rulers[d.id] case final r? when !r.isNeutral)
+          d.id: CityChartRuler(fill: Color(r.color), accent: Color(r.accent)),
+    };
+
+/// Who holds a district and how firmly (wave 18): the holding clan's colours,
+/// its [hold] of the district (0 to 1, its influence over 100), the strongest
+/// rival's [rival] with the [flipAt] level it must reach to take it, and
+/// whether the district [flipped] to its holder. Drawn on the whole-town plan
+/// as a flag in a ring (the crest), the ring filled by the hold.
+class CityChartHold {
+  const CityChartHold({
+    required this.fill,
+    required this.accent,
+    this.hold,
+    this.rival = 0,
+    this.rivalFill,
+    this.flipAt = 0,
+    this.flipped = false,
+  });
+
+  final Color fill;
+  final Color accent;
+
+  /// The holder's influence as a share of 1; null: no influence is counted
+  /// here (a flag alone).
+  final double? hold;
+  final double rival;
+  final Color? rivalFill;
+
+  /// The share of 1 the rival must reach to take the district.
+  final double flipAt;
+  final bool flipped;
+
+  @override
+  bool operator ==(Object other) =>
+      other is CityChartHold &&
+      other.fill == fill &&
+      other.accent == accent &&
+      other.hold == hold &&
+      other.rival == rival &&
+      other.rivalFill == rivalFill &&
+      other.flipAt == flipAt &&
+      other.flipped == flipped;
+
+  @override
+  int get hashCode =>
+      Object.hash(fill, accent, hold, rival, rivalFill, flipAt, flipped);
+}
+
+/// A service of the town pinned on its plan (wave 14): a notice board, the
+/// market, a tavern, a temple, a forge, a harbour. Fixed, not a way of the
+/// story; its [opens] says whether anything opens there yet.
+class CityChartService {
+  const CityChartService({
+    required this.id,
+    required this.kind,
+    required this.at,
+    required this.district,
+    this.opens = true,
+    this.badge = 0,
+    this.urgent = false,
+  });
+
+  final String id;
+
+  /// A count on the pin (the notice board's notices up); 0 shows none. It
+  /// is red when [urgent] (a contract can be claimed).
+  final int badge;
+  final bool urgent;
+
+  /// notice_board, market, tavern, temple, forge or harbour.
+  final String kind;
+
+  /// On the plan, in the plan's own units.
+  final Offset at;
+
+  /// The district's id.
+  final String district;
+  final bool opens;
 }
 
 /// A line of the plan with its width: a river, a canal, an avenue, a street.
@@ -130,6 +240,7 @@ class CityWayInput {
     required this.kind,
     required this.name,
     required this.sceneId,
+    this.at,
   });
 
   final String id;
@@ -137,6 +248,9 @@ class CityWayInput {
   final CityWayKind kind;
   final String name;
   final String sceneId;
+
+  /// A spot on the plan for the pin instead of its building (v1.542).
+  final Offset? at;
 }
 
 class CityChart {
@@ -165,6 +279,7 @@ class CityChart {
     this.waterways = const [],
     this.roads = const [],
     this.islands,
+    this.here,
   });
 
   final String name;
@@ -199,6 +314,10 @@ class CityChart {
 
   /// Islands in the water, drawn over it.
   final Path? islands;
+
+  /// Where the party stands when the scene plays outside a building
+  /// (v1.542): the building's doorstep; null to mark its district.
+  final Offset? here;
 
   CityChartDistrict? districtById(String id) {
     for (final d in districts) {
@@ -247,6 +366,7 @@ class CityChart {
     List<CityWayInput> ways = const [],
     bool french = false,
     String name = '',
+    String? doorstep,
   }) {
     Path polygon(List<Offset> pts, [Path? into]) {
       final path = into ?? Path();
@@ -272,7 +392,10 @@ class CityChart {
     final index = {for (final (i, id) in ids.indexed) id: i};
 
     // The ways, each on its building.
-    final pinned = <String, String>{};
+    final pinned = <String, String>{
+      // A scene played at a building's doorstep (v1.542) shows the building.
+      if (doorstep != null && record.building(doorstep) != null) doorstep: '',
+    };
     final chartWays = <CityChartWay>[];
     for (final w in ways) {
       final d = index[w.districtId];
@@ -281,7 +404,12 @@ class CityChart {
       if (b == null) continue;
       pinned[b.id] = w.name;
       chartWays.add(CityChartWay(
-          id: w.id, district: d, kind: w.kind, name: w.name, building: b.id));
+          id: w.id,
+          district: d,
+          kind: w.kind,
+          name: w.name,
+          building: b.id,
+          at: w.at));
     }
 
     // The buildings: the story's own, and the lots of the rest.
@@ -405,6 +533,9 @@ class CityChart {
       boats: const [],
       trees: const [],
       piers: const [],
+      here: doorstep == null || record.building(doorstep) == null
+          ? null
+          : record.doorstepOf(doorstep),
       waterways: [
         for (final r in [...record.rivers, ...record.canals])
           CityChartStroke(line(r.points), r.width),

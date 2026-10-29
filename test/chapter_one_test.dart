@@ -80,8 +80,8 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 48 scenes, all reachable', () {
-    expect(chapterOne.length, 48);
+  test('chapter 1 has no padding: 52 scenes, all reachable', () {
+    expect(chapterOne.length, 52);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -162,6 +162,13 @@ void main() {
       final choices = node.choices;
       if (choices.isEmpty) continue;
       if (choices.length == 1) {
+        if (node.pageTurn) {
+          // A page turn: the same place, the next page of the scene.
+          expect(choices.single.text, 'Continue', reason: node.id);
+          expect(nodes[choices.single.nextId]!.location, node.location,
+              reason: '${node.id} turns the page in another place');
+          continue;
+        }
         expect(_hasImpact(choices.single), isTrue,
             reason: '${node.id} is a padding node: ${choices.single.text}');
         continue;
@@ -349,10 +356,13 @@ void main() {
     expect(mate.choices.map((c) => c.checkAbility).toSet(),
         {'charisma', 'intelligence', 'dexterity'});
     for (final way in mate.choices) {
-      expect(way.nextId, '960', reason: way.text);
+      expect(way.nextId, '960_lift', reason: way.text);
       final failed = nodes[way.failNextId]!;
       final board = failed.choices.single;
+      // The failure page carries the lift's paragraph itself, so a failed
+      // boarding is one page, not two Continues in a row.
       expect(board.nextId, '960', reason: failed.id);
+      expect(failed.description, contains(nodes['960_lift']!.description));
       if (way.checkAbility == 'dexterity') {
         expect(board.healAmount, lessThan(0), reason: failed.id);
       } else {
@@ -377,8 +387,12 @@ void main() {
     expect(nodes['1101_scarred']!.choices.single.flagsToAdd,
         contains('void_marked'));
     expect(nodes['1210']!.reqFlags, ['void_marked']);
-    expect(
-        nodes['1210']!.choices.single.unlockQuestId, 'q_ch1_vess_in_the_dark');
+    // Vess is met at the Wells but joins in Saltmouth (v1.602): the Wells no
+    // longer take her quest; the Saltmouth hub's scene does.
+    expect(nodes['1210']!.choices.single.unlockQuestId, isNull);
+    expect(nodes['1210']!.choices.single.flagsToAdd, contains('met_vess'));
+    expect(nodes['2015_vess']!.choices.first.unlockQuestId,
+        'q_ch1_vess_in_the_dark');
     // The heat is a Constitution challenge.
     final heat = nodes['1120']!.choices.singleWhere((c) => c.hasSkillChallenge);
     expect(heat.checkAbility, 'constitution');
@@ -392,7 +406,26 @@ void main() {
     final spotted = nodes['1140_spotted']!.choices;
     expect(
         spotted.singleWhere((c) => c.triggersCombat).forcedCondition, 'ambush');
-    expect(spotted.map((c) => c.nextId).toSet(), {'1200'});
+    expect(spotted.map((c) => c.nextId).toSet(), {'1150_vica'});
+    expect(looters.map((c) => c.nextId).toSet(), {'1150_vica'});
+    // The end of the crossing: Vica finds the lost hero and joins, whatever
+    // the hero does (no way to refuse her); the coins really cost 10 gold.
+    final vica = nodes['1150_vica']!;
+    expect(vica.choices.map((c) => c.nextId).toSet(), {'1200'});
+    expect(vica.choices, hasLength(3));
+    final coins = vica.choices.singleWhere((c) => c.goldMod != 0);
+    expect(coins.goldMod, -10);
+    expect(coins.pays, isTrue);
+    expect(coins.flagsToAdd, ['vica_paid']);
+    // Her starting mood is the choice's own: devoted when the water is shared,
+    // wary of the coins, steady otherwise (Core's party rule seats her on
+    // arriving here; her entry says `permanent`).
+    expect(
+        vica.choices
+            .singleWhere((c) => c.flagsToAdd.contains('vica_shared'))
+            .approvalMods,
+        {'vica': 9});
+    expect(coins.approvalMods, {'vica': -8});
     // The Wells: rest, and the three ways chapter 1 ends.
     expect(nodes['1200']!.description, contains('Saltmouth'));
     for (final ending in ['1000', '1001', '1002']) {
@@ -425,5 +458,32 @@ void main() {
     for (final repair in yard.choices.where((c) => c.launchesZone)) {
       expect(repair.showIfFlags, ['eel_owned'], reason: repair.text);
     }
+  });
+
+  test('Vica is a surprise at 1150_vica; Vess is met once (v1.610)', () {
+    // The name comes out of the heat at 1150: nothing read before it says it.
+    for (final node in chapterOne.values) {
+      if (node.id == '1150_vica' || node.id == '1200') continue;
+      for (final text in [node.description, node.descriptionFr ?? '']) {
+        expect(text, isNot(contains('Vica')), reason: node.id);
+      }
+    }
+    // The tutorial's guide is unnamed until the player names it.
+    final strings = File('lib/l10n/app_strings.dart').readAsStringSync();
+    for (final key in ['tut_guide_default_name', 'tut_story_1']) {
+      final start = strings.indexOf("'$key': {");
+      final block = strings.substring(start, strings.indexOf('},', start));
+      expect(block, isNot(contains('Vica')), reason: key);
+    }
+    final arrival = nodes['1150_vica']!;
+    expect(arrival.uiTheme, 'desert');
+    expect(arrival.flagCallbacks.map((c) => c.flag), ['lysa_survived']);
+    // The +5 Vigil and the Stitchers' friendship are paid once, at the
+    // hearing in Saltmouth, not also at the Wells.
+    expect(nodes['1210']!.choices.single.politics, isNull);
+    final vess =
+        nodes['2015']!.choices.singleWhere((c) => c.nextId == '2015_vess');
+    expect(vess.hideIfFlags, contains('q_ch1_vess_in_the_dark_accepted'));
+    expect(vess.hideIfFlags, isNot(contains('met_vess')));
   });
 }

@@ -31,7 +31,7 @@ const int painDamageMultiplier = 2;
 const double painHealthShare = 0.08;
 
 /// What a Steady face is worth on top of its number.
-const int steadyBonus = 2;
+const int steadyBonus = 1;
 
 /// The keyword named [name] (dice.json spelling, any case), or null.
 FaceKeyword? faceKeywordNamed(String name) {

@@ -12,6 +12,7 @@
 // builds the harbour on load once.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,10 +224,13 @@ void main() {
             return Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
-                  onPressed: () async => pops.add(await Navigator.of(context)
-                      .push<bool>(MaterialPageRoute(
+                  onPressed: () async => pops.add(
+                      await Navigator.of(context).push<bool>(MaterialPageRoute(
                           builder: (_) => LandCrossingScreen(
-                              route: route, events: events)))),
+                              route: route,
+                              events: events,
+                              // A natural 1 or 20 settles a check.
+                              random: Random(2))))),
                   child: const Text('go'),
                 ),
               ),
@@ -358,9 +362,10 @@ void main() {
           'enemyKillCounts': <String, int>{},
         };
 
-    test('the version of a new save is 5', () {
+    test('the version of a new save is 6', () {
       expect(
-          PlayerSession.fromJson(save(version: 5)).toJson()['saveVersion'], 5);
+          PlayerSession.fromJson(save(version: 5)).toJson()['saveVersion'], 6);
+      expect(playerSessionSaveVersion, 6);
       expect(harbourSaveVersion, 5);
       expect(materialsSaveVersion, 4);
     });
@@ -428,7 +433,7 @@ void main() {
             jsonDecode(jsonEncode(s.toJson())) as Map<String, dynamic>);
         expect(again.inventoryItemIds.length, s.inventoryItemIds.length);
         expect(again.builtHouseIds, s.builtHouseIds);
-        expect(again.toJson()['saveVersion'], 5);
+        expect(again.toJson()['saveVersion'], 6);
         final founded =
             (raw['flags'] as List? ?? const []).contains(campFoundedFlag);
         if (!founded) {

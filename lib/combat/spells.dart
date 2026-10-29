@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../data/text_placeholders.dart';
 import '../l10n/app_locale.dart';
 import 'combat_engine.dart' show scaledDamage, scaledMaxHealth;
 import 'status_effect.dart';
@@ -33,18 +34,22 @@ SpellEffectKind _effectFromString(String? value) => switch (value) {
 /// [maxManaFor].
 const int baseMana = 4;
 
-/// A character's mana pool: [baseMana] plus half of whichever is higher,
-/// Intelligence or Wisdom -- a starting Mage or Cleric (4 in their stat)
-/// has 6, a Warrior 4. Mana carries over between fights like health does,
-/// refills on a rest, and comes back mid-fight through a die's `Mana`
-/// faces (see `resolvePlayerFace`).
-int maxManaFor({required int intelligence, required int wisdom}) =>
-    baseMana + max(intelligence, wisdom) ~/ 2;
+/// A character's mana pool: [baseMana] plus one a point of Wisdom
+/// (docs/proposals/stat-scale.md: mana comes from Wisdom only) -- a
+/// starting human Cleric (Wisdom 6) has 10, a Warrior 4. Mana carries over
+/// between fights like health does, refills on a rest, and comes back
+/// mid-fight through a die's `Mana` faces (see `resolvePlayerFace`).
+int maxManaFor({required int wisdom}) => baseMana + max(0, wisdom);
+
+/// The extra healing a Heal face or a healing skill does in the hands of
+/// a wise character: one point per 4 Wisdom (the fight's small scale,
+/// docs/proposals/stat-scale.md) -- a starting human Cleric (6) heals +1.
+int wisdomHealBonusFor(int wisdom) => wisdom <= 0 ? 0 : wisdom ~/ 4;
 
 /// Extra mana a Mana face or a mana skill (Channel, Prayer) gives in the
 /// hands of a wise character: one more point per 3 Wisdom -- a starting
 /// human Cleric (6) gets +2, a Mage (1) nothing yet.
-int wisdomManaBonusFor(int wisdom) => wisdom <= 0 ? 0 : wisdom ~/ 3;
+int wisdomManaBonusFor(int wisdom) => wisdom <= 0 ? 0 : wisdom ~/ 2;
 
 /// The Scroll of Fireball's item id: read in a fight, it burns once for
 /// free (see [fireballScroll]).
@@ -162,10 +167,31 @@ class SpellSpec {
   String nameFor(AppLanguage language) =>
       language == AppLanguage.fr && nameFr.isNotEmpty ? nameFr : name;
 
-  String descriptionFor(AppLanguage language) =>
+  /// The description in [language], its placeholders filled (see
+  /// [placeholders]).
+  String descriptionFor(AppLanguage language) => resolvePlaceholders(
       language == AppLanguage.fr && descriptionFr.isNotEmpty
           ? descriptionFr
-          : description;
+          : description,
+      placeholders,
+      language);
+
+  /// The numbers a description may name (text_placeholders.dart):
+  /// `{amount}`, and the same number as `{damage}`, `{heal}` or `{block}`
+  /// by the spell's effect; `{multiplier}` (a Damage spell's), `{mana}`
+  /// (its cost), and `{duration}` / `{magnitude}` for a status.
+  Map<String, num> get placeholders => {
+        'amount': amount,
+        if (effect == SpellEffectKind.damage) 'damage': amount,
+        if (effect == SpellEffectKind.heal) 'heal': amount,
+        if (effect == SpellEffectKind.block) 'block': amount,
+        if (effect == SpellEffectKind.damage) 'multiplier': damageMultiplier,
+        'mana': manaCost,
+        if (status case final status?) ...{
+          'duration': status.remainingTurns,
+          'magnitude': status.magnitude,
+        },
+      };
 
   String battleMessageFor(AppLanguage language) =>
       language == AppLanguage.fr && battleMessageFr.isNotEmpty
@@ -215,7 +241,7 @@ int spellAmountFor(
     'strength' => strength,
     _ => 0,
   };
-  final base = spell.amount + score ~/ 2;
+  final base = spell.amount + max(0, score) ~/ 4;
   return switch (spell.effect) {
     SpellEffectKind.damage =>
       max(0, ((casterDamage + base) * spell.damageMultiplier).round()),

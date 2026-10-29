@@ -155,8 +155,9 @@ void main() {
         },
         'vess_die': {
           ...dice['vess_die'] as Map<String, dynamic>,
+          // Vess's die is a d8 (dice sizes): eight faces, all the same.
           'faces': [
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 8; i++)
               {'type': 'Attack', 'value': 6, 'element': 'Electricity'},
           ],
         },

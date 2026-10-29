@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -25,21 +26,29 @@ import '../providers/chapter_loop_provider.dart'
     show chapterConditionProvider, reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
+import '../providers/day_phase_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart' show speakUpAtSea;
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/ship_dress_provider.dart';
 import '../providers/signs_provider.dart';
+import '../providers/walking_party_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/ability_roll_dialog.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
+import '../widgets/fight_entrance.dart';
+import '../widgets/fight_spoils_strip.dart';
 import '../widgets/moments.dart';
 import '../widgets/sea_battlefield.dart';
 import '../widgets/ship_widgets.dart' show HullBar, playerShipRecord;
+import '../widgets/side_view/deck_crew.dart';
 import '../widgets/side_view/sea_kit.dart';
+import '../widgets/side_view/side_view.dart' show sideViewRows;
+import '../widgets/walk_bubble.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -66,6 +75,7 @@ class VoyageScreen extends ConsumerStatefulWidget {
     required this.toPort,
     this.huntBeastId,
     @visibleForTesting this.debugEvents,
+    @visibleForTesting this.debugRandom,
   });
 
   final String fromPortId;
@@ -79,12 +89,16 @@ class VoyageScreen extends ConsumerStatefulWidget {
   /// The days at sea to sail instead of drawing them, for tests.
   final List<SeaEvent>? debugEvents;
 
+  /// The voyage's dice, for tests: a check can fail on a natural 1 and pass
+  /// on a 20 since v1.458, so a test that needs one outcome seeds them.
+  final Random? debugRandom;
+
   @override
   ConsumerState<VoyageScreen> createState() => _VoyageScreenState();
 }
 
 class _VoyageScreenState extends ConsumerState<VoyageScreen> {
-  final _random = Random();
+  late final Random _random = widget.debugRandom ?? Random();
   List<SeaEvent>? _events;
 
   /// The painted sail aboard, if any, and how strongly its sigil holds
@@ -148,6 +162,64 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   /// a raider fight).
   String? _beastId;
   BeastProfile? _beast;
+
+  /// A companion's word as the voyage casts off (Core's speakUpAtSea, once a
+  /// chapter), as a bubble over their figure on the deck for a few seconds.
+  SpokenLine? _spoken;
+  Timer? _spokenTimer;
+  bool _seaSpoke = false;
+
+  /// What the last won sea fight brought, counted up above the next day
+  /// (see fight_spoils_strip.dart); cleared when the next day is acted on.
+  FightSpoils? _seaSpoils;
+
+  void _speakUpAtSea() {
+    if (_seaSpoke || !mounted) return;
+    _seaSpoke = true;
+    final remark = speakUpAtSea(ref, chapter: _chapter);
+    if (remark == null) return;
+    final line = spokenRemarks(ref, [remark]).firstOrNull;
+    if (line == null) return;
+    setState(() => _spoken = line);
+    _spokenTimer = Timer(const Duration(seconds: 7), () {
+      if (mounted) setState(() => _spoken = null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _spokenTimer?.cancel();
+    super.dispose();
+  }
+
+  /// The bubble over the crew member who spoke, above their head on the
+  /// deck of a scene [width] pixels wide and [height] tall.
+  Widget _deckBubble(SpokenLine line, double width, double height) {
+    final crew = deckCrewOf(ref.read(walkingPartyProvider));
+    final index = max(0, crew.indexWhere((m) => m.id == line.companionId));
+    final unit = height / sideViewRows;
+    final len = seaShipLength(ref.read(shipFormProvider));
+    final at = deckCrewX(index, crew.length, len, width / unit) * unit;
+    final bubbleWidth = min(300.0, width - 16);
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    return Positioned(
+      left: left,
+      top: 4,
+      width: bubbleWidth,
+      bottom: height - 40 * unit,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.bottomLeft,
+        child: WalkBubble(
+          key: const Key('sea_bubble'),
+          speaker: line.speaker,
+          line: line.line,
+          width: bubbleWidth,
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+        ),
+      ),
+    );
+  }
 
   void _ensureStarted({
     required Map<String, dynamic> ships,
@@ -481,7 +553,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     SeaChoice choice, {
     required Map<String, dynamic> enemyShips,
   }) async {
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _seaSpoils = null;
+    });
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _player!;
     switch (choice.action) {
@@ -877,6 +952,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     // A ship taken by boarding gives up her hold: gold, and a part when
     // there is room aboard for it (its worth in gold otherwise).
     String? prizeLine;
+    SpoilItem? prizeItem;
     if (outcome.boarded) {
       final prize = boardingProfileFor(_enemyData ?? const {});
       gold += prize.prizeGold;
@@ -896,6 +972,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
               ? part['partName_fr'].toString()
               : part['partName']?.toString() ?? partId;
           prizeLine = _t('ship_log_prize_part').replaceAll('{weapon}', name);
+          prizeItem = SpoilItem(partId, 'Weapon', name);
         } else {
           final worth = ((part['cost'] as num?)?.toInt() ?? 0) ~/ 2;
           gold += worth;
@@ -953,6 +1030,20 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       if (!outcome.boarded) _log.add(_t('ship_log_sunk', ship: enemyName));
       if (prizeLine != null) _log.add(prizeLine);
       _log.add('${_t('ship_fight_won_prefix')}: +$gold ${_t('gold_label')}');
+      // The spoils strip over the next day: the gold, the XP, the part taken
+      // and the chapter's rare material.
+      final materialId = shipBattleMaterialFor(_chapter);
+      final itemTable =
+          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
+      final material = materialId == null
+          ? null
+          : itemTable[materialId] as Map<String, dynamic>?;
+      _seaSpoils = FightSpoils(gold: gold, xp: xp, items: [
+        if (prizeItem != null) prizeItem,
+        if (materialId != null)
+          SpoilItem(materialId, material?['itemType']?.toString() ?? '',
+              material?['itemName']?.toString() ?? materialId),
+      ]);
       await notifier.setShipHull(_player!.hull);
       await _advance();
       return;
@@ -1074,15 +1165,24 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   lines: [portNameFor(widget.toPort, fr)],
                   buttonLabel: trFor(lang, 'go_ashore_button'),
                   result: true,
-                  picture: SeaSideScene(
-                    key: const Key('voyage_harbour'),
-                    waters: _waters,
-                    meeting: const SeaMeeting(SeaMeetingKind.harbour),
-                    ship: ref.watch(shipFormProvider),
-                    dress: ref.watch(shipDressProvider),
-                    condition: _hullFraction,
-                    height: 130,
-                  ),
+                  picture: Column(mainAxisSize: MainAxisSize.min, children: [
+                    if (_seaSpoils != null)
+                      FightSpoilsStrip(
+                          key: const Key('sea_spoils'),
+                          spoils: _seaSpoils!,
+                          goldLabel: trFor(lang, 'gold_label')),
+                    SeaSideScene(
+                      key: const Key('voyage_harbour'),
+                      waters: _waters,
+                      meeting: const SeaMeeting(SeaMeetingKind.harbour),
+                      ship: ref.watch(shipFormProvider),
+                      dress: ref.watch(shipDressProvider),
+                      condition: _hullFraction,
+                      crew: deckCrewOf(ref.watch(walkingPartyProvider)),
+                      phase: ref.watch(dayPhaseProvider),
+                      height: 130,
+                    ),
+                  ]),
                 ),
               _VoyagePhase.failed => _buildSummary(
                   context,
@@ -1194,11 +1294,23 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       builder: (context, constraints) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (_seaSpoils != null)
+            FightSpoilsStrip(
+                key: const Key('sea_spoils'),
+                spoils: _seaSpoils!,
+                goldLabel: trFor(lang, 'gold_label')),
           _buildRoute(context, fr: fr),
           const SizedBox(height: 10),
           // The Eel on the water, beside what she meets. On a short phone
           // the day's words need the room more: she is left out.
           if (constraints.maxHeight >= dayPictureMinHeight) ...[
+            // The crew may say a word as she casts off, once a chapter.
+            if (!_seaSpoke)
+              Builder(builder: (_) {
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _speakUpAtSea());
+                return const SizedBox.shrink();
+              }),
             // A storm day rains and flashes over the water, and stops there.
             ClipRect(
               child: Stack(
@@ -1215,9 +1327,17 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     dress: ref.watch(shipDressProvider),
                     condition: _hullFraction,
                     meeting: _meetingFor(event),
+                    crew: deckCrewOf(ref.watch(walkingPartyProvider)),
+                    phase: ref.watch(dayPhaseProvider),
                     height: 140,
                     beside: Icon(icon, size: 34, color: colour),
                   ),
+                  if (_spoken != null)
+                    Positioned.fill(
+                      child: Stack(children: [
+                        _deckBubble(_spoken!, constraints.maxWidth, 140),
+                      ]),
+                    ),
                 ],
               ),
             ),
@@ -1613,6 +1733,52 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   }) {
     final lang = ref.watch(appLanguageProvider);
     final session = ref.read(playerSessionProvider);
+    final panel = _battlePanel(
+        lang: lang,
+        session: session,
+        companions: companions,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig);
+    final id = _enemyId;
+    if (id == null || !shipHasEntranceCard(id, _enemyData)) return panel;
+    // The raider's hull or the beast slides in over the fight's setup with
+    // its name and the first line of its story (fight_entrance.dart).
+    final fr = lang == AppLanguage.fr;
+    final description = fr && (_enemyData?['description_fr'] ?? '') != ''
+        ? _enemyData!['description_fr'].toString()
+        : _enemyData?['description']?.toString() ?? '';
+    return FightEntrance(
+      key: ValueKey('ship_entrance_$_battleKey'),
+      enemyId: id,
+      name: _enemyName(fr),
+      line: entranceLine(description),
+      boss: _beastId != null,
+      art: SizedBox(
+        width: 240,
+        child: SeaSideScene(
+          waters: _waters,
+          meeting: SeaMeeting(
+              _beastId != null ? SeaMeetingKind.beast : SeaMeetingKind.raider,
+              id: id),
+          showShip: false,
+          phase: ref.watch(dayPhaseProvider),
+          height: 100,
+        ),
+      ),
+      child: panel,
+    );
+  }
+
+  Widget _battlePanel({
+    required AppLanguage lang,
+    required PlayerSession session,
+    required Map<String, dynamic> companions,
+    required Map<String, dynamic> races,
+    required Map<String, dynamic> professions,
+    required Map<String, dynamic> gameConfig,
+  }) {
+    final fr = lang == AppLanguage.fr;
     return ShipBattlePanel(
       key: ValueKey('ship_battle_$_battleKey'),
       placeCrew: true,

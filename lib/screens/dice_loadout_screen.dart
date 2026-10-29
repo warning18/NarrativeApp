@@ -25,11 +25,16 @@ import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/help_hint.dart';
 import '../widgets/interactive_die.dart';
+import 'skills/die_slot_ring.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
-  const DiceLoadoutScreen({super.key, this.allyId});
+  const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
+
+  /// The die the screen opens on (the inventory's Dice tab); the first of
+  /// the dice owned when null or not owned.
+  final String? initialDieId;
 
   /// When set, this screen manages the named companion's signature die
   /// instead of the player's own dice collection — same screen, pointed at
@@ -42,7 +47,7 @@ class DiceLoadoutScreen extends ConsumerStatefulWidget {
 }
 
 class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
-  String? _selectedDiceId;
+  late String? _selectedDiceId = widget.initialDieId;
 
   /// The face of the die the player has turned to (v1.241), by its index.
   int _faceSel = 0;
@@ -168,6 +173,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       // basic face takes any skill.
       return isAssignableFace(face) &&
               face['type'] == 'Skill' &&
+              !isSignatureFace(face) &&
               element != 'None'
           ? element
           : null;
@@ -287,67 +293,61 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
               const SizedBox(height: 12),
               TutorialTarget(
                 id: 'dice.faces',
-                child: LayoutBuilder(builder: (context, box) {
-                  // Squares of one fixed size, three across or more.
-                  final columns = (box.maxWidth / 120).floor().clamp(3, 8);
-                  const gap = 10.0;
-                  final side = (box.maxWidth - gap * (columns - 1)) / columns;
-                  return Wrap(
-                    spacing: gap,
-                    runSpacing: gap,
-                    children: [
-                      for (var index = 0; index < faces.length; index++)
-                        SizedBox(
-                          width: side,
-                          height: side,
-                          child: Builder(builder: (context) {
-                            final face = faces[index];
-                            final open = isAssignableFace(face);
-                            final pickedSkillId =
-                                open ? assignments[index.toString()] : null;
-                            final overLimit = pickedSkillId != null &&
-                                limited[index.toString()] != pickedSkillId;
-                            final assignedSkillId =
-                                overLimit ? null : pickedSkillId;
-                            // A skill set on the face snaps into place.
-                            return SnapIn(
-                              snapKey: assignedSkillId ?? '',
-                              child: _FaceSlot(
-                                key: Key('face_slot_$index'),
-                                face: face,
-                                chance: totalWeight <= 0
-                                    ? 0
-                                    : ((face['weight'] as num?)?.toDouble() ??
-                                            1.0) /
-                                        totalWeight,
-                                showOdds:
-                                    ref.watch(appModeProvider) == AppMode.edit,
-                                picked: index == _faceSel,
-                                assignedSkillId: assignedSkillId,
-                                overLimitSkillId:
-                                    overLimit ? pickedSkillId : null,
-                                language: language,
-                                locked: !open,
-                                restrictionElement: restrictionOf(index),
-                                skills: skills,
-                                accepts: (id) => canSetSkillOnFace(
-                                    id, index, faces, assignments, skills),
-                                onAccept: (id) {
-                                  setState(() => _faceSel = index);
-                                  assignTo(index, id);
-                                },
-                                onClear: pickedSkillId == null
-                                    ? null
-                                    : () => clearAt(index),
-                                onTap: () => selectFace(index),
-                                onPick: open ? () => pickFace(index) : null,
-                              ),
-                            );
-                          }),
-                        ),
-                    ],
-                  );
-                }),
+                // One slot per face, in a ring as the faces go round the die.
+                child: DieSlotRing(
+                  count: faces.length,
+                  center: _RingCenter(
+                    faceCount: faces.length,
+                    withSkill: [
+                      for (var i = 0; i < faces.length; i++)
+                        if (faceSkillId(faces[i], limited[i.toString()]) !=
+                            null)
+                          i,
+                    ].length,
+                    language: language,
+                  ),
+                  slot: (index, side, compact) => Builder(builder: (context) {
+                    final face = faces[index];
+                    final open = isAssignableFace(face);
+                    final pickedSkillId =
+                        open ? assignments[index.toString()] : null;
+                    final overLimit = pickedSkillId != null &&
+                        limited[index.toString()] != pickedSkillId;
+                    final assignedSkillId = overLimit ? null : pickedSkillId;
+                    // A skill set on the face snaps into place.
+                    return SnapIn(
+                      snapKey: assignedSkillId ?? '',
+                      child: _FaceSlot(
+                        key: Key('face_slot_$index'),
+                        face: face,
+                        chance: totalWeight <= 0
+                            ? 0
+                            : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
+                                totalWeight,
+                        showOdds: ref.watch(appModeProvider) == AppMode.edit,
+                        picked: index == _faceSel,
+                        assignedSkillId: assignedSkillId,
+                        overLimitSkillId: overLimit ? pickedSkillId : null,
+                        language: language,
+                        locked: !open,
+                        restrictionElement: restrictionOf(index),
+                        skills: skills,
+                        accepts: (id) => canSetSkillOnFace(
+                            id, index, faces, assignments, skills),
+                        onAccept: (id) {
+                          setState(() => _faceSel = index);
+                          assignTo(index, id);
+                        },
+                        onClear:
+                            pickedSkillId == null ? null : () => clearAt(index),
+                        onTap: () => selectFace(index),
+                        onPick: open ? () => pickFace(index) : null,
+                        compact: compact,
+                        side: side,
+                      ),
+                    );
+                  }),
+                ),
               ),
               const Divider(height: 40),
               Text(tr(ref, 'your_unlocked_skills'),
@@ -374,7 +374,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                         skillId: id,
                         label: onDie == 0
                             ? name
-                            : '$name · $onDie/${maxFacesForSkill(skill)}',
+                            : '$name · $onDie/${maxFacesForSkill(skill, faceCount: faces.length)}',
                         rarity: skillRarity(skill),
                         kind: skillKind(skill),
                         element: skill?['element']?.toString(),
@@ -653,6 +653,45 @@ class _SkillChip extends StatelessWidget {
 /// with it. What it does, in full, is told beside the cube. A tap picks the
 /// face (the cube turns to it); a double tap, or its pencil, chooses its
 /// skill; a skill chip dragged onto it goes on it.
+/// The middle of the ring: the die's size ("d8") and how many of its faces
+/// hold a skill.
+class _RingCenter extends StatelessWidget {
+  const _RingCenter({
+    required this.faceCount,
+    required this.withSkill,
+    required this.language,
+  });
+
+  final int faceCount;
+  final int withSkill;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      key: const Key('die_ring_center'),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('d$faceCount',
+            style: theme.textTheme.headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold, height: 1)),
+        const SizedBox(height: 4),
+        Text(
+          trFor(language, 'die_ring_skill_faces')
+              .replaceAll('{n}', '$withSkill')
+              .replaceAll('{max}', '$faceCount'),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.labelSmall
+              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+        ),
+      ],
+    );
+  }
+}
+
 class _FaceSlot extends StatelessWidget {
   const _FaceSlot({
     super.key,
@@ -671,10 +710,19 @@ class _FaceSlot extends StatelessWidget {
     this.restrictionElement,
     this.onTap,
     this.onPick,
+    this.compact = false,
+    this.side = ringSlotMax,
   });
 
   final Map<String, dynamic> face;
   final double chance;
+
+  /// A small slot (a d12 or a d20 on a phone): no name, a smaller icon. The
+  /// die card above names the picked face.
+  final bool compact;
+
+  /// How wide the slot is: what it shows keeps inside its circle.
+  final double side;
 
   /// Whether its odds are told: in Edit Mode only (v1.241); a player rolls
   /// the die without being shown the numbers.
@@ -729,15 +777,17 @@ class _FaceSlot extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         onDoubleTap: onPick,
+        // A round token on the die's ring; what it shows sits in the square
+        // the circle holds.
         child: Container(
-          padding: const EdgeInsets.all(6),
+          padding: EdgeInsets.all(compact ? side * 0.12 : side * 0.15),
           decoration: BoxDecoration(
             color: isInvalidHover
                 ? colorScheme.errorContainer
                 : (isHovering
                     ? colorScheme.primaryContainer
                     : kind.color.withValues(alpha: locked ? 0.08 : 0.14)),
-            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.circle,
             border: Border.all(
               color: border,
               width: (isHovering || isInvalidHover || picked) ? 2.4 : 1,
@@ -747,14 +797,18 @@ class _FaceSlot extends StatelessWidget {
             children: [
               // The face: its skill's icon, or its own kind over its value.
               Align(
-                alignment: const Alignment(0, -0.35),
+                alignment:
+                    compact ? Alignment.center : const Alignment(0, -0.35),
                 child: skillId != null
-                    ? SkillPixelIcon(skillId, size: 34)
+                    ? SkillPixelIcon(skillId, size: compact ? 24 : 34)
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(kind.icon,
-                              size: value > 0 ? 22 : 30, color: kind.color),
+                              size: compact
+                                  ? (value > 0 ? 16 : 22)
+                                  : (value > 0 ? 22 : 30),
+                              color: kind.color),
                           if (value > 0)
                             Text('$value',
                                 style: textTheme.titleSmall?.copyWith(
@@ -764,40 +818,44 @@ class _FaceSlot extends StatelessWidget {
                         ],
                       ),
               ),
-              // Its name, on two lines at most.
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  name,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.labelSmall?.copyWith(height: 1.1),
+              // Its name, on one line.
+              if (!compact)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.labelSmall?.copyWith(height: 1.1),
+                  ),
                 ),
-              ),
               // What can be done: a lock for a fixed face, a cross to clear
-              // a skill, a pencil to choose one.
+              // a skill, a pencil to choose one (on a small slot, the die
+              // card's button chooses).
               Align(
                 alignment: Alignment.topRight,
                 child: locked
                     ? Icon(Icons.lock_outline,
-                        size: 15, color: colorScheme.outline)
-                    : onClear != null
-                        ? InkResponse(
-                            onTap: onClear,
-                            radius: 16,
-                            child: Tooltip(
-                              message: trFor(
-                                  language, 'clear_assigned_skill_tooltip'),
-                              child: const Icon(Icons.close, size: 16),
-                            ),
-                          )
-                        : InkResponse(
-                            onTap: onPick,
-                            radius: 16,
-                            child: Icon(Icons.edit_outlined,
-                                size: 16, color: colorScheme.primary),
-                          ),
+                        size: compact ? 11 : 15, color: colorScheme.outline)
+                    : compact
+                        ? const SizedBox.shrink()
+                        : onClear != null
+                            ? InkResponse(
+                                onTap: onClear,
+                                radius: 16,
+                                child: Tooltip(
+                                  message: trFor(
+                                      language, 'clear_assigned_skill_tooltip'),
+                                  child: const Icon(Icons.close, size: 16),
+                                ),
+                              )
+                            : InkResponse(
+                                onTap: onPick,
+                                radius: 16,
+                                child: Icon(Icons.edit_outlined,
+                                    size: 16, color: colorScheme.primary),
+                              ),
               ),
               Align(
                 alignment: Alignment.topLeft,
@@ -807,9 +865,9 @@ class _FaceSlot extends StatelessWidget {
                             '${skillDisplayName(overLimitSkillId!, language: language)}: '
                             '${trFor(language, 'face_over_limit_label')}',
                         child: Icon(Icons.warning_amber_rounded,
-                            size: 16, color: colorScheme.error),
+                            size: compact ? 11 : 16, color: colorScheme.error),
                       )
-                    : showOdds
+                    : showOdds && !compact
                         ? Text('${(chance * 100).round()}%',
                             style: textTheme.labelSmall
                                 ?.copyWith(color: colorScheme.onSurfaceVariant))
@@ -1054,7 +1112,9 @@ class _DieStage extends StatelessWidget {
     final overSkill = picked != null && assigned != picked ? picked : null;
     final element = face['element']?.toString() ?? 'None';
     final restriction =
-        face['type'] == 'Skill' && element != 'None' ? element : null;
+        face['type'] == 'Skill' && !isSignatureFace(face) && element != 'None'
+            ? element
+            : null;
     String t(String key) => trFor(language, key);
     final weight = (face['weight'] as num?)?.toDouble() ?? 1.0;
     return Padding(

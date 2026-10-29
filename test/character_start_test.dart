@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/dice_faces.dart';
 import 'package:narrative_data_app/data/character_start.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _json(String name) =>
@@ -17,14 +19,14 @@ void main() {
   final races = _json('races');
   final professions = _json('professions');
 
-  test('a dwarf warrior starts at 150 HP, 14 damage, 6 armour', () {
+  test('a dwarf warrior starts at 33 HP, 2 damage, 1 armour', () {
     final t = startingTotals(
         defaults: defaults,
         race: races['dwarf'] as Map<String, dynamic>,
         profession: professions['warrior'] as Map<String, dynamic>);
-    expect(t.maxHealth, 150);
-    expect(t.baseDamage, 14);
-    expect(t.baseArmor, 6);
+    expect(t.maxHealth, 33);
+    expect(t.baseDamage, 2);
+    expect(t.baseArmor, 1);
     expect(t.gold, 100);
     expect(t.abilities, {'str_abbrev': 6, 'con_abbrev': 6, 'per_abbrev': 1});
   });
@@ -65,15 +67,26 @@ void main() {
     final mage = presetBonuses(professions['mage'] as Map<String, dynamic>,
         withOffers: true);
     expect(mage.last.key, 'offer_bonus_label');
+    // The mage starts 5 health short since v1.601 (Vica guards her best).
     expect(mage.first.key, 'hp_label');
-    expect(mage.first.value, -20);
+    expect(mage.first.value, -5);
+    final rogue = presetBonuses(professions['rogue'] as Map<String, dynamic>);
+    expect(rogue.first.key, 'hp_label');
+    expect(rogue.first.value, 6);
   });
 
-  test('the granted skill drops its preset\'s name', () {
-    expect(grantedSkillName('dwarf_stoneskin', presetId: 'dwarf'), 'Stoneskin');
-    expect(grantedSkillName('warrior_shield_bash', presetId: 'warrior'),
-        'Shield Bash');
-    expect(grantedSkillName('human_resolve'), 'Human Resolve');
+  test('every starting skill has a French name, not its id in English', () {
+    for (final db in [races, professions]) {
+      for (final e in db.entries) {
+        final id = (e.value as Map)['standardSkillID']?.toString() ?? '';
+        if (id.isEmpty) continue;
+        expect(skillDisplayName(id, language: AppLanguage.fr),
+            isNot(skillDisplayName(id)),
+            reason: '${e.key} grants $id');
+      }
+    }
+    expect(skillDisplayName('human_resolve', language: AppLanguage.fr),
+        'Détermination');
   });
 
   test('every race and profession has a mark and a tag', () {

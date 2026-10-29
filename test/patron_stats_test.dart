@@ -16,6 +16,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/sim_world.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -50,25 +51,31 @@ void main() {
   });
 
   test('what a level gives', () {
-    expect(patronLevelGains(at({'mire': 15})).stats, {'dexterity': 1});
-    // Trusted: the first stat and the second in turn.
+    // A gift every other level (patronGiftEvery), none between.
+    expect(patronGiftEvery, 2);
     expect(
-        patronLevelGains(at({'mire': 30}), level: 3).stats, {'dexterity': 1});
+        patronLevelGains(at({'mire': 15}), level: 2).stats, {'dexterity': 1});
+    expect(patronLevelGains(at({'mire': 15}), level: 3).stats, isEmpty);
+    expect(patronLevelGains(at({'mire': 15}), level: 3).maxHealth, 0);
+    // Trusted: the first stat and the second in turn, gift by gift.
+    expect(
+        patronLevelGains(at({'mire': 30}), level: 2).stats, {'dexterity': 1});
     expect(patronLevelGains(at({'mire': 30}), level: 4).stats, {'luck': 1});
-    final sworn = patronLevelGains(at({'vigil': 70}), level: 2);
+    final sworn = patronLevelGains(at({'vigil': 70}), level: 4);
     expect(sworn.stats, {'perception': 1});
     expect(sworn.maxHealth, swornPatronHealth);
-    expect(patronLevelGains(PoliticsState.empty).stats, isEmpty);
+    expect(patronLevelGains(PoliticsState.empty, level: 2).stats, isEmpty);
     // The Open Hand: +1 to the strongest.
     expect(
         patronLevelGains(PoliticsState.empty,
-                stats: {'strength': 4, 'wisdom': 9}, openHand: true)
+                level: 2, stats: {'strength': 4, 'wisdom': 9}, openHand: true)
             .stats,
         {'wisdom': 1});
   });
 
-  test('two levels reached Trusted with the Dominion: +1 Charisma, +1 Strength',
-      () async {
+  test(
+      'four levels reached Trusted with the Dominion: two gifts, +1 Charisma, '
+      '+1 Strength', () async {
     SharedPreferences.setMockInitialValues({});
     final notifier = PlayerSessionNotifier();
     await Future<void>.delayed(const Duration(milliseconds: 200));
@@ -76,17 +83,22 @@ void main() {
     await notifier.loadSession(
         start.copyWith(level: 1, currentXP: 0, politics: at({'dominion': 40})));
     final before = notifier.state;
+    // Level 1 to 5: the gifts of levels 2 and 4.
     final leveled = await notifier.applyCombatResult(
-        hpAfter: before.currentHealth, xpGain: 300);
+        hpAfter: before.currentHealth, xpGain: 1000);
     expect(leveled, isTrue);
     final after = notifier.state;
     expect(after.strength, before.strength + 1);
     expect(after.charisma, before.charisma + 1);
     expect(after.constitution, before.constitution);
-    final line = after.politics.standingLog.last;
-    expect(line.cause, 'patron:dominion');
-    expect(line.note, contains('Strength'));
-    expect(line.noteFr, contains('Force'));
+    final lines = [
+      for (final l in after.politics.standingLog)
+        if (l.cause == 'patron:dominion') l,
+    ];
+    expect(lines, hasLength(2));
+    expect(lines.first.note, contains('Strength'));
+    expect(lines.first.noteFr, contains('Force'));
+    expect(lines.last.note, contains('Charisma'));
   });
 
   test('in the simulator, by patron', () {
@@ -98,16 +110,7 @@ void main() {
       for (final e in raw.entries)
         e.key: StoryNode.fromJson(e.key, e.value as Map<String, dynamic>),
     });
-    final tables = {
-      for (final name in [
-        'enemies', 'dice', 'skills', 'items', 'shops', 'races', //
-        'professions', 'spells', 'item_sets', 'zones', 'skill_trees',
-        'factions', 'signs', 'subclans', 'relations', 'titles', 'geography',
-        'biomes', 'quests', 'npcs', 'land_routes', 'land_events', 'houses',
-        'expedition_steps', 'specialisations', 'spec_variants',
-      ])
-        name: _table(name),
-    };
+    final tables = simTables();
     Map<String, ({int runs, int won, int fights, int level})> byPatron(
         bool on) {
       final summaries = simulatePlaythroughs(story,

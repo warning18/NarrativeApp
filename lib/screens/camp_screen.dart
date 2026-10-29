@@ -1,14 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-import '../combat/combat_engine.dart';
-import '../data/approval.dart';
 import '../data/camp_state.dart';
 import '../data/harbour.dart' show harbourAwaited;
-import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/politics_events.dart' show ChoiceGate;
 import '../data/materials.dart' show materialCountsOf;
@@ -17,7 +12,6 @@ import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
-import '../models/ally_state.dart';
 import '../models/story_node.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
@@ -26,7 +20,6 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
-import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -34,27 +27,23 @@ import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/level_signpost.dart';
 import '../widgets/road_panel.dart';
-import '../widgets/moments.dart';
-import '../widgets/companion_remark_bubble.dart';
-import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
 import '../widgets/bounty_board.dart';
 import '../widgets/ink_fold.dart';
 import '../widgets/coast_news.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/party_formation.dart';
 import '../widgets/pixel_sprite.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
 import '../widgets/zone_card.dart';
-import 'dice_loadout_screen.dart';
 import 'harbor_screen.dart';
-import 'inventory_screen.dart';
 import 'port_screen.dart';
 import 'shop_detail_screen.dart';
-import 'skills/skills_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, takeStoryChoice;
+import '../data/story_markup.dart' show stripStoryMarkup;
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -308,21 +297,7 @@ class CampScreen extends ConsumerWidget {
           section(tr(ref, 'camp_party_section'),
               trailing: '${tr(ref, 'active_party_label')}: '
                   '${session.activeAllyIds.length} / $partyCapacity'),
-          if (recruitedIds.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(tr(ref, 'no_companions_recruited')),
-            )
-          else
-            for (final companionId in recruitedIds)
-              _AllyCard(
-                companionId: companionId,
-                companions: companions,
-                houses: houses,
-                races: races,
-                professions: professions,
-                gameConfig: gameConfig,
-              ),
+          PartyFormation(houses: houses),
         ],
       // The Eel, her harbour (or what building it would give), and the
       // chart to sail by.
@@ -458,9 +433,11 @@ class _ChapterCard extends ConsumerWidget {
     // A choice behind a politics gate that fails (v1.196) is hidden, or
     // shut with its locked text.
     final gateWorld = ref.watch(coastGateWorldProvider);
-    final visible = campNode.choices
-        .where((c) => !choiceHiddenFor(c, session, gateWorld))
-        .toList();
+    // The camp errands follow the camp's own ways (see camp_errands.dart).
+    final visible = [
+      ...campNode.choices,
+      ...ref.watch(campErrandChoicesProvider)
+    ].where((c) => !choiceHiddenFor(c, session, gateWorld)).toList();
     bool shut(StoryChoice c) =>
         story == null ||
         isStoryChoiceLocked(c, story, session, world: gateWorld);
@@ -754,7 +731,7 @@ class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.text,
+                stripStoryMarkup(widget.text),
                 maxLines: _open ? null : 4,
                 overflow: _open ? TextOverflow.visible : TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
@@ -812,7 +789,7 @@ class _SceneChip extends StatelessWidget {
                 Text(title,
                     style: Theme.of(sheetContext).textTheme.titleMedium),
                 const SizedBox(height: 10),
-                Text(text,
+                Text(stripStoryMarkup(text),
                     style: Theme.of(sheetContext)
                         .textTheme
                         .bodyLarge
@@ -965,313 +942,6 @@ class _HarbourCard extends ConsumerWidget {
           ),
           Icon(Icons.chevron_right, color: colour),
         ]),
-      ),
-    );
-  }
-}
-
-/// Puts [companionId] in the party or on the bench, and says which
-/// achievements joining earned.
-Future<void> _setAllyInParty(
-  BuildContext context,
-  WidgetRef ref, {
-  required String companionId,
-  required bool active,
-  required int partyCapacity,
-  required String requiredHouseId,
-}) async {
-  final notifier = ref.read(playerSessionProvider.notifier);
-  await notifier.setAllyActive(companionId, active,
-      partyCapacity: partyCapacity, requiredHouseId: requiredHouseId);
-  if (!active) return;
-  final earned = await notifier.checkAchievements();
-  if (earned.isEmpty || !context.mounted) return;
-  final achievements =
-      ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
-  unawaited(announceAchievements(
-      context,
-      [
-        for (final id in earned)
-          (achievements[id] as Map<String, dynamic>?)?['achievementName']
-                  ?.toString() ??
-              id
-      ],
-      tr(ref, 'achievement_unlocked_prefix').toUpperCase()));
-  showImmersiveNotice(
-    context,
-    icon: Icons.emoji_events_outlined,
-    message:
-        '${tr(ref, 'achievement_unlocked_prefix')}: ${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}',
-  );
-}
-
-/// Whether [companionId] can join the party now, and if not, why.
-({bool canJoin, String reason}) _joinState(
-  WidgetRef ref,
-  PlayerSession session, {
-  required String companionId,
-  required Map<String, dynamic>? companion,
-  required Map<String, dynamic> houses,
-}) {
-  if (session.activeAllyIds.contains(companionId)) {
-    return (canJoin: true, reason: '');
-  }
-  final requiredHouseId = companion?['requiredHouseId']?.toString() ?? '';
-  if (requiredHouseId.isNotEmpty &&
-      !session.builtHouseIds.contains(requiredHouseId)) {
-    final houseName =
-        (houses[requiredHouseId] as Map<String, dynamic>?)?['houseName']
-                ?.toString() ??
-            requiredHouseId;
-    return (
-      canJoin: false,
-      reason: '${tr(ref, 'requires_house_prefix')}: $houseName',
-    );
-  }
-  if (session.activeAllyIds.length >=
-      partyCapacityFor(session.builtHouseIds, houses)) {
-    return (canJoin: false, reason: tr(ref, 'party_at_capacity'));
-  }
-  return (canJoin: true, reason: '');
-}
-
-/// One companion at the fire: who they are, their health, whether they
-/// come along, and their gear, skills and dice.
-class _AllyCard extends ConsumerWidget {
-  const _AllyCard({
-    required this.companionId,
-    required this.companions,
-    required this.houses,
-    required this.races,
-    required this.professions,
-    required this.gameConfig,
-  });
-
-  final String companionId;
-  final Map<String, dynamic> companions;
-  final Map<String, dynamic> houses;
-  final Map<String, dynamic> races;
-  final Map<String, dynamic> professions;
-  final Map<String, dynamic> gameConfig;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final companion = companions[companionId] as Map<String, dynamic>?;
-    final ally =
-        session.recruitedAllies.firstWhere((a) => a.companionId == companionId);
-    final raceId = companion?['raceId']?.toString() ?? '';
-    final professionId = companion?['professionId']?.toString() ?? '';
-    final race = races[raceId] as Map<String, dynamic>? ?? const {};
-    final profession =
-        professions[professionId] as Map<String, dynamic>? ?? const {};
-    final base = deriveAllyBaseStats(
-        gameConfig: gameConfig, race: race, profession: profession);
-    final liveMaxHealth = scaledMaxHealth(base.maxHealth, session.level);
-    final liveHealth = ally.currentHealth.clamp(0, liveMaxHealth);
-    final isActive = session.activeAllyIds.contains(companionId);
-    final join = _joinState(ref, session,
-        companionId: companionId, companion: companion, houses: houses);
-
-    void open(Widget screen) =>
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ListTile(
-              leading: Icon(isActive ? Icons.shield : Icons.shield_outlined),
-              title: Row(children: [
-                Flexible(
-                    child: Text(companion?['companionName']?.toString() ??
-                        companionId)),
-                if (approvalTierFor(ally.approval) == ApprovalTier.devoted)
-                  const Padding(
-                    padding: EdgeInsets.only(left: 6),
-                    child: ApprovalHeart(),
-                  ),
-              ]),
-              subtitle: Text(
-                '${race['raceName'] ?? raceId} '
-                '${profession['professionName'] ?? professionId} · '
-                '$liveHealth / $liveMaxHealth ${tr(ref, 'hp_label')}'
-                '${join.reason.isNotEmpty ? '\n${join.reason}' : ''}',
-              ),
-              isThreeLine: join.reason.isNotEmpty,
-              trailing: FilterChip(
-                key: Key('party_toggle_$companionId'),
-                label: Text(isActive
-                    ? tr(ref, 'active_label')
-                    : tr(ref, 'benched_label')),
-                selected: isActive,
-                onSelected: !join.canJoin
-                    ? null
-                    : (_) => _setAllyInParty(
-                          context,
-                          ref,
-                          companionId: companionId,
-                          active: !isActive,
-                          partyCapacity:
-                              partyCapacityFor(session.builtHouseIds, houses),
-                          requiredHouseId:
-                              companion?['requiredHouseId']?.toString() ?? '',
-                        ),
-              ),
-            ),
-            _ApprovalPanel(companion: companion ?? const {}, ally: ally),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton.icon(
-                  style: _compact,
-                  onPressed: () => open(InventoryScreen(allyId: companionId)),
-                  icon: const Icon(Icons.backpack_outlined, size: 18),
-                  label: Text(tr(ref, 'ally_gear_button')),
-                ),
-                TextButton.icon(
-                  style: _compact,
-                  onPressed: () => open(SkillsScreen(allyId: companionId)),
-                  icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-                  label: Text(tr(ref, 'skills')),
-                ),
-                TextButton.icon(
-                  style: _compact,
-                  onPressed: () => open(DiceLoadoutScreen(allyId: companionId)),
-                  icon: const Icon(Icons.casino_outlined, size: 18),
-                  label: Text(tr(ref, 'ally_dice_button')),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// How a companion feels about the player (see approval.dart): the tier on
-/// a meter, what it does in a fight, what they like and dislike, and a
-/// drink to share once a chapter.
-class _ApprovalPanel extends ConsumerWidget {
-  const _ApprovalPanel({required this.companion, required this.ally});
-
-  final Map<String, dynamic> companion;
-  final AllyState ally;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final tier = approvalTierFor(ally.approval);
-    final chapter = ref.watch(reachedChapterProvider);
-    final gold = ref.watch(playerSessionProvider.select((s) => s.gold));
-    // Loaded before a drink is shared, for the companion's word of thanks.
-    ref.watch(remarkBookProvider);
-    final color = switch (tier) {
-      ApprovalTier.devoted => Colors.amber.shade600,
-      ApprovalTier.friendly => Colors.green.shade500,
-      ApprovalTier.neutral => theme.colorScheme.outline,
-      _ => theme.colorScheme.error,
-    };
-    final effectKey = switch (tier) {
-      ApprovalTier.devoted => 'approval_effect_devoted',
-      ApprovalTier.friendly => 'approval_effect_friendly',
-      ApprovalTier.wary || ApprovalTier.estranged => 'approval_effect_wary',
-      ApprovalTier.neutral => null,
-    };
-    String deeds(bool liked) => [
-          for (final (field, key) in const [
-            ('approvesGood', 'deed_good'),
-            ('approvesEvil', 'deed_evil'),
-            ('approvesProfit', 'deed_profit'),
-          ])
-            if (((companion[field] as num?)?.toInt() ?? 0) * (liked ? 1 : -1) >
-                0)
-              tr(ref, key),
-        ].join(', ');
-    final likes = deeds(true);
-    final dislikes = deeds(false);
-    final cost = giftCostFor(chapter);
-    final shared = ally.giftChapter == chapter;
-    final name = companion['companionName']?.toString() ?? ally.companionId;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('${tr(ref, 'approval_label')}: ',
-                  style: theme.textTheme.labelMedium),
-              Text(tr(ref, approvalTierKey(tier)),
-                  key: Key('approval_tier_${ally.companionId}'),
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: color, fontWeight: FontWeight.bold)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: LinearProgressIndicator(
-                  value: (ally.approval - minApproval) /
-                      (maxApproval - minApproval),
-                  minHeight: 5,
-                  color: color,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-            ],
-          ),
-          if (effectKey != null)
-            Text(tr(ref, effectKey),
-                style: theme.textTheme.bodySmall?.copyWith(color: color)),
-          if (likes.isNotEmpty || dislikes.isNotEmpty)
-            Text(
-              [
-                if (likes.isNotEmpty) '${tr(ref, 'approval_likes')}: $likes',
-                if (dislikes.isNotEmpty)
-                  '${tr(ref, 'approval_dislikes')}: $dislikes',
-              ].join(' · '),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-            ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              key: Key('share_drink_${ally.companionId}'),
-              style: _compact,
-              onPressed: shared || gold < cost
-                  ? null
-                  : () async {
-                      final done = await ref
-                          .read(playerSessionProvider.notifier)
-                          .shareDrink(ally.companionId, chapter: chapter);
-                      if (done && context.mounted) {
-                        // They say something back (see
-                        // companion_remarks.dart), in a speech bubble
-                        // after the notice.
-                        final said = drinkRemark(ref.read(remarkBookProvider),
-                            ref.read(remarkMemoryProvider), ally.companionId);
-                        ref.read(remarkMemoryProvider.notifier).state =
-                            said.memory;
-                        await showImmersiveNotice(context,
-                            icon: Icons.local_drink,
-                            message: tr(ref, 'share_drink_notice')
-                                .replaceAll('{name}', name));
-                        final remark = said.remark;
-                        if (remark != null && context.mounted) {
-                          await showCompanionRemarks(context, ref, [remark]);
-                        }
-                      }
-                    },
-              icon: const Icon(Icons.local_drink_outlined, size: 18),
-              label: Text(shared
-                  ? tr(ref, 'share_drink_done')
-                  : tr(ref, 'share_drink_button')
-                      .replaceAll('{cost}', '$cost')),
-            ),
-          ),
-        ],
       ),
     );
   }

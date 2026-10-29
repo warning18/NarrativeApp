@@ -91,18 +91,13 @@ class _FacePreview {
 String _effectiveSkillId(DiceFaceResult face) =>
     face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
 
-/// The element a rolled face actually hits with — the linked skill's own
-/// `element` for a Skill face (the skill is what's actually cast; the face
-/// is just its delivery), or the face's own `element` for a plain
-/// Attack/Defend/Heal face. Used to look up gear's `<prefix>DmgBonus` and
-/// to record what the enemy was just hit with for `OnHitByElement`.
-String _elementFor(DiceFaceResult face, Map<String, dynamic> skills) {
-  if (face.type == 'Skill') {
-    final skill = skills[_effectiveSkillId(face)] as Map<String, dynamic>?;
-    return skill?['element']?.toString() ?? 'None';
-  }
-  return face.element;
-}
+/// The element a rolled face actually hits with (faceHitElement): the
+/// linked skill's own `element` for a Skill face (the skill is what's
+/// actually cast), else the face's own -- an elemental die's element.
+/// Used to look up gear's `<prefix>DmgBonus` and to record what the enemy
+/// was just hit with for `OnHitByElement`.
+String _elementFor(DiceFaceResult face, Map<String, dynamic> skills) =>
+    faceHitElement(face.type, face.element, skills[_effectiveSkillId(face)]);
 
 /// The equipment bonus for [element] off [equippedItemIds] — 0 for 'None'
 /// or any element without a known item-field prefix (see
@@ -168,6 +163,7 @@ class _PartyMember {
     this.wisdom = 0,
     this.luck = 0,
     this.perception = 0,
+    this.professionId = '',
     this.gear = GearEffects.none,
     this.dieFaces = const [],
     this.approval = 0,
@@ -192,6 +188,15 @@ class _PartyMember {
   /// A [UniqueEffect.secondWind] charge, spent the first time a blow would
   /// have dropped this member this fight.
   late bool secondWindAvailable = gear.secondWind;
+
+  /// What this member's thorns still owe in fractions this fight.
+  final ThornsBank thornsBank = ThornsBank();
+
+  /// What the player's strike, guard and mend signs' shares still owe in
+  /// fractions this fight (SignEffects.strikeBase and friends).
+  final FractionBank strikeBank = FractionBank();
+  final FractionBank guardBank = FractionBank();
+  final FractionBank mendBank = FractionBank();
   final int maxHealth;
   final int baseDamage;
   final int armor;
@@ -221,6 +226,11 @@ class _PartyMember {
   /// -- the whole party reads an enemy's telegraphed next move off
   /// whoever's Perception is currently highest, not the player's alone.
   final int perception;
+
+  /// The member's profession: what its Perception does in a fight (a
+  /// warrior's block, a ranger's or rogue's crit and dodge, see
+  /// stat_rules.dart).
+  final String professionId;
 
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
@@ -318,6 +328,19 @@ class _EnemyMember {
 
   /// The pack's captain, the mark of a Rout (v1.212, see fight_goal.dart).
   bool isCaptain = false;
+
+  /// A `healsOnce` boss (the claimants, see fight_length.dart) that has
+  /// mended itself once this fight: no more heals, by phase or by move.
+  bool healSpent = false;
+  bool get healBlocked => healSpent && healsOnce(data);
+
+  /// Notes a heal of this enemy: a `healsOnce` boss spends its one heal,
+  /// and its heal moves (read from [skills]) leave its list.
+  void noteHeal(Map<String, dynamic> skills) {
+    if (!healsOnce(data)) return;
+    healSpent = true;
+    data = withoutHealMoves(data, skills);
+  }
 
   /// True once a Subdue's fighter has broken and yielded: out of the
   /// fight like a defeated one, paying a ransom instead of its spoils.
@@ -468,6 +491,13 @@ class _FightLength {
     final before = _heals[memberId] ?? 0;
     _heals[memberId] = before + 1;
     return fatiguedHeal(amount, before);
+  }
+
+  /// What [fatigued] would heal, nothing counted: the round's preview.
+  int previewed(String memberId, int amount, {int round = 0}) {
+    amount = rule.heal(amount, round);
+    if (amount <= 0) return amount;
+    return fatiguedHeal(amount, _heals[memberId] ?? 0);
   }
 }
 

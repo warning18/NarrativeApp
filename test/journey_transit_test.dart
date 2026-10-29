@@ -19,6 +19,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
+import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 3; i++) {
@@ -116,13 +117,18 @@ void main() {
     // From the wharf to the alley the party goes by the world's roads
     // (v1.254), and the words name the stops it passes.
     expect(find.byKey(_stop), findsNothing, reason: 'none passed yet');
-    await tester.pump(const Duration(seconds: 2));
+    // (Alster is one place since v1.535: the walk is shorter and ends
+    // before two seconds, so look while it is still under way.)
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(_stop), findsOneWidget);
     expect(
         tester.widget<Text>(find.byKey(_stop)).data, startsWith('You pass '));
+    // A tap on the map skips the move.
+    await tester.tap(find.byKey(const ValueKey('journey_transit_skip')));
+    await tester.pump();
+    expect(find.byKey(_transit), findsNothing, reason: 'a tap skips');
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
-    expect(find.byKey(_transit), findsNothing, reason: 'the transit ends');
 
     // Back at the yard, the same failed roll tells the author's French.
     play.jumpTo('2070');
@@ -145,13 +151,15 @@ void main() {
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
 
-    // A fight is acted out where the party stands (a card under the map, no
-    // road to walk), and one turned back from leaves it on its mark.
+    // A fight is acted out where the party stands (a card in the scene view,
+    // no road to walk), and one turned back from leaves it on its mark.
     play.jumpTo('2011');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
     expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+    await tester.pump(const Duration(milliseconds: 400));
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await tester.tap(card);
     await tester.pump();
@@ -170,6 +178,9 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '2011');
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
+    // Back from the scene view to the map.
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 400));
 
     // Set down in another district of the same city along no choice (from
     // the lower town into the Undercroft), the mark comes by the streets from
@@ -184,8 +195,13 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_arriving')), findsOneWidget);
-    // Along the streets of one city nothing needs saying: no world transit.
-    expect(find.byKey(_transit), findsNothing);
+    // Along the streets of one city there is no road to draw, but the walk
+    // is told in a line (v1.537): no world map, only the words.
+    expect(find.byKey(_transit), findsOneWidget);
+    expect(find.byType(JourneyWorldMap), findsNothing);
+    final walk = tester.widget<Text>(find.byKey(_caption)).data!;
+    expect(walk, anyOf(contains('the Undercroft'), contains('les Souterrains')),
+        reason: walk);
     await tester.pump(const Duration(seconds: 4));
     expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);

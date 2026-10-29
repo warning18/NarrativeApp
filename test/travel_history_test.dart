@@ -42,10 +42,10 @@ void main() {
   test('the far ends of known roads are heard of, the rest unseen', () {
     final travels = travelHistoryOf(history: history, currentNodeId: '1200');
     expect(travels.visited, {'crash', 'sleeper', 'wells'});
-    // The docks behind the wreck, the upper town past the wells.
-    expect(travels.heardOf, containsAll(['docks', 'upper']));
+    // Alster behind the wreck, Saltmouth past the wells.
+    expect(travels.heardOf, containsAll(['alster', 'saltmouth']));
     expect(travels.heardOf.intersection(travels.visited), isEmpty);
-    expect(travels.shows('beggar'), isFalse);
+    expect(travels.shows('camp'), isFalse);
   });
 
   test('a scene read but gone from history still counts as visited', () {

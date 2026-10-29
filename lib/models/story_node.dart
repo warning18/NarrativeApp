@@ -43,6 +43,7 @@ class StoryChoice {
     this.loseAllyId,
     this.mainQuest = false,
     this.pays = false,
+    this.shortfallWounds = false,
     this.about = '',
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
@@ -54,17 +55,20 @@ class StoryChoice {
     this.shipBattleId,
     this.politics,
     this.spot,
+    this.place,
     this.politicsIf = const {},
     this.hostFight = false,
     this.noHeal = false,
     this.tutorialFight = false,
     this.luckyDieReveal = false,
+    this.returnToCamp = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
     return StoryChoice(
       text: json['text'] as String? ?? '',
       spot: json['spot']?.toString(),
+      place: json['place']?.toString(),
       nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID'])
               as String? ??
           '',
@@ -114,6 +118,7 @@ class StoryChoice {
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       pays: json['pays'] as bool? ?? false,
+      shortfallWounds: json['shortfallWounds'] as bool? ?? false,
       about: json['about']?.toString() ?? '',
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
@@ -142,6 +147,7 @@ class StoryChoice {
       noHeal: json['noHeal'] as bool? ?? false,
       tutorialFight: json['tutorialFight'] as bool? ?? false,
       luckyDieReveal: json['luckyDieReveal'] as bool? ?? false,
+      returnToCamp: json['returnToCamp'] as bool? ?? false,
     );
   }
 
@@ -181,6 +187,12 @@ class StoryChoice {
   /// room_plan.dart): a spot of its plan; null places it where its scene
   /// is, or at the door when it leads outside.
   final String? spot;
+
+  /// Where in the town this way is taken (v1.580, see way_places.dart): a
+  /// building of the city's plan (city_plans.json, `saltmouth_b157`), or
+  /// `here` for a thing done where the party stands. Null derives it from
+  /// the scene the way leads to.
+  final String? place;
 
   bool get hasPolitics => politics != null && !politics!.isEmpty;
 
@@ -375,6 +387,12 @@ class StoryChoice {
   /// other prices lock through the next scene's gold requirement.
   final bool pays;
 
+  /// A price the story forces (the only way on, after a failed check):
+  /// the purse pays what it holds and the rest is taken as a wound, health
+  /// for gold (story_prices.dart), never the last point. A choice that
+  /// [pays] instead stays shut to a short purse.
+  final bool shortfallWounds;
+
   /// A hub's grouping key for this choice (Narrative's in-place data,
   /// docs/proposals/inplace-choices.md): who or what it is about, an NPC
   /// id, a place id or a slug of its node's [StoryNode.aboutLabels]; ''
@@ -387,6 +405,12 @@ class StoryChoice {
   final String? travelPlaceId;
 
   bool get travels => travelPlaceId != null && travelPlaceId!.isNotEmpty;
+
+  /// Goes back to the camp the party stands for (a companion's camp errand
+  /// ends with it, see camp_errands.dart): taken, the story goes to the
+  /// current camp of the chapter the party is in, and [nextId] (kept for
+  /// the editor) only when no camp is current yet.
+  final bool returnToCamp;
 
   bool isHiddenFor(Iterable<String> flags) =>
       hideIfFlags.any((flag) => flags.contains(flag)) ||
@@ -410,6 +434,7 @@ class StoryChoice {
         if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
         'next_id': nextId,
         if (spot != null) 'spot': spot,
+        if (place != null) 'place': place,
         if (goldMod != 0) 'goldMod': goldMod,
         if (alignmentMod != 0) 'alignmentMod': alignmentMod,
         if (healAmount != 0) 'healAmount': healAmount,
@@ -462,6 +487,7 @@ class StoryChoice {
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
         if (pays) 'pays': pays,
+        if (shortfallWounds) 'shortfallWounds': shortfallWounds,
         if (about.isNotEmpty) 'about': about,
         if (travels) 'travelPlaceId': travelPlaceId,
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
@@ -481,6 +507,7 @@ class StoryChoice {
         if (noHeal) 'noHeal': noHeal,
         if (tutorialFight) 'tutorialFight': tutorialFight,
         if (luckyDieReveal) 'luckyDieReveal': luckyDieReveal,
+        if (returnToCamp) 'returnToCamp': returnToCamp,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -537,6 +564,14 @@ class StoryChoice {
   bool affordableWith(int gold) => goldMod >= 0 || gold >= -goldMod;
 }
 
+/// A camp errand that is an alert (wave 18): a district of the town under
+/// attack (see [StoryNode.campErrandKind]).
+const String campErrandAttack = 'attack';
+
+/// The kinds a camp errand may name instead of `true` (see
+/// [StoryNode.campErrandKind]).
+const Set<String> campErrandKinds = {campErrandAttack};
+
 class StoryNode {
   const StoryNode({
     required this.id,
@@ -563,6 +598,8 @@ class StoryNode {
     this.timeLimit,
     this.timeoutChoice = 0,
     this.noDetour = false,
+    this.pageTurn = false,
+    this.scene = const {},
     this.politicsOnEnter,
     this.location,
     this.spot,
@@ -570,6 +607,12 @@ class StoryNode {
     this.prompt = '',
     this.promptFr = '',
     this.aboutLabels = const {},
+    this.campErrand = false,
+    this.campErrandKind = '',
+    this.showIfFlags = const [],
+    this.hideIfFlags = const [],
+    this.campErrandText,
+    this.campErrandTextFr,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -605,6 +648,10 @@ class StoryNode {
       timeLimit: (json['time_limit'] as num?)?.toInt(),
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
       noDetour: json['noDetour'] as bool? ?? false,
+      pageTurn: json['page_turn'] as bool? ?? false,
+      scene: json['scene'] is Map
+          ? Map<String, dynamic>.from(json['scene'] as Map)
+          : const {},
       politicsOnEnter: StoryPolitics.tryParse(json['politicsOnEnter']),
       location: json['location']?.toString(),
       spot: json['spot']?.toString(),
@@ -621,8 +668,44 @@ class StoryNode {
                 fr: value['fr']?.toString() ?? '',
               ),
       },
+      // `true`, or a kind's name (campErrandKinds): `"attack"`.
+      campErrand: json['campErrand'] == true ||
+          campErrandKinds.contains(json['campErrand']),
+      campErrandKind: campErrandKinds.contains(json['campErrand'])
+          ? json['campErrand'] as String
+          : '',
+      showIfFlags:
+          (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      hideIfFlags:
+          (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      campErrandText: json['campErrandText']?.toString(),
+      campErrandTextFr: json['campErrandText_fr']?.toString(),
     );
   }
+
+  /// A camp errand (a companion's loyalty errand, see camp_errands.dart):
+  /// every chapter camp offers it, after the camp's own choices, while
+  /// [showIfFlags] and [hideIfFlags] let it show. No camp lists it in its
+  /// choices.
+  final bool campErrand;
+
+  /// What kind of [campErrand] it is: '' for a companion's loyalty errand,
+  /// or one of [campErrandKinds] ([campErrandAttack]: an alert, a district
+  /// of the town under attack, wave 18 step 2; nothing sets it off yet).
+  /// Written `"campErrand": "attack"`.
+  final String campErrandKind;
+
+  /// The flags a [campErrand] waits for, all of them, and the flags that
+  /// retire it, any of them (as a choice's showIfFlags and hideIfFlags).
+  final List<String> showIfFlags;
+  final List<String> hideIfFlags;
+
+  /// What the camp's button for a [campErrand] says; without one, the
+  /// first line of the scene.
+  final String? campErrandText;
+  final String? campErrandTextFr;
 
   /// Where this scene happens (v1.197): a location or district id of
   /// geography.json (see geography.dart), the most specific place there
@@ -645,6 +728,36 @@ class StoryNode {
   /// on the way into or out of it. What the road held waits for the next
   /// scene at rest.
   final bool noDetour;
+
+  /// A page of a scene told in two (v1.577): the calm page, whose one plain
+  /// Continue the story does not read through but stops on, so the player
+  /// turns the page (see passThroughChoiceOf).
+  final bool pageTurn;
+
+  /// Narrative's `scene` block (docs/proposals/node-context.md): where,
+  /// when and who, and the view the scene opens in. Kept as written, so a
+  /// save of the scene keeps it; scene_presentation.dart reads its `view`
+  /// and `weight` (presentation-contract.md).
+  final Map<String, dynamic> scene;
+
+  /// The view the `scene` block asks for (`page`, `sheet`, `street`,
+  /// `room`, `map`), or null for the default rule's.
+  String? get sceneView => scene['view']?.toString();
+
+  /// The weight the `scene` block gives (`main`, `side`, `ambient`), or
+  /// null for the default.
+  String? get sceneWeight => scene['weight']?.toString();
+
+  /// Whether the `scene` block plays the scene in the street (`kind:
+  /// street`): outside, before the building it names (see sceneStreetOf).
+  bool get sceneInStreet => scene['kind']?.toString() == 'street';
+
+  /// The building of the town's plan the `scene` block names
+  /// (city_plans.json, `alster_b032`), or null.
+  String? get sceneBuilding {
+    final id = scene['building']?.toString() ?? '';
+    return id.isEmpty ? null : id;
+  }
 
   /// Seconds the player has to choose (a chase, a wave coming over the
   /// wall), or null for all the time in the world. When they run out the
@@ -908,6 +1021,16 @@ class StoryNode {
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (noDetour) 'noDetour': noDetour,
+        if (pageTurn) 'page_turn': pageTurn,
+        if (scene.isNotEmpty) 'scene': scene,
+        if (campErrand)
+          'campErrand': campErrandKind.isEmpty ? campErrand : campErrandKind,
+        if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,
+        if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
+        if (campErrandText != null && campErrandText!.isNotEmpty)
+          'campErrandText': campErrandText,
+        if (campErrandTextFr != null && campErrandTextFr!.isNotEmpty)
+          'campErrandText_fr': campErrandTextFr,
         if (politicsOnEnter != null)
           'politicsOnEnter': politicsOnEnter!.toJson(),
         if (alignmentEpilogues.isNotEmpty)

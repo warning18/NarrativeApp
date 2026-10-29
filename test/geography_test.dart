@@ -83,7 +83,9 @@ Map<String, dynamic> geoFixture() => {
         'level': 'district',
         'parent': 'alster',
         'name': 'The Stone Bridge',
-        'landmark': 'bridge',
+        // Scene 260's landmark (Alster's, v1.534), placed on the bridge
+        // here so a scene with no location finds its landmark's place.
+        'landmark': 'alster',
       },
       'wells': {
         'level': 'location',
@@ -427,13 +429,16 @@ void main() {
       expect(geo.travelsBetween(story, 'w1', 'at_sea'), isTrue);
       expect(geo.travelsBetween(story, 'w1', 'w1'), isFalse);
       // A scene the world can't place goes by its landmark: 'lost' is
-      // on none, 260 and 270 are on different ones, 100 and 105 the same.
+      // on none, 260 and 965 are on different ones (Alster, the wreck),
+      // 260 and 270 the same (Alster is one place, v1.534).
       expect(geo.travelsBetween(story, 'w1', 'lost'), isFalse);
-      expect(Geography.empty.travelsBetween(story, '260', '270'), isTrue);
+      expect(Geography.empty.travelsBetween(story, '260', '965'), isTrue);
+      expect(Geography.empty.travelsBetween(story, '260', '270'), isFalse);
       expect(Geography.empty.travelsBetween(story, '100', '105'), isFalse);
-      // Scene 0 happens nowhere, so the bridge from it goes by landmark:
-      // the Blind Beggar to the Stone Bridge.
-      expect(geo.travelsBetween(story, '0', '260'), isTrue);
+      // Scene 0 happens nowhere, so a way from it goes by landmark: the
+      // bridge is in Alster too, the wreck is not.
+      expect(geo.travelsBetween(story, '0', '260'), isFalse);
+      expect(geo.travelsBetween(story, '0', '965'), isTrue);
     });
 
     test(

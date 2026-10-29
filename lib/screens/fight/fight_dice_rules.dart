@@ -58,12 +58,17 @@ extension _FightDiceRules on _FightScreenState {
   }
 
   /// [face]'s number with the player's guard, mend and spell signs on it
-  /// (see SignEffects.guardValue and friends).
-  DiceFaceResult _signedValue(_PartyMember actor, DiceFaceResult face) {
+  /// (see SignEffects.guardValue and friends): their shares through the
+  /// actor's banks, kept only when [keep] (the confirm, not a preview).
+  DiceFaceResult _signedValue(_PartyMember actor, DiceFaceResult face,
+      {bool keep = false}) {
     if (!actor.isPlayer || _signs.isEmpty) return face;
     return switch (face.type) {
-      'Defend' => face.withValue(_signs.guardValue(face.value)),
-      'Heal' => face.withValue(_signs.mendValue(face.value, actor.wisdom ~/ 2)),
+      'Defend' => face.withValue(
+          _signs.guardValue(face.value, bank: actor.guardBank, keep: keep)),
+      'Heal' => face.withValue(_signs.mendValue(
+          face.value, wisdomHealBonusFor(actor.wisdom),
+          bank: actor.mendBank, keep: keep)),
       'Mana' => face.withValue(_signs.manaValue(face.value)),
       _ => face,
     };
@@ -180,7 +185,8 @@ extension _FightDiceRules on _FightScreenState {
     final basic =
         face.type == 'Attack' || face.type == 'Defend' || face.type == 'Heal';
     final played = _signedValue(
-        actor, bonus > 0 && basic ? face.withValue(face.value + bonus) : face);
+        actor, bonus > 0 && basic ? face.withValue(face.value + bonus) : face,
+        keep: rollCritical);
     var damage = _totalDamageFor(actor, played, skills, items) +
         (played.type == 'Skill' ? bonus : 0);
     // The player's strike signs: an Attack face's flat damage and its
@@ -189,6 +195,8 @@ extension _FightDiceRules on _FightScreenState {
       final attack = played.type == 'Attack';
       damage = _signs.strikeBase(damage, played.value,
           attackFace: attack,
+          bank: actor.strikeBank,
+          keep: rollCritical,
           percent: _signs.strikePercentFor(
             attackFace: attack,
             currentHealth: actor.currentHealth,
@@ -211,7 +219,7 @@ extension _FightDiceRules on _FightScreenState {
       damage,
       language: lang,
       activeEffects: actor.statusEffects,
-      wisdomHealBonus: actor.wisdom ~/ 2,
+      wisdomHealBonus: wisdomHealBonusFor(actor.wisdom),
       wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
       luck: rollCritical
           ? actor.luck +
@@ -221,7 +229,9 @@ extension _FightDiceRules on _FightScreenState {
       forceCritical: surge || sureCrit,
       alignmentLabel: _alignmentLabel,
       critChanceBonus: rollCritical
-          ? actor.gear.critChance + (actor.isPlayer ? _core.ledgerChain : 0)
+          ? actor.gear.critChance +
+              perceptionCritBonus(actor.professionId, actor.perception) +
+              (actor.isPlayer ? _core.ledgerChain : 0)
           : 0,
       armor: actor.armor,
     );
@@ -249,13 +259,16 @@ extension _FightDiceRules on _FightScreenState {
       );
 
   /// Whether the face [actor] rolled this round is one of their die's own
-  /// signature skill faces (and still casts it).
+  /// signature skill faces (and still casts it: a skill set over it since
+  /// every face is a slot doesn't count).
   bool _onSignatureFace(_PartyMember actor) {
     final face = _currentFaces[actor.id];
     if (face == null || face.type != 'Skill') return false;
     if (face.faceIndex >= actor.dieFaces.length) return false;
     final raw = actor.dieFaces[face.faceIndex];
-    return raw['type'] == 'Skill' && !isAssignableFace(raw);
+    return raw['type'] == 'Skill' &&
+        (isSignatureFace(raw) || !isAssignableFace(raw)) &&
+        face.linkedSkillID == (raw['linkedSkillID']?.toString() ?? '');
   }
 
   /// The duo techniques the acting companions' faces would fire now.
@@ -300,10 +313,8 @@ extension _FightDiceRules on _FightScreenState {
               ? dealt
               : strikeDamageAfterAffixes(dealt, face.type,
                   armored: target.hasAffix(EnemyAffix.armored));
-      var healing = result.healingDone;
-      if (_condition == BattlefieldCondition.shrine && healing > 0) {
-        healing = (healing * shrineHealMultiplier).round();
-      }
+      // As the round will heal it, nothing counted (_healDealt).
+      final healing = _healDealt(actor, face, result.healingDone, count: false);
       var block = result.blockAmount;
       if (block > 0 && _isTelegraphedTarget(actor)) {
         block *= _telegraphBraceMultiplier;

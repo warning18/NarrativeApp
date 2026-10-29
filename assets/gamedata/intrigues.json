@@ -130,8 +130,8 @@
       {
         "stage": "Hook",
         "chapter": 3,
-        "text": "Inquisitor-General Aurel Vane, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
-        "text_fr": "L’Inquisiteur général Aurel Vane, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents.",
+        "text": "Regent Cassian Oriel, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
+        "text_fr": "Le Régent Cassian Oriel, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents.",
         "npcId": "hesk_morrow"
       },
       {
@@ -182,12 +182,12 @@
         "npcId": "hesk_morrow"
       },
       {
-        "name": "Vane: an inquisition",
-        "name_fr": "Vane : une inquisition",
+        "name": "Oriel: an inquisition",
+        "name_fr": "Oriel : une inquisition",
         "effects": [
           {
-            "note": "Aurel Vane takes the Throne: the Dominion at the end is an inquisition.",
-            "note_fr": "Aurel Vane prend le Trône : à la fin, le Dominion est une inquisition."
+            "note": "Regent Oriel takes the Throne: the Dominion at the end is an inquisition.",
+            "note_fr": "Le Régent Oriel prend le Trône : à la fin, le Dominion est une inquisition."
           },
           {
             "subclan": "inquisition",
@@ -197,7 +197,7 @@
             "title": "kingmaker"
           }
         ],
-        "npcId": "aurel_vane"
+        "npcId": "cassian_oriel"
       },
       {
         "name": "Tallis: a church",
@@ -775,6 +775,469 @@
           {
             "companion": "vess",
             "change": "leaves"
+          }
+        ]
+      }
+    ]
+  },
+  "lanternbearers_will": {
+    "id": "lanternbearers_will",
+    "name": "The Lantern-Bearer’s Will",
+    "name_fr": "Le testament du Porte-Lanterne",
+    "premise": "A sealed page names an heir who is neither Vane, Morrow nor Tallis, and all three Houses want it.",
+    "premise_fr": "Une page scellée nomme un héritier qui n’est ni Vane, ni Morrow, ni Tallis, et les trois Maisons la veulent.",
+    "factions": [
+      "dominion",
+      "vigil"
+    ],
+    "subclans": [
+      "wickwardens",
+      "inquisition",
+      "order"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 5,
+        "text": "A scribe at Rimewell is copying out a will in the Lantern-Bearer’s hand.",
+        "text_fr": "Une scribe de Puits-de-Givre recopie un testament de la main du Porte-Lanterne."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 6,
+        "text": "A wreck-wright has the seal in wax: a flame in a hand, the First Lantern’s own.",
+        "text_fr": "Un ouvrier des épaves a le sceau dans la cire : une flamme dans une main, celui de la Première Lanterne.",
+        "npcId": "fleet_chaplain"
+      },
+      {
+        "stage": "Turn",
+        "chapter": 6,
+        "text": "The heir is Perrin Ash, the First Lantern’s trimmer, now a grey fisher at Greyhithe.",
+        "text_fr": "L’héritier est Perrin Ash, l’allumeur de la Première Lanterne, devenu pêcheur gris à Grisegrève."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 6,
+        "text": "The three Houses write to ask whether you know of a will.",
+        "text_fr": "Les trois Maisons écrivent pour demander si vous connaissez un testament.",
+        "npcId": "crape_courier"
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The sealed original reaches Greyhithe, with three boats waiting off it.",
+        "text_fr": "L’original scellé arrive à la crique, et trois bateaux attendent au large."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 6,
+        "text": "You decide what becomes of the will.",
+        "text_fr": "Vous décidez du sort du testament."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Read aloud: Perrin Ash named",
+        "name_fr": "Lu à voix haute : Perrin Ash nommé",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 15
+          },
+          {
+            "faction": "vigil",
+            "delta": -10
+          },
+          {
+            "subclan": "wickwardens",
+            "mark": "friend"
+          },
+          {
+            "note": "The will is read on the shingle: Perrin Ash is named, and the Houses must answer him.",
+            "note_fr": "Le testament est lu sur les galets : Perrin Ash est nommé, et les Maisons doivent lui répondre."
+          }
+        ]
+      },
+      {
+        "name": "Burned: the page stays a rumour",
+        "name_fr": "Brûlé : la page reste une rumeur",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": -15
+          },
+          {
+            "faction": "crows",
+            "delta": 15
+          },
+          {
+            "note": "The will is burned unread. The Houses go on hunting a page that no longer exists.",
+            "note_fr": "Le testament est brûlé sans être lu. Les Maisons continuent de chasser une page qui n’existe plus."
+          }
+        ]
+      },
+      {
+        "name": "Given to Oriel",
+        "name_fr": "Remis à Oriel",
+        "effects": [
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Regent Oriel holds the will, and a Hand for the Throne.",
+            "note_fr": "Le Régent Oriel détient le testament, et une Main pour le Trône."
+          }
+        ]
+      },
+      {
+        "name": "Given to Morrow",
+        "name_fr": "Remis à Morrow",
+        "effects": [
+          {
+            "subclan": "order",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Grand Master Morrow holds the will, and a Hand for the Throne.",
+            "note_fr": "Le Grand Maître Morrow détient le testament, et une Main pour le Trône."
+          }
+        ]
+      },
+      {
+        "name": "Given to Tallis",
+        "name_fr": "Remis à Tallis",
+        "effects": [
+          {
+            "subclan": "wickwardens",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "note": "Eldest Tallis holds the will, and a Hand for the Throne.",
+            "note_fr": "L’Aînée Tallis détient le testament, et une Main pour le Trône."
+          }
+        ]
+      }
+    ]
+  },
+  "taken_names": {
+    "id": "taken_names",
+    "name": "The Taken’s Names",
+    "name_fr": "Les noms des disparus",
+    "premise": "The back of the Lantern Throne is cut with the names of the people the tear took, and a clerk has been copying them.",
+    "premise_fr": "Le dos du Trône de la Lanterne est taillé des noms des gens que la déchirure a pris, et un clerc les copie.",
+    "factions": [
+      "penitents",
+      "choir",
+      "pit"
+    ],
+    "subclans": [
+      "candlebearers"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 7,
+        "text": "A clerk from Candlehold arrives at the cove with a satchel of names.",
+        "text_fr": "Un clerc de Candlehold arrive à la crique avec une sacoche de noms."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 7,
+        "text": "The names run in the order the tear took them, with bare stone left after the last.",
+        "text_fr": "Les noms suivent l’ordre où la déchirure les a pris, avec de la pierre nue après le dernier."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 8,
+        "text": "The Host argues whether the names should be read before the crossing.",
+        "text_fr": "L’Ost débat de lire ou non les noms avant la traversée."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 8,
+        "text": "A Tide-Kin matriarch finds her daughter’s name on the list.",
+        "text_fr": "Une matriarche des Gens de la Marée trouve le nom de sa fille sur la liste."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 8,
+        "text": "The Penitents and the Pit stand either side of a lit brazier.",
+        "text_fr": "Les Pénitents et la Fosse se tiennent de part et d’autre d’un brasero allumé."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 8,
+        "text": "You decide what becomes of the list.",
+        "text_fr": "Vous décidez du sort de la liste."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Read aloud: the dead heard",
+        "name_fr": "Lus à voix haute : les morts entendus",
+        "effects": [
+          {
+            "faction": "penitents",
+            "delta": 20
+          },
+          {
+            "faction": "choir",
+            "delta": 10
+          },
+          {
+            "faction": "dominion",
+            "delta": -15
+          },
+          {
+            "note": "Every name is read aloud before the crossing, and the Host walks with the dead in its ears.",
+            "note_fr": "Chaque nom est lu à voix haute avant la traversée, et l’Ost marche avec les morts dans les oreilles."
+          }
+        ]
+      },
+      {
+        "name": "Burned: nobody owes",
+        "name_fr": "Brûlés : nul ne doit rien",
+        "effects": [
+          {
+            "faction": "pit",
+            "delta": 15
+          },
+          {
+            "note": "The list is burned. The names stay on the stone behind the Throne, and the Host owes the dead nothing.",
+            "note_fr": "La liste est brûlée. Les noms restent sur la pierre derrière le Trône, et l’Ost ne doit rien aux morts."
+          }
+        ]
+      },
+      {
+        "name": "Carried unread",
+        "name_fr": "Emportés sans être lus",
+        "effects": [
+          {
+            "note": "The list crosses unread, in your coat, to the one place where it might be weighed.",
+            "note_fr": "La liste traverse sans être lue, dans votre manteau, vers le seul endroit où on la pèsera peut-être."
+          }
+        ]
+      }
+    ]
+  },
+  "hosts_price": {
+    "id": "hosts_price",
+    "name": "The Host’s Price",
+    "name_fr": "Le prix de l’Ost",
+    "premise": "Every power that joins the Host asks for something in return, and the sum must be paid before the crossing.",
+    "premise_fr": "Chaque puissance qui rejoint l’Ost demande quelque chose en retour, et la somme doit être payée avant la traversée.",
+    "factions": [
+      "giants",
+      "oni",
+      "tidekin",
+      "kindly"
+    ],
+    "subclans": [],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 8,
+        "text": "Highhearth’s giants ask for the hearth-stone’s face back.",
+        "text_fr": "Les géants de Haut-Âtre demandent qu’on leur rende la face de leur pierre du foyer."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 8,
+        "text": "The Tide-Kin ask for a drowned island raised.",
+        "text_fr": "Les Gens de la Marée demandent qu’on relève une île noyée."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 8,
+        "text": "The oni ask for Candlehold’s bells to be rung for them once.",
+        "text_fr": "Les oni demandent que les cloches de Candlehold sonnent une fois pour eux."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 8,
+        "text": "The Kindly Ones are owed eleven minutes of darkness, to the second.",
+        "text_fr": "On doit aux Bienveillants onze minutes d’obscurité, à la seconde."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 8,
+        "text": "The quartermaster adds up the sum: a hundred and fifty gold.",
+        "text_fr": "La quartier-maîtresse fait la somme : cent cinquante pièces d’or."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 8,
+        "text": "You decide who is paid.",
+        "text_fr": "Vous décidez qui est payé."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Paid in full",
+        "name_fr": "Payés en totalité",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 15
+          },
+          {
+            "faction": "oni",
+            "delta": 15
+          },
+          {
+            "faction": "tidekin",
+            "delta": 15
+          },
+          {
+            "faction": "kindly",
+            "delta": 15
+          },
+          {
+            "note": "Every power is paid before the crossing, and walks it in front of you.",
+            "note_fr": "Chaque puissance est payée avant la traversée, et la franchit devant vous."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the giants",
+        "name_fr": "Payés, mais pas les géants",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": -20
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The giants are told the price is too high. They cross with their eyes on the stone.",
+            "note_fr": "On dit aux géants que le prix est trop haut. Ils traversent les yeux sur la pierre."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the Tide-Kin",
+        "name_fr": "Payés, mais pas les Gens de la Marée",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": -20
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The Tide-Kin are told no. They cross without looking at the water.",
+            "note_fr": "On dit non aux Gens de la Marée. Ils traversent sans regarder l’eau."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the oni",
+        "name_fr": "Payés, mais pas les oni",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": -20
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": 10
+          },
+          {
+            "note": "The oni are told no. They cross silent, with the clapper at their belts.",
+            "note_fr": "On dit non aux oni. Ils traversent en silence, le battant à la ceinture."
+          }
+        ]
+      },
+      {
+        "name": "Paid, but not the Kindly Ones",
+        "name_fr": "Payés, mais pas les Bienveillants",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": 10
+          },
+          {
+            "faction": "oni",
+            "delta": 10
+          },
+          {
+            "faction": "tidekin",
+            "delta": 10
+          },
+          {
+            "faction": "kindly",
+            "delta": -20
+          },
+          {
+            "note": "The Kindly Ones are told no. They cross with a stopped clock.",
+            "note_fr": "On dit non aux Bienveillants. Ils traversent avec une horloge arrêtée."
+          }
+        ]
+      },
+      {
+        "name": "Nobody paid",
+        "name_fr": "Personne payé",
+        "effects": [
+          {
+            "faction": "giants",
+            "delta": -10
+          },
+          {
+            "faction": "oni",
+            "delta": -10
+          },
+          {
+            "faction": "tidekin",
+            "delta": -10
+          },
+          {
+            "faction": "kindly",
+            "delta": -10
+          },
+          {
+            "note": "The crossing is the only payment, and the Host walks behind you with its hands on its knives.",
+            "note_fr": "La traversée est le seul paiement, et l’Ost marche derrière vous, la main sur le couteau."
           }
         ]
       }

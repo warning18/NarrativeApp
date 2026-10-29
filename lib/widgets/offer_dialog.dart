@@ -3,15 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart' show skillDisplayName;
 import '../combat/specialisations.dart' show specId;
+import '../data/camp_rolls.dart' show suitorBanishable;
+import '../data/companion_remarks.dart';
 import '../data/factions.dart';
 import '../data/item_origin_here.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
+import '../data/risky_gifts.dart';
+import 'risky_roll_dialog.dart';
+import 'sheet_kit.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/moment_remark_provider.dart';
 import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/territory_provider.dart';
@@ -24,10 +30,13 @@ import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
 import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
+import 'companion_remark_bubble.dart';
 import 'item_stats.dart';
+import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
+import 'roll_power_row.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
@@ -36,32 +45,50 @@ const Color wayfarerColor = Color(0xFF8D6E63);
 const int _wayfarerGreetings = 4;
 
 /// Opens the offer when one is due (see offers.dart): after a level-up's
-/// dialog, after a boss, at a chapter's start, from the Character tab.
+/// dialog, after a boss, from the Character tab, and whenever one waits
+/// over the home screen (offer_autopilot.dart).
 /// The offer is drawn once and kept; it is never left for later (Wave 6):
 /// the dialog closes when a gift is taken. [sayWhenNone]: when nobody can come yet,
 /// say so (the Character tab's button) rather than nothing (after a
-/// fight).
-Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
+/// fight). True when an offer is on the table (shown here, or already open);
+/// false when none could be drawn.
+Future<bool> showOfferIfWaiting(BuildContext context, WidgetRef ref,
     {bool sayWhenNone = false}) async {
-  if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return;
-  final tables = await loadOfferTables(ref);
-  final offer = await ref
-      .read(playerSessionProvider.notifier)
-      .ensureOffer(tables, placeHolder: ref.read(holderHereProvider));
-  if (!context.mounted) return;
-  if (offer == null) {
-    if (sayWhenNone) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
+  if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return false;
+  // One offer dialog at a time, opened over the whole app: a fight left
+  // while the offer loads does not lose it.
+  final navigator = Navigator.of(context, rootNavigator: true);
+  if (offerOpenOn(navigator)) return true;
+  _offerOpen[navigator] = true;
+  try {
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final holder = ref.read(holderHereProvider);
+    final tables = await loadOfferTables(ref);
+    final offer = await notifier.ensureOffer(tables, placeHolder: holder);
+    if (!navigator.mounted) return offer != null;
+    if (offer == null) {
+      if (sayWhenNone && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
+      }
+      return false;
     }
-    return;
+    await showDialog<void>(
+      context: navigator.context,
+      barrierDismissible: false,
+      builder: (_) => OfferDialog(tables: tables),
+    );
+    return true;
+  } finally {
+    _offerOpen[navigator] = null;
   }
-  await showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => OfferDialog(tables: tables),
-  );
 }
+
+/// The navigators an offer dialog is open (or loading) over.
+final Expando<bool> _offerOpen = Expando<bool>('offerOpen');
+
+/// Whether an offer dialog is open, or about to be, over [navigator].
+bool offerOpenOn(NavigatorState navigator) => _offerOpen[navigator] ?? false;
 
 /// The suitor's name as the card says it: "The Emberwives of the Cinder
 /// Compact" for a clan's voice, the faction's name for the others, "The
@@ -239,6 +266,10 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   String? _selected;
   bool _busy = false;
 
+  /// The offer last on the table: shown dimmed, with a spinner over it,
+  /// while the next one is drawn, rather than a bare spinner in an empty box.
+  ClanOffer? _lastOffer;
+
   Future<void> _take(ClanOffer offer) async {
     final factionId = _selected;
     final suitor = factionId == null ? null : offer.suitorOf(factionId);
@@ -252,39 +283,66 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         politics: ref.read(playerSessionProvider).politics,
         data: tables.data,
         lang: lang);
+    final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title:
-            Text(trFor(lang, 'offer_confirm_title').replaceAll('{gift}', name)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(trFor(lang, 'offer_confirm_from')
-                .replaceAll('{who}', suitorName(suitor, tables.data, lang))),
-            const SizedBox(height: 8),
-            Text(preview.isEmpty
-                ? trFor(lang, 'offer_no_standing')
-                : preview.map((p) => p.text).join(' · ')),
-          ],
+      builder: (dialogContext) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SheetHeader(
+                title: trFor(lang, 'offer_confirm_title')
+                    .replaceAll('{gift}', name),
+                caption: trFor(lang, 'offer_confirm_from')
+                    .replaceAll('{who}', suitorName(suitor, tables.data, lang)),
+                padding: const EdgeInsets.only(bottom: 12),
+              ),
+              Text(preview.isEmpty
+                  ? trFor(lang, 'offer_no_standing')
+                  : preview.map((p) => p.text).join(' · ')),
+              if (suitor.risky) ...[
+                const SizedBox(height: 8),
+                Text(trFor(lang, 'offer_risky_hint')),
+                Text(
+                    trFor(lang, 'offer_risky_odds')
+                        .replaceAll('{gift}', '${odds.gift}')
+                        .replaceAll('{price}', '${odds.price}'),
+                    key: const Key('offer_confirm_risky_odds')),
+              ],
+              const SizedBox(height: 16),
+              SheetButtons(
+                primaryKey: const Key('offer_confirm_accept'),
+                primaryLabel: trFor(lang, 'offer_confirm_accept'),
+                onPrimary: () => Navigator.pop(dialogContext, true),
+                closeLabel: trFor(lang, 'offer_confirm_back'),
+                onClose: () => Navigator.pop(dialogContext, false),
+              ),
+            ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(trFor(lang, 'offer_confirm_back')),
-          ),
-          FilledButton(
-            key: const Key('offer_confirm_accept'),
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(trFor(lang, 'offer_confirm_accept')),
-          ),
-        ],
       ),
     );
     if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
+    // A risky card: what the die (rolled with the draw) says, read before
+    // it is applied.
+    final risk = notifier.riskyResultOf(suitor, tables);
+    // A companion's word on taking the risk, before the die (Core's
+    // speakUpOnMoment), and on what the die did, after the card.
+    if (risk != null) await _speakUp(RemarkKind.riskyTaken);
+    // ... and the die rolled in front of the player before it is applied.
+    if (risk != null && mounted) {
+      await showRiskyRoll(context,
+          roll: suitor.riskRoll,
+          luck: notifier.riskyLuck(tables),
+          won: risk.won,
+          lang: lang);
+    }
     await notifier.acceptSuitor(suitor.factionId,
         tables: tables, origin: itemOriginHere(ref));
     // The gift, as the reward card tells it, before the next offer.
@@ -292,24 +350,50 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       final skills =
           ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
       final clanColour = _suitorColor(suitor, tables.data);
+      final card = clanGiftCard(
+        lang: lang,
+        clanName: suitorName(suitor, tables.data, lang),
+        clanColour: clanColour,
+        gift: risk != null && !risk.won
+            // The price paid: the line says what the die took.
+            ? RewardLine(
+                key: Key('reward_risky_${risk.outcome.name}'),
+                icon: Icon(Icons.casino_outlined, color: clanColour),
+                accent: clanColour,
+                title: riskyResultText(
+                    risk, tables.data.faction(suitor.factionId), lang),
+                sub: name,
+                tag: trFor(lang, 'offer_risky_badge'),
+              )
+            : RewardLine(
+                key: Key('reward_gift_${suitor.gift.id}'),
+                icon: _giftGlyph(suitor.gift, clanColour),
+                accent: clanColour,
+                title: name,
+                sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
+                value: trFor(lang, 'reward_new'),
+              ),
+        standing: [for (final p in preview) p.text],
+      );
       await showRewardCard(
         context,
-        clanGiftCard(
-          lang: lang,
-          clanName: suitorName(suitor, tables.data, lang),
-          clanColour: clanColour,
-          gift: RewardLine(
-            key: Key('reward_gift_${suitor.gift.id}'),
-            icon: _giftGlyph(suitor.gift, clanColour),
-            accent: clanColour,
-            title: name,
-            sub: trFor(lang, _giftTagKey(suitor.gift, skills)),
-            value: trFor(lang, 'reward_new'),
-          ),
-          standing: [for (final p in preview) p.text],
-        ),
+        risk == null || !risk.won
+            ? card
+            : RewardCardData(
+                kind: card.kind,
+                title: card.title,
+                accent: card.accent,
+                button: card.button,
+                lines: card.lines,
+                notes: [
+                  RewardNote(riskyResultText(
+                      risk, tables.data.faction(suitor.factionId), lang)),
+                  ...card.notes,
+                ],
+              ),
       );
     }
+    if (risk != null) await _speakUp(riskyOutcomeRemarkKind(risk.outcome));
     final next = await notifier.ensureOffer(tables,
         placeHolder: ref.read(holderHereProvider));
     if (!mounted) return;
@@ -323,12 +407,40 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     });
   }
 
+  /// A companion's word on [kind] (Core's speakUpOnMoment), if any.
+  Future<void> _speakUp(RemarkKind kind) async {
+    if (!mounted) return;
+    final remark = speakUpOnMoment(ref, kind);
+    if (remark != null) await showCompanionRemarks(context, ref, [remark]);
+  }
+
+  /// A roll power (camp_rolls.dart) used on the offer on the table; the
+  /// selection kept only for a raise.
+  Future<void> _roll(Future<void> Function() use, {bool keep = false}) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await use();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          if (!keep) _selected = null;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
+    watchMomentRemarks(ref);
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
-    final offer = session.clanOffer;
+    final current = session.clanOffer;
+    if (current != null) _lastOffer = current;
+    final offer = current ?? _lastOffer;
+    final drawing = current == null;
     if (offer == null) {
       return const Dialog(
         child: Padding(
@@ -353,109 +465,173 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
         clipBehavior: Clip.antiAlias,
         // The first offer's tour (the topic Signs had, see tutorial_topics).
-        child: TutorialTrigger(
-          topic: TutorialTopic.signs,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TutorialTarget(
-                id: 'signs.patron',
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Row(
-                    children: [
-                      Icon(Icons.diversity_3, color: theme.colorScheme.primary),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              trFor(lang, 'offer_title'),
-                              key: const Key('offer_title'),
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              waiting > 1
-                                  ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                                  : source,
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // The three banners on top, then the clans' compass, then the
-              // picked banner's words. It scrolls; the button below does not.
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
-                  child: TutorialTarget(
-                    id: 'signs.cards',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: _Drawing(
+          drawing: drawing,
+          child: TutorialTrigger(
+            topic: TutorialTopic.signs,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TutorialTarget(
+                  id: 'signs.patron',
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Row(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (final suitor in offer.suitors)
-                              Expanded(
-                                child: _OfferBanner(
-                                  key: Key('offer_suitor_${suitor.factionId}'),
-                                  suitor: suitor,
-                                  ticket: ticket,
-                                  tables: widget.tables,
-                                  selected: _selected == suitor.factionId,
-                                  dimmed: _selected != null &&
-                                      _selected != suitor.factionId,
-                                  onTap: _busy
-                                      ? null
-                                      : () => setState(
-                                          () => _selected = suitor.factionId),
-                                ),
+                        Icon(Icons.diversity_3,
+                            color: theme.colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                trFor(lang, 'offer_title'),
+                                key: const Key('offer_title'),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ConstrainedBox(
-                          key: const Key('offer_detail_zone'),
-                          constraints: const BoxConstraints(minHeight: 280),
-                          child: _OfferHall(
-                            key: selected == null
-                                ? const Key('offer_hall_none')
-                                : Key('offer_summary_${selected.factionId}'),
-                            offer: offer,
-                            suitor: selected,
-                            tables: widget.tables,
+                              Text(
+                                waiting > 1
+                                    ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                                    : source,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                child: FilledButton(
-                  key: const Key('offer_take_button'),
-                  style: FilledButton.styleFrom(backgroundColor: accent),
-                  onPressed:
-                      selected == null || _busy ? null : () => _take(offer),
-                  child: Text(trFor(lang, 'offer_take_button')),
+                // The three banners on top, then the clans' compass, then the
+                // picked banner's words. It scrolls; the button below does not.
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
+                    child: TutorialTarget(
+                      id: 'signs.cards',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final suitor in offer.suitors)
+                                Expanded(
+                                  child: _OfferBanner(
+                                    key:
+                                        Key('offer_suitor_${suitor.factionId}'),
+                                    suitor: suitor,
+                                    ticket: ticket,
+                                    tables: widget.tables,
+                                    selected: _selected == suitor.factionId,
+                                    dimmed: _selected != null &&
+                                        _selected != suitor.factionId,
+                                    onTap: _busy
+                                        ? null
+                                        : () => setState(
+                                            () => _selected = suitor.factionId),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ConstrainedBox(
+                            key: const Key('offer_detail_zone'),
+                            constraints: const BoxConstraints(minHeight: 280),
+                            child: _OfferHall(
+                              key: selected == null
+                                  ? const Key('offer_hall_none')
+                                  : Key('offer_summary_${selected.factionId}'),
+                              offer: offer,
+                              suitor: selected,
+                              tables: widget.tables,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // The camp's roll houses (camp_rolls.dart).
+                      RollPowerRow(
+                        keyPrefix: 'offer',
+                        rolls: ref.watch(campRollsProvider),
+                        canBanish: selected != null &&
+                            suitorBanishable(selected, offer),
+                        canRaise: selected != null &&
+                            ref
+                                    .read(playerSessionProvider.notifier)
+                                    .raisePreview(
+                                        selected.factionId, widget.tables) !=
+                                null,
+                        warnRaised: offer.suitors.any((s) => s.raised),
+                        onReroll: () => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .rerollOffer(widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
+                        onBanish: (draws) => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .banishSuitor(
+                                selected!.factionId, draws, widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
+                        onRaise: () => _roll(
+                            () => ref
+                                .read(playerSessionProvider.notifier)
+                                .raiseSuitor(
+                                    selected!.factionId, widget.tables),
+                            keep: true),
+                      ),
+                      FilledButton(
+                        key: const Key('offer_take_button'),
+                        style: FilledButton.styleFrom(backgroundColor: accent),
+                        onPressed: selected == null || _busy
+                            ? null
+                            : () => _take(offer),
+                        child: Text(trFor(lang, 'offer_take_button')),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Dims what it wraps and lays a spinner over it while [drawing]: the next
+/// offer is on its way and the card on the table is the last one.
+class _Drawing extends StatelessWidget {
+  const _Drawing({required this.drawing, required this.child});
+
+  final bool drawing;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 160),
+          opacity: drawing ? 0.4 : 1,
+          child: IgnorePointer(ignoring: drawing, child: child),
+        ),
+        if (drawing) const CircularProgressIndicator(key: Key('offer_drawing')),
+      ],
     );
   }
 }
@@ -510,13 +686,17 @@ class _OfferBanner extends ConsumerWidget {
     final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
     final Widget inner = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
-        : SizedBox(
-            key: Key('offer_banner_${suitor.factionId}'),
-            width: bannerBox,
-            height: pixelBannerSize.height.toDouble(),
-            child: selected
-                ? WindBanner(id: bannerId, scale: 1)
-                : Center(child: PixelBanner(id: bannerId, scale: 1)),
+        : ClanMarks(
+            factionId: suitor.factionId,
+            discSize: 34,
+            child: SizedBox(
+              key: Key('offer_banner_${suitor.factionId}'),
+              width: bannerBox,
+              height: pixelBannerSize.height.toDouble(),
+              child: selected
+                  ? WindBanner(id: bannerId, scale: 1)
+                  : Center(child: PixelBanner(id: bannerId, scale: 1)),
+            ),
           );
     final Widget flag = SizedBox(
       width: bannerBox * 0.75,
@@ -552,12 +732,18 @@ class _OfferBanner extends ConsumerWidget {
                     child: Center(child: flag),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    suitor.isWayfarer ? who : (faction?.shortFor(lang) ?? who),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  // Scales down a little rather than cutting "The Wayfarer"
+                  // with an ellipsis on a 320 px phone.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      suitor.isWayfarer
+                          ? who
+                          : (faction?.shortFor(lang) ?? who),
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                    ),
                   ),
                   const SizedBox(height: 3),
                   _Tag(
@@ -821,6 +1007,12 @@ class _OfferHall extends ConsumerWidget {
                                         SignRarityChip(
                                             rarity: gift.rarity,
                                             language: lang),
+                                      if (picked.risky)
+                                        _Tag(
+                                            key: const Key('offer_risky_badge'),
+                                            text: trFor(
+                                                lang, 'offer_risky_badge'),
+                                            color: bad),
                                     ],
                                   ),
                                 ],
@@ -837,6 +1029,33 @@ class _OfferHall extends ConsumerWidget {
                           session: session,
                           lang: lang,
                         ),
+                        // A risky gift (risky_gifts.dart): what the clan
+                        // says, its price, and the odds.
+                        if (picked.risky) ...[
+                          const SizedBox(height: 6),
+                          if ((faction?.riskyOfferFor(lang) ?? '').isNotEmpty)
+                            Text(faction!.riskyOfferFor(lang),
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(fontStyle: FontStyle.italic)),
+                          Text(trFor(lang, 'offer_risky_hint'),
+                              style: theme.textTheme.bodySmall),
+                          const SizedBox(height: 4),
+                          RiskyOddsBar(
+                              luck: ref
+                                  .read(playerSessionProvider.notifier)
+                                  .riskyLuck(tables)),
+                          const SizedBox(height: 4),
+                          Text(
+                            riskyOddsText(
+                                ref
+                                    .read(playerSessionProvider.notifier)
+                                    .riskyLuck(tables),
+                                lang),
+                            key: const Key('offer_risky_odds'),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: bad, fontWeight: FontWeight.w700),
+                          ),
+                        ],
                         const SizedBox(height: 6),
                         Container(
                           key: const Key('offer_alignment_word'),
@@ -1186,7 +1405,7 @@ class SuitorCard extends ConsumerWidget {
 }
 
 class _Tag extends StatelessWidget {
-  const _Tag({required this.text, required this.color});
+  const _Tag({super.key, required this.text, required this.color});
 
   final String text;
   final Color color;

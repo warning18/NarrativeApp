@@ -15,13 +15,21 @@ class RadarAxis {
     this.color,
     this.sub,
     this.subColor,
+    this.valueColor,
+    this.onTap,
   });
 
   final String label;
   final String? value;
   final Color? color;
+
+  /// The value's colour when it stands out (a value a pick would change).
+  final Color? valueColor;
   final String? sub;
   final Color? subColor;
+
+  /// A tap on the corner's label (a popin about it); null for a plain label.
+  final VoidCallback? onTap;
 }
 
 /// One shape drawn over the rings.
@@ -127,31 +135,64 @@ class RadarChart extends StatelessWidget {
     final at = radarPoint(center, labelRadius, i, n);
     final a = -pi / 2 + i * 2 * pi / n;
     final align = Offset(-0.5 + cos(a) * 0.5, -0.5 + sin(a) * 0.5);
+    final tap = axis.onTap;
     return Positioned(
       left: at.dx,
       top: at.dy,
       child: FractionalTranslation(
         translation: align,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(axis.label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                    fontSize: compact ? 10.5 : 11.5,
-                    letterSpacing: 0.4,
-                    color:
-                        axis.color ?? scheme.onSurface.withValues(alpha: 0.8))),
-            if (axis.value != null)
-              Text(axis.value!,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontSize: 16, color: scheme.onSurface)),
-            if (axis.sub != null)
-              Text(axis.sub!,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      fontSize: 11,
-                      color: axis.subColor ?? const Color(0xFF6FD08C))),
-          ],
+        child: _Tappable(
+          onTap: tap,
+          semanticLabel: axis.label,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(axis.label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                      fontSize: compact ? 10.5 : 11.5,
+                      letterSpacing: 0.4,
+                      color: axis.color ??
+                          scheme.onSurface.withValues(alpha: 0.8))),
+              if (axis.value != null)
+                Text(axis.value!,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                        fontSize: 16,
+                        fontWeight:
+                            axis.valueColor == null ? null : FontWeight.w700,
+                        color: axis.valueColor ?? scheme.onSurface)),
+              if (axis.sub != null)
+                Text(axis.sub!,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        fontSize: 11,
+                        color: axis.subColor ?? const Color(0xFF6FD08C))),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/// A corner's label, with room to tap when it has an action: 8 px around
+/// it (the label itself is about 30 px).
+class _Tappable extends StatelessWidget {
+  const _Tappable(
+      {required this.onTap, required this.semanticLabel, required this.child});
+
+  final VoidCallback? onTap;
+  final String semanticLabel;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (onTap == null) return child;
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(padding: const EdgeInsets.all(8), child: child),
       ),
     );
   }

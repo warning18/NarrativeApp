@@ -4,6 +4,7 @@
 // the beast's own waters, and it keeps its own look in French too.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,6 +110,8 @@ void main() {
           toPortId: 'port_ashen_landing',
           toPort: ports['port_ashen_landing'] as Map<String, dynamic>,
           huntBeastId: 'pale_leviathan',
+          // A natural 1 or 20 settles a check: seeded, so no run differs.
+          debugRandom: Random(1),
           debugEvents: [
             _shape,
             beastDayFor('pale_leviathan', leviathan, hunt: true),

@@ -7,6 +7,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../providers/walking_party_provider.dart'
+    show WalkingPartyMember, heroWalkerId;
+import 'encounter_figure.dart';
+import 'party_look.dart';
 import 'side_sprite.dart';
 import 'side_view.dart';
 
@@ -85,33 +89,75 @@ List<SideLayer> desertLayers({double progress = 0}) => [
       SideLayer(1.0, _path),
     ];
 
+/// Where the hero's feet stand, in scene pixels: the party's head.
+const double walkHeroX = 96;
+
+/// Where each of [count] figures of a walking party stands, front to back:
+/// the hero at the head, the others behind it, 13 scene pixels apart.
+List<double> walkingPartyXs(int count) => [
+      for (var i = 0; i < count; i++)
+        i == 0 ? walkHeroX : walkHeroX - 12 - 13.0 * i,
+    ];
+
+/// Whether the walking sprite [spriteKey] has frames of its own: the hero's
+/// (the user's ronin) does; a companion's does not yet (`companion_<id>`,
+/// the user's art comes later), and is drawn as a placeholder figure.
+bool hasWalkSprite(String spriteKey) => spriteKey == 'hero';
+
+/// The cloak of the placeholder figure of a companion: always the same for
+/// the same [id], so the party keeps its colours from one walk to the next.
+Color walkPlaceholderColour(String id) {
+  const colours = [
+    Color(0xFF3E7CB1),
+    Color(0xFF6B8E4E),
+    Color(0xFF8E5BA8),
+    Color(0xFFB7791F),
+    Color(0xFF2F8F83),
+  ];
+  var hash = 0;
+  for (final unit in id.codeUnits) {
+    hash = (hash * 31 + unit) & 0x7fffffff;
+  }
+  return colours[hash % colours.length];
+}
+
 /// The party, in place on the path: the hero (the user's ronin) at its head
 /// and the companions behind, walking while the party [moving] and standing
-/// when it waits on a choice. Until the sprite is loaded the hero is the
-/// placeholder too.
-SideLayer desertActors({int figures = 3, bool moving = true}) {
+/// when it waits on a choice. [party] says who walks, front to back (see
+/// walkingPartyProvider: the hero alone, or with up to two companions); a
+/// figure without frames of its own is a placeholder. Without a [party],
+/// [figures] placeholders walk behind the hero. Until the hero's sprite is
+/// loaded the hero is a placeholder too.
+SideLayer desertActors({
+  int figures = 3,
+  List<WalkingPartyMember>? party,
+  bool moving = true,
+  EncounterWalk? encounter,
+}) {
   SideSprites.preload();
+  final members = party ??
+      [
+        const WalkingPartyMember(id: heroWalkerId, spriteKey: heroWalkerId),
+        for (var i = 1; i < figures; i++)
+          WalkingPartyMember(id: 'placeholder_$i', spriteKey: 'placeholder_$i'),
+      ];
+  final xs = walkingPartyXs(members.length);
   return SideLayer(0, (c, s, scroll, t, u) {
-    const colours = [
-      Color(0xFFC0392B),
-      Color(0xFF3E7CB1),
-      Color(0xFF6B8E4E),
-      Color(0xFF8E5BA8),
-    ];
-    // The companions first, behind: placeholders, a little bigger so they
-    // stand as tall as the ronin until they have sprites of their own.
-    for (var i = 1; i < figures; i++) {
-      final x = 18.0 + (figures - 1 - i) * 13;
+    // The companions first, behind (the last of the party first): placeholders,
+    // a little bigger so they stand as tall as the ronin until they have
+    // sprites of their own.
+    for (var i = members.length - 1; i >= 1; i--) {
       c.save();
       c.scale(1.6);
-      _figure(c, u, x / 1.6, 66 / 1.6, colours[i % colours.length],
-          moving ? t + i * 0.4 : 1.3);
+      _figure(c, u, xs[i] / 1.6, 66 / 1.6, walkPlaceholderColour(members[i].id),
+          moving ? t + i * 0.4 : 1.3,
+          look: partyLookFor(members[i].id));
       c.restore();
     }
-    final hx = 18.0 + (figures - 1) * 13 + 12;
-    if (!SideSprites.paint(c, u, hx, 66, t, moving: moving)) {
-      _figure(c, u, hx - 2, 66, colours[0], moving ? t : 1.3);
+    if (!SideSprites.paint(c, u, xs[0], 66, t, moving: moving)) {
+      _figure(c, u, xs[0] - 2, 66, const Color(0xFFC0392B), moving ? t : 1.3);
     }
+    encounter?.paint(c, s, t, u, partyX: xs.last);
   });
 }
 
@@ -213,7 +259,8 @@ void _path(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// A placeholder walker: a cloaked body, a head, two legs that swap.
 void _figure(
-    Canvas canvas, double u, double x, double baseY, Color cloak, double t) {
+    Canvas canvas, double u, double x, double baseY, Color cloak, double t,
+    {PartyLook? look}) {
   final step = (t * 6).floor() % 2;
   final skin = Paint()..color = const Color(0xFFE0B48A);
   final body = Paint()..color = cloak;
@@ -224,6 +271,11 @@ void _figure(
   sidePixels(canvas, u, dark, x + 3, baseY - 3 + (step == 0 ? -1 : 0), 1, 3);
   // Cloak and head.
   sidePixels(canvas, u, body, x, baseY - 9 + bob, 5, 6);
+  if (look != null) {
+    // A companion's own face (party_look.dart).
+    paintPartyHead(canvas, u, x + 1, baseY - 12 + bob, look);
+    return;
+  }
   sidePixels(canvas, u, skin, x + 1, baseY - 12 + bob, 3, 3);
   sidePixels(canvas, u, dark, x + 1, baseY - 13 + bob, 3, 1);
 }

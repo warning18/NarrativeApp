@@ -1,3 +1,4 @@
+import '../combat/stat_rules.dart' show damageStatOf, levelStatPicks;
 import '../combat/dice_faces.dart';
 import '../models/ally_state.dart'
     show equipmentScalingBonusFor, meetsItemAlignment, meetsItemStatRequirement;
@@ -33,8 +34,8 @@ class AutoplayBuild {
   final Map<String, String>? faceAssignments;
 }
 
-/// The ability scores a stat point can raise, as
-/// `PlayerSessionNotifier.spendStatPoint` names them.
+/// The ability scores a stat pick can raise, as the session names them
+/// (training.dart's trainingStats).
 const Set<String> _abilityStats = {
   'strength',
   'dexterity',
@@ -62,8 +63,8 @@ AutoplayBuild planAutoplayBuild(
   required Map<String, dynamic> dice,
   required Map<String, dynamic> professions,
 }) {
-  final profession = professions[session.professionId] as Map?;
-  final preferred = profession?['preferredScalingStat']?.toString() ?? '';
+  // The profession's damage stat (stat_rules.dart), else Wisdom.
+  final preferred = damageStatOf(session.professionId);
   final stat = _abilityStats.contains(preferred) ? preferred : 'wisdom';
   final points = session.statPoints < 0 ? 0 : session.statPoints;
   int raised(String name, int value) => name == stat ? value + points : value;
@@ -138,7 +139,7 @@ Map<String, String>? _bestFaces(
       0;
   final open = [
     for (var i = 0; i < faces.length; i++)
-      if (faces[i]['type'] == 'Skill' && isAssignableFace(faces[i])) i,
+      if (isOpenSkillFace(faces[i])) i,
   ];
   final assignments = <String, String>{
     ...?session.diceSkillAssignments[dieId],
@@ -234,11 +235,11 @@ ArrivalTopUp planArrivalTopUp(
   final gold = target.gold > session.gold ? target.gold - session.gold : 0;
 
   // The scores the build will have: every point to the profession's stat.
-  final profession = professions[session.professionId] as Map?;
-  final preferred = profession?['preferredScalingStat']?.toString() ?? '';
+  // The profession's damage stat (stat_rules.dart), else Wisdom.
+  final preferred = damageStatOf(session.professionId);
   final stat = _abilityStats.contains(preferred) ? preferred : 'wisdom';
-  final points =
-      (session.statPoints < 0 ? 0 : session.statPoints) + 5 * levelsGained;
+  final points = (session.statPoints < 0 ? 0 : session.statPoints) +
+      levelStatPicks * levelsGained;
   int raised(String name, int value) => name == stat ? value + points : value;
   final strength = raised('strength', session.strength);
   final dexterity = raised('dexterity', session.dexterity);

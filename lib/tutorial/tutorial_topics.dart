@@ -23,7 +23,6 @@ enum TutorialTopic {
     TutorialStep('tut_story_3', target: 'story.stats'),
     TutorialStep('tut_story_4', target: 'story.text'),
     TutorialStep('tut_story_5', target: 'story.choices'),
-    TutorialStep('tut_story_6', target: 'story.companion'),
     TutorialStep('tut_story_7', target: 'home.map'),
     TutorialStep('tut_story_8', target: 'home.nav'),
   ]),

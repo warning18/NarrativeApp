@@ -461,7 +461,7 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(
       key: 'uniqueValue',
       label:
-          'Unique Effect Value (% for lifesteal/crit/dodge, points for thorns/mana)',
+          'Unique Effect Value (% for lifesteal/crit/dodge/thorns, points for mana)',
       type: FieldType.integer,
       defaultValue: 0,
     ),
@@ -935,6 +935,12 @@ final DbSchema racesSchema = DbSchema(
         type: FieldType.text),
     FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
     FieldSchema(
+        key: 'playstyle',
+        label: 'Playstyle (one line, how it plays, ~60 characters)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle_fr', label: 'Playstyle (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
         type: FieldType.multilineText),
@@ -1004,6 +1010,12 @@ final DbSchema professionsSchema = DbSchema(
         label: 'Tag (the role on the picker: Bulwark, Caster…)',
         type: FieldType.text),
     FieldSchema(key: 'tag_fr', label: 'Tag (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle',
+        label: 'Playstyle (one line, how it plays, ~60 characters)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'playstyle_fr', label: 'Playstyle (FR)', type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',
@@ -1204,6 +1216,13 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(
         key: 'packEligible',
         label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',
+        type: FieldType.boolean,
+        defaultValue: false),
+    // Wave 16: the fight opens on this foe's entrance card (bosses always
+    // do, see hasEntranceCard).
+    FieldSchema(
+        key: 'entranceCard',
+        label: 'Entrance card (the fight opens on this foe; bosses always do)',
         type: FieldType.boolean,
         defaultValue: false),
     FieldSchema(
@@ -1435,6 +1454,15 @@ final DbSchema enemyShipsSchema = DbSchema(
       label:
           'Sea Beast {waters: [chapters], regen, diveEvery, breach, fleeShare, trophyPartId, omen, sighting, hunt (+ _fr)}: a beast, never a raider (see sea_beasts.dart)',
       type: FieldType.json,
+    ),
+    // Wave 17: the sea fight opens on this ship's entrance card. Left
+    // empty, shipHasEntranceCard decides (every beast, and the raiders of
+    // chapter 4 on); true or false here overrides it.
+    FieldSchema(
+      key: 'entranceCard',
+      label:
+          'Entrance card (empty: beasts and chapter 4+ raiders get one; true/false overrides)',
+      type: FieldType.boolean,
     ),
     visualAssetFieldSchema('enemy_ships'),
   ],
@@ -2401,6 +2429,19 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.boolean,
     ),
     FieldSchema(
+      key: 'unlocksRiskyGifts',
+      label: 'Unlocks risky gifts (the Parley Tent, risky_gifts.dart)',
+      type: FieldType.boolean,
+    ),
+    FieldSchema(
+      key: 'rollPower',
+      label: 'Roll power (camp_rolls.dart)',
+      type: FieldType.enumeration,
+      enumOptions: ['reroll', 'banish', 'raise'],
+      help: 'The power it gives over the stat pick and the clans\' offer: '
+          'reroll the set, banish a card for some draws, raise a card.',
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
@@ -3140,6 +3181,83 @@ final DbSchema factionsSchema = DbSchema(
       type: FieldType.text,
     ),
     FieldSchema(
+      key: 'riskStat',
+      label: 'Risky gift: curse stat',
+      type: FieldType.enumeration,
+      enumOptions: [
+        'strength',
+        'dexterity',
+        'constitution',
+        'intelligence',
+        'wisdom',
+        'perception',
+        'luck',
+        'charisma',
+      ],
+      help: 'The ability a risky gift\'s curse lowers (risky_gifts.dart); '
+          'unset: the clan never offers a risky gift.',
+    ),
+    FieldSchema(
+      key: 'riskyOffer',
+      label: 'Risky gift: what they say',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'riskyOffer_fr',
+      label: 'Risky gift: what they say (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeName',
+      label: 'Temple: the name of its temples',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeName_fr',
+      label: 'Temple: the name of its temples (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingName',
+      label: 'Temple: the name of its temple blessing',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingName_fr',
+      label: 'Temple: the name of its temple blessing (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLine',
+      label: 'Temple: what its temple keeper says',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLine_fr',
+      label: 'Temple: what its temple keeper says (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLineHunted',
+      label: 'Temple: its temple keeper refusing a Hunted character',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'templeLineHunted_fr',
+      label: 'Temple: its temple keeper refusing a Hunted character (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingGrants',
+      label: 'Temple: one line of what its blessing grants',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'blessingGrants_fr',
+      label: 'Temple: one line of what its blessing grants (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
       key: 'gender_fr',
       label: 'French gender and number',
       type: FieldType.enumeration,
@@ -3618,6 +3736,15 @@ final DbSchema geographySchema = DbSchema(
       type: FieldType.stringList,
       help: 'Several landmark ids, one per line.',
     ),
+    FieldSchema(
+      key: 'doorstep',
+      label: 'Doorstep scenes (buildings only, v1.542)',
+      type: FieldType.stringList,
+      help: 'Story scene ids, one per line, whose location is this building '
+          'but which play outside it, in the street at its door. The '
+          'Journey opens them on the district\'s streets at the building, '
+          'not in its room.',
+    ),
   ],
 );
 
@@ -3725,6 +3852,11 @@ final DbSchema landRoutesSchema = DbSchema(
       label: 'Events {land event id: draw weight}',
       type: FieldType.json,
     ),
+    FieldSchema(
+        key: 'rulerOneIn',
+        label: 'Ruler one day in (the road\'s ruler\'s events; 0: never)',
+        type: FieldType.integer,
+        defaultValue: 0),
   ],
 );
 
@@ -3750,6 +3882,16 @@ final DbSchema landEventsSchema = DbSchema(
           'Choices [{id, text, text_fr, check, dc, outcome | success, fail}]',
       type: FieldType.json,
       help: 'An outcome is {healthPct, gold, days, note, note_fr}.',
+    ),
+    FieldSchema(
+        key: 'ruler',
+        label: 'Ruler (a factions.json id; empty: a biome event)',
+        type: FieldType.text),
+    FieldSchema(
+      key: 'band',
+      label: 'Band (standing with the ruler)',
+      type: FieldType.enumeration,
+      enumOptions: ['', 'friend', 'neutral', 'hostile'],
     ),
   ],
 );

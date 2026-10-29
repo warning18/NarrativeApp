@@ -100,8 +100,9 @@ void main() {
         flow('270', 'Leave them both'), const FlowMap('alster_family_house'));
     // Inside the house, the scenes follow one another.
     expect(flow('300', 'Watch from across the street'), const FlowStay());
-    // Kneeling at the house: done here, then carried to the Black Hold.
-    expect(flow('400', 'Kneel'), const FlowTripThenArrive('alster_black_hold'));
+    // Kneeling at the house: done here, then carried to the Black Hold's
+    // cells (a building of it since v1.470).
+    expect(flow('400', 'Kneel'), const FlowTripThenArrive('black_hold_cells'));
     // The toll fight: fought at the bridge, carried home.
     expect(flow('260', 'Refuse and fight'),
         const FlowTripThenArrive('alster_family_house'));
@@ -161,9 +162,9 @@ void main() {
     expect(stops.hubsOfErrand('2015_bazaar'), {'2015'});
     expect(stops.isMainStoryScene('2015_bazaar'), isFalse);
     expect(stops.isMainStoryScene('3001_camp'), isFalse);
-    // The doc's count: 25 hubs, 118 main-story scenes.
+    // The doc's count: 25 hubs, 122 main-story scenes (three page turns of chapter 1 and Vica's scene among them).
     expect(story.nodes.keys.where(stops.isHub).length, 25);
-    expect(story.nodes.keys.where(stops.isMainStoryScene).length, 118);
+    expect(story.nodes.keys.where(stops.isMainStoryScene).length, 122);
   });
 
   test('the services of a port town', () {
