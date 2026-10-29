@@ -204,7 +204,10 @@ final districtPlacesProvider = Provider<List<WayPlaceEntry>>((ref) {
   final node = story?.nodeFor(nodeId);
   if (record == null || node == null) return const [];
   final geo = ref.watch(geographyProvider);
-  final session = ref.watch(playerSessionProvider);
+  // Only what the locks read: a purse or a clock changing redraws nothing.
+  final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
+  final completed =
+      ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
   return districtPlaces(
     node,
     story: story!,
@@ -212,9 +215,7 @@ final districtPlacesProvider = Provider<List<WayPlaceEntry>>((ref) {
     record: record,
     stops: ref.watch(storyStopsProvider),
     ways: ref.watch(partyDistrictWaysProvider),
-    lockedWays:
-        lockedWays(geo, story, node, session.flags, session.completedQuestIds)
-            .toSet(),
+    lockedWays: lockedWays(geo, story, node, flags, completed).toSet(),
   );
 });
 
