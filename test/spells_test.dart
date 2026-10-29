@@ -57,9 +57,6 @@ void main() {
       expect(spell.status, isNotNull);
       expect(spell.status!.type, StatusEffectType.stun);
       expect(spell.status!.remainingTurns, 1);
-      expect(spell.needsEnemyPick, isTrue);
-      expect(spell.needsAllyPick, isFalse);
-      expect(spell.hitsEnemies, isTrue);
     });
 
     test('no status for an empty inflictsStatus or a zero duration', () {

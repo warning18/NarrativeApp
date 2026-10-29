@@ -21,6 +21,92 @@ isn't reconstructable from git history alone.
   `clan` field wears that clan's banner (the field is Core's; no die has one
   yet). `InteractiveDie` and its drag tests are gone.
 
+## [1.634.0+670]
+
+- **Core: "Play to chapter" (the simulator screen) takes options, leaves
+  the character as a player would, and reports what it did.**
+  - **Options:**
+    - start a new game;
+    - its race and profession (random by default);
+    - a seed (random by default; the same seed now gives the same run,
+      the character's own seed included);
+    - the player's style (the strategy chips, as before).
+  - **The end of the walk:**
+    - every clan offer (banner) due is taken, kept to the main clan and
+      its allies, as the competent simulator does;
+    - then the gear is equipped, the die is set, the harbour is built and
+      the recruited companions are seated, up to the party's room.
+    - Offers still wait while the clans are not open yet (the game's own
+      rule).
+  - **A summary pop-in with six tabs:**
+    - State: level, gold, chapter, scene, standing with each clan;
+    - Choices: in order, with their scene ids;
+    - Items: equipped, came into the pack, left it;
+    - Banners: the one carried, those taken, any still waiting;
+    - Fights: won, lost, pushed through;
+    - Companions: seated, recruited.
+- **Core: the first banner comes when the clans are met** (the user's
+  rule).
+  - On the feature ladder, level-ups, bosses and chapter turns bring no
+    clan offer before the clans are met.
+  - Meeting them brings exactly one, the first banner: the Crow at the
+    Wharf (`feat_clans`), or the story past chapter 2.
+  - After that, offers come as before.
+  - A save that already piled offers up keeps them, and gets no extra.
+  - Games off the ladder are unchanged.
+  - The simulator follows the same rule.
+  - Tests: `autoplay_engine_test` (the picks, no banner left, the party
+    seated, the log) and `autoplay_summary_test`;
+    `offers_session_test` (the first banner).
+
+## [1.633.0+669]
+
+- **Cleanup: three unread quest and NPC fields are removed**
+  `actionType` and `locationID` (quests.json) and `stancePlayer`
+  (npcs.json), which no code read, and their names in the editor's schema
+  labels. No behaviour change.
+
+## [1.632.0+668]
+
+- **Cleanup: unused Core symbols and their tests are removed**
+  `recommendedLevelFor`, `levelsShort`, `nextChapterLevelAdvice`,
+  `QuestReadiness` (and its string), `learnSpell`, `startingTotals`, the three
+  `SpellSpec` target getters, and the stale `briarReflect`, `longVigilMend`
+  and `censerBurn`; the tests that used them now check the live code. No
+  behaviour change.
+
+## [1.631.0+667]
+
+- **Narrative: chapter 6 and everything after it in the percussive style**
+  (chapters 6 and 7, the throne endings, the loyalty and names scenes, the
+  prologue and the chapter 1 flight scenes still on the old text).
+  - 235 scenes and their 752 flag callbacks are rewritten in English and
+    French. The clues, names, **bold** phrases, numbers and the words later
+    scenes and tests pick up are kept; no choice, label, flag, reward,
+    number or scene link changed. Scenes were kept at their natural weight:
+    most of these were already short.
+  - Scene text: 26,528 to 24,477 words in English (-8%), 26,985 to 25,352 in
+    French (-6%). Callbacks: 22,778 to 20,164 words (-11%) in English,
+    22,900 to 20,833 (-9%) in French; every English callback is at or under
+    150 characters except the throne-ending payoffs.
+  - French read line by line: "Cela n'avait rien empêché" in `6010_thread`, a
+    clearer sentence about the frost in `6002_camp`, "Garde-Mèche" for one
+    person in `names_throne` and `price_kindly`, a clearer "marked by the
+    rift" in the four journey endings (`7005` and its variants), and the
+    Candlehold gate line in the `7400` callbacks.
+## [1.630.0+666]
+
+- **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
+  choice: the Penitents "could shrink but not disappear").
+  - The district attacks (v1.617) skipped no seat, so the Penitents could
+    still lose the Wall of Names to a siege and fall.
+  - Now no rival attacks a guarded seat (the Penitents', as Candlehold).
+    A siege of one saved before this update breaks, and nothing is taken.
+  - The Penitents can still lose Last Lantern Street.
+  - Tests: `district_attacks_test`. Through chapters 2 to 8, every attack
+    is rolled and every siege lost: the Penitents keep the Wall and never
+    fall.
+
 ## [1.629.0+665]
 
 - **Cleanup: 120 file-only names in lib/combat are private**
@@ -243,8 +329,6 @@ isn't reconstructable from git history alone.
     `journey_walk_clock_test`'s hero starts with Saltmouth's locks open,
     since that test is about the walk.
 
-
-
 ## [1.615.0+651]
 
 - **Core: the element dice** (the user's option B;
@@ -308,7 +392,6 @@ isn't reconstructable from git history alone.
   - Tests: `boss_balance_test` measures the full world, and its professions'
     spread band allows three standard errors. `difficulty_curve_test` and
     the frozen naive run are re-pinned.
-
 
 ## [1.612.0+648]
 
@@ -915,7 +998,6 @@ Two sheets and dialogs, in one release: the place sheet's height and the clan po
 
 ### Tests
 - `arrival_sheet_size_test` and `popins_stay_open_test` are new; `offer_dialog_test`, `throne_room_test`, `journey_arrival_test` and `journey_scene_sheet_test` follow the new sheet and popin.
-
 
 ## [1.552.0+588]
 
@@ -3277,7 +3359,6 @@ Twelve story achievements.
   (an oath, a standing, an intrigue's end), so taking the Throne unlocks
   its achievement at once. "Hunted" counts the six coast clans, not the
   tribes. `test/achievements_story_test.dart` covers each.
-
 
 ## [1.278.0+314]
 

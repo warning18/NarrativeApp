@@ -273,10 +273,6 @@ Set<Spec> specsFor(Iterable<String> ids, ProfessionCore core) => {
 /// The Briar Guard: the share of a stopped blow that goes back.
 const double briarReflectShare = 0.8;
 
-/// What a Briar Guard sends back of [stopped] damage.
-int briarReflect(int stopped) =>
-    stopped <= 0 ? 0 : max(1, (stopped * briarReflectShare).round());
-
 /// The Lantern Vanguard: what its heavy blow heals against an Evil foe, as
 /// a share of its damage (the Order's upgrade raises it, step 2b).
 const double vanguardEvilHealShare = 0.20;
@@ -295,13 +291,6 @@ const String vanguardElement = 'Fire';
 
 /// The Long Vigil: what is mended each round above half health.
 const double longVigilHealShare = 0.15;
-
-/// What the Long Vigil mends a cleric at [health] of [maxHealth] this
-/// round (nothing at or below half).
-int longVigilMend(int health, int maxHealth) =>
-    health * 2 > maxHealth && health < maxHealth
-        ? max(1, (maxHealth * longVigilHealShare).round())
-        : 0;
 
 /// The Ashen Hand: the mana a burn of the fire gives.
 const int ashenManaPerBurn = 1;
@@ -341,11 +330,6 @@ int fireAfterHeal({
 /// The Censer Mage: what each point of mana past full burns, as a share of
 /// the mage's strike.
 const double censerBurnPerMana = 3.0;
-
-/// What [overflow] mana past full burns for a mage whose strike is
-/// [strike].
-int censerBurn(int overflow, int strike) =>
-    overflow <= 0 ? 0 : max(1, (overflow * strike * censerBurnPerMana).round());
 
 /// The Burden-Bearer: a spell cast from a full Well.
 const double burdenFullWellMultiplier = 1.4;
