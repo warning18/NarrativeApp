@@ -638,6 +638,8 @@ class _ChoiceEditState {
         forcedCondition: _original.forcedCondition,
         forcedAnomaly: _original.forcedAnomaly,
         forcedStage: _original.forcedStage,
+        reply: _original.reply,
+        replyFr: _original.replyFr,
         spot: _original.spot,
         place: _original.place,
         approvalMods: _original.approvalMods,
