@@ -20,6 +20,67 @@ isn't reconstructable from git history alone.
     default, for that fight only.
   - Saves with three seated keep the first two; the third goes to the
     bench, still recruited. Nobody is lost.
+## [1.666.0+702]
+
+- **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**
+  The fight screen drops the painted stage and the tall cards. Each side has three equal slots
+  (192 × 72), empty ones dashed; every fighter shows a sprite head (a crop of its sprite, made by
+  `tool/gen_fight_heads.py`) and small pixel icons for what acts on it (poison, stun, weaken,
+  block, Fury or Watchfire, a blow aimed at it, a guard, a wind-up...), each opening a pop-in with
+  the rules text on a tap. The dice board takes most of the screen and looks like the place (one
+  skin for each of the 13 fight stages, drawn in code); the dice are thrown onto it each roll. A
+  tap on a die picks it (a line shows its target), a second keeps it into the "Kept" row under
+  the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
+  The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
+  card until heals can target an ally.
+
+
+
+## [1.665.0+701]
+
+- **UX: the fights and the scenes in one pixel style, the backdrops varied.**
+  - The fight's backdrop is drawn in the scenes' own pixel style (the same
+    chunky grid, dithered sky, rimmed hills, flat shapes, the same stars at
+    dusk and night), with the rain, snow, dust and ash as the scenes' pixel
+    particles (`fight_pixel_stage.dart`; the smooth stage painters are gone).
+  - **Eight new stages:** ruins, woods, ford, burnt fields, oasis, caravan
+    road, quay and mountain pass (`FightStage`, English and French names).
+    Until Core writes their own anomalies each borrows its nearest older
+    stage's (`FightStageKin`: the ruins burn like the ashlands, the quay is the
+    shore). The temperate country's open country has four faces (open country,
+    woods, ford, burnt fields), picked by the place so a place always looks the
+    same (`poolStageOf`).
+  - **Four versions of every scene** (desert, ruins, frost, fen, sea cliffs,
+    the five seas, the six street fronts): each is its own stretch of the kit's
+    world with a landmark of its own (a dead tree and bones, a wrecked cart,
+    standing stones, columns, a far ship, a lamp post...). A crossing shows
+    them one after the other, a new one each day, in a seeded order (1, 2, 3
+    or 4, 2, 3, never the same twice in a row) with a short pixel dissolve (none
+    with reduced motion); a detour changes at each beat; each memory and each
+    street front keeps its own; successive sailings follow the order.
+    (`scene_versions.dart`.)
+  - Tests: `scene_versions_test` (the order, every kit at every version, the
+    dissolve), `pixel_stage_test` (every stage at any size, hour and sky, the
+    names, the pool). Real screens at 412 px: `docs/ux-shots/backdrops-*.png`.
+  - Touches another session's area: `lib/combat/field_anomaly.dart` and
+    `context_rules.dart` (Core: the eight stages, the pool, the kin),
+    `lib/screens/fight/fight_ground.dart` (the pool, two lines),
+    `lib/screens/land_crossing_screen.dart` and one word of
+    `test/field_anomaly_test.dart`.
+
+## [1.664.0+700]
+
+- **UX: the French Skills tab and the branch counts are whole (#651).**
+  - The Skills tabs are as wide as their names (a scrollable bar, centred when
+    everything fits): "Mes compétences 13" showed whole at no phone width before,
+    because a third of the screen is too narrow for it, at 412 px as at 360 and
+    320. In English the three tabs are centred at their natural width.
+  - On the star chart a long branch name gives way (an ellipsis) and its count
+    never does: "Chef de guerre" shortens at 320 px and keeps its "1/4".
+  - `test/skills_fr_layout_test.dart`: the real fonts at 412, 360 and 320 px,
+    with one known skill and with twelve, fails if a tab name is cut or broken
+    or a branch count is cut or off screen. `star_chart_test` reads the count
+    from its own `star_count_` key.
 
 ## [1.663.0+699]
 

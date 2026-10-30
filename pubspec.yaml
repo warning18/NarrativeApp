@@ -118,6 +118,7 @@ flutter:
     - assets/visuals/throne/
     - assets/visuals/walker/
     - assets/visuals/fighters/
+    - assets/visuals/heads/
     - assets/visuals/quests/
     - assets/visuals/shops/
     - assets/visuals/gates/

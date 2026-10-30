@@ -41,6 +41,51 @@ enum FightStage {
 
   /// A ship's deck: a boarding fight (v1.660).
   shipDeck,
+
+  // The eight stages of the pixel backdrops (v1.665).
+  ruins,
+  woods,
+  ford,
+  burntFields,
+  oasis,
+  caravanRoad,
+  quay,
+  pass,
+}
+
+/// The temperate country's own variety: open country, the hill woods, a ford,
+/// the burnt fields.
+const temperatePool = [
+  FightStage.fields,
+  FightStage.woods,
+  FightStage.ford,
+  FightStage.burntFields,
+];
+
+/// [stage] with the temperate country's variety: open country becomes one of
+/// [temperatePool], picked by [seed] (a place id) so a place always looks the
+/// same; any other stage, and a fight with no place, stay as they are.
+FightStage poolStageOf(FightStage stage, String? seed) {
+  if (stage != FightStage.fields || seed == null || seed.isEmpty) return stage;
+  var h = 7;
+  for (final c in seed.codeUnits) {
+    h = (h * 31 + c) & 0x7fffffff;
+  }
+  return temperatePool[h % temperatePool.length];
+}
+
+/// The older stage whose anomalies and place rule a newer stage borrows until
+/// they are written for it (the ruins burn like the ashlands, the quay is the
+/// shore).
+extension FightStageKin on FightStage {
+  FightStage get kin => switch (this) {
+        FightStage.ruins || FightStage.burntFields => FightStage.ash,
+        FightStage.woods || FightStage.ford => FightStage.fields,
+        FightStage.oasis || FightStage.caravanRoad => FightStage.dunes,
+        FightStage.quay => FightStage.waves,
+        FightStage.pass => FightStage.cliffs,
+        _ => this,
+      };
 }
 
 /// The stage of a fight on land of [pattern]: a [ship]'s deck first, then
@@ -170,7 +215,7 @@ class FieldAnomaly {
   /// likely it is among the others.
   double weightUnder(FightStage stage, WeatherKind? sky,
       {Set<String> tags = const {}}) {
-    if (!stages.contains(stage)) return 0;
+    if (!stages.contains(stage.kin)) return 0;
     final matches = skies.isEmpty || (sky != null && skies.contains(sky));
     final base = switch (skyRule) {
       SkyRule.any => weight.toDouble(),

@@ -298,6 +298,11 @@ class _StarChartState extends ConsumerState<StarChart> {
               ),
             ),
           ]);
+    final nameStyle = theme.textTheme.labelLarge?.copyWith(
+        color: b.mastered || on
+            ? const Color(0xFFF2D58A)
+            : const Color(0xFFD9D4E8),
+        fontWeight: FontWeight.w700);
     return Positioned(
       left: cell.left + 6,
       top: cell.top + sky.cellHeight * 0.66,
@@ -312,17 +317,20 @@ class _StarChartState extends ConsumerState<StarChart> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${b.branch.name} ${b.known}/${b.length}',
-                  key: Key('branch_${b.branch.id}'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                      color: b.mastered
-                          ? const Color(0xFFF2D58A)
-                          : on
-                              ? const Color(0xFFF2D58A)
-                              : const Color(0xFFD9D4E8),
-                      fontWeight: FontWeight.w700)),
+              // The name gives way, never the count.
+              Row(children: [
+                Flexible(
+                  child: Text(b.branch.name,
+                      key: Key('branch_${b.branch.id}'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: nameStyle),
+                ),
+                Text(' ${b.known}/${b.length}',
+                    key: Key('star_count_${b.branch.id}'),
+                    maxLines: 1,
+                    style: nameStyle),
+              ]),
               const SizedBox(height: 2),
               clan,
             ],

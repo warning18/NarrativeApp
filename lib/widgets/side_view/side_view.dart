@@ -229,6 +229,11 @@ double _rand(int seed) {
 }
 
 /// The weather over the scene: [intensity] 0 to 1.
+/// The weather's particles over [size] on a grid of [unit]: also the fight's.
+void paintSideParticles(Canvas canvas, Size size, SideParticles kind,
+        double intensity, double t, double unit) =>
+    _paintSideParticles(canvas, size, kind, intensity, t, unit);
+
 void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
     double intensity, double t, double unit) {
   if (kind == SideParticles.none || intensity <= 0) return;

@@ -56,11 +56,12 @@ void main() {
   testWidgets('a warrior sees its Fury, and a foe its execute line',
       (tester) async {
     await enterFight(tester, 'warrior');
-    // The five notches, none lit yet; the foe's health bar carries the line.
-    for (var i = 0; i < 5; i++) {
-      expect(find.byKey(Key('fury_notch_$i')), findsOneWidget);
-    }
-    expect(find.text('Fury'), findsOneWidget);
+    // Its Fury is an icon on the hero's card (the redesigned slots), at 0;
+    // the foe's health bar carries the execute line.
+    expect(
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_fury_")),
+        findsOneWidget);
     expect(find.byKey(const Key('execute_tick')), findsOneWidget);
     // Round 1: no Tide mark yet, nor its warning.
     expect(find.byKey(const Key('fight_tide_mark')), findsNothing);
@@ -70,7 +71,10 @@ void main() {
     await tapWhenEnabled(tester, 'Confirm');
     await pumpUntil(tester, () => shows('Round 2'));
     await settle(tester);
-    expect(find.byKey(const Key('fury_notch_0')), findsOneWidget);
+    expect(
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_fury_")),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
