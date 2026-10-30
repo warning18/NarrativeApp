@@ -4833,13 +4833,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'active_label': {AppLanguage.en: 'Active', AppLanguage.fr: 'Actif'},
   'benched_label': {AppLanguage.en: 'Benched', AppLanguage.fr: 'Sur le banc'},
   'houses_section': {AppLanguage.en: 'Houses', AppLanguage.fr: 'Maisons'},
-  'party_capacity_label': {
-    AppLanguage.en: 'party capacity',
-    AppLanguage.fr: 'capacité du groupe'
-  },
   'party_health_bonus_label': {
     AppLanguage.en: 'party health',
     AppLanguage.fr: 'santé du groupe'
+  },
+  // The Barracks Annex (v1.668): the companions' own health.
+  'companion_health_bonus_label': {
+    AppLanguage.en: 'companion health with a full company',
+    AppLanguage.fr: 'santé des compagnons au complet'
   },
   'party_damage_bonus_label': {
     AppLanguage.en: 'party damage',
