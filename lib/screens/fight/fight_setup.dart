@@ -385,10 +385,10 @@ extension _FightSetup on _FightScreenState {
       dieFaces: smithed(_selectedDiceId),
     );
 
-    final activeAllies = <_PartyMember>[];
-    for (final companionId in session.activeAllyIds) {
+    // A companion as they fight this one.
+    _PartyMember? allyMember(String companionId) {
       final companion = companions[companionId] as Map<String, dynamic>?;
-      if (companion == null) continue;
+      if (companion == null) return null;
       final allyState = session.recruitedAllies.firstWhere(
         (a) => a.companionId == companionId,
         orElse: () => AllyState(
@@ -413,7 +413,7 @@ extension _FightSetup on _FightScreenState {
       // A banner sign raises the whole party's health in the fight.
       final liveMaxHealth =
           _signs.maxHealthFor(baseAllyHealth, partyWide: true);
-      activeAllies.add(_PartyMember(
+      return _PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
@@ -455,14 +455,35 @@ extension _FightSetup on _FightScreenState {
         dieFaces: smithed(companion['signatureDiceId']?.toString(),
             companionId: companionId),
         approval: allyState.approval,
-      ));
+      );
     }
 
-    _party = [player, ...activeAllies];
+    // Three fighters at most: the seated companions, or the pre-fight
+    // sheet's pick (party_pick.dart), for this fight only.
+    _allyMember = allyMember;
+    _party = [player];
+    _fieldParty(ref.read(fightPickProvider));
+  }
+
+  /// Fields [pick]'s companions (party_pick.dart's [fightLineup]; null for
+  /// the seated ones) beside the player. Before the first roll only: the
+  /// pre-fight pick, UX's, may call it again.
+  void _fieldParty(List<String>? pick) {
+    final build = _allyMember;
+    if (_started || build == null || _party.isEmpty) return;
+    final lineup = fightLineup(ref.read(playerSessionProvider),
+        pick: pick, companions: _companions);
+    _party = [
+      _party.first,
+      for (final id in lineup)
+        if (build(id) case final member?) member,
+    ];
   }
 
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
+    // The pre-fight pick was for this fight only (party_pick.dart).
+    ref.read(fightPickProvider.notifier).state = null;
     // A hired sellsword fights this one, a fight off the contract.
     final session = ref.read(playerSessionProvider);
     if (!widget.modifiers.isTest && session.sellswordFights > 0) {
