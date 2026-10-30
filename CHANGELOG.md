@@ -16,6 +16,13 @@ isn't reconstructable from git history alone.
   `EventVariant.newsFor`, `SimGrowthTables.offerTables`, and the five strings
   only they read. No behaviour change.
 
+## [1.655.0+691]
+
+- **Cleanup: file-only names in lib/widgets, screens and utils are private**
+  Classes, functions, constants and enums that only their own file uses
+  are now private, so the analyzer watches them (renames inside one file,
+  67 files). The map work's files stay as they were. No behaviour change.
+
 ## [1.654.0+690]
 
 - **The opening scene is told as an animation**

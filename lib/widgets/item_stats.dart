@@ -9,7 +9,7 @@ import '../l10n/app_strings.dart';
 export '../combat/fight_numbers.dart' show potionHealAmount;
 
 /// Gear stats in display order, each with its label key.
-const List<(String, String)> gearStatKeys = [
+const List<(String, String)> _gearStatKeys = [
   ('attackDamage', 'atk_abbrev'),
   ('armor', 'arm_abbrev'),
   ('fireDmgBonus', 'fire_dmg_label'),
@@ -38,7 +38,7 @@ bool isGear(Map<String, dynamic>? item) =>
     (item?['equipSlot']?.toString() ?? '').isNotEmpty;
 
 /// The id of the item worn in [slot] among [equippedIds], or null.
-String? equippedInSlot(
+String? _equippedInSlot(
     List<String> equippedIds, Map<String, dynamic> items, String slot) {
   for (final id in equippedIds) {
     final item = items[id] as Map<String, dynamic>?;
@@ -53,7 +53,7 @@ String? equippedCounterpart(String itemId, Map<String, dynamic>? item,
     List<String> equippedIds, Map<String, dynamic> items) {
   if (!isGear(item)) return null;
   final worn =
-      equippedInSlot(equippedIds, items, item!['equipSlot'].toString());
+      _equippedInSlot(equippedIds, items, item!['equipSlot'].toString());
   return worn == itemId ? null : worn;
 }
 
@@ -70,7 +70,7 @@ class GearStatLine {
 List<GearStatLine> gearStatLines(Map<String, dynamic>? item,
     Map<String, dynamic>? equipped, AppLanguage lang) {
   return [
-    for (final (key, labelKey) in gearStatKeys)
+    for (final (key, labelKey) in _gearStatKeys)
       if (_stat(item, key) != 0 || _stat(equipped, key) != 0)
         GearStatLine(
             trFor(lang, labelKey), _stat(item, key), _stat(equipped, key)),
@@ -197,7 +197,7 @@ class ItemStatChips extends StatelessWidget {
   final bool compact;
 
   /// Shows only the first [maxChips] stats (the most telling come first in
-  /// [gearStatKeys]); null for all.
+  /// [_gearStatKeys]); null for all.
   final int? maxChips;
 
   /// Whether a slot with nothing worn still shows the "+n" of each stat

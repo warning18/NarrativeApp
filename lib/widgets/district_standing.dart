@@ -202,7 +202,7 @@ class DistrictStandingLine extends ConsumerWidget {
         ]),
         if (influence != null) ...[
           const SizedBox(height: 3),
-          InfluenceBar(
+          _InfluenceBar(
             key: Key('district_influence_${s.id}'),
             holder: influence,
             holderColor: s.holderColor,
@@ -219,8 +219,8 @@ class DistrictStandingLine extends ConsumerWidget {
 /// A two-colour bar: the holder's influence from the left, the strongest
 /// rival's from the right, the rival's name and number under it (the
 /// holder's are on the line above).
-class InfluenceBar extends StatelessWidget {
-  const InfluenceBar({
+class _InfluenceBar extends StatelessWidget {
+  const _InfluenceBar({
     super.key,
     required this.holder,
     required this.holderColor,

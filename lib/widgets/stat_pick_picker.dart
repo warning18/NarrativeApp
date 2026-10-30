@@ -208,7 +208,7 @@ Color _offerColor(StatPickOffer offer, InkColors ink) {
 
 /// The frame of a pick of [tier]: the signs' rarity colour; Common stays the
 /// quiet seam colour.
-Color statPickFrameColor(SignRarity tier, InkColors ink) =>
+Color _statPickFrameColor(SignRarity tier, InkColors ink) =>
     tier == SignRarity.common ? ink.seam : signRarityColor(tier);
 
 /// How thick the frame of [tier] is, and how much of its colour tints the
@@ -256,7 +256,7 @@ class _OfferBanner extends ConsumerWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final tier = offer.tier;
-    final tierColor = statPickFrameColor(tier, ink);
+    final tierColor = _statPickFrameColor(tier, ink);
     final accent = offer.rare ? tierColor : _offerColor(offer, ink);
     final frame = selected ? ink.gold : tierColor;
     final width = selected ? 2.5 : _frameWidth(tier);

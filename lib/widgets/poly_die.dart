@@ -309,7 +309,7 @@ class PolyDie extends StatelessWidget {
   Widget _body(DieSkin skin, double t) {
     final settled = t >= 0.78;
     final frontLabel = settled ? label : null;
-    final painter = PolyDiePainter(
+    final painter = _PolyDiePainter(
       shape: shape,
       skin: skin,
       t: t,
@@ -317,7 +317,7 @@ class PolyDie extends StatelessWidget {
       clan: clan,
       dieId: dieId,
     );
-    final spot = PolyDiePainter.frontSpot(shape);
+    final spot = _PolyDiePainter.frontSpot(shape);
     return SizedBox(
       width: size,
       height: size,
@@ -345,10 +345,10 @@ class PolyDie extends StatelessWidget {
 
 /// Where the front facet's mark sits: its centre and the side of the square
 /// the mark fits in, as fractions of the die's size.
-typedef FrontSpot = ({double dx, double dy, double side});
+typedef _FrontSpot = ({double dx, double dy, double side});
 
-class PolyDiePainter extends CustomPainter {
-  const PolyDiePainter({
+class _PolyDiePainter extends CustomPainter {
+  const _PolyDiePainter({
     required this.shape,
     required this.skin,
     required this.t,
@@ -366,7 +366,7 @@ class PolyDiePainter extends CustomPainter {
   final DieClan? clan;
   final String? dieId;
 
-  static FrontSpot frontSpot(DieShape shape) {
+  static _FrontSpot frontSpot(DieShape shape) {
     switch (shape) {
       case DieShape.coin:
         return (dx: 0.5, dy: 0.5, side: 0.5);
@@ -587,7 +587,7 @@ class PolyDiePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PolyDiePainter old) =>
+  bool shouldRepaint(_PolyDiePainter old) =>
       old.shape != shape ||
       old.skin != skin ||
       old.t != t ||

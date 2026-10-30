@@ -500,7 +500,7 @@ class _FactionShops extends ConsumerWidget {
 }
 
 /// A lost clan's emblem (v1.195, the Open Hand): its own until the
-/// remembrance reaches [ownHandNameStage], a dark silhouette before.
+/// remembrance reaches [_ownHandNameStage], a dark silhouette before.
 class LostClanEmblem extends StatelessWidget {
   const LostClanEmblem({
     super.key,
@@ -516,7 +516,7 @@ class LostClanEmblem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final emblem = PatronEmblem(patron: faction.patron, size: size);
-    if (stage >= ownHandNameStage) return emblem;
+    if (stage >= _ownHandNameStage) return emblem;
     return ColorFiltered(
       key: Key('lost_clan_silhouette_${faction.id}'),
       colorFilter: const ColorFilter.mode(Color(0xFF2B2A28), BlendMode.srcIn),
@@ -527,17 +527,17 @@ class LostClanEmblem extends StatelessWidget {
 
 /// The remembrance stage from which the Open Hand is called by its name:
 /// the name heard at the harbour.
-const int ownHandNameStage = 2;
+const int _ownHandNameStage = 2;
 
 /// A lost clan's name as the remembrance allows: "A clan with no name"
-/// before [ownHandNameStage], its own after.
-String lostClanNameFor(Faction faction, int stage, AppLanguage language) =>
-    stage >= ownHandNameStage
+/// before [_ownHandNameStage], its own after.
+String _lostClanNameFor(Faction faction, int stage, AppLanguage language) =>
+    stage >= _ownHandNameStage
         ? faction.nameFor(language)
         : trFor(language, 'open_hand_unknown_name');
 
 /// "Remembrance 3/6", or "Not remembered yet".
-String remembranceLabel(int stage, AppLanguage language) => stage <= 0
+String _remembranceLabel(int stage, AppLanguage language) => stage <= 0
     ? trFor(language, 'open_hand_stage_none')
     : trFor(language, 'open_hand_stage')
         .replaceAll('{n}', '$stage')
@@ -580,13 +580,13 @@ class LostClanCard extends ConsumerWidget {
                   LostClanEmblem(faction: faction, stage: stage),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(lostClanNameFor(faction, stage, lang),
+                    child: Text(_lostClanNameFor(faction, stage, lang),
                         style: theme.textTheme.titleSmall),
                   ),
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      remembranceLabel(stage, lang),
+                      _remembranceLabel(stage, lang),
                       key: Key('lost_clan_stage_${faction.id}'),
                       textAlign: TextAlign.end,
                       style: theme.textTheme.labelLarge?.copyWith(
@@ -746,19 +746,19 @@ class ClansCodex extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(lostClanNameFor(faction, stage, lang),
+                      Text(_lostClanNameFor(faction, stage, lang),
                           key: Key('codex_lost_name_${faction.id}'),
                           style: theme.textTheme.titleSmall),
                       Text(
                         '${tr(ref, 'patron_kind_lost')} · '
-                        '${remembranceLabel(stage, lang)}'
+                        '${_remembranceLabel(stage, lang)}'
                         '${bannerRaisedIn(session.flags) ? ' · ${tr(ref, 'open_hand_banner_raised')}' : ''}',
                         style: theme.textTheme.labelSmall?.copyWith(
                             color: standingTierTextColor(
                                 context, StandingTier.sworn)),
                       ),
                       Text(
-                        stage >= ownHandNameStage &&
+                        stage >= _ownHandNameStage &&
                                 faction.mottoFor(lang).isNotEmpty
                             ? faction.mottoFor(lang)
                             : tr(ref, 'open_hand_unknown_line'),

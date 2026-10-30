@@ -147,7 +147,7 @@ class _BannerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.scale(scale);
-    paintBannerCloth(canvas, color, dark: dark, lit: lit, unknown: unknown);
+    _paintBannerCloth(canvas, color, dark: dark, lit: lit, unknown: unknown);
   }
 
   @override
@@ -178,7 +178,7 @@ class PinBanner {
 /// on the cloth.
 void paintBannerPin(Canvas canvas, PinBanner banner,
     {required bool dark, bool lit = false}) {
-  paintBannerCloth(canvas, banner.color, dark: dark, lit: lit);
+  _paintBannerCloth(canvas, banner.color, dark: dark, lit: lit);
   final icon = banner.cat.icon;
   final tp = TextPainter(
     text: TextSpan(
@@ -197,7 +197,7 @@ void paintBannerPin(Canvas canvas, PinBanner banner,
 }
 
 /// The cloth, rod and ring of a banner in [BannerPin.base] units.
-void paintBannerCloth(Canvas canvas, Color color,
+void _paintBannerCloth(Canvas canvas, Color color,
     {required bool dark, bool lit = false, bool unknown = false}) {
   const w = 26.0;
   const h = 38.0;

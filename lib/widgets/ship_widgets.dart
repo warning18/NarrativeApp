@@ -23,16 +23,16 @@ import 'sea_battlefield.dart';
 import 'ship_cutaway.dart';
 
 /// The Rusty Eel's own record in ships.json.
-const String playerShipId = 'rusty_eel';
+const String _playerShipId = 'rusty_eel';
 
 /// The hull the Eel is built on ([hullId], the Rusty Eel's own sloop until
 /// she is rebuilt), or the first on file.
 Map<String, dynamic>? playerShipRecord(Map<String, dynamic> ships,
-    [String hullId = playerShipId]) {
+    [String hullId = _playerShipId]) {
   final id = ships.containsKey(hullId)
       ? hullId
-      : (ships.containsKey(playerShipId)
-          ? playerShipId
+      : (ships.containsKey(_playerShipId)
+          ? _playerShipId
           : (ships.keys.isEmpty ? null : ships.keys.first));
   return id == null ? null : ships[id] as Map<String, dynamic>?;
 }
@@ -125,7 +125,7 @@ class ShipStatusCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: Text(ship['shipName']?.toString() ?? playerShipId,
+                      child: Text(ship['shipName']?.toString() ?? _playerShipId,
                           style: theme.textTheme.titleMedium
                               ?.copyWith(fontFamily: InkFonts.display)),
                     ),

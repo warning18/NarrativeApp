@@ -11,7 +11,7 @@ import 'kit_common.dart';
 import 'side_view.dart';
 
 /// The frost's colours.
-abstract final class FrostLook {
+abstract final class _FrostLook {
   static const sky = [
     Color(0xFF25344A),
     Color(0xFF51698A),
@@ -42,14 +42,14 @@ List<SideLayer> frostLayers({double progress = 0}) => [
       SideLayer(
           0,
           (c, s, scroll, t, u) =>
-              kitSky(c, s, u, bands: FrostLook.sky, ground: FrostLook.peak)),
+              kitSky(c, s, u, bands: _FrostLook.sky, ground: _FrostLook.peak)),
       SideLayer(
           0.05,
           (c, s, scroll, t, u) => kitDisc(c, s, u,
               cx: 0.72,
               cy: 40,
-              disc: FrostLook.sun.withValues(alpha: 0.9),
-              glow: FrostLook.sun.withValues(alpha: 0.22),
+              disc: _FrostLook.sun.withValues(alpha: 0.9),
+              glow: _FrostLook.sun.withValues(alpha: 0.22),
               radius: 3)),
       SideLayer(0.12, (c, s, scroll, t, u) {
         sideHills(c, s, u, scroll,
@@ -57,8 +57,8 @@ List<SideLayer> frostLayers({double progress = 0}) => [
             amp: 7,
             wave: 0.07,
             phase: 0.4,
-            fill: FrostLook.peak,
-            rim: FrostLook.peakRim);
+            fill: _FrostLook.peak,
+            rim: _FrostLook.peakRim);
         _shelter(c, s, u, progress);
       }),
       SideLayer(0.3, (c, s, scroll, t, u) {
@@ -67,8 +67,8 @@ List<SideLayer> frostLayers({double progress = 0}) => [
             amp: 2.4,
             wave: 0.05,
             phase: 1.9,
-            fill: FrostLook.ridge,
-            rim: FrostLook.ridgeRim);
+            fill: _FrostLook.ridge,
+            rim: _FrostLook.ridgeRim);
         _pines(c, s, u, scroll);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
@@ -77,16 +77,16 @@ List<SideLayer> frostLayers({double progress = 0}) => [
             amp: 3,
             wave: 0.04,
             phase: 2.8,
-            fill: FrostLook.near,
-            rim: FrostLook.nearRim);
+            fill: _FrostLook.near,
+            rim: _FrostLook.nearRim);
         _rocks(c, s, u, scroll);
       }),
       SideLayer(
           1.0,
           (c, s, scroll, t, u) => kitPath(c, s, scroll, u,
-              body: FrostLook.path,
-              light: FrostLook.pathLight,
-              dark: FrostLook.pathDark)),
+              body: _FrostLook.path,
+              light: _FrostLook.pathLight,
+              dark: _FrostLook.pathDark)),
     ];
 
 /// The goal: a low shelter with a snowed roof, a lit window and a thread of
@@ -99,16 +99,16 @@ void _shelter(Canvas canvas, Size size, double u, double progress) {
   final bw = (12 * scale).round().toDouble();
   final bh = (7 * scale).round().toDouble();
   const base = 44.0;
-  sidePixels(canvas, u, Paint()..color = FrostLook.trunk, x - bw / 2, base - bh,
-      bw, bh);
+  sidePixels(canvas, u, Paint()..color = _FrostLook.trunk, x - bw / 2,
+      base - bh, bw, bh);
   // The snowed roof, a step wider than the walls.
-  sidePixels(canvas, u, Paint()..color = FrostLook.pineSnow, x - bw / 2 - 1,
+  sidePixels(canvas, u, Paint()..color = _FrostLook.pineSnow, x - bw / 2 - 1,
       base - bh - 2, bw + 2, 2);
   final win = math.max(2, (2 * scale).round()).toDouble();
-  sidePixels(canvas, u, Paint()..color = FrostLook.window, x - win / 2,
+  sidePixels(canvas, u, Paint()..color = _FrostLook.window, x - win / 2,
       base - bh * 0.7, win, win);
   // Smoke: three grey pixels leaning away.
-  final smoke = Paint()..color = FrostLook.smoke;
+  final smoke = Paint()..color = _FrostLook.smoke;
   for (var i = 0; i < 3; i++) {
     sidePixels(canvas, u, smoke, x + bw / 4 + i, base - bh - 4 - i * 2, 1, 1);
   }
@@ -119,10 +119,10 @@ void _pines(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.6;
   final offset = scroll / u;
-  final needles = Paint()..color = FrostLook.pine;
-  final snow = Paint()..color = FrostLook.pineSnow;
-  final trunk = Paint()..color = FrostLook.trunk;
-  final stone = Paint()..color = FrostLook.stone;
+  final needles = Paint()..color = _FrostLook.pine;
+  final snow = Paint()..color = _FrostLook.pineSnow;
+  final trunk = Paint()..color = _FrostLook.trunk;
+  final stone = Paint()..color = _FrostLook.stone;
   for (var i = 0; i < 6; i++) {
     final px = kitSlot(i, 6, span, offset, 6);
     if (px < -12 || px > w + 2) continue;
@@ -150,8 +150,8 @@ void _rocks(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.7;
   final offset = scroll / u;
-  final rock = Paint()..color = FrostLook.stone;
-  final snow = Paint()..color = FrostLook.pineSnow;
+  final rock = Paint()..color = _FrostLook.stone;
+  final snow = Paint()..color = _FrostLook.pineSnow;
   for (var i = 0; i < 6; i++) {
     final px = kitSlot(i, 3, span, offset, 18) + 2;
     if (px < -10 || px > w + 4) continue;
@@ -162,7 +162,7 @@ void _rocks(Canvas canvas, Size size, double u, double scroll) {
     } else {
       sidePixels(canvas, u, snow, px, y - 2, 8, 2);
       sidePixels(
-          canvas, u, Paint()..color = FrostLook.nearRim, px + 1, y - 3, 4, 1);
+          canvas, u, Paint()..color = _FrostLook.nearRim, px + 1, y - 3, 4, 1);
     }
   }
 }
