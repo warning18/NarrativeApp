@@ -188,6 +188,7 @@ extension _FightView on _FightScreenState {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
+              _buildPickCard(),
               if (activeAllies.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(
