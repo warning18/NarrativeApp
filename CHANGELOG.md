@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.674.0+710]
+
+- **Cleanup: the old fight stage's leftovers are removed**
+  `fightRectOf`, `StageBar` and `StageDisc`, `FuryGauge` and
+  `WatchfireMark`, `FightBoxes`, `heroFightSprite` and the `FightFigure`
+  widget, with the tests that only they had. No behaviour change.
+
 ## [1.673.0+709]
 
 - **Cleanup: file-only names added since the first pass are private**
