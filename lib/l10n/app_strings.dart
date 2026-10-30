@@ -13008,9 +13008,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'offer_die_note': {
     AppLanguage.en:
-        'Given once. While this clan is your main clan and you stand Friend or better, its faces of 1 to 3 count one more.',
+        'Given once. While this clan is your main clan and you stand Friend or better, its small faces (1 to 3) count one more.',
     AppLanguage.fr:
-        'Donné une seule fois. Tant que ce clan est votre clan principal et que vous êtes au moins Ami, ses faces de 1 à 3 comptent un de plus.',
+        'Offert une seule fois. Tant que ce clan est votre clan principal et que vous êtes au moins Ami, ses petites faces (de 1 à 3) comptent un de plus.',
   },
   'offer_sworn_note': {
     AppLanguage.en:

@@ -2685,7 +2685,7 @@
         "element": "Water"
       },
       {
-        "faceName": "Withdraw",
+        "faceName": "Slip Away",
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "shadow_step",
@@ -2701,7 +2701,7 @@
         "element": "None"
       }
     ],
-    "diceName_fr": "Dé de la cour",
+    "diceName_fr": "Dé du marais",
     "clan": "mire"
   }
 }
