@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.659.0+695]
+## [1.664.0+700]
 
 - **UX: the French Skills tab and the branch counts are whole (#651).**
   - The Skills tabs are as wide as their names (a scrollable bar, centred when
@@ -21,6 +21,24 @@ isn't reconstructable from git history alone.
     with one known skill and with twelve, fails if a tab name is cut or broken
     or a branch count is cut or off screen. `star_chart_test` reads the count
     from its own `star_count_` key.
+
+## [1.660.0+696]
+
+- **Core: the dice lock rules and two new fight stages (the user's combat
+  rules; UX-2 builds the board).**
+  - A first tap on a landed die selects it (its target shows), a second
+    tap locks it; a double tap releases a lock, but only until the next
+    roll is triggered: a roll freezes the round's locks. Locked dice are
+    not rerolled; a new round clears it all (`DieLocks`, `die_locks.dart`).
+    Steady faces, a Luck nudge and a Hex still lock or unlock by rule.
+  - `FightStage.cityRoad` (a fight in a town or a city) and
+    `FightStage.shipDeck` (a boarding fight). `fightStageOf` takes `town`
+    and `ship`; a place's own named stage still wins. The ship deck plays
+    by the rising water, like the waves. Placeholder scenery until UX's
+    board skins.
+  - No number changes.
+  - Tests: `die_locks_test` (new), `field_anomaly_test`,
+    `context_rules_test`.
 
 ## [1.658.0+694]
 
