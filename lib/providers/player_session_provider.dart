@@ -105,15 +105,12 @@ const int _starterDieRaceFaceIndex = 5;
 /// from the start (see `manaSkillID` in professions.json).
 const int _startingDieManaFaceIndex = 1;
 
-/// How many companions may be seated (fight beside the player) before any
-/// house bonus: two, so a fight has three dice. Each built house's own
-/// `partyCapacityBonus` (houses.json) adds to this.
+/// How many companions may be seated (fight beside the player): two, so a
+/// fight has three fighters and three dice, never more (the user's cap,
+/// v1.667). A house's `partyCapacityBonus` (houses.json, the Barracks
+/// Annex) no longer adds a seat.
 const int basePartyCapacity = 2;
 
-/// The player's current active-party capacity: [basePartyCapacity] plus
-/// every built house's own bonus. Shared by [PlayerSessionNotifier
-/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
-/// CampScreen's own roster display, so the two never drift apart.
 /// The flag set when the first banner (clan offer) is due: the clans met
 /// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
 const String firstBannerFlag = 'first_banner';
@@ -125,13 +122,12 @@ bool offersWaitForClans(PlayerSession session) =>
     session.flags.contains(featureLadderFlag) &&
     !session.featureOpen(GameFeature.clans);
 
-int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
-  return basePartyCapacity +
-      houses.values.whereType<Map<String, dynamic>>().where((h) {
-        return builtHouseIds.contains(h['houseID']?.toString() ?? '');
-      }).fold<int>(0,
-          (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
-}
+/// The player's active-party capacity: [basePartyCapacity], whatever is
+/// built (the cap of three fighters, v1.667). Shared by [PlayerSessionNotifier
+/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
+/// CampScreen's own roster display, so the two never drift apart.
+int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) =>
+    basePartyCapacity;
 
 /// The skills a companion starts with: their profession's and race's
 /// standard skill, and every skill one of their signature die's faces links
@@ -1488,6 +1484,13 @@ class PlayerSession {
     // die that shrank move with their faces, or come back
     // (dice_sizes_save.dart).
     json = resizedDiceSave(json);
+    // A save from before the cap of three fighters (v1.667) may have three
+    // companions seated (the Barracks Annex's old seat): the first two stay,
+    // the third goes to the bench, still recruited. Nobody is lost.
+    final seated = [
+      for (final id in (json['activeAllyIds'] as List?) ?? const [])
+        id.toString(),
+    ];
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -1647,9 +1650,7 @@ class PlayerSession {
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      activeAllyIds:
-          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      activeAllyIds: seated.take(basePartyCapacity).toList(),
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -4685,7 +4686,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return;
     }
     if (state.activeAllyIds.contains(companionId)) return;
-    if (state.activeAllyIds.length >= partyCapacity) return;
+    // Never more than three fighters (v1.664), whatever the caller passed.
+    if (state.activeAllyIds.length >= min(partyCapacity, basePartyCapacity)) {
+      return;
+    }
     if (requiredHouseId != null &&
         requiredHouseId.isNotEmpty &&
         !state.builtHouseIds.contains(requiredHouseId)) {
