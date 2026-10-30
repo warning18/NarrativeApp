@@ -296,30 +296,41 @@ class _FeatureUnlockHostState extends ConsumerState<FeatureUnlockHost> {
       _timer?.cancel();
       _timed = null;
     }
-    return Stack(
+    // The card has a place of its own above the page, which slides down for
+    // it: it never covers the first lines of a scene, and nothing jumps.
+    return Column(
       children: [
-        widget.child,
-        if (showing)
-          Positioned(
-            top: 8,
-            left: 12,
-            right: 12,
-            child: SafeArea(
-              bottom: false,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 520),
-                  child: _UnlockCard(
-                    key: ValueKey('unlock_card_${feature.id}'),
-                    feature: feature,
-                    onShow: () => _done(feature, tour: true),
-                    onLater: () => _done(feature),
-                  ),
-                ),
-              ),
+        TweenAnimationBuilder<double>(
+          duration: MediaQuery.maybeOf(context)?.disableAnimations ?? false
+              ? Duration.zero
+              : const Duration(milliseconds: 220),
+          tween: Tween<double>(begin: 0, end: showing ? 1 : 0),
+          builder: (context, grow, child) => ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: grow.clamp(0.0, 1.0),
+              child: child,
             ),
           ),
+          child: showing
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 520),
+                      child: _UnlockCard(
+                        key: ValueKey('unlock_card_${feature.id}'),
+                        feature: feature,
+                        onShow: () => _done(feature, tour: true),
+                        onLater: () => _done(feature),
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
+        Expanded(child: widget.child),
       ],
     );
   }
