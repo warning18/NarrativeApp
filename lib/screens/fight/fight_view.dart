@@ -49,6 +49,7 @@ extension _FightView on _FightScreenState {
       children: [
         Positioned.fill(
             child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+        Positioned.fill(child: _buildWeatherOverlay()),
         SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -533,6 +534,7 @@ extension _FightView on _FightScreenState {
         children: [
           Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: battle),
+          Positioned.fill(child: _buildWeatherOverlay()),
           Positioned.fill(
             child: IgnorePointer(
               child: CombatVfxLayer(

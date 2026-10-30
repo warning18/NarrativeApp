@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.671.0+707]
+
+- The fight's weather now falls over the whole screen, cards and board
+  included, and takes no touch. An anomaly (an earth break, a storm, a
+  glare) now plays on the dice board alone, clipped to it, under the dice.
+  The ground behind the screen keeps only the scenery, the night and the
+  lamps.
+
 ## [1.666.0+702]
 
 - **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**
