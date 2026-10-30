@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_text_provider.dart' show storyTextDoneProvider;
+import '../theme/stitched_ink.dart';
 import '../widgets/ability_radar.dart';
 import '../widgets/ability_visuals.dart';
 import '../widgets/origin_scene_backdrop.dart';
@@ -662,11 +663,13 @@ class _Outcome extends ConsumerWidget {
                     spacing: 8,
                     runSpacing: 6,
                     children: [
-                      _Tag(
+                      InkPill(
+                          large: true,
                           icon: Icons.auto_awesome,
                           label: lesson,
                           color: colors.primary),
-                      _Tag(
+                      InkPill(
+                        large: true,
                         icon: Icons.balance_outlined,
                         label: lean,
                         color: alignmentMod > 0
@@ -693,37 +696,6 @@ class _Outcome extends ConsumerWidget {
                   onPressed: onChooseAgain, child: Text(chooseAgainLabel)),
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag({required this.icon, required this.label, required this.color});
-
-  final IconData icon;
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.6)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 5),
-          Text(label,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
-                  ?.copyWith(color: color)),
         ],
       ),
     );

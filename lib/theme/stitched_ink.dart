@@ -502,6 +502,57 @@ class InkTag extends StatelessWidget {
   }
 }
 
+/// A rounded outline tag in the page's own face: a rarity, a condition, what
+/// a choice costs or teaches. [large] is the roomier one with an [icon] (the
+/// book's lessons); [neutralText] keeps the words in the page's colour with
+/// only the frame tinted (the offers, where the tint is a clan's).
+class InkPill extends StatelessWidget {
+  const InkPill({
+    super.key,
+    required this.label,
+    required this.color,
+    this.icon,
+    this.large = false,
+    this.neutralText = false,
+  });
+
+  final String label;
+  final Color color;
+  final IconData? icon;
+  final bool large;
+  final bool neutralText;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style =
+        (large ? theme.textTheme.labelMedium : theme.textTheme.labelSmall)
+            ?.copyWith(
+                color: neutralText ? null : color,
+                fontWeight: large ? null : FontWeight.w700);
+    return Container(
+      padding: large
+          ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4)
+          : const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(large ? 20 : 10),
+        border: Border.all(color: color.withValues(alpha: 0.7)),
+      ),
+      child: icon == null
+          ? Text(label, style: style)
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 14, color: color),
+                const SizedBox(width: 5),
+                Text(label, style: style),
+              ],
+            ),
+    );
+  }
+}
+
 /// Every screen change in the app: the new page fades in over 180 ms while
 /// sliding up 12 px, the old one holds still. With "reduce motion" on, the
 /// pages just swap.

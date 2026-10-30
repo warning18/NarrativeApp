@@ -973,12 +973,12 @@ class _PartCard extends ConsumerWidget {
               Wrap(
                 spacing: 6,
                 children: [
-                  _Tag(tr(ref, 'rarity_$rarity'), shade),
+                  InkPill(label: tr(ref, 'rarity_$rarity'), color: shade),
                   if (slot != 'Sail' && !trophy)
-                    _Tag(
-                        tr(ref, 'part_version_label')
+                    InkPill(
+                        label: tr(ref, 'part_version_label')
                             .replaceAll('{n}', romanVersion(tier)),
-                        ink.ash),
+                        color: ink.ash),
                 ],
               ),
               const SizedBox(height: 4),
@@ -1010,28 +1010,6 @@ class _PartCard extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag(this.text, this.color);
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.7)),
-      ),
-      child: Text(text,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: color, fontSize: 10)),
     );
   }
 }

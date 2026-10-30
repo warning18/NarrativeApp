@@ -145,36 +145,14 @@ class ChoiceCard extends StatelessWidget {
                 ),
               ] else if (tag != null) ...[
                 const SizedBox(width: 8),
-                _TagChip(tag: tag!, locked: locked),
+                InkPill(
+                    label: tag!.label,
+                    color: locked ? InkColors.of(context).ash : tag!.color),
               ],
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TagChip extends StatelessWidget {
-  const _TagChip({required this.tag, required this.locked});
-
-  final ChoiceTag tag;
-  final bool locked;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = locked ? InkColors.of(context).ash : tag.color;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.7)),
-        color: color.withValues(alpha: 0.12),
-      ),
-      child: Text(tag.label,
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: color, fontWeight: FontWeight.w700)),
     );
   }
 }

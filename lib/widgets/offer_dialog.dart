@@ -747,9 +747,10 @@ class _OfferBanner extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  _Tag(
-                      text: trFor(lang, _giftTagKey(gift, skills)),
-                      color: color),
+                  InkPill(
+                      label: trFor(lang, _giftTagKey(gift, skills)),
+                      color: color,
+                      neutralText: true),
                   const SizedBox(height: 3),
                   Text(
                     name,
@@ -1000,20 +1001,22 @@ class _OfferHall extends ConsumerWidget {
                                     crossAxisAlignment:
                                         WrapCrossAlignment.center,
                                     children: [
-                                      _Tag(
-                                          text: trFor(
+                                      InkPill(
+                                          label: trFor(
                                               lang, _giftTagKey(gift, skills)),
-                                          color: color),
+                                          color: color,
+                                          neutralText: true),
                                       if (gift.kind != GiftKind.perk)
                                         SignRarityChip(
                                             rarity: gift.rarity,
                                             language: lang),
                                       if (picked.risky)
-                                        _Tag(
+                                        InkPill(
                                             key: const Key('offer_risky_badge'),
-                                            text: trFor(
+                                            label: trFor(
                                                 lang, 'offer_risky_badge'),
-                                            color: bad),
+                                            color: bad,
+                                            neutralText: true),
                                     ],
                                   ),
                                 ],
@@ -1214,28 +1217,6 @@ class _SwallowtailClipper extends CustomClipper<Path> {
 Color _suitorColor(Suitor suitor, ClanData data) => suitor.isWayfarer
     ? _wayfarerColor
     : Color(data.faction(suitor.factionId)?.color ?? 0xFFB08D3C);
-
-class _Tag extends StatelessWidget {
-  const _Tag({super.key, required this.text, required this.color});
-
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.18),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.7)),
-        ),
-        child: Text(text,
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(fontWeight: FontWeight.w700)),
-      );
-}
 
 /// What a gift does, in its own words: a sign's effect lines (and what it
 /// would replace), a skill's line, an object's stats, a title's or a
