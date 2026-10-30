@@ -55,18 +55,12 @@ Map<String, dynamic> simTable(String name) =>
 
 Map<String, Map<String, dynamic>>? _tables;
 
-/// The simulator's tables, read once per test file. [without] leaves tables
-/// out on purpose, for a test whose bands were measured without them: say
-/// why where it is called (`// sim-tables-ok: <table>: <why>`), so that the
-/// guard in qa_sim_tables_test.dart and the next reader both know.
-Map<String, Map<String, dynamic>> simTables({Set<String> without = const {}}) {
-  final all =
-      _tables ??= {for (final name in simTableNames) name: simTable(name)};
-  return {
-    for (final e in all.entries)
-      if (!without.contains(e.key)) e.key: e.value,
-  };
-}
+/// The simulator's tables, read once per test file. Every simulator test plays
+/// in this whole world (the bosses were re-sized for it in v1.613 and v1.614,
+/// docs/proposals/bosses-full-world.md); a test that must leave a table out
+/// builds its own map and says why (`// sim-tables-ok: <table>: <why>`).
+Map<String, Map<String, dynamic>> simTables() =>
+    _tables ??= {for (final name in simTableNames) name: simTable(name)};
 
 /// game_config.json, the simulator's other input.
 Map<String, dynamic> simGameConfig() => simTable('game_config');

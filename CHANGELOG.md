@@ -18,6 +18,14 @@ isn't reconstructable from git history alone.
     Wording only, no key renamed, no plural code. Roads and draws are never 1.
   - `test/road_wards_test.dart`: the pinned line follows, and a guard checks
     that a cost of 1 never reads "1 charges" in either language.
+## [1.657.0+693]
+
+- **Fix: the opening animation now shows on a new game's first page**
+  The animation of v1.654 ran only in the Story tab's view; a new game opens on the Journey tab's
+  reading page, which still showed the whole text. That page now tells the first scene the same
+  way (a sentence at a time, the Grey Shroud's sigil behind the end of the text, the choice
+  settling in after the text has folded). The map's corner button and "Revenir à la carte" stay.
+  A real-app test now goes through New Game and finds the animation.
 
 ## [1.656.0+692]
 

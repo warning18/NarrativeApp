@@ -8,8 +8,6 @@
 // soon after jumps to the end. With reduced motion the whole text shows at
 // once and only the choice fades in.
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/story_repository.dart';
@@ -21,10 +19,6 @@ import '../theme/stitched_ink.dart';
 bool isPrologueOpening(StoryNode node) =>
     node.id == StoryRepository.startNodeId &&
     node.choices.any((c) => c.opensCharacterCreation);
-
-/// Set once the text has been told, so coming back to the first scene (the
-/// character's making backed out of) shows it whole instead of again.
-final _prologuePlayedProvider = StateProvider<bool>((ref) => false);
 
 /// The sigil's asset: the title's own standard.
 const String _prologueSigilAsset = 'assets/visuals/banners/void_standard.png';
@@ -137,8 +131,21 @@ int prologueWordsShown(PrologueSentence s, double fraction) {
   return space < 0 ? 0 : space + 1;
 }
 
-class PrologueOpening extends ConsumerStatefulWidget {
-  const PrologueOpening({super.key, required this.text, required this.choices});
+class PrologueOpening extends StatefulWidget {
+  const PrologueOpening({
+    super.key,
+    required this.text,
+    required this.choices,
+    this.told = false,
+    this.onTold,
+  });
+
+  /// The text was told already (the page came back to): shown whole.
+  final bool told;
+
+  /// Called once, after a frame, when the text has been told (or was shown
+  /// whole): the page's way back to the map waits for it.
+  final VoidCallback? onTold;
 
   /// The scene's narration, `**bold**` marked.
   final String text;
@@ -147,16 +154,17 @@ class PrologueOpening extends ConsumerStatefulWidget {
   final Widget choices;
 
   @override
-  ConsumerState<PrologueOpening> createState() => _PrologueOpeningState();
+  State<PrologueOpening> createState() => _PrologueOpeningState();
 }
 
-class _PrologueOpeningState extends ConsumerState<PrologueOpening>
+class _PrologueOpeningState extends State<PrologueOpening>
     with SingleTickerProviderStateMixin {
   late List<PrologueSentence> _sentences;
   late ({List<double> starts, List<double> ends, double total}) _plan;
   late final AnimationController _clock;
   bool _reduced = false;
   bool _started = false;
+  bool _toldSent = false;
   DateTime? _lastTap;
 
   double get _length => _plan.total + _settleSeconds;
@@ -185,7 +193,7 @@ class _PrologueOpeningState extends ConsumerState<PrologueOpening>
     _reduced = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     if (_started) return;
     _started = true;
-    if (_reduced || ref.read(_prologuePlayedProvider) || _sentences.isEmpty) {
+    if (_reduced || widget.told || _sentences.isEmpty) {
       _clock.value = 1;
     } else {
       _clock.forward();
@@ -257,16 +265,18 @@ class _PrologueOpeningState extends ConsumerState<PrologueOpening>
         builder: (context, _) {
           final s = _now;
           final total = _plan.total;
-          if (s >= total && !ref.read(_prologuePlayedProvider)) {
+          if (s >= total && !_toldSent) {
+            _toldSent = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              ref.read(_prologuePlayedProvider.notifier).state = true;
+              if (mounted) widget.onTold?.call();
             });
           }
           final settle = ((s - total) / _settleSeconds).clamp(0.0, 1.0);
           final fold =
               Curves.easeInOut.transform((settle / 0.45).clamp(0.0, 1.0));
-          final show = Curves.easeOut.transform((settle / 0.5).clamp(0.0, 1.0));
+          // The choice comes once the text has folded out of its way.
+          final show =
+              Curves.easeOut.transform(((settle - 0.35) / 0.4).clamp(0.0, 1.0));
           final done = s >= total;
           final textHeight = height + (foldedHeight - height) * fold;
           return Stack(
