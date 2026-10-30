@@ -24,3 +24,18 @@ locked dice stays the same state), `fight_dice_rules.dart` is not touched. Core 
 Annex): A fits 4 dice of 64 px in a row; B (292 px) fits 4 dice of 58 px as 2 x 2.
 
 Recommendation: A (the wider board is worth more than the side rail on a phone).
+
+## Round 3: variant A with the user's changes (A')
+The user likes A and the throw; asks for bigger cards, one per player / companion, so bonuses
+and maluses show, as small icons with a pop-in explaining them on tap.
+`docs/ux-shots/combat2/variant-A2-cards-icons.png` (a roll in flight, two dice kept, the pop-in
+open on Vica's poison, the icon legend); the 8 icons (9 x 9 pixel, one colour each) are in
+`docs/ux-shots/combat2/icons/`: poison, stun, weaken, block, parry, shelter, fury, target.
+- Three cards of 70 px on the left (head, name, HP, icons with a corner number = turns or value,
+  damage and armour), the enemy in a column on the right with its own icons; the board goes from
+  420 to 346 px tall (4 dice of 64 px still fit).
+- Tap an icon: a pop-in under the card (effect, who, turns left, what it does); tap elsewhere closes.
+- Core: nothing to change (same data: statusEffects, block, parry, Fury / Watchfire, the telegraph).
+  To write before building: the pop-in texts (EN + FR) with the exact numbers; Fury, Parry and
+  Watchfire already have texts in the game (fury_tip, parry_tip, watchfire_tip), Poison, Stun,
+  Weaken, Block and Shelter do not.
