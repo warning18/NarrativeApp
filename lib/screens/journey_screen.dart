@@ -2144,7 +2144,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       final here = locked || held || steps.any((s) => s.onCard);
       // A locked page has no way back to the map: the cards take the story
       // on, and the map's tabs and buttons wait, greyed ("Choose first").
-      final toMap = !locked && !held;
+      // Nor has a new game's first page, before the hero is made: the game
+      // hasn't started (the user's call, v1.692).
+      final toMap = !locked &&
+          !held &&
+          !(isFreshStoryStart(play) &&
+              ref.watch(appModeProvider) != AppMode.edit);
       // The button names the map: the way back to it, or, locked, the way
       // that waits.
       // A new game's first scene is told as an animation, its choice

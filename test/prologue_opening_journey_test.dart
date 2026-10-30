@@ -1,7 +1,7 @@
 // The opening animation is on the page a new game really opens (the Journey's
 // reading page, not only the Story tab): the text is told, a double tap
-// skips to the choice, which then opens the character's making; and the way
-// back to the map waits for the end of the text.
+// skips to the choice, which then opens the character's making. The game
+// hasn't started: no way to the map at all (v1.692).
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,19 +49,22 @@ void main() {
     final text = find.byKey(const Key('prologue_text'));
     await _until(tester, text);
     expect(text, findsOneWidget);
-    // Told a sentence at a time: the choice and the way to the map's button
-    // wait, the map's corner button does not.
+    // Told a sentence at a time: the choice waits; no map, neither the
+    // page's corner button nor the top bar's.
     expect(find.byKey(const Key('prologue_sentence_0')), findsOneWidget);
     expect(find.byKey(const Key('prologue_sentence_5')), findsNothing);
     expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
-    // Two taps: the end of the text, the choice settles in, and the way back
-    // to the map comes with it.
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    expect(find.byKey(const Key('home_full_map')), findsNothing);
+    // Two taps: the end of the text, the choice settles in, and still no
+    // way back to the map.
     await tester.tap(text);
     await tester.tap(text);
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(seconds: 3));
-    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    expect(find.byKey(const Key('home_full_map')), findsNothing);
     final card = find.byKey(const ValueKey('journey_choice_cards'));
     expect(card, findsOneWidget);
     expect(find.textContaining('Choisissez qui vous êtes'), findsOneWidget);

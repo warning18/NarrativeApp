@@ -117,9 +117,11 @@ const _hiddenInChapters1to3 = <String>[
   '1210',
   '2000',
   '2001',
+  '2005',
   '2010',
   '2011',
   '2015_house_drowned_debt',
+  '2015_house_keyholders',
   '2015_house_salt_ledger',
   '2015_signaller',
   '2015_dockside',
@@ -127,6 +129,7 @@ const _hiddenInChapters1to3 = <String>[
   '2015_rats',
   '2015_informant_caught',
   '2015_kelda',
+  '2020',
   '2030',
   '2040',
   '2050',
@@ -144,6 +147,7 @@ const _hiddenInChapters1to3 = <String>[
   '3005_maren',
   '3010',
   '2010_crane',
+  '2015_informant',
   '2015_informant_trap',
   '2015_informant_exposed',
   '2015_ternrow',
@@ -418,10 +422,54 @@ void main() {
           isTrue);
     });
 
+    test('one card the party can take hides it, whatever its pins (v1.692)',
+        () {
+      // One choice.
+      expect(
+          pageExitHidden(ways: const [
+            (card: true, takeable: true, to: 'gate'),
+          ], hub: false, ending: false, editMode: false),
+          isTrue);
+      // One card and a pin elsewhere (the landward gate's two ways in):
+      // the pin is listed as a road card.
+      expect(
+          pageExitHidden(ways: const [
+            (card: false, takeable: true, to: 'wharf'),
+            (card: true, takeable: true, to: 'gate'),
+          ], hub: false, ending: false, editMode: false),
+          isTrue);
+      // One card that can't be taken yet: the way out stays.
+      expect(
+          pageExitHidden(ways: const [
+            (card: true, takeable: false, to: 'gate'),
+          ], hub: false, ending: false, editMode: false),
+          isFalse);
+      expect(
+          pageExitHidden(ways: const [
+            (card: true, takeable: false, to: 'gate'),
+            (card: false, takeable: true, to: 'wharf'),
+          ], hub: false, ending: false, editMode: false),
+          isFalse);
+      // Two cards: the older rule (a pin elsewhere keeps it).
+      expect(
+          pageExitHidden(ways: const [
+            (card: true, takeable: true, to: 'gate'),
+            (card: true, takeable: true, to: 'gate'),
+          ], hub: false, ending: false, editMode: false),
+          isTrue);
+      // A hub with one card keeps it.
+      expect(
+          pageExitHidden(ways: const [
+            (card: true, takeable: true, to: 'gate'),
+          ], hub: true, ending: false, editMode: false),
+          isFalse);
+    });
+
     test('another move on the map keeps it', () {
       // A pin elsewhere.
       expect(
           pageExitHidden(ways: const [
+            (card: true, takeable: true, to: 'alley'),
             (card: true, takeable: true, to: 'alley'),
             (card: false, takeable: true, to: 'bridge'),
           ], hub: false, ending: false, editMode: false),
@@ -429,6 +477,7 @@ void main() {
       // A pin the world doesn't place.
       expect(
           pageExitHidden(ways: const [
+            (card: true, takeable: true, to: 'house'),
             (card: true, takeable: true, to: 'house'),
             (card: false, takeable: true, to: null),
           ], hub: false, ending: false, editMode: false),
@@ -482,6 +531,30 @@ void main() {
       ];
       expect(hidden, _hiddenInChapters1to3);
     });
+  });
+
+  testWidgets(
+      'a save made in the intro resumes in it, with no way to the map; '
+      'once the hero is made, the map is there (v1.692)', (tester) async {
+    await _continueSave(tester,
+        node: '0', history: const [], flags: const [featureLadderFlag]);
+    expect(_page('0'), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.byKey(const Key('home_full_map')), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
+  });
+
+  testWidgets('past the intro, the top bar has the map (v1.692)',
+      (tester) async {
+    await _continueSave(tester,
+        node: '106',
+        history: const ['0', '100', '105'],
+        flags: const [featureLadderFlag, 'casino_tables']);
+    expect(find.byKey(const Key('home_full_map')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
   });
 
   testWidgets(
