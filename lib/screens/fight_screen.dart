@@ -24,6 +24,7 @@ import '../combat/combat_engine.dart';
 import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
+import '../combat/clan_dice.dart';
 import '../combat/die_locks.dart';
 import '../combat/party_pick.dart';
 import '../providers/fight_pick_provider.dart';
@@ -372,6 +373,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _luckyDieTourReady = false;
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
+
+  /// The hero's die's Resonance this fight (clan_dice.dart): lit, asleep
+  /// and why, or none for a die of no clan. The die tray (UX's) shows it.
+  Resonance _dieResonance = Resonance.none;
 
   /// The pre-fight sheet's "keep as my party" toggle.
   bool _keepPick = false;

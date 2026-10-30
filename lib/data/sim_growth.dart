@@ -20,6 +20,7 @@ import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'camp_rolls.dart' show RollBanOn;
 import 'clan_crisis.dart' show buildCrisisNode, mainClanOf;
+import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import 'district_attacks.dart'
     show buildSiegeNode, rollDistrictAttacks, settleSiegeAway;
 import 'risky_gifts.dart';
@@ -55,12 +56,16 @@ class SimGrowthTables {
     this.events = const {},
     this.itemSets = const {},
     this.merges = const {},
+    this.dice = const {},
   });
 
   /// item_sets.json parsed and skill_merges.json: what the competent
   /// player weighs its gear by and crafts at the Skillwright.
   final Map<String, ItemSet> itemSets;
   final Map<String, dynamic> merges;
+
+  /// dice.json: the clans' dice (clan_dice.dart).
+  final Map<String, dynamic> dice;
 
   /// politics_events.json parsed: the events the coast fires by itself
   /// ([SimGrowth.runEvents]) and a story choice's `event`. None, none
@@ -732,6 +737,8 @@ class SimGrowth {
         heldSpecIds: character.specIds,
         specVariants: tables.specVariants,
         riskyGifts: riskyGifts,
+        dice: tables.dice,
+        ownedDiceIds: character.ownedDice.keys.toList(),
       );
 
   /// Whether the first banner came (see [_takeOffers]).
@@ -958,6 +965,31 @@ class SimGrowth {
         return (_bestGearValue([gift.id]) - _bestGearValue()) * 7;
       case GiftKind.spec:
         return 25;
+      case GiftKind.die:
+        // What the die adds over the one rolled now, Resonance and all.
+        final die = tables.dice[gift.id] as Map<String, dynamic>?;
+        final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+        if (faces == null || faces.isEmpty) return 0;
+        final rolled =
+            resonanceOf(die, politics: politics, data: tables.clans) ==
+                    Resonance.lit
+                ? resonantFaces(faces)
+                : faces;
+        final caster = c.knownSpells.isNotEmpty;
+        final now = simDieValue(
+            c.diceFaces, c.diceSkillAssignments, tables.skills,
+            damage: c.baseDamage, caster: caster);
+        final worth = simDieValue(
+            rolled,
+            simSkillAssignments(
+                faces: rolled,
+                current: const {},
+                unlocked: c.unlockedSkillIds,
+                skills: tables.skills),
+            tables.skills,
+            damage: c.baseDamage,
+            caster: caster);
+        return max(1.0, (worth - now) * 10);
       case GiftKind.sign:
         final sign = tables.signs[gift.id];
         if (sign == null) return 0;
@@ -1139,6 +1171,15 @@ class SimGrowth {
       case GiftKind.spec:
         if (!character.specIds.contains(gift.id)) {
           character.specIds = [...character.specIds, gift.id];
+        }
+      case GiftKind.die:
+        // A clan's die to the bag; the competent player rolls it when it
+        // beats the one in play.
+        final faces = ((tables.dice[gift.id] as Map?)?['faces'] as List?)
+            ?.cast<Map<String, dynamic>>();
+        if (faces != null && !character.ownedDice.containsKey(gift.id)) {
+          character.ownedDice[gift.id] = faces;
+          if (competent) character.rollBestDie(tables.skills);
         }
     }
     return alignment;

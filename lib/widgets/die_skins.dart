@@ -117,6 +117,13 @@ const Map<String, DieSkin> dieSkins = {
       'Silver bell', Color(0xFFAEB4BE), Color(0xFFF5F7FB), DiePattern.waves),
   // The built d12 (Core, dice sizes): bone until UX draws its own.
   'tally_die': boneSkin,
+  // The clans' new dice (Core, clan_dice.dart): placeholders until UX's.
+  'lantern_die': DieSkin('Lantern brass', Color(0xFF3A2E1A), Color(0xFFF2C14E),
+      DiePattern.rays, Color(0xFFFFC96B)),
+  'cinder_die': DieSkin('Banked coal', Color(0xFF2A1F1C), Color(0xFFFF8A3D),
+      DiePattern.cracks, Color(0xFFFF6A1F)),
+  'court_die': DieSkin(
+      'Mire green', Color(0xFF1E3326), Color(0xFF9FD8A6), DiePattern.waves),
 };
 
 /// A pattern cut into one face, drawn over its unit square: faint, so the
