@@ -37,6 +37,7 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
+import '../widgets/side_view/scene_versions.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -109,14 +110,25 @@ const crossingSceneTerrains = {
 
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
-List<SideLayer> crossingLayers(String terrain, double progress) =>
-    switch (terrain) {
-      'ruins' => ruinsLayers(progress: progress),
-      'frost' => frostLayers(progress: progress),
-      'fen' => fenLayers(progress: progress),
-      'sea_cliffs' => cliffsLayers(progress: progress),
-      _ => desertLayers(progress: progress),
-    };
+///
+/// [version] (0 to 3, sceneVersionAt) is the stretch of that land shown: its
+/// own window of the world and its own landmark.
+List<SideLayer> crossingLayers(String terrain, double progress,
+    {int version = 0}) {
+  final layers = switch (terrain) {
+    'ruins' => ruinsLayers(progress: progress),
+    'frost' => frostLayers(progress: progress),
+    'fen' => fenLayers(progress: progress),
+    'sea_cliffs' => cliffsLayers(progress: progress),
+    _ => desertLayers(progress: progress),
+  };
+  final kit = switch (terrain) {
+    'ruins' || 'frost' || 'fen' => terrain,
+    'sea_cliffs' => 'cliffs',
+    _ => 'desert',
+  };
+  return withSceneVersion(layers, kit, version);
+}
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
@@ -739,7 +751,9 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                       key: const Key('crossing_scene'),
                       height: _crossingSceneHeight,
                       layers: withHourStars(
-                          crossingLayers(terrain, progress), phase),
+                          crossingLayers(terrain, progress,
+                              version: sceneVersionAt(widget.route.id, _day)),
+                          phase),
                       overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),

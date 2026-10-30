@@ -9138,6 +9138,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Within walls',
     AppLanguage.fr: 'Entre quatre murs',
   },
+  'stage_ruins': {
+    AppLanguage.en: 'Ruins',
+    AppLanguage.fr: 'Ruines',
+  },
+  'stage_woods': {
+    AppLanguage.en: 'Woods',
+    AppLanguage.fr: 'Sous-bois',
+  },
+  'stage_ford': {
+    AppLanguage.en: 'The ford',
+    AppLanguage.fr: 'Le gué',
+  },
+  'stage_burntFields': {
+    AppLanguage.en: 'Burnt fields',
+    AppLanguage.fr: 'Champs brûlés',
+  },
+  'stage_oasis': {
+    AppLanguage.en: 'The oasis',
+    AppLanguage.fr: 'L’oasis',
+  },
+  'stage_caravanRoad': {
+    AppLanguage.en: 'Caravan road',
+    AppLanguage.fr: 'Piste des caravanes',
+  },
+  'stage_quay': {
+    AppLanguage.en: 'The quay',
+    AppLanguage.fr: 'Le quai',
+  },
+  'stage_pass': {
+    AppLanguage.en: 'Mountain pass',
+    AppLanguage.fr: 'Col de montagne',
+  },
   'anomaly_omen_storm': {
     AppLanguage.en: 'The air turns heavy: {name} is coming.',
     AppLanguage.fr: 'L’air s’alourdit : {name} approche.',

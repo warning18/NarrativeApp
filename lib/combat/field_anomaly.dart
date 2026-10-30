@@ -35,6 +35,28 @@ enum FightStage {
   snow,
   glass,
   hall,
+  ruins,
+  woods,
+  ford,
+  burntFields,
+  oasis,
+  caravanRoad,
+  quay,
+  pass,
+}
+
+/// The older stage whose anomalies and place rule a newer stage borrows until
+/// they are written for it (the ruins burn like the ashlands, the quay is the
+/// shore).
+extension FightStageKin on FightStage {
+  FightStage get kin => switch (this) {
+        FightStage.ruins || FightStage.burntFields => FightStage.ash,
+        FightStage.woods || FightStage.ford => FightStage.fields,
+        FightStage.oasis || FightStage.caravanRoad => FightStage.dunes,
+        FightStage.quay => FightStage.waves,
+        FightStage.pass => FightStage.cliffs,
+        _ => this,
+      };
 }
 
 /// The stage of a fight on land of [pattern]; [indoors] (a hall, a crypt, a
@@ -160,7 +182,7 @@ class FieldAnomaly {
   /// likely it is among the others.
   double weightUnder(FightStage stage, WeatherKind? sky,
       {Set<String> tags = const {}}) {
-    if (!stages.contains(stage)) return 0;
+    if (!stages.contains(stage.kin)) return 0;
     final matches = skies.isEmpty || (sky != null && skies.contains(sky));
     final base = switch (skyRule) {
       SkyRule.any => weight.toDouble(),
