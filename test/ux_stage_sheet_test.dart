@@ -36,6 +36,14 @@ void main() {
     Directory(dir).createSync(recursive: true);
     for (final stage in FightStage.values) {
       await _save(tester, '$dir/stage-${stage.name}.png', stage);
+      for (final (name, light) in const [
+        ('day', 1.0),
+        ('dusk', 0.75),
+        ('night', 0.45)
+      ]) {
+        await _save(tester, '$dir/smooth-${stage.name}-$name.png', stage,
+            light: light);
+      }
     }
     for (final sky in WeatherKind.values) {
       await _save(tester, '$dir/sky-${sky.name}.png', FightStage.fields,
