@@ -4,6 +4,60 @@ part of '../fight_screen.dart';
 extension _FightControls on _FightScreenState {
   // --- Log ticker ----------------------------------------------------------
 
+  /// The log behind an icon (play mode): the history, with a dot while
+  /// there are lines not yet read.
+  Widget _buildLogButton() {
+    final unread = _log.length > _logSeen;
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      button: true,
+      label: tr(ref, 'battle_log_title'),
+      excludeSemantics: true,
+      child: GestureDetector(
+        key: const Key('fight_log_button'),
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          _update(() => _logSeen = _log.length);
+          _showFullLog();
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: scheme.outlineVariant),
+                    ),
+                    child: Icon(Icons.history,
+                        size: 18, color: scheme.onSurfaceVariant),
+                  ),
+                ),
+                if (unread)
+                  Positioned(
+                    right: 2,
+                    top: 2,
+                    child: Container(
+                      key: const Key('fight_log_unread'),
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Color(0xFFE0752B)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   /// The last two log lines, tappable for the whole log.
   Widget _buildLogTicker() {
     final colorScheme = Theme.of(context).colorScheme;
