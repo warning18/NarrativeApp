@@ -8,6 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+<<<<<<< HEAD
 ## [1.691.0+727]
 
 - **Narrative: the hero speaks in the stage scenes (first replies).** Twenty
@@ -21,6 +22,24 @@ isn't reconstructable from git history alone.
     lantern).
   - Actions with nothing to say (an ambush, taking a strongbox) keep the
     choice text in the balloon.
+  - The story editor kept dropping `reply` / `reply_fr` when a choice was saved;
+    it now carries them through (two lines in `story_node_editor_screen.dart`).
+=======
+## [1.688.0+724]
+
+- **Core: the scene backgrounds' rules (UX drew the eight new stages in
+  v1.665).**
+  - A land crossing's fight is fought on its road's ground
+    (`landRouteStage`): a desert road is a caravan road, a mountain road a
+    pass, a forest the woods, a fen the reeds, a frost road the snow, the
+    ruins the ruins, the sea cliffs the cliffs; a route with no terrain
+    reads its biome.
+  - Each of the eight newer stages has an anomaly of its own, on top of
+    those of the older stage it is kin to: crumbling walls (ruins), deep
+    canopy (woods), a rising ford, smouldering stubble (burnt fields), a
+    cool spring (oasis), dust devils (caravan road), slick stones (quay)
+    and thin air (pass).
+>>>>>>> origin/main
 
 ## [1.687.0+723]
 
