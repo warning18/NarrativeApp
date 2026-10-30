@@ -22,6 +22,21 @@ isn't reconstructable from git history alone.
     or a branch count is cut or off screen. `star_chart_test` reads the count
     from its own `star_count_` key.
 
+## [1.663.0+699]
+
+- **Core: a heal mends the ally it is aimed at (the user's combat rule;
+  UX-2 builds the aiming on the board).**
+  - A Heal face goes to a chosen party member, by default the most wounded
+    one standing (lowest share of health; the healer on a tie,
+    `defaultHealTarget`, `heal_target.dart`). A heal aimed at another
+    member logs "{name} mends {target}".
+  - Overheal effects (a guard sign's shield, Stitch-Thrust, the Watchfire)
+    count on the member mended; a Shelter gives every other standing
+    member, the healer included, half of it.
+  - The simulator heals by the same default; no balance band moves.
+  - API for UX-2: `_setHealTarget(actorId, memberId)`, `_healTargetFor`,
+    `_healTargets` (cleared with the round).
+
 ## [1.660.0+696]
 
 - **Core: the dice lock rules and two new fight stages (the user's combat
