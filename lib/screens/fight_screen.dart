@@ -13,9 +13,8 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
-import '../widgets/fight_figure.dart';
-import '../widgets/fight_stage_parts.dart';
-import '../widgets/fight_sprites.dart';
+import '../widgets/fight_board.dart';
+import '../widgets/fight_effect_icons.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
@@ -112,6 +111,7 @@ import 'death_screen.dart';
 import 'fight/fight_tips.dart';
 
 part 'fight/fight_actions.dart';
+part 'fight/fight_board_view.dart';
 part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
 part 'fight/fight_clash.dart';
@@ -357,6 +357,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   String? _selectedDiceId;
   bool _rolling = false;
+
+  /// The Stack the aim line is drawn in and measured against.
+  final GlobalKey _battleSpaceKey = GlobalKey();
 
   bool _partyBuilt = false;
 

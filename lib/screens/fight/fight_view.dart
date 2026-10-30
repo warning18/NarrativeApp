@@ -484,44 +484,30 @@ extension _FightView on _FightScreenState {
             child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
           const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: _buildSlots(items, previews),
+          ),
+          const SizedBox(height: 8),
+          // The dice board takes what is left; the aim line is drawn over the
+          // cards and the board together.
           Expanded(
-            // The cards above, the stage under them (_fightStage): its
-            // height is fixed, so the cards give way, never the stage.
-            child: LayoutBuilder(
-              builder: (context, area) => Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: TutorialTarget(
-                                id: 'fight.party',
-                                child: _buildPartyColumn(items)),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            flex: 6,
-                            child: TutorialTarget(
-                                id: 'fight.enemies',
-                                child: _buildEnemyColumn(previews)),
-                          ),
-                        ],
-                      ),
+            child: Stack(
+              key: _battleSpaceKey,
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TutorialTarget(
+                      id: 'fight.dice',
+                      child: _buildDiceBoard(acting, dice, skills, items, plan),
                     ),
                   ),
-                  _fightStage(area.maxWidth),
-                ],
-              ),
+                ),
+                Positioned.fill(child: _buildAimLine(plan)),
+              ],
             ),
-          ),
-          const SizedBox(height: 6),
-          TutorialTarget(
-            id: 'fight.dice',
-            child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
           if (_spoils != null)
@@ -651,69 +637,6 @@ extension _FightView on _FightScreenState {
 
   // --- Dice tray -----------------------------------------------------------
 
-  /// The party's rolled dice (under the party and the enemies, v1.258), one tile per acting member, in the member's
-  /// own accent color, with what the landed face is worth this round under
-  /// its name (see [_buildPreviewLine]). A tap on a landed die keeps it
-  /// through the next reroll (tap again to release it); a long-press opens
-  /// the face's details and the whole die.
-  Widget _buildDiceTray(
-    List<_PartyMember> acting,
-    Map<String, dynamic> dice,
-    Map<String, dynamic> skills,
-    Map<String, dynamic> items,
-    _RoundPlan plan,
-  ) {
-    final previews = plan.previews;
-    final colorScheme = Theme.of(context).colorScheme;
-    final canLock = _awaitingDecision && !_rolling && _rollCount < _rollCap;
-    final hintKey = acting.isEmpty
-        ? 'nobody_can_act_label'
-        : _currentFaces.isEmpty
-            ? 'roll_hint'
-            : canLock
-                ? 'lock_hint'
-                : 'confirm_hint';
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (final actor in acting)
-                Expanded(
-                  child: Center(
-                    child: _buildDieTile(actor, dice, skills, items, canLock,
-                        previews[actor.id]),
-                  ),
-                ),
-            ],
-          ),
-          if (_momentum >= _momentumNeeded && !_rolling)
-            _buildSurgePicker(acting),
-          if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
-            _buildComboChips(plan),
-          const SizedBox(height: 4),
-          Text(
-            tr(ref, hintKey),
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(color: colorScheme.onSurfaceVariant),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-
   /// The party combos and duo techniques the dice on the table make (see
   /// party_combos.dart and duo_techniques.dart): what confirming now adds.
   Widget _buildComboChips(_RoundPlan plan) {
@@ -804,8 +727,9 @@ extension _FightView on _FightScreenState {
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
     bool canLock,
-    _FacePreview? preview,
-  ) {
+    _FacePreview? preview, {
+    double cube = 46,
+  }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
     final locked = _isDieLocked(actor.id);
@@ -819,7 +743,7 @@ extension _FightView on _FightScreenState {
       key: ValueKey('die_cube_${actor.id}'),
       faces: _cubeFacesFor(actor, landing, accent),
       accent: accent,
-      size: 46,
+      size: cube,
       roll: _rollController,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
@@ -847,17 +771,7 @@ extension _FightView on _FightScreenState {
       // lock until the next roll (die_locks.dart).
       onTap: face == null
           ? null
-          : () {
-              // A Steady face stays put: the sheet says why.
-              if (canLock && !_steadyActorIds.contains(actor.id)) {
-                _update(() => _tapDie(actor.id));
-              } else {
-                _showFaceSheet(actor, face, dice, skills, items);
-              }
-            },
-      onDoubleTap: face == null || !canLock || !_canReleaseDie(actor.id)
-          ? null
-          : () => _update(() => _releaseDie(actor.id)),
+          : () => _onDieTap(actor, face, canLock, dice, skills, items),
       onLongPress: face == null
           ? null
           : () => _showFaceSheet(actor, face, dice, skills, items),
@@ -867,11 +781,28 @@ extension _FightView on _FightScreenState {
           // No tile under the die: the cube stands on its own, and a kept
           // die shows its gold ring.
           SizedBox(
-            width: 58,
-            height: 58,
+            key: _dieKey(actor.id),
+            width: cube + 12,
+            height: cube + 12,
             child: Stack(
               children: [
                 Center(child: inner),
+                if (_dieLocks.selected == actor.id && !locked)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        key: Key('die_picked_${actor.id}'),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                              color: const Color(0xFFF2C14E), width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Color(0x88F2C14E), blurRadius: 16)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 if (locked)
                   Positioned(
                     top: 2,
@@ -882,6 +813,51 @@ extension _FightView on _FightScreenState {
                             : Icons.lock,
                         size: 12,
                         color: accent),
+                  ),
+                // The hero's profession core on the die: Flurry doubles an
+                // attack face; the Trail shows the face coming next.
+                if (actor.isPlayer &&
+                    face != null &&
+                    !spinning &&
+                    _core.core == ProfessionCore.flurry &&
+                    _faceKindOf(face) == FaceKind.attack)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: DieBadge(
+                        text: '×2', tooltip: tr(ref, 'flurry_tag_tip')),
+                  ),
+                if (actor.isPlayer &&
+                    !spinning &&
+                    _core.core == ProfessionCore.trail &&
+                    _core.aheadIndex != null &&
+                    _core.aheadIndex! < actor.dieFaces.length)
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: Tooltip(
+                      key: const Key('trail_next_face'),
+                      message: tr(ref, 'trail_next_tip'),
+                      child: Opacity(
+                        opacity: 0.8,
+                        child: Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.black54,
+                            border: Border.all(
+                                color: accent.withValues(alpha: 0.7)),
+                          ),
+                          child: Center(
+                              child: _buildFaceGlyph(
+                                  faceFromJson(
+                                      actor.dieFaces[_core.aheadIndex!],
+                                      _core.aheadIndex!),
+                                  size: 14)),
+                        ),
+                      ),
+                    ),
                   ),
                 // The landed face's keywords (see face_keywords.dart).
                 if (face != null && !spinning && face.keywords.isNotEmpty)
@@ -895,7 +871,7 @@ extension _FightView on _FightScreenState {
           ),
           const SizedBox(height: 3),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             child: Text(
               actor.displayName,
               maxLines: 1,
@@ -906,7 +882,7 @@ extension _FightView on _FightScreenState {
             ),
           ),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             height: 12,
             child: Text(
               label,
@@ -917,7 +893,7 @@ extension _FightView on _FightScreenState {
             ),
           ),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             height: 13,
             child: face == null || spinning || preview == null
                 ? null

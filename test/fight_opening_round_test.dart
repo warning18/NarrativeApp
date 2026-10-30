@@ -143,7 +143,7 @@ void main() {
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _shows('Confirm'));
-    await tester.longPress(find.byKey(const ValueKey('die_tile_player')));
+    await tester.longPress(find.byKey(const ValueKey('kept_die_player')));
     await _settle(tester);
     expect(find.text('Nudges 2'), findsOneWidget);
     expect(find.textContaining('Nudge to'), findsNothing);

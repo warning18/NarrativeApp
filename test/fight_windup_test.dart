@@ -147,7 +147,10 @@ void main() {
 
     expect(
         find.textContaining('is winding up', findRichText: true), findsWidgets);
-    expect(find.text('Winding up'), findsOneWidget);
+    expect(
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_windUp_")),
+        findsOneWidget);
     expect(find.text('Charged blow incoming!'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
