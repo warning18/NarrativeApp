@@ -21573,7 +21573,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21586,7 +21588,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21599,7 +21603,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21612,7 +21618,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21625,7 +21633,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21638,7 +21648,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21651,7 +21663,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21664,7 +21678,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21677,7 +21693,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21690,7 +21708,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21703,7 +21723,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21716,7 +21738,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       },
       {
         "text": "Beat Morrow, and leave him his sword",
@@ -21729,7 +21753,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "Draw, Grand Master. You keep the blade.",
+        "reply_fr": "Dégainez, Grand Maître. Vous gardez la lame."
       },
       {
         "text": "Break the Grand Master before his knights",
@@ -21742,7 +21768,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "Before your knights, then. Let them see.",
+        "reply_fr": "Devant vos chevaliers, alors. Qu’ils voient."
       }
     ],
     "flag_callbacks": [
@@ -21825,7 +21853,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21838,7 +21868,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21851,7 +21883,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21864,7 +21898,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21877,7 +21913,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21890,7 +21928,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21903,7 +21943,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21916,7 +21958,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21929,7 +21973,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21942,7 +21988,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21955,7 +22003,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21968,7 +22018,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       },
       {
         "text": "Put out her lamps, and leave her the First",
@@ -21981,7 +22033,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "Your lamps go out. The First stays yours.",
+        "reply_fr": "Vos lampes s’éteindront. La Première vous reste."
       },
       {
         "text": "Put out the First Lantern in her hands",
@@ -21994,7 +22048,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "The First goes out too.",
+        "reply_fr": "La Première s’éteint aussi."
       }
     ],
     "flag_callbacks": [

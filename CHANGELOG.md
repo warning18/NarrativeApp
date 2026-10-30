@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.693.0+729]
+## [1.695.0+731]
 
 - **Core: the Barracks Annex rests a full company (the user's pick, after
   the cap of three fighters).**
@@ -22,6 +22,17 @@ isn't reconstructable from git history alone.
     would have lifted four boss bands past theirs).
   - The camp's town card reads "+40% companion health with a full
     company"; no house shows a locked third seat any more.
+
+## [1.694.0+730]
+
+- **Narrative: the hero speaks to Morrow and to Tallis (second batch of
+  replies).** Twenty-eight fight choices in the Lantern Hall carry a
+  `reply` / `reply_fr`, the short line shown in the balloon: to the Grand
+  Master (`7520_morrow`, all 14 variants: "Draw, Grand Master. You keep the
+  blade." / "Before your knights, then. Let them see.") and to Maud Tallis
+  (`7520_tallis`, all 14: "Your lamps go out. The First stays yours." / "The
+  First goes out too."), English and French. Choice texts and every other
+  field are untouched.
 
 ## [1.692.0+728]
 
