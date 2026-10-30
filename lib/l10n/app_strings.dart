@@ -9084,6 +9084,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Every Heal face and potion restores half again as much.',
     AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
   },
+  // The eight newer stages' own anomalies (v1.683; Narrative may reword).
+  'anomaly_crumbling_walls': {
+    AppLanguage.en: 'Crumbling walls',
+    AppLanguage.fr: 'Murs qui croulent',
+  },
+  'anomaly_deep_canopy': {
+    AppLanguage.en: 'Deep canopy',
+    AppLanguage.fr: 'Sous-bois profond',
+  },
+  'anomaly_rising_ford': {
+    AppLanguage.en: 'Rising ford',
+    AppLanguage.fr: 'Gué en crue',
+  },
+  'anomaly_smouldering_stubble': {
+    AppLanguage.en: 'Smouldering stubble',
+    AppLanguage.fr: 'Chaumes qui couvent',
+  },
+  'anomaly_cool_spring': {
+    AppLanguage.en: 'Cool spring',
+    AppLanguage.fr: 'Source fraîche',
+  },
+  'anomaly_dust_devils': {
+    AppLanguage.en: 'Dust devils',
+    AppLanguage.fr: 'Tourbillons de poussière',
+  },
+  'anomaly_slick_stones': {
+    AppLanguage.en: 'Slick stones',
+    AppLanguage.fr: 'Pavés glissants',
+  },
+  'anomaly_thin_air': {
+    AppLanguage.en: 'Thin air',
+    AppLanguage.fr: 'Air raréfié',
+  },
   'anomaly_sandstorm': {
     AppLanguage.en: 'Sandstorm',
     AppLanguage.fr: 'Tempête de sable',

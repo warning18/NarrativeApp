@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.683.0+719]
+
+- **Core: the scene backgrounds' rules (UX drew the eight new stages in
+  v1.665).**
+  - A land crossing's fight is fought on its road's ground
+    (`landRouteStage`): a desert road is a caravan road, a mountain road a
+    pass, a forest the woods, a fen the reeds, a frost road the snow, the
+    ruins the ruins, the sea cliffs the cliffs; a route with no terrain
+    reads its biome.
+  - Each of the eight newer stages has an anomaly of its own, on top of
+    those of the older stage it is kin to: crumbling walls (ruins), deep
+    canopy (woods), a rising ford, smouldering stubble (burnt fields), a
+    cool spring (oasis), dust devils (caravan road), slick stones (quay)
+    and thin air (pass).
+
 ## [1.680.0+716]
 
 - **Core: the in-place choices' state (UX-2 builds the panel and the

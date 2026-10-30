@@ -110,6 +110,33 @@ FightStage fightStageOf(BiomePattern? pattern,
   };
 }
 
+/// The stage of a land crossing's fight (land_routes.json): its route's
+/// [terrain] (the side view's scene kit, land_crossing.dart's landTerrains),
+/// else its [biome]; null when neither names one (the fight's own place
+/// decides). A desert road is a caravan road, a mountain road a pass.
+FightStage? landRouteStage({String terrain = '', String biome = ''}) {
+  final byTerrain = switch (terrain) {
+    'desert' => FightStage.caravanRoad,
+    'mountain' => FightStage.pass,
+    'forest' => FightStage.woods,
+    'marsh' || 'fen' => FightStage.reeds,
+    'snow' || 'frost' => FightStage.snow,
+    'ruins' => FightStage.ruins,
+    'sea_cliffs' => FightStage.cliffs,
+    _ => null,
+  };
+  if (byTerrain != null) return byTerrain;
+  return switch (biome) {
+    'desert' => FightStage.dunes,
+    'ashlands' => FightStage.ash,
+    'fen' => FightStage.reeds,
+    'frost' => FightStage.snow,
+    'tear' => FightStage.glass,
+    'sea_cliffs' => FightStage.cliffs,
+    _ => null,
+  };
+}
+
 /// The stage named [name] ('dunes', 'hall'…), or null.
 FightStage? fightStageFromName(String? name) {
   for (final stage in FightStage.values) {
@@ -215,7 +242,8 @@ class FieldAnomaly {
   /// likely it is among the others.
   double weightUnder(FightStage stage, WeatherKind? sky,
       {Set<String> tags = const {}}) {
-    if (!stages.contains(stage.kin)) return 0;
+    // A stage's own anomalies, and those of the older stage it is kin to.
+    if (!stages.contains(stage) && !stages.contains(stage.kin)) return 0;
     final matches = skies.isEmpty || (sky != null && skies.contains(sky));
     final base = switch (skyRule) {
       SkyRule.any => weight.toDouble(),
@@ -545,6 +573,67 @@ const List<FieldAnomaly> fieldAnomalies = [
     elements: {'Fire': 1.25, 'Ice': 0.85},
     tick: AnomalyTick(mend: false, percent: 3),
     favouredBy: {'stronghold', 'ruin'},
+  ),
+  // --- The eight newer stages' own (v1.683): each also meets its kin's ---
+  FieldAnomaly(
+    id: 'crumbling_walls',
+    family: AnomalyFamily.ground,
+    stages: {FightStage.ruins},
+    tick: AnomalyTick(mend: false, percent: 5, one: true),
+  ),
+  FieldAnomaly(
+    id: 'deep_canopy',
+    family: AnomalyFamily.light,
+    stages: {FightStage.woods},
+    shared: true,
+    elements: {'Light': 0.85, 'Earth': 1.15},
+    perception: 3,
+  ),
+  FieldAnomaly(
+    id: 'rising_ford',
+    family: AnomalyFamily.water,
+    stages: {FightStage.ford},
+    skies: {WeatherKind.rain},
+    skyRule: SkyRule.prefers,
+    shared: true,
+    elements: {'Water': 1.2, 'Electricity': 1.15, 'Fire': 0.9},
+  ),
+  FieldAnomaly(
+    id: 'smouldering_stubble',
+    family: AnomalyFamily.heat,
+    stages: {FightStage.burntFields},
+    elements: {'Fire': 1.2, 'Water': 0.9},
+    tick: AnomalyTick(mend: false, percent: 3),
+  ),
+  FieldAnomaly(
+    id: 'cool_spring',
+    family: AnomalyFamily.water,
+    stages: {FightStage.oasis},
+    shared: true,
+    tick: AnomalyTick(mend: true, percent: 4),
+  ),
+  FieldAnomaly(
+    id: 'dust_devils',
+    family: AnomalyFamily.storm,
+    stages: {FightStage.caravanRoad},
+    skies: {WeatherKind.dust},
+    skyRule: SkyRule.prefers,
+    shared: true,
+    elements: {'Wind': 1.2},
+    perception: 3,
+  ),
+  FieldAnomaly(
+    id: 'slick_stones',
+    family: AnomalyFamily.ground,
+    stages: {FightStage.quay},
+    sideDamage: 0.9,
+  ),
+  FieldAnomaly(
+    id: 'thin_air',
+    family: AnomalyFamily.cold,
+    stages: {FightStage.pass},
+    elements: {'Ice': 1.15, 'Fire': 0.9},
+    tick: AnomalyTick(mend: false, percent: 3),
   ),
 ];
 
