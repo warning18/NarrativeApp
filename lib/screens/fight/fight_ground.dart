@@ -13,15 +13,18 @@ extension _FightGround on _FightScreenState {
   }
 
   /// Where this fight is drawn: the scene's own stage when the choice names
-  /// one, else the stage of the place the story stands at (a hall for a
-  /// prison or a crypt, otherwise the pattern of the land's biome), else
-  /// open country.
+  /// one, else the stage the place the story stands at names (a hall for a
+  /// prison or a crypt), else a town's streets, else the pattern of the
+  /// land's biome, else open country.
   FightStage _stageHere() {
     final forced = widget.modifiers.forcedStage;
     if (forced != null) return forced;
     final geography = ref.read(geographyProvider);
-    final named = fightStageFromName(geography.stageNameOf(_placeIdHere()));
-    return named ?? FightStage.fields;
+    final placeId = _placeIdHere();
+    final named = fightStageFromName(geography.placeStageNameOf(placeId));
+    if (named != null) return named;
+    return fightStageOf(geography.biomeOf(placeId)?.pattern,
+        town: guardedPlaceKinds.contains(geography.locationOf(placeId)?.kind));
   }
 
   /// The light this fight is fought in (see place_traits.dart): the place's,

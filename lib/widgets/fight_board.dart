@@ -21,6 +21,8 @@ Color fightBoardBase(FightStage stage) => switch (stage) {
       FightStage.snow => const Color(0xFFDFE8EF),
       FightStage.glass => const Color(0xFF1C2B3A),
       FightStage.hall => const Color(0xFF4A4036),
+      FightStage.cityRoad => const Color(0xFF2F2E33),
+      FightStage.shipDeck => const Color(0xFF7A5836),
     };
 
 /// Paints the board's surface for [stage]: the same picture every time (a
@@ -202,6 +204,55 @@ class FightBoardPainter extends CustomPainter {
                 ][r.nextInt(3)]));
             canvas.drawRect(rect, stroke(const Color(0xFF2A241D), 2));
           }
+        }
+      case FightStage.cityRoad:
+        // Cobblestones in offset rows, a wet gleam across them.
+        for (var row = 0; row * 24.0 < h; row++) {
+          for (var x = row.isOdd ? -20.0 : 0.0; x < w; x += 40) {
+            final stone = RRect.fromRectAndRadius(
+                Rect.fromLTWH(x + 1, row * 24.0 + 1, 38, 22),
+                const Radius.circular(7));
+            canvas.drawRRect(
+                stone,
+                fill([
+                  const Color(0xFF6D6B70),
+                  const Color(0xFF5F5D63),
+                  const Color(0xFF77747A)
+                ][r.nextInt(3)]));
+            canvas.drawRRect(stone, stroke(const Color(0xFF2F2E33), 2));
+          }
+        }
+        final wet = Path()
+          ..moveTo(0, h * 0.43)
+          ..quadraticBezierTo(w * 0.25, h * 0.4, w * 0.5, h * 0.45)
+          ..quadraticBezierTo(w * 0.75, h * 0.5, w, h * 0.43)
+          ..lineTo(w, h * 0.55)
+          ..quadraticBezierTo(w * 0.75, h * 0.57, w * 0.5, h * 0.54)
+          ..quadraticBezierTo(w * 0.25, h * 0.58, 0, h * 0.56)
+          ..close();
+        canvas.drawPath(wet, fill(const Color(0xFF1D3A4A), 0.45));
+      case FightStage.shipDeck:
+        // Planks with their nails and a joint here and there.
+        final plank = h / 9;
+        for (var i = 0; i < 9; i++) {
+          final rect = Rect.fromLTWH(0, i * plank, w, plank);
+          canvas.drawRect(
+              rect,
+              fill([
+                const Color(0xFF86623C),
+                const Color(0xFF795733),
+                const Color(0xFF8D6A42)
+              ][i % 3]));
+          canvas.drawRect(rect, stroke(const Color(0xFF3A2814), 2));
+          for (final x in [14.0, w - 14]) {
+            canvas.drawCircle(Offset(x, i * plank + plank / 2), 2.2,
+                fill(const Color(0xFF2A1D0E)));
+          }
+          final joint = rx(60, w - 60);
+          canvas.drawLine(
+              Offset(joint, i * plank),
+              Offset(joint, (i + 1) * plank),
+              stroke(const Color(0xFF3A2814), 2));
         }
     }
     // The edge falls into shadow, so the dice stand out in the middle.

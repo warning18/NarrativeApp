@@ -656,10 +656,17 @@ class Geography {
   /// nearest `stage` written on [id] or the places above it, else the
   /// pattern of its biome; '' with neither (open country).
   String stageNameOf(String? id) {
+    final own = placeStageNameOf(id);
+    return own.isNotEmpty ? own : biomeOf(id)?.pattern.name ?? '';
+  }
+
+  /// The stage [id] or the nearest place holding it names itself ('' for
+  /// none): [stageNameOf] without the biome's.
+  String placeStageNameOf(String? id) {
     for (final place in pathOf(id).reversed) {
       if (place.stage.isNotEmpty) return place.stage;
     }
-    return biomeOf(id)?.pattern.name ?? '';
+    return '';
   }
 
   /// The place that holds the world_map.dart landmark [landmarkId].

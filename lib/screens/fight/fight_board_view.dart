@@ -256,7 +256,7 @@ extension _FightBoardView on _FightScreenState {
         _awaitingDecision &&
         !_rolling &&
         (member.isPlayer || !_companionsAutoAim);
-    final picked = _pickedDieId == member.id;
+    final picked = _dieLocks.selected == member.id && !_isDieLocked(member.id);
     final scalingBonus = equipmentScalingBonusFor(
       member.equippedItemIds,
       items,
@@ -278,7 +278,7 @@ extension _FightBoardView on _FightScreenState {
         if (_awaitingDecision &&
             !_rolling &&
             _currentFaces[member.id] != null) {
-          _pickedDieId = member.id;
+          _dieLocks.selected = member.id;
         }
         if (canSelect) _selectedActorId = member.id;
       }),
@@ -412,8 +412,10 @@ extension _FightBoardView on _FightScreenState {
       if (preview.target?.key == enemy.key) pending += preview.damage;
     }
     final boss = isBossEnemy(enemy.enemyId, enemy.data);
-    final pickedActor =
-        _pickedDieId == null ? null : _memberById(_pickedDieId!);
+    final pickedId = _dieLocks.selected;
+    final pickedActor = pickedId == null || _isDieLocked(pickedId)
+        ? null
+        : _memberById(pickedId);
     final canRetarget = pickedActor != null &&
         _enemies.length > 1 &&
         _awaitingDecision &&
@@ -609,7 +611,7 @@ extension _FightBoardView on _FightScreenState {
         ? 'nobody_can_act_label'
         : _currentFaces.isEmpty
             ? 'roll_hint'
-            : _pickedDieId != null && canLock
+            : _dieLocks.selected != null && canLock
                 ? 'dice_picked_hint'
                 : canLock
                     ? 'dice_pick_hint'
@@ -637,9 +639,10 @@ extension _FightBoardView on _FightScreenState {
                         Positioned.fill(
                           child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
-                            onTap: _pickedDieId == null
+                            onTap: _dieLocks.selected == null
                                 ? null
-                                : () => _update(() => _pickedDieId = null),
+                                : () =>
+                                    _update(() => _dieLocks.selected = null),
                           ),
                         ),
                         for (final actor in onBoard)
@@ -700,13 +703,6 @@ extension _FightBoardView on _FightScreenState {
 
   // --- The kept row --------------------------------------------------------
 
-  /// Whether the die of [id] can be put back on the board: kept in this very
-  /// roll, never Steady. After a new roll the keep is final for the round.
-  bool _canRelease(String id) =>
-      _lockedActorIds.contains(id) &&
-      !_steadyActorIds.contains(id) &&
-      _lockedAtRoll[id] == _rollCount;
-
   Widget _buildKeptRow(
       List<_PartyMember> acting, bool canLock, ColorScheme colorScheme) {
     final kept = [
@@ -748,7 +744,7 @@ extension _FightBoardView on _FightScreenState {
           else
             for (final actor in kept) _keptDie(actor),
           if (kept.isNotEmpty) const Spacer(),
-          if (kept.any((a) => _canRelease(a.id)))
+          if (kept.any((a) => _canReleaseDie(a.id)))
             Flexible(
               child: Text(tr(ref, 'dice_kept_return_hint'),
                   textAlign: TextAlign.end,
@@ -767,18 +763,15 @@ extension _FightBoardView on _FightScreenState {
   Widget _keptDie(_PartyMember actor) {
     final face = _currentFaces[actor.id];
     final accent = _accentFor(actor);
-    final final_ = !_canRelease(actor.id);
+    final final_ = !_canReleaseDie(actor.id);
     final kind = face == null ? null : _faceKindOf(face);
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: GestureDetector(
         key: ValueKey('kept_die_${actor.id}'),
         behavior: HitTestBehavior.opaque,
-        onDoubleTap: _canRelease(actor.id)
-            ? () => _update(() {
-                  _lockedActorIds.remove(actor.id);
-                  _lockedAtRoll.remove(actor.id);
-                })
+        onDoubleTap: _canReleaseDie(actor.id)
+            ? () => _update(() => _releaseDie(actor.id))
             : null,
         onTap: final_
             ? () => showImmersiveNotice(context,
@@ -823,7 +816,7 @@ extension _FightBoardView on _FightScreenState {
   // --- Picking a die, and the line to its target ---------------------------
 
   /// The first tap on a landed die picks it (its line to the target shows);
-  /// the second keeps it.
+  /// the second keeps it (the lock rules are Core's, die_locks.dart).
   void _onDieTap(
       _PartyMember actor,
       DiceFaceResult face,
@@ -835,28 +828,13 @@ extension _FightBoardView on _FightScreenState {
       _showFaceSheet(actor, face, dice, skills, items);
       return;
     }
-    if (_pickedDieId != actor.id) {
-      _update(() {
-        _pickedDieId = actor.id;
-        if (_enemies.length > 1 &&
-            _strikerIds().contains(actor.id) &&
-            (actor.isPlayer || !_companionsAutoAim)) {
-          _selectedActorId = actor.id;
-        }
-      });
-      return;
-    }
-    _update(() {
-      _lockedActorIds.add(actor.id);
-      _lockedAtRoll[actor.id] = _rollCount;
-      _pickedDieId = null;
-    });
+    _update(() => _tapDie(actor.id));
   }
 
   /// The aim line of the picked die: to the enemy it strikes, or (a heal, a
   /// defence) to its own card. Nothing while the dice fly or no die is picked.
   Widget _buildAimLine(_RoundPlan plan) {
-    final id = _pickedDieId;
+    final id = _dieLocks.selected;
     if (id == null || _rolling || !_awaitingDecision || _over) {
       return const SizedBox.shrink();
     }

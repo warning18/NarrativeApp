@@ -732,7 +732,7 @@ extension _FightView on _FightScreenState {
   }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
-    final locked = _lockedActorIds.contains(actor.id);
+    final locked = _isDieLocked(actor.id);
     final spinning = _rolling && !locked;
 
     // The die as a cube (v1.214, see Die3D): it tumbles to the face it
@@ -767,6 +767,8 @@ extension _FightView on _FightScreenState {
         : (face.faceName.isEmpty ? face.type : face.faceName);
     return GestureDetector(
       key: ValueKey('die_tile_${actor.id}'),
+      // A tap selects the die, a second locks it; a double tap releases a
+      // lock until the next roll (die_locks.dart).
       onTap: face == null
           ? null
           : () => _onDieTap(actor, face, canLock, dice, skills, items),
@@ -785,7 +787,7 @@ extension _FightView on _FightScreenState {
             child: Stack(
               children: [
                 Center(child: inner),
-                if (_pickedDieId == actor.id && !locked)
+                if (_dieLocks.selected == actor.id && !locked)
                   Positioned.fill(
                     child: IgnorePointer(
                       child: DecoratedBox(
