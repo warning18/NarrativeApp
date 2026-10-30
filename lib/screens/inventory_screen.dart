@@ -271,19 +271,6 @@ String requirementSummary(Map<String, dynamic>? item, AppLanguage lang) {
   return parts.join(', ');
 }
 
-/// The scaling stat's display abbreviation (e.g. "strength" -> "STR"), or
-/// null if [item] doesn't scale with anything.
-String? scalingStatAbbrev(Map<String, dynamic>? item, AppLanguage lang) {
-  final key = switch (item?['scalingStat']?.toString() ?? '') {
-    'strength' => 'str_abbrev',
-    'dexterity' => 'dex_abbrev',
-    'constitution' => 'con_abbrev',
-    'intelligence' => 'int_abbrev',
-    _ => null,
-  };
-  return key == null ? null : trFor(lang, key);
-}
-
 class _InventoryBody extends ConsumerStatefulWidget {
   const _InventoryBody({
     required this.items,

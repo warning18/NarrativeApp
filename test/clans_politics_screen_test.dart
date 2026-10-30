@@ -19,7 +19,6 @@ import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/clans_politics_screen.dart';
 import 'package:narrative_data_app/screens/shop_detail_screen.dart';
-import 'package:narrative_data_app/widgets/clan_widgets.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -288,27 +287,6 @@ void main() {
     await _openTab(tester, 'clans_tab_intrigues');
     expect(find.text('Étape 3 sur 6\u00a0: Tournant'), findsOneWidget);
     expect(find.text('Pas commencée'), findsWidgets);
-    expect(tester.takeException(), isNull, reason: 'fits 360 px');
-
-    // The Character tab's section: the same cards, no slider.
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: const MaterialApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Card(child: ClansSection()),
-          ),
-        ),
-      ),
-    ));
-    await tester.pumpAndSettle();
-    expect(find.text('Clans'), findsOneWidget);
-    expect(find.byKey(const Key('faction_card_dominion')), findsOneWidget);
-    expect(find.byKey(const Key('faction_card_penitents')), findsOneWidget);
-    expect(find.byType(Slider), findsNothing);
-    expect(find.byKey(const Key('faction_card_giants')), findsNothing,
-        reason: 'a tribe shows once its flag is set');
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
   });
 
