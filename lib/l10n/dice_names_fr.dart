@@ -9,7 +9,7 @@ const Map<String, String> diceNamesFr = {
   'bulwark_die': 'Dé du rempart',
   'chorus_die': 'Dé du chœur',
   'cinder_die': 'Dé des braises',
-  'court_die': 'Dé de la cour',
+  'court_die': 'Dé du marais',
   'flame_die': 'Dé de flamme',
   'frost_die': 'Dé de givre',
   'gambler_die': 'Dé du joueur',
