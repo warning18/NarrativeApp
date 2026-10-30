@@ -79,6 +79,7 @@ import '../widgets/town_service_sheet.dart';
 import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
 import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
@@ -749,6 +750,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// Whether the scene shown is a new game's first scene, opened as a page.
   bool _openedFresh = false;
+
+  /// The first scene's text has been told as the opening animation (a new
+  /// scene resets it): the way back to the map waits for it.
+  bool _openingTold = false;
 
   /// The scene the story brought the party to (v1.553, scene_lock.dart):
   /// a way taken into it (a pin or a card), a new game's first scene, or a
@@ -1472,6 +1477,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final newScene = sceneKey != _sceneKey;
     if (newScene) {
       _sceneKey = sceneKey;
+      _openingTold = false;
       _selected = null;
       _autoPickPending = true;
       _chartKey = GlobalKey();
@@ -2066,7 +2072,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       final toMap = !locked && !held;
       // The button names the map: the way back to it, or, locked, the way
       // that waits.
-      final toMapLabel = here && (toMap || textReady);
+      // A new game's first scene is told as an animation, its choice
+      // settling under the text (prologue_opening.dart).
+      final opening = here &&
+          !locked &&
+          revealKey != null &&
+          !play.isInExcursion &&
+          isPrologueOpening(node);
+      // With reduced motion the text is whole at once.
+      final ready = opening
+          ? _openingTold || MediaQuery.of(context).disableAnimations
+          : textReady;
+      final toMapLabel = here && (toMap || ready);
       final waitLine = Text(
         tr(ref, 'journey_choose_first'),
         key: const ValueKey('journey_choose_first'),
@@ -2098,47 +2115,91 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 ),
                 const SizedBox(height: 8),
               ],
-              Expanded(
-                child: _ScenePanel(
-                  revealKey: revealKey,
-                  key: ValueKey('journey_reading_$sceneKey'),
-                  story: story,
-                  node: node,
-                  french: french,
-                  folded: false,
-                  reading: true,
-                  toMap: toMap,
-                  locked: locked,
-                  onFold: (_) {},
-                  onReading: (r) {
-                    if (r || toMap) _read(r);
-                  },
-                  detour: detour,
+              if (opening)
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: PrologueOpening(
+                          key: ValueKey('journey_reading_$sceneKey'),
+                          text: composeNarrationParts(
+                                  node, ref.watch(playerSessionProvider), story,
+                                  french: french)
+                              .text,
+                          told: _openingTold,
+                          onTold: () {
+                            if (mounted && !_openingTold) {
+                              setState(() => _openingTold = true);
+                            }
+                          },
+                          choices: _choicePanel(
+                              steps, _pickedCard(selected), french, story,
+                              shrinkWrap: true),
+                        ),
+                      ),
+                      // The map's corner button, as on any page read whole.
+                      if (toMap)
+                        Positioned(
+                          top: 2,
+                          right: 2,
+                          child: IconButton(
+                            key: const ValueKey('journey_reading_exit'),
+                            icon: const Icon(Icons.map_outlined, size: 20),
+                            tooltip: tr(ref, 'journey_reading_exit'),
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () => _read(false),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              else ...[
+                Expanded(
+                  child: _ScenePanel(
+                    revealKey: revealKey,
+                    key: ValueKey('journey_reading_$sceneKey'),
+                    story: story,
+                    node: node,
+                    french: french,
+                    folded: false,
+                    reading: true,
+                    toMap: toMap,
+                    locked: locked,
+                    onFold: (_) {},
+                    onReading: (r) {
+                      if (r || toMap) _read(r);
+                    },
+                    detour: detour,
+                  ),
                 ),
-              ),
-              if (here && textReady) ...[
-                const SizedBox(height: 8),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: MediaQuery.sizeOf(context).height * 0.42),
-                  child: _choicePanel(
-                      steps,
-                      locked || held ? selected : _pickedCard(selected),
-                      french,
-                      story,
-                      shrinkWrap: true,
-                      all: locked || held),
-                ),
+                if (here && textReady) ...[
+                  const SizedBox(height: 8),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.sizeOf(context).height * 0.42),
+                    child: _choicePanel(
+                        steps,
+                        locked || held ? selected : _pickedCard(selected),
+                        french,
+                        story,
+                        shrinkWrap: true,
+                        all: locked || held),
+                  ),
+                ],
               ],
               // On a locked page, Continue only shows the words at once;
               // then the way back to the map waits, greyed.
-              if (toMap || !textReady || locked) ...[
+              if ((toMap || !ready || locked) && !(opening && !ready)) ...[
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
                     key: const ValueKey('journey_continue'),
-                    onPressed: locked && textReady ? null : continueFromScene,
+                    onPressed: locked && ready
+                        ? null
+                        : opening
+                            ? () => _read(false)
+                            : continueFromScene,
                     icon: Icon(
                         toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
                         size: 18),
@@ -2149,7 +2210,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             : 'journey_continue')),
                   ),
                 ),
-                if (locked && textReady) ...[
+                if (locked && ready) ...[
                   const SizedBox(height: 4),
                   waitLine,
                 ],

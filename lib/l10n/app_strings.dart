@@ -12982,8 +12982,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Écarter ({left})',
   },
   'roll_banish_length': {
-    AppLanguage.en: '{draws} draws · {cost} charges',
-    AppLanguage.fr: '{draws} tirages · {cost} charges',
+    AppLanguage.en: '{draws} draws · charges: {cost}',
+    AppLanguage.fr: '{draws} tirages · charges : {cost}',
   },
   'roll_banish_done': {
     AppLanguage.en: '{name} is warded off for {draws} draws.',
@@ -13033,8 +13033,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Tenir à l’écart la chasse d’un clan pendant quelques routes.',
   },
   'ward_length': {
-    AppLanguage.en: '{roads} roads · {cost} charges',
-    AppLanguage.fr: '{roads} routes · {cost} charges',
+    AppLanguage.en: '{roads} roads · charges: {cost}',
+    AppLanguage.fr: '{roads} routes · charges : {cost}',
   },
   'ward_mark': {
     AppLanguage.en: 'Warded from {clan}: {n} roads',
