@@ -17,8 +17,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
-import 'skill_fight_harness.dart'
-    show settle, gamedata, pumpUntil, shows, tapWhenEnabled;
+import 'skill_fight_harness.dart' show settle, gamedata;
 import 'support/pump.dart';
 
 Future<void> _enter(WidgetTester tester) async {
