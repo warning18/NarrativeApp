@@ -24,7 +24,7 @@
 // screen and the playthrough simulator play them.
 import 'dart:math';
 
-import 'field_anomaly.dart' show FightStage;
+import 'field_anomaly.dart' show FightStage, FightStageKin;
 import 'fight_length.dart';
 
 /// The rule a fight plays besides the default ones and the Tide.
@@ -49,7 +49,7 @@ ContextRule contextRuleFor({
   if (bossFight) return ContextRule.tide;
   if (city) return ContextRule.townGuards;
   if (holy) return ContextRule.sanctified;
-  return switch (stage) {
+  return switch (stage.kin) {
     FightStage.reeds => ContextRule.marshMist,
     FightStage.dunes || FightStage.saltFlats => ContextRule.desertHeat,
     FightStage.waves ||

@@ -37,6 +37,7 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
+import '../widgets/side_view/scene_versions.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -109,14 +110,25 @@ const crossingSceneTerrains = {
 
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
-List<SideLayer> crossingLayers(String terrain, double progress) =>
-    switch (terrain) {
-      'ruins' => ruinsLayers(progress: progress),
-      'frost' => frostLayers(progress: progress),
-      'fen' => fenLayers(progress: progress),
-      'sea_cliffs' => cliffsLayers(progress: progress),
-      _ => desertLayers(progress: progress),
-    };
+///
+/// [version] (0 to 3, sceneVersionAt) is the stretch of that land shown: its
+/// own window of the world and its own landmark.
+List<SideLayer> crossingLayers(String terrain, double progress,
+    {int version = 0}) {
+  final layers = switch (terrain) {
+    'ruins' => ruinsLayers(progress: progress),
+    'frost' => frostLayers(progress: progress),
+    'fen' => fenLayers(progress: progress),
+    'sea_cliffs' => cliffsLayers(progress: progress),
+    _ => desertLayers(progress: progress),
+  };
+  final kit = switch (terrain) {
+    'ruins' || 'frost' || 'fen' => terrain,
+    'sea_cliffs' => 'cliffs',
+    _ => 'desert',
+  };
+  return withSceneVersion(layers, kit, version);
+}
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
@@ -179,6 +191,29 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       widget.route, widget.events.keys,
       random: _random, rulers: widget.rulers);
   var _day = 0;
+
+  /// The scene version on show, and the dissolve that brings the next one in
+  /// (a short pixel dissolve when the day, and with it the version, changes).
+  int? _shownVersion;
+  SideLayer? _dissolve;
+  DateTime _dissolveUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  List<SideLayer> _sceneLayers(
+      int version, List<SideLayer> Function(int version) layersFor,
+      {required bool reduceMotion}) {
+    final shown = _shownVersion;
+    if (shown != null && shown != version && !reduceMotion) {
+      _dissolve = sceneDissolve(layersFor(shown), layersFor(version));
+      _dissolveUntil = DateTime.now().add(const Duration(milliseconds: 1100));
+    }
+    _shownVersion = version;
+    final dissolve = _dissolve;
+    if (dissolve != null && DateTime.now().isBefore(_dissolveUntil)) {
+      return [dissolve];
+    }
+    return layersFor(version);
+  }
+
   var _phase = _Phase.event;
   var _daysSpent = 0;
   String _note = '';
@@ -738,8 +773,13 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: _crossingSceneHeight,
-                      layers: withHourStars(
-                          crossingLayers(terrain, progress), phase),
+                      layers: _sceneLayers(
+                          sceneVersionAt(widget.route.id, _day),
+                          (v) => withHourStars(
+                              crossingLayers(terrain, progress, version: v),
+                              phase),
+                          reduceMotion:
+                              MediaQuery.of(context).disableAnimations),
                       overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),

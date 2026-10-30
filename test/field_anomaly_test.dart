@@ -300,7 +300,7 @@ void main() {
               stage: stage,
               sky: WeatherKind.values[i % WeatherKind.values.length],
               random: random)!;
-          expect(p.anomaly.stages, contains(stage));
+          expect(p.anomaly.stages, contains(stage.kin));
           expect(p.onset, inInclusiveRange(2, 4));
           expect(p.rounds, inInclusiveRange(2, 3));
           expect(p.side == AnomalySide.both, p.anomaly.shared);

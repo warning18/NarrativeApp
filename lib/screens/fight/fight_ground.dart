@@ -23,8 +23,12 @@ extension _FightGround on _FightScreenState {
     final placeId = _placeIdHere();
     final named = fightStageFromName(geography.placeStageNameOf(placeId));
     if (named != null) return named;
-    return fightStageOf(geography.biomeOf(placeId)?.pattern,
-        town: guardedPlaceKinds.contains(geography.locationOf(placeId)?.kind));
+    // Open country has a few faces: the place picks one and keeps it.
+    return poolStageOf(
+        fightStageOf(geography.biomeOf(placeId)?.pattern,
+            town: guardedPlaceKinds
+                .contains(geography.locationOf(placeId)?.kind)),
+        placeId);
   }
 
   /// The light this fight is fought in (see place_traits.dart): the place's,
