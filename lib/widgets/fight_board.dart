@@ -23,6 +23,14 @@ Color fightBoardBase(FightStage stage) => switch (stage) {
       FightStage.hall => const Color(0xFF4A4036),
       FightStage.cityRoad => const Color(0xFF2F2E33),
       FightStage.shipDeck => const Color(0xFF7A5836),
+      FightStage.ruins => const Color(0xFF5A5854),
+      FightStage.woods => const Color(0xFF2E3B28),
+      FightStage.ford => const Color(0xFF3A6A7C),
+      FightStage.burntFields => const Color(0xFF2B2420),
+      FightStage.oasis => const Color(0xFFD2B676),
+      FightStage.caravanRoad => const Color(0xFF9A7C52),
+      FightStage.quay => const Color(0xFF55606A),
+      FightStage.pass => const Color(0xFF6E6A70),
     };
 
 /// Paints the board's surface for [stage]: the same picture every time (a
@@ -253,6 +261,166 @@ class FightBoardPainter extends CustomPainter {
               Offset(joint, i * plank),
               Offset(joint, (i + 1) * plank),
               stroke(const Color(0xFF3A2814), 2));
+        }
+      case FightStage.ruins:
+        // Broken flagstones, cracks between them, moss in the joints.
+        for (var row = 0; row < 5; row++) {
+          for (var col = -1; col < 6; col++) {
+            final x = col * w / 5 + (row.isOdd ? w / 10 : 0);
+            final rect = Rect.fromLTWH(
+                x + rx(-2, 2), row * h / 5, w / 5, h / 5 + rx(-3, 3));
+            canvas.drawRect(
+                rect,
+                fill([
+                  const Color(0xFF65635E),
+                  const Color(0xFF55534F),
+                  const Color(0xFF6E6C66)
+                ][r.nextInt(3)]));
+            canvas.drawRect(rect, stroke(const Color(0xFF2B2A28), 2));
+          }
+        }
+        for (var i = 0; i < 18; i++) {
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(16, 40),
+                  height: rx(6, 12)),
+              fill(const Color(0xFF4A6B3A), 0.55));
+        }
+      case FightStage.woods:
+        // A floor of leaves and roots under the trees.
+        for (var i = 0; i < 120; i++) {
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(6, 14),
+                  height: 4),
+              fill(
+                  [
+                    const Color(0xFF6B4A22),
+                    const Color(0xFF8A5B24),
+                    const Color(0xFF4A5C2A)
+                  ][r.nextInt(3)],
+                  0.7));
+        }
+        for (var i = 0; i < 9; i++) {
+          final p = Path()
+            ..moveTo(rx(0, w), rx(0, h))
+            ..relativeQuadraticBezierTo(
+                rx(-30, 30), rx(10, 40), rx(-50, 50), rx(20, 60));
+          canvas.drawPath(p, stroke(const Color(0xFF1B1710), 4));
+        }
+      case FightStage.ford:
+        // Shallow water over a stony bed, stepping stones across.
+        for (var y = 14.0; y < h; y += 22) {
+          final p = Path()..moveTo(0, y);
+          for (var k = 0; k < 4; k++) {
+            p.relativeQuadraticBezierTo(w / 8, -7, w / 4, 0);
+          }
+          canvas.drawPath(p, stroke(const Color(0xFFA6D2E0), 1.8, 0.5));
+        }
+        for (var i = 0; i < 26; i++) {
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(18, 40),
+                  height: rx(10, 20)),
+              fill(const Color(0xFF6E7A78), 0.8));
+        }
+      case FightStage.burntFields:
+        // Charred earth, burnt stubble, a few embers still red.
+        for (var i = 0; i < 9; i++) {
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(40, 100),
+                  height: rx(10, 26)),
+              fill(const Color(0xFF14100E), 0.6));
+        }
+        for (var i = 0; i < 130; i++) {
+          final x = rx(5, w - 5);
+          final y = rx(10, h);
+          canvas.drawLine(Offset(x, y), Offset(x + rx(-3, 3), y - rx(5, 11)),
+              stroke(const Color(0xFF0E0B0A), 1.6));
+        }
+        for (var i = 0; i < 40; i++) {
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1, 2),
+              fill(const Color(0xFFE0752B), 0.8));
+        }
+      case FightStage.oasis:
+        // Sand ripples around a pool, a few palms' shade.
+        for (var y = 26.0; y < h; y += 30) {
+          final p = Path()
+            ..moveTo(0, y)
+            ..quadraticBezierTo(w * 0.3, y - 10, w * 0.6, y)
+            ..quadraticBezierTo(w * 0.8, y + 8, w, y);
+          canvas.drawPath(p, stroke(const Color(0xFFB09858), 2, 0.5));
+        }
+        canvas.drawOval(
+            Rect.fromCenter(
+                center: Offset(w * 0.5, h * 0.52),
+                width: w * 0.55,
+                height: h * 0.3),
+            fill(const Color(0xFF3F8FA0), 0.85));
+        canvas.drawOval(
+            Rect.fromCenter(
+                center: Offset(w * 0.5, h * 0.52),
+                width: w * 0.55,
+                height: h * 0.3),
+            stroke(const Color(0xFF4F7A3A), 5));
+        for (var i = 0; i < 6; i++) {
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(8, 18),
+              fill(const Color(0xFF4F7A3A), 0.5));
+        }
+      case FightStage.caravanRoad:
+        // A packed dirt road with two wheel ruts and stones at its edge.
+        for (var side = 0; side < 2; side++) {
+          final y = h * (side == 0 ? 0.36 : 0.64);
+          final p = Path()
+            ..moveTo(0, y)
+            ..quadraticBezierTo(w * 0.5, y + (side == 0 ? 10 : -10), w, y);
+          canvas.drawPath(p, stroke(const Color(0xFF5E4630), 9, 0.6));
+          canvas.drawPath(p, stroke(const Color(0xFFB59A70), 2, 0.7));
+        }
+        for (var i = 0; i < 50; i++) {
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1.5, 4),
+              fill(const Color(0xFF6E5A40), 0.8));
+        }
+      case FightStage.quay:
+        // Dressed stone blocks of a harbour, an iron ring, a wet edge.
+        for (var row = 0; row < 6; row++) {
+          for (var col = -1; col < 5; col++) {
+            final x = col * w / 4 + (row.isOdd ? w / 8 : 0);
+            final rect = Rect.fromLTWH(x, row * h / 6, w / 4, h / 6);
+            canvas.drawRect(
+                rect,
+                fill([
+                  const Color(0xFF5C6770),
+                  const Color(0xFF4F5A63),
+                  const Color(0xFF66727B)
+                ][r.nextInt(3)]));
+            canvas.drawRect(rect, stroke(const Color(0xFF2A3036), 2));
+          }
+        }
+        canvas.drawCircle(
+            Offset(w * 0.12, h * 0.2), 9, stroke(const Color(0xFF1B1F23), 4));
+        canvas.drawRect(Rect.fromLTWH(0, h * 0.86, w, h * 0.14),
+            fill(const Color(0xFF2D5F78), 0.7));
+      case FightStage.pass:
+        // Bare rock of a mountain pass, snow in its hollows.
+        for (var i = 0; i < 20; i++) {
+          final p = Path()
+            ..moveTo(rx(0, w), rx(0, h))
+            ..relativeLineTo(rx(-50, 50), rx(10, 50));
+          canvas.drawPath(p, stroke(const Color(0xFF2E2C32), 2));
+        }
+        for (var i = 0; i < 9; i++) {
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(30, 80),
+                  height: rx(10, 20)),
+              fill(Colors.white, 0.75));
         }
     }
     // The edge falls into shadow, so the dice stand out in the middle.
