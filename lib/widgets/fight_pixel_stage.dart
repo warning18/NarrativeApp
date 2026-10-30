@@ -93,6 +93,16 @@ void paintPixelStage(Canvas canvas, Size size, FightStage stage,
       p.shards();
     case FightStage.hall:
       p.hall();
+    // Placeholders until the board skins of v1.662 (the city road, the deck).
+    case FightStage.cityRoad:
+      p.sky(hz: p.hz);
+      p.hills(94, 5, 0.07, 0, p.l.far, 0.35);
+      p.ground(110);
+      p.speckle(112, p.rows, p.l.dark, 90, 1);
+    case FightStage.shipDeck:
+      p.sky(hz: p.hz - 4);
+      p.sea(p.hz - 4);
+      p.sail(76, p.hz - 3);
     case FightStage.ruins:
       p.sky(hz: p.hz);
       p.birds();

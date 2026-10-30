@@ -808,7 +808,7 @@ extension _FightView on _FightScreenState {
   ) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
-    final locked = _lockedActorIds.contains(actor.id);
+    final locked = _isDieLocked(actor.id);
     final spinning = _rolling && !locked;
 
     // The die as a cube (v1.214, see Die3D): it tumbles to the face it
@@ -843,22 +843,21 @@ extension _FightView on _FightScreenState {
         : (face.faceName.isEmpty ? face.type : face.faceName);
     return GestureDetector(
       key: ValueKey('die_tile_${actor.id}'),
+      // A tap selects the die, a second locks it; a double tap releases a
+      // lock until the next roll (die_locks.dart).
       onTap: face == null
           ? null
           : () {
               // A Steady face stays put: the sheet says why.
               if (canLock && !_steadyActorIds.contains(actor.id)) {
-                _update(() {
-                  if (locked) {
-                    _lockedActorIds.remove(actor.id);
-                  } else {
-                    _lockedActorIds.add(actor.id);
-                  }
-                });
+                _update(() => _tapDie(actor.id));
               } else {
                 _showFaceSheet(actor, face, dice, skills, items);
               }
             },
+      onDoubleTap: face == null || !canLock || !_canReleaseDie(actor.id)
+          ? null
+          : () => _update(() => _releaseDie(actor.id)),
       onLongPress: face == null
           ? null
           : () => _showFaceSheet(actor, face, dice, skills, items),

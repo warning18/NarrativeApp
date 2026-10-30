@@ -188,6 +188,24 @@ class FightScenery {
             ground: Color(0xFF8A8068),
             dark: Color(0xFF4F4A3E),
             light: Color(0xFFF1E7C9)),
+        // Placeholders until UX's board skins (v1.662): grey stone for
+        // the streets, a wet deck under a sea sky.
+        FightStage.cityRoad => const FightScenery(
+            skyTop: Color(0xFF7D8794),
+            skyLow: Color(0xFFC8C3B8),
+            far: Color(0xFF6B6660),
+            mid: Color(0xFF5A554F),
+            ground: Color(0xFF77716A),
+            dark: Color(0xFF3E3A36),
+            light: Color(0xFFE6DCC4)),
+        FightStage.shipDeck => const FightScenery(
+            skyTop: Color(0xFF5E86A3),
+            skyLow: Color(0xFFB9D0DC),
+            far: Color(0xFF3F6A86),
+            mid: Color(0xFF6E5236),
+            ground: Color(0xFF8A6A47),
+            dark: Color(0xFF4A3622),
+            light: Color(0xFFF0E2C2)),
       };
 }
 
