@@ -44,7 +44,7 @@ open on Vica's poison, the icon legend); the 8 icons (9 x 9 pixel, one colour ea
 User feedback: no dynamic spaces; max 3 per side, equal blocks; tap a die: a line to its target (an
 enemy, or an ally for a heal); tap again to lock it (it drops small below the board); a locked die
 returns to the board with a double tap until a new roll is triggered, then the lock is final.
-Picture: `docs/ux-shots/combat2/variant-A3-fixed-slots-targeting.png` (3+3 slots; 2 allies vs 1
+Picture: `docs/ux-shots/combat2/variant-A3-fixed-slots-targeting.png` (3+3 slots, all six the same size, 192 x 70 px, the enemy blocks identical to the party blocks; 2 allies vs 1
 enemy with empty slots; a strike die with its line; a heal die with its line to an ally; the second
 tap; the double-tap return; the sealed locks after a new roll).
 
