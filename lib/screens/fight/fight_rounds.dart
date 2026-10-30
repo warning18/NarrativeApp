@@ -259,10 +259,16 @@ extension _FightRounds on _FightScreenState {
         _surgeActorId = null;
       }
       final healing = _healDealt(actor, face, result.healingDone);
+      // A heal mends the member it is aimed at (heal_target.dart): by
+      // default the most wounded one standing. What heals past full counts
+      // on them.
+      final healed = healing > 0 && _roleOf(result) == FaceRole.heal
+          ? _healTargetFor(actor)
+          : actor;
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
       if (watchfire && healing > 0) {
-        _watchfireOnHeal(actor, healing, newEntries, lang);
+        _watchfireOnHeal(actor, healing, newEntries, lang, healed: healed);
       }
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
@@ -282,15 +288,26 @@ extension _FightRounds on _FightScreenState {
       final signShield = actor.isPlayer && face.type == 'Heal'
           ? _signs.shieldFromOverheal(
               healing: healing,
-              currentHealth: actor.currentHealth,
-              maxHealth: actor.maxHealth)
+              currentHealth: healed.currentHealth,
+              maxHealth: healed.maxHealth)
           : 0;
       // The Stitch-Thrust: healing past full strikes the foe (step 3c).
       if (actor.isPlayer && healing > 0) {
-        _stitchThrust(overheal(healing, actor.currentHealth, actor.maxHealth),
+        _stitchThrust(overheal(healing, healed.currentHealth, healed.maxHealth),
             newEntries, lang);
       }
-      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
+      healed.currentHealth =
+          min(healed.maxHealth, healed.currentHealth + healing);
+      if (healed != actor) {
+        _fx(VfxStyle.heal, _memberCardKey(healed.id),
+            delayMs: fxDelay, text: '+$healing', textKind: VfxTextKind.heal);
+        newEntries.add(_LogEntry(
+            trFor(lang, 'heal_target_log')
+                .replaceAll('{name}', actor.displayName)
+                .replaceAll('{target}', healed.displayName)
+                .replaceAll('{n}', '$healing'),
+            _LogKind.playerHeal));
+      }
       if (!extras.isNone) {
         bonusRollsNext +=
             _applySkillExtrasOnCaster(actor, healing, extras, newEntries, lang);
@@ -299,7 +316,7 @@ extension _FightRounds on _FightScreenState {
       if (combos.contains(PartyCombo.shelter) &&
           _roleOf(result) == FaceRole.heal &&
           healing > 0) {
-        _shelterFrom(actor, healing, newEntries, lang);
+        _shelterFrom(actor, healed, healing, newEntries, lang);
       }
       final braced = result.blockAmount > 0 && _isTelegraphedTarget(actor);
       var block = braced
@@ -560,7 +577,8 @@ extension _FightRounds on _FightScreenState {
         result: result,
         target: target,
         dealt: dealt,
-        healing: healing,
+        // A heal on another member shows on their card (above).
+        healing: healed == actor ? healing : 0,
         block: block,
         drained: drainedFx,
         delayMs: fxDelay,
@@ -628,6 +646,7 @@ extension _FightRounds on _FightScreenState {
       _selectedTargets.clear();
       _parryTargets.clear();
       _dieLocks.clear();
+      _healTargets.clear();
       _steadyActorIds.clear();
       _selectedActorId = null;
       if (lastDamagedEnemyKey != null) {
@@ -813,6 +832,7 @@ extension _FightRounds on _FightScreenState {
       _currentFaces.clear();
       _selectedTargets.clear();
       _dieLocks.clear();
+      _healTargets.clear();
       _steadyActorIds.clear();
       _spellBlock.clear();
       _guardianId = null;

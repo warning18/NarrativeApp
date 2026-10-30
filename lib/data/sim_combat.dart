@@ -21,6 +21,7 @@ import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
 import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/heal_target.dart';
 import '../combat/strike_damage.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -1328,12 +1329,33 @@ SimFightOutcome simulateSimFight({
     return null;
   }
 
-  // The Stitch-Thrust: healing past full strikes the foe.
-  void overhealed(int healing) {
+  // The Stitch-Thrust: healing past full strikes the foe ([current] and
+  // [max]: the health of the one mended; the hero's by default).
+  void overhealed(int healing, {int? current, int? full}) {
     if (!has(Spec.stitchThrust)) return;
-    final hit = stitchThrust(overheal(healing, c.currentHealth, c.maxHealth));
+    final hit = stitchThrust(
+        overheal(healing, current ?? c.currentHealth, full ?? c.maxHealth));
     final target = firstLiving();
     if (hit > 0 && target != null) target.health = max(0, target.health - hit);
+  }
+
+  // Who a heal mends (heal_target.dart, the game's default): the most
+  // wounded member standing, the healer on a tie. 0 is the hero, then the
+  // companions in order.
+  int healTargetOf(int healer) => defaultHealTarget([
+        (current: c.currentHealth, max: c.maxHealth),
+        for (final a in allies) (current: a.currentHealth, max: a.maxHealth),
+      ], healer);
+  int currentOf(int i) =>
+      i == 0 ? c.currentHealth : allies[i - 1].currentHealth;
+  int maxOf(int i) => i == 0 ? c.maxHealth : allies[i - 1].maxHealth;
+  void mend(int i, int heal) {
+    if (i == 0) {
+      c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
+    } else {
+      final a = allies[i - 1];
+      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+    }
   }
 
   SimFightOutcome finish(bool won) {
@@ -1821,13 +1843,21 @@ SimFightOutcome simulateSimFight({
           s.playerInflicted(inflicted),
         );
       }
+      // A heal mends the most wounded member standing (heal_target.dart),
+      // and what heals past full counts on them.
+      final healTo = result.healingDone > 0 &&
+              result.damageDealt == 0 &&
+              result.blockAmount == 0
+          ? healTargetOf(0)
+          : 0;
+      final mended = healTo < 0 ? 0 : healTo;
       // A mend sign turns healing past full into block, and lifts
       // afflictions.
       if (face.type == 'Heal' && result.healingDone > 0) {
         block += s.shieldFromOverheal(
           healing: result.healingDone,
-          currentHealth: c.currentHealth,
-          maxHealth: c.maxHealth,
+          currentHealth: currentOf(mended),
+          maxHealth: maxOf(mended),
         );
         if (s.mendCleanse > 0) {
           c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
@@ -1869,13 +1899,13 @@ SimFightOutcome simulateSimFight({
         fire = fireAfterHeal(
           fire: fire,
           healing: heal,
-          currentHealth: c.currentHealth,
-          maxHealth: c.maxHealth,
+          currentHealth: currentOf(mended),
+          maxHealth: maxOf(mended),
           beacon: has(Spec.beacon),
         );
       }
-      overhealed(heal);
-      c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
+      overhealed(heal, current: currentOf(mended), full: maxOf(mended));
+      mend(mended, heal);
       // A Defend face meets the strongest blow coming at it as a parry,
       // worth half again as much, instead of guarding the first to strike.
       var parried = false;
@@ -1998,7 +2028,13 @@ SimFightOutcome simulateSimFight({
       }
       var heal = ctx?.heal(result.healingDone, rounds) ?? result.healingDone;
       if (on('fatigue') && heal > 0) heal = fatiguedHeal(heal, a.healsGiven++);
-      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+      // A companion's heal mends the most wounded member standing too.
+      final allyIndex = allies.indexOf(a) + 1;
+      final allyHealTo =
+          heal > 0 && result.damageDealt == 0 && result.blockAmount == 0
+              ? healTargetOf(allyIndex)
+              : allyIndex;
+      mend(allyHealTo < 0 ? allyIndex : allyHealTo, heal);
       a.block += result.blockAmount;
       if (face.type == 'Defend' && result.blockAmount > 0) {
         alliesDefending++;

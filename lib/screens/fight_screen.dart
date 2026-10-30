@@ -25,6 +25,7 @@ import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/die_locks.dart';
+import '../combat/heal_target.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
@@ -320,6 +321,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Acting members whose current face is kept (locked) through the next
   /// reroll (see [_dieLocks]).
   Set<String> get _lockedActorIds => _dieLocks.locked;
+
+  /// The member each acting member's heal is aimed at this round (see
+  /// _healTargetFor); none picked is the most wounded. Cleared with the
+  /// round.
+  final Map<String, String> _healTargets = {};
 
   /// In a pack fight, the member whose die an enemy-card tap re-aims.
   String? _selectedActorId;
