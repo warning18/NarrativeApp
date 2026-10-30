@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.692.0+728]
+
+- **Core: a page that offers one choice has no way back to the map.**
+  - A story scene with a single card the party can take hides "Back to the
+    map" and the corner map button: the story goes on through it. Its map
+    pins, if any, are listed as road cards under it, so no way is lost (the
+    landward gate's "Go in with the caravan" next to "Hide in a salt
+    wagon").
+  - A single card that can't be taken yet, a hub, an ending and Edit Mode
+    keep the way back. Pages with several cards keep the older rule.
+  - Four more scenes of chapters 1 to 3 lose the button: 2005, 2020,
+    2015_house_keyholders and 2015_informant.
+- **Core: no map before the game has started.** A new game's first page
+  (before the hero is made) has no "Back to the map", no corner map button
+  and no map in the top bar; a save made there resumes on it the same way.
+  The map is there once the hero is made.
+
 ## [1.691.0+727]
 
 - **Narrative: the hero speaks in the stage scenes (first replies).** Twenty

@@ -346,22 +346,26 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             : Text(titles[index]),
         actions: [
           // Edit Mode maps the story's scenes and paths; play mode shows
-          // the world the story has reached.
-          TutorialTarget(
-            id: 'home.map',
-            child: IconButton(
-              icon: Icon(isEditMode
-                  ? Icons.account_tree_outlined
-                  : Icons.map_outlined),
-              tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      isEditMode ? const StoryMapPage() : const FullMapScreen(),
+          // the world the story has reached, once the game has started
+          // (no map before the hero is made, v1.692).
+          if (isEditMode || !isFreshStoryStart(ref.watch(storyPlayProvider)))
+            TutorialTarget(
+              id: 'home.map',
+              child: IconButton(
+                key: const Key('home_full_map'),
+                icon: Icon(isEditMode
+                    ? Icons.account_tree_outlined
+                    : Icons.map_outlined),
+                tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => isEditMode
+                        ? const StoryMapPage()
+                        : const FullMapScreen(),
+                  ),
                 ),
               ),
             ),
-          ),
           // Edit Mode also has the world chart, whole: no fog, every place
           // and every chapter's road (v1.209).
           if (isEditMode)
