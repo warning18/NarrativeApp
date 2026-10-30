@@ -958,8 +958,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             healthMultiplier: healthMultiplier,
             difficultyMultiplier: boardingDifficulty,
             isTest: widget.isTest,
-            // A boarding fight is fought on the deck (v1.662).
-            forcedStage: FightStage.deck,
+            // A boarding fight is fought on the ship deck (v1.660).
+            forcedStage: FightStage.shipDeck,
           ),
         ),
       ),

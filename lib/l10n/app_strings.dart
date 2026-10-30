@@ -9142,13 +9142,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Within walls',
     AppLanguage.fr: 'Entre quatre murs',
   },
-  'stage_streets': {
-    AppLanguage.en: 'Streets',
-    AppLanguage.fr: 'Rues',
+  'stage_cityRoad': {
+    AppLanguage.en: 'City road',
+    AppLanguage.fr: 'Rue de la ville',
   },
-  'stage_deck': {
-    AppLanguage.en: 'Deck',
-    AppLanguage.fr: 'Pont',
+  'stage_shipDeck': {
+    AppLanguage.en: 'Ship deck',
+    AppLanguage.fr: 'Pont du navire',
   },
   'anomaly_omen_storm': {
     AppLanguage.en: 'The air turns heavy: {name} is coming.',
