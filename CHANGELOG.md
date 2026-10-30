@@ -25,6 +25,28 @@ isn't reconstructable from git history alone.
     count one more (`clan_dice.dart`).
   - No balance band moves (boss, clash, the simulator's).
 
+## [1.674.0+710]
+
+- **Cleanup: the old fight stage's leftovers are removed**
+  `fightRectOf`, `StageBar` and `StageDisc`, `FuryGauge` and
+  `WatchfireMark`, `FightBoxes`, `heroFightSprite` and the `FightFigure`
+  widget, with the tests that only they had. No behaviour change.
+
+## [1.673.0+709]
+
+- **Cleanup: file-only names added since the first pass are private**
+  Helpers of the fight board, the effect icons, the weapon styles and the
+  language notifier that only their own file uses (renames inside one file,
+  4 files). No behaviour change.
+
+## [1.672.0+708]
+
+- **Narrative: the Barracks Annex reads as rest and readiness.** The Annex no
+  longer gives a third fighting seat; it gives each companion more health. Its
+  description (English and French, `barracks_annex` in `houses.json`) now
+  speaks of bunks, a second mess table and a company rested and ready to hold
+  the line, instead of "room enough for one more pair of hands at your back".
+  Wording only: no key renamed, no number changed.
 ## [1.671.0+707]
 
 - The fight's weather now falls over the whole screen, cards and board

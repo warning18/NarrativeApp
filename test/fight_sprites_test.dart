@@ -1,36 +1,16 @@
-// The fight's sprites are swapped through one resolver (v1.451): every hero
-// gets the ronin today, a frame size sizes the figure, and a set whose
-// image is missing falls back to the ronin instead of failing.
+// The fight's sprites (v1.451): the ronin is the hero's art today, and a set
+// whose image is missing falls back to the ronin instead of failing.
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:narrative_data_app/widgets/fight_figure.dart';
 import 'package:narrative_data_app/widgets/fight_sprites.dart';
 
 void main() {
-  test('every hero gets the ronin until later art plugs in', () {
-    expect(heroFightSprite(), same(roninSprite));
-    expect(heroFightSprite(raceId: 'orc', professionId: 'mage'),
-        same(roninSprite));
+  test('the ronin is the hero\'s art until later art plugs in', () {
     expect(roninSprite.facesEast, isTrue);
     expect(roninSprite.frameWidth, 42);
     expect(roninSprite.frameHeight, 47);
-  });
-
-  test('the figure is sized from the frame the set gives, not the ronin\'s',
-      () {
-    const tall = FightSpriteSet(
-        id: 'giant',
-        idleAsset: 'assets/visuals/walker/missing.png',
-        frameWidth: 64,
-        frameHeight: 96);
-    final ronin = FightFigure.sizeFor(roninSprite, 3);
-    final big = FightFigure.sizeFor(tall, 3);
-    expect(ronin.width, 42 * 3 + FightFigure.lungeReach);
-    expect(ronin.height, 47 * 3 + 6);
-    expect(big.width, 64 * 3 + FightFigure.lungeReach);
-    expect(big.height, 96 * 3 + 6);
   });
 
   testWidgets('a set with a missing image falls back to the ronin',
