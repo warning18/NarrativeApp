@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.658.0+694]
+
+- **Narrative: "1 charges" fixed (#650).** The ward sheet and the roll banish
+  show their cost as a label, so one charge never reads as a plural, in both
+  languages.
+  - `ward_length`: "3 roads · charges: 1" / "3 routes · charges : 1";
+    `roll_banish_length`: "5 draws · charges: 1" / "5 tirages · charges : 1".
+    Wording only, no key renamed, no plural code. Roads and draws are never 1.
+  - `test/road_wards_test.dart`: the pinned line follows, and a guard checks
+    that a cost of 1 never reads "1 charges" in either language.
+## [1.657.0+693]
+
+- **Fix: the opening animation now shows on a new game's first page**
+  The animation of v1.654 ran only in the Story tab's view; a new game opens on the Journey tab's
+  reading page, which still showed the whole text. That page now tells the first scene the same
+  way (a sentence at a time, the Grey Shroud's sigil behind the end of the text, the choice
+  settling in after the text has folded). The map's corner button and "Revenir à la carte" stay.
+  A real-app test now goes through New Game and finds the animation.
+
 ## [1.656.0+692]
 
 - **Cleanup: widgets and helpers nothing used are removed**
