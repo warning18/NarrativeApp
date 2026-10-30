@@ -2390,8 +2390,9 @@ final DbSchema housesSchema = DbSchema(
         label: 'Build materials {itemId: count}',
         type: FieldType.json),
     FieldSchema(
-      key: 'partyCapacityBonus',
-      label: 'Party Capacity Bonus',
+      key: 'companionHealthBonus',
+      label:
+          'Companion Health Bonus (%, companions only, every fight once built)',
       type: FieldType.integer,
       defaultValue: 0,
     ),

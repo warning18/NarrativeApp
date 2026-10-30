@@ -29,6 +29,7 @@ import 'dart:math';
 
 import '../combat/combat_engine.dart' show scaledDamage, scaledMaxHealth;
 import '../combat/fight_numbers.dart' show reviveHealthFraction;
+import '../combat/party_bonus.dart' show fullCompanySize, houseBonusesFor;
 import '../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart' show deriveAllyBaseStats;
@@ -515,12 +516,22 @@ class SimParty {
           const {};
       final base = deriveAllyBaseStats(
           gameConfig: gameConfig, race: race, profession: profession);
-      final stats = _allyStats(record,
+      final raw = _allyStats(record,
           level: _level,
           approval: member.approval,
           races: races,
           professions: professions,
           gameConfig: gameConfig);
+      // The Barracks Annex: a full company comes rested (party_bonus.dart).
+      final rested = 100 +
+          (active.length >= fullCompanySize
+              ? houseBonusesFor(builtHouses, houses).companionHealth
+              : 0);
+      final stats = (
+        maxHealth: max(1, (raw.maxHealth * rested / 100).round()),
+        damage: raw.damage,
+        armor: raw.armor,
+      );
       final liveMax = signs.maxHealthFor(stats.maxHealth, partyWide: true);
       final faces = _facesOf(dice, record);
       final known = {

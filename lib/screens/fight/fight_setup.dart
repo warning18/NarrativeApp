@@ -386,7 +386,7 @@ extension _FightSetup on _FightScreenState {
     );
 
     // A companion as they fight this one.
-    _PartyMember? allyMember(String companionId) {
+    _PartyMember? allyMember(String companionId, {bool fullCompany = false}) {
       final companion = companions[companionId] as Map<String, dynamic>?;
       if (companion == null) return null;
       final allyState = session.recruitedAllies.firstWhere(
@@ -406,10 +406,14 @@ extension _FightSetup on _FightScreenState {
           gameConfig: gameConfig, race: race, profession: profession);
       // A devoted companion fights harder, a wary one holds back.
       final tier = approvalTierFor(allyState.approval);
-      final baseAllyHealth = _partyBonus
+      final allyHealth = _partyBonus
               .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel)) *
           approvalHealthPercent(tier) ~/
           100;
+      // The Barracks Annex: a full company comes rested (party_bonus.dart).
+      final baseAllyHealth = fullCompany
+          ? _partyBonus.scaleCompanionMaxHealth(allyHealth)
+          : allyHealth;
       // A banner sign raises the whole party's health in the fight.
       final liveMaxHealth =
           _signs.maxHealthFor(baseAllyHealth, partyWide: true);
@@ -476,7 +480,9 @@ extension _FightSetup on _FightScreenState {
     _party = [
       _party.first,
       for (final id in lineup)
-        if (build(id) case final member?) member,
+        if (build(id, fullCompany: lineup.length >= fullCompanySize)
+            case final member?)
+          member,
     ];
   }
 

@@ -107,8 +107,8 @@ const int _startingDieManaFaceIndex = 1;
 
 /// How many companions may be seated (fight beside the player): two, so a
 /// fight has three fighters and three dice, never more (the user's cap,
-/// v1.667). A house's `partyCapacityBonus` (houses.json, the Barracks
-/// Annex) no longer adds a seat.
+/// v1.667). No house adds a seat; the Barracks Annex gives the companions
+/// health instead (`companionHealthBonus`, party_bonus.dart).
 const int basePartyCapacity = 2;
 
 /// The flag set when the first banner (clan offer) is due: the clans met
@@ -609,8 +609,8 @@ class PlayerSession {
   final List<AllyState> recruitedAllies;
 
   /// Subset of [recruitedAllies] (by companionId) currently fighting
-  /// alongside the player, bounded by party capacity (default 2, raised by
-  /// built houses' partyCapacityBonus).
+  /// alongside the player, bounded by party capacity (two: three fighters,
+  /// v1.667).
   final List<String> activeAllyIds;
 
   /// Companions the story took for good (see [StoryChoice.loseAllyId]);
@@ -729,8 +729,7 @@ class PlayerSession {
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
-  /// `requiredHouseId`) and/or raises party capacity
-  /// (`partyCapacityBonus`), per houses.json.
+  /// `requiredHouseId`), per houses.json.
   final List<String> builtHouseIds;
 
   /// Every piece of the camp's cliff town in the order it went up: house

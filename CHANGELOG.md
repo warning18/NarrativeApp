@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.668.0+704]
+
+- **Core: the Barracks Annex rests a full company (the user's pick, after
+  the cap of three fighters).**
+  - Built, it gives each companion +40% max health while two companions
+    are fielded (houses.json `companionHealthBonus`, replacing
+    `partyCapacityBonus`; `PartyBonus.scaleCompanionMaxHealth`,
+    `fullCompanySize`). The building and its cost are unchanged.
+  - The fight and the simulator read the same bonus. Over 50 competent
+    runs, 4.53% of fights lost (4.45% before the cap, 8.96% with the cap
+    alone); every balance band holds (a bonus for a lone companion too
+    would have lifted four boss bands past theirs).
+  - The camp's town card reads "+40% companion health with a full
+    company"; no house shows a locked third seat any more.
+
 ## [1.667.0+703]
 
 - **Core: three fighters at most, and the pre-fight pick (the user's

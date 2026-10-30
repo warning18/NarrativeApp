@@ -8,7 +8,6 @@
     "materialCost": {
       "material_timber": 2
     },
-    "partyCapacityBonus": 0,
     "requiredFlags": [],
     "requiredAllyId": "kelda",
     "houseName_fr": "La Halle de Kelda",
@@ -24,7 +23,7 @@
       "material_timber": 3,
       "material_cut_stone": 2
     },
-    "partyCapacityBonus": 1,
+    "companionHealthBonus": 40,
     "requiredFlags": [],
     "houseName_fr": "L’Annexe de la caserne",
     "description_fr": "Des couchettes en plus, une seconde table de mess, assez de place pour une paire de mains de plus dans votre dos — aucun compagnon n’y prétend en particulier, c’est simplement un camp plus grand que celui du départ."
@@ -39,7 +38,6 @@
       "material_iron_ore": 3,
       "material_slag_glass": 2
     },
-    "partyCapacityBonus": 0,
     "unlocksShopId": "hammersmith_forge",
     "requiredFlags": [
       "scaffold_yards_cleared"
@@ -57,7 +55,6 @@
       "material_timber": 3,
       "material_slag_glass": 2
     },
-    "partyCapacityBonus": 0,
     "unlocksCraft": true,
     "houseName_fr": "L’Atelier des techniques",
     "description_fr": "Un long établi sous les lampes du camp, couvert à la craie des gestes de chaque combat auquel le groupe a survécu. Deux techniques apprises peuvent ici n’en faire qu’une : le seul endroit au monde où l’on forge une compétence."
@@ -72,7 +69,6 @@
       "material_slag_glass": 2,
       "material_cut_stone": 2
     },
-    "partyCapacityBonus": 0,
     "unlocksShopId": "arcane_academy",
     "requiredFlags": [
       "cinder_row_cleared"
@@ -90,7 +86,6 @@
       "material_timber": 2,
       "material_slag_glass": 2
     },
-    "partyCapacityBonus": 0,
     "unlocksShopId": "sharpweave_den",
     "requiredFlags": [
       "banner_second_piece_lead"
@@ -108,7 +103,6 @@
       "material_timber": 3,
       "material_cut_stone": 3
     },
-    "partyCapacityBonus": 0,
     "unlocksShopId": "smugglers_vault",
     "requiredFlags": [],
     "houseName_fr": "La Cave des contrebandiers",
@@ -125,7 +119,6 @@
       "material_slag_glass": 3,
       "material_ash_steel": 2
     },
-    "partyCapacityBonus": 0,
     "partyHealthBonus": 3,
     "requiredFlags": [
       "cinder_row_cleared"
@@ -144,7 +137,6 @@
       "material_tear_glass": 3,
       "material_shroud_thread": 1
     },
-    "partyCapacityBonus": 0,
     "partyDamageBonus": 3,
     "requiredFlags": [
       "ossuary_galleries_cleared"
@@ -162,7 +154,6 @@
       "material_tear_glass": 4,
       "material_shroud_thread": 3
     },
-    "partyCapacityBonus": 0,
     "partyHealthBonus": 2,
     "partyDamageBonus": 2,
     "requiredFlags": [
@@ -184,7 +175,6 @@
       "material_timber": 4,
       "material_cut_stone": 2
     },
-    "partyCapacityBonus": 0,
     "requiredFlags": [],
     "houseName_fr": "Le Port",
     "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
@@ -199,7 +189,6 @@
       "material_timber": 2,
       "material_cut_stone": 2
     },
-    "partyCapacityBonus": 0,
     "unlocksRiskyGifts": true,
     "requiredFlags": [],
     "houseName_fr": "La Tente de pourparlers",
@@ -215,7 +204,6 @@
       "material_timber": 2,
       "material_cut_stone": 2
     },
-    "partyCapacityBonus": 0,
     "rollPower": "reroll",
     "requiredFlags": [],
     "houseName_fr": "La Hutte du jeteur d’os",
@@ -231,7 +219,6 @@
       "material_cut_stone": 2,
       "material_slag_glass": 2
     },
-    "partyCapacityBonus": 0,
     "rollPower": "banish",
     "requiredFlags": [],
     "houseName_fr": "Le Cairn de garde",
@@ -247,7 +234,6 @@
       "material_rime_crystal": 3,
       "material_tear_glass": 2
     },
-    "partyCapacityBonus": 0,
     "rollPower": "raise",
     "requiredFlags": [],
     "houseName_fr": "Le Puits aux étoiles",

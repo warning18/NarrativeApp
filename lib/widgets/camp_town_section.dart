@@ -109,7 +109,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     final house = (widget.houses[houseId] ??
         ref.read(localizedDbProvider(housesSchema)).value?[houseId] ??
         const <String, dynamic>{}) as Map<String, dynamic>;
-    final capacity = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+    final companionHealth =
+        (house['companionHealthBonus'] as num?)?.toInt() ?? 0;
     final health = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
     final damage = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
     final shopId = house['unlocksShopId']?.toString() ?? '';
@@ -119,7 +120,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 ?.toString() ??
             shopId;
     final detail = [
-      if (capacity > 0) '+$capacity ${tr(ref, 'party_capacity_label')}',
+      if (companionHealth > 0)
+        '+$companionHealth% ${tr(ref, 'companion_health_bonus_label')}',
       if (health > 0) '+$health% ${tr(ref, 'party_health_bonus_label')}',
       if (damage > 0) '+$damage% ${tr(ref, 'party_damage_bonus_label')}',
       if (shopName != null) '${tr(ref, 'unlocks_shop_prefix')}: $shopName',

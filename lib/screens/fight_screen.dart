@@ -374,7 +374,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   /// Builds a companion as they fight this one (set with the party, see
   /// _ensurePartyBuilt); the pre-fight pick ([_fieldParty]) uses it.
-  _PartyMember? Function(String companionId)? _allyMember;
+  _PartyMember? Function(String companionId, {bool fullCompany})? _allyMember;
 
   /// The companions fielded beside the player, in seat order: the
   /// pre-fight pick (UX-2's) reads it.
