@@ -8,7 +8,6 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-<<<<<<< HEAD
 ## [1.691.0+727]
 
 - **Narrative: the hero speaks in the stage scenes (first replies).** Twenty
@@ -24,7 +23,7 @@ isn't reconstructable from git history alone.
     choice text in the balloon.
   - The story editor kept dropping `reply` / `reply_fr` when a choice was saved;
     it now carries them through (two lines in `story_node_editor_screen.dart`).
-=======
+
 ## [1.688.0+724]
 
 - **Core: the scene backgrounds' rules (UX drew the eight new stages in
@@ -39,7 +38,6 @@ isn't reconstructable from git history alone.
     canopy (woods), a rising ford, smouldering stubble (burnt fields), a
     cool spring (oasis), dust devils (caravan road), slick stones (quay)
     and thin air (pass).
->>>>>>> origin/main
 
 ## [1.687.0+723]
 
