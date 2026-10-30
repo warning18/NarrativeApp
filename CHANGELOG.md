@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.687.0+723]
+
+- Stage mode: a scene with a fight among its choices, facing someone who has
+  a standing sprite (Aurel Vane at the family house, the Inquisition's
+  warden and soldiers, the white soldier), plays on a small stage instead
+  of a panel: you on the left, them on the right, one ground line, their
+  name over them and the scene's question at its foot. The choice picked
+  speaks in a balloon over you (its spoken reply when Narrative has written
+  one, else its text), and one that moves you lights a door at the stage's
+  edge with the place it leads to. The choices are the cards under it, as
+  before. Scenes whose faced person has no sprite keep the panel.
+
 ## [1.686.0+722]
 
 - The scene panel: a scene whose choices show as cards now opens them with
