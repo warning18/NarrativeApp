@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.676.0+712]
+
+- **Core: the clans' dice, given as gifts (the user's rules,
+  docs/proposals/clan-dice-gifts.md).**
+  - Each main clan has one die (dice.json `clan`): the Lantern die
+    (Dominion), the Vigil die (Grey Vigil), the Cinder die (Cinder
+    Compact), the Court die (Mire Courts), the Tally die (Salt Crows; its
+    quest still gives it) and the Ossuary die (Ashen Penitents). The
+    Lantern, Cinder and Court dice are new; the Vigil and Ossuary dice
+    leave the shops.
+  - A clan puts its die on its banner card from Trusted, once a game
+    (GiftKind `die`); taken, it goes to the dice bag.
+  - Resonance: while the die's clan is your main clan (sworn, else your
+    patron) and you stand Friend or better with it, its faces of 1 to 3
+    count one more (`clan_dice.dart`).
+  - No balance band moves (boss, clash, the simulator's).
+
 ## [1.671.0+707]
 
 - The fight's weather now falls over the whole screen, cards and board

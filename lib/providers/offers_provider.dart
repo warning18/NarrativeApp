@@ -49,7 +49,9 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
   final spells = table(spellsSchema);
   final specs = table(specialisationsSchema);
   final specVariants = table(specVariantsSchema);
-  final dice = table(diceSchema);
+  // dice.json as it stands, not waited for: before it loads (the game
+  // reads it at the start) a draw just has no clan die to give.
+  final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
   return OfferTables(
     data: await data,
     signs: parseSigns(await signs),
@@ -59,7 +61,7 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
     spells: parseSpells(await spells),
     specs: specInfosFrom(await specs),
     specVariants: specVariantsFrom(await specVariants),
-    dice: await dice,
+    dice: dice,
   );
 }
 
