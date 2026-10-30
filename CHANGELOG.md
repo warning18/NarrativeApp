@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.666.0+702]
+
+- **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**
+  The fight screen drops the painted stage and the tall cards. Each side has three equal slots
+  (192 × 72), empty ones dashed; every fighter shows a sprite head (a crop of its sprite, made by
+  `tool/gen_fight_heads.py`) and small pixel icons for what acts on it (poison, stun, weaken,
+  block, Fury or Watchfire, a blow aimed at it, a guard, a wind-up...), each opening a pop-in with
+  the rules text on a tap. The dice board takes most of the screen and looks like the place (one
+  skin for each of the 13 fight stages, drawn in code); the dice are thrown onto it each roll. A
+  tap on a die picks it (a line shows its target), a second keeps it into the "Kept" row under
+  the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
+  The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
+  card until heals can target an ally.
+
 ## [1.660.0+696]
 
 - **Core: the dice lock rules and two new fight stages (the user's combat
