@@ -75,9 +75,9 @@ extension _FightRounds on _FightScreenState {
     if (_quick) {
       _rollController.value = 1;
     } else {
-      _rollController.duration = MediaQuery.of(context).disableAnimations
+      _rollController.duration = _still
           ? const Duration(milliseconds: 1)
-          : const Duration(milliseconds: 650);
+          : diceTimeFor(diceThrowBase, ref.read(diceSpeedProvider));
       await _rollController.forward(from: 0);
     }
     if (!mounted) return;
@@ -100,6 +100,17 @@ extension _FightRounds on _FightScreenState {
       // A Steady face that just landed stays put (see face_keywords.dart).
       _noteSteadyFaces(
           rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
+      _awaitingDecision = false;
+    });
+    // The dice rest with their faces up for a beat before they can be
+    // tapped (scaled by the dice speed; none with reduced motion or a
+    // quick resolve).
+    if (!_quick && !_still) {
+      await Future.delayed(
+          diceTimeFor(diceLandBase, ref.read(diceSpeedProvider)));
+      if (!mounted) return;
+    }
+    _update(() {
       _awaitingDecision = !forced;
       _autoAssignTargets();
     });
@@ -109,7 +120,8 @@ extension _FightRounds on _FightScreenState {
     if (forced) {
       // No choice left — give the player a beat to see the 3rd faces land
       // before they resolve on their own.
-      await Future.delayed(const Duration(milliseconds: 700));
+      await Future.delayed(diceTimeFor(
+          const Duration(milliseconds: 700), ref.read(diceSpeedProvider)));
       if (!mounted) return;
       await _confirmRoll(skills, items);
     }

@@ -587,6 +587,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
 
+  /// Reduced motion: the dice are not thrown, they are there.
+  bool get _still => MediaQuery.of(context).disableAnimations;
+
   /// The on-screen effects (see combat_vfx.dart): each card is anchored by
   /// a key so an effect lands on the fighter it belongs to.
   final CombatVfxController _vfx = CombatVfxController();
