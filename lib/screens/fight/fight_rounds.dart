@@ -45,6 +45,8 @@ extension _FightRounds on _FightScreenState {
   ) async {
     if (_over || _rolling || _rollCount >= _rollCap) return;
     final acting = _actingParty;
+    // The locks kept through this roll are frozen for the round.
+    _dieLocks.rolled();
 
     final rolled = <String, DiceFaceResult>{};
     final isReroll = _rollCount > 0;
@@ -625,7 +627,7 @@ extension _FightRounds on _FightScreenState {
       _currentFaces.clear();
       _selectedTargets.clear();
       _parryTargets.clear();
-      _lockedActorIds.clear();
+      _dieLocks.clear();
       _steadyActorIds.clear();
       _selectedActorId = null;
       if (lastDamagedEnemyKey != null) {
@@ -810,7 +812,7 @@ extension _FightRounds on _FightScreenState {
       _bonusRollsNext = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
-      _lockedActorIds.clear();
+      _dieLocks.clear();
       _steadyActorIds.clear();
       _spellBlock.clear();
       _guardianId = null;

@@ -35,12 +35,22 @@ enum FightStage {
   snow,
   glass,
   hall,
+
+  /// A town's or a city's streets (v1.662).
+  streets,
+
+  /// A ship's deck: a boarding fight (v1.662).
+  deck,
 }
 
-/// The stage of a fight on land of [pattern]; [indoors] (a hall, a crypt, a
-/// cellar) wins over it, and no pattern at all is open country.
-FightStage fightStageOf(BiomePattern? pattern, {bool indoors = false}) {
+/// The stage of a fight on land of [pattern]: a [ship]'s deck first, then
+/// [indoors] (a hall, a crypt, a cellar), then a [town]'s streets; no
+/// pattern at all is open country.
+FightStage fightStageOf(BiomePattern? pattern,
+    {bool indoors = false, bool town = false, bool ship = false}) {
+  if (ship) return FightStage.deck;
   if (indoors) return FightStage.hall;
+  if (town) return FightStage.streets;
   return switch (pattern) {
     null || BiomePattern.fields => FightStage.fields,
     BiomePattern.dunes => FightStage.dunes,
@@ -183,6 +193,8 @@ const Set<FightStage> _outdoors = {
   FightStage.reeds,
   FightStage.snow,
   FightStage.glass,
+  FightStage.streets,
+  FightStage.deck,
 };
 
 /// Every anomaly, in the order the lab lists them.

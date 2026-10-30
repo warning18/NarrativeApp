@@ -24,6 +24,7 @@ import '../combat/combat_engine.dart';
 import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
+import '../combat/die_locks.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
@@ -311,9 +312,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Cleared each [_confirmRoll], same lifecycle as [_currentFaces].
   final Map<String, String> _selectedTargets = {};
 
+  /// The dice between rolls (die_locks.dart): a first tap selects a die, a
+  /// second locks it; a lock is released (a double tap) only until the next
+  /// roll is triggered. Cleared with the round.
+  final DieLocks _dieLocks = DieLocks();
+
   /// Acting members whose current face is kept (locked) through the next
-  /// reroll -- tapping a landed die toggles it. Cleared with the round.
-  final Set<String> _lockedActorIds = {};
+  /// reroll (see [_dieLocks]).
+  Set<String> get _lockedActorIds => _dieLocks.locked;
 
   /// In a pack fight, the member whose die an enemy-card tap re-aims.
   String? _selectedActorId;
