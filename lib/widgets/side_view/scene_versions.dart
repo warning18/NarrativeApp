@@ -22,19 +22,78 @@ int sceneVersionAt(String seed, int step) {
     h = (h * 31 + c) & 0x7fffffff;
   }
   final round = step ~/ sceneVersionCount;
-  List<int> order(int r) {
-    final rng = math.Random(h + r * 7919);
-    return [0, 1, 2, 3]..shuffle(rng);
+  var last = -1;
+  var order = <int>[];
+  for (var r = 0; r <= round; r++) {
+    order = [0, 1, 2, 3]..shuffle(math.Random(h + r * 7919));
+    // A round never opens on the version the last one closed on.
+    if (order.first == last) {
+      order.add(order.removeAt(0));
+    }
+    last = order.last;
+  }
+  return order[step % sceneVersionCount];
+}
+
+/// The versions a scene has been shown in, in order, per kit: successive
+/// scenes of the same kit follow the seeded order (1, 2, 3 or 4, 2, 3...),
+/// different on every launch.
+class SceneVersions {
+  static final Map<String, int> _visits = {};
+  static final int _salt = math.Random().nextInt(1 << 20);
+
+  /// The version for the next scene of [kit].
+  static int next(String kit) {
+    final n = _visits[kit] ?? 0;
+    _visits[kit] = n + 1;
+    return sceneVersionAt('$kit#$_salt', n);
   }
 
-  final now = order(round);
-  final before =
-      step % sceneVersionCount == 0 && round > 0 ? order(round - 1).last : null;
-  // A round never opens on the version the last one closed on.
-  if (before != null && now.first == before) {
-    now.add(now.removeAt(0));
-  }
-  return now[step % sceneVersionCount];
+  /// Starts the count over (tests).
+  static void reset() => _visits.clear();
+}
+
+/// [from] turning into [to] in a pixel dissolve over [seconds]: the new
+/// version arrives block by block in an ordered dither. Painted as one layer
+/// (give it the scene's raw scroll: each inner layer takes its own share).
+/// Once the dissolve is over it is just [to].
+SideLayer sceneDissolve(List<SideLayer> from, List<SideLayer> to,
+    {double seconds = 0.9}) {
+  double? started;
+  return SideLayer(1, (canvas, size, scroll, t, u) {
+    started ??= t;
+    final k = ((t - started!) / seconds).clamp(0.0, 1.0);
+    void paintAll(List<SideLayer> layers) {
+      for (final layer in layers) {
+        layer.paint(canvas, size, scroll * layer.speed, t, u);
+      }
+    }
+
+    if (k >= 1) {
+      paintAll(to);
+      return;
+    }
+    paintAll(from);
+    final block = math.max(2.0, 3 * u);
+    final path = Path();
+    const bayer = [
+      [0, 8, 2, 10],
+      [12, 4, 14, 6],
+      [3, 11, 1, 9],
+      [15, 7, 13, 5],
+    ];
+    for (var y = 0; y * block < size.height; y++) {
+      for (var x = 0; x * block < size.width; x++) {
+        if (k > (bayer[y % 4][x % 4] + 0.5) / 16) {
+          path.addRect(Rect.fromLTWH(x * block, y * block, block, block));
+        }
+      }
+    }
+    canvas.save();
+    canvas.clipPath(path);
+    paintAll(to);
+    canvas.restore();
+  });
 }
 
 /// [layers] of the scene [kit] ('desert', 'ruins', 'frost', 'fen', 'cliffs',

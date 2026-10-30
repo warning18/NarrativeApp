@@ -13,7 +13,7 @@ import 'package:flutter/scheduler.dart';
 import '../combat/field_anomaly.dart';
 import '../data/climate.dart';
 import 'fight_pixel_stage.dart';
-import 'journey_fx.dart';
+import 'side_view/side_view.dart' show SideParticles, paintSideParticles;
 
 /// The colours of one stage, sky to ground.
 class FightScenery {
@@ -374,11 +374,18 @@ void paintFightBackdrop(
   canvas.clipRect(Offset.zero & size);
   paintPixelStage(canvas, size, stage,
       stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0));
-  // The day's weather, over the stage.
-  final weather = journeyWeatherOf(sky, 0);
-  if (weather != JourneyWeather.none && stage != FightStage.hall) {
-    paintJourneyWeather(canvas, size, t, weather, _weatherColour(weather),
-        count: 22);
+  // The day's weather over the stage, as the scenes draw it: pixel streaks.
+  final particles = switch (sky) {
+    WeatherKind.rain => SideParticles.rain,
+    WeatherKind.snow => SideParticles.snow,
+    WeatherKind.dust => SideParticles.dust,
+    WeatherKind.ash => SideParticles.ash,
+    WeatherKind.fog => SideParticles.fog,
+    _ => SideParticles.none,
+  };
+  if (particles != SideParticles.none && stage != FightStage.hall) {
+    paintSideParticles(
+        canvas, size, particles, 0.6, t, size.width / pixelStageColumns);
   }
   if (anomalyId != null && level > 0) {
     _paintAnomaly(canvas, size, anomalyId, scenery, t, level);
@@ -395,14 +402,6 @@ void paintFightBackdrop(
   paintPixelLights(canvas, size, stage, lit: light < 1);
   canvas.restore();
 }
-
-Color _weatherColour(JourneyWeather weather) => switch (weather) {
-      JourneyWeather.rain => const Color(0xFFBFDCE6),
-      JourneyWeather.snow => const Color(0xFFF4F8FB),
-      JourneyWeather.dust => const Color(0xFFD9B77A),
-      JourneyWeather.ash => const Color(0xFFB9B2A8),
-      _ => const Color(0xFFDCE3E6),
-    };
 
 double _h(num n) {
   final x = math.sin(n * 12.9898) * 43758.5453;

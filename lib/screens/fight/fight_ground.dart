@@ -20,8 +20,10 @@ extension _FightGround on _FightScreenState {
     final forced = widget.modifiers.forcedStage;
     if (forced != null) return forced;
     final geography = ref.read(geographyProvider);
-    final named = fightStageFromName(geography.stageNameOf(_placeIdHere()));
-    return named ?? FightStage.fields;
+    final placeId = _placeIdHere();
+    final named = fightStageFromName(geography.stageNameOf(placeId));
+    // Open country has a few faces: the place picks one and keeps it.
+    return poolStageOf(named ?? FightStage.fields, placeId);
   }
 
   /// The light this fight is fought in (see place_traits.dart): the place's,

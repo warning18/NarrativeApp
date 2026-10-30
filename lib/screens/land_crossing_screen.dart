@@ -191,6 +191,29 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       widget.route, widget.events.keys,
       random: _random, rulers: widget.rulers);
   var _day = 0;
+
+  /// The scene version on show, and the dissolve that brings the next one in
+  /// (a short pixel dissolve when the day, and with it the version, changes).
+  int? _shownVersion;
+  SideLayer? _dissolve;
+  DateTime _dissolveUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  List<SideLayer> _sceneLayers(
+      int version, List<SideLayer> Function(int version) layersFor,
+      {required bool reduceMotion}) {
+    final shown = _shownVersion;
+    if (shown != null && shown != version && !reduceMotion) {
+      _dissolve = sceneDissolve(layersFor(shown), layersFor(version));
+      _dissolveUntil = DateTime.now().add(const Duration(milliseconds: 1100));
+    }
+    _shownVersion = version;
+    final dissolve = _dissolve;
+    if (dissolve != null && DateTime.now().isBefore(_dissolveUntil)) {
+      return [dissolve];
+    }
+    return layersFor(version);
+  }
+
   var _phase = _Phase.event;
   var _daysSpent = 0;
   String _note = '';
@@ -750,10 +773,13 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                     SideViewScene(
                       key: const Key('crossing_scene'),
                       height: _crossingSceneHeight,
-                      layers: withHourStars(
-                          crossingLayers(terrain, progress,
-                              version: sceneVersionAt(widget.route.id, _day)),
-                          phase),
+                      layers: _sceneLayers(
+                          sceneVersionAt(widget.route.id, _day),
+                          (v) => withHourStars(
+                              crossingLayers(terrain, progress, version: v),
+                              phase),
+                          reduceMotion:
+                              MediaQuery.of(context).disableAnimations),
                       overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),
