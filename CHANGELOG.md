@@ -22,6 +22,36 @@ isn't reconstructable from git history alone.
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
 
+
+## [1.664.0+700]
+
+- **UX: the French Skills tab and the branch counts are whole (#651).**
+  - The Skills tabs are as wide as their names (a scrollable bar, centred when
+    everything fits): "Mes compétences 13" showed whole at no phone width before,
+    because a third of the screen is too narrow for it, at 412 px as at 360 and
+    320. In English the three tabs are centred at their natural width.
+  - On the star chart a long branch name gives way (an ellipsis) and its count
+    never does: "Chef de guerre" shortens at 320 px and keeps its "1/4".
+  - `test/skills_fr_layout_test.dart`: the real fonts at 412, 360 and 320 px,
+    with one known skill and with twelve, fails if a tab name is cut or broken
+    or a branch count is cut or off screen. `star_chart_test` reads the count
+    from its own `star_count_` key.
+
+## [1.663.0+699]
+
+- **Core: a heal mends the ally it is aimed at (the user's combat rule;
+  UX-2 builds the aiming on the board).**
+  - A Heal face goes to a chosen party member, by default the most wounded
+    one standing (lowest share of health; the healer on a tie,
+    `defaultHealTarget`, `heal_target.dart`). A heal aimed at another
+    member logs "{name} mends {target}".
+  - Overheal effects (a guard sign's shield, Stitch-Thrust, the Watchfire)
+    count on the member mended; a Shelter gives every other standing
+    member, the healer included, half of it.
+  - The simulator heals by the same default; no balance band moves.
+  - API for UX-2: `_setHealTarget(actorId, memberId)`, `_healTargetFor`,
+    `_healTargets` (cleared with the round).
+
 ## [1.660.0+696]
 
 - **Core: the dice lock rules and two new fight stages (the user's combat

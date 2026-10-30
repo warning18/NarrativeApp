@@ -5348,6 +5348,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Shelter: {name}\'s heal reaches the party (+{n} each).',
     AppLanguage.fr: 'Abri : le soin de {name} atteint le groupe (+{n} chacun).',
   },
+  'heal_target_log': {
+    AppLanguage.en: '{name} mends {target} (+{n}).',
+    AppLanguage.fr: '{name} soigne {target} (+{n}).',
+  },
   'splash_hits': {
     AppLanguage.en: '{name} is caught by the blow: {n} damage.',
     AppLanguage.fr: '{name} est pris dans le coup : {n} dégâts.',
