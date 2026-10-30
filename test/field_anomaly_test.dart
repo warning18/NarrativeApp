@@ -300,7 +300,7 @@ void main() {
               stage: stage,
               sky: WeatherKind.values[i % WeatherKind.values.length],
               random: random)!;
-          // Its own, or the older stage's it is kin to (v1.683).
+          // Its own, or the older stage's it is kin to (v1.688).
           expect(
               p.anomaly.stages.contains(stage) ||
                   p.anomaly.stages.contains(stage.kin),
@@ -404,7 +404,7 @@ void main() {
     expect(fightStageFromName('shipDeck'), FightStage.shipDeck);
   });
 
-  group('the newer stages (v1.683)', () {
+  group('the newer stages (v1.688)', () {
     const newer = {
       FightStage.ruins: 'crumbling_walls',
       FightStage.woods: 'deep_canopy',

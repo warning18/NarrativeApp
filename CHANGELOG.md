@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.683.0+719]
+## [1.688.0+724]
 
 - **Core: the scene backgrounds' rules (UX drew the eight new stages in
   v1.665).**

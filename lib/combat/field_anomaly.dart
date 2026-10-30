@@ -574,7 +574,7 @@ const List<FieldAnomaly> fieldAnomalies = [
     tick: AnomalyTick(mend: false, percent: 3),
     favouredBy: {'stronghold', 'ruin'},
   ),
-  // --- The eight newer stages' own (v1.683): each also meets its kin's ---
+  // --- The eight newer stages' own (v1.688): each also meets its kin's ---
   FieldAnomaly(
     id: 'crumbling_walls',
     family: AnomalyFamily.ground,
