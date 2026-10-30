@@ -39,3 +39,31 @@ open on Vica's poison, the icon legend); the 8 icons (9 x 9 pixel, one colour ea
   To write before building: the pop-in texts (EN + FR) with the exact numbers; Fury, Parry and
   Watchfire already have texts in the game (fury_tip, parry_tip, watchfire_tip), Poison, Stun,
   Weaken, Block and Shelter do not.
+
+## Round 4: variant A'' (fixed slots, target line, two-tap lock)
+User feedback: no dynamic spaces; max 3 per side, equal blocks; tap a die: a line to its target (an
+enemy, or an ally for a heal); tap again to lock it (it drops small below the board); a locked die
+returns to the board with a double tap until a new roll is triggered, then the lock is final.
+Picture: `docs/ux-shots/combat2/variant-A3-fixed-slots-targeting.png` (3+3 slots; 2 allies vs 1
+enemy with empty slots; a strike die with its line; a heal die with its line to an ally; the second
+tap; the double-tap return; the sealed locks after a new roll).
+
+How it works today (fight_view.dart / fight_cards.dart / fight_rounds.dart / fight_dice_rules.dart):
+- **Lock.** Tapping a die toggles `_lockedActorIds` at once (a long press opens the face sheet);
+  locked dice are not re-rolled; a Steady face is locked for good. A die can be released again
+  at any time before the last roll (cap `_rollCap`).
+- **Strike target.** `_selectedTargets[actorId]` (enemy key); in a solo fight it is automatic. In a
+  pack fight the player selects a party card (`_selectedActorId`) and taps an enemy card
+  (`canRetarget`). Companions follow the player's pick while `_companionsAutoAim` is on (a
+  setting); `_autoAssignTargets` overwrites their picks.
+- **Heal.** There is no target: a heal goes to the one who plays it (`actor.currentHealth += healing`,
+  fight_rounds.dart ~291), Shelter shares a part with the others (`_shelterFrom`). Block is the same.
+
+Look and interaction only (UX): the fixed 3+3 slots; selecting a die (reusing `_selectedActorId`)
+and drawing the line to `_selectedTargets`; two-tap lock; the kept row; the double-tap release.
+Needs Core (rules / state): (1) a heal aimed at a chosen ally (new target state and its use in
+`_confirmRoll`; companions would aim at the most wounded); (2) a lock that becomes final once a
+new roll is triggered (a frozen set, today it can be released until the last roll); (3) the party
+size: the Barracks Annex gives 4 seats, the user asks for 3 slots (a decision: 3 slots and the
+Annex +1 stays unseen, or 4 fixed slots when it is built). Enemy packs are at most 3 (chapter 3+).
+Companion lines are read-only while auto-aim is on (companions follow the player), editable when off.
