@@ -105,9 +105,9 @@ const int _starterDieRaceFaceIndex = 5;
 /// from the start (see `manaSkillID` in professions.json).
 const int _startingDieManaFaceIndex = 1;
 
-/// The active party's size before any house bonus -- the player plus one
-/// ally fits by default. Each built house's own `partyCapacityBonus`
-/// (houses.json) adds to this.
+/// How many companions may be seated (fight beside the player) before any
+/// house bonus: two, so a fight has three dice. Each built house's own
+/// `partyCapacityBonus` (houses.json) adds to this.
 const int basePartyCapacity = 2;
 
 /// The player's current active-party capacity: [basePartyCapacity] plus

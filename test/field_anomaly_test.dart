@@ -385,4 +385,17 @@ void main() {
       }
     });
   });
+
+  // The city road and the ship deck (v1.660).
+  test("a ship's deck and a town's streets are stages of their own", () {
+    expect(fightStageOf(BiomePattern.waves, ship: true), FightStage.shipDeck);
+    expect(fightStageOf(null, ship: true, indoors: true), FightStage.shipDeck);
+    expect(fightStageOf(BiomePattern.dunes, town: true), FightStage.cityRoad);
+    // Indoors in a town is a hall.
+    expect(fightStageOf(BiomePattern.dunes, town: true, indoors: true),
+        FightStage.hall);
+    expect(fightStageOf(BiomePattern.dunes), FightStage.dunes);
+    expect(fightStageFromName('cityRoad'), FightStage.cityRoad);
+    expect(fightStageFromName('shipDeck'), FightStage.shipDeck);
+  });
 }

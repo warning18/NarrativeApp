@@ -91,6 +91,26 @@ extension _FightDiceRules on _FightScreenState {
     return face;
   }
 
+  /// A tap on [actorId]'s landed die (the user's lock rules, die_locks.dart):
+  /// the first selects it (and aims [_selectedActorId] at it, so its target
+  /// shows), the second locks it.
+  DieTap _tapDie(String actorId) {
+    final tap = _dieLocks.tap(actorId);
+    if (tap == DieTap.selected) _selectedActorId = actorId;
+    return tap;
+  }
+
+  /// Whether [actorId]'s lock can be released: locked, not frozen by a roll
+  /// triggered since, and not a Steady face.
+  bool _canReleaseDie(String actorId) =>
+      _dieLocks.canRelease(actorId) && !_steadyActorIds.contains(actorId);
+
+  /// Releases [actorId]'s lock (a double tap); false when it can't.
+  bool _releaseDie(String actorId) =>
+      _canReleaseDie(actorId) && _dieLocks.release(actorId);
+
+  bool _isDieLocked(String actorId) => _dieLocks.locked.contains(actorId);
+
   /// Marks every member whose face just landed Steady: kept through the
   /// rerolls, and not to be released.
   void _noteSteadyFaces(Iterable<String> memberIds) {
