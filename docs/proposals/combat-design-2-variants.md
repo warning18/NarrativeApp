@@ -67,3 +67,23 @@ new roll is triggered (a frozen set, today it can be released until the last rol
 size: the Barracks Annex gives 4 seats, the user asks for 3 slots (a decision: 3 slots and the
 Annex +1 stays unseen, or 4 fixed slots when it is built). Enemy packs are at most 3 (chapter 3+).
 Companion lines are read-only while auto-aim is on (companions follow the player), editable when off.
+
+## Round 5: the board's look by place, weather on the whole screen, events on the board only
+Picture: `docs/ux-shots/combat2/board-skins-weather-events.png` (four full frames: dunes + dust,
+city streets + rain, ship deck + sea storm, cliff + earth break; the earth break in four phases;
+four other events; the 13 board skins).
+- **Place -> board skin.** The game has 11 fight stages already (`FightStage`, field_anomaly.dart:
+  fields, dunes, saltFlats, waves, ash, terraces, cliffs, reeds, snow, glass, hall), chosen from the
+  biome by `fightStageOf`; the 11 board skins follow with no Core change. City streets and a ship's
+  deck are not stages: two new values and the choice of place (a town, a ship) are a small Core
+  change (enum + `fightStageOf`); without it a town falls back to fields and a ship to waves.
+- **Weather** (`WeatherKind`: clear, cloud, fog, rain, snow, dust, ash): one overlay above the whole
+  screen (header, cards, board, buttons), never blocking touches; today the rain is part of the
+  painted backdrop behind the cards.
+- **Events** (`FieldAnomalyPlan`: sandstorm, earth_break, flash_flood, rockslide, blaze, sea_storm...,
+  each with an omen / active / over phase): a layer clipped to the board's rounded corners that
+  follows the phases (earth break: fine cracks and a banner, then wide cracks with dust and a
+  shake, then dull cracks and settling dust). Nothing outside the board moves.
+- Reduced motion: still weather (very light), no shake, cracks and waves drawn still.
+- Everything is drawn in code (patterns and strokes); no image to add. The painted stage behind
+  the cards is UX map's and is not touched.
