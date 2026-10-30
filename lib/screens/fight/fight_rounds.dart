@@ -823,6 +823,8 @@ extension _FightRounds on _FightScreenState {
     // What is left of the Watchfire burns as the round turns.
     final fireWon =
         !playerDied && !sellswordWon && _burnWatchfire(newEntries, lang);
+    // A companion down, the reserve steps in (party_pick.dart).
+    if (!playerDied) _reserveStepsIn(newEntries, lang);
 
     _update(() {
       _log.addAll(newEntries);
@@ -1771,5 +1773,27 @@ extension _FightRounds on _FightScreenState {
           trFor(lang, 'sign_log_kill_heal').replaceAll('{n}', '$heal'),
           _LogKind.playerHeal));
     }
+  }
+
+  /// The round turns: the first fielded companion knocked out makes way
+  /// for the one in the reserve seat (the Barracks Annex, party_pick.dart),
+  /// once a fight. They take the seat as they stand; the one they relieve
+  /// still goes home with the party ([_homeParty]).
+  void _reserveStepsIn(List<_LogEntry> entries, AppLanguage lang) {
+    final reserve = _reserve;
+    if (reserve == null) return;
+    final seat = reserveStepsInFor([for (final m in _party) m.isKnockedOut],
+        used: _steppedOut != null);
+    if (seat < 0) return;
+    final out = _party[seat];
+    _steppedOut = out;
+    _reserve = null;
+    _party = [..._party]..[seat] = reserve;
+    _fx(VfxStyle.heal, _memberCardKey(reserve.id));
+    entries.add(_LogEntry(
+        trFor(lang, 'reserve_steps_in')
+            .replaceAll('{name}', reserve.displayName)
+            .replaceAll('{out}', out.displayName),
+        _LogKind.info));
   }
 }

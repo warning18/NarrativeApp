@@ -10,6 +10,7 @@ import '../combat/field_anomaly.dart';
 import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
+import '../providers/fight_pick_provider.dart';
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
@@ -25,6 +26,7 @@ import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/die_locks.dart';
+import '../combat/party_pick.dart';
 import '../combat/heal_target.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
@@ -366,6 +368,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _luckyDieTourReady = false;
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
+
+  /// Builds a companion as they fight this one (set with the party, see
+  /// _ensurePartyBuilt); the pre-fight pick and the reserve use it.
+  _PartyMember? Function(String companionId)? _allyMember;
+
+  /// The companion in the reserve seat (party_pick.dart), standing by to
+  /// step in for a fielded companion knocked out; null with none, or once
+  /// they have.
+  _PartyMember? _reserve;
+
+  /// The companion the reserve stepped in for this fight (once a fight);
+  /// their health still goes home with the party's (fight_rewards.dart).
+  _PartyMember? _steppedOut;
 
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].

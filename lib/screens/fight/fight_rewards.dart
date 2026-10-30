@@ -321,7 +321,7 @@ extension _FightRewards on _FightScreenState {
       // itself, so skip writing each ally's stale pre-level-up battle-end
       // HP over that full heal (and over the new, higher level-up max).
       var anyAllyRevived = false;
-      for (final member in _party) {
+      for (final member in _homeParty) {
         if (member.isPlayer) continue;
         if (member.isKnockedOut) anyAllyRevived = true;
         if (leveledUp) continue;
@@ -540,7 +540,7 @@ extension _FightRewards on _FightScreenState {
       manaAfter: _mana,
       dropPotion: dropsPotion,
     );
-    for (final member in _party) {
+    for (final member in _homeParty) {
       if (member.isPlayer) continue;
       await notifier.applyAllyCombatResult(member.id,
           hpAfter: max(1, member.currentHealth));
@@ -566,7 +566,7 @@ extension _FightRewards on _FightScreenState {
     final player = _party.firstWhere((m) => m.isPlayer);
     await notifier.applyRetreat(
         hpAfter: player.currentHealth, goldLost: 0, manaAfter: _mana);
-    for (final member in _party) {
+    for (final member in _homeParty) {
       if (member.isPlayer) continue;
       await notifier.applyAllyCombatResult(member.id,
           hpAfter: max(1, member.currentHealth));

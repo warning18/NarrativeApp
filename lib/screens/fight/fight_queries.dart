@@ -363,6 +363,13 @@ extension _FightQueries on _FightScreenState {
   /// currently Stunned (see status_effect.dart; a stunned member is
   /// skipped for the round entirely, announced in [_startPartyRound]).
   /// In Dexterity order, the quickest first (v1.213, see turn_order.dart).
+  /// The party whose health goes home after the fight: the fighters, and
+  /// the companion the reserve stepped in for (_reserveStepsIn).
+  List<_PartyMember> get _homeParty => [
+        ..._party,
+        if (_steppedOut case final out?) out,
+      ];
+
   List<_PartyMember> get _actingParty => actingOrder(
       _party
           .where((m) =>

@@ -5352,6 +5352,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{name} mends {target} (+{n}).',
     AppLanguage.fr: '{name} soigne {target} (+{n}).',
   },
+  // The reserve seat (the Barracks Annex, v1.664): its companion steps in
+  // for one knocked out, once a fight.
+  'reserve_steps_in': {
+    AppLanguage.en: '{name} steps in for {out}.',
+    AppLanguage.fr: '{name} prend la place de {out}.',
+  },
   'splash_hits': {
     AppLanguage.en: '{name} is caught by the blow: {n} damage.',
     AppLanguage.fr: '{name} est pris dans le coup : {n} dégâts.',

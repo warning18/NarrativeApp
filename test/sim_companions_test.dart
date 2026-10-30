@@ -118,10 +118,16 @@ void main() {
       final ranked = ['vess', 'sable', 'maren']
         ..sort((a, b) => p.valueOf(b).compareTo(p.valueOf(a)));
       expect(p.active.toSet(), ranked.take(2).toSet());
-      // A third seat (the Barracks Annex) seats the third.
+      expect(p.reserve, isNull);
+      // The Barracks Annex is a reserve seat (v1.664): the third waits
+      // there, never a third seat.
       p.housesBuilt(['barracks_annex'], chapter: 4);
-      expect(p.capacity, 3);
-      expect(p.active, hasLength(3));
+      expect(p.capacity, 2);
+      expect(p.active.toSet(), ranked.take(2).toSet());
+      expect(p.reserve, ranked[2]);
+      expect(p.log.last.kind, 'reserve');
+      expect(p.fightAllies(), hasLength(2));
+      expect(p.fightReserve()?.id, ranked[2]);
     });
 
     test('a tie goes to the higher approval, then to the alignment fit', () {
@@ -205,6 +211,47 @@ void main() {
       expect(maren.damageDealt, greaterThan(0));
       p.afterFight(allies, won: false);
       expect(p.skillsCast['maren'], isNotEmpty);
+    });
+
+    test('the reserve steps in once, for the first companion knocked out', () {
+      final p = _party(level: 5)
+        ..recruit('maren', chapter: 3, cause: 'q')
+        ..recruit('vess', chapter: 3, cause: 'q')
+        ..recruit('sable', chapter: 3, cause: 'q')
+        ..housesBuilt(['barracks_annex'], chapter: 3);
+      final allies = p.fightAllies();
+      final fielded = [...allies];
+      final reserve = p.fightReserve()!;
+      // Both seated companions start the fight down.
+      for (final a in allies) {
+        a.currentHealth = 0;
+      }
+      final c = SimCharacter.create(
+        raceId: 'human',
+        race: _races['human'] as Map<String, dynamic>,
+        professionId: 'warrior',
+        profession: _professions['warrior'] as Map<String, dynamic>,
+        gameConfig: _gameConfig,
+        dice: _dice,
+        spells: const {},
+      );
+      simulateSimFight(
+        character: c,
+        enemies: [
+          const MapEntry('dummy', {'maxHealth': 100000, 'damage': 0}),
+        ],
+        chapter: 3,
+        skills: _skills,
+        items: const {},
+        random: Random(5),
+        maxRounds: 10,
+        allies: allies,
+        reserve: reserve,
+      );
+      // The first seat went to the reserve, the second stayed down.
+      expect(allies.first, same(reserve));
+      expect(allies.last, same(fielded.last));
+      expect(reserve.facesPlayed.values.fold<int>(0, (a, b) => a + b), 10);
     });
 
     test('a knocked-out companion is back at 30% after a won fight', () {

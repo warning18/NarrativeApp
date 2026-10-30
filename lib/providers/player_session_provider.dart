@@ -105,15 +105,12 @@ const int _starterDieRaceFaceIndex = 5;
 /// from the start (see `manaSkillID` in professions.json).
 const int _startingDieManaFaceIndex = 1;
 
-/// How many companions may be seated (fight beside the player) before any
-/// house bonus: two, so a fight has three dice. Each built house's own
-/// `partyCapacityBonus` (houses.json) adds to this.
+/// How many companions may be seated (fight beside the player): two, so a
+/// fight has three fighters and three dice, never more (the user's cap,
+/// v1.664). A house's `partyCapacityBonus` (houses.json, the Barracks
+/// Annex) adds a reserve seat instead ([reserveSeatsFor]).
 const int basePartyCapacity = 2;
 
-/// The player's current active-party capacity: [basePartyCapacity] plus
-/// every built house's own bonus. Shared by [PlayerSessionNotifier
-/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
-/// CampScreen's own roster display, so the two never drift apart.
 /// The flag set when the first banner (clan offer) is due: the clans met
 /// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
 const String firstBannerFlag = 'first_banner';
@@ -125,13 +122,31 @@ bool offersWaitForClans(PlayerSession session) =>
     session.flags.contains(featureLadderFlag) &&
     !session.featureOpen(GameFeature.clans);
 
-int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
-  return basePartyCapacity +
-      houses.values.whereType<Map<String, dynamic>>().where((h) {
-        return builtHouseIds.contains(h['houseID']?.toString() ?? '');
-      }).fold<int>(0,
-          (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
-}
+/// The player's active-party capacity: [basePartyCapacity], whatever is
+/// built (the cap of three fighters, v1.664; the houses' bonus is the
+/// reserve seat, [reserveSeatsFor]). Shared by [PlayerSessionNotifier
+/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
+/// CampScreen's own roster display, so the two never drift apart.
+int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) =>
+    basePartyCapacity;
+
+/// The reserve seats [builtHouseIds] give (the user's pick, v1.664): one
+/// once a built house has a `partyCapacityBonus` (the Barracks Annex),
+/// never more. The companion in it waits at the party's back and steps in
+/// for a fielded companion knocked out, once a fight (fight_rounds.dart's
+/// _reserveStepsIn).
+int reserveSeatsFor(List<String> builtHouseIds, Map<String, dynamic> houses) =>
+    min(
+        maxReserveSeats,
+        houses.values.whereType<Map<String, dynamic>>().where((h) {
+          return builtHouseIds.contains(h['houseID']?.toString() ?? '');
+        }).fold<int>(
+            0,
+            (sum, h) =>
+                sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0)));
+
+/// At most one companion waits in reserve.
+const int maxReserveSeats = 1;
 
 /// The skills a companion starts with: their profession's and race's
 /// standard skill, and every skill one of their signature die's faces links
@@ -323,6 +338,7 @@ class PlayerSession {
     this.diceUpgrades = const {},
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
+    this.reserveAllyId = '',
     this.lostAllyIds = const [],
     this.departedAllyIds = const [],
     this.perkRanks = const {},
@@ -616,6 +632,18 @@ class PlayerSession {
   /// alongside the player, bounded by party capacity (default 2, raised by
   /// built houses' partyCapacityBonus).
   final List<String> activeAllyIds;
+
+  /// The companion in the reserve seat (the Barracks Annex, see
+  /// [reserveSeatsFor]), '' for none. Read it through [reserveAlly].
+  final String reserveAllyId;
+
+  /// The companion waiting in reserve: [reserveAllyId] while recruited and
+  /// not seated, else null.
+  String? get reserveAlly => reserveAllyId.isNotEmpty &&
+          !activeAllyIds.contains(reserveAllyId) &&
+          recruitedAllies.any((a) => a.companionId == reserveAllyId)
+      ? reserveAllyId
+      : null;
 
   /// Companions the story took for good (see [StoryChoice.loseAllyId]);
   /// never re-recruited this run, cleared with a new game.
@@ -1048,6 +1076,7 @@ class PlayerSession {
     Map<String, DieUpgrades>? diceUpgrades,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
+    String? reserveAllyId,
     List<String>? lostAllyIds,
     List<String>? departedAllyIds,
     Map<String, int>? perkRanks,
@@ -1180,6 +1209,7 @@ class PlayerSession {
       diceUpgrades: diceUpgrades ?? this.diceUpgrades,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
+      reserveAllyId: reserveAllyId ?? this.reserveAllyId,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
       departedAllyIds: departedAllyIds ?? this.departedAllyIds,
       perkRanks: perkRanks ?? this.perkRanks,
@@ -1408,6 +1438,7 @@ class PlayerSession {
         'diceUpgrades': diceUpgradesToJson(diceUpgrades),
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
+        'reserveAllyId': reserveAllyId,
         'lostAllyIds': lostAllyIds,
         'departedAllyIds': departedAllyIds,
         'perkRanks': perkRanks,
@@ -1488,6 +1519,18 @@ class PlayerSession {
     // die that shrank move with their faces, or come back
     // (dice_sizes_save.dart).
     json = resizedDiceSave(json);
+    // A save from before the cap of three fighters (v1.664) may have three
+    // companions seated (the Barracks Annex's old seat): the first two stay,
+    // the third waits in the reserve seat the Annex now gives, or on the
+    // bench when it is taken. Nobody is lost.
+    final seated = [
+      for (final id in (json['activeAllyIds'] as List?) ?? const [])
+        id.toString(),
+    ];
+    final savedReserve = json['reserveAllyId']?.toString() ?? '';
+    final reserve = savedReserve.isEmpty && seated.length > basePartyCapacity
+        ? seated[basePartyCapacity]
+        : savedReserve;
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -1647,9 +1690,8 @@ class PlayerSession {
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      activeAllyIds:
-          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      activeAllyIds: seated.take(basePartyCapacity).toList(),
+      reserveAllyId: reserve,
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -4599,6 +4641,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final autoActivate = houseBuilt &&
         state.activeAllyIds.length <
             partyCapacityFor(state.builtHouseIds, houses);
+    // The seats full, a free reserve seat (the Barracks Annex) takes them.
+    final toReserve = houseBuilt &&
+        !autoActivate &&
+        state.reserveAlly == null &&
+        reserveSeatsFor(state.builtHouseIds, houses) > 0;
     state = state.copyWith(
       recruitedAllies: [
         ...state.recruitedAllies,
@@ -4611,6 +4658,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       activeAllyIds: autoActivate
           ? [...state.activeAllyIds, companionId]
           : state.activeAllyIds,
+      reserveAllyId: toReserve ? companionId : null,
     );
     await _persist();
   }
@@ -4685,14 +4733,46 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return;
     }
     if (state.activeAllyIds.contains(companionId)) return;
-    if (state.activeAllyIds.length >= partyCapacity) return;
+    // Never more than three fighters (v1.664), whatever the caller passed.
+    if (state.activeAllyIds.length >= min(partyCapacity, basePartyCapacity)) {
+      return;
+    }
     if (requiredHouseId != null &&
         requiredHouseId.isNotEmpty &&
         !state.builtHouseIds.contains(requiredHouseId)) {
       return;
     }
-    state =
-        state.copyWith(activeAllyIds: [...state.activeAllyIds, companionId]);
+    state = state.copyWith(
+      activeAllyIds: [...state.activeAllyIds, companionId],
+      // Seated, they leave the reserve seat.
+      reserveAllyId: state.reserveAllyId == companionId ? '' : null,
+    );
+    await _persist();
+  }
+
+  /// Puts [companionId] in the reserve seat (the user's pick, v1.664), or
+  /// empties it with ''. Refused without a reserve seat ([reserveSeats],
+  /// [reserveSeatsFor]), for a companion not recruited or seated already,
+  /// or whose own house ([requiredHouseId]) isn't built.
+  Future<void> setReserveAlly(
+    String companionId, {
+    required int reserveSeats,
+    String? requiredHouseId,
+  }) async {
+    if (companionId.isNotEmpty) {
+      if (reserveSeats <= 0) return;
+      if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
+        return;
+      }
+      if (state.activeAllyIds.contains(companionId)) return;
+      if (requiredHouseId != null &&
+          requiredHouseId.isNotEmpty &&
+          !state.builtHouseIds.contains(requiredHouseId)) {
+        return;
+      }
+    }
+    if (state.reserveAllyId == companionId) return;
+    state = state.copyWith(reserveAllyId: companionId);
     await _persist();
   }
 
