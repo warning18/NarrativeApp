@@ -9084,7 +9084,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Every Heal face and potion restores half again as much.',
     AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
   },
-  // The eight newer stages' own anomalies (v1.683; Narrative may reword).
+  // The eight newer stages' own anomalies (v1.688; Narrative may reword).
   'anomaly_crumbling_walls': {
     AppLanguage.en: 'Crumbling walls',
     AppLanguage.fr: 'Murs qui croulent',
