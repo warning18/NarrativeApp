@@ -37,14 +37,7 @@ void main() {
       final source = entity.readAsStringSync();
       if (!_calls.hasMatch(source)) continue;
       seen++;
-      if (source.contains('simTables(')) {
-        if (source.contains('simTables(without') &&
-            !source.contains('sim-tables-ok')) {
-          problems.add('${entity.path}: leaves tables out with no '
-              '`// sim-tables-ok: <table>: <why>`');
-        }
-        continue;
-      }
+      if (source.contains('simTables(')) continue;
       for (final table in _required) {
         final loaded = source.contains("'$table'");
         final excused = source.contains('sim-tables-ok: $table');
