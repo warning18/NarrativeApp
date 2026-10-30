@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.678.0+714]
+
+- After the character is made, the screen no longer cuts to the Blind
+  Beggar: the character's page fades out over about a second and a half,
+  the opening's sigil rising to a whisper (15 %) in the middle, and the
+  scene's text is told as before (a tap plays it at once). With reduced
+  motion it stays a cut.
+
 ## [1.676.0+712]
 
 - **Core: the clans' dice, given as gifts (the user's rules,
