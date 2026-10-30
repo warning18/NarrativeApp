@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.659.0+695]
+
+- **UX: the French Skills tab and the branch counts are whole (#651).**
+  - The Skills tabs are as wide as their names (a scrollable bar, centred when
+    everything fits): "Mes compétences 13" showed whole at no phone width before,
+    because a third of the screen is too narrow for it, at 412 px as at 360 and
+    320. In English the three tabs are centred at their natural width.
+  - On the star chart a long branch name gives way (an ellipsis) and its count
+    never does: "Chef de guerre" shortens at 320 px and keeps its "1/4".
+  - `test/skills_fr_layout_test.dart`: the real fonts at 412, 360 and 320 px,
+    with one known skill and with twelve, fails if a tab name is cut or broken
+    or a branch count is cut or off screen. `star_chart_test` reads the count
+    from its own `star_count_` key.
+
 ## [1.658.0+694]
 
 - **Narrative: "1 charges" fixed (#650).** The ward sheet and the roll banish
