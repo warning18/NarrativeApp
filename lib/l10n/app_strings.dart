@@ -3391,14 +3391,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'later',
     AppLanguage.fr: 'plus tard',
   },
-  'cost_pt_one': {
-    AppLanguage.en: '1 pt',
-    AppLanguage.fr: '1 pt',
-  },
-  'cost_pt_many': {
-    AppLanguage.en: '{n} pts',
-    AppLanguage.fr: '{n} pts',
-  },
   'mastery_cost_label': {
     AppLanguage.en: 'Mastery · {n} essence',
     AppLanguage.fr: 'Maîtrise · {n}\u00a0d’essence',
@@ -12551,7 +12543,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Intrigues',
     AppLanguage.fr: 'Intrigues',
   },
-  'clans_section': {AppLanguage.en: 'Clans', AppLanguage.fr: 'Clans'},
   'clans_section_hint': {
     AppLanguage.en: 'Where you stand with the coast.',
     AppLanguage.fr: 'Où vous en êtes avec la côte.',
@@ -12772,10 +12763,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_align_none': {
     AppLanguage.en: 'no change',
     AppLanguage.fr: 'inchangé',
-  },
-  'offer_alignment_nudge': {
-    AppLanguage.en: 'alignment\u00a0{n}',
-    AppLanguage.fr: 'alignement\u00a0{n}',
   },
   'offer_none_to_come': {
     AppLanguage.en: 'Nobody can come to you yet.',
@@ -13203,12 +13190,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'titles_section': {
     AppLanguage.en: 'Titles',
     AppLanguage.fr: 'Titres',
-  },
-  'titles_none': {
-    AppLanguage.en:
-        'No title yet. The clans give them, and standing earns them.',
-    AppLanguage.fr:
-        'Aucun titre pour l’instant. Les clans en donnent, et la réputation en vaut.',
   },
   'title_wear': {
     AppLanguage.en: 'Wear',

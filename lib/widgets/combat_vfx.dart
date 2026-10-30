@@ -97,12 +97,12 @@ class VfxParticle {
 }
 
 /// Enough particles for the busiest style at the mightiest tier.
-const int vfxParticleCount = 64;
+const int _vfxParticleCount = 64;
 
 List<VfxParticle> _makeParticles(int seed) {
   final random = Random(seed);
   return [
-    for (var i = 0; i < vfxParticleCount; i++)
+    for (var i = 0; i < _vfxParticleCount; i++)
       VfxParticle(
         random.nextDouble() * pi * 2,
         0.45 + random.nextDouble() * 0.55,

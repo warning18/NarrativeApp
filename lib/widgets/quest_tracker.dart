@@ -19,7 +19,7 @@ import 'quest_turn_in.dart';
 /// The followed quest above the story: its name and the goal it waits on
 /// ("Defeat catacomb ghouls (1/3)"), a Turn in button once every objective
 /// is met, and a short highlight when the goal moves on. Tapping it opens
-/// the quest (see [showQuestSheet]). Nothing when no quest is in progress.
+/// the quest (see [_showQuestSheet]). Nothing when no quest is in progress.
 ///
 /// [compact] (v1.213) is a small round button with the quest's icon and a
 /// badge (a tick when the goal is met, a dot when it moves on), for where
@@ -100,7 +100,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
               child: InkWell(
                 key: const Key('quest_tracker'),
                 customBorder: const CircleBorder(),
-                onTap: () => showQuestSheet(context, ref, questId),
+                onTap: () => _showQuestSheet(context, ref, questId),
                 child: SizedBox(
                   width: 34,
                   height: 34,
@@ -153,7 +153,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
         child: InkWell(
           key: const Key('quest_tracker'),
           borderRadius: BorderRadius.circular(10),
-          onTap: () => showQuestSheet(context, ref, questId),
+          onTap: () => _showQuestSheet(context, ref, questId),
           child: Container(
             padding: const EdgeInsets.fromLTRB(10, 6, 6, 6),
             decoration: BoxDecoration(
@@ -232,7 +232,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
 /// A quest in full: what was asked, each objective with its progress, the
 /// reward, and what can be done now -- turn it in, follow it, or switch
 /// to another quest in progress.
-Future<void> showQuestSheet(
+Future<void> _showQuestSheet(
     BuildContext context, WidgetRef ref, String questId) {
   return showModalBottomSheet<void>(
     context: context,

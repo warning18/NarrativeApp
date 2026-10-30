@@ -19,14 +19,14 @@ import 'skill_tree_view.dart' show TierPips;
 import 'skills_view_model.dart';
 
 /// What the filter row picks by.
-enum SkillFilter { all, attack, heal, mana, status }
+enum _SkillFilter { all, attack, heal, mana, status }
 
-bool _passes(SkillFilter filter, FaceKind kind) => switch (filter) {
-      SkillFilter.all => true,
-      SkillFilter.attack => kind == FaceKind.attack,
-      SkillFilter.heal => kind == FaceKind.heal,
-      SkillFilter.mana => kind == FaceKind.mana,
-      SkillFilter.status => kind == FaceKind.poison ||
+bool _passes(_SkillFilter filter, FaceKind kind) => switch (filter) {
+      _SkillFilter.all => true,
+      _SkillFilter.attack => kind == FaceKind.attack,
+      _SkillFilter.heal => kind == FaceKind.heal,
+      _SkillFilter.mana => kind == FaceKind.mana,
+      _SkillFilter.status => kind == FaceKind.poison ||
           kind == FaceKind.stun ||
           kind == FaceKind.weaken,
     };
@@ -47,7 +47,7 @@ class MySkillsView extends ConsumerStatefulWidget {
 }
 
 class _MySkillsViewState extends ConsumerState<MySkillsView> {
-  SkillFilter _filter = SkillFilter.all;
+  _SkillFilter _filter = _SkillFilter.all;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
     final shown = model.isPlayer
         ? [for (final id in model.knownIds) model[id]!]
         : model.entries.values.toList();
-    int count(SkillFilter f) => shown.where((e) => _passes(f, e.kind)).length;
+    int count(_SkillFilter f) => shown.where((e) => _passes(f, e.kind)).length;
     final visible = shown.where((e) => _passes(_filter, e.kind)).toList();
 
     // The player's in branch order: each branch, the heritage, the rest.
@@ -92,11 +92,11 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
           child: Row(
             children: [
               for (final (f, key, kind) in [
-                (SkillFilter.all, 'skill_filter_all', null),
-                (SkillFilter.attack, 'filter_attack', FaceKind.attack),
-                (SkillFilter.heal, 'filter_heal', FaceKind.heal),
-                (SkillFilter.mana, 'filter_mana', FaceKind.mana),
-                (SkillFilter.status, 'filter_status', FaceKind.poison),
+                (_SkillFilter.all, 'skill_filter_all', null),
+                (_SkillFilter.attack, 'filter_attack', FaceKind.attack),
+                (_SkillFilter.heal, 'filter_heal', FaceKind.heal),
+                (_SkillFilter.mana, 'filter_mana', FaceKind.mana),
+                (_SkillFilter.status, 'filter_status', FaceKind.poison),
               ])
                 Padding(
                   padding: const EdgeInsets.only(right: 6),

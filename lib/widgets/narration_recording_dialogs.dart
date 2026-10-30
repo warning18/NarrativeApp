@@ -20,7 +20,7 @@ void _snack(BuildContext context, String message) {
 /// (or open-ended when [total] is 0). With [cancellable], Cancel (and
 /// back) ask [work] to stop through its `isCancelled`; the dialog closes
 /// once [work] returns. Returns [work]'s result, or rethrows its error.
-Future<T> runWithProgress<T>(
+Future<T> _runWithProgress<T>(
   BuildContext context,
   WidgetRef ref, {
   required String title,
@@ -133,7 +133,7 @@ Future<int> recordNarration(
   var recorded = 0;
   Object? error;
   try {
-    await runWithProgress<void>(
+    await _runWithProgress<void>(
       context,
       ref,
       title: tr(ref, 'elevenlabs_recording_title'),
@@ -183,7 +183,7 @@ Future<void> pushNarrationRecordings(
 
   final List<GitBinaryFile> files;
   try {
-    files = await runWithProgress(
+    files = await _runWithProgress(
       context,
       ref,
       title: tr(ref, 'elevenlabs_push_checking'),
@@ -251,7 +251,7 @@ Future<void> pushNarrationRecordings(
 
   final GitPushResult result;
   try {
-    result = await runWithProgress(
+    result = await _runWithProgress(
       context,
       ref,
       title: tr(ref, 'elevenlabs_pushing_title'),

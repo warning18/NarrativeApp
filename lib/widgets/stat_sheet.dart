@@ -31,17 +31,17 @@ Future<void> showStatSheet(BuildContext context, String stat) {
 }
 
 /// The l10n key of a source's kind ("Race", "Picks", "Gear"...).
-String statSourceKey(String kind) =>
+String _statSourceKey(String kind) =>
     kind == 'curse' ? 'ledger_curse' : 'stat_src_$kind';
 
 /// A source row as the sheet shows it: the kind, what names it (the race,
 /// the paths picked...), and its points.
-typedef StatSourceLine = ({String kind, String detail, int amount});
+typedef _StatSourceLine = ({String kind, String detail, int amount});
 
 /// The kept rows of [rows] (or the lent ones) grouped by kind, in the order
 /// Core lists them: one line for each kind, its points added up, and, when it
 /// has names to give, them (with their points when there are several).
-List<StatSourceLine> groupStatSources(
+List<_StatSourceLine> _groupStatSources(
   List<StatSource> rows, {
   required bool lent,
   required String? Function(String kind, String id) nameOf,
@@ -120,8 +120,8 @@ class StatSheet extends ConsumerWidget {
 
     final stored = rows.storedTotal;
     final fight = rows.fightTotal;
-    final kept = groupStatSources(rows, lent: false, nameOf: nameOf);
-    final lent = groupStatSources(rows, lent: true, nameOf: nameOf);
+    final kept = _groupStatSources(rows, lent: false, nameOf: nameOf);
+    final lent = _groupStatSources(rows, lent: true, nameOf: nameOf);
     final effects = [
       for (final e in statPickEffects(stat, session.professionId, 1))
         statEffectText(e, lang),
@@ -134,7 +134,7 @@ class StatSheet extends ConsumerWidget {
                   ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
         );
 
-    Widget line(StatSourceLine l, {Key? key}) {
+    Widget line(_StatSourceLine l, {Key? key}) {
       final plus = l.amount > 0;
       return Padding(
         key: key,
@@ -146,7 +146,7 @@ class StatSheet extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(tr(ref, statSourceKey(l.kind)),
+                  Text(tr(ref, _statSourceKey(l.kind)),
                       style: theme.textTheme.bodyMedium),
                   if (l.detail.isNotEmpty)
                     Text(l.detail,

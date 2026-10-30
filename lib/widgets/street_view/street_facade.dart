@@ -78,8 +78,8 @@ FacadeBox facadeBoxFor(FacadeStyle style, double cols, double base) {
 
 /// The colours of a facade by the hour is the wash's job; these are the
 /// day's. [snow] whitens the roof; the rest does not change with weather.
-class FacadePalette {
-  const FacadePalette({
+class _FacadePalette {
+  const _FacadePalette({
     required this.wall,
     required this.shade,
     required this.roof,
@@ -95,43 +95,43 @@ class FacadePalette {
   final Color door;
   final Color glass;
 
-  static FacadePalette of(FacadeStyle style) => switch (style) {
-        FacadeStyle.house => const FacadePalette(
+  static _FacadePalette of(FacadeStyle style) => switch (style) {
+        FacadeStyle.house => const _FacadePalette(
             wall: Color(0xFFC3B08F),
             shade: Color(0xFF9C8A6E),
             roof: Color(0xFF7A4B3B),
             timber: Color(0xFF4F3B2D),
             door: Color(0xFF3D2A1D),
             glass: Color(0xFF6D8FA0)),
-        FacadeStyle.tavern => const FacadePalette(
+        FacadeStyle.tavern => const _FacadePalette(
             wall: Color(0xFFA98E6E),
             shade: Color(0xFF7F6850),
             roof: Color(0xFF5E3F36),
             timber: Color(0xFF3F2E24),
             door: Color(0xFF2E2018),
             glass: Color(0xFF5E7A86)),
-        FacadeStyle.warehouse => const FacadePalette(
+        FacadeStyle.warehouse => const _FacadePalette(
             wall: Color(0xFF8F8575),
             shade: Color(0xFF6D6559),
             roof: Color(0xFF55483E),
             timber: Color(0xFF3B3028),
             door: Color(0xFF3A2D22),
             glass: Color(0xFF58707A)),
-        FacadeStyle.shop => const FacadePalette(
+        FacadeStyle.shop => const _FacadePalette(
             wall: Color(0xFFBBA383),
             shade: Color(0xFF93805F),
             roof: Color(0xFF6C4A3A),
             timber: Color(0xFF4A3828),
             door: Color(0xFF3A2A1E),
             glass: Color(0xFF75929F)),
-        FacadeStyle.temple => const FacadePalette(
+        FacadeStyle.temple => const _FacadePalette(
             wall: Color(0xFFB4B0A6),
             shade: Color(0xFF8A877E),
             roof: Color(0xFF5B5C66),
             timber: Color(0xFF45464F),
             door: Color(0xFF3A2C22),
             glass: Color(0xFF7A8FB0)),
-        FacadeStyle.fort => const FacadePalette(
+        FacadeStyle.fort => const _FacadePalette(
             wall: Color(0xFF8E8C88),
             shade: Color(0xFF6A6865),
             roof: Color(0xFF55555A),
@@ -147,7 +147,7 @@ class FacadePalette {
 /// whitens the roof.
 void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
     {bool snow = false}) {
-  final p = FacadePalette.of(style);
+  final p = _FacadePalette.of(style);
   final paint = Paint();
   void rect(Color c, double x, double y, double w, double h) {
     paint.color = c;
@@ -237,7 +237,7 @@ void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
     };
 
 void _door(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
-    FacadePalette p) {
+    _FacadePalette p) {
   final paint = Paint();
   final (dw, dh, _) = _doorSize(style);
   final x = box.doorX - dw / 2, y = box.base - dh;
@@ -314,7 +314,7 @@ List<Rect> facadeWindows(FacadeStyle style, FacadeBox box) {
 }
 
 void _windows(
-    Canvas canvas, double u, FacadeStyle style, FacadeBox box, FacadePalette p,
+    Canvas canvas, double u, FacadeStyle style, FacadeBox box, _FacadePalette p,
     {required bool lit}) {
   final paint = Paint();
   for (final r in facadeWindows(style, box)) {
@@ -333,7 +333,7 @@ void _windows(
 /// What says what it is: an inn's hanging sign, a shop's awning, a
 /// warehouse's hoist, a temple's rose window.
 void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
-    FacadePalette p) {
+    _FacadePalette p) {
   final paint = Paint();
   void rect(Color c, double x, double y, double w, double h) {
     paint.color = c;
@@ -391,7 +391,7 @@ void paintFacadeLights(
     Canvas canvas, double u, FacadeStyle style, FacadeBox box, double t,
     {required double strength}) {
   if (strength <= 0) return;
-  final p = FacadePalette.of(style);
+  final p = _FacadePalette.of(style);
   _windows(canvas, u, style, box, p, lit: true);
   final paint = Paint();
   // A lantern by the door.

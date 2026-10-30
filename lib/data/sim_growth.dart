@@ -78,17 +78,6 @@ class SimGrowthTables {
   final Map<String, Patron> patrons;
   final Map<String, SignDef> signs;
   final ClanData clans;
-
-  OfferTables get offerTables => OfferTables(
-        data: clans,
-        signs: signs,
-        skills: skills,
-        skillTrees: skillTrees,
-        items: items,
-        spells: spells,
-        specs: specs,
-        specVariants: specVariants,
-      );
 }
 
 /// The perks the simulator takes, best first: what a fight model without a

@@ -35,8 +35,8 @@ const List<StandingTier> starTierForIndex = [
 ];
 
 /// What the sky needs to know about one class branch.
-class StarBranch {
-  const StarBranch({
+class _StarBranch {
+  const _StarBranch({
     required this.branch,
     required this.clanId,
     required this.clanName,
@@ -80,13 +80,13 @@ class StarBranch {
 
 /// The class branches of [model] as the sky shows them, with the standing of
 /// [politics] against [data]'s clans.
-List<StarBranch> starBranchesOf({
+List<_StarBranch> _starBranchesOf({
   required SkillsModel model,
   required ClanData data,
   required PoliticsState politics,
   required AppLanguage language,
 }) {
-  final out = <StarBranch>[];
+  final out = <_StarBranch>[];
   for (final branch in model.classBranches) {
     final ids = [
       for (final id in branch.skillIds)
@@ -105,7 +105,7 @@ List<StarBranch> starBranchesOf({
     }
     final tier = clan == null ? null : politics.tierOf(clan, data);
     final next = nextAt < 0 ? null : model[ids[nextAt]];
-    out.add(StarBranch(
+    out.add(_StarBranch(
       branch: branch,
       clanId: clan,
       clanName: clan == null ? '' : data.faction(clan)!.shortFor(language),
@@ -127,7 +127,7 @@ List<StarBranch> starBranchesOf({
 
 /// Where the five stars of a constellation sit in its cell (0 to 1): up to
 /// four skills and the crown last.
-const List<List<Offset>> starShapes = [
+const List<List<Offset>> _starShapes = [
   [
     Offset(0.08, 0.85),
     Offset(0.28, 0.55),
@@ -183,7 +183,7 @@ class StarSky {
   /// The place of star [k] (0 to 4, the crown last) of constellation [i].
   Offset starAt(int i, int k) {
     final cell = cells[i];
-    final shape = starShapes[i % starShapes.length][k];
+    final shape = _starShapes[i % _starShapes.length][k];
     // A wide cell stretches the shape; its stars stay in the same order.
     return Offset(cell.left + 14 + shape.dx * (cell.width - 28),
         cell.top + 10 + shape.dy * cellHeight * 0.60);
@@ -205,7 +205,7 @@ class _StarChartState extends ConsumerState<StarChart> {
 
   /// The constellation the card reads: the one picked, else the first whose
   /// clan can offer its next skill, else the first with a next skill.
-  StarBranch _focused(List<StarBranch> branches) {
+  _StarBranch _focused(List<_StarBranch> branches) {
     for (final b in branches) {
       if (b.branch.id == _focus) return b;
     }
@@ -220,7 +220,7 @@ class _StarChartState extends ConsumerState<StarChart> {
     final data = ref.watch(clanDataProvider);
     final politics = ref.watch(playerSessionProvider.select((s) => s.politics));
     final language = ref.watch(appLanguageProvider);
-    final branches = starBranchesOf(
+    final branches = _starBranchesOf(
         model: model, data: data, politics: politics, language: language);
     if (branches.isEmpty) return const SizedBox.shrink();
     final focus = _focused(branches);
@@ -275,7 +275,7 @@ class _StarChartState extends ConsumerState<StarChart> {
 
   /// A constellation's name, its count and its clan, under its stars.
   Widget _label(
-      StarBranch b, StarSky sky, int i, StarBranch focus, ThemeData theme) {
+      _StarBranch b, StarSky sky, int i, _StarBranch focus, ThemeData theme) {
     final cell = sky.cells[i];
     final on = b.branch.id == focus.branch.id;
     final clan = b.clanId == null
@@ -333,7 +333,7 @@ class _StarChartState extends ConsumerState<StarChart> {
   }
 
   /// The tap targets of a constellation's stars, over the painted sky.
-  List<Widget> _hits(StarBranch b, StarSky sky, int i) {
+  List<Widget> _hits(_StarBranch b, StarSky sky, int i) {
     const hit = 40.0;
     Widget target(Offset at, Key key, String label, VoidCallback onTap) =>
         Positioned(
@@ -375,7 +375,7 @@ class _StarChartState extends ConsumerState<StarChart> {
     ];
   }
 
-  String _starLabel(StarBranch b, int k) {
+  String _starLabel(_StarBranch b, int k) {
     final language = ref.read(appLanguageProvider);
     final id = b.branch.skillIds[k];
     final state = k < b.known
@@ -391,7 +391,7 @@ class _FocusCard extends ConsumerWidget {
   const _FocusCard({required this.model, required this.star});
 
   final SkillsModel model;
-  final StarBranch star;
+  final _StarBranch star;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -499,7 +499,7 @@ class _SkyPainter extends CustomPainter {
     required this.model,
   });
 
-  final List<StarBranch> branches;
+  final List<_StarBranch> branches;
   final StarSky sky;
   final String focusId;
   final Color gold;

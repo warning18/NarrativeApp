@@ -168,7 +168,7 @@ class _ScenePainter extends CustomPainter {
     }
     actors?.paint(canvas, size, 0, t, unit);
     overlay?.paint(canvas, size, 0, t, unit);
-    paintSideParticles(canvas, size, particles, intensity, t, unit);
+    _paintSideParticles(canvas, size, particles, intensity, t, unit);
   }
 
   @override
@@ -229,7 +229,7 @@ double _rand(int seed) {
 }
 
 /// The weather over the scene: [intensity] 0 to 1.
-void paintSideParticles(Canvas canvas, Size size, SideParticles kind,
+void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
     double intensity, double t, double unit) {
   if (kind == SideParticles.none || intensity <= 0) return;
   final w = size.width, h = size.height;

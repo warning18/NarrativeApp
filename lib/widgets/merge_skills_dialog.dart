@@ -69,7 +69,7 @@ class _CraftSheet extends ConsumerWidget {
                       shrinkWrap: true,
                       children: [
                         for (final recipe in recipes)
-                          CraftRecipeCard(
+                          _CraftRecipeCard(
                             key: Key('craft_${recipe.id}'),
                             recipe: recipe,
                             language: lang,
@@ -95,8 +95,8 @@ class _CraftSheet extends ConsumerWidget {
 
 /// One recipe: the two inputs, an arrow, the result, and what to do about
 /// it. Known inputs wear a check; missing ones are greyed with their name.
-class CraftRecipeCard extends StatelessWidget {
-  const CraftRecipeCard({
+class _CraftRecipeCard extends StatelessWidget {
+  const _CraftRecipeCard({
     super.key,
     required this.recipe,
     required this.language,
@@ -302,7 +302,7 @@ Future<void> _confirmAndMerge(
           Text(trFor(language, 'merge_confirm_message'),
               style: theme.textTheme.bodyMedium),
           const SizedBox(height: 12),
-          CraftRecipeCard(recipe: recipe, language: language),
+          _CraftRecipeCard(recipe: recipe, language: language),
         ],
       ),
       actions: [

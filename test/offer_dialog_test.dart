@@ -25,7 +25,6 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
-import 'package:narrative_data_app/widgets/title_widgets.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 import 'support/fonts.dart';
@@ -135,7 +134,6 @@ Future<ProviderContainer> _open(WidgetTester tester,
                 onPressed: () => showOfferIfWaiting(context, ref),
                 child: const Text('Open'),
               ),
-              const TitlesSection(),
             ],
           ),
         ),
@@ -533,15 +531,10 @@ void main() {
     Navigator.of(tester.element(find.byType(OfferDialog))).pop();
     await tester.pumpAndSettle();
 
-    // The titles: the one worn, and the brand that counts regardless.
-    expect(find.text('Garde du charbon · Pacte'), findsOneWidget);
-    expect(find.text('Porté'), findsOneWidget);
-    expect(find.text('Sous la Marque · Dominion'), findsOneWidget);
-    expect(
-        find.text('Une marque : elle compte, portée ou non.'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('title_coal_guard')));
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
-    await tester.pump();
+    // The worn title comes off (the Character tab's title list is gone).
+    expect(container.read(playerSessionProvider).activeTitleId, 'coal_guard');
+    await tester.runAsync(() =>
+        container.read(playerSessionProvider.notifier).setActiveTitle(''));
     expect(container.read(playerSessionProvider).activeTitleId, '');
     expect(tester.takeException(), isNull);
   });

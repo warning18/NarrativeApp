@@ -24,10 +24,10 @@ bool isPrologueOpening(StoryNode node) =>
 
 /// Set once the text has been told, so coming back to the first scene (the
 /// character's making backed out of) shows it whole instead of again.
-final prologuePlayedProvider = StateProvider<bool>((ref) => false);
+final _prologuePlayedProvider = StateProvider<bool>((ref) => false);
 
 /// The sigil's asset: the title's own standard.
-const String prologueSigilAsset = 'assets/visuals/banners/void_standard.png';
+const String _prologueSigilAsset = 'assets/visuals/banners/void_standard.png';
 
 /// How much of the sigil shows at most: a whisper (8-15 %).
 const double prologueSigilPeak = 0.12;
@@ -185,7 +185,7 @@ class _PrologueOpeningState extends ConsumerState<PrologueOpening>
     _reduced = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     if (_started) return;
     _started = true;
-    if (_reduced || ref.read(prologuePlayedProvider) || _sentences.isEmpty) {
+    if (_reduced || ref.read(_prologuePlayedProvider) || _sentences.isEmpty) {
       _clock.value = 1;
     } else {
       _clock.forward();
@@ -257,10 +257,10 @@ class _PrologueOpeningState extends ConsumerState<PrologueOpening>
         builder: (context, _) {
           final s = _now;
           final total = _plan.total;
-          if (s >= total && !ref.read(prologuePlayedProvider)) {
+          if (s >= total && !ref.read(_prologuePlayedProvider)) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
-              ref.read(prologuePlayedProvider.notifier).state = true;
+              ref.read(_prologuePlayedProvider.notifier).state = true;
             });
           }
           final settle = ((s - total) / _settleSeconds).clamp(0.0, 1.0);
@@ -285,7 +285,7 @@ class _PrologueOpeningState extends ConsumerState<PrologueOpening>
                           0, 0, 0, 1, 0,
                         ]),
                         child: Image.asset(
-                          prologueSigilAsset,
+                          _prologueSigilAsset,
                           height: height * 0.62,
                           fit: BoxFit.contain,
                           filterQuality: FilterQuality.none,

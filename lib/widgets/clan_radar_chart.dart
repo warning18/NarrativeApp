@@ -13,7 +13,7 @@ import '../providers/clan_radar_provider.dart';
 import '../theme/stitched_ink.dart';
 
 /// The label key of [axis].
-String radarAxisKey(RadarAxis axis) => 'radar_axis_${axis.name}';
+String _radarAxisKey(RadarAxis axis) => 'radar_axis_${axis.name}';
 
 class ClanRadarChart extends ConsumerWidget {
   const ClanRadarChart({
@@ -33,7 +33,7 @@ class ClanRadarChart extends ConsumerWidget {
     final ink = InkColors.of(context);
     final theme = Theme.of(context);
     final labels = [
-      for (final axis in RadarAxis.values) tr(ref, radarAxisKey(axis)),
+      for (final axis in RadarAxis.values) tr(ref, _radarAxisKey(axis)),
     ];
     return Semantics(
       label: [

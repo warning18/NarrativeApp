@@ -132,14 +132,6 @@ const Set<VfxStyle> supportVfxStyles = {
 /// Styles the fight plays for itself, which the tiers leave as they are.
 const Set<VfxStyle> systemVfxStyles = _systemStyles;
 
-/// Styles that travel from whoever acts to whoever is hit before landing.
-const Set<VfxStyle> projectileStyles = {
-  VfxStyle.arrow,
-  VfxStyle.bolt,
-  VfxStyle.fireball,
-  VfxStyle.drain,
-};
-
 /// How long a style plays, in milliseconds.
 int vfxDurationMs(VfxStyle style) {
   switch (style) {
