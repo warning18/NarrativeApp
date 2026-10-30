@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_rolls.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart' show wardTargetsProvider;
 import '../theme/stitched_ink.dart';
@@ -93,7 +94,10 @@ class RollPowerRow extends ConsumerWidget {
                 opacity: banishCostOf(length) <= charges ? 1 : 0.4,
                 child: Text(tr(ref, 'roll_banish_length')
                     .replaceAll('{draws}', '$length')
-                    .replaceAll('{cost}', '${banishCostOf(length)}')),
+                    .replaceAll(
+                        '{charges}',
+                        chargesText(ref.watch(appLanguageProvider),
+                            banishCostOf(length)))),
               ),
             ),
           // The Warding Cairn's other use: keep a hunting clan off the trail.

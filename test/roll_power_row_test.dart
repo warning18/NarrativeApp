@@ -109,6 +109,9 @@ void main() {
     await tester.tap(find.byKey(const Key('p_roll_banish')));
     await tester.pumpAndSettle();
     expect(log, ['raise'], reason: 'no charge, no reroll');
+    // The shortest ban costs one charge, and says so in the singular (#650).
+    expect(
+        find.text('${banishLengths.first} draws · 1 charge'), findsOneWidget);
     await tester.tap(find.byKey(Key('p_roll_banish_${banishLengths.first}')));
     await tester.pumpAndSettle();
     expect(log, ['raise', 'banish ${banishLengths.first}']);
