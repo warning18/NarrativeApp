@@ -5,9 +5,9 @@
 //   `rewardAllyId`) is handed in, never twice and never after leaving or
 //   being taken (PlayerSessionNotifier.recruitAlly); the quests' own gates
 //   (alignment, flags, gold) are the quest log's;
-// - the party: `partyCapacityFor` seats (two companions, three with the
-//   Barracks Annex), and a companion with a `requiredHouseId` only once that
-//   house stands (Kelda and Kelda's Hall);
+// - the party: `partyCapacityFor` seats (two companions, never more: three
+//   fighters, v1.667), and a companion with a `requiredHouseId` only once
+//   that house stands (Kelda and Kelda's Hall);
 // - approval (approval.dart): every choice's alignment and gold and its
 //   `approvalMods` move the seated companions' approval by their weights; at
 //   [leavingApproval] they walk out, and the benched companion who thinks

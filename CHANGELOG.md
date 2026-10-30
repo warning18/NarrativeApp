@@ -16,6 +16,18 @@ isn't reconstructable from git history alone.
   The ground behind the screen keeps only the scenery, the night and the
   lamps.
 
+## [1.667.0+703]
+
+- **Core: three fighters at most, and the pre-fight pick (the user's
+  rules; UX-2 builds the pick sheet).**
+  - A fight has three fighters and three dice at most: the player and two
+    companions. `partyCapacityFor` is two, whatever is built; the Barracks
+    Annex no longer adds a seat (what it gives instead is with the user).
+  - Before a fight the player may pick who goes (`fightPickProvider`,
+    `_fieldParty`, `fightLineup` in `party_pick.dart`): the seated ones by
+    default, for that fight only.
+  - Saves with three seated keep the first two; the third goes to the
+    bench, still recruited. Nobody is lost.
 ## [1.666.0+702]
 
 - **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**

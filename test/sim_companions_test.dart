@@ -118,10 +118,11 @@ void main() {
       final ranked = ['vess', 'sable', 'maren']
         ..sort((a, b) => p.valueOf(b).compareTo(p.valueOf(a)));
       expect(p.active.toSet(), ranked.take(2).toSet());
-      // A third seat (the Barracks Annex) seats the third.
+      // The Barracks Annex no longer adds a seat: three fighters at most
+      // (v1.667).
       p.housesBuilt(['barracks_annex'], chapter: 4);
-      expect(p.capacity, 3);
-      expect(p.active, hasLength(3));
+      expect(p.capacity, 2);
+      expect(p.active.toSet(), ranked.take(2).toSet());
     });
 
     test('a tie goes to the higher approval, then to the alignment fit', () {

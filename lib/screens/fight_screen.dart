@@ -24,6 +24,8 @@ import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/die_locks.dart';
+import '../combat/party_pick.dart';
+import '../providers/fight_pick_provider.dart';
 import '../combat/heal_target.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
@@ -369,6 +371,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _luckyDieTourReady = false;
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
+
+  /// Builds a companion as they fight this one (set with the party, see
+  /// _ensurePartyBuilt); the pre-fight pick ([_fieldParty]) uses it.
+  _PartyMember? Function(String companionId)? _allyMember;
+
+  /// The companions fielded beside the player, in seat order: the
+  /// pre-fight pick (UX-2's) reads it.
+  // ignore: unused_element
+  List<String> get _fieldedAllyIds => [
+        for (final m in _party)
+          if (!m.isPlayer) m.id,
+      ];
 
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
