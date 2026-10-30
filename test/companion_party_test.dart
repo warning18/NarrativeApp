@@ -81,14 +81,14 @@ Future<ProviderContainer> _open(WidgetTester tester, Map<String, dynamic> save,
 void main() {
   setUp(rootBundle.clear);
 
-  testWidgets('the seats, the bench, a locked seat and one line of mention',
+  testWidgets('the seats, the bench, no third seat and one line of mention',
       (tester) async {
     await _open(tester, _party);
     expect(find.byKey(const Key('party_seat_kelda')), findsOneWidget);
     expect(find.byKey(const Key('party_seat_sable')), findsOneWidget);
     expect(find.byKey(const Key('party_bench_maren')), findsOneWidget);
-    // The third seat a house would add, locked and named by the house.
-    expect(find.text('Barracks Annex'), findsOneWidget);
+    // No house adds a third seat: three fighters at most (v1.667).
+    expect(find.text('Barracks Annex'), findsNothing);
     // One plain line: companions still to meet, with no name and no quest.
     expect(find.byKey(const Key('party_still_out_there')), findsOneWidget);
     expect(find.textContaining('Liora'), findsNothing);

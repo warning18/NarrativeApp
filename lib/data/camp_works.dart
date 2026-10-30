@@ -100,7 +100,7 @@ WorkCategory workCategoryOf(String houseId, Map<String, dynamic> house) {
     return WorkCategory.workshops;
   }
   if ((house['requiredAllyId']?.toString() ?? '').isNotEmpty ||
-      ((house['partyCapacityBonus'] as num?) ?? 0) > 0) {
+      ((house['companionHealthBonus'] as num?) ?? 0) > 0) {
     return WorkCategory.company;
   }
   return WorkCategory.greatWorks;

@@ -125,6 +125,18 @@ void main() {
       expect(p.active.toSet(), ranked.take(2).toSet());
     });
 
+    test('the Barracks Annex: a full company fights at +40% health (v1.668)',
+        () {
+      final p = _party()..recruit('vess', chapter: 3, cause: 'quest');
+      final alone = p.fightAllies().single.maxHealth;
+      p.housesBuilt(['barracks_annex'], chapter: 4);
+      // One companion alone: no bonus.
+      expect(p.fightAllies().single.maxHealth, alone);
+      p.recruit('sable', chapter: 4, cause: 'quest');
+      final vess = p.fightAllies().singleWhere((a) => a.id == 'vess');
+      expect(vess.maxHealth, (alone * 1.4).round());
+    });
+
     test('a tie goes to the higher approval, then to the alignment fit', () {
       Map<String, dynamic> twin(int good, int evil) => {
             ...(_companions['liora'] as Map<String, dynamic>),
