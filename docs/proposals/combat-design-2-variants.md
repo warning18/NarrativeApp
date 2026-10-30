@@ -20,7 +20,7 @@ on the ground (0.35 s), land and bounce on the final face (0.3 s), settle and la
 1.1 s. A tap during the flight lands them at once; reduced motion places them with no flight.
 
 Core: nothing to change. This is look and motion only (positions come from the view; the set of
-locked dice stays the same state), `fight_dice_rules.dart` is not touched. One thing to check
-with Core before building: whether a roll can bring more than 3 dice on a board (B is tight at 5).
+locked dice stays the same state), `fight_dice_rules.dart` is not touched. Core confirmed the board holds at most 4 dice (player + 2 seated companions, 4 with the Barracks
+Annex): A fits 4 dice of 64 px in a row; B (292 px) fits 4 dice of 58 px as 2 x 2.
 
 Recommendation: A (the wider board is worth more than the side rail on a phone).
