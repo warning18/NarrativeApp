@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.686.0+722]
+
+- The scene panel: a scene whose choices show as cards now opens them with
+  the scene in small and its question. You and the one the scene faces
+  stand on one ground line (their head and name, with their role when they
+  have one), and the scene's question sits under it in italics ("Pay the
+  toll, or fight?"). With four choices, or a long one, it folds to one
+  line (their head, their name, the question) so the cards keep the room.
+  A scene with no one faced shows a voice's icon. Hubs (the map's rings)
+  and scenes without a question or a face are unchanged.
+
 ## [1.685.0+721]
 
 - The fight's top strip takes one row instead of three: the goal, the
