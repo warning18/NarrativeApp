@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.684.0+720]
+
+- The clans' dice wear their clan. The Lantern, Cinder and Court dice have
+  their own art (a hanging lantern, a banked coal with embers, a poisoned
+  cup) in place of the placeholders. In the dice bag (the inventory and
+  the dice screen) a clan die shows its clan's flag, "<Clan>'s gift" and
+  its Resonance: "+1 to faces up to 3", or asleep with the reason (not
+  your main clan, or below Friend). In a fight the hero's clan die wears
+  a small star on its corner: gold when the Resonance is lit, grey when
+  it sleeps, with a tip.
+
 ## [1.676.0+712]
 
 - **Core: the clans' dice, given as gifts (the user's rules,
