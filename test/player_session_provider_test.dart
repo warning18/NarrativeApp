@@ -764,32 +764,20 @@ void main() {
       'big_annex': {'houseID': 'big_annex', 'partyCapacityBonus': 2},
     };
 
-    test('never above two companions: three fighters (v1.664)', () {
+    test('never above two companions: three fighters (v1.667)', () {
       expect(
           partyCapacityFor(
               ['keldas_hall', 'barracks_annex', 'big_annex'], houses),
           basePartyCapacity);
       expect(basePartyCapacity, 2);
     });
-
-    test('a built house\'s bonus is one reserve seat, never more', () {
-      expect(reserveSeatsFor(const [], houses), 0);
-      expect(reserveSeatsFor(['keldas_hall'], houses), 0);
-      expect(reserveSeatsFor(['barracks_annex'], houses), 1);
-      expect(reserveSeatsFor(['barracks_annex', 'big_annex'], houses), 1);
-    });
   });
 
-  group('the reserve seat (v1.664)', () {
-    const race = {'standardSkillID': 'human_resolve'};
-    const profession = {'standardSkillID': 'warrior_technique'};
-    const houses = {
-      'barracks_annex': {'houseID': 'barracks_annex', 'partyCapacityBonus': 1},
-    };
+  group('the cap of three fighters (v1.667)', () {
     AllyState ally(String id) =>
         AllyState(companionId: id, currentHealth: AllyState.fullHealthSentinel);
 
-    test('a save with three seated keeps two; the third waits in reserve', () {
+    test('a save with three seated keeps two; the third goes to the bench', () {
       final session = PlayerSession.fromJson({
         'recruitedAllies': [
           for (final id in ['sable', 'liora', 'kelda']) ally(id).toJson(),
@@ -798,23 +786,8 @@ void main() {
         'builtHouseIds': ['barracks_annex'],
       });
       expect(session.activeAllyIds, ['sable', 'liora']);
-      expect(session.reserveAlly, 'kelda');
-      expect(session.recruitedAllies, hasLength(3));
-      // And it round-trips.
-      final again = PlayerSession.fromJson(session.toJson());
-      expect(again.activeAllyIds, ['sable', 'liora']);
-      expect(again.reserveAlly, 'kelda');
-    });
-
-    test('a recruit with the seats full takes a free reserve seat', () async {
-      final notifier = await notifierWith(baseSession(
-          recruitedAllies: [ally('sable'), ally('liora')],
-          activeAllyIds: ['sable', 'liora'],
-          builtHouseIds: ['barracks_annex']));
-      await notifier.recruitAlly('kelda',
-          race: race, profession: profession, houses: houses);
-      expect(notifier.state.activeAllyIds, ['sable', 'liora']);
-      expect(notifier.state.reserveAlly, 'kelda');
+      expect(session.recruitedAllies.map((a) => a.companionId),
+          ['sable', 'liora', 'kelda']);
     });
 
     test('no seat past two, even when a caller passes more', () async {
@@ -823,29 +796,6 @@ void main() {
           activeAllyIds: ['sable', 'liora']));
       await notifier.setAllyActive('kelda', true, partyCapacity: 3);
       expect(notifier.state.activeAllyIds, ['sable', 'liora']);
-    });
-
-    test('the reserve takes one recruited and not seated, with a seat for it',
-        () async {
-      final notifier = await notifierWith(baseSession(
-          recruitedAllies: [ally('sable'), ally('liora'), ally('kelda')],
-          activeAllyIds: ['sable', 'liora']));
-      await notifier.setReserveAlly('kelda', reserveSeats: 0);
-      expect(notifier.state.reserveAlly, isNull);
-      await notifier.setReserveAlly('sable', reserveSeats: 1);
-      expect(notifier.state.reserveAlly, isNull);
-      await notifier.setReserveAlly('nobody', reserveSeats: 1);
-      expect(notifier.state.reserveAlly, isNull);
-      await notifier.setReserveAlly('kelda', reserveSeats: 1);
-      expect(notifier.state.reserveAlly, 'kelda');
-      // Seated, they leave the reserve seat.
-      await notifier.setAllyActive('liora', false, partyCapacity: 2);
-      await notifier.setAllyActive('kelda', true, partyCapacity: 2);
-      expect(notifier.state.activeAllyIds, ['sable', 'kelda']);
-      expect(notifier.state.reserveAlly, isNull);
-      await notifier.setReserveAlly('liora', reserveSeats: 1);
-      await notifier.setReserveAlly('', reserveSeats: 1);
-      expect(notifier.state.reserveAlly, isNull);
     });
   });
 

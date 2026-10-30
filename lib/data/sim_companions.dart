@@ -6,10 +6,8 @@
 //   being taken (PlayerSessionNotifier.recruitAlly); the quests' own gates
 //   (alignment, flags, gold) are the quest log's;
 // - the party: `partyCapacityFor` seats (two companions, never more: three
-//   fighters, v1.664), the Barracks Annex's reserve seat (`reserveSeatsFor`,
-//   the next best waits there and steps in once a fight for one knocked
-//   out), and a companion with a `requiredHouseId` only once that house
-//   stands (Kelda and Kelda's Hall);
+//   fighters, v1.667), and a companion with a `requiredHouseId` only once
+//   that house stands (Kelda and Kelda's Hall);
 // - approval (approval.dart): every choice's alignment and gold and its
 //   `approvalMods` move the seated companions' approval by their weights; at
 //   [leavingApproval] they walk out, and the benched companion who thinks
@@ -35,7 +33,7 @@ import '../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart' show deriveAllyBaseStats;
 import '../providers/player_session_provider.dart'
-    show companionStarterSkillIds, partyCapacityFor, reserveSeatsFor;
+    show companionStarterSkillIds, partyCapacityFor;
 import 'approval.dart';
 import 'perks.dart';
 import 'signs.dart';
@@ -221,10 +219,6 @@ class SimParty {
 
   /// The seated ones (the fight party), in seat order.
   final List<String> active = [];
-
-  /// The one in the reserve seat (the Barracks Annex), null with none: the
-  /// next best after the seated ones (the pick rule).
-  String? reserve;
   final Set<String> departed = {};
   final Set<String> lost = {};
   final List<SimCompanionEvent> log = [];
@@ -242,9 +236,6 @@ class SimParty {
 
   /// Companion seats: partyCapacityFor (two, plus each built house's bonus).
   int get capacity => partyCapacityFor(builtHouses.toList(), houses);
-
-  /// Reserve seats: reserveSeatsFor (one once the Barracks Annex stands).
-  int get reserveSeats => reserveSeatsFor(builtHouses.toList(), houses);
 
   Map<String, dynamic>? _record(String id) =>
       companions[id] as Map<String, dynamic>?;
@@ -321,8 +312,7 @@ class SimParty {
     final values = {for (final id in left) id: valueOf(id)};
     final want = <String>[];
     final why = <String, String>{};
-    // The seats, then the reserve seat, by the same rule.
-    while (want.length < capacity + reserveSeats && left.isNotEmpty) {
+    while (want.length < capacity && left.isNotEmpty) {
       final top = left.map((id) => values[id]!).reduce(max);
       final tied = [
         for (final id in left)
@@ -342,17 +332,6 @@ class SimParty {
           : 'most to the fight, ${values[pick]!.toStringAsFixed(1)}';
       want.add(pick);
       left.remove(pick);
-    }
-    final standby = want.length > capacity ? want.removeLast() : null;
-    if (standby != reserve) {
-      reserve = standby;
-      if (standby != null) {
-        log.add(SimCompanionEvent(
-            chapter: chapter,
-            kind: 'reserve',
-            companionId: standby,
-            reason: why[standby]!));
-      }
     }
     final seated = [
       for (final id in want)
@@ -523,78 +502,59 @@ class SimParty {
     SignEffects signs = SignEffects.none,
     PerkEffects perks = PerkEffects.none,
   }) {
-    return [
-      for (final id in active)
-        if (_simAlly(id, signs: signs, perks: perks) case final ally?) ally,
-    ];
-  }
-
-  /// The reserve as a fight meets them (fightAllies), to step in for one
-  /// knocked out (sim_combat.dart's `reserve`); null with none, or when
-  /// they are down themselves.
-  SimAlly? fightReserve({
-    SignEffects signs = SignEffects.none,
-    PerkEffects perks = PerkEffects.none,
-  }) {
-    final id = reserve;
-    if (id == null || active.contains(id)) return null;
-    final ally = _simAlly(id, signs: signs, perks: perks);
-    return ally == null || ally.isKnockedOut ? null : ally;
-  }
-
-  SimAlly? _simAlly(
-    String id, {
-    required SignEffects signs,
-    required PerkEffects perks,
-  }) {
-    final record = _record(id);
-    final member = roster[id];
-    if (record == null || member == null) return null;
-    final race =
-        races[record['raceId']?.toString() ?? ''] as Map<String, dynamic>? ??
-            const {};
-    final profession = professions[record['professionId']?.toString() ?? '']
-            as Map<String, dynamic>? ??
-        const {};
-    final base = deriveAllyBaseStats(
-        gameConfig: gameConfig, race: race, profession: profession);
-    final stats = _allyStats(record,
-        level: _level,
-        approval: member.approval,
-        races: races,
-        professions: professions,
-        gameConfig: gameConfig);
-    final liveMax = signs.maxHealthFor(stats.maxHealth, partyWide: true);
-    final faces = _facesOf(dice, record);
-    final known = {
-      ...companionStarterSkillIds(
-          race: race, profession: profession, companion: record, dice: dice),
-      ...dieSignatureSkillIds(dice[record['signatureDiceId']?.toString() ?? '']
-          as Map<String, dynamic>?),
-    };
-    return SimAlly(
-      id: id,
-      professionId: record['professionId']?.toString() ?? '',
-      maxHealth: liveMax,
-      currentHealth: SignEffects.healthEntering(
-        current: (member.health ?? stats.maxHealth).clamp(0, stats.maxHealth),
-        base: stats.maxHealth,
-        fightMax: liveMax,
-      ),
-      damage: signs.scaleAllyDamage(perks.scaleAllyDamage(stats.damage)),
-      armor: stats.armor,
-      dexterity: base.dexterity,
-      luck: base.luck,
-      wisdom: base.wisdom,
-      perception: base.perception,
-      faces: faces,
-      skills: {
-        for (final entry in skills.entries)
-          if (known.contains(entry.key) ||
-              ((entry.value as Map?)?['isUnlocked'] as bool? ?? false))
-            entry.key: entry.value,
-      },
-    );
+    final allies = <SimAlly>[];
+    for (final id in active) {
+      final record = _record(id);
+      final member = roster[id];
+      if (record == null || member == null) continue;
+      final race =
+          races[record['raceId']?.toString() ?? ''] as Map<String, dynamic>? ??
+              const {};
+      final profession = professions[record['professionId']?.toString() ?? '']
+              as Map<String, dynamic>? ??
+          const {};
+      final base = deriveAllyBaseStats(
+          gameConfig: gameConfig, race: race, profession: profession);
+      final stats = _allyStats(record,
+          level: _level,
+          approval: member.approval,
+          races: races,
+          professions: professions,
+          gameConfig: gameConfig);
+      final liveMax = signs.maxHealthFor(stats.maxHealth, partyWide: true);
+      final faces = _facesOf(dice, record);
+      final known = {
+        ...companionStarterSkillIds(
+            race: race, profession: profession, companion: record, dice: dice),
+        ...dieSignatureSkillIds(
+            dice[record['signatureDiceId']?.toString() ?? '']
+                as Map<String, dynamic>?),
+      };
+      allies.add(SimAlly(
+        id: id,
+        professionId: record['professionId']?.toString() ?? '',
+        maxHealth: liveMax,
+        currentHealth: SignEffects.healthEntering(
+          current: (member.health ?? stats.maxHealth).clamp(0, stats.maxHealth),
+          base: stats.maxHealth,
+          fightMax: liveMax,
+        ),
+        damage: signs.scaleAllyDamage(perks.scaleAllyDamage(stats.damage)),
+        armor: stats.armor,
+        dexterity: base.dexterity,
+        luck: base.luck,
+        wisdom: base.wisdom,
+        perception: base.perception,
+        faces: faces,
+        skills: {
+          for (final entry in skills.entries)
+            if (known.contains(entry.key) ||
+                ((entry.value as Map?)?['isUnlocked'] as bool? ?? false))
+              entry.key: entry.value,
+        },
+      ));
+    }
+    return allies;
   }
 
   /// What a fight left (fight_rewards.dart): on a win each one's health

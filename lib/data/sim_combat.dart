@@ -17,7 +17,6 @@ import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
 import '../combat/parry.dart';
-import '../combat/party_pick.dart' show reserveStepsInFor;
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
 import '../combat/fight_numbers.dart';
@@ -1032,13 +1031,8 @@ SimFightOutcome simulateSimFight({
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
   List<SimAlly> allies = const [],
-  SimAlly? reserve,
 }) {
   final c = character;
-  // The reserve seat's companion (party_pick.dart): steps in once a fight
-  // for the first companion knocked out, at the round's turn, into
-  // [allies] itself (the caller's list: who fought goes home).
-  var standby = reserve;
   // Which of the clash rules are in play.
   bool on(String rule) => clash && !clashOff.contains(rule);
   // The fight's context rule (context_rules.dart): the place's or the
@@ -1409,15 +1403,6 @@ SimFightOutcome simulateSimFight({
   }
 
   while (rounds < maxRounds) {
-    if (standby != null) {
-      final seat = reserveStepsInFor(
-          [false, for (final a in allies) a.isKnockedOut],
-          used: false);
-      if (seat > 0) {
-        allies[seat - 1] = standby;
-        standby = null;
-      }
-    }
     rounds++;
     specRound = rounds;
     ctxRound = rounds;

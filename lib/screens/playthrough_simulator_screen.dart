@@ -1432,9 +1432,6 @@ _SimResult _simulate(
       final perks = growth?.perks ?? PerkEffects.none;
       final allies =
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
-      // The reserve steps into [allies] itself; who fought goes home.
-      final fielded = [...allies];
-      final reserve = party?.fightReserve(signs: signs, perks: perks);
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -1453,10 +1450,8 @@ _SimResult _simulate(
             ? null
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
         allies: allies,
-        reserve: reserve,
       );
-      party?.afterFight({...fielded, ...allies}.toList(),
-          won: outcome.won, signs: signs);
+      party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
       if (blessingFights > 0 && --blessingFights == 0) blessingClan = '';

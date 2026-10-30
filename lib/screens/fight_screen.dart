@@ -370,17 +370,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
   List<_PartyMember> _party = [];
 
   /// Builds a companion as they fight this one (set with the party, see
-  /// _ensurePartyBuilt); the pre-fight pick and the reserve use it.
+  /// _ensurePartyBuilt); the pre-fight pick ([_fieldParty]) uses it.
   _PartyMember? Function(String companionId)? _allyMember;
 
-  /// The companion in the reserve seat (party_pick.dart), standing by to
-  /// step in for a fielded companion knocked out; null with none, or once
-  /// they have.
-  _PartyMember? _reserve;
-
-  /// The companion the reserve stepped in for this fight (once a fight);
-  /// their health still goes home with the party's (fight_rewards.dart).
-  _PartyMember? _steppedOut;
+  /// The companions fielded beside the player, in seat order: the
+  /// pre-fight pick (UX-2's) reads it.
+  // ignore: unused_element
+  List<String> get _fieldedAllyIds => [
+        for (final m in _party)
+          if (!m.isPlayer) m.id,
+      ];
 
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].

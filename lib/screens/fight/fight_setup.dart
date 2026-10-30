@@ -459,16 +459,15 @@ extension _FightSetup on _FightScreenState {
     }
 
     // Three fighters at most: the seated companions, or the pre-fight
-    // sheet's pick (party_pick.dart), for this fight only. The reserve
-    // seat's companion waits, standing, to step in (_reserveStepsIn).
+    // sheet's pick (party_pick.dart), for this fight only.
     _allyMember = allyMember;
     _party = [player];
     _fieldParty(ref.read(fightPickProvider));
   }
 
   /// Fields [pick]'s companions (party_pick.dart's [fightLineup]; null for
-  /// the seated ones) beside the player, and seats the reserve. Before the
-  /// first roll only: the pre-fight pick, UX's, may call it again.
+  /// the seated ones) beside the player. Before the first roll only: the
+  /// pre-fight pick, UX's, may call it again.
   void _fieldParty(List<String>? pick) {
     final build = _allyMember;
     if (_started || build == null || _party.isEmpty) return;
@@ -476,11 +475,9 @@ extension _FightSetup on _FightScreenState {
         pick: pick, companions: _companions);
     _party = [
       _party.first,
-      for (final id in lineup.fielded)
+      for (final id in lineup)
         if (build(id) case final member?) member,
     ];
-    final reserve = lineup.reserve == null ? null : build(lineup.reserve!);
-    _reserve = reserve != null && !reserve.isKnockedOut ? reserve : null;
   }
 
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {
