@@ -24,7 +24,7 @@ import 'intro_screen.dart';
 import 'settings_screen.dart';
 
 /// Opens the game (HomeShell) over the menu in [mode], on the Story tab.
-Future<void> enterGame(
+Future<void> _enterGame(
     BuildContext context, WidgetRef ref, AppMode mode) async {
   await ref.read(appModeProvider.notifier).setMode(mode);
   ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(mode);
@@ -256,7 +256,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                             detail: continueDetail,
                             primary: true,
                             onPressed: () =>
-                                enterGame(context, ref, AppMode.inGame),
+                                _enterGame(context, ref, AppMode.inGame),
                           ),
                         item(
                           key: const Key('menu_new_game'),
@@ -289,7 +289,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                                       context,
                                       saving: false);
                                   if (loaded == true && context.mounted) {
-                                    await enterGame(
+                                    await _enterGame(
                                         context, ref, AppMode.inGame);
                                   }
                                 },
@@ -309,7 +309,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           label: tr(ref, 'menu_edit_mode'),
                           detail: tr(ref, 'menu_edit_mode_desc'),
                           onPressed: () =>
-                              enterGame(context, ref, AppMode.edit),
+                              _enterGame(context, ref, AppMode.edit),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -370,7 +370,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
       );
       if (!context.mounted) return;
     }
-    await enterGame(context, ref, AppMode.inGame);
+    await _enterGame(context, ref, AppMode.inGame);
   }
 
   /// The next cycle of the last finished story: its legacy (a share of
@@ -410,7 +410,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
     await notifier.beginNewGamePlus();
     ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
     if (!context.mounted) return;
-    await enterGame(context, ref, AppMode.inGame);
+    await _enterGame(context, ref, AppMode.inGame);
   }
 }
 

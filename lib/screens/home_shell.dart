@@ -295,7 +295,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // edge and gives the page the rest, instead of a bar under it.
     final window = MediaQuery.sizeOf(context);
     final wide =
-        window.width >= wideShellWidth && window.height >= wideShellHeight;
+        window.width >= _wideShellWidth && window.height >= _wideShellHeight;
     // The clans' offers open on their own while one waits (never later).
     final pages = OfferAutopilot(
         child: Stack(
@@ -456,8 +456,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 /// tablet in either direction, a desktop window); under either, the bar at
 /// the bottom. The height keeps a phone on its side (844 x 390) on the bar:
 /// a rail of five tabs needs about 480 px.
-const double wideShellWidth = 840;
-const double wideShellHeight = 480;
+const double _wideShellWidth = 840;
+const double _wideShellHeight = 480;
 
 /// The Camp tab's index among the play-mode tabs.
 const int _campTab = 2;

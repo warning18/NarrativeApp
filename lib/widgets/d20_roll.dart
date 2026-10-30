@@ -166,7 +166,7 @@ class _D20RollState extends State<D20Roll> with SingleTickerProviderStateMixin {
                   transform: matrix,
                   child: CustomPaint(
                     size: Size.square(size),
-                    painter: D20Painter(edge: edge, facet: ink.seam),
+                    painter: _D20Painter(edge: edge, facet: ink.seam),
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(top: size * 0.09),
@@ -251,8 +251,8 @@ class _RingPainter extends CustomPainter {
 }
 
 /// The d20's outline: a hexagon with its facets, lines only.
-class D20Painter extends CustomPainter {
-  const D20Painter({required this.edge, required this.facet});
+class _D20Painter extends CustomPainter {
+  const _D20Painter({required this.edge, required this.facet});
 
   final Color edge;
   final Color facet;
@@ -303,5 +303,5 @@ class D20Painter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(D20Painter old) => old.edge != edge || old.facet != facet;
+  bool shouldRepaint(_D20Painter old) => old.edge != edge || old.facet != facet;
 }

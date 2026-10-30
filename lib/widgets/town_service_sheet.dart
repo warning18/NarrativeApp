@@ -31,7 +31,7 @@ import 'road_panel.dart';
 import 'sheet_kit.dart';
 
 /// The name of a service's kind, in the player's language.
-String townServiceName(WidgetRef ref, String kind) => tr(ref, 'service_$kind');
+String _townServiceName(WidgetRef ref, String kind) => tr(ref, 'service_$kind');
 
 /// The notice board's page: the board, straight from its pin (v1.561).
 class NoticeBoardPage extends ConsumerWidget {
@@ -152,7 +152,7 @@ class _TownServiceSheet extends ConsumerWidget {
             SheetHeader(
               icon: CityChartPainter.serviceIcon(service.kind),
               title: _templeName(ref, service) ??
-                  townServiceName(ref, service.kind),
+                  _townServiceName(ref, service.kind),
               titleKey: const Key('town_service_title'),
             ),
             if (service.opens.isEmpty)

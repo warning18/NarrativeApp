@@ -35,8 +35,8 @@ String abilityAbbrevKey(String ability) => switch (ability) {
 /// for what a shape is compared with.
 const Color radarGold = Color(0xFFF2C14E);
 const Color radarMore = Color(0xFF6FD08C);
-const Color radarLess = Color(0xFFEF5350);
-const Color radarCompare = Color(0xFF9FB0C2);
+const Color _radarLess = Color(0xFFEF5350);
+const Color _radarCompare = Color(0xFF9FB0C2);
 
 class AbilityRadar extends StatelessWidget {
   const AbilityRadar({
@@ -116,7 +116,7 @@ class AbilityRadar extends StatelessWidget {
                     ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
                     : null,
             subColor: !picked && was != null && now[i] < was[i]
-                ? radarLess
+                ? _radarLess
                 : radarMore,
             onTap: onAxisTap == null ? null : () => onAxisTap!(k),
           );
@@ -152,7 +152,7 @@ class AbilityRadar extends StatelessWidget {
             if (was != null)
               RadarLayer(
                   values: was,
-                  color: radarCompare,
+                  color: _radarCompare,
                   fill: 0,
                   dashed: true,
                   width: 2),
@@ -197,7 +197,7 @@ class AbilityRadar extends StatelessWidget {
           Wrap(
             spacing: 18,
             children: [
-              legend(radarCompare, beforeLabel!, dashed: true),
+              legend(_radarCompare, beforeLabel!, dashed: true),
               legend(color, nowLabel!),
             ],
           ),

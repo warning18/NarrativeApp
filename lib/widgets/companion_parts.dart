@@ -21,7 +21,7 @@ import '../theme/stitched_ink.dart';
 import 'moments.dart' show ApprovalHeart;
 
 /// The id of the guide dog (companions.json).
-const String guideDogId = 'vica';
+const String _guideDogId = 'vica';
 
 /// One recruited companion, worked out for display.
 class CompanionView {
@@ -52,7 +52,7 @@ class CompanionView {
   int get approval => ally.approval;
   ApprovalTier get tier => approvalTierFor(ally.approval);
   String get dieId => (record['signatureDiceId'] ?? '').toString();
-  bool get isGuideDog => id == guideDogId;
+  bool get isGuideDog => id == _guideDogId;
 }
 
 /// The recruited companions, seated first (in the order seated), then the
@@ -129,7 +129,7 @@ Color tierColorOf(BuildContext context, ApprovalTier tier) {
 
 /// The guide dog's picture for a hero of [alignment] ('Good', 'Evil', else
 /// neutral): the sitting pose, as in the tutorial.
-String dogPortraitAsset(String alignment) => switch (alignment) {
+String _dogPortraitAsset(String alignment) => switch (alignment) {
       'Good' => '$companionAssetsRoot/Make_it_with_angel_w/rotations/south.png',
       'Evil' => '$companionAssetsRoot/Make_it_with_demon_w/rotations/south.png',
       _ => '$companionAssetsRoot/Sitting_down/rotations/south.png',
@@ -163,7 +163,7 @@ class CompanionPortrait extends ConsumerWidget {
         ),
         child: view.isGuideDog
             ? ClipOval(
-                child: Image.asset(dogPortraitAsset(alignment),
+                child: Image.asset(_dogPortraitAsset(alignment),
                     width: size * 0.82,
                     height: size * 0.82,
                     fit: BoxFit.contain,
