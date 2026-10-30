@@ -10169,6 +10169,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
   },
+  'dice_speed_setting_title': {
+    AppLanguage.en: 'Dice speed in fights',
+    AppLanguage.fr: 'Vitesse des dés en combat',
+  },
+  'dice_speed_setting_desc': {
+    AppLanguage.en:
+        '1× lets you watch the dice tumble and land. 2× and 4× throw them faster.',
+    AppLanguage.fr:
+        '1× laisse voir les dés rouler et se poser. 2× et 4× les lancent plus vite.',
+  },
   'aimed_shots_setting_title': {
     AppLanguage.en: 'Aimed shots in ship battles',
     AppLanguage.fr: 'Tirs visés en bataille navale',
