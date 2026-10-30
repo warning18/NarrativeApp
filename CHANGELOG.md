@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.691.0+727]
+
+- **Narrative: the hero speaks in the stage scenes (first replies).** Twenty
+  fight choices carry a `reply` / `reply_fr`, the short line the hero says in
+  the balloon when the choice is picked, in English and French; the choice
+  text and every other field are untouched.
+  - Aurel Vane (`400`: "Get away from her, Vane!"), the two Wardens in the
+    hallway (`820`, `822`, `822_lie_failed`), the Inquisition soldiers at the
+    gate (`2015_kelda`, `7510_seen`), and the Regent in the Lantern Hall
+    (`7520_vane`, all 14 variants: take him alive, or burn him with his own
+    lantern).
+  - Actions with nothing to say (an ambush, taking a strongbox) keep the
+    choice text in the balloon.
+
 ## [1.687.0+723]
 
 - Stage mode: a scene with a fight among its choices, facing someone who has
