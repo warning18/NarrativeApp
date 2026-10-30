@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.680.0+716]
+
+- **Core: the in-place choices' state (UX-2 builds the panel and the
+  stage on it).**
+  - `sceneChoiceMode` (`scene_choice_mode.dart`): how a scene shows its
+    choices. A hub (more than four acted out where the party stands, the
+    map's rings as today), the fight stage (a fight among them, facing
+    someone who has a standing sprite; UX passes `hasSprite`), else a
+    panel under the scene.
+  - `doorOf` and `doorName`: where a choice leads (walk or travel) and the
+    place's name, from `choiceShape`.
+  - A choice's optional `reply` / `reply_fr`: what the hero says aloud
+    taking it; `replyFor` falls back to the choice's text. Narrative fills
+    it in.
 ## [1.679.0+715]
 
 - The dice of a fight are thrown slower: the throw takes 1.4 s instead of
