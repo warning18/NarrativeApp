@@ -8,6 +8,7 @@ import '../combat/combat_engine.dart' show faceFromJson;
 import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/face_smithing.dart';
+import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
@@ -957,6 +958,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             healthMultiplier: healthMultiplier,
             difficultyMultiplier: boardingDifficulty,
             isTest: widget.isTest,
+            // A boarding fight is fought on the deck (v1.662).
+            forcedStage: FightStage.deck,
           ),
         ),
       ),
