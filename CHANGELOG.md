@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.672.0+708]
+
+- **Narrative: the Barracks Annex reads as rest and readiness.** The Annex no
+  longer gives a third fighting seat; it gives each companion more health. Its
+  description (English and French, `barracks_annex` in `houses.json`) now
+  speaks of bunks, a second mess table and a company rested and ready to hold
+  the line, instead of "room enough for one more pair of hands at your back".
+  Wording only: no key renamed, no number changed.
+
 ## [1.666.0+702]
 
 - **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**
