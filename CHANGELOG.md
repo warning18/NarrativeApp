@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.656.0+692]
+
+- **Cleanup: widgets and helpers nothing used are removed**
+  `SuitorCard`, `TitlesSection`, `ClansSection`, `costLabel`,
+  `scalingStatAbbrev`, `projectileStyles`, `SubClan.favourFor`,
+  `EventVariant.newsFor`, `SimGrowthTables.offerTables`, and the five strings
+  only they read. No behaviour change.
+
 ## [1.654.0+690]
 
 - **The opening scene is told as an animation**
