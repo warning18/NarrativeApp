@@ -65,6 +65,10 @@ const Map<String, int> _sizes = {
   'gambler_die': 20,
   // The built d12.
   'tally_die': 12,
+  // The clans' new dice (clan_dice.dart, v1.676).
+  'lantern_die': 6,
+  'cinder_die': 6,
+  'court_die': 8,
 };
 
 typedef _Face = (String type, int value, String skill, double weight);
@@ -277,8 +281,9 @@ void main() {
       for (final size in _sizes.values) {
         bySize[size] = (bySize[size] ?? 0) + 1;
       }
-      // Vica's die (v1.601) is an eleventh d6.
-      expect(bySize, {6: 11, 4: 6, 8: 7, 10: 4, 12: 4, 20: 1});
+      // Vica's die (v1.601) is an eleventh d6; the clans' Lantern and
+      // Cinder dice two more, their Court die an eighth d8 (v1.676).
+      expect(bySize, {6: 13, 4: 6, 8: 8, 10: 4, 12: 4, 20: 1});
     });
 
     test('a grown die keeps its faces where they were, and adds plain ones',
@@ -359,7 +364,7 @@ void main() {
       ];
       expect(selling, ['last_lantern']);
       expect((shops['last_lantern'] as Map)['diceStock'],
-          containsAll(['vigil_die', 'chorus_die', 'tearglass_die']));
+          containsAll(['chorus_die', 'tearglass_die']));
     });
   });
 

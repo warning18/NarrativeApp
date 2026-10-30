@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../combat/dice_faces.dart' show skillDisplayName;
+import '../combat/dice_faces.dart' show dieDisplayName, skillDisplayName;
 import '../combat/specialisations.dart' show specId;
 import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/companion_remarks.dart';
@@ -167,6 +167,8 @@ String _giftName(
       return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           tables.specVariants[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           gift.id;
+    case GiftKind.die:
+      return dieDisplayName(gift.id, language: lang);
   }
 }
 
@@ -1128,6 +1130,7 @@ Widget _giftGlyph(OfferGift gift, Color color) {
     GiftKind.title => Icons.military_tech_outlined,
     GiftKind.sworn => Icons.gavel,
     GiftKind.spec => Icons.alt_route,
+    GiftKind.die => Icons.casino_outlined,
     GiftKind.perk => Icons.star_outline,
   };
   final mark = Icon(fallback, size: 24, color: color);
@@ -1353,6 +1356,8 @@ class _GiftBody extends StatelessWidget {
             Text(trFor(lang, 'offer_sworn_note'), style: muted),
           ],
         );
+      case GiftKind.die:
+        return Text(trFor(lang, 'offer_die_note'), style: muted);
       case GiftKind.spec:
         final fr = lang == AppLanguage.fr;
         final spec = tables.specs[gift.id];

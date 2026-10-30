@@ -543,9 +543,7 @@
       "Potion",
       "Charm"
     ],
-    "diceStock": [
-      "ossuary_die"
-    ],
+    "diceStock": [],
     "stockQuantities": {
       "boots_bone_laced": 1,
       "greaves_bone_plated": 1,
@@ -600,7 +598,6 @@
     ],
     "diceStock": [
       "pilgrim_die",
-      "vigil_die",
       "chorus_die",
       "tearglass_die",
       "gambler_die"

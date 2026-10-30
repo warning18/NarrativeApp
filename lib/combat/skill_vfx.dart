@@ -5,7 +5,7 @@
 ///
 /// Every skill and spell names its effect in its own record (`vfx` in
 /// skills.json / spells.json, one of [vfxStyleIds]); a record without one
-/// falls back to its element and what it does ([fallbackStyleFor]). The
+/// falls back to its element and what it does ([_fallbackStyleFor]). The
 /// style decides the shape and motion, the element the colors, so a Fire
 /// heal glows warm and a Void heal dark from the same `heal` style.
 library;
@@ -223,7 +223,7 @@ VfxPalette paletteFor(VfxStyle style, String element) {
 }
 
 /// The style for a record with no `vfx`: by its element and what it does.
-VfxStyle fallbackStyleFor({
+VfxStyle _fallbackStyleFor({
   required String element,
   bool damages = true,
   bool heals = false,
@@ -298,7 +298,7 @@ VfxStyle styleForSkill(Map<String, dynamic>? skill) {
   final damage = (skill['damageMod'] as num?)?.toInt() ?? 0;
   final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
   final heal = (skill['healAmount'] as num?)?.toInt() ?? 0;
-  return fallbackStyleFor(
+  return _fallbackStyleFor(
     element: skill['element']?.toString() ?? 'None',
     damages: damage > 0 || multiplier > 1.0 || heal <= 0,
     heals: heal > 0,
@@ -344,7 +344,7 @@ WeaponFamily weaponFamilyOf(String id, String name, int attackDamage) {
 /// The style of a plain Attack face by the weapon in hand: a fist or a
 /// rap of the staff is a small thud, a dagger a quick scratch, a sword a
 /// slash (a great one a heavy cut), a spear a thrust.
-VfxStyle styleForWeapon(WeaponFamily family) => switch (family) {
+VfxStyle _styleForWeapon(WeaponFamily family) => switch (family) {
       WeaponFamily.bare || WeaponFamily.staff => VfxStyle.impact,
       WeaponFamily.dagger => VfxStyle.claw,
       WeaponFamily.sword => VfxStyle.slash,
@@ -359,7 +359,7 @@ VfxStyle styleForFace(String faceType, Map<String, dynamic>? linkedSkill,
     {WeaponFamily? weapon}) {
   switch (faceType) {
     case 'Attack':
-      return weapon == null ? VfxStyle.slash : styleForWeapon(weapon);
+      return weapon == null ? VfxStyle.slash : _styleForWeapon(weapon);
     case 'Defend':
       return VfxStyle.shield;
     case 'Heal':
@@ -384,13 +384,13 @@ VfxStyle styleForSpell({
   if (named != null) return named;
   switch (effect.toLowerCase()) {
     case 'heal':
-      return fallbackStyleFor(element: element, damages: false, heals: true);
+      return _fallbackStyleFor(element: element, damages: false, heals: true);
     case 'block':
       return VfxStyle.shield;
     case 'cleanse':
       return VfxStyle.splash;
     default:
-      return fallbackStyleFor(element: element);
+      return _fallbackStyleFor(element: element);
   }
 }
 
