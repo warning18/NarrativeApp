@@ -16,6 +16,13 @@ isn't reconstructable from git history alone.
   speaks of bunks, a second mess table and a company rested and ready to hold
   the line, instead of "room enough for one more pair of hands at your back".
   Wording only: no key renamed, no number changed.
+## [1.670.0+706]
+
+- "Qui combat ?": with more companions able to fight than the two seats, the
+  fight's setup offers the pick before the first roll. The hero is locked
+  in, two companions at most can be checked, the others wait this fight
+  out, and a toggle keeps the pick as the party. With two companions or
+  fewer nothing shows.
 
 ## [1.667.0+703]
 
