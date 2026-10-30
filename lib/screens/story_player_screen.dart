@@ -87,6 +87,7 @@ import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
+import '../widgets/creation_fade_route.dart';
 import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
@@ -1430,7 +1431,7 @@ Future<void> _selectChoice({
     await ref.read(playerSessionProvider.notifier).resetSession();
     if (!context.mounted) return;
     final started = await Navigator.of(context).push<bool>(
-        MaterialPageRoute(builder: (_) => const RaceProfessionScreen()));
+        creationToStoryRoute<bool>((_) => const RaceProfessionScreen()));
     // Back on the story with a new character, the Story tab's tour plays
     // (see TutorialTrigger in StoryPlayerScreen).
     if (started != true) return;
