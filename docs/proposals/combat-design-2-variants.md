@@ -88,12 +88,9 @@ four other events; the 13 board skins).
 - Everything is drawn in code (patterns and strokes); no image to add. The painted stage behind
   the cards is UX map's and is not touched.
 
-## Round 6: "Qui combat ?" and the reserve seat
-User: with more companions than seats he chooses who fights (player + 2 at most); with the Barracks
-Annex a 4th companion waits in reserve and steps in when a fielded one is knocked out (one swap per
-fight); never a 4th slot. `docs/ux-shots/combat2/who-fights-and-reserve.png`: the "Qui combat ?"
-sheet at the fight's start (the player locked, the seated two pre-checked, the bench below, a
-"keep as my party" toggle, skipped with two companions or fewer; with the Annex one bench row can
-carry a "Reserve" tag), the reserve chip under the party column (outside the three slots), the swap
-(the knocked-out slot fades to the reserve's card, a log line) and the state after (chip greyed:
-used). Core's state: `_fieldedAllyIds`, `_reserveAllyId`, the log/fx moment `reserve_steps_in`.
+## Round 6/7: "Qui combat ?" (the reserve was dropped)
+User: with more companions than seats he chooses who fights (player + 2 at most). The picture
+`docs/ux-shots/combat2/who-fights.png`: the "Qui combat ?" sheet at the fight's start (the player
+locked, the seated two pre-checked, the bench, a "keep as my party" toggle; skipped with two
+companions or fewer) and the fight with its three slots. The reserve seat and its swap were
+removed on the user's word. Core's state: `_fieldedAllyIds`.
