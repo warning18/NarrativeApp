@@ -60,7 +60,8 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     await settleApp(tester);
-    expect(find.textContaining('Payer le péage, ou vous battre'), findsOneWidget);
+    expect(
+        find.textContaining('Payer le péage, ou vous battre'), findsOneWidget);
     expect(_inVignette('Voyou des bas-quartiers'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));
