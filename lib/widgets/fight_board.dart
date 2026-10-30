@@ -445,10 +445,14 @@ class _FightBoardPainter extends CustomPainter {
 /// outside it.
 class FightBoardSurface extends StatelessWidget {
   const FightBoardSurface(
-      {super.key, required this.stage, required this.child});
+      {super.key, required this.stage, required this.child, this.event});
 
   final FightStage stage;
   final Widget child;
+
+  /// What breaks over the board (an anomaly), drawn on the skin and under
+  /// the dice; clipped to the board.
+  final Widget? event;
 
   @override
   Widget build(BuildContext context) {
@@ -468,6 +472,7 @@ class FightBoardSurface extends StatelessWidget {
                 painter: _FightBoardPainter(stage),
               ),
             ),
+            if (event != null) Positioned.fill(child: event!),
             child,
           ],
         ),

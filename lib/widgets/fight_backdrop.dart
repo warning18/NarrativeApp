@@ -227,7 +227,18 @@ class FightBackdrop extends StatefulWidget {
     this.anomaly,
     this.phase = AnomalyPhase.quiet,
     this.light = 1,
+    this.ground = true,
+    this.weather = true,
+    this.events = true,
   });
+
+  /// Which layers this one draws: the ground with its night and lamps, the
+  /// day's weather, the anomaly. The fight stacks three of them: the ground
+  /// behind everything, the weather over the whole screen, the anomaly on
+  /// the dice board alone.
+  final bool ground;
+  final bool weather;
+  final bool events;
 
   /// How much of the day's light there is (see lightLevel in
   /// place_traits.dart): 1 by day, down to pitch dark.
@@ -261,8 +272,9 @@ class _FightBackdropState extends State<FightBackdrop>
   double _t = 0;
   double _level = 0;
 
-  double get _target =>
-      widget.anomaly == null ? 0 : anomalyLevelOf(widget.phase);
+  double get _target => widget.anomaly == null || !widget.events
+      ? 0
+      : anomalyLevelOf(widget.phase);
 
   bool _still(BuildContext context) =>
       MediaQuery.maybeOf(context)?.disableAnimations ?? false;
@@ -328,8 +340,10 @@ class _FightBackdropState extends State<FightBackdrop>
           frame: _frame,
           stage: widget.stage,
           sky: widget.sky,
-          anomalyId: widget.anomaly?.id,
+          anomalyId: widget.events ? widget.anomaly?.id : null,
           light: widget.light,
+          ground: widget.ground,
+          weather: widget.weather,
         ),
       ),
     );
@@ -343,6 +357,8 @@ class _FightBackdropPainter extends CustomPainter {
     required this.sky,
     required this.anomalyId,
     required this.light,
+    this.ground = true,
+    this.weather = true,
   })  : _frame = frame,
         super(repaint: frame);
 
@@ -351,6 +367,8 @@ class _FightBackdropPainter extends CustomPainter {
   final WeatherKind? sky;
   final String? anomalyId;
   final double light;
+  final bool ground;
+  final bool weather;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -363,6 +381,8 @@ class _FightBackdropPainter extends CustomPainter {
       t: _frame.t,
       level: _frame.level,
       light: light,
+      ground: ground,
+      weather: weather,
     );
   }
 
@@ -371,7 +391,9 @@ class _FightBackdropPainter extends CustomPainter {
       old.stage != stage ||
       old.sky != sky ||
       old.anomalyId != anomalyId ||
-      old.light != light;
+      old.light != light ||
+      old.ground != ground ||
+      old.weather != weather;
 }
 
 /// One frame of the backdrop, from time and level alone (so a test can draw
@@ -385,13 +407,17 @@ void paintFightBackdrop(
   required double t,
   required double level,
   double light = 1,
+  bool ground = true,
+  bool weather = true,
 }) {
   if (size.isEmpty) return;
   final scenery = FightScenery.of(stage);
   canvas.save();
   canvas.clipRect(Offset.zero & size);
-  paintPixelStage(canvas, size, stage,
-      stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0));
+  if (ground) {
+    paintPixelStage(canvas, size, stage,
+        stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0));
+  }
   // The day's weather over the stage, as the scenes draw it: pixel streaks.
   final particles = switch (sky) {
     WeatherKind.rain => SideParticles.rain,
@@ -401,7 +427,7 @@ void paintFightBackdrop(
     WeatherKind.fog => SideParticles.fog,
     _ => SideParticles.none,
   };
-  if (particles != SideParticles.none && stage != FightStage.hall) {
+  if (weather && particles != SideParticles.none && stage != FightStage.hall) {
     paintSideParticles(
         canvas, size, particles, 0.6, t, size.width / pixelStageColumns);
   }
@@ -409,7 +435,7 @@ void paintFightBackdrop(
     _paintAnomaly(canvas, size, anomalyId, scenery, t, level);
   }
   // Night and dark: the missing light as a cold veil over everything.
-  if (light < 1) {
+  if (ground && light < 1) {
     canvas.drawRect(
       Offset.zero & size,
       Paint()
@@ -417,7 +443,7 @@ void paintFightBackdrop(
     );
   }
   // The lamps and torches shine through the dark.
-  paintPixelLights(canvas, size, stage, lit: light < 1);
+  if (ground) paintPixelLights(canvas, size, stage, lit: light < 1);
   canvas.restore();
 }
 
