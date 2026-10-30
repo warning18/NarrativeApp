@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.671.0+707]
+## [1.675.0+711]
 
 - **Core: the Barracks Annex rests a full company (the user's pick, after
   the cap of three fighters).**
