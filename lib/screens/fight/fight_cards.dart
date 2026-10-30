@@ -447,30 +447,23 @@ extension _FightCards on _FightScreenState {
     );
   }
 
-  Widget _telegraphChip(IconData icon, String label, {String? tip}) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final chip = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: colorScheme.onTertiaryContainer),
-          const SizedBox(width: 3),
-          Text(
-            label,
-            style:
-                TextStyle(fontSize: 11, color: colorScheme.onTertiaryContainer),
-          ),
-        ],
-      ),
+  Widget _telegraphChip(IconData icon, String label,
+      {String? tip,
+      String? badge,
+      Color? color,
+      String subtitle = '',
+      Key? key}) {
+    final scheme = Theme.of(context).colorScheme;
+    return FightStatusTile(
+      key: key,
+      icon: icon,
+      color: color ?? scheme.tertiary,
+      label: label,
+      badge: badge,
+      subtitle: subtitle,
+      body: tip ?? label,
+      closeHint: tr(ref, 'effect_popin_close'),
     );
-    return tip == null
-        ? chip
-        : Tooltip(message: tip, preferBelow: true, child: chip);
   }
 
   /// The sheet behind an enemy card: its numbers, every affix's rules text,

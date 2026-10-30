@@ -45,6 +45,10 @@ const Map<String, String> dieArtNotes = {
   'gambler_die': 'suits and red pips',
   'hound_die': 'a paw print in her white',
   'tally_die': 'tally marks, the fifth across',
+  // The clans' new dice (Core, clan_dice.dart): placeholders until UX's.
+  'lantern_die': 'a lantern flame',
+  'cinder_die': 'embers rising',
+  'court_die': 'a drop of poison',
 };
 
 /// Whether die [id] has art to draw (the plain first die has none).
@@ -457,6 +461,67 @@ void paintDieArt(
       ]) {
         canvas.drawCircle(p, 0.065, fill(paw));
       }
+    case 'lantern_die': // a hanging lantern, its flame, rays on the face
+      const brass = Color(0xFFD9A441);
+      canvas.drawCircle(const Offset(0, -1.4), 0.07, stroke(brass, 1.3));
+      canvas.drawPath(
+          Path()
+            ..moveTo(-0.21, -1.2)
+            ..lineTo(0, -1.35)
+            ..lineTo(0.21, -1.2)
+            ..close(),
+          fill(brass));
+      canvas.drawRect(const Rect.fromLTWH(-0.16, -1.2, 0.32, 0.3),
+          fill(const Color(0x40F2C14E)));
+      canvas.drawRect(
+          const Rect.fromLTWH(-0.16, -1.2, 0.32, 0.3), stroke(brass, 1.2));
+      flame(0, -0.93, 0.11, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
+      canvas.drawRect(const Rect.fromLTWH(-0.2, -0.9, 0.4, 0.05), fill(brass));
+      // The light it gives: a small sun of rays on the face.
+      for (var i = 0; i < 8; i++) {
+        final a = i * math.pi / 4;
+        canvas.drawLine(
+            Offset(0.4 + math.cos(a) * 0.12, 0.1 + math.sin(a) * 0.12),
+            Offset(0.4 + math.cos(a) * 0.22, 0.1 + math.sin(a) * 0.22),
+            stroke(brass, 1.3));
+      }
+      canvas.drawCircle(const Offset(0.4, 0.1), 0.07, fill(brass));
+    case 'cinder_die': // a banked coal, embers rising
+      const ember = Color(0xFFFF8A3D);
+      flame(0, -1.1, 0.2, const Color(0xFFFF6A1F), const Color(0xFFFFC07A));
+      canvas.drawOval(
+          Rect.fromCenter(
+              center: const Offset(0.4, 0.3), width: 0.34, height: 0.2),
+          fill(const Color(0xFF5A2A1A)));
+      canvas.drawPath(
+          Path()
+            ..moveTo(0.28, 0.3)
+            ..lineTo(0.38, 0.26)
+            ..lineTo(0.44, 0.34)
+            ..lineTo(0.54, 0.28),
+          stroke(ember, 1.3));
+      drop(0.34, 0.08, 0.05, ember);
+      drop(0.46, -0.06, 0.04, ember);
+      drop(0.38, -0.2, 0.03, const Color(0xFFFFC07A));
+      canvas.drawCircle(const Offset(0.52, -0.28), 0.02, fill(ember));
+    case 'court_die': // a poisoned cup, a drop falling
+      const cup = Color(0xFFD8C9A0);
+      canvas.drawPath(
+          Path()
+            ..moveTo(0.2, -0.02)
+            ..quadraticBezierTo(0.22, 0.24, 0.4, 0.24)
+            ..quadraticBezierTo(0.58, 0.24, 0.6, -0.02)
+            ..close(),
+          fill(cup));
+      canvas.drawLine(
+          const Offset(0.2, -0.02), const Offset(0.6, -0.02), stroke(cup, 1.4));
+      canvas.drawLine(const Offset(0.23, 0.04), const Offset(0.57, 0.04),
+          stroke(const Color(0xFF7DBF86), 1.8));
+      canvas.drawLine(
+          const Offset(0.4, 0.24), const Offset(0.4, 0.4), stroke(cup, 1.4));
+      canvas.drawLine(
+          const Offset(0.3, 0.42), const Offset(0.5, 0.42), stroke(cup, 1.6));
+      drop(0.4, -0.3, 0.07, const Color(0xFF9FD8A6));
     case 'tally_die': // tally marks, the fifth across
       for (var i = 0; i < 4; i++) {
         canvas.drawLine(

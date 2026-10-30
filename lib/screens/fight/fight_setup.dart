@@ -382,7 +382,7 @@ extension _FightSetup on _FightScreenState {
       professionId: session.professionId,
       gear: _signs.over(_perks
           .over(gearEffectsFor(session.equippedItemIds, items, itemSets))),
-      dieFaces: smithed(_selectedDiceId),
+      dieFaces: _resonating(smithed(_selectedDiceId), _selectedDiceId, session),
     );
 
     // A companion as they fight this one.
@@ -564,6 +564,17 @@ extension _FightSetup on _FightScreenState {
               (_companions[id] as Map?)?['requiredHouseId']?.toString(),
           companions: _companions);
     }
+  }
+
+  /// The hero's [faces] of die [dieId] as they roll this fight: a clan's
+  /// die with its Resonance lit counts its low faces one more
+  /// (clan_dice.dart); [_dieResonance] says how it stands, for the tray.
+  List<Map<String, dynamic>> _resonating(
+      List<Map<String, dynamic>> faces, String? dieId, PlayerSession session) {
+    final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
+    _dieResonance = resonanceOf(dice[dieId ?? ''] as Map<String, dynamic>?,
+        politics: session.politics, data: ref.read(clanDataProvider));
+    return _dieResonance == Resonance.lit ? resonantFaces(faces) : faces;
   }
 
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {

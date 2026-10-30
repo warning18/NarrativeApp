@@ -356,17 +356,15 @@ extension _FightGround on _FightScreenState {
   /// the log readable in either theme.
   Widget _buildBackdrop({double veil = 0.4}) {
     final scheme = Theme.of(context).colorScheme;
-    final plan = _anomaly;
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
-          sky: _sky.kind == WeatherKind.clear ? null : _sky.kind,
-          anomaly: plan?.anomaly,
-          phase: _anomalyPhase,
           light: lightLevel(_light),
+          weather: false,
+          events: false,
         ),
         DecoratedBox(
           decoration: BoxDecoration(
@@ -383,6 +381,37 @@ extension _FightGround on _FightScreenState {
           ),
         ),
       ],
+    );
+  }
+
+  /// The day's weather over the whole screen, cards and board included: it
+  /// takes no touch and is read through.
+  Widget _buildWeatherOverlay() {
+    if (_sky.kind == WeatherKind.clear) return const SizedBox.shrink();
+    return IgnorePointer(
+      child: FightBackdrop(
+        key: const Key('fight_weather'),
+        stage: _stage,
+        sky: _sky.kind,
+        ground: false,
+        events: false,
+      ),
+    );
+  }
+
+  /// The anomaly (an earth break, a storm, a glare) on the dice board alone.
+  Widget _buildBoardEvent() {
+    final plan = _anomaly;
+    if (plan == null) return const SizedBox.shrink();
+    return IgnorePointer(
+      child: FightBackdrop(
+        key: const Key('fight_board_event'),
+        stage: _stage,
+        anomaly: plan.anomaly,
+        phase: _anomalyPhase,
+        ground: false,
+        weather: false,
+      ),
     );
   }
 
@@ -406,37 +435,18 @@ extension _FightGround on _FightScreenState {
       false => scheme.error,
       null => scheme.tertiary,
     };
+    final left = max(0, plan.last - _roundsStarted + 1);
     final soon = phase == AnomalyPhase.omen
-        ? ' · ${trFor(lang, 'anomaly_soon')}'
-        : ' · ${max(0, plan.last - _roundsStarted + 1)}'
-            '${trFor(lang, 'anomaly_rounds_left')}';
-    return Tooltip(
-      message: anomalyEffectText(plan, lang).join('\n'),
-      child: Container(
-        key: const Key('fight_anomaly_chip'),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: colour.withValues(alpha: 0.18),
-          border: Border.all(color: colour.withValues(alpha: 0.7)),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(anomalyIcon(plan.anomaly.family), size: 12, color: colour),
-            const SizedBox(width: 3),
-            Flexible(
-              child: Text('$name$soon',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: scheme.onSurface)),
-            ),
-          ],
-        ),
-      ),
+        ? trFor(lang, 'anomaly_soon')
+        : '$left${trFor(lang, 'anomaly_rounds_left')}';
+    return _telegraphChip(
+      anomalyIcon(plan.anomaly.family),
+      name,
+      key: const Key('fight_anomaly_chip'),
+      color: colour,
+      badge: phase == AnomalyPhase.omen ? '!' : '$left',
+      subtitle: soon,
+      tip: anomalyEffectText(plan, lang).join('\n'),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../combat/clan_dice.dart' show clanDieGiftTier, clanDieOf;
 import '../combat/dice_faces.dart' show SkillRarity, skillRarity;
 import '../combat/spells.dart'
     show SpellSpec, canLearnSpell, spellbookSpellIdFor;
@@ -93,6 +94,7 @@ const StandingTier _secretMinTier = StandingTier.known;
 /// The weight of each kind of gift a clan may bring, among those it has.
 const Map<GiftKind, int> _giftKindWeights = {
   GiftKind.spec: 60,
+  GiftKind.die: 40,
   GiftKind.skill: 35,
   GiftKind.sign: 30,
   GiftKind.object: 20,
@@ -228,6 +230,9 @@ enum GiftKind {
   /// A specialisation of the character's core (specialisations.dart): its
   /// main clan's, from Friend, once.
   spec,
+
+  /// The clan's own die (clan_dice.dart): from Trusted, once a game.
+  die,
 }
 
 GiftKind? _giftKindNamed(String? name) =>
@@ -473,10 +478,14 @@ class OfferTables {
     this.spells = const {},
     this.specs = const {},
     this.specVariants = const {},
+    this.dice = const {},
   });
 
   /// spec_variants.json parsed (spec_variants.dart).
   final Map<String, SpecVariantInfo> specVariants;
+
+  /// dice.json: the clans' dice (clan_dice.dart).
+  final Map<String, dynamic> dice;
 
   final ClanData data;
   final Map<String, SignDef> signs;
@@ -522,7 +531,14 @@ class OfferContext {
     this.placeHolder = '',
     this.riskyGifts = false,
     this.bannedGifts = const {},
+    this.dice = const {},
+    this.ownedDiceIds = const [],
   });
+
+  /// dice.json, and the dice the character owns: a clan's die is given
+  /// once (clan_dice.dart).
+  final Map<String, dynamic> dice;
+  final List<String> ownedDiceIds;
 
   /// The gifts warded off at the Warding Cairn (camp_rolls.dart), as
   /// `kind:id` ([giftBanId]): no clan offers them while another gift is
@@ -563,6 +579,8 @@ class OfferContext {
         placeHolder: placeHolder,
         riskyGifts: riskyGifts,
         bannedGifts: bans,
+        dice: dice,
+        ownedDiceIds: ownedDiceIds,
       );
 
   /// Whether risky gifts are open (the Parley Tent built, see
@@ -991,6 +1009,16 @@ List<String> offerableSpecsFor(String factionId, OfferContext c) {
   return ids;
 }
 
+/// The die [factionId] could give (clan_dice.dart): its own, from
+/// [clanDieGiftTier], when the character does not own it yet; null else.
+String? offerableDieFor(String factionId, OfferContext c) {
+  if (!c.tierOf(factionId).isAtLeast(clanDieGiftTier)) return null;
+  final id = clanDieOf(factionId, c.dice);
+  if (id == null || c.ownedDiceIds.contains(id)) return null;
+  if (c.isBanned(GiftKind.die, id)) return null;
+  return id;
+}
+
 /// Whether gift [id] is a weak link's (step 3c, [weakLinkSpecs]).
 bool _isWeakLinkGift(String id) => weakLinkSpecs.contains(specNamed(id));
 
@@ -1055,6 +1083,7 @@ Map<GiftKind, int> _giftKinds(
   return {
     if (swornBoonDue(factionId, c)) GiftKind.sworn: 1,
     if (offerableSpecsFor(factionId, c).isNotEmpty) GiftKind.spec: 1,
+    if (offerableDieFor(factionId, c) != null) GiftKind.die: 1,
     if (skillOptions.isNotEmpty || accords.isNotEmpty)
       GiftKind.skill: skillOptions.length + accords.length,
     if (hasSign) GiftKind.sign: 1,
@@ -1285,6 +1314,12 @@ OfferGift? drawGift(
         kind: GiftKind.spec,
         id: id,
         rarity: better ? _better(rarity) : rarity,
+      );
+    case GiftKind.die:
+      return OfferGift(
+        kind: GiftKind.die,
+        id: offerableDieFor(factionId, c)!,
+        rarity: better ? SignRarity.heroic : SignRarity.epic,
       );
     case GiftKind.perk:
       return null;
@@ -1989,6 +2024,8 @@ Suitor? preferredSuitor(
     if (gift.kind == GiftKind.skill && fillsEmptyFace(gift.id)) return 100;
     // A specialisation changes how the character fights: taken first.
     if (gift.kind == GiftKind.spec) return 90;
+    // A clan's die, once a game: next.
+    if (gift.kind == GiftKind.die) return 80;
     var score = gift.rarity.index * 10;
     if (gift.kind == GiftKind.sworn) score += 50;
     if (gift.kind == GiftKind.sign) {

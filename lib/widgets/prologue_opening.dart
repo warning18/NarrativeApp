@@ -21,7 +21,7 @@ bool isPrologueOpening(StoryNode node) =>
     node.choices.any((c) => c.opensCharacterCreation);
 
 /// The sigil's asset: the title's own standard.
-const String _prologueSigilAsset = 'assets/visuals/banners/void_standard.png';
+const String prologueSigilAsset = 'assets/visuals/banners/void_standard.png';
 
 /// How much of the sigil shows at most: a whisper (8-15 %).
 const double prologueSigilPeak = 0.12;
@@ -295,7 +295,7 @@ class _PrologueOpeningState extends State<PrologueOpening>
                           0, 0, 0, 1, 0,
                         ]),
                         child: Image.asset(
-                          _prologueSigilAsset,
+                          prologueSigilAsset,
                           height: height * 0.62,
                           fit: BoxFit.contain,
                           filterQuality: FilterQuality.none,

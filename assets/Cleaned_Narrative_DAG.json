@@ -1000,7 +1000,9 @@
         "flagsToAdd": [
           "lysa_survived",
           "keeper_dead"
-        ]
+        ],
+        "reply": "Get away from her, Vane!",
+        "reply_fr": "Éloignez-vous d’elle, Vane !"
       },
       {
         "text": "Run, and come back for her later",
@@ -1483,7 +1485,9 @@
         "triggerEnemyId": "inquisition_warden",
         "flagsToAdd": [
           "wardens_slain"
-        ]
+        ],
+        "reply": "Which of you first?",
+        "reply_fr": "Lequel de vous d’abord ?"
       },
       {
         "text": "Bull through them",
@@ -1524,7 +1528,9 @@
         "triggerEnemyId": "inquisition_warden",
         "flagsToAdd": [
           "wardens_slain"
-        ]
+        ],
+        "reply": "Stay standing, then. Not for long.",
+        "reply_fr": "Restez debout, alors. Pas pour longtemps."
       },
       {
         "text": "Shout that the resistance is already inside",
@@ -4007,7 +4013,9 @@
           "marks": {
             "scaffolders": "friend"
           }
-        }
+        },
+        "reply": "Two at the gate, then.",
+        "reply_fr": "À deux sur la porte, alors."
       }
     ],
     "reqAlignmentScore": 2,
@@ -18120,7 +18128,9 @@
         "triggerEnemyId": "inquisition_warden",
         "flagsToAdd": [
           "wardens_slain"
-        ]
+        ],
+        "reply": "Then I’ll go through you.",
+        "reply_fr": "Alors je passerai par vous."
       }
     ],
     "facing": "inquisition_warden"
@@ -21151,7 +21161,9 @@
         "triggerEnemyIds": [
           "inquisition_soldier",
           "inquisition_auxiliary"
-        ]
+        ],
+        "reply": "Stand aside, or be moved.",
+        "reply_fr": "Écartez-vous, ou on vous écartera."
       }
     ],
     "flag_callbacks": [
@@ -21234,7 +21246,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21247,7 +21261,9 @@
         ],
         "showIfFlags": [
           "claim_dominion"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21260,7 +21276,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21273,7 +21291,9 @@
         ],
         "showIfFlags": [
           "claim_vigil"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21286,7 +21306,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21299,7 +21321,9 @@
         ],
         "showIfFlags": [
           "claim_compact"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21312,7 +21336,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21325,7 +21351,9 @@
         ],
         "showIfFlags": [
           "claim_mire"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21338,7 +21366,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21351,7 +21381,9 @@
         ],
         "showIfFlags": [
           "claim_crows"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21364,7 +21396,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21377,7 +21411,9 @@
         ],
         "showIfFlags": [
           "claim_penitents"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       },
       {
         "text": "Take the Regent alive, for the Houses to judge",
@@ -21390,7 +21426,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "You live. The Houses will judge you.",
+        "reply_fr": "Vous vivrez. Les Maisons vous jugeront."
       },
       {
         "text": "Burn the Regent with his own Hooded Lantern",
@@ -21403,7 +21441,9 @@
         ],
         "showIfFlags": [
           "claim_open_hand"
-        ]
+        ],
+        "reply": "You wanted a fire. Keep it.",
+        "reply_fr": "Vous vouliez du feu. Gardez-le."
       }
     ],
     "facing": "cassian_oriel",

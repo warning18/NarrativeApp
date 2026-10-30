@@ -2591,6 +2591,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       riskyGifts: riskyGiftsOpen(s.builtHouseIds),
       // The gifts warded at the Warding Cairn (camp_rolls.dart).
       bannedGifts: bannedIdsOf(s.rollBans, RollBanOn.offer),
+      dice: tables.dice,
+      ownedDiceIds: s.ownedDiceIds,
     );
   }
 
@@ -3287,6 +3289,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case GiftKind.spec:
         if (session.specIds.contains(gift.id)) return session;
         return session.copyWith(specIds: [...session.specIds, gift.id]);
+      case GiftKind.die:
+        // A clan's die (clan_dice.dart), to the bag: equipped like any.
+        if (session.ownedDiceIds.contains(gift.id)) return session;
+        return session
+            .copyWith(ownedDiceIds: [...session.ownedDiceIds, gift.id]);
     }
   }
 

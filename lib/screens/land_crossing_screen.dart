@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../combat/encounter.dart' show EncounterModifiers;
+import '../combat/field_anomaly.dart' show landRouteStage;
 import '../data/ability_check.dart';
 import '../data/fate_coin.dart';
 import '../data/journey_rules.dart' show watchesPerDay;
@@ -381,9 +383,15 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     if (!mounted) return;
     if (enemy == null) return _settle(choice.fail, '');
     ref.read(combatActiveProvider.notifier).state = true;
+    // The road's own ground (field_anomaly.dart's landRouteStage): a desert
+    // road a caravan road, a mountain road a pass.
+    final stage = landRouteStage(
+        terrain: widget.route.terrain, biome: widget.route.biome);
     final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
-        builder: (_) =>
-            FightScreen(enemyId: choice.fightEnemyId!, enemy: enemy)));
+        builder: (_) => FightScreen(
+            enemyId: choice.fightEnemyId!,
+            enemy: enemy,
+            modifiers: EncounterModifiers(forcedStage: stage))));
     ref.read(combatActiveProvider.notifier).state = false;
     final retreated = ref.read(lastFightRetreatedProvider);
     ref.read(lastFightRetreatedProvider.notifier).state = false;

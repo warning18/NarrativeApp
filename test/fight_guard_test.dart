@@ -106,7 +106,8 @@ void main() {
     await _settle(tester);
 
     await tester.tap(find.text('Roll Dice'));
-    await _settle(tester);
+    // The throw is slower since v1.679: wait for the faces to land.
+    await _pumpUntil(tester, () => find.text('Confirm').evaluate().isNotEmpty);
     // The die on the table is a cube (v1.214).
     expect(find.byKey(const ValueKey('die_cube_player')), findsOneWidget);
     await tester.tap(find.text('Confirm'));

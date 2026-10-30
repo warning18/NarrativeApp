@@ -9085,6 +9085,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Every Heal face and potion restores half again as much.',
     AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
   },
+  // The eight newer stages' own anomalies (v1.688; Narrative may reword).
+  'anomaly_crumbling_walls': {
+    AppLanguage.en: 'Crumbling walls',
+    AppLanguage.fr: 'Murs qui croulent',
+  },
+  'anomaly_deep_canopy': {
+    AppLanguage.en: 'Deep canopy',
+    AppLanguage.fr: 'Sous-bois profond',
+  },
+  'anomaly_rising_ford': {
+    AppLanguage.en: 'Rising ford',
+    AppLanguage.fr: 'Gué en crue',
+  },
+  'anomaly_smouldering_stubble': {
+    AppLanguage.en: 'Smouldering stubble',
+    AppLanguage.fr: 'Chaumes qui couvent',
+  },
+  'anomaly_cool_spring': {
+    AppLanguage.en: 'Cool spring',
+    AppLanguage.fr: 'Source fraîche',
+  },
+  'anomaly_dust_devils': {
+    AppLanguage.en: 'Dust devils',
+    AppLanguage.fr: 'Tourbillons de poussière',
+  },
+  'anomaly_slick_stones': {
+    AppLanguage.en: 'Slick stones',
+    AppLanguage.fr: 'Pavés glissants',
+  },
+  'anomaly_thin_air': {
+    AppLanguage.en: 'Thin air',
+    AppLanguage.fr: 'Air raréfié',
+  },
   'anomaly_sandstorm': {
     AppLanguage.en: 'Sandstorm',
     AppLanguage.fr: 'Tempête de sable',
@@ -10169,6 +10202,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_fire_hint_no_aim': {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+  },
+  'dice_speed_setting_title': {
+    AppLanguage.en: 'Dice speed in fights',
+    AppLanguage.fr: 'Vitesse des dés en combat',
+  },
+  'dice_speed_setting_desc': {
+    AppLanguage.en:
+        '1× lets you watch the dice tumble and land. 2× and 4× throw them faster.',
+    AppLanguage.fr:
+        '1× laisse voir les dés rouler et se poser. 2× et 4× les lancent plus vite.',
   },
   'aimed_shots_setting_title': {
     AppLanguage.en: 'Aimed shots in ship battles',
@@ -13001,6 +13044,45 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_gift_spec': {
     AppLanguage.en: 'Specialisation',
     AppLanguage.fr: 'Spécialisation',
+  },
+  // A clan's die (clan_dice.dart, v1.676).
+  'offer_gift_die': {
+    AppLanguage.en: 'Clan die',
+    AppLanguage.fr: 'Dé de clan',
+  },
+  'clan_die_gift_title': {
+    AppLanguage.en: "{clan}'s gift",
+    AppLanguage.fr: 'Don — {clan}',
+  },
+  'clan_die_resonance_lit': {
+    AppLanguage.en: 'Resonance: +{n} to faces up to {max}',
+    AppLanguage.fr: "Résonance : +{n} aux faces jusqu'à {max}",
+  },
+  'clan_die_resonance_main': {
+    AppLanguage.en: 'Resonance asleep: {clan} is not your main clan',
+    AppLanguage.fr:
+        "Résonance endormie : {clan} n'est pas votre clan principal",
+  },
+  'clan_die_resonance_standing': {
+    AppLanguage.en: 'Resonance asleep: stand Friend or better with {clan}',
+    AppLanguage.fr: 'Résonance endormie : soyez au moins Ami de {clan}',
+  },
+  'resonance_lit_tip': {
+    AppLanguage.en:
+        "Resonance lit: this clan die's small faces count one more.",
+    AppLanguage.fr:
+        'Résonance allumée : les petites faces de ce dé de clan comptent un de plus.',
+  },
+  'resonance_asleep_tip': {
+    AppLanguage.en: 'Resonance asleep: see the dice bag for why.',
+    AppLanguage.fr:
+        'Résonance endormie : voyez le sac de dés pour savoir pourquoi.',
+  },
+  'offer_die_note': {
+    AppLanguage.en:
+        'Given once. While this clan is your main clan and you stand Friend or better, its small faces (1 to 3) count one more.',
+    AppLanguage.fr:
+        'Offert une seule fois. Tant que ce clan est votre clan principal et que vous êtes au moins Ami, ses petites faces (de 1 à 3) comptent un de plus.',
   },
   'offer_sworn_note': {
     AppLanguage.en:

@@ -24,6 +24,7 @@ import '../combat/combat_engine.dart';
 import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
+import '../combat/clan_dice.dart';
 import '../combat/die_locks.dart';
 import '../combat/party_pick.dart';
 import '../providers/fight_pick_provider.dart';
@@ -373,6 +374,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
 
+  /// The hero's die's Resonance this fight (clan_dice.dart): lit, asleep
+  /// and why, or none for a die of no clan. The die tray (UX's) shows it.
+  Resonance _dieResonance = Resonance.none;
+
+  /// How many log lines the player has seen in the history sheet.
+  int _logSeen = 0;
+
   /// The pre-fight sheet's "keep as my party" toggle.
   bool _keepPick = false;
 
@@ -586,6 +594,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
+
+  /// Reduced motion: the dice are not thrown, they are there.
+  bool get _still => MediaQuery.of(context).disableAnimations;
 
   /// The on-screen effects (see combat_vfx.dart): each card is anchored by
   /// a key so an effect lands on the fighter it belongs to.

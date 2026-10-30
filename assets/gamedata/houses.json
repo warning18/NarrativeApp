@@ -17,7 +17,7 @@
     "houseID": "barracks_annex",
     "category": "company",
     "houseName": "Barracks Annex",
-    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion’s claim on it, just more camp than you started with.",
+    "description": "Bunks enough for everyone, a second mess table, a hot meal at the end of the road. No one companion’s claim on it: just a company rested and ready to hold the line.",
     "buildCost": 130,
     "materialCost": {
       "material_timber": 3,
@@ -26,7 +26,7 @@
     "companionHealthBonus": 40,
     "requiredFlags": [],
     "houseName_fr": "L’Annexe de la caserne",
-    "description_fr": "Des couchettes en plus, une seconde table de mess, assez de place pour une paire de mains de plus dans votre dos — aucun compagnon n’y prétend en particulier, c’est simplement un camp plus grand que celui du départ."
+    "description_fr": "Des couchettes pour tous, une seconde table de mess, un repas chaud au bout de la route. Aucun compagnon n’y prétend en particulier : seulement une compagnie reposée, prête à tenir la ligne."
   },
   "hammersmith": {
     "houseID": "hammersmith",

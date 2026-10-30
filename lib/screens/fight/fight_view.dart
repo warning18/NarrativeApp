@@ -49,6 +49,7 @@ extension _FightView on _FightScreenState {
       children: [
         Positioned.fill(
             child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+        Positioned.fill(child: _buildWeatherOverlay()),
         SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -411,9 +412,7 @@ extension _FightView on _FightScreenState {
   Widget _buildBattleChips() {
     final condition = _condition;
     final ready = _momentum >= _momentumNeeded;
-    return Wrap(
-      spacing: 6,
-      runSpacing: 4,
+    return Row(
       children: [
         ..._goalChips(),
         if (condition != null)
@@ -422,32 +421,26 @@ extension _FightView on _FightScreenState {
         if (_sky.effectKey != null)
           _telegraphChip(
               Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}'),
-              tip: _skyTip()),
+              color: Colors.lightBlue.shade200, tip: _skyTip()),
         if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
-          ready
-              ? tr(ref, 'momentum_ready_label')
-              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
+          ready ? tr(ref, 'momentum_ready_label') : tr(ref, 'momentum_label'),
+          badge: ready ? null : '$_momentum/$_momentumNeeded',
+          color: ready ? Colors.orange : null,
           tip: tr(ref, 'momentum_tip'),
         ),
         // Luck nudges left (long-press a die to spend one).
         if (_nudgesLeft > 0)
-          Tooltip(
-            message: tr(ref, 'nudge_hint'),
-            child: _telegraphChip(
-                Icons.swap_vert, '${tr(ref, 'nudges_label')} $_nudgesLeft'),
-          ),
+          _telegraphChip(Icons.swap_vert, tr(ref, 'nudges_label'),
+              badge: '$_nudgesLeft', tip: tr(ref, 'nudge_hint')),
         if (_hexPending)
-          Tooltip(
-            message: tr(ref, 'tamper_hex_desc'),
-            child: _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex')),
-          ),
+          _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex'),
+              color: Colors.deepPurple.shade200,
+              tip: tr(ref, 'tamper_hex_desc')),
         if (_silenced || _silencePending)
-          Tooltip(
-            message: tr(ref, 'tamper_silence_desc'),
-            child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
-          ),
+          _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence'),
+              color: Colors.red.shade200, tip: tr(ref, 'tamper_silence_desc')),
         _buildTideMark(),
         _buildRuleMark(),
       ],
@@ -514,7 +507,7 @@ extension _FightView on _FightScreenState {
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          _buildLogTicker(),
+          if (ref.watch(appModeProvider) != AppMode.inGame) _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
             id: 'fight.actions',
@@ -534,6 +527,7 @@ extension _FightView on _FightScreenState {
         children: [
           Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: battle),
+          Positioned.fill(child: _buildWeatherOverlay()),
           Positioned.fill(
             child: IgnorePointer(
               child: CombatVfxLayer(
@@ -552,12 +546,20 @@ extension _FightView on _FightScreenState {
   /// The battlefield condition, the momentum meter and the round counter --
   /// the fight-wide state, above the fighters.
   Widget _buildTopStrip() {
+    final play = ref.watch(appModeProvider) == AppMode.inGame;
     return Row(
       children: [
-        Expanded(child: _buildBattleChips()),
-        _telegraphChip(
-            Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted',
+        // One row of icon tiles; a long one scrolls rather than wraps.
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: _buildBattleChips(),
+          ),
+        ),
+        _telegraphChip(Icons.flag_outlined, tr(ref, 'round_label'),
+            badge: '$_roundsStarted',
             tip: tr(ref, 'round_tip').replaceAll('{n}', '$tideStartRound')),
+        if (play) _buildLogButton(),
       ],
     );
   }
@@ -594,7 +596,10 @@ extension _FightView on _FightScreenState {
         : '${tr(ref, 'context_${stem}_mark')} ×${status.level}';
     return KeyedSubtree(
       key: Key('place_rule_mark_$stem'),
-      child: _stateChip(icon, label, colour, tooltip: tip),
+      child: _telegraphChip(icon, label,
+          color: colour,
+          badge: status.omen ? '!' : '${status.level}',
+          tip: tip),
     );
   }
 
@@ -609,27 +614,24 @@ extension _FightView on _FightScreenState {
     final enemyStep = bossFight ? tideBossEnemyStep : tideEnemyStep;
     final Widget chip;
     if (level > 0) {
-      chip = Tooltip(
-        message: tr(ref, 'tide_mark_tip')
-            .replaceAll('{party}', pct(tidePartyStep, level))
-            .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
-        child: _stateChip(
-            Icons.waves,
-            tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
-            Colors.cyan.shade600),
-      );
+      chip = _telegraphChip(
+          Icons.waves, tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
+          color: Colors.cyan.shade600,
+          badge: '$level',
+          tip: tr(ref, 'tide_mark_tip')
+              .replaceAll('{party}', pct(tidePartyStep, level))
+              .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'));
     } else if (tideStartRound - _roundsStarted <= 3 && _roundsStarted > 0) {
-      chip = Tooltip(
-        message: tr(ref, 'tide_soon_tip')
-            .replaceAll('{round}', '$tideStartRound')
-            .replaceAll('{party}', pct(tidePartyStep, 1))
-            .replaceAll('{enemies}', pct(enemyStep, 1)),
-        child: _stateChip(
-            Icons.waves,
-            tr(ref, 'tide_soon_mark')
-                .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
-            Colors.blueGrey),
-      );
+      chip = _telegraphChip(
+          Icons.waves,
+          tr(ref, 'tide_soon_mark')
+              .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
+          color: Colors.blueGrey.shade300,
+          badge: '${tideStartRound - _roundsStarted}',
+          tip: tr(ref, 'tide_soon_tip')
+              .replaceAll('{round}', '$tideStartRound')
+              .replaceAll('{party}', pct(tidePartyStep, 1))
+              .replaceAll('{enemies}', pct(enemyStep, 1)));
     } else {
       return const SizedBox.shrink();
     }
@@ -814,6 +816,29 @@ extension _FightView on _FightScreenState {
                             : Icons.lock,
                         size: 12,
                         color: accent),
+                  ),
+                // A clan die's Resonance: lit (gold) or asleep (grey).
+                if (actor.isPlayer &&
+                    !spinning &&
+                    _dieResonance != Resonance.none)
+                  Positioned(
+                    left: 2,
+                    top: 2,
+                    child: Tooltip(
+                      key: Key(_dieResonance == Resonance.lit
+                          ? 'die_resonance_lit'
+                          : 'die_resonance_asleep'),
+                      message: tr(
+                          ref,
+                          _dieResonance == Resonance.lit
+                              ? 'resonance_lit_tip'
+                              : 'resonance_asleep_tip'),
+                      child: Icon(Icons.auto_awesome,
+                          size: 14,
+                          color: _dieResonance == Resonance.lit
+                              ? const Color(0xFFF2C14E)
+                              : Colors.white38),
+                    ),
                   ),
                 // The hero's profession core on the die: Flurry doubles an
                 // attack face; the Trail shows the face coming next.
