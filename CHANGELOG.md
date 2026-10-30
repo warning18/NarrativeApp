@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.664.0+700]
+
+- **Core: three fighters at most, the reserve seat and the pre-fight pick
+  (the user's rules; UX-2 builds the badge, the swap moment and the pick
+  sheet).**
+  - A fight has three fighters and three dice at most: the player and two
+    companions. `partyCapacityFor` is two, whatever is built.
+  - The Barracks Annex now gives a reserve seat (`reserveSeatsFor`, one at
+    most): the companion in it steps in for the first fielded companion
+    knocked out, at the round's turn, once a fight (`_reserveStepsIn`,
+    "{name} steps in for {out}."). A recruit with the seats full takes a
+    free reserve seat. The companion relieved still goes home with the
+    party.
+  - Before a fight the player may pick who goes (`fightPickProvider`,
+    `_fieldParty`, `fightLineup` in `party_pick.dart`): the seated ones by
+    default, for that fight only.
+  - Saves with three seated keep the first two; the third waits in the
+    reserve seat. Nobody is lost.
+  - The simulator plays the same rules (the next best waits in reserve).
+    Over 50 competent runs: 4.45% of fights lost before, 8.96% with the
+    cap alone, 4.18% with the cap and the reserve. No band moves.
+
 ## [1.663.0+699]
 
 - **Core: a heal mends the ally it is aimed at (the user's combat rule;

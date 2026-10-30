@@ -26,7 +26,10 @@ import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/die_locks.dart';
+<<<<<<< HEAD
 import '../combat/party_pick.dart';
+=======
+>>>>>>> origin/main
 import '../combat/heal_target.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
