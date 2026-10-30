@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.673.0+709]
+
+- **Cleanup: file-only names added since the first pass are private**
+  Helpers of the fight board, the effect icons, the weapon styles and the
+  language notifier that only their own file uses (renames inside one file,
+  4 files). No behaviour change.
+
 ## [1.672.0+708]
 
 - **Narrative: the Barracks Annex reads as rest and readiness.** The Annex no
