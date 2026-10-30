@@ -8907,6 +8907,90 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Chaque coup porté, et chaque coup reçu, en ajoute 1. À 5, la prochaine face offensive est un coup lourd ×2,5.',
   },
+  // The effect icons' pop-ins (combat redesign A', texts by Core,
+  // docs/proposals/fight-effect-tips.md).
+  'poison_tip': {
+    AppLanguage.en:
+        'Takes {n} damage at the start of each of its turns, for {turns} more turns. A new poison replaces the old one; poisons don’t add up.',
+    AppLanguage.fr:
+        'Subit {n} dégâts au début de chacun de ses tours, encore {turns} tours. Un nouveau poison remplace l’ancien\u00a0; les poisons ne s’additionnent pas.',
+  },
+  'stun_tip': {
+    AppLanguage.en:
+        'Loses its next turn: a stunned hero sits out the roll, a stunned enemy makes no move and drops a blow it was winding up. Lasts {turns} turn(s).',
+    AppLanguage.fr:
+        'Perd son prochain tour\u00a0: un héros étourdi ne lance pas son dé, un ennemi étourdi n’agit pas et perd le coup qu’il préparait. Dure {turns} tour(s).',
+  },
+  'weaken_tip': {
+    AppLanguage.en:
+        'Its hits deal {n}% less damage, for {turns} more turns. A new weaken replaces the old one.',
+    AppLanguage.fr:
+        'Ses coups infligent {n}\u00a0% de dégâts en moins, encore {turns} tours. Un nouvel affaiblissement remplace l’ancien.',
+  },
+  'block_tip': {
+    AppLanguage.en:
+        'Stops {n} damage of the next blow that reaches this fighter; that blow uses it up. It is doubled against the blow an enemy has announced on this fighter. It lasts until the party’s next roll.',
+    AppLanguage.fr:
+        'Arrête {n} dégâts du prochain coup qui atteint ce combattant\u00a0; ce coup l’épuise. Il est doublé contre le coup qu’un ennemi a annoncé sur ce combattant. Il dure jusqu’au prochain lancer du groupe.',
+  },
+  'shelter_tip': {
+    AppLanguage.en:
+        'Your party kept a Defend and a Heal this round: every Heal also mends each other standing member for half of it.',
+    AppLanguage.fr:
+        'Votre groupe a gardé une Défense et un Soin ce tour\u00a0: chaque Soin soigne aussi chaque autre membre debout de la moitié.',
+  },
+  'effect_block_label': {AppLanguage.en: 'Block', AppLanguage.fr: 'Blocage'},
+  'effect_shelter_label': {AppLanguage.en: 'Shelter', AppLanguage.fr: 'Abri'},
+  'effect_target_label': {AppLanguage.en: 'Targeted', AppLanguage.fr: 'Visé'},
+  'effect_target_tip': {
+    AppLanguage.en: 'An enemy’s next blow is aimed at this fighter.',
+    AppLanguage.fr: 'Le prochain coup d’un ennemi vise ce combattant.',
+  },
+  'effect_guard_label': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'effect_windup_label': {
+    AppLanguage.en: 'Winding up',
+    AppLanguage.fr: 'Coup préparé',
+  },
+  'effect_flee_label': {AppLanguage.en: 'Wavering', AppLanguage.fr: 'Vacille'},
+  'effect_more_label': {AppLanguage.en: 'Details', AppLanguage.fr: 'Détails'},
+  'effect_popin_sub': {
+    AppLanguage.en: '{name} · {turns} turns left',
+    AppLanguage.fr: '{name} · encore {turns} tours',
+  },
+  'effect_popin_sub_plain': {
+    AppLanguage.en: '{name}',
+    AppLanguage.fr: '{name}',
+  },
+  'effect_popin_close': {
+    AppLanguage.en: 'Tap anywhere to close.',
+    AppLanguage.fr: 'Touchez ailleurs pour fermer.',
+  },
+  // The dice board (combat redesign A'').
+  'dice_pick_hint': {
+    AppLanguage.en:
+        'Tap a die to see its target, tap it again to keep it. Long-press for details.',
+    AppLanguage.fr:
+        'Touchez un dé pour voir sa cible, touchez-le encore pour le garder. Appui long pour les détails.',
+  },
+  'dice_picked_hint': {
+    AppLanguage.en: 'Tap another target to change it · tap the die to keep it.',
+    AppLanguage.fr:
+        'Touchez une autre cible pour la changer · touchez le dé pour le garder.',
+  },
+  'dice_kept_label': {AppLanguage.en: 'Kept', AppLanguage.fr: 'Gardés'},
+  'dice_kept_none': {
+    AppLanguage.en: 'No die kept',
+    AppLanguage.fr: 'Aucun dé gardé',
+  },
+  'dice_kept_return_hint': {
+    AppLanguage.en: 'Double-tap a kept die to put it back.',
+    AppLanguage.fr: 'Touchez deux fois un dé gardé pour le remettre.',
+  },
+  'dice_sealed_tip': {
+    AppLanguage.en: 'Locked for this round: a new roll has been made.',
+    AppLanguage.fr:
+        'Verrouillé pour ce tour\u00a0: un nouveau lancer a eu lieu.',
+  },
   'fury_ready_label': {
     AppLanguage.en: 'Heavy blow next',
     AppLanguage.fr: 'Coup lourd au prochain',

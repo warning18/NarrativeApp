@@ -115,7 +115,9 @@ void main() {
     expect(find.textContaining('raises a guard of', findRichText: true),
         findsWidgets);
     expect(
-        find.byTooltip('Raised guard: soaks your next hits'), findsOneWidget);
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_guard_")),
+        findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
   });
 }
