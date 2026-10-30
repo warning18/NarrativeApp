@@ -318,19 +318,123 @@ class FightEffectChip extends StatelessWidget {
   }
 }
 
+/// A fight-wide status as an icon tile (the top strip: the goal, the
+/// weather, an anomaly, the momentum, a nudge count...): a tinted tile with
+/// a Material [icon], [badge] at its corner (a count or turns left), and a
+/// tap that opens the pop-in with [label] and [body].
+class FightStatusTile extends StatelessWidget {
+  const FightStatusTile({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.body,
+    required this.closeHint,
+    this.badge,
+    this.subtitle = '',
+    this.size = 32,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String label;
+  final String body;
+  final String closeHint;
+  final String? badge;
+  final String subtitle;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: badge == null ? label : '$label $badge',
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          final box = context.findRenderObject();
+          if (box is! RenderBox || !box.hasSize) return;
+          showFightEffectPopin(
+            context,
+            anchor: box.localToGlobal(Offset.zero) & box.size,
+            leading: _tile(icon, color, null, 34),
+            color: color,
+            title: label,
+            subtitle: subtitle,
+            body: body,
+            closeHint: closeHint,
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 6, bottom: 5),
+          child: _tile(icon, color, badge, size),
+        ),
+      ),
+    );
+  }
+
+  static Widget _tile(IconData icon, Color color, String? badge, double size) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: color.withValues(alpha: 0.65)),
+              ),
+              child: Icon(icon, size: size * 0.56, color: color),
+            ),
+          ),
+          if (badge != null)
+            Positioned(
+              right: -4,
+              bottom: -5,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 3, vertical: 0.5),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF15131A),
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(color: color.withValues(alpha: 0.9)),
+                ),
+                child: Text(badge,
+                    style: const TextStyle(
+                        fontSize: 9,
+                        height: 1.1,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700)),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 /// The pop-in under (or over) the icon at [anchor] (its rectangle on the
 /// screen): the icon, [title], [subtitle] (who, turns left), [body] (what it
 /// does) and a line to close it; a tap anywhere closes it.
 Future<void> showFightEffectPopin(
   BuildContext context, {
   required Rect anchor,
-  required FightEffect effect,
+  FightEffect? effect,
+  Widget? leading,
+  Color? color,
   required String title,
   required String subtitle,
   required String body,
   required String closeHint,
 }) {
-  final color = _fightEffectColor(effect);
+  assert(effect != null || (leading != null && color != null));
+  final color0 = color ?? _fightEffectColor(effect!);
+  final lead =
+      leading ?? FightEffectChip(effect: effect!, label: title, size: 34);
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -351,7 +455,7 @@ Future<void> showFightEffectPopin(
         elevation: 10,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: color),
+          side: BorderSide(color: color0),
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
@@ -361,7 +465,7 @@ Future<void> showFightEffectPopin(
             children: [
               Row(
                 children: [
-                  FightEffectChip(effect: effect, label: title, size: 34),
+                  lead,
                   const SizedBox(width: 5),
                   Expanded(
                     child: Column(
@@ -369,7 +473,7 @@ Future<void> showFightEffectPopin(
                       children: [
                         Text(title,
                             style: theme.textTheme.titleMedium?.copyWith(
-                                color: color, fontWeight: FontWeight.w700)),
+                                color: color0, fontWeight: FontWeight.w700)),
                         Text(subtitle,
                             style: theme.textTheme.labelSmall
                                 ?.copyWith(color: const Color(0xFF9A94A8))),

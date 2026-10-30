@@ -8,6 +8,67 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.688.0+724]
+
+- **Core: the scene backgrounds' rules (UX drew the eight new stages in
+  v1.665).**
+  - A land crossing's fight is fought on its road's ground
+    (`landRouteStage`): a desert road is a caravan road, a mountain road a
+    pass, a forest the woods, a fen the reeds, a frost road the snow, the
+    ruins the ruins, the sea cliffs the cliffs; a route with no terrain
+    reads its biome.
+  - Each of the eight newer stages has an anomaly of its own, on top of
+    those of the older stage it is kin to: crumbling walls (ruins), deep
+    canopy (woods), a rising ford, smouldering stubble (burnt fields), a
+    cool spring (oasis), dust devils (caravan road), slick stones (quay)
+    and thin air (pass).
+
+## [1.687.0+723]
+
+- Stage mode: a scene with a fight among its choices, facing someone who has
+  a standing sprite (Aurel Vane at the family house, the Inquisition's
+  warden and soldiers, the white soldier), plays on a small stage instead
+  of a panel: you on the left, them on the right, one ground line, their
+  name over them and the scene's question at its foot. The choice picked
+  speaks in a balloon over you (its spoken reply when Narrative has written
+  one, else its text), and one that moves you lights a door at the stage's
+  edge with the place it leads to. The choices are the cards under it, as
+  before. Scenes whose faced person has no sprite keep the panel.
+
+## [1.686.0+722]
+
+- The scene panel: a scene whose choices show as cards now opens them with
+  the scene in small and its question. You and the one the scene faces
+  stand on one ground line (their head and name, with their role when they
+  have one), and the scene's question sits under it in italics ("Pay the
+  toll, or fight?"). With four choices, or a long one, it folds to one
+  line (their head, their name, the question) so the cards keep the room.
+  A scene with no one faced shows a voice's icon. Hubs (the map's rings)
+  and scenes without a question or a face are unchanged.
+
+## [1.685.0+721]
+
+- The fight's top strip takes one row instead of three: the goal, the
+  weather, an anomaly, the momentum, the luck nudges, a hex, a silence, the
+  Tide and the place's rule are small icon tiles (a number at the corner
+  for the turns left or the count), as the effects on the cards are, and
+  each opens its explanation on a tap. The round is a tile of its own.
+- In play mode the log block above the Roll bar is gone: a history icon at
+  the end of the strip (with an orange dot while there are unread lines)
+  opens the full log. The freed height goes to the dice board. Edit mode
+  keeps the log block.
+
+## [1.684.0+720]
+
+- The clans' dice wear their clan. The Lantern, Cinder and Court dice have
+  their own art (a hanging lantern, a banked coal with embers, a poisoned
+  cup) in place of the placeholders. In the dice bag (the inventory and
+  the dice screen) a clan die shows its clan's flag, "<Clan>'s gift" and
+  its Resonance: "+1 to faces up to 3", or asleep with the reason (not
+  your main clan, or below Friend). In a fight the hero's clan die wears
+  a small star on its corner: gold when the Resonance is lit, grey when
+  it sleeps, with a tip.
+
 ## [1.680.0+716]
 
 - **Core: the in-place choices' state (UX-2 builds the panel and the

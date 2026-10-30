@@ -19,6 +19,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
@@ -68,6 +69,9 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
 Map<String, dynamic> _gamedata(String name) =>
     jsonDecode(File('assets/gamedata/$name').readAsStringSync())
         as Map<String, dynamic>;
+
+Finder _tile(String label, {String? badge}) => find.byWidgetPredicate(
+    (w) => w is FightStatusTile && w.label == label && w.badge == badge);
 
 void main() {
   testWidgets('the sellsword opens the fight; a Hex leaves a Steady die be',
@@ -145,7 +149,7 @@ void main() {
     await _pumpUntil(tester, () => _shows('Confirm'));
     await tester.longPress(find.byKey(const ValueKey('kept_die_player')));
     await _settle(tester);
-    expect(find.text('Nudges 2'), findsOneWidget);
+    expect(_tile('Nudges', badge: '2'), findsOneWidget);
     expect(find.textContaining('Nudge to'), findsNothing);
     await tester.tapAt(const Offset(20, 20));
     await _settle(tester);

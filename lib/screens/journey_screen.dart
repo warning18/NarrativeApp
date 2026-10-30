@@ -13,6 +13,7 @@ import '../data/city_camera.dart';
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
+import '../data/scene_choice_mode.dart';
 import '../data/city_districts.dart'
     show
         JourneyTownView,
@@ -78,6 +79,8 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/town_service_sheet.dart';
 import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
+import '../widgets/scene_stage.dart';
+import '../widgets/scene_vignette.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
@@ -1212,6 +1215,76 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   bool _isHub(List<_Step> steps) =>
       steps.where((s) => s.onCard).length > _hubCards;
 
+  /// Who the scene faces, from the NPCs, the enemies and the companions
+  /// (null for a voice, or no one).
+  SceneFaced? _facedOf(String id, bool french) {
+    if (id.isEmpty) return null;
+    final npcs = ref.watch(localizedDbProvider(npcsSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value;
+    String pick(Map? r, String en, String fr) {
+      if (r == null) return '';
+      final local = french ? (r[fr]?.toString() ?? '') : '';
+      return local.trim().isNotEmpty ? local : (r[en]?.toString() ?? '');
+    }
+
+    final npc = npcs?[id] as Map?;
+    final enemy = enemies?[id] as Map?;
+    final companion = companions?[id] as Map?;
+    final name = pick(npc, 'npcName', 'npcName_fr').isNotEmpty
+        ? pick(npc, 'npcName', 'npcName_fr')
+        : pick(enemy, 'enemyName', 'enemyName_fr').isNotEmpty
+            ? pick(enemy, 'enemyName', 'enemyName_fr')
+            : pick(companion, 'companionName', 'companionName_fr');
+    if (name.isEmpty) return null;
+    return SceneFaced(id: id, name: name, role: pick(npc, 'role', 'role_fr'));
+  }
+
+  /// The scene's vignette and question over a panel's cards (the scene
+  /// panel, UX's in-place choices): for a scene whose choices a panel shows
+  /// (not a hub, not the stage), when it has someone it faces or a question.
+  Widget? _vignetteFor(StoryNode node, List<_Step> steps, StoryData story,
+      Geography world, bool french,
+      {_Step? picked}) {
+    if (_isHub(steps) || !steps.any((s) => s.onCard)) return null;
+    final mode = sceneChoiceMode(node,
+        story: story,
+        geography: world,
+        choices: [for (final s in steps) s.choice],
+        hasSprite: sceneHasSprite);
+    final prompt = node.promptFor(french);
+    final faced = _facedOf(node.facing, french);
+    if (mode == SceneChoiceMode.stage && faced != null) {
+      // A fight facing someone with a sprite: the stage; the picked choice
+      // speaks in a balloon, and the door shows where it leads.
+      final door = picked == null
+          ? null
+          : doorOf(node, picked.choice,
+              story: story, geography: world, shape: picked.shape);
+      final doorLabel = door == null ? '' : doorName(door, french: french);
+      return SceneStage(
+        foeId: node.facing,
+        foeName: faced.name,
+        prompt: prompt,
+        balloon: picked?.choice.replyFor(french) ?? '',
+        doorName: doorLabel,
+        doorLit: doorLabel.isNotEmpty,
+      );
+    }
+    if (mode != SceneChoiceMode.panel) return null;
+    if (prompt.isEmpty && faced == null) return null;
+    final onCard = steps.where((s) => s.onCard).toList();
+    // Four choices, or a long one: the vignette folds to a line.
+    final folded = onCard.length >= panelChoiceLimit ||
+        onCard.any((s) => s.label.length > 46);
+    return SceneVignette(
+      heroName: ref.watch(playerSessionProvider).characterName,
+      prompt: prompt,
+      faced: faced,
+      folded: folded,
+    );
+  }
+
   /// The panel under the map in a place (design 1 of
   /// docs/proposals/inplace-choices.md): every choice acted out here is a
   /// card, the pin picked (if one is) leading with its own detail. A hub
@@ -1220,7 +1293,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// which has no pins).
   Widget _choicePanel(
       List<_Step> steps, _Step? selected, bool french, StoryData story,
-      {bool shrinkWrap = false, bool all = false}) {
+      {bool shrinkWrap = false, bool all = false, Widget? lead}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
@@ -1232,6 +1305,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       padding: EdgeInsets.zero,
       shrinkWrap: shrinkWrap,
       children: [
+        // The scene in small and its question, over a panel's cards.
+        if (!all && !hub && lead != null) lead,
         if (!all && selected != null && !selected.onCard) ...[
           _StepDetail(
             step: selected,
@@ -2183,7 +2258,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         french,
                         story,
                         shrinkWrap: true,
-                        all: locked || held),
+                        all: locked || held,
+                        lead: _vignetteFor(node, steps, story, world, french,
+                            picked:
+                                locked || held ? null : _pickedCard(selected))),
                   ),
                 ],
               ],
@@ -3123,7 +3201,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   maxHeight: room.maxHeight * 0.7),
                               child: _choicePanel(
                                   steps, _pickedCard(selected), french, story,
-                                  shrinkWrap: true),
+                                  shrinkWrap: true,
+                                  lead: _vignetteFor(
+                                      node, steps, story, world, french,
+                                      picked: _pickedCard(selected))),
                             ),
                           ],
                         ],

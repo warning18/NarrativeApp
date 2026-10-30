@@ -435,37 +435,18 @@ extension _FightGround on _FightScreenState {
       false => scheme.error,
       null => scheme.tertiary,
     };
+    final left = max(0, plan.last - _roundsStarted + 1);
     final soon = phase == AnomalyPhase.omen
-        ? ' · ${trFor(lang, 'anomaly_soon')}'
-        : ' · ${max(0, plan.last - _roundsStarted + 1)}'
-            '${trFor(lang, 'anomaly_rounds_left')}';
-    return Tooltip(
-      message: anomalyEffectText(plan, lang).join('\n'),
-      child: Container(
-        key: const Key('fight_anomaly_chip'),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: colour.withValues(alpha: 0.18),
-          border: Border.all(color: colour.withValues(alpha: 0.7)),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(anomalyIcon(plan.anomaly.family), size: 12, color: colour),
-            const SizedBox(width: 3),
-            Flexible(
-              child: Text('$name$soon',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: scheme.onSurface)),
-            ),
-          ],
-        ),
-      ),
+        ? trFor(lang, 'anomaly_soon')
+        : '$left${trFor(lang, 'anomaly_rounds_left')}';
+    return _telegraphChip(
+      anomalyIcon(plan.anomaly.family),
+      name,
+      key: const Key('fight_anomaly_chip'),
+      color: colour,
+      badge: phase == AnomalyPhase.omen ? '!' : '$left',
+      subtitle: soon,
+      tip: anomalyEffectText(plan, lang).join('\n'),
     );
   }
 
