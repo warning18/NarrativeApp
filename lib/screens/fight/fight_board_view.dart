@@ -257,6 +257,12 @@ extension _FightBoardView on _FightScreenState {
         !_rolling &&
         (member.isPlayer || !_companionsAutoAim);
     final picked = _dieLocks.selected == member.id && !_isDieLocked(member.id);
+    final healAim = _dieLocks.selected;
+    final healer = healAim == null ? null : _memberById(healAim);
+    final healed = healer != null &&
+        healAim != member.id &&
+        _healAimable(healAim) &&
+        _healTargetFor(healer).id == member.id;
     final scalingBonus = equipmentScalingBonusFor(
       member.equippedItemIds,
       items,
@@ -275,6 +281,12 @@ extension _FightBoardView on _FightScreenState {
     final card = GestureDetector(
       key: Key('party_slot_${member.id}'),
       onTap: () => _update(() {
+        // With a heal die picked, a tap on a member aims the heal at them.
+        final aimed = _dieLocks.selected;
+        if (aimed != null && _healAimable(aimed)) {
+          _setHealTarget(aimed, member.id);
+          return;
+        }
         if (_awaitingDecision &&
             !_rolling &&
             _currentFaces[member.id] != null) {
@@ -290,9 +302,12 @@ extension _FightBoardView on _FightScreenState {
               : colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color:
-                picked ? const Color(0xFFF2C14E) : colorScheme.outlineVariant,
-            width: picked ? 2.5 : 1,
+            color: picked
+                ? const Color(0xFFF2C14E)
+                : healed
+                    ? const Color(0xFFD9457A)
+                    : colorScheme.outlineVariant,
+            width: picked || healed ? 2.5 : 1,
           ),
         ),
         child: Column(
@@ -854,8 +869,9 @@ extension _FightBoardView on _FightScreenState {
       color = const Color(0xFFE0752B);
       label = '−${preview?.damage ?? 0}';
     } else {
-      to = _memberCardKey(id);
       final healing = preview?.healing ?? 0;
+      // A heal goes to the member it is aimed at (Core's heal targets).
+      to = _memberCardKey(healing > 0 ? _healTargetFor(actor).id : id);
       final block = preview?.block ?? 0;
       color = healing > 0 ? const Color(0xFFD9457A) : const Color(0xFF4C8FC7);
       label = healing > 0
@@ -871,6 +887,19 @@ extension _FightBoardView on _FightScreenState {
       color: color,
       label: label,
     );
+  }
+
+  /// Whether the picked die of [id] is a heal that can be aimed by hand.
+  bool _healAimable(String? id) {
+    if (id == null || _isDieLocked(id) || _rolling || !_awaitingDecision) {
+      return false;
+    }
+    final actor = _memberById(id);
+    final face = _currentFaces[id];
+    return actor != null &&
+        face != null &&
+        face.type == 'Heal' &&
+        (actor.isPlayer || !_companionsAutoAim);
   }
 
   GlobalKey _dieKey(String id) =>
