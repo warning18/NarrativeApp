@@ -123,9 +123,9 @@ class FightScenery {
             ground: Color(0xFF3A3642),
             dark: Color(0xFF211F27),
             light: Color(0xFFE9B96B)),
-        // Placeholders until UX's board skins (v1.661): grey stone for
+        // Placeholders until UX's board skins (v1.662): grey stone for
         // the streets, a wet deck under a sea sky.
-        FightStage.streets => const FightScenery(
+        FightStage.cityRoad => const FightScenery(
             skyTop: Color(0xFF7D8794),
             skyLow: Color(0xFFC8C3B8),
             far: Color(0xFF6B6660),
@@ -133,7 +133,7 @@ class FightScenery {
             ground: Color(0xFF77716A),
             dark: Color(0xFF3E3A36),
             light: Color(0xFFE6DCC4)),
-        FightStage.deck => const FightScenery(
+        FightStage.shipDeck => const FightScenery(
             skyTop: Color(0xFF5E86A3),
             skyLow: Color(0xFFB9D0DC),
             far: Color(0xFF3F6A86),
@@ -426,11 +426,11 @@ void _paintStage(
       _shards(canvas, size, horizon + h * 0.02, s, t);
     case FightStage.hall:
       _hall(canvas, size, horizon, s, t);
-    // Placeholders until UX's board skins (v1.661).
-    case FightStage.streets:
+    // Placeholders until UX's board skins (v1.662).
+    case FightStage.cityRoad:
       _hills(canvas, size, horizon, s.far, 0.05, 1.3, 0);
       _ground(canvas, size, horizon + h * 0.1, s);
-    case FightStage.deck:
+    case FightStage.shipDeck:
       _sea(canvas, size, horizon - h * 0.04, s, t);
       _sail(canvas, size, Offset(w * 0.68, horizon - h * 0.04), s.dark);
   }

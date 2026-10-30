@@ -54,7 +54,7 @@ ContextRule contextRuleFor({
     FightStage.dunes || FightStage.saltFlats => ContextRule.desertHeat,
     FightStage.waves ||
     FightStage.cliffs ||
-    FightStage.deck ||
+    FightStage.shipDeck ||
     FightStage.hall =>
       ContextRule.risingWater,
     _ => ContextRule.tide,

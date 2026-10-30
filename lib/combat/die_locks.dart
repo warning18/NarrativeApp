@@ -1,4 +1,4 @@
-// The party's dice between rolls (the user's lock rules, v1.662): a first
+// The party's dice between rolls (the user's lock rules, v1.660): a first
 // tap selects a die (and shows its target), a second tap locks it; a locked
 // die can be released again only until the next roll is triggered, after
 // which the round's locks are frozen; a locked die is not rerolled. A new

@@ -129,9 +129,9 @@ void main() {
   });
 
   test('a deck rises like the sea; the streets keep the watch by the city', () {
-    expect(contextRuleFor(stage: FightStage.deck), ContextRule.risingWater);
-    expect(contextRuleFor(stage: FightStage.streets), ContextRule.tide);
-    expect(contextRuleFor(stage: FightStage.streets, city: true),
+    expect(contextRuleFor(stage: FightStage.shipDeck), ContextRule.risingWater);
+    expect(contextRuleFor(stage: FightStage.cityRoad), ContextRule.tide);
+    expect(contextRuleFor(stage: FightStage.cityRoad, city: true),
         ContextRule.townGuards);
   });
 }
