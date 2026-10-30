@@ -19,6 +19,7 @@ import '../combat/combat_engine.dart'
         lostFightXpShare,
         scaledReward,
         zoneBossEnemyIds;
+import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
@@ -584,6 +585,7 @@ class _SimContext {
         events: politicsEvents,
         itemSets: itemSets,
         merges: merges,
+        dice: dice,
       );
 }
 
@@ -1432,6 +1434,15 @@ _SimResult _simulate(
       final perks = growth?.perks ?? PerkEffects.none;
       final allies =
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
+      // A clan's die with its Resonance lit rolls its low faces one more
+      // (clan_dice.dart), for this fight.
+      final ownFaces = c.diceFaces;
+      if (growth != null &&
+          resonanceOf(sim.dice[c.diceId] as Map<String, dynamic>?,
+                  politics: growth.politics, data: growth.tables.clans) ==
+              Resonance.lit) {
+        c.diceFaces = resonantFaces(ownFaces);
+      }
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -1451,6 +1462,7 @@ _SimResult _simulate(
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
         allies: allies,
       );
+      c.diceFaces = ownFaces;
       party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);

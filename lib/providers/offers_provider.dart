@@ -29,6 +29,7 @@ final offerTablesProvider = Provider<OfferTables>((ref) {
     spells: parseSpells(table(spellsSchema)),
     specs: specInfosFrom(table(specialisationsSchema)),
     specVariants: specVariantsFrom(table(specVariantsSchema)),
+    dice: table(diceSchema),
   );
 });
 
@@ -48,6 +49,7 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
   final spells = table(spellsSchema);
   final specs = table(specialisationsSchema);
   final specVariants = table(specVariantsSchema);
+  final dice = table(diceSchema);
   return OfferTables(
     data: await data,
     signs: parseSigns(await signs),
@@ -57,6 +59,7 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
     spells: parseSpells(await spells),
     specs: specInfosFrom(await specs),
     specVariants: specVariantsFrom(await specVariants),
+    dice: await dice,
   );
 }
 

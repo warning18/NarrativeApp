@@ -1884,7 +1884,8 @@
         "element": "Earth"
       }
     ],
-    "diceName_fr": "Dé de l’ossuaire"
+    "diceName_fr": "Dé de l’ossuaire",
+    "clan": "penitents"
   },
   "vigil_die": {
     "diceName": "vigil_die",
@@ -1961,7 +1962,8 @@
         "element": "Light"
       }
     ],
-    "diceName_fr": "Dé de la veillée"
+    "diceName_fr": "Dé de la veillée",
+    "clan": "vigil"
   },
   "tearglass_die": {
     "diceName": "tearglass_die",
@@ -2440,7 +2442,8 @@
       }
     ],
     "cost": 150,
-    "diceName_fr": "Dé du décompte"
+    "diceName_fr": "Dé du décompte",
+    "clan": "crows"
   },
   "hound_die": {
     "diceName": "hound_die",
@@ -2501,5 +2504,204 @@
     ],
     "cost": 0,
     "diceName_fr": "Dé de Vica"
+  },
+  "lantern_die": {
+    "diceName": "lantern_die",
+    "cost": 140,
+    "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Lantern Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Light"
+      },
+      {
+        "faceName": "Lantern Strike",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Light"
+      },
+      {
+        "faceName": "Judgement Blow",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.8,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Shield of Law",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "One Flame",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "Light"
+      },
+      {
+        "faceName": "Call to Order",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "rallying_shout",
+        "weight": 0.6,
+        "element": "Light"
+      }
+    ],
+    "diceName_fr": "Dé de la lanterne",
+    "clan": "dominion"
+  },
+  "cinder_die": {
+    "diceName": "cinder_die",
+    "cost": 140,
+    "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Ember Cut",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Ember Cut",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Banked Coals",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
+      },
+      {
+        "faceName": "Tempered",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "dwarf_forgeheart",
+        "weight": 0.6,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Forge Strike",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Hold the Heat",
+        "type": "Defend",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ],
+    "diceName_fr": "Dé des braises",
+    "clan": "compact"
+  },
+  "court_die": {
+    "diceName": "court_die",
+    "cost": 160,
+    "numberOfFaces": 8,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Quiet Knife",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water",
+        "keywords": [
+          "pierce"
+        ]
+      },
+      {
+        "faceName": "Quiet Knife",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Courtly Poison",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "rogue_poison_blade",
+        "weight": 0.8,
+        "element": "Water"
+      },
+      {
+        "faceName": "A Favour Owed",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "lucky_strike",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Veiled Guard",
+        "type": "Defend",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Sealed Verdict",
+        "type": "Attack",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "Water"
+      },
+      {
+        "faceName": "Withdraw",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "shadow_step",
+        "weight": 0.5,
+        "element": "Void"
+      },
+      {
+        "faceName": "Secret Kept",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ],
+    "diceName_fr": "Dé de la cour",
+    "clan": "mire"
   }
 }
