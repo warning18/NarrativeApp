@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.665.0+701]
+
+- **UX: the fights and the scenes in one pixel style, the backdrops varied.**
+  - The fight's backdrop is drawn in the scenes' own pixel style (the same
+    chunky grid, dithered sky, rimmed hills, flat shapes, the same stars at
+    dusk and night), with the rain, snow, dust and ash as the scenes' pixel
+    particles (`fight_pixel_stage.dart`; the smooth stage painters are gone).
+  - **Eight new stages:** ruins, woods, ford, burnt fields, oasis, caravan
+    road, quay and mountain pass (`FightStage`, English and French names).
+    Until Core writes their own anomalies each borrows its nearest older
+    stage's (`FightStageKin`: the ruins burn like the ashlands, the quay is the
+    shore). The temperate country's open country has four faces (open country,
+    woods, ford, burnt fields), picked by the place so a place always looks the
+    same (`poolStageOf`).
+  - **Four versions of every scene** (desert, ruins, frost, fen, sea cliffs,
+    the five seas, the six street fronts): each is its own stretch of the kit's
+    world with a landmark of its own (a dead tree and bones, a wrecked cart,
+    standing stones, columns, a far ship, a lamp post...). A crossing shows
+    them one after the other, a new one each day, in a seeded order (1, 2, 3
+    or 4, 2, 3, never the same twice in a row) with a short pixel dissolve (none
+    with reduced motion); a detour changes at each beat; each memory and each
+    street front keeps its own; successive sailings follow the order.
+    (`scene_versions.dart`.)
+  - Tests: `scene_versions_test` (the order, every kit at every version, the
+    dissolve), `pixel_stage_test` (every stage at any size, hour and sky, the
+    names, the pool). Real screens at 412 px: `docs/ux-shots/backdrops-*.png`.
+  - Touches another session's area: `lib/combat/field_anomaly.dart` and
+    `context_rules.dart` (Core: the eight stages, the pool, the kin),
+    `lib/screens/fight/fight_ground.dart` (the pool, two lines),
+    `lib/screens/land_crossing_screen.dart` and one word of
+    `test/field_anomaly_test.dart`.
+
 ## [1.660.0+696]
 
 - **Core: the dice lock rules and two new fight stages (the user's combat
