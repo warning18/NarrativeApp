@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.655.0+691]
 
-- **Cleanup: 99 file-only names in lib/widgets, screens and utils are private**
+- **Cleanup: file-only names in lib/widgets, screens and utils are private**
   Classes, functions, constants and enums that only their own file uses
   are now private, so the analyzer watches them (renames inside one file,
   67 files). The map work's files stay as they were. No behaviour change.
