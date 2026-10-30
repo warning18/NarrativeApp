@@ -378,6 +378,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// and why, or none for a die of no clan. The die tray (UX's) shows it.
   Resonance _dieResonance = Resonance.none;
 
+  /// How many log lines the player has seen in the history sheet.
+  int _logSeen = 0;
+
   /// The pre-fight sheet's "keep as my party" toggle.
   bool _keepPick = false;
 

@@ -23,6 +23,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 import 'support/pump.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
@@ -50,6 +51,9 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
         as Map<String, dynamic>)[id] as Map<String, dynamic>;
+
+Finder _holdTile(String badge) =>
+    find.byWidgetPredicate((w) => w is FightStatusTile && w.badge == badge);
 
 void main() {
   group('fight goals', () {
@@ -344,19 +348,18 @@ void main() {
     await tester.ensureVisible(find.text('Enter Battle'));
     await tester.tap(find.text('Enter Battle'));
     await settleApp(tester);
-    expect(find.textContaining('Hold 1/2'), findsOneWidget);
+    expect(
+        find.byWidgetPredicate((w) => w is FightStatusTile && w.badge == '1/2'),
+        findsOneWidget);
     expect(container.read(lastFightOutcomeProvider), isNull);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(
-        tester,
-        () =>
-            find.textContaining('Hold 2/2').evaluate().isNotEmpty &&
-            _enabled('Roll Dice'));
+    await _pumpUntil(tester,
+        () => _holdTile('2/2').evaluate().isNotEmpty && _enabled('Roll Dice'));
     expect(container.read(lastFightOutcomeProvider), isNull,
         reason: 'one turn survived of two');
-    expect(find.textContaining('Hold 2/2'), findsOneWidget);
+    expect(_holdTile('2/2'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
