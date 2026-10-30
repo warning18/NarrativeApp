@@ -72,7 +72,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       context,
       titleA: itemA?['itemName']?.toString() ?? firstId,
       titleB: itemB?['itemName']?.toString() ?? itemId,
-      rows: itemCompareRows(itemA, itemB),
+      rows: _itemCompareRows(itemA, itemB),
       closeLabel: trFor(lang, 'close_button'),
     );
     setState(() {
@@ -171,7 +171,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
 /// Stat rows shared by the manual item-vs-item compare dialog and the
 /// automatic item-vs-currently-equipped delta shown in item details.
-List<CompareRow> itemCompareRows(
+List<CompareRow> _itemCompareRows(
     Map<String, dynamic>? a, Map<String, dynamic>? b) {
   num v(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
   return [

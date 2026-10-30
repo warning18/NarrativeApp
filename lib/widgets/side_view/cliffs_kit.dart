@@ -11,7 +11,7 @@ import 'kit_common.dart';
 import 'side_view.dart';
 
 /// The sea cliffs' colours.
-abstract final class CliffsLook {
+abstract final class _CliffsLook {
   static const sky = [
     Color(0xFF2F4A63),
     Color(0xFF5F8299),
@@ -44,14 +44,14 @@ List<SideLayer> cliffsLayers({double progress = 0}) => [
       SideLayer(
           0,
           (c, s, scroll, t, u) =>
-              kitSky(c, s, u, bands: CliffsLook.sky, ground: CliffsLook.sea)),
+              kitSky(c, s, u, bands: _CliffsLook.sky, ground: _CliffsLook.sea)),
       SideLayer(
           0.05,
           (c, s, scroll, t, u) => kitDisc(c, s, u,
               cx: 0.68,
               cy: 14,
-              disc: CliffsLook.sun.withValues(alpha: 0.95),
-              glow: CliffsLook.sun.withValues(alpha: 0.2),
+              disc: _CliffsLook.sun.withValues(alpha: 0.95),
+              glow: _CliffsLook.sun.withValues(alpha: 0.2),
               radius: 3)),
       SideLayer(0.1, (c, s, scroll, t, u) {
         _sea(c, s, u, scroll, t);
@@ -63,8 +63,8 @@ List<SideLayer> cliffsLayers({double progress = 0}) => [
             amp: 3.4,
             wave: 0.045,
             phase: 0.8,
-            fill: CliffsLook.headland,
-            rim: CliffsLook.headlandRim);
+            fill: _CliffsLook.headland,
+            rim: _CliffsLook.headlandRim);
         _gulls(c, s, u, scroll, t);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
@@ -73,25 +73,25 @@ List<SideLayer> cliffsLayers({double progress = 0}) => [
             amp: 2.2,
             wave: 0.05,
             phase: 2.2,
-            fill: CliffsLook.cliff,
-            rim: CliffsLook.grass);
+            fill: _CliffsLook.cliff,
+            rim: _CliffsLook.grass);
         _ledge(c, s, u, scroll);
       }),
       SideLayer(
           1.0,
           (c, s, scroll, t, u) => kitPath(c, s, scroll, u,
-              body: CliffsLook.path,
-              light: CliffsLook.pathLight,
-              dark: CliffsLook.pathDark)),
+              body: _CliffsLook.path,
+              light: _CliffsLook.pathLight,
+              dark: _CliffsLook.pathDark)),
     ];
 
 /// The sea below the headlands: a band to the horizon with sparkles that
 /// come and go.
 void _sea(Canvas canvas, Size size, double u, double scroll, double t) {
   final w = size.width / u;
-  sidePixels(canvas, u, Paint()..color = CliffsLook.sea, 0, 42, w + 1, 12);
-  sidePixels(canvas, u, Paint()..color = CliffsLook.seaDeep, 0, 48, w + 1, 6);
-  final spark = Paint()..color = CliffsLook.spark;
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.sea, 0, 42, w + 1, 12);
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.seaDeep, 0, 48, w + 1, 6);
+  final spark = Paint()..color = _CliffsLook.spark;
   final offset = scroll / u;
   for (var i = 0; i < 12; i++) {
     final px = ((i * 11 - offset) % (w + 8) + (w + 8)) % (w + 8) - 4;
@@ -110,22 +110,22 @@ void _lighthouse(Canvas canvas, Size size, double u, double progress) {
   final bw = (5 * scale).round().toDouble();
   final bh = (18 * scale).round().toDouble();
   const base = 46.0;
-  sidePixels(canvas, u, Paint()..color = CliffsLook.tower, x - bw / 2,
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.tower, x - bw / 2,
       base - bh, bw, bh);
-  sidePixels(canvas, u, Paint()..color = CliffsLook.towerBand, x - bw / 2,
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.towerBand, x - bw / 2,
       base - bh * 0.55, bw, math.max(2, bh * 0.15));
   // The lamp room: a lit block under a small cap.
   final lamp = math.max(2, (3 * scale).round()).toDouble();
-  sidePixels(canvas, u, Paint()..color = CliffsLook.lamp, x - lamp / 2,
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.lamp, x - lamp / 2,
       base - bh - lamp, lamp, lamp);
-  sidePixels(canvas, u, Paint()..color = CliffsLook.towerBand, x - lamp / 2 - 1,
-      base - bh - lamp - 1, lamp + 2, 1);
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.towerBand,
+      x - lamp / 2 - 1, base - bh - lamp - 1, lamp + 2, 1);
 }
 
 /// Gulls turning above the headland: two pixels of wing that beat.
 void _gulls(Canvas canvas, Size size, double u, double scroll, double t) {
   final w = size.width / u;
-  final gull = Paint()..color = CliffsLook.gull;
+  final gull = Paint()..color = _CliffsLook.gull;
   final offset = scroll / u;
   for (var i = 0; i < 4; i++) {
     final px = ((i * w / 3 + 10 - offset * 0.6 + math.sin(t * 0.7 + i) * 3) %
@@ -145,10 +145,10 @@ void _ledge(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.7;
   final offset = scroll / u;
-  final grass = Paint()..color = CliffsLook.grass;
-  final dark = Paint()..color = CliffsLook.grassDark;
-  final weed = Paint()..color = CliffsLook.weed;
-  final stone = Paint()..color = CliffsLook.cliffRim;
+  final grass = Paint()..color = _CliffsLook.grass;
+  final dark = Paint()..color = _CliffsLook.grassDark;
+  final weed = Paint()..color = _CliffsLook.weed;
+  final stone = Paint()..color = _CliffsLook.cliffRim;
   for (var i = 0; i < 8; i++) {
     final px = kitSlot(i, 4, span, offset, 10) + (i % 2) * 4;
     if (px < -8 || px > w + 4) continue;

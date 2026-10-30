@@ -34,13 +34,13 @@ import 'ship_widgets.dart';
 
 /// The port a trip to [settlement] ends at: its landing, or null for the
 /// camp's own shore.
-String? destinationPortIdFor(
+String? _destinationPortIdFor(
         Settlement? settlement, Map<String, dynamic> ports) =>
     landingPortIdFor(settlement, ports);
 
 /// Whether a trip to [destinationPortId] (null: the camp's shore) is a
 /// walk from where the Eel is moored now.
-bool isWalkFrom(
+bool _isWalkFrom(
   String? destinationPortId, {
   required Map<String, dynamic> ports,
   required String savedPortId,
@@ -53,13 +53,13 @@ bool isWalkFrom(
 /// How far [destinationPortId] (null: the camp's shore) is from where the
 /// Eel is moored, as the player reads it: "a day's walk", or "3 days at
 /// sea".
-String routeLabelTo(
+String _routeLabelTo(
   WidgetRef ref,
   String? destinationPortId, {
   required Map<String, dynamic> ports,
   required String savedPortId,
 }) {
-  if (isWalkFrom(destinationPortId, ports: ports, savedPortId: savedPortId)) {
+  if (_isWalkFrom(destinationPortId, ports: ports, savedPortId: savedPortId)) {
     return tr(ref, 'camp_route_walk');
   }
   final here = currentPortIdFor(ports, savedPortId);
@@ -73,7 +73,7 @@ String routeLabelTo(
 
 /// Sails the party to [destinationPortId] (null: the camp's shore), a
 /// voyage played out on its own screen. True once it is there. (A walk is
-/// a step on the road, see [travelTo] and setOutOnMainQuest.)
+/// a step on the road, see [_travelTo] and setOutOnMainQuest.)
 Future<bool> sailParty(
   BuildContext context,
   WidgetRef ref, {
@@ -95,7 +95,7 @@ Future<bool> sailParty(
 /// see [startRoadEncounter], by the same rules as the story's roads),
 /// which the story plays before arriving.
 /// [origin] is the road's name on a detour's card.
-Future<void> travelTo(
+Future<void> _travelTo(
   BuildContext context,
   WidgetRef ref, {
   required String targetNodeId,
@@ -104,7 +104,7 @@ Future<void> travelTo(
   required String origin,
 }) async {
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-  final walk = isWalkFrom(destinationPortId,
+  final walk = _isWalkFrom(destinationPortId,
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
@@ -167,12 +167,12 @@ Future<void> travelToPlace(
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
   final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
   final name = settlement.nameFor(fr);
-  await travelTo(
+  await _travelTo(
     context,
     ref,
     targetNodeId:
         arrivalNodeFor(place, ref.read(storyPlayProvider).visitedNodeIds),
-    destinationPortId: destinationPortIdFor(settlement, ports),
+    destinationPortId: _destinationPortIdFor(settlement, ports),
     walkNotice: tr(ref, 'travel_walked_to').replaceAll('{place}', name),
     origin: tr(ref, 'travel_road_to').replaceAll('{place}', name),
   );
@@ -183,7 +183,7 @@ Future<void> travelToPlace(
 Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
   final campId = ref.read(currentCampNodeIdProvider);
   if (campId == null) return;
-  await travelTo(
+  await _travelTo(
     context,
     ref,
     targetNodeId: campId,
@@ -206,8 +206,8 @@ Future<void> setOutOnMainQuest(
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
     final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-    final destinationPortId = destinationPortIdFor(place?.settlement, ports);
-    if (!isWalkFrom(destinationPortId,
+    final destinationPortId = _destinationPortIdFor(place?.settlement, ports);
+    if (!_isWalkFrom(destinationPortId,
         ports: ports,
         savedPortId: ref.read(playerSessionProvider).currentPortId)) {
       final arrived =
@@ -251,7 +251,7 @@ class CampReturnButton extends ConsumerWidget {
       icon: const Icon(Icons.local_fire_department_outlined, size: 18),
       label: Text(
         '${tr(ref, 'camp_return_button')} · '
-        '${routeLabelTo(ref, null, ports: ports, savedPortId: savedPortId)}',
+        '${_routeLabelTo(ref, null, ports: ports, savedPortId: savedPortId)}',
         overflow: TextOverflow.ellipsis,
       ),
     );
@@ -297,7 +297,7 @@ class PlaceCard extends ConsumerWidget {
     final progress = placeProgress(place, session.flags);
     final companionHere =
         ref.watch(companionLeadsProvider).containsKey(place.id);
-    final route = routeLabelTo(ref, destinationPortIdFor(settlement, ports),
+    final route = _routeLabelTo(ref, _destinationPortIdFor(settlement, ports),
         ports: ports, savedPortId: session.currentPortId);
     final theme = Theme.of(context);
     final blurb = settlement.blurbFor(fr);
@@ -306,7 +306,7 @@ class PlaceCard extends ConsumerWidget {
     return Card(
       child: ListTile(
         key: Key('place_${place.id}'),
-        leading: Icon(placeIconFor(settlement)),
+        leading: Icon(_placeIconFor(settlement)),
         title: Text(settlement.nameFor(fr)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,7 +370,7 @@ class PlaceCard extends ConsumerWidget {
   }
 }
 
-IconData placeIconFor(Settlement settlement) {
+IconData _placeIconFor(Settlement settlement) {
   switch (settlement.kind) {
     case 'camp':
       return Icons.local_fire_department_outlined;
@@ -424,7 +424,7 @@ class CampAwayView extends ConsumerWidget {
                   .replaceAll('{place}', place.nameFor(fr))
                   .replaceAll(
                       '{route}',
-                      routeLabelTo(ref, null,
+                      _routeLabelTo(ref, null,
                           ports: ports, savedPortId: savedPortId)),
           style: theme.textTheme.bodyMedium,
         ),

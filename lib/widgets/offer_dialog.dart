@@ -41,7 +41,7 @@ import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
-const Color wayfarerColor = Color(0xFF8D6E63);
+const Color _wayfarerColor = Color(0xFF8D6E63);
 const int _wayfarerGreetings = 4;
 
 /// Opens the offer when one is due (see offers.dart): after a level-up's
@@ -93,7 +93,7 @@ bool offerOpenOn(NavigatorState navigator) => _offerOpen[navigator] ?? false;
 /// The suitor's name as the card says it: "The Emberwives of the Cinder
 /// Compact" for a clan's voice, the faction's name for the others, "The
 /// Wayfarer", and "Your own hand" for the lost clan (v1.195).
-String suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
+String _suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) return trFor(lang, 'offer_wayfarer_name');
   final faction = data.faction(suitor.factionId);
   if (faction?.isLost ?? false) return trFor(lang, 'offer_own_hand_name');
@@ -104,7 +104,7 @@ String suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
 }
 
 /// What the suitor says: their intro the first time, else a greeting.
-String suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
+String _suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) {
     return suitor.firstMeeting
         ? trFor(lang, 'offer_wayfarer_intro')
@@ -142,7 +142,7 @@ String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
 }
 
 /// The gift's name in [lang].
-String giftName(
+String _giftName(
   OfferGift gift, {
   required OfferTables tables,
   required Map<String, dynamic> localizedItems,
@@ -243,7 +243,7 @@ List<({String text, double delta})> standingPreviewParts(
 
 /// The alignment [suitor]'s gift moves: the faction's or sub-clan's lean,
 /// and a vow's or a pact's ±3.
-int alignmentNudgeOf(Suitor suitor, OfferTables tables) {
+int _alignmentNudgeOf(Suitor suitor, OfferTables tables) {
   final sign =
       suitor.gift.kind == GiftKind.sign ? tables.signs[suitor.gift.id] : null;
   return leanOf(suitor, tables.data) +
@@ -277,7 +277,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final lang = ref.read(appLanguageProvider);
     final tables = widget.tables;
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    final name = giftName(suitor.gift,
+    final name = _giftName(suitor.gift,
         tables: tables, localizedItems: items, lang: lang);
     final preview = standingPreviewParts(suitor, offer.ticket,
         politics: ref.read(playerSessionProvider).politics,
@@ -297,8 +297,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
               SheetHeader(
                 title: trFor(lang, 'offer_confirm_title')
                     .replaceAll('{gift}', name),
-                caption: trFor(lang, 'offer_confirm_from')
-                    .replaceAll('{who}', suitorName(suitor, tables.data, lang)),
+                caption: trFor(lang, 'offer_confirm_from').replaceAll(
+                    '{who}', _suitorName(suitor, tables.data, lang)),
                 padding: const EdgeInsets.only(bottom: 12),
               ),
               Text(preview.isEmpty
@@ -352,7 +352,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       final clanColour = _suitorColor(suitor, tables.data);
       final card = clanGiftCard(
         lang: lang,
-        clanName: suitorName(suitor, tables.data, lang),
+        clanName: _suitorName(suitor, tables.data, lang),
         clanColour: clanColour,
         gift: risk != null && !risk.won
             // The price paid: the line says what the die took.
@@ -671,14 +671,14 @@ class _OfferBanner extends ConsumerWidget {
     final color = _suitorColor(suitor, data);
     final gift = suitor.gift;
     final name =
-        giftName(gift, tables: tables, localizedItems: items, lang: lang);
+        _giftName(gift, tables: tables, localizedItems: items, lang: lang);
     final preview = standingPreviewParts(suitor, ticket,
         politics: session.politics,
         data: data,
         lang: lang,
         flags: session.flags);
     final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
-    final who = suitorName(suitor, data, lang);
+    final who = _suitorName(suitor, data, lang);
     const good = Color(0xFF3E9B57);
 
     // One box for every banner, so none changes size when another is picked
@@ -866,8 +866,8 @@ class _OfferHall extends ConsumerWidget {
     final faction = data.faction(picked.factionId);
     final color = _suitorColor(picked, data);
     final gift = picked.gift;
-    final greeting = suitorGreeting(picked, data, lang);
-    final nudge = alignmentNudgeOf(picked, tables);
+    final greeting = _suitorGreeting(picked, data, lang);
+    final nudge = _alignmentNudgeOf(picked, tables);
     final tier = faction == null || faction.isLost
         ? null
         : politics.tierOf(picked.factionId, data);
@@ -920,7 +920,7 @@ class _OfferHall extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      suitorName(picked, data, lang),
+                      _suitorName(picked, data, lang),
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontFamily: InkFonts.display, color: color),
                     ),
@@ -987,7 +987,7 @@ class _OfferHall extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    giftName(gift,
+                                    _giftName(gift,
                                         tables: tables,
                                         localizedItems: items,
                                         lang: lang),
@@ -1212,7 +1212,7 @@ class _SwallowtailClipper extends CustomClipper<Path> {
 }
 
 Color _suitorColor(Suitor suitor, ClanData data) => suitor.isWayfarer
-    ? wayfarerColor
+    ? _wayfarerColor
     : Color(data.faction(suitor.factionId)?.color ?? 0xFFB08D3C);
 
 /// One suitor's card: their colour and mark, "The Emberwives of the Cinder
@@ -1247,13 +1247,13 @@ class SuitorCard extends ConsumerWidget {
     final faction = data.faction(suitor.factionId);
     final color = _suitorColor(suitor, data);
     final gift = suitor.gift;
-    final greeting = suitorGreeting(suitor, data, lang);
+    final greeting = _suitorGreeting(suitor, data, lang);
     final preview = standingPreviewParts(suitor, ticket,
         politics: session.politics,
         data: data,
         lang: lang,
         flags: session.flags);
-    final nudge = alignmentNudgeOf(suitor, tables);
+    final nudge = _alignmentNudgeOf(suitor, tables);
     // A lost clan has no standing to show (v1.195).
     final tier = faction == null || faction.isLost
         ? null
@@ -1267,7 +1267,7 @@ class SuitorCard extends ConsumerWidget {
             height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: wayfarerColor.withValues(alpha: 0.85),
+              color: _wayfarerColor.withValues(alpha: 0.85),
             ),
             child: const Icon(Icons.hiking, size: 20, color: Colors.white),
           )
@@ -1307,7 +1307,7 @@ class SuitorCard extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          suitorName(suitor, data, lang),
+                          _suitorName(suitor, data, lang),
                           style: theme.textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -1349,7 +1349,7 @@ class SuitorCard extends ConsumerWidget {
                         color: color,
                       ),
                       Text(
-                        giftName(gift,
+                        _giftName(gift,
                             tables: tables, localizedItems: items, lang: lang),
                         key: Key('offer_gift_${gift.id}'),
                         style: theme.textTheme.titleSmall,

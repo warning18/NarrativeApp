@@ -32,7 +32,7 @@ void main() {
 }
 
 /// The widest the app draws; a larger window leaves margins either side.
-const double maxAppWidth = 1280;
+const double _maxAppWidth = 1280;
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -52,7 +52,7 @@ class MyApp extends ConsumerWidget {
           // On a big window the app keeps to a readable width, centred.
           child: LayoutBuilder(
             builder: (context, box) {
-              final margin = math.max(0.0, (box.maxWidth - maxAppWidth) / 2);
+              final margin = math.max(0.0, (box.maxWidth - _maxAppWidth) / 2);
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: margin),
                 child: child ?? const SizedBox.shrink(),

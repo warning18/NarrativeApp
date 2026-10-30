@@ -60,7 +60,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
   return choices ?? SpoilsChoices.none;
 }
 
-Color chestTierColor(ChestTier tier) => switch (tier) {
+Color _chestTierColor(ChestTier tier) => switch (tier) {
       ChestTier.wooden => const Color(0xFF9A6A3C),
       ChestTier.iron => const Color(0xFF7B7F86),
       ChestTier.silver => const Color(0xFFB0B6C2),
@@ -68,7 +68,7 @@ Color chestTierColor(ChestTier tier) => switch (tier) {
       ChestTier.voidTier => const Color(0xFF8A4AD0),
     };
 
-String chestAssetPath(ChestTier tier, {required bool open}) =>
+String _chestAssetPath(ChestTier tier, {required bool open}) =>
     'assets/icons/chests/${chestTierAssetName(tier)}_${open ? 'open' : 'closed'}.png';
 
 /// The health still missing once [drinks] potions are drunk, each healing
@@ -166,7 +166,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       if (!mounted) return;
       for (final open in [false, true]) {
         precacheImage(
-            AssetImage(chestAssetPath(widget.result.tier, open: open)),
+            AssetImage(_chestAssetPath(widget.result.tier, open: open)),
             context);
       }
     });
@@ -272,7 +272,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
   @override
   Widget build(BuildContext context) {
     final result = widget.result;
-    final tierColor = chestTierColor(result.tier);
+    final tierColor = _chestTierColor(result.tier);
     final theme = Theme.of(context);
 
     return AlertDialog(
@@ -418,7 +418,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
   /// its own art.
   Widget _chestArt(ChestTier tier) {
     if (_tierShown) {
-      return PixelIcon(chestAssetPath(tier, open: _opened), size: 112);
+      return PixelIcon(_chestAssetPath(tier, open: _opened), size: 112);
     }
     // Grey, and lifted, so the tint of the wheel reads on it.
     const grey = ColorFilter.matrix(<double>[
@@ -431,10 +431,10 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     Widget art = ColorFiltered(
       colorFilter: grey,
       child:
-          PixelIcon(chestAssetPath(ChestTier.wooden, open: false), size: 112),
+          PixelIcon(_chestAssetPath(ChestTier.wooden, open: false), size: 112),
     );
     if (cycle != null) {
-      final tint = Color.lerp(chestTierColor(cycle), Colors.white, 0.12)!;
+      final tint = Color.lerp(_chestTierColor(cycle), Colors.white, 0.12)!;
       art = ColorFiltered(
         colorFilter: ColorFilter.mode(tint, BlendMode.modulate),
         child: art,
@@ -446,7 +446,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
   Widget _buildSlot(int index) {
     final theme = Theme.of(context);
     final revealed = _revealed.contains(index);
-    final tierColor = chestTierColor(widget.result.tier);
+    final tierColor = _chestTierColor(widget.result.tier);
     Widget face;
     String label;
     if (index == 0) {
