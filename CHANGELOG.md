@@ -19,6 +19,23 @@ isn't reconstructable from git history alone.
   a small star on its corner: gold when the Resonance is lit, grey when
   it sleeps, with a tip.
 
+## [1.679.0+715]
+
+- The dice of a fight are thrown slower: the throw takes 1.4 s instead of
+  0.65 s, and the dice rest 0.45 s with their faces up before they can be
+  tapped. A new "Dice speed in fights" setting (Settings, next to the
+  fight options) offers 1× (default), 2× and 4×: every wait of the throw
+  is the default divided by two or four. Reduced motion and quick resolve
+  are unchanged.
+
+## [1.678.0+714]
+
+- After the character is made, the screen no longer cuts to the Blind
+  Beggar: the character's page fades out over about a second and a half,
+  the opening's sigil rising to a whisper (15 %) in the middle, and the
+  scene's text is told as before (a tap plays it at once). With reduced
+  motion it stays a cut.
+
 ## [1.676.0+712]
 
 - **Core: the clans' dice, given as gifts (the user's rules,
