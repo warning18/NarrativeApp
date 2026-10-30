@@ -584,7 +584,6 @@ class SubClan {
 
   String nameFor(AppLanguage language) => _pick(language, name, nameFr);
   String lineFor(AppLanguage language) => _pick(language, line, lineFr);
-  String favourFor(AppLanguage language) => _pick(language, favour, favourFr);
 
   factory SubClan.fromJson(String id, Map<String, dynamic> json) => SubClan(
         id: id,

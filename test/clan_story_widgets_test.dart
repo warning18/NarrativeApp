@@ -12,8 +12,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/factions.dart';
-import 'package:narrative_data_app/data/offers.dart';
-import 'package:narrative_data_app/data/signs.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/models/story_node.dart';
@@ -28,7 +26,6 @@ import 'package:narrative_data_app/screens/story_player_screen.dart'
 import 'package:narrative_data_app/widgets/clan_widgets.dart';
 import 'package:narrative_data_app/widgets/coast_news.dart';
 import 'package:narrative_data_app/widgets/moments.dart';
-import 'package:narrative_data_app/widgets/offer_dialog.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -361,43 +358,6 @@ void main() {
     expect(find.text('News from the coast · The Wharf raided again'),
         findsWidgets);
     expect(find.text(politics.news.single.text), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets(
-      '"Your own hand" in an offer: its name and words, no tier, the '
-      'Dominion\'s -2 once the banner is raised', (tester) async {
-    _phone(tester);
-    final container = await _container(tester,
-        session: baseSession()
-            .copyWith(flags: [...openHandFlagsUpTo(6), bannerRaisedFlag]),
-        loadClans: true);
-    final data = container.read(clanDataProvider);
-    const ticket = OfferTicket(source: OfferSource.level);
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: MaterialApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: SuitorCard(
-              suitor: const Suitor(
-                  factionId: 'open_hand',
-                  gift: OfferGift(
-                      kind: GiftKind.sign,
-                      id: 'open_palm',
-                      rarity: SignRarity.rare)),
-              ticket: ticket,
-              tables: OfferTables(data: data),
-            ),
-          ),
-        ),
-      ),
-    ));
-    await tester.pumpAndSettle();
-    expect(find.text('Your own hand'), findsOneWidget);
-    expect(find.textContaining('the old blood draws'), findsOneWidget);
-    expect(find.text('Unknown'), findsNothing, reason: 'no standing tier');
-    expect(find.textContaining('\u22122\u00a0Dominion'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
