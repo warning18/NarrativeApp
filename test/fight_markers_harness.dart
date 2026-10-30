@@ -17,6 +17,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
 import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
+import 'support/pump.dart';
 
 Future<void> enterFight(WidgetTester tester, String profession) async {
   SharedPreferences.setMockInitialValues({
@@ -36,10 +37,7 @@ Future<void> enterFight(WidgetTester tester, String profession) async {
       },
     }),
   });
-  tester.view.physicalSize = const Size(600, 1600);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(600, 1600));
   await tester.pumpWidget(ProviderScope(
       overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
       child: const MyApp()));

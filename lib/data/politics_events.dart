@@ -332,8 +332,6 @@ class EventVariant {
   final String news;
   final String newsFr;
 
-  String newsFor(AppLanguage language) => _pick(language, news, newsFr);
-
   static const Set<String> _newsKeys = {
     'news',
     'news_fr',

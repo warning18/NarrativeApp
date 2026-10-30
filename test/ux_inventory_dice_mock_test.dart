@@ -25,34 +25,8 @@ import 'package:narrative_data_app/combat/dice_faces.dart' show dieDisplayName;
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/screens/inventory_screen.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader.addFont(Future.value(
-          ByteData.view(Uint8List.fromList(file.readAsBytesSync()).buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(
-          ByteData.view(Uint8List.fromList(icons.readAsBytesSync()).buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester, {int n = 4}) async {
   for (var i = 0; i < n; i++) {
@@ -391,7 +365,7 @@ void main() {
   }
 
   testWidgets('dice on the inventory page', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
@@ -400,10 +374,7 @@ void main() {
         as Map<String, dynamic>;
     final theme =
         buildAppTheme(AppPalette.stitchedInk.schemeFor(Brightness.dark));
-    tester.view.physicalSize = const Size(_phoneW, _phoneH2);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(_phoneW, _phoneH2));
 
     final key = GlobalKey();
     final nav = GlobalKey<NavigatorState>();

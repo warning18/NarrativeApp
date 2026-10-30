@@ -17,14 +17,7 @@ import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
@@ -38,14 +31,11 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -70,11 +60,11 @@ void main() {
     final result = navigator.push(MaterialPageRoute<bool>(
         builder: (_) =>
             FightScreen(enemyId: 'harbor_rat', enemy: _enemy('harbor_rat'))));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byTooltip('Win this fight (edit mode)'));
-    await _settle(tester);
+    await settleApp(tester);
     // The chest opens by itself and shows its drops.
     bool takeReady() => find
         .widgetWithText(FilledButton, 'Take')
@@ -85,7 +75,7 @@ void main() {
     }
     expect(takeReady(), isTrue, reason: 'the chest opened by itself');
     await tester.tap(find.text('Take'));
-    await _settle(tester);
+    await settleApp(tester);
     return result;
   }
 
@@ -99,7 +89,7 @@ void main() {
     expect(find.textContaining('Victory'), findsWidgets);
     await tester
         .pump(victoryAutoLeaveDelay + const Duration(milliseconds: 300));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsNothing);
     expect(await result, isTrue);
     // The rewards go on to the next scene.
@@ -110,7 +100,7 @@ void main() {
     final again = await winAndTake(tester, navigator);
     expect(find.byType(FightScreen), findsOneWidget);
     await tester.tapAt(const Offset(195, 400));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsNothing);
     expect(await again, isTrue);
   });

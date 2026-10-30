@@ -17,6 +17,7 @@ import 'package:narrative_data_app/providers/chapter_loop_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/bounty_board.dart';
+import 'support/fonts.dart';
 
 const _contracts = [
   Contract(
@@ -36,30 +37,6 @@ const _contracts = [
     rewardEssence: 100,
   ),
 ];
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    ('Spectral', ['Spectral-Regular.ttf', 'Spectral-Medium.ttf']),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(ByteData.view(
-          Uint8List.fromList(File('assets/fonts/$f').readAsBytesSync())
-              .buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(
-          ByteData.view(Uint8List.fromList(icons.readAsBytesSync()).buffer)));
-    await loader.load();
-  }
-}
 
 /// Opens the board with [contracts] posted; returns the container.
 Future<ProviderContainer> _open(WidgetTester tester,
@@ -167,7 +144,7 @@ void main() {
   testWidgets('a picture of the board', (tester) async {
     final dir = Platform.environment['UX_SHOTS'];
     if (dir == null) return;
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     final key = GlobalKey();
     await _open(tester, boundary: key, contracts: const [
       Contract(

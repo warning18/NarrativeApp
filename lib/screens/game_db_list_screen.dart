@@ -63,7 +63,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             tooltip: 'Download (JSON or CSV)',
             onPressed: recordsAsync.value == null
                 ? null
-                : () => showCollectionExportSheet(
+                : () => _showCollectionExportSheet(
                     context, ref, schema, recordsAsync.value!),
           ),
           IconButton(
@@ -433,7 +433,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
 
 /// The ways to take one collection away: its records as JSON, as a CSV
 /// table, and its texts (English beside French) as CSV.
-Future<void> showCollectionExportSheet(BuildContext context, WidgetRef ref,
+Future<void> _showCollectionExportSheet(BuildContext context, WidgetRef ref,
     DbSchema schema, Map<String, dynamic> records) {
   return showDataExportSheet(
     context,

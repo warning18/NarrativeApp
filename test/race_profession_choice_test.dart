@@ -2,7 +2,6 @@
 // cards a step, every name whole (« Enfant du Néant » and « Guerrier » take
 // two lines rather than an ellipsis, in the app's own fonts), then the open
 // card with the clans that will court you, the compare sheet and the summary.
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,27 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 Future<void> _until(WidgetTester tester, Finder finder) async {
   for (var i = 0; i < 40 && finder.evaluate().isEmpty; i++) {
@@ -49,12 +29,9 @@ const _races = ['dwarf', 'elf', 'human', 'orc', 'voidkin'];
 const _professions = ['cleric', 'mage', 'ranger', 'rogue', 'warrior'];
 
 Future<void> _open(WidgetTester tester, {bool french = false}) async {
-  await _loadFonts();
+  await loadAppFonts();
   SharedPreferences.setMockInitialValues({});
-  tester.view.physicalSize = const Size(360, 1600);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(360, 1600));
   await tester.pumpWidget(ProviderScope(
     child: MaterialApp(
       theme: buildAppTheme(const ColorScheme.light()),

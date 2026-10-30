@@ -16,6 +16,7 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/widgets/forge_sheet.dart';
+import 'support/pump.dart';
 
 /// A random whose first `nextInt(20)` is [face] - 1, so the d20 lands on it.
 class _Face implements Random {
@@ -67,10 +68,7 @@ Future<ProviderContainer> _open(
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
   SharedPreferences.setMockInitialValues({});
-  tester.view.physicalSize = const Size(400, 800);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(400, 800));
   await tester.pumpWidget(ProviderScope(
     child: MaterialApp(
       builder: (context, child) => MediaQuery(

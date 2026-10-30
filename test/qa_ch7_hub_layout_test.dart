@@ -21,29 +21,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 List<String> _collectOverflows(WidgetTester tester) {
   final seen = <String>[];
@@ -59,21 +38,13 @@ List<String> _collectOverflows(WidgetTester tester) {
   return seen;
 }
 
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
 // Set to false when the 320 px fix lands.
 const skipUntilFixPack = false;
 
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await _loadFonts();
+    await loadAppFonts();
     // Read the data once, outside any test's fake clock: the bundle keeps the
     // first read, and one begun inside a test never finishes for the next.
     for (final path in [
@@ -103,7 +74,7 @@ void main() {
         addTearDown(
             tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
         await tester.pumpWidget(const ProviderScope(child: MyApp()));
-        await _settle(tester);
+        await settleApp(tester);
         final container =
             ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
         await tester.runAsync(() => container
@@ -115,15 +86,15 @@ void main() {
               'activeQuestIds': ['q_ch7_reed_gate_grievance'],
               'enemyKillCounts': <String, int>{},
             })));
-        await _settle(tester);
+        await settleApp(tester);
         final edit = find.byKey(const Key('menu_edit_mode'));
         await tester.ensureVisible(edit);
         await tester.tap(edit);
-        await _settle(tester);
+        await settleApp(tester);
         container.read(storyPlayProvider.notifier).jumpTo('7400');
-        await _settle(tester);
+        await settleApp(tester);
         await tester.pump(const Duration(seconds: 3));
-        await _settle(tester);
+        await settleApp(tester);
         // The ways on sit under the scene: scroll down to them.
         for (var i = 0; i < 12; i++) {
           await tester.dragFrom(
@@ -139,9 +110,9 @@ void main() {
         // They used to be found here only because the Journey tab, offstage,
         // held them as cards under its map.
         await tester.tap(find.text(french ? 'Parcours' : 'Journey').last);
-        await _settle(tester);
+        await settleApp(tester);
         await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
-        await _settle(tester);
+        await settleApp(tester);
         expect(
             find.textContaining(french ? 'héraut' : 'herald',
                 skipOffstage: false),

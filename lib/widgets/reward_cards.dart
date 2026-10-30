@@ -33,7 +33,7 @@ String chapterArtPath(int chapter) =>
     'assets/visuals/chapters/chapter_${chapter.clamp(1, 8)}.png';
 
 /// An item's own picture on a reward tile, a mark for its absence.
-Widget rewardItemIcon(String itemId, Color accent) => PixelIcon(
+Widget _rewardItemIcon(String itemId, Color accent) => PixelIcon(
       ItemIcons.pathFor(itemId),
       size: 36,
       fallback: Icon(Icons.inventory_2_outlined, size: 28, color: accent),
@@ -57,7 +57,7 @@ RewardLine rewardItemLine(
   final rare = rarity == 'Rare' || rarity == 'Relic';
   return RewardLine(
     key: Key('reward_item_$itemId'),
-    icon: rewardItemIcon(itemId, colour),
+    icon: _rewardItemIcon(itemId, colour),
     accent: colour,
     title: item?['itemName']?.toString() ?? itemId,
     tag: itemRarityLabelFor(lang, rarity),

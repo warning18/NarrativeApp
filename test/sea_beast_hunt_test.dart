@@ -19,6 +19,7 @@ import 'package:narrative_data_app/screens/ship_battle_panel.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/sea_battlefield.dart';
+import 'support/fonts.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 40 && !done(); i++) {
@@ -31,29 +32,6 @@ Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
 Map<String, dynamic> _data(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
-
-/// The app's own fonts: the test font's square glyphs make the French
-/// weather's chip crowd the beast's weapons off the sea.
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-}
 
 /// A shape under the keel: on any other crossing, a sign of a beast
 /// tracked in these waters.
@@ -72,7 +50,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     tester.view.physicalSize = const Size(420, 1400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);

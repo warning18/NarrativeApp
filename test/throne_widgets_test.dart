@@ -16,7 +16,8 @@ import 'package:narrative_data_app/providers/clans_provider.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/clans_politics_screen.dart';
-import 'package:narrative_data_app/widgets/clan_widgets.dart';
+import 'package:narrative_data_app/widgets/clan_widgets.dart' show LostClanCard;
+import 'package:narrative_data_app/widgets/throne_widgets.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -72,6 +73,26 @@ Future<void> _settle(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// What the Character tab shows of the clans' story: the climb to the
+/// Throne and, once remembered, the dead clan's card.
+class _ClimbAndLost extends ConsumerWidget {
+  const _ClimbAndLost();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(clanDataProvider);
+    final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const ClimbCard(),
+        if (openHandStageFrom(flags) > 0)
+          for (final faction in data.lost) LostClanCard(faction: faction),
+      ],
+    );
+  }
+}
+
 void main() {
   testWidgets('the Character tab\'s climb and the Host, in English',
       (tester) async {
@@ -87,7 +108,7 @@ void main() {
             home: Scaffold(
               body: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
-                child: Card(child: ClansSection()),
+                child: Card(child: _ClimbAndLost()),
               ),
             ),
           ),
@@ -252,7 +273,7 @@ void main() {
         home: Scaffold(
           body: SingleChildScrollView(
             padding: EdgeInsets.all(16),
-            child: Card(child: ClansSection()),
+            child: Card(child: _ClimbAndLost()),
           ),
         ),
       ),

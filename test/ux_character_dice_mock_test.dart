@@ -22,33 +22,8 @@ import 'package:narrative_data_app/screens/character_screen.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/skills_radar_card.dart';
 import 'package:narrative_data_app/widgets/inventory_parts.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester, {int n = 4}) async {
   for (var i = 0; i < n; i++) {
@@ -155,17 +130,14 @@ void main() {
   }
 
   testWidgets('the Character tab with a dice card', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
     const width = 412.0;
     const height = 860.0;
-    tester.view.physicalSize = const Size(width, height);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(width, height));
     final theme =
         buildAppTheme(AppPalette.stitchedInk.schemeFor(Brightness.light));
     final key = GlobalKey();

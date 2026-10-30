@@ -18,14 +18,7 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/journey_banner_pin.dart';
 import 'package:narrative_data_app/widgets/journey_glyph.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 void main() {
   test('a way folds to one of the seven categories, the main quest first', () {
@@ -68,17 +61,14 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
     await tester.pumpWidget(ProviderScope(overrides: [
       cityPlanRecordsProvider.overrideWith((ref) async => const {})
     ], child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -90,14 +80,14 @@ void main() {
             {'raceId': 'human', 'professionId': 'warrior'})));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
-    await _settle(tester);
+    await settleApp(tester);
     play.jumpTo('2005');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The gate's ways are plain roads: banners with the signpost.
     final pin = find.descendant(
@@ -135,10 +125,7 @@ void main() {
     testWidgets('the legend fits 320 px in French, ${dark ? 'dark' : 'light'}',
         (tester) async {
       SharedPreferences.setMockInitialValues({});
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      usePhone(tester, const Size(320, 640));
       final scheme = ColorScheme.fromSeed(
           seedColor: Colors.brown,
           brightness: dark ? Brightness.dark : Brightness.light);

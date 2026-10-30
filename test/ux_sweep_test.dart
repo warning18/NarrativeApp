@@ -9,7 +9,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,6 +38,7 @@ import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 import 'package:narrative_data_app/widgets/walk_bubble.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/fonts.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -58,31 +58,8 @@ String _name(
     '${c.width.toInt()} px, text ×${c.scale}, ${c.lang.name}'
     '${c.reduced ? ', reduced motion' : ''}';
 
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(Future.value(ByteData.view(
-          Uint8List.fromList(File(path).readAsBytesSync()).buffer)));
-    }
-    await loader.load();
-  }
-}
-
 void main() {
-  setUpAll(_loadFonts);
+  setUpAll(loadAppFonts);
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   Future<void> show(

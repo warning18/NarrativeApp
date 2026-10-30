@@ -87,6 +87,7 @@ import '../providers/story_text_provider.dart' show storyTextDoneProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
+import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -428,7 +429,7 @@ class _StoryView extends ConsumerWidget {
     // (every way to take is acted out on the spot) waits for the places
     // and the cities' plans the map lays its ways on; any other shows its
     // recap at once.
-    final mayLock = storyMapPlacementsKnown(ref)
+    final mayLock = _storyMapPlacementsKnown(ref)
         ? storySceneLocked(ref, node, story)
         : storySceneLocked(ref, node, story, mapped: (_) => false);
     if (storyOnScreen &&
@@ -571,6 +572,39 @@ class _StoryView extends ConsumerWidget {
               french: french, opening: opening),
           language: language),
     ];
+
+    // The first scene is told as an animation, ending on its choice (see
+    // prologue_opening.dart).
+    if (!isEditMode &&
+        !playState.isInExcursion &&
+        parts.text.isNotEmpty &&
+        isPrologueOpening(node)) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: PrologueOpening(
+            text: parts.text,
+            choices: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final choice in visibleChoices)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _ChoiceButton(
+                      choice: choice,
+                      story: story,
+                      session: session,
+                      currentNodeId: playState.currentNodeId,
+                      isExcursion: false,
+                      french: french,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     // The reader's own tour plays only while it is on screen (v1.201: in
     // play it is pushed over the game for the ending, never a tab).
@@ -1099,7 +1133,7 @@ bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
 /// Whether the data the map lays the ways on has loaded (the places and
 /// biomes, the cities' stored plans): until then [storySceneLocked] can't
 /// tell a scene the map draws from one it doesn't, and says unlocked.
-bool storyMapPlacementsKnown(WidgetRef ref) =>
+bool _storyMapPlacementsKnown(WidgetRef ref) =>
     !ref.watch(gameDbProvider(geographySchema)).isLoading &&
     !ref.watch(gameDbProvider(biomesSchema)).isLoading &&
     !ref.watch(cityPlanRecordsProvider).isLoading;
@@ -1313,7 +1347,7 @@ Future<void> _selectChoice({
   // choice's check and fight went the party's way the first time, and
   // aren't played again; the crossing is.
   final crossingKey = choice.crossesLand
-      ? '$currentNodeId#${storyChoiceIndex(story, currentNodeId, choice)}'
+      ? '$currentNodeId#${_storyChoiceIndex(story, currentNodeId, choice)}'
       : null;
   final crossingRetry =
       crossingKey != null && ref.read(crossingRetryProvider) == crossingKey;
@@ -1607,7 +1641,7 @@ Future<void> _selectChoice({
   // What the choice does to the coast (v1.195), once: taken again, or
   // after going back, it moves nothing.
   if (choice.hasPolitics && !skipRewardEffects && !isExcursion) {
-    final index = storyChoiceIndex(story, currentNodeId, choice);
+    final index = _storyChoiceIndex(story, currentNodeId, choice);
     if (index >= 0) {
       await applyStoryPoliticsNow(ref, choice.politics!,
           nodeId: currentNodeId, key: choicePoliticsKey(currentNodeId, index));
@@ -1958,7 +1992,7 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
           .applyChoiceEffects(flagsToAdd: way.flagsToAdd);
     }
     if (way.hasPolitics) {
-      final index = storyChoiceIndex(story, node.id, way);
+      final index = _storyChoiceIndex(story, node.id, way);
       if (index >= 0) {
         await applyStoryPoliticsNow(ref, way.politics!,
             nodeId: node.id, key: choicePoliticsKey(node.id, index));
@@ -1973,26 +2007,26 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
 }
 
 /// The news a chapter's card tells, in [lang]: the first
-/// [chapterCardNewsShown], then how many more the journal keeps.
+/// [_chapterCardNewsShown], then how many more the journal keeps.
 List<String> chapterCardNews(List<CoastNews> news, AppLanguage lang) {
   final lines = [
     for (final n in news)
       if (n.textFor(lang).isNotEmpty) n.textFor(lang),
   ];
-  if (lines.length <= chapterCardNewsShown) return lines;
+  if (lines.length <= _chapterCardNewsShown) return lines;
   return [
-    ...lines.take(chapterCardNewsShown),
+    ...lines.take(_chapterCardNewsShown),
     trFor(lang, 'coast_news_more')
-        .replaceAll('{n}', '${lines.length - chapterCardNewsShown}'),
+        .replaceAll('{n}', '${lines.length - _chapterCardNewsShown}'),
   ];
 }
 
 /// News lines a chapter's card has room for.
-const int chapterCardNewsShown = 3;
+const int _chapterCardNewsShown = 3;
 
 /// [choice]'s place among [nodeId]'s choices (the key its politics are
 /// remembered under, see choicePoliticsKey), -1 when it is none of them.
-int storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
+int _storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
   final choices = story.nodeFor(nodeId)?.choices ?? const <StoryChoice>[];
   final same = choices.indexWhere((c) => identical(c, choice));
   if (same >= 0) return same;

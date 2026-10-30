@@ -18,7 +18,7 @@ enum BuildFilter { ready, affordable, built }
 
 /// Whether [work] can be paid for now: not up, not locked, short of neither
 /// gold nor materials (a flag or a chapter may still stand in the way).
-bool workAffordable(CampWork work) =>
+bool _workAffordable(CampWork work) =>
     work.state != WorkState.built &&
     work.state != WorkState.locked &&
     !work.needs.any(
@@ -30,7 +30,7 @@ bool workPasses(CampWork work, {BuildFilter? filter, WorkCategory? category}) {
   return switch (filter) {
     null => true,
     BuildFilter.ready => work.state == WorkState.buildable,
-    BuildFilter.affordable => workAffordable(work),
+    BuildFilter.affordable => _workAffordable(work),
     BuildFilter.built => work.state == WorkState.built,
   };
 }

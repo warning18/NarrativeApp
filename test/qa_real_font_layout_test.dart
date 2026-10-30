@@ -5,11 +5,8 @@
 // loads them and checks the level-up pop-up (English and French) at 360 and
 // 320 px, and the home shell's bar and tablet rail at a landscape phone and
 // a tablet, for any overflow.
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,29 +16,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/level_up_dialog.dart';
-
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 /// Collects the overflow reports instead of failing on the first.
 List<String> _collectOverflows(WidgetTester tester) {
@@ -61,7 +36,7 @@ List<String> _collectOverflows(WidgetTester tester) {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await _loadFonts();
+    await loadAppFonts();
   });
 
   for (final size in const [Size(360, 640), Size(320, 568)]) {

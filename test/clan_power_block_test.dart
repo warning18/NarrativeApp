@@ -7,7 +7,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,36 +25,10 @@ import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/clan_power_block.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 final _shotKey = GlobalKey();
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
 
 Future<void> _shot(WidgetTester tester, String name) async {
   final dir = Platform.environment['UX_SHOTS'];
@@ -75,7 +48,7 @@ Future<void> _shot(WidgetTester tester, String name) async {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+    if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   });
 
   Future<ProviderContainer> open(WidgetTester tester,
@@ -84,10 +57,7 @@ void main() {
       String language = 'en'}) async {
     SharedPreferences.setMockInitialValues(
         {'app_language': language, 'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(360, 780);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(360, 780));
     final container = ProviderContainer();
     addTearDown(container.dispose);
     container.read(appLanguageProvider);

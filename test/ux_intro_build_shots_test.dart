@@ -6,29 +6,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/screens/intro_screen.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(
-          ByteData.view(File('assets/fonts/$f').readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
@@ -39,7 +22,7 @@ void main() {
 
   testWidgets('the intro, beat by beat', (tester) async {
     SharedPreferences.setMockInitialValues({});
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     tester.view.physicalSize = const Size(420, 746);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);

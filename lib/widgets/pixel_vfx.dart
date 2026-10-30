@@ -128,7 +128,7 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
 };
 
 /// The strips a blow of [tier] adds under its landing.
-List<PixelLayer> pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
+List<PixelLayer> _pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
   if (!hit ||
       tier.index < VfxTier.strong.index ||
       systemVfxStyles.contains(style)) {
@@ -311,7 +311,7 @@ bool paintPixelBurst(
     ));
   } else {
     layers.addAll(pixelPlans[style] ?? const []);
-    layers.addAll(pixelTierLayers(style, tier, hit));
+    layers.addAll(_pixelTierLayers(style, tier, hit));
   }
   if (layers.isEmpty && extra.isEmpty) return false;
 
