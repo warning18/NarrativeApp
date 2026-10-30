@@ -674,6 +674,51 @@ _SimResult _simulate(
       ..rolls = SimRolls(Random(detourSalt * 31 + 29));
   }
 
+  // The competent player tries a die before switching to it (sim_combat.dart's
+  // dieTrial): the foes of the fight at hand, a few fights with each die on
+  // the same seeds; the new one must win more, or as many with more health
+  // left.
+  var trialFoes = <MapEntry<String, Map<String, dynamic>>>[];
+  var trialChapter = 1;
+  if (character != null && sim != null && sim.policy == SimPolicy.competent) {
+    final c = character;
+    ({int wins, int health}) tryDie(List<Map<String, dynamic>> faces,
+            Map<String, String> assignments) =>
+        c.restoringAfter(() {
+          c.diceFaces = faces;
+          c.diceSkillAssignments = assignments;
+          var wins = 0, health = 0;
+          for (var i = 0; i < simDieTrialFights; i++) {
+            c.currentHealth = c.maxHealth;
+            c.statusEffects = [];
+            final o = simulateSimFight(
+              character: c,
+              enemies: trialFoes,
+              chapter: trialChapter,
+              skills: sim.skills,
+              items: sim.items,
+              itemSets: sim.itemSets,
+              random: Random(7919 + i),
+              clash: sim.clash,
+              clashOff: sim.clashOff,
+              context: sim.context,
+              reinforcement: sim.reinforcement,
+            );
+            if (o.won) wins++;
+            health += c.currentHealth;
+          }
+          return (wins: wins, health: health);
+        });
+    c.dieTrial = (faces, assignments) {
+      // Before the first fight there is nothing to try it on.
+      if (trialFoes.isEmpty) return true;
+      final now = tryDie(c.diceFaces, c.diceSkillAssignments);
+      final next = tryDie(faces, assignments);
+      return next.wins > now.wins ||
+          (next.wins == now.wins && next.health > now.health);
+    };
+  }
+
   var currentId = StoryRepository.startNodeId;
   var gold = character?.startingGold ?? 0;
   var alignment = 0;
@@ -1417,6 +1462,9 @@ _SimResult _simulate(
       );
     }
     if (entries.isEmpty) return none;
+    // The die trial plays this fight's foes (see dieTrial above).
+    trialFoes = entries;
+    trialChapter = chapter;
     // The competent player readies itself: its best gear (the pack's
     // loot and rewards counted), the merges worth crafting, its best die.
     growth?.prepareForFight(

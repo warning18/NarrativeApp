@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.689.0+725]
+
+- **Core: the simulator's competent player trials a die before it switches.**
+  - Its die valuation overrated some dice (the clan, vigil and ossuary dice).
+    It now plays 12 trial fights with the new die against its next foes and
+    keeps it only if it wins more, or as many with more health left. A die
+    that fails is not tried again at the same level.
+  - Fights lost over 50 competent runs: 11.45% → 8.56%.
+  - Simulator only; nothing changes in the game.
+
 ## [1.688.0+724]
 
 - **Core: the scene backgrounds' rules (UX drew the eight new stages in
