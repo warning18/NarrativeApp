@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.668.0+704]
+## [1.671.0+707]
 
 - **Core: the Barracks Annex rests a full company (the user's pick, after
   the cap of three fighters).**
@@ -22,6 +22,13 @@ isn't reconstructable from git history alone.
     would have lifted four boss bands past theirs).
   - The camp's town card reads "+40% companion health with a full
     company"; no house shows a locked third seat any more.
+## [1.670.0+706]
+
+- "Qui combat ?": with more companions able to fight than the two seats, the
+  fight's setup offers the pick before the first roll. The hero is locked
+  in, two companions at most can be checked, the others wait this fight
+  out, and a toggle keeps the pick as the party. With two companions or
+  fewer nothing shows.
 
 ## [1.667.0+703]
 

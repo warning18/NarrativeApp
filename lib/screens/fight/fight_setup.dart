@@ -486,6 +486,86 @@ extension _FightSetup on _FightScreenState {
     ];
   }
 
+  /// The companions who could fight now: recruited, with their own house
+  /// built (the same gate as [fightLineup], without its cap).
+  List<String> get _fightCandidateIds {
+    final session = ref.read(playerSessionProvider);
+    return [
+      for (final a in session.recruitedAllies)
+        if (_houseOpenFor(session, a.companionId)) a.companionId,
+    ];
+  }
+
+  bool _houseOpenFor(PlayerSession session, String id) {
+    final house = (_companions[id] as Map?)?['requiredHouseId']?.toString();
+    return house == null ||
+        house.isEmpty ||
+        session.builtHouseIds.contains(house);
+  }
+
+  /// "Qui combat ?": shown when more companions can fight than there are
+  /// seats; a pick changes the party before the first roll.
+  Widget _buildPickCard() {
+    final candidates = _fightCandidateIds;
+    if (candidates.length <= basePartyCapacity || _started) {
+      return const SizedBox.shrink();
+    }
+    String nameOf(String id) =>
+        (_companions[id] as Map?)?['companionName']?.toString() ?? id;
+    final player = _party.isEmpty ? null : _party.first;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: FightPickCard(
+        title: tr(ref, 'fight_pick_title'),
+        hint: tr(ref, 'fight_pick_hint'),
+        heroName: player?.displayName ?? '',
+        seats: basePartyCapacity,
+        picked: _fieldedAllyIds,
+        options: [
+          for (final id in candidates)
+            FightPickOption(
+              id: id,
+              name: nameOf(id),
+              headAsset: id == 'vica' ? 'assets/visuals/heads/vica.png' : null,
+            ),
+        ],
+        onToggle: (id, on) {
+          final now = _fieldedAllyIds;
+          final next = on ? [...now, id] : now.where((a) => a != id).toList();
+          _update(() => _fieldParty(next));
+          if (_keepPick) _seatPicked();
+        },
+        keepLabel: tr(ref, 'fight_pick_keep'),
+        keep: _keepPick,
+        onKeep: (v) {
+          _update(() => _keepPick = v);
+          if (v) _seatPicked();
+        },
+      ),
+    );
+  }
+
+  /// Makes the fielded companions the seated ones (the "keep as my party"
+  /// toggle), the others benched.
+  Future<void> _seatPicked() async {
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final fielded = _fieldedAllyIds;
+    final session = ref.read(playerSessionProvider);
+    for (final id in session.activeAllyIds) {
+      if (!fielded.contains(id)) {
+        await notifier.setAllyActive(id, false,
+            partyCapacity: basePartyCapacity, companions: _companions);
+      }
+    }
+    for (final id in fielded) {
+      await notifier.setAllyActive(id, true,
+          partyCapacity: basePartyCapacity,
+          requiredHouseId:
+              (_companions[id] as Map?)?['requiredHouseId']?.toString(),
+          companions: _companions);
+    }
+  }
+
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
     // The pre-fight pick was for this fight only (party_pick.dart).

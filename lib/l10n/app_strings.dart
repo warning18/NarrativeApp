@@ -4687,6 +4687,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: "is stunned and can't act this round.",
     AppLanguage.fr: 'est étourdi(e) et ne peut pas agir ce tour.',
   },
+  'fight_pick_title': {
+    AppLanguage.en: 'Who fights?',
+    AppLanguage.fr: 'Qui combat ?'
+  },
+  'fight_pick_hint': {
+    AppLanguage.en:
+        'You and two companions at most. The others wait this one out.',
+    AppLanguage.fr:
+        'Vous et deux compagnons au plus. Les autres attendent ce combat.',
+  },
+  'fight_pick_keep': {
+    AppLanguage.en: 'Keep this as my party',
+    AppLanguage.fr: 'Garder comme mon groupe',
+  },
   'fighting_alongside_prefix': {
     AppLanguage.en: 'Fighting alongside',
     AppLanguage.fr: 'Combat aux côtés de',
