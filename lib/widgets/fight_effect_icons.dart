@@ -192,7 +192,7 @@ const Map<FightEffect, List<String>> _bitmaps = {
 };
 
 /// The icon's colour.
-Color fightEffectColor(FightEffect effect) => switch (effect) {
+Color _fightEffectColor(FightEffect effect) => switch (effect) {
       FightEffect.poison => const Color(0xFF4CAF50),
       FightEffect.stun => const Color(0xFFF2C14E),
       FightEffect.weaken => const Color(0xFFA070E0),
@@ -259,7 +259,7 @@ class FightEffectChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = fightEffectColor(effect);
+    final color = _fightEffectColor(effect);
     return Semantics(
       button: onTap != null,
       label: badge == null ? label : '$label $badge',
@@ -330,7 +330,7 @@ Future<void> showFightEffectPopin(
   required String body,
   required String closeHint,
 }) {
-  final color = fightEffectColor(effect);
+  final color = _fightEffectColor(effect);
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: true,

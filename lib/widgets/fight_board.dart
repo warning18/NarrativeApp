@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../combat/field_anomaly.dart' show FightStage;
 
 /// The board's base colour for [stage] (also the colour of its edge glow).
-Color fightBoardBase(FightStage stage) => switch (stage) {
+Color _fightBoardBase(FightStage stage) => switch (stage) {
       FightStage.fields => const Color(0xFF3D5233),
       FightStage.dunes => const Color(0xFFC9A96A),
       FightStage.saltFlats => const Color(0xFFD8D9D2),
@@ -35,8 +35,8 @@ Color fightBoardBase(FightStage stage) => switch (stage) {
 
 /// Paints the board's surface for [stage]: the same picture every time (a
 /// fixed seed), never animated.
-class FightBoardPainter extends CustomPainter {
-  const FightBoardPainter(this.stage);
+class _FightBoardPainter extends CustomPainter {
+  const _FightBoardPainter(this.stage);
 
   final FightStage stage;
 
@@ -46,7 +46,7 @@ class FightBoardPainter extends CustomPainter {
     final h = size.height;
     final r = math.Random(stage.index * 97 + 13);
     canvas.drawRect(
-        Rect.fromLTWH(0, 0, w, h), Paint()..color = fightBoardBase(stage));
+        Rect.fromLTWH(0, 0, w, h), Paint()..color = _fightBoardBase(stage));
     Paint stroke(Color c, double width, [double alpha = 1]) => Paint()
       ..color = c.withValues(alpha: alpha)
       ..style = PaintingStyle.stroke
@@ -437,7 +437,7 @@ class FightBoardPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(FightBoardPainter old) => old.stage != stage;
+  bool shouldRepaint(_FightBoardPainter old) => old.stage != stage;
 }
 
 /// The board surface for [stage], with [child] (the dice) on it. Rounded and
@@ -445,10 +445,14 @@ class FightBoardPainter extends CustomPainter {
 /// outside it.
 class FightBoardSurface extends StatelessWidget {
   const FightBoardSurface(
-      {super.key, required this.stage, required this.child});
+      {super.key, required this.stage, required this.child, this.event});
 
   final FightStage stage;
   final Widget child;
+
+  /// What breaks over the board (an anomaly), drawn on the skin and under
+  /// the dice; clipped to the board.
+  final Widget? event;
 
   @override
   Widget build(BuildContext context) {
@@ -465,9 +469,10 @@ class FightBoardSurface extends StatelessWidget {
             RepaintBoundary(
               child: CustomPaint(
                 key: const Key('fight_board_skin'),
-                painter: FightBoardPainter(stage),
+                painter: _FightBoardPainter(stage),
               ),
             ),
+            if (event != null) Positioned.fill(child: event!),
             child,
           ],
         ),

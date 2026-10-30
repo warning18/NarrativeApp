@@ -15,6 +15,7 @@ import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
+import '../widgets/fight_pick_card.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
@@ -372,13 +373,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
 
+  /// The pre-fight sheet's "keep as my party" toggle.
+  bool _keepPick = false;
+
   /// Builds a companion as they fight this one (set with the party, see
   /// _ensurePartyBuilt); the pre-fight pick ([_fieldParty]) uses it.
   _PartyMember? Function(String companionId)? _allyMember;
 
   /// The companions fielded beside the player, in seat order: the
   /// pre-fight pick (UX-2's) reads it.
-  // ignore: unused_element
   List<String> get _fieldedAllyIds => [
         for (final m in _party)
           if (!m.isPlayer) m.id,

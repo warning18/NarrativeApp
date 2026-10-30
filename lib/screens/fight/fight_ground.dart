@@ -356,17 +356,15 @@ extension _FightGround on _FightScreenState {
   /// the log readable in either theme.
   Widget _buildBackdrop({double veil = 0.4}) {
     final scheme = Theme.of(context).colorScheme;
-    final plan = _anomaly;
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
-          sky: _sky.kind == WeatherKind.clear ? null : _sky.kind,
-          anomaly: plan?.anomaly,
-          phase: _anomalyPhase,
           light: lightLevel(_light),
+          weather: false,
+          events: false,
         ),
         DecoratedBox(
           decoration: BoxDecoration(
@@ -383,6 +381,37 @@ extension _FightGround on _FightScreenState {
           ),
         ),
       ],
+    );
+  }
+
+  /// The day's weather over the whole screen, cards and board included: it
+  /// takes no touch and is read through.
+  Widget _buildWeatherOverlay() {
+    if (_sky.kind == WeatherKind.clear) return const SizedBox.shrink();
+    return IgnorePointer(
+      child: FightBackdrop(
+        key: const Key('fight_weather'),
+        stage: _stage,
+        sky: _sky.kind,
+        ground: false,
+        events: false,
+      ),
+    );
+  }
+
+  /// The anomaly (an earth break, a storm, a glare) on the dice board alone.
+  Widget _buildBoardEvent() {
+    final plan = _anomaly;
+    if (plan == null) return const SizedBox.shrink();
+    return IgnorePointer(
+      child: FightBackdrop(
+        key: const Key('fight_board_event'),
+        stage: _stage,
+        anomaly: plan.anomaly,
+        phase: _anomalyPhase,
+        ground: false,
+        weather: false,
+      ),
     );
   }
 

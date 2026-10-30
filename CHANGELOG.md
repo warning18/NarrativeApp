@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.673.0+709]
+
+- **Cleanup: file-only names added since the first pass are private**
+  Helpers of the fight board, the effect icons, the weapon styles and the
+  language notifier that only their own file uses (renames inside one file,
+  4 files). No behaviour change.
+
+## [1.672.0+708]
+
+- **Narrative: the Barracks Annex reads as rest and readiness.** The Annex no
+  longer gives a third fighting seat; it gives each companion more health. Its
+  description (English and French, `barracks_annex` in `houses.json`) now
+  speaks of bunks, a second mess table and a company rested and ready to hold
+  the line, instead of "room enough for one more pair of hands at your back".
+  Wording only: no key renamed, no number changed.
+## [1.671.0+707]
+
+- The fight's weather now falls over the whole screen, cards and board
+  included, and takes no touch. An anomaly (an earth break, a storm, a
+  glare) now plays on the dice board alone, clipped to it, under the dice.
+  The ground behind the screen keeps only the scenery, the night and the
+  lamps.
+
+## [1.670.0+706]
+
+- "Qui combat ?": with more companions able to fight than the two seats, the
+  fight's setup offers the pick before the first roll. The hero is locked
+  in, two companions at most can be checked, the others wait this fight
+  out, and a toggle keeps the pick as the party. With two companions or
+  fewer nothing shows.
+
 ## [1.667.0+703]
 
 - **Core: three fighters at most, and the pre-fight pick (the user's
