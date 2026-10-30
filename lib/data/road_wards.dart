@@ -19,7 +19,7 @@
 library;
 
 import '../l10n/app_locale.dart';
-import '../l10n/app_strings.dart' show chargesText, trFor;
+import '../l10n/app_strings.dart' show trFor;
 import 'camp_rolls.dart';
 import 'factions.dart';
 import 'rival_hunters.dart' show rivalHunts;
@@ -112,9 +112,6 @@ String wardLine(
   text = text.replaceAll('{clan}', name);
   if (roads != null) text = text.replaceAll('{roads}', '$roads');
   if (cost != null) text = text.replaceAll('{cost}', '$cost');
-  if (cost != null) {
-    text = text.replaceAll('{charges}', chargesText(language, cost));
-  }
   if (n != null) text = text.replaceAll('{n}', '$n');
   return text;
 }

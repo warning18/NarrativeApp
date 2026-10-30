@@ -12982,16 +12982,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Écarter ({left})',
   },
   'roll_banish_length': {
-    AppLanguage.en: '{draws} draws · {charges}',
-    AppLanguage.fr: '{draws} tirages · {charges}',
-  },
-  'charges_one': {
-    AppLanguage.en: '{n} charge',
-    AppLanguage.fr: '{n} charge',
-  },
-  'charges_many': {
-    AppLanguage.en: '{n} charges',
-    AppLanguage.fr: '{n} charges',
+    AppLanguage.en: '{draws} draws · {cost} charges',
+    AppLanguage.fr: '{draws} tirages · {cost} charges',
   },
   'roll_banish_done': {
     AppLanguage.en: '{name} is warded off for {draws} draws.',
@@ -13041,8 +13033,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Tenir à l’écart la chasse d’un clan pendant quelques routes.',
   },
   'ward_length': {
-    AppLanguage.en: '{roads} roads · {charges}',
-    AppLanguage.fr: '{roads} routes · {charges}',
+    AppLanguage.en: '{roads} roads · {cost} charges',
+    AppLanguage.fr: '{roads} routes · {cost} charges',
   },
   'ward_mark': {
     AppLanguage.en: 'Warded from {clan}: {n} roads',
@@ -13726,11 +13718,3 @@ String trFor(AppLanguage language, String key) {
 
 String tr(WidgetRef ref, String key) =>
     trFor(ref.watch(appLanguageProvider), key);
-
-/// "1 charge" / "3 charges": [n] with the noun in its number (French takes
-/// the singular for 0 and 1, English for 1).
-String chargesText(AppLanguage language, int n) {
-  final one = language == AppLanguage.fr ? n >= 0 && n < 2 : n == 1;
-  return trFor(language, one ? 'charges_one' : 'charges_many')
-      .replaceAll('{n}', '$n');
-}
