@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.696.0+732]
+
+- The reading page flows. After a choice, the words of the new scene begin
+  at the top of the card instead of being centred in the page, so no empty
+  gap opens above them. What the last choice left (its aftermath, the
+  road's note, a check's outcome) is now set in the same type and spacing
+  as the text that follows it, one flow instead of a grey italic aside.
+- The "New: ..." card (a level up, a new feature) no longer covers the
+  first lines of the page: it takes a place of its own above it, and the
+  page slides down while it is there, then back.
+
 ## [1.695.0+731]
 
 - **Core: the Barracks Annex rests a full company (the user's pick, after

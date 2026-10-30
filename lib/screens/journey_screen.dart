@@ -3525,23 +3525,22 @@ class _ScenePanel extends ConsumerWidget {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (detour != null && detour!.isNotEmpty) ...[
-          Text(detour!, style: aside),
-          const SizedBox(height: 8),
+          Text(detour!, style: prose),
+          const SizedBox(height: 12),
         ],
         if (aftermath != null && aftermath.isNotEmpty) ...[
-          Text(aftermath, style: aside),
-          const SizedBox(height: 8),
+          Text(aftermath, style: prose),
+          const SizedBox(height: 12),
         ],
         if (roadNote != null && roadNote.isNotEmpty) ...[
-          Text(roadNote, style: aside),
-          const SizedBox(height: 8),
+          Text(roadNote, style: prose),
+          const SizedBox(height: 12),
         ],
         if (outcome != null && outcome.isNotEmpty) ...[
-          Text(outcome, style: aside),
-          const SizedBox(height: 8),
+          Text(outcome, style: prose),
+          const SizedBox(height: 12),
         ],
         for (final prelude in preludes) ...[
           if (prelude.speaker != null) ...[
@@ -3657,7 +3656,9 @@ class _ScenePanel extends ConsumerWidget {
                                   constraints: BoxConstraints(
                                       minHeight:
                                           math.max(0, viewport.maxHeight - 40)),
-                                  child: Center(child: body),
+                                  child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: body),
                                 )
                               : body,
                         ),
