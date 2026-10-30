@@ -1,0 +1,715 @@
+[
+ {
+  "node": "105",
+  "place": "blind_beggar",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…like a sleeper. People climbed out over the rubble, or did not.  Three steps in, someone steppe…",
+  "choice": "Put the bouncer down",
+  "other_terrain_words": []
+ },
+ {
+  "node": "105",
+  "place": "blind_beggar",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…like a sleeper. People climbed out over the rubble, or did not.  Three steps in, someone steppe…",
+  "choice": "Get the looter off her",
+  "other_terrain_words": []
+ },
+ {
+  "node": "105",
+  "place": "blind_beggar",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…like a sleeper. People climbed out over the rubble, or did not.  Three steps in, someone steppe…",
+  "choice": "Clear the door",
+  "other_terrain_words": []
+ },
+ {
+  "node": "400",
+  "place": "alster_family_house",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "check",
+  "evidence": "…n in any city: Lysa. A man walked out of the ruin holding my sister off the ground by one wris…",
+  "choice": "Charge him",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2000",
+  "place": "saltmouth_landward_gate",
+  "today": "cityRoad",
+  "suggested": "caravanRoad",
+  "confidence": "check",
+  "evidence": "…the salt flats in the night and claimed the caravan’s grain wagon. Their eyes glowed a sick gree…",
+  "choice": "Attack",
+  "other_terrain_words": [
+   "saltFlats"
+  ]
+ },
+ {
+  "node": "2011",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…apped wet boards as I pushed deeper into the docks, without the courtesy of an explanation.  So…",
+  "choice": "Continue through the Docks",
+  "other_terrain_words": []
+ },
+ {
+  "node": "2015",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…merchants still plied their trade along the wharf. They had concluded that empires rise and fa…",
+  "choice": "Deal with a lurking smuggler captain",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2015",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…merchants still plied their trade along the wharf. They had concluded that empires rise and fa…",
+  "choice": "Fend off a plague hound",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2015",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…merchants still plied their trade along the wharf. They had concluded that empires rise and fa…",
+  "choice": "Break up two harbor rats over spoiled cargo",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2015",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…merchants still plied their trade along the wharf. They had concluded that empires rise and fa…",
+  "choice": "Answer the harbor master’s bounty on the wharf b",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2015_house_drowned_debt",
+  "place": "saltmouth_tern_row",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…of his hand said why. The Drowned Debt, the wharf calls people like him: Crows who borrowed fr…",
+  "choice": "Break the chain and see off his friends",
+  "other_terrain_words": [
+   "shipDeck"
+  ]
+ },
+ {
+  "node": "2015_dockside",
+  "place": "saltmouth_wharf",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…The harbor master was a weathered woman with the exhaus…",
+  "choice": "Back through the fish-stink and the shouting",
+  "other_terrain_words": [
+   "cliffs",
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "2015_kelda",
+  "place": "saltmouth_landward_gate",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…A dwarf in a dented cuirass held the wharf gate alone. A barrel for a barricade, no one…",
+  "choice": "Hold the gate beside her",
+  "other_terrain_words": [
+   "shipDeck"
+  ]
+ },
+ {
+  "node": "2020",
+  "place": "saltmouth_landward_gate",
+  "today": "cityRoad",
+  "suggested": "caravanRoad",
+  "confidence": "strong",
+  "evidence": "…knees.  Heavy boots walked the length of the caravan. **A spear went into the next wagon’s sacks…",
+  "choice": "Ambush the inspector",
+  "other_terrain_words": []
+ },
+ {
+  "node": "3005",
+  "place": "ashen_quarter_gate",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…The Ashen Quarter lay at the Spire’s foot, **a day’s w…",
+  "choice": "Cut down the chanting acolyte",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "3005",
+  "place": "ashen_quarter_gate",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…The Ashen Quarter lay at the Spire’s foot, **a day’s w…",
+  "choice": "Snuff the grey candle over the ashes",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "3005",
+  "place": "ashen_quarter_gate",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…The Ashen Quarter lay at the Spire’s foot, **a day’s w…",
+  "choice": "Hunt the void stalker in the ruins",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "3005",
+  "place": "ashen_quarter_gate",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…The Ashen Quarter lay at the Spire’s foot, **a day’s w…",
+  "choice": "Break the iron golem guarding the vault",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "3005",
+  "place": "ashen_quarter_gate",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…The Ashen Quarter lay at the Spire’s foot, **a day’s w…",
+  "choice": "Drive off two auxiliaries sifting the ash",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "3005_clan_vigil_1",
+  "place": "ashen_quarter_wall_of_names",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…six spears in the Quarter, and a stretch of rubble wall on its northern edge, where the ash gav…",
+  "choice": "Hold your stretch of rubble",
+  "other_terrain_words": []
+ },
+ {
+  "node": "3005_clan_vigil_1_breach",
+  "place": "ashen_quarter_wall_of_names",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…st of them, the smallest: **it came over the rubble where I had said nothing would**, past the s…",
+  "choice": "Hunt it down through the ash",
+  "other_terrain_words": []
+ },
+ {
+  "node": "3005_clan_compact_1",
+  "place": "ashen_quarter_cinder_row",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…go cold to starve the Tribunal’s forges, and Cinder Row had been dark ever since. Now they meant…",
+  "choice": "Hold the left side of the cart",
+  "other_terrain_words": [
+   "woods"
+  ]
+ },
+ {
+  "node": "3005_oath",
+  "place": "ashen_quarter_ash_market",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…I signed on anyway. An oath sworn to ash and ruin was at least honest about what it expected o…",
+  "choice": "Return to the district’s streets",
+  "other_terrain_words": []
+ },
+ {
+  "node": "6002_siege_breach",
+  "place": "cove_camp",
+  "today": "cliffs",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…long moment the camp was not a camp, only a beach with people on it and things that wanted the…",
+  "choice": "Stand in the breach",
+  "other_terrain_words": []
+ },
+ {
+  "node": "2015_informant_trap",
+  "place": "saltmouth_landward_warehouse",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…sharp on every coin: the going rate on this wharf, a dockhand told me afterward, for anything…",
+  "choice": "Drift back along the wharf",
+  "other_terrain_words": []
+ },
+ {
+  "node": "2015_informant_exposed",
+  "place": "saltmouth_landward_gate",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…n still sharp on every coin. I asked where a wharf rat came by so much of it, and he told me, b…",
+  "choice": "Go after the warden he named",
+  "other_terrain_words": []
+ },
+ {
+  "node": "6010",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "check",
+  "evidence": "…ad been given up to the tear’s slow weather: frost on the cobbles in summer.  What was left of…",
+  "choice": "Drive off the void hounds circling the reliquary",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "6010",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "check",
+  "evidence": "…ad been given up to the tear’s slow weather: frost on the cobbles in summer.  What was left of…",
+  "choice": "Answer the penitent’s challenge",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "6010",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "check",
+  "evidence": "…ad been given up to the tear’s slow weather: frost on the cobbles in summer.  What was left of…",
+  "choice": "Hunt the unstitched thing in the chapel",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "6010_clan_compact_3",
+  "place": "reliquary_hammer_chapel",
+  "today": "cityRoad",
+  "suggested": "ash",
+  "confidence": "check",
+  "evidence": "…When Cinder Row broke its hammers after the Spire, **it…",
+  "choice": "Take it off the velvet",
+  "other_terrain_words": [
+   "hall"
+  ]
+ },
+ {
+  "node": "7002",
+  "place": "hollow_shore",
+  "today": "glass",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…n** on a bridge, in a locked chamber, on the docks, **each of them wearing a face I remembered*…",
+  "choice": "Put down the reflections walking the sand",
+  "other_terrain_words": [
+   "dunes",
+   "waves",
+   "hall"
+  ]
+ },
+ {
+  "node": "7002_pact",
+  "place": "hollow_shore",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "check",
+  "evidence": "…watching.  **The Inquisition would hold this shore**, and my camp on the Ashen Coast, and every…",
+  "choice": "Take the pact, and its crown",
+  "other_terrain_words": [
+   "ash"
+  ]
+ },
+ {
+  "node": "6010_masked",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "strong",
+  "evidence": "…She had stood at the edge of the frost every time I crossed the quarter, a girl in…",
+  "choice": "Break the chair-chapel, and take her out",
+  "other_terrain_words": []
+ },
+ {
+  "node": "6010_masked",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "strong",
+  "evidence": "…She had stood at the edge of the frost every time I crossed the quarter, a girl in…",
+  "choice": "Fight her",
+  "other_terrain_words": []
+ },
+ {
+  "node": "3200",
+  "place": "akagiri",
+  "today": "terraces",
+  "suggested": "ash",
+  "confidence": "strong",
+  "evidence": "…of its own steam, the only warm place on the Ashen Coast. **The oni had come over the mountains…",
+  "choice": "Break the exorcists’ salt circle",
+  "other_terrain_words": []
+ },
+ {
+  "node": "3200_house_road_exorcists",
+  "place": "akagiri",
+  "today": "terraces",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…the village, below the last terrace, with a burnt-out lantern on a staff and a patient.  He was a…",
+  "choice": "Hold him, and take what comes out",
+  "other_terrain_words": []
+ },
+ {
+  "node": "6100_clan_mire_2",
+  "place": "rimewell",
+  "today": "snow",
+  "suggested": "reeds",
+  "confidence": "strong",
+  "evidence": "…The child had come out of the fen two winters ago and walked to Rimewell. Nobo…",
+  "choice": "Meet the hunters on the road instead",
+  "other_terrain_words": [
+   "snow"
+  ]
+ },
+ {
+  "node": "7100",
+  "place": "white_anchorage_quay",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…ls, a chapel made from a flagship’s stern, a harbor wall of anchors. **The crusaders who had sai…",
+  "choice": "Face the last company still at war",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7100_house_order",
+  "place": "white_anchorage_chapel",
+  "today": "cityRoad",
+  "suggested": "dunes",
+  "confidence": "strong",
+  "evidence": "…her.  I found her where the strand turns to dunes. The tear had been at her. She was still sta…",
+  "choice": "Give her the rest the glass refused her",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7200",
+  "place": "greyhithe",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…ughed up its houses and people on the Hollow Shore, nets in hand, the grey in their faces.  The…",
+  "choice": "Put down the reflection wearing a child’s face",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7200_clan_vigil_3",
+  "place": "greyhithe",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "check",
+  "evidence": "…would I. The tear stood open off the Hollow Shore like a door, and Greyhithe had been through…",
+  "choice": "Hold its eye until it goes",
+  "other_terrain_words": [
+   "ruins"
+  ]
+ },
+ {
+  "node": "7002_approach",
+  "place": "hollow_shore_battlefield",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…to be called in.  **The Host could hold the beach. It could not go into the water**: the tear…",
+  "choice": "Cut a road straight through them",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7510_dominion",
+  "place": "candlehold_gates",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "check",
+  "evidence": "…I came up Candlehold’s harbour steps under the Dominion’s own gonfalon, tid…",
+  "choice": "Take the Hall stair with the Houses behind you",
+  "other_terrain_words": [
+   "cliffs"
+  ]
+ },
+ {
+  "node": "7510_mire",
+  "place": "candlehold_gates",
+  "today": "cityRoad",
+  "suggested": "reeds",
+  "confidence": "strong",
+  "evidence": "…The Mire Courts came to Candlehold as the fen comes t…",
+  "choice": "Take the Reed Gate with fever-bark and blades",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7510_crows",
+  "place": "candlehold_gates",
+  "today": "cityRoad",
+  "suggested": "quay",
+  "confidence": "strong",
+  "evidence": "…come to everything, and anchored across the harbour mouth under black pennants, three rings on e…",
+  "choice": "Ram the harbour chain with the Eel",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7510_penitents",
+  "place": "candlehold_gates",
+  "today": "cityRoad",
+  "suggested": "ruins",
+  "confidence": "strong",
+  "evidence": "…everywhere, barefoot, in no hurry, lanterns burnt out, the cloth of names carried in front where a…",
+  "choice": "Break the shield-wall at the Exorcists’ Gate",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7510_open_hand",
+  "place": "candlehold_gates",
+  "today": "cityRoad",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…oever had stood under the spar on the Hollow Shore, and a cloth with a figure on it, arms raise…",
+  "choice": "Hold the grey hand up at the gate until it break",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out her lamps, and leave her the First",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7520_tallis",
+  "place": "candlehold_throne_room",
+  "today": "hall",
+  "suggested": "cliffs",
+  "confidence": "strong",
+  "evidence": "…and it to someone I do not know**.” Down the cliff, lamp after lamp was being lit, and every on…",
+  "choice": "Put out the First Lantern in her hands",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7810",
+  "place": "hollow_shore_battlefield",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…The Host came ashore on the Hollow Shore at dawn under every banner I had, and the re…",
+  "choice": "Lead the Host at the Herald yourself",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7810",
+  "place": "hollow_shore_battlefield",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…The Host came ashore on the Hollow Shore at dawn under every banner I had, and the re…",
+  "choice": "Hold the line and let the Herald break on it",
+  "other_terrain_words": []
+ },
+ {
+  "node": "7810",
+  "place": "hollow_shore_battlefield",
+  "today": "glass",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…The Host came ashore on the Hollow Shore at dawn under every banner I had, and the re…",
+  "choice": "Answer its crowned copy with the true hand",
+  "other_terrain_words": []
+ },
+ {
+  "node": "6010_candle_walk_fight",
+  "place": "reliquary_quarter",
+  "today": "cityRoad",
+  "suggested": "snow",
+  "confidence": "strong",
+  "evidence": "…Past the frost line the Quarter stopped being a quarter: co…",
+  "choice": "Unmake it and take the count",
+  "other_terrain_words": [
+   "cityRoad"
+  ]
+ },
+ {
+  "node": "7100_impound_fight",
+  "place": "white_anchorage_impound",
+  "today": "cityRoad",
+  "suggested": "waves",
+  "confidence": "strong",
+  "evidence": "…ll, when I got it free, said so to the whole shore**.  The two soldiers came down the ladder wi…",
+  "choice": "Clear the hull and take the haul",
+  "other_terrain_words": []
+ }
+]
