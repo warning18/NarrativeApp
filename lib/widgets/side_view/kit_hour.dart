@@ -39,7 +39,7 @@ int hourStarCount(DayPhase phase) => switch (phase) {
 
 /// The stars: one layer, painted just after the sky so the far hills and
 /// everything in front of it cover them.
-SideLayer hourStars(DayPhase phase) {
+SideLayer _hourStars(DayPhase phase) {
   final count = hourStarCount(phase);
   return SideLayer(0, (canvas, size, scroll, t, u) {
     if (count == 0) return;
@@ -59,7 +59,7 @@ SideLayer hourStars(DayPhase phase) {
 /// (the first layer): the same list by day.
 List<SideLayer> withHourStars(List<SideLayer> layers, DayPhase phase) {
   if (hourStarCount(phase) == 0 || layers.isEmpty) return layers;
-  return [layers.first, hourStars(phase), ...layers.skip(1)];
+  return [layers.first, _hourStars(phase), ...layers.skip(1)];
 }
 
 double _hash(int i, int salt) {

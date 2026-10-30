@@ -15,7 +15,7 @@ import 'side_sprite.dart';
 import 'side_view.dart';
 
 /// The desert's colours.
-abstract final class DesertLook {
+abstract final class _DesertLook {
   static const sky = [
     Color(0xFF3E3452),
     Color(0xFF8A4F5E),
@@ -54,8 +54,8 @@ List<SideLayer> desertLayers({double progress = 0}) => [
             amp: 2.6,
             wave: 0.05,
             phase: 1,
-            fill: DesertLook.mesa,
-            rim: DesertLook.mesaRim);
+            fill: _DesertLook.mesa,
+            rim: _DesertLook.mesaRim);
         _goal(c, s, u, progress);
       }),
       SideLayer(0.15, (c, s, scroll, t, u) {
@@ -64,8 +64,8 @@ List<SideLayer> desertLayers({double progress = 0}) => [
             amp: 2.4,
             wave: 0.07,
             phase: 3,
-            fill: DesertLook.far,
-            rim: DesertLook.farRim);
+            fill: _DesertLook.far,
+            rim: _DesertLook.farRim);
       }),
       SideLayer(0.4, (c, s, scroll, t, u) {
         sideHills(c, s, u, scroll,
@@ -73,8 +73,8 @@ List<SideLayer> desertLayers({double progress = 0}) => [
             amp: 3.2,
             wave: 0.045,
             phase: 0.4,
-            fill: DesertLook.mid,
-            rim: DesertLook.midRim);
+            fill: _DesertLook.mid,
+            rim: _DesertLook.midRim);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
         sideHills(c, s, u, scroll,
@@ -82,8 +82,8 @@ List<SideLayer> desertLayers({double progress = 0}) => [
             amp: 3.6,
             wave: 0.03,
             phase: 2.1,
-            fill: DesertLook.near,
-            rim: DesertLook.nearRim);
+            fill: _DesertLook.near,
+            rim: _DesertLook.nearRim);
         _props(c, s, u, scroll);
       }),
       const SideLayer(1.0, _path),
@@ -164,7 +164,7 @@ SideLayer desertActors({
 void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
   // Dithered bands from the top to the horizon.
   const horizon = 50;
-  const bands = DesertLook.sky;
+  const bands = _DesertLook.sky;
   final cols = (size.width / u).ceil();
   final paint = Paint();
   for (var y = 0; y < horizon; y++) {
@@ -178,14 +178,14 @@ void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
     }
   }
   canvas.drawRect(Rect.fromLTWH(0, horizon * u, size.width, size.height),
-      Paint()..color = DesertLook.far);
+      Paint()..color = _DesertLook.far);
 }
 
 void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
   final cx = (size.width / u * 0.72).floorToDouble();
   const cy = 30.0;
-  final glow = Paint()..color = DesertLook.sun.withValues(alpha: 0.22);
-  final disc = Paint()..color = DesertLook.sun;
+  final glow = Paint()..color = _DesertLook.sun.withValues(alpha: 0.22);
+  final disc = Paint()..color = _DesertLook.sun;
   for (var y = -9; y <= 9; y++) {
     for (var x = -9; x <= 9; x++) {
       final d = x * x + y * y;
@@ -207,7 +207,7 @@ void _goal(Canvas canvas, Size size, double u, double progress) {
   final x = w * (1.05 - 0.62 * progress.clamp(0, 1));
   final scale = 1 + progress.clamp(0, 1) * 0.8;
   final body = Paint()..color = const Color(0xFF6E3F44);
-  final rim = Paint()..color = DesertLook.mesaRim;
+  final rim = Paint()..color = _DesertLook.mesaRim;
   final dark = Paint()..color = const Color(0xFF2E1C24);
   final bw = (14 * scale).round(), bh = (16 * scale).round();
   const base = 44.0;
@@ -247,9 +247,10 @@ void _props(Canvas canvas, Size size, double u, double scroll) {
 
 void _path(Canvas canvas, Size size, double scroll, double t, double u) {
   final w = size.width / u;
-  sidePixels(canvas, u, Paint()..color = DesertLook.path, 0, 63, w + 1, 9);
-  sidePixels(canvas, u, Paint()..color = DesertLook.pathLight, 0, 63, w + 1, 1);
-  final dark = Paint()..color = DesertLook.pathDark;
+  sidePixels(canvas, u, Paint()..color = _DesertLook.path, 0, 63, w + 1, 9);
+  sidePixels(
+      canvas, u, Paint()..color = _DesertLook.pathLight, 0, 63, w + 1, 1);
+  final dark = Paint()..color = _DesertLook.pathDark;
   final offset = scroll / u;
   for (var i = 0; i < 14; i++) {
     final px = ((i * 9 - offset) % (w + 12) + (w + 12)) % (w + 12) - 6;

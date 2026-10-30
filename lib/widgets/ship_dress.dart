@@ -328,7 +328,7 @@ const Color _timber = Color(0xFF3A2818);
 const Color _ironTone = Color(0xFF4A484F);
 
 /// A gun's metal by its rarity.
-Color metalFor(String rarity) => switch (rarity) {
+Color _metalFor(String rarity) => switch (rarity) {
       'uncommon' => const Color(0xFF6C7480),
       'rare' => const Color(0xFF8B6B3E),
       'epic' => const Color(0xFFB88A2C),
@@ -369,7 +369,7 @@ void paintMounts(Canvas canvas, Rect room, double cy, double beam,
 /// One gun, 30 units long from the centre line (0, 0) up to its muzzle
 /// at (0, -30), 20 wide.
 void _mount(Canvas canvas, ShipMount m, double t) {
-  final metal = metalFor(m.rarity);
+  final metal = _metalFor(m.rarity);
   final dark = Color.lerp(metal, const Color(0xFF000000), 0.45)!;
   final light = Color.lerp(metal, const Color(0xFFFFFFFF), 0.35)!;
   // A carriage under every gun.

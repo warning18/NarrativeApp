@@ -10,7 +10,7 @@ import 'kit_common.dart';
 import 'side_view.dart';
 
 /// The fen's colours.
-abstract final class FenLook {
+abstract final class _FenLook {
   static const sky = [
     Color(0xFF151D1F),
     Color(0xFF2B3A3A),
@@ -41,14 +41,14 @@ List<SideLayer> fenLayers({double progress = 0}) => [
       SideLayer(
           0,
           (c, s, scroll, t, u) =>
-              kitSky(c, s, u, bands: FenLook.sky, ground: FenLook.far)),
+              kitSky(c, s, u, bands: _FenLook.sky, ground: _FenLook.far)),
       SideLayer(
           0.05,
           (c, s, scroll, t, u) => kitDisc(c, s, u,
               cx: 0.28,
               cy: 20,
-              disc: FenLook.moon.withValues(alpha: 0.9),
-              glow: FenLook.moon.withValues(alpha: 0.18),
+              disc: _FenLook.moon.withValues(alpha: 0.9),
+              glow: _FenLook.moon.withValues(alpha: 0.18),
               radius: 3)),
       SideLayer(0.12, (c, s, scroll, t, u) {
         sideHills(c, s, u, scroll,
@@ -56,8 +56,8 @@ List<SideLayer> fenLayers({double progress = 0}) => [
             amp: 1.2,
             wave: 0.08,
             phase: 0.9,
-            fill: FenLook.far,
-            rim: FenLook.farRim);
+            fill: _FenLook.far,
+            rim: _FenLook.farRim);
         _deadTrees(c, s, u, scroll);
         _lantern(c, s, u, progress, t);
       }),
@@ -67,8 +67,8 @@ List<SideLayer> fenLayers({double progress = 0}) => [
             amp: 1.6,
             wave: 0.06,
             phase: 2.1,
-            fill: FenLook.bank,
-            rim: FenLook.bankRim);
+            fill: _FenLook.bank,
+            rim: _FenLook.bankRim);
         _pools(c, s, u, scroll, t);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
@@ -77,8 +77,8 @@ List<SideLayer> fenLayers({double progress = 0}) => [
             amp: 2.2,
             wave: 0.04,
             phase: 0.3,
-            fill: FenLook.near,
-            rim: FenLook.nearRim);
+            fill: _FenLook.near,
+            rim: _FenLook.nearRim);
         _reeds(c, s, u, scroll);
       }),
       const SideLayer(1.0, _boardwalk),
@@ -94,14 +94,14 @@ void _lantern(Canvas canvas, Size size, double u, double progress, double t) {
   final ph = (20 * scale).round().toDouble();
   const base = 45.0;
   final bob = math.sin(t * 1.6).roundToDouble();
-  sidePixels(canvas, u, Paint()..color = FenLook.post, x, base - ph, 1.0, ph);
-  sidePixels(canvas, u, Paint()..color = FenLook.post, x, base - ph, 3.0, 1);
+  sidePixels(canvas, u, Paint()..color = _FenLook.post, x, base - ph, 1.0, ph);
+  sidePixels(canvas, u, Paint()..color = _FenLook.post, x, base - ph, 3.0, 1);
   final lamp = math.max(2, (2 * scale).round()).toDouble();
   // A halo of pale pixels around the flame.
-  final halo = Paint()..color = FenLook.lantern.withValues(alpha: 0.25);
+  final halo = Paint()..color = _FenLook.lantern.withValues(alpha: 0.25);
   sidePixels(canvas, u, halo, x + 2 - lamp, base - ph + 1 + bob - lamp,
       lamp * 3, lamp * 3);
-  sidePixels(canvas, u, Paint()..color = FenLook.lantern, x + 2,
+  sidePixels(canvas, u, Paint()..color = _FenLook.lantern, x + 2,
       base - ph + 1 + bob, lamp, lamp * 1.5);
 }
 
@@ -110,7 +110,7 @@ void _deadTrees(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.5;
   final offset = scroll / u;
-  final bark = Paint()..color = FenLook.farRim;
+  final bark = Paint()..color = _FenLook.farRim;
   for (var i = 0; i < 7; i++) {
     final px = kitSlot(i, 7, span, offset, 5) + 4;
     if (px < -6 || px > w + 2) continue;
@@ -127,8 +127,8 @@ void _pools(Canvas canvas, Size size, double u, double scroll, double t) {
   final w = size.width / u;
   final span = w * 1.4;
   final offset = scroll / u;
-  final water = Paint()..color = FenLook.water;
-  final gleam = Paint()..color = FenLook.waterGleam;
+  final water = Paint()..color = _FenLook.water;
+  final gleam = Paint()..color = _FenLook.waterGleam;
   for (var i = 0; i < 4; i++) {
     final px = kitSlot(i, 4, span, offset, 8);
     if (px < -16 || px > w + 2) continue;
@@ -144,8 +144,8 @@ void _reeds(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.7;
   final offset = scroll / u;
-  final reed = Paint()..color = FenLook.reed;
-  final dark = Paint()..color = FenLook.reedDark;
+  final reed = Paint()..color = _FenLook.reed;
+  final dark = Paint()..color = _FenLook.reedDark;
   for (var i = 0; i < 8; i++) {
     final px = kitSlot(i, 4, span, offset, 12) + (i % 2) * 5;
     if (px < -8 || px > w + 4) continue;
@@ -163,13 +163,13 @@ void _reeds(Canvas canvas, Size size, double u, double scroll) {
 /// A boardwalk: planks along the bottom, each with a dark seam.
 void _boardwalk(Canvas canvas, Size size, double scroll, double t, double u) {
   final w = size.width / u;
-  sidePixels(canvas, u, Paint()..color = FenLook.plank, 0, 63, w + 1, 9);
-  sidePixels(canvas, u, Paint()..color = FenLook.plankLight, 0, 63, w + 1, 1);
-  final seam = Paint()..color = FenLook.plankDark;
+  sidePixels(canvas, u, Paint()..color = _FenLook.plank, 0, 63, w + 1, 9);
+  sidePixels(canvas, u, Paint()..color = _FenLook.plankLight, 0, 63, w + 1, 1);
+  final seam = Paint()..color = _FenLook.plankDark;
   final offset = scroll / u;
   for (var i = 0; i < 16; i++) {
     final px = ((i * 8 - offset) % (w + 12) + (w + 12)) % (w + 12) - 6;
     sidePixels(canvas, u, seam, px, 63, 1, 9);
   }
-  sidePixels(canvas, u, Paint()..color = FenLook.plankDark, 0, 71, w + 1, 1);
+  sidePixels(canvas, u, Paint()..color = _FenLook.plankDark, 0, 71, w + 1, 1);
 }

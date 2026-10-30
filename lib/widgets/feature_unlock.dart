@@ -3,7 +3,7 @@
 //
 // - [FeatureGate]: a tab or button of a bar is hidden until it opens; a part
 //   of a screen the player is already in is greyed with a lock, and a tap
-//   says in one line when it opens ([FeatureLockedTile], [showFeatureLocked]).
+//   says in one line when it opens ([FeatureLockedTile], [_showFeatureLocked]).
 // - [FeatureUnlockHost]: over the home shell, the "New: X" card that slides
 //   in when a feature opens, one at a time, never over a fight. "Show me"
 //   plays the feature's tour; "Later" keeps the gold dot ([UnlockDot]) on the
@@ -28,28 +28,28 @@ export '../providers/feature_unlocks_provider.dart' show isFeatureUnlocked;
 
 /// What the player is told of a feature: its icon, its tour (when it has
 /// one), and its words in `feature_<id>_name` / `feature_<id>_line`.
-class FeatureUnlockInfo {
-  const FeatureUnlockInfo(this.icon, {this.topic});
+class _FeatureUnlockInfo {
+  const _FeatureUnlockInfo(this.icon, {this.topic});
 
   final IconData icon;
   final TutorialTopic? topic;
 }
 
-FeatureUnlockInfo featureUnlockInfo(GameFeature feature) => switch (feature) {
-      GameFeature.chest => const FeatureUnlockInfo(Icons.inventory_2_outlined),
-      GameFeature.placeRules => const FeatureUnlockInfo(Icons.rule),
+_FeatureUnlockInfo _featureUnlockInfo(GameFeature feature) => switch (feature) {
+      GameFeature.chest => const _FeatureUnlockInfo(Icons.inventory_2_outlined),
+      GameFeature.placeRules => const _FeatureUnlockInfo(Icons.rule),
       GameFeature.conditions =>
-        const FeatureUnlockInfo(Icons.thunderstorm_outlined),
-      GameFeature.levelUp => const FeatureUnlockInfo(Icons.trending_up,
+        const _FeatureUnlockInfo(Icons.thunderstorm_outlined),
+      GameFeature.levelUp => const _FeatureUnlockInfo(Icons.trending_up,
           topic: TutorialTopic.levelUp),
-      GameFeature.quests => const FeatureUnlockInfo(Icons.assignment_outlined,
+      GameFeature.quests => const _FeatureUnlockInfo(Icons.assignment_outlined,
           topic: TutorialTopic.other),
-      GameFeature.inventory => const FeatureUnlockInfo(Icons.backpack_outlined,
+      GameFeature.inventory => const _FeatureUnlockInfo(Icons.backpack_outlined,
           topic: TutorialTopic.inventory),
-      GameFeature.skills => const FeatureUnlockInfo(Icons.auto_awesome,
+      GameFeature.skills => const _FeatureUnlockInfo(Icons.auto_awesome,
           topic: TutorialTopic.skills),
-      GameFeature.politics => const FeatureUnlockInfo(Icons.balance),
-      GameFeature.clans => const FeatureUnlockInfo(Icons.draw_outlined,
+      GameFeature.politics => const _FeatureUnlockInfo(Icons.balance),
+      GameFeature.clans => const _FeatureUnlockInfo(Icons.draw_outlined,
           topic: TutorialTopic.signs),
     };
 
@@ -88,9 +88,9 @@ bool featureOpen(WidgetRef ref, GameFeature feature) =>
     isFeatureUnlocked(ref, feature.id);
 
 /// A small sheet: what is shut and when it opens, in one line.
-Future<void> showFeatureLocked(
+Future<void> _showFeatureLocked(
     BuildContext context, WidgetRef ref, GameFeature feature) {
-  final info = featureUnlockInfo(feature);
+  final info = _featureUnlockInfo(feature);
   final name = tr(ref, 'feature_${feature.id}_name');
   final ink = InkColors.of(context);
   return showModalBottomSheet<void>(
@@ -146,12 +146,12 @@ class FeatureLockedTile extends ConsumerWidget {
         child: InkWell(
           key: Key('feature_locked_${feature.id}'),
           borderRadius: BorderRadius.circular(4),
-          onTap: () => showFeatureLocked(context, ref, feature),
+          onTap: () => _showFeatureLocked(context, ref, feature),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(
               children: [
-                Icon(featureUnlockInfo(feature).icon, color: ink.ash),
+                Icon(_featureUnlockInfo(feature).icon, color: ink.ash),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(title ?? tr(ref, 'feature_${feature.id}_name'),
@@ -277,7 +277,7 @@ class _FeatureUnlockHostState extends ConsumerState<FeatureUnlockHost> {
     _timer?.cancel();
     _timed = null;
     ref.read(playerSessionProvider.notifier).acknowledgeFeature(feature.id);
-    final topic = featureUnlockInfo(feature).topic;
+    final topic = _featureUnlockInfo(feature).topic;
     if (tour && topic != null) playTutorial(context, ref, topic);
   }
 
@@ -366,7 +366,7 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
     final ink = InkColors.of(context);
     final still = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final feature = widget.feature;
-    final info = featureUnlockInfo(feature);
+    final info = _featureUnlockInfo(feature);
     final curve = CurvedAnimation(parent: _in, curve: Curves.easeOutCubic);
     final card = Material(
       color: theme.colorScheme.surfaceContainerHigh,

@@ -125,7 +125,7 @@ Future<bool> showForgeMoment(
 }
 
 /// The seconds each beat starts at.
-const List<double> forgeBeatStarts = [0, 1.15, 2.7, 4.2];
+const List<double> _forgeBeatStarts = [0, 1.15, 2.7, 4.2];
 
 class ForgeMoment extends ConsumerStatefulWidget {
   const ForgeMoment({
@@ -157,7 +157,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
     with SingleTickerProviderStateMixin {
   late final AnimationController _clock = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: (forgeBeatStarts.last * 1000).round()))
+      duration: Duration(milliseconds: (_forgeBeatStarts.last * 1000).round()))
     ..addListener(() => setState(() {}));
   bool _started = false;
   bool _still = false;
@@ -181,12 +181,12 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
     super.dispose();
   }
 
-  double get _t => _clock.value * forgeBeatStarts.last;
+  double get _t => _clock.value * _forgeBeatStarts.last;
 
   int get _beat {
     var b = 0;
-    for (var i = 0; i < forgeBeatStarts.length; i++) {
-      if (_t >= forgeBeatStarts[i]) b = i;
+    for (var i = 0; i < _forgeBeatStarts.length; i++) {
+      if (_t >= _forgeBeatStarts[i]) b = i;
     }
     return b;
   }
@@ -221,7 +221,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
                       tier: roll.tier,
                       seed: roll.face,
                       tierColor: tierColor,
-                      tierAt: forgeBeatStarts[2],
+                      tierAt: _forgeBeatStarts[2],
                     ),
                   ),
                 ),
@@ -274,7 +274,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
     final clans = ref.watch(clanDataProvider);
     final theme = Theme.of(context);
     final landed = beat >= 1;
-    final modStart = forgeBeatStarts[1] + 0.1;
+    final modStart = _forgeBeatStarts[1] + 0.1;
     double appear(int i) => (_t - modStart - i * 0.3) / 0.3;
     return Column(
       key: const ValueKey('forge_beat_landing'),
@@ -325,7 +325,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
   Widget _tierRead(BuildContext context, AppLanguage lang, Color colour) {
     final roll = widget.roll;
     final theme = Theme.of(context);
-    final grow = ((_t - forgeBeatStarts[2]) / 0.5).clamp(0.0, 1.0);
+    final grow = ((_t - _forgeBeatStarts[2]) / 0.5).clamp(0.0, 1.0);
     return Column(
       key: const ValueKey('forge_beat_tier'),
       children: [

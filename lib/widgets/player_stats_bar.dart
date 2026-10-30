@@ -16,7 +16,7 @@ import 'road_panel.dart';
 /// narrow. [trailing] widgets (the story's journal and read-aloud buttons)
 /// sit at the end of the line. Tapping the numbers opens the rest in a
 /// sheet: experience, alignment, flags, and the way to the quests and
-/// shops (see [showPlayerStatusSheet]).
+/// shops (see [_showPlayerStatusSheet]).
 class PlayerStatsBar extends ConsumerWidget {
   const PlayerStatsBar({super.key, this.trailing = const []});
 
@@ -123,7 +123,7 @@ class PlayerStatsBar extends ConsumerWidget {
         Expanded(
           child: InkWell(
             borderRadius: BorderRadius.circular(4),
-            onTap: () => showPlayerStatusSheet(context),
+            onTap: () => _showPlayerStatusSheet(context),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
@@ -197,7 +197,7 @@ class _Stat extends StatelessWidget {
 /// Everything [PlayerStatsBar] leaves out: level and experience, health,
 /// mana, gold, alignment and flags, with the way to the quests and shops
 /// on the Play tab.
-Future<void> showPlayerStatusSheet(BuildContext context) {
+Future<void> _showPlayerStatusSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,

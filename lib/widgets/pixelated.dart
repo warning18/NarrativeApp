@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 /// Anything drawn at or over this much is solid, under it gone: thin lines
 /// survive as one art pixel, a soft shadow does not.
-const double pixelAlphaCut = 0.3;
+const double _pixelAlphaCut = 0.3;
 
 const ColorFilter _cut = ColorFilter.matrix(<double>[
   1, 0, 0, 0, 0, //
   0, 1, 0, 0, 0, //
   0, 0, 1, 0, 0, //
-  0, 0, 0, 9, -9 * 255 * pixelAlphaCut,
+  0, 0, 0, 9, -9 * 255 * _pixelAlphaCut,
 ]);
 
 /// Draws [draw] on [canvas] as pixel art: on a grid of [pixel]-sized art

@@ -339,7 +339,7 @@ final ShipForm _defaultForm = ShipForm.fromRecord('rusty_eel', const {
 /// The ship, in place, bobbing: her hull as [ship] says (see side_ship.dart)
 /// in what she wears ([dress]). A flying hull ([flying], or the hull's own
 /// record) hangs above the water with her shadow on it.
-SideLayer seaActors({
+SideLayer _seaActors({
   bool flying = false,
   SeaWeather weather = SeaWeather.calm,
   SeaMeeting meeting = SeaMeeting.none,
@@ -710,7 +710,7 @@ class _SeaSideSceneState extends State<SeaSideScene>
                 seaLayers(waters: widget.waters, weather: widget.weather),
                 widget.phase),
             overlay: hourWash(widget.phase),
-            actors: seaActors(
+            actors: _seaActors(
                 flying: widget.flying,
                 weather: widget.weather,
                 meeting: widget.meeting,

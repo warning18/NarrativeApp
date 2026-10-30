@@ -11,7 +11,7 @@ int _numericPrefix(String id) =>
 
 /// [story]'s nodes in reading order: by chapter, then by the number their
 /// id starts with, then by id.
-List<StoryNode> nodesInChapterOrder(StoryData story) =>
+List<StoryNode> _nodesInChapterOrder(StoryData story) =>
     story.nodes.values.toList()
       ..sort((a, b) {
         final byChapter = chapterOfNode(a.id).compareTo(chapterOfNode(b.id));
@@ -25,7 +25,7 @@ List<StoryNode> nodesInChapterOrder(StoryData story) =>
 /// (in French when [french] and the node has it), and its choices with where they lead, the enemies they fight and
 /// where a lost fight goes.
 String storyLightExport(StoryData story, {bool french = false}) {
-  final nodes = nodesInChapterOrder(story);
+  final nodes = _nodesInChapterOrder(story);
   return const JsonEncoder.withIndent('  ').convert({
     'format': 'story-nodes-light',
     'nodeCount': nodes.length,

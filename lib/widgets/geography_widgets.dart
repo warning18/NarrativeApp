@@ -16,12 +16,12 @@ import '../theme/stitched_ink.dart';
 
 /// [text] with its first letter up, for a name that opens a line or heads
 /// a section (« l’Ancien Continent » → « L’Ancien Continent »).
-String capitalised(String text) =>
+String _capitalised(String text) =>
     text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
 
 /// The icon of a location of [kind] (see geoKinds), or of a place at
 /// [level] that has none.
-IconData geoPlaceIcon(GeoPlace place) => switch (place.level) {
+IconData _geoPlaceIcon(GeoPlace place) => switch (place.level) {
       GeoLevel.continent => Icons.public,
       GeoLevel.country => Icons.flag_outlined,
       GeoLevel.zone => Icons.landscape_outlined,
@@ -161,7 +161,7 @@ class GeoBreadcrumb extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
             child: Text(
               i == 0
-                  ? capitalised(path[i].nameFor(french))
+                  ? _capitalised(path[i].nameFor(french))
                   : path[i].nameFor(french),
               maxLines: 1,
               style: i == path.length - 1
@@ -300,10 +300,10 @@ class ThisLandSheet extends ConsumerWidget {
           for (final spot in focus) ...[
             Row(
               children: [
-                Icon(geoPlaceIcon(spot), size: 16, color: ink.gold),
+                Icon(_geoPlaceIcon(spot), size: 16, color: ink.gold),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(capitalised(spot.nameFor(french)),
+                  child: Text(_capitalised(spot.nameFor(french)),
                       style: theme.textTheme.titleSmall),
                 ),
               ],
@@ -320,7 +320,7 @@ class ThisLandSheet extends ConsumerWidget {
           Text(tr(ref, 'geo_this_land').toUpperCase(), style: caption),
           const SizedBox(height: 4),
           Text(
-            capitalised((zone ?? place).nameFor(french)),
+            _capitalised((zone ?? place).nameFor(french)),
             style: heading,
           ),
           if (biome != null) ...[
@@ -375,7 +375,7 @@ class ThisLandSheet extends ConsumerWidget {
           ],
           if (country != null) ...[
             section(tr(ref, 'geo_level_country')),
-            Text(capitalised(country.nameFor(french)),
+            Text(_capitalised(country.nameFor(french)),
                 style: theme.textTheme.titleSmall),
             Text(rulerLine(country),
                 key: const ValueKey('this_land_ruler'), style: small),
@@ -386,7 +386,7 @@ class ThisLandSheet extends ConsumerWidget {
           ],
           if (continent != null) ...[
             section(tr(ref, 'geo_level_continent')),
-            Text(capitalised(continent.nameFor(french)),
+            Text(_capitalised(continent.nameFor(french)),
                 style: theme.textTheme.titleSmall),
             if (continent.blurbFor(french).isNotEmpty) ...[
               const SizedBox(height: 4),
@@ -534,7 +534,7 @@ class _ContinentEntry extends ConsumerWidget {
               Icon(Icons.public, size: 18, color: ink.gold),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(capitalised(continent.nameFor(french)),
+                child: Text(_capitalised(continent.nameFor(french)),
                     key: ValueKey('geo_codex_${continent.id}'),
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontFamily: InkFonts.display)),
@@ -554,7 +554,7 @@ class _ContinentEntry extends ConsumerWidget {
                   childrenPadding: const EdgeInsets.only(left: 8, bottom: 8),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
                   leading: Icon(Icons.flag_outlined, size: 18, color: ink.ash),
-                  title: Text(capitalised(country.nameFor(french))),
+                  title: Text(_capitalised(country.nameFor(french))),
                   subtitle: Text(rulerLine(country),
                       style:
                           theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
@@ -638,7 +638,7 @@ class _ZoneCard extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(capitalised(zone.nameFor(french)),
+                    child: Text(_capitalised(zone.nameFor(french)),
                         style: theme.textTheme.titleSmall),
                   ),
                   if (biome != null) _BiomeChip(biome: biome, french: french),
@@ -665,13 +665,13 @@ class _ZoneCard extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(geoPlaceIcon(location), size: 16, color: ink.ash),
+                      Icon(_geoPlaceIcon(location), size: 16, color: ink.ash),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text.rich(
                           TextSpan(children: [
                             TextSpan(
-                                text: capitalised(location.nameFor(french)),
+                                text: _capitalised(location.nameFor(french)),
                                 style: theme.textTheme.bodyMedium),
                             // Its quarters, found or not.
                             if (geo.childrenOf(location.id).isNotEmpty)
@@ -745,7 +745,7 @@ class _GeoLocationFieldState extends ConsumerState<GeoLocationField> {
     final id = widget.controller.text.trim();
     final place = geo.place(id);
     final path =
-        geo.pathOf(id).map((p) => capitalised(p.nameFor(french))).join(' › ');
+        geo.pathOf(id).map((p) => _capitalised(p.nameFor(french))).join(' › ');
     final spots = geo.spots;
     return TextField(
       key: const ValueKey('node_location_field'),
@@ -774,7 +774,7 @@ class _GeoLocationFieldState extends ConsumerState<GeoLocationField> {
                       value: spot.id,
                       child: Text(
                         '${spot.level == GeoLevel.district ? '   · ' : spot.level == GeoLevel.building ? '      · ' : ''}'
-                        '${capitalised(spot.nameFor(french))}  (${spot.id})',
+                        '${_capitalised(spot.nameFor(french))}  (${spot.id})',
                       ),
                     ),
                 ],

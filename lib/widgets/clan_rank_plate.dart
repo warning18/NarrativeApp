@@ -15,7 +15,8 @@ const Color _plateGold = Color(0xFFF2C14E);
 const Color _plateDown = Color(0xFF8FA3B8);
 
 /// [clanId]'s [ClanPowerRank] now, or null for a faction with no power.
-final clanRankProvider = Provider.family<ClanPowerRank?, String>((ref, clanId) {
+final _clanRankProvider =
+    Provider.family<ClanPowerRank?, String>((ref, clanId) {
   for (final r in ref.watch(clanPowerRankingProvider)) {
     if (r.clanId == clanId) return r;
   }
@@ -23,7 +24,7 @@ final clanRankProvider = Provider.family<ClanPowerRank?, String>((ref, clanId) {
 });
 
 /// The arrow for [change] places climbed: up, down, or a dash when steady.
-String rankArrow(int change) => change > 0
+String _rankArrow(int change) => change > 0
     ? '▲'
     : change < 0
         ? '▼'
@@ -52,7 +53,7 @@ class ClanRankPlate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final r = ref.watch(clanRankProvider(clanId));
+    final r = ref.watch(_clanRankProvider(clanId));
     if (r == null) return const SizedBox.shrink();
     final lang = ref.watch(appLanguageProvider);
     final change = r.rankChange;
@@ -80,7 +81,7 @@ class ClanRankPlate extends ConsumerWidget {
                     height: 1.2,
                     fontWeight: FontWeight.w800)),
             SizedBox(width: size * 0.25),
-            Text(rankArrow(change),
+            Text(_rankArrow(change),
                 key: Key('clan_rank_arrow_$clanId'),
                 style: TextStyle(
                     color: _arrowColor(change), fontSize: size * 0.85)),
@@ -99,7 +100,7 @@ class ClanRankLine extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final r = ref.watch(clanRankProvider(clanId));
+    final r = ref.watch(_clanRankProvider(clanId));
     if (r == null) return const SizedBox.shrink();
     final total = ref.watch(clanPowerRankingProvider).length;
     final lang = ref.watch(appLanguageProvider);

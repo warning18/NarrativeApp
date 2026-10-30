@@ -169,7 +169,7 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
 }
 
 /// The scene's height: the side view's own default.
-const double crossingSceneHeight = 190;
+const double _crossingSceneHeight = 190;
 
 enum _Phase { event, result, arrived, failed, turnedBack }
 
@@ -455,7 +455,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final party = ref.read(walkingPartyProvider);
     final index = party.indexWhere((m) => m.id == line.companionId);
     final xs = walkingPartyXs(party.length);
-    const unit = crossingSceneHeight / sideViewRows;
+    const unit = _crossingSceneHeight / sideViewRows;
     final width = MediaQuery.sizeOf(context).width;
     final bubbleWidth = min(300.0, width - 16);
     final at = (index < 0 ? xs.first : xs[index]) * unit;
@@ -466,7 +466,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       left: left,
       top: 34,
       width: bubbleWidth,
-      bottom: crossingSceneHeight - 40 * unit,
+      bottom: _crossingSceneHeight - 40 * unit,
       child: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomLeft,
@@ -737,7 +737,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   children: [
                     SideViewScene(
                       key: const Key('crossing_scene'),
-                      height: crossingSceneHeight,
+                      height: _crossingSceneHeight,
                       layers: withHourStars(
                           crossingLayers(terrain, progress), phase),
                       overlay: hourWash(phase),

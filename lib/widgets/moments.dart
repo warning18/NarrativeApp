@@ -188,7 +188,7 @@ void showHealWave(BuildContext context) {
 
 /// An achievement earned: a toast slides down from the top with a shine
 /// across it, then goes back up.
-Future<void> showAchievementToast(BuildContext context, String name,
+Future<void> _showAchievementToast(BuildContext context, String name,
     {String label = 'ACHIEVEMENT'}) async {
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return;
@@ -966,13 +966,13 @@ void showQuestSeal(BuildContext context,
   );
 }
 
-/// Each of [names] announced in turn with [showAchievementToast]; not
+/// Each of [names] announced in turn with [_showAchievementToast]; not
 /// awaited by callers (the toasts run over whatever comes next).
 Future<void> announceAchievements(
     BuildContext context, List<String> names, String label) async {
   for (final name in names) {
     if (!context.mounted) return;
-    await showAchievementToast(context, name, label: label);
+    await _showAchievementToast(context, name, label: label);
   }
 }
 

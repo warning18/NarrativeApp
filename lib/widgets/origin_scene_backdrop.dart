@@ -74,11 +74,11 @@ const Map<String, OriginBackdrop> originBackdrops = {
 };
 
 /// A memory without a row (a new one) gets a plain house by day.
-const OriginBackdrop originBackdropFallback =
+const OriginBackdrop _originBackdropFallback =
     OriginBackdrop.street('house', 'The house');
 
 OriginBackdrop originBackdropOf(String memoryId) =>
-    originBackdrops[memoryId] ?? originBackdropFallback;
+    originBackdrops[memoryId] ?? _originBackdropFallback;
 
 /// The backdrop of [memoryId], filling the height it is given.
 class OriginSceneBackdrop extends StatelessWidget {

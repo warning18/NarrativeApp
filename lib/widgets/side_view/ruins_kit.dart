@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'side_view.dart';
 
 /// The ruins' colours.
-abstract final class RuinsLook {
+abstract final class _RuinsLook {
   static const sky = [
     Color(0xFF2A2433),
     Color(0xFF4A3340),
@@ -50,8 +50,8 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
             amp: 1.6,
             wave: 0.06,
             phase: 1.3,
-            fill: RuinsLook.skyline,
-            rim: RuinsLook.skylineRim);
+            fill: _RuinsLook.skyline,
+            rim: _RuinsLook.skylineRim);
         _skyline(c, s, u, scroll);
         _tower(c, s, u, progress);
       }),
@@ -61,8 +61,8 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
             amp: 2.2,
             wave: 0.05,
             phase: 0.6,
-            fill: RuinsLook.hill,
-            rim: RuinsLook.hillRim);
+            fill: _RuinsLook.hill,
+            rim: _RuinsLook.hillRim);
         _walls(c, s, u, scroll);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
@@ -71,8 +71,8 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
             amp: 3,
             wave: 0.035,
             phase: 2.4,
-            fill: RuinsLook.near,
-            rim: RuinsLook.nearRim);
+            fill: _RuinsLook.near,
+            rim: _RuinsLook.nearRim);
         _rubble(c, s, u, scroll);
       }),
       const SideLayer(1.0, _path),
@@ -81,7 +81,7 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
 void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
   // Dithered bands from the top to the horizon.
   const horizon = 48;
-  const bands = RuinsLook.sky;
+  const bands = _RuinsLook.sky;
   final cols = (size.width / u).ceil();
   final paint = Paint();
   for (var y = 0; y < horizon; y++) {
@@ -95,15 +95,15 @@ void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
     }
   }
   canvas.drawRect(Rect.fromLTWH(0, horizon * u, size.width, size.height),
-      Paint()..color = RuinsLook.skyline);
+      Paint()..color = _RuinsLook.skyline);
 }
 
 void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
   // A dim disc half-sunk behind the skyline, with a dithered halo.
   final cx = (size.width / u * 0.3).floorToDouble();
   const cy = 38.0;
-  final glow = Paint()..color = RuinsLook.sun.withValues(alpha: 0.2);
-  final disc = Paint()..color = RuinsLook.sun.withValues(alpha: 0.85);
+  final glow = Paint()..color = _RuinsLook.sun.withValues(alpha: 0.2);
+  final disc = Paint()..color = _RuinsLook.sun.withValues(alpha: 0.85);
   for (var y = -9; y <= 9; y++) {
     for (var x = -9; x <= 9; x++) {
       final d = x * x + y * y;
@@ -122,8 +122,8 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
 void _skyline(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.5;
-  final body = Paint()..color = RuinsLook.skyline;
-  final rim = Paint()..color = RuinsLook.skylineRim;
+  final body = Paint()..color = _RuinsLook.skyline;
+  final rim = Paint()..color = _RuinsLook.skylineRim;
   final offset = scroll / u;
   const heights = [6, 10, 4, 8, 12, 5, 9];
   for (var i = 0; i < 7; i++) {
@@ -134,7 +134,7 @@ void _skyline(Canvas canvas, Size size, double u, double scroll) {
     sidePixels(canvas, u, rim, px, 42 - h, 4, 1);
     // A snapped top: one pixel bitten off.
     sidePixels(
-        canvas, u, Paint()..color = RuinsLook.sky[3], px + 2, 42 - h, 2, 1);
+        canvas, u, Paint()..color = _RuinsLook.sky[3], px + 2, 42 - h, 2, 1);
   }
 }
 
@@ -150,13 +150,13 @@ void _tower(Canvas canvas, Size size, double u, double progress) {
   const base = 44.0;
   final body = Paint()..color = const Color(0xFF2B2030);
   sidePixels(canvas, u, body, x - bw / 2, base - bh, bw, bh);
-  sidePixels(canvas, u, Paint()..color = RuinsLook.skylineRim, x - bw / 2,
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.skylineRim, x - bw / 2,
       base - bh, bw, 1);
   // The broken crown: two uneven teeth.
   sidePixels(canvas, u, body, x - bw / 2, base - bh - 2, 2, 2);
   sidePixels(canvas, u, body, x + bw / 2 - 2, base - bh - 1, 2, 1);
   final win = math.max(2, (2 * scale).round()).toDouble();
-  sidePixels(canvas, u, Paint()..color = RuinsLook.window, x - win / 2,
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.window, x - win / 2,
       base - bh * 0.7, win, win * 1.5);
 }
 
@@ -164,9 +164,9 @@ void _tower(Canvas canvas, Size size, double u, double progress) {
 void _walls(Canvas canvas, Size size, double u, double scroll) {
   final w = size.width / u;
   final span = w * 1.6;
-  final body = Paint()..color = RuinsLook.wall;
-  final rim = Paint()..color = RuinsLook.wallRim;
-  final hole = Paint()..color = RuinsLook.hill;
+  final body = Paint()..color = _RuinsLook.wall;
+  final rim = Paint()..color = _RuinsLook.wallRim;
+  final hole = Paint()..color = _RuinsLook.hill;
   final offset = scroll / u;
   for (var i = 0; i < 4; i++) {
     final px = ((i * span / 4 + 14 - offset) % span + span) % span - 12;
@@ -211,9 +211,9 @@ void _rubble(Canvas canvas, Size size, double u, double scroll) {
 
 void _path(Canvas canvas, Size size, double scroll, double t, double u) {
   final w = size.width / u;
-  sidePixels(canvas, u, Paint()..color = RuinsLook.path, 0, 63, w + 1, 9);
-  sidePixels(canvas, u, Paint()..color = RuinsLook.pathLight, 0, 63, w + 1, 1);
-  final dark = Paint()..color = RuinsLook.pathDark;
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.path, 0, 63, w + 1, 9);
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.pathLight, 0, 63, w + 1, 1);
+  final dark = Paint()..color = _RuinsLook.pathDark;
   final offset = scroll / u;
   for (var i = 0; i < 14; i++) {
     final px = ((i * 9 - offset) % (w + 12) + (w + 12)) % (w + 12) - 6;

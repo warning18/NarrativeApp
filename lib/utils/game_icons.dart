@@ -64,7 +64,7 @@ IconData elementIcon(String? element) {
   }
 }
 
-IconData questCategoryIcon(String? category) {
+IconData _questCategoryIcon(String? category) {
   switch (category) {
     case 'Main':
       return Icons.star;
@@ -80,9 +80,9 @@ IconData questCategoryIcon(String? category) {
 }
 
 /// A quest's icon, keyed off what its first objective actually asks the
-/// player to do — sharper than [questCategoryIcon] alone, which otherwise
+/// player to do — sharper than [_questCategoryIcon] alone, which otherwise
 /// gives every "Main" quest the same star regardless of whether it's a
-/// fight, a fetch, or a conversation. Falls back to [questCategoryIcon] for
+/// fight, a fetch, or a conversation. Falls back to [_questCategoryIcon] for
 /// an objective type this doesn't recognize (or a quest with none).
 IconData questIcon(String? category, String? firstObjectiveType) {
   switch (firstObjectiveType) {
@@ -93,7 +93,7 @@ IconData questIcon(String? category, String? firstObjectiveType) {
     case 'Talk':
       return Icons.chat_bubble_outline;
     default:
-      return questCategoryIcon(category);
+      return _questCategoryIcon(category);
   }
 }
 

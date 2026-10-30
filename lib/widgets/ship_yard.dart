@@ -161,8 +161,8 @@ class _ShipYardPreviewState extends State<ShipYardPreview>
 }
 
 /// One look in miniature, as it would show on the ship.
-class LookSwatchPainter extends CustomPainter {
-  const LookSwatchPainter(this.look);
+class _LookSwatchPainter extends CustomPainter {
+  const _LookSwatchPainter(this.look);
   final ShipLook look;
 
   @override
@@ -266,7 +266,7 @@ class LookSwatchPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant LookSwatchPainter old) => old.look != look;
+  bool shouldRepaint(covariant _LookSwatchPainter old) => old.look != look;
 }
 
 /// The shelf of looks: a tab per category, a tile per look, and the
@@ -475,7 +475,7 @@ class _LookTile extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: CustomPaint(painter: LookSwatchPainter(look)),
+                    child: CustomPaint(painter: _LookSwatchPainter(look)),
                   ),
                 ),
               ),
