@@ -404,11 +404,3 @@ Future<void> showFightEffectPopin(
     },
   );
 }
-
-/// The screen rectangle of the widget under [key], or null before it is laid
-/// out.
-Rect? fightRectOf(GlobalKey key) {
-  final box = key.currentContext?.findRenderObject();
-  if (box is! RenderBox || !box.hasSize) return null;
-  return box.localToGlobal(Offset.zero) & box.size;
-}
