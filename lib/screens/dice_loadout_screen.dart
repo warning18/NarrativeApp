@@ -24,6 +24,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/face_skill_sheet.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/clan_die_gift.dart';
 import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/help_hint.dart';
@@ -1168,6 +1169,7 @@ class _DieStage extends StatelessWidget {
                             Text(dieSkinOf(dieId).material,
                                 style: theme.textTheme.labelSmall?.copyWith(
                                     color: theme.colorScheme.onSurfaceVariant)),
+                            ClanDieGift(dieId: dieId),
                             const SizedBox(height: 8),
                             Text(name,
                                 key: const Key('die_face_name'),

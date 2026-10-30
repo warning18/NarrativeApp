@@ -18,6 +18,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
@@ -56,6 +57,9 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
         as Map<String, dynamic>)[id] as Map<String, dynamic>;
+
+Finder _tile(String label, {String? badge}) => find.byWidgetPredicate(
+    (w) => w is FightStatusTile && w.label == label && w.badge == badge);
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
@@ -105,7 +109,7 @@ void main() {
     await _settle(tester);
     await tester.tap(find.text('Enter Battle'));
     await _settle(tester);
-    expect(find.text('Nudges 2'), findsOneWidget);
+    expect(_tile('Nudges', badge: '2'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _shows('Confirm'));
@@ -113,8 +117,9 @@ void main() {
     await _settle(tester);
     expect(find.textContaining('Nudge to'), findsOneWidget);
     await tester.tap(find.textContaining('Nudge to'));
-    await _pumpUntil(tester, () => _shows('Nudges 1'));
-    expect(find.text('Nudges 1'), findsOneWidget);
+    await _pumpUntil(
+        tester, () => _tile('Nudges', badge: '1').evaluate().isNotEmpty);
+    expect(_tile('Nudges', badge: '1'), findsOneWidget);
     expect(_shows('Nudge:'), isTrue);
 
     await _tapWhenEnabled(tester, 'Confirm');
@@ -122,7 +127,7 @@ void main() {
     expect(_shows('"Silence!"'), isTrue);
     expect(_shows('land blank this round'), isTrue);
     // The Silence shows over the round, next to the nudges left.
-    expect(find.text('Silence'), findsWidgets);
+    expect(_tile('Silence'), findsWidgets);
     await tester.pump(const Duration(seconds: 3));
   });
 }
