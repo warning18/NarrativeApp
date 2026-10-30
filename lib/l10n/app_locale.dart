@@ -5,8 +5,8 @@ enum AppLanguage { en, fr }
 
 const String _languagePrefsKey = 'app_language';
 
-class AppLanguageNotifier extends StateNotifier<AppLanguage> {
-  AppLanguageNotifier() : super(AppLanguage.en) {
+class _AppLanguageNotifier extends StateNotifier<AppLanguage> {
+  _AppLanguageNotifier() : super(AppLanguage.en) {
     _load();
   }
 
@@ -24,5 +24,5 @@ class AppLanguageNotifier extends StateNotifier<AppLanguage> {
 }
 
 final appLanguageProvider =
-    StateNotifierProvider<AppLanguageNotifier, AppLanguage>(
-        (ref) => AppLanguageNotifier());
+    StateNotifierProvider<_AppLanguageNotifier, AppLanguage>(
+        (ref) => _AppLanguageNotifier());

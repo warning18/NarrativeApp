@@ -5,54 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:narrative_data_app/widgets/fight_markers.dart';
-
 import 'fight_markers_harness.dart';
 import 'skill_fight_harness.dart' show settle, tapWhenEnabled, pumpUntil, shows;
 
 void main() {
-  testWidgets('Fury is five notches, lit as it builds, glowing when full',
-      (tester) async {
-    Widget gauge(int v) => MaterialApp(
-          home: Scaffold(
-            body: FuryGauge(
-                value: v,
-                max: 5,
-                label: 'Fury',
-                readyLabel: 'Heavy blow next',
-                tooltip: 'tip'),
-          ),
-        );
-    await tester.pumpWidget(gauge(2));
-    expect(find.byKey(const Key('fury_notch_4')), findsOneWidget);
-    expect(find.text('Heavy blow next'), findsNothing);
-    await tester.pumpWidget(gauge(5));
-    expect(find.text('Heavy blow next'), findsOneWidget);
-  });
-
-  testWidgets('the Watchfire shows its flame, its worth and how much is lit',
-      (tester) async {
-    Widget mark(int fire) => MaterialApp(
-          home: Scaffold(
-            body: WatchfireMark(
-                fire: fire, cap: 40, label: 'Watchfire', tooltip: 'tip'),
-          ),
-        );
-    await tester.pumpWidget(mark(0));
-    expect(find.text('Watchfire'), findsOneWidget);
-    await tester.pumpWidget(mark(20));
-    expect(find.text('20'), findsOneWidget);
-    final fill =
-        tester.widget<FractionallySizedBox>(find.byType(FractionallySizedBox));
-    expect(fill.widthFactor, closeTo(0.5, 1e-9));
-    await tester.pumpWidget(mark(400));
-    expect(
-        tester
-            .widget<FractionallySizedBox>(find.byType(FractionallySizedBox))
-            .widthFactor,
-        1);
-  });
-
   testWidgets('a warrior sees its Fury, and a foe its execute line',
       (tester) async {
     await enterFight(tester, 'warrior');

@@ -45,6 +45,10 @@ const Map<String, String> dieArtNotes = {
   'gambler_die': 'suits and red pips',
   'hound_die': 'a paw print in her white',
   'tally_die': 'tally marks, the fifth across',
+  // The clans' new dice (Core, clan_dice.dart): placeholders until UX's.
+  'lantern_die': 'a lantern flame',
+  'cinder_die': 'embers rising',
+  'court_die': 'a drop of poison',
 };
 
 /// Whether die [id] has art to draw (the plain first die has none).
@@ -457,6 +461,16 @@ void paintDieArt(
       ]) {
         canvas.drawCircle(p, 0.065, fill(paw));
       }
+    case 'lantern_die': // a lantern flame (placeholder)
+      canvas.drawRect(const Rect.fromLTWH(-0.1, -1.2, 0.2, 0.25),
+          fill(const Color(0xFFF2C14E)));
+      flame(0, -1.2, 0.18, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
+    case 'cinder_die': // embers rising (placeholder)
+      flame(0, -1.1, 0.2, const Color(0xFFFF6A1F), const Color(0xFFFFC07A));
+      drop(0.45, -0.2, 0.05, const Color(0xFFFF8A3D));
+      drop(-0.4, -0.4, 0.04, const Color(0xFFFF8A3D));
+    case 'court_die': // a drop of poison (placeholder)
+      drop(0.5, 0.0, 0.08, const Color(0xFF9FD8A6));
     case 'tally_die': // tally marks, the fifth across
       for (var i = 0; i < 4; i++) {
         canvas.drawLine(
