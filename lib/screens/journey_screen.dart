@@ -79,6 +79,7 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/town_service_sheet.dart';
 import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
+import '../widgets/scene_stage.dart';
 import '../widgets/scene_vignette.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/prologue_opening.dart';
@@ -1243,15 +1244,34 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// panel, UX's in-place choices): for a scene whose choices a panel shows
   /// (not a hub, not the stage), when it has someone it faces or a question.
   Widget? _vignetteFor(StoryNode node, List<_Step> steps, StoryData story,
-      Geography world, bool french) {
+      Geography world, bool french,
+      {_Step? picked}) {
     if (_isHub(steps) || !steps.any((s) => s.onCard)) return null;
     final mode = sceneChoiceMode(node,
         story: story,
         geography: world,
-        choices: [for (final s in steps) s.choice]);
-    if (mode != SceneChoiceMode.panel) return null;
+        choices: [for (final s in steps) s.choice],
+        hasSprite: sceneHasSprite);
     final prompt = node.promptFor(french);
     final faced = _facedOf(node.facing, french);
+    if (mode == SceneChoiceMode.stage && faced != null) {
+      // A fight facing someone with a sprite: the stage; the picked choice
+      // speaks in a balloon, and the door shows where it leads.
+      final door = picked == null
+          ? null
+          : doorOf(node, picked.choice,
+              story: story, geography: world, shape: picked.shape);
+      final doorLabel = door == null ? '' : doorName(door, french: french);
+      return SceneStage(
+        foeId: node.facing,
+        foeName: faced.name,
+        prompt: prompt,
+        balloon: picked?.choice.replyFor(french) ?? '',
+        doorName: doorLabel,
+        doorLit: doorLabel.isNotEmpty,
+      );
+    }
+    if (mode != SceneChoiceMode.panel) return null;
     if (prompt.isEmpty && faced == null) return null;
     final onCard = steps.where((s) => s.onCard).toList();
     // Four choices, or a long one: the vignette folds to a line.
@@ -2239,7 +2259,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         story,
                         shrinkWrap: true,
                         all: locked || held,
-                        lead: _vignetteFor(node, steps, story, world, french)),
+                        lead: _vignetteFor(node, steps, story, world, french,
+                            picked:
+                                locked || held ? null : _pickedCard(selected))),
                   ),
                 ],
               ],
@@ -3181,7 +3203,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   steps, _pickedCard(selected), french, story,
                                   shrinkWrap: true,
                                   lead: _vignetteFor(
-                                      node, steps, story, world, french)),
+                                      node, steps, story, world, french,
+                                      picked: _pickedCard(selected))),
                             ),
                           ],
                         ],
