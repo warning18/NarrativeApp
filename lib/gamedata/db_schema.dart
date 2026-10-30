@@ -1116,6 +1116,11 @@ final DbSchema diceSchema = DbSchema(
           'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions, keywords: $_faceKeywordOptions}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+      key: 'clan',
+      label: 'Clan (the main clan that gives it, from Trusted; empty = none)',
+      type: FieldType.text,
+    ),
     _visualAssetFieldSchema('dice'),
   ],
 );
