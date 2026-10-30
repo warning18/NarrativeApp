@@ -636,6 +636,7 @@ extension _FightBoardView on _FightScreenState {
         Expanded(
           child: FightBoardSurface(
             stage: _stage,
+            event: _buildBoardEvent(),
             child: LayoutBuilder(
               builder: (context, box) {
                 final size = Size(box.maxWidth, box.maxHeight);

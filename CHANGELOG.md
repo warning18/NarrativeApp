@@ -16,6 +16,14 @@ isn't reconstructable from git history alone.
   speaks of bunks, a second mess table and a company rested and ready to hold
   the line, instead of "room enough for one more pair of hands at your back".
   Wording only: no key renamed, no number changed.
+## [1.671.0+707]
+
+- The fight's weather now falls over the whole screen, cards and board
+  included, and takes no touch. An anomaly (an earth break, a storm, a
+  glare) now plays on the dice board alone, clipped to it, under the dice.
+  The ground behind the screen keeps only the scenery, the night and the
+  lamps.
+
 ## [1.670.0+706]
 
 - "Qui combat ?": with more companions able to fight than the two seats, the
