@@ -20,6 +20,17 @@ isn't reconstructable from git history alone.
   opens the full log. The freed height goes to the dice board. Edit mode
   keeps the log block.
 
+## [1.684.0+720]
+
+- The clans' dice wear their clan. The Lantern, Cinder and Court dice have
+  their own art (a hanging lantern, a banked coal with embers, a poisoned
+  cup) in place of the placeholders. In the dice bag (the inventory and
+  the dice screen) a clan die shows its clan's flag, "<Clan>'s gift" and
+  its Resonance: "+1 to faces up to 3", or asleep with the reason (not
+  your main clan, or below Friend). In a fight the hero's clan die wears
+  a small star on its corner: gold when the Resonance is lit, grey when
+  it sleeps, with a tip.
+
 ## [1.680.0+716]
 
 - **Core: the in-place choices' state (UX-2 builds the panel and the

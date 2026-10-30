@@ -817,6 +817,29 @@ extension _FightView on _FightScreenState {
                         size: 12,
                         color: accent),
                   ),
+                // A clan die's Resonance: lit (gold) or asleep (grey).
+                if (actor.isPlayer &&
+                    !spinning &&
+                    _dieResonance != Resonance.none)
+                  Positioned(
+                    left: 2,
+                    top: 2,
+                    child: Tooltip(
+                      key: Key(_dieResonance == Resonance.lit
+                          ? 'die_resonance_lit'
+                          : 'die_resonance_asleep'),
+                      message: tr(
+                          ref,
+                          _dieResonance == Resonance.lit
+                              ? 'resonance_lit_tip'
+                              : 'resonance_asleep_tip'),
+                      child: Icon(Icons.auto_awesome,
+                          size: 14,
+                          color: _dieResonance == Resonance.lit
+                              ? const Color(0xFFF2C14E)
+                              : Colors.white38),
+                    ),
+                  ),
                 // The hero's profession core on the die: Flurry doubles an
                 // attack face; the Trail shows the face coming next.
                 if (actor.isPlayer &&
