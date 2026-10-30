@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.685.0+721]
+
+- The fight's top strip takes one row instead of three: the goal, the
+  weather, an anomaly, the momentum, the luck nudges, a hex, a silence, the
+  Tide and the place's rule are small icon tiles (a number at the corner
+  for the turns left or the count), as the effects on the cards are, and
+  each opens its explanation on a tap. The round is a tile of its own.
+- In play mode the log block above the Roll bar is gone: a history icon at
+  the end of the strip (with an orange dot while there are unread lines)
+  opens the full log. The freed height goes to the dice board. Edit mode
+  keeps the log block.
+
 ## [1.684.0+720]
 
 - The clans' dice wear their clan. The Lantern, Cinder and Court dice have

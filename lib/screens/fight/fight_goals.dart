@@ -229,11 +229,10 @@ extension _FightGoals on _FightScreenState {
         if (!_goal.isSlay)
           _telegraphChip(
             _goalIcon,
-            _goal.kind == FightGoalKind.hold
-                ? tr(ref, 'goal_chip_hold')
-                    .replaceAll('{r}', '${min(_roundsStarted, _goal.rounds)}')
-                    .replaceAll('{n}', '${_goal.rounds}')
-                : _goalName(),
+            _goalName(),
+            badge: _goal.kind == FightGoalKind.hold
+                ? '${min(_roundsStarted, _goal.rounds)}/${_goal.rounds}'
+                : null,
             tip: _goalText(),
           ),
         if (_doctrine != null)
