@@ -24,6 +24,16 @@ isn't reconstructable from git history alone.
   - The story editor kept dropping `reply` / `reply_fr` when a choice was saved;
     it now carries them through (two lines in `story_node_editor_screen.dart`).
 
+## [1.689.0+725]
+
+- **Core: the simulator's competent player trials a die before it switches.**
+  - Its die valuation overrated some dice (the clan, vigil and ossuary dice).
+    It now plays 12 trial fights with the new die against its next foes and
+    keeps it only if it wins more, or as many with more health left. A die
+    that fails is not tried again at the same level.
+  - Fights lost over 50 competent runs: 11.45% → 8.56%.
+  - Simulator only; nothing changes in the game.
+
 ## [1.688.0+724]
 
 - **Core: the scene backgrounds' rules (UX drew the eight new stages in
@@ -99,6 +109,7 @@ isn't reconstructable from git history alone.
   - A choice's optional `reply` / `reply_fr`: what the hero says aloud
     taking it; `replyFor` falls back to the choice's text. Narrative fills
     it in.
+
 ## [1.679.0+715]
 
 - The dice of a fight are thrown slower: the throw takes 1.4 s instead of
@@ -155,6 +166,7 @@ isn't reconstructable from git history alone.
   speaks of bunks, a second mess table and a company rested and ready to hold
   the line, instead of "room enough for one more pair of hands at your back".
   Wording only: no key renamed, no number changed.
+
 ## [1.671.0+707]
 
 - The fight's weather now falls over the whole screen, cards and board
@@ -183,6 +195,7 @@ isn't reconstructable from git history alone.
     default, for that fight only.
   - Saves with three seated keep the first two; the third goes to the
     bench, still recruited. Nobody is lost.
+
 ## [1.666.0+702]
 
 - **Combat redesign: fixed slots, heads, effect icons, a dice board, pick then keep**
@@ -288,6 +301,7 @@ isn't reconstructable from git history alone.
     Wording only, no key renamed, no plural code. Roads and draws are never 1.
   - `test/road_wards_test.dart`: the pinned line follows, and a guard checks
     that a cost of 1 never reads "1 charges" in either language.
+
 ## [1.657.0+693]
 
 - **Fix: the opening animation now shows on a new game's first page**
@@ -455,6 +469,7 @@ isn't reconstructable from git history alone.
   - Touches Core's files in a few lines: the scene's building in
     `city_plans.json`, its place in `lib/data/world_map.dart`, and the map's
     scene count in `test/world_map_test.dart` (69 to 70).
+
 ## [1.641.0+677]
 
 - **Dice: every die has its own art**
@@ -564,6 +579,7 @@ isn't reconstructable from git history alone.
     person in `names_throne` and `price_kindly`, a clearer "marked by the
     rift" in the four journey endings (`7005` and its variants), and the
     Candlehold gate line in the `7400` callbacks.
+
 ## [1.630.0+666]
 
 - **Core: a guarded seat is never attacked** (wave 18 step 2, the user's
@@ -623,6 +639,7 @@ isn't reconstructable from git history alone.
     the rhythm more than the length.
   - Tests: none changed; two tests that pin phrases (`story_direction_test`)
     keep their phrases.
+
 ## [1.624.0+660]
 
 - **Cleanup: 6 unused symbols removed from UX's files**
@@ -667,6 +684,7 @@ isn't reconstructable from git history alone.
     Gate hub, where "Take up the Ashen Oath" is always offered.
   - Touches another session's area: `lib/data/district_attacks.dart` and
     `geography.json` (wording only; no choice, number or key changed).
+
 ## [1.620.0+656]
 
 - **Narrative: the Weaver's Alley is out of chapter 1** (the opening run is shorter).
@@ -688,6 +706,7 @@ isn't reconstructable from git history alone.
     `first_journey_test` follow the one-way route (the District-view
     walk-to-pin test that used the alley is dropped: `district_walk_test`
     covers the walk).
+
 ## [1.619.0+655]
 
 - **UX: the Skills tab's tree is a sky of constellations** (the user's pick,
@@ -715,6 +734,7 @@ isn't reconstructable from git history alone.
   `skill_tree_test.dart` follows the sky (the clan is read on the
   constellation, not under each skill). Pictures:
   `docs/ux-shots/star-chart/`.
+
 ## [1.618.0+654]
 
 - **Core: the big towns, influence that pays off, clan roads, the
@@ -897,6 +917,7 @@ isn't reconstructable from git history alone.
   `ux_fight_stage_narrow_test.dart`; `ux_fight_enemy_test.dart` and
   `ux_fight_enemy_none_test.dart` follow the boxes. Pictures:
   `docs/ux-shots/fight-built/`.
+
 ## [1.611.0+647]
 
 - **UX: fixes from the chapter 1 reviews.**
@@ -922,6 +943,7 @@ isn't reconstructable from git history alone.
   `character_start_test.dart` (every starting skill has a French name),
   `forge_sheet_view_test.dart` (the hut's offer: reroll, let it stand, no hut).
   Picture: `docs/ux-shots/fixes-611/`.
+
 ## [1.610.0+646]
 
 - **Narrative: the chapter 1 fixes from the review** (notes #581 and #584).
@@ -948,6 +970,7 @@ isn't reconstructable from git history alone.
   - Tests: `chapter_one_test` (the failed boardings, the Vica and Vess
     checks); the naive run's choice hash is re-pinned in `sim_competent_test`
     and `sim_companions_test` (the tuple is unchanged).
+
 ## [1.609.0+645]
 
 - **Core: less work per frame** (docs/qa/chapter1-core.md, C1–C3). Behaviour
@@ -1533,6 +1556,7 @@ A street-view kit for scenes played outside a building, the room kits' counterpa
 
 ### Touches another session's area
 - `lib/screens/journey_screen.dart` (`_CityDistrictView`: an optional `street` building, the street scene in place of the plan's picture when set, and the pin builder; about 40 lines, the rest of the diff is the formatter re-indenting the plan view).
+
 ## [1.543.0+579]
 
 The story reader: the echoed lines are prose, and the text writes itself out more slowly.
@@ -1657,6 +1681,7 @@ Wave 17 UX, item 2: the sea fight's entrance and its spoils, on Core's `shipHasE
 
 ### Touches another session's area
 - `lib/screens/voyage_screen.dart` (shared): the card around the battle panel, the spoils state and strip (about 70 lines). `ship_battle_panel.dart` is not touched.
+
 ## [1.527.0+563]
 
 Camp errands: a scene can be offered from whichever chapter camp the party is at, and bring the party back to it. Nothing changes on screen until Narrative's loyalty scenes use it.
@@ -1887,6 +1912,7 @@ Wave 16 UX, item 1: one set of parts for the small sheets.
 - **Shared sheet parts.** The camp's build sheet, the town's service sheet and the temple rows now share a header (icon, title, one italic line), a row (icon, title with an optional small label, price, lines), a price chip and a button pair (`lib/widgets/sheet_kit.dart`), so a wrap bug on a 320 px phone is fixed once.
 - **Temple rows.** The price is a gold chip on the line under the name (it was a "75 gold" text line); a row that cannot be bought says why, as before.
 - **Camp build sheet.** A house you can build names its cost in the sheet (the same chips as its card) and the main button carries the price ("Build · 280 G").
+
 ## [1.501.0+537]
 
 Chapter 2 gets a little easier, closer to the difficulty curve.
@@ -1934,6 +1960,7 @@ Wave 14 remainder: the player can take the camera during a move.
 
 ### Changed
 - **Journey, the move on the world chart.** Dragging, pinching, or pressing the zoom or pole buttons while the party walks takes the camera: it stops following and stays where the player put it for the rest of the move. The recentre button lights while the camera is the player's, and tapping it gives the camera back to the party.
+
 ## [1.495.0+531]
 
 Wave 15 UX, part 2: towns wear their ruler's colour.
@@ -1947,6 +1974,7 @@ Wave 15 UX, part 2: towns wear their ruler's colour.
 ### Fixed
 - **Offer banner, "The Wayfarer".** The name was cut with an ellipsis at 320 px; it now scales down a little to fit on one line.
 - **Build sheet, gold need.** The gold row's label was a bare "G" above the count, which read as a stray letter at 320 px in French; it now says "Gold" / "Or".
+
 ## [1.494.0+530]
 
 Companions react to the wave 15 moments.
@@ -2002,6 +2030,7 @@ Wave 15 UX, part 1: the risky gift's die and odds, the roll powers as cards.
 ### Changed
 - **Roll powers** (Reroll, Banish, Raise) are small cards with an icon, the name and the charges as pips (then "×N"); dim when they cannot act; Raise shows its progress to the next charge. Behaviour is unchanged.
 - English and French strings for the die dialog (`offer_risky_roll_*`).
+
 ## [1.488.0+524]
 
 The last indoor scenes get their rooms on Core's side.
@@ -2028,6 +2057,7 @@ The story text keeps its room on a small phone.
 
 ### Changed
 - **About four lines of the story on the smallest phone:** QA's L3 found that at 320 x 568 a scene with three choices left one line of the text. The story's window now keeps 150 px (about four lines with the card's header) before the dog's strip and the choices take any more. A screen too short for the dog's strip beside four lines and about two choices goes without the strip and its fold button; the choices scroll in what is left. Taller phones keep the strip. Measured with the app's own fonts at 320 x 568 and 360 x 740, in English and French (`test/ux_story_room_test.dart`): the window was 72 px at 320 x 568 and is now 150 px.
+
 ## [1.485.0+521]
 
 Two bosses brought back to their curve.
@@ -2412,6 +2442,7 @@ The map is for moving: a choice that stays where you are keeps you in the scene,
 
 ### Added
 - Queries for the Journey: a scene's stop, what a choice leads to (stay, map, carried, back to the hub), the main-story scenes (not a hub, not an errand, not a camp) and the services at a place (shops, rests, trainers, ports). How each looks is UX's next step.
+
 ## [1.442.0+478]
 
 The main story's scenes and the hubs have the data the scene view and the arrival sheet read.
@@ -2489,6 +2520,7 @@ Chapter 4 says how strong you should be before you go down.
 
 ### Changed
 - **Chapter 3's side quests pay more XP**, about a fifth more: `q_ch3_marens_penance` 80 → 100, `q_ch3_groshs_price` 65 → 80, `q_ch3_reckoning_wall` 60 → 75, `q_ch3_glass_from_the_terraces` 70 → 85.
+
 ## [1.429.0+465]
 
 The game pushes back after the camp: from chapter 3 on, every profession wins about 70% of its fights within three tries, down from 82–97%. Chapters 1 and 2 stay gentler.
@@ -2513,6 +2545,7 @@ Simulated over 400 runs, by profession:
 - **Chapters 3–8:** 63–73% within three tries, 37–44% on the first try.
 
 Before, it was 82–97% within three tries and 70–84% on the first try, over the whole game. The tables are in `docs/simulation/difficulty-review.md` §6.
+
 ## [1.428.0+464]
 
 ### Added
@@ -2589,6 +2622,7 @@ For the in-place choices, and a difficulty review.
 - **Each choice now carries what its card shows:** its cost in gold (a toll's included), its alignment shift, and where its aftermath takes you. The choices are also grouped for the map's rings: fight; talk and decide; checks and pay; and the ways on.
 - **The story can say who a scene faces, the question it ends on, and what a hub's choice is about** (`facing`, `prompt`, `about`, `aboutLabels`, all optional), for the scene view and the rings.
 - **A difficulty review** (docs/simulation/difficulty-review.md): win rates by profession and chapter, deaths, the bosses' bands and five proposals. Nothing is tuned yet.
+
 ## [1.418.0+454]
 
 The Journey's choices acted out here become cards under the map.
@@ -2637,6 +2671,7 @@ Lysa's fate turns the Dominion's hunt.
   - take her by force, or give her blood to the Shroud, and the Dominion hunts you in earnest: its fighters come more often and join its fights, and Orsolya Keld comes sooner;
   - swear to the Lantern for her, and its hunt is over.
 - **Claimant Tallis and the White Admiral** are a little tougher (405 and 350 health), to keep the late bosses in their bands with Lysa's new scenes.
+
 ## [1.412.0+448]
 
 A won fight closes itself.
@@ -2645,6 +2680,7 @@ A won fight closes itself.
 - **Nothing is skipped:** a level-up, a clan's offer or a hunter's mercy waits for your answer first.
 - **The rewards stay with you:** they open the next scene ("Victory! +47 gold, +87 XP, …"), and the fight log keeps them.
 - A defeat is unchanged.
+
 ## [1.411.0+447]
 
 A clan's power and the land it holds, drawn.
@@ -2941,6 +2977,7 @@ Loyalty has a price (v5.2, step 3): the clans remember who you stand with.
 - **A clan grown cold quiets what it gave you.** Resented or Hostile with a clan, its specialisation plays only every other round, and its sub-clans' gifts and rank II go quiet. Hunted by it, the specialisation sleeps until you win the clan back. The fight log says so as the fight begins.
 - **Your patron's favour cools its rivals, each chapter.** Trusted with a clan, its rivals lose 2 standing at each new chapter. Sworn to it, they lose 4, the clans in tension with it lose 2, and its allies gain 1. Shown in the clan log as "Loyalty's price".
 - **No fight penalty:** loyalty costs shops, offers and gifts from the other side of the map, never your strength. A Dominion loyalist ends a run Hunted by three clans; a Crows loyalist by one. Report: docs/simulation/specialisations.md.
+
 ## [1.368.0+404]
 
 The fight screen shows the new fight-length rules and the professions' cores.
@@ -2965,6 +3002,7 @@ The clans' sub-clans bend your specialisation, and the clan raises it to rank II
 - **Rank II.** Sworn to the clan, it offers rank II of its specialisation (heroic): half again its number.
 - **Everywhere they show:** in the clan offers with the specialisation they bend, in the fight log, in the spoils (the Whisper Ledger's stolen gold) and on the ship (the Brig-Born's Broadside, +15% to the guns).
 - **Balance:** each measured against its specialisation alone in 60 simulated runs; the strongest, One Witness, Once (the Tribunal), now refills a third of the Well from the fourth round. The boss curve holds. Report: docs/simulation/specialisations.md.
+
 ## [1.365.0+401]
 
 The gifts say what they do.
@@ -3023,6 +3061,7 @@ The map reads on a phone, zooming out lands on the sphere, and the camp's buildi
 - **The Journey's district is board 15's.** In a city Core has stored a plan for (Saltmouth today), the District view is the city chart framed on the party's district, with a numbered pin on the building of each way; under it the ways as numbered rows (a tap opens the way's sheet with Go), and "Walk on" chips to the other districts. The Town view is the whole city with the districts under fog and their rows. Other cities keep the generated plan.
 - **The Journey map climbs district → town → world.** Zooming out from a district shows the whole town (all its districts) before the world; zooming in from the world comes back through the town. Three small tab buttons on the map (District, Town, World; Quartier, Ville, Monde) jump to a level in one tap; the Town tab is dimmed where the place has no city plan, and a + under the town view returns to the district.
 - **Camp buildings: tabs and filters.** Houses and Additions are tabs (with counts); filters keep what is ready, what the gold and the pack can pay for, what stands, and (for houses) a category. An empty result offers a way back. Each card carries a "built / limit" slot (Core's `WorkLimit`).
+
 ## [1.357.0+393]
 
 The new districts have their own voices.
@@ -3182,6 +3221,7 @@ The written expeditions, balanced.
 
 ### Added
 - Expedition steps for the five escort and delivery expeditions (data; Core's engine plays them): the Salt Road, Fever-Bark for the Wall, the Bell Road, the Ember Run and the Lantern Train, eight to ten stages each, English and French. `assets/gamedata/expedition_steps.json` now holds sixteen written zones.
+
 ## [1.334.0+370]
 
 The level-up offer reads as three ways to grow.
@@ -3202,6 +3242,7 @@ No hero starts with negative armour.
 
 ### Added
 - Expedition steps for four more tier-2 expeditions (data; Core's engine plays them): the Drowned Stair, the Dead Heart Approach, the Glass Strand and the Frost Quarry, nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds eleven written zones.
+
 ## [1.331.0+367]
 
 The clan offer: banners, a compass, then the picked clan's words.
@@ -3224,6 +3265,7 @@ The clans say what they stand for.
 
 ### Added
 - Expedition steps for four tier-2 expeditions (data only; Core's engine plays them): Lantern Docks, Cinder Row, the Exorcists’ Road and the Changeling Fen, eight or nine steps each, English and French. `assets/gamedata/expedition_steps.json` now holds seven written zones.
+
 ## [1.327.0+363]
 
 Detours and expeditions fit where they happen.
@@ -3246,6 +3288,7 @@ The Skillwright's bench shows what it fuses.
 
 ### Added
 - Detours and expeditions that fit their place (first batch, data only; the engine reads it in Core's coming PR): `assets/gamedata/expedition_steps.json` with six steps each for the three tier-1 expeditions (Fisherman’s Row, Tanner’s Court, the Ossuary Galleries), and `assets/gamedata/detours.json` with the tear shore and frost-city pools (six kinds of six lines). English and French.
+
 ## [1.322.0+358]
 
 A brand's toll reads right.
@@ -3581,6 +3624,7 @@ One apostrophe for the whole game's descriptions.
   left alone for a later pass, so nothing a test or a save matches on
   changes. The jungle biome text from #207 was read and needs no change.
   Text only; no ids, numbers or flags changed.
+
 ## [1.287.0+323]
 
 Groundwork: places only heard of, the building screen's data, the skill
@@ -3881,6 +3925,7 @@ The travel map, and a pack of layout fixes.
   the weather line wraps clear of the zoom button.
 - **Chapter 7 camp hub:** the enter-the-place button scrolls in the room it
   has, so a long quest strip no longer overflows it at 320 px.
+
 ## [1.276.0+312]
 
 The empty lands of the story chart have names.
@@ -4293,6 +4338,7 @@ The UX polish proposed in the design-system review.
 - **The standing meter moves.** When a standing changes the tick slides to its
   new place over 600 ms and the stretch it crossed glows gold for a gain, red
   for a loss, and fades.
+
 ## [1.256.0+292]
 
 A way out of a place leaves by its road, and says which.
@@ -4388,6 +4434,7 @@ Twenty new skills, and the rules they needed.
 ### Changed
 - The new skills that only shield, heal or control have a damage multiplier of 0, so they do not also strike for the caster's base damage.
 - Windwalker gives a free reroll next round rather than a second action, and Bastion Slam draws its extra damage from the armor you wear rather than from the shield you hold; both read from the same rules as the others.
+
 ## [1.247.0+283]
 
 The world's fixed roads: the groundwork for a map where the party only takes roads.
@@ -5218,6 +5265,7 @@ together, or one at Trusted, can put a stronger skill on the table.
   (story_state.dart) composes the state. `chartCalqueProvider` keeps the
   calque. The `world_map_shape_*` names are now The Two Shores, The Ring,
   The River & the Frost.
+
 ## [1.198.1+230]
 
 ### Fixed
@@ -6751,6 +6799,7 @@ pass, travellers return, and the last chapters build to set pieces.
   order: an alignment event, a familiar face (25%), then a detour.
 - **Retreat costs more.** Running from a fight now costs a fifth of your
   gold (was 15%) and a potion, if you carry one.
+
 ## [1.183.1+215] (main)
 
 ### Removed
