@@ -117,10 +117,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     });
     ref.listen<bool>(combatActiveProvider, (previous, next) {
       // A goal reached in the fight completes once it is over.
-      if (previous == true && !next) {
+      if ((previous ?? false) && !next) {
         WidgetsBinding.instance.addPostFrameCallback((_) => _settleQuests());
       }
-      if (previous == true && !next && ref.read(hostMusteredNoticeProvider)) {
+      if ((previous ?? false) &&
+          !next &&
+          ref.read(hostMusteredNoticeProvider)) {
         _showMusteredHost();
       }
     });

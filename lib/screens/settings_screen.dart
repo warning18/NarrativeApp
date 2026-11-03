@@ -854,7 +854,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       await _downloadAndInstall(info);
     }
   }

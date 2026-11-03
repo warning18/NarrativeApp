@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.705.0+741]
+
+- **Cleanup: nine more lints on, and the unused `cupertino_icons` package
+  dropped.** `use_if_null_to_convert_nulls_to_bools`,
+  `noop_primitive_operations`, `use_named_constants`,
+  `unnecessary_raw_strings`, `use_decorated_box`, `sort_pub_dependencies`,
+  `avoid_bool_literals_in_conditional_expressions`,
+  `prefer_const_literals_to_create_immutables` and
+  `avoid_unused_constructor_parameters` are enabled and fixed at about 100
+  sites in 64 files. Nothing changes on screen or in a number; the one
+  unused constructor parameter of the ship side view's palette is gone.
+
 ## [1.702.0+738]
 
 - **Core: the top bar's world map waits while the page holds the party.**

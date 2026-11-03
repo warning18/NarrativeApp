@@ -27,7 +27,7 @@ void main() {
         expect(en.length, lessThanOrEqualTo(60), reason: '${entry.key}: $en');
         expect(fr.length, lessThanOrEqualTo(60), reason: '${entry.key}: $fr');
         // French: a no-break space before a colon or semicolon.
-        expect(RegExp(r'[^ ][:;!?]').hasMatch(fr), isFalse,
+        expect(RegExp('[^ ][:;!?]').hasMatch(fr), isFalse,
             reason: '${entry.key}: $fr');
       }
     });

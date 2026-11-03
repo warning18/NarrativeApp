@@ -332,9 +332,8 @@ extension _FightRewards on _FightScreenState {
             hpAfter: min(member.maxHealth,
                 hpAfter + _signs.afterFightHeal(member.maxHealth)));
       }
-      final newlyUnlockedAchievement = anyAllyRevived
-          ? await notifier.unlockAchievement('ally_revival')
-          : false;
+      final newlyUnlockedAchievement =
+          anyAllyRevived && await notifier.unlockAchievement('ally_revival');
       // What the player chose in the chest: put gear on straight away and
       // drink potions (a level-up already healed fully, so a potion picked
       // then is kept instead of wasted).
