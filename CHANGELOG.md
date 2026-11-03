@@ -18,6 +18,16 @@ isn't reconstructable from git history alone.
   each ending still names what the player chose. French rewritten with the
   English. Flags and conditions unchanged.
 
+## [1.716.0+752]
+
+- **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
+  batch).** Nineteen labels in the Smugglers' Wharf hub (`2015`), the
+  last-choice page (`7004`) and the Hollow Court hub (`5010`) are tightened to
+  about 46 characters, English and French, with the same meaning and tone;
+  the longest drops from 54 to 47 in English and from 71 to 57 in French.
+  Labels only: no choice, flag, id, condition or number changes. No test or
+  code pinned any of them.
+
 ## [1.715.0+751]
 
 - **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
@@ -391,8 +401,6 @@ isn't reconstructable from git history alone.
   the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
-
-
 
 ## [1.665.0+701]
 
@@ -10939,8 +10947,6 @@ undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
   neither has any other unlock point in the story graph, so removing them
   would have made those shops permanently unobtainable.
 
-
-
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start
 and another available from the very first chapter.
@@ -11853,7 +11859,6 @@ Chapter 3-5 branching still falls well short of Chapter 1's — closing that gap
 
 ### Changed
 - Quest/item/skill/dice detail dialogs now render their flavor-text description with larger text and more generous line spacing, matching how the main story narration is styled, instead of the dialog's cramped default text style.
-
 
 ### Added
 - Copy button for the Playthrough Simulator's batch summary (previously only individual runs and the Gemini analysis could be copied — batches only had Export).
