@@ -25,6 +25,9 @@ import 'support/pump.dart';
 
 Future<void> _enter(WidgetTester tester) async {
   SharedPreferences.setMockInitialValues({
+    // The dice thrown at 4x: the tests wait a quarter of the throw (the
+    // default speed is proven by dice_speed_test).
+    'combat_dice_speed': 'quad',
     'gamedb_dice': jsonEncode({
       ...gamedata('dice.json'),
       'board_die': {
