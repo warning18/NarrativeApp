@@ -21,7 +21,7 @@ Section 4 folds in the cleanup plan's waves 3c, 4 and 5 (`docs/qa/code-cleanup-p
 | 2 | R1 delete the two editor-only tables (`gates`, `adventure_nodes`) | − | S | low | nothing |
 | 3 | R2 delete the three enemy move thresholds (always 0) | − | S | low | nothing (the editor loses three fields that do nothing) |
 | 4 | P1 the fight stops saving and rebuilding the app on every mana gain | ⚡ | M | medium | smoother fights; fewer storage writes |
-| 5 | P5 cap the standing log at 100, leave default fields out of the save | ⚡ | S | low | smaller save (late game 13.7 KB, growing to ~80 KB); slightly faster load |
+| 5 | ~~P5 cap the standing log, leave default fields out of the save~~ **not done** (see P5 below) | ⚡ | | | |
 | 6 | P3 parse the story and the city plans off the main thread | ⚡ | S | low | about 80 ms less on the first Journey frame |
 | 7 | B1 why the competent player keeps the starter die (30/50) | ⚖ | M | n/a (investigation) | none until fixed; then dice worth taking |
 | 8 | B2 nine of 14 shops never found in the simulator | ⚖ | S (look) | n/a | none until settled |
@@ -87,6 +87,19 @@ A seeded run (dwarf warrior, seed 7) played to chapter 7 in 111 steps gives a 13
   - cap the standing log at 100 (check what UX's history view shows; it reads the last entries);
   - leave default-valued fields out of `toJson` (`fromJson` already defaults them).
 - **Risk:** low; a save test round-trips a full session.
+
+**P5: not done, and why (decided v1.712; don't propose it again without solving both).**
+- **Leaving default fields out of the save is unsafe.** `PlayerSession.fromJson` treats a missing key as a migration marker:
+  - a save without `enemyKillCounts` grandfathers every active quest ("must never repeat it");
+  - one without `saveVersion` gets the legacy materials;
+  - `rescaledSave`, `resizedDiceSave` and `legacyHarbourDue` key on missing fields too.
+
+  Omitting a default value (an empty `enemyKillCounts` is the usual case) would re-run a migration on the next load, for about 1 KB.
+- **Capping the standing log changes what the player sees:**
+  - the epilogue's "how" (`epilogue.dart:98`) comes from the last territory entry for the ruling clan;
+  - the clans screen's Evolution chart (`standingHistory`) draws the whole log.
+
+  The cap is also rarely reached: the seeded run had 27 entries by chapter 7. The 80 KB above is the 500-entry ceiling, not a measured save (real late-game saves are about 14 KB).
 
 ### P6 [⚡] Small repeated parses
 - `loadPlacePools` and `loadDetourScenes` (`place_pools_provider.dart:14,17`) reparse on each detour, 1.0 + 1.3 ms; `placePoolsProvider` already caches the first.
