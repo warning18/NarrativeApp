@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -98,7 +97,6 @@ import '../providers/geography_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/place_pools_provider.dart';
-import '../providers/settings_providers.dart';
 import '../providers/training_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/clans_provider.dart' show loadClanData;
@@ -3996,9 +3994,6 @@ class _BatchCard extends ConsumerStatefulWidget {
 }
 
 class _BatchCardState extends ConsumerState<_BatchCard> {
-  bool _analyzing = false;
-  String? _analysisText;
-  String? _analysisError;
   late bool _expanded = widget.initiallyExpanded;
   bool _showAllRuns = false;
 
@@ -4027,68 +4022,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
 
   bool get _filterActive =>
       _endingFilter != null || _onlyStepCapFilter || _minChapterFilter != null;
-
-  /// Compiles this batch's stats into a plain-text summary Gemini can
-  /// reason over — the same numbers already shown in the card (respecting
-  /// the current filter), plus the full transcript for a single run.
-  String _buildPrompt(AppLanguage lang, List<_SimResult> results) {
-    final strategyLabel = trFor(lang, _strategyLabelKey(widget.batch.strategy));
-    final b = StringBuffer()
-      ..writeln(
-        'You are a narrative game designer reviewing simulated playthroughs of a dark-fantasy '
-        'interactive-fiction app. Below is aggregate data from an automated simulator that plays '
-        'the story graph choosing among valid choices per a fixed strategy.',
-      )
-      ..writeln()
-      ..writeln(
-          _batchSummaryText(strategyLabel, results, spells: widget.spells));
-    final single = results.length == 1 ? results.single : null;
-    if (single != null) {
-      b
-        ..writeln()
-        ..writeln('Full node path for this run: ${single.path.join(' -> ')}');
-    }
-    b
-      ..writeln()
-      ..writeln(
-        'Based on this data, provide: (1) a short summary of what this run reveals about the '
-        'player\'s experience, (2) any issues you notice (repetitive endings, dead ends, '
-        'pacing or balance problems, a strategy that trivially dominates, a chapter that\'s '
-        'thin or overloaded compared to the others), and (3) concrete, specific suggestions '
-        'for updates to particular story nodes to improve the story. Be concise.',
-      );
-    return b.toString();
-  }
-
-  Future<void> _analyze() async {
-    final apiKey = ref.read(apiKeyProvider);
-    final lang = ref.read(appLanguageProvider);
-    if (apiKey == null || apiKey.isEmpty) {
-      setState(() => _analysisError = trFor(lang, 'add_api_key_first'));
-      return;
-    }
-    final results = _filteredResults;
-    if (results.isEmpty) return;
-    setState(() {
-      _analyzing = true;
-      _analysisError = null;
-      _analysisText = null;
-    });
-    try {
-      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
-      final response = await model
-          .generateContent([Content.text(_buildPrompt(lang, results))]);
-      if (!mounted) return;
-      setState(() => _analysisText =
-          response.text ?? trFor(lang, 'no_response_generated'));
-    } catch (e) {
-      if (!mounted) return;
-      setState(() =>
-          _analysisError = '${trFor(lang, 'generation_failed_prefix')}: $e');
-    } finally {
-      if (mounted) setState(() => _analyzing = false);
-    }
-  }
 
   Future<void> _viewRun(_SimResult result, int index) async {
     await showModalBottomSheet(
@@ -4546,62 +4479,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       ),
                   ],
                 ),
-                const Divider(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: _analyzing ? null : _analyze,
-                        icon: _analyzing
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.auto_awesome),
-                        label: Text(
-                          _analyzing
-                              ? tr(ref, 'analyzing_label')
-                              : tr(ref, 'analyze_with_gemini_button'),
-                        ),
-                      ),
-                    ),
-                    if (_analysisText != null) ...[
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.copy_outlined),
-                        tooltip: tr(ref, 'copy_button'),
-                        onPressed: () =>
-                            _copyToClipboard(context, ref, _analysisText!),
-                      ),
-                    ],
-                  ],
-                ),
-                if (_analysisError != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      _analysisError!,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
-                    ),
-                  ),
-                if (_analysisText != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: SelectableText(_analysisText!),
-                    ),
-                  ),
                 if (single != null) ...[
                   const Divider(height: 24),
                   _SingleRunDetail(
