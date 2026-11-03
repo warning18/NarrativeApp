@@ -62,7 +62,11 @@ Finder _tile(String label, {String? badge}) => find.byWidgetPredicate(
     (w) => w is FightStatusTile && w.label == label && w.badge == badge);
 
 void main() {
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() => SharedPreferences.setMockInitialValues({
+        // The dice thrown at 4x: the tests wait a quarter of the throw (the
+        // default speed is proven by dice_speed_test).
+        'combat_dice_speed': 'quad',
+      }));
 
   testWidgets('a Luck nudge flips a die; a Silence blanks the next round',
       (tester) async {

@@ -76,6 +76,9 @@ Future<void> playSkillRound(WidgetTester tester, String skillId,
           const MethodChannel('flutter_tts'), (call) async => 1);
   final dice = gamedata('dice.json');
   SharedPreferences.setMockInitialValues({
+    // The dice thrown at 4x: the tests wait a quarter of the throw (the
+    // default speed is proven by dice_speed_test).
+    'combat_dice_speed': 'quad',
     'gamedb_dice': jsonEncode({
       ...dice,
       'skill_test_die': {

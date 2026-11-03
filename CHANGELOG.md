@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.707.0+743]
+## [1.713.0+749]
 
 - **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
   The panel and the stage wrap a label at about 46 characters. Eighteen
@@ -17,6 +17,16 @@ isn't reconstructable from git history alone.
   the longest drops from 54 to 46 characters in English and from 75 to 56 in
   French. Labels only: no choice, flag, id, condition or number changes. No
   test or code pinned any of them.
+
+## [1.710.0+746]
+
+- The fight's ground no longer repaints sixty times a second: the layer
+  behind the fight (the stage, the night, the lamps) has nothing that moves,
+  so it is drawn once, and only the weather and an anomaly keep a clock, and
+  only while they show (an anomaly's ease out included). Nothing changes on
+  screen; the phone does less work during every fight.
+- Tests: the fight tests throw the dice at 4x (the "Dice speed" setting),
+  so they wait a quarter of the throw.
 
 ## [1.702.0+738]
 
