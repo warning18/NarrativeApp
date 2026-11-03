@@ -347,8 +347,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         actions: [
           // Edit Mode maps the story's scenes and paths; play mode shows
           // the world the story has reached, once the game has started
-          // (no map before the hero is made, v1.692).
-          if (isEditMode || !isFreshStoryStart(ref.watch(storyPlayProvider)))
+          // (no map before the hero is made, v1.692) and while the
+          // Journey's page leaves a way to it (v1.697).
+          if (isEditMode ||
+              !isFreshStoryStart(ref.watch(storyPlayProvider)) &&
+                  !ref.watch(journeyMapClosedProvider))
             TutorialTarget(
               id: 'home.map',
               child: IconButton(
