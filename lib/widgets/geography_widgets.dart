@@ -59,7 +59,7 @@ IconData biomeIcon(Biome biome) => switch (biome.pattern) {
 IconData hazardIcon(BiomeHazard hazard) {
   final words = '${hazard.id} ${hazard.name}'
       .toLowerCase()
-      .split(RegExp(r'[^a-z]+'))
+      .split(RegExp('[^a-z]+'))
       .where((w) => w.isNotEmpty)
       .toList();
   bool has(List<String> starts) =>

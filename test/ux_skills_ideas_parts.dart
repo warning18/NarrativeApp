@@ -383,7 +383,7 @@ class HandAndDecks extends ConsumerWidget {
       final hand = <SkillEntry>[
         for (final b in bs)
           for (final id in b.branch.skillIds)
-            if (model[id]?.known == true) model[id]!,
+            if (model[id]?.known ?? false) model[id]!,
       ];
       return ListView(padding: EdgeInsets.zero, children: [
         AStrip(model: model),

@@ -76,7 +76,7 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
         ],
       ),
     );
-    if (confirmed == true) await _reset();
+    if (confirmed ?? false) await _reset();
   }
 
   Future<void> _reset() async {

@@ -192,7 +192,7 @@ int facesCastingSkill(
   for (var i = 0; i < faces.length; i++) {
     if (i == exceptIndex) continue;
     final counted = kept[i.toString()] ??
-        (assignments[i.toString()]?.isNotEmpty == true &&
+        ((assignments[i.toString()]?.isNotEmpty ?? false) &&
                 isAssignableFace(faces[i])
             ? null
             : _ownCountedSkill(faces[i]));

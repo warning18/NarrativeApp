@@ -262,7 +262,7 @@ String detourOutcomeNote(StepOutcome outcome,
   String pick(String en, String fr) => french && fr.isNotEmpty ? fr : en;
   return [
     pick(outcome.note, outcome.noteFr),
-    if (passed == true) pick(outcome.successNote, outcome.successNoteFr),
+    if (passed ?? false) pick(outcome.successNote, outcome.successNoteFr),
     if (passed == false) pick(outcome.failNote, outcome.failNoteFr),
   ].where((line) => line.isNotEmpty).join(' ');
 }

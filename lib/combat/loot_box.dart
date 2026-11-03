@@ -334,7 +334,7 @@ Set<String> gearRaritiesFor(ChestTier tier, {bool rareOnly = false}) {
 }
 
 String _rarityOf(Map<String, dynamic> item) =>
-    item['rarity']?.toString().isNotEmpty == true
+    item['rarity']?.toString().isNotEmpty ?? false
         ? item['rarity'].toString()
         : 'Common';
 

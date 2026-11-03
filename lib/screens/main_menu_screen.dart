@@ -288,7 +288,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                                   final loaded = await showSaveSlotsSheet(
                                       context,
                                       saving: false);
-                                  if (loaded == true && context.mounted) {
+                                  if ((loaded ?? false) && context.mounted) {
                                     await _enterGame(
                                         context, ref, AppMode.inGame);
                                   }

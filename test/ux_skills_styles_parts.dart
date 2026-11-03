@@ -88,9 +88,9 @@ class Beads extends StatelessWidget {
           margin: const EdgeInsets.only(left: 5),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: model[id]?.known == true ? ink.gold : null,
+            color: model[id]?.known ?? false ? ink.gold : null,
             border: Border.all(
-                color: model[id]?.known == true
+                color: model[id]?.known ?? false
                     ? ink.gold
                     : next?.id == id
                         ? ink.gold

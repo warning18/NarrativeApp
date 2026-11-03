@@ -351,16 +351,14 @@ class _HeroStat extends StatelessWidget {
                         borderRadius: BorderRadius.circular(2)),
                   ),
                   Container(
-                    width: w * (value / scale).clamp(0.0, 1.0).toDouble(),
+                    width: w * (value / scale).clamp(0.0, 1.0),
                     decoration: BoxDecoration(
                         color: color, borderRadius: BorderRadius.circular(2)),
                   ),
                   if (other != null && other! > 0)
                     Positioned(
-                      left:
-                          (w * (other! / scale).clamp(0.0, 1.0).toDouble() - 1)
-                              .clamp(0.0, w - 2)
-                              .toDouble(),
+                      left: (w * (other! / scale).clamp(0.0, 1.0) - 1)
+                          .clamp(0.0, w - 2),
                       top: -3,
                       bottom: -3,
                       child: Container(

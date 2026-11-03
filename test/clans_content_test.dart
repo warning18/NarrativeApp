@@ -217,8 +217,8 @@ void main() {
   test('titles: real factions and sources, known effects', () {
     expect(data.titles.length, greaterThanOrEqualTo(30));
     final source =
-        RegExp(r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|'
-            r'while:(unfriendly|resented|friendly|friend)|'
+        RegExp('^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|'
+            'while:(unfriendly|resented|friendly|friend)|'
             r'mark:foe:[a-z_]+|throne:[a-z_]+)$');
     for (final t in data.titles.values) {
       final id = t.id;

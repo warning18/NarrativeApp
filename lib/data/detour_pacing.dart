@@ -377,7 +377,7 @@ RoadTurn planRoad({
         p.copyWith(
           quiet: 0,
           cooldown: _detourCooldownRoads,
-          owed: paysOwed ? false : p.owed,
+          owed: !paysOwed && p.owed,
           met: scene == null ? p.met : [...p.met, scene.id],
         ),
         scene: scene,

@@ -147,7 +147,7 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
   final node = story.nodeFor(play.currentNodeId);
   final chapter = chapterOfNode(play.currentNodeId);
   final mapChapter = mapChapters.where((c) => c.number == chapter).firstOrNull;
-  final chapterTitle = loop?.title.isNotEmpty == true
+  final chapterTitle = loop?.title.isNotEmpty ?? false
       ? loop!.title
       : mapChapter == null
           ? ''
