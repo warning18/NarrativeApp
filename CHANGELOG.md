@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.719.0+755]
+
+- **Narrative: 34 long scenes cut.** Scenes over the 800-character page cap
+  lose about a tenth of their text, English and French together:
+  35,840 to 32,157 characters in English, 40,762 to 36,482 in French.
+  Scenes over 800 characters go from 35 to 28, French scenes over 1,000
+  from 22 to 12. Every reveal, fact and bolded line stays (the Open Hand
+  ledger on `5004`/`5004b`, the Unmaking roll on `6010_record`, the four
+  endings); what went is repetition, scene-setting and doubled images. The
+  endings and `6010_record` are trimmed lightly: they are reveals, and a
+  deeper cut needs a page-turn split (Core). Ids, choices, flags and
+  conditions are unchanged.
+
 ## [1.718.0+754]
 
 - **Narrative: tighter ending callbacks.** The 38 longest English callbacks
