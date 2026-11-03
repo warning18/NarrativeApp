@@ -17,6 +17,34 @@ isn't reconstructable from git history alone.
   developer tools; the simulator itself, the Dev tools button and the
   ElevenLabs key are unchanged. Edit mode now has four tabs.
 
+## [1.714.0+750]
+
+- **Core: the fight keeps its mana until it ends; a burst of saves writes
+  once.** A fight saved the whole game, and rebuilt every screen behind it,
+  each time mana was gained or spent; it now keeps mana in the fight and
+  the session takes it when the fight ends (won, lost, fled or broken up,
+  as it already did). Saves asked for together share one write, and each
+  still waits until its change is on disk.
+
+## [1.713.0+749]
+
+- **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
+  The panel and the stage wrap a label at about 46 characters. Eighteen
+  labels in the Ashen Quarter hub (`3005`) and the Reliquary Quarter hub
+  (`6010`) are tightened, English and French, with the same meaning and tone;
+  the longest drops from 54 to 46 characters in English and from 75 to 56 in
+  French. Labels only: no choice, flag, id, condition or number changes. No
+  test or code pinned any of them.
+
+## [1.712.0+748]
+
+- **Core: the game's tables are read from the cache.** Each scene change
+  and fight start read its tables (enemies, items, skills, shops...) by
+  rebuilding them, placeholders and the French overlay included: 10 to 30
+  ms a table in French. They now come from the cache that already holds
+  them; the same records (a test checks every table, in English and
+  French).
+
 ## [1.711.0+747]
 
 - **Cleanup: nine more lints on, and the unused `cupertino_icons` package

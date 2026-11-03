@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart' show mapEquals;
+import 'package:flutter/foundation.dart' show mapEquals, visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
@@ -2254,10 +2254,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> _persist() async {
+  /// The write the next [_persist] calls join, until it encodes.
+  Future<void>? _pendingWrite;
+
+  /// How many times the session was written (tests count them).
+  @visibleForTesting
+  int sessionWrites = 0;
+
+  /// Saves the session. Calls made before the write encodes share it
+  /// (v1.713): a burst of changes is written once, and every caller still
+  /// awaits a write that holds its change.
+  Future<void> _persist() => _pendingWrite ??= _write();
+
+  Future<void> _write() async {
     await _loaded.future;
+    _pendingWrite = null;
+    final encoded = json.encode(state.toJson());
+    sessionWrites++;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
+    await prefs.setString(_playerSessionPrefsKey, encoded);
   }
 
   /// See [_resetToDefaults]: a plain reset keeps a pending New Game+
