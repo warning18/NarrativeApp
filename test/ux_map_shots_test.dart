@@ -143,21 +143,43 @@ void main() {
       });
     }
 
+    // The screen reads how far the party has come from the story's own play
+    // state (the travel history above only feeds the fog), so move it there.
+    final path = early
+        ? const ['965', '1100', '1120', '1130', '1200']
+        : [...ids.sublist(0, ids.length - 1), ids.last];
+    container
+        .read(storyPlayProvider.notifier)
+        .loadState(path.last, path.sublist(0, path.length - 1));
     await settle();
     await shoot('1-sphere');
     if (tag == 'after') {
+      // M2, the map's size (not the ball's): (A) the panel takes 0.8 / 0.5 of
+      // today's height, the rest of the screen is free; (B) the panel keeps
+      // its place but is drawn at 0.8 / 0.5 of today's resolution.
+      final mapBox = find.byKey(const ValueKey('full_world_map'));
+      final todayH = tester.getSize(mapBox).height;
+      final mapRect = tester.getRect(mapBox);
+      File('$shots/map-rect.txt').writeAsStringSync(
+          '${mapRect.left} ${mapRect.top} ${mapRect.width} ${mapRect.height}');
       for (final f in [0.8, 0.5]) {
-        JourneyWorldMap.sphereSizeFactor = f;
-        container.read(chartGlobeProvider.notifier).state = false;
-        await settle();
-        container.read(chartGlobeProvider.notifier).state = true;
-        await shoot('1-sphere-${(f * 100).round()}');
+        tester.view.physicalSize =
+            Size(824, 1780 - (1 - f) * todayH * 2); // logical x 2
+        await shoot('M2A-${(f * 100).round()}');
       }
-      JourneyWorldMap.sphereSizeFactor = 1;
-      container.read(chartGlobeProvider.notifier).state = false;
+      tester.view.physicalSize = const Size(824, 1780);
       await settle();
-      container.read(chartGlobeProvider.notifier).state = true;
-      await settle();
+      for (final f in [1.0, 0.8, 0.5]) {
+        await settle();
+        await tester.runAsync(() async {
+          final b =
+              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+          final image = await b.toImage(pixelRatio: 2 * f);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          File('$shots/map-$tag-${early ? 'early' : 'mid'}-M2B-${(f * 100).round()}.png')
+              .writeAsBytesSync(bytes!.buffer.asUint8List());
+        });
+      }
     }
 
     // The Clans layer on the sphere.
