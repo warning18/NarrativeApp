@@ -13,6 +13,7 @@ before starting a change.
 | **UX** (design and UX) | `claude/eager-pascal-y847vf` | how things look, move and read |
 | **Narrative** (story and content) | `claude/narrative` | what the game says: story, quests, characters, dialogue |
 | **QA** (testing) | `claude/qa` | keeps the tests fast and finds what broke: tests, simulator, L3 on request |
+| **Cleanup** (code health) | `claude/cleanup` | removes dead code, applies analyzer-proven lint fixes, privatises file-only names; no behaviour change (waves 1, 2, 2b of `docs/qa/code-cleanup-plan.md`) |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
@@ -59,6 +60,15 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
   never changes their numbers.
 - Core still sets the numbers inside Narrative's files (quest rewards,
   standing thresholds) and may add the fields a new system needs.
+
+**Cleanup owns:**
+- the waves 1, 2 and 2b of `docs/qa/code-cleanup-plan.md`: mechanical lint
+  fixes, deleting code nothing uses (with its tests), unused strings and
+  assets, privatising names used in one file.
+- It never changes behaviour, a number, a string's text or a layout, and
+  never touches a file another session has an open PR on. Wave 3a is QA's,
+  3b UX's, 3c Core's; the big-file splits (4) and performance (5) go to the
+  owner of each file.
 
 **QA owns:**
 - new test files named `test/qa_*_test.dart`, and `docs/qa/`
