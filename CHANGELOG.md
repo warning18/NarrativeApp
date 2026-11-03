@@ -17,6 +17,16 @@ isn't reconstructable from git history alone.
   as it already did). Saves asked for together share one write, and each
   still waits until its change is on disk.
 
+## [1.713.0+749]
+
+- **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
+  The panel and the stage wrap a label at about 46 characters. Eighteen
+  labels in the Ashen Quarter hub (`3005`) and the Reliquary Quarter hub
+  (`6010`) are tightened, English and French, with the same meaning and tone;
+  the longest drops from 54 to 46 characters in English and from 75 to 56 in
+  French. Labels only: no choice, flag, id, condition or number changes. No
+  test or code pinned any of them.
+
 ## [1.712.0+748]
 
 - **Core: the game's tables are read from the cache.** Each scene change
