@@ -188,7 +188,7 @@ void _line(Canvas canvas, double u, Paint paint, double x0, double y0,
 }
 
 class _Palette {
-  _Palette(ShipForm form, ShipDress? dress, {Color? clothOverride})
+  _Palette(ShipDress? dress, {Color? clothOverride})
       : hull = dress?.hull ?? _woodHull,
         trim = dress?.trim ?? _woodTrim,
         deck = dress?.deck ?? const Color(0xFF9A7448),
@@ -227,7 +227,7 @@ void paintSideShip(
   List<DeckCrew> crew = const [],
   bool lamp = false,
 }) {
-  final pal = _Palette(form, dress);
+  final pal = _Palette(dress);
   final len = sideShipLength(form);
   List<_SailBox> sails = const [];
   final List<double> top;
@@ -684,7 +684,7 @@ void _oars(Canvas canvas, double u, double x, double base, double len,
 /// Two slender hulls under one deck, one behind the other, two lateens.
 _Rig _twin(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t) {
-  final far = _Palette(form, null);
+  final far = _Palette(null);
   _hull(canvas, u, x + 3, base - 2, len - 4, form, far,
       colour: _shade(pal.hull, 0.7), freeboard: 3, sheerRise: 1.5, draft: 2);
   _hull(canvas, u, x, base, len, form, pal,
@@ -955,8 +955,7 @@ _Rig _bone(Canvas canvas, double u, double x, double base, double len,
   // A short square sail of void cloth ahead of the wings.
   final mx = (x + len * 0.62).floorToDouble();
   sidePixels(canvas, u, Paint()..color = pal.mast, mx, base - 26, 1, 20);
-  final voidCloth =
-      _Palette(form, null, clothOverride: const Color(0xFF3B2A5A));
+  final voidCloth = _Palette(null, clothOverride: const Color(0xFF3B2A5A));
   _squareSail(canvas, u, mx + 1, base - 24, 10, 10, voidCloth, t);
   _pennant(canvas, u, mx, base - 27, pal, t);
   return (

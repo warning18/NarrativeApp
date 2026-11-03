@@ -162,7 +162,7 @@ void main() {
     test('no road between two scenes of one place (D1)', () {
       // Two scenes of the camp, then the camp and a place of its chapter.
       final camp = story.nodes.values.firstWhere(
-          (n) => n.settlement?.isCamp == true && n.location != null);
+          (n) => (n.settlement?.isCamp ?? false) && n.location != null);
       final sameplace = story.nodes.values
           .firstWhere((n) => n.id != camp.id && n.location == camp.location);
       expect(

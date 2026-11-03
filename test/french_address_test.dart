@@ -41,7 +41,7 @@ void main() {
   test("what companions say in the story's asides is in « vous »", () {
     for (final nodeId in acknowledgedNodeIds) {
       for (final line in allyAcknowledgmentVariantsFor(nodeId, french: true)) {
-        for (final quote in RegExp(r'«([^»]*)»').allMatches(line)) {
+        for (final quote in RegExp('«([^»]*)»').allMatches(line)) {
           expect(_saysTu(quote.group(1)!), isFalse,
               reason: '$nodeId: ${quote.group(1)}');
         }

@@ -47,7 +47,7 @@ Map<String, ItemOrigin> withItemOrigins(
   for (final id in itemIds) {
     if (id.isEmpty ||
         origins.containsKey(id) ||
-        next?.containsKey(id) == true) {
+        (next?.containsKey(id) ?? false)) {
       continue;
     }
     (next ??= {...origins})[id] = origin;

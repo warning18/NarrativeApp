@@ -772,7 +772,7 @@ Widget _levelTabs(BuildContext context, bool fr, {Widget? trailing}) {
     padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
     child: Row(
       children: [
-        Container(
+        DecoratedBox(
           decoration: BoxDecoration(
               border: Border.all(color: ink.seam),
               borderRadius: BorderRadius.circular(3)),
