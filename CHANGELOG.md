@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.710.0+746]
+
+- The fight's ground no longer repaints sixty times a second: the layer
+  behind the fight (the stage, the night, the lamps) has nothing that moves,
+  so it is drawn once, and only the weather and an anomaly keep a clock, and
+  only while they show (an anomaly's ease out included). Nothing changes on
+  screen; the phone does less work during every fight.
+- Tests: the fight tests throw the dice at 4x (the "Dice speed" setting),
+  so they wait a quarter of the throw.
+
 ## [1.702.0+738]
 
 - **Core: the top bar's world map waits while the page holds the party.**
