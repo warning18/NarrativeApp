@@ -19,7 +19,12 @@ import 'package:narrative_data_app/screens/skills/dice_weave_card.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/widgets/character_die_badge.dart';
 import 'package:narrative_data_app/widgets/clan_rank_plate.dart';
+import 'package:narrative_data_app/widgets/clan_die_gift.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 import 'package:narrative_data_app/widgets/fight_entrance.dart';
+import 'package:narrative_data_app/widgets/fight_pick_card.dart';
+import 'package:narrative_data_app/widgets/scene_stage.dart';
+import 'package:narrative_data_app/widgets/scene_vignette.dart';
 import 'package:narrative_data_app/widgets/handover_list.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
 import 'package:narrative_data_app/widgets/prologue_opening.dart';
@@ -114,6 +119,112 @@ void main() {
         ),
         SmokeCase('dice_loadout', const DiceLoadoutScreen(),
             session: save(), prepare: _load, bare: true),
+        SmokeCase(
+          'scene_panel',
+          const Column(children: [
+            SceneVignette(
+              heroName: 'Aurel the Wanderer of the Ashen Quarter',
+              prompt: 'Draw, Grand Master, or let the Lantern Hall watch you '
+                  'kneel before the Regent?',
+              faced: SceneFaced(
+                  id: 'aurel_vane',
+                  name: 'Aurel Vane, Regent of the Lantern Hall',
+                  role: 'Grand Master of the Dominion'),
+            ),
+            SizedBox(height: 12),
+            SceneVignette(
+              heroName: 'Aurel the Wanderer of the Ashen Quarter',
+              prompt: 'Pay the toll, or fight?',
+              faced: SceneFaced(id: 'aurel_vane', name: 'Aurel Vane'),
+              folded: true,
+            ),
+          ]),
+          session: save(),
+          prepare: _load,
+        ),
+        SmokeCase(
+          'scene_stage',
+          const SceneStage(
+            foeId: 'aurel_vane',
+            foeName: 'Aurel Vane',
+            prompt: 'Draw, Grand Master, or let the Lantern Hall watch you '
+                'kneel before the Regent?',
+            // The longest spoken reply (48 characters) and place name (38)
+            // in the data.
+            balloon: 'Vos lampes s’éteindront. La Première vous reste.',
+            doorName: 'La chapelle de la gardienne des cartes',
+            doorLit: true,
+          ),
+          session: save(),
+          prepare: _load,
+        ),
+        SmokeCase(
+          'fight_chips',
+          Wrap(spacing: 6, runSpacing: 6, children: [
+            for (final e in FightEffect.values)
+              FightEffectChip(effect: e, label: e.name, badge: '3', size: 30),
+          ]),
+          session: save(),
+          prepare: _load,
+        ),
+        SmokeCase(
+          'who_fights',
+          FightPickCard(
+            title: 'Qui combat\u00a0?',
+            hint: 'Le héros combat toujours; deux compagnons au plus.',
+            heroName: 'Aurel',
+            options: const [
+              FightPickOption(id: 'kelda', name: 'Kelda'),
+              FightPickOption(id: 'sable', name: 'Sable'),
+              FightPickOption(id: 'maren', name: 'Maren la Cartographe'),
+            ],
+            picked: const ['kelda', 'sable'],
+            seats: 2,
+            onToggle: (_, __) {},
+            keepLabel: 'Garder ce groupe',
+            keep: true,
+            onKeep: (_) {},
+          ),
+          session: save(),
+          prepare: _load,
+        ),
+        SmokeCase(
+          'clan_die_gifts',
+          Column(children: [
+            for (final id in const [
+              'lantern_die',
+              'vigil_die',
+              'cinder_die',
+              'court_die',
+              'tally_die',
+              'ossuary_die',
+            ])
+              ClanDieGift(dieId: id),
+          ]),
+          session: save({
+            'ownedDiceIds': [
+              'starter_die',
+              'lantern_die',
+              'vigil_die',
+              'cinder_die',
+              'court_die',
+              'tally_die',
+              'ossuary_die',
+            ],
+          }),
+          prepare: _load,
+        ),
+        SmokeCase('dice_loadout_clan_dice', const DiceLoadoutScreen(),
+            session: save({
+              'ownedDiceIds': [
+                'starter_die',
+                'lantern_die',
+                'cinder_die',
+                'court_die',
+              ],
+            }),
+            prepare: _load,
+            bare: true),
         SmokeCase('dice_weave_card', const DiceWeaveCard(),
             session: save(), prepare: _load),
         SmokeCase('character_die_badge', const CharacterDieBadge(),
