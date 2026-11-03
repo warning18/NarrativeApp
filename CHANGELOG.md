@@ -18,6 +18,15 @@ isn't reconstructable from git history alone.
   Labels only: no choice, flag, id, condition or number changes. No test or
   code pinned any of them.
 
+## [1.715.0+751]
+
+- **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
+  (the AI generator), the "Analyze with Gemini" button of the playthrough
+  simulator, the API-key field in Settings and the `google_generative_ai`
+  package are removed, with the strings that only they used. They were
+  developer tools; the simulator itself, the Dev tools button and the
+  ElevenLabs key are unchanged. Edit mode now has four tabs.
+
 ## [1.714.0+750]
 
 - **Core: the fight keeps its mana until it ends; a burst of saves writes
