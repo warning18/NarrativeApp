@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.735.0+771]
+
+- Fight on a small phone (320 x 568): the dice board was squeezed to a strip
+  of a few pixels. Under 620 px of screen height the fight no longer draws
+  its empty seats (a side with fewer than three fighters shows only its
+  fighters) nor the two-line log under the board (the log button still opens
+  it), so the dice have room. Normal phones are unchanged.
+- The scene stage's door tab hangs under the foe's name on a narrow stage
+  instead of covering the foe, and its label is cut with "..." when long.
+- Tests: `qa_fight_320_test.dart`, `qa_scene_stage_320_test.dart`.
+
 ## [1.710.0+746]
 
 - The fight's ground no longer repaints sixty times a second: the layer
