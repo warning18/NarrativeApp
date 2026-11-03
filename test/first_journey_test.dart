@@ -592,6 +592,8 @@ void main() {
     expect(_backToMap, findsOneWidget);
     expect(tester.widget<ButtonStyleButton>(_backToMap).onPressed, isNotNull);
     expect(_cornerMap, findsOneWidget);
+    // Two cards and a move the page has not: the top bar's world map stays.
+    expect(find.byKey(const Key('home_full_map')), findsOneWidget);
     await _done(tester);
   });
 

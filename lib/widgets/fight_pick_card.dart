@@ -5,17 +5,17 @@
 // the pick as the party. The state is Core's (fightPickProvider, v1.667).
 import 'package:flutter/material.dart';
 
+import 'head_avatar.dart';
+
 /// One companion who could fight.
 class FightPickOption {
   const FightPickOption({
     required this.id,
     required this.name,
-    this.headAsset,
   });
 
   final String id;
   final String name;
-  final String? headAsset;
 }
 
 class FightPickCard extends StatelessWidget {
@@ -44,38 +44,6 @@ class FightPickCard extends StatelessWidget {
   final bool keep;
   final ValueChanged<bool> onKeep;
 
-  Widget _head(BuildContext context, String? asset, String name,
-      {bool dim = false}) {
-    final scheme = Theme.of(context).colorScheme;
-    return Opacity(
-      opacity: dim ? 0.45 : 1,
-      child: Container(
-        width: 40,
-        height: 40,
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          color: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: asset == null
-            ? Center(
-                child: CircleAvatar(
-                  radius: 14,
-                  backgroundColor: scheme.primary,
-                  child: Text(name.isEmpty ? '?' : name[0].toUpperCase(),
-                      style: TextStyle(
-                          color: scheme.onPrimary,
-                          fontWeight: FontWeight.bold)),
-                ),
-              )
-            : Image.asset(asset,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.none,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink()),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -94,8 +62,7 @@ class FightPickCard extends StatelessWidget {
             ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              leading:
-                  _head(context, 'assets/visuals/heads/hero.png', heroName),
+              leading: HeadAvatar(id: 'hero', name: heroName, size: 40),
               title: Text(heroName),
               trailing: const Icon(Icons.lock_outline, size: 18),
             ),
@@ -108,7 +75,8 @@ class FightPickCard extends StatelessWidget {
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  secondary: _head(context, o.headAsset, o.name, dim: disabled),
+                  secondary: HeadAvatar(
+                      id: o.id, name: o.name, size: 40, dim: disabled),
                   title: Text(o.name),
                   value: on,
                   onChanged:

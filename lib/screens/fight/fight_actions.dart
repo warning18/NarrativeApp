@@ -413,15 +413,11 @@ extension _FightActions on _FightScreenState {
             ),
             for (final member in candidates)
               ListTile(
-                leading: CircleAvatar(
-                  radius: 14,
-                  backgroundColor: _accentFor(member),
-                  child: Text(
-                    member.displayName.isEmpty
-                        ? '?'
-                        : member.displayName[0].toUpperCase(),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
+                leading: HeadAvatar(
+                  id: member.isPlayer ? 'hero' : member.id,
+                  name: member.displayName,
+                  accent: _accentFor(member),
+                  size: 32,
                 ),
                 title: Text(member.displayName),
                 subtitle: Text(

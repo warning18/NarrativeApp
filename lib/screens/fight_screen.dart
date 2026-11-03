@@ -15,6 +15,7 @@ import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
+import '../widgets/head_avatar.dart';
 import '../widgets/fight_pick_card.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';

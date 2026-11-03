@@ -12132,10 +12132,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Aucun Signe pour l’instant. Les clans, les tribus, le Chœur et la Fosse en apportent dans leurs offres.',
   },
-  'sign_pending': {
-    AppLanguage.en: '{n} sign(s) to choose',
-    AppLanguage.fr: '{n}\u00a0Signe(s) à choisir',
-  },
   'sign_choose_hint': {
     AppLanguage.en: 'Choose one sign.',
     AppLanguage.fr: 'Choisissez un Signe.',
