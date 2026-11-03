@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.717.0+753]
+
+- **Narrative: shorter choice labels, the last batch.** 118 more labels in
+  the Saltmouth, Candlehold, Reliquary and ending hubs (`7200`, `7510`,
+  `7590`, `7800`, `3005`, `3100`, `5100`, `6100`, `6200`, `7100`, `7400` and
+  others) cut to about 46 characters in English and 56 in French so the
+  panel bubble no longer wraps. Same choices, ids, flags and costs; only the
+  wording changed. No test pinned these labels.
+
 ## [1.716.0+752]
 
 - **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
@@ -391,8 +400,6 @@ isn't reconstructable from git history alone.
   the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
-
-
 
 ## [1.665.0+701]
 
@@ -10939,8 +10946,6 @@ undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
   neither has any other unlock point in the story graph, so removing them
   would have made those shops permanently unobtainable.
 
-
-
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start
 and another available from the very first chapter.
@@ -11853,7 +11858,6 @@ Chapter 3-5 branching still falls well short of Chapter 1's — closing that gap
 
 ### Changed
 - Quest/item/skill/dice detail dialogs now render their flavor-text description with larger text and more generous line spacing, matching how the main story narration is styled, instead of the dialog's cramped default text style.
-
 
 ### Added
 - Copy button for the Playthrough Simulator's batch summary (previously only individual runs and the Gemini analysis could be copied — batches only had Export).

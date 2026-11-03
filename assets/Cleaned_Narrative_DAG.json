@@ -1750,8 +1750,8 @@
         ]
       },
       {
-        "text": "Pull a buckler from the shieldwright’s overturned cart",
-        "text_fr": "Tirer une rondache de la charrette renversée du fabricant de boucliers",
+        "text": "Pull a buckler from the overturned cart",
+        "text_fr": "Tirer une rondache de la charrette renversée",
         "next_id": "891",
         "grantItemId": "shield_t1",
         "hideIfFlags": [
@@ -2575,8 +2575,8 @@
         ]
       },
       {
-        "text": "Pour what is left in your flask into your hand for her",
-        "text_fr": "Verser dans votre main ce qui reste de votre gourde, pour elle",
+        "text": "Pour what is left of your flask for her",
+        "text_fr": "Verser pour elle ce qui reste de votre gourde",
         "next_id": "1200",
         "flagsToAdd": [
           "vica_shared"
@@ -2586,8 +2586,8 @@
         }
       },
       {
-        "text": "Count some coins into the sand for her (10 gold)",
-        "text_fr": "Compter quelques pièces dans le sable, pour elle (10 pièces d’or)",
+        "text": "Count coins into the sand for her (10 gold)",
+        "text_fr": "Compter des pièces dans le sable (10 pièces d’or)",
         "next_id": "1200",
         "goldMod": -10,
         "pays": true,
@@ -4206,7 +4206,7 @@
         ]
       },
       {
-        "text": "Take the tunnel, and show the refugees the way in",
+        "text": "Take the tunnel and show the refugees in",
         "text_fr": "Prendre le tunnel, et montrer l’entrée aux réfugiés",
         "next_id": "2900",
         "alignmentMod": 2,
@@ -4216,7 +4216,7 @@
         ]
       },
       {
-        "text": "Sell the tunnel to Vane’s rival first (+40 gold)",
+        "text": "Sell Vane’s rival the tunnel first (+40 gold)",
         "text_fr": "Vendre d’abord le tunnel au rival de Vane (+40 or)",
         "next_id": "2900",
         "goldMod": 40,
@@ -4265,7 +4265,7 @@
         ]
       },
       {
-        "text": "Drop the blade and pay for the insult (40 gold)",
+        "text": "Drop the blade, pay for the insult (40 gold)",
         "text_fr": "Lâcher la lame et payer l’affront (40 or)",
         "next_id": "2040_paid",
         "goldMod": -40,
@@ -4572,8 +4572,8 @@
         }
       },
       {
-        "text": "Take the twenty who can fight, leave the rest",
-        "text_fr": "Prendre les vingt qui savent se battre, laisser les autres",
+        "text": "Take the twenty who can fight",
+        "text_fr": "Prendre les vingt qui savent se battre",
         "next_id": "2999",
         "alignmentMod": -2,
         "flagsToAdd": [
@@ -4581,7 +4581,7 @@
         ]
       },
       {
-        "text": "Take no one. The Eel sails light, fast and full",
+        "text": "Take no one: the Eel sails light, fast, full",
         "text_fr": "Ne prendre personne. L’Eel part léger, rapide et plein",
         "next_id": "2999",
         "alignmentMod": -5,
@@ -4725,7 +4725,7 @@
     },
     "choices": [
       {
-        "text": "Infiltrate the Cathedral via the high cloisters",
+        "text": "Infiltrate the Cathedral by the high cloisters",
         "text_fr": "Infiltrer la cathédrale par les hauts cloîtres",
         "next_id": "3010",
         "politics": {
@@ -5183,7 +5183,7 @@
         }
       },
       {
-        "text": "Speak against her: it was the sick ward’s bread",
+        "text": "Speak against her: the sick ward’s bread",
         "text_fr": "Témoigner contre elle : c’était le pain des malades",
         "next_id": "3005",
         "alignmentMod": -1,
@@ -5368,8 +5368,8 @@
         }
       },
       {
-        "text": "Pay the buyers to watch another street (40 gold)",
-        "text_fr": "Payer les acheteurs pour guetter une autre rue (40 or)",
+        "text": "Pay the buyers to watch elsewhere (40 gold)",
+        "text_fr": "Payer les acheteurs pour guetter ailleurs (40 or)",
         "next_id": "3005_clan_compact_1_lit",
         "goldMod": -40,
         "flagsToAdd": [
@@ -5653,7 +5653,7 @@
         ]
       },
       {
-        "text": "Wait for the bells and climb down the bell rope",
+        "text": "Wait for the bells, climb down the bell rope",
         "text_fr": "Attendre les cloches et descendre par la corde",
         "next_id": "3030",
         "checkAbility": "dexterity",
@@ -5685,7 +5685,7 @@
     "choices": [
       {
         "text": "Bribe the archivist for the high-security pass",
-        "text_fr": "Soudoyer l’archiviste pour obtenir le laissez-passer haute sécurité",
+        "text_fr": "Soudoyer l’archiviste pour le passe haute sécurité",
         "next_id": "3040",
         "goldMod": -40
       },
@@ -5750,7 +5750,7 @@
     },
     "choices": [
       {
-        "text": "Bluff past the guard with the signet, then fight",
+        "text": "Bluff the guard with the signet, then fight",
         "text_fr": "Bluffer le garde avec le sceau, puis se battre",
         "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
@@ -5776,7 +5776,7 @@
     "choices": [
       {
         "text": "Fight past the vanguard to the sanctum",
-        "text_fr": "Se frayer un chemin à travers l’avant-garde jusqu’au sanctuaire",
+        "text_fr": "Passer l’avant-garde de force jusqu’au sanctuaire",
         "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
       }
@@ -6341,8 +6341,8 @@
     "location": "cove_camp",
     "choices": [
       {
-        "text": "Sail for the Black Reliquary and the fourth piece",
-        "text_fr": "Mettre le cap sur le Reliquaire Noir et la quatrième pièce",
+        "text": "Sail for the Black Reliquary",
+        "text_fr": "Cap sur le Reliquaire Noir et la quatrième pièce",
         "next_id": "6010_thread",
         "mainQuest": true,
         "travelPlaceId": "6010"
@@ -6585,7 +6585,7 @@
         ]
       },
       {
-        "text": "Tear your parents’ page out of the ledger first",
+        "text": "Tear your parents’ page from the ledger first",
         "text_fr": "Arracher d’abord du registre la page familiale",
         "next_id": "5004_altar",
         "flagsToAdd": [
@@ -6667,8 +6667,8 @@
         "goldMod": 35
       },
       {
-        "text": "Leave the salvage for the dockhands who lost their pay",
-        "text_fr": "Laisser la récupération aux dockers qui ont perdu leur paie",
+        "text": "Leave the salvage to the unpaid dockhands",
+        "text_fr": "Laisser la récupération aux dockers sans paie",
         "next_id": "2900",
         "alignmentMod": 2,
         "flagsToAdd": [
@@ -6696,8 +6696,8 @@
         "next_id": "2015_informant_trap"
       },
       {
-        "text": "Ask why a stranger’s trouble suddenly matters to him",
-        "text_fr": "Demander pourquoi les ennuis d’un inconnu lui importent soudain",
+        "text": "Ask why a stranger’s trouble matters to him",
+        "text_fr": "Demander pourquoi les ennuis d’un inconnu lui importent",
         "next_id": "2015_informant_exposed",
         "checkAbility": "wisdom",
         "checkDC": 12,
@@ -6770,8 +6770,8 @@
         }
       },
       {
-        "text": "Give his name to the Crows instead of his coin",
-        "text_fr": "Donner son nom aux Corneilles plutôt que prendre son argent",
+        "text": "Give his name to the Crows, not his coin",
+        "text_fr": "Donner son nom aux Corneilles, pas son argent",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_informant",
@@ -6828,8 +6828,8 @@
         "failNextId": "2015_ternrow_fight"
       },
       {
-        "text": "His enforcers won’t listen to reason — end this now",
-        "text_fr": "Ses hommes n’écouteront pas la raison — en finir maintenant",
+        "text": "His enforcers won’t listen: end this now",
+        "text_fr": "Ses hommes ne veulent rien entendre : en finir maintenant",
         "next_id": "2015_ternrow_fight",
         "unlockQuestId": "q_ch2_terns_toll"
       }
@@ -6955,7 +6955,7 @@
     "reqGold": 80,
     "choices": [
       {
-        "text": "Take his contract and clear the zealot he names",
+        "text": "Take his contract: clear the zealot he names",
         "text_fr": "Prendre son contrat et abattre le zélote qu’il désigne",
         "next_id": "3005",
         "unlockQuestId": "q_ch3_groshs_price",
@@ -6987,7 +6987,7 @@
     "location": "ashen_quarter_wall_of_names",
     "choices": [
       {
-        "text": "Argue that burning the wall won’t unburn the truth",
+        "text": "Argue: burning the wall won’t unburn the truth",
         "text_fr": "Faire valoir que brûler le mur ne brûlera pas la vérité",
         "next_id": "3005_wall_argued",
         "checkAbility": "intelligence",
@@ -7811,7 +7811,7 @@
         "failNextId": "5010_clan_crows_2_failed"
       },
       {
-        "text": "Pay the Whisper Ledger to name the seller (40 gold)",
+        "text": "Pay the Whisper Ledger for the name (40 gold)",
         "text_fr": "Payer le Registre des Murmures pour un nom (40 or)",
         "next_id": "5010_clan_crows_2_found",
         "goldMod": -40,
@@ -8089,7 +8089,7 @@
         ]
       },
       {
-        "text": "Turn him in to the cloister for the bounty (+40 gold)",
+        "text": "Turn him in to the cloister (+40 gold)",
         "text_fr": "Le livrer au cloître pour la prime (+40 or)",
         "next_id": "5010",
         "goldMod": 40,
@@ -8208,8 +8208,8 @@
         "lockedText_fr": "La chapelle était barrée, son givre une forme que je ne voulais pas lire."
       },
       {
-        "text": "Face the masked penitent who will not stop staring",
-        "text_fr": "Affronter la pénitente masquée qui ne cesse de fixer",
+        "text": "Face the masked penitent who keeps staring",
+        "text_fr": "Affronter la pénitente masquée qui fixe sans cesse",
         "next_id": "6010_masked",
         "showIfFlags": [
           "lysa_lost"
@@ -10680,7 +10680,7 @@
     "reqAlignmentScore": 20,
     "choices": [
       {
-        "text": "Keep the first watch beside him at the water’s edge",
+        "text": "Keep the first watch beside him by the water",
         "text_fr": "Veiller à ses côtés, au bord de l’eau, la première nuit",
         "next_id": "5010",
         "unlockQuestId": "q_ch4_tobins_vigil",
@@ -10787,7 +10787,7 @@
     "choices": [
       {
         "text": "Wade back to the candle-lit ledges",
-        "text_fr": "Retourner en pataugeant vers les corniches aux chandelles",
+        "text_fr": "Retourner en pataugeant aux corniches à chandelles",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_archivist_words"
@@ -10870,8 +10870,8 @@
     "location": "reliquary_quarter",
     "choices": [
       {
-        "text": "His name stays on the list, and he carries it from here",
-        "text_fr": "Son nom reste sur la liste, et c’est lui qui la porte désormais",
+        "text": "His name stays on the list; he carries it",
+        "text_fr": "Son nom reste sur la liste ; il la porte désormais",
         "next_id": "6010",
         "alignmentMod": 2,
         "flagsToAdd": [
@@ -10879,8 +10879,8 @@
         ]
       },
       {
-        "text": "Tell him nothing. Some answers are not mine to give",
-        "text_fr": "Ne rien lui dire. Certaines réponses ne sont pas les miennes à donner",
+        "text": "Tell him nothing. Some answers aren’t mine",
+        "text_fr": "Ne rien dire. Certaines réponses ne sont pas miennes",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_confession_later"
@@ -10974,7 +10974,7 @@
     "location": "hollow_shore_battlefield",
     "choices": [
       {
-        "text": "Tell it the names of the taken, every one of them",
+        "text": "Tell it the names of the taken, every one",
         "text_fr": "Lui dire les noms des disparus, chacun d’eux",
         "next_id": "7002_price",
         "alignmentMod": 2
@@ -11118,8 +11118,8 @@
         }
       },
       {
-        "text": "Give him the mercy of the blade first, then take it",
-        "text_fr": "Lui accorder d’abord la miséricorde de la lame, puis le prendre",
+        "text": "Grant him the blade’s mercy, then take it",
+        "text_fr": "Lui accorder la miséricorde de la lame, puis le prendre",
         "next_id": "4999_camp",
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -11306,7 +11306,7 @@
     "choices": [
       {
         "text": "Wake them first, so they die as themselves",
-        "text_fr": "Les réveiller d’abord, pour qu’ils meurent en étant eux-mêmes",
+        "text_fr": "Les réveiller d’abord, qu’ils meurent eux-mêmes",
         "next_id": "5005",
         "alignmentMod": 2,
         "healAmount": -4,
@@ -11519,8 +11519,8 @@
         "hostFight": true
       },
       {
-        "text": "Give it your blood. Whatever the crossing leaves of you",
-        "text_fr": "Lui donner votre sang. Ce que la traversée laissera de vous",
+        "text": "Give it your blood, what the crossing leaves",
+        "text_fr": "Lui donner votre sang, ce que la traversée laisse",
         "next_id": "7003",
         "launchZoneId": "z_beyond_the_tear",
         "healAmount": -9,
@@ -11533,8 +11533,8 @@
         "hostFight": true
       },
       {
-        "text": "Give it the camp. Let the coast burn behind you",
-        "text_fr": "Lui donner le campement. Laisser la côte brûler derrière vous",
+        "text": "Give it the camp; let the coast burn",
+        "text_fr": "Lui donner le campement. Laisser la côte brûler",
         "next_id": "7003",
         "launchZoneId": "z_beyond_the_tear",
         "alignmentMod": -4,
@@ -11584,7 +11584,7 @@
         }
       },
       {
-        "text": "Refuse it, and send the white sail back with its offer",
+        "text": "Refuse it, and send the white sail back",
         "text_fr": "Le refuser, et renvoyer la voile blanche avec son offre",
         "next_id": "7002",
         "flagsToAdd": [
@@ -11982,7 +11982,7 @@
       },
       {
         "text": "Ride an Emberwife’s coal past the buyers",
-        "text_fr": "Escorter le charbon d’une Charbonnière devant les acheteurs",
+        "text_fr": "Escorter le charbon d’une Charbonnière chez les acheteurs",
         "next_id": "3100_house_emberwives",
         "hideIfFlags": [
           "hub_3100_house_emberwives"
@@ -11999,8 +11999,8 @@
         "about": "anvil_deaf"
       },
       {
-        "text": "Watch the Salt Road from the slag heaps at the new moon",
-        "text_fr": "Guetter la route du sel depuis les crassiers à la nouvelle lune",
+        "text": "Watch the Salt Road from the slag at new moon",
+        "text_fr": "Guetter la route du sel depuis les crassiers",
         "next_id": "3100_new_moon",
         "hideIfFlags": [
           "hub_3100_new_moon"
@@ -12306,7 +12306,7 @@
       },
       {
         "text": "Promise to mend the third beam from the top",
-        "text_fr": "Promettre de réparer la troisième poutre en partant du haut",
+        "text_fr": "Promettre de réparer la troisième poutre du haut",
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_widow",
@@ -12894,7 +12894,7 @@
       },
       {
         "text": "Ask about the hand painted over a door",
-        "text_fr": "Demander pourquoi une main est peinte au-dessus d’une porte",
+        "text_fr": "Demander pourquoi une main orne une porte",
         "next_id": "5100_house_fishbasket_line",
         "hideIfFlags": [
           "hub_5100_house_fishbasket_line"
@@ -12902,8 +12902,8 @@
         "about": "fishbasket_line"
       },
       {
-        "text": "Carry a Wickwarden’s flame up through the fog",
-        "text_fr": "Porter la flamme d’une Garde-Mèche à travers le brouillard",
+        "text": "Carry a Wickwarden’s flame through the fog",
+        "text_fr": "Porter la flamme d’une Garde-Mèche dans le brouillard",
         "next_id": "5100_clan_dominion_1",
         "lockedText": "No House of the Dominion would vouch for me yet.",
         "lockedText_fr": "Aucune Maison du Dominion ne se portait encore garante de moi.",
@@ -12934,8 +12934,8 @@
         "about": "crows"
       },
       {
-        "text": "Follow a Keyholder’s low lantern down the cliff path",
-        "text_fr": "Suivre la lanterne basse d’une Porte-Clef sur le sentier de la falaise",
+        "text": "Follow a Keyholder’s low lantern down the path",
+        "text_fr": "Suivre la lanterne basse d’une Porte-Clef sur le sentier",
         "next_id": "5100_keyholder_cut",
         "showIfFlags": [
           "plot_ledger_2"
@@ -12945,8 +12945,8 @@
         ]
       },
       {
-        "text": "Ask an old Tar-Hand about the Fleet’s last refit",
-        "text_fr": "Interroger une vieille Main-de-Goudron sur le dernier radoub de la Flotte",
+        "text": "Ask an old Tar-Hand about the last refit",
+        "text_fr": "Interroger une vieille Main-de-Goudron sur le radoub",
         "next_id": "5100_tar_hand_book",
         "showIfFlags": [
           "plot_admiralty_2"
@@ -13091,7 +13091,7 @@
         }
       },
       {
-        "text": "Warn her to paint the hand over, for her safety",
+        "text": "Warn her to paint the hand over, for safety",
         "text_fr": "L’avertir de recouvrir la main, pour sa sécurité",
         "next_id": "5100",
         "alignmentMod": 1,
@@ -14222,8 +14222,8 @@
         "about": "penitents"
       },
       {
-        "text": "Follow the branded debtors off the pilgrims’ road",
-        "text_fr": "Suivre les débiteurs marqués hors de la route des pèlerins",
+        "text": "Follow the branded debtors off the road",
+        "text_fr": "Suivre les débiteurs marqués hors de la route",
         "next_id": "6100_debt_rising",
         "showIfFlags": [
           "plot_ledger_3"
@@ -14244,7 +14244,7 @@
         ]
       },
       {
-        "text": "Meet the Row and the Tribunal at the quarry’s edge",
+        "text": "Meet the Row and the Tribunal at the quarry",
         "text_fr": "Rencontrer la Rue et le Tribunal au bord de la carrière",
         "next_id": "6100_charter_signing",
         "showIfFlags": [
@@ -14937,7 +14937,7 @@
       },
       {
         "text": "Clear a Frost Quarry gallery for the Quarrymen",
-        "text_fr": "Dégager une galerie de la Carrière de Givre pour les Carriers",
+        "text_fr": "Dégager une galerie de la Carrière pour les Carriers",
         "next_id": "6200_house_quarrymen",
         "hideIfFlags": [
           "hub_6200_house_quarrymen"
@@ -14945,7 +14945,7 @@
         "about": "quarrymen"
       },
       {
-        "text": "Tell the Anvil-Deaf why they should forge for you",
+        "text": "Tell the Anvil-Deaf why they forge for you",
         "text_fr": "Dire aux Sourds de l’Enclume pourquoi forger pour vous",
         "next_id": "6200_clan_compact_2",
         "lockedText": "The Compact did not know me well enough yet.",
@@ -15092,7 +15092,7 @@
       },
       {
         "text": "So no one hangs anyone from what you make",
-        "text_fr": "Pour que plus personne ne pende personne à ce que vous forgez",
+        "text_fr": "Pour qu’on ne pende plus personne avec vos ouvrages",
         "next_id": "6200",
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -15410,7 +15410,7 @@
         ]
       },
       {
-        "text": "Bring a fallen knight’s sword home to the chapel",
+        "text": "Bring a fallen knight’s sword to the chapel",
         "text_fr": "Rapporter à la chapelle l’épée d’une chevalière tombée",
         "next_id": "7100_house_order",
         "hideIfFlags": [
@@ -15551,8 +15551,8 @@
         ]
       },
       {
-        "text": "Let the helmsman take you down to the flagship’s hold",
-        "text_fr": "Laisser le timonier vous conduire à la cale du vaisseau amiral",
+        "text": "Let the helmsman take you down to the hold",
+        "text_fr": "Laisser le timonier vous conduire à la cale amirale",
         "next_id": "7100_flagship_hold",
         "showIfFlags": [
           "plot_admiralty_4"
@@ -16241,7 +16241,7 @@
       },
       {
         "text": "Look into the tear, and swear it to the Vigil",
-        "text_fr": "Regarder dans la déchirure, et en faire serment à la Veille",
+        "text_fr": "Regarder dans la déchirure et le jurer à la Veille",
         "next_id": "7200_clan_vigil_3",
         "lockedText": "The Vigil did not trust me that far yet.",
         "lockedText_fr": "La Veille ne me faisait pas encore assez confiance.",
@@ -16317,8 +16317,8 @@
         ]
       },
       {
-        "text": "Settle the Fourth Piece with the Reliquary Thieves",
-        "text_fr": "Régler le sort de la Quatrième Pièce avec les Voleurs de Reliques",
+        "text": "Settle the Fourth Piece with Reliquary Thieves",
+        "text_fr": "Régler la Quatrième Pièce avec les Voleurs de Reliques",
         "next_id": "7200_fourth_piece",
         "showIfFlags": [
           "plot_relic_5"
@@ -16350,8 +16350,8 @@
         ]
       },
       {
-        "text": "Decide what the Last Watch hears about Wenna Tarn",
-        "text_fr": "Décider de ce que la Dernière Veille apprendra sur Wenna Tarn",
+        "text": "Decide what the Watch hears about Wenna Tarn",
+        "text_fr": "Décider ce que la Veille apprendra sur Wenna Tarn",
         "next_id": "7200_stitcher",
         "showIfFlags": [
           "plot_stitcher_5"
@@ -16372,7 +16372,7 @@
         ]
       },
       {
-        "text": "Decide the fate of the children in the Eel’s hold",
+        "text": "Decide the fate of the children on the Eel",
         "text_fr": "Décider du sort des enfants dans la cale de l’Eel",
         "next_id": "7200_returned",
         "showIfFlags": [
@@ -16395,8 +16395,8 @@
         ]
       },
       {
-        "text": "Cast the Admiralty’s vote for the Lantern Throne",
-        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
+        "text": "Cast the Admiralty’s vote for the Throne",
+        "text_fr": "Donner la voix de l’Amirauté pour le Trône",
         "next_id": "7002_throne",
         "showIfFlags": [
           "admiralty_vote"
@@ -16728,8 +16728,8 @@
         ]
       },
       {
-        "text": "Promise to find her daughter’s name in the ledger",
-        "text_fr": "Lui promettre de retrouver le nom de sa fille dans le registre",
+        "text": "Promise her daughter’s name from the ledger",
+        "text_fr": "Promettre de retrouver le nom de sa fille",
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_elder",
@@ -16763,7 +16763,7 @@
         ]
       },
       {
-        "text": "Tell her the ledger kept no names from her coast",
+        "text": "Tell her the ledger kept none from her coast",
         "text_fr": "Lui dire que le registre ne gardait aucun nom de sa côte",
         "next_id": "7200",
         "goldMod": 30,
@@ -17107,7 +17107,7 @@
     "location": "greyhithe",
     "choices": [
       {
-        "text": "Promise to say nothing until you have seen the door",
+        "text": "Promise silence until you have seen the door",
         "text_fr": "Promettre de ne rien dire avant d’avoir vu la porte",
         "next_id": "7200",
         "flagsToAdd": [
@@ -17550,7 +17550,7 @@
         ]
       },
       {
-        "text": "Receive the Order’s herald under his white flag",
+        "text": "Receive the Order’s herald under his flag",
         "text_fr": "Recevoir le héraut de l’Ordre sous son pavillon blanc",
         "next_id": "7400_herald",
         "hideIfFlags": [
@@ -17588,8 +17588,8 @@
         ]
       },
       {
-        "text": "Sail for Candlehold and take the Lantern Throne",
-        "text_fr": "Faire voile vers Candlehold et prendre le Trône de la Lanterne",
+        "text": "Sail for Candlehold and take the Throne",
+        "text_fr": "Faire voile vers Candlehold et prendre le Trône",
         "next_id": "7500",
         "landRouteId": "lantern_cliffs",
         "mainQuest": true,
@@ -18525,7 +18525,7 @@
     "location": "reliquary_muniment_room",
     "choices": [
       {
-        "text": "Tell the coast: a copy on every boat that sails",
+        "text": "Tell the coast: a copy on every boat",
         "text_fr": "Le dire à la côte : une copie sur chaque bateau qui part",
         "next_id": "6010",
         "alignmentMod": 1,
@@ -18830,7 +18830,7 @@
     "location": "hollow_shore",
     "choices": [
       {
-        "text": "Send it to the Order’s knights at the Anchorage",
+        "text": "Send it to the knights at the Anchorage",
         "text_fr": "L’envoyer aux chevaliers de l’Ordre, au Mouillage",
         "next_id": "7200",
         "alignmentMod": 1,
@@ -19120,7 +19120,7 @@
         }
       },
       {
-        "text": "Say nothing, take the measure of her lantern, and go",
+        "text": "Say nothing, measure her lantern, and go",
         "text_fr": "Ne rien dire, jauger sa lanterne, et partir",
         "next_id": "5100",
         "flagsToAdd": [
@@ -19193,7 +19193,7 @@
         }
       },
       {
-        "text": "Ask what else she has forgotten for the Inquisition",
+        "text": "Ask what else she forgot for the Inquisition",
         "text_fr": "Demander ce qu’elle a encore oublié pour l’Inquisition",
         "next_id": "5100",
         "flagsToAdd": [
@@ -19390,7 +19390,7 @@
       },
       {
         "text": "Warn the Keyholders by the Rimewell post",
-        "text_fr": "Prévenir les Porte-Clefs par le courrier de Puits-de-Givre",
+        "text_fr": "Prévenir les Porte-Clefs par le courrier du Puits-de-Givre",
         "next_id": "6100",
         "goldMod": 20,
         "flagsToAdd": [
@@ -19412,7 +19412,7 @@
         }
       },
       {
-        "text": "Pay the debts of those who will go home (40 gold)",
+        "text": "Pay the debts of those going home (40 gold)",
         "text_fr": "Payer les dettes de ceux qui rentreront chez eux (40 or)",
         "next_id": "6100",
         "goldMod": -40,
@@ -20150,8 +20150,8 @@
     "location": "candlehold_gates",
     "choices": [
       {
-        "text": "Speak before the Houses on the First Lantern’s cliff",
-        "text_fr": "Parler devant les Maisons sur la falaise de la Première Lanterne",
+        "text": "Speak before the Houses on the cliff",
+        "text_fr": "Parler devant les Maisons sur la falaise",
         "next_id": "7515_rest",
         "checkAbility": "charisma",
         "checkDC": 15,
@@ -20168,8 +20168,8 @@
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
-        "text": "Take the Hall stair with the Houses behind you",
-        "text_fr": "Prendre l’escalier de la Salle, les Maisons derrière vous",
+        "text": "Take the Hall stair, the Houses behind you",
+        "text_fr": "Prendre l’escalier, les Maisons derrière vous",
         "next_id": "7515_rest",
         "triggerEnemyIds": [
           "white_soldier",
@@ -20298,7 +20298,7 @@
     "choices": [
       {
         "text": "Go over the sea-wall at the new moon, unseen",
-        "text_fr": "Franchir le mur de mer à la nouvelle lune, sans qu’on vous voie",
+        "text_fr": "Franchir le mur de mer à la nouvelle lune, discrètement",
         "next_id": "7515_rest",
         "checkAbility": "dexterity",
         "checkDC": 15,
@@ -20310,8 +20310,8 @@
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
-        "text": "Break the Sun Gate with the Last Watch’s spears",
-        "text_fr": "Briser la porte du Soleil avec les lances de la Dernière Veille",
+        "text": "Break the Sun Gate with the Watch’s spears",
+        "text_fr": "Briser la porte du Soleil avec les lances de la Veille",
         "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_soldier",
@@ -20445,7 +20445,7 @@
     "choices": [
       {
         "text": "Open the Anvil Gate by its own forge-marks",
-        "text_fr": "Ouvrir la porte de l’Enclume par ses propres marques de forge",
+        "text_fr": "Ouvrir la porte de l’Enclume par ses marques de forge",
         "next_id": "7515_rest",
         "checkAbility": "intelligence",
         "checkDC": 15,
@@ -20457,7 +20457,7 @@
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
-        "text": "Break the Anvil Gate with the Row’s master hammer",
+        "text": "Break the Anvil Gate with the master hammer",
         "text_fr": "Briser la porte de l’Enclume au marteau maître de la Rue",
         "next_id": "7515_rest",
         "triggerEnemyIds": [
@@ -20591,8 +20591,8 @@
     "location": "candlehold_gates",
     "choices": [
       {
-        "text": "Follow a Heron’s Wake guide through the salt marsh",
-        "text_fr": "Suivre une guide du Sillage du Héron à travers le marais salant",
+        "text": "Follow a Heron’s Wake guide through the marsh",
+        "text_fr": "Suivre une guide du Sillage du Héron au marais",
         "next_id": "7515_rest",
         "checkAbility": "wisdom",
         "checkDC": 15,
@@ -20605,7 +20605,7 @@
       },
       {
         "text": "Take the Reed Gate with fever-bark and blades",
-        "text_fr": "Prendre la porte des Roseaux à l’écorce à fièvre et à la lame",
+        "text_fr": "Prendre la porte des Roseaux, écorce à fièvre et lames",
         "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_auxiliary",
@@ -20618,7 +20618,7 @@
       },
       {
         "text": "Let the Compact’s smiths open the Anvil Gate",
-        "text_fr": "Laisser les forgerons du Pacte ouvrir la porte de l’Enclume",
+        "text_fr": "Laisser les forgerons du Pacte ouvrir l’Enclume",
         "next_id": "7515_rest",
         "politics": {
           "standing": {
@@ -20767,8 +20767,8 @@
         "forcedStage": "quay"
       },
       {
-        "text": "Let the Salt Ledger open its counting-house door",
-        "text_fr": "Laisser le Registre du Sel ouvrir la porte de son comptoir",
+        "text": "Let the Salt Ledger open its own door",
+        "text_fr": "Laisser le Registre du Sel ouvrir sa propre porte",
         "next_id": "7515_rest",
         "politics": {
           "standing": {
@@ -21051,8 +21051,8 @@
         "failNote_fr": "Les cloches sonnent et l’escalier se remplit sous vous : on vous refoule vers les portes."
       },
       {
-        "text": "Hold the grey hand up at the gate until it breaks",
-        "text_fr": "Tenir la main grise levée devant la porte jusqu’à ce qu’elle cède",
+        "text": "Hold the grey hand at the gate until it breaks",
+        "text_fr": "Tenir la main grise à la porte jusqu’à ce qu’elle cède",
         "next_id": "7515_rest",
         "triggerEnemyIds": [
           "inquisition_auxiliary",
@@ -22151,7 +22151,7 @@
     "spot": "dais",
     "choices": [
       {
-        "text": "Bear the Lantern, and let the clans keep their banners",
+        "text": "Bear the Lantern, clans keep their banners",
         "text_fr": "Porter la Lanterne, et laisser aux clans leurs bannières",
         "next_id": "7800",
         "alignmentMod": 1,
@@ -22378,7 +22378,7 @@
       },
       {
         "text": "Sit, and turn the Inquisition’s lists on it",
-        "text_fr": "Siéger, et retourner contre l’Inquisition ses propres listes",
+        "text_fr": "Siéger et retourner contre l’Inquisition ses listes",
         "next_id": "7800",
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -22507,8 +22507,8 @@
     "spot": "dais",
     "choices": [
       {
-        "text": "Tell them why, and take the crown from their hands",
-        "text_fr": "Leur dire pourquoi, et prendre la couronne de leurs mains",
+        "text": "Tell them why; take the crown from their hands",
+        "text_fr": "Leur dire pourquoi, prendre la couronne de leurs mains",
         "next_id": "7800",
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -22557,7 +22557,7 @@
         }
       },
       {
-        "text": "Take the crown, and bind the Houses by a Charter",
+        "text": "Take the crown and bind the Houses by Charter",
         "text_fr": "Prendre la couronne, et lier les Maisons par une Charte",
         "next_id": "7800",
         "alignmentMod": -1,
@@ -22688,7 +22688,7 @@
     "choices": [
       {
         "text": "Accept the fen’s terms unread, and keep them",
-        "text_fr": "Accepter les conditions du marais sans les lire, et les tenir",
+        "text_fr": "Accepter sans les lire les conditions du marais",
         "next_id": "7800",
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -23260,7 +23260,7 @@
       },
       {
         "text": "Make the Dominion kneel to the hand it cut",
-        "text_fr": "Faire s’agenouiller le Dominion devant la main qu’il a coupée",
+        "text_fr": "Faire s’agenouiller le Dominion devant la main coupée",
         "next_id": "7800",
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -23963,7 +23963,7 @@
       },
       {
         "text": "Give the van to the Crows’ boarding crews",
-        "text_fr": "Confier l’avant-garde aux équipages d’abordage des Corneilles",
+        "text_fr": "Confier l’avant-garde aux abordeurs des Corneilles",
         "next_id": "7800",
         "flagsToAdd": [
           "hub_7800_council",
@@ -23987,7 +23987,7 @@
       },
       {
         "text": "Give the van to the Penitents, walking first",
-        "text_fr": "Confier l’avant-garde aux Pénitents, qui marchent en tête",
+        "text_fr": "Confier l’avant-garde aux Pénitents, qui marchent devant",
         "next_id": "7800",
         "flagsToAdd": [
           "hub_7800_council",
@@ -24077,7 +24077,7 @@
         }
       },
       {
-        "text": "Send them to sleep, and stand the watch yourself",
+        "text": "Send them to sleep; keep the watch yourself",
         "text_fr": "Les envoyer dormir, et monter la garde vous-même",
         "next_id": "7800",
         "flagsToAdd": [
@@ -24365,7 +24365,7 @@
         }
       },
       {
-        "text": "Mark the cutter’s signals in a book of your own",
+        "text": "Mark the cutter’s signals in your own book",
         "text_fr": "Noter les signaux du cotre dans un livre à vous",
         "next_id": "2015",
         "flagsToAdd": [
@@ -24563,7 +24563,7 @@
       },
       {
         "text": "Walk on; some things are not yours to look at",
-        "text_fr": "Passer votre chemin : certaines choses ne sont pas à vous de les regarder",
+        "text_fr": "Passer votre chemin : ce n’est pas à vous de regarder",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_child_tongue",
@@ -25098,7 +25098,7 @@
         }
       },
       {
-        "text": "Burn the thread, and tell the runner to count again",
+        "text": "Burn the thread, tell the runner to recount",
         "text_fr": "Brûler le fil, et dire au coursier de recompter",
         "next_id": "3005",
         "flagsToAdd": [
@@ -25147,8 +25147,8 @@
         }
       },
       {
-        "text": "Pay the clerk to copy the catalogue entry (10 gold)",
-        "text_fr": "Payer le commis pour recopier la fiche du catalogue (10 or)",
+        "text": "Pay the clerk to copy the entry (10 gold)",
+        "text_fr": "Payer le commis pour recopier la fiche (10 or)",
         "next_id": "3005",
         "goldMod": -10,
         "pays": true,
@@ -25201,8 +25201,8 @@
     "location": "ashen_quarter_ash_market",
     "choices": [
       {
-        "text": "Help Inès sweep the dust up for a proper burial",
-        "text_fr": "Aider Inès à recueillir la poudre pour une vraie sépulture",
+        "text": "Help Inès gather the dust for a proper burial",
+        "text_fr": "Aider Inès à recueillir la poudre pour l’enterrer",
         "next_id": "3005",
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -25235,8 +25235,8 @@
         }
       },
       {
-        "text": "Tell the Quarter’s wardens a thief walked among them",
-        "text_fr": "Dire aux gardiens du Quartier qu’un voleur a marché parmi eux",
+        "text": "Tell the wardens a thief walked among them",
+        "text_fr": "Dire aux gardiens qu’un voleur a marché parmi eux",
         "next_id": "3005",
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -25352,8 +25352,8 @@
     "location": "ashen_quarter_spire_stair",
     "choices": [
       {
-        "text": "Warn Dorran the Tribunal pays in more than coin",
-        "text_fr": "Prévenir Dorran que le Tribunal paie de plus que de la monnaie",
+        "text": "Warn Dorran the Tribunal pays beyond coin",
+        "text_fr": "Prévenir Dorran : le Tribunal paie plus qu’en monnaie",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_tribunal_gold",
@@ -25588,8 +25588,8 @@
         }
       },
       {
-        "text": "Ask what the Watch would do with a child at the tear",
-        "text_fr": "Demander ce que la Veille ferait d’un enfant devant la déchirure",
+        "text": "Ask what the Watch would do with a child",
+        "text_fr": "Demander ce que la Veille ferait d’un enfant",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_vigil_envoy",
@@ -25749,8 +25749,8 @@
     "location": "reliquary_chartkeeper_chapel",
     "choices": [
       {
-        "text": "Swear to be on the Eel’s deck when the bells ring",
-        "text_fr": "Jurer d’être sur le pont de l’Eel quand les cloches sonneront",
+        "text": "Swear to be on the Eel’s deck at the bells",
+        "text_fr": "Jurer d’être sur le pont de l’Eel aux cloches",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_heist_night",
@@ -25783,8 +25783,8 @@
         }
       },
       {
-        "text": "Slip away before they finish, with what you have heard",
-        "text_fr": "Vous éclipser avant la fin, avec ce que vous avez entendu",
+        "text": "Slip away early with what you have heard",
+        "text_fr": "Vous éclipser avant la fin, avec ce que vous savez",
         "next_id": "6010",
         "alignmentMod": -1,
         "flagsToAdd": [
@@ -26088,8 +26088,8 @@
     "location": "white_anchorage_hulls",
     "choices": [
       {
-        "text": "Put the Drowned Debt’s spokesman in the master’s chair",
-        "text_fr": "Installer le porte-parole de la Dette Noyée dans le fauteuil du maître",
+        "text": "Seat the Drowned Debt’s spokesman as master",
+        "text_fr": "Asseoir le porte-parole de la Dette Noyée en maître",
         "next_id": "7100",
         "alignmentMod": 1,
         "flagsToAdd": [
@@ -27313,7 +27313,7 @@
       },
       {
         "text": "Answer all three: the page exists, and is safe",
-        "text_fr": "Répondre aux trois : la page existe, et elle est en sûreté",
+        "text_fr": "Répondre aux trois : la page existe, en sûreté",
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_will_courier",
@@ -27413,7 +27413,7 @@
         }
       },
       {
-        "text": "Burn it unread and tell the Houses it was lost",
+        "text": "Burn it unread; tell the Houses it was lost",
         "text_fr": "Le brûler sans le lire et dire aux Maisons qu’il est perdu",
         "next_id": "7200",
         "flagsToAdd": [
@@ -27446,8 +27446,8 @@
         ]
       },
       {
-        "text": "Give it to Grand Master Morrow, whom you did not back",
-        "text_fr": "Le remettre au Grand Maître Morrow, que vous n’avez pas soutenu",
+        "text": "Give it to Morrow, whom you did not back",
+        "text_fr": "Le remettre à Morrow, que vous n’avez pas soutenu",
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_will_choice",
@@ -27464,8 +27464,8 @@
         ]
       },
       {
-        "text": "Give it to Eldest Tallis, whom you did not back",
-        "text_fr": "Le remettre à l’Aînée Tallis, que vous n’avez pas soutenue",
+        "text": "Give it to Tallis, whom you did not back",
+        "text_fr": "Le remettre à Tallis, que vous n’avez pas soutenue",
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_will_choice",
@@ -27880,7 +27880,7 @@
       },
       {
         "text": "Push it back unread and say you trust him",
-        "text_fr": "Le repousser sans le lire et dire que vous lui faites confiance",
+        "text_fr": "Le repousser sans le lire : vous lui faites confiance",
         "next_id": "4999_camp",
         "returnToCamp": true,
         "flagsToAdd": [
@@ -28061,7 +28061,7 @@
         }
       },
       {
-        "text": "Say the list is yours to decide, and only yours",
+        "text": "Say the list is yours to decide, only yours",
         "text_fr": "Dire que la liste vous revient, à vous seul",
         "next_id": "4999_camp",
         "returnToCamp": true,
