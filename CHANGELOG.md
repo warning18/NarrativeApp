@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.736.0+772]
+
+- Code: the fight's two kinds of icon tile (a fighter's effect and a
+  fight-wide status) drew the same tinted square twice; they now share one
+  widget. Nothing changes on screen.
+
 ## [1.711.0+747]
 
 - **Cleanup: nine more lints on, and the unused `cupertino_icons` package
