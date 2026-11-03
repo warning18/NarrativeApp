@@ -12,6 +12,12 @@ Keys that are the data's own ids (an object whose keys are item ids, zone ids)
 are told apart from fields: a key counts as a field when two or more records
 share it.
 
+Keys of a map whose keys are data, not fields, are skipped: the children of
+`marks` (sub-clan ids), `control` (place ids), `approvalMods` (a clan id or the
+`*` wildcard) and `persona_variants` (`race:<id>`, `profession:<id>`, built at
+run time). Core confirmed those are read by built names, so deleting them
+changes behaviour.
+
 False positives: fields read through a built name ('${prefix}Chance'), or
 through a whole-object read that forwards every key (editor screens, the
 game-data browser); listed per file with the record count so the owner can
@@ -37,9 +43,17 @@ def base(k):
     return k2
 
 
+MAP_KEYS = {'marks', 'control', 'approvalMods', 'persona_variants'}
+
+
 def collect(obj, counter, depth=0):
     if isinstance(obj, dict):
         for k, v in obj.items():
+            if k in MAP_KEYS and isinstance(v, dict):
+                counter[k] += 1
+                for sub in v.values():  # the map's own keys are ids
+                    collect(sub, counter, depth + 2)
+                continue
             counter[k] += 1
             collect(v, counter, depth + 1)
     elif isinstance(obj, list):

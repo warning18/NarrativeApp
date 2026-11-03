@@ -6,7 +6,7 @@ import 'remark_provider.dart';
 
 /// The most companions who walk beside the hero on a land walk (wave 13):
 /// the side view has room for three figures.
-const int maxWalkingCompanions = 2;
+const int _maxWalkingCompanions = 2;
 
 /// One figure of the walking party on a land walk's side view.
 class WalkingPartyMember {
@@ -39,7 +39,7 @@ const String heroWalkerId = 'hero';
 
 /// Who walks on a land walk, front to back: the hero first, then the
 /// companions the player picked for the party (`activeAllyIds`, in the
-/// order picked), at most [maxWalkingCompanions]. With no companion in the
+/// order picked), at most [_maxWalkingCompanions]. With no companion in the
 /// party the hero walks alone. A companion the story took or who left
 /// does not walk, whatever the party list still says.
 List<WalkingPartyMember> walkingPartyOf(PlayerSession session) {
@@ -49,7 +49,7 @@ List<WalkingPartyMember> walkingPartyOf(PlayerSession session) {
   };
   final companions = <String>[];
   for (final id in session.activeAllyIds) {
-    if (companions.length >= maxWalkingCompanions) break;
+    if (companions.length >= _maxWalkingCompanions) break;
     if (id.isEmpty || gone.contains(id) || !recruited.contains(id)) continue;
     if (companions.contains(id)) continue;
     companions.add(id);

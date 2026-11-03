@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _apiKeyPrefsKey = 'gemini_api_key';
 
-class ApiKeyNotifier extends StateNotifier<String?> {
-  ApiKeyNotifier() : super(null) {
+class _ApiKeyNotifier extends StateNotifier<String?> {
+  _ApiKeyNotifier() : super(null) {
     _load();
   }
 
@@ -27,4 +27,4 @@ class ApiKeyNotifier extends StateNotifier<String?> {
 }
 
 final apiKeyProvider =
-    StateNotifierProvider<ApiKeyNotifier, String?>((ref) => ApiKeyNotifier());
+    StateNotifierProvider<_ApiKeyNotifier, String?>((ref) => _ApiKeyNotifier());

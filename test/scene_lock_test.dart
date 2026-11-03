@@ -27,6 +27,7 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'support/pump.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -92,10 +93,7 @@ Future<void> _setUp(WidgetTester tester) async {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
-  tester.view.physicalSize = const Size(420, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(420, 900));
   // No walks or beats to wait for.
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       const FakeAccessibilityFeatures(disableAnimations: true);
@@ -149,7 +147,7 @@ Future<void> _take(WidgetTester tester, int i) async {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   group('sceneLocked', () {
     test('the Bouncer\'s aftermath does not lock: its ways are room spots', () {
@@ -203,11 +201,11 @@ void main() {
 
     test('a way on the map keeps a scene unlocked: mixed scenes do not lock',
         () {
-      // 250: the Weaver's Alley is acted out here, the bridge a road; both
-      // are ways on Alster's city chart.
+      // 250: the bridge, its one way on (the alley is parked, v1.620), is a
+      // road on Alster's city chart.
       final ways = _ways('250');
+      expect(ways, hasLength(1));
       expect(ways[0].here, isFalse);
-      expect(ways[1].here, isTrue);
       expect(ways.every((w) => w.mapped), isTrue);
       expect(_locks('250'), isFalse);
       // A pure choice beside a way on the map: no lock.

@@ -18,7 +18,7 @@ bool skillFitsCharacter(Map<String, dynamic>? skill,
 /// Whether the merge-only [resultId] can ever be crafted by this
 /// character: every skill_merges.json recipe that yields it needs inputs
 /// the character can learn.
-bool mergeResultFitsCharacter(
+bool _mergeResultFitsCharacter(
   String resultId,
   Map<String, dynamic> merges,
   Map<String, dynamic> skills, {
@@ -58,7 +58,7 @@ List<String> skillIdsForCharacter(
               raceId: raceId, professionId: professionId) &&
           ((entry.value as Map<String, dynamic>)['unlockedViaMergeOnly'] !=
                   true ||
-              mergeResultFitsCharacter(entry.key, merges, skills,
+              _mergeResultFitsCharacter(entry.key, merges, skills,
                   raceId: raceId, professionId: professionId)))
         entry.key,
   ]..sort();

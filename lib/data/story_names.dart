@@ -7,7 +7,7 @@ import 'story_markup.dart';
 
 /// Plain words that are also a clan's short name, and so are never
 /// coloured on their own.
-const Set<String> storyNamesIgnore = {'Mire', 'Pit', 'Choir', 'Giants', 'Oni'};
+const Set<String> _storyNamesIgnore = {'Mire', 'Pit', 'Choir', 'Giants', 'Oni'};
 
 final RegExp _article = RegExp(
     r"^(?:(?:The|A|An|Le|La|Les|Un|Une)\s+|L['’]\s*)(?=\S)",
@@ -42,7 +42,7 @@ StoryNameMatcher buildStoryNames({
   }
 
   void add(String? name, StoryNameKind kind) {
-    if (name == null || storyNamesIgnore.contains(name)) return;
+    if (name == null || _storyNamesIgnore.contains(name)) return;
     // The first kind wins: a person before a place before a clan.
     names.putIfAbsent(name, () => kind);
   }

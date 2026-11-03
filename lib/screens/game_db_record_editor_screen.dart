@@ -53,7 +53,6 @@ class _GameDbRecordEditorScreenState
         case FieldType.boolean:
           _boolValues[field.key] =
               value as bool? ?? (field.defaultValue as bool? ?? false);
-          break;
         case FieldType.enumeration:
         case FieldType.reference:
           _enumValues[field.key] = (value as String?) ??
@@ -62,7 +61,6 @@ class _GameDbRecordEditorScreenState
                       field.enumOptions.isNotEmpty
                   ? field.enumOptions.first
                   : '');
-          break;
         case FieldType.stringList:
           final list = (value as List?)?.map((e) => e.toString()).toList() ??
               const <String>[];
@@ -70,25 +68,21 @@ class _GameDbRecordEditorScreenState
           // all (dialogue, encounter texts, companion remarks).
           _textControllers[field.key] =
               TextEditingController(text: list.join('\n'));
-          break;
         case FieldType.referenceList:
         case FieldType.multiEnum:
           _multiSelectValues[field.key] =
               (value as List?)?.map((e) => e.toString()).toList() ?? <String>[];
-          break;
         case FieldType.json:
           final encoded = value == null
               ? '[]'
               : const JsonEncoder.withIndent('  ').convert(value);
           _textControllers[field.key] = TextEditingController(text: encoded);
-          break;
         case FieldType.text:
         case FieldType.multilineText:
         case FieldType.image:
           _textControllers[field.key] = TextEditingController(
             text: value?.toString() ?? (field.defaultValue?.toString() ?? ''),
           );
-          break;
         case FieldType.integer:
         case FieldType.decimal:
           _textControllers[field.key] = TextEditingController(
@@ -98,7 +92,6 @@ class _GameDbRecordEditorScreenState
                     ? field.defaultValue.toString()
                     : ''),
           );
-          break;
       }
     }
   }
@@ -117,11 +110,9 @@ class _GameDbRecordEditorScreenState
       switch (field.type) {
         case FieldType.boolean:
           result[field.key] = _boolValues[field.key] ?? false;
-          break;
         case FieldType.enumeration:
         case FieldType.reference:
           result[field.key] = _enumValues[field.key] ?? '';
-          break;
         case FieldType.stringList:
           final raw = _textControllers[field.key]!.text;
           result[field.key] = raw
@@ -129,11 +120,9 @@ class _GameDbRecordEditorScreenState
               .map((s) => s.trim())
               .where((s) => s.isNotEmpty)
               .toList();
-          break;
         case FieldType.referenceList:
         case FieldType.multiEnum:
           result[field.key] = _multiSelectValues[field.key] ?? <String>[];
-          break;
         case FieldType.json:
           final raw = _textControllers[field.key]!.text.trim();
           try {
@@ -142,20 +131,16 @@ class _GameDbRecordEditorScreenState
             setState(() => _error = 'Invalid JSON in "${field.label}".');
             return;
           }
-          break;
         case FieldType.integer:
           final raw = _textControllers[field.key]!.text.trim();
           result[field.key] = int.tryParse(raw) ?? 0;
-          break;
         case FieldType.decimal:
           final raw = _textControllers[field.key]!.text.trim();
           result[field.key] = double.tryParse(raw) ?? 0.0;
-          break;
         case FieldType.text:
         case FieldType.multilineText:
         case FieldType.image:
           result[field.key] = _textControllers[field.key]!.text;
-          break;
       }
     }
 

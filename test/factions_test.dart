@@ -259,8 +259,8 @@ void main() {
       state = _change(state, 'red', 70).state;
       expect(state.swornFactionId, 'red');
       // A save from before the rule, with the Choir sworn, is released.
-      final old = const PoliticsState(
-          standings: {'choir': 80}, swornFactionId: 'choir');
+      const old =
+          PoliticsState(standings: {'choir': 80}, swornFactionId: 'choir');
       final fixed = _change(old, 'gold', 1);
       expect(fixed.state.swornFactionId, '');
       expect(fixed.released, 'choir');

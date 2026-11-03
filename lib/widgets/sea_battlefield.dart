@@ -156,7 +156,7 @@ class SeaSurfacePainter extends CustomPainter {
     final rough = weather == SeaWeather.squall ? 1.8 : 1.0;
     final drift = _windOf(weather).dx / 70;
     // What lies under the water first, the surface's waves over it.
-    SeaDepthsPainter(waters: waters, t: t).paint(canvas, size);
+    _SeaDepthsPainter(waters: waters, t: t).paint(canvas, size);
     switch (waters) {
       case SeaWaters.open:
         _swells(canvas, size, look, rough, drift);
@@ -309,7 +309,7 @@ class SeaSurfacePainter extends CustomPainter {
     final centre = Offset(size.width * 0.5, size.height * 0.5);
     final maxR = size.longestSide * 0.75;
     for (var i = 0; i < 6; i++) {
-      final r = ((t * 14 * rough + i * maxR / 6) % maxR);
+      final r = (t * 14 * rough + i * maxR / 6) % maxR;
       final fade = 1 - r / maxR;
       canvas.drawCircle(
         centre,
@@ -432,8 +432,8 @@ class SeaSurfacePainter extends CustomPainter {
 ///   in the dark.
 /// - The ashen chop: grey rocks crusted with barnacles, dead weed, small
 ///   dark fish.
-class SeaDepthsPainter extends CustomPainter {
-  const SeaDepthsPainter({required this.waters, required this.t});
+class _SeaDepthsPainter extends CustomPainter {
+  const _SeaDepthsPainter({required this.waters, required this.t});
 
   final SeaWaters waters;
   final double t;
@@ -711,7 +711,7 @@ class SeaDepthsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant SeaDepthsPainter old) =>
+  bool shouldRepaint(covariant _SeaDepthsPainter old) =>
       old.t != t || old.waters != waters;
 }
 

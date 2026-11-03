@@ -45,7 +45,7 @@ for nid, n in G.items():
     for cb in n.get('flag_callbacks', []):
         if cb.get('flag'): readers[cb['flag']].add(nid)
 blob = open(f'{ROOT}/assets/gamedata/quests.json').read() + open(f'{ROOT}/assets/gamedata/chapters.json').read()
-for f in re.findall(r'"flagToAdd"\s*:\s*"([^"]+)"', blob): setters[f].add('quests')
+for qid in json.load(open(f'{ROOT}/assets/gamedata/quests.json')): setters[f'{qid}_accepted'].add('quests')  # acceptQuest sets it
 code = ''
 for dp, _, fs in os.walk(f'{ROOT}/lib'):
     for fn in fs:

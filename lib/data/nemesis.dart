@@ -1,7 +1,7 @@
 // The nemesis (v5.2 step 6, docs/proposals/territory-power-nemesis.md):
 // a clan the character keeps turning against does not just fade.
 //
-// - Who: at most one, the strongest main clan (power [nemesisMinPower] or
+// - Who: at most one, the strongest main clan (power [_nemesisMinPower] or
 //   more) the character stands Hostile or Hunted with. It rises at a
 //   chapter's turn ([updateNemesis]) and stays until the standing climbs
 //   back to Wary, so it does not flicker at the border.
@@ -34,7 +34,7 @@ import 'clan_crisis.dart' show clanCrisisNodePrefix;
 import 'clan_power.dart';
 import 'factions.dart';
 
-const int nemesisMinPower = risingPower;
+const int _nemesisMinPower = risingPower;
 const int nemesisBreakChapters = 2;
 
 /// Whether [state]'s standing with [clanId] makes it a nemesis candidate:
@@ -43,7 +43,7 @@ bool _turnedAgainst(PoliticsState state, String clanId, ClanData data) =>
     !state.tierOf(clanId, data).isAtLeast(StandingTier.resented);
 
 /// The clan that would be the character's nemesis now, with no
-/// hysteresis: the strongest main clan of power [nemesisMinPower] or more
+/// hysteresis: the strongest main clan of power [_nemesisMinPower] or more
 /// stood Hostile or Hunted with, not fallen, not cooling down; '' for
 /// none.
 String nemesisCandidate(PoliticsState state, ClanData data,
@@ -56,7 +56,7 @@ String nemesisCandidate(PoliticsState state, ClanData data,
     if ((state.nemesisCooldown[id] ?? 0) > chapter) continue;
     if (!_turnedAgainst(state, id, data)) continue;
     final power = powerOf(state, id, data);
-    if (power < nemesisMinPower || power <= bestPower) continue;
+    if (power < _nemesisMinPower || power <= bestPower) continue;
     best = id;
     bestPower = power;
   }
@@ -65,7 +65,7 @@ String nemesisCandidate(PoliticsState state, ClanData data,
 
 /// Whether the nemesis [clanId] lets go: the standing back at Wary or
 /// better, or the clan fallen.
-bool nemesisEnds(PoliticsState state, String clanId, ClanData data) =>
+bool _nemesisEnds(PoliticsState state, String clanId, ClanData data) =>
     state.fallen.contains(clanId) ||
     state.tierOf(clanId, data).isAtLeast(StandingTier.wary);
 
@@ -83,7 +83,7 @@ const List<String> dominionSidedFlags = [
 /// Lysa taken from its chapel by force, or her blood given to the Shroud.
 /// The story's nemesis turns an earned one (the Hunted odds, its people in
 /// your fights, its wars), and its champion comes sooner
-/// ([fiercerChampionRoadChance]).
+/// ([_fiercerChampionRoadChance]).
 const List<String> dominionFiercerFlags = [
   'lysa_rescued_force',
   'lysa_sacrificed',
@@ -91,7 +91,7 @@ const List<String> dominionFiercerFlags = [
 
 /// The Dominion's champion's odds on a road at rest once its hunt is
 /// fiercer ([dominionFiercerFlags]).
-const double fiercerChampionRoadChance = 0.6;
+const double _fiercerChampionRoadChance = 0.6;
 
 /// The clans [flags] put out of the nemesis's reach ([dominionSidedFlags]).
 Set<String> _sidedWith(Iterable<String> flags) =>
@@ -100,7 +100,7 @@ Set<String> _sidedWith(Iterable<String> flags) =>
         : const {};
 
 /// [state] with its nemesis brought up to date at [chapter]: the one held
-/// kept until it ends ([nemesisEnds]), then the [nemesisCandidate]; the
+/// kept until it ends ([_nemesisEnds]), then the [nemesisCandidate]; the
 /// news says when one rises or lets go. [flags]: the story's, for
 /// [dominionSidedFlags].
 PoliticsState updateNemesis(
@@ -143,7 +143,7 @@ PoliticsState updateNemesis(
         nemesisRiseNews(data.faction(rising)), chapter, day);
   }
   if (held.isNotEmpty) {
-    if (!sided.contains(held) && !nemesisEnds(state, held, data)) return state;
+    if (!sided.contains(held) && !_nemesisEnds(state, held, data)) return state;
     next = _told(next.copyWith(nemesis: ''), 'nemesis_end:$held',
         nemesisEndNews(data.faction(held)), chapter, day);
   }
@@ -203,7 +203,7 @@ PoliticsState breakNemesis(
   int day = 0,
 }) {
   final power = powerOf(state, clanId, data);
-  var next = addPower(state, clanId, -min25(power), data).copyWith(
+  var next = addPower(state, clanId, -_min25(power), data).copyWith(
     nemesis: state.nemesis == clanId ? '' : state.nemesis,
     nemesisCooldown: {
       ...state.nemesisCooldown,
@@ -216,7 +216,7 @@ PoliticsState breakNemesis(
 }
 
 /// A tier of [power]: 25, never more than there is.
-int min25(int power) => power < risingPower ? power : risingPower;
+int _min25(int power) => power < risingPower ? power : risingPower;
 
 PoliticsState _told(PoliticsState state, String id,
     ({String en, String fr}) text, int chapter, int day) {
@@ -306,7 +306,7 @@ String _text(Map<String, dynamic> record, String key, [String fallback = '']) {
 
 /// The trail's road scene: the quest's first objective as the way on, one
 /// choice that follows it ([trailFlagOf]); null when [quests] lacks it.
-StoryNode? buildTrailNode(
+StoryNode? _buildTrailNode(
     String clanId, Map<String, dynamic> quests, Random random) {
   final quest = quests[nemesisQuestIdOf(clanId)];
   if (quest is! Map<String, dynamic>) return null;
@@ -337,7 +337,7 @@ StoryNode? buildTrailNode(
 /// (`wayForce`, `wayGuile`, `wayMercy`: each fights it with its edge and
 /// sets its flag; Mercy, won, earns [mercyStanding]); with none written,
 /// one plain "Face" choice. Null when [enemies] lacks it.
-StoryNode? buildChampionNode(
+StoryNode? _buildChampionNode(
     String clanId, Map<String, dynamic> enemies, Random random) {
   final id = championIdOf(clanId);
   final enemy = enemies[id];
@@ -408,7 +408,7 @@ Map<String, dynamic> championRecordFor(
 
 /// The nemesis quest's beat on this road at rest, or null: its quest under
 /// way ([activeQuestIds]), from [championMinChapter], at
-/// [championRoadChance] ([fiercerChampionRoadChance] for the Dominion's
+/// [championRoadChance] ([_fiercerChampionRoadChance] for the Dominion's
 /// once its hunt is fiercer); the trail first ([flags] without [trailFlagOf]),
 /// then the champion.
 List<StoryNode>? maybeChampionRoad({
@@ -425,12 +425,12 @@ List<StoryNode>? maybeChampionRoad({
   if (!activeQuestIds.contains(nemesisQuestIdOf(clan))) return null;
   final chance =
       clan == storyNemesisClan && flags.any(dominionFiercerFlags.contains)
-          ? fiercerChampionRoadChance
+          ? _fiercerChampionRoadChance
           : championRoadChance;
   if (random.nextDouble() >= chance) return null;
   final node = flags.contains(trailFlagOf(clan))
-      ? buildChampionNode(clan, enemies, random)
-      : buildTrailNode(clan, quests, random) ??
-          buildChampionNode(clan, enemies, random);
+      ? _buildChampionNode(clan, enemies, random)
+      : _buildTrailNode(clan, quests, random) ??
+          _buildChampionNode(clan, enemies, random);
   return node == null ? null : [node];
 }

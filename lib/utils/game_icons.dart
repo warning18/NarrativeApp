@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../combat/skill_vfx.dart' show paletteForElement;
-
 import '../combat/spells.dart';
 
 IconData itemTypeIcon(String? itemType) {
@@ -66,17 +64,7 @@ IconData elementIcon(String? element) {
   }
 }
 
-/// The colour of [element], as its skills' effects are drawn (see
-/// skill_vfx.dart); a skill with no element takes [plain]. On a light
-/// page, pass its text colour as [ink]: the pale elements (Light, Ice,
-/// Wind) are darkened toward it so they still show.
-Color elementColor(String? element, {required Color plain, Color? ink}) {
-  if (element == null || element == 'None') return plain;
-  final color = Color(paletteForElement(element).primary);
-  return ink == null ? color : Color.lerp(ink, color, 0.6)!;
-}
-
-IconData questCategoryIcon(String? category) {
+IconData _questCategoryIcon(String? category) {
   switch (category) {
     case 'Main':
       return Icons.star;
@@ -92,9 +80,9 @@ IconData questCategoryIcon(String? category) {
 }
 
 /// A quest's icon, keyed off what its first objective actually asks the
-/// player to do — sharper than [questCategoryIcon] alone, which otherwise
+/// player to do — sharper than [_questCategoryIcon] alone, which otherwise
 /// gives every "Main" quest the same star regardless of whether it's a
-/// fight, a fetch, or a conversation. Falls back to [questCategoryIcon] for
+/// fight, a fetch, or a conversation. Falls back to [_questCategoryIcon] for
 /// an objective type this doesn't recognize (or a quest with none).
 IconData questIcon(String? category, String? firstObjectiveType) {
   switch (firstObjectiveType) {
@@ -105,28 +93,7 @@ IconData questIcon(String? category, String? firstObjectiveType) {
     case 'Talk':
       return Icons.chat_bubble_outline;
     default:
-      return questCategoryIcon(category);
-  }
-}
-
-IconData adventureNodeCategoryIcon(String? category) {
-  switch (category) {
-    case 'Combat':
-      return Icons.sports_martial_arts;
-    case 'Event':
-      return Icons.celebration;
-    case 'Shop':
-      return Icons.storefront;
-    case 'Rest':
-      return Icons.hotel;
-    case 'Treasure':
-      return Icons.diamond;
-    case 'Puzzle':
-      return Icons.extension;
-    case 'Travel':
-      return Icons.explore;
-    default:
-      return Icons.place;
+      return _questCategoryIcon(category);
   }
 }
 

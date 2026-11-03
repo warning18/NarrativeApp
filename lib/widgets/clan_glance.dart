@@ -12,11 +12,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/clan_power.dart';
 import '../data/factions.dart';
 import '../providers/clans_provider.dart';
+import 'clan_rank_plate.dart';
 import 'standing_sign.dart';
 
 /// What a clan's banner says of it at a glance.
-class ClanGlance {
-  const ClanGlance(this.standing, this.power);
+class _ClanGlance {
+  const _ClanGlance(this.standing, this.power);
 
   /// How it stands with the player.
   final StandingTier standing;
@@ -26,18 +27,21 @@ class ClanGlance {
 
   @override
   bool operator ==(Object other) =>
-      other is ClanGlance && other.standing == standing && other.power == power;
+      other is _ClanGlance &&
+      other.standing == standing &&
+      other.power == power;
 
   @override
   int get hashCode => Object.hash(standing, power);
 }
 
 /// [clanId]'s glance now, or null for a faction not on file.
-final clanGlanceProvider = Provider.family<ClanGlance?, String>((ref, clanId) {
+final _clanGlanceProvider =
+    Provider.family<_ClanGlance?, String>((ref, clanId) {
   final data = ref.watch(clanDataProvider);
   if (data.faction(clanId) == null) return null;
   final politics = ref.watch(politicsProvider);
-  return ClanGlance(
+  return _ClanGlance(
     politics.tierOf(clanId, data),
     hasPower(clanId, data)
         ? powerTierFor(powerOf(politics, clanId, data))
@@ -114,7 +118,7 @@ class ClanCloth extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final power = ref.watch(clanGlanceProvider(factionId))?.power;
+    final power = ref.watch(_clanGlanceProvider(factionId))?.power;
     return power == null ? child : PowerCloth(tier: power, child: child);
   }
 }
@@ -131,6 +135,7 @@ class ClanMarks extends ConsumerWidget {
     this.discSize = 24,
     this.cloth = true,
     this.atLeft = false,
+    this.plate = false,
   });
 
   final String factionId;
@@ -145,9 +150,13 @@ class ClanMarks extends ConsumerWidget {
   /// already wears a number at its right).
   final bool atLeft;
 
+  /// Whether the rank plate ("#2 ▲", clan_rank_plate.dart) hangs under the
+  /// banner: the chips and the Clans page.
+  final bool plate;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final glance = ref.watch(clanGlanceProvider(factionId));
+    final glance = ref.watch(_clanGlanceProvider(factionId));
     if (glance == null) return child;
     final power = glance.power;
     return Stack(
@@ -161,6 +170,13 @@ class ClanMarks extends ConsumerWidget {
           top: -discSize * 0.2,
           child: StandingSign(glance.standing, size: discSize),
         ),
+        if (plate && glance.power != null)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: -4,
+            child: Center(child: ClanRankPlate(clanId: factionId)),
+          ),
       ],
     );
   }

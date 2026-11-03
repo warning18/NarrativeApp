@@ -11,6 +11,7 @@ import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_lab_screen.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
@@ -34,10 +35,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(420, 2400);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(420, 2400));
 
     await tester.pumpWidget(
         const ProviderScope(child: MaterialApp(home: FightLabScreen())));

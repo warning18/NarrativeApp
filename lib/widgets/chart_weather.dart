@@ -80,7 +80,7 @@ class _ChartWeatherState extends State<ChartWeather>
         child: RepaintBoundary(
           child: CustomPaint(
             size: widget.size,
-            painter: ChartWeatherPainter(
+            painter: _ChartWeatherPainter(
               geography: widget.geography,
               palette: widget.palette,
               day: widget.day,
@@ -97,8 +97,8 @@ class _ChartWeatherState extends State<ChartWeather>
 }
 
 /// Paints the sky of one moment over the chart.
-class ChartWeatherPainter extends CustomPainter {
-  ChartWeatherPainter({
+class _ChartWeatherPainter extends CustomPainter {
+  _ChartWeatherPainter({
     required this.geography,
     required this.palette,
     required this.day,
@@ -404,7 +404,7 @@ class ChartWeatherPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ChartWeatherPainter old) =>
+  bool shouldRepaint(_ChartWeatherPainter old) =>
       old.geography != geography ||
       old.palette != palette ||
       old.day != day ||

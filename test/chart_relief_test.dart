@@ -28,12 +28,12 @@ void main() {
       // A cap: along the top edge, down the seam on both sides, and a
       // ragged lower edge between.
       final cap = [
-        Offset(0, 0),
+        const Offset(0, 0),
         Offset(w, 0),
         Offset(w, 30),
         Offset(w * 0.6, 42),
         Offset(w * 0.3, 36),
-        Offset(0, 30),
+        const Offset(0, 30),
       ];
       for (final seed in [1, 2, 3]) {
         final pts = fractalLine(cap, seed: seed);

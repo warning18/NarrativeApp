@@ -116,7 +116,7 @@ WayPlace placeOfWay(
 
 /// Whether [choice] carries the party somewhere else in the town or out of
 /// it (a walk, a journey), rather than being done where it stands.
-bool wayCarriesParty(StoryNode node, StoryChoice choice,
+bool _wayCarriesParty(StoryNode node, StoryChoice choice,
     {required StoryData story, required Geography geography}) {
   final move =
       choiceShape(node, choice, story: story, geography: geography).move;
@@ -125,7 +125,7 @@ bool wayCarriesParty(StoryNode node, StoryChoice choice,
 
 /// Whether [choice] goes on with the main story: it leads to one of the
 /// chapters' beats, or to a main-story scene ([stops]).
-bool wayIsMainStory(StoryChoice choice, {StoryStops? stops}) =>
+bool _wayIsMainStory(StoryChoice choice, {StoryStops? stops}) =>
     chapterForNode(choice.nextId) != null ||
     (stops?.isMainStoryScene(choice.nextId) ?? false);
 
@@ -240,8 +240,8 @@ List<WayPlaceEntry> districtPlaces(
     final choice = node.choices[i];
     places[i] = placeOfWay(node, choice,
         story: story, geography: geography, record: record, stops: stops);
-    if (wayIsMainStory(choice, stops: stops)) main.add(i);
-    if (wayCarriesParty(node, choice, story: story, geography: geography)) {
+    if (_wayIsMainStory(choice, stops: stops)) main.add(i);
+    if (_wayCarriesParty(node, choice, story: story, geography: geography)) {
       carries.add(i);
     }
   }

@@ -10,7 +10,7 @@ import 'pixel_banner.dart';
 
 /// A faction's icon (factions.json `icon`, see patronIconNames): a
 /// Material icon, since factions have no image of their own.
-IconData patronIconFor(String name) => switch (name) {
+IconData _patronIconFor(String name) => switch (name) {
       'flag' => Icons.flag,
       'brush' => Icons.brush,
       'palette' => Icons.palette,
@@ -169,7 +169,7 @@ class PatronEmblem extends StatelessWidget {
         ),
         border: Border.all(color: color.withValues(alpha: 0.9), width: 1.5),
       ),
-      child: Icon(patronIconFor(patron?.icon ?? ''),
+      child: Icon(_patronIconFor(patron?.icon ?? ''),
           size: size * 0.55, color: Colors.white),
     );
   }

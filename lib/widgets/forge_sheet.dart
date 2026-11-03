@@ -44,7 +44,13 @@ Future<void> showForgeSheet(BuildContext context, {required String shopId}) {
 }
 
 /// The order the slot tabs come in; any other slot follows by name.
-const List<String> forgeSlotOrder = ['Head', 'Top', 'Bottom', 'Foot', 'Weapon'];
+const List<String> _forgeSlotOrder = [
+  'Head',
+  'Top',
+  'Bottom',
+  'Foot',
+  'Weapon'
+];
 
 String _nameOf(Map<String, dynamic>? item, String id, AppLanguage lang) {
   final fr = item?['itemName_fr']?.toString() ?? '';
@@ -195,8 +201,8 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
     final slots = {for (final id in recipes) slotOf(id)}.toList()
       ..sort((a, b) {
         int rank(String s) {
-          final i = forgeSlotOrder.indexOf(s);
-          return i < 0 ? forgeSlotOrder.length : i;
+          final i = _forgeSlotOrder.indexOf(s);
+          return i < 0 ? _forgeSlotOrder.length : i;
         }
 
         final r = rank(a).compareTo(rank(b));

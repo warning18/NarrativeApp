@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../combat/encounter.dart' show EncounterModifiers;
+import '../combat/field_anomaly.dart' show landRouteStage;
 import '../data/ability_check.dart';
 import '../data/fate_coin.dart';
 import '../data/journey_rules.dart' show watchesPerDay;
@@ -37,6 +39,7 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
+import '../widgets/side_view/scene_versions.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -109,14 +112,25 @@ const crossingSceneTerrains = {
 
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
-List<SideLayer> crossingLayers(String terrain, double progress) =>
-    switch (terrain) {
-      'ruins' => ruinsLayers(progress: progress),
-      'frost' => frostLayers(progress: progress),
-      'fen' => fenLayers(progress: progress),
-      'sea_cliffs' => cliffsLayers(progress: progress),
-      _ => desertLayers(progress: progress),
-    };
+///
+/// [version] (0 to 3, sceneVersionAt) is the stretch of that land shown: its
+/// own window of the world and its own landmark.
+List<SideLayer> crossingLayers(String terrain, double progress,
+    {int version = 0}) {
+  final layers = switch (terrain) {
+    'ruins' => ruinsLayers(progress: progress),
+    'frost' => frostLayers(progress: progress),
+    'fen' => fenLayers(progress: progress),
+    'sea_cliffs' => cliffsLayers(progress: progress),
+    _ => desertLayers(progress: progress),
+  };
+  final kit = switch (terrain) {
+    'ruins' || 'frost' || 'fen' => terrain,
+    'sea_cliffs' => 'cliffs',
+    _ => 'desert',
+  };
+  return withSceneVersion(layers, kit, version);
+}
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
 /// the terrain's (heat shimmer in the desert, ash among the ruins).
@@ -169,7 +183,7 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
 }
 
 /// The scene's height: the side view's own default.
-const double crossingSceneHeight = 190;
+const double _crossingSceneHeight = 190;
 
 enum _Phase { event, result, arrived, failed, turnedBack }
 
@@ -179,6 +193,29 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       widget.route, widget.events.keys,
       random: _random, rulers: widget.rulers);
   var _day = 0;
+
+  /// The scene version on show, and the dissolve that brings the next one in
+  /// (a short pixel dissolve when the day, and with it the version, changes).
+  int? _shownVersion;
+  SideLayer? _dissolve;
+  DateTime _dissolveUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  List<SideLayer> _sceneLayers(
+      int version, List<SideLayer> Function(int version) layersFor,
+      {required bool reduceMotion}) {
+    final shown = _shownVersion;
+    if (shown != null && shown != version && !reduceMotion) {
+      _dissolve = sceneDissolve(layersFor(shown), layersFor(version));
+      _dissolveUntil = DateTime.now().add(const Duration(milliseconds: 1100));
+    }
+    _shownVersion = version;
+    final dissolve = _dissolve;
+    if (dissolve != null && DateTime.now().isBefore(_dissolveUntil)) {
+      return [dissolve];
+    }
+    return layersFor(version);
+  }
+
   var _phase = _Phase.event;
   var _daysSpent = 0;
   String _note = '';
@@ -346,9 +383,15 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     if (!mounted) return;
     if (enemy == null) return _settle(choice.fail, '');
     ref.read(combatActiveProvider.notifier).state = true;
+    // The road's own ground (field_anomaly.dart's landRouteStage): a desert
+    // road a caravan road, a mountain road a pass.
+    final stage = landRouteStage(
+        terrain: widget.route.terrain, biome: widget.route.biome);
     final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
-        builder: (_) =>
-            FightScreen(enemyId: choice.fightEnemyId!, enemy: enemy)));
+        builder: (_) => FightScreen(
+            enemyId: choice.fightEnemyId!,
+            enemy: enemy,
+            modifiers: EncounterModifiers(forcedStage: stage))));
     ref.read(combatActiveProvider.notifier).state = false;
     final retreated = ref.read(lastFightRetreatedProvider);
     ref.read(lastFightRetreatedProvider.notifier).state = false;
@@ -455,7 +498,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final party = ref.read(walkingPartyProvider);
     final index = party.indexWhere((m) => m.id == line.companionId);
     final xs = walkingPartyXs(party.length);
-    const unit = crossingSceneHeight / sideViewRows;
+    const unit = _crossingSceneHeight / sideViewRows;
     final width = MediaQuery.sizeOf(context).width;
     final bubbleWidth = min(300.0, width - 16);
     final at = (index < 0 ? xs.first : xs[index]) * unit;
@@ -466,7 +509,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       left: left,
       top: 34,
       width: bubbleWidth,
-      bottom: crossingSceneHeight - 40 * unit,
+      bottom: _crossingSceneHeight - 40 * unit,
       child: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.bottomLeft,
@@ -737,9 +780,14 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
                   children: [
                     SideViewScene(
                       key: const Key('crossing_scene'),
-                      height: crossingSceneHeight,
-                      layers: withHourStars(
-                          crossingLayers(terrain, progress), phase),
+                      height: _crossingSceneHeight,
+                      layers: _sceneLayers(
+                          sceneVersionAt(widget.route.id, _day),
+                          (v) => withHourStars(
+                              crossingLayers(terrain, progress, version: v),
+                              phase),
+                          reduceMotion:
+                              MediaQuery.of(context).disableAnimations),
                       overlay: hourWash(phase),
                       actors: desertActors(
                           party: ref.watch(walkingPartyProvider),

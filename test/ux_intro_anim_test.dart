@@ -20,33 +20,7 @@ import 'package:narrative_data_app/screens/intro_screen.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/story_text.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 void main() {
   final dir = Platform.environment['UX_ANIM'];
@@ -56,7 +30,7 @@ void main() {
   }
 
   testWidgets('the intro, animated', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);

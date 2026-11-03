@@ -8,7 +8,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,28 +18,18 @@ import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/world_leg_path.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/data/world_roads.dart';
-import 'package:narrative_data_app/l10n/app_locale.dart';
-import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/city_provider.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart';
-import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 import 'package:narrative_data_app/widgets/street_view/street_view.dart';
+import 'support/pump.dart';
+import 'support/open_game.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
 
 void main() {
   final geo = Geography.parse(
@@ -142,32 +131,14 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    tester.view.physicalSize = const Size(400, 860);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 860));
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
-    await _settle(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await _settle(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await _settle(tester);
+    final container = await openGame(tester);
     final play = container.read(storyPlayProvider.notifier);
 
     Future<void> moveTo(String nodeId, {VoidCallback? whileWalking}) async {
       play.jumpTo(nodeId);
-      await _settle(tester);
+      await settleApp(tester);
       whileWalking?.call();
       await tester.pump(const Duration(seconds: 2));
       // What arriving opens over the game (a scene read full screen, a
@@ -186,9 +157,9 @@ void main() {
     }
 
     play.jumpTo('250');
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Journey'));
-    await _settle(tester);
+    await settleApp(tester);
     await moveTo('250');
     expect(container.read(currentCityProvider), 'alster');
 

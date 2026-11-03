@@ -456,10 +456,6 @@ class ChartClimate {
   double elevationAt(Offset p) => isLand(p) ? _at(_elev, p) : 0;
   double humidityAt(Offset p) => _at(_hum, p);
 
-  /// Distance to the coast in chart units: positive on land, negative at
-  /// sea.
-  double coastAt(Offset p) => _at(_coast, p);
-
   /// The season's swing on [day]: the story's year turns in ninety days,
   /// and each day is a little warmer or colder than the last.
   static double seasonOf(double day) =>

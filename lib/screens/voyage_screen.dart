@@ -1303,7 +1303,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           const SizedBox(height: 10),
           // The Eel on the water, beside what she meets. On a short phone
           // the day's words need the room more: she is left out.
-          if (constraints.maxHeight >= dayPictureMinHeight) ...[
+          if (constraints.maxHeight >= _dayPictureMinHeight) ...[
             // The crew may say a word as she casts off, once a chapter.
             if (!_seaSpoke)
               Builder(builder: (_) {
@@ -1862,7 +1862,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 /// Below this height a day at sea leaves the Eel's picture out, so the
 /// day's words (a beast named and described, what the crew knows of it)
 /// keep room to be read above the choices.
-const double dayPictureMinHeight = 600;
+const double _dayPictureMinHeight = 600;
 
 /// The party as the Eel's crew: the player and every active companion,
 /// with the stats the stations read and their current health. [youLabel]

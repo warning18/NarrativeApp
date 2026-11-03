@@ -69,11 +69,32 @@ void main() {
     };
 
     test('built works add up; unbuilt and unknown ones do not', () {
-      expect(houseBonusesFor(const ['hut'], houses), (health: 0, damage: 0));
+      expect(houseBonusesFor(const ['hut'], houses),
+          (health: 0, damage: 0, companionHealth: 0));
       expect(houseBonusesFor(const ['hall', 'loft'], houses),
-          (health: 5, damage: 5));
+          (health: 5, damage: 5, companionHealth: 0));
       expect(houseBonusesFor(const ['hall', 'loft', 'shrine', 'ghost'], houses),
-          (health: 10, damage: 10));
+          (health: 10, damage: 10, companionHealth: 0));
+    });
+
+    test("the Barracks Annex: the companions' own health, +40% (v1.668)", () {
+      final shipped = _loadJson('assets/gamedata/houses.json');
+      expect(houseBonusesFor(const ['barracks_annex'], shipped),
+          (health: 0, damage: 0, companionHealth: 40));
+      final bonus = partyBonusFor(
+        bossDefeatCounts: const {},
+        enemyIds: const [],
+        builtHouseIds: const ['barracks_annex'],
+        houses: shipped,
+      );
+      // The companions only: the party's own bonus is untouched.
+      expect(bonus.healthPercent, 0);
+      expect(bonus.scaleCompanionMaxHealth(50), 70);
+      expect(PartyBonus.none.scaleCompanionMaxHealth(50), 50);
+      // No house adds a fighting seat any more.
+      for (final h in shipped.values) {
+        expect((h as Map)['partyCapacityBonus'], isNull);
+      }
     });
 
     test('Resolve and the works combine into one party bonus', () {
@@ -125,7 +146,7 @@ void main() {
       // the fight of the game (at +10/+10 simulated parties beat it first
       // try 90% of the time, up from 65%).
       final all = houseBonusesFor(works.map((e) => e.key), shipped);
-      expect(all, (health: 5, damage: 5));
+      expect(all, (health: 5, damage: 5, companionHealth: 0));
     });
   });
 }

@@ -140,22 +140,22 @@ StandingTier? standingTierNamed(String? name) =>
 
 /// A faction's allies share this much of any change with it, gain or
 /// loss.
-const double allyRippleShare = 0.25;
+const double _allyRippleShare = 0.25;
 
 /// Its rivals lose this much of a gain with it (a loss leaves them be).
-const double rivalRippleShare = 0.5;
+const double _rivalRippleShare = 0.5;
 
 /// Relation steps from which two factions count as allies, and up to
 /// which they count as rivals (see [alliesOf], [rivalsOf]).
-const int allyMinStep = 6;
-const int rivalMaxStep = 3;
+const int _allyMinStep = 6;
+const int _rivalMaxStep = 3;
 
 /// Standing at which a faction becomes the sworn one (the Sworn tier's
 /// floor); only one faction is sworn at a time.
 const int swornThreshold = 61;
 
 /// What swearing to a faction costs with each of its rivals, once.
-const int swornRivalCost = 20;
+const int _swornRivalCost = 20;
 
 /// While a faction is sworn, its rivals stop here (the top of Known), and
 /// every other faction at the top of Trusted: there is one banner.
@@ -168,7 +168,7 @@ const int maxRelationStep = 7;
 
 /// Log entries kept (the oldest go first): enough for a whole game.
 const int maxStandingLogEntries = 500;
-const int maxRelationsLogEntries = 200;
+const int _maxRelationsLogEntries = 200;
 
 // --- Reading the data -----------------------------------------------------
 
@@ -584,7 +584,6 @@ class SubClan {
 
   String nameFor(AppLanguage language) => _pick(language, name, nameFr);
   String lineFor(AppLanguage language) => _pick(language, line, lineFr);
-  String favourFor(AppLanguage language) => _pick(language, favour, favourFr);
 
   factory SubClan.fromJson(String id, Map<String, dynamic> json) => SubClan(
         id: id,
@@ -1010,14 +1009,14 @@ int? intrigueOutcomeFrom(Iterable<String> flags, String intrigueId) {
 
 /// The dead clan's id in factions.json (kind `lost`): the drawers whose
 /// banner the character carries.
-const String openHandId = 'open_hand';
+const String _openHandId = 'open_hand';
 
 /// The remembrance stages, one a chapter: the cloth, the name, the blood
 /// answers, the ledger, the truth, the banner.
 const int openHandStages = 6;
 
 /// The flag the story sets at remembrance stage [n] (`open_hand_<n>`).
-String openHandFlag(int n) => 'open_hand_$n';
+String _openHandFlag(int n) => 'open_hand_$n';
 
 /// The flag set when the banner is raised on the Hollow Shore.
 const String bannerRaisedFlag = 'banner_raised';
@@ -1047,7 +1046,8 @@ int openHandStageFrom(Iterable<String> flags) {
 /// The flags of remembrance [stage]: every stage up to it, so a scene
 /// asking for an earlier one still finds it.
 List<String> openHandFlagsUpTo(int stage) => [
-      for (var n = 1; n <= stage.clamp(0, openHandStages); n++) openHandFlag(n),
+      for (var n = 1; n <= stage.clamp(0, openHandStages); n++)
+        _openHandFlag(n),
     ];
 
 /// Whether the banner has been raised (see [bannerRaisedFlag]).
@@ -1056,7 +1056,7 @@ bool bannerRaisedIn(Iterable<String> flags) => flags.contains(bannerRaisedFlag);
 /// The remembrance stage [title] comes with: its source `remembrance:<n>`,
 /// else 3 for "Drawer" and 6 for "Last of the Open Hand" (by id or
 /// English name); null for any other title.
-int? remembranceStageOfTitle(TitleDef title) {
+int? _remembranceStageOfTitle(TitleDef title) {
   final source = title.source.trim().toLowerCase();
   if (source.startsWith('remembrance:')) {
     return int.tryParse(source.substring('remembrance:'.length));
@@ -1079,7 +1079,7 @@ List<String> remembranceTitlesFor(Iterable<String> flags, ClanData data) {
   final raised = bannerRaisedIn(flags);
   return [
     for (final title in data.titles.values)
-      if (remembranceStageOfTitle(title) case final at?)
+      if (_remembranceStageOfTitle(title) case final at?)
         if (at >= 1 && stage >= at && (at < openHandStages || raised)) title.id,
   ];
 }
@@ -1175,10 +1175,10 @@ class ClanData {
   /// The lost clans (the Open Hand), in the file's order.
   List<Faction> get lost => ofKind(PatronKind.lost);
 
-  /// The Open Hand's record: [openHandId], else the first lost clan; null
+  /// The Open Hand's record: [_openHandId], else the first lost clan; null
   /// before the data has one.
   Faction? get openHand =>
-      factions[openHandId] ?? (lost.isEmpty ? null : lost.first);
+      factions[_openHandId] ?? (lost.isEmpty ? null : lost.first);
 
   /// [factionId]'s sub-clans, in its record's order (any sub-clan naming
   /// it as its clan but missing from the list comes after).
@@ -1586,6 +1586,7 @@ class PoliticsState {
     this.pledged = const [],
     this.host = Host.none,
     this.power = const {},
+    this.powerAtTurn = const {},
     this.control = const {},
     this.influence = const {},
     this.helped = const [],
@@ -1611,6 +1612,11 @@ class PoliticsState {
   /// Each main clan's power (0..100, clan_power.dart) once it has moved;
   /// a clan not here stands at its `startPower`.
   final Map<String, int> power;
+
+  /// Each clan's power as the last chapter's turn began (territoryTurn,
+  /// clan_power.dart): what the clan power sign's arrow compares with
+  /// (clanPowerRanking). Empty before the first turn.
+  final Map<String, int> powerAtTurn;
 
   /// The places that changed hands (place id -> clan), over the holders
   /// geography.json writes (see holderOf in clan_power.dart).
@@ -1766,6 +1772,7 @@ class PoliticsState {
     List<String>? pledged,
     Host? host,
     Map<String, int>? power,
+    Map<String, int>? powerAtTurn,
     Map<String, String>? control,
     Map<String, Map<String, int>>? influence,
     List<String>? helped,
@@ -1795,6 +1802,7 @@ class PoliticsState {
         pledged: pledged ?? this.pledged,
         host: host ?? this.host,
         power: power ?? this.power,
+        powerAtTurn: powerAtTurn ?? this.powerAtTurn,
         control: control ?? this.control,
         influence: influence ?? this.influence,
         helped: helped ?? this.helped,
@@ -1834,6 +1842,7 @@ class PoliticsState {
         if (pledged.isNotEmpty) 'pledged': pledged,
         if (host.mustered) 'host': host.toJson(),
         if (power.isNotEmpty) 'power': power,
+        if (powerAtTurn.isNotEmpty) 'powerAtTurn': powerAtTurn,
         if (control.isNotEmpty) 'control': control,
         if (influence.isNotEmpty) 'influence': influence,
         if (helped.isNotEmpty) 'helped': helped,
@@ -1904,6 +1913,7 @@ class PoliticsState {
       pledged: _strings(json['pledged']).toSet().toList(),
       host: Host.fromJson(json['host']),
       power: _ints(json['power']),
+      powerAtTurn: _ints(json['powerAtTurn']),
       control: {
         if (json['control'] is Map)
           for (final e in (json['control'] as Map).entries)
@@ -1949,14 +1959,14 @@ class PoliticsState {
 // --- The rules ------------------------------------------------------------
 
 /// [factionId]'s allies now: every faction it stands with on step
-/// [allyMinStep] or above (Trade, Allies), in the data's order.
+/// [_allyMinStep] or above (Trade, Allies), in the data's order.
 List<String> alliesOf(String factionId, PoliticsState state, ClanData data) =>
-    _related(factionId, state, data, (step) => step >= allyMinStep);
+    _related(factionId, state, data, (step) => step >= _allyMinStep);
 
 /// [factionId]'s rivals now: every faction it stands with on step
-/// [rivalMaxStep] or below (Blood feud, War, Hostile).
+/// [_rivalMaxStep] or below (Blood feud, War, Hostile).
 List<String> rivalsOf(String factionId, PoliticsState state, ClanData data) =>
-    _related(factionId, state, data, (step) => step <= rivalMaxStep);
+    _related(factionId, state, data, (step) => step <= _rivalMaxStep);
 
 List<String> _related(String factionId, PoliticsState state, ClanData data,
     bool Function(int step) matches) {
@@ -2023,7 +2033,7 @@ bool canBeSworn(String factionId, ClanData data) =>
 /// - the sworn faction falling under [swornThreshold] is released;
 /// - with none sworn, one reaching it is sworn (the [preferred] one
 ///   first, then the highest), and costs each of its rivals
-///   [swornRivalCost] ([chargeRivals]);
+///   [_swornRivalCost] ([chargeRivals]);
 /// - while one is sworn, its rivals stop at [swornRivalCap] and every
 ///   other faction at [swornOthersCap].
 /// Returns the faction sworn after, and those sworn and released.
@@ -2070,7 +2080,7 @@ bool canBeSworn(String factionId, ClanData data) =>
       if (chargeRivals) {
         for (final rival in rivalsOf(current, state, data)) {
           if (!values.containsKey(rival)) continue;
-          values[rival] = _clampStanding(values[rival]! - swornRivalCost);
+          values[rival] = _clampStanding(values[rival]! - _swornRivalCost);
         }
       }
     }
@@ -2160,7 +2170,7 @@ Map<String, double> _allStandings(PoliticsState state, ClanData data) => {
 ///   loses half of it; on a loss, the rivals don't move;
 /// - **the banner:** reaching [swornThreshold] with no faction sworn
 ///   swears the character to it, which costs each of its rivals
-///   [swornRivalCost]; while it is sworn its rivals stop at
+///   [_swornRivalCost]; while it is sworn its rivals stop at
 ///   [swornRivalCap] and every other faction at [swornOthersCap]; falling
 ///   under the threshold releases them;
 /// - every standing stays within [minStanding]..[maxStanding].
@@ -2193,11 +2203,11 @@ StandingResult applyStandingChange(
 
   move(factionId, change);
   for (final ally in alliesOf(factionId, state, data)) {
-    move(ally, change * allyRippleShare);
+    move(ally, change * _allyRippleShare);
   }
   if (change > 0) {
     for (final rival in rivalsOf(factionId, state, data)) {
-      move(rival, -change * rivalRippleShare);
+      move(rival, -change * _rivalRippleShare);
     }
   }
   final banner = _applyBanner(values,
@@ -2219,7 +2229,7 @@ StandingResult applyStandingChange(
 
 /// The relation step of two factions that are tense: neither rivals nor
 /// allies, but not at peace either (Tense).
-const int tenseStep = 4;
+const int _tenseStep = 4;
 
 /// What each new chapter costs a patron's neighbours (see
 /// [applyLoyaltyDrift]): its rivals while you are Trusted with it; its
@@ -2231,9 +2241,9 @@ const int swornTenseDrift = -2;
 const int swornAllyDrift = 1;
 
 /// [factionId]'s tense neighbours now: every faction it stands with on
-/// [tenseStep].
+/// [_tenseStep].
 List<String> tenseWith(String factionId, PoliticsState state, ClanData data) =>
-    _related(factionId, state, data, (step) => step == tenseStep);
+    _related(factionId, state, data, (step) => step == _tenseStep);
 
 /// The clan the character is loyal to, whose favour cools its rivals: the
 /// sworn one, else the clan stood highest with at Trusted or above (the
@@ -2496,7 +2506,7 @@ RelationResult shiftRelation(
     relationSteps: relationSteps,
     relationSnapshots: {...state.relationSnapshots, chapter: relationSteps},
     relationsLog:
-        _appendCapped(state.relationsLog, entry, maxRelationsLogEntries),
+        _appendCapped(state.relationsLog, entry, _maxRelationsLogEntries),
   );
   StandingLogEntry? standing;
   if (next.swornFactionId.isNotEmpty) {

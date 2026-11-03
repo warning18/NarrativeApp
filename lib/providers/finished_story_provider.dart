@@ -5,14 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'player_session_provider.dart';
 
-const String finishedStoryPrefsKey = 'finished_story';
+const String _finishedStoryPrefsKey = 'finished_story';
 
 /// The stories seen through to an ending: how many, and the last finished
 /// run itself, which New Game+ from the main menu banks as the next
 /// cycle's legacy (see PlayerSessionNotifier.beginNewGamePlus) even after
 /// a new game has replaced it as the current session.
-class FinishedStory {
-  const FinishedStory({
+class _FinishedStory {
+  const _FinishedStory({
     this.count = 0,
     this.lastRun,
     this.lastKey = '',
@@ -31,8 +31,8 @@ class FinishedStory {
   bool get any => count > 0 && lastRun != null;
 }
 
-class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
-  FinishedStoryNotifier() : super(const FinishedStory()) {
+class FinishedStoryNotifier extends StateNotifier<_FinishedStory> {
+  FinishedStoryNotifier() : super(const _FinishedStory()) {
     ready = _load();
   }
 
@@ -41,15 +41,15 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(finishedStoryPrefsKey);
+    final raw = prefs.getString(_finishedStoryPrefsKey);
     if (raw == null) {
-      state = const FinishedStory(loaded: true);
+      state = const _FinishedStory(loaded: true);
       return;
     }
     try {
       final data = json.decode(raw) as Map<String, dynamic>;
       final run = data['lastRun'];
-      state = FinishedStory(
+      state = _FinishedStory(
         count: (data['count'] as num?)?.toInt() ?? 0,
         lastRun:
             run is Map<String, dynamic> ? PlayerSession.fromJson(run) : null,
@@ -58,7 +58,7 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
       );
     } catch (_) {
       // An unreadable record only hides New Game+ until the next ending.
-      state = const FinishedStory(loaded: true);
+      state = const _FinishedStory(loaded: true);
     }
   }
 
@@ -83,7 +83,7 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
         json.encode(state.lastRun!.toJson()) == encoded) {
       return;
     }
-    state = FinishedStory(
+    state = _FinishedStory(
       count: key == state.lastKey ? state.count : state.count + 1,
       lastRun: run,
       lastKey: key,
@@ -91,7 +91,7 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
     );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      finishedStoryPrefsKey,
+      _finishedStoryPrefsKey,
       json.encode({
         'count': state.count,
         'lastRun': run.toJson(),
@@ -102,5 +102,5 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
 }
 
 final finishedStoryProvider =
-    StateNotifierProvider<FinishedStoryNotifier, FinishedStory>(
+    StateNotifierProvider<FinishedStoryNotifier, _FinishedStory>(
         (ref) => FinishedStoryNotifier());

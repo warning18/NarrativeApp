@@ -24,14 +24,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 200 && !done(); i++) {
@@ -136,15 +129,12 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -183,7 +173,7 @@ void main() {
                   forcedGoal: FightGoal.slay,
                   forcedAffixes: [EnemyAffix.packLeader]),
             )));
-    await _settle(tester);
+    await settleApp(tester);
 
     // The loadout picker names the weakness and what this die brings.
     expect(find.byKey(const Key('loadout_picker')), findsOneWidget);
@@ -193,7 +183,7 @@ void main() {
 
     await tester.ensureVisible(find.byKey(const Key('loadout_die_flame_die')));
     await tester.tap(find.byKey(const Key('loadout_die_flame_die')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.textContaining('This die hits: Fire'), findsOneWidget);
 
     // Beaten five times already: the fight offers to play itself.

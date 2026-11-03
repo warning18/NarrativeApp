@@ -18,7 +18,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
@@ -27,23 +26,8 @@ import 'package:narrative_data_app/widgets/die_3d.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/pixel_banner.dart';
 import 'package:narrative_data_app/widgets/street_view/street_view.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(
-          ByteData.view(File('assets/fonts/$f').readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 const _bg = Color(0xFF0B0A0D);
 const _cream = Color(0xFFEDE3C8);
@@ -405,7 +389,7 @@ class _Fire extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final g = _Grid(canvas, size);
-    final base = _rows - 6.0;
+    const base = _rows - 6.0;
     final top = _rows * (1 - level);
     for (var x = from; x < to; x += 1) {
       final i = x.floor();
@@ -684,7 +668,7 @@ void main() {
   }
 
   testWidgets('storyboard D', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     ui.Image? lastImage;
     if (last != null && File(last).existsSync()) {
       lastImage = await tester.runAsync(() async {
@@ -703,12 +687,12 @@ void main() {
           Stack(fit: StackFit.expand, children: [
             _scene('smoke', 1),
             const ColoredBox(color: Color(0xB3000000)),
-            Align(
-                alignment: const Alignment(0, -0.1),
+            const Align(
+                alignment: Alignment(0, -0.1),
                 child: SizedBox(
                     height: 300,
                     child: ColorFiltered(
-                        colorFilter: const ColorFilter.matrix(<double>[
+                        colorFilter: ColorFilter.matrix(<double>[
                           0.7, 0.05, 0.02, 0, 0, //
                           0.05, 0.55, 0.02, 0, 0,
                           0.04, 0.04, 0.5, 0, 0,
@@ -717,7 +701,7 @@ void main() {
                         child: FittedBox(
                             child: PixelBanner(id: titleBannerId, scale: 1))))),
             const CustomPaint(painter: _Fire(0.55)),
-            CustomPaint(painter: _Ash(11)),
+            const CustomPaint(painter: _Ash(11)),
           ]),
           line: 1,
           isNew: 'the fire (one painter)'),
@@ -788,7 +772,7 @@ void main() {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [Color(0xEE2B2830), Color(0x002B2830)])))),
-            CustomPaint(painter: _Ash(23)),
+            const CustomPaint(painter: _Ash(23)),
           ]),
           line: 3),
       _Beat(
@@ -852,10 +836,7 @@ void main() {
     final total = spans.fold<double>(0, (a, b) => a + b);
     const boardW = 4 * (_frameW + 16) + 16;
     final key = GlobalKey();
-    tester.view.physicalSize = const Size(boardW, 1560);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(boardW, 1560));
     Widget chip(String t, {Color c = _cream}) => Padding(
         padding: const EdgeInsets.only(bottom: 3),
         child: Text(t, style: _serif(12, color: c)));

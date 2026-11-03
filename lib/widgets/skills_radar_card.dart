@@ -16,7 +16,7 @@ import 'stat_sheet.dart';
 import 'feature_unlock.dart';
 
 /// How many skills the page lists before "All skills".
-const int skillsCardRows = 6;
+const int _skillsCardRows = 6;
 
 class SkillsRadarCard extends ConsumerWidget {
   const SkillsRadarCard({super.key});
@@ -29,7 +29,7 @@ class SkillsRadarCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final known = model?.knownIds ?? const <String>[];
-    final shown = known.take(skillsCardRows).toList();
+    final shown = known.take(_skillsCardRows).toList();
     final abilities = <String, int>{
       'strength': session.strength,
       'dexterity': session.dexterity,

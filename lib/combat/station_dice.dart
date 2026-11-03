@@ -12,7 +12,7 @@ import 'combat_engine.dart' show DiceFaceResult;
 import 'ship_combat.dart';
 
 /// The kinds of face each station can use.
-const Map<ShipRoom, Set<FaceKind>> stationFaceKinds = {
+const Map<ShipRoom, Set<FaceKind>> _stationFaceKinds = {
   ShipRoom.guns: {FaceKind.attack, FaceKind.poison},
   ShipRoom.bulwark: {FaceKind.defend},
   ShipRoom.hold: {FaceKind.heal, FaceKind.mana},
@@ -39,7 +39,7 @@ class CrewDie {
   /// The faces [room] can use, in the die's order.
   List<StationFace> forRoom(ShipRoom room) => [
         for (final f in faces)
-          if (stationFaceKinds[room]!.contains(f.kind)) f,
+          if (_stationFaceKinds[room]!.contains(f.kind)) f,
       ];
 }
 

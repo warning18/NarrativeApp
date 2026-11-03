@@ -18,6 +18,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
 /// ones only let the screen catch up.
@@ -97,10 +98,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
@@ -149,7 +147,10 @@ void main() {
 
     expect(
         find.textContaining('is winding up', findRichText: true), findsWidgets);
-    expect(find.text('Winding up'), findsOneWidget);
+    expect(
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_windUp_")),
+        findsOneWidget);
     expect(find.text('Charged blow incoming!'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
@@ -158,7 +159,7 @@ void main() {
     // the enemy's turn can write more than that in one frame (the blow,
     // a status, the next round's lines), so the landing line is read from
     // the full log once the next round waits on the party.
-    await _pumpUntil(tester, () => _rollEnabled());
+    await _pumpUntil(tester, _rollEnabled);
     await tester.tap(find.byIcon(Icons.unfold_more));
     await tester.pump(const Duration(milliseconds: 600));
     expect(_logShows('comes crashing down') || _logShows('knocked off balance'),

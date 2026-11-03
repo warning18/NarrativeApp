@@ -19,6 +19,8 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
+import 'support/pump.dart';
 
 /// The first settle of a test waits for the game data to load; the later
 /// ones only let the screen catch up.
@@ -68,6 +70,9 @@ Map<String, dynamic> _gamedata(String name) =>
     jsonDecode(File('assets/gamedata/$name').readAsStringSync())
         as Map<String, dynamic>;
 
+Finder _tile(String label, {String? badge}) => find.byWidgetPredicate(
+    (w) => w is FightStatusTile && w.label == label && w.badge == badge);
+
 void main() {
   testWidgets('the sellsword opens the fight; a Hex leaves a Steady die be',
       (tester) async {
@@ -93,10 +98,7 @@ void main() {
       }),
     });
     // Room for the test font's wide chips, and for the whole log at once.
-    tester.view.physicalSize = const Size(600, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(600, 1600));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
@@ -145,9 +147,9 @@ void main() {
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _shows('Confirm'));
-    await tester.longPress(find.byKey(const ValueKey('die_tile_player')));
+    await tester.longPress(find.byKey(const ValueKey('kept_die_player')));
     await _settle(tester);
-    expect(find.text('Nudges 2'), findsOneWidget);
+    expect(_tile('Nudges', badge: '2'), findsOneWidget);
     expect(find.textContaining('Nudge to'), findsNothing);
     await tester.tapAt(const Offset(20, 20));
     await _settle(tester);

@@ -23,7 +23,7 @@ const int branchMasteryCost = 2;
 const int branchMasteryEssenceCost = 2000;
 
 /// Tiers a mastered branch adds to each of its skills in a fight.
-const int branchMasteryTierBonus = 1;
+const int _branchMasteryTierBonus = 1;
 
 /// Skill points a branch's skills cost, from its top: the first two one
 /// point each, the third two, the fourth three.
@@ -131,7 +131,7 @@ bool reputationAllows(Map<String, dynamic> skill, int alignmentScore) {
       (max == null || alignmentScore <= max);
 }
 
-enum SkillNodeState {
+enum _SkillNodeState {
   /// Learned already.
   known,
 
@@ -142,15 +142,15 @@ enum SkillNodeState {
   locked,
 }
 
-SkillNodeState skillNodeState(
+_SkillNodeState _skillNodeState(
   SkillBranch branch,
   int index,
   Set<String> known,
 ) {
-  if (known.contains(branch.skillIds[index])) return SkillNodeState.known;
+  if (known.contains(branch.skillIds[index])) return _SkillNodeState.known;
   return index == 0 || known.contains(branch.skillIds[index - 1])
-      ? SkillNodeState.learnable
-      : SkillNodeState.locked;
+      ? _SkillNodeState.learnable
+      : _SkillNodeState.locked;
 }
 
 /// Whether the character can spend a skill point on [skillId] now: the
@@ -167,8 +167,8 @@ bool canLearnWithPoints(
   if (known.contains(skillId)) return false;
   final place = branchPlaceOf(skillId, branches);
   if (place != null) {
-    return skillNodeState(place.branch, place.index, known) ==
-        SkillNodeState.learnable;
+    return _skillNodeState(place.branch, place.index, known) ==
+        _SkillNodeState.learnable;
   }
   final skill = skills[skillId] as Map<String, dynamic>?;
   return isReputationSkill(skill) && reputationAllows(skill!, alignmentScore);
@@ -206,7 +206,7 @@ Map<String, int> effectiveSkillTiers(
   return {
     ...tiers,
     for (final id in branch.skillIds)
-      id: max(0, tiers[id] ?? 0) + branchMasteryTierBonus,
+      id: max(0, tiers[id] ?? 0) + _branchMasteryTierBonus,
   };
 }
 

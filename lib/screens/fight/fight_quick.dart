@@ -121,7 +121,8 @@ extension _FightQuick on _FightScreenState {
         ...session.unlockedSkillIds,
         ...dieSignatureSkillIds(dice[dieId] as Map<String, dynamic>?),
       ];
-      player.dieFaces = smithedFaces(faces, session.upgradesOfDie(dieId));
+      player.dieFaces = _resonating(
+          smithedFaces(faces, session.upgradesOfDie(dieId)), dieId, session);
     });
   }
 

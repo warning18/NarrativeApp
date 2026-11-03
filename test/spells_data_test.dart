@@ -47,10 +47,12 @@ void main() {
         expect(spellTargetOptions, contains(raw['target']));
         expect(spellScalingOptions, contains(raw['scalingStat']));
         expect(elementOptions, contains(raw['element']));
+        final hitsEnemies = spell.target == SpellTarget.enemy ||
+            spell.target == SpellTarget.allEnemies;
         if (spell.effect == SpellEffectKind.status) {
           expect(spell.status, isNotNull,
               reason: '${entry.key} is a Status spell with no status');
-          expect(spell.hitsEnemies, isTrue);
+          expect(hitsEnemies, isTrue);
         }
         if (spell.effect == SpellEffectKind.damage) {
           expect(spell.damageMultiplier, greaterThan(0));
@@ -62,7 +64,7 @@ void main() {
         if (spell.effect == SpellEffectKind.heal ||
             spell.effect == SpellEffectKind.block ||
             spell.effect == SpellEffectKind.cleanse) {
-          expect(spell.hitsEnemies, isFalse,
+          expect(hitsEnemies, isFalse,
               reason: '${entry.key} helps but targets enemies');
         }
       }

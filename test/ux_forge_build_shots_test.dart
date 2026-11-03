@@ -17,6 +17,8 @@ import 'package:narrative_data_app/providers/palette_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/forge_sheet.dart';
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 class _Face implements Random {
   _Face(this.face);
@@ -27,33 +29,6 @@ class _Face implements Random {
   double nextDouble() => 0.5;
   @override
   bool nextBool() => true;
-}
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
 }
 
 Future<void> _settle(WidgetTester tester, {int n = 4}) async {
@@ -72,15 +47,12 @@ void main() {
   }
 
   testWidgets('the forge sheet and the forging moment', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(400, 760);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(400, 760));
     forgeRandomForTest = () => _Face(13);
     addTearDown(() => forgeRandomForTest = null);
     final key = GlobalKey();

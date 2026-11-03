@@ -139,7 +139,7 @@ void main() {
           'professionId': 'warrior',
           'gold': 100,
           'recruitedAllies': [
-            AllyState(
+            const AllyState(
                     companionId: 'maren',
                     currentHealth: AllyState.fullHealthSentinel)
                 .toJson(),

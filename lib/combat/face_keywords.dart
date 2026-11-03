@@ -12,7 +12,7 @@ import 'dart:math';
 /// - [echo]: the face does what the party member before it does this
 ///   round (the first in line repeats what they did last round).
 /// - [pain]: a strike hits for double, and costs its roller
-///   [painHealthShare] of their max health (never the last point).
+///   [_painHealthShare] of their max health (never the last point).
 /// - [steady]: the face can't be rerolled once it lands, and is worth
 ///   [steadyBonus] more.
 enum FaceKeyword { cleave, pierce, growth, echo, pain, steady }
@@ -28,7 +28,7 @@ const int growthStep = 1;
 const int painDamageMultiplier = 2;
 
 /// A Pain strike costs its roller this share of their max health.
-const double painHealthShare = 0.08;
+const double _painHealthShare = 0.08;
 
 /// What a Steady face is worth on top of its number.
 const int steadyBonus = 1;
@@ -84,11 +84,11 @@ bool keywordFitsFaceType(FaceKeyword keyword, String type) {
 }
 
 /// The health a Pain strike costs a roller of [maxHealth] at
-/// [currentHealth]: [painHealthShare] of the max, at least 1, and never the
+/// [currentHealth]: [_painHealthShare] of the max, at least 1, and never the
 /// last point.
 int painCost({required int maxHealth, required int currentHealth}) {
   if (currentHealth <= 1) return 0;
-  final cost = max(1, (maxHealth * painHealthShare).round());
+  final cost = max(1, (maxHealth * _painHealthShare).round());
   return min(cost, currentHealth - 1);
 }
 

@@ -141,7 +141,7 @@ class _StoryTextState extends ConsumerState<StoryText>
       final out = <InlineSpan>[];
       var at = offset;
       for (final r in runs) {
-        TextStyle style = base.copyWith(
+        final TextStyle style = base.copyWith(
           fontWeight: r.bold ? FontWeight.w700 : null,
           fontStyle: r.italic ? FontStyle.italic : null,
           color: r.kind == null ? null : storyNameColor(r.kind!, ink),

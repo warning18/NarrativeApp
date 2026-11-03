@@ -52,8 +52,8 @@ class TutorialSettings {
       );
 }
 
-class TutorialNotifier extends StateNotifier<TutorialSettings> {
-  TutorialNotifier() : super(const TutorialSettings(enabled: true, seen: {})) {
+class _TutorialNotifier extends StateNotifier<TutorialSettings> {
+  _TutorialNotifier() : super(const TutorialSettings(enabled: true, seen: {})) {
     _load();
   }
 
@@ -122,8 +122,8 @@ class TutorialNotifier extends StateNotifier<TutorialSettings> {
 }
 
 final tutorialProvider =
-    StateNotifierProvider<TutorialNotifier, TutorialSettings>(
-        (ref) => TutorialNotifier());
+    StateNotifierProvider<_TutorialNotifier, TutorialSettings>(
+        (ref) => _TutorialNotifier());
 
 /// Whether tours start by themselves when a feature is first reached. Off
 /// under `flutter test`, where a tour would cover what a test taps; tests

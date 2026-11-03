@@ -4,7 +4,7 @@ import 'dart:math';
 /// the party kills them in becomes a decision.
 ///
 /// - [healer]: mends the most wounded of its friends at the start of the
-///   enemies' turn, for [healerHealShare] of that friend's health, but hits
+///   enemies' turn, for [_healerHealShare] of that friend's health, but hits
 ///   [healerDamageMultiplier] as hard. Kill it first, or it undoes your work.
 /// - [guard]: while it stands, the party's blows on the other enemies are
 ///   cut by [guardCoverShare] (a Pierce goes through). Take it down to open
@@ -25,7 +25,7 @@ const int squadFirstChapter = 2;
 
 /// The share of a wounded friend's maximum health a healer mends each
 /// enemy turn.
-const double healerHealShare = 0.12;
+const double _healerHealShare = 0.12;
 
 const double healerDamageMultiplier = 0.7;
 const double guardCoverShare = 0.25;
@@ -84,7 +84,7 @@ int? squadHealTarget({
 
 /// What a healer mends a friend of [maxHealth] for, at least 1.
 int squadHealAmount(int maxHealth) =>
-    max(1, (maxHealth * healerHealShare).round());
+    max(1, (maxHealth * _healerHealShare).round());
 
 /// l10n keys of a role's name and one-line rules text.
 String squadRoleLabelKey(SquadRole role) => 'squad_${role.name}';

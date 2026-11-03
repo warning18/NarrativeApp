@@ -8,7 +8,7 @@ import '../l10n/app_strings.dart';
 import 'shop_pricing.dart' show charismaDiscountPerPoint;
 
 /// What an ability point does, by kind (see [statPickEffects]).
-enum StatEffectKind {
+enum _StatEffectKind {
   damage,
   health,
   dodge,
@@ -24,7 +24,7 @@ enum StatEffectKind {
 /// One thing [amount] points of an ability do: its [kind] and how much
 /// ([amount] is 0 for a kind without a number: reading foes, rarer picks,
 /// story checks; percentages are in points of %).
-typedef StatEffect = ({StatEffectKind kind, num amount});
+typedef StatEffect = ({_StatEffectKind kind, num amount});
 
 /// What [amount] points of [stat] do for a hero of [professionId], in the
 /// order a card lists them.
@@ -33,40 +33,40 @@ List<StatEffect> statPickEffects(
   final damage = damageStatOf(professionId) == stat;
   return switch (stat) {
     'strength' => [
-        if (damage) (kind: StatEffectKind.damage, amount: amount),
-        if (!damage) (kind: StatEffectKind.storyChecks, amount: 0),
+        if (damage) (kind: _StatEffectKind.damage, amount: amount),
+        if (!damage) (kind: _StatEffectKind.storyChecks, amount: 0),
       ],
     'dexterity' => [
-        if (damage) (kind: StatEffectKind.damage, amount: amount),
-        (kind: StatEffectKind.dodge, amount: amount * dodgePerDexterity),
+        if (damage) (kind: _StatEffectKind.damage, amount: amount),
+        (kind: _StatEffectKind.dodge, amount: amount * dodgePerDexterity),
       ],
     'constitution' => [
-        (kind: StatEffectKind.health, amount: amount * healthPerConstitution),
+        (kind: _StatEffectKind.health, amount: amount * healthPerConstitution),
       ],
     'intelligence' => [
-        if (damage) (kind: StatEffectKind.damage, amount: amount),
-        if (!damage) (kind: StatEffectKind.storyChecks, amount: 0),
+        if (damage) (kind: _StatEffectKind.damage, amount: amount),
+        if (!damage) (kind: _StatEffectKind.storyChecks, amount: 0),
       ],
-    'wisdom' => [(kind: StatEffectKind.mana, amount: amount)],
+    'wisdom' => [(kind: _StatEffectKind.mana, amount: amount)],
     'perception' => [
         if (professionId == 'warrior')
-          (kind: StatEffectKind.block, amount: amount * blockPerPerception),
+          (kind: _StatEffectKind.block, amount: amount * blockPerPerception),
         if (sharpEyed(professionId)) ...[
-          (kind: StatEffectKind.crit, amount: amount * perceptionCritPerPoint),
+          (kind: _StatEffectKind.crit, amount: amount * perceptionCritPerPoint),
           (
-            kind: StatEffectKind.dodge,
+            kind: _StatEffectKind.dodge,
             amount: amount * perceptionDodgePerPoint
           ),
         ],
-        (kind: StatEffectKind.readFoes, amount: 0),
+        (kind: _StatEffectKind.readFoes, amount: 0),
       ],
     'luck' => [
-        (kind: StatEffectKind.crit, amount: amount * critPerLuck),
-        (kind: StatEffectKind.rarerPicks, amount: 0),
+        (kind: _StatEffectKind.crit, amount: amount * critPerLuck),
+        (kind: _StatEffectKind.rarerPicks, amount: 0),
       ],
     'charisma' => [
         (
-          kind: StatEffectKind.shopPrices,
+          kind: _StatEffectKind.shopPrices,
           amount: amount * charismaDiscountPerPoint * 100
         ),
       ],
@@ -75,7 +75,7 @@ List<StatEffect> statPickEffects(
 }
 
 /// The short name of [stat] on a card ("DEX", "FOR").
-String statAbbrevKey(String stat) => switch (stat) {
+String _statAbbrevKey(String stat) => switch (stat) {
       'strength' => 'str_abbrev',
       'dexterity' => 'dex_abbrev',
       'constitution' => 'con_abbrev',
@@ -95,16 +95,16 @@ String _number(num n) {
 /// One effect in words: "+2% dodge", "reads foes better".
 String statEffectText(StatEffect effect, AppLanguage language) {
   final key = switch (effect.kind) {
-    StatEffectKind.damage => 'stat_effect_damage',
-    StatEffectKind.health => 'stat_effect_health',
-    StatEffectKind.dodge => 'stat_effect_dodge',
-    StatEffectKind.crit => 'stat_effect_crit',
-    StatEffectKind.block => 'stat_effect_block',
-    StatEffectKind.mana => 'stat_effect_mana',
-    StatEffectKind.readFoes => 'stat_effect_read_foes',
-    StatEffectKind.rarerPicks => 'stat_effect_luckier_picks',
-    StatEffectKind.shopPrices => 'stat_effect_shop_prices',
-    StatEffectKind.storyChecks => 'stat_effect_story_checks',
+    _StatEffectKind.damage => 'stat_effect_damage',
+    _StatEffectKind.health => 'stat_effect_health',
+    _StatEffectKind.dodge => 'stat_effect_dodge',
+    _StatEffectKind.crit => 'stat_effect_crit',
+    _StatEffectKind.block => 'stat_effect_block',
+    _StatEffectKind.mana => 'stat_effect_mana',
+    _StatEffectKind.readFoes => 'stat_effect_read_foes',
+    _StatEffectKind.rarerPicks => 'stat_effect_luckier_picks',
+    _StatEffectKind.shopPrices => 'stat_effect_shop_prices',
+    _StatEffectKind.storyChecks => 'stat_effect_story_checks',
   };
   return trFor(language, key).replaceAll('{n}', _number(effect.amount));
 }
@@ -114,7 +114,7 @@ String statEffectText(StatEffect effect, AppLanguage language) {
 String statPickEffect(
     String stat, String? professionId, int amount, AppLanguage language) {
   final effects = statPickEffects(stat, professionId, amount);
-  final head = '+$amount ${trFor(language, statAbbrevKey(stat))}';
+  final head = '+$amount ${trFor(language, _statAbbrevKey(stat))}';
   if (effects.isEmpty) return head;
   return '$head: ${effects.map((e) => statEffectText(e, language)).join(', ')}';
 }

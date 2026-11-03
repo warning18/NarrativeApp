@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/risky_gifts.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/widgets/d20_roll.dart' show d20RollDuration;
 import 'package:narrative_data_app/widgets/risky_roll_dialog.dart';
 
 void main() {
@@ -79,4 +80,5 @@ void main() {
 }
 
 /// Past the die's tumble and the fade of its words.
-const Duration d20RollDurationPlus = Duration(milliseconds: 1500);
+final Duration d20RollDurationPlus =
+    d20RollDuration + const Duration(milliseconds: 500);

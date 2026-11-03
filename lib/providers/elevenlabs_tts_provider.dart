@@ -35,7 +35,7 @@ typedef ElevenLabsSynthesize = Future<Uint8List> Function({
 
 /// Calls ElevenLabs' text-to-speech endpoint
 /// (https://elevenlabs.io/docs/api-reference/text-to-speech/convert).
-Future<Uint8List> synthesizeWithElevenLabs({
+Future<Uint8List> _synthesizeWithElevenLabs({
   required String text,
   required String apiKey,
   required String voiceId,
@@ -43,7 +43,7 @@ Future<Uint8List> synthesizeWithElevenLabs({
   final uri = Uri.https(
     'api.elevenlabs.io',
     '/v1/text-to-speech/${Uri.encodeComponent(voiceId)}',
-    {'output_format': elevenLabsOutputFormat},
+    {'output_format': _elevenLabsOutputFormat},
   );
   final response = await http
       .post(
@@ -85,7 +85,7 @@ String elevenLabsErrorMessage(String body, int statusCode) {
 /// ElevenLabs' MP3 at 64 kbit/s: clear for a speaking voice, and half
 /// the size of their default, which matters once recordings ship inside
 /// the app (see [bundledNarrationPath]).
-const String elevenLabsOutputFormat = 'mp3_44100_64';
+const String _elevenLabsOutputFormat = 'mp3_44100_64';
 
 /// Where a recording is kept in the repository, and so inside the app
 /// once it is pushed (see `pushNarrationToGitHub`): the clip id already
@@ -159,12 +159,6 @@ class NarrationRecordings {
     final id = clipIdFor(text, voiceId: voiceId);
     return File('${(await _dir(voiceId, language)).path}/$id.mp3');
   }
-
-  /// Whether [text] ships inside the app in [voiceId].
-  Future<bool> isBundled(String text,
-          {required String voiceId, required AppLanguage language}) async =>
-      (await bundled()).contains(
-          bundledNarrationPath(clipIdFor(text, voiceId: voiceId), language));
 
   /// What plays [text] without recording it: this device's recording, or
   /// the one shipped inside the app; null when there is neither.
@@ -261,7 +255,7 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     NarrationRecordings? recordings,
     ElevenLabsSynthesize? synthesize,
   })  : recordings = recordings ?? NarrationRecordings(),
-        _synthesize = synthesize ?? synthesizeWithElevenLabs,
+        _synthesize = synthesize ?? _synthesizeWithElevenLabs,
         super(VoicePlaybackState.idle);
 
   final NarrationRecordings recordings;

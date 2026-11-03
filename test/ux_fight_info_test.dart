@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,13 +19,14 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 
 import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
+import 'support/fonts.dart';
+import 'support/pump.dart';
 
 Future<void> _enter(WidgetTester tester, {required int perception}) async {
-  if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+  if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   SharedPreferences.setMockInitialValues({
     'gamedb_dice': jsonEncode({
       ...gamedata('dice.json'),
@@ -44,10 +44,7 @@ Future<void> _enter(WidgetTester tester, {required int perception}) async {
       },
     }),
   });
-  tester.view.physicalSize = const Size(600, 1600);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(600, 1600));
   await tester.pumpWidget(ProviderScope(
       overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
       child: const MyApp()));
@@ -87,34 +84,6 @@ Future<void> _enter(WidgetTester tester, {required int perception}) async {
   await pumpUntil(tester, () => shows('Roll Dice'));
 }
 
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
-
 /// UX_SHOTS (a folder): saves the screen as it is.
 Future<void> _shot(WidgetTester tester, String name) async {
   final dir = Platform.environment['UX_SHOTS'];
@@ -141,17 +110,30 @@ void main() {
     await _enter(tester, perception: 30);
 
     await _shot(tester, 'fight-incoming-estimate');
-    // The round, the momentum and the condition each answer a long press.
-    await _longPress(tester, find.textContaining('Round'));
+    // The round, the momentum and the condition each open a pop-in on a tap.
+    Finder tile(String label) =>
+        find.byWidgetPredicate((w) => w is FightStatusTile && w.label == label);
+    Future<void> open(String label) async {
+      await tester.tap(tile(label));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    Future<void> close() async {
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    await open('Round');
+    expect(find.byKey(const Key('fight_effect_popin')), findsOneWidget);
     expect(find.textContaining('the Tide rises'), findsOneWidget);
-    await tester.tap(find.byType(Scaffold).first, warnIfMissed: false);
-    await tester.pump(const Duration(seconds: 3));
-    await _longPress(tester, find.textContaining('Momentum'));
+    await close();
+    await open('Momentum');
     expect(find.textContaining('sure critical'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 3));
-    await _longPress(tester, find.text('High Ground'));
+    await close();
+    await open('High Ground');
     expect(find.textContaining('Tide rises'), findsNothing);
-    expect(find.byType(Tooltip), findsWidgets);
+    expect(find.byKey(const Key('fight_effect_popin')), findsOneWidget);
+    await close();
 
     // The foe's telegraphed blow, read in full (Perception 30), is on the
     // bar of the one it is aimed at, as "−N", and says so on a long press.

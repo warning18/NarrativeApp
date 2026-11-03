@@ -14,6 +14,8 @@ import 'package:narrative_data_app/data/origin_stories.dart';
 import 'package:narrative_data_app/combat/combat_aftermath.dart';
 import 'package:narrative_data_app/data/ally_acknowledgments.dart';
 import 'package:narrative_data_app/data/approval.dart';
+import 'package:narrative_data_app/data/city_districts.dart'
+    show questAcceptedFlag;
 import 'package:narrative_data_app/data/district_influence.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/narration_tokens.dart';
@@ -421,16 +423,14 @@ void main() {
         districtFlippedFlag(district),
         for (final clan in factions.keys) heldFlag(district, clan),
       ],
-      // Set by a quest's turn-in choice (turn_in_choices.dart) or by one of
-      // its own choices (v1.204: the side quests with a giver in a town).
-      for (final quest in quests.values) ...[
+      // Set when a quest is taken (acceptQuest sets `<id>_accepted`) or by
+      // its turn-in choice (turn_in_choices.dart).
+      for (final MapEntry(key: questId, value: quest) in quests.entries) ...[
+        questAcceptedFlag(questId),
         for (final choice
             in ((quest as Map)['turnInChoices'] as List?) ?? const [])
           if ((choice as Map)['flag']?.toString().isNotEmpty ?? false)
             choice['flag'].toString(),
-        for (final choice in (quest['questChoices'] as List?) ?? const [])
-          if ((choice as Map)['flagToAdd']?.toString().isNotEmpty ?? false)
-            choice['flagToAdd'].toString(),
       ],
       // Set by the coast's own events (politics_events.json, v1.195): who
       // came to stand under the banner, who took the Throne.

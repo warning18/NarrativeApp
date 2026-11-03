@@ -12,27 +12,27 @@ enum ChestTier { wooden, iron, silver, gold, voidTier }
 
 /// Fortune-roll thresholds, checked lowest to highest -- a roll below the
 /// first is Wooden.
-const int ironThreshold = 40;
-const int silverThreshold = 70;
-const int goldThreshold = 100;
-const int voidThreshold = 125;
+const int _ironThreshold = 40;
+const int _silverThreshold = 70;
+const int _goldThreshold = 100;
+const int _voidThreshold = 125;
 
 /// Points per Luck on the fortune roll, for the player and for the best
 /// ally respectively.
-const int luckFortuneWeight = 2;
-const int allyLuckFortuneWeight = 1;
-const int eliteFortuneBonus = 25;
-const int packFortuneBonusPerExtraEnemy = 6;
-const int flawlessFortuneBonus = 8;
-const int swiftFortuneBonus = 8;
-const int swiftRoundLimit = 2;
-const int criticalFinishFortuneBonus = 8;
-const int affixFortuneBonusEach = 8;
-const int pityFortuneBonusPerStreak = 15;
+const int _luckFortuneWeight = 2;
+const int _allyLuckFortuneWeight = 1;
+const int _eliteFortuneBonus = 25;
+const int _packFortuneBonusPerExtraEnemy = 6;
+const int _flawlessFortuneBonus = 8;
+const int _swiftFortuneBonus = 8;
+const int _swiftRoundLimit = 2;
+const int _criticalFinishFortuneBonus = 8;
+const int _affixFortuneBonusEach = 8;
+const int _pityFortuneBonusPerStreak = 15;
 
 /// Base gold per tier before chapter scaling; each chest then rolls
 /// +/-30% around it.
-const Map<ChestTier, int> chestBaseGold = {
+const Map<ChestTier, int> _chestBaseGold = {
   ChestTier.wooden: 2,
   ChestTier.iron: 4,
   ChestTier.silver: 8,
@@ -199,36 +199,36 @@ class LootBoxResult {
 /// same context always gives the same list.
 List<FortuneModifier> fortuneModifiersFor(LootContext context) {
   final mods = <FortuneModifier>[];
-  final luck = context.playerLuck * luckFortuneWeight +
-      context.bestAllyLuck * allyLuckFortuneWeight;
+  final luck = context.playerLuck * _luckFortuneWeight +
+      context.bestAllyLuck * _allyLuckFortuneWeight;
   if (luck != 0) mods.add(FortuneModifier('fortune_luck', luck));
   if (context.isElite) {
-    mods.add(const FortuneModifier('fortune_elite', eliteFortuneBonus));
+    mods.add(const FortuneModifier('fortune_elite', _eliteFortuneBonus));
   }
   if (context.enemyCount > 1) {
     mods.add(FortuneModifier('fortune_pack',
-        (context.enemyCount - 1) * packFortuneBonusPerExtraEnemy));
+        (context.enemyCount - 1) * _packFortuneBonusPerExtraEnemy));
   }
   if (context.flawless) {
-    mods.add(const FortuneModifier('fortune_flawless', flawlessFortuneBonus));
+    mods.add(const FortuneModifier('fortune_flawless', _flawlessFortuneBonus));
   }
-  if (context.rounds <= swiftRoundLimit) {
-    mods.add(const FortuneModifier('fortune_swift', swiftFortuneBonus));
+  if (context.rounds <= _swiftRoundLimit) {
+    mods.add(const FortuneModifier('fortune_swift', _swiftFortuneBonus));
   }
   if (context.finalBlowCritical) {
     mods.add(const FortuneModifier(
-        'fortune_critical_finish', criticalFinishFortuneBonus));
+        'fortune_critical_finish', _criticalFinishFortuneBonus));
   }
   if (context.affixCount > 0) {
     mods.add(FortuneModifier(
-        'fortune_affixes', context.affixCount * affixFortuneBonusEach));
+        'fortune_affixes', context.affixCount * _affixFortuneBonusEach));
   }
   if (context.conditionBonus != 0) {
     mods.add(FortuneModifier('fortune_condition', context.conditionBonus));
   }
   if (context.pityStreak > 0) {
     mods.add(FortuneModifier(
-        'fortune_pity', context.pityStreak * pityFortuneBonusPerStreak));
+        'fortune_pity', context.pityStreak * _pityFortuneBonusPerStreak));
   }
   return mods;
 }
@@ -243,17 +243,17 @@ int fortuneRollFor(LootContext context, int d100) {
 }
 
 ChestTier tierForRoll(int roll) {
-  if (roll < ironThreshold) return ChestTier.wooden;
-  if (roll < silverThreshold) return ChestTier.iron;
-  if (roll < goldThreshold) return ChestTier.silver;
-  if (roll < voidThreshold) return ChestTier.gold;
+  if (roll < _ironThreshold) return ChestTier.wooden;
+  if (roll < _silverThreshold) return ChestTier.iron;
+  if (roll < _goldThreshold) return ChestTier.silver;
+  if (roll < _voidThreshold) return ChestTier.gold;
   return ChestTier.voidTier;
 }
 
 /// The floor [context] imposes on the rolled tier, if any -- the highest
 /// of: Iron for a first kill, Silver for an Elite, Gold for a boss, and
 /// any explicit [LootContext.tierFloor].
-ChestTier? tierFloorFor(LootContext context) {
+ChestTier? _tierFloorFor(LootContext context) {
   ChestTier? floor;
   void raise(ChestTier tier) {
     floor = floor == null ? tier : _maxTier(floor!, tier);
@@ -268,13 +268,13 @@ ChestTier? tierFloorFor(LootContext context) {
 
 /// The final tier: the rolled tier, lifted to any floor, then shifted.
 ChestTier finalTierFor(LootContext context, ChestTier rolled) {
-  final floor = tierFloorFor(context);
+  final floor = _tierFloorFor(context);
   final floored = floor == null ? rolled : _maxTier(rolled, floor);
   return _shiftTier(floored, context.tierShift);
 }
 
 /// Slots a chest of [tier] holds (before the Perception extra slot).
-int slotCountFor(ChestTier tier, Random random) => switch (tier) {
+int _slotCountFor(ChestTier tier, Random random) => switch (tier) {
       ChestTier.wooden => 1,
       ChestTier.iron => 1 + random.nextInt(2),
       ChestTier.silver => 2,
@@ -283,9 +283,9 @@ int slotCountFor(ChestTier tier, Random random) => switch (tier) {
     };
 
 /// Gold for a chest of [tier] in [chapter].
-int chestGoldFor(ChestTier tier, int chapter, Random random,
+int _chestGoldFor(ChestTier tier, int chapter, Random random,
     {bool isElite = false}) {
-  final base = chestBaseGold[tier] ?? 0;
+  final base = _chestBaseGold[tier] ?? 0;
   final variance = 0.7 + random.nextDouble() * 0.6;
   var gold = (base * variance * (1 + 0.25 * (chapter - 1))).round();
   if (isElite) gold = (gold * 1.5).round();
@@ -457,14 +457,14 @@ LootBoxResult rollLootBox(
   final roll = fortuneRollFor(context, 1 + random.nextInt(100));
   final rolled = tierForRoll(roll);
   final tier = finalTierFor(context, rolled);
-  final floor = tierFloorFor(context);
+  final floor = _tierFloorFor(context);
   final floorApplied =
       floor != null && floor.index > rolled.index ? floor : null;
 
   var gold =
-      chestGoldFor(tier, context.chapter, random, isElite: context.isElite);
+      _chestGoldFor(tier, context.chapter, random, isElite: context.isElite);
   final slotCount =
-      slotCountFor(tier, random) + (context.fullTelegraphRead ? 1 : 0);
+      _slotCountFor(tier, random) + (context.fullTelegraphRead ? 1 : 0);
   final itemIds = <String>[];
   final chestGear = <String>{};
 
@@ -473,7 +473,7 @@ LootBoxResult rollLootBox(
     for (var attempt = 0; attempt < 3; attempt++) {
       switch (kind) {
         case _SlotKind.goldPouch:
-          gold += chestGoldFor(ChestTier.wooden, context.chapter, random);
+          gold += _chestGoldFor(ChestTier.wooden, context.chapter, random);
           attempt = 3;
           continue;
         case _SlotKind.consumable:

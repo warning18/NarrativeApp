@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/screens/character_screen.dart';
 
 void main() {
-  setUpAll(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   Future<List<String>> texts(WidgetTester tester, {bool french = false}) async {
     SharedPreferences.setMockInitialValues({if (french) 'app_language': 'fr'});

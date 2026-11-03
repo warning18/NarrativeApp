@@ -382,13 +382,13 @@ extension _FightSetup on _FightScreenState {
       professionId: session.professionId,
       gear: _signs.over(_perks
           .over(gearEffectsFor(session.equippedItemIds, items, itemSets))),
-      dieFaces: smithed(_selectedDiceId),
+      dieFaces: _resonating(smithed(_selectedDiceId), _selectedDiceId, session),
     );
 
-    final activeAllies = <_PartyMember>[];
-    for (final companionId in session.activeAllyIds) {
+    // A companion as they fight this one.
+    _PartyMember? allyMember(String companionId, {bool fullCompany = false}) {
       final companion = companions[companionId] as Map<String, dynamic>?;
-      if (companion == null) continue;
+      if (companion == null) return null;
       final allyState = session.recruitedAllies.firstWhere(
         (a) => a.companionId == companionId,
         orElse: () => AllyState(
@@ -406,14 +406,18 @@ extension _FightSetup on _FightScreenState {
           gameConfig: gameConfig, race: race, profession: profession);
       // A devoted companion fights harder, a wary one holds back.
       final tier = approvalTierFor(allyState.approval);
-      final baseAllyHealth = _partyBonus
+      final allyHealth = _partyBonus
               .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel)) *
           approvalHealthPercent(tier) ~/
           100;
+      // The Barracks Annex: a full company comes rested (party_bonus.dart).
+      final baseAllyHealth = fullCompany
+          ? _partyBonus.scaleCompanionMaxHealth(allyHealth)
+          : allyHealth;
       // A banner sign raises the whole party's health in the fight.
       final liveMaxHealth =
           _signs.maxHealthFor(baseAllyHealth, partyWide: true);
-      activeAllies.add(_PartyMember(
+      return _PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
@@ -455,14 +459,128 @@ extension _FightSetup on _FightScreenState {
         dieFaces: smithed(companion['signatureDiceId']?.toString(),
             companionId: companionId),
         approval: allyState.approval,
-      ));
+      );
     }
 
-    _party = [player, ...activeAllies];
+    // Three fighters at most: the seated companions, or the pre-fight
+    // sheet's pick (party_pick.dart), for this fight only.
+    _allyMember = allyMember;
+    _party = [player];
+    _fieldParty(ref.read(fightPickProvider));
+  }
+
+  /// Fields [pick]'s companions (party_pick.dart's [fightLineup]; null for
+  /// the seated ones) beside the player. Before the first roll only: the
+  /// pre-fight pick, UX's, may call it again.
+  void _fieldParty(List<String>? pick) {
+    final build = _allyMember;
+    if (_started || build == null || _party.isEmpty) return;
+    final lineup = fightLineup(ref.read(playerSessionProvider),
+        pick: pick, companions: _companions);
+    _party = [
+      _party.first,
+      for (final id in lineup)
+        if (build(id, fullCompany: lineup.length >= fullCompanySize)
+            case final member?)
+          member,
+    ];
+  }
+
+  /// The companions who could fight now: recruited, with their own house
+  /// built (the same gate as [fightLineup], without its cap).
+  List<String> get _fightCandidateIds {
+    final session = ref.read(playerSessionProvider);
+    return [
+      for (final a in session.recruitedAllies)
+        if (_houseOpenFor(session, a.companionId)) a.companionId,
+    ];
+  }
+
+  bool _houseOpenFor(PlayerSession session, String id) {
+    final house = (_companions[id] as Map?)?['requiredHouseId']?.toString();
+    return house == null ||
+        house.isEmpty ||
+        session.builtHouseIds.contains(house);
+  }
+
+  /// "Qui combat ?": shown when more companions can fight than there are
+  /// seats; a pick changes the party before the first roll.
+  Widget _buildPickCard() {
+    final candidates = _fightCandidateIds;
+    if (candidates.length <= basePartyCapacity || _started) {
+      return const SizedBox.shrink();
+    }
+    String nameOf(String id) =>
+        (_companions[id] as Map?)?['companionName']?.toString() ?? id;
+    final player = _party.isEmpty ? null : _party.first;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: FightPickCard(
+        title: tr(ref, 'fight_pick_title'),
+        hint: tr(ref, 'fight_pick_hint'),
+        heroName: player?.displayName ?? '',
+        seats: basePartyCapacity,
+        picked: _fieldedAllyIds,
+        options: [
+          for (final id in candidates)
+            FightPickOption(
+              id: id,
+              name: nameOf(id),
+              headAsset: id == 'vica' ? 'assets/visuals/heads/vica.png' : null,
+            ),
+        ],
+        onToggle: (id, on) {
+          final now = _fieldedAllyIds;
+          final next = on ? [...now, id] : now.where((a) => a != id).toList();
+          _update(() => _fieldParty(next));
+          if (_keepPick) _seatPicked();
+        },
+        keepLabel: tr(ref, 'fight_pick_keep'),
+        keep: _keepPick,
+        onKeep: (v) {
+          _update(() => _keepPick = v);
+          if (v) _seatPicked();
+        },
+      ),
+    );
+  }
+
+  /// Makes the fielded companions the seated ones (the "keep as my party"
+  /// toggle), the others benched.
+  Future<void> _seatPicked() async {
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final fielded = _fieldedAllyIds;
+    final session = ref.read(playerSessionProvider);
+    for (final id in session.activeAllyIds) {
+      if (!fielded.contains(id)) {
+        await notifier.setAllyActive(id, false,
+            partyCapacity: basePartyCapacity, companions: _companions);
+      }
+    }
+    for (final id in fielded) {
+      await notifier.setAllyActive(id, true,
+          partyCapacity: basePartyCapacity,
+          requiredHouseId:
+              (_companions[id] as Map?)?['requiredHouseId']?.toString(),
+          companions: _companions);
+    }
+  }
+
+  /// The hero's [faces] of die [dieId] as they roll this fight: a clan's
+  /// die with its Resonance lit counts its low faces one more
+  /// (clan_dice.dart); [_dieResonance] says how it stands, for the tray.
+  List<Map<String, dynamic>> _resonating(
+      List<Map<String, dynamic>> faces, String? dieId, PlayerSession session) {
+    final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
+    _dieResonance = resonanceOf(dice[dieId ?? ''] as Map<String, dynamic>?,
+        politics: session.politics, data: ref.read(clanDataProvider));
+    return _dieResonance == Resonance.lit ? resonantFaces(faces) : faces;
   }
 
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
+    // The pre-fight pick was for this fight only (party_pick.dart).
+    ref.read(fightPickProvider.notifier).state = null;
     // A hired sellsword fights this one, a fight off the contract.
     final session = ref.read(playerSessionProvider);
     if (!widget.modifiers.isTest && session.sellswordFights > 0) {

@@ -7,7 +7,7 @@ import 'world_map.dart';
 /// chapter 2, the first chapter with a town to buy from.
 
 /// The first chapter the road's rules apply to.
-const int roadRulesFromChapter = 2;
+const int _roadRulesFromChapter = 2;
 
 /// Provisions carried at most, and at the start. The crew eats one a day
 /// at sea too (v1.187), so a long crossing wants a full pack: in the
@@ -40,7 +40,7 @@ const int walkWatches = 2;
 
 /// With no provisions left, each step on the road costs this share of
 /// the character's maximum health (never the last point).
-const double hungerShare = 0.08;
+const double _hungerShare = 0.08;
 
 /// Days a chapter can take before its enemies start to gather strength
 /// (see [threatGraceDaysFor]).
@@ -84,7 +84,7 @@ const double threatMax = 0.30;
 const int sellswordContractFights = 3;
 
 /// Whether the road's rules apply in [chapter].
-bool roadRulesApply(int chapter) => chapter >= roadRulesFromChapter;
+bool roadRulesApply(int chapter) => chapter >= _roadRulesFromChapter;
 
 /// Whether going from scene [from] to scene [to] crosses the map: a step
 /// on the road between two places, not a move within one.
@@ -108,7 +108,7 @@ int sellswordDamage(int chapter) => 5 + 3 * math.max(chapter, 1);
 /// What hunger costs a character of [maxHealth] at [health]: never the
 /// last point.
 int hungerDamage({required int health, required int maxHealth}) {
-  final bite = math.max(1, (maxHealth * hungerShare).round());
+  final bite = math.max(1, (maxHealth * _hungerShare).round());
   return math.max(0, math.min(bite, health - 1));
 }
 

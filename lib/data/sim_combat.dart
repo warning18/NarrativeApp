@@ -19,7 +19,10 @@ import '../combat/specialisations.dart';
 import '../combat/parry.dart';
 import 'character_start.dart' show startingArmor;
 import '../combat/squad.dart';
+import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/heal_target.dart';
+import '../combat/strike_damage.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
@@ -72,7 +75,7 @@ import 'training.dart';
 /// How each profession's simulated build shares its picks (ability ->
 /// share of the points): mostly the damage stat, some Constitution, and
 /// what else the profession leans on (stat_rules.dart).
-const Map<String, Map<String, double>> simBuildShares = {
+const Map<String, Map<String, double>> _simBuildShares = {
   'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
   'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
   'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
@@ -250,14 +253,45 @@ class SimCharacter {
   String diceId = '';
   final Map<String, List<Map<String, dynamic>>> ownedDice = {};
 
+  /// The competent player's trial of a die before switching to it (the
+  /// walk's, playthrough_simulator_screen.dart): true when [faces], its
+  /// skills at [assignments], fought measurably better than the die in
+  /// play. Null, the worth (simDieValue) alone decides.
+  bool Function(
+          List<Map<String, dynamic>> faces, Map<String, String> assignments)?
+      dieTrial;
+
+  /// Whether die [id], worth more than the one in play (simDieValue), also
+  /// passes its [dieTrial]: the worth leaves out the profession's core, the
+  /// elements and the specialisations, and so overrates some dice. A die
+  /// that failed is not tried again before the next level.
+  bool _passesTrial(String id, List<Map<String, dynamic>> faces,
+      Map<String, String> assignments) {
+    final trial = dieTrial;
+    if (trial == null) return true;
+    if (_dieFailedAt[id] == level) return false;
+    final passed = trial(faces, assignments);
+    if (!passed) _dieFailedAt[id] = level;
+    return passed;
+  }
+
+  /// The level each die last failed its trial at.
+  final Map<String, int> _dieFailedAt = {};
+
   /// The best die owned for the competent player (simDieValue, its skills
   /// best placed by simSkillAssignments) rolled from now on, when it beats
-  /// the one in play.
+  /// the one in play and passes its [dieTrial].
   void rollBestDie(Map<String, dynamic> skills) {
     final caster = knownSpells.isNotEmpty;
-    var bestValue = simDieValue(diceFaces, diceSkillAssignments, skills,
+    final now = simDieValue(diceFaces, diceSkillAssignments, skills,
             damage: baseDamage, caster: caster) +
         0.01;
+    final better = <({
+      String id,
+      List<Map<String, dynamic>> faces,
+      Map<String, String> placed,
+      double value
+    })>[];
     for (final id in ownedDice.keys.toList()..sort()) {
       if (id == diceId) continue;
       final faces = ownedDice[id]!;
@@ -268,12 +302,70 @@ class SimCharacter {
           skills: skills);
       final v = simDieValue(faces, placed, skills,
           damage: baseDamage, caster: caster);
-      if (v > bestValue) {
-        bestValue = v;
-        diceId = id;
-        diceFaces = faces;
-        diceSkillAssignments = placed;
-      }
+      if (v > now) better.add((id: id, faces: faces, placed: placed, value: v));
+    }
+    // The worthiest first; the first to pass its trial is rolled.
+    better.sort((a, b) => b.value.compareTo(a.value));
+    for (final d in better) {
+      if (!_passesTrial(d.id, d.faces, d.placed)) continue;
+      diceId = d.id;
+      diceFaces = d.faces;
+      diceSkillAssignments = d.placed;
+      return;
+    }
+  }
+
+  /// Runs [fight] (a trial) and puts back everything a fight changes on the
+  /// character: its health, mana, potions, afflictions, the stats a fight
+  /// lends, the die in play and the run's tallies.
+  T restoringAfter<T>(T Function() fight) {
+    final saved = (
+      maxHealth: maxHealth,
+      currentHealth: currentHealth,
+      baseDamage: baseDamage,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+      wisdom: wisdom,
+      luck: luck,
+      potions: potions,
+      mana: mana,
+      signMaxMana: signMaxMana,
+      statusEffects: statusEffects,
+      fightsWon: fightsWon,
+      fightsLost: fightsLost,
+      roundsFought: roundsFought,
+      potionsUsed: potionsUsed,
+      manaGained: manaGained,
+      diceId: diceId,
+      diceFaces: diceFaces,
+      diceSkillAssignments: diceSkillAssignments,
+    );
+    try {
+      return fight();
+    } finally {
+      maxHealth = saved.maxHealth;
+      currentHealth = saved.currentHealth;
+      baseDamage = saved.baseDamage;
+      strength = saved.strength;
+      dexterity = saved.dexterity;
+      constitution = saved.constitution;
+      intelligence = saved.intelligence;
+      wisdom = saved.wisdom;
+      luck = saved.luck;
+      potions = saved.potions;
+      mana = saved.mana;
+      signMaxMana = saved.signMaxMana;
+      statusEffects = saved.statusEffects;
+      fightsWon = saved.fightsWon;
+      fightsLost = saved.fightsLost;
+      roundsFought = saved.roundsFought;
+      potionsUsed = saved.potionsUsed;
+      manaGained = saved.manaGained;
+      diceId = saved.diceId;
+      diceFaces = saved.diceFaces;
+      diceSkillAssignments = saved.diceSkillAssignments;
     }
   }
 
@@ -330,23 +422,29 @@ class SimCharacter {
   ) =>
       gearEffectsFor(equippedItemIds, items, itemSets);
 
-  /// The total a face or spell of [element] hits with -- the same sum the
-  /// fight screen and the character screen use ([itemSets] adds a worn
-  /// set's flat attack).
+  /// The alignment the hero's gear answers to (an aligned item's bonus,
+  /// see alignmentGearBonusFor): the walk sets it from its alignment score.
+  String alignmentLabel = 'Neutral';
+
+  /// The total a face or spell of [element] hits with: the fight screen's
+  /// own sum (strikeDamageFor; [itemSets] adds a worn set's flat attack).
   int casterDamage(
     Map<String, dynamic> items,
     String element, {
     Map<String, ItemSet> itemSets = const {},
-  }) {
-    final prefix = elementFieldPrefixes[element];
-    final elemental = prefix == null
-        ? 0
-        : equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
-    return baseDamage +
-        equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
-        gearEffects(items, itemSets).attackDamage +
-        elemental;
-  }
+  }) =>
+      strikeDamageFor(
+        baseDamage: baseDamage,
+        equippedItemIds: equippedItemIds,
+        items: items,
+        element: element,
+        gearAttack: gearEffects(items, itemSets).attackDamage,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence,
+        alignmentLabel: alignmentLabel,
+      );
 
   int armor(
     Map<String, dynamic> items, {
@@ -455,7 +553,7 @@ class SimCharacter {
         bannedPaths: roll?.banned(RollBanOn.pick) ?? const {},
       );
       if (offer.isEmpty) return;
-      final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
+      final shares = _simBuildShares[professionId] ?? {preferredStat: 1.0};
       int choose(List<StatPickOffer> o) =>
           statPickForShares(o, shares, pickedPoints);
       if (roll != null) {
@@ -705,17 +803,16 @@ class SimCharacter {
           !simCanUseDie(die, professionId: professionId, raceId: raceId)) {
         continue;
       }
-      final v = simDieValue(
-          faces,
-          simSkillAssignments(
-              faces: faces,
-              current: const {},
-              unlocked: unlockedSkillIds,
-              skills: skills),
-          skills,
-          damage: baseDamage,
-          caster: caster);
-      if (v > dieBest) {
+      final placed = simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      final v = simDieValue(faces, placed, skills,
+          damage: baseDamage, caster: caster);
+      // Bought only when it would be rolled: worth more, and its trial
+      // passed.
+      if (v > dieBest && _passesTrial(id, faces, placed)) {
         dieBest = v;
         dieId = id;
       }
@@ -811,11 +908,10 @@ class SimFightOutcome {
   int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
 }
 
-/// Pack-size stat multipliers, the fight screen's own.
-const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
-
-const int _potionHeal = 8; // potionHealAmount (item_stats.dart)
-const int _maxRolls = 3;
+// The fight screen's own numbers (fight_numbers.dart).
+const Map<int, double> _packStatMultipliers = packStatMultipliers;
+const int _potionHeal = potionHealAmount;
+const int _maxRolls = maxRollsPerTurn;
 
 class _SimEnemy {
   _SimEnemy({
@@ -1321,12 +1417,33 @@ SimFightOutcome simulateSimFight({
     return null;
   }
 
-  // The Stitch-Thrust: healing past full strikes the foe.
-  void overhealed(int healing) {
+  // The Stitch-Thrust: healing past full strikes the foe ([current] and
+  // [max]: the health of the one mended; the hero's by default).
+  void overhealed(int healing, {int? current, int? full}) {
     if (!has(Spec.stitchThrust)) return;
-    final hit = stitchThrust(overheal(healing, c.currentHealth, c.maxHealth));
+    final hit = stitchThrust(
+        overheal(healing, current ?? c.currentHealth, full ?? c.maxHealth));
     final target = firstLiving();
     if (hit > 0 && target != null) target.health = max(0, target.health - hit);
+  }
+
+  // Who a heal mends (heal_target.dart, the game's default): the most
+  // wounded member standing, the healer on a tie. 0 is the hero, then the
+  // companions in order.
+  int healTargetOf(int healer) => defaultHealTarget([
+        (current: c.currentHealth, max: c.maxHealth),
+        for (final a in allies) (current: a.currentHealth, max: a.maxHealth),
+      ], healer);
+  int currentOf(int i) =>
+      i == 0 ? c.currentHealth : allies[i - 1].currentHealth;
+  int maxOf(int i) => i == 0 ? c.maxHealth : allies[i - 1].maxHealth;
+  void mend(int i, int heal) {
+    if (i == 0) {
+      c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
+    } else {
+      final a = allies[i - 1];
+      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+    }
   }
 
   SimFightOutcome finish(bool won) {
@@ -1814,13 +1931,21 @@ SimFightOutcome simulateSimFight({
           s.playerInflicted(inflicted),
         );
       }
+      // A heal mends the most wounded member standing (heal_target.dart),
+      // and what heals past full counts on them.
+      final healTo = result.healingDone > 0 &&
+              result.damageDealt == 0 &&
+              result.blockAmount == 0
+          ? healTargetOf(0)
+          : 0;
+      final mended = healTo < 0 ? 0 : healTo;
       // A mend sign turns healing past full into block, and lifts
       // afflictions.
       if (face.type == 'Heal' && result.healingDone > 0) {
         block += s.shieldFromOverheal(
           healing: result.healingDone,
-          currentHealth: c.currentHealth,
-          maxHealth: c.maxHealth,
+          currentHealth: currentOf(mended),
+          maxHealth: maxOf(mended),
         );
         if (s.mendCleanse > 0) {
           c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
@@ -1862,13 +1987,13 @@ SimFightOutcome simulateSimFight({
         fire = fireAfterHeal(
           fire: fire,
           healing: heal,
-          currentHealth: c.currentHealth,
-          maxHealth: c.maxHealth,
+          currentHealth: currentOf(mended),
+          maxHealth: maxOf(mended),
           beacon: has(Spec.beacon),
         );
       }
-      overhealed(heal);
-      c.currentHealth = min(c.maxHealth, c.currentHealth + heal);
+      overhealed(heal, current: currentOf(mended), full: maxOf(mended));
+      mend(mended, heal);
       // A Defend face meets the strongest blow coming at it as a parry,
       // worth half again as much, instead of guarding the first to strike.
       var parried = false;
@@ -1991,7 +2116,13 @@ SimFightOutcome simulateSimFight({
       }
       var heal = ctx?.heal(result.healingDone, rounds) ?? result.healingDone;
       if (on('fatigue') && heal > 0) heal = fatiguedHeal(heal, a.healsGiven++);
-      a.currentHealth = min(a.maxHealth, a.currentHealth + heal);
+      // A companion's heal mends the most wounded member standing too.
+      final allyIndex = allies.indexOf(a) + 1;
+      final allyHealTo =
+          heal > 0 && result.damageDealt == 0 && result.blockAmount == 0
+              ? healTargetOf(allyIndex)
+              : allyIndex;
+      mend(allyHealTo < 0 ? allyIndex : allyHealTo, heal);
       a.block += result.blockAmount;
       if (face.type == 'Defend' && result.blockAmount > 0) {
         alliesDefending++;

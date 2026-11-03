@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/clan_power.dart' show ClanPowerRank, clanPowerRanking;
 import '../data/factions.dart';
+import '../data/region_holders.dart';
 import '../data/road_wards.dart';
 import '../gamedata/db_schema.dart';
 import 'game_db_providers.dart';
+import 'geography_provider.dart';
 import 'player_session_provider.dart';
 
 /// factions.json, subclans.json, relations.json, titles.json and
@@ -53,6 +56,17 @@ Future<ClanData> loadClanData(WidgetRef ref) async {
 /// The character's standing, marks and relations (see PoliticsState).
 final politicsProvider = Provider<PoliticsState>(
     (ref) => ref.watch(playerSessionProvider.select((s) => s.politics)));
+
+/// The clans with power ranked, now and at the last chapter's turn
+/// (clanPowerRanking, clan_power.dart): the clan power sign's rank and
+/// arrow.
+final clanPowerRankingProvider = Provider<List<ClanPowerRank>>((ref) =>
+    clanPowerRanking(ref.watch(politicsProvider), ref.watch(clanDataProvider)));
+
+/// Each region (a geography.json country) and the clans holding its places
+/// (regionHolders, region_holders.dart): the world map's Clans layer.
+final regionHoldersProvider = Provider<Map<String, RegionHolders>>((ref) =>
+    regionHolders(ref.watch(geographyProvider), ref.watch(politicsProvider)));
 
 /// The clans the Warding Cairn may ward the road against now: those
 /// hunting the character (road_wards.dart's [wardTargets]). Empty: the

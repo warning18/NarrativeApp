@@ -35,9 +35,9 @@ class FightSpoils {
 
 /// How long the gold and the XP count up, and the pause before and between
 /// the items.
-const Duration spoilsCountTime = Duration(milliseconds: 700);
-const Duration spoilsItemGap = Duration(milliseconds: 220);
-const Duration spoilsItemTime = Duration(milliseconds: 320);
+const Duration _spoilsCountTime = Duration(milliseconds: 700);
+const Duration _spoilsItemGap = Duration(milliseconds: 220);
+const Duration _spoilsItemTime = Duration(milliseconds: 320);
 
 /// The strip: "+gold G  +xp XP" and the items, dropping in.
 class FightSpoilsStrip extends StatefulWidget {
@@ -60,9 +60,9 @@ class _FightSpoilsStripState extends State<FightSpoilsStrip>
     with SingleTickerProviderStateMixin {
   late final AnimationController _anim = AnimationController(
     vsync: this,
-    duration: spoilsCountTime +
-        spoilsItemGap * widget.spoils.items.length +
-        spoilsItemTime,
+    duration: _spoilsCountTime +
+        _spoilsItemGap * widget.spoils.items.length +
+        _spoilsItemTime,
   );
   bool _started = false;
 
@@ -104,8 +104,8 @@ class _FightSpoilsStripState extends State<FightSpoilsStrip>
         animation: _anim,
         builder: (context, _) {
           final ms = _anim.value * total;
-          final count = Curves.easeOut
-              .transform((ms / spoilsCountTime.inMilliseconds).clamp(0.0, 1.0));
+          final count = Curves.easeOut.transform(
+              (ms / _spoilsCountTime.inMilliseconds).clamp(0.0, 1.0));
           return Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 12,
@@ -132,9 +132,9 @@ class _FightSpoilsStripState extends State<FightSpoilsStrip>
 
   /// Item [i] falls in from above once its turn comes.
   Widget _drop(SpoilItem item, int i, double ms) {
-    final start =
-        spoilsCountTime.inMilliseconds * 0.6 + spoilsItemGap.inMilliseconds * i;
-    final p = ((ms - start) / spoilsItemTime.inMilliseconds).clamp(0.0, 1.0);
+    final start = _spoilsCountTime.inMilliseconds * 0.6 +
+        _spoilsItemGap.inMilliseconds * i;
+    final p = ((ms - start) / _spoilsItemTime.inMilliseconds).clamp(0.0, 1.0);
     final fall = Curves.bounceOut.transform(p);
     return Tooltip(
       message: item.name,

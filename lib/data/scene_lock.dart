@@ -103,6 +103,11 @@ typedef ExitWay = ({bool card, bool takeable, String? to});
 /// to do in any order), an ending, Edit Mode. A walk to another district
 /// of the town is no way of the scene's and doesn't count. A scene that
 /// locks ([sceneLocked]) has no way back already.
+///
+/// A page with a single card the party can take hides it too, whatever its
+/// pins (the user's call, v1.692: a page that offers one choice is a tunnel,
+/// the story goes on through it). Its pins are listed as road cards, so no
+/// way is lost; a single card that can't be taken yet keeps the button.
 bool pageExitHidden({
   required List<ExitWay> ways,
   required bool hub,
@@ -119,5 +124,6 @@ bool pageExitHidden({
       if (w.card && w.to != null) w.to,
   };
   if (!open.any((w) => w.card)) return false;
+  if (open.where((w) => w.card).length == 1) return true;
   return open.every((w) => w.card || (w.to != null && reached.contains(w.to)));
 }

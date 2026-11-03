@@ -161,6 +161,66 @@ void main() {
     });
   });
 
+  testWidgets(
+      'Play to chapter takes the race and profession picked, and leaves the '
+      'banners taken, the party seated and its log', (tester) async {
+    late WidgetRef capturedRef;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            capturedRef = ref;
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.runAsync(() async {
+      Future<Map<String, dynamic>> load(DbSchema schema) =>
+          capturedRef.read(gameDbRepositoryProvider(schema)).loadRecords();
+      final story = await capturedRef.read(storyDataProvider.future);
+      final log = AutoplayLog();
+      // Past chapter 2 the clans are open (feature_unlocks.dart): every
+      // banner due can be taken.
+      final result = await autoplayToChapter(
+        capturedRef,
+        story: story,
+        targetChapter: 3,
+        strategy: AutoplayStrategy.favorGood,
+        dice: await load(diceSchema),
+        skills: await load(skillsSchema),
+        items: await load(itemsSchema),
+        enemies: await load(enemiesSchema),
+        races: await load(racesSchema),
+        professions: await load(professionsSchema),
+        zones: await load(zonesSchema),
+        raceId: 'dwarf',
+        professionId: 'warrior',
+        seed: 7,
+        log: log,
+      );
+
+      expect(result.status, AutoplayStatus.reachedTarget);
+      final s = capturedRef.read(playerSessionProvider);
+      expect((s.raceId, s.professionId), ('dwarf', 'warrior'));
+      // No banner left for the player to pick by hand.
+      expect(s.pendingOffers, isEmpty);
+      expect(s.clanOffer, isNull);
+      expect(log.banners, isNotEmpty);
+      // The recruited companions are seated, up to the party's room.
+      final houses = await load(housesSchema);
+      final room = partyCapacityFor(s.builtHouseIds, houses);
+      expect(s.activeAllyIds.length,
+          s.recruitedAllies.length < room ? s.recruitedAllies.length : room);
+      // The log: the choices in order, every fight kept won.
+      expect(log.choices, isNotEmpty);
+      expect(log.choices.length, greaterThanOrEqualTo(result.stepsApplied));
+      expect(log.fights.every((f) => f.won), isTrue);
+    });
+  });
+
   testWidgets('taking a main quest from the camp explores the chapter first',
       (WidgetTester tester) async {
     late WidgetRef capturedRef;

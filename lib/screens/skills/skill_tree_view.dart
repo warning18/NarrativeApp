@@ -1,15 +1,13 @@
-// The Tree tab: the class's branches side by side, learned from the top
-// down and crowned by a mastery, the race's heritage under them, then the
-// skills a reputation earns. A gold ring is known (its tier in dots), a lit
-// ring is ready to learn, grey with a lock comes later; every skill not yet
-// known says what it costs. Tapping one opens its sheet.
+// The Tree tab: the class's branches as constellations on one night sky
+// (star_chart.dart), the race's heritage under them, then the skills a
+// reputation earns. A gold ring is known (its tier in dots), a lit ring is
+// ready to learn, grey with a lock comes later. Tapping one opens its sheet.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/combat_engine.dart';
 import '../../combat/dice_faces.dart';
-import '../../data/skill_tree.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
@@ -19,6 +17,7 @@ import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/detail_dialog.dart';
 import '../../widgets/pixel_banner.dart';
 import 'skill_sheet.dart';
+import 'star_chart.dart';
 import 'skills_view_model.dart';
 
 class SkillTreeView extends ConsumerWidget {
@@ -66,14 +65,7 @@ class SkillTreeView extends ConsumerWidget {
           style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
         ),
         const SizedBox(height: 14),
-        if (model.classBranches.isNotEmpty)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final branch in model.classBranches)
-                Expanded(child: _BranchColumn(model: model, branch: branch)),
-            ],
-          ),
+        if (model.classBranches.isNotEmpty) StarChart(model: model),
         for (final branch in model.heritageBranches) ...[
           const Divider(height: 28),
           _SectionTitle(
@@ -124,78 +116,6 @@ class _SectionTitle extends StatelessWidget {
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: InkColors.of(context).ash)),
     ]));
-  }
-}
-
-class _BranchColumn extends ConsumerWidget {
-  const _BranchColumn({required this.model, required this.branch});
-
-  final SkillsModel model;
-  final SkillBranch branch;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    final isMastered = branch.id == model.masteredBranchId;
-    final ids = [
-      for (final id in branch.skillIds)
-        if (model[id] != null) id
-    ];
-    return Column(
-      children: [
-        Text.rich(
-          TextSpan(children: [
-            TextSpan(
-                text: branch.name,
-                style: theme.textTheme.titleSmall
-                    ?.copyWith(color: isMastered ? ink.gold : null)),
-            TextSpan(
-                text: ' ${model.knownOn(branch)}/${branch.skillIds.length}',
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-          ]),
-          key: Key('branch_${branch.id}'),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 2),
-        // What the branch is about, under its name (no tooltip to find).
-        SizedBox(
-          height: 30,
-          child: Text(
-            branch.description,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: ink.ash, fontSize: 10.5, height: 1.2),
-          ),
-        ),
-        const SizedBox(height: 6),
-        for (var i = 0; i < ids.length; i++) ...[
-          if (i > 0) _Link(lit: model[ids[i]]!.known),
-          SkillNode(entry: model[ids[i]]!),
-        ],
-        _Link(lit: isMastered),
-        _MasteryNode(model: model, branch: branch),
-      ],
-    );
-  }
-}
-
-class _Link extends StatelessWidget {
-  const _Link({required this.lit});
-
-  final bool lit;
-
-  @override
-  Widget build(BuildContext context) {
-    final ink = InkColors.of(context);
-    return Container(
-      width: 2,
-      height: 10,
-      margin: const EdgeInsets.symmetric(vertical: 1),
-      color: lit ? ink.gold : ink.seam,
-    );
   }
 }
 
@@ -379,59 +299,6 @@ class TierPips extends StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _MasteryNode extends ConsumerWidget {
-  const _MasteryNode({required this.model, required this.branch});
-
-  final SkillsModel model;
-  final SkillBranch branch;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    final isMastered = branch.id == model.masteredBranchId;
-    final closed = model.masteredBranchId.isNotEmpty && !isMastered;
-    final ready = model.canMaster(branch);
-    final colour = isMastered || ready ? ink.gold : ink.seam;
-    return InkWell(
-      key: Key('mastery_${branch.id}'),
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => showMasterySheet(context, ref, branch),
-      child: Opacity(
-        opacity: closed ? 0.4 : 1,
-        child: Padding(
-          padding: const EdgeInsets.all(2),
-          child: Column(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isMastered ? ink.gold.withValues(alpha: 0.2) : null,
-                  border: Border.all(color: colour, width: 2),
-                ),
-                child: Icon(closed ? Icons.block : Icons.star,
-                    color: isMastered || ready ? ink.gold : ink.ash, size: 20),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                isMastered
-                    ? tr(ref, 'mastery_label')
-                    : tr(ref, 'mastery_cost_label')
-                        .replaceAll('{n}', '$branchMasteryEssenceCost'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: isMastered || ready ? ink.gold : ink.ash),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

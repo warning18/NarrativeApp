@@ -15,38 +15,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/companion_sprites.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      loader.addFont(Future.value(ByteData.view(
-          Uint8List.fromList(File('assets/fonts/$f').readAsBytesSync())
-              .buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(
-          ByteData.view(Uint8List.fromList(icons.readAsBytesSync()).buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 const _bg = Color(0xFF17151B);
 const _page = Color(0xFF121116);
@@ -189,9 +162,9 @@ Widget _dog(String asset, {double size = 70, bool flip = false}) =>
               Icon(Icons.pets, size: size * 0.6, color: _gold)),
     );
 
-final String _walkEast = '$companionAssetsRoot/Walking/east/frame_002.png';
-final String _walkEast2 = '$companionAssetsRoot/Walking/east/frame_005.png';
-final String _sit = '$companionAssetsRoot/Sitting_down/rotations/south.png';
+const String _walkEast = '$companionAssetsRoot/Walking/east/frame_002.png';
+const String _walkEast2 = '$companionAssetsRoot/Walking/east/frame_005.png';
+const String _sit = '$companionAssetsRoot/Sitting_down/rotations/south.png';
 
 Widget _bubble(String text) => Container(
       padding: const EdgeInsets.fromLTRB(9, 6, 9, 7),
@@ -537,7 +510,7 @@ Widget _ideaB() {
             title: 'New: Journey',
             text:
                 'Your story on a map. Follow the route; tap a pin to see what waits there.',
-            p: (v) => _RoutePainter(v),
+            p: _RoutePainter.new,
             caption: 'a route is drawn across the map'),
         const SizedBox(width: 12),
       ],
@@ -553,7 +526,7 @@ Widget _ideaB() {
             title: 'New: Character',
             text:
                 'Your abilities, your gear and how you lean. It grows as you do.',
-            p: (v) => _RadarDemo(v),
+            p: _RadarDemo.new,
             caption: 'the radar grows with a level'),
         const SizedBox(width: 12),
       ],
@@ -584,7 +557,7 @@ Widget _board() => Padding(
     );
 
 void main() {
-  setUpAll(_loadFonts);
+  setUpAll(loadAppFonts);
 
   test('the dog frames the mock draws are the guide’s own', () {
     expect(_walkEast, contains('Walking/east'));

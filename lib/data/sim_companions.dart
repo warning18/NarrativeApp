@@ -5,9 +5,9 @@
 //   `rewardAllyId`) is handed in, never twice and never after leaving or
 //   being taken (PlayerSessionNotifier.recruitAlly); the quests' own gates
 //   (alignment, flags, gold) are the quest log's;
-// - the party: `partyCapacityFor` seats (two companions, three with the
-//   Barracks Annex), and a companion with a `requiredHouseId` only once that
-//   house stands (Kelda and Kelda's Hall);
+// - the party: `partyCapacityFor` seats (two companions, never more: three
+//   fighters, v1.667), and a companion with a `requiredHouseId` only once
+//   that house stands (Kelda and Kelda's Hall);
 // - approval (approval.dart): every choice's alignment and gold and its
 //   `approvalMods` move the seated companions' approval by their weights; at
 //   [leavingApproval] they walk out, and the benched companion who thinks
@@ -19,7 +19,7 @@
 //   won fight, and a rest or a level-up heals everyone.
 //
 // The pick rule (what the competent player decides): the seats go to the
-// companions worth most in a fight ([simCompanionValue]: their die's
+// companions worth most in a fight ([_simCompanionValue]: their die's
 // average roll at their damage, plus their health and armor as survival);
 // a companion within one point of the best left is a tie, settled toward
 // the higher approval, then the one whose weights fit the player's
@@ -28,6 +28,8 @@
 import 'dart:math';
 
 import '../combat/combat_engine.dart' show scaledDamage, scaledMaxHealth;
+import '../combat/fight_numbers.dart' show reviveHealthFraction;
+import '../combat/party_bonus.dart' show fullCompanySize, houseBonusesFor;
 import '../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart' show deriveAllyBaseStats;
@@ -40,8 +42,8 @@ import 'sim_policy.dart' show simDieValue;
 import 'story_companions.dart';
 
 /// A knocked-out companion is back at this share of their health after a
-/// won fight (fight_screen.dart's `_reviveHealthFraction`).
-const double simReviveHealthFraction = 0.3;
+/// won fight (fight_numbers.dart).
+const double simReviveHealthFraction = reviveHealthFraction;
 
 /// One thing the party went through: [kind] is `recruit`, `pick` (seated),
 /// `bench`, `swap` ([companionId] seated for [other]), `leave` (walked out
@@ -133,7 +135,7 @@ class SimAlly {
 /// player's [level] and their [approval], in the units of simDieValue: the
 /// signature die's average roll at their damage, plus a tenth of their
 /// health and most of their armor (what keeps them standing).
-double simCompanionValue(
+double _simCompanionValue(
   Map<String, dynamic> companion, {
   required int level,
   required int approval,
@@ -247,7 +249,7 @@ class SimParty {
   double valueOf(String id, {int? level}) {
     final record = _record(id);
     if (record == null) return 0;
-    return simCompanionValue(record,
+    return _simCompanionValue(record,
         level: level ?? _level,
         approval: roster[id]?.approval ?? startingApproval,
         races: races,
@@ -514,12 +516,22 @@ class SimParty {
           const {};
       final base = deriveAllyBaseStats(
           gameConfig: gameConfig, race: race, profession: profession);
-      final stats = _allyStats(record,
+      final raw = _allyStats(record,
           level: _level,
           approval: member.approval,
           races: races,
           professions: professions,
           gameConfig: gameConfig);
+      // The Barracks Annex: a full company comes rested (party_bonus.dart).
+      final rested = 100 +
+          (active.length >= fullCompanySize
+              ? houseBonusesFor(builtHouses, houses).companionHealth
+              : 0);
+      final stats = (
+        maxHealth: max(1, (raw.maxHealth * rested / 100).round()),
+        damage: raw.damage,
+        armor: raw.armor,
+      );
       final liveMax = signs.maxHealthFor(stats.maxHealth, partyWide: true);
       final faces = _facesOf(dice, record);
       final known = {

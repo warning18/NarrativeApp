@@ -198,6 +198,10 @@ Map<String, String> simSkillAssignments({
   return assignments;
 }
 
+/// The fights a competent player's die trial plays with each die (the die
+/// in play and the one it would switch to), on the same seeds.
+const int simDieTrialFights = 12;
+
 /// What a roll of the die is worth on average (faces by their weight), in
 /// the same units as [simLoadoutValue]: an Attack face the character's
 /// [damage] plus its value, a Skill face [damage] plus what its skill adds

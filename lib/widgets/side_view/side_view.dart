@@ -168,7 +168,7 @@ class _ScenePainter extends CustomPainter {
     }
     actors?.paint(canvas, size, 0, t, unit);
     overlay?.paint(canvas, size, 0, t, unit);
-    paintSideParticles(canvas, size, particles, intensity, t, unit);
+    _paintSideParticles(canvas, size, particles, intensity, t, unit);
   }
 
   @override
@@ -181,8 +181,8 @@ void sidePixels(Canvas canvas, double unit, Paint paint, double x, double y,
     double w, double h) {
   canvas.drawRect(
       Rect.fromLTWH(
-          (x).floorToDouble() * unit,
-          (y).floorToDouble() * unit,
+          x.floorToDouble() * unit,
+          y.floorToDouble() * unit,
           math.max(1, w.roundToDouble()) * unit,
           math.max(1, h.roundToDouble()) * unit),
       paint);
@@ -229,7 +229,12 @@ double _rand(int seed) {
 }
 
 /// The weather over the scene: [intensity] 0 to 1.
+/// The weather's particles over [size] on a grid of [unit]: also the fight's.
 void paintSideParticles(Canvas canvas, Size size, SideParticles kind,
+        double intensity, double t, double unit) =>
+    _paintSideParticles(canvas, size, kind, intensity, t, unit);
+
+void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
     double intensity, double t, double unit) {
   if (kind == SideParticles.none || intensity <= 0) return;
   final w = size.width, h = size.height;

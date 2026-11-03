@@ -38,7 +38,7 @@ typedef TownServiceOpen = ({
 });
 
 /// The shops that stand at a town's forge rather than its market.
-const Set<String> forgeShopIds = {
+const Set<String> _forgeShopIds = {
   'weaponsmith_forge',
   'hammersmith_forge',
   'shieldwrights_hall',
@@ -107,11 +107,11 @@ List<TownService> townServicesOf(
               ],
             'market' => [
                 for (final id in shops)
-                  if (!forgeShopIds.contains(id)) shop(id),
+                  if (!_forgeShopIds.contains(id)) shop(id),
               ],
             'forge' => [
                 for (final id in shops)
-                  if (forgeShopIds.contains(id)) shop(id),
+                  if (_forgeShopIds.contains(id)) shop(id),
               ],
             'tavern' => const [
                 (

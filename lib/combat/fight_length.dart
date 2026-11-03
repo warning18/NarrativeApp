@@ -5,11 +5,11 @@
 // cleric's 39: these keep them near 10 to 12 without a cap.
 //
 // - Healing fatigue: each heal a member gives in a fight heals
-//   [healFatigueStep] less than the one before, never under
-//   [healFatigueFloor] (what made a healer's fights endless).
+//   [_healFatigueStep] less than the one before, never under
+//   [_healFatigueFloor] (what made a healer's fights endless).
 // - Execute: a foe struck this round and left under [executeShare] of its
 //   health falls (never a boss).
-// - Morale: a hurt foe (under [moraleFleeShare]) may flee, at
+// - Morale: a hurt foe (under [_moraleFleeShare]) may flee, at
 //   [moraleFleeChance] a round; a fled foe pays part of its spoils, as a
 //   Skittish one does.
 // - The pack breaks: when a pack's leader (its biggest, see
@@ -65,7 +65,7 @@ int? fightTideCap(Iterable<Map<String, dynamic>> enemies) {
 }
 
 /// The factor on the party's blows in [round].
-double tidePartyMultiplier(int round) => 1 + tidePartyStep * tideLevel(round);
+double _tidePartyMultiplier(int round) => 1 + tidePartyStep * tideLevel(round);
 
 /// The factor on the enemies' blows in [round] ([bossFight]: a boss is
 /// in the fight; [cap]: the fight's [fightTideCap]).
@@ -81,7 +81,7 @@ int tideDamage(int damage, int round,
     {required bool byParty, bool bossFight = false, int? enemyCap}) {
   if (damage <= 0 || tideLevel(round) == 0) return damage;
   final factor = byParty
-      ? tidePartyMultiplier(round)
+      ? _tidePartyMultiplier(round)
       : tideEnemyMultiplier(round, bossFight: bossFight, cap: enemyCap);
   return (damage * factor).round();
 }
@@ -112,13 +112,13 @@ Map<String, dynamic> withoutHealMoves(
 }
 
 /// What each heal given before takes off the next one, and how low it goes.
-const double healFatigueStep = 0.05;
-const double healFatigueFloor = 0.30;
+const double _healFatigueStep = 0.05;
+const double _healFatigueFloor = 0.30;
 
 /// The factor on a heal after [healsBefore] heals by the same member this
 /// fight.
 double healFatigueFactor(int healsBefore) =>
-    max(healFatigueFloor, 1 - healFatigueStep * healsBefore);
+    max(_healFatigueFloor, 1 - _healFatigueStep * healsBefore);
 
 /// [amount] healed after [healsBefore] heals by the same member (at least 1
 /// when there is anything to heal).
@@ -138,12 +138,12 @@ bool executes(
 
 /// Under this share of its health, a foe that isn't a boss may flee, at
 /// [moraleFleeChance] each round.
-const double moraleFleeShare = 0.25;
+const double _moraleFleeShare = 0.25;
 const double moraleFleeChance = 0.5;
 
 /// Whether a foe at [health] of [maxHealth] wavers.
 bool wavers({required int health, required int maxHealth}) =>
-    health > 0 && health < maxHealth * moraleFleeShare;
+    health > 0 && health < maxHealth * _moraleFleeShare;
 
 /// When a pack's leader falls, each other foe flees at this chance.
 const double packBreakChance = 0.7;

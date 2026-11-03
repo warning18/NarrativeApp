@@ -8,10 +8,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'support/fonts.dart';
 
 // --- The kinds of way ------------------------------------------------------
 
@@ -113,34 +113,6 @@ const _here = Offset(0.42, 0.42);
 bool _bannerRows = false;
 
 // --- Fonts ------------------------------------------------------------------
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
 
 // --- The district map -------------------------------------------------------
 
@@ -349,7 +321,7 @@ class _BannerPainter extends CustomPainter {
     const h = 38.0;
     final surface = dark ? const Color(0xFF141218) : const Color(0xFFFAF3E2);
     final rod = Color.lerp(color, Colors.black, 0.45)!;
-    final cord = const Color(0xFFEFE3C8);
+    const cord = Color(0xFFEFE3C8);
     // The cloth: straight sides, a swallow-tail hem.
     final cloth = Path()
       ..moveTo(3, 9)
@@ -1694,7 +1666,7 @@ void main() {
     return;
   }
 
-  setUpAll(_loadFonts);
+  setUpAll(loadAppFonts);
 
   Widget journey(bool dark, PinStyle s, {bool fr = false, String? selected}) =>
       _phoneApp(

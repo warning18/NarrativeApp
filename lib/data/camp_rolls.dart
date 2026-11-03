@@ -200,12 +200,6 @@ class CampRolls {
 
   /// Whether any of the three houses is up.
   bool get any => reroll != null || banish != null || raise != null;
-
-  /// The bans on the stat picks ([RollBanOn.pick]) or the offers.
-  List<RollBan> bansOn(RollBanOn on) => [
-        for (final b in bans)
-          if (b.on == on) b,
-      ];
 }
 
 /// A seed for [text] that is the same on every run and platform.

@@ -40,7 +40,7 @@ class UiThemePalette {
   final FontWeight headerWeight;
 }
 
-const Map<String, UiThemePalette> uiThemePalettes = {
+const Map<String, UiThemePalette> _uiThemePalettes = {
   // Cool, working-harbor steel-teal.
   'docks': UiThemePalette(accent: Color(0xFF3E7C8C)),
   // Warm antique gold, ceremonial weight.
@@ -84,7 +84,7 @@ const Map<String, UiThemePalette> uiThemePalettes = {
 
 /// The palette for [uiTheme], or null to leave the reading screen's colors
 /// exactly as they already are.
-UiThemePalette? uiThemePaletteFor(String? uiTheme) => uiThemePalettes[uiTheme];
+UiThemePalette? uiThemePaletteFor(String? uiTheme) => _uiThemePalettes[uiTheme];
 
 /// The colors [_StoryText] (`story_player_screen.dart`) paints with
 /// (text and border; cardTint is no longer painted), once a [UiThemePalette]'s raw accent has been blended

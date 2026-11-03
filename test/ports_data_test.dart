@@ -28,6 +28,8 @@ void main() {
   group('ports.json', () {
     test('exactly one home port, and every port names real zones and shops',
         () {
+      // The lambda gives `where` its Map type: a tear-off would not compile.
+      // ignore: unnecessary_lambdas
       expect(ports.values.where((p) => portIsHome(p)).length, 1);
       for (final entry in ports.entries) {
         final port = entry.value as Map<String, dynamic>;

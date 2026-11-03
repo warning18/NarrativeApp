@@ -40,16 +40,3 @@ final templeOfferProvider =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider),
   );
 });
-
-/// The blessing the party carries: the clan whose temple gave it ('' a
-/// neutral one) and the fights it has left; null for none (for the
-/// RoadPanel's line and the fight's chip).
-final activeBlessingProvider = Provider<({String clanId, int fights})?>((ref) {
-  final fights =
-      ref.watch(playerSessionProvider.select((s) => s.blessingFights));
-  if (fights <= 0) return null;
-  return (
-    clanId: ref.watch(playerSessionProvider.select((s) => s.blessingClan)),
-    fights: fights,
-  );
-});

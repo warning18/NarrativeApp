@@ -442,8 +442,8 @@ void main() {
       }
       expect(counts.keys,
           containsAll([GiftKind.skill, GiftKind.sign, GiftKind.object]));
-      expect(counts[GiftKind.skill]!, greaterThan(counts[GiftKind.object]!));
-      expect(counts[GiftKind.object]!, greaterThan(counts[GiftKind.title]!));
+      expect(counts[GiftKind.skill], greaterThan(counts[GiftKind.object]!));
+      expect(counts[GiftKind.object], greaterThan(counts[GiftKind.title]!));
     });
 
     test('the Choir and the Pit give signs only, at least Rare', () {

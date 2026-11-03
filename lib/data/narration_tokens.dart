@@ -22,7 +22,7 @@ const Map<String, ({String en, String fr})> _professionNouns = {
   'ranger': (en: 'ranger', fr: 'rôdeur'),
 };
 
-String raceNounFor(String raceId, {required bool french}) {
+String _raceNounFor(String raceId, {required bool french}) {
   final noun = _raceNouns[raceId];
   if (noun == null) {
     return raceId.isEmpty ? (french ? 'inconnu' : 'stranger') : raceId;
@@ -30,7 +30,7 @@ String raceNounFor(String raceId, {required bool french}) {
   return french ? noun.fr : noun.en;
 }
 
-String professionNounFor(String professionId, {required bool french}) {
+String _professionNounFor(String professionId, {required bool french}) {
   final noun = _professionNouns[professionId];
   if (noun == null) {
     return professionId.isEmpty
@@ -57,7 +57,7 @@ String powerMediumFor(String raceId, {required bool french}) {
   return french ? medium.fr : medium.en;
 }
 
-bool hasNarrationTokens(String text) => text.contains('{');
+bool _hasNarrationTokens(String text) => text.contains('{');
 
 /// [text] with every `{name}`, `{race}`, `{profession}`, `{companion}`,
 /// `{sigil}` (the race's power medium) and `{lost}` (the companion the
@@ -74,7 +74,7 @@ String personalizeNarration(
   String? lostCompanionName,
   required bool french,
 }) {
-  if (!hasNarrationTokens(text)) return text;
+  if (!_hasNarrationTokens(text)) return text;
   final displayName =
       name.trim().isEmpty ? (french ? "l'étranger" : 'stranger') : name.trim();
   final companion = (companionName?.trim().isNotEmpty ?? false)
@@ -86,9 +86,9 @@ String personalizeNarration(
   return text
       .replaceAll('{lost}', lost)
       .replaceAll('{name}', displayName)
-      .replaceAll('{race}', raceNounFor(raceId, french: french))
+      .replaceAll('{race}', _raceNounFor(raceId, french: french))
       .replaceAll(
-          '{profession}', professionNounFor(professionId, french: french))
+          '{profession}', _professionNounFor(professionId, french: french))
       .replaceAll('{companion}', companion)
       .replaceAll('{sigil}', powerMediumFor(raceId, french: french));
 }

@@ -29,29 +29,7 @@ import 'package:narrative_data_app/providers/combat_active_provider.dart';
 import 'package:narrative_data_app/providers/expedition_active_provider.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
-
-Future<void> _loadFonts() async {
-  const families = {
-    'PixelifySans': [
-      'assets/fonts/PixelifySans-Regular.ttf',
-      'assets/fonts/PixelifySans-SemiBold.ttf',
-    ],
-    'Spectral': [
-      'assets/fonts/Spectral-Regular.ttf',
-      'assets/fonts/Spectral-Medium.ttf',
-      'assets/fonts/Spectral-Italic.ttf',
-    ],
-    'IMFellEnglishSC': ['assets/fonts/IMFellEnglishSC-Regular.ttf'],
-  };
-  for (final family in families.entries) {
-    final loader = FontLoader(family.key);
-    for (final path in family.value) {
-      loader.addFont(
-          Future.value(ByteData.view(File(path).readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 List<String> _collectOverflows(WidgetTester tester) {
   final seen = <String>[];
@@ -84,7 +62,7 @@ Future<void> _settle(WidgetTester tester) async {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await _loadFonts();
+    await loadAppFonts();
     for (final path in [
       'assets/Cleaned_Narrative_DAG.json',
       for (final f in Directory('assets/gamedata').listSync())

@@ -12,15 +12,15 @@ import 'fight_goal.dart';
 /// `situation_ambush`. Its text is the l10n key `tip_fight_<id>`.
 
 /// The tip id of a goal; null for the plain slaughter, which needs none.
-String? fightGoalTipId(FightGoalKind kind) =>
+String? _fightGoalTipId(FightGoalKind kind) =>
     kind == FightGoalKind.slay ? null : 'goal_${kind.name}';
 
 /// The tip id of the doctrine of [factionId]'s fighters.
-String fightDoctrineTipId(String factionId) => 'doctrine_$factionId';
+String _fightDoctrineTipId(String factionId) => 'doctrine_$factionId';
 
 /// The tip id of a battlefield condition ("situation"): `situation_ambush`,
 /// `situation_high_ground`…
-String fightSituationTipId(BattlefieldCondition condition) =>
+String _fightSituationTipId(BattlefieldCondition condition) =>
     'situation_${conditionLabelKey(condition).substring('condition_'.length)}';
 
 /// The l10n key of a tip's text.
@@ -34,9 +34,9 @@ List<String> fightTipIdsFor({
   BattlefieldCondition? condition,
 }) =>
     [
-      if (fightGoalTipId(goal) case final id?) id,
-      if (doctrineFactionId != null) fightDoctrineTipId(doctrineFactionId),
-      if (condition != null) fightSituationTipId(condition),
+      if (_fightGoalTipId(goal) case final id?) id,
+      if (doctrineFactionId != null) _fightDoctrineTipId(doctrineFactionId),
+      if (condition != null) _fightSituationTipId(condition),
     ];
 
 /// The tips of [shown] the player has not had yet ([seen]), in [shown]'s
@@ -58,10 +58,10 @@ List<String> dueFightTips({
 /// doctrine and per situation.
 List<String> get allFightTipIds => [
       for (final kind in FightGoalKind.values)
-        if (fightGoalTipId(kind) case final id?) id,
-      for (final factionId in doctrines.keys) fightDoctrineTipId(factionId),
+        if (_fightGoalTipId(kind) case final id?) id,
+      for (final factionId in doctrines.keys) _fightDoctrineTipId(factionId),
       for (final condition in BattlefieldCondition.values)
-        fightSituationTipId(condition),
+        _fightSituationTipId(condition),
     ];
 
 /// The l10n key of the name of what tip [id] explains: the goal's, the

@@ -318,7 +318,7 @@ class RoomPlan implements PlacePlan {
       case RoomKind.den:
         // A tavern at the front, the gaming room behind, the counting
         // room off it, a gallery over the floor.
-        final box = const Rect.fromLTWH(180, 110, 640, 780);
+        const box = Rect.fromLTWH(180, 110, 640, 780);
         outline = _corners(box);
         final front = Rect.fromLTRB(box.left, 560, box.right, box.bottom);
         final back = Rect.fromLTRB(box.left, box.top, box.right, 560);
@@ -390,7 +390,7 @@ class RoomPlan implements PlacePlan {
           ..['strongbox'] = Offset(counting.right - 90, counting.top + 60)
           ..['stairs'] = Offset(box.right - 110, front.center.dy);
       case RoomKind.tavern || RoomKind.inn:
-        final box = const Rect.fromLTWH(190, 160, 620, 680);
+        const box = Rect.fromLTWH(190, 160, 620, 680);
         outline = _corners(box);
         final room =
             Rect.fromLTRB(box.left, box.top + 170, box.right, box.bottom);
@@ -447,7 +447,7 @@ class RoomPlan implements PlacePlan {
           ..['kitchen'] = Offset(kitchen.center.dx, kitchen.center.dy)
           ..['rooms'] = Offset(box.right - 120, room.bottom - 90);
       case RoomKind.house:
-        final box = const Rect.fromLTWH(230, 240, 540, 520);
+        const box = Rect.fromLTWH(230, 240, 540, 520);
         outline = _corners(box);
         final hall =
             Rect.fromLTRB(box.left, box.top, box.left + 320, box.bottom);
@@ -489,7 +489,7 @@ class RoomPlan implements PlacePlan {
           ..['bed'] = Offset(chamber.center.dx + 30, chamber.top + 190)
           ..['chamber'] = Offset(chamber.center.dx, chamber.center.dy + 40);
       case RoomKind.hall || RoomKind.keep:
-        final box = const Rect.fromLTWH(220, 90, 560, 820);
+        const box = Rect.fromLTWH(220, 90, 560, 820);
         outline = _corners(box);
         final nave =
             Rect.fromLTRB(box.left, box.top + 150, box.right, box.bottom);
@@ -526,7 +526,7 @@ class RoomPlan implements PlacePlan {
           ..['throne'] = Offset(box.center.dx, dais.center.dy + 90)
           ..['stairs'] = Offset(box.left + 120, nave.bottom - 100);
       case RoomKind.temple:
-        final box = const Rect.fromLTWH(230, 90, 540, 820);
+        const box = Rect.fromLTWH(230, 90, 540, 820);
         outline = _corners(box);
         final nave =
             Rect.fromLTRB(box.left, box.top + 200, box.right, box.bottom);
@@ -557,7 +557,7 @@ class RoomPlan implements PlacePlan {
           ..['altar'] = Offset(box.center.dx, choir.top + 150)
           ..['chapel'] = Offset(box.right - 80, choir.center.dy);
       case RoomKind.shop:
-        final box = const Rect.fromLTWH(230, 220, 540, 560);
+        const box = Rect.fromLTWH(230, 220, 540, 560);
         outline = _corners(box);
         final front =
             Rect.fromLTRB(box.left, box.top + 200, box.right, box.bottom);
@@ -600,9 +600,9 @@ class RoomPlan implements PlacePlan {
           ..['shelves'] = Offset(box.left + 110, front.center.dy + 40)
           ..['store'] = Offset(store.center.dx + 80, store.center.dy);
       case RoomKind.warehouse:
-        final box = const Rect.fromLTWH(170, 160, 660, 680);
+        const box = Rect.fromLTWH(170, 160, 660, 680);
         outline = _corners(box);
-        rooms.add(Room('floor', box));
+        rooms.add(const Room('floor', box));
         doors
           ..add(RoomDoor('door', Offset(box.center.dx, box.bottom), math.pi / 2,
               width: 120))
@@ -628,14 +628,15 @@ class RoomPlan implements PlacePlan {
         // Rough walls round one or two chambers.
         outline = _rough(const Rect.fromLTWH(200, 160, 600, 680), rng,
             kind == RoomKind.cave ? 40 : 14);
-        final main = const Rect.fromLTWH(220, 400, 560, 420);
-        final deep = const Rect.fromLTWH(220, 180, 560, 220);
+        const main = Rect.fromLTWH(220, 400, 560, 420);
+        const deep = Rect.fromLTWH(220, 180, 560, 220);
         rooms
-          ..add(Room('main', main))
-          ..add(Room('deep', deep));
-        doors.add(RoomDoor('door', Offset(500, 840), math.pi / 2, width: 60));
+          ..add(const Room('main', main))
+          ..add(const Room('deep', deep));
+        doors.add(
+            const RoomDoor('door', Offset(500, 840), math.pi / 2, width: 60));
         if (kind == RoomKind.cellar) {
-          put(FurnitureKind.stair, Offset(500, 780), 70, 100);
+          put(FurnitureKind.stair, const Offset(500, 780), 70, 100);
           for (var i = 0; i < 6; i++) {
             put(FurnitureKind.cask,
                 Offset(260 + (i % 3) * 70.0, 460 + (i ~/ 3) * 70.0), 56, 56);
@@ -662,9 +663,9 @@ class RoomPlan implements PlacePlan {
           ..['dark'] = const Offset(500, 290);
       case RoomKind.tower:
         outline = _circle(const Offset(500, 500), 300, 28);
-        rooms.add(Room('round', const Rect.fromLTWH(220, 220, 560, 560)));
+        rooms.add(const Room('round', Rect.fromLTWH(220, 220, 560, 560)));
         doors.add(
-            RoomDoor('door', const Offset(500, 800), math.pi / 2, width: 50));
+            const RoomDoor('door', Offset(500, 800), math.pi / 2, width: 50));
         put(FurnitureKind.stair, const Offset(500, 500), 140, 140, angle: 0.3);
         put(FurnitureKind.hearth, const Offset(260, 500), 44, 90);
         anchors
@@ -681,9 +682,9 @@ class RoomPlan implements PlacePlan {
             RoomKind.forge ||
             RoomKind.theatre ||
             RoomKind.baths:
-        final box = const Rect.fromLTWH(250, 250, 500, 500);
+        const box = Rect.fromLTWH(250, 250, 500, 500);
         outline = _corners(box);
-        rooms.add(Room('room', box));
+        rooms.add(const Room('room', box));
         doors.add(RoomDoor(
             'door', Offset(box.center.dx, box.bottom), math.pi / 2,
             width: 56));

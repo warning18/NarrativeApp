@@ -23,14 +23,8 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
+import 'support/pump.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 150 && !done(); i++) {
@@ -57,6 +51,9 @@ Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
         as Map<String, dynamic>)[id] as Map<String, dynamic>;
+
+Finder _holdTile(String badge) =>
+    find.byWidgetPredicate((w) => w is FightStatusTile && w.badge == badge);
 
 void main() {
   group('fight goals', () {
@@ -220,11 +217,11 @@ void main() {
 
     test('every faction named by an enemy or a doctrine exists', () {
       final factions =
-          (jsonDecode(File('assets/gamedata/factions.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/factions.json').readAsStringSync())
+              as Map<String, dynamic>;
       final enemies =
-          (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
+              as Map<String, dynamic>;
       for (final entry in enemies.entries) {
         final faction =
             (entry.value as Map<String, dynamic>)['faction']?.toString() ?? '';
@@ -239,8 +236,8 @@ void main() {
 
     test('a boss or unique has no faction, so no doctrine', () {
       final enemies =
-          (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
-              as Map<String, dynamic>);
+          jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
+              as Map<String, dynamic>;
       // Uniques tuned one by one carry no faction in their own right.
       for (final id in ['void_sovereign', 'white_admiral', 'void_archon']) {
         expect((enemies[id] as Map<String, dynamic>)['faction'], '',
@@ -255,15 +252,12 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -293,7 +287,7 @@ void main() {
 
     Future<void> pushFight(FightScreen screen) async {
       navigator().push(MaterialPageRoute<bool>(builder: (_) => screen));
-      await _settle(tester);
+      await settleApp(tester);
     }
 
     FightScreen pack(FightGoal goal) => FightScreen(
@@ -312,13 +306,13 @@ void main() {
     expect(find.textContaining('Hold the line'), findsOneWidget);
     expect(find.textContaining('Survive 2 of their turns'), findsOneWidget);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     await pushFight(pack(const FightGoal(FightGoalKind.rout)));
     expect(find.textContaining('Rout'), findsWidgets);
     expect(find.textContaining('their captain'), findsOneWidget);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     await pushFight(FightScreen(
       enemyId: 'slum_thug',
@@ -333,7 +327,7 @@ void main() {
     expect(find.byKey(const Key('fight_doctrine_banner')), findsOneWidget);
     expect(find.textContaining('The Short Con'), findsOneWidget);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // A plain fight shows neither banner.
     await pushFight(FightScreen(
@@ -346,27 +340,26 @@ void main() {
     expect(find.byKey(const Key('fight_goal_banner')), findsNothing);
     expect(find.byKey(const Key('fight_doctrine_banner')), findsNothing);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // A hold of two turns: nothing can be felled, so the party wins only by
     // standing through the second enemy turn.
     await pushFight(pack(const FightGoal(FightGoalKind.hold, rounds: 2)));
     await tester.ensureVisible(find.text('Enter Battle'));
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
-    expect(find.textContaining('Hold 1/2'), findsOneWidget);
+    await settleApp(tester);
+    expect(
+        find.byWidgetPredicate((w) => w is FightStatusTile && w.badge == '1/2'),
+        findsOneWidget);
     expect(container.read(lastFightOutcomeProvider), isNull);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(
-        tester,
-        () =>
-            find.textContaining('Hold 2/2').evaluate().isNotEmpty &&
-            _enabled('Roll Dice'));
+    await _pumpUntil(tester,
+        () => _holdTile('2/2').evaluate().isNotEmpty && _enabled('Roll Dice'));
     expect(container.read(lastFightOutcomeProvider), isNull,
         reason: 'one turn survived of two');
-    expect(find.textContaining('Hold 2/2'), findsOneWidget);
+    expect(_holdTile('2/2'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');

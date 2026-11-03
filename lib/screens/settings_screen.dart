@@ -385,6 +385,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   .read(alignmentHuntersEnabledProvider.notifier)
                   .setEnabled(value),
             ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'dice_speed_setting_title')),
+              subtitle: Text(tr(ref, 'dice_speed_setting_desc')),
+            ),
+            SegmentedButton<DiceSpeed>(
+              key: const Key('dice_speed_setting'),
+              segments: [
+                for (final value in DiceSpeed.values)
+                  ButtonSegment(value: value, label: Text('${value.factor}×')),
+              ],
+              selected: {ref.watch(diceSpeedProvider)},
+              showSelectedIcon: false,
+              onSelectionChanged: (picked) =>
+                  ref.read(diceSpeedProvider.notifier).set(picked.first),
+            ),
+            const SizedBox(height: 8),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(tr(ref, 'companion_auto_target_setting_title')),

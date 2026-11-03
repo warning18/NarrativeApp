@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../combat/dice_faces.dart' show skillDisplayName;
+import '../combat/dice_faces.dart' show dieDisplayName, skillDisplayName;
 import '../combat/specialisations.dart' show specId;
 import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/companion_remarks.dart';
@@ -41,7 +41,7 @@ import 'sign_widgets.dart';
 import 'wind_banner.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
-const Color wayfarerColor = Color(0xFF8D6E63);
+const Color _wayfarerColor = Color(0xFF8D6E63);
 const int _wayfarerGreetings = 4;
 
 /// Opens the offer when one is due (see offers.dart): after a level-up's
@@ -93,7 +93,7 @@ bool offerOpenOn(NavigatorState navigator) => _offerOpen[navigator] ?? false;
 /// The suitor's name as the card says it: "The Emberwives of the Cinder
 /// Compact" for a clan's voice, the faction's name for the others, "The
 /// Wayfarer", and "Your own hand" for the lost clan (v1.195).
-String suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
+String _suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) return trFor(lang, 'offer_wayfarer_name');
   final faction = data.faction(suitor.factionId);
   if (faction?.isLost ?? false) return trFor(lang, 'offer_own_hand_name');
@@ -104,7 +104,7 @@ String suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
 }
 
 /// What the suitor says: their intro the first time, else a greeting.
-String suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
+String _suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) {
     return suitor.firstMeeting
         ? trFor(lang, 'offer_wayfarer_intro')
@@ -142,7 +142,7 @@ String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
 }
 
 /// The gift's name in [lang].
-String giftName(
+String _giftName(
   OfferGift gift, {
   required OfferTables tables,
   required Map<String, dynamic> localizedItems,
@@ -167,6 +167,8 @@ String giftName(
       return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           tables.specVariants[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           gift.id;
+    case GiftKind.die:
+      return dieDisplayName(gift.id, language: lang);
   }
 }
 
@@ -243,7 +245,7 @@ List<({String text, double delta})> standingPreviewParts(
 
 /// The alignment [suitor]'s gift moves: the faction's or sub-clan's lean,
 /// and a vow's or a pact's ±3.
-int alignmentNudgeOf(Suitor suitor, OfferTables tables) {
+int _alignmentNudgeOf(Suitor suitor, OfferTables tables) {
   final sign =
       suitor.gift.kind == GiftKind.sign ? tables.signs[suitor.gift.id] : null;
   return leanOf(suitor, tables.data) +
@@ -277,7 +279,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final lang = ref.read(appLanguageProvider);
     final tables = widget.tables;
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    final name = giftName(suitor.gift,
+    final name = _giftName(suitor.gift,
         tables: tables, localizedItems: items, lang: lang);
     final preview = standingPreviewParts(suitor, offer.ticket,
         politics: ref.read(playerSessionProvider).politics,
@@ -297,8 +299,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
               SheetHeader(
                 title: trFor(lang, 'offer_confirm_title')
                     .replaceAll('{gift}', name),
-                caption: trFor(lang, 'offer_confirm_from')
-                    .replaceAll('{who}', suitorName(suitor, tables.data, lang)),
+                caption: trFor(lang, 'offer_confirm_from').replaceAll(
+                    '{who}', _suitorName(suitor, tables.data, lang)),
                 padding: const EdgeInsets.only(bottom: 12),
               ),
               Text(preview.isEmpty
@@ -352,7 +354,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       final clanColour = _suitorColor(suitor, tables.data);
       final card = clanGiftCard(
         lang: lang,
-        clanName: suitorName(suitor, tables.data, lang),
+        clanName: _suitorName(suitor, tables.data, lang),
         clanColour: clanColour,
         gift: risk != null && !risk.won
             // The price paid: the line says what the die took.
@@ -671,14 +673,14 @@ class _OfferBanner extends ConsumerWidget {
     final color = _suitorColor(suitor, data);
     final gift = suitor.gift;
     final name =
-        giftName(gift, tables: tables, localizedItems: items, lang: lang);
+        _giftName(gift, tables: tables, localizedItems: items, lang: lang);
     final preview = standingPreviewParts(suitor, ticket,
         politics: session.politics,
         data: data,
         lang: lang,
         flags: session.flags);
     final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
-    final who = suitorName(suitor, data, lang);
+    final who = _suitorName(suitor, data, lang);
     const good = Color(0xFF3E9B57);
 
     // One box for every banner, so none changes size when another is picked
@@ -689,6 +691,7 @@ class _OfferBanner extends ConsumerWidget {
         : ClanMarks(
             factionId: suitor.factionId,
             discSize: 34,
+            plate: true,
             child: SizedBox(
               key: Key('offer_banner_${suitor.factionId}'),
               width: bannerBox,
@@ -865,8 +868,8 @@ class _OfferHall extends ConsumerWidget {
     final faction = data.faction(picked.factionId);
     final color = _suitorColor(picked, data);
     final gift = picked.gift;
-    final greeting = suitorGreeting(picked, data, lang);
-    final nudge = alignmentNudgeOf(picked, tables);
+    final greeting = _suitorGreeting(picked, data, lang);
+    final nudge = _alignmentNudgeOf(picked, tables);
     final tier = faction == null || faction.isLost
         ? null
         : politics.tierOf(picked.factionId, data);
@@ -919,7 +922,7 @@ class _OfferHall extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      suitorName(picked, data, lang),
+                      _suitorName(picked, data, lang),
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontFamily: InkFonts.display, color: color),
                     ),
@@ -986,7 +989,7 @@ class _OfferHall extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    giftName(gift,
+                                    _giftName(gift,
                                         tables: tables,
                                         localizedItems: items,
                                         lang: lang),
@@ -1127,6 +1130,7 @@ Widget _giftGlyph(OfferGift gift, Color color) {
     GiftKind.title => Icons.military_tech_outlined,
     GiftKind.sworn => Icons.gavel,
     GiftKind.spec => Icons.alt_route,
+    GiftKind.die => Icons.casino_outlined,
     GiftKind.perk => Icons.star_outline,
   };
   final mark = Icon(fallback, size: 24, color: color);
@@ -1211,198 +1215,8 @@ class _SwallowtailClipper extends CustomClipper<Path> {
 }
 
 Color _suitorColor(Suitor suitor, ClanData data) => suitor.isWayfarer
-    ? wayfarerColor
+    ? _wayfarerColor
     : Color(data.faction(suitor.factionId)?.color ?? 0xFFB08D3C);
-
-/// One suitor's card: their colour and mark, "The Emberwives of the Cinder
-/// Compact", what they say, the gift (its kind, name, rarity and what it
-/// does) and the standing it would move, faction by faction, from the
-/// relations as they stand.
-class SuitorCard extends ConsumerWidget {
-  const SuitorCard({
-    super.key,
-    required this.suitor,
-    required this.ticket,
-    required this.tables,
-    this.selected = false,
-    this.onTap,
-  });
-
-  final Suitor suitor;
-  final OfferTicket ticket;
-  final OfferTables tables;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final lang = ref.watch(appLanguageProvider);
-    final session = ref.watch(playerSessionProvider);
-    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
-    final skills =
-        ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
-    final data = tables.data;
-    final faction = data.faction(suitor.factionId);
-    final color = _suitorColor(suitor, data);
-    final gift = suitor.gift;
-    final greeting = suitorGreeting(suitor, data, lang);
-    final preview = standingPreviewParts(suitor, ticket,
-        politics: session.politics,
-        data: data,
-        lang: lang,
-        flags: session.flags);
-    final nudge = alignmentNudgeOf(suitor, tables);
-    // A lost clan has no standing to show (v1.195).
-    final tier = faction == null || faction.isLost
-        ? null
-        : session.politics.tierOf(suitor.factionId, data);
-    const good = Color(0xFF3E9B57);
-    final bad = theme.colorScheme.error;
-
-    final emblem = suitor.isWayfarer
-        ? Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: wayfarerColor.withValues(alpha: 0.85),
-            ),
-            child: const Icon(Icons.hiking, size: 20, color: Colors.white),
-          )
-        : PatronEmblem(patron: faction?.patron, size: 36);
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: selected ? color : theme.colorScheme.outlineVariant,
-          width: selected ? 2.5 : 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // The suitor, on a band of their colour.
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  color.withValues(alpha: 0.32),
-                  color.withValues(alpha: 0.06),
-                ]),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  emblem,
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          suitorName(suitor, data, lang),
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        if (tier != null)
-                          Text(
-                            trFor(lang, standingTierKey(tier)),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                                color: Color(tierColor(tier)),
-                                fontWeight: FontWeight.w600),
-                          ),
-                        if (greeting.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2),
-                            child: Text(
-                              greeting,
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // The gift.
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      _Tag(
-                        text: trFor(lang, _giftTagKey(gift, skills)),
-                        color: color,
-                      ),
-                      Text(
-                        giftName(gift,
-                            tables: tables, localizedItems: items, lang: lang),
-                        key: Key('offer_gift_${gift.id}'),
-                        style: theme.textTheme.titleSmall,
-                      ),
-                      if (gift.kind != GiftKind.perk)
-                        SignRarityChip(rarity: gift.rarity, language: lang),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  _GiftBody(
-                    gift: gift,
-                    tables: tables,
-                    items: items,
-                    skills: skills,
-                    session: session,
-                    lang: lang,
-                  ),
-                  const SizedBox(height: 6),
-                  // The standing it moves, and the alignment.
-                  Text.rich(
-                    TextSpan(children: [
-                      if (preview.isEmpty)
-                        TextSpan(text: trFor(lang, 'offer_no_standing')),
-                      for (var i = 0; i < preview.length; i++) ...[
-                        if (i > 0) const TextSpan(text: ' · '),
-                        TextSpan(
-                          text: preview[i].text,
-                          style: TextStyle(
-                              color: preview[i].delta >= 0 ? good : bad,
-                              fontWeight:
-                                  i == 0 ? FontWeight.bold : FontWeight.w500),
-                        ),
-                      ],
-                      if (nudge != 0) ...[
-                        const TextSpan(text: ' · '),
-                        TextSpan(
-                          text: trFor(lang, 'offer_alignment_nudge').replaceAll(
-                              '{n}', nudge > 0 ? '+$nudge' : '−${-nudge}'),
-                          style: const TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ],
-                    ]),
-                    key: Key('offer_preview_${suitor.factionId}'),
-                    style: theme.textTheme.labelMedium,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _Tag extends StatelessWidget {
   const _Tag({super.key, required this.text, required this.color});
@@ -1542,6 +1356,8 @@ class _GiftBody extends StatelessWidget {
             Text(trFor(lang, 'offer_sworn_note'), style: muted),
           ],
         );
+      case GiftKind.die:
+        return Text(trFor(lang, 'offer_die_note'), style: muted);
       case GiftKind.spec:
         final fr = lang == AppLanguage.fr;
         final spec = tables.specs[gift.id];

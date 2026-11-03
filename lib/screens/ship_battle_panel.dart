@@ -8,6 +8,7 @@ import '../combat/combat_engine.dart' show faceFromJson;
 import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/face_smithing.dart';
+import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
@@ -957,6 +958,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             healthMultiplier: healthMultiplier,
             difficultyMultiplier: boardingDifficulty,
             isTest: widget.isTest,
+            // A boarding fight is fought on the ship deck (v1.660).
+            forcedStage: FightStage.shipDeck,
           ),
         ),
       ),
@@ -1049,7 +1052,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return false;
     final result = await _deckFight(records,
-        healthMultiplier: holdManned ? holdMannedBoarderHealth : 1.0);
+        healthMultiplier: holdManned ? _holdMannedBoarderHealth : 1.0);
     if (!mounted || result == null) return false;
     if (result == _DeckFight.won) {
       _battle.boardersRepelled();
@@ -1290,7 +1293,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     // Low in the water with a way out: that comes before anything else.
     final runWarning = widget.canFlee &&
         !_over &&
-        _battle.player.hull < _battle.player.maxHull * runWarningShare;
+        _battle.player.hull < _battle.player.maxHull * _runWarningShare;
     if (runWarning) hint = trFor(lang, 'ship_run_warning');
     if (_busy && !_over) {
       hint = trFor(lang, 'ship_enemy_turn_label')
@@ -3875,11 +3878,11 @@ const Color _previewColor = Color(0xFF42A5F5);
 
 /// Boarders met by a hand in the hold come over the rail at this share
 /// of their health.
-const double holdMannedBoarderHealth = 0.75;
+const double _holdMannedBoarderHealth = 0.75;
 
 /// Below this share of her hull the dock tells the player to run for it:
 /// a run started lower often fails, the enemy closing as she turns.
-const double runWarningShare = 0.3;
+const double _runWarningShare = 0.3;
 
 /// A room's own colour, from the Stitched Ink palette; darker on a light
 /// page so it still reads.

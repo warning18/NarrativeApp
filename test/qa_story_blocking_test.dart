@@ -20,6 +20,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/data/city_districts.dart'
+    show questAcceptedFlag;
 
 typedef Json = Map<String, dynamic>;
 
@@ -138,7 +140,8 @@ void main() {
       for (final c in choicesOf(n)) ..._strings(c['flagsToAdd']),
   };
   final outside = <String>{};
-  _collect(_table('quests'), 'flagToAdd', outside);
+  // Taking a quest sets its `<id>_accepted` flag (acceptQuest).
+  outside.addAll(_table('quests').keys.map(questAcceptedFlag));
   _collect(_table('zones'), 'rewardFlag', outside);
   _collect(_table('politics_events'), 'flags', outside);
   _collect(_table('detour_scenes'), 'flag', outside);
@@ -210,9 +213,10 @@ void main() {
           }
         }
       }
+      // 270, the Weaver's Alley, is parked off the run (v1.620).
       expect([
         for (final n in nodes.keys)
-          if (!may.containsKey(n)) n
+          if (!may.containsKey(n) && n != '270') n
       ], isEmpty);
     });
 

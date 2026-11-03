@@ -47,23 +47,13 @@ class DbSchema {
 /// images dropped in are bundled without further wiring.
 String visualAssetFolder(DbSchema schema) => 'assets/visuals/${schema.id}/';
 
-/// Full asset path for [record]'s visual, or null if the schema has no
-/// visual field or the record hasn't set one.
-String? visualAssetPath(DbSchema schema, Map<String, dynamic> record) {
-  final field = schema.visualAssetField;
-  if (field == null) return null;
-  final filename = record[field]?.toString() ?? '';
-  if (filename.isEmpty) return null;
-  return '${visualAssetFolder(schema)}$filename';
-}
-
-FieldSchema visualAssetFieldSchema(String schemaId) => FieldSchema(
+FieldSchema _visualAssetFieldSchema(String schemaId) => FieldSchema(
       key: 'visualAsset',
       label: 'Visual Asset (filename in assets/visuals/$schemaId/)',
       type: FieldType.image,
     );
 
-const List<String> itemTypeOptions = [
+const List<String> _itemTypeOptions = [
   'Weapon',
   'Armor',
   'Potion',
@@ -80,7 +70,7 @@ const List<String> itemTypeOptions = [
 /// The ability score an equippable item's flat attackDamage/armor scales
 /// with -- e.g. a staff scales with Intelligence, a sword with Strength.
 /// Empty means the item doesn't scale (most Armor-slot pieces).
-const List<String> statScalingOptions = [
+const List<String> _statScalingOptions = [
   'strength',
   'dexterity',
   'constitution',
@@ -96,7 +86,7 @@ const List<String> equipSlotOptions = [
 ];
 
 /// A skill's rarity: how many faces of one die it may take.
-const List<String> skillRarityOptions = [
+const List<String> _skillRarityOptions = [
   'common',
   'uncommon',
   'rare',
@@ -118,7 +108,7 @@ const List<String> elementOptions = [
 
 // 'Empty' is intentionally excluded: no die face may be empty in play, so
 // the Data tab only offers face types that are actually usable in combat.
-const List<String> enemyIntentOptions = [
+const List<String> _enemyIntentOptions = [
   '',
   'attack',
   'heal',
@@ -130,7 +120,7 @@ const List<String> enemyIntentOptions = [
 
 /// What an enemy skill does to the party's dice (v1.182, see
 /// dice_tamper.dart); empty for none.
-const List<String> diceTamperOptions = [
+const List<String> _diceTamperOptions = [
   '',
   'hex',
   'silence',
@@ -139,7 +129,7 @@ const List<String> diceTamperOptions = [
 ];
 
 /// The rule words a die face can carry (v1.182, see face_keywords.dart).
-const List<String> faceKeywordOptions = [
+const List<String> _faceKeywordOptions = [
   'cleave',
   'pierce',
   'growth',
@@ -195,11 +185,11 @@ const List<String> shipPartRarityOptions = [
   'legendary',
 ];
 
-const List<String> questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
+const List<String> _questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
 
-const List<String> alignmentOptions = ['Good', 'Neutral', 'Evil'];
+const List<String> _alignmentOptions = ['Good', 'Neutral', 'Evil'];
 
-const List<String> nodeCategoryOptions = [
+const List<String> _nodeCategoryOptions = [
   'Combat',
   'Event',
   'Shop',
@@ -209,20 +199,20 @@ const List<String> nodeCategoryOptions = [
   'Travel',
 ];
 
-const List<String> nodeDifficultyOptions = ['Normal', 'Hard', 'Elite', 'Boss'];
+const List<String> _nodeDifficultyOptions = ['Normal', 'Hard', 'Elite', 'Boss'];
 
 // Mirrors the MapTheme enum in lib/data/map_themes.dart — kept as plain
 // strings here (like every other enum field in this file) rather than
 // importing that enum, so the data-editor schema layer stays free of any
 // dependency on gameplay code.
-const List<String> mapThemeOptions = [
+const List<String> _mapThemeOptions = [
   'ashenStreets',
   'saltRoads',
   'hollowReaches',
   'wildsBeyond',
 ];
 
-const List<String> skillMoveConditionOptions = [
+const List<String> _skillMoveConditionOptions = [
   'Always',
   'Chance',
   'OnPlayerPotion',
@@ -235,7 +225,7 @@ const List<String> skillMoveConditionOptions = [
 
 // Mirrors StatusEffectType in lib/combat/status_effect.dart, plus 'None'
 // for "this skill doesn't inflict a status" — the common case.
-const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
+const List<String> _statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
 
 /// Rarity band the spoils chest draws gear from (see loot_box.dart). A
 /// Relic (v1.204) is a Rare with a story: the Shroud, a saint's bones, a
@@ -244,7 +234,7 @@ const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare', 'Relic'];
 
 /// The icon keys a person's `kind` may take in npcs.json (v1.204, see
 /// npcKindIcon in game_icons.dart and people_codex.dart).
-const List<String> npcKindOptions = [
+const List<String> _npcKindOptions = [
   'inquisitor',
   'soldier',
   'merchant',
@@ -262,7 +252,7 @@ const List<String> npcKindOptions = [
 ];
 
 /// See `UniqueEffect` in lib/combat/gear_effects.dart.
-const List<String> uniqueEffectOptions = [
+const List<String> _uniqueEffectOptions = [
   '',
   'lifesteal',
   'thorns',
@@ -277,7 +267,7 @@ const List<String> uniqueEffectOptions = [
 /// worn and opposed skills are weaker (see ally_state.dart's
 /// meetsItemAlignment/alignmentGearBonusFor and combat_engine.dart's
 /// alignmentSkillMultiplier).
-const List<String> affinityAlignmentOptions = ['', 'Good', 'Evil'];
+const List<String> _affinityAlignmentOptions = ['', 'Good', 'Evil'];
 
 final DbSchema itemsSchema = DbSchema(
   id: 'items',
@@ -305,7 +295,7 @@ final DbSchema itemsSchema = DbSchema(
       key: 'itemType',
       label: 'Item Type',
       type: FieldType.enumeration,
-      enumOptions: itemTypeOptions,
+      enumOptions: _itemTypeOptions,
     ),
     FieldSchema(
         key: 'damage',
@@ -417,7 +407,7 @@ final DbSchema itemsSchema = DbSchema(
       key: 'scalingStat',
       label: 'Damage/Armor Scales With',
       type: FieldType.enumeration,
-      enumOptions: statScalingOptions,
+      enumOptions: _statScalingOptions,
     ),
     FieldSchema(
         key: 'reqStrength',
@@ -456,7 +446,7 @@ final DbSchema itemsSchema = DbSchema(
       key: 'uniqueEffect',
       label: 'Unique Effect',
       type: FieldType.enumeration,
-      enumOptions: uniqueEffectOptions,
+      enumOptions: _uniqueEffectOptions,
     ),
     FieldSchema(
       key: 'uniqueValue',
@@ -476,7 +466,7 @@ final DbSchema itemsSchema = DbSchema(
       key: 'alignment',
       label: 'Alignment Affinity (empty = none)',
       type: FieldType.enumeration,
-      enumOptions: affinityAlignmentOptions,
+      enumOptions: _affinityAlignmentOptions,
     ),
     FieldSchema(
         key: 'alignedAttackBonus',
@@ -515,7 +505,7 @@ final DbSchema itemsSchema = DbSchema(
         key: 'materialTier',
         label: 'Material tier (1-4, a Material only; see materials.dart)',
         type: FieldType.integer),
-    visualAssetFieldSchema('items'),
+    _visualAssetFieldSchema('items'),
   ],
 );
 
@@ -551,7 +541,7 @@ final DbSchema skillsSchema = DbSchema(
       label:
           'Rarity (faces per die: common 3, uncommon/rare 2, epic/legendary 1)',
       type: FieldType.enumeration,
-      enumOptions: skillRarityOptions,
+      enumOptions: _skillRarityOptions,
       defaultValue: 'uncommon',
     ),
     FieldSchema(
@@ -576,7 +566,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'intent',
       label: 'Enemy intent (attack / heal / guard / charge / rally / tamper)',
       type: FieldType.enumeration,
-      enumOptions: enemyIntentOptions,
+      enumOptions: _enemyIntentOptions,
     ),
     // v1.182: what an enemy using this skill does to the party's dice (see
     // dice_tamper.dart). Hex, Silence and Curse go with intent 'tamper';
@@ -585,7 +575,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'tamper',
       label: 'Dice tamper (hex / silence / curse / mirror)',
       type: FieldType.enumeration,
-      enumOptions: diceTamperOptions,
+      enumOptions: _diceTamperOptions,
     ),
     FieldSchema(
         key: 'guardMultiplier',
@@ -691,7 +681,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'alignment',
       label: 'Alignment Affinity (+25% for a matching wielder, -25% opposed)',
       type: FieldType.enumeration,
-      enumOptions: affinityAlignmentOptions,
+      enumOptions: _affinityAlignmentOptions,
     ),
     FieldSchema(
       key: 'unlockedViaMergeOnly',
@@ -729,7 +719,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'inflictsStatus',
       label: 'Inflicts Status Effect (on hit)',
       type: FieldType.enumeration,
-      enumOptions: statusEffectOptions,
+      enumOptions: _statusEffectOptions,
     ),
     FieldSchema(
       key: 'statusDuration',
@@ -748,7 +738,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'inflictsStatus2',
       label: 'Second Status Effect (laid beside the first)',
       type: FieldType.enumeration,
-      enumOptions: statusEffectOptions,
+      enumOptions: _statusEffectOptions,
     ),
     FieldSchema(
       key: 'statusDuration2',
@@ -778,7 +768,7 @@ final DbSchema skillsSchema = DbSchema(
       key: 'reflectStatus',
       label: 'Ward: status laid on an enemy that strikes the block',
       type: FieldType.enumeration,
-      enumOptions: statusEffectOptions,
+      enumOptions: _statusEffectOptions,
     ),
     FieldSchema(
       key: 'reflectDuration',
@@ -845,7 +835,7 @@ final DbSchema skillsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
-    visualAssetFieldSchema('skills'),
+    _visualAssetFieldSchema('skills'),
   ],
 );
 
@@ -985,7 +975,7 @@ final DbSchema racesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'skills',
     ),
-    visualAssetFieldSchema('races'),
+    _visualAssetFieldSchema('races'),
   ],
 );
 
@@ -1064,7 +1054,7 @@ final DbSchema professionsSchema = DbSchema(
       key: 'preferredScalingStat',
       label: 'Loot Affinity (Scaling Stat)',
       type: FieldType.enumeration,
-      enumOptions: statScalingOptions,
+      enumOptions: _statScalingOptions,
     ),
     FieldSchema(
       key: 'startingDiceId',
@@ -1086,7 +1076,7 @@ final DbSchema professionsSchema = DbSchema(
       type: FieldType.referenceList,
       referenceSchemaId: 'spells',
     ),
-    visualAssetFieldSchema('professions'),
+    _visualAssetFieldSchema('professions'),
   ],
 );
 
@@ -1123,10 +1113,15 @@ final DbSchema diceSchema = DbSchema(
     FieldSchema(
       key: 'faces',
       label:
-          'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions, keywords: $faceKeywordOptions}]',
+          'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions, keywords: $_faceKeywordOptions}]',
       type: FieldType.json,
     ),
-    visualAssetFieldSchema('dice'),
+    FieldSchema(
+      key: 'clan',
+      label: 'Clan (the main clan that gives it, from Trusted; empty = none)',
+      type: FieldType.text,
+    ),
+    _visualAssetFieldSchema('dice'),
   ],
 );
 
@@ -1230,7 +1225,7 @@ final DbSchema enemiesSchema = DbSchema(
       label:
           'Hunter Of (alignment this enemy hunts: Good = stalks Good characters; empty = ordinary enemy)',
       type: FieldType.enumeration,
-      enumOptions: affinityAlignmentOptions,
+      enumOptions: _affinityAlignmentOptions,
     ),
     FieldSchema(
         key: 'hunterTier',
@@ -1325,7 +1320,7 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(
       key: 'skillMoves',
       label:
-          'Skill Moves [{skillID, condition: $skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
+          'Skill Moves [{skillID, condition: $_skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -1344,7 +1339,7 @@ final DbSchema enemiesSchema = DbSchema(
           'None for a foe with no home (a boss of one place, a summoned '
           'thing).',
     ),
-    visualAssetFieldSchema('enemies'),
+    _visualAssetFieldSchema('enemies'),
   ],
 );
 
@@ -1464,7 +1459,7 @@ final DbSchema enemyShipsSchema = DbSchema(
           'Entrance card (empty: beasts and chapter 4+ raiders get one; true/false overrides)',
       type: FieldType.boolean,
     ),
-    visualAssetFieldSchema('enemy_ships'),
+    _visualAssetFieldSchema('enemy_ships'),
   ],
 );
 
@@ -1606,7 +1601,7 @@ final DbSchema shipsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 20,
     ),
-    visualAssetFieldSchema('ships'),
+    _visualAssetFieldSchema('ships'),
   ],
 );
 
@@ -1748,7 +1743,7 @@ final DbSchema shipPartsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'enemy_ships',
     ),
-    visualAssetFieldSchema('ship_parts'),
+    _visualAssetFieldSchema('ship_parts'),
     FieldSchema(
       key: 'sailPower',
       label:
@@ -1876,19 +1871,19 @@ final DbSchema questsSchema = DbSchema(
       key: 'category',
       label: 'Category',
       type: FieldType.enumeration,
-      enumOptions: questCategoryOptions,
+      enumOptions: _questCategoryOptions,
     ),
     FieldSchema(key: 'difficulty', label: 'Difficulty', type: FieldType.text),
     FieldSchema(
       key: 'requiredAlignment',
       label: 'Required Alignment',
       type: FieldType.enumeration,
-      enumOptions: alignmentOptions,
+      enumOptions: _alignmentOptions,
     ),
     FieldSchema(
       key: 'objectives',
       label:
-          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID (or targetEnemyIDs, any of which counts; countFromAccept: only kills after the quest is taken), targetItemID, targetNPCName, targetNPCID (npcs.json id, for Talk gating), locationID, requiredAmount}]',
+          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID (or targetEnemyIDs, any of which counts; countFromAccept: only kills after the quest is taken), targetItemID, targetNPCName, targetNPCID (npcs.json id, for Talk gating), requiredAmount}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -1956,7 +1951,7 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'questChoices',
       label:
-          'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, actionType, lockedText}]',
+          'Quest Choices [{buttonText, goldModifier, alignmentModifier, nextEventID, lockedText}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -1971,7 +1966,7 @@ final DbSchema questsSchema = DbSchema(
             'Can be offered by a random detour or expedition (off for a quest with its own giver in a town, v1.204)',
         type: FieldType.boolean,
         defaultValue: true),
-    visualAssetFieldSchema('quests'),
+    _visualAssetFieldSchema('quests'),
   ],
 );
 
@@ -2039,7 +2034,7 @@ final DbSchema shopsSchema = DbSchema(
       key: 'merchantSpecialties',
       label: 'Merchant Specialties',
       type: FieldType.multiEnum,
-      enumOptions: itemTypeOptions,
+      enumOptions: _itemTypeOptions,
     ),
     FieldSchema(
       key: 'faction',
@@ -2097,11 +2092,11 @@ final DbSchema shopsSchema = DbSchema(
         key: 'keeperLineSworn_fr',
         label: 'Keeper\'s line when Sworn (FR)',
         type: FieldType.multilineText),
-    visualAssetFieldSchema('shops'),
+    _visualAssetFieldSchema('shops'),
   ],
 );
 
-final DbSchema gatesSchema = DbSchema(
+final DbSchema _gatesSchema = DbSchema(
   id: 'gates',
   label: 'Gates',
   assetPath: 'assets/gamedata/gates.json',
@@ -2121,11 +2116,11 @@ final DbSchema gatesSchema = DbSchema(
       type: FieldType.referenceList,
       referenceSchemaId: 'enemies',
     ),
-    visualAssetFieldSchema('gates'),
+    _visualAssetFieldSchema('gates'),
   ],
 );
 
-final DbSchema adventureNodesSchema = DbSchema(
+final DbSchema _adventureNodesSchema = DbSchema(
   id: 'adventure_nodes',
   label: 'Adventure Node Types',
   assetPath: 'assets/gamedata/adventure_nodes.json',
@@ -2150,13 +2145,13 @@ final DbSchema adventureNodesSchema = DbSchema(
       key: 'category',
       label: 'Category',
       type: FieldType.enumeration,
-      enumOptions: nodeCategoryOptions,
+      enumOptions: _nodeCategoryOptions,
     ),
     FieldSchema(
       key: 'difficulty',
       label: 'Difficulty',
       type: FieldType.enumeration,
-      enumOptions: nodeDifficultyOptions,
+      enumOptions: _nodeDifficultyOptions,
     ),
     FieldSchema(
       key: 'possibleEnemies',
@@ -2199,7 +2194,7 @@ final DbSchema adventureNodesSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
-    visualAssetFieldSchema('adventure_nodes'),
+    _visualAssetFieldSchema('adventure_nodes'),
   ],
 );
 
@@ -2358,7 +2353,7 @@ final DbSchema companionsSchema = DbSchema(
       label: 'Walking Out Line (FR)',
       type: FieldType.text,
     ),
-    visualAssetFieldSchema('companions'),
+    _visualAssetFieldSchema('companions'),
   ],
 );
 
@@ -2400,8 +2395,9 @@ final DbSchema housesSchema = DbSchema(
         label: 'Build materials {itemId: count}',
         type: FieldType.json),
     FieldSchema(
-      key: 'partyCapacityBonus',
-      label: 'Party Capacity Bonus',
+      key: 'companionHealthBonus',
+      label:
+          'Companion Health Bonus (%, companions only, every fight once built)',
       type: FieldType.integer,
       defaultValue: 0,
     ),
@@ -2459,7 +2455,7 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'companions',
     ),
-    visualAssetFieldSchema('houses'),
+    _visualAssetFieldSchema('houses'),
   ],
 );
 
@@ -2490,7 +2486,7 @@ final DbSchema zonesSchema = DbSchema(
       key: 'mapTheme',
       label: 'Flavor Theme',
       type: FieldType.enumeration,
-      enumOptions: mapThemeOptions,
+      enumOptions: _mapThemeOptions,
     ),
     FieldSchema(
         key: 'flavorText', label: 'Flavor Text', type: FieldType.multilineText),
@@ -2620,7 +2616,7 @@ final DbSchema zonesSchema = DbSchema(
       help: 'Where the expedition takes place: a place of geography.json '
           '(v1.197).',
     ),
-    visualAssetFieldSchema('zones'),
+    _visualAssetFieldSchema('zones'),
   ],
 );
 
@@ -2650,7 +2646,7 @@ final DbSchema achievementsSchema = DbSchema(
         key: 'description_fr',
         label: 'Description (FR)',
         type: FieldType.multilineText),
-    visualAssetFieldSchema('achievements'),
+    _visualAssetFieldSchema('achievements'),
   ],
 );
 
@@ -2697,7 +2693,7 @@ final DbSchema npcsSchema = DbSchema(
       key: 'kind',
       label: 'Kind (icon)',
       type: FieldType.enumeration,
-      enumOptions: npcKindOptions,
+      enumOptions: _npcKindOptions,
     ),
     FieldSchema(
         key: 'want', label: 'What they want', type: FieldType.multilineText),
@@ -2747,7 +2743,7 @@ final DbSchema npcsSchema = DbSchema(
       label: 'Dialogue Lines (French)',
       type: FieldType.stringList,
     ),
-    visualAssetFieldSchema('npcs'),
+    _visualAssetFieldSchema('npcs'),
   ],
 );
 
@@ -2880,7 +2876,7 @@ final DbSchema portsSchema = DbSchema(
       label: 'Required Flags (all must be set for the port to appear)',
       type: FieldType.stringList,
     ),
-    visualAssetFieldSchema('ports'),
+    _visualAssetFieldSchema('ports'),
   ],
 );
 
@@ -2962,7 +2958,7 @@ final DbSchema spellsSchema = DbSchema(
       key: 'inflictsStatus',
       label: 'Inflicts Status (Damage/Status spells on an enemy)',
       type: FieldType.enumeration,
-      enumOptions: statusEffectOptions,
+      enumOptions: _statusEffectOptions,
     ),
     FieldSchema(
         key: 'statusDuration',
@@ -2980,7 +2976,7 @@ final DbSchema spellsSchema = DbSchema(
         key: 'battleMessage_fr',
         label: 'Battle Message (FR)',
         type: FieldType.text),
-    visualAssetFieldSchema('spells'),
+    _visualAssetFieldSchema('spells'),
   ],
 );
 
@@ -3965,8 +3961,8 @@ final List<DbSchema> gameDbSchemas = [
   shipLooksSchema,
   questsSchema,
   shopsSchema,
-  gatesSchema,
-  adventureNodesSchema,
+  _gatesSchema,
+  _adventureNodesSchema,
   racesSchema,
   professionsSchema,
   companionsSchema,

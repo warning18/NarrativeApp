@@ -7,7 +7,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,29 +21,9 @@ import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
+import 'support/fonts.dart';
 
 final _shotKey = GlobalKey();
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-}
 
 Future<void> _shot(WidgetTester tester, String name) async {
   final dir = Platform.environment['UX_SHOTS'];
@@ -62,7 +41,7 @@ Future<void> _shot(WidgetTester tester, String name) async {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+    if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   });
 
   testWidgets('every stored plan draws, whole and by district', (tester) async {

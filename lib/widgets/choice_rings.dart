@@ -30,7 +30,7 @@ class ChoiceRing {
 }
 
 /// How many icons a ring shows before its "+N".
-const int choiceRingIcons = 5;
+const int _choiceRingIcons = 5;
 
 /// The rings, in [here]'s coordinates (the layer fills its parent).
 class ChoiceRingsLayer extends StatelessWidget {
@@ -103,8 +103,8 @@ class ChoiceRingsLayer extends StatelessWidget {
     final ring = rings[i];
     final radius = radiusOf(i);
     final dim = lit != null && lit != ring.id;
-    final shown = ring.count > choiceRingIcons
-        ? choiceRingIcons - 1
+    final shown = ring.count > _choiceRingIcons
+        ? _choiceRingIcons - 1
         : math.min(ring.count, ring.icons.length);
     final discs = shown + (ring.count > shown ? 1 : 0);
     return [

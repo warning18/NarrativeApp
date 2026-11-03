@@ -20,14 +20,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/tutorial_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) =>
     (jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
@@ -94,10 +87,7 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     final navigatorKey = GlobalKey<NavigatorState>();
     await tester.pumpWidget(ProviderScope(
@@ -137,7 +127,7 @@ void main() {
     Future<void> pushFight() async {
       navigatorKey.currentState!
           .push(MaterialPageRoute<bool>(builder: (_) => pack()));
-      await _settle(tester);
+      await settleApp(tester);
     }
 
     // The first hold under an ambush: both explained, one after the other.
@@ -147,17 +137,17 @@ void main() {
     expect(find.textContaining('1/2'), findsOneWidget);
     expect(find.byKey(const Key('fight_tip_situation_ambush')), findsNothing);
     await tester.tap(find.byKey(const Key('fight_tip_next')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('fight_tip_goal_hold')), findsNothing);
     expect(find.byKey(const Key('fight_tip_situation_ambush')), findsOneWidget);
     expect(find.textContaining('2/2'), findsOneWidget);
     await tester.tap(find.byKey(const Key('fight_tip_ok')));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byKey(const Key('fight_tip_situation_ambush')), findsNothing);
     expect(container.read(playerSessionProvider).seenFightTipIds,
         ['goal_hold', 'situation_ambush']);
     navigatorKey.currentState!.pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // The same fight again: nothing left to explain.
     await pushFight();
@@ -165,7 +155,7 @@ void main() {
     expect(find.byKey(const Key('fight_tip_goal_hold')), findsNothing);
     expect(find.byKey(const Key('fight_tip_situation_ambush')), findsNothing);
     navigatorKey.currentState!.pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // With tutorials off, a fresh save is told nothing.
     await tester.runAsync(() => container
@@ -183,6 +173,6 @@ void main() {
     expect(find.byKey(const Key('fight_tip_goal_hold')), findsNothing);
     expect(tester.takeException(), isNull);
     navigatorKey.currentState!.pop();
-    await _settle(tester);
+    await settleApp(tester);
   });
 }

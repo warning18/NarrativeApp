@@ -16,8 +16,6 @@ assets/icons/chests: 5 of 10
 
 == folders pubspec does not declare (files would not ship)
    8 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/rotations
-   8 assets/visuals/companion/dog_companion_animations/Walking/west
-   8 assets/visuals/companion/dog_companion_animations/Walking/south
    6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/west
    6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/north
    6 assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/east

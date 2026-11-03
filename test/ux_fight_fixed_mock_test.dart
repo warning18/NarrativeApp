@@ -13,33 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in const [
-    ('PixelifySans', ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']),
-    (
-      'Spectral',
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    ('IMFellEnglishSC', ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final f in files) {
-      final file = File('assets/fonts/$f');
-      if (!file.existsSync()) continue;
-      loader
-          .addFont(Future.value(ByteData.view(file.readAsBytesSync().buffer)));
-    }
-    await loader.load();
-  }
-  final icons = File(
-      '/tmp/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.view(icons.readAsBytesSync().buffer)));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 Future<void> _settle(WidgetTester tester, {int n = 4}) async {
   for (var i = 0; i < n; i++) {
@@ -311,7 +285,7 @@ class _DashedBox extends CustomPainter {
       ..strokeWidth = 1;
     const dash = 4.0;
     void line(Offset a, Offset b) {
-      final d = (b - a);
+      final d = b - a;
       final len = d.distance;
       final dir = d / len;
       for (var t = 0.0; t < len; t += dash * 2) {
@@ -414,7 +388,7 @@ void main() {
   }
 
   testWidgets('the fight today, then with fixed sizes', (tester) async {
-    await tester.runAsync(_loadFonts);
+    await tester.runAsync(loadAppFonts);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     tester.view.devicePixelRatio = 1;

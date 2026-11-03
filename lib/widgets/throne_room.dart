@@ -66,7 +66,7 @@ List<String> earnedClanBannerFactionIds({
 
 /// The scene's width in logical pixels: a throne at x2, a column of
 /// banners each side of it.
-const double throneSceneWidth = 384;
+const double _throneSceneWidth = 384;
 
 /// Height of the throne's own part of the hall.
 const double _throneSectionHeight = 312;
@@ -281,12 +281,12 @@ class _ThroneRoomState extends State<ThroneRoom>
         clipBehavior: Clip.none,
         children: [
           // The pole, from the rod to the floor, behind the cloth.
-          Positioned(
+          const Positioned(
             left: (_standardWidth - 6) / 2,
             width: 6,
             top: _standardTop + 4,
             bottom: 6,
-            child: const DecoratedBox(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/visuals/throne/pole_tile.png'),
@@ -373,7 +373,7 @@ class _ThroneRoomState extends State<ThroneRoom>
     const byThroneTop = 300 - poleHeightByThrone;
     return SizedBox(
       key: const Key('throne_hall'),
-      width: throneSceneWidth,
+      width: _throneSceneWidth,
       height: hallHeight,
       child: Stack(
         clipBehavior: Clip.hardEdge,
@@ -439,12 +439,12 @@ class _ThroneRoomState extends State<ThroneRoom>
           ),
           // The carpet down the middle of the long hall.
           if (rows > 0)
-            Positioned(
-              left: (throneSceneWidth - 72) / 2,
+            const Positioned(
+              left: (_throneSceneWidth - 72) / 2,
               width: 72,
               top: _throneSectionHeight,
               bottom: 0,
-              child: const DecoratedBox(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/visuals/throne/carpet_tile.png'),
@@ -503,14 +503,14 @@ class _ThroneRoomState extends State<ThroneRoom>
           // A standard each side of the throne...
           for (var i = 0; i < beside; i++)
             Positioned(
-              left: i.isEven ? 0 : throneSceneWidth - _standardWidth,
+              left: i.isEven ? 0 : _throneSceneWidth - _standardWidth,
               top: byThroneTop,
               child: _standard(i, _poleByThrone),
             ),
           // ...and the rest down the long hall, a pair to a row.
           for (var i = beside; i < n; i++)
             Positioned(
-              left: i.isEven ? 0 : throneSceneWidth - _standardWidth,
+              left: i.isEven ? 0 : _throneSceneWidth - _standardWidth,
               top: _throneSectionHeight + ((i - beside) ~/ 2) * _hallRow + 8,
               child: _standard(i, _poleInRows),
             ),

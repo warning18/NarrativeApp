@@ -16,8 +16,8 @@ const String _storyAssetPath = 'assets/Cleaned_Narrative_DAG.json';
 
 /// Stores the user's GitHub Personal Access Token — same pattern and trust
 /// level as [ApiKeyNotifier] for the Gemini key: local device storage only.
-class GithubTokenNotifier extends StateNotifier<String?> {
-  GithubTokenNotifier() : super(null) {
+class _GithubTokenNotifier extends StateNotifier<String?> {
+  _GithubTokenNotifier() : super(null) {
     _load();
   }
 
@@ -39,8 +39,9 @@ class GithubTokenNotifier extends StateNotifier<String?> {
   }
 }
 
-final githubTokenProvider = StateNotifierProvider<GithubTokenNotifier, String?>(
-    (ref) => GithubTokenNotifier());
+final githubTokenProvider =
+    StateNotifierProvider<_GithubTokenNotifier, String?>(
+        (ref) => _GithubTokenNotifier());
 
 /// One repo file to create/update, with its final pretty-printed content.
 class GitFileChange {

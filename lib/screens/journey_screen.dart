@@ -13,6 +13,7 @@ import '../data/city_camera.dart';
 import '../data/geography.dart';
 import '../data/choice_flow.dart';
 import '../data/choice_shape.dart';
+import '../data/scene_choice_mode.dart';
 import '../data/city_districts.dart'
     show
         JourneyTownView,
@@ -78,7 +79,10 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/town_service_sheet.dart';
 import '../providers/town_services_provider.dart';
 import '../widgets/geography_widgets.dart';
+import '../widgets/scene_stage.dart';
+import '../widgets/scene_vignette.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/prologue_opening.dart';
 import '../widgets/story_text.dart';
 import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
@@ -750,6 +754,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// Whether the scene shown is a new game's first scene, opened as a page.
   bool _openedFresh = false;
 
+  /// The first scene's text has been told as the opening animation (a new
+  /// scene resets it): the way back to the map waits for it.
+  bool _openingTold = false;
+
   /// The scene the story brought the party to (v1.553, scene_lock.dart):
   /// a way taken into it (a pin or a card), a new game's first scene, or a
   /// save picked back up on it. While it holds a way acted out here, its
@@ -1207,6 +1215,76 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   bool _isHub(List<_Step> steps) =>
       steps.where((s) => s.onCard).length > _hubCards;
 
+  /// Who the scene faces, from the NPCs, the enemies and the companions
+  /// (null for a voice, or no one).
+  SceneFaced? _facedOf(String id, bool french) {
+    if (id.isEmpty) return null;
+    final npcs = ref.watch(localizedDbProvider(npcsSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value;
+    String pick(Map? r, String en, String fr) {
+      if (r == null) return '';
+      final local = french ? (r[fr]?.toString() ?? '') : '';
+      return local.trim().isNotEmpty ? local : (r[en]?.toString() ?? '');
+    }
+
+    final npc = npcs?[id] as Map?;
+    final enemy = enemies?[id] as Map?;
+    final companion = companions?[id] as Map?;
+    final name = pick(npc, 'npcName', 'npcName_fr').isNotEmpty
+        ? pick(npc, 'npcName', 'npcName_fr')
+        : pick(enemy, 'enemyName', 'enemyName_fr').isNotEmpty
+            ? pick(enemy, 'enemyName', 'enemyName_fr')
+            : pick(companion, 'companionName', 'companionName_fr');
+    if (name.isEmpty) return null;
+    return SceneFaced(id: id, name: name, role: pick(npc, 'role', 'role_fr'));
+  }
+
+  /// The scene's vignette and question over a panel's cards (the scene
+  /// panel, UX's in-place choices): for a scene whose choices a panel shows
+  /// (not a hub, not the stage), when it has someone it faces or a question.
+  Widget? _vignetteFor(StoryNode node, List<_Step> steps, StoryData story,
+      Geography world, bool french,
+      {_Step? picked}) {
+    if (_isHub(steps) || !steps.any((s) => s.onCard)) return null;
+    final mode = sceneChoiceMode(node,
+        story: story,
+        geography: world,
+        choices: [for (final s in steps) s.choice],
+        hasSprite: sceneHasSprite);
+    final prompt = node.promptFor(french);
+    final faced = _facedOf(node.facing, french);
+    if (mode == SceneChoiceMode.stage && faced != null) {
+      // A fight facing someone with a sprite: the stage; the picked choice
+      // speaks in a balloon, and the door shows where it leads.
+      final door = picked == null
+          ? null
+          : doorOf(node, picked.choice,
+              story: story, geography: world, shape: picked.shape);
+      final doorLabel = door == null ? '' : doorName(door, french: french);
+      return SceneStage(
+        foeId: node.facing,
+        foeName: faced.name,
+        prompt: prompt,
+        balloon: picked?.choice.replyFor(french) ?? '',
+        doorName: doorLabel,
+        doorLit: doorLabel.isNotEmpty,
+      );
+    }
+    if (mode != SceneChoiceMode.panel) return null;
+    if (prompt.isEmpty && faced == null) return null;
+    final onCard = steps.where((s) => s.onCard).toList();
+    // Four choices, or a long one: the vignette folds to a line.
+    final folded = onCard.length >= panelChoiceLimit ||
+        onCard.any((s) => s.label.length > 46);
+    return SceneVignette(
+      heroName: ref.watch(playerSessionProvider).characterName,
+      prompt: prompt,
+      faced: faced,
+      folded: folded,
+    );
+  }
+
   /// The panel under the map in a place (design 1 of
   /// docs/proposals/inplace-choices.md): every choice acted out here is a
   /// card, the pin picked (if one is) leading with its own detail. A hub
@@ -1215,7 +1293,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// which has no pins).
   Widget _choicePanel(
       List<_Step> steps, _Step? selected, bool french, StoryData story,
-      {bool shrinkWrap = false, bool all = false}) {
+      {bool shrinkWrap = false, bool all = false, Widget? lead}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
@@ -1227,6 +1305,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       padding: EdgeInsets.zero,
       shrinkWrap: shrinkWrap,
       children: [
+        // The scene in small and its question, over a panel's cards.
+        if (!all && !hub && lead != null) lead,
         if (!all && selected != null && !selected.onCard) ...[
           _StepDetail(
             step: selected,
@@ -1472,6 +1552,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final newScene = sceneKey != _sceneKey;
     if (newScene) {
       _sceneKey = sceneKey;
+      _openingTold = false;
       _selected = null;
       _autoPickPending = true;
       _chartKey = GlobalKey();
@@ -1522,7 +1603,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // way is picked (it comes back selected on the map) or the party walks
     // to another district.
     if (ref.watch(currentCityProvider) != null &&
-        !(ref.read(storyPlayProvider).isInExcursion)) {
+        !ref.read(storyPlayProvider).isInExcursion) {
       tools.add(IconButton(
         key: const ValueKey('journey_city_plan'),
         icon: const Icon(Icons.map_outlined, size: 20),
@@ -2063,10 +2144,26 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       final here = locked || held || steps.any((s) => s.onCard);
       // A locked page has no way back to the map: the cards take the story
       // on, and the map's tabs and buttons wait, greyed ("Choose first").
-      final toMap = !locked && !held;
+      // Nor has a new game's first page, before the hero is made: the game
+      // hasn't started (the user's call, v1.692).
+      final toMap = !locked &&
+          !held &&
+          !(isFreshStoryStart(play) &&
+              ref.watch(appModeProvider) != AppMode.edit);
       // The button names the map: the way back to it, or, locked, the way
       // that waits.
-      final toMapLabel = here && (toMap || textReady);
+      // A new game's first scene is told as an animation, its choice
+      // settling under the text (prologue_opening.dart).
+      final opening = here &&
+          !locked &&
+          revealKey != null &&
+          !play.isInExcursion &&
+          isPrologueOpening(node);
+      // With reduced motion the text is whole at once.
+      final ready = opening
+          ? _openingTold || MediaQuery.of(context).disableAnimations
+          : textReady;
+      final toMapLabel = here && (toMap || ready);
       final waitLine = Text(
         tr(ref, 'journey_choose_first'),
         key: const ValueKey('journey_choose_first'),
@@ -2098,47 +2195,94 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 ),
                 const SizedBox(height: 8),
               ],
-              Expanded(
-                child: _ScenePanel(
-                  revealKey: revealKey,
-                  key: ValueKey('journey_reading_$sceneKey'),
-                  story: story,
-                  node: node,
-                  french: french,
-                  folded: false,
-                  reading: true,
-                  toMap: toMap,
-                  locked: locked,
-                  onFold: (_) {},
-                  onReading: (r) {
-                    if (r || toMap) _read(r);
-                  },
-                  detour: detour,
+              if (opening)
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: PrologueOpening(
+                          key: ValueKey('journey_reading_$sceneKey'),
+                          text: composeNarrationParts(
+                                  node, ref.watch(playerSessionProvider), story,
+                                  french: french)
+                              .text,
+                          told: _openingTold,
+                          onTold: () {
+                            if (mounted && !_openingTold) {
+                              setState(() => _openingTold = true);
+                            }
+                          },
+                          choices: _choicePanel(
+                              steps, _pickedCard(selected), french, story,
+                              shrinkWrap: true),
+                        ),
+                      ),
+                      // The map's corner button, as on any page read whole.
+                      if (toMap)
+                        Positioned(
+                          top: 2,
+                          right: 2,
+                          child: IconButton(
+                            key: const ValueKey('journey_reading_exit'),
+                            icon: const Icon(Icons.map_outlined, size: 20),
+                            tooltip: tr(ref, 'journey_reading_exit'),
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () => _read(false),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              else ...[
+                Expanded(
+                  child: _ScenePanel(
+                    revealKey: revealKey,
+                    key: ValueKey('journey_reading_$sceneKey'),
+                    story: story,
+                    node: node,
+                    french: french,
+                    folded: false,
+                    reading: true,
+                    toMap: toMap,
+                    locked: locked,
+                    onFold: (_) {},
+                    onReading: (r) {
+                      if (r || toMap) _read(r);
+                    },
+                    detour: detour,
+                  ),
                 ),
-              ),
-              if (here && textReady) ...[
-                const SizedBox(height: 8),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: MediaQuery.sizeOf(context).height * 0.42),
-                  child: _choicePanel(
-                      steps,
-                      locked || held ? selected : _pickedCard(selected),
-                      french,
-                      story,
-                      shrinkWrap: true,
-                      all: locked || held),
-                ),
+                if (here && textReady) ...[
+                  const SizedBox(height: 8),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.sizeOf(context).height * 0.42),
+                    child: _choicePanel(
+                        steps,
+                        locked || held ? selected : _pickedCard(selected),
+                        french,
+                        story,
+                        shrinkWrap: true,
+                        all: locked || held,
+                        lead: _vignetteFor(node, steps, story, world, french,
+                            picked:
+                                locked || held ? null : _pickedCard(selected))),
+                  ),
+                ],
               ],
               // On a locked page, Continue only shows the words at once;
               // then the way back to the map waits, greyed.
-              if (toMap || !textReady || locked) ...[
+              if ((toMap || !ready || locked) && !(opening && !ready)) ...[
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
                     key: const ValueKey('journey_continue'),
-                    onPressed: locked && textReady ? null : continueFromScene,
+                    onPressed: locked && ready
+                        ? null
+                        : opening
+                            ? () => _read(false)
+                            : continueFromScene,
                     icon: Icon(
                         toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
                         size: 18),
@@ -2149,7 +2293,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             : 'journey_continue')),
                   ),
                 ),
-                if (locked && textReady) ...[
+                if (locked && ready) ...[
                   const SizedBox(height: 4),
                   waitLine,
                 ],
@@ -2499,7 +2643,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                   icon: Icons.remove,
                   tip: tr(ref, 'journey_look_out'),
                   palette: palette,
-                  onTap: _busy ? null : () => _lookOut(),
+                  onTap: _busy ? null : _lookOut,
                 ),
               ),
             ],
@@ -2747,7 +2891,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               icon: Icons.remove,
                               tip: tr(ref, 'journey_look_out'),
                               palette: palette,
-                              onTap: _busy ? null : () => _lookOut(),
+                              onTap: _busy ? null : _lookOut,
                             ),
                           ),
                         ],
@@ -3062,7 +3206,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   maxHeight: room.maxHeight * 0.7),
                               child: _choicePanel(
                                   steps, _pickedCard(selected), french, story,
-                                  shrinkWrap: true),
+                                  shrinkWrap: true,
+                                  lead: _vignetteFor(
+                                      node, steps, story, world, french,
+                                      picked: _pickedCard(selected))),
                             ),
                           ],
                         ],
@@ -3378,23 +3525,22 @@ class _ScenePanel extends ConsumerWidget {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (detour != null && detour!.isNotEmpty) ...[
-          Text(detour!, style: aside),
-          const SizedBox(height: 8),
+          Text(detour!, style: prose),
+          const SizedBox(height: 12),
         ],
         if (aftermath != null && aftermath.isNotEmpty) ...[
-          Text(aftermath, style: aside),
-          const SizedBox(height: 8),
+          Text(aftermath, style: prose),
+          const SizedBox(height: 12),
         ],
         if (roadNote != null && roadNote.isNotEmpty) ...[
-          Text(roadNote, style: aside),
-          const SizedBox(height: 8),
+          Text(roadNote, style: prose),
+          const SizedBox(height: 12),
         ],
         if (outcome != null && outcome.isNotEmpty) ...[
-          Text(outcome, style: aside),
-          const SizedBox(height: 8),
+          Text(outcome, style: prose),
+          const SizedBox(height: 12),
         ],
         for (final prelude in preludes) ...[
           if (prelude.speaker != null) ...[
@@ -3510,7 +3656,9 @@ class _ScenePanel extends ConsumerWidget {
                                   constraints: BoxConstraints(
                                       minHeight:
                                           math.max(0, viewport.maxHeight - 40)),
-                                  child: Center(child: body),
+                                  child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: body),
                                 )
                               : body,
                         ),
@@ -6221,11 +6369,11 @@ class _CityDistrictView extends ConsumerWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(shape: BoxShape.circle, color: ink.gold),
           child: Text('$n',
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: InkFonts.system,
                   fontSize: 11,
                   height: 1,
-                  color: const Color(0xFF17151B))),
+                  color: Color(0xFF17151B))),
         );
 
     // A way's pin in the street (v1.544): its banner, else its kind's disc.

@@ -6,14 +6,14 @@ import 'combat_engine.dart';
 /// enemy_intent.dart) and for Luck nudges.
 
 /// A Mirror hits back with the party's best blow of the round, but never
-/// for less than [mirrorFloorShare] or more than [mirrorCapMultiplier] of
+/// for less than [_mirrorFloorShare] or more than [_mirrorCapMultiplier] of
 /// the enemy's own damage.
-const double mirrorFloorShare = 0.5;
-const double mirrorCapMultiplier = 2.0;
+const double _mirrorFloorShare = 0.5;
+const double _mirrorCapMultiplier = 2.0;
 
 int mirrorDamage({required int bestPartyHit, required int enemyDamage}) {
-  final floor = (enemyDamage * mirrorFloorShare).round();
-  final cap = (enemyDamage * mirrorCapMultiplier).round();
+  final floor = (enemyDamage * _mirrorFloorShare).round();
+  final cap = (enemyDamage * _mirrorCapMultiplier).round();
   return bestPartyHit.clamp(floor, max(floor, cap));
 }
 
@@ -66,13 +66,13 @@ String? hexVictim(Map<String, int> worth) {
   return best;
 }
 
-/// Luck nudges (v1.182): every [luckPerNudge] points of the party's best
+/// Luck nudges (v1.182): every [_luckPerNudge] points of the party's best
 /// Luck give one nudge a fight, up to [maxNudges]. A nudge turns a landed
 /// die to its opposite face.
-const int luckPerNudge = 3;
+const int _luckPerNudge = 3;
 const int maxNudges = 3;
 
-int nudgesForLuck(int luck) => (luck ~/ luckPerNudge).clamp(0, maxNudges);
+int nudgesForLuck(int luck) => (luck ~/ _luckPerNudge).clamp(0, maxNudges);
 
 /// The face opposite [index] on a die of [faceCount] faces: the first and
 /// the last, the second and the one before last, and so on (1 and 6, 2 and

@@ -159,7 +159,7 @@ enum ChoiceGroup {
 }
 
 /// The ring of [action].
-ChoiceGroup choiceGroupOf(ChoiceAction action) => switch (action) {
+ChoiceGroup _choiceGroupOf(ChoiceAction action) => switch (action) {
       ChoiceAction.fight || ChoiceAction.evade => ChoiceGroup.fight,
       ChoiceAction.talk || ChoiceAction.decide => ChoiceGroup.talkDecide,
       ChoiceAction.pay ||
@@ -199,6 +199,6 @@ ChoiceTags choiceTags(
     alignment: choice.alignmentMod,
     destination:
         s.move == ChoiceMove.walk || s.move == ChoiceMove.travel ? s.to : null,
-    group: choiceGroupOf(s.action),
+    group: _choiceGroupOf(s.action),
   );
 }

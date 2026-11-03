@@ -59,7 +59,9 @@ const newSpellIds = [
   'spell_snare_shot',
 ];
 
-const newDiceIds = ['ossuary_die', 'vigil_die', 'tearglass_die'];
+// The Ossuary and Vigil dice became clan gifts (clan_dice.dart, v1.676):
+// no shop sells them any more.
+const newDiceIds = ['tearglass_die'];
 
 const newEnemyIds = ['bone_sexton', 'drowned_pilgrim', 'unmade_knight'];
 

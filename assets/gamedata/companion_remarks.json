@@ -3645,5 +3645,122 @@
       "Hume l’air et vous regarde.",
       "Prend la tête pendant dix pas, puis se laisse distancer, comme par politesse."
     ]
+  },
+  "kelda_districtAttacked": {
+    "remarkID": "kelda_districtAttacked",
+    "companionID": "kelda",
+    "trigger": "districtAttacked",
+    "lines": [
+      "Bar the gate, hold the street. I have done this before.",
+      "A siege is a wall with people behind it. I know which side I stand."
+    ],
+    "lines_fr": [
+      "Fermez la porte, tenez la rue. Je l’ai déjà fait.",
+      "Un siège, c’est un mur avec des gens derrière. Je sais de quel côté je me tiens."
+    ]
+  },
+  "sable_districtAttacked": {
+    "remarkID": "sable_districtAttacked",
+    "companionID": "sable",
+    "trigger": "districtAttacked",
+    "lines": [
+      "Two days. Plenty of time to be somewhere else, love.",
+      "Whoever wins, somebody’s till is open tonight."
+    ],
+    "lines_fr": [
+      "Deux jours. Largement le temps d’être ailleurs, mon cœur.",
+      "Quel que soit le vainqueur, la caisse de quelqu’un sera ouverte ce soir."
+    ]
+  },
+  "maren_districtAttacked": {
+    "remarkID": "maren_districtAttacked",
+    "companionID": "maren",
+    "trigger": "districtAttacked",
+    "lines": [
+      "Smoke over the roofs. I know how this ends: names cut into a wall.",
+      "Whichever side wins, someone will need a priest by morning."
+    ],
+    "lines_fr": [
+      "De la fumée sur les toits. Je sais comment ça finit : des noms gravés dans un mur.",
+      "Quel que soit le vainqueur, il faudra un prêtre à quelqu’un d’ici demain."
+    ]
+  },
+  "liora_districtAttacked": {
+    "remarkID": "liora_districtAttacked",
+    "companionID": "liora",
+    "trigger": "districtAttacked",
+    "lines": [
+      "I count three ways over the roofs. They will count two.",
+      "A siege is a long list of things nobody guarded. I can help with the list."
+    ],
+    "lines_fr": [
+      "Je compte trois passages par les toits. Eux n’en verront que deux.",
+      "Un siège est une longue liste de choses que personne ne gardait. Je peux aider avec la liste."
+    ]
+  },
+  "vess_districtAttacked": {
+    "remarkID": "vess_districtAttacked",
+    "companionID": "vess",
+    "trigger": "districtAttacked",
+    "lines": [
+      "The whispers are loud when people are afraid. Tonight they are very loud.",
+      "Watch closely. Sieges end on small choices."
+    ],
+    "lines_fr": [
+      "Les murmures sont forts quand les gens ont peur. Ce soir, ils le sont beaucoup.",
+      "Regardez bien. Les sièges se terminent sur de petits choix."
+    ]
+  },
+  "grosh_districtAttacked": {
+    "remarkID": "grosh_districtAttacked",
+    "companionID": "grosh",
+    "trigger": "districtAttacked",
+    "lines": [
+      "Grosh hears banging. Grosh likes banging. Who do we hit?",
+      "Small fight, big fight, Grosh is ready. Just say."
+    ],
+    "lines_fr": [
+      "Grosh entend du bruit. Grosh aime le bruit. On tape qui ?",
+      "Petite ou grosse bagarre, Grosh est prêt. Il suffit de le dire."
+    ]
+  },
+  "tobin_districtAttacked": {
+    "remarkID": "tobin_districtAttacked",
+    "companionID": "tobin",
+    "trigger": "districtAttacked",
+    "lines": [
+      "The brothers taught me to pray before a wall falls, not after. I am a little late.",
+      "Say the word and I will carry something heavy toward the right side."
+    ],
+    "lines_fr": [
+      "Les frères m’ont appris à prier avant la chute d’un mur, pas après. Je suis un peu en retard.",
+      "Dites un mot et je porterai quelque chose de lourd du bon côté."
+    ]
+  },
+  "malrik_districtAttacked": {
+    "remarkID": "malrik_districtAttacked",
+    "companionID": "malrik",
+    "trigger": "districtAttacked",
+    "lines": [
+      "A siege is just a market with a very short queue.",
+      "The winner will want ships. The loser will want to leave. Either way, I am in business."
+    ],
+    "lines_fr": [
+      "Un siège, c’est un marché où la file est très courte.",
+      "Le vainqueur voudra des navires. Le perdant voudra partir. Dans les deux cas, je fais des affaires."
+    ]
+  },
+  "vica_districtAttacked": {
+    "remarkID": "vica_districtAttacked",
+    "companionID": "vica",
+    "trigger": "districtAttacked",
+    "lines": [
+      "Stands in front of you facing the gate, hackles up, and does not look back.",
+      "Whines once, low, at the smoke, then sits very close to your leg."
+    ],
+    "lines_fr": [
+      "Se place devant vous face à la porte, le poil hérissé, sans se retourner.",
+      "Gémit une fois, bas, vers la fumée, puis se serre contre votre jambe."
+    ]
   }
 }

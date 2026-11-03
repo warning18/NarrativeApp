@@ -61,14 +61,12 @@ class StoryCommentsReviewScreen extends ConsumerWidget {
                         ref,
                         asCommentExportJson(commented, chapterOfNode),
                         'story_review_comments.json');
-                    break;
                   case 'csv':
                     exportTextToFile(
                         context,
                         ref,
                         asCommentExportCsv(commented, chapterOfNode),
                         'story_review_comments.csv');
-                    break;
                   default:
                     exportTextToFile(context, ref, _asExportText(commented),
                         'story_review_comments.txt');

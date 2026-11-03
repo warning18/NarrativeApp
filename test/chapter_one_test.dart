@@ -80,7 +80,9 @@ void main() {
       nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
           orElse: () => fail('$nodeId does not lead to $target'));
 
-  test('chapter 1 has no padding: 52 scenes, all reachable', () {
+  test(
+      'chapter 1 has no padding: 52 scenes, all reachable but the parked alley',
+      () {
     expect(chapterOne.length, 52);
     final targets = <String>{};
     for (final node in nodes.values) {
@@ -92,6 +94,12 @@ void main() {
     }
     for (final id in chapterOne.keys) {
       if (id == '0') continue;
+      // 270, the Weaver's Alley, is parked off the opening run (v1.620): its
+      // text waits for a later placement (docs/proposals/weavers-alley-parked.md).
+      if (id == '270') {
+        expect(targets, isNot(contains(id)), reason: 'the parked alley');
+        continue;
+      }
       expect(targets, contains(id), reason: '$id is never reached');
     }
     for (final removed in [
@@ -160,7 +168,7 @@ void main() {
       () {
     for (final node in chapterOne.values) {
       final choices = node.choices;
-      if (choices.isEmpty) continue;
+      if (choices.isEmpty || node.id == '270') continue; // parked alley
       if (choices.length == 1) {
         if (node.pageTurn) {
           // A page turn: the same place, the next page of the scene.

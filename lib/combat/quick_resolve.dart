@@ -5,18 +5,18 @@
 /// the fight holds.
 ///
 /// Offered only when every enemy has been beaten at least
-/// [quickResolveKills] times, the player is in good shape, and the fight is
+/// [_quickResolveKills] times, the player is in good shape, and the fight is
 /// an ordinary one (no boss, unique, hunt, ambush, lesson or story fight
 /// with a defeat branch).
-const int quickResolveKills = 5;
+const int _quickResolveKills = 5;
 
 /// The share of the player's health under which a fight is not offered
 /// quick resolve.
-const double quickResolveMinHealth = 0.6;
+const double _quickResolveMinHealth = 0.6;
 
 /// The share of the player's health under which a quick resolve stops and
 /// hands the fight back.
-const double quickResolveStopHealth = 0.45;
+const double _quickResolveStopHealth = 0.45;
 
 /// True when a fight against [enemyIds] may be quick-resolved. [killCounts]
 /// is the session's tally of enemies beaten, by id; [eligible] is the
@@ -29,8 +29,8 @@ bool quickResolveOffered({
   required double healthShare,
 }) {
   if (!eligible || enemyIds.isEmpty) return false;
-  if (healthShare < quickResolveMinHealth) return false;
-  return enemyIds.every((id) => (killCounts[id] ?? 0) >= quickResolveKills);
+  if (healthShare < _quickResolveMinHealth) return false;
+  return enemyIds.every((id) => (killCounts[id] ?? 0) >= _quickResolveKills);
 }
 
 /// True when a running quick resolve should stop and hand the fight back:
@@ -39,4 +39,4 @@ bool quickResolveShouldStop({
   required double playerHealthShare,
   required bool anyAllyDown,
 }) =>
-    playerHealthShare < quickResolveStopHealth || anyAllyDown;
+    playerHealthShare < _quickResolveStopHealth || anyAllyDown;

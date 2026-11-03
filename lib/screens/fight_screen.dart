@@ -13,9 +13,9 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
-import '../widgets/fight_figure.dart';
-import '../widgets/fight_stage_parts.dart';
-import '../widgets/fight_sprites.dart';
+import '../widgets/fight_board.dart';
+import '../widgets/fight_effect_icons.dart';
+import '../widgets/fight_pick_card.dart';
 import '../data/weather_effects.dart';
 import '../providers/climate_provider.dart';
 import '../combat/combat_aftermath.dart';
@@ -24,6 +24,11 @@ import '../combat/combat_engine.dart';
 import '../combat/face_element.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
+import '../combat/clan_dice.dart';
+import '../combat/die_locks.dart';
+import '../combat/party_pick.dart';
+import '../providers/fight_pick_provider.dart';
+import '../combat/heal_target.dart';
 import '../combat/duo_techniques.dart';
 import '../combat/face_smithing.dart';
 import '../combat/party_combos.dart';
@@ -46,7 +51,9 @@ import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
+import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/strike_damage.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -108,6 +115,7 @@ import 'death_screen.dart';
 import 'fight/fight_tips.dart';
 
 part 'fight/fight_actions.dart';
+part 'fight/fight_board_view.dart';
 part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
 part 'fight/fight_clash.dart';
@@ -130,7 +138,7 @@ const int _potionHealAmount = potionHealAmount;
 
 /// A knocked-out ally is revived at this fraction of their (live-derived)
 /// max health after a won fight — see [_FightScreenState._finishFight].
-const double _reviveHealthFraction = 0.3;
+const double _reviveHealthFraction = reviveHealthFraction;
 
 /// Odds a solo fight against an enemy not in [soloOnlyEnemyIds] is promoted
 /// to an Elite encounter — see [_FightScreenState._isElite]. Never rolled
@@ -157,14 +165,9 @@ const double _eliteRewardMultiplier = 1.5;
 /// every single time.
 const double _banterChance = 0.35;
 
-/// Per-member hp/damage multiplier for a multi-enemy pack, by pack size. A
-/// pack's threat is its action economy -- two or three hits a round against
-/// one party's worth of rolls -- so each member is scaled down to keep the
-/// fight winnable for a party at the pack's own chapter level (unscaled,
-/// three chapter-2 heavies were a 0% fight at level 3; at 0.85/0.75 a pair
-/// of mid-tier enemies was still the worst random fight in the game).
-/// Solo fights are never scaled.
-const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
+/// Per-member hp/damage multiplier for a multi-enemy pack, by pack size
+/// (see packStatMultipliers).
+const Map<int, double> _packStatMultipliers = packStatMultipliers;
 
 /// A Defend face rolled by the party member an enemy is visibly (see
 /// [telegraphTierFor]) about to hit blocks this many times its face value
@@ -195,7 +198,7 @@ const int _ironSkinArmorBonus = 1;
 const StatusEffect _venomousPoison = StatusEffect(
     type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
 
-const int _maxRolls = 3;
+const int _maxRolls = maxRollsPerTurn;
 
 class FightScreen extends ConsumerStatefulWidget {
   const FightScreen({
@@ -314,9 +317,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Cleared each [_confirmRoll], same lifecycle as [_currentFaces].
   final Map<String, String> _selectedTargets = {};
 
+  /// The dice between rolls (die_locks.dart): a first tap selects a die, a
+  /// second locks it; a lock is released (a double tap) only until the next
+  /// roll is triggered. Cleared with the round.
+  final DieLocks _dieLocks = DieLocks();
+
   /// Acting members whose current face is kept (locked) through the next
-  /// reroll -- tapping a landed die toggles it. Cleared with the round.
-  final Set<String> _lockedActorIds = {};
+  /// reroll (see [_dieLocks]).
+  Set<String> get _lockedActorIds => _dieLocks.locked;
+
+  /// The member each acting member's heal is aimed at this round (see
+  /// _healTargetFor); none picked is the most wounded. Cleared with the
+  /// round.
+  final Map<String, String> _healTargets = {};
 
   /// In a pack fight, the member whose die an enemy-card tap re-aims.
   String? _selectedActorId;
@@ -349,6 +362,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   String? _selectedDiceId;
   bool _rolling = false;
 
+  /// The Stack the aim line is drawn in and measured against.
+  final GlobalKey _battleSpaceKey = GlobalKey();
+
   bool _partyBuilt = false;
 
   /// The first fight's lucky die (see fight_lucky_die.dart): whether the
@@ -357,6 +373,27 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _luckyDieTourReady = false;
   Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
+
+  /// The hero's die's Resonance this fight (clan_dice.dart): lit, asleep
+  /// and why, or none for a die of no clan. The die tray (UX's) shows it.
+  Resonance _dieResonance = Resonance.none;
+
+  /// How many log lines the player has seen in the history sheet.
+  int _logSeen = 0;
+
+  /// The pre-fight sheet's "keep as my party" toggle.
+  bool _keepPick = false;
+
+  /// Builds a companion as they fight this one (set with the party, see
+  /// _ensurePartyBuilt); the pre-fight pick ([_fieldParty]) uses it.
+  _PartyMember? Function(String companionId, {bool fullCompany})? _allyMember;
+
+  /// The companions fielded beside the player, in seat order: the
+  /// pre-fight pick (UX-2's) reads it.
+  List<String> get _fieldedAllyIds => [
+        for (final m in _party)
+          if (!m.isPlayer) m.id,
+      ];
 
   /// This fight's one-off circumstance, if any -- see
   /// battlefield_condition.dart. Rolled once in [_ensureEnemiesBuilt].
@@ -557,6 +594,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
+
+  /// Reduced motion: the dice are not thrown, they are there.
+  bool get _still => MediaQuery.of(context).disableAnimations;
 
   /// The on-screen effects (see combat_vfx.dart): each card is anchored by
   /// a key so an effect lands on the fighter it belongs to.

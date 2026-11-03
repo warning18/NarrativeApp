@@ -445,7 +445,7 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
               key: Key('clan_row_${f.id}'),
               borderRadius: BorderRadius.circular(8),
               onTap: () =>
-                  showClanSheet(context, ref, book, f, folder: folder, id: id),
+                  _showClanSheet(context, ref, book, f, folder: folder, id: id),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(children: [
@@ -491,7 +491,7 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
 
 /// What a clan offers a choice: its words, and the branches it sponsors for
 /// that people or calling.
-Future<void> showClanSheet(
+Future<void> _showClanSheet(
   BuildContext context,
   WidgetRef ref,
   ChoiceBook book,

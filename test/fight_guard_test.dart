@@ -17,6 +17,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 8; i++) {
@@ -61,10 +62,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
@@ -108,7 +106,8 @@ void main() {
     await _settle(tester);
 
     await tester.tap(find.text('Roll Dice'));
-    await _settle(tester);
+    // The throw is slower since v1.679: wait for the faces to land.
+    await _pumpUntil(tester, () => find.text('Confirm').evaluate().isNotEmpty);
     // The die on the table is a cube (v1.214).
     expect(find.byKey(const ValueKey('die_cube_player')), findsOneWidget);
     await tester.tap(find.text('Confirm'));
@@ -117,7 +116,9 @@ void main() {
     expect(find.textContaining('raises a guard of', findRichText: true),
         findsWidgets);
     expect(
-        find.byTooltip('Raised guard: soaks your next hits'), findsOneWidget);
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_guard_")),
+        findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
   });
 }

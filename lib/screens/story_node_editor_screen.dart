@@ -59,7 +59,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         text: politicsEditorText(widget.node.politicsOnEnter));
     _locationController =
         TextEditingController(text: widget.node.location ?? '');
-    _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
+    _choices = widget.node.choices.map(_ChoiceEditState.new).toList();
   }
 
   @override
@@ -638,6 +638,8 @@ class _ChoiceEditState {
         forcedCondition: _original.forcedCondition,
         forcedAnomaly: _original.forcedAnomaly,
         forcedStage: _original.forcedStage,
+        reply: _original.reply,
+        replyFr: _original.replyFr,
         spot: _original.spot,
         place: _original.place,
         approvalMods: _original.approvalMods,

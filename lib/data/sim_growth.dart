@@ -20,6 +20,7 @@ import 'politics_events.dart';
 import 'politics_events.dart' as coast show applyStoryPolitics;
 import 'camp_rolls.dart' show RollBanOn;
 import 'clan_crisis.dart' show buildCrisisNode, mainClanOf;
+import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import 'district_attacks.dart'
     show buildSiegeNode, rollDistrictAttacks, settleSiegeAway;
 import 'risky_gifts.dart';
@@ -55,12 +56,16 @@ class SimGrowthTables {
     this.events = const {},
     this.itemSets = const {},
     this.merges = const {},
+    this.dice = const {},
   });
 
   /// item_sets.json parsed and skill_merges.json: what the competent
   /// player weighs its gear by and crafts at the Skillwright.
   final Map<String, ItemSet> itemSets;
   final Map<String, dynamic> merges;
+
+  /// dice.json: the clans' dice (clan_dice.dart).
+  final Map<String, dynamic> dice;
 
   /// politics_events.json parsed: the events the coast fires by itself
   /// ([SimGrowth.runEvents]) and a story choice's `event`. None, none
@@ -78,22 +83,11 @@ class SimGrowthTables {
   final Map<String, Patron> patrons;
   final Map<String, SignDef> signs;
   final ClanData clans;
-
-  OfferTables get offerTables => OfferTables(
-        data: clans,
-        signs: signs,
-        skills: skills,
-        skillTrees: skillTrees,
-        items: items,
-        spells: spells,
-        specs: specs,
-        specVariants: specVariants,
-      );
 }
 
 /// The perks the simulator takes, best first: what a fight model without a
 /// party, rerolls or momentum feels most.
-const List<Perk> simPerkPreference = [
+const List<Perk> _simPerkPreference = [
   Perk.heavyHand,
   Perk.ironHide,
   Perk.vigor,
@@ -111,7 +105,7 @@ const List<Perk> simPerkPreference = [
 
 /// The odds the offers' policy takes the suitor of the faction the
 /// character stands best with, rather than the best gift.
-const double simFavourBestChance = 0.25;
+const double _simFavourBestChance = 0.25;
 
 /// A skill's worth on a die face, for the simulator's assignment: what it
 /// hits for over a plain blow, what it heals, a status it carries.
@@ -576,7 +570,7 @@ class SimGrowth {
         perkPicks--;
         final offer = rollPerkOffer(perkRanks, random);
         if (offer.isEmpty) break;
-        final perk = simPerkPreference.firstWhere(offer.contains);
+        final perk = _simPerkPreference.firstWhere(offer.contains);
         _takePerk(perk);
       }
       next = _takeSigns(next, flags, random);
@@ -743,7 +737,12 @@ class SimGrowth {
         heldSpecIds: character.specIds,
         specVariants: tables.specVariants,
         riskyGifts: riskyGifts,
+        dice: tables.dice,
+        ownedDiceIds: character.ownedDice.keys.toList(),
       );
+
+  /// Whether the first banner came (see [_takeOffers]).
+  bool _firstBanner = false;
 
   int _takeOffers(int alignment, Iterable<String> flags, Random random) {
     var next = alignment;
@@ -756,13 +755,25 @@ class SimGrowth {
         ))) {
       return next;
     }
+    // The clans just met: the offers earned before them did not pile up,
+    // one comes, the first banner (the game's rule, v1.634:
+    // offersWaitForClans).
+    if (ladder && !_firstBanner) {
+      _firstBanner = true;
+      final first = pending.isEmpty
+          ? const OfferTicket(source: OfferSource.level, detail: 'first')
+          : pending.first;
+      pending
+        ..clear()
+        ..add(first);
+    }
     while (pending.isNotEmpty) {
       final ticket = pending.first;
       final context = _context(next, flags);
       var offer = drawOffer(ticket, context, random,
           riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
       if (offer == null) return next;
-      final favourBest = random.nextDouble() < simFavourBestChance;
+      final favourBest = random.nextDouble() < _simFavourBestChance;
       // Keeping to the patron and its allies (a card of another clan only
       // for an empty die face), as a player who backs a clan would.
       final main = mainClanOf(politics);
@@ -954,6 +965,31 @@ class SimGrowth {
         return (_bestGearValue([gift.id]) - _bestGearValue()) * 7;
       case GiftKind.spec:
         return 25;
+      case GiftKind.die:
+        // What the die adds over the one rolled now, Resonance and all.
+        final die = tables.dice[gift.id] as Map<String, dynamic>?;
+        final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+        if (faces == null || faces.isEmpty) return 0;
+        final rolled =
+            resonanceOf(die, politics: politics, data: tables.clans) ==
+                    Resonance.lit
+                ? resonantFaces(faces)
+                : faces;
+        final caster = c.knownSpells.isNotEmpty;
+        final now = simDieValue(
+            c.diceFaces, c.diceSkillAssignments, tables.skills,
+            damage: c.baseDamage, caster: caster);
+        final worth = simDieValue(
+            rolled,
+            simSkillAssignments(
+                faces: rolled,
+                current: const {},
+                unlocked: c.unlockedSkillIds,
+                skills: tables.skills),
+            tables.skills,
+            damage: c.baseDamage,
+            caster: caster);
+        return max(1.0, (worth - now) * 10);
       case GiftKind.sign:
         final sign = tables.signs[gift.id];
         if (sign == null) return 0;
@@ -971,8 +1007,8 @@ class SimGrowth {
         final perk = perkFromName(gift.id);
         if (perk == null) return 0;
         if ((perkRanks[perk.name] ?? 0) >= perkInfo[perk]!.maxRank) return 0;
-        final rank = simPerkPreference.indexOf(perk);
-        return 2.0 + (rank < 0 ? 0 : simPerkPreference.length - rank);
+        final rank = _simPerkPreference.indexOf(perk);
+        return 2.0 + (rank < 0 ? 0 : _simPerkPreference.length - rank);
       case GiftKind.title:
         return 3.0 + gift.rarity.index * 3;
     }
@@ -1135,6 +1171,15 @@ class SimGrowth {
       case GiftKind.spec:
         if (!character.specIds.contains(gift.id)) {
           character.specIds = [...character.specIds, gift.id];
+        }
+      case GiftKind.die:
+        // A clan's die to the bag; the competent player rolls it when it
+        // beats the one in play.
+        final faces = ((tables.dice[gift.id] as Map?)?['faces'] as List?)
+            ?.cast<Map<String, dynamic>>();
+        if (faces != null && !character.ownedDice.containsKey(gift.id)) {
+          character.ownedDice[gift.id] = faces;
+          if (competent) character.rollBestDie(tables.skills);
         }
     }
     return alignment;

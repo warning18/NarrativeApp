@@ -51,7 +51,7 @@ void main() {
       final list = placesOf('891');
       expect(list, hasLength(1));
       expect(list.single.place.isHere, isTrue);
-      expect(list.single.ways, [0, 1, 2, 3, 4]);
+      expect(list.single.ways, [0, 1, 2, 3]);
       // The mate at the gangway goes on with the main story.
       expect(list.single.main, isTrue);
     });

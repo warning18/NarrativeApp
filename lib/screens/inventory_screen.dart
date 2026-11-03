@@ -16,6 +16,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/clan_die_gift.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/item_detail_view.dart';
 import '../widgets/inventory_parts.dart';
@@ -72,7 +73,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       context,
       titleA: itemA?['itemName']?.toString() ?? firstId,
       titleB: itemB?['itemName']?.toString() ?? itemId,
-      rows: itemCompareRows(itemA, itemB),
+      rows: _itemCompareRows(itemA, itemB),
       closeLabel: trFor(lang, 'close_button'),
     );
     setState(() {
@@ -171,7 +172,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
 /// Stat rows shared by the manual item-vs-item compare dialog and the
 /// automatic item-vs-currently-equipped delta shown in item details.
-List<CompareRow> itemCompareRows(
+List<CompareRow> _itemCompareRows(
     Map<String, dynamic>? a, Map<String, dynamic>? b) {
   num v(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
   return [
@@ -269,19 +270,6 @@ String requirementSummary(Map<String, dynamic>? item, AppLanguage lang) {
       '${req('reqIntelligence')} ${trFor(lang, 'int_abbrev')}',
   ];
   return parts.join(', ');
-}
-
-/// The scaling stat's display abbreviation (e.g. "strength" -> "STR"), or
-/// null if [item] doesn't scale with anything.
-String? scalingStatAbbrev(Map<String, dynamic>? item, AppLanguage lang) {
-  final key = switch (item?['scalingStat']?.toString() ?? '') {
-    'strength' => 'str_abbrev',
-    'dexterity' => 'dex_abbrev',
-    'constitution' => 'con_abbrev',
-    'intelligence' => 'int_abbrev',
-    _ => null,
-  };
-  return key == null ? null : trFor(lang, key);
 }
 
 class _InventoryBody extends ConsumerStatefulWidget {
@@ -420,14 +408,14 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         meetsItemAlignment(
             items[itemId] as Map<String, dynamic>?, session.alignmentLabel);
 
-    void Function(String itemId, {String? slot}) equipFn = allyId != null
+    final void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipAllyItem(allyId, itemId, slot: slot, items: items)
         : (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipItem(itemId, slot: slot, items: items);
-    void Function(String itemId) unequipFn = allyId != null
+    final void Function(String itemId) unequipFn = allyId != null
         ? (itemId) => ref
             .read(playerSessionProvider.notifier)
             .unequipAllyItem(allyId, itemId)
@@ -696,6 +684,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
           inHand: inHand,
           locked: !usable,
           madeFor: dieMadeForLabel(die, professions, races),
+          gift: ClanDieGift(dieId: id),
           onOpen: () => _openDice(context, id),
           onEquip: usable && !inHand
               ? () => ref.read(playerSessionProvider.notifier).equipDice(id)

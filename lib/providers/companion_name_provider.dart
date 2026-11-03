@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _companionNamePrefsKey = 'companion_name';
 
-class CompanionNameNotifier extends StateNotifier<String> {
-  CompanionNameNotifier() : super('') {
+class _CompanionNameNotifier extends StateNotifier<String> {
+  _CompanionNameNotifier() : super('') {
     _load();
   }
 
@@ -29,5 +29,5 @@ class CompanionNameNotifier extends StateNotifier<String> {
 /// (generic "your companion" phrasing is used instead). Persisted via
 /// [SharedPreferences].
 final companionNameProvider =
-    StateNotifierProvider<CompanionNameNotifier, String>(
-        (ref) => CompanionNameNotifier());
+    StateNotifierProvider<_CompanionNameNotifier, String>(
+        (ref) => _CompanionNameNotifier());

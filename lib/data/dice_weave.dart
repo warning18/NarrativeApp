@@ -9,10 +9,10 @@ import 'skill_craft.dart' show skillCraftOpen;
 const String tallyDieId = 'tally_die';
 
 /// The size of the dice the Skillwright recuts into the tally die.
-const int weaveInputFaces = 8;
+const int _weaveInputFaces = 8;
 
 /// The faces of [die] (a dice.json record).
-int dieFaceCount(Map<String, dynamic>? die) =>
+int _dieFaceCount(Map<String, dynamic>? die) =>
     (die?['faces'] as List?)?.length ??
     (die?['numberOfFaces'] as num?)?.toInt() ??
     0;
@@ -23,7 +23,8 @@ List<String> weavableDice(Iterable<String> owned, Map<String, dynamic> dice) =>
     [
       for (final id in owned)
         if (id != tallyDieId &&
-            dieFaceCount(dice[id] as Map<String, dynamic>?) == weaveInputFaces)
+            _dieFaceCount(dice[id] as Map<String, dynamic>?) ==
+                _weaveInputFaces)
           id,
     ];
 

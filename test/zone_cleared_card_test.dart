@@ -7,41 +7,13 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/reward_card.dart';
 import 'package:narrative_data_app/widgets/reward_cards.dart';
-
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
+import 'support/fonts.dart';
 
 void main() {
   for (final (name, width, lang) in [
@@ -49,7 +21,7 @@ void main() {
     ('french 320', 320.0, AppLanguage.fr),
   ]) {
     testWidgets('the cleared zone is a reward card ($name)', (tester) async {
-      if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+      if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
       tester.view.physicalSize = Size(width, 760);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);

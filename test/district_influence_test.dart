@@ -254,7 +254,7 @@ void main() {
 
     test('the clan favoured at the turn-in takes it over the fixed clan', () {
       final r = done(PoliticsState.empty, side(),
-          picked: StoryPolitics(standing: const {'mire': 5, 'crows': 2}));
+          picked: const StoryPolitics(standing: {'mire': 5, 'crows': 2}));
       expect(r.clanId, 'mire');
       expect(influenceIn(r.state, geo, _yard, 'mire'), 15);
       expect(influenceIn(r.state, geo, _yard, 'dominion'), 0);

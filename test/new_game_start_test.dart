@@ -21,6 +21,7 @@ import 'package:narrative_data_app/providers/home_tab_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
+import 'support/pump.dart';
 
 Future<void> _settle(WidgetTester tester, {int rounds = 4}) async {
   for (var i = 0; i < rounds; i++) {
@@ -49,10 +50,7 @@ Future<void> _launch(WidgetTester tester) async {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
           const MethodChannel('flutter_tts'), (call) async => 1);
-  tester.view.physicalSize = const Size(420, 900);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
+  usePhone(tester, const Size(420, 900));
   tester.platformDispatcher.accessibilityFeaturesTestValue =
       const FakeAccessibilityFeatures(disableAnimations: true);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
@@ -101,7 +99,7 @@ void _expectFirstScenePage(WidgetTester tester, ProviderContainer container) {
 }
 
 void main() {
-  setUp(() => rootBundle.clear());
+  setUp(rootBundle.clear);
 
   group('hasRecapProgress', () {
     test('nothing to recap on a fresh story', () {
@@ -334,23 +332,14 @@ void main() {
     // The way on is a card on the page, not a step on the map.
     final card = find.byKey(const ValueKey('journey_choice_card_0'));
     await _pumpUntilFound(tester, card);
-    // It is on Alster's city chart too, so the page does not hold the
-    // party (scene_lock.dart): its way back to the map is open, the button
-    // under the cards and the corner's.
+    // The game hasn't started (the hero isn't made): no way to the map at
+    // all, neither under the cards, nor in the corner, nor in the top bar
+    // (v1.692).
     expect(find.byKey(const ValueKey('journey_choose_first')), findsNothing);
-    expect(
-        tester
-            .widget<ButtonStyleButton>(
-                find.byKey(const ValueKey('journey_continue')))
-            .onPressed,
-        isNotNull);
-    expect(find.text('Back to the map'), findsOneWidget);
-    expect(
-        tester
-            .widget<IconButton>(
-                find.byKey(const ValueKey('journey_reading_exit')))
-            .onPressed,
-        isNotNull);
+    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
+    expect(find.text('Back to the map'), findsNothing);
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsNothing);
+    expect(find.byKey(const Key('home_full_map')), findsNothing);
     expect(
         find.descendant(
             of: card, matching: find.textContaining('Choose who you are')),

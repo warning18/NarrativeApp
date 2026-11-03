@@ -17,14 +17,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Map<String, dynamic> _enemy(String id) {
   for (final path in [
@@ -48,15 +41,12 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     // A character with the starter die, so the fight can begin.
@@ -76,32 +66,32 @@ void main() {
       navigator.push(MaterialPageRoute<bool>(
           builder: (_) =>
               FightScreen(enemyId: 'harbor_rat', enemy: _enemy('harbor_rat'))));
-      await _settle(tester);
+      await settleApp(tester);
       expect(find.byType(FightScreen), findsOneWidget);
     }
 
     // Before the fight begins, back turns away from it.
     await openFight();
     await navigator.maybePop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsNothing);
 
     // Once it has begun, back leaves it running.
     await openFight();
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     await navigator.maybePop();
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsOneWidget);
     expect(find.textContaining('not over'), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
 
     // Retreat is the way out: it costs a share of the purse.
     await tester.tap(find.byTooltip('Retreat'));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.descendant(
         of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
-    await _settle(tester);
+    await settleApp(tester);
     expect(find.byType(FightScreen), findsNothing);
     expect(
         container.read(playerSessionProvider).gold, 100 - retreatCostFor(100));

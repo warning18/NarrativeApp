@@ -3,8 +3,9 @@
 // may attack a district it doesn't hold, and the district is under siege.
 //
 // - Who attacks: a main clan with [attackMinPower] power or more, against
-//   a district held by a clan it is at odds with: a blood feud
-//   ([attackOdds]: 35% a chapter), a war (20%) or hostile (10%); tense or
+//   a district (never a guarded seat, clan_power.dart's seatGuarded) held
+//   by a clan it is at odds with: a blood feud
+//   ([_attackOdds]: 35% a chapter), a war (20%) or hostile (10%); tense or
 //   warmer, never. At most one attack a town a chapter, and none while the
 //   town is under siege.
 // - The siege lasts [siegeDays] days ([PoliticsState.sieges]), with its
@@ -34,7 +35,7 @@ import 'rival_hunters.dart' show rivalHunterPool;
 /// A clan's chance a chapter to attack a district held by a clan at
 /// [relation step](PoliticsState.relationStep): 1 a blood feud, 2 a war,
 /// 3 hostile.
-const Map<int, double> attackOdds = {1: 0.35, 2: 0.20, 3: 0.10};
+const Map<int, double> _attackOdds = {1: 0.35, 2: 0.20, 3: 0.10};
 
 /// The least power a clan attacks with.
 const int attackMinPower = 10;
@@ -133,15 +134,22 @@ String _cityOf(Geography geography, String districtId) =>
     if (place == null || place.level != GeoLevel.district) continue;
     final city = _cityOf(geography, placeId);
     if (city.isEmpty || besieged.contains(city)) continue;
+    // A guarded seat (the Penitents' Wall of Names) is never attacked: its
+    // clan may shrink but not fall to the turns.
+    if (seatGuarded(holder) && placeId == data.faction(holder)?.seat) continue;
     for (final clan in data.factions.keys) {
       if (clan == holder || !isMainClan(clan, data)) continue;
       if (state.fallen.contains(clan)) continue;
       if (powerOf(state, clan, data) < attackMinPower) continue;
       final step = state.relationStep(clan, holder, data);
-      final odds = step == null ? null : attackOdds[step];
+      final odds = step == null ? null : _attackOdds[step];
       if (odds == null) continue;
-      (candidates[city] ??= [])
-          .add((district: placeId, attacker: clan, holder: holder, odds: odds));
+      (candidates[city] ??= []).add((
+        district: placeId,
+        attacker: clan,
+        holder: holder,
+        odds: odds,
+      ));
     }
   }
   var next = state;
@@ -163,10 +171,12 @@ String _cityOf(Geography geography, String districtId) =>
         until: day + siegeDays,
       );
       final place = geography.place(c.district)!;
-      String told(AppLanguage language) => siegeBegunNews(language,
-          district: place.nameFor(language == AppLanguage.fr),
-          attacker: data.faction(c.attacker),
-          holder: data.faction(c.holder));
+      String told(AppLanguage language) => siegeBegunNews(
+            language,
+            district: place.nameFor(language == AppLanguage.fr),
+            attacker: data.faction(c.attacker),
+            holder: data.faction(c.holder),
+          );
       next = next.copyWith(
         sieges: {...next.sieges, c.district: siege.toEntry()},
         news: [
@@ -188,7 +198,7 @@ String _cityOf(Geography geography, String districtId) =>
 }
 
 /// [state] with [districtId]'s siege lifted (settled one way or another).
-PoliticsState clearSiege(PoliticsState state, String districtId) =>
+PoliticsState _clearSiege(PoliticsState state, String districtId) =>
     state.sieges.containsKey(districtId)
         ? state.copyWith(sieges: {...state.sieges}..remove(districtId))
         : state;
@@ -197,14 +207,16 @@ PoliticsState clearSiege(PoliticsState state, String districtId) =>
 /// district's siege lifted, or, for `<district>:aside`, marked met (it runs
 /// its course and is settled when it runs out).
 PoliticsState applySiegeChoice(PoliticsState state, String settle) {
-  if (!settle.endsWith(asideSuffix)) return clearSiege(state, settle);
+  if (!settle.endsWith(asideSuffix)) return _clearSiege(state, settle);
   final districtId = settle.substring(0, settle.length - asideSuffix.length);
   final entry = state.sieges[districtId];
   if (entry == null) return state;
-  return state.copyWith(sieges: {
-    ...state.sieges,
-    districtId: {...entry, 'met': '1'}
-  });
+  return state.copyWith(
+    sieges: {
+      ...state.sieges,
+      districtId: {...entry, 'met': '1'},
+    },
+  );
 }
 
 /// What a Stand aside choice's [StoryPolitics.settleSiege] ends with.
@@ -224,8 +236,10 @@ double attackerWinChance(
   final influence =
       influenceIn(state, geography, siege.districtId, siege.attacker) -
           influenceIn(state, geography, siege.districtId, siege.holder);
-  return (0.5 + power / 100 + influence / 200)
-      .clamp(attackOddsFloor, attackOddsCeiling);
+  return (0.5 + power / 100 + influence / 200).clamp(
+    attackOddsFloor,
+    attackOddsCeiling,
+  );
 }
 
 /// [state] with [siege] settled away from the party (it ran out, or the
@@ -242,7 +256,7 @@ PoliticsState settleSiegeAway(
   int day = 0,
   List<TerritoryChange>? changes,
 }) {
-  var next = clearSiege(state, siege.districtId);
+  var next = _clearSiege(state, siege.districtId);
   final place = geography.place(siege.districtId);
   if (place == null) return next;
   // The holder may have changed since (an event, influence): the siege is
@@ -250,33 +264,46 @@ PoliticsState settleSiegeAway(
   if (holderOf(siege.districtId, geography, next) != siege.holder) {
     return next;
   }
+  // A guarded seat holds (a siege saved before the guard).
+  if (seatGuarded(siege.holder) &&
+      siege.districtId == data.faction(siege.holder)?.seat) {
+    return next;
+  }
   final won = random.nextDouble() <
       attackerWinChance(next, siege, data: data, geography: geography);
   if (won) {
-    next = givePlace(next, siege.districtId, siege.attacker,
-        cause: 'war',
-        data: data,
-        geography: geography,
-        chapter: chapter,
-        day: day,
-        changes: changes);
+    next = givePlace(
+      next,
+      siege.districtId,
+      siege.attacker,
+      cause: 'war',
+      data: data,
+      geography: geography,
+      chapter: chapter,
+      day: day,
+      changes: changes,
+    );
     // War's news, in the siege's words.
     final last = next.news.lastOrNull;
     if (last != null && last.eventId == 'territory:${siege.districtId}') {
-      String told(AppLanguage language) => siegeTakenNews(language,
-          district: place.nameFor(language == AppLanguage.fr),
-          attacker: data.faction(siege.attacker),
-          holder: data.faction(siege.holder));
-      next = next.copyWith(news: [
-        ...next.news.take(next.news.length - 1),
-        CoastNews(
-          eventId: last.eventId,
-          chapter: last.chapter,
-          day: last.day,
-          text: told(AppLanguage.en),
-          textFr: told(AppLanguage.fr),
-        ),
-      ]);
+      String told(AppLanguage language) => siegeTakenNews(
+            language,
+            district: place.nameFor(language == AppLanguage.fr),
+            attacker: data.faction(siege.attacker),
+            holder: data.faction(siege.holder),
+          );
+      next = next.copyWith(
+        news: [
+          ...next.news.take(next.news.length - 1),
+          CoastNews(
+            eventId: last.eventId,
+            chapter: last.chapter,
+            day: last.day,
+            text: told(AppLanguage.en),
+            textFr: told(AppLanguage.fr),
+          ),
+        ],
+      );
     }
     next = addPower(next, siege.attacker, warSpoils, data);
     if (!next.fallen.contains(siege.holder)) {
@@ -284,20 +311,24 @@ PoliticsState settleSiegeAway(
     }
     return next;
   }
-  String told(AppLanguage language) => siegeHeldNews(language,
-      district: place.nameFor(language == AppLanguage.fr),
-      holder: data.faction(siege.holder),
-      attacker: data.faction(siege.attacker));
-  return next.copyWith(news: [
-    ...next.news,
-    CoastNews(
-      eventId: 'siege:${siege.districtId}',
-      chapter: chapter,
-      day: day,
-      text: told(AppLanguage.en),
-      textFr: told(AppLanguage.fr),
-    ),
-  ]);
+  String told(AppLanguage language) => siegeHeldNews(
+        language,
+        district: place.nameFor(language == AppLanguage.fr),
+        holder: data.faction(siege.holder),
+        attacker: data.faction(siege.attacker),
+      );
+  return next.copyWith(
+    news: [
+      ...next.news,
+      CoastNews(
+        eventId: 'siege:${siege.districtId}',
+        chapter: chapter,
+        day: day,
+        text: told(AppLanguage.en),
+        textFr: told(AppLanguage.fr),
+      ),
+    ],
+  );
 }
 
 /// The sieges of [state] run out by [day] (their last day gone).
@@ -330,11 +361,14 @@ StoryNode? buildSiegeNode(
       .replaceAll('{attacker}', _name(data, siege.attacker, fr))
       .replaceAll('{district}', place.nameFor(fr));
   final pool = rivalHunterPool(
-      enemies: enemies, clanId: siege.attacker, chapter: max(chapter, 3));
+    enemies: enemies,
+    clanId: siege.attacker,
+    chapter: max(chapter, 3),
+  );
   final defender = pool.isEmpty ? null : pool[random.nextInt(pool.length)];
   final d = siege.districtId;
   return StoryNode(
-    id: '$siegeNodePrefix${d}_${random.nextInt(1 << 30)}',
+    id: '$_siegeNodePrefix${d}_${random.nextInt(1 << 30)}',
     description: fill(_siegeBodyEn, false),
     descriptionFr: fill(_siegeBodyFr, true),
     contextNote: fill(_siegeTitleEn, false),
@@ -342,8 +376,8 @@ StoryNode? buildSiegeNode(
     choices: [
       if (defender != null)
         StoryChoice(
-          text: fill('Hold {district} for {holder}', false),
-          textFr: fill('Tenir {district} pour {holder}', true),
+          text: fill('Defend {district}', false),
+          textFr: fill('Défendre {district}', true),
           nextId: '',
           triggerEnemyId: defender,
           politics: StoryPolitics(
@@ -359,8 +393,8 @@ StoryNode? buildSiegeNode(
         nextId: '',
         politics: StoryPolitics(
           standing: {
-            siege.attacker: siegeJoinStanding,
-            siege.holder: -siegeJoinStanding,
+            siege.attacker: _siegeJoinStanding,
+            siege.holder: -_siegeJoinStanding,
           },
           control: {d: siege.attacker},
           flags: [siegeOutcomeFlag(d, 'joined')],
@@ -382,9 +416,9 @@ StoryNode? buildSiegeNode(
 
 /// The id prefix of the siege scenes, whose politics the story player
 /// applies though they are met on a road.
-const String siegeNodePrefix = 'district_siege_';
+const String _siegeNodePrefix = 'district_siege_';
 bool isSiegeNode(String? nodeId) =>
-    nodeId?.startsWith(siegeNodePrefix) ?? false;
+    nodeId?.startsWith(_siegeNodePrefix) ?? false;
 
 /// What holding a district against its attackers moves: the holder's
 /// standing up, the attacker's power down.
@@ -392,7 +426,7 @@ const int siegeDefendStanding = 5;
 const int siegeDefendAttackerPower = 5;
 
 /// What joining the attackers moves: their standing up, the holder's down.
-const int siegeJoinStanding = 5;
+const int _siegeJoinStanding = 5;
 
 /// The siege of the party's town to meet on a road at rest: one whose
 /// town [fromCity] or [toCity] is, not yet stood aside from.
@@ -469,17 +503,16 @@ String siegeHeldNews(
 
 // --- Words for Narrative to reword (wave 18 step 2) ------------------------
 
-const String _siegeTitleEn = '{district} is under siege.';
-const String _siegeTitleFr = '{district} est assiégé.';
+const String _siegeTitleEn = 'Siege of {district}.';
+const String _siegeTitleFr = 'Siège de {district}.';
 const String _siegeBodyEn =
-    'Smoke over the rooftops, and the gate bar down. {attacker} has come '
-    'for {district}, and {holder} holds it with whatever it has to hand. '
-    'Nobody asks you which side you are on. Everybody is watching to see.';
+    'Smoke over the roofs. The gate bar is down. {attacker} against '
+    '{holder}: the assault on {district} has begun. Nobody asks which side '
+    'you are on. Everyone is watching.';
 const String _siegeBodyFr =
-    'De la fumée sur les toits, et la barre de la porte abaissée. '
-    '{attacker} est venu prendre {district}, et {holder} le tient avec ce '
-    'qu’il a sous la main. Personne ne vous demande de quel côté vous êtes. '
-    'Tout le monde attend de le voir.';
+    'De la fumée sur les toits. La barre de la porte est baissée. '
+    '{attacker} contre {holder}\u00a0: l’assaut sur {district} a commencé. '
+    'Personne ne vous demande votre camp. Tout le monde guette.';
 
 /// [flags] with the siege flags in step with [state]'s sieges: each siege's
 /// [attackFlag] and [attackByFlag] set, those of a siege that is over

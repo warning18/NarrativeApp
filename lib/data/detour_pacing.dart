@@ -13,14 +13,14 @@
 // - A crisis (both scenes tense) holds nothing, but what its road rolled
 //   is owed: paid on the next road at rest of the same chapter, after the
 //   cooldown; it lapses when the chapter ends. A set piece owes nothing.
-// - The pity timer: a road at rest rolls [detourBaseChance], and
-//   [detourPityStep] more for each quiet road since the last detour, up to
+// - The pity timer: a road at rest rolls [_detourBaseChance], and
+//   [_detourPityStep] more for each quiet road since the last detour, up to
 //   [detourPityCap]. Then the factors: a city's streets
-//   [detourCityFactor], a long road (two watches or more)
-//   [detourLongRoadFactor], a deadline a day or less away
-//   [detourDeadlineFactor].
+//   [_detourCityFactor], a long road (two watches or more)
+//   [_detourLongRoadFactor], a deadline a day or less away
+//   [_detourDeadlineFactor].
 // - No two in a row: after a detour, a hunter or a familiar face, the next
-//   [detourCooldownRoads] roads at rest hold none of them.
+//   [_detourCooldownRoads] roads at rest hold none of them.
 // - A voyage's landing rolls as a road arriving there would (v1.361): the
 //   sailed chapters (4 to 7) get their share.
 // - The landmark: each chapter's memorable scene (tagged `landmark`) is
@@ -47,22 +47,22 @@ const int lastDetourChapter = 7;
 
 /// What a road at rest rolls with no quiet road behind it, what each quiet
 /// road adds, and the most it reaches.
-const double detourBaseChance = 0.08;
-const double detourPityStep = 0.06;
+const double _detourBaseChance = 0.08;
+const double _detourPityStep = 0.06;
 const double detourPityCap = 0.45;
 
 /// Roads at rest after a detour, a hunter or a familiar face that hold
 /// none of them.
-const int detourCooldownRoads = 1;
+const int _detourCooldownRoads = 1;
 
 /// The odds' factors: a move between districts of one city, a road of
-/// [longRoadWatches] or more, a deadline [tightDeadlineDays] or fewer days
+/// [_longRoadWatches] or more, a deadline [_tightDeadlineDays] or fewer days
 /// away.
-const double detourCityFactor = 0.5;
-const double detourLongRoadFactor = 1.3;
-const double detourDeadlineFactor = 0.3;
-const int longRoadWatches = 2;
-const int tightDeadlineDays = 1;
+const double _detourCityFactor = 0.5;
+const double _detourLongRoadFactor = 1.3;
+const double _detourDeadlineFactor = 0.3;
+const int _longRoadWatches = 2;
+const int _tightDeadlineDays = 1;
 
 /// The road at rest of a chapter from which its landmark comes (the first
 /// one nothing else holds).
@@ -240,12 +240,12 @@ DetourRoad? detourRoadBetween(
 
 /// The odds a road at rest holds a detour, after [quiet] quiet roads.
 double detourChanceFor(int quiet, DetourRoad road) {
-  var chance = min(detourPityCap, detourBaseChance + detourPityStep * quiet);
-  if (road.kind == DetourRoadKind.streets) chance *= detourCityFactor;
-  if (road.watches >= longRoadWatches) chance *= detourLongRoadFactor;
+  var chance = min(detourPityCap, _detourBaseChance + _detourPityStep * quiet);
+  if (road.kind == DetourRoadKind.streets) chance *= _detourCityFactor;
+  if (road.watches >= _longRoadWatches) chance *= _detourLongRoadFactor;
   final spare = road.daysToSpare;
-  if (spare != null && spare <= tightDeadlineDays) {
-    chance *= detourDeadlineFactor;
+  if (spare != null && spare <= _tightDeadlineDays) {
+    chance *= _detourDeadlineFactor;
   }
   return min(1.0, chance);
 }
@@ -370,13 +370,13 @@ RoadTurn planRoad({
   p = p.copyWith(roads: p.roads + 1);
   if (taken) {
     return RoadTurn(
-        RoadTurnKind.taken, p.copyWith(cooldown: detourCooldownRoads));
+        RoadTurnKind.taken, p.copyWith(cooldown: _detourCooldownRoads));
   }
   RoadTurn detour(DetourScene? scene, {required bool paysOwed}) => RoadTurn(
         RoadTurnKind.detour,
         p.copyWith(
           quiet: 0,
-          cooldown: detourCooldownRoads,
+          cooldown: _detourCooldownRoads,
           owed: paysOwed ? false : p.owed,
           met: scene == null ? p.met : [...p.met, scene.id],
         ),
@@ -400,7 +400,7 @@ RoadTurn planRoad({
   }
   if (familiar != null && familiar()) {
     return RoadTurn(
-        RoadTurnKind.familiar, p.copyWith(cooldown: detourCooldownRoads));
+        RoadTurnKind.familiar, p.copyWith(cooldown: _detourCooldownRoads));
   }
   if (!road.detoursOpen) return RoadTurn(RoadTurnKind.quiet, p);
   if (random.nextDouble() < detourChanceFor(p.quiet, road)) {

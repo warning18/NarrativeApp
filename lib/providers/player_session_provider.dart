@@ -22,6 +22,7 @@ import '../data/story_prices.dart';
 import '../data/character_start.dart' show startingArmor;
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
+import '../data/city_districts.dart' show questAcceptedFlag;
 import '../data/district_attacks.dart'
     show expiredSieges, rollDistrictAttacks, settleSiegeAway, syncSiegeFlags;
 import '../data/nemesis.dart'
@@ -92,7 +93,7 @@ const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
 /// The flag of the rest before the Lantern Hall (7515_rest): the
 /// provisions and the mana refilled (applyChoiceEffects).
-const String restBeforeHallFlag = 'rest_before_hall';
+const String _restBeforeHallFlag = 'rest_before_hall';
 
 /// The starter die's face indexes reserved for the player's profession and
 /// race standard skills (see assets/gamedata/dice.json's starter_die).
@@ -104,22 +105,29 @@ const int _starterDieRaceFaceIndex = 5;
 /// from the start (see `manaSkillID` in professions.json).
 const int _startingDieManaFaceIndex = 1;
 
-/// The active party's size before any house bonus -- the player plus one
-/// ally fits by default. Each built house's own `partyCapacityBonus`
-/// (houses.json) adds to this.
+/// How many companions may be seated (fight beside the player): two, so a
+/// fight has three fighters and three dice, never more (the user's cap,
+/// v1.667). No house adds a seat; the Barracks Annex gives the companions
+/// health instead (`companionHealthBonus`, party_bonus.dart).
 const int basePartyCapacity = 2;
 
-/// The player's current active-party capacity: [basePartyCapacity] plus
-/// every built house's own bonus. Shared by [PlayerSessionNotifier
+/// The flag set when the first banner (clan offer) is due: the clans met
+/// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
+const String firstBannerFlag = 'first_banner';
+
+/// Whether [session]'s level-ups, bosses and chapters bring no clan offer
+/// yet (the user's rule, v1.634): on the feature ladder, until the clans
+/// are met. Off the ladder they always do.
+bool offersWaitForClans(PlayerSession session) =>
+    session.flags.contains(featureLadderFlag) &&
+    !session.featureOpen(GameFeature.clans);
+
+/// The player's active-party capacity: [basePartyCapacity], whatever is
+/// built (the cap of three fighters, v1.667). Shared by [PlayerSessionNotifier
 /// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
 /// CampScreen's own roster display, so the two never drift apart.
-int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
-  return basePartyCapacity +
-      houses.values.whereType<Map<String, dynamic>>().where((h) {
-        return builtHouseIds.contains(h['houseID']?.toString() ?? '');
-      }).fold<int>(0,
-          (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
-}
+int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) =>
+    basePartyCapacity;
 
 /// The skills a companion starts with: their profession's and race's
 /// standard skill, and every skill one of their signature die's faces links
@@ -163,7 +171,7 @@ const int intrigueCount = 11;
 /// How many of the six clans must trust the character at once for "A Hand
 /// at Four Doors": a clan's gains cost its rivals half, so all six is out of
 /// reach (QA's search never passed five).
-const int trustedClansForFriend = 4;
+const int _trustedClansForFriend = 4;
 
 /// The six clans a character can swear to (the ones with a Sworn boon).
 const List<String> coastClanIds = [
@@ -180,15 +188,15 @@ final RegExp _intrigueOutcomeFlag = RegExp(r'^intrigue_(.+)_outcome_\d+$');
 
 /// The share of the purse a retreat costs (see [retreatCostFor]); a
 /// potion, when the pack holds one, is dropped too.
-const double retreatGoldShare = 0.2;
+const double _retreatGoldShare = 0.2;
 
 /// The least a retreat costs, when the party has that much.
-const int retreatMinimumGold = 10;
+const int _retreatMinimumGold = 10;
 
 /// What getting away from a fight costs a party carrying [gold]: a
-/// share of it, at least [retreatMinimumGold], never more than it has.
+/// share of it, at least [_retreatMinimumGold], never more than it has.
 int retreatCostFor(int gold) =>
-    min(gold, max(retreatMinimumGold, (gold * retreatGoldShare).round()));
+    min(gold, max(_retreatMinimumGold, (gold * _retreatGoldShare).round()));
 
 /// What a shop pays for [item]: two fifths of its price, at least 1 gold.
 /// An item's own `sellValue` wins -- the Elite Mark is a trophy, worth
@@ -595,20 +603,14 @@ class PlayerSession {
           ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
 
-  /// The part of the day the clock is at (wave 16, see [dayPhaseOf]).
-  DayPhase get dayPhase => dayPhaseOf(watch);
-
-  /// The hour (0..23) the clock shows (see [hourOfWatch]).
-  int get hourOfDay => hourOfWatch(watch);
-
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
   /// [completedQuestIds]'s append-only pattern).
   final List<AllyState> recruitedAllies;
 
   /// Subset of [recruitedAllies] (by companionId) currently fighting
-  /// alongside the player, bounded by party capacity (default 2, raised by
-  /// built houses' partyCapacityBonus).
+  /// alongside the player, bounded by party capacity (two: three fighters,
+  /// v1.667).
   final List<String> activeAllyIds;
 
   /// Companions the story took for good (see [StoryChoice.loseAllyId]);
@@ -727,8 +729,7 @@ class PlayerSession {
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
-  /// `requiredHouseId`) and/or raises party capacity
-  /// (`partyCapacityBonus`), per houses.json.
+  /// `requiredHouseId`), per houses.json.
   final List<String> builtHouseIds;
 
   /// Every piece of the camp's cliff town in the order it went up: house
@@ -1482,6 +1483,13 @@ class PlayerSession {
     // die that shrank move with their faces, or come back
     // (dice_sizes_save.dart).
     json = resizedDiceSave(json);
+    // A save from before the cap of three fighters (v1.667) may have three
+    // companions seated (the Barracks Annex's old seat): the first two stay,
+    // the third goes to the bench, still recruited. Nobody is lost.
+    final seated = [
+      for (final id in (json['activeAllyIds'] as List?) ?? const [])
+        id.toString(),
+    ];
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -1518,6 +1526,9 @@ class PlayerSession {
         ...?(json['builtHouseIds'] as List?)
             ?.map((e) => houseFlag(e.toString())),
         if (legacyHarbourDue(json)) houseFlag(harborHouseId),
+        // Quests taken before the accepted flag was set (v1.639).
+        ...?(json['activeQuestIds'] as List?)
+            ?.map((e) => questAcceptedFlag(e.toString())),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -1638,9 +1649,7 @@ class PlayerSession {
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      activeAllyIds:
-          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      activeAllyIds: seated.take(basePartyCapacity).toList(),
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2311,12 +2320,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // Taken by the story: they don't stay to have an opinion.
       exclude: lostId,
     );
-    final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
+    final newFlags = <String>{
+      ...state.flags,
+      ...flagsToAdd,
+      // A quest taken in a scene is marked taken, as acceptQuest does.
+      if (questIDToProgress != null &&
+          questIDToProgress.isNotEmpty &&
+          !state.completedQuestIds.contains(questIDToProgress))
+        questAcceptedFlag(questIDToProgress),
+    }.toList();
     // The rest before the Lantern Hall (7515_rest, docs/simulation/
     // difficulty-review.md proposal 4): the provisions and the mana
     // refilled; the scene's own heal and potion come with its choice.
-    final rested = flagsToAdd.contains(restBeforeHallFlag) &&
-        !state.flags.contains(restBeforeHallFlag);
+    final rested = flagsToAdd.contains(_restBeforeHallFlag) &&
+        !state.flags.contains(_restBeforeHallFlag);
     var newActiveQuests = state.activeQuestIds;
     var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
@@ -2378,6 +2395,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
     }
+    // The clans met (feat_clans): the first banner.
+    state = _withFirstBanner(state);
     await _persist();
     // A flag or a piece of the Shroud may be what an achievement asks for.
     if (flagsToAdd.isNotEmpty || (bannerPieceId ?? '').isNotEmpty) {
@@ -2572,6 +2591,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       riskyGifts: riskyGiftsOpen(s.builtHouseIds),
       // The gifts warded at the Warding Cairn (camp_rolls.dart).
       bannedGifts: bannedIdsOf(s.rollBans, RollBanOn.offer),
+      dice: tables.dice,
+      ownedDiceIds: s.ownedDiceIds,
     );
   }
 
@@ -2694,13 +2715,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
       }
     }
-    state = state.copyWith(
+    state = _withFirstBanner(state.copyWith(
       chapterOffersThrough: chapter,
-      pendingOffers: [
-        ...state.pendingOffers,
-        OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
-      ],
-    );
+      // Before the clans are met, no offer piles up (offersWaitForClans).
+      pendingOffers: offersWaitForClans(state)
+          ? null
+          : [
+              ...state.pendingOffers,
+              OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
+            ],
+    ));
     await _persist();
     return true;
   }
@@ -3265,6 +3289,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case GiftKind.spec:
         if (session.specIds.contains(gift.id)) return session;
         return session.copyWith(specIds: [...session.specIds, gift.id]);
+      case GiftKind.die:
+        // A clan's die (clan_dice.dart), to the bag: equipped like any.
+        if (session.ownedDiceIds.contains(gift.id)) return session;
+        return session
+            .copyWith(ownedDiceIds: [...session.ownedDiceIds, gift.id]);
     }
   }
 
@@ -3335,6 +3364,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
             i++)
           const OfferTicket(source: OfferSource.start),
       ];
+
+  /// [session] with its first banner (the user's rule, v1.634): on the
+  /// feature ladder, once the clans are met (feat_clans, or past chapter
+  /// 2), one offer is due, [firstBannerFlag] set; none when one is already
+  /// waiting (a save that piled offers up before this rule keeps them, they
+  /// are the player's). Off the ladder, nothing changes.
+  static PlayerSession _withFirstBanner(PlayerSession session) {
+    if (!session.flags.contains(featureLadderFlag) ||
+        session.flags.contains(firstBannerFlag) ||
+        !session.featureOpen(GameFeature.clans)) {
+      return session;
+    }
+    return session.copyWith(
+      flags: [...session.flags, firstBannerFlag],
+      pendingOffers: session.pendingOffers.isEmpty
+          ? const [OfferTicket(source: OfferSource.level, detail: 'first')]
+          : null,
+    );
+  }
 
   /// [levels] offers for the levels just reached.
   static List<OfferTicket> _levelOffers(int levels) => [
@@ -3872,7 +3920,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return replacement;
   }
 
-  /// Takes on [questId]. A bounty in [quest] (a `countFromAccept` Kill
+  /// Takes on [questId] and sets its `<id>_accepted` flag
+  /// (questAcceptedFlag). A bounty in [quest] (a `countFromAccept` Kill
   /// objective) remembers its foes' kill counts now, so only the kills
   /// made after count (see [questKillBaselines]); a quest with none stores
   /// nothing. Without [quest] the objectives can't be read, and every
@@ -3886,6 +3935,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      // Marked taken: a district lock that opens on it opens now
+      // (city_districts.dart).
+      flags: {...state.flags, questAcceptedFlag(questId)}.toList(),
       // A baseline already taken (see [noteQuestOfferedBeforeFight]) stands.
       questKillBaselines: baseline.isEmpty
           ? state.questKillBaselines
@@ -4640,7 +4692,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return;
     }
     if (state.activeAllyIds.contains(companionId)) return;
-    if (state.activeAllyIds.length >= partyCapacity) return;
+    // Never more than three fighters (v1.664), whatever the caller passed.
+    if (state.activeAllyIds.length >= min(partyCapacity, basePartyCapacity)) {
+      return;
+    }
     if (requiredHouseId != null &&
         requiredHouseId.isNotEmpty &&
         !state.builtHouseIds.contains(requiredHouseId)) {
@@ -5142,7 +5197,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
                     .where((id) => standingTierFor(politics.standings[id] ?? 0)
                         .isAtLeast(StandingTier.trusted))
                     .length >=
-                trustedClansForFriend);
+                _trustedClansForFriend);
     check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
     check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
     check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));
@@ -5750,14 +5805,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Adds [spellId] to [PlayerSession.knownSpellIds]; a no-op for a spell
-  /// already known or an empty id.
-  Future<void> learnSpell(String spellId) async {
-    if (spellId.isEmpty || state.knownSpellIds.contains(spellId)) return;
-    state = state.copyWith(knownSpellIds: [...state.knownSpellIds, spellId]);
-    await _persist();
-  }
-
   /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
   /// applying every level gained: [levelStatPicks] stat pick and
   /// [levelHealthGain] max health (stat_rules.dart; base damage grows only
@@ -5777,7 +5824,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
-    var newBaseDamage = state.baseDamage;
+    final newBaseDamage = state.baseDamage;
     var newStatPoints = state.statPoints;
     var leveledUp = false;
     var levelsGained = 0;
@@ -5972,9 +6019,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       // pact one fight on.
       pendingOffers: [
         ...state.pendingOffers,
-        ..._levelOffers(leveled.levelsGained),
-        for (var i = 0; i < bossOffers; i++)
-          const OfferTicket(source: OfferSource.boss),
+        // Before the clans are met, levels and bosses bring none
+        // (offersWaitForClans); the first banner comes when they are.
+        if (!offersWaitForClans(state)) ...[
+          ..._levelOffers(leveled.levelsGained),
+          for (var i = 0; i < bossOffers; i++)
+            const OfferTicket(source: OfferSource.boss),
+        ],
         ...tomeOffers,
       ],
       rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
@@ -6007,6 +6058,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (leveled.leveledUp) {
       state = _withPatronGains(state, leveled.levelsGained).withCursesEnded();
     }
+    state = _withFirstBanner(state);
     await _persist();
     return leveled.leveledUp;
   }

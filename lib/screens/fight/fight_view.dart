@@ -49,6 +49,7 @@ extension _FightView on _FightScreenState {
       children: [
         Positioned.fill(
             child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+        Positioned.fill(child: _buildWeatherOverlay()),
         SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -188,6 +189,7 @@ extension _FightView on _FightScreenState {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
+              _buildPickCard(),
               if (activeAllies.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(
@@ -410,9 +412,7 @@ extension _FightView on _FightScreenState {
   Widget _buildBattleChips() {
     final condition = _condition;
     final ready = _momentum >= _momentumNeeded;
-    return Wrap(
-      spacing: 6,
-      runSpacing: 4,
+    return Row(
       children: [
         ..._goalChips(),
         if (condition != null)
@@ -421,32 +421,26 @@ extension _FightView on _FightScreenState {
         if (_sky.effectKey != null)
           _telegraphChip(
               Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}'),
-              tip: _skyTip()),
+              color: Colors.lightBlue.shade200, tip: _skyTip()),
         if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
-          ready
-              ? tr(ref, 'momentum_ready_label')
-              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
+          ready ? tr(ref, 'momentum_ready_label') : tr(ref, 'momentum_label'),
+          badge: ready ? null : '$_momentum/$_momentumNeeded',
+          color: ready ? Colors.orange : null,
           tip: tr(ref, 'momentum_tip'),
         ),
         // Luck nudges left (long-press a die to spend one).
         if (_nudgesLeft > 0)
-          Tooltip(
-            message: tr(ref, 'nudge_hint'),
-            child: _telegraphChip(
-                Icons.swap_vert, '${tr(ref, 'nudges_label')} $_nudgesLeft'),
-          ),
+          _telegraphChip(Icons.swap_vert, tr(ref, 'nudges_label'),
+              badge: '$_nudgesLeft', tip: tr(ref, 'nudge_hint')),
         if (_hexPending)
-          Tooltip(
-            message: tr(ref, 'tamper_hex_desc'),
-            child: _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex')),
-          ),
+          _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex'),
+              color: Colors.deepPurple.shade200,
+              tip: tr(ref, 'tamper_hex_desc')),
         if (_silenced || _silencePending)
-          Tooltip(
-            message: tr(ref, 'tamper_silence_desc'),
-            child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
-          ),
+          _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence'),
+              color: Colors.red.shade200, tip: tr(ref, 'tamper_silence_desc')),
         _buildTideMark(),
         _buildRuleMark(),
       ],
@@ -484,50 +478,36 @@ extension _FightView on _FightScreenState {
             child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
           const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: _buildSlots(items, previews),
+          ),
+          const SizedBox(height: 8),
+          // The dice board takes what is left; the aim line is drawn over the
+          // cards and the board together.
           Expanded(
-            // The cards above, the stage under them (_fightStage): its
-            // height is fixed, so the cards give way, never the stage.
-            child: LayoutBuilder(
-              builder: (context, area) => Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: TutorialTarget(
-                                id: 'fight.party',
-                                child: _buildPartyColumn(items)),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            flex: 6,
-                            child: TutorialTarget(
-                                id: 'fight.enemies',
-                                child: _buildEnemyColumn(previews)),
-                          ),
-                        ],
-                      ),
+            child: Stack(
+              key: _battleSpaceKey,
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TutorialTarget(
+                      id: 'fight.dice',
+                      child: _buildDiceBoard(acting, dice, skills, items, plan),
                     ),
                   ),
-                  _fightStage(area.maxWidth),
-                ],
-              ),
+                ),
+                Positioned.fill(child: _buildAimLine(plan)),
+              ],
             ),
-          ),
-          const SizedBox(height: 6),
-          TutorialTarget(
-            id: 'fight.dice',
-            child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          _buildLogTicker(),
+          if (ref.watch(appModeProvider) != AppMode.inGame) _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
             id: 'fight.actions',
@@ -547,6 +527,7 @@ extension _FightView on _FightScreenState {
         children: [
           Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: battle),
+          Positioned.fill(child: _buildWeatherOverlay()),
           Positioned.fill(
             child: IgnorePointer(
               child: CombatVfxLayer(
@@ -565,12 +546,20 @@ extension _FightView on _FightScreenState {
   /// The battlefield condition, the momentum meter and the round counter --
   /// the fight-wide state, above the fighters.
   Widget _buildTopStrip() {
+    final play = ref.watch(appModeProvider) == AppMode.inGame;
     return Row(
       children: [
-        Expanded(child: _buildBattleChips()),
-        _telegraphChip(
-            Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted',
+        // One row of icon tiles; a long one scrolls rather than wraps.
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: _buildBattleChips(),
+          ),
+        ),
+        _telegraphChip(Icons.flag_outlined, tr(ref, 'round_label'),
+            badge: '$_roundsStarted',
             tip: tr(ref, 'round_tip').replaceAll('{n}', '$tideStartRound')),
+        if (play) _buildLogButton(),
       ],
     );
   }
@@ -607,7 +596,10 @@ extension _FightView on _FightScreenState {
         : '${tr(ref, 'context_${stem}_mark')} ×${status.level}';
     return KeyedSubtree(
       key: Key('place_rule_mark_$stem'),
-      child: _stateChip(icon, label, colour, tooltip: tip),
+      child: _telegraphChip(icon, label,
+          color: colour,
+          badge: status.omen ? '!' : '${status.level}',
+          tip: tip),
     );
   }
 
@@ -622,27 +614,24 @@ extension _FightView on _FightScreenState {
     final enemyStep = bossFight ? tideBossEnemyStep : tideEnemyStep;
     final Widget chip;
     if (level > 0) {
-      chip = Tooltip(
-        message: tr(ref, 'tide_mark_tip')
-            .replaceAll('{party}', pct(tidePartyStep, level))
-            .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
-        child: _stateChip(
-            Icons.waves,
-            tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
-            Colors.cyan.shade600),
-      );
+      chip = _telegraphChip(
+          Icons.waves, tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
+          color: Colors.cyan.shade600,
+          badge: '$level',
+          tip: tr(ref, 'tide_mark_tip')
+              .replaceAll('{party}', pct(tidePartyStep, level))
+              .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'));
     } else if (tideStartRound - _roundsStarted <= 3 && _roundsStarted > 0) {
-      chip = Tooltip(
-        message: tr(ref, 'tide_soon_tip')
-            .replaceAll('{round}', '$tideStartRound')
-            .replaceAll('{party}', pct(tidePartyStep, 1))
-            .replaceAll('{enemies}', pct(enemyStep, 1)),
-        child: _stateChip(
-            Icons.waves,
-            tr(ref, 'tide_soon_mark')
-                .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
-            Colors.blueGrey),
-      );
+      chip = _telegraphChip(
+          Icons.waves,
+          tr(ref, 'tide_soon_mark')
+              .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
+          color: Colors.blueGrey.shade300,
+          badge: '${tideStartRound - _roundsStarted}',
+          tip: tr(ref, 'tide_soon_tip')
+              .replaceAll('{round}', '$tideStartRound')
+              .replaceAll('{party}', pct(tidePartyStep, 1))
+              .replaceAll('{enemies}', pct(enemyStep, 1)));
     } else {
       return const SizedBox.shrink();
     }
@@ -650,69 +639,6 @@ extension _FightView on _FightScreenState {
   }
 
   // --- Dice tray -----------------------------------------------------------
-
-  /// The party's rolled dice (under the party and the enemies, v1.258), one tile per acting member, in the member's
-  /// own accent color, with what the landed face is worth this round under
-  /// its name (see [_buildPreviewLine]). A tap on a landed die keeps it
-  /// through the next reroll (tap again to release it); a long-press opens
-  /// the face's details and the whole die.
-  Widget _buildDiceTray(
-    List<_PartyMember> acting,
-    Map<String, dynamic> dice,
-    Map<String, dynamic> skills,
-    Map<String, dynamic> items,
-    _RoundPlan plan,
-  ) {
-    final previews = plan.previews;
-    final colorScheme = Theme.of(context).colorScheme;
-    final canLock = _awaitingDecision && !_rolling && _rollCount < _rollCap;
-    final hintKey = acting.isEmpty
-        ? 'nobody_can_act_label'
-        : _currentFaces.isEmpty
-            ? 'roll_hint'
-            : canLock
-                ? 'lock_hint'
-                : 'confirm_hint';
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (final actor in acting)
-                Expanded(
-                  child: Center(
-                    child: _buildDieTile(actor, dice, skills, items, canLock,
-                        previews[actor.id]),
-                  ),
-                ),
-            ],
-          ),
-          if (_momentum >= _momentumNeeded && !_rolling)
-            _buildSurgePicker(acting),
-          if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
-            _buildComboChips(plan),
-          const SizedBox(height: 4),
-          Text(
-            tr(ref, hintKey),
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall
-                ?.copyWith(color: colorScheme.onSurfaceVariant),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
 
   /// The party combos and duo techniques the dice on the table make (see
   /// party_combos.dart and duo_techniques.dart): what confirming now adds.
@@ -804,11 +730,12 @@ extension _FightView on _FightScreenState {
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
     bool canLock,
-    _FacePreview? preview,
-  ) {
+    _FacePreview? preview, {
+    double cube = 46,
+  }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
-    final locked = _lockedActorIds.contains(actor.id);
+    final locked = _isDieLocked(actor.id);
     final spinning = _rolling && !locked;
 
     // The die as a cube (v1.214, see Die3D): it tumbles to the face it
@@ -819,7 +746,7 @@ extension _FightView on _FightScreenState {
       key: ValueKey('die_cube_${actor.id}'),
       faces: _cubeFacesFor(actor, landing, accent),
       accent: accent,
-      size: 46,
+      size: cube,
       roll: _rollController,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
@@ -829,6 +756,8 @@ extension _FightView on _FightScreenState {
       // The die's own skin, a gold ring when kept, and what the landed face
       // adds to the burst: its rule words, its element, a surge, a curse.
       skin: dieSkinOf(actor.equippedDiceId),
+      shape: dieShapeOf(actor.dieFaces.length),
+      artId: actor.equippedDiceId,
       held: locked,
       keywords: face?.keywords ?? const {},
       element: face == null ? 'None' : _elementFor(face, skills),
@@ -841,22 +770,11 @@ extension _FightView on _FightScreenState {
         : (face.faceName.isEmpty ? face.type : face.faceName);
     return GestureDetector(
       key: ValueKey('die_tile_${actor.id}'),
+      // A tap selects the die, a second locks it; a double tap releases a
+      // lock until the next roll (die_locks.dart).
       onTap: face == null
           ? null
-          : () {
-              // A Steady face stays put: the sheet says why.
-              if (canLock && !_steadyActorIds.contains(actor.id)) {
-                _update(() {
-                  if (locked) {
-                    _lockedActorIds.remove(actor.id);
-                  } else {
-                    _lockedActorIds.add(actor.id);
-                  }
-                });
-              } else {
-                _showFaceSheet(actor, face, dice, skills, items);
-              }
-            },
+          : () => _onDieTap(actor, face, canLock, dice, skills, items),
       onLongPress: face == null
           ? null
           : () => _showFaceSheet(actor, face, dice, skills, items),
@@ -866,11 +784,28 @@ extension _FightView on _FightScreenState {
           // No tile under the die: the cube stands on its own, and a kept
           // die shows its gold ring.
           SizedBox(
-            width: 58,
-            height: 58,
+            key: _dieKey(actor.id),
+            width: cube + 12,
+            height: cube + 12,
             child: Stack(
               children: [
                 Center(child: inner),
+                if (_dieLocks.selected == actor.id && !locked)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        key: Key('die_picked_${actor.id}'),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                              color: const Color(0xFFF2C14E), width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Color(0x88F2C14E), blurRadius: 16)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 if (locked)
                   Positioned(
                     top: 2,
@@ -881,6 +816,74 @@ extension _FightView on _FightScreenState {
                             : Icons.lock,
                         size: 12,
                         color: accent),
+                  ),
+                // A clan die's Resonance: lit (gold) or asleep (grey).
+                if (actor.isPlayer &&
+                    !spinning &&
+                    _dieResonance != Resonance.none)
+                  Positioned(
+                    left: 2,
+                    top: 2,
+                    child: Tooltip(
+                      key: Key(_dieResonance == Resonance.lit
+                          ? 'die_resonance_lit'
+                          : 'die_resonance_asleep'),
+                      message: tr(
+                          ref,
+                          _dieResonance == Resonance.lit
+                              ? 'resonance_lit_tip'
+                              : 'resonance_asleep_tip'),
+                      child: Icon(Icons.auto_awesome,
+                          size: 14,
+                          color: _dieResonance == Resonance.lit
+                              ? const Color(0xFFF2C14E)
+                              : Colors.white38),
+                    ),
+                  ),
+                // The hero's profession core on the die: Flurry doubles an
+                // attack face; the Trail shows the face coming next.
+                if (actor.isPlayer &&
+                    face != null &&
+                    !spinning &&
+                    _core.core == ProfessionCore.flurry &&
+                    _faceKindOf(face) == FaceKind.attack)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: DieBadge(
+                        text: '×2', tooltip: tr(ref, 'flurry_tag_tip')),
+                  ),
+                if (actor.isPlayer &&
+                    !spinning &&
+                    _core.core == ProfessionCore.trail &&
+                    _core.aheadIndex != null &&
+                    _core.aheadIndex! < actor.dieFaces.length)
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: Tooltip(
+                      key: const Key('trail_next_face'),
+                      message: tr(ref, 'trail_next_tip'),
+                      child: Opacity(
+                        opacity: 0.8,
+                        child: Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.black54,
+                            border: Border.all(
+                                color: accent.withValues(alpha: 0.7)),
+                          ),
+                          child: Center(
+                              child: _buildFaceGlyph(
+                                  faceFromJson(
+                                      actor.dieFaces[_core.aheadIndex!],
+                                      _core.aheadIndex!),
+                                  size: 14)),
+                        ),
+                      ),
+                    ),
                   ),
                 // The landed face's keywords (see face_keywords.dart).
                 if (face != null && !spinning && face.keywords.isNotEmpty)
@@ -894,7 +897,7 @@ extension _FightView on _FightScreenState {
           ),
           const SizedBox(height: 3),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             child: Text(
               actor.displayName,
               maxLines: 1,
@@ -905,7 +908,7 @@ extension _FightView on _FightScreenState {
             ),
           ),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             height: 12,
             child: Text(
               label,
@@ -916,7 +919,7 @@ extension _FightView on _FightScreenState {
             ),
           ),
           SizedBox(
-            width: 72,
+            width: cube + 24,
             height: 13,
             child: face == null || spinning || preview == null
                 ? null

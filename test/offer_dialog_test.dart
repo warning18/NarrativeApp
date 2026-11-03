@@ -11,7 +11,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,9 +25,9 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
-import 'package:narrative_data_app/widgets/title_widgets.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+import 'support/fonts.dart';
 
 const OfferTicket _level = OfferTicket(source: OfferSource.level);
 
@@ -60,35 +59,6 @@ const ClanOffer _offer = ClanOffer(ticket: _level, suitors: [
 ]);
 
 final _shotKey = GlobalKey();
-
-/// The app's own fonts and icon font, for the pictures (set UX_SHOTS to a folder).
-Future<void> _loadFonts() async {
-  for (final (family, files) in [
-    (
-      InkFonts.system,
-      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
-    ),
-    (
-      InkFonts.prose,
-      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
-    ),
-    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
-  ]) {
-    final loader = FontLoader(family);
-    for (final file in files) {
-      loader.addFont(Future.value(
-          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
-    }
-    await loader.load();
-  }
-  final icons = File('/tmp/flutter/bin/cache/artifacts/material_fonts/'
-      'MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    final loader = FontLoader('MaterialIcons')
-      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
-    await loader.load();
-  }
-}
 
 Future<void> _shot(WidgetTester tester, String name) async {
   final dir = Platform.environment['UX_SHOTS'];
@@ -164,7 +134,6 @@ Future<ProviderContainer> _open(WidgetTester tester,
                 onPressed: () => showOfferIfWaiting(context, ref),
                 child: const Text('Open'),
               ),
-              const TitlesSection(),
             ],
           ),
         ),
@@ -191,7 +160,7 @@ Future<void> _settle(WidgetTester tester) async {
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    if (Platform.environment['UX_SHOTS'] != null) await _loadFonts();
+    if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   });
 
   testWidgets('between offers the last card stays, dimmed, with a spinner',
@@ -562,15 +531,10 @@ void main() {
     Navigator.of(tester.element(find.byType(OfferDialog))).pop();
     await tester.pumpAndSettle();
 
-    // The titles: the one worn, and the brand that counts regardless.
-    expect(find.text('Garde du charbon · Pacte'), findsOneWidget);
-    expect(find.text('Porté'), findsOneWidget);
-    expect(find.text('Sous la Marque · Dominion'), findsOneWidget);
-    expect(
-        find.text('Une marque : elle compte, portée ou non.'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('title_coal_guard')));
-    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
-    await tester.pump();
+    // The worn title comes off (the Character tab's title list is gone).
+    expect(container.read(playerSessionProvider).activeTitleId, 'coal_guard');
+    await tester.runAsync(() =>
+        container.read(playerSessionProvider.notifier).setActiveTitle(''));
     expect(container.read(playerSessionProvider).activeTitleId, '');
     expect(tester.takeException(), isNull);
   });

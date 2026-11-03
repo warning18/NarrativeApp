@@ -4,8 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _themeModePrefsKey = 'app_theme_mode';
 
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.system) {
+class _ThemeModeNotifier extends StateNotifier<ThemeMode> {
+  _ThemeModeNotifier() : super(ThemeMode.system) {
     _load();
   }
 
@@ -25,5 +25,5 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
 
 /// Light / dark / follow-system theme preference; persisted via
 /// [SharedPreferences]. Defaults to following the device setting.
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
-    (ref) => ThemeModeNotifier());
+final themeModeProvider = StateNotifierProvider<_ThemeModeNotifier, ThemeMode>(
+    (ref) => _ThemeModeNotifier());

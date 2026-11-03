@@ -151,8 +151,7 @@ void main() {
       expect(rewards, hasLength(1));
       for (final shop in shops.values) {
         expect(
-            ((shop as Map<String, dynamic>)['initialStock'] as List? ??
-                const []),
+            (shop as Map<String, dynamic>)['initialStock'] as List? ?? const [],
             isNot(contains('void_banner')));
       }
       final banner = items['void_banner'] as Map<String, dynamic>;

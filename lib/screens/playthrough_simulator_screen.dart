@@ -19,12 +19,14 @@ import '../combat/combat_engine.dart'
         lostFightXpShare,
         scaledReward,
         zoneBossEnemyIds;
+import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
+import '../data/autoplay_summary.dart';
 import '../data/camp_errands.dart' show storyChoiceTarget;
 import '../data/camp_works.dart';
 import '../data/chapter_loop.dart';
@@ -99,6 +101,9 @@ import '../providers/place_pools_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/training_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/clans_provider.dart' show loadClanData;
+import '../providers/player_session_provider.dart' show playerSessionProvider;
+import 'autoplay_summary_dialog.dart';
 import '../utils/game_icons.dart';
 
 AutoplayStrategy _toAutoplayStrategy(SimStrategy strategy) {
@@ -580,6 +585,7 @@ class _SimContext {
         events: politicsEvents,
         itemSets: itemSets,
         merges: merges,
+        dice: dice,
       );
 }
 
@@ -666,6 +672,51 @@ _SimResult _simulate(
       ..policy = sim.policy
       // The camp's roll houses draw on their own (sim_rolls.dart).
       ..rolls = SimRolls(Random(detourSalt * 31 + 29));
+  }
+
+  // The competent player tries a die before switching to it (sim_combat.dart's
+  // dieTrial): the foes of the fight at hand, a few fights with each die on
+  // the same seeds; the new one must win more, or as many with more health
+  // left.
+  var trialFoes = <MapEntry<String, Map<String, dynamic>>>[];
+  var trialChapter = 1;
+  if (character != null && sim != null && sim.policy == SimPolicy.competent) {
+    final c = character;
+    ({int wins, int health}) tryDie(List<Map<String, dynamic>> faces,
+            Map<String, String> assignments) =>
+        c.restoringAfter(() {
+          c.diceFaces = faces;
+          c.diceSkillAssignments = assignments;
+          var wins = 0, health = 0;
+          for (var i = 0; i < simDieTrialFights; i++) {
+            c.currentHealth = c.maxHealth;
+            c.statusEffects = [];
+            final o = simulateSimFight(
+              character: c,
+              enemies: trialFoes,
+              chapter: trialChapter,
+              skills: sim.skills,
+              items: sim.items,
+              itemSets: sim.itemSets,
+              random: Random(7919 + i),
+              clash: sim.clash,
+              clashOff: sim.clashOff,
+              context: sim.context,
+              reinforcement: sim.reinforcement,
+            );
+            if (o.won) wins++;
+            health += c.currentHealth;
+          }
+          return (wins: wins, health: health);
+        });
+    c.dieTrial = (faces, assignments) {
+      // Before the first fight there is nothing to try it on.
+      if (trialFoes.isEmpty) return true;
+      final now = tryDie(c.diceFaces, c.diceSkillAssignments);
+      final next = tryDie(faces, assignments);
+      return next.wins > now.wins ||
+          (next.wins == now.wins && next.health > now.health);
+    };
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -1411,6 +1462,9 @@ _SimResult _simulate(
       );
     }
     if (entries.isEmpty) return none;
+    // The die trial plays this fight's foes (see dieTrial above).
+    trialFoes = entries;
+    trialChapter = chapter;
     // The competent player readies itself: its best gear (the pack's
     // loot and rewards counted), the merges worth crafting, its best die.
     growth?.prepareForFight(
@@ -1421,11 +1475,22 @@ _SimResult _simulate(
     // Vica joins at her scene (story_companions.dart), whatever the policy.
     party?.joinFromStory(visited, chapter: chapter, alignment: alignment);
     party?.levelIs(c.level);
+    // Aligned gear answers to the walk's alignment, as in the game.
+    c.alignmentLabel = _alignmentLabelOf(alignment);
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;
       final allies =
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
+      // A clan's die with its Resonance lit rolls its low faces one more
+      // (clan_dice.dart), for this fight.
+      final ownFaces = c.diceFaces;
+      if (growth != null &&
+          resonanceOf(sim.dice[c.diceId] as Map<String, dynamic>?,
+                  politics: growth.politics, data: growth.tables.clans) ==
+              Resonance.lit) {
+        c.diceFaces = resonantFaces(ownFaces);
+      }
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -1445,6 +1510,7 @@ _SimResult _simulate(
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
         allies: allies,
       );
+      c.diceFaces = ownFaces;
       party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -3024,6 +3090,15 @@ class _PlaythroughSimulatorScreenState
   /// and played again until it reaches the chapter.
   int _autoplayAttempt = 0;
 
+  /// [_playToChapter]'s options: a fresh game first, with this race and
+  /// profession (null: random), and a seed (null: random).
+  bool _autoplayNewGame = false;
+  String? _autoplayRaceId;
+  String? _autoplayProfessionId;
+  int? _autoplaySeed;
+  Map<String, dynamic> _raceRecords = const {};
+  Map<String, dynamic> _professionRecords = const {};
+
   /// Whether the strategy/runs/simulate controls are shown in full. They
   /// collapse to a compact bar on a tap (or a new result to look at), and
   /// come back on a tap or once the compact view's results are scrolled
@@ -3035,6 +3110,21 @@ class _PlaythroughSimulatorScreenState
   void initState() {
     super.initState();
     _resultsScrollController.addListener(_onResultsScroll);
+    _loadCharacterRecords();
+  }
+
+  /// The races and professions [_playToChapter]'s pickers offer.
+  Future<void> _loadCharacterRecords() async {
+    final races =
+        await ref.read(gameDbRepositoryProvider(racesSchema)).loadRecords();
+    final professions = await ref
+        .read(gameDbRepositoryProvider(professionsSchema))
+        .loadRecords();
+    if (!mounted) return;
+    setState(() {
+      _raceRecords = races;
+      _professionRecords = professions;
+    });
   }
 
   @override
@@ -3081,6 +3171,14 @@ class _PlaythroughSimulatorScreenState
         .loadRecords();
     final zones = await loadZonesWithWrittenCounts(ref);
 
+    // A fresh game first, when asked: the pickers' race and profession are
+    // a new character's.
+    if (_autoplayNewGame) {
+      await ref.read(playerSessionProvider.notifier).resetSession();
+      ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+    }
+    final before = ref.read(playerSessionProvider);
+    final log = AutoplayLog();
     final result = await autoplayToChapter(
       ref,
       story: story,
@@ -3093,6 +3191,10 @@ class _PlaythroughSimulatorScreenState
       races: races,
       professions: professions,
       zones: zones,
+      raceId: _autoplayRaceId,
+      professionId: _autoplayProfessionId,
+      seed: _autoplaySeed,
+      log: log,
       onAttempt: (attempt) {
         if (mounted) setState(() => _autoplayAttempt = attempt);
       },
@@ -3117,6 +3219,33 @@ class _PlaythroughSimulatorScreenState
     };
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
+
+    // What the walk did, tab by tab, before the player takes over.
+    if (result.stepsApplied > 0) {
+      final clans = await loadClanData(ref);
+      final companions = await ref
+          .read(gameDbRepositoryProvider(companionsSchema))
+          .loadRecords();
+      if (!mounted) return;
+      final after = ref.read(playerSessionProvider);
+      final nodeId = ref.read(storyPlayProvider).currentNodeId;
+      await showAutoplaySummary(
+        context,
+        summary: autoplaySummaryOf(
+          before: before,
+          after: after,
+          log: log,
+          data: clans,
+          chapter: chapterForNode(nodeId) ?? target,
+          nodeId: nodeId,
+        ),
+        clans: clans,
+        itemName: (id) => (items[id] as Map?)?['itemName']?.toString() ?? id,
+        companionName: (id) =>
+            (companions[id] as Map?)?['companionName']?.toString() ?? id,
+      );
+      if (!mounted) return;
+    }
 
     // Land the player on the Story tab, ready to keep going manually from
     // wherever the walk ended up -- the whole point of this feature. This
@@ -3335,6 +3464,8 @@ class _PlaythroughSimulatorScreenState
           ],
         ),
         const SizedBox(height: 12),
+        _playToChapterOptions(context),
+        const SizedBox(height: 12),
         ElevatedButton.icon(
           onPressed: (_autoplayRunning || _targetChapter == null)
               ? null
@@ -3352,6 +3483,60 @@ class _PlaythroughSimulatorScreenState
                       '${tr(ref, 'autoplay_attempt_label')} $_autoplayAttempt'
                   : tr(ref, 'autoplay_running'))
               : tr(ref, 'play_to_chapter_button')),
+        ),
+      ],
+    );
+  }
+
+  /// [_playToChapter]'s pickers: a new game, its race and profession, the
+  /// player's style (the strategy chips above) and a seed.
+  Widget _playToChapterOptions(BuildContext context) {
+    String nameOf(Map<String, dynamic> records, String id, String field) =>
+        (records[id] as Map?)?[field]?.toString() ?? id;
+    DropdownButton<String?> picker(
+      Map<String, dynamic> records,
+      String field,
+      String? value,
+      void Function(String?) onChanged,
+    ) =>
+        DropdownButton<String?>(
+          value: records.containsKey(value) ? value : null,
+          hint: Text(tr(ref, 'ptc_random')),
+          items: [
+            DropdownMenuItem(value: null, child: Text(tr(ref, 'ptc_random'))),
+            for (final id in records.keys)
+              DropdownMenuItem(
+                  value: id, child: Text(nameOf(records, id, field))),
+          ],
+          onChanged: _autoplayNewGame ? onChanged : null,
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(tr(ref, 'ptc_new_game')),
+          subtitle: Text(tr(ref, 'ptc_new_game_hint')),
+          value: _autoplayNewGame,
+          onChanged: (v) => setState(() => _autoplayNewGame = v),
+        ),
+        Wrap(
+          spacing: 16,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(tr(ref, 'race_label')),
+            picker(_raceRecords, 'raceName', _autoplayRaceId,
+                (v) => setState(() => _autoplayRaceId = v)),
+            Text(tr(ref, 'profession_label')),
+            picker(_professionRecords, 'professionName', _autoplayProfessionId,
+                (v) => setState(() => _autoplayProfessionId = v)),
+          ],
+        ),
+        TextField(
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: tr(ref, 'ptc_seed_label')),
+          onChanged: (v) => setState(() => _autoplaySeed = int.tryParse(v)),
         ),
       ],
     );
@@ -4004,7 +4189,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                                 spells: widget.spells),
                             'playthrough_batch_${batch.id}.txt',
                           );
-                          break;
                         case 'csv':
                           _exportToFile(
                             context,
@@ -4012,7 +4196,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                             _batchResultsCsv(results),
                             'playthrough_batch_${batch.id}.csv',
                           );
-                          break;
                         case 'json':
                           _exportToFile(
                             context,
@@ -4020,7 +4203,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                             _batchResultsJson(strategyLabel, results),
                             'playthrough_batch_${batch.id}.json',
                           );
-                          break;
                       }
                     },
                     itemBuilder: (context) => [

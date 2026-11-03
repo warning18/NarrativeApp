@@ -22,14 +22,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-
-Future<void> _settle(WidgetTester tester) async {
-  for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
+import 'support/pump.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 150 && !done(); i++) {
@@ -163,15 +156,12 @@ void main() {
         },
       }),
     });
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    usePhone(tester, const Size(390, 844));
 
     await tester.pumpWidget(ProviderScope(
         overrides: [fightRandomProvider.overrideWithValue(() => Random(7))],
         child: const MyApp()));
-    await _settle(tester);
+    await settleApp(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
     await tester.runAsync(() => container
@@ -221,9 +211,9 @@ void main() {
                   forcedCondition: BattlefieldCondition.highGround,
                   forcedGoal: FightGoal.slay),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _enabled('Confirm'));
     final chip = find.byKey(const Key('parry_player'));
@@ -245,7 +235,7 @@ void main() {
             find.textContaining('Round 2').evaluate().isNotEmpty &&
             _enabled('Roll Dice'));
     await tester.tap(find.byIcon(Icons.unfold_more));
-    await _settle(tester);
+    await settleApp(tester);
     expect(_inLog('readies a parry against'), findsOneWidget);
     // A character with no dexterity still has the 5% dodge floor, and a
     // dodged blow is not parried: the log then says the dodge instead.
@@ -253,11 +243,11 @@ void main() {
     expect(_inLog(dodged ? 'you dodge it!' : 'turned aside and answered'),
         findsOneWidget);
     await tester.tapAt(const Offset(195, 40));
-    await _settle(tester);
+    await settleApp(tester);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
     navigator().pop();
-    await _settle(tester);
+    await settleApp(tester);
 
     // --- A reaction --------------------------------------------------------
     await load('water_test_die', ally: true, dexterity: 60);
@@ -269,9 +259,9 @@ void main() {
                   forcedCondition: BattlefieldCondition.highGround,
                   forcedGoal: FightGoal.slay),
             )));
-    await _settle(tester);
+    await settleApp(tester);
     await tester.tap(find.text('Enter Battle'));
-    await _settle(tester);
+    await settleApp(tester);
     await _tapWhenEnabled(tester, 'Roll Dice (2×)');
     await _pumpUntil(tester, () => _enabled('Confirm'));
     await tester.tap(find.text('Confirm'));
@@ -281,7 +271,7 @@ void main() {
             find.textContaining('Round 2').evaluate().isNotEmpty &&
             _enabled('Roll Dice (2×)'));
     await tester.tap(find.byIcon(Icons.unfold_more));
-    await _settle(tester);
+    await settleApp(tester);
     // Water first (the player, quicker), then Electricity: a Conduct.
     expect(_inLog('Conduct!'), findsOneWidget);
     expect(tester.takeException(), isNull);

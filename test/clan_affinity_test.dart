@@ -304,9 +304,9 @@ void main() {
 
     test('taking a fusion raises both clans, the second by half', () {
       final c = _ctx();
-      final suitor = Suitor(
+      const suitor = Suitor(
         factionId: 'red',
-        gift: const OfferGift(
+        gift: OfferGift(
             kind: GiftKind.skill,
             id: 'fuse',
             rarity: SignRarity.epic,

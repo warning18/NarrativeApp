@@ -73,7 +73,7 @@ const double defaultChargeMultiplier = 2.0;
 
 /// A charge breaks when the party deals at least this share of the
 /// enemy's max health to it within one round.
-const double chargeBreakFraction = 0.25;
+const double _chargeBreakFraction = 0.25;
 
 /// A guard is worth the enemy's own damage (times the skill's
 /// `guardMultiplier`, 1.0 unless set) in block.
@@ -91,7 +91,7 @@ const int maxRallyStacks = 2;
 /// ×2 until the element dice (v1.615): with an elemental die's element on
 /// all its hits, the die that matches the foe is worth swapping in.
 const double weaknessMultiplier = 3.0;
-const double resistanceMultiplier = 0.5;
+const double _resistanceMultiplier = 0.5;
 
 List<String> enemyWeaknesses(Map<String, dynamic> enemy) =>
     ((enemy['weakTo'] as List?) ?? const []).map((e) => e.toString()).toList();
@@ -100,12 +100,12 @@ List<String> enemyResistances(Map<String, dynamic> enemy) =>
     ((enemy['resists'] as List?) ?? const []).map((e) => e.toString()).toList();
 
 /// How [enemy] takes a hit of [element]: [weaknessMultiplier] when it's
-/// weak to it, [resistanceMultiplier] when it resists it, 1 otherwise
+/// weak to it, [_resistanceMultiplier] when it resists it, 1 otherwise
 /// ('None', a plain blow, is never either).
 double elementMultiplierFor(Map<String, dynamic> enemy, String element) {
   if (element == 'None' || element.isEmpty) return 1.0;
   if (enemyWeaknesses(enemy).contains(element)) return weaknessMultiplier;
-  if (enemyResistances(enemy).contains(element)) return resistanceMultiplier;
+  if (enemyResistances(enemy).contains(element)) return _resistanceMultiplier;
   return 1.0;
 }
 
@@ -128,7 +128,7 @@ int damageAfterElement(int damage, Map<String, dynamic> enemy, String element) {
 }
 
 /// Whether a winding-up enemy loses its charged blow: hit for at least
-/// [chargeBreakFraction] of its [maxHealth] this round, stunned, or struck
+/// [_chargeBreakFraction] of its [maxHealth] this round, stunned, or struck
 /// with an element it's weak to.
 bool chargeBroken({
   required int damageThisRound,
@@ -138,7 +138,7 @@ bool chargeBroken({
 }) =>
     stunned ||
     hitWeakness ||
-    (maxHealth > 0 && damageThisRound >= maxHealth * chargeBreakFraction);
+    (maxHealth > 0 && damageThisRound >= maxHealth * _chargeBreakFraction);
 
 /// An enemy's heal, scaled the way its health was: a heal written for a
 /// 150 HP enemy mends proportionally more once the enemy has been scaled up

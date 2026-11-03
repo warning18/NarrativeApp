@@ -40,7 +40,7 @@ void main() {
   });
 
   test('paragraphs: a blank line splits, a single break stays', () {
-    final text = 'First paragraph.\n\nSecond,\nwith a break.\n \n\n  Third.  ';
+    const text = 'First paragraph.\n\nSecond,\nwith a break.\n \n\n  Third.  ';
     final paragraphs = parseStoryText(text);
     expect(paragraphs.map((p) => p.map((r) => r.text).join()),
         ['First paragraph.', 'Second,\nwith a break.', 'Third.']);

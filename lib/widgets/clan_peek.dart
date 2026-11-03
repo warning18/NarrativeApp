@@ -115,6 +115,7 @@ class ClanDetailsCard extends ConsumerWidget {
                           child: ClanMarks(
                               factionId: factionId,
                               discSize: 30,
+                              plate: true,
                               child: PixelBanner(id: bannerId, scale: 1))),
                     ),
                   if (bannerId != null) const SizedBox(width: 12),

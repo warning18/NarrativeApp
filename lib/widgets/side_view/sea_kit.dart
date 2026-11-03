@@ -20,6 +20,7 @@ import '../ship_dress.dart' show ShipDress;
 import 'deck_crew.dart';
 import 'side_ship.dart';
 import 'kit_hour.dart';
+import 'scene_versions.dart';
 import 'side_view.dart';
 
 /// The horizon, in scene rows from the top.
@@ -300,7 +301,7 @@ void _carried(Canvas canvas, Size size, double u, double scroll, double t,
         ..style = PaintingStyle.stroke
         ..strokeWidth = u;
       for (var i = 0; i < 3; i++) {
-        final phase = ((t * 0.12 + i / 3) % 1.0);
+        final phase = (t * 0.12 + i / 3) % 1.0;
         final px = ((i * span / 3 + 20 - offset) % span + span) % span - 10;
         canvas.drawOval(
             Rect.fromCenter(
@@ -339,7 +340,7 @@ final ShipForm _defaultForm = ShipForm.fromRecord('rusty_eel', const {
 /// The ship, in place, bobbing: her hull as [ship] says (see side_ship.dart)
 /// in what she wears ([dress]). A flying hull ([flying], or the hull's own
 /// record) hangs above the water with her shadow on it.
-SideLayer seaActors({
+SideLayer _seaActors({
   bool flying = false,
   SeaWeather weather = SeaWeather.calm,
   SeaMeeting meeting = SeaMeeting.none,
@@ -663,6 +664,10 @@ class SeaSideScene extends StatefulWidget {
 
 class _SeaSideSceneState extends State<SeaSideScene>
     with SingleTickerProviderStateMixin {
+  /// The version of the sea this sailing shows (successive sailings follow the
+  /// seeded order).
+  late final int _version = SceneVersions.next('sea-${widget.waters.name}');
+
   late final AnimationController _arrival =
       AnimationController(vsync: this, duration: seaArrivalTime, value: 1);
   bool _started = false;
@@ -707,10 +712,13 @@ class _SeaSideSceneState extends State<SeaSideScene>
           SideViewScene(
             key: const Key('sea_scene'),
             layers: withHourStars(
-                seaLayers(waters: widget.waters, weather: widget.weather),
+                withSceneVersion(
+                    seaLayers(waters: widget.waters, weather: widget.weather),
+                    'sea-${widget.waters.name}',
+                    _version),
                 widget.phase),
             overlay: hourWash(widget.phase),
-            actors: seaActors(
+            actors: _seaActors(
                 flying: widget.flying,
                 weather: widget.weather,
                 meeting: widget.meeting,
