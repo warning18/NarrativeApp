@@ -507,7 +507,8 @@ extension _FightView on _FightScreenState {
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          if (ref.watch(appModeProvider) != AppMode.inGame) _buildLogTicker(),
+          if (ref.watch(appModeProvider) != AppMode.inGame && !_shortPhone)
+            _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
             id: 'fight.actions',
