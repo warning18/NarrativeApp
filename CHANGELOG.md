@@ -18,6 +18,15 @@ isn't reconstructable from git history alone.
   Labels only: no choice, flag, id, condition or number changes. No test or
   code pinned any of them.
 
+## [1.714.0+750]
+
+- **Core: the fight keeps its mana until it ends; a burst of saves writes
+  once.** A fight saved the whole game, and rebuilt every screen behind it,
+  each time mana was gained or spent; it now keeps mana in the fight and
+  the session takes it when the fight ends (won, lost, fled or broken up,
+  as it already did). Saves asked for together share one write, and each
+  still waits until its change is on disk.
+
 ## [1.713.0+749]
 
 - **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
