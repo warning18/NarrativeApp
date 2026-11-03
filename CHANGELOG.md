@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.716.0+752]
+
+- **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
+  batch).** Nineteen labels in the Smugglers' Wharf hub (`2015`), the
+  last-choice page (`7004`) and the Hollow Court hub (`5010`) are tightened to
+  about 46 characters, English and French, with the same meaning and tone;
+  the longest drops from 54 to 47 in English and from 71 to 57 in French.
+  Labels only: no choice, flag, id, condition or number changes. No test or
+  code pinned any of them.
+
 ## [1.715.0+751]
 
 - **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
