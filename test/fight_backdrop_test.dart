@@ -121,6 +121,57 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('the ground alone is painted once, it does not tick',
+        (tester) async {
+      await tester.pumpWidget(_host(
+        const FightBackdrop(
+            stage: FightStage.fields, weather: false, events: false),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.transientCallbackCount, 0,
+          reason: 'nothing moves on the ground layer');
+      // A layer with weather ticks; without it, again not.
+      await tester.pumpWidget(_host(
+        const FightBackdrop(
+            stage: FightStage.fields,
+            sky: WeatherKind.rain,
+            ground: false,
+            events: false),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.transientCallbackCount, greaterThan(0));
+      await tester.pumpWidget(_host(
+        const FightBackdrop(
+            stage: FightStage.fields, ground: false, events: false),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.transientCallbackCount, 0);
+    });
+
+    testWidgets('an anomaly eases in and out, then the ticker stops',
+        (tester) async {
+      await tester.pumpWidget(_host(
+        FightBackdrop(
+          stage: FightStage.fields,
+          anomaly: fieldAnomalyById('whiteout'),
+          phase: AnomalyPhase.active,
+          ground: false,
+          weather: false,
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.transientCallbackCount, greaterThan(0));
+      // Over: it eases out, and the ticker stops once it is gone.
+      await tester.pumpWidget(_host(
+        const FightBackdrop(
+            stage: FightStage.fields, ground: false, weather: false),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.binding.transientCallbackCount, 0);
+    });
+
     testWidgets('holds still with animations off, the anomaly in at once',
         (tester) async {
       await tester.pumpWidget(_host(
