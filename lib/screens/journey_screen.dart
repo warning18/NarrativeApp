@@ -1089,6 +1089,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
+  /// Tells the top bar whether the page leaves no way to the map (after
+  /// the frame: a provider can't change while the tab builds).
+  void _closeMap(bool closed) {
+    if (ref.read(journeyMapClosedProvider) == closed) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(journeyMapClosedProvider.notifier).state = closed;
+    });
+  }
+
   /// A road card taken on a locked page (v1.553): the lock lifts, the map
   /// comes back and the party walks the way as a step on it.
   void _leaveByRoad(int index, _Step step) {
@@ -2122,6 +2131,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         });
       }
     }
+    if (!_reading) _closeMap(false);
     if (_reading) {
       // A page the story brought the party to whose cards hold every move
       // the map would offer (scene_lock.dart's pageExitHidden, v1.565): no
@@ -2150,6 +2160,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           !held &&
           !(isFreshStoryStart(play) &&
               ref.watch(appModeProvider) != AppMode.edit);
+      _closeMap(!toMap);
       // The button names the map: the way back to it, or, locked, the way
       // that waits.
       // A new game's first scene is told as an animation, its choice

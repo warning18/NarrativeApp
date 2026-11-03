@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.702.0+738]
+
+- **Core: the top bar's world map waits while the page holds the party.**
+  A page with no way back to the map (one card to take, a page whose
+  cards hold every move, a locked page, a new game's first page) hides
+  the world map in the top bar too: it could travel the party away from
+  a scene the story has to go on through. A page that keeps its way back
+  (two cards and a move elsewhere) keeps it.
+
 ## [1.701.0+737]
 
 - No more letter where a face exists. One place (`HeadAvatar`) now says
