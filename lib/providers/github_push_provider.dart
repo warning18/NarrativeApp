@@ -14,8 +14,7 @@ const String _baseBranch = 'main';
 const String _storyOverridePrefsKey = 'story_nodes_override';
 const String _storyAssetPath = 'assets/Cleaned_Narrative_DAG.json';
 
-/// Stores the user's GitHub Personal Access Token — same pattern and trust
-/// level as [ApiKeyNotifier] for the Gemini key: local device storage only.
+/// Stores the user's GitHub Personal Access Token: local device storage only.
 class _GithubTokenNotifier extends StateNotifier<String?> {
   _GithubTokenNotifier() : super(null) {
     _load();
