@@ -513,7 +513,7 @@ class IntroEmber extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Transform.rotate(
         angle: tilt,
-        child: Container(
+        child: DecoratedBox(
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
                 color: _ember.withValues(alpha: 0.75),

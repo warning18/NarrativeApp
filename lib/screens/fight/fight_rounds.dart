@@ -864,7 +864,7 @@ extension _FightRounds on _FightScreenState {
       _finishFight(won: false);
       return;
     }
-    if (sellswordWon || fireWon || watch == true) {
+    if (sellswordWon || fireWon || (watch ?? false)) {
       _finishFight(won: true);
       return;
     }

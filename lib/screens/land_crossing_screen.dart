@@ -78,7 +78,7 @@ Future<bool> runLandCrossing(
         rulers: rulerPool(known, ruler.clanId, ruler.band),
         random: ref.read(landCrossingRandomProvider)),
   ));
-  return arrived == true;
+  return arrived ?? false;
 }
 
 /// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
@@ -398,7 +398,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     // The road tells the fight itself: no aftermath for the next scene.
     ref.read(lastFightOutcomeProvider.notifier).state = null;
     if (!mounted) return;
-    if (won == true) {
+    if (won ?? false) {
       return _settle(choice.success, trFor(lang, 'crossing_fight_won'));
     }
     if (retreated) {
@@ -502,7 +502,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final width = MediaQuery.sizeOf(context).width;
     final bubbleWidth = min(300.0, width - 16);
     final at = (index < 0 ? xs.first : xs[index]) * unit;
-    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8);
     // Anchored just above the figure's head, under the HUD's row, scaled down
     // a little when the words need more room than is left.
     return Positioned(
@@ -518,7 +518,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
           speaker: line.speaker,
           line: line.line,
           width: bubbleWidth,
-          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22),
         ),
       ),
     );

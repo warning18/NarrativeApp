@@ -53,7 +53,7 @@ void main() {
 
   Future<ProviderContainer> open(WidgetTester tester,
       {required String factionId,
-      PoliticsState politics = const PoliticsState(),
+      PoliticsState politics = PoliticsState.empty,
       String language = 'en'}) async {
     SharedPreferences.setMockInitialValues(
         {'app_language': language, 'tutorial_enabled': false});
