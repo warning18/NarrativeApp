@@ -1,6 +1,6 @@
 # QA log
 
-**Last L3: 1.654.0** (2026-10-30, head `1a59f62e`; [report](l3-1.654.0.md)). Before it: [1.501.0](l3-1.501.0.md). Next L3 on request, before a release the user shares, or after a big refactor. See "QA levels" in `CLAUDE.md` for what each level covers.
+**Last L3: 1.696.0** (2026-11-03, head `0d5f71e5`; [report](l3-1.696.0.md)). Before it: [1.654.0](l3-1.654.0.md) (no simulator batch) and [1.501.0](l3-1.501.0.md) (the last simulator comparison before this one). Next L3 on request, before a release the user shares, or after a big refactor. See "QA levels" in `CLAUDE.md` for what each level covers.
 
 Suite time at v1.499.0 (839 s, 3,086 tests) and where it goes: [suite-time-1.499.0.md](suite-time-1.499.0.md).
 
@@ -11,6 +11,7 @@ file in this folder.
 
 | Version | Date | Result | Suite time | Report |
 |---|---|---|---|---|
+| 1.696.0 (`0d5f71e5`) | 2026-11-03 | Pass, one finding for UX (#688: the fight's dice board is a 20 px strip at 320 x 568) and three observations for Core and the user. `dart format` clean, `flutter analyze` no issues, full suite 3,852 tests, 0 failed, 0 skipped. Simulator (800 runs, same method as 1.501): bosses on the curve (mean 48.7%, every boss within 6 points), but the ordinary fights are easier (encounter win 75.5% against 66.8%) and the mage leads (spread 7.9 against 1.9). Cross-reference audit of all gamedata: 0 problems. 21 screens and widgets read at 412, 360 and 320 px in English and French. Guards added for the user's feedback of v1.665 to v1.696. | 1,426 s (23 min 46 s) (one process) | [l3-1.696.0.md](l3-1.696.0.md) |
 | 1.654.0 (`1a59f62e`) | 2026-10-30 | Pass, two small findings (#650, #651). `dart format` clean, `flutter analyze` no issues, full suite 3,793 tests passed, 0 skipped. Cross-reference audit of all gamedata (45 tables, 2,857 references, the story graph's 1,156 choices): 0 problems. 13 new screens and widgets read at 412, 360 and 320 px in English and French: no overflow. No simulator batch (the user's standing instruction); the band tests in the suite pass and Core's #645 moved no band. | 21m39s (one process) | [l3-1.654.0.md](l3-1.654.0.md) |
 | 1.473.0 (`c19b9d0`, #407) | 2026-10-17 | Pass, partial screen read. `dart format` clean, `flutter analyze` no issues, full suite 2,941 tests passed (942 s). Simulator: encounter win 69.2% on 800 runs (the difficulty review's 70% aim; attempt win 36.1% against 45.0% at 1.285.0 by design), class gap closed, bosses won 59% on average (above the curve). 0 scenes unreachable; exploring runs reach 96.8% of 440. Six new gamedata tables audited: 0 problems. One finding for UX (the story text's room on a small phone). v1.474 to v1.477 landed during it. | 15m42s | [l3-1.473.0.md](l3-1.473.0.md) |
 | 1.285.0 (`5a416c6`, #215) | 2026-10-14 | Pass. `dart format` clean, `flutter analyze` no issues, full suite 2351 passed, 0 skipped. Simulator compared with 1.274.0: no regression (800-run check 45.0% against 39.8%, the rise being the boss curve). 0 scenes statically unreachable; exploring runs reach 97% of 426 scenes. 40 guards added (full map, harbour and crossing). No finding on `main`. | 16m32s | [l3-1.285.0.md](l3-1.285.0.md) |

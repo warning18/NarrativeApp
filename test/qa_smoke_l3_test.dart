@@ -4,6 +4,7 @@
 // SMOKE_SHOTS=<folder> for the pictures).
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,10 +12,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/screens/epilogue_map_screen.dart';
+import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/skills/dice_weave_card.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/widgets/character_die_badge.dart';
@@ -68,13 +71,17 @@ void main() {
       .keys
       .toList();
 
+  final enemies =
+      jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
+          as Map<String, dynamic>;
+
   PlayerSession save([Map<String, dynamic> extra = const {}]) =>
       PlayerSession.fromJson({
         'raceId': 'human',
         'professionId': 'warrior',
         'level': 12,
         'gold': 420,
-        'ownedDiceIds': ['starter_die', ...dice.take(8)],
+        'ownedDiceIds': {'starter_die', ...dice.take(8)}.toList(),
         'equippedDiceId': 'starter_die',
         ...extra,
       });
@@ -225,6 +232,58 @@ void main() {
             }),
             prepare: _load,
             bare: true),
+        for (final foe in const ['slum_thug', 'aurel_vane'])
+          SmokeCase(
+            'fight_screen_$foe',
+            FightScreen(
+              enemyId: foe,
+              enemy: enemies[foe] as Map<String, dynamic>,
+              random: Random(7),
+            ),
+            session: save({
+              'recruitedAllies': [
+                {'companionId': 'kelda'},
+                {'companionId': 'vica'},
+              ],
+              'activeAllyIds': ['kelda', 'vica'],
+            }),
+            prepare: _load,
+            bare: true,
+          ),
+        // The fight itself: past "Enter Battle", the board with its chip row.
+        SmokeCase(
+          'fight_board_slum_thug',
+          FightScreen(
+            enemyId: 'slum_thug',
+            enemy: enemies['slum_thug'] as Map<String, dynamic>,
+            random: Random(7),
+          ),
+          session: save({
+            'recruitedAllies': [
+              {'companionId': 'kelda'},
+              {'companionId': 'vica'},
+            ],
+            'activeAllyIds': ['kelda', 'vica'],
+          }),
+          prepare: _load,
+          act: (tester) async {
+            final container = ProviderScope.containerOf(
+                tester.element(find.byType(FightScreen)));
+            final french =
+                container.read(appLanguageProvider) == AppLanguage.fr;
+            final enter =
+                find.text(french ? 'Entrer au combat' : 'Enter Battle');
+            if (enter.evaluate().isNotEmpty) {
+              await tester.ensureVisible(enter);
+              await tester.pump();
+              await tester.tap(enter, warnIfMissed: false);
+              for (var i = 0; i < 6; i++) {
+                await tester.pump(const Duration(milliseconds: 400));
+              }
+            }
+          },
+          bare: true,
+        ),
         SmokeCase('dice_weave_card', const DiceWeaveCard(),
             session: save(), prepare: _load),
         SmokeCase('character_die_badge', const CharacterDieBadge(),
