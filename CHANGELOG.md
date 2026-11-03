@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.730.0+766]
+
+- **Core: a save that can't be read never strands the player (#693).**
+  - An autosave whose history or visited list is unreadable keeps the
+    scene it names (it fell back to the story's first scene).
+  - An unreadable old two-key save is left where it is, and the save slots
+    still read (their list didn't load).
+  - An unreadable game config from the Data editor falls back to the
+    shipped one, for a fresh session and for a new character (neither
+    could be made).
+
 ## [1.714.0+750]
 
 - **Core: the fight keeps its mana until it ends; a burst of saves writes
