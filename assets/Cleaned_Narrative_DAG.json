@@ -138,7 +138,8 @@
         "loseNextId": "115",
         "triggerEnemyId": "den_bouncer",
         "tutorialFight": true,
-        "luckyDieReveal": true
+        "luckyDieReveal": true,
+        "forcedStage": "ruins"
       },
       {
         "text": "Get the looter off her",
@@ -156,7 +157,8 @@
         "loseNextId": "125",
         "triggerEnemyId": "den_looter",
         "tutorialFight": true,
-        "luckyDieReveal": true
+        "luckyDieReveal": true,
+        "forcedStage": "ruins"
       },
       {
         "text": "Clear the door",
@@ -171,7 +173,8 @@
         "loseNextId": "115",
         "triggerEnemyId": "sore_loser",
         "tutorialFight": true,
-        "luckyDieReveal": true
+        "luckyDieReveal": true,
+        "forcedStage": "ruins"
       }
     ],
     "facing": "den_bouncer",
@@ -1002,7 +1005,8 @@
           "keeper_dead"
         ],
         "reply": "Get away from her, Vane!",
-        "reply_fr": "Éloignez-vous d’elle, Vane !"
+        "reply_fr": "Éloignez-vous d’elle, Vane !",
+        "forcedStage": "ruins"
       },
       {
         "text": "Run, and come back for her later",
@@ -2858,7 +2862,8 @@
         "text": "Attack",
         "text_fr": "Attaquer",
         "next_id": "2005",
-        "triggerEnemyId": "harbor_rat"
+        "triggerEnemyId": "harbor_rat",
+        "forcedStage": "caravanRoad"
       },
       {
         "text": "Lash the tarp down and leave them the grain",
@@ -3044,7 +3049,8 @@
         "text": "Continue through the Docks",
         "text_fr": "Continuer à travers les docks",
         "next_id": "2900",
-        "triggerEnemyId": "harbor_rat"
+        "triggerEnemyId": "harbor_rat",
+        "forcedStage": "quay"
       },
       {
         "text": "Take the warehouse roofs above them",
@@ -3126,7 +3132,8 @@
         "unlockQuestId": "q_ch2_captains_gambit",
         "showIfFlags": [
           "hub_2015_bandits"
-        ]
+        ],
+        "forcedStage": "quay"
       },
       {
         "text": "Fend off a plague hound",
@@ -3136,7 +3143,8 @@
         "hideIfFlags": [
           "hub_2015_hound"
         ],
-        "unlockQuestId": "q_ch2_harbor_reckoning"
+        "unlockQuestId": "q_ch2_harbor_reckoning",
+        "forcedStage": "quay"
       },
       {
         "text": "Break up two harbor rats over spoiled cargo",
@@ -3151,7 +3159,8 @@
         ],
         "showIfFlags": [
           "hub_2015_dockside"
-        ]
+        ],
+        "forcedStage": "quay"
       },
       {
         "text": "Answer the harbor master’s bounty on the wharf bandits",
@@ -3167,7 +3176,8 @@
         ],
         "showIfFlags": [
           "hub_2015_rats"
-        ]
+        ],
+        "forcedStage": "quay"
       },
       {
         "text": "Hear out a dwarf holding the gate alone",
@@ -3896,7 +3906,8 @@
         "triggerEnemyId": "harbor_rat",
         "flagsToAdd": [
           "hub_2015_dockside"
-        ]
+        ],
+        "forcedStage": "quay"
       }
     ],
     "facing": "harbor_rat"
@@ -4015,7 +4026,8 @@
           }
         },
         "reply": "Two at the gate, then.",
-        "reply_fr": "À deux sur la porte, alors."
+        "reply_fr": "À deux sur la porte, alors.",
+        "forcedStage": "quay"
       }
     ],
     "reqAlignmentScore": 2,
@@ -4135,7 +4147,8 @@
         "text": "Ambush the inspector",
         "text_fr": "Tendre une embuscade à l’inspecteur",
         "next_id": "2021",
-        "triggerEnemyId": "inquisition_soldier"
+        "triggerEnemyId": "inquisition_soldier",
+        "forcedStage": "caravanRoad"
       }
     ],
     "facing": "inquisition_soldier",
@@ -4775,7 +4788,8 @@
         "triggerEnemyId": "cultist_acolyte",
         "hideIfFlags": [
           "hub_3005_acolyte"
-        ]
+        ],
+        "forcedStage": "ash"
       },
       {
         "text": "Take the contract for the Void Relic",
@@ -4793,7 +4807,8 @@
         "triggerEnemyId": "void_wisp",
         "hideIfFlags": [
           "hub_3005_wisp"
-        ]
+        ],
+        "forcedStage": "ash"
       },
       {
         "text": "Hunt the void stalker in the ruins",
@@ -4802,7 +4817,8 @@
         "triggerEnemyId": "void_stalker",
         "hideIfFlags": [
           "hub_3005_stalker"
-        ]
+        ],
+        "forcedStage": "ruins"
       },
       {
         "text": "Break the iron golem guarding the vault",
@@ -4823,7 +4839,8 @@
         ],
         "hideIfFlags": [
           "hub_3005_auxiliaries"
-        ]
+        ],
+        "forcedStage": "ash"
       },
       {
         "text": "Hear the cleric’s confession",
@@ -5232,7 +5249,8 @@
           "power": {
             "vigil": 3
           }
-        }
+        },
+        "forcedStage": "ruins"
       },
       {
         "text": "Watch the dark and call where they come over",
@@ -5292,7 +5310,8 @@
           "power": {
             "vigil": 3
           }
-        }
+        },
+        "forcedStage": "ruins"
       }
     ]
   },
@@ -6261,7 +6280,8 @@
         ],
         "flagsToAdd": [
           "siege_breached"
-        ]
+        ],
+        "forcedStage": "waves"
       }
     ],
     "facing": "void_hound"
@@ -8311,7 +8331,8 @@
         ],
         "hideIfFlags": [
           "hub_6010_hounds"
-        ]
+        ],
+        "forcedStage": "snow"
       },
       {
         "text": "Hear a penitent Inquisitor’s confession",
@@ -8340,7 +8361,8 @@
         "triggerEnemyId": "inquisition_penitent",
         "hideIfFlags": [
           "hub_6010_penitent"
-        ]
+        ],
+        "forcedStage": "snow"
       },
       {
         "text": "Trade at the Last Lantern",
@@ -8382,7 +8404,8 @@
         "goldMod": 70,
         "hideIfFlags": [
           "hub_6010_spawn"
-        ]
+        ],
+        "forcedStage": "snow"
       },
       {
         "text": "Read the frost for the tear’s pattern",
@@ -11735,7 +11758,8 @@
         "triggerEnemyId": "brother_clement",
         "hideIfFlags": [
           "fled_house"
-        ]
+        ],
+        "forcedStage": "snow"
       },
       {
         "text": "Offer Clement the Shroud’s piece for her",
@@ -11781,7 +11805,8 @@
             "inquisition": "foe"
           },
           "hidden": true
-        }
+        },
+        "forcedStage": "snow"
       },
       {
         "text": "Lay her blood on the Shroud",
@@ -15338,7 +15363,8 @@
         ],
         "hideIfFlags": [
           "hub_7100_company"
-        ]
+        ],
+        "forcedStage": "quay"
       },
       {
         "text": "Tend the pilgrims with the grey sickness",
@@ -15640,7 +15666,8 @@
           "marks": {
             "order": "friend"
           }
-        }
+        },
+        "forcedStage": "dunes"
       },
       {
         "text": "Leave her standing watch over the strand",
@@ -20736,7 +20763,8 @@
         ],
         "flagsToAdd": [
           "way_force"
-        ]
+        ],
+        "forcedStage": "quay"
       },
       {
         "text": "Let the Salt Ledger open its counting-house door",
@@ -24816,7 +24844,8 @@
         "triggerEnemyId": "tear_spawn",
         "flagsToAdd": [
           "count_carried"
-        ]
+        ],
+        "forcedStage": "snow"
       }
     ],
     "facing": "tear_spawn"
