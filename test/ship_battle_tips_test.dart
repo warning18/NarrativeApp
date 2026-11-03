@@ -127,7 +127,7 @@ void main() {
     // A tap still fires.
     await tester.tap(find.byKey(const Key('ship_room_enemy_guns')));
     await tester.pump();
-    expect(find.textContaining(RegExp(r'Ballista (hits|goes wide)|slips')),
+    expect(find.textContaining(RegExp('Ballista (hits|goes wide)|slips')),
         findsOneWidget);
   });
 }

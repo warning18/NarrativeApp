@@ -685,7 +685,7 @@ class _OfferBanner extends ConsumerWidget {
 
     // One box for every banner, so none changes size when another is picked
     // (the picked one only takes the wind).
-    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
+    final bannerBox = pixelBannerSize.width + 2 * WindBanner.room;
     final Widget inner = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
         : ClanMarks(
@@ -695,7 +695,7 @@ class _OfferBanner extends ConsumerWidget {
             child: SizedBox(
               key: Key('offer_banner_${suitor.factionId}'),
               width: bannerBox,
-              height: pixelBannerSize.height.toDouble(),
+              height: pixelBannerSize.height,
               child: selected
                   ? WindBanner(id: bannerId, scale: 1)
                   : Center(child: PixelBanner(id: bannerId, scale: 1)),

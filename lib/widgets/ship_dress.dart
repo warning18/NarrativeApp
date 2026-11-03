@@ -393,7 +393,7 @@ void _mount(Canvas canvas, ShipMount m, double t) {
   switch (m.family) {
     case 'ballista':
       // Stock, two bowed arms across the front, a bolt laid in the groove.
-      canvas.drawLine(const Offset(0, 0), const Offset(0, -26),
+      canvas.drawLine(Offset.zero, const Offset(0, -26),
           _line(const Color(0xFF6E5A46), 3.2));
       final arm = _line(const Color(0xFF8A6A44), 2.6);
       final reach = 9.0 + m.tier * 1.4;
