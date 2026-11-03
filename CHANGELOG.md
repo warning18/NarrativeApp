@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.712.0+748]
+
+- **Core: the game's tables are read from the cache.** Each scene change
+  and fight start read its tables (enemies, items, skills, shops...) by
+  rebuilding them, placeholders and the French overlay included: 10 to 30
+  ms a table in French. They now come from the cache that already holds
+  them; the same records (a test checks every table, in English and
+  French).
+
 ## [1.711.0+747]
 
 - **Cleanup: nine more lints on, and the unused `cupertino_icons` package
