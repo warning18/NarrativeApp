@@ -17,6 +17,16 @@ isn't reconstructable from git history alone.
   a scene the story has to go on through. A page that keeps its way back
   (two cards and a move elsewhere) keeps it.
 
+## [1.699.0+735]
+
+- **Narrative: three French names made consistent.** One word each, text only:
+  "Porte-Clé" becomes "Porte-Clef" in a `6010` callback (29 other uses),
+  "L’Hôte" becomes "L’Ost" for the Host in `7004_stitch` (about 97 other
+  uses), and "Leur doyenne" becomes "Leur ancienne" for the Anvil-Deaf elder
+  in `7590_compact` (11 other scenes). The rest of the audit found nothing
+  to change: "Garde-Mèche" / "Garde-Mèches" and "Porte-Aiguille(s)" already
+  agree in number everywhere.
+
 ## [1.698.0+734]
 
 - **Narrative: fights drawn on the terrain their scene names (`forcedStage`).**
