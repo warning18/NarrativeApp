@@ -259,7 +259,7 @@ extension _FightControls on _FightScreenState {
               ] else
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: (!anyDieAvailable || _rolling)
+                    onPressed: (!anyDieAvailable || _rolling || _settlingRound)
                         ? null
                         : () => _rollDice(dice, skills, items),
                     icon: const Icon(Icons.casino, size: 18),
