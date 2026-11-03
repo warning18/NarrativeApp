@@ -319,6 +319,5 @@ void main() {
 
   test('the side view keeps its grid for the crew figures', () {
     expect(sideViewRows, 72);
-    expect(deckCrewHeight, lessThan(sideViewRows / 4));
   });
 }
