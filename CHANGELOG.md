@@ -15,6 +15,27 @@ isn't reconstructable from git history alone.
   the tests that used them check the room boxes and the grid directly. No
   behaviour change.
 
+## [1.698.0+734]
+
+- **Narrative: fights drawn on the terrain their scene names (`forcedStage`).**
+  From UX's table (39 scenes, 66 fight choices), each row read against its
+  line: 29 fight choices now carry a `forcedStage`, data only.
+  - `quay`: the Smugglers' Wharf hub fights (`2015`), the docks (`2011`), the
+    harbor master's job (`2015_dockside`), the wharf gate (`2015_kelda`), the
+    Anchorage's last company (`7100`) and the harbour chain (`7510_crows`).
+  - `caravanRoad`: `2000` and `2020`. `ruins`: the collapsed Blind Beggar
+    (`105`), the family house (`400`), the Wall of Names rubble
+    (`3005_clan_vigil_1`, `_breach`) and the stalker in the ruins (`3005`).
+    `snow`: the frosted Reliquary Quarter (`6010`, `6010_candle_walk_fight`,
+    `6010_masked`). `ash`: the Ashen Quarter hub (`3005`). `dunes`:
+    `7100_house_order`. `waves`: the beach breach (`6002_siege_breach`).
+  - Skipped on purpose (37 choices): where the terrain word is a name or a
+    figure of speech (Cinder Row, "ruin" in an oath, "the whole shore"), or
+    another place's stage fits better (the Hollow Shore keeps its glass; the
+    Lantern Hall keeps its hall, 14 choices of `7520_tallis` that only look
+    down the cliff; the Reed Gate and the Exorcists' Gate in Candlehold; the
+    iron golem's vault; `6100_clan_mire_2` stays on its snow road).
+
 ## [1.696.0+732]
 
 - The reading page flows. After a choice, the words of the new scene begin
