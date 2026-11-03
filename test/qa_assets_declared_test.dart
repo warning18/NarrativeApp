@@ -13,8 +13,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/companion_sprites.dart';
 
-/// Source art the build does not need: the animation's own exports.
+/// Source art the build does not need: the animation's own exports. The three
+/// `rotations` folders ship only their `south.png` (the one the game reads);
+/// `Bark/south` is source for `tool/gen_fight_heads.py`, not shipped.
 const _sourceOnly = {
+  'assets/visuals/companion/dog_companion_animations/Sitting_down/rotations',
+  'assets/visuals/companion/dog_companion_animations/Make_it_with_angel_w/rotations',
+  'assets/visuals/companion/dog_companion_animations/Make_it_with_demon_w/rotations',
+  'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/south',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/rotations',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/east',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/north',

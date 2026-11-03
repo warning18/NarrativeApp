@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.722.0+758]
+
+- The app no longer ships dog pictures nothing reads: the three `rotations`
+  folders (the sitting dog, the angel's and the demon's) now list only their
+  `south.png`, and the unused bark frames are left out (about 65 KB less).
+  The art stays in the repository, as source. Nothing changes on screen.
+
 ## [1.710.0+746]
 
 - The fight's ground no longer repaints sixty times a second: the layer
