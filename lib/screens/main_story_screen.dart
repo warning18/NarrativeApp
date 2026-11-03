@@ -33,7 +33,7 @@ class MainStoryScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       await resetStoryToDefaults(ref);
     }
   }

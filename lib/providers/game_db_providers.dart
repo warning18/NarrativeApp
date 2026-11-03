@@ -93,14 +93,12 @@ final gameDbProvider = StateNotifierProvider.family<_GameDbNotifier,
   },
 );
 
-/// [_GameDbNotifier.whenLoaded] for [schema]'s table.
+/// [_GameDbNotifier.whenLoaded] for [schema]'s table, as the player reads
+/// it ([localizedDbProvider]'s, cached: it isn't rebuilt on each call).
 Future<Map<String, dynamic>> loadedGameDb(
     WidgetRef ref, DbSchema schema) async {
-  final records = withResolvedPlaceholders(
-      schema.id, await ref.read(gameDbProvider(schema).notifier).whenLoaded());
-  return ref.read(appLanguageProvider) == AppLanguage.fr
-      ? _readableTable(schema, frenchOverlay(records), french: true)
-      : _readableTable(schema, records);
+  await ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  return ref.read(localizedDbProvider(schema)).value ?? const {};
 }
 
 /// A copy of [records] with every French field laid over its English

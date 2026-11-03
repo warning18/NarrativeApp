@@ -1089,6 +1089,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
+  /// Tells the top bar whether the page leaves no way to the map (after
+  /// the frame: a provider can't change while the tab builds).
+  void _closeMap(bool closed) {
+    if (ref.read(journeyMapClosedProvider) == closed) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(journeyMapClosedProvider.notifier).state = closed;
+    });
+  }
+
   /// A road card taken on a locked page (v1.553): the lock lifts, the map
   /// comes back and the party walks the way as a step on it.
   void _leaveByRoad(int index, _Step step) {
@@ -1942,7 +1951,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // and each way at the spot it is taken from, or at the door it leaves
     // by; the streets are one look out.
     // A scene played at its building's doorstep (v1.542) is on the streets.
-    final hereBuilding = herePlace?.isBuilding == true &&
+    final hereBuilding = (herePlace?.isBuilding ?? false) &&
             !herePlace!.doorstep.contains(play.currentNodeId) &&
             !(story.nodeFor(play.currentNodeId)?.sceneInStreet ?? false)
         ? herePlace
@@ -2122,6 +2131,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         });
       }
     }
+    if (!_reading) _closeMap(false);
     if (_reading) {
       // A page the story brought the party to whose cards hold every move
       // the map would offer (scene_lock.dart's pageExitHidden, v1.565): no
@@ -2150,6 +2160,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           !held &&
           !(isFreshStoryStart(play) &&
               ref.watch(appModeProvider) != AppMode.edit);
+      _closeMap(!toMap);
       // The button names the map: the way back to it, or, locked, the way
       // that waits.
       // A new game's first scene is told as an animation, its choice
@@ -4325,9 +4336,9 @@ class _JourneyChartState extends State<_JourneyChart>
   double get _stagger =>
       math.min(0.08, 0.25 / math.max(1, widget.steps.length));
   double _roadReveal(int i) =>
-      ((_reveal - i * _stagger) / 0.55).clamp(0.0, 1.0).toDouble();
+      ((_reveal - i * _stagger) / 0.55).clamp(0.0, 1.0);
   double _markReveal(int i) =>
-      ((_reveal - 0.4 - i * _stagger) / 0.35).clamp(0.0, 1.0).toDouble();
+      ((_reveal - 0.4 - i * _stagger) / 0.35).clamp(0.0, 1.0);
 
   /// Walks the party's mark along the road to step [index], the map
   /// following it and coming back to where it opened; returns how far the

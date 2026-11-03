@@ -337,7 +337,7 @@ void main() {
       expect(pick.suitor, weak);
       expect(pick.reason, contains('compact would turn penitents Hostile'));
       // With no clan backed, the strongest gift is taken.
-      g.politics = const PoliticsState();
+      g.politics = PoliticsState.empty;
       final free = g.competentSuitor(
           const ClanOffer(ticket: ticket, suitors: [strong, weak]), ticket);
       expect(free.suitor, strong);

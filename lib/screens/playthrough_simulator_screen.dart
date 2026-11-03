@@ -932,7 +932,7 @@ _SimResult _simulate(
       // taken as it opens, met on a road at rest; beaten, the nemesis is
       // broken.
       final nemesis = growth?.politics.nemesis ?? '';
-      if (sim?.championFights == true &&
+      if ((sim?.championFights ?? false) &&
           hunter.isEmpty &&
           nemesis.isNotEmpty &&
           chapter >= championMinChapter &&
@@ -974,7 +974,7 @@ _SimResult _simulate(
             fightAttempts: result.attempts,
             spellsCast: result.casts,
           ));
-          if (result.won == true) {
+          if (result.won ?? false) {
             championsBeaten.add(nemesis);
             growth!.politics = breakNemesis(
                 growth.politics, nemesis, growth.tables.clans,
@@ -1103,7 +1103,7 @@ _SimResult _simulate(
                 ...?notes[i],
                 '[ch ${step.chapter ?? 0}] ${step.nodeId}'
                     '${step.choiceText == null ? '' : ' · ${step.choiceText}'}'
-                    '${step.enemyId == null ? '' : ' · fight ${step.enemyId}: ${step.fightWon == true ? 'won' : step.fightWon == false ? 'lost' : '-'}'}'
+                    '${step.enemyId == null ? '' : ' · fight ${step.enemyId}: ${step.fightWon ?? false ? 'won' : step.fightWon == false ? 'lost' : '-'}'}'
                     '${step.nodeId.startsWith('road:') ? ' · ${step.description}' : ''}',
               ],
               ...?notes[steps.length],
@@ -1338,7 +1338,7 @@ _SimResult _simulate(
     };
     for (final id in log.ready(flags)) {
       final pay = log.complete(id, step: atStep, bias: bias, random: random);
-      gold = (gold + pay.gold).clamp(0, 1 << 30).toInt();
+      gold = (gold + pay.gold).clamp(0, 1 << 30);
       alignment += pay.alignment;
       if (pay.flag.isNotEmpty) flags.add(pay.flag);
       // How it was settled moves the clans, as in the app (v1.463, see
@@ -1606,7 +1606,7 @@ _SimResult _simulate(
       gold: gold,
       flags: flags,
       random: Random(detourSalt * 31 + chapter * 7919 + steps.length),
-      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+      defend: (id) => fightEnemies([id], chapter, once: true).won ?? false,
     );
     if (r.how.isEmpty) return;
     gold = r.gold;
@@ -1637,7 +1637,7 @@ _SimResult _simulate(
       chapter: chapter,
       flags: flags,
       random: Random(detourSalt * 37 + chapter * 104729 + steps.length),
-      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+      defend: (id) => fightEnemies([id], chapter, once: true).won ?? false,
     );
     flags
       ..clear()
@@ -1704,7 +1704,7 @@ _SimResult _simulate(
           chapter: lastKnownChapter,
           rulers: rulers);
       c.currentHealth = result.health;
-      gold = (gold + result.gold).clamp(0, 1 << 30).toInt();
+      gold = (gold + result.gold).clamp(0, 1 << 30);
       steps.add(_SimStep(
         nodeId: 'crossing:${route.id}',
         chapter: lastKnownChapter,
@@ -2325,7 +2325,7 @@ _SimResult _simulate(
           c0.currentHealth +
               shortfallWound(gold: gold, goldMod: effectiveGoldMod));
     }
-    gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
+    gold = (gold + effectiveGoldMod).clamp(0, 1 << 30);
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
     // The party sees the choice (applyChoiceEffects): who the story takes
@@ -2352,7 +2352,7 @@ _SimResult _simulate(
       }
     }
     // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
-    if (sim?.featureLadder == true) {
+    if (sim?.featureLadder ?? false) {
       if (choice.flagsToAdd.contains(trainerStrikeFlag)) {
         growth?.learnTrainerSkill(strike: true);
       } else if (choice.flagsToAdd.contains(trainerGuardFlag)) {
@@ -2498,7 +2498,7 @@ _SimResult _simulate(
       tally[key] = (
         runs: before.runs + (reached.add(key) ? 1 : 0),
         attempts: before.attempts + (fought ? step.fightAttempts : 0),
-        won: before.won + (step.fightWon == true ? 1 : 0),
+        won: before.won + (step.fightWon ?? false ? 1 : 0),
       );
     }
   }
@@ -2713,10 +2713,10 @@ List<SimRunSummary> simulatePlaythroughs(
           byChapter[key] ?? (attempts: 0, won: 0, fights: 0, firstTry: 0);
       byChapter[key] = (
         attempts: before.attempts + step.fightAttempts,
-        won: before.won + (step.fightWon == true ? 1 : 0),
+        won: before.won + (step.fightWon ?? false ? 1 : 0),
         fights: before.fights + 1,
         firstTry: before.firstTry +
-            (step.fightWon == true && step.fightAttempts == 1 ? 1 : 0),
+            ((step.fightWon ?? false) && step.fightAttempts == 1 ? 1 : 0),
       );
       final enemy = step.enemyId ?? '?';
       fought[enemy] = (fought[enemy] ?? 0) + 1;

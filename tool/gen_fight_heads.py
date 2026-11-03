@@ -58,4 +58,8 @@ box = vica.getchannel('A').getbbox()
 vica = vica.crop(box)
 save('vica', vica.crop((int(vica.width * 0.52), 0, vica.width,
                          int(vica.height * 0.58))))
+# Aurel Vane has his own sprite (assets/visuals/fighters), so his own head,
+# not the borrowed High Warden's icon.
+vane = Image.open('assets/visuals/fighters/aurel_vane_idle_west.png')
+save('aurel_vane', head(vane))
 print('heads:', len(glob.glob(f'{OUT}/*.png')))

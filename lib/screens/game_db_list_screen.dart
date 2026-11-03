@@ -303,7 +303,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       await ref.read(gameDbProvider(schema).notifier).deleteRecord(key);
     }
   }
@@ -328,7 +328,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       await ref.read(gameDbProvider(schema).notifier).resetToDefaults();
     }
   }

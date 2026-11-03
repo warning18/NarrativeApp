@@ -176,7 +176,7 @@ Widget _section(String s) => Padding(
     child: Text(s, style: _px(11.5, color: _inkSoft)));
 
 /// The tabs row of the real screen (District / Town / World).
-Widget _tabs(int selected) => Container(
+Widget _tabs(int selected) => DecoratedBox(
       decoration: BoxDecoration(
           color: const Color(0xFF3A3642),
           border: Border.all(color: const Color(0xFF6A6478), width: 2)),

@@ -41,6 +41,15 @@ linter:
     prefer_final_locals: true
     prefer_const_declarations: true
     prefer_const_constructors: true
+    use_if_null_to_convert_nulls_to_bools: true
+    noop_primitive_operations: true
+    use_named_constants: true
+    unnecessary_raw_strings: true
+    use_decorated_box: true
+    sort_pub_dependencies: true
+    avoid_bool_literals_in_conditional_expressions: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_unused_constructor_parameters: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

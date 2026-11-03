@@ -9,6 +9,7 @@ import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart' show coastGateWorldProvider;
 import '../utils/game_icons.dart' show npcKindIcon;
+import '../widgets/head_avatar.dart';
 import '../widgets/people_widgets.dart';
 
 /// One person's page (v1.204, see people_codex.dart): who they are (icon,
@@ -67,8 +68,15 @@ class NpcDetailScreen extends ConsumerWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                          child: Icon(npcKindIcon(npc['kind']?.toString()))),
+                      // Their head when there is one (the sprite's crop), else
+                      // the mark of their kind.
+                      HeadAvatar(
+                        id: npcId,
+                        name: npcName,
+                        size: 48,
+                        fallback: Icon(npcKindIcon(npc['kind']?.toString()),
+                            size: 26),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(

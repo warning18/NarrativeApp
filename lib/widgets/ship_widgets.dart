@@ -251,7 +251,7 @@ Future<bool> sailTo(
     ),
   );
   expedition.state = false;
-  return arrived == true;
+  return arrived ?? false;
 }
 
 /// The chart: every port the story has opened, where the boat is moored
