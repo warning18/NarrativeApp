@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart'
-    show ErrorDescription, FlutterError, FlutterErrorDetails;
+    show ErrorDescription, FlutterError, FlutterErrorDetails, compute;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,25 +20,25 @@ class StoryRepository {
   static const String startNodeId = '0';
   static const String _prefsKey = 'story_nodes_override';
 
-  Future<StoryData> load() async {
-    final decoded = await loadRaw();
-    final nodes = <String, StoryNode>{};
-    decoded.forEach((id, value) {
-      nodes[id] = StoryNode.fromJson(id, value as Map<String, dynamic>);
-    });
-
-    return StoryData(nodes);
-  }
+  /// The story, read off the main thread (v1.741): its 1.5 MB took about
+  /// 65 ms to decode and build there.
+  Future<StoryData> load() async => compute(_storyFrom, await _rawText());
 
   /// The story's raw node records, exactly as stored: the local edits when
   /// there are any, the bundled asset otherwise. Every field, in both
   /// languages (see the Edit Mode export on the map).
-  Future<Map<String, dynamic>> loadRaw() async {
+  Future<Map<String, dynamic>> loadRaw() async =>
+      json.decode(await _rawText()) as Map<String, dynamic>;
+
+  Future<String> _rawText() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_prefsKey);
     if (saved != null) {
       try {
-        return json.decode(saved) as Map<String, dynamic>;
+        // Checked here, so a broken edit falls back before the parse is
+        // handed off the main thread. Only an edited story pays for it.
+        if (json.decode(saved) is Map<String, dynamic>) return saved;
+        throw const FormatException('the edited story is not a map of nodes');
       } catch (error, stack) {
         // A broken edited story is reported, and the bundled one read in
         // its place (issue #696).
@@ -50,8 +50,7 @@ class StoryRepository {
                 'reading the edited story; the bundled one is used')));
       }
     }
-    return json.decode(await rootBundle.loadString(assetPath))
-        as Map<String, dynamic>;
+    return rootBundle.loadString(assetPath);
   }
 
   /// Persists an edited set of raw node records as a local override, so
@@ -67,6 +66,12 @@ class StoryRepository {
     await prefs.remove(_prefsKey);
   }
 }
+
+StoryData _storyFrom(String raw) => StoryData({
+      for (final entry in (json.decode(raw) as Map<String, dynamic>).entries)
+        entry.key:
+            StoryNode.fromJson(entry.key, entry.value as Map<String, dynamic>),
+    });
 
 /// The first scene after character creation: where the story picks up when
 /// the same character starts over (permadeath), skipping the creation step
