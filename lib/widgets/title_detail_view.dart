@@ -47,7 +47,7 @@ class TitleDetailView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (bannerId != null) ...[
-              Container(
+              DecoratedBox(
                 key: const Key('title_banner'),
                 decoration: BoxDecoration(
                   border: Border(bottom: BorderSide(color: accent, width: 3)),

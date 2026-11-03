@@ -307,7 +307,7 @@ class _FightBackdropState extends State<FightBackdrop>
       }
       return;
     }
-    if (_ticker?.isActive == true) _ticker!.stop();
+    if (_ticker?.isActive ?? false) _ticker!.stop();
     _last = Duration.zero;
     if (!_motion) _level = _target;
     _frame.tick(_t, _level);

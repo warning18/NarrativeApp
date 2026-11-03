@@ -661,7 +661,7 @@ class _Fx {
   _Fx(this.canvas, this.layer, this.burst, this.rect, this.sourceRect, this.t,
       this.frame)
       : c = rect.center,
-        s = min(rect.width, rect.height).clamp(40.0, 110.0).toDouble(),
+        s = min(rect.width, rect.height).clamp(40.0, 110.0),
         primary = Color(burst.palette.primary),
         secondary = Color(burst.palette.secondary);
 

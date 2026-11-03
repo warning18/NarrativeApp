@@ -127,7 +127,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
   Widget build(BuildContext context) {
     final look = ref.watch(mapLookProvider);
     final live = widget.preview ? null : _live();
-    final title = live?.chart.name.isNotEmpty == true
+    final title = live?.chart.name.isNotEmpty ?? false
         ? live!.chart.name
         : tr(ref, 'city_chart_title');
     return Scaffold(

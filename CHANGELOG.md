@@ -18,6 +18,18 @@ isn't reconstructable from git history alone.
   Labels only: no choice, flag, id, condition or number changes. No test or
   code pinned any of them.
 
+## [1.711.0+747]
+
+- **Cleanup: nine more lints on, and the unused `cupertino_icons` package
+  dropped.** `use_if_null_to_convert_nulls_to_bools`,
+  `noop_primitive_operations`, `use_named_constants`,
+  `unnecessary_raw_strings`, `use_decorated_box`, `sort_pub_dependencies`,
+  `avoid_bool_literals_in_conditional_expressions`,
+  `prefer_const_literals_to_create_immutables` and
+  `avoid_unused_constructor_parameters` are enabled and fixed at about 100
+  sites in 64 files. Nothing changes on screen or in a number; the one
+  unused constructor parameter of the ship side view's palette is gone.
+
 ## [1.710.0+746]
 
 - The fight's ground no longer repaints sixty times a second: the layer

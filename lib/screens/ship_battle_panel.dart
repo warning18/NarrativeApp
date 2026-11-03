@@ -1411,7 +1411,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final ink = InkColors.of(context);
     final total = max(1, widget.turnSeconds ?? 1);
     final timed = widget.turnSeconds != null && !_over;
-    return Container(
+    return DecoratedBox(
       key: const Key('ship_dock'),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerLow,
@@ -3843,7 +3843,7 @@ class _Flash extends StatelessWidget {
 // every second.
 final RegExp _deElidedArticle = RegExp(r"\bde L['’]");
 final RegExp _deBeforeVowel = RegExp(r'\bde ([AEIOUÉÈÊ])');
-final RegExp _articleMidSentence = RegExp(r'([a-zà-ÿ]) (Le|La|Les) ');
+final RegExp _articleMidSentence = RegExp('([a-zà-ÿ]) (Le|La|Les) ');
 
 /// A log line with a ship's name dropped in, made to read right: a name
 /// that carries its own article ("The Rusty Eel", "Le Rusty Eel") after
@@ -3870,7 +3870,7 @@ String tidyShipLine(String text, AppLanguage lang) {
       .replaceAllMapped(_theMidSentence, (m) => '${m.group(1)} the ');
 }
 
-final RegExp _theMidSentence = RegExp(r"([a-z,;:]) The ");
+final RegExp _theMidSentence = RegExp("([a-z,;:]) The ");
 
 /// The color of damage that is coming but not dealt yet, the same blue
 /// the dice fight uses for its preview.

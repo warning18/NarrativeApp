@@ -175,9 +175,9 @@ void paintDieArt(
       }
       canvas.drawPath(star..close(), stroke(const Color(0xFF7C8CFF), 1.4));
     case 'iron_die': // riveted bands
-      canvas.drawLine(const Offset(-0.87, -0.5), const Offset(0, 0),
+      canvas.drawLine(const Offset(-0.87, -0.5), Offset.zero,
           stroke(const Color(0xFF2B2F35), 3));
-      canvas.drawLine(const Offset(0, 0), const Offset(0.87, -0.5),
+      canvas.drawLine(Offset.zero, const Offset(0.87, -0.5),
           stroke(const Color(0xFF2B2F35), 3));
       for (final p in const [
         Offset(-0.55, -0.32),

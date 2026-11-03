@@ -256,7 +256,7 @@ class _Wood extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
           color: const Color(0xFF5B4128),
           borderRadius: BorderRadius.circular(10),
