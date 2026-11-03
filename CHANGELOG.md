@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.700.0+736]
+
+- **Cleanup: three leftovers nothing used are removed**
+  `ShipCutaway.roomRect`, `deckCrewHeight` and the string `sign_pending`;
+  the tests that used them check the room boxes and the grid directly. No
+  behaviour change.
+
 ## [1.699.0+735]
 
 - **Narrative: three French names made consistent.** One word each, text only:

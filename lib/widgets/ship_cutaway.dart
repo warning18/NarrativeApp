@@ -89,12 +89,4 @@ class ShipCutaway {
     return 'assets/visuals/ship_cutaways/$id$level'
         '${battered ? '_battered' : ''}.png';
   }
-
-  /// [room]'s box on a sprite drawn [width] wide, mirrored when [flip].
-  Rect roomRect(ShipRoom room, double width, {required bool flip}) {
-    final k = width / spriteSize.width;
-    final r = rooms[room]!;
-    final left = flip ? spriteSize.width - r.right : r.left;
-    return Rect.fromLTWH(left * k, r.top * k, r.width * k, r.height * k);
-  }
 }

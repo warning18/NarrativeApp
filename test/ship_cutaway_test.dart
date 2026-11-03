@@ -81,18 +81,14 @@ void main() {
     expect(ShipCutaway.refitOf(_eel(level: 3)), 2);
   });
 
-  test('a mirrored room keeps its size and flips its place', () {
+  test('every room is big enough to tap', () {
     const eel = ShipCutaway.rustyEel;
-    final helm = eel.roomRect(ShipRoom.helm, 390, flip: false);
-    final flipped = eel.roomRect(ShipRoom.helm, 390, flip: true);
-    expect(flipped.size, helm.size);
-    expect(flipped.right, closeTo(390 - helm.left, 0.001));
-    // Big enough to tap.
     for (final c in [eel, ...ShipCutaway.enemies]) {
+      final k = 358 / ShipCutaway.spriteSize.width;
       for (final room in ShipRoom.values) {
-        final r = c.roomRect(room, 358, flip: false);
-        expect(r.width, greaterThanOrEqualTo(60), reason: '${c.id} $room');
-        expect(r.height, greaterThanOrEqualTo(40), reason: '${c.id} $room');
+        final r = c.rooms[room]!;
+        expect(r.width * k, greaterThanOrEqualTo(60), reason: '${c.id} $room');
+        expect(r.height * k, greaterThanOrEqualTo(40), reason: '${c.id} $room');
       }
     }
   });
