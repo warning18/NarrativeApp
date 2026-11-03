@@ -110,12 +110,12 @@ Each is read only by `db_schema.dart` (and, where named, one test).
 |---|---|---|
 | `items.json` `damage` | 134 | unread; nonzero only on `void_banner` (25, while its read `attackDamage` is 2), a trap for whoever edits it |
 | `shops.json` `unlockLevel`, `merchantSpecialties` | 14 | unread |
-| `ship_parts.json` `battleActionLabel` (+ `_fr`) | 67 | unread outside 2 tests: **the text is Narrative's; ask before removing** |
-| `factions.json` `_newKinds` | 6 | a design brief the loader skips (`factions.dart:1088`); read by `clans_content_test:111` only |
+| `ship_parts.json` `battleActionLabel` (+ `_fr`) | 67 | unread outside 2 tests (22 of 67 filled): **Narrative: remove** (field, schema, the two tests) |
+| `factions.json` `_newKinds` | 6 | a design brief the loader skips (`factions.dart:1088`); read by `clans_content_test:111` only: **Narrative: remove** |
 | `specialisations.json` `link: "weak"` | 8 | duplicates `weakLinkSpecs` (`specialisations.dart:91`); they agree today: keep one |
 | `items.json` `materialTier` | 10 | duplicates `materialTiers` (`materials.dart:16`); they agree: keep one |
 | `enemies.json` `championClan` | 6 | the code builds `champion_<clan>` (`nemesis.dart:282`); one test reads the field |
-| `factions.json` `ruling` / `ruling_fr` | 6 | long lore paragraphs nothing shows: **Narrative's call** (show them or drop them) |
+| `factions.json` `ruling` / `ruling_fr` | 6 | long lore paragraphs nothing shows: **Narrative: keep** (a "How it is ruled" block on each clan page is being put to UX; drop only if UX declines) |
 
 Simplification, separate PR:
 - 13 element bonus/resist fields and the `alignment*` fields are 0 or empty on 129 of 134 items. Making 0 the default in the reader and dropping the zeros cuts `items.json` by about a third.
