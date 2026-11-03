@@ -36,8 +36,8 @@ Future<void> settle(WidgetTester tester) async {
 
 Future<void> pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 40 && !done(); i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 200)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 40)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -76,6 +76,8 @@ Future<void> playSkillRound(WidgetTester tester, String skillId,
           const MethodChannel('flutter_tts'), (call) async => 1);
   final dice = gamedata('dice.json');
   SharedPreferences.setMockInitialValues({
+    // The throw at 4x: these tests wait for the dice, not watch them.
+    'combat_dice_speed': 'quad',
     'gamedb_dice': jsonEncode({
       ...dice,
       'skill_test_die': {
@@ -135,7 +137,7 @@ Future<void> playSkillRound(WidgetTester tester, String skillId,
   await tapWhenEnabled(tester, 'Roll Dice');
   await pumpUntil(tester, () => shows('Confirm'));
   await tapWhenEnabled(tester, 'Confirm');
-  await pumpUntil(tester, () => shows('Round 2'));
+  await pumpFor(tester, 40);
   await settle(tester);
   await tester.tap(find.byIcon(Icons.unfold_more));
   await settle(tester);
