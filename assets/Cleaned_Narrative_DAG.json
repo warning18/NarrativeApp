@@ -8627,7 +8627,7 @@
       {
         "flag": "bark_sold",
         "en": "The fever-bark the Keyholders had sold on reached the Quarter through the Court, at a Keyholder’s price, and the penitents could not pay it.",
-        "fr": "L’écorce-fièvre que les Porte-Clefs avaient revendue atteignit le Quartier par la Cour, au prix d’un Porte-Clé, et les pénitents ne pouvaient pas le payer."
+        "fr": "L’écorce-fièvre que les Porte-Clefs avaient revendue atteignit le Quartier par la Cour, au prix d’un Porte-Clef, et les pénitents ne pouvaient pas le payer."
       },
       {
         "flag": "bark_kept",
@@ -22497,7 +22497,7 @@
   "7590_compact": {
     "id": "7590_compact",
     "description": "[CHAPTER 7 END] The Compact had forged a crown on the way up the cliff, at a cart-forge, between one gate and the next: **plain iron, heat-blued, riveted, with no stone in it**, because nobody had given the smiths a reason for a stone. The Anvil-Deaf carried it into the Hall and did not hand it to me.\n\nTheir eldest held it up and signed a question, slowly, and a young smith beside her read it out for the galleries, in case the Houses had forgotten the word. **Why?** Two hundred years the Row had forged for this Throne without asking. It was asking now.",
-    "description_fr": "[FIN DU CHAPITRE 7] Le Pacte avait forgé une couronne en gravissant la falaise, sur une forge de charrette, entre une porte et la suivante : **du fer simple, bleui au feu, riveté, sans pierre**, parce que personne n’avait donné aux forgerons de raison d’en mettre une. Les Sourds de l’Enclume la portèrent dans la Salle et ne me la tendirent pas.\n\nLeur doyenne la leva et signa une question, lentement, et un jeune forgeron à côté d’elle la lut à voix haute pour les tribunes, au cas où les Maisons auraient oublié le mot. **Pourquoi ?** Deux cents ans, la Rue avait forgé pour ce Trône sans rien demander. Elle demandait, à présent.",
+    "description_fr": "[FIN DU CHAPITRE 7] Le Pacte avait forgé une couronne en gravissant la falaise, sur une forge de charrette, entre une porte et la suivante : **du fer simple, bleui au feu, riveté, sans pierre**, parce que personne n’avait donné aux forgerons de raison d’en mettre une. Les Sourds de l’Enclume la portèrent dans la Salle et ne me la tendirent pas.\n\nLeur ancienne la leva et signa une question, lentement, et un jeune forgeron à côté d’elle la lut à voix haute pour les tribunes, au cas où les Maisons auraient oublié le mot. **Pourquoi ?** Deux cents ans, la Rue avait forgé pour ce Trône sans rien demander. Elle demandait, à présent.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "solemn",
@@ -26912,7 +26912,7 @@
   "7004_stitch": {
     "id": "7004_stitch",
     "description": "The Shroud was whole but for the sixth piece, and the tear would not close on cloth alone. It wanted a hand to carry the needle, and **the hand had to be of the blood the cloth had been made for**. I had known that the way you know a debt. I had not known Lysa knew.\n\nShe was already on the sand, threading the needle with the grey, calm as when she dressed wounds.\n\n“**It has to be one of us**,” she said. “I am better with a needle.” The Host waited, banners down. The tear hung open at my back.",
-    "description_fr": "Le Linceul était entier, hormis la sixième pièce, et la déchirure ne se refermerait pas sur la seule toile. Il lui fallait une main pour tenir l’aiguille, et **cette main devait être du sang pour lequel le tissu avait été fait**. Je le savais comme on sait une dette. Je ne savais pas que Lysa le savait.\n\nElle était déjà sur le sable, passant l’aiguille dans le gris, calme comme lorsqu’elle pansait des blessures.\n\n« **Il faut que ce soit l’un de nous**, dit-elle. Je suis meilleure avec une aiguille. » L’Hôte attendait, bannières baissées. La déchirure restait ouverte dans mon dos.",
+    "description_fr": "Le Linceul était entier, hormis la sixième pièce, et la déchirure ne se refermerait pas sur la seule toile. Il lui fallait une main pour tenir l’aiguille, et **cette main devait être du sang pour lequel le tissu avait été fait**. Je le savais comme on sait une dette. Je ne savais pas que Lysa le savait.\n\nElle était déjà sur le sable, passant l’aiguille dans le gris, calme comme lorsqu’elle pansait des blessures.\n\n« **Il faut que ce soit l’un de nous**, dit-elle. Je suis meilleure avec une aiguille. » L’Ost attendait, bannières baissées. La déchirure restait ouverte dans mon dos.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
