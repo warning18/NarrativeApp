@@ -17,6 +17,25 @@ isn't reconstructable from git history alone.
   a scene the story has to go on through. A page that keeps its way back
   (two cards and a move elsewhere) keeps it.
 
+## [1.701.0+737]
+
+- No more letter where a face exists. One place (`HeadAvatar`) now says
+  which head a name wears, and the fight's slots, the "Qui combat ?" card,
+  the scene vignette, a spell's target list and the NPC's page all use it.
+  The fourteen foes that borrow another's icon (Den Bouncer, Brine Jack,
+  Brother Clement, the claimants...) now wear that icon's head instead of an
+  initial; Aurel Vane gets his own head, cut from his own sprite. Vica, the
+  hero and every enemy have a head; a companion with no art yet (Kelda,
+  Sable, Maren...) keeps its initial, and an NPC with no sprite keeps the
+  mark of its kind.
+
+## [1.700.0+736]
+
+- **Cleanup: three leftovers nothing used are removed**
+  `ShipCutaway.roomRect`, `deckCrewHeight` and the string `sign_pending`;
+  the tests that used them check the room boxes and the grid directly. No
+  behaviour change.
+
 ## [1.699.0+735]
 
 - **Narrative: three French names made consistent.** One word each, text only:
