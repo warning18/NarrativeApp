@@ -81,6 +81,9 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     // A one-face die, a Steady guard: its only face is its own opposite.
     SharedPreferences.setMockInitialValues({
+      // The dice thrown at 4x: the tests wait a quarter of the throw (the
+      // default speed is proven by dice_speed_test).
+      'combat_dice_speed': 'quad',
       'gamedb_dice': jsonEncode({
         ..._gamedata('dice.json'),
         'steady_test_die': {
