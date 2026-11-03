@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.705.0+741]
+## [1.711.0+747]
 
 - **Cleanup: nine more lints on, and the unused `cupertino_icons` package
   dropped.** `use_if_null_to_convert_nulls_to_bools`,
@@ -19,6 +19,16 @@ isn't reconstructable from git history alone.
   `avoid_unused_constructor_parameters` are enabled and fixed at about 100
   sites in 64 files. Nothing changes on screen or in a number; the one
   unused constructor parameter of the ship side view's palette is gone.
+
+## [1.710.0+746]
+
+- The fight's ground no longer repaints sixty times a second: the layer
+  behind the fight (the stage, the night, the lamps) has nothing that moves,
+  so it is drawn once, and only the weather and an anomaly keep a clock, and
+  only while they show (an anomaly's ease out included). Nothing changes on
+  screen; the phone does less work during every fight.
+- Tests: the fight tests throw the dice at 4x (the "Dice speed" setting),
+  so they wait a quarter of the throw.
 
 ## [1.702.0+738]
 
