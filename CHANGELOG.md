@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.717.0+753]
+
+- **Narrative: shorter choice labels, the last batch.** 118 more labels in
+  the Saltmouth, Candlehold, Reliquary and ending hubs (`7200`, `7510`,
+  `7590`, `7800`, `3005`, `3100`, `5100`, `6100`, `6200`, `7100`, `7400` and
+  others) cut to about 46 characters in English and 56 in French so the
+  panel bubble no longer wraps. Same choices, ids, flags and costs; only the
+  wording changed. No test pinned these labels.
+
 ## [1.715.0+751]
 
 - **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
