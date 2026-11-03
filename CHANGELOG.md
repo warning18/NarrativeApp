@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.714.0+750]
+
+- **Core: the fight keeps its mana until it ends; a burst of saves writes
+  once.** A fight saved the whole game, and rebuilt every screen behind it,
+  each time mana was gained or spent; it now keeps mana in the fight and
+  the session takes it when the fight ends (won, lost, fled or broken up,
+  as it already did). Saves asked for together share one write, and each
+  still waits until its change is on disk.
+
 ## [1.712.0+748]
 
 - **Core: the game's tables are read from the cache.** Each scene change
