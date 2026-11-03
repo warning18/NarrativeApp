@@ -105,53 +105,16 @@ extension _FightBoardView on _FightScreenState {
     );
   }
 
-  /// A fighter's head: a crop of its sprite (assets/visuals/heads, made by
-  /// tool/gen_fight_heads.py), or its initial in [accent] when it has none.
-  Widget _headTile(String? asset, String name, Color accent,
+  /// A fighter's head (head_avatar.dart): a crop of its sprite, or its
+  /// initial in [accent] when it has none.
+  Widget _headTile(String id, String name, Color accent,
       {double size = 36, bool dim = false}) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final initial = name.isEmpty ? '?' : name[0].toUpperCase();
-    final fallback = Center(
-      child: Container(
-        width: size * 0.74,
-        height: size * 0.74,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: accent),
-        child: Text(initial,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: size * 0.4,
-                fontWeight: FontWeight.bold)),
-      ),
-    );
-    return Opacity(
-      opacity: dim ? 0.45 : 1,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.all(3),
-        child: asset == null
-            ? fallback
-            : Image.asset(
-                asset,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.none,
-                isAntiAlias: false,
-                errorBuilder: (_, __, ___) => fallback,
-              ),
-      ),
-    );
+    return HeadAvatar(id: id, name: name, accent: accent, size: size, dim: dim);
   }
 
-  String? _headAssetFor(_PartyMember member) {
-    if (member.isPlayer) return 'assets/visuals/heads/hero.png';
-    if (member.id == 'vica') return 'assets/visuals/heads/vica.png';
-    return null;
-  }
+  /// The id whose head a party member wears.
+  String _headIdFor(_PartyMember member) =>
+      member.isPlayer ? 'hero' : member.id;
 
   // --- Effect icons --------------------------------------------------------
 
@@ -315,7 +278,7 @@ extension _FightBoardView on _FightScreenState {
           children: [
             Row(
               children: [
-                _headTile(_headAssetFor(member), member.displayName, accent,
+                _headTile(_headIdFor(member), member.displayName, accent,
                     size: 34, dim: member.isKnockedOut),
                 const SizedBox(width: 8),
                 Expanded(
@@ -521,8 +484,7 @@ extension _FightBoardView on _FightScreenState {
             children: [
               Row(
                 children: [
-                  _headTile('assets/visuals/heads/${enemy.enemyId}.png',
-                      enemy.displayName, Colors.deepOrange,
+                  _headTile(enemy.enemyId, enemy.displayName, Colors.deepOrange,
                       size: 34, dim: !enemy.isAlive),
                   const SizedBox(width: 8),
                   Expanded(

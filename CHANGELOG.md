@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.701.0+737]
+
+- No more letter where a face exists. One place (`HeadAvatar`) now says
+  which head a name wears, and the fight's slots, the "Qui combat ?" card,
+  the scene vignette, a spell's target list and the NPC's page all use it.
+  The fourteen foes that borrow another's icon (Den Bouncer, Brine Jack,
+  Brother Clement, the claimants...) now wear that icon's head instead of an
+  initial; Aurel Vane gets his own head, cut from his own sprite. Vica, the
+  hero and every enemy have a head; a companion with no art yet (Kelda,
+  Sable, Maren...) keeps its initial, and an NPC with no sprite keeps the
+  mark of its kind.
+
 ## [1.700.0+736]
 
 - **Cleanup: three leftovers nothing used are removed**
