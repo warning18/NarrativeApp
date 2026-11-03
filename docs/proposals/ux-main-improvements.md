@@ -98,6 +98,13 @@ each a separate PR as you proposed:
 5. Cap the sphere's mesh by its pixel size (free if the user keeps a smaller
    ball).
 
+6. From Cleanup (item 10, Core's files): `chart_story.dart`,
+   `chart_worlds.dart` and `tool/fmg_chart/chart_fmg.dart` carry 2,747
+   `prefer_const_constructors` sites behind an `ignore_for_file`. Making the
+   tables const would move them out of startup allocation, if Core confirms
+   nothing mutates them. Measure in the same timeline capture first; the
+   tables are Core's, so this step is theirs, with the map as the reason.
+
 Step 0 of the work is a timeline capture on the user's phone, so the order
 is corrected before anything is built. `ChartMapPainter.shouldRepaint` returns
 `true` (line 2412), so today a drag repaints everything 60 times a second.
@@ -115,6 +122,12 @@ quieter map at world zoom.
   pays for it. The shots are screenshots with flat pixel-art colour, which
   quantize well (item 1 went 10 to 1; screenshots will gain less, I have not
   measured them).
+- **Cleanup's input** (`docs/proposals/cleanup-improvements.md`, item 8,
+  `.git` 182 MB): prune the shots of proposals that have shipped. I agree and
+  would do it with the quantizing, keeping the pictures the user may still
+  want to compare (the map, the clan power sign alternatives, the scene
+  backgrounds) and dropping the mocks of built designs along with item 2.
+  The history keeps whatever is dropped.
 - **Proposal.** Quantize the existing ones in a docs-only PR, and from now on
   keep only the pictures a decision needs, as PNG8, no new GIFs (an
   artifact page or the PR description carries an animation). This does not
