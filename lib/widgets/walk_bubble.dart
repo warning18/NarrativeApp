@@ -84,7 +84,7 @@ class _Tail extends CustomPainter {
       ..lineTo(size.width / 2, size.height)
       ..lineTo(size.width, 0);
     canvas.drawPath(
-        path.shift(const Offset(0, 0)),
+        path.shift(Offset.zero),
         Paint()
           ..color = fill
           ..style = PaintingStyle.fill);

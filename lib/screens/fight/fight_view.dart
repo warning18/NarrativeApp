@@ -456,9 +456,9 @@ extension _FightView on _FightScreenState {
     final acting = _actingParty;
     final anyDieAvailable = acting.any((m) =>
         m.equippedDiceId != null &&
-        ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.isNotEmpty ==
-            true);
+        (((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+                ?.isNotEmpty ??
+            false));
     final plan = _roundPlan(skills, items, ref.watch(appLanguageProvider));
     final previews = plan.previews;
 

@@ -137,6 +137,7 @@ void main() {
       // `const` would make 'dexterity' a duplicate key of the const `values`.
       // ignore: prefer_const_constructors
       await tester.pumpWidget(host(AbilityRadar(
+        // ignore: prefer_const_literals_to_create_immutables
         values: {...values, 'dexterity': 5, 'wisdom': 1},
         before: values,
         beforeLabel: 'Before',

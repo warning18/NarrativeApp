@@ -636,7 +636,7 @@ Widget _title() => Column(mainAxisSize: MainAxisSize.min, children: [
 /// A piece of the Shroud as an ember: dim cloth, lit at its edge, a glow.
 Widget _emberPiece(String id, double h, {double tilt = 0}) => Transform.rotate(
       angle: tilt,
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
               color: _ember.withValues(alpha: 0.75),

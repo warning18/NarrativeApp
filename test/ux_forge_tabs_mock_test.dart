@@ -127,7 +127,7 @@ Widget _tabs(String selected, Map<String, bool> ready) => SizedBox(
                   const SizedBox(width: 5),
                   Text(slot,
                       style: _t(13, c: slot == selected ? Colors.white : _ash)),
-                  if (ready[slot] == true) ...[
+                  if (ready[slot] ?? false) ...[
                     const SizedBox(width: 4),
                     Container(
                         width: 6,
