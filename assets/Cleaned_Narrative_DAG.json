@@ -2587,7 +2587,7 @@
       },
       {
         "text": "Count coins into the sand for her (10 gold)",
-        "text_fr": "Compter des pièces dans le sable, pour elle (10 or)",
+        "text_fr": "Compter des pièces dans le sable (10 pièces d’or)",
         "next_id": "1200",
         "goldMod": -10,
         "pays": true,
@@ -28672,7 +28672,7 @@
     "choices": [
       {
         "text": "Pay them all, to the last promise (150 gold)",
-        "text_fr": "Les payer tous, jusqu’à la dernière promesse (150 or)",
+        "text_fr": "Les payer tous, jusqu’à la dernière promesse (150 pièces)",
         "next_id": "4999_camp",
         "returnToCamp": true,
         "flagsToAdd": [
