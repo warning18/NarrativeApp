@@ -26,7 +26,7 @@ dead members (`sign_pending`, `ShipCutaway.roomRect`, `deckCrewHeight`;
 | 3 | Map: the still-map and fog steps from the performance note | faster | high | M each | medium |
 | 4 | Pictures in `docs/`: quantize, stop committing GIFs | smaller repo | medium | S | low |
 | 5 | Art generators: one README, delete what cannot reproduce its art | removes | medium | S-M | low |
-| 6 | Drop `Spectral-Medium.ttf` | smaller (-171 KB) | low | S | low-medium |
+| 6 | ~~Drop `Spectral-Medium.ttf`~~ (withdrawn after the check) | - | - | - | - |
 | 7 | Dog sprites shipped but never read | smaller (about -60 KB) | low | S | low |
 | 8 | One radar painter instead of two | removes | low | S-M | low |
 | 9 | Die widgets: one pass looking for overlap | removes (to check) | unknown | M | medium |
@@ -157,16 +157,23 @@ quieter map at world zoom.
   (ten runs). **Player notices:** nothing. It makes the next person's
   "regenerate the art" a known command.
 
-### 6. `Spectral-Medium.ttf` (smaller, 171 KB)
+### 6. `Spectral-Medium.ttf` (smaller, 171 KB): checked, **withdrawn**
 
-- **What.** `Spectral` ships Regular, Medium (weight 500) and Italic. Only 10
-  places in `lib` ask for `FontWeight.w500`.
-- **Why.** Dropping Medium makes those 10 spots Regular; Spectral has no
-  bold file, so bold prose is already synthesised from a shipped weight.
-- **Risk.** Low-medium: ten texts get slightly lighter, and I would check
-  them in pictures before the change. If you prefer no visible change on
-  prose, skip this one: it is the smallest gain here.
-- **Effort.** Small. **Player notices:** a slightly lighter text in 10 spots.
+- **What I first wrote.** Only 10 places ask for `FontWeight.w500`, so
+  dropping the file would lighten ten texts. **That was wrong.**
+- **What the check shows** (`docs/ux-shots/spectral-medium-weights.png`, the
+  same line drawn at each weight, left with Medium, right without; measured in
+  a widget test with the real font files). Spectral ships Regular (400),
+  Medium (500) and Italic. With Medium present, a request for **w600 resolves
+  to Medium** (no bold applied). Without it, w600 and w700 both get the
+  engine's synthetic bold. So the file also sets how every `w600` on Spectral
+  looks: 55 `FontWeight.w600` uses in `lib` (plus the 10 `w500`) would change,
+  w500 lighter and w600 clearly heavier. Which of the 55 are on Spectral and
+  which on Pixelify (which has its own SemiBold) cannot be told from the
+  code; each would need a picture.
+- **Verdict.** 171 KB for about 65 texts that change look, each to be
+  checked by hand, is a poor trade. I will not build it unless you want it
+  anyway; the safe saving is zero. (The other four size items stand.)
 
 ### 7. Dog sprites that ship but are never read (about 60 KB)
 
