@@ -3102,8 +3102,8 @@
         ]
       },
       {
-        "text": "Look into the alley where a signal-lantern still burns",
-        "text_fr": "Regarder dans la ruelle où brûle encore une lanterne de signal",
+        "text": "Look into the alley with the signal-lantern",
+        "text_fr": "Regarder dans la ruelle à la lanterne de signal",
         "next_id": "2015_signaller",
         "hideIfFlags": [
           "hub_2015_signaller"
@@ -3163,8 +3163,8 @@
         "forcedStage": "quay"
       },
       {
-        "text": "Answer the harbor master’s bounty on the wharf bandits",
-        "text_fr": "Répondre à la prime du maître du port sur les bandits du quai",
+        "text": "Take the harbor master’s bounty on the bandits",
+        "text_fr": "Prendre la prime du maître du port sur les bandits",
         "next_id": "2015_bandits",
         "triggerEnemyIds": [
           "street_bandit",
@@ -3192,7 +3192,7 @@
       },
       {
         "text": "Hear a rogue out about a card game gone wrong",
-        "text_fr": "Écouter une voleuse à propos d’une partie qui a mal tourné",
+        "text_fr": "Écouter une voleuse sur une partie qui a mal tourné",
         "next_id": "2015_sable",
         "unlockQuestId": "q_ch2_sables_wager",
         "lockedText": "She took one look at my honest face and decided I’d be bad for business.",
@@ -3214,8 +3214,8 @@
         "about": "wharf_informant"
       },
       {
-        "text": "Follow a trail of paper lanterns down a side alley",
-        "text_fr": "Suivre une traînée de lanternes de papier dans une ruelle",
+        "text": "Follow paper lanterns down a side alley",
+        "text_fr": "Suivre des lanternes de papier dans une ruelle",
         "next_id": "2015_ternrow",
         "hideIfFlags": [
           "hub_2015_ternrow"
@@ -3224,7 +3224,7 @@
       },
       {
         "text": "Sit in on a card game with dock regulars",
-        "text_fr": "Se joindre à une partie de cartes avec des habitués du port",
+        "text_fr": "Jouer aux cartes avec les habitués du port",
         "next_id": "2015_cards",
         "hideIfFlags": [
           "hub_2015_cards"
@@ -3273,7 +3273,7 @@
         ]
       },
       {
-        "text": "Answer the old sign-painter staring at your back",
+        "text": "Answer the old sign-painter at your back",
         "text_fr": "Répondre au vieux peintre qui fixe votre dos",
         "next_id": "2015_drawer",
         "hideIfFlags": [
@@ -3292,7 +3292,7 @@
       },
       {
         "text": "Carry a Keyholder’s key to a door, unopened",
-        "text_fr": "Porter la clef d’une Porte-Clef jusqu’à sa porte, sans l’ouvrir",
+        "text_fr": "Porter une clef de Porte-Clef à sa porte, sans l’ouvrir",
         "next_id": "2015_house_keyholders",
         "hideIfFlags": [
           "hub_2015_house_keyholders"
@@ -3309,7 +3309,7 @@
         "about": "salt_ledger"
       },
       {
-        "text": "Hear out the dwarf foreman at the breaker’s yard",
+        "text": "Hear the dwarf foreman at the breaker’s yard",
         "text_fr": "Écouter le contremaître nain du chantier",
         "next_id": "2015_dorran",
         "hideIfFlags": [
@@ -3348,7 +3348,7 @@
         ]
       },
       {
-        "text": "Take the wrapped bundle a grey pilgrim holds out",
+        "text": "Take the bundle a grey pilgrim holds out",
         "text_fr": "Prendre le paquet qu’une pèlerine en gris vous tend",
         "next_id": "2015_bundle",
         "hideIfFlags": [
@@ -7349,7 +7349,7 @@
         "about": "cloister_archivist"
       },
       {
-        "text": "Bring the archivist what you have pieced together",
+        "text": "Bring the archivist what you pieced together",
         "text_fr": "Apporter à l’archiviste ce que vous avez reconstitué",
         "next_id": "5010_archivist_words",
         "showIfFlags": [
@@ -7501,7 +7501,7 @@
         "about": "herons_wake"
       },
       {
-        "text": "Find the Crow who sells routes to the Inquisition",
+        "text": "Find the Crow who sells routes to Inquisitors",
         "text_fr": "Trouver la Corneille qui vend les routes à l’Inquisition",
         "next_id": "5010_clan_crows_2",
         "lockedText": "The Crows did not know me well enough yet.",
@@ -7562,7 +7562,7 @@
         "about": "imeh"
       },
       {
-        "text": "Meet the woman in grey who is asking for a ship",
+        "text": "Meet the woman in grey asking for a ship",
         "text_fr": "Rencontrer la femme en gris qui demande un navire",
         "next_id": "5010_thieves_ship",
         "showIfFlags": [
@@ -7573,8 +7573,8 @@
         ]
       },
       {
-        "text": "Hear the Last Watch’s envoy on the driest ledge",
-        "text_fr": "Écouter l’émissaire de la Dernière Veille sur la corniche la plus sèche",
+        "text": "Hear the Last Watch’s envoy on the dry ledge",
+        "text_fr": "Écouter l’émissaire de la Dernière Veille sur la corniche",
         "next_id": "5010_vigil_envoy",
         "showIfFlags": [
           "plot_returned_2"
@@ -9747,17 +9747,17 @@
     "automations": {},
     "choices": [
       {
-        "text": "Rule from the Throne, and raise the camp into a city",
+        "text": "Rule from the Throne, make the camp a city",
         "text_fr": "Régner depuis le Trône, et faire du camp une ville",
         "next_id": "7005"
       },
       {
-        "text": "Give the Throne away, and sail for the other tears",
-        "text_fr": "Céder le Trône, et faire voile vers les autres déchirures",
+        "text": "Give up the Throne, sail for the other tears",
+        "text_fr": "Céder le Trône, et voguer vers les autres déchirures",
         "next_id": "7005_seeker"
       },
       {
-        "text": "Sew the tear shut, and lay the Throne down with it",
+        "text": "Sew the tear shut and lay the Throne down",
         "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
         "next_id": "7005_dawn",
         "hideIfFlags": [
@@ -9769,7 +9769,7 @@
         ]
       },
       {
-        "text": "Sew the tear shut, and lay the Throne down with it",
+        "text": "Sew the tear shut and lay the Throne down",
         "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
         "next_id": "7005_dawn",
         "showIfFlags": [
@@ -9783,7 +9783,7 @@
         ]
       },
       {
-        "text": "Sew the tear shut, and lay the Throne down with it",
+        "text": "Sew the tear shut and lay the Throne down",
         "text_fr": "Recoudre la déchirure, et déposer le Trône avec elle",
         "next_id": "7004_stitch",
         "showIfFlags": [
@@ -9795,8 +9795,8 @@
         ]
       },
       {
-        "text": "Take the Sovereign’s crown to wear with the Throne",
-        "text_fr": "Prendre la couronne du Souverain, et la porter avec le Trône",
+        "text": "Wear the Sovereign’s crown with the Throne",
+        "text_fr": "Porter la couronne du Souverain avec le Trône",
         "next_id": "7005_crown"
       }
     ],
