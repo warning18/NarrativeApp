@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.707.0+743]
+
+- **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
+  The panel and the stage wrap a label at about 46 characters. Eighteen
+  labels in the Ashen Quarter hub (`3005`) and the Reliquary Quarter hub
+  (`6010`) are tightened, English and French, with the same meaning and tone;
+  the longest drops from 54 to 46 characters in English and from 75 to 56 in
+  French. Labels only: no choice, flag, id, condition or number changes. No
+  test or code pinned any of them.
+
 ## [1.702.0+738]
 
 - **Core: the top bar's world map waits while the page holds the party.**
