@@ -134,6 +134,11 @@ bool isFreshStoryStart(StoryPlayState play) =>
     play.currentNodeId == StoryRepository.startNodeId &&
     play.history.every((id) => id == StoryRepository.startNodeId);
 
+/// Whether the Journey's page holds the party with no way to the map (a
+/// locked page, one card to take, a new game's first page): the top bar's
+/// world map waits too (the user's call, v1.697). The Journey sets it.
+final journeyMapClosedProvider = StateProvider<bool>((ref) => false);
+
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
       : super(StoryPlayState(
