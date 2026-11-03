@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.718.0+754]
+
+- **Narrative: tighter ending callbacks.** The 38 longest English callbacks
+  (the nine on each of the four journey endings `7005`, `7005_seeker`,
+  `7005_dawn`, `7005_crown`, plus `7001`, `7002_betrayal`, `7002_approach`,
+  `7400`) lose about a fifth of their words, 14,346 to 11,297 characters
+  across the 79 rewritten. The clan's own image and the dated detail stay;
+  each ending still names what the player chose. French rewritten with the
+  English. Flags and conditions unchanged.
+
 ## [1.717.0+753]
 
 - **Narrative: shorter choice labels, the last batch.** 118 more labels in

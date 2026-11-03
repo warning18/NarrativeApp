@@ -9323,7 +9323,7 @@
       },
       {
         "flag": "confession_executed",
-        "en": "I had given the Inquisitor the answer he came for, on the frost of the Reliquary Quarter. Nobody at the camp asked me about it, which meant everyone knew.",
+        "en": "I had given the Inquisitor the answer he came for, on the frost of the Reliquary Quarter. Nobody at the camp asked, which meant everyone knew.",
         "fr": "J’avais donné à l’Inquisiteur la réponse qu’il était venu chercher, sur le givre du Quartier des Reliquaires. Personne au camp ne m’en parla, ce qui voulait dire que tout le monde savait."
       },
       {
@@ -10005,38 +10005,38 @@
     "flag_callbacks": [
       {
         "flag": "throne_winner_dominion",
-        "en": "I had sat the Lantern Throne for one season as its Lantern-Bearer, and every clan on the coast had knelt to the lamp, gladly or not. The needle took the season back. But on the night before the invasion, in Candlehold, a dying Lantern-Bearer woke in the dark and asked for a stranger by my name, and a Wickwarden sat up with the lamp and wrote it down, so that the Houses would know whom to wait for.",
-        "fr": "J’avais tenu le Trône de la Lanterne une saison en Porte-Lanterne, et chaque clan de la côte s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla dans le noir et demanda une personne inconnue sous mon nom, et une Garde-Mèche veilla près de la lampe et l’écrivit, pour que les Maisons sachent qui attendre."
+        "en": "For one season I had sat the Lantern Throne, and every clan knelt to the lamp, gladly or not. The needle took the season back. But the night before the invasion, in Candlehold, a dying Lantern-Bearer woke and asked for a stranger by my name, and a Wickwarden wrote it down.",
+        "fr": "J’avais tenu le Trône de la Lanterne une saison, et chaque clan s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla et demanda une personne inconnue sous mon nom, et une Garde-Mèche l’écrivit."
       },
       {
         "flag": "throne_winner_vigil",
-        "en": "I had ruled from the Lantern Throne under the Vigil’s open eye for one season, and in that season no voidkin on the coast was called tear-marked to their face. The needle took the season back. But on the night before the invasion, on the last ridge before the tear, a sentry of the Last Watch wrote my name in the watch-book between two new moons, and could not have said why, and did not look away from it.",
-        "fr": "J’avais régné depuis le Trône de la Lanterne sous l’œil ouvert de la Veille pendant une saison, et durant cette saison aucun Enfant du Néant de la côte ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la dernière crête avant la déchirure, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde entre deux nouvelles lunes, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
+        "en": "I had ruled under the Vigil’s open eye for one season, and no voidkin was called tear-marked to their face. The needle took the season back. But the night before the invasion a sentry of the Last Watch wrote my name in the watch-book, could not have said why, and did not look away.",
+        "fr": "J’avais régné une saison sous l’œil ouvert de la Veille, et aucun Enfant du Néant ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
       },
       {
         "flag": "throne_winner_compact",
-        "en": "For one season I had worn the Compact’s iron crown, the one with no stone in it, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But on the night before the invasion, in Cinder Row, a master hammer that had lain broken on its anvil for twenty-one years was found whole in the morning, and the Anvil-Deaf have been signing to each other about it ever since.",
-        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, celle sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître resté brisé sur son enclume depuis vingt et un ans fut trouvé entier au matin, et les Sourds de l’Enclume ne cessent depuis de s’en parler par signes."
+        "en": "For one season I had worn the Compact’s stoneless iron crown, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But the night before the invasion, in Cinder Row, a master hammer broken for twenty-one years was found whole, and the Anvil-Deaf have signed about it ever since.",
+        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître brisé depuis vingt et un ans fut trouvé entier, et les Sourds de l’Enclume s’en parlent par signes depuis."
       },
       {
         "flag": "throne_winner_mire",
-        "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "en": "For one season the Mire Courts had held court on the Lantern Hall’s floor, and the fen’s terms had held me. The needle took the season back. But the night before the invasion, in a house in the reeds, someone painted a heron on a child’s hand, said my name, and said the fen would hold me to it.",
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu cour dans la Salle de la Lanterne, et les conditions du marais me tenaient. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux, quelqu’un peignit un héron sur la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
-        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But on the night before the invasion, at the Smugglers’ Wharf, a Keyholder found a key on her ring that opened no door she knew, and kept it, because a Crow never throws a key away; and it had my name scratched on the bow.",
-        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, au Quai des Contrebandiers, une Porte-Clefs trouva à son trousseau une clef qui n’ouvrait aucune porte qu’elle connût, et la garda, parce qu’une Corneille ne jette jamais une clef ; et mon nom était gratté sur l’anneau."
+        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But the night before the invasion a Keyholder at the Smugglers’ Wharf found a key on her ring that opened no door she knew, and kept it. My name was scratched on the bow.",
+        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, une Porte-Clefs du Quai des Contrebandiers trouva à son trousseau une clef qui n’ouvrait aucune porte connue d’elle, et la garda. Mon nom était gratté sur l’anneau."
       },
       {
         "flag": "throne_winner_penitents",
-        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall every night until the Houses knew them by heart. The needle took the season back. But on the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the very end of the cloth, in brown thread, and could not have said whose it was. It was mine.",
-        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne jusqu’à ce que les Maisons les sachent par cœur. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus tout au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
+        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall each night. The needle took the season back. But the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the end of the cloth, in brown thread, and could not have said whose. It was mine.",
+        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
       },
       {
         "flag": "throne_winner_open_hand",
-        "en": "For one season the Seal had been the drawers’ again, and the grey hand had flown over the Lantern Throne, and nobody on the coast had needed to hide their hands. The needle took the season back. It could not take the drawing. On the night before the invasion, all along the coast, in houses where nobody had drawn for forty-nine years, children woke and drew an open hand in the dust by their beds, and their parents, who had been told to forget, did not rub it out.",
-        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, et la main grise avait flotté au-dessus du Trône de la Lanterne, et personne sur la côte n’avait eu besoin de cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, tout le long de la côte, dans des maisons où personne n’avait tracé depuis quarante-neuf ans, des enfants s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
+        "en": "For one season the Seal had been the drawers’ again, the grey hand had flown over the Lantern Throne, and nobody had needed to hide their hands. The needle took the season back. It could not take the drawing. The night before the invasion, children along the whole coast woke and drew an open hand in the dust by their beds, and their parents, told to forget, did not rub it out.",
+        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, la main grise avait flotté au-dessus du Trône de la Lanterne, et personne n’avait eu à cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, des enfants de toute la côte s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
       },
       {
         "flag": "camp_founded",
@@ -10084,13 +10084,13 @@
       },
       {
         "flag": "banner_raised",
-        "en": "It was the hand’s last drawing, I understand now: the one thing the Seal could do once it was whole, drawn long ago by the clan that made it. The figure on the heirloom held its arms up the whole way back through the needle, not in surrender but the way a drawer lifts the brush off the last line. What is drawn, holds. The city I raised the second time flew a grey flag with an open hand on it from its first roof, and no clerk anywhere struck it from a record.",
-        "fr": "C’était le dernier dessin de la main, je le comprends à présent : la seule chose que le Sceau savait faire une fois entier, tracée il y a longtemps par le clan qui l’avait fait. La silhouette de l’héritage garda les bras levés tout le long du retour par le chas de l’aiguille, non pour se rendre, mais comme on lève le pinceau au dernier trait. Ce qui est tracé tient. La ville que je bâtis la seconde fois fit flotter dès son premier toit un drapeau gris marqué d’une main ouverte, et aucun greffier nulle part ne le raya d’aucun registre."
+        "en": "It was the hand’s last drawing, I understand now: the one thing the Seal could do once whole. The figure on the heirloom held its arms up all the way back through the needle, not in surrender but as a drawer lifts the brush off the last line. What is drawn, holds. The city I raised the second time flew a grey flag with an open hand from its first roof, and no clerk struck it from any record.",
+        "fr": "C’était le dernier dessin de la main, je le comprends à présent : la seule chose que le Sceau savait faire une fois entier. La silhouette de l’héritage garda les bras levés tout le long du retour par le chas de l’aiguille, non pour se rendre, mais comme on lève le pinceau au dernier trait. Ce qui est tracé tient. La ville que je bâtis la seconde fois fit flotter dès son premier toit un drapeau gris marqué d’une main ouverte, et aucun greffier ne le raya d’aucun registre."
       },
       {
         "flag": "banner_furled",
-        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
-        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+        "en": "I had kept the hand furled to the end. It unfurled itself, and the figure’s palms opened on the night: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Elle se déroula d’elle-même, et les paumes de la silhouette s’ouvrirent sur la nuit : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
       },
       {
         "flag": "truth_told",
@@ -10187,38 +10187,38 @@
     "flag_callbacks": [
       {
         "flag": "throne_winner_dominion",
-        "en": "I had sat the Lantern Throne for one season as its Lantern-Bearer, and every clan on the coast had knelt to the lamp, gladly or not. The needle took the season back. But on the night before the invasion, in Candlehold, a dying Lantern-Bearer woke in the dark and asked for a stranger by my name, and a Wickwarden sat up with the lamp and wrote it down, so that the Houses would know whom to wait for.",
-        "fr": "J’avais tenu le Trône de la Lanterne une saison en Porte-Lanterne, et chaque clan de la côte s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla dans le noir et demanda une personne inconnue sous mon nom, et une Garde-Mèche veilla près de la lampe et l’écrivit, pour que les Maisons sachent qui attendre."
+        "en": "For one season I had sat the Lantern Throne, and every clan knelt to the lamp, gladly or not. The needle took the season back. But the night before the invasion, in Candlehold, a dying Lantern-Bearer woke and asked for a stranger by my name, and a Wickwarden wrote it down.",
+        "fr": "J’avais tenu le Trône de la Lanterne une saison, et chaque clan s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla et demanda une personne inconnue sous mon nom, et une Garde-Mèche l’écrivit."
       },
       {
         "flag": "throne_winner_vigil",
-        "en": "I had ruled from the Lantern Throne under the Vigil’s open eye for one season, and in that season no voidkin on the coast was called tear-marked to their face. The needle took the season back. But on the night before the invasion, on the last ridge before the tear, a sentry of the Last Watch wrote my name in the watch-book between two new moons, and could not have said why, and did not look away from it.",
-        "fr": "J’avais régné depuis le Trône de la Lanterne sous l’œil ouvert de la Veille pendant une saison, et durant cette saison aucun Enfant du Néant de la côte ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la dernière crête avant la déchirure, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde entre deux nouvelles lunes, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
+        "en": "I had ruled under the Vigil’s open eye for one season, and no voidkin was called tear-marked to their face. The needle took the season back. But the night before the invasion a sentry of the Last Watch wrote my name in the watch-book, could not have said why, and did not look away.",
+        "fr": "J’avais régné une saison sous l’œil ouvert de la Veille, et aucun Enfant du Néant ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
       },
       {
         "flag": "throne_winner_compact",
-        "en": "For one season I had worn the Compact’s iron crown, the one with no stone in it, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But on the night before the invasion, in Cinder Row, a master hammer that had lain broken on its anvil for twenty-one years was found whole in the morning, and the Anvil-Deaf have been signing to each other about it ever since.",
-        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, celle sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître resté brisé sur son enclume depuis vingt et un ans fut trouvé entier au matin, et les Sourds de l’Enclume ne cessent depuis de s’en parler par signes."
+        "en": "For one season I had worn the Compact’s stoneless iron crown, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But the night before the invasion, in Cinder Row, a master hammer broken for twenty-one years was found whole, and the Anvil-Deaf have signed about it ever since.",
+        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître brisé depuis vingt et un ans fut trouvé entier, et les Sourds de l’Enclume s’en parlent par signes depuis."
       },
       {
         "flag": "throne_winner_mire",
-        "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "en": "For one season the Mire Courts had held court on the Lantern Hall’s floor, and the fen’s terms had held me. The needle took the season back. But the night before the invasion, in a house in the reeds, someone painted a heron on a child’s hand, said my name, and said the fen would hold me to it.",
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu cour dans la Salle de la Lanterne, et les conditions du marais me tenaient. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux, quelqu’un peignit un héron sur la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
-        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But on the night before the invasion, at the Smugglers’ Wharf, a Keyholder found a key on her ring that opened no door she knew, and kept it, because a Crow never throws a key away; and it had my name scratched on the bow.",
-        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, au Quai des Contrebandiers, une Porte-Clefs trouva à son trousseau une clef qui n’ouvrait aucune porte qu’elle connût, et la garda, parce qu’une Corneille ne jette jamais une clef ; et mon nom était gratté sur l’anneau."
+        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But the night before the invasion a Keyholder at the Smugglers’ Wharf found a key on her ring that opened no door she knew, and kept it. My name was scratched on the bow.",
+        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, une Porte-Clefs du Quai des Contrebandiers trouva à son trousseau une clef qui n’ouvrait aucune porte connue d’elle, et la garda. Mon nom était gratté sur l’anneau."
       },
       {
         "flag": "throne_winner_penitents",
-        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall every night until the Houses knew them by heart. The needle took the season back. But on the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the very end of the cloth, in brown thread, and could not have said whose it was. It was mine.",
-        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne jusqu’à ce que les Maisons les sachent par cœur. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus tout au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
+        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall each night. The needle took the season back. But the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the end of the cloth, in brown thread, and could not have said whose. It was mine.",
+        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
       },
       {
         "flag": "throne_winner_open_hand",
-        "en": "For one season the Seal had been the drawers’ again, and the grey hand had flown over the Lantern Throne, and nobody on the coast had needed to hide their hands. The needle took the season back. It could not take the drawing. On the night before the invasion, all along the coast, in houses where nobody had drawn for forty-nine years, children woke and drew an open hand in the dust by their beds, and their parents, who had been told to forget, did not rub it out.",
-        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, et la main grise avait flotté au-dessus du Trône de la Lanterne, et personne sur la côte n’avait eu besoin de cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, tout le long de la côte, dans des maisons où personne n’avait tracé depuis quarante-neuf ans, des enfants s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
+        "en": "For one season the Seal had been the drawers’ again, the grey hand had flown over the Lantern Throne, and nobody had needed to hide their hands. The needle took the season back. It could not take the drawing. The night before the invasion, children along the whole coast woke and drew an open hand in the dust by their beds, and their parents, told to forget, did not rub it out.",
+        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, la main grise avait flotté au-dessus du Trône de la Lanterne, et personne n’avait eu à cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, des enfants de toute la côte s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
       },
       {
         "flag": "camp_founded",
@@ -10240,13 +10240,13 @@
       },
       {
         "flag": "banner_raised",
-        "en": "It was the hand’s last drawing, I understand now, and it went the long way round, as I did. I sailed with the grey hand at the Eel’s masthead, and in every port that remembered nothing, somebody still looked up at it a moment too long, as if they knew it from a dream.",
-        "fr": "C’était le dernier dessin de la main, je le comprends à présent, et il prit le long chemin, comme moi. Je naviguai avec la main grise en tête de mât de l’Eel, et dans chaque port qui ne se souvenait de rien, quelqu’un la regardait encore un instant de trop, comme s’il la connaissait d’un rêve."
+        "en": "It was the hand’s last drawing, and it went the long way round, as I did. I sailed with the grey hand at the Eel’s masthead, and in every port that remembered nothing, someone looked up at it a moment too long, as if from a dream.",
+        "fr": "C’était le dernier dessin de la main, et il prit le long chemin, comme moi. Je naviguai avec la main grise en tête de mât de l’Eel, et dans chaque port qui ne se souvenait de rien, quelqu’un la regardait un instant de trop, comme d’un rêve."
       },
       {
         "flag": "banner_furled",
-        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
-        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+        "en": "I had kept the hand furled to the end. It unfurled itself, and the figure’s palms opened on the night: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Elle se déroula d’elle-même, et les paumes de la silhouette s’ouvrirent sur la nuit : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
       },
       {
         "flag": "truth_told",
@@ -10340,38 +10340,38 @@
     "flag_callbacks": [
       {
         "flag": "throne_winner_dominion",
-        "en": "I had sat the Lantern Throne for one season as its Lantern-Bearer, and every clan on the coast had knelt to the lamp, gladly or not. The needle took the season back. But on the night before the invasion, in Candlehold, a dying Lantern-Bearer woke in the dark and asked for a stranger by my name, and a Wickwarden sat up with the lamp and wrote it down, so that the Houses would know whom to wait for.",
-        "fr": "J’avais tenu le Trône de la Lanterne une saison en Porte-Lanterne, et chaque clan de la côte s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla dans le noir et demanda une personne inconnue sous mon nom, et une Garde-Mèche veilla près de la lampe et l’écrivit, pour que les Maisons sachent qui attendre."
+        "en": "For one season I had sat the Lantern Throne, and every clan knelt to the lamp, gladly or not. The needle took the season back. But the night before the invasion, in Candlehold, a dying Lantern-Bearer woke and asked for a stranger by my name, and a Wickwarden wrote it down.",
+        "fr": "J’avais tenu le Trône de la Lanterne une saison, et chaque clan s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla et demanda une personne inconnue sous mon nom, et une Garde-Mèche l’écrivit."
       },
       {
         "flag": "throne_winner_vigil",
-        "en": "I had ruled from the Lantern Throne under the Vigil’s open eye for one season, and in that season no voidkin on the coast was called tear-marked to their face. The needle took the season back. But on the night before the invasion, on the last ridge before the tear, a sentry of the Last Watch wrote my name in the watch-book between two new moons, and could not have said why, and did not look away from it.",
-        "fr": "J’avais régné depuis le Trône de la Lanterne sous l’œil ouvert de la Veille pendant une saison, et durant cette saison aucun Enfant du Néant de la côte ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la dernière crête avant la déchirure, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde entre deux nouvelles lunes, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
+        "en": "I had ruled under the Vigil’s open eye for one season, and no voidkin was called tear-marked to their face. The needle took the season back. But the night before the invasion a sentry of the Last Watch wrote my name in the watch-book, could not have said why, and did not look away.",
+        "fr": "J’avais régné une saison sous l’œil ouvert de la Veille, et aucun Enfant du Néant ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
       },
       {
         "flag": "throne_winner_compact",
-        "en": "For one season I had worn the Compact’s iron crown, the one with no stone in it, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But on the night before the invasion, in Cinder Row, a master hammer that had lain broken on its anvil for twenty-one years was found whole in the morning, and the Anvil-Deaf have been signing to each other about it ever since.",
-        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, celle sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître resté brisé sur son enclume depuis vingt et un ans fut trouvé entier au matin, et les Sourds de l’Enclume ne cessent depuis de s’en parler par signes."
+        "en": "For one season I had worn the Compact’s stoneless iron crown, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But the night before the invasion, in Cinder Row, a master hammer broken for twenty-one years was found whole, and the Anvil-Deaf have signed about it ever since.",
+        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître brisé depuis vingt et un ans fut trouvé entier, et les Sourds de l’Enclume s’en parlent par signes depuis."
       },
       {
         "flag": "throne_winner_mire",
-        "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "en": "For one season the Mire Courts had held court on the Lantern Hall’s floor, and the fen’s terms had held me. The needle took the season back. But the night before the invasion, in a house in the reeds, someone painted a heron on a child’s hand, said my name, and said the fen would hold me to it.",
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu cour dans la Salle de la Lanterne, et les conditions du marais me tenaient. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux, quelqu’un peignit un héron sur la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
-        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But on the night before the invasion, at the Smugglers’ Wharf, a Keyholder found a key on her ring that opened no door she knew, and kept it, because a Crow never throws a key away; and it had my name scratched on the bow.",
-        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, au Quai des Contrebandiers, une Porte-Clefs trouva à son trousseau une clef qui n’ouvrait aucune porte qu’elle connût, et la garda, parce qu’une Corneille ne jette jamais une clef ; et mon nom était gratté sur l’anneau."
+        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But the night before the invasion a Keyholder at the Smugglers’ Wharf found a key on her ring that opened no door she knew, and kept it. My name was scratched on the bow.",
+        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, une Porte-Clefs du Quai des Contrebandiers trouva à son trousseau une clef qui n’ouvrait aucune porte connue d’elle, et la garda. Mon nom était gratté sur l’anneau."
       },
       {
         "flag": "throne_winner_penitents",
-        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall every night until the Houses knew them by heart. The needle took the season back. But on the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the very end of the cloth, in brown thread, and could not have said whose it was. It was mine.",
-        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne jusqu’à ce que les Maisons les sachent par cœur. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus tout au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
+        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall each night. The needle took the season back. But the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the end of the cloth, in brown thread, and could not have said whose. It was mine.",
+        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
       },
       {
         "flag": "throne_winner_open_hand",
-        "en": "For one season the Seal had been the drawers’ again, and the grey hand had flown over the Lantern Throne, and nobody on the coast had needed to hide their hands. The needle took the season back. It could not take the drawing. On the night before the invasion, all along the coast, in houses where nobody had drawn for forty-nine years, children woke and drew an open hand in the dust by their beds, and their parents, who had been told to forget, did not rub it out.",
-        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, et la main grise avait flotté au-dessus du Trône de la Lanterne, et personne sur la côte n’avait eu besoin de cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, tout le long de la côte, dans des maisons où personne n’avait tracé depuis quarante-neuf ans, des enfants s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
+        "en": "For one season the Seal had been the drawers’ again, the grey hand had flown over the Lantern Throne, and nobody had needed to hide their hands. The needle took the season back. It could not take the drawing. The night before the invasion, children along the whole coast woke and drew an open hand in the dust by their beds, and their parents, told to forget, did not rub it out.",
+        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, la main grise avait flotté au-dessus du Trône de la Lanterne, et personne n’avait eu à cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, des enfants de toute la côte s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
       },
       {
         "flag": "camp_founded",
@@ -10420,13 +10420,13 @@
       },
       {
         "flag": "banner_raised",
-        "en": "It was the hand’s last drawing, and I had raised the hand before I made it. When the needle went back through the night, the figure on the grey went with it, arms raised, hands open, the way the Open Hand had drawn it first: not to keep a door, but to let go of one.",
-        "fr": "C’était le dernier dessin de la main, et j’avais levé la main avant de le faire. Quand l’aiguille repassa à travers la nuit, la silhouette du gris l’accompagna, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée d’abord : non pour garder une porte, mais pour en lâcher une."
+        "en": "It was the hand’s last drawing, and I had raised the hand before I made it. The figure on the grey went back through the night with the needle, arms raised, hands open, as the Open Hand first drew it: not to keep a door, but to let one go.",
+        "fr": "C’était le dernier dessin de la main, et j’avais levé la main avant de le faire. La silhouette du gris repassa par la nuit avec l’aiguille, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée d’abord : non pour garder une porte, mais pour en lâcher une."
       },
       {
         "flag": "banner_furled",
-        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
-        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+        "en": "I had kept the hand furled to the end. It unfurled itself, and the figure’s palms opened on the night: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Elle se déroula d’elle-même, et les paumes de la silhouette s’ouvrirent sur la nuit : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
       },
       {
         "flag": "truth_told",
@@ -10539,38 +10539,38 @@
     "flag_callbacks": [
       {
         "flag": "throne_winner_dominion",
-        "en": "I had sat the Lantern Throne for one season as its Lantern-Bearer, and every clan on the coast had knelt to the lamp, gladly or not. The needle took the season back. But on the night before the invasion, in Candlehold, a dying Lantern-Bearer woke in the dark and asked for a stranger by my name, and a Wickwarden sat up with the lamp and wrote it down, so that the Houses would know whom to wait for.",
-        "fr": "J’avais tenu le Trône de la Lanterne une saison en Porte-Lanterne, et chaque clan de la côte s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla dans le noir et demanda une personne inconnue sous mon nom, et une Garde-Mèche veilla près de la lampe et l’écrivit, pour que les Maisons sachent qui attendre."
+        "en": "For one season I had sat the Lantern Throne, and every clan knelt to the lamp, gladly or not. The needle took the season back. But the night before the invasion, in Candlehold, a dying Lantern-Bearer woke and asked for a stranger by my name, and a Wickwarden wrote it down.",
+        "fr": "J’avais tenu le Trône de la Lanterne une saison, et chaque clan s’était agenouillé devant la lampe, de bon gré ou non. L’aiguille reprit la saison. Mais la veille de l’invasion, à Candlehold, un Porte-Lanterne mourant s’éveilla et demanda une personne inconnue sous mon nom, et une Garde-Mèche l’écrivit."
       },
       {
         "flag": "throne_winner_vigil",
-        "en": "I had ruled from the Lantern Throne under the Vigil’s open eye for one season, and in that season no voidkin on the coast was called tear-marked to their face. The needle took the season back. But on the night before the invasion, on the last ridge before the tear, a sentry of the Last Watch wrote my name in the watch-book between two new moons, and could not have said why, and did not look away from it.",
-        "fr": "J’avais régné depuis le Trône de la Lanterne sous l’œil ouvert de la Veille pendant une saison, et durant cette saison aucun Enfant du Néant de la côte ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la dernière crête avant la déchirure, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde entre deux nouvelles lunes, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
+        "en": "I had ruled under the Vigil’s open eye for one season, and no voidkin was called tear-marked to their face. The needle took the season back. But the night before the invasion a sentry of the Last Watch wrote my name in the watch-book, could not have said why, and did not look away.",
+        "fr": "J’avais régné une saison sous l’œil ouvert de la Veille, et aucun Enfant du Néant ne s’était entendu dire en face qu’il était marqué par la déchirure. L’aiguille reprit la saison. Mais la veille de l’invasion, une sentinelle de la Dernière Veille inscrivit mon nom au registre de garde, sans pouvoir dire pourquoi, et ne détourna pas les yeux."
       },
       {
         "flag": "throne_winner_compact",
-        "en": "For one season I had worn the Compact’s iron crown, the one with no stone in it, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But on the night before the invasion, in Cinder Row, a master hammer that had lain broken on its anvil for twenty-one years was found whole in the morning, and the Anvil-Deaf have been signing to each other about it ever since.",
-        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, celle sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître resté brisé sur son enclume depuis vingt et un ans fut trouvé entier au matin, et les Sourds de l’Enclume ne cessent depuis de s’en parler par signes."
+        "en": "For one season I had worn the Compact’s stoneless iron crown, and the Row had forged for the Throne because I had given it a reason. The needle took the season back. But the night before the invasion, in Cinder Row, a master hammer broken for twenty-one years was found whole, and the Anvil-Deaf have signed about it ever since.",
+        "fr": "Pendant une saison, j’avais porté la couronne de fer du Pacte, sans pierre, et la Rue avait forgé pour le Trône parce que je lui avais donné une raison. L’aiguille reprit la saison. Mais la veille de l’invasion, dans la Rue des Braises, un marteau maître brisé depuis vingt et un ans fut trouvé entier, et les Sourds de l’Enclume s’en parlent par signes depuis."
       },
       {
         "flag": "throne_winner_mire",
-        "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "en": "For one season the Mire Courts had held court on the Lantern Hall’s floor, and the fen’s terms had held me. The needle took the season back. But the night before the invasion, in a house in the reeds, someone painted a heron on a child’s hand, said my name, and said the fen would hold me to it.",
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu cour dans la Salle de la Lanterne, et les conditions du marais me tenaient. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux, quelqu’un peignit un héron sur la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
-        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But on the night before the invasion, at the Smugglers’ Wharf, a Keyholder found a key on her ring that opened no door she knew, and kept it, because a Crow never throws a key away; and it had my name scratched on the bow.",
-        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, au Quai des Contrebandiers, une Porte-Clefs trouva à son trousseau une clef qui n’ouvrait aucune porte qu’elle connût, et la garda, parce qu’une Corneille ne jette jamais une clef ; et mon nom était gratté sur l’anneau."
+        "en": "For one season I had held the key to Candlehold, and the Crows had been paid on time. The needle took the season back. But the night before the invasion a Keyholder at the Smugglers’ Wharf found a key on her ring that opened no door she knew, and kept it. My name was scratched on the bow.",
+        "fr": "Pendant une saison, j’avais tenu la clef de Candlehold, et les Corneilles avaient été payées à l’heure. L’aiguille reprit la saison. Mais la veille de l’invasion, une Porte-Clefs du Quai des Contrebandiers trouva à son trousseau une clef qui n’ouvrait aucune porte connue d’elle, et la garda. Mon nom était gratté sur l’anneau."
       },
       {
         "flag": "throne_winner_penitents",
-        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall every night until the Houses knew them by heart. The needle took the season back. But on the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the very end of the cloth, in brown thread, and could not have said whose it was. It was mine.",
-        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne jusqu’à ce que les Maisons les sachent par cœur. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus tout au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
+        "en": "For one season I had sat under the burnt crown, and the Penitents had read the names in the Lantern Hall each night. The needle took the season back. But the night before the invasion, on the Exorcists’ Road, a Penitent stitched one more name at the end of the cloth, in brown thread, and could not have said whose. It was mine.",
+        "fr": "Pendant une saison, j’avais siégé sous la couronne brûlée, et les Pénitents avaient lu les noms chaque nuit dans la Salle de la Lanterne. L’aiguille reprit la saison. Mais la veille de l’invasion, sur la Route des Exorcistes, un Pénitent cousit un nom de plus au bout de l’étoffe, en fil brun, sans pouvoir dire à qui il était. C’était le mien."
       },
       {
         "flag": "throne_winner_open_hand",
-        "en": "For one season the Seal had been the drawers’ again, and the grey hand had flown over the Lantern Throne, and nobody on the coast had needed to hide their hands. The needle took the season back. It could not take the drawing. On the night before the invasion, all along the coast, in houses where nobody had drawn for forty-nine years, children woke and drew an open hand in the dust by their beds, and their parents, who had been told to forget, did not rub it out.",
-        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, et la main grise avait flotté au-dessus du Trône de la Lanterne, et personne sur la côte n’avait eu besoin de cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, tout le long de la côte, dans des maisons où personne n’avait tracé depuis quarante-neuf ans, des enfants s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
+        "en": "For one season the Seal had been the drawers’ again, the grey hand had flown over the Lantern Throne, and nobody had needed to hide their hands. The needle took the season back. It could not take the drawing. The night before the invasion, children along the whole coast woke and drew an open hand in the dust by their beds, and their parents, told to forget, did not rub it out.",
+        "fr": "Pendant une saison, le Sceau avait de nouveau appartenu aux traceurs, la main grise avait flotté au-dessus du Trône de la Lanterne, et personne n’avait eu à cacher ses mains. L’aiguille reprit la saison. Elle ne put reprendre le dessin. La veille de l’invasion, des enfants de toute la côte s’éveillèrent et tracèrent une main ouverte dans la poussière près de leur lit, et leurs parents, à qui l’on avait dit d’oublier, ne l’effacèrent pas."
       },
       {
         "flag": "hub_6010_confession",
@@ -10599,13 +10599,13 @@
       },
       {
         "flag": "banner_raised",
-        "en": "It was the hand’s last drawing, and it did not ask the crown’s leave. I had raised the grey hand on the Hollow Shore and then set a crown above it. The Open Hand, I think, had seen kings before, and outlasted them.",
-        "fr": "C’était le dernier dessin de la main, et il ne demanda pas la permission de la couronne. J’avais levé la main grise sur la Rive Creuse, puis posé une couronne au-dessus. La Main Ouverte, je crois, avait déjà vu des rois, et leur avait survécu."
+        "en": "It was the hand’s last drawing, and it did not ask the crown’s leave. I had raised the grey hand on the Hollow Shore, then set a crown above it. The Open Hand had seen kings before, and outlasted them.",
+        "fr": "C’était le dernier dessin de la main, et il ne demanda pas la permission de la couronne. J’avais levé la main grise sur la Rive Creuse, puis posé une couronne au-dessus. La Main Ouverte avait déjà vu des rois, et leur avait survécu."
       },
       {
         "flag": "banner_furled",
-        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
-        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+        "en": "I had kept the hand furled to the end. It unfurled itself, and the figure’s palms opened on the night: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Elle se déroula d’elle-même, et les paumes de la silhouette s’ouvrirent sur la nuit : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
       },
       {
         "flag": "truth_told",
@@ -11648,13 +11648,13 @@
     "flag_callbacks": [
       {
         "flag": "companion_turned",
-        "en": "{lost} had stood between me and the legate’s boat before I had finished answering, and had not moved when I asked, and had not moved when I stopped asking. The crew watched me put {lost} down and did not help either of us. When it was over, the legate stepped around the body to shake my hand.",
-        "fr": "{lost} s’était placé entre moi et la barque du légat avant que j’aie fini de répondre, et n’avait pas bougé quand je l’ai demandé, ni quand j’ai cessé de demander. L’équipage me regarda abattre {lost} sans aider ni l’un ni l’autre. Quand ce fut fini, le légat contourna le corps pour me serrer la main."
+        "en": "{lost} stood between me and the legate’s boat and did not move when I asked, nor when I stopped asking. The crew watched me put {lost} down and helped neither of us. The legate stepped round the body to shake my hand.",
+        "fr": "{lost} s’était placé entre moi et la barque du légat et n’avait pas bougé quand je l’ai demandé, ni quand j’ai cessé de demander. L’équipage me regarda abattre {lost} sans aider ni l’un ni l’autre. Le légat contourna le corps pour me serrer la main."
       },
       {
         "flag": "legate_fought",
-        "en": "With no one left to stand against me, the legate’s own champion did, as the terms required: a pact of the Inquisition is sealed in a champion’s blood, and he had brought one for the purpose. I gave it what it came for. The legate shook my hand over it.",
-        "fr": "Comme il ne restait personne pour se dresser contre moi, le champion du légat s’en chargea, comme l’exigeaient les termes : un pacte de l’Inquisition se scelle dans le sang d’un champion, et il en avait amené un à cet effet. Je lui donnai ce pour quoi il était venu. Le légat me serra la main par-dessus."
+        "en": "With no one left to stand against me, the legate’s champion did, as the terms required: an Inquisition pact is sealed in a champion’s blood. I gave it what it came for. The legate shook my hand over it.",
+        "fr": "Comme il ne restait personne pour se dresser contre moi, le champion du légat s’en chargea, comme l’exigeaient les termes : un pacte de l’Inquisition se scelle dans le sang d’un champion. Je lui donnai ce pour quoi il était venu. Le légat me serra la main par-dessus."
       }
     ],
     "choices": [
@@ -17722,7 +17722,7 @@
       },
       {
         "flag": "inquisition_pact",
-        "en": "The legate’s contract was in my coat. The Inquisition meant to set me on the Throne, and had not yet said what it meant to do with me once I was on it.",
+        "en": "The legate’s contract was in my coat. The Inquisition meant to set me on the Throne, and had not said what it meant to do with me once I was on it.",
         "fr": "Le contrat du légat était dans mon manteau. L’Inquisition comptait me mettre sur le Trône, et n’avait pas encore dit ce qu’elle comptait faire de moi une fois que j’y serais."
       },
       {
@@ -17833,7 +17833,7 @@
       },
       {
         "flag": "children_hidden",
-        "en": "One of the children I had hidden in the Eel’s hold walked ahead of the Host to the water’s edge, and the tear’s rim softened wherever she set down a foot.",
+        "en": "One of the children I had hidden in the Eel’s hold walked ahead of the Host to the water’s edge, and the tear’s rim softened wherever she set a foot.",
         "fr": "L’un des enfants que j’avais cachés dans la cale de l’Eel marcha devant l’Ost jusqu’au bord de l’eau, et le rebord de la déchirure s’adoucissait partout où elle posait le pied."
       },
       {
