@@ -19,6 +19,38 @@ isn't reconstructable from git history alone.
     shipped one, for a fresh session and for a new character (neither
     could be made).
 
+## [1.719.0+755]
+
+- **Narrative: 34 long scenes cut.** Scenes over the 800-character page cap
+  lose about a tenth of their text, English and French together:
+  35,840 to 32,157 characters in English, 40,762 to 36,482 in French.
+  Scenes over 800 characters go from 35 to 28, French scenes over 1,000
+  from 22 to 12. Every reveal, fact and bolded line stays (the Open Hand
+  ledger on `5004`/`5004b`, the Unmaking roll on `6010_record`, the four
+  endings); what went is repetition, scene-setting and doubled images. The
+  endings and `6010_record` are trimmed lightly: they are reveals, and a
+  deeper cut needs a page-turn split (Core). Ids, choices, flags and
+  conditions are unchanged.
+
+## [1.718.0+754]
+
+- **Narrative: tighter ending callbacks.** The 38 longest English callbacks
+  (the nine on each of the four journey endings `7005`, `7005_seeker`,
+  `7005_dawn`, `7005_crown`, plus `7001`, `7002_betrayal`, `7002_approach`,
+  `7400`) lose about a fifth of their words, 14,346 to 11,297 characters
+  across the 79 rewritten. The clan's own image and the dated detail stay;
+  each ending still names what the player chose. French rewritten with the
+  English. Flags and conditions unchanged.
+
+## [1.717.0+753]
+
+- **Narrative: shorter choice labels, the last batch.** 118 more labels in
+  the Saltmouth, Candlehold, Reliquary and ending hubs (`7200`, `7510`,
+  `7590`, `7800`, `3005`, `3100`, `5100`, `6100`, `6200`, `7100`, `7400` and
+  others) cut to about 46 characters in English and 56 in French so the
+  panel bubble no longer wraps. Same choices, ids, flags and costs; only the
+  wording changed. No test pinned these labels.
+
 ## [1.716.0+752]
 
 - **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
@@ -402,8 +434,6 @@ isn't reconstructable from git history alone.
   the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
-
-
 
 ## [1.665.0+701]
 
@@ -10950,8 +10980,6 @@ undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
   neither has any other unlock point in the story graph, so removing them
   would have made those shops permanently unobtainable.
 
-
-
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start
 and another available from the very first chapter.
@@ -11864,7 +11892,6 @@ Chapter 3-5 branching still falls well short of Chapter 1's — closing that gap
 
 ### Changed
 - Quest/item/skill/dice detail dialogs now render their flavor-text description with larger text and more generous line spacing, matching how the main story narration is styled, instead of the dialog's cramped default text style.
-
 
 ### Added
 - Copy button for the Playthrough Simulator's batch summary (previously only individual runs and the Gemini analysis could be copied — batches only had Export).
