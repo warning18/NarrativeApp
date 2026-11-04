@@ -48,6 +48,7 @@ import '../widgets/reward_card.dart';
 import '../widgets/reward_cards.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
+import '../data/narration_pages.dart' show joinedNarration;
 import '../data/story_markup.dart' show stripStoryMarkup;
 
 enum _ExpeditionPhase { event, completed, retreated }
@@ -1117,7 +1118,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   const SizedBox(height: 16),
                 ],
                 Text(
-                  stripStoryMarkup(node.descriptionFor(lang == AppLanguage.fr)),
+                  stripStoryMarkup(joinedNarration(
+                      node.descriptionFor(lang == AppLanguage.fr))),
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
