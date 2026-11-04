@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.813.0+849]
+
+- Story: two new fields for Narrative's text, nothing changes until the
+  story uses them. A scene with `callback_cap` shows at most that many of
+  the lines your past choices earned (the ones with the highest `priority`
+  first, then in the order written), so a scene everyone reaches late
+  doesn't read as a list. A scene with `revisit_description` says
+  something else the second time you come back (French:
+  `revisit_description_fr`); the first visit is unchanged. Both go through
+  the page, the read-aloud and the story editor; the recording script keeps
+  every line.
 ## [1.812.0+848]
 
 - Fights: one entrance. A fight met on a land crossing now opens with the same
