@@ -45,12 +45,12 @@ Future<void> setAllyInParty(
               id
       ],
       tr(ref, 'achievement_unlocked_prefix').toUpperCase()));
-  showImmersiveNotice(
+  unawaited(showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
     message:
         '${tr(ref, 'achievement_unlocked_prefix')}: ${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}',
-  );
+  ));
 }
 
 /// Whether [companionId] can join the party now, and if not, why.
