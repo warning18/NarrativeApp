@@ -15,6 +15,8 @@ class GameConfigScreen extends StatefulWidget {
 
 class _GameConfigScreenState extends State<GameConfigScreen> {
   final Map<String, TextEditingController> _controllers = {};
+  // The values loaded: a save keeps the keys the form doesn't show.
+  Map<String, dynamic> _loaded = {};
   bool _loading = true;
 
   @override
@@ -36,6 +38,7 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
       final raw = await rootBundle.loadString(gameConfigAssetPath);
       values = json.decode(raw) as Map<String, dynamic>;
     }
+    _loaded = values;
     for (final field in gameConfigFields) {
       final value = values[field.key] ?? field.defaultValue;
       _controllers[field.key]!.text = value?.toString() ?? '';
@@ -44,10 +47,11 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
   }
 
   Future<void> _save() async {
-    final values = <String, dynamic>{};
+    // A blank or unreadable field saves as its default, not as 0.
+    final values = <String, dynamic>{..._loaded};
     for (final field in gameConfigFields) {
-      values[field.key] =
-          int.tryParse(_controllers[field.key]!.text.trim()) ?? 0;
+      values[field.key] = int.tryParse(_controllers[field.key]!.text.trim()) ??
+          field.defaultValue;
     }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(gameConfigPrefsKey, json.encode(values));
@@ -76,7 +80,7 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
         ],
       ),
     );
-    if (confirmed == true) await _reset();
+    if (confirmed ?? false) await _reset();
   }
 
   Future<void> _reset() async {

@@ -8,6 +8,509 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.773.0+809]
+
+- The 377 icons (items, skills, enemies, shops, chests) are stored at the size
+  they are drawn on: 16x16, the skills' gems 32x32, instead of enlarged to
+  128x128. Every one was an exact enlargement, so they look the same at
+  every size the app draws them (checked at 18, 26, 28, 30, 36, 44 and 52 px,
+  no differing byte); the app is 140 KB smaller and a screen of icons holds
+  a sixty-fourth of the memory (1 KB per icon instead of 64 KB).
+- The art scripts for the icons write the small size; the enemies' heads are
+  cut as before (same files).
+- Tests: `icon_sizes_test` keeps any icon over 32 px out of `assets/icons`;
+  `hunter_icons_test` expects 16x16.
+
+## [1.772.0+808]
+
+- A scene's text is composed once per build instead of two or three
+  times: the Journey's page count, its scene panel and the opening
+  reading now share one composition (`composeNarrationParts` keeps its
+  last answer while the scene, the session and the story are the same).
+  A slightly smoother Journey on slow phones; nothing else changes.
+
+## [1.771.0+807]
+
+- The playthrough simulator loses its old growth mode (the skill points,
+  perks and sign picks of before v1.194), which only two tests still ran;
+  the game and every batch use the clans' offers. About 170 lines less,
+  and a seeded batch gives the same numbers. Nothing changes in play.
+
+## [1.770.0+806]
+
+- Code: the 15% lift on ordinary enemies' damage from chapter 2 on
+  (v1.743) is folded into the damage floor table (one table instead of a
+  table and a factor); every fight's numbers are the same.
+- The clans' tables and the offers' tables are parsed once and kept while
+  they stay the same (an edit in the Data tab parses them again), instead
+  of about 2.7 ms again on each of 13 calls: offers and clan pages open a
+  little faster.
+
+## [1.769.0+805]
+
+- The app is about 350 KB smaller: `city_plans.json` (the cities' stored
+  plans, generated, never edited by hand) is written minified, 733 KB down
+  to 386 KB with the same data. The two plan generators
+  (`city_plan_generator.dart`, `town_service_pins.dart`), which only the
+  tools in `tool/city_plans/` run, move there from `lib/`. Nothing changes
+  on screen.
+
+## [1.768.0+804]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
+
+## [1.767.0+803]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
+## [1.766.0+802]
+
+- The playthrough simulator now shops where a player shops: the ports'
+  shops at their settlements, a house's shop once it is built, the
+  Wayfarer's Caravan when the road holds it, and a shop again when the walk
+  is back there a later chapter (from the chapter it opens). Its naive
+  baseline moves with it (encounters won 71.0% to 75.3%, 800 runs), see
+  `docs/simulation/sim-reach-v1.766.md`.
+- The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
+  damage 4 to 5): a player who shops reached it too well armed.
+## [1.765.0+801]
+
+- Settings: a new switch, "Show slow frames" (off by default, saved). While it
+  is on, a small counter at the top right shows how many frames of the screen
+  you are on took more than 17 ms ("slow 7 / 612 · worst 48 ms"), and two
+  buttons appear under the switch: "Copy report" (the numbers per screen, the
+  five worst frames split into build and raster time, and a line about the
+  phone) and "Reset". The screens are the Fight, the Journey (its reading page
+  and its map apart), the Character, Camp or ship and Other tabs, the main
+  menu, and "Another screen" for the rest. It is meant for finding what
+  stutters on a phone with no computer: turn it on, play, copy the report and
+  paste it to the team. Off, nothing runs: no timer, no counter, no timing
+  callback. English and French.
+- Tests: `slow_frames_test.dart` (the counting, the five worst, the naming of
+  the screens, off by default, the switch, the copy and the reset); the 320 px
+  and French sweep shows the switch and the counter.
+
+## [1.764.0+800]
+
+- Fight on a phone: the screen stays upright while a fight is open. Turned
+  sideways (640 x 360) the dice board was left 1 px tall, so the fight could
+  not be played; now it holds portrait and lets the phone turn again when the
+  fight closes. The rest of the app turns as before, and a tablet (shortest
+  side of 600 dp or more) is never held.
+- Tests: `fight_orientation_test.dart` (the hold and the release, two fights
+  at once, a tablet, and a real fight opened and closed).
+
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
+
+## [1.762.0+798]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
+## [1.761.0+797]
+
+- Rangers get a die worth replacing the starter with: the storm die's Wind
+  Step (Defend 2) and Catch Your Breath (Heal 2) faces become open Skill
+  faces, so half its rolls land where your skills cast at full power, and
+  it beats the starter however many skills you know. It is now also sold at
+  the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
+  at the black market. Its price is unchanged.
+## [1.760.0+796]
+
+- **Cleanup: the dropped futures are named.** The 45 places where a Future
+  was started and left (a notice or a progress dialog that must not hold
+  the caller, a save that follows a state change already made) are
+  wrapped in `unawaited(...)`, and the `unawaited_futures` lint is on so a
+  new one cannot slip in unseen. All 45 were fire-and-forget on purpose;
+  nothing runs earlier, later or differently.
+
+## [1.759.0+795]
+
+- The profession dice sold in shops now beat the starter die once bought,
+  so there is a reason to replace it. The iron, bulwark, storm, holy, tide,
+  flame and arcane dice each turn one plain face into an open Skill face
+  (where your skills cast at full power, as on the starter) and their
+  weakest signature faces come up more often. Prices and shops are
+  unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
+  the same way. See `docs/simulation/starter-die.md`.
+## [1.758.0+794]
+
+- Code (P4, part 1): two providers no longer wake everything below them on
+  every change to the session. The tab badges compare equal when no dot
+  comes or goes, so the always-on home shell and the play menu stop
+  rebuilding on each change; the clan effects (and the signs built on
+  them) watch only the four fields they read. No change in play. Over five
+  unrelated session changes they notified 5 and 5 times; now 0 and 0
+  (`provider_rebuilds_test`).
+## [1.757.0+793]
+
+- Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
+  main file (the screen, 765 lines) and five `part` files under
+  `lib/screens/playthrough_simulator/`: the engine (`sim_engine.dart`,
+  `simulatePlaythroughs` and the walk), the batch statistics, the exports,
+  the batch card and the run detail. A pure move: every line is the same,
+  so the simulator's numbers and the tests do not change (wave 4a).
+
+## [1.756.0+792]
+
+- Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three
+  files under `lib/screens/journey/`: the panel under the map (its height, the
+  choice cards, the rings and list sheets), the road the party is carried
+  along, and the scene, map-button, looked-at and ended panels (about 1,000
+  lines). The map chart, the district view and `build` stay where they are.
+  The state's methods moved into a private extension (as in the fight screen)
+  and `setState` is called through a one-line `_update`; nothing changes on
+  screen or in the rules.
+
+## [1.755.0+791]
+
+- Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
+  lines: the widget, its state and `build`) and five files under
+  `lib/screens/ship_battle/`: the turns, the dock and chips, the sea, the crew
+  and the painters. The state's methods moved into private extensions (as in
+  the fight screen) and `setState` is called through a one-line `_update`;
+  nothing changes on screen or in the rules.
+
+## [1.754.0+790]
+
+- **The world map, simpler and readable.** One look and one world: the Layers
+  sheet no longer holds the look and shape selectors. It keeps the sphere,
+  the weather and three map layers: none, **Clans** and the route by
+  chapter; the country, standing, relief, humidity, heat and shops layers
+  are gone. The dotted borders of the lands and the dotted coasts under the
+  fog are gone too. The **Clans** layer tints each whole land by the clan
+  that holds it now (stripes where a second clan presses almost as hard),
+  from Core's region holders.
+- Tests: `full_map_screen_test` now checks the sheet offers the plain map,
+  Clans and chapters (and no look, shape, height or standing layer), and that
+  the Clans layer gives the painter who holds each land; `chart_weather_test`
+  turns the Clans layer instead of the height one.
+- The map's size is unchanged (the question of the map's size is with the
+  user). `docs/proposals/map-performance.md` lists the speed steps that
+  follow, each its own PR.
+
+## [1.753.0+789]
+
+- The app no longer ships dog pictures nothing reads: the three `rotations`
+  folders (the sitting dog, the angel's and the demon's) now list only their
+  `south.png`, and the unused bark frames are left out (about 65 KB less).
+  The art stays in the repository, as source. Nothing changes on screen.
+
+## [1.752.0+788]
+
+- The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the
+  Mother of Wrecks) are WebP instead of PNG: 1.07 MB down to 0.19 MB in the
+  app, the largest saving among the pictures (they were 62% of all PNG bytes).
+  They look the same, soft halos included (a 64-colour PNG was tried and
+  dropped: it turned the leviathan's dark halo into a hard-edged ellipse).
+  `test/sea_beast_sprites_test.dart` checks each loads, is 840 px wide and
+  keeps its soft edge.
+- Tests: `qa_assets_declared_test.dart` also counts `.webp` files when it checks
+  every image folder is declared.
+
+## [1.751.0+787]
+
+- **Narrative: a page break in `6010_record`.** The Reliquary's records scene
+  uses the `[PAGE]` marker of v1.750 where the Unmaking roll ends and the Rite
+  roll begins (about 600 and 575 characters in English, 700 and 650 in
+  French). The four journey endings keep the single `[EPILOGUE]` break that
+  v1.750 gave them: their pages already follow the story's own breaths (the
+  return, then the undoing of the night). No text, id, choice or flag changed.
+
+## [1.750.0+786]
+
+- **Core: a scene can be read in pages.** A `[PAGE]` marker in a scene's
+  text, and an ending's `[EPILOGUE]` (`[ÉPILOGUE]`), cut its reading into
+  pages: the first pages end on Continue, and the scene's choices wait on
+  its last page. Each page writes itself out on its own. The node keeps its
+  id, its choices and its one narration recording, and a game reopened
+  inside a scene starts on its first page. The four written endings now
+  read in two pages: the return, then the epilogue with "Begin again".
+
+## [1.749.0+785]
+
+- Code: `story_player_screen.dart` (4,479 lines) is cut into the main file
+  (1,078 lines: the screen and its story view) and four files under
+  `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
+  the ending. Pure cut and paste, nothing changes on screen or in the rules.
+
+## [1.743.0+779]
+
+- **Core: ordinary fights are a little harder again from chapter 2 on.**
+  Clan dice, the specialisations, Vica and the x3 weakness had made ordinary
+  fights easier than meant. Regular (non-boss) enemies now hit 15% harder
+  from chapter 2 on; chapter 1 and the bosses keep their numbers. In the
+  simulator (800 naive runs) encounters won go from 75.5% to 71.0%, and
+  every boss stays within 7 points of its target win rate.
+
+## [1.742.0+778]
+
+- **Core: two unused tables and three always-0 enemy fields removed (R1/R2).**
+  The gates and adventure-node tables (4 records in all) were read only by
+  the data editor; they, their editor pages and their asset lines are gone.
+  The `attackCountRequirement`, `playerPatternThreshold` and `blockThreshold`
+  fields on enemy moves were 0 everywhere and read by nothing (717 lines of
+  `enemies.json`). Old saves and old exported or edited data still load: a
+  stale edit of a removed table is ignored, and an old enemies edit with the
+  removed fields reads as before.
+
+## [1.741.0+777]
+
+- **Core: the story and the city plans are read off the main thread (P3).**
+  The story (1.5 MB, 479 scenes) took about 65 ms to decode and build on the
+  main thread, and the city plans (715 KB) about 17 ms, both on the way into
+  the Journey. They are now parsed on a worker. A broken edited story still
+  falls back to the bundled one (#696).
+
+## [1.740.0+776]
+
+- Character, Overview: the radar card has a switch under it: **Abilities**
+  (the eight abilities, as before), **Skills** (a second radar: the skills
+  you know, counted by element) and **Detail** (the eight numbers as bars, a
+  bar per element, then the skills as chips and "All skills"). The skill
+  chips that sat under the card moved to Detail, so the Overview is shorter.
+  French and English; fits 320 px; no animation added. A locked Skills page
+  shows the abilities radar alone, as before.
+- Tests: the Character tab test opens each view; `skills_by_element_test.dart`;
+  the phone sweep shows the Skills and Detail views.
+
+## [1.738.0+774]
+
+- **Core: fight and story fixes from QA issue #694.**
+  - A story choice whose fight names an enemy missing from the table is no
+    longer a free win: the error is reported and the choice isn't taken.
+  - A fight whose rewards fail to pay can still be left: the error is
+    reported and the fight settles.
+  - The Long Vigil's mend stops at full health.
+  - A Flurry's second strike no longer spends the Relicbreaker's mana or the
+    signs' banked shares a second time (as in the simulator).
+  - No die can be rolled in the beat between a confirmed roll and the
+    enemies' answer.
+
+## [1.737.0+773]
+
+- **Core: a broken edited table or story falls back to the bundled one (#696).**
+  An editor override (`gamedb_<table>` or `story_nodes_override`) that no
+  longer parses used to fail the whole load. It is now reported and the
+  table or story bundled with the app is read instead; the override is
+  left in place to be fixed or reset.
+
+## [1.736.0+772]
+
+- Code: the fight's two kinds of icon tile (a fighter's effect and a
+  fight-wide status) drew the same tinted square twice; they now share one
+  widget. Nothing changes on screen.
+
+## [1.735.0+771]
+
+- Fight on a small phone (320 x 568): the dice board was squeezed to a strip
+  of a few pixels. Under 620 px of screen height the fight no longer draws
+  its empty seats (a side with fewer than three fighters shows only its
+  fighters) nor the two-line log under the board (the log button still opens
+  it), so the dice have room. Normal phones are unchanged.
+- The scene stage's door tab hangs under the foe's name on a narrow stage
+  instead of covering the foe, and its label is cut with "..." when long.
+- Tests: `qa_fight_320_test.dart`, `qa_scene_stage_320_test.dart`.
+
+## [1.731.0+767]
+
+- **Core: a detour begun is saved as the scene it leads to (#695).** The
+  choice that sets off a detour has already taken its effects and its
+  time when the detour starts; the save still stood before the choice, so
+  a game closed mid-detour reopened there and the choice could be taken a
+  second time (its gold and effects again, the same detour drawn again).
+  The save now stands where the detour leads; the detour itself is still
+  not saved.
+
+## [1.730.0+766]
+
+- **Core: a save that can't be read never strands the player (#693).**
+  - An autosave whose history or visited list is unreadable keeps the
+    scene it names (it fell back to the story's first scene).
+  - An unreadable old two-key save is left where it is, and the save slots
+    still read (their list didn't load).
+  - An unreadable game config from the Data editor falls back to the
+    shipped one, for a fresh session and for a new character (neither
+    could be made).
+
+## [1.719.0+755]
+
+- **Narrative: 34 long scenes cut.** Scenes over the 800-character page cap
+  lose about a tenth of their text, English and French together:
+  35,840 to 32,157 characters in English, 40,762 to 36,482 in French.
+  Scenes over 800 characters go from 35 to 28, French scenes over 1,000
+  from 22 to 12. Every reveal, fact and bolded line stays (the Open Hand
+  ledger on `5004`/`5004b`, the Unmaking roll on `6010_record`, the four
+  endings); what went is repetition, scene-setting and doubled images. The
+  endings and `6010_record` are trimmed lightly: they are reveals, and a
+  deeper cut needs a page-turn split (Core). Ids, choices, flags and
+  conditions are unchanged.
+
+## [1.718.0+754]
+
+- **Narrative: tighter ending callbacks.** The 38 longest English callbacks
+  (the nine on each of the four journey endings `7005`, `7005_seeker`,
+  `7005_dawn`, `7005_crown`, plus `7001`, `7002_betrayal`, `7002_approach`,
+  `7400`) lose about a fifth of their words, 14,346 to 11,297 characters
+  across the 79 rewritten. The clan's own image and the dated detail stay;
+  each ending still names what the player chose. French rewritten with the
+  English. Flags and conditions unchanged.
+
+## [1.717.0+753]
+
+- **Narrative: shorter choice labels, the last batch.** 118 more labels in
+  the Saltmouth, Candlehold, Reliquary and ending hubs (`7200`, `7510`,
+  `7590`, `7800`, `3005`, `3100`, `5100`, `6100`, `6200`, `7100`, `7400` and
+  others) cut to about 46 characters in English and 56 in French so the
+  panel bubble no longer wraps. Same choices, ids, flags and costs; only the
+  wording changed. No test pinned these labels.
+
+## [1.716.0+752]
+
+- **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
+  batch).** Nineteen labels in the Smugglers' Wharf hub (`2015`), the
+  last-choice page (`7004`) and the Hollow Court hub (`5010`) are tightened to
+  about 46 characters, English and French, with the same meaning and tone;
+  the longest drops from 54 to 47 in English and from 71 to 57 in French.
+  Labels only: no choice, flag, id, condition or number changes. No test or
+  code pinned any of them.
+
+## [1.715.0+751]
+
+- **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
+  (the AI generator), the "Analyze with Gemini" button of the playthrough
+  simulator, the API-key field in Settings and the `google_generative_ai`
+  package are removed, with the strings that only they used. They were
+  developer tools; the simulator itself, the Dev tools button and the
+  ElevenLabs key are unchanged. Edit mode now has four tabs.
+
+## [1.714.0+750]
+
+- **Core: the fight keeps its mana until it ends; a burst of saves writes
+  once.** A fight saved the whole game, and rebuilt every screen behind it,
+  each time mana was gained or spent; it now keeps mana in the fight and
+  the session takes it when the fight ends (won, lost, fled or broken up,
+  as it already did). Saves asked for together share one write, and each
+  still waits until its change is on disk.
+
+## [1.713.0+749]
+
+- **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
+  The panel and the stage wrap a label at about 46 characters. Eighteen
+  labels in the Ashen Quarter hub (`3005`) and the Reliquary Quarter hub
+  (`6010`) are tightened, English and French, with the same meaning and tone;
+  the longest drops from 54 to 46 characters in English and from 75 to 56 in
+  French. Labels only: no choice, flag, id, condition or number changes. No
+  test or code pinned any of them.
+
+## [1.712.0+748]
+
+- **Core: the game's tables are read from the cache.** Each scene change
+  and fight start read its tables (enemies, items, skills, shops...) by
+  rebuilding them, placeholders and the French overlay included: 10 to 30
+  ms a table in French. They now come from the cache that already holds
+  them; the same records (a test checks every table, in English and
+  French).
+
+## [1.711.0+747]
+
+- **Cleanup: nine more lints on, and the unused `cupertino_icons` package
+  dropped.** `use_if_null_to_convert_nulls_to_bools`,
+  `noop_primitive_operations`, `use_named_constants`,
+  `unnecessary_raw_strings`, `use_decorated_box`, `sort_pub_dependencies`,
+  `avoid_bool_literals_in_conditional_expressions`,
+  `prefer_const_literals_to_create_immutables` and
+  `avoid_unused_constructor_parameters` are enabled and fixed at about 100
+  sites in 64 files. Nothing changes on screen or in a number; the one
+  unused constructor parameter of the ship side view's palette is gone.
+
+## [1.710.0+746]
+
+- The fight's ground no longer repaints sixty times a second: the layer
+  behind the fight (the stage, the night, the lamps) has nothing that moves,
+  so it is drawn once, and only the weather and an anomaly keep a clock, and
+  only while they show (an anomaly's ease out included). Nothing changes on
+  screen; the phone does less work during every fight.
+- Tests: the fight tests throw the dice at 4x (the "Dice speed" setting),
+  so they wait a quarter of the throw.
+
+## [1.702.0+738]
+
+- **Core: the top bar's world map waits while the page holds the party.**
+  A page with no way back to the map (one card to take, a page whose
+  cards hold every move, a locked page, a new game's first page) hides
+  the world map in the top bar too: it could travel the party away from
+  a scene the story has to go on through. A page that keeps its way back
+  (two cards and a move elsewhere) keeps it.
+
+## [1.701.0+737]
+
+- No more letter where a face exists. One place (`HeadAvatar`) now says
+  which head a name wears, and the fight's slots, the "Qui combat ?" card,
+  the scene vignette, a spell's target list and the NPC's page all use it.
+  The fourteen foes that borrow another's icon (Den Bouncer, Brine Jack,
+  Brother Clement, the claimants...) now wear that icon's head instead of an
+  initial; Aurel Vane gets his own head, cut from his own sprite. Vica, the
+  hero and every enemy have a head; a companion with no art yet (Kelda,
+  Sable, Maren...) keeps its initial, and an NPC with no sprite keeps the
+  mark of its kind.
+
+## [1.700.0+736]
+
+- **Cleanup: three leftovers nothing used are removed**
+  `ShipCutaway.roomRect`, `deckCrewHeight` and the string `sign_pending`;
+  the tests that used them check the room boxes and the grid directly. No
+  behaviour change.
+
+## [1.699.0+735]
+
+- **Narrative: three French names made consistent.** One word each, text only:
+  "Porte-Clé" becomes "Porte-Clef" in a `6010` callback (29 other uses),
+  "L’Hôte" becomes "L’Ost" for the Host in `7004_stitch` (about 97 other
+  uses), and "Leur doyenne" becomes "Leur ancienne" for the Anvil-Deaf elder
+  in `7590_compact` (11 other scenes). The rest of the audit found nothing
+  to change: "Garde-Mèche" / "Garde-Mèches" and "Porte-Aiguille(s)" already
+  agree in number everywhere.
+
+## [1.698.0+734]
+
+- **Narrative: fights drawn on the terrain their scene names (`forcedStage`).**
+  From UX's table (39 scenes, 66 fight choices), each row read against its
+  line: 29 fight choices now carry a `forcedStage`, data only.
+  - `quay`: the Smugglers' Wharf hub fights (`2015`), the docks (`2011`), the
+    harbor master's job (`2015_dockside`), the wharf gate (`2015_kelda`), the
+    Anchorage's last company (`7100`) and the harbour chain (`7510_crows`).
+  - `caravanRoad`: `2000` and `2020`. `ruins`: the collapsed Blind Beggar
+    (`105`), the family house (`400`), the Wall of Names rubble
+    (`3005_clan_vigil_1`, `_breach`) and the stalker in the ruins (`3005`).
+    `snow`: the frosted Reliquary Quarter (`6010`, `6010_candle_walk_fight`,
+    `6010_masked`). `ash`: the Ashen Quarter hub (`3005`). `dunes`:
+    `7100_house_order`. `waves`: the beach breach (`6002_siege_breach`).
+  - Skipped on purpose (37 choices): where the terrain word is a name or a
+    figure of speech (Cinder Row, "ruin" in an oath, "the whole shore"), or
+    another place's stage fits better (the Hollow Shore keeps its glass; the
+    Lantern Hall keeps its hall, 14 choices of `7520_tallis` that only look
+    down the cliff; the Reed Gate and the Exorcists' Gate in Candlehold; the
+    iron golem's vault; `6100_clan_mire_2` stays on its snow road).
+
 ## [1.696.0+732]
 
 - The reading page flows. After a choice, the words of the new scene begin
@@ -263,8 +766,6 @@ isn't reconstructable from git history alone.
   the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
-
-
 
 ## [1.665.0+701]
 
@@ -10811,8 +11312,6 @@ undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
   neither has any other unlock point in the story graph, so removing them
   would have made those shops permanently unobtainable.
 
-
-
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start
 and another available from the very first chapter.
@@ -11725,7 +12224,6 @@ Chapter 3-5 branching still falls well short of Chapter 1's — closing that gap
 
 ### Changed
 - Quest/item/skill/dice detail dialogs now render their flavor-text description with larger text and more generous line spacing, matching how the main story narration is styled, instead of the dialog's cramped default text style.
-
 
 ### Added
 - Copy button for the Playthrough Simulator's batch summary (previously only individual runs and the Gemini analysis could be copied — batches only had Export).

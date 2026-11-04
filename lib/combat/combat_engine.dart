@@ -878,12 +878,17 @@ const double _chapterDifficultyStep = 0.15;
 /// cut moved nothing once the claimants (their own floor) were counted.
 /// The difficulty pass (v1.597, docs/proposals/difficulty-pass.md) cut
 /// chapters 2-8 by 10% with the hero's own health (3 a level, 3 a point
-/// of Constitution), the naive player's encounters won as before.
+/// of Constitution), the naive player's encounters won as before. From chapter
+/// 2 on, the damage floor carries the 15% lift of v1.743: clan dice, the
+/// specialisations, Vica and the x3 weakness had made the ordinary fights
+/// easier than meant (chapter 1 and the bosses kept their numbers; QA's 800
+/// naive runs, seeds 11 and 23). It was a separate factor until v1.761:
+/// 2.00, 2.74, 2.74, 2.88, 2.16, 2.09, 2.02 times 1.15.
 const List<double> enemyHealthFloorByChapter = [
   1.36, 1.62, 2.72, 2.72, 2.85, 2.12, 2.05, 2.00, //
 ];
 const List<double> enemyDamageFloorByChapter = [
-  1.25, 2.00, 2.74, 2.74, 2.88, 2.16, 2.09, 2.02, //
+  1.25, 2.30, 3.151, 3.151, 3.312, 2.484, 2.4035, 2.323, //
 ];
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for

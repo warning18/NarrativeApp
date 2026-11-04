@@ -456,9 +456,9 @@ extension _FightView on _FightScreenState {
     final acting = _actingParty;
     final anyDieAvailable = acting.any((m) =>
         m.equippedDiceId != null &&
-        ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.isNotEmpty ==
-            true);
+        (((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+                ?.isNotEmpty ??
+            false));
     final plan = _roundPlan(skills, items, ref.watch(appLanguageProvider));
     final previews = plan.previews;
 
@@ -507,7 +507,8 @@ extension _FightView on _FightScreenState {
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          if (ref.watch(appModeProvider) != AppMode.inGame) _buildLogTicker(),
+          if (ref.watch(appModeProvider) != AppMode.inGame && !_shortPhone)
+            _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
             id: 'fight.actions',

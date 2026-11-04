@@ -43,8 +43,17 @@ void main() {
       expect(enemyHealthBaseMultiplier(3), enemyHealthFloorByChapter[2]);
       expect(enemyHealthBaseMultiplier(0), enemyHealthFloorByChapter[0]);
       expect(enemyHealthBaseMultiplier(99), enemyHealthFloorByChapter.last);
+      // From chapter 2 on, an ordinary enemy's damage carries the 15% lift
+      // of v1.743, folded into the table in v1.761; chapter 1 does not.
+      expect(enemyDamageBaseMultiplier(1), enemyDamageFloorByChapter[0]);
       expect(enemyDamageBaseMultiplier(2), enemyDamageFloorByChapter[1]);
       expect(enemyDamageBaseMultiplier(99), enemyDamageFloorByChapter.last);
+      const beforeLift = [1.25, 2.00, 2.74, 2.74, 2.88, 2.16, 2.09, 2.02];
+      for (var i = 0; i < beforeLift.length; i++) {
+        expect(enemyDamageFloorByChapter[i],
+            closeTo(beforeLift[i] * (i == 0 ? 1.0 : 1.15), 1e-9),
+            reason: 'chapter ${i + 1}');
+      }
       // Chapter 1 still teaches: it is lighter than the middle chapters.
       expect(
           enemyHealthBaseMultiplier(1), lessThan(enemyHealthBaseMultiplier(2)));
@@ -58,6 +67,17 @@ void main() {
           later.damage,
           closeTo(
               enemyDamageFloorByChapter[2] * damageShareOf(1.30 * 1.2), 1e-9));
+    });
+
+    test('the ordinary-damage lift leaves bosses alone', () {
+      for (var chapter = 2; chapter <= 8; chapter++) {
+        expect(
+            difficultyCurveFor(chapter: chapter, isBoss: true).damage,
+            closeTo(
+                bossDamageBaseMultiplier *
+                    damageShareOf(chapterDifficultyMultiplier(chapter)),
+                1e-9));
+      }
     });
 
     test('a boss takes its own lighter floor: its phases do the rest', () {

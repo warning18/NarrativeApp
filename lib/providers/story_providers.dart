@@ -134,6 +134,38 @@ bool isFreshStoryStart(StoryPlayState play) =>
     play.currentNodeId == StoryRepository.startNodeId &&
     play.history.every((id) => id == StoryRepository.startNodeId);
 
+/// Whether the Journey's page holds the party with no way to the map (a
+/// locked page, one card to take, a new game's first page): the top bar's
+/// world map waits too (the user's call, v1.697). The Journey sets it.
+final journeyMapClosedProvider = StateProvider<bool>((ref) => false);
+
+/// The page of a scene being read (v1.750, see narration_pages.dart): the
+/// visit it belongs to ([scenePageKey]) and its index. It is not saved: a
+/// game reopened inside a scene starts on its first page.
+typedef ScenePage = ({String key, int page});
+
+final scenePageProvider = StateProvider<ScenePage>((ref) => (key: '', page: 0));
+
+/// One visit to [nodeId]: a scene reached again (a hub, a page come back
+/// to) opens on its first page.
+String scenePageKey(StoryPlayState play, String nodeId) =>
+    '$nodeId|${play.isInExcursion}|${play.history.length}';
+
+/// The page of the visit [key] being read in [state], 0 when [state] holds
+/// another visit, clamped to the scene's [pageCount].
+int scenePageOf(ScenePage state, String key, int pageCount) =>
+    state.key != key || pageCount <= 1 ? 0 : state.page.clamp(0, pageCount - 1);
+
+/// [raw] read as a JSON list of ids; null when missing or unreadable.
+List<String>? _idList(String? raw) {
+  if (raw == null) return null;
+  try {
+    return [for (final e in json.decode(raw) as List) e.toString()];
+  } catch (_) {
+    return null;
+  }
+}
+
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
       : super(StoryPlayState(
@@ -160,17 +192,16 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     final savedNodeId = prefs.getString(_autosaveNodePrefsKey);
     if (savedNodeId == null) return;
     final nodeId = liveNodeId(savedNodeId);
-    final historyJson = prefs.getString(_autosaveHistoryPrefsKey);
-    final history = historyJson != null
-        ? (json.decode(historyJson) as List).map((e) => e.toString()).toList()
-        : const <String>[];
-    final visitedJson = prefs.getString(_autosaveVisitedPrefsKey);
+    // A list that can't be read is treated as missing (issue #693): the
+    // party stays at the scene the autosave names.
+    final history =
+        _idList(prefs.getString(_autosaveHistoryPrefsKey)) ?? const <String>[];
     // A save from before fog-of-war tracking existed has no visited-set key
     // yet -- backfill from history + the current node rather than shadowing
     // every node a returning player has already actually read.
-    final visitedNodeIds = visitedJson != null
-        ? (json.decode(visitedJson) as List).map((e) => e.toString()).toSet()
-        : {...history, nodeId};
+    final visitedNodeIds =
+        _idList(prefs.getString(_autosaveVisitedPrefsKey))?.toSet() ??
+            {...history, nodeId};
     state = StoryPlayState(
       currentNodeId: nodeId,
       history: history,
@@ -189,16 +220,18 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// brings the old story back.
   bool startedFresh = false;
 
-  Future<void> _persistAutosave() async {
+  /// Saves where the story stands, or [at] instead (a detour's way out).
+  Future<void> _persistAutosave([StoryPlayState? at]) async {
     // Snapshot everything from `state` before the first await -- this runs
     // fire-and-forget from choose()/goBack()/etc, so by the time an awaited
     // SharedPreferences call resumes, the notifier (and its `state` getter)
     // may already have been disposed (e.g. the widget tree torn down right
     // after a choice). Reading `state` only synchronously, up front, avoids
     // that "Tried to use StoryPlayNotifier after dispose" race entirely.
-    final nodeId = state.currentNodeId;
-    final history = state.history;
-    final visitedNodeIds = state.visitedNodeIds;
+    final saved = at ?? state;
+    final nodeId = saved.currentNodeId;
+    final history = saved.history;
+    final visitedNodeIds = saved.visitedNodeIds;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_autosaveNodePrefsKey, nodeId);
     await prefs.setString(_autosaveHistoryPrefsKey, json.encode(history));
@@ -320,6 +353,15 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       excursionOrigin: origin,
       excursionOriginFr: originFr,
     );
+    // A detour isn't saved (it is made up on the way), but the choice that
+    // set off already took its effects and its time: the save stands where
+    // the detour leads, so a game closed mid-detour reopens there and
+    // never before the choice, to take it twice (issue #695).
+    _persistAutosave(StoryPlayState(
+      currentNodeId: resumeNodeId,
+      history: [...state.history, state.currentNodeId],
+      visitedNodeIds: {...state.visitedNodeIds, resumeNodeId},
+    ));
   }
 
   /// Leaves the detour at once, back to the scene it set out from -- the

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -191,11 +192,11 @@ class ShipStatusCard extends ConsumerWidget {
                                   .read(playerSessionProvider.notifier)
                                   .repairShip(repairCost);
                               if (!ok || !context.mounted) return;
-                              showImmersiveNotice(
+                              unawaited(showImmersiveNotice(
                                 context,
                                 icon: Icons.build_outlined,
                                 message: tr(ref, 'ship_sound_label'),
-                              );
+                              ));
                             },
                   icon: const Icon(Icons.build_outlined),
                   label: Text(repairCost == 0
@@ -251,7 +252,7 @@ Future<bool> sailTo(
     ),
   );
   expedition.state = false;
-  return arrived == true;
+  return arrived ?? false;
 }
 
 /// The chart: every port the story has opened, where the boat is moored

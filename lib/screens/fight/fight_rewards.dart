@@ -28,7 +28,21 @@ extension _FightRewards on _FightScreenState {
       _over = true;
       _won = won;
     });
+    try {
+      await _settleFight(won: won);
+    } catch (error, stack) {
+      // A reward that failed to pay (a save that threw) never strands the
+      // party on a fight already over: the error is reported and the way
+      // out opens, with nothing paid twice.
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: error, stack: stack, library: 'fight'));
+      if (mounted && !_settled) _update(() => _settled = true);
+    }
+  }
 
+  /// What the fight leaves once it is over (see [_finishFight]): the
+  /// rewards of a win, the cost of a loss.
+  Future<void> _settleFight({required bool won}) async {
     // What this fight left behind, for the next scene's opening line.
     ref.read(lastFightOutcomeProvider.notifier).state = FightOutcome(
       won: won,
@@ -52,7 +66,7 @@ extension _FightRewards on _FightScreenState {
       player.currentHealth = min(player.maxHealth,
           player.currentHealth + ashWellHeal(_mana, player.maxHealth));
       _mana = 0;
-      notifier.setMana(0);
+      unawaited(notifier.setMana(0));
     }
     if (won) {
       // Every enemy that died (or fled) in this fight -- a pack's rewards
@@ -332,9 +346,8 @@ extension _FightRewards on _FightScreenState {
             hpAfter: min(member.maxHealth,
                 hpAfter + _signs.afterFightHeal(member.maxHealth)));
       }
-      final newlyUnlockedAchievement = anyAllyRevived
-          ? await notifier.unlockAchievement('ally_revival')
-          : false;
+      final newlyUnlockedAchievement =
+          anyAllyRevived && await notifier.unlockAchievement('ally_revival');
       // What the player chose in the chest: put gear on straight away and
       // drink potions (a level-up already healed fully, so a potion picked
       // then is kept instead of wasted).
@@ -438,9 +451,9 @@ extension _FightRewards on _FightScreenState {
       if (leveledUp) {
         // The level-up dialog opens the offer once it closes.
         final newLevel = ref.read(playerSessionProvider).level;
-        showLevelUpDialog(context, ref, newLevel: newLevel);
+        unawaited(showLevelUpDialog(context, ref, newLevel: newLevel));
       } else if (bossBeaten) {
-        showOfferIfWaiting(context, ref);
+        unawaited(showOfferIfWaiting(context, ref));
       }
       _update(() => _settled = true);
       unawaited(_leaveAfterVictory());

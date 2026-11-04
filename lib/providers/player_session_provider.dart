@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart' show mapEquals;
+import 'package:flutter/foundation.dart' show mapEquals, visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
@@ -1944,6 +1944,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _resetToDefaults(prefs);
   }
 
+  /// The new-game defaults: the Data editor's game config when it has one
+  /// that can be read, the shipped one otherwise (issue #693: a broken
+  /// override must not stop a session or a character from being made).
+  static Future<Map<String, dynamic>> _newGameDefaults(
+      SharedPreferences prefs) async {
+    final saved = prefs.getString(_newGameDefaultsPrefsKey);
+    if (saved != null) {
+      try {
+        return json.decode(saved) as Map<String, dynamic>;
+      } catch (_) {}
+    }
+    return json.decode(await rootBundle.loadString(_newGameDefaultsAssetPath))
+        as Map<String, dynamic>;
+  }
+
   /// [keepLegacy] carries the New Game+ cycle and its banked legacy (see
   /// [PlayerSession.legacyGold]) through the reset -- the reset that
   /// precedes character creation must not lose what the previous cycle
@@ -1951,14 +1966,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> _resetToDefaults(SharedPreferences prefs,
       {bool keepLegacy = true}) async {
     final previous = state;
-    Map<String, dynamic> defaults;
-    final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
-    if (savedConfig != null) {
-      defaults = json.decode(savedConfig) as Map<String, dynamic>;
-    } else {
-      final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
-      defaults = json.decode(raw) as Map<String, dynamic>;
-    }
+    final defaults = await _newGameDefaults(prefs);
     final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 20;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
@@ -2029,14 +2037,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required Map<String, dynamic> profession,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> defaults;
-    final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
-    if (savedConfig != null) {
-      defaults = json.decode(savedConfig) as Map<String, dynamic>;
-    } else {
-      final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
-      defaults = json.decode(raw) as Map<String, dynamic>;
-    }
+    final defaults = await _newGameDefaults(prefs);
 
     int bonus(Map<String, dynamic> preset, String key) =>
         (preset[key] as num?)?.toInt() ?? 0;
@@ -2254,10 +2255,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> _persist() async {
+  /// The write the next [_persist] calls join, until it encodes.
+  Future<void>? _pendingWrite;
+
+  /// How many times the session was written (tests count them).
+  @visibleForTesting
+  int sessionWrites = 0;
+
+  /// Saves the session. Calls made before the write encodes share it
+  /// (v1.713): a burst of changes is written once, and every caller still
+  /// awaits a write that holds its change.
+  Future<void> _persist() => _pendingWrite ??= _write();
+
+  Future<void> _write() async {
     await _loaded.future;
+    _pendingWrite = null;
+    final encoded = json.encode(state.toJson());
+    sessionWrites++;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
+    await prefs.setString(_playerSessionPrefsKey, encoded);
   }
 
   /// See [_resetToDefaults]: a plain reset keeps a pending New Game+

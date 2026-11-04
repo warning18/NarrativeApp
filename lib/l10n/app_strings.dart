@@ -1359,7 +1359,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
-  'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
@@ -1449,10 +1448,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'title_map': {
     AppLanguage.en: 'Story Map',
     AppLanguage.fr: "Carte de l'histoire"
-  },
-  'title_generate': {
-    AppLanguage.en: 'AI Generator',
-    AppLanguage.fr: 'Générateur IA'
   },
   'title_data': {AppLanguage.en: 'Game Data', AppLanguage.fr: 'Données du jeu'},
   'settings': {AppLanguage.en: 'Settings', AppLanguage.fr: 'Paramètres'},
@@ -5998,18 +5993,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             '(lecteur et carte), la Légende, et tous les écrans de jeu. Les tables de données, '
             'les noms de champs et les identifiants restent en anglais.',
   },
-  'gemini_api_key_title': {
-    AppLanguage.en: 'Gemini API Key',
-    AppLanguage.fr: 'Clé API Gemini'
-  },
-  'gemini_api_key_desc': {
-    AppLanguage.en: 'Used by the AI Generator tab to create new story beats. '
-        'Stored only on this device.',
-    AppLanguage.fr:
-        "Utilisée par l'onglet Générateur IA pour créer de nouvelles scènes. "
-            'Stockée uniquement sur cet appareil.',
-  },
-  'api_key_label': {AppLanguage.en: 'API key', AppLanguage.fr: 'Clé API'},
   'show_api_key_tooltip': {
     AppLanguage.en: 'Show API key',
     AppLanguage.fr: 'Afficher la clé API'
@@ -6069,19 +6052,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "Brume d'ardoise"
   },
   'combat_section_title': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
-  'add_api_key_first': {
-    AppLanguage.en: 'Add your Gemini API key in Settings first.',
-    AppLanguage.fr: "Ajoutez d'abord votre clé API Gemini dans les Paramètres.",
-  },
-  'describe_next': {
-    AppLanguage.en: 'Describe what should happen next.',
-    AppLanguage.fr: 'Décrivez ce qui doit se passer ensuite.',
-  },
-  'no_api_key_banner': {
-    AppLanguage.en: 'No Gemini API key set. Open Settings to add one.',
-    AppLanguage.fr:
-        "Aucune clé API Gemini définie. Ouvrez les Paramètres pour en ajouter une.",
-  },
   'what_happens_next_label': {
     AppLanguage.en: 'What happens next?',
     AppLanguage.fr: 'Que se passe-t-il ensuite ?',
@@ -6094,15 +6064,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'generating_label': {
     AppLanguage.en: 'Generating...',
     AppLanguage.fr: 'Génération en cours...'
-  },
-  'generate_button': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
-  'no_response_generated': {
-    AppLanguage.en: 'No response generated.',
-    AppLanguage.fr: 'Aucune réponse générée.',
-  },
-  'generation_failed_prefix': {
-    AppLanguage.en: 'Generation failed',
-    AppLanguage.fr: 'Échec de la génération',
   },
   'close_button': {AppLanguage.en: 'Close', AppLanguage.fr: 'Fermer'},
   'flags_count_label': {AppLanguage.en: 'flags', AppLanguage.fr: 'drapeaux'},
@@ -6855,14 +6816,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'structural_audit_broken_links_label': {
     AppLanguage.en: 'Broken links',
     AppLanguage.fr: 'Liens rompus',
-  },
-  'analyze_with_gemini_button': {
-    AppLanguage.en: 'Analyze with Gemini',
-    AppLanguage.fr: 'Analyser avec Gemini',
-  },
-  'analyzing_label': {
-    AppLanguage.en: 'Analyzing…',
-    AppLanguage.fr: 'Analyse en cours…'
   },
   'playthrough_recap_title': {
     AppLanguage.en: 'Playthrough Recap',
@@ -10203,6 +10156,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
   },
+  'slow_frames_setting_title': {
+    AppLanguage.en: 'Show slow frames',
+    AppLanguage.fr: 'Afficher les images lentes',
+  },
+  'slow_frames_setting_desc': {
+    AppLanguage.en:
+        'A small counter while you play, to find what stutters. Off, nothing runs.',
+    AppLanguage.fr:
+        'Un petit compteur pendant le jeu, pour trouver ce qui saccade. Éteint, rien ne tourne.',
+  },
+  'slow_frames_copy': {
+    AppLanguage.en: 'Copy report',
+    AppLanguage.fr: 'Copier le rapport',
+  },
+  'slow_frames_reset': {
+    AppLanguage.en: 'Reset',
+    AppLanguage.fr: 'Remettre à zéro',
+  },
+  'slow_frames_copied': {
+    AppLanguage.en: 'Report copied',
+    AppLanguage.fr: 'Rapport copié',
+  },
+  'slow_frames_chip': {
+    AppLanguage.en: 'slow {n} / {total} · worst {ms} ms',
+    AppLanguage.fr: 'lentes {n} / {total} · pire {ms} ms',
+  },
   'dice_speed_setting_title': {
     AppLanguage.en: 'Dice speed in fights',
     AppLanguage.fr: 'Vitesse des dés en combat',
@@ -12132,10 +12111,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Aucun Signe pour l’instant. Les clans, les tribus, le Chœur et la Fosse en apportent dans leurs offres.',
   },
-  'sign_pending': {
-    AppLanguage.en: '{n} sign(s) to choose',
-    AppLanguage.fr: '{n}\u00a0Signe(s) à choisir',
-  },
   'sign_choose_hint': {
     AppLanguage.en: 'Choose one sign.',
     AppLanguage.fr: 'Choisissez un Signe.',
@@ -13396,6 +13371,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tile_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'skills_see_all': {AppLanguage.en: 'All skills', AppLanguage.fr: 'Toutes'},
+  'radar_view_detail': {AppLanguage.en: 'Detail', AppLanguage.fr: 'Détail'},
+  'skills_radar_hint': {
+    AppLanguage.en: 'The skills you know, by element.',
+    AppLanguage.fr: 'Les compétences connues, par élément.',
+  },
   'skills_none_short': {
     AppLanguage.en: 'No skills yet',
     AppLanguage.fr: 'Aucune compétence',

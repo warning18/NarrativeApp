@@ -11,7 +11,7 @@ import 'package:narrative_data_app/data/world_map.dart';
 
 void main() {
   group('fractalLine', () {
-    const square = [Offset(0, 0), Offset(40, 0), Offset(40, 40), Offset(0, 40)];
+    const square = [Offset.zero, Offset(40, 0), Offset(40, 40), Offset(0, 40)];
 
     test('is the same for the same seed, and differs by seed', () {
       final a = fractalLine(square, seed: 3);
@@ -28,7 +28,7 @@ void main() {
       // A cap: along the top edge, down the seam on both sides, and a
       // ragged lower edge between.
       final cap = [
-        const Offset(0, 0),
+        Offset.zero,
         Offset(w, 0),
         Offset(w, 30),
         Offset(w * 0.6, 42),
@@ -75,9 +75,9 @@ void main() {
     });
 
     test('an open line keeps both ends', () {
-      final pts = fractalLine(const [Offset(0, 0), Offset(50, 10)],
+      final pts = fractalLine(const [Offset.zero, Offset(50, 10)],
           depth: 3, seed: 9, closed: false);
-      expect(pts.first, const Offset(0, 0));
+      expect(pts.first, Offset.zero);
       expect(pts.last, const Offset(50, 10));
       expect(pts.length, 9);
     });

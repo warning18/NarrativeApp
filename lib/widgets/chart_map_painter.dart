@@ -74,6 +74,7 @@ class ChartMapPainter extends CustomPainter {
     this.fog = ChartFog.uncharted,
     this.calque = ChartCalque.none,
     this.clanColours = const {},
+    this.zoneHolders,
     this.standingOf = const {},
     this.shopPlaces = const {},
     this.campPlaces = const {},
@@ -116,6 +117,12 @@ class ChartMapPainter extends CustomPainter {
   /// Each clan's colour (factions.json), for the clans calque and the
   /// seats; a clan missing here is drawn in the chart's label colour.
   final Map<String, Color> clanColours;
+
+  /// Who holds each land now (RegionHolders, region_holders.dart), in
+  /// [ChartGeography.zones]' order: the Clans calque tints a whole land by
+  /// its first holder and stripes it for a second. Null falls back to each
+  /// zone's own `influence`.
+  final List<List<(String, double)>>? zoneHolders;
 
   /// The player's standing with each clan, -100 to 100, for the standing
   /// calque.
@@ -218,7 +225,7 @@ class ChartMapPainter extends CustomPainter {
   /// [v] kept within [lo]..[hi]; [lo] when the range is empty (a name
   /// wider than the canvas), where num.clamp would throw.
   static double _within(double v, double lo, double hi) =>
-      hi < lo ? lo : v.clamp(lo, hi).toDouble();
+      hi < lo ? lo : v.clamp(lo, hi);
 
   /// Text with a dark halo (a stroked copy under the fill): readable over
   /// land, sea, roads and the fog's edge alike.
@@ -814,7 +821,7 @@ class ChartMapPainter extends CustomPainter {
       _skins[key] = image;
       return image;
     } finally {
-      _skinsPending.remove(key);
+      unawaited(_skinsPending.remove(key));
     }
   }
 
@@ -1058,13 +1065,6 @@ class ChartMapPainter extends CustomPainter {
       final colours = chartBiome(geography.zones[i].biome);
       canvas.drawPath(_poly(relief.zones[i]),
           Paint()..color = colours.ground.withValues(alpha: wash));
-    }
-    final border = Paint()
-      ..color = palette.coast.withValues(alpha: 0.9)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.7;
-    for (var i = 0; i < geography.zones.length; i++) {
-      _dashedPath(canvas, _poly(relief.zones[i]), border, dash: 2.2, gap: 1.6);
     }
     // The ground's grain (v1.202): a stipple of each biome's accent.
     if (detail && lod >= 1) {
@@ -1964,13 +1964,16 @@ class ChartMapPainter extends CustomPainter {
         final zone = geography.zones[i];
         final path = _poly(relief.zones[i]);
         if (calque == ChartCalque.clans) {
-          if (zone.influence.isEmpty) continue;
-          final (first, strength) = zone.influence.first;
+          final holders = zoneHolders != null && i < zoneHolders!.length
+              ? zoneHolders![i]
+              : zone.influence;
+          if (holders.isEmpty) continue;
+          final (first, strength) = holders.first;
           final colour = clanColours[first] ?? palette.label;
           canvas.drawPath(
-              path, Paint()..color = colour.withValues(alpha: 0.38 * strength));
-          if (zone.influence.length > 1 && zone.influence[1].$2 >= 0.45) {
-            final second = clanColours[zone.influence[1].$1] ?? palette.label;
+              path, Paint()..color = colour.withValues(alpha: 0.5 * strength));
+          if (holders.length > 1 && holders[1].$2 >= 0.45) {
+            final second = clanColours[holders[1].$1] ?? palette.label;
             canvas.save();
             canvas.clipPath(path);
             final stripe = Paint()
@@ -2137,17 +2140,6 @@ class ChartMapPainter extends CustomPainter {
         canvas.drawCircle(g.centre, g.radius, fogPaint);
       } else {
         canvas.drawRect(whole, fogPaint);
-      }
-      if (fog == ChartFog.uncharted) {
-        // The coasts, dotted, and the lands' names: the world has a shape
-        // before the story.
-        final dotted = Paint()
-          ..color = palette.coast.withValues(alpha: 0.9)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
-        for (final coast in relief.coasts) {
-          _dashedPath(canvas, _poly(coast), dotted, dash: 1.2, gap: 1.2);
-        }
       }
       // What the story has reached shows through (v1.208): each land a
       // place was read in, whole, its torn edge softened; the roads

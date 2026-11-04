@@ -113,7 +113,6 @@ SimGrowth _growth({SimPolicy policy = SimPolicy.competent}) {
     spells: const {},
   )..policy = policy;
   return SimGrowth(
-    mode: SimProgression.offers,
     tables: SimGrowthTables(
       items: _items,
       itemSets: _sets,
@@ -337,7 +336,7 @@ void main() {
       expect(pick.suitor, weak);
       expect(pick.reason, contains('compact would turn penitents Hostile'));
       // With no clan backed, the strongest gift is taken.
-      g.politics = const PoliticsState();
+      g.politics = PoliticsState.empty;
       final free = g.competentSuitor(
           const ClanOffer(ticket: ticket, suitors: [strong, weak]), ticket);
       expect(free.suitor, strong);

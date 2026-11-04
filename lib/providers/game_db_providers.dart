@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart'
+    show ErrorDescription, FlutterError, FlutterErrorDetails;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -42,6 +45,13 @@ class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
       state = AsyncValue.data(records);
       if (!loaded.isCompleted) loaded.complete(records);
     } catch (error, stackTrace) {
+      // Logged, not swallowed (issue #696): the bundled file itself failed.
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'gamedata',
+          context:
+              ErrorDescription('loading the ${_repository.schema.id} table')));
       state = AsyncValue.error(error, stackTrace);
       if (!loaded.isCompleted) loaded.complete(const {});
     }
@@ -93,14 +103,12 @@ final gameDbProvider = StateNotifierProvider.family<_GameDbNotifier,
   },
 );
 
-/// [_GameDbNotifier.whenLoaded] for [schema]'s table.
+/// [_GameDbNotifier.whenLoaded] for [schema]'s table, as the player reads
+/// it ([localizedDbProvider]'s, cached: it isn't rebuilt on each call).
 Future<Map<String, dynamic>> loadedGameDb(
     WidgetRef ref, DbSchema schema) async {
-  final records = withResolvedPlaceholders(
-      schema.id, await ref.read(gameDbProvider(schema).notifier).whenLoaded());
-  return ref.read(appLanguageProvider) == AppLanguage.fr
-      ? _readableTable(schema, frenchOverlay(records), french: true)
-      : _readableTable(schema, records);
+  await ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  return ref.read(localizedDbProvider(schema)).value ?? const {};
 }
 
 /// A copy of [records] with every French field laid over its English

@@ -26,3 +26,19 @@ The 25 simulator files, run alone on the same machine (`flutter test --reporter 
 | `sim_coverage_test` | 28.0 s | 36.3 s |
 
 The full world costs the walk more (specialisations, ports and detour scenes are more to roll): `clash_balance_test` (+13 s) and `sim_coverage_test` (+8 s) paid for what `nemesis_quests_test` saved. Both are the next speed candidates (`clash_balance_test`: three seeds of 40 runs, twice).
+
+## Reference numbers since v1.766 (the simulator reaches the shops)
+
+Core's #742 made the simulated walk visit the ports', the houses' and the caravan's shops ([sim-reach-v1.766.md](../simulation/sim-reach-v1.766.md)) and re-tuned `void_stalker` (health 44 to 54, damage 4 to 5). The numbers QA compares against move; the older L3 tables ([1.696.0](l3-1.696.0.md) and before) stay as they were measured, on the simulator of their day, and are **not** comparable with these:
+
+| 800 naive runs, seeds 11 and 23, four goals (QA's method) | v1.762 | **v1.766** |
+|---|---|---|
+| encounters won | 71.0% | **75.3%** |
+| ordinary (non-boss) fights won | 74.4% | **79.3%** |
+| won at the first attempt | 40.0% | **44.4%** |
+| level and gold at the end | 21.6, 4,976 | **22.1, 4,110** |
+| runs that reach an ending | 800 of 800 | 800 of 800 |
+| profession spread (encounter win, mage to warrior) | 6.1 points | **8.2 points** (mage 80.2, warrior 74.9) |
+| `void_stalker` in the boss test (target 65) | 60.3% | **62.5%** (88.3% before the re-tuning) |
+
+What reads differently: chapter 3 is 83% won (was 71), chapters 6 to 8 lose 1 to 4 points (the shopping leaves less gold). Every boss stays inside its band. `l3_sim_metrics.py` keeps the same boss targets (no target moved), so the next L3 compares with this table. The guards that quote bands (`boss_balance`, the class spread, `sim_competent`, `sim_playthroughs`, `sim_coverage`, `clash_balance`, `qa_sim_tables`) pass on main at v1.766 (CI of #742); no `qa_` guard quotes the old figures, so none changes.

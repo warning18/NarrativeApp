@@ -105,7 +105,7 @@ StoryGraphReport checkStoryGraphIntegrity(
     if (node.settlement?.isCamp ?? false) queue.addAll(errands);
 
     final campChapter =
-        node.settlement?.isCamp == true ? node.settlement!.chapter : null;
+        node.settlement?.isCamp ?? false ? node.settlement!.chapter : null;
     if (campChapter != null) {
       for (final place in places) {
         if (place.settlement!.chapter! > campChapter) continue;

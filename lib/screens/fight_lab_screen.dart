@@ -236,7 +236,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             ),
           ),
         ),
-        (won) => won == true ? 'fight_lab_fight_won' : 'fight_lab_fight_lost',
+        (won) => won ?? false ? 'fight_lab_fight_won' : 'fight_lab_fight_lost',
       );
 
   Future<void> _runShip(Map<String, dynamic> enemyShips) async {

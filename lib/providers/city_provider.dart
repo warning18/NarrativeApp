@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -22,12 +23,16 @@ const String cityPlansAssetPath = 'assets/gamedata/city_plans.json';
 final cityPlanRecordsProvider =
     FutureProvider<Map<String, CityPlanRecord>>((ref) async {
   try {
-    final raw = await rootBundle.loadString(cityPlansAssetPath);
-    return cityPlanRecordsFrom(jsonDecode(raw) as Map<String, dynamic>);
+    // Read off the main thread (v1.741): 715 KB, about 17 ms there.
+    return await compute(
+        _cityPlansFrom, await rootBundle.loadString(cityPlansAssetPath));
   } catch (_) {
     return const {};
   }
 });
+
+Map<String, CityPlanRecord> _cityPlansFrom(String raw) =>
+    cityPlanRecordsFrom(jsonDecode(raw) as Map<String, dynamic>);
 
 /// The district the party walked to (free walking, board 15) and the scene
 /// it walked from: it holds while the story stays at that scene; the story

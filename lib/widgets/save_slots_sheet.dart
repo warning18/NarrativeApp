@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -106,8 +107,8 @@ class SaveSlotsSheet extends ConsumerWidget {
     // A seal pressed on the page: the game is kept.
     showQuestSeal(context, colour: const Color(0xFF3F6E8C));
     Navigator.pop(context);
-    showImmersiveNotice(context,
-        icon: Icons.save, message: trFor(lang, 'game_saved_message'));
+    unawaited(showImmersiveNotice(context,
+        icon: Icons.save, message: trFor(lang, 'game_saved_message')));
   }
 
   Future<void> _load(BuildContext context, WidgetRef ref, int slot) async {
@@ -139,9 +140,9 @@ class SaveSlotsSheet extends ConsumerWidget {
     final saved = await ref.read(savedGamesProvider.notifier).load(slot);
     if (!context.mounted) return;
     if (saved == null) {
-      showImmersiveNotice(context,
+      unawaited(showImmersiveNotice(context,
           icon: Icons.error_outline,
-          message: trFor(lang, 'save_slot_unreadable'));
+          message: trFor(lang, 'save_slot_unreadable')));
       return;
     }
     await ref.read(playerSessionProvider.notifier).loadSession(saved.session);
@@ -150,8 +151,8 @@ class SaveSlotsSheet extends ConsumerWidget {
         .loadState(saved.currentNodeId, saved.history);
     if (!context.mounted) return;
     Navigator.pop(context, true);
-    showImmersiveNotice(context,
-        icon: Icons.folder_open, message: trFor(lang, 'game_loaded_message'));
+    unawaited(showImmersiveNotice(context,
+        icon: Icons.folder_open, message: trFor(lang, 'game_loaded_message')));
   }
 }
 

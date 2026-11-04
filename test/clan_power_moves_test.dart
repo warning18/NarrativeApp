@@ -327,7 +327,6 @@ void main() {
 
     test('the simulator fires the politics events as the app does', () {
       final growth = SimGrowth(
-        mode: SimProgression.offers,
         tables: SimGrowthTables(clans: data, events: events),
         character: SimCharacter.create(
           raceId: 'human',

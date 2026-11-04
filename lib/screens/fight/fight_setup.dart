@@ -523,11 +523,7 @@ extension _FightSetup on _FightScreenState {
         picked: _fieldedAllyIds,
         options: [
           for (final id in candidates)
-            FightPickOption(
-              id: id,
-              name: nameOf(id),
-              headAsset: id == 'vica' ? 'assets/visuals/heads/vica.png' : null,
-            ),
+            FightPickOption(id: id, name: nameOf(id)),
         ],
         onToggle: (id, on) {
           final now = _fieldedAllyIds;

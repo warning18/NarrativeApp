@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import 'head_avatar.dart';
 
 /// Who the scene faces: [name], their [role] if known, and [headAsset] (a
 /// head from assets/visuals/heads) when there is one.
@@ -15,8 +16,6 @@ class SceneFaced {
   final String id;
   final String name;
   final String role;
-
-  String get headAsset => 'assets/visuals/heads/$id.png';
 }
 
 class SceneVignette extends StatelessWidget {
@@ -39,40 +38,18 @@ class SceneVignette extends StatelessWidget {
   /// One line instead of the two-figure scene.
   final bool folded;
 
-  static const String _heroHead = 'assets/visuals/heads/hero.png';
-
-  Widget _head(BuildContext context, String? asset, String name,
-      {double size = 40}) {
+  Widget _head(BuildContext context, String id, String name,
+      {double size = 40, bool voice = false}) {
     final scheme = Theme.of(context).colorScheme;
-    final initial = name.isEmpty ? '?' : name[0].toUpperCase();
-    final fallback = Center(
-      child: asset == null
+    return HeadAvatar(
+      id: id,
+      name: name,
+      size: size,
+      // A scene with no one faced: a voice's icon in place of a head.
+      fallback: voice
           ? Icon(Icons.record_voice_over_outlined,
               size: size * 0.55, color: scheme.onSurfaceVariant)
-          : CircleAvatar(
-              radius: size * 0.32,
-              backgroundColor: scheme.primary,
-              child: Text(initial,
-                  style: TextStyle(
-                      color: scheme.onPrimary,
-                      fontSize: size * 0.36,
-                      fontWeight: FontWeight.bold)),
-            ),
-    );
-    return Container(
-      width: size,
-      height: size,
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: asset == null
-          ? fallback
-          : Image.asset(asset,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.none,
-              errorBuilder: (_, __, ___) => fallback),
+          : null,
     );
   }
 
@@ -98,7 +75,8 @@ class SceneVignette extends StatelessWidget {
       child: folded
           ? Row(
               children: [
-                _head(context, who?.headAsset, who?.name ?? '', size: 30),
+                _head(context, who?.id ?? '', who?.name ?? '',
+                    size: 30, voice: who == null),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
@@ -121,7 +99,7 @@ class SceneVignette extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    _head(context, _heroHead, heroName),
+                    _head(context, 'hero', heroName),
                     // One ground line between the two.
                     Expanded(
                       child: Container(
@@ -130,7 +108,8 @@ class SceneVignette extends StatelessWidget {
                         color: ink.seam,
                       ),
                     ),
-                    _head(context, who?.headAsset, who?.name ?? ''),
+                    _head(context, who?.id ?? '', who?.name ?? '',
+                        voice: who == null),
                   ],
                 ),
                 const SizedBox(height: 2),

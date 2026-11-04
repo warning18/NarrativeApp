@@ -286,28 +286,44 @@ class _FightBackdropState extends State<FightBackdrop>
     _frame.tick(0, _level);
   }
 
+  /// Whether motion is allowed here (not reduced, and the page is live).
+  bool _motion = false;
+
+  /// Whether anything on this layer moves: the day's weather, an anomaly
+  /// (or one still easing in or out). The ground alone is still, and so is
+  /// painted once, not sixty times a second.
+  bool get _moves =>
+      (widget.weather && widget.sky != null) ||
+      (widget.events && widget.anomaly != null) ||
+      (_level - _target).abs() > 1e-6;
+
+  /// Runs the ticker only while there is motion to draw.
+  void _sync() {
+    if (_motion && _moves) {
+      _ticker ??= createTicker(_onTick);
+      if (!_ticker!.isActive) {
+        _last = Duration.zero;
+        _ticker!.start();
+      }
+      return;
+    }
+    if (_ticker?.isActive ?? false) _ticker!.stop();
+    _last = Duration.zero;
+    if (!_motion) _level = _target;
+    _frame.tick(_t, _level);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final on = !_still(context) && TickerMode.valuesOf(context).enabled;
-    if (on) {
-      _ticker ??= createTicker(_onTick);
-      if (!_ticker!.isActive) _ticker!.start();
-    } else {
-      _ticker?.stop();
-      _last = Duration.zero;
-      _level = _target;
-      _frame.tick(_t, _level);
-    }
+    _motion = !_still(context) && TickerMode.valuesOf(context).enabled;
+    _sync();
   }
 
   @override
   void didUpdateWidget(FightBackdrop old) {
     super.didUpdateWidget(old);
-    if (_ticker?.isActive != true) {
-      _level = _target;
-      _frame.tick(_t, _level);
-    }
+    _sync();
   }
 
   void _onTick(Duration elapsed) {
@@ -322,6 +338,8 @@ class _FightBackdropState extends State<FightBackdrop>
       _level += _level < target ? step : -step;
     }
     _frame.tick(_t, _level);
+    // The last of the motion drawn: stop ticking.
+    if (!_moves) _sync();
   }
 
   @override
