@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.771.0+807]
+
+- The playthrough simulator loses its old growth mode (the skill points,
+  perks and sign picks of before v1.194), which only two tests still ran;
+  the game and every batch use the clans' offers. About 170 lines less,
+  and a seeded batch gives the same numbers. Nothing changes in play.
+
+## [1.770.0+806]
+
+- Code: the 15% lift on ordinary enemies' damage from chapter 2 on
+  (v1.743) is folded into the damage floor table (one table instead of a
+  table and a factor); every fight's numbers are the same.
+- The clans' tables and the offers' tables are parsed once and kept while
+  they stay the same (an edit in the Data tab parses them again), instead
+  of about 2.7 ms again on each of 13 calls: offers and clan pages open a
+  little faster.
+
+## [1.769.0+805]
+
+- The app is about 350 KB smaller: `city_plans.json` (the cities' stored
+  plans, generated, never edited by hand) is written minified, 733 KB down
+  to 386 KB with the same data. The two plan generators
+  (`city_plan_generator.dart`, `town_service_pins.dart`), which only the
+  tools in `tool/city_plans/` run, move there from `lib/`. Nothing changes
+  on screen.
+
+## [1.768.0+804]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
+
+## [1.767.0+803]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
 ## [1.766.0+802]
 
 - The playthrough simulator now shops where a player shops: the ports'

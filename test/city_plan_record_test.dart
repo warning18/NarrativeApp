@@ -13,7 +13,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/city_districts.dart';
-import 'package:narrative_data_app/data/city_plan_generator.dart';
 import 'package:narrative_data_app/data/city_plan_record.dart';
 import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
@@ -21,6 +20,8 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/city_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+
+import '../tool/city_plans/city_plan_generator.dart';
 
 Map<String, dynamic> _json(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
