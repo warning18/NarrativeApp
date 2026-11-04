@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.813.0+849]
+## [1.816.0+852]
 
 - Story: two new fields for Narrative's text, nothing changes until the
   story uses them. A scene with `callback_cap` shows at most that many of
@@ -19,6 +19,16 @@ isn't reconstructable from git history alone.
   `revisit_description_fr`); the first visit is unchanged. Both go through
   the page, the read-aloud and the story editor; the recording script keeps
   every line.
+
+## [1.814.0+850]
+
+- Effects: the 25 dice, element and keyword animations (`die_*`, `el_*`,
+  `kw_*`, with `die_surge`, `die_curse`, `die_glint`), the campfire, the chests
+  and the map seal are drawn from the game's own palette (`InkColors`) in one
+  table in `tool/gen_pixel_fx.py`, where they used Material Design colours
+  (pink, light blue, amber, grey, brown). Same shapes and timing, new tones;
+  picture: `docs/ux-shots/art/fx-recolour-before-after.png`.
+
 ## [1.812.0+848]
 
 - Fights: one entrance. A fight met on a land crossing now opens with the same
