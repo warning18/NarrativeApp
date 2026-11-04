@@ -27,7 +27,7 @@ Said first so nobody pays for work that is not needed.
 - **Why:** the percussive cap is a reading rhythm. A page-turn at the beat keeps every word and gets the pages under 600. Cutting further now would cost facts.
 - **Size:** S, one PR, EN and FR together. **Risk:** low; `narration_pages_test` and `new_game_start_test` pin the four endings at two pages, so those are left alone. A scene whose test pins a phrase stays whole across pages. **Player notices:** fewer long pages on a small phone; one tap more on ten scenes.
 
-### 3. Retire the hub rows that do nothing [removes] — value medium, effort M
+### 3. Retire the hub rows that do nothing [removes] — value low after checking (see `hub-rows-candidates.md`: only 12 rows qualify, 3 are thin), effort M
 
 - **What:** the big hubs list rows whose scene has no fight, no gold, no alignment and no flag beyond the hub's own: they read a short scene and return. Counts: `2015` 11 of its 36 rows (`2015_bazaar`, `2015_apothecary`, `2015_informant`, `2015_ternrow`, `2015_cards`, `2015_liora`, `2015_dorran`, `2015_vane`, and three more), `6010` 6, `5010` 6, `7100` 3, `3005` 2, `7200` 1, `5100` 1. `2015` shows up to 25 ungated buttons at once.
 - **Why:** choice overload on a 320 px screen, and each flavor row has the same weight as a quest. Folding the ones that only give a line into the hub's own description or into a companion remark keeps the voice and loses the button.
