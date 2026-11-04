@@ -54,9 +54,6 @@ double deckCrewX(int index, int count, double length, double width) =>
 double seaShipX(double length, double width) =>
     (width * 0.34 - length / 2 + 18).floorToDouble();
 
-/// How tall a figure is, in scene pixels.
-const double deckCrewHeight = 8;
-
 /// Paints [crew] on a hull of [len] pixels whose stern is at [x]; [top] is
 /// her rail line, one row per column from the stern (the hull painter's).
 void paintDeckCrew(

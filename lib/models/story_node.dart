@@ -18,6 +18,8 @@ class StoryChoice {
     this.unlockQuestId,
     this.opensCharacterCreation = false,
     this.textFr,
+    this.reply = '',
+    this.replyFr = '',
     this.lockedTextFr,
     this.checkAbility,
     this.checkDC,
@@ -89,6 +91,8 @@ class StoryChoice {
       unlockQuestId: json['unlockQuestId'] as String?,
       opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
       textFr: json['text_fr'] as String?,
+      reply: json['reply']?.toString() ?? '',
+      replyFr: json['reply_fr']?.toString() ?? '',
       lockedTextFr: json['lockedText_fr'] as String?,
       checkAbility: json['checkAbility'] as String?,
       checkDC: (json['checkDC'] as num?)?.toInt(),
@@ -253,6 +257,12 @@ class StoryChoice {
 
   /// Optional French translation of [text]; falls back to English when absent.
   final String? textFr;
+
+  /// What the hero says aloud taking this choice (the in-place choices,
+  /// v1.679; Narrative's), and its French; '' falls back to the choice's
+  /// text ([replyFor]).
+  final String reply;
+  final String replyFr;
 
   /// Optional French translation of [lockedText]; falls back to English when absent.
   final String? lockedTextFr;
@@ -426,12 +436,20 @@ class StoryChoice {
   String textFor(bool french) =>
       french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
 
+  /// The hero's spoken answer ([reply]), else the choice's own text.
+  String replyFor(bool french) {
+    final own = french && replyFr.isNotEmpty ? replyFr : reply;
+    return own.isNotEmpty ? own : textFor(french);
+  }
+
   String? lockedTextFor(bool french) =>
       french && (lockedTextFr?.isNotEmpty ?? false) ? lockedTextFr : lockedText;
 
   Map<String, dynamic> toJson() => {
         'text': text,
         if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
+        if (reply.isNotEmpty) 'reply': reply,
+        if (replyFr.isNotEmpty) 'reply_fr': replyFr,
         'next_id': nextId,
         if (spot != null) 'spot': spot,
         if (place != null) 'place': place,

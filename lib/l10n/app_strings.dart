@@ -1359,7 +1359,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
-  'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
@@ -1449,10 +1448,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'title_map': {
     AppLanguage.en: 'Story Map',
     AppLanguage.fr: "Carte de l'histoire"
-  },
-  'title_generate': {
-    AppLanguage.en: 'AI Generator',
-    AppLanguage.fr: 'Générateur IA'
   },
   'title_data': {AppLanguage.en: 'Game Data', AppLanguage.fr: 'Données du jeu'},
   'settings': {AppLanguage.en: 'Settings', AppLanguage.fr: 'Paramètres'},
@@ -3391,14 +3386,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'later',
     AppLanguage.fr: 'plus tard',
   },
-  'cost_pt_one': {
-    AppLanguage.en: '1 pt',
-    AppLanguage.fr: '1 pt',
-  },
-  'cost_pt_many': {
-    AppLanguage.en: '{n} pts',
-    AppLanguage.fr: '{n} pts',
-  },
   'mastery_cost_label': {
     AppLanguage.en: 'Mastery · {n} essence',
     AppLanguage.fr: 'Maîtrise · {n}\u00a0d’essence',
@@ -4695,6 +4682,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: "is stunned and can't act this round.",
     AppLanguage.fr: 'est étourdi(e) et ne peut pas agir ce tour.',
   },
+  'fight_pick_title': {
+    AppLanguage.en: 'Who fights?',
+    AppLanguage.fr: 'Qui combat ?'
+  },
+  'fight_pick_hint': {
+    AppLanguage.en:
+        'You and two companions at most. The others wait this one out.',
+    AppLanguage.fr:
+        'Vous et deux compagnons au plus. Les autres attendent ce combat.',
+  },
+  'fight_pick_keep': {
+    AppLanguage.en: 'Keep this as my party',
+    AppLanguage.fr: 'Garder comme mon groupe',
+  },
   'fighting_alongside_prefix': {
     AppLanguage.en: 'Fighting alongside',
     AppLanguage.fr: 'Combat aux côtés de',
@@ -4827,13 +4828,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'active_label': {AppLanguage.en: 'Active', AppLanguage.fr: 'Actif'},
   'benched_label': {AppLanguage.en: 'Benched', AppLanguage.fr: 'Sur le banc'},
   'houses_section': {AppLanguage.en: 'Houses', AppLanguage.fr: 'Maisons'},
-  'party_capacity_label': {
-    AppLanguage.en: 'party capacity',
-    AppLanguage.fr: 'capacité du groupe'
-  },
   'party_health_bonus_label': {
     AppLanguage.en: 'party health',
     AppLanguage.fr: 'santé du groupe'
+  },
+  // The Barracks Annex (v1.668): the companions' own health.
+  'companion_health_bonus_label': {
+    AppLanguage.en: 'companion health with a full company',
+    AppLanguage.fr: 'santé des compagnons au complet'
   },
   'party_damage_bonus_label': {
     AppLanguage.en: 'party damage',
@@ -5355,6 +5357,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'shelter_heals': {
     AppLanguage.en: 'Shelter: {name}\'s heal reaches the party (+{n} each).',
     AppLanguage.fr: 'Abri : le soin de {name} atteint le groupe (+{n} chacun).',
+  },
+  'heal_target_log': {
+    AppLanguage.en: '{name} mends {target} (+{n}).',
+    AppLanguage.fr: '{name} soigne {target} (+{n}).',
   },
   'splash_hits': {
     AppLanguage.en: '{name} is caught by the blow: {n} damage.',
@@ -5987,18 +5993,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             '(lecteur et carte), la Légende, et tous les écrans de jeu. Les tables de données, '
             'les noms de champs et les identifiants restent en anglais.',
   },
-  'gemini_api_key_title': {
-    AppLanguage.en: 'Gemini API Key',
-    AppLanguage.fr: 'Clé API Gemini'
-  },
-  'gemini_api_key_desc': {
-    AppLanguage.en: 'Used by the AI Generator tab to create new story beats. '
-        'Stored only on this device.',
-    AppLanguage.fr:
-        "Utilisée par l'onglet Générateur IA pour créer de nouvelles scènes. "
-            'Stockée uniquement sur cet appareil.',
-  },
-  'api_key_label': {AppLanguage.en: 'API key', AppLanguage.fr: 'Clé API'},
   'show_api_key_tooltip': {
     AppLanguage.en: 'Show API key',
     AppLanguage.fr: 'Afficher la clé API'
@@ -6058,19 +6052,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "Brume d'ardoise"
   },
   'combat_section_title': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
-  'add_api_key_first': {
-    AppLanguage.en: 'Add your Gemini API key in Settings first.',
-    AppLanguage.fr: "Ajoutez d'abord votre clé API Gemini dans les Paramètres.",
-  },
-  'describe_next': {
-    AppLanguage.en: 'Describe what should happen next.',
-    AppLanguage.fr: 'Décrivez ce qui doit se passer ensuite.',
-  },
-  'no_api_key_banner': {
-    AppLanguage.en: 'No Gemini API key set. Open Settings to add one.',
-    AppLanguage.fr:
-        "Aucune clé API Gemini définie. Ouvrez les Paramètres pour en ajouter une.",
-  },
   'what_happens_next_label': {
     AppLanguage.en: 'What happens next?',
     AppLanguage.fr: 'Que se passe-t-il ensuite ?',
@@ -6083,15 +6064,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'generating_label': {
     AppLanguage.en: 'Generating...',
     AppLanguage.fr: 'Génération en cours...'
-  },
-  'generate_button': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
-  'no_response_generated': {
-    AppLanguage.en: 'No response generated.',
-    AppLanguage.fr: 'Aucune réponse générée.',
-  },
-  'generation_failed_prefix': {
-    AppLanguage.en: 'Generation failed',
-    AppLanguage.fr: 'Échec de la génération',
   },
   'close_button': {AppLanguage.en: 'Close', AppLanguage.fr: 'Fermer'},
   'flags_count_label': {AppLanguage.en: 'flags', AppLanguage.fr: 'drapeaux'},
@@ -6844,14 +6816,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'structural_audit_broken_links_label': {
     AppLanguage.en: 'Broken links',
     AppLanguage.fr: 'Liens rompus',
-  },
-  'analyze_with_gemini_button': {
-    AppLanguage.en: 'Analyze with Gemini',
-    AppLanguage.fr: 'Analyser avec Gemini',
-  },
-  'analyzing_label': {
-    AppLanguage.en: 'Analyzing…',
-    AppLanguage.fr: 'Analyse en cours…'
   },
   'playthrough_recap_title': {
     AppLanguage.en: 'Playthrough Recap',
@@ -8915,6 +8879,90 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Chaque coup porté, et chaque coup reçu, en ajoute 1. À 5, la prochaine face offensive est un coup lourd ×2,5.',
   },
+  // The effect icons' pop-ins (combat redesign A', texts by Core,
+  // docs/proposals/fight-effect-tips.md).
+  'poison_tip': {
+    AppLanguage.en:
+        'Takes {n} damage at the start of each of its turns, for {turns} more turns. A new poison replaces the old one; poisons don’t add up.',
+    AppLanguage.fr:
+        'Subit {n} dégâts au début de chacun de ses tours, encore {turns} tours. Un nouveau poison remplace l’ancien\u00a0; les poisons ne s’additionnent pas.',
+  },
+  'stun_tip': {
+    AppLanguage.en:
+        'Loses its next turn: a stunned hero sits out the roll, a stunned enemy makes no move and drops a blow it was winding up. Lasts {turns} turn(s).',
+    AppLanguage.fr:
+        'Perd son prochain tour\u00a0: un héros étourdi ne lance pas son dé, un ennemi étourdi n’agit pas et perd le coup qu’il préparait. Dure {turns} tour(s).',
+  },
+  'weaken_tip': {
+    AppLanguage.en:
+        'Its hits deal {n}% less damage, for {turns} more turns. A new weaken replaces the old one.',
+    AppLanguage.fr:
+        'Ses coups infligent {n}\u00a0% de dégâts en moins, encore {turns} tours. Un nouvel affaiblissement remplace l’ancien.',
+  },
+  'block_tip': {
+    AppLanguage.en:
+        'Stops {n} damage of the next blow that reaches this fighter; that blow uses it up. It is doubled against the blow an enemy has announced on this fighter. It lasts until the party’s next roll.',
+    AppLanguage.fr:
+        'Arrête {n} dégâts du prochain coup qui atteint ce combattant\u00a0; ce coup l’épuise. Il est doublé contre le coup qu’un ennemi a annoncé sur ce combattant. Il dure jusqu’au prochain lancer du groupe.',
+  },
+  'shelter_tip': {
+    AppLanguage.en:
+        'Your party kept a Defend and a Heal this round: every Heal also mends each other standing member for half of it.',
+    AppLanguage.fr:
+        'Votre groupe a gardé une Défense et un Soin ce tour\u00a0: chaque Soin soigne aussi chaque autre membre debout de la moitié.',
+  },
+  'effect_block_label': {AppLanguage.en: 'Block', AppLanguage.fr: 'Blocage'},
+  'effect_shelter_label': {AppLanguage.en: 'Shelter', AppLanguage.fr: 'Abri'},
+  'effect_target_label': {AppLanguage.en: 'Targeted', AppLanguage.fr: 'Visé'},
+  'effect_target_tip': {
+    AppLanguage.en: 'An enemy’s next blow is aimed at this fighter.',
+    AppLanguage.fr: 'Le prochain coup d’un ennemi vise ce combattant.',
+  },
+  'effect_guard_label': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'effect_windup_label': {
+    AppLanguage.en: 'Winding up',
+    AppLanguage.fr: 'Coup préparé',
+  },
+  'effect_flee_label': {AppLanguage.en: 'Wavering', AppLanguage.fr: 'Vacille'},
+  'effect_more_label': {AppLanguage.en: 'Details', AppLanguage.fr: 'Détails'},
+  'effect_popin_sub': {
+    AppLanguage.en: '{name} · {turns} turns left',
+    AppLanguage.fr: '{name} · encore {turns} tours',
+  },
+  'effect_popin_sub_plain': {
+    AppLanguage.en: '{name}',
+    AppLanguage.fr: '{name}',
+  },
+  'effect_popin_close': {
+    AppLanguage.en: 'Tap anywhere to close.',
+    AppLanguage.fr: 'Touchez ailleurs pour fermer.',
+  },
+  // The dice board (combat redesign A'').
+  'dice_pick_hint': {
+    AppLanguage.en:
+        'Tap a die to see its target, tap it again to keep it. Long-press for details.',
+    AppLanguage.fr:
+        'Touchez un dé pour voir sa cible, touchez-le encore pour le garder. Appui long pour les détails.',
+  },
+  'dice_picked_hint': {
+    AppLanguage.en: 'Tap another target to change it · tap the die to keep it.',
+    AppLanguage.fr:
+        'Touchez une autre cible pour la changer · touchez le dé pour le garder.',
+  },
+  'dice_kept_label': {AppLanguage.en: 'Kept', AppLanguage.fr: 'Gardés'},
+  'dice_kept_none': {
+    AppLanguage.en: 'No die kept',
+    AppLanguage.fr: 'Aucun dé gardé',
+  },
+  'dice_kept_return_hint': {
+    AppLanguage.en: 'Double-tap a kept die to put it back.',
+    AppLanguage.fr: 'Touchez deux fois un dé gardé pour le remettre.',
+  },
+  'dice_sealed_tip': {
+    AppLanguage.en: 'Locked for this round: a new roll has been made.',
+    AppLanguage.fr:
+        'Verrouillé pour ce tour\u00a0: un nouveau lancer a eu lieu.',
+  },
   'fury_ready_label': {
     AppLanguage.en: 'Heavy blow next',
     AppLanguage.fr: 'Coup lourd au prochain',
@@ -8989,6 +9037,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'condition_shrine_desc': {
     AppLanguage.en: 'Every Heal face and potion restores half again as much.',
     AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
+  },
+  // The eight newer stages' own anomalies (v1.688; Narrative may reword).
+  'anomaly_crumbling_walls': {
+    AppLanguage.en: 'Crumbling walls',
+    AppLanguage.fr: 'Murs qui croulent',
+  },
+  'anomaly_deep_canopy': {
+    AppLanguage.en: 'Deep canopy',
+    AppLanguage.fr: 'Sous-bois profond',
+  },
+  'anomaly_rising_ford': {
+    AppLanguage.en: 'Rising ford',
+    AppLanguage.fr: 'Gué en crue',
+  },
+  'anomaly_smouldering_stubble': {
+    AppLanguage.en: 'Smouldering stubble',
+    AppLanguage.fr: 'Chaumes qui couvent',
+  },
+  'anomaly_cool_spring': {
+    AppLanguage.en: 'Cool spring',
+    AppLanguage.fr: 'Source fraîche',
+  },
+  'anomaly_dust_devils': {
+    AppLanguage.en: 'Dust devils',
+    AppLanguage.fr: 'Tourbillons de poussière',
+  },
+  'anomaly_slick_stones': {
+    AppLanguage.en: 'Slick stones',
+    AppLanguage.fr: 'Pavés glissants',
+  },
+  'anomaly_thin_air': {
+    AppLanguage.en: 'Thin air',
+    AppLanguage.fr: 'Air raréfié',
   },
   'anomaly_sandstorm': {
     AppLanguage.en: 'Sandstorm',
@@ -9145,6 +9226,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'stage_hall': {
     AppLanguage.en: 'Within walls',
     AppLanguage.fr: 'Entre quatre murs',
+  },
+  'stage_ruins': {
+    AppLanguage.en: 'Ruins',
+    AppLanguage.fr: 'Ruines',
+  },
+  'stage_woods': {
+    AppLanguage.en: 'Woods',
+    AppLanguage.fr: 'Sous-bois',
+  },
+  'stage_ford': {
+    AppLanguage.en: 'The ford',
+    AppLanguage.fr: 'Le gué',
+  },
+  'stage_burntFields': {
+    AppLanguage.en: 'Burnt fields',
+    AppLanguage.fr: 'Champs brûlés',
+  },
+  'stage_oasis': {
+    AppLanguage.en: 'The oasis',
+    AppLanguage.fr: 'L’oasis',
+  },
+  'stage_caravanRoad': {
+    AppLanguage.en: 'Caravan road',
+    AppLanguage.fr: 'Piste des caravanes',
+  },
+  'stage_quay': {
+    AppLanguage.en: 'The quay',
+    AppLanguage.fr: 'Le quai',
+  },
+  'stage_pass': {
+    AppLanguage.en: 'Mountain pass',
+    AppLanguage.fr: 'Col de montagne',
+  },
+  'stage_cityRoad': {
+    AppLanguage.en: 'City road',
+    AppLanguage.fr: 'Rue de la ville',
+  },
+  'stage_shipDeck': {
+    AppLanguage.en: 'Ship deck',
+    AppLanguage.fr: 'Pont du navire',
   },
   'anomaly_omen_storm': {
     AppLanguage.en: 'The air turns heavy: {name} is coming.',
@@ -10034,6 +10155,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_fire_hint_no_aim': {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+  },
+  'dice_speed_setting_title': {
+    AppLanguage.en: 'Dice speed in fights',
+    AppLanguage.fr: 'Vitesse des dés en combat',
+  },
+  'dice_speed_setting_desc': {
+    AppLanguage.en:
+        '1× lets you watch the dice tumble and land. 2× and 4× throw them faster.',
+    AppLanguage.fr:
+        '1× laisse voir les dés rouler et se poser. 2× et 4× les lancent plus vite.',
   },
   'aimed_shots_setting_title': {
     AppLanguage.en: 'Aimed shots in ship battles',
@@ -11954,10 +12085,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Aucun Signe pour l’instant. Les clans, les tribus, le Chœur et la Fosse en apportent dans leurs offres.',
   },
-  'sign_pending': {
-    AppLanguage.en: '{n} sign(s) to choose',
-    AppLanguage.fr: '{n}\u00a0Signe(s) à choisir',
-  },
   'sign_choose_hint': {
     AppLanguage.en: 'Choose one sign.',
     AppLanguage.fr: 'Choisissez un Signe.',
@@ -12551,7 +12678,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Intrigues',
     AppLanguage.fr: 'Intrigues',
   },
-  'clans_section': {AppLanguage.en: 'Clans', AppLanguage.fr: 'Clans'},
   'clans_section_hint': {
     AppLanguage.en: 'Where you stand with the coast.',
     AppLanguage.fr: 'Où vous en êtes avec la côte.',
@@ -12773,10 +12899,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'no change',
     AppLanguage.fr: 'inchangé',
   },
-  'offer_alignment_nudge': {
-    AppLanguage.en: 'alignment\u00a0{n}',
-    AppLanguage.fr: 'alignement\u00a0{n}',
-  },
   'offer_none_to_come': {
     AppLanguage.en: 'Nobody can come to you yet.',
     AppLanguage.fr: 'Personne ne peut encore venir à vous.',
@@ -12871,6 +12993,45 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_gift_spec': {
     AppLanguage.en: 'Specialisation',
     AppLanguage.fr: 'Spécialisation',
+  },
+  // A clan's die (clan_dice.dart, v1.676).
+  'offer_gift_die': {
+    AppLanguage.en: 'Clan die',
+    AppLanguage.fr: 'Dé de clan',
+  },
+  'clan_die_gift_title': {
+    AppLanguage.en: "{clan}'s gift",
+    AppLanguage.fr: 'Don — {clan}',
+  },
+  'clan_die_resonance_lit': {
+    AppLanguage.en: 'Resonance: +{n} to faces up to {max}',
+    AppLanguage.fr: "Résonance : +{n} aux faces jusqu'à {max}",
+  },
+  'clan_die_resonance_main': {
+    AppLanguage.en: 'Resonance asleep: {clan} is not your main clan',
+    AppLanguage.fr:
+        "Résonance endormie : {clan} n'est pas votre clan principal",
+  },
+  'clan_die_resonance_standing': {
+    AppLanguage.en: 'Resonance asleep: stand Friend or better with {clan}',
+    AppLanguage.fr: 'Résonance endormie : soyez au moins Ami de {clan}',
+  },
+  'resonance_lit_tip': {
+    AppLanguage.en:
+        "Resonance lit: this clan die's small faces count one more.",
+    AppLanguage.fr:
+        'Résonance allumée : les petites faces de ce dé de clan comptent un de plus.',
+  },
+  'resonance_asleep_tip': {
+    AppLanguage.en: 'Resonance asleep: see the dice bag for why.',
+    AppLanguage.fr:
+        'Résonance endormie : voyez le sac de dés pour savoir pourquoi.',
+  },
+  'offer_die_note': {
+    AppLanguage.en:
+        'Given once. While this clan is your main clan and you stand Friend or better, its small faces (1 to 3) count one more.',
+    AppLanguage.fr:
+        'Offert une seule fois. Tant que ce clan est votre clan principal et que vous êtes au moins Ami, ses petites faces (de 1 à 3) comptent un de plus.',
   },
   'offer_sworn_note': {
     AppLanguage.en:
@@ -12995,8 +13156,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Écarter ({left})',
   },
   'roll_banish_length': {
-    AppLanguage.en: '{draws} draws · {cost} charges',
-    AppLanguage.fr: '{draws} tirages · {cost} charges',
+    AppLanguage.en: '{draws} draws · charges: {cost}',
+    AppLanguage.fr: '{draws} tirages · charges : {cost}',
   },
   'roll_banish_done': {
     AppLanguage.en: '{name} is warded off for {draws} draws.',
@@ -13046,8 +13207,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Tenir à l’écart la chasse d’un clan pendant quelques routes.',
   },
   'ward_length': {
-    AppLanguage.en: '{roads} roads · {cost} charges',
-    AppLanguage.fr: '{roads} routes · {cost} charges',
+    AppLanguage.en: '{roads} roads · charges: {cost}',
+    AppLanguage.fr: '{roads} routes · charges : {cost}',
   },
   'ward_mark': {
     AppLanguage.en: 'Warded from {clan}: {n} roads',
@@ -13203,12 +13364,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'titles_section': {
     AppLanguage.en: 'Titles',
     AppLanguage.fr: 'Titres',
-  },
-  'titles_none': {
-    AppLanguage.en:
-        'No title yet. The clans give them, and standing earns them.',
-    AppLanguage.fr:
-        'Aucun titre pour l’instant. Les clans en donnent, et la réputation en vaut.',
   },
   'title_wear': {
     AppLanguage.en: 'Wear',

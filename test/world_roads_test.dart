@@ -35,7 +35,7 @@ void main() {
     for (final stop in [for (final r in worldRoads) ...r.stops]) {
       expect(stop.nameEn.trim(), isNotEmpty, reason: stop.id);
       expect(stop.nameFr.trim(), isNotEmpty, reason: stop.id);
-      expect(RegExp(r'[^ ][;:!?]').hasMatch(stop.nameFr), isFalse,
+      expect(RegExp('[^ ][;:!?]').hasMatch(stop.nameFr), isFalse,
           reason: '${stop.id}: a non-breaking space before ; : ! ?');
     }
   });

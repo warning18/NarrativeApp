@@ -5,9 +5,9 @@
 //   `rewardAllyId`) is handed in, never twice and never after leaving or
 //   being taken (PlayerSessionNotifier.recruitAlly); the quests' own gates
 //   (alignment, flags, gold) are the quest log's;
-// - the party: `partyCapacityFor` seats (two companions, three with the
-//   Barracks Annex), and a companion with a `requiredHouseId` only once that
-//   house stands (Kelda and Kelda's Hall);
+// - the party: `partyCapacityFor` seats (two companions, never more: three
+//   fighters, v1.667), and a companion with a `requiredHouseId` only once
+//   that house stands (Kelda and Kelda's Hall);
 // - approval (approval.dart): every choice's alignment and gold and its
 //   `approvalMods` move the seated companions' approval by their weights; at
 //   [leavingApproval] they walk out, and the benched companion who thinks
@@ -29,6 +29,7 @@ import 'dart:math';
 
 import '../combat/combat_engine.dart' show scaledDamage, scaledMaxHealth;
 import '../combat/fight_numbers.dart' show reviveHealthFraction;
+import '../combat/party_bonus.dart' show fullCompanySize, houseBonusesFor;
 import '../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart' show deriveAllyBaseStats;
@@ -515,12 +516,22 @@ class SimParty {
           const {};
       final base = deriveAllyBaseStats(
           gameConfig: gameConfig, race: race, profession: profession);
-      final stats = _allyStats(record,
+      final raw = _allyStats(record,
           level: _level,
           approval: member.approval,
           races: races,
           professions: professions,
           gameConfig: gameConfig);
+      // The Barracks Annex: a full company comes rested (party_bonus.dart).
+      final rested = 100 +
+          (active.length >= fullCompanySize
+              ? houseBonusesFor(builtHouses, houses).companionHealth
+              : 0);
+      final stats = (
+        maxHealth: max(1, (raw.maxHealth * rested / 100).round()),
+        damage: raw.damage,
+        armor: raw.armor,
+      );
       final liveMax = signs.maxHealthFor(stats.maxHealth, partyWide: true);
       final faces = _facesOf(dice, record);
       final known = {

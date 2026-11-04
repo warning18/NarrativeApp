@@ -758,28 +758,44 @@ void main() {
       expect(partyCapacityFor(const [], const {}), basePartyCapacity);
     });
 
-    test('adds every built house\'s own partyCapacityBonus', () {
-      const houses = {
-        'keldas_hall': {'houseID': 'keldas_hall', 'partyCapacityBonus': 0},
-        'barracks_annex': {
-          'houseID': 'barracks_annex',
-          'partyCapacityBonus': 1
-        },
-      };
+    const houses = {
+      'keldas_hall': {'houseID': 'keldas_hall', 'partyCapacityBonus': 0},
+      'barracks_annex': {'houseID': 'barracks_annex', 'partyCapacityBonus': 1},
+      'big_annex': {'houseID': 'big_annex', 'partyCapacityBonus': 2},
+    };
+
+    test('never above two companions: three fighters (v1.667)', () {
       expect(
-        partyCapacityFor(['keldas_hall', 'barracks_annex'], houses),
-        basePartyCapacity + 1,
-      );
+          partyCapacityFor(
+              ['keldas_hall', 'barracks_annex', 'big_annex'], houses),
+          basePartyCapacity);
+      expect(basePartyCapacity, 2);
+    });
+  });
+
+  group('the cap of three fighters (v1.667)', () {
+    AllyState ally(String id) =>
+        AllyState(companionId: id, currentHealth: AllyState.fullHealthSentinel);
+
+    test('a save with three seated keeps two; the third goes to the bench', () {
+      final session = PlayerSession.fromJson({
+        'recruitedAllies': [
+          for (final id in ['sable', 'liora', 'kelda']) ally(id).toJson(),
+        ],
+        'activeAllyIds': ['sable', 'liora', 'kelda'],
+        'builtHouseIds': ['barracks_annex'],
+      });
+      expect(session.activeAllyIds, ['sable', 'liora']);
+      expect(session.recruitedAllies.map((a) => a.companionId),
+          ['sable', 'liora', 'kelda']);
     });
 
-    test('ignores a house\'s bonus if it hasn\'t been built', () {
-      const houses = {
-        'barracks_annex': {
-          'houseID': 'barracks_annex',
-          'partyCapacityBonus': 1
-        },
-      };
-      expect(partyCapacityFor(const [], houses), basePartyCapacity);
+    test('no seat past two, even when a caller passes more', () async {
+      final notifier = await notifierWith(baseSession(
+          recruitedAllies: [ally('sable'), ally('liora'), ally('kelda')],
+          activeAllyIds: ['sable', 'liora']));
+      await notifier.setAllyActive('kelda', true, partyCapacity: 3);
+      expect(notifier.state.activeAllyIds, ['sable', 'liora']);
     });
   });
 

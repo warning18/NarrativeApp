@@ -178,7 +178,7 @@ void main() {
     await tester.tap(find.byKey(const Key('ship_aim_fire')));
     await tester.pump();
     expect(find.byKey(const Key('ship_aim_bar')), findsNothing);
-    expect(find.textContaining(RegExp(r'Ballista (hits|goes wide)|slips')),
+    expect(find.textContaining(RegExp('Ballista (hits|goes wide)|slips')),
         findsOneWidget);
     expect(outcome, isNull);
   });

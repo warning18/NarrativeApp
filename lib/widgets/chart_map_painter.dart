@@ -225,7 +225,7 @@ class ChartMapPainter extends CustomPainter {
   /// [v] kept within [lo]..[hi]; [lo] when the range is empty (a name
   /// wider than the canvas), where num.clamp would throw.
   static double _within(double v, double lo, double hi) =>
-      hi < lo ? lo : v.clamp(lo, hi).toDouble();
+      hi < lo ? lo : v.clamp(lo, hi);
 
   /// Text with a dark halo (a stroked copy under the fill): readable over
   /// land, sea, roads and the fog's edge alike.

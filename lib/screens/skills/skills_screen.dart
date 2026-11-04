@@ -89,21 +89,28 @@ class SkillsScreen extends ConsumerWidget {
         const SizedBox(height: 4),
         TutorialTarget(
           id: 'skills.views',
-          child: TabBar(tabs: [
-            Tab(
-                key: const Key('skills_tab_tree'),
-                text: tr(ref, 'skills_tab_tree')),
-            TutorialTarget(
-              id: 'skills.mine',
-              child: Tab(
-                key: const Key('skills_tab_mine'),
-                text: '${tr(ref, 'skills_tab_mine')} ${model.knownIds.length}',
-              ),
-            ),
-            Tab(
-                key: const Key('skills_tab_spells'),
-                text: tr(ref, 'skills_tab_spells')),
-          ]),
+          child: TabBar(
+              // Each tab as wide as its name: "Mes compétences 12" does not
+              // fit a third of a phone (#651), and a short name wastes one.
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 10),
+              tabs: [
+                Tab(
+                    key: const Key('skills_tab_tree'),
+                    text: tr(ref, 'skills_tab_tree')),
+                TutorialTarget(
+                  id: 'skills.mine',
+                  child: Tab(
+                    key: const Key('skills_tab_mine'),
+                    text:
+                        '${tr(ref, 'skills_tab_mine')} ${model.knownIds.length}',
+                  ),
+                ),
+                Tab(
+                    key: const Key('skills_tab_spells'),
+                    text: tr(ref, 'skills_tab_spells')),
+              ]),
         ),
         Expanded(
           child: TutorialTarget(

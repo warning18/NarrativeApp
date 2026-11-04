@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart' show mapEquals;
+import 'package:flutter/foundation.dart' show mapEquals, visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
@@ -105,15 +105,12 @@ const int _starterDieRaceFaceIndex = 5;
 /// from the start (see `manaSkillID` in professions.json).
 const int _startingDieManaFaceIndex = 1;
 
-/// The active party's size before any house bonus -- the player plus one
-/// ally fits by default. Each built house's own `partyCapacityBonus`
-/// (houses.json) adds to this.
+/// How many companions may be seated (fight beside the player): two, so a
+/// fight has three fighters and three dice, never more (the user's cap,
+/// v1.667). No house adds a seat; the Barracks Annex gives the companions
+/// health instead (`companionHealthBonus`, party_bonus.dart).
 const int basePartyCapacity = 2;
 
-/// The player's current active-party capacity: [basePartyCapacity] plus
-/// every built house's own bonus. Shared by [PlayerSessionNotifier
-/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
-/// CampScreen's own roster display, so the two never drift apart.
 /// The flag set when the first banner (clan offer) is due: the clans met
 /// on the feature ladder (see PlayerSessionNotifier._withFirstBanner).
 const String firstBannerFlag = 'first_banner';
@@ -125,13 +122,12 @@ bool offersWaitForClans(PlayerSession session) =>
     session.flags.contains(featureLadderFlag) &&
     !session.featureOpen(GameFeature.clans);
 
-int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
-  return basePartyCapacity +
-      houses.values.whereType<Map<String, dynamic>>().where((h) {
-        return builtHouseIds.contains(h['houseID']?.toString() ?? '');
-      }).fold<int>(0,
-          (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
-}
+/// The player's active-party capacity: [basePartyCapacity], whatever is
+/// built (the cap of three fighters, v1.667). Shared by [PlayerSessionNotifier
+/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
+/// CampScreen's own roster display, so the two never drift apart.
+int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) =>
+    basePartyCapacity;
 
 /// The skills a companion starts with: their profession's and race's
 /// standard skill, and every skill one of their signature die's faces links
@@ -613,8 +609,8 @@ class PlayerSession {
   final List<AllyState> recruitedAllies;
 
   /// Subset of [recruitedAllies] (by companionId) currently fighting
-  /// alongside the player, bounded by party capacity (default 2, raised by
-  /// built houses' partyCapacityBonus).
+  /// alongside the player, bounded by party capacity (two: three fighters,
+  /// v1.667).
   final List<String> activeAllyIds;
 
   /// Companions the story took for good (see [StoryChoice.loseAllyId]);
@@ -733,8 +729,7 @@ class PlayerSession {
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
-  /// `requiredHouseId`) and/or raises party capacity
-  /// (`partyCapacityBonus`), per houses.json.
+  /// `requiredHouseId`), per houses.json.
   final List<String> builtHouseIds;
 
   /// Every piece of the camp's cliff town in the order it went up: house
@@ -1488,6 +1483,13 @@ class PlayerSession {
     // die that shrank move with their faces, or come back
     // (dice_sizes_save.dart).
     json = resizedDiceSave(json);
+    // A save from before the cap of three fighters (v1.667) may have three
+    // companions seated (the Barracks Annex's old seat): the first two stay,
+    // the third goes to the bench, still recruited. Nobody is lost.
+    final seated = [
+      for (final id in (json['activeAllyIds'] as List?) ?? const [])
+        id.toString(),
+    ];
     // A save with no 'enemyKillCounts' key at all predates objective
     // tracking entirely -- every quest already active in it was accepted
     // (and may well have already been earned) under the old, ungated
@@ -1647,9 +1649,7 @@ class PlayerSession {
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      activeAllyIds:
-          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
-              const [],
+      activeAllyIds: seated.take(basePartyCapacity).toList(),
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2254,10 +2254,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> _persist() async {
+  /// The write the next [_persist] calls join, until it encodes.
+  Future<void>? _pendingWrite;
+
+  /// How many times the session was written (tests count them).
+  @visibleForTesting
+  int sessionWrites = 0;
+
+  /// Saves the session. Calls made before the write encodes share it
+  /// (v1.713): a burst of changes is written once, and every caller still
+  /// awaits a write that holds its change.
+  Future<void> _persist() => _pendingWrite ??= _write();
+
+  Future<void> _write() async {
     await _loaded.future;
+    _pendingWrite = null;
+    final encoded = json.encode(state.toJson());
+    sessionWrites++;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
+    await prefs.setString(_playerSessionPrefsKey, encoded);
   }
 
   /// See [_resetToDefaults]: a plain reset keeps a pending New Game+
@@ -2591,6 +2606,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       riskyGifts: riskyGiftsOpen(s.builtHouseIds),
       // The gifts warded at the Warding Cairn (camp_rolls.dart).
       bannedGifts: bannedIdsOf(s.rollBans, RollBanOn.offer),
+      dice: tables.dice,
+      ownedDiceIds: s.ownedDiceIds,
     );
   }
 
@@ -3287,6 +3304,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case GiftKind.spec:
         if (session.specIds.contains(gift.id)) return session;
         return session.copyWith(specIds: [...session.specIds, gift.id]);
+      case GiftKind.die:
+        // A clan's die (clan_dice.dart), to the bag: equipped like any.
+        if (session.ownedDiceIds.contains(gift.id)) return session;
+        return session
+            .copyWith(ownedDiceIds: [...session.ownedDiceIds, gift.id]);
     }
   }
 
@@ -4685,7 +4707,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       return;
     }
     if (state.activeAllyIds.contains(companionId)) return;
-    if (state.activeAllyIds.length >= partyCapacity) return;
+    // Never more than three fighters (v1.664), whatever the caller passed.
+    if (state.activeAllyIds.length >= min(partyCapacity, basePartyCapacity)) {
+      return;
+    }
     if (requiredHouseId != null &&
         requiredHouseId.isNotEmpty &&
         !state.builtHouseIds.contains(requiredHouseId)) {

@@ -155,7 +155,7 @@ void main() {
             contains('material_${w.$5}'),
             reason: id);
         expect(house['requiredFlags'], isEmpty, reason: id);
-        expect(house['partyCapacityBonus'], 0, reason: id);
+        expect(house['companionHealthBonus'] ?? 0, 0, reason: id);
         for (final field in [
           'houseName',
           'houseName_fr',

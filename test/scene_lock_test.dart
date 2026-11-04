@@ -146,6 +146,9 @@ Future<void> _take(WidgetTester tester, int i) async {
   }
 }
 
+/// The top bar's world map.
+final _worldMap = find.byKey(const Key('home_full_map'));
+
 void main() {
   setUp(rootBundle.clear);
 
@@ -402,6 +405,7 @@ void main() {
     await _settle(tester);
     await tester.pump(const Duration(seconds: 3));
     expect(_chooseFirst, findsNothing);
+    expect(_worldMap, findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
     await tester.pump(const Duration(milliseconds: 500));
     await _take(tester, 0);
@@ -417,6 +421,8 @@ void main() {
             of: _card(0), matching: find.textContaining('Lash yourself')),
         findsOneWidget);
     _expectLocked(tester);
+    // Nor does the top bar offer the world map (v1.697).
+    expect(_worldMap, findsNothing);
 
     // A card taken: the story moves on, the lock lifts.
     await _take(tester, 0);
@@ -426,6 +432,10 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     expect(container.read(storyPlayProvider).currentNodeId, '1100');
     expect(_chooseFirst, findsNothing);
+    // The shore's page holds the party (scene_lock.dart's pageExitHidden):
+    // still no world map in the top bar.
+    expect(_page('1100'), findsOneWidget);
+    expect(_worldMap, findsNothing);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));
@@ -460,6 +470,7 @@ void main() {
     expect(_card(0), findsOneWidget);
     expect(_card(1), findsOneWidget);
     _expectLocked(tester);
+    expect(_worldMap, findsNothing);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));

@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/rival_hunters.dart';
 import 'package:narrative_data_app/data/road_wards.dart';
 import 'package:narrative_data_app/data/sim_rolls.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
@@ -264,7 +265,17 @@ void main() {
               clanId: 'dominion', data: data, n: 4),
           'Protection contre la chasse du Dominion de la Lanterne : 4 routes');
       expect(wardLine('ward_length', AppLanguage.en, roads: 6, cost: 2),
-          '6 roads · 2 charges');
+          '6 roads · charges: 2');
+      // The cost is read as a label, so one charge never reads "1 charges".
+      for (final language in AppLanguage.values) {
+        for (final key in ['ward_length', 'roll_banish_length']) {
+          final line = trFor(language, key)
+              .replaceAll('{cost}', '1')
+              .replaceAll('{roads}', '3')
+              .replaceAll('{draws}', '3');
+          expect(line, isNot(contains('1 charges')), reason: '$key $language');
+        }
+      }
     });
   });
 

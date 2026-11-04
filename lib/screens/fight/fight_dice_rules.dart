@@ -91,6 +91,50 @@ extension _FightDiceRules on _FightScreenState {
     return face;
   }
 
+  /// The member [actor]'s heal mends (heal_target.dart): the one picked
+  /// with [_setHealTarget] while standing, else the most wounded standing
+  /// member (the healer on a tie). Companions who aim on their own take the
+  /// default.
+  _PartyMember _healTargetFor(_PartyMember actor) {
+    final pickedId = _healTargets[actor.id];
+    final picked = pickedId == null || (_companionsAutoAim && !actor.isPlayer)
+        ? null
+        : _memberById(pickedId);
+    if (picked != null && !picked.isKnockedOut) return picked;
+    final i = defaultHealTarget([
+      for (final m in _party) (current: m.currentHealth, max: m.maxHealth),
+    ], _party.indexOf(actor));
+    return i < 0 ? actor : _party[i];
+  }
+
+  /// Aims [actorId]'s heal at [memberId] for this round: the combat board
+  /// (UX-2's) calls it when a heal die is pointed at a party member.
+  // ignore: unused_element
+  void _setHealTarget(String actorId, String memberId) {
+    if (_memberById(memberId) == null) return;
+    _healTargets[actorId] = memberId;
+  }
+
+  /// A tap on [actorId]'s landed die (the user's lock rules, die_locks.dart):
+  /// the first selects it (and aims [_selectedActorId] at it, so its target
+  /// shows), the second locks it.
+  DieTap _tapDie(String actorId) {
+    final tap = _dieLocks.tap(actorId);
+    if (tap == DieTap.selected) _selectedActorId = actorId;
+    return tap;
+  }
+
+  /// Whether [actorId]'s lock can be released: locked, not frozen by a roll
+  /// triggered since, and not a Steady face.
+  bool _canReleaseDie(String actorId) =>
+      _dieLocks.canRelease(actorId) && !_steadyActorIds.contains(actorId);
+
+  /// Releases [actorId]'s lock (a double tap); false when it can't.
+  bool _releaseDie(String actorId) =>
+      _canReleaseDie(actorId) && _dieLocks.release(actorId);
+
+  bool _isDieLocked(String actorId) => _dieLocks.locked.contains(actorId);
+
   /// Marks every member whose face just landed Steady: kept through the
   /// rerolls, and not to be released.
   void _noteSteadyFaces(Iterable<String> memberIds) {
@@ -361,14 +405,14 @@ extension _FightDiceRules on _FightScreenState {
     return combos.contains(PartyCombo.wellspring) ? wellspringMana : 0;
   }
 
-  /// A Shelter: [healer]'s heal of [healing] reaches every other party
-  /// member standing at [shelterShare].
-  void _shelterFrom(_PartyMember healer, int healing, List<_LogEntry> entries,
-      AppLanguage lang) {
+  /// A Shelter: [healer]'s heal of [healing] on [healed] reaches every
+  /// other party member standing (the healer too) at [shelterShare].
+  void _shelterFrom(_PartyMember healer, _PartyMember healed, int healing,
+      List<_LogEntry> entries, AppLanguage lang) {
     final share = (healing * shelterShare).round();
     if (share <= 0) return;
     for (final member in _party) {
-      if (member.id == healer.id || member.isKnockedOut) continue;
+      if (member.id == healed.id || member.isKnockedOut) continue;
       member.currentHealth =
           min(member.maxHealth, member.currentHealth + share);
       _fx(VfxStyle.heal, _memberCardKey(member.id),
@@ -981,12 +1025,15 @@ extension _FightDiceRules on _FightScreenState {
   /// The cleric's heal of [healing] from the die: it burns the enemy the
   /// cleric faces, and what heals past full feeds the Watchfire.
   void _watchfireOnHeal(_PartyMember actor, int healing,
-      List<_LogEntry> entries, AppLanguage lang) {
+      List<_LogEntry> entries, AppLanguage lang,
+      {_PartyMember? healed}) {
+    // What heals past full on the member mended feeds the fire.
+    final mended = healed ?? actor;
     _core.fire = fireAfterHeal(
         fire: _core.fire,
         healing: healing,
-        currentHealth: actor.currentHealth,
-        maxHealth: actor.maxHealth,
+        currentHealth: mended.currentHealth,
+        maxHealth: mended.maxHealth,
         beacon: _core.has(Spec.beacon));
     final key = _selectedTargets[actor.id];
     final picked = key == null ? null : _enemyByKey(key);

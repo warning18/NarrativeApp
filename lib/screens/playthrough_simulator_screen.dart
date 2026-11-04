@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -19,6 +18,7 @@ import '../combat/combat_engine.dart'
         lostFightXpShare,
         scaledReward,
         zoneBossEnemyIds;
+import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import '../combat/context_rules.dart' show ContextRule, Reinforcement;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
@@ -97,7 +97,6 @@ import '../providers/geography_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/place_pools_provider.dart';
-import '../providers/settings_providers.dart';
 import '../providers/training_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/clans_provider.dart' show loadClanData;
@@ -584,6 +583,7 @@ class _SimContext {
         events: politicsEvents,
         itemSets: itemSets,
         merges: merges,
+        dice: dice,
       );
 }
 
@@ -670,6 +670,51 @@ _SimResult _simulate(
       ..policy = sim.policy
       // The camp's roll houses draw on their own (sim_rolls.dart).
       ..rolls = SimRolls(Random(detourSalt * 31 + 29));
+  }
+
+  // The competent player tries a die before switching to it (sim_combat.dart's
+  // dieTrial): the foes of the fight at hand, a few fights with each die on
+  // the same seeds; the new one must win more, or as many with more health
+  // left.
+  var trialFoes = <MapEntry<String, Map<String, dynamic>>>[];
+  var trialChapter = 1;
+  if (character != null && sim != null && sim.policy == SimPolicy.competent) {
+    final c = character;
+    ({int wins, int health}) tryDie(List<Map<String, dynamic>> faces,
+            Map<String, String> assignments) =>
+        c.restoringAfter(() {
+          c.diceFaces = faces;
+          c.diceSkillAssignments = assignments;
+          var wins = 0, health = 0;
+          for (var i = 0; i < simDieTrialFights; i++) {
+            c.currentHealth = c.maxHealth;
+            c.statusEffects = [];
+            final o = simulateSimFight(
+              character: c,
+              enemies: trialFoes,
+              chapter: trialChapter,
+              skills: sim.skills,
+              items: sim.items,
+              itemSets: sim.itemSets,
+              random: Random(7919 + i),
+              clash: sim.clash,
+              clashOff: sim.clashOff,
+              context: sim.context,
+              reinforcement: sim.reinforcement,
+            );
+            if (o.won) wins++;
+            health += c.currentHealth;
+          }
+          return (wins: wins, health: health);
+        });
+    c.dieTrial = (faces, assignments) {
+      // Before the first fight there is nothing to try it on.
+      if (trialFoes.isEmpty) return true;
+      final now = tryDie(c.diceFaces, c.diceSkillAssignments);
+      final next = tryDie(faces, assignments);
+      return next.wins > now.wins ||
+          (next.wins == now.wins && next.health > now.health);
+    };
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -885,7 +930,7 @@ _SimResult _simulate(
       // taken as it opens, met on a road at rest; beaten, the nemesis is
       // broken.
       final nemesis = growth?.politics.nemesis ?? '';
-      if (sim?.championFights == true &&
+      if ((sim?.championFights ?? false) &&
           hunter.isEmpty &&
           nemesis.isNotEmpty &&
           chapter >= championMinChapter &&
@@ -927,7 +972,7 @@ _SimResult _simulate(
             fightAttempts: result.attempts,
             spellsCast: result.casts,
           ));
-          if (result.won == true) {
+          if (result.won ?? false) {
             championsBeaten.add(nemesis);
             growth!.politics = breakNemesis(
                 growth.politics, nemesis, growth.tables.clans,
@@ -1056,7 +1101,7 @@ _SimResult _simulate(
                 ...?notes[i],
                 '[ch ${step.chapter ?? 0}] ${step.nodeId}'
                     '${step.choiceText == null ? '' : ' · ${step.choiceText}'}'
-                    '${step.enemyId == null ? '' : ' · fight ${step.enemyId}: ${step.fightWon == true ? 'won' : step.fightWon == false ? 'lost' : '-'}'}'
+                    '${step.enemyId == null ? '' : ' · fight ${step.enemyId}: ${step.fightWon ?? false ? 'won' : step.fightWon == false ? 'lost' : '-'}'}'
                     '${step.nodeId.startsWith('road:') ? ' · ${step.description}' : ''}',
               ],
               ...?notes[steps.length],
@@ -1291,7 +1336,7 @@ _SimResult _simulate(
     };
     for (final id in log.ready(flags)) {
       final pay = log.complete(id, step: atStep, bias: bias, random: random);
-      gold = (gold + pay.gold).clamp(0, 1 << 30).toInt();
+      gold = (gold + pay.gold).clamp(0, 1 << 30);
       alignment += pay.alignment;
       if (pay.flag.isNotEmpty) flags.add(pay.flag);
       // How it was settled moves the clans, as in the app (v1.463, see
@@ -1415,6 +1460,9 @@ _SimResult _simulate(
       );
     }
     if (entries.isEmpty) return none;
+    // The die trial plays this fight's foes (see dieTrial above).
+    trialFoes = entries;
+    trialChapter = chapter;
     // The competent player readies itself: its best gear (the pack's
     // loot and rewards counted), the merges worth crafting, its best die.
     growth?.prepareForFight(
@@ -1432,6 +1480,15 @@ _SimResult _simulate(
       final perks = growth?.perks ?? PerkEffects.none;
       final allies =
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
+      // A clan's die with its Resonance lit rolls its low faces one more
+      // (clan_dice.dart), for this fight.
+      final ownFaces = c.diceFaces;
+      if (growth != null &&
+          resonanceOf(sim.dice[c.diceId] as Map<String, dynamic>?,
+                  politics: growth.politics, data: growth.tables.clans) ==
+              Resonance.lit) {
+        c.diceFaces = resonantFaces(ownFaces);
+      }
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -1451,6 +1508,7 @@ _SimResult _simulate(
             : (id) => growth.politics.standingOf(id, growth.tables.clans),
         allies: allies,
       );
+      c.diceFaces = ownFaces;
       party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -1546,7 +1604,7 @@ _SimResult _simulate(
       gold: gold,
       flags: flags,
       random: Random(detourSalt * 31 + chapter * 7919 + steps.length),
-      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+      defend: (id) => fightEnemies([id], chapter, once: true).won ?? false,
     );
     if (r.how.isEmpty) return;
     gold = r.gold;
@@ -1577,7 +1635,7 @@ _SimResult _simulate(
       chapter: chapter,
       flags: flags,
       random: Random(detourSalt * 37 + chapter * 104729 + steps.length),
-      defend: (id) => fightEnemies([id], chapter, once: true).won == true,
+      defend: (id) => fightEnemies([id], chapter, once: true).won ?? false,
     );
     flags
       ..clear()
@@ -1644,7 +1702,7 @@ _SimResult _simulate(
           chapter: lastKnownChapter,
           rulers: rulers);
       c.currentHealth = result.health;
-      gold = (gold + result.gold).clamp(0, 1 << 30).toInt();
+      gold = (gold + result.gold).clamp(0, 1 << 30);
       steps.add(_SimStep(
         nodeId: 'crossing:${route.id}',
         chapter: lastKnownChapter,
@@ -2265,7 +2323,7 @@ _SimResult _simulate(
           c0.currentHealth +
               shortfallWound(gold: gold, goldMod: effectiveGoldMod));
     }
-    gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
+    gold = (gold + effectiveGoldMod).clamp(0, 1 << 30);
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
     // The party sees the choice (applyChoiceEffects): who the story takes
@@ -2292,7 +2350,7 @@ _SimResult _simulate(
       }
     }
     // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
-    if (sim?.featureLadder == true) {
+    if (sim?.featureLadder ?? false) {
       if (choice.flagsToAdd.contains(trainerStrikeFlag)) {
         growth?.learnTrainerSkill(strike: true);
       } else if (choice.flagsToAdd.contains(trainerGuardFlag)) {
@@ -2438,7 +2496,7 @@ _SimResult _simulate(
       tally[key] = (
         runs: before.runs + (reached.add(key) ? 1 : 0),
         attempts: before.attempts + (fought ? step.fightAttempts : 0),
-        won: before.won + (step.fightWon == true ? 1 : 0),
+        won: before.won + (step.fightWon ?? false ? 1 : 0),
       );
     }
   }
@@ -2653,10 +2711,10 @@ List<SimRunSummary> simulatePlaythroughs(
           byChapter[key] ?? (attempts: 0, won: 0, fights: 0, firstTry: 0);
       byChapter[key] = (
         attempts: before.attempts + step.fightAttempts,
-        won: before.won + (step.fightWon == true ? 1 : 0),
+        won: before.won + (step.fightWon ?? false ? 1 : 0),
         fights: before.fights + 1,
         firstTry: before.firstTry +
-            (step.fightWon == true && step.fightAttempts == 1 ? 1 : 0),
+            ((step.fightWon ?? false) && step.fightAttempts == 1 ? 1 : 0),
       );
       final enemy = step.enemyId ?? '?';
       fought[enemy] = (fought[enemy] ?? 0) + 1;
@@ -3936,9 +3994,6 @@ class _BatchCard extends ConsumerStatefulWidget {
 }
 
 class _BatchCardState extends ConsumerState<_BatchCard> {
-  bool _analyzing = false;
-  String? _analysisText;
-  String? _analysisError;
   late bool _expanded = widget.initiallyExpanded;
   bool _showAllRuns = false;
 
@@ -3967,68 +4022,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
 
   bool get _filterActive =>
       _endingFilter != null || _onlyStepCapFilter || _minChapterFilter != null;
-
-  /// Compiles this batch's stats into a plain-text summary Gemini can
-  /// reason over — the same numbers already shown in the card (respecting
-  /// the current filter), plus the full transcript for a single run.
-  String _buildPrompt(AppLanguage lang, List<_SimResult> results) {
-    final strategyLabel = trFor(lang, _strategyLabelKey(widget.batch.strategy));
-    final b = StringBuffer()
-      ..writeln(
-        'You are a narrative game designer reviewing simulated playthroughs of a dark-fantasy '
-        'interactive-fiction app. Below is aggregate data from an automated simulator that plays '
-        'the story graph choosing among valid choices per a fixed strategy.',
-      )
-      ..writeln()
-      ..writeln(
-          _batchSummaryText(strategyLabel, results, spells: widget.spells));
-    final single = results.length == 1 ? results.single : null;
-    if (single != null) {
-      b
-        ..writeln()
-        ..writeln('Full node path for this run: ${single.path.join(' -> ')}');
-    }
-    b
-      ..writeln()
-      ..writeln(
-        'Based on this data, provide: (1) a short summary of what this run reveals about the '
-        'player\'s experience, (2) any issues you notice (repetitive endings, dead ends, '
-        'pacing or balance problems, a strategy that trivially dominates, a chapter that\'s '
-        'thin or overloaded compared to the others), and (3) concrete, specific suggestions '
-        'for updates to particular story nodes to improve the story. Be concise.',
-      );
-    return b.toString();
-  }
-
-  Future<void> _analyze() async {
-    final apiKey = ref.read(apiKeyProvider);
-    final lang = ref.read(appLanguageProvider);
-    if (apiKey == null || apiKey.isEmpty) {
-      setState(() => _analysisError = trFor(lang, 'add_api_key_first'));
-      return;
-    }
-    final results = _filteredResults;
-    if (results.isEmpty) return;
-    setState(() {
-      _analyzing = true;
-      _analysisError = null;
-      _analysisText = null;
-    });
-    try {
-      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
-      final response = await model
-          .generateContent([Content.text(_buildPrompt(lang, results))]);
-      if (!mounted) return;
-      setState(() => _analysisText =
-          response.text ?? trFor(lang, 'no_response_generated'));
-    } catch (e) {
-      if (!mounted) return;
-      setState(() =>
-          _analysisError = '${trFor(lang, 'generation_failed_prefix')}: $e');
-    } finally {
-      if (mounted) setState(() => _analyzing = false);
-    }
-  }
 
   Future<void> _viewRun(_SimResult result, int index) async {
     await showModalBottomSheet(
@@ -4486,62 +4479,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       ),
                   ],
                 ),
-                const Divider(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: _analyzing ? null : _analyze,
-                        icon: _analyzing
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.auto_awesome),
-                        label: Text(
-                          _analyzing
-                              ? tr(ref, 'analyzing_label')
-                              : tr(ref, 'analyze_with_gemini_button'),
-                        ),
-                      ),
-                    ),
-                    if (_analysisText != null) ...[
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.copy_outlined),
-                        tooltip: tr(ref, 'copy_button'),
-                        onPressed: () =>
-                            _copyToClipboard(context, ref, _analysisText!),
-                      ),
-                    ],
-                  ],
-                ),
-                if (_analysisError != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      _analysisError!,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
-                    ),
-                  ),
-                if (_analysisText != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: SelectableText(_analysisText!),
-                    ),
-                  ),
                 if (single != null) ...[
                   const Divider(height: 24),
                   _SingleRunDetail(

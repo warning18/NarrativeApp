@@ -15,6 +15,7 @@ import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/field_anomaly.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/widgets/fight_board.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
@@ -133,6 +134,19 @@ void main() {
 
     // Round one: the omen, as a chip over the battle.
     expect(find.byKey(const Key('fight_anomaly_chip')), findsOneWidget);
+    // The anomaly is drawn on the dice board alone, not behind the screen.
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('fight_board_skin')).first,
+            matching: find.byKey(const Key('fight_board_event'))),
+        findsNothing,
+        reason: 'the event sits beside the skin, inside the board surface');
+    expect(find.byKey(const Key('fight_board_event')), findsOneWidget);
+    expect(
+        find.ancestor(
+            of: find.byKey(const Key('fight_board_event')),
+            matching: find.byType(FightBoardSurface)),
+        findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _shows('Confirm'));

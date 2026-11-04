@@ -354,8 +354,8 @@ extension _FightActions on _FightScreenState {
     if (scrollItemId != null) {
       ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId);
     } else {
+      // The session takes it when the fight ends (v1.713).
       _mana -= _spellCost(spell);
-      ref.read(playerSessionProvider.notifier).setMana(_mana);
     }
     _update(() {
       _log.addAll(entries);
@@ -413,15 +413,11 @@ extension _FightActions on _FightScreenState {
             ),
             for (final member in candidates)
               ListTile(
-                leading: CircleAvatar(
-                  radius: 14,
-                  backgroundColor: _accentFor(member),
-                  child: Text(
-                    member.displayName.isEmpty
-                        ? '?'
-                        : member.displayName[0].toUpperCase(),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
+                leading: HeadAvatar(
+                  id: member.isPlayer ? 'hero' : member.id,
+                  name: member.displayName,
+                  accent: _accentFor(member),
+                  size: 32,
                 ),
                 title: Text(member.displayName),
                 subtitle: Text(

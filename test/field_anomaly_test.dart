@@ -300,7 +300,12 @@ void main() {
               stage: stage,
               sky: WeatherKind.values[i % WeatherKind.values.length],
               random: random)!;
-          expect(p.anomaly.stages, contains(stage));
+          // Its own, or the older stage's it is kin to (v1.688).
+          expect(
+              p.anomaly.stages.contains(stage) ||
+                  p.anomaly.stages.contains(stage.kin),
+              isTrue,
+              reason: '${stage.name}: ${p.anomaly.id}');
           expect(p.onset, inInclusiveRange(2, 4));
           expect(p.rounds, inInclusiveRange(2, 3));
           expect(p.side == AnomalySide.both, p.anomaly.shared);
@@ -382,6 +387,71 @@ void main() {
             expect(fightStageFromName(stage), isNotNull, reason: stage);
           }
         }
+      }
+    });
+  });
+
+  // The city road and the ship deck (v1.660).
+  test("a ship's deck and a town's streets are stages of their own", () {
+    expect(fightStageOf(BiomePattern.waves, ship: true), FightStage.shipDeck);
+    expect(fightStageOf(null, ship: true, indoors: true), FightStage.shipDeck);
+    expect(fightStageOf(BiomePattern.dunes, town: true), FightStage.cityRoad);
+    // Indoors in a town is a hall.
+    expect(fightStageOf(BiomePattern.dunes, town: true, indoors: true),
+        FightStage.hall);
+    expect(fightStageOf(BiomePattern.dunes), FightStage.dunes);
+    expect(fightStageFromName('cityRoad'), FightStage.cityRoad);
+    expect(fightStageFromName('shipDeck'), FightStage.shipDeck);
+  });
+
+  group('the newer stages (v1.688)', () {
+    const newer = {
+      FightStage.ruins: 'crumbling_walls',
+      FightStage.woods: 'deep_canopy',
+      FightStage.ford: 'rising_ford',
+      FightStage.burntFields: 'smouldering_stubble',
+      FightStage.oasis: 'cool_spring',
+      FightStage.caravanRoad: 'dust_devils',
+      FightStage.quay: 'slick_stones',
+      FightStage.pass: 'thin_air',
+    };
+
+    test('each meets an anomaly of its own, and still its kin\'s', () {
+      for (final MapEntry(key: stage, value: id) in newer.entries) {
+        final own = _anomaly(id);
+        expect(own.stages, {stage}, reason: id);
+        expect(own.weightUnder(stage, null), greaterThan(0), reason: id);
+        // Only there: not on the older stage it is kin to.
+        expect(own.weightUnder(stage.kin, null), 0, reason: id);
+        // The kin's anomalies come too.
+        final kinOnes = fieldAnomalies.where((a) =>
+            a.stages.contains(stage.kin) && a.weightUnder(stage, null) > 0);
+        expect(kinOnes, isNotEmpty, reason: stage.name);
+      }
+    });
+
+    test("a land crossing's fight: its road's terrain, else its biome", () {
+      expect(landRouteStage(terrain: 'desert', biome: 'desert'),
+          FightStage.caravanRoad);
+      expect(landRouteStage(terrain: 'mountain'), FightStage.pass);
+      expect(landRouteStage(terrain: 'forest'), FightStage.woods);
+      expect(landRouteStage(terrain: 'fen'), FightStage.reeds);
+      expect(landRouteStage(terrain: 'ruins', biome: 'ashlands'),
+          FightStage.ruins);
+      expect(landRouteStage(biome: 'tear'), FightStage.glass);
+      expect(landRouteStage(), isNull);
+      // Every route on file has its stage.
+      final routes = jsonDecode(
+              File('assets/gamedata/land_routes.json').readAsStringSync())
+          as Map<String, dynamic>;
+      for (final MapEntry(:key, :value) in routes.entries) {
+        final r = value as Map<String, dynamic>;
+        expect(
+            landRouteStage(
+                terrain: r['terrain']?.toString() ?? '',
+                biome: r['biome']?.toString() ?? ''),
+            isNotNull,
+            reason: key);
       }
     });
   });

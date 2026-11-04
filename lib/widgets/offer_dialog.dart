@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../combat/dice_faces.dart' show skillDisplayName;
+import '../combat/dice_faces.dart' show dieDisplayName, skillDisplayName;
 import '../combat/specialisations.dart' show specId;
 import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/companion_remarks.dart';
@@ -167,6 +167,8 @@ String _giftName(
       return tables.specs[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           tables.specVariants[gift.id]?.nameFor(lang == AppLanguage.fr) ??
           gift.id;
+    case GiftKind.die:
+      return dieDisplayName(gift.id, language: lang);
   }
 }
 
@@ -683,7 +685,7 @@ class _OfferBanner extends ConsumerWidget {
 
     // One box for every banner, so none changes size when another is picked
     // (the picked one only takes the wind).
-    final bannerBox = (pixelBannerSize.width + 2 * WindBanner.room).toDouble();
+    final bannerBox = pixelBannerSize.width + 2 * WindBanner.room;
     final Widget inner = bannerId == null
         ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
         : ClanMarks(
@@ -693,7 +695,7 @@ class _OfferBanner extends ConsumerWidget {
             child: SizedBox(
               key: Key('offer_banner_${suitor.factionId}'),
               width: bannerBox,
-              height: pixelBannerSize.height.toDouble(),
+              height: pixelBannerSize.height,
               child: selected
                   ? WindBanner(id: bannerId, scale: 1)
                   : Center(child: PixelBanner(id: bannerId, scale: 1)),
@@ -1128,6 +1130,7 @@ Widget _giftGlyph(OfferGift gift, Color color) {
     GiftKind.title => Icons.military_tech_outlined,
     GiftKind.sworn => Icons.gavel,
     GiftKind.spec => Icons.alt_route,
+    GiftKind.die => Icons.casino_outlined,
     GiftKind.perk => Icons.star_outline,
   };
   final mark = Icon(fallback, size: 24, color: color);
@@ -1214,196 +1217,6 @@ class _SwallowtailClipper extends CustomClipper<Path> {
 Color _suitorColor(Suitor suitor, ClanData data) => suitor.isWayfarer
     ? _wayfarerColor
     : Color(data.faction(suitor.factionId)?.color ?? 0xFFB08D3C);
-
-/// One suitor's card: their colour and mark, "The Emberwives of the Cinder
-/// Compact", what they say, the gift (its kind, name, rarity and what it
-/// does) and the standing it would move, faction by faction, from the
-/// relations as they stand.
-class SuitorCard extends ConsumerWidget {
-  const SuitorCard({
-    super.key,
-    required this.suitor,
-    required this.ticket,
-    required this.tables,
-    this.selected = false,
-    this.onTap,
-  });
-
-  final Suitor suitor;
-  final OfferTicket ticket;
-  final OfferTables tables;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final lang = ref.watch(appLanguageProvider);
-    final session = ref.watch(playerSessionProvider);
-    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
-    final skills =
-        ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
-    final data = tables.data;
-    final faction = data.faction(suitor.factionId);
-    final color = _suitorColor(suitor, data);
-    final gift = suitor.gift;
-    final greeting = _suitorGreeting(suitor, data, lang);
-    final preview = standingPreviewParts(suitor, ticket,
-        politics: session.politics,
-        data: data,
-        lang: lang,
-        flags: session.flags);
-    final nudge = _alignmentNudgeOf(suitor, tables);
-    // A lost clan has no standing to show (v1.195).
-    final tier = faction == null || faction.isLost
-        ? null
-        : session.politics.tierOf(suitor.factionId, data);
-    const good = Color(0xFF3E9B57);
-    final bad = theme.colorScheme.error;
-
-    final emblem = suitor.isWayfarer
-        ? Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _wayfarerColor.withValues(alpha: 0.85),
-            ),
-            child: const Icon(Icons.hiking, size: 20, color: Colors.white),
-          )
-        : PatronEmblem(patron: faction?.patron, size: 36);
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: selected ? color : theme.colorScheme.outlineVariant,
-          width: selected ? 2.5 : 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // The suitor, on a band of their colour.
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  color.withValues(alpha: 0.32),
-                  color.withValues(alpha: 0.06),
-                ]),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  emblem,
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _suitorName(suitor, data, lang),
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        if (tier != null)
-                          Text(
-                            trFor(lang, standingTierKey(tier)),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                                color: Color(tierColor(tier)),
-                                fontWeight: FontWeight.w600),
-                          ),
-                        if (greeting.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2),
-                            child: Text(
-                              greeting,
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // The gift.
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      _Tag(
-                        text: trFor(lang, _giftTagKey(gift, skills)),
-                        color: color,
-                      ),
-                      Text(
-                        _giftName(gift,
-                            tables: tables, localizedItems: items, lang: lang),
-                        key: Key('offer_gift_${gift.id}'),
-                        style: theme.textTheme.titleSmall,
-                      ),
-                      if (gift.kind != GiftKind.perk)
-                        SignRarityChip(rarity: gift.rarity, language: lang),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  _GiftBody(
-                    gift: gift,
-                    tables: tables,
-                    items: items,
-                    skills: skills,
-                    session: session,
-                    lang: lang,
-                  ),
-                  const SizedBox(height: 6),
-                  // The standing it moves, and the alignment.
-                  Text.rich(
-                    TextSpan(children: [
-                      if (preview.isEmpty)
-                        TextSpan(text: trFor(lang, 'offer_no_standing')),
-                      for (var i = 0; i < preview.length; i++) ...[
-                        if (i > 0) const TextSpan(text: ' · '),
-                        TextSpan(
-                          text: preview[i].text,
-                          style: TextStyle(
-                              color: preview[i].delta >= 0 ? good : bad,
-                              fontWeight:
-                                  i == 0 ? FontWeight.bold : FontWeight.w500),
-                        ),
-                      ],
-                      if (nudge != 0) ...[
-                        const TextSpan(text: ' · '),
-                        TextSpan(
-                          text: trFor(lang, 'offer_alignment_nudge').replaceAll(
-                              '{n}', nudge > 0 ? '+$nudge' : '−${-nudge}'),
-                          style: const TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ],
-                    ]),
-                    key: Key('offer_preview_${suitor.factionId}'),
-                    style: theme.textTheme.labelMedium,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _Tag extends StatelessWidget {
   const _Tag({super.key, required this.text, required this.color});
@@ -1543,6 +1356,8 @@ class _GiftBody extends StatelessWidget {
             Text(trFor(lang, 'offer_sworn_note'), style: muted),
           ],
         );
+      case GiftKind.die:
+        return Text(trFor(lang, 'offer_die_note'), style: muted);
       case GiftKind.spec:
         final fr = lang == AppLanguage.fr;
         final spec = tables.specs[gift.id];

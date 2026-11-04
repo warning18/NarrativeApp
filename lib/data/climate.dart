@@ -558,9 +558,8 @@ class ChartClimate {
     final field = humidity ? _hum : _elev;
     final segments = <(Offset, Offset)>[];
     Offset corner(int i, int j) => Offset((i + 0.5) * cell, (j + 0.5) * cell);
-    double at(int i, int j) => _land[j * cols + i] == 0 && !humidity
-        ? 0.0
-        : field[j * cols + i].toDouble();
+    double at(int i, int j) =>
+        _land[j * cols + i] == 0 && !humidity ? 0.0 : field[j * cols + i];
     Offset lerp(Offset a, Offset b, double va, double vb) =>
         a + (b - a) * ((level - va) / (vb - va)).clamp(0.0, 1.0);
     for (var j = 0; j + 1 < rows; j++) {

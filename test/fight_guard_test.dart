@@ -56,7 +56,11 @@ Map<String, dynamic> _enemy(String id) {
 }
 
 void main() {
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() => SharedPreferences.setMockInitialValues({
+        // The dice thrown at 4x: the tests wait a quarter of the throw (the
+        // default speed is proven by dice_speed_test).
+        'combat_dice_speed': 'quad',
+      }));
 
   testWidgets('an enemy that braces shows its guard', (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -106,7 +110,8 @@ void main() {
     await _settle(tester);
 
     await tester.tap(find.text('Roll Dice'));
-    await _settle(tester);
+    // The throw is slower since v1.679: wait for the faces to land.
+    await _pumpUntil(tester, () => find.text('Confirm').evaluate().isNotEmpty);
     // The die on the table is a cube (v1.214).
     expect(find.byKey(const ValueKey('die_cube_player')), findsOneWidget);
     await tester.tap(find.text('Confirm'));
@@ -115,7 +120,9 @@ void main() {
     expect(find.textContaining('raises a guard of', findRichText: true),
         findsWidgets);
     expect(
-        find.byTooltip('Raised guard: soaks your next hits'), findsOneWidget);
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_guard_")),
+        findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
   });
 }

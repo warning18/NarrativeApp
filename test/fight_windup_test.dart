@@ -92,7 +92,11 @@ Map<String, dynamic> _enemy(String id) {
 }
 
 void main() {
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() => SharedPreferences.setMockInitialValues({
+        // The dice thrown at 4x: the tests wait a quarter of the throw (the
+        // default speed is proven by dice_speed_test).
+        'combat_dice_speed': 'quad',
+      }));
 
   testWidgets('a wind-up shows, then lands or breaks', (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -147,7 +151,10 @@ void main() {
 
     expect(
         find.textContaining('is winding up', findRichText: true), findsWidgets);
-    expect(find.text('Winding up'), findsOneWidget);
+    expect(
+        find.byWidgetPredicate(
+            (w) => '${w.key}'.startsWith("[<'fight_effect_windUp_")),
+        findsOneWidget);
     expect(find.text('Charged blow incoming!'), findsOneWidget);
 
     await _tapWhenEnabled(tester, 'Roll Dice');

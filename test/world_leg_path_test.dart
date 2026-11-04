@@ -96,7 +96,7 @@ void main() {
 
   test('no road: a straight line, its kind by the lie of the land', () {
     const land = [
-      Offset(0, 0),
+      Offset.zero,
       Offset(100, 0),
       Offset(100, 100),
       Offset(0, 100)

@@ -127,4 +127,11 @@ void main() {
     // ignore: avoid_print
     print(lines.join('\n'));
   });
+
+  test('a deck rises like the sea; the streets keep the watch by the city', () {
+    expect(contextRuleFor(stage: FightStage.shipDeck), ContextRule.risingWater);
+    expect(contextRuleFor(stage: FightStage.cityRoad), ContextRule.tide);
+    expect(contextRuleFor(stage: FightStage.cityRoad, city: true),
+        ContextRule.townGuards);
+  });
 }

@@ -247,6 +247,42 @@ void main() {
       expect(c.diceId, 'war_die');
     });
 
+    test('a die that fails its trial is not bought, nor tried again', () {
+      final g = _growth();
+      final c = g.character;
+      var trials = 0;
+      c.dieTrial = (faces, placed) {
+        trials++;
+        return false;
+      };
+      g.assignSkills();
+      final shop = {
+        'diceStock': ['war_die'],
+      };
+      final left = c.visitShop(shop, _items, _dice, const {}, 200,
+          skills: _skills, itemSets: _sets);
+      expect(left, 200);
+      expect(c.diceId, 'own_die');
+      expect(c.ownedDice.keys, ['own_die']);
+      c.visitShop(shop, _items, _dice, const {}, 200,
+          skills: _skills, itemSets: _sets);
+      expect(trials, 1, reason: 'the same level never re-tries a die');
+    });
+
+    test('a trial fight leaves the character as it was', () {
+      final c = _growth().character;
+      final health = c.currentHealth;
+      final won = c.fightsWon;
+      c.restoringAfter(() {
+        c.currentHealth = 1;
+        c.fightsWon += 5;
+        c.diceId = 'war_die';
+      });
+      expect(c.currentHealth, health);
+      expect(c.fightsWon, won);
+      expect(c.diceId, 'own_die');
+    });
+
     test('merges only a recipe that raises the die', () {
       final skills = {
         ..._skills,
@@ -301,7 +337,7 @@ void main() {
       expect(pick.suitor, weak);
       expect(pick.reason, contains('compact would turn penitents Hostile'));
       // With no clan backed, the strongest gift is taken.
-      g.politics = const PoliticsState();
+      g.politics = PoliticsState.empty;
       final free = g.competentSuitor(
           const ClanOffer(ticket: ticket, suitors: [strong, weak]), ticket);
       expect(free.suitor, strong);

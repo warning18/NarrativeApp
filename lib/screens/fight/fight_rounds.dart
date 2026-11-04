@@ -45,6 +45,8 @@ extension _FightRounds on _FightScreenState {
   ) async {
     if (_over || _rolling || _rollCount >= _rollCap) return;
     final acting = _actingParty;
+    // The locks kept through this roll are frozen for the round.
+    _dieLocks.rolled();
 
     final rolled = <String, DiceFaceResult>{};
     final isReroll = _rollCount > 0;
@@ -73,9 +75,9 @@ extension _FightRounds on _FightScreenState {
     if (_quick) {
       _rollController.value = 1;
     } else {
-      _rollController.duration = MediaQuery.of(context).disableAnimations
+      _rollController.duration = _still
           ? const Duration(milliseconds: 1)
-          : const Duration(milliseconds: 650);
+          : diceTimeFor(diceThrowBase, ref.read(diceSpeedProvider));
       await _rollController.forward(from: 0);
     }
     if (!mounted) return;
@@ -98,6 +100,17 @@ extension _FightRounds on _FightScreenState {
       // A Steady face that just landed stays put (see face_keywords.dart).
       _noteSteadyFaces(
           rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
+      _awaitingDecision = false;
+    });
+    // The dice rest with their faces up for a beat before they can be
+    // tapped (scaled by the dice speed; none with reduced motion or a
+    // quick resolve).
+    if (!_quick && !_still) {
+      await Future.delayed(
+          diceTimeFor(diceLandBase, ref.read(diceSpeedProvider)));
+      if (!mounted) return;
+    }
+    _update(() {
       _awaitingDecision = !forced;
       _autoAssignTargets();
     });
@@ -107,7 +120,8 @@ extension _FightRounds on _FightScreenState {
     if (forced) {
       // No choice left — give the player a beat to see the 3rd faces land
       // before they resolve on their own.
-      await Future.delayed(const Duration(milliseconds: 700));
+      await Future.delayed(diceTimeFor(
+          const Duration(milliseconds: 700), ref.read(diceSpeedProvider)));
       if (!mounted) return;
       await _confirmRoll(skills, items);
     }
@@ -257,10 +271,16 @@ extension _FightRounds on _FightScreenState {
         _surgeActorId = null;
       }
       final healing = _healDealt(actor, face, result.healingDone);
+      // A heal mends the member it is aimed at (heal_target.dart): by
+      // default the most wounded one standing. What heals past full counts
+      // on them.
+      final healed = healing > 0 && _roleOf(result) == FaceRole.heal
+          ? _healTargetFor(actor)
+          : actor;
       final watchfire =
           actor.isPlayer && _core.core == ProfessionCore.watchfire;
       if (watchfire && healing > 0) {
-        _watchfireOnHeal(actor, healing, newEntries, lang);
+        _watchfireOnHeal(actor, healing, newEntries, lang, healed: healed);
       }
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
@@ -280,15 +300,26 @@ extension _FightRounds on _FightScreenState {
       final signShield = actor.isPlayer && face.type == 'Heal'
           ? _signs.shieldFromOverheal(
               healing: healing,
-              currentHealth: actor.currentHealth,
-              maxHealth: actor.maxHealth)
+              currentHealth: healed.currentHealth,
+              maxHealth: healed.maxHealth)
           : 0;
       // The Stitch-Thrust: healing past full strikes the foe (step 3c).
       if (actor.isPlayer && healing > 0) {
-        _stitchThrust(overheal(healing, actor.currentHealth, actor.maxHealth),
+        _stitchThrust(overheal(healing, healed.currentHealth, healed.maxHealth),
             newEntries, lang);
       }
-      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
+      healed.currentHealth =
+          min(healed.maxHealth, healed.currentHealth + healing);
+      if (healed != actor) {
+        _fx(VfxStyle.heal, _memberCardKey(healed.id),
+            delayMs: fxDelay, text: '+$healing', textKind: VfxTextKind.heal);
+        newEntries.add(_LogEntry(
+            trFor(lang, 'heal_target_log')
+                .replaceAll('{name}', actor.displayName)
+                .replaceAll('{target}', healed.displayName)
+                .replaceAll('{n}', '$healing'),
+            _LogKind.playerHeal));
+      }
       if (!extras.isNone) {
         bonusRollsNext +=
             _applySkillExtrasOnCaster(actor, healing, extras, newEntries, lang);
@@ -297,7 +328,7 @@ extension _FightRounds on _FightScreenState {
       if (combos.contains(PartyCombo.shelter) &&
           _roleOf(result) == FaceRole.heal &&
           healing > 0) {
-        _shelterFrom(actor, healing, newEntries, lang);
+        _shelterFrom(actor, healed, healing, newEntries, lang);
       }
       final braced = result.blockAmount > 0 && _isTelegraphedTarget(actor);
       var block = braced
@@ -558,7 +589,8 @@ extension _FightRounds on _FightScreenState {
         result: result,
         target: target,
         dealt: dealt,
-        healing: healing,
+        // A heal on another member shows on their card (above).
+        healing: healed == actor ? healing : 0,
         block: block,
         drained: drainedFx,
         delayMs: fxDelay,
@@ -610,8 +642,9 @@ extension _FightRounds on _FightScreenState {
 
     if (manaGained > 0) {
       final overflow = _mana + manaGained - _maxMana;
+      // Kept in the fight; the session takes it when the fight ends
+      // (applyCombatResult, applyRetreat: v1.713).
       _mana = min(_maxMana, _mana + manaGained);
-      ref.read(playerSessionProvider.notifier).setMana(_mana);
       _censerBurn(overflow, newEntries, lang);
     }
 
@@ -625,7 +658,8 @@ extension _FightRounds on _FightScreenState {
       _currentFaces.clear();
       _selectedTargets.clear();
       _parryTargets.clear();
-      _lockedActorIds.clear();
+      _dieLocks.clear();
+      _healTargets.clear();
       _steadyActorIds.clear();
       _selectedActorId = null;
       if (lastDamagedEnemyKey != null) {
@@ -810,7 +844,8 @@ extension _FightRounds on _FightScreenState {
       _bonusRollsNext = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
-      _lockedActorIds.clear();
+      _dieLocks.clear();
+      _healTargets.clear();
       _steadyActorIds.clear();
       _spellBlock.clear();
       _guardianId = null;
@@ -830,7 +865,7 @@ extension _FightRounds on _FightScreenState {
       _finishFight(won: false);
       return;
     }
-    if (sellswordWon || fireWon || watch == true) {
+    if (sellswordWon || fireWon || (watch ?? false)) {
       _finishFight(won: true);
       return;
     }

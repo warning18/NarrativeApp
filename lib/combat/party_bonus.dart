@@ -9,12 +9,16 @@ import 'dart:math';
 ///   which FightScreen fills on a lost boss fight.
 /// * **The camp's works** -- houses.json `partyHealthBonus` and
 ///   `partyDamageBonus` (percent), the late-game gold sink: the Hearth-Hall,
-///   the Banner Loft and the Shroud Shrine.
+///   the Banner Loft and the Shroud Shrine; and `companionHealthBonus`
+///   (percent, the companions only, while [fullCompanySize] of them are
+///   fielded), the Barracks Annex's since the cap of three fighters
+///   (v1.668): it makes up for the seat a full company lost.
 class PartyBonus {
   const PartyBonus({
     this.resolveStacks = 0,
     this.houseHealthPercent = 0,
     this.houseDamagePercent = 0,
+    this.companionHealthPercent = 0,
   });
 
   static const PartyBonus none = PartyBonus();
@@ -22,6 +26,9 @@ class PartyBonus {
   final int resolveStacks;
   final int houseHealthPercent;
   final int houseDamagePercent;
+
+  /// The companions' own max health bonus, on top of [healthPercent].
+  final int companionHealthPercent;
 
   int get resolvePercent => resolveStacks * resolvePercentPerStack;
   int get healthPercent => resolvePercent + houseHealthPercent;
@@ -34,12 +41,20 @@ class PartyBonus {
   /// A max health scaled by the bonus, never under 1.
   int scaleMaxHealth(int value) => max(1, (value * healthMultiplier).round());
 
+  /// A companion's max health scaled by [companionHealthPercent].
+  int scaleCompanionMaxHealth(int value) =>
+      max(1, (value * (100 + companionHealthPercent) / 100).round());
+
   /// A current health scaled by the bonus (0 stays 0: a knocked-out
   /// companion is still knocked out).
   int scaleCurrentHealth(int value) => (value * healthMultiplier).round();
 
   int scaleDamage(int value) => (value * damageMultiplier).round();
 }
+
+/// How many companions make a full company: the Annex's
+/// `companionHealthBonus` holds only while this many are fielded.
+const int fullCompanySize = 2;
 
 /// Resolve never stacks past this many defeats.
 const int resolveStackCap = 5;
@@ -59,18 +74,21 @@ int resolveStacksFor(
   return min(resolveStackCap, most);
 }
 
-/// The percent bonuses the built camp works add up to.
-({int health, int damage}) houseBonusesFor(
+/// The percent bonuses the built camp works add up to: the party's health
+/// and damage, and the companions' own health.
+({int health, int damage, int companionHealth}) houseBonusesFor(
     Iterable<String> builtHouseIds, Map<String, dynamic> houses) {
   var health = 0;
   var damage = 0;
+  var companionHealth = 0;
   for (final id in builtHouseIds) {
     final house = houses[id] as Map<String, dynamic>?;
     if (house == null) continue;
     health += (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
     damage += (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
+    companionHealth += (house['companionHealthBonus'] as num?)?.toInt() ?? 0;
   }
-  return (health: health, damage: damage);
+  return (health: health, damage: damage, companionHealth: companionHealth);
 }
 
 PartyBonus partyBonusFor({
@@ -84,5 +102,6 @@ PartyBonus partyBonusFor({
     resolveStacks: resolveStacksFor(bossDefeatCounts, enemyIds),
     houseHealthPercent: works.health,
     houseDamagePercent: works.damage,
+    companionHealthPercent: works.companionHealth,
   );
 }

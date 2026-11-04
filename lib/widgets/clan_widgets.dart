@@ -18,7 +18,6 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
-import 'throne_widgets.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
 const Color clanFoeColor = Color(0xFFD9544D);
@@ -694,42 +693,6 @@ class _StandingSliderState extends State<_StandingSlider> {
           widget.onSet(v.round());
         },
       ),
-    );
-  }
-}
-
-/// The Character tab's Clans: a card per clan (and per tribe the story
-/// has opened), without Edit Mode's controls.
-class ClansSection extends ConsumerWidget {
-  const ClansSection({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(clanDataProvider);
-    final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
-    final theme = Theme.of(context);
-    final shown = [
-      ...data.clans,
-      for (final tribe in data.tribes)
-        if (tribe.unlockFlag.isEmpty || flags.contains(tribe.unlockFlag)) tribe,
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(tr(ref, 'clans_section'), style: theme.textTheme.titleSmall),
-        Text(tr(ref, 'clans_section_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        const SizedBox(height: 4),
-        // The climb to the Lantern Throne (v1.196), once begun.
-        const ClimbCard(),
-        if (shown.isEmpty)
-          Text(tr(ref, 'clans_none'), style: theme.textTheme.bodySmall),
-        for (final faction in shown) FactionStandingCard(faction: faction),
-        // The dead clan, once remembered (v1.195): its stage, no meter.
-        if (openHandStageFrom(flags) > 0)
-          for (final faction in data.lost) LostClanCard(faction: faction),
-      ],
     );
   }
 }

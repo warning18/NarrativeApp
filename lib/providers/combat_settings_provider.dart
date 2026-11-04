@@ -111,6 +111,58 @@ final aimedShotsProvider =
     StateNotifierProvider<_AimedShotsNotifier, AimedShots>(
         (ref) => _AimedShotsNotifier());
 
+/// How fast the dice of a fight are thrown (v1.679): the default is slow
+/// enough to watch them tumble and land; 2x and 4x divide every wait of
+/// the throw by two or four.
+enum DiceSpeed {
+  normal(1),
+  double(2),
+  quad(4);
+
+  const DiceSpeed(this.factor);
+  final int factor;
+}
+
+/// The throw of the dice, before the faces read (it was 650 ms before
+/// v1.679).
+const Duration diceThrowBase = Duration(milliseconds: 1400);
+
+/// How long the dice rest on the board with their faces up before they can
+/// be tapped.
+const Duration diceLandBase = Duration(milliseconds: 450);
+
+/// [base] at [speed]: the default divided by 2 or 4.
+Duration diceTimeFor(Duration base, DiceSpeed speed) =>
+    Duration(microseconds: base.inMicroseconds ~/ speed.factor);
+
+class _DiceSpeedNotifier extends StateNotifier<DiceSpeed> {
+  _DiceSpeedNotifier() : super(DiceSpeed.normal) {
+    _load();
+  }
+
+  static const String prefsKey = 'combat_dice_speed';
+  bool _changed = false;
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_changed || !mounted) return;
+    final saved = prefs.getString(prefsKey);
+    state = DiceSpeed.values
+        .firstWhere((v) => v.name == saved, orElse: () => DiceSpeed.normal);
+  }
+
+  Future<void> set(DiceSpeed value) async {
+    _changed = true;
+    state = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(prefsKey, value.name);
+  }
+}
+
+/// How fast a fight's dice are thrown (see [DiceSpeed]).
+final diceSpeedProvider = StateNotifierProvider<_DiceSpeedNotifier, DiceSpeed>(
+    (ref) => _DiceSpeedNotifier());
+
 /// Whether a story choice that moves the clans says so, in a muted line
 /// under it: "Vigil +5 · Dominion −5" (v1.195, see politicsHint). A
 /// choice whose consequences are hidden never does. Defaults to on.

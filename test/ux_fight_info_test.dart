@@ -19,6 +19,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 
 import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
 import 'support/fonts.dart';
@@ -109,17 +110,30 @@ void main() {
     await _enter(tester, perception: 30);
 
     await _shot(tester, 'fight-incoming-estimate');
-    // The round, the momentum and the condition each answer a long press.
-    await _longPress(tester, find.textContaining('Round'));
+    // The round, the momentum and the condition each open a pop-in on a tap.
+    Finder tile(String label) =>
+        find.byWidgetPredicate((w) => w is FightStatusTile && w.label == label);
+    Future<void> open(String label) async {
+      await tester.tap(tile(label));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    Future<void> close() async {
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    await open('Round');
+    expect(find.byKey(const Key('fight_effect_popin')), findsOneWidget);
     expect(find.textContaining('the Tide rises'), findsOneWidget);
-    await tester.tap(find.byType(Scaffold).first, warnIfMissed: false);
-    await tester.pump(const Duration(seconds: 3));
-    await _longPress(tester, find.textContaining('Momentum'));
+    await close();
+    await open('Momentum');
     expect(find.textContaining('sure critical'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 3));
-    await _longPress(tester, find.text('High Ground'));
+    await close();
+    await open('High Ground');
     expect(find.textContaining('Tide rises'), findsNothing);
-    expect(find.byType(Tooltip), findsWidgets);
+    expect(find.byKey(const Key('fight_effect_popin')), findsOneWidget);
+    await close();
 
     // The foe's telegraphed blow, read in full (Perception 30), is on the
     // bar of the one it is aimed at, as "−N", and says so on a long press.

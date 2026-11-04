@@ -609,7 +609,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
                     _voice?.stop();
                   }
                 },
-                tailX: tailX.toDouble(),
+                tailX: tailX,
                 tailDown: _bubbleAbove,
               );
 

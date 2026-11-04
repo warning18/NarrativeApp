@@ -127,7 +127,7 @@ void main() {
     expect(_line(tester), contains('Friendly'));
     expect(
         tester
-            .widget<Text>(find.byKey(const Key('branch_warrior_bulwark')))
+            .widget<Text>(find.byKey(const Key('star_count_warrior_bulwark')))
             .data,
         contains('2/4'));
 

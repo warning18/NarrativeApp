@@ -596,7 +596,11 @@ class InventoryDieRow extends StatelessWidget {
     this.locked = false,
     this.onOpen,
     this.onEquip,
+    this.gift,
   });
+
+  /// A clan die's gift line (ClanDieGift), under the die's details.
+  final Widget? gift;
 
   final String dieId;
   final String name;
@@ -654,6 +658,7 @@ class InventoryDieRow extends StatelessWidget {
                             .replaceAll('{material}', skin.material),
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: ink.ash)),
+                    if (gift != null) gift!,
                     if (inHand)
                       Text(trFor(language, 'inv_in_hand'),
                           style: theme.textTheme.bodySmall?.copyWith(

@@ -217,7 +217,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
     // forge, else the first.
     final slot = slots.contains(_slot)
         ? _slot!
-        : slots.firstWhere((s) => ready[s] == true,
+        : slots.firstWhere((s) => ready[s] ?? false,
             orElse: () => slots.isEmpty ? '' : slots.first);
     final shown = [
       for (final id in recipes)
@@ -304,7 +304,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                           trFor(lang, 'forge_slot_$s').startsWith('forge_slot_')
                               ? s
                               : trFor(lang, 'forge_slot_$s')),
-                      if (ready[s] == true) ...[
+                      if (ready[s] ?? false) ...[
                         const SizedBox(width: 6),
                         Container(
                           key: ValueKey('forge_tab_dot_$s'),
@@ -325,7 +325,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
         // The roll, in one line; its odds behind a tap.
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-          child: Container(
+          child: DecoratedBox(
             key: const Key('forge_roll_box'),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),

@@ -4,16 +4,9 @@
 
 ## What moved
 
-| Test | World | Why |
-|---|---|---|
-| 20 tests | the full world | their bands held; the extra tables (companions, specialisations, spec variants, skill merges, detour scenes, ports) changed no pass or fail |
-| `boss_balance_test` | the full world **without `specialisations` and `spec_variants`** | see below |
-| `sim_companions_test`, `sim_competent_test` | the full world without the five tables the screen loads and they did not | the frozen naive run (tuple and hash) is pinned on the old world; Core replaces the pin with property checks (S1) and the exclusion goes with it |
-| `sign_fight_hooks_test` | its own minimal list, marked | the test is about a world with no clan tables |
+All 24 simulator tests play in the full world, apart from `sign_fight_hooks_test`, which keeps its own marked list (it is about a world with no clan tables). The shared list has no way to leave a table out any more.
 
-## The finding
-
-**With the hero's specialisation in the world, the boss curve is 15 to 20 points too easy.** Same 400 runs, same seed, bosses won (target): chapter 4 inquisitor 68 (55), bone warden 72 (55), void archon 71 (50), white admiral 66 (45), chapter 8 tear herald 55 (35), void sovereign 67 (35); the claimants together 58 (40); the mean 65 (target about 50). The professions' spread stays at 8.3. Only `specialisations` and `spec_variants` do this; the other three tables (skill merges, detour scenes, ports) change nothing. The simulator screen loads both, so its L3 numbers include them; the CI bands were measured without. `boss_balance_test` keeps its measure and says why at the call. **Core decides** whether the bosses or the targets move; until then the CI curve and the simulator screen disagree by that much.
+*History:* when this helper first landed (#591) `boss_balance_test` and the two frozen-run tests kept the old world through a `simTables(without: ...)` argument, because with the specialisations in the world the same 400 runs won the bosses 15 to 20 points more often. Core's decision was to keep the targets and re-size the bosses (v1.613 and v1.614, `docs/proposals/bosses-full-world.md`) and to replace the frozen runs with property checks (#603, v1.617); the exclusions went with them and the argument is gone.
 
 ## S5: one big run
 

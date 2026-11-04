@@ -58,11 +58,6 @@ SkillsModel? watchSkillsModel(WidgetRef ref, String? allyId) {
   );
 }
 
-/// "1 pt" / "3 pts".
-String costLabel(WidgetRef ref, int points) => points == 1
-    ? tr(ref, 'cost_pt_one')
-    : tr(ref, 'cost_pt_many').replaceAll('{n}', '$points');
-
 /// "Offered by the Cinder Compact": who offers [entry], the player's skill
 /// not yet known (see offers.dart); a line saying none does when no clan
 /// sponsors it.
