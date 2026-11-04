@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.777.0+813]
+
+- **Narrative: page breaks in nine long scenes.** `400`, `470`, `6010_thread`,
+  `1200`, `6002`, `2015_dockside`, `4999_drawn`, `5004` and `5004b` read in
+  two pages, cut at a beat of the story rather than by length (the man in the
+  white mask appears; the light comes up on the cloth; the ledger names the
+  parents). Every word stays; English and French break at the same place.
+  `7400`, the cove camp, is left whole: it is a hub the player returns to, and
+  its ways on must stay on the first page. Ids, choices and flags unchanged.
+
 ## [1.751.0+787]
 
 - **Narrative: a page break in `6010_record`.** The Reliquary's records scene
