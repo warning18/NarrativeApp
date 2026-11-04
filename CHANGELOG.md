@@ -20,6 +20,14 @@ isn't reconstructable from git history alone.
 - Tests: the Character tab test opens each view; `skills_by_element_test.dart`;
   the phone sweep shows the Skills and Detail views.
 
+## [1.737.0+773]
+
+- **Core: a broken edited table or story falls back to the bundled one (#696).**
+  An editor override (`gamedb_<table>` or `story_nodes_override`) that no
+  longer parses used to fail the whole load. It is now reported and the
+  table or story bundled with the app is read instead; the override is
+  left in place to be fixed or reset.
+
 ## [1.736.0+772]
 
 - Code: the fight's two kinds of icon tile (a fighter's effect and a
