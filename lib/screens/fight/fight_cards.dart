@@ -463,6 +463,8 @@ extension _FightCards on _FightScreenState {
       subtitle: subtitle,
       body: tip ?? label,
       closeHint: tr(ref, 'effect_popin_close'),
+      reachTop: _stripReachTop,
+      reachBottom: _stripReachBottom,
     );
   }
 
