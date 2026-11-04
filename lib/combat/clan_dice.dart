@@ -12,7 +12,7 @@ import '../data/factions.dart';
 const StandingTier clanDieGiftTier = StandingTier.trusted;
 
 /// The standing a clan die resonates from, with its clan the main one.
-const StandingTier resonanceTier = StandingTier.friend;
+const StandingTier _resonanceTier = StandingTier.friend;
 
 /// Resonance: faces of value 1 up to this...
 const int resonanceMaxFace = 3;
@@ -60,7 +60,7 @@ Resonance resonanceOf(
   final clan = clanOfDie(die);
   if (clan.isEmpty) return Resonance.none;
   if (mainClanOf(politics) != clan) return Resonance.notMainClan;
-  return politics.tierOf(clan, data).isAtLeast(resonanceTier)
+  return politics.tierOf(clan, data).isAtLeast(_resonanceTier)
       ? Resonance.lit
       : Resonance.standingLow;
 }
