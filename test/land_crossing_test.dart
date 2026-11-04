@@ -19,6 +19,8 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/journey_fx.dart'
+    show JourneyJoltPainter;
 import 'package:narrative_data_app/data/climate.dart' show WeatherKind;
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
@@ -355,6 +357,8 @@ void main() {
 
     Future<bool?> fight(WidgetTester tester, bool? won,
         {bool retreat = false}) async {
+      // The fight on the road opens with the map's jolt (v1.812).
+      var sawJolt = false;
       SharedPreferences.setMockInitialValues({});
       late WidgetRef ref;
       bool? arrived;
@@ -406,7 +410,18 @@ void main() {
         await tester.tap(find.byKey(const Key('crossing_choice_fight')));
         await Future<void>.delayed(const Duration(milliseconds: 300));
       });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      sawJolt = find
+          .byWidgetPredicate(
+              (w) => w is CustomPaint && w.painter is JourneyJoltPainter)
+          .evaluate()
+          .isNotEmpty;
       await settle();
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 300)));
+      await settle();
+      expect(sawJolt, isTrue, reason: 'the jolt plays before the fight');
       expect(find.byType(FightScreen), findsOneWidget);
       // The fight's own end, as FightScreen leaves it.
       if (retreat) ref.read(lastFightRetreatedProvider.notifier).state = true;

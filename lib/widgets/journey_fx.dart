@@ -560,6 +560,58 @@ class JourneyFxPainter extends CustomPainter {
   }
 }
 
+/// The one entrance into a fight, from the map and from the road: a short
+/// shake and a red vignette over [child], driven by [controller] (380 ms,
+/// see [fightJoltDuration]). Rests at 0 and 1, where it is just [child].
+class FightJolt extends StatelessWidget {
+  const FightJolt(
+      {super.key,
+      required this.controller,
+      required this.colour,
+      required this.child});
+
+  final AnimationController controller;
+  final Color colour;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        final t = controller.value;
+        if (t == 0 || t == 1) return child!;
+        final shake = math.sin(t * math.pi * 7) * 6 * (1 - t);
+        return Stack(
+          fit: StackFit.passthrough,
+          children: [
+            Transform.translate(
+              offset: Offset(shake, shake * 0.4),
+              child: child,
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: JourneyJoltPainter(t: t, colour: colour),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+const fightJoltDuration = Duration(milliseconds: 380);
+
+/// Plays [controller] as the jolt; a cut (no wait) under reduced motion.
+Future<void> playFightJolt(BuildContext context, AnimationController c) async {
+  if (MediaQuery.of(context).disableAnimations) return;
+  await c.forward(from: 0);
+}
+
 /// A shake and a red vignette going into a fight (see the Journey tab's
 /// take): [t] runs 0 to 1 over the jolt.
 class JourneyJoltPainter extends CustomPainter {

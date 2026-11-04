@@ -812,8 +812,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   }
 
   /// The jolt going into a fight: the map shakes and its edges run red.
-  late final AnimationController _jolt = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 380));
+  late final AnimationController _jolt =
+      AnimationController(vsync: this, duration: fightJoltDuration);
 
   @override
   void dispose() {
@@ -897,9 +897,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       }
       if (step.kind == JourneyStepKind.fight ||
           step.kind == JourneyStepKind.expedition) {
-        if (!MediaQuery.of(context).disableAnimations) {
-          await _jolt.forward(from: 0);
-        }
+        await playFightJolt(context, _jolt);
         if (!mounted || moved()) return;
       }
       fromId = ref.read(storyPlayProvider).currentNodeId;
@@ -2339,32 +2337,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 id: 'journey.chart',
                 // Going into a fight the map jolts and its edges run red (see
                 // _take).
-                child: AnimatedBuilder(
-                  animation: _jolt,
-                  builder: (context, child) {
-                    final t = _jolt.value;
-                    if (t == 0 || t == 1) return child!;
-                    final shake = math.sin(t * math.pi * 7) * 6 * (1 - t);
-                    return Stack(
-                      fit: StackFit.passthrough,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(shake, shake * 0.4),
-                          child: child,
-                        ),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            child: CustomPaint(
-                              painter: JourneyJoltPainter(
-                                t: t,
-                                colour: InkColors.dark.blood,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                child: FightJolt(
+                  controller: _jolt,
+                  colour: InkColors.dark.blood,
                   child: cityMap ??
                       Stack(
                         fit: StackFit.passthrough,
