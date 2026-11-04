@@ -1,7 +1,7 @@
 // Pins each town's services (the notice board, the market, the tavern, the
 // temple, the forge, the harbour) on its stored plan, without laying the
 // plan out again: writes each record's `services` in
-// assets/gamedata/city_plans.json (see lib/data/town_service_pins.dart).
+// assets/gamedata/city_plans.json (see town_service_pins.dart).
 // gen_city_plans.dart does the same for a plan it lays out anew. Run from
 // the repository's root:
 //
@@ -9,7 +9,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:narrative_data_app/data/town_service_pins.dart';
+import 'town_service_pins.dart';
 
 const String _out = 'assets/gamedata/city_plans.json';
 

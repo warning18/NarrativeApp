@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.769.0+805]
+
+- The app is about 350 KB smaller: `city_plans.json` (the cities' stored
+  plans, generated, never edited by hand) is written minified, 733 KB down
+  to 386 KB with the same data. The two plan generators
+  (`city_plan_generator.dart`, `town_service_pins.dart`), which only the
+  tools in `tool/city_plans/` run, move there from `lib/`. Nothing changes
+  on screen.
+
 ## [1.768.0+804]
 
 - No stray "[PAGE]" in a scene read in one go: the narration recording
