@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.772.0+808]
+
+- A scene's text is composed once per build instead of two or three
+  times: the Journey's page count, its scene panel and the opening
+  reading now share one composition (`composeNarrationParts` keeps its
+  last answer while the scene, the session and the story are the same).
+  A slightly smoother Journey on slow phones; nothing else changes.
+
 ## [1.770.0+806]
 
 - Code: the 15% lift on ordinary enemies' damage from chapter 2 on
