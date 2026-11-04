@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.774.0+810]
+
+- The pictures are stored as palette PNGs: 652 of them (the banners, the effects'
+  strips, the heads, the icons, the throne room and the rest, the ones that
+  have 256 colours or fewer, which is all of them) go from 567,761 to 300,525
+  bytes (-267 KB), and decode to exactly the same pixels (the new
+  `tool/png8.py` keeps a rewrite only if it reads back as the same RGBA and is
+  smaller; 120 files compared again with a second decoder: none differs).
+- `python3 tool/png8.py --check` lists any picture that should be a palette PNG
+  and is not (exit 1), for a guard; `tool/README.md` says to run `png8.py`
+  after a generator, and a generator then writes the same bytes as before.
+
 ## [1.773.0+809]
 
 - The 377 icons (items, skills, enemies, shops, chests) are stored at the size

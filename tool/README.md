@@ -7,7 +7,7 @@ install pillow`); nothing in the app reads a script.
 ## Art generators (write into `assets/`)
 
 Each one was run into a clean checkout (Pillow 13.0.0, Python 3) and wrote the
-**same bytes as the files in the repository** (before `png8.py`: see below) (no file changed, none added), so
+**same pictures as the files in the repository** (once `png8.py`, below, has stored them as palette PNGs: no file changed, none added), so
 the checked-in pictures are what the script makes. Run one again only if you
 change its recipe, and commit the pictures with it.
 
