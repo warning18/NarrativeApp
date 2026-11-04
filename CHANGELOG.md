@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.809.0+845]
+
+- Journey: a choice that leads to the next scene in the same place keeps
+  you in the scene. It is a card on the scene page (in a room too, not a
+  mark on the map), and taking it opens the next scene on the same page or
+  sheet, with no map in between. Ways to another district or road are still
+  marks on the map; a one-card page still has no Continue.
 ## [1.808.0+844]
 
 - Code cleanup (split 4f, step 2): the session notifier's methods leave
