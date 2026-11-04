@@ -115,12 +115,12 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, '2015');
     expect(tester.widget<Text>(taken).data, startsWith('› Say nothing'));
 
-    // French, on the narrowest phone: the line reads "Toujours : <place>".
+    // French, on the narrowest phone: the line reads "Toujours ici : <place>".
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     await settleApp(tester);
-    expect(tester.widget<Text>(still).data, startsWith('Toujours : '));
+    expect(tester.widget<Text>(still).data, startsWith('Toujours ici\u00a0: '));
     expect(tester.takeException(), isNull);
   });
 }

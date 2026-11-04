@@ -13,7 +13,7 @@ isn't reconstructable from git history alone.
 - Journey: a step taken inside one place (a card whose way opens the next
   scene at the same stop, v1.809) now says so. The new scene opens with a small
   gold italic line, "› <the choice you took>", and under it "Still at <place>"
-  ("Toujours : <place>"); the scene's stage and its cards fade in over 200 ms
+  ("Toujours ici : <place>"); the scene's stage and its cards fade in over 200 ms
   (a cut with reduced motion). A way that moves the party, a carried trip, a
   hub's return and a detour show neither line. Tests:
   `journey_taken_line_test.dart` (which steps say it; the lines on the
