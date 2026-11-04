@@ -47,7 +47,6 @@ Not done, because the files are UX's picture mocks and a merge is a design choic
 | `fight_goals_test.dart` | settle, usePhone |
 | `fight_ground_test.dart` | usePhone |
 | `fight_guard_test.dart` | usePhone |
-| `fight_hero_harness.dart` | fonts, usePhone |
 | `fight_lab_companion_test.dart` | usePhone |
 | `fight_lab_parts_test.dart` | settle |
 | `fight_lab_test.dart` | usePhone |

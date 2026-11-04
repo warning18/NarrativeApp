@@ -25,7 +25,7 @@ import 'story_node_editor_screen.dart';
 /// A node box's fixed width — capped and ellipsized (see the node
 /// `builder` below) rather than left to grow with the id's length, so a
 /// long id (e.g. "2015_dockside") can never spill past its column and
-/// overlap the next one. Kept comfortably under [ChapterGridAlgorithm]'s
+/// overlap the next one. Kept comfortably under [_ChapterGridAlgorithm]'s
 /// own `columnWidth` so there's always a visible gap for edges to route
 /// through between columns.
 const double _nodeBoxWidth = 150;
@@ -148,18 +148,16 @@ Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
 /// (Sugiyama, force-directed, …) decide positions — this is what actually
 /// enforces "5 nodes per column, chapters as separate bands," a constraint
 /// no general-purpose layout algorithm takes as an input.
-class ChapterGridAlgorithm extends Algorithm {
-  ChapterGridAlgorithm({
+class _ChapterGridAlgorithm extends Algorithm {
+  _ChapterGridAlgorithm({
     required this.slots,
     required this.bandLayout,
-    this.columnWidth = 190,
-    this.rowHeight = 72,
   });
 
   final Map<String, GridSlot> slots;
   final ChapterBandLayout bandLayout;
-  final double columnWidth;
-  final double rowHeight;
+  final double columnWidth = 190;
+  final double rowHeight = 72;
 
   // ArrowEdgeRenderer, not null — some GraphView internals call through
   // this unconditionally, and SugiyamaAlgorithm (what this replaces)
@@ -268,7 +266,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     // nodes per column (column = hops from that chapter's opening beat),
     // stacked in vertical bands so no chapter's branching crowds another's.
     final slots = computeChapterGridSlots(story);
-    // rowHeight here must match ChapterGridAlgorithm's own rowHeight below
+    // rowHeight here must match _ChapterGridAlgorithm's own rowHeight below
     // -- it's what the band start-Y offsets are measured in, and a mismatch
     // would leave later chapters' bands overlapping the ones before them.
     final bandLayout = computeChapterBandLayout(slots, rowHeight: 72);
@@ -293,7 +291,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
               children: [
                 GraphView(
                   graph: graph,
-                  algorithm: ChapterGridAlgorithm(
+                  algorithm: _ChapterGridAlgorithm(
                       slots: slots, bandLayout: bandLayout),
                   paint: Paint()
                     ..color = colorScheme.outline
