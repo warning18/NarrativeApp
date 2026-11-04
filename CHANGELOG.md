@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.788.0+824]
+
+- **Cleanup: five ship-log lines nothing says any more.** The sail's
+  "first volley seen" line (the blunt it described was never applied) and
+  four older ones ("You strike the ship", "The ship strikes", "Bulwark
+  braced", "Hull patched") are removed in English and French. No line the
+  game shows changes.
+
 ## [1.786.0+822]
 
 - Code cleanup (R4, batch 2): eight more names only the tests used are
