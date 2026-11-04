@@ -22,6 +22,16 @@ isn't reconstructable from git history alone.
   Tests: `fight_board_test.dart` (the land is behind a fight given one),
   `land_crossing_test.dart` (the road's fight is given it).
 
+
+## [1.825.0+861]
+
+- Journey: the map is back for every scene with a choice to make, as before
+  v1.809. A room's ways are spots on its plan again (the Blind Beggar's
+  tables and doors, the family house, Kindly Hill: 28 scenes had lost
+  them), and the party walks to the one picked. Only a scene with nothing to
+  choose, its one way leading on in the same place, still goes on with no
+  map (its way a card on the page). A way to another district of a town is
+  walked on the town's chart: the party's mark crosses the streets to it.
 ## [1.824.0+860]
 
 - Fight: the aim line of a picked die is no longer cut off at the dice board.
