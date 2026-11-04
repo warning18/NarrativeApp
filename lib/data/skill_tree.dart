@@ -14,10 +14,6 @@
 
 import 'dart:math';
 
-/// Skill points it cost to master a completed branch, before v1.194 (the
-/// simulator's old rules).
-const int branchMasteryCost = 2;
-
 /// Skill essence it costs to master a completed branch (v1.194): about
 /// the essence of the two levels its two points took before.
 const int branchMasteryEssenceCost = 2000;

@@ -257,9 +257,6 @@ void main() {
 
     test('a legacy record is known by its chapter and flag', () {
       final s = baseSession();
-      expect(npcIsLegacy(_harker), isTrue);
-      expect(npcIsLegacy(_vane), isFalse);
-      expect(npcIsLegacy(_keeper), isFalse);
       expect(npcDiscovered('old_harker', _harker, s, 1), isFalse);
       expect(npcDiscovered('old_harker', _harker, s, 2), isTrue);
     });

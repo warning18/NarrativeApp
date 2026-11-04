@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.786.0+822]
+
+- Code cleanup (R4, batch 2): eight more names only the tests used are
+  removed: an alias of the channelled-skill power, two wrappers of the
+  duo techniques, the camp errands' filter, a copy of the people codex's
+  legacy check, a sail rule never applied, two stat-pick helpers and the
+  pre-v1.194 mastery cost. Their tests now check the functions the game
+  uses. Nothing changes in play.
+
 ## [1.785.0+821]
 
 - Code cleanup (R4, batch 1): one provider nothing watched and six

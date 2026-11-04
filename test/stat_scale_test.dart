@@ -97,10 +97,8 @@ void main() {
     test('a rarer pick reads its points', () {
       expect(en('dexterity', 'ranger', 2), '+2 DEX: +2 damage, +4% dodge');
       expect(en('luck', 'rogue', 3), '+3 LUCK: +4.5% crit, rarer picks');
-      expect(
-          statPickOfferEffect(
-              {'strength': 2, 'constitution': 1}, 'warrior', AppLanguage.en),
-          '+2 STR: +2 damage · +1 CON: +3 health');
+      expect(en('strength', 'warrior', 2), '+2 STR: +2 damage');
+      expect(en('constitution', 'warrior'), '+1 CON: +3 health');
     });
 
     test('in French', () {
