@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.811.0+847]
+
+- For the side-view camera to come (UX-2's parallax): every place with a
+  scene and every road stop now has a position on one long strip of the
+  land (desert, ruins, fen, frost, in the journey's order) or on the sea
+  crossing's own strip, the same on every launch (`region_strip.dart`).
+  Nothing uses it yet: no change in the game.
+
 ## [1.810.0+846]
 
 - Journey: a step taken inside one place (a card whose way opens the next
