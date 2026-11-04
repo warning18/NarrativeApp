@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.799.0+835]
+
+- Code cleanup: the retired level-up sign pick is removed (its offer roll,
+  its preferred card, its "can anyone offer" check and its saved offer).
+  The clans' offers draw signs since v1.194 and stay as they are. The
+  sign tests now check the rules those offers use: what a patron can
+  offer, which patrons may, and the slots. Nothing in the game changes.
+
 ## [1.796.0+832]
 
 - **Narrative: the toll's price shown once.** "Pay the toll" (`260`) loses its
