@@ -100,6 +100,7 @@ import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import '../utils/fight_orientation.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
@@ -613,6 +614,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   GlobalKey _enemyCardKey(String key) =>
       _cardKeys.putIfAbsent('enemy:$key', GlobalKey.new);
 
+  /// Whether this fight holds the screen upright (see fight_orientation.dart).
+  bool _heldUpright = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_heldUpright) _heldUpright = holdFightUpright(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -642,6 +652,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   @override
   void dispose() {
+    if (_heldUpright) releaseFightUpright();
     _luckyDieTourTimer?.cancel();
     _shakeController.dispose();
     _vfx.removeImpactListener(_onVfxImpact);
