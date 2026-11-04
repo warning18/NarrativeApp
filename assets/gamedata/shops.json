@@ -652,7 +652,8 @@
       "Potion"
     ],
     "diceStock": [
-      "tide_die"
+      "tide_die",
+      "storm_die"
     ],
     "stockQuantities": {
       "harborwatch_cutlass": 1,

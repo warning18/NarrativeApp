@@ -50,6 +50,7 @@ linter:
     avoid_bool_literals_in_conditional_expressions: true
     prefer_const_literals_to_create_immutables: true
     avoid_unused_constructor_parameters: true
+    unawaited_futures: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

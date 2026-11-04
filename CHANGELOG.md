@@ -8,13 +8,68 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.758.0+794]
+## [1.762.0+798]
 
 - Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
   the cues, the controller, the layer and its painter) and three files under
   `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
   groups of drawing methods (the building blocks, and what a strong or mighty
   burst adds). Pure cut and paste; nothing changes on screen.
+
+## [1.761.0+797]
+
+- Rangers get a die worth replacing the starter with: the storm die's Wind
+  Step (Defend 2) and Catch Your Breath (Heal 2) faces become open Skill
+  faces, so half its rolls land where your skills cast at full power, and
+  it beats the starter however many skills you know. It is now also sold at
+  the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
+  at the black market. Its price is unchanged.
+## [1.760.0+796]
+
+- **Cleanup: the dropped futures are named.** The 45 places where a Future
+  was started and left (a notice or a progress dialog that must not hold
+  the caller, a save that follows a state change already made) are
+  wrapped in `unawaited(...)`, and the `unawaited_futures` lint is on so a
+  new one cannot slip in unseen. All 45 were fire-and-forget on purpose;
+  nothing runs earlier, later or differently.
+
+## [1.759.0+795]
+
+- The profession dice sold in shops now beat the starter die once bought,
+  so there is a reason to replace it. The iron, bulwark, storm, holy, tide,
+  flame and arcane dice each turn one plain face into an open Skill face
+  (where your skills cast at full power, as on the starter) and their
+  weakest signature faces come up more often. Prices and shops are
+  unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
+  the same way. See `docs/simulation/starter-die.md`.
+## [1.758.0+794]
+
+- Code (P4, part 1): two providers no longer wake everything below them on
+  every change to the session. The tab badges compare equal when no dot
+  comes or goes, so the always-on home shell and the play menu stop
+  rebuilding on each change; the clan effects (and the signs built on
+  them) watch only the four fields they read. No change in play. Over five
+  unrelated session changes they notified 5 and 5 times; now 0 and 0
+  (`provider_rebuilds_test`).
+## [1.757.0+793]
+
+- Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
+  main file (the screen, 765 lines) and five `part` files under
+  `lib/screens/playthrough_simulator/`: the engine (`sim_engine.dart`,
+  `simulatePlaythroughs` and the walk), the batch statistics, the exports,
+  the batch card and the run detail. A pure move: every line is the same,
+  so the simulator's numbers and the tests do not change (wave 4a).
+
+## [1.756.0+792]
+
+- Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three
+  files under `lib/screens/journey/`: the panel under the map (its height, the
+  choice cards, the rings and list sheets), the road the party is carried
+  along, and the scene, map-button, looked-at and ended panels (about 1,000
+  lines). The map chart, the district view and `build` stay where they are.
+  The state's methods moved into a private extension (as in the fight screen)
+  and `setState` is called through a one-line `_update`; nothing changes on
+  screen or in the rules.
 
 ## [1.755.0+791]
 

@@ -3,6 +3,7 @@
 // notice; the hint under a choice and its setting; Edit Mode's events
 // with "Fire now", the Open Hand's stage and its line in the Evolution
 // log; and the codex's silhouette before the name is heard.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -176,12 +177,12 @@ void main() {
     ], AppLanguage.en);
     expect(lines, hasLength(4), reason: 'three, then how many more');
     expect(lines.last, '1 more in the journal');
-    showChapterCard(ctx,
+    unawaited(showChapterCard(ctx,
         number: 'Chapter 4',
         title: 'The Hollow Court',
         colour: Colors.orange,
         newsTitle: 'News from the coast',
-        news: lines);
+        news: lines));
     await tester.pump(const Duration(milliseconds: 900));
     expect(find.byKey(const ValueKey('chapter_card_news')), findsOneWidget);
     expect(find.text('NEWS FROM THE COAST'), findsOneWidget);
