@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.817.0+853]
+
+- For the side-view camera (step 3b of UX-2's parallax): the seam between two
+  kits. `kitBlend` (`kit_blend.dart`) turns one region's land into the next as
+  the camera moves: the new kit comes in from the right edge in an ordered
+  dither, a band of mixed land trailing it, the old land staying on the left
+  until the seam has passed. Nothing uses it yet (the camera, next, gives it
+  its progress): no change in the game. Picture:
+  `docs/ux-shots/blend/desert-into-ruins.png`. Test: `kit_blend_test.dart`.
+
 ## [1.816.0+852]
 
 - Story: two new fields for Narrative's text, nothing changes until the
