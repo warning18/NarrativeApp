@@ -16,6 +16,13 @@ isn't reconstructable from git history alone.
   last answer while the scene, the session and the story are the same).
   A slightly smoother Journey on slow phones; nothing else changes.
 
+## [1.771.0+807]
+
+- The playthrough simulator loses its old growth mode (the skill points,
+  perks and sign picks of before v1.194), which only two tests still ran;
+  the game and every batch use the clans' offers. About 170 lines less,
+  and a seeded batch gives the same numbers. Nothing changes in play.
+
 ## [1.770.0+806]
 
 - Code: the 15% lift on ordinary enemies' damage from chapter 2 on
