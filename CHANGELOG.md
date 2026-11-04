@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.775.0+811]
+
+- The code that settles a fight (rewards, loot, XP, quests, politics) is
+  cut from one 460-line function into named steps: the outcome, a win, a
+  loss, the per-foe tally, the chest's odds and the allies' revival. The
+  same calls run in the same order, random rolls included, so nothing
+  changes in play.
+
 ## [1.771.0+807]
 
 - The playthrough simulator loses its old growth mode (the skill points,
