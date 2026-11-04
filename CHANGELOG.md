@@ -8,12 +8,103 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.722.0+758]
+## [1.747.0+783]
 
 - The app no longer ships dog pictures nothing reads: the three `rotations`
   folders (the sitting dog, the angel's and the demon's) now list only their
   `south.png`, and the unused bark frames are left out (about 65 KB less).
   The art stays in the repository, as source. Nothing changes on screen.
+
+## [1.719.0+755]
+
+- **Narrative: 34 long scenes cut.** Scenes over the 800-character page cap
+  lose about a tenth of their text, English and French together:
+  35,840 to 32,157 characters in English, 40,762 to 36,482 in French.
+  Scenes over 800 characters go from 35 to 28, French scenes over 1,000
+  from 22 to 12. Every reveal, fact and bolded line stays (the Open Hand
+  ledger on `5004`/`5004b`, the Unmaking roll on `6010_record`, the four
+  endings); what went is repetition, scene-setting and doubled images. The
+  endings and `6010_record` are trimmed lightly: they are reveals, and a
+  deeper cut needs a page-turn split (Core). Ids, choices, flags and
+  conditions are unchanged.
+
+## [1.718.0+754]
+
+- **Narrative: tighter ending callbacks.** The 38 longest English callbacks
+  (the nine on each of the four journey endings `7005`, `7005_seeker`,
+  `7005_dawn`, `7005_crown`, plus `7001`, `7002_betrayal`, `7002_approach`,
+  `7400`) lose about a fifth of their words, 14,346 to 11,297 characters
+  across the 79 rewritten. The clan's own image and the dated detail stay;
+  each ending still names what the player chose. French rewritten with the
+  English. Flags and conditions unchanged.
+
+## [1.717.0+753]
+
+- **Narrative: shorter choice labels, the last batch.** 118 more labels in
+  the Saltmouth, Candlehold, Reliquary and ending hubs (`7200`, `7510`,
+  `7590`, `7800`, `3005`, `3100`, `5100`, `6100`, `6200`, `7100`, `7400` and
+  others) cut to about 46 characters in English and 56 in French so the
+  panel bubble no longer wraps. Same choices, ids, flags and costs; only the
+  wording changed. No test pinned these labels.
+
+## [1.716.0+752]
+
+- **Narrative: shorter choice labels, hubs `2015`, `7004` and `5010` (second
+  batch).** Nineteen labels in the Smugglers' Wharf hub (`2015`), the
+  last-choice page (`7004`) and the Hollow Court hub (`5010`) are tightened to
+  about 46 characters, English and French, with the same meaning and tone;
+  the longest drops from 54 to 47 in English and from 71 to 57 in French.
+  Labels only: no choice, flag, id, condition or number changes. No test or
+  code pinned any of them.
+
+## [1.715.0+751]
+
+- **Cleanup: the Gemini library is gone.** The edit-mode "Generate" tab
+  (the AI generator), the "Analyze with Gemini" button of the playthrough
+  simulator, the API-key field in Settings and the `google_generative_ai`
+  package are removed, with the strings that only they used. They were
+  developer tools; the simulator itself, the Dev tools button and the
+  ElevenLabs key are unchanged. Edit mode now has four tabs.
+
+## [1.714.0+750]
+
+- **Core: the fight keeps its mana until it ends; a burst of saves writes
+  once.** A fight saved the whole game, and rebuilt every screen behind it,
+  each time mana was gained or spent; it now keeps mana in the fight and
+  the session takes it when the fight ends (won, lost, fled or broken up,
+  as it already did). Saves asked for together share one write, and each
+  still waits until its change is on disk.
+
+## [1.713.0+749]
+
+- **Narrative: shorter choice labels, hubs `3005` and `6010` (first batch).**
+  The panel and the stage wrap a label at about 46 characters. Eighteen
+  labels in the Ashen Quarter hub (`3005`) and the Reliquary Quarter hub
+  (`6010`) are tightened, English and French, with the same meaning and tone;
+  the longest drops from 54 to 46 characters in English and from 75 to 56 in
+  French. Labels only: no choice, flag, id, condition or number changes. No
+  test or code pinned any of them.
+
+## [1.712.0+748]
+
+- **Core: the game's tables are read from the cache.** Each scene change
+  and fight start read its tables (enemies, items, skills, shops...) by
+  rebuilding them, placeholders and the French overlay included: 10 to 30
+  ms a table in French. They now come from the cache that already holds
+  them; the same records (a test checks every table, in English and
+  French).
+
+## [1.711.0+747]
+
+- **Cleanup: nine more lints on, and the unused `cupertino_icons` package
+  dropped.** `use_if_null_to_convert_nulls_to_bools`,
+  `noop_primitive_operations`, `use_named_constants`,
+  `unnecessary_raw_strings`, `use_decorated_box`, `sort_pub_dependencies`,
+  `avoid_bool_literals_in_conditional_expressions`,
+  `prefer_const_literals_to_create_immutables` and
+  `avoid_unused_constructor_parameters` are enabled and fixed at about 100
+  sites in 64 files. Nothing changes on screen or in a number; the one
+  unused constructor parameter of the ship side view's palette is gone.
 
 ## [1.710.0+746]
 
@@ -339,8 +430,6 @@ isn't reconstructable from git history alone.
   the board; a double tap puts it back until the next roll, then the keep is sealed (a padlock).
   The lock rules are Core's (`die_locks.dart`). Heal and defence lines point to the fighter's own
   card until heals can target an ally.
-
-
 
 ## [1.665.0+701]
 
@@ -10887,8 +10976,6 @@ undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
   neither has any other unlock point in the story graph, so removing them
   would have made those shops permanently unobtainable.
 
-
-
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start
 and another available from the very first chapter.
@@ -11801,7 +11888,6 @@ Chapter 3-5 branching still falls well short of Chapter 1's — closing that gap
 
 ### Changed
 - Quest/item/skill/dice detail dialogs now render their flavor-text description with larger text and more generous line spacing, matching how the main story narration is styled, instead of the dialog's cramped default text style.
-
 
 ### Added
 - Copy button for the Playthrough Simulator's batch summary (previously only individual runs and the Gemini analysis could be copied — batches only had Export).

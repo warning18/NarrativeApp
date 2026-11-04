@@ -59,7 +59,7 @@ void main() {
       [for (final c in nodes[n]!['choices'] as List) c as Json];
   bool fight(Json c) =>
       c['triggerEnemyId'] != null ||
-      (c['triggerEnemyIds'] as List?)?.isNotEmpty == true ||
+      ((c['triggerEnemyIds'] as List?)?.isNotEmpty ?? false) ||
       c['shipBattleId'] != null;
   bool check(Json c) => c['checkAbility'] != null;
   Json settlement(String n) => (nodes[n]!['settlement'] as Json?) ?? const {};

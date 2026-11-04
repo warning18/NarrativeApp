@@ -498,7 +498,7 @@ double vfxPowerFor({
   }
   if (critical) power += 0.2;
   if (boss) power += 0.15;
-  return power.clamp(minVfxPower, maxVfxPower).toDouble();
+  return power.clamp(minVfxPower, maxVfxPower);
 }
 
 /// The tier a [power] plays at.

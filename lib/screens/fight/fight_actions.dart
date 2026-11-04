@@ -354,8 +354,8 @@ extension _FightActions on _FightScreenState {
     if (scrollItemId != null) {
       ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId);
     } else {
+      // The session takes it when the fight ends (v1.713).
       _mana -= _spellCost(spell);
-      ref.read(playerSessionProvider.notifier).setMana(_mana);
     }
     _update(() {
       _log.addAll(entries);

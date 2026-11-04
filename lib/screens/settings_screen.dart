@@ -13,7 +13,6 @@ import '../providers/github_push_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/palette_provider.dart';
 import '../providers/permadeath_provider.dart';
-import '../providers/settings_providers.dart';
 import '../providers/theme_mode_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
@@ -30,10 +29,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  late final TextEditingController _controller;
   late final TextEditingController _githubTokenController;
   late final TextEditingController _companionNameController;
-  bool _obscure = true;
   bool _obscureGithubToken = true;
   bool _checkingUpdate = false;
   bool _downloading = false;
@@ -43,7 +40,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: ref.read(apiKeyProvider) ?? '');
     _githubTokenController =
         TextEditingController(text: ref.read(githubTokenProvider) ?? '');
     _companionNameController =
@@ -52,7 +48,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _githubTokenController.dispose();
     _companionNameController.dispose();
     super.dispose();
@@ -505,64 +500,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             if (isEditMode) ...[
               const SizedBox(height: 24),
               Text(
-                tr(ref, 'gemini_api_key_title'),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                tr(ref, 'gemini_api_key_desc'),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _controller,
-                obscureText: _obscure,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: tr(ref, 'api_key_label'),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        _obscure ? Icons.visibility : Icons.visibility_off),
-                    tooltip: _obscure
-                        ? tr(ref, 'show_api_key_tooltip')
-                        : tr(ref, 'hide_api_key_tooltip'),
-                    onPressed: () => setState(() => _obscure = !_obscure),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final key = _controller.text.trim();
-                        if (key.isEmpty) return;
-                        await ref.read(apiKeyProvider.notifier).setKey(key);
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(tr(ref, 'api_key_saved'))),
-                        );
-                      },
-                      child: Text(tr(ref, 'save')),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  OutlinedButton(
-                    onPressed: () async {
-                      _controller.clear();
-                      await ref.read(apiKeyProvider.notifier).clearKey();
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(tr(ref, 'api_key_removed'))),
-                      );
-                    },
-                    child: Text(tr(ref, 'clear_button')),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Text(
                 tr(ref, 'github_sync_title'),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
@@ -854,7 +791,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed ?? false) {
       await _downloadAndInstall(info);
     }
   }

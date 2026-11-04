@@ -201,7 +201,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final len = seaShipLength(ref.read(shipFormProvider));
     final at = deckCrewX(index, crew.length, len, width / unit) * unit;
     final bubbleWidth = min(300.0, width - 16);
-    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8).toDouble();
+    final left = (at - 24).clamp(8.0, width - bubbleWidth - 8);
     return Positioned(
       left: left,
       top: 4,
@@ -215,7 +215,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           speaker: line.speaker,
           line: line.line,
           width: bubbleWidth,
-          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22).toDouble(),
+          tailX: (at - left - 7).clamp(8.0, bubbleWidth - 22),
         ),
       ),
     );

@@ -90,17 +90,17 @@ _Shape _d6() {
   final top = [
     const _P(0, -1),
     const _P(0.87, -0.5),
-    const _P(0, 0),
+    Offset.zero,
     const _P(-0.87, -0.5)
   ];
   final left = [
     const _P(-0.87, -0.5),
-    const _P(0, 0),
+    Offset.zero,
     const _P(0, 1),
     const _P(-0.87, 0.5)
   ];
   final right = [
-    const _P(0, 0),
+    Offset.zero,
     const _P(0.87, -0.5),
     const _P(0.87, 0.5),
     const _P(0, 1)
@@ -1391,9 +1391,9 @@ class _ArtPainter extends CustomPainter {
         }
         canvas.drawPath(star..close(), stroke(const Color(0xFF7C8CFF), 1.4));
       case 'iron_die': // riveted bands
-        canvas.drawLine(const _P(-0.87, -0.5), const _P(0, 0),
+        canvas.drawLine(const _P(-0.87, -0.5), Offset.zero,
             stroke(const Color(0xFF2B2F35), 3));
-        canvas.drawLine(const _P(0, 0), const _P(0.87, -0.5),
+        canvas.drawLine(Offset.zero, const _P(0.87, -0.5),
             stroke(const Color(0xFF2B2F35), 3));
         for (final p in const [
           _P(-0.55, -0.32),
