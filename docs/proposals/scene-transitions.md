@@ -190,8 +190,7 @@ hand-testing 1.809):**
 1. A **taken line** above the new scene's words when the step was a same-place
    card: the choice's own text in a small italic gold line with a "›" (no new
    string: the choice text is already in the language read). It stays until the
-   next step (no timer), scrolls with the text, and is absent under reading
-   mode's full-screen page? (kept: it is one line).
+   next step (no timer) and scrolls with the text.
 2. A **still-in line** under it: "Toujours : {place}" / "Still at {place}": **2
    new strings** (Narrative to word), the place being the crumbs' last name.
    Shown only after a same-place step, never after a move or a hub return (that
