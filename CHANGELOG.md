@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.816.0+852]
+## [1.817.0+853]
 
 - For the side-view camera (step 3b of UX-2's parallax): the seam between two
   kits. `kitBlend` (`kit_blend.dart`) turns one region's land into the next as
