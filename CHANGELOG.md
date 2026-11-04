@@ -15,6 +15,14 @@ isn't reconstructable from git history alone.
   (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
   that imports it changes. A pure move: nothing in the game or the save
   changes.
+## [1.803.0+839]
+
+- The clan card (a long press on a clan's banner, the offer's (i)) ends with
+  "How it is ruled" ("Comment il est gouverné"): who holds power in the clan,
+  how it passes, what a member owes, for the six clans that have it, as
+  Narrative wrote it (`ruling` in factions.json, not shown anywhere until
+  now). Test: `clan_ruling_test.dart` (the six clans, English and French, at
+  320 px).
 
 ## [1.802.0+838]
 
