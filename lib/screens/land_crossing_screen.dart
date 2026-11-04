@@ -487,6 +487,17 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     return checkLine;
   }
 
+  /// The land the road's fight is met on: the camera's at today's place, else
+  /// the route's own terrain kit in today's window; null for a terrain with
+  /// no scene.
+  List<SideLayer>? _landForFight() {
+    final cam = widget.camera;
+    if (cam != null) return cam.layersAt(_cameraX(_day)!);
+    final terrain = widget.route.terrain;
+    if (!crossingSceneTerrains.contains(terrain)) return null;
+    return crossingLayers(terrain, 0.5, version: _windowOfDay());
+  }
+
   /// A fight on the road (the scavengers, v1.305.0): played on the battle
   /// screen, with the party's own health, rewards and loot. Won, the
   /// choice's success follows; broken off, its fail; lost, the crossing
@@ -508,6 +519,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
         builder: (_) => FightScreen(
             enemyId: choice.fightEnemyId!,
             enemy: enemy,
+            landLayers: _landForFight(),
             modifiers: EncounterModifiers(forcedStage: stage))));
     ref.read(combatActiveProvider.notifier).state = false;
     final retreated = ref.read(lastFightRetreatedProvider);
