@@ -17,6 +17,32 @@ isn't reconstructable from git history alone.
   weakest signature faces come up more often. Prices and shops are
   unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
   the same way. See `docs/simulation/starter-die.md`.
+## [1.755.0+791]
+
+- Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
+  lines: the widget, its state and `build`) and five files under
+  `lib/screens/ship_battle/`: the turns, the dock and chips, the sea, the crew
+  and the painters. The state's methods moved into private extensions (as in
+  the fight screen) and `setState` is called through a one-line `_update`;
+  nothing changes on screen or in the rules.
+
+## [1.754.0+790]
+
+- **The world map, simpler and readable.** One look and one world: the Layers
+  sheet no longer holds the look and shape selectors. It keeps the sphere,
+  the weather and three map layers: none, **Clans** and the route by
+  chapter; the country, standing, relief, humidity, heat and shops layers
+  are gone. The dotted borders of the lands and the dotted coasts under the
+  fog are gone too. The **Clans** layer tints each whole land by the clan
+  that holds it now (stripes where a second clan presses almost as hard),
+  from Core's region holders.
+- Tests: `full_map_screen_test` now checks the sheet offers the plain map,
+  Clans and chapters (and no look, shape, height or standing layer), and that
+  the Clans layer gives the painter who holds each land; `chart_weather_test`
+  turns the Clans layer instead of the height one.
+- The map's size is unchanged (the question of the map's size is with the
+  user). `docs/proposals/map-performance.md` lists the speed steps that
+  follow, each its own PR.
 
 ## [1.753.0+789]
 
