@@ -26,6 +26,11 @@ const double _tileH = 118;
 /// (combat redesign A'/A''): a head and some icons for each fighter, the dice
 /// thrown onto a board that looks like the place, a tap on a die to see its
 /// target and a second tap to keep it.
+/// The effects of the fighter whose icons are being built (a build runs
+/// start to end, one fighter at a time): each `_effectIcon` adds its own, and
+/// a tap on any of them opens them all.
+List<FightEffectEntry> _fxGroup = [];
+
 extension _FightBoardView on _FightScreenState {
   // --- Slots ---------------------------------------------------------------
 
@@ -126,7 +131,9 @@ extension _FightBoardView on _FightScreenState {
 
   // --- Effect icons --------------------------------------------------------
 
-  /// One effect icon, whose tap opens its pop-in.
+  /// One effect icon. A fighter with one effect gets that effect's pop-in; a
+  /// fighter with several gets one pop-in listing all of them, whichever icon
+  /// was tapped.
   Widget _effectIcon(
     FightEffect effect,
     String title, {
@@ -135,6 +142,9 @@ extension _FightBoardView on _FightScreenState {
     required String who,
     int? turns,
   }) {
+    final group = _fxGroup;
+    group.add(FightEffectEntry(
+        effect: effect, title: title, body: body, badge: badge));
     return Builder(
       builder: (iconContext) => FightEffectChip(
         key: Key('fight_effect_${effect.name}_$who'),
@@ -145,6 +155,18 @@ extension _FightBoardView on _FightScreenState {
           final box = iconContext.findRenderObject();
           if (box is! RenderBox || !box.hasSize) return;
           final rect = box.localToGlobal(Offset.zero) & box.size;
+          if (group.length > 1) {
+            showFightEffectsPopin(
+              context,
+              anchor: rect,
+              title: tr(ref, 'effects_popin_title')
+                  .replaceAll('{name}', who)
+                  .replaceAll('{n}', '${group.length}'),
+              entries: List.of(group),
+              closeHint: tr(ref, 'effect_popin_close'),
+            );
+            return;
+          }
           showFightEffectPopin(
             context,
             anchor: rect,
@@ -198,6 +220,7 @@ extension _FightBoardView on _FightScreenState {
   /// weaken.
   List<Widget> _partyEffectIcons(_PartyMember member) {
     final who = member.displayName;
+    _fxGroup = [];
     return [
       if (member.isPlayer && _core.core == ProfessionCore.fury)
         _effectIcon(FightEffect.fury, tr(ref, 'fury_label'),
@@ -419,6 +442,7 @@ extension _FightBoardView on _FightScreenState {
             : const Color(0xFFFF9A2E).withValues(alpha: 0.75);
     final who = enemy.displayName;
     final extras = _enemyExtraCount(enemy);
+    _fxGroup = [];
     final icons = <Widget>[
       // Its role in a squad (healer, guard, striker) and what it is set on
       // stay readable: they decide who to hit first.

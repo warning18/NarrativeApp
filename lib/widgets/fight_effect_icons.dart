@@ -517,3 +517,129 @@ Future<void> showFightEffectPopin(
     },
   );
 }
+
+/// One line of the effects pop-in: an effect of a fighter, with what it does.
+class FightEffectEntry {
+  const FightEffectEntry({
+    required this.effect,
+    required this.title,
+    required this.body,
+    this.badge,
+  });
+
+  final FightEffect effect;
+  final String title;
+  final String body;
+  final String? badge;
+}
+
+/// The pop-in of a fighter's effects, all at once: [title] (who, how many),
+/// then each of [entries] with its icon, name and rule, and a line to close
+/// it. Same card as [showFightEffectPopin], under (or over) the icon at
+/// [anchor]; it scrolls when the list is long. A tap anywhere closes it.
+Future<void> showFightEffectsPopin(
+  BuildContext context, {
+  required Rect anchor,
+  required String title,
+  required List<FightEffectEntry> entries,
+  required String closeHint,
+}) {
+  return showGeneralDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: closeHint,
+    barrierColor: Colors.transparent,
+    transitionDuration: MediaQuery.of(context).disableAnimations
+        ? Duration.zero
+        : const Duration(milliseconds: 120),
+    pageBuilder: (context, _, __) {
+      final screen = MediaQuery.of(context).size;
+      const width = 300.0;
+      final left = (anchor.left - 8).clamp(10.0, screen.width - width - 10);
+      final below = anchor.bottom + 200 < screen.height;
+      final room = below
+          ? screen.height - anchor.bottom - 16
+          : anchor.top - MediaQuery.of(context).padding.top - 16;
+      final theme = Theme.of(context);
+      const ink = Color(0xFFE8E2D2);
+      const muted = Color(0xFF9A94A8);
+      final card = Material(
+        key: const Key('fight_effect_popin'),
+        color: const Color(0xFF241F2B),
+        elevation: 10,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: Colors.white38),
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: room.clamp(160.0, 1000.0)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w700)),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final e in entries) ...[
+                          const SizedBox(height: 8),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FightEffectChip(
+                                  effect: e.effect,
+                                  label: e.title,
+                                  badge: e.badge,
+                                  size: 30),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(e.title,
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                                color: ink,
+                                                fontWeight: FontWeight.w700)),
+                                    Text(e.body,
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                                color: ink, height: 1.3)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(closeHint,
+                    style: theme.textTheme.labelSmall?.copyWith(color: muted)),
+              ],
+            ),
+          ),
+        ),
+      );
+      return Stack(
+        children: [
+          Positioned(
+            left: left,
+            width: width,
+            top: below ? anchor.bottom + 6 : null,
+            bottom: below ? null : screen.height - anchor.top + 6,
+            child: card,
+          ),
+        ],
+      );
+    },
+  );
+}
