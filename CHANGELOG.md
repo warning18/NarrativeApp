@@ -20,6 +20,19 @@ isn't reconstructable from git history alone.
 - Tests: the Character tab test opens each view; `skills_by_element_test.dart`;
   the phone sweep shows the Skills and Detail views.
 
+## [1.738.0+774]
+
+- **Core: fight and story fixes from QA issue #694.**
+  - A story choice whose fight names an enemy missing from the table is no
+    longer a free win: the error is reported and the choice isn't taken.
+  - A fight whose rewards fail to pay can still be left: the error is
+    reported and the fight settles.
+  - The Long Vigil's mend stops at full health.
+  - A Flurry's second strike no longer spends the Relicbreaker's mana or the
+    signs' banked shares a second time (as in the simulator).
+  - No die can be rolled in the beat between a confirmed roll and the
+    enemies' answer.
+
 ## [1.737.0+773]
 
 - **Core: a broken edited table or story falls back to the bundled one (#696).**
