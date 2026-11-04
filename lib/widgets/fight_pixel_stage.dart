@@ -543,7 +543,7 @@ class _P {
     r(mix(l.light, l.dark, 0.4), 38, 52, 5, 1);
     for (var y = 12; y < 50; y++) {
       for (var x = 36; x < 46; x++) {
-        if ((x + y) % 2 == 0 && rnd(x * 7 + y, 9) < 0.7 - (50 - y) * 0.012) {
+        if ((x + y).isEven && rnd(x * 7 + y, 9) < 0.7 - (50 - y) * 0.012) {
           r(mix(l.skyLow, Colors.white, 0.2), x + math.sin(y * 0.2) * 2,
               y.toDouble(), 1, 1);
         }
@@ -688,7 +688,7 @@ class _P {
       for (var y = 10; y < hz; y++) {
         final sway = math.sin(y * 0.09 + k) * 3;
         for (var x = 0; x < 6; x++) {
-          if ((x + y) % 2 == 0) {
+          if ((x + y).isEven) {
             r(l.dark.withValues(alpha: 0.5), x0 + x + sway, y.toDouble(), 1, 1);
           }
         }
@@ -762,7 +762,7 @@ class _P {
             for (var dy = -7; dy <= 7; dy++) {
               for (var dx = -7; dx <= 7; dx++) {
                 final d = dx * dx + dy * dy;
-                if (d < 49 && (dx + dy) % 2 == 0) {
+                if (d < 49 && (dx + dy).isEven) {
                   r(warm.withValues(alpha: 0.5 * (1 - d / 49)), x + dx,
                       y - 13 + dy, 1, 1);
                 }
@@ -778,7 +778,7 @@ class _P {
             for (var dy = -6; dy <= 6; dy++) {
               for (var dx = -6; dx <= 6; dx++) {
                 final d = dx * dx + dy * dy;
-                if (d < 36 && (dx + dy) % 2 == 0) {
+                if (d < 36 && (dx + dy).isEven) {
                   r(warm.withValues(alpha: 0.4 * (1 - d / 36)), x + 5 + dx,
                       63 + dy, 1, 1);
                 }

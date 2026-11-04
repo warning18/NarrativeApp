@@ -53,7 +53,7 @@ void kitDisc(Canvas canvas, Size size, double u,
         canvas.drawRect(
             Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
             discPaint);
-      } else if (d <= halo * halo && (x + y) % 2 == 0) {
+      } else if (d <= halo * halo && (x + y).isEven) {
         canvas.drawRect(
             Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
             glowPaint);

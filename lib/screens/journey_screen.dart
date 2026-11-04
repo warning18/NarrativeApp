@@ -110,13 +110,13 @@ import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
 import 'story_player_screen.dart'
     show
-        StoryPlayerScreen,
         EchoLine,
+        StoryPlayerScreen,
         composeNarrationParts,
         isStoryChoiceLocked,
-        storySceneLocked,
         noteShownEchoes,
         storyChoiceLockedText,
+        storySceneLocked,
         takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
 
@@ -812,8 +812,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   }
 
   /// The jolt going into a fight: the map shakes and its edges run red.
-  late final AnimationController _jolt = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 380));
+  late final AnimationController _jolt =
+      AnimationController(vsync: this, duration: fightJoltDuration);
 
   @override
   void dispose() {
@@ -839,6 +839,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _takingFrom = before;
       _pressed = index;
     });
+    // The view the step is taken from: a same-place step keeps it.
+    final current = _reading
+        ? ArrivalView.page
+        : _arrival
+            ? ArrivalView.sheet
+            : null;
     // Where the party stands before it sets out.
     final home = _partyChart;
     final homePlan = _partyPlan, homeDistrict = _partyDistrict;
@@ -891,15 +897,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       }
       if (step.kind == JourneyStepKind.fight ||
           step.kind == JourneyStepKind.expedition) {
-        if (!MediaQuery.of(context).disableAnimations) {
-          await _jolt.forward(from: 0);
-        }
+        await playFightJolt(context, _jolt);
         if (!mounted || moved()) return;
       }
       fromId = ref.read(storyPlayProvider).currentNodeId;
       await takeStoryChoice(context, ref, step.choice);
       taken = true;
       flow = _flowAfter(fromId, step.choice);
+      _noteTakenStep(step.choice, flow, before);
     } finally {
       if (mounted) {
         // A choice that keeps the story where it was (a shop, a fight
@@ -944,6 +949,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         ?.isMainStoryScene(play.currentNodeId) ??
                     true,
                 inExcursion: play.isInExcursion,
+                current: current,
               );
               // The story begun again: its first scene, as a new game's.
               final fresh = isFreshStoryStart(play);
@@ -965,6 +971,24 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
+  }
+
+  /// A step taken inside one place (a card whose way leads to the next scene
+  /// at the same stop): the scene it opens says what was taken and that the
+  /// party is still here (pendingTakenProvider). A move, a carried trip, a
+  /// hub's return and a step that left the scene as it was say nothing.
+  void _noteTakenStep(StoryChoice choice, ChoiceFlow flow, String before) {
+    final play = ref.read(storyPlayProvider);
+    final place = ref
+        .read(geographyProvider)
+        .placeOfNode(widget.story.nodeFor(play.currentNodeId));
+    ref.read(pendingTakenProvider.notifier).state = takenStepAfter(
+      choice: choice,
+      flow: flow,
+      inExcursion: play.isInExcursion,
+      sceneChanged: _sceneKeyOf(play) != before,
+      placeId: place?.id,
+    );
   }
 
   /// What the Journey does after [choice] took the story from [fromId] to
@@ -1616,13 +1640,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A written detour has no map: all its ways are cards under its scene.
     _writtenDetour = play.isInExcursion &&
         ref.read(storyPlayProvider.notifier).scenePlay != null;
-    final cardsOn = _writtenDetour ||
-        (!play.isInExcursion &&
-            placeLandmark != null &&
-            chartHere != null &&
-            room == null);
+    final placed =
+        !play.isInExcursion && placeLandmark != null && chartHere != null;
+    // A way to the next scene at the same stop is a card as well, in a room
+    // too: the scene keeps the party (choice_flow.dart's FlowStay).
     final onCard = [
-      for (final s in shapes) cardsOn && (_writtenDetour || s.here),
+      for (var i = 0; i < shapes.length; i++)
+        _writtenDetour ||
+            placed &&
+                ((room == null && shapes[i].here) ||
+                    (stops?.flowOf(node, choices[i]) is FlowStay)),
     ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;
@@ -1665,7 +1692,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // on the last one. Each page writes itself out on its own.
     final pageCount = composeNarrationParts(
             node, ref.watch(playerSessionProvider), story,
-            french: french)
+            french: french, revisit: isRevisit(play))
         .pages
         .length;
     final pageKey = scenePageKey(play, node.id);
@@ -1809,7 +1836,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           key: ValueKey('journey_reading_$sceneKey'),
                           text: composeNarrationParts(
                                   node, ref.watch(playerSessionProvider), story,
-                                  french: french)
+                                  french: french, revisit: isRevisit(play))
                               .text,
                           told: _openingTold,
                           onTold: () {
@@ -2310,32 +2337,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 id: 'journey.chart',
                 // Going into a fight the map jolts and its edges run red (see
                 // _take).
-                child: AnimatedBuilder(
-                  animation: _jolt,
-                  builder: (context, child) {
-                    final t = _jolt.value;
-                    if (t == 0 || t == 1) return child!;
-                    final shake = math.sin(t * math.pi * 7) * 6 * (1 - t);
-                    return Stack(
-                      fit: StackFit.passthrough,
-                      children: [
-                        Transform.translate(
-                          offset: Offset(shake, shake * 0.4),
-                          child: child,
-                        ),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            child: CustomPaint(
-                              painter: JourneyJoltPainter(
-                                t: t,
-                                colour: InkColors.dark.blood,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                child: FightJolt(
+                  controller: _jolt,
+                  colour: InkColors.dark.blood,
                   child: cityMap ??
                       Stack(
                         fit: StackFit.passthrough,

@@ -275,6 +275,16 @@ final DbSchema factionsSchema = DbSchema(
     FieldSchema(
         key: 'stands_for_fr', label: 'Stands for (FR)', type: FieldType.text),
     FieldSchema(
+      key: 'ruling',
+      label: 'How it is ruled',
+      type: FieldType.multilineText,
+      help: 'Shown on the clan card, as written (records.dart rulingFor).',
+    ),
+    FieldSchema(
+        key: 'ruling_fr',
+        label: 'How it is ruled (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
       key: 'intro',
       label: 'Intro (the first time they come)',
       type: FieldType.multilineText,

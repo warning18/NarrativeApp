@@ -4543,7 +4543,9 @@
     ],
     "noDetour": true,
     "prompt": "How do you get the Eel afloat?",
-    "prompt_fr": "Comment remettez-vous l’Anguille à flot ?"
+    "prompt_fr": "Comment remettez-vous l’Anguille à flot ?",
+    "revisit_description": "The yards again: ribs on the slips, and the Rusty Eel at the end of the row on her blocks.",
+    "revisit_description_fr": "Les chantiers de nouveau : des membrures sur les cales, et le Rusty Eel au bout de la rangée, sur ses étais."
   },
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
@@ -9254,132 +9256,158 @@
       {
         "flag": "hub_6010_confession",
         "en": "The penitent’s name was on my list. I had decided, in the dark, what to do about it. The deciding had weighed less than I expected.",
-        "fr": "Le nom du pénitent était sur ma liste. J’avais décidé, dans le noir, ce que j’en ferais. La décision avait pesé moins lourd que prévu."
+        "fr": "Le nom du pénitent était sur ma liste. J’avais décidé, dans le noir, ce que j’en ferais. La décision avait pesé moins lourd que prévu.",
+        "priority": 1
       },
       {
         "flag": "dead_heart_cleared",
         "en": "I knew the Dead Heart now, its glass and its silence. The tear had drawn the new shore out of it like a splinter, and I knew the wound.",
-        "fr": "Je connaissais le Cœur Mort désormais, son verre et son silence. La déchirure en avait tiré le nouveau rivage comme une écharde, et je connaissais la plaie."
+        "fr": "Je connaissais le Cœur Mort désormais, son verre et son silence. La déchirure en avait tiré le nouveau rivage comme une écharde, et je connaissais la plaie.",
+        "priority": 1
       },
       {
         "flag": "reliquary_opened",
         "en": "The girl’s bones lay in the frost of the Reliquary Quarter where I had left them. The chart-keeper had not looked at me again.",
-        "fr": "Les os de la fillette gisaient dans le givre du Quartier des Reliquaires, là où je les avais laissés. La gardienne des cartes n’avait plus levé les yeux sur moi."
+        "fr": "Les os de la fillette gisaient dans le givre du Quartier des Reliquaires, là où je les avais laissés. La gardienne des cartes n’avait plus levé les yeux sur moi.",
+        "priority": 1
       },
       {
         "flag": "chartkeeper_paid",
         "en": "The chart-keeper had her chapel and her sister’s bones, and none of my gold left to give. I found I did not miss it.",
-        "fr": "La gardienne des cartes avait sa chapelle et les os de sa sœur, et il ne me restait rien de mon or à donner. Je m’aperçus qu’il ne me manquait pas."
+        "fr": "La gardienne des cartes avait sa chapelle et les os de sa sœur, et il ne me restait rien de mon or à donner. Je m’aperçus qu’il ne me manquait pas.",
+        "priority": 1
       },
       {
         "flag": "penitent_seal",
         "en": "The penitent had broken the seal and not come out of the chapel. He had asked for that. I had given it. It did not feel like giving.",
-        "fr": "Le pénitent avait brisé le sceau et n’était pas ressorti de la chapelle. Il l’avait demandé. Je le lui avais donné. Cela ne ressemblait pas à un don."
+        "fr": "Le pénitent avait brisé le sceau et n’était pas ressorti de la chapelle. Il l’avait demandé. Je le lui avais donné. Cela ne ressemblait pas à un don.",
+        "priority": 1
       },
       {
         "flag": "lysa_fallen",
         "en": "I had killed Lysa in a frost-bound chapel a week before, wearing the Inquisition’s mask, saying my name. The Shroud was nearly whole. I was not.",
-        "fr": "J’avais tué Lysa dans une chapelle prise par le givre une semaine plus tôt, sous le masque de l’Inquisition, disant mon nom. Le Linceul était presque entier. Moi non."
+        "fr": "J’avais tué Lysa dans une chapelle prise par le givre une semaine plus tôt, sous le masque de l’Inquisition, disant mon nom. Le Linceul était presque entier. Moi non.",
+        "priority": 4
       },
       {
         "flag": "lysa_found_dead",
         "en": "Lysa’s name was on the chapel wall in the Reliquary Quarter, twelve times, in my hand’s worst spelling: mine, scratched by hers. I carried it home.",
-        "fr": "Le nom de Lysa était sur le mur de la chapelle du Quartier des Reliquaires, douze fois, dans la pire orthographe de ma main : le mien, gravé par la sienne. Je l’emportai avec moi."
+        "fr": "Le nom de Lysa était sur le mur de la chapelle du Quartier des Reliquaires, douze fois, dans la pire orthographe de ma main : le mien, gravé par la sienne. Je l’emportai avec moi.",
+        "priority": 4
       },
       {
         "flag": "void_accepted",
         "en": "I had taken what the Void offered me to know, and it sat in me now like a swallowed stone.",
-        "fr": "J’avais pris ce que le Néant m’offrait de savoir, et cela pesait en moi comme une pierre avalée."
+        "fr": "J’avais pris ce que le Néant m’offrait de savoir, et cela pesait en moi comme une pierre avalée.",
+        "priority": 1
       },
       {
         "flag": "void_refused",
         "en": "I had torn myself out of the Void’s certainty before it finished, and keeping my ignorance had cost me blood.",
-        "fr": "J’avais échappé à la certitude du Néant avant qu’il n’ait fini, et garder mon ignorance m’avait coûté du sang."
+        "fr": "J’avais échappé à la certitude du Néant avant qu’il n’ait fini, et garder mon ignorance m’avait coûté du sang.",
+        "priority": 1
       },
       {
         "flag": "crew_sent_back",
         "en": "The crew I had sent back to camp had not stayed. They had sailed the Eel to the dead heart the night the tear opened, and brought me home in her.",
-        "fr": "L’équipage que j’avais renvoyé au camp n’y était pas resté. Il avait mené l’Eel jusqu’au cœur mort la nuit où la déchirure s’était ouverte, et m’avait ramené à son bord."
+        "fr": "L’équipage que j’avais renvoyé au camp n’y était pas resté. Il avait mené l’Eel jusqu’au cœur mort la nuit où la déchirure s’était ouverte, et m’avait ramené à son bord.",
+        "priority": 1
       },
       {
         "flag": "crew_followed",
         "en": "The crew had waited at the tear’s edge for as long as they could bear, then carried me down to the Eel and home.",
-        "fr": "L’équipage avait attendu au bord de la déchirure aussi longtemps qu’il avait pu le supporter, puis s’était chargé de moi jusqu’à l’Eel, et de l’Eel jusqu’à la crique."
+        "fr": "L’équipage avait attendu au bord de la déchirure aussi longtemps qu’il avait pu le supporter, puis s’était chargé de moi jusqu’à l’Eel, et de l’Eel jusqu’à la crique.",
+        "priority": 1
       },
       {
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall’s warmth was still in my coat, or I told myself it was.",
-        "fr": "La chaleur de la Halle du Foyer était encore dans mon manteau, ou je me le disais."
+        "fr": "La chaleur de la Halle du Foyer était encore dans mon manteau, ou je me le disais.",
+        "priority": 1
       },
       {
         "flag": "giants_names_read",
         "en": "A cart from Highhearth had brought a door-sized stone to the coast, drawn by giants. My name was cut in it among theirs. We set it by the fire.",
-        "fr": "Une charrette de Haut-Âtre avait amené à la côte une pierre grande comme une porte, tirée par des géants. Mon nom y était gravé parmi les leurs. Nous la posâmes près du feu."
+        "fr": "Une charrette de Haut-Âtre avait amené à la côte une pierre grande comme une porte, tirée par des géants. Mon nom y était gravé parmi les leurs. Nous la posâmes près du feu.",
+        "priority": 2
       },
       {
         "flag": "confession_spared",
         "en": "The Inquisitor who burned the Ashen Quarter was hauling water for the wounded, and did not look up when I passed. That was how he preferred it.",
-        "fr": "L’Inquisiteur qui avait brûlé le Quartier des Cendres portait de l’eau pour les blessés, et ne leva pas les yeux à mon passage. C’était ainsi qu’il le préférait."
+        "fr": "L’Inquisiteur qui avait brûlé le Quartier des Cendres portait de l’eau pour les blessés, et ne leva pas les yeux à mon passage. C’était ainsi qu’il le préférait.",
+        "priority": 1
       },
       {
         "flag": "confession_executed",
         "en": "I had given the Inquisitor the answer he came for, on the frost of the Reliquary Quarter. Nobody at the camp asked, which meant everyone knew.",
-        "fr": "J’avais donné à l’Inquisiteur la réponse qu’il était venu chercher, sur le givre du Quartier des Reliquaires. Personne au camp ne m’en parla, ce qui voulait dire que tout le monde savait."
+        "fr": "J’avais donné à l’Inquisiteur la réponse qu’il était venu chercher, sur le givre du Quartier des Reliquaires. Personne au camp ne m’en parla, ce qui voulait dire que tout le monde savait.",
+        "priority": 1
       },
       {
         "flag": "confession_robbed",
         "en": "The Inquisitor’s purse paid for a month of lamp oil. Nobody at the camp asked where it had come from, and nobody asked after him.",
-        "fr": "La bourse de l’Inquisiteur paya un mois d’huile de lampe. Personne au camp ne demanda d’où elle venait, et personne ne demanda de ses nouvelles."
+        "fr": "La bourse de l’Inquisiteur paya un mois d’huile de lampe. Personne au camp ne demanda d’où elle venait, et personne ne demanda de ses nouvelles.",
+        "priority": 1
       },
       {
         "flag": "lysa_to_camp",
         "en": "Lysa had turned the camp’s sail-loft into an infirmary, and ran it like a ship.",
-        "fr": "Lysa avait transformé la voilerie du camp en infirmerie, et la dirigeait comme un navire."
+        "fr": "Lysa avait transformé la voilerie du camp en infirmerie, et la dirigeait comme un navire.",
+        "priority": 1
       },
       {
         "flag": "lysa_stays_quarter",
         "en": "Word came from the Reliquary Quarter with every boat: Lysa’s ward was still open, and still full.",
-        "fr": "Chaque bateau apportait des nouvelles du Quartier des Reliquaires : le dispensaire de Lysa était toujours ouvert, et toujours plein."
+        "fr": "Chaque bateau apportait des nouvelles du Quartier des Reliquaires : le dispensaire de Lysa était toujours ouvert, et toujours plein.",
+        "priority": 1
       },
       {
         "flag": "truth_told",
         "en": "Copies of the Reliquary’s roll had gone out on every boat. The camp had heard it read twice before I was home, and argued over it once, at length.",
-        "fr": "Des copies du rouleau du Reliquaire étaient parties sur chaque bateau. Le camp l’avait entendu lire deux fois avant mon retour, et en avait débattu une fois, longuement."
+        "fr": "Des copies du rouleau du Reliquaire étaient parties sur chaque bateau. Le camp l’avait entendu lire deux fois avant mon retour, et en avait débattu une fois, longuement.",
+        "priority": 1
       },
       {
         "flag": "lysa_rescued_force",
         "en": "Lysa kept the porcelain mask on a nail by her cot, face to the wall. She said she would look at it when she was ready. She had not looked yet.",
-        "fr": "Lysa gardait le masque de porcelaine sur un clou près de son lit, face au mur. Elle disait qu’elle le regarderait quand elle serait prête. Elle ne l’avait pas encore regardé."
+        "fr": "Lysa gardait le masque de porcelaine sur un clou près de son lit, face au mur. Elle disait qu’elle le regarderait quand elle serait prête. Elle ne l’avait pas encore regardé.",
+        "priority": 1
       },
       {
         "flag": "lysa_sworn_for",
         "en": "Lysa ran the camp’s infirmary and did not speak of the Lantern. The Dominion’s couriers always asked after her, and she never answered.",
-        "fr": "Lysa tenait l’infirmerie du camp et ne parlait pas de la Lanterne. Les courriers du Dominion demandaient toujours de ses nouvelles, et elle ne répondait jamais."
+        "fr": "Lysa tenait l’infirmerie du camp et ne parlait pas de la Lanterne. Les courriers du Dominion demandaient toujours de ses nouvelles, et elle ne répondait jamais.",
+        "priority": 1
       },
       {
         "flag": "lysa_sacrificed",
         "en": "The Shroud in its oilcloth was warm the way a hand is warm. I did not take it out if I could help it.",
-        "fr": "Le Linceul dans sa toile cirée était tiède comme l’est une main. Je ne le sortais pas si je pouvais l’éviter."
+        "fr": "Le Linceul dans sa toile cirée était tiède comme l’est une main. Je ne le sortais pas si je pouvais l’éviter.",
+        "priority": 4
       },
       {
         "flag": "lysa_mercy",
         "en": "I had a porcelain mask in my coat and no sister. I had been in time, and it was no kind of victory.",
-        "fr": "J’avais un masque de porcelaine dans mon manteau et plus de sœur. Le temps m’avait suffi, et ce n’était pas une victoire."
+        "fr": "J’avais un masque de porcelaine dans mon manteau et plus de sœur. Le temps m’avait suffi, et ce n’était pas une victoire.",
+        "priority": 1
       },
       {
         "flag": "lysa_forgiven",
         "en": "Lysa had been forgiven for the ledger, and ran the infirmary the better for it.",
-        "fr": "On avait pardonné à Lysa le registre, et elle tenait l’infirmerie d’autant mieux."
+        "fr": "On avait pardonné à Lysa le registre, et elle tenait l’infirmerie d’autant mieux.",
+        "priority": 1
       },
       {
         "flag": "lysa_scolded",
         "en": "Lysa had not forgotten the scolding. She ran the infirmary with her chin up.",
-        "fr": "Lysa n’avait pas oublié le sermon. Elle tenait l’infirmerie le menton levé."
+        "fr": "Lysa n’avait pas oublié le sermon. Elle tenait l’infirmerie le menton levé.",
+        "priority": 1
       },
       {
         "flag": "lysa_traded",
         "en": "Lysa never asked what became of the copies. She knew.",
-        "fr": "Lysa ne demanda jamais ce que les copies étaient devenues. Elle le savait."
+        "fr": "Lysa ne demanda jamais ce que les copies étaient devenues. Elle le savait.",
+        "priority": 1
       }
     ],
     "settlement": {
@@ -9387,7 +9415,8 @@
       "name": "The Cove Camp",
       "name_fr": "Le camp de la crique",
       "chapter": 6
-    }
+    },
+    "callback_cap": 8
   },
   "7002": {
     "id": "7002",
@@ -9804,7 +9833,8 @@
       {
         "flag": "banner_whole",
         "en": "The Shroud was whole on my back for the first time since the first Inquisitor cut it, and it was humming, very quietly, a tune I did not know yet.",
-        "fr": "Le Linceul était entier sur mon dos pour la première fois depuis que le premier Inquisiteur l’avait coupé, et il fredonnait, tout bas, un air que je ne connaissais pas encore."
+        "fr": "Le Linceul était entier sur mon dos pour la première fois depuis que le premier Inquisiteur l’avait coupé, et il fredonnait, tout bas, un air que je ne connaissais pas encore.",
+        "priority": 4
       },
       {
         "flag": "camp_founded",
@@ -9812,7 +9842,8 @@
           "camp_given"
         ],
         "en": "The camp on the Ashen Coast was a few days’ sail away, expecting me back with an answer. I had founded it; the least I owed it was that.",
-        "fr": "Le campement de la Côte de Cendre était à quelques jours de mer, et l’on y attendait mon retour avec une réponse. Je l’avais fondé ; c’était le moins que je lui devais."
+        "fr": "Le campement de la Côte de Cendre était à quelques jours de mer, et l’on y attendait mon retour avec une réponse. Je l’avais fondé ; c’était le moins que je lui devais.",
+        "priority": 1
       },
       {
         "flag": "lysa_survived",
@@ -9823,152 +9854,182 @@
           "lysa_found_dead",
           "lysa_mercy",
           "lysa_sacrificed"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "reckoning_wall_saved",
         "en": "Whatever I chose, the Wall would keep its names. That, at least, was already done.",
-        "fr": "Quoi que je choisisse, le Mur garderait ses noms. Cela, au moins, était déjà fait."
+        "fr": "Quoi que je choisisse, le Mur garderait ses noms. Cela, au moins, était déjà fait.",
+        "priority": 1
       },
       {
         "flag": "camp_given",
         "en": "There was no camp to sail home to. Whatever I chose, I would be choosing it for a coast of ash.",
-        "fr": "Il n’y avait plus de campement où rentrer. Quoi que je choisisse, je le choisirais pour une côte de cendre."
+        "fr": "Il n’y avait plus de campement où rentrer. Quoi que je choisisse, je le choisirais pour une côte de cendre.",
+        "priority": 1
       },
       {
         "flag": "refugees_left",
         "en": "The wharf at Saltmouth was still in me, the eighty faces I had left on it, and whatever I built now would be built on them whether I said so or not.",
-        "fr": "Le quai de Bouche-de-Sel était encore en moi, les quatre-vingts visages que j’y avais laissés, et ce que je bâtirais désormais serait bâti sur eux, que je le dise ou non."
+        "fr": "Le quai de Bouche-de-Sel était encore en moi, les quatre-vingts visages que j’y avais laissés, et ce que je bâtirais désormais serait bâti sur eux, que je le dise ou non.",
+        "priority": 1
       },
       {
         "flag": "sovereign_took_companion",
         "en": "{lost} had gone into the tear so the rest could. I had not chosen it. I had let it be chosen, which is not the same thing, and is not better.",
-        "fr": "{lost} avait franchi la déchirure pour que les autres le puissent. Je ne l’avais pas choisi. J’avais laissé choisir, ce qui n’est pas la même chose, et n’est pas mieux."
+        "fr": "{lost} avait franchi la déchirure pour que les autres le puissent. Je ne l’avais pas choisi. J’avais laissé choisir, ce qui n’est pas la même chose, et n’est pas mieux.",
+        "priority": 1
       },
       {
         "flag": "inquisition_pact",
         "en": "The Inquisition’s boat waited off the shore for my decision. Whatever I decided, the man in the white mask had decided it already.",
-        "fr": "La barque de l’Inquisition attendait au large que je décide. Quelle que soit ma réponse, l’homme au masque blanc en avait déjà décidé pour moi."
+        "fr": "La barque de l’Inquisition attendait au large que je décide. Quelle que soit ma réponse, l’homme au masque blanc en avait déjà décidé pour moi.",
+        "priority": 3
       },
       {
         "flag": "lysa_fallen",
         "en": "There was no one on the shingle waiting for me who had known me before all this. I had seen to that myself, in a chapel, with a blade.",
-        "fr": "Il n’y avait personne sur les galets à m’attendre qui eût su qui j’étais avant tout cela. J’y avais veillé moi-même, dans une chapelle, avec une lame."
+        "fr": "Il n’y avait personne sur les galets à m’attendre qui eût su qui j’étais avant tout cela. J’y avais veillé moi-même, dans une chapelle, avec une lame.",
+        "priority": 4
       },
       {
         "flag": "lysa_found_dead",
         "en": "Whatever I chose, I would be choosing it for a girl who had scratched my name into a wall twelve times, and who would not be on the shingle to see it.",
-        "fr": "Quoi que je choisisse, je le choisirais pour une fille qui avait gravé mon nom douze fois dans un mur, et qui ne serait pas sur les galets pour le voir."
+        "fr": "Quoi que je choisisse, je le choisirais pour une fille qui avait gravé mon nom douze fois dans un mur, et qui ne serait pas sur les galets pour le voir.",
+        "priority": 4
       },
       {
         "flag": "lysa_mask_kept",
         "en": "Lysa’s mask was in my coat. I had not decided what to do with it, and had begun to suspect I never would.",
-        "fr": "Le masque de Lysa était dans mon manteau. Je n’avais pas décidé quoi en faire, et commençais à soupçonner que je ne le déciderais jamais."
+        "fr": "Le masque de Lysa était dans mon manteau. Je n’avais pas décidé quoi en faire, et commençais à soupçonner que je ne le déciderais jamais.",
+        "priority": 1
       },
       {
         "flag": "lysa_left_masked",
         "en": "I had left Lysa’s mask on her face among the penitents. It had seemed, at the time, like the last thing I could still give her.",
-        "fr": "J’avais laissé le masque de Lysa sur son visage parmi les pénitents. Cela m’avait semblé, sur le moment, la dernière chose que je pouvais encore lui donner."
+        "fr": "J’avais laissé le masque de Lysa sur son visage parmi les pénitents. Cela m’avait semblé, sur le moment, la dernière chose que je pouvais encore lui donner.",
+        "priority": 1
       },
       {
         "flag": "left_at_once",
         "en": "I had not looked back at the throne. Some things are better left unexamined by anyone with a memory.",
-        "fr": "Je n’avais pas jeté un regard vers le trône. Certaines choses valent mieux non examinées par quiconque a de la mémoire."
+        "fr": "Je n’avais pas jeté un regard vers le trône. Certaines choses valent mieux non examinées par quiconque a de la mémoire.",
+        "priority": 1
       },
       {
         "flag": "names_recovered",
         "en": "The names I had cut from the throne’s foot were in my pocket, in the ledger’s own hand. Somebody would want them read.",
-        "fr": "Les noms que j’avais arrachés au pied du trône étaient dans ma poche, de la main même du registre. Quelqu’un voudrait qu’on les lise."
+        "fr": "Les noms que j’avais arrachés au pied du trône étaient dans ma poche, de la main même du registre. Quelqu’un voudrait qu’on les lise.",
+        "priority": 1
       },
       {
         "flag": "banner_raised",
         "en": "The grey hand still stood on its spar above the tide line where I had raised it, and the people under it had not moved.",
-        "fr": "La main grise se dressait toujours sur son espar au-dessus de la laisse de mer, là où je l’avais levée, et ceux qui se tenaient dessous n’avaient pas bougé."
+        "fr": "La main grise se dressait toujours sur son espar au-dessus de la laisse de mer, là où je l’avais levée, et ceux qui se tenaient dessous n’avaient pas bougé.",
+        "priority": 4
       },
       {
         "flag": "banner_furled",
         "en": "The grey hand was still furled on my back. Through the cloth, very faintly, I could feel the figure’s palms, open.",
-        "fr": "La main grise était toujours roulée sur mon dos. À travers l’étoffe, très faiblement, je sentais les paumes de la silhouette, ouvertes."
+        "fr": "La main grise était toujours roulée sur mon dos. À travers l’étoffe, très faiblement, je sentais les paumes de la silhouette, ouvertes.",
+        "priority": 4
       },
       {
         "flag": "truth_kept",
         "en": "The Reliquary’s roll was still in my coat, read by nobody but me. Whatever I chose, I would be choosing it with that in my pocket.",
-        "fr": "Le rouleau du Reliquaire était toujours dans mon manteau, lu par personne d’autre que moi. Quoi que je choisisse, je le choisirais avec cela en poche."
+        "fr": "Le rouleau du Reliquaire était toujours dans mon manteau, lu par personne d’autre que moi. Quoi que je choisisse, je le choisirais avec cela en poche.",
+        "priority": 1
       },
       {
         "flag": "lantern_exposed",
         "en": "Somewhere along the coast the Order and the Inquisition were at each other’s throats over a page I had sent, and neither had a ship to spare for me.",
-        "fr": "Quelque part le long de la côte, l’Ordre et l’Inquisition s’entre-déchiraient pour une page que j’avais envoyée, et ni l’un ni l’autre n’avait de navire à me consacrer."
+        "fr": "Quelque part le long de la côte, l’Ordre et l’Inquisition s’entre-déchiraient pour une page que j’avais envoyée, et ni l’un ni l’autre n’avait de navire à me consacrer.",
+        "priority": 1
       },
       {
         "flag": "lantern_kept",
         "en": "The Inquisition’s writ was in my coat beside the Shroud. It opened every port from here to Candlehold, and I had begun to notice what it closed.",
-        "fr": "Le mandat de l’Inquisition était dans mon manteau, à côté du Linceul. Il ouvrait tous les ports d’ici à Candlehold, et je commençais à remarquer ce qu’il fermait."
+        "fr": "Le mandat de l’Inquisition était dans mon manteau, à côté du Linceul. Il ouvrait tous les ports d’ici à Candlehold, et je commençais à remarquer ce qu’il fermait.",
+        "priority": 1
       },
       {
         "flag": "crowned_open",
         "en": "The Host had cheered when I came back out of the tear. Not for the Throne: for me. It is not the same thing, and I knew the difference.",
-        "fr": "L’Ost avait acclamé mon retour de la déchirure. Pas le Trône : moi. Ce n’est pas la même chose, et je connaissais la différence."
+        "fr": "L’Ost avait acclamé mon retour de la déchirure. Pas le Trône : moi. Ce n’est pas la même chose, et je connaissais la différence.",
+        "priority": 4
       },
       {
         "flag": "crowned_iron",
         "en": "The Host had cheered when I came back out of the tear, on command, and very well.",
-        "fr": "L’Ost avait acclamé mon retour de la déchirure, sur ordre, et très bien."
+        "fr": "L’Ost avait acclamé mon retour de la déchirure, sur ordre, et très bien.",
+        "priority": 4
       },
       {
         "flag": "rival_spared",
         "en": "At Candlehold the claimant I had spared was waiting for the Houses’ judgment, and for mine.",
-        "fr": "À Candlehold, la personne que j’avais épargnée attendait le jugement des Maisons, et le mien."
+        "fr": "À Candlehold, la personne que j’avais épargnée attendait le jugement des Maisons, et le mien.",
+        "priority": 3
       },
       {
         "flag": "dominion_hand_vane",
         "en": "Aurel Vane, my Hand, had sent a boat to the shore with a letter I did not open. I knew what it said. It said: now.",
-        "fr": "Aurel Vane, ma Main, avait envoyé une barque au rivage avec une lettre que je n’ouvris pas. Je savais ce qu’elle disait. Elle disait : maintenant."
+        "fr": "Aurel Vane, ma Main, avait envoyé une barque au rivage avec une lettre que je n’ouvris pas. Je savais ce qu’elle disait. Elle disait : maintenant.",
+        "priority": 1
       },
       {
         "flag": "dominion_hand_morrow",
         "en": "Hesk Morrow, my Hand, stood on the sand, sword toward the tear, as for thirty-nine years. Shut enough now to sheathe it, he said. He did not.",
-        "fr": "Hesk Morrow, ma Main, se tenait sur le sable, l’épée tendue vers la déchirure, comme depuis trente-neuf ans. Assez fermée pour qu’il la rengaine, dit-il. Il n’en fit rien."
+        "fr": "Hesk Morrow, ma Main, se tenait sur le sable, l’épée tendue vers la déchirure, comme depuis trente-neuf ans. Assez fermée pour qu’il la rengaine, dit-il. Il n’en fit rien.",
+        "priority": 1
       },
       {
         "flag": "dominion_hand_tallis",
         "en": "Maud Tallis, my Hand, had set one lamp at the tide line for me to come home by. It was still lit.",
-        "fr": "Maud Tallis, ma Main, avait posé une lampe à la laisse de mer pour que je retrouve le chemin. Elle brûlait encore."
+        "fr": "Maud Tallis, ma Main, avait posé une lampe à la laisse de mer pour que je retrouve le chemin. Elle brûlait encore.",
+        "priority": 1
       },
       {
         "flag": "seal_returned",
         "en": "The Seal was the drawers’ again, and whole on my back, and for the first time since the Unmaking there was somebody it belonged to.",
-        "fr": "Le Sceau était de nouveau aux traceurs, et entier sur mon dos, et pour la première fois depuis la Défaite du Sceau il appartenait à quelqu’un."
+        "fr": "Le Sceau était de nouveau aux traceurs, et entier sur mon dos, et pour la première fois depuis la Défaite du Sceau il appartenait à quelqu’un.",
+        "priority": 1
       },
       {
         "flag": "relic_raised",
         "en": "The relic had come up out of the flagship’s hold and stood on dry land at last, in a Reliquary’s keeping I tried not to think about.",
-        "fr": "La relique était remontée de la cale du vaisseau amiral et reposait enfin sur la terre ferme, sous la garde d’un Reliquaire auquel j’essayais de ne pas penser."
+        "fr": "La relique était remontée de la cale du vaisseau amiral et reposait enfin sur la terre ferme, sous la garde d’un Reliquaire auquel j’essayais de ne pas penser.",
+        "priority": 1
       },
       {
         "flag": "relic_sunk",
         "en": "The flagship’s hold was still under forty fathoms with its cradle and its coffin, and no one on this coast would carry anything through again.",
-        "fr": "La cale du vaisseau amiral était toujours par quarante brasses de fond avec son berceau et son cercueil, et nul, sur cette côte, ne porterait plus jamais rien au travers."
+        "fr": "La cale du vaisseau amiral était toujours par quarante brasses de fond avec son berceau et son cercueil, et nul, sur cette côte, ne porterait plus jamais rien au travers.",
+        "priority": 1
       },
       {
         "flag": "piece_broken",
         "en": "The Fourth Piece still lay in my pack, broken across and cold. The Thieves had been right that it would hum for no one again.",
-        "fr": "La Quatrième Pièce reposait toujours dans mon sac, brisée en deux et froide. Les Voleurs avaient eu raison : elle ne bourdonnerait plus pour personne."
+        "fr": "La Quatrième Pièce reposait toujours dans mon sac, brisée en deux et froide. Les Voleurs avaient eu raison : elle ne bourdonnerait plus pour personne.",
+        "priority": 1
       },
       {
         "flag": "piece_betrayed",
         "en": "The Fourth Piece was in the Inquisition’s hands, on a cutter’s deck, and I had been paid for it. I told myself the coin was heavy for another reason.",
-        "fr": "La Quatrième Pièce était aux mains de l’Inquisition, sur le pont d’un cotre, et l’on m’avait payé pour elle. Je me dis que la pièce était lourde pour une tout autre raison."
+        "fr": "La Quatrième Pièce était aux mains de l’Inquisition, sur le pont d’un cotre, et l’on m’avait payé pour elle. Je me dis que la pièce était lourde pour une tout autre raison.",
+        "priority": 1
       },
       {
         "flag": "lysa_sacrificed",
         "en": "The Shroud was warm in my arms, warmer than any cloth should be, and every time I touched it I knew whose warmth it was.",
-        "fr": "Le Linceul était tiède entre mes bras, plus tiède qu’aucun tissu ne devrait l’être, et chaque fois que je le touchais, je savais de qui venait cette chaleur."
+        "fr": "Le Linceul était tiède entre mes bras, plus tiède qu’aucun tissu ne devrait l’être, et chaque fois que je le touchais, je savais de qui venait cette chaleur.",
+        "priority": 4
       }
     ],
     "noDetour": true,
     "prompt": "What do you do with the Throne?",
-    "prompt_fr": "Que faites-vous du Trône ?"
+    "prompt_fr": "Que faites-vous du Trône ?",
+    "callback_cap": 10
   },
   "7005": {
     "id": "7005",
@@ -11290,7 +11351,9 @@
       "name": "The Cove Camp",
       "name_fr": "Le camp de la crique",
       "chapter": 4
-    }
+    },
+    "revisit_description": "The cove again. The wall stood, the fires were lit, and the Stair could wait until I was harder to kill.",
+    "revisit_description_fr": "La crique de nouveau. Le mur tenait, les feux brûlaient, et l’Escalier pouvait attendre que je sois plus difficile à tuer."
   },
   "5004_altar": {
     "id": "5004_altar",
@@ -17610,17 +17673,20 @@
       {
         "flag": "sail_climbed",
         "en": "My hands were still raw from the mast. Somebody wrapped them without asking.",
-        "fr": "Mes mains étaient encore à vif à cause du mât. Quelqu’un les banda sans demander."
+        "fr": "Mes mains étaient encore à vif à cause du mât. Quelqu’un les banda sans demander.",
+        "priority": 1
       },
       {
         "flag": "sail_bought",
         "en": "The Anchorage’s riggers had brought the sail down like a shroud, folded and quiet, and would not stay for the meal.",
-        "fr": "Les gréeurs du Mouillage avaient descendu la voile comme un linceul, pliée et silencieuse, et n’étaient pas restés pour le repas."
+        "fr": "Les gréeurs du Mouillage avaient descendu la voile comme un linceul, pliée et silencieuse, et n’étaient pas restés pour le repas.",
+        "priority": 1
       },
       {
         "flag": "flagship_burned",
         "en": "The sail still smelled of the flagship’s burning, and of the fleet’s dead who had burned with her. The smell got into the bread.",
-        "fr": "La voile sentait encore l’incendie du vaisseau amiral, et les morts de la flotte qui avaient brûlé avec lui. L’odeur passa dans le pain."
+        "fr": "La voile sentait encore l’incendie du vaisseau amiral, et les morts de la flotte qui avaient brûlé avec lui. L’odeur passa dans le pain.",
+        "priority": 1
       },
       {
         "flag": "lysa_survived",
@@ -17632,22 +17698,26 @@
           "lysa_mercy",
           "lysa_sacrificed",
           "sailed_alone"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "sailed_alone",
         "en": "No camp to speak of: only the fire, the Eel and the five pieces. I told them where I was going. They were the only company I had brought.",
-        "fr": "Pas de camp à proprement parler : le feu, l’Eel, les cinq pièces. Je leur dis où j’allais. C’était la seule compagnie que j’avais amenée."
+        "fr": "Pas de camp à proprement parler : le feu, l’Eel, les cinq pièces. Je leur dis où j’allais. C’était la seule compagnie que j’avais amenée.",
+        "priority": 1
       },
       {
         "flag": "house_hearth_hall",
         "en": "We sat in the Hearth-Hall, by the fire the camp never lets go out, and I found that I could not remember a night I had been warmer.",
-        "fr": "Nous étions assis dans la Halle du Foyer, près du feu que le camp ne laisse jamais s’éteindre, et je m’aperçus que je ne me rappelais pas une nuit plus chaude."
+        "fr": "Nous étions assis dans la Halle du Foyer, près du feu que le camp ne laisse jamais s’éteindre, et je m’aperçus que je ne me rappelais pas une nuit plus chaude.",
+        "priority": 1
       },
       {
         "flag": "greyhithe_names_read",
         "en": "Greyhithe had sent a basket of its pale fish and, tucked under it, a name written out twelve times in a hand that was learning to write again.",
-        "fr": "Grisegrève avait envoyé un panier de ses poissons pâles et, glissé dessous, un nom écrit douze fois d’une main qui réapprenait à écrire."
+        "fr": "Grisegrève avait envoyé un panier de ses poissons pâles et, glissé dessous, un nom écrit douze fois d’une main qui réapprenait à écrire.",
+        "priority": 2
       },
       {
         "flag": "open_hand_4",
@@ -17655,12 +17725,14 @@
         "fr": "La main grise n’avait encore jamais été levée. Si elle devait l’être un jour, la Rive Creuse était le dernier endroit pour le faire.",
         "unlessFlags": [
           "open_hand_6"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "banner_raised",
         "en": "Somebody had brought the spar back from the Hollow Shore with the grey hand still on it, and stood it by the fire. Nobody sat with their back to it.",
-        "fr": "Quelqu’un avait rapporté l’espar de la Rive Creuse, la main grise toujours dessus, et l’avait planté près du feu. Personne ne s’assit en lui tournant le dos."
+        "fr": "Quelqu’un avait rapporté l’espar de la Rive Creuse, la main grise toujours dessus, et l’avait planté près du feu. Personne ne s’assit en lui tournant le dos.",
+        "priority": 4
       },
       {
         "flag": "admiralty_vote",
@@ -17669,7 +17741,8 @@
         "unlessFlags": [
           "throne_backed",
           "throne_filled"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "banner_five",
@@ -17683,69 +17756,83 @@
           "claim_crows",
           "claim_penitents",
           "claim_open_hand"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "claim_dominion",
         "en": "My claim was the Dominion’s own: to sit the Lantern Throne as its next Lantern-Bearer. Half the Houses had decided whether to kneel or fight.",
-        "fr": "Ma prétention était celle du Dominion lui-même : m’asseoir sur le Trône de la Lanterne en Porte-Lanterne. La moitié des Maisons avait déjà choisi : s’agenouiller ou se battre."
+        "fr": "Ma prétention était celle du Dominion lui-même : m’asseoir sur le Trône de la Lanterne en Porte-Lanterne. La moitié des Maisons avait déjà choisi : s’agenouiller ou se battre.",
+        "priority": 3
       },
       {
         "flag": "claim_vigil",
         "en": "The Vigil’s war-cloth hung unwashed from the Eel’s yard. The Vigil had never left its wall for a throne. It was leaving it for mine.",
-        "fr": "La toile de guerre de la Veille pendait, jamais lavée, à la vergue de l’Eel. La Veille n’avait jamais quitté son mur pour un trône. Elle le quittait pour le mien."
+        "fr": "La toile de guerre de la Veille pendait, jamais lavée, à la vergue de l’Eel. La Veille n’avait jamais quitté son mur pour un trône. Elle le quittait pour le mien.",
+        "priority": 3
       },
       {
         "flag": "claim_compact",
         "en": "The Compact’s plaque, a broken hammer crossed with a chisel, was bolted to the Eel’s stern. The Row asked why I wanted the Throne and found it sound.",
-        "fr": "La plaque du Pacte, un marteau brisé croisé d’un ciseau, était boulonnée à la poupe de l’Eel. La Rue m’avait demandé pourquoi je voulais le Trône. Elle avait jugé ma raison bonne."
+        "fr": "La plaque du Pacte, un marteau brisé croisé d’un ciseau, était boulonnée à la poupe de l’Eel. La Rue m’avait demandé pourquoi je voulais le Trône. Elle avait jugé ma raison bonne.",
+        "priority": 3
       },
       {
         "flag": "claim_mire",
         "en": "A deerhide on a willow branch hung at the masthead, the heron repainted. The Courts had never sent anyone from the fen for a throne. They sent me.",
-        "fr": "Une peau de daim sur une branche de saule pendait en tête de mât, le héron fraîchement repeint. Les Cours n’avaient jamais envoyé personne hors du marais pour un trône. Elles m’envoyaient."
+        "fr": "Une peau de daim sur une branche de saule pendait en tête de mât, le héron fraîchement repeint. Les Cours n’avaient jamais envoyé personne hors du marais pour un trône. Elles m’envoyaient.",
+        "priority": 3
       },
       {
         "flag": "claim_crows",
         "en": "The Crows’ black pennant flew at the masthead, three rings on the halyard. A Crow captain sails for a contract, not a throne. This contract was one.",
-        "fr": "Le fanion noir des Corneilles flottait en tête de mât, trois anneaux à la drisse. Une capitaine des Corneilles ne fait pas voile pour un trône mais pour un contrat. Celui-ci, c’était le Trône."
+        "fr": "Le fanion noir des Corneilles flottait en tête de mât, trois anneaux à la drisse. Une capitaine des Corneilles ne fait pas voile pour un trône mais pour un contrat. Celui-ci, c’était le Trône.",
+        "priority": 3
       },
       {
         "flag": "claim_penitents",
         "en": "The Penitents’ cloth hung from the Eel’s rail, the hanged in brown thread, a scorched hole for the flame. They meant to enter the Lantern Hall first.",
-        "fr": "L’étoffe des Pénitents pendait au bastingage de l’Eel, les noms des pendus en fil brun, un trou roussi à la place de la flamme. Ils comptaient entrer les premiers dans la Salle de la Lanterne."
+        "fr": "L’étoffe des Pénitents pendait au bastingage de l’Eel, les noms des pendus en fil brun, un trou roussi à la place de la flamme. Ils comptaient entrer les premiers dans la Salle de la Lanterne.",
+        "priority": 3
       },
       {
         "flag": "claim_open_hand",
         "en": "The grey hand stood at the Eel’s bow, arms raised. The clan that never was meant to sit the Lantern Throne, with one member left to sit in it.",
-        "fr": "La main grise se dressait à la proue de l’Eel, bras levés. Le clan qui n’a jamais été comptait s’asseoir sur le Trône de la Lanterne, et n’avait plus qu’un seul membre pour s’y asseoir."
+        "fr": "La main grise se dressait à la proue de l’Eel, bras levés. Le clan qui n’a jamais été comptait s’asseoir sur le Trône de la Lanterne, et n’avait plus qu’un seul membre pour s’y asseoir.",
+        "priority": 3
       },
       {
         "flag": "inquisition_pact",
         "en": "The legate’s contract was in my coat. The Inquisition meant to set me on the Throne, and had not said what it meant to do with me once I was on it.",
-        "fr": "Le contrat du légat était dans mon manteau. L’Inquisition comptait me mettre sur le Trône, et n’avait pas encore dit ce qu’elle comptait faire de moi une fois que j’y serais."
+        "fr": "Le contrat du légat était dans mon manteau. L’Inquisition comptait me mettre sur le Trône, et n’avait pas encore dit ce qu’elle comptait faire de moi une fois que j’y serais.",
+        "priority": 3
       },
       {
         "flag": "dominion_split",
         "en": "The Reliquary’s roll had split the Dominion: half the Houses wanted the Throne filled before anyone asked about the tear, half wanted a culprit.",
-        "fr": "Le rouleau du Reliquaire avait fendu le Dominion : la moitié des Maisons voulait le Trône occupé avant qu’on l’interroge sur la déchirure, l’autre voulait quelqu’un à accuser."
+        "fr": "Le rouleau du Reliquaire avait fendu le Dominion : la moitié des Maisons voulait le Trône occupé avant qu’on l’interroge sur la déchirure, l’autre voulait quelqu’un à accuser.",
+        "priority": 3
       },
       {
         "flag": "salvage_to_crows",
         "en": "A Brig-Born boat put in at the cove with a flagship’s bell in its bow, rung once for the camp. Nkem Tallow’s people called it my signal.",
-        "fr": "Une barque des Enfants du Brick relâcha à la crique, la cloche d’un vaisseau amiral à la proue, sonnée une fois pour le camp. Les gens de Nkem Tallow l’appelaient mon signal."
+        "fr": "Une barque des Enfants du Brick relâcha à la crique, la cloche d’un vaisseau amiral à la proue, sonnée une fois pour le camp. Les gens de Nkem Tallow l’appelaient mon signal.",
+        "priority": 1
       },
       {
         "flag": "salvage_to_admiralty",
         "en": "The Admiralty’s new cutter rang a flagship’s bell, Nkem Tallow’s haul, off the cove in passing. The Brig-Born on the beach took it as meant.",
-        "fr": "Le nouveau cotre de l’Amirauté sonna au large de la crique, en passant, la cloche d’un vaisseau amiral, prise de Nkem Tallow. Les Enfants du Brick sur la plage comprirent ce qu’elle voulait dire."
+        "fr": "Le nouveau cotre de l’Amirauté sonna au large de la crique, en passant, la cloche d’un vaisseau amiral, prise de Nkem Tallow. Les Enfants du Brick sur la plage comprirent ce qu’elle voulait dire.",
+        "priority": 1
       },
       {
         "flag": "salvage_sold",
         "en": "The wreck-wrights had recast Nkem Tallow’s bell into fittings for a stranger’s boat; the Brig-Born had recast my name into something not for my ears.",
-        "fr": "Les charpentiers d’épaves avaient refondu la cloche de Nkem Tallow en ferrures pour la barque d’un inconnu ; les Enfants du Brick avaient refondu mon nom en quelque chose que je n’étais pas censé entendre."
+        "fr": "Les charpentiers d’épaves avaient refondu la cloche de Nkem Tallow en ferrures pour la barque d’un inconnu ; les Enfants du Brick avaient refondu mon nom en quelque chose que je n’étais pas censé entendre.",
+        "priority": 1
       }
-    ]
+    ],
+    "callback_cap": 8
   },
   "7002_approach": {
     "id": "7002_approach",
@@ -20012,77 +20099,92 @@
       {
         "flag": "claim_dominion",
         "en": "On the walls, the Houses’ people saw the Dominion’s own gonfalon on a smuggler’s boat and did not know whether they were meant to cheer.",
-        "fr": "Sur les murs, les gens des Maisons virent le gonfanon du Dominion lui-même sur un bateau de contrebandier, et ne surent pas s’ils étaient censés acclamer."
+        "fr": "Sur les murs, les gens des Maisons virent le gonfanon du Dominion lui-même sur un bateau de contrebandier, et ne surent pas s’ils étaient censés acclamer.",
+        "priority": 3
       },
       {
         "flag": "claim_vigil",
         "en": "The open eye at the Eel’s yard looked back at the walls, and the walls, for once, looked away first.",
-        "fr": "L’œil ouvert à la vergue de l’Eel regarda les murs, et les murs, pour une fois, détournèrent les yeux les premiers."
+        "fr": "L’œil ouvert à la vergue de l’Eel regarda les murs, et les murs, pour une fois, détournèrent les yeux les premiers.",
+        "priority": 3
       },
       {
         "flag": "claim_compact",
         "en": "The Compact’s iron plaque caught the sun at the Eel’s stern, and up on the Anvil Gate an old smith’s mark caught it back.",
-        "fr": "La plaque de fer du Pacte accrocha le soleil à la poupe de l’Eel, et là-haut, sur la porte de l’Enclume, la marque d’un vieux forgeron le lui renvoya."
+        "fr": "La plaque de fer du Pacte accrocha le soleil à la poupe de l’Eel, et là-haut, sur la porte de l’Enclume, la marque d’un vieux forgeron le lui renvoya.",
+        "priority": 3
       },
       {
         "flag": "claim_mire",
         "en": "The heron at the masthead had the harbour’s gulls in an uproar, and the Inquisition’s lookouts in another.",
-        "fr": "Le héron en tête de mât mit en émoi les mouettes du port, et les guetteurs de l’Inquisition dans un autre émoi encore."
+        "fr": "Le héron en tête de mât mit en émoi les mouettes du port, et les guetteurs de l’Inquisition dans un autre émoi encore.",
+        "priority": 3
       },
       {
         "flag": "claim_crows",
         "en": "The black pennant had three rings on its halyard, and every chain-master in Candlehold knew what three rings cost.",
-        "fr": "Le fanion noir portait trois anneaux à sa drisse, et chaque maître de chaîne de Candlehold savait ce que coûtent trois anneaux."
+        "fr": "Le fanion noir portait trois anneaux à sa drisse, et chaque maître de chaîne de Candlehold savait ce que coûtent trois anneaux.",
+        "priority": 3
       },
       {
         "flag": "claim_penitents",
         "en": "The burnt lantern at the Eel’s bow drew a crowd on the quays, and the crowd went quiet when it had read the names.",
-        "fr": "La lanterne brûlée à la proue de l’Eel attira la foule sur les quais, et la foule se tut quand elle eut lu les noms."
+        "fr": "La lanterne brûlée à la proue de l’Eel attira la foule sur les quais, et la foule se tut quand elle eut lu les noms.",
+        "priority": 3
       },
       {
         "flag": "claim_open_hand",
         "en": "The grey hand at the bow had stopped the harbour’s work: people stood on the quays and looked at it as if they had dreamed it once.",
-        "fr": "La main grise à la proue avait arrêté le travail du port : des gens se tenaient sur les quais et la regardaient comme s’ils l’avaient rêvée un jour."
+        "fr": "La main grise à la proue avait arrêté le travail du port : des gens se tenaient sur les quais et la regardaient comme s’ils l’avaient rêvée un jour.",
+        "priority": 3
       },
       {
         "flag": "lantern_bearer_dead",
         "en": "Black cloth still hung from the First Lantern’s iron, a year’s mourning crowded into one season. The bells had stopped. The arguing had not.",
-        "fr": "Un drap noir pendait encore au fer de la Première Lanterne, une année de deuil tassée en une saison. Les cloches s’étaient tues. Les disputes, non."
+        "fr": "Un drap noir pendait encore au fer de la Première Lanterne, une année de deuil tassée en une saison. Les cloches s’étaient tues. Les disputes, non.",
+        "priority": 1
       },
       {
         "flag": "vote_kept",
         "en": "The Admiralty’s seal was in my coat, its vote kept for my own claim. The chain-master on the harbour wall saw the wax and went pale.",
-        "fr": "Le sceau de l’Amirauté était dans mon manteau, sa voix gardée pour ma propre prétention. Le maître de la chaîne, sur le mur du port, en vit la cire et pâlit."
+        "fr": "Le sceau de l’Amirauté était dans mon manteau, sa voix gardée pour ma propre prétention. Le maître de la chaîne, sur le mur du port, en vit la cire et pâlit.",
+        "priority": 1
       },
       {
         "flag": "throne_backed_vane",
         "en": "I had cast the Admiralty’s vote for Regent Oriel. Whatever I meant to do at Candlehold, I had already decided who would be waiting at the top.",
-        "fr": "J’avais donné la voix de l’Amirauté au Régent Oriel. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut."
+        "fr": "J’avais donné la voix de l’Amirauté au Régent Oriel. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut.",
+        "priority": 3
       },
       {
         "flag": "throne_backed_morrow",
         "en": "I had cast the Admiralty’s vote for Hesk Morrow. Whatever I meant to do at Candlehold, I had already decided who would be waiting at the top.",
-        "fr": "J’avais donné la voix de l’Amirauté à Hesk Morrow. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut."
+        "fr": "J’avais donné la voix de l’Amirauté à Hesk Morrow. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut.",
+        "priority": 3
       },
       {
         "flag": "throne_backed_tallis",
         "en": "I had cast the Admiralty’s vote for Maud Tallis. Whatever I meant to do at Candlehold, I had already decided who would be waiting at the top.",
-        "fr": "J’avais donné la voix de l’Amirauté à Maud Tallis. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut."
+        "fr": "J’avais donné la voix de l’Amirauté à Maud Tallis. Quoi que je compte faire à Candlehold, j’avais déjà décidé de qui m’attendrait tout en haut.",
+        "priority": 3
       },
       {
         "flag": "inquisition_pact",
         "en": "A white sail had gone straight to the Inquisition’s quay an hour ahead of the Eel. The legate’s contract was in my coat; his masters had read theirs.",
-        "fr": "Une voile blanche avait filé droit au quai de l’Inquisition une heure avant l’Eel. Le contrat du légat était dans mon manteau ; ses maîtres avaient lu le leur."
+        "fr": "Une voile blanche avait filé droit au quai de l’Inquisition une heure avant l’Eel. Le contrat du légat était dans mon manteau ; ses maîtres avaient lu le leur.",
+        "priority": 3
       },
       {
         "flag": "banner_raised",
         "en": "The grey hand was on its spar at the Eel’s bow. On the walls, people were pointing at it, and some of them were not pointing with their weapons.",
-        "fr": "La main grise était sur son espar, à la proue de l’Eel. Sur les murs, des gens la montraient du doigt, et certains ne la montraient pas du bout de leurs armes."
+        "fr": "La main grise était sur son espar, à la proue de l’Eel. Sur les murs, des gens la montraient du doigt, et certains ne la montraient pas du bout de leurs armes.",
+        "priority": 4
       },
       {
         "flag": "dominion_split",
         "en": "The Houses’ tongues flew side by side on the towers, and here and there a tongue had been cut down in the night and not put back.",
-        "fr": "Les flammes des Maisons flottaient côte à côte sur les tours, et ici ou là une flamme avait été abattue pendant la nuit et pas remise."
+        "fr": "Les flammes des Maisons flottaient côte à côte sur les tours, et ici ou là une flamme avait été abattue pendant la nuit et pas remise.",
+        "priority": 3
       },
       {
         "flag": "banner_five",
@@ -20096,37 +20198,44 @@
           "claim_crows",
           "claim_penitents",
           "claim_open_hand"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "reed_nine_lodged",
         "en": "Nine households’ names were in my coat on the harbour steps, and the Reed Gate’s tongue was, for the first time in three years, being counted.",
-        "fr": "Les noms de neuf foyers étaient dans mon manteau quand je montai les marches du port, et la flamme de la Porte des Roseaux, pour la première fois en trois ans, était comptée."
+        "fr": "Les noms de neuf foyers étaient dans mon manteau quand je montai les marches du port, et la flamme de la Porte des Roseaux, pour la première fois en trois ans, était comptée.",
+        "priority": 1
       },
       {
         "flag": "reed_eleven_lodged",
         "en": "The petition went up the harbour steps with eleven names on it, two of them never signed. The Reed Gate could better afford a lie than a silence.",
-        "fr": "La pétition monta les marches du port avec onze noms, dont deux n’avaient jamais signé. La Porte des Roseaux pouvait mieux se payer un mensonge qu’un silence."
+        "fr": "La pétition monta les marches du port avec onze noms, dont deux n’avaient jamais signé. La Porte des Roseaux pouvait mieux se payer un mensonge qu’un silence.",
+        "priority": 1
       },
       {
         "flag": "herald_answered_morrow",
         "en": "The Order knew my answer before I climbed the harbour steps, and so did the knights who did not look at me on them.",
-        "fr": "L’Ordre connaissait ma réponse avant que je monte les marches du port, et les chevaliers qui ne me regardèrent pas sur ces marches aussi."
+        "fr": "L’Ordre connaissait ma réponse avant que je monte les marches du port, et les chevaliers qui ne me regardèrent pas sur ces marches aussi.",
+        "priority": 1
       },
       {
         "flag": "herald_unanswered",
         "en": "I had sent Morrow’s herald away with nothing. The knights on the stair would learn my banner the way he had warned they would.",
-        "fr": "J’avais renvoyé le héraut de Morrow sans rien. Les chevaliers de l’escalier apprendraient ma bannière comme il m’avait prévenu qu’ils l’apprendraient."
+        "fr": "J’avais renvoyé le héraut de Morrow sans rien. Les chevaliers de l’escalier apprendraient ma bannière comme il m’avait prévenu qu’ils l’apprendraient.",
+        "priority": 1
       },
       {
         "flag": "chain_hours_kept",
         "en": "The chain-master’s tide table was folded small in my boot. The chain came down for four hours on the night of the dark moon, and I meant to be there.",
-        "fr": "La table des marées du maître de chaîne était pliée en quatre dans ma botte. La chaîne s’abaissait quatre heures la nuit de la lune noire, et je comptais y être."
+        "fr": "La table des marées du maître de chaîne était pliée en quatre dans ma botte. La chaîne s’abaissait quatre heures la nuit de la lune noire, et je comptais y être.",
+        "priority": 1
       },
       {
         "flag": "chain_thanks_promised",
         "en": "I had promised a stranger on the harbour wall that I would thank him to his face. It was the only debt I was looking forward to paying.",
-        "fr": "J’avais promis à un inconnu du mur du port de le remercier en face. C’était la seule dette que j’avais hâte de payer."
+        "fr": "J’avais promis à un inconnu du mur du port de le remercier en face. C’était la seule dette que j’avais hâte de payer.",
+        "priority": 1
       }
     ],
     "settlement": {
@@ -20136,7 +20245,8 @@
       "landingPortId": "port_candlehold",
       "blurb": "The Dominion’s capital on the First Lantern’s cliff, and the Lantern Throne at the top of it.",
       "blurb_fr": "La capitale du Dominion sur la falaise de la Première Lanterne, et le Trône de la Lanterne tout en haut."
-    }
+    },
+    "callback_cap": 8
   },
   "7510_dominion": {
     "id": "7510_dominion",
@@ -23434,42 +23544,50 @@
       {
         "flag": "throne_winner_dominion",
         "en": "The Dominion’s ships came first, as always: tide-blue hulls, the gonfalon at every masthead, the Lantern-Bearer’s lamp at the flagship’s stern.",
-        "fr": "Les navires du Dominion arrivèrent les premiers, comme toujours : des coques bleu marée, le gonfanon à chaque tête de mât, la lampe du Porte-Lanterne à la poupe du vaisseau amiral."
+        "fr": "Les navires du Dominion arrivèrent les premiers, comme toujours : des coques bleu marée, le gonfanon à chaque tête de mât, la lampe du Porte-Lanterne à la poupe du vaisseau amiral.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_vigil",
         "en": "The Vigil came down off its wall with every spear it could spare and a few it could not, its grey cloth and open eye pitched at the cove’s head.",
-        "fr": "La Veille descendit de son mur avec toutes les lances dont elle pouvait se passer et quelques autres, sa toile grise et son œil ouvert dressés en tête de la crique."
+        "fr": "La Veille descendit de son mur avec toutes les lances dont elle pouvait se passer et quelques autres, sa toile grise et son œil ouvert dressés en tête de la crique.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_compact",
         "en": "The Compact came by barge with forges lit on the decks, and by the second night the cove rang like Cinder Row.",
-        "fr": "Le Pacte vint par péniche, des forges allumées sur les ponts, et dès la deuxième nuit la crique résonnait comme la Rue des Braises."
+        "fr": "Le Pacte vint par péniche, des forges allumées sur les ponts, et dès la deuxième nuit la crique résonnait comme la Rue des Braises.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_mire",
         "en": "The Mire Courts came as the fen comes, along every ditch at once, and by morning there were herons painted on the camp wall that nobody saw painted.",
-        "fr": "Les Cours du Marais vinrent comme vient le marais, par tous les fossés à la fois, et au matin des hérons peints ornaient le mur du camp sans que personne les ait vu peindre."
+        "fr": "Les Cours du Marais vinrent comme vient le marais, par tous les fossés à la fois, et au matin des hérons peints ornaient le mur du camp sans que personne les ait vu peindre.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_crows",
         "en": "The Crows came by sea in black brigs, three rings on every halyard, and moored across the cove’s mouth as if it were a contract they meant to keep.",
-        "fr": "Les Corneilles vinrent par la mer sur des bricks noirs, trois anneaux à chaque drisse, et mouillèrent en travers de la crique comme si c’était un contrat qu’elles comptaient tenir."
+        "fr": "Les Corneilles vinrent par la mer sur des bricks noirs, trois anneaux à chaque drisse, et mouillèrent en travers de la crique comme si c’était un contrat qu’elles comptaient tenir.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_penitents",
         "en": "The Penitents walked in from the Exorcists’ Road with their cloth of names, and set up a hospital in the sail-loft before anyone had asked them to.",
-        "fr": "Les Pénitents arrivèrent à pied par la Route des Exorcistes avec leur étoffe des noms, et installèrent un hôpital dans la voilerie avant que quiconque le leur demande."
+        "fr": "Les Pénitents arrivèrent à pied par la Route des Exorcistes avec leur étoffe des noms, et installèrent un hôpital dans la voilerie avant que quiconque le leur demande.",
+        "priority": 5
       },
       {
         "flag": "throne_winner_open_hand",
         "en": "Drawers came under the grey hand, some who had only heard of it, hands hidden for forty-nine years, drawing in the sand as they walked.",
-        "fr": "Des traceurs vinrent sous la main grise, certains qui n’en avaient qu’entendu parler, les mains cachées depuis quarante-neuf ans, traçant dans le sable en marchant."
+        "fr": "Des traceurs vinrent sous la main grise, certains qui n’en avaient qu’entendu parler, les mains cachées depuis quarante-neuf ans, traçant dans le sable en marchant.",
+        "priority": 5
       },
       {
         "flag": "clans_knelt",
         "en": "The clans’ contingents anchored behind the Dominion’s, because the clans had knelt at Candlehold, and kept their own colours furled.",
-        "fr": "Les contingents des clans mouillèrent derrière ceux du Dominion, parce que les clans s’étaient agenouillés à Candlehold, et gardèrent leurs couleurs roulées."
+        "fr": "Les contingents des clans mouillèrent derrière ceux du Dominion, parce que les clans s’étaient agenouillés à Candlehold, et gardèrent leurs couleurs roulées.",
+        "priority": 4
       },
       {
         "flag": "pledged_dominion",
@@ -23477,7 +23595,8 @@
         "fr": "Des Maisons du Dominion avaient juré pour ma cause, et leurs navires entrèrent dans la crique sous le gonfanon, pour se ranger sous le mien.",
         "unlessFlags": [
           "throne_winner_dominion"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "pledged_vigil",
@@ -23485,7 +23604,8 @@
         "fr": "La Veille avait juré ses lances à ma cause, et tint parole à la manière de la Veille : toutes, sans un mot.",
         "unlessFlags": [
           "throne_winner_vigil"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "pledged_compact",
@@ -23493,7 +23613,8 @@
         "fr": "Le Pacte avait juré ses marteaux ; une forge brûlait sur chaque péniche qui entrait, et personne ne me demanda pourquoi, ce qui, venant du Pacte, est une forme d’amour.",
         "unlessFlags": [
           "throne_winner_compact"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "pledged_mire",
@@ -23501,7 +23622,8 @@
         "fr": "Les Cours du Marais avaient juré pour ma cause, et le marais était venu m’y tenir.",
         "unlessFlags": [
           "throne_winner_mire"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "pledged_crows",
@@ -23509,7 +23631,8 @@
         "fr": "Les Corneilles avaient juré pour ma cause, ce qui pour les Corneilles est un contrat ; leurs bricks entrèrent l’encre encore fraîche.",
         "unlessFlags": [
           "throne_winner_crows"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "pledged_penitents",
@@ -23517,7 +23640,8 @@
         "fr": "Les Pénitents avaient juré de marcher devant ma cause, et ils entrèrent dans la crique en chantant les noms.",
         "unlessFlags": [
           "throne_winner_penitents"
-        ]
+        ],
+        "priority": 3
       },
       {
         "flag": "host_dominion",
@@ -23526,7 +23650,8 @@
         "unlessFlags": [
           "throne_winner_dominion",
           "pledged_dominion"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_vigil",
@@ -23535,7 +23660,8 @@
         "unlessFlags": [
           "throne_winner_vigil",
           "pledged_vigil"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_compact",
@@ -23544,7 +23670,8 @@
         "unlessFlags": [
           "throne_winner_compact",
           "pledged_compact"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_mire",
@@ -23553,7 +23680,8 @@
         "unlessFlags": [
           "throne_winner_mire",
           "pledged_mire"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_crows",
@@ -23562,7 +23690,8 @@
         "unlessFlags": [
           "throne_winner_crows",
           "pledged_crows"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_penitents",
@@ -23571,7 +23700,8 @@
         "unlessFlags": [
           "throne_winner_penitents",
           "pledged_penitents"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_giants",
@@ -23579,7 +23709,8 @@
         "fr": "Deux géants de Haut-Âtre étaient descendus de la Carrière de Givre avec une pierre de compte, pour y graver les noms des tombés, et s’étaient assis près d’un feu de camp bien trop petit pour eux.",
         "unlessFlags": [
           "throne_winner_giants"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_oni",
@@ -23587,7 +23718,8 @@
         "fr": "Les oni d’Akagiri étaient venus avec leurs cloches et un tonneau de la bière sur laquelle ils parient, et pariaient sur la déchirure.",
         "unlessFlags": [
           "throne_winner_oni"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_tidekin",
@@ -23595,7 +23727,8 @@
         "fr": "Des bateaux des Gens de la Marée bordaient le rivage, une lanterne de papier à chaque proue : les gens de Nadira, venus éclairer la traversée.",
         "unlessFlags": [
           "throne_winner_tidekin"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_kindly",
@@ -23603,7 +23736,8 @@
         "fr": "Les Bienveillants de la Colline étaient venus, ou quelque chose qui sentait un soir d’été en plein automne ; personne n’approchait de ce bout du camp la nuit tombée.",
         "unlessFlags": [
           "throne_winner_kindly"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_choir",
@@ -23611,7 +23745,8 @@
         "fr": "Et quelque chose du Chœur était venu, que je ne vis pas, et vers quoi se penchait chaque feu du camp.",
         "unlessFlags": [
           "throne_winner_choir"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_pit",
@@ -23619,7 +23754,8 @@
         "fr": "Et quelque chose de la Fosse était venu, qui ne signa rien, et dont chaque ombre du camp s’écartait.",
         "unlessFlags": [
           "throne_winner_pit"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_open_hand",
@@ -23627,7 +23763,8 @@
         "fr": "Des traceurs étaient venus un par un, deux par deux, de chaque port de la côte, les mains cachées dans les manches, se tenir sous la main grise, à côté de ma bannière.",
         "unlessFlags": [
           "throne_winner_open_hand"
-        ]
+        ],
+        "priority": 1
       },
       {
         "flag": "host_houses_1",
@@ -23732,117 +23869,140 @@
       {
         "flag": "crowned_open",
         "en": "The Host had heard how I was crowned, and the camp had made up its mind about me accordingly: someone on the Throne you could bring a complaint to.",
-        "fr": "L’Ost avait appris comment on m’avait donné la couronne, et le camp s’était fait une idée de moi en conséquence : quelqu’un sur le Trône à qui l’on pouvait porter une plainte."
+        "fr": "L’Ost avait appris comment on m’avait donné la couronne, et le camp s’était fait une idée de moi en conséquence : quelqu’un sur le Trône à qui l’on pouvait porter une plainte.",
+        "priority": 4
       },
       {
         "flag": "crowned_iron",
         "en": "The Host had heard how I was crowned. The camp was quieter around me than it had been, and stood up when I passed.",
-        "fr": "L’Ost avait appris comment on m’avait donné la couronne. Le camp se taisait davantage autour de moi qu’avant, et se levait sur mon passage."
+        "fr": "L’Ost avait appris comment on m’avait donné la couronne. Le camp se taisait davantage autour de moi qu’avant, et se levait sur mon passage.",
+        "priority": 4
       },
       {
         "flag": "rival_spared",
         "en": "The claimant I had beaten at Candlehold was alive in the Lantern Hall’s cells, awaiting the Houses’ judgment, and everyone in camp had an opinion.",
-        "fr": "La personne vaincue à Candlehold était vivante dans les cachots de la Salle de la Lanterne, dans l’attente du jugement des Maisons, et tout le camp avait un avis."
+        "fr": "La personne vaincue à Candlehold était vivante dans les cachots de la Salle de la Lanterne, dans l’attente du jugement des Maisons, et tout le camp avait un avis.",
+        "priority": 3
       },
       {
         "flag": "rival_slain",
         "en": "The claimant I had beaten at Candlehold was buried under the cliff with the Dominion’s rites. I had not gone.",
-        "fr": "La personne vaincue à Candlehold avait été enterrée sous la falaise selon les rites du Dominion. Je n’avais pas assisté à l’enterrement."
+        "fr": "La personne vaincue à Candlehold avait été enterrée sous la falaise selon les rites du Dominion. Je n’avais pas assisté à l’enterrement.",
+        "priority": 3
       },
       {
         "flag": "will_read",
         "en": "Perrin Ash stood at the muster’s back, grey-faced, in a trimmer’s apron, the First Lantern’s wax on a string at his neck. All who passed bowed.",
-        "fr": "Perrin Ash se tenait au fond de la revue, le visage gris, en tablier d’allumeur, la cire de la Première Lanterne pendue au cou par un cordon. Nul ne passait devant lui sans s’incliner."
+        "fr": "Perrin Ash se tenait au fond de la revue, le visage gris, en tablier d’allumeur, la cire de la Première Lanterne pendue au cou par un cordon. Nul ne passait devant lui sans s’incliner.",
+        "priority": 3
       },
       {
         "flag": "will_hidden",
         "en": "I kept the ash of the will in the Eel’s chart-case. Every time a House asked after it, I felt the weight of what it did not say.",
-        "fr": "Je gardais la cendre du testament dans l’étui à cartes de l’Eel. Chaque fois qu’une Maison le réclamait, je sentais le poids de ce qu’il ne disait pas."
+        "fr": "Je gardais la cendre du testament dans l’étui à cartes de l’Eel. Chaque fois qu’une Maison le réclamait, je sentais le poids de ce qu’il ne disait pas.",
+        "priority": 3
       },
       {
         "flag": "will_given",
         "en": "The House that had the will brought it in its own hand to the muster, and read my name beside the Throne’s, as if it had always been written there.",
-        "fr": "La Maison qui avait le testament l’apporta de sa propre main à la revue, et lut mon nom à côté de celui du Trône, comme s’il y avait toujours été écrit."
+        "fr": "La Maison qui avait le testament l’apporta de sa propre main à la revue, et lut mon nom à côté de celui du Trône, comme s’il y avait toujours été écrit.",
+        "priority": 3
       },
       {
         "flag": "kelda_gate_held",
         "en": "Kelda still held the camp’s gate at night, and since the tags were buried under it, nobody had ever tried to rush it.",
-        "fr": "Kelda tenait toujours la porte du camp la nuit, et depuis que les plaques étaient enterrées dessous, personne n’avait jamais tenté de la forcer."
+        "fr": "Kelda tenait toujours la porte du camp la nuit, et depuis que les plaques étaient enterrées dessous, personne n’avait jamais tenté de la forcer.",
+        "priority": 2
       },
       {
         "flag": "kelda_gate_left",
         "en": "Kelda kept the gate alone after that, and I made a habit of leaving a lamp lit on the palisade for her.",
-        "fr": "Kelda tint désormais la porte seule, et je pris l’habitude de laisser une lampe allumée pour elle sur la palissade."
+        "fr": "Kelda tint désormais la porte seule, et je pris l’habitude de laisser une lampe allumée pour elle sur la palissade.",
+        "priority": 2
       },
       {
         "flag": "sable_marker_kept",
         "en": "Sable wore the ivory die on a cord at her neck now, and no one at the camp’s tables would play her for it.",
-        "fr": "Sable portait désormais le dé d’ivoire à une cordelette autour du cou, et personne aux tables du camp n’aurait voulu jouer contre elle pour l’avoir."
+        "fr": "Sable portait désormais le dé d’ivoire à une cordelette autour du cou, et personne aux tables du camp n’aurait voulu jouer contre elle pour l’avoir.",
+        "priority": 2
       },
       {
         "flag": "sable_marker_torn",
         "en": "Sable never mentioned the six markers again, but she stopped folding her scraps of paper, and left them lying open.",
-        "fr": "Sable ne reparla jamais des six reconnaissances, mais elle cessa de plier ses bouts de papier, et les laissa traîner ouverts."
+        "fr": "Sable ne reparla jamais des six reconnaissances, mais elle cessa de plier ses bouts de papier, et les laissa traîner ouverts.",
+        "priority": 2
       },
       {
         "flag": "maren_names_read",
         "en": "Maren said the names of the roll at dusk now, quietly, once for each, and I noticed that nobody in the camp interrupted her.",
-        "fr": "Maren disait désormais les noms du rôle à la tombée du jour, doucement, une fois chacun, et je remarquai que personne au camp ne l’interrompait."
+        "fr": "Maren disait désormais les noms du rôle à la tombée du jour, doucement, une fois chacun, et je remarquai que personne au camp ne l’interrompait.",
+        "priority": 2
       },
       {
         "flag": "maren_roll_burned",
         "en": "Maren had no roll to read now. She kept her hands open at dusk, in the hour when she used to say the names.",
-        "fr": "Maren n’avait plus de rôle à lire. À la tombée du jour, à l’heure où elle disait les noms, elle gardait les mains ouvertes."
+        "fr": "Maren n’avait plus de rôle à lire. À la tombée du jour, à l’heure où elle disait les noms, elle gardait les mains ouvertes.",
+        "priority": 2
       },
       {
         "flag": "liora_watch_shared",
         "en": "Liora looked a little past the firelight now, never at the edge of it, and from time to time she glanced at me to see whether I was doing the same.",
-        "fr": "Liora regardait désormais un peu au-delà de la lueur du feu, jamais au bord, et de temps à autre elle me jetait un coup d’œil pour voir si j’en faisais autant."
+        "fr": "Liora regardait désormais un peu au-delà de la lueur du feu, jamais au bord, et de temps à autre elle me jetait un coup d’œil pour voir si j’en faisais autant.",
+        "priority": 2
       },
       {
         "flag": "liora_watch_left",
         "en": "Liora woke me every morning now before the others, and never said what she had seen in the night.",
-        "fr": "Liora me réveillait désormais chaque matin avant les autres, et ne disait jamais ce qu’elle avait vu dans la nuit."
+        "fr": "Liora me réveillait désormais chaque matin avant les autres, et ne disait jamais ce qu’elle avait vu dans la nuit.",
+        "priority": 2
       },
       {
         "flag": "vess_voice_answered",
         "en": "Vess had stopped flinching when the camp went quiet. She sat nearer the fire than she used to, and when someone said my name she looked up first.",
-        "fr": "Vess ne tressaillait plus quand le camp se taisait. Elle s’asseyait plus près du feu qu’avant, et quand quelqu’un prononçait mon nom, elle levait les yeux la première."
+        "fr": "Vess ne tressaillait plus quand le camp se taisait. Elle s’asseyait plus près du feu qu’avant, et quand quelqu’un prononçait mon nom, elle levait les yeux la première.",
+        "priority": 2
       },
       {
         "flag": "vess_voice_stilled",
         "en": "Vess sat with her back to the dark now, and her hand where mine could find it.",
-        "fr": "Vess s’asseyait désormais le dos tourné à l’obscurité, la main là où la mienne pouvait la trouver."
+        "fr": "Vess s’asseyait désormais le dos tourné à l’obscurité, la main là où la mienne pouvait la trouver.",
+        "priority": 2
       },
       {
         "flag": "grosh_debt_paid",
         "en": "Grosh had stopped counting coins at the table. It took me a while to see why: he no longer needed to.",
-        "fr": "Grosh ne comptait plus les pièces à table. Il me fallut un moment pour comprendre pourquoi : il n’en avait plus besoin."
+        "fr": "Grosh ne comptait plus les pièces à table. Il me fallut un moment pour comprendre pourquoi : il n’en avait plus besoin.",
+        "priority": 2
       },
       {
         "flag": "grosh_debt_kept",
         "en": "Grosh counted his forty-one coins every month at the camp table, aloud, and never once let me see his face.",
-        "fr": "Grosh comptait ses quarante et une pièces chaque mois à la table du camp, à voix haute, sans jamais me laisser voir son visage."
+        "fr": "Grosh comptait ses quarante et une pièces chaque mois à la table du camp, à voix haute, sans jamais me laisser voir son visage.",
+        "priority": 2
       },
       {
         "flag": "tobin_letter_sent",
         "en": "Tobin hummed a phrase of the precentor’s while he worked, and always stopped it before the last bar.",
-        "fr": "Tobin fredonnait une phrase du chantre en travaillant, et l’arrêtait toujours avant la dernière mesure."
+        "fr": "Tobin fredonnait une phrase du chantre en travaillant, et l’arrêtait toujours avant la dernière mesure.",
+        "priority": 2
       },
       {
         "flag": "tobin_stays",
         "en": "Tobin had stopped looking down the coast road for the carter. He sang the evening office with the camp now, a verse behind.",
-        "fr": "Tobin ne guettait plus le charretier sur la route de la côte. Il chantait désormais l’office du soir avec le camp, un verset en retard."
+        "fr": "Tobin ne guettait plus le charretier sur la route de la côte. Il chantait désormais l’office du soir avec le camp, un verset en retard.",
+        "priority": 2
       },
       {
         "flag": "malrik_book_read",
         "en": "Malrik had stopped writing in the little black book when I was in sight. He still wrote. He just did it where I could not watch.",
-        "fr": "Malrik avait cessé d’écrire dans son petit livre noir quand j’étais en vue. Il écrivait toujours. Simplement là où je ne pouvais pas le regarder."
+        "fr": "Malrik avait cessé d’écrire dans son petit livre noir quand j’étais en vue. Il écrivait toujours. Simplement là où je ne pouvais pas le regarder.",
+        "priority": 2
       },
       {
         "flag": "malrik_book_shut",
         "en": "Malrik still kept his little black book, but he had stopped hiding the spine when I passed, and it stayed in his coat.",
-        "fr": "Malrik gardait toujours son petit livre noir, mais il ne cachait plus le dos quand je passais, et il restait dans son manteau."
+        "fr": "Malrik gardait toujours son petit livre noir, mais il ne cachait plus le dos quand je passais, et il restait dans son manteau.",
+        "priority": 2
       }
     ],
     "settlement": {
@@ -23854,7 +24014,10 @@
     "politicsOnEnter": {
       "muster": true,
       "event": "the_last_battle"
-    }
+    },
+    "callback_cap": 10,
+    "revisit_description": "The cove again, the fires grey, the Host mustering on the shingle, the tear twice as wide.",
+    "revisit_description_fr": "La crique de nouveau, les feux gris, l’Ost se rassemblant sur les galets, la déchirure deux fois plus large."
   },
   "7800_council": {
     "id": "7800_council",
@@ -27124,7 +27287,9 @@
       }
     ],
     "prompt": "Ready for the Hall?",
-    "prompt_fr": "La Salle, maintenant ?"
+    "prompt_fr": "La Salle, maintenant ?",
+    "revisit_description": "The harbour steps again, the cliff lit above me, every clan’s fire on its own terrace. The Hall could wait.",
+    "revisit_description_fr": "Les marches du port de nouveau, la falaise éclairée au-dessus de moi, le feu de chaque clan sur sa terrasse. La Salle pouvait attendre."
   },
   "6100_will_scribe": {
     "id": "6100_will_scribe",

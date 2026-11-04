@@ -8,6 +8,184 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.821.0+857]
+
+- Crossings: a land crossing's scene is now painted by the world camera
+  (`WorldCamera`, v1.818) when its road is short enough on the world's strip
+  (up to 100 chart units): each day's land is the kit of the region the
+  party is in, in the window of that place, and where two regions meet the
+  dithered seam between them. Six of the seven roads look as before (their
+  terrain is their region's kit); the camp-to-quarter road now starts in the
+  Cove's cliffs and ends in the ruins, through the seam, where it used to be
+  ruins from the first day. The sea cliffs' road, which the strip stretches
+  over the whole land (535 units), keeps its own terrain. Picture:
+  `docs/ux-shots/camera/crossing-camp-to-quarter.png`. Tests:
+  `crossing_strip_path_test.dart` (which roads go to the camera; a crossing
+  along a seam paints).
+
+## [1.820.0+856]
+
+- Edit Mode: saving a scene in the scene editor no longer erases parts of
+  it. The editor used to drop a scene's camp errand, its kind, its
+  show/hide flags and its camp line (English and French) on every save, so
+  saving one of the 20 companion loyalty errands turned it into a plain
+  scene that no longer showed at camp. A test now opens the editor on
+  scenes holding every field the story uses, saves them unedited, and
+  checks nothing changed.
+
+## [1.819.0+855]
+
+- **Narrative: callbacks capped on five scenes, a shorter text on four returns.**
+  `callback_cap` and `priority` (v1.816) are set on the scenes where earned
+  lines stack: `7800` (70 callbacks, cap 10), `7004` (31, cap 10), `7001` (26,
+  cap 8), `7400` (23, cap 8) and `7500` (22, cap 8). The clan payoffs, the
+  crown, the fate of Lysa and the Lantern-Bearer's will are kept first; the
+  twenty "houses" lines on `7800` go first. `revisit_description` (EN and FR)
+  is added on the four non-town scenes the player returns to and that show
+  their text each time: the cove camp (`4999_camp`, `7800`), the yards
+  (`2900`) and the harbour steps (`7515_rest`). The towns already fold when
+  read, so they get none. No other story text changed.
+
+## [1.818.0+854]
+
+- For the side-view camera (step 3c of UX-2's parallax): `WorldCamera`
+  (`world_camera.dart`). One x on the land strip says what the side view
+  shows: the kit of the region the x is in, in the window of that x, or, near
+  the border of two regions with different kits, the dithered seam between
+  them (`kitBlend`, 12 chart units wide). The same x gives the same picture on
+  every launch. Nothing uses it yet (the crossing is wired next): no change in
+  the game. Picture: `docs/ux-shots/camera/land-strip-seams.png` (the whole
+  land strip walked, seven seams). Test: `world_camera_test.dart`.
+
+## [1.817.0+853]
+
+- For the side-view camera (step 3b of UX-2's parallax): the seam between two
+  kits. `kitBlend` (`kit_blend.dart`) turns one region's land into the next as
+  the camera moves: the new kit comes in from the right edge in an ordered
+  dither, a band of mixed land trailing it, the old land staying on the left
+  until the seam has passed. Nothing uses it yet (the camera, next, gives it
+  its progress): no change in the game. Picture:
+  `docs/ux-shots/blend/desert-into-ruins.png`. Test: `kit_blend_test.dart`.
+
+## [1.816.0+852]
+
+- Story: two new fields for Narrative's text, nothing changes until the
+  story uses them. A scene with `callback_cap` shows at most that many of
+  the lines your past choices earned (the ones with the highest `priority`
+  first, then in the order written), so a scene everyone reaches late
+  doesn't read as a list. A scene with `revisit_description` says
+  something else the second time you come back (French:
+  `revisit_description_fr`); the first visit is unchanged. Both go through
+  the page, the read-aloud and the story editor; the recording script keeps
+  every line.
+
+## [1.815.0+851]
+
+- Side-view scenes: a scene's window of its kit no longer comes from a seeded
+  shuffle with a per-launch random start. A window is a fixed stretch of the
+  world's strip (`sceneWindowAt(x)`, 12 chart units wide, four in turn): a
+  crossing takes the day's x along its road when it is given the road's strip
+  path (`LandCrossingScreen.stripPath`, from the new `regionStripsProvider`,
+  `stripPathOf`), else its route's own window and the next one each day; the sea, detours, streets and
+  memories take a window fixed by their id. The same place shows the same land
+  on every launch; successive sailings of the same waters no longer rotate
+  through the four. `scene_versions.dart` and its test became
+  `scene_windows.dart` / `scene_windows_test.dart`.
+
+## [1.814.0+850]
+
+- Effects: the 25 dice, element and keyword animations (`die_*`, `el_*`,
+  `kw_*`, with `die_surge`, `die_curse`, `die_glint`), the campfire, the chests
+  and the map seal are drawn from the game's own palette (`InkColors`) in one
+  table in `tool/gen_pixel_fx.py`, where they used Material Design colours
+  (pink, light blue, amber, grey, brown). Same shapes and timing, new tones;
+  picture: `docs/ux-shots/art/fx-recolour-before-after.png`.
+
+## [1.812.0+848]
+
+- Fights: one entrance. A fight met on a land crossing now opens with the same
+  short shake and red vignette (380 ms, a cut with reduced motion) the map has
+  always played before a fight; before, the road went straight to the battle
+  screen. The effect is one widget (`FightJolt`, `journey_fx.dart`) used by both
+  screens. The other "arrive" animations are unchanged: they depend on the
+  world camera (next steps). Test: `land_crossing_test.dart` (the jolt shows
+  before the battle screen opens).
+
+## [1.811.0+847]
+
+- For the side-view camera to come (UX-2's parallax): every place with a
+  scene and every road stop now has a position on one long strip of the
+  land (desert, ruins, fen, frost, in the journey's order) or on the sea
+  crossing's own strip, the same on every launch (`region_strip.dart`).
+  Nothing uses it yet: no change in the game.
+
+## [1.810.0+846]
+
+- Journey: a step taken inside one place (a card whose way opens the next
+  scene at the same stop, v1.809) now says so. The new scene opens with a small
+  gold italic line, "› <the choice you took>", and under it "Still at <place>"
+  ("Toujours ici : <place>"); the scene's stage and its cards fade in over 200 ms
+  (a cut with reduced motion). A way that moves the party, a carried trip, a
+  hub's return and a detour show neither line. Tests:
+  `journey_taken_line_test.dart` (which steps say it; the lines on the
+  narrowest phone, in English and French).
+
+## [1.809.0+845]
+
+- Journey: a choice that leads to the next scene in the same place keeps
+  you in the scene. It is a card on the scene page (in a room too, not a
+  mark on the map), and taking it opens the next scene on the same page or
+  sheet, with no map in between. Ways to another district or road are still
+  marks on the map; a one-card page still has no Continue.
+
+## [1.808.0+844]
+
+- Code cleanup (split 4f, step 2): the session notifier's methods leave
+  `player_session_provider.dart` (4,385 lines, now 907) for seven files by
+  feature: offers, politics, quests, shop and forge, allies and camp, road
+  and time, skills and combat. A move: the saves, the rules and the
+  simulator's results are unchanged.
+
+## [1.807.0+843]
+
+- Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
+  on its card since v1.803) is now in the factions table of the game
+  database, so it can be read and saved there.
+
+## [1.806.0+842]
+
+- **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
+  (`loyal`, `scheming`, `wavering`, set on 50 people in `npcs.json`, 44 with
+  a value) is removed. No code, test or screen read it; the clan pages show
+  the ruling text only. No screen changes.
+
+## [1.805.0+841]
+
+- **Cleanup: five more lints on, 28 sites fixed.** `combinators_ordering`,
+  `use_is_even_rather_than_modulo`, `use_colored_box`,
+  `join_return_with_assignment` and `use_late_for_private_fields_and_variables`
+  are enabled and kept at zero: the names after `show` sorted, `x % 2 == 0`
+  written `x.isEven`, two single-colour boxes as `ColoredBox`, one
+  assignment returned directly and the expedition's reward card declared
+  `late`. Nothing changes on screen or in a number.
+
+## [1.804.0+840]
+
+- Code cleanup (split 4f, step 1): the save's model (`PlayerSession`, its
+  constants and small rules) leaves `player_session_provider.dart`
+  (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
+  that imports it changes. A pure move: nothing in the game or the save
+  changes.
+
+## [1.803.0+839]
+
+- The clan card (a long press on a clan's banner, the offer's (i)) ends with
+  "How it is ruled" ("Comment il est gouverné"): who holds power in the clan,
+  how it passes, what a member owes, for the six clans that have it, as
+  Narrative wrote it (`ruling` in factions.json, not shown anywhere until
+  now). Test: `clan_ruling_test.dart` (the six clans, English and French, at
+  320 px).
+
 ## [1.802.0+838]
 
 - Code cleanup (split 4e): the fight's round logic leaves
@@ -37,6 +215,7 @@ isn't reconstructable from git history alone.
   The clans' offers draw signs since v1.194 and stay as they are. The
   sign tests now check the rules those offers use: what a patron can
   offer, which patrons may, and the slots. Nothing in the game changes.
+
 ## [1.798.0+834]
 
 - The Journey draws a city, a town or a village from its stored plan only

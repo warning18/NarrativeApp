@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:math' as math show max, min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +10,10 @@ import '../combat/encounter.dart' show EncounterModifiers;
 import '../combat/field_anomaly.dart' show landRouteStage;
 import '../data/ability_check.dart';
 import '../data/fate_coin.dart';
+import '../data/geography.dart' show Geography;
 import '../data/journey_rules.dart' show watchesPerDay;
 import '../data/land_crossing.dart';
+import '../data/region_strip.dart' show RegionStrips;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -24,6 +27,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart' show loadGeography;
 import '../providers/player_session_provider.dart';
+import '../providers/region_strips_provider.dart';
 import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -39,7 +43,11 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
-import '../widgets/side_view/scene_versions.dart';
+import '../widgets/journey_fx.dart'
+    show FightJolt, fightJoltDuration, playFightJolt;
+import '../theme/stitched_ink.dart' show InkColors;
+import '../widgets/side_view/scene_windows.dart';
+import '../widgets/side_view/world_camera.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -69,6 +77,8 @@ Future<bool> runLandCrossing(
   if (route == null) return true;
   final known = landEventsFrom(events);
   final ruler = await crossingRulerOf(ref, route);
+  final stripPath = await crossingStripPath(ref, route);
+  final camera = await crossingCamera(ref, stripPath);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
@@ -76,9 +86,54 @@ Future<bool> runLandCrossing(
         events: known,
         ruler: ruler.clanId,
         rulers: rulerPool(known, ruler.clanId, ruler.band),
-        random: ref.read(landCrossingRandomProvider)),
+        random: ref.read(landCrossingRandomProvider),
+        stripPath: stripPath,
+        camera: camera),
   ));
   return arrived ?? false;
+}
+
+/// The x on the world's strip of [route]'s road, from its start to its end
+/// (RegionStrips.pathOn): what the crossing's windows follow. Empty when the
+/// strips cannot say (a road from the land to the sea, a place with no x).
+Future<List<double>> crossingStripPath(WidgetRef ref, LandRoute route) async {
+  try {
+    final geo = await loadGeography(ref);
+    final strips = await ref.read(regionStripsProvider.future);
+    return stripPathOf(strips, geo, route);
+  } catch (_) {
+    return const [];
+  }
+}
+
+/// The longest road the camera paints a crossing along (chart units): a
+/// crossing of a few days is a short walk on the strip; a road that the
+/// strip stretches over whole regions (the sea cliffs' road reaches from
+/// the first cliffs to the last, 535 units) keeps its own terrain's land.
+const double crossingCameraReach = 100;
+
+/// The camera for a crossing along [path], null when the road is too long
+/// for it or the strips cannot say ([crossingCameraReach]).
+Future<WorldCamera?> crossingCamera(WidgetRef ref, List<double> path) async {
+  if (path.length < 2) return null;
+  if (path.reduce(math.max) - path.reduce(math.min) > crossingCameraReach) {
+    return null;
+  }
+  try {
+    final strips = await ref.read(regionStripsProvider.future);
+    return WorldCamera(strips.zones);
+  } catch (_) {
+    return null;
+  }
+}
+
+/// [crossingStripPath] with the strips and the geography in hand: the
+/// route's `from` and `to` are landmark ids (world_map.dart), which
+/// [Geography.placeOfLandmark] puts on the strip.
+List<double> stripPathOf(RegionStrips strips, Geography geo, LandRoute route) {
+  final a = geo.placeOfLandmark(route.from), b = geo.placeOfLandmark(route.to);
+  if (a == null || b == null) return const [];
+  return strips.pathOn(a.id, b.id);
 }
 
 /// Who holds the land [route] crosses now (landRouteRuler: '' for no one),
@@ -113,7 +168,7 @@ const crossingSceneTerrains = {
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
 ///
-/// [version] (0 to 3, sceneVersionAt) is the stretch of that land shown: its
+/// [version] (0 to 3, sceneWindowAt) is the stretch of that land shown: its
 /// own window of the world and its own landmark.
 List<SideLayer> crossingLayers(String terrain, double progress,
     {int version = 0}) {
@@ -129,7 +184,7 @@ List<SideLayer> crossingLayers(String terrain, double progress,
     'sea_cliffs' => 'cliffs',
     _ => 'desert',
   };
-  return withSceneVersion(layers, kit, version);
+  return withSceneWindow(layers, kit, version);
 }
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
@@ -163,6 +218,8 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     this.ruler = '',
     this.rulers = const [],
     this.random,
+    this.stripPath = const [],
+    this.camera,
   });
 
   final LandRoute route;
@@ -178,6 +235,16 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
   /// Injectable for tests; a fresh stream otherwise.
   final Random? random;
 
+  /// The x on the world's strip of the road's stops, first to last
+  /// (RegionStrips.pathOn): the day's x, and with it the window of the land
+  /// on show. Empty: the window follows the route's own id.
+  final List<double> stripPath;
+
+  /// The world camera, when the road is short enough for it: the land of
+  /// each day is then the camera's at the day's x (the region's kit, or the
+  /// seam where two meet), else the route's own terrain.
+  final WorldCamera? camera;
+
   @override
   ConsumerState<LandCrossingScreen> createState() => _LandCrossingScreenState();
 }
@@ -187,7 +254,12 @@ const double _crossingSceneHeight = 190;
 
 enum _Phase { event, result, arrived, failed, turnedBack }
 
-class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
+class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
+    with SingleTickerProviderStateMixin {
+  /// The jolt going into a fight on the road, the same as the map's.
+  late final AnimationController _jolt =
+      AnimationController(vsync: this, duration: fightJoltDuration);
+
   late final Random _random = widget.random ?? Random();
   late final List<String> _drawn = drawCrossing(
       widget.route, widget.events.keys,
@@ -199,6 +271,33 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   int? _shownVersion;
   SideLayer? _dissolve;
   DateTime _dissolveUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// The window of the land on show today: the day's x on the road's way
+  /// along the strip, else the route's own window moving on a day at a time.
+  int _windowOfDay() {
+    final x = pathXAt(
+        widget.stripPath, (_day + 0.5) / math.max(1, widget.route.days));
+    return x == null
+        ? (sceneWindowOfId(widget.route.id) + _day) % sceneWindowCount
+        : sceneWindowAt(x);
+  }
+
+  /// The camera's x on [day], null without a camera.
+  double? _cameraX(int day) => widget.camera == null
+      ? null
+      : pathXAt(widget.stripPath, (day + 0.5) / math.max(1, widget.route.days));
+
+  /// What the camera shows on [day]: an id that changes whenever the land
+  /// does (its window, its kit, a seam), and the x it stands for.
+  final Map<int, double> _lookX = {};
+  int _lookOfDay(int day) {
+    final x = _cameraX(day)!;
+    final cam = widget.camera!;
+    final look =
+        Object.hash(cam.windowAt(x), cam.kitAt(x), cam.seamAt(x)?.start);
+    _lookX[look] = x;
+    return look;
+  }
 
   List<SideLayer> _sceneLayers(
       int version, List<SideLayer> Function(int version) layersFor,
@@ -279,6 +378,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   @override
   void dispose() {
     _spokenTimer?.cancel();
+    _jolt.dispose();
     super.dispose();
   }
 
@@ -382,6 +482,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final enemy = enemies[choice.fightEnemyId] as Map<String, dynamic>?;
     if (!mounted) return;
     if (enemy == null) return _settle(choice.fail, '');
+    await playFightJolt(context, _jolt);
+    if (!mounted) return;
     ref.read(combatActiveProvider.notifier).state = true;
     // The road's own ground (field_anomaly.dart's landRouteStage): a desert
     // road a caravan road, a mountain road a pass.
@@ -758,58 +860,68 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       canPop: done,
       child: TutorialTrigger(
         topic: TutorialTopic.landCrossing,
-        child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(widget.route.nameFor(fr)),
-            bottom: rulerColour == null
-                ? null
-                : PreferredSize(
-                    preferredSize: const Size.fromHeight(3),
-                    child: ColoredBox(
-                      key: const Key('crossing_ruler_band'),
-                      color: rulerColour,
-                      child: const SizedBox(height: 3, width: double.infinity),
+        child: FightJolt(
+          controller: _jolt,
+          colour: InkColors.dark.blood,
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(widget.route.nameFor(fr)),
+              bottom: rulerColour == null
+                  ? null
+                  : PreferredSize(
+                      preferredSize: const Size.fromHeight(3),
+                      child: ColoredBox(
+                        key: const Key('crossing_ruler_band'),
+                        color: rulerColour,
+                        child:
+                            const SizedBox(height: 3, width: double.infinity),
+                      ),
                     ),
+            ),
+            body: Column(
+              children: [
+                if (scene)
+                  Stack(
+                    children: [
+                      SideViewScene(
+                        key: const Key('crossing_scene'),
+                        height: _crossingSceneHeight,
+                        layers: _sceneLayers(
+                            widget.camera == null
+                                ? _windowOfDay()
+                                : _lookOfDay(_day),
+                            (v) => withHourStars(
+                                widget.camera?.layersAt(_lookX[v] ?? 0,
+                                        progress: progress) ??
+                                    crossingLayers(terrain, progress,
+                                        version: v),
+                                phase),
+                            reduceMotion:
+                                MediaQuery.of(context).disableAnimations),
+                        overlay: hourWash(phase),
+                        actors: desertActors(
+                            party: ref.watch(walkingPartyProvider),
+                            moving: _phase == _Phase.result,
+                            encounter: _encounterWalk(event)),
+                        particles: particles,
+                        intensity: storm ? 1 : 0.6,
+                        moving: _phase == _Phase.result,
+                      ),
+                      Positioned(left: 0, right: 0, top: 0, child: hud),
+                      if (_spoken != null) _walkBubble(_spoken!),
+                    ],
+                  )
+                else
+                  hud,
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [body],
                   ),
-          ),
-          body: Column(
-            children: [
-              if (scene)
-                Stack(
-                  children: [
-                    SideViewScene(
-                      key: const Key('crossing_scene'),
-                      height: _crossingSceneHeight,
-                      layers: _sceneLayers(
-                          sceneVersionAt(widget.route.id, _day),
-                          (v) => withHourStars(
-                              crossingLayers(terrain, progress, version: v),
-                              phase),
-                          reduceMotion:
-                              MediaQuery.of(context).disableAnimations),
-                      overlay: hourWash(phase),
-                      actors: desertActors(
-                          party: ref.watch(walkingPartyProvider),
-                          moving: _phase == _Phase.result,
-                          encounter: _encounterWalk(event)),
-                      particles: particles,
-                      intensity: storm ? 1 : 0.6,
-                      moving: _phase == _Phase.result,
-                    ),
-                    Positioned(left: 0, right: 0, top: 0, child: hud),
-                    if (_spoken != null) _walkBubble(_spoken!),
-                  ],
-                )
-              else
-                hud,
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [body],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

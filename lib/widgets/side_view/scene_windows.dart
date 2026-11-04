@@ -1,56 +1,50 @@
-// Four versions of every scene (docs/proposals/scene-backgrounds.md): a
-// version is a window of the kit's own scrolling world, so version k+1 is the
-// land right after version k, plus a landmark of its own (a dead tree, columns,
-// a far ship, a cart) that scrolls past every so often. A scene shows its
-// versions one after the other in a seeded order (1, 2, 3 or 4, 2, 3...), no
-// two alike in a row.
+// Four windows of every scene's kit (docs/proposals/scene-transitions.md):
+// a window is a stretch of the kit's own scrolling world, so window k+1 is the
+// land right after window k, plus a landmark of its own (a dead tree, columns,
+// a far ship, a cart) that scrolls past every so often. Where a scene stands
+// on the world's strip (RegionStrips, lib/data/region_strip.dart) decides its
+// window: the same place shows the same land on every launch, and a road
+// walked from one end to the other passes through the windows in turn.
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import 'side_view.dart';
 
-/// How many versions every scene has.
-const int sceneVersionCount = 4;
+/// How many windows every kit has.
+const int sceneWindowCount = 4;
 
-/// The version shown at [step] of a scene seeded by [seed] (a route id, a
-/// place id): the four versions in a shuffled order that starts over each
-/// round, never the same twice in a row.
-int sceneVersionAt(String seed, int step) {
-  var h = 17;
-  for (final c in seed.codeUnits) {
-    h = (h * 31 + c) & 0x7fffffff;
-  }
-  final round = step ~/ sceneVersionCount;
-  var last = -1;
-  var order = <int>[];
-  for (var r = 0; r <= round; r++) {
-    order = [0, 1, 2, 3]..shuffle(math.Random(h + r * 7919));
-    // A round never opens on the version the last one closed on.
-    if (order.first == last) {
-      order.add(order.removeAt(0));
-    }
-    last = order.last;
-  }
-  return order[step % sceneVersionCount];
+/// How wide one window is on the strip (chart units, region_strip.dart): a
+/// road of the story is a few windows long, a town is one.
+const double sceneWindowSpan = 12;
+
+/// The window of the strip at [x]: the strip cut in stretches of
+/// [sceneWindowSpan], the four windows following one another and starting
+/// over. Fixed: no seed, no order to remember.
+int sceneWindowAt(double x) {
+  final k = (x / sceneWindowSpan).floor() % sceneWindowCount;
+  return k < 0 ? k + sceneWindowCount : k;
 }
 
-/// The versions a scene has been shown in, in order, per kit: successive
-/// scenes of the same kit follow the seeded order (1, 2, 3 or 4, 2, 3...),
-/// different on every launch.
-class SceneVersions {
-  static final Map<String, int> _visits = {};
-  static final int _salt = math.Random().nextInt(1 << 20);
-
-  /// The version for the next scene of [kit].
-  static int next(String kit) {
-    final n = _visits[kit] ?? 0;
-    _visits[kit] = n + 1;
-    return sceneVersionAt('$kit#$_salt', n);
+/// The window of a scene that has no place on the strip (a memory, a
+/// detour, a sea of its own): fixed by its [id], the same on every launch.
+int sceneWindowOfId(String id) {
+  var h = 17;
+  for (final c in id.codeUnits) {
+    h = (h * 31 + c) & 0x7fffffff;
   }
+  return h % sceneWindowCount;
+}
 
-  /// Starts the count over (tests).
-  static void reset() => _visits.clear();
+/// The x on the strip of a walk along [path] (the x of each stop, first to
+/// last, `RegionStrips.pathOn`) once [done] of its way (0 to 1) is walked.
+/// An empty path has no x; a single one is that x.
+double? pathXAt(List<double> path, double done) {
+  if (path.isEmpty) return null;
+  if (path.length == 1) return path.first;
+  final f = done.clamp(0.0, 1.0) * (path.length - 1);
+  final i = math.min(f.floor(), path.length - 2);
+  return path[i] + (path[i + 1] - path[i]) * (f - i);
 }
 
 /// [from] turning into [to] in a pixel dissolve over [seconds]: the new
@@ -97,11 +91,11 @@ SideLayer sceneDissolve(List<SideLayer> from, List<SideLayer> to,
 }
 
 /// [layers] of the scene [kit] ('desert', 'ruins', 'frost', 'fen', 'cliffs',
-/// 'sea-open'..'sea-ashen', 'street-house'..'street-fort') as version
-/// [version] (0 to 3): the world window, then the landmark.
-List<SideLayer> withSceneVersion(
+/// 'sea-open'..'sea-ashen', 'street-house'..'street-fort') in
+/// window [version] (0 to 3): the world window, then the landmark.
+List<SideLayer> withSceneWindow(
     List<SideLayer> layers, String kit, int version) {
-  final v = version.clamp(0, sceneVersionCount - 1);
+  final v = version.clamp(0, sceneWindowCount - 1);
   if (v == 0 && !_marks.containsKey(kit)) {
     return layers;
   }
@@ -431,7 +425,7 @@ void _wisps(_G g, double x, double y, int n) {
         final d = dx * dx + dy * dy;
         if (d <= 1) {
           g.r(const Color(0xFFD8F5C8), wx + dx, wy + dy, 1, 1);
-        } else if (d <= 9 && (dx + dy) % 2 == 0) {
+        } else if (d <= 9 && (dx + dy).isEven) {
           g.r(const Color(0xFF8FD6A0).withValues(alpha: 0.45), wx + dx, wy + dy,
               1, 1);
         }

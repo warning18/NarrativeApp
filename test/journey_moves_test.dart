@@ -58,11 +58,13 @@ void main() {
     await tester.tap(find.text('Journey'));
     await _settle(tester);
 
-    // Two ways: the next table (the party stays at the tables) and the way
-    // out the back, into the streets.
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    // Two ways: the next table (the party stays in the Blind Beggar: a card
+    // of the scene, not a spot, by the scene-or-map rule) and the way out
+    // the back, into the streets (a spot on the room's plan).
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
     expect(find.byKey(const ValueKey('journey_step_1')), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_step_2')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
 
     // The way out walks the party there.
     await tester.tap(find.byKey(const ValueKey('journey_step_1')));
@@ -86,7 +88,16 @@ void main() {
       await _settle(tester);
     }
     await tester.pump(const Duration(seconds: 3));
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
+    // It is a card of the scene now (the same stop keeps the scene).
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    if (find
+        .byKey(const ValueKey('journey_choice_card_0'))
+        .evaluate()
+        .isEmpty) {
+      await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
+      await _settle(tester);
+    }
+    await tester.tap(find.byKey(const ValueKey('journey_choice_card_0')));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     await tester.pump();
