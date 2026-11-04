@@ -10,13 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'support/open_game.dart' show storedCityPlans;
 import 'support/pump.dart';
 
 void main() {
@@ -31,11 +30,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-          // These test the streets' marks: the generated plan, not the stored
-          // city chart (board 15, v1.355).
-          overrides: [
-            cityPlanRecordsProvider.overrideWith((ref) async => const {})
-          ],
+          // The streets' marks on the city's stored plan (N11, v1.794).
+          overrides: [storedCityPlans],
           child: const MyApp()),
     );
     await settleApp(tester);

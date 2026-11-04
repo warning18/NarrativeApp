@@ -50,6 +50,21 @@ void main() {
   final salt = plans['saltmouth']!;
   final districts = districtsOfCity(geo, 'saltmouth');
 
+  test(
+      'every city, town and village has a stored plan: the Journey draws '
+      'no other (N11, v1.794)', () {
+    final settlements = [
+      for (final place in geo.places.values)
+        if (place.level == GeoLevel.location &&
+            const {'city', 'town', 'village'}.contains(place.kind))
+          place.id,
+    ];
+    expect(settlements, isNotEmpty);
+    for (final id in settlements) {
+      expect(plans.containsKey(id), isTrue, reason: '$id has no city plan');
+    }
+  });
+
   test('Saltmouth has six districts, the two new ones among them', () {
     expect(districts.map((d) => d.id), [
       'saltmouth_landward_gate',

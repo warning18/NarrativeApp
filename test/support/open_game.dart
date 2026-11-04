@@ -2,6 +2,9 @@
 // press Edit Mode on the main menu (it opens the game with no save), then set
 // the language to English, load a save and switch to in-game mode. It was
 // written out in 23 files.
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -10,16 +13,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
+import 'package:narrative_data_app/data/city_plan_record.dart'
+    show cityPlanRecordsFrom;
 import 'package:narrative_data_app/providers/city_provider.dart'
-    show cityPlanRecordsProvider;
+    show cityPlanRecordsProvider, cityPlansAssetPath;
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 import 'pump.dart';
 
-/// No stored city chart: the Journey draws the generated plan under the marks
-/// (the stored chart has its own test, journey_city_view_test).
-final noCityPlans =
-    cityPlanRecordsProvider.overrideWith((ref) async => const {});
+/// The cities' stored plans (city_plans.json), read at once: the Journey
+/// draws a city from its record only (N11, v1.794), and a widget test can't
+/// wait for the app's background read (compute) to finish.
+final storedCityPlans = cityPlanRecordsProvider.overrideWith((ref) async =>
+    cityPlanRecordsFrom(jsonDecode(File(cityPlansAssetPath).readAsStringSync())
+        as Map<String, dynamic>));
 
 /// The app, open on the game with [session] (a plain human warrior by
 /// default), English, in-game mode. Returns the provider container. [overrides]

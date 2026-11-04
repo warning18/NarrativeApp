@@ -276,7 +276,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     usePhone(tester, const Size(400, 860));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
     await settleApp(tester);

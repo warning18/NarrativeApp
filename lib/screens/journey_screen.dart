@@ -1433,39 +1433,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // the one plan and look from district to district, so only a journey
     // changes the map.
     final hereLocation = world.locationOf(herePlace?.id);
-    // The city's plan (v1.203): a city, a town or a village of the
-    // geography is drawn as one, its districts on it; the roads out to the
-    // nearest other places give it its gates.
-    CityPlan? plan;
+    // A city, a town or a village of the geography is drawn from its
+    // stored plan (city_plans.json, below), its districts on it; every
+    // one has a record (city_plan_record_test). The procedural plan
+    // (v1.203) is no longer built (N11, v1.794).
     final districtOfStep = <int, String>{};
-    final citySize = switch (hereLocation?.kind) {
-      'city' => CitySize.city,
-      'town' => CitySize.town,
-      'village' => CitySize.village,
-      _ => null,
-    };
-    if (hereLocation != null && citySize != null && chartHere != null) {
-      final others = [
-        for (final l in worldMapLandmarks)
-          if (world.locationOf(world.placeOfLandmark(l.id)?.id)?.id !=
-              hereLocation.id)
-            geography.of(l),
-      ]..sort((a, b) => (a - chartHere)
-          .distanceSquared
-          .compareTo((b - chartHere).distanceSquared));
-      plan = CityPlan.of(
-        seed: _stableSeed(hereLocation.id),
-        size: citySize,
-        water: hereLocation.water,
-        districts: [
-          for (final d in world.childrenOf(hereLocation.id))
-            if (d.level == GeoLevel.district) CityDistrict(d.id, d.glyph),
-        ],
-        exitBearings: [
-          for (final p in others.take(3)) (p - chartHere).direction,
-        ],
-        climate: skyHere == null ? null : CityClimate.of(skyHere.ground),
-      );
+    final isCity = hereLocation != null &&
+        chartHere != null &&
+        const {'city', 'town', 'village'}.contains(hereLocation.kind);
+    if (isCity) {
       for (var i = 0; i < choices.length; i++) {
         final place = world.placeOfNode(story.nodeFor(ends[choices[i]]!));
         if (place == null || place.id == herePlace?.id) continue;
@@ -1476,7 +1452,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     }
     // The city's stored plan (Core's city_plans.json, board 15): the plan
     // the ways are laid on and the chart drawn under them.
-    PlacePlan? cityPlan = plan;
+    PlacePlan? cityPlan;
     final cityDistrictOf = <int, String>{};
     // The building whose street the scene plays in (v1.589, sceneStreetOf).
     GeoPlace? sceneStreet;
@@ -1485,7 +1461,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     Set<String>? foundDistricts;
     // A scene inside a building (the Blind Beggar) keeps its room; looking
     // out of it shows the city's chart, with a button back in (v1.425).
-    if (plan != null && hereLocation != null) {
+    if (isCity) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;
@@ -1716,7 +1692,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // plans have loaded, every way counts as drawn: nothing locks before
     // the map knows where its ways are.
     final cityLoading = world.isEmpty ||
-        plan != null && ref.watch(cityPlanRecordsProvider).value == null;
+        isCity && ref.watch(cityPlanRecordsProvider).value == null;
     final mapped = Map<StoryChoice, bool>.identity()
       ..addAll({
         for (var i = 0; i < steps.length; i++)

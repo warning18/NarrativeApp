@@ -64,7 +64,7 @@ void main() {
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
     usePhone(tester, const Size(360, 640));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
     await settleApp(tester);

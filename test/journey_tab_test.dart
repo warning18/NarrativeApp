@@ -22,7 +22,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     usePhone(tester, const Size(400, 860));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
 
     // In play the Journey tab sits beside the Story tab.
     expect(find.text('Journey'), findsOneWidget);
