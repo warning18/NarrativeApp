@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.749.0+785]
+
+- Code: `story_player_screen.dart` (4,479 lines) is cut into the main file
+  (1,078 lines: the screen and its story view) and four files under
+  `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
+  the ending. Pure cut and paste, nothing changes on screen or in the rules.
+
 ## [1.743.0+779]
 
 - **Core: ordinary fights are a little harder again from chapter 2 on.**
