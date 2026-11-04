@@ -363,6 +363,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   String? _selectedDiceId;
   bool _rolling = false;
 
+  /// True in the beat between a confirmed roll and the enemies' answer
+  /// (see [_confirmRoll]): no die is rolled while the round settles.
+  bool _settlingRound = false;
+
   /// The Stack the aim line is drawn in and measured against.
   final GlobalKey _battleSpaceKey = GlobalKey();
 

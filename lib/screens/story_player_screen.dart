@@ -1513,6 +1513,19 @@ Future<void> _selectChoice({
         }
         return;
       }
+    } else {
+      // An enemy missing from the table (broken or edited data) is no free
+      // win: the choice isn't taken, as a lost fight with no defeat branch,
+      // and the player stays on this scene.
+      final missing = [
+        for (final entry in resolvedEnemies.entries)
+          if (entry.value == null) entry.key,
+      ];
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: StateError('No enemy ${missing.join(', ')} for the '
+              'fight of "${choice.text}"'),
+          library: 'story'));
+      return;
     }
   }
 
