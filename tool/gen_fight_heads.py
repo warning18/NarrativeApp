@@ -42,7 +42,11 @@ def save(name, im):
 
 for path in sorted(glob.glob('assets/icons/enemies/*.png')):
     name = os.path.splitext(os.path.basename(path))[0]
-    save(name, head(Image.open(path)))
+    # The icons are stored at their own 16x16 size; the heads were cut from
+    # them enlarged x8, so cut them the same way to keep every head as it is.
+    icon = Image.open(path).convert('RGBA')
+    save(name, head(icon.resize((icon.width * 8, icon.height * 8),
+                                Image.NEAREST)))
 
 # The hero: the ronin's hat and face.
 ronin = Image.open('assets/visuals/walker/ronin_idle_east.png').convert('RGBA')

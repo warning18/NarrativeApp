@@ -247,7 +247,7 @@ def icon(name, el):
     body.putalpha(alpha)
     base.alpha_composite(shadow, (9, 9))
     base.alpha_composite(body, (8, 8))
-    return base.resize((128, 128), Image.NEAREST)
+    return base
 
 
 def main(out):
