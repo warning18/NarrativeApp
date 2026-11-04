@@ -17,6 +17,16 @@ isn't reconstructable from git history alone.
   (pink, light blue, amber, grey, brown). Same shapes and timing, new tones;
   picture: `docs/ux-shots/art/fx-recolour-before-after.png`.
 
+## [1.812.0+848]
+
+- Fights: one entrance. A fight met on a land crossing now opens with the same
+  short shake and red vignette (380 ms, a cut with reduced motion) the map has
+  always played before a fight; before, the road went straight to the battle
+  screen. The effect is one widget (`FightJolt`, `journey_fx.dart`) used by both
+  screens. The other "arrive" animations are unchanged: they depend on the
+  world camera (next steps). Test: `land_crossing_test.dart` (the jolt shows
+  before the battle screen opens).
+
 ## [1.811.0+847]
 
 - For the side-view camera to come (UX-2's parallax): every place with a
