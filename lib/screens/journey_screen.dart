@@ -414,6 +414,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// A new scene's lone step is still to be picked for the player.
   bool _autoPickPending = false;
+
+  /// Whether the way picked now was picked by the game (a scene's one way),
+  /// not by the player: a tap on its mark on the map only confirms the pick,
+  /// it never takes the step (Go does, a second tap, or a card's tap,
+  /// v1.827). Before, the first tap on the map after "Back to the map" set
+  /// the party on the road at once, and a way to another place rolled its
+  /// detour.
+  bool _pickedForPlayer = false;
   GlobalKey<_JourneyChartState> _chartKey = GlobalKey();
 
   /// How far out the map is looked at (v1.199): the place, its land, or
@@ -1163,13 +1171,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
-  void _tap(int index, _Step step) {
+  /// A tap on step [index]: a second tap on the way picked takes it. On
+  /// the map ([fromMap]) a way the game picked is only confirmed by the
+  /// first tap; a card goes at once (v1.692).
+  void _tap(int index, _Step step, {bool fromMap = false}) {
     if (_busy) return;
-    if (_selected == index && !step.locked) {
+    if (_selected == index && !step.locked && !(fromMap && _pickedForPlayer)) {
       _take(index, step);
       return;
     }
-    setState(() => _selected = index);
+    setState(() {
+      _selected = index;
+      _pickedForPlayer = false;
+    });
   }
 
   /// The height of the panel under the map: a way picked fills it as it
@@ -1208,6 +1222,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _sceneKey = sceneKey;
       _openingTold = false;
       _selected = null;
+      _pickedForPlayer = false;
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
@@ -1697,7 +1712,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A scene with one way on has its step picked already: one tap on Go.
     if (_autoPickPending) {
       _autoPickPending = false;
-      if (steps.length == 1 && !steps.single.locked) _selected = 0;
+      if (steps.length == 1 && !steps.single.locked) {
+        _selected = 0;
+        _pickedForPlayer = true;
+      }
     }
     if (_cityPick != null) {
       final i = steps.indexWhere((s) => identical(s.choice, _cityPick));
@@ -2434,7 +2452,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   terrainShift: _terrainShift,
                                   terrainSeed: 7 +
                                       chapterOfNode(play.currentNodeId) * 13,
-                                  onTap: (j, step) => _tap(_pinIdx[j], step),
+                                  onTap: (j, step) =>
+                                      _tap(_pinIdx[j], step, fromMap: true),
                                   stamp: _stamp,
                                   burn: _burn,
                                   unroll: _unroll,
