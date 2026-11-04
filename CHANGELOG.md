@@ -21,6 +21,17 @@ isn't reconstructable from git history alone.
   (`2900`) and the harbour steps (`7515_rest`). The towns already fold when
   read, so they get none. No other story text changed.
 
+## [1.818.0+854]
+
+- For the side-view camera (step 3c of UX-2's parallax): `WorldCamera`
+  (`world_camera.dart`). One x on the land strip says what the side view
+  shows: the kit of the region the x is in, in the window of that x, or, near
+  the border of two regions with different kits, the dithered seam between
+  them (`kitBlend`, 12 chart units wide). The same x gives the same picture on
+  every launch. Nothing uses it yet (the crossing is wired next): no change in
+  the game. Picture: `docs/ux-shots/camera/land-strip-seams.png` (the whole
+  land strip walked, seven seams). Test: `world_camera_test.dart`.
+
 ## [1.817.0+853]
 
 - For the side-view camera (step 3b of UX-2's parallax): the seam between two
