@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.822.0+858]
+
+- Crossings: the camera travels. On a road the world camera paints (v1.821),
+  the land no longer dissolves from one day to the next: the camera pans
+  along the road from the day's place to the next's over 1.1 s (a cut with
+  reduced motion), crossing the dithered seam where two regions meet, and
+  the window's landmark fades out and in as it passes. The kits' world is
+  now scrolled continuously to the place (`withSceneAt`, `layersAt(x)`),
+  where a window used to be a discrete step. Crossings on roads too long for
+  the camera (the sea cliffs') and every other scene still use the windows
+  and the dissolve. Not yet: the map's flight along the road still ends in
+  a screen change to the crossing; folding that hand-off into the same
+  travel needs the Journey's map to give up its scene. Picture:
+  `docs/ux-shots/camera/crossing-travel.png`. Tests: `scene_windows_test.dart`
+  (the land pans with x, no jump at a window border; the landmark shows or
+  not), `crossing_strip_path_test.dart` (the camera travels to the next day).
+
 ## [1.821.0+857]
 
 - Crossings: a land crossing's scene is now painted by the world camera
