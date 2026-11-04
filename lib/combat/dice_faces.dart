@@ -344,7 +344,7 @@ List<String> dieSignatureSkillIds(Map<String, dynamic>? die) {
     for (final face in faces)
       if (face['type'] == 'Skill' &&
           (isSignatureFace(face) || !isAssignableFace(face)))
-        face['linkedSkillID'].toString(),
+        face['linkedSkillID']?.toString() ?? '',
   ];
 }
 

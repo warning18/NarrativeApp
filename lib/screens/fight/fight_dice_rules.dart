@@ -109,7 +109,6 @@ extension _FightDiceRules on _FightScreenState {
 
   /// Aims [actorId]'s heal at [memberId] for this round: the combat board
   /// (UX-2's) calls it when a heal die is pointed at a party member.
-  // ignore: unused_element
   void _setHealTarget(String actorId, String memberId) {
     if (_memberById(memberId) == null) return;
     _healTargets[actorId] = memberId;
