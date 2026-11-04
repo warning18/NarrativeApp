@@ -8,6 +8,120 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.768.0+804]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
+
+## [1.767.0+803]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
+## [1.766.0+802]
+
+- The playthrough simulator now shops where a player shops: the ports'
+  shops at their settlements, a house's shop once it is built, the
+  Wayfarer's Caravan when the road holds it, and a shop again when the walk
+  is back there a later chapter (from the chapter it opens). Its naive
+  baseline moves with it (encounters won 71.0% to 75.3%, 800 runs), see
+  `docs/simulation/sim-reach-v1.766.md`.
+- The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
+  damage 4 to 5): a player who shops reached it too well armed.
+## [1.765.0+801]
+
+- Settings: a new switch, "Show slow frames" (off by default, saved). While it
+  is on, a small counter at the top right shows how many frames of the screen
+  you are on took more than 17 ms ("slow 7 / 612 · worst 48 ms"), and two
+  buttons appear under the switch: "Copy report" (the numbers per screen, the
+  five worst frames split into build and raster time, and a line about the
+  phone) and "Reset". The screens are the Fight, the Journey (its reading page
+  and its map apart), the Character, Camp or ship and Other tabs, the main
+  menu, and "Another screen" for the rest. It is meant for finding what
+  stutters on a phone with no computer: turn it on, play, copy the report and
+  paste it to the team. Off, nothing runs: no timer, no counter, no timing
+  callback. English and French.
+- Tests: `slow_frames_test.dart` (the counting, the five worst, the naming of
+  the screens, off by default, the switch, the copy and the reset); the 320 px
+  and French sweep shows the switch and the counter.
+
+## [1.764.0+800]
+
+- Fight on a phone: the screen stays upright while a fight is open. Turned
+  sideways (640 x 360) the dice board was left 1 px tall, so the fight could
+  not be played; now it holds portrait and lets the phone turn again when the
+  fight closes. The rest of the app turns as before, and a tablet (shortest
+  side of 600 dp or more) is never held.
+- Tests: `fight_orientation_test.dart` (the hold and the release, two fights
+  at once, a tablet, and a real fight opened and closed).
+
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
+
+## [1.762.0+798]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
+## [1.761.0+797]
+
+- Rangers get a die worth replacing the starter with: the storm die's Wind
+  Step (Defend 2) and Catch Your Breath (Heal 2) faces become open Skill
+  faces, so half its rolls land where your skills cast at full power, and
+  it beats the starter however many skills you know. It is now also sold at
+  the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
+  at the black market. Its price is unchanged.
+## [1.760.0+796]
+
+- **Cleanup: the dropped futures are named.** The 45 places where a Future
+  was started and left (a notice or a progress dialog that must not hold
+  the caller, a save that follows a state change already made) are
+  wrapped in `unawaited(...)`, and the `unawaited_futures` lint is on so a
+  new one cannot slip in unseen. All 45 were fire-and-forget on purpose;
+  nothing runs earlier, later or differently.
+
+## [1.759.0+795]
+
+- The profession dice sold in shops now beat the starter die once bought,
+  so there is a reason to replace it. The iron, bulwark, storm, holy, tide,
+  flame and arcane dice each turn one plain face into an open Skill face
+  (where your skills cast at full power, as on the starter) and their
+  weakest signature faces come up more often. Prices and shops are
+  unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
+  the same way. See `docs/simulation/starter-die.md`.
+## [1.758.0+794]
+
+- Code (P4, part 1): two providers no longer wake everything below them on
+  every change to the session. The tab badges compare equal when no dot
+  comes or goes, so the always-on home shell and the play menu stop
+  rebuilding on each change; the clan effects (and the signs built on
+  them) watch only the four fields they read. No change in play. Over five
+  unrelated session changes they notified 5 and 5 times; now 0 and 0
+  (`provider_rebuilds_test`).
+## [1.757.0+793]
+
+- Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
+  main file (the screen, 765 lines) and five `part` files under
+  `lib/screens/playthrough_simulator/`: the engine (`sim_engine.dart`,
+  `simulatePlaythroughs` and the walk), the batch statistics, the exports,
+  the batch card and the run detail. A pure move: every line is the same,
+  so the simulator's numbers and the tests do not change (wave 4a).
+
 ## [1.756.0+792]
 
 - Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three

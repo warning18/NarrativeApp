@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -62,6 +63,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import '../utils/slow_frames.dart' show slowFrameHint;
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/detour_scene_band.dart';
@@ -810,6 +812,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   @override
   void dispose() {
+    slowFrameHint = null;
     _jolt.dispose();
     _arrive.dispose();
     _door.dispose();
@@ -1132,6 +1135,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   @override
   Widget build(BuildContext context) {
+    // For the slow-frames report: which view the Journey is showing.
+    slowFrameHint = _reading ? 'reading page' : 'map';
     final story = widget.story;
     final play = ref.watch(storyPlayProvider);
     final session = ref.watch(playerSessionProvider);

@@ -88,12 +88,19 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
 /// What the clans add to a fight now (see clanEffectsFor): the title worn,
 /// every bad title, and the Sworn boon while still sworn.
 final clanEffectsProvider = Provider<List<SignEffect>>((ref) {
-  final session = ref.watch(playerSessionProvider);
+  // Only the four fields it reads (P4): any other change to the session
+  // leaves the effects, and the signs built on them, as they were.
+  final read = ref.watch(playerSessionProvider.select((s) => (
+        activeTitleId: s.activeTitleId,
+        heldTitleIds: s.heldTitleIds,
+        swornBoonIds: s.swornBoonIds,
+        swornFactionId: s.politics.swornFactionId,
+      )));
   return clanEffectsFor(
-    activeTitleId: session.activeTitleId,
-    heldTitleIds: session.heldTitleIds,
-    swornBoonIds: session.swornBoonIds,
-    swornFactionId: session.politics.swornFactionId,
+    activeTitleId: read.activeTitleId,
+    heldTitleIds: read.heldTitleIds,
+    swornBoonIds: read.swornBoonIds,
+    swornFactionId: read.swornFactionId,
     data: ref.watch(clanDataProvider),
   );
 });

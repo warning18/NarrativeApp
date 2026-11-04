@@ -2,6 +2,7 @@
 // climb (the claim, its rungs, the Throne, "Your Host"), the Host's
 // sheet, and Edit Mode's Throne tab (the claim, the steps, a pledge, the
 // muster), in English and in French.
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -178,9 +179,10 @@ void main() {
           'name_fr': 'La Lignée des Paniers',
         }));
     // The session moves at once; its save follows in the test's own time.
-    notifier.setOpenHandStage(2, data: container.read(clanDataProvider));
-    notifier.setSubclanMark('fishbasket_line', SubclanMark.friend,
-        data: container.read(clanDataProvider), cause: 'edit');
+    unawaited(
+        notifier.setOpenHandStage(2, data: container.read(clanDataProvider)));
+    unawaited(notifier.setSubclanMark('fishbasket_line', SubclanMark.friend,
+        data: container.read(clanDataProvider), cause: 'edit'));
     await _settle(tester);
     expect(
         find.descendant(

@@ -3,6 +3,7 @@
 // its limit (the guns, and a gun a step short is ready to fire), all on a
 // 360x640 phone: the dock's row with the crew, the push, the boarding and
 // End turn fits, in English and in French.
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -184,7 +185,9 @@ void main() {
     dockFits();
 
     // And in French.
-    container.read(appLanguageProvider.notifier).setLanguage(AppLanguage.fr);
+    unawaited(container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.fr));
     await tester.pump();
     expect(intent(), 'Vire pour éperonner');
     dockFits();

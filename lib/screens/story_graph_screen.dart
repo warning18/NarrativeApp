@@ -539,7 +539,7 @@ Future<void> _runAutoplay(
   final lang = ref.read(appLanguageProvider);
   String t(String key) => trFor(lang, key);
 
-  showDialog<void>(
+  unawaited(showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (_) => Center(
@@ -561,7 +561,7 @@ Future<void> _runAutoplay(
         ),
       ),
     ),
-  );
+  ));
 
   final story = await ref.read(storyDataProvider.future);
   final dice = await _awaitGameDb(ref, diceSchema);

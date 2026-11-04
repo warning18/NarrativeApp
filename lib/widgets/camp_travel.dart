@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -138,7 +139,8 @@ Future<void> _travelTo(
       return;
     }
     if (started) return;
-    showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
+    unawaited(
+        showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice));
     play.choose(targetNodeId);
     return;
   }
