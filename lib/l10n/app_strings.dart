@@ -3196,6 +3196,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Use your spoils now',
     AppLanguage.fr: 'Utiliser votre butin tout de suite',
   },
+  'loot_sheet_changes': {
+    AppLanguage.en: 'What the spoils change',
+    AppLanguage.fr: 'Ce que le butin change',
+  },
+  'loot_sheet_details': {AppLanguage.en: 'Details', AppLanguage.fr: 'Détail'},
+  'loot_use_now': {
+    AppLanguage.en: 'Use right away',
+    AppLanguage.fr: 'Utiliser tout de suite',
+  },
   'drink_now_button': {AppLanguage.en: 'Drink', AppLanguage.fr: 'Boire'},
   'loot_undo_button': {AppLanguage.en: 'Undo', AppLanguage.fr: 'Annuler'},
   'loot_auto_read_note': {
