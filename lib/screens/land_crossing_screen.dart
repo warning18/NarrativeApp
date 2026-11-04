@@ -10,8 +10,10 @@ import '../combat/encounter.dart' show EncounterModifiers;
 import '../combat/field_anomaly.dart' show landRouteStage;
 import '../data/ability_check.dart';
 import '../data/fate_coin.dart';
+import '../data/geography.dart' show Geography;
 import '../data/journey_rules.dart' show watchesPerDay;
 import '../data/land_crossing.dart';
+import '../data/region_strip.dart' show RegionStrips;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -25,6 +27,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/geography_provider.dart' show loadGeography;
 import '../providers/player_session_provider.dart';
+import '../providers/region_strips_provider.dart';
 import '../providers/walking_party_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -73,6 +76,7 @@ Future<bool> runLandCrossing(
   if (route == null) return true;
   final known = landEventsFrom(events);
   final ruler = await crossingRulerOf(ref, route);
+  final stripPath = await crossingStripPath(ref, route);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
@@ -80,9 +84,32 @@ Future<bool> runLandCrossing(
         events: known,
         ruler: ruler.clanId,
         rulers: rulerPool(known, ruler.clanId, ruler.band),
-        random: ref.read(landCrossingRandomProvider)),
+        random: ref.read(landCrossingRandomProvider),
+        stripPath: stripPath),
   ));
   return arrived ?? false;
+}
+
+/// The x on the world's strip of [route]'s road, from its start to its end
+/// (RegionStrips.pathOn): what the crossing's windows follow. Empty when the
+/// strips cannot say (a road from the land to the sea, a place with no x).
+Future<List<double>> crossingStripPath(WidgetRef ref, LandRoute route) async {
+  try {
+    final geo = await loadGeography(ref);
+    final strips = await ref.read(regionStripsProvider.future);
+    return stripPathOf(strips, geo, route);
+  } catch (_) {
+    return const [];
+  }
+}
+
+/// [crossingStripPath] with the strips and the geography in hand: the
+/// route's `from` and `to` are landmark ids (world_map.dart), which
+/// [Geography.placeOfLandmark] puts on the strip.
+List<double> stripPathOf(RegionStrips strips, Geography geo, LandRoute route) {
+  final a = geo.placeOfLandmark(route.from), b = geo.placeOfLandmark(route.to);
+  if (a == null || b == null) return const [];
+  return strips.pathOn(a.id, b.id);
 }
 
 /// Who holds the land [route] crosses now (landRouteRuler: '' for no one),

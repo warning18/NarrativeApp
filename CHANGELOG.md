@@ -14,8 +14,8 @@ isn't reconstructable from git history alone.
   shuffle with a per-launch random start. A window is a fixed stretch of the
   world's strip (`sceneWindowAt(x)`, 12 chart units wide, four in turn): a
   crossing takes the day's x along its road when it is given the road's strip
-  path (`LandCrossingScreen.stripPath`, wired with the camera), else its
-  route's own window and the next one each day; the sea, detours, streets and
+  path (`LandCrossingScreen.stripPath`, from the new `regionStripsProvider`,
+  `stripPathOf`), else its route's own window and the next one each day; the sea, detours, streets and
   memories take a window fixed by their id. The same place shows the same land
   on every launch; successive sailings of the same waters no longer rotate
   through the four. `scene_versions.dart` and its test became
