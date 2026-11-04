@@ -215,7 +215,10 @@ extension _FightDiceRules on _FightScreenState {
 
   /// [face] resolved for [actor]: Growth and Steady on its number (or, on a
   /// skill, on its damage), Pain doubling a strike. A critical is rolled
-  /// only when [rollCritical] (the confirm); [surge] forces one.
+  /// only when [rollCritical] (the confirm); [surge] forces one. [again]
+  /// is the same face struck a second time (a Flurry): it rolls its own
+  /// critical but spends nothing the first already spent (the signs'
+  /// banked shares, the Relicbreaker's mana).
   PlayerActionResult _resolveFor(
     _PartyMember actor,
     DiceFaceResult face,
@@ -224,13 +227,15 @@ extension _FightDiceRules on _FightScreenState {
     AppLanguage lang, {
     required bool surge,
     bool rollCritical = false,
+    bool again = false,
   }) {
+    final keep = rollCritical && !again;
     final bonus = _flatBonusFor(actor, face);
     final basic =
         face.type == 'Attack' || face.type == 'Defend' || face.type == 'Heal';
     final played = _signedValue(
         actor, bonus > 0 && basic ? face.withValue(face.value + bonus) : face,
-        keep: rollCritical);
+        keep: keep);
     var damage = _totalDamageFor(actor, played, skills, items) +
         (played.type == 'Skill' ? bonus : 0);
     // The player's strike signs: an Attack face's flat damage and its
@@ -240,7 +245,7 @@ extension _FightDiceRules on _FightScreenState {
       damage = _signs.strikeBase(damage, played.value,
           attackFace: attack,
           bank: actor.strikeBank,
-          keep: rollCritical,
+          keep: keep,
           percent: _signs.strikePercentFor(
             attackFace: attack,
             currentHealth: actor.currentHealth,
@@ -251,7 +256,7 @@ extension _FightDiceRules on _FightScreenState {
     // The Relicbreaker's mana makes a sure critical of the player's strike;
     // the Ledger Knife's misses raise the chance.
     final strike = played.type == 'Attack' || played.type == 'Skill';
-    final sureCrit = rollCritical &&
+    final sureCrit = keep &&
         actor.isPlayer &&
         strike &&
         _core.has(Spec.relicbreaker) &&
@@ -845,7 +850,7 @@ extension _FightDiceRules on _FightScreenState {
       case ProfessionCore.flurry:
         if (result.damageDealt <= 0) return;
         final second = _resolveFor(hero, face, skills, items, lang,
-            surge: false, rollCritical: true);
+            surge: false, rollCritical: true, again: true);
         // The Pitch Hand: the second hit slows its target (step 3c).
         _core.pitched = _core.has(Spec.pitchHand) && second.damageDealt > 0;
         // Each hit's critical: the Ledger Knife's chain, the Relicbreaker's

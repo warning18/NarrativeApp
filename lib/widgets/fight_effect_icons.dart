@@ -269,47 +269,15 @@ class FightEffectChip extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.only(right: 5, bottom: 3),
-          child: SizedBox(
-            width: size,
-            height: size,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: color.withValues(alpha: 0.65)),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(size * 0.2),
-                      child: CustomPaint(
-                          painter: _PixelPainter(_bitmaps[effect]!, color)),
-                    ),
-                  ),
-                ),
-                if (badge != null)
-                  Positioned(
-                    right: -4,
-                    bottom: -5,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 3, vertical: 0.5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF15131A),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: color.withValues(alpha: 0.9)),
-                      ),
-                      child: Text(badge!,
-                          style: const TextStyle(
-                              fontSize: 9,
-                              height: 1.1,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700)),
-                    ),
-                  ),
-              ],
+          child: _EffectTile(
+            size: size,
+            color: color,
+            radius: 6,
+            badge: badge,
+            child: Padding(
+              padding: EdgeInsets.all(size * 0.2),
+              child:
+                  CustomPaint(painter: _PixelPainter(_bitmaps[effect]!, color)),
             ),
           ),
         ),
@@ -358,7 +326,7 @@ class FightStatusTile extends StatelessWidget {
           showFightEffectPopin(
             context,
             anchor: box.localToGlobal(Offset.zero) & box.size,
-            leading: _tile(icon, color, null, 34),
+            leading: _statusTile(icon, color, null, 34),
             color: color,
             title: label,
             subtitle: subtitle,
@@ -368,13 +336,42 @@ class FightStatusTile extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.only(right: 6, bottom: 5),
-          child: _tile(icon, color, badge, size),
+          child: _statusTile(icon, color, badge, size),
         ),
       ),
     );
   }
 
-  static Widget _tile(IconData icon, Color color, String? badge, double size) {
+  static Widget _statusTile(
+          IconData icon, Color color, String? badge, double size) =>
+      _EffectTile(
+        size: size,
+        color: color,
+        radius: 8,
+        badge: badge,
+        child: Icon(icon, size: size * 0.56, color: color),
+      );
+}
+
+/// The tinted square both kinds of tile share (a fighter's effect and a
+/// fight-wide status): [child] inside, [badge] at its corner.
+class _EffectTile extends StatelessWidget {
+  const _EffectTile({
+    required this.size,
+    required this.color,
+    required this.radius,
+    required this.child,
+    this.badge,
+  });
+
+  final double size;
+  final Color color;
+  final double radius;
+  final Widget child;
+  final String? badge;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       width: size,
       height: size,
@@ -385,10 +382,10 @@ class FightStatusTile extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(radius),
                 border: Border.all(color: color.withValues(alpha: 0.65)),
               ),
-              child: Icon(icon, size: size * 0.56, color: color),
+              child: child,
             ),
           ),
           if (badge != null)
@@ -400,10 +397,10 @@ class FightStatusTile extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 3, vertical: 0.5),
                 decoration: BoxDecoration(
                   color: const Color(0xFF15131A),
-                  borderRadius: BorderRadius.circular(7),
+                  borderRadius: BorderRadius.circular(radius - 1),
                   border: Border.all(color: color.withValues(alpha: 0.9)),
                 ),
-                child: Text(badge,
+                child: Text(badge!,
                     style: const TextStyle(
                         fontSize: 9,
                         height: 1.1,

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart'
+    show ErrorDescription, FlutterError, FlutterErrorDetails;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +27,18 @@ class GameDbRepository {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_prefsKey);
     if (saved != null) {
-      return json.decode(saved) as Map<String, dynamic>;
+      try {
+        return json.decode(saved) as Map<String, dynamic>;
+      } catch (error, stack) {
+        // A broken edited copy is reported, and the bundled table read in
+        // its place: never an empty table far from the cause (issue #696).
+        FlutterError.reportError(FlutterErrorDetails(
+            exception: error,
+            stack: stack,
+            library: 'gamedata',
+            context: ErrorDescription(
+                'reading the edited ${schema.id} table; the bundled one is used')));
+      }
     }
     final raw = await rootBundle.loadString(schema.assetPath);
     return json.decode(raw) as Map<String, dynamic>;

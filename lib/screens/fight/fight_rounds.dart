@@ -43,7 +43,7 @@ extension _FightRounds on _FightScreenState {
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) async {
-    if (_over || _rolling || _rollCount >= _rollCap) return;
+    if (_over || _rolling || _settlingRound || _rollCount >= _rollCap) return;
     final acting = _actingParty;
     // The locks kept through this roll are frozen for the round.
     _dieLocks.rolled();
@@ -667,6 +667,7 @@ extension _FightRounds on _FightScreenState {
         _lastEnemyDamageTaken = lastEnemyDamage;
       }
       _log.addAll(newEntries);
+      _settlingRound = true;
     });
 
     // Give the round's effects time to land before the enemy answers.
@@ -677,6 +678,7 @@ extension _FightRounds on _FightScreenState {
                 ? max(400, (fxIndex - 1) * _fxStagger + 450)
                 : 400));
     if (!mounted) return;
+    _settlingRound = false;
 
     if (_enemies.every((e) => !e.isAlive)) {
       _finishFight(won: true);
