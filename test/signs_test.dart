@@ -1,5 +1,5 @@
-// Signs (v1.192), the rules: rarity and level, what an offer holds, which
-// patron makes it, the slots, the Choir's vows and the Pit's pacts, favour,
+// Signs (v1.192), the rules: rarity and level, what a patron can offer,
+// which patrons may, the slots, the Choir's vows and the Pit's pacts, favour,
 // and what the held signs add up to.
 import 'dart:math';
 
@@ -83,29 +83,6 @@ final Map<String, SignDef> _signs = {
     requiresPatrons: ['red', 'blue'],
   ),
 };
-
-Map<String, Patron> _only(Iterable<String> ids) =>
-    {for (final id in ids) id: _patrons[id]!};
-
-SignOffer? _offer({
-  Map<String, Patron>? patrons,
-  List<HeldSign> held = const [],
-  Iterable<String> flags = const [],
-  int alignment = 0,
-  List<String> patronsThisLife = const [],
-  List<String> patronsMet = const [],
-  required int seed,
-}) =>
-    rollSignOffer(
-      patrons: patrons ?? _patrons,
-      signs: _signs,
-      held: held,
-      flags: flags,
-      alignment: alignment,
-      random: Random(seed),
-      patronsThisLife: patronsThisLife,
-      patronsMet: patronsMet,
-    );
 
 HeldSign _held(String id,
         {SignRarity rarity = SignRarity.common, int level = 1}) =>
@@ -231,88 +208,65 @@ void main() {
     });
   });
 
-  group('the offer', () {
-    test('three different signs of one patron, none of them held', () {
-      final held = [_held('red_strike'), _held('blue_guard')];
-      for (var seed = 0; seed < 100; seed++) {
-        final offer = _offer(held: held, seed: seed)!;
-        expect(offer.cards, hasLength(signOfferSize));
-        expect(offer.cards.map((c) => c.signId).toSet(), hasLength(3));
-        for (final card in offer.cards) {
-          expect(_signs[card.signId]!.offeredBy(offer.patronId), isTrue);
-          expect(held.map((h) => h.signId), isNot(contains(card.signId)));
-        }
-      }
-    });
+  group('who can offer what', () {
+    List<String> regular(String patronId, List<HeldSign> held) => [
+          for (final s
+              in offerableSigns(patronId, signs: _signs, held: held).regular)
+            s.id
+        ];
+    List<String> duos(String patronId, List<HeldSign> held) => [
+          for (final s
+              in offerableSigns(patronId, signs: _signs, held: held).duos)
+            s.id
+        ];
+    bool open(String id,
+            {Iterable<String> flags = const [],
+            int alignment = 0,
+            List<String> patronsThisLife = const []}) =>
+        patronOpen(_patrons[id]!,
+            flags: flags,
+            alignment: alignment,
+            patronsThisLife: patronsThisLife,
+            patrons: _patrons);
 
-    test('fewer than three left: what is left; none: no offer', () {
-      final red = _only(['red']);
-      final offer = _offer(
-          patrons: red,
-          held: [_held('red_strike'), _held('red_guard'), _held('red_armor')],
-          seed: 1)!;
-      expect(offer.cards.map((c) => c.signId), ['red_health']);
+    test('a patron offers its own signs, none of them held', () {
+      final held = [_held('red_strike'), _held('blue_guard')];
+      expect(regular('red', held), ['red_armor', 'red_guard', 'red_health']);
+      expect(
+          regular('blue', held), ['blue_armor', 'blue_health', 'blue_strike']);
+      expect(
+          regular('red',
+              [_held('red_strike'), _held('red_guard'), _held('red_armor')]),
+          ['red_health']);
       final all = [
         for (final id in _signs.keys)
           if (_signs[id]!.patronId == 'red' && !_signs[id]!.isDuo) _held(id),
       ];
-      expect(_offer(patrons: red, held: all, seed: 1), isNull);
-      expect(
-          anyPatronCanOffer(
-              patrons: red,
-              signs: _signs,
-              held: all,
-              flags: const [],
-              alignment: 0),
-          isFalse);
+      expect(regular('red', all), isEmpty);
     });
 
-    test('a duo comes in once both its patrons have given, about 35%', () {
-      final pair = _only(['red', 'blue']);
-      for (var seed = 0; seed < 200; seed++) {
-        final offer =
-            _offer(patrons: pair, held: [_held('red_armor')], seed: seed)!;
-        expect(
-            offer.cards.map((c) => c.signId), isNot(contains('duo_red_blue')));
-      }
-      var duos = 0;
-      for (var seed = 0; seed < 4000; seed++) {
-        final offer = _offer(
-            patrons: pair,
-            held: [_held('red_armor'), _held('blue_armor')],
-            seed: seed)!;
-        final card =
-            offer.cards.where((c) => c.signId == 'duo_red_blue').firstOrNull;
-        if (card != null) {
-          duos++;
-          expect(card.rarity, isNot(SignRarity.common));
-        }
-      }
-      expect(duos / 4000, closeTo(duoOfferChance, 0.03));
+    test('a duo comes in once both its patrons have given', () {
+      expect(duos('red', [_held('red_armor')]), isEmpty);
+      expect(duos('red', [_held('red_armor'), _held('blue_armor')]),
+          ['duo_red_blue']);
+      expect(
+          duos('red',
+              [_held('red_armor'), _held('blue_armor'), _held('duo_red_blue')]),
+          isEmpty);
     });
 
     test('a patron offers only when the story lets them', () {
-      final ids = {
-        for (var seed = 0; seed < 300; seed++) _offer(seed: seed)!.patronId,
-      };
-      expect(ids, containsAll(['red', 'blue', 'green', 'gold']));
-      expect(ids, isNot(contains('tribe')));
-      expect(ids, isNot(contains(choirPatronId)));
-      expect(ids, isNot(contains(pitPatronId)));
-
-      final met = {
-        for (var seed = 0; seed < 300; seed++)
-          _offer(flags: const ['met_tribe'], alignment: 12, seed: seed)!
-              .patronId,
-      };
-      expect(met, containsAll(['tribe', choirPatronId]));
-      expect(met, isNot(contains(pitPatronId)));
-      final dark = {
-        for (var seed = 0; seed < 300; seed++)
-          _offer(alignment: -10, seed: seed)!.patronId,
-      };
-      expect(dark, contains(pitPatronId));
-      expect(dark, isNot(contains(choirPatronId)));
+      for (final id in ['red', 'blue', 'green', 'gold']) {
+        expect(open(id), isTrue, reason: id);
+      }
+      expect(open('tribe'), isFalse);
+      expect(open(choirPatronId), isFalse);
+      expect(open(pitPatronId), isFalse);
+      expect(open('tribe', flags: const ['met_tribe']), isTrue);
+      expect(open(choirPatronId, alignment: 12), isTrue);
+      expect(open(pitPatronId, alignment: 12), isFalse);
+      expect(open(pitPatronId, alignment: -10), isTrue);
+      expect(open(choirPatronId, alignment: -10), isFalse);
     });
 
     test('no cap on clans a life (v1.193): a fourth still comes', () {
@@ -324,11 +278,7 @@ void main() {
             isFalse,
             reason: id);
       }
-      final met = {
-        for (var seed = 0; seed < 300; seed++)
-          _offer(patronsThisLife: life, seed: seed)!.patronId,
-      };
-      expect(met, contains('gold'));
+      expect(open('gold', patronsThisLife: life), isTrue);
     });
 
     test('the Choir and the Pit shut each other out for the life', () {
@@ -342,49 +292,10 @@ void main() {
           isTrue);
       expect(
           otherworldClaimOf(const ['red', pitPatronId], _patrons), pitPatronId);
-      for (var seed = 0; seed < 300; seed++) {
-        expect(
-            _offer(
-                    alignment: -20,
-                    patronsThisLife: const [choirPatronId],
-                    seed: seed)!
-                .patronId,
-            isNot(pitPatronId));
-      }
-    });
-
-    test('a patron that gave returns 60% of the time; tribes weigh half', () {
-      var returning = 0;
-      for (var seed = 0; seed < 4000; seed++) {
-        if (_offer(patronsThisLife: const ['red'], seed: seed)!.patronId ==
-            'red') {
-          returning++;
-        }
-      }
-      expect(returning / 4000, closeTo(returningPatronChance, 0.03));
-
-      var clan = 0;
-      for (var seed = 0; seed < 4000; seed++) {
-        final offer = _offer(
-            patrons: _only(['red', 'tribe']),
-            flags: const ['met_tribe'],
-            seed: seed)!;
-        if (offer.patronId == 'red') clan++;
-      }
-      expect(clan / 4000, closeTo(1 / (1 + tribeOfferWeight), 0.03));
-    });
-
-    test('the first offer opens with the intro; the offer keeps', () {
-      final first = _offer(patrons: _only(['red']), seed: 3)!;
-      expect(first.firstMeeting, isTrue);
-      final again =
-          _offer(patrons: _only(['red']), patronsMet: const ['red'], seed: 3)!;
-      expect(again.firstMeeting, isFalse);
-      expect(again.greetingIndex, lessThan(3));
-      expect(SignOffer.tryParse(first.toJson()), first);
-      expect(SignOffer.tryParse(null), isNull);
       expect(
-          SignOffer.tryParse(const {'patronId': 'red', 'cards': []}), isNull);
+          open(pitPatronId,
+              alignment: -20, patronsThisLife: const [choirPatronId]),
+          isFalse);
     });
   });
 
@@ -458,15 +369,13 @@ void main() {
       expect(countDownPacts(held), held);
     });
 
-    test('the simulator takes an empty slot first, then the rarest', () {
-      const offer = SignOffer(patronId: 'red', cards: [
-        SignCard(signId: 'red_strike', rarity: SignRarity.heroic),
-        SignCard(signId: 'red_guard', rarity: SignRarity.common),
-        SignCard(signId: 'red_health', rarity: SignRarity.rare),
-      ]);
+    test('a slot holds one sign; passives are many', () {
       final held = [_held('blue_strike'), _held('blue_guard')];
-      expect(preferredSignCard(offer, held, _signs)!.signId, 'red_health');
-      expect(preferredSignCard(offer, const [], _signs)!.signId, 'red_strike');
+      expect(heldInSlot(SignSlot.strike, held, _signs)!.signId, 'blue_strike');
+      expect(heldInSlot(SignSlot.guard, held, _signs)!.signId, 'blue_guard');
+      expect(heldInSlot(SignSlot.strike, const [], _signs), isNull);
+      expect(
+          heldInSlot(SignSlot.passive, [_held('blue_health')], _signs), isNull);
     });
 
     test('held signs survive the save file', () {

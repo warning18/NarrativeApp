@@ -17,9 +17,9 @@ import '../l10n/app_strings.dart';
 /// Everything here is pure and takes a [Random], like perks.dart: the
 /// patrons are the factions of assets/gamedata/factions.json (v1.193, see
 /// factions.dart) and the signs come from signs.json (see [parsePatrons],
-/// [parseSigns]); the session keeps what is held (see [HeldSign]) and the
-/// offer waiting (see [SignOffer]); a fight reads the sum of it all as one
-/// [SignEffects].
+/// [parseSigns]); the session keeps what is held (see [HeldSign]), the
+/// clans' offers draw signs (offers.dart), and a fight reads the sum of it
+/// all as one [SignEffects].
 
 /// A patron's place in the world: one of the clans (the Lantern Dominion
 /// and the five clans of the coast), a tribe met on the way, the Choir or
@@ -67,15 +67,8 @@ const double _signLevelStep = 0.5;
 /// However rare and raised, a chance on a sign never passes this.
 const int signChanceCap = 60;
 
-/// The cards an offer shows, when the patron has that many to give.
-const int signOfferSize = 3;
-
 /// Odds an eligible duo sign takes one of an offer's places.
 const double duoOfferChance = 0.35;
-
-/// Odds an offer comes from a patron that already gave a sign this life
-/// (when one can still offer), rather than from a new one.
-const double returningPatronChance = 0.6;
 
 /// A tribe's weight among the new patrons, a clan's or the Choir's or the
 /// Pit's being 1: tribes are met on the way, and offer less often.
@@ -734,84 +727,6 @@ SignRarity _rarityNamed(String? name) =>
     SignRarity.values.where((r) => r.name == name).firstOrNull ??
     SignRarity.common;
 
-/// One card of an offer: the sign and the rarity it was drawn at.
-class SignCard {
-  const SignCard({required this.signId, required this.rarity});
-
-  final String signId;
-  final SignRarity rarity;
-
-  Map<String, dynamic> toJson() => {'signId': signId, 'rarity': rarity.name};
-
-  factory SignCard.fromJson(Map<String, dynamic> json) => SignCard(
-        signId: json['signId']?.toString() ?? '',
-        rarity: _rarityNamed(json['rarity']?.toString()),
-      );
-
-  @override
-  bool operator ==(Object other) =>
-      other is SignCard && other.signId == signId && other.rarity == rarity;
-
-  @override
-  int get hashCode => Object.hash(signId, rarity);
-}
-
-/// The offer waiting: one patron's cards, drawn once and kept until one is
-/// taken, so closing the app never loses or redraws it. [firstMeeting]:
-/// the patron's first offer, which opens with their intro; otherwise
-/// [greetingIndex] picks the greeting.
-class SignOffer {
-  const SignOffer({
-    required this.patronId,
-    required this.cards,
-    this.firstMeeting = false,
-    this.greetingIndex = 0,
-  });
-
-  final String patronId;
-  final List<SignCard> cards;
-  final bool firstMeeting;
-  final int greetingIndex;
-
-  Map<String, dynamic> toJson() => {
-        'patronId': patronId,
-        'cards': [for (final c in cards) c.toJson()],
-        'firstMeeting': firstMeeting,
-        'greetingIndex': greetingIndex,
-      };
-
-  /// [raw] read, or null for no offer.
-  static SignOffer? tryParse(Object? raw) {
-    if (raw is! Map) return null;
-    final cards = [
-      for (final c in (raw['cards'] as List?) ?? const [])
-        if (c is Map) SignCard.fromJson(c.cast<String, dynamic>()),
-    ];
-    final patronId = raw['patronId']?.toString() ?? '';
-    if (patronId.isEmpty || cards.isEmpty) return null;
-    return SignOffer(
-      patronId: patronId,
-      cards: cards,
-      firstMeeting: raw['firstMeeting'] == true,
-      greetingIndex: (raw['greetingIndex'] as num?)?.toInt() ?? 0,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      other is SignOffer &&
-      other.patronId == patronId &&
-      other.firstMeeting == firstMeeting &&
-      other.greetingIndex == greetingIndex &&
-      other.cards.length == cards.length &&
-      [for (var i = 0; i < cards.length; i++) other.cards[i] == cards[i]]
-          .every((same) => same);
-
-  @override
-  int get hashCode =>
-      Object.hash(patronId, firstMeeting, greetingIndex, Object.hashAll(cards));
-}
-
 // --- The rules --------------------------------------------------------------
 
 /// Sign offers a level-up from [levelBefore] to [levelAfter] brings: one
@@ -956,117 +871,6 @@ List<HeldSign> withStoryBoons(List<HeldSign> held, Iterable<String> flags) =>
           ]
         : held;
 
-/// Draws the next offer, or null when no patron can offer. The patron:
-/// with [returningPatronChance] one that already gave a sign this life (and
-/// can offer), else one of the others, evenly (a tribe at
-/// [tribeOfferWeight]). The cards: up to [signOfferSize] different signs of
-/// theirs not held yet, an eligible duo taking one place at
-/// [duoOfferChance] (or filling places when too few are left), each at a
-/// rarity rolled with [luck] and the patron's favour.
-SignOffer? rollSignOffer({
-  required Map<String, Patron> patrons,
-  required Map<String, SignDef> signs,
-  required List<HeldSign> held,
-  required Iterable<String> flags,
-  required int alignment,
-  required Random random,
-  List<String> patronsThisLife = const [],
-  Map<String, int> favour = const {},
-  List<String> patronsMet = const [],
-  int luck = 0,
-}) {
-  final ids = patrons.keys.toList()..sort();
-  final open = [
-    for (final id in ids)
-      if (patronOpen(patrons[id]!,
-              flags: flags,
-              alignment: alignment,
-              patronsThisLife: patronsThisLife,
-              patrons: patrons) &&
-          _hasAnything(offerableSigns(id, signs: signs, held: held)))
-        patrons[id]!,
-  ];
-  if (open.isEmpty) return null;
-  final returning = [
-    for (final p in open)
-      if (patronsThisLife.contains(p.id)) p,
-  ];
-  final fresh = [
-    for (final p in open)
-      if (!patronsThisLife.contains(p.id)) p,
-  ];
-  final pool = returning.isEmpty
-      ? fresh
-      : fresh.isEmpty || random.nextDouble() < returningPatronChance
-          ? returning
-          : fresh;
-  final patron = _weightedPatron(pool, random);
-
-  final offerable = offerableSigns(patron.id, signs: signs, held: held);
-  final regular = [...offerable.regular]..shuffle(random);
-  final duos = [...offerable.duos]..shuffle(random);
-  final picked = <SignDef>[];
-  if (duos.isNotEmpty && random.nextDouble() < duoOfferChance) {
-    picked.add(duos.removeAt(0));
-  }
-  while (picked.length < signOfferSize && regular.isNotEmpty) {
-    picked.add(regular.removeAt(0));
-  }
-  while (picked.length < signOfferSize && duos.isNotEmpty) {
-    picked.add(duos.removeAt(0));
-  }
-  final favourLevel = favourLevelFor(favour[patron.id] ?? 0);
-  final greetings = max(1, patron.greetings.length);
-  return SignOffer(
-    patronId: patron.id,
-    cards: [
-      for (final sign in picked)
-        SignCard(
-          signId: sign.id,
-          rarity: rollSignRarity(
-              random: random,
-              luck: luck,
-              favourLevel: favourLevel,
-              duo: sign.isDuo),
-        ),
-    ],
-    firstMeeting: !patronsMet.contains(patron.id),
-    greetingIndex: random.nextInt(greetings),
-  );
-}
-
-/// Whether any patron could draw an offer now (see [rollSignOffer]): a
-/// pick waiting with nobody to offer stays waiting, unannounced.
-bool anyPatronCanOffer({
-  required Map<String, Patron> patrons,
-  required Map<String, SignDef> signs,
-  required List<HeldSign> held,
-  required Iterable<String> flags,
-  required int alignment,
-  List<String> patronsThisLife = const [],
-}) =>
-    patrons.values.any((patron) =>
-        patronOpen(patron,
-            flags: flags,
-            alignment: alignment,
-            patronsThisLife: patronsThisLife,
-            patrons: patrons) &&
-        _hasAnything(offerableSigns(patron.id, signs: signs, held: held)));
-
-bool _hasAnything(({List<SignDef> regular, List<SignDef> duos}) offerable) =>
-    offerable.regular.isNotEmpty || offerable.duos.isNotEmpty;
-
-Patron _weightedPatron(List<Patron> pool, Random random) {
-  double weight(Patron p) => p.kind == PatronKind.tribe ? tribeOfferWeight : 1;
-  final total = pool.fold<double>(0, (sum, p) => sum + weight(p));
-  var roll = random.nextDouble() * total;
-  for (final patron in pool) {
-    roll -= weight(patron);
-    if (roll < 0) return patron;
-  }
-  return pool.last;
-}
-
 /// The held sign in [slot] (never a passive: those are many), if any.
 HeldSign? heldInSlot(
     SignSlot slot, List<HeldSign> held, Map<String, SignDef> signs) {
@@ -1135,28 +939,6 @@ List<HeldSign>? raiseSign(List<HeldSign> held, String signId) {
     for (final h in held)
       h.signId == signId ? h.copyWith(level: h.level + 1) : h,
   ];
-}
-
-/// The simulator's pick (and a fair default): a sign that fills an empty
-/// slot or a passive before one that replaces, then the rarest.
-SignCard? preferredSignCard(
-  SignOffer offer,
-  List<HeldSign> held,
-  Map<String, SignDef> signs,
-) {
-  SignCard? best;
-  var bestScore = -1;
-  for (final card in offer.cards) {
-    final sign = signs[card.signId];
-    if (sign == null) continue;
-    final fillsEmpty = heldInSlot(sign.slot, held, signs) == null;
-    final score = (fillsEmpty ? 10 : 0) + card.rarity.index;
-    if (score > bestScore) {
-      best = card;
-      bestScore = score;
-    }
-  }
-  return best;
 }
 
 // --- What held signs add up to ------------------------------------------------
