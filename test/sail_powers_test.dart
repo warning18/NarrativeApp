@@ -149,13 +149,9 @@ void main() {
       expect(hearthHullRepair(2), 12);
     });
 
-    test(
-        'foresight sees a day ahead, two for the inked, and blunts the '
-        'first volley', () {
+    test('foresight sees a day ahead, two for the inked', () {
       expect(foresightDays(1), 1);
       expect(foresightDays(2), 2);
-      expect(firstVolleyFactor(1), 0.5);
-      expect(firstVolleyFactor(2), 0.0);
     });
 
     test('the void mark takes the storm\'s teeth and sharpens the volley', () {

@@ -76,15 +76,13 @@ void main() {
       expect(world.lightOf('dunes'), '');
     });
 
-    test('controller falls back to the ruler; heldBy does not', () {
-      expect(world.controllerOf('lower_town'), 'crows');
+    test('heldBy reads the controllers up the chain, never the ruler', () {
       expect(world.heldBy('lower_town'), 'crows');
-      expect(world.controllerOf('alster'), 'dominion'); // the vale's
-      expect(world.heldBy('alster'), 'dominion');
+      expect(world.heldBy('alster'), 'dominion'); // the vale's
       // The Marches are ruled by the Dominion; the Waste by nobody.
-      expect(world.controllerOf('marches'), 'dominion');
+      expect(world.countryOf('marches')?.ruler, 'dominion');
       expect(world.heldBy('marches'), '');
-      expect(world.controllerOf('wells'), '');
+      expect(world.countryOf('wells')?.ruler ?? '', '');
       expect(world.heldBy('wells'), '');
     });
 
@@ -353,7 +351,7 @@ void main() {
           geography: geo, biomes: _json('assets/gamedata/biomes.json'));
       expect(world.dangerOf('alster_black_hold'), 3);
       expect(world.lightOf('alster_black_hold'), 'dark');
-      expect(world.controllerOf('alster_black_hold'), 'dominion');
+      expect(world.heldBy('alster_black_hold'), 'dominion');
       expect(world.tagsOf('alster_black_hold'), contains('underground'));
       expect(world.dangerOf('highhearth'), 0);
       expect(world.watchesTo('spire_of_judgment', fallback: 2), 4);

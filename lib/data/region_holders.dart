@@ -25,27 +25,6 @@ RegionHolders _rank(Map<String, int> counts, List<String> order) {
   return [for (final c in clans) (c, counts[c]! / top)];
 }
 
-/// Each region of the world (a geography.json `country`: the Salt Coast,
-/// the Grey Fen…) and its [RegionHolders], counted over the places held in
-/// it (a city, its districts, a seat: one each).
-Map<String, RegionHolders> regionHolders(
-    Geography geography, PoliticsState politics) {
-  final held = holdings(geography, politics);
-  final order = held.values.toSet().toList();
-  final counts = <String, Map<String, int>>{};
-  for (final e in held.entries) {
-    final region = geography.countryOf(e.key);
-    if (region == null) continue;
-    final c = counts.putIfAbsent(region.id, () => {});
-    c[e.value] = (c[e.value] ?? 0) + 1;
-  }
-  return {
-    for (final place in geography.places.values)
-      if (place.level == GeoLevel.country)
-        place.id: _rank(counts[place.id] ?? const {}, order),
-  };
-}
-
 /// The [RegionHolders] of each of [chart]'s zones (its lands), in
 /// [ChartGeography.zones]' order: a held place counts in the zone its
 /// location (the city or town it is in) stands in on [chart]. A place

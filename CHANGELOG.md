@@ -8,6 +8,75 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.791.0+827]
+
+- The Void Banner's `damage` of 25, which nothing in the game ever read
+  (gear deals its attack damage), is set to 0 like every other item, so
+  the data no longer suggests a hit it never made. A seeded simulator
+  batch gives byte-identical results; nothing changes in play.
+
+## [1.790.0+826]
+
+- The playthrough simulator's fight (`sim_combat.dart`, 2,851 lines, one
+  1,500-line function) is cut into its phases, each in its own file:
+  setup, the party's turn, the enemy's turn and the round's end (4b).
+  The same steps run in the same order: two seeded batches give
+  byte-identical results. Nothing changes in play.
+
+## [1.789.0+825]
+
+- Code cleanup (R4, batch 3): seven more names only the tests used are
+  removed: two copies of the geography's holder and room rules, a sea
+  event's and a sign offer's lookups, two copies of the people codex's
+  fields and the save's legacy shortcut. Their tests now check the code
+  the game uses. Nothing changes in play.
+
+## [1.788.0+824]
+
+- **Cleanup: five ship-log lines nothing says any more.** The sail's
+  "first volley seen" line (the blunt it described was never applied) and
+  four older ones ("You strike the ship", "The ship strikes", "Bulwark
+  braced", "Hull patched") are removed in English and French. No line the
+  game shows changes.
+
+## [1.786.0+822]
+
+- Code cleanup (R4, batch 2): eight more names only the tests used are
+  removed: an alias of the channelled-skill power, two wrappers of the
+  duo techniques, the camp errands' filter, a copy of the people codex's
+  legacy check, a sail rule never applied, two stat-pick helpers and the
+  pre-v1.194 mastery cost. Their tests now check the functions the game
+  uses. Nothing changes in play.
+
+## [1.785.0+821]
+
+- Code cleanup (R4, batch 1): one provider nothing watched and six
+  functions only the tests called are removed (about 160 lines), with the
+  tests that only pinned them. The skill-list and Watchfire tests now
+  check the functions the game really uses. Nothing changes in play.
+
+## [1.784.0+820]
+
+- The playthrough simulator starts a character, and levels it up, by the
+  game's own rules instead of a copy (R5): one function adds the New Game
+  Defaults and the race's and profession's bonuses for both, the starting
+  die's skill slots have one name, and "100 XP a level" is written once.
+  Inside the simulator, the two shop visits and the two autoplay walks
+  share their common steps. A seeded batch gives the same numbers as
+  before, and nothing changes in play.
+
+## [1.783.0+819]
+
+- The pictures are stored as palette PNGs: 652 of them (the banners, the effects'
+  strips, the heads, the icons, the throne room and the rest, the ones that
+  have 256 colours or fewer, which is all of them) go from 567,761 to 300,525
+  bytes (-267 KB), and decode to exactly the same pixels (the new
+  `tool/png8.py` keeps a rewrite only if it reads back as the same RGBA and is
+  smaller; 120 files compared again with a second decoder: none differs).
+- `python3 tool/png8.py --check` lists any picture that should be a palette PNG
+  and is not (exit 1), for a guard; `tool/README.md` says to run `png8.py`
+  after a generator, and a generator then writes the same bytes as before.
+
 ## [1.782.0+818]
 
 - The Journey redraws less (P4, part 2): the camp's roll houses, the road

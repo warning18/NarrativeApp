@@ -38,15 +38,6 @@ List<StoryChoice> campErrandChoices(Iterable<StoryNode> nodes) => [
         if (node.campErrand) campErrandChoice(node),
     ];
 
-/// The camp errands a camp offers a party holding [flags]: those whose
-/// flags let them show, in [nodes]' order.
-List<StoryChoice> campErrandsFor(
-        Iterable<StoryNode> nodes, Iterable<String> flags) =>
-    [
-      for (final choice in campErrandChoices(nodes))
-        if (!choice.isHiddenFor(flags)) choice,
-    ];
-
 /// Where taking [choice] leads: for a `returnToCamp` choice, the current
 /// camp ([campNodeId], see currentCampNodeId) when there is one; else the
 /// choice's own next_id.

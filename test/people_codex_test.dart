@@ -257,9 +257,6 @@ void main() {
 
     test('a legacy record is known by its chapter and flag', () {
       final s = baseSession();
-      expect(npcIsLegacy(_harker), isTrue);
-      expect(npcIsLegacy(_vane), isFalse);
-      expect(npcIsLegacy(_keeper), isFalse);
       expect(npcDiscovered('old_harker', _harker, s, 1), isFalse);
       expect(npcDiscovered('old_harker', _harker, s, 2), isTrue);
     });
@@ -393,8 +390,6 @@ void main() {
       expect(npcText(_harker, 'role', true), '');
       expect(npcChapter(_harker), 2);
       expect(npcChapter(const {}), 1);
-      expect(npcMetNodes(_vane), ['400', '400_lost']);
-      expect(npcShopId(_keeper), 'tide_cellar');
     });
   });
 

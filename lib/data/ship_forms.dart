@@ -194,17 +194,6 @@ List<String> hullIdsInOrder(Map<String, dynamic> ships) {
   return ids;
 }
 
-/// The hull of the player's ship: the record [hullId] names, else the Rusty
-/// Eel's own, else the first on file.
-Map<String, dynamic>? hullRecordOf(Map<String, dynamic> ships, String hullId) {
-  final id = ships.containsKey(hullId)
-      ? hullId
-      : (ships.containsKey(defaultHullId)
-          ? defaultHullId
-          : (ships.keys.isEmpty ? null : ships.keys.first));
-  return id == null ? null : ships[id] as Map<String, dynamic>?;
-}
-
 /// The hull the Eel starts on.
 const String defaultHullId = 'rusty_eel';
 

@@ -118,12 +118,3 @@ String statPickEffect(
   if (effects.isEmpty) return head;
   return '$head: ${effects.map((e) => statEffectText(e, language)).join(', ')}';
 }
-
-/// The line of a whole offer ([gains], ability -> points), one ability
-/// after the other: "+2 STR: +2 damage · +1 CON: +5 health".
-String statPickOfferEffect(
-        Map<String, int> gains, String? professionId, AppLanguage language) =>
-    [
-      for (final MapEntry(:key, :value) in gains.entries)
-        statPickEffect(key, professionId, value, language),
-    ].join(' · ');

@@ -146,8 +146,7 @@ class LootContext {
   final int tierShift;
 
   /// The player's profession's `preferredScalingStat`, for the loot
-  /// affinity reweight (see professionLootAffinityBonus in
-  /// combat_engine.dart).
+  /// affinity reweight: an item scaling with it weighs more.
   final String preferredScalingStat;
 
   /// 'Good' / 'Neutral' / 'Evil' -- gear of the opposite alignment never

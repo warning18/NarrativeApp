@@ -133,8 +133,12 @@ void main() {
         expect(statPickOdds(l).values.fold<double>(0, (a, b) => a + b),
             closeTo(100, 1e-9));
       }
-      expect(statPickExpectedPoints(0), closeTo(1.124, 1e-9));
-      expect(statPickExpectedPoints(15), closeTo(1.349, 1e-9));
+      // The points a pick is worth on average.
+      double expectedPoints(int luck) => statPickOdds(luck)
+          .entries
+          .fold(0.0, (sum, e) => sum + e.value / 100 * statPickPointsOf(e.key));
+      expect(expectedPoints(0), closeTo(1.124, 1e-9));
+      expect(expectedPoints(15), closeTo(1.349, 1e-9));
     });
 
     test('a rarer pick: +2, or +1 and +1; +2 and +1; +2 and +2', () {

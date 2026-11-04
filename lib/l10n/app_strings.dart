@@ -9869,12 +9869,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Kraken\'s Eye sees ahead',
     AppLanguage.fr: 'L\'Œil du Kraken voit devant',
   },
-  'ship_log_first_volley_seen': {
-    AppLanguage.en:
-        'The sail saw the first volley coming; the Eel slips most of it.',
-    AppLanguage.fr:
-        'La voile a vu venir la première bordée ; l\'Eel en esquive l\'essentiel.',
-  },
   'ship_log_hearth': {
     AppLanguage.en:
         'The hearth-mark warms the crew: +{n} health, and the hull knits.',
@@ -9943,22 +9937,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Bataille navale'
   },
   'ready_in_prefix': {AppLanguage.en: 'ready in', AppLanguage.fr: 'prêt dans'},
-  'ship_log_you_strike': {
-    AppLanguage.en: 'You strike the {ship} for {n}',
-    AppLanguage.fr: 'Vous frappez {ship} pour {n}',
-  },
-  'ship_log_enemy_strikes': {
-    AppLanguage.en: 'The {ship} strikes for {n}',
-    AppLanguage.fr: '{ship} frappe pour {n}',
-  },
-  'ship_log_brace': {
-    AppLanguage.en: 'Bulwark braced, +{n}',
-    AppLanguage.fr: 'Pavois renforcé, +{n}',
-  },
-  'ship_log_repair': {
-    AppLanguage.en: 'Hull patched, +{n}',
-    AppLanguage.fr: 'Coque colmatée, +{n}',
-  },
   'ship_log_sunk': {
     AppLanguage.en: 'The {ship} goes down',
     AppLanguage.fr: '{ship} sombre',

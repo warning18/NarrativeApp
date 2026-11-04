@@ -194,14 +194,16 @@ void main() {
         expect(duo.nameFr.trim(), isNotEmpty);
       }
       for (final id in companions.keys) {
-        expect(duosOf(id), isNotEmpty, reason: id);
+        expect(duoTechniques.where((d) => d.involves(id)), isNotEmpty,
+            reason: id);
       }
       expect(duoTechniques.map((d) => d.id).toSet(), hasLength(9));
     });
 
     test('Tobin and Malrik, who never share a party, share no duo', () {
-      expect(duoFor('tobin', 'malrik'), isNull);
-      expect(duoFor('kelda', 'grosh')?.id, 'anvil_and_hammer');
+      expect(duoTechniques.where((d) => d.pairs('tobin', 'malrik')), isEmpty);
+      expect(duoTechniques.singleWhere((d) => d.pairs('kelda', 'grosh')).id,
+          'anvil_and_hammer');
     });
 
     test('every companion die has a signature face to fire one with', () {

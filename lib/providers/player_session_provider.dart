@@ -20,7 +20,7 @@ import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/story_companions.dart';
 import '../data/story_prices.dart';
-import '../data/character_start.dart' show startingArmor;
+import '../data/character_start.dart';
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
 import '../data/city_districts.dart' show questAcceptedFlag;
@@ -95,16 +95,6 @@ const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 /// The flag of the rest before the Lantern Hall (7515_rest): the
 /// provisions and the mana refilled (applyChoiceEffects).
 const String _restBeforeHallFlag = 'rest_before_hall';
-
-/// The starter die's face indexes reserved for the player's profession and
-/// race standard skills (see assets/gamedata/dice.json's starter_die).
-const String _starterDiceId = 'starter_die';
-const int _starterDieProfessionFaceIndex = 4;
-const int _starterDieRaceFaceIndex = 5;
-
-/// The apprentice die's Channeling face, where a caster's mana skill sits
-/// from the start (see `manaSkillID` in professions.json).
-const int _startingDieManaFaceIndex = 1;
 
 /// How many companions may be seated (fight beside the player): two, so a
 /// fight has three fighters and three dice, never more (the user's cap,
@@ -910,13 +900,10 @@ class PlayerSession {
   /// Cleared with the pack on permadeath.
   final Map<String, ItemOrigin> itemOrigins;
 
-  bool get hasLegacy =>
-      legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
-
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
   int get maxMana => maxManaFor(wisdom: wisdom) + perkEffects.maxMana;
 
-  int get xpToNextLevel => level * 100;
+  int get xpToNextLevel => xpForLevel(level);
 
   /// This session with its companion flags (`ally_<id>`, `devoted_<id>`,
   /// see approval.dart's withCompanionFlags) in step with the roster; this
@@ -2040,46 +2027,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final prefs = await SharedPreferences.getInstance();
     final defaults = await _newGameDefaults(prefs);
 
-    int bonus(Map<String, dynamic> preset, String key) =>
-        (preset[key] as num?)?.toInt() ?? 0;
-
-    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 20) +
-        bonus(race, 'bonusMaxHealth') +
-        bonus(profession, 'bonusMaxHealth');
-    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 2) +
-        bonus(race, 'bonusBaseDamage') +
-        bonus(profession, 'bonusBaseDamage');
-    final baseArmor = startingArmor(
-        ((defaults['baseArmor'] as num?)?.toInt() ?? 0) +
-            bonus(race, 'bonusBaseArmor') +
-            bonus(profession, 'bonusBaseArmor'));
-    final luck = ((defaults['luck'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusLuck') +
-        bonus(profession, 'bonusLuck');
-    final charisma = ((defaults['charisma'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusCharisma') +
-        bonus(profession, 'bonusCharisma');
-    final strength = ((defaults['strength'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusStrength') +
-        bonus(profession, 'bonusStrength');
-    final dexterity = ((defaults['dexterity'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusDexterity') +
-        bonus(profession, 'bonusDexterity');
-    final constitution = ((defaults['constitution'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusConstitution') +
-        bonus(profession, 'bonusConstitution');
-    final intelligence = ((defaults['intelligence'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusIntelligence') +
-        bonus(profession, 'bonusIntelligence');
-    final wisdom = ((defaults['wisdom'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusWisdom') +
-        bonus(profession, 'bonusWisdom');
-    final perception = ((defaults['perception'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'bonusPerception') +
-        bonus(profession, 'bonusPerception');
-    final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
-        bonus(race, 'startingGoldBonus') +
-        bonus(profession, 'startingGoldBonus');
+    // The same numbers the simulator starts from (character_start.dart).
+    final totals = newCharacterTotals(defaults, race, profession);
     // A profession's starting skill points are offers since v1.194.
 
     // Race/profession signature skills (and a caster's mana skill) default
@@ -2087,17 +2036,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     // earned) but are wired directly into the starting die's faces from
     // the moment a character exists -- so they are unlocked here too, or
     // those faces would just fizzle on the very first roll.
-    final starterAssignments = _starterFaceAssignments(race, profession);
-    final starterUnlockedSkills = _starterSkillsFor(race, profession);
-    final startingDiceId = _startingDiceIdFor(profession);
-    final startingSpellIds = _startingSpellIdsFor(profession);
+    final starterAssignments = starterFaceAssignments(race, profession);
+    final starterUnlockedSkills = starterSkillsFor(race, profession);
+    final startingDiceId = startingDiceIdFor(profession);
+    final startingSpellIds = startingSpellIdsFor(profession);
     // A New Game+ character inherits the previous cycle's legacy (see
     // [beginNewGamePlus]): its gold share, every die it owned and every
     // spell it knew.
     final legacy = state;
     final legacyDice = [
       for (final id in legacy.legacyDiceIds)
-        if (id != _starterDiceId && id != startingDiceId) id,
+        if (id != starterDiceId && id != startingDiceId) id,
     ];
     // One die to start with: the profession's own (a Mage's or Cleric's
     // apprentice die replaces the starter die), plus a New Game+ legacy.
@@ -2110,20 +2059,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       currentXP: 0,
       politics: PoliticsState.storyStart,
-      gold: gold + legacy.legacyGold,
+      gold: totals.gold + legacy.legacyGold,
       alignmentScore: 0,
-      maxHealth: maxHealth,
-      currentHealth: maxHealth,
-      baseDamage: baseDamage,
-      baseArmor: baseArmor,
-      luck: luck,
-      charisma: charisma,
-      strength: strength,
-      dexterity: dexterity,
-      constitution: constitution,
-      intelligence: intelligence,
-      wisdom: wisdom,
-      perception: perception,
+      maxHealth: totals.maxHealth,
+      currentHealth: totals.maxHealth,
+      baseDamage: totals.baseDamage,
+      baseArmor: totals.baseArmor,
+      luck: totals.luck,
+      charisma: totals.charisma,
+      strength: totals.strength,
+      dexterity: totals.dexterity,
+      constitution: totals.constitution,
+      intelligence: totals.intelligence,
+      wisdom: totals.wisdom,
+      perception: totals.perception,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       // The starting skill comes from the trainer (feature_unlocks.dart),
@@ -2146,7 +2095,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: [startingDiceId, ...legacyDice],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
-      mana: maxManaFor(wisdom: wisdom),
+      mana: maxManaFor(wisdom: totals.wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
       // A new character starts with no signs, but the patrons remember.
@@ -2184,23 +2133,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// The one die a new character of [profession] starts with -- its own
-  /// `startingDiceId` (a Mage's or Cleric's apprentice die, with its Focus
-  /// and Channeling faces) or the starter die. Every profession's starting
-  /// die keeps the Profession/Heritage Technique faces at the same indexes
-  /// ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]).
-  static String _startingDiceIdFor(Map<String, dynamic> profession) {
-    final id = profession['startingDiceId']?.toString() ?? '';
-    return id.isEmpty ? _starterDiceId : id;
-  }
-
-  static List<String> _startingSpellIdsFor(Map<String, dynamic> profession) =>
-      (profession['startingSpellIds'] as List?)
-          ?.map((e) => e.toString())
-          .where((e) => e.isNotEmpty)
-          .toList() ??
-      const [];
-
   /// [starterAssignments] under the profession's starting die, the one
   /// die a new character owns.
   static Map<String, Map<String, String>> _starterAssignmentsByDie(
@@ -2210,43 +2142,6 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       {
         if (starterAssignments.isNotEmpty) startingDiceId: starterAssignments,
       };
-
-  /// The skills a new character of [race] and [profession] knows: the
-  /// profession's standard skill, a caster's mana skill (`manaSkillID`:
-  /// Channel for a Mage, Prayer for a Cleric) and the race's standard
-  /// skill. Nothing from another class: the generic Heavy Blow every open
-  /// Skill face falls back to is the only skill everyone shares.
-  static List<String> _starterSkillsFor(
-      Map<String, dynamic> race, Map<String, dynamic> profession) {
-    final ids = [
-      profession['standardSkillID']?.toString() ?? '',
-      profession['manaSkillID']?.toString() ?? '',
-      race['standardSkillID']?.toString() ?? '',
-    ];
-    return [
-      for (final id in ids.toSet())
-        if (id.isNotEmpty) id,
-    ];
-  }
-
-  /// Where the starter skills sit on the starting die: the profession's
-  /// technique on the Profession Technique face, the race's on the
-  /// Heritage Technique face, and a caster's mana skill on the apprentice
-  /// die's Channeling face.
-  static Map<String, String> _starterFaceAssignments(
-      Map<String, dynamic> race, Map<String, dynamic> profession) {
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final manaSkillId = profession['manaSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    return {
-      if (manaSkillId.isNotEmpty)
-        _startingDieManaFaceIndex.toString(): manaSkillId,
-      if (professionSkillId.isNotEmpty)
-        _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty)
-        _starterDieRaceFaceIndex.toString(): raceSkillId,
-    };
-  }
 
   /// Sets the character's name — called once from the lock-in dialog right
   /// after character creation (see RaceProfessionScreen), before the
@@ -5822,7 +5717,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
+  /// Runs [xpGain] through the level-up threshold ([xpForLevel] each),
   /// applying every level gained: [levelStatPicks] stat pick and
   /// [levelHealthGain] max health (stat_rules.dart; base damage grows only
   /// with the damage stat), and an offer, which the callers add: see
@@ -5846,8 +5741,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var leveledUp = false;
     var levelsGained = 0;
 
-    while (newXp >= newLevel * 100) {
-      newXp -= newLevel * 100;
+    while (newXp >= xpForLevel(newLevel)) {
+      newXp -= xpForLevel(newLevel);
       newLevel += 1;
       newStatPoints += levelStatPicks;
       newMaxHealth += levelHealthGain;
@@ -6144,8 +6039,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       signsLost: state.heldSigns.length,
     );
 
-    final starterUnlockedSkills = _starterSkillsFor(race, profession);
-    final starterAssignments = _starterFaceAssignments(race, profession);
+    final starterUnlockedSkills = starterSkillsFor(race, profession);
+    final starterAssignments = starterFaceAssignments(race, profession);
 
     state = state.copyWith(
       currentHealth: state.maxHealth,
@@ -6173,8 +6068,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       activeTitleId: '',
       swornBoonIds: const [],
       diceSkillAssignments: _starterAssignmentsByDie(
-          starterAssignments, _startingDiceIdFor(profession)),
-      knownSpellIds: _startingSpellIdsFor(profession),
+          starterAssignments, startingDiceIdFor(profession)),
+      knownSpellIds: startingSpellIdsFor(profession),
       mana: state.maxMana,
       heldSigns: const [],
       titanBlood: 0,
