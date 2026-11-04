@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.754.0+790]
+
+- **The world map, simpler and readable.** One look and one world: the Layers
+  sheet no longer holds the look and shape selectors. It keeps the sphere,
+  the weather and three map layers: none, **Clans** and the route by
+  chapter; the country, standing, relief, humidity, heat and shops layers
+  are gone. The dotted borders of the lands and the dotted coasts under the
+  fog are gone too. The **Clans** layer tints each whole land by the clan
+  that holds it now (stripes where a second clan presses almost as hard),
+  from Core's region holders.
+- Tests: `full_map_screen_test` now checks the sheet offers the plain map,
+  Clans and chapters (and no look, shape, height or standing layer), and that
+  the Clans layer gives the painter who holds each land; `chart_weather_test`
+  turns the Clans layer instead of the height one.
+- The map's size is unchanged (the question of the map's size is with the
+  user). `docs/proposals/map-performance.md` lists the speed steps that
+  follow, each its own PR.
+
 ## [1.753.0+789]
 
 - The app no longer ships dog pictures nothing reads: the three `rotations`
