@@ -38,7 +38,10 @@ void main() {
     };
     final missing = <String>{};
     for (final f in Directory('assets').listSync(recursive: true)) {
-      if (f is! File || !f.path.endsWith('.png')) continue;
+      if (f is! File ||
+          !(f.path.endsWith('.png') || f.path.endsWith('.webp'))) {
+        continue;
+      }
       final path = f.path.replaceAll('\\', '/');
       final folder = path.substring(0, path.lastIndexOf('/'));
       if (declared.contains('$folder/') || declared.contains(path)) continue;
