@@ -43,8 +43,6 @@ class SeaEvent {
 
   String descriptionFor(bool fr) =>
       fr && descriptionFr.isNotEmpty ? descriptionFr : description;
-  String choiceTextFor(bool fr) =>
-      fr && choiceTextFr.isNotEmpty ? choiceTextFr : choiceText;
 
   /// What the crew can do about it (v1.163), the usual answer first.
   List<SeaChoice> get choices => seaChoicesFor(kind);

@@ -773,9 +773,6 @@ class SignOffer {
   final bool firstMeeting;
   final int greetingIndex;
 
-  SignCard? cardFor(String signId) =>
-      cards.where((c) => c.signId == signId).firstOrNull;
-
   Map<String, dynamic> toJson() => {
         'patronId': patronId,
         'cards': [for (final c in cards) c.toJson()],

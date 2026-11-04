@@ -465,7 +465,7 @@ class GeoPlace {
   /// which happen in the street before its door (the family house watched
   /// from across the street, the alley behind the Blind Beggar). The
   /// Journey opens them on the district's streets at the building's spot,
-  /// not in its room (see [Geography.roomOfNode]).
+  /// not in its room (see SceneView.room in scene_presentation.dart).
   final List<String> doorstep;
 
   /// A district's lock (wave 18, see districtLocked in
@@ -616,15 +616,6 @@ class Geography {
     return '';
   }
 
-  /// The faction that holds [id]: the nearest controller written up the
-  /// chain, else the country's ruler, else ''.
-  String controllerOf(String? id) {
-    for (final place in pathOf(id).reversed) {
-      if (place.controller.isNotEmpty) return place.controller;
-    }
-    return countryOf(id)?.ruler ?? '';
-  }
-
   /// The faction that holds [id] by a controller written on it or a place
   /// above it, with no fall back to a country's ruler (a ruler holds its
   /// land, but does not set the price of every shop in it): '' for none.
@@ -691,15 +682,6 @@ class Geography {
     final here = placeOfNode(node);
     if (here == null || !here.isBuilding) return null;
     return here.doorstep.contains(node!.id) ? here : null;
-  }
-
-  /// The building whose room the Journey draws for [node] (v1.207): its
-  /// place when that is a building, unless the scene plays at the
-  /// building's doorstep (v1.542, then it is drawn on the streets).
-  GeoPlace? roomOfNode(StoryNode? node) {
-    final here = placeOfNode(node);
-    if (here == null || !here.isBuilding) return null;
-    return here.doorstep.contains(node!.id) ? null : here;
   }
 
   /// The places the story has been to: each one where a scene of
