@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.769.0+805]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
+
 ## [1.764.0+800]
 
 - Fight on a phone: the screen stays upright while a fight is open. Turned
