@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.776.0+812]
+
+- **Cleanup: leftovers cleared, seven names made private.** Seven names
+  that only their own file uses (the clan die's resonance tier and line,
+  the narration's page markers, the street view's two layers, the journal's
+  "story so far" page and the story graph's grid algorithm) are now
+  private; two unused constructor options go with the last two. A stale
+  `ignore` comment, a test helper no test imports, two empty placeholder
+  files in folders that already hold their frames, and the description in
+  `pubspec.yaml` ("AI-assisted generation", gone with the Gemini library)
+  are removed. Nothing changes on screen or in a number.
+
 ## [1.772.0+808]
 
 - A scene's text is composed once per build instead of two or three
