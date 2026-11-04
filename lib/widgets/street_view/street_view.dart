@@ -14,7 +14,7 @@ import '../../data/climate.dart' show WeatherKind;
 import '../../data/journey_rules.dart' show DayPhase;
 import '../side_view/kit_common.dart';
 import '../side_view/kit_hour.dart';
-import '../side_view/scene_versions.dart';
+import '../side_view/scene_windows.dart';
 import '../side_view/side_view.dart';
 import 'street_facade.dart';
 
@@ -284,10 +284,10 @@ class StreetViewScene extends StatelessWidget {
           SideViewScene(
             key: const ValueKey('journey_street_scene'),
             // Each building keeps its own version of the street.
-            layers: withSceneVersion(
+            layers: withSceneWindow(
                 streetLayers(style: style, phase: phase, sky: sky),
                 'street-${style.name}',
-                sceneVersionAt('$kind|$name', 0)),
+                sceneWindowOfId('$kind|$name')),
             actors: party ? _streetParty(style: style) : null,
             overlay: _streetOverlay(style: style, phase: phase),
             particles: streetParticles(sky),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:math' as math show max;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,7 @@ import '../widgets/d20_roll.dart';
 import '../widgets/journey_fx.dart'
     show FightJolt, fightJoltDuration, playFightJolt;
 import '../theme/stitched_ink.dart' show InkColors;
-import '../widgets/side_view/scene_versions.dart';
+import '../widgets/side_view/scene_windows.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -116,7 +117,7 @@ const crossingSceneTerrains = {
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
 ///
-/// [version] (0 to 3, sceneVersionAt) is the stretch of that land shown: its
+/// [version] (0 to 3, sceneWindowAt) is the stretch of that land shown: its
 /// own window of the world and its own landmark.
 List<SideLayer> crossingLayers(String terrain, double progress,
     {int version = 0}) {
@@ -132,7 +133,7 @@ List<SideLayer> crossingLayers(String terrain, double progress,
     'sea_cliffs' => 'cliffs',
     _ => 'desert',
   };
-  return withSceneVersion(layers, kit, version);
+  return withSceneWindow(layers, kit, version);
 }
 
 /// The particles over a crossing's scene: a storm's own, else the sky's, else
@@ -166,6 +167,7 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     this.ruler = '',
     this.rulers = const [],
     this.random,
+    this.stripPath = const [],
   });
 
   final LandRoute route;
@@ -180,6 +182,11 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
 
   /// Injectable for tests; a fresh stream otherwise.
   final Random? random;
+
+  /// The x on the world's strip of the road's stops, first to last
+  /// (RegionStrips.pathOn): the day's x, and with it the window of the land
+  /// on show. Empty: the window follows the route's own id.
+  final List<double> stripPath;
 
   @override
   ConsumerState<LandCrossingScreen> createState() => _LandCrossingScreenState();
@@ -207,6 +214,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
   int? _shownVersion;
   SideLayer? _dissolve;
   DateTime _dissolveUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// The window of the land on show today: the day's x on the road's way
+  /// along the strip, else the route's own window moving on a day at a time.
+  int _windowOfDay() {
+    final x = pathXAt(
+        widget.stripPath, (_day + 0.5) / math.max(1, widget.route.days));
+    return x == null
+        ? (sceneWindowOfId(widget.route.id) + _day) % sceneWindowCount
+        : sceneWindowAt(x);
+  }
 
   List<SideLayer> _sceneLayers(
       int version, List<SideLayer> Function(int version) layersFor,
@@ -797,7 +814,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                         key: const Key('crossing_scene'),
                         height: _crossingSceneHeight,
                         layers: _sceneLayers(
-                            sceneVersionAt(widget.route.id, _day),
+                            _windowOfDay(),
                             (v) => withHourStars(
                                 crossingLayers(terrain, progress, version: v),
                                 phase),

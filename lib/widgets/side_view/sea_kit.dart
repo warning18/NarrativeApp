@@ -20,7 +20,7 @@ import '../ship_dress.dart' show ShipDress;
 import 'deck_crew.dart';
 import 'side_ship.dart';
 import 'kit_hour.dart';
-import 'scene_versions.dart';
+import 'scene_windows.dart';
 import 'side_view.dart';
 
 /// The horizon, in scene rows from the top.
@@ -664,9 +664,9 @@ class SeaSideScene extends StatefulWidget {
 
 class _SeaSideSceneState extends State<SeaSideScene>
     with SingleTickerProviderStateMixin {
-  /// The version of the sea this sailing shows (successive sailings follow the
-  /// seeded order).
-  late final int _version = SceneVersions.next('sea-${widget.waters.name}');
+  /// The window of the sea this sailing shows: fixed by its waters, the same
+  /// on every launch (the sea strip's own x comes with the camera).
+  late final int _version = sceneWindowOfId('sea-${widget.waters.name}');
 
   late final AnimationController _arrival =
       AnimationController(vsync: this, duration: seaArrivalTime, value: 1);
@@ -712,7 +712,7 @@ class _SeaSideSceneState extends State<SeaSideScene>
           SideViewScene(
             key: const Key('sea_scene'),
             layers: withHourStars(
-                withSceneVersion(
+                withSceneWindow(
                     seaLayers(waters: widget.waters, weather: widget.weather),
                     'sea-${widget.waters.name}',
                     _version),
