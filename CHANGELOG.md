@@ -21,6 +21,15 @@ isn't reconstructable from git history alone.
   through the four. `scene_versions.dart` and its test became
   `scene_windows.dart` / `scene_windows_test.dart`.
 
+## [1.814.0+850]
+
+- Effects: the 25 dice, element and keyword animations (`die_*`, `el_*`,
+  `kw_*`, with `die_surge`, `die_curse`, `die_glint`), the campfire, the chests
+  and the map seal are drawn from the game's own palette (`InkColors`) in one
+  table in `tool/gen_pixel_fx.py`, where they used Material Design colours
+  (pink, light blue, amber, grey, brown). Same shapes and timing, new tones;
+  picture: `docs/ux-shots/art/fx-recolour-before-after.png`.
+
 ## [1.812.0+848]
 
 - Fights: one entrance. A fight met on a land crossing now opens with the same

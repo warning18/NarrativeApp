@@ -26,6 +26,32 @@ os.makedirs(OUT, exist_ok=True)
 BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 
 
+# The game's palette (lib/theme/stitched_ink.dart InkColors.dark), the one
+# table every strip here draws from: a base colour and its pale and deep tones.
+INK = '#0A0807'          # the warm black outline
+PAL = {
+    'gold': '#F2C14E', 'gold_pale': '#FFE3A0', 'gold_hot': '#FFF0B8',
+    'blood': '#D9544D', 'blood_pale': '#EDA29D',
+    'ember': '#E0762B', 'ember_pale': '#F2A560',
+    'tide': '#4FB0B0', 'tide_pale': '#B4DEDC',
+    'void': '#A987EA', 'void_pale': '#D2C1F3', 'void_deep': '#7F62C4',
+    'heal': '#7DBE6A', 'heal_deep': '#4E8A43',
+    'ash': '#A8A194', 'earth': '#8A6A4E', 'earth_deep': '#5E4636',
+}
+# What each flat Material Design colour became.
+FROM_MATERIAL = {
+    '#EC407A': 'blood', '#F48FB1': 'blood_pale', '#E53935': 'blood',
+    '#64B5F6': 'tide', '#BBDEFB': 'tide_pale', '#4FC3F7': 'tide',
+    '#B3E5FC': 'tide_pale', '#A5D6C8': 'tide_pale',
+    '#43A047': 'heal_deep', '#81C784': 'heal',
+    '#FFC107': 'gold', '#FFD54F': 'gold', '#FFE082': 'gold_pale',
+    '#FFF59D': 'gold_hot',
+    '#AB47BC': 'void', '#CE93D8': 'void_pale', '#9575CD': 'void_deep',
+    '#9E9E9E': 'ash', '#FF7043': 'ember', '#FF8A3D': 'ember',
+    '#A1887F': 'earth', '#6D4C41': 'earth_deep',
+}
+
+
 def rgb(h, a=255):
     h = h.lstrip('#')
     return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
@@ -88,7 +114,7 @@ def ease(t):
 def die_strike(i):
     t = i / (N - 1)
     im, d = new(S)
-    flash, ringc, hot, blood = rgb('#FFE08A'), rgb('#FFB04D'), rgb('#FF8A3D'), rgb('#E53935')
+    flash, ringc, hot, blood = rgb('#FFE08A'), rgb('#FFB04D'), rgb(PAL['ember']), rgb(PAL['blood'])
     if i < 4:
         f = Image.new('RGBA', (S, S), (0, 0, 0, 0)); fd = ImageDraw.Draw(f)
         disc(fd, C, C, 4 + i * 3, hot)
@@ -124,10 +150,10 @@ def die_bloom(i):
     for k in range(8):
         x = C + (hash01(k, 3) - .5) * 26 + math.sin(t * 5 + k) * 2
         y = C + 6 - ease(t) * (14 + hash01(k, 4) * 8) - hash01(k, 5) * 4
-        c = rgb('#F48FB1') if k % 2 == 0 else rgb('#EAF7EA')
+        c = rgb(PAL['blood_pale']) if k % 2 == 0 else rgb('#EAF7EA')
         d.point([(round(x), round(y)), (round(x) - 1, round(y)), (round(x) + 1, round(y)), (round(x), round(y) - 1), (round(x), round(y) + 1)], fill=c)
     f = Image.new('RGBA', (S, S), (0, 0, 0, 0)); fd = ImageDraw.Draw(f)
-    disc(fd, C, C, 11, rgb('#EC407A'))
+    disc(fd, C, C, 11, rgb(PAL['blood']))
     im.alpha_composite(fade(f, .7 + t * .3))
     return fade(im, max(0, t - .5) * 2)
 
@@ -139,8 +165,8 @@ def die_arcs(i):
         a = k * math.pi / 4 + t * 4
         r = 8 + ease(t) * 11
         x, y = C + math.cos(a) * r, C + math.sin(a) * r * .7 - t * 6
-        dot(d, x, y, rgb('#64B5F6') if k % 2 == 0 else rgb('#BBDEFB'), 2)
-    ring(d, C, C, 7 + round(ease(t) * 12), rgb('#64B5F6'))
+        dot(d, x, y, rgb(PAL['tide']) if k % 2 == 0 else rgb(PAL['tide_pale']), 2)
+    ring(d, C, C, 7 + round(ease(t) * 12), rgb(PAL['tide']))
     return fade(im, max(0, t - .45) * 1.9)
 
 
@@ -148,14 +174,14 @@ def die_miasma(i):
     t = i / (N - 1)
     im, d = new(S)
     f = Image.new('RGBA', (S, S), (0, 0, 0, 0)); fd = ImageDraw.Draw(f)
-    fd.ellipse([C - 6 - round(t * 10), C, C + 6 + round(t * 10), C + 12], fill=rgb('#43A047'))
+    fd.ellipse([C - 6 - round(t * 10), C, C + 6 + round(t * 10), C + 12], fill=rgb(PAL['heal_deep']))
     im.alpha_composite(fade(f, .55 + t * .4))
     for k in range(7):
         x = C + (hash01(k, 6) - .5) * 22
         kk = max(0, min(1, (t - hash01(k, 7) * .3) / .7))
         y = C + 8 - kk * 20
         if 0 < kk < 1:
-            ring(d, x, y, 1 + round(kk * 2), rgb('#81C784'))
+            ring(d, x, y, 1 + round(kk * 2), rgb(PAL['heal']))
     return fade(im, max(0, t - .55) * 2.1)
 
 
@@ -164,7 +190,7 @@ def die_shock(i):
     im, d = new(S)
     if t < .4:
         f = Image.new('RGBA', (S, S), (0, 0, 0, 0)); fd = ImageDraw.Draw(f)
-        disc(fd, C, C, 12, rgb('#FFC107'))
+        disc(fd, C, C, 12, rgb(PAL['gold']))
         im.alpha_composite(fade(f, .4 + t * 1.2))
     for k in range(4):
         a = k * math.pi / 2 + hash01(k, 8)
@@ -173,18 +199,18 @@ def die_shock(i):
             r = (4 + 4 * j) * (.5 + ease(t) * .5)
             jag = (3 if j % 2 == 0 else -3)
             pts.append((C + math.cos(a) * r - math.sin(a) * jag, C + math.sin(a) * r + math.cos(a) * jag))
-        d.line([(round(x), round(y)) for x, y in pts], fill=rgb('#FFE082'), width=1)
+        d.line([(round(x), round(y)) for x, y in pts], fill=rgb(PAL['gold_pale']), width=1)
     return fade(im, max(0, t - .35) * 1.6)
 
 
 def die_drain(i):
     t = i / (N - 1)
     im, d = new(S)
-    ring(d, C, C, max(2, 18 - round(ease(t) * 12)), rgb('#AB47BC'), 2 if t < .5 else 1)
+    ring(d, C, C, max(2, 18 - round(ease(t) * 12)), rgb(PAL['void']), 2 if t < .5 else 1)
     for k in range(8):
         a = k * math.pi / 4 - t * 5
         r = (16 - ease(t) * 12)
-        dot(d, C + math.cos(a) * r, C + math.sin(a) * r, rgb('#CE93D8'), 2)
+        dot(d, C + math.cos(a) * r, C + math.sin(a) * r, rgb(PAL['void_pale']), 2)
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -195,7 +221,7 @@ def die_fizzle(i):
     for k in range(6):
         a = k * math.pi / 3 + hash01(k, 9)
         r = 6 + ease(t) * 9
-        disc(fd, C + math.cos(a) * r, C + math.sin(a) * r, 2 + round(t * 2), rgb('#9E9E9E'))
+        disc(fd, C + math.cos(a) * r, C + math.sin(a) * r, 2 + round(t * 2), rgb(PAL['ash']))
     im.alpha_composite(fade(f, .35 + t * .6))
     return im
 
@@ -207,7 +233,7 @@ def el_fire(i):
     for k in range(9):
         x = C + (hash01(k, 11) - .5) * 24
         y = C + 10 - t * (14 + hash01(k, 12) * 12)
-        dot(d, x, y, rgb('#FF7043') if k % 3 else rgb('#FFD54F'), 2 if k % 3 == 0 else 1)
+        dot(d, x, y, rgb(PAL['ember']) if k % 3 else rgb(PAL['gold']), 2 if k % 3 == 0 else 1)
     return fade(im, max(0, t - .45) * 1.8)
 
 
@@ -217,8 +243,8 @@ def el_water(i):
     for k in range(6):
         x = C + (hash01(k, 13) - .5) * 22
         y = C - 14 + t * 28 * (.7 + hash01(k, 14) * .5)
-        d.line([round(x), round(y), round(x), round(y) + 2], fill=rgb('#4FC3F7'))
-        dot(d, x, y + 3, rgb('#B3E5FC'))
+        d.line([round(x), round(y), round(x), round(y) + 2], fill=rgb(PAL['tide']))
+        dot(d, x, y + 3, rgb(PAL['tide_pale']))
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -227,7 +253,7 @@ def el_wind(i):
     im, d = new(S)
     for k in range(3):
         r = 9 + k * 4
-        d.arc([C - r, C - r, C + r, C + r], math.degrees(t * 7 + k * 2), math.degrees(t * 7 + k * 2 + 1.6), fill=rgb('#A5D6C8'))
+        d.arc([C - r, C - r, C + r, C + r], math.degrees(t * 7 + k * 2), math.degrees(t * 7 + k * 2 + 1.6), fill=rgb(PAL['tide_pale']))
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -237,7 +263,7 @@ def el_earth(i):
     for k in range(6):
         x = C + (hash01(k, 15) - .5) * 28
         up = math.sin(math.pi * t) * (6 + hash01(k, 16) * 10)
-        dot(d, x, C + 11 - up, rgb('#A1887F') if k % 2 else rgb('#6D4C41'), 2)
+        dot(d, x, C + 11 - up, rgb(PAL['earth']) if k % 2 else rgb(PAL['earth_deep']), 2)
     return fade(im, max(0, t - .55) * 2.2)
 
 
@@ -252,7 +278,7 @@ def el_electricity(i):
                 r = 8 * j
                 jag = (3 if j % 2 == 0 else -3)
                 pts.append((C + math.cos(a) * r - math.sin(a) * jag, C + math.sin(a) * r + math.cos(a) * jag))
-            d.line([(round(x), round(y)) for x, y in pts], fill=rgb('#FFE082'))
+            d.line([(round(x), round(y)) for x, y in pts], fill=rgb(PAL['gold_pale']))
     return im
 
 
@@ -263,7 +289,7 @@ def el_ice(i):
         a = math.pi / 4 + k * math.pi / 2
         bx, by = C + math.cos(a) * 14, C + math.sin(a) * 14
         tip = (bx + math.cos(a) * 8 * ease(t), by + math.sin(a) * 8 * ease(t))
-        d.polygon([(round(bx - 1), round(by)), (round(tip[0]), round(tip[1])), (round(bx + 1), round(by + 1))], fill=rgb('#B3E5FC'))
+        d.polygon([(round(bx - 1), round(by)), (round(tip[0]), round(tip[1])), (round(bx + 1), round(by + 1))], fill=rgb(PAL['tide_pale']))
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -272,7 +298,7 @@ def el_void(i):
     im, d = new(S)
     for k in range(3):
         r = 8 + round(ease(t) * 11)
-        d.arc([C - r, C - r, C + r, C + r], math.degrees(k * 2.1 + t * 2), math.degrees(k * 2.1 + t * 2 + .9), fill=rgb('#9575CD'), width=2)
+        d.arc([C - r, C - r, C + r, C + r], math.degrees(k * 2.1 + t * 2), math.degrees(k * 2.1 + t * 2 + .9), fill=rgb(PAL['void_deep']), width=2)
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -281,7 +307,7 @@ def el_light(i):
     im, d = new(S)
     for k in range(8):
         a = k * math.pi / 4
-        line(d, (C + math.cos(a) * 9, C + math.sin(a) * 9), (C + math.cos(a) * (9 + 11 * ease(t)), C + math.sin(a) * (9 + 11 * ease(t))), rgb('#FFF59D'))
+        line(d, (C + math.cos(a) * 9, C + math.sin(a) * 9), (C + math.cos(a) * (9 + 11 * ease(t)), C + math.sin(a) * (9 + 11 * ease(t))), rgb(PAL['gold_hot']))
     return fade(im, max(0, t - .45) * 1.9)
 
 
@@ -291,7 +317,7 @@ def kw_cleave(i):
     im, d = new(S)
     for s in (-1, 1):
         x = C + s * (8 + ease(t) * 10)
-        d.arc([x - 4, C - 10, x + 4, C + 10], 270 if s > 0 else 90, 90 if s > 0 else 270, fill=rgb('#FF8A3D'), width=2)
+        d.arc([x - 4, C - 10, x + 4, C + 10], 270 if s > 0 else 90, 90 if s > 0 else 270, fill=rgb(PAL['ember']), width=2)
     return fade(im, max(0, t - .5) * 2)
 
 
@@ -382,7 +408,7 @@ def die_surge(i):
 def die_curse(i):
     t = i / (N - 1)
     im, d = new(S)
-    iron = rgb('#9E9E9E')
+    iron = rgb(PAL['ash'])
     for s in (-1, 1):
         for k in range(8):
             x = C - 15 + k * 4
@@ -445,7 +471,7 @@ def campfire(i, size=18):
     cx = 9 + sway // 1
     for y in range(h):
         w = max(0, round((h - y) / h * 4 - (1 if y < 2 else 0)))
-        col = rgb('#E53935') if y > h * .6 else rgb('#FF8A3D') if y > h * .25 else rgb('#FFD54F')
+        col = rgb(PAL['blood']) if y > h * .6 else rgb(PAL['ember']) if y > h * .25 else rgb(PAL['gold'])
         yy = 11 - y
         d.rectangle([cx - w, yy, cx + w, yy], fill=col)
     d.rectangle([cx - 1, 10, cx + 1, 11], fill=rgb('#FFF3C4'))
