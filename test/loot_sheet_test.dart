@@ -30,19 +30,19 @@ Widget _sheet(AppLanguage language,
     chestAsset: 'assets/icons/chests/silver_open.png',
     tierLabel: t("Coffre d'argent", 'Silver chest'),
     changes: [
-      LootChange(
+      LootSheetLine(
           label: t('Or', 'Gold'),
           before: '126',
           after: '144',
           icon: Icon(Icons.monetization_on,
               size: 28, color: Colors.amber.shade700),
           tone: const Color(0xFFF2A93B)),
-      LootChange(
+      LootSheetLine(
           label: t('Dés', 'Dice'),
           before: t('1 relance / tour', '1 reroll / round'),
           after: t('2 relances / tour', '2 rerolls / round'),
           icon: const ItemPixelIcon('charm_fourth_roll', 'Charm', size: 28)),
-      LootChange(
+      LootSheetLine(
           label: t('Sac', 'Bag'),
           before: 'Antidote ×1',
           after: 'Antidote ×2',

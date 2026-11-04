@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.831.0+867]
+
+- The spoils sheet, wired (design C, the user's pick): once the chest is open
+  and every drop shown, the loot dialog gives way to the full-height sheet: the
+  chest and its rarity, "What the spoils change" (gold 126 to 144, Antidote
+  x1 to x2, the Knucklebone's rolls a round, health from a potion drunk, a
+  spell learnt, stat points, clan offers) from the engine's own numbers
+  (`lootChanges`, v1.830), each drop's text with its switch to put it on or
+  drink it (the same choices as before), the fortune roll, and Take. A value
+  several rewards move shows from the first before to the last after; gear
+  and a spellbook already known add no line. The fight passes the dialog the
+  whole loot (`SpoilsSheetData`), not only the chest's. Without it the dialog
+  is as it was. Strings `loot_line_*`. Tests: `loot_sheet_wiring_test.dart`.
+
 ## [1.830.0+866]
 
 ### Added

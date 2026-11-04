@@ -219,6 +219,15 @@ extension _FightRewards on _FightScreenState {
             currentHealth: player.currentHealth,
             maxHealth: player.maxHealth,
             potionBonus: _potionBonus,
+            // The spoils sheet counts what the whole loot changes.
+            sheet: SpoilsSheetData(
+              session: session,
+              gold: goldGain,
+              itemIds: List.of(loot),
+              keepWounds: widget.modifiers.keepWounds,
+              spells:
+                  ref.read(localizedDbProvider(spellsSchema)).value ?? const {},
+            ),
           );
     if (!mounted) return;
 
