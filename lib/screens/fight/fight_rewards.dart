@@ -41,7 +41,8 @@ extension _FightRewards on _FightScreenState {
   }
 
   /// What the fight leaves once it is over (see [_finishFight]): the
-  /// rewards of a win, the cost of a loss.
+  /// outcome noted, the Ash Well drained, then [_settleWin] (the rewards)
+  /// or [_settleLoss] (the cost).
   Future<void> _settleFight({required bool won}) async {
     _noteFightOutcome(won);
 
