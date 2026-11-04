@@ -8,20 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.828.0+864]
+## [1.831.0+867]
 
-- The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
-  the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
-  full-height sheet: the chest and its rarity, "What the spoils change" (gold
-  126 to 144, dice 1 to 2 rerolls a round, bag Antidote x1 to x2), each
-  reward's text with its "Use right away" switch, and one Take button that
-  stays at the bottom; it scrolls on a short phone. Three strings
-  (`loot_sheet_changes`, `loot_sheet_details`, `loot_use_now`). Nothing uses
-  it yet: it is wired to the chest and to the engine's before-and-after data
-  when that merges, so the game does not change. Picture:
-  `docs/ux-shots/loot/sheet-built-stub.png`. Test: `loot_sheet_test.dart`
-  (360 and 412 px, French and English, real fonts, no text under 11 px, the
-  switch and Take).
+- The spoils sheet, wired (design C, the user's pick): once the chest is open
+  and every drop shown, the loot dialog gives way to the full-height sheet: the
+  chest and its rarity, "What the spoils change" (gold 126 to 144, Antidote
+  x1 to x2, the Knucklebone's rolls a round, health from a potion drunk, a
+  spell learnt, stat points, clan offers) from the engine's own numbers
+  (`lootChanges`, v1.830), each drop's text with its switch to put it on or
+  drink it (the same choices as before), the fortune roll, and Take. A value
+  several rewards move shows from the first before to the last after; gear
+  and a spellbook already known add no line. The fight passes the dialog the
+  whole loot (`SpoilsSheetData`), not only the chest's. Without it the dialog
+  is as it was. Strings `loot_line_*`. Tests: `loot_sheet_wiring_test.dart`.
 
 ## [1.830.0+866]
 
@@ -43,6 +42,35 @@ isn't reconstructable from git history alone.
   something taking the loot doesn't do. `test/loot_changes_test.dart`
   checks that every "after" is what taking the loot leaves. No screen
   changes yet: UX-2 wires the sheet.
+## [1.829.0+865]
+
+- Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
+  Attack, Heavy Windup, Battle Trance, Final Stand, Focus Mind, Guard Break,
+  Human Diplomacy, Human Quick Study, Improvised Strike, Lucky Strike, Orc
+  Savage Cleave, Precision Thrust, Ruthless Edge, Warrior Execute, Warrior
+  Whirlwind, Zealous Conviction) shared one blank grey gem; each now has its
+  own 7x7 cream glyph on it (a sword, a hammer, an axe, a spiral, a flag, an
+  eye, a broken shield, a speech bubble, a book, a club, a star, claw marks,
+  a spear, a dagger, a skull, a whirl, a sun). The frame keeps the school;
+  the glyph carries the skill. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/martial.png`, stored by `tool/png8.py`. Pictures:
+  `docs/ux-shots/skill-glyphs/`. The other schools follow in their own
+  releases.
+
+## [1.828.0+864]
+
+- The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
+  the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
+  full-height sheet: the chest and its rarity, "What the spoils change" (gold
+  126 to 144, dice 1 to 2 rerolls a round, bag Antidote x1 to x2), each
+  reward's text with its "Use right away" switch, and one Take button that
+  stays at the bottom; it scrolls on a short phone. Three strings
+  (`loot_sheet_changes`, `loot_sheet_details`, `loot_use_now`). Nothing uses
+  it yet: it is wired to the chest and to the engine's before-and-after data
+  when that merges, so the game does not change. Picture:
+  `docs/ux-shots/loot/sheet-built-stub.png`. Test: `loot_sheet_test.dart`
+  (360 and 412 px, French and English, real fonts, no text under 11 px, the
+  switch and Take).
 
 ## [1.827.0+863]
 

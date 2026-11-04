@@ -290,6 +290,7 @@
  "qa_fight_tips_real_font_test.dart": 6.7,
  "qa_full_map_test.dart": 20.7,
  "qa_harbour_crossing_test.dart": 4.2,
+ "qa_journey_back_to_map_test.dart": 8.0,
  "qa_journey_choice_view_test.dart": 8.0,
  "qa_journey_map_click_detour_test.dart": 8.0,
  "qa_markup_test.dart": 0.6,
