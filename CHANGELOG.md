@@ -14,6 +14,27 @@ isn't reconstructable from git history alone.
   fight-wide status) drew the same tinted square twice; they now share one
   widget. Nothing changes on screen.
 
+## [1.735.0+771]
+
+- Fight on a small phone (320 x 568): the dice board was squeezed to a strip
+  of a few pixels. Under 620 px of screen height the fight no longer draws
+  its empty seats (a side with fewer than three fighters shows only its
+  fighters) nor the two-line log under the board (the log button still opens
+  it), so the dice have room. Normal phones are unchanged.
+- The scene stage's door tab hangs under the foe's name on a narrow stage
+  instead of covering the foe, and its label is cut with "..." when long.
+- Tests: `qa_fight_320_test.dart`, `qa_scene_stage_320_test.dart`.
+
+## [1.731.0+767]
+
+- **Core: a detour begun is saved as the scene it leads to (#695).** The
+  choice that sets off a detour has already taken its effects and its
+  time when the detour starts; the save still stood before the choice, so
+  a game closed mid-detour reopened there and the choice could be taken a
+  second time (its gold and effects again, the same detour drawn again).
+  The save now stands where the detour leads; the detour itself is still
+  not saved.
+
 ## [1.730.0+766]
 
 - **Core: a save that can't be read never strands the player (#693).**

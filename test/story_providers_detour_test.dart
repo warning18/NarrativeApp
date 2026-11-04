@@ -35,6 +35,28 @@ void main() {
     expect(notifier.state.excursionOriginFor(false), isNull);
   });
 
+  test(
+      'a detour begun is saved as the scene it leads to: closed mid-detour, '
+      'the game reopens there, never before the choice (issue #695)', () async {
+    SharedPreferences.setMockInitialValues({});
+    final notifier = StoryPlayNotifier('1');
+    await Future<void>.delayed(Duration.zero);
+    notifier.choose('5');
+    const a = StoryNode(id: 'gen_a', description: 'A', choices: []);
+    notifier.startExcursion([a], '9', origin: 'Take the Stone Bridge');
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    // The app closes; it opens again.
+    final reopened = StoryPlayNotifier('1');
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    expect(reopened.state.currentNodeId, '9');
+    expect(reopened.state.history, ['1', '5']);
+    expect(reopened.state.visitedNodeIds, containsAll(['1', '5', '9']));
+    expect(reopened.state.isInExcursion, isFalse);
+    // The live state is still the detour.
+    expect(notifier.state.activeExcursionNode?.id, 'gen_a');
+    expect(notifier.state.currentNodeId, '5');
+  });
+
   test('a pack slipped past leaves no trail to follow', () async {
     const pack = StoryNode(id: 'gen_1', description: 'Rats', choices: []);
     const trail = StoryNode(
