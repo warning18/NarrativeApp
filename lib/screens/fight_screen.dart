@@ -61,6 +61,8 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../data/item_origin_here.dart';
+import '../data/loot_changes.dart'
+    show charmExtraRolls, healthAfterDrinks, rollsPerRoundOf;
 import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
