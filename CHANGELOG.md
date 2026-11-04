@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.758.0+794]
+
+- Code (P4, part 1): two providers no longer wake everything below them on
+  every change to the session. The tab badges compare equal when no dot
+  comes or goes, so the always-on home shell and the play menu stop
+  rebuilding on each change; the clan effects (and the signs built on
+  them) watch only the four fields they read. No change in play. Over five
+  unrelated session changes they notified 5 and 5 times; now 0 and 0
+  (`provider_rebuilds_test`).
 ## [1.757.0+793]
 
 - Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
