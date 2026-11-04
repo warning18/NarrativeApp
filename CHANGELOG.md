@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.751.0+787]
+
+- **Narrative: a page break in `6010_record`.** The Reliquary's records scene
+  uses the `[PAGE]` marker of v1.750 where the Unmaking roll ends and the Rite
+  roll begins (about 600 and 575 characters in English, 700 and 650 in
+  French). The four journey endings keep the single `[EPILOGUE]` break that
+  v1.750 gave them: their pages already follow the story's own breaths (the
+  return, then the undoing of the night). No text, id, choice or flag changed.
+
 ## [1.750.0+786]
 
 - **Core: a scene can be read in pages.** A `[PAGE]` marker in a scene's
