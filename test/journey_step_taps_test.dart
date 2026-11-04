@@ -1,9 +1,11 @@
 // The Journey map's steps take taps on their marks alone: a tap on a
 // step's mark picks that step, whatever name lies near it, never a
 // neighbour's (v1.186 had a step's whole label take its taps, so the
-// step later in the list won). Checked on a 360-wide phone, at the alley
-// with three ways out to the square (scene 270) and at the busy wharf
-// (hub 2015), with nothing picked and with each step picked in turn.
+// step later in the list won). Checked on a 360-wide phone, at the Wreck of
+// the Lark (scene 1101, a site: its ways are marks), with nothing picked and
+// with each step picked in turn. A city draws its ways as pins on its stored
+// chart (N11): the pins of the busy wharf's kind are in city_chart_pins_test.
+// The alley's card (scene 270) is below.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -64,7 +66,7 @@ void main() {
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
     usePhone(tester, const Size(360, 640));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
     await settleApp(tester);
@@ -93,7 +95,7 @@ void main() {
 
     for (final size in const [Size(360, 640), Size(360, 800)]) {
       tester.view.physicalSize = size;
-      for (final id in ['1101', '2015']) {
+      for (final id in ['1101']) {
         play.jumpTo(id);
         await settleApp(tester);
         // Past the map inking in (and a new chapter's burning open), and

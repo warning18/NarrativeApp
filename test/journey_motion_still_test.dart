@@ -21,11 +21,11 @@ Future<ProviderContainer> _openJourney(WidgetTester tester) async {
           const MethodChannel('flutter_tts'), (call) async => 1);
   SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
   usePhone(tester, const Size(400, 860));
-  final container = await openGame(tester, overrides: [noCityPlans]);
+  final container = await openGame(tester, overrides: [storedCityPlans]);
   final play = container.read(storyPlayProvider.notifier);
-  play.jumpTo('2001');
+  play.jumpTo('1101');
   await settleApp(tester);
-  play.jumpTo('2005');
+  play.jumpTo('1100');
   await settleApp(tester);
   return container;
 }
@@ -42,13 +42,13 @@ void main() {
     expect(_fx, findsNothing);
     // Every way is there at once, fully drawn: nothing waits to ink in.
     final step =
-        find.byKey(const ValueKey('journey_step_0'), skipOffstage: false);
+        find.byKey(const ValueKey('journey_step_2'), skipOffstage: false);
     expect(step, findsOneWidget);
     final opacity = tester.widget<Opacity>(
         find.ancestor(of: step, matching: find.byType(Opacity)).first);
     expect(opacity.opacity, 1);
     expect(find.byKey(const ValueKey('journey_stamp')), findsNothing);
-    expect(container.read(storyPlayProvider).currentNodeId, '2005');
+    expect(container.read(storyPlayProvider).currentNodeId, '1100');
     expect(tester.takeException(), isNull);
   });
 }

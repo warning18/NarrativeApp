@@ -1,14 +1,13 @@
 // The climate on the map (v1.204): the height, humidity and warmth
 // calques paint flat and on the sphere, the weather layer paints and
 // moves, the Layers sheet turns them on, the chip over the Journey names
-// the sky, and a town is laid out for its climate.
+// the sky.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/chart_globe.dart';
-import 'package:narrative_data_app/data/city_plan.dart';
 import 'package:narrative_data_app/data/climate.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_map.dart';
@@ -209,65 +208,6 @@ void main() {
     });
   });
 
-  group('a town laid out for its climate', () {
-    const districts = <CityDistrict>[];
-    test('a dry land has scrub for trees and no fields', () {
-      final wet = CityPlan.of(
-          seed: 9,
-          size: CitySize.town,
-          water: '',
-          districts: districts,
-          climate: const CityClimate(
-              elevation: 0.2, humidity: 0.9, temperature: 15));
-      final dry = CityPlan.of(
-          seed: 9,
-          size: CitySize.town,
-          water: '',
-          districts: districts,
-          climate: const CityClimate(
-              elevation: 0.2, humidity: 0.1, temperature: 25));
-      expect(identical(wet, dry), isFalse);
-      expect(dry.trees.length, lessThan(wet.trees.length));
-      expect(dry.buildings.where((b) => b.kind == CityBuildingKind.field),
-          isEmpty);
-      expect(wet.buildings.where((b) => b.kind == CityBuildingKind.field),
-          isNotEmpty);
-      expect(dry.climate.dry, isTrue);
-    });
-
-    test('a day of warmth does not lay the town out again', () {
-      final a = CityPlan.of(
-          seed: 11,
-          size: CitySize.village,
-          water: 'river',
-          districts: districts,
-          climate: const CityClimate(
-              elevation: 0.3, humidity: 0.62, temperature: 12));
-      final b = CityPlan.of(
-          seed: 11,
-          size: CitySize.village,
-          water: 'river',
-          districts: districts,
-          climate: const CityClimate(
-              elevation: 0.3, humidity: 0.64, temperature: 9));
-      expect(identical(a, b), isTrue);
-      final snow = CityPlan.of(
-          seed: 11,
-          size: CitySize.village,
-          water: 'river',
-          districts: districts,
-          climate: const CityClimate(
-              elevation: 0.3, humidity: 0.62, temperature: -4));
-      expect(identical(a, snow), isFalse);
-      expect(snow.climate.snow, isTrue);
-      expect(
-          CityClimate.of(ChartClimate.of(chartOf(MapShape.archipelago))
-                  .sample(const Offset(60, 60)))
-              .humidity,
-          inInclusiveRange(0, 1));
-    });
-  });
-
   testWidgets('the Layers sheet turns the calques and the weather on',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -276,7 +216,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     usePhone(tester, const Size(400, 860));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
     play.jumpTo('2001');
     await settleApp(tester);
@@ -284,7 +224,7 @@ void main() {
     await settleApp(tester);
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
 
     // The sky over the party, named in a chip on the place map.
     expect(container.read(skyHereProvider), isNotNull);
@@ -300,7 +240,10 @@ void main() {
     await settleApp(tester);
     // A city looked out from shows the whole town first (v1.350), then the
     // land.
-    if (find.byKey(const Key('journey_town_zoom_in')).evaluate().isNotEmpty) {
+    // (A scene inside a building steps out into its streets first.)
+    for (var i = 0;
+        i < 3 && find.byType(JourneyWorldMap).evaluate().isEmpty;
+        i++) {
       await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
       await settleApp(tester);
     }

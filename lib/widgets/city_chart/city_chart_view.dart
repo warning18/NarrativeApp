@@ -427,6 +427,28 @@ class _CityChartViewState extends State<CityChartView>
         buildingNames: widget.buildingNames,
       );
 
+  /// Where the pin of way [wayId] is, in this widget's own coordinates, and
+  /// whether a tap there reaches it (the district shown, the pins drawn):
+  /// null when it is not showing. For tests that tap a pin's centre.
+  @visibleForTesting
+  Offset? debugPinCentre(String wayId) {
+    final chart = widget.chart;
+    final painter = _painter();
+    if (!painter.detailed) return null;
+    for (final w in chart.ways) {
+      if (w.id != wayId) continue;
+      final d = chart.districts[w.district];
+      if (_focus != null && d.id != _focus) return null;
+      if (!_known(d.id)) return null;
+      return _offset + painter.pinAt(w) * _scale + const Offset(0, -16);
+    }
+    return null;
+  }
+
+  /// The id of the way whose pin was last picked, if one is.
+  @visibleForTesting
+  String? get debugPickedWayId => _pickedWay?.id;
+
   void _tap(Offset at) {
     final chart = widget.chart;
     final plan = (at - _offset) / _scale;
@@ -448,19 +470,29 @@ class _CityChartViewState extends State<CityChartView>
     _pickedService = null;
     // Pins first, when they are showing.
     if (painter.detailed) {
+      // The pin nearest the tap, within reach: two pins can be closer than
+      // the reach (the busy wharf's), and the first in the list would take
+      // a tap meant for the next.
+      CityChartWay? nearest;
+      var nearestAt = CityChartPainter.pinRadius + 10;
       for (final w in chart.ways) {
         final d = chart.districts[w.district];
         if (_focus != null && d.id != _focus) continue;
         if (!_known(d.id)) continue;
         final pin = _offset + painter.pinAt(w) * _scale + const Offset(0, -16);
-        if ((pin - at).distance <= CityChartPainter.pinRadius + 10) {
-          setState(() {
-            _pickedWay = w;
-            _pickedFog = null;
-          });
-          widget.onPick?.call(w);
-          return;
+        final away = (pin - at).distance;
+        if (away <= nearestAt) {
+          nearest = w;
+          nearestAt = away;
         }
+      }
+      if (nearest != null) {
+        setState(() {
+          _pickedWay = nearest;
+          _pickedFog = null;
+        });
+        widget.onPick?.call(nearest);
+        return;
       }
     }
     // A district: the one whose blocks the tap is in, else the nearest.

@@ -22,7 +22,6 @@ import '../data/city_districts.dart'
         sceneDoorstep,
         sceneStreetOf,
         townMoveView;
-import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
@@ -96,7 +95,6 @@ import '../widgets/return_notice.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_chart/city_chart_view.dart';
-import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
@@ -253,6 +251,7 @@ class _PlaceView {
     this.hereDistrict = '',
     this.districtOfStep = const {},
     this.holderColor,
+    this.loading = false,
   });
 
   final PlaceKind kind;
@@ -297,6 +296,11 @@ class _PlaceView {
   /// is the party's nemesis: the ground takes a faint wash of it.
   final Color? holderColor;
 
+  /// A city, a town or a village whose stored plan has not loaded yet: its
+  /// ground shows alone until the chart replaces it (N11), not a plan that
+  /// is not the city's.
+  final bool loading;
+
   /// The same place for a map that draws only the steps [keep] lists (by
   /// their place in the list of steps): the glyphs and districts follow.
   _PlaceView pinned(List<int> keep) => _PlaceView(
@@ -314,6 +318,7 @@ class _PlaceView {
         plan: plan,
         chart: chart,
         explored: explored,
+        loading: loading,
         room: room,
         hereDistrict: hereDistrict,
         districtOfStep: {
@@ -1433,39 +1438,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // the one plan and look from district to district, so only a journey
     // changes the map.
     final hereLocation = world.locationOf(herePlace?.id);
-    // The city's plan (v1.203): a city, a town or a village of the
-    // geography is drawn as one, its districts on it; the roads out to the
-    // nearest other places give it its gates.
-    CityPlan? plan;
+    // A city, a town or a village of the geography is drawn from its
+    // stored plan (city_plans.json, below), its districts on it; every
+    // one has a record (city_plan_record_test). The procedural plan
+    // (v1.203) is no longer built (N11, v1.794).
     final districtOfStep = <int, String>{};
-    final citySize = switch (hereLocation?.kind) {
-      'city' => CitySize.city,
-      'town' => CitySize.town,
-      'village' => CitySize.village,
-      _ => null,
-    };
-    if (hereLocation != null && citySize != null && chartHere != null) {
-      final others = [
-        for (final l in worldMapLandmarks)
-          if (world.locationOf(world.placeOfLandmark(l.id)?.id)?.id !=
-              hereLocation.id)
-            geography.of(l),
-      ]..sort((a, b) => (a - chartHere)
-          .distanceSquared
-          .compareTo((b - chartHere).distanceSquared));
-      plan = CityPlan.of(
-        seed: _stableSeed(hereLocation.id),
-        size: citySize,
-        water: hereLocation.water,
-        districts: [
-          for (final d in world.childrenOf(hereLocation.id))
-            if (d.level == GeoLevel.district) CityDistrict(d.id, d.glyph),
-        ],
-        exitBearings: [
-          for (final p in others.take(3)) (p - chartHere).direction,
-        ],
-        climate: skyHere == null ? null : CityClimate.of(skyHere.ground),
-      );
+    final isCity = hereLocation != null &&
+        chartHere != null &&
+        const {'city', 'town', 'village'}.contains(hereLocation.kind);
+    if (isCity) {
       for (var i = 0; i < choices.length; i++) {
         final place = world.placeOfNode(story.nodeFor(ends[choices[i]]!));
         if (place == null || place.id == herePlace?.id) continue;
@@ -1476,7 +1457,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     }
     // The city's stored plan (Core's city_plans.json, board 15): the plan
     // the ways are laid on and the chart drawn under them.
-    PlacePlan? cityPlan = plan;
+    PlacePlan? cityPlan;
     final cityDistrictOf = <int, String>{};
     // The building whose street the scene plays in (v1.589, sceneStreetOf).
     GeoPlace? sceneStreet;
@@ -1485,7 +1466,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     Set<String>? foundDistricts;
     // A scene inside a building (the Blind Beggar) keeps its room; looking
     // out of it shows the city's chart, with a button back in (v1.425).
-    if (plan != null && hereLocation != null) {
+    if (isCity) {
       final record = ref.watch(cityPlanRecordsProvider).value?[hereLocation.id];
       if (record != null) {
         cityPlan = record;
@@ -1716,7 +1697,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // plans have loaded, every way counts as drawn: nothing locks before
     // the map knows where its ways are.
     final cityLoading = world.isEmpty ||
-        plan != null && ref.watch(cityPlanRecordsProvider).value == null;
+        isCity && ref.watch(cityPlanRecordsProvider).value == null;
     final mapped = Map<StoryChoice, bool>.identity()
       ..addAll({
         for (var i = 0; i < steps.length; i++)
@@ -1950,6 +1931,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             water: herePlace?.water ?? '',
             plan: cityPlan,
             chart: cityChart,
+            loading: isCity && cityPlan == null,
             explored: foundDistricts,
             room: room,
             hereDistrict: hereDistrictId,
@@ -3116,10 +3098,6 @@ class _JourneyChartState extends State<_JourneyChart>
   double? _planScale;
   double _planFitted = 1;
   Offset? _planOrigin;
-  CityPlan? get _plan {
-    final plan = widget.place?.plan;
-    return plan is CityPlan ? plan : null;
-  }
 
   RoomPlan? get _room => widget.place?.room;
 
@@ -3857,14 +3835,8 @@ class _JourneyChartState extends State<_JourneyChart>
                                                   ? widget.place!.hereDistrict
                                                   : null,
                                             )
-                                          : _plan != null && _planScale != null
-                                              ? CityPlanPainter(
-                                                  plan: _plan!,
-                                                  scale: _planScale!,
-                                                  origin: _planOrigin!,
-                                                  palette: palette,
-                                                  ember: widget.ink.ember,
-                                                )
+                                          : widget.place!.loading
+                                              ? null
                                               : PlacePlanPainter(
                                                   kind: widget.place!.kind,
                                                   seed: widget.place!.seed,
