@@ -5,15 +5,20 @@
 // only by the design of planRoad (one road one turn, a cooldown after a
 // detour, the same road the same turn for a seed).
 //
-// The first test taps everything a player can tap without choosing a way:
-// the marks, the rows, the chart or room or land map itself, at nine points
-// of it, in a room (scene 100), on a town's chart (the wharf hub 2015, White
-// Wells 1200) and on the land (zoomed out). After every scene: still in it,
-// no excursion, the pacing as it was. The second is planRoad on its own,
-// seeded: what leaving for another place may roll. (Walking a real road
-// through the screen is not held here: v1.809 turned the Blind Beggar's way
-// out into a card, and the card flow is the other guard's,
-// qa_journey_choice_view_test.)
+// The first test (one game, one test: a second test in a file draws the bare
+// ground, not the room) does two things. It taps everything a player can tap
+// without choosing a way: the marks, the rows, the chart or room or land map
+// itself, at nine points of it, in a room (scene 100), on a town's chart (the
+// wharf hub 2015, White Wells 1200) and on the land (zoomed out); after every
+// scene: still in it, no excursion, the pacing as it was. Then the user's own
+// click, "Back to the map" (the corner map icon and the bottom button of a
+// scene page, key journey_reading_exit / journey_continue), on pages with one
+// plain way on (100_dice, 2015_smuggler): the map shows, and the scene, the
+// history, the pacing, the clock and the rations are as they were; then the
+// step is taken on the map and, the way staying at its place, no road, no
+// detour. The second test is planRoad on its own, seeded: what leaving for
+// another place may roll. (Walking a real road through the screen is not held
+// here; the card flow is qa_journey_choice_view_test's.)
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -105,7 +110,8 @@ Future<void> _tapEverything(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('a tap on the map inside one place starts no detour',
+  testWidgets(
+      'a tap on the map, or the return to it from a page, starts no detour',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -154,6 +160,101 @@ void main() {
     if (after.excursion) failures.add('the land map: a tap started a detour');
     if (after.pacing != before.pacing) {
       failures.add('the land map: a tap moved the detour pacing');
+    }
+
+    // The return to the map from a scene page (the user's click).
+    /// Everything the road would touch: the scene, the history, the pacing,
+    /// the clock and the pack.
+    String snap() {
+      final s = container.read(playerSessionProvider);
+      final p = container.read(storyPlayProvider);
+      return 'node ${p.currentNodeId}, history ${p.history.length}, '
+          'excursion ${p.isInExcursion}, pacing ${s.detourPacing.toJson()}, '
+          'day ${s.day} watch ${s.watch}, provisions ${s.provisions}';
+    }
+
+    Future<void> openPage() async {
+      expect(_key('journey_read'), findsOneWidget);
+      await tester.tap(_key('journey_read'));
+      await settleApp(tester);
+      await tester.pump(const Duration(seconds: 3));
+      expect(_key('journey_reading_exit'), findsOneWidget,
+          reason: 'the scene is read as a page');
+    }
+
+    // The map is up: a room, a chart, the land, or the bare ground a place
+    // draws before its plan has loaded.
+    bool onMap() => [..._surfaces, 'journey_ground']
+        .any((s) => _key(s).evaluate().isNotEmpty);
+
+    // Scenes with one plain way on, at their place: a room's, a town's.
+    for (final id in ['100_dice', '2015_smuggler']) {
+      await _arrive(tester, container, id);
+      final before = snap();
+      for (final button in ['journey_reading_exit', 'journey_continue']) {
+        await openPage();
+        await tester.tap(_key(button));
+        await settleApp(tester);
+        await tester.pump(const Duration(seconds: 3));
+        await _clear(tester);
+        if (!onMap()) {
+          final out = <String>{};
+          void walk(Element e) {
+            final k = e.widget.key;
+            if (k is ValueKey<String> && k.value.startsWith('journey_')) {
+              out.add(k.value);
+            }
+            e.visitChildren(walk);
+          }
+
+          walk(tester.binding.rootElement!);
+          failures.add('$id: "$button" does not show the map: '
+              '${(out.toList()..sort()).join(' ')}');
+        }
+        final after = snap();
+        if (after != before) {
+          failures.add('$id: "$button" changed the game\n'
+              '  before $before\n  after  $after');
+        }
+      }
+      // Then the step is taken on the map, as the design says: this way
+      // stays at its place, so no road: the next scene, no detour, the
+      // pacing and the pack as they were.
+      // A fresh arrival (from another scene, so the page state is new).
+      await _arrive(tester, container, '100');
+      await _arrive(tester, container, id);
+      // (Where the way is a card of the scene, its list is opened and the
+      // card picked first.)
+      if (_key('journey_go').evaluate().isEmpty) {
+        if (_key('journey_open_choices').evaluate().isNotEmpty) {
+          await tester.tap(_key('journey_open_choices'));
+          await tester.pump(const Duration(milliseconds: 600));
+        }
+        if (_key('journey_choice_card_0').evaluate().isNotEmpty) {
+          await tester.tap(_key('journey_choice_card_0'));
+          await tester.pump(const Duration(milliseconds: 400));
+        }
+      }
+      expect(_key('journey_go'), findsOneWidget, reason: '$id: Go is ready');
+      await tester.tap(_key('journey_go'));
+      await tester.pump();
+      for (var i = 0; i < 14; i++) {
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+      await settleApp(tester);
+      final play = container.read(storyPlayProvider);
+      if (play.currentNodeId == id) {
+        failures.add('$id: Go on the map did not take the step');
+      }
+      if (play.isInExcursion) {
+        failures.add('$id: a way that stays at its place started a detour');
+      }
+      final taken = snap().replaceAll(RegExp(r'node [^,]*, history \d+, '), '');
+      final was = before.replaceAll(RegExp(r'node [^,]*, history \d+, '), '');
+      if (taken != was) {
+        failures.add('$id: a way that stays at its place moved the road\n'
+            '  before $was\n  after  $taken');
+      }
     }
     expect(tester.takeException(), isNull);
     expect(failures, isEmpty, reason: failures.join('\n'));
