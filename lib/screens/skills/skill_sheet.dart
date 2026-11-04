@@ -3,6 +3,7 @@
 // and the one button that matters -- Learn, or Raise tier, with the reason
 // when it is greyed. Compare and Craft hang off it for a known skill.
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -90,12 +91,12 @@ Future<void> learnSkill(BuildContext context, WidgetRef ref, String id,
       at: MediaQuery.sizeOf(context).center(Offset.zero),
       colour: InkColors.of(context).ember,
       count: 18);
-  showImmersiveNotice(
+  unawaited(showImmersiveNotice(
     context,
     icon: Icons.auto_awesome,
     message: '${trFor(lang, 'unlocked_prefix')}: '
         '${skillDisplayName(id, language: lang)}',
-  );
+  ));
 }
 
 /// Opens the sheet for [skillId].

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -40,11 +41,11 @@ Future<void> restTheNight(BuildContext context, WidgetRef ref,
       await showCampFateDie(context, ref, restedLine: line);
       return;
     }
-    showImmersiveNotice(
+    unawaited(showImmersiveNotice(
       context,
       icon: Icons.local_fire_department,
       message: line,
-    );
+    ));
   } finally {
     resting.state = false;
   }
