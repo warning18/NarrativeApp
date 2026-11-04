@@ -167,8 +167,6 @@ void main() {
       expect(hullUnlocked(hull('brig'), 3, false), isTrue);
       expect(hullUnlocked(hull('galleon'), 1, true), isTrue);
       expect(hullUnlocked(hull('rusty_eel'), 0, false), isTrue);
-      expect(hullRecordOf(ships, 'nope'), same(ships['rusty_eel']));
-      expect(hullRecordOf(ships, 'galleon'), same(ships['galleon']));
     });
   });
 

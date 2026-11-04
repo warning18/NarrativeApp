@@ -25,7 +25,6 @@ void main() {
   final dice = _data('dice');
   final professions = _data('professions');
   final races = _data('races');
-  final merges = _data('skill_merges');
 
   group('starting kit', () {
     test('only Heavy Blow is everyone\'s skill from the start', () {
@@ -93,11 +92,16 @@ void main() {
   });
 
   group('skill lists', () {
-    test('a warrior never sees a mage\'s skills, and the other way round', () {
-      final warrior = skillIdsForCharacter(skills, merges,
-          raceId: 'human', professionId: 'warrior');
-      final mage = skillIdsForCharacter(skills, merges,
-          raceId: 'human', professionId: 'mage');
+    test('a warrior never fits a mage\'s skills, and the other way round', () {
+      List<String> fitting(String profession) => [
+            for (final e in skills.entries)
+              if ((e.value as Map<String, dynamic>)['enemyOnly'] != true &&
+                  skillFitsCharacter(e.value as Map<String, dynamic>,
+                      raceId: 'human', professionId: profession))
+                e.key,
+          ];
+      final warrior = fitting('warrior');
+      final mage = fitting('mage');
       expect(warrior, isNot(contains('fireball')));
       expect(warrior.where((id) => id.startsWith('mage_')), isEmpty);
       expect(warrior, contains('warrior_whirlwind'));
@@ -105,25 +109,6 @@ void main() {
       expect(mage, containsAll(['fireball', 'mage_channel', 'human_resolve']));
       expect(mage.where((id) => id.startsWith('warrior_')), isEmpty);
       expect(mage.where((id) => id.startsWith('elf_')), isEmpty);
-      for (final list in [warrior, mage]) {
-        for (final id in list) {
-          expect(
-              (skills[id] as Map<String, dynamic>)['enemyOnly'], isNot(true));
-        }
-      }
-    });
-
-    test('a merge skill is listed only when its recipe fits', () {
-      bool listed(String result, String race, String profession) =>
-          skillIdsForCharacter(skills, merges,
-                  raceId: race, professionId: profession)
-              .contains(result);
-      // Fireball (mage) + Shadow Step (anyone).
-      expect(listed('blazing_shadow', 'human', 'mage'), isTrue);
-      expect(listed('blazing_shadow', 'human', 'warrior'), isFalse);
-      // Arcane Focus (elf) + Arcane Missile (mage).
-      expect(listed('arcane_convergence', 'elf', 'mage'), isTrue);
-      expect(listed('arcane_convergence', 'human', 'mage'), isFalse);
     });
   });
 

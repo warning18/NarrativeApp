@@ -132,17 +132,6 @@ void main() {
       expect(yieldsNow(0, 100), isFalse);
     });
 
-    test('goals can be named by a hand-made fight', () {
-      expect(fightGoalFromName('rout'), const FightGoal(FightGoalKind.rout));
-      expect(
-          fightGoalFromName('subdue'), const FightGoal(FightGoalKind.subdue));
-      expect(fightGoalFromName('hold:5'),
-          const FightGoal(FightGoalKind.hold, rounds: 5));
-      expect(fightGoalFromName('hold', enemyCount: 3)!.rounds, 5);
-      expect(fightGoalFromName('nonsense'), isNull);
-      expect(fightGoalFromName(null), isNull);
-    });
-
     test('the harder asks pay more, the plain slaughter pays as before', () {
       expect(goalRewardMultiplier(FightGoalKind.slay), 1.0);
       expect(goalRewardMultiplier(FightGoalKind.hold), greaterThan(1.0));

@@ -1030,23 +1030,6 @@ double chapterRewardMultiplier(int chapter) => 1 + 0.10 * (max(1, chapter) - 1);
 /// its main zone (tier 1 ×1.0, tier 3 ×1.2).
 double zoneTierMultiplier(int tier) => 1 + 0.10 * (max(1, tier) - 1);
 
-/// Percentage-point drop-rate bonus (same units as the flat luck bonus a
-/// win's loot roll already adds) for a loot item whose own `scalingStat`
-/// matches the player's profession's `preferredScalingStat` — a Mage sees
-/// noticeably more staves than a Warrior would off the exact same enemy,
-/// without any single drop ever becoming guaranteed. 0 for a non-matching
-/// item, an item with no scalingStat, or a profession with no affinity
-/// (e.g. Cleric, whose dominant stat is Wisdom, which nothing scales
-/// with).
-int professionLootAffinityBonus(
-  Map<String, dynamic>? item,
-  String preferredScalingStat,
-) {
-  if (preferredScalingStat.isEmpty) return 0;
-  final itemScalingStat = item?['scalingStat']?.toString() ?? '';
-  return itemScalingStat == preferredScalingStat ? 20 : 0;
-}
-
 /// One stage of a boss fight (see `phases` on an enemies.json record): once
 /// the enemy's health falls to [healthThresholdPercent] or below it enters
 /// the phase -- a one-time transition that can heal it, shed its
