@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.801.0+837]
+
+- Code cleanup (split 4d): the game database's schemas leave
+  `db_schema.dart` (3,872 lines) for four files by what they describe:
+  the character's kit, the foes and ships, the story, and the world. The
+  schema class, the shared option lists and the list of schemas stay. A
+  pure move: nothing in the game or the Edit Mode database changes.
+
 ## [1.800.0+836]
 
 - Code cleanup (N11, step 3): the code of the generated city street plan
