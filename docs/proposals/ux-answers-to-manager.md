@@ -116,7 +116,7 @@ only other mention of `districtArrivalProvider` is a comment in
 2. **Palettes are not shared.** No generator imports a common module (only
    Pillow and the standard library); each holds its own colour literals, 33 to
    106 distinct per script (about 520 in all, many the same few: the near-black
-   outline `(10, 8, 7)` is written out in six of them). So a colour change is
+   outline `(10, 8, 7)` is written out in four of them, and the others have a near-black of their own). So a colour change is
    an edit of ten scripts, unless a `tool/palette.py` is first made (a small,
    safe step: move the shared outline and the element tones into it, check each
    script still writes the same bytes).
