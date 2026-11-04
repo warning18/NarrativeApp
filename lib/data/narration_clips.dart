@@ -166,14 +166,9 @@ List<String> nodeNarrationScript(
       ...allyAcknowledgmentVariantsFor(node.id, french: french),
       for (final line in node.hubProgress?.lines ?? const <HubProgressLine>[])
         line.line.textFor(french),
-      // Every callback, whatever the node's cap keeps on a visit (v1.813).
+      // Every callback, whatever the node's cap keeps on a visit (v1.816).
       for (final callback in node.flagCallbacks) callback.line.textFor(french),
       for (final line in node.personaVariants.values) line.textFor(french),
-      // The text a second visit reads, after the first visit's (v1.813).
-      if (node.revisitDescription?.isNotEmpty ?? false)
-        storyBodyFor(node
-            .descriptionFor(french, revisit: true)
-            .replaceAll(pageBreakMarker, '')),
     ];
     for (final extra in extras) {
       script.addAll(narrationParagraphs(personalize(extra)));
@@ -182,8 +177,26 @@ List<String> nodeNarrationScript(
   return script.toList();
 }
 
+/// The paragraphs [node] is read aloud in on a revisit (its
+/// `revisit_description`, v1.816), for recording ahead of time: entries of
+/// their own, each its own clip, played only on a revisit. Empty for a node
+/// with no revisit text. [nodeNarrationScript] (the first visit) is the
+/// same with or without one, so no recording of it changes.
+List<String> nodeRevisitNarrationScript(
+  StoryNode node, {
+  required bool french,
+  required String Function(String text) personalize,
+}) {
+  if (node.revisitDescription?.isEmpty ?? true) return const [];
+  return narrationParagraphs(storyBodyFor(personalize(node
+      .descriptionFor(french, revisit: true)
+      .replaceAll(pageBreakMarker, ''))));
+}
+
 /// Every paragraph the story can read aloud to this player, for recording
-/// the whole story ahead of time (see [nodeNarrationScript]).
+/// the whole story ahead of time (see [nodeNarrationScript]; with
+/// [variations], each node's revisit text after it, see
+/// [nodeRevisitNarrationScript]).
 /// Insertion-ordered (story order), without duplicates.
 List<String> narrationScript(
   Iterable<StoryNode> nodes, {
@@ -192,8 +205,12 @@ List<String> narrationScript(
   bool variations = true,
 }) {
   return {
-    for (final node in nodes)
+    for (final node in nodes) ...[
       ...nodeNarrationScript(node,
           french: french, personalize: personalize, variations: variations),
+      if (variations)
+        ...nodeRevisitNarrationScript(node,
+            french: french, personalize: personalize),
+    ],
   }.toList();
 }

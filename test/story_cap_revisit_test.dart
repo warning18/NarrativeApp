@@ -1,4 +1,4 @@
-// A scene's callback cap and its revisit text (v1.813): `callback_cap` on a
+// A scene's callback cap and its revisit text (v1.816): `callback_cap` on a
 // node keeps at most that many earned callbacks, the highest `priority`
 // first (ties by the file's order), shown in the file's order; a node's
 // `revisit_description` (and `_fr`) is what it says once the party has
@@ -163,20 +163,53 @@ void main() {
           contains('First sight'));
     });
 
-    test('the recording script keeps the first visit\'s text, then the revisit',
+    test('the first visit\'s script is the same with or without a revisit text',
         () {
-      final script = nodeNarrationScript(_revisited(),
+      final without = StoryNode.fromJson('wells', {
+        ...(_revisited().toJson()
+          ..remove('revisit_description')
+          ..remove('revisit_description_fr')),
+      });
+      for (final french in [false, true]) {
+        for (final variations in [false, true]) {
+          final a = nodeNarrationScript(_revisited(),
+              french: french, personalize: (t) => t, variations: variations);
+          final b = nodeNarrationScript(without,
+              french: french, personalize: (t) => t, variations: variations);
+          expect(a, b, reason: 'french $french, variations $variations');
+          expect(a.join(' '), isNot(contains('again')));
+          expect(a.join(' '), isNot(contains('Encore')));
+        }
+      }
+    });
+
+    test('the revisit text is its own recording entry, only when it exists',
+        () {
+      final revisit = nodeRevisitNarrationScript(_revisited(),
           french: false, personalize: (t) => t);
-      final joined = script.join(' ');
-      expect(joined, contains('First sight'));
-      expect(joined, contains('The wells again.'));
+      expect(revisit.join(' '), contains('The wells again.'));
+      expect(revisit.join(' '), isNot(contains('First sight')));
       expect(
-          joined.indexOf('First sight'), lessThan(joined.indexOf('The wells')));
+          nodeRevisitNarrationScript(_revisited(),
+              french: true, personalize: (t) => t).join(' '),
+          contains('Encore les puits.'));
       expect(
+          nodeRevisitNarrationScript(_capped(),
+              french: false, personalize: (t) => t),
+          isEmpty);
+      // Its own clips: none shares a first visit's paragraph.
+      final first = nodeNarrationScript(_revisited(),
+          french: false, personalize: (t) => t);
+      expect(revisit.toSet().intersection(first.toSet()), isEmpty);
+      // The whole story's script records it after the node's own entries.
+      final story =
+          narrationScript([_revisited()], french: false, personalize: (t) => t);
+      expect(story, [...first, ...revisit]);
+      expect(
+          narrationScript([_revisited()],
+              french: false, personalize: (t) => t, variations: false),
           nodeNarrationScript(_revisited(),
-                  french: false, personalize: (t) => t, variations: false)
-              .join(' '),
-          isNot(contains('The wells again.')));
+              french: false, personalize: (t) => t, variations: false));
     });
   });
 

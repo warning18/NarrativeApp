@@ -117,7 +117,7 @@ class StoryPlayState {
   bool get isInExcursion => activeExcursionNode != null;
 }
 
-/// Whether the scene [play] stands on was reached before this visit (v1.813):
+/// Whether the scene [play] stands on was reached before this visit (v1.816):
 /// it is in the scenes left before it. Such a scene reads its
 /// `revisit_description` when it has one (StoryNode.descriptionFor). A
 /// generated detour scene is never a revisit.

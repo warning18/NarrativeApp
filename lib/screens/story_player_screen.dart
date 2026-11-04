@@ -256,7 +256,7 @@ class _StoryView extends ConsumerWidget {
         playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
-    // A scene reached before reads its revisit text (v1.813).
+    // A scene reached before reads its revisit text (v1.816).
     final revisit = isRevisit(playState);
     final displayDescription = node == null
         ? ''

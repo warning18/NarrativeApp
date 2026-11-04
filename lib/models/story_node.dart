@@ -949,13 +949,13 @@ class StoryNode {
   /// body, in authored order.
   final List<FlagCallback> flagCallbacks;
 
-  /// At most this many of [flagCallbacks] show at once (v1.813): the ones
+  /// At most this many of [flagCallbacks] show at once (v1.816): the ones
   /// with the highest [FlagCallback.priority] (ties: the earlier in the
   /// file), shown in the file's order. Null: every callback earned shows.
   final int? callbackCap;
 
   /// What the scene says instead of [description] when the party has been
-  /// here before this visit (v1.813): the first visit reads [description];
+  /// here before this visit (v1.816): the first visit reads [description];
   /// the callbacks, the hub's progress line and the choices are the same.
   /// Its French in [revisitDescriptionFr] (English when missing).
   final String? revisitDescription;
@@ -1170,7 +1170,7 @@ class FlagCallback {
   final NarrationLine line;
 
   /// Which callbacks a node's [StoryNode.callbackCap] keeps: the highest
-  /// first (v1.813). 0 when unset.
+  /// first (v1.816). 0 when unset.
   final int priority;
 
   /// Any of these held vetoes the paragraph.
