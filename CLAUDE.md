@@ -91,6 +91,15 @@ as possible.
 the strings of the feature they belong to, and never reorder or reformat
 other blocks. Narrative may reword any string, but never renames its key.
 
+## Skills and settings (`.claude/`)
+
+A skill or a setting under `.claude/` steers every session that loads it, so
+it is the manager's file. No other session adds, edits or deletes anything
+under `.claude/` (skills, settings, hooks) without the manager's approval, and
+a PR that touches it says so in its description. The manager reads each such
+change before merging it. A skill never lets a session merge, renumber a
+version or message another session: only the manager does.
+
 ## Requests that cross areas
 
 If you're asked for something that needs work outside your area, don't do
