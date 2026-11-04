@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.765.0+801]
+
+- Settings: a new switch, "Show slow frames" (off by default, saved). While it
+  is on, a small counter at the top right shows how many frames of the screen
+  you are on took more than 17 ms ("slow 7 / 612 · worst 48 ms"), and two
+  buttons appear under the switch: "Copy report" (the numbers per screen, the
+  five worst frames split into build and raster time, and a line about the
+  phone) and "Reset". The screens are the Fight, the Journey (its reading page
+  and its map apart), the Character, Camp or ship and Other tabs, the main
+  menu, and "Another screen" for the rest. It is meant for finding what
+  stutters on a phone with no computer: turn it on, play, copy the report and
+  paste it to the team. Off, nothing runs: no timer, no counter, no timing
+  callback. English and French.
+- Tests: `slow_frames_test.dart` (the counting, the five worst, the naming of
+  the screens, off by default, the switch, the copy and the reset); the 320 px
+  and French sweep shows the switch and the counter.
+
 ## [1.762.0+798]
 
 - Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
