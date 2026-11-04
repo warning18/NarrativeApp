@@ -320,7 +320,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                       child: ChoiceChip(
                                         avatar:
                                             Icon(itemTypeIcon(type), size: 16),
-                                        label: Text(type),
+                                        label: Text(
+                                            trItemType(ref, type, short: true)),
                                         selected: _typeFilter == type,
                                         onSelected: (_) =>
                                             setState(() => _typeFilter = type),
@@ -543,7 +544,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                           ),
                                           Text(
                                             [
-                                              if (itemType != null) itemType,
+                                              if (itemType != null)
+                                                trItemType(ref, itemType),
                                               if ((equipSlot ?? '').isNotEmpty)
                                                 equipSlot,
                                               priceLine,

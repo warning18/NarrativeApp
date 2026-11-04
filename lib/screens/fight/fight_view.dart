@@ -1,5 +1,10 @@
 part of '../fight_screen.dart';
 
+/// The strip's spacing above and below its tiles (they used to be the
+/// strip's padding), handed to the tiles as tap room.
+const double _stripReachTop = 8;
+const double _stripReachBottom = 6;
+
 /// The setup screen, the battle layout and the dice tray.
 extension _FightView on _FightScreenState {
   Widget _buildSetup(
@@ -473,11 +478,13 @@ extension _FightView on _FightScreenState {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // The strip's 8 px above and 6 px below are the tiles' own reach (see
+          // FightStatusTile.reachTop), so a tap a little above or below one
+          // still lands on it and nothing is moved.
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
-          const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: _buildSlots(items, previews),
