@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.802.0+838]
+
+- Code cleanup (split 4e): the fight's round logic leaves
+  `fight_rounds.dart` (1,790 lines) for three files: the party's dice
+  and round, the enemies' turn, and the signs' effects in a round. A
+  pure move: nothing in the fight changes.
+
 ## [1.801.0+837]
 
 - Code cleanup (split 4d): the game database's schemas leave
