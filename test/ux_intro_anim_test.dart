@@ -4,6 +4,7 @@
 // as PNG frames and joined into docs/ux-shots/intro-anim.gif with ffmpeg. Only
 // with UX_ANIM (a folder):
 //   UX_ANIM=/tmp/intro flutter test test/ux_intro_anim_test.dart
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -66,12 +67,12 @@ void main() {
 
     // The way the menu does it: the intro over the menu, then the game.
     var introDone = false;
-    nav.currentState!
+    unawaited(nav.currentState!
         .push(PageRouteBuilder<bool>(
           transitionDuration: Duration.zero,
           pageBuilder: (_, __, ___) => const IntroScreen(),
         ))
-        .then((_) => introDone = true);
+        .then((_) => introDone = true));
     // Let its pictures decode before the clock is read.
     for (var i = 0; i < 6; i++) {
       await tester.runAsync(

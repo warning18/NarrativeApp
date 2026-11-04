@@ -21,6 +21,8 @@ import 'support/pump.dart';
 
 Future<void> enterFight(WidgetTester tester, String profession) async {
   SharedPreferences.setMockInitialValues({
+    'combat_dice_speed':
+        'quad', // the tests wait for the dice, they do not watch them
     'gamedb_dice': jsonEncode({
       ...gamedata('dice.json'),
       'marks_die': {

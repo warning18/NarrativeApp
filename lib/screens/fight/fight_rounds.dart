@@ -681,7 +681,7 @@ extension _FightRounds on _FightScreenState {
     _settlingRound = false;
 
     if (_enemies.every((e) => !e.isAlive)) {
-      _finishFight(won: true);
+      unawaited(_finishFight(won: true));
       return;
     }
 

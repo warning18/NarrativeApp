@@ -75,6 +75,18 @@ class _TabBadges {
   final int readyQuestCount;
 
   bool get other => readyQuestCount > 0;
+
+  // Equal badges notify nobody (P4): the shell and the play menu rebuild
+  // only when a dot comes or goes, not on every change to the session.
+  @override
+  bool operator ==(Object other) =>
+      other is _TabBadges &&
+      other.character == character &&
+      other.camp == camp &&
+      other.readyQuestCount == readyQuestCount;
+
+  @override
+  int get hashCode => Object.hash(character, camp, readyQuestCount);
 }
 
 final tabBadgesProvider = Provider<_TabBadges>((ref) {
