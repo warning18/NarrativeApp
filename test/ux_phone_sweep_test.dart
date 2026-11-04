@@ -79,6 +79,15 @@ void main() {
         ),
       ),
       const SmokeCase('skills_radar_card', SkillsRadarCard()),
+      for (final view in const ['skills', 'detail'])
+        SmokeCase(
+          'skills_radar_card_$view',
+          const SkillsRadarCard(),
+          act: (tester) async {
+            await tester.tap(find.byKey(Key('character_view_$view')));
+            await tester.pump(const Duration(milliseconds: 300));
+          },
+        ),
       const SmokeCase('settings', SettingsScreen(), bare: true),
     ]);
   }, timeout: const Timeout(Duration(minutes: 10)));
