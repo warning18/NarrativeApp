@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.784.0+820]
+
+- The playthrough simulator starts a character, and levels it up, by the
+  game's own rules instead of a copy (R5): one function adds the New Game
+  Defaults and the race's and profession's bonuses for both, the starting
+  die's skill slots have one name, and "100 XP a level" is written once.
+  Inside the simulator, the two shop visits and the two autoplay walks
+  share their common steps. A seeded batch gives the same numbers as
+  before, and nothing changes in play.
+
 ## [1.781.0+817]
 
 - **Narrative: page breaks in five long scenes.** `470`, `6010_thread`,
