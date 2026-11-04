@@ -8,13 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.769.0+805]
+## [1.768.0+804]
 
 - No stray "[PAGE]" in a scene read in one go: the narration recording
   preview and an expedition's scene text now join a scene's pages, as the
   read-aloud clips already did (node 6010_record showed the marker as
   text).
 
+## [1.767.0+803]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
 ## [1.766.0+802]
 
 - The playthrough simulator now shops where a player shops: the ports'
