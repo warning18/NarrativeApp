@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.829.0+865]
+
+- Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
+  Attack, Heavy Windup, Battle Trance, Final Stand, Focus Mind, Guard Break,
+  Human Diplomacy, Human Quick Study, Improvised Strike, Lucky Strike, Orc
+  Savage Cleave, Precision Thrust, Ruthless Edge, Warrior Execute, Warrior
+  Whirlwind, Zealous Conviction) shared one blank grey gem; each now has its
+  own 7x7 cream glyph on it (a sword, a hammer, an axe, a spiral, a flag, an
+  eye, a broken shield, a speech bubble, a book, a club, a star, claw marks,
+  a spear, a dagger, a skull, a whirl, a sun). The frame keeps the school;
+  the glyph carries the skill. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/martial.png`, stored by `tool/png8.py`. Pictures:
+  `docs/ux-shots/skill-glyphs/`. The other schools follow in their own
+  releases.
+
 ## [1.828.0+864]
 
 - The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
