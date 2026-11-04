@@ -99,3 +99,32 @@ UX branch `lib/` holds only the definition of `CityPlanRecord.districtAt`
 (`town_service_pins.dart` has its own private `districtAt`, unrelated), and the
 only other mention of `districtArrivalProvider` is a comment in
 `journey_screen.dart:2162` saying the code does *not* use it. Core may remove both.
+
+## For UX-2: what the generators cost for a new pixel style (UX main's reading)
+
+1. **What is drawn by code.** Ten scripts make 252 of the 684 pictures (37%):
+   `gen_banners` 20 (691 lines), `gen_chapter_art` 8 (327), `gen_fight_fx` 36 effect
+   strips (977, the biggest), `gen_pixel_fx` 32 strips (506: die, element, keyword,
+   campfire, chests, the place stamp), `gen_throne_room` 6 + 1 flame (275),
+   `gen_skill_icons` 20 + `gen_skill_card_icons` 40 skill gems (261 + 171),
+   `gen_hunter_icons` 13 enemy icons (439), `gen_material_icons` 9 items (170) and
+   `gen_fight_heads` 67 heads (69, a crop of existing sprites: nothing drawn, so
+   no style of its own). The other **432 are hand-placed or imported**, no
+   script: companion 104, item icons 123, skill icons 97, enemy icons 51, shops 14,
+   chests 10, ship cutaways 14, the fighters, races, professions and walker 19.
+   A new style done in the generators reaches 37%; the rest is redrawn or recoloured.
+2. **Palettes are not shared.** No generator imports a common module (only
+   Pillow and the standard library); each holds its own colour literals, 33 to
+   106 distinct per script (about 520 in all, many the same few: the near-black
+   outline `(10, 8, 7)` is written out in six of them). So a colour change is
+   an edit of ten scripts, unless a `tool/palette.py` is first made (a small,
+   safe step: move the shared outline and the element tones into it, check each
+   script still writes the same bytes).
+3. **Recolouring by editing the palette.** Yes, for a pure colour change it
+   works and needs no redraw: the 652 palette PNGs hold their colours once (PLTE
+   and tRNS), so a script can map entries (hue shift, swap one tone for another)
+   in seconds, check it with `png8.py`, and `git diff` shows it. The 32 tiny files
+   still RGBA are mapped by pixel. It cannot restyle shapes, outlines or dither.
+   One catch: the effect strips (`vfx_*`, 36 files) are drawn in three tones that
+   `pixel_vfx.dart` recolours at run time by element; changing their tones
+   needs the same change in that file, or leave them out of a palette edit.
