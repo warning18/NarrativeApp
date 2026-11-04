@@ -839,6 +839,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _takingFrom = before;
       _pressed = index;
     });
+    // The view the step is taken from: a same-place step keeps it.
+    final current = _reading
+        ? ArrivalView.page
+        : _arrival
+            ? ArrivalView.sheet
+            : null;
     // Where the party stands before it sets out.
     final home = _partyChart;
     final homePlan = _partyPlan, homeDistrict = _partyDistrict;
@@ -944,6 +950,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         ?.isMainStoryScene(play.currentNodeId) ??
                     true,
                 inExcursion: play.isInExcursion,
+                current: current,
               );
               // The story begun again: its first scene, as a new game's.
               final fresh = isFreshStoryStart(play);
@@ -1616,13 +1623,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A written detour has no map: all its ways are cards under its scene.
     _writtenDetour = play.isInExcursion &&
         ref.read(storyPlayProvider.notifier).scenePlay != null;
-    final cardsOn = _writtenDetour ||
-        (!play.isInExcursion &&
-            placeLandmark != null &&
-            chartHere != null &&
-            room == null);
+    final placed =
+        !play.isInExcursion && placeLandmark != null && chartHere != null;
+    // A way to the next scene at the same stop is a card as well, in a room
+    // too: the scene keeps the party (choice_flow.dart's FlowStay).
     final onCard = [
-      for (final s in shapes) cardsOn && (_writtenDetour || s.here),
+      for (var i = 0; i < shapes.length; i++)
+        _writtenDetour ||
+            placed &&
+                ((room == null && shapes[i].here) ||
+                    (stops?.flowOf(node, choices[i]) is FlowStay)),
     ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;

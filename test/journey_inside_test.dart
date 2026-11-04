@@ -47,23 +47,19 @@ void main() {
         .painter as RoomPlanPainter;
     final plan = painter.plan;
     expect(plan.kind, RoomKind.den);
+    // All three ways lead to the next scene in the room (the scene-or-map
+    // rule: the same stop keeps the scene), so none is a spot on its plan:
+    // the three are the scene's cards, behind its "choices here" button.
     for (var i = 0; i < 3; i++) {
-      expect(find.byKey(ValueKey('journey_step_$i')), findsOneWidget,
-          reason: 'step $i');
+      expect(find.byKey(ValueKey('journey_step_$i')), findsNothing,
+          reason: 'spot $i');
     }
-    // The ways sit over the building: each step's centre falls within
-    // the plan's walls on the map.
-    final roomRect = tester.getRect(find.byKey(const ValueKey('journey_room')));
-    Rect onMap(Rect r) => Rect.fromLTRB(
-        roomRect.left + painter.origin.dx + r.left * painter.scale,
-        roomRect.top + painter.origin.dy + r.top * painter.scale,
-        roomRect.left + painter.origin.dx + r.right * painter.scale,
-        roomRect.top + painter.origin.dy + r.bottom * painter.scale);
-    final walls = onMap(plan.frame);
-    for (var i = 0; i < 3; i++) {
-      final c = tester.getCenter(find.byKey(ValueKey('journey_step_$i')));
-      expect(walls.contains(c), isTrue, reason: 'step $i at $c in $walls');
-    }
+    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const ValueKey('journey_open_choices')),
+            matching: find.text('3')),
+        findsOneWidget);
 
     // A look out: the streets round the building (Alster's stored chart,
     // board 15), and the + brings the room back.
@@ -84,7 +80,7 @@ void main() {
     await settleApp(tester);
     expect(find.text('You step inside the Blind Beggar\u2026'), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_room')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
 
     // Out again and further: the land.
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));

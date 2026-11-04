@@ -19,24 +19,36 @@ void main() {
     usePhone(tester, const Size(400, 860));
 
     final container = await openGame(tester);
-    container.read(storyPlayProvider.notifier).jumpTo('100');
+    // The house after the escape (470): both its ways lead out of the Lower
+    // Town, so both are marks on the map (the Blind Beggar's 100, used
+    // before, has only ways that stay in the room: cards, no marks).
+    container.read(storyPlayProvider.notifier).jumpTo('470');
     await settleApp(tester);
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
 
+    final shown = [
+      for (var i = 0; i < 4; i++)
+        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isNotEmpty) i,
+    ];
+    expect(shown.length, greaterThanOrEqualTo(2), reason: '$shown');
     List<Offset> marks() => [
-          for (var i = 0; i < 3; i++)
+          for (final i in shown)
             tester.getCenter(find.byKey(ValueKey('journey_step_$i')))
         ];
+    // The map the marks stand on: the nearest stack round the first one.
+    final map = find
+        .ancestor(
+            of: find.byKey(ValueKey('journey_step_${shown[0]}')),
+            matching: find.byType(Stack))
+        .first;
     final before = marks();
-    final mapBefore =
-        tester.getSize(find.byKey(const ValueKey('journey_room')));
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
+    final mapBefore = tester.getSize(map);
+    await tester.tap(find.byKey(ValueKey('journey_step_${shown[0]}')));
     await settleApp(tester);
     expect(marks(), before);
-    expect(
-        tester.getSize(find.byKey(const ValueKey('journey_room'))), mapBefore);
-    await tester.tap(find.byKey(const ValueKey('journey_step_1')));
+    expect(tester.getSize(map), mapBefore);
+    await tester.tap(find.byKey(ValueKey('journey_step_${shown[1]}')));
     await settleApp(tester);
     expect(marks(), before);
   });

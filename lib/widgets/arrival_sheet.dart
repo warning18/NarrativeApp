@@ -21,14 +21,20 @@ enum ArrivalView {
 }
 
 /// Which view the scene a choice led to opens in (see choice_flow.dart):
-/// a one-tap return to a hub opens none, a main-story scene (or one met on a
-/// detour) the full page, every other scene the sheet.
+/// a one-tap return to a hub opens none; a step to the next scene at the
+/// same stop keeps the view it was taken from ([current], the page or the
+/// sheet: the scene keeps the party); otherwise a main-story scene (or one
+/// met on a detour) the full page, every other scene the sheet.
 ArrivalView arrivalViewOf(
   ChoiceFlow flow, {
   required bool mainStory,
   required bool inExcursion,
+  ArrivalView? current,
 }) {
   if (flow is FlowReturnToHub) return ArrivalView.none;
+  if (flow is FlowStay && current != null && current != ArrivalView.none) {
+    return current;
+  }
   return inExcursion || mainStory ? ArrivalView.page : ArrivalView.sheet;
 }
 
