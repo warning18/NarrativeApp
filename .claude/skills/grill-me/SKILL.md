@@ -13,6 +13,7 @@ description: Put the open decisions to the user as short multiple-choice questio
 6. End with a plain list of what was sent to whom and what is still open.
 
 Rules for every Manager skill:
+- Only the Manager session (see CLAUDE.md) merges PRs, renumbers versions or messages other sessions. Any other session that loads this skill only reports what it finds and never merges.
 - Say plainly what was done and what was not. Never report a check that was not run.
 - Merge only green PRs, one at a time, in ascending version order; never merge a PR that touches another session's area without it being listed in the PR.
 - Never put a model name in a commit, a PR or a file in the repo.
