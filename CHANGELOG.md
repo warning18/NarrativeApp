@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.764.0+800]
+
+- Fight on a phone: the screen stays upright while a fight is open. Turned
+  sideways (640 x 360) the dice board was left 1 px tall, so the fight could
+  not be played; now it holds portrait and lets the phone turn again when the
+  fight closes. The rest of the app turns as before, and a tablet (shortest
+  side of 600 dp or more) is never held.
+- Tests: `fight_orientation_test.dart` (the hold and the release, two fights
+  at once, a tablet, and a real fight opened and closed).
+
 ## [1.761.0+797]
 
 - Rangers get a die worth replacing the starter with: the storm die's Wind
