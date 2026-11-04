@@ -130,7 +130,6 @@ void main() {
 
   test('the eighth chapter brings its offer like any other', () {
     final growth = SimGrowth(
-      mode: SimProgression.offers,
       tables: const SimGrowthTables(),
       character: SimCharacter.create(
         raceId: 'human',

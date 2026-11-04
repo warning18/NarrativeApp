@@ -335,7 +335,6 @@ class _SimContext {
     this.signs = const {},
     this.clans = ClanData.empty,
     this.skillTrees = const {},
-    this.progression = SimProgression.offers,
     this.geography,
     this.clash = true,
     this.clashOff = const {},
@@ -461,10 +460,6 @@ class _SimContext {
   /// trees: what the offers draw from.
   final ClanData clans;
   final Map<String, dynamic> skillTrees;
-
-  /// How the character grows: the clans' offers (the game's rules since
-  /// v1.194), or the old skill points, perks and sign picks, to compare.
-  final SimProgression progression;
 
   /// The world's places and biomes (v1.197): the hazards on the roads.
   /// None, no hazards.
@@ -648,7 +643,6 @@ _SimResult _simulate(
   final growth = character == null || sim == null
       ? null
       : (SimGrowth(
-          mode: sim.progression,
           tables: sim.growthTables,
           character: character,
           startingSkillPoints: (sim.professions[character.professionId]
@@ -2352,8 +2346,7 @@ _SimResult _simulate(
 /// numbers, without the screen (the sign values and the offers were tuned
 /// with it, see signs.json and offers.dart); [tables] holds the gamedata
 /// files by name ('enemies', 'dice'...): without 'signs' the character
-/// never takes a sign, without 'factions' no clan comes. [progression]:
-/// the clans' offers, or the old skill points, perks and sign picks.
+/// never takes a sign, without 'factions' no clan comes.
 @visibleForTesting
 ({
   Map<String, ({int runs, int attempts, int won})> chapters,
@@ -2366,17 +2359,13 @@ _SimResult _simulate(
   required Map<String, dynamic> gameConfig,
   required int runs,
   required int seed,
-  SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
   SimPolicy policy = SimPolicy.naive,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final sim = _simContextOf(tables, gameConfig,
-      progression: progression,
-      clash: clash,
-      clashOff: clashOff,
-      policy: policy);
+      clash: clash, clashOff: clashOff, policy: policy);
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
@@ -2411,7 +2400,6 @@ _SimResult _simulate(
 _SimContext _simContextOf(
   Map<String, Map<String, dynamic>> tables,
   Map<String, dynamic> gameConfig, {
-  SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
@@ -2444,7 +2432,6 @@ _SimContext _simContextOf(
       titles: table('titles'),
     ),
     skillTrees: table('skill_trees'),
-    progression: progression,
     geography:
         Geography.parse(geography: table('geography'), biomes: table('biomes')),
     clash: clash,
