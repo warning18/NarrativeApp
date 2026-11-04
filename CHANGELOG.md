@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.820.0+856]
+
+- Edit Mode: saving a scene in the scene editor no longer erases parts of
+  it. The editor used to drop a scene's camp errand, its kind, its
+  show/hide flags and its camp line (English and French) on every save, so
+  saving one of the 20 companion loyalty errands turned it into a plain
+  scene that no longer showed at camp. A test now opens the editor on
+  scenes holding every field the story uses, saves them unedited, and
+  checks nothing changed.
+
 ## [1.819.0+855]
 
 - **Narrative: callbacks capped on five scenes, a shorter text on four returns.**
