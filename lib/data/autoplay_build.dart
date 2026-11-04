@@ -1,4 +1,5 @@
-import '../combat/stat_rules.dart' show damageStatOf, levelStatPicks;
+import '../combat/stat_rules.dart'
+    show damageStatOf, levelStatPicks, xpForLevel;
 import '../combat/dice_faces.dart';
 import '../models/ally_state.dart'
     show equipmentScalingBonusFor, meetsItemAlignment, meetsItemStatRequirement;
@@ -227,7 +228,7 @@ ArrivalTopUp planArrivalTopUp(
 
   var xp = -session.currentXP;
   for (var l = session.level; l < target.level; l++) {
-    xp += l * 100;
+    xp += xpForLevel(l);
   }
   if (session.level >= target.level) xp = 0;
   final levelsGained =

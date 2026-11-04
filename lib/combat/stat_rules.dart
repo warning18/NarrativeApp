@@ -22,6 +22,10 @@ const int levelHealthGain = 3;
 /// level, its rarity drawn, see drawStatPick).
 const int levelStatPicks = 1;
 
+/// The XP that takes a character from [level] to the next: 100 a level.
+/// One rule for the game (PlayerSession), the simulator and autoplay.
+int xpForLevel(int level) => level * 100;
+
 /// The ability that raises a profession's damage, '' for none: Strength
 /// for a warrior, Dexterity for a ranger or a rogue, Intelligence for a
 /// mage or a cleric.
