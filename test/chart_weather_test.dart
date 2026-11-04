@@ -322,12 +322,12 @@ void main() {
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(prefs!.getBool(chartWeatherPrefsKey), isFalse);
     expect(prefs.getBool(chartWeatherWorldOnlyPrefsKey), isTrue);
-    // The height calque, with its legend.
-    await tester.scrollUntilVisible(find.byKey(const Key('calque_height')), 80,
+    // The Clans calque (the sheet keeps the plain map, Clans and chapters).
+    await tester.scrollUntilVisible(find.byKey(const Key('calque_clans')), 80,
         scrollable: find.byType(Scrollable).last);
-    await tester.tap(find.byKey(const Key('calque_height')));
+    await tester.tap(find.byKey(const Key('calque_clans')));
     await settleApp(tester);
-    expect(container.read(chartCalqueProvider), ChartCalque.height);
+    expect(container.read(chartCalqueProvider), ChartCalque.clans);
     // The sheet closed (it can fill the screen, so a tap above it
     // would land on it).
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();

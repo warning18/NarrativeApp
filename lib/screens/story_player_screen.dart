@@ -314,13 +314,13 @@ class _StoryView extends ConsumerWidget {
           .firstOrNull;
       if (loop == null || loop.title.isEmpty) return;
       final lang = ref.read(appLanguageProvider);
-      showChapterCard(context,
+      unawaited(showChapterCard(context,
           number: loop.label.isEmpty ? '$next' : loop.label,
           title: loop.title,
           colour: InkColors.of(context).ember,
           note: offered ? tr(ref, 'offer_chapter_note') : null,
           newsTitle: trFor(lang, 'coast_news_title'),
-          news: chapterCardNews(news, lang));
+          news: chapterCardNews(news, lang)));
     });
 
     // Kept loaded for the party's reactions to a choice (see approval.dart),
@@ -490,11 +490,11 @@ class _StoryView extends ConsumerWidget {
             // failure here must still surface — otherwise it just looks
             // like the voice silently never triggers.
             if (!context.mounted) return;
-            showImmersiveNotice(
+            unawaited(showImmersiveNotice(
               context,
               icon: Icons.error_outline,
               message: '${tr(ref, 'voice_error_prefix')}: $e',
-            );
+            ));
           }
         });
       }

@@ -209,9 +209,11 @@ void main() {
         allies: allies,
       );
       final maren = allies.single;
-      final signature =
-          dieSignatureSkillIds(_dice['holy_die'] as Map<String, dynamic>)
-              .toSet();
+      // Its signature skills, and Heavy Blow on its open face (v1.759).
+      final signature = {
+        ...dieSignatureSkillIds(_dice['holy_die'] as Map<String, dynamic>),
+        'heavy_attack',
+      };
       expect(maren.facesPlayed.values.fold<int>(0, (a, b) => a + b), 40);
       expect(maren.skillsCast, isNotEmpty);
       expect(signature, containsAll(maren.skillsCast.keys));
