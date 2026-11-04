@@ -978,7 +978,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// others hidden by their flags), leading on to the next scene at the
   /// same stop (FlowStay). Such a scene has its way as a card, and a
   /// same-place step to it keeps the page or the sheet it was taken from
-  /// (v1.823); a scene with a choice to make opens as it did before v1.809,
+  /// (v1.825); a scene with a choice to make opens as it did before v1.809,
   /// its choices on the map.
   bool _hasOneWay(String nodeId) {
     final node = widget.story.nodeFor(nodeId);
@@ -1662,7 +1662,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.read(storyPlayProvider.notifier).scenePlay != null;
     final placed =
         !play.isInExcursion && placeLandmark != null && chartHere != null;
-    // A scene with a choice to make keeps it on the map (v1.823, as before
+    // A scene with a choice to make keeps it on the map (v1.825, as before
     // v1.809): the city chart's banners, the room plan's spots, the place
     // view's pins and cards. Only a scene with nothing to choose, its one
     // way leading to the next scene at the same stop (choice_flow.dart's

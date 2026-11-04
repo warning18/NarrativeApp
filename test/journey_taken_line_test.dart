@@ -87,7 +87,7 @@ void main() {
     tester.view.physicalSize = const Size(320, 568);
     await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
-    // Saltmouth's market (v1.823: a same-place step is a card when it is
+    // Saltmouth's market (v1.825: a same-place step is a card when it is
     // acted out there; a plain way is a banner on the map).
     play.jumpTo('2010');
     await settleApp(tester);

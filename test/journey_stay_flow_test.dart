@@ -1,4 +1,4 @@
-// The scene-or-map rule as the user set it (v1.823, after v1.809): a scene
+// The scene-or-map rule as the user set it (v1.825, after v1.809): a scene
 // with nothing to choose, its one way leading to the next scene at the same
 // stop, goes on in the view it was taken from (the page or the sheet), with
 // no map; a scene with a choice to make keeps its choices on the map as

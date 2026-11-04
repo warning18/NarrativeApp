@@ -1,5 +1,5 @@
 // A way to another district of the town is walked on the city chart
-// (v1.823): from the Lower Town (250) the way to the Stone Bridge is a mark
+// (v1.825): from the Lower Town (250) the way to the Stone Bridge is a mark
 // on Alster's chart, the party's mark walks the streets to it (the walk can
 // be skipped by a tap) and the bridge's scene opens.
 import 'package:flutter/material.dart';

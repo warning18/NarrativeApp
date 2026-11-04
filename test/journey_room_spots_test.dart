@@ -1,4 +1,4 @@
-// A room scene with choices to make keeps them as spots on its plan (v1.823,
+// A room scene with choices to make keeps them as spots on its plan (v1.825,
 // as before v1.809): the Blind Beggar's casino (110) is a room plan with a
 // mark for each way, and its page has a way back to it.
 import 'package:flutter/material.dart';
