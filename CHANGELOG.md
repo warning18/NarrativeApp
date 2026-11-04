@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.770.0+806]
+## [1.769.0+805]
 
 - The app is about 350 KB smaller: `city_plans.json` (the cities' stored
   plans, generated, never edited by hand) is written minified, 733 KB down
@@ -16,6 +16,13 @@ isn't reconstructable from git history alone.
   (`city_plan_generator.dart`, `town_service_pins.dart`), which only the
   tools in `tool/city_plans/` run, move there from `lib/`. Nothing changes
   on screen.
+
+## [1.768.0+804]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
 
 ## [1.767.0+803]
 
