@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.771.0+807]
+
+- The playthrough simulator loses its old growth mode (the skill points,
+  perks and sign picks of before v1.194), which only two tests still ran;
+  the game and every batch use the clans' offers. About 170 lines less,
+  and a seeded batch gives the same numbers. Nothing changes in play.
+
 ## [1.770.0+806]
 
 - Code: the 15% lift on ordinary enemies' damage from chapter 2 on

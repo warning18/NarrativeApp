@@ -65,7 +65,6 @@ void main() {
     expect(pay.politicsKey, questTurnInPoliticsKey('candles', 0));
 
     final growth = SimGrowth(
-      mode: SimProgression.offers,
       tables: SimGrowthTables(clans: clans),
       character: SimCharacter.create(
         raceId: 'human',
