@@ -334,11 +334,11 @@
         "element": "Wind"
       },
       {
-        "faceName": "Wind Step",
-        "type": "Defend",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "Wind"
       },
       {
@@ -361,9 +361,9 @@
         ]
       },
       {
-        "faceName": "Catch Your Breath",
-        "type": "Heal",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
