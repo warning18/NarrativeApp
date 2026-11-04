@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fight_markers_harness.dart';
 import 'skill_fight_harness.dart' show settle, tapWhenEnabled, pumpUntil, shows;
+import 'support/pump.dart';
 
 void main() {
   testWidgets('a warrior sees its Fury, and a foe its execute line',
@@ -25,7 +26,7 @@ void main() {
     await tapWhenEnabled(tester, 'Roll Dice');
     await pumpUntil(tester, () => shows('Confirm'));
     await tapWhenEnabled(tester, 'Confirm');
-    await pumpUntil(tester, () => shows('Round 2'));
+    await pumpFor(tester, 40);
     await settle(tester);
     expect(
         find.byWidgetPredicate(

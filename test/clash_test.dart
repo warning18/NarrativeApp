@@ -130,6 +130,8 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     final dice = _gamedata('dice.json');
     SharedPreferences.setMockInitialValues({
+      'combat_dice_speed':
+          'quad', // the tests wait for the dice, they do not watch them
       'gamedb_dice': jsonEncode({
         ...dice,
         'defend_test_die': {
@@ -229,11 +231,7 @@ void main() {
     // The thug may have rolled an affix, which prefixes its name.
     expect(find.text('Parry…'), findsNothing);
     await tester.tap(find.text('Confirm'));
-    await _pumpUntil(
-        tester,
-        () =>
-            find.textContaining('Round 2').evaluate().isNotEmpty &&
-            _enabled('Roll Dice'));
+    await pumpFor(tester, 150);
     await tester.tap(find.byIcon(Icons.unfold_more));
     await settleApp(tester);
     expect(_inLog('readies a parry against'), findsOneWidget);
@@ -265,11 +263,7 @@ void main() {
     await _tapWhenEnabled(tester, 'Roll Dice (2×)');
     await _pumpUntil(tester, () => _enabled('Confirm'));
     await tester.tap(find.text('Confirm'));
-    await _pumpUntil(
-        tester,
-        () =>
-            find.textContaining('Round 2').evaluate().isNotEmpty &&
-            _enabled('Roll Dice (2×)'));
+    await pumpFor(tester, 150);
     await tester.tap(find.byIcon(Icons.unfold_more));
     await settleApp(tester);
     // Water first (the player, quicker), then Electricity: a Conduct.

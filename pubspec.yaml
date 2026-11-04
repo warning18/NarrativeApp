@@ -129,10 +129,9 @@ flutter:
     - assets/visuals/companion/dog_companion_animations/Walking/north/
     - assets/visuals/companion/dog_companion_animations/Walking/west/
     - assets/visuals/companion/dog_companion_animations/Walking/south/
-    - assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/south/
-    - assets/visuals/companion/dog_companion_animations/Sitting_down/rotations/
-    - assets/visuals/companion/dog_companion_animations/Make_it_with_angel_w/rotations/
-    - assets/visuals/companion/dog_companion_animations/Make_it_with_demon_w/rotations/
+    - assets/visuals/companion/dog_companion_animations/Sitting_down/rotations/south.png
+    - assets/visuals/companion/dog_companion_animations/Make_it_with_angel_w/rotations/south.png
+    - assets/visuals/companion/dog_companion_animations/Make_it_with_demon_w/rotations/south.png
     - assets/visuals/companion/dog_companion_animations/walking_angel/east/
     - assets/visuals/companion/dog_companion_animations/walking_angel/west/
     - assets/visuals/companion/dog_companion_animations/walking_evil/east/

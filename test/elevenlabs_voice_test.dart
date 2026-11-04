@@ -156,8 +156,10 @@ void main() {
                 text.replaceAll(RegExp(r'\s+'), ' ').trim();
             expect(
                 words(spoken.join(' ')),
+                // The screen never shows a page-break marker either.
                 words(stripStoryMarkup(storyBodyFor(
-                    composeNarration(node, session, french: french)))),
+                        composeNarration(node, session, french: french)))
+                    .replaceAll('[PAGE]', '')),
                 reason: 'node ${node.id}');
             for (final paragraph in spoken) {
               expect(script, contains(paragraph),
