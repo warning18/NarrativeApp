@@ -11,8 +11,6 @@
       "material_timber": 3
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "hull_patched",
     "tier": 1,
     "bossEnemyId": "dock_overseer",
@@ -37,8 +35,6 @@
       "material_cut_stone": 3
     },
     "rewardItemId": "armor_leather",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "sail_mended",
     "tier": 1,
     "bossEnemyId": "plague_hound",
@@ -64,8 +60,6 @@
       "material_cut_stone": 1
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "banner_second_piece_lead",
     "tier": 2,
     "bossEnemyId": "smuggler_captain",
@@ -92,8 +86,6 @@
       "material_slag_glass": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "cinder_row_cleared",
     "tier": 2,
     "bossEnemyId": "iron_golem",
@@ -124,8 +116,6 @@
       "material_slag_glass": 1
     },
     "rewardItemId": "plate_emberproof",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "scaffold_yards_cleared",
     "tier": 3,
     "bossEnemyId": "void_stalker",
@@ -158,8 +148,6 @@
       "material_ash_steel": 1
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "ossuary_galleries_cleared",
     "tier": 1,
     "bossEnemyId": "bone_warden",
@@ -191,8 +179,6 @@
       "material_ash_steel": 2
     },
     "rewardItemId": "sword_t8",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "drowned_stair_cleared",
     "tier": 2,
     "bossEnemyId": "hollow_court_inquisitor",
@@ -222,8 +208,6 @@
       "material_shroud_thread": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "dead_heart_cleared",
     "tier": 2,
     "bossEnemyId": "tear_spawn",
@@ -255,8 +239,6 @@
       "material_shroud_thread": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "shroud_vigil_cleared",
     "tier": 3,
     "bossEnemyId": "void_archon",
@@ -286,8 +268,6 @@
       "material_lantern_brass": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "void_sovereign_fallen",
     "tier": 3,
     "bossEnemyId": "void_sovereign",
@@ -316,8 +296,6 @@
       "material_tear_glass": 3
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "glass_strand_cleared",
     "tier": 2,
     "bossEnemyId": "strand_colossus",
@@ -349,8 +327,6 @@
       "material_lantern_brass": 1
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "white_fleet_grave_cleared",
     "tier": 3,
     "bossEnemyId": "white_admiral",
@@ -377,8 +353,6 @@
       "material_iron_ore": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "exorcists_road_cleared",
     "tier": 2,
     "bossEnemyId": "horn_taker",
@@ -410,8 +384,6 @@
       "material_iron_ore": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "changeling_fen_cleared",
     "tier": 2,
     "bossEnemyId": "teind_rider",
@@ -445,8 +417,6 @@
       "material_tear_glass": 2
     },
     "rewardItemId": "",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "frost_quarry_cleared",
     "tier": 2,
     "bossEnemyId": "frost_kept_giant",
@@ -478,8 +448,6 @@
       "material_cut_stone": 2
     },
     "rewardItemId": "coat_brigandine",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "salt_road_cleared",
     "tier": 2,
     "bossEnemyId": "brine_jack",
@@ -507,8 +475,6 @@
       "material_slag_glass": 2
     },
     "rewardItemId": "boots_iron_shod",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "fever_bark_delivered",
     "tier": 2,
     "bossEnemyId": "purifier_vell",
@@ -539,8 +505,6 @@
       "material_slag_glass": 2
     },
     "rewardItemId": "helm_drowned_sallet",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "bell_road_cleared",
     "tier": 2,
     "bossEnemyId": "knell_keeper",
@@ -569,8 +533,6 @@
       "material_tear_glass": 2
     },
     "rewardItemId": "phoenix_sigil",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "ember_run_delivered",
     "tier": 2,
     "bossEnemyId": "rime_bailiff",
@@ -601,8 +563,6 @@
       "material_lantern_brass": 2
     },
     "rewardItemId": "boots_tearwalker",
-    "rewardDiceId": "",
-    "rewardAllyId": "",
     "rewardFlag": "lantern_train_cleared",
     "tier": 2,
     "bossEnemyId": "glass_shepherd",

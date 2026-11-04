@@ -209,7 +209,7 @@ void main() {
         final die = dice[(companion as Map)['signatureDiceId']] as Map;
         final signature = (die['faces'] as List).cast<Map>().where((f) =>
             f['type'] == 'Skill' &&
-            f['linkedSkillID'] != '' &&
+            (f['linkedSkillID'] ?? '') != '' &&
             f['linkedSkillID'] != 'heavy_attack');
         expect(signature, isNotEmpty, reason: companion['companionID']);
       }

@@ -284,7 +284,7 @@ const Map<String, List<_Face>> _before = {
 _Face _face(Map<String, dynamic> f) => (
       f['type'] as String,
       (f['value'] as num).toInt(),
-      f['linkedSkillID'] as String,
+      f['linkedSkillID'] as String? ?? '',
       (f['weight'] as num).toDouble(),
     );
 
@@ -353,7 +353,7 @@ void main() {
           expect(const ['Attack', 'Defend', 'Heal'], contains(f['type']),
               reason: key);
           expect(f['weight'], 1.0, reason: key);
-          expect(f['linkedSkillID'], '', reason: key);
+          expect(f['linkedSkillID'] ?? '', '', reason: key);
           if (key != 'gambler_die') expect(f['value'], average, reason: key);
         }
       }
