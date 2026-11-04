@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.791.0+827]
+
+- The Void Banner's `damage` of 25, which nothing in the game ever read
+  (gear deals its attack damage), is set to 0 like every other item, so
+  the data no longer suggests a hit it never made. A seeded simulator
+  batch gives byte-identical results; nothing changes in play.
+
 ## [1.790.0+826]
 
 - The playthrough simulator's fight (`sim_combat.dart`, 2,851 lines, one
