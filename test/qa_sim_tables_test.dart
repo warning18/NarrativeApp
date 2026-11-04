@@ -54,8 +54,15 @@ void main() {
   });
 
   test('the shared list holds every table the simulator reads', () {
-    final screen = File('lib/screens/playthrough_simulator_screen.dart')
-        .readAsStringSync();
+    // The screen and its part files (v1.757 cut the engine out into
+    // lib/screens/playthrough_simulator/).
+    final screen = [
+      File('lib/screens/playthrough_simulator_screen.dart'),
+      ...Directory('lib/screens/playthrough_simulator')
+          .listSync()
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.dart')),
+    ].map((f) => f.readAsStringSync()).join('\n');
     final read = {
       for (final m in RegExp(r"table\('([a-z_]+)'\)").allMatches(screen))
         m.group(1)!,

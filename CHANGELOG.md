@@ -17,6 +17,78 @@ isn't reconstructable from git history alone.
   new one cannot slip in unseen. All 45 were fire-and-forget on purpose;
   nothing runs earlier, later or differently.
 
+## [1.759.0+795]
+
+- The profession dice sold in shops now beat the starter die once bought,
+  so there is a reason to replace it. The iron, bulwark, storm, holy, tide,
+  flame and arcane dice each turn one plain face into an open Skill face
+  (where your skills cast at full power, as on the starter) and their
+  weakest signature faces come up more often. Prices and shops are
+  unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
+  the same way. See `docs/simulation/starter-die.md`.
+## [1.758.0+794]
+
+- Code (P4, part 1): two providers no longer wake everything below them on
+  every change to the session. The tab badges compare equal when no dot
+  comes or goes, so the always-on home shell and the play menu stop
+  rebuilding on each change; the clan effects (and the signs built on
+  them) watch only the four fields they read. No change in play. Over five
+  unrelated session changes they notified 5 and 5 times; now 0 and 0
+  (`provider_rebuilds_test`).
+## [1.757.0+793]
+
+- Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
+  main file (the screen, 765 lines) and five `part` files under
+  `lib/screens/playthrough_simulator/`: the engine (`sim_engine.dart`,
+  `simulatePlaythroughs` and the walk), the batch statistics, the exports,
+  the batch card and the run detail. A pure move: every line is the same,
+  so the simulator's numbers and the tests do not change (wave 4a).
+
+## [1.756.0+792]
+
+- Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three
+  files under `lib/screens/journey/`: the panel under the map (its height, the
+  choice cards, the rings and list sheets), the road the party is carried
+  along, and the scene, map-button, looked-at and ended panels (about 1,000
+  lines). The map chart, the district view and `build` stay where they are.
+  The state's methods moved into a private extension (as in the fight screen)
+  and `setState` is called through a one-line `_update`; nothing changes on
+  screen or in the rules.
+
+## [1.755.0+791]
+
+- Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
+  lines: the widget, its state and `build`) and five files under
+  `lib/screens/ship_battle/`: the turns, the dock and chips, the sea, the crew
+  and the painters. The state's methods moved into private extensions (as in
+  the fight screen) and `setState` is called through a one-line `_update`;
+  nothing changes on screen or in the rules.
+
+## [1.754.0+790]
+
+- **The world map, simpler and readable.** One look and one world: the Layers
+  sheet no longer holds the look and shape selectors. It keeps the sphere,
+  the weather and three map layers: none, **Clans** and the route by
+  chapter; the country, standing, relief, humidity, heat and shops layers
+  are gone. The dotted borders of the lands and the dotted coasts under the
+  fog are gone too. The **Clans** layer tints each whole land by the clan
+  that holds it now (stripes where a second clan presses almost as hard),
+  from Core's region holders.
+- Tests: `full_map_screen_test` now checks the sheet offers the plain map,
+  Clans and chapters (and no look, shape, height or standing layer), and that
+  the Clans layer gives the painter who holds each land; `chart_weather_test`
+  turns the Clans layer instead of the height one.
+- The map's size is unchanged (the question of the map's size is with the
+  user). `docs/proposals/map-performance.md` lists the speed steps that
+  follow, each its own PR.
+
+## [1.753.0+789]
+
+- The app no longer ships dog pictures nothing reads: the three `rotations`
+  folders (the sitting dog, the angel's and the demon's) now list only their
+  `south.png`, and the unused bark frames are left out (about 65 KB less).
+  The art stays in the repository, as source. Nothing changes on screen.
+
 ## [1.752.0+788]
 
 - The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the

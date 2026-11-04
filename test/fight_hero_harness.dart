@@ -30,6 +30,8 @@ Future<void> enterFight(WidgetTester tester,
     String enemyId = 'slum_thug'}) async {
   if (Platform.environment['UX_SHOTS'] != null) await loadAppFonts();
   SharedPreferences.setMockInitialValues({
+    'combat_dice_speed':
+        'quad', // the tests wait for the dice, they do not watch them
     'gamedb_dice': jsonEncode({
       ...gamedata('dice.json'),
       'info_die': {
