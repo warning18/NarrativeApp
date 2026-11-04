@@ -179,66 +179,73 @@ extension _JourneyChoices on _JourneyViewState {
     // A locked page ([all], v1.553) lists every way as a card: the ways
     // somewhere as road cards, which go back to the map and walk them.
     final hub = !all && _isHub(steps);
-    return ListView(
-      key: const ValueKey('journey_choice_cards'),
-      padding: EdgeInsets.zero,
-      shrinkWrap: shrinkWrap,
-      children: [
-        // The scene in small and its question, over a panel's cards.
-        if (!all && !hub && lead != null) lead,
-        if (!all && selected != null && !selected.onCard) ...[
-          _StepDetail(
-            step: selected,
-            busy: _busy,
-            french: french,
-            isExcursion: false,
-            onGo: () => _take(_selected!, selected),
-          ),
-          const SizedBox(height: 6),
-        ],
-        if (hub) ...[
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final ring in _rings(steps, ink))
-                ChoiceGroupChip(
-                  key: ValueKey('choice_chip_${ring.id}'),
-                  label: ring.label,
-                  count: ring.count,
-                  color: ring.color,
-                  onTap: () => _openList(ring.id, steps, french, story),
+    return _SceneFadeIn(
+      // A same-place step opens the next scene's stage and cards with a short
+      // fade (200 ms; a cut with reduced motion); anything else shows them as
+      // before.
+      key: ValueKey('journey_fade_${_sceneKey ?? ''}'),
+      enabled: ref.watch(pendingTakenProvider) != null,
+      child: ListView(
+        key: const ValueKey('journey_choice_cards'),
+        padding: EdgeInsets.zero,
+        shrinkWrap: shrinkWrap,
+        children: [
+          // The scene in small and its question, over a panel's cards.
+          if (!all && !hub && lead != null) lead,
+          if (!all && selected != null && !selected.onCard) ...[
+            _StepDetail(
+              step: selected,
+              busy: _busy,
+              french: french,
+              isExcursion: false,
+              onGo: () => _take(_selected!, selected),
+            ),
+            const SizedBox(height: 6),
+          ],
+          if (hub) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final ring in _rings(steps, ink))
+                  ChoiceGroupChip(
+                    key: ValueKey('choice_chip_${ring.id}'),
+                    label: ring.label,
+                    count: ring.count,
+                    color: ring.color,
+                    onTap: () => _openList(ring.id, steps, french, story),
+                  ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(tr(ref, 'choice_hub_hint'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+            ),
+          ] else
+            for (var i = 0; i < steps.length; i++)
+              if (steps[i].onCard || (all && steps[i].shape.here))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                      identical(selected, steps[i])),
+                )
+              else if (all)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                      identical(selected, steps[i]),
+                      onTap: () => _selected == i && !steps[i].locked
+                          ? _leaveByRoad(i, steps[i])
+                          : _update(() => _selected = i),
+                      onGo: () => _leaveByRoad(i, steps[i])),
                 ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(tr(ref, 'choice_hub_hint'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
-          ),
-        ] else
-          for (var i = 0; i < steps.length; i++)
-            if (steps[i].onCard || (all && steps[i].shape.here))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: _cardFor(i, steps[i], french, ink, palette, enemies,
-                    identical(selected, steps[i])),
-              )
-            else if (all)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: _cardFor(i, steps[i], french, ink, palette, enemies,
-                    identical(selected, steps[i]),
-                    onTap: () => _selected == i && !steps[i].locked
-                        ? _leaveByRoad(i, steps[i])
-                        : _update(() => _selected = i),
-                    onGo: () => _leaveByRoad(i, steps[i])),
-              ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -407,5 +414,43 @@ extension _JourneyChoices on _JourneyViewState {
         onGo: onGo ?? () => _take(i, step),
       ),
     );
+  }
+}
+
+/// [child] fading in over 200 ms when [enabled] (the stage and the cards of a
+/// scene a same-place step opened); shown at once otherwise, and with the
+/// system's reduced motion. New for each scene (the caller keys it by the
+/// scene).
+class _SceneFadeIn extends StatefulWidget {
+  const _SceneFadeIn({super.key, required this.enabled, required this.child});
+
+  final bool enabled;
+  final Widget child;
+
+  @override
+  State<_SceneFadeIn> createState() => _SceneFadeInState();
+}
+
+class _SceneFadeInState extends State<_SceneFadeIn>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _fade = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 200));
+  bool _started = false;
+
+  @override
+  void dispose() {
+    _fade.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (!widget.enabled || still) return widget.child;
+    if (!_started) {
+      _started = true;
+      _fade.forward();
+    }
+    return FadeTransition(opacity: _fade, child: widget.child);
   }
 }

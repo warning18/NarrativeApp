@@ -60,6 +60,7 @@ class _ScenePanel extends ConsumerWidget {
     final aftermath = ref.watch(pendingAftermathProvider);
     final outcome = ref.watch(pendingCheckOutcomeProvider);
     final roadNote = ref.watch(pendingRoadNoteProvider);
+    final taken = ref.watch(pendingTakenProvider);
     // Plain scenes read on the way here open this one (see
     // scene_flow.dart); lines an earlier choice earned close it.
     final speaker = speakerLabelFor(node.speaker, french: french);
@@ -94,6 +95,31 @@ class _ScenePanel extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // A step taken inside this place: what was taken, and that nothing
+        // moved (the scene-or-map rule, v1.809).
+        if (firstPage && taken != null) ...[
+          Text(
+            '\u203a ${taken.choice.textFor(french)}',
+            key: const ValueKey('journey_taken_line'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontFamily: InkFonts.prose,
+              fontStyle: FontStyle.italic,
+              color: ink.gold,
+            ),
+          ),
+          Text(
+            tr(ref, 'journey_still_in').replaceAll(
+                '{place}',
+                ref
+                        .watch(geographyProvider)
+                        .places[taken.placeId]
+                        ?.nameFor(french) ??
+                    ''),
+            key: const ValueKey('journey_still_line'),
+            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+          ),
+          const SizedBox(height: 10),
+        ],
         if (firstPage && detour != null && detour!.isNotEmpty) ...[
           Text(detour!, style: prose),
           const SizedBox(height: 12),

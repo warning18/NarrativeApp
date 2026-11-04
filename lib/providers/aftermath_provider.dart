@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../data/choice_flow.dart';
+import '../models/story_node.dart';
+
 import '../combat/combat_aftermath.dart';
 import '../data/scene_flow.dart';
 
@@ -34,3 +37,31 @@ final pendingPreludeProvider =
 /// running low; see journey_rules.dart): the next scene opens with it, and
 /// the next choice retires it.
 final pendingRoadNoteProvider = StateProvider<String?>((ref) => null);
+
+/// The step just taken inside one place (a card of the scene whose way leads
+/// to the next scene at the same stop): its own words and where the party
+/// still stands. The scene opens with them (a "taken" line and a "still in"
+/// line, see journey_panels.dart); a move, a hub's return and the next choice
+/// retire them.
+typedef TakenStep = ({StoryChoice choice, String placeId});
+final pendingTakenProvider = StateProvider<TakenStep?>((ref) => null);
+
+/// What [pendingTakenProvider] holds after [choice] was taken with [flow]: the
+/// step and the place only for a step that stayed at the same stop and
+/// opened another scene ([sceneChanged]), off a detour; null after a move, a
+/// carried trip, a hub's return, the step that opens the character's making
+/// or a step that left the scene as it was.
+TakenStep? takenStepAfter({
+  required StoryChoice choice,
+  required ChoiceFlow flow,
+  required bool inExcursion,
+  required bool sceneChanged,
+  required String? placeId,
+}) =>
+    flow is FlowStay &&
+            !inExcursion &&
+            sceneChanged &&
+            !choice.opensCharacterCreation &&
+            placeId != null
+        ? (choice: choice, placeId: placeId)
+        : null;
