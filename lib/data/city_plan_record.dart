@@ -1,5 +1,5 @@
 // A city's plan as stored (board 15, docs/proposals/city-plan-record.md):
-// assets/gamedata/city_plans.json, laid out by city_plan_generator.dart.
+// assets/gamedata/city_plans.json, laid out by tool/city_plans/city_plan_generator.dart.
 // Typed for the painter (every polygon and path a list of Offsets in the
 // plan's 1000 x 1000 square, y down), and a PlacePlan for the Journey: where
 // each district's entry is, which building each way's pin stands on, and how
@@ -87,9 +87,9 @@ class CityPlanBuilding {
 }
 
 /// One of a town's services pinned on its plan (wave 14, see
-/// town_service_pins.dart): its [kind] (see townServiceKinds), where it
-/// stands ([at], on a square or a lot of the record) and the district that
-/// is in.
+/// tool/city_plans/town_service_pins.dart): its [kind] (see
+/// townServiceKinds), where it stands ([at], on a square or a lot of the
+/// record) and the district that is in.
 class CityServicePin {
   const CityServicePin(this.id, this.kind, this.at, this.district);
   final String id;
@@ -264,7 +264,7 @@ class CityPlanRecord implements PlacePlan {
 
   /// The order [districtId]'s buildings take ways: halls and temples
   /// first, then the rest, each nearest the district's label first (as
-  /// city_plan_generator.dart's anchorOrder).
+  /// tool/city_plans/city_plan_generator.dart's anchorOrder).
   List<CityPlanBuilding> anchorOrder(String districtId) {
     final d = districts[districtId];
     if (d == null) return const [];
