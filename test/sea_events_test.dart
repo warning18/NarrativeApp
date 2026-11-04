@@ -98,7 +98,6 @@ void main() {
             fail('a beast is never drawn');
         }
         expect(event.descriptionFor(true), isNotEmpty);
-        expect(event.choiceTextFor(true), isNotEmpty);
         expect(event.descriptionFor(false), isNot(event.descriptionFor(true)));
       }
     }

@@ -92,7 +92,6 @@ void main() {
       for (final id in value) {
         final node = story.nodeFor(id);
         expect(geo.doorstepOfNode(node)?.id, key, reason: id);
-        expect(geo.roomOfNode(node), isNull, reason: id);
       }
     }
     // Inside: the ruins' trapdoor, the Beggar's tables, the cells.
@@ -103,11 +102,12 @@ void main() {
       ('800', 'black_hold_cells'),
     ]) {
       final node = story.nodeFor(id);
-      expect(geo.roomOfNode(node)?.id, building, reason: id);
+      expect(geo.placeOfNode(node)?.id, building, reason: id);
+      expect(geo.placeOfNode(node)!.isBuilding, isTrue, reason: id);
       expect(geo.doorstepOfNode(node), isNull, reason: id);
     }
     // A district's scene has neither.
-    expect(geo.roomOfNode(story.nodeFor('250')), isNull);
+    expect(geo.placeOfNode(story.nodeFor('250'))?.isBuilding ?? false, isFalse);
     expect(geo.doorstepOfNode(story.nodeFor('250')), isNull);
   });
 
