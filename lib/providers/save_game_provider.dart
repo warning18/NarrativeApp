@@ -88,15 +88,20 @@ class SavedGamesNotifier extends StateNotifier<List<SaveSlotSummary?>> {
     final story = prefs.getString(_legacyStoryPrefsKey);
     if (session == null || story == null) return;
     if (prefs.getString(_slotPrefsKey(1)) == null) {
-      final storyMap = json.decode(story) as Map<String, dynamic>;
-      await prefs.setString(
-        _slotPrefsKey(1),
-        json.encode({
+      final String slot;
+      try {
+        final storyMap = json.decode(story) as Map<String, dynamic>;
+        slot = json.encode({
           'session': json.decode(session),
           'currentNodeId': storyMap['currentNodeId'],
           'history': storyMap['history'] ?? const [],
-        }),
-      );
+        });
+      } catch (_) {
+        // Unreadable (issue #693): left where it is, never deleted, so a
+        // later version can still read it; the slots read on.
+        return;
+      }
+      await prefs.setString(_slotPrefsKey(1), slot);
     }
     await prefs.remove(_legacySessionPrefsKey);
     await prefs.remove(_legacyStoryPrefsKey);
