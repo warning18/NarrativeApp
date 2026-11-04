@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.832.0+868]
+
+- Skill icons, the fire school: Cleric Smite (a bolt), Fireball, Inner Fire (a
+  flame), Mage Meteor, Molten Backlash, Orc Berserk Rage (a snarling face), Pack
+  Howl (a crescent moon) and Warcry (the sound of it) each had the same blank
+  orange gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/fire.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/fire-before-after.png`.
+
 ## [1.829.0+865]
 
 - Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
