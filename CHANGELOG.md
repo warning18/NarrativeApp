@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.770.0+806]
+
+- Code: the 15% lift on ordinary enemies' damage from chapter 2 on
+  (v1.743) is folded into the damage floor table (one table instead of a
+  table and a factor); every fight's numbers are the same.
+- The clans' tables and the offers' tables are parsed once and kept while
+  they stay the same (an edit in the Data tab parses them again), instead
+  of about 2.7 ms again on each of 13 calls: offers and clan pages open a
+  little faster.
+
 ## [1.769.0+805]
 
 - The app is about 350 KB smaller: `city_plans.json` (the cities' stored
