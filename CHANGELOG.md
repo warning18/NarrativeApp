@@ -15,6 +15,15 @@ isn't reconstructable from git history alone.
   The clans' offers draw signs since v1.194 and stay as they are. The
   sign tests now check the rules those offers use: what a patron can
   offer, which patrons may, and the slots. Nothing in the game changes.
+## [1.797.0+833]
+
+- Code cleanup (R4, batch 4): ten more names only the tests used are
+  removed: the level-up sign and perk picks the clans' offers replaced
+  (their counts and the perk offer roll), a copy of the skills screen's
+  skill-point price, the clock's hour of a watch, an ability check's
+  critical flags and two one-line getters. Their tests now check the
+  live code, or lose only the lines that pinned the dead copy. Nothing
+  in the game changes.
 
 ## [1.796.0+832]
 

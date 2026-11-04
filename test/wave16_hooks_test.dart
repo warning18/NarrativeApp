@@ -45,10 +45,9 @@ Map<String, dynamic> _seaLines(String id) => {
 
 void main() {
   group('the part of the day', () {
-    test('each watch is a phase and an hour', () {
+    test('each watch is a phase', () {
       expect([for (var w = 0; w < 4; w++) dayPhaseOf(w)],
           [DayPhase.dawn, DayPhase.day, DayPhase.dusk, DayPhase.night]);
-      expect([for (var w = 0; w < 4; w++) hourOfWatch(w)], [6, 12, 18, 0]);
       // Out of range is kept in it.
       expect(dayPhaseOf(9), DayPhase.night);
       expect(dayPhaseOf(-1), DayPhase.dawn);
@@ -57,11 +56,9 @@ void main() {
     test('the session shows it, saves it, and an old save is at day', () {
       final dusk = _session({'day': 4, 'watch': 2});
       expect(dayPhaseOf(dusk.watch), DayPhase.dusk);
-      expect(hourOfWatch(dusk.watch), 18);
       expect(dayPhaseOf(_roundTrip(dusk).watch), DayPhase.dusk);
       final old = _session({});
       expect(dayPhaseOf(old.watch), DayPhase.day);
-      expect(hourOfWatch(old.watch), 12);
     });
 
     test('the providers follow the clock', () async {
@@ -74,11 +71,11 @@ void main() {
       ]);
       addTearDown(container.dispose);
       expect(container.read(dayPhaseProvider), DayPhase.day);
-      int hour() => hourOfWatch(container.read(playerSessionProvider).watch);
-      expect(hour(), 12);
+      int watch() => container.read(playerSessionProvider).watch;
+      expect(watch(), 1);
       await notifier.passTime(2);
       expect(container.read(dayPhaseProvider), DayPhase.night);
-      expect(hour(), 0);
+      expect(watch(), 3);
       await notifier.restUntilDawn();
       expect(container.read(dayPhaseProvider), DayPhase.dawn);
     });

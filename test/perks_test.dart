@@ -1,6 +1,5 @@
 // Perks (v1.163; since v1.194 the Wayfarer's gift in the clans' offers):
 // what each rank adds, taking one from the Wayfarer, and the save file.
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,27 +79,15 @@ void main() {
       expect(over.secondWind, isFalse);
     });
 
-    test('the offer is three different perks still open', () {
-      for (var seed = 0; seed < 30; seed++) {
-        final offer =
-            rollPerkOffer(const {'steadyHands': 1, 'vigor': 3}, Random(seed));
-        expect(offer, hasLength(perkOfferSize));
-        expect(offer.toSet(), hasLength(perkOfferSize));
-        expect(offer, isNot(contains(Perk.steadyHands)));
-        expect(offer, isNot(contains(Perk.vigor)));
-      }
+    test('the perks still open are those below their top rank', () {
+      final open = perksAvailable(const {'steadyHands': 1, 'vigor': 3});
+      expect(open, isNot(contains(Perk.steadyHands)));
+      expect(open, isNot(contains(Perk.vigor)));
+      expect(open, hasLength(Perk.values.length - 2));
       final everything = {
         for (final perk in Perk.values) perk.name: perkInfo[perk]!.maxRank,
       };
-      expect(rollPerkOffer(everything, Random(1)), isEmpty);
-    });
-
-    test('one pick every second level', () {
-      expect(perkPicksFor(1, 2), 1);
-      expect(perkPicksFor(2, 3), 0);
-      expect(perkPicksFor(3, 5), 1);
-      expect(perkPicksFor(1, 7), 3);
-      expect(perkPicksFor(4, 4), 0);
+      expect(perksAvailable(everything), isEmpty);
     });
 
     test('every perk has a name and a description in both languages', () {
