@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.826.0+862]
+
+- Fights on the road: the fight is dressed with the land it is met on. A fight
+  fought during a land crossing (the scavengers) now has the side-view land
+  behind its cards: the world camera's kit at the party's place (or, on a
+  road the camera does not paint, the route's own terrain in today's window),
+  across the upper half of the screen and faded softly into the stage's ground,
+  standing still. Fights met anywhere else (the Journey, the story, a
+  hunt) are unchanged. `FightScreen.landLayers`; the backdrop's
+  `_buildLand` in `fight_ground.dart`. Picture:
+  `docs/ux-shots/fight-land/before-desert-ruins.png` (no land, desert, ruins).
+  Tests: `fight_board_test.dart` (the land is behind a fight given one),
+  `land_crossing_test.dart` (the road's fight is given it).
+
+
 ## [1.825.0+861]
 
 - Journey: the map is back for every scene with a choice to make, as before
