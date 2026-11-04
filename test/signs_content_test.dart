@@ -174,8 +174,7 @@ void main() {
   test('every patron has three signs of their own to offer', () {
     for (final patron in patrons.values) {
       final own = offerableSigns(patron.id, signs: signs, held: const []);
-      expect(own.regular.length, greaterThanOrEqualTo(signOfferSize),
-          reason: patron.id);
+      expect(own.regular.length, greaterThanOrEqualTo(3), reason: patron.id);
     }
   });
 
