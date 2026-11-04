@@ -152,6 +152,8 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     final dice = _gamedata('dice.json');
     SharedPreferences.setMockInitialValues({
+      'combat_dice_speed':
+          'quad', // the tests wait for the dice, they do not watch them
       'gamedb_dice': jsonEncode({
         ...dice,
         'strike_test_die': {
@@ -215,11 +217,7 @@ void main() {
     // The first rat takes the blow; the healer mends it before they strike.
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(
-        tester,
-        () =>
-            find.textContaining('Round 2').evaluate().isNotEmpty &&
-            _enabled('Roll Dice'));
+    await pumpFor(tester, 150);
     await tester.tap(find.byIcon(Icons.unfold_more));
     await settleApp(tester);
     expect(
