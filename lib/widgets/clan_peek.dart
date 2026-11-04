@@ -1,7 +1,7 @@
 // A clan's details on a long press (Wave 8): hold a clan's banner (in the
 // offer's banner row, on the ring's crests, on the Throne room's standards)
 // and its card opens over the screen: where it leans, what it stands for,
-// its sub-clans, a short recap of its story. It stays open when the finger
+// its sub-clans, a short recap of its story, how it is ruled. It stays open when the finger
 // lifts (v1.555); a tap outside it, its close button or the back gesture
 // closes it.
 import 'package:flutter/material.dart';
@@ -80,6 +80,7 @@ class ClanDetailsCard extends ConsumerWidget {
     final motto = faction.mottoFor(lang);
     final stands = faction.standsForIn(lang);
     final intro = faction.introFor(lang);
+    final ruling = faction.rulingFor(lang);
     final subs = [
       for (final s in data.subclansOf(factionId)) s.nameFor(lang),
     ];
@@ -222,6 +223,13 @@ class ClanDetailsCard extends ConsumerWidget {
                 heading('clan_peek_backstory'),
                 Text(intro,
                     key: Key('clan_peek_intro_$factionId'),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+              if (ruling.isNotEmpty) ...[
+                heading('clan_peek_ruling'),
+                Text(ruling,
+                    key: Key('clan_peek_ruling_$factionId'),
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
               ],

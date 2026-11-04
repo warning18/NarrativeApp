@@ -166,6 +166,8 @@ class Faction {
     this.mottoFr = '',
     this.standsFor = '',
     this.standsForFr = '',
+    this.ruling = '',
+    this.rulingFr = '',
     this.lean = 0,
     this.startStanding = 0,
     this.subclans = const [],
@@ -278,6 +280,11 @@ class Faction {
   final String standsFor;
   final String standsForFr;
 
+  /// How the clan is ruled: who holds power, how it passes, what a member
+  /// owes (factions.json `ruling`, Narrative's).
+  final String ruling;
+  final String rulingFr;
+
   /// The alignment nudge when the character accepts their gift: -1, 0 or
   /// 1.
   final int lean;
@@ -328,6 +335,7 @@ class Faction {
   String mottoFor(AppLanguage language) => _pick(language, motto, mottoFr);
   String standsForIn(AppLanguage language) =>
       _pick(language, standsFor, standsForFr);
+  String rulingFor(AppLanguage language) => _pick(language, ruling, rulingFr);
   String introFor(AppLanguage language) => patron.introFor(language);
   List<String> greetingsFor(AppLanguage language) =>
       patron.greetingsFor(language);
@@ -342,6 +350,8 @@ class Faction {
         mottoFr: _text(json['motto_fr']),
         standsFor: _text(json['stands_for']),
         standsForFr: _text(json['stands_for_fr']),
+        ruling: _text(json['ruling']).trim(),
+        rulingFr: _text(json['ruling_fr']).trim(),
         lean: _int(json['lean']).clamp(-1, 1),
         startStanding:
             _int(json['startStanding']).clamp(minStanding, maxStanding),
