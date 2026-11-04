@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.818.0+854]
+
+- **Narrative: callbacks capped on five scenes, a shorter text on four returns.**
+  `callback_cap` and `priority` (v1.816) are set on the scenes where earned
+  lines stack: `7800` (70 callbacks, cap 10), `7004` (31, cap 10), `7001` (26,
+  cap 8), `7400` (23, cap 8) and `7500` (22, cap 8). The clan payoffs, the
+  crown, the fate of Lysa and the Lantern-Bearer's will are kept first; the
+  twenty "houses" lines on `7800` go first. `revisit_description` (EN and FR)
+  is added on the four non-town scenes the player returns to and that show
+  their text each time: the cove camp (`4999_camp`, `7800`), the yards
+  (`2900`) and the harbour steps (`7515_rest`). The towns already fold when
+  read, so they get none. No other story text changed.
+
 ## [1.816.0+852]
 
 - Story: two new fields for Narrative's text, nothing changes until the
