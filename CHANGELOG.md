@@ -15,6 +15,13 @@ isn't reconstructable from git history alone.
   a value) is removed. No code, test or screen read it; the clan pages show
   the ruling text only. No screen changes.
 
+## [1.802.0+838]
+
+- Code cleanup (split 4e): the fight's round logic leaves
+  `fight_rounds.dart` (1,790 lines) for three files: the party's dice
+  and round, the enemies' turn, and the signs' effects in a round. A
+  pure move: nothing in the fight changes.
+
 ## [1.801.0+837]
 
 - Code cleanup (split 4d): the game database's schemas leave
@@ -37,6 +44,7 @@ isn't reconstructable from git history alone.
   The clans' offers draw signs since v1.194 and stay as they are. The
   sign tests now check the rules those offers use: what a patron can
   offer, which patrons may, and the slots. Nothing in the game changes.
+
 ## [1.798.0+834]
 
 - The Journey draws a city, a town or a village from its stored plan only
