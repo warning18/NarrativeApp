@@ -13,7 +13,7 @@ isn't reconstructable from git history alone.
 - The game data files leave out fields stored at the value their reader
   already assumes: `healthMod: 0` and `isActiveSkill: true` on every
   skill, the empty `rewardDiceId` / `rewardAllyId` on every zone, and a
-  dice face's `"element": "None"` and empty `linkedSkillID` (about 27 KB
+  dice face's `"element": "None"` and empty `linkedSkillID` (about 19 KB
   less, the game plays the same). The data editor no longer writes such a
   field back when a record leaves it out and it isn't edited, and a save
   keeps the keys the form doesn't show.
