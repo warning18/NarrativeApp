@@ -69,8 +69,6 @@ void main() {
       expect(result.modifier, 6);
       expect(result.total, 26);
       expect(result.success, isTrue);
-      expect(result.isCriticalSuccess, isTrue);
-      expect(result.isCriticalFail, isFalse);
     });
 
     test('a low roll plus modifier misses the DC', () {
@@ -84,7 +82,6 @@ void main() {
       expect(result.roll, 1);
       expect(result.total, 3);
       expect(result.success, isFalse);
-      expect(result.isCriticalFail, isTrue);
     });
 
     test('total meeting the DC exactly still succeeds', () {

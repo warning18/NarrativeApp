@@ -815,8 +815,8 @@
     },
     "choices": [
       {
-        "text": "Pay the toll (30 gold)",
-        "text_fr": "Payer le péage (30 pièces d’or)",
+        "text": "Pay the toll",
+        "text_fr": "Payer le péage",
         "next_id": "261",
         "lockedText": "Thirty gold. I did not have it.",
         "lockedText_fr": "Trente pièces d’or. Je ne les avais pas."

@@ -141,7 +141,7 @@ void main() {
       for (final id in cliffs.events.keys) {
         final event = events[id];
         expect(event, isNotNull, reason: id);
-        expect(event!.isRulers, isFalse, reason: id);
+        expect(event!.ruler, isEmpty, reason: id);
         // A way round that costs at most 2% health, whatever the dice.
         expect(
             event.choices.any(
@@ -172,7 +172,7 @@ void main() {
       });
       for (final id in sands.events.keys) {
         expect(events[id], isNotNull, reason: id);
-        expect(events[id]!.isRulers, isFalse, reason: id);
+        expect(events[id]!.ruler, isEmpty, reason: id);
         // Mild: chapter 6 is won little more than half the time.
         for (final c in events[id]!.choices) {
           for (final o in [c.outcome, c.success, c.fail]) {
@@ -341,9 +341,8 @@ void main() {
       expect(rulerPool(_fixture, 'giants', RulerBand.neutral), isEmpty);
       // The file's keys load onto the event.
       final event = _fixture['ruler_mire_hostile']!;
-      expect((event.ruler, event.band, event.isRulers),
-          ('mire', RulerBand.hostile, true));
-      expect(_fixture['fen_mud']!.isRulers, isFalse);
+      expect((event.ruler, event.band), ('mire', RulerBand.hostile));
+      expect(_fixture['fen_mud']!.ruler, isEmpty);
     });
   });
 

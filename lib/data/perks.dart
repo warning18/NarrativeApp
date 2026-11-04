@@ -71,9 +71,6 @@ const int _xpPercentPerRank = 10;
 const int _leaderPercentPerRank = 5;
 const int manaPerRank = 2;
 
-/// How many perks a level-up offers to choose from.
-const int perkOfferSize = 3;
-
 /// What a set of perk ranks adds up to.
 class PerkEffects {
   const PerkEffects({
@@ -152,20 +149,3 @@ List<Perk> perksAvailable(Map<String, int> ranks) => [
       for (final perk in Perk.values)
         if ((ranks[perk.name] ?? 0) < perkInfo[perk]!.maxRank) perk,
     ];
-
-/// Up to [perkOfferSize] different perks still available, drawn at random.
-List<Perk> rollPerkOffer(Map<String, int> ranks, Random random) =>
-    (perksAvailable(ranks)..shuffle(random)).take(perkOfferSize).toList();
-
-/// Levels that bring a perk to choose: every [_perkLevelStep]th.
-const int _perkLevelStep = 2;
-
-/// Perk picks a level-up from [levelBefore] to [levelAfter] brings: one per
-/// perk level (see [_perkLevelStep]) reached on the way.
-int perkPicksFor(int levelBefore, int levelAfter) {
-  var picks = 0;
-  for (var level = max(1, levelBefore) + 1; level <= levelAfter; level++) {
-    if (level % _perkLevelStep == 0) picks++;
-  }
-  return picks;
-}

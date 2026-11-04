@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.797.0+833]
+
+- Code cleanup (R4, batch 4): ten more names only the tests used are
+  removed: the level-up sign and perk picks the clans' offers replaced
+  (their counts and the perk offer roll), a copy of the skills screen's
+  skill-point price, the clock's hour of a watch, an ability check's
+  critical flags and two one-line getters. Their tests now check the
+  live code, or lose only the lines that pinned the dead copy. Nothing
+  in the game changes.
+
+## [1.796.0+832]
+
+- **Narrative: the toll's price shown once.** "Pay the toll" (`260`) loses its
+  "(30 gold)" in English and French. The button's cost tag already shows
+  30 (the next scene, `261`, asks for 30 and takes it), so the price was
+  typed twice. `choice_shape_test` keeps checking that the tag reads 30.
+
 ## [1.795.0+831]
 
 - The clans' and politics' model (`factions.dart`, 2,622 lines) is cut
