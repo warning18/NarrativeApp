@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.818.0+854]
+## [1.819.0+855]
 
 - **Narrative: callbacks capped on five scenes, a shorter text on four returns.**
   `callback_cap` and `priority` (v1.816) are set on the scenes where earned
