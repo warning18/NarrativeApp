@@ -110,7 +110,7 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
       if (d <= 20) {
         canvas.drawRect(
             Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), disc);
-      } else if (d <= 81 && (x + y) % 2 == 0) {
+      } else if (d <= 81 && (x + y).isEven) {
         canvas.drawRect(
             Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), glow);
       }
@@ -174,7 +174,7 @@ void _walls(Canvas canvas, Size size, double u, double scroll) {
     final h = 8.0 + (i % 3) * 3;
     sidePixels(canvas, u, body, px, 50 - h, 10, h);
     sidePixels(canvas, u, rim, px, 50 - h, 10, 1);
-    if (i % 2 == 0) {
+    if (i.isEven) {
       // An arch: a hole with a rounded head.
       sidePixels(canvas, u, hole, px + 3, 50 - 5, 4, 5);
       sidePixels(canvas, u, hole, px + 4, 50 - 6, 2, 1);
