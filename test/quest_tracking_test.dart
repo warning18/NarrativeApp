@@ -34,8 +34,8 @@ const _bounty = <String, dynamic>{
 
 Future<void> _settle(WidgetTester tester) async {
   for (var i = 0; i < 3; i++) {
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
