@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -99,11 +100,11 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
         .wearShipLook(look.category, look.id, price);
     if (!ok || !mounted) return;
     setState(() => _tryLooks.remove(look.category));
-    showImmersiveNotice(
+    unawaited(showImmersiveNotice(
       context,
       icon: Icons.palette_outlined,
       message: '${tr(ref, 'look_worn_notice')}: ${look.name}',
-    );
+    ));
   }
 
   /// Rebuilds the Eel on the hull [hullId] after saying which parts have no
@@ -174,11 +175,11 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
       _tryHullId = null;
       _tryPartId = null;
     });
-    showImmersiveNotice(
+    unawaited(showImmersiveNotice(
       context,
       icon: Icons.construction,
       message: tr(ref, 'hull_rebuilt_notice').replaceAll('{hull}', hullName),
-    );
+    ));
   }
 
   String _hullName(Map<String, dynamic> hull, bool fr) {
@@ -761,11 +762,11 @@ class _PartCard extends ConsumerWidget {
         .read(playerSessionProvider.notifier)
         .installShipPart(partId, cost, replacing: replacing);
     if (!ok || !context.mounted) return;
-    showImmersiveNotice(
+    unawaited(showImmersiveNotice(
       context,
       icon: Icons.handyman_outlined,
       message: '${tr(ref, 'installed_label')}: ${shipPartName(part, fr)}',
-    );
+    ));
   }
 
   /// Asks which part of the slot comes off for this one; null to keep

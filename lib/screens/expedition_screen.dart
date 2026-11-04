@@ -361,8 +361,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (countsTowardZone && nextIndex == _expeditionCount ~/ 2) {
       final found = await _discoverPlaces(atEnd: false);
       if (found.isNotEmpty && mounted) {
-        showImmersiveNotice(context,
-            icon: Icons.travel_explore, message: found.join('\n'));
+        unawaited(showImmersiveNotice(context,
+            icon: Icons.travel_explore, message: found.join('\n')));
       }
     }
     // Halfway through a zone of three or more events, its own narration

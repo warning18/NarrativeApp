@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -1482,7 +1483,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     );
     if (mounted) setState(() => _ringOpen = null);
     if (taken != null && mounted && taken < steps.length) {
-      _take(taken, steps[taken]);
+      unawaited(_take(taken, steps[taken]));
     }
   }
 

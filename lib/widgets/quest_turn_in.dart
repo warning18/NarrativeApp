@@ -36,12 +36,12 @@ Future<void> acceptQuestWithNotice(
       .acceptQuest(questId, quest: quest);
   if (!context.mounted) return;
   final lang = ref.read(appLanguageProvider);
-  showImmersiveNotice(
+  unawaited(showImmersiveNotice(
     context,
     icon: Icons.assignment_turned_in_outlined,
     message: '${trFor(lang, 'quest_accepted_prefix')}: '
         '${quest?['questName']?.toString() ?? questId}',
-  );
+  ));
 }
 
 /// Turns in [questId], whose objectives are all met: pays its rewards
@@ -250,7 +250,7 @@ Future<void> turnInQuest(
   ]);
   if (!context.mounted) return;
   if (leveledUp) {
-    showLevelUpDialog(context, ref,
-        newLevel: ref.read(playerSessionProvider).level);
+    unawaited(showLevelUpDialog(context, ref,
+        newLevel: ref.read(playerSessionProvider).level));
   }
 }
