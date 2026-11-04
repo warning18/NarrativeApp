@@ -10,6 +10,9 @@ import 'package:narrative_data_app/widgets/fight_effect_icons.dart';
 import 'package:narrative_data_app/widgets/scene_stage.dart';
 import 'package:narrative_data_app/widgets/scene_vignette.dart';
 import 'package:narrative_data_app/widgets/skills_radar_card.dart';
+import 'package:narrative_data_app/widgets/slow_frames_overlay.dart';
+import 'package:narrative_data_app/widgets/slow_frames_settings.dart';
+import 'package:narrative_data_app/providers/slow_frames_provider.dart';
 
 import 'qa_smoke_harness.dart';
 
@@ -89,6 +92,20 @@ void main() {
           },
         ),
       const SmokeCase('settings', SettingsScreen(), bare: true),
+      // The slow-frames switch with its buttons, and the counter chip.
+      SmokeCase(
+        'slow_frames_settings',
+        const Padding(padding: EdgeInsets.all(12), child: SlowFramesSettings()),
+        prepare: (container) =>
+            container.read(slowFramesProvider.notifier).setEnabled(true),
+      ),
+      SmokeCase(
+        'slow_frames_chip',
+        const SlowFramesOverlay(
+            child: SizedBox(width: double.infinity, height: 80)),
+        prepare: (container) =>
+            container.read(slowFramesProvider.notifier).setEnabled(true),
+      ),
     ]);
   }, timeout: const Timeout(Duration(minutes: 10)));
 }

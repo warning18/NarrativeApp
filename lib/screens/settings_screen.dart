@@ -19,6 +19,7 @@ import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
 import '../widgets/elevenlabs_voice_settings.dart';
+import '../widgets/slow_frames_settings.dart';
 import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
 
@@ -498,6 +499,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       : tr(ref, 'check_for_updates_button'),
                 ),
               ),
+            const SizedBox(height: 24),
+            const SlowFramesSettings(),
             if (isEditMode) ...[
               const SizedBox(height: 24),
               Text(

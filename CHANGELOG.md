@@ -18,6 +18,41 @@ isn't reconstructable from git history alone.
   `docs/simulation/sim-reach-v1.766.md`.
 - The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
   damage 4 to 5): a player who shops reached it too well armed.
+## [1.765.0+801]
+
+- Settings: a new switch, "Show slow frames" (off by default, saved). While it
+  is on, a small counter at the top right shows how many frames of the screen
+  you are on took more than 17 ms ("slow 7 / 612 · worst 48 ms"), and two
+  buttons appear under the switch: "Copy report" (the numbers per screen, the
+  five worst frames split into build and raster time, and a line about the
+  phone) and "Reset". The screens are the Fight, the Journey (its reading page
+  and its map apart), the Character, Camp or ship and Other tabs, the main
+  menu, and "Another screen" for the rest. It is meant for finding what
+  stutters on a phone with no computer: turn it on, play, copy the report and
+  paste it to the team. Off, nothing runs: no timer, no counter, no timing
+  callback. English and French.
+- Tests: `slow_frames_test.dart` (the counting, the five worst, the naming of
+  the screens, off by default, the switch, the copy and the reset); the 320 px
+  and French sweep shows the switch and the counter.
+
+## [1.764.0+800]
+
+- Fight on a phone: the screen stays upright while a fight is open. Turned
+  sideways (640 x 360) the dice board was left 1 px tall, so the fight could
+  not be played; now it holds portrait and lets the phone turn again when the
+  fight closes. The rest of the app turns as before, and a tablet (shortest
+  side of 600 dp or more) is never held.
+- Tests: `fight_orientation_test.dart` (the hold and the release, two fights
+  at once, a tablet, and a real fight opened and closed).
+
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
 
 ## [1.762.0+798]
 
