@@ -642,8 +642,9 @@ extension _FightRounds on _FightScreenState {
 
     if (manaGained > 0) {
       final overflow = _mana + manaGained - _maxMana;
+      // Kept in the fight; the session takes it when the fight ends
+      // (applyCombatResult, applyRetreat: v1.713).
       _mana = min(_maxMana, _mana + manaGained);
-      ref.read(playerSessionProvider.notifier).setMana(_mana);
       _censerBurn(overflow, newEntries, lang);
     }
 
