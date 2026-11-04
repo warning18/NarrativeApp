@@ -253,20 +253,6 @@ List<DuoTechnique> duosFiring(List<DuoCandidate> candidates) {
   return firing;
 }
 
-/// The duo two companions share, if any.
-DuoTechnique? duoFor(String a, String b) {
-  for (final duo in duoTechniques) {
-    if (duo.pairs(a, b)) return duo;
-  }
-  return null;
-}
-
-/// Every duo [companionId] is part of.
-List<DuoTechnique> duosOf(String companionId) => [
-      for (final duo in duoTechniques)
-        if (duo.involves(companionId)) duo
-    ];
-
 /// A duo's power: the two companions' base damage added up.
 int duoPower(int firstBaseDamage, int secondBaseDamage) =>
     firstBaseDamage + secondBaseDamage;

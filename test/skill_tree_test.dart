@@ -146,12 +146,12 @@ void main() {
     });
 
     test('a whole tree costs more than a run earns', () {
-      // Two full class branches, the heritage and a mastery fit in about
-      // twenty points; the third branch is a choice.
+      // Two full class branches and the heritage fit in about twenty
+      // points; the third branch is a choice (mastery costs essence).
       final classBranch = branchSkillPointCosts.fold<int>(0, (a, b) => a + b);
       final heritage =
           branchSkillPointCosts.take(3).fold<int>(0, (a, b) => a + b);
-      expect(3 * classBranch + heritage + branchMasteryCost, greaterThan(24));
+      expect(3 * classBranch + heritage, greaterThan(24));
     });
   });
 

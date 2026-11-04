@@ -30,21 +30,9 @@ List<String> _stringList(Object? raw) => [
 List<String> npcMetNodes(Map<String, dynamic> npc) =>
     _stringList(npc['metNodes']);
 
-/// The flags meeting [npc]: once one is held, they are known.
-List<String> _npcMetFlags(Map<String, dynamic> npc) =>
-    _stringList(npc['metFlags']);
-
 /// The shop [npc] keeps ('' for none): once found, they are known.
 String npcShopId(Map<String, dynamic> npc) =>
     npc['shopId']?.toString().trim() ?? '';
-
-/// A record from before the codex (v1.204): no `metNodes`, `metFlags` or
-/// `shopId`. Such a person is known by chapter and `requiredFlag` alone
-/// (see npcDiscovered).
-bool npcIsLegacy(Map<String, dynamic> npc) =>
-    npcMetNodes(npc).isEmpty &&
-    _npcMetFlags(npc).isEmpty &&
-    npcShopId(npc).isEmpty;
 
 /// [npc]'s chapter (1 when unset).
 int npcChapter(Map<String, dynamic> npc) =>

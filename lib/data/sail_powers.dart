@@ -147,9 +147,6 @@ int hearthHullRepair(int strength) => 6 * strength;
 /// Foresight: how many days ahead the sail can see.
 int foresightDays(int strength) => strength;
 
-/// Foresight: the share of the enemy's first volley that still lands.
-double firstVolleyFactor(int strength) => strength >= 2 ? 0.0 : 0.5;
-
 /// Void mark: what a storm's hull loss becomes (halved, or nothing when
 /// the mark was set by a void-marked hand).
 int voidmarkStormLoss(int loss, int strength) => strength >= 2 ? 0 : loss ~/ 2;

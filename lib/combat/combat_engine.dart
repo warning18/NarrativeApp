@@ -48,8 +48,11 @@ const Map<String, String> elementFieldPrefixes = {
   'Light': 'light',
 };
 
-/// How strongly a skill works on a basic face (see dice_faces.dart's
-/// channeledSkillPower, which is this value).
+/// How strongly a skill works when it is set on a basic face (Attack,
+/// Guard, Heal) instead of a skill face: its damage and healing are scaled
+/// by this, never below what the face itself would have done. A skill face
+/// casts at full power. Keeps every face open to skills without letting a
+/// die of six top skills outclass the dice built around them.
 const double channeledPower = 0.7;
 
 class DiceFaceResult {

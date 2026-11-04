@@ -111,8 +111,10 @@ void main() {
   });
 
   test('an errand is listed only while its flags let it show', () {
-    List<String> ids(Set<String> flags) =>
-        [for (final c in campErrandsFor(nodes.values, flags)) c.nextId];
+    List<String> ids(Set<String> flags) => [
+          for (final c in campErrandChoices(nodes.values))
+            if (!c.isHiddenFor(flags)) c.nextId
+        ];
     expect(ids({}), ['errand_tom']);
     expect(ids({'mira_joined'}), ['errand_mira', 'errand_tom']);
     expect(ids({'mira_joined', 'mira_errand_done'}), ['errand_tom']);

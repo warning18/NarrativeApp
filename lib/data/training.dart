@@ -179,11 +179,6 @@ Map<SignRarity, double> statPickOdds(int luck) {
   };
 }
 
-/// The points a pick is worth on average for a character with [luck].
-double statPickExpectedPoints(int luck) => statPickOdds(luck)
-    .entries
-    .fold(0.0, (sum, e) => sum + e.value / 100 * statPickPointsOf(e.key));
-
 /// A pick's rarity, drawn for a character with [luck].
 SignRarity _drawStatPickTier(int luck, Random random) {
   final odds = statPickOdds(luck);
