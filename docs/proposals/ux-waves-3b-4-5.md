@@ -67,3 +67,26 @@ I already did the performance-relevant parts of my own recent work: the weather 
 8. 4-1 `story_player_screen.dart`, 9. 4-2 `journey_screen.dart` scene layer, 10. 4-3 `ship_battle_panel.dart`,
 11. 4-4 the painters, 12. 4-5 the long `build`s.
 Steps 1 to 7 are small and can overlap with other sessions' work; 8 to 12 each need a quiet window you grant.
+
+## Status (2026-11-04, UX-2)
+
+**Done**: 4-1 `story_player_screen.dart` cut into four part files (#724, v1.749; pure cut, the sorted lines before and after
+are identical). Related work outside this plan: the list in `ux-2-improvements.md` (D one tile widget #708, G the 320 px /
+French sweep #709, C the `ux_*` generators #718 and #720: 38 files / about 22,000 lines of picture mocks removed, the 8 that
+assert real behaviour kept).
+
+**Not done, and why**
+- **3b-1, 3b-2, 3b-3**: not duplicates once read. The tag/badge and die-badge blocks have different looks and roles (merging them
+  would change a pixel or add a parameter list longer than the code it saves); the shell block is a 25-line mixin that costs
+  more than it saves. Manager agreed.
+- **3b-4** (dead code, 2b for `lib/widgets`, `lib/utils`, `lib/theme`): the Cleanup session owns it (CLAUDE.md: waves 1, 2, 2b).
+- **H (the aim line measuring only on a change)**: `_measure` already calls `setState` only when a point moved; measuring only
+  when the widget's fields change would leave the line stale when a card moves with the same keys (for example the slot count
+  of #704). The saving is a post-frame callback and two transforms. Manager agreed.
+
+**Options left for a later PR (not started)**
+- Merge the two duplicated blocks inside the story view (`story_player_screen.dart` near the old `:3015` and `:3229`, now in
+  `story_player/story_hub.dart`: the settlement arrival card and the hub choice card). That is a code change, not a cut, so it
+  needs its own PR and a picture check.
+- 4-2 the Journey's scene layer, 4-3 `ship_battle_panel.dart`, 4-4 the painters, 4-5 the long `build`s, 5-1 to 5-3: still as
+  planned above, each when no other PR touches the file.
