@@ -49,7 +49,8 @@ final pendingTakenProvider = StateProvider<TakenStep?>((ref) => null);
 /// What [pendingTakenProvider] holds after [choice] was taken with [flow]: the
 /// step and the place only for a step that stayed at the same stop and
 /// opened another scene ([sceneChanged]), off a detour; null after a move, a
-/// carried trip, a hub's return or a step that left the scene as it was.
+/// carried trip, a hub's return, the step that opens the character's making
+/// or a step that left the scene as it was.
 TakenStep? takenStepAfter({
   required StoryChoice choice,
   required ChoiceFlow flow,
@@ -57,6 +58,10 @@ TakenStep? takenStepAfter({
   required bool sceneChanged,
   required String? placeId,
 }) =>
-    flow is FlowStay && !inExcursion && sceneChanged && placeId != null
+    flow is FlowStay &&
+            !inExcursion &&
+            sceneChanged &&
+            !choice.opensCharacterCreation &&
+            placeId != null
         ? (choice: choice, placeId: placeId)
         : null;

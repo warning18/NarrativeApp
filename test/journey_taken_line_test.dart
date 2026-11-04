@@ -43,6 +43,19 @@ void main() {
     // fled): nothing.
     expect(after(const FlowStay(), excursion: true), isNull);
     expect(after(const FlowStay(), changed: false), isNull);
+    // The step that opens the making of the character (a new game's first
+    // page) is no step taken inside a place.
+    expect(
+        takenStepAfter(
+            choice: const StoryChoice(
+                text: 'Choose who you are\u2026',
+                nextId: 'x',
+                opensCharacterCreation: true),
+            flow: const FlowStay(),
+            inExcursion: false,
+            sceneChanged: true,
+            placeId: 'alster_lower_town'),
+        isNull);
   });
 
   testWidgets('a same-place card says what was taken and that nothing moved',
