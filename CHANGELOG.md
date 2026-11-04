@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.806.0+842]
+
+- **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
+  (`loyal`, `scheming`, `wavering`, set on 50 people in `npcs.json`, 44 with
+  a value) is removed. No code, test or screen read it; the clan pages show
+  the ruling text only. No screen changes.
+
 ## [1.805.0+841]
 
 - **Cleanup: five more lints on, 28 sites fixed.** `combinators_ordering`,
@@ -25,6 +32,7 @@ isn't reconstructable from git history alone.
   (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
   that imports it changes. A pure move: nothing in the game or the save
   changes.
+
 ## [1.803.0+839]
 
 - The clan card (a long press on a clan's banner, the offer's (i)) ends with
@@ -63,6 +71,7 @@ isn't reconstructable from git history alone.
   The clans' offers draw signs since v1.194 and stay as they are. The
   sign tests now check the rules those offers use: what a patron can
   offer, which patrons may, and the slots. Nothing in the game changes.
+
 ## [1.798.0+834]
 
 - The Journey draws a city, a town or a village from its stored plan only
