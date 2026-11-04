@@ -248,28 +248,3 @@ final districtPlacesProvider = Provider<List<WayPlaceEntry>>((ref) {
     lockedWays: lockedWays(geo, story, node, flags, completed).toSet(),
   );
 });
-
-/// A party arriving in a district (v1.580): the district, and how many
-/// arrivals came before it ([count] tells two arrivals in the same district
-/// apart). The district view's camera eases in on one (see city_camera.dart).
-typedef DistrictArrival = ({String districtId, int count});
-
-/// The party's last arrival in a district: a new value each time
-/// [partyDistrictProvider] changes to a district (a walk, the story moving
-/// the party, a city entered), the first district the party stands in
-/// counting as one. Walking between the places of a district is no arrival.
-final districtArrivalProvider =
-    NotifierProvider<_DistrictArrivalNotifier, DistrictArrival?>(
-        _DistrictArrivalNotifier.new);
-
-class _DistrictArrivalNotifier extends Notifier<DistrictArrival?> {
-  @override
-  DistrictArrival? build() {
-    ref.listen<String?>(partyDistrictProvider, (previous, next) {
-      if (next == null || next == previous) return;
-      state = (districtId: next, count: (state?.count ?? 0) + 1);
-    });
-    final here = ref.read(partyDistrictProvider);
-    return here == null ? null : (districtId: here, count: 1);
-  }
-}

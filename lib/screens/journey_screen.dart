@@ -259,7 +259,7 @@ class _PlaceView {
   final ChartGeography geography;
   final Offset chartHere;
 
-  /// The city's plan (v1.203, see city_plan.dart), when the place is a
+  /// The city's plan (v1.203, see city_plan_record.dart), when the place is a
   /// city, a town or a village of the geography: the party stands in
   /// [hereDistrict] ('' for the square), and the steps into its other
   /// districts ([districtOfStep], by step) sit where those districts are.
@@ -2141,8 +2141,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         streetShown;
     if (_arrival && streetScene) _arrival = false;
     // An arrival in a district: the map eases in on the party (v1.586). Read
-    // from the party's district here, not from districtArrivalProvider,
-    // whose state is set by a listener (a provider changed while building).
+    // from the party's district here, compared with the last one seen.
     // (Not on the Town view a move to another district frames: that view is
     // the one asked for.)
     final hereDistrictNow = ref.watch(partyDistrictProvider);

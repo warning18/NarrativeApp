@@ -7,8 +7,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/choice_flow.dart';
@@ -17,7 +15,6 @@ import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/way_places.dart';
 import 'package:narrative_data_app/models/story_node.dart';
-import 'package:narrative_data_app/providers/city_provider.dart';
 
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -156,30 +153,5 @@ void main() {
     expect(list.last.locked, isTrue);
     expect(list.last.openCount, 0);
     expect(list.first.carries, isFalse);
-  });
-
-  test('an arrival each time the party changes district', () {
-    final district = StateProvider<String?>((ref) => 'gate');
-    final container = ProviderContainer(overrides: [
-      partyDistrictProvider.overrideWith((ref) => ref.watch(district)),
-    ]);
-    addTearDown(container.dispose);
-    final seen = <DistrictArrival?>[];
-    container.listen(districtArrivalProvider, (_, next) => seen.add(next),
-        fireImmediately: true);
-    void walk(String? to) {
-      container.read(district.notifier).state = to;
-      container.read(districtArrivalProvider);
-    }
-
-    walk('wharf');
-    walk('wharf');
-    walk(null);
-    walk('gate');
-    expect(seen, [
-      (districtId: 'gate', count: 1),
-      (districtId: 'wharf', count: 2),
-      (districtId: 'gate', count: 3),
-    ]);
   });
 }
