@@ -33,6 +33,12 @@ class _GameDbRecordEditorScreenState
   final Map<String, List<String>> _multiSelectValues = {};
   String? _error;
 
+  /// What each field the record didn't have showed when the form opened:
+  /// such a field is saved only if it was changed, so a save doesn't write
+  /// the defaults back into the record (data files leave a field out where
+  /// its reader's default holds, N7 of core-improvements-2.md).
+  final Map<String, Object?> _absentShown = {};
+
   bool get _isNew => widget.initialRecord == null;
 
   @override
@@ -94,7 +100,17 @@ class _GameDbRecordEditorScreenState
           );
       }
     }
+    if (!_isNew) {
+      for (final field in widget.schema.fields) {
+        if (!record.containsKey(field.key)) {
+          _absentShown[field.key] = _formValue(field);
+        }
+      }
+    }
   }
+
+  static bool _sameValue(Object? a, Object? b) =>
+      jsonEncode(a) == jsonEncode(b);
 
   @override
   void dispose() {
@@ -104,8 +120,46 @@ class _GameDbRecordEditorScreenState
     super.dispose();
   }
 
+  /// The value [field] holds in the form now, as [_save] writes it; null
+  /// when its JSON doesn't parse.
+  Object? _formValue(FieldSchema field) {
+    switch (field.type) {
+      case FieldType.boolean:
+        return _boolValues[field.key] ?? false;
+      case FieldType.enumeration:
+      case FieldType.reference:
+        return _enumValues[field.key] ?? '';
+      case FieldType.stringList:
+        return _textControllers[field.key]!
+            .text
+            .split('\n')
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+      case FieldType.referenceList:
+      case FieldType.multiEnum:
+        return [...?_multiSelectValues[field.key]];
+      case FieldType.json:
+        final raw = _textControllers[field.key]!.text.trim();
+        try {
+          return raw.isEmpty ? <dynamic>[] : json.decode(raw);
+        } catch (_) {
+          return null;
+        }
+      case FieldType.integer:
+        return int.tryParse(_textControllers[field.key]!.text.trim()) ?? 0;
+      case FieldType.decimal:
+        return double.tryParse(_textControllers[field.key]!.text.trim()) ?? 0.0;
+      case FieldType.text:
+      case FieldType.multilineText:
+      case FieldType.image:
+        return _textControllers[field.key]!.text;
+    }
+  }
+
   void _save() {
-    final result = <String, dynamic>{};
+    // An existing record keeps the keys the form doesn't show.
+    final result = <String, dynamic>{...?widget.initialRecord};
     for (final field in widget.schema.fields) {
       switch (field.type) {
         case FieldType.boolean:
@@ -141,6 +195,15 @@ class _GameDbRecordEditorScreenState
         case FieldType.multilineText:
         case FieldType.image:
           result[field.key] = _textControllers[field.key]!.text;
+      }
+    }
+
+    // A field the record didn't have, left as the form showed it, stays
+    // out (the primary key always goes in).
+    for (final entry in _absentShown.entries) {
+      if (entry.key == widget.schema.primaryKeyField) continue;
+      if (_sameValue(result[entry.key], entry.value)) {
+        result.remove(entry.key);
       }
     }
 
