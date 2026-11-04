@@ -26,7 +26,6 @@ import '../widgets/camp_travel.dart';
 import '../widgets/feature_unlock.dart';
 import '../widgets/moments.dart';
 import '../widgets/throne_widgets.dart' show showHostSheet;
-import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'clans_politics_screen.dart';
@@ -61,7 +60,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   static const List<Widget> _editScreens = [
     StoryPlayerScreen(),
     PlayScreen(),
-    AiGeneratorScreen(),
+    // Slot 2 was the AI generator (removed): kept empty so the other
+    // tabs' indexes (Data 3, Journey 4) hold.
+    SizedBox.shrink(),
     GameDataHomeScreen(),
     // The Journey's map of the edited scene (v1.209), with no fog.
     JourneyScreen(),
@@ -196,7 +197,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ? [
             tr(ref, 'title_story'),
             tr(ref, 'title_play'),
-            tr(ref, 'title_generate'),
+            '',
             tr(ref, 'title_data'),
             tr(ref, 'nav_journey'),
           ]
@@ -214,7 +215,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // In play the story is followed on the Journey (v1.201: no Story
     // tab); the reader stays index 0 for Edit Mode and the ending.
     final visibleTabs = isEditMode
-        ? const [0, journeyTabIndex, 1, 2, 3]
+        ? const [0, journeyTabIndex, 1, 3]
         : storyHidden
             ? const [_campTab, 1, 3]
             : const [journeyTabIndex, 1, 2, 3];
@@ -262,9 +263,6 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             NavigationDestination(
                 icon: const Icon(Icons.videogame_asset),
                 label: tr(ref, 'nav_play')),
-            NavigationDestination(
-                icon: const Icon(Icons.auto_awesome),
-                label: tr(ref, 'nav_generate')),
             NavigationDestination(
                 icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
           ]
