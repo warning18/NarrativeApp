@@ -73,16 +73,21 @@ void main() {
       ],
       'activeAllyIds': ['kelda', 'vica'],
     });
-    Widget fight() => FightScreen(
-          enemyId: ids.first,
-          enemy: enemies[ids.first] as Map<String, dynamic>,
-          additionalEnemyIds: ids.skip(1).toList(),
-          additionalEnemies: {
-            for (final id in ids.skip(1))
-              id: enemies[id] as Map<String, dynamic>,
-          },
-          random: Random(7),
-        );
+    // As the story's fight is opened (loadedGameDb): the records in the
+    // language read.
+    Widget fight() => Consumer(builder: (context, ref, _) {
+          final db = ref.watch(localizedDbProvider(enemiesSchema)).value;
+          if (db == null) return const SizedBox.shrink();
+          return FightScreen(
+            enemyId: ids.first,
+            enemy: db[ids.first] as Map<String, dynamic>,
+            additionalEnemyIds: ids.skip(1).toList(),
+            additionalEnemies: {
+              for (final id in ids.skip(1)) id: db[id] as Map<String, dynamic>,
+            },
+            random: Random(7),
+          );
+        });
     await runSmoke(
       tester,
       [
