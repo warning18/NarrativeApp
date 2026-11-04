@@ -14,7 +14,7 @@ import 'pixel_banner.dart';
 
 /// The line of resonance text for [state] ([clan]: the clan's name), or ''
 /// for no clan die.
-String resonanceLineFor(Resonance state, String clan, AppLanguage language) {
+String _resonanceLineFor(Resonance state, String clan, AppLanguage language) {
   String t(String key) => trFor(language, key);
   return switch (state) {
     Resonance.lit => t('clan_die_resonance_lit')
@@ -73,7 +73,7 @@ class ClanDieGift extends ConsumerWidget {
                       ?.copyWith(color: color, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  resonanceLineFor(state, clan, language),
+                  _resonanceLineFor(state, clan, language),
                   key: Key('clan_die_resonance_${state.name}'),
                   style: theme.textTheme.labelSmall?.copyWith(
                       color: lit ? null : theme.colorScheme.onSurfaceVariant,

@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.778.0+814]
+
+- Fight: the tiles of the top strip (the goal, the weather, the momentum, the
+  round, the log button...) have a taller tap area: 38 x 51 instead of 38 x 37
+  (the log button 32 x 51), so a tap a little above or below one still lands.
+  Nothing moves: the 8 px above and the 6 px below the strip became the tiles'
+  own tap room (a picture of the fight at 360 and 320 px, in play and edit
+  mode, is pixel for pixel what it was), and a tile's pop-in still opens in the
+  same place. The effect icons on the fighters' cards keep their size: their
+  row has no room to give.
+- Tests: `fight_tap_areas_test.dart` (the box sizes, where the tile and the
+  cards sit, a tap above the tile opens its pop-in and where).
+
+## [1.777.0+813]
+
+- **Cleanup: leftovers cleared, seven names made private.** Seven names
+  that only their own file uses (the clan die's resonance tier and line,
+  the narration's page markers, the street view's two layers, the journal's
+  "story so far" page and the story graph's grid algorithm) are now
+  private; two unused constructor options go with the last two. A stale
+  `ignore` comment, a test helper no test imports, two empty placeholder
+  files in folders that already hold their frames, and the description in
+  `pubspec.yaml` ("AI-assisted generation", gone with the Gemini library)
+  are removed. Nothing changes on screen or in a number.
+
+## [1.776.0+812]
+
+- The game data files leave out fields stored at the value their reader
+  already assumes: `healthMod: 0` and `isActiveSkill: true` on every
+  skill, the empty `rewardDiceId` / `rewardAllyId` on every zone, and a
+  dice face's `"element": "None"` and empty `linkedSkillID` (about 19 KB
+  less, the game plays the same). The data editor no longer writes such a
+  field back when a record leaves it out and it isn't edited, and a save
+  keeps the keys the form doesn't show.
+
 ## [1.773.0+809]
 
 - The 377 icons (items, skills, enemies, shops, chests) are stored at the size

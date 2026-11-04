@@ -164,9 +164,9 @@ void main() {
         final faces = (dice[id] as Map<String, dynamic>)['faces'] as List;
         expect(faces.length, greaterThanOrEqualTo(6));
         expect((faces[4] as Map)['type'], 'Skill');
-        expect((faces[4] as Map)['linkedSkillID'], '');
+        expect((faces[4] as Map)['linkedSkillID'] ?? '', '');
         expect((faces[5] as Map)['type'], 'Skill');
-        expect((faces[5] as Map)['linkedSkillID'], '');
+        expect((faces[5] as Map)['linkedSkillID'] ?? '', '');
       }
     });
 

@@ -31,7 +31,7 @@ void main() {
   test('every active skill names an effect', () {
     final bare = [
       for (final e in skills.entries)
-        if (e.value['isActiveSkill'] == true && (e.value['vfx'] ?? '') == '')
+        if (e.value['isActiveSkill'] != false && (e.value['vfx'] ?? '') == '')
           e.key,
     ];
     expect(bare, isEmpty);
