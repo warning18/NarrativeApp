@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart'
+    show ErrorDescription, FlutterError, FlutterErrorDetails;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,8 +36,22 @@ class StoryRepository {
   Future<Map<String, dynamic>> loadRaw() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_prefsKey);
-    final raw = saved ?? await rootBundle.loadString(assetPath);
-    return json.decode(raw) as Map<String, dynamic>;
+    if (saved != null) {
+      try {
+        return json.decode(saved) as Map<String, dynamic>;
+      } catch (error, stack) {
+        // A broken edited story is reported, and the bundled one read in
+        // its place (issue #696).
+        FlutterError.reportError(FlutterErrorDetails(
+            exception: error,
+            stack: stack,
+            library: 'story',
+            context: ErrorDescription(
+                'reading the edited story; the bundled one is used')));
+      }
+    }
+    return json.decode(await rootBundle.loadString(assetPath))
+        as Map<String, dynamic>;
   }
 
   /// Persists an edited set of raw node records as a local override, so
