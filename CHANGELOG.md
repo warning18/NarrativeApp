@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.756.0+792]
+
+- Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three
+  files under `lib/screens/journey/`: the panel under the map (its height, the
+  choice cards, the rings and list sheets), the road the party is carried
+  along, and the scene, map-button, looked-at and ended panels (about 1,000
+  lines). The map chart, the district view and `build` stay where they are.
+  The state's methods moved into a private extension (as in the fight screen)
+  and `setState` is called through a one-line `_update`; nothing changes on
+  screen or in the rules.
+
 ## [1.755.0+791]
 
 - Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
