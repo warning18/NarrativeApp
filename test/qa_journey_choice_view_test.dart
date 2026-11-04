@@ -6,9 +6,9 @@
 //   * a room scene with several choices draws every choice as a spot of its
 //     room plan (scene 100's three, scene 110's two), not cards behind a
 //     "choices here" button;
-//   * a scene with one plain choice at its stop keeps that choice at its
-//     spot with Go ready: it continues at a tap, without the map and without
-//     a list to open (scene 100_dice);
+//   * a scene with one plain choice at its stop continues at a tap: Go is
+//     ready, no map to choose on, no trip (scene 100_dice; v1.808 kept it as
+//     a spot, v1.825's design is Go with the choice a card, both pass);
 //   * on the city chart a scene's choices hang as banners/pins (scene
 //     1150_vica's three, the wharf hub's ways);
 //   * a choice to another stop walks the party there, visibly: the
@@ -100,12 +100,14 @@ Future<void> _singleChoice(
   await _arrive(tester, container, '100_dice');
   expect(_visibleChoices(container, '100_dice'), 1);
   expect(_key('journey_room'), findsOneWidget);
-  expect(_spots(tester), [0], reason: 'its one way keeps its spot');
   expect(_key('journey_go'), findsOneWidget,
-      reason: 'the way is picked already: Go is ready');
-  expect(_key('journey_open_choices'), findsNothing);
+      reason: 'the way is picked already: Go is ready, no map to choose on');
 
   await tester.tap(_key('journey_go'));
+  await tester.pump();
+  for (var i = 0; i < 14; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
+  }
   await settleApp(tester);
   expect(container.read(storyPlayProvider).currentNodeId, '100');
   // Staying in the room is no trip: the party is not walked anywhere.
