@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.818.0+854]
+
+- For the side-view camera (step 3c of UX-2's parallax): `WorldCamera`
+  (`world_camera.dart`). One x on the land strip says what the side view
+  shows: the kit of the region the x is in, in the window of that x, or, near
+  the border of two regions with different kits, the dithered seam between
+  them (`kitBlend`, 12 chart units wide). The same x gives the same picture on
+  every launch. Nothing uses it yet (the crossing is wired next): no change in
+  the game. Picture: `docs/ux-shots/camera/land-strip-seams.png` (the whole
+  land strip walked, seven seams). Test: `world_camera_test.dart`.
+
 ## [1.817.0+853]
 
 - For the side-view camera (step 3b of UX-2's parallax): the seam between two
@@ -17,6 +28,18 @@ isn't reconstructable from git history alone.
   until the seam has passed. Nothing uses it yet (the camera, next, gives it
   its progress): no change in the game. Picture:
   `docs/ux-shots/blend/desert-into-ruins.png`. Test: `kit_blend_test.dart`.
+
+## [1.816.0+852]
+
+- Story: two new fields for Narrative's text, nothing changes until the
+  story uses them. A scene with `callback_cap` shows at most that many of
+  the lines your past choices earned (the ones with the highest `priority`
+  first, then in the order written), so a scene everyone reaches late
+  doesn't read as a list. A scene with `revisit_description` says
+  something else the second time you come back (French:
+  `revisit_description_fr`); the first visit is unchanged. Both go through
+  the page, the read-aloud and the story editor; the recording script keeps
+  every line.
 
 ## [1.815.0+851]
 

@@ -925,7 +925,8 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
         isStoryChoiceLocked(way, story, session, world: gateWorld)) {
       break;
     }
-    final parts = composeNarrationParts(node, session, story, french: french);
+    final parts = composeNarrationParts(node, session, story,
+        french: french, revisit: isRevisit(ref.read(storyPlayProvider)));
     preludes.add(ScenePrelude(
       nodeId: node.id,
       body: parts.text,
@@ -1290,8 +1291,8 @@ void _noteFightAftermath(WidgetRef ref, bool french) {
 /// with every `{name}`/`{race}`/`{profession}` token filled in. Exposed
 /// so the narration tests can read a scene the way the screen does.
 String composeNarration(StoryNode node, PlayerSession session,
-        {required bool french}) =>
-    _composeNarration(node, session, french: french);
+        {required bool french, bool revisit = false}) =>
+    _composeNarration(node, session, french: french, revisit: revisit);
 
 /// A node's text as [composeNarration] gives it, less the lines earned by
 /// an earlier choice of [story], which come back apart as echoes, each
@@ -1303,7 +1304,7 @@ String composeNarration(StoryNode node, PlayerSession session,
   List<String> pages,
   List<SceneEcho> echoes
 }) composeNarrationParts(StoryNode node, PlayerSession session, StoryData story,
-    {required bool french}) {
+    {required bool french, bool revisit = false}) {
   // The Journey asks for the same scene two or three times a build (its
   // page count, the panel, the opening): the last answer is kept while
   // the node, the session and the story are the same objects (each is
@@ -1313,12 +1314,13 @@ String composeNarration(StoryNode node, PlayerSession session,
       identical(last.node, node) &&
       identical(last.session, session) &&
       identical(last.story, story) &&
-      last.french == french) {
+      last.french == french &&
+      last.revisit == revisit) {
     return last.parts;
   }
   final echoes = <SceneEcho>[];
   final raw = _composeNarration(node, session,
-      french: french, story: story, echoesOut: echoes);
+      french: french, story: story, echoesOut: echoes, revisit: revisit);
   final pages = splitNarrationPages(raw);
   // A scene with no page break reads exactly as before.
   final text = raw.contains(pageBreakMarker) ? pages.join('\n\n') : raw;
@@ -1332,6 +1334,7 @@ String composeNarration(StoryNode node, PlayerSession session,
     session: session,
     story: story,
     french: french,
+    revisit: revisit,
     parts: parts,
   );
   return parts;
@@ -1342,14 +1345,18 @@ String composeNarration(StoryNode node, PlayerSession session,
   PlayerSession session,
   StoryData story,
   bool french,
+  bool revisit,
   ({String text, List<String> pages, List<SceneEcho> echoes}) parts,
 })? _lastParts;
 
 String _composeNarration(StoryNode node, PlayerSession session,
-    {required bool french, StoryData? story, List<SceneEcho>? echoesOut}) {
+    {required bool french,
+    StoryData? story,
+    List<SceneEcho>? echoesOut,
+    bool revisit = false}) {
   final buffer = StringBuffer(withAllyAcknowledgment(
     node.id,
-    node.descriptionFor(french),
+    node.descriptionFor(french, revisit: revisit),
     activeAllyIds: session.activeAllyIds,
     french: french,
   ));
