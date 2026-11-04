@@ -21,6 +21,16 @@ isn't reconstructable from git history alone.
   (`2900`) and the harbour steps (`7515_rest`). The towns already fold when
   read, so they get none. No other story text changed.
 
+## [1.817.0+853]
+
+- For the side-view camera (step 3b of UX-2's parallax): the seam between two
+  kits. `kitBlend` (`kit_blend.dart`) turns one region's land into the next as
+  the camera moves: the new kit comes in from the right edge in an ordered
+  dither, a band of mixed land trailing it, the old land staying on the left
+  until the seam has passed. Nothing uses it yet (the camera, next, gives it
+  its progress): no change in the game. Picture:
+  `docs/ux-shots/blend/desert-into-ruins.png`. Test: `kit_blend_test.dart`.
+
 ## [1.816.0+852]
 
 - Story: two new fields for Narrative's text, nothing changes until the
@@ -91,6 +101,7 @@ isn't reconstructable from git history alone.
   mark on the map), and taking it opens the next scene on the same page or
   sheet, with no map in between. Ways to another district or road are still
   marks on the map; a one-card page still has no Continue.
+
 ## [1.808.0+844]
 
 - Code cleanup (split 4f, step 2): the session notifier's methods leave
@@ -98,11 +109,13 @@ isn't reconstructable from git history alone.
   feature: offers, politics, quests, shop and forge, allies and camp, road
   and time, skills and combat. A move: the saves, the rules and the
   simulator's results are unchanged.
+
 ## [1.807.0+843]
 
 - Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
   on its card since v1.803) is now in the factions table of the game
   database, so it can be read and saved there.
+
 ## [1.806.0+842]
 
 - **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
