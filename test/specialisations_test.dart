@@ -70,6 +70,8 @@ void main() {
     expect(mods.vigilMend(80, 100), 15);
     expect(mods.vigilMend(50, 100), 0);
     expect(mods.vigilMend(100, 100), 0);
+    // Never past full health (#694): 95 of 100 mends 5, not 15.
+    expect(mods.vigilMend(95, 100), 5);
     expect(
         fireAfterHeal(
             fire: 0,

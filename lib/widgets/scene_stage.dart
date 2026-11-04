@@ -130,10 +130,13 @@ class SceneStage extends StatelessWidget {
             if (doorName.isNotEmpty)
               Positioned(
                 right: 0,
-                top: h * 0.42,
+                // On a narrow stage the middle of the edge is the foe's body:
+                // the door hangs under its name instead.
+                top: box.maxWidth < 340 ? 34 : h * 0.42,
                 child: Opacity(
                   opacity: doorLit ? 1 : 0.35,
                   child: Container(
+                    constraints: BoxConstraints(maxWidth: box.maxWidth * 0.45),
                     key: const Key('scene_stage_door'),
                     padding: const EdgeInsets.fromLTRB(8, 4, 6, 4),
                     decoration: BoxDecoration(
@@ -144,10 +147,14 @@ class SceneStage extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(doorName,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700)),
+                        Flexible(
+                          child: Text(doorName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700)),
+                        ),
                         const SizedBox(width: 3),
                         const Icon(Icons.arrow_forward,
                             size: 12, color: Colors.black),
