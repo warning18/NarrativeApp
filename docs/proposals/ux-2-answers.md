@@ -41,3 +41,7 @@ Pictures at 320 x 568, French (`docs/ux-shots/effects-row/`):
 - `today-one-effect.png`: tapping the poison icon opens a pop-in about poison only; to read the stun you close it and tap the next 27 px icon.
 - `proposal-all-effects.png`: one tap on the row opens one pop-in, "Voleur des taudis · 3 effets", with each effect's icon, name and rule. The pop-in is the same card (same colours, same width 296 px, same "Touchez ailleurs pour fermer."), only taller (about 340 px for 3 effects; it scrolls beyond 4).
 What changes: a tap on any icon of the row shows all of them (the icon you hit first). Nothing on the cards moves. Mock-up only, not built.
+
+## Raising the tiny text to 11 px: the fight, 320 px, French
+
+`docs/ux-shots/text-11px/fight-320-fr-before-after.png`: left today, right with the 16 fight places at 8-10 px set to 11 px (fight files, `fight_effect_icons`, `fight_markers`; render of the real fight board, seed 7, real fonts, no overflow). The changes are small: the intent chip's label ("Intention i…" becomes "Intention …": one letter fewer fits, the chip is already cut off today), the telegraph/badge digits, the HP and shield numbers and the round counters grow by 1-3 px. Nothing wraps or moves. The cost: text that is already cut off gets cut one letter earlier. The 25 places outside the fight (clan compass, ship yard, bounty board...) are not in this picture; ask before I build them.
