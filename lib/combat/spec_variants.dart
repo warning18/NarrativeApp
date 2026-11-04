@@ -198,7 +198,7 @@ class SpecMods {
       _rank(Spec.longVigil);
   int vigilMend(int health, int maxHealth) =>
       health * 2 > maxHealth && health < maxHealth
-          ? max(1, (maxHealth * vigilShare).round())
+          ? min(maxHealth - health, max(1, (maxHealth * vigilShare).round()))
           : 0;
   bool get defendFeedsFire => has('last_watch_long_vigil');
 
