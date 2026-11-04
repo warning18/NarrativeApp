@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.819.0+855]
+## [1.821.0+857]
 
 - Crossings: a land crossing's scene is now painted by the world camera
   (`WorldCamera`, v1.818) when its road is short enough on the world's strip
