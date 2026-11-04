@@ -23,7 +23,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/clans_politics_screen.dart';
 import 'package:narrative_data_app/screens/journal_screen.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart'
-    show choicePoliticsHint, chapterCardNews;
+    show chapterCardNews, choicePoliticsHint;
 import 'package:narrative_data_app/widgets/clan_widgets.dart';
 import 'package:narrative_data_app/widgets/coast_news.dart';
 import 'package:narrative_data_app/widgets/moments.dart';

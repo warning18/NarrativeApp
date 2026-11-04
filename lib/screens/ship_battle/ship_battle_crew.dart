@@ -193,7 +193,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final look = ref.watch(playerShipLookProvider);
-    return Container(
+    return ColoredBox(
       key: const Key('ship_placement'),
       color: theme.colorScheme.surface,
       child: Column(

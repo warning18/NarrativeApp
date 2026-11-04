@@ -98,8 +98,7 @@
     "clan": "dominion",
     "rank": 3,
     "title": "Inquisitor-General",
-    "title_fr": "Inquisiteur général",
-    "stanceLeader": "scheming"
+    "title_fr": "Inquisiteur général"
   },
   "cassian_oriel": {
     "npcID": "cassian_oriel",
@@ -176,8 +175,7 @@
     "clan": "dominion",
     "rank": 2,
     "title": "Regent of the Lantern",
-    "title_fr": "Régent de la Lanterne",
-    "stanceLeader": "scheming"
+    "title_fr": "Régent de la Lanterne"
   },
   "vane_quartermaster": {
     "npcID": "vane_quartermaster",
@@ -435,8 +433,7 @@
     "clan": "dominion",
     "rank": 9,
     "title": "Overseer, Inquisition customs",
-    "title_fr": "Douanier de l’Inquisition",
-    "stanceLeader": "wavering"
+    "title_fr": "Douanier de l’Inquisition"
   },
   "nadira": {
     "npcID": "nadira",
@@ -629,8 +626,7 @@
     "clan": "dominion",
     "rank": 5,
     "title": "Eldest Wickwarden",
-    "title_fr": "Aînée des Garde-Mèches",
-    "stanceLeader": "loyal"
+    "title_fr": "Aînée des Garde-Mèches"
   },
   "hesk_morrow": {
     "npcID": "hesk_morrow",
@@ -719,8 +715,7 @@
     "clan": "dominion",
     "rank": 4,
     "title": "Grand Master of the Order",
-    "title_fr": "Grand Maître de l’Ordre",
-    "stanceLeader": "scheming"
+    "title_fr": "Grand Maître de l’Ordre"
   },
   "old_hesk": {
     "npcID": "old_hesk",
@@ -932,8 +927,7 @@
     "clan": "crows",
     "rank": 3,
     "title": "First Keyholder",
-    "title_fr": "Première Porte-Clef",
-    "stanceLeader": "loyal"
+    "title_fr": "Première Porte-Clef"
   },
   "chart_keeper": {
     "npcID": "chart_keeper",
@@ -1121,8 +1115,7 @@
     "clan": "penitents",
     "rank": 5,
     "title": "Acolyte of the Quarter’s shrine",
-    "title_fr": "Acolyte du sanctuaire du Quartier",
-    "stanceLeader": "wavering"
+    "title_fr": "Acolyte du sanctuaire du Quartier"
   },
   "high_warden": {
     "npcID": "high_warden",
@@ -1187,8 +1180,7 @@
     "clan": "dominion",
     "rank": 7,
     "title": "Commander of the Crusade",
-    "title_fr": "Commandant de la Croisade",
-    "stanceLeader": "loyal"
+    "title_fr": "Commandant de la Croisade"
   },
   "rat_matriarch": {
     "npcID": "rat_matriarch",
@@ -1916,8 +1908,7 @@
     "clan": "compact",
     "rank": 5,
     "title": "Master of the Scaffolders",
-    "title_fr": "Maître des Échafaudeurs",
-    "stanceLeader": "scheming"
+    "title_fr": "Maître des Échafaudeurs"
   },
   "imeh": {
     "npcID": "imeh",
@@ -2085,8 +2076,7 @@
     "clan": "mire",
     "rank": 6,
     "title": "Healer of the Barkbleeders",
-    "title_fr": "Guérisseur Saigne-Écorce",
-    "stanceLeader": "wavering"
+    "title_fr": "Guérisseur Saigne-Écorce"
   },
   "orsabet_vell": {
     "npcID": "orsabet_vell",
@@ -2172,8 +2162,7 @@
     "clan": "vigil",
     "rank": 6,
     "title": "Candlebearer widow",
-    "title_fr": "Veuve porte-chandelle",
-    "stanceLeader": "wavering"
+    "title_fr": "Veuve porte-chandelle"
   },
   "ghrem_stonebrow": {
     "npcID": "ghrem_stonebrow",
@@ -2341,8 +2330,7 @@
     "clan": "crows",
     "rank": 7,
     "title": "Brig-Born salvager",
-    "title_fr": "Récupérateur des Enfants du Brick",
-    "stanceLeader": "wavering"
+    "title_fr": "Récupérateur des Enfants du Brick"
   },
   "keeper_blind_beggar_stall": {
     "npcID": "keeper_blind_beggar_stall",
@@ -2437,8 +2425,7 @@
     "clan": "crows",
     "rank": 8,
     "title": "Fence of the Tide Cellar",
-    "title_fr": "Receleur de la Cave des Marées",
-    "stanceLeader": "loyal"
+    "title_fr": "Receleur de la Cave des Marées"
   },
   "keeper_weaponsmith_forge": {
     "npcID": "keeper_weaponsmith_forge",
@@ -2489,8 +2476,7 @@
     "clan": "compact",
     "rank": 3,
     "title": "Master smith",
-    "title_fr": "Maître forgeron",
-    "stanceLeader": "loyal"
+    "title_fr": "Maître forgeron"
   },
   "keeper_shieldwrights_hall": {
     "npcID": "keeper_shieldwrights_hall",
@@ -2541,8 +2527,7 @@
     "clan": "compact",
     "rank": 4,
     "title": "Master of the Quarrymen",
-    "title_fr": "Maîtresse des Carriers",
-    "stanceLeader": "wavering"
+    "title_fr": "Maîtresse des Carriers"
   },
   "keeper_arcane_bazaar": {
     "npcID": "keeper_arcane_bazaar",
@@ -2630,8 +2615,7 @@
     "clan": "mire",
     "rank": 5,
     "title": "Apothecary of the Courts",
-    "title_fr": "Apothicaire des Cours",
-    "stanceLeader": "loyal"
+    "title_fr": "Apothicaire des Cours"
   },
   "keeper_smugglers_vault": {
     "npcID": "keeper_smugglers_vault",
@@ -2682,8 +2666,7 @@
     "clan": "crows",
     "rank": 4,
     "title": "Second Keyholder, keeper of the Vault",
-    "title_fr": "Second Porte-Clef, garde du Coffre",
-    "stanceLeader": "wavering"
+    "title_fr": "Second Porte-Clef, garde du Coffre"
   },
   "keeper_hammersmith_forge": {
     "npcID": "keeper_hammersmith_forge",
@@ -2734,8 +2717,7 @@
     "clan": "compact",
     "rank": 6,
     "title": "Master of the Anvil-Deaf",
-    "title_fr": "Maîtresse des Sourds de l’Enclume",
-    "stanceLeader": "loyal"
+    "title_fr": "Maîtresse des Sourds de l’Enclume"
   },
   "keeper_arcane_academy": {
     "npcID": "keeper_arcane_academy",
@@ -2786,8 +2768,7 @@
     "clan": "dominion",
     "rank": 8,
     "title": "Magister of the Cantors, keeper of the tithe",
-    "title_fr": "Magister des Chantres, gardien de la dîme",
-    "stanceLeader": "loyal"
+    "title_fr": "Magister des Chantres, gardien de la dîme"
   },
   "keeper_sharpweave_den": {
     "npcID": "keeper_sharpweave_den",
@@ -2838,8 +2819,7 @@
     "clan": "crows",
     "rank": 6,
     "title": "Keeper of the Whisper Ledger",
-    "title_fr": "Garde du Registre des Murmures",
-    "stanceLeader": "scheming"
+    "title_fr": "Garde du Registre des Murmures"
   },
   "keeper_ossuary_relics": {
     "npcID": "keeper_ossuary_relics",
@@ -2873,8 +2853,7 @@
     "clan": "penitents",
     "rank": 6,
     "title": "Trader of relics",
-    "title_fr": "Marchand de reliques",
-    "stanceLeader": "scheming"
+    "title_fr": "Marchand de reliques"
   },
   "keeper_last_lantern": {
     "npcID": "keeper_last_lantern",
@@ -2920,8 +2899,7 @@
     "clan": "vigil",
     "rank": 3,
     "title": "Keeper of the Last Lantern",
-    "title_fr": "Gardienne de la Dernière Lanterne",
-    "stanceLeader": "loyal"
+    "title_fr": "Gardienne de la Dernière Lanterne"
   },
   "keeper_anchorage_chandlery": {
     "npcID": "keeper_anchorage_chandlery",
@@ -3192,8 +3170,7 @@
     "clan": "dominion",
     "rank": 10,
     "title": "Courier of the crape",
-    "title_fr": "Courrier du crêpe",
-    "stanceLeader": "loyal"
+    "title_fr": "Courrier du crêpe"
   },
   "frozen_pilgrim": {
     "npcID": "frozen_pilgrim",
@@ -3347,8 +3324,7 @@
     "clan": "dominion",
     "rank": 1,
     "title": "Voice of the First Lantern",
-    "title_fr": "Voix de la Première Lanterne",
-    "stanceLeader": ""
+    "title_fr": "Voix de la Première Lanterne"
   },
   "orsolya_keld": {
     "npcID": "orsolya_keld",
@@ -3378,8 +3354,7 @@
     "clan": "dominion",
     "rank": 6,
     "title": "High Lantern-Bearer, Keeper of the List",
-    "title_fr": "Haute Porte-Lanterne, Gardienne du Registre",
-    "stanceLeader": "loyal"
+    "title_fr": "Haute Porte-Lanterne, Gardienne du Registre"
   },
   "joss_harrow": {
     "npcID": "joss_harrow",
@@ -3409,8 +3384,7 @@
     "clan": "vigil",
     "rank": 1,
     "title": "Warden-in-Chief",
-    "title_fr": "Garde-en-chef",
-    "stanceLeader": ""
+    "title_fr": "Garde-en-chef"
   },
   "edda_grey": {
     "npcID": "edda_grey",
@@ -3440,8 +3414,7 @@
     "clan": "vigil",
     "rank": 2,
     "title": "Watch-Captain of the Ridge",
-    "title_fr": "Capitaine du Guet de la Crête",
-    "stanceLeader": "loyal"
+    "title_fr": "Capitaine du Guet de la Crête"
   },
   "halvard": {
     "npcID": "halvard",
@@ -3471,8 +3444,7 @@
     "clan": "vigil",
     "rank": 4,
     "title": "Spearman of the Last Watch",
-    "title_fr": "Lancier de la Dernière Veille",
-    "stanceLeader": "wavering"
+    "title_fr": "Lancier de la Dernière Veille"
   },
   "ysel": {
     "npcID": "ysel",
@@ -3502,8 +3474,7 @@
     "clan": "vigil",
     "rank": 5,
     "title": "Candlebearer, keeper of the count",
-    "title_fr": "Porte-Chandelle, gardienne du compte",
-    "stanceLeader": "loyal"
+    "title_fr": "Porte-Chandelle, gardienne du compte"
   },
   "cade_rowan": {
     "npcID": "cade_rowan",
@@ -3533,8 +3504,7 @@
     "clan": "vigil",
     "rank": 7,
     "title": "Watch-Lieutenant",
-    "title_fr": "Lieutenant du Guet",
-    "stanceLeader": "scheming"
+    "title_fr": "Lieutenant du Guet"
   },
   "tam_lamp": {
     "npcID": "tam_lamp",
@@ -3564,8 +3534,7 @@
     "clan": "vigil",
     "rank": 8,
     "title": "Lamp-boy of the ridge post",
-    "title_fr": "Garçon de lampe du poste de la crête",
-    "stanceLeader": "loyal"
+    "title_fr": "Garçon de lampe du poste de la crête"
   },
   "odalys_fenn": {
     "npcID": "odalys_fenn",
@@ -3595,8 +3564,7 @@
     "clan": "compact",
     "rank": 1,
     "title": "Speaker of the Table",
-    "title_fr": "Oratrice de la Table",
-    "stanceLeader": ""
+    "title_fr": "Oratrice de la Table"
   },
   "hollis_reck": {
     "npcID": "hollis_reck",
@@ -3626,8 +3594,7 @@
     "clan": "compact",
     "rank": 2,
     "title": "Master of the Charter",
-    "title_fr": "Maître de la Charte",
-    "stanceLeader": "loyal"
+    "title_fr": "Maître de la Charte"
   },
   "corin_ashdown": {
     "npcID": "corin_ashdown",
@@ -3657,8 +3624,7 @@
     "clan": "compact",
     "rank": 7,
     "title": "Tally-Master of the Table",
-    "title_fr": "Maître des Comptes de la Table",
-    "stanceLeader": "scheming"
+    "title_fr": "Maître des Comptes de la Table"
   },
   "kit_emberly": {
     "npcID": "kit_emberly",
@@ -3688,8 +3654,7 @@
     "clan": "compact",
     "rank": 8,
     "title": "Coal-runner of Cinder Row",
-    "title_fr": "Porteur de charbon de la Rue des Braises",
-    "stanceLeader": "loyal"
+    "title_fr": "Porteur de charbon de la Rue des Braises"
   },
   "heron_queen": {
     "npcID": "heron_queen",
@@ -3719,8 +3684,7 @@
     "clan": "mire",
     "rank": 1,
     "title": "The Heron Queen",
-    "title_fr": "La Reine-Héron",
-    "stanceLeader": ""
+    "title_fr": "La Reine-Héron"
   },
   "herons_hand": {
     "npcID": "herons_hand",
@@ -3750,8 +3714,7 @@
     "clan": "mire",
     "rank": 2,
     "title": "The Queen’s Hand",
-    "title_fr": "La Main de la Reine",
-    "stanceLeader": "loyal"
+    "title_fr": "La Main de la Reine"
   },
   "hesper_mere": {
     "npcID": "hesper_mere",
@@ -3781,8 +3744,7 @@
     "clan": "mire",
     "rank": 3,
     "title": "Seneschal of Favours",
-    "title_fr": "Sénéchale des Faveurs",
-    "stanceLeader": "loyal"
+    "title_fr": "Sénéchale des Faveurs"
   },
   "perrin_mere": {
     "npcID": "perrin_mere",
@@ -3812,8 +3774,7 @@
     "clan": "mire",
     "rank": 4,
     "title": "Heir of the House of Mere",
-    "title_fr": "Héritière de la Maison de Mere",
-    "stanceLeader": "scheming"
+    "title_fr": "Héritière de la Maison de Mere"
   },
   "wen_wake": {
     "npcID": "wen_wake",
@@ -3843,8 +3804,7 @@
     "clan": "mire",
     "rank": 7,
     "title": "Guide of the Heron’s Wake",
-    "title_fr": "Guide du Sillage du Héron",
-    "stanceLeader": "loyal"
+    "title_fr": "Guide du Sillage du Héron"
   },
   "sedge_returned": {
     "npcID": "sedge_returned",
@@ -3874,8 +3834,7 @@
     "clan": "mire",
     "rank": 8,
     "title": "One of the Returned",
-    "title_fr": "Un des Revenus",
-    "stanceLeader": "loyal"
+    "title_fr": "Un des Revenus"
   },
   "tamsin_brask": {
     "npcID": "tamsin_brask",
@@ -3905,8 +3864,7 @@
     "clan": "crows",
     "rank": 1,
     "title": "First Captain",
-    "title_fr": "Première Capitaine",
-    "stanceLeader": ""
+    "title_fr": "Première Capitaine"
   },
   "mireille_sable": {
     "npcID": "mireille_sable",
@@ -3936,8 +3894,7 @@
     "clan": "crows",
     "rank": 2,
     "title": "Collector of the Syndicate",
-    "title_fr": "Percepteuse du Syndicat",
-    "stanceLeader": "loyal"
+    "title_fr": "Percepteuse du Syndicat"
   },
   "brine_jack": {
     "npcID": "brine_jack",
@@ -3967,8 +3924,7 @@
     "clan": "crows",
     "rank": 5,
     "title": "Captain of the Wreckers",
-    "title_fr": "Capitaine des Naufrageurs",
-    "stanceLeader": "scheming"
+    "title_fr": "Capitaine des Naufrageurs"
   },
   "aldith_crowe": {
     "npcID": "aldith_crowe",
@@ -3998,8 +3954,7 @@
     "clan": "penitents",
     "rank": 1,
     "title": "Eldest of the Ashen Penitents",
-    "title_fr": "Aînée des Pénitents de Cendre",
-    "stanceLeader": ""
+    "title_fr": "Aînée des Pénitents de Cendre"
   },
   "ash_confessor": {
     "npcID": "ash_confessor",
@@ -4029,8 +3984,7 @@
     "clan": "penitents",
     "rank": 2,
     "title": "The Ash Confessor",
-    "title_fr": "La Confesseuse de Cendre",
-    "stanceLeader": "loyal"
+    "title_fr": "La Confesseuse de Cendre"
   },
   "masked_penitent": {
     "npcID": "masked_penitent",
@@ -4060,8 +4014,7 @@
     "clan": "penitents",
     "rank": 3,
     "title": "The Masked Penitent",
-    "title_fr": "Le Pénitent masqué",
-    "stanceLeader": "wavering"
+    "title_fr": "Le Pénitent masqué"
   },
   "anselm_voe": {
     "npcID": "anselm_voe",
@@ -4091,8 +4044,7 @@
     "clan": "penitents",
     "rank": 4,
     "title": "Knight of the Spire-Fallen",
-    "title_fr": "Chevalier des Déchus de la Flèche",
-    "stanceLeader": "scheming"
+    "title_fr": "Chevalier des Déchus de la Flèche"
   },
   "odile_ember": {
     "npcID": "odile_ember",
@@ -4122,8 +4074,7 @@
     "clan": "penitents",
     "rank": 7,
     "title": "Ember Sister, nurse of the Quarter",
-    "title_fr": "Sœur de Braise, infirmière du Quartier",
-    "stanceLeader": "loyal"
+    "title_fr": "Sœur de Braise, infirmière du Quartier"
   },
   "wick_sweeper": {
     "npcID": "wick_sweeper",
@@ -4153,7 +4104,6 @@
     "clan": "penitents",
     "rank": 8,
     "title": "Ash-sweeper of the Wall of Names",
-    "title_fr": "Balayeur de cendre du Mur des Noms",
-    "stanceLeader": "loyal"
+    "title_fr": "Balayeur de cendre du Mur des Noms"
   }
 }

@@ -192,7 +192,7 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
       if (d <= 25) {
         canvas.drawRect(
             Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), disc);
-      } else if (d <= 81 && (x + y) % 2 == 0) {
+      } else if (d <= 81 && (x + y).isEven) {
         canvas.drawRect(
             Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), glow);
       }

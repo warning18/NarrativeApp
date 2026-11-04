@@ -431,7 +431,7 @@ void _wisps(_G g, double x, double y, int n) {
         final d = dx * dx + dy * dy;
         if (d <= 1) {
           g.r(const Color(0xFFD8F5C8), wx + dx, wy + dy, 1, 1);
-        } else if (d <= 9 && (dx + dy) % 2 == 0) {
+        } else if (d <= 9 && (dx + dy).isEven) {
           g.r(const Color(0xFF8FD6A0).withValues(alpha: 0.45), wx + dx, wy + dy,
               1, 1);
         }

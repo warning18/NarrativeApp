@@ -110,13 +110,13 @@ import 'city_chart_screen.dart';
 import 'full_map_screen.dart';
 import 'story_player_screen.dart'
     show
-        StoryPlayerScreen,
         EchoLine,
+        StoryPlayerScreen,
         composeNarrationParts,
         isStoryChoiceLocked,
-        storySceneLocked,
         noteShownEchoes,
         storyChoiceLockedText,
+        storySceneLocked,
         takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
 

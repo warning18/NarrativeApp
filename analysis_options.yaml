@@ -50,6 +50,11 @@ linter:
     avoid_bool_literals_in_conditional_expressions: true
     prefer_const_literals_to_create_immutables: true
     avoid_unused_constructor_parameters: true
+    combinators_ordering: true
+    use_is_even_rather_than_modulo: true
+    use_colored_box: true
+    join_return_with_assignment: true
+    use_late_for_private_fields_and_variables: true
     unawaited_futures: true
 
 # Additional information about this file can be found at
