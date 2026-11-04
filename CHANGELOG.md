@@ -15,6 +15,14 @@ isn't reconstructable from git history alone.
   `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
   the ending. Pure cut and paste, nothing changes on screen or in the rules.
 
+## [1.741.0+777]
+
+- **Core: the story and the city plans are read off the main thread (P3).**
+  The story (1.5 MB, 479 scenes) took about 65 ms to decode and build on the
+  main thread, and the city plans (715 KB) about 17 ms, both on the way into
+  the Journey. They are now parsed on a worker. A broken edited story still
+  falls back to the bundled one (#696).
+
 ## [1.740.0+776]
 
 - Character, Overview: the radar card has a switch under it: **Abilities**
