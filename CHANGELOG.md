@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
+
 ## [1.760.0+796]
 
 - **Cleanup: the dropped futures are named.** The 45 places where a Future
