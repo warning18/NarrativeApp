@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.825.0+861]
+## [1.826.0+862]
 
 - Fights on the road: the fight is dressed with the land it is met on. A fight
   fought during a land crossing (the scavengers) now has the side-view land
