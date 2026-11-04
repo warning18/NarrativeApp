@@ -87,7 +87,9 @@ void main() {
     tester.view.physicalSize = const Size(320, 568);
     await settleApp(tester);
     final play = container.read(storyPlayProvider.notifier);
-    play.jumpTo('2015');
+    // Saltmouth's market (v1.823: a same-place step is a card when it is
+    // acted out there; a plain way is a banner on the map).
+    play.jumpTo('2010');
     await settleApp(tester);
     await tester.pump(const Duration(seconds: 3));
     Future<void> clearCards() async {
@@ -101,18 +103,21 @@ void main() {
     await clearCards();
     final taken = find.byKey(const ValueKey('journey_taken_line'));
     final still = find.byKey(const ValueKey('journey_still_line'));
-    // Nothing was taken yet: the hub's page has neither line.
+    // Nothing was taken yet: the page has neither line.
     expect(taken, findsNothing);
     expect(still, findsNothing);
 
-    // An errand on the wharf: the page stays, with what was taken and where
-    // the party still is.
-    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
-    await tester.pump(const Duration(milliseconds: 500));
-    await takeCard(tester, 'Buy a quiet route');
-    expect(container.read(storyPlayProvider).currentNodeId, '2015_route_sold');
+    // A walk through the stalls: the scene it opens says what was taken and
+    // where the party still is.
+    final open = find.byKey(const ValueKey('journey_open_choices'));
+    if (open.evaluate().isNotEmpty) {
+      await tester.tap(open);
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+    await takeCard(tester, 'Walk the stalls');
+    expect(container.read(storyPlayProvider).currentNodeId, '2015_crow_offer');
     expect(taken, findsOneWidget);
-    expect(tester.widget<Text>(taken).data, startsWith('› Buy a quiet'));
+    expect(tester.widget<Text>(taken).data, startsWith('› Walk the stalls'));
     expect(still, findsOneWidget);
     expect(tester.widget<Text>(still).data, startsWith('Still at '));
     // The stage and the cards have finished their fade.
@@ -123,10 +128,11 @@ void main() {
       expect((f.widget as FadeTransition).opacity.value, 1.0);
     }
 
-    // Back to the hub, still on the wharf: the lines name what was taken now.
-    await takeCard(tester, 'Say nothing');
+    // The Crows' offer answered, still in the place: the lines name what was
+    // taken now.
+    await takeCard(tester, 'Ask what the Crows');
     expect(container.read(storyPlayProvider).currentNodeId, '2015');
-    expect(tester.widget<Text>(taken).data, startsWith('› Say nothing'));
+    expect(tester.widget<Text>(taken).data, startsWith('› Ask what the Crows'));
 
     // French, on the narrowest phone: the line reads "Toujours ici : <place>".
     await tester.runAsync(() => container
