@@ -39,6 +39,9 @@ import '../widgets/side_view/frost_kit.dart';
 import '../widgets/side_view/kit_hour.dart';
 import '../widgets/side_view/ruins_kit.dart';
 import '../widgets/d20_roll.dart';
+import '../widgets/journey_fx.dart'
+    show FightJolt, fightJoltDuration, playFightJolt;
+import '../theme/stitched_ink.dart' show InkColors;
 import '../widgets/side_view/scene_versions.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
@@ -187,7 +190,12 @@ const double _crossingSceneHeight = 190;
 
 enum _Phase { event, result, arrived, failed, turnedBack }
 
-class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
+class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
+    with SingleTickerProviderStateMixin {
+  /// The jolt going into a fight on the road, the same as the map's.
+  late final AnimationController _jolt =
+      AnimationController(vsync: this, duration: fightJoltDuration);
+
   late final Random _random = widget.random ?? Random();
   late final List<String> _drawn = drawCrossing(
       widget.route, widget.events.keys,
@@ -279,6 +287,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
   @override
   void dispose() {
     _spokenTimer?.cancel();
+    _jolt.dispose();
     super.dispose();
   }
 
@@ -382,6 +391,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
     final enemy = enemies[choice.fightEnemyId] as Map<String, dynamic>?;
     if (!mounted) return;
     if (enemy == null) return _settle(choice.fail, '');
+    await playFightJolt(context, _jolt);
+    if (!mounted) return;
     ref.read(combatActiveProvider.notifier).state = true;
     // The road's own ground (field_anomaly.dart's landRouteStage): a desert
     // road a caravan road, a mountain road a pass.
@@ -758,58 +769,63 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen> {
       canPop: done,
       child: TutorialTrigger(
         topic: TutorialTopic.landCrossing,
-        child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(widget.route.nameFor(fr)),
-            bottom: rulerColour == null
-                ? null
-                : PreferredSize(
-                    preferredSize: const Size.fromHeight(3),
-                    child: ColoredBox(
-                      key: const Key('crossing_ruler_band'),
-                      color: rulerColour,
-                      child: const SizedBox(height: 3, width: double.infinity),
+        child: FightJolt(
+          controller: _jolt,
+          colour: InkColors.dark.blood,
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(widget.route.nameFor(fr)),
+              bottom: rulerColour == null
+                  ? null
+                  : PreferredSize(
+                      preferredSize: const Size.fromHeight(3),
+                      child: ColoredBox(
+                        key: const Key('crossing_ruler_band'),
+                        color: rulerColour,
+                        child:
+                            const SizedBox(height: 3, width: double.infinity),
+                      ),
                     ),
+            ),
+            body: Column(
+              children: [
+                if (scene)
+                  Stack(
+                    children: [
+                      SideViewScene(
+                        key: const Key('crossing_scene'),
+                        height: _crossingSceneHeight,
+                        layers: _sceneLayers(
+                            sceneVersionAt(widget.route.id, _day),
+                            (v) => withHourStars(
+                                crossingLayers(terrain, progress, version: v),
+                                phase),
+                            reduceMotion:
+                                MediaQuery.of(context).disableAnimations),
+                        overlay: hourWash(phase),
+                        actors: desertActors(
+                            party: ref.watch(walkingPartyProvider),
+                            moving: _phase == _Phase.result,
+                            encounter: _encounterWalk(event)),
+                        particles: particles,
+                        intensity: storm ? 1 : 0.6,
+                        moving: _phase == _Phase.result,
+                      ),
+                      Positioned(left: 0, right: 0, top: 0, child: hud),
+                      if (_spoken != null) _walkBubble(_spoken!),
+                    ],
+                  )
+                else
+                  hud,
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [body],
                   ),
-          ),
-          body: Column(
-            children: [
-              if (scene)
-                Stack(
-                  children: [
-                    SideViewScene(
-                      key: const Key('crossing_scene'),
-                      height: _crossingSceneHeight,
-                      layers: _sceneLayers(
-                          sceneVersionAt(widget.route.id, _day),
-                          (v) => withHourStars(
-                              crossingLayers(terrain, progress, version: v),
-                              phase),
-                          reduceMotion:
-                              MediaQuery.of(context).disableAnimations),
-                      overlay: hourWash(phase),
-                      actors: desertActors(
-                          party: ref.watch(walkingPartyProvider),
-                          moving: _phase == _Phase.result,
-                          encounter: _encounterWalk(event)),
-                      particles: particles,
-                      intensity: storm ? 1 : 0.6,
-                      moving: _phase == _Phase.result,
-                    ),
-                    Positioned(left: 0, right: 0, top: 0, child: hud),
-                    if (_spoken != null) _walkBubble(_spoken!),
-                  ],
-                )
-              else
-                hud,
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [body],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
