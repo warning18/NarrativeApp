@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.828.0+864]
+
+- The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
+  the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
+  full-height sheet: the chest and its rarity, "What the spoils change" (gold
+  126 to 144, dice 1 to 2 rerolls a round, bag Antidote x1 to x2), each
+  reward's text with its "Use right away" switch, and one Take button that
+  stays at the bottom; it scrolls on a short phone. Three strings
+  (`loot_sheet_changes`, `loot_sheet_details`, `loot_use_now`). Nothing uses
+  it yet: it is wired to the chest and to the engine's before-and-after data
+  when that merges, so the game does not change. Picture:
+  `docs/ux-shots/loot/sheet-built-stub.png`. Test: `loot_sheet_test.dart`
+  (360 and 412 px, French and English, real fonts, no text under 11 px, the
+  switch and Take).
+
 ## [1.827.0+863]
 
 ### Fixed
