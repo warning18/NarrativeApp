@@ -28,7 +28,21 @@ extension _FightRewards on _FightScreenState {
       _over = true;
       _won = won;
     });
+    try {
+      await _settleFight(won: won);
+    } catch (error, stack) {
+      // A reward that failed to pay (a save that threw) never strands the
+      // party on a fight already over: the error is reported and the way
+      // out opens, with nothing paid twice.
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: error, stack: stack, library: 'fight'));
+      if (mounted && !_settled) _update(() => _settled = true);
+    }
+  }
 
+  /// What the fight leaves once it is over (see [_finishFight]): the
+  /// rewards of a win, the cost of a loss.
+  Future<void> _settleFight({required bool won}) async {
     // What this fight left behind, for the next scene's opening line.
     ref.read(lastFightOutcomeProvider.notifier).state = FightOutcome(
       won: won,

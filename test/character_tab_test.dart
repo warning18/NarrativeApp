@@ -132,7 +132,20 @@ void main() {
         // Overview: the radar and the skills known, and the alignment.
         expect(find.byKey(const Key('character_radar')), findsOneWidget);
         expect(find.byKey(const Key('character_skill_warrior_shield_bash')),
+            findsNothing);
+        // The switch: the skills by element, then the detail with the chips.
+        await tester.tap(find.byKey(const Key('character_view_skills')));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.byKey(const Key('character_skills_radar')), findsOneWidget);
+        expect(find.byKey(const Key('character_radar')), findsNothing);
+        await tester.tap(find.byKey(const Key('character_view_detail')));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.byKey(const Key('character_radar_detail')), findsOneWidget);
+        expect(find.byKey(const Key('character_skill_warrior_shield_bash')),
             findsOneWidget);
+        await tester.tap(find.byKey(const Key('character_view_abilities')));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.byKey(const Key('character_radar')), findsOneWidget);
         expect(find.byKey(const Key('character_titles')), findsNothing);
         // The Gifts tab says an offer waits.
         expect(find.byKey(const Key('character_gifts_dot')), findsOneWidget);
@@ -214,6 +227,9 @@ void main() {
 
   testWidgets('"All skills" opens the skills on the Tree', (tester) async {
     await _open(tester, _tab, size: const Size(360, 740));
+    await tester.tap(find.byKey(const Key('character_view_detail')));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.ensureVisible(find.byKey(const Key('character_skills_all')));
     await tester.tap(find.byKey(const Key('character_skills_all')));
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 100));

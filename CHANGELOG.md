@@ -8,12 +8,118 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.747.0+783]
+## [1.753.0+789]
 
 - The app no longer ships dog pictures nothing reads: the three `rotations`
   folders (the sitting dog, the angel's and the demon's) now list only their
   `south.png`, and the unused bark frames are left out (about 65 KB less).
   The art stays in the repository, as source. Nothing changes on screen.
+
+## [1.749.0+785]
+
+- Code: `story_player_screen.dart` (4,479 lines) is cut into the main file
+  (1,078 lines: the screen and its story view) and four files under
+  `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
+  the ending. Pure cut and paste, nothing changes on screen or in the rules.
+
+## [1.743.0+779]
+
+- **Core: ordinary fights are a little harder again from chapter 2 on.**
+  Clan dice, the specialisations, Vica and the x3 weakness had made ordinary
+  fights easier than meant. Regular (non-boss) enemies now hit 15% harder
+  from chapter 2 on; chapter 1 and the bosses keep their numbers. In the
+  simulator (800 naive runs) encounters won go from 75.5% to 71.0%, and
+  every boss stays within 7 points of its target win rate.
+
+## [1.742.0+778]
+
+- **Core: two unused tables and three always-0 enemy fields removed (R1/R2).**
+  The gates and adventure-node tables (4 records in all) were read only by
+  the data editor; they, their editor pages and their asset lines are gone.
+  The `attackCountRequirement`, `playerPatternThreshold` and `blockThreshold`
+  fields on enemy moves were 0 everywhere and read by nothing (717 lines of
+  `enemies.json`). Old saves and old exported or edited data still load: a
+  stale edit of a removed table is ignored, and an old enemies edit with the
+  removed fields reads as before.
+
+## [1.741.0+777]
+
+- **Core: the story and the city plans are read off the main thread (P3).**
+  The story (1.5 MB, 479 scenes) took about 65 ms to decode and build on the
+  main thread, and the city plans (715 KB) about 17 ms, both on the way into
+  the Journey. They are now parsed on a worker. A broken edited story still
+  falls back to the bundled one (#696).
+
+## [1.740.0+776]
+
+- Character, Overview: the radar card has a switch under it: **Abilities**
+  (the eight abilities, as before), **Skills** (a second radar: the skills
+  you know, counted by element) and **Detail** (the eight numbers as bars, a
+  bar per element, then the skills as chips and "All skills"). The skill
+  chips that sat under the card moved to Detail, so the Overview is shorter.
+  French and English; fits 320 px; no animation added. A locked Skills page
+  shows the abilities radar alone, as before.
+- Tests: the Character tab test opens each view; `skills_by_element_test.dart`;
+  the phone sweep shows the Skills and Detail views.
+
+## [1.738.0+774]
+
+- **Core: fight and story fixes from QA issue #694.**
+  - A story choice whose fight names an enemy missing from the table is no
+    longer a free win: the error is reported and the choice isn't taken.
+  - A fight whose rewards fail to pay can still be left: the error is
+    reported and the fight settles.
+  - The Long Vigil's mend stops at full health.
+  - A Flurry's second strike no longer spends the Relicbreaker's mana or the
+    signs' banked shares a second time (as in the simulator).
+  - No die can be rolled in the beat between a confirmed roll and the
+    enemies' answer.
+
+## [1.737.0+773]
+
+- **Core: a broken edited table or story falls back to the bundled one (#696).**
+  An editor override (`gamedb_<table>` or `story_nodes_override`) that no
+  longer parses used to fail the whole load. It is now reported and the
+  table or story bundled with the app is read instead; the override is
+  left in place to be fixed or reset.
+
+## [1.736.0+772]
+
+- Code: the fight's two kinds of icon tile (a fighter's effect and a
+  fight-wide status) drew the same tinted square twice; they now share one
+  widget. Nothing changes on screen.
+
+## [1.735.0+771]
+
+- Fight on a small phone (320 x 568): the dice board was squeezed to a strip
+  of a few pixels. Under 620 px of screen height the fight no longer draws
+  its empty seats (a side with fewer than three fighters shows only its
+  fighters) nor the two-line log under the board (the log button still opens
+  it), so the dice have room. Normal phones are unchanged.
+- The scene stage's door tab hangs under the foe's name on a narrow stage
+  instead of covering the foe, and its label is cut with "..." when long.
+- Tests: `qa_fight_320_test.dart`, `qa_scene_stage_320_test.dart`.
+
+## [1.731.0+767]
+
+- **Core: a detour begun is saved as the scene it leads to (#695).** The
+  choice that sets off a detour has already taken its effects and its
+  time when the detour starts; the save still stood before the choice, so
+  a game closed mid-detour reopened there and the choice could be taken a
+  second time (its gold and effects again, the same detour drawn again).
+  The save now stands where the detour leads; the detour itself is still
+  not saved.
+
+## [1.730.0+766]
+
+- **Core: a save that can't be read never strands the player (#693).**
+  - An autosave whose history or visited list is unreadable keeps the
+    scene it names (it fell back to the story's first scene).
+  - An unreadable old two-key save is left where it is, and the save slots
+    still read (their list didn't load).
+  - An unreadable game config from the Data editor falls back to the
+    shipped one, for a fresh session and for a new character (neither
+    could be made).
 
 ## [1.719.0+755]
 
