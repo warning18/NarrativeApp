@@ -295,6 +295,7 @@
  "qa_real_font_cards_test.dart": 24.6,
  "qa_real_font_layout_test.dart": 9.4,
  "qa_seeded_rolls_test.dart": 0.7,
+ "qa_sim_gate_test.dart": 0.5,
  "qa_sim_tables_test.dart": 0.6,
  "qa_smoke_camp_test.dart": 21.2,
  "qa_smoke_ch1_test.dart": 10.7,
