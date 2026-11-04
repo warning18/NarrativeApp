@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.830.0+866]
+## [1.829.0+865]
 
 - Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
   Attack, Heavy Windup, Battle Trance, Final Stand, Focus Mind, Guard Break,
