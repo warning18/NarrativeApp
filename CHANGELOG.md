@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.808.0+844]
+
+- Code cleanup (split 4f, step 2): the session notifier's methods leave
+  `player_session_provider.dart` (4,385 lines, now 907) for seven files by
+  feature: offers, politics, quests, shop and forge, allies and camp, road
+  and time, skills and combat. A move: the saves, the rules and the
+  simulator's results are unchanged.
 ## [1.807.0+843]
 
 - Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
