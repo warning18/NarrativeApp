@@ -16,6 +16,24 @@ isn't reconstructable from git history alone.
   change to the save (gold, XP, a flag) no longer rebuilds them. Nothing
   changes on screen.
 
+## [1.781.0+817]
+
+- **Narrative: page breaks in five long scenes.** `470`, `6010_thread`,
+  `4999_drawn`, `5004` and `5004b` read in two pages, cut at a beat of the
+  story rather than by length (the light comes up on the cloth; the ledger
+  names the parents). Every word stays; English and French break at the same
+  place. `400`, `1200`, `2015_dockside`, `6002` and the cove camp `7400` stay
+  whole: tests walk through them and expect their ways on at once. Ids,
+  choices and flags unchanged.
+
+## [1.780.0+816]
+
+- The code that settles a fight (rewards, loot, XP, quests, politics) is
+  cut from one 460-line function into named steps: the outcome, a win, a
+  loss, the per-foe tally, the chest's odds and the allies' revival. The
+  same calls run in the same order, random rolls included, so nothing
+  changes in play.
+
 ## [1.779.0+815]
 
 - The shop page names the item types in French: "Arme", "Armure", "Grimoire",
@@ -122,6 +140,7 @@ isn't reconstructable from git history alone.
   from the defaults a new game starts from, and a blank field saved as 0.
   Every key now has its field and its real default, a save keeps what the
   form does not show, and a blank field saves as its default.
+
 ## [1.766.0+802]
 
 - The playthrough simulator now shops where a player shops: the ports'
@@ -132,6 +151,7 @@ isn't reconstructable from git history alone.
   `docs/simulation/sim-reach-v1.766.md`.
 - The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
   damage 4 to 5): a player who shops reached it too well armed.
+
 ## [1.765.0+801]
 
 - Settings: a new switch, "Show slow frames" (off by default, saved). While it
@@ -184,6 +204,7 @@ isn't reconstructable from git history alone.
   it beats the starter however many skills you know. It is now also sold at
   the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
   at the black market. Its price is unchanged.
+
 ## [1.760.0+796]
 
 - **Cleanup: the dropped futures are named.** The 45 places where a Future
@@ -202,6 +223,7 @@ isn't reconstructable from git history alone.
   weakest signature faces come up more often. Prices and shops are
   unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
   the same way. See `docs/simulation/starter-die.md`.
+
 ## [1.758.0+794]
 
 - Code (P4, part 1): two providers no longer wake everything below them on
@@ -211,6 +233,7 @@ isn't reconstructable from git history alone.
   them) watch only the four fields they read. No change in play. Over five
   unrelated session changes they notified 5 and 5 times; now 0 and 0
   (`provider_rebuilds_test`).
+
 ## [1.757.0+793]
 
 - Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
