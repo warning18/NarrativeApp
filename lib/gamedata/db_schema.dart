@@ -189,18 +189,6 @@ const List<String> _questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
 
 const List<String> _alignmentOptions = ['Good', 'Neutral', 'Evil'];
 
-const List<String> _nodeCategoryOptions = [
-  'Combat',
-  'Event',
-  'Shop',
-  'Rest',
-  'Treasure',
-  'Puzzle',
-  'Travel',
-];
-
-const List<String> _nodeDifficultyOptions = ['Normal', 'Hard', 'Elite', 'Boss'];
-
 // Mirrors the MapTheme enum in lib/data/map_themes.dart — kept as plain
 // strings here (like every other enum field in this file) rather than
 // importing that enum, so the data-editor schema layer stays free of any
@@ -1320,7 +1308,7 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(
       key: 'skillMoves',
       label:
-          'Skill Moves [{skillID, condition: $_skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
+          'Skill Moves [{skillID, condition: $_skillMoveConditionOptions, requiredElement, chance, healthThreshold, priority}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -2093,108 +2081,6 @@ final DbSchema shopsSchema = DbSchema(
         label: 'Keeper\'s line when Sworn (FR)',
         type: FieldType.multilineText),
     _visualAssetFieldSchema('shops'),
-  ],
-);
-
-final DbSchema _gatesSchema = DbSchema(
-  id: 'gates',
-  label: 'Gates',
-  assetPath: 'assets/gamedata/gates.json',
-  primaryKeyField: 'gateID',
-  visualAssetField: 'visualAsset',
-  fields: [
-    FieldSchema(key: 'gateID', label: 'Gate ID', type: FieldType.text),
-    FieldSchema(
-      key: 'isPermanentGate',
-      label: 'Permanent Gate',
-      type: FieldType.boolean,
-      defaultValue: false,
-    ),
-    FieldSchema(
-      key: 'possibleMonsters',
-      label: 'Possible Monsters',
-      type: FieldType.referenceList,
-      referenceSchemaId: 'enemies',
-    ),
-    _visualAssetFieldSchema('gates'),
-  ],
-);
-
-final DbSchema _adventureNodesSchema = DbSchema(
-  id: 'adventure_nodes',
-  label: 'Adventure Node Types',
-  assetPath: 'assets/gamedata/adventure_nodes.json',
-  primaryKeyField: 'nodeID',
-  titleField: 'displayName',
-  visualAssetField: 'visualAsset',
-  fields: [
-    FieldSchema(key: 'nodeID', label: 'Node ID', type: FieldType.text),
-    FieldSchema(
-        key: 'displayName', label: 'Display Name', type: FieldType.text),
-    FieldSchema(
-        key: 'displayName_fr',
-        label: 'Display Name (FR)',
-        type: FieldType.text),
-    FieldSchema(
-        key: 'flavorText', label: 'Flavor Text', type: FieldType.multilineText),
-    FieldSchema(
-        key: 'flavorText_fr',
-        label: 'Flavor Text (FR)',
-        type: FieldType.multilineText),
-    FieldSchema(
-      key: 'category',
-      label: 'Category',
-      type: FieldType.enumeration,
-      enumOptions: _nodeCategoryOptions,
-    ),
-    FieldSchema(
-      key: 'difficulty',
-      label: 'Difficulty',
-      type: FieldType.enumeration,
-      enumOptions: _nodeDifficultyOptions,
-    ),
-    FieldSchema(
-      key: 'possibleEnemies',
-      label: 'Possible Enemies (Combat)',
-      type: FieldType.referenceList,
-      referenceSchemaId: 'enemies',
-    ),
-    FieldSchema(
-      key: 'possibleEnemyShips',
-      label: 'Possible Enemy Ships (Combat, FTL)',
-      type: FieldType.referenceList,
-      referenceSchemaId: 'enemy_ships',
-    ),
-    FieldSchema(
-      key: 'storyEventID',
-      label: 'Story Event ID (Event)',
-      type: FieldType.reference,
-      referenceSchemaId: storyEventsReferenceId,
-    ),
-    FieldSchema(
-      key: 'shopID',
-      label: 'Shop ID (Shop)',
-      type: FieldType.reference,
-      referenceSchemaId: 'shops',
-    ),
-    FieldSchema(
-        key: 'healPercent',
-        label: 'Heal Percent (Rest)',
-        type: FieldType.integer,
-        defaultValue: 0),
-    FieldSchema(
-      key: 'guaranteedLoot',
-      label: 'Guaranteed Loot (Treasure)',
-      type: FieldType.referenceList,
-      referenceSchemaId: 'items',
-    ),
-    FieldSchema(
-      key: 'goldReward',
-      label: 'Gold Reward (Treasure)',
-      type: FieldType.integer,
-      defaultValue: 0,
-    ),
-    _visualAssetFieldSchema('adventure_nodes'),
   ],
 );
 
@@ -3961,8 +3847,6 @@ final List<DbSchema> gameDbSchemas = [
   shipLooksSchema,
   questsSchema,
   shopsSchema,
-  _gatesSchema,
-  _adventureNodesSchema,
   racesSchema,
   professionsSchema,
   companionsSchema,
