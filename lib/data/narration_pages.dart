@@ -9,7 +9,7 @@
 const String pageBreakMarker = '[PAGE]';
 
 /// Markers that open a page of their own and stay as its first words.
-const List<String> pageOpeningMarkers = ['[EPILOGUE]', '[ÉPILOGUE]'];
+const List<String> _pageOpeningMarkers = ['[EPILOGUE]', '[ÉPILOGUE]'];
 
 /// [text] cut into its pages, in order. A text with no marker is one page;
 /// empty pages (two markers in a row, a marker at either end) are dropped,
@@ -42,7 +42,7 @@ String joinedNarration(String text) => splitNarrationPages(text).join('\n\n');
 int _firstOpening(String text) {
   var best = -1;
   if (text.length < 2) return best;
-  for (final marker in pageOpeningMarkers) {
+  for (final marker in _pageOpeningMarkers) {
     // From the second character: a page that already opens on a marker is
     // not cut again there.
     final at = text.indexOf(marker, 1);
