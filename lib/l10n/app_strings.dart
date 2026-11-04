@@ -8934,6 +8934,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre groupe a gardé une Défense et un Soin ce tour\u00a0: chaque Soin soigne aussi chaque autre membre debout de la moitié.',
   },
+  'effects_popin_title': {
+    AppLanguage.en: '{name} · {n} effects',
+    AppLanguage.fr: '{name} · {n} effets',
+  },
   'effect_block_label': {AppLanguage.en: 'Block', AppLanguage.fr: 'Blocage'},
   'effect_shelter_label': {AppLanguage.en: 'Shelter', AppLanguage.fr: 'Abri'},
   'effect_target_label': {AppLanguage.en: 'Targeted', AppLanguage.fr: 'Visé'},
