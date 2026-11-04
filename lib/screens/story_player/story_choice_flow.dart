@@ -1294,14 +1294,22 @@ String composeNarration(StoryNode node, PlayerSession session,
 
 /// A node's text as [composeNarration] gives it, less the lines earned by
 /// an earlier choice of [story], which come back apart as echoes, each
-/// with the choice that earned it (see echoes.dart).
-({String text, List<SceneEcho> echoes}) composeNarrationParts(
-    StoryNode node, PlayerSession session, StoryData story,
+/// with the choice that earned it (see echoes.dart). [pages] is the same
+/// text cut where the writer turns the page (narration_pages.dart, v1.750);
+/// [text] is it whole, the page-break markers removed.
+({
+  String text,
+  List<String> pages,
+  List<SceneEcho> echoes
+}) composeNarrationParts(StoryNode node, PlayerSession session, StoryData story,
     {required bool french}) {
   final echoes = <SceneEcho>[];
-  final text = _composeNarration(node, session,
+  final raw = _composeNarration(node, session,
       french: french, story: story, echoesOut: echoes);
-  return (text: text, echoes: echoes);
+  final pages = splitNarrationPages(raw);
+  // A scene with no page break reads exactly as before.
+  final text = raw.contains(pageBreakMarker) ? pages.join('\n\n') : raw;
+  return (text: text, pages: pages, echoes: echoes);
 }
 
 String _composeNarration(StoryNode node, PlayerSession session,
