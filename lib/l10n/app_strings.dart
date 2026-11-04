@@ -3201,6 +3201,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Ce que le butin change',
   },
   'loot_sheet_details': {AppLanguage.en: 'Details', AppLanguage.fr: 'Détail'},
+  'loot_line_gold': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
+  'loot_line_potions': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'loot_line_antidotes': {
+    AppLanguage.en: 'Antidotes',
+    AppLanguage.fr: 'Antidotes',
+  },
+  'loot_line_rolls': {
+    AppLanguage.en: 'Dice rolls a round',
+    AppLanguage.fr: 'Lancers de dés par tour',
+  },
+  'loot_line_health': {AppLanguage.en: 'Health', AppLanguage.fr: 'Santé'},
+  'loot_line_spell': {AppLanguage.en: 'Spell', AppLanguage.fr: 'Sort'},
+  'loot_line_spell_learnt': {
+    AppLanguage.en: 'Learnt',
+    AppLanguage.fr: 'Appris',
+  },
+  'loot_line_stat_points': {
+    AppLanguage.en: 'Stat points',
+    AppLanguage.fr: 'Points de caractéristique',
+  },
+  'loot_line_offers': {
+    AppLanguage.en: 'Clan offers',
+    AppLanguage.fr: 'Offres des clans',
+  },
   'loot_use_now': {
     AppLanguage.en: 'Use right away',
     AppLanguage.fr: 'Utiliser tout de suite',
