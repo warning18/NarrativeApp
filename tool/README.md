@@ -11,6 +11,12 @@ Each one was run into a clean checkout (Pillow 13.0.0, Python 3) and wrote the
 the checked-in pictures are what the script makes. Run one again only if you
 change its recipe, and commit the pictures with it.
 
+The icons under `assets/icons/` are stored at the size they are drawn on (16x16;
+the skills' gems 32x32) and enlarged by `PixelIcon` with no smoothing, so the
+scripts write them that way and `test/icon_sizes_test.dart` keeps any icon over
+32 px out. `gen_fight_heads.py` still cuts the enemies' heads from the icons
+enlarged x8, so the heads are the same pictures as before.
+
 | Script | Writes | Notes |
 |---|---|---|
 | `tool/gen_banners.py [sheet.png]` | `assets/visuals/banners/` (20) | the Shroud's pieces, the title standard, the clans' banners; an optional contact sheet |
