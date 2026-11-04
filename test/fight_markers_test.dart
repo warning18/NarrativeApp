@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fight_markers_harness.dart';
-import 'skill_fight_harness.dart' show settle, tapWhenEnabled, pumpUntil, shows;
+import 'skill_fight_harness.dart' show pumpUntil, settle, shows, tapWhenEnabled;
 import 'support/pump.dart';
 
 void main() {

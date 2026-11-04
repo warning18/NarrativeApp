@@ -63,12 +63,12 @@ Future<ProviderContainer> _pump(WidgetTester tester,
       builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(disableAnimations: still),
           child: child!),
-      home: Scaffold(
+      home: const Scaffold(
         body: RepaintBoundary(
-          key: const Key('shot'),
-          child: Container(
+          key: Key('shot'),
+          child: ColoredBox(
             color: Colors.white,
-            child: const FeatureUnlockHost(
+            child: FeatureUnlockHost(
                 child: Padding(padding: EdgeInsets.all(16), child: _Bars())),
           ),
         ),

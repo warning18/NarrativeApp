@@ -402,7 +402,7 @@ class ChartMapPainter extends CustomPainter {
         final field = Paint()
           ..color = ink.withValues(alpha: 0.45)
           ..strokeWidth = 0.25;
-        final fx = (seed % 2 == 0 ? 4.0 : -8.5), fy = -1.5;
+        final fx = (seed.isEven ? 4.0 : -8.5), fy = -1.5;
         for (var i = 0; i < 4; i++) {
           canvas.drawLine(
               Offset(fx, fy + i * 0.9), Offset(fx + 4.5, fy + i * 0.9), field);

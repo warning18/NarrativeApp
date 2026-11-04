@@ -114,7 +114,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   List<String> _summaryLines = const [];
 
   /// What the cleared zone paid, as the reward card (see reward_cards.dart).
-  RewardCardData? _rewardCard;
+  late RewardCardData _rewardCard;
 
   /// Bonus events queued ahead of the zone's own next draw -- a hunt's
   /// trail and quarry after a pack win (see [SubNodeEngine.buildHuntNodes]).
@@ -1016,7 +1016,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                         constraints: const BoxConstraints(maxWidth: 460),
                         child: RewardCard(
                           key: const Key('zone_reward_card'),
-                          data: _rewardCard!,
+                          data: _rewardCard,
                           onDone: () => Navigator.of(context).pop(true),
                         ),
                       ),

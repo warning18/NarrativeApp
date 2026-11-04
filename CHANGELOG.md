@@ -15,6 +15,33 @@ isn't reconstructable from git history alone.
   a value) is removed. No code, test or screen read it; the clan pages show
   the ruling text only. No screen changes.
 
+## [1.805.0+841]
+
+- **Cleanup: five more lints on, 28 sites fixed.** `combinators_ordering`,
+  `use_is_even_rather_than_modulo`, `use_colored_box`,
+  `join_return_with_assignment` and `use_late_for_private_fields_and_variables`
+  are enabled and kept at zero: the names after `show` sorted, `x % 2 == 0`
+  written `x.isEven`, two single-colour boxes as `ColoredBox`, one
+  assignment returned directly and the expedition's reward card declared
+  `late`. Nothing changes on screen or in a number.
+
+## [1.804.0+840]
+
+- Code cleanup (split 4f, step 1): the save's model (`PlayerSession`, its
+  constants and small rules) leaves `player_session_provider.dart`
+  (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
+  that imports it changes. A pure move: nothing in the game or the save
+  changes.
+
+## [1.803.0+839]
+
+- The clan card (a long press on a clan's banner, the offer's (i)) ends with
+  "How it is ruled" ("Comment il est gouverné"): who holds power in the clan,
+  how it passes, what a member owes, for the six clans that have it, as
+  Narrative wrote it (`ruling` in factions.json, not shown anywhere until
+  now). Test: `clan_ruling_test.dart` (the six clans, English and French, at
+  320 px).
+
 ## [1.802.0+838]
 
 - Code cleanup (split 4e): the fight's round logic leaves
