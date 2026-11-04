@@ -561,7 +561,6 @@ Future<AutoplayResult> autoplayToNode(
         status: AutoplayStatus.noPathFound, stepsApplied: 0);
   }
 
-  final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
   final random = Random();
   var stepsApplied = 0;
@@ -1015,7 +1014,6 @@ Future<AutoplayResult> _playTowardChapter(
   AutoplayLog? log,
 }) async {
   var forcedWins = 0;
-  final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
   var stepsApplied = 0;
   // The clans, for the choices' politics gates (v1.196).
