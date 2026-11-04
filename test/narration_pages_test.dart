@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/narration_clips.dart';
 import 'package:narrative_data_app/data/narration_pages.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
@@ -49,6 +50,22 @@ void main() {
           ['La fin.', '[ÉPILOGUE] Après.']);
       // A page that already opens on it is not cut again.
       expect(splitNarrationPages('[EPILOGUE] After.'), ['[EPILOGUE] After.']);
+    });
+
+    test(
+        'the recording script of a paged scene has no marker, in both languages',
+        () {
+      final node = _story.nodeFor('6010_record')!;
+      expect(node.description, contains(pageBreakMarker));
+      for (final french in [false, true]) {
+        final script = nodeNarrationScript(node,
+            french: french, personalize: (text) => text, variations: false);
+        expect(script.any((p) => p.contains(pageBreakMarker)), isFalse);
+        // The same words read-aloud asks for: the scene, marker removed.
+        final text =
+            node.descriptionFor(french).replaceAll(pageBreakMarker, '');
+        expect(script, narrationParagraphs(storyBodyFor(text)));
+      }
     });
 
     test('empty pages are dropped', () {
