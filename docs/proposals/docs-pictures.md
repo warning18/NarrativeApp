@@ -2,6 +2,8 @@
 
 Measured on main `bcf73433` (v1.751, after #707 quantized 132 PNGs from 56.6 MB to 20.3 MB). Docs only. **Nothing is deleted by this note**: the deletions wait for UX's keep/drop answer on `docs/ux-shots`. `docs/feedback` and `docs/qa` are not touched or counted.
 
+> **Status (UX main answered, `ux-answers-to-manager.md`):** of the 115 unnamed `docs/ux-shots` pictures, **103 were dropped** (9.1 MB; git keeps them) and **12 kept** (about 1.5 MB): the five `backdrops-*` pictures, `sea-beasts-png-vs-webp.png` and `sea-beasts-png-64-colours-rejected.png`, `clan-power-card.png`, `clan-power-nemesis-fr.png`, `clan-details-360.png`, `poi-sphere-1-world.png` and `poi-flat-3-district.png`, because open or recent work still points at them. `docs/ux-shots/map/`, `icons-8x-vs-native.png` and `spectral-medium-weights.png` were not touched. The lists below are the state before the drop.
+
 ## How "referenced" was measured
 
 ```
