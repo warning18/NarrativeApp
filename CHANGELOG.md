@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.790.0+826]
+
+- The playthrough simulator's fight (`sim_combat.dart`, 2,851 lines, one
+  1,500-line function) is cut into its phases, each in its own file:
+  setup, the party's turn, the enemy's turn and the round's end (4b).
+  The same steps run in the same order: two seeded batches give
+  byte-identical results. Nothing changes in play.
+
 ## [1.789.0+825]
 
 - Code cleanup (R4, batch 3): seven more names only the tests used are
