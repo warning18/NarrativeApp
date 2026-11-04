@@ -352,7 +352,7 @@ extension _JourneyChoices on _JourneyViewState {
     );
     if (mounted) _update(() => _ringOpen = null);
     if (taken != null && mounted && taken < steps.length) {
-      _take(taken, steps[taken]);
+      unawaited(_take(taken, steps[taken]));
     }
   }
 

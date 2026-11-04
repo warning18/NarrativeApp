@@ -247,9 +247,9 @@ Future<void> _selectChoice({
   // choice is offered: it says why and waits (see _isChoiceLocked).
   final purse = ref.read(playerSessionProvider);
   if (_paymentShort(choice, purse.gold, isExcursion)) {
-    showImmersiveNotice(context,
+    unawaited(showImmersiveNotice(context,
         icon: Icons.lock_outline,
-        message: _goldShortText(ref, choice, purse.gold, french: french));
+        message: _goldShortText(ref, choice, purse.gold, french: french)));
     return;
   }
   // The last fight's aftermath opened this scene, and a companion's remark

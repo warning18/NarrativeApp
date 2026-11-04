@@ -170,8 +170,7 @@ List<Map<String, Object>> placeTownServices(
   return out;
 }
 
-/// city_plans.json's text: indented JSON with every point ([x, y]) kept on one line.
-String encodeCityPlans(Object? value) {
-  final text = const JsonEncoder.withIndent('  ').convert(value);
-  return '${text.replaceAllMapped(RegExp(r'\[\s+(-?\d+),\s+(-?\d+)\s+\]'), (m) => '[${m[1]}, ${m[2]}]')}\n';
-}
+/// city_plans.json's text: minified JSON (v1.761), about half the size of
+/// the indented form. The file is generated, never edited by hand; read it
+/// with a JSON viewer.
+String encodeCityPlans(Object? value) => '${jsonEncode(value)}\n';

@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/narration_clips.dart';
 import 'package:narrative_data_app/data/narration_pages.dart';
+import 'package:narrative_data_app/data/story_markup.dart'
+    show stripStoryMarkup;
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
@@ -90,6 +92,19 @@ void main() {
         expect(node.choices.single.isEnding, isTrue, reason: id);
       }
     });
+  });
+
+  test(
+      'a scene read in one go (the recording preview, an expedition beat) '
+      'shows no [PAGE]', () {
+    final node = _story.nodeFor('6010_record')!;
+    for (final text in [node.description, node.descriptionFr!]) {
+      expect(text, contains(pageBreakMarker));
+      final shown = storyBodyFor(joinedNarration(text));
+      expect(shown, isNot(contains(pageBreakMarker)));
+      expect(stripStoryMarkup(joinedNarration(text)),
+          isNot(contains(pageBreakMarker)));
+    }
   });
 
   group('scenePageOf', () {
