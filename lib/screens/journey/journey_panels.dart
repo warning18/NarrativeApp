@@ -64,7 +64,8 @@ class _ScenePanel extends ConsumerWidget {
     // Plain scenes read on the way here open this one (see
     // scene_flow.dart); lines an earlier choice earned close it.
     final speaker = speakerLabelFor(node.speaker, french: french);
-    final parts = composeNarrationParts(node, session, story, french: french);
+    final parts = composeNarrationParts(node, session, story,
+        french: french, revisit: isRevisit(ref.watch(storyPlayProvider)));
     // A scene in pages shows the page being read (v1.750): what led here
     // opens its first page, the echoes close its last.
     final page = scenePageOf(

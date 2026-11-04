@@ -117,6 +117,13 @@ class StoryPlayState {
   bool get isInExcursion => activeExcursionNode != null;
 }
 
+/// Whether the scene [play] stands on was reached before this visit (v1.816):
+/// it is in the scenes left before it. Such a scene reads its
+/// `revisit_description` when it has one (StoryNode.descriptionFor). A
+/// generated detour scene is never a revisit.
+bool isRevisit(StoryPlayState play) =>
+    !play.isInExcursion && play.history.contains(play.currentNodeId);
+
 /// Whether the "Previously..." recap has anything to tell: only on a story
 /// picked back up from a save ([resumed]) that has gone past its first
 /// scene. A brand-new game, or one that only made its character on the

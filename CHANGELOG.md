@@ -18,6 +18,18 @@ isn't reconstructable from git history alone.
   its progress): no change in the game. Picture:
   `docs/ux-shots/blend/desert-into-ruins.png`. Test: `kit_blend_test.dart`.
 
+## [1.816.0+852]
+
+- Story: two new fields for Narrative's text, nothing changes until the
+  story uses them. A scene with `callback_cap` shows at most that many of
+  the lines your past choices earned (the ones with the highest `priority`
+  first, then in the order written), so a scene everyone reaches late
+  doesn't read as a list. A scene with `revisit_description` says
+  something else the second time you come back (French:
+  `revisit_description_fr`); the first visit is unchanged. Both go through
+  the page, the read-aloud and the story editor; the recording script keeps
+  every line.
+
 ## [1.815.0+851]
 
 - Side-view scenes: a scene's window of its kit no longer comes from a seeded

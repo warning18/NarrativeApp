@@ -631,6 +631,9 @@ class StoryNode {
     this.hideIfFlags = const [],
     this.campErrandText,
     this.campErrandTextFr,
+    this.callbackCap,
+    this.revisitDescription,
+    this.revisitDescriptionFr,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -660,6 +663,20 @@ class StoryNode {
       authoringComment: json['authoring_comment'] as String?,
       alignmentEpilogues: _parseEpilogues(json['alignment_epilogues']),
       flagCallbacks: _parseCallbacks(json['flag_callbacks']),
+      // A value of the wrong type is left out (test/story_cap_revisit_test
+      // flags it in the story file).
+      callbackCap: switch (json['callback_cap']) {
+        final num cap => cap.toInt(),
+        _ => null,
+      },
+      revisitDescription: switch (json['revisit_description']) {
+        final String text => text,
+        _ => null,
+      },
+      revisitDescriptionFr: switch (json['revisit_description_fr']) {
+        final String text => text,
+        _ => null,
+      },
       personaVariants: _parseLines(json['persona_variants']),
       hubProgress: HubProgress.fromJson(json['hub_progress']),
       settlement: Settlement.fromJson(json['settlement']),
@@ -809,6 +826,10 @@ class StoryNode {
         andFlags:
             (entry['andFlags'] as List?)?.map((e) => e.toString()).toList() ??
                 const [],
+        priority: switch (entry['priority']) {
+          final num priority => priority.toInt(),
+          _ => 0,
+        },
       ));
     }
     return out;
@@ -928,6 +949,18 @@ class StoryNode {
   /// body, in authored order.
   final List<FlagCallback> flagCallbacks;
 
+  /// At most this many of [flagCallbacks] show at once (v1.816): the ones
+  /// with the highest [FlagCallback.priority] (ties: the earlier in the
+  /// file), shown in the file's order. Null: every callback earned shows.
+  final int? callbackCap;
+
+  /// What the scene says instead of [description] when the party has been
+  /// here before this visit (v1.816): the first visit reads [description];
+  /// the callbacks, the hub's progress line and the choices are the same.
+  /// Its French in [revisitDescriptionFr] (English when missing).
+  final String? revisitDescription;
+  final String? revisitDescriptionFr;
+
   /// Sentences keyed `race:<raceId>` or `profession:<professionId>`, shown
   /// under the body to a character of that race or profession -- a stall
   /// keeper who reacts to an orc, a guard who has a word for mages.
@@ -964,16 +997,26 @@ class StoryNode {
           callback.line.textFor(french),
       ];
 
-  /// The callbacks the player's [flags] have earned, in order.
+  /// The callbacks the player's [flags] have earned, in order; with a
+  /// [callbackCap], only that many: the highest [FlagCallback.priority]
+  /// first, ties by the file's order, then shown in the file's order.
   List<FlagCallback> firedCallbacks(Iterable<String> flags) {
     final held = flags.toSet();
-    return [
+    final fired = [
       for (final callback in flagCallbacks)
         if (held.contains(callback.flag) &&
             !callback.unlessFlags.any(held.contains) &&
             callback.andFlags.every(held.contains))
           callback,
     ];
+    final cap = callbackCap;
+    if (cap == null || fired.length <= cap) return fired;
+    final order = [for (var i = 0; i < fired.length; i++) i]..sort((a, b) {
+        final byPriority = fired[b].priority.compareTo(fired[a].priority);
+        return byPriority != 0 ? byPriority : a.compareTo(b);
+      });
+    final kept = order.take(cap < 0 ? 0 : cap).toList()..sort();
+    return [for (final i in kept) fired[i]];
   }
 
   /// The persona sentences for this character, race first.
@@ -991,10 +1034,19 @@ class StoryNode {
   String? hubProgressLineFor(Iterable<String> flags, bool french) =>
       hubProgress?.lineFor(flags, french);
 
-  String descriptionFor(bool french) =>
-      french && (descriptionFr?.isNotEmpty ?? false)
-          ? descriptionFr!
-          : description;
+  /// The scene's text in the reader's language; on a [revisit] (the party
+  /// has been here before this visit), its [revisitDescription] when it has
+  /// one.
+  String descriptionFor(bool french, {bool revisit = false}) {
+    if (revisit && (revisitDescription?.isNotEmpty ?? false)) {
+      return french && (revisitDescriptionFr?.isNotEmpty ?? false)
+          ? revisitDescriptionFr!
+          : revisitDescription!;
+    }
+    return french && (descriptionFr?.isNotEmpty ?? false)
+        ? descriptionFr!
+        : description;
+  }
 
   bool get hasComment => authoringComment?.isNotEmpty ?? false;
 
@@ -1010,6 +1062,10 @@ class StoryNode {
         'description': description,
         if (descriptionFr != null && descriptionFr!.isNotEmpty)
           'description_fr': descriptionFr,
+        if (revisitDescription != null && revisitDescription!.isNotEmpty)
+          'revisit_description': revisitDescription,
+        if (revisitDescriptionFr != null && revisitDescriptionFr!.isNotEmpty)
+          'revisit_description_fr': revisitDescriptionFr,
         if (uiTheme != null || mood != null || speaker != null)
           'context_taxonomy': {
             if (uiTheme != null) 'ui_theme': uiTheme,
@@ -1069,8 +1125,10 @@ class StoryNode {
                 if (callback.unlessFlags.isNotEmpty)
                   'unlessFlags': callback.unlessFlags,
                 if (callback.andFlags.isNotEmpty) 'andFlags': callback.andFlags,
+                if (callback.priority != 0) 'priority': callback.priority,
               },
           ],
+        if (callbackCap != null) 'callback_cap': callbackCap,
         if (personaVariants.isNotEmpty)
           'persona_variants': {
             for (final entry in personaVariants.entries)
@@ -1105,10 +1163,15 @@ class FlagCallback {
     required this.line,
     this.unlessFlags = const [],
     this.andFlags = const [],
+    this.priority = 0,
   });
 
   final String flag;
   final NarrationLine line;
+
+  /// Which callbacks a node's [StoryNode.callbackCap] keeps: the highest
+  /// first (v1.816). 0 when unset.
+  final int priority;
 
   /// Any of these held vetoes the paragraph.
   final List<String> unlessFlags;

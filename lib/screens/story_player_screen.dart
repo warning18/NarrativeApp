@@ -256,13 +256,17 @@ class _StoryView extends ConsumerWidget {
         playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
-    final displayDescription =
-        node == null ? '' : composeNarration(node, session, french: french);
+    // A scene reached before reads its revisit text (v1.816).
+    final revisit = isRevisit(playState);
+    final displayDescription = node == null
+        ? ''
+        : composeNarration(node, session, french: french, revisit: revisit);
     // The same text less the lines an earlier choice earned: those come
     // after it as echoes, with the choice that earned them.
     final parts = node == null
         ? (text: '', pages: const [''], echoes: const <SceneEcho>[])
-        : composeNarrationParts(node, session, story, french: french);
+        : composeNarrationParts(node, session, story,
+            french: french, revisit: revisit);
     // Plain scenes read on the way here open this one.
     final preludes = ref.watch(pendingPreludeProvider);
     // The echoes shown (theirs too) are remembered for the journal's What
@@ -483,7 +487,7 @@ class _StoryView extends ConsumerWidget {
             await _speakNarration(
                 ref,
                 readAloudParagraphs(node, session,
-                    french: french, opening: opening),
+                    french: french, opening: opening, revisit: revisit),
                 language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
@@ -604,7 +608,7 @@ class _StoryView extends ConsumerWidget {
       ),
       _ReadAloudButton(
           paragraphs: readAloudParagraphs(node, session,
-              french: french, opening: opening),
+              french: french, opening: opening, revisit: revisit),
           language: language),
     ];
 
@@ -726,7 +730,9 @@ class _StoryView extends ConsumerWidget {
                         _RecordSceneButton(
                           paragraphs: {
                             ...readAloudParagraphs(node, session,
-                                french: french, opening: opening),
+                                french: french,
+                                opening: opening,
+                                revisit: revisit),
                             ...nodeNarrationScript(node,
                                 french: french,
                                 personalize: (text) => personalizeFor(
