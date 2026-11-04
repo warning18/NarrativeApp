@@ -8,8 +8,8 @@ import '../utils/pixel_icons/pixel_icon.dart';
 /// One line of "what the spoils change": [label] (Gold, Dice, Bag...) going
 /// from [before] to [after], with the picture of what changes. The engine
 /// says it (see the loot changes function); the sheet only draws it.
-class LootChange {
-  const LootChange({
+class LootSheetLine {
+  const LootSheetLine({
     required this.label,
     required this.before,
     required this.after,
@@ -34,6 +34,8 @@ class LootReward {
     required this.text,
     required this.icon,
     this.canUseNow = false,
+    this.useLabel,
+    this.useEnabled = true,
   });
 
   final String id;
@@ -41,9 +43,15 @@ class LootReward {
   final String text;
   final Widget icon;
 
-  /// Whether it can be used on the spot (a charm, a potion): the sheet then
-  /// offers its "Use right away" switch.
+  /// Whether it can be used on the spot (a piece of gear to put on, a healing
+  /// potion to drink): the sheet then offers its switch.
   final bool canUseNow;
+
+  /// What the switch says ("Equip", "Drink"); "Use right away" when null.
+  final String? useLabel;
+
+  /// False when the switch stands dim (nothing to heal for a potion).
+  final bool useEnabled;
 }
 
 /// The spoils as a full-height sheet (design C, docs/proposals/
@@ -64,6 +72,7 @@ class LootSheet extends StatelessWidget {
     required this.onUseNow,
     required this.onTake,
     this.tierColor,
+    this.footer,
   });
 
   final AppLanguage language;
@@ -71,13 +80,16 @@ class LootSheet extends StatelessWidget {
   final String chestAsset;
   final String tierLabel;
   final Color? tierColor;
-  final List<LootChange> changes;
+  final List<LootSheetLine> changes;
   final List<LootReward> rewards;
 
   /// The rewards the player wants to use right away.
   final Set<String> useNow;
   final void Function(String id, bool on) onUseNow;
   final VoidCallback onTake;
+
+  /// Under the details (the chest's fortune roll), when there is one.
+  final Widget? footer;
 
   String _t(String key) => trFor(language, key);
 
@@ -133,6 +145,7 @@ class LootSheet extends StatelessWidget {
                 Text(_t('loot_sheet_details'), style: label),
                 const SizedBox(height: 6),
                 for (final r in rewards) _rewardRow(theme, ink, r),
+                if (footer != null) ...[const SizedBox(height: 6), footer!],
               ],
             ),
           ),
@@ -155,7 +168,7 @@ class LootSheet extends StatelessWidget {
   }
 
   Widget _changeRow(
-      ThemeData theme, InkColors ink, LootChange c, TextStyle? label) {
+      ThemeData theme, InkColors ink, LootSheetLine c, TextStyle? label) {
     final scheme = theme.colorScheme;
     final tone = c.tone ?? ink.gold;
     return Container(
@@ -219,14 +232,14 @@ class LootSheet extends StatelessWidget {
                 Icon(Icons.bolt, size: 16, color: ink.heal),
                 const SizedBox(width: 4),
                 Expanded(
-                  child: Text(_t('loot_use_now'),
+                  child: Text(r.useLabel ?? _t('loot_use_now'),
                       style: theme.textTheme.bodySmall?.copyWith(
                           color: ink.heal, fontFamily: InkFonts.system)),
                 ),
                 Switch(
                   key: Key('loot_use_${r.id}'),
                   value: useNow.contains(r.id),
-                  onChanged: (on) => onUseNow(r.id, on),
+                  onChanged: r.useEnabled ? (on) => onUseNow(r.id, on) : null,
                 ),
               ]),
           ]),
