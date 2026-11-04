@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.779.0+815]
+
+- The shop page names the item types in French: "Arme", "Armure", "Grimoire",
+  "Matériau", "Artefact", "Talisman", "Parchemin", "Objet de quête" (the
+  filter chip says "Quête"), instead of the raw English words. English reads
+  as before, except "Quest item" on the item line. Test:
+  `shop_item_types_test.dart` (every shop, 320 px, French).
+
 ## [1.778.0+814]
 
 - Fight: the tiles of the top strip (the goal, the weather, the momentum, the
