@@ -337,41 +337,13 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
 
     // Looted potions/antidotes become charges (see [consumableChargesFor]),
     // a looted tome is read on the spot (see [tomeGrantFor]); everything
-    // else is carried in the inventory.
-    var potionsGained = 0;
-    var antidotesGained = 0;
-    var statPointsGained = 0;
-    var tomePicks = state.tomePicks;
-    final tomeOffers = <OfferTicket>[];
-    final carried = <String>[];
-    final spellsLearned = <String>[];
-    for (final itemId in itemsGained) {
-      final item = items[itemId] as Map<String, dynamic>?;
-      final tome = PlayerSessionNotifier.tomeGrantFor(itemId, item);
-      if (tome != null) {
-        statPointsGained += tome.statPoints;
-        tomePicks = PlayerSessionNotifier._withTomePicks(
-            tomePicks, itemId, tome.statPoints);
-        tomeOffers.addAll(tome.offers);
-        continue;
-      }
-      // A spellbook handed out as a reward is read like a bought one.
-      final taughtSpellId = spellbookSpellIdFor(item);
-      if (taughtSpellId != null) {
-        if (!state.knownSpellIds.contains(taughtSpellId) &&
-            !spellsLearned.contains(taughtSpellId)) {
-          spellsLearned.add(taughtSpellId);
-        }
-        continue;
-      }
-      final charges = PlayerSessionNotifier.consumableChargesFor(itemId, item);
-      if (charges == null) {
-        carried.add(itemId);
-        continue;
-      }
-      potionsGained += charges.potions;
-      antidotesGained += charges.antidotes;
-    }
+    // else is carried in the inventory (lootGrantOf, which the spoils
+    // sheet's lootChanges reads too).
+    final grant =
+        lootGrantOf(itemsGained, items, knownSpellIds: state.knownSpellIds);
+    final carried = grant.carried;
+    final spellsLearned = grant.spellsLearned;
+    final tomePicks = [...state.tomePicks, ...grant.tomePickIds];
 
     final clampedHp = hpAfter < 0
         ? 0
@@ -408,7 +380,7 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
       maxHealth: leveled.maxHealth,
       baseDamage: leveled.baseDamage,
       currentHealth: newHealth,
-      statPoints: leveled.statPoints + statPointsGained,
+      statPoints: leveled.statPoints + grant.statPoints,
       tomePicks: tomePicks,
       // Each level reached and a boss beaten bring an offer (see
       // offers.dart), a Tome of Mastery one too; a hunt (or, sometimes, an
@@ -423,7 +395,7 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
           for (var i = 0; i < bossOffers; i++)
             const OfferTicket(source: OfferSource.boss),
         ],
-        ...tomeOffers,
+        ...grant.offers,
       ],
       rerollCharges: _levelCharges(RollPower.reroll, leveled.levelsGained),
       banishCharges: _levelCharges(RollPower.banish, leveled.levelsGained),
@@ -432,8 +404,8 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       itemOrigins: withItemOrigins(state.itemOrigins, carried, origin),
-      potionCount: state.potionCount + potionsGained,
-      antidoteCount: state.antidoteCount + antidotesGained,
+      potionCount: state.potionCount + grant.potions,
+      antidoteCount: state.antidoteCount + grant.antidotes,
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
       skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,
