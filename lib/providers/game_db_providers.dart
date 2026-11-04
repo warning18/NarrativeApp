@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart'
+    show ErrorDescription, FlutterError, FlutterErrorDetails;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -42,6 +45,13 @@ class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
       state = AsyncValue.data(records);
       if (!loaded.isCompleted) loaded.complete(records);
     } catch (error, stackTrace) {
+      // Logged, not swallowed (issue #696): the bundled file itself failed.
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'gamedata',
+          context:
+              ErrorDescription('loading the ${_repository.schema.id} table')));
       state = AsyncValue.error(error, stackTrace);
       if (!loaded.isCompleted) loaded.complete(const {});
     }
