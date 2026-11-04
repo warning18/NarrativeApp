@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.833.0+869]
+
+- Skill icons, the wind school: Elf Arcane Focus (a four-point star), Elf Keen
+  Eye, Ranger Aimed Shot (an arrow), Ranger Multi Shot (three), Rogue Shadow
+  Clone (a ghost) and Steady Aim (a crosshair) each had the same blank teal
+  gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/wind.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/wind-before-after.png`.
+
 ## [1.832.0+868]
 
 - Skill icons, the fire school: Cleric Smite (a bolt), Fireball, Inner Fire (a
