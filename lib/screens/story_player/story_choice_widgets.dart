@@ -346,11 +346,11 @@ class _ReadAloudButton extends ConsumerWidget {
           await _speakNarration(ref, paragraphs, language);
         } catch (e) {
           if (!context.mounted) return;
-          showImmersiveNotice(
+          unawaited(showImmersiveNotice(
             context,
             icon: Icons.error_outline,
             message: '${tr(ref, 'voice_error_prefix')}: $e',
-          );
+          ));
         }
       },
     );

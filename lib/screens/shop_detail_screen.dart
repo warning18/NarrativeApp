@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/help_hint.dart';
@@ -442,7 +443,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     origin: itemOriginHere(ref));
                             if (!context.mounted) return;
                             _coinsOut(context);
-                            showImmersiveNotice(
+                            unawaited(showImmersiveNotice(
                               context,
                               icon: spell != null
                                   ? Icons.auto_stories
@@ -463,7 +464,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                       .equipItem(itemId,
                                           slot: equipSlot, items: items)
                                   : null,
-                            );
+                            ));
                           }
 
                           final description =
@@ -667,14 +668,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                     .buyDice(diceId, cost);
                                                 if (!context.mounted) return;
                                                 _coinsOut(context);
-                                                showImmersiveNotice(
+                                                unawaited(showImmersiveNotice(
                                                   context,
                                                   icon: Icons.casino,
                                                   message:
                                                       '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId, language: lang)} '
                                                       '${trFor(lang, 'for_label')} $cost '
                                                       '${trFor(lang, 'gold_label')}',
-                                                );
+                                                ));
                                               },
                                         child: Text(tr(ref, 'buy_button')),
                                       ),

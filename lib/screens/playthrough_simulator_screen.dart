@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -417,7 +418,7 @@ class _PlaythroughSimulatorScreenState
     final report = checkStoryGraphIntegrity(story.nodes,
         startNodeId: StoryRepository.startNodeId);
     if (!mounted) return;
-    showDialog<void>(
+    unawaited(showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(
@@ -459,7 +460,7 @@ class _PlaythroughSimulatorScreenState
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _fullControls(BuildContext context, List<_SimBatch> batches) {
