@@ -367,6 +367,42 @@ Future<void> _exploreChapterBeforeMainQuest(
   return (playerHealth: playerHealth, enemyHealth: enemyHealth);
 }
 
+/// Fights [enemy] up to [retries] times, stopping at the first win: the
+/// retry rule of both autoplay walks. Whether it was won.
+Future<bool> _fightWithRetries(
+  int retries, {
+  required WidgetRef ref,
+  required String? enemyId,
+  required Map<String, dynamic> enemy,
+  required Map<String, dynamic> dice,
+  required Map<String, dynamic> skills,
+  required Map<String, dynamic> items,
+  required Random random,
+}) async {
+  for (var attempt = 0; attempt < retries; attempt++) {
+    if (await _simulateFight(
+        ref: ref,
+        enemyId: enemyId,
+        enemy: enemy,
+        dice: dice,
+        skills: skills,
+        items: items,
+        random: random)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/// The walk stops at [enemy], which beat every retry.
+AutoplayResult _stuckAt(
+        Map<String, dynamic> enemy, String? enemyId, int stepsApplied) =>
+    AutoplayResult(
+      status: AutoplayStatus.stuckInCombat,
+      stepsApplied: stepsApplied,
+      stuckEnemyName: enemy['enemyName']?.toString() ?? enemyId,
+    );
+
 Future<bool> _simulateFight({
   required WidgetRef ref,
   required String? enemyId,
@@ -591,25 +627,15 @@ Future<AutoplayResult> autoplayToNode(
     if (choice.triggersCombat) {
       final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
-        var won = false;
-        for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
-          won = await _simulateFight(
+        final won = await _fightWithRetries(maxCombatRetries,
             ref: ref,
             enemyId: firstEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,
             items: items,
-            random: random,
-          );
-        }
-        if (!won) {
-          return AutoplayResult(
-            status: AutoplayStatus.stuckInCombat,
-            stepsApplied: stepsApplied,
-            stuckEnemyName: enemy['enemyName']?.toString() ?? firstEnemyId,
-          );
-        }
+            random: random);
+        if (!won) return _stuckAt(enemy, firstEnemyId, stepsApplied);
       }
     }
 
@@ -1137,19 +1163,15 @@ Future<AutoplayResult> _playTowardChapter(
     if (choice.triggersCombat) {
       final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
-        var won = false;
-        var forced = false;
-        for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
-          won = await _simulateFight(
+        var won = await _fightWithRetries(maxCombatRetries,
             ref: ref,
             enemyId: firstEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,
             items: items,
-            random: random,
-          );
-        }
+            random: random);
+        var forced = false;
         if (!won && forceWins) {
           won = await _simulateFight(
             ref: ref,
@@ -1170,13 +1192,7 @@ Future<AutoplayResult> _playTowardChapter(
           won: won,
           forced: forced,
         ));
-        if (!won) {
-          return AutoplayResult(
-            status: AutoplayStatus.stuckInCombat,
-            stepsApplied: stepsApplied,
-            stuckEnemyName: enemy['enemyName']?.toString() ?? firstEnemyId,
-          );
-        }
+        if (!won) return _stuckAt(enemy, firstEnemyId, stepsApplied);
       }
     }
 

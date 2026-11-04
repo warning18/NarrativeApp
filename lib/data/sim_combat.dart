@@ -17,7 +17,7 @@ import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
 import '../combat/specialisations.dart';
 import '../combat/parry.dart';
-import 'character_start.dart' show startingArmor;
+import 'character_start.dart';
 import '../combat/squad.dart';
 import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
@@ -121,58 +121,40 @@ class SimCharacter {
     required Map<String, dynamic> dice,
     required Map<String, SpellSpec> spells,
   }) {
-    int defaults(String key) => (gameConfig[key] as num?)?.toInt() ?? 0;
-    int bonus(Map<String, dynamic> record, String key) =>
-        (record[key] as num?)?.toInt() ?? 0;
-    int stat(String key, String bonusKey) =>
-        defaults(key) + bonus(race, bonusKey) + bonus(profession, bonusKey);
-
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final manaSkillId = profession['manaSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    final startingDiceId = profession['startingDiceId']?.toString() ?? '';
-    final dieId = startingDiceId.isEmpty ? 'starter_die' : startingDiceId;
+    // The game's own new-game rules (character_start.dart).
+    final totals = newCharacterTotals(gameConfig, race, profession);
+    final dieId = startingDiceIdFor(profession);
     final faces = ((dice[dieId] as Map<String, dynamic>?)?['faces'] as List?)
             ?.cast<Map<String, dynamic>>() ??
         const <Map<String, dynamic>>[];
     final startingSpells = <SpellSpec>[
-      for (final id in (profession['startingSpellIds'] as List?) ?? const [])
-        if (spells[id.toString()] != null) spells[id.toString()]!,
+      for (final id in startingSpellIdsFor(profession))
+        if (spells[id] != null) spells[id]!,
     ];
     final preferred = damageStatOf(professionId);
     final character = SimCharacter._(
       raceId: raceId,
       professionId: professionId,
       preferredStat: preferred.isEmpty ? 'wisdom' : preferred,
-      maxHealth: max(1, stat('maxHealth', 'bonusMaxHealth')),
-      baseDamage: stat('baseDamage', 'bonusBaseDamage'),
-      baseArmor: startingArmor(stat('baseArmor', 'bonusBaseArmor')),
-      strength: stat('strength', 'bonusStrength'),
-      dexterity: stat('dexterity', 'bonusDexterity'),
-      constitution: stat('constitution', 'bonusConstitution'),
-      intelligence: stat('intelligence', 'bonusIntelligence'),
-      wisdom: stat('wisdom', 'bonusWisdom'),
-      luck: stat('luck', 'bonusLuck'),
-      charisma: stat('charisma', 'bonusCharisma'),
-      perception: stat('perception', 'bonusPerception'),
+      maxHealth: max(1, totals.maxHealth),
+      baseDamage: totals.baseDamage,
+      baseArmor: totals.baseArmor,
+      strength: totals.strength,
+      dexterity: totals.dexterity,
+      constitution: totals.constitution,
+      intelligence: totals.intelligence,
+      wisdom: totals.wisdom,
+      luck: totals.luck,
+      charisma: totals.charisma,
+      perception: totals.perception,
       diceFaces: faces,
       // The same starting kit as PlayerSessionNotifier.startNewGame: a
       // caster's mana skill sits on the apprentice die's Channeling face.
-      diceSkillAssignments: {
-        if (manaSkillId.isNotEmpty) '1': manaSkillId,
-        if (professionSkillId.isNotEmpty) '4': professionSkillId,
-        if (raceSkillId.isNotEmpty) '5': raceSkillId,
-      },
-      unlockedSkillIds: {
-        if (professionSkillId.isNotEmpty) professionSkillId,
-        if (manaSkillId.isNotEmpty) manaSkillId,
-        if (raceSkillId.isNotEmpty) raceSkillId,
-      },
+      diceSkillAssignments: starterFaceAssignments(race, profession),
+      unlockedSkillIds: starterSkillsFor(race, profession).toSet(),
       knownSpells: startingSpells,
-      potions: defaults('potionCount'),
-      startingGold: defaults('gold') +
-          bonus(race, 'startingGoldBonus') +
-          bonus(profession, 'startingGoldBonus'),
+      potions: (gameConfig['potionCount'] as num?)?.toInt() ?? 0,
+      startingGold: totals.gold,
     );
     return character
       ..diceId = dieId
@@ -468,7 +450,7 @@ class SimCharacter {
     statusEffects = [];
   }
 
-  /// Runs [gain] XP through the app's own `level * 100` thresholds. Each
+  /// Runs [gain] XP through the app's own thresholds ([xpForLevel]). Each
   /// level: [levelHealthGain] max health and [levelStatPicks] stat pick --
   /// with [trainingPaths] drawn and taken (see [takeStatPicks]), else a
   /// point to [preferredStat] (the simulator's fixed assumption) -- then a
@@ -476,8 +458,8 @@ class SimCharacter {
   bool gainXp(int gain) {
     xp += gain;
     var leveled = false;
-    while (xp >= level * 100) {
-      xp -= level * 100;
+    while (xp >= xpForLevel(level)) {
+      xp -= xpForLevel(level);
       level++;
       leveled = true;
       maxHealth += levelHealthGain;
@@ -607,7 +589,6 @@ class SimCharacter {
       return _visitShopCompetent(shop, items, dice, spells, gold,
           skills: skills, itemSets: itemSets);
     }
-    var purse = gold;
     int scoreOf(String? itemId) {
       final item = items[itemId] as Map<String, dynamic>?;
       if (item == null) return -1;
@@ -615,16 +596,10 @@ class SimCharacter {
           ((item['armor'] as num?)?.toInt() ?? 0);
     }
 
-    int costOf(Map<String, dynamic> item) =>
-        (item['cost'] as num?)?.toInt() ?? 0;
-    final quantities = (shop['stockQuantities'] as Map?)?.map(
-          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
-        ) ??
-        const <String, int>{};
-    final stock = _shopItems(shop, items);
-
     // 1. Spellbooks: the profession's own, still unknown.
-    purse = _buySpellbooks(stock, spells, purse);
+    final (:stock, :quantities, purse: afterBooks) =
+        _openShop(shop, items, spells, gold);
+    var purse = afterBooks;
 
     // 2. Potions: up to two charges per entry (an antidote is skipped --
     //    the model cures nothing but by spell).
@@ -633,7 +608,7 @@ class SimCharacter {
           entry.key == 'antidote') {
         continue;
       }
-      final cost = costOf(entry.value);
+      final cost = _itemCost(entry.value);
       final limit = quantities[entry.key] ?? 1;
       var bought = 0;
       while (bought < min(limit, 2) && cost > 0 && purse >= cost) {
@@ -652,7 +627,7 @@ class SimCharacter {
       final item = entry.value;
       if (item['isEquippable'] != true) continue;
       final slot = item['equipSlot']?.toString() ?? '';
-      if (slot.isEmpty || purse < costOf(item)) continue;
+      if (slot.isEmpty || purse < _itemCost(item)) continue;
       if (scoreOf(entry.key) <= scoreOf(equippedBySlot[slot])) continue;
       if (!meetsItemStatRequirement(
         item,
@@ -669,7 +644,7 @@ class SimCharacter {
       }
     }
     for (final entry in bySlot.entries) {
-      final cost = costOf(entry.value.value);
+      final cost = _itemCost(entry.value.value);
       if (purse < cost) continue;
       purse -= cost;
       equippedBySlot[entry.key] = entry.value.key;
@@ -698,6 +673,27 @@ class SimCharacter {
     return purse;
   }
 
+  /// What both shop visits start with: the stock, how many of each the
+  /// shop holds, and the purse once the profession's own spellbooks are
+  /// bought.
+  ({
+    List<MapEntry<String, Map<String, dynamic>>> stock,
+    Map<String, int> quantities,
+    int purse,
+  }) _openShop(Map<String, dynamic> shop, Map<String, dynamic> items,
+      Map<String, SpellSpec> spells, int gold) {
+    final quantities = (shop['stockQuantities'] as Map?)?.map(
+          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
+        ) ??
+        const <String, int>{};
+    final stock = _shopItems(shop, items);
+    return (
+      stock: stock,
+      quantities: quantities,
+      purse: _buySpellbooks(stock, spells, gold),
+    );
+  }
+
   /// What [shop] sells that [items] knows, in the shop's order.
   List<MapEntry<String, Map<String, dynamic>>> _shopItems(
     Map<String, dynamic> shop,
@@ -716,14 +712,12 @@ class SimCharacter {
     Map<String, SpellSpec> spells,
     int purse,
   ) {
-    int costOf(Map<String, dynamic> item) =>
-        (item['cost'] as num?)?.toInt() ?? 0;
     for (final entry in stock) {
       final taughtSpellId = spellbookSpellIdFor(entry.value);
       if (taughtSpellId == null) continue;
       final spell = spells[taughtSpellId];
       if (spell == null ||
-          purse < costOf(entry.value) ||
+          purse < _itemCost(entry.value) ||
           knownSpells.any((s) => s.id == spell.id) ||
           !canLearnSpell(
             spell,
@@ -732,7 +726,7 @@ class SimCharacter {
           )) {
         continue;
       }
-      purse -= costOf(entry.value);
+      purse -= _itemCost(entry.value);
       knownSpells.add(spell);
       spellbooksBought.add(spell.id);
     }
@@ -754,16 +748,9 @@ class SimCharacter {
     required Map<String, dynamic> skills,
     required Map<String, ItemSet> itemSets,
   }) {
-    var purse = gold;
-    int costOf(Map<String, dynamic> item) =>
-        (item['cost'] as num?)?.toInt() ?? 0;
-    final quantities = (shop['stockQuantities'] as Map?)?.map(
-          (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
-        ) ??
-        const <String, int>{};
-    final stock = _shopItems(shop, items);
-
-    purse = _buySpellbooks(stock, spells, purse);
+    final (:stock, :quantities, purse: afterBooks) =
+        _openShop(shop, items, spells, gold);
+    var purse = afterBooks;
 
     void buyPotions(int upTo) {
       for (final entry in stock) {
@@ -771,7 +758,7 @@ class SimCharacter {
             entry.key == 'antidote') {
           continue;
         }
-        final cost = costOf(entry.value);
+        final cost = _itemCost(entry.value);
         final limit = quantities[entry.key] ?? 1;
         var bought = 0;
         while (potions < upTo && bought < limit && cost > 0 && purse >= cost) {
@@ -849,7 +836,7 @@ class SimCharacter {
         if (item['isEquippable'] != true ||
             ownedItemIds.contains(entry.key) ||
             equippedBySlot.containsValue(entry.key) ||
-            purse < costOf(item) ||
+            purse < _itemCost(item) ||
             !canWear(item)) {
           continue;
         }
@@ -860,7 +847,7 @@ class SimCharacter {
         }
       }
       if (pick == null) break;
-      purse -= costOf(items[pick] as Map<String, dynamic>);
+      purse -= _itemCost(items[pick] as Map<String, dynamic>);
       ownedItemIds.add(pick);
       final best = bestWith(const []);
       equippedBySlot
@@ -2858,3 +2845,7 @@ bool _landsSteady(SimCharacter c, DiceFaceResult raw, SignEffects s,
   }
   return _tamperedFace(face, cursed, silenced).hasKeyword(FaceKeyword.steady);
 }
+
+/// A shop item's price in gold.
+int _itemCost(Map<String, dynamic> item) =>
+    (item['cost'] as num?)?.toInt() ?? 0;
