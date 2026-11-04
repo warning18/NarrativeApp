@@ -8,7 +8,7 @@ Where the user's answer meets work that already shipped, I say so first: the Man
 | # | Item | State |
 |---|---|---|
 | A | the fight's ground layer repainted every frame | **already merged**: #691, v1.710 |
-| B | the slow fight tests at dice speed 4× | **already merged** (v1.684 on) |
+| B | the slow fight tests at dice speed 4× | **already merged**: with #691, v1.710 (the fight tests throw the dice at 4×) |
 | C | the `UX_SHOTS` picture-generator tests | **already merged**: #718 and #720 (34 of the 38 files; the other files assert real behaviour) |
 | D | one status-tile widget | **already merged**: #708, v1.736 |
 | E, F | one log UI, the weather tile | not built, waiting for the user |
@@ -32,5 +32,5 @@ The picture shows the two tiles as they are today, at the sizes the fight uses (
 
 ## J: what the capture is for, and the easiest way for someone with only a phone
 **Purpose (3 lines)**: to turn three guesses into yes or no with numbers: (1) is the rest of the fight's per-frame repaint work (rain, anomaly, VFX) worth cutting, as A was; (2) is the Journey's reading page or the Camp slow at all; (3) is a `RepaintBoundary` around the VFX, sea and guide layers worth adding. Without a capture each stays a guess; with it each is "2 ms, leave it" or "20 ms, fix it".
-**Easiest, no code at all**: Android's own *Developer options > Profile HWUI rendering > On screen as bars* draws a bar per frame over any app; a screenshot of the fight, the Journey and the Camp shows which frames pass the 16 ms line. The user needs no computer.
-**Better, a small thing to build** (picture: `docs/ux-shots/frame-meter/frame-meter-mock.png`, a mock with made-up numbers): a Settings switch "Show slow frames", off by default; when on, the app counts frames that took over 17 ms per screen (Flutter's frame timings, which work in the release APK), shows a small counter while playing, and "Copy report" copies the per-screen numbers to paste to the team. About 150 lines, mostly in a new widget plus one Settings tile; it costs nothing when off. Nothing is built: the user's word first.
+**No code at all**: I have no route I can vouch for. Android's *Profile HWUI rendering* bars measure the system's own views, and Flutter draws on its own surface, so I do not know that they show Flutter's frames; I would not ask the user to try it on my word.
+**The easiest I can vouch for, a small thing to build** (picture: `docs/ux-shots/frame-meter/frame-meter-mock.png`, a mock with made-up numbers): a Settings switch "Show slow frames", off by default; when on, the app counts frames that took over 17 ms per screen (Flutter's frame timings, which work in the release APK), shows a small counter while playing, and "Copy report" copies the per-screen numbers to paste to the team. About 150 lines, mostly in a new widget plus one Settings tile; it costs nothing when off. Nothing is built: the user's word first.
