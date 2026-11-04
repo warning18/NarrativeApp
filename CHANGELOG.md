@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.778.0+814]
+
+- Fight: the tiles of the top strip (the goal, the weather, the momentum, the
+  round, the log button...) have a taller tap area: 38 x 51 instead of 38 x 37
+  (the log button 32 x 51), so a tap a little above or below one still lands.
+  Nothing moves: the 8 px above and the 6 px below the strip became the tiles'
+  own tap room (a picture of the fight at 360 and 320 px, in play and edit
+  mode, is pixel for pixel what it was), and a tile's pop-in still opens in the
+  same place. The effect icons on the fighters' cards keep their size: their
+  row has no room to give.
+- Tests: `fight_tap_areas_test.dart` (the box sizes, where the tile and the
+  cards sit, a tap above the tile opens its pop-in and where).
+
 ## [1.773.0+809]
 
 - The 377 icons (items, skills, enemies, shops, chests) are stored at the size
