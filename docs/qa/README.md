@@ -36,3 +36,15 @@ shard) from `test/shard_weights.json`, and fails if a file is dropped or
 doubled. A new file needs no entry (it counts as the median file). Refresh the
 weights now and then, with `flutter test --reporter json > report.json` and
 `tool/shard_weights_from_report.py report.json`.
+
+**The simulator tests and pull requests.** Four files play whole simulated
+runs (`boss_balance`, `clash_balance`, `sim_coverage`, `adapt_gap`: about 160 s).
+A pull request that changes none of the paths in `tool/sim_gate.txt` (the
+combat, data, gamedata, models and providers code, the simulator screen, the
+gamedata and story assets, the simulator tests and their helpers, the CI files)
+cannot move what they measure, so CI leaves them out and splits the other files
+again; main, and any pull request that touches a listed path, run the whole
+suite. `test/qa_sim_gate_test.dart` holds the list: every `lib/` file the four
+tests read must be under a trigger. To run them anyway, `flutter test
+test/boss_balance_test.dart test/clash_balance_test.dart
+test/sim_coverage_test.dart test/adapt_gap_test.dart`.
