@@ -509,7 +509,8 @@ class _FightAimLineState extends State<FightAimLine> {
   Offset? _b;
 
   void _measure() {
-    Offset? local(GlobalKey key, GlobalKey space, {required bool top}) {
+    // The box of [key] in the space's own coordinates.
+    Rect? local(GlobalKey key, GlobalKey space) {
       final box = key.currentContext?.findRenderObject();
       final root = space.currentContext?.findRenderObject();
       if (box is! RenderBox ||
@@ -518,13 +519,18 @@ class _FightAimLineState extends State<FightAimLine> {
           !root.hasSize) {
         return null;
       }
-      final center = box.localToGlobal(box.size.center(Offset.zero));
-      final at = root.globalToLocal(center);
-      return at;
+      final at = root.globalToLocal(box.localToGlobal(Offset.zero));
+      return at & box.size;
     }
 
-    final a = local(widget.from, widget.space, top: true);
-    final b = local(widget.to, widget.space, top: false);
+    final from = local(widget.from, widget.space);
+    final to = local(widget.to, widget.space);
+    final a = from?.center;
+    // The line ends on the edge of the target card that faces the die, not
+    // on its middle, which would hide the card's health and name.
+    final b = to == null || a == null
+        ? null
+        : Offset(to.center.dx, a.dy > to.center.dy ? to.bottom : to.top);
     if (a != _a || b != _b) {
       if (!mounted) return;
       setState(() {
@@ -544,6 +550,9 @@ class _FightAimLineState extends State<FightAimLine> {
     return IgnorePointer(
       child: Stack(
         key: const Key('fight_aim_line'),
+        // The line runs up over the cards to its target, outside the board's
+        // own box: a Stack clips to its bounds unless told not to.
+        clipBehavior: Clip.none,
         children: [
           Positioned.fill(
             child: CustomPaint(painter: _AimPainter(a, b, widget.color)),

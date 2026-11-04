@@ -119,6 +119,26 @@ void main() {
     expect(find.byKey(const Key('fight_aim_line')), findsOneWidget);
     expect(find.byKey(const ValueKey('kept_die_player')), findsNothing);
 
+    // The line is not clipped to the board: it runs up over the cards to the
+    // enemy card's lower edge, which is above the board's own box (user
+    // feedback: "the line goes under the interface").
+    final line = tester.widget<Stack>(find.byKey(const Key('fight_aim_line')));
+    expect(line.clipBehavior, Clip.none);
+    final paint = tester.widget<CustomPaint>(find.descendant(
+        of: find.byKey(const Key('fight_aim_line')),
+        matching: find.byType(CustomPaint)));
+    final painter = paint.painter as dynamic;
+    final boardTop =
+        tester.getTopLeft(find.byKey(const Key('fight_aim_line'))).dy;
+    final enemyCard = tester.getRect(_keyStarting('enemy_slot_'));
+    final end = painter.b as Offset;
+    final start = painter.a as Offset;
+    expect(boardTop + end.dy, closeTo(enemyCard.bottom, 1),
+        reason: 'it ends on the edge of the target card that faces the die');
+    expect(end.dy, lessThan(0),
+        reason: 'above the board box: drawn over the cards');
+    expect(start.dy, greaterThan(0));
+
     // The second keeps it: gone from the board, small in the kept row.
     await tester.tap(find.byKey(const ValueKey('die_tile_player')));
     await settle(tester);
