@@ -21,7 +21,8 @@ extension _FightControls on _FightScreenState {
           _showFullLog();
         },
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 5),
+          padding: const EdgeInsets.only(
+              top: _stripReachTop, bottom: 5 + _stripReachBottom),
           child: SizedBox(
             width: 32,
             height: 32,

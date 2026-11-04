@@ -57,8 +57,8 @@ void main() {
     final container =
         ProviderScope.containerOf(tester.element(find.byType(LevelUpScreen)));
     container.read(playerSessionProvider);
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson(
@@ -121,8 +121,8 @@ void main() {
     final container =
         ProviderScope.containerOf(tester.element(find.byType(LevelUpScreen)));
     container.read(playerSessionProvider);
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson(
@@ -162,8 +162,8 @@ void main() {
     // first read, and must finish before the fixture is loaded, or it lands
     // after it and resets the points.
     container.read(playerSessionProvider);
-    await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 30)));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson({'statPoints': 2})));

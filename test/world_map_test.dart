@@ -29,7 +29,7 @@ Future<void> _settle(WidgetTester tester) async {
   _warmed[tester] = true;
   for (var i = 0; i < (first ? 6 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(Duration(milliseconds: first ? 150 : 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 150 : 30)));
     await tester.pump(const Duration(milliseconds: 150));
   }
 }
