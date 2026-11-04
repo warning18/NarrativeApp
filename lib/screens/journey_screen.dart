@@ -22,7 +22,6 @@ import '../data/city_districts.dart'
         sceneDoorstep,
         sceneStreetOf,
         townMoveView;
-import '../data/city_plan.dart';
 import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
@@ -96,7 +95,6 @@ import '../widgets/return_notice.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_painter.dart';
 import '../widgets/city_chart/city_chart_view.dart';
-import '../widgets/city_plan_painter.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_travel.dart' show CampReturnButton, TravelOnList;
@@ -253,6 +251,7 @@ class _PlaceView {
     this.hereDistrict = '',
     this.districtOfStep = const {},
     this.holderColor,
+    this.loading = false,
   });
 
   final PlaceKind kind;
@@ -297,6 +296,11 @@ class _PlaceView {
   /// is the party's nemesis: the ground takes a faint wash of it.
   final Color? holderColor;
 
+  /// A city, a town or a village whose stored plan has not loaded yet: its
+  /// ground shows alone until the chart replaces it (N11), not a plan that
+  /// is not the city's.
+  final bool loading;
+
   /// The same place for a map that draws only the steps [keep] lists (by
   /// their place in the list of steps): the glyphs and districts follow.
   _PlaceView pinned(List<int> keep) => _PlaceView(
@@ -314,6 +318,7 @@ class _PlaceView {
         plan: plan,
         chart: chart,
         explored: explored,
+        loading: loading,
         room: room,
         hereDistrict: hereDistrict,
         districtOfStep: {
@@ -1926,6 +1931,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             water: herePlace?.water ?? '',
             plan: cityPlan,
             chart: cityChart,
+            loading: isCity && cityPlan == null,
             explored: foundDistricts,
             room: room,
             hereDistrict: hereDistrictId,
@@ -3092,10 +3098,6 @@ class _JourneyChartState extends State<_JourneyChart>
   double? _planScale;
   double _planFitted = 1;
   Offset? _planOrigin;
-  CityPlan? get _plan {
-    final plan = widget.place?.plan;
-    return plan is CityPlan ? plan : null;
-  }
 
   RoomPlan? get _room => widget.place?.room;
 
@@ -3833,14 +3835,8 @@ class _JourneyChartState extends State<_JourneyChart>
                                                   ? widget.place!.hereDistrict
                                                   : null,
                                             )
-                                          : _plan != null && _planScale != null
-                                              ? CityPlanPainter(
-                                                  plan: _plan!,
-                                                  scale: _planScale!,
-                                                  origin: _planOrigin!,
-                                                  palette: palette,
-                                                  ember: widget.ink.ember,
-                                                )
+                                          : widget.place!.loading
+                                              ? null
                                               : PlacePlanPainter(
                                                   kind: widget.place!.kind,
                                                   seed: widget.place!.seed,
