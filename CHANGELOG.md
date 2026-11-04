@@ -23,6 +23,16 @@ isn't reconstructable from git history alone.
   (360 and 412 px, French and English, real fonts, no text under 11 px, the
   switch and Take).
 
+## [1.827.0+863]
+
+### Fixed
+- Journey: a tap on the map no longer sets the party on the road by itself.
+  When a scene has one way, the game picks it for the player; a tap on its
+  mark (after "Back to the map", for example) now only confirms the pick.
+  Go, a second tap or a page card takes it. Before, the first tap took the
+  step, and a way to another place rolled its detour (1101_scarred).
+  `test/journey_auto_pick_test.dart` guards it.
+
 ## [1.826.0+862]
 
 - Fights on the road: the fight is dressed with the land it is met on. A fight
