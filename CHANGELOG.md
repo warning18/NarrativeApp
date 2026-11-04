@@ -23,6 +23,29 @@ isn't reconstructable from git history alone.
   `crossing_strip_path_test.dart` (which roads go to the camera; a crossing
   along a seam paints).
 
+## [1.820.0+856]
+
+- Edit Mode: saving a scene in the scene editor no longer erases parts of
+  it. The editor used to drop a scene's camp errand, its kind, its
+  show/hide flags and its camp line (English and French) on every save, so
+  saving one of the 20 companion loyalty errands turned it into a plain
+  scene that no longer showed at camp. A test now opens the editor on
+  scenes holding every field the story uses, saves them unedited, and
+  checks nothing changed.
+
+## [1.819.0+855]
+
+- **Narrative: callbacks capped on five scenes, a shorter text on four returns.**
+  `callback_cap` and `priority` (v1.816) are set on the scenes where earned
+  lines stack: `7800` (70 callbacks, cap 10), `7004` (31, cap 10), `7001` (26,
+  cap 8), `7400` (23, cap 8) and `7500` (22, cap 8). The clan payoffs, the
+  crown, the fate of Lysa and the Lantern-Bearer's will are kept first; the
+  twenty "houses" lines on `7800` go first. `revisit_description` (EN and FR)
+  is added on the four non-town scenes the player returns to and that show
+  their text each time: the cove camp (`4999_camp`, `7800`), the yards
+  (`2900`) and the harbour steps (`7515_rest`). The towns already fold when
+  read, so they get none. No other story text changed.
+
 ## [1.818.0+854]
 
 - For the side-view camera (step 3c of UX-2's parallax): `WorldCamera`
@@ -114,6 +137,7 @@ isn't reconstructable from git history alone.
   mark on the map), and taking it opens the next scene on the same page or
   sheet, with no map in between. Ways to another district or road are still
   marks on the map; a one-card page still has no Continue.
+
 ## [1.808.0+844]
 
 - Code cleanup (split 4f, step 2): the session notifier's methods leave
@@ -121,11 +145,13 @@ isn't reconstructable from git history alone.
   feature: offers, politics, quests, shop and forge, allies and camp, road
   and time, skills and combat. A move: the saves, the rules and the
   simulator's results are unchanged.
+
 ## [1.807.0+843]
 
 - Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
   on its card since v1.803) is now in the factions table of the game
   database, so it can be read and saved there.
+
 ## [1.806.0+842]
 
 - **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
