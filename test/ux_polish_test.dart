@@ -232,7 +232,7 @@ void main() {
       await openEditMode(tester, const Size(1000, 700));
       expect(find.byKey(const Key('home_nav_rail')), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
-      expect(find.text('Generate'), findsOneWidget);
+      expect(find.text('Data'), findsOneWidget);
     });
 
     testWidgets('a phone on its side keeps the bar and does not overflow',
