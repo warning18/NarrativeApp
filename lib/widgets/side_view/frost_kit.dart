@@ -156,7 +156,7 @@ void _rocks(Canvas canvas, Size size, double u, double scroll) {
     final px = kitSlot(i, 3, span, offset, 18) + 2;
     if (px < -10 || px > w + 4) continue;
     final y = 59.0 + (i % 2) * 2;
-    if (i % 2 == 0) {
+    if (i.isEven) {
       sidePixels(canvas, u, rock, px, y - 3, 6, 3);
       sidePixels(canvas, u, snow, px, y - 4, 5, 1);
     } else {

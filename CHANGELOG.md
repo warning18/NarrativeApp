@@ -13,6 +13,22 @@ isn't reconstructable from git history alone.
 - Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
   on its card since v1.803) is now in the factions table of the game
   database, so it can be read and saved there.
+## [1.806.0+842]
+
+- **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
+  (`loyal`, `scheming`, `wavering`, set on 50 people in `npcs.json`, 44 with
+  a value) is removed. No code, test or screen read it; the clan pages show
+  the ruling text only. No screen changes.
+
+## [1.805.0+841]
+
+- **Cleanup: five more lints on, 28 sites fixed.** `combinators_ordering`,
+  `use_is_even_rather_than_modulo`, `use_colored_box`,
+  `join_return_with_assignment` and `use_late_for_private_fields_and_variables`
+  are enabled and kept at zero: the names after `show` sorted, `x % 2 == 0`
+  written `x.isEven`, two single-colour boxes as `ColoredBox`, one
+  assignment returned directly and the expedition's reward card declared
+  `late`. Nothing changes on screen or in a number.
 
 ## [1.804.0+840]
 
@@ -21,6 +37,7 @@ isn't reconstructable from git history alone.
   (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
   that imports it changes. A pure move: nothing in the game or the save
   changes.
+
 ## [1.803.0+839]
 
 - The clan card (a long press on a clan's banner, the offer's (i)) ends with
@@ -59,6 +76,7 @@ isn't reconstructable from git history alone.
   The clans' offers draw signs since v1.194 and stay as they are. The
   sign tests now check the rules those offers use: what a patron can
   offer, which patrons may, and the slots. Nothing in the game changes.
+
 ## [1.798.0+834]
 
 - The Journey draws a city, a town or a village from its stored plan only

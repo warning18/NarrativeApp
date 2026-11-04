@@ -18,7 +18,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
 import 'skill_fight_harness.dart'
-    show settle, gamedata, pumpUntil, shows, tapWhenEnabled;
+    show gamedata, pumpUntil, settle, shows, tapWhenEnabled;
 import 'support/pump.dart';
 
 PoliticsState _politics(bool lit) {

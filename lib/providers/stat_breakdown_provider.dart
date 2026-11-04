@@ -10,7 +10,7 @@ import 'player_session_provider.dart';
 import 'signs_provider.dart';
 
 export '../data/stat_breakdown.dart'
-    show StatSource, StatBreakdownTotals, breakdownStats;
+    show StatBreakdownTotals, StatSource, breakdownStats;
 
 /// Where the hero's [stat] (one of [breakdownStats]: an ability, or
 /// 'maxHealth', 'baseDamage', 'baseArmor') comes from now (see
