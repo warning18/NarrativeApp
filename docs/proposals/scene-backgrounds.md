@@ -1,6 +1,6 @@
 # Scene backgrounds: more variety, chosen by where the scene is
 
-UX proposal, **approved by the user and built in v1.665.0**: all eight new stages, the choosing ladder and the pools for the temperate country. The fights' backdrops are now in the scenes' pixel style (`lib/widgets/fight_pixel_stage.dart`), and every scene has four versions (`lib/widgets/side_view/scene_versions.dart`) shown one after the other in a seeded order, with a pixel dissolve between them. Still to do: Core's mapping table and the road crossing passing its stage (the ladder's steps 2 to 4), Narrative's `forcedStage` table (step 1), the anomalies redrawn in pixels.
+UX proposal, **approved by the user and built in v1.665.0**: all eight new stages, the choosing ladder and the pools for the temperate country. The fights' backdrops are now in the scenes' pixel style (`lib/widgets/fight_pixel_stage.dart`), and every scene has four versions (`lib/widgets/side_view/scene_windows.dart`) shown one after the other in a seeded order, with a pixel dissolve between them. Still to do: Core's mapping table and the road crossing passing its stage (the ladder's steps 2 to 4), Narrative's `forcedStage` table (step 1), the anomalies redrawn in pixels.
 The user's words: the backgrounds behind the fight setup, the fight and the
 scenes (green hills, trees, a road) are too uniform; add diversity matching the
 texts and situations of detours, expeditions and so on, for example more

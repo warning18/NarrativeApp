@@ -1,7 +1,5 @@
-// Four versions of every scene (docs/proposals/scene-backgrounds.md): the
-// order they follow one another in, that every kit paints every version, the
-// pixel dissolve between two, and the counter that makes successive scenes of
-// a kit follow the order.
+// Four windows of every scene's kit: the fixed window of an x on the strip,
+// that every kit paints every window, and the pixel dissolve between two.
 import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +12,7 @@ import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/fen_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/frost_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/ruins_kit.dart';
-import 'package:narrative_data_app/widgets/side_view/scene_versions.dart';
+import 'package:narrative_data_app/widgets/side_view/scene_windows.dart';
 import 'package:narrative_data_app/widgets/side_view/sea_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 import 'package:narrative_data_app/widgets/street_view/street_facade.dart';
@@ -29,44 +27,50 @@ void _paint(List<SideLayer> layers, ui.Size size, {double t = 1.3}) {
 }
 
 void main() {
-  group('the order', () {
-    test(
-        'each round shows all four versions, never the same one twice in a row',
-        () {
-      for (final seed in ['crash_to_sleeper', 'alster', 'the_cove', '', 'x']) {
-        final shown = [for (var i = 0; i < 40; i++) sceneVersionAt(seed, i)];
-        for (var round = 0; round < 10; round++) {
-          expect(shown.sublist(round * 4, round * 4 + 4).toSet(), {0, 1, 2, 3},
-              reason: '$seed round $round');
-        }
-        for (var i = 1; i < shown.length; i++) {
-          expect(shown[i], isNot(shown[i - 1]), reason: '$seed at $i');
-        }
-      }
+  group('the windows', () {
+    test('a window is a fixed stretch of the strip, the four in turn', () {
+      expect(
+          [for (var i = 0; i < 8; i++) sceneWindowAt(i * sceneWindowSpan + 1)],
+          [0, 1, 2, 3, 0, 1, 2, 3]);
+      // Anywhere inside a stretch is the same window.
+      expect(sceneWindowAt(0), sceneWindowAt(sceneWindowSpan - 0.01));
+      expect(sceneWindowAt(sceneWindowSpan), 1);
+      // Before the strip's start it still has one.
+      expect(sceneWindowAt(-1), 3);
     });
 
-    test('the order is the seed\'s, and different seeds order them differently',
-        () {
-      List<int> first(String seed) =>
-          [for (var i = 0; i < 4; i++) sceneVersionAt(seed, i)];
-      expect(first('a'), first('a'));
+    test('a scene with no x has a fixed window of its id', () {
+      for (final id in ['crash_to_sleeper', 'alster', '', 'x']) {
+        expect(sceneWindowOfId(id), sceneWindowOfId(id));
+        expect(sceneWindowOfId(id), inInclusiveRange(0, 3));
+      }
       expect(
           {
-            for (final s in ['a', 'b', 'c', 'd', 'e', 'f']) first(s).join()
+            for (final s in ['a', 'b', 'c', 'd', 'e', 'f']) sceneWindowOfId(s)
           }.length,
           greaterThan(1));
     });
 
-    test('successive scenes of a kit follow the seeded order', () {
-      SceneVersions.reset();
-      final shown = [
-        for (var i = 0; i < 8; i++) SceneVersions.next('sea-open')
-      ];
-      expect(shown.sublist(0, 4).toSet(), {0, 1, 2, 3});
-      expect(shown.sublist(4).toSet(), {0, 1, 2, 3});
-      // Another kit counts on its own.
-      expect(SceneVersions.next('desert'), inInclusiveRange(0, 3));
-      SceneVersions.reset();
+    test('a walk along a path passes its stops in order', () {
+      const path = [10.0, 20.0, 50.0];
+      expect(pathXAt(path, 0), 10);
+      expect(pathXAt(path, 0.5), 20);
+      expect(pathXAt(path, 0.75), 35);
+      expect(pathXAt(path, 1), 50);
+      expect(pathXAt(path, 2), 50);
+      expect(pathXAt(const [7.0], 0.4), 7);
+      expect(pathXAt(const [], 0.4), isNull);
+    });
+
+    test('a long road shows its windows in turn, the same every time', () {
+      // 40 units of road over 4 days: each day a different window.
+      const path = [100.0, 140.0];
+      List<int> days() => [
+            for (var d = 0; d < 4; d++)
+              sceneWindowAt(pathXAt(path, (d + 0.5) / 4)!)
+          ];
+      expect(days(), days());
+      expect(days().toSet().length, greaterThan(2));
     });
   });
 
@@ -85,14 +89,14 @@ void main() {
 
     test('every kit paints every version at any size', () {
       for (final e in kits.entries) {
-        for (var v = 0; v < sceneVersionCount; v++) {
+        for (var v = 0; v < sceneWindowCount; v++) {
           for (final size in const [
             ui.Size(360, 190),
             ui.Size(412, 260),
             ui.Size(800, 190),
             ui.Size(120, 72),
           ]) {
-            _paint(withSceneVersion(e.value(), e.key, v), size);
+            _paint(withSceneWindow(e.value(), e.key, v), size);
           }
         }
       }
@@ -101,10 +105,10 @@ void main() {
     test('a version after the first adds its landmark layer', () {
       for (final e in kits.entries) {
         final base = e.value();
-        expect(withSceneVersion(base, e.key, 0), hasLength(base.length),
+        expect(withSceneWindow(base, e.key, 0), hasLength(base.length),
             reason: e.key);
-        for (var v = 1; v < sceneVersionCount; v++) {
-          expect(withSceneVersion(base, e.key, v), hasLength(base.length + 1),
+        for (var v = 1; v < sceneWindowCount; v++) {
+          expect(withSceneWindow(base, e.key, v), hasLength(base.length + 1),
               reason: '${e.key} $v');
         }
       }
@@ -112,7 +116,7 @@ void main() {
 
     test('the crossing builds every terrain at every version', () {
       for (final terrain in crossingSceneTerrains) {
-        for (var v = 0; v < sceneVersionCount; v++) {
+        for (var v = 0; v < sceneWindowCount; v++) {
           _paint(crossingLayers(terrain, 0.4, version: v),
               const ui.Size(360, 190));
         }

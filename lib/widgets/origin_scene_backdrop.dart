@@ -13,7 +13,7 @@ import 'sea_battlefield.dart' show SeaWaters;
 import 'side_view/fen_kit.dart';
 import 'side_view/frost_kit.dart';
 import 'side_view/sea_kit.dart';
-import 'side_view/scene_versions.dart';
+import 'side_view/scene_windows.dart';
 import 'side_view/side_view.dart';
 import 'street_view/street_view.dart';
 
@@ -93,7 +93,7 @@ class OriginSceneBackdrop extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = originBackdropOf(memoryId);
     // Each memory keeps its own version of the place.
-    final version = sceneVersionAt(memoryId, 0);
+    final version = sceneWindowOfId(memoryId);
     return SizedBox(
       height: height,
       child: switch (b.place) {
@@ -106,18 +106,18 @@ class OriginSceneBackdrop extends StatelessWidget {
           ),
         OriginPlace.frost => SideViewScene(
             layers:
-                withSceneVersion(frostLayers(progress: 0.3), 'frost', version),
+                withSceneWindow(frostLayers(progress: 0.3), 'frost', version),
             particles: SideParticles.snow,
             moving: false,
             height: height,
           ),
         OriginPlace.fen => SideViewScene(
-            layers: withSceneVersion(fenLayers(progress: 0.3), 'fen', version),
+            layers: withSceneWindow(fenLayers(progress: 0.3), 'fen', version),
             moving: false,
             height: height,
           ),
         OriginPlace.sea => SideViewScene(
-            layers: withSceneVersion(
+            layers: withSceneWindow(
                 seaLayers(waters: SeaWaters.shallows), 'sea-shallows', version),
             moving: false,
             height: height,

@@ -20,6 +20,19 @@ isn't reconstructable from git history alone.
   the page, the read-aloud and the story editor; the recording script keeps
   every line.
 
+## [1.815.0+851]
+
+- Side-view scenes: a scene's window of its kit no longer comes from a seeded
+  shuffle with a per-launch random start. A window is a fixed stretch of the
+  world's strip (`sceneWindowAt(x)`, 12 chart units wide, four in turn): a
+  crossing takes the day's x along its road when it is given the road's strip
+  path (`LandCrossingScreen.stripPath`, from the new `regionStripsProvider`,
+  `stripPathOf`), else its route's own window and the next one each day; the sea, detours, streets and
+  memories take a window fixed by their id. The same place shows the same land
+  on every launch; successive sailings of the same waters no longer rotate
+  through the four. `scene_versions.dart` and its test became
+  `scene_windows.dart` / `scene_windows_test.dart`.
+
 ## [1.814.0+850]
 
 - Effects: the 25 dice, element and keyword animations (`die_*`, `el_*`,
