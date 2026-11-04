@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.758.0+794]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
 ## [1.755.0+791]
 
 - Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
