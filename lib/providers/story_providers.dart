@@ -203,16 +203,18 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// brings the old story back.
   bool startedFresh = false;
 
-  Future<void> _persistAutosave() async {
+  /// Saves where the story stands, or [at] instead (a detour's way out).
+  Future<void> _persistAutosave([StoryPlayState? at]) async {
     // Snapshot everything from `state` before the first await -- this runs
     // fire-and-forget from choose()/goBack()/etc, so by the time an awaited
     // SharedPreferences call resumes, the notifier (and its `state` getter)
     // may already have been disposed (e.g. the widget tree torn down right
     // after a choice). Reading `state` only synchronously, up front, avoids
     // that "Tried to use StoryPlayNotifier after dispose" race entirely.
-    final nodeId = state.currentNodeId;
-    final history = state.history;
-    final visitedNodeIds = state.visitedNodeIds;
+    final saved = at ?? state;
+    final nodeId = saved.currentNodeId;
+    final history = saved.history;
+    final visitedNodeIds = saved.visitedNodeIds;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_autosaveNodePrefsKey, nodeId);
     await prefs.setString(_autosaveHistoryPrefsKey, json.encode(history));
@@ -334,6 +336,15 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       excursionOrigin: origin,
       excursionOriginFr: originFr,
     );
+    // A detour isn't saved (it is made up on the way), but the choice that
+    // set off already took its effects and its time: the save stands where
+    // the detour leads, so a game closed mid-detour reopens there and
+    // never before the choice, to take it twice (issue #695).
+    _persistAutosave(StoryPlayState(
+      currentNodeId: resumeNodeId,
+      history: [...state.history, state.currentNodeId],
+      visitedNodeIds: {...state.visitedNodeIds, resumeNodeId},
+    ));
   }
 
   /// Leaves the detour at once, back to the scene it set out from -- the
