@@ -662,6 +662,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Their story',
     AppLanguage.fr: 'Leur histoire',
   },
+  'clan_peek_ruling': {
+    AppLanguage.en: 'How it is ruled',
+    AppLanguage.fr: 'Comment il est gouverné',
+  },
   'clan_peek_says': {
     AppLanguage.en: 'What they say to you',
     AppLanguage.fr: 'Ce qu\u2019ils vous disent',
