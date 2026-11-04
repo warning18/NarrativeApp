@@ -315,7 +315,7 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     try {
       return DeviceFileSource((await recording).path);
     } finally {
-      _recording.remove(file.path);
+      unawaited(_recording.remove(file.path));
     }
   }
 

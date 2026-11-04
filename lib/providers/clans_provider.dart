@@ -44,13 +44,38 @@ Future<ClanData> loadClanData(WidgetRef ref) async {
   final relations = table(relationsSchema);
   final titles = table(titlesSchema);
   final intrigues = table(intriguesSchema);
-  return ClanData.fromTables(
-    factions: await factions,
-    subclans: await subclans,
-    relations: await relations,
-    titles: await titles,
-    intrigues: await intrigues,
+  final tables = [
+    await factions,
+    await subclans,
+    await relations,
+    await titles,
+    await intrigues,
+  ];
+  // Parsed once while the tables stay the same (about 2 ms a parse, and
+  // 13 callers); an edit in the Data tab gives a new table, so a new parse.
+  final last = _lastClanData;
+  if (last != null && sameTables(last.tables, tables)) return last.data;
+  final data = ClanData.fromTables(
+    factions: tables[0],
+    subclans: tables[1],
+    relations: tables[2],
+    titles: tables[3],
+    intrigues: tables[4],
   );
+  _lastClanData = (tables: tables, data: data);
+  return data;
+}
+
+({List<Map<String, dynamic>> tables, ClanData data})? _lastClanData;
+
+/// Whether [a] and [b] hold the very same table objects, in order: the
+/// game-data tables are replaced, never changed in place, when edited.
+bool sameTables(List<Object?> a, List<Object?> b) {
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (!identical(a[i], b[i])) return false;
+  }
+  return true;
 }
 
 /// The character's standing, marks and relations (see PoliticsState).

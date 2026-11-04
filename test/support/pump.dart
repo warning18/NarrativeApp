@@ -22,3 +22,15 @@ void usePhone(WidgetTester tester, Size size) {
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
 }
+
+/// Lets [steps] frames of 100 ms go by, with a short real pause each for the
+/// game's async work. For a moment that has no screen sign to wait for (the
+/// enemy's turn after a Confirm): it replaces a poll for text that no longer
+/// existed, which always ran to its limit at 300 ms of real time a step.
+Future<void> pumpFor(WidgetTester tester, int steps) async {
+  for (var i = 0; i < steps; i++) {
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 10)));
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}

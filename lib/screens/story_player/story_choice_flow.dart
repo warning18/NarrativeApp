@@ -247,9 +247,9 @@ Future<void> _selectChoice({
   // choice is offered: it says why and waits (see _isChoiceLocked).
   final purse = ref.read(playerSessionProvider);
   if (_paymentShort(choice, purse.gold, isExcursion)) {
-    showImmersiveNotice(context,
+    unawaited(showImmersiveNotice(context,
         icon: Icons.lock_outline,
-        message: _goldShortText(ref, choice, purse.gold, french: french));
+        message: _goldShortText(ref, choice, purse.gold, french: french)));
     return;
   }
   // The last fight's aftermath opened this scene, and a companion's remark
@@ -1303,14 +1303,46 @@ String composeNarration(StoryNode node, PlayerSession session,
   List<SceneEcho> echoes
 }) composeNarrationParts(StoryNode node, PlayerSession session, StoryData story,
     {required bool french}) {
+  // The Journey asks for the same scene two or three times a build (its
+  // page count, the panel, the opening): the last answer is kept while
+  // the node, the session and the story are the same objects (each is
+  // replaced, never changed in place).
+  final last = _lastParts;
+  if (last != null &&
+      identical(last.node, node) &&
+      identical(last.session, session) &&
+      identical(last.story, story) &&
+      last.french == french) {
+    return last.parts;
+  }
   final echoes = <SceneEcho>[];
   final raw = _composeNarration(node, session,
       french: french, story: story, echoesOut: echoes);
   final pages = splitNarrationPages(raw);
   // A scene with no page break reads exactly as before.
   final text = raw.contains(pageBreakMarker) ? pages.join('\n\n') : raw;
-  return (text: text, pages: pages, echoes: echoes);
+  final parts = (
+    text: text,
+    pages: List<String>.unmodifiable(pages),
+    echoes: List<SceneEcho>.unmodifiable(echoes),
+  );
+  _lastParts = (
+    node: node,
+    session: session,
+    story: story,
+    french: french,
+    parts: parts,
+  );
+  return parts;
 }
+
+({
+  StoryNode node,
+  PlayerSession session,
+  StoryData story,
+  bool french,
+  ({String text, List<String> pages, List<SceneEcho> echoes}) parts,
+})? _lastParts;
 
 String _composeNarration(StoryNode node, PlayerSession session,
     {required bool french, StoryData? story, List<SceneEcho>? echoesOut}) {
