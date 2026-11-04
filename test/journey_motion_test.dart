@@ -23,11 +23,11 @@ Future<ProviderContainer> _openJourney(WidgetTester tester) async {
           const MethodChannel('flutter_tts'), (call) async => 1);
   SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
   usePhone(tester, const Size(400, 860));
-  final container = await openGame(tester, overrides: [noCityPlans]);
+  final container = await openGame(tester, overrides: [storedCityPlans]);
   final play = container.read(storyPlayProvider.notifier);
-  play.jumpTo('2001');
+  play.jumpTo('1101');
   await settleApp(tester);
-  play.jumpTo('2005');
+  play.jumpTo('1100');
   await settleApp(tester);
   return container;
 }
@@ -110,7 +110,7 @@ void main() {
     await settleApp(tester);
     expect(_fx, findsOneWidget);
     // Picking a step and a shut way's rattle don't get in the way.
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')),
+    await tester.tap(find.byKey(const ValueKey('journey_step_2')),
         warnIfMissed: false);
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull);

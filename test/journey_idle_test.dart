@@ -25,11 +25,11 @@ Future<ProviderContainer> _openJourney(WidgetTester tester) async {
           const MethodChannel('flutter_tts'), (call) async => 1);
   SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
   usePhone(tester, const Size(400, 860));
-  final container = await openGame(tester, overrides: [noCityPlans]);
+  final container = await openGame(tester, overrides: [storedCityPlans]);
   final play = container.read(storyPlayProvider.notifier);
-  play.jumpTo('2001');
+  play.jumpTo('1101');
   await settleApp(tester);
-  play.jumpTo('2005');
+  play.jumpTo('1100');
   await settleApp(tester);
   return container;
 }

@@ -26,60 +26,87 @@ void main() {
     SharedPreferences.setMockInitialValues({chartGlobePrefsKey: false});
     usePhone(tester, const Size(400, 860));
 
-    final container = await openGame(tester, overrides: [noCityPlans]);
+    final container = await openGame(tester, overrides: [storedCityPlans]);
     final play = container.read(storyPlayProvider.notifier);
-    play.jumpTo('2001');
+    // Alster's High Quay (scene 960) first: its way out takes the party
+    // from the city to another place.
+    play.jumpTo('250');
     await settleApp(tester);
-    play.jumpTo('2005');
+    play.jumpTo('960');
     await settleApp(tester);
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
 
     // No scene over the map: Read opens it full screen, the map button
     // brings the map back.
+    const chart = ValueKey('journey_city_chart');
+    await tester.pump(const Duration(seconds: 6));
     expect(find.byKey(const ValueKey('journey_scene_fold')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(chart), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_read')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_reading_exit')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(chart), findsOneWidget);
 
     // A choice made opens the scene reached full screen, with Continue
-    // under it to come back to the map.
+    // under it to come back to the map. (The city's way here is a row of
+    // its list; the walk camera of the generated plan, v1.219, is gone with
+    // it, the chart's camera is city_camera_test's.)
     expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(find.byKey(const ValueKey('journey_go')));
-    // The city's camera (v1.219): the map zooms in on the party as it
-    // strolls, and is back to its size when the walk is done.
-    expect(find.byKey(const ValueKey('journey_walk_camera')), findsNothing);
-    await tester.pump(const Duration(milliseconds: 100));
-    for (var i = 0; i < 6; i++) {
-      await tester.pump(const Duration(milliseconds: 100));
+    final out = find.byKey(const ValueKey('place_row_out:lark_wreck'));
+    await tester.tap(find.byKey(const ValueKey('journey_tab_district')));
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.tap(find.byKey(const Key('places_handle')));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
     }
-    final camera = find.byKey(const ValueKey('journey_walk_camera'));
-    expect(camera, findsOneWidget);
-    expect(tester.widget<Transform>(camera).transform.storage[0],
-        greaterThan(1.2));
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(out);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.ensureVisible(find.byKey(const ValueKey('journey_go')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('journey_go')));
+    // The party walks to the way's building, then out by the road: a tap
+    // skips each.
+    final cityWalk = find.byKey(const ValueKey('journey_city_walk_skip'));
+    final skip = find.byKey(const ValueKey('journey_road_skip'));
+    for (var i = 0;
+        i < 120 &&
+            find.byKey(const ValueKey('journey_continue')).evaluate().isEmpty;
+        i++) {
+      if (cityWalk.evaluate().isNotEmpty) {
+        await tester.tap(cityWalk);
+      } else if (skip.evaluate().isNotEmpty) {
+        await tester.tap(skip);
+      }
+      await tester.pump(const Duration(milliseconds: 250));
     }
     await settleApp(tester);
     final after = container.read(storyPlayProvider);
-    expect(after.isInExcursion || after.currentNodeId != '2005', isTrue);
+    expect(after.isInExcursion || after.currentNodeId != '960', isTrue);
     expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
-    await tester.tap(find.byKey(const ValueKey('journey_continue')));
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    // The map is back with its steps, or, when the road held a written
+    expect(find.byKey(chart), findsNothing);
+    // Continue brings the map back (a scene that goes on has its own).
+    for (var i = 0;
+        i < 4 &&
+            find
+                .byKey(const ValueKey('journey_continue'))
+                .evaluate()
+                .isNotEmpty;
+        i++) {
+      await tester.tap(find.byKey(const ValueKey('journey_continue')));
+      await tester.pump(const Duration(milliseconds: 600));
+    }
+    // The map is back with its tabs, or, when the road held a written
     // detour (v1.439), its scene, whose ways are cards.
     expect(
-        find.byKey(const ValueKey('journey_step_0')).evaluate().length +
+        find.byKey(const Key('journey_level_tabs')).evaluate().length +
             find.byKey(const Key('journey_detour_scene')).evaluate().length,
         1);
+    play.jumpTo('2001');
+    await settleApp(tester);
     play.jumpTo('2005');
     await settleApp(tester);
 
@@ -104,7 +131,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
     expect(find.byType(JourneyWorldMap), findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     // The + under it comes back to the district; the Town tab goes out.
     await tester.tap(find.byKey(const Key('journey_town_zoom_in')));
     await tester.pump(const Duration(milliseconds: 400));
@@ -115,11 +142,16 @@ void main() {
 
     // The − button on the whole town looks out at the land under the fog
     // (v1.201: the levels are zoomed between); the steps wait behind.
-    await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 40));
+    // (A scene inside a building steps out into its streets first.)
+    for (var i = 0;
+        i < 2 && find.byType(JourneyWorldMap).evaluate().isEmpty;
+        i++) {
+      await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+    }
     expect(find.byType(JourneyWorldMap), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
     expect(find.byKey(const ValueKey('journey_level_hint')), findsOneWidget);
     // No jump (v1.201.1): the chart opens close, where the streets were,
     // and glides out to the land's zoom.
@@ -152,7 +184,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
     }
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
@@ -163,7 +195,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(JourneyWorldMap), findsNothing);
     expect(find.byKey(const Key('journey_town_zoom_in')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_tab_world')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(JourneyWorldMap), findsOneWidget);
@@ -217,7 +249,7 @@ void main() {
     await tester.tap(globe);
     await tester.pump(const Duration(milliseconds: 400));
     expect(globe, findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(globe, findsOneWidget);
@@ -231,7 +263,7 @@ void main() {
     await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('journey_world_canvas')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     final error = tester.takeException();
     expect(error, isNull,
         reason: error is FlutterError ? error.toStringDeep() : '$error');
