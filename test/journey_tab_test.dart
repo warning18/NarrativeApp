@@ -19,7 +19,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
     usePhone(tester, const Size(400, 860));
 
     final container = await openGame(tester, overrides: [storedCityPlans]);
@@ -27,58 +27,91 @@ void main() {
     // In play the Journey tab sits beside the Story tab.
     expect(find.text('Journey'), findsOneWidget);
     final play = container.read(storyPlayProvider.notifier);
-    play.jumpTo('2001');
+    // The party stands on Alster's High Quay (scene 960): a city draws its
+    // ways from its stored chart (N11), and the way out to the Wreck of the
+    // Lark is a row of the places' list.
+    play.jumpTo('250');
     await settleApp(tester);
-    play.jumpTo('2005');
+    play.jumpTo('960');
     await settleApp(tester);
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
     expect(container.read(homeTabIndexProvider), journeyTabIndex);
     expect(find.byType(JourneyScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
+    // Past the map inking in and the new place's card.
+    await tester.pump(const Duration(seconds: 6));
+    for (var i = 0; i < 3; i++) {
+      Navigator.of(tester.element(find.byType(JourneyScreen)))
+          .popUntil(isGameRoute);
+      await tester.pump(const Duration(seconds: 1));
+    }
 
-    // The way on that carries the party is a step on the map; the other, a
-    // roll acted out at the gate, is a choice in the scene view (a button
-    // under the map opens it).
-    final node = container.read(storyDataProvider).value!.nodeFor('2005')!;
-    expect(find.text(node.choices.first.text), findsOneWidget);
-    expect(find.text(node.choices.last.text), findsNothing);
+    // The way out that carries the party is a row on the map's list; the
+    // others, acted out where the party stands, are cards in the scene view
+    // (a button under the map opens it).
+    final node = container.read(storyDataProvider).value!.nodeFor('960')!;
+    await tester.tap(find.byKey(const ValueKey('journey_tab_district')));
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.tap(find.byKey(const Key('places_handle')));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    final out = find.byKey(const ValueKey('place_row_out:lark_wreck'));
+    expect(out, findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text(node.choices.last.text), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_continue')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_continue')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('You are here'.toUpperCase()), findsOneWidget);
-
-    // The road already taken is the Map tab's to show (v1.224): the
-    // Journey draws only the party and the ways on.
-    expect(find.byKey(const ValueKey('journey_past_0')), findsNothing);
 
     // Read opens the scene full screen (v1.199: the scene no longer sits
     // over the map); the map button brings the map back.
     await tester.tap(find.byKey(const ValueKey('journey_read')));
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    expect(out, findsNothing);
     await tester.tap(find.byKey(const ValueKey('journey_reading_exit')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+    // The map is back with its list folded: the handle raises it.
+    if (out.evaluate().isEmpty) {
+      await tester.tap(find.byKey(const Key('places_handle')));
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+    }
+    expect(out, findsOneWidget);
 
     // Picking one says what it is; Go takes it.
-    final taken = node.choices.first;
-    await tester.tap(find.byKey(const ValueKey('journey_step_0')));
-    await tester.pump();
+    await tester.tap(out);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(seconds: 1));
     expect(find.text('ROAD'), findsOneWidget);
-    expect(find.text(taken.text), findsNWidgets(2));
+    final taken =
+        node.choices.firstWhere((c) => find.text(c.text).evaluate().isNotEmpty);
+    await tester.ensureVisible(find.byKey(const ValueKey('journey_go')));
+    await tester.pump();
     await tester.tap(find.byKey(const ValueKey('journey_go')));
     // The party walks there first.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
-    expect(container.read(storyPlayProvider).currentNodeId, '2005');
-    // Through the gate into the town is a walk between two places.
-    for (var i = 0; i < 8; i++) {
-      await tester.pump(const Duration(milliseconds: 500));
+    expect(container.read(storyPlayProvider).currentNodeId, '960');
+    // The party walks to the way's building first (a tap skips it), then
+    // out by the world's road, a long walk across the land (a tap skips it
+    // too; the road's own test is journey_transit_test).
+    final cityWalk = find.byKey(const ValueKey('journey_city_walk_skip'));
+    final skip = find.byKey(const ValueKey('journey_road_skip'));
+    expect(cityWalk, findsOneWidget, reason: 'the party walks there first');
+    for (var i = 0;
+        i < 120 &&
+            find.byKey(const ValueKey('journey_continue')).evaluate().isEmpty;
+        i++) {
+      if (cityWalk.evaluate().isNotEmpty) {
+        await tester.tap(cityWalk);
+      } else if (skip.evaluate().isNotEmpty) {
+        await tester.tap(skip);
+      }
+      await tester.pump(const Duration(milliseconds: 250));
     }
     await settleApp(tester);
     // The scene reached is read full screen first; Continue brings the
