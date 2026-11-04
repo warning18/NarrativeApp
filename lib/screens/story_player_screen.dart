@@ -812,6 +812,25 @@ class _StoryView extends ConsumerWidget {
                               // axis -- a LayoutBuilder nested inside it would only ever
                               // see infinite height, not the actual viewport size.
                               builder: (context, viewportConstraints) {
+                                // The same text card in the centred and the plain layout.
+                                final storyText = _StoryText(
+                                  revealKey: revealKey,
+                                  text: pageText,
+                                  prelude: firstPage ? preludes : const [],
+                                  echoes: lastPage ? parts.echoes : const [],
+                                  echoCaption: tr(ref, 'echo_because'),
+                                  uiTheme: node.uiTheme,
+                                  placeLabel: _placeLabel(ref, node.uiTheme),
+                                  moodLabel: _moodLabel(ref, node.mood),
+                                  epilogue: lastPage ? epilogue : null,
+                                  speakerLabel: speakerLabel,
+                                  aftermath:
+                                      firstPage ? pendingAftermath : null,
+                                  aftermathHeading:
+                                      tr(ref, 'aftermath_heading'),
+                                  outcome: firstPage ? checkOutcome : null,
+                                  epilogueHeading: tr(ref, 'epilogue_heading'),
+                                );
                                 return TutorialTarget(
                                   id: 'story.text',
                                   child:
@@ -864,38 +883,7 @@ class _StoryView extends ConsumerWidget {
                                                   height: viewportConstraints
                                                       .maxHeight,
                                                   child: Center(
-                                                    child: _StoryText(
-                                                      revealKey: revealKey,
-                                                      text: pageText,
-                                                      prelude: firstPage
-                                                          ? preludes
-                                                          : const [],
-                                                      echoes: lastPage
-                                                          ? parts.echoes
-                                                          : const [],
-                                                      echoCaption: tr(
-                                                          ref, 'echo_because'),
-                                                      uiTheme: node.uiTheme,
-                                                      placeLabel: _placeLabel(
-                                                          ref, node.uiTheme),
-                                                      moodLabel: _moodLabel(
-                                                          ref, node.mood),
-                                                      epilogue: lastPage
-                                                          ? epilogue
-                                                          : null,
-                                                      speakerLabel:
-                                                          speakerLabel,
-                                                      aftermath: firstPage
-                                                          ? pendingAftermath
-                                                          : null,
-                                                      aftermathHeading: tr(ref,
-                                                          'aftermath_heading'),
-                                                      outcome: firstPage
-                                                          ? checkOutcome
-                                                          : null,
-                                                      epilogueHeading: tr(ref,
-                                                          'epilogue_heading'),
-                                                    ),
+                                                    child: storyText,
                                                   ),
                                                 )
                                               : Column(
@@ -912,38 +900,7 @@ class _StoryView extends ConsumerWidget {
                                                             node.contextNoteFor(
                                                                 french),
                                                       ),
-                                                    _StoryText(
-                                                      revealKey: revealKey,
-                                                      text: pageText,
-                                                      prelude: firstPage
-                                                          ? preludes
-                                                          : const [],
-                                                      echoes: lastPage
-                                                          ? parts.echoes
-                                                          : const [],
-                                                      echoCaption: tr(
-                                                          ref, 'echo_because'),
-                                                      uiTheme: node.uiTheme,
-                                                      placeLabel: _placeLabel(
-                                                          ref, node.uiTheme),
-                                                      moodLabel: _moodLabel(
-                                                          ref, node.mood),
-                                                      epilogue: lastPage
-                                                          ? epilogue
-                                                          : null,
-                                                      speakerLabel:
-                                                          speakerLabel,
-                                                      aftermath: firstPage
-                                                          ? pendingAftermath
-                                                          : null,
-                                                      aftermathHeading: tr(ref,
-                                                          'aftermath_heading'),
-                                                      outcome: firstPage
-                                                          ? checkOutcome
-                                                          : null,
-                                                      epilogueHeading: tr(ref,
-                                                          'epilogue_heading'),
-                                                    ),
+                                                    storyText,
                                                   ],
                                                 ),
                                         ),

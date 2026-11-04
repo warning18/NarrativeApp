@@ -476,6 +476,57 @@ Future<void> _applyEnterPolitics(
       nodeId: nodeId, key: enterPoliticsKey(nodeId));
 }
 
+/// What follows the fights of one autoplay step: the land crossed, the
+/// choice's effects and unlocks, the politics, the hazard on the road, and
+/// the move to the next node. Shared by [autoplayToNode] and
+/// [_playTowardChapter].
+Future<void> _finishAutoplayStep(
+  WidgetRef ref,
+  StoryData story,
+  StoryChoice choice,
+  String fromNodeId,
+  String? firstEnemyId,
+  Random random,
+) async {
+  final sessionNotifier = ref.read(playerSessionProvider.notifier);
+  final playNotifier = ref.read(storyPlayProvider.notifier);
+  await _crossLand(ref, choice, random);
+
+  if (choice.hasEffects) {
+    await sessionNotifier.applyChoiceEffects(
+      goldMod: choice.goldMod,
+      alignmentMod: choice.alignmentMod,
+      healAmount: choice.healAmount,
+      shortfallWounds: choice.shortfallWounds,
+      flagsToAdd: choice.flagsToAdd,
+      bannerPieceId: choice.grantsBannerPieceId,
+      itemId: choice.grantItemId,
+      materials: choice.grantMaterials,
+      questIDToProgress: choice.questIDToProgress,
+      approvalMods: choice.approvalMods,
+      origin: itemOriginHere(ref),
+    );
+  }
+  await _applyPolitics(ref, story, fromNodeId, choice);
+  if (choice.hasUnlocks) {
+    await sessionNotifier.unlockContent(
+      shopId: choice.unlockShopId,
+      questId: choice.unlockQuestId,
+      enemyId: firstEnemyId,
+      shopUnlockNodeId: fromNodeId,
+    );
+    if ((choice.unlockShopId ?? '').isNotEmpty) {
+      await sessionNotifier.checkAchievements();
+    }
+  }
+
+  // A hazard on the road there (v1.197), taken as a player would.
+  await meetRoadHazard(ref, story,
+      fromNodeId: fromNodeId, toNodeId: choice.nextId);
+  playNotifier.choose(choice.nextId);
+  await _applyEnterPolitics(ref, story, choice.nextId);
+}
+
 /// Walks the shortest choice-path from the player's current story position
 /// to [targetNodeId], applying each step's real effects — gold/alignment/
 /// heal/flags/quest-progress, shop/quest unlocks, achievement checks, and a
@@ -563,41 +614,8 @@ Future<AutoplayResult> autoplayToNode(
       }
     }
 
-    await _crossLand(ref, choice, random);
-
-    if (choice.hasEffects) {
-      await sessionNotifier.applyChoiceEffects(
-        goldMod: choice.goldMod,
-        alignmentMod: choice.alignmentMod,
-        healAmount: choice.healAmount,
-        shortfallWounds: choice.shortfallWounds,
-        flagsToAdd: choice.flagsToAdd,
-        bannerPieceId: choice.grantsBannerPieceId,
-        itemId: choice.grantItemId,
-        materials: choice.grantMaterials,
-        questIDToProgress: choice.questIDToProgress,
-        approvalMods: choice.approvalMods,
-        origin: itemOriginHere(ref),
-      );
-    }
-    await _applyPolitics(ref, story, fromNodeId, choice);
-    if (choice.hasUnlocks) {
-      await sessionNotifier.unlockContent(
-        shopId: choice.unlockShopId,
-        questId: choice.unlockQuestId,
-        enemyId: firstEnemyId,
-        shopUnlockNodeId: fromNodeId,
-      );
-      if ((choice.unlockShopId ?? '').isNotEmpty) {
-        await sessionNotifier.checkAchievements();
-      }
-    }
-
-    // A hazard on the road there (v1.197), taken as a player would.
-    await meetRoadHazard(ref, story,
-        fromNodeId: fromNodeId, toNodeId: choice.nextId);
-    playNotifier.choose(choice.nextId);
-    await _applyEnterPolitics(ref, story, choice.nextId);
+    await _finishAutoplayStep(
+        ref, story, choice, fromNodeId, firstEnemyId, random);
     stepsApplied += 1;
   }
 
@@ -1164,41 +1182,8 @@ Future<AutoplayResult> _playTowardChapter(
       }
     }
 
-    await _crossLand(ref, choice, random);
-
-    if (choice.hasEffects) {
-      await sessionNotifier.applyChoiceEffects(
-        goldMod: choice.goldMod,
-        alignmentMod: choice.alignmentMod,
-        healAmount: choice.healAmount,
-        shortfallWounds: choice.shortfallWounds,
-        flagsToAdd: choice.flagsToAdd,
-        bannerPieceId: choice.grantsBannerPieceId,
-        itemId: choice.grantItemId,
-        materials: choice.grantMaterials,
-        questIDToProgress: choice.questIDToProgress,
-        approvalMods: choice.approvalMods,
-        origin: itemOriginHere(ref),
-      );
-    }
-    await _applyPolitics(ref, story, currentNodeId, choice);
-    if (choice.hasUnlocks) {
-      await sessionNotifier.unlockContent(
-        shopId: choice.unlockShopId,
-        questId: choice.unlockQuestId,
-        enemyId: firstEnemyId,
-        shopUnlockNodeId: currentNodeId,
-      );
-      if ((choice.unlockShopId ?? '').isNotEmpty) {
-        await sessionNotifier.checkAchievements();
-      }
-    }
-
-    // A hazard on the road there (v1.197), taken as a player would.
-    await meetRoadHazard(ref, story,
-        fromNodeId: currentNodeId, toNodeId: choice.nextId);
-    playNotifier.choose(choice.nextId);
-    await _applyEnterPolitics(ref, story, choice.nextId);
+    await _finishAutoplayStep(
+        ref, story, choice, currentNodeId, firstEnemyId, random);
     stepsApplied += 1;
   }
 
