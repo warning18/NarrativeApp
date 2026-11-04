@@ -187,7 +187,7 @@ web fetch) unless noted.
 | **Pillow** (Python, used by every generator and `png8.py`) | resize, palette, dither, palette PNG: all I used for the measures above | MIT-CMU (from the installed 12.3.0 metadata) | n/a | **docs page not reachable from this session** (readthedocs host blocked); version and licence read locally |
 | **Pyxelate** (Python, github.com/sedthh/pyxelate) | turns an image into pixel art with a palette from hex or a retro set; dither none / naive / bayer / floyd / atkinson | MIT | not stated | **could not confirm**: the page shows no release and no last-commit date; its requirements pin scikit-learn 0.24.1, scikit-image 0.18.1 and numba 0.53.1 (2021). Not recommended: the recolour needs about 40 lines of Pillow |
 | **oxipng** (Rust, github.com/shssoichiro/oxipng) | lossless PNG recompression; a dev tool, not an app dependency; it could shave more bytes after `png8.py` | MIT | not stated | looks active (978 commits, 2026 copyright, 10.x), no release date on the page |
-| **libimagequant / pngquant** | picks a palette for an image | **GPL v3 or later, or a commercial licence** | not stated | maintenance not confirmed from the page | Not needed (palettes are fixed here); the licence is the point against it for anything shipped |
+| **libimagequant / pngquant** | picks a palette for an image | **GPL v3 or later, or a commercial licence** | not stated | maintenance not confirmed from the page. Not needed (palettes are fixed here); the licence is the point against it for anything shipped |
 | **image** (Dart, pub.dev/packages/image 4.12.0) | pure-Dart image tools, "color quantization and dithering" listed, no detail on the page | MIT | not stated | active (published about 3 weeks before I read it, 8.85M downloads, verified publisher taosengine.com). Only useful if the app recoloured at run time; it does not need to, the pictures are recoloured offline |
 | **flutter_shaders** (pub.dev, 0.1.5, flutter.dev) | helpers for fragment shaders; ships a pixelation shader (blocks of a child widget) | BSD-3-Clause | not stated | recent publish (about 4 weeks before I read it); the page says nothing about maintenance. It pixelates; it has no palette-snap shader named on its page, so a palette shader would be our own |
 | **flame** (pub.dev, 1.38.2) | a game engine: sprites, sheets, animations | MIT | not stated | active; a full engine for what `PixelStrip` already does: not recommended |
@@ -204,7 +204,7 @@ so I do not recommend it as a dependency).
 ## 5. Asked, not yet answered
 
 UX main (session_01Y8cU3zPWWudNpnZGCrkKEc) was asked about which generators
-write the 686 pictures, whether they share a palette module, and whether a
+write the pictures (684 on main, not 686), whether they share a palette module, and whether a
 recolour by palette rewrite fits `png8.py`'s files. The answers above come
 from reading the scripts and the README myself (no shared palette module: each
 script holds its own colours); UX main's reply, if it differs, goes in an
