@@ -17,6 +17,80 @@ isn't reconstructable from git history alone.
   them) watch only the four fields they read. No change in play. Over five
   unrelated session changes they notified 5 and 5 times; now 0 and 0
   (`provider_rebuilds_test`).
+## [1.757.0+793]
+
+- Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the
+  main file (the screen, 765 lines) and five `part` files under
+  `lib/screens/playthrough_simulator/`: the engine (`sim_engine.dart`,
+  `simulatePlaythroughs` and the walk), the batch statistics, the exports,
+  the batch card and the run detail. A pure move: every line is the same,
+  so the simulator's numbers and the tests do not change (wave 4a).
+
+## [1.756.0+792]
+
+- Code: `journey_screen.dart` (6,901 lines) loses the scene layer to three
+  files under `lib/screens/journey/`: the panel under the map (its height, the
+  choice cards, the rings and list sheets), the road the party is carried
+  along, and the scene, map-button, looked-at and ended panels (about 1,000
+  lines). The map chart, the district view and `build` stay where they are.
+  The state's methods moved into a private extension (as in the fight screen)
+  and `setState` is called through a one-line `_update`; nothing changes on
+  screen or in the rules.
+
+## [1.755.0+791]
+
+- Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
+  lines: the widget, its state and `build`) and five files under
+  `lib/screens/ship_battle/`: the turns, the dock and chips, the sea, the crew
+  and the painters. The state's methods moved into private extensions (as in
+  the fight screen) and `setState` is called through a one-line `_update`;
+  nothing changes on screen or in the rules.
+
+## [1.754.0+790]
+
+- **The world map, simpler and readable.** One look and one world: the Layers
+  sheet no longer holds the look and shape selectors. It keeps the sphere,
+  the weather and three map layers: none, **Clans** and the route by
+  chapter; the country, standing, relief, humidity, heat and shops layers
+  are gone. The dotted borders of the lands and the dotted coasts under the
+  fog are gone too. The **Clans** layer tints each whole land by the clan
+  that holds it now (stripes where a second clan presses almost as hard),
+  from Core's region holders.
+- Tests: `full_map_screen_test` now checks the sheet offers the plain map,
+  Clans and chapters (and no look, shape, height or standing layer), and that
+  the Clans layer gives the painter who holds each land; `chart_weather_test`
+  turns the Clans layer instead of the height one.
+- The map's size is unchanged (the question of the map's size is with the
+  user). `docs/proposals/map-performance.md` lists the speed steps that
+  follow, each its own PR.
+
+## [1.753.0+789]
+
+- The app no longer ships dog pictures nothing reads: the three `rotations`
+  folders (the sitting dog, the angel's and the demon's) now list only their
+  `south.png`, and the unused bark frames are left out (about 65 KB less).
+  The art stays in the repository, as source. Nothing changes on screen.
+
+## [1.752.0+788]
+
+- The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the
+  Mother of Wrecks) are WebP instead of PNG: 1.07 MB down to 0.19 MB in the
+  app, the largest saving among the pictures (they were 62% of all PNG bytes).
+  They look the same, soft halos included (a 64-colour PNG was tried and
+  dropped: it turned the leviathan's dark halo into a hard-edged ellipse).
+  `test/sea_beast_sprites_test.dart` checks each loads, is 840 px wide and
+  keeps its soft edge.
+- Tests: `qa_assets_declared_test.dart` also counts `.webp` files when it checks
+  every image folder is declared.
+
+## [1.751.0+787]
+
+- **Narrative: a page break in `6010_record`.** The Reliquary's records scene
+  uses the `[PAGE]` marker of v1.750 where the Unmaking roll ends and the Rite
+  roll begins (about 600 and 575 characters in English, 700 and 650 in
+  French). The four journey endings keep the single `[EPILOGUE]` break that
+  v1.750 gave them: their pages already follow the story's own breaths (the
+  return, then the undoing of the night). No text, id, choice or flag changed.
 
 ## [1.750.0+786]
 
