@@ -143,9 +143,9 @@
         "element": "None"
       },
       {
-        "faceName": "Battlefield Bandage",
-        "type": "Heal",
-        "value": 3,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
         "weight": 0.6,
         "element": "None"
@@ -155,7 +155,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "warrior_shield_bash",
-        "weight": 0.4,
+        "weight": 0.6,
         "element": "None"
       }
     ],
@@ -199,7 +199,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "mage_meteor",
-        "weight": 0.3,
+        "weight": 0.5,
         "element": "Fire",
         "keywords": [
           "cleave"
@@ -218,7 +218,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Fire"
       },
       {
@@ -230,11 +230,11 @@
         "element": "Fire"
       },
       {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 1,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       }
     ],
@@ -278,7 +278,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "cleric_holy_light",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Water"
       },
       {
@@ -286,7 +286,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "cleric_purify",
-        "weight": 0.4,
+        "weight": 0.6,
         "element": "Water"
       },
       {
@@ -294,7 +294,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Water"
       },
       {
@@ -306,11 +306,11 @@
         "element": "Water"
       },
       {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       }
     ],
@@ -354,7 +354,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "ranger_multi_shot",
-        "weight": 0.3,
+        "weight": 0.6,
         "element": "Wind",
         "keywords": [
           "cleave"
@@ -373,7 +373,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Wind"
       },
       {
@@ -389,15 +389,15 @@
         "type": "Defend",
         "value": 2,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       },
       {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       },
       {
@@ -531,11 +531,11 @@
         "element": "Fire"
       },
       {
-        "faceName": "Sanctuary Ward",
-        "type": "Defend",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       },
       {
@@ -543,7 +543,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "cleric_smite",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Fire"
       },
       {
@@ -551,7 +551,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "cleric_revive_prayer",
-        "weight": 0.3,
+        "weight": 0.5,
         "element": "Fire"
       },
       {
@@ -689,11 +689,11 @@
         "element": "None"
       },
       {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "None"
       },
       {
@@ -1583,11 +1583,11 @@
         ]
       },
       {
-        "faceName": "Stone Footing",
-        "type": "Defend",
-        "value": 2,
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
-        "weight": 1.0,
+        "weight": 0.6,
         "element": "Earth"
       },
       {
@@ -1595,7 +1595,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "bulwark_stance",
-        "weight": 0.5,
+        "weight": 0.6,
         "element": "Earth"
       },
       {
@@ -1611,7 +1611,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "warrior_shield_bash",
-        "weight": 0.4,
+        "weight": 0.6,
         "element": "None"
       },
       {

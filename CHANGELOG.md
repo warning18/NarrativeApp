@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.759.0+795]
+
+- The profession dice sold in shops now beat the starter die once bought,
+  so there is a reason to replace it. The iron, bulwark, storm, holy, tide,
+  flame and arcane dice each turn one plain face into an open Skill face
+  (where your skills cast at full power, as on the starter) and their
+  weakest signature faces come up more often. Prices and shops are
+  unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
+  the same way. See `docs/simulation/starter-die.md`.
+
 ## [1.753.0+789]
 
 - The app no longer ships dog pictures nothing reads: the three `rotations`

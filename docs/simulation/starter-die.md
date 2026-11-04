@@ -2,7 +2,11 @@
 
 The user: "Dive balance and finding so that starter die is not kept until
 the end." This note gives the cause with numbers, the smallest fix, and a
-bounded before/after. Nothing is built yet.
+bounded before/after.
+
+**Shipped in v1.759:** the dice change of §4, exactly as tabled, with the
+numbers of §5. The rangers' follow-up (§6.1) is the next PR. The
+simulator's reach (§6.2) is with the user.
 
 **Method.** I ran 50 runs: every race × profession pair, twice, with seed 11
 and the competent policy (the same method as the +15% pass). I also ran the
@@ -130,6 +134,11 @@ a shop:
 
 Prices, shops, drop rates, the starter die, the clan dice and void_die are
 unchanged. `void_banner` is not touched.
+
+Two companions roll these dice as their signature die: Kelda (iron) and
+Maren (holy). A companion doesn't set skills, so on their die the new open
+face casts Heavy Blow, in place of a Heal 3 (Kelda) or a Defend 2 (Maren).
+The batches below include them.
 
 Value against the starter afterwards (game fill, 1 / 2 / 4 skills):
 

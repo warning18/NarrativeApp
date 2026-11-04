@@ -73,6 +73,46 @@ const Map<String, int> _sizes = {
 
 typedef _Face = (String type, int value, String skill, double weight);
 
+/// The faces retuned since (v1.759, docs/simulation/starter-die.md): each
+/// profession die sold in a shop got one more open Skill face and stronger
+/// signature weights, so it beats the starter once bought. By face index.
+const Map<String, Map<int, _Face>> _retuned = {
+  'iron_die': {
+    4: ('Skill', 0, '', 0.6),
+    5: ('Skill', 0, 'warrior_shield_bash', 0.6),
+  },
+  'bulwark_die': {
+    1: ('Skill', 0, '', 0.6),
+    2: ('Skill', 0, 'bulwark_stance', 0.6),
+    4: ('Skill', 0, 'warrior_shield_bash', 0.6),
+  },
+  'storm_die': {
+    3: ('Skill', 0, 'ranger_multi_shot', 0.6),
+    5: ('Skill', 0, 'heavy_attack', 0.6),
+    7: ('Defend', 2, '', 0.6),
+    8: ('Skill', 0, '', 0.6),
+  },
+  'holy_die': {
+    2: ('Skill', 0, '', 0.6),
+    3: ('Skill', 0, 'cleric_smite', 0.6),
+    4: ('Skill', 0, 'cleric_revive_prayer', 0.5),
+  },
+  'tide_die': {
+    3: ('Skill', 0, 'cleric_holy_light', 0.6),
+    4: ('Skill', 0, 'cleric_purify', 0.6),
+    5: ('Skill', 0, 'heavy_attack', 0.6),
+    7: ('Skill', 0, '', 0.6),
+  },
+  'flame_die': {
+    3: ('Skill', 0, 'mage_meteor', 0.5),
+    5: ('Skill', 0, 'heavy_attack', 0.6),
+    7: ('Skill', 0, '', 0.6),
+  },
+  'arcane_die': {
+    8: ('Skill', 0, '', 0.6),
+  },
+};
+
 /// The faces of each resized die before the sizes (v1.568's dice.json).
 const Map<String, List<_Face>> _before = {
   'flame_die': [
@@ -291,8 +331,9 @@ void main() {
       for (final MapEntry(:key, value: old) in _before.entries) {
         final faces = _facesOf(dice, key);
         if (faces.length < old.length) continue;
+        final retuned = _retuned[key] ?? const <int, _Face>{};
         for (var i = 0; i < old.length; i++) {
-          expect(_face(faces[i]), old[i], reason: '$key face $i');
+          expect(_face(faces[i]), retuned[i] ?? old[i], reason: '$key face $i');
         }
         // The new faces: plain, weight 1, the die's average plain number.
         final plain = [
@@ -300,7 +341,12 @@ void main() {
             if (f.$1 != 'Skill') f.$2,
         ];
         final average = (plain.reduce((a, b) => a + b) / plain.length).round();
-        for (final f in faces.skip(old.length)) {
+        for (var i = old.length; i < faces.length; i++) {
+          final f = faces[i];
+          if (retuned.containsKey(i)) {
+            expect(_face(f), retuned[i], reason: '$key face $i');
+            continue;
+          }
           expect(const ['Attack', 'Defend', 'Heal'], contains(f['type']),
               reason: key);
           expect(f['weight'], 1.0, reason: key);
