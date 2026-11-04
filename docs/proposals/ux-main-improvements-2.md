@@ -41,8 +41,9 @@ Ranked by value over effort:
 - **What.** All 377 icons (items 132, skills 157, enemies 64, shops 14,
   chests 10; the heads are separate) are 128×128 PNGs, but every one of them
   is an exact nearest-neighbour upscale of a 16×16 picture (the skills' of a
-  32×32): ×8 from `gen_hunter_icons.py`, `gen_material_icons.py` and the
-  hand-made ones, ×4 for the skills. I checked all 377 by shrinking and
+  32×32), ×8 for the items, enemies, shops and chests and ×4 for the skills
+  (the scripts say so: `gen_hunter_icons.py` "written at 128x128 (x8, no
+  smoothing)"). I checked all 377 by shrinking and
   enlarging again with `-filter point`: **377 of 377 come back
   pixel-identical**.
 - **Picture.** `docs/ux-shots/icons-8x-vs-native.png`: top row the shipped
@@ -53,8 +54,9 @@ Ranked by value over effort:
   decode time: Flutter keeps a decoded picture at its stored size, so a
   128×128 icon takes 64 KB of RAM for 256 pixels of art (1 KB at 16×16, 4 KB
   at 32×32). A screen of 40 icons holds 2.5 MB of icons instead of 40 KB.
-- **Why the screen does not change** (measured). Every icon goes through
-  `PixelIcon`, which draws with `FilterQuality.none`. I drew one icon at
+- **Why the screen does not change** (measured). The icon widgets I found
+  (`offer_dialog`, `reward_cards`, `mercy_dialog`, `spoils_chest_dialog`) go
+  through `PixelIcon`, which draws with `FilterQuality.none`. I drew one icon at
   18, 26, 28, 30, 36, 44 and 52 px (the sizes the app uses) from the 128 px
   file and from the 16 px file in a widget test: **0 differing bytes at all
   seven sizes**.
@@ -84,7 +86,7 @@ map.
   repaint only the canvas. The Journey scene is on screen for most of play,
   so it comes first.
 - **Blurs in painters that run every frame**: 24 `MaskFilter.blur` (the sea
-  battle 8, the ships' hulls and effects 6, the fight's backdrop 3, the
+  battle 8, the ships' hulls and effects 7, the fight's backdrop 3, the
   Journey's effects 2, the map 2) and 4 `saveLayer`. A blur mask is one of
   the dearest things the canvas does; each could be drawn once into a
   picture and reused where its shape does not change. Only a capture says
