@@ -63,9 +63,16 @@ List<WalkingPartyMember> walkingPartyOf(PlayerSession session) {
 
 /// The walking party of the current save, for the land walk's side view
 /// (UX reads it; see [walkingPartyOf]).
-final walkingPartyProvider = Provider<List<WalkingPartyMember>>(
-  (ref) => walkingPartyOf(ref.watch(playerSessionProvider)),
-);
+final walkingPartyProvider = Provider<List<WalkingPartyMember>>((ref) {
+  // Only the companions' lists it reads (P4).
+  ref.watch(playerSessionProvider.select((s) => (
+        lost: s.lostAllyIds,
+        departed: s.departedAllyIds,
+        recruited: s.recruitedAllies,
+        active: s.activeAllyIds,
+      )));
+  return walkingPartyOf(ref.read(playerSessionProvider));
+});
 
 /// The word a walking companion says as a land walk starts, or null (see
 /// [walkRemark]): UX calls it once when a walk begins and shows the line

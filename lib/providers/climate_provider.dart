@@ -33,7 +33,12 @@ class SkyHere {
 }
 
 final skyHereProvider = Provider<SkyHere?>((ref) {
-  final play = ref.watch(storyPlayProvider);
+  // Only where the party stands (P4), not the rest of the story's state.
+  final play = ref.watch(storyPlayProvider.select((p) => (
+        isInExcursion: p.isInExcursion,
+        currentNodeId: p.currentNodeId,
+        history: p.history,
+      )));
   if (play.isInExcursion) return null;
   final standing = currentLandmark(play.currentNodeId, play.history) ??
       landmarkOfScene(play.currentNodeId);
