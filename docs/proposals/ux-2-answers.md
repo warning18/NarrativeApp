@@ -34,3 +34,10 @@ The picture shows the two tiles as they are today, at the sizes the fight uses (
 **Purpose (3 lines)**: to turn three guesses into yes or no with numbers: (1) is the rest of the fight's per-frame repaint work (rain, anomaly, VFX) worth cutting, as A was; (2) is the Journey's reading page or the Camp slow at all; (3) is a `RepaintBoundary` around the VFX, sea and guide layers worth adding. Without a capture each stays a guess; with it each is "2 ms, leave it" or "20 ms, fix it".
 **No code at all**: I have no route I can vouch for. Android's *Profile HWUI rendering* bars measure the system's own views, and Flutter draws on its own surface, so I do not know that they show Flutter's frames; I would not ask the user to try it on my word.
 **The easiest I can vouch for, a small thing to build** (picture: `docs/ux-shots/frame-meter/frame-meter-mock.png`, a mock with made-up numbers): a Settings switch "Show slow frames", off by default; when on, the app counts frames that took over 17 ms per screen (Flutter's frame timings, which work in the release APK), shows a small counter while playing, and "Copy report" copies the per-screen numbers to paste to the team. About 150 lines, mostly in a new widget plus one Settings tile; it costs nothing when off. Nothing is built: the user's word first.
+
+## Option C: one tap on a fighter's effect icons lists all its effects
+
+Pictures at 320 x 568, French (`docs/ux-shots/effects-row/`):
+- `today-one-effect.png`: tapping the poison icon opens a pop-in about poison only; to read the stun you close it and tap the next 27 px icon.
+- `proposal-all-effects.png`: one tap on the row opens one pop-in, "Voleur des taudis · 3 effets", with each effect's icon, name and rule. The pop-in is the same card (same colours, same width 296 px, same "Touchez ailleurs pour fermer."), only taller (about 340 px for 3 effects; it scrolls beyond 4).
+What changes: a tap on any icon of the row shows all of them (the icon you hit first). Nothing on the cards moves. Mock-up only, not built.
