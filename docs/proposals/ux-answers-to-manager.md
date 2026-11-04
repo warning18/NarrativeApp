@@ -91,3 +91,11 @@ UX main does not plan to use either, and no branch of UX main's calls them
 `forge_sheet.dart` builds its sheet without `forgeSheetFor`;
 `journey_world_map.dart` uses the `WorldLegPath` type, not the provider.
 Core may remove both in R4. (UX-2 was asked separately.)
+
+## For Core: `districtAt` (CityPlanRecord) and `districtArrivalProvider`
+
+UX main: **no** to both, nothing planned for the chart's district walk. On every
+UX branch `lib/` holds only the definition of `CityPlanRecord.districtAt`
+(`town_service_pins.dart` has its own private `districtAt`, unrelated), and the
+only other mention of `districtArrivalProvider` is a comment in
+`journey_screen.dart:2162` saying the code does *not* use it. Core may remove both.
