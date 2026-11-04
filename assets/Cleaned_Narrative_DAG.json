@@ -2586,8 +2586,8 @@
         }
       },
       {
-        "text": "Count coins into the sand for her (10 gold)",
-        "text_fr": "Compter des pièces dans le sable (10 pièces d’or)",
+        "text": "Count coins into the sand for her",
+        "text_fr": "Compter des pièces dans le sable",
         "next_id": "1200",
         "goldMod": -10,
         "pays": true,
@@ -3231,8 +3231,8 @@
         ]
       },
       {
-        "text": "Buy back in at the barrel for Sable (10 gold)",
-        "text_fr": "Revenir au tonneau pour Sable (10 or)",
+        "text": "Buy back in at the barrel for Sable",
+        "text_fr": "Revenir au tonneau pour Sable",
         "next_id": "2015_cards_won",
         "goldMod": -10,
         "pays": true,
@@ -3583,8 +3583,8 @@
     "location": "saltmouth_tern_row",
     "choices": [
       {
-        "text": "Pay off his chain (30 gold)",
-        "text_fr": "Racheter sa chaîne (30 or)",
+        "text": "Pay off his chain",
+        "text_fr": "Racheter sa chaîne",
         "next_id": "2015",
         "goldMod": -30,
         "alignmentMod": 1,
@@ -3757,8 +3757,8 @@
         }
       },
       {
-        "text": "Pay the pan-workers’ tithe yourself (25 gold)",
-        "text_fr": "Payer vous-même la dîme des sauniers (25 or)",
+        "text": "Pay the pan-workers’ tithe yourself",
+        "text_fr": "Payer vous-même la dîme des sauniers",
         "next_id": "2015",
         "goldMod": -25,
         "alignmentMod": 1,
@@ -4090,8 +4090,8 @@
         ]
       },
       {
-        "text": "Talk him into selling it back (30 gold)",
-        "text_fr": "Le convaincre de la revendre (30 or)",
+        "text": "Talk him into selling it back",
+        "text_fr": "Le convaincre de la revendre",
         "next_id": "2015_sable_bought",
         "checkAbility": "charisma",
         "checkDC": 12,
@@ -4216,8 +4216,8 @@
         ]
       },
       {
-        "text": "Sell Vane’s rival the tunnel first (+40 gold)",
-        "text_fr": "Vendre d’abord le tunnel au rival de Vane (+40 or)",
+        "text": "Sell Vane’s rival the tunnel first",
+        "text_fr": "Vendre d’abord le tunnel au rival de Vane",
         "next_id": "2900",
         "goldMod": 40,
         "alignmentMod": -2,
@@ -4265,8 +4265,8 @@
         ]
       },
       {
-        "text": "Drop the blade, pay for the insult (40 gold)",
-        "text_fr": "Lâcher la lame et payer l’affront (40 or)",
+        "text": "Drop the blade, pay for the insult",
+        "text_fr": "Lâcher la lame et payer l’affront",
         "next_id": "2040_paid",
         "goldMod": -40,
         "lockedText": "Forty gold. I did not have it, and Vane could tell.",
@@ -4366,8 +4366,8 @@
     },
     "choices": [
       {
-        "text": "Buy the Eel as she lies (120 gold)",
-        "text_fr": "Acheter l’Eel en l’état (120 or)",
+        "text": "Buy the Eel as she lies",
+        "text_fr": "Acheter l’Eel en l’état",
         "next_id": "2900",
         "goldMod": -120,
         "pays": true,
@@ -5368,8 +5368,8 @@
         }
       },
       {
-        "text": "Pay the buyers to watch elsewhere (40 gold)",
-        "text_fr": "Payer les acheteurs pour guetter ailleurs (40 or)",
+        "text": "Pay the buyers to watch elsewhere",
+        "text_fr": "Payer les acheteurs pour guetter ailleurs",
         "next_id": "3005_clan_compact_1_lit",
         "goldMod": -40,
         "flagsToAdd": [
@@ -7185,8 +7185,8 @@
         ]
       },
       {
-        "text": "Send her your purse with the message (30 gold)",
-        "text_fr": "Joindre la bourse au message (30 or)",
+        "text": "Send her your purse with the message",
+        "text_fr": "Joindre la bourse au message",
         "next_id": "3005",
         "goldMod": -30,
         "pays": true,
@@ -7811,8 +7811,8 @@
         "failNextId": "5010_clan_crows_2_failed"
       },
       {
-        "text": "Pay the Whisper Ledger for the name (40 gold)",
-        "text_fr": "Payer le Registre des Murmures pour un nom (40 or)",
+        "text": "Pay the Whisper Ledger for the name",
+        "text_fr": "Payer le Registre des Murmures pour un nom",
         "next_id": "5010_clan_crows_2_found",
         "goldMod": -40,
         "pays": true
@@ -8089,8 +8089,8 @@
         ]
       },
       {
-        "text": "Turn him in to the cloister (+40 gold)",
-        "text_fr": "Le livrer au cloître pour la prime (+40 or)",
+        "text": "Turn him in to the cloister",
+        "text_fr": "Le livrer au cloître pour la prime",
         "next_id": "5010",
         "goldMod": 40,
         "alignmentMod": -3,
@@ -8998,8 +8998,8 @@
         ]
       },
       {
-        "text": "Buy a copy of her chart (40 gold)",
-        "text_fr": "Acheter une copie de sa carte (40 or)",
+        "text": "Buy a copy of her chart",
+        "text_fr": "Acheter une copie de sa carte",
         "next_id": "6010_chart_bought",
         "goldMod": -40,
         "lockedText": "Forty gold. I had spent it already, on worse things.",
@@ -11408,8 +11408,8 @@
         }
       },
       {
-        "text": "Pay the chart-keeper to cut it out (150 gold)",
-        "text_fr": "Payer la gardienne pour qu’elle le découpe (150 pièces)",
+        "text": "Pay the chart-keeper to cut it out",
+        "text_fr": "Payer la gardienne pour qu’elle le découpe",
         "next_id": "6003",
         "landRouteId": "reliquary_to_heart",
         "launchZoneId": "z_shroud_vigil",
@@ -12742,8 +12742,8 @@
         ]
       },
       {
-        "text": "Buy a blade from Tetsu’s anvil (70 gold)",
-        "text_fr": "Acheter une lame sur l’enclume de Tetsu (70 or)",
+        "text": "Buy a blade from Tetsu’s anvil",
+        "text_fr": "Acheter une lame sur l’enclume de Tetsu",
         "next_id": "3200_blade",
         "goldMod": -70,
         "lockedText": "Seventy gold. Tetsu did not haggle, and I could not pay.",
@@ -13272,8 +13272,8 @@
         }
       },
       {
-        "text": "Bribe her purser (40 gold)",
-        "text_fr": "Soudoyer son commissaire (40 or)",
+        "text": "Bribe her purser",
+        "text_fr": "Soudoyer son commissaire",
         "next_id": "5100",
         "goldMod": -40,
         "flagsToAdd": [
@@ -13477,8 +13477,8 @@
         }
       },
       {
-        "text": "Ask for a cut of the next wreck (+50 gold)",
-        "text_fr": "Demander une part du prochain naufrage (+50 or)",
+        "text": "Ask for a cut of the next wreck",
+        "text_fr": "Demander une part du prochain naufrage",
         "next_id": "5100",
         "goldMod": 50,
         "alignmentMod": -3,
@@ -15853,8 +15853,8 @@
         "challengeMaxFailures": 2
       },
       {
-        "text": "Pay the company’s arrears first (60 gold)",
-        "text_fr": "Payer d’abord l’arriéré de la compagnie (60 or)",
+        "text": "Pay the company’s arrears first",
+        "text_fr": "Payer d’abord l’arriéré de la compagnie",
         "next_id": "7100_clan_penitents_3_through",
         "goldMod": -60,
         "pays": true
@@ -17318,8 +17318,8 @@
         }
       },
       {
-        "text": "Agree to hide them, and ask a price (100 gold)",
-        "text_fr": "Accepter de les cacher, et demander un prix (100 or)",
+        "text": "Agree to hide them, and ask a price",
+        "text_fr": "Accepter de les cacher, et demander un prix",
         "next_id": "7200",
         "goldMod": 100,
         "alignmentMod": -1,
@@ -18383,8 +18383,8 @@
     "location": "saltmouth_tern_row",
     "choices": [
       {
-        "text": "Buy his silence (20 gold)",
-        "text_fr": "Acheter son silence (20 or)",
+        "text": "Buy his silence",
+        "text_fr": "Acheter son silence",
         "next_id": "2015",
         "goldMod": -20,
         "pays": true,
@@ -18890,8 +18890,8 @@
     "location": "ashen_quarter_gate",
     "choices": [
       {
-        "text": "Take the Regent’s purse (+40 gold)",
-        "text_fr": "Prendre la bourse du Régent (+40 or)",
+        "text": "Take the Regent’s purse",
+        "text_fr": "Prendre la bourse du Régent",
         "next_id": "3005",
         "goldMod": 40,
         "alignmentMod": -1,
@@ -19157,8 +19157,8 @@
     "location": "wracks_end",
     "choices": [
       {
-        "text": "Buy the caulker’s refit book (40 gold)",
-        "text_fr": "Acheter le livre de radoub de la calfate (40 or)",
+        "text": "Buy the caulker’s refit book",
+        "text_fr": "Acheter le livre de radoub de la calfate",
         "next_id": "5100",
         "goldMod": -40,
         "pays": true,
@@ -19412,8 +19412,8 @@
         }
       },
       {
-        "text": "Pay the debts of those going home (40 gold)",
-        "text_fr": "Payer les dettes de ceux qui rentreront chez eux (40 or)",
+        "text": "Pay the debts of those going home",
+        "text_fr": "Payer les dettes de ceux qui rentreront chez eux",
         "next_id": "6100",
         "goldMod": -40,
         "pays": true,
@@ -24396,8 +24396,8 @@
     "location": "saltmouth_tern_row",
     "choices": [
       {
-        "text": "Buy him another cup, and let him talk (5 gold)",
-        "text_fr": "Lui offrir une autre tasse, et le laisser parler (5 or)",
+        "text": "Buy him another cup, and let him talk",
+        "text_fr": "Lui offrir une autre tasse, et le laisser parler",
         "next_id": "2015",
         "goldMod": -5,
         "pays": true,
@@ -25056,8 +25056,8 @@
     "location": "ashen_quarter_ash_market",
     "choices": [
       {
-        "text": "Pay the Ledger’s price (30 gold)",
-        "text_fr": "Payer le prix du Registre (30 or)",
+        "text": "Pay the Ledger’s price",
+        "text_fr": "Payer le prix du Registre",
         "next_id": "3005",
         "goldMod": -30,
         "pays": true,
@@ -25147,8 +25147,8 @@
         }
       },
       {
-        "text": "Pay the clerk to copy the entry (10 gold)",
-        "text_fr": "Payer le commis pour recopier la fiche (10 or)",
+        "text": "Pay the clerk to copy the entry",
+        "text_fr": "Payer le commis pour recopier la fiche",
         "next_id": "3005",
         "goldMod": -10,
         "pays": true,
@@ -25692,8 +25692,8 @@
         }
       },
       {
-        "text": "Pay her for the page itself (60 gold)",
-        "text_fr": "Lui payer la page elle-même (60 or)",
+        "text": "Pay her for the page itself",
+        "text_fr": "Lui payer la page elle-même",
         "next_id": "6010",
         "goldMod": -60,
         "pays": true,
@@ -26486,8 +26486,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Pay him for the road (20 gold)",
-        "text_fr": "Le payer pour la route (20 or)",
+        "text": "Pay him for the road",
+        "text_fr": "Le payer pour la route",
         "next_id": "2015",
         "goldMod": -20,
         "pays": true,
@@ -27765,8 +27765,8 @@
     "location": "cove_camp",
     "choices": [
       {
-        "text": "Pay what he lacks (50 gold)",
-        "text_fr": "Payer ce qui lui manque (50 pièces)",
+        "text": "Pay what he lacks",
+        "text_fr": "Payer ce qui lui manque",
         "next_id": "4999_camp",
         "returnToCamp": true,
         "flagsToAdd": [
@@ -28671,8 +28671,8 @@
     "location": "cove_camp",
     "choices": [
       {
-        "text": "Pay them all, to the last promise (150 gold)",
-        "text_fr": "Les payer tous, jusqu’à la dernière promesse (150 pièces)",
+        "text": "Pay them all, to the last promise",
+        "text_fr": "Les payer tous, jusqu’à la dernière promesse",
         "next_id": "4999_camp",
         "returnToCamp": true,
         "flagsToAdd": [

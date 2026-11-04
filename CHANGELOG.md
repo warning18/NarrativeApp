@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.793.0+829]
+
+- **Narrative: the price is shown once.** 30 choices whose label ended in
+  the price, such as "Pay off his chain (30 gold)", lose the bracket in
+  English and French; the gold tag under the sentence already shows it and
+  always did. Only where the tag matches the number. "Pay the toll (30 gold)"
+  (`260`) keeps its bracket: that choice has no gold change of its own, so
+  the text is the only place the price shows. `qa_chapter1_test` now checks
+  the Vica label carries no price in its text.
+
 ## [1.792.0+828]
 
 - Fight: one tap on any effect icon of a fighter (Fury, block, poison, stun,

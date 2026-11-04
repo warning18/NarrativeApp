@@ -73,15 +73,16 @@ void main() {
 
   test(
       'a payment in chapter 1 that the story asks (pays) is shut to a purse '
-      'too small, and its gold shown in the text', () {
+      'too small, and its gold shown by its own tag, not '
+      'repeated in the text', () {
     for (final id in chapter1) {
       for (final c in (graph[id] as Map)['choices'] as List) {
         if ((c as Map)['pays'] == true) {
           expect((c['goldMod'] as num) < 0, isTrue, reason: id);
-          final price = -(c['goldMod'] as num).toInt();
           if (id == '1150_vica') {
-            expect(c['text'], contains('$price gold'));
-            expect(c['text_fr'], contains('$price pièces d’or'));
+            // The gold tag under the sentence shows the price (v1.793).
+            expect(c['text'], isNot(contains('gold')));
+            expect(c['text_fr'], isNot(contains('pièces d’or')));
           }
         }
       }
