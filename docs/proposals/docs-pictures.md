@@ -92,14 +92,14 @@ The full list of the 115 files:
 - `docs/maps/fmg-chart/` has 9 files no document names by file name (`story-globe-north.jpg` ... `sphere-views.png`, 3.1 MB). They are **referenced**: `STORY-WORLD.md` lists them by suffix (`story-globe-whole.jpg`, then "views turned toward each part: `-north`, `-south`, `-west`, `-east`, `-crossing`, `-polar-south`") and the `-turn-parchment.gif` as "a turn of the sphere". Deleting them would leave the document describing pictures that are gone. Kept.
 - `docs/proposals/images/feedback-*.jpg` (8 files, 3.5 MB, named by no document): the user's own feedback screenshots, added to the repo by the Manager (#682). Kept; candidates for the re-encode below instead.
 
-## 3. Quantize the rest (a proposal, not done)
+## 3. Quantize the rest (done in this branch, approved by the user through the Manager)
 
-Measured on copies in a scratch folder:
+The two GIFs and nine JPEGs that are neither one of the nine unnamed `fmg-chart` images nor a `feedback-*.jpg` (both kept as they were, as asked) were re-encoded in place, same file names:
 
-| What | Now | After | How |
+| What | Before | After | How |
 |---|---|---|---|
-| 3 GIFs (`ux-shots/intro-anim.gif`, `maps/fmg-chart/story-globe-turn.gif`, `-turn-parchment.gif`): 7.3 MB | 7.3 MB | about 4.8 MB (-35%) | `ffmpeg`: 10 fps, 75% size, 64-colour palette. The picture is coarser; the file names stay |
-| All JPEGs outside feedback/ and qa/ (9.3 MB, mostly `proposals/images/feedback-*` and the globe views) | 9.3 MB | about 2.3 MB (-75%) | `convert -quality 80 -strip`. Lossy; the text in the screenshots stays readable (checked on four) |
-| The 132 PNGs of #707 | done | | |
+| `ux-shots/intro-anim.gif`, `maps/fmg-chart/story-globe-turn.gif` | 5.6 MB | 3.6 MB (-36%) | `ffmpeg`: 10 fps, 75% size, 64-colour palette |
+| 9 JPEGs (`proposals/images/banner-choice-final`, `inplace-today-*` (3), `maps/fmg-chart/story-night`, `story-parchment`, `story-globe-whole`, `compare-night`, `compare-parchment`) | 4.1 MB | 2.1 MB (-49%) | `convert -quality 80 -strip` |
+| 132 PNGs of #707 | done before | | |
 
-Total saved: about 9 MB, plus 10.6 MB if UX drops the unreferenced shots. The GIF and JPEG step is UX's and Core's to approve (the maps are Core's geography docs, the screenshots UX's), so it is a proposal, with the exact commands above.
+Total 9.7 MB to 5.9 MB (3.7 MB saved). A screenshot with small text (`inplace-today-bridge-town.jpg`) was read after the re-encode: still clear. Left as they were: `story-globe-turn-parchment.gif` (one of the nine unnamed `fmg-chart` files), `dice-roll-anim.gif` (485 KB, not in the list the Manager approved), every `feedback-*.jpg`, `docs/feedback/`, `docs/qa/`. The 115 unnamed `ux-shots` files wait for UX's answer (section 1).
