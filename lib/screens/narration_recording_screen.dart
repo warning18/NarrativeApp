@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart' show lastNodeIdChapter;
 import '../data/narration_clips.dart';
+import '../data/narration_pages.dart' show joinedNarration;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
@@ -282,7 +283,7 @@ class _NodeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final body = storyBodyFor(node.descriptionFor(french));
+    final body = storyBodyFor(joinedNarration(node.descriptionFor(french)));
     final header = storyHeaderFor(node.descriptionFor(french));
     final done = coverage != null &&
         coverage!.total > 0 &&

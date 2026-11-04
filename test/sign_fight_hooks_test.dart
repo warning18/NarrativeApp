@@ -256,8 +256,7 @@ void main() {
     expect(c.signMaxMana, 0);
   });
 
-  test('the simulator\'s walk clears expeditions; offers and the old rules',
-      () {
+  test('the simulator\'s walk clears expeditions, with the offers', () {
     final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync())
         as Map<String, dynamic>;
     final story = StoryData({
@@ -269,7 +268,7 @@ void main() {
       int signsTaken,
       int offersTaken,
       int skillsLearned,
-    }) walk({required bool signs, required SimProgression progression}) =>
+    }) walk({required bool signs}) =>
         // The walk's tables are the point here: signs off means no clan tables.
         // sim-tables-ok: expedition_steps: a minimal world on purpose
         // sim-tables-ok: training_paths: a minimal world on purpose
@@ -303,9 +302,8 @@ void main() {
           gameConfig: _gamedata('game_config.json'),
           runs: 4,
           seed: 3,
-          progression: progression,
         );
-    final offers = walk(signs: true, progression: SimProgression.offers);
+    final offers = walk(signs: true);
     // Past the harbour's two expeditions (node 2900) and on to the end.
     expect(offers.chapters['Chapter 6']?.attempts, greaterThan(0));
     for (final chapter in offers.chapters.values) {
@@ -314,13 +312,6 @@ void main() {
     expect(offers.offersTaken, greaterThanOrEqualTo(4 * 10),
         reason: 'levels, bosses and chapters bring offers');
     expect(offers.signsTaken, greaterThan(0));
-    final legacy = walk(signs: true, progression: SimProgression.legacy);
-    expect(legacy.offersTaken, 0);
-    expect(legacy.signsTaken, greaterThanOrEqualTo(4 * 3),
-        reason: 'odd levels and bosses brought signs');
-    expect(legacy.skillsLearned, greaterThan(0), reason: 'and skill points');
-    expect(
-        walk(signs: false, progression: SimProgression.legacy).signsTaken, 0);
   });
 
   group('the clans\' Sworn boons (v1.194)', () {
@@ -438,27 +429,9 @@ void main() {
           spells: parseSpells(_gamedata('spells.json')),
         );
 
-    test('the old rules: points on the tree, a perk, a sign', () {
-      final c = warrior();
-      final growth =
-          SimGrowth(mode: SimProgression.legacy, tables: tables, character: c);
-      growth.levelsReached(1, 3);
-      expect(growth.skillPoints, 2);
-      expect(growth.perkPicks, 1);
-      expect(growth.signPicks, 1);
-      growth.settle(alignment: 0, flags: const [], random: Random(1));
-      expect(growth.skillPoints, 0);
-      expect(growth.skillsLearned, greaterThanOrEqualTo(1));
-      expect(growth.perkRanks.values.fold<int>(0, (a, b) => a + b), 1);
-      expect(c.heldSigns, hasLength(1));
-      // The open Skill face of the starter die took the first skill.
-      expect(c.diceSkillAssignments.containsKey('2'), isTrue);
-    });
-
     test('the offers: one a level, a boss and a chapter, all taken', () {
       final c = warrior();
-      final growth =
-          SimGrowth(mode: SimProgression.offers, tables: tables, character: c);
+      final growth = SimGrowth(tables: tables, character: c);
       growth.levelsReached(1, 3);
       growth.bossBeaten();
       growth.chapterReached(1);

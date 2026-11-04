@@ -4,6 +4,7 @@ import '../combat/spec_variants.dart' show specVariantsFrom;
 import '../combat/specialisations.dart' show specInfosFrom;
 import '../combat/spells.dart' show parseSpells;
 import '../data/description_text.dart';
+import '../data/factions.dart' show ClanData;
 import '../data/offers.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
@@ -52,18 +53,37 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
   // dice.json as it stands, not waited for: before it loads (the game
   // reads it at the start) a draw just has no clan die to give.
   final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
-  return OfferTables(
-    data: await data,
-    signs: parseSigns(await signs),
-    skills: withResolvedPlaceholders(skillsSchema.id, await skills),
-    skillTrees: await skillTrees,
-    items: await items,
-    spells: parseSpells(await spells),
-    specs: specInfosFrom(await specs),
-    specVariants: specVariantsFrom(await specVariants),
+  final inputs = <Object?>[
+    await data,
+    await signs,
+    await skills,
+    await skillTrees,
+    await items,
+    await spells,
+    await specs,
+    await specVariants,
+    dice,
+  ];
+  // Built once while its tables stay the same (see loadClanData).
+  final last = _lastOfferTables;
+  if (last != null && sameTables(last.inputs, inputs)) return last.tables;
+  final tables = OfferTables(
+    data: inputs[0] as ClanData,
+    signs: parseSigns(inputs[1] as Map<String, dynamic>),
+    skills: withResolvedPlaceholders(
+        skillsSchema.id, inputs[2] as Map<String, dynamic>),
+    skillTrees: inputs[3] as Map<String, dynamic>,
+    items: inputs[4] as Map<String, dynamic>,
+    spells: parseSpells(inputs[5] as Map<String, dynamic>),
+    specs: specInfosFrom(inputs[6] as Map<String, dynamic>),
+    specVariants: specVariantsFrom(inputs[7] as Map<String, dynamic>),
     dice: dice,
   );
+  _lastOfferTables = (inputs: inputs, tables: tables);
+  return tables;
 }
+
+({List<Object?> inputs, OfferTables tables})? _lastOfferTables;
 
 /// What the clans add to a fight now (see clanEffectsFor): the title worn,
 /// every bad title, and the Sworn boon while still sworn.

@@ -1,7 +1,7 @@
 // What a town offers and what each of its service pins opens (wave 14,
 // docs/proposals/journey-world-data.md): the pins stand on the town's plan
-// (city_plans.json's `services`, laid by town_service_pins.dart); what they
-// open comes from the story (StoryStops.servicesAt: the shops its scenes
+// (city_plans.json's `services`, laid by
+// tool/city_plans/town_service_pins.dart); what open comes from the story (StoryStops.servicesAt: the shops its scenes
 // unlock, the ports its settlements sail from) and the game's own screens.
 import 'choice_flow.dart';
 import 'city_plan_record.dart';
