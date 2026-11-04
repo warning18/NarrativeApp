@@ -168,3 +168,39 @@ districts in plan order or story order): for the camera, **road distances** feel
 right (the scroll is proportional to the walk), **zone** is the region (a
 country is too long for four kits), and **districts in story order** (the camera
 visits them in the order the player does). Nothing to build now.
+
+## 7. After #789 (v1.809): what the look still lacks, and the smallest PR
+
+Read from the diff of #789 and `journey_panels.dart` on main: same-place
+choices are now cards on the page and keep the page or the sheet
+(`arrivalViewOf(..., current:)`, `onCard` for `FlowStay`); no map in between.
+Core built no look. Against my `same-place-run.png`:
+
+| In my picture | State on main |
+|---|---|
+| **the 200 ms beat** (cross-fade of text and cards) | **mostly there already**: a new scene's words "come out of the ink, top to bottom" (`StoryText(revealKey)` in `journey_panels.dart`), so the text has its own beat. What is not covered: the stage and the card list swap with no beat (a cut). Optional. |
+| **the one-line echo of the choice taken** | **missing**. (`EchoLine` in the same file is something else: the consequences of earlier choices, "because ...". I would not reuse the word "echo": call it the "taken" line.) |
+| **a "still in <place>" line** | **missing**. The crumbs name the place, and a one-tap return to a hub has its "You came back to ..." notice, but nothing says "nothing moved" after a same-place card. |
+
+`same-place-look-v1810.png`: scene 2005 (the card is tapped); 2020 as v1.809
+shows it; and 2020 with the two lines drawn over the real page.
+
+**Smallest UX PR (v1.810 provisional, not built, the user decides after
+hand-testing 1.809):**
+1. A **taken line** above the new scene's words when the step was a same-place
+   card: the choice's own text in a small italic gold line with a "›" (no new
+   string: the choice text is already in the language read). It stays until the
+   next step (no timer), scrolls with the text, and is absent under reading
+   mode's full-screen page? (kept: it is one line).
+2. A **still-in line** under it: "Toujours : {place}" / "Still at {place}": **2
+   new strings** (Narrative to word), the place being the crumbs' last name.
+   Shown only after a same-place step, never after a move or a hub return (that
+   has its own notice).
+3. Optional, separate: a 200 ms cross-fade of the stage and the cards
+   (`AnimatedSwitcher` keyed by the node), a cut under reduced motion.
+
+Files: `lib/screens/journey/journey_panels.dart` (the two lines, about 30
+lines), `journey_screen.dart` (remember the taken choice and the flow in `_take`,
+clear it on a map or hub move: about 10 lines, shared file, Core's `_take`),
+`app_strings.dart` (2 strings). Test: the lines show after a same-place card
+and not after a move, at 320 px French. No data, no assets.
