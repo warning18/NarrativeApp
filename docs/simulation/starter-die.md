@@ -5,7 +5,7 @@ the end." This note gives the cause with numbers, the smallest fix, and a
 bounded before/after.
 
 **Shipped in v1.759:** the dice change of §4, exactly as tabled, with the
-numbers of §5. The rangers' follow-up (§6.1) is the next PR. The
+numbers of §5. The rangers' follow-up (§6.1) shipped in v1.761 (§8). The
 simulator's reach (§6.2) is with the user.
 
 **Method.** I ran 50 runs: every race × profession pair, twice, with seed 11
@@ -192,3 +192,41 @@ that is now plainly better than the starter. It has three faces to set
 skills on, at full power, plus Attack 2 faces. The same holds for the
 bulwark, holy and flame dice. Nothing changes for a player who keeps
 the starter.
+
+## 8. The rangers' follow-up (v1.761)
+
+**What.** After v1.759 the storm die still trailed the starter once a
+ranger knows four skills (−0.41). A ranger's best skills are strong
+(trap_set, precision_thrust and lucky_strike score 4.0–4.5), so the die's
+weak plain faces dragged it down: Defend 2 and Heal 2, at 1.6 and 1.4
+against 7 or more for a skill face.
+
+**The change:**
+- Two more of the storm die's faces become open Skill faces: Wind Step
+  (Defend 2) and Catch Your Breath (Heal 2). That puts 50% of its weight on
+  Skill faces, against the starter's 38% and the shadow die's 60%.
+- The storm die is also sold at **anchorage_chandlery** (a port, chapter
+  6). Its only seller until now was the black market in chapter 2, where
+  the simulated ranger arrives at level 2–3 with 1–47 gold and never buys
+  it.
+
+Value against the starter, under the game's fill:
+
+| Skills known | v1.759 | v1.761 |
+|---|---|---|
+| 1 | +0.02 | **+0.86** |
+| 2 | +0.21 | **+0.77** |
+| 4 | −0.41 | **+0.25** |
+
+**Before and after** (50 runs, seed 11, against v1.759):
+
+| Batch | Starter kept to the end | Rangers on the storm die | Fight win rate |
+|---|---|---|---|
+| Competent, as it plays | 26 → 24 of 50 | 0 → 2 of 10 | 93.3% → 93.3% (±0) |
+| Competent, every shop reached and revisited (scratch) | 11 → 10 of 50 | 0 → 1 of 10 | 96.3% → 96.3% (±0) |
+| Naive (the CI bands) | 30 → 30 of 50 | 0 → 0 | 38.3% → 38.3% (±0) |
+
+Every simulated ranger who reaches the chandlery with the gold buys the
+storm die and passes its trial. Few reach it, because the simulator
+seldom walks to that port. That is the reach gap of §3, which is with the
+user.

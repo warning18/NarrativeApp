@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.761.0+797]
+
+- Rangers get a die worth replacing the starter with: the storm die's Wind
+  Step (Defend 2) and Catch Your Breath (Heal 2) faces become open Skill
+  faces, so half its rolls land where your skills cast at full power, and
+  it beats the starter however many skills you know. It is now also sold at
+  the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
+  at the black market. Its price is unchanged.
+
 ## [1.759.0+795]
 
 - The profession dice sold in shops now beat the starter die once bought,
