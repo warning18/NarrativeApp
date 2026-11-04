@@ -20,8 +20,7 @@ import 'package:narrative_data_app/widgets/choice_card.dart' show ChoiceCard;
 import 'support/pump.dart';
 
 void main() {
-  testWidgets(
-      "an errand in the hub's own place keeps the scene page, its choices on it",
+  testWidgets('an errand opens as a sheet that holds its own choices',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -80,14 +79,15 @@ void main() {
     final here = container.read(storyPlayProvider).currentNodeId;
     expect(here, '2015_dockside');
 
-    // The errand is on the wharf, where the hub is: the same stop, so the
-    // scene keeps the party (the scene-or-map rule). It opens in the view
-    // the card was taken from, the scene page, not in a sheet over the map,
-    // with its own choice as a card under its words.
+    // The errand is not the main story: a sheet over the map, with its own
+    // choice as a card under its words, and none on the map.
     final sheet = find.byKey(const Key('journey_arrival_sheet'));
-    expect(sheet, findsNothing);
-    expect(find.byKey(const ValueKey('journey_scene_text')), findsOneWidget);
-    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
+    expect(sheet, findsOneWidget);
+    expect(
+        find.descendant(
+            of: sheet,
+            matching: find.byKey(const ValueKey('journey_choice_card_0'))),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
 
     // French, and the narrowest phone: the sheet still fits.
@@ -96,16 +96,18 @@ void main() {
         .setLanguage(AppLanguage.fr));
     tester.view.physicalSize = const Size(320, 568);
     await settleApp(tester);
-    expect(sheet, findsNothing);
+    expect(sheet, findsOneWidget);
     expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
 
-    // Its one card is the way on (a one-card page, v1.692): no Continue
-    // back to the map, and the top bar's map is closed too.
+    // Continue closes the sheet (what arriving opens over the game, the new
+    // place's card, is closed first); the map has no card.
     Navigator.of(tester.element(find.byType(JourneyScreen)))
         .popUntil(isGameRoute);
     await tester.pump(const Duration(seconds: 1));
-    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    expect(container.read(journeyMapClosedProvider), isTrue);
+    await tester.tap(find.byKey(const ValueKey('journey_continue')));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(sheet, findsNothing);
+    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }
