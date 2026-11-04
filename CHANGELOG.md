@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.741.0+777]
+
+- **Core: the story and the city plans are read off the main thread (P3).**
+  The story (1.5 MB, 479 scenes) took about 65 ms to decode and build on the
+  main thread, and the city plans (715 KB) about 17 ms, both on the way into
+  the Journey. They are now parsed on a worker. A broken edited story still
+  falls back to the bundled one (#696).
+
 ## [1.738.0+774]
 
 - **Core: fight and story fixes from QA issue #694.**
