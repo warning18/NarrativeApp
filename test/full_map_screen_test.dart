@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/map_charts.dart' show ChartPalette;
 import 'package:narrative_data_app/data/heard_of.dart';
-import 'package:narrative_data_app/data/map_charts.dart' show MapShape;
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
 import 'package:narrative_data_app/data/world_map.dart';
@@ -20,6 +19,8 @@ import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/travel_history_provider.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/chart_map_painter.dart'
+    show ChartCalque, ChartMapPainter;
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 void main() {
@@ -239,20 +240,49 @@ void main() {
         0);
   });
 
-  testWidgets('the layers sheet holds the map look and the shape of its world',
+  testWidgets('the layers sheet offers the plain map, Clans and the chapters',
       (tester) async {
     await open(tester, withTarget);
     await tester.tap(find.byKey(const Key('journey_layers')));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pump(const Duration(milliseconds: 400));
+    // One look and one world: no selector for either, and none of the
+    // climate, standing or shops layers.
+    for (final key in const [
+      'world_map_look',
+      'world_map_shape',
+      'calque_height',
+      'calque_standing',
+    ]) {
+      expect(find.byKey(Key(key)), findsNothing, reason: key);
+    }
+    for (final key in const [
+      'calque_none',
+      'calque_clans',
+      'calque_chapters'
+    ]) {
+      expect(find.byKey(Key(key)), findsOneWidget, reason: key);
+    }
+  });
+
+  testWidgets('the Clans layer hands the painter who holds each land',
+      (tester) async {
+    await open(tester, withTarget);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(FullMapScreen)));
-    await tester.tap(find.byKey(const Key('world_map_look_parchment')));
+    ChartMapPainter painter() => tester
+        .widgetList<CustomPaint>(find.byType(CustomPaint))
+        .map((c) => c.painter)
+        .whereType<ChartMapPainter>()
+        .first;
+    expect(painter().zoneHolders, isNull);
+    await container
+        .read(chartCalqueProvider.notifier)
+        .choose(ChartCalque.clans);
     await tester.pump(const Duration(milliseconds: 300));
-    expect(container.read(mapLookProvider), MapLook.parchment);
-    await tester.tap(find.byKey(const Key('world_map_shape_delta')));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(container.read(mapShapeProvider), MapShape.delta);
+    expect(painter().calque, ChartCalque.clans);
+    expect(painter().zoneHolders, isNotNull);
+    expect(painter().zoneHolders, isNotEmpty);
   });
 
   testWidgets('"Replay all" in the journeys sheet walks the road again',
