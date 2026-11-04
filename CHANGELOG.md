@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.785.0+821]
+
+- Code cleanup (R4, batch 1): one provider nothing watched and six
+  functions only the tests called are removed (about 160 lines), with the
+  tests that only pinned them. The skill-list and Watchfire tests now
+  check the functions the game really uses. Nothing changes in play.
+
 ## [1.782.0+818]
 
 - The Journey redraws less (P4, part 2): the camp's roll houses, the road
