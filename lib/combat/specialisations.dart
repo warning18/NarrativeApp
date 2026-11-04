@@ -309,8 +309,9 @@ const String beaconElement = 'Light';
 /// The Beacon's fire holds up to this share of max health.
 const double _beaconCapShare = 1.0;
 
-/// The fire after healing, under the Beacon or not (see
-/// watchfireAfterHeal).
+/// The fire after healing [healing] at [currentHealth] of [maxHealth] with
+/// [fire] already lit: the part past full feeds it, up to its cap (the
+/// Beacon's higher).
 int fireAfterHeal({
   required int fire,
   required int healing,

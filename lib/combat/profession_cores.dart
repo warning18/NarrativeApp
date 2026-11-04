@@ -58,19 +58,6 @@ const double _watchfireBurnMultiplier = 2.0;
 /// What a heal from the die burns the enemy for, as a share of it.
 const double watchfireHealBurnShare = 2.0;
 
-/// The fire after healing [healing] at [currentHealth] of [maxHealth] with
-/// [fire] already lit: the part past full feeds it, up to its cap.
-int watchfireAfterHeal({
-  required int fire,
-  required int healing,
-  required int currentHealth,
-  required int maxHealth,
-}) {
-  final over = currentHealth + healing - maxHealth;
-  if (over <= 0) return fire;
-  return min((maxHealth * watchfireCapShare).round(), fire + over);
-}
-
 /// What the fire burns the enemy for at the round's end.
 int watchfireBurn(int fire) => (fire * _watchfireBurnMultiplier).round();
 

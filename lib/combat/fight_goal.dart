@@ -90,27 +90,6 @@ FightGoal rollFightGoal({
   return canYield ? const FightGoal(FightGoalKind.subdue) : FightGoal.slay;
 }
 
-/// The goal named [name] ('hold', 'rout', 'subdue'; 'hold:5' sets the
-/// rounds) -- what a hand-made fight carries -- or null for an unknown
-/// name. A hold without rounds takes [holdRoundsFor] [enemyCount].
-FightGoal? fightGoalFromName(String? name, {int enemyCount = 2}) {
-  if (name == null || name.isEmpty) return null;
-  final parts = name.split(':');
-  switch (parts.first) {
-    case 'slay':
-      return FightGoal.slay;
-    case 'hold':
-      final rounds = parts.length > 1 ? int.tryParse(parts[1]) : null;
-      return FightGoal(FightGoalKind.hold,
-          rounds: max(1, rounds ?? holdRoundsFor(enemyCount)));
-    case 'rout':
-      return const FightGoal(FightGoalKind.rout);
-    case 'subdue':
-      return const FightGoal(FightGoalKind.subdue);
-  }
-  return null;
-}
-
 /// The index of a pack's captain: its sturdiest member (the first of equals).
 int captainIndex(List<int> maxHealths) {
   var best = 0;
