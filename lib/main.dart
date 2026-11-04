@@ -7,9 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_info.dart';
 import 'providers/palette_provider.dart';
+import 'providers/slow_frames_provider.dart';
 import 'providers/theme_mode_provider.dart';
 import 'screens/main_menu_screen.dart';
 import 'theme/stitched_ink.dart';
+import 'widgets/slow_frames_overlay.dart';
 
 void main() {
   // The app's fonts are under the SIL Open Font License, which asks that
@@ -46,7 +48,9 @@ class MyApp extends ConsumerWidget {
       themeMode: themeMode,
       theme: buildAppTheme(palette.schemeFor(Brightness.light)),
       darkTheme: buildAppTheme(palette.schemeFor(Brightness.dark)),
-      builder: (context, child) => SafeArea(
+      navigatorObservers: [ref.watch(slowFrameRoutesProvider)],
+      builder: (context, child) => SlowFramesOverlay(
+          child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12),
           // On a big window the app keeps to a readable width, centred.
@@ -60,7 +64,7 @@ class MyApp extends ConsumerWidget {
             },
           ),
         ),
-      ),
+      )),
       home: const MainMenuScreen(),
     );
   }
