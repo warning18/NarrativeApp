@@ -35,8 +35,8 @@ void main() {
   });
 
   final shops =
-      (jsonDecode(File('assets/gamedata/shops.json').readAsStringSync())
-          as Map<String, dynamic>);
+      jsonDecode(File('assets/gamedata/shops.json').readAsStringSync())
+          as Map<String, dynamic>;
 
   testWidgets('every shop page shows French item types, none in English',
       (tester) async {
