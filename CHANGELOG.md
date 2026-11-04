@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.793.0+829]
+
+- **Narrative: the price is shown once.** 30 choices whose label ended in
+  the price, such as "Pay off his chain (30 gold)", lose the bracket in
+  English and French; the gold tag under the sentence already shows it and
+  always did. Only where the tag matches the number. "Pay the toll (30 gold)"
+  (`260`) keeps its bracket: that choice has no gold change of its own, so
+  the text is the only place the price shows. `qa_chapter1_test` now checks
+  the Vica label carries no price in its text.
+
+## [1.792.0+828]
+
+- Fight: one tap on any effect icon of a fighter (Fury, block, poison, stun,
+  wind-up...) opens one pop-in that lists all its effects, each with its icon,
+  name and rule, under the title "<name> · N effects" ("· N effets"); it
+  scrolls when the list is long. A fighter with a single effect keeps the
+  pop-in it had. The cards do not move. Test: `fight_effects_popin_test.dart`
+  (a hero with Fury and a block: each icon opens the same list; the list fits
+  at 320 px).
+
+## [1.791.0+827]
+
+- The Void Banner's `damage` of 25, which nothing in the game ever read
+  (gear deals its attack damage), is set to 0 like every other item, so
+  the data no longer suggests a hit it never made. A seeded simulator
+  batch gives byte-identical results; nothing changes in play.
+
+## [1.790.0+826]
+
+- The playthrough simulator's fight (`sim_combat.dart`, 2,851 lines, one
+  1,500-line function) is cut into its phases, each in its own file:
+  setup, the party's turn, the enemy's turn and the round's end (4b).
+  The same steps run in the same order: two seeded batches give
+  byte-identical results. Nothing changes in play.
+
 ## [1.789.0+825]
 
 - Code cleanup (R4, batch 3): seven more names only the tests used are
