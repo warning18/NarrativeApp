@@ -1944,6 +1944,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _resetToDefaults(prefs);
   }
 
+  /// The new-game defaults: the Data editor's game config when it has one
+  /// that can be read, the shipped one otherwise (issue #693: a broken
+  /// override must not stop a session or a character from being made).
+  static Future<Map<String, dynamic>> _newGameDefaults(
+      SharedPreferences prefs) async {
+    final saved = prefs.getString(_newGameDefaultsPrefsKey);
+    if (saved != null) {
+      try {
+        return json.decode(saved) as Map<String, dynamic>;
+      } catch (_) {}
+    }
+    return json.decode(await rootBundle.loadString(_newGameDefaultsAssetPath))
+        as Map<String, dynamic>;
+  }
+
   /// [keepLegacy] carries the New Game+ cycle and its banked legacy (see
   /// [PlayerSession.legacyGold]) through the reset -- the reset that
   /// precedes character creation must not lose what the previous cycle
@@ -1951,14 +1966,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> _resetToDefaults(SharedPreferences prefs,
       {bool keepLegacy = true}) async {
     final previous = state;
-    Map<String, dynamic> defaults;
-    final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
-    if (savedConfig != null) {
-      defaults = json.decode(savedConfig) as Map<String, dynamic>;
-    } else {
-      final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
-      defaults = json.decode(raw) as Map<String, dynamic>;
-    }
+    final defaults = await _newGameDefaults(prefs);
     final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 20;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
@@ -2029,14 +2037,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required Map<String, dynamic> profession,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> defaults;
-    final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
-    if (savedConfig != null) {
-      defaults = json.decode(savedConfig) as Map<String, dynamic>;
-    } else {
-      final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
-      defaults = json.decode(raw) as Map<String, dynamic>;
-    }
+    final defaults = await _newGameDefaults(prefs);
 
     int bonus(Map<String, dynamic> preset, String key) =>
         (preset[key] as num?)?.toInt() ?? 0;

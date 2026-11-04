@@ -139,6 +139,16 @@ bool isFreshStoryStart(StoryPlayState play) =>
 /// world map waits too (the user's call, v1.697). The Journey sets it.
 final journeyMapClosedProvider = StateProvider<bool>((ref) => false);
 
+/// [raw] read as a JSON list of ids; null when missing or unreadable.
+List<String>? _idList(String? raw) {
+  if (raw == null) return null;
+  try {
+    return [for (final e in json.decode(raw) as List) e.toString()];
+  } catch (_) {
+    return null;
+  }
+}
+
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
       : super(StoryPlayState(
@@ -165,17 +175,16 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     final savedNodeId = prefs.getString(_autosaveNodePrefsKey);
     if (savedNodeId == null) return;
     final nodeId = liveNodeId(savedNodeId);
-    final historyJson = prefs.getString(_autosaveHistoryPrefsKey);
-    final history = historyJson != null
-        ? (json.decode(historyJson) as List).map((e) => e.toString()).toList()
-        : const <String>[];
-    final visitedJson = prefs.getString(_autosaveVisitedPrefsKey);
+    // A list that can't be read is treated as missing (issue #693): the
+    // party stays at the scene the autosave names.
+    final history =
+        _idList(prefs.getString(_autosaveHistoryPrefsKey)) ?? const <String>[];
     // A save from before fog-of-war tracking existed has no visited-set key
     // yet -- backfill from history + the current node rather than shadowing
     // every node a returning player has already actually read.
-    final visitedNodeIds = visitedJson != null
-        ? (json.decode(visitedJson) as List).map((e) => e.toString()).toSet()
-        : {...history, nodeId};
+    final visitedNodeIds =
+        _idList(prefs.getString(_autosaveVisitedPrefsKey))?.toSet() ??
+            {...history, nodeId};
     state = StoryPlayState(
       currentNodeId: nodeId,
       history: history,
