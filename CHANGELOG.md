@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.782.0+818]
+
+- The Journey redraws less (P4, part 2): the camp's roll houses, the road
+  wards, the walking party, the sky overhead and the city's found
+  districts now each watch only the fields they read, so an unrelated
+  change to the save (gold, XP, a flag) no longer rebuilds them. Nothing
+  changes on screen.
+
 ## [1.776.0+812]
 
 - The game data files leave out fields stored at the value their reader
