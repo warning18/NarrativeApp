@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.752.0+788]
+
+- The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the
+  Mother of Wrecks) are WebP instead of PNG: 1.07 MB down to 0.19 MB in the
+  app, the largest saving among the pictures (they were 62% of all PNG bytes).
+  They look the same, soft halos included (a 64-colour PNG was tried and
+  dropped: it turned the leviathan's dark halo into a hard-edged ellipse).
+  `test/sea_beast_sprites_test.dart` checks each loads, is 840 px wide and
+  keeps its soft edge.
+- Tests: `qa_assets_declared_test.dart` also counts `.webp` files when it checks
+  every image folder is declared.
+
 ## [1.751.0+787]
 
 - **Narrative: a page break in `6010_record`.** The Reliquary's records scene
