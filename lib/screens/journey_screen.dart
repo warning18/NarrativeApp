@@ -839,7 +839,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _takingFrom = before;
       _pressed = index;
     });
-    // The view the step is taken from: a same-place step keeps it.
+    // The view the step is taken from: a same-place step to a scene with
+    // nothing to choose keeps it (see _hasOneWay).
     final current = _reading
         ? ArrivalView.page
         : _arrival
@@ -949,7 +950,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         ?.isMainStoryScene(play.currentNodeId) ??
                     true,
                 inExcursion: play.isInExcursion,
-                current: current,
+                current: _hasOneWay(play.currentNodeId) ? current : null,
               );
               // The story begun again: its first scene, as a new game's.
               final fresh = isFreshStoryStart(play);
@@ -971,6 +972,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
+  }
+
+  /// Whether scene [nodeId] has nothing to choose: one way shown (the
+  /// others hidden by their flags), leading on to the next scene at the
+  /// same stop (FlowStay). Such a scene has its way as a card, and a
+  /// same-place step to it keeps the page or the sheet it was taken from
+  /// (v1.825); a scene with a choice to make opens as it did before v1.809,
+  /// its choices on the map.
+  bool _hasOneWay(String nodeId) {
+    final node = widget.story.nodeFor(nodeId);
+    final stops = ref.read(storyStopsProvider);
+    if (node == null || stops == null) return false;
+    final session = ref.read(playerSessionProvider);
+    final gate = ref.read(coastGateWorldProvider);
+    final shown = [
+      for (final c in node.choices)
+        if (!choiceHiddenFor(c, session, gate)) c,
+    ];
+    return shown.length == 1 && stops.flowOf(node, shown.single) is FlowStay;
   }
 
   /// A step taken inside one place (a card whose way leads to the next scene
@@ -1642,14 +1662,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.read(storyPlayProvider.notifier).scenePlay != null;
     final placed =
         !play.isInExcursion && placeLandmark != null && chartHere != null;
-    // A way to the next scene at the same stop is a card as well, in a room
-    // too: the scene keeps the party (choice_flow.dart's FlowStay).
+    // A scene with a choice to make keeps it on the map (v1.825, as before
+    // v1.809): the city chart's banners, the room plan's spots, the place
+    // view's pins and cards. Only a scene with nothing to choose, its one
+    // way leading to the next scene at the same stop (choice_flow.dart's
+    // FlowStay), has it as a card: the story goes on with no map.
+    final single =
+        choices.length == 1 && stops?.flowOf(node, choices.single) is FlowStay;
     final onCard = [
       for (var i = 0; i < shapes.length; i++)
         _writtenDetour ||
-            placed &&
-                ((room == null && shapes[i].here) ||
-                    (stops?.flowOf(node, choices[i]) is FlowStay)),
+            placed && ((room == null && shapes[i].here) || single),
     ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;

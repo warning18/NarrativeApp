@@ -300,9 +300,9 @@ void main() {
   });
 
   testWidgets(
-      'a save on the Bouncer\'s aftermath opens on the map, its way out a '
-      'spot in the room; the next table, a card, keeps the scene page, and '
-      'the way out is a road card that brings the map back', (tester) async {
+      'a save on the Bouncer\'s aftermath opens on the map, its ways spots '
+      'in the room; the next table opens with its way back to the map',
+      (tester) async {
     await _setUp(tester);
     SharedPreferences.setMockInitialValues({
       'tutorial_enabled': false,
@@ -341,71 +341,35 @@ void main() {
         tester.widget<InkWell>(find.byKey(const Key('journey_tab_world')));
     expect(world.onTap, isNotNull);
 
-    // "Work the next table" stays in the Blind Beggar: by the scene-or-map
-    // rule it is no spot in the room but a card of the scene, behind its
-    // "choices here" button. The way out the back is still a spot.
-    final spot = find.byWidgetPredicate((w) =>
+    // "Work the next table" is a spot in the room, taken from the map.
+    // (Called, not tapped: the room's spots may lie over each other.)
+    final step = find.byWidgetPredicate((w) =>
         w is Semantics &&
         (w.properties.label ?? '').contains('next table') &&
         w.child is GestureDetector);
-    expect(spot, findsNothing);
-    expect(find.byKey(const ValueKey('journey_step_1')), findsOneWidget);
-    // (Called, not tapped: the room's spots may lie over the button.)
-    tester
-        .widget<IconButton>(find.byKey(const ValueKey('journey_open_choices')))
-        .onPressed!();
-    await _settle(tester);
-    // Its two tables are the scene's two cards (both stay in the room).
-    final table = [
-      for (var i = 0; i < 3; i++)
-        if (find
-            .descendant(
-                of: _card(i),
-                matching: find.textContaining('Work the next table',
-                    findRichText: true))
-            .evaluate()
-            .isNotEmpty)
-          i,
-    ];
-    expect(table, hasLength(1));
-    expect(_card(2), findsNothing);
-    await _take(tester, table.single);
-    if (find.byKey(const ValueKey('journey_go')).evaluate().isNotEmpty) {
-      await tester.tap(find.byKey(const ValueKey('journey_go')));
-      await tester.pump();
-    }
+    expect(step, findsOneWidget);
+    void tapStep() =>
+        (tester.widget<Semantics>(step).child! as GestureDetector).onTap!();
+    tapStep();
+    await tester.pump();
+    tapStep();
+    await tester.pump();
     await _pumpUntil(
         tester, () => container.read(storyPlayProvider).currentNodeId == '110');
     await _settle(tester);
     await tester.pump(const Duration(seconds: 3));
     expect(container.read(storyPlayProvider).currentNodeId, '110');
-    // The dice tables, in the same room: the scene page stays (the card was
-    // taken on it). It does not lock ("Choose first"): the way out has a
-    // place on the map. With one card the party can take (the dice table),
-    // the page is a one-card page (v1.692): no Continue, and the way out is
-    // listed as a road card under it.
-    expect(_page('110'), findsOneWidget);
+    // The dice tables: its ways are spots in the room too, so it does not
+    // lock. Read as its page, the way back to the map is open.
     expect(_chooseFirst, findsNothing);
-    expect(find.byKey(const ValueKey('journey_continue')), findsNothing);
-    final out = [
-      for (var i = 0; i < 3; i++)
-        if (find
-            .descendant(
-                of: _card(i),
-                matching: find.textContaining('Out before the roof goes',
-                    findRichText: true))
-            .evaluate()
-            .isNotEmpty)
-          i,
-    ];
-    expect(out, hasLength(1));
-    // The road card brings the map back, and the party walks out on it.
-    await _take(tester, out.single);
-    await _pumpUntil(
-        tester, () => container.read(storyPlayProvider).currentNodeId == '250');
-    await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '250');
+    final back = find.byKey(const ValueKey('journey_continue'));
+    if (_page('110').evaluate().isNotEmpty) {
+      expect(tester.widget<ButtonStyleButton>(back).onPressed, isNotNull);
+      await tester.tap(back);
+      await _settle(tester);
+    }
     expect(_page('110'), findsNothing);
+    expect(find.byKey(const Key('journey_level_tabs')), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));

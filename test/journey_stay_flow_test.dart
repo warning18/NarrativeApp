@@ -1,8 +1,10 @@
-// The scene-or-map rule, finished (v1.809, docs/proposals/scene-vs-map-flow.md
-// and scene-flow-status-and-strip.md): a choice that leads to the next scene
-// at the same stop keeps the party in the scene, in the view it was taken
-// from (the page or the sheet). A way to another stop is still a mark on the
-// map, a carried trip and a hub's one-tap return keep their own views.
+// The scene-or-map rule as the user set it (v1.825, after v1.809): a scene
+// with nothing to choose, its one way leading to the next scene at the same
+// stop, goes on in the view it was taken from (the page or the sheet), with
+// no map; a scene with a choice to make keeps its choices on the map as
+// before v1.809 (the city chart's banners, the room plan's spots); a way to
+// another district of the town is walked on the city chart. A carried trip
+// and a hub's one-tap return keep their own views.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,18 +12,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/choice_flow.dart';
-import 'package:narrative_data_app/main.dart';
-import 'package:narrative_data_app/providers/app_mode_provider.dart';
-import 'package:narrative_data_app/providers/choice_flow_provider.dart';
+import 'package:narrative_data_app/data/choice_shape.dart' show choiceShape;
+import 'package:narrative_data_app/providers/geography_provider.dart'
+    show geographyProvider;
 import 'package:narrative_data_app/providers/home_tab_provider.dart'
     show isGameRoute;
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/politics_provider.dart'
     show choiceHiddenFor, coastGateWorldProvider;
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/screens/journey_screen.dart';
+import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart'
+    show CityChartView;
 import 'package:narrative_data_app/widgets/arrival_sheet.dart';
 import 'package:narrative_data_app/widgets/choice_card.dart' show ChoiceCard;
+import 'support/open_game.dart';
 import 'support/pump.dart';
 
 void main() {
@@ -82,85 +86,66 @@ void main() {
     });
   });
 
-  testWidgets(
-      'a run of scenes on the wharf stays on the scene page; its ways to '
-      'other districts stay marks on the map (reduced motion)', (tester) async {
+  /// The game open on the Journey at scene [nodeId].
+  Future<ProviderContainer> openAt(WidgetTester tester, String nodeId,
+      {bool motion = true}) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    usePhone(tester, const Size(360, 740));
-    tester.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures(disableAnimations: true);
-    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    SharedPreferences.setMockInitialValues({});
+    usePhone(tester, const Size(400, 860));
+    if (!motion) {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+          tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    }
+    final container = await openGame(tester);
+    container.read(storyPlayProvider.notifier).jumpTo(nodeId);
     await settleApp(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await settleApp(tester);
-    final container =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson({
-          'raceId': 'human',
-          'professionId': 'warrior',
-        })));
-    await tester.runAsync(
-        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
-    await settleApp(tester);
-    final play = container.read(storyPlayProvider.notifier);
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
+    return container;
+  }
 
-    play.jumpTo('2015');
-    await settleApp(tester);
-    await tester.pump(const Duration(seconds: 3));
+  Future<void> closeOverlays(WidgetTester tester) async {
     for (var i = 0; i < 3; i++) {
-      Navigator.of(tester.element(find.byType(JourneyScreen)))
+      tester
+          .state<NavigatorState>(find.byType(Navigator).first)
           .popUntil(isGameRoute);
       await tester.pump(const Duration(seconds: 1));
     }
+  }
 
-    // The hub's ways to other districts are marks on the map; its errands
-    // on the wharf itself are behind the "choices here" button.
-    final stops = container.read(storyStopsProvider)!;
+  testWidgets(
+      'a hub on the city chart keeps its banners: only the ways acted out '
+      'there are cards (reduced motion)', (tester) async {
+    final container = await openAt(tester, '2015', motion: false);
+    await closeOverlays(tester);
+
     final story = container.read(storyDataProvider).value!;
+    final world = container.read(geographyProvider);
     final hub = story.nodeFor('2015')!;
-    final moves = hub.choices.where((c) => stops.flowOf(hub, c) is FlowMap);
-    expect(moves, isNotEmpty);
-    final button = find.byKey(const ValueKey('journey_open_choices'));
-    expect(button, findsOneWidget);
-    final badge = tester.widget<Badge>(
-        find.descendant(of: button, matching: find.byType(Badge)));
-    final here = int.parse((badge.label! as Text).data!);
     final session = container.read(playerSessionProvider);
     final gate = container.read(coastGateWorldProvider);
     final visible = [
       for (final c in hub.choices)
         if (!choiceHiddenFor(c, session, gate)) c,
     ];
-    expect(here, greaterThan(0));
-    expect(here, lessThan(visible.length),
-        reason: 'the ways to other districts are not cards: marks on the map');
-    expect(here, visible.where((c) => stops.flowOf(hub, c) is! FlowMap).length,
-        reason: 'every way that stays (or is acted out here) is a card');
-
-    // Open the scene, take an errand on the wharf: the page stays.
-    await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
-    await tester.pump(const Duration(milliseconds: 500));
-    await takeCard(tester, 'Buy a quiet route');
-    expect(container.read(storyPlayProvider).currentNodeId, '2015_route_sold');
-    expect(find.byKey(const ValueKey('journey_scene_text')), findsOneWidget);
-    expect(find.byKey(const Key('journey_arrival_sheet')), findsNothing);
-    expect(find.byKey(const Key('journey_level_tabs')), findsNothing,
-        reason: 'no map between two scenes in one place');
-
-    // Back to the hub, still on the wharf: the page again, no map between.
-    await takeCard(tester, 'Say nothing');
-    expect(container.read(storyPlayProvider).currentNodeId, '2015');
-    expect(find.byKey(const ValueKey('journey_scene_text')), findsOneWidget);
-    expect(find.byKey(const Key('journey_arrival_sheet')), findsNothing);
+    final acted = visible
+        .where((c) => choiceShape(hub, c, story: story, geography: world).here)
+        .length;
+    final button = find.byKey(const ValueKey('journey_open_choices'));
+    expect(button, findsOneWidget);
+    final badge = tester.widget<Badge>(
+        find.descendant(of: button, matching: find.byType(Badge)));
+    expect(int.parse((badge.label! as Text).data!), acted,
+        reason: 'the cards are the ways acted out here, nothing else');
+    final chart = tester
+        .widget<CityChartView>(find.byKey(const ValueKey('journey_city_chart')))
+        .chart;
+    expect(chart.ways.length, greaterThanOrEqualTo(visible.length - acted),
+        reason: 'every way not acted out here is a banner on the city chart');
     expect(tester.takeException(), isNull);
   });
 }
