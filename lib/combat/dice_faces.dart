@@ -6,16 +6,8 @@ import '../l10n/dice_names_fr.dart';
 import '../l10n/skill_names_fr.dart';
 import 'combat_engine.dart';
 
-/// How strongly a skill works when it is set on a basic face (Attack,
-/// Guard, Heal) instead of a skill face: its damage and healing are scaled
-/// by this, never below what the face itself would have done. A skill face
-/// casts at full power. Keeps every face open to skills without letting a
-/// die of six top skills outclass the dice built around them.
-const double channeledSkillPower = channeledPower;
-
 /// The basic actions a face can carry on its own: the plain numbered
-/// faces. A skill set on one of them is channeled (see
-/// [channeledSkillPower]).
+/// faces. A skill set on one of them is channeled (see [channeledPower]).
 const Set<String> _basicFaceTypes = {'Attack', 'Defend', 'Heal', 'Mana'};
 
 /// Race and profession prefixes on skill ids, dropped from the name shown
@@ -222,7 +214,7 @@ bool canSetSkillOnFace(
           faceCount: faces.length);
 }
 
-/// Whether a skill on [face] works at [channeledSkillPower].
+/// Whether a skill on [face] works at [channeledPower].
 bool isBasicFace(Map<String, dynamic> face) =>
     _basicFaceTypes.contains(face['type']?.toString() ?? '');
 
@@ -272,7 +264,7 @@ String rolledFaceName(DiceFaceResult face, AppLanguage language) {
 }
 
 /// Applies the player's skill pick to a rolled [face]: a skill face takes
-/// the picked skill, a basic face channels it (see [channeledSkillPower]),
+/// the picked skill, a basic face channels it (see [channeledPower]),
 /// and a fixed face ignores it. [rawFace] is the die's face record, which
 /// says whether the face is open. The result is named after what it does.
 DiceFaceResult applyFaceAssignment(
