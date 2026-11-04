@@ -1,0 +1,35 @@
+# The statistical simulator tests and what can move them (QA, item 3 of
+# docs/qa/qa-improvements-2.md). Read by tool/shard_tests.py and by
+# test/qa_sim_gate_test.dart.
+#
+# `gated <file>`: a test file in test/ that plays whole simulated runs
+# (about 160 s together). On a pull request that changes none of the
+# `trigger` paths, CI leaves these out of its shard; on main, and on any
+# pull request that changes a trigger path, it runs them.
+#
+# `trigger <prefix>`: a changed file whose path starts with the prefix may
+# change what the gated tests measure. A prefix ending in `/` is a folder.
+gated boss_balance_test.dart
+gated clash_balance_test.dart
+gated sim_coverage_test.dart
+gated adapt_gap_test.dart
+
+trigger lib/combat/
+trigger lib/data/
+trigger lib/gamedata/
+trigger lib/models/
+trigger lib/providers/
+trigger lib/screens/playthrough_simulator
+trigger lib/screens/autoplay_summary_dialog.dart
+trigger assets/gamedata/
+trigger assets/Cleaned_Narrative_DAG.json
+trigger test/sim_
+trigger test/support/
+trigger test/boss_balance_test.dart
+trigger test/clash_balance_test.dart
+trigger test/adapt_gap_test.dart
+trigger tool/shard_tests.py
+trigger tool/sim_gate.txt
+trigger .github/
+trigger pubspec.yaml
+trigger pubspec.lock
