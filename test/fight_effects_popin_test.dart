@@ -35,9 +35,6 @@ Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   }
 }
 
-bool _logShows(String text) =>
-    find.textContaining(text, findRichText: true).evaluate().isNotEmpty;
-
 /// Taps the button labelled [label] once it is enabled. The enemy's line
 /// shows before its turn is over, and a busy machine can still be in that
 /// turn when the test moves on: the buttons are there, but disabled, and a

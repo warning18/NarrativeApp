@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.792.0+828]
+
+- Fight: one tap on any effect icon of a fighter (Fury, block, poison, stun,
+  wind-up...) opens one pop-in that lists all its effects, each with its icon,
+  name and rule, under the title "<name> · N effects" ("· N effets"); it
+  scrolls when the list is long. A fighter with a single effect keeps the
+  pop-in it had. The cards do not move. Test: `fight_effects_popin_test.dart`
+  (a hero with Fury and a block: each icon opens the same list; the list fits
+  at 320 px).
+
 ## [1.791.0+827]
 
 - The Void Banner's `damage` of 25, which nothing in the game ever read
