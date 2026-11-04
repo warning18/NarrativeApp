@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.796.0+832]
+
+- **Narrative: the toll's price shown once.** "Pay the toll" (`260`) loses its
+  "(30 gold)" in English and French. The button's cost tag already shows
+  30 (the next scene, `261`, asks for 30 and takes it), so the price was
+  typed twice. `choice_shape_test` keeps checking that the tag reads 30.
+
+## [1.795.0+831]
+
+- The clans' and politics' model (`factions.dart`, 2,622 lines) is cut
+  into ten files by kind: standing tiers, the clan records, relations,
+  intrigues, the clan data, what the save keeps, the politics state,
+  the standing rules, the mark and relation rules and the words (4c).
+  The code moves as it was; nothing changes in play.
+
 ## [1.793.0+829]
 
 - **Narrative: the price is shown once.** 30 choices whose label ended in
