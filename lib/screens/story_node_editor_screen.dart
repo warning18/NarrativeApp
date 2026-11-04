@@ -131,6 +131,13 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       prompt: widget.node.prompt,
       promptFr: widget.node.promptFr,
       aboutLabels: widget.node.aboutLabels,
+      // The camp errand and its gates (v1.819): not edited here, kept.
+      campErrand: widget.node.campErrand,
+      campErrandKind: widget.node.campErrandKind,
+      showIfFlags: widget.node.showIfFlags,
+      hideIfFlags: widget.node.hideIfFlags,
+      campErrandText: widget.node.campErrandText,
+      campErrandTextFr: widget.node.campErrandTextFr,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
