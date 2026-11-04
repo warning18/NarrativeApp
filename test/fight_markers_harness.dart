@@ -16,7 +16,7 @@ import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
-import 'skill_fight_harness.dart' show settle, gamedata, pumpUntil, shows;
+import 'skill_fight_harness.dart' show gamedata, pumpUntil, settle, shows;
 import 'support/pump.dart';
 
 Future<void> enterFight(WidgetTester tester, String profession) async {

@@ -203,16 +203,15 @@ PoliticsState breakNemesis(
   int day = 0,
 }) {
   final power = powerOf(state, clanId, data);
-  var next = addPower(state, clanId, -_min25(power), data).copyWith(
+  final next = addPower(state, clanId, -_min25(power), data).copyWith(
     nemesis: state.nemesis == clanId ? '' : state.nemesis,
     nemesisCooldown: {
       ...state.nemesisCooldown,
       clanId: chapter + nemesisBreakChapters,
     },
   );
-  next = _told(next, 'nemesis_broken:$clanId',
+  return _told(next, 'nemesis_broken:$clanId',
       nemesisBrokenNews(data.faction(clanId)), chapter, day);
-  return next;
 }
 
 /// A tier of [power]: 25, never more than there is.

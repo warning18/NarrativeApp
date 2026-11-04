@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.805.0+841]
+
+- **Cleanup: five more lints on, 28 sites fixed.** `combinators_ordering`,
+  `use_is_even_rather_than_modulo`, `use_colored_box`,
+  `join_return_with_assignment` and `use_late_for_private_fields_and_variables`
+  are enabled and kept at zero: the names after `show` sorted, `x % 2 == 0`
+  written `x.isEven`, two single-colour boxes as `ColoredBox`, one
+  assignment returned directly and the expedition's reward card declared
+  `late`. Nothing changes on screen or in a number.
+
 ## [1.804.0+840]
 
 - Code cleanup (split 4f, step 1): the save's model (`PlayerSession`, its
