@@ -25,15 +25,6 @@ List<String> _stringList(Object? raw) => [
         if (e.toString().trim().isNotEmpty) e.toString().trim(),
     ];
 
-/// The scenes meeting [npc]: once the story has stood in one, they are
-/// known.
-List<String> npcMetNodes(Map<String, dynamic> npc) =>
-    _stringList(npc['metNodes']);
-
-/// The shop [npc] keeps ('' for none): once found, they are known.
-String npcShopId(Map<String, dynamic> npc) =>
-    npc['shopId']?.toString().trim() ?? '';
-
 /// [npc]'s chapter (1 when unset).
 int npcChapter(Map<String, dynamic> npc) =>
     (npc['chapter'] as num?)?.toInt() ?? 1;
