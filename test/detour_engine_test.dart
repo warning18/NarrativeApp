@@ -181,7 +181,8 @@ void main() {
         var p = const DetourPacing(quiet: 10);
         for (var i = 0; i < 50; i++) {
           final t = turn(p, DetourRoad(chapter: chapter), seed: i);
-          expect(t.isDetour, isFalse, reason: 'chapter $chapter');
+          expect(t.kind, isNot(RoadTurnKind.detour),
+              reason: 'chapter $chapter');
           p = t.next;
         }
       }
@@ -205,9 +206,9 @@ void main() {
       ].firstWhere((t) => t.kind == RoadTurnKind.owed);
       p = crisis.next.copyWith(cooldown: 1);
       final cooling = turn(p, road);
-      expect(cooling.isDetour, isFalse);
+      expect(cooling.kind, isNot(RoadTurnKind.detour));
       final paid = turn(cooling.next, road);
-      expect(paid.isDetour, isTrue);
+      expect(paid.kind, RoadTurnKind.detour);
       expect(paid.paysOwed, isTrue);
       expect(paid.next.owed, isFalse);
       // Owed in chapter 3, gone in chapter 4.
@@ -220,7 +221,7 @@ void main() {
       var last = false;
       for (var i = 0; i < 3000; i++) {
         final t = turn(p, road, seed: i);
-        if (t.isDetour) {
+        if (t.kind == RoadTurnKind.detour) {
           expect(last, isFalse, reason: 'two in a row at road $i');
           detours++;
           dry = 0;
@@ -228,7 +229,7 @@ void main() {
           dry++;
           longestDry = max(longestDry, dry);
         }
-        last = t.isDetour;
+        last = t.kind == RoadTurnKind.detour;
         p = t.next;
       }
       // About one road in five or six (the cooldown's road among them),
@@ -293,7 +294,7 @@ void main() {
               flags: const {},
               random: Random(seed)),
       ];
-      final t = turns.firstWhere((t) => t.isDetour);
+      final t = turns.firstWhere((t) => t.kind == RoadTurnKind.detour);
       expect(t.scene, isNull);
     });
 

@@ -284,8 +284,6 @@ class RoadTurn {
 
   /// The detour pays one owed by a crisis.
   final bool paysOwed;
-
-  bool get isDetour => kind == RoadTurnKind.detour;
 }
 
 /// The scenes that may come on [road] for a party holding [flags], met

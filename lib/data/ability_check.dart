@@ -86,14 +86,9 @@ class AbilityCheckResult {
 
   int get total => roll + modifier;
 
-  bool get success => checkPasses(roll, modifier, dc);
-
   /// A natural 20 always succeeds and a natural 1 always fails, mirroring
-  /// D&D's critical roll convention — checked separately from [success] so
-  /// the UI can call out a critical result even when the modifier alone
-  /// would have decided it either way.
-  bool get isCriticalSuccess => roll == 20;
-  bool get isCriticalFail => roll == 1;
+  /// D&D's critical roll convention (see [checkPasses]).
+  bool get success => checkPasses(roll, modifier, dc);
 }
 
 /// Rolls a d20, adds [session]'s bonus for [ability], and compares the

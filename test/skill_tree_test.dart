@@ -135,14 +135,21 @@ void main() {
     final branches =
         skillBranchesFor(trees, raceId: 'human', professionId: 'warrior');
 
+    // As the skills screen prices a skill: its place on its branch, or one
+    // for a skill off the tree.
+    int skillPointCostOf(String skillId) {
+      final place = branchPlaceOf(skillId, branches);
+      return place == null ? 1 : branchSkillPointCost(place.index);
+    }
+
     test('the deeper on a branch, the dearer', () {
       expect(branchSkillPointCosts, [1, 1, 2, 3]);
-      expect(skillPointCostOf('power_strike', branches), 1);
-      expect(skillPointCostOf('guard_break', branches), 1);
-      expect(skillPointCostOf('warrior_whirlwind', branches), 2);
-      expect(skillPointCostOf('warrior_execute', branches), 3);
+      expect(skillPointCostOf('power_strike'), 1);
+      expect(skillPointCostOf('guard_break'), 1);
+      expect(skillPointCostOf('warrior_whirlwind'), 2);
+      expect(skillPointCostOf('warrior_execute'), 3);
       // A reputation skill, off the tree, is one point.
-      expect(skillPointCostOf('zealous_conviction', branches), 1);
+      expect(skillPointCostOf('zealous_conviction'), 1);
     });
 
     test('a whole tree costs more than a run earns', () {
