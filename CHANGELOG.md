@@ -8,6 +8,215 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.783.0+819]
+
+- The pictures are stored as palette PNGs: 652 of them (the banners, the effects'
+  strips, the heads, the icons, the throne room and the rest, the ones that
+  have 256 colours or fewer, which is all of them) go from 567,761 to 300,525
+  bytes (-267 KB), and decode to exactly the same pixels (the new
+  `tool/png8.py` keeps a rewrite only if it reads back as the same RGBA and is
+  smaller; 120 files compared again with a second decoder: none differs).
+- `python3 tool/png8.py --check` lists any picture that should be a palette PNG
+  and is not (exit 1), for a guard; `tool/README.md` says to run `png8.py`
+  after a generator, and a generator then writes the same bytes as before.
+
+## [1.782.0+818]
+
+- The Journey redraws less (P4, part 2): the camp's roll houses, the road
+  wards, the walking party, the sky overhead and the city's found
+  districts now each watch only the fields they read, so an unrelated
+  change to the save (gold, XP, a flag) no longer rebuilds them. Nothing
+  changes on screen.
+
+## [1.781.0+817]
+
+- **Narrative: page breaks in five long scenes.** `470`, `6010_thread`,
+  `4999_drawn`, `5004` and `5004b` read in two pages, cut at a beat of the
+  story rather than by length (the light comes up on the cloth; the ledger
+  names the parents). Every word stays; English and French break at the same
+  place. `400`, `1200`, `2015_dockside`, `6002` and the cove camp `7400` stay
+  whole: tests walk through them and expect their ways on at once. Ids,
+  choices and flags unchanged.
+
+## [1.780.0+816]
+
+- The code that settles a fight (rewards, loot, XP, quests, politics) is
+  cut from one 460-line function into named steps: the outcome, a win, a
+  loss, the per-foe tally, the chest's odds and the allies' revival. The
+  same calls run in the same order, random rolls included, so nothing
+  changes in play.
+
+## [1.779.0+815]
+
+- The shop page names the item types in French: "Arme", "Armure", "Grimoire",
+  "Matériau", "Artefact", "Talisman", "Parchemin", "Objet de quête" (the
+  filter chip says "Quête"), instead of the raw English words. English reads
+  as before, except "Quest item" on the item line. Test:
+  `shop_item_types_test.dart` (every shop, 320 px, French).
+
+## [1.778.0+814]
+
+- Fight: the tiles of the top strip (the goal, the weather, the momentum, the
+  round, the log button...) have a taller tap area: 38 x 51 instead of 38 x 37
+  (the log button 32 x 51), so a tap a little above or below one still lands.
+  Nothing moves: the 8 px above and the 6 px below the strip became the tiles'
+  own tap room (a picture of the fight at 360 and 320 px, in play and edit
+  mode, is pixel for pixel what it was), and a tile's pop-in still opens in the
+  same place. The effect icons on the fighters' cards keep their size: their
+  row has no room to give.
+- Tests: `fight_tap_areas_test.dart` (the box sizes, where the tile and the
+  cards sit, a tap above the tile opens its pop-in and where).
+
+## [1.777.0+813]
+
+- **Cleanup: leftovers cleared, seven names made private.** Seven names
+  that only their own file uses (the clan die's resonance tier and line,
+  the narration's page markers, the street view's two layers, the journal's
+  "story so far" page and the story graph's grid algorithm) are now
+  private; two unused constructor options go with the last two. A stale
+  `ignore` comment, a test helper no test imports, two empty placeholder
+  files in folders that already hold their frames, and the description in
+  `pubspec.yaml` ("AI-assisted generation", gone with the Gemini library)
+  are removed. Nothing changes on screen or in a number.
+
+## [1.776.0+812]
+
+- The game data files leave out fields stored at the value their reader
+  already assumes: `healthMod: 0` and `isActiveSkill: true` on every
+  skill, the empty `rewardDiceId` / `rewardAllyId` on every zone, and a
+  dice face's `"element": "None"` and empty `linkedSkillID` (about 19 KB
+  less, the game plays the same). The data editor no longer writes such a
+  field back when a record leaves it out and it isn't edited, and a save
+  keeps the keys the form doesn't show.
+
+## [1.773.0+809]
+
+- The 377 icons (items, skills, enemies, shops, chests) are stored at the size
+  they are drawn on: 16x16, the skills' gems 32x32, instead of enlarged to
+  128x128. Every one was an exact enlargement, so they look the same at
+  every size the app draws them (checked at 18, 26, 28, 30, 36, 44 and 52 px,
+  no differing byte); the app is 140 KB smaller and a screen of icons holds
+  a sixty-fourth of the memory (1 KB per icon instead of 64 KB).
+- The art scripts for the icons write the small size; the enemies' heads are
+  cut as before (same files).
+- Tests: `icon_sizes_test` keeps any icon over 32 px out of `assets/icons`;
+  `hunter_icons_test` expects 16x16.
+
+## [1.772.0+808]
+
+- A scene's text is composed once per build instead of two or three
+  times: the Journey's page count, its scene panel and the opening
+  reading now share one composition (`composeNarrationParts` keeps its
+  last answer while the scene, the session and the story are the same).
+  A slightly smoother Journey on slow phones; nothing else changes.
+
+## [1.771.0+807]
+
+- The playthrough simulator loses its old growth mode (the skill points,
+  perks and sign picks of before v1.194), which only two tests still ran;
+  the game and every batch use the clans' offers. About 170 lines less,
+  and a seeded batch gives the same numbers. Nothing changes in play.
+
+## [1.770.0+806]
+
+- Code: the 15% lift on ordinary enemies' damage from chapter 2 on
+  (v1.743) is folded into the damage floor table (one table instead of a
+  table and a factor); every fight's numbers are the same.
+- The clans' tables and the offers' tables are parsed once and kept while
+  they stay the same (an edit in the Data tab parses them again), instead
+  of about 2.7 ms again on each of 13 calls: offers and clan pages open a
+  little faster.
+
+## [1.769.0+805]
+
+- The app is about 350 KB smaller: `city_plans.json` (the cities' stored
+  plans, generated, never edited by hand) is written minified, 733 KB down
+  to 386 KB with the same data. The two plan generators
+  (`city_plan_generator.dart`, `town_service_pins.dart`), which only the
+  tools in `tool/city_plans/` run, move there from `lib/`. Nothing changes
+  on screen.
+
+## [1.768.0+804]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
+
+## [1.767.0+803]
+
+- The New Game Defaults editor (Edit Mode) matches game_config.json: it
+  offered 100 health and 10 damage as defaults where the game ships 20 and
+  2, had no field for the antidotes, the six stats, luck or perception,
+  and a save wrote only the fields it showed, so one save dropped those
+  from the defaults a new game starts from, and a blank field saved as 0.
+  Every key now has its field and its real default, a save keeps what the
+  form does not show, and a blank field saves as its default.
+
+## [1.766.0+802]
+
+- The playthrough simulator now shops where a player shops: the ports'
+  shops at their settlements, a house's shop once it is built, the
+  Wayfarer's Caravan when the road holds it, and a shop again when the walk
+  is back there a later chapter (from the chapter it opens). Its naive
+  baseline moves with it (encounters won 71.0% to 75.3%, 800 runs), see
+  `docs/simulation/sim-reach-v1.766.md`.
+- The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
+  damage 4 to 5): a player who shops reached it too well armed.
+
+## [1.765.0+801]
+
+- Settings: a new switch, "Show slow frames" (off by default, saved). While it
+  is on, a small counter at the top right shows how many frames of the screen
+  you are on took more than 17 ms ("slow 7 / 612 · worst 48 ms"), and two
+  buttons appear under the switch: "Copy report" (the numbers per screen, the
+  five worst frames split into build and raster time, and a line about the
+  phone) and "Reset". The screens are the Fight, the Journey (its reading page
+  and its map apart), the Character, Camp or ship and Other tabs, the main
+  menu, and "Another screen" for the rest. It is meant for finding what
+  stutters on a phone with no computer: turn it on, play, copy the report and
+  paste it to the team. Off, nothing runs: no timer, no counter, no timing
+  callback. English and French.
+- Tests: `slow_frames_test.dart` (the counting, the five worst, the naming of
+  the screens, off by default, the switch, the copy and the reset); the 320 px
+  and French sweep shows the switch and the counter.
+
+## [1.764.0+800]
+
+- Fight on a phone: the screen stays upright while a fight is open. Turned
+  sideways (640 x 360) the dice board was left 1 px tall, so the fight could
+  not be played; now it holds portrait and lets the phone turn again when the
+  fight closes. The rest of the app turns as before, and a tablet (shortest
+  side of 600 dp or more) is never held.
+- Tests: `fight_orientation_test.dart` (the hold and the release, two fights
+  at once, a tablet, and a real fight opened and closed).
+
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
+
+## [1.762.0+798]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
+## [1.761.0+797]
+
+- Rangers get a die worth replacing the starter with: the storm die's Wind
+  Step (Defend 2) and Catch Your Breath (Heal 2) faces become open Skill
+  faces, so half its rolls land where your skills cast at full power, and
+  it beats the starter however many skills you know. It is now also sold at
+  the Anchorage Chandlery (chapter 6), for a ranger who couldn't afford it
+  at the black market. Its price is unchanged.
+
 ## [1.760.0+796]
 
 - **Cleanup: the dropped futures are named.** The 45 places where a Future
@@ -26,6 +235,7 @@ isn't reconstructable from git history alone.
   weakest signature faces come up more often. Prices and shops are
   unchanged. Kelda's and Maren's dice (iron, holy) gain a Heavy Blow face
   the same way. See `docs/simulation/starter-die.md`.
+
 ## [1.758.0+794]
 
 - Code (P4, part 1): two providers no longer wake everything below them on
@@ -35,6 +245,7 @@ isn't reconstructable from git history alone.
   them) watch only the four fields they read. No change in play. Over five
   unrelated session changes they notified 5 and 5 times; now 0 and 0
   (`provider_rebuilds_test`).
+
 ## [1.757.0+793]
 
 - Code: `playthrough_simulator_screen.dart` (4,770 lines) is cut into the

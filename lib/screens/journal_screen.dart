@@ -131,7 +131,7 @@ class JournalScreen extends ConsumerWidget {
             ]),
           ),
           body: TabBarView(children: [
-            const StorySoFarPage(),
+            const _StorySoFarPage(),
             entries.isEmpty
                 ? InkEmptyState(message: tr(ref, 'journal_empty'))
                 : ListView(
@@ -148,8 +148,8 @@ class JournalScreen extends ConsumerWidget {
 }
 
 /// The state of the story in one reading (see storySoFarProvider).
-class StorySoFarPage extends ConsumerWidget {
-  const StorySoFarPage({super.key, this.compact = false});
+class _StorySoFarPage extends ConsumerWidget {
+  const _StorySoFarPage({this.compact = false});
 
   /// In the Previously… dialog: the last scenes and the threads only.
   final bool compact;
@@ -453,7 +453,7 @@ Future<void> showPreviouslyDialog(
       return AlertDialog(
         scrollable: true,
         title: Text(trFor(lang, 'previously_title')),
-        content: const StorySoFarPage(compact: true),
+        content: const _StorySoFarPage(compact: true),
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(),

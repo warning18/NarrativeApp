@@ -74,7 +74,10 @@ final foundDistrictsProvider = Provider<Set<String>>((ref) {
   final city = ref.watch(currentCityProvider);
   final story = ref.watch(storyDataProvider).value;
   if (city == null || story == null) return const {};
-  final play = ref.watch(storyPlayProvider);
+  final play = ref.watch(storyPlayProvider.select((p) => (
+        visitedNodeIds: p.visitedNodeIds,
+        currentNodeId: p.currentNodeId,
+      )));
   return foundDistricts(
     ref.watch(geographyProvider),
     story,

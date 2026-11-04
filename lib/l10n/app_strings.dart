@@ -2779,6 +2779,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Plus en stock'
   },
   'filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tous'},
+  'item_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'item_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'item_type_spellbook': {
+    AppLanguage.en: 'Spellbook',
+    AppLanguage.fr: 'Grimoire'
+  },
+  'item_type_material': {
+    AppLanguage.en: 'Material',
+    AppLanguage.fr: 'Matériau'
+  },
+  'item_type_artifact': {
+    AppLanguage.en: 'Artifact',
+    AppLanguage.fr: 'Artefact'
+  },
+  'item_type_charm': {AppLanguage.en: 'Charm', AppLanguage.fr: 'Talisman'},
+  'item_type_potion': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'item_type_scroll': {AppLanguage.en: 'Scroll', AppLanguage.fr: 'Parchemin'},
+  'item_type_tome': {AppLanguage.en: 'Tome', AppLanguage.fr: 'Tome'},
+  'item_type_quest': {
+    AppLanguage.en: 'Quest item',
+    AppLanguage.fr: 'Objet de quête'
+  },
+  'item_type_quest_short': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
   'shop_filtered_empty': {
     AppLanguage.en: 'No items match this filter.',
     AppLanguage.fr: 'Aucun objet ne correspond à ce filtre.',
@@ -10156,6 +10179,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
   },
+  'slow_frames_setting_title': {
+    AppLanguage.en: 'Show slow frames',
+    AppLanguage.fr: 'Afficher les images lentes',
+  },
+  'slow_frames_setting_desc': {
+    AppLanguage.en:
+        'A small counter while you play, to find what stutters. Off, nothing runs.',
+    AppLanguage.fr:
+        'Un petit compteur pendant le jeu, pour trouver ce qui saccade. Éteint, rien ne tourne.',
+  },
+  'slow_frames_copy': {
+    AppLanguage.en: 'Copy report',
+    AppLanguage.fr: 'Copier le rapport',
+  },
+  'slow_frames_reset': {
+    AppLanguage.en: 'Reset',
+    AppLanguage.fr: 'Remettre à zéro',
+  },
+  'slow_frames_copied': {
+    AppLanguage.en: 'Report copied',
+    AppLanguage.fr: 'Rapport copié',
+  },
+  'slow_frames_chip': {
+    AppLanguage.en: 'slow {n} / {total} · worst {ms} ms',
+    AppLanguage.fr: 'lentes {n} / {total} · pire {ms} ms',
+  },
   'dice_speed_setting_title': {
     AppLanguage.en: 'Dice speed in fights',
     AppLanguage.fr: 'Vitesse des dés en combat',
@@ -13887,6 +13936,15 @@ String trAlignmentLabel(WidgetRef ref, String raw) {
     default:
       return tr(ref, 'alignment_neutral');
   }
+}
+
+/// The display name of a raw item type ('Weapon', 'Spellbook'...), in the
+/// player's language. [short] gives the filter chip's form ("Quête").
+/// An unknown type is shown as it is.
+String trItemType(WidgetRef ref, String raw, {bool short = false}) {
+  final key = 'item_type_${raw.toLowerCase()}';
+  if (raw == 'Quest' && short) return tr(ref, 'item_type_quest_short');
+  return _strings.containsKey(key) ? tr(ref, key) : raw;
 }
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —

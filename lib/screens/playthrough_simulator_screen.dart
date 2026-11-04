@@ -88,6 +88,7 @@ import '../data/nemesis.dart'
         trailFlagOf;
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
+import '../data/port_helpers.dart' show portShopIds;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';

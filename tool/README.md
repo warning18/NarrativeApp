@@ -7,9 +7,15 @@ install pillow`); nothing in the app reads a script.
 ## Art generators (write into `assets/`)
 
 Each one was run into a clean checkout (Pillow 13.0.0, Python 3) and wrote the
-**same bytes as the files in the repository** (no file changed, none added), so
+**same pictures as the files in the repository** (once `png8.py`, below, has stored them as palette PNGs: no file changed, none added), so
 the checked-in pictures are what the script makes. Run one again only if you
 change its recipe, and commit the pictures with it.
+
+The icons under `assets/icons/` are stored at the size they are drawn on (16x16;
+the skills' gems 32x32) and enlarged by `PixelIcon` with no smoothing, so the
+scripts write them that way and `test/icon_sizes_test.dart` keeps any icon over
+32 px out. `gen_fight_heads.py` still cuts the enemies' heads from the icons
+enlarged x8, so the heads are the same pictures as before.
 
 | Script | Writes | Notes |
 |---|---|---|
@@ -26,6 +32,16 @@ change its recipe, and commit the pictures with it.
 
 `assets/visuals/sea_beasts/` and the companion, ship, city and fighter art
 have no script here: the pictures themselves are the source.
+
+## Storing the pictures (after any generator)
+
+`python3 tool/png8.py` stores every picture under `assets/` that fits 256 colours
+as an 8-bit palette PNG, with nothing lost: a rewrite is kept only if it reads
+back as the same RGBA pixels and is smaller. The generators above save RGBA, so
+run it after one: `python3 tool/gen_banners.py && python3 tool/png8.py && git
+status assets` shows no change when the recipe did not. `--dry-run` says what it
+would do; `--check` lists the pictures that should be palette PNGs and are not
+(exit 1), for a guard. A picture with more than 256 colours is left alone.
 
 ## Checks (read the repository, write nothing)
 

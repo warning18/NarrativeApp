@@ -335,7 +335,6 @@ class _SimContext {
     this.signs = const {},
     this.clans = ClanData.empty,
     this.skillTrees = const {},
-    this.progression = SimProgression.offers,
     this.geography,
     this.clash = true,
     this.clashOff = const {},
@@ -461,10 +460,6 @@ class _SimContext {
   /// trees: what the offers draw from.
   final ClanData clans;
   final Map<String, dynamic> skillTrees;
-
-  /// How the character grows: the clans' offers (the game's rules since
-  /// v1.194), or the old skill points, perks and sign picks, to compare.
-  final SimProgression progression;
 
   /// The world's places and biomes (v1.197): the hazards on the roads.
   /// None, no hazards.
@@ -622,6 +617,13 @@ _SimResult _simulate(
   var alignment = 0;
   final flags = <String>{};
   final shops = <String>{};
+  // The shops the walk can reach (v1.766): a scene's, a port's at its
+  // settlement, a house's once built, the road's caravan; visited at the
+  // next choice, once a chapter at most (a port's again when the walk is
+  // back there a later chapter), from the chapter the shop opens.
+  final pendingShops = <String>[];
+  final shopVisitedInChapter = <String, int>{};
+  final sceneShops = <String>{};
   final quests = <String>{};
   var combatCount = 0;
   int? furthestChapter = chapterForNode(currentId);
@@ -648,7 +650,6 @@ _SimResult _simulate(
   final growth = character == null || sim == null
       ? null
       : (SimGrowth(
-          mode: sim.progression,
           tables: sim.growthTables,
           character: character,
           startingSkillPoints: (sim.professions[character.professionId]
@@ -1638,6 +1639,8 @@ _SimResult _simulate(
       hazardShare: share,
       world: geography,
     );
+    // The Wayfarer's Caravan on the road: its stall is looked at.
+    if (kind == RoadEventKind.caravan) pendingShops.add(caravanShopId);
     if (kind != RoadEventKind.hazard) return kind != null;
     final hazard = roadHazardFor(biome,
         fromNodeId: fromNodeId, toNodeId: toNodeId, historyLength: at)!;
@@ -1739,6 +1742,9 @@ _SimResult _simulate(
       }
       final id = ready.first;
       housesBuilt[id] = chapter;
+      final houseShop =
+          (houses[id] as Map?)?['unlocksShopId']?.toString() ?? '';
+      if (houseShop.isNotEmpty) pendingShops.add(houseShop);
       party?.housesBuilt(housesBuilt.keys,
           chapter: chapter, alignment: alignment);
       character?.rolls?.build(rollPowerOf(houses[id] as Map<String, dynamic>));
@@ -2005,6 +2011,12 @@ _SimResult _simulate(
     // each, then back to the camp -- as a player opening the chapter
     // would; with every place toured, the camp's main quest goes on.
     final here = node.settlement;
+    // A port's shops at its settlement.
+    final portId = here?.portId;
+    if (portId != null) {
+      final port = sim?.ports[portId];
+      if (port is Map<String, dynamic>) pendingShops.addAll(portShopIds(port));
+    }
     if (here != null &&
         here.isCamp &&
         here.chapter != null &&
@@ -2262,10 +2274,22 @@ _SimResult _simulate(
     applyPolitics(choice.politics,
         choicePoliticsKey(currentId, node.choices.indexOf(choice)));
     if ((choice.unlockShopId ?? '').isNotEmpty) {
-      final shopId = choice.unlockShopId!;
-      final firstVisit = shops.add(shopId);
+      pendingShops.add(choice.unlockShopId!);
+      sceneShops.add(choice.unlockShopId!);
+    }
+    final chapterNow = lastKnownChapter ?? 1;
+    while (pendingShops.isNotEmpty) {
+      final shopId = pendingShops.removeAt(0);
       final shop = sim?.shops[shopId];
-      if (firstVisit && character != null && sim != null && shop is Map) {
+      final opens =
+          (shop is Map ? shop['minChapter'] as num? : null)?.toInt() ?? 1;
+      // A scene's shop is found when the scene unlocks it, even before
+      // its chapter; one reached any other way only once it is open.
+      if (chapterNow < opens && !sceneShops.contains(shopId)) continue;
+      if (shopVisitedInChapter[shopId] == chapterNow) continue;
+      shopVisitedInChapter[shopId] = chapterNow;
+      shops.add(shopId);
+      if (character != null && sim != null && shop is Map) {
         gold = character.visitShop(
           shop.cast<String, dynamic>(),
           sim.items,
@@ -2352,8 +2376,7 @@ _SimResult _simulate(
 /// numbers, without the screen (the sign values and the offers were tuned
 /// with it, see signs.json and offers.dart); [tables] holds the gamedata
 /// files by name ('enemies', 'dice'...): without 'signs' the character
-/// never takes a sign, without 'factions' no clan comes. [progression]:
-/// the clans' offers, or the old skill points, perks and sign picks.
+/// never takes a sign, without 'factions' no clan comes.
 @visibleForTesting
 ({
   Map<String, ({int runs, int attempts, int won})> chapters,
@@ -2366,17 +2389,13 @@ _SimResult _simulate(
   required Map<String, dynamic> gameConfig,
   required int runs,
   required int seed,
-  SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
   SimPolicy policy = SimPolicy.naive,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final sim = _simContextOf(tables, gameConfig,
-      progression: progression,
-      clash: clash,
-      clashOff: clashOff,
-      policy: policy);
+      clash: clash, clashOff: clashOff, policy: policy);
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
@@ -2411,7 +2430,6 @@ _SimResult _simulate(
 _SimContext _simContextOf(
   Map<String, Map<String, dynamic>> tables,
   Map<String, dynamic> gameConfig, {
-  SimProgression progression = SimProgression.offers,
   bool clash = true,
   Set<String> clashOff = const {},
   List<String> startSpecs = const [],
@@ -2444,7 +2462,6 @@ _SimContext _simContextOf(
       titles: table('titles'),
     ),
     skillTrees: table('skill_trees'),
-    progression: progression,
     geography:
         Geography.parse(geography: table('geography'), biomes: table('biomes')),
     clash: clash,

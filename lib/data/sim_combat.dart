@@ -621,31 +621,10 @@ class SimCharacter {
           (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
         ) ??
         const <String, int>{};
-    final stock = <MapEntry<String, Map<String, dynamic>>>[
-      for (final raw in allShopStock(shop))
-        if (items[raw] is Map<String, dynamic>)
-          MapEntry(raw, items[raw] as Map<String, dynamic>),
-    ];
+    final stock = _shopItems(shop, items);
 
     // 1. Spellbooks: the profession's own, still unknown.
-    for (final entry in stock) {
-      final taughtSpellId = spellbookSpellIdFor(entry.value);
-      if (taughtSpellId == null) continue;
-      final spell = spells[taughtSpellId];
-      if (spell == null ||
-          purse < costOf(entry.value) ||
-          knownSpells.any((s) => s.id == spell.id) ||
-          !canLearnSpell(
-            spell,
-            professionId: professionId,
-            knownSpellIds: [for (final s in knownSpells) s.id],
-          )) {
-        continue;
-      }
-      purse -= costOf(entry.value);
-      knownSpells.add(spell);
-      spellbooksBought.add(spell.id);
-    }
+    purse = _buySpellbooks(stock, spells, purse);
 
     // 2. Potions: up to two charges per entry (an antidote is skipped --
     //    the model cures nothing but by spell).
@@ -719,6 +698,47 @@ class SimCharacter {
     return purse;
   }
 
+  /// What [shop] sells that [items] knows, in the shop's order.
+  List<MapEntry<String, Map<String, dynamic>>> _shopItems(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> items,
+  ) =>
+      [
+        for (final raw in allShopStock(shop))
+          if (items[raw] is Map<String, dynamic>)
+            MapEntry(raw, items[raw] as Map<String, dynamic>),
+      ];
+
+  /// Buys the spellbooks in [stock] that teach a spell the profession may
+  /// still learn and the [purse] pays for; returns the gold left.
+  int _buySpellbooks(
+    List<MapEntry<String, Map<String, dynamic>>> stock,
+    Map<String, SpellSpec> spells,
+    int purse,
+  ) {
+    int costOf(Map<String, dynamic> item) =>
+        (item['cost'] as num?)?.toInt() ?? 0;
+    for (final entry in stock) {
+      final taughtSpellId = spellbookSpellIdFor(entry.value);
+      if (taughtSpellId == null) continue;
+      final spell = spells[taughtSpellId];
+      if (spell == null ||
+          purse < costOf(entry.value) ||
+          knownSpells.any((s) => s.id == spell.id) ||
+          !canLearnSpell(
+            spell,
+            professionId: professionId,
+            knownSpellIds: [for (final s in knownSpells) s.id],
+          )) {
+        continue;
+      }
+      purse -= costOf(entry.value);
+      knownSpells.add(spell);
+      spellbooksBought.add(spell.id);
+    }
+    return purse;
+  }
+
   /// The competent player's visit (sim_policy.dart): the profession's own
   /// spellbook; potions up to [_potionsKept] charges; the best die the
   /// shop sells it may roll, when it beats the one in play; then gear,
@@ -741,30 +761,9 @@ class SimCharacter {
           (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
         ) ??
         const <String, int>{};
-    final stock = <MapEntry<String, Map<String, dynamic>>>[
-      for (final raw in allShopStock(shop))
-        if (items[raw] is Map<String, dynamic>)
-          MapEntry(raw, items[raw] as Map<String, dynamic>),
-    ];
+    final stock = _shopItems(shop, items);
 
-    for (final entry in stock) {
-      final taughtSpellId = spellbookSpellIdFor(entry.value);
-      if (taughtSpellId == null) continue;
-      final spell = spells[taughtSpellId];
-      if (spell == null ||
-          purse < costOf(entry.value) ||
-          knownSpells.any((s) => s.id == spell.id) ||
-          !canLearnSpell(
-            spell,
-            professionId: professionId,
-            knownSpellIds: [for (final s in knownSpells) s.id],
-          )) {
-        continue;
-      }
-      purse -= costOf(entry.value);
-      knownSpells.add(spell);
-      spellbooksBought.add(spell.id);
-    }
+    purse = _buySpellbooks(stock, spells, purse);
 
     void buyPotions(int upTo) {
       for (final entry in stock) {
