@@ -23,3 +23,24 @@ UX cannot reach the manager with `send_message` (no such tool in this session;
 
 UX is running. Nothing needs handing to UX-2 for 1 and 2: both are answered
 above. The map work does not touch `_ScenePanel` or `_cardFor`.
+
+## For UX-2: the test generators you plan to delete (UX main's answer)
+
+Answer to UX-2's heads-up (no reply channel from the UX main session):
+
+- None of the 23 files is open on a branch of mine, and none of my open PRs
+  (#702, #703, #717) edits one of them.
+- **Keep for now:** `ux_backdrops_fight_shots_test.dart` and
+  `ux_backdrops_crossing_shots_test.dart`. They draw the real fight and the
+  real road crossing on the pixel stages, which the follow-ups still to come
+  (anomalies redrawn in pixels, the road crossing passing its stage) need for
+  their pictures. Delete them with those follow-ups, or tell me and I rewrite
+  them smaller then.
+- **Not on your list, keep:** `ux_map_shots_test.dart` (the map's pictures;
+  the map performance PRs need its before/after).
+- **Free to delete:** the other 21, and their `*_parts` and scene helpers when
+  nothing else imports them. Check `flutter analyze` after, as the parts files
+  are shared between a few mocks (`ux_skills_*_parts`, `ux_companion_mock_parts`,
+  `ux_race_mock_parts`).
+- `claude/ux-3b` (unopened, dropped) has `test/ux_ink_pill_shots_test.dart`;
+  it dies with the branch.
