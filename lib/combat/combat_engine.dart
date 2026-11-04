@@ -892,9 +892,18 @@ double enemyHealthBaseMultiplier(int chapter) => enemyHealthFloorByChapter[
     (max(1, chapter) - 1).clamp(0, enemyHealthFloorByChapter.length - 1)];
 
 /// A regular enemy's damage floor in [chapter], as
-/// [enemyHealthBaseMultiplier].
-double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
-    (max(1, chapter) - 1).clamp(0, enemyDamageFloorByChapter.length - 1)];
+/// [enemyHealthBaseMultiplier], with [ordinaryDamageLift] from chapter 2 on.
+double enemyDamageBaseMultiplier(int chapter) =>
+    enemyDamageFloorByChapter[
+        (max(1, chapter) - 1).clamp(0, enemyDamageFloorByChapter.length - 1)] *
+    (chapter >= 2 ? ordinaryDamageLift : 1.0);
+
+/// The lift on a regular (non-boss) enemy's damage from chapter 2 on
+/// (v1.743). Clan dice, the specialisations, Vica and the x3 weakness had
+/// made the ordinary fights easier than meant, which the user did not
+/// want. Chapter 1 and the bosses keep their numbers. Measured with QA's
+/// 800 naive runs (seeds 11 and 23), in the PR that set it.
+const double ordinaryDamageLift = 1.15;
 
 /// A boss's own, lighter floor (any enemy with `phases`, see [BossPhase],
 /// or a solo-only unique): most of its difficulty comes from its phases,
