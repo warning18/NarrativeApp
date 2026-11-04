@@ -2,7 +2,7 @@
 // keeps every field of every choice, the ones with no control in the
 // editor included (hunts, showIfFlags, main-quest and travel markers, the
 // sneak round a fight, approval reactions). A scene saved unedited keeps
-// every field too (v1.819): before, its camp errand, the errand's kind, its
+// every field too (v1.820): before, its camp errand, the errand's kind, its
 // show/hide flags and its camp line in both languages were lost on every
 // save, turning the companions' loyalty errands into plain scenes.
 import 'dart:convert';
@@ -134,7 +134,7 @@ void main() {
     expect(politicsIfEditorText(const {}), isEmpty);
   });
 
-  // --- Scenes (v1.819) ---
+  // --- Scenes (v1.820) ---
 
   final raw = jsonDecode(File(StoryRepository.assetPath).readAsStringSync())
       as Map<String, dynamic>;

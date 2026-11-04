@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.819.0+855]
+## [1.820.0+856]
 
 - Edit Mode: saving a scene in the scene editor no longer erases parts of
   it. The editor used to drop a scene's camp errand, its kind, its
