@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:math' as math show max;
+import 'dart:math' as math show max, min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +47,7 @@ import '../widgets/journey_fx.dart'
     show FightJolt, fightJoltDuration, playFightJolt;
 import '../theme/stitched_ink.dart' show InkColors;
 import '../widgets/side_view/scene_windows.dart';
+import '../widgets/side_view/world_camera.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
@@ -77,6 +78,7 @@ Future<bool> runLandCrossing(
   final known = landEventsFrom(events);
   final ruler = await crossingRulerOf(ref, route);
   final stripPath = await crossingStripPath(ref, route);
+  final camera = await crossingCamera(ref, stripPath);
   if (!context.mounted) return false;
   final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) => LandCrossingScreen(
@@ -85,7 +87,8 @@ Future<bool> runLandCrossing(
         ruler: ruler.clanId,
         rulers: rulerPool(known, ruler.clanId, ruler.band),
         random: ref.read(landCrossingRandomProvider),
-        stripPath: stripPath),
+        stripPath: stripPath,
+        camera: camera),
   ));
   return arrived ?? false;
 }
@@ -100,6 +103,27 @@ Future<List<double>> crossingStripPath(WidgetRef ref, LandRoute route) async {
     return stripPathOf(strips, geo, route);
   } catch (_) {
     return const [];
+  }
+}
+
+/// The longest road the camera paints a crossing along (chart units): a
+/// crossing of a few days is a short walk on the strip; a road that the
+/// strip stretches over whole regions (the sea cliffs' road reaches from
+/// the first cliffs to the last, 535 units) keeps its own terrain's land.
+const double crossingCameraReach = 100;
+
+/// The camera for a crossing along [path], null when the road is too long
+/// for it or the strips cannot say ([crossingCameraReach]).
+Future<WorldCamera?> crossingCamera(WidgetRef ref, List<double> path) async {
+  if (path.length < 2) return null;
+  if (path.reduce(math.max) - path.reduce(math.min) > crossingCameraReach) {
+    return null;
+  }
+  try {
+    final strips = await ref.read(regionStripsProvider.future);
+    return WorldCamera(strips.zones);
+  } catch (_) {
+    return null;
   }
 }
 
@@ -195,6 +219,7 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
     this.rulers = const [],
     this.random,
     this.stripPath = const [],
+    this.camera,
   });
 
   final LandRoute route;
@@ -214,6 +239,11 @@ class LandCrossingScreen extends ConsumerStatefulWidget {
   /// (RegionStrips.pathOn): the day's x, and with it the window of the land
   /// on show. Empty: the window follows the route's own id.
   final List<double> stripPath;
+
+  /// The world camera, when the road is short enough for it: the land of
+  /// each day is then the camera's at the day's x (the region's kit, or the
+  /// seam where two meet), else the route's own terrain.
+  final WorldCamera? camera;
 
   @override
   ConsumerState<LandCrossingScreen> createState() => _LandCrossingScreenState();
@@ -250,6 +280,23 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     return x == null
         ? (sceneWindowOfId(widget.route.id) + _day) % sceneWindowCount
         : sceneWindowAt(x);
+  }
+
+  /// The camera's x on [day], null without a camera.
+  double? _cameraX(int day) => widget.camera == null
+      ? null
+      : pathXAt(widget.stripPath, (day + 0.5) / math.max(1, widget.route.days));
+
+  /// What the camera shows on [day]: an id that changes whenever the land
+  /// does (its window, its kit, a seam), and the x it stands for.
+  final Map<int, double> _lookX = {};
+  int _lookOfDay(int day) {
+    final x = _cameraX(day)!;
+    final cam = widget.camera!;
+    final look =
+        Object.hash(cam.windowAt(x), cam.kitAt(x), cam.seamAt(x)?.start);
+    _lookX[look] = x;
+    return look;
   }
 
   List<SideLayer> _sceneLayers(
@@ -841,9 +888,14 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                         key: const Key('crossing_scene'),
                         height: _crossingSceneHeight,
                         layers: _sceneLayers(
-                            _windowOfDay(),
+                            widget.camera == null
+                                ? _windowOfDay()
+                                : _lookOfDay(_day),
                             (v) => withHourStars(
-                                crossingLayers(terrain, progress, version: v),
+                                widget.camera?.layersAt(_lookX[v] ?? 0,
+                                        progress: progress) ??
+                                    crossingLayers(terrain, progress,
+                                        version: v),
                                 phase),
                             reduceMotion:
                                 MediaQuery.of(context).disableAnimations),
