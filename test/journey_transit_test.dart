@@ -145,18 +145,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     // Set down in another district of the same city along no choice (from
-    // the lower town into the Undercroft), the mark comes by the streets from
-    // where it stood and is home after. (From the street, 250: the family
+    // the lower town into the Undercroft), the walk is told in words, and
+    // ends by itself. (The mark that came by the generated streets is gone
+    // with them, N11: the stored chart shows where the party stands.) (From the street, 250: the family
     // house, 470, is a building of its own since the scene-or-map rule.)
     play.jumpTo('250');
     await settleApp(tester);
     await tester.pump(const Duration(seconds: 4));
     await clearCards();
-    expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     play.choose('855');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byKey(const ValueKey('journey_arriving')), findsOneWidget);
     // Along the streets of one city there is no road to draw, but the walk
     // is told in a line (v1.537): no world map, only the words.
     expect(find.byKey(_transit), findsOneWidget);
@@ -165,7 +164,6 @@ void main() {
     expect(walk, anyOf(contains('the Undercroft'), contains('les Souterrains')),
         reason: walk);
     await tester.pump(const Duration(seconds: 4));
-    expect(find.byKey(const ValueKey('journey_arriving')), findsNothing);
     expect(find.byKey(_transit), findsNothing);
     expect(tester.takeException(), isNull);
 
@@ -179,23 +177,32 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
     await settleApp(tester);
-    // The stops of every way out, read in the language of the moment.
+    // The stops of every way out (the rows of the city's chart, each one
+    // opening its sheet), read in the language of the moment.
     Future<List<String>> roadLines(String label) async {
       final lines = <String>[];
       for (var i = 0; i < 3; i++) {
-        if (find.byKey(ValueKey('journey_step_$i')).evaluate().isEmpty) {
-          continue;
-        }
-        await tester.tap(find.byKey(ValueKey('journey_step_$i')));
+        final row = find.byKey(ValueKey('journey_city_row_$i'));
+        if (row.evaluate().isEmpty) continue;
+        await tester.ensureVisible(row);
+        await tester.tap(row);
         await tester.pump(const Duration(milliseconds: 500));
         lines.addAll([
           for (final t in tester.widgetList<Text>(find.textContaining(label)))
             t.data!,
         ]);
+        await tester.tap(find.byKey(const ValueKey('journey_city_not_now')));
+        await tester.pump(const Duration(milliseconds: 500));
       }
       return lines;
     }
 
+    // The chart opens on the whole town: the District tab shows the ways.
+    final district = find.byKey(const Key('journey_tab_district'));
+    if (district.evaluate().isNotEmpty) {
+      await tester.tap(district);
+      await tester.pump(const Duration(milliseconds: 600));
+    }
     final roads = await roadLines('Road: ');
     expect(roads, isNotEmpty, reason: 'a way out names its road');
     expect(roads.any((t) => t.contains('Road: The Harbour Chain')), isTrue,
