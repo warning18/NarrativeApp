@@ -36,6 +36,7 @@ import '../data/encounter_text.dart';
 import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
 import '../data/narration_clips.dart';
+import '../data/narration_pages.dart';
 import '../data/narration_tokens.dart';
 import '../data/politics_events.dart';
 import '../data/port_helpers.dart';
@@ -83,7 +84,8 @@ import '../providers/politics_provider.dart';
 import '../providers/road_random_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
-import '../providers/story_text_provider.dart' show storyTextDoneProvider;
+import '../providers/story_text_provider.dart'
+    show storyTextDoneProvider, storyTextSkipProvider;
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
@@ -259,7 +261,7 @@ class _StoryView extends ConsumerWidget {
     // The same text less the lines an earlier choice earned: those come
     // after it as echoes, with the choice that earned them.
     final parts = node == null
-        ? (text: '', echoes: const <SceneEcho>[])
+        ? (text: '', pages: const [''], echoes: const <SceneEcho>[])
         : composeNarrationParts(node, session, story, french: french);
     // Plain scenes read on the way here open this one.
     final preludes = ref.watch(pendingPreludeProvider);
@@ -546,13 +548,40 @@ class _StoryView extends ConsumerWidget {
     // them at once); the choices come once they have. A folded place shows
     // no text, so its lists are there from the start.
     final isEditing = ref.watch(appModeProvider) == AppMode.edit;
+    // A scene in pages (narration_pages.dart, v1.750) is read a page at a
+    // time: Continue turns the page, its choices wait on the last one, and
+    // each page writes itself out on its own.
+    final pageKey = scenePageKey(playState, node.id);
+    final page =
+        scenePageOf(ref.watch(scenePageProvider), pageKey, parts.pages.length);
+    final firstPage = page == 0;
+    final lastPage = page >= parts.pages.length - 1;
+    final pageText = parts.pages.length > 1 ? parts.pages[page] : parts.text;
     final revealKey = isEditing
         ? null
-        : '${node.id}|${playState.history.length}|${playState.isInExcursion}';
-    final choicesReady = narrationFolded ||
-        revealKey == null ||
+        : '${node.id}|${playState.history.length}|${playState.isInExcursion}'
+            '${page > 0 ? '#p$page' : ''}';
+    final pageWritten = revealKey == null ||
         storyTextShownAtOnce(context) ||
         ref.watch(storyTextDoneProvider).contains(revealKey);
+    final choicesReady = narrationFolded || (pageWritten && lastPage);
+    // A page before the last: Continue in the choices' place writes it out
+    // at once, then turns it.
+    final pageContinue = narrationFolded || lastPage
+        ? null
+        : SizedBox(
+            key: ValueKey('page_$pageKey#$page'),
+            width: double.infinity,
+            child: FilledButton.icon(
+              key: const ValueKey('story_page_continue'),
+              onPressed: () => pageWritten
+                  ? ref.read(scenePageProvider.notifier).state =
+                      (key: pageKey, page: page + 1)
+                  : ref.read(storyTextSkipProvider.notifier).state++,
+              icon: const Icon(Icons.arrow_forward, size: 18),
+              label: Text(tr(ref, 'journey_continue')),
+            ),
+          );
     // Reading the place's scene: the place waits behind Enter.
     final readingScene = hubFold != null && !narrationFolded;
     void setNarrationFolded(bool folded) =>
@@ -837,9 +866,13 @@ class _StoryView extends ConsumerWidget {
                                                   child: Center(
                                                     child: _StoryText(
                                                       revealKey: revealKey,
-                                                      text: parts.text,
-                                                      prelude: preludes,
-                                                      echoes: parts.echoes,
+                                                      text: pageText,
+                                                      prelude: firstPage
+                                                          ? preludes
+                                                          : const [],
+                                                      echoes: lastPage
+                                                          ? parts.echoes
+                                                          : const [],
                                                       echoCaption: tr(
                                                           ref, 'echo_because'),
                                                       uiTheme: node.uiTheme,
@@ -847,14 +880,19 @@ class _StoryView extends ConsumerWidget {
                                                           ref, node.uiTheme),
                                                       moodLabel: _moodLabel(
                                                           ref, node.mood),
-                                                      epilogue: epilogue,
+                                                      epilogue: lastPage
+                                                          ? epilogue
+                                                          : null,
                                                       speakerLabel:
                                                           speakerLabel,
-                                                      aftermath:
-                                                          pendingAftermath,
+                                                      aftermath: firstPage
+                                                          ? pendingAftermath
+                                                          : null,
                                                       aftermathHeading: tr(ref,
                                                           'aftermath_heading'),
-                                                      outcome: checkOutcome,
+                                                      outcome: firstPage
+                                                          ? checkOutcome
+                                                          : null,
                                                       epilogueHeading: tr(ref,
                                                           'epilogue_heading'),
                                                     ),
@@ -876,9 +914,13 @@ class _StoryView extends ConsumerWidget {
                                                       ),
                                                     _StoryText(
                                                       revealKey: revealKey,
-                                                      text: parts.text,
-                                                      prelude: preludes,
-                                                      echoes: parts.echoes,
+                                                      text: pageText,
+                                                      prelude: firstPage
+                                                          ? preludes
+                                                          : const [],
+                                                      echoes: lastPage
+                                                          ? parts.echoes
+                                                          : const [],
                                                       echoCaption: tr(
                                                           ref, 'echo_because'),
                                                       uiTheme: node.uiTheme,
@@ -886,14 +928,19 @@ class _StoryView extends ConsumerWidget {
                                                           ref, node.uiTheme),
                                                       moodLabel: _moodLabel(
                                                           ref, node.mood),
-                                                      epilogue: epilogue,
+                                                      epilogue: lastPage
+                                                          ? epilogue
+                                                          : null,
                                                       speakerLabel:
                                                           speakerLabel,
-                                                      aftermath:
-                                                          pendingAftermath,
+                                                      aftermath: firstPage
+                                                          ? pendingAftermath
+                                                          : null,
                                                       aftermathHeading: tr(ref,
                                                           'aftermath_heading'),
-                                                      outcome: checkOutcome,
+                                                      outcome: firstPage
+                                                          ? checkOutcome
+                                                          : null,
                                                       epilogueHeading: tr(ref,
                                                           'epilogue_heading'),
                                                     ),
@@ -939,8 +986,9 @@ class _StoryView extends ConsumerWidget {
                                   switchOutCurve: Curves.easeIn,
                                   transitionBuilder: _nodeTransition,
                                   child: !choicesReady
-                                      ? const SizedBox.shrink(
-                                          key: ValueKey('choices_waiting'))
+                                      ? pageContinue ??
+                                          const SizedBox.shrink(
+                                              key: ValueKey('choices_waiting'))
                                       : readingScene
                                           ? _EnterPlaceButton(
                                               key: ValueKey(

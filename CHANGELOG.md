@@ -26,6 +26,44 @@ isn't reconstructable from git history alone.
   user). `docs/proposals/map-performance.md` lists the speed steps that
   follow, each its own PR.
 
+## [1.753.0+789]
+
+- The app no longer ships dog pictures nothing reads: the three `rotations`
+  folders (the sitting dog, the angel's and the demon's) now list only their
+  `south.png`, and the unused bark frames are left out (about 65 KB less).
+  The art stays in the repository, as source. Nothing changes on screen.
+
+## [1.752.0+788]
+
+- The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the
+  Mother of Wrecks) are WebP instead of PNG: 1.07 MB down to 0.19 MB in the
+  app, the largest saving among the pictures (they were 62% of all PNG bytes).
+  They look the same, soft halos included (a 64-colour PNG was tried and
+  dropped: it turned the leviathan's dark halo into a hard-edged ellipse).
+  `test/sea_beast_sprites_test.dart` checks each loads, is 840 px wide and
+  keeps its soft edge.
+- Tests: `qa_assets_declared_test.dart` also counts `.webp` files when it checks
+  every image folder is declared.
+
+## [1.751.0+787]
+
+- **Narrative: a page break in `6010_record`.** The Reliquary's records scene
+  uses the `[PAGE]` marker of v1.750 where the Unmaking roll ends and the Rite
+  roll begins (about 600 and 575 characters in English, 700 and 650 in
+  French). The four journey endings keep the single `[EPILOGUE]` break that
+  v1.750 gave them: their pages already follow the story's own breaths (the
+  return, then the undoing of the night). No text, id, choice or flag changed.
+
+## [1.750.0+786]
+
+- **Core: a scene can be read in pages.** A `[PAGE]` marker in a scene's
+  text, and an ending's `[EPILOGUE]` (`[ÉPILOGUE]`), cut its reading into
+  pages: the first pages end on Continue, and the scene's choices wait on
+  its last page. Each page writes itself out on its own. The node keeps its
+  id, its choices and its one narration recording, and a game reopened
+  inside a scene starts on its first page. The four written endings now
+  read in two pages: the return, then the epilogue with "Begin again".
+
 ## [1.749.0+785]
 
 - Code: `story_player_screen.dart` (4,479 lines) is cut into the main file
