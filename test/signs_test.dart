@@ -217,12 +217,7 @@ void main() {
       expect(def.isDuo, isFalse);
     });
 
-    test('one pick each odd level; favour levels every three signs', () {
-      expect(signPicksFor(1, 2), 0);
-      expect(signPicksFor(2, 3), 1);
-      expect(signPicksFor(1, 3), 1);
-      expect(signPicksFor(1, 9), 4);
-      expect(signPicksFor(5, 5), 0);
+    test('favour levels every three signs', () {
       expect(favourLevelFor(0), 0);
       expect(favourLevelFor(2), 0);
       expect(favourLevelFor(3), 1);

@@ -29,13 +29,6 @@ const List<int> branchSkillPointCosts = [1, 1, 2, 3];
 int branchSkillPointCost(int index) =>
     branchSkillPointCosts[index.clamp(0, branchSkillPointCosts.length - 1)];
 
-/// Skill points it costs to learn [skillId] with points: its place on its
-/// branch, or one for a skill off the tree (a reputation skill).
-int skillPointCostOf(String skillId, List<SkillBranch> branches) {
-  final place = branchPlaceOf(skillId, branches);
-  return place == null ? 1 : branchSkillPointCost(place.index);
-}
-
 class SkillBranch {
   const SkillBranch({
     required this.id,

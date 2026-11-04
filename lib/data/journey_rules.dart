@@ -29,11 +29,6 @@ enum DayPhase { dawn, day, dusk, night }
 DayPhase dayPhaseOf(int watch) =>
     DayPhase.values[watch.clamp(0, watchesPerDay - 1)];
 
-/// The hour (0..23) the clock shows in [watch]: each watch is six hours
-/// and shows its middle one, so a screen that wants an hour gets the same
-/// one for the same save (dawn 6, day 12, dusk 18, night 0).
-int hourOfWatch(int watch) => (6 + 6 * watch.clamp(0, watchesPerDay - 1)) % 24;
-
 /// Watches a walk between two places takes (the camp and its places, see
 /// camp_travel.dart): two steps' worth, for one ration.
 const int walkWatches = 2;

@@ -153,8 +153,6 @@ class LandEvent {
   final String ruler;
   final RulerBand? band;
 
-  bool get isRulers => ruler.isNotEmpty;
-
   String nameFor(bool fr) => fr && nameFr.isNotEmpty ? nameFr : name;
   String textFor(bool fr) => fr && textFr.isNotEmpty ? textFr : text;
 }

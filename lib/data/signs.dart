@@ -814,17 +814,6 @@ class SignOffer {
 
 // --- The rules --------------------------------------------------------------
 
-/// Sign offers a level-up from [levelBefore] to [levelAfter] brings: one
-/// for every odd level reached (3, 5, 7...). Even levels bring a perk (see
-/// perkPicksFor), so every level brings one or the other.
-int signPicksFor(int levelBefore, int levelAfter) {
-  var picks = 0;
-  for (var level = max(1, levelBefore) + 1; level <= levelAfter; level++) {
-    if (level.isOdd) picks++;
-  }
-  return picks;
-}
-
 /// The favour level [favour] signs taken from a patron add up to.
 int favourLevelFor(int favour) =>
     min(maxFavourLevel, max(0, favour) ~/ _favourPerLevel);
