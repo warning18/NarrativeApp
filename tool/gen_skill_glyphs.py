@@ -53,7 +53,6 @@ SCHOOLS = {
         'pack_howl': ["..###..", ".##....", "##.....", "##.....", ".##....", "..###..", "......."],
         'warcry': ["#.....#", ".#...#.", "..#.#..", "#.#.#.#", "..#.#..", ".#...#.", "#.....#"],
     },
-<<<<<<< HEAD
     # The wind skills: the elves' and the rangers' and the shadow's.
     'wind': {
         'elf_arcane_focus': ["...#...", "...#...", "..###..", "#######", "..###..", "...#...", "...#..."],
@@ -63,21 +62,33 @@ SCHOOLS = {
         'rogue_shadow_clone': [".#####.", "#######", "#.###.#", "#######", "#######", "#######", "#.#.#.#"],
         'steady_aim': ["...#...", "...#...", "##.#.##", ".#####.", "##.#.##", "...#...", "...#..."],
     },
-=======
->>>>>>> origin/main
+    # The earth skills on the shield-shaped gem (the stances and the skins).
+    'earth_shield': {
+        'brace': ["..#.#..", "..#.#..", "..#.#..", ".##.##.", ".##.##.", "##...##", "#######"],
+        'bulwark_stance': ["#######", "###.###", "#######", "#.###.#", "#######", "###.###", "#######"],
+        'dwarf_stoneskin': [".#####.", "#######", "###.###", "#######", "##.####", "#######", ".#####."],
+        'stone_resolve': ["...#...", "..###..", "..###..", ".#####.", ".#####.", "#######", "#######"],
+        'warrior_iron_stance': ["######.", "#######", ".#####.", "..###..", "..###..", ".#####.", "#######"],
+    },
 }
+
+
+# Where the 7x7 glyph starts on the gem: (5, 5) in a diamond's middle; a shield
+# has its room higher.
+OFFSET = {'earth_shield': (4, 3)}
 
 
 def draw(school, skill, bitmap):
     gem = Image.open(os.path.join(GEMS, school + '.png')).convert('RGBA')
     px = gem.load()
+    ox, oy = OFFSET.get(school, (5, 5))
     for y, row in enumerate(bitmap):
         assert len(row) == 7, (skill, row)
         for x, ch in enumerate(row):
             if ch == '#':
-                px[x + 5, y + 5] = CREAM
+                px[x + ox, y + oy] = CREAM
             elif ch == 'o':
-                px[x + 5, y + 5] = SHADE
+                px[x + ox, y + oy] = SHADE
     gem.save(os.path.join(ICONS, skill + '.png'))
 
 
