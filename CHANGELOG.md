@@ -15,6 +15,15 @@ isn't reconstructable from git history alone.
   `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
   the ending. Pure cut and paste, nothing changes on screen or in the rules.
 
+## [1.743.0+779]
+
+- **Core: ordinary fights are a little harder again from chapter 2 on.**
+  Clan dice, the specialisations, Vica and the x3 weakness had made ordinary
+  fights easier than meant. Regular (non-boss) enemies now hit 15% harder
+  from chapter 2 on; chapter 1 and the bosses keep their numbers. In the
+  simulator (800 naive runs) encounters won go from 75.5% to 71.0%, and
+  every boss stays within 7 points of its target win rate.
+
 ## [1.742.0+778]
 
 - **Core: two unused tables and three always-0 enemy fields removed (R1/R2).**
