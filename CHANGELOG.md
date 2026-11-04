@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.731.0+767]
+
+- **Core: a detour begun is saved as the scene it leads to (#695).** The
+  choice that sets off a detour has already taken its effects and its
+  time when the detour starts; the save still stood before the choice, so
+  a game closed mid-detour reopened there and the choice could be taken a
+  second time (its gold and effects again, the same detour drawn again).
+  The save now stands where the detour leads; the detour itself is still
+  not saved.
+
 ## [1.730.0+766]
 
 - **Core: a save that can't be read never strands the player (#693).**
