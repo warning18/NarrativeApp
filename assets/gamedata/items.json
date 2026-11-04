@@ -62,7 +62,7 @@
     "id": "void_banner",
     "itemName": "Void Banner (Grey Shroud)",
     "itemType": "Artifact",
-    "damage": 25,
+    "damage": 0,
     "cost": 250,
     "isEquippable": true,
     "equipSlot": "Top",

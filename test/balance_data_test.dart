@@ -156,6 +156,9 @@ void main() {
       }
       final banner = items['void_banner'] as Map<String, dynamic>;
       expect(banner['attackDamage'], lessThan(12));
+      // Its old 'damage' of 25 was never read (gear deals attackDamage):
+      // 0, like every other item (v1.791).
+      expect(banner['damage'] ?? 0, 0);
     });
 
     test('a starting Top piece is not as tough as a chapter-4 one', () {
