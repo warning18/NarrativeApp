@@ -900,9 +900,6 @@ class PlayerSession {
   /// Cleared with the pack on permadeath.
   final Map<String, ItemOrigin> itemOrigins;
 
-  bool get hasLegacy =>
-      legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
-
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
   int get maxMana => maxManaFor(wisdom: wisdom) + perkEffects.maxMana;
 

@@ -16,6 +16,14 @@ isn't reconstructable from git history alone.
   The same steps run in the same order: two seeded batches give
   byte-identical results. Nothing changes in play.
 
+## [1.789.0+825]
+
+- Code cleanup (R4, batch 3): seven more names only the tests used are
+  removed: two copies of the geography's holder and room rules, a sea
+  event's and a sign offer's lookups, two copies of the people codex's
+  fields and the save's legacy shortcut. Their tests now check the code
+  the game uses. Nothing changes in play.
+
 ## [1.788.0+824]
 
 - **Cleanup: five ship-log lines nothing says any more.** The sail's

@@ -281,7 +281,8 @@ void main() {
             patrons: pair,
             held: [_held('red_armor'), _held('blue_armor')],
             seed: seed)!;
-        final card = offer.cardFor('duo_red_blue');
+        final card =
+            offer.cards.where((c) => c.signId == 'duo_red_blue').firstOrNull;
         if (card != null) {
           duos++;
           expect(card.rarity, isNot(SignRarity.common));

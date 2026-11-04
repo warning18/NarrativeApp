@@ -1129,7 +1129,6 @@ void main() {
       expect(s.legacyGold, 100);
       expect(s.legacyDiceIds, containsAll(['starter_die', 'iron_die']));
       expect(s.legacySpellIds, ['spell_frost_bind']);
-      expect(s.hasLegacy, isTrue);
     });
 
     test('a plain reset keeps the legacy, a full reset wipes it', () async {
@@ -1141,7 +1140,9 @@ void main() {
       expect(notifier.state.gold, isNot(50));
       await notifier.resetSession(keepLegacy: false);
       expect(notifier.state.newGamePlusCycle, 0);
-      expect(notifier.state.hasLegacy, isFalse);
+      expect(notifier.state.legacyGold, 0);
+      expect(notifier.state.legacyDiceIds, isEmpty);
+      expect(notifier.state.legacySpellIds, isEmpty);
     });
 
     test('startNewGame spends the legacy on the new character', () async {
@@ -1167,7 +1168,9 @@ void main() {
       expect(s.knownSpellIds,
           ['spell_arcane_bolt', 'spell_mana_ward', 'spell_frost_bind']);
       expect(s.newGamePlusCycle, 1);
-      expect(s.hasLegacy, isFalse);
+      expect(s.legacyGold, 0);
+      expect(s.legacyDiceIds, isEmpty);
+      expect(s.legacySpellIds, isEmpty);
     });
 
     test('the cycle and legacy round-trip through JSON', () {
