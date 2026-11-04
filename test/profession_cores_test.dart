@@ -9,6 +9,8 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/profession_cores.dart';
+import 'package:narrative_data_app/combat/specialisations.dart'
+    show fireAfterHeal;
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
@@ -26,16 +28,28 @@ void main() {
 
   test('the Watchfire takes what heals past full, up to half', () {
     expect(
-        watchfireAfterHeal(
-            fire: 0, healing: 30, currentHealth: 90, maxHealth: 100),
+        fireAfterHeal(
+            fire: 0,
+            healing: 30,
+            currentHealth: 90,
+            maxHealth: 100,
+            beacon: false),
         20);
     expect(
-        watchfireAfterHeal(
-            fire: 45, healing: 30, currentHealth: 100, maxHealth: 100),
+        fireAfterHeal(
+            fire: 45,
+            healing: 30,
+            currentHealth: 100,
+            maxHealth: 100,
+            beacon: false),
         50);
     expect(
-        watchfireAfterHeal(
-            fire: 5, healing: 10, currentHealth: 50, maxHealth: 100),
+        fireAfterHeal(
+            fire: 5,
+            healing: 10,
+            currentHealth: 50,
+            maxHealth: 100,
+            beacon: false),
         5);
     expect(watchfireBurn(20), 40);
   });
