@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.800.0+836]
+
+- Code cleanup (N11, step 3): the code of the generated city street plan
+  is removed, now that v1.798 draws every city from its stored plan
+  (1,200 lines and its test), and so is a district-arrival provider
+  nothing watched. Nothing in the game changes.
+
 ## [1.799.0+835]
 
 - Code cleanup: the retired level-up sign pick is removed (its offer roll,
