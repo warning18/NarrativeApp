@@ -177,15 +177,33 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));
     await settleApp(tester);
-    // The stops of every way out (the rows of the city's chart, each one
-    // opening its sheet), read in the language of the moment.
+    // The stops of every way out, read in the language of the moment: the
+    // list of places under the map (raised by its handle) has a row for each
+    // way out, and a tap on it opens the way's sheet.
+    final out = find.byWidgetPredicate((w) =>
+        w.key is ValueKey<String> &&
+        (w.key as ValueKey<String>).value.startsWith('place_row_out:'));
     Future<List<String>> roadLines(String label) async {
+      // The chart opens on the whole town: the District tab goes in.
+      final district = find.byKey(const Key('journey_tab_district'));
+      if (find.byKey(const Key('places_handle')).evaluate().isEmpty &&
+          out.evaluate().isEmpty &&
+          district.evaluate().isNotEmpty) {
+        await tester.tap(district);
+        await tester.pump(const Duration(milliseconds: 600));
+      }
+      final handle = find.byKey(const Key('places_handle'));
+      if (out.evaluate().isEmpty && handle.evaluate().isNotEmpty) {
+        await tester.tap(handle);
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 300));
+        }
+      }
       final lines = <String>[];
-      for (var i = 0; i < 3; i++) {
-        final row = find.byKey(ValueKey('journey_city_row_$i'));
-        if (row.evaluate().isEmpty) continue;
-        await tester.ensureVisible(row);
-        await tester.tap(row);
+      final count = out.evaluate().length;
+      for (var i = 0; i < count; i++) {
+        await tester.ensureVisible(out.at(i));
+        await tester.tap(out.at(i));
         await tester.pump(const Duration(milliseconds: 500));
         lines.addAll([
           for (final t in tester.widgetList<Text>(find.textContaining(label)))
@@ -197,12 +215,6 @@ void main() {
       return lines;
     }
 
-    // The chart opens on the whole town: the District tab shows the ways.
-    final district = find.byKey(const Key('journey_tab_district'));
-    if (district.evaluate().isNotEmpty) {
-      await tester.tap(district);
-      await tester.pump(const Duration(milliseconds: 600));
-    }
     final roads = await roadLines('Road: ');
     expect(roads, isNotEmpty, reason: 'a way out names its road');
     expect(roads.any((t) => t.contains('Road: The Harbour Chain')), isTrue,
@@ -211,6 +223,16 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     await settleApp(tester);
+    // Entered again in French: the way sheets of a city already open when the
+    // language changes keep the English road names until it is re-entered.
+    play.jumpTo('250');
+    await settleApp(tester);
+    await tester.pump(const Duration(seconds: 4));
+    await clearCards();
+    play.jumpTo('960');
+    await settleApp(tester);
+    await tester.pump(const Duration(seconds: 6));
+    await clearCards();
     final routes = await roadLines('Route\u00a0: ');
     expect(routes, isNotEmpty, reason: 'the road is named in French too');
     expect(
