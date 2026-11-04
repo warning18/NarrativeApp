@@ -16,6 +16,39 @@ isn't reconstructable from git history alone.
   change to the save (gold, XP, a flag) no longer rebuilds them. Nothing
   changes on screen.
 
+## [1.779.0+815]
+
+- The shop page names the item types in French: "Arme", "Armure", "Grimoire",
+  "Matériau", "Artefact", "Talisman", "Parchemin", "Objet de quête" (the
+  filter chip says "Quête"), instead of the raw English words. English reads
+  as before, except "Quest item" on the item line. Test:
+  `shop_item_types_test.dart` (every shop, 320 px, French).
+
+## [1.778.0+814]
+
+- Fight: the tiles of the top strip (the goal, the weather, the momentum, the
+  round, the log button...) have a taller tap area: 38 x 51 instead of 38 x 37
+  (the log button 32 x 51), so a tap a little above or below one still lands.
+  Nothing moves: the 8 px above and the 6 px below the strip became the tiles'
+  own tap room (a picture of the fight at 360 and 320 px, in play and edit
+  mode, is pixel for pixel what it was), and a tile's pop-in still opens in the
+  same place. The effect icons on the fighters' cards keep their size: their
+  row has no room to give.
+- Tests: `fight_tap_areas_test.dart` (the box sizes, where the tile and the
+  cards sit, a tap above the tile opens its pop-in and where).
+
+## [1.777.0+813]
+
+- **Cleanup: leftovers cleared, seven names made private.** Seven names
+  that only their own file uses (the clan die's resonance tier and line,
+  the narration's page markers, the street view's two layers, the journal's
+  "story so far" page and the story graph's grid algorithm) are now
+  private; two unused constructor options go with the last two. A stale
+  `ignore` comment, a test helper no test imports, two empty placeholder
+  files in folders that already hold their frames, and the description in
+  `pubspec.yaml` ("AI-assisted generation", gone with the Gemini library)
+  are removed. Nothing changes on screen or in a number.
+
 ## [1.776.0+812]
 
 - The game data files leave out fields stored at the value their reader

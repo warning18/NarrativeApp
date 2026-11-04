@@ -183,7 +183,8 @@ List<SideLayer> streetLayers({
 
 /// The overlay: the hour's wash, then the lights over it, so they are not
 /// dimmed with the evening. A pool of window light lies on the street.
-SideLayer streetOverlay({required FacadeStyle style, required DayPhase phase}) {
+SideLayer _streetOverlay(
+    {required FacadeStyle style, required DayPhase phase}) {
   final wash = hourWash(phase);
   final lit = phase == DayPhase.dusk || phase == DayPhase.night;
   return SideLayer(0, (canvas, size, scroll, t, u) {
@@ -206,7 +207,7 @@ SideLayer streetOverlay({required FacadeStyle style, required DayPhase phase}) {
 
 /// The party at the door: the hero, small, with the cloak and the hat of
 /// the deck and the walk.
-SideLayer streetParty({required FacadeStyle style}) {
+SideLayer _streetParty({required FacadeStyle style}) {
   return SideLayer(0, (canvas, size, scroll, t, u) {
     final box = facadeBoxFor(style, size.width / u, streetKerb);
     // On the pavement beside the door, clear of the pin that stands before it.
@@ -287,8 +288,8 @@ class StreetViewScene extends StatelessWidget {
                 streetLayers(style: style, phase: phase, sky: sky),
                 'street-${style.name}',
                 sceneVersionAt('$kind|$name', 0)),
-            actors: party ? streetParty(style: style) : null,
-            overlay: streetOverlay(style: style, phase: phase),
+            actors: party ? _streetParty(style: style) : null,
+            overlay: _streetOverlay(style: style, phase: phase),
             particles: streetParticles(sky),
             intensity: sky == WeatherKind.fog ? 0.7 : 0.8,
             moving: false,
