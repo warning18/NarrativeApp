@@ -5,7 +5,8 @@ import 'dart:math';
 import 'package:flutter/foundation.dart' show mapEquals, visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart'
+    show Provider, ProviderListenableSelect;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
@@ -6118,13 +6119,23 @@ CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
 }
 
 /// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
-final campRollsProvider =
-    Provider<CampRolls>((ref) => campRollsOf(ref.watch(playerSessionProvider)));
+final campRollsProvider = Provider<CampRolls>((ref) {
+  // Only what the roll houses read (P4): other changes leave the sheets be.
+  ref.watch(playerSessionProvider.select((s) => (
+        built: s.builtHouseIds,
+        reroll: s.rerollCharges,
+        banish: s.banishCharges,
+        raise: s.raiseCharges,
+        progress: s.raiseProgress,
+        bans: s.rollBans,
+      )));
+  return campRollsOf(ref.read(playerSessionProvider));
+});
 
 /// The wards on the road running now, each clan with its roads left
 /// (road_wards.dart), for the Journey's mark (`ward_mark`).
-final roadWardsProvider = Provider<List<RoadWard>>(
-    (ref) => roadWardsOf(ref.watch(playerSessionProvider).rollBans));
+final roadWardsProvider = Provider<List<RoadWard>>((ref) =>
+    roadWardsOf(ref.watch(playerSessionProvider.select((s) => s.rollBans))));
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {
