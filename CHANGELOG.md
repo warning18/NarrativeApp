@@ -18,6 +18,13 @@ isn't reconstructable from git history alone.
   assignment returned directly and the expedition's reward card declared
   `late`. Nothing changes on screen or in a number.
 
+## [1.804.0+840]
+
+- Code cleanup (split 4f, step 1): the save's model (`PlayerSession`, its
+  constants and small rules) leaves `player_session_provider.dart`
+  (6,153 lines) for `player_session_model.dart`, a part of it, so nothing
+  that imports it changes. A pure move: nothing in the game or the save
+  changes.
 ## [1.803.0+839]
 
 - The clan card (a long press on a clan's banner, the offer's (i)) ends with
