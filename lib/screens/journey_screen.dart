@@ -906,6 +906,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       await takeStoryChoice(context, ref, step.choice);
       taken = true;
       flow = _flowAfter(fromId, step.choice);
+      _noteTakenStep(step.choice, flow, before);
     } finally {
       if (mounted) {
         // A choice that keeps the story where it was (a shop, a fight
@@ -972,6 +973,24 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
+  }
+
+  /// A step taken inside one place (a card whose way leads to the next scene
+  /// at the same stop): the scene it opens says what was taken and that the
+  /// party is still here (pendingTakenProvider). A move, a carried trip, a
+  /// hub's return and a step that left the scene as it was say nothing.
+  void _noteTakenStep(StoryChoice choice, ChoiceFlow flow, String before) {
+    final play = ref.read(storyPlayProvider);
+    final place = ref
+        .read(geographyProvider)
+        .placeOfNode(widget.story.nodeFor(play.currentNodeId));
+    ref.read(pendingTakenProvider.notifier).state = takenStepAfter(
+      choice: choice,
+      flow: flow,
+      inExcursion: play.isInExcursion,
+      sceneChanged: _sceneKeyOf(play) != before,
+      placeId: place?.id,
+    );
   }
 
   /// What the Journey does after [choice] took the story from [fromId] to

@@ -258,6 +258,7 @@ Future<void> _selectChoice({
   ref.read(pendingCheckOutcomeProvider.notifier).state = null;
   ref.read(pendingPreludeProvider.notifier).state = const [];
   ref.read(pendingRoadNoteProvider.notifier).state = null;
+  ref.read(pendingTakenProvider.notifier).state = null;
   ref.read(pendingRemarksProvider.notifier).state = const [];
   // A written detour backed away from at its first beat: the road goes on,
   // nothing spent (see detour_scenes.dart).

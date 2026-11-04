@@ -53,6 +53,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You are here',
     AppLanguage.fr: 'Vous êtes ici',
   },
+  'journey_still_in': {
+    AppLanguage.en: 'Still at {place}',
+    AppLanguage.fr: 'Toujours\u00a0: {place}',
+  },
   'journey_leads_to': {
     AppLanguage.en: 'To {place}',
     AppLanguage.fr: 'Vers {place}',
