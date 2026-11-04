@@ -48,7 +48,7 @@ Future<void> _settle(WidgetTester tester) async {
     await tester.tap(find.byKey(const Key('reward_button')));
     for (var i = 0; i < 3; i++) {
       await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 100)));
+          () => Future<void>.delayed(const Duration(milliseconds: 30)));
       await tester.pump(const Duration(milliseconds: 100));
     }
   }
