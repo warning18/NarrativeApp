@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.755.0+791]
+
+- Code: `ship_battle_panel.dart` (3,982 lines) is cut into the main file (558
+  lines: the widget, its state and `build`) and five files under
+  `lib/screens/ship_battle/`: the turns, the dock and chips, the sea, the crew
+  and the painters. The state's methods moved into private extensions (as in
+  the fight screen) and `setState` is called through a one-line `_update`;
+  nothing changes on screen or in the rules.
+
 ## [1.754.0+790]
 
 - **The world map, simpler and readable.** One look and one world: the Layers
