@@ -183,7 +183,8 @@ buys a die, so the CI bands don't move.
    it **moves the naive bands by more than 3 points**: with every shop
    reached, naive goes from 38.3% to 44.6% (+6.3). So it comes back to the
    manager before I build it. It would also make the competent numbers read
-   closer to the real game.
+   closer to the real game. **Shipped in v1.766**, without the camp
+   revisit: see `sim-reach-v1.766.md`.
 
 ## 7. What the user would notice
 

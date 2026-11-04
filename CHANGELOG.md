@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.766.0+802]
+
+- The playthrough simulator now shops where a player shops: the ports'
+  shops at their settlements, a house's shop once it is built, the
+  Wayfarer's Caravan when the road holds it, and a shop again when the walk
+  is back there a later chapter (from the chapter it opens). Its naive
+  baseline moves with it (encounters won 71.0% to 75.3%, 800 runs), see
+  `docs/simulation/sim-reach-v1.766.md`.
+- The Void Stalker (chapter 3's boss) is a little tougher (health 44 to 54,
+  damage 4 to 5): a player who shops reached it too well armed.
+
 ## [1.762.0+798]
 
 - Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
