@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.769.0+805]
+
+- No stray "[PAGE]" in a scene read in one go: the narration recording
+  preview and an expedition's scene text now join a scene's pages, as the
+  read-aloud clips already did (node 6010_record showed the marker as
+  text).
+
 ## [1.766.0+802]
 
 - The playthrough simulator now shops where a player shops: the ports'
