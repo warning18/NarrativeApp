@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.750.0+786]
+
+- **Core: a scene can be read in pages.** A `[PAGE]` marker in a scene's
+  text, and an ending's `[EPILOGUE]` (`[ÉPILOGUE]`), cut its reading into
+  pages: the first pages end on Continue, and the scene's choices wait on
+  its last page. Each page writes itself out on its own. The node keeps its
+  id, its choices and its one narration recording, and a game reopened
+  inside a scene starts on its first page. The four written endings now
+  read in two pages: the return, then the epilogue with "Begin again".
+
 ## [1.749.0+785]
 
 - Code: `story_player_screen.dart` (4,479 lines) is cut into the main file

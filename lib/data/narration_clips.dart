@@ -5,6 +5,7 @@ import '../providers/player_session_provider.dart';
 import 'ally_acknowledgments.dart';
 import 'chapter_grid_layout.dart';
 import 'chapter_spine.dart';
+import 'narration_pages.dart' show pageBreakMarker;
 import 'narration_tokens.dart';
 import 'story_markup.dart' show stripStoryMarkup;
 
@@ -106,7 +107,9 @@ List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
   ];
   return [
     for (final line in opening) ...narrationParagraphs(line),
-    ...narrationParagraphs(storyBodyFor(personal(node.descriptionFor(french)))),
+    // One recording for the whole scene, its page breaks unspoken (v1.750).
+    ...narrationParagraphs(storyBodyFor(
+        personal(node.descriptionFor(french).replaceAll(pageBreakMarker, '')))),
     for (final extra in extras) ...narrationParagraphs(personal(extra)),
   ];
 }

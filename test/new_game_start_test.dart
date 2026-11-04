@@ -274,6 +274,12 @@ void main() {
     expect(container.read(storyPlayProvider).currentNodeId, _ending);
     await tester.tap(open);
     await _settle(tester);
+    // The ending reads in two pages (v1.750): its way on is on the
+    // epilogue's.
+    final turn = find.byKey(const ValueKey('story_page_continue'));
+    await _pumpUntilFound(tester, turn);
+    await tester.tap(turn);
+    await _settle(tester);
     final again = find.text('Begin again, changed');
     await _pumpUntilFound(tester, again);
     await tester.tap(again.last);
