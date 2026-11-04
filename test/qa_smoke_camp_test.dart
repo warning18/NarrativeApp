@@ -84,6 +84,20 @@ void main() {
         }),
         prepare: _loadTables,
       ),
+      SmokeCase(
+        'camp_town_annex',
+        const _Town(),
+        session: camp({
+          'gold': 900,
+          'recruitedAllies': [
+            {'companionId': 'kelda'},
+            {'companionId': 'sable'},
+          ],
+          'activeAllyIds': ['kelda', 'sable'],
+          'builtHouseIds': ['harbor', 'parley_tent', 'barracks_annex'],
+        }),
+        prepare: _loadTables,
+      ),
       for (final id in const [
         'parley_tent',
         'bone_casters_hut',
