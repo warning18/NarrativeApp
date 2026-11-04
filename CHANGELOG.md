@@ -8,13 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.775.0+811]
+## [1.780.0+816]
 
 - The code that settles a fight (rewards, loot, XP, quests, politics) is
   cut from one 460-line function into named steps: the outcome, a win, a
   loss, the per-foe tally, the chest's odds and the allies' revival. The
   same calls run in the same order, random rolls included, so nothing
   changes in play.
+
+## [1.776.0+812]
+
+- The game data files leave out fields stored at the value their reader
+  already assumes: `healthMod: 0` and `isActiveSkill: true` on every
+  skill, the empty `rewardDiceId` / `rewardAllyId` on every zone, and a
+  dice face's `"element": "None"` and empty `linkedSkillID` (about 19 KB
+  less, the game plays the same). The data editor no longer writes such a
+  field back when a record leaves it out and it isn't edited, and a save
+  keeps the keys the form doesn't show.
 
 ## [1.773.0+809]
 
