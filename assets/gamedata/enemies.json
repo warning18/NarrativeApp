@@ -31,9 +31,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -42,9 +39,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -107,9 +101,6 @@
         "requiredElement": "Fire",
         "chance": 40,
         "healthThreshold": 30,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -118,9 +109,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -190,9 +178,6 @@
             "requiredElement": "Earth",
             "chance": 45,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -250,9 +235,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -315,9 +297,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -326,9 +305,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -387,9 +363,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -398,9 +371,6 @@
         "requiredElement": "Void",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -409,9 +379,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -477,9 +444,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -488,9 +452,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -555,9 +516,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -566,9 +524,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -577,9 +532,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -636,9 +588,6 @@
         "requiredElement": "Wind",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -663,9 +612,6 @@
             "requiredElement": "Wind",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -725,9 +671,6 @@
         "requiredElement": "None",
         "chance": 33,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -752,9 +695,6 @@
             "requiredElement": "None",
             "chance": 60,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -814,9 +754,6 @@
         "requiredElement": "Fire",
         "chance": 100,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 5
       }
     ],
@@ -841,9 +778,6 @@
             "requiredElement": "Fire",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -902,9 +836,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -913,9 +844,6 @@
         "requiredElement": "Wind",
         "chance": 40,
         "healthThreshold": 30,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -924,9 +852,6 @@
         "requiredElement": "Void",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -951,9 +876,6 @@
             "requiredElement": "Wind",
             "chance": 45,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -1012,9 +934,6 @@
         "requiredElement": "Fire",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1023,9 +942,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -1050,9 +966,6 @@
             "requiredElement": "Fire",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -1103,9 +1016,6 @@
         "requiredElement": "None",
         "chance": 18,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -1130,9 +1040,6 @@
             "requiredElement": "Light",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -1177,9 +1084,6 @@
         "requiredElement": "Void",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -1204,9 +1108,6 @@
             "requiredElement": "Fire",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -1257,9 +1158,6 @@
         "requiredElement": "Void",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1268,9 +1166,6 @@
         "requiredElement": "Wind",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1279,9 +1174,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -1306,9 +1198,6 @@
             "requiredElement": "Void",
             "chance": 45,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -1361,9 +1250,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1372,9 +1258,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -1399,9 +1282,6 @@
             "requiredElement": "None",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -1462,9 +1342,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1473,9 +1350,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -1534,9 +1408,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1545,9 +1416,6 @@
         "requiredElement": "Fire",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -1597,9 +1465,6 @@
         "requiredElement": "Fire",
         "chance": 40,
         "healthThreshold": 50,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 4
       },
       {
@@ -1608,9 +1473,6 @@
         "requiredElement": "Light",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 3
       },
       {
@@ -1619,9 +1481,6 @@
         "requiredElement": "Fire",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1630,9 +1489,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -1693,9 +1549,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1704,9 +1557,6 @@
         "requiredElement": "",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -1756,9 +1606,6 @@
         "requiredElement": "Void",
         "chance": 40,
         "healthThreshold": 50,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 4
       },
       {
@@ -1767,9 +1614,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 3
       },
       {
@@ -1778,9 +1622,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1789,9 +1630,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -1856,9 +1694,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1867,9 +1702,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -1878,9 +1710,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -1939,9 +1768,6 @@
         "requiredElement": "None",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -1950,9 +1776,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -1961,9 +1784,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -1988,9 +1808,6 @@
             "requiredElement": "Earth",
             "chance": 45,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -2045,9 +1862,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2056,9 +1870,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -2067,9 +1878,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -2078,9 +1886,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -2117,9 +1922,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -2166,9 +1968,6 @@
         "requiredElement": "Earth",
         "chance": 12,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2177,9 +1976,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -2238,9 +2034,6 @@
         "requiredElement": "Void",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2249,9 +2042,6 @@
         "requiredElement": "Void",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -2260,9 +2050,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2328,9 +2115,6 @@
         "requiredElement": "Fire",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2339,9 +2123,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2366,9 +2147,6 @@
             "requiredElement": "Fire",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -2427,9 +2205,6 @@
         "requiredElement": "Void",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -2438,9 +2213,6 @@
         "requiredElement": "Ice",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -2449,9 +2221,6 @@
         "requiredElement": "Wind",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -2476,9 +2245,6 @@
             "requiredElement": "Void",
             "chance": 25,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -2533,9 +2299,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2544,9 +2307,6 @@
         "requiredElement": "Electricity",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -2555,9 +2315,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2615,9 +2372,6 @@
         "requiredElement": "Void",
         "chance": 45,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 3
       },
       {
@@ -2626,9 +2380,6 @@
         "requiredElement": "Void",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2637,9 +2388,6 @@
         "requiredElement": "Void",
         "chance": 60,
         "healthThreshold": 50,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -2648,9 +2396,6 @@
         "requiredElement": "Wind",
         "chance": 40,
         "healthThreshold": 25,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -2659,9 +2404,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 4
       }
     ],
@@ -2686,9 +2428,6 @@
             "requiredElement": "Void",
             "chance": 30,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -2710,9 +2449,6 @@
             "requiredElement": "Void",
             "chance": 45,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 5
           }
         ],
@@ -2748,9 +2484,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2759,9 +2492,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2786,9 +2516,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -2824,9 +2551,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2835,9 +2559,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2862,9 +2583,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -2900,9 +2618,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2911,9 +2626,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -2938,9 +2650,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -2976,9 +2685,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -2987,9 +2693,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3014,9 +2717,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3052,9 +2752,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3063,9 +2760,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3090,9 +2784,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3128,9 +2819,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3139,9 +2827,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3166,9 +2851,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3204,9 +2886,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3215,9 +2894,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3242,9 +2918,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3280,9 +2953,6 @@
         "requiredElement": "None",
         "chance": 40,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3291,9 +2961,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3318,9 +2985,6 @@
             "requiredElement": "None",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3356,9 +3020,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3367,9 +3028,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3394,9 +3052,6 @@
             "requiredElement": "Fire",
             "chance": 55,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -3432,9 +3087,6 @@
         "requiredElement": "Fire",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3443,9 +3095,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3506,9 +3155,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3517,9 +3163,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -3578,9 +3221,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3589,9 +3229,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -3600,9 +3237,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3668,9 +3302,6 @@
         "requiredElement": "Ice",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3679,9 +3310,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -3744,9 +3372,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3755,9 +3380,6 @@
         "requiredElement": "Void",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -3766,9 +3388,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": -1
       }
     ],
@@ -3826,9 +3445,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3837,9 +3453,6 @@
         "requiredElement": "Void",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -3848,9 +3461,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": -1
       }
     ],
@@ -3916,9 +3526,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -3927,9 +3534,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -3938,9 +3542,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -3965,9 +3566,6 @@
             "requiredElement": "Void",
             "chance": 30,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -4034,9 +3632,6 @@
         "requiredElement": "Light",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4045,9 +3640,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4056,9 +3648,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4128,9 +3717,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4139,9 +3725,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4150,9 +3733,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4222,9 +3802,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4233,9 +3810,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4244,9 +3818,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4312,9 +3883,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4323,9 +3891,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -4350,9 +3915,6 @@
             "requiredElement": "None",
             "chance": 30,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -4407,9 +3969,6 @@
         "requiredElement": "Fire",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4418,9 +3977,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -4445,9 +4001,6 @@
             "requiredElement": "Fire",
             "chance": 30,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -4503,9 +4056,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4514,9 +4064,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4525,9 +4072,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4593,9 +4137,6 @@
         "requiredElement": "None",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4604,9 +4145,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4615,9 +4153,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4642,9 +4177,6 @@
             "requiredElement": "None",
             "chance": 25,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 2
           }
         ],
@@ -4695,9 +4227,6 @@
         "requiredElement": "Void",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4706,9 +4235,6 @@
         "requiredElement": "Void",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4717,9 +4243,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -4728,9 +4251,6 @@
         "requiredElement": "None",
         "chance": 30,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 3
       }
     ],
@@ -4787,9 +4307,6 @@
         "requiredElement": "Ice",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -4843,9 +4360,6 @@
         "requiredElement": "Fire",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4854,9 +4368,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -4865,9 +4376,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4876,9 +4384,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -4903,9 +4408,6 @@
             "requiredElement": "Light",
             "chance": 30,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -4927,9 +4429,6 @@
             "requiredElement": "Fire",
             "chance": 35,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -4980,9 +4479,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -4991,9 +4487,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -5002,9 +4495,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -5013,9 +4503,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5040,9 +4527,6 @@
             "requiredElement": "None",
             "chance": 25,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -5064,9 +4548,6 @@
             "requiredElement": "None",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -5117,9 +4598,6 @@
         "requiredElement": "None",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -5128,9 +4606,6 @@
         "requiredElement": "Light",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -5139,9 +4614,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -5166,9 +4638,6 @@
             "requiredElement": "None",
             "chance": 25,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -5190,9 +4659,6 @@
             "requiredElement": "Light",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -5243,9 +4709,6 @@
         "requiredElement": "Void",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 3
       },
       {
@@ -5254,9 +4717,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -5265,9 +4725,6 @@
         "requiredElement": "Void",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5276,9 +4733,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 50,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -5303,9 +4757,6 @@
             "requiredElement": "Void",
             "chance": 35,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -5327,9 +4778,6 @@
             "requiredElement": "Void",
             "chance": 35,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -5371,9 +4819,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5411,9 +4856,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5451,9 +4893,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5495,9 +4934,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5506,9 +4942,6 @@
         "requiredElement": "None",
         "chance": 15,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5554,9 +4987,6 @@
         "requiredElement": "None",
         "chance": 18,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -5565,9 +4995,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -5592,9 +5019,6 @@
             "requiredElement": "Light",
             "chance": 40,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 3
           }
         ],
@@ -5639,9 +5063,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5650,9 +5071,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5699,9 +5117,6 @@
         "requiredElement": "Light",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5710,9 +5125,6 @@
         "requiredElement": "None",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       }
     ],
@@ -5763,9 +5175,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5774,9 +5183,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5827,9 +5233,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5838,9 +5241,6 @@
         "requiredElement": "Fire",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5887,9 +5287,6 @@
         "requiredElement": "None",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5898,9 +5295,6 @@
         "requiredElement": "Wind",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -5947,9 +5341,6 @@
         "requiredElement": "Earth",
         "chance": 25,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -5958,9 +5349,6 @@
         "requiredElement": "Ice",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       }
     ],
@@ -6007,9 +5395,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6018,9 +5403,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6029,9 +5411,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6040,9 +5419,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6079,9 +5455,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6138,9 +5511,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6149,9 +5519,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6160,9 +5527,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6171,9 +5535,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6210,9 +5571,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6269,9 +5627,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6280,9 +5635,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6291,9 +5643,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6302,9 +5651,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6341,9 +5687,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6400,9 +5743,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6411,9 +5751,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6422,9 +5759,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6433,9 +5767,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6472,9 +5803,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6531,9 +5859,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6542,9 +5867,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6553,9 +5875,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6564,9 +5883,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6603,9 +5919,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6662,9 +5975,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6673,9 +5983,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6684,9 +5991,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6695,9 +5999,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6734,9 +6035,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],
@@ -6797,9 +6095,6 @@
         "requiredElement": "Light",
         "chance": 35,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       },
       {
@@ -6808,9 +6103,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 0
       },
       {
@@ -6819,9 +6111,6 @@
         "requiredElement": "Void",
         "chance": 50,
         "healthThreshold": 40,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 2
       },
       {
@@ -6830,9 +6119,6 @@
         "requiredElement": "None",
         "chance": 20,
         "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
         "priority": 1
       }
     ],
@@ -6869,9 +6155,6 @@
             "requiredElement": "Void",
             "chance": 50,
             "healthThreshold": 0,
-            "attackCountRequirement": 0,
-            "playerPatternThreshold": 0,
-            "blockThreshold": 0,
             "priority": 4
           }
         ],

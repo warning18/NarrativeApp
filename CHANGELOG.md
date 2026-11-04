@@ -15,6 +15,17 @@ isn't reconstructable from git history alone.
   `lib/screens/story_player/`: the choice flow, the hub, the choice cards and
   the ending. Pure cut and paste, nothing changes on screen or in the rules.
 
+## [1.742.0+778]
+
+- **Core: two unused tables and three always-0 enemy fields removed (R1/R2).**
+  The gates and adventure-node tables (4 records in all) were read only by
+  the data editor; they, their editor pages and their asset lines are gone.
+  The `attackCountRequirement`, `playerPatternThreshold` and `blockThreshold`
+  fields on enemy moves were 0 everywhere and read by nothing (717 lines of
+  `enemies.json`). Old saves and old exported or edited data still load: a
+  stale edit of a removed table is ignored, and an old enemies edit with the
+  removed fields reads as before.
+
 ## [1.741.0+777]
 
 - **Core: the story and the city plans are read off the main thread (P3).**

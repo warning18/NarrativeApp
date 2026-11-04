@@ -119,10 +119,6 @@ IconData gameDbIcon(String schemaId) {
       return Icons.assignment;
     case 'shops':
       return Icons.storefront;
-    case 'gates':
-      return Icons.door_front_door;
-    case 'adventure_nodes':
-      return Icons.map;
     case 'races':
       return Icons.diversity_3;
     case 'professions':
