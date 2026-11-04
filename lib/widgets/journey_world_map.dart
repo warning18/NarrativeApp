@@ -95,10 +95,6 @@ abstract final class JourneyWorldMapZoom {
 }
 
 class JourneyWorldMap extends ConsumerStatefulWidget {
-  /// How big the ball is against today's (1): a picture's way to show the
-  /// sphere at 0.8 and 0.5 of its size (UX mock; the app keeps 1).
-  static double sphereSizeFactor = 1;
-
   const JourneyWorldMap({
     super.key,
     required this.level,
@@ -451,11 +447,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// first zoom fills the box's short side (v1.350; it was a 250 px ball,
   /// small on a phone).
   double _sphereK(Size box) => math.min(
-      box.shortestSide *
-          0.9 *
-          JourneyWorldMap.sphereSizeFactor /
-          (2 * GlobeView.baseRadius),
-      sphereMaxScale);
+      box.shortestSide * 0.9 / (2 * GlobeView.baseRadius), sphereMaxScale);
 
   /// How close a place asked for is framed.
   static const double _focusZoom = 2.4;

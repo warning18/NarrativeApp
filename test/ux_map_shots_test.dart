@@ -24,7 +24,6 @@ import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/chart_map_painter.dart'
     show ChartCalque;
-import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
