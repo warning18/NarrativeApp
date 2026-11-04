@@ -18,12 +18,14 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
+import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
 import 'skill_fight_harness.dart'
     show gamedata, pumpUntil, settle, shows, tapWhenEnabled;
 import 'support/pump.dart';
 
-Future<void> _enter(WidgetTester tester) async {
+Future<void> _enter(WidgetTester tester, {List<SideLayer>? land}) async {
   SharedPreferences.setMockInitialValues({
     // The dice thrown at 4x: the tests wait a quarter of the throw (the
     // default speed is proven by dice_speed_test).
@@ -71,6 +73,7 @@ Future<void> _enter(WidgetTester tester) async {
       .push(MaterialPageRoute<bool>(
           builder: (_) => FightScreen(
                 enemyId: 'slum_thug',
+                landLayers: land,
                 enemy: thug,
                 modifiers: const EncounterModifiers(
                     forcedCondition: BattlefieldCondition.highGround,
@@ -87,7 +90,9 @@ Finder _keyStarting(String prefix) =>
 
 void main() {
   testWidgets('slots, pop-in, pick, keep and put back', (tester) async {
-    await _enter(tester);
+    // Met on a road, the fight has the land behind it (v1.825).
+    await _enter(tester, land: desertLayers(progress: 0.5));
+    expect(find.byKey(const Key('fight_land')), findsOneWidget);
     // Three equal slots a side; one fighter a side leaves two empty each.
     expect(find.byKey(const Key('fight_empty_slot')), findsNWidgets(4));
     final party = tester.getSize(find.byKey(const Key('party_slot_player')));
