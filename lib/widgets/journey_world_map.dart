@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chart_globe.dart';
 import '../data/map_charts.dart';
+import '../data/region_holders.dart' show chartZoneHolders;
 import '../data/world_leg_path.dart';
 import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
@@ -771,6 +772,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             fog: widget.fog,
             calque: calque,
             clanColours: clanColours,
+            zoneHolders: calque == ChartCalque.clans
+                ? chartZoneHolders(geo, ref.watch(geographyProvider), politics)
+                : null,
             standingOf: standings,
             shopPlaces: widget.shopPlaces,
             campPlaces: widget.campPlaces,

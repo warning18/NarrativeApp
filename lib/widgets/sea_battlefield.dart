@@ -937,15 +937,15 @@ class SeaWeatherPainter extends CustomPainter {
 enum TopBeast {
   /// The Drowned Wyrm: a sea dragon, coils sunk under the swell, fin-wings
   /// and a fanged head.
-  wyrm('assets/visuals/sea_beasts/drowned_wyrm.png'),
+  wyrm('assets/visuals/sea_beasts/drowned_wyrm.webp'),
 
   /// The Deep Leviathan: a vast scaled back, barnacled, old harpoons in
   /// it, one pale eye.
-  leviathan('assets/visuals/sea_beasts/deep_leviathan.png'),
+  leviathan('assets/visuals/sea_beasts/deep_leviathan.webp'),
 
   /// The Mother of Wrecks: a kraken among the timbers of the ships it took,
   /// its arms rising.
-  kraken('assets/visuals/sea_beasts/mother_of_wrecks.png');
+  kraken('assets/visuals/sea_beasts/mother_of_wrecks.webp');
 
   const TopBeast(this.asset);
   final String asset;
