@@ -301,7 +301,16 @@ class FightStatusTile extends StatelessWidget {
     this.badge,
     this.subtitle = '',
     this.size = 32,
+    this.reachTop = 0,
+    this.reachBottom = 0,
   });
+
+  /// Room above and below the tile that belongs to its tap area but not to
+  /// its look: the strip it sits in hands over its own spacing, so the tap
+  /// area is taller while nothing moves (a tap outside a widget's own box
+  /// never reaches it, so the room has to be inside it).
+  final double reachTop;
+  final double reachBottom;
 
   final IconData icon;
   final Color color;
@@ -325,7 +334,9 @@ class FightStatusTile extends StatelessWidget {
           if (box is! RenderBox || !box.hasSize) return;
           showFightEffectPopin(
             context,
-            anchor: box.localToGlobal(Offset.zero) & box.size,
+            // The tile itself, not the room around it that only taps use.
+            anchor: box.localToGlobal(Offset(0, reachTop)) &
+                Size(box.size.width, box.size.height - reachTop - reachBottom),
             leading: _statusTile(icon, color, null, 34),
             color: color,
             title: label,
@@ -335,7 +346,8 @@ class FightStatusTile extends StatelessWidget {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.only(right: 6, bottom: 5),
+          padding:
+              EdgeInsets.only(top: reachTop, right: 6, bottom: 5 + reachBottom),
           child: _statusTile(icon, color, badge, size),
         ),
       ),
