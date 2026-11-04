@@ -27,19 +27,7 @@ import 'risky_gifts.dart';
 import 'signs.dart';
 import 'sim_combat.dart';
 import 'sim_policy.dart';
-import 'skill_tree.dart';
 import 'throne.dart';
-
-/// How the simulated character grows (see the playthrough simulator):
-/// - [legacy]: the rules before v1.194 -- a skill point a level (and the
-///   profession's starting ones) spent on the tree, a perk every even
-///   level, a sign every odd level and every boss;
-/// - [offers]: v1.194 -- an offer from the clans for each level, each
-///   boss and each chapter reached (and the profession's starting points),
-///   taken by [preferredSuitor]'s policy.
-/// Both share the fight model and how a learned skill finds a face on the
-/// die ([SimGrowth.assignSkills]), so their win rates compare.
-enum SimProgression { legacy, offers }
 
 /// The gamedata the growth reads.
 class SimGrowthTables {
@@ -127,16 +115,13 @@ double simSkillScore(Map<String, dynamic>? skill) {
 /// [bossBeaten] and [chapterReached], then [settle] to spend what waits.
 class SimGrowth {
   SimGrowth({
-    required this.mode,
     required this.tables,
     required this.character,
     int startingSkillPoints = 0,
     this.ladder = false,
     this.policy = SimPolicy.naive,
   }) {
-    if (mode == SimProgression.legacy) {
-      skillPoints = startingSkillPoints;
-    } else if (!ladder) {
+    if (!ladder) {
       // On the feature ladder the starting skill comes from the trainer.
       for (var i = 0; i < startingSkillPoints; i++) {
         pending.add(const OfferTicket(source: OfferSource.start));
@@ -144,7 +129,6 @@ class SimGrowth {
     }
   }
 
-  final SimProgression mode;
   final SimGrowthTables tables;
   final SimCharacter character;
 
@@ -174,12 +158,7 @@ class SimGrowth {
     if (id != null) _learn(id);
   }
 
-  // The old rules.
-  int skillPoints = 0;
-  int perkPicks = 0;
-  int signPicks = 0;
-
-  // The offers.
+  /// The offers waiting to be taken.
   final List<OfferTicket> pending = [];
 
   /// The places that changed hands at the chapters' turns.
@@ -363,21 +342,15 @@ class SimGrowth {
   /// Levels from [before] to [after] reached.
   void levelsReached(int before, int after) {
     if (after <= before) return;
-    if (mode == SimProgression.legacy) {
-      skillPoints += after - before;
-      perkPicks += perkPicksFor(before, after);
-      signPicks += signPicksFor(before, after);
-    } else {
-      for (var i = before; i < after; i++) {
-        pending.add(const OfferTicket(source: OfferSource.level));
-        if (passives) _patronGains(i + 1);
-      }
-      // A clan's curse ends at its level.
-      for (final c in [..._curses]) {
-        if (after >= c.untilLevel) {
-          character.addAbilities({c.stat: c.amount});
-          _curses.remove(c);
-        }
+    for (var i = before; i < after; i++) {
+      pending.add(const OfferTicket(source: OfferSource.level));
+      if (passives) _patronGains(i + 1);
+    }
+    // A clan's curse ends at its level.
+    for (final c in [..._curses]) {
+      if (after >= c.untilLevel) {
+        character.addAbilities({c.stat: c.amount});
+        _curses.remove(c);
       }
     }
   }
@@ -395,24 +368,16 @@ class SimGrowth {
     c.currentHealth += gains.maxHealth;
   }
 
-  /// A boss beaten: a sign (legacy), an offer (offers).
-  void bossBeaten() {
-    if (mode == SimProgression.legacy) {
-      signPicks++;
-    } else {
-      pending.add(const OfferTicket(source: OfferSource.boss));
-    }
-  }
+  /// A boss beaten: an offer.
+  void bossBeaten() => pending.add(const OfferTicket(source: OfferSource.boss));
 
-  /// A new chapter reached: an offer from chapter 2 on, once (offers),
+  /// A new chapter reached: an offer from chapter 2 on, once,
   /// the price of loyalty (applyLoyaltyDrift: the patron's rivals cool)
   /// and, with the world's [geography], the clans' power and places
   /// (territoryTurn, clan_power.dart; what changed hands is kept in
   /// [territoryChanges]).
   void chapterReached(int chapter, {Geography? geography}) {
-    if (mode != SimProgression.offers ||
-        chapter < 2 ||
-        chapter <= chapterOffersThrough) {
+    if (chapter < 2 || chapter <= chapterOffersThrough) {
       return;
     }
     chapterOffersThrough = chapter;
@@ -563,21 +528,7 @@ class SimGrowth {
     required Iterable<String> flags,
     required Random random,
   }) {
-    var next = alignment;
-    if (mode == SimProgression.legacy) {
-      _spendSkillPoints(next);
-      while (perkPicks > 0) {
-        perkPicks--;
-        final offer = rollPerkOffer(perkRanks, random);
-        if (offer.isEmpty) break;
-        final perk = _simPerkPreference.firstWhere(offer.contains);
-        _takePerk(perk);
-      }
-      next = _takeSigns(next, flags, random);
-    } else {
-      next = _takeOffers(next, flags, random);
-    }
-    return next;
+    return _takeOffers(alignment, flags, random);
   }
 
   // --- Skills and the die ---------------------------------------------------
@@ -615,45 +566,6 @@ class SimGrowth {
     assignSkills();
   }
 
-  /// The old rules: each point spent on the best next skill the points
-  /// cover, one that fills an empty face first.
-  void _spendSkillPoints(int alignment) {
-    final branches = skillBranchesFor(tables.skillTrees,
-        raceId: character.raceId, professionId: character.professionId);
-    while (skillPoints > 0) {
-      final known = {
-        ...character.unlockedSkillIds,
-        for (final e in tables.skills.entries)
-          if (e.value is Map && (e.value as Map)['isUnlocked'] == true) e.key,
-      };
-      String? best;
-      var bestScore = double.negativeInfinity;
-      for (final branch in branches) {
-        for (var i = 0; i < branch.skillIds.length; i++) {
-          final id = branch.skillIds[i];
-          if (!canLearnWithPoints(id,
-              branches: branches,
-              known: known,
-              skills: tables.skills,
-              alignmentScore: alignment)) {
-            continue;
-          }
-          final cost = skillPointCostOf(id, branches);
-          if (cost > skillPoints) continue;
-          final score = (fillsEmptyFace(id) ? 1000 : 0) +
-              simSkillScore(tables.skills[id] as Map<String, dynamic>?) / cost;
-          if (score > bestScore) {
-            best = id;
-            bestScore = score;
-          }
-        }
-      }
-      if (best == null) return;
-      skillPoints -= skillPointCostOf(best, branches);
-      _learn(best);
-    }
-  }
-
   void _takePerk(Perk perk) {
     final rank = perkRanks[perk.name] ?? 0;
     if (rank >= perkInfo[perk]!.maxRank) return;
@@ -662,44 +574,6 @@ class SimGrowth {
       character.maxHealth += vigorHealthPerRank;
       character.currentHealth += vigorHealthPerRank;
     }
-  }
-
-  // --- Signs (the old rules) ------------------------------------------------
-
-  int _takeSigns(int alignment, Iterable<String> flags, Random random) {
-    var next = alignment;
-    if (tables.signs.isEmpty) {
-      signPicks = 0;
-      return next;
-    }
-    while (signPicks > 0) {
-      final offer = rollSignOffer(
-        patrons: tables.patrons,
-        signs: tables.signs,
-        held: character.heldSigns,
-        flags: flags,
-        alignment: next,
-        random: random,
-        patronsThisLife: patronsThisLife,
-        patronsMet: patronsMet,
-        luck: character.luck + effects(next).stat('luck'),
-      );
-      final card = offer == null
-          ? null
-          : preferredSignCard(offer, character.heldSigns, tables.signs);
-      final sign = card == null ? null : tables.signs[card.signId];
-      if (offer == null || card == null || sign == null) return next;
-      character.heldSigns =
-          takeSign(character.heldSigns, sign, card.rarity, tables.signs).held;
-      next += alignmentShiftFor(sign);
-      for (final id in {offer.patronId, sign.patronId}) {
-        if (!patronsThisLife.contains(id)) patronsThisLife.add(id);
-      }
-      if (!patronsMet.contains(offer.patronId)) patronsMet.add(offer.patronId);
-      signsTaken.add(sign.id);
-      signPicks--;
-    }
-    return next;
   }
 
   // --- Offers ---------------------------------------------------------------
