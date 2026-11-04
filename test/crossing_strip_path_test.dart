@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,6 +94,7 @@ void main() {
           events: const {},
           stripPath: path,
           camera: camera,
+          random: Random(7),
         ),
       ),
     ));
