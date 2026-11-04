@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.819.0+855]
+
+- Crossings: a land crossing's scene is now painted by the world camera
+  (`WorldCamera`, v1.818) when its road is short enough on the world's strip
+  (up to 100 chart units): each day's land is the kit of the region the
+  party is in, in the window of that place, and where two regions meet the
+  dithered seam between them. Six of the seven roads look as before (their
+  terrain is their region's kit); the camp-to-quarter road now starts in the
+  Cove's cliffs and ends in the ruins, through the seam, where it used to be
+  ruins from the first day. The sea cliffs' road, which the strip stretches
+  over the whole land (535 units), keeps its own terrain. Picture:
+  `docs/ux-shots/camera/crossing-camp-to-quarter.png`. Tests:
+  `crossing_strip_path_test.dart` (which roads go to the camera; a crossing
+  along a seam paints).
+
 ## [1.818.0+854]
 
 - For the side-view camera (step 3c of UX-2's parallax): `WorldCamera`
