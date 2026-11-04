@@ -83,3 +83,11 @@ pictures, the user is still choosing) and the two round-2 pictures
 two globe GIFs in `docs/maps/fmg-chart/` and the JPEGs of `docs/maps` and
 `docs/proposals/images/feedback-*` are Core's maps and the user's feedback
 screenshots, not UX's: not mine to approve.
+
+## For Core (R4 dead-code cleanup): `forgeSheetFor` and `worldLegPathProvider`
+
+UX main does not plan to use either, and no branch of UX main's calls them
+(checked on every UX branch: `lib/` holds only their definitions).
+`forge_sheet.dart` builds its sheet without `forgeSheetFor`;
+`journey_world_map.dart` uses the `WorldLegPath` type, not the provider.
+Core may remove both in R4. (UX-2 was asked separately.)
