@@ -27,6 +27,7 @@ marked "schematic" where I did not render it.
 | 10 | road between two places | a flight along the chart road, 1900 ms (the crossing is the same trip on its own screen) |
 | 11 | Story tab > Camp | the Camp takes the Story tab's place: a swap |
 | 12 | creation > first scene | fade 300 ms in, 1500 ms out |
+| 13 | a choice that stays in the place (69 % of them) | page > Continue > map > page, nothing moves (row 13 of the picture, with the count) |
 
 **Where they contradict each other** (red letters on the picture):
 - **A. Five ways to "arrive"**: scale-in (360 ms), rise + fade (180 ms), slide +
@@ -122,3 +123,48 @@ the blend painted by a column mask); the cards and the sheet are drawn over.
    travelling), or only the same look?
 3. Should a town keep its chart (a town is where the camera stops and the chart
    opens), or should towns also be a scene on the strip?
+
+## 5. Update: what a run of scenes in one place should look like (for Core's v1.809)
+
+Core read the code against main 1.808
+(`docs/proposals/scene-flow-status-and-strip.md`, branch `claude/core-flow-note`):
+the rule "a choice that stays in the place keeps you in the scene" was built as
+a classification (`StoryStops`, `FlowStay` / `FlowMap` / `FlowTripThenArrive` /
+`FlowReturnToHub`) but `_take` still opens the next scene and brings the map
+back with Continue after every choice that moves the story. The user told Core
+to finish that rule (logic only); this is the look it lands on, so I add it.
+
+`same-place-run.png` (real pages of scenes 2005 and 2020, both at the Landward
+Gate; the beat frame and the echo line are drawn over real pictures):
+
+- **Today** (also row 13 of `transitions-today.png`): scene 2005, tap the card,
+  scene 2020 full screen with Continue, the map, the page again: 4 views and 3
+  hops for one tap, while the party has not moved (729 of 1,061 choices).
+- **Proposed**: the scene view holds the run. The tap lights the card; a **200 ms
+  beat** cross-fades the text and the cards (the stage with its figures stays,
+  the crumbs stay, the top bar's map button stays); a **one-line echo** of the
+  choice just taken ("Vous vous cachez dans un chariot de sel.") rides the beat
+  and fades, so the thread is not lost. The map comes only when a card *moves*
+  the party (a pin, as "Entrer avec la caravane"), then the arrival sheet.
+- **Replace or append**: replace with the echo (shown). Appending (a log that
+  grows) keeps the thread by itself but makes the page grow; it suits a long
+  hub, not a short run.
+- **Reduced motion**: a cut, no beat, the echo line shows still for a second.
+- **Decision for the user**: the 200 ms beat and the echo line are my proposal;
+  "no beat, no echo" (a straight swap) is the cheaper alternative.
+
+## 6. Core's strip data, read (in case the parallax goes ahead)
+
+The user has said **not yet** to the position strip. I read Core's note for it
+anyway: a pure file (`lib/data/region_strip.dart`, 200 to 300 lines, a test, low
+risk, changes no existing code) derived from `StoryStops`,
+`Geography.placeOfNode`, `ancestorAt(zone|country)`, the landmarks' chart
+positions, `world_roads` and `world_leg_path`: a region is a strip of stops
+placed by road distance, districts spread around their town. What it settles for
+my side: the camera's x for "arriving" is a stop's `at`, and for "travelling" the
+projection of `world_leg_path` on the strip (`pathOn`). Three choices it leaves
+to the user (zone or country as the region; true road distances or even steps;
+districts in plan order or story order): for the camera, **road distances** feel
+right (the scroll is proportional to the walk), **zone** is the region (a
+country is too long for four kits), and **districts in story order** (the camera
+visits them in the order the player does). Nothing to build now.
