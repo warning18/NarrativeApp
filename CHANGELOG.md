@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.807.0+843]
+
+- Edit Mode: a clan's "How it is ruled" text (`ruling`, `ruling_fr`, shown
+  on its card since v1.803) is now in the factions table of the game
+  database, so it can be read and saved there.
 ## [1.806.0+842]
 
 - **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
