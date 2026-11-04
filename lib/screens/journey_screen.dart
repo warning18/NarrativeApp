@@ -1694,7 +1694,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // on the last one. Each page writes itself out on its own.
     final pageCount = composeNarrationParts(
             node, ref.watch(playerSessionProvider), story,
-            french: french)
+            french: french, revisit: isRevisit(play))
         .pages
         .length;
     final pageKey = scenePageKey(play, node.id);
@@ -1838,7 +1838,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           key: ValueKey('journey_reading_$sceneKey'),
                           text: composeNarrationParts(
                                   node, ref.watch(playerSessionProvider), story,
-                                  french: french)
+                                  french: french, revisit: isRevisit(play))
                               .text,
                           told: _openingTold,
                           onTold: () {

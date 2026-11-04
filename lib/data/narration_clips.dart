@@ -90,7 +90,9 @@ String personalizeFor(PlayerSession session, String text,
 /// own text (the last fight's aftermath, a check's outcome, the party's
 /// remarks), read first.
 List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
-    {required bool french, List<String> opening = const []}) {
+    {required bool french,
+    List<String> opening = const [],
+    bool revisit = false}) {
   String personal(String text) => personalizeFor(session, text, french: french);
   final aside = allyAcknowledgmentFor(node.id,
       activeAllyIds: session.activeAllyIds, french: french);
@@ -108,8 +110,9 @@ List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
   return [
     for (final line in opening) ...narrationParagraphs(line),
     // One recording for the whole scene, its page breaks unspoken (v1.750).
-    ...narrationParagraphs(storyBodyFor(
-        personal(node.descriptionFor(french).replaceAll(pageBreakMarker, '')))),
+    ...narrationParagraphs(storyBodyFor(personal(node
+        .descriptionFor(french, revisit: revisit)
+        .replaceAll(pageBreakMarker, '')))),
     for (final extra in extras) ...narrationParagraphs(personal(extra)),
   ];
 }
@@ -163,8 +166,14 @@ List<String> nodeNarrationScript(
       ...allyAcknowledgmentVariantsFor(node.id, french: french),
       for (final line in node.hubProgress?.lines ?? const <HubProgressLine>[])
         line.line.textFor(french),
+      // Every callback, whatever the node's cap keeps on a visit (v1.813).
       for (final callback in node.flagCallbacks) callback.line.textFor(french),
       for (final line in node.personaVariants.values) line.textFor(french),
+      // The text a second visit reads, after the first visit's (v1.813).
+      if (node.revisitDescription?.isNotEmpty ?? false)
+        storyBodyFor(node
+            .descriptionFor(french, revisit: true)
+            .replaceAll(pageBreakMarker, '')),
     ];
     for (final extra in extras) {
       script.addAll(narrationParagraphs(personalize(extra)));
