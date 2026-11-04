@@ -85,8 +85,9 @@ assert real behaviour kept).
   of #704). The saving is a post-frame callback and two transforms. Manager agreed.
 
 **Options left for a later PR (not started)**
-- Merge the two duplicated blocks inside the story view (`story_player_screen.dart` near the old `:3015` and `:3229`, now in
-  `story_player/story_hub.dart`: the settlement arrival card and the hub choice card). That is a code change, not a cut, so it
-  needs its own PR and a picture check.
+- Merge the two duplicated 28-line blocks inside the story view that `docs/qa/code-cleanup-plan.md` lists (old lines `:3015-3044`
+  and `:3229-3259`; today both are in `story_player/story_hub.dart`, the first inside `_showSettlementArrival`, the second near
+  `_DetourContextCard`). I have not read them side by side yet, so whether they are a safe merge is open. It is a code change,
+  not a cut, so it needs its own PR and a look at both screens.
 - 4-2 the Journey's scene layer, 4-3 `ship_battle_panel.dart`, 4-4 the painters, 4-5 the long `build`s, 5-1 to 5-3: still as
   planned above, each when no other PR touches the file.
