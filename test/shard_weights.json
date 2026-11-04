@@ -291,6 +291,7 @@
  "qa_harbour_crossing_test.dart": 4.2,
  "qa_markup_test.dart": 0.6,
  "qa_new_data_test.dart": 1.0,
+ "qa_png_palette_test.dart": 1.0,
  "qa_real_font_cards_test.dart": 24.6,
  "qa_real_font_layout_test.dart": 9.4,
  "qa_seeded_rolls_test.dart": 0.7,
