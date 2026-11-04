@@ -154,8 +154,9 @@ List<String> nodeNarrationScript(
   bool variations = true,
 }) {
   final script = <String>{
-    ...narrationParagraphs(
-        storyBodyFor(personalize(node.descriptionFor(french)))),
+    // Its page breaks unspoken, as in [readAloudParagraphs] (v1.750).
+    ...narrationParagraphs(storyBodyFor(personalize(
+        node.descriptionFor(french).replaceAll(pageBreakMarker, '')))),
   };
   if (variations) {
     final extras = [

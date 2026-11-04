@@ -13,8 +13,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/companion_sprites.dart';
 
-/// Source art the build does not need: the animation's own exports.
+/// Source art the build does not need: the animation's own exports. The three
+/// `rotations` folders ship only their `south.png` (the one the game reads);
+/// `Bark/south` is source for `tool/gen_fight_heads.py`, not shipped.
 const _sourceOnly = {
+  'assets/visuals/companion/dog_companion_animations/Sitting_down/rotations',
+  'assets/visuals/companion/dog_companion_animations/Make_it_with_angel_w/rotations',
+  'assets/visuals/companion/dog_companion_animations/Make_it_with_demon_w/rotations',
+  'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/south',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/rotations',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/east',
   'assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/north',
@@ -32,7 +38,10 @@ void main() {
     };
     final missing = <String>{};
     for (final f in Directory('assets').listSync(recursive: true)) {
-      if (f is! File || !f.path.endsWith('.png')) continue;
+      if (f is! File ||
+          !(f.path.endsWith('.png') || f.path.endsWith('.webp'))) {
+        continue;
+      }
       final path = f.path.replaceAll('\\', '/');
       final folder = path.substring(0, path.lastIndexOf('/'));
       if (declared.contains('$folder/') || declared.contains(path)) continue;
