@@ -1,7 +1,7 @@
 import 'dart:ui' show Offset, Rect;
 
 /// A drawn plan the Journey lays its ways on (v1.207): a city's streets
-/// (see city_plan.dart) or the inside of a building (see room_plan.dart).
+/// (see city_plan_record.dart) or the inside of a building (see room_plan.dart).
 /// Both are laid out in their own units and know where each named spot
 /// is and how to walk between two points.
 abstract interface class PlacePlan {
