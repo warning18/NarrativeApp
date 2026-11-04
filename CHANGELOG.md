@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.830.0+866]
+
+### Added
+- The engine can say what each reward of a loot changes, for the spoils
+  sheet of design C (`lib/data/loot_changes.dart`, `lootChanges`). For each
+  reward it gives a before and an after for each thing that moves:
+  - gold;
+  - healing potion and antidote charges;
+  - the copies of a charm, material or trophy in the bag;
+  - dice rolls a round (the Gambler's Knucklebone);
+  - health, for a potion drunk from the chest;
+  - a spell learnt, a stat point (Tome of Insight) or an offer (Tome of
+    Mastery).
+
+  Gear is shown as "nothing to count". The numbers come from the code that
+  applies the loot (`lootGrantOf`, now shared with `applyCombatResult`,
+  and the fight's own rolls and potion heal), so the sheet can't say
+  something taking the loot doesn't do. `test/loot_changes_test.dart`
+  checks that every "after" is what taking the loot leaves. No screen
+  changes yet: UX-2 wires the sheet.
+
 ## [1.827.0+863]
 
 ### Fixed

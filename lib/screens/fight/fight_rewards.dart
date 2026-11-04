@@ -228,8 +228,11 @@ extension _FightRewards on _FightScreenState {
     // mends between its fights: the potion is kept, no sign heals.
     final keepWounds = widget.modifiers.keepWounds;
     final drinks = keepWounds ? 0 : spoils.drinkItemIds.length;
-    final hpAfterSpoils = min(player.maxHealth,
-        player.currentHealth + drinks * (potionHealAmount + _potionBonus));
+    final hpAfterSpoils = healthAfterDrinks(
+        health: player.currentHealth,
+        maxHealth: player.maxHealth,
+        drinks: drinks,
+        potionBonus: _potionBonus);
     // A sign that mends the party after a won fight.
     final signHeal = keepWounds ? 0 : _signs.afterFightHeal(player.maxHealth);
     final leveledUp = await notifier.applyCombatResult(
