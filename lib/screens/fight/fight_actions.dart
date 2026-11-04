@@ -352,7 +352,8 @@ extension _FightActions on _FightScreenState {
     _feedSignKills(entries, lang);
 
     if (scrollItemId != null) {
-      ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId);
+      unawaited(
+          ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId));
     } else {
       // The session takes it when the fight ends (v1.713).
       _mana -= _spellCost(spell);
@@ -365,7 +366,7 @@ extension _FightActions on _FightScreenState {
     if (_enemies.every((e) => !e.isAlive)) {
       await Future.delayed(const Duration(milliseconds: 400));
       if (!mounted) return;
-      _finishFight(won: true);
+      unawaited(_finishFight(won: true));
     }
   }
 

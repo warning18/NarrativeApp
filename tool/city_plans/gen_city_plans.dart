@@ -1,12 +1,12 @@
-// Lays out the cities' plans (lib/data/city_plan_generator.dart) and
+// Lays out the cities' plans (city_plan_generator.dart) and
 // writes them to assets/gamedata/city_plans.json, keeping the building
 // names already there. Run from the repository's root:
 //   dart run tool/city_plans/gen_city_plans.dart
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:narrative_data_app/data/city_plan_generator.dart';
-import 'package:narrative_data_app/data/town_service_pins.dart';
+import 'city_plan_generator.dart';
+import 'town_service_pins.dart';
 
 const _out = 'assets/gamedata/city_plans.json';
 

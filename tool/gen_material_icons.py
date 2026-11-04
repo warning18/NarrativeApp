@@ -1,7 +1,7 @@
 """Pixel icons for the nine building materials (v1.281.0): 16x16 art at 8x,
 a near-black outline round the silhouette, flat shading with a light top
 edge and a dark bottom edge, like the iron ore's. Writes
-assets/icons/items/material_<name>.png (128x128).
+assets/icons/items/material_<name>.png (16x16, as the other icons).
 
     python3 tool/gen_material_icons.py [outdir]
 """
@@ -159,7 +159,7 @@ def render(palette, rows):
         for x in range(16):
             if out[y][x] is not None:
                 px[x, y] = out[y][x]
-    return im.resize((128, 128), Image.NEAREST)
+    return im
 
 
 if __name__ == '__main__':

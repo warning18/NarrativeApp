@@ -13,7 +13,6 @@ import 'package:narrative_data_app/data/choice_flow.dart';
 import 'package:narrative_data_app/data/city_plan_record.dart';
 import 'package:narrative_data_app/data/geography.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
-import 'package:narrative_data_app/data/town_service_pins.dart';
 import 'package:narrative_data_app/data/town_services.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/choice_flow_provider.dart';
@@ -21,11 +20,19 @@ import 'package:narrative_data_app/providers/city_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/town_services_provider.dart';
 
+import '../tool/city_plans/town_service_pins.dart';
+
 Map<String, dynamic> _table(String name) =>
     jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
         as Map<String, dynamic>;
 
 void main() {
+  test('city_plans.json is stored as the generator writes it (minified)', () {
+    final text = File('assets/gamedata/city_plans.json').readAsStringSync();
+    expect(text, encodeCityPlans(jsonDecode(text)));
+    expect(text.length, lessThan(450 * 1024));
+  });
+
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
   final rawPlans = _table('city_plans');

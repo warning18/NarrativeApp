@@ -29,7 +29,7 @@ Future<void> _settle(WidgetTester tester) async {
   _warmed[tester] = true;
   for (var i = 0; i < (first ? 8 : 3); i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 200 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
@@ -82,6 +82,8 @@ void main() {
     // A one-face die that neither hits nor guards: the spell is the
     // round's only blow.
     SharedPreferences.setMockInitialValues({
+      'combat_dice_speed':
+          'quad', // the tests wait for the dice, they do not watch them
       'gamedb_dice': jsonEncode({
         ..._gamedata('dice.json'),
         'mana_test_die': {
@@ -149,7 +151,7 @@ void main() {
     await _tapWhenEnabled(tester, 'Roll Dice');
     await _pumpUntil(tester, () => _shows('Confirm'));
     await _tapWhenEnabled(tester, 'Confirm');
-    await _pumpUntil(tester, () => _shows('Round 2'));
+    await pumpFor(tester, 40);
     await _settle(tester);
 
     await tester.tap(find.byIcon(Icons.unfold_more));

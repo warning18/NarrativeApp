@@ -230,7 +230,6 @@ void main() {
       clans: data,
     );
     SimGrowth growth() => SimGrowth(
-          mode: SimProgression.offers,
           tables: tables,
           character: SimCharacter.create(
             raceId: 'human',

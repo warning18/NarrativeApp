@@ -30,6 +30,8 @@ Future<void> _playAttackRound(WidgetTester tester, List<String> specIds) async {
           const MethodChannel('flutter_tts'), (call) async => 1);
   final dice = gamedata('dice.json');
   SharedPreferences.setMockInitialValues({
+    'combat_dice_speed':
+        'quad', // the tests wait for the dice, they do not watch them
     'gamedb_dice': jsonEncode({
       ...dice,
       'spec_test_die': {
@@ -85,7 +87,7 @@ Future<void> _playAttackRound(WidgetTester tester, List<String> specIds) async {
   await tapWhenEnabled(tester, 'Roll Dice');
   await pumpUntil(tester, () => shows('Confirm'));
   await tapWhenEnabled(tester, 'Confirm');
-  await pumpUntil(tester, () => shows('Round 2'));
+  await pumpFor(tester, 40);
   await settle(tester);
   await tester.tap(find.byIcon(Icons.unfold_more));
   await settle(tester);

@@ -10156,6 +10156,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
     AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
   },
+  'slow_frames_setting_title': {
+    AppLanguage.en: 'Show slow frames',
+    AppLanguage.fr: 'Afficher les images lentes',
+  },
+  'slow_frames_setting_desc': {
+    AppLanguage.en:
+        'A small counter while you play, to find what stutters. Off, nothing runs.',
+    AppLanguage.fr:
+        'Un petit compteur pendant le jeu, pour trouver ce qui saccade. Éteint, rien ne tourne.',
+  },
+  'slow_frames_copy': {
+    AppLanguage.en: 'Copy report',
+    AppLanguage.fr: 'Copier le rapport',
+  },
+  'slow_frames_reset': {
+    AppLanguage.en: 'Reset',
+    AppLanguage.fr: 'Remettre à zéro',
+  },
+  'slow_frames_copied': {
+    AppLanguage.en: 'Report copied',
+    AppLanguage.fr: 'Rapport copié',
+  },
+  'slow_frames_chip': {
+    AppLanguage.en: 'slow {n} / {total} · worst {ms} ms',
+    AppLanguage.fr: 'lentes {n} / {total} · pire {ms} ms',
+  },
   'dice_speed_setting_title': {
     AppLanguage.en: 'Dice speed in fights',
     AppLanguage.fr: 'Vitesse des dés en combat',

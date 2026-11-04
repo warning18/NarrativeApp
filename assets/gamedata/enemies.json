@@ -802,8 +802,8 @@
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
-    "maxHealth": 44,
-    "damage": 4,
+    "maxHealth": 54,
+    "damage": 5,
     "guile": 5,
     "faction": "",
     "reaction": "",

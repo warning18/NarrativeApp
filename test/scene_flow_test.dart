@@ -332,6 +332,27 @@ void main() {
       expect(echoCause(story, 'no_such_flag'), isNull);
     });
 
+    test(
+        'the same scene, session and story read again give the same parts; '
+        'a new session reads afresh', () {
+      final altar = story.nodeFor('5004_altar')!;
+      final fled = session(['court_fled']);
+      final first = composeNarrationParts(altar, fled, story, french: false);
+      expect(
+          identical(
+              composeNarrationParts(altar, fled, story, french: false), first),
+          isTrue);
+      // Another language, another session: composed again, and right.
+      final fr = composeNarrationParts(altar, fled, story, french: true);
+      expect(identical(fr, first), isFalse);
+      expect(fr.echoes.single.cause, 'Les affronter');
+      final none =
+          composeNarrationParts(altar, session(const []), story, french: false);
+      expect(none.echoes, isEmpty);
+      // The kept parts can't be changed by a caller.
+      expect(() => first.pages.add('x'), throwsUnsupportedError);
+    });
+
     test('a scene sets its earned lines apart, with their choice', () {
       final altar = story.nodeFor('5004_altar')!;
       final whole =

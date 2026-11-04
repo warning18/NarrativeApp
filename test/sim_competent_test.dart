@@ -113,7 +113,6 @@ SimGrowth _growth({SimPolicy policy = SimPolicy.competent}) {
     spells: const {},
   )..policy = policy;
   return SimGrowth(
-    mode: SimProgression.offers,
     tables: SimGrowthTables(
       items: _items,
       itemSets: _sets,
