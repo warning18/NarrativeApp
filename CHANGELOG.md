@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.760.0+796]
+
+- **Cleanup: the dropped futures are named.** The 45 places where a Future
+  was started and left (a notice or a progress dialog that must not hold
+  the caller, a save that follows a state change already made) are
+  wrapped in `unawaited(...)`, and the `unawaited_futures` lint is on so a
+  new one cannot slip in unseen. All 45 were fire-and-forget on purpose;
+  nothing runs earlier, later or differently.
+
 ## [1.752.0+788]
 
 - The three sea beasts' pictures (the Drowned Wyrm, the Deep Leviathan, the
