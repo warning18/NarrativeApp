@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.827.0+863]
+## [1.828.0+864]
 
 - The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
   the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
