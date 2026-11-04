@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -120,13 +121,13 @@ class _SellSheet extends ConsumerWidget {
                       .read(playerSessionProvider.notifier)
                       .sellItem(id, price: price, shopId: shopId);
                   if (!sold || !context.mounted) return;
-                  showImmersiveNotice(
+                  unawaited(showImmersiveNotice(
                     context,
                     icon: Icons.sell_outlined,
                     message: '${trFor(lang, 'sold_prefix')} $name '
                         '${trFor(lang, 'for_label')} $price '
                         '${trFor(lang, 'gold_label')}',
-                  );
+                  ));
                 },
           child: Text(trFor(lang, 'sell_button')),
         ),

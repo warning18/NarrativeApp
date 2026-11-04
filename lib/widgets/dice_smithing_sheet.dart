@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -296,12 +297,12 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
         recastType: recastType,
       );
       if (!done || !mounted) return;
-      showImmersiveNotice(
+      unawaited(showImmersiveNotice(
         context,
         icon: Icons.hardware,
         message: trFor(lang, 'smith_done')
             .replaceAll('{work}', trFor(lang, smithingWorkLabelKey(kind))),
-      );
+      ));
     }
 
     final baseType = face['type']?.toString() ?? '';
