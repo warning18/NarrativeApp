@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.835.0+871]
+
+- Skill icons, the earth school on the green diamond: Dwarf Hammer Blow (a
+  mallet), Ranger Camouflage (a leaf), Ranger Trap Set (a trap's teeth) and
+  Rogue Poison Blade (a drop) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/earth-before-after.png`.
+
 ## [1.834.0+870]
 
 - Skill icons, the earth school on the shield-shaped gem: Brace (two planted
