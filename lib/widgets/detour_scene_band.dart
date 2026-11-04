@@ -14,7 +14,7 @@ import '../data/detour_scenes.dart';
 import '../theme/stitched_ink.dart';
 import 'side_view/desert_kit.dart';
 import 'side_view/ruins_kit.dart';
-import 'side_view/scene_versions.dart';
+import 'side_view/scene_windows.dart';
 import 'side_view/side_view.dart';
 
 /// The kit that dresses a scene of a biome, if there is one: the desert's
@@ -111,14 +111,14 @@ class DetourSceneBand extends StatelessWidget {
             if (kit != null)
               SideViewScene(
                 layers: switch (kit) {
-                  DetourKit.desert => withSceneVersion(
+                  DetourKit.desert => withSceneWindow(
                       desertLayers(progress: progress),
                       'desert',
-                      sceneVersionAt(scene.title, at)),
-                  DetourKit.ruins => withSceneVersion(
+                      (sceneWindowOfId(scene.title) + at) % sceneWindowCount),
+                  DetourKit.ruins => withSceneWindow(
                       ruinsLayers(progress: progress),
                       'ruins',
-                      sceneVersionAt(scene.title, at)),
+                      (sceneWindowOfId(scene.title) + at) % sceneWindowCount),
                 },
                 moving: false,
                 height: height,
