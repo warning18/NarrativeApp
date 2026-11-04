@@ -139,6 +139,23 @@ bool isFreshStoryStart(StoryPlayState play) =>
 /// world map waits too (the user's call, v1.697). The Journey sets it.
 final journeyMapClosedProvider = StateProvider<bool>((ref) => false);
 
+/// The page of a scene being read (v1.750, see narration_pages.dart): the
+/// visit it belongs to ([scenePageKey]) and its index. It is not saved: a
+/// game reopened inside a scene starts on its first page.
+typedef ScenePage = ({String key, int page});
+
+final scenePageProvider = StateProvider<ScenePage>((ref) => (key: '', page: 0));
+
+/// One visit to [nodeId]: a scene reached again (a hub, a page come back
+/// to) opens on its first page.
+String scenePageKey(StoryPlayState play, String nodeId) =>
+    '$nodeId|${play.isInExcursion}|${play.history.length}';
+
+/// The page of the visit [key] being read in [state], 0 when [state] holds
+/// another visit, clamped to the scene's [pageCount].
+int scenePageOf(ScenePage state, String key, int pageCount) =>
+    state.key != key || pageCount <= 1 ? 0 : state.page.clamp(0, pageCount - 1);
+
 /// [raw] read as a JSON list of ids; null when missing or unreadable.
 List<String>? _idList(String? raw) {
   if (raw == null) return null;

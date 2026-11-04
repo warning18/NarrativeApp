@@ -2083,14 +2083,31 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // The words write themselves out when the scene is new (Edit Mode shows
     // them at once); its choices come once they have, and a tap on Continue
     // before that shows them all first.
-    final revealKey =
-        ref.watch(appModeProvider) == AppMode.edit ? null : 'journey|$sceneKey';
+    // A scene the writer cut into pages (narration_pages.dart, v1.750) is
+    // read a page at a time: Continue turns the page, and its choices wait
+    // on the last one. Each page writes itself out on its own.
+    final pageCount = composeNarrationParts(
+            node, ref.watch(playerSessionProvider), story,
+            french: french)
+        .pages
+        .length;
+    final pageKey = scenePageKey(play, node.id);
+    final page = scenePageOf(ref.watch(scenePageProvider), pageKey, pageCount);
+    final lastPage = page >= pageCount - 1;
+    final revealKey = ref.watch(appModeProvider) == AppMode.edit
+        ? null
+        : 'journey|$sceneKey${page > 0 ? '#p$page' : ''}';
     final textReady = revealKey == null ||
         storyTextShownAtOnce(context) ||
         ref.watch(storyTextDoneProvider).contains(revealKey);
-    void continueFromScene() => textReady
-        ? _read(false)
-        : ref.read(storyTextSkipProvider.notifier).state++;
+    // The choices come once the last page is written out.
+    final choicesReady = textReady && lastPage;
+    void continueFromScene() => !textReady
+        ? ref.read(storyTextSkipProvider.notifier).state++
+        : !lastPage
+            ? ref.read(scenePageProvider.notifier).state =
+                (key: pageKey, page: page + 1)
+            : _read(false);
     // Read full screen, the scene has the tab to itself: its words, then the
     // choices acted out here (cards, or a chip for each kind in a hub), then
     // the way back to the map. The map keeps only the ways that carry the
@@ -2174,7 +2191,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       final ready = opening
           ? _openingTold || MediaQuery.of(context).disableAnimations
           : textReady;
-      final toMapLabel = here && (toMap || ready);
+      final toMapLabel = lastPage && here && (toMap || ready);
       final waitLine = Text(
         tr(ref, 'journey_choose_first'),
         key: const ValueKey('journey_choose_first'),
@@ -2263,7 +2280,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     detour: detour,
                   ),
                 ),
-                if (here && textReady) ...[
+                if (here && choicesReady) ...[
                   const SizedBox(height: 8),
                   ConstrainedBox(
                     constraints: BoxConstraints(
@@ -2283,17 +2300,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
               ],
               // On a locked page, Continue only shows the words at once;
               // then the way back to the map waits, greyed.
-              if ((toMap || !ready || locked) && !(opening && !ready)) ...[
+              if ((toMap || !ready || locked || !lastPage) &&
+                  !(opening && !ready)) ...[
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
                     key: const ValueKey('journey_continue'),
-                    onPressed: locked && ready
-                        ? null
-                        : opening
-                            ? () => _read(false)
-                            : continueFromScene,
+                    onPressed: !lastPage
+                        ? continueFromScene
+                        : locked && ready
+                            ? null
+                            : opening
+                                ? () => _read(false)
+                                : continueFromScene,
                     icon: Icon(
                         toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
                         size: 18),
@@ -2304,7 +2324,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             : 'journey_continue')),
                   ),
                 ),
-                if (locked && ready) ...[
+                if (locked && ready && lastPage) ...[
                   const SizedBox(height: 4),
                   waitLine,
                 ],
@@ -3210,7 +3230,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                             ),
                           ),
                           // The choices acted out here, under the words.
-                          if (steps.any((s) => s.onCard) && textReady) ...[
+                          if (steps.any((s) => s.onCard) && choicesReady) ...[
                             const SizedBox(height: 8),
                             ConstrainedBox(
                               constraints: BoxConstraints(
@@ -3514,11 +3534,20 @@ class _ScenePanel extends ConsumerWidget {
     final roadNote = ref.watch(pendingRoadNoteProvider);
     // Plain scenes read on the way here open this one (see
     // scene_flow.dart); lines an earlier choice earned close it.
-    final preludes = ref.watch(pendingPreludeProvider);
     final speaker = speakerLabelFor(node.speaker, french: french);
     final parts = composeNarrationParts(node, session, story, french: french);
-    final text = parts.text;
-    if (!folded) {
+    // A scene in pages shows the page being read (v1.750): what led here
+    // opens its first page, the echoes close its last.
+    final page = scenePageOf(
+        ref.watch(scenePageProvider),
+        scenePageKey(ref.watch(storyPlayProvider), node.id),
+        parts.pages.length);
+    final firstPage = page == 0;
+    final lastPage = page >= parts.pages.length - 1;
+    final text = parts.pages.length > 1 ? parts.pages[page] : parts.text;
+    final allPreludes = ref.watch(pendingPreludeProvider);
+    final preludes = firstPage ? allPreludes : const <ScenePrelude>[];
+    if (!folded && lastPage) {
       noteShownEchoes(ref, session, [
         for (final prelude in preludes) ...prelude.echoes,
         ...parts.echoes,
@@ -3537,19 +3566,19 @@ class _ScenePanel extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (detour != null && detour!.isNotEmpty) ...[
+        if (firstPage && detour != null && detour!.isNotEmpty) ...[
           Text(detour!, style: prose),
           const SizedBox(height: 12),
         ],
-        if (aftermath != null && aftermath.isNotEmpty) ...[
+        if (firstPage && aftermath != null && aftermath.isNotEmpty) ...[
           Text(aftermath, style: prose),
           const SizedBox(height: 12),
         ],
-        if (roadNote != null && roadNote.isNotEmpty) ...[
+        if (firstPage && roadNote != null && roadNote.isNotEmpty) ...[
           Text(roadNote, style: prose),
           const SizedBox(height: 12),
         ],
-        if (outcome != null && outcome.isNotEmpty) ...[
+        if (firstPage && outcome != null && outcome.isNotEmpty) ...[
           Text(outcome, style: prose),
           const SizedBox(height: 12),
         ],
@@ -3602,16 +3631,18 @@ class _ScenePanel extends ConsumerWidget {
           style: prose ?? const TextStyle(),
           revealKey: revealKey,
         ),
-        for (final echo in parts.echoes) ...[
-          const SizedBox(height: 10),
-          EchoLine(
-            key: ValueKey('journey_echo_${echo.key}'),
-            echo: echo,
-            caption: tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
-            colour: ink.gold,
-            style: prose ?? const TextStyle(),
-          ),
-        ],
+        if (lastPage)
+          for (final echo in parts.echoes) ...[
+            const SizedBox(height: 10),
+            EchoLine(
+              key: ValueKey('journey_echo_${echo.key}'),
+              echo: echo,
+              caption:
+                  tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
+              colour: ink.gold,
+              style: prose ?? const TextStyle(),
+            ),
+          ],
       ],
     );
     return DecoratedBox(
