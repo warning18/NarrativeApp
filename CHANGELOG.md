@@ -8,6 +8,27 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.773.0+809]
+
+- The 377 icons (items, skills, enemies, shops, chests) are stored at the size
+  they are drawn on: 16x16, the skills' gems 32x32, instead of enlarged to
+  128x128. Every one was an exact enlargement, so they look the same at
+  every size the app draws them (checked at 18, 26, 28, 30, 36, 44 and 52 px,
+  no differing byte); the app is 140 KB smaller and a screen of icons holds
+  a sixty-fourth of the memory (1 KB per icon instead of 64 KB).
+- The art scripts for the icons write the small size; the enemies' heads are
+  cut as before (same files).
+- Tests: `icon_sizes_test` keeps any icon over 32 px out of `assets/icons`;
+  `hunter_icons_test` expects 16x16.
+
+## [1.772.0+808]
+
+- A scene's text is composed once per build instead of two or three
+  times: the Journey's page count, its scene panel and the opening
+  reading now share one composition (`composeNarrationParts` keeps its
+  last answer while the scene, the session and the story are the same).
+  A slightly smoother Journey on slow phones; nothing else changes.
+
 ## [1.771.0+807]
 
 - The playthrough simulator loses its old growth mode (the skill points,

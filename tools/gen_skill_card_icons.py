@@ -1,5 +1,5 @@
 # Draws the 40 clan-card skill icons (fusions, ascensions, sub-clan skills,
-# secrets) as 16x16 pixel art scaled to 128x128 into assets/icons/skills/.
+# secrets) as 16x16 pixel art, stored at that size, into assets/icons/skills/.
 # Run from the repository root: python3 tools/gen_skill_card_icons.py
 # Replace any of the PNGs with hand-drawn art at will: nothing else reads this.
 import json, sys
@@ -130,7 +130,7 @@ def make(kind,glyph_name,elem,elemB=None):
         for x in range(16):
             if img[y][x] is not None:
                 c=img[y][x]; im.putpixel((x,y),c if len(c)==4 else c+(255,))
-    return im.resize((128,128),Image.NEAREST)
+    return im
 SK=json.load(open('assets/gamedata/skills.json'))
 SPEC={
 # fusion: (glyph, parentA, parentB elems resolved from skills)
@@ -167,5 +167,5 @@ print(len(made))
 # contact sheet
 sheet=Image.new('RGBA',(128*10,128*4),(52,52,60,255))
 for i,sid in enumerate(SPEC):
-    im=Image.open(f'{OUT}/{sid}.png'); sheet.paste(im,((i%10)*128,(i//10)*128),im)
+    im=Image.open(f'{OUT}/{sid}.png').resize((128,128),Image.NEAREST); sheet.paste(im,((i%10)*128,(i//10)*128),im)
 sheet.save('/tmp/skill_card_icons_sheet.png')

@@ -3,7 +3,7 @@
 docs/proposals/rival-hunters.md) and the six nemesis champions' (from
 Narrative's docs/proposals/nemesis-quests.md and the champions' records in
 enemies.json): 16x16 sprites in the enemy icons' style
-(flat tones, a near-black outline), written at 128x128 (x8, no smoothing) to
+(flat tones, a near-black outline), written at their own 16x16 size (the game enlarges them with no smoothing) to
 assets/icons/enemies/<id>.png.
 
 Each sprite is drawn as its inside only; the outline is added around it.
@@ -429,8 +429,8 @@ def main():
     sheet = Image.new('RGBA', (3 * 136 + 8, 4 * 136 + 8), (40, 36, 48, 255))
     for i, (enemy_id, (palette, rows)) in enumerate(SPRITES.items()):
         small = render(palette, rows)
+        small.save(os.path.join(folder, f'{enemy_id}.png'))
         big = small.resize((128, 128), Image.NEAREST)
-        big.save(os.path.join(folder, f'{enemy_id}.png'))
         sheet.paste(big, (4 + (i % 3) * 136, 4 + (i // 3) * 136), big)
     sheet.save('/tmp/hunter_sheet.png')
 
