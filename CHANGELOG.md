@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.824.0+860]
+
+- Fight: the aim line of a picked die is no longer cut off at the dice board.
+  It ran from the die up toward its target but was clipped to the board's own
+  box, so it vanished under the party and enemy cards; it now draws over the
+  cards and ends on the edge of the target card that faces the die (not on
+  its middle, which hid the health and name). Same for a heal or a defence
+  aimed at an ally. Pictures: `docs/ux-shots/fight-aim/` (360 and 412 px,
+  before and after). Test: `fight_board_test.dart` (the line is not clipped
+  and ends on the target card's edge, above the board).
+
 ## [1.822.0+858]
 
 - Crossings: the camera travels. On a road the world camera paints (v1.821),
