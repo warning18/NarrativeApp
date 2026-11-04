@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +19,7 @@ import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
 import '../widgets/elevenlabs_voice_settings.dart';
+import '../widgets/slow_frames_settings.dart';
 import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
 
@@ -497,6 +499,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       : tr(ref, 'check_for_updates_button'),
                 ),
               ),
+            const SizedBox(height: 24),
+            const SlowFramesSettings(),
             if (isEditMode) ...[
               const SizedBox(height: 24),
               Text(
@@ -806,7 +810,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     if (!mounted) return;
     StateSetter? dialogSetState;
-    showDialog<void>(
+    unawaited(showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => StatefulBuilder(
@@ -818,7 +822,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           );
         },
       ),
-    );
+    ));
 
     try {
       final path = await downloadUpdate(

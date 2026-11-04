@@ -66,7 +66,7 @@ extension _FightRewards on _FightScreenState {
       player.currentHealth = min(player.maxHealth,
           player.currentHealth + ashWellHeal(_mana, player.maxHealth));
       _mana = 0;
-      notifier.setMana(0);
+      unawaited(notifier.setMana(0));
     }
     if (won) {
       // Every enemy that died (or fled) in this fight -- a pack's rewards
@@ -451,9 +451,9 @@ extension _FightRewards on _FightScreenState {
       if (leveledUp) {
         // The level-up dialog opens the offer once it closes.
         final newLevel = ref.read(playerSessionProvider).level;
-        showLevelUpDialog(context, ref, newLevel: newLevel);
+        unawaited(showLevelUpDialog(context, ref, newLevel: newLevel));
       } else if (bossBeaten) {
-        showOfferIfWaiting(context, ref);
+        unawaited(showOfferIfWaiting(context, ref));
       }
       _update(() => _settled = true);
       unawaited(_leaveAfterVictory());

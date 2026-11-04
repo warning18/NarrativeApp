@@ -1,6 +1,7 @@
 // The small moments (v1.178): the achievement toast and the chapter card
 // come and go on their own and let taps through; with reduced motion the
 // effects stay out of the way.
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,7 +16,7 @@ void main() {
         return const Scaffold();
       }),
     ));
-    announceAchievements(ctx, ['First Blood'], 'ACHIEVEMENT');
+    unawaited(announceAchievements(ctx, ['First Blood'], 'ACHIEVEMENT'));
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.byKey(const Key('achievement_toast')), findsOneWidget);
     expect(find.text('First Blood'), findsOneWidget);
@@ -38,8 +39,8 @@ void main() {
         );
       }),
     ));
-    showChapterCard(ctx,
-        number: 'Chapter 3', title: 'The Spire', colour: Colors.orange);
+    unawaited(showChapterCard(ctx,
+        number: 'Chapter 3', title: 'The Spire', colour: Colors.orange));
     await tester.pump(const Duration(milliseconds: 800));
     expect(find.byKey(const ValueKey('chapter_card')), findsOneWidget);
     await tester.tap(find.text('under'), warnIfMissed: false);
@@ -59,7 +60,8 @@ void main() {
         }),
       ),
     ));
-    showChapterCard(ctx, number: '3', title: 'T', colour: Colors.orange);
+    unawaited(
+        showChapterCard(ctx, number: '3', title: 'T', colour: Colors.orange));
     showQuestSeal(ctx);
     await tester.pump();
     expect(find.byKey(const ValueKey('chapter_card')), findsNothing);

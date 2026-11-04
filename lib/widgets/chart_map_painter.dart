@@ -821,7 +821,7 @@ class ChartMapPainter extends CustomPainter {
       _skins[key] = image;
       return image;
     } finally {
-      _skinsPending.remove(key);
+      unawaited(_skinsPending.remove(key));
     }
   }
 

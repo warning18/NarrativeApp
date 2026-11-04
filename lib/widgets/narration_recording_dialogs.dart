@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ Future<T> _runWithProgress<T>(
   final progress = ValueNotifier<int>(0);
   var cancelled = false;
   final navigator = Navigator.of(context);
-  showDialog<void>(
+  unawaited(showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (context) => PopScope(
@@ -68,7 +69,7 @@ Future<T> _runWithProgress<T>(
         ],
       ),
     ),
-  );
+  ));
   try {
     return await work((done) => progress.value = done, () => cancelled);
   } finally {

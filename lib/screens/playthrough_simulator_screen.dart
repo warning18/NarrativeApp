@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -87,6 +88,7 @@ import '../data/nemesis.dart'
         trailFlagOf;
 import '../data/land_crossing.dart';
 import '../data/road_events.dart';
+import '../data/port_helpers.dart' show portShopIds;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -417,7 +419,7 @@ class _PlaythroughSimulatorScreenState
     final report = checkStoryGraphIntegrity(story.nodes,
         startNodeId: StoryRepository.startNodeId);
     if (!mounted) return;
-    showDialog<void>(
+    unawaited(showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(
@@ -459,7 +461,7 @@ class _PlaythroughSimulatorScreenState
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _fullControls(BuildContext context, List<_SimBatch> batches) {

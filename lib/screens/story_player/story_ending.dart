@@ -446,11 +446,11 @@ Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
   final middle = MediaQuery.sizeOf(context).center(Offset.zero);
   showBurst(context, at: middle, colour: const Color(0xFFD4A017), count: 28);
   showQuestSeal(context, colour: const Color(0xFFB8860B));
-  showImmersiveNotice(
+  unawaited(showImmersiveNotice(
     context,
     icon: Icons.replay_circle_filled_outlined,
     message: trFor(lang, 'new_game_plus_started_message'),
-  );
+  ));
 }
 
 /// Shown once, right after a choice unlocks a shop and/or quest, on the
@@ -495,12 +495,12 @@ Future<void> _showDiscoveryModal(
         .read(playerSessionProvider.notifier)
         .acceptQuest(questId!, quest: quest);
     if (!context.mounted) return;
-    showImmersiveNotice(
+    unawaited(showImmersiveNotice(
       context,
       icon: Icons.assignment_turned_in_outlined,
       message:
           '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
-    );
+    ));
   }
 
   // A main quest is never left for later (Wave 6): taken on at once (here,

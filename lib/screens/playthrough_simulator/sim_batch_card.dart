@@ -85,6 +85,36 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
     );
   }
 
+  /// One collapsible list of [groups] (a place, a mood) and how many nodes
+  /// of the runs fell in each.
+  Widget _distributionTile(
+      BuildContext context, String titleKey, List<_GroupStat> groups) {
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: Text(tr(ref, titleKey)),
+      children: [
+        for (final g in groups)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(g.label,
+                        style: Theme.of(context).textTheme.bodySmall)),
+                Text(
+                  '${g.nodeCount}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final batch = widget.batch;
@@ -462,60 +492,10 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       ),
                   ],
                 ),
-                ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  title: Text(tr(ref, 'by_location_label')),
-                  children: [
-                    for (final g in _distributionBy(results, (s) => s.uiTheme))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Text(g.label,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall)),
-                            Text(
-                              '${g.nodeCount}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-                ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  title: Text(tr(ref, 'by_mood_label')),
-                  children: [
-                    for (final g in _distributionBy(results, (s) => s.mood))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Text(g.label,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall)),
-                            Text(
-                              '${g.nodeCount}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                _distributionTile(context, 'by_location_label',
+                    _distributionBy(results, (s) => s.uiTheme)),
+                _distributionTile(context, 'by_mood_label',
+                    _distributionBy(results, (s) => s.mood)),
                 if (single != null) ...[
                   const Divider(height: 24),
                   _SingleRunDetail(

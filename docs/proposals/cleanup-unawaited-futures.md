@@ -2,6 +2,13 @@
 
 Item 5 of `cleanup-improvements.md`. Generated with the `unawaited_futures` lint on (`flutter analyze`, v1.696); 47 sites. For each, the owner says either **deliberate** (wrap the call in `unawaited(...)` from `dart:async`: no behaviour change) or **missing await** (add `await` or handle the error: a fix with a test, not a cleanup). Nothing is changed in code yet.
 
+> **Status (Cleanup, main `bcf73433`):** released by the user. Re-measured: 45 sites (the list below is the v1.696 one, kept for the history). I read every site: all 45 are fire-and-forget on purpose, so each is wrapped in `unawaited(...)` and the lint is on. None looks like a missing `await`:
+> - 3 are `Map.remove` in a `finally` whose removed value is the Future itself (`elevenlabs_tts_provider.dart`, `chart_map_painter.dart`): nothing to wait for.
+> - 6 start a persist whose state change already happened synchronously (`consumeItem`, `setMana`, `_finishFight`, `_take`, in `fight_*` and `journey_screen.dart`): the same calls are not awaited in the 12 non-async call sites either.
+> - 28 are `showImmersiveNotice` / `showDialog` / `showChapterCard` / `showLevelUpDialog` / `showOfferIfWaiting`: a notice or a progress dialog that must not hold the caller (an `await` would change when the next line runs). `road_panel.dart:43` is the one to look at: its camp branch awaits `showCampFateDie`, the other branch does not wait for the notice, and `resting.state = false` runs in `finally` right away; awaiting would keep `resting` true until the notice closed, a behaviour change, so it stays as is.
+> - 8 are in tests that pump the clock by hand.
+> Owners (UX-2: screens and widgets; Core: providers, `fight_*`): a site you want awaited instead is a fix with its own test, not part of the cleanup; say which and it comes out of the PR.
+
 | Where | The call | Owner | Decision (deliberate / missing await) |
 |---|---|---|---|
 | `lib/providers/elevenlabs_tts_provider.dart:318` | `_recording.remove(file.path);` | Core | |
