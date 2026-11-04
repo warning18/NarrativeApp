@@ -17,6 +17,40 @@ isn't reconstructable from git history alone.
   `tool/gen_skill_glyphs.py` on `tool/skill_gems/fire.png`, stored by
   `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/fire-before-after.png`.
 
+## [1.831.0+867]
+
+- The spoils sheet, wired (design C, the user's pick): once the chest is open
+  and every drop shown, the loot dialog gives way to the full-height sheet: the
+  chest and its rarity, "What the spoils change" (gold 126 to 144, Antidote
+  x1 to x2, the Knucklebone's rolls a round, health from a potion drunk, a
+  spell learnt, stat points, clan offers) from the engine's own numbers
+  (`lootChanges`, v1.830), each drop's text with its switch to put it on or
+  drink it (the same choices as before), the fortune roll, and Take. A value
+  several rewards move shows from the first before to the last after; gear
+  and a spellbook already known add no line. The fight passes the dialog the
+  whole loot (`SpoilsSheetData`), not only the chest's. Without it the dialog
+  is as it was. Strings `loot_line_*`. Tests: `loot_sheet_wiring_test.dart`.
+
+## [1.830.0+866]
+
+### Added
+- The engine can say what each reward of a loot changes, for the spoils
+  sheet of design C (`lib/data/loot_changes.dart`, `lootChanges`). For each
+  reward it gives a before and an after for each thing that moves:
+  - gold;
+  - healing potion and antidote charges;
+  - the copies of a charm, material or trophy in the bag;
+  - dice rolls a round (the Gambler's Knucklebone);
+  - health, for a potion drunk from the chest;
+  - a spell learnt, a stat point (Tome of Insight) or an offer (Tome of
+    Mastery).
+
+  Gear is shown as "nothing to count". The numbers come from the code that
+  applies the loot (`lootGrantOf`, now shared with `applyCombatResult`,
+  and the fight's own rolls and potion heal), so the sheet can't say
+  something taking the loot doesn't do. `test/loot_changes_test.dart`
+  checks that every "after" is what taking the loot leaves. No screen
+  changes yet: UX-2 wires the sheet.
 ## [1.829.0+865]
 
 - Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
