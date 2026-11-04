@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.806.0+842]
+
+- **Narrative: an unread field dropped from the NPC file.** `stanceLeader`
+  (`loyal`, `scheming`, `wavering`, set on 50 people in `npcs.json`, 44 with
+  a value) is removed. No code, test or screen read it; the clan pages show
+  the ruling text only. No screen changes.
+
 ## [1.801.0+837]
 
 - Code cleanup (split 4d): the game database's schemas leave
