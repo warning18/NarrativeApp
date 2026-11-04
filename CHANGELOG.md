@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.798.0+834]
+
+- The Journey draws a city, a town or a village from its stored plan only
+  (N11): the generated street plan (`city_plan_painter.dart`, 751 lines, and
+  the Journey's branch for it) is gone. In the first moments of a visit, while
+  `city_plans.json` is read, the ground shows alone (it used to show a made-up
+  street plan that then jumped to the real one). The chart's pins now take the
+  tap to the pin nearest it (the busy wharf's pins sit closer than a pin's
+  reach, and the first of the list took a neighbour's tap). Tests: nine
+  Journey tests moved off the generated plan onto the stored chart (see the
+  PR), and `city_chart_pins_test.dart` (the nearest pin) is new.
+
 ## [1.797.0+833]
 
 - Code cleanup (R4, batch 4): ten more names only the tests used are
