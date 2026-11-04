@@ -102,4 +102,36 @@ void main() {
     expect(find.byKey(const Key('crossing_scene')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('the camera travels to the next day instead of cutting',
+      (tester) async {
+    final camera = WorldCamera(strips.zones);
+    final route = routes['camp_to_quarter']!;
+    final path = stripPathOf(strips, geo, route);
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home: LandCrossingScreen(
+          route: route,
+          events: const {},
+          stripPath: path,
+          camera: camera,
+          random: Random(7),
+        ),
+      ),
+    ));
+    await tester.pump(const Duration(milliseconds: 300));
+    final state = tester.state(find.byType(LandCrossingScreen)) as dynamic;
+    // Parked on day 1: nothing travelling.
+    expect(state.debugTravelling, isFalse);
+    // Leaving for day 2 starts the travel, which ends where day 2 is.
+    state.debugLeaveDay();
+    await tester.pump();
+    expect(state.debugTravelling, isTrue);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(state.debugTravelling, isTrue);
+    await tester.pump(const Duration(milliseconds: 800));
+    expect(state.debugTravelling, isFalse);
+    expect(tester.takeException(), isNull);
+  });
 }

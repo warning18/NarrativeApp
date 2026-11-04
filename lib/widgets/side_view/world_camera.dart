@@ -92,25 +92,29 @@ class WorldCamera {
   /// The window of the kit's world at [x].
   int windowAt(double x) => sceneWindowAt(x);
 
-  /// The scene's layers with the camera at [x]: the kit of the region in
-  /// its window, or the seam between two kits. Null when the strip has no
-  /// land there to paint.
-  List<SideLayer>? layersAt(double x, {double progress = 0.5}) {
+  /// The scene's layers with the camera at [x]: the kit of the region
+  /// scrolled to the place (the land pans as [x] moves, no cut between
+  /// windows), or the seam between two kits. [landmark] (0 to 1) is how
+  /// much of the window's landmark shows: a camera on the move shows none.
+  /// Null when the strip has no land there to paint.
+  List<SideLayer>? layersAt(double x,
+      {double progress = 0.5, double landmark = 1}) {
     final seam = seamAt(x);
-    final window = windowAt(x);
-    List<SideLayer>? windowed(String kit) {
+    List<SideLayer>? placed(String kit) {
       final layers = kitLayersOf(kit, progress: progress);
-      return layers == null ? null : withSceneWindow(layers, kit, window);
+      return layers == null
+          ? null
+          : withSceneAt(layers, kit, x, landmark: landmark);
     }
 
     if (seam != null) {
-      final from = windowed(seam.from), to = windowed(seam.to);
+      final from = placed(seam.from), to = placed(seam.to);
       if (from != null && to != null) {
         final k = seam.progressAt(x);
         return [kitBlend(from, to, (_) => k)];
       }
     }
     final kit = kitAt(x);
-    return kit == null ? null : windowed(kit);
+    return kit == null ? null : placed(kit);
   }
 }
