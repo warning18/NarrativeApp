@@ -13345,6 +13345,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tile_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'skills_see_all': {AppLanguage.en: 'All skills', AppLanguage.fr: 'Toutes'},
+  'radar_view_detail': {AppLanguage.en: 'Detail', AppLanguage.fr: 'Détail'},
+  'skills_radar_hint': {
+    AppLanguage.en: 'The skills you know, by element.',
+    AppLanguage.fr: 'Les compétences connues, par élément.',
+  },
   'skills_none_short': {
     AppLanguage.en: 'No skills yet',
     AppLanguage.fr: 'Aucune compétence',

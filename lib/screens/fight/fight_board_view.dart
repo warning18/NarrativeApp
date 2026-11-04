@@ -4,6 +4,9 @@ part of '../fight_screen.dart';
 /// foe, has a box of this size (three a side, always), so nothing resizes
 /// when the party or the pack is smaller.
 const double _slotH = 72;
+
+/// Below this screen height the fight drops its empty seats and its log line.
+const double _shortPhoneH = 620;
 const double _slotGap = 6;
 
 /// The seats of up to four dice on the board, as shares of its width and
@@ -28,7 +31,12 @@ extension _FightBoardView on _FightScreenState {
 
   /// How many slots a side shows: three, or more when a side has more
   /// fighters (a fourth seat in the party).
-  int get _slotCount => max(3, max(_party.length, _enemies.length));
+  /// On a short phone (320 x 568) the empty seats go, so the dice board keeps
+  /// room to be played on.
+  bool get _shortPhone => MediaQuery.sizeOf(context).height < _shortPhoneH;
+
+  int get _slotCount =>
+      max(_shortPhone ? 1 : 3, max(_party.length, _enemies.length));
 
   double get _slotsHeight => _slotCount * _slotH + (_slotCount - 1) * _slotGap;
 
