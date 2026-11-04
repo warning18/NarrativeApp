@@ -18,6 +18,23 @@ isn't reconstructable from git history alone.
 - Tests: `fight_orientation_test.dart` (the hold and the release, two fights
   at once, a tablet, and a real fight opened and closed).
 
+## [1.763.0+799]
+
+- **Cleanup: four copy-pasted blocks become one each.** The story text card
+  built twice in the story player, the two distribution lists of the
+  simulator's batch card, the spellbook shopping of the simulator's two
+  shop visits, and the end of a step in the two autoplay walks are each
+  written once, as a private helper. Nothing changes on screen or in a
+  number.
+
+## [1.762.0+798]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
 ## [1.761.0+797]
 
 - Rangers get a die worth replacing the starter with: the storm die's Wind
