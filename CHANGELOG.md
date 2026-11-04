@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.762.0+798]
+
+- Code: `combat_vfx.dart` (1,887 lines) is cut into the main file (660 lines:
+  the cues, the controller, the layer and its painter) and three files under
+  `lib/widgets/combat_vfx/`: the class that draws one burst, and its two
+  groups of drawing methods (the building blocks, and what a strong or mighty
+  burst adds). Pure cut and paste; nothing changes on screen.
+
 ## [1.761.0+797]
 
 - Rangers get a die worth replacing the starter with: the storm die's Wind
