@@ -152,6 +152,7 @@ extension _FightRewards on _FightScreenState {
     // On the feature ladder the lesson (105) brings no chest: the next
     // fight won does (feature_unlocks.dart).
     final noChest = spared ||
+        widget.modifiers.tower ||
         (widget.modifiers.tutorial && !session.featureOpen(GameFeature.chest));
     final chest = noChest
         ? const LootBoxResult(
@@ -188,6 +189,11 @@ extension _FightRewards on _FightScreenState {
           _LogKind.enemyDamage));
     }
     xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
+    // A Tower floor pays in its own rewards, never in gold or XP.
+    if (widget.modifiers.tower) {
+      goldGain = 0;
+      xpGain = 0;
+    }
 
     final lang = ref.read(appLanguageProvider);
     final chestBanter =
@@ -317,7 +323,7 @@ extension _FightRewards on _FightScreenState {
         '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.';
     // Kept for the next scene: the fight closes itself.
     final outcome = ref.read(lastFightOutcomeProvider);
-    if (outcome != null) {
+    if (outcome != null && !widget.modifiers.tower) {
       ref.read(lastFightOutcomeProvider.notifier).state =
           outcome.withSpoils(victoryLine);
     }
