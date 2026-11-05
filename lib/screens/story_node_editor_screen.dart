@@ -731,6 +731,7 @@ class _ChoiceCardState extends State<_ChoiceCard> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               // `value` (not `initialValue`) is needed: this row is reused
               // as the edited choice/state changes, so the field must
               // track state.nextId reactively.
@@ -742,7 +743,9 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 border: const OutlineInputBorder(),
               ),
               items: options
-                  .map((id) => DropdownMenuItem(value: id, child: Text(id)))
+                  .map((id) => DropdownMenuItem(
+                      value: id,
+                      child: Text(id, overflow: TextOverflow.ellipsis)))
                   .toList(),
               onChanged: (value) =>
                   setState(() => state.nextId = value ?? state.nextId),
@@ -917,6 +920,7 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   // ignore: deprecated_member_use
                   value: options.contains(state.failNextId)
                       ? state.failNextId
@@ -928,14 +932,16 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   items: [
                     DropdownMenuItem(
                         value: null, child: Text(t('none_option'))),
-                    ...options.map(
-                        (id) => DropdownMenuItem(value: id, child: Text(id))),
+                    ...options.map((id) => DropdownMenuItem(
+                        value: id,
+                        child: Text(id, overflow: TextOverflow.ellipsis))),
                   ],
                   onChanged: (value) =>
                       setState(() => state.failNextId = value),
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   // ignore: deprecated_member_use
                   value: options.contains(state.loseNextId)
                       ? state.loseNextId
@@ -947,8 +953,9 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   items: [
                     DropdownMenuItem(
                         value: null, child: Text(t('none_option'))),
-                    ...options.map(
-                        (id) => DropdownMenuItem(value: id, child: Text(id))),
+                    ...options.map((id) => DropdownMenuItem(
+                        value: id,
+                        child: Text(id, overflow: TextOverflow.ellipsis))),
                   ],
                   onChanged: (value) =>
                       setState(() => state.loseNextId = value),
