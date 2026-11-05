@@ -12,7 +12,7 @@ import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
-import 'tower_floor_stub.dart';
+import 'tower_floor_screen.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
 import 'tower_widgets.dart';
@@ -46,7 +46,7 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     if (!mounted) return;
     setState(() => _starting = false);
     await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const TowerFloorStubScreen()));
+        .push(MaterialPageRoute(builder: (_) => const TowerFloorScreen()));
   }
 
   @override
@@ -147,7 +147,7 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
               FilledButton(
                 key: const Key('tower_continue'),
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const TowerFloorStubScreen())),
+                    builder: (_) => const TowerFloorScreen())),
                 child: Text(
                     '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
                       'n': run.floor

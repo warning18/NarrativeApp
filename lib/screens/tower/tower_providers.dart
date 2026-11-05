@@ -4,6 +4,7 @@
 // run only through lib/data/tower/ and this controller.
 import 'dart:math';
 
+import 'package:flutter/widgets.dart' show BuildContext;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -116,3 +117,24 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
 final towerProvider =
     StateNotifierProvider<TowerController, AsyncValue<TowerState>>(
         (ref) => TowerController());
+
+/// How a floor's fight ended.
+class TowerFightResult {
+  const TowerFightResult({required this.won, required this.healthLeft});
+
+  final bool won;
+
+  /// The hero's health when the fight ended.
+  final int healthLeft;
+}
+
+/// Plays the fight of [run]'s floor and says how it ended; null when it was
+/// not played (the screen was left, or the fight is not wired).
+typedef TowerFightLauncher = Future<TowerFightResult?> Function(
+    BuildContext context, TowerRun run, TowerData data);
+
+/// The fight of a floor. The default plays nothing (null): the fight needs
+/// the Tower's own player session (the hero of the run under a provider
+/// override that never writes the story save). Tests give a fake.
+final towerFightLauncherProvider =
+    Provider<TowerFightLauncher>((ref) => (context, run, data) async => null);
