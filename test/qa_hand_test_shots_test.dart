@@ -858,6 +858,44 @@ void main() {
       }
     });
 
+    // ---- the village hubs after #841: do their ways show on the map ----
+    await section('village-hubs', () async {
+      for (final (id, name) in const <(String, String)>[
+        ('1200', 'white-wells'),
+        ('6100', 'rimewell'),
+        ('7200', 'greyhithe'),
+        ('5100', 'wracks-end'),
+        ('6200', 'highhearth'),
+        ('3100', 'emberwick'),
+        ('3200', 'akagiri'),
+        ('5200', 'kindly-hill'),
+      ]) {
+        await newSession({
+          'flags': id == '1200'
+              ? const ['lysa_survived', 'vica_follow']
+              : const <String>[],
+        });
+        await go(id);
+        await toMap();
+        final first = describe(id);
+        final district = find.text('District');
+        if (district.evaluate().isNotEmpty) {
+          await tester.tap(district.first);
+          await tester.pump(const Duration(seconds: 5));
+        }
+        final row = describe(id);
+        final rows = [
+          for (final e in find.byType(InkWell).evaluate())
+            if ('${e.widget.key}'.contains('city_row')) 1,
+        ].length;
+        await shot('village-$id-$name');
+        debugPrint('VILLAGE $id $name opened=${first['surface']} '
+            'banners=${row['banners']} rows=$rows marks=${row['spots']} '
+            'cardsBadge=${row['cards']} choices=${row['choices']} '
+            'surface=${row['surface']}');
+      }
+    });
+
     // ---- the keys of the other tabs, to find what to tap ----
     if (Platform.environment['QA_SHOTS_KEYS'] != null) {
       for (final tab in ['Character', 'Camp', 'Other']) {
