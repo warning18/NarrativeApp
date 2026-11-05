@@ -8,6 +8,57 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.855.0+891]
+
+### Changed
+- **The Tower's clans offer their oaths** (the user's call): no clan is
+  chosen at the start; a clan offers its oath among the cards on the way
+  up (`TowerRewardKind.clanOath`). Always on the first floor won, then on
+  35% of the offers while a clan of the run's pool is left; one oath an
+  offer at most; refused, the usual mark. Several clans may be sworn.
+  - Sworn, the hero owns the clan's die at once, and stands at Friend with
+    the clan in the fight. The first clan sworn is the main one (the
+    story's rules: its die resonates, the others roll plain).
+  - The clan's gift (a stat point) is offered only once a clan is sworn.
+  - The clan unlocks (Salt Crows, Grey Vigil, Cinder Compact) now let the
+    clan be offered (`TowerRun.clanPool`, from `TowerProgress.clans`).
+  - An old save sworn at the start keeps its clan.
+- Balance (1,500 seeds): no unlocks, median 17, floor 20 34.7%, top 10.5%;
+  every unlock, top 16.5%. The clans' spread is gone (each 10–11% top as
+  the main clan). QA's floor-20 band is now 25–38% (34.4% to 36.8% over
+  the 500 guard seeds).
+- `test/tower_oaths_test.dart`; `docs/proposals/tower-mechanics.md` has the
+  rules.
+
+## [1.854.0+890]
+
+### Changed
+- **Every move wears its tag** (the user's call): a way's price, check or
+  fight now shows where the way is, not only on a card:
+  - on its name on the map (the place view's plaque, the street's pin:
+    scene 125's "Get up and go home" says 15, 35 or 70 gold);
+  - on its row under the town chart (a place with one way wears that
+    way's tag: "The loading crane · Strength DC 13");
+  - on the panel of the way picked.
+  The chip is the cards' own (`ChoiceTagChip`, choice_card.dart).
+- **A move that pays, checks or fights is a mark, not a card**, in a place
+  drawn with no plan: a way that walks or travels somewhere stays on the
+  map with its tag, even when it has a price, a roll or a fight on the way
+  (the Sleeper's Face: "Slip past them in the dark", "Take back what they
+  stole"; the Stone Bridge's "Refuse and fight"). What is done where the
+  party stands stays a card, and so does a decision that weighs on the
+  conscience (choice_shape's `decide`). On a town's chart such a move stays
+  a card, now with its tag on its row too: there a way into a district not
+  yet found would stand in its fog (the wharf's docks fight, 2011).
+- Tests: `qa_journey_move_tags_test.dart` (125's price on its pin and its
+  row), `qa_journey_move_pins_test.dart` (1140's moves are pins, a fight
+  tag on them); journey_choice_cards_test follows the new rule. Before and after pictures in
+  `docs/ux-shots/journey-moves/` (`test/ux_journey_moves_shot_test.dart`).
+
+## [1.853.0+889]
+
+- **The town chart** (the district view of a town or village): a district is framed with room for what hangs over it (the banners above their buildings, the names under them), so a way's banner is never cut by the frame (White Wells' "pool at night"); and the building names are placed one after another in the first clear spot (under, right, left, a row lower), clear of each other, of the banners, of the service pins and of the edge, long names on two lines. A name with no clear spot is left off (the list under the chart names every way); the way picked always keeps its name. Rimewell, Greyhithe, Wrack's End, Highhearth, Emberwick and Akagiri no longer pile their names on each other.
+
 ## [1.852.0+888]
 
 - **The story node editor** (Edit Mode): the "Destination node", "Fail destination" and "Lose destination" fields take the width they are given and cut a long node id with an ellipsis; the longest id of the story (37 characters) overflowed the first one by 22 px at 412 px. Layout only.

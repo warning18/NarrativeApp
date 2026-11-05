@@ -81,6 +81,8 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       raceId: raceId,
       professionId: professionId,
       clanId: clanId,
+      // The clans that may offer their oath on the way up (v1.855).
+      clanPool: progress.clans,
       startUnlocks: progress.startUnlocks,
       unlocksOwned: progress.unlocksOwned,
       data: data,

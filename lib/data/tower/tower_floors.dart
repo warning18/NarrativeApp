@@ -12,7 +12,8 @@ import 'tower_tables.dart';
 
 /// What a random stream of the Tower is for: one stream per floor and
 /// purpose ([towerRandom]).
-enum TowerStream { foes, affix, offer, fight, start }
+/// (A stream added later goes last: the others keep their draws.)
+enum TowerStream { foes, affix, offer, fight, start, oath }
 
 /// The stream [purpose] of floor [floor] in the run of [seed]. Mixed by
 /// hand (Object.hash may change from one launch to the next), so a seed

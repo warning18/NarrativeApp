@@ -26,12 +26,16 @@ class StreetPin {
     required this.child,
     required this.label,
     this.locked = false,
+    this.tag,
   });
 
   final int index;
   final Widget child;
   final String label;
   final bool locked;
+
+  /// Under the label: the way's price, check or fight (v1.854).
+  final Widget? tag;
 }
 
 /// The row the buildings stand on, in scene pixels from the top.
@@ -306,7 +310,9 @@ class StreetViewScene extends StatelessWidget {
               final cell = math.min(84.0, width / inRow - 2);
               return Positioned(
                 left: (at.dx * width - cell / 2).clamp(0.0, width - cell),
-                top: (at.dy * height - 34).clamp(0.0, height - 56),
+                // A pin with a tag stands a line higher, its tag in view.
+                top: (at.dy * height - (pin.tag == null ? 34 : 64))
+                    .clamp(0.0, height - (pin.tag == null ? 56 : 90)),
                 width: cell,
                 child: GestureDetector(
                   key: ValueKey('street_pin_${pin.index}'),
@@ -342,6 +348,16 @@ class StreetViewScene extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (pin.tag case final tag?) ...[
+                        const SizedBox(height: 2),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: tag,
+                        ),
+                      ],
                     ],
                   ),
                 ),

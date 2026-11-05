@@ -1769,6 +1769,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+{n} to your main stat.',
     AppLanguage.fr: '+{n} à votre caractéristique principale.',
   },
+  // A clan offers its oath on the way up (v1.855).
+  'tower_kind_oath': {
+    AppLanguage.en: 'Oath',
+    AppLanguage.fr: 'Serment',
+  },
+  'tower_oath_text': {
+    AppLanguage.en: 'Swear to them: their standing and their die.',
+    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',
