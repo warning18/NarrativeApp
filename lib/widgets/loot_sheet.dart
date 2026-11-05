@@ -73,6 +73,7 @@ class LootSheet extends StatelessWidget {
     required this.onTake,
     this.tierColor,
     this.footer,
+    this.showHandle = true,
   });
 
   final AppLanguage language;
@@ -91,6 +92,10 @@ class LootSheet extends StatelessWidget {
   /// Under the details (the chest's fortune roll), when there is one.
   final Widget? footer;
 
+  /// The grip of a sheet pulled up from the bottom; off when it sits in a
+  /// page (the Tower's).
+  final bool showHandle;
+
   String _t(String key) => trFor(language, key);
 
   @override
@@ -108,16 +113,17 @@ class LootSheet extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: SafeArea(
         child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 4),
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                  color: scheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2)),
+          if (showHandle)
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 4),
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                    color: scheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2)),
+              ),
             ),
-          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
