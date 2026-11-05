@@ -80,6 +80,10 @@ class TowerProgress {
             u.value,
       };
 
+  /// How many unlocks a new run takes the power of (towerHealthPerUnlock,
+  /// towerUnlocksPerPotion).
+  int get unlocksOwned => unlocked.length;
+
   /// The start dice and items a new run begins with.
   List<String> get startUnlocks => [
         for (final u in towerUnlocks)

@@ -158,6 +158,36 @@ The bot over 500 seeds:
 
 These are inside the targets of §11. QA's phase 2 confirms them.
 
+### As tuned (v1.848): QA's #834, the user's calls
+
+QA's batch showed the splits were off. The user chose three changes. The
+overall difficulty stays as it was.
+
+| Change | Numbers |
+|---|---|
+| Foes per profession (Tower only) | mage ×0.65, cleric ×1.35, the others ×1 (on the floor's extra) |
+| Wardens (5, 15, 25) | ×1.9: extra 0.34, 0.42, 0.44 |
+| Bosses | 10 ×1.7 (0.31), 20 ×1.25 (0.28), 30 ×1.1 (0.26) |
+| Unlock power | +2% max health for each unlock owned at the start, and +1 potion carried into each fight for every 5 |
+
+Start levels were tried first as the unlocks' power, and they made the
+Tower harder. The foes grow with the hero's level: with every unlock, the
+top won fell from 10% to 3.6%.
+
+The bot over 1,500 seeds:
+
+| | Median floor | Floor 20 reached | Top won |
+|---|---|---|---|
+| No unlocks | 17 | 33% | 10.1% |
+| Every unlock | 19 | 47% | 19.6% |
+
+- **Professions:** with no unlocks, mage 8.8%, rogue 10.0%, warrior 11.3%
+  top won; with every unlock, 16–23%.
+- **Bosses won:** 93/89/87% (10/20/30) with no unlocks, so they are now
+  gates.
+- **Clans and Voidkin:** not tuned. The bot can't see them; the user's
+  hand test decides.
+
 ## 4. Bosses on 10, 20 and 30
 
 The bosses are the existing boss records, each with its phases. They run on

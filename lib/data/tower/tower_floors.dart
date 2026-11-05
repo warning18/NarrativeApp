@@ -58,12 +58,18 @@ class TowerFloor {
 
   bool get isPack => enemyIds.length > 1;
 
-  /// What the fight screen is handed for this floor (the Tower's context:
-  /// no scene, no chest, no gold or XP, wounds carried, a loss handed back
-  /// to the Tower rather than the death screen).
-  EncounterModifiers get modifiers => EncounterModifiers(
+  /// The multiplier on the curve the fight of a hero of [professionId] runs
+  /// at: the floor's extra and the profession's scale.
+  double extraFor(String professionId) =>
+      extra * towerProfessionScaleOf(professionId);
+
+  /// What the fight screen is handed for this floor, for a hero of
+  /// [professionId] (the Tower's context: no scene, no chest, no gold or
+  /// XP, wounds carried, a loss handed back to the Tower rather than the
+  /// death screen).
+  EncounterModifiers modifiersFor(String professionId) => EncounterModifiers(
         chapter: chapter,
-        difficultyMultiplier: extra,
+        difficultyMultiplier: extraFor(professionId),
         forcedAffixes: affixes,
         forceElite: elite,
         keepWounds: true,
