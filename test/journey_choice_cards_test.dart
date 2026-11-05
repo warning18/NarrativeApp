@@ -177,8 +177,9 @@ void main() {
       expect(find.byKey(ValueKey('choice_chip_$id')), findsOneWidget,
           reason: id);
     }
-    // The wharf's one fight ("Fend off a plague hound") walks on to where
-    // the hound is: a banner on the map, not a chip here (v1.854).
+    // Drawn with no plan (this test loads none), the wharf's one fight
+    // ("Fend off a plague hound") walks on: a mark on the map, not a chip
+    // here (v1.854).
     expect(find.byKey(const ValueKey('choice_chip_fight')), findsNothing);
     expect(find.byKey(const ValueKey('choice_chip_ways')), findsNothing);
     await _shot(tester, 'choice-hub-scene');

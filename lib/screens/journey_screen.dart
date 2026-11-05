@@ -1704,11 +1704,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // FlowStay), has it as a card: the story goes on with no map.
     final single =
         choices.length == 1 && stops?.flowOf(node, choices.single) is FlowStay;
-    // A move that pays, checks or fights on its way is still a move: a pin
-    // with its tag, not a card (v1.854, the user's call: every move is on
-    // the map). A decision that weighs on the conscience (choice_shape's
-    // `decide`) stays a card: it is made here, its aftermath goes on.
+    // In a place drawn with no plan, a move that pays, checks or fights on
+    // its way is still a move: a pin with its tag, not a card (v1.854, the
+    // user's call: every move is on the map). A decision that weighs on the
+    // conscience (choice_shape's `decide`) stays a card. On a town's chart a
+    // move into a district not yet found would stand in its fog, so there
+    // it stays a card (with its tag) as before.
     bool moves(int i) =>
+        cityPlan == null &&
         (shapes[i].move == ChoiceMove.walk ||
             shapes[i].move == ChoiceMove.travel) &&
         shapes[i].action != ChoiceAction.decide;

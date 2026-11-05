@@ -19,17 +19,18 @@ isn't reconstructable from git history alone.
     way's tag: "The loading crane · Strength DC 13");
   - on the panel of the way picked.
   The chip is the cards' own (`ChoiceTagChip`, choice_card.dart).
-- **A move that pays, checks or fights is a mark, not a card**: a way that
-  walks or travels somewhere stays on the map with its tag, even when it
-  has a price, a roll or a fight on the way (the Sleeper's Face: "Slip past
-  them in the dark", "Take back what they stole"; the Stone Bridge's
-  "Refuse and fight"; the wharf's "Fend off a plague hound"). What is done
-  where the party stands stays a card, and so does a decision that weighs
-  on the conscience (choice_shape's `decide`).
+- **A move that pays, checks or fights is a mark, not a card**, in a place
+  drawn with no plan: a way that walks or travels somewhere stays on the
+  map with its tag, even when it has a price, a roll or a fight on the way
+  (the Sleeper's Face: "Slip past them in the dark", "Take back what they
+  stole"; the Stone Bridge's "Refuse and fight"). What is done where the
+  party stands stays a card, and so does a decision that weighs on the
+  conscience (choice_shape's `decide`). On a town's chart such a move stays
+  a card, now with its tag on its row too: there a way into a district not
+  yet found would stand in its fog (the wharf's docks fight, 2011).
 - Tests: `qa_journey_move_tags_test.dart` (125's price on its pin and its
   row), `qa_journey_move_pins_test.dart` (1140's moves are pins, a fight
-  tag on them); journey_choice_cards_test and journey_stay_flow_test
-  follow the new rule. Before and after pictures in
+  tag on them); journey_choice_cards_test follows the new rule. Before and after pictures in
   `docs/ux-shots/journey-moves/` (`test/ux_journey_moves_shot_test.dart`).
 
 ## [1.853.0+889]
