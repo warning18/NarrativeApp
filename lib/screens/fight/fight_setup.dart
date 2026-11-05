@@ -307,7 +307,7 @@ extension _FightSetup on _FightScreenState {
     }
     // The mage's Ash Well starts every fight empty (profession_cores.dart).
     if (_core.core == ProfessionCore.ashWell) _mana = 0;
-    _maxRollsThisFight = _maxRolls + _perks.extraRolls;
+    _maxRollsThisFight = rollsPerRoundOf(session);
     _alignmentLabel = session.alignmentLabel;
     _partyBonus = partyBonusFor(
       bossDefeatCounts: session.bossDefeatCounts,
@@ -734,7 +734,7 @@ extension _FightSetup on _FightScreenState {
     for (final id in _armedCharmIds) {
       switch (id) {
         case 'charm_fourth_roll':
-          _maxRollsThisFight += 1;
+          _maxRollsThisFight += charmExtraRolls(id);
         case 'charm_lucky_coin':
           _luckyCoinArmed = true;
         case 'charm_iron_skin':

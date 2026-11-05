@@ -8,6 +8,217 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.844.0+880]
+
+- Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.
+
+## [1.843.0+879]
+
+- Skill icons: two more pairs that shared a gem each get their own glyph: Rogue Backstab a dagger, Void Drain a funnel, Plague Bite a skull, Voidkin Entropy Touch fading dots.
+
+## [1.842.0+878]
+
+- Skill icons: the Electricity pair and the Fire pair that shared a gem each get their own glyph: Adrenaline Surge a bolt, Mage Arcane Missile a dart, Dwarf Forgeheart a hammer, Orc Bloodlust a set of fangs.
+
+## [1.841.0+877]
+
+- Skill icons: the two Water pairs that shared a gem each get their own glyph: Cleric Holy Light a cross, Mage Frost Nova a snowflake, Cleric Purify a drop, Elf Moonlight Step a crescent moon.
+
+## [1.840.0+876]
+
+- Skill icons: the 3 warding skills on the grey shield each get their own glyph: Cleric Sanctuary an arch, Iron Will an anvil, Mage Mana Shield a spark.
+
+## [1.839.0+875]
+
+- Skill icons: the 3 healing skills on the blue gem each get their own glyph: Bind Wounds a bandage, Mending Touch a hand over a spark, Quick Heal a cross with speed marks.
+
+## [1.838.0+874]
+
+- Skill icons: the 4 rallying skills each get their own glyph on the grey gem: Rallying Cry a banner, Rallying Shout a horn with sound waves, Warrior Rally Cry a raised blade with rays, Rogue Quick Pockets a pouch.
+
+## [1.837.0+873]
+
+- Skill icons, the second-chance skills on the grey diamond: Cleric Revive
+  Prayer (a halo over a cross), Human Resolve (a fist), Second Chance (a heart)
+  and Second Wind (a breath) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/resolve.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/resolve-before-after.png`.
+
+## [1.836.0+872]
+
+- Skill icons, the void school on the violet diamond: Mage Teleport Strike (a
+  blink), Void Blast (an orb with a dark heart), Void Gathering (motes drawn
+  in) and Voidkin Starless Gaze (an eye with a dark pupil) each had the same
+  blank gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/void.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/void-before-after.png`.
+
+## [1.835.0+871]
+
+- Skill icons, the earth school on the green diamond: Dwarf Hammer Blow (a
+  mallet), Ranger Camouflage (a leaf), Ranger Trap Set (a trap's teeth) and
+  Rogue Poison Blade (a drop) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/earth-before-after.png`.
+
+## [1.834.0+870]
+
+- Skill icons, the earth school on the shield-shaped gem: Brace (two planted
+  legs), Bulwark Stance (a wall), Dwarf Stoneskin (a boulder), Stone Resolve (a
+  mountain) and Warrior Iron Stance (an anvil) each had the same blank green
+  shield; each now has its own 7x7 cream glyph on it, set higher where the
+  shield has room. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth_shield.png`, stored by `tool/png8.py`. Also fixes the
+  generator itself: merge conflict markers had been left in it by v1.833
+  (it did not run; the shipped icons are unaffected). Picture:
+  `docs/ux-shots/skill-glyphs/earth-shield-before-after.png`.
+
+## [1.833.0+869]
+
+- Skill icons, the wind school: Elf Arcane Focus (a four-point star), Elf Keen
+  Eye, Ranger Aimed Shot (an arrow), Ranger Multi Shot (three), Rogue Shadow
+  Clone (a ghost) and Steady Aim (a crosshair) each had the same blank teal
+  gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/wind.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/wind-before-after.png`.
+
+## [1.832.0+868]
+
+- Skill icons, the fire school: Cleric Smite (a bolt), Fireball, Inner Fire (a
+  flame), Mage Meteor, Molten Backlash, Orc Berserk Rage (a snarling face), Pack
+  Howl (a crescent moon) and Warcry (the sound of it) each had the same blank
+  orange gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/fire.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/fire-before-after.png`.
+
+## [1.831.0+867]
+
+- The spoils sheet, wired (design C, the user's pick): once the chest is open
+  and every drop shown, the loot dialog gives way to the full-height sheet: the
+  chest and its rarity, "What the spoils change" (gold 126 to 144, Antidote
+  x1 to x2, the Knucklebone's rolls a round, health from a potion drunk, a
+  spell learnt, stat points, clan offers) from the engine's own numbers
+  (`lootChanges`, v1.830), each drop's text with its switch to put it on or
+  drink it (the same choices as before), the fortune roll, and Take. A value
+  several rewards move shows from the first before to the last after; gear
+  and a spellbook already known add no line. The fight passes the dialog the
+  whole loot (`SpoilsSheetData`), not only the chest's. Without it the dialog
+  is as it was. Strings `loot_line_*`. Tests: `loot_sheet_wiring_test.dart`.
+
+## [1.830.0+866]
+
+### Added
+- The engine can say what each reward of a loot changes, for the spoils
+  sheet of design C (`lib/data/loot_changes.dart`, `lootChanges`). For each
+  reward it gives a before and an after for each thing that moves:
+  - gold;
+  - healing potion and antidote charges;
+  - the copies of a charm, material or trophy in the bag;
+  - dice rolls a round (the Gambler's Knucklebone);
+  - health, for a potion drunk from the chest;
+  - a spell learnt, a stat point (Tome of Insight) or an offer (Tome of
+    Mastery).
+
+  Gear is shown as "nothing to count". The numbers come from the code that
+  applies the loot (`lootGrantOf`, now shared with `applyCombatResult`,
+  and the fight's own rolls and potion heal), so the sheet can't say
+  something taking the loot doesn't do. `test/loot_changes_test.dart`
+  checks that every "after" is what taking the loot leaves. No screen
+  changes yet: UX-2 wires the sheet.
+## [1.829.0+865]
+
+- Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
+  Attack, Heavy Windup, Battle Trance, Final Stand, Focus Mind, Guard Break,
+  Human Diplomacy, Human Quick Study, Improvised Strike, Lucky Strike, Orc
+  Savage Cleave, Precision Thrust, Ruthless Edge, Warrior Execute, Warrior
+  Whirlwind, Zealous Conviction) shared one blank grey gem; each now has its
+  own 7x7 cream glyph on it (a sword, a hammer, an axe, a spiral, a flag, an
+  eye, a broken shield, a speech bubble, a book, a club, a star, claw marks,
+  a spear, a dagger, a skull, a whirl, a sun). The frame keeps the school;
+  the glyph carries the skill. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/martial.png`, stored by `tool/png8.py`. Pictures:
+  `docs/ux-shots/skill-glyphs/`. The other schools follow in their own
+  releases.
+
+## [1.828.0+864]
+
+- The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
+  the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
+  full-height sheet: the chest and its rarity, "What the spoils change" (gold
+  126 to 144, dice 1 to 2 rerolls a round, bag Antidote x1 to x2), each
+  reward's text with its "Use right away" switch, and one Take button that
+  stays at the bottom; it scrolls on a short phone. Three strings
+  (`loot_sheet_changes`, `loot_sheet_details`, `loot_use_now`). Nothing uses
+  it yet: it is wired to the chest and to the engine's before-and-after data
+  when that merges, so the game does not change. Picture:
+  `docs/ux-shots/loot/sheet-built-stub.png`. Test: `loot_sheet_test.dart`
+  (360 and 412 px, French and English, real fonts, no text under 11 px, the
+  switch and Take).
+
+## [1.827.0+863]
+
+### Fixed
+- Journey: a tap on the map no longer sets the party on the road by itself.
+  When a scene has one way, the game picks it for the player; a tap on its
+  mark (after "Back to the map", for example) now only confirms the pick.
+  Go, a second tap or a page card takes it. Before, the first tap took the
+  step, and a way to another place rolled its detour (1101_scarred).
+  `test/journey_auto_pick_test.dart` guards it.
+
+## [1.826.0+862]
+
+- Fights on the road: the fight is dressed with the land it is met on. A fight
+  fought during a land crossing (the scavengers) now has the side-view land
+  behind its cards: the world camera's kit at the party's place (or, on a
+  road the camera does not paint, the route's own terrain in today's window),
+  across the upper half of the screen and faded softly into the stage's ground,
+  standing still. Fights met anywhere else (the Journey, the story, a
+  hunt) are unchanged. `FightScreen.landLayers`; the backdrop's
+  `_buildLand` in `fight_ground.dart`. Picture:
+  `docs/ux-shots/fight-land/before-desert-ruins.png` (no land, desert, ruins).
+  Tests: `fight_board_test.dart` (the land is behind a fight given one),
+  `land_crossing_test.dart` (the road's fight is given it).
+
+
+## [1.825.0+861]
+
+- Journey: the map is back for every scene with a choice to make, as before
+  v1.809. A room's ways are spots on its plan again (the Blind Beggar's
+  tables and doors, the family house, Kindly Hill: 28 scenes had lost
+  them), and the party walks to the one picked. Only a scene with nothing to
+  choose, its one way leading on in the same place, still goes on with no
+  map (its way a card on the page). A way to another district of a town is
+  walked on the town's chart: the party's mark crosses the streets to it.
+## [1.824.0+860]
+
+- Fight: the aim line of a picked die is no longer cut off at the dice board.
+  It ran from the die up toward its target but was clipped to the board's own
+  box, so it vanished under the party and enemy cards; it now draws over the
+  cards and ends on the edge of the target card that faces the die (not on
+  its middle, which hid the health and name). Same for a heal or a defence
+  aimed at an ally. Pictures: `docs/ux-shots/fight-aim/` (360 and 412 px,
+  before and after). Test: `fight_board_test.dart` (the line is not clipped
+  and ends on the target card's edge, above the board).
+
+## [1.822.0+858]
+
+- Crossings: the camera travels. On a road the world camera paints (v1.821),
+  the land no longer dissolves from one day to the next: the camera pans
+  along the road from the day's place to the next's over 1.1 s (a cut with
+  reduced motion), crossing the dithered seam where two regions meet, and
+  the window's landmark fades out and in as it passes. The kits' world is
+  now scrolled continuously to the place (`withSceneAt`, `layersAt(x)`),
+  where a window used to be a discrete step. Crossings on roads too long for
+  the camera (the sea cliffs') and every other scene still use the windows
+  and the dissolve. Not yet: the map's flight along the road still ends in
+  a screen change to the crossing; folding that hand-off into the same
+  travel needs the Journey's map to give up its scene. Picture:
+  `docs/ux-shots/camera/crossing-travel.png`. Tests: `scene_windows_test.dart`
+  (the land pans with x, no jump at a window border; the landmark shows or
+  not), `crossing_strip_path_test.dart` (the camera travels to the next day).
+
 ## [1.821.0+857]
 
 - Crossings: a land crossing's scene is now painted by the world camera

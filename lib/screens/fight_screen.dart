@@ -13,6 +13,7 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
+import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
 import '../widgets/head_avatar.dart';
@@ -60,6 +61,8 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../data/item_origin_here.dart';
+import '../data/loot_changes.dart'
+    show charmExtraRolls, healthAfterDrinks, rollsPerRoundOf;
 import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
@@ -213,7 +216,14 @@ class FightScreen extends ConsumerStatefulWidget {
     this.additionalEnemies = const {},
     this.modifiers = EncounterModifiers.none,
     this.random,
+    this.landLayers,
   });
+
+  /// The land the fight stands on, when it is met on a road: the side-view
+  /// kit of the place (the camera's at the party's x, see world_camera.dart),
+  /// drawn behind the battle's upper part and faded into the stage's ground.
+  /// Null (every other fight) leaves the backdrop as it was.
+  final List<SideLayer>? landLayers;
 
   /// The dice this fight rolls (see [fightRandomProvider]): null in play, so
   /// the fight makes its own unseeded Random; a test gives a seeded one.

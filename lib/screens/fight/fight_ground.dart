@@ -366,6 +366,7 @@ extension _FightGround on _FightScreenState {
           weather: false,
           events: false,
         ),
+        if (widget.landLayers != null) _buildLand(widget.landLayers!),
         DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -382,6 +383,35 @@ extension _FightGround on _FightScreenState {
         ),
       ],
     );
+  }
+
+  /// The land of the road the fight is met on (the side-view kit at the
+  /// camera's x), across the upper part of the screen and faded into the
+  /// stage's ground below, standing still.
+  Widget _buildLand(List<SideLayer> layers) {
+    return LayoutBuilder(builder: (context, box) {
+      final height = (box.maxHeight * 0.5).clamp(160.0, 340.0);
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ShaderMask(
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (rect) => const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            // Softer than the scene is on its own, so the names and bars
+            // over it keep their contrast.
+            colors: [Color(0xB3FFFFFF), Color(0xB3FFFFFF), Color(0x00FFFFFF)],
+            stops: [0, 0.6, 1],
+          ).createShader(rect),
+          child: SideViewScene(
+            key: const Key('fight_land'),
+            layers: layers,
+            moving: false,
+            height: height,
+          ),
+        ),
+      );
+    });
   }
 
   /// The day's weather over the whole screen, cards and board included: it

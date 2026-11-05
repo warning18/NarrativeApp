@@ -414,6 +414,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// A new scene's lone step is still to be picked for the player.
   bool _autoPickPending = false;
+
+  /// Whether the way picked now was picked by the game (a scene's one way),
+  /// not by the player: a tap on its mark on the map only confirms the pick,
+  /// it never takes the step (Go does, a second tap, or a card's tap,
+  /// v1.827). Before, the first tap on the map after "Back to the map" set
+  /// the party on the road at once, and a way to another place rolled its
+  /// detour.
+  bool _pickedForPlayer = false;
   GlobalKey<_JourneyChartState> _chartKey = GlobalKey();
 
   /// How far out the map is looked at (v1.199): the place, its land, or
@@ -839,7 +847,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _takingFrom = before;
       _pressed = index;
     });
-    // The view the step is taken from: a same-place step keeps it.
+    // The view the step is taken from: a same-place step to a scene with
+    // nothing to choose keeps it (see _hasOneWay).
     final current = _reading
         ? ArrivalView.page
         : _arrival
@@ -949,7 +958,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                         ?.isMainStoryScene(play.currentNodeId) ??
                     true,
                 inExcursion: play.isInExcursion,
-                current: current,
+                current: _hasOneWay(play.currentNodeId) ? current : null,
               );
               // The story begun again: its first scene, as a new game's.
               final fresh = isFreshStoryStart(play);
@@ -971,6 +980,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       }
     }
+  }
+
+  /// Whether scene [nodeId] has nothing to choose: one way shown (the
+  /// others hidden by their flags), leading on to the next scene at the
+  /// same stop (FlowStay). Such a scene has its way as a card, and a
+  /// same-place step to it keeps the page or the sheet it was taken from
+  /// (v1.825); a scene with a choice to make opens as it did before v1.809,
+  /// its choices on the map.
+  bool _hasOneWay(String nodeId) {
+    final node = widget.story.nodeFor(nodeId);
+    final stops = ref.read(storyStopsProvider);
+    if (node == null || stops == null) return false;
+    final session = ref.read(playerSessionProvider);
+    final gate = ref.read(coastGateWorldProvider);
+    final shown = [
+      for (final c in node.choices)
+        if (!choiceHiddenFor(c, session, gate)) c,
+    ];
+    return shown.length == 1 && stops.flowOf(node, shown.single) is FlowStay;
   }
 
   /// A step taken inside one place (a card whose way leads to the next scene
@@ -1143,13 +1171,19 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     });
   }
 
-  void _tap(int index, _Step step) {
+  /// A tap on step [index]: a second tap on the way picked takes it. On
+  /// the map ([fromMap]) a way the game picked is only confirmed by the
+  /// first tap; a card goes at once (v1.692).
+  void _tap(int index, _Step step, {bool fromMap = false}) {
     if (_busy) return;
-    if (_selected == index && !step.locked) {
+    if (_selected == index && !step.locked && !(fromMap && _pickedForPlayer)) {
       _take(index, step);
       return;
     }
-    setState(() => _selected = index);
+    setState(() {
+      _selected = index;
+      _pickedForPlayer = false;
+    });
   }
 
   /// The height of the panel under the map: a way picked fills it as it
@@ -1188,6 +1222,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _sceneKey = sceneKey;
       _openingTold = false;
       _selected = null;
+      _pickedForPlayer = false;
       _autoPickPending = true;
       _chartKey = GlobalKey();
       _outside = false;
@@ -1642,14 +1677,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         ref.read(storyPlayProvider.notifier).scenePlay != null;
     final placed =
         !play.isInExcursion && placeLandmark != null && chartHere != null;
-    // A way to the next scene at the same stop is a card as well, in a room
-    // too: the scene keeps the party (choice_flow.dart's FlowStay).
+    // A scene with a choice to make keeps it on the map (v1.825, as before
+    // v1.809): the city chart's banners, the room plan's spots, the place
+    // view's pins and cards. Only a scene with nothing to choose, its one
+    // way leading to the next scene at the same stop (choice_flow.dart's
+    // FlowStay), has it as a card: the story goes on with no map.
+    final single =
+        choices.length == 1 && stops?.flowOf(node, choices.single) is FlowStay;
     final onCard = [
       for (var i = 0; i < shapes.length; i++)
         _writtenDetour ||
-            placed &&
-                ((room == null && shapes[i].here) ||
-                    (stops?.flowOf(node, choices[i]) is FlowStay)),
+            placed && ((room == null && shapes[i].here) || single),
     ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;
@@ -1674,7 +1712,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // A scene with one way on has its step picked already: one tap on Go.
     if (_autoPickPending) {
       _autoPickPending = false;
-      if (steps.length == 1 && !steps.single.locked) _selected = 0;
+      if (steps.length == 1 && !steps.single.locked) {
+        _selected = 0;
+        _pickedForPlayer = true;
+      }
     }
     if (_cityPick != null) {
       final i = steps.indexWhere((s) => identical(s.choice, _cityPick));
@@ -2411,7 +2452,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   terrainShift: _terrainShift,
                                   terrainSeed: 7 +
                                       chapterOfNode(play.currentNodeId) * 13,
-                                  onTap: (j, step) => _tap(_pinIdx[j], step),
+                                  onTap: (j, step) =>
+                                      _tap(_pinIdx[j], step, fromMap: true),
                                   stamp: _stamp,
                                   burn: _burn,
                                   unroll: _unroll,

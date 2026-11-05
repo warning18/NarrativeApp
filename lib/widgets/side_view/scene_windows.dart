@@ -125,6 +125,45 @@ List<SideLayer> withSceneWindow(
   ];
 }
 
+/// [layers] of the scene [kit] with the camera at [x] on the world's strip:
+/// the kit's own world scrolled to the place, continuously (a window of the
+/// strip is [sceneWindowSpan] wide, so moving the camera pans the land
+/// instead of cutting between windows), and the landmark of the window [x]
+/// is in, at [landmark] opacity (0 to 1: a camera on the move shows none).
+List<SideLayer> withSceneAt(List<SideLayer> layers, String kit, double x,
+    {double landmark = 1}) {
+  final v = sceneWindowAt(x);
+  final offset = x / sceneWindowSpan;
+  final street = kit.startsWith('street-');
+  return [
+    for (final layer in layers)
+      SideLayer(
+          layer.speed,
+          street
+              ? layer.paint
+              : (c, s, scroll, t, u) =>
+                  layer.paint(c, s, scroll + offset * s.width, t, u)),
+    if (v > 0 && landmark > 0 && _marks[kit] != null)
+      SideLayer(0.8, (canvas, size, scroll, t, u) {
+        final g = _G(canvas, size, u, _inkOf(kit));
+        final cols = size.width / u;
+        final period = cols * 1.7;
+        final shift = (-(scroll / u) % period + period) % period;
+        if (landmark < 1) {
+          canvas.saveLayer(Offset.zero & size,
+              Paint()..color = Colors.white.withValues(alpha: landmark));
+        }
+        for (final dx in [shift, shift - period]) {
+          canvas.save();
+          canvas.translate(dx.floorToDouble() * u, 0);
+          _marks[kit]![v - 1](g);
+          canvas.restore();
+        }
+        if (landmark < 1) canvas.restore();
+      }),
+  ];
+}
+
 class _Ink {
   const _Ink(this.dark, this.mid, this.rim);
   final Color dark, mid, rim;

@@ -74,6 +74,43 @@ void main() {
     });
   });
 
+  group('the camera at x', () {
+    test('the land pans with x, with no jump at a window border', () {
+      final seen = <double>[];
+      final probe = [
+        SideLayer(1, (c, size, scroll, t, u) => seen.add(scroll)),
+      ];
+      const size = ui.Size(360, 190);
+      final canvas = ui.Canvas(ui.PictureRecorder());
+      void at(double x) =>
+          withSceneAt(probe, 'desert', x).first.paint(canvas, size, 0, 1, 1);
+      // Across the border between two windows the offset runs on.
+      at(sceneWindowSpan - 0.5);
+      at(sceneWindowSpan + 0.5);
+      expect(seen[0],
+          closeTo((sceneWindowSpan - 0.5) / sceneWindowSpan * 360, 1e-6));
+      expect(seen[1] - seen[0], closeTo(1 / sceneWindowSpan * 360, 1e-6));
+    });
+
+    test('the landmark of the window shows unless the camera is on the move',
+        () {
+      final base = desertLayers(progress: 0.5);
+      // Window 1 has its landmark; window 0 has none.
+      expect(withSceneAt(base, 'desert', sceneWindowSpan + 1),
+          hasLength(base.length + 1));
+      expect(withSceneAt(base, 'desert', 1), hasLength(base.length));
+      expect(withSceneAt(base, 'desert', sceneWindowSpan + 1, landmark: 0),
+          hasLength(base.length));
+      for (final a in [0.0, 0.3, 1.0]) {
+        for (final layer
+            in withSceneAt(base, 'desert', sceneWindowSpan + 1, landmark: a)) {
+          layer.paint(ui.Canvas(ui.PictureRecorder()), const ui.Size(360, 190),
+              90, 1.3, 190 / sideViewRows);
+        }
+      }
+    });
+  });
+
   group('the kits', () {
     final kits = <String, List<SideLayer> Function()>{
       'desert': () => desertLayers(progress: 0.5),
