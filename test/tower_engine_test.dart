@@ -71,9 +71,10 @@ void main() {
       final m = floor.modifiersFor('warrior');
       expect(m.tower, isTrue);
       expect(m.chapter, floor.chapter);
-      expect(m.difficultyMultiplier, floor.extra);
+      expect(
+          m.difficultyMultiplier, closeTo(floor.extra * towerFoeScale, 1e-9));
       expect(floor.modifiersFor('mage').difficultyMultiplier,
-          closeTo(floor.extra * .65, 1e-9));
+          closeTo(floor.extra * .65 * towerFoeScale, 1e-9));
       expect(m.forcedAffixes, floor.affixes);
       expect(m.lossContinues, isTrue);
       expect(m.keepWounds, isTrue);

@@ -469,3 +469,33 @@ the die at once.
   every unlock, median 19, top 16.5% (19.6%). The spread between clans is
   gone: as the main clan, each wins the top 10–11% with no unlocks,
   14–18% with every unlock (it was Dominion 15% to Mire 4.7%).
+
+## The level-up, the main game's way (v1.857)
+
+The user's call: the Tower takes the main game's "earning offers", in
+three steps; this is the first: **the level-up's stat picks are the
+player's**, as in the story (stat-picks.md), not a point given to the
+damage stat.
+
+- **The picks are held by the run.** A level gained earns
+  `levelStatPicks` (1) pick; `towerPendingPicks(run)` is the picks the
+  run's level earned less those taken (`TowerRun.statPicks`, the offer
+  taken for each, saved as `picks`). An old save (no `picks`) keeps the
+  points its levels gave then.
+- **The pick is the main game's**: `towerStatPickOffer(run, data)` draws it
+  with `drawStatPick` (three offers, one rarity, the calling, the habit and
+  a turn), from the run's own stream (`TowerStream.pick`), as the hero
+  stands; `towerTakeStatPick(run, data, index)` takes one; the hero
+  replays every pick (`towerHeroOf`).
+- **The picks come before the floor's cards**: the screen opens the main
+  game's Level Up on `TowerLevelUpSession(run, data).wrap(LevelUpScreen())`
+  (the Tower hero's own session, the story save untouched) after a floor
+  that gains a level; a pick still waiting when the cards are taken goes to
+  the calling (`towerPick`), so the climb never stalls.
+- **The bot** takes its picks as the story's bot does (`simBuildShares`,
+  `statPickForShares`).
+- **Balance**: the story's builds spread their points (about 60% to the
+  damage stat), so the climb came out harder (no unlocks, median 15, top
+  7.0%); every foe of the Tower is now at `towerFoeScale` (0.95) of its
+  floor's extra: no unlocks, median 17, floor 20 34.9%, top 10.7%; every
+  unlock, median 19, top 16.3% (1,500 seeds), as at v1.855.

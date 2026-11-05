@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import '../sim_combat.dart';
+import '../training.dart' show statPickForShares;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_progress.dart';
@@ -71,6 +72,19 @@ TowerRun playTowerRun({
     run = towerAfterFight(run, data,
         won: outcome.won, healthLeft: hero.currentHealth);
     if (run.status == TowerStatus.choosing) {
+      // The level-up first, as the story's bot takes its picks.
+      while (towerPendingPicks(run) > 0) {
+        final offer = towerStatPickOffer(run, data);
+        if (offer.isEmpty) break;
+        final hero = towerHeroOf(run, data);
+        run = towerTakeStatPick(
+            run,
+            data,
+            statPickForShares(
+                offer,
+                simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
+                hero.pickedPoints));
+      }
       run = towerPick(run, data, towerBotChoice(run, data));
     }
   }
