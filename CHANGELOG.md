@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.847.0+883]
+
+- **The Tower's door and screens, without the climb** (phase 3a; shown in Edit mode only until the climb is in): "The Tower" on the main menu, the start screen (a people, a calling and a clan, the ones not bought yet locked, marks and best floor, Continue when a run is under way), the marks and unlocks screen (the ten unlocks, Buy and Owned), and the end of a run (floor, marks earned and total). A run can be started and left from a stand-in floor page; the floor itself, the ladder and the cards come in the next release. English and French from Narrative's names note; the Tower keeps its own save and never touches the story's.
+
 ## [1.846.0+882]
 
 - A road the story crosses on foot (the Dune Sea road and the other long land routes) is one trip now: the chart flight only sets the party out (two seconds at most, it used to run to the far place), and the crossing rises over the chart from the top, scene first, in 420 ms, instead of a new page that set out again from day 1. Turning back lowers it the same way; with reduced motion it is there at once.

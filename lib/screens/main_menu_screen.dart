@@ -22,6 +22,7 @@ import '../widgets/wind_banner.dart';
 import 'home_shell.dart';
 import 'intro_screen.dart';
 import 'settings_screen.dart';
+import 'tower/tower_start_screen.dart';
 
 /// Opens the game (HomeShell) over the menu in [mode], on the Story tab.
 Future<void> _enterGame(
@@ -294,6 +295,19 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                                   }
                                 },
                         ),
+                        // The Tower (v1.847): shown in Edit mode while its
+                        // climb is being built; open to everyone with it.
+                        if (ref.watch(appModeProvider) == AppMode.edit)
+                          item(
+                            key: const Key('menu_tower'),
+                            icon: Icons.fort_outlined,
+                            label: tr(ref, 'tower_menu'),
+                            detail: tr(ref, 'tower_menu_sub'),
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => const TowerStartScreen()),
+                            ),
+                          ),
                         item(
                           key: const Key('menu_settings'),
                           icon: Icons.settings_outlined,
