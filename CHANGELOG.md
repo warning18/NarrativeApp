@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.840.0+876]
+
+- Skill icons: the 3 warding skills on the grey shield each get their own glyph: Cleric Sanctuary an arch, Iron Will an anvil, Mage Mana Shield a spark.
+
 ## [1.839.0+875]
 
 - Skill icons: the 3 healing skills on the blue gem each get their own glyph: Bind Wounds a bandage, Mending Touch a hand over a spark, Quick Heal a cross with speed marks.
