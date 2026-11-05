@@ -9,7 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
+import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
+import 'package:narrative_data_app/widgets/race_profession_cards.dart'
+    show ClanDisc;
 import 'package:narrative_data_app/screens/tower/tower_marks_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_start_screen.dart';
 import 'support/pump.dart';
@@ -37,35 +40,43 @@ Future<ProviderContainer> _open(WidgetTester tester, Widget screen,
 }
 
 void main() {
-  testWidgets('the start screen locks what is not bought; Climb needs a pick',
-      (tester) async {
+  testWidgets(
+      'the main game\'s creation screen picks the hero: the unbought calling '
+      'lies padlocked, no clan is told', (tester) async {
     await _open(tester, const TowerStartScreen());
-    // Open at the start: warrior; no clan to pick (the clans offer their oaths
-    // on the way up).
-    expect(find.byKey(const Key('tower_clan_dominion')), findsNothing);
-    expect(find.byKey(const Key('tower_profession_warrior')), findsOneWidget);
-    // The cleric is bought with marks: locked, a tap does nothing.
-    await tester
-        .ensureVisible(find.byKey(const Key('tower_profession_cleric')));
-    await tester.tap(find.byKey(const Key('tower_profession_cleric')),
-        warnIfMissed: false);
-    await tester.pump();
+    // The start screen opens the main game's Race & Profession screen.
     final climb = find.byKey(const Key('tower_climb'));
     await tester.ensureVisible(climb);
-    expect(tester.widget<FilledButton>(climb).onPressed, isNull);
-
-    for (final k in [
-      'tower_race_human',
-      'tower_profession_warrior',
-    ]) {
-      await tester.ensureVisible(find.byKey(Key(k)));
-      await tester.tap(find.byKey(Key(k)));
-      await tester.pump();
-    }
-    await tester.ensureVisible(climb);
-    expect(tester.widget<FilledButton>(climb).onPressed, isNotNull);
-
     await tester.tap(climb);
+    await _settle(tester);
+    expect(find.byType(RaceProfessionScreen), findsOneWidget);
+    // Nothing of the story's clans: no count on the cards.
+    expect(find.textContaining('clans'), findsNothing);
+    final start = find.byKey(const Key('rp_start'));
+    expect(tester.widget<FilledButton>(start).onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key('choice_card_human')));
+    await tester.pump();
+    expect(find.byKey(const Key('rp_next')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('rp_next')));
+    await _settle(tester);
+    // The cleric is bought with marks: padlocked, a tap does nothing.
+    expect(find.byKey(const Key('choice_lock_cleric')), findsOneWidget);
+    expect(find.text('Bought with marks: 15'), findsOneWidget);
+    expect(find.text('Bought with marks: 25'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('choice_card_cleric')));
+    await tester.pump();
+    expect(tester.widget<FilledButton>(start).onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key('choice_card_warrior')));
+    await tester.pump();
+    // Picked: the open card tells no clan that will court the hero.
+    expect(find.byKey(const Key('open_choice_warrior')), findsOneWidget);
+    expect(find.byKey(const Key('rp_summary')), findsOneWidget);
+    expect(tester.widgetList(find.byType(ClanDisc)), isEmpty);
+    expect(tester.widget<FilledButton>(start).onPressed, isNotNull);
+
+    await tester.tap(start);
     await _settle(tester);
     expect(find.byKey(const Key('tower_floor_label')), findsOneWidget);
     expect(find.text('Floor 1 of 30'), findsOneWidget);
