@@ -33,6 +33,7 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/politics_provider.dart'
     show choiceHiddenFor, coastGateWorldProvider;
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/land_crossing_screen.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/widgets/choice_card.dart' show ChoiceCard;
 import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
@@ -498,12 +499,52 @@ void main() {
       await tester.tap(_key('camp_tab_town'));
       await settle();
       await shot('1822-camp-town-tab');
+      for (var i = 1; i <= 3; i++) {
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -520));
+        await settle();
+        await shot('1822-camp-town-tab-scroll$i');
+      }
       await tester.tap(_key('camp_tab_party'));
       await settle();
       await shot('1822-camp-party-tab');
       await tester.tap(_key('camp_tab_sea'));
       await settle();
       await shot('1822-camp-sea-tab');
+    });
+
+    // A crossing played on its own screen, as the Journey starts it
+    // (runLandCrossing: the real road, the strip and the world camera).
+    Future<void> crossing(String routeId, String name) async {
+      await newSession(const {});
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+      nav.push(MaterialPageRoute<void>(
+          builder: (_) => _CrossingLauncher(routeId: routeId)));
+      await settle(10);
+      await tester.pump(const Duration(seconds: 2));
+      await shot('$name-day1-start');
+      // What the road holds is answered with its first choice; the screen
+      // after each answer is a picture while a crossing is on.
+      for (var step = 1; step <= 6; step++) {
+        final options = find.descendant(
+            of: find.byType(LandCrossingScreen),
+            matching: find.byType(InkWell));
+        if (options.evaluate().isEmpty) break;
+        await tester.tap(options.first, warnIfMissed: false);
+        await tester.pump(const Duration(milliseconds: 700));
+        if (find.byType(LandCrossingScreen).evaluate().isEmpty) break;
+        await shot('$name-step$step-answer');
+        await tester.pump(const Duration(milliseconds: 2500));
+        if (find.byType(LandCrossingScreen).evaluate().isEmpty) break;
+        await shot('$name-step$step-next');
+      }
+      await clear();
+    }
+
+    await section('1822-camp-to-quarter', () async {
+      await crossing('camp_to_quarter', '1822-camp-to-quarter');
+    });
+    await section('1815-sleeper-to-wells', () async {
+      await crossing('sleeper_to_wells', '1815-sleeper-to-wells');
     });
 
     // ---- the keys of the other tabs, to find what to tap ----
@@ -530,4 +571,26 @@ void main() {
         .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(table));
     debugPrint('UNRENDERED ${unrendered.length}: ${unrendered.join(' | ')}');
   });
+}
+
+/// Starts a land crossing on its own page, as the Journey does.
+class _CrossingLauncher extends ConsumerStatefulWidget {
+  const _CrossingLauncher({required this.routeId});
+  final String routeId;
+
+  @override
+  ConsumerState<_CrossingLauncher> createState() => _CrossingLauncherState();
+}
+
+class _CrossingLauncherState extends ConsumerState<_CrossingLauncher> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) runLandCrossing(context, ref, widget.routeId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const Scaffold();
 }
