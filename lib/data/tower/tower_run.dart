@@ -5,6 +5,8 @@
 
 import 'dart:math';
 
+import '../../combat/stat_rules.dart' show levelStatPicks;
+import '../training.dart' show StatPickOffer;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_rewards.dart';
@@ -45,6 +47,8 @@ class TowerRun {
     this.taken = const {},
     this.refused = const {},
     this.offer = const [],
+    this.statPicks = const [],
+    this.autoPicks = false,
   });
 
   factory TowerRun.fromJson(Map<String, dynamic> json) => TowerRun(
@@ -77,6 +81,13 @@ class TowerRun {
           for (final r in (json['offer'] as List?) ?? const [])
             TowerReward.fromJson(r as Map<String, dynamic>),
         ],
+        statPicks: [
+          for (final p in (json['picks'] as List?) ?? const [])
+            (p as num).toInt(),
+        ],
+        // A save from before v1.857 has no picks: its levels keep the
+        // points they gave then.
+        autoPicks: !json.containsKey('picks'),
       );
 
   /// The seed every floor and offer is drawn from.
@@ -136,6 +147,14 @@ class TowerRun {
   /// The cards on the table ([TowerStatus.choosing]); empty otherwise.
   final List<TowerReward> offer;
 
+  /// The stat picks taken (v1.857, the main game's level-up): for each pick
+  /// earned, in order, the offer taken (0..2 of towerStatPickDraw's three).
+  final List<int> statPicks;
+
+  /// A save from before v1.857: each level's point goes to the damage
+  /// stat, as it did then; no pick waits.
+  final bool autoPicks;
+
   bool get isOver =>
       status == TowerStatus.dead ||
       status == TowerStatus.won ||
@@ -161,6 +180,7 @@ class TowerRun {
     Map<int, TowerReward>? taken,
     Set<int>? refused,
     List<TowerReward>? offer,
+    List<int>? statPicks,
   }) =>
       TowerRun(
         seed: seed,
@@ -176,6 +196,8 @@ class TowerRun {
         taken: taken ?? this.taken,
         refused: refused ?? this.refused,
         offer: offer ?? this.offer,
+        statPicks: statPicks ?? this.statPicks,
+        autoPicks: autoPicks,
       );
 
   Map<String, dynamic> toJson() => {
@@ -196,6 +218,7 @@ class TowerRun {
           },
         if (refused.isNotEmpty) 'refused': (refused.toList()..sort()),
         if (offer.isNotEmpty) 'offer': [for (final r in offer) r.toJson()],
+        if (!autoPicks) 'picks': statPicks,
       };
 }
 
@@ -294,10 +317,47 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   );
 }
 
+/// The level the hero stands at with [floorsCleared] floors won.
+int towerLevelAfter(int floorsCleared) => floorsCleared <= 0
+    ? 1
+    : max(1, towerBudgetOf(min(floorsCleared, towerTop)).levelAfter);
+
+/// The stat picks [run]'s hero has earned and not yet taken (v1.857, the
+/// main game's level-up: [levelStatPicks] a level gained). Held by the run
+/// itself: the picks earned by its level, less those it took.
+int towerPendingPicks(TowerRun run) {
+  if (run.autoPicks || run.isOver) return 0;
+  final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
+  return max(0, earned - run.statPicks.length);
+}
+
+/// The stat pick on the table for [run]: the three offers of its next
+/// pending pick (the main game's draw, towerStatPickDraw), or none.
+List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data) {
+  if (towerPendingPicks(run) <= 0) return const [];
+  return towerStatPickDraw(
+      towerHeroOf(run, data), run.seed, run.statPicks.length, data);
+}
+
+/// [run] with offer [index] of its stat pick on the table taken; [run] as
+/// it is when no pick waits or there is no such offer.
+TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
+  final offer = towerStatPickOffer(run, data);
+  if (index < 0 || index >= offer.length) return run;
+  return run.copyWith(statPicks: [...run.statPicks, index]);
+}
+
 /// [run] after its cards: card [index] taken, or none (null) refused for a
-/// mark; then on to the next floor.
+/// mark; then on to the next floor. The floor's level-up picks come first
+/// (the screen opens the Level Up before the cards); a pick still waiting
+/// here is given its first offer, the calling, so the climb never stalls.
 TowerRun towerPick(TowerRun run, TowerData data, int? index) {
   if (run.status != TowerStatus.choosing) return run;
+  for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
+    final taken = towerTakeStatPick(run, data, 0);
+    if (identical(taken, run)) break;
+    run = taken;
+  }
   if (index == null || index < 0 || index >= run.offer.length) {
     return run.copyWith(
       status: TowerStatus.climbing,

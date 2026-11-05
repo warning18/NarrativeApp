@@ -83,7 +83,7 @@ part 'sim_combat/sim_spell_cast.dart';
 /// How each profession's simulated build shares its picks (ability ->
 /// share of the points): mostly the damage stat, some Constitution, and
 /// what else the profession leans on (stat_rules.dart).
-const Map<String, Map<String, double>> _simBuildShares = {
+const Map<String, Map<String, double>> simBuildShares = {
   'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
   'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
   'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
@@ -543,7 +543,7 @@ class SimCharacter {
         bannedPaths: roll?.banned(RollBanOn.pick) ?? const {},
       );
       if (offer.isEmpty) return;
-      final shares = _simBuildShares[professionId] ?? {preferredStat: 1.0};
+      final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
       int choose(List<StatPickOffer> o) =>
           statPickForShares(o, shares, pickedPoints);
       if (roll != null) {

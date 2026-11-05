@@ -14,6 +14,7 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/screens/level_up_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
 import 'support/pump.dart';
@@ -59,6 +60,15 @@ Future<ProviderContainer> _open(
   return container;
 }
 
+/// A floor that gained a level opens the main game's Level Up screen before
+/// the cards; most tests go past it.
+Future<void> _pastLevelUp(WidgetTester tester) async {
+  final screen = find.byType(LevelUpScreen);
+  if (screen.evaluate().isEmpty) return;
+  Navigator.of(tester.element(screen)).pop();
+  await _settle(tester);
+}
+
 const _fresh = TowerRun(
   seed: 7,
   raceId: 'human',
@@ -84,6 +94,9 @@ void main() {
 
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
+    expect(find.byType(LevelUpScreen), findsOneWidget,
+        reason: 'floor 1 gains a level: its pick comes before the cards');
+    await _pastLevelUp(tester);
     expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
     expect(find.byKey(const Key('tower_card_0')), findsOneWidget);
     expect(find.byKey(const Key('tower_card_2')), findsOneWidget);
@@ -104,6 +117,7 @@ void main() {
         prefs: saved(_fresh));
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
+    await _pastLevelUp(tester);
     await tester.tap(find.byKey(const Key('tower_refuse')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
@@ -163,6 +177,7 @@ void main() {
     // A win comes back to the floor's cards.
     Navigator.of(tester.element(find.byType(FightScreen))).pop(true);
     await _settle(tester);
+    await _pastLevelUp(tester);
     expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
   });
 
@@ -177,6 +192,7 @@ void main() {
     expect(find.text('Unsworn'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
+    await _pastLevelUp(tester);
     // Core's rule: the first floor won always offers an oath.
     final offer = (await TowerSave.open()).loadRun()!.offer;
     final at = offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);

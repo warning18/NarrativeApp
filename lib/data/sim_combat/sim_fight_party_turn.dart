@@ -98,6 +98,16 @@ extension _SimFightPartyTurn on _SimFight {
       react: on('reaction'),
       round: rounds,
       healed: core == ProfessionCore.watchfire ? null : healed,
+      // The Watchfire: a spell's heal past full feeds the fire too.
+      onSpellHeal: core == ProfessionCore.watchfire
+          ? (heal) => fire = fireAfterHeal(
+                fire: fire,
+                healing: heal,
+                currentHealth: c.currentHealth,
+                maxHealth: c.maxHealth,
+                beacon: has(Spec.beacon),
+              )
+          : null,
       partyBlow: ctx == null
           ? null
           : (raw, element) => ctx.blow(raw, rounds,
