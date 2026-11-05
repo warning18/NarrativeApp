@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.839.0+875]
+
+- Skill icons: the 3 healing skills on the blue gem each get their own glyph: Bind Wounds a bandage, Mending Touch a hand over a spark, Quick Heal a cross with speed marks.
+
 ## [1.838.0+874]
 
 - Skill icons: the 4 rallying skills each get their own glyph on the grey gem: Rallying Cry a banner, Rallying Shout a horn with sound waves, Warrior Rally Cry a raised blade with rays, Rogue Quick Pockets a pouch.
