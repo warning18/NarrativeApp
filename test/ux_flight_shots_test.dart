@@ -49,9 +49,10 @@ Future<void> _loadFonts() async {
   }
 }
 
-Future<void> _shot(WidgetTester tester, String dir, String name) async {
-  final boundaries = tester
-      .renderObjectList<RenderRepaintBoundary>(find.byType(RepaintBoundary));
+Future<void> _shot(WidgetTester tester, String dir, String name,
+    {Finder? within}) async {
+  final boundaries = tester.renderObjectList<RenderRepaintBoundary>(
+      within ?? find.byType(RepaintBoundary));
   final b = boundaries.first;
   late Uint8List bytes;
   await tester.runAsync(() async {
@@ -104,7 +105,7 @@ void main() {
       if (find.byType(LandCrossingScreen).evaluate().isNotEmpty) break;
       if (find.byType(JourneyWorldMap).evaluate().isNotEmpty) {
         n++;
-        if (n == 5 || n == 30 || n == 55) {
+        if (n == 5 || n == 20 || n == 30) {
           await _shot(tester, dir, '${frame++}-flight-$n');
         }
       }
@@ -117,7 +118,21 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     if (find.byType(LandCrossingScreen).evaluate().isNotEmpty) {
-      await tester.pump(const Duration(milliseconds: 300));
+      for (var ms = 0; ms < 500; ms += 50) {
+        final rise = find.byKey(const ValueKey('crossing_rise'));
+        // ignore: avoid_print
+        print(
+            'rise $ms ms: ${rise.evaluate().isEmpty ? '-' : tester.getSize(rise.last).height}');
+        if (ms == 0 || ms == 100) {
+          await _shot(tester, dir, '$frame-map-under-$ms');
+          await _shot(tester, dir, '${frame++}-page-risen-$ms',
+              within: find
+                  .ancestor(of: rise, matching: find.byType(RepaintBoundary))
+                  .first);
+        }
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await tester.pump(const Duration(milliseconds: 600));
       await _shot(tester, dir, '${frame++}-crossing-start');
       await tester.pump(const Duration(seconds: 2));
       await _shot(tester, dir, '${frame++}-crossing-later');

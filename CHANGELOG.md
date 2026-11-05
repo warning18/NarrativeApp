@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.846.0+882]
+
+- A road the story crosses on foot (the Dune Sea road and the other long land routes) is one trip now: the chart flight only sets the party out (two seconds at most, it used to run to the far place), and the crossing rises over the chart from the top, scene first, in 420 ms, instead of a new page that set out again from day 1. Turning back lowers it the same way; with reduced motion it is there at once.
+
 ## [1.844.0+880]
 
 - Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.

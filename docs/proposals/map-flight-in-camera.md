@@ -83,3 +83,19 @@ meter of a phone if the user sends it.
   kept to one route class and a few lines in `walkTo`, so it reverts alone.
 - `journey_screen.dart` and the map files had no open PR when this was written
   (#829 and #830 are docs only); Core's engine (v1.845) does not touch them.
+
+## Built (v1.846)
+
+- `lib/screens/crossing_rise_route.dart` (new): `CrossingRiseRoute` (the page
+  uncovered from the top over 420 ms, the chart under it), `crossingRiseProvider`
+  (set by the Journey map when its flight set out for a crossing, cleared by the
+  crossing), `crossingSetOutAt` (0.4 of the flight) and `crossingSetOutMax` (2.2 s).
+- `journey_screen.dart`: `_take` sets the flag for a choice that crosses land;
+  `walkTo(setOut: true)` animates the flight to 0.4 instead of running it out.
+- `land_crossing_screen.dart`: `runLandCrossing` pushes `CrossingRiseRoute` when
+  the flag is set (a still one with reduced motion), a plain page otherwise.
+- Picture of the built flow: `docs/ux-shots/transitions/map-flight-built.png`.
+- Perf (Dart time of the first 8 frames of 30 ms after the crossing opens, debug
+  VM, same road, three runs each): before 140 to 168 ms with one 55 to 66 ms frame
+  (the plain page's first paint); after 102 to 109 ms, no spike.
+- To revert alone: delete the new file and the three small edits above.
