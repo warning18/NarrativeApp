@@ -1,0 +1,538 @@
+// Design mock for the Tower mode (docs only, not built): the screens of the
+// design brief in two directions. Copy to test/zz_tower_designs_test.dart and
+// run:  OUT=/tmp/tower flutter test test/zz_tower_designs_test.dart
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/main.dart' show buildAppTheme;
+import 'package:narrative_data_app/providers/palette_provider.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/utils/pixel_icons/game_pixel_icons.dart';
+import 'package:narrative_data_app/utils/pixel_icons/pixel_icon.dart';
+import 'support/fonts.dart';
+
+String t(bool fr, String f, String e) => fr ? f : e;
+
+/// One direction: a name, colours and frames. A is today's look (ink panels,
+/// gold, rounded cards); B is bolder (stone, ember, a vertical ladder).
+class Dir {
+  const Dir(this.name, this.bg, this.panel, this.edge, this.accent, this.onAccent,
+      {required this.radius, required this.bold});
+  final String name;
+  final List<Color> bg;
+  final Color panel, edge, accent, onAccent;
+  final double radius;
+  final bool bold;
+}
+
+const dirA = Dir('A', [Color(0xFF14131A), Color(0xFF1B1923)], Color(0xFF24222E),
+    Color(0xFF3B3743), Color(0xFFF2C14E), Color(0xFF1B1923), radius: 10, bold: false);
+const dirB = Dir('B', [Color(0xFF0E0C10), Color(0xFF2A1A14)], Color(0xFF1C1618),
+    Color(0xFF5A3A2C), Color(0xFFE0762B), Color(0xFF1A0E08), radius: 2, bold: true);
+
+TextStyle disp(double s, [Color c = Colors.white]) =>
+    TextStyle(fontFamily: InkFonts.display, fontSize: s, color: c);
+TextStyle sys(double s, {Color c = Colors.white, FontWeight? w}) =>
+    TextStyle(fontFamily: InkFonts.system, fontSize: s, color: c, fontWeight: w);
+TextStyle prose(double s, {Color c = Colors.white70}) =>
+    TextStyle(fontFamily: InkFonts.prose, fontSize: s, height: 1.3, color: c);
+
+Widget screen(Dir d, Widget child, {String? title, String? sub, bool back = true}) => Container(
+      decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: d.bg)),
+      child: Column(children: [
+        Container(
+          height: 56,
+          color: Colors.black38,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(children: [
+            if (back) const Icon(Icons.arrow_back, color: Colors.white70),
+            const SizedBox(width: 10),
+            if (title != null)
+              Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(title, style: disp(20), maxLines: 1, overflow: TextOverflow.ellipsis),
+                if (sub != null) Text(sub, style: sys(12, c: Colors.white60)),
+              ])),
+          ]),
+        ),
+        Expanded(child: child),
+      ]),
+    );
+
+BoxDecoration panel(Dir d, {Color? edge, double? w}) => BoxDecoration(
+      color: d.panel,
+      borderRadius: BorderRadius.circular(d.radius),
+      border: Border.all(color: edge ?? d.edge, width: w ?? (d.bold ? 2 : 1)),
+    );
+
+Widget btn(Dir d, String s, {bool wide = true, bool ghost = false}) => SizedBox(
+      width: wide ? double.infinity : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: ghost ? Colors.transparent : d.accent,
+            borderRadius: BorderRadius.circular(d.radius == 2 ? 2 : 6),
+            border: ghost ? Border.all(color: d.accent) : null),
+        child: Text(s, style: sys(15, c: ghost ? d.accent : d.onAccent, w: FontWeight.w600)),
+      ),
+    );
+
+Widget tower(double s, Color c) => CustomPaint(size: Size(s, s * 1.3), painter: _TowerPainter(c));
+
+class _TowerPainter extends CustomPainter {
+  _TowerPainter(this.c);
+  final Color c;
+  @override
+  void paint(Canvas canvas, Size s) {
+    final p = Paint()..color = c;
+    final u = s.width / 12;
+    // A stepped pixel tower with a lit window and a crown of teeth.
+    canvas.drawRect(Rect.fromLTWH(3 * u, 4 * u, 6 * u, 12 * u), p);
+    canvas.drawRect(Rect.fromLTWH(2 * u, 2 * u, 8 * u, 2 * u), p);
+    for (var i = 0; i < 4; i++) {
+      canvas.drawRect(Rect.fromLTWH((2 + i * 2.2) * u, 0.6 * u, 1.4 * u, 1.6 * u), p);
+    }
+    canvas.drawRect(Rect.fromLTWH(1 * u, 14 * u, 10 * u, 2 * u), p);
+    final w = Paint()..color = const Color(0xFF14131A);
+    canvas.drawRect(Rect.fromLTWH(5.2 * u, 6 * u, 1.6 * u, 3 * u), w);
+    canvas.drawRect(Rect.fromLTWH(5.2 * u, 11 * u, 1.6 * u, 3 * u), w);
+  }
+  @override
+  bool shouldRepaint(_TowerPainter o) => o.c != c;
+}
+
+// ---- 1. The main menu entry ----
+Widget menu(Dir d, bool fr) => screen(
+      d,
+      back: false,
+      title: t(fr, 'Menu principal', 'Main menu'),
+      Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const SizedBox(height: 18),
+          Center(child: Text(t(fr, 'Chroniques', 'Chronicles'), style: disp(34))),
+          const SizedBox(height: 30),
+          btn(d, t(fr, 'Continuer', 'Continue')),
+          const SizedBox(height: 10),
+          btn(d, t(fr, 'Nouvelle partie', 'New game'), ghost: true),
+          const SizedBox(height: 18),
+          if (!d.bold)
+            // A: one more button of the same family, with its tower mark.
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: panel(d, edge: d.accent),
+              child: Row(children: [
+                tower(26, d.accent),
+                const SizedBox(width: 14),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(t(fr, 'La Tour', 'The Tower'), style: disp(22)),
+                  Text(t(fr, '30 étages · un combat chacun', '30 floors · one fight each'), style: sys(12, c: Colors.white60)),
+                ])),
+                Icon(Icons.chevron_right, color: d.accent),
+              ]),
+            )
+          else
+            // B: a banner that stands apart from the story's two buttons.
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [Color(0xFF3A1D10), Color(0xFF14101A)]),
+                border: Border.all(color: d.accent, width: 2),
+              ),
+              child: Row(children: [
+                const SizedBox(width: 18),
+                tower(70, d.accent),
+                const SizedBox(width: 18),
+                Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(t(fr, 'LA TOUR', 'THE TOWER'), style: disp(26, d.accent)),
+                  const SizedBox(height: 4),
+                  Text(t(fr, 'Trente étages. Aucune histoire. Monter.', 'Thirty floors. No story. Climb.'), style: prose(13.5, c: Colors.white70)),
+                ])),
+              ]),
+            ),
+          const Spacer(),
+          Center(child: Text('v1.824', style: sys(12, c: Colors.white38))),
+        ]),
+      ),
+    );
+
+// ---- 2. The start screen ----
+Widget chip(Dir d, String s, {bool on = false, bool locked = false}) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: on ? d.accent.withValues(alpha: .18) : Colors.transparent,
+        borderRadius: BorderRadius.circular(d.radius == 2 ? 2 : 16),
+        border: Border.all(color: on ? d.accent : Colors.white24, width: on ? 2 : 1),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        if (locked) const Padding(padding: EdgeInsets.only(right: 4), child: Icon(Icons.lock, size: 13, color: Colors.white38)),
+        Text(s, style: sys(13, c: locked ? Colors.white38 : Colors.white)),
+      ]),
+    );
+
+Widget start(Dir d, bool fr) {
+  Widget label(String s) => Padding(padding: const EdgeInsets.only(top: 14, bottom: 6), child: Text(s, style: sys(12, c: Colors.white60)));
+  return screen(
+    d,
+    title: t(fr, 'La Tour', 'The Tower'),
+    sub: t(fr, 'Une nouvelle ascension', 'A new climb'),
+    ListView(padding: const EdgeInsets.all(16), children: [
+      Row(children: [
+        Container(width: 64, height: 64, decoration: panel(d, edge: d.accent), child: const PixelIcon('assets/visuals/heads/hero.png', size: 56)),
+        const SizedBox(width: 12),
+        Expanded(child: Text(t(fr, 'Un nouveau héros à chaque ascension. Rien n’est pris à votre partie.', 'A new hero each climb. Nothing is taken from your game.'), style: prose(13.5))),
+      ]),
+      label(t(fr, 'Race', 'Race')),
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        chip(d, t(fr, 'Humain', 'Human'), on: true), chip(d, t(fr, 'Elfe', 'Elf')), chip(d, t(fr, 'Nain', 'Dwarf')),
+        chip(d, 'Orc', locked: true), chip(d, 'Voidkin', locked: true),
+      ]),
+      label(t(fr, 'Profession', 'Profession')),
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        chip(d, t(fr, 'Guerrier', 'Warrior'), on: true), chip(d, t(fr, 'Mage', 'Mage')), chip(d, t(fr, 'Voleur', 'Rogue')),
+        chip(d, t(fr, 'Clerc', 'Cleric'), locked: true), chip(d, t(fr, 'Rôdeur', 'Ranger'), locked: true),
+      ]),
+      label(t(fr, 'Clan', 'Clan')),
+      for (final (i, c) in [
+        (t(fr, 'La Veille Grise', 'The Grey Vigil'), true),
+        (t(fr, 'Le Dominion de la Lanterne', 'The Lantern Dominion'), false),
+        (t(fr, 'Le Pacte des Cendres', 'The Cinder Compact'), false),
+      ].indexed)
+        Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.all(10),
+          decoration: panel(d, edge: c.$2 ? d.accent : null),
+          child: Row(children: [
+            Icon(c.$2 ? Icons.radio_button_checked : Icons.radio_button_off, size: 18, color: c.$2 ? d.accent : Colors.white38),
+            const SizedBox(width: 10),
+            Expanded(child: Text(c.$1, style: sys(14))),
+            if (i == 2) const Icon(Icons.lock, size: 14, color: Colors.white38),
+          ]),
+        ),
+      label(t(fr, 'Équipement de départ', 'Starter kit')),
+      Container(
+        padding: const EdgeInsets.all(10),
+        decoration: panel(d),
+        child: Row(children: [
+          ItemPixelIcon('thug_knuckle_wrap', 'Weapon', size: 34), const SizedBox(width: 10),
+          ItemPixelIcon('antidote', 'Potion', size: 34), const SizedBox(width: 10),
+          ItemPixelIcon('charm_fourth_roll', 'Charm', size: 34), const SizedBox(width: 12),
+          Expanded(child: Text(t(fr, 'Bande de poing, antidote, osselet · 3 dés', 'Knuckle wrap, antidote, knucklebone · 3 dice'), style: sys(12, c: Colors.white70))),
+        ]),
+      ),
+      const SizedBox(height: 18),
+      btn(d, t(fr, 'Commencer l’ascension', 'Begin the climb')),
+    ]),
+  );
+}
+
+// ---- 3 & 5. A floor and a boss floor ----
+Widget ladder(Dir d, int floor, {bool vertical = false}) {
+  if (!vertical) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text('${floor <= 30 ? floor : 30} / 30', style: sys(13, c: d.accent, w: FontWeight.w600)),
+        Text(t(true, '', ''), style: sys(12)),
+      ]),
+      const SizedBox(height: 4),
+      SizedBox(
+        height: 18,
+        child: Row(children: [
+          for (var i = 1; i <= 30; i++)
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: .5),
+                height: i % 10 == 0 ? 18 : 10,
+                alignment: Alignment.bottomCenter,
+                child: Container(height: i % 10 == 0 ? 18 : 10, color: i < floor ? d.accent : (i == floor ? Colors.white : Colors.white24)),
+              ),
+            ),
+        ]),
+      ),
+    ]);
+  }
+  return SizedBox(
+    width: 42,
+    child: Column(children: [
+      for (var i = 30; i >= 1; i--)
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: .5),
+            alignment: Alignment.center,
+            width: i % 10 == 0 ? 40 : 22,
+            color: i < floor ? d.accent.withValues(alpha: .7) : (i == floor ? Colors.white : Colors.white12),
+            child: i % 10 == 0 || i == floor ? Text('$i', style: sys(10.5, c: i == floor ? Colors.black : Colors.white, w: FontWeight.w700)) : null,
+          ),
+        ),
+    ]),
+  );
+}
+
+Widget fighter(Dir d, String name, String head, int hp, int max, {bool enemy = false, bool boss = false, String? note}) => Container(
+      padding: const EdgeInsets.all(10),
+      decoration: panel(d, edge: enemy ? (boss ? const Color(0xFFD9544D) : d.accent) : null, w: boss ? 3 : null),
+      child: Row(children: [
+        PixelIcon('assets/visuals/heads/$head.png', size: boss ? 56 : 44),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(name, style: sys(14, c: enemy ? d.accent : const Color(0xFF8FD6C8), w: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 6),
+          Container(
+            height: 16,
+            decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(8)),
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(widthFactor: hp / max, child: Container(decoration: BoxDecoration(color: const Color(0xFF5BA55B), borderRadius: BorderRadius.circular(8)))),
+          ),
+          if (note != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(note, style: sys(11.5, c: Colors.white60))),
+        ])),
+      ]),
+    );
+
+Widget floorScreen(Dir d, bool fr, {required int floor, bool boss = false}) {
+  final enemy = boss ? t(fr, 'Gardien d’Os', 'Bone Warden') : t(fr, 'Voyou des bas-quartiers', 'Slum Thug');
+  final head = boss ? 'bone_warden' : 'catacomb_ghoul';
+  Widget body = Padding(
+    padding: const EdgeInsets.all(12),
+    child: Column(children: [
+      if (boss)
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          margin: const EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(color: const Color(0xFF3A1210), border: Border.all(color: const Color(0xFFD9544D))),
+          child: Text(t(fr, 'ÉTAGE $floor · GARDIEN', 'FLOOR $floor · BOSS'), textAlign: TextAlign.center, style: sys(14, c: const Color(0xFFFFB3A8), w: FontWeight.w700)),
+        ),
+      fighter(d, t(fr, 'Vous', 'You'), 'hero', 29, 29),
+      const SizedBox(height: 8),
+      fighter(d, enemy, head, boss ? 75 : 11, boss ? 75 : 11, enemy: true, boss: boss, note: boss ? t(fr, 'Os brisés : relance les dés de défense', 'Bone shards: rerolls Defend dice') : null),
+      const SizedBox(height: 10),
+      Expanded(
+        child: Container(
+          decoration: BoxDecoration(color: const Color(0xFF1E2A22), borderRadius: BorderRadius.circular(d.radius + 6), border: Border.all(color: const Color(0xFF4D5B4A), width: 2)),
+          alignment: Alignment.center,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            ItemPixelIcon('charm_fourth_roll', 'Charm', size: 54), const SizedBox(width: 30), ItemPixelIcon('thug_knuckle_wrap', 'Weapon', size: 54),
+          ]),
+        ),
+      ),
+      const SizedBox(height: 10),
+      Row(children: [
+        Expanded(child: btn(d, t(fr, 'Relancer (2)', 'Reroll (2)'), ghost: true)),
+        const SizedBox(width: 10),
+        Expanded(child: btn(d, t(fr, 'Confirmer', 'Confirm'))),
+      ]),
+    ]),
+  );
+  return screen(
+    d,
+    title: t(fr, 'La Tour · étage $floor', 'The Tower · floor $floor'),
+    sub: t(fr, 'Rue de la ville', 'City street'),
+    d.bold
+        ? Row(children: [
+            Padding(padding: const EdgeInsets.fromLTRB(8, 8, 0, 8), child: ladder(d, floor, vertical: true)),
+            Expanded(child: body),
+          ])
+        : Column(children: [
+            Padding(padding: const EdgeInsets.fromLTRB(12, 10, 12, 0), child: ladder(d, floor)),
+            Expanded(child: body),
+          ]),
+  );
+}
+
+// ---- 4. The reward choice (the loot component in "choose one" mode) ----
+Widget rewardCard(Dir d, bool fr, Widget icon, String name, String text, {bool up = false, bool dim = false, String? tag}) => Opacity(
+      opacity: dim ? .55 : 1,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(10),
+        decoration: panel(d, edge: up ? d.accent : null, w: up ? 2 : null),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(width: d.bold ? 54 : 44, height: d.bold ? 54 : 44, child: Center(child: icon)),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Expanded(child: Text(name, style: disp(17))),
+              if (tag != null) Text(tag, style: sys(11.5, c: d.accent)),
+            ]),
+            const SizedBox(height: 2),
+            Text(text, style: prose(12.5)),
+            const SizedBox(height: 8),
+            Align(alignment: Alignment.centerRight, child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(border: Border.all(color: up ? d.accent : Colors.white24), color: up ? d.accent : null, borderRadius: BorderRadius.circular(d.radius == 2 ? 2 : 6)),
+              child: Text(t(fr, 'Choisir', 'Choose'), style: sys(13, c: up ? d.onAccent : Colors.white54)),
+            )),
+          ])),
+        ]),
+      ),
+    );
+
+Widget reward(Dir d, bool fr) => screen(
+      d,
+      title: t(fr, 'Étage 7 vaincu', 'Floor 7 cleared'),
+      sub: t(fr, 'Choisissez une récompense', 'Choose one reward'),
+      ListView(padding: const EdgeInsets.all(14), children: [
+        Center(child: Stack(alignment: Alignment.center, children: [
+          Container(width: 150, height: 64, decoration: BoxDecoration(gradient: RadialGradient(colors: [d.accent.withValues(alpha: .35), d.accent.withValues(alpha: 0)]))),
+          const PixelIcon('assets/icons/chests/silver_open.png', size: 64),
+        ])),
+        const SizedBox(height: 6),
+        rewardCard(d, fr, ItemPixelIcon('charm_fourth_roll', 'Charm', size: 38), t(fr, 'Osselet du joueur', 'Gambler’s Knucklebone'),
+            t(fr, 'Consumé au début d’un combat : une relance de plus à chaque tour.', 'Burned at the start of a fight: one extra reroll each round.'), up: true, tag: t(fr, 'Charme', 'Charm')),
+        rewardCard(d, fr, ItemPixelIcon('antidote', 'Potion', size: 38), 'Antidote', t(fr, 'Se boit pour guérir le poison et les afflictions.', 'Drunk to cure poison and afflictions.'), dim: true, tag: t(fr, 'Potion', 'Potion')),
+        rewardCard(d, fr, ItemPixelIcon('thug_knuckle_wrap', 'Weapon', size: 38), t(fr, 'Bande de poing du voyou', 'Thug’s Knuckle Wrap'),
+            t(fr, '+2 aux dégâts d’attaque tant qu’elle est équipée.', '+2 attack damage while equipped.'), dim: true, tag: t(fr, 'Arme', 'Weapon')),
+      ]),
+    );
+
+// ---- 6. End of a run: death and victory ----
+Widget endScreen(Dir d, bool fr, {required bool win}) {
+  final accent = win ? d.accent : const Color(0xFFD9544D);
+  return screen(
+    d,
+    back: false,
+    title: win ? t(fr, 'Sommet atteint', 'Summit reached') : t(fr, 'La Tour vous reprend', 'The Tower takes you back'),
+    ListView(padding: const EdgeInsets.all(16), children: [
+      Center(child: Column(children: [
+        tower(win ? 60 : 50, accent),
+        const SizedBox(height: 6),
+        Text(win ? t(fr, 'Étage 30', 'Floor 30') : t(fr, 'Étage 7', 'Floor 7'), style: disp(d.bold ? 44 : 34, accent)),
+        Text(win ? t(fr, 'Vous êtes au sommet.', 'You stand at the top.') : t(fr, 'Mort face au Voyou des bas-quartiers.', 'Slain by the Slum Thug.'), style: prose(14, c: Colors.white70)),
+      ])),
+      const SizedBox(height: 16),
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: panel(d, edge: d.accent),
+        child: Row(children: [
+          Icon(Icons.diamond_outlined, color: d.accent, size: 30),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(t(fr, 'Marques gagnées', 'Marks earned'), style: sys(12, c: Colors.white60)),
+            Text(win ? '+120' : '+14', style: disp(30, d.accent)),
+          ])),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text(t(fr, 'Total', 'Total'), style: sys(12, c: Colors.white60)),
+            Text(win ? '168' : '62', style: sys(18, w: FontWeight.w700)),
+          ]),
+        ]),
+      ),
+      const SizedBox(height: 10),
+      for (final r in [
+        (t(fr, 'Étages franchis', 'Floors cleared'), win ? '30' : '6'),
+        (t(fr, 'Meilleur étage', 'Best floor'), win ? '30' : '12'),
+        (t(fr, 'Boss vaincus', 'Bosses beaten'), win ? '3' : '0'),
+        (t(fr, 'Dés lancés', 'Dice rolled'), win ? '412' : '71'),
+      ])
+        Padding(padding: const EdgeInsets.symmetric(vertical: 5), child: Row(children: [
+          Expanded(child: Text(r.$1, style: sys(13, c: Colors.white70))),
+          Text(r.$2, style: sys(14, w: FontWeight.w600)),
+        ])),
+      if (win) Padding(padding: const EdgeInsets.only(top: 8), child: Text(t(fr, 'Débloqué : le Clerc, la Fosse', 'Unlocked: the Cleric, the Pit'), style: sys(13, c: d.accent))),
+      const SizedBox(height: 14),
+      btn(d, t(fr, 'Marques et déblocages', 'Marks and unlocks')),
+      const SizedBox(height: 8),
+      btn(d, t(fr, 'Gravir à nouveau', 'Climb again'), ghost: true),
+    ]),
+  );
+}
+
+// ---- 7. Marks and unlocks ----
+Widget marks(Dir d, bool fr) {
+  Widget unlock(String name, String text, int cost, {bool owned = false, bool afford = false}) => Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(10),
+        decoration: panel(d, edge: owned ? const Color(0xFF7DBE6A) : (afford ? d.accent : null)),
+        child: Row(children: [
+          Container(width: 40, height: 40, decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(d.radius)), child: Icon(owned ? Icons.check : Icons.lock_open, color: owned ? const Color(0xFF7DBE6A) : Colors.white54)),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(name, style: disp(16)),
+            Text(text, style: prose(12.5)),
+          ])),
+          const SizedBox(width: 8),
+          if (owned) Text(t(fr, 'Acquis', 'Owned'), style: sys(12, c: const Color(0xFF7DBE6A))) else Column(children: [
+            Row(children: [Icon(Icons.diamond_outlined, size: 14, color: afford ? d.accent : Colors.white38), const SizedBox(width: 4), Text('$cost', style: sys(14, c: afford ? d.accent : Colors.white38, w: FontWeight.w700))]),
+            if (afford) Text(t(fr, 'Acheter', 'Buy'), style: sys(11.5, c: d.accent)),
+          ]),
+        ]),
+      );
+  return screen(
+    d,
+    title: t(fr, 'Marques et déblocages', 'Marks and unlocks'),
+    ListView(padding: const EdgeInsets.all(14), children: [
+      Container(
+        padding: const EdgeInsets.all(12),
+        decoration: panel(d, edge: d.accent),
+        child: Row(children: [
+          Icon(Icons.diamond_outlined, color: d.accent, size: 28),
+          const SizedBox(width: 10),
+          Text('62', style: disp(30, d.accent)),
+          const SizedBox(width: 10),
+          Expanded(child: Text(t(fr, 'marques à dépenser', 'marks to spend'), style: sys(13, c: Colors.white70))),
+          Text(t(fr, 'Meilleur : 12', 'Best: 12'), style: sys(12, c: Colors.white60)),
+        ]),
+      ),
+      const SizedBox(height: 12),
+      Text(t(fr, 'Races et professions', 'Races and professions'), style: sys(12, c: Colors.white60)),
+      const SizedBox(height: 6),
+      unlock('Orc', t(fr, 'Une nouvelle race de départ.', 'A new starting race.'), 40, afford: true),
+      unlock(t(fr, 'Clerc', 'Cleric'), t(fr, 'Soigne, guérit, protège.', 'Heals, cures, wards.'), 90),
+      Text(t(fr, 'Clans', 'Clans'), style: sys(12, c: Colors.white60)),
+      const SizedBox(height: 6),
+      unlock(t(fr, 'Le Pacte des Cendres', 'The Cinder Compact'), t(fr, 'Don de départ : un dé de feu.', 'Starting gift: a fire die.'), 60),
+      unlock(t(fr, 'La Veille Grise', 'The Grey Vigil'), t(fr, 'Disponible dès le départ.', 'Available from the start.'), 0, owned: true),
+      Text(t(fr, 'Équipement', 'Kit'), style: sys(12, c: Colors.white60)),
+      const SizedBox(height: 6),
+      unlock(t(fr, 'Osselet du joueur', 'Gambler’s Knucklebone'), t(fr, 'Départ avec un osselet.', 'Start with a knucklebone.'), 30, afford: true),
+    ]),
+  );
+}
+
+Future<void> _shot(WidgetTester tester, Widget app, double w, String path) async {
+  final key = GlobalKey();
+  tester.view.devicePixelRatio = 2;
+  tester.view.physicalSize = Size(w * 2, 780 * 2);
+  await tester.pumpWidget(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: buildAppTheme(AppPalette.stitchedInk.schemeFor(Brightness.dark)),
+    home: RepaintBoundary(key: key, child: Scaffold(body: app)),
+  ));
+  await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.runAsync(() async {
+    final b = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final image = await b.toImage(pixelRatio: 1);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    File(path).writeAsBytesSync(bytes!.buffer.asUint8List());
+  });
+}
+
+void main() {
+  testWidgets('tower designs', (tester) async {
+    await tester.runAsync(loadAppFonts);
+    final out = Platform.environment['OUT']!;
+    Directory(out).createSync(recursive: true);
+    final screens = <String, Widget Function(Dir, bool)>{
+      '1-menu': menu,
+      '2-start': start,
+      '3-floor': (d, fr) => floorScreen(d, fr, floor: 7),
+      '4-reward': reward,
+      '5-boss': (d, fr) => floorScreen(d, fr, floor: 10, boss: true),
+      '6a-death': (d, fr) => endScreen(d, fr, win: false),
+      '6b-victory': (d, fr) => endScreen(d, fr, win: true),
+      '7-marks': marks,
+    };
+    for (final e in screens.entries) {
+      for (final d in [dirA, dirB]) {
+        // French at 360 px and English at 412 px: the two ends of the phones
+        // (and the longest text against the narrowest screen).
+        await _shot(tester, e.value(d, true), 360, '$out/${e.key}-${d.name}-fr-360.png');
+        await _shot(tester, e.value(d, false), 412, '$out/${e.key}-${d.name}-en-412.png');
+      }
+    }
+  });
+}
