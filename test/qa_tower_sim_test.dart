@@ -25,9 +25,11 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 
 /// What the design asks of a naive bot (tower-mechanics.md §11): the median
 /// floor it reaches, how many reach floor 20, how many win floor 30.
-const _medianFloor = (min: 12, max: 16);
+/// v1.848 (the user's calls on #834): the professions evened out, the median
+/// moved to 17 and the top with no unlocks to about 10%.
+const _medianFloor = (min: 13, max: 18);
 const _floor20 = (min: 0.25, max: 0.35);
-const _topNone = (min: 0.05, max: 0.10);
+const _topNone = (min: 0.05, max: 0.12);
 const _topAll = (min: 0.15, max: 0.25);
 
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
