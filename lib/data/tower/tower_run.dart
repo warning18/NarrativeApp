@@ -37,6 +37,7 @@ class TowerRun {
     required this.professionId,
     required this.clanId,
     this.startUnlocks = const [],
+    this.unlocksOwned = 0,
     this.floor = 1,
     required this.health,
     this.status = TowerStatus.climbing,
@@ -53,6 +54,7 @@ class TowerRun {
         startUnlocks: [
           for (final u in (json['unlocks'] as List?) ?? const []) u.toString(),
         ],
+        unlocksOwned: (json['owned'] as num?)?.toInt() ?? 0,
         floor: (json['floor'] as num?)?.toInt() ?? 1,
         health: (json['health'] as num?)?.toInt() ?? 0,
         status: TowerStatus.values.byName(json['status'] as String),
@@ -80,6 +82,10 @@ class TowerRun {
 
   /// The unlocks the run started with (its start dice and items).
   final List<String> startUnlocks;
+
+  /// How many unlocks the player owned when the run began: their power
+  /// (towerHealthPerUnlock, towerUnlocksPerPotion) for the whole run.
+  final int unlocksOwned;
 
   /// The floor to fight next, or, [TowerStatus.choosing], the one just won.
   final int floor;
@@ -129,6 +135,7 @@ class TowerRun {
         professionId: professionId,
         clanId: clanId,
         startUnlocks: startUnlocks,
+        unlocksOwned: unlocksOwned,
         floor: floor ?? this.floor,
         health: health ?? this.health,
         status: status ?? this.status,
@@ -143,6 +150,7 @@ class TowerRun {
         'profession': professionId,
         'clan': clanId,
         if (startUnlocks.isNotEmpty) 'unlocks': startUnlocks,
+        if (unlocksOwned != 0) 'owned': unlocksOwned,
         'floor': floor,
         'health': health,
         'status': status.name,
@@ -172,13 +180,15 @@ int towerMarksOf(int floorsCleared, int refusals) {
   return marks;
 }
 
-/// A new run of [seed]: floor 1, the hero at full health.
+/// A new run of [seed]: floor 1, the hero at full health, with the power
+/// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned).
 TowerRun towerStart({
   required int seed,
   required String raceId,
   required String professionId,
   required String clanId,
   Iterable<String> startUnlocks = const [],
+  int unlocksOwned = 0,
   required TowerData data,
 }) {
   final unlocks = [
@@ -187,13 +197,15 @@ TowerRun towerStart({
           case TowerUnlockKind.startDie || TowerUnlockKind.startItem)
         id,
   ];
-  final hero = towerFreshHero(raceId, professionId, unlocks, data);
+  final hero = towerFreshHero(raceId, professionId, unlocks, data,
+      unlocksOwned: unlocksOwned);
   return TowerRun(
     seed: seed,
     raceId: raceId,
     professionId: professionId,
     clanId: clanId,
     startUnlocks: unlocks,
+    unlocksOwned: unlocksOwned,
     health: hero.maxHealth,
   );
 }
