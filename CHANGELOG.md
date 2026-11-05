@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.842.0+878]
+
+- Skill icons: the Electricity pair and the Fire pair that shared a gem each get their own glyph: Adrenaline Surge a bolt, Mage Arcane Missile a dart, Dwarf Forgeheart a hammer, Orc Bloodlust a set of fangs.
+
 ## [1.841.0+877]
 
 - Skill icons: the two Water pairs that shared a gem each get their own glyph: Cleric Holy Light a cross, Mage Frost Nova a snowflake, Cleric Purify a drop, Elf Moonlight Step a crescent moon.
