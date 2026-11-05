@@ -8,15 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../gamedata/db_schema.dart';
-import '../../providers/aftermath_provider.dart';
 import '../../providers/game_db_providers.dart';
 import '../../providers/combat_active_provider.dart';
 import '../../providers/tower_fight_session.dart';
 import '../fight_screen.dart';
 import 'tower_providers.dart';
 
-/// Plays [run]'s floor and says how it ended; null when it could not start
-/// (a foe missing from the tables).
+/// Plays [run]'s floor and says how it ended; null when it was not fought (a
+/// foe missing from the tables, or Back before the first roll). There is no
+/// retreat in the Tower: once begun, a fight is won or lost.
 Future<TowerFightResult?> towerFightFor(
     Ref ref, BuildContext context, TowerRun run, TowerData data) async {
   await ref.read(gameDbProvider(enemiesSchema).notifier).whenLoaded();
@@ -44,12 +44,7 @@ Future<TowerFightResult?> towerFightFor(
     )),
   ));
   ref.read(combatActiveProvider.notifier).state = false;
-  final cleared = won ?? false;
-  final retreated = ref.read(lastFightRetreatedProvider);
-  ref.read(lastFightRetreatedProvider.notifier).state = false;
-  return TowerFightResult(
-    won: cleared,
-    healthLeft: fight.healthLeft,
-    retreated: !cleared && retreated,
-  );
+  // Back before the first roll pops null: the floor was not fought.
+  if (won == null) return null;
+  return TowerFightResult(won: won, healthLeft: fight.healthLeft);
 }

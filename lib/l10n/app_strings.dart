@@ -1769,10 +1769,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+{n} to your main stat.',
     AppLanguage.fr: '+{n} à votre caractéristique principale.',
   },
-  'tower_fight_unready': {
-    AppLanguage.en: 'The fight is not wired in this build yet.',
-    AppLanguage.fr: 'Le combat n’est pas encore relié dans cette version.',
-  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',

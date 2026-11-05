@@ -124,7 +124,7 @@ void main() {
     expect(save.loadProgress().runs, 1);
   });
 
-  testWidgets('a boss floor is marked, and an unwired fight says so',
+  testWidgets('a boss floor is marked, and a fight not begun changes nothing',
       (tester) async {
     await _open(tester,
         fight: (context, run, data) async => null,
@@ -132,10 +132,10 @@ void main() {
     expect(find.byKey(const Key('tower_danger_band')), findsOneWidget);
     expect(find.text('FLOOR 10 · BOSS'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_fight')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(
-        find.text('The fight is not wired in this build yet.'), findsOneWidget);
+    await _settle(tester);
+    expect(find.text('Floor 10 of 30'), findsOneWidget);
+    expect(find.byKey(const Key('tower_fight')), findsOneWidget);
+    expect((await TowerSave.open()).loadRun()?.floor, 10);
   });
 
   testWidgets('the real fight runs on the Tower hero, apart from the story',

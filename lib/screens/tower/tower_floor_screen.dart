@@ -45,18 +45,8 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
       final result =
           await ref.read(towerFightLauncherProvider)(context, run, data);
       if (!mounted) return;
-      if (result == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tr(ref, 'tower_fight_unready'))));
-        return;
-      }
-      if (result.retreated) {
-        // Got away: the floor stays, with the health the fight left.
-        await ref
-            .read(towerProvider.notifier)
-            .setRun(run.copyWith(health: result.healthLeft.clamp(1, 1 << 20)));
-        return;
-      }
+      // Not fought (Back before the first roll): the floor stays as it was.
+      if (result == null) return;
       final next = towerAfterFight(run, data,
           won: result.won, healthLeft: result.healthLeft);
       if (next.isOver) {

@@ -122,28 +122,20 @@ final towerProvider =
 
 /// How a floor's fight ended.
 class TowerFightResult {
-  const TowerFightResult({
-    required this.won,
-    required this.healthLeft,
-    this.retreated = false,
-  });
+  const TowerFightResult({required this.won, required this.healthLeft});
 
   final bool won;
-
-  /// The party got away: the floor stays to be fought, with the health the
-  /// fight left.
-  final bool retreated;
 
   /// The hero's health when the fight ended.
   final int healthLeft;
 }
 
 /// Plays the fight of [run]'s floor and says how it ended; null when it was
-/// not played (the screen was left, or the fight is not wired).
+/// fought (Back before the first roll).
 typedef TowerFightLauncher = Future<TowerFightResult?> Function(
     BuildContext context, TowerRun run, TowerData data);
 
 /// The fight of a floor: [towerFightFor] plays it for real. Tests give a
-/// fake (or null: nothing played).
+/// fake (or null: not fought).
 final towerFightLauncherProvider = Provider<TowerFightLauncher>(
     (ref) => (context, run, data) => towerFightFor(ref, context, run, data));
