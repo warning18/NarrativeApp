@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.838.0+874]
+
+- Skill icons: the 4 rallying skills each get their own glyph on the grey gem: Rallying Cry a banner, Rallying Shout a horn with sound waves, Warrior Rally Cry a raised blade with rays, Rogue Quick Pockets a pouch.
+
 ## [1.837.0+873]
 
 - Skill icons, the second-chance skills on the grey diamond: Cleric Revive
