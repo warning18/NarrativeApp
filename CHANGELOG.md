@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.859.0+895]
+
+### Fixed
+- **A cleric's Mending Light now feeds the Watchfire** (the user's bug: "the
+  watchfire countdown doesn't accumulate"). A spell's heal past full feeds
+  the fire as a die's heal does, in the story's fights, the Tower's and the
+  playthrough simulator. Only what heals past full feeds it, so a Mending
+  Light on a wounded member still leaves the fire as it was.
+- `test/qa_mending_light_watchfire_test.dart`.
+
 ## [1.856.0+892]
 
 - **The Tower's oaths, on screen** (Core's oaths, v1.855): the start screen takes a people and a calling only (no clan to pick); a clan's oath is a card among the rewards: its banner, "The Salt Crows offer you their oath", what swearing gives (their standing, and their die by name) and a Swear button (leaving them all is still the mark); the floor screen shows the clans sworn so far ("Unsworn" before the first, the main clan marked when there are several); the marks screen words the three clan unlocks "Can be offered: the Salt Crows." and so on. Also: a die's card no longer shows its raw id in English ("lantern_die" is "Lantern Die").
