@@ -8,6 +8,61 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.844.0+880]
+
+- Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.
+
+## [1.843.0+879]
+
+- Skill icons: two more pairs that shared a gem each get their own glyph: Rogue Backstab a dagger, Void Drain a funnel, Plague Bite a skull, Voidkin Entropy Touch fading dots.
+
+## [1.842.0+878]
+
+- Skill icons: the Electricity pair and the Fire pair that shared a gem each get their own glyph: Adrenaline Surge a bolt, Mage Arcane Missile a dart, Dwarf Forgeheart a hammer, Orc Bloodlust a set of fangs.
+
+## [1.841.0+877]
+
+- Skill icons: the two Water pairs that shared a gem each get their own glyph: Cleric Holy Light a cross, Mage Frost Nova a snowflake, Cleric Purify a drop, Elf Moonlight Step a crescent moon.
+
+## [1.840.0+876]
+
+- Skill icons: the 3 warding skills on the grey shield each get their own glyph: Cleric Sanctuary an arch, Iron Will an anvil, Mage Mana Shield a spark.
+
+## [1.839.0+875]
+
+- Skill icons: the 3 healing skills on the blue gem each get their own glyph: Bind Wounds a bandage, Mending Touch a hand over a spark, Quick Heal a cross with speed marks.
+
+## [1.838.0+874]
+
+- Skill icons: the 4 rallying skills each get their own glyph on the grey gem: Rallying Cry a banner, Rallying Shout a horn with sound waves, Warrior Rally Cry a raised blade with rays, Rogue Quick Pockets a pouch.
+
+## [1.837.0+873]
+
+- Skill icons, the second-chance skills on the grey diamond: Cleric Revive
+  Prayer (a halo over a cross), Human Resolve (a fist), Second Chance (a heart)
+  and Second Wind (a breath) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/resolve.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/resolve-before-after.png`.
+
+## [1.836.0+872]
+
+- Skill icons, the void school on the violet diamond: Mage Teleport Strike (a
+  blink), Void Blast (an orb with a dark heart), Void Gathering (motes drawn
+  in) and Voidkin Starless Gaze (an eye with a dark pupil) each had the same
+  blank gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/void.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/void-before-after.png`.
+
+## [1.835.0+871]
+
+- Skill icons, the earth school on the green diamond: Dwarf Hammer Blow (a
+  mallet), Ranger Camouflage (a leaf), Ranger Trap Set (a trap's teeth) and
+  Rogue Poison Blade (a drop) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/earth-before-after.png`.
+
 ## [1.834.0+870]
 
 - Skill icons, the earth school on the shield-shaped gem: Brace (two planted
