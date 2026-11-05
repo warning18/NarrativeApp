@@ -208,6 +208,7 @@ class ChoiceCard extends ConsumerWidget {
     required this.onTap,
     this.selected = false,
     this.compact = false,
+    this.lockedNote,
   });
 
   final ChoiceBook book;
@@ -217,6 +218,11 @@ class ChoiceCard extends ConsumerWidget {
   final bool compact;
   final VoidCallback onTap;
 
+  /// Why the card is shut ("Bought with marks"): the card then lies dimmed
+  /// under a padlock and a tap does nothing (the Tower's callings and
+  /// peoples not yet bought). Null: open, as in the story.
+  final String? lockedNote;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -224,80 +230,99 @@ class ChoiceCard extends ConsumerWidget {
     final record = book.recordOf(folder, id);
     final tag = record['tag']?.toString() ?? '';
     final clans = book.clansOf(folder, id);
+    final locked = lockedNote != null;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        key: Key('choice_card_$id'),
-        color: selected
-            ? ink.gold.withValues(alpha: 0.1)
-            : theme.colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-              color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: onTap,
-          child: Padding(
-            padding:
-                EdgeInsets.fromLTRB(10, compact ? 7 : 10, 10, compact ? 7 : 10),
-            child: Row(children: [
-              PresetMark(
-                  folder: folder, preset: record, size: compact ? 30 : 44),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
-                        children: [
-                          Text(book.nameOfChoice(folder, id),
-                              key: Key('choice_name_$id'),
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(fontFamily: InkFonts.display)),
-                          if (tag.isNotEmpty)
-                            InkTag(label: tag, color: ink.gold),
-                        ]),
-                    Text(record['playstyle']?.toString() ?? '',
-                        maxLines: compact ? 1 : 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: ink.ash)),
-                    if (!compact) ...[
-                      const SizedBox(height: 6),
-                      StatChips(record: record),
+      child: Opacity(
+        opacity: locked ? 0.6 : 1,
+        child: Material(
+          key: Key('choice_card_$id'),
+          color: selected
+              ? ink.gold.withValues(alpha: 0.1)
+              : theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+                color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: locked ? null : onTap,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                  10, compact ? 7 : 10, 10, compact ? 7 : 10),
+              child: Row(children: [
+                PresetMark(
+                    folder: folder, preset: record, size: compact ? 30 : 44),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 8,
+                          children: [
+                            Text(book.nameOfChoice(folder, id),
+                                key: Key('choice_name_$id'),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontFamily: InkFonts.display)),
+                            if (tag.isNotEmpty)
+                              InkTag(label: tag, color: ink.gold),
+                          ]),
+                      Text(record['playstyle']?.toString() ?? '',
+                          maxLines: compact ? 1 : 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: ink.ash)),
+                      if (locked)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Row(children: [
+                            Icon(Icons.lock_outline, size: 14, color: ink.gold),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(lockedNote!,
+                                  key: Key('choice_lock_$id'),
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                      color: ink.gold,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ]),
+                        )
+                      else if (!compact) ...[
+                        const SizedBox(height: 6),
+                        StatChips(record: record),
+                      ],
                     ],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Wrap(spacing: -6, children: [
+                      for (final f in clans.take(compact ? 3 : 4))
+                        ClanDisc(f, size: compact ? 22 : 26),
+                    ]),
+                    if (!compact)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Text(
+                            tr(ref, 'rp_clans_count')
+                                .replaceAll('{n}', '${clans.length}'),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
+                      ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 6),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Wrap(spacing: -6, children: [
-                    for (final f in clans.take(compact ? 3 : 4))
-                      ClanDisc(f, size: compact ? 22 : 26),
-                  ]),
-                  if (!compact)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(
-                          tr(ref, 'rp_clans_count')
-                              .replaceAll('{n}', '${clans.length}'),
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ink.ash)),
-                    ),
-                ],
-              ),
-              if (selected)
-                Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: Icon(Icons.check_circle, color: ink.gold, size: 20),
-                ),
-            ]),
+                if (selected)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Icon(Icons.check_circle, color: ink.gold, size: 20),
+                  ),
+              ]),
+            ),
           ),
         ),
       ),

@@ -26,7 +26,11 @@ import '../widgets/empty_state.dart';
 import '../widgets/race_profession_cards.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
-  const RaceProfessionScreen({super.key});
+  const RaceProfessionScreen({super.key, this.locks = const {}});
+
+  /// Choices shut for now, by id, with the line saying why (the Tower's
+  /// callings not yet bought); a tap on one does nothing.
+  final Map<String, String> locks;
 
   @override
   ConsumerState<RaceProfessionScreen> createState() =>
@@ -131,6 +135,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           id: id,
           selected: id == pickedHere,
           compact: compact,
+          lockedNote: widget.locks[id],
           onTap: () => pick(id),
         );
 

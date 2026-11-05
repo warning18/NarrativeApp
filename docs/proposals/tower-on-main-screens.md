@@ -36,3 +36,12 @@ It looks at home, but the two screens answer a different question from the Tower
 2. Name and look: none, or after the button as in the story?
 3. The three cards: keep "choose one" (on the sheet's choose-one mode), or give the sheet's whole list (a bigger reward, an easier Tower)?
 4. Level-ups: silent (the level in the floor header), or the Level Up screen with points?
+
+## Update after the user's decision
+
+The user chose: the main Race & Profession screen as the Tower's first screen, with locks, no name/look step, the story's clan text hidden for the Tower; the spoils chest (`LootSheet`, no gold) with the ladder beside it, and the Level Up screen after a floor that gains a level; the pick-one offer only for boons on wardens and bosses (the sheet's choose-one mode, design A); the clan oath as the clan's own offer after the spoils.
+
+Pictures: `docs/ux-shots/tower/main-screens/tower-locks-and-spoils-en412.png`.
+1. **The locked callings** (real cards): Cleric and Ranger are dimmed under a padlock with "Bought with marks: 15" / "25"; a tap does nothing. A prototype is in the branch: `ChoiceCard.lockedNote` and `RaceProfessionScreen(locks: {id: line})` (null by default, so the story's screen is unchanged; a few lines).
+2. **The spoils sheet with the ladder** (real widgets): the sheet shows what the spoils change and each reward, with no gold line.
+3. **A boon on a boss or warden floor** (a mock: the loot designs' picture A beside the real ladder, its gold row to be dropped): choose one of three, the card in hand ringed, a Choose button on each.

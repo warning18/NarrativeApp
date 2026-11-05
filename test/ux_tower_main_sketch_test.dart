@@ -43,9 +43,10 @@ void main() {
       File('$shots/$name.png').writeAsBytesSync(bytes);
     }
 
+    // One container for all the screens: the game data loads once.
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
     Future<ProviderContainer> open(Widget home) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
       await tester.pumpWidget(UncontrolledProviderScope(
         container: container,
         child: RepaintBoundary(
@@ -129,8 +130,21 @@ void main() {
     ));
     await shot('b1-spoils-with-ladder');
 
+    // The callings with the Tower's locks: Cleric and Ranger are bought.
+    await open(const RaceProfessionScreen(locks: {
+      'cleric': 'Bought with marks: 15',
+      'ranger': 'Bought with marks: 25',
+    }));
+    // The people already picked in this session: it opens on the callings.
+    if (find.byKey(const Key('choice_card_cleric')).evaluate().isEmpty) {
+      await tester.tap(find.byKey(const Key('choice_card_human')));
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.tap(find.byKey(const Key('rp_next')));
+      await tester.pump(const Duration(seconds: 1));
+    }
+    await shot('c1-locked-callings');
     // The level-up screen after a floor that levelled the hero.
-    final container = await open(const LevelUpScreen());
+    await open(const LevelUpScreen());
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson(const {
