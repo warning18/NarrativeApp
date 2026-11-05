@@ -6,7 +6,8 @@
 // each, with how many things there are to do there.
 //
 // A way's place, in order:
-// * its own `place` (story data: a building of the plan, or `here`);
+// * its own `place` (story data: a building of the plan, `here`, or
+//   `out`: a way out told by a departure scene still here, v1.851);
 // * `here`, the party's own place, for a way acted out where the party
 //   stands (a fight, a check, a payment, a decision: choiceShape's `here`)
 //   or one leading to a scene at the same stop;
@@ -91,6 +92,14 @@ WayPlace placeOfWay(
     if (record.building(own) != null) return WayPlace.building(own);
   }
   final shape = choiceShape(node, choice, story: story, geography: geography);
+  // A way out of the town told by a departure scene still here (v1.851).
+  if (own == outPlaceWord) {
+    final end = story.nodeFor(wayOutEndOf(choice, story));
+    return WayPlace.wayOut(shape.to?.id ??
+        geography.locationOfNode(end)?.id ??
+        end?.location ??
+        choice.nextId);
+  }
   if (shape.here) return const WayPlace.here();
   final next = story.nodeFor(choice.nextId);
   if (next == null) return const WayPlace.here();

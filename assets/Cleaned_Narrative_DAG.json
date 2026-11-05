@@ -2650,6 +2650,7 @@
         "text": "Go south with Lysa and the caravan",
         "text_fr": "Partir au sud avec Lysa et la caravane",
         "next_id": "1000",
+        "place": "out",
         "showIfFlags": [
           "lysa_survived"
         ]
@@ -2658,6 +2659,7 @@
         "text": "Go south, and keep what’s left of you",
         "text_fr": "Partir au sud, et garder ce qu’il reste de soi",
         "next_id": "1001",
+        "place": "out",
         "showIfFlags": [
           "lysa_lost"
         ]
@@ -2666,6 +2668,7 @@
         "text": "Go south, and let the rage carry you",
         "text_fr": "Partir au sud, et laisser faire la rage",
         "next_id": "1002",
+        "place": "out",
         "showIfFlags": [
           "lysa_lost"
         ],
