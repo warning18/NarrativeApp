@@ -51,6 +51,7 @@ import '../widgets/side_view/world_camera.dart';
 import '../widgets/side_view/side_view.dart';
 import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
+import 'crossing_rise_route.dart';
 import 'fight_screen.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
@@ -80,16 +81,22 @@ Future<bool> runLandCrossing(
   final stripPath = await crossingStripPath(ref, route);
   final camera = await crossingCamera(ref, stripPath);
   if (!context.mounted) return false;
-  final arrived = await Navigator.of(context).push<bool>(MaterialPageRoute(
-    builder: (_) => LandCrossingScreen(
-        route: ruler.route,
-        events: known,
-        ruler: ruler.clanId,
-        rulers: rulerPool(known, ruler.clanId, ruler.band),
-        random: ref.read(landCrossingRandomProvider),
-        stripPath: stripPath,
-        camera: camera),
-  ));
+  // After the Journey map's flight set out for it, the crossing rises over
+  // the chart (crossing_rise_route.dart); anywhere else it is a plain page.
+  final rise = ref.read(crossingRiseProvider);
+  ref.read(crossingRiseProvider.notifier).state = false;
+  Widget screen(BuildContext _) => LandCrossingScreen(
+      route: ruler.route,
+      events: known,
+      ruler: ruler.clanId,
+      rulers: rulerPool(known, ruler.clanId, ruler.band),
+      random: ref.read(landCrossingRandomProvider),
+      stripPath: stripPath,
+      camera: camera);
+  final arrived = await Navigator.of(context).push<bool>(rise
+      ? CrossingRiseRoute<bool>(
+          builder: screen, still: MediaQuery.of(context).disableAnimations)
+      : MaterialPageRoute(builder: screen));
   return arrived ?? false;
 }
 
