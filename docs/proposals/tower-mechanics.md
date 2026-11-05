@@ -437,3 +437,35 @@ with the user):
 | A naive bot's median floor reached | 12–16 |
 | The bot reaching floor 20 | 25–35% |
 | The bot winning floor 30 | 5–10% with no unlocks, 15–25% with all |
+
+## The clans offer their oaths (v1.855)
+
+The user's call, after playing it: "in the Tower you don't choose clans,
+they propose you rewards like in the story mode". Their answers: several
+clans per climb, an oath on any floor while a clan is left, the rule and
+the die at once.
+
+- **The start** is people and calling only: a run begins sworn to none
+  (`towerStart`'s `clanId` is gone from the screen; kept, optional, for an
+  old save sworn at the start, which keeps its clan as its first).
+- **The oath card** (`TowerRewardKind.clanOath`, `id` the clan): always on
+  the first floor won; later on `towerOathChance` (35%) of the offers while
+  a clan of the run's pool is left; one oath an offer at most, in one of
+  its three slots, drawn from its own stream (the other cards draw as
+  before). Refused, it is the usual mark.
+- **The pool** (`TowerRun.clanPool`) is the clans open when the run began
+  (`TowerProgress.clans`: the three of the start, and Salt Crows, Grey
+  Vigil, Cinder Compact once unlocked: an unlock now means "this clan can
+  be offered").
+- **Sworn** (`TowerRun.clanIds`, in the order sworn): the clan's die is
+  owned at once; in the fight each sworn clan stands at Friend, the first
+  one point above, so the story's own rules decide: one main clan
+  (`mainClanOf`: the patron, the first sworn), its die the one that
+  resonates; the other clans' dice roll plain. Nothing stacks.
+- **The clan's gift** (stat points) is offered only once a clan is sworn,
+  one point as before: it does not grow with the clans sworn.
+- **Balance** (1,500 seeds, the bot taking the first oath it sees): no
+  unlocks, median 17, floor 20 34.7% (33.2% before), top 10.5% (10.1%);
+  every unlock, median 19, top 16.5% (19.6%). The spread between clans is
+  gone: as the main clan, each wins the top 10–11% with no unlocks,
+  14–18% with every unlock (it was Dominion 15% to Mire 4.7%).

@@ -35,7 +35,8 @@ class TowerRun {
     required this.seed,
     required this.raceId,
     required this.professionId,
-    required this.clanId,
+    this.clanId = '',
+    this.clanPool = towerStartClanPool,
     this.startUnlocks = const [],
     this.unlocksOwned = 0,
     this.floor = 1,
@@ -50,7 +51,11 @@ class TowerRun {
         seed: (json['seed'] as num).toInt(),
         raceId: json['race'] as String,
         professionId: json['profession'] as String,
-        clanId: json['clan'] as String,
+        clanId: json['clan']?.toString() ?? '',
+        clanPool: [
+          for (final c in (json['pool'] as List?) ?? towerStartClanPool)
+            c.toString(),
+        ],
         startUnlocks: [
           for (final u in (json['unlocks'] as List?) ?? const []) u.toString(),
         ],
@@ -78,7 +83,35 @@ class TowerRun {
   final int seed;
   final String raceId;
   final String professionId;
+
+  /// The clan sworn at the start: '' for a run begun from v1.855, where
+  /// the clans offer their oaths on the way up (the user's call); an older
+  /// save's clan, sworn from floor 1.
   final String clanId;
+
+  /// The clans that may offer their oath on this run (the player's open
+  /// clans, TowerProgress.clans, when it began).
+  final List<String> clanPool;
+
+  /// The clans sworn, in the order they were: the start's, then each oath
+  /// taken, floor by floor. The first is the main clan (the story's rule:
+  /// one main clan, its die's Resonance, its patron's standing).
+  List<String> get clanIds => [
+        if (clanId.isNotEmpty) clanId,
+        for (final f in taken.keys.toList()..sort())
+          if (taken[f]!.kind == TowerRewardKind.clanOath &&
+              taken[f]!.id != clanId)
+            taken[f]!.id,
+      ];
+
+  /// The main clan: the first sworn, '' while none is.
+  String get mainClanId => clanIds.isEmpty ? '' : clanIds.first;
+
+  /// The clans still to swear to.
+  List<String> get oathsLeft => [
+        for (final c in clanPool)
+          if (!clanIds.contains(c)) c,
+      ];
 
   /// The unlocks the run started with (its start dice and items).
   final List<String> startUnlocks;
@@ -134,6 +167,7 @@ class TowerRun {
         raceId: raceId,
         professionId: professionId,
         clanId: clanId,
+        clanPool: clanPool,
         startUnlocks: startUnlocks,
         unlocksOwned: unlocksOwned,
         floor: floor ?? this.floor,
@@ -148,7 +182,8 @@ class TowerRun {
         'seed': seed,
         'race': raceId,
         'profession': professionId,
-        'clan': clanId,
+        if (clanId.isNotEmpty) 'clan': clanId,
+        'pool': clanPool,
         if (startUnlocks.isNotEmpty) 'unlocks': startUnlocks,
         if (unlocksOwned != 0) 'owned': unlocksOwned,
         'floor': floor,
@@ -181,12 +216,16 @@ int towerMarksOf(int floorsCleared, int refusals) {
 }
 
 /// A new run of [seed]: floor 1, the hero at full health, with the power
-/// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned).
+/// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned). It is sworn
+/// to no clan (v1.855): the clans of [clanPool] (TowerProgress.clans)
+/// offer their oaths on the way up. A [clanId] swears one from the start
+/// (the start screen's pick, until it goes).
 TowerRun towerStart({
   required int seed,
   required String raceId,
   required String professionId,
-  required String clanId,
+  String clanId = '',
+  Iterable<String> clanPool = towerStartClanPool,
   Iterable<String> startUnlocks = const [],
   int unlocksOwned = 0,
   required TowerData data,
@@ -204,6 +243,10 @@ TowerRun towerStart({
     raceId: raceId,
     professionId: professionId,
     clanId: clanId,
+    clanPool: [
+      for (final c in towerClans)
+        if (clanPool.contains(c)) c,
+    ],
     startUnlocks: unlocks,
     unlocksOwned: unlocksOwned,
     health: hero.maxHealth,
@@ -240,6 +283,9 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
       seed: run.seed,
       floor: run.floor,
       hero: towerHeroView(choosing, hero),
+      oaths: run.oathsLeft,
+      // The first floor won always offers a clan (the user's call).
+      oathDue: run.floor == 1 && run.clanIds.isEmpty,
       items: data.items,
       dice: data.dice,
       skills: data.skills,

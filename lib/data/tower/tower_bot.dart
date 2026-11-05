@@ -25,8 +25,9 @@ TowerData towerDataFromAssets([String dir = 'assets/gamedata']) =>
 
 /// Plays one whole run of [seed] with the unlocks of [progress] (none by
 /// default, [towerAllUnlocked] for all) and returns it ended: won, or dead
-/// on the floor it lost. The race, profession and clan are drawn by the
-/// seed among those open, unless given.
+/// on the floor it lost. The race and profession are drawn by the seed
+/// among those open, unless given; it starts unsworn ([clanId] swears one
+/// from the start) and takes the first oath it is offered.
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -44,7 +45,8 @@ TowerRun playTowerRun({
     seed: seed,
     raceId: raceId ?? draw(races),
     professionId: professionId ?? draw(professions),
-    clanId: clanId ?? draw(clans),
+    clanId: clanId ?? '',
+    clanPool: clans,
     startUnlocks: progress.startUnlocks,
     unlocksOwned: progress.unlocksOwned,
     data: data,
@@ -76,8 +78,8 @@ TowerRun playTowerRun({
 }
 
 /// The card the bot takes from [run]'s offer: a heal when below half
-/// health, else the first of: its clan's die, gear better than what it
-/// wears, a die, a skill, a spell, the clan's stat point, a heal.
+/// health, else the first of: a clan's oath (a player's habit), a clan's
+/// die, gear better than what it wears, a die, a skill, a spell, the clan's stat point, a heal.
 int? towerBotChoice(TowerRun run, TowerData data) {
   if (run.offer.isEmpty) return null;
   final hero = towerHeroOf(run, data);
@@ -103,7 +105,8 @@ int? towerBotChoice(TowerRun run, TowerData data) {
     return gear(r.id) > gear(hero.equippedBySlot[slot]);
   }
 
-  return find((r) => r.kind == TowerRewardKind.clanGift && r.id.isNotEmpty) ??
+  return find((r) => r.kind == TowerRewardKind.clanOath) ??
+      find((r) => r.kind == TowerRewardKind.clanGift && r.id.isNotEmpty) ??
       find((r) => r.kind == TowerRewardKind.item && better(r)) ??
       find((r) => r.kind == TowerRewardKind.die) ??
       find((r) => r.kind == TowerRewardKind.skill) ??

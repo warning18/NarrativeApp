@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.855.0+891]
+
+### Changed
+- **The Tower's clans offer their oaths** (the user's call): no clan is
+  chosen at the start; a clan offers its oath among the cards on the way
+  up (`TowerRewardKind.clanOath`). Always on the first floor won, then on
+  35% of the offers while a clan of the run's pool is left; one oath an
+  offer at most; refused, the usual mark. Several clans may be sworn.
+  - Sworn, the hero owns the clan's die at once, and stands at Friend with
+    the clan in the fight. The first clan sworn is the main one (the
+    story's rules: its die resonates, the others roll plain).
+  - The clan's gift (a stat point) is offered only once a clan is sworn.
+  - The clan unlocks (Salt Crows, Grey Vigil, Cinder Compact) now let the
+    clan be offered (`TowerRun.clanPool`, from `TowerProgress.clans`).
+  - An old save sworn at the start keeps its clan.
+- Balance (1,500 seeds): no unlocks, median 17, floor 20 34.7%, top 10.5%;
+  every unlock, top 16.5%. The clans' spread is gone (each 10–11% top as
+  the main clan). QA's floor-20 band is now 25–38% (34.4% to 36.8% over
+  the 500 guard seeds).
+- `test/tower_oaths_test.dart`; `docs/proposals/tower-mechanics.md` has the
+  rules.
+
 ## [1.854.0+890]
 
 ### Changed
