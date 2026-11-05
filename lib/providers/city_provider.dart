@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/city_districts.dart';
 import '../data/city_plan_record.dart';
-import '../data/geography.dart' show GeoPlace;
+import '../data/geography.dart' show GeoLevel, GeoPlace;
 import '../data/way_places.dart';
 import 'choice_flow_provider.dart';
 import 'geography_provider.dart';
@@ -65,7 +65,16 @@ final partyDistrictProvider = Provider<String?>((ref) {
       geo.locationOf(walked.districtId)?.id == city) {
     return walked.districtId;
   }
-  return districtOfNode(geo, story?.nodeFor(nodeId))?.id;
+  final own = districtOfNode(geo, story?.nodeFor(nodeId))?.id;
+  if (own != null) return own;
+  // A village hub told at the village itself (the White Wells' 1200)
+  // stands at its hub district's lot (choice_flow.dart's stops, v1.851):
+  // the chart opens on that district, its ways on it.
+  final stop = ref.watch(storyStopsProvider)?.stopOf(nodeId) ?? '';
+  return geo.place(stop)?.level == GeoLevel.district &&
+          geo.locationOf(stop)?.id == city
+      ? stop
+      : null;
 });
 
 /// The districts of the party's city it has found (see foundDistricts);
