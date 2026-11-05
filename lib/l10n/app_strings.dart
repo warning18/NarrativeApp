@@ -1536,6 +1536,239 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'La montée elle-même arrive avec la prochaine version ; ici, vous pouvez regarder les écrans.',
   },
+  'tower_floor_1': {
+    AppLanguage.en: 'The Foot of the Stair',
+    AppLanguage.fr: 'Le Pied de l’escalier',
+  },
+  'tower_floor_2': {
+    AppLanguage.en: 'Ash Landing',
+    AppLanguage.fr: 'Le Palier de cendre',
+  },
+  'tower_floor_3': {
+    AppLanguage.en: 'The Wet Steps',
+    AppLanguage.fr: 'Les Marches mouillées',
+  },
+  'tower_floor_4': {
+    AppLanguage.en: 'Cinder Turn',
+    AppLanguage.fr: 'Le Tournant des braises',
+  },
+  'tower_floor_5': {
+    AppLanguage.en: 'The Half-Lit Flight',
+    AppLanguage.fr: 'La Volée mi-éclairée',
+  },
+  'tower_floor_6': {
+    AppLanguage.en: 'Rope and Rust',
+    AppLanguage.fr: 'Corde et rouille',
+  },
+  'tower_floor_7': {
+    AppLanguage.en: 'The Sallow Landing',
+    AppLanguage.fr: 'Le Palier blême',
+  },
+  'tower_floor_8': {
+    AppLanguage.en: 'The Drip Hall',
+    AppLanguage.fr: 'La Salle des gouttes',
+  },
+  'tower_floor_9': {
+    AppLanguage.en: 'The Last Low Step',
+    AppLanguage.fr: 'La Dernière Marche basse',
+  },
+  'tower_floor_10': {
+    AppLanguage.en: 'The Gatehouse',
+    AppLanguage.fr: 'La Loge du portier',
+  },
+  'tower_floor_11': {
+    AppLanguage.en: 'The Long Gallery',
+    AppLanguage.fr: 'La Longue Galerie',
+  },
+  'tower_floor_12': {
+    AppLanguage.en: 'Hall of Hooks',
+    AppLanguage.fr: 'La Salle des crochets',
+  },
+  'tower_floor_13': {
+    AppLanguage.en: 'The Salt Corridor',
+    AppLanguage.fr: 'Le Couloir de sel',
+  },
+  'tower_floor_14': {
+    AppLanguage.en: 'Candle Row',
+    AppLanguage.fr: 'La Rangée de chandelles',
+  },
+  'tower_floor_15': {
+    AppLanguage.en: 'The Cold Hearth',
+    AppLanguage.fr: 'L’Âtre froid',
+  },
+  'tower_floor_16': {
+    AppLanguage.en: 'The Tally Room',
+    AppLanguage.fr: 'La Salle des comptes',
+  },
+  'tower_floor_17': {
+    AppLanguage.en: 'The Flooded Hall',
+    AppLanguage.fr: 'La Salle inondée',
+  },
+  'tower_floor_18': {
+    AppLanguage.en: 'The Quiet Chapel',
+    AppLanguage.fr: 'La Chapelle muette',
+  },
+  'tower_floor_19': {
+    AppLanguage.en: 'The Narrow Door',
+    AppLanguage.fr: 'La Porte étroite',
+  },
+  'tower_floor_20': {
+    AppLanguage.en: 'The Great Hall',
+    AppLanguage.fr: 'La Grande Salle',
+  },
+  'tower_floor_21': {
+    AppLanguage.en: 'The Bell Stair',
+    AppLanguage.fr: 'L’Escalier des cloches',
+  },
+  'tower_floor_22': {
+    AppLanguage.en: 'The Lamp Ledge',
+    AppLanguage.fr: 'La Corniche des lampes',
+  },
+  'tower_floor_23': {
+    AppLanguage.en: 'The Windward Steps',
+    AppLanguage.fr: 'Les Marches au vent',
+  },
+  'tower_floor_24': {
+    AppLanguage.en: 'Grey Battlements',
+    AppLanguage.fr: 'Les Créneaux gris',
+  },
+  'tower_floor_25': {
+    AppLanguage.en: 'The Open Roof',
+    AppLanguage.fr: 'Le Toit ouvert',
+  },
+  'tower_floor_26': {
+    AppLanguage.en: 'The Thin Air',
+    AppLanguage.fr: 'L’Air mince',
+  },
+  'tower_floor_27': {
+    AppLanguage.en: 'The Last Rail',
+    AppLanguage.fr: 'La Dernière Rampe',
+  },
+  'tower_floor_28': {
+    AppLanguage.en: 'The Lantern Gallery',
+    AppLanguage.fr: 'La Galerie de la lanterne',
+  },
+  'tower_floor_29': {
+    AppLanguage.en: 'The Top Stair',
+    AppLanguage.fr: 'La Dernière Volée',
+  },
+  'tower_floor_30': {
+    AppLanguage.en: 'The Summit',
+    AppLanguage.fr: 'Le Sommet',
+  },
+  'tower_boss_line_10': {
+    AppLanguage.en:
+        'He holds the gatehouse in the name of a pact sealed in blood.',
+    AppLanguage.fr: 'Il tient la loge au nom d’un pacte scellé dans le sang.',
+  },
+  'tower_boss_line_20': {
+    AppLanguage.en:
+        'He keeps the Great Hall, and asks only that you do not stop.',
+    AppLanguage.fr:
+        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
+  },
+  'tower_boss_line_30': {
+    AppLanguage.en:
+        'He waits where the stair runs out, under a crown the tear wore first.',
+    AppLanguage.fr:
+        'Il attend là où l’escalier s’arrête, sous une couronne que la déchirure a portée la première.',
+  },
+  'tower_band_1': {
+    AppLanguage.en: 'The Lower Stairs',
+    AppLanguage.fr: 'Les Escaliers bas',
+  },
+  'tower_band_2': {
+    AppLanguage.en: 'The Middle Halls',
+    AppLanguage.fr: 'Les Salles du milieu',
+  },
+  'tower_band_3': {
+    AppLanguage.en: 'The Crown',
+    AppLanguage.fr: 'La Couronne',
+  },
+  'tower_fight': {
+    AppLanguage.en: 'Fight',
+    AppLanguage.fr: 'Combattre',
+  },
+  'tower_floor_boss': {
+    AppLanguage.en: 'FLOOR {n} · BOSS',
+    AppLanguage.fr: 'ÉTAGE {n} · BOSS',
+  },
+  'tower_floor_warden': {
+    AppLanguage.en: 'FLOOR {n} · WARDEN',
+    AppLanguage.fr: 'ÉTAGE {n} · GARDIEN',
+  },
+  'tower_floor_elite': {
+    AppLanguage.en: 'An Elite waits here.',
+    AppLanguage.fr: 'Un Élite attend ici.',
+  },
+  'tower_foes': {
+    AppLanguage.en: 'Foes',
+    AppLanguage.fr: 'Adversaires',
+  },
+  'tower_your_health': {
+    AppLanguage.en: 'Your health',
+    AppLanguage.fr: 'Votre santé',
+  },
+  'tower_cleared': {
+    AppLanguage.en: 'Floor {n} cleared',
+    AppLanguage.fr: 'Étage {n} vaincu',
+  },
+  'tower_choose_one': {
+    AppLanguage.en: 'Choose one reward',
+    AppLanguage.fr: 'Choisissez une récompense',
+  },
+  'tower_take': {
+    AppLanguage.en: 'Take',
+    AppLanguage.fr: 'Prendre',
+  },
+  'tower_refuse': {
+    AppLanguage.en: 'Leave them all (+1 mark)',
+    AppLanguage.fr: 'Ne rien prendre (+1 marque)',
+  },
+  'tower_next_floor': {
+    AppLanguage.en: 'Next floor',
+    AppLanguage.fr: 'Étage suivant',
+  },
+  'tower_kind_item': {
+    AppLanguage.en: 'Item',
+    AppLanguage.fr: 'Objet',
+  },
+  'tower_kind_die': {
+    AppLanguage.en: 'Die',
+    AppLanguage.fr: 'Dé',
+  },
+  'tower_kind_skill': {
+    AppLanguage.en: 'Skill',
+    AppLanguage.fr: 'Compétence',
+  },
+  'tower_kind_spell': {
+    AppLanguage.en: 'Spell',
+    AppLanguage.fr: 'Sort',
+  },
+  'tower_kind_heal': {
+    AppLanguage.en: 'Heal',
+    AppLanguage.fr: 'Soin',
+  },
+  'tower_kind_gift': {
+    AppLanguage.en: 'Clan gift',
+    AppLanguage.fr: 'Don du clan',
+  },
+  'tower_heal_name': {
+    AppLanguage.en: 'Heal {n}%',
+    AppLanguage.fr: 'Soin de {n} %',
+  },
+  'tower_gift_name': {
+    AppLanguage.en: 'A gift of your clan',
+    AppLanguage.fr: 'Un don de votre clan',
+  },
+  'tower_heal_text': {
+    AppLanguage.en: 'Heals {n}% of your health.',
+    AppLanguage.fr: 'Rend {n} % de votre santé.',
+  },
+  'tower_gift_stat': {
+    AppLanguage.en: '+{n} to your main stat.',
+    AppLanguage.fr: '+{n} à votre caractéristique principale.',
+  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',

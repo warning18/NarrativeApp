@@ -4,6 +4,7 @@
 // run only through lib/data/tower/ and this controller.
 import 'dart:math';
 
+import 'package:flutter/widgets.dart' show BuildContext;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -14,6 +15,7 @@ import '../../data/tower/tower_save.dart';
 import '../../gamedata/db_schema.dart';
 import '../../providers/game_config_provider.dart';
 import '../../providers/game_db_providers.dart';
+import 'tower_fight_launcher.dart';
 
 /// The tables the Tower's engine reads (races, professions, game config,
 /// dice, skills, items, enemies, spells), as the engine's rules see them
@@ -80,6 +82,7 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       professionId: professionId,
       clanId: clanId,
       startUnlocks: progress.startUnlocks,
+      unlocksOwned: progress.unlocksOwned,
       data: data,
     );
     await save.saveRun(run);
@@ -116,3 +119,23 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
 final towerProvider =
     StateNotifierProvider<TowerController, AsyncValue<TowerState>>(
         (ref) => TowerController());
+
+/// How a floor's fight ended.
+class TowerFightResult {
+  const TowerFightResult({required this.won, required this.healthLeft});
+
+  final bool won;
+
+  /// The hero's health when the fight ended.
+  final int healthLeft;
+}
+
+/// Plays the fight of [run]'s floor and says how it ended; null when it was
+/// fought (Back before the first roll).
+typedef TowerFightLauncher = Future<TowerFightResult?> Function(
+    BuildContext context, TowerRun run, TowerData data);
+
+/// The fight of a floor: [towerFightFor] plays it for real. Tests give a
+/// fake (or null: not fought).
+final towerFightLauncherProvider = Provider<TowerFightLauncher>(
+    (ref) => (context, run, data) => towerFightFor(ref, context, run, data));

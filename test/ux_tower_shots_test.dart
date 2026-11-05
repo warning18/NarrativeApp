@@ -17,6 +17,9 @@ import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/main_menu_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_providers.dart';
+import 'dart:convert';
 import 'package:narrative_data_app/screens/tower/tower_marks_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_start_screen.dart';
 import 'package:narrative_data_app/providers/palette_provider.dart';
@@ -132,6 +135,35 @@ void main() {
       await open(const TowerMarksScreen(),
           prefs: {'tower_marks_v1': '{"marks":12,"unlocked":["flame_die"]}'});
       await shot('4-marks-$tag');
+      Map<String, Object> saved(TowerRun r) =>
+          {'tower_run_v1': jsonEncode(r.toJson())};
+      Future<void> settleLong() async {
+        for (var i = 0; i < 40; i++) {
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 20)));
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      final mid =
+          run.copyWith(floor: 7, health: 31, status: TowerStatus.climbing);
+      await open(const TowerFloorScreen(), prefs: saved(mid));
+      await settleLong();
+      await shot('7-floor-$tag');
+      await open(const TowerFloorScreen(),
+          prefs: saved(mid.copyWith(floor: 10, health: 40)));
+      await settleLong();
+      await shot('8-boss-$tag');
+      // The cards of a won floor: the offer the engine draws for it.
+      await open(const TowerFloorScreen(), prefs: saved(mid));
+      await settleLong();
+      final data = await tester.runAsync(() => ProviderScope.containerOf(
+              tester.element(find.byType(TowerFloorScreen)))
+          .read(towerDataProvider.future));
+      final won = towerAfterFight(mid, data!, won: true, healthLeft: 22);
+      await open(const TowerFloorScreen(), prefs: saved(won));
+      await settleLong();
+      await shot('9-cards-$tag');
       await open(const TowerEndScreen(
           run: run,
           progress: TowerProgress(marks: 28, bestFloor: 17, runs: 5)));

@@ -66,7 +66,8 @@ void main() {
 
     await tester.tap(climb);
     await _settle(tester);
-    expect(find.byKey(const Key('tower_stub_floor')), findsOneWidget);
+    expect(find.byKey(const Key('tower_floor_label')), findsOneWidget);
+    expect(find.text('Floor 1 of 30'), findsOneWidget);
     final saved = await TowerSave.open();
     expect(saved.loadRun()?.floor, 1);
     expect(saved.loadRun()?.professionId, 'warrior');
