@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/main_menu_screen.dart';
+import 'package:narrative_data_app/screens/level_up_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
@@ -142,6 +143,21 @@ void main() {
         }
       }
 
+      // A floor that gained a level opens the Level Up first: drawn once,
+      // then closed so the cards behind it show.
+      var levelShot = false;
+      Future<void> pastLevelUp() async {
+        final screen = find.byType(LevelUpScreen);
+        if (screen.evaluate().isEmpty) return;
+        if (!levelShot) {
+          levelShot = true;
+          await tester.pump(const Duration(milliseconds: 600));
+          await shot('12-levelup-$tag');
+        }
+        Navigator.of(tester.element(screen)).pop();
+        await settleLong();
+      }
+
       final mid =
           run.copyWith(floor: 7, health: 31, status: TowerStatus.climbing);
       await open(const TowerFloorScreen(), prefs: saved(mid));
@@ -160,6 +176,7 @@ void main() {
       final won = towerAfterFight(mid, data!, won: true, healthLeft: 22);
       await open(const TowerFloorScreen(), prefs: saved(won));
       await settleLong();
+      await pastLevelUp();
       await shot('9-cards-$tag');
       // The first floor won offers a clan's oath (Core's rule).
       final first =
@@ -167,6 +184,7 @@ void main() {
       final oathOffer = towerAfterFight(first, data, won: true, healthLeft: 30);
       await open(const TowerFloorScreen(), prefs: saved(oathOffer));
       await settleLong();
+      await pastLevelUp();
       // The card in hand is the oath.
       final oathAt =
           oathOffer.offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);
@@ -180,6 +198,7 @@ void main() {
       });
       await open(const TowerFloorScreen(), prefs: saved(sworn));
       await settleLong();
+      await pastLevelUp();
       await shot('11-sworn-$tag');
       await open(const TowerEndScreen(
           run: run,
