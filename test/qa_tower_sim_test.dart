@@ -68,6 +68,7 @@ Map<String, dynamic> _json(TowerRun run) => {
       'floorsCleared': run.floorsCleared,
       'marks': run.marks,
       'refused': run.refused.length,
+      'spoils': run.spoils.values.fold<int>(0, (n, items) => n + items.length),
       'taken': {
         for (final e in run.taken.entries) '${e.key}': e.value.kind.name,
       },
