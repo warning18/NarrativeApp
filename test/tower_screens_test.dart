@@ -40,7 +40,9 @@ void main() {
   testWidgets('the start screen locks what is not bought; Climb needs a pick',
       (tester) async {
     await _open(tester, const TowerStartScreen());
-    // Open at the start: warrior, the Dominion.
+    // Open at the start: warrior; no clan to pick (the clans offer their oaths
+    // on the way up).
+    expect(find.byKey(const Key('tower_clan_dominion')), findsNothing);
     expect(find.byKey(const Key('tower_profession_warrior')), findsOneWidget);
     // The cleric is bought with marks: locked, a tap does nothing.
     await tester
@@ -55,7 +57,6 @@ void main() {
     for (final k in [
       'tower_race_human',
       'tower_profession_warrior',
-      'tower_clan_dominion',
     ]) {
       await tester.ensureVisible(find.byKey(Key(k)));
       await tester.tap(find.byKey(Key(k)));
@@ -86,7 +87,6 @@ void main() {
       seed: 1,
       raceId: 'human',
       professionId: 'warrior',
-      clanId: 'dominion',
       floor: 7,
       health: 0,
       status: TowerStatus.dead,
