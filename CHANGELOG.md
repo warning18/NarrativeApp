@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.854.0+890]
+
+### Changed
+- **Every move wears its tag** (the user's call): a way's price, check or
+  fight now shows where the way is, not only on a card:
+  - on its name on the map (the place view's plaque, the street's pin:
+    scene 125's "Get up and go home" says 15, 35 or 70 gold);
+  - on its row under the town chart (a place with one way wears that
+    way's tag: "The loading crane · Strength DC 13");
+  - on the panel of the way picked.
+  The chip is the cards' own (`ChoiceTagChip`, choice_card.dart).
+- **A move that pays, checks or fights is a mark, not a card**: a way that
+  walks or travels somewhere stays on the map with its tag, even when it
+  has a price, a roll or a fight on the way (the Sleeper's Face: "Slip past
+  them in the dark", "Take back what they stole"; the Stone Bridge's
+  "Refuse and fight"; the wharf's "Fend off a plague hound"). What is done
+  where the party stands stays a card, and so does a decision that weighs
+  on the conscience (choice_shape's `decide`).
+- Tests: `qa_journey_move_tags_test.dart` (125's price on its pin and its
+  row), `qa_journey_move_pins_test.dart` (1140's moves are pins, a fight
+  tag on them); journey_choice_cards_test and journey_stay_flow_test
+  follow the new rule. Before and after pictures in
+  `docs/ux-shots/journey-moves/` (`test/ux_journey_moves_shot_test.dart`).
+
 ## [1.853.0+889]
 
 - **The town chart** (the district view of a town or village): a district is framed with room for what hangs over it (the banners above their buildings, the names under them), so a way's banner is never cut by the frame (White Wells' "pool at night"); and the building names are placed one after another in the first clear spot (under, right, left, a row lower), clear of each other, of the banners, of the service pins and of the edge, long names on two lines. A name with no clear spot is left off (the list under the chart names every way); the way picked always keeps its name. Rimewell, Greyhithe, Wrack's End, Highhearth, Emberwick and Akagiri no longer pile their names on each other.

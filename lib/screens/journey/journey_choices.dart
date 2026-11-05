@@ -1,5 +1,30 @@
 part of '../journey_screen.dart';
 
+/// The tag a way carries, on its card, its pin's name, its row and its
+/// panel (v1.854, the user's call): a price, an alignment shift, a check or
+/// the kind of fight, whichever the choice has first (Core's choiceTags).
+ChoiceTag? _stepTag(WidgetRef ref, _Step step, InkColors ink) {
+  final c = step.choice;
+  final tags = step.tags;
+  String signed(int v) => v > 0 ? '+$v' : '−${v.abs()}';
+  if (tags.cost > 0) {
+    return ChoiceTag('${tags.cost} ${tr(ref, 'gold_label')}', ink.gold);
+  }
+  if (tags.alignment != 0) {
+    return ChoiceTag('${tr(ref, 'alignment_label')} ${signed(tags.alignment)}',
+        ink.voidColor);
+  }
+  if (c.hasAbilityCheck) {
+    return ChoiceTag(
+        '${tr(ref, '${c.checkAbility}_label')} DC ${c.checkDC ?? 10}',
+        ink.tide);
+  }
+  if (step.shape.action == ChoiceAction.fight) {
+    return ChoiceTag(tr(ref, 'journey_kind_fight'), ink.blood);
+  }
+  return null;
+}
+
 /// The panel under the map: its height, the choice cards, the rings and the
 /// list sheets, and who the scene faces. Cut out of journey_screen.dart with
 /// no change (setState is called as _update).
@@ -14,30 +39,8 @@ extension _JourneyChoices on _JourneyViewState {
     return math.max(plain, math.min(plain + room, 66.0 * 3 + 8));
   }
 
-  /// The tag a card carries: a price, an alignment shift, a check or the
-  /// kind of fight, whichever the choice has first (Core's choiceTags).
-  ChoiceTag? _cardTag(_Step step, InkColors ink) {
-    final c = step.choice;
-    final tags = step.tags;
-    String signed(int v) => v > 0 ? '+$v' : '−${v.abs()}';
-    if (tags.cost > 0) {
-      return ChoiceTag('${tags.cost} ${tr(ref, 'gold_label')}', ink.gold);
-    }
-    if (tags.alignment != 0) {
-      return ChoiceTag(
-          '${tr(ref, 'alignment_label')} ${signed(tags.alignment)}',
-          ink.voidColor);
-    }
-    if (c.hasAbilityCheck) {
-      return ChoiceTag(
-          '${tr(ref, '${c.checkAbility}_label')} DC ${c.checkDC ?? 10}',
-          ink.tide);
-    }
-    if (step.shape.action == ChoiceAction.fight) {
-      return ChoiceTag(tr(ref, 'journey_kind_fight'), ink.blood);
-    }
-    return null;
-  }
+  /// The tag a card carries (see [_stepTag]).
+  ChoiceTag? _cardTag(_Step step, InkColors ink) => _stepTag(ref, step, ink);
 
   /// The icon of a choice done here: its glyph (a fight, a roll, a shop), or
   /// for a plain decision or word, the action's own (the road's signpost

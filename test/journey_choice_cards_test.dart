@@ -97,32 +97,29 @@ void main() {
     await tester.tap(find.text('Journey'));
     await settleApp(tester);
 
-    // The Stone Bridge: a toll to pay or a fight, both done on the bridge.
-    // They are not on the map (no way on, so no mark either): a button under
-    // the map opens the scene view, where they are cards.
+    // The Stone Bridge: a toll paid on the bridge, or a fight that walks on
+    // to the family house. The toll is done here: a button under the map
+    // opens the scene view, where it is a card. The fight is a move: a mark
+    // on the map, its tag on its name (v1.854, the user's call).
     play.jumpTo('260');
     await settleApp(tester);
     await tester.pump(const Duration(seconds: 6));
-    expect(_count('journey_step_'), 0, reason: 'no way on: no mark');
+    expect(_count('journey_step_'), 1, reason: 'the fight walks on: a mark');
+    expect(find.byKey(const ValueKey('journey_pin_tag_0')), findsOneWidget,
+        reason: 'the fight says so on its name');
     expect(_count('journey_choice_card_'), 0,
         reason: 'the choices done here are not on the map');
     expect(find.byKey(const ValueKey('journey_open_choices')), findsOneWidget);
     await _shot(tester, 'choice-cards-bridge-map');
     await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
     await tester.pump(const Duration(milliseconds: 500));
-    expect(_count('journey_choice_card_'), 2);
+    expect(_count('journey_choice_card_'), 1);
     final toll = find.byKey(const ValueKey('journey_choice_card_0'));
     expect(find.descendant(of: toll, matching: find.textContaining('Pay the')),
         findsOneWidget);
     // The price comes from the next scene, and the card says it.
     expect(find.descendant(of: toll, matching: find.textContaining('30')),
         findsWidgets);
-    final fight = find.byKey(const ValueKey('journey_choice_card_1'));
-    expect(find.descendant(of: fight, matching: find.text('The family house')),
-        findsOneWidget,
-        reason: 'the fight walks on to the family house afterwards');
-    expect(find.descendant(of: fight, matching: find.text('Fight')),
-        findsOneWidget);
     expect(find.byKey(const ValueKey('journey_go')), findsNothing);
     await _shot(tester, 'choice-cards-bridge');
 
@@ -139,7 +136,7 @@ void main() {
         .setLanguage(AppLanguage.fr));
     tester.view.physicalSize = const Size(320, 640);
     await settleApp(tester);
-    expect(find.byKey(const ValueKey('journey_choice_card_1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_choice_card_0')), findsOneWidget);
     expect(tester.takeException(), isNull);
     await _shot(tester, 'choice-cards-bridge-fr-320');
     await tester.runAsync(() => container
@@ -176,10 +173,13 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('journey_open_choices')));
     await tester.pump(const Duration(milliseconds: 500));
     expect(_count('journey_choice_card_'), 0, reason: 'a hub shows chips');
-    for (final id in ['fight', 'talkDecide', 'checksPay']) {
+    for (final id in ['talkDecide', 'checksPay']) {
       expect(find.byKey(ValueKey('choice_chip_$id')), findsOneWidget,
           reason: id);
     }
+    // The wharf's one fight ("Fend off a plague hound") walks on to where
+    // the hound is: a banner on the map, not a chip here (v1.854).
+    expect(find.byKey(const ValueKey('choice_chip_fight')), findsNothing);
     expect(find.byKey(const ValueKey('choice_chip_ways')), findsNothing);
     await _shot(tester, 'choice-hub-scene');
 
@@ -192,7 +192,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));
     await sheet();
     expect(find.byKey(const ValueKey('choice_sheet_close')), findsNothing);
-    await tester.tap(find.byKey(const ValueKey('choice_chip_fight')));
+    await tester.tap(find.byKey(const ValueKey('choice_chip_checksPay')));
     await sheet();
     expect(_count('journey_choice_card_'), greaterThan(0));
     await tester.tap(find.byKey(const ValueKey('choice_sheet_close')));

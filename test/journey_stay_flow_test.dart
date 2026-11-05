@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/choice_flow.dart';
-import 'package:narrative_data_app/data/choice_shape.dart' show choiceShape;
+import 'package:narrative_data_app/data/choice_shape.dart';
 import 'package:narrative_data_app/providers/geography_provider.dart'
     show geographyProvider;
 import 'package:narrative_data_app/providers/home_tab_provider.dart'
@@ -132,8 +132,14 @@ void main() {
       for (final c in hub.choices)
         if (!choiceHiddenFor(c, session, gate)) c,
     ];
+    // A move that pays, checks or fights is a banner too (v1.854): only a
+    // way acted out where the party stands, or a decision, is a card.
+    bool card(ChoiceShape s) =>
+        s.here &&
+        (s.action == ChoiceAction.decide ||
+            (s.move != ChoiceMove.walk && s.move != ChoiceMove.travel));
     final acted = visible
-        .where((c) => choiceShape(hub, c, story: story, geography: world).here)
+        .where((c) => card(choiceShape(hub, c, story: story, geography: world)))
         .length;
     final button = find.byKey(const ValueKey('journey_open_choices'));
     expect(button, findsOneWidget);

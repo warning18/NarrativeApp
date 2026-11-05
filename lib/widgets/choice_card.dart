@@ -145,7 +145,7 @@ class ChoiceCard extends StatelessWidget {
                 ),
               ] else if (tag != null) ...[
                 const SizedBox(width: 8),
-                _TagChip(tag: tag!, locked: locked),
+                ChoiceTagChip(tag: tag!, locked: locked),
               ],
             ],
           ),
@@ -155,8 +155,9 @@ class ChoiceCard extends StatelessWidget {
   }
 }
 
-class _TagChip extends StatelessWidget {
-  const _TagChip({required this.tag, required this.locked});
+/// A card's tag as a chip; the Journey's pins and rows wear it too (v1.854).
+class ChoiceTagChip extends StatelessWidget {
+  const ChoiceTagChip({super.key, required this.tag, this.locked = false});
 
   final ChoiceTag tag;
   final bool locked;

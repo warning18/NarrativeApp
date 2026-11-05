@@ -228,6 +228,10 @@ class _Step {
   /// decision) has no place of its own to point at.
   bool onCard = false;
 
+  /// What the way's card, pin name, row and panel carry beside its words: a
+  /// price, a check, a fight (see _stepTag; v1.854).
+  ChoiceTag? tag;
+
   /// The district (or room spot) of the party's own place that taking this
   /// step brings it to, when it stays inside the place (v1.246).
   String? district;
@@ -1700,10 +1704,18 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     // FlowStay), has it as a card: the story goes on with no map.
     final single =
         choices.length == 1 && stops?.flowOf(node, choices.single) is FlowStay;
+    // A move that pays, checks or fights on its way is still a move: a pin
+    // with its tag, not a card (v1.854, the user's call: every move is on
+    // the map). A decision that weighs on the conscience (choice_shape's
+    // `decide`) stays a card: it is made here, its aftermath goes on.
+    bool moves(int i) =>
+        (shapes[i].move == ChoiceMove.walk ||
+            shapes[i].move == ChoiceMove.travel) &&
+        shapes[i].action != ChoiceAction.decide;
     final onCard = [
       for (var i = 0; i < shapes.length; i++)
         _writtenDetour ||
-            placed && ((room == null && shapes[i].here) || single),
+            placed && ((room == null && shapes[i].here && !moves(i)) || single),
     ];
     final pinSlots = journeySlots(onCard.where((c) => !c).length);
     var pinCount = 0;
@@ -1711,6 +1723,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       steps[i].shape = shapes[i];
       steps[i].tags = choiceTags(node, steps[i].choice,
           story: story, geography: world, shape: shapes[i]);
+      steps[i].tag = _stepTag(ref, steps[i], InkColors.of(context));
       steps[i].onCard = onCard[i];
       if (!onCard[i] && onCard.contains(true)) {
         steps[i].slot = pinSlots[pinCount++];
@@ -4431,8 +4444,13 @@ class _JourneyChartState extends State<_JourneyChart>
         ? Size.zero
         : measure(
             widget.leadsTo.replaceAll('{place}', step.leadsTo!), noteStyle, 1);
-    return Size(
-        math.max(words.width, to.width) + 6, words.height + to.height + 2);
+    // The way's tag (a price, a check, a fight) under its words (v1.854).
+    final tag = step.tag;
+    final tagged = tag == null
+        ? Size.zero
+        : Size(measure(tag.label, noteStyle, 1).width + 16, 20);
+    return Size(math.max(math.max(words.width, to.width), tagged.width) + 6,
+        words.height + to.height + tagged.height + 2);
   }
 
   /// Step [i]'s name on its plaque, in [spot] (see journeyLabelSpots). It
@@ -4486,6 +4504,14 @@ class _JourneyChartState extends State<_JourneyChart>
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: noteStyle,
+                          ),
+                        if (step.tag case final tag?)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: ChoiceTagChip(
+                                key: ValueKey('journey_pin_tag_$i'),
+                                tag: tag,
+                                locked: step.locked),
                           ),
                       ],
                     ),
@@ -5065,6 +5091,14 @@ class _StepDetail extends ConsumerWidget {
                         height: 1.3,
                       ),
                     ),
+                    if (step.tag case final tag?)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3, bottom: 1),
+                        child: ChoiceTagChip(
+                            key: const ValueKey('journey_detail_tag'),
+                            tag: tag,
+                            locked: step.locked),
+                      ),
                     if (roster != null && !step.locked)
                       Text(
                         tr(ref, 'choice_fight_roster')
@@ -5617,6 +5651,13 @@ class _CityDistrictView extends ConsumerWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                         color: s.locked ? ink.ash : null, height: 1.2)),
               ),
+              if (s.tag case final tag?) ...[
+                const SizedBox(width: 8),
+                ChoiceTagChip(
+                    key: ValueKey('journey_row_tag_$i'),
+                    tag: tag,
+                    locked: s.locked),
+              ],
               if (target.isNotEmpty) ...[
                 const SizedBox(width: 8),
                 Flexible(
@@ -5690,6 +5731,14 @@ class _CityDistrictView extends ConsumerWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(
                           color: allShut ? ink.ash : null, height: 1.2)),
                 ),
+                // A place with one way wears that way's tag (v1.854).
+                if (g.members.length == 1 && steps[g.lead].tag != null) ...[
+                  const SizedBox(width: 8),
+                  ChoiceTagChip(
+                      key: ValueKey('journey_row_tag_${g.lead}'),
+                      tag: steps[g.lead].tag!,
+                      locked: allShut),
+                ],
               ]),
             ),
           ));
@@ -5809,6 +5858,12 @@ class _CityDistrictView extends ConsumerWidget {
                               index: i,
                               label: steps[i].label,
                               locked: steps[i].locked,
+                              tag: steps[i].tag == null
+                                  ? null
+                                  : ChoiceTagChip(
+                                      key: ValueKey('journey_pin_tag_$i'),
+                                      tag: steps[i].tag!,
+                                      locked: steps[i].locked),
                               child: streetPinOf(i),
                             ),
                         ],
