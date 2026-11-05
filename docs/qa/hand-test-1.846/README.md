@@ -61,3 +61,7 @@ What the Journey shows for each scene where a choice takes the hero to another p
 - **Second visits (1.819)**: the pictures show the scene's text on a second visit; whether that text is the scene's "revisit" text is not told by the picture. Scene 7515 is `7515_rest`.
 - **A layout finding from the Edit Mode editor** (`1820-errand-loyal_kelda-editor-*`): at 412 px the scene editor's "Destination node" dropdown (`story_node_editor_screen.dart:733`) overflows by 22 px on the right (the yellow and black stripes in `editor-scroll1`). It is an Edit Mode tool.
 - Chapter notices: a chapter's first scene opens under its "burning" notice; the pictures wait ten seconds, but a camp scene may still show it faintly (`movement-3001_camp`, `movement-7400`).
+
+## Priority: marks at scenes 125, 2005 and 2015 (`priority-*.png`)
+
+Opened as the Journey opens a scene (new human warrior, English, stored city plans, `jumpTo(id)`, ink done, cards closed), with the "District" level tapped (the Journey keeps the level it was left on). `journey_step_N` keys found: **0** at 125, 2005 and 2015. Those keys exist only in rooms, ground and land views. On the city chart the ways are `CityChartView` banners/pins (2005: 2, 2015: 25) and "Places here" rows; scene 125 (flags `casino_rescue` + `saved_woman`, or + `saved_boy`) shows one banner whose label is cut ("Set up and…"), so the price is not visible in the frame.
