@@ -134,6 +134,30 @@ The pool has this many enemies per band:
 **No repeats.** A foe met on one of the last 3 floors is drawn again only
 if the pool has nothing else.
 
+### As built (phase 1, v1.845): the bot's numbers
+
+The table above was the starting point. Played by the bot (`tower_bot.dart`,
+the headless fight), it was far too hard: the median run died on floor 2.
+The Tower's hero climbs alone, with no companion, no shop and no rest.
+Phase 1 changes four of the Tower's own numbers. The main game's are
+untouched.
+
+| Number | Planned | As built |
+|---|---|---|
+| Extra on ordinary floors | ×1.00 to ×1.15 | ×0.30 (1–9), ×0.35–0.37 (11–19), ×0.39–0.40 (21–29) |
+| Extra on wardens and bosses | ×1.00 to ×1.15 | ×0.18 (5, 10), ×0.22 (15, 20), ×0.23 (25), ×0.24 (30) |
+| Hero level after the floor | 1 to 15 | 2 to 18, the story's pace by chapter |
+| Between floors | its level's health only | +30% of max health, and 1 potion carried into each fight |
+
+The bot over 500 seeds:
+
+| | Median floor | Floor 20 reached | Top reached |
+|---|---|---|---|
+| No unlocks | 16 | 30% | 9.6% |
+| Every unlock | 17 | 37% | 18.8% |
+
+These are inside the targets of §11. QA's phase 2 confirms them.
+
 ## 4. Bosses on 10, 20 and 30
 
 The bosses are the existing boss records, each with its phases. They run on
