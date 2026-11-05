@@ -83,13 +83,10 @@ void main() {
         findsOneWidget);
     // Pins show in the district: tap the first way's pin.
     final way = chart.waysIn('wharf').first;
-    final b = chart.buildingOf(way)!;
-    final zoom = 390 / wharf.box.width < 760 / wharf.box.height
-        ? 390 / wharf.box.width
-        : 760 / wharf.box.height;
-    final pin = const Offset(390 / 2, 760 * 0.42) +
-        (b.at - wharf.box.center) * zoom +
-        const Offset(0, -16);
+    // The pin is where the view draws it (the district is framed with room
+    // for its banners, v1.853).
+    final pin = (tester.state(find.byType(CityChartView)) as dynamic)
+        .debugPinCentre(way.id) as Offset;
     await tester.tapAt(topLeft + pin);
     await tester.pump();
     expect(find.byKey(const Key('city_chart_way_card')), findsOneWidget);
