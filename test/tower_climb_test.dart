@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
 import 'support/pump.dart';
@@ -29,7 +31,7 @@ TowerData? _data;
 
 Future<ProviderContainer> _open(
   WidgetTester tester, {
-  required TowerFightLauncher fight,
+  TowerFightLauncher? fight,
   Map<String, Object> prefs = const {},
 }) async {
   SharedPreferences.resetStatic();
@@ -44,7 +46,7 @@ Future<ProviderContainer> _open(
     }
   }
   final container = ProviderContainer(overrides: [
-    towerFightLauncherProvider.overrideWithValue(fight),
+    if (fight != null) towerFightLauncherProvider.overrideWithValue(fight),
     towerDataProvider.overrideWith((ref) async => _data!),
   ]);
   addTearDown(container.dispose);
@@ -134,5 +136,33 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(
         find.text('The fight is not wired in this build yet.'), findsOneWidget);
+  });
+
+  testWidgets('the real fight runs on the Tower hero, apart from the story',
+      (tester) async {
+    await _open(tester, prefs: saved(_fresh));
+    await tester.tap(find.byKey(const Key('tower_fight')));
+    for (var i = 0;
+        i < 20 && find.byType(FightScreen).evaluate().isEmpty;
+        i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.byType(FightScreen), findsOneWidget);
+    // Under the fight, the session is the run's hero's, not the story's.
+    final inFight =
+        ProviderScope.containerOf(tester.element(find.byType(FightScreen)));
+    final hero = inFight.read(playerSessionProvider);
+    expect(hero.professionId, 'warrior');
+    expect(hero.currentHealth, 20);
+    final story = ProviderScope.containerOf(
+        tester.element(find.byType(TowerFloorScreen, skipOffstage: false)));
+    expect(identical(inFight, story), isFalse);
+    expect(story.read(playerSessionProvider).professionId, isNot('warrior'));
+    // A win comes back to the floor's cards.
+    Navigator.of(tester.element(find.byType(FightScreen))).pop(true);
+    await _settle(tester);
+    expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
   });
 }

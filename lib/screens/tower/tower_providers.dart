@@ -15,6 +15,7 @@ import '../../data/tower/tower_save.dart';
 import '../../gamedata/db_schema.dart';
 import '../../providers/game_config_provider.dart';
 import '../../providers/game_db_providers.dart';
+import 'tower_fight_launcher.dart';
 
 /// The tables the Tower's engine reads (races, professions, game config,
 /// dice, skills, items, enemies, spells), as the engine's rules see them
@@ -81,6 +82,7 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       professionId: professionId,
       clanId: clanId,
       startUnlocks: progress.startUnlocks,
+      unlocksOwned: progress.unlocksOwned,
       data: data,
     );
     await save.saveRun(run);
@@ -120,9 +122,17 @@ final towerProvider =
 
 /// How a floor's fight ended.
 class TowerFightResult {
-  const TowerFightResult({required this.won, required this.healthLeft});
+  const TowerFightResult({
+    required this.won,
+    required this.healthLeft,
+    this.retreated = false,
+  });
 
   final bool won;
+
+  /// The party got away: the floor stays to be fought, with the health the
+  /// fight left.
+  final bool retreated;
 
   /// The hero's health when the fight ended.
   final int healthLeft;
@@ -133,8 +143,7 @@ class TowerFightResult {
 typedef TowerFightLauncher = Future<TowerFightResult?> Function(
     BuildContext context, TowerRun run, TowerData data);
 
-/// The fight of a floor. The default plays nothing (null): the fight needs
-/// the Tower's own player session (the hero of the run under a provider
-/// override that never writes the story save). Tests give a fake.
-final towerFightLauncherProvider =
-    Provider<TowerFightLauncher>((ref) => (context, run, data) async => null);
+/// The fight of a floor: [towerFightFor] plays it for real. Tests give a
+/// fake (or null: nothing played).
+final towerFightLauncherProvider = Provider<TowerFightLauncher>(
+    (ref) => (context, run, data) => towerFightFor(ref, context, run, data));

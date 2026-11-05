@@ -50,6 +50,13 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
             SnackBar(content: Text(tr(ref, 'tower_fight_unready'))));
         return;
       }
+      if (result.retreated) {
+        // Got away: the floor stays, with the health the fight left.
+        await ref
+            .read(towerProvider.notifier)
+            .setRun(run.copyWith(health: result.healthLeft.clamp(1, 1 << 20)));
+        return;
+      }
       final next = towerAfterFight(run, data,
           won: result.won, healthLeft: result.healthLeft);
       if (next.isOver) {
