@@ -28,6 +28,16 @@ isn't reconstructable from git history alone.
   (was .02); the ranger's foes at .88, the rogue's at 1.04. QA's floor-20
   bound to 20%.
 
+## [1.859.0+895]
+
+### Fixed
+- **A cleric's Mending Light now feeds the Watchfire** (the user's bug: "the
+  watchfire countdown doesn't accumulate"). A spell's heal past full feeds
+  the fire as a die's heal does, in the story's fights, the Tower's and the
+  playthrough simulator. Only what heals past full feeds it, so a Mending
+  Light on a wounded member still leaves the fire as it was.
+- `test/qa_mending_light_watchfire_test.dart`.
+
 ## [1.858.0+894]
 
 ### Changed

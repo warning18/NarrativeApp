@@ -9,6 +9,7 @@ part of '../sim_combat.dart';
 /// block against a heavy combined swing, a hex on an enemy that will live
 /// long enough to feel it. Returns the block granted this round. [signs]
 /// lower the costs, lift what spells deal and heal, and add their status.
+/// [onSpellHeal] hears a heal before it lands (the Watchfire's feed).
 int _castSpellIfWorth(
   SimCharacter c,
   List<_SimEnemy> ens,
@@ -21,6 +22,7 @@ int _castSpellIfWorth(
   bool react = true,
   int round = 0,
   int Function(int)? healed,
+  void Function(int healing)? onSpellHeal,
   int Function(int raw, String element)? partyBlow,
   bool ashWell = false,
   double fullWellMultiplier = 1,
@@ -70,6 +72,7 @@ int _castSpellIfWorth(
       ..sort((a, b) => amountOf(b).compareTo(amountOf(a)));
     if (heals.isNotEmpty) {
       final amount = amountOf(heals.first);
+      onSpellHeal?.call(healed?.call(amount) ?? amount);
       c.currentHealth = min(
         c.maxHealth,
         c.currentHealth + (healed?.call(amount) ?? amount),
