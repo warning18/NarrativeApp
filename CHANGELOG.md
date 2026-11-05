@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.837.0+873]
+
+- Skill icons, the second-chance skills on the grey diamond: Cleric Revive
+  Prayer (a halo over a cross), Human Resolve (a fist), Second Chance (a heart)
+  and Second Wind (a breath) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/resolve.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/resolve-before-after.png`.
+
 ## [1.836.0+872]
 
 - Skill icons, the void school on the violet diamond: Mage Teleport Strike (a
