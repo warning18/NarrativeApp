@@ -312,20 +312,18 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           onPressed: () =>
                               _enterGame(context, ref, AppMode.edit),
                         ),
-                        // The Tower (v1.847): shown in Edit mode while its
-                        // climb is being built, below the others so they
-                        // keep their places; open to everyone with it.
-                        if (ref.watch(appModeProvider) == AppMode.edit)
-                          item(
-                            key: const Key('menu_tower'),
-                            icon: Icons.fort_outlined,
-                            label: tr(ref, 'tower_menu'),
-                            detail: tr(ref, 'tower_menu_sub'),
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (_) => const TowerStartScreen()),
-                            ),
+                        // The Tower (v1.850): open to everyone, below the other
+                        // buttons so the story's keep their places.
+                        item(
+                          key: const Key('menu_tower'),
+                          icon: Icons.fort_outlined,
+                          label: tr(ref, 'tower_menu'),
+                          detail: tr(ref, 'tower_menu_sub'),
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => const TowerStartScreen()),
                           ),
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'v${AppInfo.version}',

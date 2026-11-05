@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.850.0+886]
+
+- **The Tower's climb** (phase 3b): the floor screen with B's vertical ladder beside A's panels (the band, the floor's title, the foes with their affixes, a red band and the boss's line on the warden and boss floors, the health), Fight over Core's Tower fight session (no retreat; Back before the first roll leaves the floor as it was), the cards of a won floor (take one, or leave them all for a mark), the end of a run on a loss or at floor 30, and Continue the climb from the save. The Tower entry is on the main menu for everyone, below Edit Mode. English and French from Narrative's names note (the 30 floor titles, the three boss lines).
+
+## [1.849.0+885]
+
+### Added
+- **The Tower's fight, apart from the story** (for UX-2's floor screen):
+  - `TowerFightSession(run, data)` (`lib/providers/tower_fight_session.dart`)
+    wraps the FightScreen in a ProviderScope whose hero is the Tower's
+    (`towerSessionOf`, `lib/data/tower/tower_session.dart`). The hero
+    carries the run's race, profession, level, health, dice, skills,
+    spells, gear and potions, and its clan at Friend.
+  - Whatever the fight does to the hero stays in that session: a new
+    `PlayerSessionNotifier.detached` never reads or writes the story save.
+  - `fight.after(run, won:)` takes the fight's result and the health it
+    left through `towerAfterFight`.
+- **No retreat in the Tower**: a floor's fight, once begun, is won or lost
+  (`_canRetreat` is false under `EncounterModifiers.tower`). Back before
+  the first roll still leaves, and FightScreen pops null: the floor was
+  not fought.
+- `test/tower_fight_session_test.dart` opens a fight under it with a story
+  save in place, and checks that the save is untouched.
+
 ## [1.848.0+884]
 
 ### Changed
