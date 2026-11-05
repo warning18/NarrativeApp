@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.860.0+896]
+
+### Changed
+- **The Tower pays the main game's way** (the user's call, step 2 of "the
+  main game's earning offers"):
+  - every floor won drops the story's spoils chest (its gear and potions,
+    never its gold); the gear is worn when better, the potions go in a bag
+    carried from floor to floor on top of the flask;
+  - floors 5, 10, 15, 20 and 25 offer a boon: a skill, a die or a spell,
+    one to take;
+  - a clan's oath still comes after the spoils (always on the first floor
+    won, then on 35% of the other floors); many floors offer nothing;
+  - no more heal, item or clan-gift cards.
+  - `towerSpoilsFor`, `TowerRun.spoils` / `potions` / `antidotes`,
+    `towerBoonFloors`; `TowerFightSession` reports the potions left.
+- Balance (1,500 seeds): no unlocks, median 17, top 10.2%; every unlock,
+  median 18, top 15.7%. An unlock is `towerHealthPerUnlock` .04 more health
+  (was .02); the ranger's foes at .88, the rogue's at 1.04. QA's floor-20
+  bound to 20%.
+
 ## [1.858.0+894]
 
 ### Changed
