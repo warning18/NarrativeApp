@@ -21,6 +21,10 @@ isn't reconstructable from git history alone.
     `PlayerSessionNotifier.detached` never reads or writes the story save.
   - `fight.after(run, won:)` takes the fight's result and the health it
     left through `towerAfterFight`.
+- **No retreat in the Tower**: a floor's fight, once begun, is won or lost
+  (`_canRetreat` is false under `EncounterModifiers.tower`). Back before
+  the first roll still leaves, and FightScreen pops null: the floor was
+  not fought.
 - `test/tower_fight_session_test.dart` opens a fight under it with a story
   save in place, and checks that the save is untouched.
 

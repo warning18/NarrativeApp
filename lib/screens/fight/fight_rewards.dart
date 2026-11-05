@@ -595,8 +595,10 @@ extension _FightRewards on _FightScreenState {
 
   /// Whether the party may still get away: the fight has begun and isn't
   /// over, and no boss stands in it -- a boss (a story duel, a zone's
-  /// master) has to be faced.
+  /// master) has to be faced. A Tower floor is won or lost: no one walks
+  /// out of it mid-fight (leaving the run is the floor screen's).
   bool get _canRetreat =>
+      !widget.modifiers.tower &&
       _started &&
       !_over &&
       !_enemies.any((e) =>

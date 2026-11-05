@@ -98,6 +98,12 @@ void main() {
     expect(inner.read(playerSessionProvider).maxHealth, fight.start.maxHealth);
     expect(inner.read(playerSessionProvider).raceId, 'human');
 
+    // A Tower floor has no retreat: once the fight starts it is won or lost.
+    await tester.ensureVisible(find.byIcon(Icons.sports_martial_arts));
+    await tester.tap(find.byIcon(Icons.sports_martial_arts));
+    await settleApp(tester);
+    expect(find.byIcon(Icons.directions_run), findsNothing);
+
     // What the fight does to the hero stays in the Tower's session.
     await tester.runAsync(() async {
       final notifier = inner.read(playerSessionProvider.notifier);
@@ -118,7 +124,8 @@ void main() {
     expect(after.status, TowerStatus.choosing);
     expect(after.health, greaterThanOrEqualTo(7));
     expect(fight.after(r, won: false).status, TowerStatus.dead);
-    await navigator.maybePop();
-    await settleApp(tester);
+    // The fight has begun, so the page holds: take the tree down instead.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
   });
 }
