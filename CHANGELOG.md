@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.861.0+897]
+
+### Changed
+- **The Tower shows its spoils** (step 3 of "the main game's earning
+  offers"): after the Level Up, every floor won opens the main game's spoils
+  sheet (`LootSheet`, no gold) beside the ladder: the potions and antidotes
+  the bag gains, each item with what becomes of it. Take goes on to the boon
+  (floors 5, 10, 15, 20, 25) or the oath, and straight to the next floor when
+  no card is on offer. An empty chest says so.
+- `LootSheet.showHandle` (default true: the story's sheet is unchanged).
+- `test/tower_climb_test.dart` takes the sheet first; the picture test draws
+  it (`docs/ux-shots/tower/spoils/`).
+
 ## [1.860.0+896]
 
 ### Changed

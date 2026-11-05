@@ -1717,6 +1717,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Choose one reward',
     AppLanguage.fr: 'Choisissez une récompense',
   },
+  'tower_spoils_title': {
+    AppLanguage.en: 'Floor {n} spoils',
+    AppLanguage.fr: 'Butin de l\'étage {n}',
+  },
+  'tower_spoils_worn': {
+    AppLanguage.en: 'Worn at once if it beats what you wear.',
+    AppLanguage.fr: 'Porté aussitôt s\'il vaut mieux que votre tenue.',
+  },
+  'tower_spoils_bag': {
+    AppLanguage.en: 'Into the bag, for the next fights.',
+    AppLanguage.fr: 'Dans le sac, pour les prochains combats.',
+  },
+  'tower_spoils_none': {
+    AppLanguage.en: 'The floor gave nothing this time.',
+    AppLanguage.fr: 'L\'étage n\'a rien donné cette fois.',
+  },
   'tower_take': {
     AppLanguage.en: 'Take',
     AppLanguage.fr: 'Prendre',
