@@ -35,7 +35,9 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
     wisdom: hero.wisdom,
     perception: hero.perception,
     potionCount: hero.potions,
-    statPoints: 0,
+    // The level-up's picks waiting (v1.857): the main game's Level Up screen
+    // reads them, the Tower's own pick on the table (tower_level_up_session).
+    statPoints: towerPendingPicks(run),
     maxSkillSlots: 3,
     flags: const [],
     activeQuestIds: const [],
@@ -54,6 +56,8 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
   ).copyWith(
     mana: hero.mana,
     knownSpellIds: [for (final s in hero.knownSpells) s.id],
+    trainingTaken: {...hero.trainingTaken},
+    statPickOffer: towerStatPickOffer(run, data),
     // Each clan sworn at Friend; the first (the main one) a point above, so
     // it is the patron and its die the one that resonates (one main clan,
     // the story's rule: the others' dice roll plain).
