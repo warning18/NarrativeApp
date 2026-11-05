@@ -4,7 +4,9 @@
 // it saves the real screens of three scenes as pictures, named with
 // UX_SHOT_TAG (before, after):
 //   UX_SHOTS=docs/ux-shots/journey-moves UX_SHOT_TAG=after \
-//     flutter test test/ux_journey_moves_shot_test.dart
+//     flutter test test/ux_journey_moves_shot_test.dart --plain-name 'scene 2015'
+// One scene per run: run in one file, a scene left by the one before it
+// draws the next one's map without its marks.
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -51,7 +53,10 @@ void main() {
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
       SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-      usePhone(tester, const Size(412, 915));
+      usePhone(
+          tester,
+          Size(double.parse(Platform.environment['SHOT_W'] ?? '412'),
+              double.parse(Platform.environment['SHOT_H'] ?? '915')));
       await tester.pumpWidget(ProviderScope(
         overrides: [
           if (Platform.environment['NO_PLANS'] != null)
