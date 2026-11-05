@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.861.0+897]
+
+### Changed
+- **The Tower shows its spoils** (step 3 of "the main game's earning
+  offers"): after the Level Up, every floor won opens the main game's spoils
+  sheet (`LootSheet`, no gold) beside the ladder: the potions and antidotes
+  the bag gains, each item with what becomes of it. Take goes on to the boon
+  (floors 5, 10, 15, 20, 25) or the oath, and straight to the next floor when
+  no card is on offer. An empty chest says so.
+- `LootSheet.showHandle` (default true: the story's sheet is unchanged).
+- `test/tower_climb_test.dart` takes the sheet first; the picture test draws
+  it (`docs/ux-shots/tower/spoils/`).
+
 ## [1.860.0+896]
 
 ### Changed
@@ -27,6 +40,16 @@ isn't reconstructable from git history alone.
   median 18, top 15.7%. An unlock is `towerHealthPerUnlock` .04 more health
   (was .02); the ranger's foes at .88, the rogue's at 1.04. QA's floor-20
   bound to 20%.
+
+## [1.859.0+895]
+
+### Fixed
+- **A cleric's Mending Light now feeds the Watchfire** (the user's bug: "the
+  watchfire countdown doesn't accumulate"). A spell's heal past full feeds
+  the fire as a die's heal does, in the story's fights, the Tower's and the
+  playthrough simulator. Only what heals past full feeds it, so a Mending
+  Light on a wounded member still leaves the fire as it was.
+- `test/qa_mending_light_watchfire_test.dart`.
 
 ## [1.858.0+894]
 

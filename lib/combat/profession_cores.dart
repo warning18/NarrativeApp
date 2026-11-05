@@ -6,7 +6,8 @@
 //   to them, adds 1 Fury; at [furyMax] the next damaging face is a heavy
 //   blow worth [furyHeavyMultiplier], and spends it all.
 // - Cleric, the Watchfire: every heal from the die also burns the enemy
-//   for its amount; healing past full feeds a fire (up to
+//   for its amount; healing past full, from the die or a spell (v1.859),
+//   feeds a fire (up to
 //   [watchfireCapShare] of max health) that takes blows first, and what is
 //   left of it at the round's end burns the enemy for
 //   [_watchfireBurnMultiplier] times. Healing fatigue (fight_length.dart) is
