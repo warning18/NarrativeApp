@@ -68,10 +68,12 @@ void main() {
 
     test('a floor fights with the Tower\'s context: no scene, no chest', () {
       final floor = towerFloorsFor(3, data.enemies)[11];
-      final m = floor.modifiers;
+      final m = floor.modifiersFor('warrior');
       expect(m.tower, isTrue);
       expect(m.chapter, floor.chapter);
       expect(m.difficultyMultiplier, floor.extra);
+      expect(floor.modifiersFor('mage').difficultyMultiplier,
+          closeTo(floor.extra * .65, 1e-9));
       expect(m.forcedAffixes, floor.affixes);
       expect(m.lossContinues, isTrue);
       expect(m.keepWounds, isTrue);
