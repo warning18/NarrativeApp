@@ -20,9 +20,17 @@ const Map<String, double> towerProfessionScale = {
   'cleric': 1.35,
 };
 
-/// The foes' scale for [professionId] (1 for the others).
+/// The foes' scale for [professionId] (1 for the others), with the
+/// Tower's own [towerFoeScale].
 double towerProfessionScaleOf(String professionId) =>
-    towerProfessionScale[professionId] ?? 1.0;
+    (towerProfessionScale[professionId] ?? 1.0) * towerFoeScale;
+
+/// Every foe of the Tower, on top of the floors' extras (v1.857): the
+/// level-up's stat picks are the player's, the main game's way, and spread
+/// their points as the story's builds do (less into the damage stat than
+/// the point a level gave before), so the foes come down to keep the
+/// climb as hard as it was.
+const double towerFoeScale = 0.95;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share

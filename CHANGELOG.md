@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.857.0+893]
+
+### Changed
+- **The Tower's level-up is the main game's** (the user's call, step 1 of
+  "the main game's earning offers"): each level gained puts the main
+  game's stat pick on the table (three offers, one rarity, drawn from the
+  run's seed) and the player takes one, as in the story; no more point
+  given to the damage stat.
+  - The run holds the picks (`TowerRun.statPicks`); `towerPendingPicks`,
+    `towerStatPickOffer`, `towerTakeStatPick`; the hero replays them.
+  - `TowerLevelUpSession` runs the main game's Level Up screen on the
+    Tower hero (a detached session: the story save untouched).
+  - A pick still waiting when the floor's cards are taken goes to the
+    calling, so the climb never stalls; an old save keeps its points.
+  - The bot takes its picks as the story's bot does.
+- Balance: every Tower foe at `towerFoeScale` 0.95 of its floor's extra,
+  so the climb stays as hard as at 1.855 (1,500 seeds: no unlocks, median
+  17, top 10.7%; every unlock, top 16.3%).
+- `test/tower_level_up_test.dart`.
+
 ## [1.855.0+891]
 
 ### Changed
