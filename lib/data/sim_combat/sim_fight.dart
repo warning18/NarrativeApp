@@ -28,6 +28,7 @@ class _SimFight {
     required this.context,
     required this.reinforcement,
     required this.allies,
+    this.zoneMultiplier = 1.0,
   });
 
   // simulateSimFight's arguments ([c] the character, [s] its signs).
@@ -48,6 +49,10 @@ class _SimFight {
   final ContextRule? context;
   final Reinforcement reinforcement;
   final List<SimAlly> allies;
+
+  /// The fight's own multiplier on the curve (a zone's tier, a Tower
+  /// floor's extra): the fight screen's EncounterModifiers.difficultyMultiplier.
+  final double zoneMultiplier;
 
   // What the fight keeps from round to round, set in _setup (where each
   // is explained), in the order it sets them.
@@ -154,6 +159,7 @@ class _SimFight {
   DifficultyCurve curveFor(MapEntry<String, Map<String, dynamic>> entry) =>
       difficultyCurveFor(
         chapter: chapter,
+        zoneMultiplier: zoneMultiplier,
         newGamePlusCycle: newGamePlusCycle,
         isBoss: isBossEnemy(entry.key, entry.value),
       );
