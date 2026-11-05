@@ -113,7 +113,8 @@ const _hiddenInChapters1to3 = <String>[
   '1140',
   '1140_spotted',
   '1150_vica',
-  '1200',
+  // 1200's "Go south" is a way out on the map (v1.851): its page keeps the
+  // way back to the map.
   '1210',
   '2000',
   '2001',

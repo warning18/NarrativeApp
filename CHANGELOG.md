@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.851.0+887]
+
+### Fixed
+- **The White Wells' road south is on the map** (QA's hand test of 1.846,
+  scene 1200). The "Go south…" ways lead to a departure scene still told at
+  the Wells (1000, 1001, 1002), so they read as things done on the spot:
+  behind the hand badge, with the chart opened on the whole village and no
+  way on it.
+  - A choice's `place` may now be `out`: a way out of the town, ending where
+    its departure scene's one way goes (`wayOutEndOf`, choice_shape.dart).
+    `choiceShape`, `placeOfWay` and the Journey read it, so the way south is
+    a journey to Saltmouth's landward gate, not an action here. The three
+    1200 ways carry it.
+  - A village hub told at the village itself stands at its hub district
+    (`partyDistrictProvider` falls back on the scene's stop): the chart
+    opens on the Pool, both ways banners on it.
+  - 1200's page now keeps its way back to the map (first_journey_test's
+    list, on purpose).
+- `test/qa_white_wells_way_out_test.dart` guards it; before and after
+  pictures in `docs/ux-shots/journey-moves/`
+  (`test/ux_white_wells_shot_test.dart`).
+
 ## [1.850.0+886]
 
 - **The Tower's climb** (phase 3b): the floor screen with B's vertical ladder beside A's panels (the band, the floor's title, the foes with their affixes, a red band and the boss's line on the warden and boss floors, the health), Fight over Core's Tower fight session (no retreat; Back before the first roll leaves the floor as it was), the cards of a won floor (take one, or leave them all for a mark), the end of a run on a loss or at floor 30, and Continue the climb from the save. The Tower entry is on the main menu for everyone, below Edit Mode. English and French from Narrative's names note (the 30 floor titles, the three boss lines).

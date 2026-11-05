@@ -194,8 +194,9 @@ class StoryChoice {
 
   /// Where in the town this way is taken (v1.580, see way_places.dart): a
   /// building of the city's plan (city_plans.json, `saltmouth_b157`), or
-  /// `here` for a thing done where the party stands. Null derives it from
-  /// the scene the way leads to.
+  /// `here` for a thing done where the party stands, or `out` for a way out
+  /// of the town told by a departure scene still here (v1.851, see
+  /// wayOutEndOf). Null derives it from the scene the way leads to.
   final String? place;
 
   bool get hasPolitics => politics != null && !politics!.isEmpty;
