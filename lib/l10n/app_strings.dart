@@ -1357,6 +1357,185 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Story editor, map, data and test tools',
     AppLanguage.fr: 'Éditeur du récit, carte, données et outils de test',
   },
+  'tower_menu': {
+    AppLanguage.en: 'The Tower',
+    AppLanguage.fr: 'La Tour',
+  },
+  'tower_menu_sub': {
+    AppLanguage.en: 'Thirty floors, no story.',
+    AppLanguage.fr: 'Trente étages, sans histoire.',
+  },
+  'tower_name': {
+    AppLanguage.en: 'The Ashen Tower',
+    AppLanguage.fr: 'La Tour de Cendre',
+  },
+  'tower_tagline': {
+    AppLanguage.en: 'Thirty floors. One way up.',
+    AppLanguage.fr: 'Trente étages. Un seul chemin.',
+  },
+  'tower_floor_of': {
+    AppLanguage.en: 'Floor {n} of 30',
+    AppLanguage.fr: 'Étage {n} sur 30',
+  },
+  'tower_climb': {
+    AppLanguage.en: 'Climb',
+    AppLanguage.fr: 'Gravir',
+  },
+  'tower_continue': {
+    AppLanguage.en: 'Continue the climb',
+    AppLanguage.fr: 'Reprendre l’ascension',
+  },
+  'tower_climb_again': {
+    AppLanguage.en: 'Climb again',
+    AppLanguage.fr: 'Gravir de nouveau',
+  },
+  'tower_marks_name': {
+    AppLanguage.en: 'Ash Marks',
+    AppLanguage.fr: 'Marques de cendre',
+  },
+  'tower_earned': {
+    AppLanguage.en: 'You earn {n} Ash Marks.',
+    AppLanguage.fr: 'Vous gagnez {n} marques de cendre.',
+  },
+  'tower_marks_title': {
+    AppLanguage.en: 'Marks and unlocks',
+    AppLanguage.fr: 'Marques et déblocages',
+  },
+  'tower_marks_cost': {
+    AppLanguage.en: '{n} marks',
+    AppLanguage.fr: '{n} marques',
+  },
+  'tower_marks_button': {
+    AppLanguage.en: 'Marks',
+    AppLanguage.fr: 'Marques',
+  },
+  'tower_buy': {
+    AppLanguage.en: 'Buy',
+    AppLanguage.fr: 'Acheter',
+  },
+  'tower_owned': {
+    AppLanguage.en: 'Owned',
+    AppLanguage.fr: 'Acquis',
+  },
+  'tower_leave': {
+    AppLanguage.en: 'Leave the Tower',
+    AppLanguage.fr: 'Quitter la Tour',
+  },
+  'tower_leave_confirm': {
+    AppLanguage.en: 'Leave the Tower? The climb ends and earns its marks.',
+    AppLanguage.fr:
+        'Quitter la Tour ? La montée s’arrête et rapporte ses marques.',
+  },
+  'tower_back': {
+    AppLanguage.en: 'Back to the menu',
+    AppLanguage.fr: 'Retour au menu',
+  },
+  'tower_death': {
+    AppLanguage.en:
+        'The stair keeps what you could not carry. You reached floor {n}.',
+    AppLanguage.fr:
+        'L’escalier garde ce que vous n’avez pu porter. Vous avez atteint l’étage {n}.',
+  },
+  'tower_victory': {
+    AppLanguage.en:
+        'The top. No door, only sky, and the whole climb behind you.',
+    AppLanguage.fr:
+        'Le sommet. Pas de porte, seulement le ciel, et toute la montée derrière vous.',
+  },
+  'tower_left': {
+    AppLanguage.en: 'You left the Tower on floor {n}.',
+    AppLanguage.fr: 'Vous avez quitté la Tour à l’étage {n}.',
+  },
+  'tower_pick_race': {
+    AppLanguage.en: 'People',
+    AppLanguage.fr: 'Peuple',
+  },
+  'tower_pick_profession': {
+    AppLanguage.en: 'Calling',
+    AppLanguage.fr: 'Vocation',
+  },
+  'tower_pick_clan': {
+    AppLanguage.en: 'Clan',
+    AppLanguage.fr: 'Clan',
+  },
+  'tower_locked': {
+    AppLanguage.en: 'Locked: buy it with marks',
+    AppLanguage.fr: 'Verrouillé : à acheter avec des marques',
+  },
+  'tower_save_note': {
+    AppLanguage.en: 'Nothing is taken from your story’s saves.',
+    AppLanguage.fr: 'Rien n’est pris sur les sauvegardes de votre histoire.',
+  },
+  'tower_best': {
+    AppLanguage.en: 'Best floor {n}',
+    AppLanguage.fr: 'Meilleur étage {n}',
+  },
+  'tower_runs_line': {
+    AppLanguage.en: '{r} climbs, {w} won',
+    AppLanguage.fr: '{r} ascensions, {w} victoires',
+  },
+  'tower_kit': {
+    AppLanguage.en: 'You begin with',
+    AppLanguage.fr: 'Vous commencez avec',
+  },
+  'tower_group_peoples': {
+    AppLanguage.en: 'Callings and peoples',
+    AppLanguage.fr: 'Vocations et peuples',
+  },
+  'tower_group_clans': {
+    AppLanguage.en: 'Clans',
+    AppLanguage.fr: 'Clans',
+  },
+  'tower_group_kit': {
+    AppLanguage.en: 'Starting kit',
+    AppLanguage.fr: 'Équipement de départ',
+  },
+  'tower_unlock_flame_die': {
+    AppLanguage.en: 'Begin with a Flame Die.',
+    AppLanguage.fr: 'Commencer avec un Dé de flamme.',
+  },
+  'tower_unlock_crows': {
+    AppLanguage.en: 'Begin under the Salt Crows.',
+    AppLanguage.fr: 'Commencer auprès des Corneilles de Sel.',
+  },
+  'tower_unlock_shield_t5': {
+    AppLanguage.en: 'Begin with a Knight’s Bulwark.',
+    AppLanguage.fr: 'Commencer avec un Rempart du chevalier.',
+  },
+  'tower_unlock_cleric': {
+    AppLanguage.en: 'Begin as a Cleric.',
+    AppLanguage.fr: 'Commencer en Clerc.',
+  },
+  'tower_unlock_tide_die': {
+    AppLanguage.en: 'Begin with a Tide Die.',
+    AppLanguage.fr: 'Commencer avec un Dé de marée.',
+  },
+  'tower_unlock_vigil': {
+    AppLanguage.en: 'Begin under the Grey Vigil.',
+    AppLanguage.fr: 'Commencer auprès de la Veille Grise.',
+  },
+  'tower_unlock_sword_t4': {
+    AppLanguage.en: 'Begin with a Silvered Longsword.',
+    AppLanguage.fr: 'Commencer avec une Épée longue argentée.',
+  },
+  'tower_unlock_ranger': {
+    AppLanguage.en: 'Begin as a Ranger.',
+    AppLanguage.fr: 'Commencer en Rôdeur.',
+  },
+  'tower_unlock_compact': {
+    AppLanguage.en: 'Begin under the Cinder Compact.',
+    AppLanguage.fr: 'Commencer auprès du Pacte des Cendres.',
+  },
+  'tower_unlock_tearglass_die': {
+    AppLanguage.en: 'Begin with a Tearglass Die.',
+    AppLanguage.fr: 'Commencer avec un Dé de verre-larme.',
+  },
+  'tower_stub_floor': {
+    AppLanguage.en:
+        'The climb itself comes with the next release; here you can look at the screens.',
+    AppLanguage.fr:
+        'La montée elle-même arrive avec la prochaine version ; ici, vous pouvez regarder les écrans.',
+  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',
