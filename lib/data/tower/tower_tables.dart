@@ -11,6 +11,29 @@ const double towerRecoveryShare = .30;
 /// floor): the fight's Potion button, at the story's own heal.
 const int towerFlask = 1;
 
+/// The Tower's foes for each profession, on top of the floor's extra
+/// (v1.848, the user's call on QA's #834): alone, the mage was the weakest
+/// by far (the top won 1 run in 100) and the cleric, healing itself, the
+/// strongest (half the runs with every unlock).
+const Map<String, double> towerProfessionScale = {
+  'mage': .65,
+  'cleric': 1.35,
+};
+
+/// The foes' scale for [professionId] (1 for the others).
+double towerProfessionScaleOf(String professionId) =>
+    towerProfessionScale[professionId] ?? 1.0;
+
+/// What the unlocks owned give a run (v1.848, the user's call: unlocks give
+/// some power, not options only). Each one owned at the start: this share
+/// more max health. (Start levels were tried first and made the Tower
+/// harder: the foes grow with the hero's level.)
+const double towerHealthPerUnlock = .02;
+
+/// Every this many unlocks owned at the start: one more potion carried into
+/// each fight.
+const int towerUnlocksPerPotion = 5;
+
 /// The top floor: winning it wins the run.
 const int towerTop = 30;
 
@@ -69,7 +92,7 @@ const List<TowerBudget> towerBudgets = [
   TowerBudget(1, 0.30, levelAfter: 3),
   TowerBudget(2, 0.30,
       maxFoes: 2, packChance: .30, eliteChance: .12, levelAfter: 3),
-  TowerBudget(2, 0.18, levelAfter: 4, kind: TowerFloorKind.warden),
+  TowerBudget(2, 0.34, levelAfter: 4, kind: TowerFloorKind.warden),
   TowerBudget(2, 0.30,
       maxFoes: 2,
       packChance: .30,
@@ -94,7 +117,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 6),
-  TowerBudget(3, 0.18, levelAfter: 7, kind: TowerFloorKind.boss),
+  TowerBudget(3, 0.31, levelAfter: 7, kind: TowerFloorKind.boss),
   TowerBudget(4, 0.35,
       maxFoes: 2,
       packChance: .50,
@@ -123,7 +146,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 9),
-  TowerBudget(4, 0.22,
+  TowerBudget(4, 0.42,
       minAffixes: 1,
       maxAffixes: 1,
       levelAfter: 10,
@@ -156,7 +179,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 1,
       eliteChance: .15,
       levelAfter: 12),
-  TowerBudget(5, 0.22, levelAfter: 13, kind: TowerFloorKind.boss),
+  TowerBudget(5, 0.28, levelAfter: 13, kind: TowerFloorKind.boss),
   TowerBudget(6, 0.39,
       minFoes: 2,
       maxFoes: 3,
@@ -189,7 +212,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .20,
       levelAfter: 15),
-  TowerBudget(7, 0.23,
+  TowerBudget(7, 0.44,
       minAffixes: 1,
       maxAffixes: 1,
       levelAfter: 16,
@@ -226,7 +249,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 18),
-  TowerBudget(8, 0.24, levelAfter: 18, kind: TowerFloorKind.boss),
+  TowerBudget(8, 0.26, levelAfter: 18, kind: TowerFloorKind.boss),
 ];
 
 /// Floor [floor]'s budget (1..[towerTop]).

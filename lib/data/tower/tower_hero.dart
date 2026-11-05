@@ -73,9 +73,11 @@ class TowerData {
 
 /// A new hero of [raceId] and [professionId] with the start unlocks
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
-/// health, no potions (the heal cards stand in for them).
+/// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
+/// unlocks, no potions (the heal cards stand in for them).
 SimCharacter towerFreshHero(String raceId, String professionId,
-    Iterable<String> unlockIds, TowerData data) {
+    Iterable<String> unlockIds, TowerData data,
+    {int unlocksOwned = 0}) {
   final hero = SimCharacter.create(
     raceId: raceId,
     race: data.races[raceId] as Map<String, dynamic>? ?? const {},
@@ -98,6 +100,11 @@ SimCharacter towerFreshHero(String raceId, String professionId,
       case TowerUnlockKind.profession:
         break;
     }
+  }
+  if (unlocksOwned > 0) {
+    hero.maxHealth =
+        (hero.maxHealth * (1 + towerHealthPerUnlock * unlocksOwned)).round();
+    hero.currentHealth = hero.maxHealth;
   }
   return hero;
 }
@@ -174,8 +181,9 @@ void _takeDie(SimCharacter hero, String dieId, TowerData data) {
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
 /// floors it cleared and the cards it took, with the run's health.
 SimCharacter towerHeroOf(TowerRun run, TowerData data) {
-  final hero =
-      towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data);
+  final hero = towerFreshHero(
+      run.raceId, run.professionId, run.startUnlocks, data,
+      unlocksOwned: run.unlocksOwned);
   for (var floor = 1; floor <= run.floorsCleared; floor++) {
     towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
     final card = run.taken[floor];
@@ -183,7 +191,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
-  hero.potions = towerFlask;
+  hero.potions = towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion;
   return hero;
 }
 
