@@ -8,9 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.856.0+892]
+## [1.858.0+894]
 
-- **The Tower's oaths, on screen** (Core's oaths, v1.855): the start screen takes a people and a calling only (no clan to pick); a clan's oath is a card among the rewards: its banner, "The Salt Crows offer you their oath", what swearing gives (their standing, and their die by name) and a Swear button (leaving them all is still the mark); the floor screen shows the clans sworn so far ("Unsworn" before the first, the main clan marked when there are several); the marks screen words the three clan unlocks "Can be offered: the Salt Crows." and so on. Also: a die's card no longer shows its raw id in English ("lantern_die" is "Lantern Die").
+### Changed
+- **The Tower opens the main game's Level Up after a floor that gains a
+  level**, before the cards (step 2 of "the main game's earning offers"):
+  `TowerLevelUpSession(run, data).wrap(LevelUpScreen())`, the run saved
+  afterwards. A saved run reopened with picks waiting does the same once.
+- `test/tower_climb_test.dart` goes past the Level Up; the picture test
+  draws it (`docs/ux-shots/tower/levelup/`).
 
 ## [1.857.0+893]
 
@@ -31,6 +37,10 @@ isn't reconstructable from git history alone.
   so the climb stays as hard as at 1.855 (1,500 seeds: no unlocks, median
   17, top 10.7%; every unlock, top 16.3%).
 - `test/tower_level_up_test.dart`.
+
+## [1.856.0+892]
+
+- **The Tower's oaths, on screen** (Core's oaths, v1.855): the start screen takes a people and a calling only (no clan to pick); a clan's oath is a card among the rewards: its banner, "The Salt Crows offer you their oath", what swearing gives (their standing, and their die by name) and a Swear button (leaving them all is still the mark); the floor screen shows the clans sworn so far ("Unsworn" before the first, the main clan marked when there are several); the marks screen words the three clan unlocks "Can be offered: the Salt Crows." and so on. Also: a die's card no longer shows its raw id in English ("lantern_die" is "Lantern Die").
 
 ## [1.855.0+891]
 
