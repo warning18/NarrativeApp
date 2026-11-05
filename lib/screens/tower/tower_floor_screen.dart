@@ -14,6 +14,8 @@ import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
+import '../../providers/tower_level_up_session.dart';
+import '../level_up_screen.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
@@ -31,6 +33,19 @@ class TowerFloorScreen extends ConsumerStatefulWidget {
 
 class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
   bool _busy = false;
+  bool _resumed = false;
+
+  /// The Level Up screen, the main game's own, under the run's hero: a pick
+  /// is owed after a floor that gained a level (the engine holds the points,
+  /// Core's v1.857). What is picked goes back to the run.
+  Future<void> _levelUp(TowerRun run, TowerData data) async {
+    _resumed = true;
+    final session = TowerLevelUpSession(run, data);
+    await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => session.wrap(const LevelUpScreen())));
+    if (!mounted) return;
+    await ref.read(towerProvider.notifier).setRun(session.run);
+  }
 
   /// An ended run: its marks banked, its end screen in this one's place.
   Future<void> _finish(TowerRun over) async {
@@ -50,11 +65,19 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
       // Not fought (Back before the first roll): the floor stays as it was.
       if (result == null) return;
       final next = towerAfterFight(run, data,
-          won: result.won, healthLeft: result.healthLeft);
+          won: result.won,
+          healthLeft: result.healthLeft,
+          potionsLeft: result.potionsLeft,
+          antidotesLeft: result.antidotesLeft);
       if (next.isOver) {
         await _finish(next);
       } else {
+        _resumed = true; // this visit opens the Level Up itself
         await ref.read(towerProvider.notifier).setRun(next);
+        // A floor that gained a level: its pick, before the cards.
+        if (towerPendingPicks(next) > 0 && mounted) {
+          await _levelUp(next, data);
+        }
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -96,6 +119,13 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
           body: const Center(child: CircularProgressIndicator()));
     }
     final choosing = run.status == TowerStatus.choosing;
+    // Back on a floor won with a pick still owed: the Level Up first.
+    if (!_resumed && choosing && towerPendingPicks(run) > 0) {
+      _resumed = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _levelUp(run, data);
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(ref, 'tower_name')),

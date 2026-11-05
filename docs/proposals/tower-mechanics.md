@@ -469,3 +469,80 @@ the die at once.
   every unlock, median 19, top 16.5% (19.6%). The spread between clans is
   gone: as the main clan, each wins the top 10–11% with no unlocks,
   14–18% with every unlock (it was Dominion 15% to Mire 4.7%).
+
+## The level-up, the main game's way (v1.857)
+
+The user's call: the Tower takes the main game's "earning offers", in
+three steps; this is the first: **the level-up's stat picks are the
+player's**, as in the story (stat-picks.md), not a point given to the
+damage stat.
+
+- **The picks are held by the run.** A level gained earns
+  `levelStatPicks` (1) pick; `towerPendingPicks(run)` is the picks the
+  run's level earned less those taken (`TowerRun.statPicks`, the offer
+  taken for each, saved as `picks`). An old save (no `picks`) keeps the
+  points its levels gave then.
+- **The pick is the main game's**: `towerStatPickOffer(run, data)` draws it
+  with `drawStatPick` (three offers, one rarity, the calling, the habit and
+  a turn), from the run's own stream (`TowerStream.pick`), as the hero
+  stands; `towerTakeStatPick(run, data, index)` takes one; the hero
+  replays every pick (`towerHeroOf`).
+- **The picks come before the floor's cards**: the screen opens the main
+  game's Level Up on `TowerLevelUpSession(run, data).wrap(LevelUpScreen())`
+  (the Tower hero's own session, the story save untouched) after a floor
+  that gains a level; a pick still waiting when the cards are taken goes to
+  the calling (`towerPick`), so the climb never stalls.
+- **The bot** takes its picks as the story's bot does (`simBuildShares`,
+  `statPickForShares`).
+- **Balance**: the story's builds spread their points (about 60% to the
+  damage stat), so the climb came out harder (no unlocks, median 15, top
+  7.0%); every foe of the Tower is now at `towerFoeScale` (0.95) of its
+  floor's extra: no unlocks, median 17, floor 20 34.9%, top 10.7%; every
+  unlock, median 19, top 16.3% (1,500 seeds), as at v1.855.
+
+## The spoils chest and the boons (v1.860)
+
+Step 2 of the main game's earning offers (the user's call): the cards of §5
+go, and a floor won pays the main game's way.
+
+- **The spoils chest, every floor won** (`towerSpoilsFor`): the story's own
+  chest (`rollLootBox`: the fortune roll with the hero's Luck, a boss floor
+  never below Gold, a warden or an Elite raised as an Elite is), from the
+  floor's own stream (`TowerStream.spoils`). The Tower keeps its gear and
+  its potions; never its gold (nor charms, tomes or materials). The run
+  holds each floor's chest (`TowerRun.spoils`, saved as `spoils`); the hero
+  wears its gear when it beats what it wears.
+- **The bag** (`TowerRun.potions`, `antidotes`): the chest's potions (a
+  major one is two, as in the story) and antidotes, carried from floor to
+  floor on top of the flask that fills every floor (`towerFlask`). A fight
+  drinks the flask first: what it leaves (`towerAfterFight`'s
+  `potionsLeft`, from `TowerFightSession`) is what the bag still holds.
+- **A boon on floors 5, 10, 15, 20 and 25** (`towerBoonFloors`; 30 ends the
+  run): a choose-one of a skill, a die and a spell (`towerBoonKinds`), the
+  rarity of §5's draw. Refusing it is still a mark.
+- **The clans' oaths after the spoils**: always on the first floor won,
+  then on 35% of the floors that are not a boon's, while a clan is left
+  (v1.855). Many floors offer nothing: the screen shows the spoils and goes
+  on, and nothing refused is no mark.
+- **No heal cards, item cards or clan gifts** any more (an old save's offer
+  still takes them).
+- **The bot** takes a boon's skill first (a die first left the ranger at 1
+  top in 70).
+- **Balance** (1,500 seeds): see the table below. Fewer skills and dice than
+  the cards gave hit the unlocked runs (every unlock, top 7%): an unlock is
+  now `towerHealthPerUnlock` .04 more health (was .02); the ranger's foes at
+  .88, the rogue's at 1.04 (`towerProfessionScale`). QA's floor-20 bound
+  goes to 20% (more climbs end between 10 and 20; the median and the top
+  hold).
+
+| 1,500 seeds | median | floor 20 | top | top by profession |
+|---|---|---|---|---|
+| v1.857, no unlocks | 17 | 34.9% | 10.7% | |
+| v1.860, no unlocks | 17 | 23.9% | 10.2% | mage 9.2, warrior 10.0, rogue 11.4 |
+| v1.857, every unlock | 19 | | 16.3% | |
+| v1.860, every unlock | 18 | 31.4% | 15.7% | mage 21.8, warrior 15.9, cleric 15.9, rogue 12.5, ranger 12.2 |
+
+By main clan (every unlock): dominion 20.1%, mire 17.5%, crows 16.5%,
+compact 15.3%, vigil 14.9%, penitents 10.3%. The bag ends a climb with about
+7 potions (no unlocks) to 11 (every unlock): the bot drinks only below 40%
+health.

@@ -2,9 +2,11 @@
 // the Tower's own save (tower_save.dart: its two keys, apart from the
 // story's) and the one place a run or the marks change. The screens move a
 // run only through lib/data/tower/ and this controller.
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart' show BuildContext;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -35,6 +37,10 @@ final towerDataProvider = FutureProvider<TowerData>((ref) async {
     'items': await table(itemsSchema),
     'enemies': await table(enemiesSchema),
     'spells': await table(spellsSchema),
+    // The level-up's paths (v1.857): the stat picks the player takes.
+    'training_paths': jsonDecode(
+            await rootBundle.loadString('assets/gamedata/training_paths.json'))
+        as Map<String, dynamic>,
   });
 });
 
@@ -122,12 +128,21 @@ final towerProvider =
 
 /// How a floor's fight ended.
 class TowerFightResult {
-  const TowerFightResult({required this.won, required this.healthLeft});
+  const TowerFightResult(
+      {required this.won,
+      required this.healthLeft,
+      this.potionsLeft,
+      this.antidotesLeft});
 
   final bool won;
 
   /// The hero's health when the fight ended.
   final int healthLeft;
+
+  /// The potions and antidotes it left (v1.860, the bag's); null, as it
+  /// was.
+  final int? potionsLeft;
+  final int? antidotesLeft;
 }
 
 /// Plays the fight of [run]'s floor and says how it ended; null when it was

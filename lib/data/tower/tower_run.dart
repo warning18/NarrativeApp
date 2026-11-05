@@ -5,6 +5,8 @@
 
 import 'dart:math';
 
+import '../../combat/stat_rules.dart' show levelStatPicks;
+import '../training.dart' show StatPickOffer;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_rewards.dart';
@@ -45,6 +47,11 @@ class TowerRun {
     this.taken = const {},
     this.refused = const {},
     this.offer = const [],
+    this.statPicks = const [],
+    this.autoPicks = false,
+    this.spoils = const {},
+    this.potions = 0,
+    this.antidotes = 0,
   });
 
   factory TowerRun.fromJson(Map<String, dynamic> json) => TowerRun(
@@ -77,6 +84,22 @@ class TowerRun {
           for (final r in (json['offer'] as List?) ?? const [])
             TowerReward.fromJson(r as Map<String, dynamic>),
         ],
+        statPicks: [
+          for (final p in (json['picks'] as List?) ?? const [])
+            (p as num).toInt(),
+        ],
+        // A save from before v1.857 has no picks: its levels keep the
+        // points they gave then.
+        autoPicks: !json.containsKey('picks'),
+        spoils: {
+          for (final MapEntry(:key, :value)
+              in ((json['spoils'] as Map?) ?? const {}).entries)
+            int.parse(key.toString()): [
+              for (final id in value as List) id.toString(),
+            ],
+        },
+        potions: (json['potions'] as num?)?.toInt() ?? 0,
+        antidotes: (json['antidotes'] as num?)?.toInt() ?? 0,
       );
 
   /// The seed every floor and offer is drawn from.
@@ -136,6 +159,25 @@ class TowerRun {
   /// The cards on the table ([TowerStatus.choosing]); empty otherwise.
   final List<TowerReward> offer;
 
+  /// The stat picks taken (v1.857, the main game's level-up): for each pick
+  /// earned, in order, the offer taken (0..2 of towerStatPickDraw's three).
+  final List<int> statPicks;
+
+  /// A save from before v1.857: each level's point goes to the damage
+  /// stat, as it did then; no pick waits.
+  final bool autoPicks;
+
+  /// The spoils chest of each floor won (v1.860, floor -> its items): its
+  /// gear worn when better than what the hero wears, its potions in the
+  /// bag.
+  final Map<int, List<String>> spoils;
+
+  /// The bag (v1.860): the spoils' potions and antidotes the hero carries
+  /// from floor to floor, on top of the flask that fills every floor
+  /// ([towerFlask]).
+  final int potions;
+  final int antidotes;
+
   bool get isOver =>
       status == TowerStatus.dead ||
       status == TowerStatus.won ||
@@ -161,6 +203,10 @@ class TowerRun {
     Map<int, TowerReward>? taken,
     Set<int>? refused,
     List<TowerReward>? offer,
+    List<int>? statPicks,
+    Map<int, List<String>>? spoils,
+    int? potions,
+    int? antidotes,
   }) =>
       TowerRun(
         seed: seed,
@@ -176,6 +222,11 @@ class TowerRun {
         taken: taken ?? this.taken,
         refused: refused ?? this.refused,
         offer: offer ?? this.offer,
+        statPicks: statPicks ?? this.statPicks,
+        autoPicks: autoPicks,
+        spoils: spoils ?? this.spoils,
+        potions: potions ?? this.potions,
+        antidotes: antidotes ?? this.antidotes,
       );
 
   Map<String, dynamic> toJson() => {
@@ -196,6 +247,13 @@ class TowerRun {
           },
         if (refused.isNotEmpty) 'refused': (refused.toList()..sort()),
         if (offer.isNotEmpty) 'offer': [for (final r in offer) r.toJson()],
+        if (!autoPicks) 'picks': statPicks,
+        if (spoils.isNotEmpty)
+          'spoils': {
+            for (final MapEntry(:key, :value) in spoils.entries) '$key': value,
+          },
+        if (potions != 0) 'potions': potions,
+        if (antidotes != 0) 'antidotes': antidotes,
       };
 }
 
@@ -259,17 +317,49 @@ TowerFloor towerFloorOf(TowerRun run, TowerData data) =>
 
 /// [run] after its fight of [TowerRun.floor]: lost, the run is over; won,
 /// the hero levels (its new health added to what it has left,
-/// [healthLeft]) and the floor's cards are dealt, or, on the top floor,
-/// the run is won.
+/// [healthLeft]), the floor's spoils drop (v1.860) and its offer is dealt
+/// (a boon, a clan's oath, or nothing), or, on the top floor, the run is
+/// won. [potionsLeft] and [antidotesLeft] are what the fight left of what
+/// it carried (the flask's potions are drunk first: what the bag held is
+/// gone only past them); null, the bag as it was.
 TowerRun towerAfterFight(TowerRun run, TowerData data,
-    {required bool won, required int healthLeft}) {
+    {required bool won,
+    required int healthLeft,
+    int? potionsLeft,
+    int? antidotesLeft}) {
   if (run.status != TowerStatus.climbing) return run;
   if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
+  final potions =
+      potionsLeft == null ? run.potions : min(run.potions, max(0, potionsLeft));
+  final antidotes = antidotesLeft == null
+      ? run.antidotes
+      : min(run.antidotes, max(0, antidotesLeft));
   if (run.floor >= towerTop) {
-    return run.copyWith(status: TowerStatus.won, health: max(1, healthLeft));
+    return run.copyWith(
+        status: TowerStatus.won,
+        health: max(1, healthLeft),
+        potions: potions,
+        antidotes: antidotes);
   }
   final before = towerHeroOf(run, data).maxHealth;
-  final choosing = run.copyWith(status: TowerStatus.choosing);
+  final leveled = run.copyWith(status: TowerStatus.choosing);
+  final drop = towerSpoilsFor(
+    seed: run.seed,
+    floor: towerFloorOf(run, data),
+    luck: towerHeroOf(leveled, data).luck,
+    ownedItemIds: towerHeroOf(leveled, data).ownedItemIds,
+    preferredScalingStat:
+        (data.professions[run.professionId] as Map?)?['preferredScalingStat']
+                ?.toString() ??
+            '',
+    items: data.items,
+  );
+  final choosing = leveled.copyWith(
+    spoils: {...run.spoils, run.floor: drop},
+    potions:
+        potions + drop.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0)),
+    antidotes: antidotes + drop.where((id) => id == towerSpoilsAntidote).length,
+  );
   final hero = towerHeroOf(choosing.copyWith(health: 1 << 20), data);
   final health = (healthLeft +
           hero.maxHealth -
@@ -294,15 +384,53 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   );
 }
 
+/// The level the hero stands at with [floorsCleared] floors won.
+int towerLevelAfter(int floorsCleared) => floorsCleared <= 0
+    ? 1
+    : max(1, towerBudgetOf(min(floorsCleared, towerTop)).levelAfter);
+
+/// The stat picks [run]'s hero has earned and not yet taken (v1.857, the
+/// main game's level-up: [levelStatPicks] a level gained). Held by the run
+/// itself: the picks earned by its level, less those it took.
+int towerPendingPicks(TowerRun run) {
+  if (run.autoPicks || run.isOver) return 0;
+  final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
+  return max(0, earned - run.statPicks.length);
+}
+
+/// The stat pick on the table for [run]: the three offers of its next
+/// pending pick (the main game's draw, towerStatPickDraw), or none.
+List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data) {
+  if (towerPendingPicks(run) <= 0) return const [];
+  return towerStatPickDraw(
+      towerHeroOf(run, data), run.seed, run.statPicks.length, data);
+}
+
+/// [run] with offer [index] of its stat pick on the table taken; [run] as
+/// it is when no pick waits or there is no such offer.
+TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
+  final offer = towerStatPickOffer(run, data);
+  if (index < 0 || index >= offer.length) return run;
+  return run.copyWith(statPicks: [...run.statPicks, index]);
+}
+
 /// [run] after its cards: card [index] taken, or none (null) refused for a
-/// mark; then on to the next floor.
+/// mark (an empty offer refuses nothing: the floor gave its spoils only);
+/// then on to the next floor. The floor's level-up picks come first
+/// (the screen opens the Level Up before the cards); a pick still waiting
+/// here is given its first offer, the calling, so the climb never stalls.
 TowerRun towerPick(TowerRun run, TowerData data, int? index) {
   if (run.status != TowerStatus.choosing) return run;
+  for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
+    final taken = towerTakeStatPick(run, data, 0);
+    if (identical(taken, run)) break;
+    run = taken;
+  }
   if (index == null || index < 0 || index >= run.offer.length) {
     return run.copyWith(
       status: TowerStatus.climbing,
       floor: run.floor + 1,
-      refused: {...run.refused, run.floor},
+      refused: run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
       offer: const [],
     );
   }

@@ -10,6 +10,8 @@ import '../../combat/stat_rules.dart'
     show damageStatOf, levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
 import '../sim_policy.dart' show simSkillAssignments;
+import '../training.dart';
+import 'tower_floors.dart' show TowerStream, towerRandom;
 import 'tower_rewards.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
@@ -27,6 +29,7 @@ class TowerData {
     required this.items,
     required this.enemies,
     required this.spells,
+    this.trainingPaths = const {},
   }) : spellSpecs = parseSpells(spells);
 
   /// From the tables keyed by file name (as `gameDbProvider` or a test
@@ -41,6 +44,7 @@ class TowerData {
         items: tables['items'] ?? const {},
         enemies: tables['enemies'] ?? const {},
         spells: tables['spells'] ?? const {},
+        trainingPaths: trainingPathsFrom(tables['training_paths'] ?? const {}),
       );
 
   /// The tables [TowerData.fromTables] reads.
@@ -53,6 +57,7 @@ class TowerData {
     'items',
     'enemies',
     'spells',
+    'training_paths',
   ];
 
   final Map<String, dynamic> races;
@@ -65,6 +70,10 @@ class TowerData {
   final Map<String, dynamic> spells;
   final Map<String, SpellSpec> spellSpecs;
 
+  /// The level-up's training paths (training_paths.json): the stat picks
+  /// the player takes (v1.857, the main game's level-up).
+  final Map<String, TrainingPath> trainingPaths;
+
   List<Map<String, dynamic>> facesOf(String dieId) =>
       ((dice[dieId] as Map?)?['faces'] as List?)
           ?.cast<Map<String, dynamic>>() ??
@@ -74,7 +83,8 @@ class TowerData {
 /// A new hero of [raceId] and [professionId] with the start unlocks
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
 /// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
-/// unlocks, no potions (the heal cards stand in for them).
+/// unlocks, no potions (the flask and the bag come with the run,
+/// [towerHeroOf]).
 SimCharacter towerFreshHero(String raceId, String professionId,
     Iterable<String> unlockIds, TowerData data,
     {int unlocksOwned = 0}) {
@@ -110,14 +120,56 @@ SimCharacter towerFreshHero(String raceId, String professionId,
 }
 
 /// [hero] raised to [level]: each level its health ([levelHealthGain], the
-/// wound kept, not healed) and its stat pick in its damage stat.
-void towerLevelTo(SimCharacter hero, int level) {
+/// wound kept, not healed); with [autoPicks] (a save from before v1.857)
+/// its stat pick in its damage stat, else the pick waits for the player
+/// (towerPendingPicks). Returns the levels gained.
+int towerLevelTo(SimCharacter hero, int level, {bool autoPicks = true}) {
+  var gained = 0;
   while (hero.level < level) {
     hero.level++;
+    gained++;
     hero.maxHealth += levelHealthGain;
     hero.currentHealth += levelHealthGain;
-    hero.addAbilities({hero.preferredStat: levelStatPicks});
+    if (autoPicks) hero.addAbilities({hero.preferredStat: levelStatPicks});
   }
+  return gained;
+}
+
+/// The hero's abilities as the stat picks read them.
+Map<String, int> _abilitiesOf(SimCharacter hero) => {
+      'strength': hero.strength,
+      'dexterity': hero.dexterity,
+      'constitution': hero.constitution,
+      'intelligence': hero.intelligence,
+      'wisdom': hero.wisdom,
+      'perception': hero.perception,
+      'luck': hero.luck,
+      'charisma': hero.charisma,
+    };
+
+/// The [n]th stat pick of the run of [seed] (from 0), as [hero] stands
+/// before it: the main game's own draw (drawStatPick, three offers and one
+/// rarity), from the run's own stream so a replay draws the same.
+List<StatPickOffer> towerStatPickDraw(
+        SimCharacter hero, int seed, int n, TowerData data) =>
+    drawStatPick(
+      paths: data.trainingPaths,
+      random: towerRandom(seed, n + 1, TowerStream.pick),
+      professionId: hero.professionId,
+      raceId: hero.raceId,
+      luck: hero.luck,
+      taken: hero.trainingTaken,
+      stats: _abilitiesOf(hero),
+    );
+
+/// [pick] taken by [hero]: its gains, its path counted (as the session's
+/// takeStatPick and the simulator's takeStatPicks).
+void towerTakePickOn(SimCharacter hero, StatPickOffer pick) {
+  hero.trainingTaken[pick.pathId] = (hero.trainingTaken[pick.pathId] ?? 0) + 1;
+  for (final MapEntry(:key, :value) in pick.gains.entries) {
+    hero.pickedPoints[key] = (hero.pickedPoints[key] ?? 0) + value;
+  }
+  hero.addAbilities(pick.gains);
 }
 
 /// [reward] given to [hero].
@@ -190,14 +242,34 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   final hero = towerFreshHero(
       run.raceId, run.professionId, run.startUnlocks, data,
       unlocksOwned: run.unlocksOwned);
+  var pick = 0;
   for (var floor = 1; floor <= run.floorsCleared; floor++) {
-    towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
+    final gained = towerLevelTo(hero, towerBudgetOf(floor).levelAfter,
+        autoPicks: run.autoPicks);
+    // The floor's level-up picks, taken before its cards (towerPick waits
+    // for them): each drawn as the hero stands then.
+    if (!run.autoPicks) {
+      for (var i = 0; i < gained * levelStatPicks; i++, pick++) {
+        if (pick >= run.statPicks.length) break;
+        final offer = towerStatPickDraw(hero, run.seed, pick, data);
+        final index = run.statPicks[pick];
+        if (index >= 0 && index < offer.length) {
+          towerTakePickOn(hero, offer[index]);
+        }
+      }
+    }
+    // The floor's spoils (v1.860): its gear worn when better.
+    for (final id in run.spoils[floor] ?? const <String>[]) {
+      _wear(hero, id, data);
+    }
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data);
   }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
-  hero.potions = towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion;
+  // The flask, filled every floor, and the bag the spoils filled.
+  hero.potions =
+      towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion + run.potions;
   return hero;
 }
 

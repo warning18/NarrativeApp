@@ -71,9 +71,10 @@ void main() {
       final m = floor.modifiersFor('warrior');
       expect(m.tower, isTrue);
       expect(m.chapter, floor.chapter);
-      expect(m.difficultyMultiplier, floor.extra);
+      expect(
+          m.difficultyMultiplier, closeTo(floor.extra * towerFoeScale, 1e-9));
       expect(floor.modifiersFor('mage').difficultyMultiplier,
-          closeTo(floor.extra * .65, 1e-9));
+          closeTo(floor.extra * .65 * towerFoeScale, 1e-9));
       expect(m.forcedAffixes, floor.affixes);
       expect(m.lossContinues, isTrue);
       expect(m.keepWounds, isTrue);
@@ -115,38 +116,69 @@ void main() {
       expect(towerMarksOf(towerTop, 3), 64);
     });
 
-    test('a won floor deals 3 cards of different kinds, never gold', () {
+    test(
+        'a won floor drops its spoils; a boon floor offers a skill, a die '
+        'and a spell; never gold', () {
       var run = towerStart(
           seed: 5,
           raceId: 'human',
           professionId: 'warrior',
           clanId: 'dominion',
           data: data);
-      final full = run.health;
-      run = towerAfterFight(run, data, won: true, healthLeft: full);
+      run = towerAfterFight(run, data, won: true, healthLeft: run.health);
       expect(run.status, TowerStatus.choosing);
-      expect(run.offer, hasLength(towerOfferSize));
-      expect(run.offer.map((r) => r.kind).toSet(), hasLength(towerOfferSize));
-      // Below 40% health a heal is always on the table.
-      final hurt = towerAfterFight(
-          towerStart(
-              seed: 5,
-              raceId: 'human',
-              professionId: 'warrior',
-              clanId: 'dominion',
-              data: data),
-          data,
-          won: true,
-          healthLeft: 1);
-      expect(hurt.offer.map((r) => r.kind), contains(TowerRewardKind.heal));
+      // The story's chest: its gear and potions only, never its gold.
+      final spoils = run.spoils[1]!;
+      expect(spoils, isNotEmpty);
+      for (final id in spoils) {
+        final item = data.items[id] as Map;
+        expect(item['isEquippable'] == true || item['itemType'] == 'Potion',
+            isTrue,
+            reason: id);
+      }
+      // Floors 1 to 4 bring no boon: at most a clan's oath.
+      expect(
+          run.offer.every((r) => r.kind == TowerRewardKind.clanOath), isTrue);
+      for (var floor = 1; floor < 5; floor++) {
+        if (floor > 1) {
+          run = towerAfterFight(run, data, won: true, healthLeft: run.health);
+        }
+        final before = run.refused.length;
+        final offered = run.offer.isNotEmpty;
+        run = towerPick(run, data, null);
+        // Nothing on the table refuses nothing.
+        expect(run.refused.length, before + (offered ? 1 : 0));
+      }
+      run = towerAfterFight(run, data, won: true, healthLeft: run.health);
+      expect(run.floor, 5);
+      expect(run.offer.map((r) => r.kind).toSet(),
+          {TowerRewardKind.skill, TowerRewardKind.die, TowerRewardKind.spell});
       // Picking takes the card to the next floor; refusing earns a mark.
       final picked = towerPick(run, data, 0);
-      expect(picked.floor, 2);
+      expect(picked.floor, 6);
       expect(picked.status, TowerStatus.climbing);
-      expect(picked.taken[1], run.offer.first);
+      expect(picked.taken[5], run.offer.first);
       final refused = towerPick(run, data, null);
-      expect(refused.refused, {1});
+      expect(refused.refused, contains(5));
       expect(refused.marks, run.marks + towerMarksPerRefusal);
+    });
+
+    test('the bag keeps the spoils\' potions past the flask', () {
+      var run = towerStart(
+          seed: 3, raceId: 'human', professionId: 'warrior', data: data);
+      run = run.copyWith(potions: 2);
+      final flask = towerHeroOf(run, data).potions - 2;
+      // A fight that drank the flask and one more: the bag holds one.
+      run = towerAfterFight(run, data,
+          won: true, healthLeft: run.health, potionsLeft: 1);
+      final looted =
+          run.spoils[1]!.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
+      expect(run.potions, 1 + looted);
+      expect(towerHeroOf(run, data).potions, flask + run.potions);
+      // The save keeps the spoils and the bag.
+      final back = TowerRun.fromJson(run.toJson());
+      expect(back.spoils, run.spoils);
+      expect(back.potions, run.potions);
     });
 
     test('leaving ends the run with what it earned', () {
