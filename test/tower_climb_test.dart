@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
+import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
@@ -62,7 +63,6 @@ const _fresh = TowerRun(
   seed: 7,
   raceId: 'human',
   professionId: 'warrior',
-  clanId: 'dominion',
   health: 20,
 );
 
@@ -164,5 +164,32 @@ void main() {
     Navigator.of(tester.element(find.byType(FightScreen))).pop(true);
     await _settle(tester);
     expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
+  });
+
+  testWidgets(
+      'the first win offers a clan\'s oath; swearing shows it on the floor',
+      (tester) async {
+    await _open(tester,
+        fight: (context, run, data) async =>
+            TowerFightResult(won: true, healthLeft: run.health),
+        prefs: saved(_fresh));
+    expect(find.byKey(const Key('tower_sworn')), findsOneWidget);
+    expect(find.text('Unsworn'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_fight')));
+    await _settle(tester);
+    // Core's rule: the first floor won always offers an oath.
+    final offer = (await TowerSave.open()).loadRun()!.offer;
+    final at = offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);
+    expect(at, isNonNegative);
+    expect(offer[at].kind, TowerRewardKind.clanOath);
+    await tester.tap(find.byKey(Key('tower_card_$at')));
+    await tester.pump();
+    expect(find.text('Swear'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_take')));
+    await _settle(tester);
+    final run = (await TowerSave.open()).loadRun()!;
+    expect(run.clanIds, [offer[at].id]);
+    expect(run.floor, 2);
+    expect(find.text('Unsworn'), findsNothing);
   });
 }

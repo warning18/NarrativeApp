@@ -12,7 +12,9 @@ import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
+import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
+import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
 import 'tower_ladder.dart';
@@ -206,6 +208,8 @@ class _FloorIntro extends ConsumerWidget {
             ),
           ),
         ],
+        TowerLabel(tr(ref, 'tower_oaths_label')),
+        _SwornRow(run: run),
         TowerLabel(tr(ref, 'tower_foes')),
         for (final id in floor.enemyIds)
           Padding(
@@ -258,6 +262,49 @@ class _FloorIntro extends ConsumerWidget {
           child: Text(tr(ref, 'tower_fight')),
         ),
       ],
+    );
+  }
+}
+
+/// The clans the run has sworn to, the main one first: their banners, or
+/// "Unsworn" before the first oath.
+class _SwornRow extends ConsumerWidget {
+  const _SwornRow({required this.run});
+
+  final TowerRun run;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final factions = ref.watch(factionsProvider);
+    final sworn = run.clanIds;
+    return TowerPanel(
+      key: const Key('tower_sworn'),
+      child: sworn.isEmpty
+          ? Text(tr(ref, 'tower_unsworn'),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theme.colorScheme.onSurfaceVariant))
+          : Wrap(
+              spacing: 12,
+              runSpacing: 6,
+              children: [
+                for (final id in sworn)
+                  if (factions[id] case final faction?)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClanDisc(faction, size: 28, name: true),
+                        if (id == run.mainClanId && sworn.length > 1)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Text('(${tr(ref, 'tower_main_clan')})',
+                                style: theme.textTheme.labelSmall),
+                          ),
+                      ],
+                    ),
+              ],
+            ),
     );
   }
 }
