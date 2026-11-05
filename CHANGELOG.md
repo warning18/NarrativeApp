@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.844.0+880]
+
+- Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.
+
 ## [1.843.0+879]
 
 - Skill icons: two more pairs that shared a gem each get their own glyph: Rogue Backstab a dagger, Void Drain a funnel, Plague Bite a skull, Voidkin Entropy Touch fading dots.
