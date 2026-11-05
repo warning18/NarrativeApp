@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
 import 'package:narrative_data_app/widgets/race_profession_cards.dart'
@@ -43,7 +44,8 @@ void main() {
   testWidgets(
       'the main game\'s creation screen picks the hero: the unbought calling '
       'lies padlocked, no clan is told', (tester) async {
-    await _open(tester, const TowerStartScreen());
+    final container = await _open(tester, const TowerStartScreen());
+    final story = container.read(playerSessionProvider);
     // The start screen opens the main game's Race & Profession screen.
     final climb = find.byKey(const Key('tower_climb'));
     await tester.ensureVisible(climb);
@@ -83,6 +85,11 @@ void main() {
     final saved = await TowerSave.open();
     expect(saved.loadRun()?.floor, 1);
     expect(saved.loadRun()?.professionId, 'warrior');
+    // The story's own save is untouched by a Tower creation.
+    final after = container.read(playerSessionProvider);
+    expect(after.raceId, story.raceId);
+    expect(after.professionId, story.professionId);
+    expect(after.characterName, story.characterName);
 
     // Leaving ends the run and shows the end screen.
     await tester.tap(find.byKey(const Key('tower_leave')));
