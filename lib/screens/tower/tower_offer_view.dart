@@ -14,6 +14,7 @@ import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
+import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_widgets.dart';
@@ -27,6 +28,20 @@ class TowerCardText {
   final String text;
 }
 
+/// A die's name in the reader's language: its English name is its id
+/// ("lantern_die"), worded as a title.
+String towerDieName(WidgetRef ref, String id) {
+  final row = ((ref.watch(localizedDbProvider(diceSchema)).value ??
+          const {})[id] as Map?)
+      ?.cast<String, dynamic>();
+  final name = '${row?['diceName'] ?? id}';
+  if (!name.contains('_')) return name;
+  return name
+      .split('_')
+      .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
+      .join(' ');
+}
+
 /// The words of [reward] in the reader's language.
 TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
   final lang = ref.watch(appLanguageProvider);
@@ -34,7 +49,7 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
       ((ref.watch(localizedDbProvider(schema)).value ?? const {})[id] as Map?)
           ?.cast<String, dynamic>() ??
       const {};
-  String dieName(String id) => '${row(diceSchema, id)['diceName'] ?? id}';
+  String dieName(String id) => towerDieName(ref, id);
   switch (reward.kind) {
     case TowerRewardKind.item:
       final r = row(itemsSchema, reward.id);
@@ -127,6 +142,17 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
             child: Builder(builder: (context) {
               final text = towerCardText(ref, offer[i]);
               final held = i == _held;
+              if (offer[i].kind == TowerRewardKind.clanOath) {
+                return _OathCard(
+                  key: Key('tower_card_$i'),
+                  clanId: offer[i].id,
+                  held: held,
+                  done: _done,
+                  data: widget.data,
+                  onHold: () => setState(() => _held = i),
+                  onSwear: () => _pick(i),
+                );
+              }
               return TowerPanel(
                 key: Key('tower_card_$i'),
                 lit: held,
@@ -178,6 +204,91 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// A clan's oath among the cards: its banner on its colour, "The Salt Crows
+/// offer you their oath", what swearing gives (their standing, and their
+/// die by name) and Swear for the card in hand.
+class _OathCard extends ConsumerWidget {
+  const _OathCard({
+    super.key,
+    required this.clanId,
+    required this.held,
+    required this.done,
+    required this.data,
+    required this.onHold,
+    required this.onSwear,
+  });
+
+  final String clanId;
+  final bool held;
+  final bool done;
+  final TowerData data;
+  final VoidCallback onHold;
+  final VoidCallback onSwear;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final faction = ref.watch(factionsProvider)[clanId];
+    final colour =
+        faction == null ? InkColors.of(context).gold : Color(faction.color);
+    final name = faction?.shortFor(lang) ?? clanId;
+    final die = towerClanDieOf(clanId, data.dice);
+    return TowerPanel(
+      lit: held,
+      dim: !held,
+      onTap: onHold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (faction != null) ...[
+                ClanDisc(faction, size: 34),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                child: Text(
+                    tr(ref, 'tower_oath_title').replaceAll('{clan}', name),
+                    key: Key('tower_oath_title_$clanId'),
+                    style: theme.textTheme.titleSmall),
+              ),
+              Text(tr(ref, 'tower_kind_oath'),
+                  style: theme.textTheme.labelSmall?.copyWith(color: colour)),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(tr(ref, 'tower_oath_text'),
+                style: theme.textTheme.bodySmall),
+          ),
+          if (die != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                  tr(ref, 'tower_oath_die')
+                      .replaceAll('{die}', towerDieName(ref, die)),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+          if (held)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: FilledButton(
+                  key: const Key('tower_take'),
+                  onPressed: done ? null : onSwear,
+                  child: Text(tr(ref, 'tower_swear')),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

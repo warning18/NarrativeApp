@@ -71,7 +71,6 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
     required TowerData data,
     required String raceId,
     required String professionId,
-    required String clanId,
     int? seed,
   }) async {
     final save = await _opened();
@@ -80,7 +79,6 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       seed: seed ?? Random().nextInt(1 << 31),
       raceId: raceId,
       professionId: professionId,
-      clanId: clanId,
       // The clans that may offer their oath on the way up (v1.855).
       clanPool: progress.clans,
       startUnlocks: progress.startUnlocks,

@@ -13,7 +13,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
+import 'package:narrative_data_app/data/tower/tower_rewards.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
+import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/main_menu_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
@@ -84,7 +86,6 @@ void main() {
       seed: 1,
       raceId: 'human',
       professionId: 'warrior',
-      clanId: 'dominion',
       floor: 17,
       health: 0,
       status: TowerStatus.dead,
@@ -126,10 +127,6 @@ void main() {
         await tester.tap(find.byKey(Key(k)));
         await tester.pump();
       }
-      await tester.ensureVisible(find.byKey(const Key('tower_clan_dominion')));
-      await tester.tap(find.byKey(const Key('tower_clan_dominion')));
-      await tester.pump();
-      await tester.ensureVisible(find.byKey(const Key('tower_climb')));
       await tester.pump(const Duration(milliseconds: 600));
       await shot('3-start-picked-$tag');
       await open(const TowerMarksScreen(),
@@ -164,6 +161,26 @@ void main() {
       await open(const TowerFloorScreen(), prefs: saved(won));
       await settleLong();
       await shot('9-cards-$tag');
+      // The first floor won offers a clan's oath (Core's rule).
+      final first =
+          run.copyWith(floor: 1, health: 38, status: TowerStatus.climbing);
+      final oathOffer = towerAfterFight(first, data, won: true, healthLeft: 30);
+      await open(const TowerFloorScreen(), prefs: saved(oathOffer));
+      await settleLong();
+      // The card in hand is the oath.
+      final oathAt =
+          oathOffer.offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);
+      await tester.tap(find.byKey(Key('tower_card_$oathAt')));
+      await tester.pump(const Duration(milliseconds: 600));
+      await shot('10-oath-$tag');
+      // A run sworn to two clans, on its eighth floor.
+      final sworn = mid.copyWith(floor: 8, health: 29, taken: {
+        1: const TowerReward(TowerRewardKind.clanOath, id: 'dominion'),
+        4: const TowerReward(TowerRewardKind.clanOath, id: 'mire'),
+      });
+      await open(const TowerFloorScreen(), prefs: saved(sworn));
+      await settleLong();
+      await shot('11-sworn-$tag');
       await open(const TowerEndScreen(
           run: run,
           progress: TowerProgress(marks: 28, bestFloor: 17, runs: 5)));

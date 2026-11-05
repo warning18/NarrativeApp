@@ -1495,8 +1495,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Commencer avec un Dé de flamme.',
   },
   'tower_unlock_crows': {
-    AppLanguage.en: 'Begin under the Salt Crows.',
-    AppLanguage.fr: 'Commencer auprès des Corneilles de Sel.',
+    AppLanguage.en: 'Can be offered: the Salt Crows.',
+    AppLanguage.fr: 'Peut être proposé : les Corneilles de Sel.',
   },
   'tower_unlock_shield_t5': {
     AppLanguage.en: 'Begin with a Knight’s Bulwark.',
@@ -1511,8 +1511,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Commencer avec un Dé de marée.',
   },
   'tower_unlock_vigil': {
-    AppLanguage.en: 'Begin under the Grey Vigil.',
-    AppLanguage.fr: 'Commencer auprès de la Veille Grise.',
+    AppLanguage.en: 'Can be offered: the Grey Vigil.',
+    AppLanguage.fr: 'Peut être proposé : la Veille Grise.',
   },
   'tower_unlock_sword_t4': {
     AppLanguage.en: 'Begin with a Silvered Longsword.',
@@ -1523,8 +1523,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Commencer en Rôdeur.',
   },
   'tower_unlock_compact': {
-    AppLanguage.en: 'Begin under the Cinder Compact.',
-    AppLanguage.fr: 'Commencer auprès du Pacte des Cendres.',
+    AppLanguage.en: 'Can be offered: the Cinder Compact.',
+    AppLanguage.fr: 'Peut être proposé : le Pacte des Cendres.',
   },
   'tower_unlock_tearglass_die': {
     AppLanguage.en: 'Begin with a Tearglass Die.',
@@ -1770,6 +1770,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '+{n} à votre caractéristique principale.',
   },
   // A clan offers its oath on the way up (v1.855).
+  'tower_oath_title': {
+    AppLanguage.en: '{clan} offer you their oath',
+    AppLanguage.fr: '{clan} vous offrent leur serment',
+  },
+  'tower_oath_die': {
+    AppLanguage.en: 'Their die: {die}',
+    AppLanguage.fr: 'Leur dé : {die}',
+  },
+  'tower_swear': {
+    AppLanguage.en: 'Swear',
+    AppLanguage.fr: 'Jurer',
+  },
+  'tower_unsworn': {
+    AppLanguage.en: 'Unsworn',
+    AppLanguage.fr: 'Sans serment',
+  },
+  'tower_oaths_label': {
+    AppLanguage.en: 'Oaths',
+    AppLanguage.fr: 'Serments',
+  },
+  'tower_main_clan': {
+    AppLanguage.en: 'main',
+    AppLanguage.fr: 'principal',
+  },
   'tower_kind_oath': {
     AppLanguage.en: 'Oath',
     AppLanguage.fr: 'Serment',

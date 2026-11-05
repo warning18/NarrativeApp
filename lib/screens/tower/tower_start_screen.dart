@@ -7,9 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
-import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
-import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_floor_screen.dart';
@@ -27,7 +25,6 @@ class TowerStartScreen extends ConsumerStatefulWidget {
 class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
   String? _race;
   String? _profession;
-  String? _clan;
   bool _starting = false;
 
   String _fill(String text, Map<String, Object> values) {
@@ -37,12 +34,13 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
   }
 
   Future<void> _begin() async {
-    final race = _race, profession = _profession, clan = _clan;
-    if (race == null || profession == null || clan == null || _starting) return;
+    final race = _race, profession = _profession;
+    if (race == null || profession == null || _starting) return;
     setState(() => _starting = true);
     final data = await ref.read(towerDataProvider.future);
-    await ref.read(towerProvider.notifier).start(
-        data: data, raceId: race, professionId: profession, clanId: clan);
+    await ref
+        .read(towerProvider.notifier)
+        .start(data: data, raceId: race, professionId: profession);
     if (!mounted) return;
     setState(() => _starting = false);
     await Navigator.of(context)
@@ -53,17 +51,14 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final lang = ref.watch(appLanguageProvider);
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
     final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
     final professions =
         ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
-    final factions = ref.watch(factionsProvider);
     final open = progress.professions;
-    final clansOpen = progress.clans;
-    final ready = _race != null && _profession != null && _clan != null;
+    final ready = _race != null && _profession != null;
 
     Widget option({
       required Key key,
@@ -185,19 +180,6 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
                     onTap: () => setState(() => _profession = id),
                   ),
                 ),
-            TowerLabel(tr(ref, 'tower_pick_clan')),
-            for (final id in towerClans)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: option(
-                  key: Key('tower_clan_$id'),
-                  title: factions[id]?.shortFor(lang) ?? id,
-                  line: clansOpen.contains(id) ? null : tr(ref, 'tower_locked'),
-                  picked: _clan == id,
-                  locked: !clansOpen.contains(id),
-                  onTap: () => setState(() => _clan = id),
-                ),
-              ),
             const SizedBox(height: 14),
             FilledButton(
               key: const Key('tower_climb'),
