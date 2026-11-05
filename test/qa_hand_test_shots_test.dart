@@ -23,6 +23,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/battlefield_condition.dart';
+import 'package:narrative_data_app/combat/encounter.dart';
+import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/data/choice_flow.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
@@ -33,11 +36,17 @@ import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/politics_provider.dart'
     show choiceHiddenFor, coastGateWorldProvider;
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/fight_screen.dart';
 import 'package:narrative_data_app/screens/land_crossing_screen.dart';
+import 'package:narrative_data_app/screens/story_node_editor_screen.dart';
+import 'package:narrative_data_app/screens/vfx_gallery_screen.dart';
 import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 import 'package:narrative_data_app/widgets/choice_card.dart' show ChoiceCard;
+import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
+import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
 
+import 'skill_fight_harness.dart' as fh;
 import 'support/fonts.dart';
 import 'support/open_game.dart' show storedCityPlans;
 
@@ -103,6 +112,7 @@ void main() {
     await settle();
     final play = container.read(storyPlayProvider.notifier);
 
+    Future<void> fightSettle(WidgetTester t) => fh.settle(t);
     final unrendered = <String>[];
     final notes = <String>[];
     void note(String text) => notes.add(text);
@@ -148,11 +158,14 @@ void main() {
     /// Closes the scene's page (Back to the map), when it is the page that is
     /// up, so the map is what the picture shows.
     Future<void> toMap() async {
-      final exit = _key('journey_reading_exit');
-      if (exit.evaluate().isNotEmpty && _key('journey_go').evaluate().isEmpty) {
-        await tester.tap(exit);
-        await settle();
-        await tester.pump(const Duration(seconds: 2));
+      for (final k in ['journey_reading_exit', 'journey_continue']) {
+        final button = _key(k);
+        if (_key('journey_go').evaluate().isEmpty &&
+            button.evaluate().isNotEmpty) {
+          await tester.tap(button.first);
+          await settle();
+          await tester.pump(const Duration(seconds: 2));
+        }
       }
     }
 
@@ -211,12 +224,40 @@ void main() {
 
     Future<void> section(String name, Future<void> Function() body) async {
       if (only.isNotEmpty && !name.startsWith(only)) return;
+      await clear();
+      // Each section starts from the Journey tab, in English, in play mode.
+      container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
+      await tester.runAsync(() => container
+          .read(appLanguageProvider.notifier)
+          .setLanguage(AppLanguage.en));
+      await tester.runAsync(() =>
+          container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+      await settle();
       try {
         await body();
       } catch (e, s) {
         unrendered.add('$name: ${'$e'.split('\n').first}');
         debugPrint('SECTION $name failed: $e\n$s');
         await clear();
+      }
+      // A layout error the screen threw while it was drawn is a finding: it
+      // goes to the notes, not to the test's failure.
+      for (var e = tester.takeException();
+          e != null;
+          e = tester.takeException()) {
+        final all = '$e';
+        final overflow = RegExp(r'overflowed by [0-9.]+ pixels on the \w+')
+            .allMatches(all)
+            .map((m) => m.group(0))
+            .toSet();
+        final where = RegExp(r'[A-Za-z_/]+\.dart:\d+')
+            .allMatches(all)
+            .map((m) => m.group(0))
+            .where((w) => w!.startsWith('lib') || w.contains('screens'))
+            .toSet();
+        note('$name: a layout error while drawing: '
+            '${overflow.isEmpty ? all.split('\n').first : overflow.join('; ')}'
+            ' (${where.join(', ')})');
       }
     }
 
@@ -432,7 +473,7 @@ void main() {
         await shot('skills-screen-tab${i + 1}');
       }
       debugPrint('SKILLTABS $count');
-      nav.popUntil((r) => r.isFirst);
+      nav.popUntil(isGameRoute);
       await tester.pump(const Duration(seconds: 1));
     });
 
@@ -459,7 +500,7 @@ void main() {
       await settle();
       await shot('1815-land-crossing-arrival');
     });
-    await section('1822-camp-crossing', () async {
+    await section('1822-camp-sea-voyage', () async {
       await newSession({'flags': callbackFlags('7001')});
       await go('7001');
       await tester.pump(const Duration(seconds: 8));
@@ -480,13 +521,13 @@ void main() {
           await tester.pump(const Duration(milliseconds: 500));
           t++;
         }
-        await shot('1822-camp-crossing-${at.toString().padLeft(2, '0')}s');
+        await shot('1822-camp-sea-voyage-${at.toString().padLeft(2, '0')}s');
       }
       for (var i = 0; i < 20; i++) {
         await tester.pump(const Duration(milliseconds: 500));
       }
       await settle();
-      await shot('1822-camp-crossing-arrival');
+      await shot('1822-camp-sea-voyage-arrival');
       await clear();
     });
     await section('1822-camp-town-tab', () async {
@@ -546,6 +587,232 @@ void main() {
     await section('1815-sleeper-to-wells', () async {
       await crossing('sleeper_to_wells', '1815-sleeper-to-wells');
     });
+
+    // ---- fights: the aim line (1.824), the land behind the cards (1.826),
+    // the board and its effects (1.814), the spoils sheet (1.831) ----
+    Future<void> fight(String name,
+        {Map<String, dynamic> enemyPatch = const {},
+        String enemyId = 'slum_thug',
+        List<SideLayer>? land,
+        bool win = false,
+        bool pushed = false}) async {
+      final enemy = {
+        ...fh.gamedata('enemies.json')[enemyId] as Map<String, dynamic>,
+        'skillMoves': <dynamic>[],
+        ...enemyPatch,
+      };
+      if (!pushed) {
+        tester
+            .state<NavigatorState>(find.byType(Navigator).first)
+            .push(MaterialPageRoute<bool>(
+                builder: (_) => FightScreen(
+                      enemyId: enemyId,
+                      enemy: enemy,
+                      landLayers: land,
+                      modifiers: const EncounterModifiers(
+                          forcedCondition: BattlefieldCondition.highGround,
+                          forcedGoal: FightGoal.slay),
+                    )));
+      }
+      await fightSettle(tester);
+      await shot('$name-0-prebattle');
+      final enter = find.text('Enter Battle');
+      if (enter.evaluate().isEmpty) throw StateError('no Enter Battle');
+      await tester.ensureVisible(enter);
+      await tester.pump();
+      await tester.tap(enter);
+      await fightSettle(tester);
+      await shot('$name-1-board');
+      // The button reads "Roll Dice" or "Roll Dice (2×)" with rerolls left.
+      final roll = find.textContaining('Roll Dice');
+      for (var i = 0; i < 40 && roll.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.tap(roll.first);
+      await tester.pump();
+      await fh.pumpUntil(tester, () => fh.shows('Confirm'));
+      await fightSettle(tester);
+      await shot('$name-2-rolled');
+      final die = find.byWidgetPredicate((w) =>
+          w.key is ValueKey<String> &&
+          (w.key! as ValueKey<String>).value.startsWith('die_tile_'));
+      if (die.evaluate().isNotEmpty) {
+        await tester.tap(die.first);
+        await fightSettle(tester);
+        await tester.pump(const Duration(milliseconds: 700));
+        await shot('$name-3-die-picked-aim-line');
+      }
+      if (win) {
+        await fh.tapWhenEnabled(tester, 'Confirm');
+        for (var i = 0; i < 6; i++) {
+          await tester.pump(const Duration(milliseconds: 700));
+          await shot('$name-4-after-confirm-$i');
+        }
+      }
+      await clear();
+    }
+
+    await section('1824-fight-allies', () async {
+      // A fight with Vica and Kelda beside the hero.
+      await newSession({
+        'level': 9,
+        'ownedDiceIds': ['starter_die', 'iron_die'],
+        'equippedDiceId': 'starter_die',
+        'maxHealth': 60,
+        'currentHealth': 60,
+        'recruitedAllies': [
+          {'companionId': 'vica', 'currentHealth': 1 << 30},
+          {'companionId': 'kelda', 'currentHealth': 1 << 30},
+        ],
+        'activeAllyIds': ['vica', 'kelda'],
+      });
+      await fight('1824-fight-allies', enemyPatch: {'maxHealth': 900});
+    });
+    await section('1826-fight-on-a-crossing', () async {
+      await newSession({
+        'level': 9,
+        'ownedDiceIds': ['starter_die'],
+        'equippedDiceId': 'starter_die',
+      });
+      await fight('1826-fight-on-a-crossing',
+          enemyPatch: {'maxHealth': 900}, land: desertLayers(progress: 0.5));
+    });
+    await section('1831-spoils', () async {
+      await newSession({
+        'level': 9,
+        'ownedDiceIds': ['starter_die'],
+        'equippedDiceId': 'starter_die',
+      });
+      await fight('1831-spoils',
+          enemyPatch: {'maxHealth': 1, 'minHealth': 1}, win: true);
+    });
+
+    // ---- 1.820: Edit Mode keeps a scene's camp errand ----
+    await section('1820-edit-mode-errand', () async {
+      await newSession(const {});
+      await tester.runAsync(
+          () => container.read(appModeProvider.notifier).setMode(AppMode.edit));
+      await settle();
+      await go('loyal_kelda');
+      await shot('1820-errand-loyal_kelda-journey-edit-mode');
+      final story = container.read(storyDataProvider).value!;
+      final node = story.nodeFor('loyal_kelda')!;
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+      nav.push(MaterialPageRoute<void>(
+          builder: (_) => StoryNodeEditorScreen(node: node)));
+      await settle();
+      await tester.pump(const Duration(seconds: 1));
+      await shot('1820-errand-loyal_kelda-editor-top');
+      for (var i = 1; i <= 3; i++) {
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -600));
+        await settle();
+        await shot('1820-errand-loyal_kelda-editor-scroll$i');
+      }
+      nav.popUntil(isGameRoute);
+      await tester.runAsync(() =>
+          container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+      await settle();
+    });
+
+    // ---- 1.814: the dice, element and keyword effects, the campfire ----
+    await section('1814-effects-gallery', () async {
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+      nav.push(
+          MaterialPageRoute<void>(builder: (_) => const VfxGalleryScreen()));
+      await settle();
+      await tester.pump(const Duration(seconds: 2));
+      await shot('1814-effects-gallery-1');
+      for (var i = 2; i <= 4; i++) {
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -700));
+        await tester.pump(const Duration(milliseconds: 600));
+        await shot('1814-effects-gallery-$i');
+      }
+      for (final effect in ['fireball', 'lightning', 'frost']) {
+        final chip = find.text(effect);
+        if (chip.evaluate().isEmpty) continue;
+        await tester.ensureVisible(chip.first);
+        await tester.tap(chip.first);
+        await tester.pump(const Duration(milliseconds: 280));
+        await shot('1814-effects-gallery-play-$effect');
+      }
+      nav.popUntil(isGameRoute);
+      await tester.pump(const Duration(seconds: 1));
+    });
+    await section('1814-campfire', () async {
+      await newSession({'flags': callbackFlags('7001')});
+      await go('7001');
+      await tester.pump(const Duration(seconds: 8));
+      await tester.fling(
+          find.byType(Scrollable).first, const Offset(0, 3000), 5000);
+      await settle();
+      await shot('1814-campfire-camp');
+      final rest = find.text('Rest');
+      if (rest.evaluate().isNotEmpty) {
+        await tester.tap(rest.first);
+        await tester.pump(const Duration(milliseconds: 700));
+        await shot('1814-campfire-rest-0');
+        await tester.pump(const Duration(milliseconds: 1500));
+        await shot('1814-campfire-rest-1');
+      }
+      await clear();
+    });
+
+    // ---- where a move is a pin or a banner on the map, and where a card ----
+    final moveRows = <Map<String, Object?>>[];
+    await section('movement-table', () async {
+      const scenes = <(String, List<String>)>[
+        ('106', ['casino_tables']),
+        ('110', ['casino_tables']),
+        ('250', []),
+        ('260', []),
+        ('1101_scarred', []),
+        ('1140', []),
+        ('1200', ['lysa_survived', 'vica_follow']),
+        ('2005', []),
+        ('2010', []),
+        ('2015', []),
+        ('2020', []),
+        ('3001_camp', []),
+        ('7400', ['banner_five']),
+        ('7500', []),
+        ('6100_clan_vigil_2', []),
+      ];
+      for (final (id, flags) in scenes) {
+        try {
+          await newSession({'flags': flags});
+          await go(id);
+          // A chapter's first scene opens under its notice: let it go.
+          await tester.pump(const Duration(seconds: 10));
+          await toMap();
+          final row = describe(id);
+          await shot('movement-$id');
+          // The scene's cards (behind the hand badge), by their words.
+          final opener = _key('journey_open_choices');
+          if (opener.evaluate().isNotEmpty) {
+            await tester.tap(opener);
+            await tester.pump(const Duration(milliseconds: 800));
+            row['cardTexts'] = [
+              for (final e in find.byType(ChoiceCard).evaluate())
+                find
+                    .descendant(
+                        of: find.byWidget(e.widget),
+                        matching: find.byType(Text))
+                    .evaluate()
+                    .map((t) => (t.widget as Text).data ?? '')
+                    .where((t) => t.isNotEmpty)
+                    .first,
+            ];
+            await shot('movement-$id-cards');
+            await clear();
+          }
+          moveRows.add(row);
+        } catch (e) {
+          unrendered.add('movement-$id: ${'$e'.split('\n').first}');
+        }
+      }
+    });
+    File('$out/_movement.json')
+        .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(moveRows));
 
     // ---- the keys of the other tabs, to find what to tap ----
     if (Platform.environment['QA_SHOTS_KEYS'] != null) {
