@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.852.0+888]
+
+- **The story node editor** (Edit Mode): the "Destination node", "Fail destination" and "Lose destination" fields take the width they are given and cut a long node id with an ellipsis; the longest id of the story (37 characters) overflowed the first one by 22 px at 412 px. Layout only.
+
 ## [1.851.0+887]
 
 ### Fixed
