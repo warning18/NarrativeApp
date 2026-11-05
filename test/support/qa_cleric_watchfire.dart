@@ -1,6 +1,5 @@
-// Shared by qa_cleric_watchfire_test.dart (the story's fight) and
-// qa_cleric_watchfire_tower_test.dart (the Tower's detached session; the
-// suite keeps one fight per test file).
+// Used by qa_cleric_watchfire_tower_test.dart (the Tower's detached
+// session); `detached: false` plays the story's own session.
 //
 // QA guard for the user's report: "For the cleric when using Mending Light
 // the watchfire countdown doesn't accumulate."
