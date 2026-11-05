@@ -814,6 +814,50 @@ void main() {
     File('$out/_movement.json')
         .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(moveRows));
 
+    // ---- the hub and the gate as the Journey opens them (marks counted) ----
+    await section('priority-hub-marks', () async {
+      for (final (id, flags) in const <(String, List<String>)>[
+        ('125', ['casino_rescue', 'saved_woman']),
+        ('125', ['casino_rescue', 'saved_woman', 'saved_boy']),
+        ('2005', []),
+        ('2015', []),
+      ]) {
+        await newSession({'flags': flags});
+        await go(id);
+        await toMap();
+        // The Journey keeps the level (District, Town, World) it was left on.
+        final district = find.text('District');
+        if (district.evaluate().isNotEmpty) {
+          await tester.tap(district.first);
+          // The camera flies to the district: let it land.
+          await tester.pump(const Duration(seconds: 5));
+        }
+        final row = describe(id);
+        final rows = [
+          for (final e in find.byType(InkWell).evaluate())
+            if ('${e.widget.key}'.contains('city_row')) 1,
+        ].length;
+        final steps = row['spots'];
+        final tag = flags.length > 2
+            ? '-price35'
+            : flags.isNotEmpty
+                ? '-price15'
+                : '';
+        await shot('priority-$id$tag-district');
+        debugPrint(
+            'PRIORITY $id $flags journey_step_ marks=$steps chartBanners='
+            '${row['banners']} cityRows=$rows cardsBadge=${row['cards']} '
+            'choices=${row['choices']} surface=${row['surface']}');
+        // The same scene on the Town level, as the segmented control offers.
+        final town = find.text('Town');
+        if (town.evaluate().isNotEmpty) {
+          await tester.tap(town.first);
+          await tester.pump(const Duration(seconds: 5));
+          await shot('priority-$id$tag-town');
+        }
+      }
+    });
+
     // ---- the keys of the other tabs, to find what to tap ----
     if (Platform.environment['QA_SHOTS_KEYS'] != null) {
       for (final tab in ['Character', 'Camp', 'Other']) {
