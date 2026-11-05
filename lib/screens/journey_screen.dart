@@ -1396,10 +1396,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final stops = ref.watch(storyStopsProvider);
     final mainQuestIds = mainQuestIdsOf(
         ref.watch(localizedDbProvider(questsSchema)).value ?? const {});
+    // A way out told by a departure scene still here (`place: out`,
+    // v1.851) ends where the departure's road does.
     String endOf(StoryChoice c) => play.isInExcursion || c.isEnding || !reading
         ? c.nextId
         : readThroughEnd(
-            c.nextId,
+            wayOutEndOf(c, story),
             nodeFor: story.nodeFor,
             flags: session.flags,
             hidden: (x, held) => choiceHiddenFor(
@@ -1441,7 +1443,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           // is a journey over the world chart (v1.197).
           final elsewhere = target != null && target.id != standing?.id;
           final travels = elsewhere &&
-              world.travelsBetween(story, play.currentNodeId, choice.nextId);
+              world.travelsBetween(
+                  story, play.currentNodeId, wayOutEndOf(choice, story));
           // The roads and stops that way takes over the world chart.
           final route = travels && standing != null
               ? chartRoadsBetween(geography, standing.id, target.id, language)
