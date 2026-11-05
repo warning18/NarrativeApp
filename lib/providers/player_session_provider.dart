@@ -191,6 +191,12 @@ class PlayerSessionNotifier extends _SessionNotifierBase
     _loaded.complete();
   }
 
+  /// Puts [offer] on the table as the stat pick to take (v1.857, the
+  /// Tower's level-up: its own draw, tower_level_up_session.dart), in
+  /// place of the one ensureStatPick would draw.
+  void putStatPick(List<StatPickOffer> offer) =>
+      state = state.copyWith(statPickOffer: offer);
+
   /// Whether this notifier is [PlayerSessionNotifier.detached]: it writes
   /// nothing.
   final bool _detached;
