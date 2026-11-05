@@ -128,12 +128,21 @@ final towerProvider =
 
 /// How a floor's fight ended.
 class TowerFightResult {
-  const TowerFightResult({required this.won, required this.healthLeft});
+  const TowerFightResult(
+      {required this.won,
+      required this.healthLeft,
+      this.potionsLeft,
+      this.antidotesLeft});
 
   final bool won;
 
   /// The hero's health when the fight ended.
   final int healthLeft;
+
+  /// The potions and antidotes it left (v1.860, the bag's); null, as it
+  /// was.
+  final int? potionsLeft;
+  final int? antidotesLeft;
 }
 
 /// Plays the fight of [run]'s floor and says how it ended; null when it was

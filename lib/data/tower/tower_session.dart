@@ -55,6 +55,8 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
     equippedDiceId: hero.diceId,
   ).copyWith(
     mana: hero.mana,
+    // The bag's antidotes (v1.860, the spoils').
+    antidoteCount: run.antidotes,
     knownSpellIds: [for (final s in hero.knownSpells) s.id],
     trainingTaken: {...hero.trainingTaken},
     statPickOffer: towerStatPickOffer(run, data),

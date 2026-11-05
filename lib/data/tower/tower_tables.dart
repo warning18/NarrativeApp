@@ -14,10 +14,15 @@ const int towerFlask = 1;
 /// The Tower's foes for each profession, on top of the floor's extra
 /// (v1.848, the user's call on QA's #834): alone, the mage was the weakest
 /// by far (the top won 1 run in 100) and the cleric, healing itself, the
-/// strongest (half the runs with every unlock).
+/// strongest (half the runs with every unlock). v1.860 (the spoils and
+/// the boons, fewer skills and dice than the cards gave): the ranger, who
+/// leans on them most, at .88 (else 1 run in 25 won the top with every
+/// unlock); the rogue, whom the spoils' gear lifts most, at 1.04.
 const Map<String, double> towerProfessionScale = {
   'mage': .65,
   'cleric': 1.35,
+  'ranger': .88,
+  'rogue': 1.04,
 };
 
 /// The foes' scale for [professionId] (1 for the others), with the
@@ -35,8 +40,10 @@ const double towerFoeScale = 0.95;
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
 /// more max health. (Start levels were tried first and made the Tower
-/// harder: the foes grow with the hero's level.)
-const double towerHealthPerUnlock = .02;
+/// harder: the foes grow with the hero's level.) v1.860: .04 (was .02):
+/// the cards the unlocked runs took most are gone, and the top with every
+/// unlock had fallen to 7% (the design asks 15 to 25%).
+const double towerHealthPerUnlock = .04;
 
 /// Every this many unlocks owned at the start: one more potion carried into
 /// each fight.
@@ -341,11 +348,34 @@ const Map<TowerRewardKind, int> towerRewardWeights = {
 const int towerOfferSize = 3;
 
 /// A clan's oath on the table (v1.855): always on the first floor won, then
-/// on this share of the offers while a clan is left to swear to; one oath
-/// an offer at most, never all three cards.
+/// on this share of the floors (not a boon's, v1.860) while a clan is left
+/// to swear to; one oath a floor at most.
 const double towerOathChance = 0.35;
 
+/// The floors whose win offers a boon (v1.860, the main game's earning
+/// offers): a choose-one of a skill, a die and a spell. The other floors
+/// give their spoils only, and a clan's oath when one comes.
+const Set<int> towerBoonFloors = {5, 10, 15, 20, 25};
+
+/// What a boon's three cards are, one of each while each has one to give.
+const List<TowerRewardKind> towerBoonKinds = [
+  TowerRewardKind.skill,
+  TowerRewardKind.die,
+  TowerRewardKind.spell,
+];
+
+/// The spoils chest's potions in the bag, as the story counts them
+/// (PlayerSessionNotifier: a major potion is two).
+const Map<String, int> towerSpoilsPotions = {
+  'potion_minor': 1,
+  'potion_major': 2,
+};
+
+/// The chest's antidote.
+const String towerSpoilsAntidote = 'antidote';
+
 /// A heal card's share of max health, and after a boss or a warden.
+/// (Before v1.860; an old save's offer may still hold one.)
 const double towerHealShare = .35;
 const double towerBigHealShare = .50;
 

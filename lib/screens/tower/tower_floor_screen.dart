@@ -50,7 +50,10 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
       // Not fought (Back before the first roll): the floor stays as it was.
       if (result == null) return;
       final next = towerAfterFight(run, data,
-          won: result.won, healthLeft: result.healthLeft);
+          won: result.won,
+          healthLeft: result.healthLeft,
+          potionsLeft: result.potionsLeft,
+          antidotesLeft: result.antidotesLeft);
       if (next.isOver) {
         await _finish(next);
       } else {
