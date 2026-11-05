@@ -44,6 +44,11 @@ class TowerFightSession {
   /// The health the fight left the hero.
   int get healthLeft => current.currentHealth;
 
+  /// The potions and antidotes the fight left the hero (v1.860: the bag
+  /// carries what is left of the spoils').
+  int get potionsLeft => current.potionCount;
+  int get antidotesLeft => current.antidoteCount;
+
   /// [child] (the FightScreen) under the Tower hero's session: every read
   /// of playerSessionProvider below it is the Tower's, every write stays
   /// in it and is never saved.
@@ -61,5 +66,9 @@ class TowerFightSession {
   /// [run] after this fight: [won] (what FightScreen pops) and the health
   /// it left, through towerAfterFight.
   TowerRun after(TowerRun run, {required bool won}) =>
-      towerAfterFight(run, data, won: won, healthLeft: healthLeft);
+      towerAfterFight(run, data,
+          won: won,
+          healthLeft: healthLeft,
+          potionsLeft: potionsLeft,
+          antidotesLeft: antidotesLeft);
 }

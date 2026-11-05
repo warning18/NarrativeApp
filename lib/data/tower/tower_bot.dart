@@ -70,7 +70,9 @@ TowerRun playTowerRun({
       random: towerRandom(seed, floor.floor, TowerStream.fight),
     );
     run = towerAfterFight(run, data,
-        won: outcome.won, healthLeft: hero.currentHealth);
+        won: outcome.won,
+        healthLeft: hero.currentHealth,
+        potionsLeft: hero.potions);
     if (run.status == TowerStatus.choosing) {
       // The level-up first, as the story's bot takes its picks.
       while (towerPendingPicks(run) > 0) {
@@ -92,8 +94,10 @@ TowerRun playTowerRun({
 }
 
 /// The card the bot takes from [run]'s offer: a heal when below half
-/// health, else the first of: a clan's oath (a player's habit), a clan's
-/// die, gear better than what it wears, a die, a skill, a spell, the clan's stat point, a heal.
+/// health (an old save's), else the first of: a clan's oath (a player's
+/// habit), a clan's die, gear better than what it wears, a skill (a boon's
+/// first: the measure of v1.860, a die first left the ranger at 1 top in
+/// 70), a die, a spell, the clan's stat point, a heal.
 int? towerBotChoice(TowerRun run, TowerData data) {
   if (run.offer.isEmpty) return null;
   final hero = towerHeroOf(run, data);
@@ -122,8 +126,8 @@ int? towerBotChoice(TowerRun run, TowerData data) {
   return find((r) => r.kind == TowerRewardKind.clanOath) ??
       find((r) => r.kind == TowerRewardKind.clanGift && r.id.isNotEmpty) ??
       find((r) => r.kind == TowerRewardKind.item && better(r)) ??
-      find((r) => r.kind == TowerRewardKind.die) ??
       find((r) => r.kind == TowerRewardKind.skill) ??
+      find((r) => r.kind == TowerRewardKind.die) ??
       find((r) => r.kind == TowerRewardKind.spell) ??
       find((r) => r.kind == TowerRewardKind.clanGift) ??
       find((r) => r.kind == TowerRewardKind.heal) ??

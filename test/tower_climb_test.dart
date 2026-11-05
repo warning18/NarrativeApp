@@ -81,16 +81,16 @@ void main() {
       {towerRunPrefsKey: jsonEncode(run.toJson())};
 
   testWidgets(
-      'the floor shows its ladder and foes; a win offers cards, one is taken',
-      (tester) async {
+      'the floor shows its ladder and foes; a boon floor offers cards, one is '
+      'taken', (tester) async {
     await _open(tester,
         fight: (context, run, data) async =>
             TowerFightResult(won: true, healthLeft: run.health),
-        prefs: saved(_fresh));
-    expect(find.text('Floor 1 of 30'), findsOneWidget);
+        // Floor 5: a boon (v1.860, a skill, a die and a spell).
+        prefs: saved(_fresh.copyWith(floor: 5)));
+    expect(find.text('Floor 5 of 30'), findsOneWidget);
     expect(find.byKey(const Key('tower_ladder')), findsOneWidget);
     expect(find.byKey(const Key('tower_ladder_here')), findsOneWidget);
-    expect(find.byKey(const Key('tower_danger_band')), findsNothing);
 
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
@@ -104,10 +104,10 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_take')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
-    expect(run.floor, 2);
+    expect(run.floor, 6);
     expect(run.status, TowerStatus.climbing);
     expect(run.taken.length, 1);
-    expect(find.text('Floor 2 of 30'), findsOneWidget);
+    expect(find.text('Floor 6 of 30'), findsOneWidget);
   });
 
   testWidgets('leaving all the cards earns a mark and goes on', (tester) async {
