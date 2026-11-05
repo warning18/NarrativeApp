@@ -18,6 +18,16 @@ isn't reconstructable from git history alone.
   Light on a wounded member still leaves the fire as it was.
 - `test/qa_mending_light_watchfire_test.dart`.
 
+## [1.858.0+894]
+
+### Changed
+- **The Tower opens the main game's Level Up after a floor that gains a
+  level**, before the cards (step 2 of "the main game's earning offers"):
+  `TowerLevelUpSession(run, data).wrap(LevelUpScreen())`, the run saved
+  afterwards. A saved run reopened with picks waiting does the same once.
+- `test/tower_climb_test.dart` goes past the Level Up; the picture test
+  draws it (`docs/ux-shots/tower/levelup/`).
+
 ## [1.857.0+893]
 
 ### Changed
