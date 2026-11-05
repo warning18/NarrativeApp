@@ -914,6 +914,9 @@ const int _maxRolls = maxRollsPerTurn;
 /// a loss; XP and gold are the caller's to grant on a win. [signs] is what
 /// the character's held signs add up to (see signEffectsFor): lent for
 /// the fight and taken back when it ends; [perks] what the perk ranks do.
+/// [zoneMultiplier] is the fight's own multiplier on the curve, as the
+/// fight screen's `EncounterModifiers.difficultyMultiplier` (a Tower floor's
+/// extra).
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -932,6 +935,7 @@ SimFightOutcome simulateSimFight({
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
   List<SimAlly> allies = const [],
+  double zoneMultiplier = 1.0,
 }) {
   final fight = _SimFight(
     c: character,
@@ -951,6 +955,7 @@ SimFightOutcome simulateSimFight({
     context: context,
     reinforcement: reinforcement,
     allies: allies,
+    zoneMultiplier: zoneMultiplier,
   ).._setup();
   return fight.run();
 }

@@ -68,6 +68,7 @@ class EncounterModifiers {
     this.hostFight = false,
     this.forcedGoal,
     this.forcedSquad,
+    this.tower = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -157,6 +158,11 @@ class EncounterModifiers {
   /// The squad roles of the pack, in enemy order (null for a plain
   /// enemy), instead of rolling them (v1.215, see squad.dart).
   final List<SquadRole?>? forcedSquad;
+
+  /// A floor of the Tower (v1.845, lib/data/tower/): no scene behind it, so
+  /// no chest, no gold or XP, no threat and no weather, and nothing told to
+  /// the story's next scene; the Tower takes the result.
+  final bool tower;
 
   bool get isDefault =>
       forcedAffixes.isEmpty &&

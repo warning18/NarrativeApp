@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.845.0+881]
+
+### Added
+- **The Tower's engine** (phase 1, headless; no screens yet), in
+  `lib/data/tower/`, following `docs/proposals/tower-mechanics.md`:
+  - **The run** (`TowerRun`): its seed, race, profession and clan, the
+    floor, the health, the cards taken, and the cards on the table. Its
+    moves are `towerStart`, `towerAfterFight`, `towerPick` and
+    `towerAbandon`. The hero is rebuilt from the run (`towerHeroOf`), so
+    the save holds no character.
+  - **30 seeded floors** (`towerFloorsFor`): the budget table, a pool of
+    ordinary foes per chapter, wardens on 5, 15 and 25, and Narrative's
+    bosses on 10, 20 and 30 (the Legate's Champion, Hesk Morrow, the
+    Sovereign). The same seed always gives the same tower.
+  - **The cards** (`towerOfferFor`): 3 of different kinds (item, die,
+    skill, spell, heal, clan gift), never gold, with a heal always among
+    them below 40% health.
+  - **Marks and unlocks** (`TowerProgress`): 1 a floor, 2 a warden, 5 a
+    boss, 15 the top (61 for a win), and +1 for refusing an offer.
+    Narrative's ten unlocks cost 210 marks in all.
+  - **Its own save** (`TowerSave`): the keys `tower_run_v1` and
+    `tower_marks_v1`. Deleting the story saves never touches them.
+  - **The fight without a scene**: a new setting,
+    `EncounterModifiers.tower`, gives no chest, no gold or XP, no threat
+    and no weather, and tells nothing to a scene. Each floor's settings
+    are `TowerFloor.modifiers`.
+  - **The bot** (`playTowerRun`, `playTowerBatch`) plays whole runs on the
+    headless fight in about 10 ms each. Over 500 seeds with no unlocks,
+    the median run reaches floor 16, 30% reach floor 20 and 9.6% win the
+    top (18.8% with every unlock).
+- The headless fight takes a fight's own multiplier on the curve
+  (`simulateSimFight(zoneMultiplier:)`), as the fight screen does. It
+  defaults to 1.0, so the simulator's existing runs are unchanged.
+
 ## [1.844.0+880]
 
 - Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.
