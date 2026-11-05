@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.849.0+885]
+
+### Added
+- **The Tower's fight, apart from the story** (for UX-2's floor screen):
+  - `TowerFightSession(run, data)` (`lib/providers/tower_fight_session.dart`)
+    wraps the FightScreen in a ProviderScope whose hero is the Tower's
+    (`towerSessionOf`, `lib/data/tower/tower_session.dart`). The hero
+    carries the run's race, profession, level, health, dice, skills,
+    spells, gear and potions, and its clan at Friend.
+  - Whatever the fight does to the hero stays in that session: a new
+    `PlayerSessionNotifier.detached` never reads or writes the story save.
+  - `fight.after(run, won:)` takes the fight's result and the health it
+    left through `towerAfterFight`.
+- `test/tower_fight_session_test.dart` opens a fight under it with a story
+  save in place, and checks that the save is untouched.
+
+## [1.848.0+884]
+
+### Changed
+- The Tower's balance, from QA's batch (#834) and the user's calls (numbers
+  only, `lib/data/tower/tower_tables.dart`):
+  - **Foes per profession:** mage ×0.65, cleric ×1.35, the others ×1
+    (Tower only; `TowerFloor.modifiersFor(professionId)`). The mage was
+    winning the top 1 run in 100, and the cleric half the runs with every
+    unlock.
+  - **Wardens and bosses are gates:** wardens ×1.9; bosses 10 ×1.7, 20
+    ×1.25, 30 ×1.1.
+  - **Unlocks give power:** +2% max health for each unlock owned at the
+    start, and +1 potion per fight for every 5 (`TowerRun.unlocksOwned`).
+- The bot over 1,500 seeds: with no unlocks, median floor 17 and the top
+  won 10.1%; with every unlock, the top won 19.6%. Professions now win
+  9–11% with no unlocks.
+- The overall difficulty is unchanged, as the user asked. Clans and
+  Voidkin are left to the user's hand test.
+
 ## [1.847.0+883]
 
 - **The Tower's door and screens, without the climb** (phase 3a; shown in Edit mode only until the climb is in): "The Tower" on the main menu, the start screen (a people, a calling and a clan, the ones not bought yet locked, marks and best floor, Continue when a run is under way), the marks and unlocks screen (the ten unlocks, Buy and Owned), and the end of a run (floor, marks earned and total). A run can be started and left from a stand-in floor page; the floor itself, the ladder and the cards come in the next release. English and French from Narrative's names note; the Tower keeps its own save and never touches the story's.

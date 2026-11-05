@@ -145,7 +145,8 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         _RoadTimeActions,
         _SkillsCombatActions {
   PlayerSessionNotifier()
-      : super(const PlayerSession(
+      : _detached = false,
+        super(const PlayerSession(
           level: 1,
           currentXP: 0,
           gold: 0,
@@ -182,6 +183,17 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         )) {
     _load();
   }
+
+  /// A notifier on [session] alone, never read from nor written to the
+  /// story save (v1.849, the Tower's fight: towerFightSession). Its changes
+  /// live only as long as it does.
+  PlayerSessionNotifier.detached(super.session) : _detached = true {
+    _loaded.complete();
+  }
+
+  /// Whether this notifier is [PlayerSessionNotifier.detached]: it writes
+  /// nothing.
+  final bool _detached;
 
   /// Every state the notifier takes keeps its companion flags in step with
   /// the roster (wave 17: `ally_<id>` while recruited, `devoted_<id>` once
@@ -461,6 +473,7 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   Future<void> _write() async {
     await _loaded.future;
     _pendingWrite = null;
+    if (_detached) return;
     final encoded = json.encode(state.toJson());
     sessionWrites++;
     final prefs = await SharedPreferences.getInstance();

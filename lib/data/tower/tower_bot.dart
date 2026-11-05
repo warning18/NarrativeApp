@@ -46,6 +46,7 @@ TowerRun playTowerRun({
     professionId: professionId ?? draw(professions),
     clanId: clanId ?? draw(clans),
     startUnlocks: progress.startUnlocks,
+    unlocksOwned: progress.unlocksOwned,
     data: data,
   );
   final floors = towerFloorsFor(seed, data.enemies);
@@ -59,8 +60,8 @@ TowerRun playTowerRun({
           MapEntry(id, data.enemies[id] as Map<String, dynamic>),
       ],
       chapter: floor.chapter,
-      zoneMultiplier:
-          floor.extra * (floor.elite ? towerSimEliteMultiplier : 1.0),
+      zoneMultiplier: floor.extraFor(run.professionId) *
+          (floor.elite ? towerSimEliteMultiplier : 1.0),
       skills: data.skills,
       items: data.items,
       random: towerRandom(seed, floor.floor, TowerStream.fight),
