@@ -1,0 +1,11 @@
+## What the batch says
+
+**The totals hold the design's targets; the splits do not.** Checked on two seed ranges of 2,000 runs (1 to 2000 and 10001 to 12000, both ways): the median floor is 15 or 16, 29% reach floor 20, and 9.8% to 10.3% win the top with no unlocks (the target is 5 to 10%: the upper edge, a tenth of a point over on the first range), 16.6% to 18.4% with all of them (15 to 25%). Core's own figures (median 16, floor 20 at 30%, top 9.6% and 18.8%) are reproduced. The guards of `test/qa_tower_sim_test.dart` hold the targets on seeds 1 to 500.
+
+1. **The profession decides the run, far more than the targets say.** With no unlocks, the bot wins the top **15.2% as a warrior, 15.1% as a rogue and 0.5% as a mage** (median floor 11 for the mage, 17 and 19.5 for the others; 5% of mages reach floor 20, 50% of rogues). With all unlocks the **cleric wins 52.0%**, the ranger 15.5%, the mage still 0.5%. The mage can hardly climb and the cleric hardly falls. The bot takes a spell last (6% of its cards), so the mage may only be badly played by it; Core has to say which it is. Issue filed for Core.
+2. **The clan is the second split**: Dominion 14.3% against Mire 6.0% (Penitents 10.4%) with no unlocks; with all, Dominion 29.3% against 12.2% (Mire) to 19.0% (Compact).
+3. **Voidkin gets nothing from the unlocks**: 7.8% with none, 8.0% with all, where the other races go from about 11% to 17 to 24%.
+4. **The walls are not the bosses.** The boss and warden floors are the easiest of their stretch: floors 5, 10, 15 and 25 are won 98% to 99% of the time, floor 20 93.5%; the top boss (30) is won 88.5%, as much as the floors around it. The runs end on ordinary floors: **11** (8.6% of all runs), **17**, **8**, **9**, **12**. If the user wants a boss to be a gate, the numbers do not make it one.
+5. **The start sets differ from the note**: the tables give 3 professions (warrior, mage, rogue) and 3 clans (Dominion, Mire, Penitents) from the start; tower-mechanics.md §7 says 4 professions and one clan. The batch is on the tables.
+6. The bot never refuses a card, so a run earns 25.4 marks on average (median 24; 28.2 with all unlocks).
+
