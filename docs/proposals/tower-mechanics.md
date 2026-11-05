@@ -140,13 +140,16 @@ The bosses are the existing boss records, each with its phases. They run on
 the boss floor (`bossHealthBaseMultiplier` 1.45 and damage 1.24), and the
 Tower's extra goes on top.
 
-| Floor | Chapter | Boss (one, drawn by the seed) | Phases |
+| Floor | Chapter | Boss | Phases |
 |---|---|---|---|
-| 10 | 3 | `void_stalker`, `inquisition_high_warden`, `angel_judicator`, `demon_tormentor`, `iron_golem` | 1–2 |
-| 20 | 5 | `void_archon`, `bone_warden`, `frost_kept_giant`, `rime_bailiff`, `teind_rider` | 1–2 |
-| 30 | 8 | `void_sovereign`, always | 2 |
+| 10 | 3 | `inquisition_legate` (the Legate's Champion) | 1 |
+| 20 | 5 | `claimant_morrow` (Hesk Morrow) | 2 |
+| 30 | 8 | `void_sovereign` (the Sovereign) | 2 |
 
-- The top is always the same fight, so phase 2's win rate means one thing.
+- The bosses are Narrative's picks (`the-tower-names.md`, each with its
+  banner line). The same three every run, so phase 2's win rates mean one
+  thing. They are a table in `tower_tables.dart`, so another foe is a
+  one-line change.
 - A boss is always alone: no pack, no forced affix, no Elite.
 - After a boss the offer is a **boss offer**: 3 rewards one rarity step up
   (§5), and a heal of 50% if the hero is below half.
@@ -163,8 +166,8 @@ phases from the band's boss list, minus the floor bosses above.
 They break the climb into steps of five, and each one guards a better offer
 too (one rarity step up, as after a boss).
 
-Clan champions, the claimants and `tear_herald` are left out of the first
-version. They are story duels with lines written for the story.
+Clan champions, the other claimants and `tear_herald` are left out of the
+first version. They are story duels with lines written for the story.
 
 ## 5. Rewards: 1 of 3
 
@@ -173,13 +176,12 @@ where possible. **A reward is never gold.**
 
 | Kind | Weight | What it gives | Pool |
 |---|---|---|---|
-| Item | 26 | one weapon, armour, charm or artifact, equipped or kept | `items.json`, `isEquippable`, by rarity (below); no quest items or materials |
+| Item | 30 | one weapon, armour, charm or artifact, equipped or kept | `items.json`, `isEquippable`, by rarity (below); no quest items or materials |
 | Die | 10 | a new die for the loadout | `dice.json` minus the companion dice (`liora_die`, `vess_die`, `grosh_die`, `tobin_die`, `malrik_die`) and other clans' dice |
-| Die face | 14 | one face upgraded or swapped (the forge's face smithing, `face_smithing.dart`) | that profession's faces, by rarity |
-| Skill | 16 | one skill learnt | `skills.json` the hero may learn (race and profession limits), by rarity |
+| Skill | 18 | one skill learnt | `skills.json` the hero may learn (race and profession limits), by rarity |
 | Spell | 8 | one spell | `spells.json` for the profession (3–4 each); none once all are known |
-| Heal | 14 | 35% of max health (50% after a boss or warden) | always offered when the hero is below 40% health (it replaces the lowest-weight card) |
-| Clan gift | 12 | from the run's clan: its skill, sign, object or **its die** | the clan's offers (`offers.dart` `GiftKind`); the die only once a run |
+| Heal | 16 | 35% of max health (50% after a boss or warden) | always offered when the hero is below 40% health (it replaces the lowest-weight card) |
+| Clan gift | 14 | from the run's clan: **its die** once a run, then a point in the profession's damage stat | the clan's die (`dice.json` `clan`) |
 
 Weights are per card. The 3 cards are drawn without repeating a kind,
 unless a kind's pool is empty.
@@ -199,9 +201,10 @@ skills, "Relic / epic+" means epic or legendary.
 **Skip.** The hero may refuse all three for **+1 mark**. It's an easy
 choice for a full build, and it costs the hero the power.
 
-**Allies.** A sellsword reward (+1 card kind, weight 6): it strikes for
-`sellswordDamage(chapter)` each round for the next 3 floors. Companions
-are left out (§10).
+**Later (not in phase 1).** A die-face card (the forge's face smithing), a
+sellsword card, and clan skills, signs and objects as clan gifts: each needs
+its own screen, and none is in the headless engine yet. Companions are left
+out (§10).
 
 ## 6. Clans and dice in a run
 
@@ -247,21 +250,26 @@ offers).
 **The first unlock tree** has 10 entries. Marks are spent, not lost on
 death.
 
-| # | Unlock | Cost | Needs |
-|---|---|---|---|
-| 1 | Clan: Vigil | 10 | — |
-| 2 | Clan: Compact | 10 | — |
-| 3 | Clan: Mire | 15 | 1 or 2 |
-| 4 | Clan: Crows | 15 | 1 or 2 |
-| 5 | Clan: Penitents | 20 | 3 or 4 |
-| 6 | Profession: Ranger | 20 | — |
-| 7 | Race: Voidkin | 20 | — |
-| 8 | Start with a second die (`apprentice_die`) | 25 | 6 or 7 |
-| 9 | Start with an Uncommon item of the profession | 25 | any clan |
-| 10 | A fourth reward card on boss and warden floors | 40 | 8 and 9 |
+Narrative's ten (`the-tower-names.md`), in their order, cheapest first:
 
-At first the player has 4 races, 4 professions (warrior, mage, rogue,
-cleric) and one clan, Dominion. Narrative names the entries (phase 0c).
+| # | Unlock | Kind | Cost | Needs |
+|---|---|---|---|---|
+| 1 | Flame Die (`flame_die`) | start die | 10 | — |
+| 2 | The Salt Crows (`crows`) | clan | 10 | — |
+| 3 | Knight's Bulwark (`shield_t5`) | start item | 15 | — |
+| 4 | Cleric (`cleric`) | profession | 15 | — |
+| 5 | Tide Die (`tide_die`) | start die | 20 | 1 |
+| 6 | The Grey Vigil (`vigil`) | clan | 20 | 2 |
+| 7 | Silvered Longsword (`sword_t4`) | start item | 25 | 3 |
+| 8 | Ranger (`ranger`) | profession | 25 | 4 |
+| 9 | The Cinder Compact (`compact`) | clan | 30 | 6 |
+| 10 | Tearglass Die (`tearglass_die`) | start die | 40 | 5 |
+
+The ten cost 210 marks in all, about three and a half won runs. At first
+the player has every race, three professions (warrior, mage, rogue) and
+three clans (Dominion, Mire, Penitents). A start die is owned from the
+first floor and played when it beats the profession's own; a start item is
+worn.
 Each unlock adds options and never raises a number on its own, so the
 balance batch can test "no unlocks" and "all unlocks" as two cases.
 
