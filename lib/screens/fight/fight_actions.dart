@@ -299,6 +299,16 @@ extension _FightActions on _FightScreenState {
               text: '+$healing',
               textKind: VfxTextKind.heal,
               power: spellPower(amount: healing, maxHealth: member.maxHealth));
+          // The cleric's Watchfire: a spell's heal past full feeds the
+          // fire, as a die's does (profession_cores.dart).
+          if (_core.core == ProfessionCore.watchfire) {
+            _core.fire = fireAfterHeal(
+                fire: _core.fire,
+                healing: healing,
+                currentHealth: member.currentHealth,
+                maxHealth: member.maxHealth,
+                beacon: _core.has(Spec.beacon));
+          }
           member.currentHealth =
               min(member.maxHealth, member.currentHealth + healing);
           entries.add(_LogEntry(
