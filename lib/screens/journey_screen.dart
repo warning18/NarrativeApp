@@ -46,6 +46,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import 'crossing_rise_route.dart';
 import '../data/camp_state.dart' show canReturnToCampFrom;
 import '../providers/chapter_loop_provider.dart';
 import '../providers/choice_flow_provider.dart';
@@ -865,6 +866,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     var taken = false;
     ChoiceFlow flow = const FlowStay();
     String? fromId;
+    // Kept now: the screen may be gone by the time the step ends.
+    final rise = ref.read(crossingRiseProvider.notifier)..state = false;
     try {
       final chart = _chartKey.currentState;
       // On a town's District view (v1.565): the party's mark walks to the
@@ -889,7 +892,15 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       if (chart != null &&
           step.moves &&
           !MediaQuery.of(context).disableAnimations) {
-        walked = await chart.walkTo(_pinIdx.indexOf(index));
+        // A long road the choice crosses (land_routes.json) is played on
+        // the crossing screen: the chart flight only sets out, and the
+        // crossing rises over it (crossing_rise_route.dart).
+        final crossing = step.choice.crossesLand &&
+            ref.read(appModeProvider) != AppMode.edit;
+        walked = await chart.walkTo(_pinIdx.indexOf(index), setOut: crossing);
+        if (crossing && walked != null) {
+          rise.state = true;
+        }
       }
       if (!mounted || moved()) return;
       if (walked != null) _terrainShift += walked;
@@ -915,7 +926,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       flow = _flowAfter(fromId, step.choice);
       _noteTakenStep(step.choice, flow, before);
     } finally {
+      // The rise is for the crossing that follows this flight only.
       if (mounted) {
+        rise.state = false;
         // A choice that keeps the story where it was (a shop, a fight
         // fled) brings the party back to its mark.
         final stayed = _sceneKeyOf(ref.read(storyPlayProvider)) == before;
@@ -3377,7 +3390,10 @@ class _JourneyChartState extends State<_JourneyChart>
   /// following it and coming back to where it opened; returns how far the
   /// party went (the step's place less its own), or null when the map is
   /// taken down before the party gets there.
-  Future<Offset?> walkTo(int index) async {
+  /// [setOut]: a road the crossing screen plays: the flight stops once the
+  /// party has left (about two seconds), and the crossing rises over the
+  /// chart.
+  Future<Offset?> walkTo(int index, {bool setOut = false}) async {
     if (index >= _centres.length || !widget.steps[index].moves) return null;
     _walkRoad = _road(_here, _centres[index]).computeMetrics().first;
     // Slow in a place, a stroll whatever the street's length, and the
@@ -3420,7 +3436,16 @@ class _JourneyChartState extends State<_JourneyChart>
         }
         setState(() => _flying = index);
         _wake();
-        await _flight.forward(from: 0).orCancel;
+        if (setOut) {
+          final span = _flight.duration! * crossingSetOutAt;
+          await _flight
+              .animateTo(crossingSetOutAt,
+                  duration: span > crossingSetOutMax ? crossingSetOutMax : span,
+                  curve: Curves.easeOut)
+              .orCancel;
+        } else {
+          await _flight.forward(from: 0).orCancel;
+        }
       }
     } on TickerCanceled {
       // The map went mid-walk (disposed with its scene): its walk never
