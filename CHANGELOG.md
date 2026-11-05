@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.852.0+888]
+
+- **The story node editor** (Edit Mode): the "Destination node", "Fail destination" and "Lose destination" fields take the width they are given and cut a long node id with an ellipsis; the longest id of the story (37 characters) overflowed the first one by 22 px at 412 px. Layout only.
+
 ## [1.850.0+886]
 
 - **The Tower's climb** (phase 3b): the floor screen with B's vertical ladder beside A's panels (the band, the floor's title, the foes with their affixes, a red band and the boss's line on the warden and boss floors, the health), Fight over Core's Tower fight session (no retreat; Back before the first roll leaves the floor as it was), the cards of a won floor (take one, or leave them all for a mark), the end of a run on a loss or at floor 30, and Continue the climb from the save. The Tower entry is on the main menu for everyone, below Edit Mode. English and French from Narrative's names note (the 30 floor titles, the three boss lines).
