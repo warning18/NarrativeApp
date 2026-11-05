@@ -19,7 +19,6 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
-import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -93,68 +92,16 @@ void main() {
       }));
   });
 
-  test('every run ends, won or dead, on a floor of the tower', () {
+  // (That a run ends won or dead, that a seed gives the same tower and run,
+  // and that every floor's foes are in their pool are held by Core's
+  // test/tower_engine_test.dart: not repeated here.)
+  test('a batch ends on the tower: floors 1 to $towerTop, no card left', () {
     for (final run in [...none, ...all]) {
-      expect(run.status, anyOf(TowerStatus.won, TowerStatus.dead),
-          reason: 'seed ${run.seed}: ${run.status}');
       expect(run.floorReached, inInclusiveRange(1, towerTop),
           reason: 'seed ${run.seed}');
       expect(run.offer, isEmpty, reason: 'seed ${run.seed}: a card is left');
       if (run.status == TowerStatus.won) {
-        expect(run.floorReached, towerTop);
-        expect(run.floorsCleared, towerTop);
-      }
-      // The marks are the rules' (§7), for the floors cleared and the
-      // offers refused.
-      expect(run.marks, towerMarksOf(run.floorsCleared, run.refused.length),
-          reason: 'seed ${run.seed}');
-    }
-  });
-
-  test('the same seed gives the same tower and the same run', () {
-    for (var seed = 1; seed <= 20; seed++) {
-      final a = towerFloorsFor(seed, _data.enemies);
-      final b = towerFloorsFor(seed, _data.enemies);
-      expect(a.length, towerTop);
-      for (var i = 0; i < a.length; i++) {
-        expect(a[i].enemyIds, b[i].enemyIds,
-            reason: 'seed $seed floor ${i + 1}');
-        expect(a[i].affixes, b[i].affixes, reason: 'seed $seed floor ${i + 1}');
-        expect(a[i].elite, b[i].elite, reason: 'seed $seed floor ${i + 1}');
-      }
-      final run1 = playTowerRun(seed: seed, data: _data);
-      final run2 = playTowerRun(seed: seed, data: _data);
-      expect(run1.toJson(), run2.toJson(), reason: 'seed $seed');
-    }
-    // And two seeds are two towers.
-    final towers = {
-      for (var seed = 1; seed <= 20; seed++)
-        towerFloorsFor(seed, _data.enemies).map((f) => f.enemyIds).join('|'),
-    };
-    expect(towers.length, greaterThan(15),
-        reason: '20 seeds give 20 different towers');
-  });
-
-  test('every floor\'s foes are in its pool; the bosses are the table\'s', () {
-    for (var seed = 1; seed <= 60; seed++) {
-      for (final floor in towerFloorsFor(seed, _data.enemies)) {
-        final reason = 'seed $seed floor ${floor.floor}';
-        for (final id in floor.enemyIds) {
-          expect(_data.enemies.containsKey(id), isTrue, reason: '$reason: $id');
-        }
-        switch (floor.kind) {
-          case TowerFloorKind.boss:
-            expect(floor.enemyIds, [towerBosses[floor.floor]], reason: reason);
-          case TowerFloorKind.warden:
-            expect(floor.enemyIds, hasLength(1), reason: reason);
-            expect(towerWardens[floor.floor], contains(floor.enemyIds.single),
-                reason: reason);
-          case TowerFloorKind.fight:
-            final pool = towerPoolOf(floor.chapter, _data.enemies);
-            for (final id in floor.enemyIds) {
-              expect(pool, contains(id), reason: '$reason: $id');
-            }
-        }
+        expect(run.floorsCleared, towerTop, reason: 'seed ${run.seed}');
       }
     }
   });

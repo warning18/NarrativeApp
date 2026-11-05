@@ -9,3 +9,4 @@
 5. **The start sets differ from the note**: the tables give 3 professions (warrior, mage, rogue) and 3 clans (Dominion, Mire, Penitents) from the start; tower-mechanics.md §7 says 4 professions and one clan. The batch is on the tables.
 6. The bot never refuses a card, so a run earns 25.4 marks on average (median 24; 28.2 with all unlocks).
 
+**What the bot cannot say (Core's note).** It plays on the headless fight (`simulateSimFight`): that fight has **no affixes** (the real one has them, so the real floors are harder), and the clan die's resonance and the specialisations are not simulated. So the mage and clan splits above may come from what the bot leaves out (a mage's spells, a clan's die at Friend) as much as from the tables; they are findings to check, not verdicts. The bot takes a heal below half health, then the clan's die, better gear, a die, a skill, a spell. No number of the Tower was tuned: the difficulty cut waits on the user's call.
