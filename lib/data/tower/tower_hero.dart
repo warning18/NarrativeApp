@@ -142,6 +142,12 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
     case TowerRewardKind.heal:
       hero.currentHealth = min(hero.maxHealth,
           hero.currentHealth + (hero.maxHealth * reward.amount / 100).round());
+    case TowerRewardKind.clanOath:
+      // Sworn: the clan's die at once (the user's call); its standing is
+      // the session's (towerSessionOf).
+      if (towerClanDieOf(reward.id, data.dice) case final die?) {
+        _takeDie(hero, die, data);
+      }
     case TowerRewardKind.clanGift:
       if (reward.id.isNotEmpty) {
         _takeDie(hero, reward.id, data);
@@ -199,7 +205,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
 TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
       raceId: run.raceId,
       professionId: run.professionId,
-      clanId: run.clanId,
+      clanIds: run.clanIds,
       health: hero.currentHealth,
       maxHealth: hero.maxHealth,
       equippedItemIds: hero.equippedItemIds.toSet(),

@@ -54,6 +54,12 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
   ).copyWith(
     mana: hero.mana,
     knownSpellIds: [for (final s in hero.knownSpells) s.id],
-    politics: PoliticsState(standings: {run.clanId: towerClanStanding}),
+    // Each clan sworn at Friend; the first (the main one) a point above, so
+    // it is the patron and its die the one that resonates (one main clan,
+    // the story's rule: the others' dice roll plain).
+    politics: PoliticsState(standings: {
+      for (final c in run.clanIds)
+        c: c == run.mainClanId ? towerClanStanding + 1 : towerClanStanding,
+    }),
   );
 }

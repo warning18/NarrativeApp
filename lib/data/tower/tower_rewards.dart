@@ -49,7 +49,7 @@ class TowerHeroView {
   const TowerHeroView({
     required this.raceId,
     required this.professionId,
-    required this.clanId,
+    this.clanIds = const [],
     required this.health,
     required this.maxHealth,
     this.equippedItemIds = const {},
@@ -61,7 +61,12 @@ class TowerHeroView {
 
   final String raceId;
   final String professionId;
-  final String clanId;
+
+  /// The clans sworn, the first (the main one) first (v1.855).
+  final List<String> clanIds;
+
+  /// The main clan, '' while none is sworn.
+  String get clanId => clanIds.isEmpty ? '' : clanIds.first;
   final int health;
   final int maxHealth;
   final Set<String> equippedItemIds;
@@ -103,11 +108,16 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 
 /// The cards on the table after floor [floor] is won (§5): [towerOfferSize]
 /// of different kinds while the kinds last, a heal always among them when
-/// the hero is below [towerHealFloor] of its health.
+/// the hero is below [towerHealFloor] of its health. A clan of [oaths] (the
+/// clans still to swear to) offers its oath (v1.855): always when
+/// [oathDue] (the first floor won), else on [towerOathChance] of offers;
+/// one oath an offer at most.
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
   required TowerHeroView hero,
+  List<String> oaths = const [],
+  bool oathDue = false,
   required Map<String, dynamic> items,
   required Map<String, dynamic> dice,
   required Map<String, dynamic> skills,
@@ -183,13 +193,20 @@ List<TowerReward> towerOfferFor({
         ]);
         return id == null ? null : TowerReward(kind, id: id);
       case TowerRewardKind.clanGift:
-        final die = towerClanDieOf(hero.clanId, dice);
-        if (die != null &&
-            !hero.ownedDiceIds.contains(die) &&
-            !hero.takenIds.contains(die)) {
-          return TowerReward(kind, id: die);
+        // A gift comes from a clan sworn: none before the first oath.
+        if (hero.clanIds.isEmpty) return null;
+        for (final clan in hero.clanIds) {
+          final die = towerClanDieOf(clan, dice);
+          if (die != null &&
+              !hero.ownedDiceIds.contains(die) &&
+              !hero.takenIds.contains(die)) {
+            return TowerReward(kind, id: die);
+          }
         }
         return const TowerReward(TowerRewardKind.clanGift, amount: 1);
+      case TowerRewardKind.clanOath:
+        // Dealt apart, below (its own stream).
+        return null;
     }
   }
 
@@ -198,6 +215,18 @@ List<TowerReward> towerOfferFor({
   if (hero.health < hero.maxHealth * towerHealFloor) {
     offer.add(heal);
     kinds.remove(TowerRewardKind.heal);
+  }
+  // A clan's oath, from its own stream (the other cards draw as before).
+  final free = [
+    for (final clan in oaths)
+      if (!hero.clanIds.contains(clan)) clan,
+  ]..sort();
+  if (free.isNotEmpty) {
+    final oathRandom = towerRandom(seed, floor, TowerStream.oath);
+    if (oathDue || oathRandom.nextDouble() < towerOathChance) {
+      offer.add(TowerReward(TowerRewardKind.clanOath,
+          id: free[oathRandom.nextInt(free.length)]));
+    }
   }
   while (offer.length < towerOfferSize && kinds.isNotEmpty) {
     final total = kinds.values.fold(0, (a, b) => a + b);

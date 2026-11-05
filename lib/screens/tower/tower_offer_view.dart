@@ -13,6 +13,7 @@ import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
+import '../../providers/clans_provider.dart';
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_widgets.dart';
@@ -68,6 +69,12 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
               tr(ref, 'tower_gift_name'),
               tr(ref, 'tower_gift_stat').replaceAll('{n}', '${reward.amount}'))
           : TowerCardText(tr(ref, 'tower_kind_gift'), dieName(reward.id), '');
+    case TowerRewardKind.clanOath:
+      // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
+      return TowerCardText(
+          tr(ref, 'tower_kind_oath'),
+          ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
+          tr(ref, 'tower_oath_text'));
   }
 }
 

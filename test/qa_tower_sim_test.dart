@@ -28,7 +28,10 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 /// v1.848 (the user's calls on #834): the professions evened out, the median
 /// moved to 17 and the top with no unlocks to about 10%.
 const _medianFloor = (min: 13, max: 18);
-const _floor20 = (min: 0.25, max: 0.35);
+// v1.855 (the user's call): no clan at the start, the clans offer their
+// oaths on the way up (a die each, at once): floor 20 about 2 points more
+// often (34.4% to 36.8% over the 500 guard seeds), the top unchanged.
+const _floor20 = (min: 0.25, max: 0.38);
 const _topNone = (min: 0.05, max: 0.12);
 const _topAll = (min: 0.15, max: 0.25);
 
@@ -54,7 +57,8 @@ Map<String, dynamic> _json(TowerRun run) => {
       'seed': run.seed,
       'race': run.raceId,
       'profession': run.professionId,
-      'clan': run.clanId,
+      'clan': run.mainClanId,
+      'clans': run.clanIds,
       'status': run.status.name,
       'floorReached': run.floorReached,
       'floorsCleared': run.floorsCleared,

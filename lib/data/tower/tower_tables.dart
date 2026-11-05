@@ -315,7 +315,9 @@ const int towerNoRepeatFloors = 3;
 const double towerSimEliteMultiplier = 1.35;
 
 /// What a reward card gives.
-enum TowerRewardKind { item, die, skill, spell, heal, clanGift }
+/// [clanOath]: a clan offers itself (v1.855, the user's call): sworn, the
+/// hero holds its standing and its die (see [towerOathChance]).
+enum TowerRewardKind { item, die, skill, spell, heal, clanGift, clanOath }
 
 /// Each kind's weight on a card (§5 of the note).
 const Map<TowerRewardKind, int> towerRewardWeights = {
@@ -329,6 +331,11 @@ const Map<TowerRewardKind, int> towerRewardWeights = {
 
 /// Cards on the table after a win.
 const int towerOfferSize = 3;
+
+/// A clan's oath on the table (v1.855): always on the first floor won, then
+/// on this share of the offers while a clan is left to swear to; one oath
+/// an offer at most, never all three cards.
+const double towerOathChance = 0.35;
 
 /// A heal card's share of max health, and after a boss or a warden.
 const double towerHealShare = .35;
@@ -386,6 +393,9 @@ const List<String> towerClans = [
 /// Open before any unlock.
 const Set<String> towerStartProfessions = {'warrior', 'mage', 'rogue'};
 const Set<String> towerStartClans = {'dominion', 'mire', 'penitents'};
+
+/// The clans a run may be offered before any is unlocked, in order.
+const List<String> towerStartClanPool = ['dominion', 'mire', 'penitents'];
 
 /// What an unlock opens.
 enum TowerUnlockKind { startDie, clan, startItem, profession }
