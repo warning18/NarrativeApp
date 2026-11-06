@@ -114,7 +114,7 @@ void main() {
             // away); the count is the point of the line and stays whole.
             final counts = find.byWidgetPredicate((w) =>
                 w.key is ValueKey<String> &&
-                (w.key! as ValueKey<String>).value.startsWith('star_count_'));
+                (w.key! as ValueKey<String>).value.startsWith('branch_count_'));
             problems.addAll(_cut(counts, '$name: branch count at $width px'));
             for (final e in counts.evaluate()) {
               final rect = tester.getRect(find.byWidget(e.widget));
