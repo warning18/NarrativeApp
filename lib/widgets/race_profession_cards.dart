@@ -208,6 +208,8 @@ class ChoiceCard extends ConsumerWidget {
     required this.onTap,
     this.selected = false,
     this.compact = false,
+    this.lockedNote,
+    this.showClans = true,
   });
 
   final ChoiceBook book;
@@ -217,6 +219,15 @@ class ChoiceCard extends ConsumerWidget {
   final bool compact;
   final VoidCallback onTap;
 
+  /// Why the card is shut ("Bought with marks"): the card then lies dimmed
+  /// under a padlock and a tap does nothing (the Tower's callings and
+  /// peoples not yet bought). Null: open, as in the story.
+  final String? lockedNote;
+
+  /// The clans behind the choice (their discs and count); off in the Tower,
+  /// where the clans offer their oaths on the way up instead.
+  final bool showClans;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -224,80 +235,101 @@ class ChoiceCard extends ConsumerWidget {
     final record = book.recordOf(folder, id);
     final tag = record['tag']?.toString() ?? '';
     final clans = book.clansOf(folder, id);
+    final locked = lockedNote != null;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        key: Key('choice_card_$id'),
-        color: selected
-            ? ink.gold.withValues(alpha: 0.1)
-            : theme.colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-              color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: onTap,
-          child: Padding(
-            padding:
-                EdgeInsets.fromLTRB(10, compact ? 7 : 10, 10, compact ? 7 : 10),
-            child: Row(children: [
-              PresetMark(
-                  folder: folder, preset: record, size: compact ? 30 : 44),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
-                        children: [
-                          Text(book.nameOfChoice(folder, id),
-                              key: Key('choice_name_$id'),
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(fontFamily: InkFonts.display)),
-                          if (tag.isNotEmpty)
-                            InkTag(label: tag, color: ink.gold),
-                        ]),
-                    Text(record['playstyle']?.toString() ?? '',
-                        maxLines: compact ? 1 : 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: ink.ash)),
-                    if (!compact) ...[
-                      const SizedBox(height: 6),
-                      StatChips(record: record),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 6),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Wrap(spacing: -6, children: [
-                    for (final f in clans.take(compact ? 3 : 4))
-                      ClanDisc(f, size: compact ? 22 : 26),
-                  ]),
-                  if (!compact)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(
-                          tr(ref, 'rp_clans_count')
-                              .replaceAll('{n}', '${clans.length}'),
-                          style: theme.textTheme.labelSmall
+      child: Opacity(
+        opacity: locked ? 0.6 : 1,
+        child: Material(
+          key: Key('choice_card_$id'),
+          color: selected
+              ? ink.gold.withValues(alpha: 0.1)
+              : theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+                color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: locked ? null : onTap,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                  10, compact ? 7 : 10, 10, compact ? 7 : 10),
+              child: Row(children: [
+                PresetMark(
+                    folder: folder, preset: record, size: compact ? 30 : 44),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 8,
+                          children: [
+                            Text(book.nameOfChoice(folder, id),
+                                key: Key('choice_name_$id'),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontFamily: InkFonts.display)),
+                            if (tag.isNotEmpty)
+                              InkTag(label: tag, color: ink.gold),
+                          ]),
+                      Text(record['playstyle']?.toString() ?? '',
+                          maxLines: compact ? 1 : 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall
                               ?.copyWith(color: ink.ash)),
-                    ),
-                ],
-              ),
-              if (selected)
-                Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: Icon(Icons.check_circle, color: ink.gold, size: 20),
+                      if (locked)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Row(children: [
+                            Icon(Icons.lock_outline, size: 14, color: ink.gold),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(lockedNote!,
+                                  key: Key('choice_lock_$id'),
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                      color: ink.gold,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ]),
+                        )
+                      else if (!compact) ...[
+                        const SizedBox(height: 6),
+                        StatChips(record: record),
+                      ],
+                    ],
+                  ),
                 ),
-            ]),
+                if (showClans) ...[
+                  const SizedBox(width: 6),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Wrap(spacing: -6, children: [
+                        for (final f in clans.take(compact ? 3 : 4))
+                          ClanDisc(f, size: compact ? 22 : 26),
+                      ]),
+                      if (!compact)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text(
+                              tr(ref, 'rp_clans_count')
+                                  .replaceAll('{n}', '${clans.length}'),
+                              style: theme.textTheme.labelSmall
+                                  ?.copyWith(color: ink.ash)),
+                        ),
+                    ],
+                  ),
+                ],
+                if (selected)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Icon(Icons.check_circle, color: ink.gold, size: 20),
+                  ),
+              ]),
+            ),
           ),
         ),
       ),
@@ -313,11 +345,15 @@ class OpenChoice extends ConsumerStatefulWidget {
     required this.book,
     required this.folder,
     required this.id,
+    this.showClans = true,
   });
 
   final ChoiceBook book;
   final String folder;
   final String id;
+
+  /// The clans that will court you; off in the Tower.
+  final bool showClans;
 
   @override
   ConsumerState<OpenChoice> createState() => _OpenChoiceState();
@@ -436,39 +472,41 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
               ),
             const SizedBox(height: 8),
           ],
-          Text(tr(ref, 'rp_clans_court').toUpperCase(),
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
-          const SizedBox(height: 8),
-          for (final (f, line) in rows)
-            InkWell(
-              key: Key('clan_row_${f.id}'),
-              borderRadius: BorderRadius.circular(8),
-              onTap: () =>
-                  _showClanSheet(context, ref, book, f, folder: folder, id: id),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Row(children: [
-                  ClanDisc(f, size: 28),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(f.nameFor(lang),
-                            style: theme.textTheme.titleSmall
-                                ?.copyWith(color: Color(f.color))),
-                        Text(line,
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(color: ink.ash)),
-                      ],
+          if (widget.showClans) ...[
+            Text(tr(ref, 'rp_clans_court').toUpperCase(),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+            const SizedBox(height: 8),
+            for (final (f, line) in rows)
+              InkWell(
+                key: Key('clan_row_${f.id}'),
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => _showClanSheet(context, ref, book, f,
+                    folder: folder, id: id),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Row(children: [
+                    ClanDisc(f, size: 28),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(f.nameFor(lang),
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(color: Color(f.color))),
+                          Text(line,
+                              style: theme.textTheme.labelSmall
+                                  ?.copyWith(color: ink.ash)),
+                        ],
+                      ),
                     ),
-                  ),
-                  Icon(Icons.chevron_right, size: 18, color: ink.ash),
-                ]),
+                    Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                  ]),
+                ),
               ),
-            ),
-          const Divider(height: 18),
+            const Divider(height: 18),
+          ],
           Text(tr(ref, 'rp_unlocks').toUpperCase(),
               style: theme.textTheme.labelSmall
                   ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
@@ -643,9 +681,11 @@ class SummaryCard extends ConsumerWidget {
     required this.book,
     required this.raceId,
     required this.professionId,
+    this.showClans = true,
   });
 
   final ChoiceBook book;
+  final bool showClans;
   final String raceId;
   final String professionId;
 
@@ -689,21 +729,23 @@ class SummaryCard extends ConsumerWidget {
           ]),
           Text(profession['playstyle']?.toString() ?? '',
               style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
-          const SizedBox(height: 8),
-          Text(
-              [
-                tr(ref, 'rp_first_clans').toUpperCase(),
-                if (both > 0)
-                  tr(ref, 'rp_back_both')
-                      .replaceAll('{n}', '$both')
-                      .toUpperCase(),
-              ].join(' · '),
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: ink.ash, letterSpacing: 1)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 10, runSpacing: 6, children: [
-            for (final f in first) ClanDisc(f, size: 28, name: true),
-          ]),
+          if (showClans) ...[
+            const SizedBox(height: 8),
+            Text(
+                [
+                  tr(ref, 'rp_first_clans').toUpperCase(),
+                  if (both > 0)
+                    tr(ref, 'rp_back_both')
+                        .replaceAll('{n}', '$both')
+                        .toUpperCase(),
+                ].join(' · '),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: ink.ash, letterSpacing: 1)),
+            const SizedBox(height: 6),
+            Wrap(spacing: 10, runSpacing: 6, children: [
+              for (final f in first) ClanDisc(f, size: 28, name: true),
+            ]),
+          ],
         ],
       ),
     );
@@ -719,6 +761,7 @@ Future<void> showCompareSheet(
   required String folder,
   required String first,
   required ValueChanged<String> onPick,
+  bool showClans = true,
 }) {
   final ids =
       ((folder == ChoiceBook.folderRaces ? book.races : book.professions)
@@ -767,14 +810,16 @@ Future<void> showCompareSheet(
                 padding: const EdgeInsets.only(top: 3),
                 child: Text(b.name, style: theme.textTheme.bodySmall),
               ),
-            const SizedBox(height: 10),
-            Text(tr(ref, 'rp_clans_title').toUpperCase(),
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: ink.ash, letterSpacing: 1)),
-            const SizedBox(height: 4),
-            Wrap(spacing: 4, runSpacing: 4, children: [
-              for (final f in clans) ClanDisc(f, size: 26),
-            ]),
+            if (showClans) ...[
+              const SizedBox(height: 10),
+              Text(tr(ref, 'rp_clans_title').toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 1)),
+              const SizedBox(height: 4),
+              Wrap(spacing: 4, runSpacing: 4, children: [
+                for (final f in clans) ClanDisc(f, size: 26),
+              ]),
+            ],
             const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
