@@ -424,14 +424,21 @@ class _MasteryNode extends ConsumerWidget {
                     color: isMastered || ready ? ink.gold : ink.ash, size: 20),
               ),
               const SizedBox(height: 3),
-              Text(
-                isMastered
-                    ? tr(ref, 'mastery_label')
-                    : tr(ref, 'mastery_cost_label')
-                        .replaceAll('{n}', '$branchMasteryEssenceCost'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: isMastered || ready ? ink.gold : ink.ash),
+              // "Mastery" over its cost, shrunk to the column when French
+              // is longer than it ("2000 d'essence" at 320 px).
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  isMastered
+                      ? tr(ref, 'mastery_label')
+                      : tr(ref, 'mastery_cost_label')
+                          .replaceAll('{n}', '$branchMasteryEssenceCost')
+                          .replaceFirst(' · ', '\n'),
+                  key: Key('mastery_text_${branch.id}'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: isMastered || ready ? ink.gold : ink.ash),
+                ),
               ),
             ],
           ),

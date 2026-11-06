@@ -108,6 +108,7 @@ void main() {
           child: RepaintBoundary(
             key: key,
             child: MaterialApp(
+                key: UniqueKey(), // a screen pushed before is dropped
                 theme: buildAppTheme(container
                     .read(appPaletteProvider)
                     .schemeFor(Brightness.light)),
@@ -123,13 +124,19 @@ void main() {
         'tower_marks_v1': '{"marks":12,"bestFloor":17,"runs":4,"wins":0}'
       });
       await shot('2-start-$tag');
-      for (final k in ['tower_race_human', 'tower_profession_warrior']) {
-        await tester.ensureVisible(find.byKey(Key(k)));
-        await tester.tap(find.byKey(Key(k)));
-        await tester.pump();
-      }
+      // Climb opens the main game's creation screen, the unbought callings
+      // padlocked.
+      await tester.tap(find.byKey(const Key('tower_climb')));
+      await settle();
+      await shot('3a-create-peoples-$tag');
+      await tester.tap(find.byKey(const Key('choice_card_human')));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.byKey(const Key('rp_next')));
+      await settle();
+      await shot('3b-create-callings-$tag');
+      await tester.tap(find.byKey(const Key('choice_card_warrior')));
       await tester.pump(const Duration(milliseconds: 600));
-      await shot('3-start-picked-$tag');
+      await shot('3c-create-picked-$tag');
       await open(const TowerMarksScreen(),
           prefs: {'tower_marks_v1': '{"marks":12,"unlocked":["flame_die"]}'});
       await shot('4-marks-$tag');

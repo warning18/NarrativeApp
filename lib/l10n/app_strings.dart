@@ -1446,6 +1446,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You left the Tower on floor {n}.',
     AppLanguage.fr: 'Vous avez quitté la Tour à l’étage {n}.',
   },
+  'tower_bought_with_marks': {
+    AppLanguage.en: 'Bought with marks: {n}',
+    AppLanguage.fr: 'S\'achète en marques : {n}',
+  },
   'tower_pick_race': {
     AppLanguage.en: 'People',
     AppLanguage.fr: 'Peuple',
@@ -4554,6 +4558,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Who are your people? The clans behind them will court you.',
     AppLanguage.fr:
         'Qui sont les vôtres\u00a0? Les clans qui les soutiennent vous courtiseront.',
+  },
+  'tower_hint_people': {
+    AppLanguage.en: 'Who climbs the Tower?',
+    AppLanguage.fr: 'Qui gravit la Tour\u00a0?',
   },
   'rp_hint_calling': {
     AppLanguage.en:

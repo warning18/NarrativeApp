@@ -116,6 +116,27 @@ void main() {
                 w.key is ValueKey<String> &&
                 (w.key! as ValueKey<String>).value.startsWith('branch_count_'));
             problems.addAll(_cut(counts, '$name: branch count at $width px'));
+            // The Mastery cost shrinks to its column: its box stays on the
+            // screen, no word is broken (a FittedBox holds it whole) and it is
+            // not shrunk past reading.
+            final mastery = find.byWidgetPredicate((w) =>
+                w.key is ValueKey<String> &&
+                (w.key! as ValueKey<String>).value.startsWith('mastery_text_'));
+            for (final e in mastery.evaluate()) {
+              final box = find.ancestor(
+                  of: find.byWidget(e.widget),
+                  matching: find.byType(FittedBox));
+              final rect = tester.getRect(box.first);
+              final text = tester.getSize(find.byWidget(e.widget));
+              final scale = rect.width / text.width;
+              if (rect.right > width) {
+                problems.add('$name: mastery cost at $width px is off screen');
+              }
+              if (scale < 0.6) {
+                problems.add('$name: mastery cost at $width px shrinks to '
+                    '${(scale * 100).round()}%');
+              }
+            }
             for (final e in counts.evaluate()) {
               final rect = tester.getRect(find.byWidget(e.widget));
               if (rect.right > width) {

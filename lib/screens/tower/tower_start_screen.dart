@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/tower/tower_tables.dart';
-import '../../gamedata/db_schema.dart';
 import '../../l10n/app_strings.dart';
-import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
+import '../race_profession_screen.dart';
 import 'tower_floor_screen.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
@@ -23,8 +22,6 @@ class TowerStartScreen extends ConsumerStatefulWidget {
 }
 
 class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
-  String? _race;
-  String? _profession;
   bool _starting = false;
 
   String _fill(String text, Map<String, Object> values) {
@@ -33,9 +30,29 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     return out;
   }
 
-  Future<void> _begin() async {
-    final race = _race, profession = _profession;
-    if (race == null || profession == null || _starting) return;
+  /// The callings not yet bought lie padlocked on the creation screen, with
+  /// what they cost.
+  Map<String, String> _locks(Set<String> open) => {
+        for (final u in towerUnlocks)
+          if (u.kind == TowerUnlockKind.profession && !open.contains(u.value))
+            u.value: _fill(tr(ref, 'tower_bought_with_marks'), {'n': u.cost}),
+      };
+
+  /// The main game's Race & Profession screen picks the hero; the run starts
+  /// when it hands the pick back, and takes its place.
+  Future<void> _create() async {
+    final progress = ref.read(towerProvider).value?.progress;
+    final locks = _locks(progress?.professions ?? towerStartProfessions);
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => RaceProfessionScreen(
+        locks: locks,
+        onChosen: _begin,
+      ),
+    ));
+  }
+
+  Future<void> _begin(String race, String profession) async {
+    if (_starting) return;
     setState(() => _starting = true);
     final data = await ref.read(towerDataProvider.future);
     await ref
@@ -43,8 +60,8 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
         .start(data: data, raceId: race, professionId: profession);
     if (!mounted) return;
     setState(() => _starting = false);
-    await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const TowerFloorScreen()));
+    await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const TowerFloorScreen()));
   }
 
   @override
@@ -54,47 +71,6 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
-    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
-    final professions =
-        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
-    final open = progress.professions;
-    final ready = _race != null && _profession != null;
-
-    Widget option({
-      required Key key,
-      required String title,
-      String? line,
-      required bool picked,
-      bool locked = false,
-      required VoidCallback onTap,
-    }) =>
-        TowerPanel(
-          key: key,
-          lit: picked,
-          dim: locked,
-          onTap: locked ? null : onTap,
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: theme.textTheme.titleSmall),
-                    if (line != null && line.isNotEmpty)
-                      Text(line,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant)),
-                  ],
-                ),
-              ),
-              if (locked)
-                const Icon(Icons.lock_outline, size: 18)
-              else if (picked)
-                Icon(Icons.check_circle, size: 20, color: ink.gold),
-            ],
-          ),
-        );
-
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
       body: SafeArea(
@@ -149,41 +125,10 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
                     })}'),
               ),
             ],
-            TowerLabel(tr(ref, 'tower_pick_race')),
-            for (final id in races.keys)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: option(
-                  key: Key('tower_race_$id'),
-                  title: '${(races[id] as Map)['raceName'] ?? id}',
-                  line: '${(races[id] as Map)['playstyle'] ?? ''}',
-                  picked: _race == id,
-                  onTap: () => setState(() => _race = id),
-                ),
-              ),
-            TowerLabel(tr(ref, 'tower_pick_profession')),
-            for (final id in professions.keys)
-              if (towerStartProfessions.contains(id) ||
-                  towerUnlocks.any((u) =>
-                      u.kind == TowerUnlockKind.profession && u.value == id))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: option(
-                    key: Key('tower_profession_$id'),
-                    title:
-                        '${(professions[id] as Map)['professionName'] ?? id}',
-                    line: open.contains(id)
-                        ? '${(professions[id] as Map)['playstyle'] ?? ''}'
-                        : tr(ref, 'tower_locked'),
-                    picked: _profession == id,
-                    locked: !open.contains(id),
-                    onTap: () => setState(() => _profession = id),
-                  ),
-                ),
             const SizedBox(height: 14),
             FilledButton(
               key: const Key('tower_climb'),
-              onPressed: ready && !_starting ? _begin : null,
+              onPressed: _starting ? null : _create,
               child: Text(tr(ref, 'tower_climb')),
             ),
             const SizedBox(height: 8),

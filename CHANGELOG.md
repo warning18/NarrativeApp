@@ -20,9 +20,25 @@ isn't reconstructable from git history alone.
 - The branch header keeps #651's promise in French: the name shrinks to its
   column ("Avant-garde" at 320 px) and the count `2/4` stays whole under it.
   The scrollable Skills tab bar of #655 stays.
+- The Mastery cost under each column reads "Mastery" over its cost and shrinks
+  to the column, so French no longer breaks "d'essence" mid-word at 320 px.
 - `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
   smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
   under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
+## [1.862.0+898]
+
+### Changed
+- **The Tower is created on the main game's own screen** (step 4 of "the
+  main game's earning offers"): Climb opens the Race & Profession screen
+  (`RaceProfessionScreen(locks, onChosen)`), the callings not yet bought
+  padlocked with "Bought with marks: 15" (Cleric) / "25" (Ranger). The story's
+  clan discs, counts and "will court you" lines are hidden for the Tower
+  (`showClans`), the hint reads "Who climbs the Tower?", and there is no name,
+  look or origin memories. The pick goes to `TowerController.start`; the story
+  save is never written.
+- The start screen's own people/calling lists are gone.
+- `test/tower_screens_test.dart` follows the new flow and checks the story
+  session is untouched; pictures in `docs/ux-shots/tower/create/`.
 
 ## [1.861.0+897]
 
