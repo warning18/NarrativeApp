@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.863.0+899]
+
+### Changed
+- **The Skills tab's tree is the banner version again** (the user's call: "revert
+  the skill to the banner interface, the previous one didn't accept this").
+  The sky of constellations of v1.619 is gone: the branches are columns of
+  rings again, each unknown skill with its offering clan's small banner on
+  its ring, the clan's name under it. `skill_tree_view.dart` is the v1.618
+  file; `star_chart.dart`, its tests and its `star_*` strings are deleted.
+- The branch header keeps #651's promise in French: the name shrinks to its
+  column ("Avant-garde" at 320 px) and the count `2/4` stays whole under it.
+  The scrollable Skills tab bar of #655 stays.
+- The Mastery cost under each column reads "Mastery" over its cost and shrinks
+  to the column, so French no longer breaks "d'essence" mid-word at 320 px.
+- `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
+  smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
+  under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
 ## [1.862.0+898]
 
 ### Changed
