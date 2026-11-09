@@ -446,12 +446,16 @@ Map<String, double> _consumableWeightsFor(
   };
 }
 
-/// Rolls the whole chest for a won fight. [items] is the items db.
+/// Rolls the whole chest for a won fight. [items] is the items db. With
+/// [gearAndPotionsOnly] (the Tower's, v1.865) a slot that would hold a gold
+/// pouch holds a consumable, and one that would hold a charm or a tome holds
+/// gear: every slot is something a Tower hero can use.
 LootBoxResult rollLootBox(
   LootContext context,
   Map<String, dynamic> items,
-  Random random,
-) {
+  Random random, {
+  bool gearAndPotionsOnly = false,
+}) {
   final modifiers = fortuneModifiersFor(context);
   final roll = fortuneRollFor(context, 1 + random.nextInt(100));
   final rolled = tierForRoll(roll);
@@ -469,6 +473,13 @@ LootBoxResult rollLootBox(
 
   for (var slot = 0; slot < slotCount; slot++) {
     var kind = _rollSlotKind(tier, slot, random);
+    if (gearAndPotionsOnly) {
+      kind = switch (kind) {
+        _SlotKind.goldPouch => _SlotKind.consumable,
+        _SlotKind.charm || _SlotKind.tome => _SlotKind.gear,
+        _ => kind,
+      };
+    }
     for (var attempt = 0; attempt < 3; attempt++) {
       switch (kind) {
         case _SlotKind.goldPouch:
@@ -500,7 +511,7 @@ LootBoxResult rollLootBox(
           // No eligible gear left (everything owned already, or the
           // rarity band is empty this chapter) -- fall back to a tome
           // for a big chest, a consumable otherwise, never to nothing.
-          kind = tier.index >= ChestTier.gold.index
+          kind = tier.index >= ChestTier.gold.index && !gearAndPotionsOnly
               ? _SlotKind.tome
               : _SlotKind.consumable;
           continue;
