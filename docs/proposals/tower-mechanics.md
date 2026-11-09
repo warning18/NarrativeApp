@@ -546,3 +546,40 @@ By main clan (every unlock): dominion 20.1%, mire 17.5%, crows 16.5%,
 compact 15.3%, vigil 14.9%, penitents 10.3%. The bag ends a climb with about
 7 potions (no unlocks) to 11 (every unlock): the bot drinks only below 40%
 health.
+
+## The bag's cap and the full chest (v1.865)
+
+Round 3, item B (the user's pick):
+
+- **The bag holds 5 potions** (`towerBagCap`). What the chest gives past
+  that is drunk at once, healing the story's potion (`potionHealAmount`,
+  8). At v1.860 the bot ended its climbs with a median of 11 potions and up
+  to 28.
+- **No chest is empty.** The Tower's chest (`rollLootBox`'s
+  `gearAndPotionsOnly`) draws a slot that would hold a gold pouch as a
+  consumable, and one that would hold a charm or a tome as gear. At v1.860,
+  15.5% of the floors won dropped nothing. The story's chest is unchanged.
+- **Balance.** Fuller chests made the climb much easier (no unlocks, top
+  18.4%). Every foe is now at `towerFoeScale` 1.02 (was 0.95), and the
+  cleric's at 1.28 (was 1.35; at 1.02 it had fallen to 9% with every
+  unlock).
+
+| 1,500 seeds | median | floor 20 | top | top by profession |
+|---|---|---|---|---|
+| v1.860, no unlocks | 17 | 23.9% | 10.2% | mage 9.2, warrior 10.0, rogue 11.4 |
+| v1.865, no unlocks | 17 | 26.7% | 10.6% | mage 11.6, warrior 11.0, rogue 9.1 |
+| v1.860, every unlock | 18 | 31.4% | 15.7% | |
+| v1.865, every unlock | 19 | 35.4% | 19.3% | mage 24.7, warrior 21.3, cleric 20.1, rogue 18.3, ranger 11.9 |
+
+Deaths on the big floors (of the runs that reach them, v1.865):
+
+| | 5 | 10 | 15 | 20 | 25 | 30 |
+|---|---|---|---|---|---|---|
+| No unlocks | 1.6% | 5.0% | 10.2% | 25.6% | 24.0% | 1.9% |
+| Every unlock | 0.1% | 7.6% | 9.4% | 24.1% | 22.0% | 0.3% |
+
+Floors 5, 15 and 25 are wardens; 10, 20 and 30 are bosses.
+
+By main clan (every unlock): dominion 24.1%, mire 20.8%, compact 19.3%,
+crows 18.8%, vigil 17.6%, penitents 15.1%. The bag stays full (median 5).
+Antidotes are not capped: median 3, at most 13.
