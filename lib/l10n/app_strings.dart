@@ -1749,10 +1749,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Next floor',
     AppLanguage.fr: 'Étage suivant',
   },
-  'tower_kind_item': {
-    AppLanguage.en: 'Item',
-    AppLanguage.fr: 'Objet',
-  },
   'tower_kind_die': {
     AppLanguage.en: 'Die',
     AppLanguage.fr: 'Dé',
@@ -1764,30 +1760,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_kind_spell': {
     AppLanguage.en: 'Spell',
     AppLanguage.fr: 'Sort',
-  },
-  'tower_kind_heal': {
-    AppLanguage.en: 'Heal',
-    AppLanguage.fr: 'Soin',
-  },
-  'tower_kind_gift': {
-    AppLanguage.en: 'Clan gift',
-    AppLanguage.fr: 'Don du clan',
-  },
-  'tower_heal_name': {
-    AppLanguage.en: 'Heal {n}%',
-    AppLanguage.fr: 'Soin de {n} %',
-  },
-  'tower_gift_name': {
-    AppLanguage.en: 'A gift of your clan',
-    AppLanguage.fr: 'Un don de votre clan',
-  },
-  'tower_heal_text': {
-    AppLanguage.en: 'Heals {n}% of your health.',
-    AppLanguage.fr: 'Rend {n} % de votre santé.',
-  },
-  'tower_gift_stat': {
-    AppLanguage.en: '+{n} to your main stat.',
-    AppLanguage.fr: '+{n} à votre caractéristique principale.',
   },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {

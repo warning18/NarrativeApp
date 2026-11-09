@@ -24,6 +24,22 @@ isn't reconstructable from git history alone.
   `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
   what each font never had; `test/font_glyphs_test.dart` fails when a new
   character comes into a text that a font had and the subset lost.
+## [1.867.0+903]
+
+### Changed
+- **Old Tower saves are brought up to date once, as they load** (round 3,
+  item D, the user's pick), and the three paths kept for them are gone:
+  - a clan sworn at the start (before v1.855) is its oath on floor 0, and
+    now gives its die as any oath does;
+  - a run without level-up picks (before v1.857) takes the calling's for
+    each level;
+  - the old cards (before v1.860): an item card's gear joins the floor's
+    spoils, a clan's die becomes a die card, a heal or stat-point card
+    nothing (the health is saved apart).
+- Gone: `TowerRun.clanId`, `TowerRun.autoPicks`, the `item`, `heal` and
+  `clanGift` reward kinds and their seven strings.
+- `test/tower_save_migration_test.dart`: one save of each old shape.
+
 ## [1.866.0+902]
 
 ### Changed
