@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.872.0+908]
+
+- **Narrative: British spelling everywhere in the English text.** The story
+  and game data, and the English UI strings, used both spellings (harbour 64
+  against harbor 40, armour against armor, colour, favour, rumour, armoury,
+  centre, defence, travelled). They now follow the majority, British, like
+  the 204 "grey". 115 strings in the story and game data and 34 in
+  `app_strings.dart` change; ids, flags, keys, enum values and French are
+  untouched. Names that move: Harbour Rat, Harbour Reckoning, A Smuggler's
+  Favour, The Harbour (house), Harbourwatch (set and items).
+
 ## [1.863.0+899]
 
 ### Changed
