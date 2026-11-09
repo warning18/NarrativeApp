@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.871.0+907]
+
+### Changed
+- **One panel, one confirm dialog, step 1** (UX-2 round 3, "one panel / one
+  tag / one dialog frame / one sheet frame"; no change to how anything looks):
+  - `InkPanel` and `InkLabel` (`lib/widgets/ink_panel.dart`) are the Tower's
+    panel and label, promoted: the 77 uses in the Tower's screens now say
+    `InkPanel`/`InkLabel`, `tower_widgets.dart` is gone. The 36 pictures of
+    the Tower's screens are byte for byte the same before and after.
+  - `showInkConfirm` (`lib/widgets/ink_confirm.dart`) is the plain yes/no
+    dialog (title, words, Cancel left, the act right, filled or quiet). Seven
+    hand-written ones use it: New Game, New Game+, overwrite a save slot, leave
+    the Tower, rebuild a hull, reset the game defaults, reset the story
+    (about 100 lines fewer). The hull confirm's act is a filled button where
+    it was an elevated one.
+  - Next steps (own PRs, picture first): the sheet frame, the tags, the
+    story's offer dialog last.
 ## [1.870.0+906]
 
 ### Fixed

@@ -10,7 +10,7 @@ import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_marks_screen.dart';
 import 'tower_start_screen.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
 
 class TowerEndScreen extends ConsumerWidget {
   const TowerEndScreen({super.key, required this.run, required this.progress});
@@ -42,7 +42,7 @@ class TowerEndScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
-            TowerPanel(
+            InkPanel(
               lit: won,
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -63,7 +63,7 @@ class TowerEndScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 10),
-            TowerPanel(
+            InkPanel(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
