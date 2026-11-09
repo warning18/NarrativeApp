@@ -191,7 +191,7 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Saltmouth',
     nameFr: 'Bouche-de-Sel',
     blurbEn:
-        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the landward gate. Inside lie Smugglers’ Wharf and its market, Tern Row and its paper boats, the Lantern Alleys, the card games of Card Row, and the ship-breaker’s yard, where the Rusty Eel waits for someone to patch her.',
+        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbour mouth, and the Inquisition searching every caravan at the landward gate. Inside lie Smugglers’ Wharf and its market, Tern Row and its paper boats, the Lantern Alleys, the card games of Card Row, and the ship-breaker’s yard, where the Rusty Eel waits for someone to patch her.',
     blurbFr:
         'Là où la Désolation descend jusqu’à la mer\u00a0: des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte de la terre. Dedans\u00a0: le Quai des Contrebandiers et son marché, Tern Row et ses bateaux de papier, les Ruelles aux lanternes, les parties de cartes de la Rangée des cartes, et le chantier des démolisseurs, où le Rusty Eel attend qu’on le colmate.',
     scenes: [
