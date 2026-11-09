@@ -12,7 +12,7 @@ import '../race_profession_screen.dart';
 import 'tower_floor_screen.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
 
 class TowerStartScreen extends ConsumerStatefulWidget {
   const TowerStartScreen({super.key});
@@ -81,7 +81,7 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
                 style: theme.textTheme.bodyLarge
                     ?.copyWith(fontStyle: FontStyle.italic)),
             const SizedBox(height: 10),
-            TowerPanel(
+            InkPanel(
               child: Row(
                 children: [
                   Expanded(

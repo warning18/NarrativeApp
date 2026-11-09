@@ -148,6 +148,6 @@ void main() {
     expect(text, matches(RegExp(r'^−\d+$')));
     await tester.pump(const Duration(seconds: 3));
     await _longPress(tester, bar);
-    expect(find.textContaining('after armor and block'), findsOneWidget);
+    expect(find.textContaining('after armour and block'), findsOneWidget);
   });
 }

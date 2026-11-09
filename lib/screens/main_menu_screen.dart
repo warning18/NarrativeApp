@@ -23,6 +23,7 @@ import 'home_shell.dart';
 import 'intro_screen.dart';
 import 'settings_screen.dart';
 import 'tower/tower_start_screen.dart';
+import '../widgets/ink_confirm.dart';
 
 /// Opens the game (HomeShell) over the menu in [mode], on the Story tab.
 Future<void> _enterGame(
@@ -350,24 +351,14 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
       {required bool confirm}) async {
     if (confirm) {
       final lang = ref.read(appLanguageProvider);
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(trFor(lang, 'menu_new_game')),
-          content: Text(trFor(lang, 'menu_new_game_confirm_body')),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(trFor(lang, 'cancel')),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(trFor(lang, 'menu_new_game')),
-            ),
-          ],
-        ),
+      final ok = await showInkConfirm(
+        context,
+        title: trFor(lang, 'menu_new_game'),
+        body: trFor(lang, 'menu_new_game_confirm_body'),
+        cancel: trFor(lang, 'cancel'),
+        confirm: trFor(lang, 'menu_new_game'),
       );
-      if (ok != true) return;
+      if (!ok) return;
     }
     await ref
         .read(playerSessionProvider.notifier)
@@ -395,29 +386,17 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
     final lang = ref.read(appLanguageProvider);
     final nextCycle = finished.newGamePlusCycle + 1;
     final bonus = (newGamePlusStep * nextCycle * 100).round();
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text('${trFor(lang, 'new_game_plus_button')} · '
-            '${trFor(lang, 'new_game_plus_cycle_label')} $nextCycle'),
-        content: Text(
-          '${trFor(lang, 'new_game_plus_desc')}\n\n'
+    final ok = await showInkConfirm(
+      context,
+      title: '${trFor(lang, 'new_game_plus_button')} · '
+          '${trFor(lang, 'new_game_plus_cycle_label')} $nextCycle',
+      body: '${trFor(lang, 'new_game_plus_desc')}\n\n'
           '${trFor(lang, 'new_game_plus_enemies_prefix')} +$bonus% '
           '${trFor(lang, 'new_game_plus_enemies_suffix')}',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(trFor(lang, 'cancel')),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(trFor(lang, 'new_game_plus_confirm')),
-          ),
-        ],
-      ),
+      cancel: trFor(lang, 'cancel'),
+      confirm: trFor(lang, 'new_game_plus_confirm'),
     );
-    if (ok != true) return;
+    if (!ok) return;
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.loadSession(finished);
     await notifier.beginNewGamePlus();

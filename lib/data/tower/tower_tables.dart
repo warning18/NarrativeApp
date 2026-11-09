@@ -330,10 +330,12 @@ const int towerNoRepeatFloors = 3;
 /// its own (the fight screen's `_eliteStatMultiplier`).
 const double towerSimEliteMultiplier = 1.35;
 
-/// What a reward card gives.
-/// [clanOath]: a clan offers itself (v1.855, the user's call): sworn, the
-/// hero holds its standing and its die (see [towerOathChance]).
-enum TowerRewardKind { item, die, skill, spell, heal, clanGift, clanOath }
+/// What a reward card gives: a boon's skill, die or spell (v1.860), or
+/// [clanOath], a clan offering itself (v1.855, the user's call): sworn, the
+/// hero holds its standing and its die (see [towerOathChance]). The item,
+/// heal and clan-gift cards of v1.845 are gone (v1.867): an old save's are
+/// brought up to date as it loads (TowerRun.fromJson).
+enum TowerRewardKind { die, skill, spell, clanOath }
 
 /// A clan's oath on the table (v1.855): always on the first floor won, then
 /// on this share of the floors (not a boon's, v1.860) while a clan is left

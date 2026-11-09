@@ -1,6 +1,6 @@
 {
   "harborwatch": {
-    "setName": "Harborwatch Kit",
+    "setName": "Harbourwatch Kit",
     "setNameFr": "Panoplie de la Garde du port",
     "itemIds": ["harborwatch_cutlass", "harborwatch_coat", "harborwatch_lantern"],
     "bonuses": [
@@ -8,7 +8,7 @@
         "pieces": 2,
         "armor": 1,
         "dodgeChance": 5,
-        "description": "Two pieces: +{armor} armor and +{dodge}% dodge — the watch learned to keep its feet on wet stone.",
+        "description": "Two pieces: +{armor} armour and +{dodge}% dodge — the watch learned to keep its feet on wet stone.",
         "descriptionFr": "Deux pièces : +{armor} armure et +{dodge} % d’esquive — la garde a appris à tenir debout sur la pierre mouillée."
       },
       {
@@ -29,7 +29,7 @@
         "pieces": 2,
         "armor": 1,
         "thorns": 20,
-        "description": "Two pieces: +{armor} armor, and anything that strikes you takes {thorns}% of the blow back.",
+        "description": "Two pieces: +{armor} armour, and anything that strikes you takes {thorns}% of the blow back.",
         "descriptionFr": "Deux pièces : +{armor} armure, et tout ce qui vous frappe encaisse {thorns} % du coup en retour."
       },
       {

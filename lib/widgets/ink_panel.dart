@@ -1,13 +1,14 @@
-// Small pieces the Tower's screens share (v1.847): a panel in today's look
-// (ink panel, gold accent), a section label and a stat chip.
+// The panel and the small-caps label of the app's own look (promoted from the
+// Tower's screens, v1.871): the surface colour, a seam border and round
+// corners, with a gold edge when lit; a label over a group of panels.
 import 'package:flutter/material.dart';
 
-import '../../theme/stitched_ink.dart';
+import '../theme/stitched_ink.dart';
 
-/// A panel of the Tower's screens: the surface colour, a seam border and
+/// A panel: the surface colour, a seam border and
 /// round corners, with a gold edge when [lit].
-class TowerPanel extends StatelessWidget {
-  const TowerPanel({
+class InkPanel extends StatelessWidget {
+  const InkPanel({
     super.key,
     required this.child,
     this.lit = false,
@@ -46,8 +47,8 @@ class TowerPanel extends StatelessWidget {
 }
 
 /// A small caps label over a group of panels.
-class TowerLabel extends StatelessWidget {
-  const TowerLabel(this.text, {super.key});
+class InkLabel extends StatelessWidget {
+  const InkLabel(this.text, {super.key});
 
   final String text;
 

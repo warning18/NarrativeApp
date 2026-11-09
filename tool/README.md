@@ -52,6 +52,9 @@ the QA session's audits; `docs/qa/` says what each reports.
 
 ## Other
 
+`subset_fonts.py`: cuts the three font families to the letters the texts use
+(needs fonttools and the full fonts of commit `60522342e`; writes
+`assets/fonts/` and `GLYPHS.json`, which `test/font_glyphs_test.dart` checks).
 `shard_tests.py`, `shard_weights_from_report.py`: how CI splits the test files
 over its four runners. `clan_power_report.py`: the clans' power table.
 `city_plans/`, `fmg_chart/`: inputs and generated tables for the city plans
