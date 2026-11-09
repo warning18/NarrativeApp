@@ -34,7 +34,8 @@ double towerProfessionScaleOf(String professionId) =>
 /// level-up's stat picks are the player's, the main game's way, and spread
 /// their points as the story's builds do (less into the damage stat than
 /// the point a level gave before), so the foes come down to keep the
-/// climb as hard as it was.
+/// climb as hard as it was. v1.865: 1.02 (was 0.95), as full chests
+/// (rollLootBox's gearAndPotionsOnly) gave the hero much more gear.
 const double towerFoeScale = 1.02;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
@@ -363,7 +364,8 @@ const String towerSpoilsAntidote = 'antidote';
 
 /// The most potions the bag holds (v1.865, the user's pick): what a chest
 /// gives past it is drunk at once, each healing the story's potion
-/// (fight_numbers.dart's potionHealAmount), so a climb never ends on a hoard of 20.
+/// (fight_numbers.dart's potionHealAmount), so a climb never ends on a
+/// hoard of 20.
 const int towerBagCap = 5;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
