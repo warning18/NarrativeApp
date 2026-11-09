@@ -23,6 +23,20 @@ isn't reconstructable from git history alone.
   on the screen they never did. They now go through it in both.
 - `test/heal_rules_test.dart`: each source against each step.
 
+## [1.865.0+901]
+
+### Changed
+- **The Tower's bag holds 5 potions, and no chest is empty** (round 3,
+  item B, the user's pick):
+  - what a chest gives past a full bag is drunk at once (each heals the
+    story's potion, 8);
+  - the Tower's chest draws a gold pouch's slot as a potion and a charm's
+    or a tome's as gear (`rollLootBox(gearAndPotionsOnly:)`; the story's
+    chest is unchanged): 15.5% of floors gave nothing before.
+- Balance kept (1,500 seeds): no unlocks, median 17, top 10.6%; every
+  unlock, median 19, top 19.3%. Every foe at `towerFoeScale` 1.02 (was
+  0.95), the cleric's at 1.28 (was 1.35).
+
 ## [1.864.0+900]
 
 ### Changed

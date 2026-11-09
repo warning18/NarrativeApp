@@ -5,6 +5,7 @@
 
 import 'dart:math';
 
+import '../../combat/fight_numbers.dart' show potionHealAmount;
 import '../../combat/stat_rules.dart' show levelStatPicks;
 import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
@@ -361,17 +362,22 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
             '',
     items: data.items,
   );
+  // The bag holds [towerBagCap] potions: what the chest gives past it is
+  // drunk at once (v1.865).
+  final looted =
+      potions + drop.fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
+  final drunk = max(0, looted - towerBagCap);
   final choosing = leveled.copyWith(
     spoils: {...run.spoils, run.floor: drop},
-    potions:
-        potions + drop.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0)),
+    potions: looted - drunk,
     antidotes: antidotes + drop.where((id) => id == towerSpoilsAntidote).length,
   );
   towerWearSpoils(hero, drop, data);
   final health = (healthLeft +
           hero.maxHealth -
           before +
-          (hero.maxHealth * towerRecoveryShare).round())
+          (hero.maxHealth * towerRecoveryShare).round() +
+          drunk * potionHealAmount)
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
   return choosing.copyWith(
