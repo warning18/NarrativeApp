@@ -70,20 +70,19 @@ void main() {
     expect(towerHeroOf(picked, data).trainingTaken, {offer[0].pathId: 1});
   });
 
-  test('the save keeps the picks; an old save keeps its levels\' points', () {
+  test('the save keeps the picks; an old save takes the calling\'s', () {
     final run = towerTakeStatPick(won(start(3)), data, 1);
     final again = TowerRun.fromJson(
         jsonDecode(jsonEncode(run.toJson())) as Map<String, dynamic>);
     expect(again.statPicks, [1]);
-    expect(again.autoPicks, isFalse);
     expect(towerHeroOf(again, data).strength, towerHeroOf(run, data).strength);
-    // A save from before v1.857: no picks, the point went to the damage stat.
+    // A save from before v1.857 (no picks): brought up to date as it loads
+    // (v1.867), each pick its levels earned the calling's (offer 0).
     final old = run.toJson()..remove('picks');
     final loaded = TowerRun.fromJson(old);
-    expect(loaded.autoPicks, isTrue);
+    expect(loaded.statPicks, [0]);
     expect(towerPendingPicks(loaded), 0);
-    final fresh = towerHeroOf(start(3), data);
-    expect(towerHeroOf(loaded, data).strength, fresh.strength + 1);
+    expect(loaded.toJson()['picks'], [0]);
   });
 
   test('the bot takes its picks the story\'s way, and none is left waiting',

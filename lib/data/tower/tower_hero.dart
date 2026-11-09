@@ -3,11 +3,8 @@
 // gave, the cards it took), so the save holds no character and a reload
 // can never drift from the run.
 
-import 'dart:math';
-
 import '../../combat/spells.dart';
-import '../../combat/stat_rules.dart'
-    show damageStatOf, levelHealthGain, levelStatPicks;
+import '../../combat/stat_rules.dart' show levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
 import '../sim_policy.dart' show simSkillAssignments;
 import '../training.dart';
@@ -120,17 +117,15 @@ SimCharacter towerFreshHero(String raceId, String professionId,
 }
 
 /// [hero] raised to [level]: each level its health ([levelHealthGain], the
-/// wound kept, not healed); with [autoPicks] (a save from before v1.857)
-/// its stat pick in its damage stat, else the pick waits for the player
+/// wound kept, not healed); its stat pick waits for the player
 /// (towerPendingPicks). Returns the levels gained.
-int towerLevelTo(SimCharacter hero, int level, {bool autoPicks = true}) {
+int towerLevelTo(SimCharacter hero, int level) {
   var gained = 0;
   while (hero.level < level) {
     hero.level++;
     gained++;
     hero.maxHealth += levelHealthGain;
     hero.currentHealth += levelHealthGain;
-    if (autoPicks) hero.addAbilities({hero.preferredStat: levelStatPicks});
   }
   return gained;
 }
@@ -175,8 +170,6 @@ void towerTakePickOn(SimCharacter hero, StatPickOffer pick) {
 /// [reward] given to [hero].
 void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
   switch (reward.kind) {
-    case TowerRewardKind.item:
-      _wear(hero, reward.id, data);
     case TowerRewardKind.die:
       _takeDie(hero, reward.id, data);
     case TowerRewardKind.skill:
@@ -191,22 +184,11 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
       if (spell != null && !hero.knownSpells.any((s) => s.id == reward.id)) {
         hero.knownSpells.add(spell);
       }
-    case TowerRewardKind.heal:
-      hero.currentHealth = min(hero.maxHealth,
-          hero.currentHealth + (hero.maxHealth * reward.amount / 100).round());
     case TowerRewardKind.clanOath:
       // Sworn: the clan's die at once (the user's call); its standing is
       // the session's (towerSessionOf).
       if (towerClanDieOf(reward.id, data.dice) case final die?) {
         _takeDie(hero, die, data);
-      }
-    case TowerRewardKind.clanGift:
-      if (reward.id.isNotEmpty) {
-        _takeDie(hero, reward.id, data);
-      } else {
-        final stat = damageStatOf(hero.professionId);
-        hero.addAbilities(
-            {stat.isEmpty ? hero.preferredStat : stat: reward.amount});
       }
   }
 }
@@ -250,20 +232,19 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   final hero = towerFreshHero(
       run.raceId, run.professionId, run.startUnlocks, data,
       unlocksOwned: run.unlocksOwned);
+  // A clan sworn at the start: its oath on floor 0 (towerStart).
+  if (run.taken[0] case final oath?) towerApplyReward(hero, oath, data);
   var pick = 0;
   for (var floor = 1; floor <= run.floorsCleared; floor++) {
-    final gained = towerLevelTo(hero, towerBudgetOf(floor).levelAfter,
-        autoPicks: run.autoPicks);
+    final gained = towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
     // The floor's level-up picks, taken before its cards (towerPick waits
     // for them): each drawn as the hero stands then.
-    if (!run.autoPicks) {
-      for (var i = 0; i < gained * levelStatPicks; i++, pick++) {
-        if (pick >= run.statPicks.length) break;
-        final offer = towerStatPickDraw(hero, run.seed, pick, data);
-        final index = run.statPicks[pick];
-        if (index >= 0 && index < offer.length) {
-          towerTakePickOn(hero, offer[index]);
-        }
+    for (var i = 0; i < gained * levelStatPicks; i++, pick++) {
+      if (pick >= run.statPicks.length) break;
+      final offer = towerStatPickDraw(hero, run.seed, pick, data);
+      final index = run.statPicks[pick];
+      if (index >= 0 && index < offer.length) {
+        towerTakePickOn(hero, offer[index]);
       }
     }
     // The floor's spoils (v1.860): its gear worn when better.

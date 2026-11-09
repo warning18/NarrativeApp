@@ -583,3 +583,29 @@ Floors 5, 15 and 25 are wardens; 10, 20 and 30 are bosses.
 By main clan (every unlock): dominion 24.1%, mire 20.8%, compact 19.3%,
 crows 18.8%, vigil 17.6%, penitents 15.1%. The bag stays full (median 5).
 Antidotes are not capped: median 3, at most 13.
+
+## Old saves, brought up to date once (v1.867)
+
+Round 3, item D (the user's pick). A run saved by an older version is
+converted as it loads (`TowerRun.fromJson`), so nothing else reads the old
+shapes:
+
+- **Before v1.855, a clan sworn at the start** becomes that clan's oath,
+  taken on floor 0 (`towerStart(clanId:)` does the same). Sworn this way,
+  the hero now holds the clan's die, as with an oath taken on the way up.
+- **Before v1.857, no level-up picks**: each pick the run's levels earned is
+  the calling's (offer 0), instead of a point to the damage stat.
+- **Before v1.860, the old cards**:
+  - an item card's gear joins that floor's spoils;
+  - a clan's die becomes a die card;
+  - a heal card or a gift's stat point becomes nothing (the run's health is
+    saved apart);
+  - a waiting offer keeps only the cards still dealt.
+
+Gone with them:
+
+- `TowerRun.clanId` and `TowerRun.autoPicks`;
+- `towerLevelTo`'s auto points;
+- the `item`, `heal` and `clanGift` reward kinds, their cases in the hero,
+  the offer and the card text (UX's `tower_offer_view.dart`);
+- the seven strings they used.
