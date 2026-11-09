@@ -1,9 +1,13 @@
-// The Tower's reward cards (v1.845, docs/proposals/tower-mechanics.md §5):
-// after a win, 3 cards of different kinds, drawn from the floor's own
-// stream; never gold.
+// The Tower's rewards (docs/proposals/tower-mechanics.md §5). From v1.860
+// (the main game's earning offers, the user's call): every floor won drops
+// the story's spoils chest (its gear and potions, never its gold), a boon
+// floor (towerBoonFloors) offers a choose-one of a skill, a die and a
+// spell, and a clan may offer its oath after the spoils. All drawn from the
+// floor's own streams.
 
 import 'dart:math';
 
+import '../../combat/loot_box.dart';
 import 'tower_floors.dart';
 import 'tower_tables.dart';
 
@@ -106,12 +110,12 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
   return null;
 }
 
-/// The cards on the table after floor [floor] is won (§5): [towerOfferSize]
-/// of different kinds while the kinds last, a heal always among them when
-/// the hero is below [towerHealFloor] of its health. A clan of [oaths] (the
-/// clans still to swear to) offers its oath (v1.855): always when
-/// [oathDue] (the first floor won), else on [towerOathChance] of offers;
-/// one oath an offer at most.
+/// The cards on the table after floor [floor] is won (v1.860): on a boon
+/// floor ([towerBoonFloors]) a skill, a die and a spell, one of each while
+/// each has one to give; on another, a clan of [oaths] (the clans still to
+/// swear to) offering its oath (v1.855): always when [oathDue] (the first
+/// floor won), else on [towerOathChance] of the floors. Often nothing: the
+/// floor's spoils ([towerSpoilsFor]) are its reward.
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -210,40 +214,62 @@ List<TowerReward> towerOfferFor({
     }
   }
 
-  final offer = <TowerReward>[];
-  final kinds = {...towerRewardWeights};
-  if (hero.health < hero.maxHealth * towerHealFloor) {
-    offer.add(heal);
-    kinds.remove(TowerRewardKind.heal);
+  if (towerBoonFloors.contains(floor)) {
+    return [
+      for (final kind in towerBoonKinds)
+        if (draw(kind) case final card?) card,
+    ];
   }
-  // A clan's oath, from its own stream (the other cards draw as before).
+  // A clan's oath, from its own stream.
   final free = [
     for (final clan in oaths)
       if (!hero.clanIds.contains(clan)) clan,
   ]..sort();
-  if (free.isNotEmpty) {
-    final oathRandom = towerRandom(seed, floor, TowerStream.oath);
-    if (oathDue || oathRandom.nextDouble() < towerOathChance) {
-      offer.add(TowerReward(TowerRewardKind.clanOath,
-          id: free[oathRandom.nextInt(free.length)]));
-    }
-  }
-  while (offer.length < towerOfferSize && kinds.isNotEmpty) {
-    final total = kinds.values.fold(0, (a, b) => a + b);
-    var roll = random.nextInt(total);
-    late TowerRewardKind kind;
-    for (final MapEntry(:key, :value) in kinds.entries) {
-      if (roll < value) {
-        kind = key;
-        break;
-      }
-      roll -= value;
-    }
-    kinds.remove(kind);
-    final card = draw(kind);
-    if (card != null) offer.add(card);
-  }
-  return offer;
+  if (free.isEmpty) return const [];
+  final oathRandom = towerRandom(seed, floor, TowerStream.oath);
+  if (!oathDue && oathRandom.nextDouble() >= towerOathChance) return const [];
+  return [
+    TowerReward(TowerRewardKind.clanOath,
+        id: free[oathRandom.nextInt(free.length)]),
+  ];
+}
+
+/// The spoils chest of floor [floor] won (v1.860): the story's own chest
+/// (rollLootBox: its tier from the fortune roll of a hero of [luck], a boss
+/// floor's never below Gold, a warden's and an Elite's raised as an
+/// Elite's), from the floor's own stream; its gear and its potions, never
+/// its gold (nor its charms, tomes or materials, which the Tower has no
+/// use for).
+List<String> towerSpoilsFor({
+  required int seed,
+  required TowerFloor floor,
+  int luck = 0,
+  Iterable<String> ownedItemIds = const [],
+  String preferredScalingStat = '',
+  required Map<String, dynamic> items,
+}) {
+  final chest = rollLootBox(
+    LootContext(
+      chapter: floor.chapter,
+      playerLuck: luck,
+      isElite: floor.elite || floor.kind == TowerFloorKind.warden,
+      hasBossOrUnique: floor.kind == TowerFloorKind.boss,
+      enemyCount: floor.enemyIds.length,
+      affixCount: floor.affixes.length,
+      preferredScalingStat: preferredScalingStat,
+      ownedItemIds: ownedItemIds.toList(),
+      signatureItemIds: const [],
+    ),
+    items,
+    towerRandom(seed, floor.floor, TowerStream.spoils),
+  );
+  return [
+    for (final id in chest.itemIds)
+      if ((items[id] as Map?)?['isEquippable'] == true ||
+          towerSpoilsPotions.containsKey(id) ||
+          id == towerSpoilsAntidote)
+        id,
+  ];
 }
 
 bool _restrictionAllows(Object? restricted, String id) {

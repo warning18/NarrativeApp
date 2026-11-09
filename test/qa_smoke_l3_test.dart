@@ -288,7 +288,7 @@ void main() {
             session: save(), prepare: _load),
         SmokeCase('character_die_badge', const CharacterDieBadge(),
             session: save(), prepare: _load),
-        SmokeCase('skills_star_chart', const SkillsScreen(),
+        SmokeCase('skills_tree', const SkillsScreen(),
             session: save({'skillEssence': 6}), prepare: _load, bare: true),
         SmokeCase(
           'prologue_opening',

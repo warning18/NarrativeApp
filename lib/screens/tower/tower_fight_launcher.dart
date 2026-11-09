@@ -46,5 +46,9 @@ Future<TowerFightResult?> towerFightFor(
   ref.read(combatActiveProvider.notifier).state = false;
   // Back before the first roll pops null: the floor was not fought.
   if (won == null) return null;
-  return TowerFightResult(won: won, healthLeft: fight.healthLeft);
+  return TowerFightResult(
+      won: won,
+      healthLeft: fight.healthLeft,
+      potionsLeft: fight.potionsLeft,
+      antidotesLeft: fight.antidotesLeft);
 }

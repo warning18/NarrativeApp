@@ -83,7 +83,8 @@ class TowerData {
 /// A new hero of [raceId] and [professionId] with the start unlocks
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
 /// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
-/// unlocks, no potions (the heal cards stand in for them).
+/// unlocks, no potions (the flask and the bag come with the run,
+/// [towerHeroOf]).
 SimCharacter towerFreshHero(String raceId, String professionId,
     Iterable<String> unlockIds, TowerData data,
     {int unlocksOwned = 0}) {
@@ -257,12 +258,18 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
         }
       }
     }
+    // The floor's spoils (v1.860): its gear worn when better.
+    for (final id in run.spoils[floor] ?? const <String>[]) {
+      _wear(hero, id, data);
+    }
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data);
   }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
-  hero.potions = towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion;
+  // The flask, filled every floor, and the bag the spoils filled.
+  hero.potions =
+      towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion + run.potions;
   return hero;
 }
 

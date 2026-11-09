@@ -8,6 +8,71 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.863.0+899]
+
+### Changed
+- **The Skills tab's tree is the banner version again** (the user's call: "revert
+  the skill to the banner interface, the previous one didn't accept this").
+  The sky of constellations of v1.619 is gone: the branches are columns of
+  rings again, each unknown skill with its offering clan's small banner on
+  its ring, the clan's name under it. `skill_tree_view.dart` is the v1.618
+  file; `star_chart.dart`, its tests and its `star_*` strings are deleted.
+- The branch header keeps #651's promise in French: the name shrinks to its
+  column ("Avant-garde" at 320 px) and the count `2/4` stays whole under it.
+  The scrollable Skills tab bar of #655 stays.
+- The Mastery cost under each column reads "Mastery" over its cost and shrinks
+  to the column, so French no longer breaks "d'essence" mid-word at 320 px.
+- `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
+  smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
+  under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
+## [1.862.0+898]
+
+### Changed
+- **The Tower is created on the main game's own screen** (step 4 of "the
+  main game's earning offers"): Climb opens the Race & Profession screen
+  (`RaceProfessionScreen(locks, onChosen)`), the callings not yet bought
+  padlocked with "Bought with marks: 15" (Cleric) / "25" (Ranger). The story's
+  clan discs, counts and "will court you" lines are hidden for the Tower
+  (`showClans`), the hint reads "Who climbs the Tower?", and there is no name,
+  look or origin memories. The pick goes to `TowerController.start`; the story
+  save is never written.
+- The start screen's own people/calling lists are gone.
+- `test/tower_screens_test.dart` follows the new flow and checks the story
+  session is untouched; pictures in `docs/ux-shots/tower/create/`.
+
+## [1.861.0+897]
+
+### Changed
+- **The Tower shows its spoils** (step 3 of "the main game's earning
+  offers"): after the Level Up, every floor won opens the main game's spoils
+  sheet (`LootSheet`, no gold) beside the ladder: the potions and antidotes
+  the bag gains, each item with what becomes of it. Take goes on to the boon
+  (floors 5, 10, 15, 20, 25) or the oath, and straight to the next floor when
+  no card is on offer. An empty chest says so.
+- `LootSheet.showHandle` (default true: the story's sheet is unchanged).
+- `test/tower_climb_test.dart` takes the sheet first; the picture test draws
+  it (`docs/ux-shots/tower/spoils/`).
+
+## [1.860.0+896]
+
+### Changed
+- **The Tower pays the main game's way** (the user's call, step 2 of "the
+  main game's earning offers"):
+  - every floor won drops the story's spoils chest (its gear and potions,
+    never its gold); the gear is worn when better, the potions go in a bag
+    carried from floor to floor on top of the flask;
+  - floors 5, 10, 15, 20 and 25 offer a boon: a skill, a die or a spell,
+    one to take;
+  - a clan's oath still comes after the spoils (always on the first floor
+    won, then on 35% of the other floors); many floors offer nothing;
+  - no more heal, item or clan-gift cards.
+  - `towerSpoilsFor`, `TowerRun.spoils` / `potions` / `antidotes`,
+    `towerBoonFloors`; `TowerFightSession` reports the potions left.
+- Balance (1,500 seeds): no unlocks, median 17, top 10.2%; every unlock,
+  median 18, top 15.7%. An unlock is `towerHealthPerUnlock` .04 more health
+  (was .02); the ranger's foes at .88, the rogue's at 1.04. QA's floor-20
+  bound to 20%.
+
 ## [1.859.0+895]
 
 ### Fixed

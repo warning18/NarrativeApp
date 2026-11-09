@@ -44,7 +44,8 @@ void main() {
       // No clan's gift before a clan is sworn.
       expect(first.offer.map((r) => r.kind),
           isNot(contains(TowerRewardKind.clanGift)));
-      expect(first.offer, hasLength(towerOfferSize));
+      // After the spoils, the oath alone (v1.860: no cards beside it).
+      expect(first.offer, hasLength(1));
     }
   });
 

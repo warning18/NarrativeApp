@@ -31,7 +31,11 @@ const _medianFloor = (min: 13, max: 18);
 // v1.855 (the user's call): no clan at the start, the clans offer their
 // oaths on the way up (a die each, at once): floor 20 about 2 points more
 // often (34.4% to 36.8% over the 500 guard seeds), the top unchanged.
-const _floor20 = (min: 0.25, max: 0.38);
+// v1.860 (the user's call: the main game's spoils chest after every floor,
+// a boon of a skill, a die or a spell on 5, 10, 15, 20 and 25, no heal
+// cards): the median and the top hold, but more climbs end between 10 and
+// 20 (floor 20 at 24.6% over the 500 guard seeds).
+const _floor20 = (min: 0.20, max: 0.38);
 const _topNone = (min: 0.05, max: 0.12);
 const _topAll = (min: 0.15, max: 0.25);
 
@@ -64,6 +68,7 @@ Map<String, dynamic> _json(TowerRun run) => {
       'floorsCleared': run.floorsCleared,
       'marks': run.marks,
       'refused': run.refused.length,
+      'spoils': run.spoils.values.fold<int>(0, (n, items) => n + items.length),
       'taken': {
         for (final e in run.taken.entries) '${e.key}': e.value.kind.name,
       },

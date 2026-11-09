@@ -22,6 +22,7 @@ import 'tower_end_screen.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
+import 'tower_spoils_view.dart';
 import 'tower_widgets.dart';
 
 class TowerFloorScreen extends ConsumerStatefulWidget {
@@ -34,6 +35,9 @@ class TowerFloorScreen extends ConsumerStatefulWidget {
 class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
   bool _busy = false;
   bool _resumed = false;
+
+  /// The floor whose spoils sheet was taken: its boon or oath comes next.
+  int _spoilsTaken = 0;
 
   /// The Level Up screen, the main game's own, under the run's hero: a pick
   /// is owed after a floor that gained a level (the engine holds the points,
@@ -65,7 +69,10 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
       // Not fought (Back before the first roll): the floor stays as it was.
       if (result == null) return;
       final next = towerAfterFight(run, data,
-          won: result.won, healthLeft: result.healthLeft);
+          won: result.won,
+          healthLeft: result.healthLeft,
+          potionsLeft: result.potionsLeft,
+          antidotesLeft: result.antidotesLeft);
       if (next.isOver) {
         await _finish(next);
       } else {
@@ -143,18 +150,25 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
               child: TowerLadder(floor: run.floor),
             ),
             Expanded(
-              child: choosing
-                  ? TowerOfferView(
+              child: choosing && _spoilsTaken != run.floor
+                  ? TowerSpoilsView(
                       run: run,
-                      data: data,
-                      onPick: (i) => _pick(run, data, i),
+                      onTake: () => run.offer.isEmpty
+                          ? _pick(run, data, null)
+                          : setState(() => _spoilsTaken = run.floor),
                     )
-                  : _FloorIntro(
-                      run: run,
-                      data: data,
-                      busy: _busy,
-                      onFight: () => _fight(run, data),
-                    ),
+                  : choosing
+                      ? TowerOfferView(
+                          run: run,
+                          data: data,
+                          onPick: (i) => _pick(run, data, i),
+                        )
+                      : _FloorIntro(
+                          run: run,
+                          data: data,
+                          busy: _busy,
+                          onFight: () => _fight(run, data),
+                        ),
             ),
           ],
         ),
