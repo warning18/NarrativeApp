@@ -27,7 +27,7 @@ The Tower's fights are not played: the Tower's own launcher (`towerFightLauncher
 
 ## Mending Light feeds the Watchfire (1.859)
 
-A level 9 cleric at full health (60 / 60), mana 10, in a fight with a Skittish Slum Thug: `watchfire-0-before-cast` (no Watchfire icon), `watchfire-1-after-one-cast`, `watchfire-2-after-two-casts`. The Watchfire is the flame icon under the hero's name; after two casts at full health its number is **20** (the number is read in the test, too: every point healed past full feeds it; the heal sizes are Mending Light's, not a die's).
+A level 9 cleric at full health (60 / 60), mana 10, in a fight with a Skittish Slum Thug: `watchfire-0-before-cast`, `watchfire-1-after-one-cast`, `watchfire-2-after-two-casts`. The Watchfire is the flame icon under the hero's name; after two casts at full health its number is **20** (the number is read in the test, too: every point healed past full feeds it; the heal sizes are Mending Light's, not a die's).
 
 ## The village hubs after the chart change (1.851 and later)
 
