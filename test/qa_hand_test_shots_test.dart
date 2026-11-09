@@ -1,6 +1,7 @@
-// QA: real pictures of the build for the user's hand test of 1.809 to 1.846
-// (docs/qa/hand-test-1.846/). Drawn only with QA_SHOTS=<folder>; without it
-// the file holds one empty test.
+// QA: real pictures of the build for the user's hand tests (1.809 to 1.846,
+// then 1.863: the v1863-* sections). The folders of finished hand tests are
+// deleted from the repository (git history keeps them). Drawn only with
+// QA_SHOTS=<folder>; without it the file holds one empty test.
 //
 //   QA_SHOTS=docs/qa/hand-test-1.846 flutter test test/qa_hand_test_shots_test.dart
 //
