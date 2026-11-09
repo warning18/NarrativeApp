@@ -1,14 +1,24 @@
-# The statistical simulator tests and what can move them (QA, item 3 of
-# docs/qa/qa-improvements-2.md). Read by tool/shard_tests.py and by
-# test/qa_sim_gate_test.dart.
+# What CI leaves out of a pull request that cannot move it (QA: item 3 of
+# docs/qa/qa-improvements-2.md, and item 4 of docs/proposals/qa-ideas-round-3.md).
+# Read by tool/shard_tests.py and by test/qa_sim_gate_test.dart.
 #
-# `gated <file>`: a test file in test/ that plays whole simulated runs
-# (about 160 s together). On a pull request that changes none of the
-# `trigger` paths, CI leaves these out of its shard; on main, and on any
-# pull request that changes a trigger path, it runs them.
+# `group <name>`: starts a group; each group has its own gated files and paths.
+#
+# `gated <file>`: a test file in test/ that a group holds back. On a pull
+# request that changes none of the group's `trigger` paths, CI leaves these
+# out of its shards; on main, and on any pull request that changes a trigger
+# path, it runs them.
 #
 # `trigger <prefix>`: a changed file whose path starts with the prefix may
-# change what the gated tests measure. A prefix ending in `/` is a folder.
+# change what the group's tests measure. A prefix ending in `/` is a folder.
+#
+# `ignore <prefix>`: a changed file under this prefix never counts, though a
+# trigger covers it (a folder inside a broad trigger that the group's tests
+# do not read: qa_sim_gate_test.dart checks that they do not).
+
+# The four statistical simulator tests: whole simulated runs (about 160 s
+# together).
+group simulator
 gated boss_balance_test.dart
 gated clash_balance_test.dart
 gated sim_coverage_test.dart
@@ -33,3 +43,29 @@ trigger tool/sim_gate.txt
 trigger .github/
 trigger pubspec.yaml
 trigger pubspec.lock
+
+# The three big screen smoke tests (about 90 s together): how the screens
+# look. Only a change to what draws a screen, its text, fonts or data can move
+# them: a pull request that touches only docs, tests, tools, the Tower's
+# engine and screens or the simulator's own folders cannot.
+group screens
+gated qa_smoke_l3_test.dart
+gated qa_smoke_screens_test.dart
+gated qa_real_font_cards_test.dart
+
+trigger lib/
+trigger assets/
+trigger pubspec.yaml
+trigger pubspec.lock
+trigger test/support/
+trigger test/qa_smoke_
+trigger test/qa_real_font_
+trigger tool/shard_tests.py
+trigger tool/sim_gate.txt
+trigger .github/
+
+ignore lib/data/tower/
+ignore lib/data/sim_combat/
+ignore lib/screens/tower/
+ignore lib/screens/playthrough_simulator
+ignore lib/providers/tower_
