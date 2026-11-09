@@ -17,7 +17,7 @@ import '../../providers/clans_provider.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
 
 /// What a card reads: its kind, its name and what it does.
 class TowerCardText {
@@ -51,15 +51,6 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
       const {};
   String dieName(String id) => towerDieName(ref, id);
   switch (reward.kind) {
-    case TowerRewardKind.item:
-      final r = row(itemsSchema, reward.id);
-      return TowerCardText(
-          tr(ref, 'tower_kind_item'),
-          '${r['itemName'] ?? reward.id}',
-          [
-            trItemType(ref, '${r['itemType'] ?? ''}'),
-            '${r['rarity'] ?? ''}',
-          ].where((s) => s.isNotEmpty).join(' · '));
     case TowerRewardKind.die:
       return TowerCardText(tr(ref, 'tower_kind_die'), dieName(reward.id),
           '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}');
@@ -72,18 +63,6 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
       final r = row(spellsSchema, reward.id);
       return TowerCardText(tr(ref, 'tower_kind_spell'),
           '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
-    case TowerRewardKind.heal:
-      return TowerCardText(
-          tr(ref, 'tower_kind_heal'),
-          tr(ref, 'tower_heal_name').replaceAll('{n}', '${reward.amount}'),
-          tr(ref, 'tower_heal_text').replaceAll('{n}', '${reward.amount}'));
-    case TowerRewardKind.clanGift:
-      return reward.id.isEmpty
-          ? TowerCardText(
-              tr(ref, 'tower_kind_gift'),
-              tr(ref, 'tower_gift_name'),
-              tr(ref, 'tower_gift_stat').replaceAll('{n}', '${reward.amount}'))
-          : TowerCardText(tr(ref, 'tower_kind_gift'), dieName(reward.id), '');
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
@@ -153,7 +132,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   onSwear: () => _pick(i),
                 );
               }
-              return TowerPanel(
+              return InkPanel(
                 key: Key('tower_card_$i'),
                 lit: held,
                 dim: !held,
@@ -238,7 +217,7 @@ class _OathCard extends ConsumerWidget {
         faction == null ? InkColors.of(context).gold : Color(faction.color);
     final name = faction?.shortFor(lang) ?? clanId;
     final die = towerClanDieOf(clanId, data.dice);
-    return TowerPanel(
+    return InkPanel(
       lit: held,
       dim: !held,
       onTap: onHold,

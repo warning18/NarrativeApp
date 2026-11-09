@@ -48,3 +48,7 @@ suite. `test/qa_sim_gate_test.dart` holds the list: every `lib/` file the four
 tests read must be under a trigger. To run them anyway, `flutter test
 test/boss_balance_test.dart test/clash_balance_test.dart
 test/sim_coverage_test.dart test/adapt_gap_test.dart`.
+
+## Picture folders
+
+The pictures of a finished test are deleted (git history keeps them): `hand-test-1.846/` (15 MB), `smoke/` (2.1 MB) and the picture folders of the L3 reports 1.473.0, 1.489.0, 1.501.0 and 1.654.0 (the reports' picture links no longer resolve; `git log -- docs/qa/<folder>` finds them). Kept: `hand-test-1.863/` (until the user has finished testing it), `l3-1.696.0/` (the last L3) and `village-hubs-1.851/` (cited by `docs/proposals/town-chart-framing-and-labels.md`). The next hand-test PR deletes the previous folder.

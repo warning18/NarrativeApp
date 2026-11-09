@@ -20,7 +20,7 @@ const int towerFlask = 1;
 /// unlock); the rogue, whom the spoils' gear lifts most, at 1.04.
 const Map<String, double> towerProfessionScale = {
   'mage': .65,
-  'cleric': 1.35,
+  'cleric': 1.28,
   'ranger': .88,
   'rogue': 1.04,
 };
@@ -34,8 +34,9 @@ double towerProfessionScaleOf(String professionId) =>
 /// level-up's stat picks are the player's, the main game's way, and spread
 /// their points as the story's builds do (less into the damage stat than
 /// the point a level gave before), so the foes come down to keep the
-/// climb as hard as it was.
-const double towerFoeScale = 0.95;
+/// climb as hard as it was. v1.865: 1.02 (was 0.95), as full chests
+/// (rollLootBox's gearAndPotionsOnly) gave the hero much more gear.
+const double towerFoeScale = 1.02;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -329,23 +330,12 @@ const int towerNoRepeatFloors = 3;
 /// its own (the fight screen's `_eliteStatMultiplier`).
 const double towerSimEliteMultiplier = 1.35;
 
-/// What a reward card gives.
-/// [clanOath]: a clan offers itself (v1.855, the user's call): sworn, the
-/// hero holds its standing and its die (see [towerOathChance]).
-enum TowerRewardKind { item, die, skill, spell, heal, clanGift, clanOath }
-
-/// Each kind's weight on a card (§5 of the note).
-const Map<TowerRewardKind, int> towerRewardWeights = {
-  TowerRewardKind.item: 30,
-  TowerRewardKind.die: 10,
-  TowerRewardKind.skill: 18,
-  TowerRewardKind.spell: 8,
-  TowerRewardKind.heal: 16,
-  TowerRewardKind.clanGift: 14,
-};
-
-/// Cards on the table after a win.
-const int towerOfferSize = 3;
+/// What a reward card gives: a boon's skill, die or spell (v1.860), or
+/// [clanOath], a clan offering itself (v1.855, the user's call): sworn, the
+/// hero holds its standing and its die (see [towerOathChance]). The item,
+/// heal and clan-gift cards of v1.845 are gone (v1.867): an old save's are
+/// brought up to date as it loads (TowerRun.fromJson).
+enum TowerRewardKind { die, skill, spell, clanOath }
 
 /// A clan's oath on the table (v1.855): always on the first floor won, then
 /// on this share of the floors (not a boon's, v1.860) while a clan is left
@@ -374,13 +364,11 @@ const Map<String, int> towerSpoilsPotions = {
 /// The chest's antidote.
 const String towerSpoilsAntidote = 'antidote';
 
-/// A heal card's share of max health, and after a boss or a warden.
-/// (Before v1.860; an old save's offer may still hold one.)
-const double towerHealShare = .35;
-const double towerBigHealShare = .50;
-
-/// Below this share of health a heal is always on the table.
-const double towerHealFloor = .40;
+/// The most potions the bag holds (v1.865, the user's pick): what a chest
+/// gives past it is drunk at once, each healing the story's potion
+/// (fight_numbers.dart's potionHealAmount), so a climb never ends on a
+/// hoard of 20.
+const int towerBagCap = 5;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.
@@ -389,9 +377,6 @@ const List<List<double>> towerRarityOdds = [
   [.25, .45, .27, .03],
   [.05, .35, .50, .10],
 ];
-
-/// items.json's rarities, lowest first.
-const List<String> towerItemRarities = ['Common', 'Uncommon', 'Rare', 'Relic'];
 
 /// skills.json's rarities by step: the top step holds epic and legendary.
 const List<List<String>> towerSkillRarities = [

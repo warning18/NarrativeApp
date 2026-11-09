@@ -3,30 +3,32 @@ part of '../fight_screen.dart';
 /// Rolling and confirming the party's dice and the party's round (the
 /// enemies' turn: fight_enemy_turn.dart; the signs: fight_sign_rounds.dart).
 extension _FightRounds on _FightScreenState {
-  /// What [raw] healing from [actor]'s [face] heals this round: the
-  /// Anvil-Deaf's wall takes no Heal faces (spec_variants.dart), a shrine
-  /// heals more, each heal a member gives this fight heals a little less,
-  /// and the cleric's Watchfire doesn't tire, it burns
-  /// (profession_cores.dart). [count] false: the round's preview, which
-  /// counts no heal (fight_dice_rules.dart).
+  /// What [raw] healing from [actor]'s [face] heals this round: the heal
+  /// rule (heal_rules.dart), the same as the simulator's. [count] false:
+  /// the round's preview, which counts no heal (fight_dice_rules.dart).
   int _healDealt(_PartyMember actor, DiceFaceResult face, int raw,
-      {bool count = true}) {
-    var healing = actor.isPlayer &&
-            face.type == 'Heal' &&
-            _core.has(Spec.briarGuard) &&
-            _core.mods.noHealFaces
-        ? 0
-        : raw;
-    if (_condition == BattlefieldCondition.shrine && healing > 0) {
-      healing = (healing * shrineHealMultiplier).round();
-    }
-    if (actor.isPlayer && _core.core == ProfessionCore.watchfire) {
-      return _length.rule.heal(healing, _roundsStarted);
-    }
-    return count
-        ? _length.fatigued(actor.id, healing, round: _roundsStarted)
-        : _length.previewed(actor.id, healing, round: _roundsStarted);
-  }
+          {bool count = true}) =>
+      _healOf(actor, HealSource.face, raw,
+          count: count,
+          noHealFaces: actor.isPlayer &&
+              face.type == 'Heal' &&
+              _core.has(Spec.briarGuard) &&
+              _core.mods.noHealFaces);
+
+  /// What [raw] healing from [source], given by [actor], heals this round
+  /// (heal_rules.dart): the shrine, the ground's rule, and the fatigue
+  /// ([count] false: not counted), never the cleric's.
+  int _healOf(_PartyMember actor, HealSource source, int raw,
+          {bool count = true, bool noHealFaces = false}) =>
+      healDealt(
+        source: source,
+        raw: raw,
+        noHealFaces: noHealFaces,
+        shrine: _condition == BattlefieldCondition.shrine,
+        watchfire: actor.isPlayer && _core.core == ProfessionCore.watchfire,
+        roundRule: (amount) => _length.rule.heal(amount, _roundsStarted),
+        fatigue: (amount) => _length.tire(actor.id, amount, count: count),
+      );
 
   /// Milliseconds between one party member's effect and the next, so a
   /// round of dice reads as a sequence rather than one flash.
