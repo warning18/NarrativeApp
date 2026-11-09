@@ -25167,8 +25167,8 @@
     "location": "ashen_quarter_ash_market",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take what Dorran sent",
+        "text_fr": "Prendre ce que Dorran envoie",
         "next_id": "3005",
         "goldMod": 20,
         "flagsToAdd": [
@@ -25181,8 +25181,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Thank the rigger and send her home",
+        "text_fr": "Remercier la gréeuse et la renvoyer chez elle",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_dorran_later"
@@ -25593,8 +25593,8 @@
     "location": "drowned_cloister_nave_hall",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take Imeh’s crate",
+        "text_fr": "Prendre la caisse d’Imeh",
         "next_id": "5010",
         "goldMod": 20,
         "flagsToAdd": [
@@ -25608,8 +25608,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Thank the boatman and let him pole on",
+        "text_fr": "Remercier le passeur et le laisser repartir",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_imeh_later"
@@ -25785,8 +25785,8 @@
     "location": "reliquary_quarter",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take Brannoc’s packet",
+        "text_fr": "Prendre le paquet de Brannoc",
         "next_id": "6010",
         "goldMod": 20,
         "flagsToAdd": [
@@ -25799,8 +25799,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Send the novice back with your thanks",
+        "text_fr": "Renvoyer le novice avec vos remerciements",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_brannoc_later"
@@ -26143,8 +26143,8 @@
     "location": "white_anchorage_quay",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take Orsabet’s lit tallow",
+        "text_fr": "Prendre le suif allumé d’Orsabet",
         "next_id": "7100",
         "goldMod": 20,
         "flagsToAdd": [
@@ -26158,8 +26158,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Thank the Candlebearer and let her go",
+        "text_fr": "Remercier la Porte-Chandelle et la laisser partir",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_orsabet_later"
@@ -26199,8 +26199,8 @@
     "location": "white_anchorage_quay",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take what Ghrem brought down",
+        "text_fr": "Prendre ce que Ghrem a apporté",
         "next_id": "7100",
         "goldMod": 20,
         "flagsToAdd": [
@@ -26213,8 +26213,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Leave him with the sea",
+        "text_fr": "Le laisser à la mer",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_ghrem_later"
@@ -26467,8 +26467,8 @@
     "location": "cove_camp",
     "choices": [
       {
-        "text": "Accept what they offer",
-        "text_fr": "Accepter ce qu’on vous offre",
+        "text": "Take what Nkem brought in",
+        "text_fr": "Prendre ce que Nkem a ramené",
         "next_id": "7800",
         "goldMod": 20,
         "flagsToAdd": [
@@ -26481,8 +26481,8 @@
         }
       },
       {
-        "text": "Say your goodbyes",
-        "text_fr": "Faire vos adieux",
+        "text": "Wave the Brig-Born on to the muster",
+        "text_fr": "Faire signe aux Enfants du Brick de rejoindre la revue",
         "next_id": "7800",
         "flagsToAdd": [
           "hub_7800_nkem_later"

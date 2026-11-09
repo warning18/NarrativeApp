@@ -862,7 +862,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"I’ve watched this stretch of roofline for three days,\" she says, not lowering the bow, \"and you’re the first thing to cross it worth aiming at instead of past.\" The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I’ll consider the rest of this city marginally less worth watching alone.\"",
+    "npcDialogueText": "\"I’ve watched this stretch of roofline for three days,\" she says, not lowering the bow. The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I’ll consider the rest of this city marginally less worth watching alone.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -878,7 +878,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "liora",
     "questName_fr": "Le Guet de Liora",
-    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
+    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours », dit-elle sans baisser son arc. Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
     "turnInChoices": [
       {
         "choiceText": "Keep the captain’s purse",
@@ -933,7 +933,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"It has noticed you,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you’ve carried the mark long enough yourself. \"It took its time with me. With you it is still deciding what it wants. I don’t know that I can help with that, but I know what it costs to face it alone, and I’d rather not watch someone else find out the same way I did.\"",
+    "npcDialogueText": "\"It has noticed you,\" she says, before I have said anything at all. \"It took its time with me. With you it is still deciding what it wants. I don’t know that I can help with that, but I know what it costs to face it alone, and I’d rather not watch someone else find out the same way I did.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -949,7 +949,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "vess",
     "questName_fr": "Vess dans les ténèbres",
-    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
+    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
   },
   "q_ch3_groshs_price": {
     "questID": "q_ch3_groshs_price",
@@ -1551,7 +1551,7 @@
     "rewardItemID": "",
     "alignmentChange": 5,
     "nextQuestID": "",
-    "npcDialogueText": "\"I sang in the Court’s choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter.\" He does not stop trimming the wick while he says it. \"These people have nothing but the candles and me. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
+    "npcDialogueText": "\"I sang in the Court’s choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -1567,7 +1567,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "tobin",
     "questName_fr": "La Veillée de Frère Tobin",
-    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
+    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
   },
   "q_ch5_malriks_cut": {
     "questID": "q_ch5_malriks_cut",
