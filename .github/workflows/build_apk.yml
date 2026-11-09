@@ -80,11 +80,13 @@ jobs:
   # --total-shards (which splits a file's tests across runners and breaks
   # the few tests that lean on a sibling run earlier in the same file).
   #
-  # Four of the files play whole simulated runs (about 160 s together: the boss
-  # curve, the clash gap, the story coverage, the adapt gap). A pull request
-  # that changes none of the paths in tool/sim_gate.txt cannot move what they
-  # measure, so its shards leave them out and split the rest again; main, and
-  # any pull request that touches a listed path, run the whole suite.
+  # Two groups of files are gated (tool/sim_gate.txt): the four that play whole
+  # simulated runs (about 160 s together: the boss curve, the clash gap, the
+  # story coverage, the adapt gap) and the three big screen smoke tests (about
+  # 90 s). A pull request that changes none of a group's trigger paths cannot
+  # move what it measures, so its shards leave that group out and split the
+  # rest again; main, and any pull request that touches a trigger path, run
+  # the whole suite.
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -111,17 +113,13 @@ jobs:
       - name: Run tests (shard ${{ matrix.shard }} of 4)
         run: |
           python3 tool/shard_tests.py --check 4
-          gate=run
+          changed=""
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt"
-            gate=$(python3 tool/shard_tests.py --gate < "$RUNNER_TEMP/changed.txt")
+            changed="--changed $RUNNER_TEMP/changed.txt"
           fi
-          flag=""
-          if [ "$gate" = "skip" ]; then
-            flag="--skip-gated"
-            echo "Simulator tests skipped: this PR changes nothing in tool/sim_gate.txt"
-          fi
-          files=$(python3 tool/shard_tests.py ${{ matrix.shard }} 4 $flag)
+          # Says on stderr which gated groups (tool/sim_gate.txt) it leaves out.
+          files=$(python3 tool/shard_tests.py ${{ matrix.shard }} 4 $changed)
           echo "$(echo "$files" | wc -l) test files in this shard"
           flutter test $files
 
