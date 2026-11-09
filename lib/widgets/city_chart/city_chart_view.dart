@@ -17,6 +17,7 @@ import '../../data/world_map.dart' show MapLook;
 import '../journey_banner_pin.dart' show PinBanner;
 import 'city_chart.dart';
 import 'city_chart_painter.dart';
+import '../motion.dart';
 
 /// The words the view says, in the player's language (the host passes them).
 class CityChartText {
@@ -223,7 +224,19 @@ class _CityChartViewState extends State<CityChartView>
     super.initState();
     widget.camera?.addListener(_onCamera);
     _move.addListener(_tick);
-    if (widget.animate) _breath.repeat();
+  }
+
+  /// Moves and breathes, unless the caller or the platform says no.
+  bool get _animate => widget.animate && !stillMotion(context);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animate) {
+      if (!_breath.isAnimating) _breath.repeat();
+    } else {
+      _breath.stop();
+    }
   }
 
   @override
@@ -272,7 +285,7 @@ class _CityChartViewState extends State<CityChartView>
         framed != null && shot.centre == null && shot.zoom == 1 && !shot.full
             ? framed.$2
             : Offset(_size.width / 2, _size.height / 2) - centre * scale;
-    if (shot.jump || !widget.animate) {
+    if (shot.jump || !_animate) {
       final s = scale.clamp(_minScale, _maxScale);
       setState(() {
         _scale = s;
@@ -369,7 +382,7 @@ class _CityChartViewState extends State<CityChartView>
   void _animateTo(double scale, Offset offset) {
     scale = scale.clamp(_minScale, _maxScale);
     offset = _clamped(offset, scale);
-    if (!widget.animate) {
+    if (!_animate) {
       setState(() {
         _scale = scale;
         _offset = offset;

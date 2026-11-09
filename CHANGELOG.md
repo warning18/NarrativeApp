@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.870.0+906]
+
+### Fixed
+- **"Remove animations" is honoured by the last animations that ignored it**
+  (UX-2 round 3): the city chart no longer breathes in a loop nor glides
+  between zooms, the map's sky no longer fades in, a stat no longer pulses on
+  a change, and the story's cards no longer reveal one after the other. With
+  the platform's setting on they stand at their end state at once. Everything
+  else already honoured it (about 60 places read the setting, the page
+  transitions among them); `lib/widgets/motion.dart` (`stillMotion`,
+  `forwardOrJump`) is the one helper for those that start in `initState`.
+  The aim sweep of a ship battle and the timed choice's countdown are play,
+  not decoration, and keep running.
+- `test/motion_test.dart`.
+
 ## [1.863.0+899]
 
 ### Changed

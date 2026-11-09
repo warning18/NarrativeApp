@@ -10,6 +10,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/game_icons.dart';
 import 'road_panel.dart';
+import 'motion.dart';
 
 /// The party's vital numbers on one line: level, health, mana, gold and
 /// the open quests, sized down rather than scrolled when the screen is
@@ -362,7 +363,7 @@ class _PulseOnChangeState extends State<_PulseOnChange>
   void didUpdateWidget(covariant _PulseOnChange oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
-      _controller.forward(from: 0);
+      _controller.forwardOrJump(context, from: 0);
     }
   }
 
