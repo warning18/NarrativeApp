@@ -24,6 +24,81 @@ isn't reconstructable from git history alone.
   the new piece on and leaves the old one in the bag.
 - `LootReward.detail` and `.onTap`; the string `loot_use_now_title` is gone,
   `loot_replaces` is new. Pictures: `docs/ux-shots/spoils-actions/`.
+## [1.868.0+904]
+
+### Changed
+- **The fonts are cut to the letters the game draws** (UX-2 round 3): the six
+  font files go from 774 KB to 376 KB (Spectral 160 to 62 KB each, Pixelify
+  48 to 28, IM Fell 179 to 131), so every in-app update downloads about 400 KB
+  less. Kept: ASCII, Latin-1, Latin Extended-A (a typed name keeps its
+  accents), general punctuation, the arrows, and every other character the
+  texts really use (gamedata, the story, every string in `lib/`) that the
+  font had. Kerning, ligatures and hinting are kept. The same text drawn in
+  the old and the new fonts (EN and FR, all four faces) is pixel for pixel
+  identical.
+- `tool/subset_fonts.py` makes them (needs fonttools, and the full fonts:
+  `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
+  what each font never had; `test/font_glyphs_test.dart` fails when a new
+  character comes into a text that a font had and the subset lost.
+## [1.867.0+903]
+
+### Changed
+- **Old Tower saves are brought up to date once, as they load** (round 3,
+  item D, the user's pick), and the three paths kept for them are gone:
+  - a clan sworn at the start (before v1.855) is its oath on floor 0, and
+    now gives its die as any oath does;
+  - a run without level-up picks (before v1.857) takes the calling's for
+    each level;
+  - the old cards (before v1.860): an item card's gear joins the floor's
+    spoils, a clan's die becomes a die card, a heal or stat-point card
+    nothing (the health is saved apart).
+- Gone: `TowerRun.clanId`, `TowerRun.autoPicks`, the `item`, `heal` and
+  `clanGift` reward kinds and their seven strings.
+- `test/tower_save_migration_test.dart`: one save of each old shape.
+
+## [1.866.0+902]
+
+### Changed
+- **One healing rule for the fight and the simulator** (round 3, item C, the
+  user's pick): `lib/combat/heal_rules.dart` (`healDealt`, `healFeedsFire`)
+  says what a heal heals, whatever it comes from (a die's Heal face, a
+  spell, a potion), in one place: the Anvil-Deaf's wall, the shrine, the
+  ground's rule, the fatigue (never a potion's or the cleric's), and what
+  feeds the Watchfire. The fight screen's three heal paths and the
+  simulator's three call it, instead of five copies of it.
+- The one difference it found: in the simulator, the cleric's spell heals
+  skipped the ground's rule (desert heat, rising water, sanctified ground);
+  on the screen they never did. They now go through it in both.
+- `test/heal_rules_test.dart`: each source against each step.
+
+## [1.865.0+901]
+
+### Changed
+- **The Tower's bag holds 5 potions, and no chest is empty** (round 3,
+  item B, the user's pick):
+  - what a chest gives past a full bag is drunk at once (each heals the
+    story's potion, 8);
+  - the Tower's chest draws a gold pouch's slot as a potion and a charm's
+    or a tome's as gear (`rollLootBox(gearAndPotionsOnly:)`; the story's
+    chest is unchanged): 15.5% of floors gave nothing before.
+- Balance kept (1,500 seeds): no unlocks, median 17, top 10.6%; every
+  unlock, median 19, top 19.3%. Every foe at `towerFoeScale` 1.02 (was
+  0.95), the cleric's at 1.28 (was 1.35).
+
+## [1.864.0+900]
+
+### Changed
+- **The Tower's engine, lighter** (round 3, item A; the game plays the same):
+  - the bot builds each step's hero once and hands it on (`towerPick`,
+    `towerStatPickOffer`, `towerTakeStatPick` and `towerAfterFight` take
+    the hero, the drawn offer or the max health already at hand):
+    rebuilds per floor 7.2 to about 4, the bot about 20% faster, its 300
+    test runs giving the same runs to the byte;
+  - the cards nothing deals since v1.860 are gone: the heal, item and
+    clan-gift draws, `towerRewardWeights`, `towerOfferSize`,
+    `towerHealShare`, `towerBigHealShare`, `towerHealFloor`,
+    `towerItemRarities` and the bot's branches for them (an old save's
+    waiting card still applies).
 
 ## [1.863.0+899]
 
