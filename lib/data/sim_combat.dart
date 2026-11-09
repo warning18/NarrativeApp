@@ -884,6 +884,7 @@ class SimFightOutcome {
     required this.potionsUsed,
     this.phasesEntered = 0,
     this.goldStolen = 0,
+    this.healedBy = const {},
   });
 
   final bool won;
@@ -901,6 +902,15 @@ class SimFightOutcome {
   final int potionsUsed;
 
   int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
+
+  /// What the hero's heals healed this fight, by source (v1.874, for QA's
+  /// heal-rule guards): the heal rule's amounts (heal_rules.dart), before
+  /// full health caps them; a lost fight's too (its hero is then refilled).
+  final Map<HealSource, int> healedBy;
+
+  /// All of [healedBy], and the spells' share of it.
+  int get healed => healedBy.values.fold(0, (a, b) => a + b);
+  int get spellHealed => healedBy[HealSource.spell] ?? 0;
 }
 
 // The fight screen's own numbers (fight_numbers.dart).

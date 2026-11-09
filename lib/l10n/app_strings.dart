@@ -188,7 +188,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'service_tavern': {AppLanguage.en: 'Tavern', AppLanguage.fr: 'Taverne'},
   'service_temple': {AppLanguage.en: 'Temple', AppLanguage.fr: 'Temple'},
   'service_forge': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
-  'service_harbour': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
+  'service_harbour': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
   'service_nothing_yet': {
     AppLanguage.en: 'Nothing to do here yet.',
     AppLanguage.fr: 'Rien à faire ici pour l’instant.',
@@ -1059,7 +1059,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'camp_away_town_body': {
     AppLanguage.en:
-        'You are in {place}, {route} from the camp. The camp is your base: your companions’ gear, skills and dice, the works and the Harbor are there. Go back whenever you like.',
+        'You are in {place}, {route} from the camp. The camp is your base: your companions’ gear, skills and dice, the works and the Harbour are there. Go back whenever you like.',
     AppLanguage.fr:
         'Vous êtes à {place}, à {route} du camp. Le camp est votre base : l’équipement, les compétences et les dés de vos compagnons, les ouvrages et le port s’y trouvent. Revenez-y quand vous voulez.',
   },
@@ -1097,7 +1097,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ashore at {port}',
     AppLanguage.fr: 'À terre : {port}',
   },
-  'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
+  'harbor_title': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
   'ally_gear_button': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
   'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'badge_points_waiting': {
@@ -2429,7 +2429,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'map_theme_description': {
     AppLanguage.en:
-        'The 5 main beats per chapter never change. This picks the flavor of the random '
+        'The 5 main beats per chapter never change. This picks the flavour of the random '
             'encounters, shops, and quests generated between them. Auto matches each scene\'s '
             'own setting automatically; pick a fixed theme to override every chapter with it.',
     AppLanguage.fr:
@@ -2679,7 +2679,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'constitution_desc': {
     AppLanguage.en:
         'Backs Constitution checks on story choices — enduring what '
-            'would stop most people. Also boosts the armor of '
+            'would stop most people. Also boosts the armour of '
             'Constitution-scaling shields, and unlocks the heaviest gear.',
     AppLanguage.fr:
         'Intervient dans les jets de Constitution des choix narratifs — '
@@ -2804,7 +2804,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Conçu pour : {who}',
   },
   'inv_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
-  'inv_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'inv_type_armor': {AppLanguage.en: 'Armour', AppLanguage.fr: 'Armure'},
   'inv_type_artifact': {AppLanguage.en: 'Artifact', AppLanguage.fr: 'Artéfact'},
   'inv_type_charm': {AppLanguage.en: 'Charm', AppLanguage.fr: 'Charme'},
   'inv_type_potion': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
@@ -3225,7 +3225,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tous'},
   'item_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
-  'item_type_armor': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'item_type_armor': {AppLanguage.en: 'Armour', AppLanguage.fr: 'Armure'},
   'item_type_spellbook': {
     AppLanguage.en: 'Spellbook',
     AppLanguage.fr: 'Grimoire'
@@ -3542,7 +3542,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Attack Damage',
     AppLanguage.fr: "Dégâts d'attaque"
   },
-  'armor_label': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'armor_label': {AppLanguage.en: 'Armour', AppLanguage.fr: 'Armure'},
   'fire_dmg_label': {AppLanguage.en: 'Fire Dmg', AppLanguage.fr: 'Dégâts Feu'},
   'wind_dmg_label': {AppLanguage.en: 'Wind Dmg', AppLanguage.fr: 'Dégâts Vent'},
   'earth_dmg_label': {
@@ -4018,7 +4018,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Encore {n} étapes',
   },
   'harbour_not_built_title': {
-    AppLanguage.en: 'The Harbor: not built yet',
+    AppLanguage.en: 'The Harbour: not built yet',
     AppLanguage.fr: 'Le Port : pas encore bâti',
   },
   'harbour_not_built_body': {
@@ -4236,7 +4236,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_harbour': {
     AppLanguage.en:
-        'First, the Harbor. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
+        'First, the Harbour. The wreck’s timber and the burned wall’s stone are set aside: that is what it costs. Until the quay stands, the Eel cannot put to sea.',
     AppLanguage.fr:
         'D’abord, le port. Le bois de l’épave et la pierre du mur brûlé sont mis de côté\u00a0: voilà ce qu’il coûte. Tant que le quai n’est pas debout, le Rusty Eel ne peut pas reprendre la mer.',
   },
@@ -4439,7 +4439,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Dégâts de base'
   },
   'base_armor_label': {
-    AppLanguage.en: 'Base Armor',
+    AppLanguage.en: 'Base Armour',
     AppLanguage.fr: 'Armure de base'
   },
   'gold_field_label': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
@@ -5724,7 +5724,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'keyword_pierce_desc': {
     AppLanguage.en:
-        'the strike goes through a raised guard and an Armored hide.',
+        'the strike goes through a raised guard and an Armoured hide.',
     AppLanguage.fr: 'le coup traverse une garde levée et une peau Cuirassée.',
   },
   'keyword_growth': {
@@ -6469,7 +6469,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clear_button': {AppLanguage.en: 'Clear', AppLanguage.fr: 'Effacer'},
   'palette_section_title': {
-    AppLanguage.en: 'Color Palette',
+    AppLanguage.en: 'Colour Palette',
     AppLanguage.fr: 'Palette de couleurs'
   },
   'palette_section_desc': {
@@ -6731,7 +6731,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '+10 % de chances de bloquer un coup (il perd la moitié).',
   },
   'perk_vigor': {
-    AppLanguage.en: 'Vigor',
+    AppLanguage.en: 'Vigour',
     AppLanguage.fr: 'Vigueur',
   },
   'perk_vigor_desc': {
@@ -7660,11 +7660,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Aléatoire'
   },
   'sim_strategy_favor_good': {
-    AppLanguage.en: 'Favor Good',
+    AppLanguage.en: 'Favour Good',
     AppLanguage.fr: 'Favoriser le bien'
   },
   'sim_strategy_favor_evil': {
-    AppLanguage.en: 'Favor Evil',
+    AppLanguage.en: 'Favour Evil',
     AppLanguage.fr: 'Favoriser le mal'
   },
   'sim_strategy_maximize_gold': {
@@ -7931,7 +7931,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Épreuves de compétence',
   },
   'tut_boat_title': {
-    AppLanguage.en: 'The Harbor',
+    AppLanguage.en: 'The Harbour',
     AppLanguage.fr: 'Le port',
   },
   'tut_landCrossing_title': {
@@ -8040,7 +8040,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_5': {
     AppLanguage.en:
-        'Sea: the Rusty Eel, the Harbor, and the chart. Sail to a port for its expeditions.',
+        'Sea: the Rusty Eel, the Harbour, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
         'Mer\u00a0: le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
@@ -8189,7 +8189,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_3': {
     AppLanguage.en:
-        'The Harbor, once you build it. Your boat is refitted there.',
+        'The Harbour, once you build it. Your boat is refitted there.',
     AppLanguage.fr:
         'Le port, une fois construit. On y remet votre bateau en état.',
   },
@@ -8407,7 +8407,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
-        'Close in or pull away, and give each hand’s one order. Each gun fires the shot it was fitted with at the Harbor. Side by side with their rail open, you can board them.',
+        'Close in or pull away, and give each hand’s one order. Each gun fires the shot it was fitted with at the Harbour. Side by side with their rail open, you can board them.',
     AppLanguage.fr:
         'Approchez ou éloignez-vous, et donnez l’ordre unique de chaque personne. Chaque arme tire la munition avec laquelle le port l’a montée. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
   },
@@ -8603,7 +8603,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Its attacks poison whoever they hit.',
     AppLanguage.fr: 'Ses attaques empoisonnent leur cible.',
   },
-  'affix_armored': {AppLanguage.en: 'Armored', AppLanguage.fr: 'Cuirassé'},
+  'affix_armored': {AppLanguage.en: 'Armoured', AppLanguage.fr: 'Cuirassé'},
   'affix_armored_desc': {
     AppLanguage.en:
         'Shrugs off 1 damage from every Attack face. Skills cut through.',
@@ -8632,7 +8632,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Tant qu'il tient debout, le reste de la meute frappe plus fort. Abattez-le en premier.",
   },
   'armored_absorbs_suffix': {
-    AppLanguage.en: 'shrugs off part of the blow (armored).',
+    AppLanguage.en: 'shrugs off part of the blow (armoured).',
     AppLanguage.fr: 'encaisse une partie du coup (cuirassé).',
   },
   'goal_label': {
@@ -9914,7 +9914,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'incoming_tip': {
     AppLanguage.en:
-        'The blows aimed at {name} this round would take off about {n}, after armor and block.',
+        'The blows aimed at {name} this round would take off about {n}, after armour and block.',
     AppLanguage.fr:
         'Les coups visant {name} ce tour retireraient environ {n}, armure et blocage déduits.',
   },
@@ -9967,7 +9967,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Votre chance de coup critique augmente de 15 % ce combat.',
   },
   'charm_iron_skin_desc': {
-    AppLanguage.en: '+1 armor this fight.',
+    AppLanguage.en: '+1 armour this fight.',
     AppLanguage.fr: '+1 armure ce combat.',
   },
   'charm_warding_desc': {
@@ -10240,7 +10240,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'hull_confirm_body': {
     AppLanguage.en:
-        'No slot for {parts} on the new hull: they wait in the Harbor\'s store.',
+        'No slot for {parts} on the new hull: they wait in the Harbour\'s store.',
     AppLanguage.fr:
         'Pas de place pour {parts} sur la nouvelle coque : elles attendent au dépôt du port.',
   },
@@ -10722,7 +10722,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_doctrine_dominion': {
     AppLanguage.en:
-        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: count on plain Attack and Defend then. The Dominion’s soldiers are often Armored and shrug off a little of each Attack hit; skills cut through.',
+        'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: count on plain Attack and Defend then. The Dominion’s soldiers are often Armoured and shrug off a little of each Attack hit; skills cut through.',
     AppLanguage.fr:
         'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent un peu de chaque coup d’Attaque ; les compétences passent.',
   },
@@ -10740,7 +10740,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_doctrine_choir': {
     AppLanguage.en:
-        'The Choir’s sentinels are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
+        'The Choir’s sentinels are often Armoured: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
         'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
@@ -10752,7 +10752,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_fight_doctrine_giants': {
     AppLanguage.en:
-        'The giants of Highhearth are often Armored: they shrug off a little of each Attack hit, while skills cut straight through.',
+        'The giants of Highhearth are often Armoured: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
         'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
@@ -11431,7 +11431,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '{ship} combat le feu dans {room}',
   },
   'port_shops_section': {
-    AppLanguage.en: 'Harbor trade',
+    AppLanguage.en: 'Harbour trade',
     AppLanguage.fr: 'Commerce du port'
   },
   'home_port_label': {
@@ -11676,7 +11676,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Visite',
   },
   'fate_face_rumor': {
-    AppLanguage.en: 'Rumor',
+    AppLanguage.en: 'Rumour',
     AppLanguage.fr: 'Rumeur',
   },
   'fate_face_quarrel': {
@@ -12147,7 +12147,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_beast_hunt_ready': {
     AppLanguage.en:
-        'Enough signs of {ship} to hunt it: the Harbor can send the Eel out.',
+        'Enough signs of {ship} to hunt it: the Harbour can send the Eel out.',
     AppLanguage.fr:
         'Assez de signes de {ship} pour partir en chasse : le Port peut envoyer l\'Eel.',
   },
@@ -12182,7 +12182,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_trophy_waiting': {
     AppLanguage.en:
-        'A trophy for the Eel: {weapon}. No room aboard; it waits at the Harbor.',
+        'A trophy for the Eel: {weapon}. No room aboard; it waits at the Harbour.',
     AppLanguage.fr:
         'Un trophée pour l\'Eel : {weapon}. Pas de place à bord ; il attend au Port.',
   },
@@ -12231,7 +12231,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Échanger',
   },
   'part_stored_note': {
-    AppLanguage.en: 'In store at the Harbor: it goes back on for nothing.',
+    AppLanguage.en: 'In store at the Harbour: it goes back on for nothing.',
     AppLanguage.fr: 'En réserve au Port : il se remonte sans frais.',
   },
   'free_label': {
@@ -12708,7 +12708,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '+{v} de santé maximale en combat.',
   },
   'sign_fx_armor': {
-    AppLanguage.en: '+{v} armor.',
+    AppLanguage.en: '+{v} armour.',
     AppLanguage.fr: '+{v} d’armure.',
   },
   'sign_fx_critChance': {
