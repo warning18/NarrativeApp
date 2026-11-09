@@ -21,6 +21,7 @@ import 'character_start.dart';
 import '../combat/squad.dart';
 import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/heal_rules.dart';
 import '../combat/heal_target.dart';
 import '../combat/strike_damage.dart';
 import '../combat/spells.dart';

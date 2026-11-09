@@ -24,6 +24,21 @@ isn't reconstructable from git history alone.
   `clanGift` reward kinds and their seven strings.
 - `test/tower_save_migration_test.dart`: one save of each old shape.
 
+## [1.866.0+902]
+
+### Changed
+- **One healing rule for the fight and the simulator** (round 3, item C, the
+  user's pick): `lib/combat/heal_rules.dart` (`healDealt`, `healFeedsFire`)
+  says what a heal heals, whatever it comes from (a die's Heal face, a
+  spell, a potion), in one place: the Anvil-Deaf's wall, the shrine, the
+  ground's rule, the fatigue (never a potion's or the cleric's), and what
+  feeds the Watchfire. The fight screen's three heal paths and the
+  simulator's three call it, instead of five copies of it.
+- The one difference it found: in the simulator, the cleric's spell heals
+  skipped the ground's rule (desert heat, rising water, sanctified ground);
+  on the screen they never did. They now go through it in both.
+- `test/heal_rules_test.dart`: each source against each step.
+
 ## [1.865.0+901]
 
 ### Changed
