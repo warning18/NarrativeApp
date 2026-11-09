@@ -121,11 +121,25 @@ class _SimFight {
   // Which of the clash rules are in play.
   bool on(String rule) => clash && !clashOff.contains(rule);
 
-  int healed(int amount) {
-    amount = ctx?.heal(amount, ctxRound) ?? amount;
-    if (!on('fatigue') || amount <= 0) return amount;
-    return fatiguedHeal(amount, healsGiven++);
-  }
+  /// What [raw] healing from [source] heals: the heal rule the fight
+  /// screen uses (heal_rules.dart), with the ground's rule of [round]
+  /// (default this round) and the fatigue when its clash rule is on. The
+  /// simulator has no battlefield conditions, so no shrine.
+  int healed(HealSource source, int raw,
+          {bool noHealFaces = false, int? round}) =>
+      healDealt(
+        source: source,
+        raw: raw,
+        noHealFaces: noHealFaces,
+        watchfire: core == ProfessionCore.watchfire,
+        roundRule: switch (ctx) {
+          final rule? => (amount) => rule.heal(amount, round ?? ctxRound),
+          null => null,
+        },
+        fatigue: on('fatigue')
+            ? (amount) => fatiguedHeal(amount, healsGiven++)
+            : null,
+      );
 
   bool has(Spec spec) =>
       specs.contains(spec) &&
