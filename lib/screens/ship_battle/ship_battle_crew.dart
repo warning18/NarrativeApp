@@ -129,9 +129,9 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
             ? null
             : trFor(lang, 'ship_order_go')
                 .replaceAll('{room}', _roomName(lang, room, enemy: false));
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         return SafeArea(
@@ -662,10 +662,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
   /// to move them) and their order, once a battle.
   Future<void> _openCrewSheet(Map<String, dynamic>? enemies) {
     final lang = ref.read(appLanguageProvider);
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (sheetContext) => StatefulBuilder(
         builder: (sheetContext, setSheet) {
           void act(VoidCallback change) {
@@ -819,10 +817,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
   Future<void> _openLog() {
     final lang = ref.read(appLanguageProvider);
     final lines = [for (final line in _battle.log.reversed) _line(line)];
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (sheetContext) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(

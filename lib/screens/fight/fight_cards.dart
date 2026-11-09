@@ -528,9 +528,9 @@ extension _FightCards on _FightScreenState {
         '${trFor(lang, 'resists_label')} '
             '${known.resist.map((e) => elementLabel(e, lang)).join(', ')} (×½)',
     ].join(' · ');
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         return SafeArea(

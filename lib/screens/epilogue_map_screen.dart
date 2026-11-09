@@ -33,6 +33,7 @@ import '../providers/town_rulers_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/chart_map_painter.dart';
 import '../widgets/pixel_banner.dart';
+import '../widgets/ink_sheet.dart';
 
 class EpilogueMapScreen extends ConsumerWidget {
   const EpilogueMapScreen({super.key});
@@ -218,10 +219,8 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
     final ink = InkColors.of(context);
     final fr = language == AppLanguage.fr;
     final name = fr ? town.nameFr : town.name;
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (context) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(

@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.872.0+908]
+
+### Changed
+- **One bottom sheet, step 2 of the shared frames** (UX-2 round 3; no change
+  to how anything looks): `showInkSheet` (`lib/widgets/ink_sheet.dart`) is
+  the bottom sheet with the grip, scroll-controlled unless told otherwise,
+  with an optional width limit. 49 of the 56 hand-written
+  `showModalBottomSheet` calls had exactly those flags and now use it (the
+  other seven carry their own shape, barrier colour or safe area and stay).
+  About 40 lines fewer, and one place to change the sheet's look.
+
 ## [1.871.0+907]
 
 ### Changed

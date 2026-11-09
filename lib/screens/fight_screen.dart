@@ -118,6 +118,7 @@ import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 import 'fight/fight_tips.dart';
+import '../widgets/ink_sheet.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';

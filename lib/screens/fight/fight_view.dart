@@ -1183,9 +1183,9 @@ extension _FightView on _FightScreenState {
     final canNudge =
         onTable && _awaitingDecision && !_rolling && _nudgesLeft > 0;
     final nudgeTo = canNudge ? _nudgePreview(actor) : null;
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         // Scrolls: a face with keywords, a curse and a nudge to offer

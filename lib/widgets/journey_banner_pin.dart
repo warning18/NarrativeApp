@@ -16,6 +16,7 @@ import '../data/journey_map.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'journey_glyph.dart';
+import 'ink_sheet.dart';
 
 /// What a way is, folded to the seven a player can learn. The order is the
 /// priority: a pin that stands for several ways shows the first of them.
@@ -285,10 +286,8 @@ void _dashed(Canvas canvas, Path path, Paint paint) {
 /// The key button's sheet: each category with its banner, its name in its
 /// colour and one line.
 Future<void> showJourneyLegend(BuildContext context) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) => const JourneyLegendSheet(),
   );
 }

@@ -10,6 +10,7 @@ import '../providers/player_session_provider.dart';
 import '../screens/skills/dice_weave_card.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import 'ink_sheet.dart';
 
 /// The Skillwright's bench: every skill_merges.json recipe as two skills
 /// becoming a third, each drawn with its icon and its real name, the ones
@@ -23,11 +24,9 @@ Future<void> showMergeSkillsDialog(
   required Map<String, dynamic> merges,
   required List<String> unlockedSkillIds,
 }) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    constraints: const BoxConstraints(maxWidth: 560),
+    maxWidth: 560,
     builder: (_) => _CraftSheet(merges: merges),
   );
 }

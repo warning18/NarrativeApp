@@ -24,6 +24,7 @@ import '../widgets/immersive_notice.dart';
 import 'origin_stories_screen.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/race_profession_cards.dart';
+import '../widgets/ink_sheet.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key, this.locks = const {}, this.onChosen});
@@ -581,10 +582,8 @@ class _ChoiceRow extends ConsumerWidget {
       skillDisplayName(_skillId, language: language);
 
   void _read(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (context) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -948,10 +947,8 @@ class _CharacterSheet extends StatelessWidget {
       (t('unlocked_skills_label'), '${session.unlockedSkillIds.length}'),
     ];
 
-    void openBelongings() => showModalBottomSheet<void>(
+    void openBelongings() => showInkSheet<void>(
           context: context,
-          isScrollControlled: true,
-          showDragHandle: true,
           builder: (sheetContext) => SafeArea(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -989,10 +986,8 @@ class _CharacterSheet extends StatelessWidget {
           ),
         );
 
-    void openElements() => showModalBottomSheet<void>(
+    void openElements() => showInkSheet<void>(
           context: context,
-          isScrollControlled: true,
-          showDragHandle: true,
           builder: (sheetContext) => SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

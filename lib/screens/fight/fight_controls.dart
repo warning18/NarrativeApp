@@ -116,10 +116,8 @@ extension _FightControls on _FightScreenState {
 
   Future<void> _showFullLog() {
     final lang = ref.read(appLanguageProvider);
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (sheetContext) => SafeArea(
         child: SizedBox(
           height: MediaQuery.of(sheetContext).size.height * 0.6,
@@ -470,9 +468,9 @@ extension _FightControls on _FightScreenState {
     final amount = _spellAmountNow(spell, items);
     final status = spellStatusFor(spell, level: _playerLevel);
     final color = spellEffectColor(spell.effect);
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         return SafeArea(

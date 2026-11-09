@@ -12,13 +12,14 @@ import '../providers/story_providers.dart';
 import 'immersive_notice.dart';
 import 'moments.dart';
 import 'ink_confirm.dart';
+import 'ink_sheet.dart';
 
 /// Opens the save slots, to save into one ([saving]) or load one. True
 /// once a slot has been loaded.
 Future<bool?> showSaveSlotsSheet(BuildContext context, {required bool saving}) {
-  return showModalBottomSheet<bool>(
+  return showInkSheet<bool>(
     context: context,
-    showDragHandle: true,
+    scrollControlled: false,
     builder: (_) => SaveSlotsSheet(saving: saving),
   );
 }

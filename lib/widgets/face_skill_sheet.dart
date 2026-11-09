@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'help_hint.dart';
+import 'ink_sheet.dart';
 
 /// How a skill changes a die face (board 9): the face as it is, the face as
 /// it would be, and what kind of change that is. The numbers come from the
@@ -76,10 +77,8 @@ Future<void> showFaceSkillSheet(
   required VoidCallback? onClear,
   required String clearSubtitle,
 }) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) => FaceSkillSheet(
       nowLine: nowLine,
       note: note,

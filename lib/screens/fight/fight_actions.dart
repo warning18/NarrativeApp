@@ -383,9 +383,9 @@ extension _FightActions on _FightScreenState {
   Future<_EnemyMember?> _pickEnemy(
       List<_EnemyMember> candidates, SpellSpec spell) {
     final lang = ref.read(appLanguageProvider);
-    return showModalBottomSheet<_EnemyMember>(
+    return showInkSheet<_EnemyMember>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -411,9 +411,9 @@ extension _FightActions on _FightScreenState {
   Future<_PartyMember?> _pickMember(
       List<_PartyMember> candidates, SpellSpec spell) {
     final lang = ref.read(appLanguageProvider);
-    return showModalBottomSheet<_PartyMember>(
+    return showInkSheet<_PartyMember>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
