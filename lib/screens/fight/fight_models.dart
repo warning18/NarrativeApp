@@ -481,21 +481,14 @@ class _FightLength {
   /// fatigue mark; nothing is counted).
   int healsBy(String memberId) => _heals[memberId] ?? 0;
 
-  /// [amount] as [memberId]'s next heal in [round] heals it, counted:
-  /// the place's rule on it first.
-  int fatigued(String memberId, int amount, {int round = 0}) {
-    amount = rule.heal(amount, round);
+  /// [amount] tired as [memberId]'s next heal (fatiguedHeal, the heals it
+  /// gave this fight); [count] false: the round's preview, nothing counted.
+  /// The heal rule (heal_rules.dart) calls it after the place's rule.
+  int tire(String memberId, int amount, {bool count = true}) {
     if (amount <= 0) return amount;
     final before = _heals[memberId] ?? 0;
-    _heals[memberId] = before + 1;
+    if (count) _heals[memberId] = before + 1;
     return fatiguedHeal(amount, before);
-  }
-
-  /// What [fatigued] would heal, nothing counted: the round's preview.
-  int previewed(String memberId, int amount, {int round = 0}) {
-    amount = rule.heal(amount, round);
-    if (amount <= 0) return amount;
-    return fatiguedHeal(amount, _heals[memberId] ?? 0);
   }
 }
 

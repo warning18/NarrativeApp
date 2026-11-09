@@ -28,6 +28,7 @@ import '../widgets/ship_dress.dart';
 import '../widgets/ship_widgets.dart';
 import '../widgets/ship_yard.dart';
 import 'voyage_screen.dart';
+import '../widgets/ink_confirm.dart';
 
 /// The camp's Harbor, once built: the Rusty Eel hauled up on its slipway,
 /// her hull made sound and the shipwright's parts fitted into her slots.
@@ -122,32 +123,21 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
     final toStore = partsBeyondSlots(
         ship: next, parts: parts, installedPartIds: session.shipPartIds);
     final hullName = _hullName(next, fr);
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        key: const Key('rebuild_confirm'),
-        title:
-            Text(tr(ref, 'hull_confirm_title').replaceAll('{hull}', hullName)),
-        content: Text(toStore.isEmpty
-            ? tr(ref, 'hull_confirm_all_fit')
-            : tr(ref, 'hull_confirm_body').replaceAll(
-                '{parts}',
-                toStore
-                    .map((id) =>
-                        shipPartName(parts[id] as Map<String, dynamic>, fr))
-                    .join(', '))),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(tr(ref, 'cancel')),
-          ),
-          ElevatedButton(
-            key: const Key('rebuild_confirm_yes'),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(tr(ref, 'hull_confirm_yes')),
-          ),
-        ],
-      ),
+    final ok = await showInkConfirm(
+      context,
+      dialogKey: const Key('rebuild_confirm'),
+      title: tr(ref, 'hull_confirm_title').replaceAll('{hull}', hullName),
+      body: toStore.isEmpty
+          ? tr(ref, 'hull_confirm_all_fit')
+          : tr(ref, 'hull_confirm_body').replaceAll(
+              '{parts}',
+              toStore
+                  .map((id) =>
+                      shipPartName(parts[id] as Map<String, dynamic>, fr))
+                  .join(', ')),
+      cancel: tr(ref, 'cancel'),
+      confirm: tr(ref, 'hull_confirm_yes'),
+      confirmKey: const Key('rebuild_confirm_yes'),
     );
     if (ok != true || !mounted) return;
     // She keeps the share of her hull she has, on the new one.

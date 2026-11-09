@@ -4,9 +4,11 @@
     tool/shard_tests.py SHARD N     print the files of shard SHARD (0-based) of N
     tool/shard_tests.py --check N   check the N shards hold every file exactly once
     tool/shard_tests.py SHARD N --skip-gated
-                                    the same, without the statistical simulator tests
-    tool/shard_tests.py --gate      read the changed paths of a pull request on
-                                    stdin; print `run` or `skip` for the gated tests
+                                    the same, without any gated test file
+    tool/shard_tests.py SHARD N --changed FILE
+                                    the same, without the gated files of each
+                                    group (tool/sim_gate.txt) that the changed
+                                    paths listed in FILE (one a line) cannot move
 
 Weights (seconds per file, from `flutter test --reporter json`) are in
 test/shard_weights.json. A file without a weight counts as the median, so a
@@ -14,11 +16,13 @@ new test file needs no entry. Files go heaviest first to the lightest shard
 (ties by name), the same on every runner, and each file lands in exactly one
 shard: every call checks that before printing.
 
-The gated tests (tool/sim_gate.txt) are left out of the split altogether with
---skip-gated, so the remaining files are balanced again across the shards (the
-partition check runs on that smaller set too). CI skips them only on a
-pull request that changes none of the gate's trigger paths; an empty or
-unreadable list of changed paths means `run`, and main always runs them.
+The gated tests (tool/sim_gate.txt, in groups) are left out of the split
+altogether, so the remaining files are balanced again across the shards (the
+partition check runs on that smaller set too). CI skips a group only on a
+pull request whose changed paths touch none of the group's triggers (or only
+paths under its `ignore` prefixes); an empty or unreadable list of changed
+paths skips nothing, and main always runs everything. What is skipped is told
+on stderr ("Simulator tests skipped: ...").
 """
 import json
 import os
@@ -29,17 +33,55 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TEST = os.path.join(ROOT, "test")
 
 
-def gate():
-    """The gated file names and the trigger prefixes of tool/sim_gate.txt."""
-    gated, triggers = [], []
+def groups():
+    """tool/sim_gate.txt as {name: {gated, triggers, ignores}}."""
+    found, current = {}, None
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "sim_gate.txt")) as handle:
         for line in handle:
             line = line.strip()
-            if line.startswith("gated "):
-                gated.append(line[len("gated "):].strip())
-            elif line.startswith("trigger "):
-                triggers.append(line[len("trigger "):].strip())
+            if line.startswith("group "):
+                current = found.setdefault(
+                    line[len("group "):].strip(), {"gated": [], "triggers": [], "ignores": []})
+            elif current is not None and line.startswith("gated "):
+                current["gated"].append(line[len("gated "):].strip())
+            elif current is not None and line.startswith("trigger "):
+                current["triggers"].append(line[len("trigger "):].strip())
+            elif current is not None and line.startswith("ignore "):
+                current["ignores"].append(line[len("ignore "):].strip())
+    return found
+
+
+def gate():
+    """Every gated file name and every trigger prefix, over all groups."""
+    gated, triggers = [], []
+    for group in groups().values():
+        gated += group["gated"]
+        triggers += group["triggers"]
     return gated, triggers
+
+
+MESSAGES = {
+    "simulator": "Simulator tests skipped",
+    "screens": "Screen smoke tests skipped",
+}
+
+
+def skipped_for(changed):
+    """The gated files to leave out for the changed paths, and why (stderr)."""
+    skip, notes = [], []
+    if not changed:
+        return skip, ["no changed paths given: nothing is skipped"]
+    for name, group in groups().items():
+        counts = [p for p in changed
+                  if any(p.startswith(t) for t in group["triggers"])
+                  and not any(p.startswith(i) for i in group["ignores"])]
+        label = MESSAGES.get(name, f"{name} tests skipped")
+        if counts:
+            notes.append(f"{name} tests run: {len(counts)} changed path(s) can move them, e.g. {counts[0]}")
+        else:
+            skip += group["gated"]
+            notes.append(f"{label}: none of {len(changed)} changed path(s) can move them (tool/sim_gate.txt)")
+    return skip, notes
 
 
 def test_files():
@@ -84,28 +126,29 @@ def main(argv):
         print(f"{count} test files in {n} shards, each in exactly one; "
               "expected seconds " + ", ".join(f"{x:.0f}" for x in load))
         return
-    if argv[1:] == ["--gate"]:
-        _, triggers = gate()
-        changed = [line.strip() for line in sys.stdin if line.strip()]
-        hit = [p for p in changed if any(p.startswith(t) for t in triggers)]
-        if not changed:
-            print("run")
-            print("no changed paths given: running the simulator tests", file=sys.stderr)
-        elif hit:
-            print("run")
-            print(f"{len(hit)} changed path(s) can move the simulator tests, e.g. {hit[0]}", file=sys.stderr)
-        else:
-            print("skip")
-            print(f"none of {len(changed)} changed path(s) can move the simulator tests", file=sys.stderr)
-        return
     skip = "--skip-gated" in argv
     argv = [a for a in argv if a != "--skip-gated"]
+    skipped = gate()[0] if skip else []
+    if "--changed" in argv:
+        at = argv.index("--changed")
+        if at + 1 >= len(argv):
+            sys.exit(__doc__)
+        try:
+            with open(argv[at + 1]) as handle:
+                changed = [line.strip() for line in handle if line.strip()]
+        except OSError:
+            changed = []
+        argv = argv[:at] + argv[at + 2:]
+        left_out, notes = skipped_for(changed)
+        skipped = sorted(set(skipped) | set(left_out))
+        for note in notes:
+            print(note, file=sys.stderr)
     if len(argv) != 3:
         sys.exit(__doc__)
     shard, n = int(argv[1]), int(argv[2])
     if not 0 <= shard < n:
         sys.exit("shard must be in 0..N-1")
-    shards, _ = split(n, skip=gate()[0] if skip else ())
+    shards, _ = split(n, skip=skipped)
     for f in sorted(shards[shard]):
         print(os.path.join("test", f))
 

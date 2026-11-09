@@ -41,9 +41,13 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
     _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _offset = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    Future.delayed(widget.delay, () {
-      if (mounted) _controller.forward();
-    });
+    if (stillMotion(context)) {
+      _controller.value = 1; // shown at once, not staggered
+    } else {
+      Future.delayed(widget.delay, () {
+        if (mounted) _controller.forward();
+      });
+    }
   }
 
   @override

@@ -8,7 +8,7 @@ import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_providers.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
 
 class TowerMarksScreen extends ConsumerWidget {
   const TowerMarksScreen({super.key});
@@ -38,7 +38,7 @@ class TowerMarksScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
           children: [
-            TowerPanel(
+            InkPanel(
               lit: true,
               child: Row(
                 children: [
@@ -55,11 +55,11 @@ class TowerMarksScreen extends ConsumerWidget {
               ),
             ),
             for (final (labelKey, kinds) in _groups) ...[
-              TowerLabel(tr(ref, labelKey)),
+              InkLabel(tr(ref, labelKey)),
               for (final u in towerUnlocks.where((u) => kinds.contains(u.kind)))
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
-                  child: TowerPanel(
+                  child: InkPanel(
                     key: Key('tower_unlock_${u.id}'),
                     dim: !progress.unlocked.contains(u.id) &&
                         u.needs != null &&

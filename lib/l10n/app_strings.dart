@@ -1749,10 +1749,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Next floor',
     AppLanguage.fr: 'Étage suivant',
   },
-  'tower_kind_item': {
-    AppLanguage.en: 'Item',
-    AppLanguage.fr: 'Objet',
-  },
   'tower_kind_die': {
     AppLanguage.en: 'Die',
     AppLanguage.fr: 'Dé',
@@ -1764,30 +1760,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_kind_spell': {
     AppLanguage.en: 'Spell',
     AppLanguage.fr: 'Sort',
-  },
-  'tower_kind_heal': {
-    AppLanguage.en: 'Heal',
-    AppLanguage.fr: 'Soin',
-  },
-  'tower_kind_gift': {
-    AppLanguage.en: 'Clan gift',
-    AppLanguage.fr: 'Don du clan',
-  },
-  'tower_heal_name': {
-    AppLanguage.en: 'Heal {n}%',
-    AppLanguage.fr: 'Soin de {n} %',
-  },
-  'tower_gift_name': {
-    AppLanguage.en: 'A gift of your clan',
-    AppLanguage.fr: 'Un don de votre clan',
-  },
-  'tower_heal_text': {
-    AppLanguage.en: 'Heals {n}% of your health.',
-    AppLanguage.fr: 'Rend {n} % de votre santé.',
-  },
-  'tower_gift_stat': {
-    AppLanguage.en: '+{n} to your main stat.',
-    AppLanguage.fr: '+{n} à votre caractéristique principale.',
   },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {
@@ -3657,10 +3629,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Lu sur-le-champ\u00a0: les clans viennent à vous avec une offre.',
   },
-  'loot_use_now_title': {
-    AppLanguage.en: 'Use your spoils now',
-    AppLanguage.fr: 'Utiliser votre butin tout de suite',
-  },
   'loot_sheet_changes': {
     AppLanguage.en: 'What the spoils change',
     AppLanguage.fr: 'Ce que le butin change',
@@ -3695,6 +3663,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Utiliser tout de suite',
   },
   'drink_now_button': {AppLanguage.en: 'Drink', AppLanguage.fr: 'Boire'},
+  'loot_replaces': {
+    AppLanguage.en: 'Replaces {name}',
+    AppLanguage.fr: 'Remplace {name}',
+  },
   'loot_undo_button': {AppLanguage.en: 'Undo', AppLanguage.fr: 'Annuler'},
   'loot_auto_read_note': {
     AppLanguage.en: 'Read on the spot when you take it.',

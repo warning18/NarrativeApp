@@ -5,7 +5,9 @@
 
 import 'dart:math';
 
+import '../../combat/fight_numbers.dart' show potionHealAmount;
 import '../../combat/stat_rules.dart' show levelStatPicks;
+import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
@@ -37,7 +39,6 @@ class TowerRun {
     required this.seed,
     required this.raceId,
     required this.professionId,
-    this.clanId = '',
     this.clanPool = towerStartClanPool,
     this.startUnlocks = const [],
     this.unlocksOwned = 0,
@@ -48,83 +49,107 @@ class TowerRun {
     this.refused = const {},
     this.offer = const [],
     this.statPicks = const [],
-    this.autoPicks = false,
     this.spoils = const {},
     this.potions = 0,
     this.antidotes = 0,
   });
 
-  factory TowerRun.fromJson(Map<String, dynamic> json) => TowerRun(
-        seed: (json['seed'] as num).toInt(),
-        raceId: json['race'] as String,
-        professionId: json['profession'] as String,
-        clanId: json['clan']?.toString() ?? '',
-        clanPool: [
-          for (final c in (json['pool'] as List?) ?? towerStartClanPool)
-            c.toString(),
+  /// A saved run. A save from an older version is brought up to date once,
+  /// here (v1.867), so nothing else reads the old shapes: a clan sworn at
+  /// the start (before v1.855) is its oath on floor 0; a run with no
+  /// level-up picks (before v1.857) takes the calling's for each one its
+  /// levels earned; the old cards (before v1.860) become what the Tower
+  /// gives now (an item card's gear among that floor's spoils, a clan's die
+  /// a die card), and a heal card or a gift's stat point, nothing (the run's
+  /// health is saved apart).
+  factory TowerRun.fromJson(Map<String, dynamic> json) {
+    final spoils = <int, List<String>>{
+      for (final MapEntry(:key, :value)
+          in ((json['spoils'] as Map?) ?? const {}).entries)
+        int.parse(key.toString()): [
+          for (final id in value as List) id.toString(),
         ],
-        startUnlocks: [
-          for (final u in (json['unlocks'] as List?) ?? const []) u.toString(),
-        ],
-        unlocksOwned: (json['owned'] as num?)?.toInt() ?? 0,
-        floor: (json['floor'] as num?)?.toInt() ?? 1,
-        health: (json['health'] as num?)?.toInt() ?? 0,
-        status: TowerStatus.values.byName(json['status'] as String),
-        taken: {
-          for (final MapEntry(:key, :value)
-              in ((json['taken'] as Map?) ?? const {}).entries)
-            int.parse(key.toString()):
-                TowerReward.fromJson(value as Map<String, dynamic>),
-        },
-        refused: {
-          for (final f in (json['refused'] as List?) ?? const [])
-            (f as num).toInt(),
-        },
-        offer: [
-          for (final r in (json['offer'] as List?) ?? const [])
+    };
+    final taken = <int, TowerReward>{};
+    for (final MapEntry(:key, :value)
+        in ((json['taken'] as Map?) ?? const {}).entries) {
+      final floor = int.parse(key.toString());
+      final card = value as Map<String, dynamic>;
+      final id = card['id']?.toString() ?? '';
+      switch (card['kind']) {
+        case 'item':
+          spoils[floor] = [...?spoils[floor], if (id.isNotEmpty) id];
+        case 'clanGift':
+          if (id.isNotEmpty) {
+            taken[floor] = TowerReward(TowerRewardKind.die, id: id);
+          }
+        case 'heal':
+          break;
+        default:
+          taken[floor] = TowerReward.fromJson(card);
+      }
+    }
+    final startClan = json['clan']?.toString() ?? '';
+    if (startClan.isNotEmpty) {
+      taken[0] = TowerReward(TowerRewardKind.clanOath, id: startClan);
+    }
+    final run = TowerRun(
+      seed: (json['seed'] as num).toInt(),
+      raceId: json['race'] as String,
+      professionId: json['profession'] as String,
+      clanPool: [
+        for (final c in (json['pool'] as List?) ?? towerStartClanPool)
+          c.toString(),
+      ],
+      startUnlocks: [
+        for (final u in (json['unlocks'] as List?) ?? const []) u.toString(),
+      ],
+      unlocksOwned: (json['owned'] as num?)?.toInt() ?? 0,
+      floor: (json['floor'] as num?)?.toInt() ?? 1,
+      health: (json['health'] as num?)?.toInt() ?? 0,
+      status: TowerStatus.values.byName(json['status'] as String),
+      taken: taken,
+      refused: {
+        for (final f in (json['refused'] as List?) ?? const [])
+          (f as num).toInt(),
+      },
+      offer: [
+        for (final r in (json['offer'] as List?) ?? const [])
+          if (!_oldCards.contains((r as Map)['kind']))
             TowerReward.fromJson(r as Map<String, dynamic>),
-        ],
-        statPicks: [
-          for (final p in (json['picks'] as List?) ?? const [])
-            (p as num).toInt(),
-        ],
-        // A save from before v1.857 has no picks: its levels keep the
-        // points they gave then.
-        autoPicks: !json.containsKey('picks'),
-        spoils: {
-          for (final MapEntry(:key, :value)
-              in ((json['spoils'] as Map?) ?? const {}).entries)
-            int.parse(key.toString()): [
-              for (final id in value as List) id.toString(),
-            ],
-        },
-        potions: (json['potions'] as num?)?.toInt() ?? 0,
-        antidotes: (json['antidotes'] as num?)?.toInt() ?? 0,
-      );
+      ],
+      statPicks: [
+        for (final p in (json['picks'] as List?) ?? const [])
+          (p as num).toInt(),
+      ],
+      spoils: spoils,
+      potions: (json['potions'] as num?)?.toInt() ?? 0,
+      antidotes: (json['antidotes'] as num?)?.toInt() ?? 0,
+    );
+    if (json.containsKey('picks')) return run;
+    final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
+    return run.copyWith(statPicks: List.filled(max(0, earned), 0));
+  }
+
+  /// The cards no longer dealt (before v1.860), as a save names them.
+  static const Set<String> _oldCards = {'item', 'heal', 'clanGift'};
 
   /// The seed every floor and offer is drawn from.
   final int seed;
   final String raceId;
   final String professionId;
 
-  /// The clan sworn at the start: '' for a run begun from v1.855, where
-  /// the clans offer their oaths on the way up (the user's call); an older
-  /// save's clan, sworn from floor 1.
-  final String clanId;
-
   /// The clans that may offer their oath on this run (the player's open
   /// clans, TowerProgress.clans, when it began).
   final List<String> clanPool;
 
-  /// The clans sworn, in the order they were: the start's, then each oath
-  /// taken, floor by floor. The first is the main clan (the story's rule:
-  /// one main clan, its die's Resonance, its patron's standing).
+  /// The clans sworn, in the order they were: each oath taken, floor by
+  /// floor (one sworn at the start is floor 0's). The first is the main
+  /// clan (the story's rule: one main clan, its die's Resonance, its
+  /// patron's standing).
   List<String> get clanIds => [
-        if (clanId.isNotEmpty) clanId,
         for (final f in taken.keys.toList()..sort())
-          if (taken[f]!.kind == TowerRewardKind.clanOath &&
-              taken[f]!.id != clanId)
-            taken[f]!.id,
+          if (taken[f]!.kind == TowerRewardKind.clanOath) taken[f]!.id,
       ];
 
   /// The main clan: the first sworn, '' while none is.
@@ -162,10 +187,6 @@ class TowerRun {
   /// The stat picks taken (v1.857, the main game's level-up): for each pick
   /// earned, in order, the offer taken (0..2 of towerStatPickDraw's three).
   final List<int> statPicks;
-
-  /// A save from before v1.857: each level's point goes to the damage
-  /// stat, as it did then; no pick waits.
-  final bool autoPicks;
 
   /// The spoils chest of each floor won (v1.860, floor -> its items): its
   /// gear worn when better than what the hero wears, its potions in the
@@ -212,7 +233,6 @@ class TowerRun {
         seed: seed,
         raceId: raceId,
         professionId: professionId,
-        clanId: clanId,
         clanPool: clanPool,
         startUnlocks: startUnlocks,
         unlocksOwned: unlocksOwned,
@@ -223,7 +243,6 @@ class TowerRun {
         refused: refused ?? this.refused,
         offer: offer ?? this.offer,
         statPicks: statPicks ?? this.statPicks,
-        autoPicks: autoPicks,
         spoils: spoils ?? this.spoils,
         potions: potions ?? this.potions,
         antidotes: antidotes ?? this.antidotes,
@@ -233,7 +252,6 @@ class TowerRun {
         'seed': seed,
         'race': raceId,
         'profession': professionId,
-        if (clanId.isNotEmpty) 'clan': clanId,
         'pool': clanPool,
         if (startUnlocks.isNotEmpty) 'unlocks': startUnlocks,
         if (unlocksOwned != 0) 'owned': unlocksOwned,
@@ -247,7 +265,7 @@ class TowerRun {
           },
         if (refused.isNotEmpty) 'refused': (refused.toList()..sort()),
         if (offer.isNotEmpty) 'offer': [for (final r in offer) r.toJson()],
-        if (!autoPicks) 'picks': statPicks,
+        'picks': statPicks,
         if (spoils.isNotEmpty)
           'spoils': {
             for (final MapEntry(:key, :value) in spoils.entries) '$key': value,
@@ -276,8 +294,8 @@ int towerMarksOf(int floorsCleared, int refusals) {
 /// A new run of [seed]: floor 1, the hero at full health, with the power
 /// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned). It is sworn
 /// to no clan (v1.855): the clans of [clanPool] (TowerProgress.clans)
-/// offer their oaths on the way up. A [clanId] swears one from the start
-/// (the start screen's pick, until it goes).
+/// offer their oaths on the way up. A [clanId] swears one from the start:
+/// its oath taken on floor 0 (the bot's and the tests').
 TowerRun towerStart({
   required int seed,
   required String raceId,
@@ -300,7 +318,10 @@ TowerRun towerStart({
     seed: seed,
     raceId: raceId,
     professionId: professionId,
-    clanId: clanId,
+    taken: {
+      if (clanId.isNotEmpty)
+        0: TowerReward(TowerRewardKind.clanOath, id: clanId),
+    },
     clanPool: [
       for (final c in towerClans)
         if (clanPool.contains(c)) c,
@@ -321,12 +342,15 @@ TowerFloor towerFloorOf(TowerRun run, TowerData data) =>
 /// (a boon, a clan's oath, or nothing), or, on the top floor, the run is
 /// won. [potionsLeft] and [antidotesLeft] are what the fight left of what
 /// it carried (the flask's potions are drunk first: what the bag held is
-/// gone only past them); null, the bag as it was.
+/// gone only past them); null, the bag as it was. [maxHealthBefore], when
+/// given, is the hero's max health as the fight began (the bot has built
+/// it: towerHeroOf replays the whole run).
 TowerRun towerAfterFight(TowerRun run, TowerData data,
     {required bool won,
     required int healthLeft,
     int? potionsLeft,
-    int? antidotesLeft}) {
+    int? antidotesLeft,
+    int? maxHealthBefore}) {
   if (run.status != TowerStatus.climbing) return run;
   if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
   final potions =
@@ -341,30 +365,38 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
         potions: potions,
         antidotes: antidotes);
   }
-  final before = towerHeroOf(run, data).maxHealth;
+  final before = maxHealthBefore ?? towerHeroOf(run, data).maxHealth;
   final leveled = run.copyWith(status: TowerStatus.choosing);
+  // The hero with the floor's levels: built once, then given the spoils
+  // (as towerHeroOf would replay them).
+  final hero = towerHeroOf(leveled, data);
   final drop = towerSpoilsFor(
     seed: run.seed,
     floor: towerFloorOf(run, data),
-    luck: towerHeroOf(leveled, data).luck,
-    ownedItemIds: towerHeroOf(leveled, data).ownedItemIds,
+    luck: hero.luck,
+    ownedItemIds: hero.ownedItemIds,
     preferredScalingStat:
         (data.professions[run.professionId] as Map?)?['preferredScalingStat']
                 ?.toString() ??
             '',
     items: data.items,
   );
+  // The bag holds [towerBagCap] potions: what the chest gives past it is
+  // drunk at once (v1.865).
+  final looted =
+      potions + drop.fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
+  final drunk = max(0, looted - towerBagCap);
   final choosing = leveled.copyWith(
     spoils: {...run.spoils, run.floor: drop},
-    potions:
-        potions + drop.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0)),
+    potions: looted - drunk,
     antidotes: antidotes + drop.where((id) => id == towerSpoilsAntidote).length,
   );
-  final hero = towerHeroOf(choosing.copyWith(health: 1 << 20), data);
+  towerWearSpoils(hero, drop, data);
   final health = (healthLeft +
           hero.maxHealth -
           before +
-          (hero.maxHealth * towerRecoveryShare).round())
+          (hero.maxHealth * towerRecoveryShare).round() +
+          drunk * potionHealAmount)
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
   return choosing.copyWith(
@@ -393,23 +425,27 @@ int towerLevelAfter(int floorsCleared) => floorsCleared <= 0
 /// main game's level-up: [levelStatPicks] a level gained). Held by the run
 /// itself: the picks earned by its level, less those it took.
 int towerPendingPicks(TowerRun run) {
-  if (run.autoPicks || run.isOver) return 0;
+  if (run.isOver) return 0;
   final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
   return max(0, earned - run.statPicks.length);
 }
 
 /// The stat pick on the table for [run]: the three offers of its next
 /// pending pick (the main game's draw, towerStatPickDraw), or none.
-List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data) {
+/// [hero], when given, is [run]'s hero already built (towerHeroOf).
+List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data,
+    {SimCharacter? hero}) {
   if (towerPendingPicks(run) <= 0) return const [];
   return towerStatPickDraw(
-      towerHeroOf(run, data), run.seed, run.statPicks.length, data);
+      hero ?? towerHeroOf(run, data), run.seed, run.statPicks.length, data);
 }
 
 /// [run] with offer [index] of its stat pick on the table taken; [run] as
-/// it is when no pick waits or there is no such offer.
-TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
-  final offer = towerStatPickOffer(run, data);
+/// it is when no pick waits or there is no such offer. [offer], when given,
+/// is [run]'s pick on the table already drawn (towerStatPickOffer).
+TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
+    {List<StatPickOffer>? offer}) {
+  offer ??= towerStatPickOffer(run, data);
   if (index < 0 || index >= offer.length) return run;
   return run.copyWith(statPicks: [...run.statPicks, index]);
 }
@@ -419,12 +455,16 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
 /// then on to the next floor. The floor's level-up picks come first
 /// (the screen opens the Level Up before the cards); a pick still waiting
 /// here is given its first offer, the calling, so the climb never stalls.
-TowerRun towerPick(TowerRun run, TowerData data, int? index) {
+/// [hero], when given, is [run]'s hero already built (towerHeroOf); it is
+/// given the card.
+TowerRun towerPick(TowerRun run, TowerData data, int? index,
+    {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
   for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
     final taken = towerTakeStatPick(run, data, 0);
     if (identical(taken, run)) break;
     run = taken;
+    hero = null;
   }
   if (index == null || index < 0 || index >= run.offer.length) {
     return run.copyWith(
@@ -435,7 +475,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index) {
     );
   }
   final card = run.offer[index];
-  final hero = towerHeroOf(run, data);
+  hero ??= towerHeroOf(run, data);
   towerApplyReward(hero, card, data);
   return run.copyWith(
     status: TowerStatus.climbing,
