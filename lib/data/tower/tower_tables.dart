@@ -20,7 +20,7 @@ const int towerFlask = 1;
 /// unlock); the rogue, whom the spoils' gear lifts most, at 1.04.
 const Map<String, double> towerProfessionScale = {
   'mage': .65,
-  'cleric': 1.35,
+  'cleric': 1.28,
   'ranger': .88,
   'rogue': 1.04,
 };
@@ -35,7 +35,7 @@ double towerProfessionScaleOf(String professionId) =>
 /// their points as the story's builds do (less into the damage stat than
 /// the point a level gave before), so the foes come down to keep the
 /// climb as hard as it was.
-const double towerFoeScale = 0.95;
+const double towerFoeScale = 1.02;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -360,6 +360,11 @@ const Map<String, int> towerSpoilsPotions = {
 
 /// The chest's antidote.
 const String towerSpoilsAntidote = 'antidote';
+
+/// The most potions the bag holds (v1.865, the user's pick): what a chest
+/// gives past it is drunk at once, each healing the story's potion
+/// (fight_numbers.dart's potionHealAmount), so a climb never ends on a hoard of 20.
+const int towerBagCap = 5;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.

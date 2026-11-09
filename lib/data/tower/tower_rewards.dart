@@ -214,7 +214,8 @@ List<TowerReward> towerOfferFor({
 /// floor's never below Gold, a warden's and an Elite's raised as an
 /// Elite's), from the floor's own stream; its gear and its potions, never
 /// its gold (nor its charms, tomes or materials, which the Tower has no
-/// use for).
+/// use for). From v1.865 the chest draws those slots as gear or a potion
+/// instead (rollLootBox's gearAndPotionsOnly): no chest is empty.
 List<String> towerSpoilsFor({
   required int seed,
   required TowerFloor floor,
@@ -237,6 +238,8 @@ List<String> towerSpoilsFor({
     ),
     items,
     towerRandom(seed, floor.floor, TowerStream.spoils),
+    // Every slot gear or a potion (v1.865): no empty chest.
+    gearAndPotionsOnly: true,
   );
   return [
     for (final id in chest.itemIds)
