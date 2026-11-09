@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.864.0+900]
+
+### Changed
+- **The Tower's engine, lighter** (round 3, item A; the game plays the same):
+  - the bot builds each step's hero once and hands it on (`towerPick`,
+    `towerStatPickOffer`, `towerTakeStatPick` and `towerAfterFight` take
+    the hero, the drawn offer or the max health already at hand):
+    rebuilds per floor 7.2 to about 4, the bot about 20% faster, its 300
+    test runs giving the same runs to the byte;
+  - the cards nothing deals since v1.860 are gone: the heal, item and
+    clan-gift draws, `towerRewardWeights`, `towerOfferSize`,
+    `towerHealShare`, `towerBigHealShare`, `towerHealFloor`,
+    `towerItemRarities` and the bot's branches for them (an old save's
+    waiting card still applies).
+
 ## [1.863.0+899]
 
 ### Changed
