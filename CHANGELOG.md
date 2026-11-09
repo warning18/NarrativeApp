@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.873.0+909]
+
+### Changed
+- **The simulator says what the hero healed** (QA's ask, for its heal-rule
+  guards): `SimFightOutcome.healedBy` (by source: a die's face, a spell, a
+  potion), `.healed` and `.spellHealed`, as the heal rule (heal_rules.dart)
+  works the amounts out, before full health caps them; a lost fight's too
+  (its hero is then refilled, so its health can't tell). Nothing in a
+  fight changes.
+- `test/sim_heals_test.dart`.
+
 ## [1.867.0+903]
 
 ### Changed

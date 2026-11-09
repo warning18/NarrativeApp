@@ -38,6 +38,7 @@ extension _SimFightSetup on _SimFight {
     // The fight-length rules (fight_length.dart): the hero's heals so far,
     // and whether the pack has broken.
     healsGiven = 0;
+    healedBy = {};
     packBroken = false;
 
     // The hero's core (profession_cores.dart): Fury built up, the
