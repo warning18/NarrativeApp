@@ -1,6 +1,6 @@
 // Shared by the heal guards (test/qa_heal_*_test.dart): a real fight played
-// as a script of heals, then the heals the log reports, in the order they
-// were given. QA's, tests only.
+// as a script of heals, then what each step healed (the hero's health on its
+// card before and after), in the order given. QA's, tests only.
 import 'dart:convert';
 import 'dart:math';
 
