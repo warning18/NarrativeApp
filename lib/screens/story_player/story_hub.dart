@@ -417,10 +417,8 @@ class _HubSections extends ConsumerWidget {
                         key: const Key('place_travel_on'),
                         style: OutlinedButton.styleFrom(
                             visualDensity: VisualDensity.compact),
-                        onPressed: () => showModalBottomSheet<void>(
+                        onPressed: () => showInkSheet<void>(
                           context: context,
-                          isScrollControlled: true,
-                          showDragHandle: true,
                           builder: (_) => SafeArea(
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

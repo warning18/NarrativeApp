@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'ink_sheet.dart';
 
 /// "News from the coast" (v1.195, see politics_events.dart): what the
 /// clans did while the party was elsewhere. The camp says what it has not
@@ -33,10 +34,8 @@ class CoastNewsChip extends ConsumerWidget {
             const EdgeInsets.symmetric(horizontal: 12, vertical: 4)),
         side: WidgetStateProperty.all(BorderSide(color: ink.ember)),
       ),
-      onPressed: () => showModalBottomSheet<void>(
+      onPressed: () => showInkSheet<void>(
         context: context,
-        showDragHandle: true,
-        isScrollControlled: true,
         builder: (_) => const SafeArea(child: CoastNewsSheet()),
       ),
       icon: Icon(Icons.campaign_outlined, size: 18, color: ink.ember),

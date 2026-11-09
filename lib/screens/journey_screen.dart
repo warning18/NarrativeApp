@@ -120,6 +120,7 @@ import 'story_player_screen.dart'
         storySceneLocked,
         takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
+import '../widgets/ink_sheet.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -508,10 +509,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// the same.
   void _openWay(int i, List<_Step> steps, bool french) {
     setState(() => _selected = i);
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (sheet) => SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -545,10 +544,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// A pin with several ways (v1.607): its sheet is named by the place and
   /// lists the ways; a tap on one opens it like a pin with that way alone.
   void _openPin(List<int> ways, String name, List<_Step> steps, bool french) {
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (sheet) {
         final theme = Theme.of(sheet);
         final ink = InkColors.of(sheet);
@@ -732,10 +729,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// The other places known, each with its "Go".
   void _showTravelOn(String fromNodeId) {
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (_) => SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

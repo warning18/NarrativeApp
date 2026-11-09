@@ -10,6 +10,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/game_icons.dart';
 import 'road_panel.dart';
+import 'ink_sheet.dart';
 import 'motion.dart';
 
 /// The party's vital numbers on one line: level, health, mana, gold and
@@ -199,10 +200,8 @@ class _Stat extends StatelessWidget {
 /// mana, gold, alignment and flags, with the way to the quests and shops
 /// on the Play tab.
 Future<void> _showPlayerStatusSheet(BuildContext context) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (context) => ConstrainedBox(
       constraints:
           BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),

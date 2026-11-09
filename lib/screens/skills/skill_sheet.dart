@@ -29,6 +29,7 @@ import '../../widgets/pixel_banner.dart';
 import '../../widgets/sheet_kit.dart';
 import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
+import '../../widgets/ink_sheet.dart';
 
 /// The skills of the player ([allyId] null) or a companion, from the live
 /// session and tables; null while the skills table loads.
@@ -102,10 +103,8 @@ Future<void> learnSkill(BuildContext context, WidgetRef ref, String id,
 /// Opens the sheet for [skillId].
 Future<void> showSkillSheet(BuildContext context, String skillId,
     {String? allyId}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (_) =>
         _SkillSheet(skillId: skillId, allyId: allyId, host: context),
   );
@@ -549,9 +548,9 @@ class _Action extends ConsumerWidget {
 /// The sheet for a branch's mastery.
 Future<void> showMasterySheet(
     BuildContext context, WidgetRef ref, SkillBranch branch) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
+    scrollControlled: false,
     builder: (sheetContext) => Consumer(builder: (inner, ref, _) {
       final model = watchSkillsModel(ref, null);
       if (model == null) return const SizedBox(height: 120);

@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../providers/map_look_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'chart_map_painter.dart' show ChartCalque;
+import 'ink_sheet.dart';
 
 /// What the marks on the Journey's chart mean, as the chart draws them:
 /// one sheet so a new player does not guess. The calque showing adds its
@@ -18,10 +19,8 @@ Future<void> showMapLegendSheet(
   required ChartPalette palette,
   required Color Function(int chapter) chapterColor,
 }) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) => Consumer(builder: (context, ref, _) {
       final theme = Theme.of(context);
       final ink = InkColors.of(context);
@@ -147,10 +146,8 @@ Future<MapJourneysPick?> showMapJourneysSheet(
   required Color Function(int chapter) chapterColor,
 }) {
   final language = ref.read(appLanguageProvider);
-  return showModalBottomSheet<MapJourneysPick>(
+  return showInkSheet<MapJourneysPick>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) {
       final theme = Theme.of(context);
       final ink = InkColors.of(context);

@@ -29,6 +29,7 @@ import 'city_chart/city_chart_painter.dart';
 import 'companion_remark_bubble.dart';
 import 'road_panel.dart';
 import 'sheet_kit.dart';
+import 'ink_sheet.dart';
 
 /// The name of a service's kind, in the player's language.
 String _townServiceName(WidgetRef ref, String kind) => tr(ref, 'service_$kind');
@@ -58,10 +59,8 @@ Future<void> showTownServiceSheet(BuildContext context, TownService service) {
           settings: const RouteSettings(name: 'notice_board')),
     );
   }
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) => _TownServiceSheet(service: service, host: context),
   );
 }

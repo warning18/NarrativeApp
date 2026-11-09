@@ -10,6 +10,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'clan_widgets.dart';
 import 'sign_widgets.dart';
+import 'ink_sheet.dart';
 
 /// The climb to the Lantern Throne and the Host (v1.196, see throne.dart),
 /// on screen: the Character tab's climb ([ClimbCard]), its rungs
@@ -246,10 +247,8 @@ class ClimbCard extends ConsumerWidget {
 /// Opens "Your Host": the one mustered, or, with [preview] (Edit Mode),
 /// the one the character would muster now.
 Future<void> showHostSheet(BuildContext context, {bool preview = false}) =>
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => SafeArea(child: HostSheet(preview: preview)),
     );
 

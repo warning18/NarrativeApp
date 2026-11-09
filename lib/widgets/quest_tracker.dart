@@ -15,6 +15,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import 'quest_turn_in.dart';
+import 'ink_sheet.dart';
 
 /// The followed quest above the story: its name and the goal it waits on
 /// ("Defeat catacomb ghouls (1/3)"), a Turn in button once every objective
@@ -234,10 +235,8 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
 /// to another quest in progress.
 Future<void> _showQuestSheet(
     BuildContext context, WidgetRef ref, String questId) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
     builder: (sheetContext) =>
         _QuestSheet(questId: questId, hostContext: context, hostRef: ref),
   );

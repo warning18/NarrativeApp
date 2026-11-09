@@ -7,15 +7,14 @@ import '../providers/map_look_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'chart_map_painter.dart' show ChartCalque;
 import 'handover_list.dart';
+import 'ink_sheet.dart';
 
 /// The calques sheet: the sphere and the weather, then one calque over the
 /// chart at a time, or none. Shared by the Journey and the full map.
 Future<void> showCalquesSheet(BuildContext context, WidgetRef ref) {
   final lang = ref.read(appLanguageProvider);
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheetContext) => Consumer(builder: (context, ref, _) {
       final current = ref.watch(chartCalqueProvider);
       final theme = Theme.of(context);
