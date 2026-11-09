@@ -36,6 +36,8 @@ class LootReward {
     this.canUseNow = false,
     this.useLabel,
     this.useEnabled = true,
+    this.detail,
+    this.onTap,
   });
 
   final String id;
@@ -52,6 +54,13 @@ class LootReward {
 
   /// False when the switch stands dim (nothing to heal for a potion).
   final bool useEnabled;
+
+  /// What tells the choice under the text (a piece of gear's stats against
+  /// the one worn), when there is one.
+  final Widget? detail;
+
+  /// Opens the reward in full (its sheet, with the same switch's action).
+  final VoidCallback? onTap;
 }
 
 /// The spoils as a full-height sheet (design C, docs/proposals/
@@ -220,7 +229,7 @@ class LootSheet extends StatelessWidget {
 
   Widget _rewardRow(ThemeData theme, InkColors ink, LootReward r) {
     final scheme = theme.colorScheme;
-    return Padding(
+    final row = Padding(
       key: Key('loot_reward_${r.id}'),
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -233,6 +242,7 @@ class LootSheet extends StatelessWidget {
             Text(r.text,
                 style: theme.textTheme.bodySmall
                     ?.copyWith(color: scheme.onSurfaceVariant)),
+            if (r.detail != null) r.detail!,
             if (r.canUseNow)
               Row(children: [
                 Icon(Icons.bolt, size: 16, color: ink.heal),
@@ -251,6 +261,13 @@ class LootSheet extends StatelessWidget {
           ]),
         ),
       ]),
+    );
+    if (r.onTap == null) return row;
+    return InkWell(
+      key: Key('loot_open_${r.id}'),
+      onTap: r.onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: row,
     );
   }
 }

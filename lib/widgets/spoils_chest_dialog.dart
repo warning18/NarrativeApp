@@ -423,7 +423,6 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                         ?.copyWith(color: theme.colorScheme.tertiary),
                   ),
                 ],
-                ..._buildSpoilsList(theme),
               ],
               if (_tierShown) ...[
                 const SizedBox(height: 12),
@@ -495,6 +494,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
               : isGear(item) && !_canEquipSlot(slot)
                   ? _t('loot_cannot_wear_note')
                   : (item?['description']?.toString() ?? ''));
+      final wornId = _wornFor(slot);
+      final worn =
+          wornId == null ? null : widget.items[wornId] as Map<String, dynamic>?;
       rewards.add(LootReward(
         id: '$slot',
         name: item?['itemName']?.toString() ?? itemId,
@@ -503,6 +505,30 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
         canUseNow: action != null,
         useLabel: action?.$1,
         useEnabled: action?.$3 != null,
+        // A piece of gear says what it changes against the one worn (the
+        // stats with their difference, and what it replaces), as the old
+        // list under the slots did; a tap reads it in full.
+        detail: isGear(item)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ItemStatChips(
+                    item: item,
+                    equipped: worn,
+                    language: widget.language,
+                    compact: true,
+                  ),
+                  if (worn != null)
+                    Text(
+                        _t('loot_replaces').replaceAll(
+                            '{name}', worn['itemName']?.toString() ?? wornId!),
+                        key: Key('loot_replaces_$slot'),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant)),
+                ],
+              )
+            : null,
+        onTap: () => _showDetails(slot),
       ));
     }
     final height = MediaQuery.sizeOf(context).height -
@@ -736,78 +762,6 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           ? null
           : (action.$2 ? _t('loot_undo_button') : action.$1),
       onAction: action?.$3,
-    );
-  }
-
-  List<Widget> _buildSpoilsList(ThemeData theme) {
-    final slots = [
-      for (var i = 1; i < _slotCount; i++)
-        if (_revealed.contains(i)) i,
-    ];
-    if (slots.isEmpty) return const [];
-    return [
-      const SizedBox(height: 12),
-      Text(_t('loot_use_now_title'), style: theme.textTheme.titleSmall),
-      const SizedBox(height: 4),
-      for (final slot in slots) _buildSpoilsRow(theme, slot),
-    ];
-  }
-
-  Widget _buildSpoilsRow(ThemeData theme, int slot) {
-    final itemId = _itemIdAt(slot);
-    final item = _itemAt(slot);
-    final wornId = _wornFor(slot);
-    final worn =
-        wornId == null ? null : widget.items[wornId] as Map<String, dynamic>?;
-    final type = item?['itemType']?.toString() ?? '';
-    final action = _actionFor(slot);
-    final note = consumableNote(itemId, item, widget.language) ??
-        (type == 'Tome' || type == 'Spellbook'
-            ? _t('loot_auto_read_note')
-            : isGear(item) && !_canEquipSlot(slot)
-                ? _t('loot_cannot_wear_note')
-                : null);
-    return InkWell(
-      onTap: () => _showDetails(slot),
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ItemPixelIcon(itemId, type, size: 28),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item?['itemName']?.toString() ?? itemId,
-                      style: theme.textTheme.bodyMedium),
-                  ItemStatChips(
-                    item: item,
-                    equipped: worn,
-                    language: widget.language,
-                    compact: true,
-                  ),
-                  if (note != null)
-                    Text(note,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant)),
-                ],
-              ),
-            ),
-            if (action != null) ...[
-              const SizedBox(width: 6),
-              FilterChip(
-                label: Text(action.$1),
-                selected: action.$2,
-                onSelected: action.$3 == null ? null : (_) => action.$3!(),
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 
