@@ -181,6 +181,36 @@ void main() {
       expect(back.potions, run.potions);
     });
 
+    test('a hero handed on is the hero towerHeroOf builds', () {
+      // The bot builds each step's hero once and hands it on (v1.864):
+      // the moves must come out as they do when they build it themselves.
+      for (var seed = 1; seed <= 6; seed++) {
+        var run = towerStart(
+            seed: seed, raceId: 'human', professionId: 'mage', data: data);
+        for (var floor = 1; floor <= 6 && !run.isOver; floor++) {
+          final before = towerHeroOf(run, data).maxHealth;
+          final a = towerAfterFight(run, data,
+              won: true, healthLeft: run.health, maxHealthBefore: before);
+          expect(
+              a.toJson(),
+              towerAfterFight(run, data, won: true, healthLeft: run.health)
+                  .toJson());
+          run = a;
+          while (towerPendingPicks(run) > 0) {
+            final hero = towerHeroOf(run, data);
+            final offer = towerStatPickOffer(run, data, hero: hero);
+            expect(offer, towerStatPickOffer(run, data));
+            run = towerTakeStatPick(run, data, 1, offer: offer);
+          }
+          final pick = run.offer.isEmpty ? null : 0;
+          final handed =
+              towerPick(run, data, pick, hero: towerHeroOf(run, data));
+          expect(handed.toJson(), towerPick(run, data, pick).toJson());
+          run = handed;
+        }
+      }
+    });
+
     test('leaving ends the run with what it earned', () {
       final run = towerAbandon(towerStart(
           seed: 1,
