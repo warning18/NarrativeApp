@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.869.0+905]
+
+### Changed
+- **The spoils have one list, and it lets you equip** (the user's feedback:
+  "allow direct equipment again"; UX-2 round 3): the full-height spoils sheet
+  now says, for each piece of gear, what the old list under the flipped slots
+  said: its stats with their difference against the piece worn in that slot
+  (`ATK 3 +1`) and "Replaces Iron Sword", with the Equip switch; a tap on any
+  drop reads it in full, with the same Equip or Drink action. A potion keeps
+  its Drink switch. The chest dialog's own Equip/Drink list under the slots
+  (about 90 lines) is gone: one list, on the sheet. Nothing changes in
+  `fight_rewards.dart`: what is switched on goes back through the same
+  `SpoilsChoices` (`equipItemIds`, `drinkItemIds`) and `equipItem`, which puts
+  the new piece on and leaves the old one in the bag.
+- `LootReward.detail` and `.onTap`; the string `loot_use_now_title` is gone,
+  `loot_replaces` is new. Pictures: `docs/ux-shots/spoils-actions/`.
 ## [1.868.0+904]
 
 ### Changed
