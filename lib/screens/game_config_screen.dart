@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../gamedata/game_config_schema.dart';
+import '../widgets/ink_confirm.dart';
 
 class GameConfigScreen extends StatefulWidget {
   const GameConfigScreen({super.key});
@@ -62,25 +63,16 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
   }
 
   Future<void> _confirmReset() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Reset to defaults?'),
-        content: const Text(
-            'This discards your saved New Game Defaults and reloads the bundled values.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Reset'),
-          ),
-        ],
-      ),
+    final confirmed = await showInkConfirm(
+      context,
+      title: 'Reset to defaults?',
+      body:
+          'This discards your saved New Game Defaults and reloads the bundled values.',
+      cancel: 'Cancel',
+      confirm: 'Reset',
+      filled: false,
     );
-    if (confirmed ?? false) await _reset();
+    if (confirmed) await _reset();
   }
 
   Future<void> _reset() async {

@@ -23,7 +23,8 @@ import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
 import 'tower_spoils_view.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
+import '../../widgets/ink_confirm.dart';
 
 class TowerFloorScreen extends ConsumerStatefulWidget {
   const TowerFloorScreen({super.key});
@@ -94,22 +95,14 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
   }
 
   Future<void> _leave(TowerRun run) async {
-    final yes = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Text(tr(ref, 'tower_leave_confirm')),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
-          FilledButton(
-              key: const Key('tower_leave_yes'),
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(tr(ref, 'tower_leave'))),
-        ],
-      ),
+    final yes = await showInkConfirm(
+      context,
+      body: tr(ref, 'tower_leave_confirm'),
+      cancel: MaterialLocalizations.of(context).cancelButtonLabel,
+      confirm: tr(ref, 'tower_leave'),
+      confirmKey: const Key('tower_leave_yes'),
     );
-    if (yes != true || !mounted) return;
+    if (!yes || !mounted) return;
     await _finish(towerAbandon(run));
   }
 
@@ -249,13 +242,13 @@ class _FloorIntro extends ConsumerWidget {
             ),
           ),
         ],
-        TowerLabel(tr(ref, 'tower_oaths_label')),
+        InkLabel(tr(ref, 'tower_oaths_label')),
         _SwornRow(run: run),
-        TowerLabel(tr(ref, 'tower_foes')),
+        InkLabel(tr(ref, 'tower_foes')),
         for (final id in floor.enemyIds)
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: TowerPanel(
+            child: InkPanel(
               lit: danger,
               child: Row(
                 children: [
@@ -283,8 +276,8 @@ class _FloorIntro extends ConsumerWidget {
               ),
             ),
           ),
-        TowerLabel(tr(ref, 'tower_your_health')),
-        TowerPanel(
+        InkLabel(tr(ref, 'tower_your_health')),
+        InkPanel(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -319,7 +312,7 @@ class _SwornRow extends ConsumerWidget {
     final theme = Theme.of(context);
     final factions = ref.watch(factionsProvider);
     final sworn = run.clanIds;
-    return TowerPanel(
+    return InkPanel(
       key: const Key('tower_sworn'),
       child: sworn.isEmpty
           ? Text(tr(ref, 'tower_unsworn'),

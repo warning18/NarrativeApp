@@ -343,7 +343,7 @@
     "dialogueLines": [
       "\"You’re still breathing. Good — I wasn’t in the mood to burn a second set of clothes.\"",
       "\"They’re saying the Warden fell. Is it true? Tell it to me straight, I’ve had enough of people softening things for my sake.\"",
-      "\"Go on, then. The camp will want to hear this from someone who was actually there, not from a rumor wearing a rumor’s coat.\""
+      "\"Go on, then. The camp will want to hear this from someone who was actually there, not from a rumour wearing a rumour’s coat.\""
     ],
     "dialogueLines_fr": [
       "« Vous respirez encore. Bien — je n’avais pas envie de brûler une deuxième tenue. »",
@@ -1059,7 +1059,7 @@
     "placeId": "saltmouth_wharf",
     "chapter": 2,
     "kind": "elder",
-    "description": "A harbor-front fixture who’s outlived three regimes by never once having an opinion out loud. Always good for gossip, at the low price of your patience.",
+    "description": "A harbour-front fixture who’s outlived three regimes by never once having an opinion out loud. Always good for gossip, at the low price of your patience.",
     "description_fr": "Une figure familière du front de mer qui a survécu à trois régimes en ne donnant jamais son avis à voix haute. Toujours de bon conseil pour les ragots, au faible prix de votre patience.",
     "want": "Wants nothing but gossip to trade and someone patient enough to hear it.",
     "want_fr": "Ne veut que des ragots à échanger, et quelqu’un d’assez patient pour les écouter.",

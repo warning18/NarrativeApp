@@ -57,9 +57,9 @@ void main() {
     await _settle(tester);
     await tester.enterText(find.byType(TextField), 'harbor_rat');
     await _settle(tester);
-    await tester.tap(find.widgetWithText(ListTile, 'Harbor Rat'));
+    await tester.tap(find.widgetWithText(ListTile, 'Harbour Rat'));
     await _settle(tester);
-    expect(find.widgetWithText(InputChip, 'Harbor Rat'), findsOneWidget);
+    expect(find.widgetWithText(InputChip, 'Harbour Rat'), findsOneWidget);
     await tester.tap(find.byType(DropdownButtonFormField<String?>));
     await _settle(tester);
     await tester.tap(find.text('Iron Die').last);

@@ -19,6 +19,63 @@ isn't reconstructable from git history alone.
   fight changes.
 - `test/sim_heals_test.dart`.
 
+## [1.873.0+909]
+
+- **Narrative: six endings with their own buttons, two dead lines out, three
+  shorter speeches.** The six scenes where someone comes back with a message
+  (`3005_dorran_later`, `5010_imeh_later`, `6010_brannoc_later`,
+  `7100_orsabet_later`, `7100_ghrem_later`, `7800_nkem_later`) no longer end
+  on the same "Accept what they offer" / "Say your goodbyes": each pair now
+  names the person and what they bring (the gold and the flag are unchanged).
+  Two Vess remarks keyed to the choices of an old pier scene
+  (`choice_960_1_vess`, `choice_960_2_vess`) are removed: they could never play.
+  The quest-giver speeches of Tobin, Vess and Liora lose a sentence each
+  (439, 422 and 385 characters to 336, 290 and 311). English and French.
+
+## [1.872.0+908]
+
+- **Narrative: British spelling everywhere in the English text.** The story
+  and game data, and the English UI strings, used both spellings (harbour 64
+  against harbor 40, armour against armor, colour, favour, rumour, armoury,
+  centre, defence, travelled). They now follow the majority, British, like
+  the 204 "grey". 115 strings in the story and game data and 34 in
+  `app_strings.dart` change; ids, flags, keys, enum values and French are
+  untouched. Names that move: Harbour Rat, Harbour Reckoning, A Smuggler's
+  Favour, The Harbour (house), Harbourwatch (set and items).
+
+## [1.871.0+907]
+
+### Changed
+- **One panel, one confirm dialog, step 1** (UX-2 round 3, "one panel / one
+  tag / one dialog frame / one sheet frame"; no change to how anything looks):
+  - `InkPanel` and `InkLabel` (`lib/widgets/ink_panel.dart`) are the Tower's
+    panel and label, promoted: the 77 uses in the Tower's screens now say
+    `InkPanel`/`InkLabel`, `tower_widgets.dart` is gone. The 36 pictures of
+    the Tower's screens are byte for byte the same before and after.
+  - `showInkConfirm` (`lib/widgets/ink_confirm.dart`) is the plain yes/no
+    dialog (title, words, Cancel left, the act right, filled or quiet). Seven
+    hand-written ones use it: New Game, New Game+, overwrite a save slot, leave
+    the Tower, rebuild a hull, reset the game defaults, reset the story
+    (about 100 lines fewer). The hull confirm's act is a filled button where
+    it was an elevated one.
+  - Next steps (own PRs, picture first): the sheet frame, the tags, the
+    story's offer dialog last.
+
+## [1.870.0+906]
+
+### Fixed
+- **"Remove animations" is honoured by the last animations that ignored it**
+  (UX-2 round 3): the city chart no longer breathes in a loop nor glides
+  between zooms, the map's sky no longer fades in, a stat no longer pulses on
+  a change, and the story's cards no longer reveal one after the other. With
+  the platform's setting on they stand at their end state at once. Everything
+  else already honoured it (about 60 places read the setting, the page
+  transitions among them); `lib/widgets/motion.dart` (`stillMotion`,
+  `forwardOrJump`) is the one helper for those that start in `initState`.
+  The aim sweep of a ship battle and the timed choice's countdown are play,
+  not decoration, and keep running.
+- `test/motion_test.dart`.
+
 ## [1.869.0+905]
 
 ### Changed
@@ -35,6 +92,7 @@ isn't reconstructable from git history alone.
   the new piece on and leaves the old one in the bag.
 - `LootReward.detail` and `.onTap`; the string `loot_use_now_title` is gone,
   `loot_replaces` is new. Pictures: `docs/ux-shots/spoils-actions/`.
+
 ## [1.868.0+904]
 
 ### Changed
@@ -51,6 +109,7 @@ isn't reconstructable from git history alone.
   `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
   what each font never had; `test/font_glyphs_test.dart` fails when a new
   character comes into a text that a font had and the subset lost.
+
 ## [1.867.0+903]
 
 ### Changed
@@ -128,6 +187,7 @@ isn't reconstructable from git history alone.
 - `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
   smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
   under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
+
 ## [1.862.0+898]
 
 ### Changed
@@ -501,6 +561,7 @@ isn't reconstructable from git history alone.
   something taking the loot doesn't do. `test/loot_changes_test.dart`
   checks that every "after" is what taking the loot leaves. No screen
   changes yet: UX-2 wires the sheet.
+
 ## [1.829.0+865]
 
 - Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
@@ -555,7 +616,6 @@ isn't reconstructable from git history alone.
   Tests: `fight_board_test.dart` (the land is behind a fight given one),
   `land_crossing_test.dart` (the road's fight is given it).
 
-
 ## [1.825.0+861]
 
 - Journey: the map is back for every scene with a choice to make, as before
@@ -565,6 +625,7 @@ isn't reconstructable from git history alone.
   choose, its one way leading on in the same place, still goes on with no
   map (its way a card on the page). A way to another district of a town is
   walked on the town's chart: the party's mark crosses the streets to it.
+
 ## [1.824.0+860]
 
 - Fight: the aim line of a picked die is no longer cut off at the dice board.

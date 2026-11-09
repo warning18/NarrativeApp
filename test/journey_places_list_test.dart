@@ -56,7 +56,7 @@ void main() {
     expect(find.byKey(const Key('scene_band')), findsNothing);
     // The places, one row each.
     expect(inList(find.textContaining('Lark')), findsOneWidget);
-    expect(inList(find.text('The looted armory')), findsOneWidget);
+    expect(inList(find.text('The looted armoury')), findsOneWidget);
     // Never a choice's text, a count or a chevron.
     expect(inList(find.text('Bind your wounds with sailcloth')), findsNothing);
     expect(inList(find.text('Talk to the mate at the gangway')), findsNothing);
@@ -69,7 +69,7 @@ void main() {
                 .startsWith('journey_city_pin_count_')),
         findsNothing);
     // A place with several ways opens a sheet that names them.
-    await tester.tap(inList(find.text('The looted armory')));
+    await tester.tap(inList(find.text('The looted armoury')));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pump(const Duration(milliseconds: 400));
     expect(

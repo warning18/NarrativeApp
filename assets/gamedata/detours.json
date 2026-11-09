@@ -148,7 +148,7 @@
     "saltmouth_wharf": {
       "shop": [
         {
-          "en": "A Crow tout sells a quiet route out of the harbor by the half-hour, and a longer one by the hour.",
+          "en": "A Crow tout sells a quiet route out of the harbour by the half-hour, and a longer one by the hour.",
           "fr": "Un rabatteur des Corneilles vend une route discrète hors du port à la demi-heure, et une plus longue à l’heure."
         },
         {
@@ -170,7 +170,7 @@
       ],
       "quest": [
         {
-          "en": "The harbor master has pinned another bounty to her door, in a hand that has written a great many.",
+          "en": "The harbour master has pinned another bounty to her door, in a hand that has written a great many.",
           "fr": "La maîtresse de port a épinglé une nouvelle prime à sa porte, d’une main qui en a écrit beaucoup."
         },
         {
@@ -198,7 +198,7 @@
           "fr": "Une grue balance une caisse au-dessus de l’eau, et un instant la caisse semble suspendue toute seule."
         },
         {
-          "en": "Lantern light slides on the oily harbor and breaks into small, shifting coins.",
+          "en": "Lantern light slides on the oily harbour and breaks into small, shifting coins.",
           "fr": "La lumière des lanternes glisse sur le port huileux et se brise en petites pièces mouvantes."
         }
       ],
@@ -334,7 +334,7 @@
       ],
       "generic": [
         {
-          "en": "Lanterns of every color hang over the alley, and each lights something different.",
+          "en": "Lanterns of every colour hang over the alley, and each lights something different.",
           "fr": "Des lanternes de toutes les couleurs pendent au-dessus de la ruelle, et chacune éclaire quelque chose de différent."
         },
         {
@@ -861,7 +861,7 @@
           "fr": "Un marchand sur les marches vend des bougies frappées du sceau de la Première Lanterne, trois par paquet."
         },
         {
-          "en": "A stall by the harbor chain sells passes that are certainly not forgeries.",
+          "en": "A stall by the harbour chain sells passes that are certainly not forgeries.",
           "fr": "Un étal près de la chaîne du port vend des laissez-passer qui ne sont certainement pas des faux."
         }
       ],
@@ -889,7 +889,7 @@
       ],
       "rest": [
         {
-          "en": "A landing on the great stair, out of the wind, has a bench and a view of the harbor.",
+          "en": "A landing on the great stair, out of the wind, has a bench and a view of the harbour.",
           "fr": "Un palier du grand escalier, à l’abri du vent, a un banc et une vue sur le port."
         },
         {
@@ -899,7 +899,7 @@
       ],
       "generic": [
         {
-          "en": "The harbor chain ripples in the swell, and the gulls sit on it in a long line.",
+          "en": "The harbour chain ripples in the swell, and the gulls sit on it in a long line.",
           "fr": "La chaîne du port ondule dans la houle, et les mouettes s’y alignent en une longue file."
         },
         {
@@ -1003,7 +1003,7 @@
       ],
       "enemy": [
         {
-          "en": "A drowned sailor in a white sash rises from the harbor wall and stands, dripping, in your path.",
+          "en": "A drowned sailor in a white sash rises from the harbour wall and stands, dripping, in your path.",
           "fr": "Un marin noyé à l’écharpe blanche se dresse du mur du port et se tient, ruisselant, sur votre chemin.",
           "mood": "tense"
         },
@@ -2358,7 +2358,7 @@
           "mood": "tense"
         },
         {
-          "en": "A hound of no particular color pads out of the snow and stops at exactly the distance from which it can spring.",
+          "en": "A hound of no particular colour pads out of the snow and stops at exactly the distance from which it can spring.",
           "fr": "Un chien d’aucune couleur précise sort de la neige à pas feutrés et s’arrête à la distance exacte d’où il peut bondir.",
           "mood": "tense"
         }
