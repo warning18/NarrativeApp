@@ -11,6 +11,7 @@ import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import 'immersive_notice.dart';
 import 'moments.dart';
+import 'ink_confirm.dart';
 
 /// Opens the save slots, to save into one ([saving]) or load one. True
 /// once a slot has been loaded.
@@ -78,23 +79,13 @@ class SaveSlotsSheet extends ConsumerWidget {
       BuildContext context, WidgetRef ref, int slot, bool filled) async {
     final lang = ref.read(appLanguageProvider);
     if (filled) {
-      final overwrite = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(trFor(lang, 'save_slot_overwrite_title')),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text(trFor(lang, 'cancel')),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text(trFor(lang, 'save_slot_overwrite_button')),
-            ),
-          ],
-        ),
+      final overwrite = await showInkConfirm(
+        context,
+        title: trFor(lang, 'save_slot_overwrite_title'),
+        cancel: trFor(lang, 'cancel'),
+        confirm: trFor(lang, 'save_slot_overwrite_button'),
       );
-      if (overwrite != true) return;
+      if (!overwrite) return;
     }
     final playState = ref.read(storyPlayProvider);
     await ref.read(savedGamesProvider.notifier).save(

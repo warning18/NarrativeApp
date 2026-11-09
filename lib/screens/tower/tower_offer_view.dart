@@ -17,7 +17,7 @@ import '../../providers/clans_provider.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
-import 'tower_widgets.dart';
+import '../../widgets/ink_panel.dart';
 
 /// What a card reads: its kind, its name and what it does.
 class TowerCardText {
@@ -153,7 +153,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   onSwear: () => _pick(i),
                 );
               }
-              return TowerPanel(
+              return InkPanel(
                 key: Key('tower_card_$i'),
                 lit: held,
                 dim: !held,
@@ -238,7 +238,7 @@ class _OathCard extends ConsumerWidget {
         faction == null ? InkColors.of(context).gold : Color(faction.color);
     final name = faction?.shortFor(lang) ?? clanId;
     final die = towerClanDieOf(clanId, data.dice);
-    return TowerPanel(
+    return InkPanel(
       lit: held,
       dim: !held,
       onTap: onHold,
