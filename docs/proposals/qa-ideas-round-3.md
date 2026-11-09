@@ -14,7 +14,7 @@ Ranked, my recommendation first. Removing and speeding up come first.
 
 ## 2. Make the shard weights complete and keep them complete (speed)
 
-- **What**: 67 of the 602 test files have no entry in `test/shard_weights.json` (all `tower_*`, `qa_mending_light_*`, `journey_*`, `fight_qa694_*`, `ux_*_shot*` among them). `tool/shard_tests.py` gives them the median weight (about 1 s). Any of them that is really a 10 to 30 s widget test makes one runner the slow one. Refresh the weights from one CI run (the four shard JSON reports, `tool/shard_weights_from_report.py`), and add to `shard_tests.py --check` a failure when a file has no weight (the author adds a line when adding a test).
+- **What**: 67 of the 602 test files have no entry in `test/shard_weights.json` (all `tower_*`, `qa_mending_light_*`, `journey_*`, `fight_qa694_*`, `ux_*_shot*` among them). `tool/shard_tests.py` gives them the median weight (2.2 s). Any of them that is really a 10 to 30 s widget test makes one runner the slow one. Refresh the weights from one CI run (the four shard JSON reports, `tool/shard_weights_from_report.py`), and add to `shard_tests.py --check` a failure when a file has no weight (the author adds a line when adding a test).
 - **Why**: the pull request's wall time is its slowest runner; the weights are the only lever the partition has, and 11% of the files are blind.
 - **Size**: small. A fresh profile is needed first (about 14 min of one runner's time, or the artefacts of the last green main run).
 - **Risk**: low; a new test file would need a weight line to pass `--check`.
@@ -36,18 +36,18 @@ Ranked, my recommendation first. Removing and speeding up come first.
 - **Risk**: a data change that breaks a screen (a longer French name in `assets/gamedata/`) is not caught until main. Mitigation: keep `assets/gamedata/` as a trigger for the real-font cards (the name-length case) and gate only the L3 and screens smoke files.
 - **User notices**: nothing, or a faster CI.
 
-## 5. A single `setUpAll` for the Tower batch in `qa_tower_sim_test.dart` (speed, 16 s a run of the report)
+## 5. Lazy batches in `qa_tower_sim_test.dart` (speed)
 
-- **What**: `main()` plays both 500-seed batches (1,000 Tower runs, about 16 s per `weights`) before any test, so a `--plain-name batch` run for the report pays it too, and so does every run of that file for one test. Move the two batches into a lazy `late final` read by the guards only.
-- **Why**: the report rerun (2,000 + 2,000 seeds, twice) spends 16 s of its time on guards it does not use; in CI it is a wash. Small gain, near-zero risk.
+- **What**: `main()` plays both 500-seed batches (1,000 Tower runs; the whole file weighs 16 s) before any test, so a `--plain-name batch` run for the report pays for them too, as does any run of one test of that file. Move the two batches into a lazy `late final` read by the guards only.
+- **Why**: a report rerun (two ranges of 2,000 seeds) spends part of those 16 s on guards it does not use; in CI it is a wash (all tests run). A small gain for whoever reruns the report; I have not timed the split.
 - **Size**: tiny (3 lines).
 - **Risk**: none; the guards are unchanged.
 - **User notices**: nothing.
 
 ## 6. Replace the hand-test harness's duplicated `settle`/`pumpUntil` with `skill_fight_harness.dart` (remove)
 
-- **What**: `test/qa_hand_test_shots_test.dart` (about 900 lines), `qa_cleric_watchfire` and several older QA files carry their own `_settle`, `_pumpUntil`, `_tapWhenEnabled`, `_shows`. `test/skill_fight_harness.dart` already exports them, and `qa-improvements.md` item 3 proposed it for the others; this item is the QA-owned files only (7 files by `grep`), not the 30 others.
-- **Why**: fewer copies; a fix to a wait (the cleric guard needed `findRichText`) lands once.
+- **What**: 6 of QA's own `qa_*_test.dart` files declare their own copy of `_settle`, `_pumpUntil` or `_tapWhenEnabled` (by `grep`); `test/skill_fight_harness.dart` already exports them. `qa-improvements.md` item 3 covers the other sessions' files; this item is the 6 QA-owned ones only.
+- **Why**: fewer copies; a fix to a wait lands once.
 - **Size**: small, mechanical (one PR, tests only).
 - **Risk**: low; each file's tests must still pass; verify with the same files.
 - **User notices**: nothing.
