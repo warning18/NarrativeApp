@@ -3629,10 +3629,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Lu sur-le-champ\u00a0: les clans viennent à vous avec une offre.',
   },
-  'loot_use_now_title': {
-    AppLanguage.en: 'Use your spoils now',
-    AppLanguage.fr: 'Utiliser votre butin tout de suite',
-  },
   'loot_sheet_changes': {
     AppLanguage.en: 'What the spoils change',
     AppLanguage.fr: 'Ce que le butin change',
@@ -3667,6 +3663,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Utiliser tout de suite',
   },
   'drink_now_button': {AppLanguage.en: 'Drink', AppLanguage.fr: 'Boire'},
+  'loot_replaces': {
+    AppLanguage.en: 'Replaces {name}',
+    AppLanguage.fr: 'Remplace {name}',
+  },
   'loot_undo_button': {AppLanguage.en: 'Undo', AppLanguage.fr: 'Annuler'},
   'loot_auto_read_note': {
     AppLanguage.en: 'Read on the spot when you take it.',

@@ -1,4 +1,4 @@
-// What the simulated hero healed (v1.873, for QA's heal-rule guards):
+// What the simulated hero healed (v1.874, for QA's heal-rule guards):
 // SimFightOutcome.healedBy, by source, as the heal rule (heal_rules.dart)
 // worked it out, a lost fight's too.
 import 'dart:convert';
