@@ -13,7 +13,7 @@ and what is merged. Ranked, my recommendation first.
 | 3 | One pick-one frame | 4 hand-built "one of three" views | M | med | the offers read the same everywhere |
 | 4 | The spoils chest has one list | ~110 lines | S | low | tap a drop once, in one place |
 | 5 | One dialog frame, one sheet frame | 44 dialogs, 56 sheets built by hand | M | low | same buttons, same spacing |
-| 6 | "Remove animations" honoured everywhere | 16 of 41 animated files ignore it | M | low | calmer screens, less battery |
+| 6 | "Remove animations" honoured everywhere | corrected: 4 small gaps, not 16 files (built, 1.870) | S | low | calmer screens |
 | 7 | No fractional `Opacity` in lists | 89 `Opacity(` widgets, measured first | S | low | smoother scroll on the oldest phone |
 
 ---
@@ -159,31 +159,17 @@ after   Leave the Tower?   (Cancel left, the act right, red when it destroys)
 
 ---
 
-## 6. "Remove animations" honoured everywhere
+## 6. "Remove animations" honoured everywhere (corrected, built as 1.870)
 
-**What.** 41 files create an `AnimationController`; 40 files mention
-`MediaQuery.disableAnimations`, but **16 of those 41 animated files do not** (`die_3d`,
-`rolling_die`, `pixel_portrait`, `throne_room`, `wind_banner`, `chart_weather`,
-`city_chart_view`, `prologue_opening`, `timed_choice_bar`, `station_die`,
-`pixel_vfx`, `player_stats_bar`, `clan_widgets`, `reward_card`, and two choice
-files). Ten loops (`repeat(`) run forever: wind banner, throne room, ship yard,
-sea clock, idle glyphs. Proposal: one `Motion` helper (`context.still`, and a
-`StillAware` ticker mixin that parks a controller at its rest frame) used by all
-41, so the phone's setting, and later a "Calm" switch in Settings, works the same
-on every screen.
-
-**Why.** Accessibility and battery (an idle loop on a hidden screen is stopped
-by the Navigator already, but the visible ones are not). Today a user with
-"Remove animations" gets half the game calm and half moving.
-
-**Size / risk.** M. Low: each file gets two lines; a test pumps every animated
-widget with `disableAnimations: true` and checks the controller is stopped.
-
-**Sketch.** None for the helper; the Settings switch (if wanted) is one row:
-```
-Settings > Display
-  Calm: no loops, no shakes        ( )
-```
+**Correction.** This note first said 16 of 41 animated files ignore the
+platform setting. That count was wrong: the grep missed
+`MediaQuery.maybeDisableAnimationsOf`, the `still:` parameters the parents pass
+and the `reduceMotion` fields. About 60 places read the setting, the page
+transitions among them. The real gaps were four small spots (the city chart's
+breath and zooms, the map sky's fade-in, a stat's pulse, the story cards'
+stagger), fixed in 1.870 with one 25-line helper (`lib/widgets/motion.dart`)
+and a test. The aim sweep and the timed choice's countdown are play, not
+decoration, and keep running. A "Calm" switch in Settings is not needed.
 
 ---
 
@@ -210,7 +196,7 @@ timeline says it matters, which is why it is last.
 ## Order I would do them in
 
 1 (a quick win, no look change), then 4 (small, removes duplicate logic), then 2
-(the base 3 and 5 stand on), then 3, 5, 6; 7 only after a measured frame.
+(the base 3 and 5 stand on), then 3, 5; 6 is done (and smaller than said); 7 only after a measured frame.
 Nothing here needs another session's files except 3's story offer dialog and
 4's `fight_rewards.dart` call site (Core owns the fight screens): I would send
 Core a note before touching those two.
