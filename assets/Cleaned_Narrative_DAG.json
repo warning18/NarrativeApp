@@ -646,7 +646,7 @@
   },
   "250": {
     "id": "250",
-    "description": "Alster had been made to kneel in one evening. Every door on Tallow Street was chalked with the same white sign a hand above the latch, and behind each a house emptied of its people.\n\nA proclamation was nailed to the well-head, the ink still wet: **against unlicensed drawers of every clan and of none**, and whoever sheltered them. Over the roofs the harbor’s old stone giant stood out of the smoke, fire in its lap. Above it, lower than clouds should hang, the ships: white, in the air, their sails painted with signs that burned like lamps.\n\nOne road went home, and it was not a good one: the Stone Bridge, quick and watched.\n\nOn the brick by the stairs someone had chalked a list: **jobs, names, a price for each**. The Inquisition had not found time to scrub it. I took it for something I would be coming back to.",
+    "description": "Alster had been made to kneel in one evening. Every door on Tallow Street was chalked with the same white sign a hand above the latch, and behind each a house emptied of its people.\n\nA proclamation was nailed to the well-head, the ink still wet: **against unlicensed drawers of every clan and of none**, and whoever sheltered them. Over the roofs the harbour’s old stone giant stood out of the smoke, fire in its lap. Above it, lower than clouds should hang, the ships: white, in the air, their sails painted with signs that burned like lamps.\n\nOne road went home, and it was not a good one: the Stone Bridge, quick and watched.\n\nOn the brick by the stairs someone had chalked a list: **jobs, names, a price for each**. The Inquisition had not found time to scrub it. I took it for something I would be coming back to.",
     "description_fr": "Alster avait été mise à genoux en une seule soirée. Chaque porte de la rue du Suif portait à la craie le même signe blanc, à une main au-dessus du loquet, et derrière chacune, une maison vidée de ses gens.\n\nUne proclamation était clouée à la margelle du puits, l’encre encore fraîche : **contre les traceurs sans licence de tous les clans et d’aucun**, et contre quiconque les abritait. Par-dessus les toits, le vieux géant de pierre du port se dressait hors de la fumée, du feu sur les genoux. Au-dessus, plus bas que ne flottent les nuages, les navires : blancs, dans les airs, leurs voiles peintes de signes qui brûlaient comme des lampes.\n\nUne seule route menait à la maison, et elle n’avait rien de bon : le Pont de Pierre, rapide et surveillé.\n\nSur la brique, près de l’escalier, quelqu’un avait tracé une liste à la craie : **des travaux, des noms, un prix pour chacun**. L’Inquisition n’avait pas trouvé le temps de l’effacer. Je pris cette liste pour quelque chose à laquelle je reviendrais.",
     "context_taxonomy": {
       "ui_theme": "bridge",
@@ -1708,7 +1708,7 @@
   },
   "891": {
     "id": "891",
-    "description": "The high quay stood over the harbor on stone legs. Along it, moored to iron posts, rode vessels that should not float: long hulls with no water under them, swaying a man’s height above the stones, their sails painted with signs.\n\nCrews wetted the sails with buckets. Where the water ran, the signs shone as if lit from inside.\n\nHalf the city was trying to get aboard. The first to cast off, **a narrow grey-hulled flier called the Lark**, had begun to ring her bell. A mate with a manifest counted heads at her gangway. The armory under the quay was looted to the walls; the shieldwright’s cart lay on its side. **There was time to grab one thing, and not much else**.",
+    "description": "The high quay stood over the harbour on stone legs. Along it, moored to iron posts, rode vessels that should not float: long hulls with no water under them, swaying a man’s height above the stones, their sails painted with signs.\n\nCrews wetted the sails with buckets. Where the water ran, the signs shone as if lit from inside.\n\nHalf the city was trying to get aboard. The first to cast off, **a narrow grey-hulled flier called the Lark**, had begun to ring her bell. A mate with a manifest counted heads at her gangway. The armoury under the quay was looted to the walls; the shieldwright’s cart lay on its side. **There was time to grab one thing, and not much else**.",
     "description_fr": "Le haut quai dominait le port sur des jambes de pierre. Tout du long, amarrés à des bornes de fer, se balançaient des vaisseaux qui n’auraient pas dû flotter : de longues coques sans eau dessous, à hauteur d’homme au-dessus des pierres, les voiles peintes de signes.\n\nLes équipages mouillaient les voiles à grands seaux. Là où l’eau coulait, les signes brillaient comme éclairés de l’intérieur.\n\nLa moitié de la ville essayait d’embarquer. Le premier à larguer, **un voilier volant étroit à coque grise nommé l’Alouette**, sonnait déjà sa cloche. Un second, manifeste en main, comptait les têtes à la passerelle. L’armurerie sous le quai était pillée jusqu’aux murs ; la charrette du fabricant de boucliers gisait sur le flanc. **Il y avait le temps d’attraper une chose, et guère plus**.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -1738,7 +1738,7 @@
         ]
       },
       {
-        "text": "Snatch a blade off the looted armory rack",
+        "text": "Snatch a blade off the looted armoury rack",
         "text_fr": "Arracher une lame au râtelier pillé de l’armurerie",
         "next_id": "891",
         "grantItemId": "sword_t1",
@@ -1969,7 +1969,7 @@
   },
   "960": {
     "id": "960",
-    "description": "For a breath Alster lay under us like a map someone had set fire to. Then **the guns on the harbor walls found us**. The first ball went under our keel. The second took the stern lantern and half the rail, and **fire ran along the deck where the lamp-oil spilled, toward the sail**.\n\nThe crew went for it with buckets, coats and bare hands. The sign on the sail flickered.",
+    "description": "For a breath Alster lay under us like a map someone had set fire to. Then **the guns on the harbour walls found us**. The first ball went under our keel. The second took the stern lantern and half the rail, and **fire ran along the deck where the lamp-oil spilled, toward the sail**.\n\nThe crew went for it with buckets, coats and bare hands. The sign on the sail flickered.",
     "description_fr": "Le temps d’un souffle, Alster s’étendit sous nous comme une carte à laquelle on aurait mis le feu. Puis **les canons des remparts du port nous trouvèrent**. Le premier boulet passa sous notre quille. Le deuxième emporta la lanterne de poupe et la moitié du bastingage, et **le feu courut sur le pont, là où l’huile des lampes s’était répandue, vers la voile**.\n\nL’équipage s’y jeta avec des seaux, des manteaux et ses mains nues. Le signe de la voile vacilla.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -2883,7 +2883,7 @@
   },
   "2001": {
     "id": "2001",
-    "description": "[CHAPTER 2: SALTMOUTH] **Ten days** with the salt caravan taught me one thing about the Waste: it does not end so much as wear out.\n\nOn the eleventh morning the dunes gave up. Saltmouth rose out of the haze where the desert met the sea and simply stopped. White walls on a brown headland. A harbor bristling with masts. Over the harbor mouth, a stone giant knee-deep in the water, its face worn away, as if it had waded out long ago to look at something and forgotten to come back.\n\nThere were white masks on the landward gate. Even here, at the far end of the sand, the Inquisition had arrived before me. The caravans queued in the heat to be searched wagon by wagon. The caravan master spat, and said **the gate would take all day**.",
+    "description": "[CHAPTER 2: SALTMOUTH] **Ten days** with the salt caravan taught me one thing about the Waste: it does not end so much as wear out.\n\nOn the eleventh morning the dunes gave up. Saltmouth rose out of the haze where the desert met the sea and simply stopped. White walls on a brown headland. A harbour bristling with masts. Over the harbour mouth, a stone giant knee-deep in the water, its face worn away, as if it had waded out long ago to look at something and forgotten to come back.\n\nThere were white masks on the landward gate. Even here, at the far end of the sand, the Inquisition had arrived before me. The caravans queued in the heat to be searched wagon by wagon. The caravan master spat, and said **the gate would take all day**.",
     "description_fr": "[CHAPITRE 2 : BOUCHE-DE-SEL] **Dix jours** avec la caravane de sel m’apprirent une chose sur la Désolation : elle ne finit pas, elle s’use.\n\nLe onzième matin, les dunes renoncèrent. Bouche-de-Sel surgit de la brume, là où le désert rejoignait la mer et s’arrêtait net. Des murs blancs sur un promontoire brun. Un port hérissé de mâts. Au-dessus de l’entrée, un géant de pierre dans l’eau jusqu’aux genoux, le visage effacé, comme s’il était venu là il y a longtemps pour regarder quelque chose et avait oublié de repartir.\n\nIl y avait des masques blancs à la porte de la terre. Même ici, au bout du sable, l’Inquisition m’avait devancé. Les caravanes attendaient sous la chaleur d’être fouillées chariot par chariot. Le chef de caravane cracha, et dit que **la porte allait prendre la journée**.",
     "context_taxonomy": {
       "ui_theme": "gate",
@@ -2992,7 +2992,7 @@
   },
   "2010": {
     "id": "2010",
-    "description": "Inside the walls the road ran steeply down to Saltmouth’s harbor quarter, the Smugglers’ Wharf, the caravan master called it. Fish scales and black oil. Every step was a small negotiation with gravity.\n\nSmugglers bartered in hushed tones under amber lanterns that, on principle, lit as little as possible.\n\n**A scarred quartermaster blocked the gate to the shipyards**. Vane, the porters called him, and the name went through me like a nail. But **this Vane had a ledger and a scar, not a lantern**, and he had never heard of me. He sized up my gear like a man working out how much of it he could lift before I noticed.",
+    "description": "Inside the walls the road ran steeply down to Saltmouth’s harbour quarter, the Smugglers’ Wharf, the caravan master called it. Fish scales and black oil. Every step was a small negotiation with gravity.\n\nSmugglers bartered in hushed tones under amber lanterns that, on principle, lit as little as possible.\n\n**A scarred quartermaster blocked the gate to the shipyards**. Vane, the porters called him, and the name went through me like a nail. But **this Vane had a ledger and a scar, not a lantern**, and he had never heard of me. He sized up my gear like a man working out how much of it he could lift before I noticed.",
     "description_fr": "Passé les murs, la route descendait en pente raide vers le port de Bouche-de-Sel, le Quai des Contrebandiers, comme l’appelait le chef de caravane. Écailles de poisson et huile noire. Chaque pas était une petite négociation avec la gravité.\n\nDes contrebandiers marchandaient à voix basse sous des lanternes ambrées qui, par principe, éclairaient le moins possible.\n\n**Un intendant balafré bloquait la porte des chantiers navals**. Vane, l’appelaient les porteurs, et le nom me traversa comme un clou. Mais **ce Vane-là avait un registre et une balafre, pas une lanterne**, et il n’avait jamais entendu parler de moi. Il jaugeait mon équipement en homme qui calcule ce qu’il pourra en prendre avant que je ne m’en aperçoive.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3116,7 +3116,7 @@
         ]
       },
       {
-        "text": "Take the harbor master’s job",
+        "text": "Take the harbour master’s job",
         "text_fr": "Accepter la mission du maître du port",
         "next_id": "2015_dockside",
         "unlockQuestId": "q_ch2_dockside_debts",
@@ -3150,7 +3150,7 @@
         "forcedStage": "quay"
       },
       {
-        "text": "Break up two harbor rats over spoiled cargo",
+        "text": "Break up two harbour rats over spoiled cargo",
         "text_fr": "Séparer deux rats du port sur une cargaison avariée",
         "next_id": "2015_rats",
         "triggerEnemyIds": [
@@ -3166,7 +3166,7 @@
         "forcedStage": "quay"
       },
       {
-        "text": "Take the harbor master’s bounty on the bandits",
+        "text": "Take the harbour master’s bounty on the bandits",
         "text_fr": "Prendre la prime du maître du port sur les bandits",
         "next_id": "2015_bandits",
         "triggerEnemyIds": [
@@ -3536,7 +3536,7 @@
         },
         {
           "after": 7,
-          "en": "By now the harbor market had rearranged itself around me the way water does around a pier. The trouble I had settled stayed settled, and the trouble that was left kept its distance.",
+          "en": "By now the harbour market had rearranged itself around me the way water does around a pier. The trouble I had settled stayed settled, and the trouble that was left kept its distance.",
           "fr": "Le marché du port s’était désormais réorganisé autour de moi comme l’eau autour d’un ponton. Les ennuis que j’avais réglés restaient réglés, et ceux qui restaient gardaient leurs distances."
         }
       ]
@@ -3893,7 +3893,7 @@
   },
   "2015_dockside": {
     "id": "2015_dockside",
-    "description": "The harbor master was a weathered woman with the exhaustion of someone who has spent decades solving other people’s problems. Rats fouled her stores, and she had no patience left.\n\n\"Kill them, burn them, marry them, I don’t care,\" she said. \"**Just get them out of my flour**.\" By the time she finished, I had agreed to become her solution of choice. Against my better judgment.\n\nIt would keep, I decided, until I had finished with the market. And with Vane. Before I left the stores, a man with soot to the elbows, and no business on that side of the wall, caught my sleeve.\n\n\"Rats are the least of what comes up through these floors,\" he said. \"**Bring me iron ore**. The overseers and the Inquisition’s soldiers carry more of it than they admit. My forge is under the sea wall, and I will cut you a fair price on steel.\" He was gone before I could ask whose forge it was.",
+    "description": "The harbour master was a weathered woman with the exhaustion of someone who has spent decades solving other people’s problems. Rats fouled her stores, and she had no patience left.\n\n\"Kill them, burn them, marry them, I don’t care,\" she said. \"**Just get them out of my flour**.\" By the time she finished, I had agreed to become her solution of choice. Against my better judgment.\n\nIt would keep, I decided, until I had finished with the market. And with Vane. Before I left the stores, a man with soot to the elbows, and no business on that side of the wall, caught my sleeve.\n\n\"Rats are the least of what comes up through these floors,\" he said. \"**Bring me iron ore**. The overseers and the Inquisition’s soldiers carry more of it than they admit. My forge is under the sea wall, and I will cut you a fair price on steel.\" He was gone before I could ask whose forge it was.",
     "description_fr": "La maîtresse du port était une femme éprouvée, avec l’épuisement de quelqu’un qui résout depuis des décennies les problèmes d’autrui. Des rats infestaient ses réserves, et elle n’avait plus de patience.\n\n« Tuez-les, brûlez-les, épousez-les, ça m’est égal, dit-elle. **Sortez-les de ma farine, c’est tout**. » Quand elle eut fini, j’avais accepté de devenir sa solution de choix. Contre mon meilleur jugement.\n\nCela attendrait, décidai-je, que j’aie fini avec le marché. Et avec Vane. Avant que je quitte les réserves, un homme noirci de suie jusqu’aux coudes, sans rien à faire de ce côté du mur, m’attrapa par la manche.\n\n« Les rats sont le moindre de ce qui remonte par ces planchers, dit-il. **Rapportez-moi du minerai de fer**. Les contremaîtres et les soldats de l’Inquisition en portent plus qu’ils ne l’avouent. Ma forge est sous la digue, et je vous ferai un bon prix sur l’acier. » Il avait disparu avant que je demande à qui elle était.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3917,7 +3917,7 @@
   },
   "2015_smuggler": {
     "id": "2015_smuggler",
-    "description": "The smuggler captain fought like a man who had expected the meeting to end differently. It is the usual fate of people who lurk in market alleys sizing up strangers’ purses.\n\nHe carried less coin than his confidence suggested. But **the manifest tucked into his coat** was worth far more: a tidy record of what was really moving through this harbor, and for whom. Vane, I suspected, would pay well to know.",
+    "description": "The smuggler captain fought like a man who had expected the meeting to end differently. It is the usual fate of people who lurk in market alleys sizing up strangers’ purses.\n\nHe carried less coin than his confidence suggested. But **the manifest tucked into his coat** was worth far more: a tidy record of what was really moving through this harbour, and for whom. Vane, I suspected, would pay well to know.",
     "description_fr": "Le capitaine contrebandier se battit comme un homme qui s’attendait à ce que la rencontre finisse autrement. C’est le sort habituel de ceux qui rôdent dans les ruelles du marché en jaugeant les bourses des inconnus.\n\nIl portait moins d’or que son assurance ne le laissait croire. Mais **le manifeste glissé dans son manteau** valait bien davantage : un registre soigné de ce qui transitait réellement par ce port, et pour le compte de qui. Vane, soupçonnai-je, paierait cher pour le savoir.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -3959,7 +3959,7 @@
   },
   "2015_rats": {
     "id": "2015_rats",
-    "description": "Two harbor rats, larger and far more committed to violence than their name suggested, had claimed a crate of spoiled fish and would not discuss it.\n\nI settled it the way most disagreements on this wharf get settled. Both left less interested in cargo disputes. The crate remained thoroughly spoiled.",
+    "description": "Two harbour rats, larger and far more committed to violence than their name suggested, had claimed a crate of spoiled fish and would not discuss it.\n\nI settled it the way most disagreements on this wharf get settled. Both left less interested in cargo disputes. The crate remained thoroughly spoiled.",
     "description_fr": "Deux rats des quais, plus gros et bien plus enclins à la violence que leur nom ne le laissait croire, avaient revendiqué une caisse de poisson avarié et refusaient d’en discuter.\n\nJe réglai l’affaire comme se règlent la plupart des différends sur ce quai. Les deux repartirent moins intéressés par les litiges de cargaison. La caisse resta pleinement avariée.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -4160,7 +4160,7 @@
   },
   "2021": {
     "id": "2021",
-    "description": "I struck from the shadows, where I prefer to do business, and found his armor tougher than his manners had suggested.\n\nBelow the gate the harbor market was loud enough to lose a man in. At its far end a scarred quartermaster held the gate to the shipyards as if it were his by birthright. Vane, by the sound of the porters cursing him, **and not, thank every saint, the other one**.\n\nI wiped the blade, straightened my coat, and went down to become a customer.",
+    "description": "I struck from the shadows, where I prefer to do business, and found his armour tougher than his manners had suggested.\n\nBelow the gate the harbour market was loud enough to lose a man in. At its far end a scarred quartermaster held the gate to the shipyards as if it were his by birthright. Vane, by the sound of the porters cursing him, **and not, thank every saint, the other one**.\n\nI wiped the blade, straightened my coat, and went down to become a customer.",
     "description_fr": "Je frappai depuis l’ombre, où je préfère faire mes affaires, et trouvai l’armure plus solide que ses manières ne l’annonçaient.\n\nSous la porte, le marché du port était assez bruyant pour y perdre un homme. Tout au bout, un intendant balafré tenait la porte des chantiers navals comme si elle lui revenait de naissance. Vane, à en juger par les jurons des porteurs, **et pas, grâce à tous les saints, l’autre**.\n\nJ’essuyai la lame, rajustai mon manteau et descendis me faire client.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -4295,7 +4295,7 @@
     },
     "choices": [
       {
-        "text": "Climb up into the harbor market",
+        "text": "Climb up into the harbour market",
         "text_fr": "Grimper jusqu’au marché du port",
         "next_id": "2015",
         "healAmount": -2,
@@ -4552,7 +4552,7 @@
   },
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
-    "description": "The Rusty Eel sat lower in the water than she had on the slip, but evenly now. Her hull was sound, her sail patched in a canvas that didn’t quite match. Honest work, by hands that hadn’t asked for thanks and hadn’t got any from me, until now.\n\n**She would carry twenty in comfort, and a hundred only if the stores went over the side** and a skiff was towed astern for the rest. **The wharf held a hundred**: Tern Row’s families with their paper lanterns, the harbor’s last dockhands, a cleric with three orphans and no boat. They watched the Eel the way the drowning watch a plank.\n\n**The Inquisition’s drums were already at the landward gate**. Whatever I decided, I would decide it for people who would not get another chance to be decided for.",
+    "description": "The Rusty Eel sat lower in the water than she had on the slip, but evenly now. Her hull was sound, her sail patched in a canvas that didn’t quite match. Honest work, by hands that hadn’t asked for thanks and hadn’t got any from me, until now.\n\n**She would carry twenty in comfort, and a hundred only if the stores went over the side** and a skiff was towed astern for the rest. **The wharf held a hundred**: Tern Row’s families with their paper lanterns, the harbour’s last dockhands, a cleric with three orphans and no boat. They watched the Eel the way the drowning watch a plank.\n\n**The Inquisition’s drums were already at the landward gate**. Whatever I decided, I would decide it for people who would not get another chance to be decided for.",
     "description_fr": "Le Rusty Eel s’enfonçait plus bas dans l’eau qu’il ne reposait sur sa cale, mais d’aplomb désormais. La coque saine, la voile rapiécée d’une toile à peine assortie. Un travail honnête, fait par des mains qui n’avaient pas demandé de merci et n’en avaient pas reçu de moi, jusqu’à maintenant.\n\n**Il en porterait vingt à l’aise, et cent seulement si les réserves passaient par-dessus bord** et qu’on remorquait une yole à l’arrière pour le reste. **Le quai en comptait cent** : les familles de Tern Row avec leurs lanternes de papier, les derniers dockers du port, un clerc avec trois orphelins et pas de bateau. Ils regardaient l’Eel comme les noyés regardent une planche.\n\n**Les tambours de l’Inquisition étaient déjà à la porte de la terre**. Quoi que je décide, je déciderais pour des gens qui n’auraient pas d’autre occasion qu’on décide pour eux.",
     "context_taxonomy": {
       "ui_theme": "gate",
@@ -5538,7 +5538,7 @@
   },
   "3005_stalker": {
     "id": "3005_stalker",
-    "description": "The stalker fought as its name promised: patient, low, and uninterested in giving me a clean angle until it had no choice. Even the cultists gave these things a wide berth, which I now understood better than I wanted to.\n\nIt went down eventually. The ashes took one more dying thing without comment. I made my way back into the Quarter, nerves more frayed than my armor.",
+    "description": "The stalker fought as its name promised: patient, low, and uninterested in giving me a clean angle until it had no choice. Even the cultists gave these things a wide berth, which I now understood better than I wanted to.\n\nIt went down eventually. The ashes took one more dying thing without comment. I made my way back into the Quarter, nerves more frayed than my armour.",
     "description_fr": "Le rôdeur combattit comme son nom le promettait : patient, bas, indifférent à m’offrir un angle net tant qu’il lui restait un autre choix. Même les cultistes évitaient ces créatures, ce que je comprenais désormais mieux que je ne l’aurais voulu.\n\nIl finit par tomber. Les cendres accueillirent une chose de plus mourant sans commentaire. Je regagnai le Quartier, les nerfs plus éprouvés que mon armure.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -5790,7 +5790,7 @@
   },
   "4999": {
     "id": "4999",
-    "description": "The High Warden fell, and the Crusade’s official story fell with him. The truth was uglier and more mundane than any rumor, as truth tends to be: the Crusade had not sailed to save anyone.\n\n**It had sailed for the Shroud**. The white standard the Warden carried into every burning was stitched to his own back, cloth into skin, in the fashion of the Spire. It was **not white at all under the dye**. It was grey.\n\nA piece of the thing I carried. Three chapters in, I had survived all of them, a fact I meant to enjoy while circumstances allowed. Why the Crusade wanted grey cloth enough to burn a city for it, I did not yet know. I would.",
+    "description": "The High Warden fell, and the Crusade’s official story fell with him. The truth was uglier and more mundane than any rumour, as truth tends to be: the Crusade had not sailed to save anyone.\n\n**It had sailed for the Shroud**. The white standard the Warden carried into every burning was stitched to his own back, cloth into skin, in the fashion of the Spire. It was **not white at all under the dye**. It was grey.\n\nA piece of the thing I carried. Three chapters in, I had survived all of them, a fact I meant to enjoy while circumstances allowed. Why the Crusade wanted grey cloth enough to burn a city for it, I did not yet know. I would.",
     "description_fr": "Le Haut Gardien tomba, et le récit officiel de la Croisade avec lui. La vérité était plus laide et plus banale que toutes les rumeurs, comme le sont souvent les vérités : la Croisade n’avait pas fait voile pour sauver qui que ce soit.\n\n**Elle avait fait voile pour le Linceul**. L’étendard blanc que le Gardien portait dans chaque incendie était cousu à son propre dos, toile dans la peau, à la manière de la Flèche. Il n’était **pas blanc du tout sous la teinture**. Il était gris.\n\nC’était un morceau de la chose que je portais. Trois chapitres, et j’y avais survécu : un fait que je comptais savourer aussi longtemps que les circonstances le permettraient. Pourquoi la Croisade voulait de la toile grise au point de brûler une ville, je l’ignorais encore. Je le saurais.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
@@ -5844,7 +5844,7 @@
   },
   "5003": {
     "id": "5003",
-    "description": "The passage opened into a chamber carved smooth by hands with centuries to spare. Robed figures knelt in a loose circle around a black altar, the Court’s ash-ink spiralling up their bared arms and glowing as they chanted: power worn the inked way, under the skin, where the Spire could not confiscate it.\n\nAt the circle’s center hummed something my body recognized before my mind caught up. It was **the twin of the Grey Shroud**, restless in its cradle of stone, no more at peace with its situation than I was with mine. Nobody had looked up yet.\n\nExperience, mine specifically, suggested that grace would not last.",
+    "description": "The passage opened into a chamber carved smooth by hands with centuries to spare. Robed figures knelt in a loose circle around a black altar, the Court’s ash-ink spiralling up their bared arms and glowing as they chanted: power worn the inked way, under the skin, where the Spire could not confiscate it.\n\nAt the circle’s centre hummed something my body recognized before my mind caught up. It was **the twin of the Grey Shroud**, restless in its cradle of stone, no more at peace with its situation than I was with mine. Nobody had looked up yet.\n\nExperience, mine specifically, suggested that grace would not last.",
     "description_fr": "Le passage débouchait sur une chambre polie par des mains qui avaient eu des siècles devant elles. Des silhouettes encapuchonnées s’agenouillaient en cercle lâche autour d’un autel noir, l’encre de cendre de la Cour spiralant sur leurs bras nus et luisant au rythme du chant : un pouvoir porté à la manière des encrés, sous la peau, là où la Flèche ne pouvait le confisquer.\n\nAu centre du cercle vibrait quelque chose que mon corps reconnut avant que mon esprit ne le rattrape. C’était **le jumeau du Linceul Gris**, agité dans son berceau de pierre, pas plus en paix avec sa situation que moi avec la mienne. Personne n’avait encore levé les yeux.\n\nL’expérience, la mienne en particulier, suggérait que cette grâce ne durerait pas.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
@@ -6949,7 +6949,7 @@
   },
   "3005_grosh": {
     "id": "3005_grosh",
-    "description": "He was doing the arithmetic mercenaries do on strangers: armor, boots, the number of scars that suggested I had survived things rather than merely witnessed them. Whatever total he reached cleared his bar. He did not bother introducing himself before naming a price.",
+    "description": "He was doing the arithmetic mercenaries do on strangers: armour, boots, the number of scars that suggested I had survived things rather than merely witnessed them. Whatever total he reached cleared his bar. He did not bother introducing himself before naming a price.",
     "description_fr": "Il faisait le calcul que font les mercenaires sur les inconnus : l’armure, les bottes, le nombre de cicatrices suggérant que j’avais survécu à des choses plutôt que simplement assisté à elles. Quel que fût son total, il franchit son seuil. Il ne prit pas la peine de se présenter avant d’annoncer un prix.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
@@ -7107,7 +7107,7 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbor master’s post",
+        "text": "Head back toward the harbour master’s post",
         "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "goldMod": 35,
@@ -7142,7 +7142,7 @@
   },
   "2015_bandits": {
     "id": "2015_bandits",
-    "description": "The bounty was pinned to the harbor master’s door in the hand of someone who had written many: **two men who had burned a season’s worth of shipping manifests** and then, with the poor judgment of the recently successful, stayed to drink the proceeds.\n\nI found them exactly where the notice said, which is more than most notices manage. They came at me together, with the confidence of men who had never been hunted. It did not take long.\n\nWhat was left of the manifests was in the taller one’s coat, charred at the edges and readable in the middle. A fair description of most things in this harbor.",
+    "description": "The bounty was pinned to the harbour master’s door in the hand of someone who had written many: **two men who had burned a season’s worth of shipping manifests** and then, with the poor judgment of the recently successful, stayed to drink the proceeds.\n\nI found them exactly where the notice said, which is more than most notices manage. They came at me together, with the confidence of men who had never been hunted. It did not take long.\n\nWhat was left of the manifests was in the taller one’s coat, charred at the edges and readable in the middle. A fair description of most things in this harbour.",
     "description_fr": "La prime était clouée à la porte du maître du port, de la main de quelqu’un qui en avait écrit beaucoup : **deux hommes qui avaient brûlé une saison entière de manifestes d’expédition** puis, avec le mauvais jugement des gens fraîchement prospères, étaient restés en boire le produit.\n\nJe les trouvai exactement où l’avis l’annonçait, ce que peu d’avis réussissent. Ils vinrent à moi ensemble, avec l’assurance d’hommes qu’on n’avait jamais traqués. Ce ne fut pas long.\n\nCe qui restait des manifestes était dans le manteau du plus grand, calciné sur les bords et lisible au milieu. Une description honnête de la plupart des choses dans ce port.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -9617,7 +9617,7 @@
   },
   "7002_rest": {
     "id": "7002_rest",
-    "description": "The fire was slow to catch on the grey sand and burned a color I had no name for. I slept anyway. **Whatever waited beyond the tear could wait one more night**; it had, by its own account, been waiting a very long time already.",
+    "description": "The fire was slow to catch on the grey sand and burned a colour I had no name for. I slept anyway. **Whatever waited beyond the tear could wait one more night**; it had, by its own account, been waiting a very long time already.",
     "description_fr": "Le feu mit longtemps à prendre sur le sable gris et brûla d’une couleur pour laquelle je n’avais pas de nom. Je dormis quand même. **Ce qui attendait au-delà de la déchirure pouvait attendre une nuit de plus** ; de son propre aveu, cela attendait déjà depuis très longtemps.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
@@ -10294,7 +10294,7 @@
       },
       {
         "flag": "refugees_left",
-        "en": "The first tear the ledger named was in a harbor town. I told myself that was a coincidence, and sailed for it anyway.",
+        "en": "The first tear the ledger named was in a harbour town. I told myself that was a coincidence, and sailed for it anyway.",
         "fr": "La première déchirure que nommait le registre était dans une ville portuaire. Je me dis que c’était une coïncidence, et fis voile vers elle quand même."
       },
       {
@@ -11335,7 +11335,7 @@
       },
       {
         "flag": "house_harbor",
-        "en": "The harbor had its quay past the wall now. The shipwright was under the Eel before my boots were off, not liking what her planks said.",
+        "en": "The harbour had its quay past the wall now. The shipwright was under the Eel before my boots were off, not liking what her planks said.",
         "fr": "Le port avait son quai au-delà du mur. Le charpentier de marine était sous l’Eel avant que j’aie ôté mes bottes, et n’aimait pas ce que disaient les bordages."
       },
       {
@@ -13507,7 +13507,7 @@
   },
   "5100_headman": {
     "id": "5100_headman",
-    "description": "The headman smoked weed that was not tobacco and told me, unasked, how the false lamps worked.\n\n“**One on the point, one on the rocks**,” he said. “A ship in fog reads a harbor mouth where there’s none. The sea does the rest. We only pick up after it.” The Court had paid for the first lamps.\n\n**The Court took its share of what came ashore in people, not cargo**. The village had never asked what for.",
+    "description": "The headman smoked weed that was not tobacco and told me, unasked, how the false lamps worked.\n\n“**One on the point, one on the rocks**,” he said. “A ship in fog reads a harbour mouth where there’s none. The sea does the rest. We only pick up after it.” The Court had paid for the first lamps.\n\n**The Court took its share of what came ashore in people, not cargo**. The village had never asked what for.",
     "description_fr": "Le chef du village fumait une herbe qui n’était pas du tabac et m’expliqua, sans que je le demande, comment marchaient les fausses lampes.\n\n« **Une sur la pointe, une sur les rochers**, dit-il. Un navire dans le brouillard lit une entrée de port là où il n’y en a pas. La mer fait le reste. Nous, on ramasse derrière elle. » La Cour avait payé les premières lampes.\n\n**La Cour prenait sa part de ce qui s’échouait en gens, pas en cargaison**. Le village n’avait jamais demandé pourquoi.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -15384,7 +15384,7 @@
   },
   "7100": {
     "id": "7100",
-    "description": "The White Anchorage had been built out of the White Fleet by the men the White Fleet had brought: hulls hauled up the sand and roofed with their own sails, a chapel made from a flagship’s stern, a harbor wall of anchors. **The crusaders who had sailed to burn my city had washed up here instead**, the ones who lived, and had had a year to think about it.\n\nSome had become sailors again. Some had become something closer to monks. All of them knew what the grey cloth on my back was, and **none of them would look at it for long**.",
+    "description": "The White Anchorage had been built out of the White Fleet by the men the White Fleet had brought: hulls hauled up the sand and roofed with their own sails, a chapel made from a flagship’s stern, a harbour wall of anchors. **The crusaders who had sailed to burn my city had washed up here instead**, the ones who lived, and had had a year to think about it.\n\nSome had become sailors again. Some had become something closer to monks. All of them knew what the grey cloth on my back was, and **none of them would look at it for long**.",
     "description_fr": "Le Mouillage Blanc avait été bâti avec la Flotte Blanche par les hommes que la Flotte Blanche avait amenés : des coques hissées sur le sable et couvertes de leurs propres voiles, une chapelle faite de la poupe d’un vaisseau amiral, un mur de port en ancres. **Les croisés partis brûler ma ville s’étaient échoués ici à la place**, ceux qui avaient survécu, et avaient eu un an pour y réfléchir.\n\nCertains étaient redevenus marins. D’autres étaient devenus quelque chose de plus proche du moine. Tous savaient ce qu’était l’étoffe grise sur mon dos, et **aucun ne la regardait longtemps**.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -16052,7 +16052,7 @@
   },
   "7100_company": {
     "id": "7100_company",
-    "description": "The last company still at war had not heard that the Crusade was over, or had called it a lie. They kept the old watch on the harbor wall and challenged anyone in grey. **They died challenging**. The Anchorage buried them with the fleet and did not ask me to dig, a kindness I noticed.",
+    "description": "The last company still at war had not heard that the Crusade was over, or had called it a lie. They kept the old watch on the harbour wall and challenged anyone in grey. **They died challenging**. The Anchorage buried them with the fleet and did not ask me to dig, a kindness I noticed.",
     "description_fr": "La dernière compagnie encore en guerre n’avait pas appris que la Croisade était finie, ou avait traité la nouvelle de mensonge. Elle montait toujours la vieille garde sur le mur du port et défiait quiconque portait du gris. **Ils moururent en défiant**. Le Mouillage les enterra avec la flotte et ne me demanda pas de creuser, une délicatesse que je remarquai.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -16062,7 +16062,7 @@
     "location": "white_anchorage_quay",
     "choices": [
       {
-        "text": "Walk back along the harbor wall",
+        "text": "Walk back along the harbour wall",
         "text_fr": "Revenir le long du mur du port",
         "next_id": "7100",
         "goldMod": 50,
@@ -16196,7 +16196,7 @@
   },
   "7100_cutter": {
     "id": "7100_cutter",
-    "description": "The cutter went down off the Anchorage’s harbor wall of anchors, and **the town came out to watch it go the way a town watches its last bad habit leave**. The helmsman stood beside me on the mole, hat in hand. He did not say whether he was sorry.",
+    "description": "The cutter went down off the Anchorage’s harbour wall of anchors, and **the town came out to watch it go the way a town watches its last bad habit leave**. The helmsman stood beside me on the mole, hat in hand. He did not say whether he was sorry.",
     "description_fr": "Le cotre sombra au large du mur d’ancres du Mouillage, et **la ville sortit le regarder partir comme une ville regarde s’en aller sa dernière mauvaise habitude**. Le timonier se tenait à côté de moi sur le môle, son chapeau à la main. Il ne dit pas s’il le regrettait.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -16776,7 +16776,7 @@
   },
   "7200_elder": {
     "id": "7200_elder",
-    "description": "The eldest was the greyest of them, and remembered everything. The tear had taken their coast in one breath, one night, she said: the harbor, the church, the dead in the churchyard and the names on their stones. **The living it had kept. The names it had not given back**.\n\n**She could not remember her own daughter’s name**, and it was the only thing she asked of anyone who came.\n\n“I call her little one,” she said. “It is the only name I have left for her, and she would have hated it.”",
+    "description": "The eldest was the greyest of them, and remembered everything. The tear had taken their coast in one breath, one night, she said: the harbour, the church, the dead in the churchyard and the names on their stones. **The living it had kept. The names it had not given back**.\n\n**She could not remember her own daughter’s name**, and it was the only thing she asked of anyone who came.\n\n“I call her little one,” she said. “It is the only name I have left for her, and she would have hated it.”",
     "description_fr": "L’aînée était la plus grise d’entre eux, et se souvenait de tout. La déchirure avait pris leur côte d’un seul souffle, une nuit, dit-elle : le port, l’église, les morts du cimetière et les noms sur leurs pierres. **Les vivants, elle les avait gardés. Les noms, elle ne les avait pas rendus**.\n\n**Elle ne se rappelait pas le nom de sa propre fille**, et c’était la seule chose qu’elle demandait à quiconque venait.\n\n« Je l’appelle ma petite, dit-elle. C’est le seul nom qui me reste pour elle, et elle aurait détesté ça. »",
     "context_taxonomy": {
       "ui_theme": "slums",
@@ -17978,7 +17978,7 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbor master’s post",
+        "text": "Head back toward the harbour master’s post",
         "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
@@ -17997,7 +17997,7 @@
   },
   "2015_sable_caught": {
     "id": "2015_sable_caught",
-    "description": "His hand closed on my wrist before mine had closed on anything. He was faster than he looked, and far less drunk. It cost me **twenty gold** and a good deal of dignity to walk away without the harbor watch hearing of it.\n\nSable had watched from across the wharf. When I came back she was laughing. \"Cards, then,\" she said. \"The honest way. Heaven help us.\"",
+    "description": "His hand closed on my wrist before mine had closed on anything. He was faster than he looked, and far less drunk. It cost me **twenty gold** and a good deal of dignity to walk away without the harbour watch hearing of it.\n\nSable had watched from across the wharf. When I came back she was laughing. \"Cards, then,\" she said. \"The honest way. Heaven help us.\"",
     "description_fr": "Sa main se referma sur mon poignet avant que la mienne se soit refermée sur quoi que ce soit. Il était plus rapide qu’il n’en avait l’air, et bien moins ivre. Il m’en coûta **vingt pièces d’or** et une bonne part de ma dignité pour repartir sans que la garde du port en entende parler.\n\nSable avait tout vu depuis l’autre bout du quai. À mon retour, elle riait. « Les cartes, alors, dit-elle. À la loyale. Que le ciel nous vienne en aide. »",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -18007,7 +18007,7 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbor master’s post",
+        "text": "Head back toward the harbour master’s post",
         "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
@@ -18029,7 +18029,7 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbor master’s post",
+        "text": "Head back toward the harbour master’s post",
         "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
@@ -18051,7 +18051,7 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbor master’s post",
+        "text": "Head back toward the harbour master’s post",
         "text_fr": "Revenir vers le poste du maître du port",
         "next_id": "2015",
         "flagsToAdd": [
@@ -18172,7 +18172,7 @@
   },
   "2015_vess": {
     "id": "2015_vess",
-    "description": "She had been two streets behind me since the harbor gate. When I stopped and waited, she stopped too, then came the rest of the way as if the distance had been a question and my waiting the answer.\n\nUp close I felt it before I saw it: a thread of the same cold, patient wrongness that hummed in the Bundle on my back, worn on her like a garment she had stopped trying to take off.\n\n\"You carry a piece of it,\" she said, looking at the Bundle and not at me. \"**It remembers everyone who carries it**. I would rather you heard what that means from me than from it.\"",
+    "description": "She had been two streets behind me since the harbour gate. When I stopped and waited, she stopped too, then came the rest of the way as if the distance had been a question and my waiting the answer.\n\nUp close I felt it before I saw it: a thread of the same cold, patient wrongness that hummed in the Bundle on my back, worn on her like a garment she had stopped trying to take off.\n\n\"You carry a piece of it,\" she said, looking at the Bundle and not at me. \"**It remembers everyone who carries it**. I would rather you heard what that means from me than from it.\"",
     "description_fr": "Elle me suivait à deux rues depuis la porte du port. Quand je m’arrêtai pour l’attendre, elle s’arrêta aussi, puis franchit le reste de la distance comme si celle-ci avait été une question et mon attente la réponse.\n\nDe près, je le sentis avant de le voir : un fil de cette même étrangeté froide et patiente qui bourdonnait dans le Balluchon sur mon dos, portée comme un vêtement qu’elle avait cessé d’essayer d’ôter.\n\n« Vous en portez un morceau, dit-elle en regardant le Balluchon et non moi. **Il se souvient de tous ceux qui le portent**. Je préfère que vous appreniez ce que cela signifie de ma bouche plutôt que de la sienne. »",
     "context_taxonomy": {
       "ui_theme": "docks",

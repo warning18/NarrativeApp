@@ -202,7 +202,7 @@
     "kind": "beast"
   },
   "harbor_rat": {
-    "enemyName": "Harbor Rat",
+    "enemyName": "Harbour Rat",
     "maxHealth": 12,
     "damage": 2,
     "guile": 0,
@@ -245,8 +245,8 @@
     "description": "A quay rat, bold with hunger and carrying the plague in its fur.",
     "description_fr": "Un rat des quais, rendu hardi par la faim, la peste dans le pelage.",
     "encounterText": [
-      "A split sack of meal has spilled across the way, and a harbor rat is already fat on it. You are standing in its supper, and it does not intend to go around you.",
-      "Hunger makes the harbor rats bold. This one smells the food in your pack before it sees you, and comes on as if you were only the wrapping."
+      "A split sack of meal has spilled across the way, and a harbour rat is already fat on it. You are standing in its supper, and it does not intend to go around you.",
+      "Hunger makes the harbour rats bold. This one smells the food in your pack before it sees you, and comes on as if you were only the wrapping."
     ],
     "encounterText_fr": [
       "Un sac de farine éventré s’est répandu en travers du chemin, et un rat des quais s’en gave déjà. Vous marchez dans son souper, et il n’a pas l’intention de vous contourner.",
@@ -3395,17 +3395,17 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A knight of the Hollow Court who followed the Sovereign beyond the Tear and was unmade there: armor that keeps the shape of a man, held together by nothing at all.",
+    "description": "A knight of the Hollow Court who followed the Sovereign beyond the Tear and was unmade there: armour that keeps the shape of a man, held together by nothing at all.",
     "description_fr": "Un chevalier de la Cour Creuse qui a suivi le Souverain au-delà de la Déchirure et y a été défait : une armure qui garde la forme d’un homme, tenue par rien du tout.",
     "encounterText": [
-      "A suit of armor stands across the path with nothing inside it, visor open on the dark. When you step closer it draws its sword: it swore to let no one reach the Sovereign, and it has forgotten everything else.",
+      "A suit of armour stands across the path with nothing inside it, visor open on the dark. When you step closer it draws its sword: it swore to let no one reach the Sovereign, and it has forgotten everything else.",
       "The unmade knight has smelled the Shroud on you. It remembers being whole, and it believes that wrapped in what you carry, it would be whole again."
     ],
     "encounterText_fr": [
       "Une armure se dresse en travers du chemin, vide, la visière ouverte sur le noir. Quand vous approchez, elle tire l’épée : elle a juré de ne laisser personne atteindre le Souverain, et elle a oublié tout le reste.",
       "Le chevalier défait a senti le Linceul sur vous. Il se souvient d’avoir été entier, et il croit qu’enveloppé de ce que vous portez, il le redeviendrait."
     ],
-    "packText": "Empty armor rises from the ash in a broken line, the last guard of a court that no longer exists. They close ranks between you and the Sovereign, as they swore to.",
+    "packText": "Empty armour rises from the ash in a broken line, the last guard of a court that no longer exists. They close ranks between you and the Sovereign, as they swore to.",
     "packText_fr": "Des armures vides se relèvent de la cendre en une ligne brisée, dernière garde d’une cour qui n’existe plus. Elles serrent les rangs entre vous et le Souverain, comme elles l’ont juré.",
     "biomes": [
       "tear"

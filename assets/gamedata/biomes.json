@@ -324,13 +324,13 @@
       {
         "name": "Stone pine",
         "name_fr": "Pin parasol",
-        "note": "Leans out over the headland: the only shade above the harbor.",
+        "note": "Leans out over the headland: the only shade above the harbour.",
         "note_fr": "Penché au-dessus du promontoire : la seule ombre qui domine le port."
       },
       {
         "name": "Caper bush",
         "name_fr": "Câprier",
-        "note": "Roots in the harbor wall itself; the stone giant’s knees are green with it.",
+        "note": "Roots in the harbour wall itself; the stone giant’s knees are green with it.",
         "note_fr": "S’enracine dans le mur du port ; les genoux du géant de pierre en sont verts."
       }
     ],
@@ -401,7 +401,7 @@
       {
         "name": "Wake gull",
         "name_fr": "Goéland de sillage",
-        "note": "Follows every hull out of harbor and turns back at the first squall.",
+        "note": "Follows every hull out of harbour and turns back at the first squall.",
         "note_fr": "Suit chaque coque hors du port et rebrousse chemin au premier grain."
       },
       {
