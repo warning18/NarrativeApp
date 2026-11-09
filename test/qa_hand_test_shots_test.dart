@@ -860,7 +860,7 @@ void main() {
     });
 
     // ---- the village hubs after #841: do their ways show on the map ----
-    await section('village-hubs', () async {
+    await section('v1863-village-hubs', () async {
       for (final (id, name) in const <(String, String)>[
         ('1200', 'white-wells'),
         ('6100', 'rimewell'),
@@ -895,6 +895,89 @@ void main() {
             'cardsBadge=${row['cards']} choices=${row['choices']} '
             'surface=${row['surface']}');
       }
+    });
+
+    // ---- hand test of 1.863: the Skills tree and Mending Light's fire ----
+    await section('v1863-skills-tree', () async {
+      await newSession({'level': 12, 'professionId': 'cleric'});
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+      nav.push(MaterialPageRoute<void>(builder: (_) => const SkillsScreen()));
+      await settle();
+      await tester.pump(const Duration(seconds: 1));
+      final tabs = find.byType(Tab);
+      final names = [
+        for (final e in tabs.evaluate())
+          find
+              .descendant(
+                  of: find.byWidget(e.widget), matching: find.byType(Text))
+              .evaluate()
+              .map((t) => (t.widget as Text).data)
+              .join('/'),
+      ];
+      debugPrint('SKILLTABS $names');
+      await tester.tap(tabs.first);
+      await settle();
+      await tester.pump(const Duration(seconds: 1));
+      await shot('skills-tree-en-412');
+      await tester.runAsync(() => container
+          .read(appLanguageProvider.notifier)
+          .setLanguage(AppLanguage.fr));
+      tester.view.physicalSize = const Size(320, 860);
+      await settle();
+      await tester.pump(const Duration(seconds: 1));
+      await shot('skills-tree-fr-320');
+      tester.view.physicalSize = const Size(412, 860);
+      await tester.runAsync(() => container
+          .read(appLanguageProvider.notifier)
+          .setLanguage(AppLanguage.en));
+      await settle();
+      nav.popUntil(isGameRoute);
+      await tester.pump(const Duration(seconds: 1));
+    });
+    await section('v1863-watchfire', () async {
+      await newSession({
+        'level': 9,
+        'professionId': 'cleric',
+        'ownedDiceIds': ['starter_die'],
+        'equippedDiceId': 'starter_die',
+        'maxHealth': 60,
+        'currentHealth': 60,
+        'wisdom': 6,
+        'mana': 10,
+        'knownSpellIds': ['spell_mending_light'],
+      });
+      final enemy = {
+        ...fh.gamedata('enemies.json')['slum_thug'] as Map<String, dynamic>,
+        'skillMoves': <dynamic>[],
+        'maxHealth': 900,
+      };
+      tester
+          .state<NavigatorState>(find.byType(Navigator).first)
+          .push(MaterialPageRoute<bool>(
+              builder: (_) => FightScreen(
+                    enemyId: 'slum_thug',
+                    enemy: enemy,
+                    modifiers: const EncounterModifiers(
+                        forcedCondition: BattlefieldCondition.highGround,
+                        forcedGoal: FightGoal.slay),
+                  )));
+      await fightSettle(tester);
+      await tester.tap(find.text('Enter Battle'));
+      await fightSettle(tester);
+      await shot('watchfire-0-before-cast');
+      await tester.tap(find.text('Mending Light'));
+      await fightSettle(tester);
+      await tester.pump(const Duration(milliseconds: 700));
+      await shot('watchfire-1-after-one-cast');
+      await tester.tap(find.text('Mending Light'));
+      await fightSettle(tester);
+      await tester.pump(const Duration(milliseconds: 700));
+      await shot('watchfire-2-after-two-casts');
+      final icon = find.byWidgetPredicate((w) =>
+          w.key != null && '${w.key}'.contains('fight_effect_watchfire_'));
+      debugPrint('WATCHFIRE icon=${icon.evaluate().length} texts='
+          '${find.descendant(of: icon.first, matching: find.byType(Text)).evaluate().map((e) => (e.widget as Text).data).toList()}');
+      await clear();
     });
 
     // ---- the keys of the other tabs, to find what to tap ----
