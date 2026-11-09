@@ -5,7 +5,9 @@
 
 import 'dart:math';
 
+import '../../combat/fight_numbers.dart' show potionHealAmount;
 import '../../combat/stat_rules.dart' show levelStatPicks;
+import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
@@ -321,12 +323,15 @@ TowerFloor towerFloorOf(TowerRun run, TowerData data) =>
 /// (a boon, a clan's oath, or nothing), or, on the top floor, the run is
 /// won. [potionsLeft] and [antidotesLeft] are what the fight left of what
 /// it carried (the flask's potions are drunk first: what the bag held is
-/// gone only past them); null, the bag as it was.
+/// gone only past them); null, the bag as it was. [maxHealthBefore], when
+/// given, is the hero's max health as the fight began (the bot has built
+/// it: towerHeroOf replays the whole run).
 TowerRun towerAfterFight(TowerRun run, TowerData data,
     {required bool won,
     required int healthLeft,
     int? potionsLeft,
-    int? antidotesLeft}) {
+    int? antidotesLeft,
+    int? maxHealthBefore}) {
   if (run.status != TowerStatus.climbing) return run;
   if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
   final potions =
@@ -341,30 +346,38 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
         potions: potions,
         antidotes: antidotes);
   }
-  final before = towerHeroOf(run, data).maxHealth;
+  final before = maxHealthBefore ?? towerHeroOf(run, data).maxHealth;
   final leveled = run.copyWith(status: TowerStatus.choosing);
+  // The hero with the floor's levels: built once, then given the spoils
+  // (as towerHeroOf would replay them).
+  final hero = towerHeroOf(leveled, data);
   final drop = towerSpoilsFor(
     seed: run.seed,
     floor: towerFloorOf(run, data),
-    luck: towerHeroOf(leveled, data).luck,
-    ownedItemIds: towerHeroOf(leveled, data).ownedItemIds,
+    luck: hero.luck,
+    ownedItemIds: hero.ownedItemIds,
     preferredScalingStat:
         (data.professions[run.professionId] as Map?)?['preferredScalingStat']
                 ?.toString() ??
             '',
     items: data.items,
   );
+  // The bag holds [towerBagCap] potions: what the chest gives past it is
+  // drunk at once (v1.865).
+  final looted =
+      potions + drop.fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
+  final drunk = max(0, looted - towerBagCap);
   final choosing = leveled.copyWith(
     spoils: {...run.spoils, run.floor: drop},
-    potions:
-        potions + drop.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0)),
+    potions: looted - drunk,
     antidotes: antidotes + drop.where((id) => id == towerSpoilsAntidote).length,
   );
-  final hero = towerHeroOf(choosing.copyWith(health: 1 << 20), data);
+  towerWearSpoils(hero, drop, data);
   final health = (healthLeft +
           hero.maxHealth -
           before +
-          (hero.maxHealth * towerRecoveryShare).round())
+          (hero.maxHealth * towerRecoveryShare).round() +
+          drunk * potionHealAmount)
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
   return choosing.copyWith(
@@ -400,16 +413,20 @@ int towerPendingPicks(TowerRun run) {
 
 /// The stat pick on the table for [run]: the three offers of its next
 /// pending pick (the main game's draw, towerStatPickDraw), or none.
-List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data) {
+/// [hero], when given, is [run]'s hero already built (towerHeroOf).
+List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data,
+    {SimCharacter? hero}) {
   if (towerPendingPicks(run) <= 0) return const [];
   return towerStatPickDraw(
-      towerHeroOf(run, data), run.seed, run.statPicks.length, data);
+      hero ?? towerHeroOf(run, data), run.seed, run.statPicks.length, data);
 }
 
 /// [run] with offer [index] of its stat pick on the table taken; [run] as
-/// it is when no pick waits or there is no such offer.
-TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
-  final offer = towerStatPickOffer(run, data);
+/// it is when no pick waits or there is no such offer. [offer], when given,
+/// is [run]'s pick on the table already drawn (towerStatPickOffer).
+TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
+    {List<StatPickOffer>? offer}) {
+  offer ??= towerStatPickOffer(run, data);
   if (index < 0 || index >= offer.length) return run;
   return run.copyWith(statPicks: [...run.statPicks, index]);
 }
@@ -419,12 +436,16 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index) {
 /// then on to the next floor. The floor's level-up picks come first
 /// (the screen opens the Level Up before the cards); a pick still waiting
 /// here is given its first offer, the calling, so the climb never stalls.
-TowerRun towerPick(TowerRun run, TowerData data, int? index) {
+/// [hero], when given, is [run]'s hero already built (towerHeroOf); it is
+/// given the card.
+TowerRun towerPick(TowerRun run, TowerData data, int? index,
+    {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
   for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
     final taken = towerTakeStatPick(run, data, 0);
     if (identical(taken, run)) break;
     run = taken;
+    hero = null;
   }
   if (index == null || index < 0 || index >= run.offer.length) {
     return run.copyWith(
@@ -435,7 +456,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index) {
     );
   }
   final card = run.offer[index];
-  final hero = towerHeroOf(run, data);
+  hero ??= towerHeroOf(run, data);
   towerApplyReward(hero, card, data);
   return run.copyWith(
     status: TowerStatus.climbing,

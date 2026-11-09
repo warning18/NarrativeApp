@@ -128,9 +128,6 @@ List<TowerReward> towerOfferFor({
   required Map<String, dynamic> spells,
 }) {
   final random = towerRandom(seed, floor, TowerStream.offer);
-  final big = towerBudgetOf(floor).kind != TowerFloorKind.fight;
-  final heal = TowerReward(TowerRewardKind.heal,
-      amount: ((big ? towerBigHealShare : towerHealShare) * 100).round());
 
   TowerReward? draw(TowerRewardKind kind) {
     String? pick(List<String> pool) {
@@ -142,22 +139,6 @@ List<TowerReward> towerOfferFor({
     }
 
     switch (kind) {
-      case TowerRewardKind.heal:
-        return heal;
-      case TowerRewardKind.item:
-        // The floor's rarity, else the nearest one below it that has any.
-        for (var step = towerRarityStep(floor, random); step >= 0; step--) {
-          final id = pick([
-            for (final MapEntry(:key, :value) in items.entries)
-              if (value is Map &&
-                  value['isEquippable'] == true &&
-                  value['rarity'] == towerItemRarities[step] &&
-                  !hero.equippedItemIds.contains(key))
-                key,
-          ]);
-          if (id != null) return TowerReward(kind, id: id);
-        }
-        return null;
       case TowerRewardKind.die:
         final id = pick([
           for (final MapEntry(:key, :value) in dice.entries)
@@ -196,20 +177,14 @@ List<TowerReward> towerOfferFor({
               key,
         ]);
         return id == null ? null : TowerReward(kind, id: id);
-      case TowerRewardKind.clanGift:
-        // A gift comes from a clan sworn: none before the first oath.
-        if (hero.clanIds.isEmpty) return null;
-        for (final clan in hero.clanIds) {
-          final die = towerClanDieOf(clan, dice);
-          if (die != null &&
-              !hero.ownedDiceIds.contains(die) &&
-              !hero.takenIds.contains(die)) {
-            return TowerReward(kind, id: die);
-          }
-        }
-        return const TowerReward(TowerRewardKind.clanGift, amount: 1);
-      case TowerRewardKind.clanOath:
-        // Dealt apart, below (its own stream).
+      // A boon is a skill, a die or a spell (v1.860); an oath is dealt
+      // apart, below (its own stream). The heal, item and clan-gift cards
+      // are no longer dealt (an old save's offer may still hold one:
+      // towerApplyReward takes it).
+      case TowerRewardKind.heal ||
+            TowerRewardKind.item ||
+            TowerRewardKind.clanGift ||
+            TowerRewardKind.clanOath:
         return null;
     }
   }
@@ -239,7 +214,8 @@ List<TowerReward> towerOfferFor({
 /// floor's never below Gold, a warden's and an Elite's raised as an
 /// Elite's), from the floor's own stream; its gear and its potions, never
 /// its gold (nor its charms, tomes or materials, which the Tower has no
-/// use for).
+/// use for). From v1.865 the chest draws those slots as gear or a potion
+/// instead (rollLootBox's gearAndPotionsOnly): no chest is empty.
 List<String> towerSpoilsFor({
   required int seed,
   required TowerFloor floor,
@@ -262,6 +238,8 @@ List<String> towerSpoilsFor({
     ),
     items,
     towerRandom(seed, floor.floor, TowerStream.spoils),
+    // Every slot gear or a potion (v1.865): no empty chest.
+    gearAndPotionsOnly: true,
   );
   return [
     for (final id in chest.itemIds)

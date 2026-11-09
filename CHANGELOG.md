@@ -24,6 +24,49 @@ isn't reconstructable from git history alone.
   `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
   what each font never had; `test/font_glyphs_test.dart` fails when a new
   character comes into a text that a font had and the subset lost.
+## [1.866.0+902]
+
+### Changed
+- **One healing rule for the fight and the simulator** (round 3, item C, the
+  user's pick): `lib/combat/heal_rules.dart` (`healDealt`, `healFeedsFire`)
+  says what a heal heals, whatever it comes from (a die's Heal face, a
+  spell, a potion), in one place: the Anvil-Deaf's wall, the shrine, the
+  ground's rule, the fatigue (never a potion's or the cleric's), and what
+  feeds the Watchfire. The fight screen's three heal paths and the
+  simulator's three call it, instead of five copies of it.
+- The one difference it found: in the simulator, the cleric's spell heals
+  skipped the ground's rule (desert heat, rising water, sanctified ground);
+  on the screen they never did. They now go through it in both.
+- `test/heal_rules_test.dart`: each source against each step.
+
+## [1.865.0+901]
+
+### Changed
+- **The Tower's bag holds 5 potions, and no chest is empty** (round 3,
+  item B, the user's pick):
+  - what a chest gives past a full bag is drunk at once (each heals the
+    story's potion, 8);
+  - the Tower's chest draws a gold pouch's slot as a potion and a charm's
+    or a tome's as gear (`rollLootBox(gearAndPotionsOnly:)`; the story's
+    chest is unchanged): 15.5% of floors gave nothing before.
+- Balance kept (1,500 seeds): no unlocks, median 17, top 10.6%; every
+  unlock, median 19, top 19.3%. Every foe at `towerFoeScale` 1.02 (was
+  0.95), the cleric's at 1.28 (was 1.35).
+
+## [1.864.0+900]
+
+### Changed
+- **The Tower's engine, lighter** (round 3, item A; the game plays the same):
+  - the bot builds each step's hero once and hands it on (`towerPick`,
+    `towerStatPickOffer`, `towerTakeStatPick` and `towerAfterFight` take
+    the hero, the drawn offer or the max health already at hand):
+    rebuilds per floor 7.2 to about 4, the bot about 20% faster, its 300
+    test runs giving the same runs to the byte;
+  - the cards nothing deals since v1.860 are gone: the heal, item and
+    clan-gift draws, `towerRewardWeights`, `towerOfferSize`,
+    `towerHealShare`, `towerBigHealShare`, `towerHealFloor`,
+    `towerItemRarities` and the bot's branches for them (an old save's
+    waiting card still applies).
 
 ## [1.863.0+899]
 
