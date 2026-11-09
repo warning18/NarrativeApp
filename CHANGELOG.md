@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.868.0+904]
+
+### Changed
+- **The fonts are cut to the letters the game draws** (UX-2 round 3): the six
+  font files go from 774 KB to 376 KB (Spectral 160 to 62 KB each, Pixelify
+  48 to 28, IM Fell 179 to 131), so every in-app update downloads about 400 KB
+  less. Kept: ASCII, Latin-1, Latin Extended-A (a typed name keeps its
+  accents), general punctuation, the arrows, and every other character the
+  texts really use (gamedata, the story, every string in `lib/`) that the
+  font had. Kerning, ligatures and hinting are kept. The same text drawn in
+  the old and the new fonts (EN and FR, all four faces) is pixel for pixel
+  identical.
+- `tool/subset_fonts.py` makes them (needs fonttools, and the full fonts:
+  `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
+  what each font never had; `test/font_glyphs_test.dart` fails when a new
+  character comes into a text that a font had and the subset lost.
+
 ## [1.863.0+899]
 
 ### Changed
