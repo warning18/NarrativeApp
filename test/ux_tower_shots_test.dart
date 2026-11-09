@@ -108,6 +108,7 @@ void main() {
           child: RepaintBoundary(
             key: key,
             child: MaterialApp(
+                key: UniqueKey(), // a screen pushed before is dropped
                 theme: buildAppTheme(container
                     .read(appPaletteProvider)
                     .schemeFor(Brightness.light)),
@@ -123,13 +124,19 @@ void main() {
         'tower_marks_v1': '{"marks":12,"bestFloor":17,"runs":4,"wins":0}'
       });
       await shot('2-start-$tag');
-      for (final k in ['tower_race_human', 'tower_profession_warrior']) {
-        await tester.ensureVisible(find.byKey(Key(k)));
-        await tester.tap(find.byKey(Key(k)));
-        await tester.pump();
-      }
+      // Climb opens the main game's creation screen, the unbought callings
+      // padlocked.
+      await tester.tap(find.byKey(const Key('tower_climb')));
+      await settle();
+      await shot('3a-create-peoples-$tag');
+      await tester.tap(find.byKey(const Key('choice_card_human')));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.byKey(const Key('rp_next')));
+      await settle();
+      await shot('3b-create-callings-$tag');
+      await tester.tap(find.byKey(const Key('choice_card_warrior')));
       await tester.pump(const Duration(milliseconds: 600));
-      await shot('3-start-picked-$tag');
+      await shot('3c-create-picked-$tag');
       await open(const TowerMarksScreen(),
           prefs: {'tower_marks_v1': '{"marks":12,"unlocked":["flame_die"]}'});
       await shot('4-marks-$tag');
@@ -158,6 +165,17 @@ void main() {
         await settleLong();
       }
 
+      // The spoils sheet of a won floor, drawn then taken: the boon or
+      // oath comes after it.
+      Future<void> spoils(String? name) async {
+        final take = find.byKey(const Key('loot_sheet_take'));
+        if (take.evaluate().isEmpty) return;
+        await tester.pump(const Duration(milliseconds: 600));
+        if (name != null) await shot(name);
+        await tester.tap(take);
+        await settleLong();
+      }
+
       final mid =
           run.copyWith(floor: 7, health: 31, status: TowerStatus.climbing);
       await open(const TowerFloorScreen(), prefs: saved(mid));
@@ -177,6 +195,19 @@ void main() {
       await open(const TowerFloorScreen(), prefs: saved(won));
       await settleLong();
       await pastLevelUp();
+      await spoils('13-spoils-floor7-$tag');
+      // A boon floor: its spoils, then one of a skill, a die and a spell.
+      final boonRun = towerAfterFight(mid.copyWith(floor: 5), data,
+          won: true, healthLeft: 22);
+      await open(const TowerFloorScreen(), prefs: saved(boonRun));
+      await settleLong();
+      await pastLevelUp();
+      await spoils('14-spoils-boon-$tag');
+      await shot('15-boon-$tag');
+      await open(const TowerFloorScreen(), prefs: saved(won));
+      await settleLong();
+      await pastLevelUp();
+      await spoils(null);
       await shot('9-cards-$tag');
       // The first floor won offers a clan's oath (Core's rule).
       final first =
@@ -185,6 +216,7 @@ void main() {
       await open(const TowerFloorScreen(), prefs: saved(oathOffer));
       await settleLong();
       await pastLevelUp();
+      await spoils('16-spoils-floor1-$tag');
       // The card in hand is the oath.
       final oathAt =
           oathOffer.offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);

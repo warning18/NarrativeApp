@@ -69,6 +69,16 @@ Future<void> _pastLevelUp(WidgetTester tester) async {
   await _settle(tester);
 }
 
+/// The floor's spoils sheet comes before its boon or oath; most tests take
+/// it and go on.
+Future<void> _takeSpoils(WidgetTester tester) async {
+  final take = find.byKey(const Key('loot_sheet_take'));
+  if (take.evaluate().isEmpty) return;
+  await tester.ensureVisible(take);
+  await tester.tap(take);
+  await _settle(tester);
+}
+
 const _fresh = TowerRun(
   seed: 7,
   raceId: 'human',
@@ -97,6 +107,10 @@ void main() {
     expect(find.byType(LevelUpScreen), findsOneWidget,
         reason: 'floor 1 gains a level: its pick comes before the cards');
     await _pastLevelUp(tester);
+    expect(find.byKey(const Key('loot_sheet')), findsOneWidget,
+        reason: 'the floor\'s spoils sheet comes before its boon');
+    expect(find.byKey(const Key('tower_cleared')), findsNothing);
+    await _takeSpoils(tester);
     expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
     expect(find.byKey(const Key('tower_card_0')), findsOneWidget);
     expect(find.byKey(const Key('tower_card_2')), findsOneWidget);
@@ -118,6 +132,7 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
     await _pastLevelUp(tester);
+    await _takeSpoils(tester);
     await tester.tap(find.byKey(const Key('tower_refuse')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
@@ -178,7 +193,7 @@ void main() {
     Navigator.of(tester.element(find.byType(FightScreen))).pop(true);
     await _settle(tester);
     await _pastLevelUp(tester);
-    expect(find.byKey(const Key('tower_cleared')), findsOneWidget);
+    expect(find.byKey(const Key('loot_sheet')), findsOneWidget);
   });
 
   testWidgets(
@@ -193,6 +208,7 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_fight')));
     await _settle(tester);
     await _pastLevelUp(tester);
+    await _takeSpoils(tester);
     // Core's rule: the first floor won always offers an oath.
     final offer = (await TowerSave.open()).loadRun()!.offer;
     final at = offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);

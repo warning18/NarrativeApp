@@ -1446,6 +1446,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You left the Tower on floor {n}.',
     AppLanguage.fr: 'Vous avez quitté la Tour à l’étage {n}.',
   },
+  'tower_bought_with_marks': {
+    AppLanguage.en: 'Bought with marks: {n}',
+    AppLanguage.fr: 'S\'achète en marques : {n}',
+  },
   'tower_pick_race': {
     AppLanguage.en: 'People',
     AppLanguage.fr: 'Peuple',
@@ -1716,6 +1720,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_choose_one': {
     AppLanguage.en: 'Choose one reward',
     AppLanguage.fr: 'Choisissez une récompense',
+  },
+  'tower_spoils_title': {
+    AppLanguage.en: 'Floor {n} spoils',
+    AppLanguage.fr: 'Butin de l\'étage {n}',
+  },
+  'tower_spoils_worn': {
+    AppLanguage.en: 'Worn at once if it beats what you wear.',
+    AppLanguage.fr: 'Porté aussitôt s\'il vaut mieux que votre tenue.',
+  },
+  'tower_spoils_bag': {
+    AppLanguage.en: 'Into the bag, for the next fights.',
+    AppLanguage.fr: 'Dans le sac, pour les prochains combats.',
+  },
+  'tower_spoils_none': {
+    AppLanguage.en: 'The floor gave nothing this time.',
+    AppLanguage.fr: 'L\'étage n\'a rien donné cette fois.',
   },
   'tower_take': {
     AppLanguage.en: 'Take',
@@ -3848,53 +3868,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'How it works',
     AppLanguage.fr: 'Comment ça marche',
   },
-  // The Tree tab's sky (star_chart.dart, v1.619).
-  'star_hint': {
-    AppLanguage.en:
-        'Each branch is a constellation: a star for each skill, a crown for Mastery. A star lights when you learn the skill; the ringed one is the next, bright when its clan can offer it now. Tap a name to read it below, a star to open the skill.',
-    AppLanguage.fr:
-        'Chaque voie est une constellation : une étoile par compétence, une couronne pour la Maîtrise. Une étoile s’allume quand vous apprenez la compétence ; celle qui est cerclée est la suivante, vive quand son clan peut l’offrir maintenant. Touchez un nom pour le lire plus bas, une étoile pour ouvrir la compétence.',
-  },
-  'star_offer_now': {
-    AppLanguage.en: '{clan} can offer it now.',
-    AppLanguage.fr: '{clan} peut l’offrir maintenant.',
-  },
-  'star_waits': {
-    AppLanguage.en: 'Waits for “{tier}” with {clan} (you are: {now}).',
-    AppLanguage.fr: 'Attend « {tier} » auprès de {clan} (vous : {now}).',
-  },
-  'star_no_clan': {
-    AppLanguage.en: 'No clan stands behind this branch.',
-    AppLanguage.fr: 'Aucun clan ne soutient cette voie.',
-  },
-  'star_no_clan_label': {
-    AppLanguage.en: 'no clan',
-    AppLanguage.fr: 'aucun clan',
-  },
-  'star_learned_label': {
-    AppLanguage.en: 'learned',
-    AppLanguage.fr: 'acquise',
-  },
-  'star_learned_all': {
-    AppLanguage.en: 'Every skill of this branch is yours.',
-    AppLanguage.fr: 'Toutes les compétences de cette voie sont à vous.',
-  },
-  'star_state_known': {
-    AppLanguage.en: 'learned',
-    AppLanguage.fr: 'apprise',
-  },
-  'star_state_offered': {
-    AppLanguage.en: 'next, its clan can offer it now',
-    AppLanguage.fr: 'la suivante, son clan peut l’offrir maintenant',
-  },
-  'star_state_next': {
-    AppLanguage.en: 'next',
-    AppLanguage.fr: 'la suivante',
-  },
-  'star_state_later': {
-    AppLanguage.en: 'later',
-    AppLanguage.fr: 'plus tard',
-  },
   'mastery_cost_label': {
     AppLanguage.en: 'Mastery · {n} essence',
     AppLanguage.fr: 'Maîtrise · {n}\u00a0d’essence',
@@ -4585,6 +4558,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Who are your people? The clans behind them will court you.',
     AppLanguage.fr:
         'Qui sont les vôtres\u00a0? Les clans qui les soutiennent vous courtiseront.',
+  },
+  'tower_hint_people': {
+    AppLanguage.en: 'Who climbs the Tower?',
+    AppLanguage.fr: 'Qui gravit la Tour\u00a0?',
   },
   'rp_hint_calling': {
     AppLanguage.en:
