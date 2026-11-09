@@ -8,12 +8,10 @@ extension _FightActions on _FightScreenState {
     final player = _party.firstWhere((m) => m.isPlayer);
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
-    final heal = _length.rule.heal(
-        _condition == BattlefieldCondition.shrine
-            ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier)
-                .round()
-            : _potionHealAmount + _potionBonus,
-        _roundsStarted);
+    // The heal rule (heal_rules.dart): the shrine and the ground's rule; a
+    // potion never tires.
+    final heal =
+        _healOf(player, HealSource.potion, _potionHealAmount + _potionBonus);
     _potionUsed = true;
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
@@ -21,7 +19,10 @@ extension _FightActions on _FightScreenState {
       final spilled = <_LogEntry>[];
       // The weak links (step 3c): the Brimming Draught's spill feeds the
       // fire, the Stitch-Thrust's strikes the foe.
-      if (_core.has(Spec.brimmingDraught)) {
+      if (healFeedsFire(
+          source: HealSource.potion,
+          watchfire: _core.core == ProfessionCore.watchfire,
+          brimmingDraught: _core.has(Spec.brimmingDraught))) {
         _core.fire = fireAfterHeal(
             fire: _core.fire,
             healing: heal,
@@ -281,18 +282,10 @@ extension _FightActions on _FightScreenState {
       final memberKey = _memberCardKey(member.id);
       switch (spell.effect) {
         case SpellEffectKind.heal:
-          var healing = amount;
-          if (_condition == BattlefieldCondition.shrine) {
-            healing = (healing * shrineHealMultiplier).round();
-          }
-          // Healing fatigue counts the caster's spells as its heals (not
-          // the cleric's: the Watchfire doesn't tire).
-          if (_core.core != ProfessionCore.watchfire) {
-            healing =
-                _length.fatigued(player.id, healing, round: _roundsStarted);
-          } else {
-            healing = _length.rule.heal(healing, _roundsStarted);
-          }
+          // The heal rule (heal_rules.dart): the shrine, the ground's
+          // rule, and the fatigue, which counts the caster's spells as its
+          // heals (not the cleric's: the Watchfire doesn't tire).
+          final healing = _healOf(player, HealSource.spell, amount);
           _fx(spellStyle, memberKey,
               element: spell.element,
               delayMs: fxDelay,
@@ -301,7 +294,9 @@ extension _FightActions on _FightScreenState {
               power: spellPower(amount: healing, maxHealth: member.maxHealth));
           // The cleric's Watchfire: a spell's heal past full feeds the
           // fire, as a die's does (profession_cores.dart).
-          if (_core.core == ProfessionCore.watchfire) {
+          if (healFeedsFire(
+              source: HealSource.spell,
+              watchfire: _core.core == ProfessionCore.watchfire)) {
             _core.fire = fireAfterHeal(
                 fire: _core.fire,
                 healing: healing,

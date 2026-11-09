@@ -41,9 +41,6 @@ void main() {
           first.offer.where((r) => r.kind == TowerRewardKind.clanOath);
       expect(oaths, hasLength(1), reason: 'seed $seed: one oath, always');
       expect(towerStartClanPool, contains(oaths.single.id));
-      // No clan's gift before a clan is sworn.
-      expect(first.offer.map((r) => r.kind),
-          isNot(contains(TowerRewardKind.clanGift)));
       // After the spoils, the oath alone (v1.860: no cards beside it).
       expect(first.offer, hasLength(1));
     }
