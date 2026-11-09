@@ -270,7 +270,7 @@ void main() {
     // stair and Vane's gate (v1.578).
     expect(find.text('Scenes read: 5 / 70'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
-    expect(find.text('Harbor Rat'), findsOneWidget);
+    expect(find.text('Harbour Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(5));
     // Next on the road, the ship-breaker's yard is not reached yet.
     expect(find.text('Next: ???'), findsOneWidget);

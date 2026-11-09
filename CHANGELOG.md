@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.872.0+908]
+
+- **Narrative: British spelling everywhere in the English text.** The story
+  and game data, and the English UI strings, used both spellings (harbour 64
+  against harbor 40, armour against armor, colour, favour, rumour, armoury,
+  centre, defence, travelled). They now follow the majority, British, like
+  the 204 "grey". 115 strings in the story and game data and 34 in
+  `app_strings.dart` change; ids, flags, keys, enum values and French are
+  untouched. Names that move: Harbour Rat, Harbour Reckoning, A Smuggler's
+  Favour, The Harbour (house), Harbourwatch (set and items).
+
 ## [1.871.0+907]
 
 ### Changed
@@ -25,6 +36,7 @@ isn't reconstructable from git history alone.
     it was an elevated one.
   - Next steps (own PRs, picture first): the sheet frame, the tags, the
     story's offer dialog last.
+
 ## [1.870.0+906]
 
 ### Fixed
@@ -39,6 +51,7 @@ isn't reconstructable from git history alone.
   The aim sweep of a ship battle and the timed choice's countdown are play,
   not decoration, and keep running.
 - `test/motion_test.dart`.
+
 ## [1.869.0+905]
 
 ### Changed
@@ -55,6 +68,7 @@ isn't reconstructable from git history alone.
   the new piece on and leaves the old one in the bag.
 - `LootReward.detail` and `.onTap`; the string `loot_use_now_title` is gone,
   `loot_replaces` is new. Pictures: `docs/ux-shots/spoils-actions/`.
+
 ## [1.868.0+904]
 
 ### Changed
@@ -71,6 +85,7 @@ isn't reconstructable from git history alone.
   `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
   what each font never had; `test/font_glyphs_test.dart` fails when a new
   character comes into a text that a font had and the subset lost.
+
 ## [1.867.0+903]
 
 ### Changed
@@ -148,6 +163,7 @@ isn't reconstructable from git history alone.
 - `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
   smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
   under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
+
 ## [1.862.0+898]
 
 ### Changed
@@ -521,6 +537,7 @@ isn't reconstructable from git history alone.
   something taking the loot doesn't do. `test/loot_changes_test.dart`
   checks that every "after" is what taking the loot leaves. No screen
   changes yet: UX-2 wires the sheet.
+
 ## [1.829.0+865]
 
 - Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
@@ -575,7 +592,6 @@ isn't reconstructable from git history alone.
   Tests: `fight_board_test.dart` (the land is behind a fight given one),
   `land_crossing_test.dart` (the road's fight is given it).
 
-
 ## [1.825.0+861]
 
 - Journey: the map is back for every scene with a choice to make, as before
@@ -585,6 +601,7 @@ isn't reconstructable from git history alone.
   choose, its one way leading on in the same place, still goes on with no
   map (its way a card on the page). A way to another district of a town is
   walked on the town's chart: the party's mark crosses the streets to it.
+
 ## [1.824.0+860]
 
 - Fight: the aim line of a picked die is no longer cut off at the dice board.

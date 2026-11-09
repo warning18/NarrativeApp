@@ -159,7 +159,7 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Clear the rats fouling the harbor stores",
+        "description": "Clear the rats fouling the harbour stores",
         "type": "Kill",
         "targetEnemyID": "harbor_rat",
         "targetItemID": "",
@@ -174,7 +174,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "q_ch2_smugglers_favor",
-    "npcDialogueText": "The harbor master needs those rats dealt with before the shipment arrives.",
+    "npcDialogueText": "The harbour master needs those rats dealt with before the shipment arrives.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -196,7 +196,7 @@
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
-    "questName": "A Smuggler’s Favor",
+    "questName": "A Smuggler’s Favour",
     "chapter": 2,
     "category": "Side",
     "difficulty": "3",
@@ -327,14 +327,14 @@
   },
   "q_ch2_harbor_reckoning": {
     "questID": "q_ch2_harbor_reckoning",
-    "questName": "Harbor Reckoning",
+    "questName": "Harbour Reckoning",
     "chapter": 2,
     "category": "Side",
     "difficulty": "5",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down the plague hound stalking the harbor",
+        "description": "Put down the plague hound stalking the harbour",
         "type": "Kill",
         "targetEnemyID": "plague_hound",
         "targetItemID": "",

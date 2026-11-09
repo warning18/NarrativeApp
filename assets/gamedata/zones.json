@@ -5,7 +5,7 @@
     "chapter": 2,
     "expeditionCount": 3,
     "mapTheme": "saltRoads",
-    "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbor wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they’ve learned not to ask why, which suited someone quietly scavenging pitch and spare timber for a leaking hull just fine.",
+    "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbour wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they’ve learned not to ask why, which suited someone quietly scavenging pitch and spare timber for a leaking hull just fine.",
     "rewardGold": 60,
     "rewardMaterials": {
       "material_timber": 3
@@ -53,7 +53,7 @@
     "chapter": 2,
     "expeditionCount": 3,
     "mapTheme": "saltRoads",
-    "flavorText": "Where the harbor’s official business gives way to its unofficial business. A woman who trades in old charts keeps a lantern lit past curfew for anyone willing to pay for what she knows -- and what she knows, this week, is where the Shroud’s next piece went.",
+    "flavorText": "Where the harbour’s official business gives way to its unofficial business. A woman who trades in old charts keeps a lantern lit past curfew for anyone willing to pay for what she knows -- and what she knows, this week, is where the Shroud’s next piece went.",
     "rewardGold": 0,
     "rewardMaterials": {
       "material_timber": 2,
@@ -249,7 +249,7 @@
     ],
     "isMainZone": true,
     "recommendedLevel": 11,
-    "midpointFlavorText": "At the vigil’s center the candles were still lit, hundreds of them, in a ring around nothing at all, an absence the eye slid off, and the wax had not run in a year. The order had kept this. Whatever it was, they had thought it worth kneeling to.",
+    "midpointFlavorText": "At the vigil’s centre the candles were still lit, hundreds of them, in a ring around nothing at all, an absence the eye slid off, and the wax had not run in a year. The order had kept this. Whatever it was, they had thought it worth kneeling to.",
     "midpointFlavorTextFr": "Au centre de la veillée, les chandelles brûlaient encore, des centaines, en cercle autour de rien du tout, une absence sur laquelle le regard glissait, et la cire n’avait pas coulé depuis un an. L’ordre avait entretenu cela. Quoi que ce fût, ils avaient jugé que cela valait qu’on s’agenouille.",
     "zoneName_fr": "La Veillée du Linceul",
     "flavorText_fr": "La place au cœur mort de la ville, où la déchirure flotte à l’air libre et où une chose qui fut jadis un Inquisiteur monte la garde depuis la nuit où elle s’est ouverte. Le dernier tronçon de la route du registre, et le pire.",
@@ -456,7 +456,7 @@
     "bossFlavorText": "The inland market was in sight when the last of the Wreckers came down off the dunes: a dozen of them, and in front a big man with a lantern on a pole and a coat stiff with salt. Brine Jack, the drivers said, as if the name were the weather. He did not want the salt, he said. He wanted it understood whose road this was.",
     "bossFlavorTextFr": "Le marché de l’intérieur était en vue quand le reste des Naufrageurs descendit des dunes : une douzaine, et devant eux un grand gaillard avec une lanterne au bout d’une perche et un manteau raidi par le sel. Jack la Saumure, dirent les conducteurs, comme on annonce le temps qu’il fera. Il ne voulait pas le sel, dit-il. Il voulait qu’on sache à qui était la route.",
     "recommendedLevel": 5,
-    "midpointFlavorText": "Halfway along the coast road the wagons passed a wreck lying on its side in the shallows, lamps still hanging from its rigging. The drivers did not look at it. One of them told me afterwards that the Wreckers light those lamps on stormy nights, on the rocks, where a harbor ought to be.",
+    "midpointFlavorText": "Halfway along the coast road the wagons passed a wreck lying on its side in the shallows, lamps still hanging from its rigging. The drivers did not look at it. One of them told me afterwards that the Wreckers light those lamps on stormy nights, on the rocks, where a harbour ought to be.",
     "midpointFlavorTextFr": "À mi-chemin de la route côtière, les chariots passèrent devant une épave couchée sur le flanc dans les hauts-fonds, des lanternes encore pendues à son gréement. Les conducteurs ne la regardèrent pas. L’un d’eux me dit plus tard que les Naufrageurs allument ces lanternes les soirs de tempête, sur les rochers, là où devrait se trouver un port.",
     "kind": "escort",
     "location": "saltmouth"

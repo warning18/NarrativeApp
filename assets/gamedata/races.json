@@ -2,7 +2,7 @@
   "human": {
     "raceID": "human",
     "raceName": "Human",
-    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human’s strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
+    "description": "Adaptable and resourceful, humans favour coin and connections over raw power. Their power is sewn: a human’s strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
@@ -77,7 +77,7 @@
     "visualAsset": "dwarf.png",
     "tag": "Sturdy",
     "tag_fr": "Solide",
-    "playstyle": "Hard to kill: extra life, armor and a stone-skin heal",
+    "playstyle": "Hard to kill: extra life, armour and a stone-skin heal",
     "playstyle_fr": "Dur à cuire : plus de vie, d’armure et un soin de pierre"
   },
   "orc": {
