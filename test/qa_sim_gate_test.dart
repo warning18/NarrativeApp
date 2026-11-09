@@ -41,8 +41,9 @@ Map<String, _Group> _groups() {
       current = (gated: <String>[], triggers: <String>[], ignores: <String>[]);
       found[line.substring(6).trim()] = current;
     } else if (current != null) {
-      if (line.startsWith('gated '))
+      if (line.startsWith('gated ')) {
         current.gated.add(line.substring(6).trim());
+      }
       if (line.startsWith('trigger ')) {
         current.triggers.add(line.substring(8).trim());
       }
@@ -213,7 +214,7 @@ void main() {
     expect(yml, contains('fetch-depth: 2'));
     // The default is to run everything: the flag is set only on a pull
     // request, from the paths git lists as changed.
-    expect(yml, contains(r'changed=""'));
+    expect(yml, contains('changed=""'));
     expect(yml, contains('git diff --name-only HEAD^1 HEAD'));
     expect(yml, isNot(contains('--skip-gated')));
   });
