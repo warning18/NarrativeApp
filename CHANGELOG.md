@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.873.0+909]
+
+- **Narrative: six endings with their own buttons, two dead lines out, three
+  shorter speeches.** The six scenes where someone comes back with a message
+  (`3005_dorran_later`, `5010_imeh_later`, `6010_brannoc_later`,
+  `7100_orsabet_later`, `7100_ghrem_later`, `7800_nkem_later`) no longer end
+  on the same "Accept what they offer" / "Say your goodbyes": each pair now
+  names the person and what they bring (the gold and the flag are unchanged).
+  Two Vess remarks keyed to the choices of an old pier scene
+  (`choice_960_1_vess`, `choice_960_2_vess`) are removed: they could never play.
+  The quest-giver speeches of Tobin, Vess and Liora lose a sentence each
+  (439, 422 and 385 characters to 336, 290 and 311). English and French.
+
 ## [1.872.0+908]
 
 - **Narrative: British spelling everywhere in the English text.** The story
