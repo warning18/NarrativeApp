@@ -75,6 +75,10 @@ class _SimFight {
   late final FractionBank mendBank;
   late int phasesEntered;
   late int healsGiven;
+
+  /// What the hero's heals healed this fight, by where they came from (as
+  /// the heal rule worked them out, before what full health caps).
+  late final Map<HealSource, int> healedBy;
   late bool packBroken;
   late final ProfessionCore core;
   late int fury;
@@ -126,20 +130,22 @@ class _SimFight {
   /// (default this round) and the fatigue when its clash rule is on. The
   /// simulator has no battlefield conditions, so no shrine.
   int healed(HealSource source, int raw,
-          {bool noHealFaces = false, int? round}) =>
-      healDealt(
-        source: source,
-        raw: raw,
-        noHealFaces: noHealFaces,
-        watchfire: core == ProfessionCore.watchfire,
-        roundRule: switch (ctx) {
-          final rule? => (amount) => rule.heal(amount, round ?? ctxRound),
-          null => null,
-        },
-        fatigue: on('fatigue')
-            ? (amount) => fatiguedHeal(amount, healsGiven++)
-            : null,
-      );
+      {bool noHealFaces = false, int? round}) {
+    final healing = healDealt(
+      source: source,
+      raw: raw,
+      noHealFaces: noHealFaces,
+      watchfire: core == ProfessionCore.watchfire,
+      roundRule: switch (ctx) {
+        final rule? => (amount) => rule.heal(amount, round ?? ctxRound),
+        null => null,
+      },
+      fatigue:
+          on('fatigue') ? (amount) => fatiguedHeal(amount, healsGiven++) : null,
+    );
+    if (healing > 0) healedBy[source] = (healedBy[source] ?? 0) + healing;
+    return healing;
+  }
 
   bool has(Spec spec) =>
       specs.contains(spec) &&
