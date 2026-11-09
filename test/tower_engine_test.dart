@@ -5,14 +5,18 @@
 // story's.
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/fight_numbers.dart'
+    show potionHealAmount;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
+import 'package:narrative_data_app/data/tower/tower_rewards.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -173,7 +177,7 @@ void main() {
           won: true, healthLeft: run.health, potionsLeft: 1);
       final looted =
           run.spoils[1]!.fold(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
-      expect(run.potions, 1 + looted);
+      expect(run.potions, min(towerBagCap, 1 + looted));
       expect(towerHeroOf(run, data).potions, flask + run.potions);
       // The save keeps the spoils and the bag.
       final back = TowerRun.fromJson(run.toJson());
@@ -211,6 +215,47 @@ void main() {
       }
     });
 
+    test('the bag holds 5 potions; what the chest gives past them heals', () {
+      // v1.865: the bag is capped, the rest drunk at once at the story's
+      // potion heal.
+      var checked = 0;
+      for (var seed = 1; seed <= 30; seed++) {
+        final run = towerStart(
+                seed: seed,
+                raceId: 'human',
+                professionId: 'warrior',
+                data: data)
+            .copyWith(potions: towerBagCap);
+        final full = towerAfterFight(run, data,
+            won: true, healthLeft: 1, potionsLeft: towerBagCap + 1);
+        final looted = full.spoils[1]!
+            .fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
+        if (looted == 0) continue;
+        checked++;
+        expect(full.potions, towerBagCap);
+        // The same chest into an empty bag: all of it kept, none drunk.
+        final empty = towerAfterFight(run.copyWith(potions: 0), data,
+            won: true, healthLeft: 1, potionsLeft: 1);
+        expect(empty.spoils[1], full.spoils[1]);
+        expect(empty.potions, looted);
+        expect(
+            full.health,
+            min(towerHeroOf(full, data).maxHealth,
+                empty.health + looted * potionHealAmount));
+      }
+      expect(checked, greaterThan(3));
+    });
+
+    test('no chest is empty: every slot gear or a potion', () {
+      for (var seed = 1; seed <= 40; seed++) {
+        for (final floor in towerFloorsFor(seed, data.enemies).take(12)) {
+          final drop =
+              towerSpoilsFor(seed: seed, floor: floor, items: data.items);
+          expect(drop, isNotEmpty, reason: 'seed $seed floor ${floor.floor}');
+        }
+      }
+    });
+
     test('leaving ends the run with what it earned', () {
       final run = towerAbandon(towerStart(
           seed: 1,
@@ -232,7 +277,7 @@ void main() {
           seed: 4,
           raceId: run.raceId,
           professionId: run.professionId,
-          clanId: run.clanId,
+          clanId: run.mainClanId,
           data: data);
       run = towerAfterFight(run, data, won: true, healthLeft: run.health - 3);
       run = towerPick(run, data, 1);

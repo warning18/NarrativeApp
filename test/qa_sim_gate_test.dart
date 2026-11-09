@@ -25,15 +25,34 @@ const _presentation = [
   'lib/widgets/',
 ];
 
-({List<String> gated, List<String> triggers}) _gate() {
-  final gated = <String>[];
-  final triggers = <String>[];
+typedef _Group = ({
+  List<String> gated,
+  List<String> triggers,
+  List<String> ignores
+});
+
+/// tool/sim_gate.txt, by group.
+Map<String, _Group> _groups() {
+  final found = <String, _Group>{};
+  _Group? current;
   for (final raw in File('tool/sim_gate.txt').readAsLinesSync()) {
     final line = raw.trim();
-    if (line.startsWith('gated ')) gated.add(line.substring(6).trim());
-    if (line.startsWith('trigger ')) triggers.add(line.substring(8).trim());
+    if (line.startsWith('group ')) {
+      current = (gated: <String>[], triggers: <String>[], ignores: <String>[]);
+      found[line.substring(6).trim()] = current;
+    } else if (current != null) {
+      if (line.startsWith('gated ')) {
+        current.gated.add(line.substring(6).trim());
+      }
+      if (line.startsWith('trigger ')) {
+        current.triggers.add(line.substring(8).trim());
+      }
+      if (line.startsWith('ignore ')) {
+        current.ignores.add(line.substring(7).trim());
+      }
+    }
   }
-  return (gated: gated, triggers: triggers);
+  return found;
 }
 
 /// Every local file the Dart file [start] imports, exports or has as a part,
@@ -63,24 +82,54 @@ Set<String> _closure(Iterable<String> start) {
   return seen;
 }
 
-void main() {
-  final gate = _gate();
+/// The local files the Dart files [start] import themselves.
+Set<String> _direct(Iterable<String> start) {
+  final seen = <String>{};
+  final pattern = RegExp(r'''^\s*(?:import|export|part)\s+['"]([^'"]+)['"]''',
+      multiLine: true);
+  for (final path in start) {
+    final file = File(path);
+    if (!file.existsSync()) continue;
+    for (final m in pattern.allMatches(file.readAsStringSync())) {
+      final target = m.group(1)!;
+      if (target.startsWith('package:narrative_data_app/')) {
+        seen.add(
+            'lib/${target.substring('package:narrative_data_app/'.length)}');
+      }
+    }
+  }
+  return seen;
+}
 
-  test('the gated simulator tests exist and have a shard weight', () {
-    expect(gate.gated, isNotEmpty);
+void main() {
+  final groups = _groups();
+  final gated = [for (final g in groups.values) ...g.gated];
+  final triggers = [for (final g in groups.values) ...g.triggers];
+  final ignores = [for (final g in groups.values) ...g.ignores];
+
+  test('both groups are there, each with gated files and triggers', () {
+    expect(groups.keys, containsAll(['simulator', 'screens']));
+    for (final e in groups.entries) {
+      expect(e.value.gated, isNotEmpty, reason: e.key);
+      expect(e.value.triggers, isNotEmpty, reason: e.key);
+    }
+  });
+
+  test('the gated tests exist and have a shard weight', () {
+    expect(gated, isNotEmpty);
     final weights =
         jsonDecode(File('test/shard_weights.json').readAsStringSync())
             as Map<String, dynamic>;
-    for (final name in gate.gated) {
+    for (final name in gated) {
       expect(File('test/$name').existsSync(), isTrue, reason: 'test/$name');
       expect(weights.containsKey(name), isTrue,
           reason: '$name needs a weight in test/shard_weights.json');
     }
   });
 
-  test('every trigger names a path that exists', () {
-    expect(gate.triggers, isNotEmpty);
-    for (final prefix in gate.triggers) {
+  test('every trigger and ignore names a path that exists', () {
+    expect(triggers, isNotEmpty);
+    for (final prefix in [...triggers, ...ignores]) {
       final dir = Directory(prefix);
       final inFolder = dir.existsSync();
       final parent = prefix.contains('/')
@@ -95,17 +144,18 @@ void main() {
           : const <String>[];
       expect(
           inFolder || File(prefix).existsSync() || siblings.isNotEmpty, isTrue,
-          reason: 'trigger "$prefix" matches nothing, so it can never fire');
+          reason: '"$prefix" matches nothing, so it can never fire');
     }
   });
 
-  test('the triggers cover every lib/ file the gated tests read', () {
-    final reached = _closure(gate.gated.map((n) => 'test/$n'))
+  test('the simulator triggers cover every lib/ file those tests read', () {
+    final group = groups['simulator']!;
+    final reached = _closure(group.gated.map((n) => 'test/$n'))
         .where((p) => p.startsWith('lib/'));
     expect(reached, isNotEmpty);
     final uncovered = reached
         .where((p) =>
-            !gate.triggers.any(p.startsWith) &&
+            !group.triggers.any(p.startsWith) &&
             !_presentation.any(p.startsWith))
         .toList()
       ..sort();
@@ -116,15 +166,56 @@ void main() {
             'only, a folder to _presentation here):\n${uncovered.join('\n')}');
   });
 
+  test('the screens group ignores only folders its tests never import', () {
+    final group = groups['screens']!;
+    expect(group.ignores, isNotEmpty);
+    // What the tests import themselves, and what their harness imports (not
+    // what those reach in turn: the whole app imports the Tower's folders
+    // through the main menu, and those compile in every other test).
+    final reached = _direct([
+      for (final n in group.gated) 'test/$n',
+      'test/qa_smoke_harness.dart',
+    ]).where((p) => p.startsWith('lib/'));
+    expect(reached, isNotEmpty);
+    // Each ignored folder lies inside a trigger (else it would be pointless).
+    for (final prefix in group.ignores) {
+      expect(group.triggers.any(prefix.startsWith), isTrue,
+          reason: 'ignore $prefix is not inside any trigger');
+    }
+    final read = reached.where((p) => group.ignores.any(p.startsWith)).toList()
+      ..sort();
+    expect(read, isEmpty,
+        reason:
+            'The screen smoke tests now import these files themselves, which '
+            'tool/sim_gate.txt ignores: a change there would skip them on a '
+            'pull request. Remove the ignore:\n${read.join('\n')}');
+    // Whatever draws a screen is a trigger: the folders of the screens, the
+    // widgets, the text, the fonts and the data.
+    for (final path in [
+      'lib/screens/fight_screen.dart',
+      'lib/widgets/poly_die.dart',
+      'lib/l10n/app_strings.dart',
+      'assets/gamedata/skills.json',
+      'pubspec.yaml',
+    ]) {
+      expect(
+          group.triggers.any(path.startsWith) &&
+              !group.ignores.any(path.startsWith),
+          isTrue,
+          reason: '$path must run the screen smoke tests');
+    }
+  });
+
   test('the workflow skips only on a pull request and uses the gate', () {
     final yml = File('.github/workflows/build_apk.yml').readAsStringSync();
-    expect(yml, contains('--gate'));
-    expect(yml, contains('--skip-gated'));
+    expect(yml, contains('--changed'));
     expect(
         yml, contains(r'if [ "${{ github.event_name }}" = "pull_request" ]'));
     expect(yml, contains('fetch-depth: 2'));
-    // The default is to run: the skip flag is set only when the gate says so.
-    expect(yml, contains('gate=run'));
-    expect(yml, contains(r'if [ "$gate" = "skip" ]'));
+    // The default is to run everything: the flag is set only on a pull
+    // request, from the paths git lists as changed.
+    expect(yml, contains('changed=""'));
+    expect(yml, contains('git diff --name-only HEAD^1 HEAD'));
+    expect(yml, isNot(contains('--skip-gated')));
   });
 }
