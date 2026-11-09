@@ -334,19 +334,6 @@ const double towerSimEliteMultiplier = 1.35;
 /// hero holds its standing and its die (see [towerOathChance]).
 enum TowerRewardKind { item, die, skill, spell, heal, clanGift, clanOath }
 
-/// Each kind's weight on a card (§5 of the note).
-const Map<TowerRewardKind, int> towerRewardWeights = {
-  TowerRewardKind.item: 30,
-  TowerRewardKind.die: 10,
-  TowerRewardKind.skill: 18,
-  TowerRewardKind.spell: 8,
-  TowerRewardKind.heal: 16,
-  TowerRewardKind.clanGift: 14,
-};
-
-/// Cards on the table after a win.
-const int towerOfferSize = 3;
-
 /// A clan's oath on the table (v1.855): always on the first floor won, then
 /// on this share of the floors (not a boon's, v1.860) while a clan is left
 /// to swear to; one oath a floor at most.
@@ -374,14 +361,6 @@ const Map<String, int> towerSpoilsPotions = {
 /// The chest's antidote.
 const String towerSpoilsAntidote = 'antidote';
 
-/// A heal card's share of max health, and after a boss or a warden.
-/// (Before v1.860; an old save's offer may still hold one.)
-const double towerHealShare = .35;
-const double towerBigHealShare = .50;
-
-/// Below this share of health a heal is always on the table.
-const double towerHealFloor = .40;
-
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.
 const List<List<double>> towerRarityOdds = [
@@ -389,9 +368,6 @@ const List<List<double>> towerRarityOdds = [
   [.25, .45, .27, .03],
   [.05, .35, .50, .10],
 ];
-
-/// items.json's rarities, lowest first.
-const List<String> towerItemRarities = ['Common', 'Uncommon', 'Rare', 'Relic'];
 
 /// skills.json's rarities by step: the top step holds epic and legendary.
 const List<List<String>> towerSkillRarities = [

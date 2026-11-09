@@ -211,6 +211,14 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
   }
 }
 
+/// A floor's spoils [itemIds] given to [hero]: its gear worn when better.
+void towerWearSpoils(
+    SimCharacter hero, Iterable<String> itemIds, TowerData data) {
+  for (final id in itemIds) {
+    _wear(hero, id, data);
+  }
+}
+
 void _wear(SimCharacter hero, String itemId, TowerData data) {
   final item = data.items[itemId] as Map<String, dynamic>?;
   if (item == null) return;
@@ -259,9 +267,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       }
     }
     // The floor's spoils (v1.860): its gear worn when better.
-    for (final id in run.spoils[floor] ?? const <String>[]) {
-      _wear(hero, id, data);
-    }
+    towerWearSpoils(hero, run.spoils[floor] ?? const [], data);
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data);
   }
