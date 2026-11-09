@@ -9,6 +9,8 @@
 //     first, a cleric's do not, a potion never tires;
 //   * the Anvil-Deaf (briar guard with the anvil_deaf variant) gets nothing
 //     from a Heal face, and a spell or a potion still heals.
+// Each step was mutation checked on fight_rounds.dart (shrine off, fatigue off,
+// noHealFaces off, potions tiring): each fails this test.
 // (The Watchfire past full is held by qa_mending_light_watchfire_test and
 // qa_cleric_watchfire_tower_test.)
 import 'package:flutter_test/flutter_test.dart';
