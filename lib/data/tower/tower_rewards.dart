@@ -178,13 +178,8 @@ List<TowerReward> towerOfferFor({
         ]);
         return id == null ? null : TowerReward(kind, id: id);
       // A boon is a skill, a die or a spell (v1.860); an oath is dealt
-      // apart, below (its own stream). The heal, item and clan-gift cards
-      // are no longer dealt (an old save's offer may still hold one:
-      // towerApplyReward takes it).
-      case TowerRewardKind.heal ||
-            TowerRewardKind.item ||
-            TowerRewardKind.clanGift ||
-            TowerRewardKind.clanOath:
+      // apart, below (its own stream).
+      case TowerRewardKind.clanOath:
         return null;
     }
   }

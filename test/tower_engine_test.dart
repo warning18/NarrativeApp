@@ -277,7 +277,7 @@ void main() {
           seed: 4,
           raceId: run.raceId,
           professionId: run.professionId,
-          clanId: run.clanId,
+          clanId: run.mainClanId,
           data: data);
       run = towerAfterFight(run, data, won: true, healthLeft: run.health - 3);
       run = towerPick(run, data, 1);
