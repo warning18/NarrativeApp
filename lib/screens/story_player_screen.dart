@@ -89,6 +89,7 @@ import '../providers/story_text_provider.dart'
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
+import '../widgets/ink_chip.dart';
 import '../widgets/motion.dart';
 import '../widgets/creation_fade_route.dart';
 import '../widgets/prologue_opening.dart';

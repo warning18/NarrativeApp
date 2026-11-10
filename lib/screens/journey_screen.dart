@@ -121,6 +121,7 @@ import 'story_player_screen.dart'
         takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
+import '../widgets/ink_chip.dart';
 import '../theme/palette.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
@@ -5030,26 +5031,19 @@ class _StepDetail extends ConsumerWidget {
             greyed: false);
     final tags = [
       if (choice.hasAbilityCheck)
-        InkTag(
-          label: '${tr(ref, '${choice.checkAbility}_label')} '
-              'DC ${choice.checkDC ?? 10}',
-          color: ink.tide,
-        ),
+        InkChip(
+            '${tr(ref, '${choice.checkAbility}_label')} '
+            'DC ${choice.checkDC ?? 10}',
+            color: ink.tide),
       if (choice.goldMod != 0)
-        InkTag(
-          label: '${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
-          color: ink.gold,
-        ),
+        InkChip('${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
+            color: ink.gold),
       if (choice.healAmount != 0)
-        InkTag(
-          label: '${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
-          color: choice.healAmount > 0 ? ink.heal : ink.blood,
-        ),
+        InkChip('${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
+            color: choice.healAmount > 0 ? ink.heal : ink.blood),
       if (choice.alignmentMod != 0)
-        InkTag(
-          label: '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
-          color: ink.voidColor,
-        ),
+        InkChip('${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
+            color: ink.voidColor),
     ];
     return DecoratedBox(
       decoration: BoxDecoration(

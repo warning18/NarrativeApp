@@ -474,35 +474,6 @@ class StitchedEdgePainter extends CustomPainter {
       oldDelegate.color != color || oldDelegate.width != width;
 }
 
-/// A small tag in the system face: a choice's cost ("+20 G"), a rarity,
-/// a condition.
-class InkTag extends StatelessWidget {
-  const InkTag({super.key, required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: const BorderRadius.all(Radius.circular(3)),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: InkFonts.system,
-          fontSize: 12,
-          height: 1.2,
-          color: color,
-        ),
-      ),
-    );
-  }
-}
-
 /// Every screen change in the app: the new page fades in over 180 ms while
 /// sliding up 12 px, the old one holds still. With "reduce motion" on, the
 /// pages just swap.

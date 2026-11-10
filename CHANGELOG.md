@@ -8,6 +8,43 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.885.0+921]
+
+### Changed
+- **The shared palette** (the user's choice, UX-2; no change to how anything
+  looks, the pictures are byte for byte the same): `lib/theme/palette.dart`
+  holds every colour that two or more files drew with, 157 of them, with the
+  hex each always had, and the 16 semantic tokens of the theme (`InkColors`
+  dark and light), which now take their values from it. A colour only one
+  painter uses stays beside it (about 1,170 of them: the backdrops, ships and
+  dice). 580 literals in 84 files now say `Palette.<name>`; the names are the
+  hue and lightness of the colour (`amber77`), to be renamed by role as roles
+  are found.
+  - The Material named colours used in two or more files are roles:
+    `Palette.good` (green), `danger`, `alert`, `hot`, `arcane`, `neutral`...
+    (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
+  - `test/palette_test.dart` fails when a colour drawn in two files is written
+    as a literal: it goes to the palette.
+
+## [1.882.0+918]
+
+### Changed
+- **One chip** (the user's choice, UX-2 round 3): `InkChip`
+  (`lib/widgets/ink_chip.dart`) is the app's one chip: a short label in a
+  colour, on a tinted pill with a thin edge of the same colour, 12 px bold.
+  It replaces the square `InkTag` (21 uses: item and calling tags, the
+  geography lines, the camp tags, the story choices), the look of the choice
+  tags (`ChoiceTagChip` is now an `InkChip`) and the Tower's Material chips.
+  - **A bug fixed:** the Tower's foe marks ("Frenzied", "Skittish", "Elite")
+    were drawn in white on cream, unreadable, on every floor that has one
+    (since v1.848); they are red chips now, and "Elite" a gold one.
+  - What changes on screen: item and calling tags gain an edge and rounder
+    corners; the choice tags go from 11 to 12 px and from 10 to 8 px corners.
+  - Left as they were: the offer dialog's and the harbor's own tags, the stat
+    bonus chips.
+- `test/ink_chip_test.dart`; the Tower's picture test draws a warden floor.
+  Pictures before and after: `docs/ux-shots/chips/`.
+
 ## [1.881.0+917]
 
 - **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
