@@ -1,0 +1,98 @@
+// SCRATCH: ground reaction prototype pictures (not committed).
+import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/combat/field_anomaly.dart';
+import 'package:narrative_data_app/utils/face_style.dart';
+import 'package:narrative_data_app/widgets/die_3d.dart';
+import 'package:narrative_data_app/widgets/die_skins.dart';
+import 'package:narrative_data_app/widgets/fight_backdrop.dart';
+import 'support/fonts.dart';
+
+class Kind {
+  const Kind(this.name, this.colors, this.count, this.w, this.h, this.gravity, this.ring);
+  final String name; final List<Color> colors; final int count; final double w, h, gravity; final bool ring;
+}
+
+const kinds = {
+  FightStage.dunes: Kind('Dunes / roads: dust', [Color(0xFFD9B98A), Color(0xFFC49A66), Color(0xFFEBD3A8)], 14, 6, 6, 30, false),
+  FightStage.woods: Kind('Woods / fields: leaves and grass', [Color(0xFF6FA84A), Color(0xFF9BC45B), Color(0xFF8A6B3A)], 12, 4, 7, 60, false),
+  FightStage.ruins: Kind('Ruins / halls: stone chips', [Color(0xFF8D8A86), Color(0xFFB4B0AA), Color(0xFF5E5B58)], 10, 4, 4, 140, false),
+  FightStage.quay: Kind('Quay / deck: splinters and a ripple', [Color(0xFFA9794A), Color(0xFFD1A06A), Color(0xFF6E4C2B)], 8, 2, 8, 120, true),
+  FightStage.snow: Kind('Snow coast: a puff of snow', [Color(0xFFFFFFFF), Color(0xFFDCE8F4), Color(0xFFB9CDE4)], 14, 6, 6, 20, false),
+};
+
+double _h(int i, int s) { final x = math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - x.floorToDouble(); }
+
+class ReactPainter extends CustomPainter {
+  ReactPainter(this.k, this.t); final Kind k; final double t; // t 0..1 over 450 ms
+  @override
+  void paint(Canvas c, Size s) {
+    final o = Offset(s.width / 2, s.height * 0.71);
+    if (k.ring) {
+      for (var r = 0; r < 2; r++) {
+        final tt = (t - r * 0.18).clamp(0.0, 1.0);
+        if (tt <= 0) continue;
+        c.drawOval(Rect.fromCenter(center: o, width: 20 + 90 * tt, height: 7 + 30 * tt),
+            Paint()..style = PaintingStyle.stroke..strokeWidth = 2..color = const Color(0xFFCFE8F2).withValues(alpha: 0.7 * (1 - tt)));
+      }
+    }
+    for (var i = 0; i < k.count; i++) {
+      final a = -math.pi * (0.05 + 0.5 * _h(i, 1));          // upward fan
+      final sp = 55 + 85 * _h(i, 2);
+      final x = o.dx + math.cos(a) * sp * t * (_h(i, 3) > 0.5 ? 1 : -1);
+      final y = o.dy + math.sin(a) * sp * t * 1.0 + k.gravity * t * t * 2.2;
+      final fade = (1 - t).clamp(0.0, 1.0);
+      final grow = k.name.startsWith('Dunes') || k.name.startsWith('Snow') ? 1 + 1.3 * t : 1.0;
+      final col = k.colors[i % k.colors.length].withValues(alpha: fade * 0.9);
+      c.save();
+      c.translate(x, y);
+      if (k.name.startsWith('Woods') || k.name.startsWith('Quay')) c.rotate(t * 6 * (_h(i, 4) - 0.5) * 2);
+      c.drawRect(Rect.fromCenter(center: Offset.zero, width: k.w * 1.5 * grow, height: k.h * 1.5 * grow), Paint()..color = col..isAntiAlias = false);
+      c.restore();
+    }
+  }
+  @override bool shouldRepaint(_) => true;
+}
+
+void main() {
+  testWidgets('ground reaction pictures', (tester) async {
+    await loadAppFonts();
+    final out = Platform.environment['UX_SHOTS'];
+    if (out == null) return;
+    tester.view.physicalSize = const Size(2400, 3200); tester.view.devicePixelRatio = 2; addTearDown(tester.view.reset);
+    final key = GlobalKey();
+    final faces = [for (var i = 0; i < 6; i++) DieCubeFace(glyph: Icon(FaceKind.values[i % 6].icon, size: 20, color: FaceKind.values[i % 6].color), color: FaceKind.values[i % 6].color)];
+    final facets = [for (var i = 0; i < 20; i++) faces[i % 6]];
+    Widget cell(FightStage st, Kind k, double t, double hopLift) => SizedBox(width: 218, height: 190, child: ClipRect(child: Stack(children: [
+      Positioned.fill(child: FightBackdrop(stage: st, sky: null)),
+      Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: 0.28))),
+      Positioned(left: 79, top: 52 - hopLift, child: Die3D(faces: faces, facets: facets, accent: Colors.orange, size: 60, skin: dieSkinOf('flame_die'), shape: DieShape.d20)),
+      if (t >= 0) Positioned.fill(child: CustomPaint(painter: ReactPainter(k, t))),
+    ])));
+    final rows = <Widget>[];
+    for (final e in kinds.entries) {
+      rows.add(Padding(padding: const EdgeInsets.only(bottom: 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(e.value.name + '  (${e.value.count} bits)', style: const TextStyle(color: Colors.white, fontSize: 15, fontFamily: 'Spectral', decoration: TextDecoration.none)),
+        const SizedBox(height: 4),
+        Row(children: [
+          for (final (label, t, lift) in [('in the air', -1.0, 26.0), ('lands: 0 ms', 0.05, 0.0), ('+150 ms', 0.33, 0.0), ('+300 ms', 0.66, 0.0), ('gone: 450 ms', 1.0, 0.0)])
+            Padding(padding: const EdgeInsets.only(right: 6), child: Column(children: [cell(e.key, e.value, t, lift), Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11, fontFamily: 'Spectral', decoration: TextDecoration.none))])),
+        ]),
+      ])));
+    }
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: MediaQuery(data: const MediaQueryData(), child: Center(child: RepaintBoundary(key: key, child: Container(color: const Color(0xFF0E0D10), padding: const EdgeInsets.all(14), child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: rows)))))));
+    for (var i = 0; i < 4; i++) { await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150))); await tester.pump(const Duration(milliseconds: 100)); }
+    final bytes = await tester.runAsync(() async {
+      final o = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final im = await o.toImage(pixelRatio: 1.5);
+      return im.toByteData(format: ui.ImageByteFormat.png);
+    });
+    File('$out/ground-reaction.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+  });
+}
