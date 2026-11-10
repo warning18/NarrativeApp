@@ -7107,8 +7107,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Pocket the marker and head back to the harbour master’s post",
-        "text_fr": "Empocher le billet et revenir vers le poste du maître du port",
+        "text": "Pocket the marker, back to the harbour post",
+        "text_fr": "Empocher le billet, retour au poste du port",
         "next_id": "2015",
         "goldMod": 35,
         "flagsToAdd": [
@@ -16106,7 +16106,7 @@
     "choices": [
       {
         "text": "Leave the sick tent, the cold still in your hands",
-        "text_fr": "Quitter la tente des malades, le froid encore dans les doigts",
+        "text_fr": "Quitter la tente, le froid encore aux doigts",
         "next_id": "7100",
         "healAmount": -4,
         "flagsToAdd": [
