@@ -233,10 +233,27 @@ chapter-strip line that names the door. No new screen.
 |---|---|---|---|
 | **The player sees** | seven pins with names on the sphere; a sentence in each town | the sphere pins, plus a Tower card in the seven towns' place views (the "door scene" is its one-paragraph read), a chapter-strip line, a story line on return | all of P2, plus quests with a "climb" button, seven recovered names changing the ledger scenes, a finale offer at Candlehold |
 | **Narrative** | 7 door names and lore lines, 7 town sentences, 1 achievement: S, 1 PR | + 7 door scenes and return callbacks, 3 remarks, 7 to 8 achievements, 3 to 7 NPC lines, D1 lines: M, 1 to 2 PRs | + 7 quests, 8 NPCs, about 15 remarks, 4 ledger callbacks, ending callbacks, a finale scene: L, 3 PRs |
-| **Core** | `tower_sites.json` names only (already planned for option A) | + D2 flags, D1 grant, a `towerId` on the door card: 2 PRs | + a quest objective that reads a floor, a names count flag: 3 PRs |
+| **Core** | 1 small PR, if the 7 pins open the one existing Tower (no per-door runs); `tower_sites.json` names | 3 PRs: (1) `towerId` on the run, `bestFloorByTower`, old saves read as Alster's; (2) D1 grant + D3 first oath; (3) D2 flags | 4 PRs: P2's three, plus a quest objective that reads a floor and a names count flag; only side quests and ledger text, no Tower-gated main step |
 | **UX-2** | the sphere pin (small) | + the Tower card in the place view, the chapter-strip line: 1 PR | + the quest-card button: 1 small PR more |
-| **Art** | 5 generations (one generic tower, a code tint per place), pins hand-drawn (0) | the minimal set, 8 to 12 generations (1 exterior, 1 icon, 2 strips, wardens reused) | the full set, 20 to 35 (strips for arrival, a warden and the top; new wardens) |
-| **Risk** | none | low to medium: the hubs are long; every door scene is one folded row under the page cap | medium to high: the 4% step margin and the shared ending text; the names must stay text only |
+| **Art** | 5 generations (one generic tower, a code tint per place), pins hand-drawn (0) | the minimal set, 8 to 12 generations (1 exterior, 1 icon, 2 strips, wardens reused); the place-card thumbnail is cut from the generic exterior (0) | 36 to 51 if the 8 NPCs get figures, plus a finale strip (the full set without figures is 20 to 35) |
+| **Risk** | none | low to medium: the hubs are long; every door scene is one folded row under the page cap; the three below | medium to high: the 4% step margin (to be re-measured), the shared ending text, the names stay text only, and the Candlehold finale stays optional |
+
+**Three risks to write into P2 and P3 (from Core's check):**
+
+- **(a) Flags are profile-wide.** The Tower's best floor belongs to the
+  profile, not to a story save, so a new story save on a profile that has
+  already climbed starts with the door flags set. Every return line and
+  every door remark must read right at *any* chapter: either written so it
+  does not assume the hero has just come down, or gated on the flag *and*
+  the chapter. I write them that way (the hook "I came down with the sound
+  of somebody else's boots still in my head" works at any point).
+- **(b) D1 pays once per profile.** The first save to reach the event gets
+  the marks or the clan unlock; later saves do not. The line says so in the
+  story's voice ("The stair remembers you already") so a second save is
+  not promised what it will not get.
+- **(c) All of it is text, flags and achievements**, because no simulator
+  sees it: the playthrough simulator and the Tower bot never read a door
+  scene, so nothing here can stall a run or move a band.
 
 **My recommendation: P2, built on P1.** It gives the user what they asked
 (the towers part of the system, met in the towns, on the map and in the
