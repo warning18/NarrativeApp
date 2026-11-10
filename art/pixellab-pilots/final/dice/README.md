@@ -12,3 +12,6 @@ How the fitted cuts were made (free, PIL): crop to the die, box-average down (no
 Honest note: 40/44 px from 64 px is not a whole-number ratio (0.62 and 0.69). If the app needs a strict whole-number cut, use the `_half` files (clean, but the die is only 32 px in the tile). Recommended: the fitted `_44` or `_48`.
 
 Resting bodies only: numbers, skill glyphs and the roll stay code. The skill icons fit best on the big faces (see `docs/art/boards/dice-with-skill-icons.png`; at 44 to 48 px the icons would have to be 8 to 12 px, so the tile should show the body, with the glyph drawn small or not at all).
+
+## 40 px cuts (for the companion page's 40 px tile)
+`die_<shape>_bone_40.png` for d4, d6, d8, d12, d20: the same cut as the 44 px files (box-averaged from the 64 px source, 20 colours, no dither, 1 px dark outline redrawn), die about 36 px plus the outline in a 40x40 tile, palette PNG8, square pixels. 0 generations. The d10 has no body and keeps today's tile.

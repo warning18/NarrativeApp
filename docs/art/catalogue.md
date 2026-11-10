@@ -59,3 +59,6 @@ The user: the game draws the skill glyph on each face, so the body must be simpl
 Balance 1251.5 before, 1227.5 after: **24 generations**.
 - Enemies (`art/pixellab-enemies2/`, `index.json`, sheet `docs/art/boards/enemies-round2.png`): `create_character` v3 at 60 px, 2 generations each, for tear_herald, white_admiral, bone_warden, inquisition_high_warden, cultist_acolyte, hollow_reflection (12); `create_image_pixen` 60x60, 1 each, for void_hound and void_wisp (2; seed 21). The void_hound came out as a wolf head, not a full hound. Staged palette PNG8 (32 colours) in `staged/`, raw in `raw/`. Ranking reasons are in the index (bosses and wardens first, then the most met in the data: void_hound 23 references, cultist_acolyte 18, void_wisp 17, hollow_reflection 15).
 - Fight backgrounds (`art/pixellab-backgrounds/fight/`, `docs/art/fight-backgrounds.md`, sheet `docs/art/boards/fight-backgrounds.png`): `create_image_pixen` 180x320, seeds 11 and 12, 10 generations.
+
+## Dice 40 px cuts (no generation)
+`art/pixellab-pilots/final/dice/die_{d4,d6,d8,d12,d20}_bone_40.png`: the 44 px recipe at 40 px for the companion page's tile (user chose B: bone body on the die's own skin tile). Free PIL cut from `round3/pixellab`, PNG8 (`tool/png8.py --check`: 0 to convert). Balance unchanged, 1251.5.
