@@ -8,6 +8,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'item_lore.dart';
 import 'item_stats.dart';
 import 'ink_sheet.dart';
+import 'ink_chip.dart';
 
 num _stat(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
 
@@ -137,15 +138,14 @@ class ItemDetailView extends StatelessWidget {
                   const SizedBox(height: 6),
                   Wrap(spacing: 4, runSpacing: 4, children: [
                     if (rarityLabel.isNotEmpty)
-                      InkTag(
+                      InkChip(rarityLabel,
                           key: const Key('item_rarity_tag'),
-                          label: rarityLabel,
                           color: rarityColor),
-                    if (type.isNotEmpty) InkTag(label: type, color: ink.ash),
+                    if (type.isNotEmpty) InkChip(type, color: ink.ash),
                     if (slot.isNotEmpty && slot != type)
-                      InkTag(label: slot, color: ink.ash),
+                      InkChip(slot, color: ink.ash),
                     if (count != null && count! > 1)
-                      InkTag(label: 'x$count', color: ink.ash),
+                      InkChip('x$count', color: ink.ash),
                   ]),
                   if (priceLine != null) ...[
                     const SizedBox(height: 6),

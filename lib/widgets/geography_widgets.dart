@@ -13,6 +13,7 @@ import '../providers/clans_provider.dart';
 import '../providers/geography_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import 'ink_chip.dart';
 
 /// [text] with its first letter up, for a name that opens a line or heads
 /// a section (« l’Ancien Continent » → « L’Ancien Continent »).
@@ -351,7 +352,7 @@ class ThisLandSheet extends ConsumerWidget {
                 runSpacing: 4,
                 children: [
                   for (final line in biome.weather)
-                    InkTag(label: line.nameFor(french), color: ink.tide),
+                    InkChip(line.nameFor(french), color: ink.tide),
                 ],
               ),
             ],
@@ -620,7 +621,7 @@ class _ZoneCard extends ConsumerWidget {
               Tooltip(
                 message: line.noteFor(french),
                 triggerMode: TooltipTriggerMode.tap,
-                child: InkTag(label: line.nameFor(french), color: ink.heal),
+                child: InkChip(line.nameFor(french), color: ink.heal),
               ),
           ],
         );

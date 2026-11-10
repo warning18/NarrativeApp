@@ -23,6 +23,7 @@ import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
 import 'tower_spoils_view.dart';
+import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/ink_confirm.dart';
 
@@ -260,16 +261,14 @@ class _FloorIntro extends ConsumerWidget {
                     for (final a in floor.affixes)
                       Padding(
                         padding: const EdgeInsets.only(left: 6),
-                        child: Chip(
-                          visualDensity: VisualDensity.compact,
-                          label: Text(tr(ref, affixLabelKey(a))),
-                        ),
+                        child: InkChip(tr(ref, affixLabelKey(a)),
+                            color: ink.blood, dense: true),
                       ),
                     if (floor.elite)
                       Padding(
                         padding: const EdgeInsets.only(left: 6),
-                        child: Text(tr(ref, 'tower_floor_elite'),
-                            style: theme.textTheme.labelSmall),
+                        child: InkChip(tr(ref, 'tower_floor_elite'),
+                            color: ink.gold, dense: true),
                       ),
                   ],
                 ],

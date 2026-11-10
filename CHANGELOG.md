@@ -20,6 +20,25 @@ isn't reconstructable from git history alone.
   read as long as French normally does and are left as written. No key, flag or number
   changed; bold counts match in both languages.
 
+## [1.882.0+918]
+
+### Changed
+- **One chip** (the user's choice, UX-2 round 3): `InkChip`
+  (`lib/widgets/ink_chip.dart`) is the app's one chip: a short label in a
+  colour, on a tinted pill with a thin edge of the same colour, 12 px bold.
+  It replaces the square `InkTag` (21 uses: item and calling tags, the
+  geography lines, the camp tags, the story choices), the look of the choice
+  tags (`ChoiceTagChip` is now an `InkChip`) and the Tower's Material chips.
+  - **A bug fixed:** the Tower's foe marks ("Frenzied", "Skittish", "Elite")
+    were drawn in white on cream, unreadable, on every floor that has one
+    (since v1.848); they are red chips now, and "Elite" a gold one.
+  - What changes on screen: item and calling tags gain an edge and rounder
+    corners; the choice tags go from 11 to 12 px and from 10 to 8 px corners.
+  - Left as they were: the offer dialog's and the harbor's own tags, the stat
+    bonus chips.
+- `test/ink_chip_test.dart`; the Tower's picture test draws a warden floor.
+  Pictures before and after: `docs/ux-shots/chips/`.
+
 ## [1.881.0+917]
 
 - **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
