@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.877.0+913]
+
+- **Narrative: one bold passage per scene, the sharpest.** 668 passages were bold,
+  about one word in eight; 192 scenes that carried two or three now carry one,
+  the fact the player most needs (a name, a rule, a price, a turn). The opening,
+  the reveals, the chapter endings, the crowning scenes and the ledgers keep all
+  theirs (28 scenes). English and French trim the same passage, so every scene has
+  the same number of bold passages in both. New guard
+  `test/story_bold_budget_test.dart`: EN and FR counts match, and a scene has one
+  bold passage unless it is on the keep list. No wording, flag or number changed.
+
 ## [1.876.0+912]
 
 - **Narrative: British spelling in the English text the game builds in code.**
