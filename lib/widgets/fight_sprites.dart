@@ -108,6 +108,13 @@ const Map<String, String> _enemySprites = {
   'harbor_rat': 'rat',
   'rat_matriarch': 'rat_matriarch',
   'plague_hound': 'plague_hound',
+  'wreck_scavenger': 'wreck_scavenger',
+  'den_bouncer': 'den_bouncer',
+  'den_looter': 'den_looter',
+  'mire_returned_sedge': 'sedge_returned',
+  'demon_imp': 'low_demon',
+  'angel_sentinel': 'low_angel',
+  'street_bandit': 'street_bandit',
 };
 
 /// The art an enemy stands in the fight with (facing west, toward the

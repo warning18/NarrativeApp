@@ -23,6 +23,17 @@ isn't reconstructable from git history alone.
   Drowned Cloister, the Ashen Quarter, Candlehold and the White Anchorage.
   Over three seeds the encounter win rates move by a point at most, and
   the profession spread goes from 5.4 to 5.6.
+## [1.890.0+926]
+
+### Added
+- **Seven more enemies stand in the fight** (UX, from the user's PixelLab
+  library). The Wreck Scavenger, the Den Bouncer, the Den Looter, the Returned
+  Sedge, the Demon Imp, the Angel Sentinel and the Street Bandit now wear
+  PixelLab art in the scene stage and on the road. All are 48 x 48 side views,
+  one idle frame each (about 15 KB in all); the other clothes states and the
+  walk strips stay in `art/`. The Den Bouncer is the heavy bearded one and the
+  Den Looter the lean one in the green vest; the Street Bandit is the
+  hoodless one that fits the Alster streets.
 
 ## [1.889.0+925]
 
