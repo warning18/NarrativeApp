@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.893.0+929]
+
+### Fixed
+- **The 320 px phone: three small things QA found** (UX, QA's L3 issues #891,
+  #892 and #893). In French the fight's Reroll and Confirm buttons no longer
+  break in the middle of a word ("Relancer (2)", "Confirmer" are shrunk to
+  one line to fit). The home shell's top bar gives its title room (narrower
+  buttons and a tighter margin under 360 px), so "Personnage" and
+  "Campement" read whole instead of "Pe..." and "C...". On a short screen
+  (under 640 px high) Level Up's radar is smaller, so "Take this pick" is above
+  the fold at 320 x 568. The two spoils rows said to lack an icon (Elite Mark,
+  Timber) do have their pixel icons: the picture was taken before they loaded.
+
+## [1.892.0+928]
+
+### Changed
+- **One waiting look for the whole app** (UX). The 34 plain spinners that
+  every screen wrote out by itself are now one widget, `InkLoading`
+  (`lib/widgets/ink_loading.dart`): a 56 px gold ring (3 px stroke) around
+  the brass lantern, centred on the page's own ground. Only after a wait of two
+  seconds does a quiet line fade in (Motion.slow) saying what is awaited: a
+  general one, or "Reading the map..." on the town chart; English and French.
+  Its room is kept from the start, so nothing jumps. The small spinners
+  inside buttons are unchanged. A new guard (`test/ink_loading_test.dart`)
+  fails when a bare `CircularProgressIndicator()` comes back to
+  `lib/screens`.
+
 ## [1.891.0+927]
 
 ### Fixed

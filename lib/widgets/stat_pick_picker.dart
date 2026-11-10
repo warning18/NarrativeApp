@@ -397,7 +397,9 @@ class _PickRadar extends ConsumerWidget {
       children: [
         AbilityRadar(
           key: const Key('stat_pick_radar'),
-          size: 220,
+          // On a short screen (320 x 568) a smaller radar keeps "Take this
+          // pick" above the fold (#893).
+          size: MediaQuery.sizeOf(context).height < 640 ? 150 : 220,
           t: (key) => tr(ref, key),
           values: values,
           preview: after,

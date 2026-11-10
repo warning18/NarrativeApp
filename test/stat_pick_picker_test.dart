@@ -174,6 +174,43 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+  // #893: at 320 x 568 the radar was 220 px and "Take this pick" fell below
+  // the fold of the Level Up page; on a short screen the radar is smaller.
+  for (final (height, radar) in [(568.0, 150.0), (820.0, 220.0)]) {
+    testWidgets('the radar is $radar px on a ${height.toInt()} px screen',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      tester.view.physicalSize = Size(320, height);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(ProviderScope(
+        overrides: [trainingPathsProvider.overrideWith((ref) async => paths)],
+        child: MaterialApp(
+          theme: buildAppTheme(ColorScheme.fromSeed(seedColor: Colors.brown)),
+          home: const Scaffold(
+              body: SingleChildScrollView(child: StatPickPicker())),
+        ),
+      ));
+      final container =
+          ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+      container.read(playerSessionProvider);
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
+      await tester.runAsync(() => container
+          .read(playerSessionProvider.notifier)
+          .loadSession(session(SignRarity.common, 1)));
+      for (var i = 0; i < 6; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      expect(
+          tester
+              .widget<AbilityRadar>(find.byKey(const Key('stat_pick_radar')))
+              .size,
+          radar);
+    });
+  }
 }
 
 Future<void> _save(WidgetTester tester, String name) async {

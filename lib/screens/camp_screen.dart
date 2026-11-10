@@ -46,6 +46,7 @@ import 'story_player_screen.dart'
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -87,7 +88,7 @@ class CampScreen extends ConsumerWidget {
         gameConfig == null ||
         zones == null ||
         shops == null) {
-      const loading = Center(child: CircularProgressIndicator());
+      const loading = InkLoading();
       if (embedded) return loading;
       return Scaffold(
         appBar: AppBar(

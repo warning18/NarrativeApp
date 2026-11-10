@@ -37,6 +37,7 @@ import '../widgets/player_stats_bar.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -691,11 +692,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                 ],
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
                 message: tr(ref, 'failed_to_load_dice'), detail: error),
           ),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
               message: tr(ref, 'failed_to_load_items'), detail: error),
         ),

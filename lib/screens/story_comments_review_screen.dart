@@ -9,6 +9,7 @@ import '../providers/story_providers.dart';
 import '../utils/comment_export_format.dart';
 import '../utils/export_utils.dart';
 import 'story_node_editor_screen.dart';
+import '../widgets/ink_loading.dart';
 
 final RegExp _leadingDigits = RegExp(r'^\d+');
 
@@ -87,7 +88,7 @@ class StoryCommentsReviewScreen extends ConsumerWidget {
         ],
       ),
       body: storyAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const InkLoading(),
         error: (error, stack) =>
             Center(child: Text('${tr(ref, 'failed_to_load_story')}: $error')),
         data: (story) {

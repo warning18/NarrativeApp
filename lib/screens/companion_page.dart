@@ -26,6 +26,7 @@ import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'skills/skills_screen.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 class CompanionPage extends ConsumerWidget {
   const CompanionPage({super.key, required this.companionId});
@@ -38,9 +39,7 @@ class CompanionPage extends ConsumerWidget {
     final view = views?.where((v) => v.id == companionId).firstOrNull;
     return Scaffold(
       appBar: AppBar(title: Text(view?.name ?? '')),
-      body: view == null
-          ? const Center(child: CircularProgressIndicator())
-          : _CompanionBody(view: view),
+      body: view == null ? const InkLoading() : _CompanionBody(view: view),
     );
   }
 }
