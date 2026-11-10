@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.890.0+926]
+
+### Added
+- **Seven more enemies stand in the fight** (UX, from the user's PixelLab
+  library). The Wreck Scavenger, the Den Bouncer, the Den Looter, the Returned
+  Sedge, the Demon Imp, the Angel Sentinel and the Street Bandit now wear
+  PixelLab art in the scene stage and on the road. All are 48 x 48 side views,
+  one idle frame each (about 15 KB in all); the other clothes states and the
+  walk strips stay in `art/`. The Den Bouncer is the heavy bearded one and the
+  Den Looter the lean one in the green vest; the Street Bandit is the
+  hoodless one that fits the Alster streets.
+
 ## [1.889.0+925]
 
 ### Added
