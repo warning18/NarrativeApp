@@ -12,6 +12,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/voice_settings_provider.dart';
 import '../widgets/narration_recording_dialogs.dart';
+import '../widgets/ink_loading.dart';
 
 /// Edit Mode's recording page: the story's scenes sorted by kind (main
 /// story, places, side scenes, endings) and chapter, each showing how much
@@ -153,7 +154,7 @@ class _NarrationRecordingScreenState
         ],
       ),
       body: storyAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const InkLoading(),
         error: (e, _) => Center(child: Text('$e')),
         data: (story) {
           final nodes = story.nodes.values.toList();

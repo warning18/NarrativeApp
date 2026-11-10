@@ -50,6 +50,7 @@ import '../widgets/side_view/sea_kit.dart';
 import '../widgets/side_view/side_view.dart' show sideViewRows;
 import '../widgets/walk_bubble.dart';
 import 'ship_battle_panel.dart';
+import '../widgets/ink_loading.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
 
@@ -1089,7 +1090,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ready: false,
         child: Scaffold(
           appBar: AppBar(title: Text(title)),
-          body: const Center(child: CircularProgressIndicator()),
+          body: const InkLoading(),
         ),
       );
     }

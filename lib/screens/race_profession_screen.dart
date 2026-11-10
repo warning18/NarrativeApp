@@ -25,6 +25,7 @@ import 'origin_stories_screen.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/race_profession_cards.dart';
 import '../widgets/ink_sheet.dart';
+import '../widgets/ink_loading.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key, this.locks = const {}, this.onChosen});
@@ -98,15 +99,15 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               }
               return _buildPicker(context, races, professions, skills);
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
                 message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
               message: tr(ref, 'failed_to_load_professions'), detail: error),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const InkLoading(),
         error: (error, stack) => InkErrorState(
             message: tr(ref, 'failed_to_load_races'), detail: error),
       ),
@@ -120,7 +121,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     Map<String, dynamic> skills,
   ) {
     final book = ref.watch(choiceBookProvider);
-    if (book == null) return const Center(child: CircularProgressIndicator());
+    if (book == null) return const InkLoading();
     final raceIds = races.keys.toList()..sort();
     final professionIds = professions.keys.toList()..sort();
     final theme = Theme.of(context);

@@ -127,6 +127,7 @@ import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import '../widgets/ink_loading.dart';
 
 part 'story_player/story_choice_flow.dart';
 part 'story_player/story_hub.dart';
@@ -236,7 +237,7 @@ class StoryPlayerScreen extends ConsumerWidget {
 
     return storyAsync.when(
       data: (story) => _StoryView(story: story),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const InkLoading(),
       error: (error, stack) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
