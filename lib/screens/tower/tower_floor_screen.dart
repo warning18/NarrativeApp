@@ -20,6 +20,7 @@ import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
+import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
@@ -29,14 +30,23 @@ import '../../widgets/ink_panel.dart';
 import '../../widgets/ink_confirm.dart';
 import '../../widgets/ink_loading.dart';
 
-class TowerFloorScreen extends ConsumerStatefulWidget {
+/// The Tower's floor, in the Tower's night theme (its body below).
+class TowerFloorScreen extends StatelessWidget {
   const TowerFloorScreen({super.key});
 
   @override
-  ConsumerState<TowerFloorScreen> createState() => _TowerFloorScreenState();
+  Widget build(BuildContext context) =>
+      const TowerNight(child: _TowerFloorBody());
 }
 
-class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
+class _TowerFloorBody extends ConsumerStatefulWidget {
+  const _TowerFloorBody();
+
+  @override
+  ConsumerState<_TowerFloorBody> createState() => _TowerFloorScreenState();
+}
+
+class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   bool _busy = false;
   bool _resumed = false;
 
@@ -49,8 +59,9 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
   Future<void> _levelUp(TowerRun run, TowerData data) async {
     _resumed = true;
     final session = TowerLevelUpSession(run, data);
-    await Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => session.wrap(const LevelUpScreen())));
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) =>
+            TowerNight(child: session.wrap(const LevelUpScreen()))));
     if (!mounted) return;
     await ref.read(towerProvider.notifier).setRun(session.run);
   }
@@ -213,9 +224,12 @@ class _FloorIntro extends ConsumerWidget {
         Text(tr(ref, 'tower_band_$band').toUpperCase(),
             style: theme.textTheme.labelMedium?.copyWith(
                 letterSpacing: 1.2, color: theme.colorScheme.onSurfaceVariant)),
+        // The floor's number, large and gold (v1.900).
         Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
             key: const Key('tower_floor_label'),
-            style: theme.textTheme.headlineSmall),
+            style: theme.textTheme.headlineMedium?.copyWith(
+                color: ink.gold,
+                shadows: const [Shadow(blurRadius: 8, color: Colors.black)])),
         Text(tr(ref, 'tower_floor_${run.floor}'),
             style: theme.textTheme.bodyLarge
                 ?.copyWith(fontStyle: FontStyle.italic)),
@@ -262,6 +276,8 @@ class _FloorIntro extends ConsumerWidget {
                     child: Text('${(enemies[id] as Map?)?['enemyName'] ?? id}',
                         style: theme.textTheme.titleSmall),
                   ),
+                  // The foe stands in its panel when it has art (v1.900).
+                  if (id == floor.enemyIds.first) TowerFoeFigure(id),
                   if (id == floor.enemyIds.first) ...[
                     for (final a in floor.affixes)
                       Padding(

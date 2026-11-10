@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/factions.dart';
+import '../theme/palette.dart';
 
 /// Each step's shape: seven rows of seven pixels, '#' for a lit one.
 const Map<StandingTier, List<String>> standingGlyphs = {
@@ -145,7 +146,7 @@ class _StandingSignPainter extends CustomPainter {
     final r = size.width / 2;
     final rim = tier == StandingTier.hunted || tier == StandingTier.sworn;
     final inner = rim ? r - size.width * 0.07 : r;
-    canvas.drawCircle(c, inner, Paint()..color = const Color(0xFF14121A));
+    canvas.drawCircle(c, inner, Paint()..color = Palette.night8c);
     canvas.drawCircle(
         c,
         inner - 0.75,

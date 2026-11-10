@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.900.0+936]
+
+### Changed
+- **The Tower in the night theme** (UX, the design the user chose: option B).
+  Every Tower screen (the door, the creation, the floors, the spoils, the Level
+  Up, the end and the marks) wears the dark scheme of the app's palette; the rest of
+  the game stays as it is. The Tower's panels have a double ink line and a bevel.
+  The floor ladder is a stair of arched windows lit up to the floor climbed to,
+  with the wardens' and bosses' windows wider and the current floor glowing.
+  The floor's number is large and gold, and the foe stands in its panel as its
+  figure when it has art. The door shows the three bands as panes of their pictures
+  under Climb. The spoils chest is 96 px (72 on a narrow phone, so a French title
+  fits). Same information, same actions, same text.
+
 ## [1.899.0+935]
 
 ### Changed

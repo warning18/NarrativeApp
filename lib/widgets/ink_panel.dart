@@ -3,6 +3,7 @@
 // corners, with a gold edge when lit; a label over a group of panels.
 import 'package:flutter/material.dart';
 
+import '../screens/tower/tower_look.dart';
 import '../theme/stitched_ink.dart';
 
 /// A panel: the surface colour, a seam border and
@@ -27,6 +28,32 @@ class InkPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final ink = InkColors.of(context);
     final scheme = Theme.of(context).colorScheme;
+    if (TowerPanelStyle.of(context)) {
+      // The Tower's panel (v1.900): a double ink line and a bevel.
+      final panel = CustomPaint(
+        foregroundPainter: BevelPanelPainter(
+          outer: lit ? ink.gold : ink.seam,
+          inner: lit ? ink.gold.withValues(alpha: .6) : ink.seam,
+          light: Colors.white.withValues(alpha: .10),
+          shade: Colors.black.withValues(alpha: .35),
+          radius: 8,
+        ),
+        child: Container(
+          padding: padding.add(const EdgeInsets.all(5)),
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Opacity(opacity: dim ? .5 : 1, child: child),
+        ),
+      );
+      return onTap == null
+          ? panel
+          : InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: onTap,
+              child: panel);
+    }
     final body = Container(
       padding: padding,
       decoration: BoxDecoration(
