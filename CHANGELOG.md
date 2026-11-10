@@ -25,6 +25,33 @@ isn't reconstructable from git history alone.
     (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
   - `test/palette_test.dart` fails when a colour drawn in two files is written
     as a literal: it goes to the palette.
+## [1.884.0+920]
+
+### Changed
+- **The simulator fights on the ground the fight screen picks** (Core round
+  4, item 1; nothing changes on screen). `fightGroundAt`
+  (`lib/combat/fight_ground_rule.dart`) gives a fight's stage and rule from
+  its place: the watch in a city, a holy place's sanctified ground, the
+  desert heat, the rising water, the marsh mist, and the Tide where none
+  applies or a boss is fought. The fight screen's two helpers now call it,
+  and so does the playthrough simulator, which used to play every fight on
+  the Tide. On the feature ladder the Tide plays until the place rules
+  open, as in the game. In the 400-run balance batch, a third of the fights
+  now play a place rule (most of them the rising water). The encounter win
+  rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
+  ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
+  boss curve and every balance guard stay green.
+## [1.883.0+919]
+
+- **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
+  A read of every "something", "the way" and "as if" in the scenes (about 210) found the
+  narrator's similes are deliberate voice and stay; four scenes had a real placeholder,
+  now named: the tall shape in the dunes (`1120`, English and French), the message the
+  Spire courier passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and
+  the wisp's luminous smear (`3005_wisp`). In the French, 13 phrases in 11 of the 34
+  longest scenes lose their padding (150 characters in all); the rest of those scenes
+  read as long as French normally does and are left as written. No key, flag or number
+  changed; bold counts match in both languages.
 
 ## [1.882.0+918]
 

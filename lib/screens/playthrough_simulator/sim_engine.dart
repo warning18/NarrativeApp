@@ -391,7 +391,8 @@ class _SimContext {
   final List<String> startSpecs;
 
   /// A context rule every fight plays (context_rules.dart), to measure
-  /// each one; null: the Tide (no fight's place is known here).
+  /// each one; null: each fight's own ground, as the fight screen picks it
+  /// from its place (fight_ground_rule.dart), the Tide with no geography.
   final ContextRule? context;
 
   /// Reinforcements in every fight (context_rules.dart), to measure them;
@@ -573,6 +574,10 @@ _SimResult _simulate(
   // left.
   var trialFoes = <MapEntry<String, Map<String, dynamic>>>[];
   var trialChapter = 1;
+  ContextRule? trialGround;
+  // The fights won in chapter 1, for the feature ladder: a place's rule
+  // waits for the second (feature_unlocks.dart's ladderFlagsForWin).
+  var ladderWins = 0;
   if (character != null && sim != null && sim.policy == SimPolicy.competent) {
     final c = character;
     ({int wins, int health}) tryDie(List<Map<String, dynamic>> faces,
@@ -594,7 +599,7 @@ _SimResult _simulate(
               random: Random(7919 + i),
               clash: sim.clash,
               clashOff: sim.clashOff,
-              context: sim.context,
+              context: trialGround,
               reinforcement: sim.reinforcement,
             );
             if (o.won) wins++;
@@ -1329,6 +1334,7 @@ _SimResult _simulate(
   }) fightEnemies(List<String> enemyIds, int chapter,
       {bool once = false,
       bool host = false,
+      String? forcedStage,
       Map<String, Map<String, dynamic>> records = const {}}) {
     const none = (
       won: null,
@@ -1364,6 +1370,21 @@ _SimResult _simulate(
     // The die trial plays this fight's foes (see dieTrial above).
     trialFoes = entries;
     trialChapter = chapter;
+    // The ground this fight is on, as the fight screen picks it
+    // (fight_ground_rule.dart): the watch in a city, a holy place's ground,
+    // the stage's own, the Tide for a boss or with no place known; a rule
+    // the caller measures ([_SimContext.context]) in every fight. On the
+    // feature ladder the Tide plays until the place rules open.
+    final world = sim.geography;
+    final ground = sim.context ??
+        (world == null || (sim.featureLadder && chapter <= 1 && ladderWins < 2)
+            ? ContextRule.tide
+            : fightGroundAt(
+                    world, world.placeOfNode(story.nodeFor(currentId))?.id,
+                    forcedStage: fightStageFromName(forcedStage),
+                    bossFight: isBossFight(entries))
+                .rule);
+    trialGround = ground;
     // The competent player readies itself: its best gear (the pack's
     // loot and rewards counted), the merges worth crafting, its best die.
     growth?.prepareForFight(
@@ -1402,7 +1423,7 @@ _SimResult _simulate(
         perks: perks,
         clash: sim.clash,
         clashOff: sim.clashOff,
-        context: sim.context,
+        context: ground,
         reinforcement: sim.reinforcement,
         clanStanding: growth == null
             ? null
@@ -1431,6 +1452,7 @@ _SimResult _simulate(
         party?.levelIs(c.level);
       }
       if (outcome.won) {
+        if (chapter <= 1) ladderWins++;
         questLog?.recordKills(entries.map((e) => e.key));
         // What the foes drop, by their loot tables' own odds: a quest's
         // item (the sealed letter) or a material is picked up.
@@ -1564,7 +1586,9 @@ _SimResult _simulate(
     int stolen,
   }) fight(StoryChoice choice, int chapter) => choice.triggersCombat
       ? fightEnemies(choice.allTriggerEnemyIds, chapter,
-          once: choice.hasLossBranch, host: choice.hostFight)
+          once: choice.hasLossBranch,
+          host: choice.hostFight,
+          forcedStage: choice.forcedStage)
       : fightEnemies(const [], chapter);
 
   /// The land route [routeId] crossed from [fromNodeId] (v1.285.0, see

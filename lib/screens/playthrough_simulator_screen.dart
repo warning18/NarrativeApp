@@ -21,6 +21,8 @@ import '../combat/combat_engine.dart'
         zoneBossEnemyIds;
 import '../combat/clan_dice.dart' show Resonance, resonanceOf, resonantFaces;
 import '../combat/context_rules.dart' show ContextRule, Reinforcement;
+import '../combat/field_anomaly.dart' show fightStageFromName;
+import '../combat/fight_ground_rule.dart' show fightGroundAt, isBossFight;
 import '../combat/gear_effects.dart';
 import '../combat/spec_variants.dart' show SpecVariantInfo, specVariantsFrom;
 import '../combat/specialisations.dart' show SpecInfo, specInfosFrom;
