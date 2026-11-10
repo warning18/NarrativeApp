@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.898.0+934]
+
+### Added
+- **Kelda and Sable stand as figures in the Party tab** (UX, the Art pilots
+  the user approved). Where their circle portrait was, in the seat cards, on the
+  bench and on their page, each now shows their PixelLab sprite (48 x 48,
+  mirrored to face east with the hero) on a small ground in the colour of their
+  approval tier. The card, the name, the health bar and the tier chip do not
+  move. A companion without art keeps the class mark in its circle (Vica keeps
+  her dog). Guard: `test/companion_figure_test.dart`.
+
 ## [1.897.0+933]
 
 ### Added
