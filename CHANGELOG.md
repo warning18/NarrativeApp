@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.903.0+939]
+
+- Dice in the fight: the d4, d8, d10, d12 and d20 are real 3D solids that tumble in perspective, each facet carrying its own face (a skill's icon, or a type icon over its value) on the facets turned toward you; the d20 stands about 130 px across. A die not yet rolled shows a "?" on its front. Falls back to the flat drawing with a slow frame, on small tiles and with reduced motion stays still.
+
 ## [1.902.0+938]
 
 - Inventory die tile: d4, d6, d8, d12 and d20 now show a bone 3D body inside the skin-coloured ring (Dice tab, companion page, character badge); d10 keeps its tile.
