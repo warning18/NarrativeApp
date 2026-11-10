@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.893.0+929]
+
+### Fixed
+- **The 320 px phone: three small things QA found** (UX, QA's L3 issues #891,
+  #892 and #893). In French the fight's Reroll and Confirm buttons no longer
+  break in the middle of a word ("Relancer (2)", "Confirmer" are shrunk to
+  one line to fit). The home shell's top bar gives its title room (narrower
+  buttons and a tighter margin under 360 px), so "Personnage" and
+  "Campement" read whole instead of "Pe..." and "C...". On a short screen
+  (under 640 px high) Level Up's radar is smaller, so "Take this pick" is above
+  the fold at 320 x 568. The two spoils rows said to lack an icon (Elite Mark,
+  Timber) do have their pixel icons: the picture was taken before they loaded.
+
 ## [1.889.0+925]
 
 ### Added
