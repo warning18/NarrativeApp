@@ -29,6 +29,7 @@ import '../widgets/ship_widgets.dart';
 import '../widgets/ship_yard.dart';
 import 'voyage_screen.dart';
 import '../widgets/ink_confirm.dart';
+import '../widgets/ink_loading.dart';
 
 /// The camp's Harbor, once built: the Rusty Eel hauled up on its slipway,
 /// her hull made sound and the shipwright's parts fitted into her slots.
@@ -193,7 +194,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
 
     Widget body;
     if (ships == null || parts == null) {
-      body = const Center(child: CircularProgressIndicator());
+      body = const InkLoading();
     } else if (ship == null) {
       body = Center(child: Text(tr(ref, 'no_zones_available')));
     } else {

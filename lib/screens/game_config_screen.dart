@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../gamedata/game_config_schema.dart';
 import '../widgets/ink_confirm.dart';
+import '../widgets/ink_loading.dart';
 
 class GameConfigScreen extends StatefulWidget {
   const GameConfigScreen({super.key});
@@ -106,7 +107,7 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const InkLoading()
           : ListView(
               padding: const EdgeInsets.all(16),
               children: gameConfigFields

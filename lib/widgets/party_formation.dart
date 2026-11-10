@@ -11,6 +11,7 @@ import '../providers/player_session_provider.dart';
 import '../screens/companion_page.dart';
 import '../theme/stitched_ink.dart';
 import 'companion_parts.dart';
+import 'ink_loading.dart';
 
 class PartyFormation extends ConsumerWidget {
   const PartyFormation({super.key, required this.houses});
@@ -27,7 +28,7 @@ class PartyFormation extends ConsumerWidget {
         ref.watch(playerSessionProvider.select((s) => s.builtHouseIds));
     final unmet = ref.watch(unmetCompanionCountProvider);
     if (views == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const InkLoading();
     }
     if (views.isEmpty) {
       return Padding(

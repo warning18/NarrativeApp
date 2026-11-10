@@ -44,7 +44,10 @@ bool isBossFight(Iterable<MapEntry<String, Map<String, dynamic>>> enemies,
     rule: contextRuleFor(
       stage: stage,
       bossFight: bossFight,
-      city: guardedPlaceKinds.contains(geography.place(placeId)?.kind),
+      // The settlement's kind, not the place's own: a district has none
+      // and a building has its own (a tavern), so asking the place itself
+      // never found a town (v1.891).
+      city: guardedPlaceKinds.contains(geography.locationOf(placeId)?.kind),
       holy: geography.tagsOf(placeId).contains('holy'),
     ),
   );

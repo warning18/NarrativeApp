@@ -11,6 +11,7 @@ import '../gamedata/quest_validation.dart';
 import '../providers/game_db_providers.dart';
 import '../widgets/data_export_sheet.dart';
 import 'game_db_record_editor_screen.dart';
+import '../widgets/ink_loading.dart';
 
 class GameDbListScreen extends ConsumerStatefulWidget {
   const GameDbListScreen({super.key, required this.schema});
@@ -250,7 +251,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const InkLoading(),
         error: (error, stack) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
