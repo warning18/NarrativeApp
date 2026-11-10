@@ -26,16 +26,15 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'forge_moment.dart';
 import 'player_stats_bar.dart';
+import 'ink_sheet.dart';
 
 /// A test seam: the random the forge rolls its d20 with (null: a fresh one).
 Random Function()? forgeRandomForTest;
 
 /// Opens the forge's recipes at [shopId].
 Future<void> showForgeSheet(BuildContext context, {required String shopId}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
     builder: (_) => FractionallySizedBox(
       heightFactor: 0.8,
       child: ForgeSheetView(shopId: shopId),

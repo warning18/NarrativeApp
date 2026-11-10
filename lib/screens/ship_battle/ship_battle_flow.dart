@@ -73,10 +73,8 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
   /// strain it risks; a tap pushes and closes the sheet.
   Future<void> _openPushSheet() {
     final lang = ref.read(appLanguageProvider);
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         final ink = InkColors.of(sheetContext);

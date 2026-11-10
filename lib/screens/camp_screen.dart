@@ -44,6 +44,7 @@ import 'shop_detail_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
+import '../widgets/ink_sheet.dart';
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -776,10 +777,8 @@ class _SceneChip extends StatelessWidget {
     return OutlinedButton.icon(
       key: const Key('camp_scene_chip'),
       style: _compact,
-      onPressed: () => showModalBottomSheet<void>(
+      onPressed: () => showInkSheet<void>(
         context: context,
-        showDragHandle: true,
-        isScrollControlled: true,
         builder: (sheetContext) => SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),

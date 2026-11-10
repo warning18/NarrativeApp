@@ -19,13 +19,12 @@ import '../providers/stat_breakdown_provider.dart';
 import '../providers/training_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'ability_radar.dart' show abilityAbbrevKey;
+import 'ink_sheet.dart';
 
 /// Opens the sheet of [stat] (an ability: one of the radar's keys).
 Future<void> showStatSheet(BuildContext context, String stat) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (_) => StatSheet(stat: stat),
   );
 }
