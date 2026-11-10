@@ -12,6 +12,7 @@ import '../widgets/ability_radar.dart';
 import '../widgets/ability_visuals.dart';
 import '../widgets/origin_scene_backdrop.dart';
 import '../widgets/story_text.dart';
+import '../theme/motion.dart';
 
 /// The formative memories, on their own page once the character is named:
 /// six moments from the age of six to sixteen (origin_stories.dart), one
@@ -151,7 +152,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         appBar: AppBar(title: Text(tr(ref, 'origin_stories_section_title'))),
         body: SafeArea(
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 260),
+            duration: Motion.base,
             child: KeyedSubtree(
               key: ValueKey('$_index/$_showingOutcome'),
               child:
@@ -536,7 +537,7 @@ class _AgeTimeline extends StatelessWidget {
           if (i > 0)
             Expanded(
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
+                duration: Motion.base,
                 height: 1.5,
                 margin: const EdgeInsets.only(bottom: 16),
                 color: answered[i - 1]
@@ -548,7 +549,7 @@ class _AgeTimeline extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
+                duration: Motion.base,
                 width: i == current ? 14 : 10,
                 height: i == current ? 14 : 10,
                 decoration: BoxDecoration(
@@ -924,7 +925,7 @@ class _AlignmentGauge extends StatelessWidget {
                   child: ColoredBox(color: colors.outline),
                 ),
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
+                duration: Motion.base,
                 left: at * w - 7,
                 top: 2,
                 width: 14,

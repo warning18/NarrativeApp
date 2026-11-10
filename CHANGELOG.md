@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.886.0+922]
+
+### Changed
+- **Motion tokens** (the user's choice, UX-2 round 4): the interface's own
+  transitions keep to three paces, `Motion.fast` 160 ms, `base` 240 ms and
+  `slow` 400 ms (`lib/theme/motion.dart`). The 22 implicit animations (a fade,
+  a switch, a resize: `AnimatedOpacity`, `AnimatedSwitcher`,
+  `AnimatedContainer`, `AnimatedRotation`, `AnimatedPositioned`, `AnimatedSize`)
+  had 12 different durations of their own, from 120 to 400 ms; they now use a
+  token. Moved: 120 and 180 ms to 160; 200, 220, 250, 260, 280, 300 and 320 ms
+  to 240 (the two story page switchers, 320 to 240, are a little quicker);
+  160 and 400 ms stay. Not moved on purpose: timelines choreographed to art (a
+  fight's blows, the reveals, the loops, the world map's flights).
+- `test/motion_tokens_test.dart` fails when an implicit animation under half a
+  second carries a number of its own.
+
 ## [1.885.0+921]
 
 ### Changed
