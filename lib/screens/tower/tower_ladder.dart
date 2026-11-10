@@ -1,8 +1,8 @@
-// The Tower's ladder (v1.847+, the-tower-designs.md direction B's idea kept
-// inside A's look): 30 floors from the bottom (1) to the top (30), the floors
-// climbed filled in gold, the floor the party stands on lit with its number,
-// the wardens (5, 15, 25) wider and the bosses (10, 20, 30) widest, with
-// their number beside them.
+// The Tower's ladder (v1.847+; v1.900 as a stair of arched windows): 30 floors
+// from the bottom (1) to the top (30), a window lit gold for each floor
+// climbed, the floor the party stands on glowing with its number, the
+// wardens (5, 15, 25) wider and the bosses (10, 20, 30) widest and ringed in
+// blood, with their number in them.
 import 'package:flutter/material.dart';
 
 import '../../data/tower/tower_tables.dart';
@@ -23,8 +23,50 @@ class TowerLadder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ink = InkColors.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final label = Theme.of(context).textTheme.labelSmall;
+    const night = Color(0xFF211E28);
+    const dark = Color(0xFF14121A);
+    Widget stone(int n) {
+      final here = n == floor;
+      final lit = n <= floor;
+      final w = isBoss(n)
+          ? towerLadderWidth - 4
+          : isWarden(n)
+              ? 28.0
+              : 20.0;
+      return Container(
+        width: w,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: night,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+          border: Border.all(color: isBoss(n) ? ink.blood : dark, width: 1.2),
+          boxShadow: here
+              ? [
+                  BoxShadow(
+                      color: ink.gold.withValues(alpha: .7), blurRadius: 9)
+                ]
+              : null,
+        ),
+        child: here
+            ? Text('$n',
+                style: label?.copyWith(
+                    fontWeight: FontWeight.w800, color: ink.gold, height: 1))
+            : isBoss(n)
+                ? Text('$n',
+                    style: label?.copyWith(color: Colors.white70, height: 1))
+                : Container(
+                    width: w * 0.36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: lit ? ink.gold.withValues(alpha: .85) : dark,
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(3)),
+                    ),
+                  ),
+      );
+    }
+
     return SizedBox(
       key: const Key('tower_ladder'),
       width: towerLadderWidth,
@@ -36,42 +78,9 @@ class TowerLadder extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 1),
                 child: Center(
                   child: n == floor
-                      ? Container(
-                          key: const Key('tower_ladder_here'),
-                          width: towerLadderWidth - 4,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: ink.gold,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          child: Text('$n',
-                              style: label?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: scheme.surface,
-                                  height: 1)),
-                        )
-                      : Container(
-                          width: isBoss(n)
-                              ? towerLadderWidth - 4
-                              : isWarden(n)
-                                  ? 26
-                                  : 16,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: n < floor
-                                ? ink.gold.withValues(alpha: .55)
-                                : ink.seam.withValues(alpha: .55),
-                            border: isBoss(n)
-                                ? Border.all(color: ink.blood, width: 1.2)
-                                : null,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          child: isBoss(n)
-                              ? Text('$n',
-                                  style: label?.copyWith(
-                                      color: scheme.onSurface, height: 1))
-                              : null,
-                        ),
+                      ? KeyedSubtree(
+                          key: const Key('tower_ladder_here'), child: stone(n))
+                      : stone(n),
                 ),
               ),
             ),

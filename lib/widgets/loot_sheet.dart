@@ -83,11 +83,13 @@ class LootSheet extends StatelessWidget {
     this.tierColor,
     this.footer,
     this.showHandle = true,
+    this.chestSize = 60,
   });
 
   final AppLanguage language;
   final String title;
   final String chestAsset;
+  final double chestSize;
   final String tierLabel;
   final Color? tierColor;
   final List<LootSheetLine> changes;
@@ -138,7 +140,7 @@ class LootSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               children: [
                 Row(children: [
-                  PixelIcon(chestAsset, size: 60),
+                  PixelIcon(chestAsset, size: chestSize),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

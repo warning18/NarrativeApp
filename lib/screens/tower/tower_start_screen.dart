@@ -9,19 +9,30 @@ import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import '../race_profession_screen.dart';
+import 'tower_backdrop.dart';
 import 'tower_floor_screen.dart';
+import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
 import '../../widgets/ink_panel.dart';
 
-class TowerStartScreen extends ConsumerStatefulWidget {
+/// The Tower's door, in the Tower's night theme (its body below).
+class TowerStartScreen extends StatelessWidget {
   const TowerStartScreen({super.key});
 
   @override
-  ConsumerState<TowerStartScreen> createState() => _TowerStartScreenState();
+  Widget build(BuildContext context) =>
+      const TowerNight(child: _TowerStartBody());
 }
 
-class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
+class _TowerStartBody extends ConsumerStatefulWidget {
+  const _TowerStartBody();
+
+  @override
+  ConsumerState<_TowerStartBody> createState() => _TowerStartScreenState();
+}
+
+class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   bool _starting = false;
 
   String _fill(String text, Map<String, Object> values) {
@@ -44,9 +55,11 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     final progress = ref.read(towerProvider).value?.progress;
     final locks = _locks(progress?.professions ?? towerStartProfessions);
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => RaceProfessionScreen(
-        locks: locks,
-        onChosen: _begin,
+      builder: (_) => TowerNight(
+        child: RaceProfessionScreen(
+          locks: locks,
+          onChosen: _begin,
+        ),
       ),
     ));
   }
@@ -73,72 +86,108 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     final run = state.run;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-          children: [
-            Text(tr(ref, 'tower_tagline'),
-                style: theme.textTheme.bodyLarge
-                    ?.copyWith(fontStyle: FontStyle.italic)),
-            const SizedBox(height: 10),
-            InkPanel(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${progress.marks} ${tr(ref, 'tower_marks_name')}',
-                            key: const Key('tower_marks_total'),
-                            style: theme.textTheme.titleSmall
-                                ?.copyWith(color: ink.gold)),
-                        Text(
-                            [
-                              _fill(tr(ref, 'tower_best'),
-                                  {'n': progress.bestFloor}),
-                              _fill(tr(ref, 'tower_runs_line'),
-                                  {'r': progress.runs, 'w': progress.wins}),
-                            ].join(' · '),
-                            style: theme.textTheme.bodySmall),
-                      ],
-                    ),
-                  ),
-                  OutlinedButton(
-                    key: const Key('tower_marks_button'),
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const TowerMarksScreen())),
-                    child: Text(tr(ref, 'tower_marks_button')),
-                  ),
-                ],
-              ),
-            ),
-            if (run != null && !run.isOver) ...[
+      body: TowerBackdrop(
+        floor: 1,
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+            children: [
+              Text(tr(ref, 'tower_tagline'),
+                  style: theme.textTheme.bodyLarge
+                      ?.copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 10),
-              FilledButton(
-                key: const Key('tower_continue'),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const TowerFloorScreen())),
-                child: Text(
-                    '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
-                      'n': run.floor
-                    })}'),
+              InkPanel(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              '${progress.marks} ${tr(ref, 'tower_marks_name')}',
+                              key: const Key('tower_marks_total'),
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(color: ink.gold)),
+                          Text(
+                              [
+                                _fill(tr(ref, 'tower_best'),
+                                    {'n': progress.bestFloor}),
+                                _fill(tr(ref, 'tower_runs_line'),
+                                    {'r': progress.runs, 'w': progress.wins}),
+                              ].join(' · '),
+                              style: theme.textTheme.bodySmall),
+                        ],
+                      ),
+                    ),
+                    OutlinedButton(
+                      key: const Key('tower_marks_button'),
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const TowerMarksScreen())),
+                      child: Text(tr(ref, 'tower_marks_button')),
+                    ),
+                  ],
+                ),
               ),
+              if (run != null && !run.isOver) ...[
+                const SizedBox(height: 10),
+                FilledButton(
+                  key: const Key('tower_continue'),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const TowerFloorScreen())),
+                  child: Text(
+                      '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
+                        'n': run.floor
+                      })}'),
+                ),
+              ],
+              const SizedBox(height: 14),
+              FilledButton(
+                key: const Key('tower_climb'),
+                onPressed: _starting ? null : _create,
+                child: Text(tr(ref, 'tower_climb')),
+              ),
+              const SizedBox(height: 8),
+              Text(tr(ref, 'tower_save_note'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              // The three bands of the tower, top to bottom (v1.900).
+              const SizedBox(height: 18),
+              for (final band in [3, 2, 1]) _bandPane(band, theme, ink),
             ],
-            const SizedBox(height: 14),
-            FilledButton(
-              key: const Key('tower_climb'),
-              onPressed: _starting ? null : _create,
-              child: Text(tr(ref, 'tower_climb')),
-            ),
-            const SizedBox(height: 8),
-            Text(tr(ref, 'tower_save_note'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  /// One band of the tower as a pane of its own picture: its name and floors.
+  Widget _bandPane(int band, ThemeData theme, InkColors ink) => Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            height: 70,
+            child: Stack(fit: StackFit.expand, children: [
+              Image.asset(towerBackdropAsset(band),
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              ColoredBox(color: Colors.black.withValues(alpha: .45)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(tr(ref, 'tower_band_$band'),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: Colors.white)),
+                  ),
+                  Text('${(band - 1) * 10 + 1}\u2013${band * 10}',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(color: ink.gold)),
+                ]),
+              ),
+            ]),
+          ),
+        ),
+      );
 }

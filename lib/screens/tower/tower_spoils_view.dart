@@ -43,6 +43,8 @@ class TowerSpoilsView extends ConsumerWidget {
       chestAsset: 'assets/icons/chests/wooden_open.png',
       tierLabel: tr(ref, 'tower_floor_${run.floor}'),
       showHandle: false,
+      // The chest at 96 px (72 on a narrow phone, so a French title fits).
+      chestSize: MediaQuery.sizeOf(context).width >= 360 ? 96 : 72,
       changes: [
         if (potions > 0)
           LootSheetLine(

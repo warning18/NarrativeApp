@@ -8,17 +8,30 @@ import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
+import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_start_screen.dart';
 import '../../widgets/ink_panel.dart';
 
-class TowerEndScreen extends ConsumerWidget {
+/// The end of a run, in the Tower's night theme (its body below).
+class TowerEndScreen extends StatelessWidget {
   const TowerEndScreen({super.key, required this.run, required this.progress});
 
   /// The run that ended (dead, won or left).
   final TowerRun run;
 
   /// The Tower's record with this run's marks banked.
+  final TowerProgress progress;
+
+  @override
+  Widget build(BuildContext context) =>
+      TowerNight(child: _TowerEndBody(run: run, progress: progress));
+}
+
+class _TowerEndBody extends ConsumerWidget {
+  const _TowerEndBody({required this.run, required this.progress});
+
+  final TowerRun run;
   final TowerProgress progress;
 
   @override
