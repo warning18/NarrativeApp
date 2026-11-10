@@ -36,3 +36,11 @@ Balance 1317.5 before, 1288.5 after: **29 generations** (6 chests x 1, die 1, 2 
 - Panel + button: one `create_ui_asset` call per surface (dark `#1F1C23`, parchment `#EAE0C9`, the app's real `surfaceContainer` tokens, not the board mock's `#3B3743`), seed 21, palette-locked, style reference = the stitched-ink mock of the board. The button on the parchment sheet had the word "BUTTON" written in it; it is painted out in the review file.
 - Die: pixen 64x64, seed 7. One fixed isometric cube (no rotation, no numbers).
 - Chapter strips: pixen 160x56, seed 3; they are much more detailed than today's code strips.
+
+## Round 2 (after the user's marks on round 1), `art/pixellab-pilots/round2/`
+Balance 1288.5 before, 1267.5 after: **21 generations**. Nothing wired.
+- Renn, 3 candidates (A greatcoat and peaked cap, B bald toll collector with apron, C black wide-brim hat and cloak): `create_character` v3, 2 each = 6.
+- Open chests (wooden and iron, 2 tries each): `edit_image_pixen` with the approved closed chest as the input, 1 each = 4. Gold open kept as approved.
+- Dice in the Ember skin (blank faces): d4, d8, d10, d12, d20 and the d6 bone and iron skins, pixen 64x64, 1 each = 7; retries for d12 and d20 (the first tries read as diamonds) = 4, of which two (`d12_c`, `d20_c`, seeds 9) were not kept (flames around the die). Raw files of all are in `round2/raw/`.
+- Banners: 3 stronger versions of the Dominion banner by exact pixel edit (0 generations), `round2/banners/`.
+Seeds: chest edits 41 and 42; dice 7 (retries 8 and 9). Prompts per file: `round2/index.json`.
