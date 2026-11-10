@@ -20,3 +20,10 @@ Board: `boards/characters.png`. Pilots: `iron_golem`, `void_sovereign`, `lysa`, 
 
 ## Recommendation
 **B (60x60 side view) for every enemy and boss; people (NPCs, companions) at 48x48 side view** so a person never outgrows the hero. A is retired because it is the only top-down set and mixes badly with the side-view backdrops. Cost: PixelLab standard character, 1 generation, plus about 8 for an idle clean-up pass per sprite.
+
+## Style rule from the user (2026-11-10): inspired by the main character sprite
+"Ensure that character, enemy or NPC generations are inspired from the main character sprite style in pixellab.ai."
+- **The reference:** the straw-hat hero, group "Hero" in the PixelLab library, tag `Main_Ronin` (states `Idle-Walking`, `Idle-Walking (copy)`, `Idle-Walking (copy 2)`; id `3cd4c1e2-a9b9-4b5b-945a-a219c084b7bd` is the one used). It is the sprite the fights show as "You" (`assets/visuals/walker`). Staged: `art/pixellab-enemies2/style/ronin_main_west.png`.
+- **What defines it:** chibi proportions (head about 40% of the height), a thick clean dark outline, flat rounded shading in few tones, 48x48 canvas, side view.
+- **How it is applied:** as a style reference, not only text: `create_character` in `pro` mode with `style_character_id` set to the ronin (it copies the outline, proportions and shading); every other parameter stays (60 px, no text, muted warm palette).
+- **Check:** `docs/art/boards/style-check.png` (the ronin next to the approved sprites) and `docs/art/boards/style-test.png` (same enemy in v3, standard + chibi, pro + style reference). The v3 sprites (realistic 3.5-head proportions, finer detail) drift from the ronin; standard + chibi is too small and weak; pro + style reference matches but costs 10 instead of 2.

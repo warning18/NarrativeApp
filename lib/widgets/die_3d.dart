@@ -17,15 +17,20 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../combat/face_keywords.dart';
 import '../utils/face_style.dart';
+import 'die_poly3d.dart';
 import 'die_skins.dart';
+import 'die_solids.dart';
 import 'pixel_sprite.dart';
 import 'poly_die.dart';
 import '../theme/palette.dart';
 
 export 'poly_die.dart' show DieShape, dieShapeOf;
+export 'die_solids.dart' show dieSolidOf;
+export 'die_poly3d.dart' show dieSolidScale;
 
 /// One side of the cube: what it shows, and the colour it is tinted.
 class DieCubeFace {
@@ -34,6 +39,26 @@ class DieCubeFace {
   final Widget glyph;
   final Color color;
 }
+
+/// A die not yet rolled shows this on its front: a pale plaque with a "?",
+/// in place of the face it will land on.
+Widget dieUnrolledMark() => Container(
+      key: const ValueKey('die_unrolled_mark'),
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Palette.amber88.withValues(alpha: 0.92),
+        border: Border.all(color: Palette.goldDark, width: 2),
+      ),
+      child: const Text('?',
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              height: 1,
+              color: Palette.goldDark)),
+    );
 
 /// The burst a face lets go when it lands.
 enum DieFx { strike, ward, bloom, arcs, miasma, shock, drain, fizzle }
@@ -59,6 +84,15 @@ const double dieRestTurnY = 0.26;
 /// Perspective: the eye sits `1 / _perspective` in front of the cube.
 const double _perspective = 0.0016;
 
+/// The smallest square a die is drawn as a real solid in; smaller ones (the
+/// rail, the loadout's ring) are identity tiles and stay flat.
+const double dieSolidMinSize = 40;
+
+/// A frame that takes longer than this, [dieSlowFrames] times in a row during
+/// a roll, drops the solid for the flat drawing.
+const Duration dieFrameBudget = Duration(milliseconds: 24);
+const int dieSlowFrames = 6;
+
 /// Turns the tumble makes before the die settles.
 const double _tumbleTurns = 2.5;
 
@@ -83,6 +117,7 @@ class Die3D extends StatefulWidget {
     this.shape = DieShape.d6,
     this.artId,
     this.flat = false,
+    this.facets,
   }) : assert(faces.length == 6);
 
   /// The six sides, the front one (the face that lands) first.
@@ -143,6 +178,11 @@ class Die3D extends StatefulWidget {
   /// tumbling cube.
   final bool flat;
 
+  /// Every face of the die, the landed one first, for a solid of more than
+  /// six sides: each facet carries its own face (die_poly3d.dart). Without it
+  /// the solid's facets repeat [faces].
+  final List<DieCubeFace>? facets;
+
   @override
   State<Die3D> createState() => _Die3DState();
 }
@@ -151,10 +191,30 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   late final AnimationController _burst = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 900));
 
+  /// Frames in a row that took too long while a solid tumbled; the solid
+  /// gives way to the flat drawing for good when it is slow.
+  int _slow = 0;
+  bool _flatFallback = false;
+  bool _watching = false;
+
   @override
   void initState() {
     super.initState();
     PixelStrips.preload(_pixelNames(widget.fx));
+    if (dieSolidOf(widget.shape) != null) {
+      SchedulerBinding.instance.addTimingsCallback(_onTimings);
+      _watching = true;
+    }
+  }
+
+  void _onTimings(List<FrameTiming> timings) {
+    if (_flatFallback || !widget.rolling) return;
+    for (final t in timings) {
+      _slow = t.totalSpan > dieFrameBudget ? _slow + 1 : 0;
+    }
+    if (_slow >= dieSlowFrames && mounted) {
+      setState(() => _flatFallback = true);
+    }
   }
 
   /// The strips that make a landing, in pixel art (see
@@ -182,6 +242,9 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    if (_watching) {
+      SchedulerBinding.instance.removeTimingsCallback(_onTimings);
+    }
     _burst.dispose();
     super.dispose();
   }
@@ -338,7 +401,17 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              if (widget.shape != DieShape.d6 || widget.flat)
+              if (_solid)
+                PolyDie3D(
+                  shape: widget.shape,
+                  faces: widget.facets ?? widget.faces,
+                  skin: _skin,
+                  size: size,
+                  t: t,
+                  unrolled: _unrolled,
+                  landed: widget.fx != null && !widget.dim && t >= 1,
+                )
+              else if (widget.shape != DieShape.d6 || widget.flat)
                 PolyDie(
                   shape: widget.shape,
                   size: size,
@@ -364,8 +437,21 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
     );
   }
 
+  /// Whether the die is drawn as a real solid: a d4, d8, d10, d12 or d20 of
+  /// a size where its facets can carry a glyph, not asked flat and not slow.
+  bool get _solid =>
+      !widget.flat &&
+      !_flatFallback &&
+      widget.size >= dieSolidMinSize &&
+      dieSolidOf(widget.shape) != null;
+
+  /// Not rolled yet: the front shows a "?" in place of its face.
+  bool get _unrolled => widget.dim && !widget.rolling;
+
   Widget _face(DieCubeFace face, CubeFacePlacement p) => DieFaceTile(
-        face: face,
+        face: p.slot == 0 && _unrolled
+            ? DieCubeFace(glyph: dieUnrolledMark(), color: face.color)
+            : face,
         size: widget.size,
         skin: _skin,
         skinned: widget.skin != null,

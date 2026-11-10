@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/die_3d.dart';
+import 'package:narrative_data_app/widgets/die_poly3d.dart';
 import 'package:narrative_data_app/widgets/die_art.dart';
 import 'package:narrative_data_app/widgets/die_skins.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
@@ -137,8 +138,13 @@ void main() {
         ),
       ));
       await tester.pump(const Duration(milliseconds: 100));
+      // The solids (d4, d8, d10, d12, d20) are real 3D from v1.903; the coin
+      // stays the flat drawing and the d6 the cube.
+      final solid = dieSolidOf(shape) != null;
+      expect(find.byType(PolyDie3D), solid ? findsOneWidget : findsNothing,
+          reason: shape.name);
       expect(find.byType(PolyDie),
-          shape == DieShape.d6 ? findsNothing : findsOneWidget,
+          shape == DieShape.coin ? findsOneWidget : findsNothing,
           reason: shape.name);
       expect(tester.takeException(), isNull, reason: shape.name);
     }

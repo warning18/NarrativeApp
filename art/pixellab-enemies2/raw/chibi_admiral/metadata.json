@@ -1,0 +1,36 @@
+{
+  "group_id": "198dd187-1bed-4b0f-b211-546879966f1b",
+  "states": [
+    {
+      "character": {
+        "id": "588f8458-d6fd-46c2-bffe-ad8d06ae1692",
+        "name": "Idle",
+        "prompt": "undead admiral in a long pale white naval coat with gold braid, tricorn hat, a rusted sabre, ghostly grey skin, tattered orders, muted warm palette, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T22:14:03.662168+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T22:15:58.598781"
+}

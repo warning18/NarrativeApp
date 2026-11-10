@@ -55,6 +55,11 @@ The user: the game draws the skill glyph on each face, so the body must be simpl
 ## Round 4: panels and buttons, three new directions (free pixel drawing, 0 generations)
 `art/pixellab-pilots/round4/` (`index.json`, `<direction>/<dark|parchment>/panel_<state>.png` 48x32 and `button_<state>.png` 40x16, states normal, pressed, disabled, lit) and `docs/art/boards/round4-*.png`. Real tokens: dark surface `#1F1C23`, parchment `#EAE0C9`, panel corner 10 dp and button corner 4 dp (art px = 2 dp: 5 and 2 px), gold primary buttons. A: double ink line with corner stitches. B: worn leather/parchment edge (ragged 3-tone edge, rivets). C: flat pixel frame with 1 px highlight and shadow bevel. Nine-slice corner 6 px (panel), 4 px (button). Round 1's stitched ink was not chosen. Balance unchanged, 1251.5.
 
+## Round 6: next enemies and fight backgrounds (nothing wired)
+Balance 1251.5 before, 1227.5 after: **24 generations**.
+- Enemies (`art/pixellab-enemies2/`, `index.json`, sheet `docs/art/boards/enemies-round2.png`): `create_character` v3 at 60 px, 2 generations each, for tear_herald, white_admiral, bone_warden, inquisition_high_warden, cultist_acolyte, hollow_reflection (12); `create_image_pixen` 60x60, 1 each, for void_hound and void_wisp (2; seed 21). The void_hound came out as a wolf head, not a full hound. Staged palette PNG8 (32 colours) in `staged/`, raw in `raw/`. Ranking reasons are in the index (bosses and wardens first, then the most met in the data: void_hound 23 references, cultist_acolyte 18, void_wisp 17, hollow_reflection 15).
+- Fight backgrounds (`art/pixellab-backgrounds/fight/`, `docs/art/fight-backgrounds.md`, sheet `docs/art/boards/fight-backgrounds.png`): `create_image_pixen` 180x320, seeds 11 and 12, 10 generations.
+
 ## Dice 40 px cuts (no generation)
 `art/pixellab-pilots/final/dice/die_{d4,d6,d8,d12,d20}_bone_40.png`: the 44 px recipe at 40 px for the companion page's tile (user chose B: bone body on the die's own skin tile). Free PIL cut from `round3/pixellab`, PNG8 (`tool/png8.py --check`: 0 to convert). Balance unchanged, 1251.5.
 

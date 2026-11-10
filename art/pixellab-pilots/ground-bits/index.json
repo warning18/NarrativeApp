@@ -1,0 +1,93 @@
+{
+ "note": "Hand-drawn (PIL), 0 generations. Cells are cw x ch pixels; variants 0..n-1 side by side. Colours from the ground-reaction prototype and the chosen backgrounds. Pieces: dust 3 puffs + 2 grains; leaf 2 leaves + twig + 2 grass blades; chip 3 chips + 2 specks; splinter 3 splinters + 2 flecks; snow 3 puffs + 2 flakes; ripple 4 expanding rings (6x3, 12x5, 18x8, 22x10, ellipses in a 24x12 cell).",
+ "colours": {
+  "dust": {
+   "a": "#EBD3A8",
+   "b": "#D9B98A",
+   "c": "#C49A66"
+  },
+  "leaf": {
+   "a": "#A9D45B",
+   "b": "#6FA03C",
+   "c": "#3F6B2A",
+   "d": "#8A6A3C"
+  },
+  "chip": {
+   "a": "#B4B0AA",
+   "b": "#8D8A86",
+   "c": "#5E5B58"
+  },
+  "splinter": {
+   "a": "#D1A06A",
+   "b": "#A9794A",
+   "c": "#6E4C2B"
+  },
+  "snow": {
+   "a": "#FFFFFF",
+   "b": "#DCE8F4",
+   "c": "#B9CDE4"
+  },
+  "ripple": {
+   "a": "#E6F0F4",
+   "b": "#A9C3CF",
+   "c": "#6F8E9E"
+  }
+ },
+ "pieces": {
+  "dust": {
+   "file": "dust_bits.png",
+   "cell_px": [
+    8,
+    8
+   ],
+   "cells": 5,
+   "ground": "dunes (and roads)"
+  },
+  "leaf": {
+   "file": "leaf_bits.png",
+   "cell_px": [
+    8,
+    8
+   ],
+   "cells": 5,
+   "ground": "woods and fields"
+  },
+  "chip": {
+   "file": "chip_bits.png",
+   "cell_px": [
+    8,
+    8
+   ],
+   "cells": 5,
+   "ground": "ruins and halls"
+  },
+  "splinter": {
+   "file": "splinter_bits.png",
+   "cell_px": [
+    8,
+    8
+   ],
+   "cells": 5,
+   "ground": "quay and deck"
+  },
+  "snow": {
+   "file": "snow_bits.png",
+   "cell_px": [
+    8,
+    8
+   ],
+   "cells": 5,
+   "ground": "snow coast"
+  },
+  "ripple": {
+   "file": "ripple_bits.png",
+   "cell_px": [
+    24,
+    12
+   ],
+   "cells": 4,
+   "ground": "water: quay, waves, ford"
+  }
+ },
+ "generations": 0
+}
