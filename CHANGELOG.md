@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.902.0+938]
+## [1.901.0+937]
 
 ### Changed
 - **The thirteen clan banners, redrawn** (UX, the Art pack the user approved:
