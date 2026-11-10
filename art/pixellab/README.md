@@ -40,3 +40,17 @@ Not yet bundled: UX crops or converts what the game uses into `assets/visuals/`
 (`lib/widgets/fight_sprites.dart` hard-codes 48 x 48 frames for enemies today, so
 a 60 x 60 set needs a frame size per sprite). The matriarch needs a larger canvas
 in PixelLab (set_canvas_size, free) before it is used.
+
+## More enemies and people (PixelLab groups, one folder per group, one subfolder per state)
+
+All 48 x 48, side view, 8 directions; some states carry a `Walking` set. Raw, not
+bundled; UX crops the west idle into `assets/visuals/fighters/` when an enemy is wired.
+
+| Folder | PixelLab group | Candidate enemy ids (state to confirm with a picture) |
+|---|---|---|
+| `wreck_scavenger` | City Wreck scavenger (4 states) | `wreck_scavenger` |
+| `noble_bouncer` | The Noble Bouncer (3 states: Idle, "A looter who got to...", "Thiner man, no beard") | `den_bouncer`, `den_looter` |
+| `sedge_returned` | Sedge of the Returned (2 states) | `mire_returned_sedge` (NPC `sedge_returned`) |
+| `low_demon` | A low level demon | `demon_imp` |
+| `low_angel` | A low level angel with blond hairs | `angel_sentinel` |
+| `desert_bandit` | Bandit from the desert (6 clothes states, one a woman) | `street_bandit` and other bandits |
