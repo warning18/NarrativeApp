@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.895.0+931]
+
+### Added
+- **The Tower floor has a backdrop** (UX, from the user's PixelLab library).
+  Behind the floor screen (and its spoils and card pages) a picture of the
+  tower's room: the lower stairs (floors 1 to 10), the middle halls (11 to
+  20) and the ruined top (21 to 30). Each is a 180 x 320 palette PNG
+  (about 12 KB) cover-fitted behind the page, with the page's own colour laid
+  over it at 80 %, so the text and panels read as before and nothing in the
+  layout moves. Guard: `test/tower_backdrop_test.dart`.
+
 ## [1.894.0+930]
 
 - **Narrative: the last American spellings in the English text** (QA's L3 on 1.888, issue #894).
