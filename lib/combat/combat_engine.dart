@@ -919,6 +919,27 @@ double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
 const double bossHealthBaseMultiplier = 1.45;
 const double bossDamageBaseMultiplier = 1.24;
 
+/// A boss's damage floor by the chapter it is fought in (v1.896): the
+/// [bossDamageBaseMultiplier] in chapters 1, 2 and 4, lighter (1.12) in 3
+/// and 5 to 8. Since v1.743 (ordinary foes 15% harder) and v1.766 (the
+/// simulator shopping as a player does), the void stalker and the bosses
+/// of chapters 5 to 8 had fallen 5 to 12 points under the curve's targets
+/// while chapter 1's and 4's stayed on it (QA's L3 on v1.888, #895). The
+/// last entry holds for any later chapter.
+const List<double> bossDamageByChapter = [
+  bossDamageBaseMultiplier, // 1
+  bossDamageBaseMultiplier, // 2
+  1.12, // 3
+  bossDamageBaseMultiplier, // 4
+  1.12, // 5
+  1.12, // 6
+  1.12, // 7
+  1.12, // 8
+];
+
+double bossDamageBaseMultiplierFor(int chapter) => bossDamageByChapter[
+    (max(1, chapter) - 1).clamp(0, bossDamageByChapter.length - 1)];
+
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A
 /// 40-run simulation at +30% per cycle left a fifth of the runs stuck on
@@ -953,8 +974,9 @@ DifficultyCurve difficultyCurveFor({
   final cycle = newGamePlusMultiplier(newGamePlusCycle);
   final baseHealth =
       isBoss ? bossHealthBaseMultiplier : enemyHealthBaseMultiplier(chapter);
-  final baseDamage =
-      isBoss ? bossDamageBaseMultiplier : enemyDamageBaseMultiplier(chapter);
+  final baseDamage = isBoss
+      ? bossDamageBaseMultiplierFor(chapter)
+      : enemyDamageBaseMultiplier(chapter);
   return DifficultyCurve(
     health: baseHealth * chapterHealth * cycle,
     damage: baseDamage * damageShareOf(chapterHealth) * cycle,
