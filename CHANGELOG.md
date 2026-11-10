@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.889.0+925]
+
+### Added
+- **The sewer rats stand in the fight** (UX, from the user's PixelLab library).
+  The Harbour Rat, the Rat Matriarch and the Plague Hound now wear PixelLab
+  art in the scene stage and on the road, 60 x 60 side views (the dominion
+  figures are 48 x 48). A sprite has its own frame size and a draw scale, so
+  the rat stands smaller than the ronin and the hound a little smaller than
+  its frame. Three idle frames only (about 6 KB); the walk strips stay in
+  `art/`. The matriarch's body is clipped by its canvas and needs a bigger one.
+
 ## [1.888.0+924]
 
 ### Changed
