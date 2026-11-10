@@ -9,6 +9,7 @@ import '../providers/map_look_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'chart_map_painter.dart' show ChartCalque;
 import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// What the marks on the Journey's chart mean, as the chart draws them:
 /// one sheet so a new player does not guess. The calque showing adds its
@@ -102,10 +103,10 @@ Future<void> showMapLegendSheet(
                   ),
                   'map_leg_fog'),
               if (calque == ChartCalque.shops) ...[
-                row(dot(10, const Color(0xFFF2C14E)), 'map_leg_shop'),
+                row(dot(10, Palette.goldDark), 'map_leg_shop'),
                 row(
                     const Icon(Icons.change_history,
-                        size: 18, color: Color(0xFF7DBE6A)),
+                        size: 18, color: Palette.healDark),
                     'map_leg_camp'),
               ],
               const SizedBox(height: 8),

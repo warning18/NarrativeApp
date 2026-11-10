@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../data/climate.dart';
 import '../data/journey_map.dart';
+import '../theme/palette.dart';
 
 /// The weather drifting over the Journey map: ash over the burning Lower
 /// City, Alster and the Spire, and what the sky brings (v1.204, see
@@ -166,7 +167,7 @@ class JourneyFxPainter extends CustomPainter {
     this.dice,
     this.diceColour = Colors.white,
     this.rattle,
-    this.rattleColour = Colors.red,
+    this.rattleColour = Palette.alert,
   }) : super(repaint: time);
 
   final ValueNotifier<double> time;
@@ -293,8 +294,8 @@ class JourneyFxPainter extends CustomPainter {
           canvas.drawRect(
             Rect.fromCenter(center: pos, width: 3, height: 3),
             Paint()
-              ..color = const Color(0xFFE0762B)
-                  .withValues(alpha: math.sin(math.pi * p)),
+              ..color =
+                  Palette.emberDark.withValues(alpha: math.sin(math.pi * p)),
           );
         }
       case JourneyStepKind.shop:

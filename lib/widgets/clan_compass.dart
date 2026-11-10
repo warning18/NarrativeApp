@@ -13,6 +13,7 @@ import '../theme/stitched_ink.dart';
 import 'clan_glance.dart' show ClanCloth, ClanMarks;
 import 'clan_peek.dart';
 import 'pixel_banner.dart';
+import '../theme/palette.dart';
 
 /// A number on a crest: "+6", "−3", a standing.
 typedef CompassBadge = ({String text, Color color});
@@ -111,9 +112,7 @@ class ClanCompass extends StatelessWidget {
 
   Color _stepColor(int step) {
     final info = relations.stepInfo(step);
-    return info == null
-        ? const Color(0xFFA8A194)
-        : Color(info.color | 0xFF000000);
+    return info == null ? Palette.ashDark : Color(info.color | 0xFF000000);
   }
 
   @override
@@ -303,7 +302,7 @@ class _Crest extends StatelessWidget {
       height: d,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFF141217),
+        color: Palette.night8,
         border: Border.all(color: ring, width: focus || ringed ? 2.5 : 1.5),
         boxShadow: focus
             ? [BoxShadow(color: color.withValues(alpha: 0.55), blurRadius: 10)]
@@ -367,7 +366,7 @@ class _Crest extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4, vertical: 1),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF141217),
+                              color: Palette.night8,
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(color: badge!.color, width: 1),
                             ),

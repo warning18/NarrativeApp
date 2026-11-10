@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/room_plan.dart' show RoomKind;
 import '../side_view/side_view.dart';
+import '../../theme/palette.dart';
 
 enum FacadeStyle { house, tavern, warehouse, shop, temple, fort }
 
@@ -122,7 +123,7 @@ class _FacadePalette {
             shade: Color(0xFF93805F),
             roof: Color(0xFF6C4A3A),
             timber: Color(0xFF4A3828),
-            door: Color(0xFF3A2A1E),
+            door: Palette.orange17,
             glass: Color(0xFF75929F)),
         FacadeStyle.temple => const _FacadePalette(
             wall: Color(0xFFB4B0A6),
@@ -321,7 +322,7 @@ void _windows(
     paint.color = p.timber;
     sidePixels(
         canvas, u, paint, r.left - 1, r.top - 1, r.width + 2, r.height + 2);
-    paint.color = lit ? const Color(0xFFFFD27A) : p.glass;
+    paint.color = lit ? Palette.orange74 : p.glass;
     sidePixels(canvas, u, paint, r.left, r.top, r.width, r.height);
     if (!lit && r.width >= 5) {
       paint.color = Colors.white.withValues(alpha: 0.22);
@@ -356,7 +357,7 @@ void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
         rect(i.isEven ? const Color(0xFF9E3A32) : const Color(0xFFE9DCC1),
             box.left + i * 4, y, 4, 4);
       }
-      rect(const Color(0x33000000), box.left, y + 4, box.width, 1);
+      rect(Palette.alpha33Night0, box.left, y + 4, box.width, 1);
     case FacadeStyle.warehouse:
       // A hoist beam out of the loft, and crates by the door.
       final hx = box.left + box.width * 0.78;
@@ -366,8 +367,7 @@ void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
       rect(const Color(0xFF7B5B3A), box.left + 3, box.base - 6, 7, 6);
       rect(p.timber, box.left + 3, box.base - 6, 7, 1);
       rect(const Color(0xFF6B4D30), box.left + 6, box.base - 10, 6, 4);
-      rect(const Color(0xFF5E4630), box.left + box.width - 11, box.base - 7, 6,
-          7);
+      rect(Palette.orange28, box.left + box.width - 11, box.base - 7, 6, 7);
     case FacadeStyle.temple:
       // The rose window above the door.
       rect(p.glass, box.doorX - 3, box.base - 25, 6, 6);
@@ -398,9 +398,9 @@ void paintFacadeLights(
   final lx = box.doorX + _doorSize(style).$1 / 2 + 3, ly = box.base - 12;
   final flick = 0.8 + 0.2 * math.sin(t * 7.3);
   canvas.drawCircle(Offset((lx + 0.5) * u, (ly + 1.5) * u), 7 * u,
-      Paint()..color = const Color(0xFFFFD27A).withValues(alpha: 0.18 * flick));
-  paint.color = const Color(0xFF3A2A1C);
+      Paint()..color = Palette.orange74.withValues(alpha: 0.18 * flick));
+  paint.color = Palette.orange17a;
   sidePixels(canvas, u, paint, lx, ly - 1, 2, 1);
-  paint.color = const Color(0xFFFFD27A);
+  paint.color = Palette.orange74;
   sidePixels(canvas, u, paint, lx, ly, 2, 2);
 }

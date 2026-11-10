@@ -9,9 +9,10 @@ import '../data/clan_power.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../theme/palette.dart';
 
-const Color _plateInk = Color(0xFF141217);
-const Color _plateGold = Color(0xFFF2C14E);
+const Color _plateInk = Palette.night8;
+const Color _plateGold = Palette.goldDark;
 const Color _plateDown = Color(0xFF8FA3B8);
 
 /// [clanId]'s [ClanPowerRank] now, or null for a faction with no power.

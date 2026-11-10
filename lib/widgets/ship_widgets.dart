@@ -22,6 +22,7 @@ import '../theme/stitched_ink.dart';
 import 'immersive_notice.dart';
 import 'sea_battlefield.dart';
 import 'ship_cutaway.dart';
+import '../theme/palette.dart';
 
 /// The Rusty Eel's own record in ships.json.
 const String _playerShipId = 'rusty_eel';
@@ -459,11 +460,10 @@ class ShipAtSea extends ConsumerWidget {
                       },
                       burning: const {},
                       water: 0,
-                      shield: const Color(0xFF80D8FF),
-                      foam: const Color(0xFFE6F2F4),
+                      shield: Palette.cyan75,
+                      foam: Palette.cyan93,
                       roomColors: {
-                        for (final r in ShipRoom.values)
-                          r: const Color(0xFFAAAAAA)
+                        for (final r in ShipRoom.values) r: Palette.stone67
                       },
                       refit: ShipCutaway.refitOf(ship),
                       speed: 0.4,

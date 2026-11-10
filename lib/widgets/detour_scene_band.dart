@@ -16,6 +16,7 @@ import 'side_view/desert_kit.dart';
 import 'side_view/ruins_kit.dart';
 import 'side_view/scene_windows.dart';
 import 'side_view/side_view.dart';
+import '../theme/palette.dart';
 
 /// The kit that dresses a scene of a biome, if there is one: the desert's
 /// for the dry lands, the ruins' for the burned, torn and shattered ones.
@@ -146,7 +147,7 @@ class DetourSceneBand extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(10, 6, 12, 7),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF141218).withValues(alpha: 0.82),
+                    color: Palette.night8a.withValues(alpha: 0.82),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -195,7 +196,7 @@ class DetourSceneBand extends StatelessWidget {
                 key: const Key('journey_detour_beat'),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF141218).withValues(alpha: 0.82),
+                  color: Palette.night8a.withValues(alpha: 0.82),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -238,14 +239,14 @@ class DetourSceneBand extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF141218).withValues(alpha: 0.82),
+                      color: Palette.night8a.withValues(alpha: 0.82),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.place_outlined,
-                            size: 14, color: Color(0xFFA8A194)),
+                            size: 14, color: Palette.ashDark),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(place,

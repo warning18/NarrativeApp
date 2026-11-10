@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../combat/spells.dart';
+import '../theme/palette.dart';
 
 IconData itemTypeIcon(String? itemType) {
   switch (itemType) {
@@ -196,15 +197,15 @@ IconData spellEffectIcon(SpellEffectKind effect) {
 Color spellEffectColor(SpellEffectKind effect) {
   switch (effect) {
     case SpellEffectKind.damage:
-      return Colors.deepOrange;
+      return Palette.hot;
     case SpellEffectKind.heal:
-      return Colors.green;
+      return Palette.good;
     case SpellEffectKind.block:
-      return Colors.blueGrey;
+      return Palette.slate;
     case SpellEffectKind.status:
-      return Colors.purple;
+      return Palette.violet;
     case SpellEffectKind.cleanse:
-      return Colors.teal;
+      return Palette.lagoon;
   }
 }
 

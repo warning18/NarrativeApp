@@ -444,7 +444,7 @@ Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
   ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
   // A crown of gold sparks: the road begins again, harder.
   final middle = MediaQuery.sizeOf(context).center(Offset.zero);
-  showBurst(context, at: middle, colour: const Color(0xFFD4A017), count: 28);
+  showBurst(context, at: middle, colour: Palette.amber46, count: 28);
   showQuestSeal(context, colour: const Color(0xFFB8860B));
   unawaited(showImmersiveNotice(
     context,

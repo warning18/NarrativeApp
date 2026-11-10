@@ -66,8 +66,8 @@ void _sigil(Canvas canvas, double u, double cx, double cy, double r,
         final w = (math.sin(math.pi * math.pow(f, 0.7)) * r * 0.55).round();
         sidePixels(canvas, u, paint, cx - w, cy + k, 2 * w + 1, 1);
       }
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE08A), cx,
-          cy + r * 0.3, 1, 2);
+      sidePixels(
+          canvas, u, Paint()..color = Palette.amber77, cx, cy + r * 0.3, 1, 2);
     case SailPower.windknot:
       // A knot: two crossed loops.
       for (var a = 0; a < 24; a++) {
@@ -142,14 +142,13 @@ void _plating(Canvas canvas, double u, double x, double base, double len,
       for (var k = 0; k < n; k++) {
         final col = (len * (0.18 + 0.6 * k / (n - 1))).floor();
         final y = top[col] + 1;
-        final boss =
-            k.isEven ? const Color(0xFFB8862B) : const Color(0xFF7A3A2A);
+        final boss = k.isEven ? Palette.orange45 : const Color(0xFF7A3A2A);
         sidePixels(canvas, u, Paint()..color = _ironDark, x + col - 1, y, 4, 4);
         sidePixels(canvas, u, Paint()..color = boss, x + col, y + 1, 2, 2);
       }
     case 'trophy_plating':
       // Pale scales of the beast she took it from, spined along the rail.
-      final scale = Paint()..color = const Color(0xFFD8D0BC);
+      final scale = Paint()..color = Palette.paper79;
       final shade = Paint()..color = const Color(0xFFA89E86);
       for (var i = (len * 0.12).floor(); i < len * 0.82; i += 2) {
         final y = top[i] + 2;
@@ -176,7 +175,7 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
     switch (m.family) {
       case 'ballista':
         // A bow on a post at the rail, a bolt laid in it.
-        final wood = Paint()..color = const Color(0xFF8A6038);
+        final wood = Paint()..color = Palette.orange38;
         sidePixels(canvas, u, wood, col, top - 3, 1, 3);
         sidePixels(canvas, u, wood, col - 1, top - 5, 3, 1);
         sidePixels(canvas, u, Paint()..color = _ironDark, col - 1, top - 4,
@@ -191,8 +190,8 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
         final stub = m.family == 'carronade' || m.family == 'grape';
         final length = (stub ? 3 : 5) + tier - 1.0;
         final y = top + 3;
-        sidePixels(canvas, u, Paint()..color = const Color(0xFF14110F), col - 1,
-            y - 1, 4, 3);
+        sidePixels(
+            canvas, u, Paint()..color = Palette.night7, col - 1, y - 1, 4, 3);
         sidePixels(canvas, u, Paint()..color = _ironDark, col + 1, y, length,
             stub ? 2 : 1.0);
         sidePixels(canvas, u, Paint()..color = bright ? _brass : _iron, col + 1,
@@ -202,7 +201,7 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
           sidePixels(
               canvas,
               u,
-              Paint()..color = const Color(0xFFF2992E).withValues(alpha: glow),
+              Paint()..color = Palette.orange56a.withValues(alpha: glow),
               col + length,
               y,
               1,
@@ -221,7 +220,7 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
           sidePixels(canvas, u, Paint()..color = const Color(0xFF8A4A2A), px,
               top - 2, 2, 2);
           final fl = (1 + (math.sin(t * 8 + k + i) > 0 ? 1 : 0)).toDouble();
-          sidePixels(canvas, u, Paint()..color = const Color(0xFFF2992E), px,
+          sidePixels(canvas, u, Paint()..color = Palette.orange56a, px,
               top - 2 - fl, 1, fl);
         }
       case 'harpoon':
@@ -230,8 +229,8 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
         final hf = 0.78 + 0.03 * i;
         final hx = x + (hf * len).floorToDouble();
         final ht = rail(hf);
-        _line(canvas, u, Paint()..color = const Color(0xFF8A6038), hx - 2,
-            ht - 1, hx + 6 + tier, ht - 4);
+        _line(canvas, u, Paint()..color = Palette.orange38, hx - 2, ht - 1,
+            hx + 6 + tier, ht - 4);
         sidePixels(canvas, u, Paint()..color = bright ? _brass : _iron,
             hx + 6 + tier, ht - 5, 2, 2);
         sidePixels(canvas, u, Paint()..color = const Color(0xFFB8A07A), hx - 3,
@@ -240,7 +239,7 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
         // A horn of bone at the stem, below the bowsprit.
         final bx = x + len - 1;
         final by = rail(1.0) + 2;
-        _fillPoly(canvas, u, Paint()..color = const Color(0xFFE6DFCB),
+        _fillPoly(canvas, u, Paint()..color = Palette.amber85,
             [(bx, by), (bx + 7, by + 1), (bx, by + 3)]);
     }
   }
@@ -250,7 +249,7 @@ void _guns(Canvas canvas, double u, double x, double base, double len,
 void _deckGear(Canvas canvas, double u, double x, double base, double len,
     _Palette pal, String? gear, double Function(double) rail, double t) {
   if (gear == null) return;
-  final crate = Paint()..color = const Color(0xFF9A7448);
+  final crate = Paint()..color = Palette.orange44;
   final crateDark = Paint()..color = const Color(0xFF6B4E2E);
   switch (gear) {
     case 'stores':
@@ -267,10 +266,10 @@ void _deckGear(Canvas canvas, double u, double x, double base, double len,
       final line = Paint()..color = pal.mast;
       _line(canvas, u, line, xs, rail(0.08) - 3, xe, y0 - 10);
       const colours = [
-        Color(0xFFC0392B),
-        Color(0xFFE8B94E),
+        Palette.red46,
+        Palette.amber61,
         Color(0xFF2E6FB0),
-        Color(0xFFECE7DC)
+        Palette.paper89
       ];
       for (var k = 0; k < 5; k++) {
         final f = (k + 1) / 6;
@@ -288,14 +287,13 @@ void _deckGear(Canvas canvas, double u, double x, double base, double len,
       sidePixels(
           canvas,
           u,
-          Paint()
-            ..color = const Color(0xFFF2B85A).withValues(alpha: 0.35 * glow),
+          Paint()..color = Palette.orange65a.withValues(alpha: 0.35 * glow),
           x,
           top - 9,
           5,
           5);
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE08A), x + 1,
-          top - 8, 2, 3);
+      sidePixels(
+          canvas, u, Paint()..color = Palette.amber77, x + 1, top - 8, 2, 3);
     case 'gunnery':
       // A pyramid of shot by the rail and a rammer propped up.
       final top = rail(0.34);
@@ -306,8 +304,8 @@ void _deckGear(Canvas canvas, double u, double x, double base, double len,
               top - 2 - r * 2, 2, 2);
         }
       }
-      _line(canvas, u, Paint()..color = const Color(0xFFB08A58),
-          x + len * 0.34 + 7, top, x + len * 0.34 + 9, top - 7);
+      _line(canvas, u, Paint()..color = Palette.orange52a, x + len * 0.34 + 7,
+          top, x + len * 0.34 + 9, top - 7);
     case 'hold':
       // Barrels roped along the deck.
       final top = rail(0.3);
@@ -316,8 +314,8 @@ void _deckGear(Canvas canvas, double u, double x, double base, double len,
         sidePixels(canvas, u, barrel, x + len * 0.24 + k * 4, top - 3, 3, 3);
         sidePixels(canvas, u, crateDark, x + len * 0.24 + k * 4, top - 2, 3, 1);
       }
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFB08A58),
-          x + len * 0.24, top - 4, 10, 1);
+      sidePixels(canvas, u, Paint()..color = Palette.orange52a, x + len * 0.24,
+          top - 4, 10, 1);
     case 'command':
       // A banner on a tall pole at the stern: a gold star on the ensign's
       // colour.
@@ -330,7 +328,7 @@ void _deckGear(Canvas canvas, double u, double x, double base, double len,
     case 'trophy_hull':
       // Tusks crossed on the stern rail.
       final top = rail(0.04);
-      final bone = Paint()..color = const Color(0xFFE6DFCB);
+      final bone = Paint()..color = Palette.amber85;
       _line(canvas, u, bone, x + 1, top - 1, x + 6, top - 7);
       _line(canvas, u, bone, x + 6, top - 1, x + 1, top - 7);
   }

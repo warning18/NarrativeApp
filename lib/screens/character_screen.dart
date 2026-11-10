@@ -30,6 +30,7 @@ import 'inventory_screen.dart';
 import 'level_up_screen.dart';
 import 'race_profession_screen.dart';
 import 'skills/skills_screen.dart';
+import '../theme/palette.dart';
 
 class CharacterScreen extends ConsumerWidget {
   const CharacterScreen({super.key, this.embedded = false});
@@ -695,7 +696,7 @@ class _NewGamePlusCard extends ConsumerWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.replay_circle_filled_outlined,
-            color: Colors.deepPurple, size: 28),
+            color: Palette.arcane, size: 28),
         title: Text(
             '${tr(ref, 'new_game_plus_label')} · ${tr(ref, 'new_game_plus_cycle_label')} $cycle'),
         subtitle: Text(

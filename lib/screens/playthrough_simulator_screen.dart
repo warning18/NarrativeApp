@@ -107,6 +107,7 @@ import '../providers/clans_provider.dart' show loadClanData;
 import '../providers/player_session_provider.dart' show playerSessionProvider;
 import 'autoplay_summary_dialog.dart';
 import '../utils/game_icons.dart';
+import '../theme/palette.dart';
 
 part 'playthrough_simulator/sim_engine.dart';
 part 'playthrough_simulator/sim_stats.dart';

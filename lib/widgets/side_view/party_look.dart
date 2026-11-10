@@ -10,6 +10,7 @@
 import 'package:flutter/material.dart';
 
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// What a figure wears on its head.
 enum PartyHeadgear { none, hood, veil, helm }
@@ -21,7 +22,7 @@ class PartyLook {
     required this.skin,
     this.hair,
     this.headgear = PartyHeadgear.none,
-    this.gear = const Color(0xFF3A3A44),
+    this.gear = Palette.night25,
     this.beard = false,
     this.tusks = false,
     this.ears = false,
@@ -75,7 +76,7 @@ const Map<String, PartyLook> _looks = {
       skin: Color(0xFFEBC9A5),
       hair: Color(0xFF6B4A32),
       headgear: PartyHeadgear.veil,
-      gear: Color(0xFFEDE6D6)),
+      gear: Palette.amber88a),
   // The elf: fair, long gold hair, pointed ears.
   'liora':
       PartyLook(skin: Color(0xFFF0D2B4), hair: Color(0xFFE3C26B), ears: true),
@@ -105,7 +106,7 @@ PartyLook partyLookFor(String id) {
     hash = (hash * 31 + unit) & 0x7fffffff;
   }
   const skins = [
-    Color(0xFFE2B890),
+    Palette.orange73,
     Color(0xFFC99A74),
     Color(0xFF9C6B4B),
     Color(0xFFEBC9A5),

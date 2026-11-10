@@ -13,6 +13,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../theme/stitched_ink.dart';
 import 'journey_banner_pin.dart';
+import '../theme/palette.dart';
 
 /// One place of the district's list, ready to draw: its [name] (empty when
 /// the plan has none yet), the [steps] taken there (indices of the Journey's
@@ -265,13 +266,12 @@ class PlaceCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFFEDE3C8),
+                    color: Palette.amber86,
                     fontWeight: FontWeight.w600,
                     fontStyle: named ? FontStyle.normal : FontStyle.italic)),
             Text(things,
                 style: theme.textTheme.bodySmall?.copyWith(
-                    color: const Color(0xFF9A93A6),
-                    fontStyle: FontStyle.italic)),
+                    color: Palette.stone61, fontStyle: FontStyle.italic)),
           ]),
         ),
         const SizedBox(width: 8),
@@ -288,7 +288,7 @@ class PlaceCard extends StatelessWidget {
                   style: const TextStyle(
                       fontFamily: InkFonts.system,
                       fontSize: 12.5,
-                      color: Color(0xFF17151B))),
+                      color: Palette.night9)),
             ),
           ),
         ),
@@ -330,7 +330,7 @@ class PlacesHandle extends StatelessWidget {
                 style: const TextStyle(
                     fontFamily: InkFonts.system,
                     fontSize: 12.5,
-                    color: Color(0xFFEDE3C8))),
+                    color: Palette.amber86)),
           ]),
         ),
       ),

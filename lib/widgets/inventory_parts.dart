@@ -14,6 +14,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'die_skins.dart';
 import 'item_lore.dart';
 import 'item_stats.dart';
+import '../theme/palette.dart';
 
 /// The inventory's tabs, in the order they are drawn.
 enum InventoryTab { all, gear, charms, potions, materials, books, quest, dice }
@@ -574,7 +575,7 @@ class InventoryDieTile extends StatelessWidget {
             style: TextStyle(
                 fontFamily: InkFonts.system,
                 fontSize: size * 0.34,
-                color: dark ? const Color(0xFF1B1710) : skin.edge,
+                color: dark ? Palette.night8b : skin.edge,
                 fontWeight: FontWeight.w600)),
       ]),
     );

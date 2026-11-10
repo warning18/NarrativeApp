@@ -14,6 +14,7 @@ import '../combat/field_anomaly.dart';
 import '../data/climate.dart';
 import 'fight_pixel_stage.dart';
 import 'side_view/side_view.dart' show SideParticles, paintSideParticles;
+import '../theme/palette.dart';
 
 /// The colours of one stage, sky to ground.
 class FightScenery {
@@ -54,36 +55,36 @@ class FightScenery {
             light: Color(0xFFFFF1CC)),
         FightStage.saltFlats => const FightScenery(
             skyTop: Color(0xFF9FC1CF),
-            skyLow: Color(0xFFF1EBDD),
+            skyLow: Palette.amber91,
             far: Color(0xFFC9BEA0),
             mid: Color(0xFFDAD0B6),
             ground: Color(0xFFD8CAA6),
-            dark: Color(0xFFA3865A),
-            light: Color(0xFFFFFFFF)),
+            dark: Palette.stone50,
+            light: Palette.white),
         FightStage.waves => const FightScenery(
             skyTop: Color(0xFF38607E),
             skyLow: Color(0xFF9CC3D6),
-            far: Color(0xFF2F5D7C),
+            far: Palette.cyan34,
             mid: Color(0xFF28506C),
-            ground: Color(0xFF1E3F57),
+            ground: Palette.blue23,
             dark: Color(0xFF14293A),
-            light: Color(0xFFCFE3EE)),
+            light: Palette.cyan87),
         FightStage.ash => const FightScenery(
             skyTop: Color(0xFF6D6963),
             skyLow: Color(0xFFA79F94),
             far: Color(0xFF4D4A45),
-            mid: Color(0xFF5F5B55),
+            mid: Palette.stone35a,
             ground: Color(0xFF4A4743),
             dark: Color(0xFF2E2C29),
             light: Color(0xFFE9A35B)),
         FightStage.terraces => const FightScenery(
             skyTop: Color(0xFF8E4B3A),
             skyLow: Color(0xFFE0A27A),
-            far: Color(0xFF6E3527),
+            far: Palette.red29,
             mid: Color(0xFF8A4632),
             ground: Color(0xFF723A2B),
             dark: Color(0xFF4A241B),
-            light: Color(0xFFE9B48A)),
+            light: Palette.orange73a),
         FightStage.cliffs => const FightScenery(
             skyTop: Color(0xFF7FA3B5),
             skyLow: Color(0xFFD7E1DC),
@@ -91,7 +92,7 @@ class FightScenery {
             mid: Color(0xFF52625A),
             ground: Color(0xFF45544D),
             dark: Color(0xFF2F3A35),
-            light: Color(0xFFD9DDD2)),
+            light: Palette.paper85),
         FightStage.reeds => const FightScenery(
             skyTop: Color(0xFF7A8C80),
             skyLow: Color(0xFFB9C4A8),
@@ -99,26 +100,26 @@ class FightScenery {
             mid: Color(0xFF3E4A3A),
             ground: Color(0xFF2E3A36),
             dark: Color(0xFF1E2724),
-            light: Color(0xFFA9B59A)),
+            light: Palette.stone66),
         FightStage.snow => const FightScenery(
             skyTop: Color(0xFFA9BCCC),
             skyLow: Color(0xFFF0F4F8),
-            far: Color(0xFF9AA7B4),
+            far: Palette.stone65a,
             mid: Color(0xFFC9D3DD),
             ground: Color(0xFFE3EAF0),
             dark: Color(0xFFA7B6C4),
-            light: Color(0xFFFFFFFF)),
+            light: Palette.white),
         FightStage.glass => const FightScenery(
             skyTop: Color(0xFF8D86A0),
             skyLow: Color(0xFFD9D4DC),
-            far: Color(0xFF6E6A73),
+            far: Palette.stone43,
             mid: Color(0xFF857F8E),
-            ground: Color(0xFFA7A39C),
+            ground: Palette.stone63,
             dark: Color(0xFF5A5470),
-            light: Color(0xFFE9E6DF)),
+            light: Palette.paper89a),
         FightStage.hall => const FightScenery(
             skyTop: Color(0xFF2C2A33),
-            skyLow: Color(0xFF4A4552),
+            skyLow: Palette.night30,
             far: Color(0xFF1F1D25),
             mid: Color(0xFF34313D),
             ground: Color(0xFF3A3642),
@@ -177,9 +178,9 @@ class FightScenery {
             skyLow: Color(0xFFC59A78),
             far: Color(0xFF27425C),
             mid: Color(0xFF1F364B),
-            ground: Color(0xFF5A4636),
+            ground: Palette.night28,
             dark: Color(0xFF2C2118),
-            light: Color(0xFFFFC66B)),
+            light: Palette.orange71a),
         FightStage.pass => const FightScenery(
             skyTop: Color(0xFF8AA0AE),
             skyLow: Color(0xFFDCD3BC),
@@ -517,7 +518,7 @@ void _flash(Canvas canvas, Size size, double t, double level) {
   final f = phase > 3.2 && phase < 3.5
       ? (phase < 3.3 ? 0.5 : (phase < 3.4 ? 0.12 : 0.3))
       : 0.0;
-  if (f > 0) _veil(canvas, size, const Color(0xFFEAF4FF), f * level);
+  if (f > 0) _veil(canvas, size, Palette.blue96, f * level);
 }
 
 void _motes(Canvas canvas, Size size, double t, Color colour, double level,
@@ -623,9 +624,9 @@ void _eclipse(Canvas canvas, Size size, double t, double level) {
     52,
     Paint()
       ..shader = RadialGradient(colors: [
-        const Color(0x00000000),
+        Palette.clear,
         const Color(0xFFBFB6FF).withValues(alpha: 0.55 * level),
-        const Color(0x00000000),
+        Palette.clear,
       ], stops: const [
         0.55,
         0.62,
@@ -708,8 +709,8 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
     case 'heatstroke':
       _heat(canvas, size, t, level);
     case 'salt_glare':
-      _veil(canvas, size, const Color(0xFFFFFFFF), 0.32 * level);
-      _anomalyGlint(canvas, size, t, const Color(0xFFFFFFFF), level);
+      _veil(canvas, size, Palette.white, 0.32 * level);
+      _anomalyGlint(canvas, size, t, Palette.white, level);
     case 'brine_crust':
       _sheen(canvas, size, t, level);
     case 'sea_storm':
@@ -736,7 +737,7 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _fogBanks(canvas, size, t, const Color(0xFFE3E9E8), level);
     case 'whiteout':
       _veil(canvas, size, const Color(0xFFF4F8FB), 0.4 * level);
-      _streaks(canvas, size, t, const Color(0xFFFFFFFF), level,
+      _streaks(canvas, size, t, Palette.white, level,
           count: 54, speed: 0.8, length: 26, slope: 0.22);
     case 'black_ice':
       _sheen(canvas, size, t, level);
@@ -765,12 +766,12 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _motes(canvas, size, t, const Color(0xFFFFC46B), level,
           count: 32, radius: 2.6);
     case 'glass_field':
-      _anomalyGlint(canvas, size, t, const Color(0xFFFFFFFF), level);
+      _anomalyGlint(canvas, size, t, Palette.white, level);
       _veil(canvas, size, const Color(0xFFCFC6F2), 0.12 * level);
     case 'eclipse':
       _eclipse(canvas, size, t, level);
     case 'sunburst':
-      _rays(canvas, size, t, const Color(0xFFFFE9A8), level);
+      _rays(canvas, size, t, Palette.amber83, level);
     case 'wellspring':
       _motes(canvas, size, t, const Color(0xFF9CF0D2), level, count: 30);
     case 'tailwind':

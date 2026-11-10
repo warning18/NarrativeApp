@@ -7,6 +7,7 @@ import 'chart_globe.dart' show GlobeView;
 import 'chart_story.dart';
 import 'chart_worlds.dart';
 import 'world_map.dart';
+import '../theme/palette.dart';
 
 /// The world map drawn as a chart: the same places and road as
 /// world_map.dart, laid out on one of three geographies, in the map's
@@ -304,16 +305,16 @@ class ChartPalette {
         MapLook.night => const ChartPalette(
             sea: Color(0xFF16323B),
             seaLine: Color(0xFF214552),
-            land: Color(0xFF38343F),
+            land: Palette.night23,
             coast: Color(0xFF8A8396),
             river: Color(0xFF3F7288),
-            fog: Color(0xFF141217),
+            fog: Palette.night8,
             label: Color(0xFFA9A3B6),
             place: Color(0xFFEDE7DA),
-            road: Color(0xFFF2C14E),
+            road: Palette.goldDark,
             ahead: Color(0xFFA9A3B6),
-            mark: Color(0xFFF2C14E),
-            voidColor: Color(0xFFA987EA),
+            mark: Palette.goldDark,
+            voidColor: Palette.voidDark,
             roofs: Color(0xFF34303C),
           ),
         MapLook.parchment => const ChartPalette(
@@ -325,10 +326,10 @@ class ChartPalette {
             fog: Color(0xFFE6DAB9),
             label: Color(0xFF6E5C3C),
             place: Color(0xFF3A2E1F),
-            road: Color(0xFF9B2A2A),
+            road: Palette.red39,
             ahead: Color(0xFF8C7A57),
-            mark: Color(0xFF9B2A2A),
-            voidColor: Color(0xFF6A4FB0),
+            mark: Palette.red39,
+            voidColor: Palette.voidLight,
             roofs: Color(0xFFD9C9A4),
           ),
         MapLook.shroud => const ChartPalette(

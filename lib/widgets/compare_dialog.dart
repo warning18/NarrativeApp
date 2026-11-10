@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 /// One stat line in a comparison table: a label plus two numeric values to
 /// contrast. [higherIsBetter] controls delta coloring — true colors a
@@ -90,7 +91,7 @@ Future<void> showCompareDialog(
                   if (row.higherIsBetter != null && delta != 0) {
                     final isBetter =
                         row.higherIsBetter! ? delta > 0 : delta < 0;
-                    deltaColor = isBetter ? Colors.green : colorScheme.error;
+                    deltaColor = isBetter ? Palette.good : colorScheme.error;
                   }
                   final deltaText = delta == 0
                       ? '='

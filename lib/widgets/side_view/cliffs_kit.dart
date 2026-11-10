@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'kit_common.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The sea cliffs' colours.
 abstract final class _CliffsLook {
@@ -33,7 +34,7 @@ abstract final class _CliffsLook {
   static const path = Color(0xFF9A8E78);
   static const pathLight = Color(0xFFC4B898);
   static const pathDark = Color(0xFF6E6452);
-  static const tower = Color(0xFFEDE6D6);
+  static const tower = Palette.amber88a;
   static const towerBand = Color(0xFFB4483C);
   static const lamp = Color(0xFFFFD36A);
   static const gull = Color(0xFFF4F4EE);

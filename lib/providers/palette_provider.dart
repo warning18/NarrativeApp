@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/stitched_ink.dart';
+import '../theme/palette.dart';
 
 /// A curated set of palettes the player can pick from in Settings.
 /// [stitchedInk], the default, is the palette the app's look was drawn in
@@ -27,9 +28,9 @@ enum AppPalette {
   Color get seedColor {
     switch (this) {
       case AppPalette.stitchedInk:
-        return const Color(0xFFF2C14E);
+        return Palette.goldDark;
       case AppPalette.deepPurple:
-        return Colors.deepPurple;
+        return Palette.arcane;
       case AppPalette.weatheredEarth:
         return const Color(0xFF7A3F41);
       case AppPalette.autumnMeadow:
@@ -49,7 +50,7 @@ enum AppPalette {
   List<Color> get swatch {
     switch (this) {
       case AppPalette.stitchedInk:
-        return const [Color(0xFFF2C14E), Color(0xFFA987EA), Color(0xFF4FB0B0)];
+        return const [Palette.goldDark, Palette.voidDark, Palette.tideDark];
       case AppPalette.deepPurple:
         return const [Color(0xFF6750A4), Color(0xFF9A82DB), Color(0xFFEADDFF)];
       case AppPalette.weatheredEarth:

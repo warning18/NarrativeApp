@@ -13,6 +13,7 @@ import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/story_repository.dart';
 import '../models/story_node.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/palette.dart';
 
 /// Whether [node] is the story's first scene (the one that asks who the
 /// character is), which opens as this animation.
@@ -430,7 +431,7 @@ class _ToldText extends StatelessWidget {
       shaderCallback: (rect) => const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Color(0x00FFFFFF), Color(0xFFFFFFFF)],
+        colors: [Palette.alpha00Paper100, Palette.white],
         stops: [0, 0.14],
       ).createShader(rect),
       child: LayoutBuilder(builder: (context, box) {
