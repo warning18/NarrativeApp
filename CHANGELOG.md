@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.902.0+938]
+
+- Inventory die tile: d4, d6, d8, d12 and d20 now show a bone 3D body inside the skin-coloured ring (Dice tab, companion page, character badge); d10 keeps its tile.
+
 ## [1.901.0+937]
 
 ### Changed
