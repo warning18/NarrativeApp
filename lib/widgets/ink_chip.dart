@@ -1,7 +1,7 @@
 // The app's one chip (v1.878): a short word or two in a colour, on a tinted
 // pill with a thin edge of the same colour. It replaces the square InkTag, the
-// choice tag chip and the Tower's Material chips, which were three looks for
-// the same thing.
+// choice tag chip's own look and the Tower's Material chips, which were three
+// looks for the same thing.
 import 'package:flutter/material.dart';
 
 class InkChip extends StatelessWidget {
@@ -24,10 +24,9 @@ class InkChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context)
-        .textTheme
-        .labelSmall
-        ?.copyWith(color: color, fontWeight: FontWeight.w700);
+    // 12 px, as the item and calling tags were; the choice tags were 11.
+    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
+        color: color, fontSize: 12, height: 1.2, fontWeight: FontWeight.w700);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: dense ? 6 : 8, vertical: 2),
       decoration: BoxDecoration(

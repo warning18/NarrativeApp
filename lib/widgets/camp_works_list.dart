@@ -12,6 +12,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'camp_build_tray.dart' show SlotChip, slotText;
 import 'sheet_kit.dart';
 import 'ink_sheet.dart';
+import 'ink_chip.dart';
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -205,7 +206,7 @@ class CampWorksList extends ConsumerWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerRight,
-                        child: InkTag(label: tag, color: tagColour),
+                        child: InkChip(tag, color: tagColour),
                       ),
                     ),
                   ],

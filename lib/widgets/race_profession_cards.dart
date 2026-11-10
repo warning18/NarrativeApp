@@ -22,6 +22,7 @@ import '../screens/race_profession_screen.dart' show PresetMark, leadAndRest;
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
+import 'ink_chip.dart';
 
 /// The races, the professions, the skill trees and the clans, together: what
 /// the choice reads.
@@ -273,8 +274,7 @@ class ChoiceCard extends ConsumerWidget {
                                 key: Key('choice_name_$id'),
                                 style: theme.textTheme.titleMedium
                                     ?.copyWith(fontFamily: InkFonts.display)),
-                            if (tag.isNotEmpty)
-                              InkTag(label: tag, color: ink.gold),
+                            if (tag.isNotEmpty) InkChip(tag, color: ink.gold),
                           ]),
                       Text(record['playstyle']?.toString() ?? '',
                           maxLines: compact ? 1 : 3,
@@ -790,9 +790,7 @@ Future<void> showCompareSheet(
                       ?.copyWith(fontFamily: InkFonts.display)),
             ),
             if ((record['tag']?.toString() ?? '').isNotEmpty)
-              Center(
-                  child:
-                      InkTag(label: record['tag'].toString(), color: ink.gold)),
+              Center(child: InkChip(record['tag'].toString(), color: ink.gold)),
             const SizedBox(height: 8),
             Text(record['playstyle']?.toString() ?? '',
                 style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
