@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart' show trFor;
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/screens/level_up_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
@@ -46,7 +47,26 @@ void main() {
     });
     addTearDown(tester.view.reset);
     tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(412, 860);
+    // QA_SHOTS_SIZE=320x568 and QA_SHOTS_LANG=fr draw the same run at another
+    // phone size and in French (the L3's screen read); any overflow error is
+    // written to _overflow.txt.
+    final sizeEnv = (Platform.environment['QA_SHOTS_SIZE'] ?? '412x860')
+        .split('x')
+        .map(int.parse)
+        .toList();
+    tester.view.physicalSize = Size(sizeEnv[0] * 1.0, sizeEnv[1] * 1.0);
+    final french = Platform.environment['QA_SHOTS_LANG'] == 'fr';
+    final lang = french ? AppLanguage.fr : AppLanguage.en;
+    final overflows = <String>[];
+    final previousHandler = FlutterError.onError;
+    FlutterError.onError = (details) {
+      if (details.exceptionAsString().contains('overflowed')) {
+        overflows.add(details.exceptionAsString().split('\n').first);
+      } else {
+        previousHandler?.call(details);
+      }
+    };
+    addTearDown(() => FlutterError.onError = previousHandler);
     Directory(out).createSync(recursive: true);
     final boundary = GlobalKey();
     await tester.pumpWidget(ProviderScope(overrides: [
@@ -68,6 +88,7 @@ void main() {
       'tower-1-main-menu-card',
       'tower-2-start-screen',
       'tower-3-creation-race',
+      'tower-3-debug',
       'tower-3-creation-callings-padlocked',
       'tower-3-creation-picked',
       'tower-4-floor-1',
@@ -95,7 +116,23 @@ void main() {
 
     Future<void> tapKey(String k) async {
       final f = find.byKey(Key(k));
-      await tester.ensureVisible(f.first);
+      // A lazy list (a small phone) has not built a card below the fold yet.
+      for (var i = 0; i < 30 && f.evaluate().isEmpty; i++) {
+        final vertical = find.byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down);
+        await tester.drag(vertical.first, const Offset(0, -200));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      // On a small phone the card can lie under the sticky step header or the
+      // bottom bar: bring it to the middle before the tap.
+      final y = tester.getCenter(f.first).dy;
+      final vertical = find.byWidgetPredicate(
+          (w) => w is Scrollable && w.axisDirection == AxisDirection.down);
+      if ((y < 220 || y > tester.view.physicalSize.height - 170) &&
+          vertical.evaluate().isNotEmpty) {
+        await tester.drag(vertical.first, Offset(0, 300 - y));
+        await tester.pump(const Duration(milliseconds: 200));
+      }
       await tester.tap(f.first);
       await settle();
     }
@@ -108,9 +145,8 @@ void main() {
     await settle();
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
+    await tester.runAsync(
+        () => container.read(appLanguageProvider.notifier).setLanguage(lang));
     await settle();
 
     await tester.ensureVisible(find.byKey(const Key('menu_tower')));
@@ -121,6 +157,7 @@ void main() {
     await tapKey('tower_climb');
     await shot('tower-3-creation-race');
     await tapKey('choice_card_human');
+    await shot('tower-3-debug');
     await tapKey('rp_next');
     await shot('tower-3-creation-callings-padlocked');
     await tapKey('choice_card_warrior');
@@ -138,14 +175,16 @@ void main() {
       while (find.byType(LevelUpScreen).evaluate().isNotEmpty && guard++ < 4) {
         levelUps++;
         if (levelUps == 1) await shot('tower-8-level-up-after-floor-$floor');
-        if (find.text('Take this pick').evaluate().isNotEmpty) {
+        if (find.text(trFor(lang, 'stat_pick_take')).evaluate().isNotEmpty) {
           // The three gains are dealt at random: take whichever is first.
           final gain = find.textContaining(RegExp(
-              r'^(Constitution|Strength|Dexterity|Intelligence|Wisdom|Perception|Luck|Charisma)$'));
+              r'^(Constitution|Strength|Force|Dexterity|Dextérité|Intelligence|Wisdom|Sagesse|Perception|Luck|Chance|Charisma|Charisme)$'));
           await tester.tap(gain.first);
           await settle();
           if (levelUps == 1) await shot('tower-8-level-up-picked');
-          await tester.tap(find.text('Take this pick'));
+          await tester.ensureVisible(find.text(trFor(lang, 'stat_pick_take')));
+          await tester.pump(const Duration(milliseconds: 200));
+          await tester.tap(find.text(trFor(lang, 'stat_pick_take')));
           await settle(10);
           if (levelUps == 1) await shot('tower-8-level-up-after-pick');
         }
@@ -158,11 +197,14 @@ void main() {
       debugPrint('FLOOR $floor after: ${visible()}');
       await shot('tower-5-floor-$floor-won');
       for (var i = 0; i < 4; i++) {
-        if (find.text('What the spoils change').evaluate().isNotEmpty) {
-          final empty = find.text('The floor gave nothing this time.');
+        if (find
+            .text(trFor(lang, 'loot_sheet_changes'))
+            .evaluate()
+            .isNotEmpty) {
+          final empty = find.text(trFor(lang, 'tower_spoils_none'));
           await shot('tower-7-spoils-floor-$floor'
               '${empty.evaluate().isEmpty ? '-with-items' : '-nothing'}');
-          await tester.tap(find.text('Take'));
+          await tester.tap(find.text(trFor(lang, 'tower_take')));
           await settle(10);
           debugPrint('SPOILS TAKEN $floor ${visible()}');
           await shot('tower-7-after-spoils-floor-$floor');
@@ -193,6 +235,8 @@ void main() {
     await settle(10);
     await shot('tower-9-marks-screen');
     debugPrint('MARKS ${visible()}');
+    File('$out/_overflow.txt').writeAsStringSync(
+        overflows.isEmpty ? 'none\n' : '${overflows.toSet().join('\n')}\n');
     await tester.pump(const Duration(seconds: 3));
   });
 }
