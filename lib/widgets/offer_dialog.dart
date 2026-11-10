@@ -40,6 +40,7 @@ import 'roll_power_row.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
 const Color _wayfarerColor = Color(0xFF8D6E63);
@@ -629,7 +630,7 @@ class _Drawing extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         AnimatedOpacity(
-          duration: const Duration(milliseconds: 160),
+          duration: Motion.fast,
           opacity: drawing ? 0.4 : 1,
           child: IgnorePointer(ignoring: drawing, child: child),
         ),
@@ -718,7 +719,7 @@ class _OfferBanner extends ConsumerWidget {
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
           child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 160),
+            duration: Motion.fast,
             opacity: dimmed ? 0.62 : 1,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),

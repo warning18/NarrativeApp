@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../data/ability_check.dart';
 import '../theme/stitched_ink.dart';
 import 'd20_roll.dart';
+import '../theme/motion.dart';
 
 /// Shows [result] being rolled; [message] is the line that comes up when the
 /// die has landed ("Strength check: 12 + 2 = 14 vs DC 12 — success").
@@ -74,7 +75,7 @@ class _AbilityRollState extends State<_AbilityRoll> {
               ),
               const SizedBox(height: 14),
               AnimatedOpacity(
-                duration: const Duration(milliseconds: 250),
+                duration: Motion.base,
                 opacity: _landed ? 1 : 0,
                 child: Text(
                   widget.message,

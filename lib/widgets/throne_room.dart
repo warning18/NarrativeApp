@@ -24,6 +24,7 @@ import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
 import 'wind_banner.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// One banner hanging in the hall.
 class HungBanner {
@@ -158,7 +159,7 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
                   style: theme.textTheme.labelMedium),
               const SizedBox(height: 4),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: Motion.base,
                 child: Text(
                   picked == null
                       ? trFor(lang, 'throne_room_hint')

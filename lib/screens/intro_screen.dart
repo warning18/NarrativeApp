@@ -25,6 +25,7 @@ import '../widgets/pixel_banner.dart';
 import '../widgets/story_text.dart' show storyTextShownAtOnce;
 import '../widgets/street_view/street_view.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// Whether the intro plays at the first New Game. The tests turn it off (see
 /// test/flutter_test_config.dart); the ones about the intro turn it back on.
@@ -185,7 +186,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
             bottom: 14,
             child: SafeArea(
               child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 400),
+                duration: Motion.slow,
                 opacity: seconds < 3.5 ? 0.7 : 0,
                 child: Text(tr(ref, 'intro_skip'),
                     style: const TextStyle(

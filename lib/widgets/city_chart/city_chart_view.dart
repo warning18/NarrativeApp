@@ -18,6 +18,7 @@ import '../journey_banner_pin.dart' show PinBanner;
 import 'city_chart.dart';
 import 'city_chart_painter.dart';
 import '../motion.dart';
+import '../../theme/motion.dart';
 
 /// The words the view says, in the player's language (the host passes them).
 class CityChartText {
@@ -664,7 +665,7 @@ class _CityChartViewState extends State<CityChartView>
             left: 12,
             top: 12,
             child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
+              duration: Motion.base,
               opacity: zoomed ? 1 : 0,
               child: IgnorePointer(
                 ignoring: !zoomed,

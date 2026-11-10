@@ -122,6 +122,7 @@ import 'death_screen.dart';
 import 'fight/fight_tips.dart';
 import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';

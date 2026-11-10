@@ -146,7 +146,7 @@ extension _FightCards on _FightScreenState {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
+                      duration: Motion.base,
                       curve: Curves.easeOut,
                       width: constraints.maxWidth * ratio,
                       height: height,
