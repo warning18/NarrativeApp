@@ -54,3 +54,6 @@ The user: the game draws the skill glyph on each face, so the body must be simpl
 
 ## Round 4: panels and buttons, three new directions (free pixel drawing, 0 generations)
 `art/pixellab-pilots/round4/` (`index.json`, `<direction>/<dark|parchment>/panel_<state>.png` 48x32 and `button_<state>.png` 40x16, states normal, pressed, disabled, lit) and `docs/art/boards/round4-*.png`. Real tokens: dark surface `#1F1C23`, parchment `#EAE0C9`, panel corner 10 dp and button corner 4 dp (art px = 2 dp: 5 and 2 px), gold primary buttons. A: double ink line with corner stitches. B: worn leather/parchment edge (ragged 3-tone edge, rivets). C: flat pixel frame with 1 px highlight and shadow bevel. Nine-slice corner 6 px (panel), 4 px (button). Round 1's stitched ink was not chosen. Balance unchanged, 1251.5.
+
+## Dice 40 px cuts (no generation)
+`art/pixellab-pilots/final/dice/die_{d4,d6,d8,d12,d20}_bone_40.png`: the 44 px recipe at 40 px for the companion page's tile (user chose B: bone body on the die's own skin tile). Free PIL cut from `round3/pixellab`, PNG8 (`tool/png8.py --check`: 0 to convert). Balance unchanged, 1251.5.
