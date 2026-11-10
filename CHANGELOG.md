@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.894.0+930]
+
+- **Narrative: the last American spellings in the English text** (QA's L3 on 1.888, issue #894).
+  "Recognised" (nine places in the story and the Frost Quarry's zone text), "apologised",
+  "practised" (the first-aid skill) and "Harbour master’s office" (the Saltmouth chart's
+  stub plan) now follow the British spelling of v1.872. Text only; no key, id or French changed.
+
 ## [1.888.0+924]
 
 ### Changed
