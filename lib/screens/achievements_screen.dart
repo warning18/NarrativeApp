@@ -11,6 +11,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/moments.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -82,7 +83,7 @@ class AchievementsScreen extends ConsumerWidget {
               ],
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const InkLoading(),
           error: (error, stack) => Center(
               child: Text('${tr(ref, 'failed_to_load_achievements')}: $error')),
         ),

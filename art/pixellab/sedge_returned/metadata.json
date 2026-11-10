@@ -1,0 +1,65 @@
+{
+  "group_id": "e76a1fea-93a3-442a-b362-0dde5b5444c5",
+  "states": [
+    {
+      "character": {
+        "id": "838589e7-9878-4cd1-9f83-fec4e24fd58d",
+        "name": "Idle",
+        "prompt": "Sedge of the Returned One of the children the fen gave back, in a reed mask worn all year, who is always perfectly polite and has never once been in a hurry.",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "custom",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T14:21:41.512737+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    },
+    {
+      "character": {
+        "id": "e440b77b-4534-4f34-a983-02ec40c676a6",
+        "name": "Slightly differents",
+        "prompt": "Sedge of the Returned One of the children the fen gave back, in a reed mask worn all year, who is always perfectly polite and has never once been in a hurry.",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "custom",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T14:26:53.951732+00:00"
+      },
+      "folder": "Slightly_differents",
+      "frames": {
+        "rotations": {
+          "south": "Slightly_differents/rotations/south.png",
+          "south-east": "Slightly_differents/rotations/south-east.png",
+          "east": "Slightly_differents/rotations/east.png",
+          "north-east": "Slightly_differents/rotations/north-east.png",
+          "north": "Slightly_differents/rotations/north.png",
+          "north-west": "Slightly_differents/rotations/north-west.png",
+          "west": "Slightly_differents/rotations/west.png",
+          "south-west": "Slightly_differents/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T15:41:29.300159"
+}

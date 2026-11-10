@@ -21,6 +21,47 @@ isn't reconstructable from git history alone.
   the fold at 320 x 568. The two spoils rows said to lack an icon (Elite Mark,
   Timber) do have their pixel icons: the picture was taken before they loaded.
 
+## [1.892.0+928]
+
+### Changed
+- **One waiting look for the whole app** (UX). The 34 plain spinners that
+  every screen wrote out by itself are now one widget, `InkLoading`
+  (`lib/widgets/ink_loading.dart`): a 56 px gold ring (3 px stroke) around
+  the brass lantern, centred on the page's own ground. Only after a wait of two
+  seconds does a quiet line fade in (Motion.slow) saying what is awaited: a
+  general one, or "Reading the map..." on the town chart; English and French.
+  Its room is kept from the start, so nothing jumps. The small spinners
+  inside buttons are unchanged. A new guard (`test/ink_loading_test.dart`)
+  fails when a bare `CircularProgressIndicator()` comes back to
+  `lib/screens`.
+
+## [1.891.0+927]
+
+### Fixed
+- **The town watch keeps the towns' streets** (Core). A fight in a city or
+  town plays the watch: from round 6 the guards come and break the fight
+  up. Until now it never came, on screen or in the simulator, because the
+  rule asked the fight's own place whether it was a town. Story fights sit
+  in a district (which has no kind) or a building (whose kind is its own,
+  a tavern), so none qualified. `fightGroundAt` now asks the settlement, as
+  the stage already did. Boss fights stay on the Tide, and villages keep
+  their own ground. In the simulator's balance batch, about 4,400 of 27,000
+  fights now play the watch: Saltmouth, Alster, the Black Reliquary, the
+  Drowned Cloister, the Ashen Quarter, Candlehold and the White Anchorage.
+  Over three seeds the encounter win rates move by a point at most, and
+  the profession spread goes from 5.4 to 5.6.
+## [1.890.0+926]
+
+### Added
+- **Seven more enemies stand in the fight** (UX, from the user's PixelLab
+  library). The Wreck Scavenger, the Den Bouncer, the Den Looter, the Returned
+  Sedge, the Demon Imp, the Angel Sentinel and the Street Bandit now wear
+  PixelLab art in the scene stage and on the road. All are 48 x 48 side views,
+  one idle frame each (about 15 KB in all); the other clothes states and the
+  walk strips stay in `art/`. The Den Bouncer is the heavy bearded one and the
+  Den Looter the lean one in the green vest; the Street Bandit is the
+  hoodless one that fits the Alster streets.
+
 ## [1.889.0+925]
 
 ### Added

@@ -46,6 +46,7 @@ import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
 import 'port_screen.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -327,8 +328,7 @@ class PlayScreen extends ConsumerWidget {
                   },
                   child: questsAsync.when(
                     data: (records) => _QuestList(records: records),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const InkLoading(),
                     error: (error, stack) =>
                         Text('${tr(ref, 'failed_to_load_quests')}: $error'),
                   ),
@@ -343,8 +343,7 @@ class PlayScreen extends ConsumerWidget {
                     .markAllSeenInCategory(shops: true),
                 child: shopsAsync.when(
                   data: (records) => _ShopList(records: records),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const InkLoading(),
                   error: (error, stack) =>
                       Text('${tr(ref, 'failed_to_load_shops')}: $error'),
                 ),
@@ -358,8 +357,7 @@ class PlayScreen extends ConsumerWidget {
                     .markAllSeenInCategory(enemies: true),
                 child: enemiesAsync.when(
                   data: (records) => _EnemyList(records: records),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const InkLoading(),
                   error: (error, stack) =>
                       Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
                 ),
@@ -374,8 +372,7 @@ class PlayScreen extends ConsumerWidget {
                 child: npcsAsync.when(
                   data: (records) =>
                       _PeopleList(records: records, known: peopleKnown),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const InkLoading(),
                   error: (error, stack) =>
                       Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
                 ),

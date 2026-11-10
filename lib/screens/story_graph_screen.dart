@@ -22,6 +22,7 @@ import '../utils/export_utils.dart';
 import '../utils/story_export.dart';
 import 'story_node_editor_screen.dart';
 import '../widgets/ink_sheet.dart';
+import '../widgets/ink_loading.dart';
 
 /// A node box's fixed width — capped and ellipsized (see the node
 /// `builder` below) rather than left to grow with the id's length, so a
@@ -208,7 +209,7 @@ class StoryGraphScreen extends ConsumerWidget {
 
     return storyAsync.when(
       data: (story) => _GraphView(story: story),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const InkLoading(),
       error: (error, stack) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

@@ -23,6 +23,7 @@ import '../widgets/inventory_parts.dart';
 import '../widgets/item_lore.dart';
 import '../widgets/item_stats.dart';
 import 'dice_loadout_screen.dart';
+import '../widgets/ink_loading.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -149,14 +150,12 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           _onCompareTap(context, items, itemId),
                       onCompareStart: _startCompareFrom,
                     ),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const InkLoading(),
                     error: (error, stack) => Center(
                         child:
                             Text('${tr(ref, 'failed_to_load_dice')}: $error')),
                   ),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const InkLoading(),
                   error: (error, stack) => Center(
                       child:
                           Text('${tr(ref, 'failed_to_load_items')}: $error')),
