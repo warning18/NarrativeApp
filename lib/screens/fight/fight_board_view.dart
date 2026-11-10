@@ -22,6 +22,19 @@ const double _dieCube = 60;
 const double _tileW = 84;
 const double _tileH = 118;
 
+/// The square a die of [faces] faces is given on the board: the cube and the
+/// coin keep [_dieCube]; the solids (die_poly3d.dart) are drawn bigger than
+/// their square, and their square grows too, so a d20 stands about 130 px
+/// across and its facets can carry their glyphs (v1.903).
+double _dieSquareFor(int faces) => switch (dieShapeOf(faces)) {
+      DieShape.d4 => _dieCube,
+      DieShape.d8 => 70,
+      DieShape.d10 => 74,
+      DieShape.d12 => 80,
+      DieShape.d20 => 87,
+      _ => _dieCube,
+    };
+
 /// The fight's cards as fixed slots, the dice board and the row of kept dice
 /// (combat redesign A'/A''): a head and some icons for each fighter, the dice
 /// thrown onto a board that looks like the place, a tap on a die to see its
@@ -661,14 +674,17 @@ extension _FightBoardView on _FightScreenState {
                             final seat = _seatFor(i, acting.length, size);
                             final pos =
                                 Offset.lerp(launch, seat, t)! - Offset(0, arc);
+                            final square = _dieSquareFor(actor.dieFaces.length);
+                            final tileW = max(_tileW, square + 24);
+                            final tileH = _tileH + (square - _dieCube);
                             return Positioned(
-                              left: pos.dx - _tileW / 2,
-                              top: pos.dy - _tileH / 2,
-                              width: _tileW,
-                              height: _tileH,
+                              left: pos.dx - tileW / 2,
+                              top: pos.dy - tileH / 2,
+                              width: tileW,
+                              height: tileH,
                               child: _buildDieTile(actor, dice, skills, items,
                                   canLock, plan.previews[actor.id],
-                                  cube: _dieCube),
+                                  cube: square),
                             );
                           }(),
                         Positioned(

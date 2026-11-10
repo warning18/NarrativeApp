@@ -9,7 +9,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'die_3d.dart' show DieCubeFace, dieRestTipX, dieRestTurnY;
+import 'die_3d.dart'
+    show DieCubeFace, dieRestTipX, dieRestTurnY, dieUnrolledMark;
 import 'die_skins.dart';
 import 'die_solids.dart';
 import 'poly_die.dart' show DieShape;
@@ -45,6 +46,7 @@ class PolyDie3D extends StatelessWidget {
     required this.size,
     required this.t,
     this.showGlyphs = true,
+    this.unrolled = false,
   });
 
   final DieShape shape;
@@ -59,6 +61,9 @@ class PolyDie3D extends StatelessWidget {
   /// The roll's progress, 0 to 1 (1 at rest).
   final double t;
   final bool showGlyphs;
+
+  /// Not rolled yet: the front facet shows a "?" and the others no glyph.
+  final bool unrolled;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +115,9 @@ class PolyDie3D extends StatelessWidget {
           .multiplied(model)
           .multiplied(basis)
           .multiplied(Matrix4.translationValues(-r, -r, 0));
-      final face = faces[i % faces.length];
+      final face = unrolled && i == 0
+          ? DieCubeFace(glyph: dieUnrolledMark(), color: faces[0].color)
+          : faces[i % faces.length];
       final local = [for (final p in pts) p + Offset(r, r)];
       placed.add((
         cr[2],

@@ -39,6 +39,26 @@ class DieCubeFace {
   final Color color;
 }
 
+/// A die not yet rolled shows this on its front: a pale plaque with a "?",
+/// in place of the face it will land on.
+Widget dieUnrolledMark() => Container(
+      key: const ValueKey('die_unrolled_mark'),
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Palette.amber88.withValues(alpha: 0.92),
+        border: Border.all(color: Palette.goldDark, width: 2),
+      ),
+      child: const Text('?',
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              height: 1,
+              color: Palette.goldDark)),
+    );
+
 /// The burst a face lets go when it lands.
 enum DieFx { strike, ward, bloom, arcs, miasma, shock, drain, fizzle }
 
@@ -387,6 +407,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   skin: _skin,
                   size: size,
                   t: t,
+                  unrolled: _unrolled,
                 )
               else if (widget.shape != DieShape.d6 || widget.flat)
                 PolyDie(
@@ -422,8 +443,13 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
       widget.size >= dieSolidMinSize &&
       dieSolidOf(widget.shape) != null;
 
+  /// Not rolled yet: the front shows a "?" in place of its face.
+  bool get _unrolled => widget.dim && !widget.rolling;
+
   Widget _face(DieCubeFace face, CubeFacePlacement p) => DieFaceTile(
-        face: face,
+        face: p.slot == 0 && _unrolled
+            ? DieCubeFace(glyph: dieUnrolledMark(), color: face.color)
+            : face,
         size: widget.size,
         skin: _skin,
         skinned: widget.skin != null,

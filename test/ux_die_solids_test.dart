@@ -19,7 +19,8 @@ List<DieCubeFace> _faces(int n) => [
             color: FaceKind.values[i % FaceKind.values.length].color)
     ];
 
-Widget _die(DieShape shape, int n, {double size = 60, bool flat = false}) =>
+Widget _die(DieShape shape, int n,
+        {double size = 60, bool flat = false, bool dim = false}) =>
     Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
@@ -30,6 +31,7 @@ Widget _die(DieShape shape, int n, {double size = 60, bool flat = false}) =>
           size: size,
           shape: shape,
           flat: flat,
+          dim: dim,
           skin: dieSkinOf('flame_die'),
         ),
       ),
@@ -97,6 +99,23 @@ void main() {
     expect(find.byType(PolyDie3D), findsNothing);
     await tester.pumpWidget(_die(DieShape.coin, 2));
     expect(find.byType(PolyDie3D), findsNothing);
+  });
+
+  testWidgets('a die not rolled yet shows a ? and no face; a rolled one none',
+      (tester) async {
+    for (final (shape, n) in [
+      (DieShape.d20, 20),
+      (DieShape.d8, 8),
+      (DieShape.d6, 6)
+    ]) {
+      await tester.pumpWidget(_die(shape, n, dim: true));
+      expect(find.byKey(const ValueKey('die_unrolled_mark')), findsOneWidget,
+          reason: '$shape');
+      expect(find.byKey(const ValueKey('glyph_0')), findsNothing);
+      await tester.pumpWidget(_die(shape, n));
+      expect(find.byKey(const ValueKey('die_unrolled_mark')), findsNothing,
+          reason: '$shape');
+    }
   });
 
   testWidgets('a tumbling solid draws without error', (tester) async {
