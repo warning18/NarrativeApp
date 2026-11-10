@@ -2,7 +2,7 @@
 
 New items only, on how things look, move and read. Removing, simplifying and
 optimizing first. Nothing is built; every count below was taken from `main`
-(v1.877) with `grep`, and I re-read the lines before writing a claim (round 3
+(v1.875) with `grep`, and I re-read the lines before writing a claim (round 3
 had two wrong counts, both corrected). Not repeated: rounds 1 to 3, what is
 merged (fonts, motion, spoils, panels, dialogs, sheets), and what is held or
 in hand (the tag chip, the shared palette file, 11 px text, QA's 360 px
