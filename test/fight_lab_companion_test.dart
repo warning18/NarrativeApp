@@ -51,7 +51,7 @@ void main() {
     await _settle(tester);
     await tester.enterText(find.byType(TextField), 'harbor_rat');
     await _settle(tester);
-    await tester.tap(find.widgetWithText(ListTile, 'Harbor Rat'));
+    await tester.tap(find.widgetWithText(ListTile, 'Harbour Rat'));
     await _settle(tester);
     await tester
         .ensureVisible(find.byKey(const Key('fight_lab_add_companion')));

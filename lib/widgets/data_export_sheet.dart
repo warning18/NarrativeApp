@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
 import '../utils/export_utils.dart';
+import 'ink_sheet.dart';
 
 /// One way to take data away: what it is, the file it goes into, and how
 /// to build its contents (only when asked).
@@ -31,10 +32,8 @@ Future<void> showDataExportSheet(
   required String title,
   required List<DataExportOption> options,
 }) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheetContext) {
       Future<void> copy(DataExportOption option) async {
         final text = await option.build();

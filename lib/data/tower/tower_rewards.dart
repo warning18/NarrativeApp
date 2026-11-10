@@ -178,13 +178,8 @@ List<TowerReward> towerOfferFor({
         ]);
         return id == null ? null : TowerReward(kind, id: id);
       // A boon is a skill, a die or a spell (v1.860); an oath is dealt
-      // apart, below (its own stream). The heal, item and clan-gift cards
-      // are no longer dealt (an old save's offer may still hold one:
-      // towerApplyReward takes it).
-      case TowerRewardKind.heal ||
-            TowerRewardKind.item ||
-            TowerRewardKind.clanGift ||
-            TowerRewardKind.clanOath:
+      // apart, below (its own stream).
+      case TowerRewardKind.clanOath:
         return null;
     }
   }
@@ -214,7 +209,8 @@ List<TowerReward> towerOfferFor({
 /// floor's never below Gold, a warden's and an Elite's raised as an
 /// Elite's), from the floor's own stream; its gear and its potions, never
 /// its gold (nor its charms, tomes or materials, which the Tower has no
-/// use for).
+/// use for). From v1.865 the chest draws those slots as gear or a potion
+/// instead (rollLootBox's gearAndPotionsOnly): no chest is empty.
 List<String> towerSpoilsFor({
   required int seed,
   required TowerFloor floor,
@@ -237,6 +233,8 @@ List<String> towerSpoilsFor({
     ),
     items,
     towerRandom(seed, floor.floor, TowerStream.spoils),
+    // Every slot gear or a potion (v1.865): no empty chest.
+    gearAndPotionsOnly: true,
   );
   return [
     for (final id in chest.itemIds)

@@ -21,6 +21,7 @@ import '../providers/game_db_providers.dart';
 import '../screens/race_profession_screen.dart' show PresetMark, leadAndRest;
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
+import 'ink_sheet.dart';
 
 /// The races, the professions, the skill trees and the clans, together: what
 /// the choice reads.
@@ -543,11 +544,9 @@ Future<void> _showClanSheet(
       if (clan.sponsors.contains(b.id)) b.name,
   ];
   final colour = Color(clan.color);
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    constraints: const BoxConstraints(maxWidth: 560),
+    maxWidth: 560,
     builder: (sheet) {
       final theme = Theme.of(sheet);
       final ink = InkColors.of(sheet);
@@ -770,11 +769,9 @@ Future<void> showCompareSheet(
             ..sort())
           .cast<String>();
   var second = ids.firstWhere((i) => i != first);
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    constraints: const BoxConstraints(maxWidth: 560),
+    maxWidth: 560,
     builder: (sheet) => StatefulBuilder(builder: (sheet, setState) {
       final theme = Theme.of(sheet);
       final ink = InkColors.of(sheet);

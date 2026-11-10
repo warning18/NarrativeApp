@@ -332,7 +332,7 @@ const _saltRoads = ExcursionFlavor(
     'A woman in Tide-Kin blue asks, quietly, whether the road inland is safe for people who cannot pay a toll.',
     "The harbour master's clerk has lost a ledger, and the tide has not.",
     'An old sailor points at a hull on the slip and says it was his, and that the man who took it drinks two doors down.',
-    'A lantern burns in a window that has been dark all week, and the neighbors want someone else to go and look.',
+    'A lantern burns in a window that has been dark all week, and the neighbours want someone else to go and look.',
   ],
   questFr: [
     "Un marin usé par les années vous agrippe le bras, marmonnant à propos d'une dette et d'un travail pour la régler.",
@@ -607,7 +607,7 @@ const _hollowReaches = ExcursionFlavor(
 
 const _wildsBeyond = ExcursionFlavor(
   shop: [
-    'A traveling peddler has parked a cart beneath the trees, wares hung from the branches.',
+    'A travelling peddler has parked a cart beneath the trees, wares hung from the branches.',
     "A trapper's camp doubles as a stall, furs and tools spread on a fallen log.",
     'Smoke curls from a small clearing where a merchant has set up for the day.',
     'A hand-painted sign points toward a stall tucked just off the trail.',

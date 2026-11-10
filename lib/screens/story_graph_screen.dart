@@ -21,6 +21,7 @@ import '../providers/story_providers.dart';
 import '../utils/export_utils.dart';
 import '../utils/story_export.dart';
 import 'story_node_editor_screen.dart';
+import '../widgets/ink_sheet.dart';
 
 /// A node box's fixed width — capped and ellipsized (see the node
 /// `builder` below) rather than left to grow with the id's length, so a
@@ -803,9 +804,9 @@ class _ExportNodesButton extends ConsumerWidget {
           ),
         );
 
-    await showModalBottomSheet<void>(
+    await showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (_) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12),

@@ -15,14 +15,13 @@ import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import 'immersive_notice.dart';
 import 'player_stats_bar.dart';
+import 'ink_sheet.dart';
 
 /// Opens the Hammersmith's dice smithing (v1.182, see face_smithing.dart):
 /// the party's dice, face by face.
 Future<void> showDiceSmithingSheet(BuildContext context) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
     builder: (_) => const FractionallySizedBox(
       heightFactor: 0.9,
       child: _DiceSmithingSheet(),

@@ -20,6 +20,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'city_chart/city_chart.dart' show CityChartHold;
 import 'pixel_banner.dart' show ClanFlag, clanBannerId;
+import 'ink_sheet.dart';
 
 /// What the Town view says of one district.
 class DistrictStanding {
@@ -308,9 +309,9 @@ class DistrictLead extends StatelessWidget {
 Future<void> showLockedDistrictSheet(
     BuildContext context, DistrictStanding standing,
     {required String name}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
+    scrollControlled: false,
     builder: (_) => _LockedDistrictSheet(standing: standing, name: name),
   );
 }

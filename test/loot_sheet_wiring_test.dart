@@ -108,6 +108,8 @@ void main() {
   group('the dialog', () {
     Future<void> open(WidgetTester tester, AppLanguage language,
         {List<String> items = const ['charm_fourth_roll', 'antidote'],
+        List<String> worn = const [],
+        bool Function(String)? canEquip,
         void Function(SpoilsChoices)? onTake}) async {
       await tester.runAsync(loadAppFonts);
       usePhone(tester, const Size(360, 740));
@@ -137,6 +139,8 @@ void main() {
                   language: language,
                   currentHealth: 60,
                   maxHealth: 100,
+                  equippedItemIds: worn,
+                  canEquip: canEquip,
                   sheet: SpoilsSheetData(
                       session: session, gold: 18, itemIds: items),
                 );
@@ -195,6 +199,41 @@ void main() {
       await tester.tap(find.byKey(const Key('loot_sheet_take')));
       await tester.pump(const Duration(milliseconds: 400));
       expect(got!.drinkItemIds, ['potion_minor']);
+    });
+    testWidgets(
+        'a piece of gear is equipped from the sheet: its stats against the '
+        'worn one, what it replaces, and the switch', (tester) async {
+      SpoilsChoices? got;
+      await open(tester, AppLanguage.en,
+          items: const ['sword_t4'],
+          worn: const ['sword_001'],
+          canEquip: (_) => true,
+          onTake: (c) => got = c);
+      // The stats with their difference, and the piece it takes the place of.
+      expect(find.text('Replaces Iron Sword'), findsOneWidget);
+      expect(find.textContaining('ATK'), findsWidgets);
+      // The old list under the slots is gone: one list, on the sheet.
+      expect(find.text('Use your spoils now'), findsNothing);
+      await tester.ensureVisible(find.byKey(const Key('loot_use_1')));
+      await tester.tap(find.byKey(const Key('loot_use_1')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('loot_sheet_take')));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(got!.equipItemIds, ['sword_t4']);
+    });
+
+    testWidgets('a tap on a drop reads it in full, with the same action',
+        (tester) async {
+      await open(tester, AppLanguage.en,
+          items: const ['sword_t4'],
+          worn: const ['sword_001'],
+          canEquip: (_) => true);
+      await tester.ensureVisible(find.byKey(const Key('loot_open_1')));
+      await tester.tap(find.byKey(const Key('loot_open_1')),
+          warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Equip'), findsWidgets);
+      expect(find.byKey(const Key('loot_sheet')), findsOneWidget);
     });
   });
 }

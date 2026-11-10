@@ -75,6 +75,10 @@ class _SimFight {
   late final FractionBank mendBank;
   late int phasesEntered;
   late int healsGiven;
+
+  /// What the hero's heals healed this fight, by where they came from (as
+  /// the heal rule worked them out, before what full health caps).
+  late final Map<HealSource, int> healedBy;
   late bool packBroken;
   late final ProfessionCore core;
   late int fury;
@@ -121,10 +125,26 @@ class _SimFight {
   // Which of the clash rules are in play.
   bool on(String rule) => clash && !clashOff.contains(rule);
 
-  int healed(int amount) {
-    amount = ctx?.heal(amount, ctxRound) ?? amount;
-    if (!on('fatigue') || amount <= 0) return amount;
-    return fatiguedHeal(amount, healsGiven++);
+  /// What [raw] healing from [source] heals: the heal rule the fight
+  /// screen uses (heal_rules.dart), with the ground's rule of [round]
+  /// (default this round) and the fatigue when its clash rule is on. The
+  /// simulator has no battlefield conditions, so no shrine.
+  int healed(HealSource source, int raw,
+      {bool noHealFaces = false, int? round}) {
+    final healing = healDealt(
+      source: source,
+      raw: raw,
+      noHealFaces: noHealFaces,
+      watchfire: core == ProfessionCore.watchfire,
+      roundRule: switch (ctx) {
+        final rule? => (amount) => rule.heal(amount, round ?? ctxRound),
+        null => null,
+      },
+      fatigue:
+          on('fatigue') ? (amount) => fatiguedHeal(amount, healsGiven++) : null,
+    );
+    if (healing > 0) healedBy[source] = (healedBy[source] ?? 0) + healing;
+    return healing;
   }
 
   bool has(Spec spec) =>

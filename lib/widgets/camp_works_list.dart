@@ -11,6 +11,7 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'camp_build_tray.dart' show SlotChip, slotText;
 import 'sheet_kit.dart';
+import 'ink_sheet.dart';
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -292,10 +293,8 @@ class CampWorksList extends ConsumerWidget {
   void _showSheet(BuildContext context, WidgetRef ref, CampWork work) {
     if (work.state == WorkState.built) return;
     final id = work.houseId;
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         final ink = InkColors.of(sheetContext);

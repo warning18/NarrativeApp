@@ -30,6 +30,7 @@ import 'ship_battle_panel.dart';
 import 'city_chart_screen.dart';
 import 'vfx_gallery_screen.dart';
 import 'voyage_screen.dart';
+import '../widgets/ink_sheet.dart';
 
 /// Zone-tier style multipliers offered for a test fight's enemies.
 const List<double> _difficulties = [0.75, 1.0, 1.25, 1.5, 2.0];
@@ -92,10 +93,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
       id;
 
   Future<void> _pickEnemy(Map<String, dynamic> enemies) async {
-    final picked = await showModalBottomSheet<String>(
+    final picked = await showInkSheet<String>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (_) => FractionallySizedBox(
         heightFactor: 0.85,
         child: _EnemyPicker(enemies: enemies),
@@ -106,9 +105,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
 
   Future<void> _pickCompanion(Map<String, dynamic> companions) async {
     final taken = {..._companionIds};
-    final picked = await showModalBottomSheet<String>(
+    final picked = await showInkSheet<String>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (_) => _CompanionPicker(
         companions: {
           for (final e in companions.entries)

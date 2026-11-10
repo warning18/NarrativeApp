@@ -6,6 +6,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/story_providers.dart';
 import 'story_node_editor_screen.dart';
+import '../widgets/ink_confirm.dart';
 
 /// The main quest line: each chapter's fixed story beats, pulled live from
 /// the narrative data. Tap a node id to edit its text and choices directly;
@@ -16,24 +17,15 @@ class MainStoryScreen extends ConsumerWidget {
   Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {
     final language = ref.read(appLanguageProvider);
     String t(String key) => trFor(language, key);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(t('reset_story')),
-        content: Text(t('reset_story_confirm')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(t('cancel')),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(t('reset')),
-          ),
-        ],
-      ),
+    final confirmed = await showInkConfirm(
+      context,
+      title: t('reset_story'),
+      body: t('reset_story_confirm'),
+      cancel: t('cancel'),
+      confirm: t('reset'),
+      filled: false,
     );
-    if (confirmed ?? false) {
+    if (confirmed) {
       await resetStoryToDefaults(ref);
     }
   }

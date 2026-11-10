@@ -1,0 +1,111 @@
+{
+ "IMFellEnglishSC-Regular.ttf": {
+  "absent_in_source": [
+   "0394",
+   "03C0",
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "2192",
+   "2212",
+   "2264",
+   "2265",
+   "24D8",
+   "25B2",
+   "25B4",
+   "25BC",
+   "25BE",
+   "25CF",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 297
+ },
+ "PixelifySans-Regular.ttf": {
+  "absent_in_source": [
+   "0394",
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "2192",
+   "24D8",
+   "25B2",
+   "25B4",
+   "25BC",
+   "25BE",
+   "25CF",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 335
+ },
+ "PixelifySans-SemiBold.ttf": {
+  "absent_in_source": [
+   "0394",
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "2192",
+   "24D8",
+   "25B2",
+   "25B4",
+   "25BC",
+   "25BE",
+   "25CF",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 335
+ },
+ "Spectral-Italic.ttf": {
+  "absent_in_source": [
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "24D8",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 353
+ },
+ "Spectral-Medium.ttf": {
+  "absent_in_source": [
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "24D8",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 353
+ },
+ "Spectral-Regular.ttf": {
+  "absent_in_source": [
+   "1F1E7",
+   "1F1EB",
+   "1F1EC",
+   "1F1F7",
+   "2042",
+   "24D8",
+   "2605",
+   "26E8",
+   "FEFF"
+  ],
+  "kept": 353
+ }
+}
