@@ -14,6 +14,7 @@ before starting a change.
 | **Narrative** (story and content) | `claude/narrative` | what the game says: story, quests, characters, dialogue |
 | **QA** (testing) | `claude/qa` | keeps the tests fast and finds what broke: tests, simulator, L3 on request |
 | **Cleanup** (code health) | `claude/cleanup` | removes dead code, applies analyzer-proven lint fixes, privatises file-only names; no behaviour change (waves 1, 2, 2b of `docs/qa/code-cleanup-plan.md`) |
+| **Art** (PixelLab) | `claude/art` | every exchange with PixelLab: generates, reviews and stages the game's visual elements (characters, dice, buttons, icons, banners, backgrounds); hands finished files to UX, who wires them |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
@@ -60,6 +61,18 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
   never changes their numbers.
 - Core still sets the numbers inside Narrative's files (quest rewards,
   standing thresholds) and may add the fields a new system needs.
+
+**Art owns:**
+- the PixelLab exchanges (the user's account; the key is never in the repo, a
+  prompt or a session setting: it is saved once with `request_credential`, and
+  the client is `tool/pixellab_client.py`), `art/pixellab*/` (raw exports, not
+  bundled) and `docs/art/` (inventory and a catalogue of every generated asset:
+  prompt, seed, model, size, cost, what it is for).
+- It never changes the UX (layouts stay), the code, a number or an id. It hands
+  UX palette-reduced files and a short brief; UX wires them into `assets/visuals/`
+  and `lib/widgets/` in its own PR. Banners are improved in their current style,
+  never restyled. Picture first for every category; state the cost of a call before
+  making it and ask the user before a batch above about 30 generations.
 
 **Cleanup owns:**
 - the waves 1, 2 and 2b of `docs/qa/code-cleanup-plan.md`: mechanical lint
