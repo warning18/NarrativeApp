@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.878.0+914]
+
+- **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
+  two buttons: "Back into the Anchorage" (the five `7100` rows) and "Head back toward
+  the harbour master’s post" (the five `2015` rows). Each now says what that scene just
+  did ("Leave the helmsman to his cup", "Leave Sable with her marker"), in English and
+  French. Flags, gold and destinations unchanged.
+
 ## [1.877.0+913]
 
 - **Narrative: one bold passage per scene, the sharpest.** 668 passages were bold,
