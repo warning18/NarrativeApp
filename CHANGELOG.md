@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.899.0+935]
+
+### Changed
+- **New chests: wooden, iron and gold** (UX, the Art pilots the user approved).
+  The six chest pictures of those three tiers (closed and open) are the new 32 x 32
+  PixelLab ones, in the places of the 16 x 16: the spoils sheet, the chest
+  dialog and the Tower's spoils. They are drawn at the same size on screen,
+  so no layout moves. The silver and void chests keep their 16 x 16
+  pictures for now.
+
 ## [1.897.0+933]
 
 ### Added
