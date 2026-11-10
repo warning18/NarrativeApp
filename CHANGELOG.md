@@ -20,6 +20,42 @@ isn't reconstructable from git history alone.
   The other six strips are as before. Lysa, Kelda and Sable are not wired:
   no screen stands them today (see the PR).
 
+## [1.896.0+932]
+
+### Changed
+- **Late bosses hit a little softer** (Core, QA's finding #895). Since
+  v1.743 (ordinary foes 15% harder) and v1.766 (the simulator shopping as
+  a player does), the void stalker and the bosses of chapters 5 to 8 had
+  fallen 5 to 12 points under their targets.
+  - A boss's damage floor now goes by the chapter it is fought in: 1.24 in
+    chapters 1, 2 and 4, as before, and 1.12 in chapters 3 and 5 to 8.
+  - The Void Sovereign has 86 health instead of 95.
+  - Over three seeds (1,200 runs), all eleven bosses are within 5 points
+    of their targets; before, seven were 5 to 12 points under.
+  - Ordinary fights move little: encounter win goes from 74.8% to 76.4%,
+    and chapters 6, 7 and 8 from 62, 51 and 48 to 64, 56 and 53.
+  - The profession spread goes from 5.3 to 5.8, and a run ends with 4,221
+    gold instead of 4,005.
+  - The Tower's bosses (the legate, Morrow, the Sovereign on floor 30) use
+    the same floor; the Tower's bands still pass.
+## [1.895.0+931]
+
+### Added
+- **The Tower floor has a backdrop** (UX, from the user's PixelLab library).
+  Behind the floor screen (and its spoils and card pages) a picture of the
+  tower's room: the lower stairs (floors 1 to 10), the middle halls (11 to
+  20) and the ruined top (21 to 30). Each is a 180 x 320 palette PNG
+  (about 12 KB) cover-fitted behind the page, with the page's own colour laid
+  over it at 80 %, so the text and panels read as before and nothing in the
+  layout moves. Guard: `test/tower_backdrop_test.dart`.
+
+## [1.894.0+930]
+
+- **Narrative: the last American spellings in the English text** (QA's L3 on 1.888, issue #894).
+  "Recognised" (nine places in the story and the Frost Quarry's zone text), "apologised",
+  "practised" (the first-aid skill) and "Harbour master’s office" (the Saltmouth chart's
+  stub plan) now follow the British spelling of v1.872. Text only; no key, id or French changed.
+
 ## [1.893.0+929]
 
 ### Fixed
@@ -62,6 +98,7 @@ isn't reconstructable from git history alone.
   Drowned Cloister, the Ashen Quarter, Candlehold and the White Anchorage.
   Over three seeds the encounter win rates move by a point at most, and
   the profession spread goes from 5.4 to 5.6.
+
 ## [1.890.0+926]
 
 ### Added
@@ -98,6 +135,7 @@ isn't reconstructable from git history alone.
 - The balance test's profession guard now allows two standard errors of
   noise on top of its 8-point limit, not three, so a spread like the old
   9.7 points fails it.
+
 ## [1.886.0+922]
 
 ### Changed
@@ -131,6 +169,7 @@ isn't reconstructable from git history alone.
     (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
   - `test/palette_test.dart` fails when a colour drawn in two files is written
     as a literal: it goes to the palette.
+
 ## [1.884.0+920]
 
 ### Changed
@@ -147,6 +186,7 @@ isn't reconstructable from git history alone.
   rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
   ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
   boss curve and every balance guard stay green.
+
 ## [1.883.0+919]
 
 - **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
