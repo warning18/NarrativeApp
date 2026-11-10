@@ -20,6 +20,15 @@ isn't reconstructable from git history alone.
   rebuilds fall from about half of the bot's time to about 15%. A new test
   (`test/sim_character_copy_test.dart`) fails when a field is added to
   `SimCharacter` without being copied.
+## [1.876.0+912]
+
+- **Narrative: British spelling in the English text the game builds in code.**
+  The last player-visible English strings that were not in the string table
+  follow the spelling of v1.872: the street and sea encounter lines (harbour,
+  traveller, favour, colour, centre), a chapter-1 origin line, the alignment
+  event's "burning armour" and "in your favour" choice, the Saltmouth blurb on
+  the world map and a chart note. 16 strings in 8 files; no key, id or French
+  text changed. Editor documentation (the `db_schema_*` files) is left as it is.
 
 ## [1.875.0+911]
 
@@ -31,6 +40,7 @@ isn't reconstructable from git history alone.
   `showModalBottomSheet` calls had exactly those flags and now use it (the
   other seven carry their own shape, barrier colour or safe area and stay).
   About 40 lines fewer, and one place to change the sheet's look.
+
 ## [1.874.0+910]
 
 ### Changed
