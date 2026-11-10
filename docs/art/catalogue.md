@@ -65,3 +65,6 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 
 ## Story scene backgrounds (user: "add some backgrounds to important scenes you see fit")
 `art/pixellab-scenes/` (raw, `staged/` PNG8, `index.json`), sheet `docs/art/boards/story-scenes.png`. Six of the 74 story locations by node count and weight: cove_camp (39 nodes), saltmouth_wharf (22), hollow_shore (15), candlehold_throne_room (9), black_hold_cells (6), alster_lower_town (the prologue). `create_image_pixen` 240x100, seeds 3 and 4, 1 generation each = **12** (balance 1187.5 to 1175.5). Recommended pick per scene is in the index. Nothing wired.
+
+## Intro redraw (user: "redraw also the intro animation, propose 2 versions")
+`art/pixellab-intro/` (raw, `staged/`, `index.json`), `docs/art/intro-redraw.md`, sheet `docs/art/boards/intro-redraw.png`. Four plates x two versions (A "Alster in ashes", B "The night of the shells") x two seeds (5 and 6), `create_image_pixen` 180x320, 1 generation each = **16** (balance 1175.5 to 1159.5). Nothing wired.
