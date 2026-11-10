@@ -23,3 +23,20 @@ Each character folder holds:
 `inquisition_soldier_02` came with two walk sets: `Walking` (east) and a second
 `walking` (east and west), renamed `Walking_2` so the folders don't collide on
 case-insensitive disks.
+
+## sewer/ (the Alster undercroft's vermin, "Big rat monster")
+
+One PixelLab character group with three states, exported as one zip. Unlike the
+dominion folders these are 60 x 60 px frames and a side view (not 48 x 48 low
+top-down). `metadata.json` is the group's export note.
+
+| Folder | PixelLab state | Enemy id | Notes |
+|---|---|---|---|
+| `rat` | Idle (the base rat) | `harbor_rat` (to confirm) | 8 directions, `Walking` east and west (8 frames) |
+| `rat_matriarch` | A rat matriarch grown huge | `rat_matriarch` | 8 directions, `Walking` east and west; the body runs to the frame edges and is clipped there, see below |
+| `plague_hound` | Plague Hound | `plague_hound` | 8 directions, no animation yet |
+
+Not yet bundled: UX crops or converts what the game uses into `assets/visuals/`
+(`lib/widgets/fight_sprites.dart` hard-codes 48 x 48 frames for enemies today, so
+a 60 x 60 set needs a frame size per sprite). The matriarch needs a larger canvas
+in PixelLab (set_canvas_size, free) before it is used.

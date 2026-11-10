@@ -15,6 +15,17 @@ isn't reconstructable from git history alone.
   "practised" (the first-aid skill) and "Harbour master’s office" (the Saltmouth chart's
   stub plan) now follow the British spelling of v1.872. Text only; no key, id or French changed.
 
+## [1.889.0+925]
+
+### Added
+- **The sewer rats stand in the fight** (UX, from the user's PixelLab library).
+  The Harbour Rat, the Rat Matriarch and the Plague Hound now wear PixelLab
+  art in the scene stage and on the road, 60 x 60 side views (the dominion
+  figures are 48 x 48). A sprite has its own frame size and a draw scale, so
+  the rat stands smaller than the ronin and the hound a little smaller than
+  its frame. Three idle frames only (about 6 KB); the walk strips stay in
+  `art/`. The matriarch's pups are cut at the art's own edge (a bigger canvas cannot bring them back); on the stage it reads as a crop.
+
 ## [1.888.0+924]
 
 ### Changed
@@ -28,6 +39,7 @@ isn't reconstructable from git history alone.
 - The balance test's profession guard now allows two standard errors of
   noise on top of its 8-point limit, not three, so a spread like the old
   9.7 points fails it.
+
 ## [1.886.0+922]
 
 ### Changed
@@ -61,6 +73,7 @@ isn't reconstructable from git history alone.
     (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
   - `test/palette_test.dart` fails when a colour drawn in two files is written
     as a literal: it goes to the palette.
+
 ## [1.884.0+920]
 
 ### Changed
@@ -77,6 +90,7 @@ isn't reconstructable from git history alone.
   rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
   ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
   boss curve and every balance guard stay green.
+
 ## [1.883.0+919]
 
 - **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
