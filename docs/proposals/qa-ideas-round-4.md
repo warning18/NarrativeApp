@@ -2,7 +2,7 @@
 
 New items only. Not repeated: anything in `docs/qa/qa-improvements.md`, `qa-improvements-2.md`, `docs/proposals/qa-ideas-round-3.md`, the held 360 px nightly job, and the done ones (picture clean-up, smoke gate, 10-floor sample). The shard weights come back **only with new evidence** (idea 1).
 
-**Evidence.** A fresh full profile on main v1.874 (`flutter test --reporter json`, one machine, one process): **4,035 tests in 611 files, 0 failed, 3 skipped, 1,395 s wall**; 2,224 s in tests and **462 s loading the 611 files** (0.76 s each). CI step times of run 42686752831 (#876): "Run tests" 331 / 290 / 310 / 322 s on the four shards, "Set up Flutter" 15 to 30 s, "Analyze" 19 s, "Build APK" 189 s. Raw: `file_times` of that profile are summarised below; nothing here was timed on the user's phone.
+**Evidence.** A fresh full profile on main v1.874 (`flutter test --reporter json`, one machine, one process): **4,035 tests in 611 files, 0 failed, 3 skipped, 1,395 s wall**; 2,224 s in tests and **462 s loading the 611 files** (0.76 s each). CI step times of run 42686752831 (#876): "Run tests" 331 / 290 / 310 / 322 s on the four shards, "Set up Flutter" 15 to 30 s, "Analyze" 19 s, "Build APK" 189 s. The profile's per-file times are not committed (they are a local, one-machine measure); the figures below come from it.
 
 Ranked, my recommendation first.
 
@@ -15,7 +15,7 @@ Ranked, my recommendation first.
 ## 2. Six CI shards instead of four (speed; a `.github/` change, the Manager's)
 
 - **What**: `matrix.shard: [0..5]` and `shard_tests.py N 6` in `build_apk.yml` (the script already takes any N; `--check 6` to test).
-- **Evidence**: each job is about 28 s of setup plus the shard's tests (290 to 331 s at four shards, about 4,000 s of test work split four ways). At six the tests take about 210 s: **a PR's wall time falls from about 6 min to about 4 min 30 (roughly 100 s)**, for two more runners (+8 runner-minutes a PR, +50% on the test job; the APK job runs beside them and takes 4 min 37 s, so the tests would stop being the longest job).
+- **Evidence**: each job is about 28 s of setup plus the shard's tests (290 to 331 s at four shards, about 1,250 s of test steps split four ways). At six the tests take about 210 s: **a PR's wall time falls from about 6 min to about 4 min 30 (roughly 100 s)**, for two more runners (+8 runner-minutes a PR, +50% on the test job; the APK job runs beside them and takes 4 min 37 s, so the tests would stop being the longest job).
 - **Size**: tiny. **Risk**: more concurrent runners on one PR (a queue when several PRs run at once); runner minutes. **User notices**: PRs go green about a minute and a half sooner.
 
 ## 3. Cut QA's own slowest test back (speed; mine)
@@ -27,7 +27,7 @@ Ranked, my recommendation first.
 ## 4. Delete the pictures nothing names (remove; owners decide)
 
 - **What**: 73 of 270 pictures under `docs/ux-shots`, `docs/feedback`, `docs/maps` and `docs/proposals` (**17.6 MB of 54 MB**) have a file name that appears in no `.md`, `.dart`, `.py`, `.json`, `.yml`, `.txt` or `.csv` of the repository (`docs/qa/unreferenced-pictures-1.874.txt`: size and path of each). Most are in `docs/feedback` (10), `ux-shots/journey-moves` (10), `ux-shots/skill-glyphs` (9), `proposals/images` (8), `maps/fmg-chart` (6).
-- **Why**: `docs/` is 62 MB of the repository's 80 MB of text and pictures (and `.git` 374 MB); every clone and every cloud session pays for them.
+- **Why**: `docs/` is 62 MB (`assets/` 8.5 MB, `.git` 374 MB); every clone and every cloud session pays for them.
 - **Size**: small per owner (UX for `ux-shots`, the Manager for `feedback` and `proposals`, Core for `maps`). **Risk**: a README that names a range or a folder instead of a file (`-01s to -11s`) hides a reference from my search, so each owner checks their list before deleting; history keeps everything.
 - **User notices**: nothing; a smaller checkout.
 
