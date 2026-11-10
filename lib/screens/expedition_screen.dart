@@ -50,6 +50,7 @@ import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 import '../data/narration_pages.dart' show joinedNarration;
 import '../data/story_markup.dart' show stripStoryMarkup;
+import '../widgets/ink_loading.dart';
 
 enum _ExpeditionPhase { event, completed, retreated }
 
@@ -979,7 +980,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         !_settingsLoaded) {
       return Scaffold(
         appBar: AppBar(title: Text(zoneName)),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const InkLoading(),
       );
     }
 

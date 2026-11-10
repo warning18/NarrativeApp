@@ -19,6 +19,68 @@ isn't reconstructable from git history alone.
   over it at 80 %, so the text and panels read as before and nothing in the
   layout moves. Guard: `test/tower_backdrop_test.dart`.
 
+## [1.894.0+930]
+
+- **Narrative: the last American spellings in the English text** (QA's L3 on 1.888, issue #894).
+  "Recognised" (nine places in the story and the Frost Quarry's zone text), "apologised",
+  "practised" (the first-aid skill) and "Harbour master’s office" (the Saltmouth chart's
+  stub plan) now follow the British spelling of v1.872. Text only; no key, id or French changed.
+
+## [1.893.0+929]
+
+### Fixed
+- **The 320 px phone: three small things QA found** (UX, QA's L3 issues #891,
+  #892 and #893). In French the fight's Reroll and Confirm buttons no longer
+  break in the middle of a word ("Relancer (2)", "Confirmer" are shrunk to
+  one line to fit). The home shell's top bar gives its title room (narrower
+  buttons and a tighter margin under 360 px), so "Personnage" and
+  "Campement" read whole instead of "Pe..." and "C...". On a short screen
+  (under 640 px high) Level Up's radar is smaller, so "Take this pick" is above
+  the fold at 320 x 568. The two spoils rows said to lack an icon (Elite Mark,
+  Timber) do have their pixel icons: the picture was taken before they loaded.
+
+## [1.892.0+928]
+
+### Changed
+- **One waiting look for the whole app** (UX). The 34 plain spinners that
+  every screen wrote out by itself are now one widget, `InkLoading`
+  (`lib/widgets/ink_loading.dart`): a 56 px gold ring (3 px stroke) around
+  the brass lantern, centred on the page's own ground. Only after a wait of two
+  seconds does a quiet line fade in (Motion.slow) saying what is awaited: a
+  general one, or "Reading the map..." on the town chart; English and French.
+  Its room is kept from the start, so nothing jumps. The small spinners
+  inside buttons are unchanged. A new guard (`test/ink_loading_test.dart`)
+  fails when a bare `CircularProgressIndicator()` comes back to
+  `lib/screens`.
+
+## [1.891.0+927]
+
+### Fixed
+- **The town watch keeps the towns' streets** (Core). A fight in a city or
+  town plays the watch: from round 6 the guards come and break the fight
+  up. Until now it never came, on screen or in the simulator, because the
+  rule asked the fight's own place whether it was a town. Story fights sit
+  in a district (which has no kind) or a building (whose kind is its own,
+  a tavern), so none qualified. `fightGroundAt` now asks the settlement, as
+  the stage already did. Boss fights stay on the Tide, and villages keep
+  their own ground. In the simulator's balance batch, about 4,400 of 27,000
+  fights now play the watch: Saltmouth, Alster, the Black Reliquary, the
+  Drowned Cloister, the Ashen Quarter, Candlehold and the White Anchorage.
+  Over three seeds the encounter win rates move by a point at most, and
+  the profession spread goes from 5.4 to 5.6.
+
+## [1.890.0+926]
+
+### Added
+- **Seven more enemies stand in the fight** (UX, from the user's PixelLab
+  library). The Wreck Scavenger, the Den Bouncer, the Den Looter, the Returned
+  Sedge, the Demon Imp, the Angel Sentinel and the Street Bandit now wear
+  PixelLab art in the scene stage and on the road. All are 48 x 48 side views,
+  one idle frame each (about 15 KB in all); the other clothes states and the
+  walk strips stay in `art/`. The Den Bouncer is the heavy bearded one and the
+  Den Looter the lean one in the green vest; the Street Bandit is the
+  hoodless one that fits the Alster streets.
+
 ## [1.889.0+925]
 
 ### Added
@@ -43,6 +105,7 @@ isn't reconstructable from git history alone.
 - The balance test's profession guard now allows two standard errors of
   noise on top of its 8-point limit, not three, so a spread like the old
   9.7 points fails it.
+
 ## [1.886.0+922]
 
 ### Changed
@@ -76,6 +139,7 @@ isn't reconstructable from git history alone.
     (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
   - `test/palette_test.dart` fails when a colour drawn in two files is written
     as a literal: it goes to the palette.
+
 ## [1.884.0+920]
 
 ### Changed
@@ -92,6 +156,7 @@ isn't reconstructable from git history alone.
   rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
   ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
   boss curve and every balance guard stay green.
+
 ## [1.883.0+919]
 
 - **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**

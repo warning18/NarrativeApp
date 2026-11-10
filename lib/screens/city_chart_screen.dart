@@ -25,6 +25,7 @@ import '../providers/day_phase_provider.dart';
 import '../providers/town_rulers_provider.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_view.dart';
+import '../widgets/ink_loading.dart';
 
 CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
       JourneyStepKind.fight => CityWayKind.fight,
@@ -149,7 +150,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
               builder: (context, snap) {
                 final chart = snap.data;
                 if (chart == null) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const InkLoading(wordKey: 'loading_map');
                 }
                 return CityChartView(
                   chart: chart,
@@ -161,7 +162,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
               },
             )
           : live == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const InkLoading(wordKey: 'loading_map')
               : CityChartView(
                   chart: live.chart,
                   look: look,

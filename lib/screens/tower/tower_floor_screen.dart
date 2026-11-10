@@ -27,6 +27,7 @@ import 'tower_spoils_view.dart';
 import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/ink_confirm.dart';
+import '../../widgets/ink_loading.dart';
 
 class TowerFloorScreen extends ConsumerStatefulWidget {
   const TowerFloorScreen({super.key});
@@ -115,7 +116,7 @@ class _TowerFloorScreenState extends ConsumerState<TowerFloorScreen> {
     if (run == null || data == null || run.isOver) {
       return Scaffold(
           appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
-          body: const Center(child: CircularProgressIndicator()));
+          body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
     // Back on a floor won with a pick still owed: the Level Up first.

@@ -329,11 +329,22 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
     );
 
+    // At 320 px the five bar buttons left the title one or two letters
+    // ("Pe..."): narrower buttons give it room (#892).
+    final barButton = MediaQuery.sizeOf(context).width < 360
+        ? IconButton.styleFrom(
+            minimumSize: const Size(36, 40),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap)
+        : null;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        leadingWidth: barButton == null ? null : 40,
+        titleSpacing: barButton == null ? null : 4,
         leading: canLeave
             ? IconButton(
+                style: barButton,
                 icon: const Icon(Icons.home_outlined),
                 tooltip: tr(ref, 'menu_back_to_menu'),
                 onPressed: () =>
@@ -355,6 +366,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             TutorialTarget(
               id: 'home.map',
               child: IconButton(
+                style: barButton,
                 key: const Key('home_full_map'),
                 icon: Icon(isEditMode
                     ? Icons.account_tree_outlined
@@ -373,6 +385,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           // and every chapter's road (v1.209).
           if (isEditMode)
             IconButton(
+              style: barButton,
               key: const Key('home_world_map'),
               icon: const Icon(Icons.map_outlined),
               tooltip: tr(ref, 'world_map_title'),
@@ -386,6 +399,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           FeatureGate(
             feature: GameFeature.politics,
             child: IconButton(
+              style: barButton,
               key: const Key('home_clans_politics'),
               icon: Stack(
                 clipBehavior: Clip.none,
@@ -413,6 +427,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             ),
           ),
           IconButton(
+            style: barButton,
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
             tooltip: tr(ref, 'language'),
             onPressed: () {
@@ -424,6 +439,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             },
           ),
           IconButton(
+            style: barButton,
             icon: const Icon(Icons.settings),
             tooltip: tr(ref, 'settings'),
             onPressed: () {

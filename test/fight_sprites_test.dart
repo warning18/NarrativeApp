@@ -38,6 +38,13 @@ void main() {
       'white_soldier',
       'inquisition_soldier',
       'inquisition_auxiliary',
+      'wreck_scavenger',
+      'den_bouncer',
+      'den_looter',
+      'mire_returned_sedge',
+      'demon_imp',
+      'angel_sentinel',
+      'street_bandit',
     ]) {
       final set = enemyFightSprite(id);
       expect(set, isNotNull, reason: id);
