@@ -167,6 +167,14 @@ extension _FightControls on _FightScreenState {
 
   // --- Bottom bar ----------------------------------------------------------
 
+  /// A button's words on one line, shrunk to fit: at 320 px in French the
+  /// two Expanded buttons beside the potions were too narrow, and "Relancer"
+  /// broke in the middle of the word (#891).
+  Widget _oneLine(String text) => FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(text, maxLines: 1, softWrap: false),
+      );
+
   /// Mana and spells on the first line; potion/antidote, reroll and confirm
   /// (or roll) on the second -- everything the player can press, in one
   /// place, like the action bar under a Slice & Dice fight.
@@ -242,7 +250,7 @@ extension _FightControls on _FightScreenState {
                         ? null
                         : () => _rollDice(dice, skills, items),
                     icon: const Icon(Icons.refresh, size: 18),
-                    label: Text('${tr(ref, 'reroll_button')} ($rollsLeft)'),
+                    label: _oneLine('${tr(ref, 'reroll_button')} ($rollsLeft)'),
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -252,7 +260,7 @@ extension _FightControls on _FightScreenState {
                         ? null
                         : () => _confirmRoll(skills, items),
                     icon: const Icon(Icons.check, size: 18),
-                    label: Text(tr(ref, 'confirm_roll_button')),
+                    label: _oneLine(tr(ref, 'confirm_roll_button')),
                   ),
                 ),
               ] else
@@ -262,7 +270,7 @@ extension _FightControls on _FightScreenState {
                         ? null
                         : () => _rollDice(dice, skills, items),
                     icon: const Icon(Icons.casino, size: 18),
-                    label: Text(
+                    label: _oneLine(
                       acting.length > 1
                           ? '${tr(ref, 'roll_dice_button')} (${acting.length}×)'
                           : tr(ref, 'roll_dice_button'),

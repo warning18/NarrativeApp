@@ -2342,7 +2342,7 @@
   },
   "void_sovereign": {
     "enemyName": "The Sovereign",
-    "maxHealth": 95,
+    "maxHealth": 86,
     "damage": 6,
     "guile": 12,
     "faction": "",

@@ -23,6 +23,7 @@ import 'skill_sheet.dart';
 import 'skill_tree_view.dart';
 import 'skills_view_model.dart';
 import 'spells_view.dart';
+import '../../widgets/ink_loading.dart';
 
 class SkillsScreen extends ConsumerWidget {
   const SkillsScreen({super.key, this.allyId, this.initialTab = 0});
@@ -63,7 +64,7 @@ class SkillsScreen extends ConsumerWidget {
           child: Text('${tr(ref, 'failed_to_load_skills')}: '
               '${skillsAsync.error}'));
     } else if (model == null) {
-      body = const Center(child: CircularProgressIndicator());
+      body = const InkLoading();
     } else if (allyId != null) {
       final professions =
           ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};

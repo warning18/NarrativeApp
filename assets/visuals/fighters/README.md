@@ -16,3 +16,12 @@ Used by `lib/widgets/fight_sprites.dart` (`enemyFightSprite`: which enemy gets w
 | `plague_hound` | Plague Hound (`art/pixellab/sewer/plague_hound`) | `plague_hound` |
 
 The sewer ones are 60 x 60 side views: `lib/widgets/fight_sprites.dart` keeps a frame size, foot inset and draw scale for them (`_enemyFrames`).
+| `wreck_scavenger` | Wreck Scavenger, Idle | `wreck_scavenger` |
+| `den_bouncer` | Noble Bouncer, Idle | `den_bouncer` |
+| `den_looter` | Noble Bouncer, Thiner man no beard | `den_looter` |
+| `sedge_returned` | Sedge of the Returned, Idle | `mire_returned_sedge` |
+| `low_demon` | Low demon | `demon_imp` |
+| `low_angel` | Low angel | `angel_sentinel` |
+| `street_bandit` | Bandit from the desert, Pit wretch no hood | `street_bandit` |
+| `iron_golem` | Iron Golem (60 x 60, Art pilots) | `iron_golem` |
+| `void_sovereign` | Void Sovereign (60 x 60, Art pilots) | `void_sovereign` |

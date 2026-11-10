@@ -20,6 +20,7 @@ import '../widgets/camp_travel.dart';
 import '../widgets/zone_card.dart';
 import 'expedition_screen.dart';
 import 'shop_detail_screen.dart';
+import '../widgets/ink_loading.dart';
 
 /// One port of call (a ports.json row) as its own page: the Smugglers'
 /// Wharf, chapter 2's Town Hub, opened from Edit Mode's Play tab. In play
@@ -78,7 +79,7 @@ class PortServices extends ConsumerWidget {
     if (ports == null || shops == null || zones == null) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: InkLoading(),
       );
     }
     final port = ports[portId] as Map<String, dynamic>?;

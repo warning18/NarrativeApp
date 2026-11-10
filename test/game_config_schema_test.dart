@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +40,8 @@ void main() {
         'futureKey': 7,
       }),
     });
-    await tester.pumpWidget(const MaterialApp(home: GameConfigScreen()));
+    await tester.pumpWidget(
+        const ProviderScope(child: MaterialApp(home: GameConfigScreen())));
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();
 

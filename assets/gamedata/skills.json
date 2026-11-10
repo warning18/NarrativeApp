@@ -1223,7 +1223,7 @@
     "rarity": "uncommon",
     "requiredSkillID": "",
     "isUnlocked": false,
-    "description": "A brief, practiced moment of first aid.",
+    "description": "A brief, practised moment of first aid.",
     "healAmount": 3,
     "damageMod": 0,
     "damageMultiplier": 1.0,
