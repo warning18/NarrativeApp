@@ -753,6 +753,10 @@ extension _FightView on _FightScreenState {
     final Widget inner = Die3D(
       key: ValueKey('die_cube_${actor.id}'),
       faces: _cubeFacesFor(actor, landing, accent),
+      // A solid (d4, d8, d10, d12, d20) shows every face of the die.
+      facets: dieSolidOf(dieShapeOf(actor.dieFaces.length)) == null
+          ? null
+          : _cubeFacesFor(actor, landing, accent, count: actor.dieFaces.length),
       accent: accent,
       size: cube,
       roll: _rollController,
@@ -1045,11 +1049,12 @@ extension _FightView on _FightScreenState {
   /// table, or the one the die is tumbling to) in front and the die's next
   /// faces round it; a die of fewer than six faces repeats them.
   List<DieCubeFace> _cubeFacesFor(
-      _PartyMember actor, DiceFaceResult? landed, Color accent) {
+      _PartyMember actor, DiceFaceResult? landed, Color accent,
+      {int count = 6}) {
     final raws = actor.dieFaces;
     if (raws.isEmpty) {
       return List.filled(
-          6,
+          count,
           DieCubeFace(
               glyph: Icon(Icons.casino, size: 22, color: accent),
               color: accent));
@@ -1057,7 +1062,7 @@ extension _FightView on _FightScreenState {
     final language = ref.read(appLanguageProvider);
     final start = landed?.faceIndex ?? 0;
     return [
-      for (var slot = 0; slot < 6; slot++)
+      for (var slot = 0; slot < count; slot++)
         () {
           final index = (start + slot) % raws.length;
           final DiceFaceResult face;
