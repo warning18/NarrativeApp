@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
 import '../providers/slow_frames_provider.dart';
+import '../theme/palette.dart';
 
 class SlowFramesOverlay extends ConsumerStatefulWidget {
   const SlowFramesOverlay({super.key, required this.child});
@@ -68,7 +69,7 @@ class _SlowFramesChip extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Colors.black.withValues(alpha: 0.75),
               border: Border.all(
-                  color: slow > 0 ? const Color(0xFFE0752B) : Colors.white38),
+                  color: slow > 0 ? Palette.orange52 : Colors.white38),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

@@ -12,24 +12,11 @@ extension _FightGround on _FightScreenState {
     return geography.placeOfNode(story?.nodeFor(play.currentNodeId))?.id;
   }
 
-  /// Where this fight is drawn: the scene's own stage when the choice names
-  /// one, else the stage the place the story stands at names (a hall for a
-  /// prison or a crypt), else a town's streets, else the pattern of the
-  /// land's biome, else open country.
-  FightStage _stageHere() {
-    final forced = widget.modifiers.forcedStage;
-    if (forced != null) return forced;
-    final geography = ref.read(geographyProvider);
-    final placeId = _placeIdHere();
-    final named = fightStageFromName(geography.placeStageNameOf(placeId));
-    if (named != null) return named;
-    // Open country has a few faces: the place picks one and keeps it.
-    return poolStageOf(
-        fightStageOf(geography.biomeOf(placeId)?.pattern,
-            town: guardedPlaceKinds
-                .contains(geography.locationOf(placeId)?.kind)),
-        placeId);
-  }
+  /// Where this fight is drawn (fight_ground_rule.dart): the scene's own
+  /// stage, the place's, a town's streets, the biome's, open country.
+  FightStage _stageHere() =>
+      fightStageAt(ref.read(geographyProvider), _placeIdHere(),
+          forcedStage: widget.modifiers.forcedStage);
 
   /// The light this fight is fought in (see place_traits.dart): the place's,
   /// else the day's.
@@ -75,21 +62,15 @@ extension _FightGround on _FightScreenState {
     );
   }
 
-  /// The rule this fight plays by its place and foe: the watch in a city,
-  /// a holy place's ground, the stage's own, the Tide where none applies or
-  /// a boss is fought.
-  ContextRule _contextRuleHere() {
-    final geography = ref.read(geographyProvider);
-    final placeId = _placeIdHere();
-    return contextRuleFor(
-      stage: _stage,
-      bossFight: widget.modifiers.isZoneBoss ||
-          widget._allEnemyEntries.any((e) =>
-              isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key)),
-      city: guardedPlaceKinds.contains(geography.place(placeId)?.kind),
-      holy: geography.tagsOf(placeId).contains('holy'),
-    );
-  }
+  /// The rule this fight plays by its place and foe (fight_ground_rule.dart):
+  /// the watch in a city, a holy place's ground, the stage's own, the Tide
+  /// where none applies or a boss is fought.
+  ContextRule _contextRuleHere() =>
+      fightGroundAt(ref.read(geographyProvider), _placeIdHere(),
+              forcedStage: _stage,
+              bossFight: isBossFight(widget._allEnemyEntries,
+                  zoneBoss: widget.modifiers.isZoneBoss))
+          .rule;
 
   /// The context rule as a round starts (context_rules.dart): its omen the
   /// round before it rises, its level as it rises, the ground's toll on
@@ -366,6 +347,7 @@ extension _FightGround on _FightScreenState {
           weather: false,
           events: false,
         ),
+        if (widget.landLayers != null) _buildLand(widget.landLayers!),
         DecoratedBox(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -382,6 +364,39 @@ extension _FightGround on _FightScreenState {
         ),
       ],
     );
+  }
+
+  /// The land of the road the fight is met on (the side-view kit at the
+  /// camera's x), across the upper part of the screen and faded into the
+  /// stage's ground below, standing still.
+  Widget _buildLand(List<SideLayer> layers) {
+    return LayoutBuilder(builder: (context, box) {
+      final height = (box.maxHeight * 0.5).clamp(160.0, 340.0);
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ShaderMask(
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (rect) => const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            // Softer than the scene is on its own, so the names and bars
+            // over it keep their contrast.
+            colors: [
+              Color(0xB3FFFFFF),
+              Color(0xB3FFFFFF),
+              Palette.alpha00Paper100
+            ],
+            stops: [0, 0.6, 1],
+          ).createShader(rect),
+          child: SideViewScene(
+            key: const Key('fight_land'),
+            layers: layers,
+            moving: false,
+            height: height,
+          ),
+        ),
+      );
+    });
   }
 
   /// The day's weather over the whole screen, cards and board included: it
@@ -431,7 +446,7 @@ extension _FightGround on _FightScreenState {
     final favour = reads ? plan.helpsParty : null;
     final scheme = Theme.of(context).colorScheme;
     final colour = switch (favour) {
-      true => Colors.green,
+      true => Palette.good,
       false => scheme.error,
       null => scheme.tertiary,
     };

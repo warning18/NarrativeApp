@@ -10,16 +10,15 @@ import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'immersive_notice.dart';
 import 'player_stats_bar.dart';
+import 'ink_sheet.dart';
 
 // The forge's sheet lives in forge_sheet.dart (v1.593).
 export 'forge_sheet.dart' show showForgeSheet;
 
 /// Opens the pack at [shopId] to sell what nobody wears.
 Future<void> showSellSheet(BuildContext context, {required String shopId}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
     builder: (_) => FractionallySizedBox(
       heightFactor: 0.8,
       child: _SellSheet(shopId: shopId),

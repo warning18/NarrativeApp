@@ -14,9 +14,10 @@ import '../theme/stitched_ink.dart';
 import 'die_3d.dart';
 import 'die_skins.dart';
 import 'pixel_banner.dart';
+import '../theme/palette.dart';
 
-const Color _ember = Color(0xFFE0702A);
-const Color _gold = Color(0xFFE2B890);
+const Color _ember = Palette.orange52b;
+const Color _gold = Palette.orange73;
 
 const _cols = 70;
 const _rows = 124;
@@ -65,7 +66,7 @@ void _smoke(_Grid g, List<(double, double)> cols) {
       final cx = x + i * 0.55 + math.sin(i * 0.7) * 1.2;
       final a = (0.55 - i * 0.018).clamp(0.08, 0.55);
       g.px(cx - w / 2, base - i * 2.2, w, 2.4,
-          const Color(0xFF2B2830).withValues(alpha: a));
+          Palette.night17b.withValues(alpha: a));
     }
   }
 }
@@ -110,7 +111,7 @@ Color _bgSky(_Grid g, double y) => const Color(0xFF6B3A2F);
 void _tower(_Grid g, {double x = 30, double base = 96}) {
   const stone = Color(0xFF2A262E);
   const lit = Color(0xFF3A353F);
-  const dark = Color(0xFF17151B);
+  const dark = Palette.night9;
   g.px(x, base - 44, 14, 44, stone);
   g.px(x, base - 44, 3, 44, lit);
   // The break at the top.
@@ -193,7 +194,7 @@ void _street(_Grid g, {double kerb = 84}) {
   g.px(47, kerb + 1, 10, 3, const Color(0xFF2A262E));
   g.px(49, kerb + 4, 6, 5, const Color(0xFFE8DDC0));
   for (var i = 0; i < 3; i++) {
-    g.px(50, kerb + 5 + i * 1.4, 4, 0.6, const Color(0xFF3A2A1E));
+    g.px(50, kerb + 5 + i * 1.4, 4, 0.6, Palette.orange17);
   }
   // A lamp post with its flame.
   g.px(61, kerb - 18, 1, 22, dark);
@@ -439,8 +440,8 @@ class IntroFloor extends CustomPainter {
       g.px(0, y, _cols, 0.6, const Color(0xFF16100C));
     }
     // The tables' edges and the cage.
-    g.px(0, 0, 14, 28, const Color(0xFF3A2A1E));
-    g.px(56, 8, 14, 30, const Color(0xFF3A2A1E));
+    g.px(0, 0, 14, 28, Palette.orange17);
+    g.px(56, 8, 14, 30, Palette.orange17);
     for (var i = 0; i < 6; i++) {
       g.px(58 + i * 2, 12, 0.7, 22, const Color(0xFF7A6A50));
     }
@@ -448,7 +449,7 @@ class IntroFloor extends CustomPainter {
     g.px(57, 33, 12, 0.8, const Color(0xFF7A6A50));
     // A mug and a candle on the table.
     g.px(4, 8, 3, 4, const Color(0xFF8A7A60));
-    g.px(9, 14, 1, 3, const Color(0xFFEDE3C8));
+    g.px(9, 14, 1, 3, Palette.amber86);
     g.px(9, 12.5, 1, 1.5, const Color(0xFFF6C050));
     // The pool of lamplight and the dark round it.
     final c = Offset(size.width / 2, size.height * 0.55);
@@ -456,7 +457,7 @@ class IntroFloor extends CustomPainter {
         Offset.zero & size,
         Paint()
           ..shader = ui.Gradient.radial(c, size.width * 0.95,
-              [const Color(0x00000000), const Color(0xEE000000)], [0.25, 1]));
+              [Palette.clear, const Color(0xEE000000)], [0.25, 1]));
     canvas.drawCircle(
         c,
         size.width * 0.55,
@@ -490,7 +491,7 @@ Widget introDie(double size, {double? roll, int face = 6}) => Die3D(
                       fontFamily: InkFonts.system,
                       fontSize: size * 0.45,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF3A2A1E))),
+                      color: Palette.orange17)),
               color: const Color(0xFFE8DDC0)),
       ],
       accent: _gold,

@@ -955,32 +955,6 @@
       "Au profit. Et, bon, à vous."
     ]
   },
-  "choice_960_1_vess": {
-    "remarkID": "choice_960_1_vess",
-    "companionID": "vess",
-    "trigger": "choice",
-    "choiceKey": "960#1",
-    "note": "The Inquisitor on the pier, beaten: end it quickly",
-    "lines": [
-      "You could have made him scream. He’d have deserved it. I’m glad you didn’t want to."
-    ],
-    "lines_fr": [
-      "Vous auriez pu le faire hurler. Il l’aurait mérité. Je suis contente que vous n’en ayez pas eu envie."
-    ]
-  },
-  "choice_960_2_vess": {
-    "remarkID": "choice_960_2_vess",
-    "companionID": "vess",
-    "trigger": "choice",
-    "choiceKey": "960#2",
-    "note": "The Inquisitor on the pier, beaten: make him pay",
-    "lines": [
-      "The dark taught me that too. Making them pay. It never once felt like being paid back."
-    ],
-    "lines_fr": [
-      "Le noir m’a appris ça aussi. Leur faire payer. Ça n’a jamais ressemblé à une dette qu’on me rendait."
-    ]
-  },
   "choice_refugees_aboard_kelda": {
     "remarkID": "choice_refugees_aboard_kelda",
     "companionID": "kelda",

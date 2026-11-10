@@ -13,13 +13,12 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import 'pixel_banner.dart';
 import 'sheet_kit.dart';
+import 'ink_sheet.dart';
 
 /// Opens the sheet over [context]; the charges to spend are read from the
 /// session.
-Future<void> showWardSheet(BuildContext context) => showModalBottomSheet<void>(
+Future<void> showWardSheet(BuildContext context) => showInkSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => const WardSheet(),
     );
 

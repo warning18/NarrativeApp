@@ -135,6 +135,7 @@ extension _SimFightEnd on _SimFight {
       potionsUsed: potionsUsed,
       phasesEntered: phasesEntered,
       goldStolen: s.crowsGold(crowsHits) + specGold,
+      healedBy: Map.unmodifiable(healedBy),
     );
   }
 }

@@ -22,6 +22,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/tutorial_launcher.dart';
 import '../tutorial/tutorial_topics.dart';
+import 'ink_sheet.dart';
 
 export '../data/feature_unlocks.dart' show GameFeature, GameFeatureInfo;
 export '../providers/feature_unlocks_provider.dart' show isFeatureUnlocked;
@@ -93,9 +94,9 @@ Future<void> _showFeatureLocked(
   final info = _featureUnlockInfo(feature);
   final name = tr(ref, 'feature_${feature.id}_name');
   final ink = InkColors.of(context);
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
+    scrollControlled: false,
     builder: (context) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),

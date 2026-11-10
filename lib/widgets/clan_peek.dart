@@ -17,6 +17,7 @@ import 'clan_power_block.dart';
 import 'clan_radar_chart.dart';
 import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
+import '../theme/palette.dart';
 
 /// Wraps [child] so a long press opens the details of [factionId] (see
 /// [showClanDetails]); they stay open until closed. With no clan (the
@@ -73,7 +74,7 @@ class ClanDetailsCard extends ConsumerWidget {
             ? 'offer_align_evil'
             : 'offer_align_none';
     final leanColor = lean > 0
-        ? const Color(0xFF3E9B57)
+        ? Palette.green43
         : lean < 0
             ? theme.colorScheme.error
             : theme.colorScheme.onSurfaceVariant;

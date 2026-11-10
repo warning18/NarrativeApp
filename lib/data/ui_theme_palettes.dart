@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 /// A small, deliberately restrained visual accent for one of the story
 /// graph's settings (`context_taxonomy.ui_theme` in the DAG, exposed as
@@ -45,7 +46,7 @@ const Map<String, UiThemePalette> _uiThemePalettes = {
   'docks': UiThemePalette(accent: Color(0xFF3E7C8C)),
   // Warm antique gold, ceremonial weight.
   'cathedral': UiThemePalette(
-    accent: Color(0xFFC9A227),
+    accent: Palette.amber47,
     letterSpacing: 0.4,
     headerWeight: FontWeight.w800,
   ),

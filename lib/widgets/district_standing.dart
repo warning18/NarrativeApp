@@ -20,6 +20,8 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'city_chart/city_chart.dart' show CityChartHold;
 import 'pixel_banner.dart' show ClanFlag, clanBannerId;
+import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// What the Town view says of one district.
 class DistrictStanding {
@@ -183,7 +185,7 @@ class DistrictStandingLine extends ConsumerWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           if (s.flipped) ...[
-            const Icon(Icons.star, size: 12, color: Color(0xFFF2C14E)),
+            const Icon(Icons.star, size: 12, color: Palette.goldDark),
             const SizedBox(width: 3),
           ],
           Flexible(
@@ -308,9 +310,9 @@ class DistrictLead extends StatelessWidget {
 Future<void> showLockedDistrictSheet(
     BuildContext context, DistrictStanding standing,
     {required String name}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
+    scrollControlled: false,
     builder: (_) => _LockedDistrictSheet(standing: standing, name: name),
   );
 }

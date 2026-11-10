@@ -16,6 +16,8 @@ import '../data/journey_map.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'journey_glyph.dart';
+import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// What a way is, folded to the seven a player can learn. The order is the
 /// priority: a pin that stands for several ways shows the first of them.
@@ -104,7 +106,7 @@ class BannerPin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = dark ? const Color(0xFF141218) : Colors.white;
+    final iconColor = dark ? Palette.night8a : Colors.white;
     return SizedBox(
       width: base.width * scale,
       height: base.height * scale,
@@ -188,7 +190,7 @@ void paintBannerPin(Canvas canvas, PinBanner banner,
         package: icon.fontPackage,
         fontSize: 14,
         height: 1,
-        color: dark ? const Color(0xFF141218) : Colors.white,
+        color: dark ? Palette.night8a : Colors.white,
       ),
     ),
     textDirection: TextDirection.ltr,
@@ -201,7 +203,7 @@ void _paintBannerCloth(Canvas canvas, Color color,
     {required bool dark, bool lit = false, bool unknown = false}) {
   const w = 26.0;
   const h = 38.0;
-  final surface = dark ? const Color(0xFF141218) : const Color(0xFFFAF3E2);
+  final surface = dark ? Palette.night8a : const Color(0xFFFAF3E2);
   final rod = Color.lerp(color, Colors.black, 0.45)!;
   const cord = Color(0xFFEFE3C8);
   // The cloth: straight sides, a swallow-tail hem.
@@ -285,10 +287,8 @@ void _dashed(Canvas canvas, Path path, Paint paint) {
 /// The key button's sheet: each category with its banner, its name in its
 /// colour and one line.
 Future<void> showJourneyLegend(BuildContext context) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
     builder: (sheet) => const JourneyLegendSheet(),
   );
 }

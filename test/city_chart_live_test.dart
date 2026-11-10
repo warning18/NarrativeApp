@@ -90,15 +90,12 @@ void main() {
         tester.widget<CityChartView>(find.byType(CityChartView)).chart;
     final wharfWays = chart.waysIn(wharf);
     expect(wharfWays, isNotEmpty, reason: 'the hub has ways on the wharf');
-    final box = chart.districtById(wharf)!.box;
-    final zoom = size.width / box.width < size.height / box.height
-        ? size.width / box.width
-        : size.height / box.height;
-    final building = chart.buildingOf(wharfWays.first)!;
+    // The pin is where the view draws it once the zoom has ended (the
+    // district is framed with room for its banners, v1.853).
+    await tester.pump(const Duration(seconds: 1));
     final pin = topLeft +
-        Offset(size.width / 2, size.height * 0.42) +
-        (building.at - box.center) * zoom +
-        const Offset(0, -16);
+        ((tester.state(find.byType(CityChartView)) as dynamic)
+            .debugPinCentre(wharfWays.first.id) as Offset);
     await tester.tapAt(pin);
     await settle();
     expect(find.byKey(const Key('city_chart_way_card')), findsOneWidget);

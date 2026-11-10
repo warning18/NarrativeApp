@@ -68,6 +68,21 @@ typedef ChoiceShape = ({
   bool here,
 });
 
+/// The word a choice's `place` takes for a way out of the town (v1.851):
+/// the way leads to a departure scene still told where the party stands
+/// (the White Wells' "Go south…" to the night by the water), whose one way
+/// is the road on.
+const String outPlaceWord = 'out';
+
+/// The scene [choice] takes the party to: for a way out ([outPlaceWord])
+/// whose next scene has one way, that way's scene (the departure told,
+/// the road on); else the choice's own next scene.
+String wayOutEndOf(StoryChoice choice, StoryData story) {
+  if (choice.place != outPlaceWord) return choice.nextId;
+  final ways = story.nodeFor(choice.nextId)?.choices ?? const [];
+  return ways.length == 1 ? ways.single.nextId : choice.nextId;
+}
+
 /// The shape of [choice], taken in scene [from] of [story].
 ChoiceShape choiceShape(
   StoryNode from,
@@ -77,11 +92,14 @@ ChoiceShape choiceShape(
 }) {
   final travelId = choice.travelPlaceId ?? '';
   final next = story.nodeFor(choice.nextId);
+  // A way out goes where its departure scene's road does.
+  final endId = wayOutEndOf(choice, story);
+  final end = story.nodeFor(endId);
   final here = geography.placeOfNode(from);
   final there = travelId.isNotEmpty
       ? geography.placeOfNode(story.nodeFor(travelId)) ??
-          geography.placeOfNode(next)
-      : geography.placeOfNode(next);
+          geography.placeOfNode(end)
+      : geography.placeOfNode(end);
   final ChoiceMove move;
   if (travelId.isNotEmpty) {
     move = ChoiceMove.travel;
@@ -90,7 +108,7 @@ ChoiceShape choiceShape(
   } else if (here.id == there.id) {
     move = ChoiceMove.stay;
   } else {
-    move = geography.travelsBetween(story, from.id, choice.nextId)
+    move = geography.travelsBetween(story, from.id, endId)
         ? ChoiceMove.travel
         : ChoiceMove.walk;
   }

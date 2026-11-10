@@ -2987,7 +2987,7 @@
   },
   "harborwatch_cutlass": {
     "id": "harborwatch_cutlass",
-    "itemName": "Harborwatch Cutlass",
+    "itemName": "Harbourwatch Cutlass",
     "itemType": "Weapon",
     "damage": 0,
     "cost": 85,
@@ -3022,7 +3022,7 @@
   },
   "harborwatch_coat": {
     "id": "harborwatch_coat",
-    "itemName": "Harborwatch Coat",
+    "itemName": "Harbourwatch Coat",
     "itemType": "Armor",
     "damage": 0,
     "cost": 95,
@@ -3056,7 +3056,7 @@
   },
   "harborwatch_lantern": {
     "id": "harborwatch_lantern",
-    "itemName": "Harborwatch Lantern",
+    "itemName": "Harbourwatch Lantern",
     "itemType": "Artifact",
     "damage": 0,
     "cost": 90,
@@ -3087,7 +3087,7 @@
     "alignedArmorBonus": 0,
     "setId": "harborwatch",
     "itemName_fr": "Lanterne de la Garde du port",
-    "description": "Signal lantern of the Saltmouth harbor watch, its glass salvaged by the wreck-wrights of the White Anchorage from a fleet boat the sea gave back. The Admiralty counts every one sold; with the coat and the cutlass it is the full watch, and the watch learned to keep its feet on wet stone.",
+    "description": "Signal lantern of the Saltmouth harbour watch, its glass salvaged by the wreck-wrights of the White Anchorage from a fleet boat the sea gave back. The Admiralty counts every one sold; with the coat and the cutlass it is the full watch, and the watch learned to keep its feet on wet stone.",
     "description_fr": "Lanterne de signal de la garde du port de Bouche-de-Sel, dont le verre fut récupéré par les charpentiers d’épaves du Mouillage Blanc sur une chaloupe de la flotte que la mer a rendue. L’Amirauté en compte chaque vente ; avec le manteau et le sabre, c’est la garde au complet, et la garde a appris à tenir debout sur la pierre mouillée."
   },
   "hollow_court_blade": {

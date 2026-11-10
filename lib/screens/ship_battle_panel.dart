@@ -32,6 +32,8 @@ import '../widgets/die_skins.dart';
 import '../widgets/ship_fx.dart';
 import '../widgets/station_die.dart';
 import 'fight_screen.dart';
+import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
 
 part 'ship_battle/ship_battle_flow.dart';
 part 'ship_battle/ship_battle_dock.dart';

@@ -7,6 +7,7 @@ import '../../data/ship_forms.dart';
 import '../ship_dress.dart';
 import 'deck_crew.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 part 'side_gear.dart';
 
@@ -72,8 +73,8 @@ final Map<String, SideEnemy> _enemies = {
       'oars': 6,
     }),
     const ShipDress(
-        hull: Color(0xFF4A3426),
-        trim: Color(0xFF7A5A3A),
+        hull: Palette.orange22,
+        trim: Palette.orange35,
         cloth: Color(0xFF6B5A48),
         ensignColor: Color(0xFF1B1B1B)),
   ),
@@ -90,7 +91,7 @@ final Map<String, SideEnemy> _enemies = {
       'jibs': 1,
     }),
     const ShipDress(
-        hull: Color(0xFF2C2A30),
+        hull: Palette.night18,
         trim: Color(0xFF5A5A66),
         cloth: Color(0xFF3A3944),
         ensignColor: Color(0xFFB8322A)),
@@ -110,7 +111,7 @@ final Map<String, SideEnemy> _enemies = {
         hull: Color(0xFF3A3F4A),
         trim: Color(0xFFC9B26A),
         cloth: Color(0xFFD8D4C8),
-        ensignColor: Color(0xFFE4E2DC)),
+        ensignColor: Palette.paper88),
   ),
   'void_barge': SideEnemy(
     _enemyForm('void_barge', const {
@@ -125,9 +126,9 @@ final Map<String, SideEnemy> _enemies = {
     const ShipDress(
         hull: Color(0xFF1B1530),
         trim: Color(0xFF7A55C8),
-        cloth: Color(0xFF3A2A66),
-        ensignColor: Color(0xFF9A6BFF)),
-    glow: const Color(0xFF9A6BFF),
+        cloth: Palette.purple28,
+        ensignColor: Palette.purple71),
+    glow: Palette.purple71,
   ),
 };
 
@@ -136,7 +137,7 @@ final Map<String, SideEnemy> _enemies = {
 SideEnemy sideEnemyOf(String? id) => _enemies[id] ?? _enemies['raider_skiff']!;
 
 const Color _woodHull = Color(0xFF5A3A24);
-const Color _woodTrim = Color(0xFF8A6038);
+const Color _woodTrim = Palette.orange38;
 const Color _clothDefault = Color(0xFFE8E0C8);
 
 Color _shade(Color c, double k) => Color.fromARGB(
@@ -191,12 +192,12 @@ class _Palette {
   _Palette(ShipDress? dress, {Color? clothOverride})
       : hull = dress?.hull ?? _woodHull,
         trim = dress?.trim ?? _woodTrim,
-        deck = dress?.deck ?? const Color(0xFF9A7448),
+        deck = dress?.deck ?? Palette.orange44,
         cloth = clothOverride ?? dress?.cloth ?? _clothDefault,
         edge = dress?.clothEdge,
         pattern = dress?.clothPattern ?? 'plain',
         patternColor = dress?.clothPatternColor,
-        ensign = dress?.ensignColor ?? const Color(0xFFC0392B),
+        ensign = dress?.ensignColor ?? Palette.red46,
         figurehead = dress?.figurehead ?? 'none',
         figureheadColor = dress?.figureheadColor ?? const Color(0xFFD9B36A),
         figureheadEye = dress?.figureheadEye ?? const Color(0xFF1B1B1B),
@@ -376,10 +377,9 @@ void _damage(
       final h = (2 + (2 + 2 * math.sin(t * 9 + k * 1.7)).round()).toDouble();
       sidePixels(canvas, u, Paint()..color = const Color(0xFFD9442B), fx,
           fy - h, 2, h);
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFF2992E), fx,
-          fy - h + 1, 2, math.max(1, h - 1));
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE08A), fx,
-          fy - 1, 1, 1);
+      sidePixels(canvas, u, Paint()..color = Palette.orange56a, fx, fy - h + 1,
+          2, math.max(1, h - 1));
+      sidePixels(canvas, u, Paint()..color = Palette.amber77, fx, fy - 1, 1, 1);
     }
   }
 }
@@ -656,7 +656,7 @@ void _oars(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t, List<double> top) {
   if (form.oars <= 0) return;
   final n = (form.oars / 2).ceil();
-  final oar = Paint()..color = const Color(0xFFB08A58);
+  final oar = Paint()..color = Palette.orange52a;
   final blade = Paint()..color = const Color(0xFF8A6A3E);
   for (var i = 0; i < n; i++) {
     final f = 0.16 + 0.68 * (n == 1 ? 0.5 : i / (n - 1));
@@ -750,7 +750,7 @@ void _ironclad(Canvas canvas, double u, double x, double base, double len,
   for (var i = 0; i < len * 0.5; i += 3) {
     sidePixels(canvas, u, light, x + len * 0.26 + i, base - 7, 1, 1);
   }
-  final port = Paint()..color = const Color(0xFF14110F);
+  final port = Paint()..color = Palette.night7;
   for (final f in [0.36, 0.5, 0.64]) {
     sidePixels(canvas, u, port, x + len * f, base - 9, 3, 2);
   }
@@ -760,8 +760,8 @@ void _ironclad(Canvas canvas, double u, double x, double base, double len,
     sidePixels(canvas, u, Paint()..color = const Color(0xFF1B1B20), fx,
         base - 20, 4, 9);
     sidePixels(canvas, u, Paint()..color = pal.ensign, fx, base - 15, 4, 1);
-    sidePixels(canvas, u, Paint()..color = const Color(0xFF3A3A44), fx,
-        base - 20, 4, 1);
+    sidePixels(
+        canvas, u, Paint()..color = Palette.night25, fx, base - 20, 4, 1);
     for (var i = 0; i < 5; i++) {
       final age = (t * 0.7 + i / 5 + f) % 1.0;
       final sx = fx + 1 - age * 18;
@@ -876,7 +876,7 @@ void _batwings(Canvas canvas, double u, double x, double base, double len,
   sidePixels(
       canvas,
       u,
-      Paint()..color = const Color(0xFFFFD27A).withValues(alpha: flicker),
+      Paint()..color = Palette.orange74.withValues(alpha: flicker),
       x + 3,
       base - 8,
       1,
@@ -933,14 +933,14 @@ void _lodestone(Canvas canvas, double u, double x, double base, double len,
 /// bone wings that beat.
 _Rig _bone(Canvas canvas, double u, double x, double base, double len,
     ShipForm form, _Palette pal, double t) {
-  final boneHull = Color.lerp(pal.hull, const Color(0xFFD8D0BC), 0.8)!;
+  final boneHull = Color.lerp(pal.hull, Palette.paper79, 0.8)!;
   _hull(canvas, u, x, base, len, form, pal, colour: boneHull);
   final p = _profile(form, len, base);
   _bow(canvas, u, x, base, len, form, pal, p.top.last);
   // The wings: three finger-bones from the shoulder, a membrane between.
   final sx = x + len * 0.46, sy = base - 8;
   final beat = math.sin(t * 1.5);
-  final bone = Paint()..color = const Color(0xFFE6DFCB);
+  final bone = Paint()..color = Palette.amber85;
   final membrane = Paint()
     ..color = const Color(0xFF4A2F6B).withValues(alpha: 0.85);
   final tips = [

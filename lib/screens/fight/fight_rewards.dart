@@ -152,6 +152,7 @@ extension _FightRewards on _FightScreenState {
     // On the feature ladder the lesson (105) brings no chest: the next
     // fight won does (feature_unlocks.dart).
     final noChest = spared ||
+        widget.modifiers.tower ||
         (widget.modifiers.tutorial && !session.featureOpen(GameFeature.chest));
     final chest = noChest
         ? const LootBoxResult(
@@ -188,6 +189,11 @@ extension _FightRewards on _FightScreenState {
           _LogKind.enemyDamage));
     }
     xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
+    // A Tower floor pays in its own rewards, never in gold or XP.
+    if (widget.modifiers.tower) {
+      goldGain = 0;
+      xpGain = 0;
+    }
 
     final lang = ref.read(appLanguageProvider);
     final chestBanter =
@@ -219,6 +225,15 @@ extension _FightRewards on _FightScreenState {
             currentHealth: player.currentHealth,
             maxHealth: player.maxHealth,
             potionBonus: _potionBonus,
+            // The spoils sheet counts what the whole loot changes.
+            sheet: SpoilsSheetData(
+              session: session,
+              gold: goldGain,
+              itemIds: List.of(loot),
+              keepWounds: widget.modifiers.keepWounds,
+              spells:
+                  ref.read(localizedDbProvider(spellsSchema)).value ?? const {},
+            ),
           );
     if (!mounted) return;
 
@@ -228,8 +243,11 @@ extension _FightRewards on _FightScreenState {
     // mends between its fights: the potion is kept, no sign heals.
     final keepWounds = widget.modifiers.keepWounds;
     final drinks = keepWounds ? 0 : spoils.drinkItemIds.length;
-    final hpAfterSpoils = min(player.maxHealth,
-        player.currentHealth + drinks * (potionHealAmount + _potionBonus));
+    final hpAfterSpoils = healthAfterDrinks(
+        health: player.currentHealth,
+        maxHealth: player.maxHealth,
+        drinks: drinks,
+        potionBonus: _potionBonus);
     // A sign that mends the party after a won fight.
     final signHeal = keepWounds ? 0 : _signs.afterFightHeal(player.maxHealth);
     final leveledUp = await notifier.applyCombatResult(
@@ -305,7 +323,7 @@ extension _FightRewards on _FightScreenState {
         '${lootNames.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${lootNames.join(", ")}" : ""}.';
     // Kept for the next scene: the fight closes itself.
     final outcome = ref.read(lastFightOutcomeProvider);
-    if (outcome != null) {
+    if (outcome != null && !widget.modifiers.tower) {
       ref.read(lastFightOutcomeProvider.notifier).state =
           outcome.withSpoils(victoryLine);
     }
@@ -577,8 +595,10 @@ extension _FightRewards on _FightScreenState {
 
   /// Whether the party may still get away: the fight has begun and isn't
   /// over, and no boss stands in it -- a boss (a story duel, a zone's
-  /// master) has to be faced.
+  /// master) has to be faced. A Tower floor is won or lost: no one walks
+  /// out of it mid-fight (leaving the run is the floor screen's).
   bool get _canRetreat =>
+      !widget.modifiers.tower &&
       _started &&
       !_over &&
       !_enemies.any((e) =>

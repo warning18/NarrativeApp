@@ -145,7 +145,8 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         _RoadTimeActions,
         _SkillsCombatActions {
   PlayerSessionNotifier()
-      : super(const PlayerSession(
+      : _detached = false,
+        super(const PlayerSession(
           level: 1,
           currentXP: 0,
           gold: 0,
@@ -182,6 +183,23 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         )) {
     _load();
   }
+
+  /// A notifier on [session] alone, never read from nor written to the
+  /// story save (v1.849, the Tower's fight: towerFightSession). Its changes
+  /// live only as long as it does.
+  PlayerSessionNotifier.detached(super.session) : _detached = true {
+    _loaded.complete();
+  }
+
+  /// Puts [offer] on the table as the stat pick to take (v1.857, the
+  /// Tower's level-up: its own draw, tower_level_up_session.dart), in
+  /// place of the one ensureStatPick would draw.
+  void putStatPick(List<StatPickOffer> offer) =>
+      state = state.copyWith(statPickOffer: offer);
+
+  /// Whether this notifier is [PlayerSessionNotifier.detached]: it writes
+  /// nothing.
+  final bool _detached;
 
   /// Every state the notifier takes keeps its companion flags in step with
   /// the roster (wave 17: `ally_<id>` while recruited, `devoted_<id>` once
@@ -461,6 +479,7 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   Future<void> _write() async {
     await _loaded.future;
     _pendingWrite = null;
+    if (_detached) return;
     final encoded = json.encode(state.toJson());
     sessionWrites++;
     final prefs = await SharedPreferences.getInstance();
@@ -839,6 +858,70 @@ class PlayerSessionNotifier extends _SessionNotifierBase
     }
     return (statPoints: 1, offers: const <OfferTicket>[]);
   }
+}
+
+/// What a fight's (a chest's, a voyage's, a top-up's) loot [itemIds]
+/// grants once applied: the one split [PlayerSessionNotifier.applyCombatResult]
+/// applies and loot_changes.dart reads, so what the spoils sheet says a
+/// reward changes is what taking it does (v1.830). A potion or an antidote
+/// becomes charges, a tome is read on the spot (a stat point, or an offer),
+/// a spellbook teaches its spell once ([knownSpellIds] and the books read
+/// before it in the list teach nothing), everything else is carried.
+({
+  int potions,
+  int antidotes,
+  int statPoints,
+  List<String> tomePickIds,
+  List<OfferTicket> offers,
+  List<String> carried,
+  List<String> spellsLearned,
+}) lootGrantOf(
+  List<String> itemIds,
+  Map<String, dynamic> items, {
+  required List<String> knownSpellIds,
+}) {
+  var potions = 0, antidotes = 0, statPoints = 0;
+  final tomePickIds = <String>[];
+  final offers = <OfferTicket>[];
+  final carried = <String>[];
+  final spellsLearned = <String>[];
+  for (final itemId in itemIds) {
+    final item = items[itemId] as Map<String, dynamic>?;
+    final tome = PlayerSessionNotifier.tomeGrantFor(itemId, item);
+    if (tome != null) {
+      statPoints += tome.statPoints;
+      for (var i = 0; i < tome.statPoints; i++) {
+        tomePickIds.add(itemId);
+      }
+      offers.addAll(tome.offers);
+      continue;
+    }
+    // A spellbook handed out as a reward is read like a bought one.
+    final taughtSpellId = spellbookSpellIdFor(item);
+    if (taughtSpellId != null) {
+      if (!knownSpellIds.contains(taughtSpellId) &&
+          !spellsLearned.contains(taughtSpellId)) {
+        spellsLearned.add(taughtSpellId);
+      }
+      continue;
+    }
+    final charges = PlayerSessionNotifier.consumableChargesFor(itemId, item);
+    if (charges == null) {
+      carried.add(itemId);
+      continue;
+    }
+    potions += charges.potions;
+    antidotes += charges.antidotes;
+  }
+  return (
+    potions: potions,
+    antidotes: antidotes,
+    statPoints: statPoints,
+    tomePickIds: tomePickIds,
+    offers: offers,
+    carried: carried,
+    spellsLearned: spellsLearned,
+  );
 }
 
 /// Summary of a run that ended in permadeath, for the death screen.

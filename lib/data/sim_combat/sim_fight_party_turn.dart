@@ -46,11 +46,14 @@ extension _SimFightPartyTurn on _SimFight {
     if (c.currentHealth < 0.4 * c.maxHealth && c.potions > 0) {
       c.potions--;
       potionsUsed++;
-      final drink = ctx?.heal(
-              _potionHeal + s.potionBonus + perks.potionBonus, rounds + 1) ??
-          _potionHeal + s.potionBonus + perks.potionBonus;
+      final drink = healed(
+          HealSource.potion, _potionHeal + s.potionBonus + perks.potionBonus,
+          round: rounds + 1);
       // The Brimming Draught: what spills past full feeds the fire.
-      if (has(Spec.brimmingDraught)) {
+      if (healFeedsFire(
+          source: HealSource.potion,
+          watchfire: core == ProfessionCore.watchfire,
+          brimmingDraught: has(Spec.brimmingDraught))) {
         fire = fireAfterHeal(
           fire: fire,
           healing: drink,
@@ -97,7 +100,21 @@ extension _SimFightPartyTurn on _SimFight {
       clash: clash,
       react: on('reaction'),
       round: rounds,
-      healed: core == ProfessionCore.watchfire ? null : healed,
+      // The heal rule (heal_rules.dart), the cleric's included: before
+      // v1.866 its spells skipped the ground's rule here (not on screen).
+      healed: (amount) => healed(HealSource.spell, amount),
+      // The Watchfire: a spell's heal past full feeds the fire too.
+      onSpellHeal: healFeedsFire(
+              source: HealSource.spell,
+              watchfire: core == ProfessionCore.watchfire)
+          ? (heal) => fire = fireAfterHeal(
+                fire: fire,
+                healing: heal,
+                currentHealth: c.currentHealth,
+                maxHealth: c.maxHealth,
+                beacon: has(Spec.beacon),
+              )
+          : null,
       partyBlow: ctx == null
           ? null
           : (raw, element) => ctx.blow(raw, rounds,
@@ -471,15 +488,13 @@ extension _SimFightPartyTurn on _SimFight {
         c.statusEffects = c.statusEffects.skip(s.mendCleanse).toList();
       }
     }
-    // The Watchfire's heals from the die don't tire: they are its fire.
-    // The Anvil-Deaf's wall takes no Heal faces.
-    final faceHeal =
-        mods.noHealFaces && has(Spec.briarGuard) && face.type == 'Heal'
-            ? 0
-            : result.healingDone;
-    final heal = core == ProfessionCore.watchfire
-        ? ctx?.heal(faceHeal, rounds) ?? faceHeal
-        : healed(faceHeal);
+    // The heal rule (heal_rules.dart): the Anvil-Deaf's wall takes no Heal
+    // faces; the Watchfire's heals from the die don't tire, they are its
+    // fire.
+    final heal = healed(HealSource.face, result.healingDone,
+        noHealFaces:
+            mods.noHealFaces && has(Spec.briarGuard) && face.type == 'Heal',
+        round: rounds);
     if (core == ProfessionCore.watchfire && heal > 0) {
       // Every heal from the die burns (under the Beacon, every enemy);
       // the part past full feeds the fire.

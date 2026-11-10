@@ -7,9 +7,16 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
+import '../data/loot_changes.dart';
+import '../providers/player_session_provider.dart' show PlayerSession;
+import '../theme/stitched_ink.dart' show InkColors;
 import 'item_stats.dart';
+import 'loot_sheet.dart';
+import 'loot_sheet_lines.dart';
 import 'item_detail_view.dart';
 import 'pixel_sprite.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// What the player chose to do with the spoils before closing the chest:
 /// gear to put on at once and healing potions to drink on the spot.
@@ -19,6 +26,33 @@ class SpoilsChoices {
   final List<String> equipItemIds;
   final List<String> drinkItemIds;
   static const none = SpoilsChoices();
+}
+
+/// What the full-height spoils sheet (design C) needs on top of the chest: the
+/// whole loot of the fight, not only the chest's (what lootChanges counts from).
+class SpoilsSheetData {
+  const SpoilsSheetData({
+    required this.session,
+    required this.gold,
+    required this.itemIds,
+    this.keepWounds = false,
+    this.spells = const {},
+  });
+
+  /// The hero before the loot is granted.
+  final PlayerSession session;
+
+  /// The gold the fight grants in all, once the perks and signs have scaled it.
+  final int gold;
+
+  /// Every item the fight grants, in order (the chest's among them).
+  final List<String> itemIds;
+
+  /// A chain with no healing: a potion drunk from the chest is kept.
+  final bool keepWounds;
+
+  /// spells.json (localised), for the name of a spell a tome teaches.
+  final Map<String, dynamic> spells;
 }
 
 /// The post-fight spoils chest (see loot_box.dart): a closed chest the
@@ -40,6 +74,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
   int currentHealth = 0,
   int maxHealth = 0,
   int potionBonus = 0,
+  SpoilsSheetData? sheet,
 }) async {
   final choices = await showDialog<SpoilsChoices>(
     context: context,
@@ -55,6 +90,7 @@ Future<SpoilsChoices> showSpoilsChestDialog(
       currentHealth: currentHealth,
       maxHealth: maxHealth,
       potionBonus: potionBonus,
+      sheet: sheet,
     ),
   );
   return choices ?? SpoilsChoices.none;
@@ -94,7 +130,13 @@ class SpoilsChestDialog extends StatefulWidget {
     this.currentHealth = 0,
     this.maxHealth = 0,
     this.potionBonus = 0,
+    this.sheet,
   });
+
+  /// With it, once the chest is open and every drop shown the dialog gives
+  /// way to the full-height spoils sheet (what the loot changes); without it,
+  /// the dialog is as it was.
+  final SpoilsSheetData? sheet;
 
   final LootBoxResult result;
   final Map<String, dynamic> items;
@@ -274,6 +316,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     final result = widget.result;
     final tierColor = _chestTierColor(result.tier);
     final theme = Theme.of(context);
+    if (widget.sheet != null && _opened && _allRevealed && !_bursting) {
+      return _buildSheet(theme);
+    }
 
     return AlertDialog(
       title: Row(
@@ -380,7 +425,6 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                         ?.copyWith(color: theme.colorScheme.tertiary),
                   ),
                 ],
-                ..._buildSpoilsList(theme),
               ],
               if (_tierShown) ...[
                 const SizedBox(height: 12),
@@ -410,6 +454,122 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           child: Text(_t('chest_take_button')),
         ),
       ],
+    );
+  }
+
+  /// The spoils as the full-height sheet (design C): what the whole loot
+  /// changes, each drop's text with its switch (put on, drink), Take.
+  Widget _buildSheet(ThemeData theme) {
+    final data = widget.sheet!;
+    final ink = InkColors.of(context);
+    final result = widget.result;
+    final drinks = [for (final i in _drinkSlots) result.itemIds[i - 1]];
+    final lines = lootSheetLines(
+      lootChanges(
+        data.session,
+        gold: data.gold,
+        itemIds: data.itemIds,
+        items: widget.items,
+        drinkItemIds: drinks,
+        health: widget.maxHealth > 0 ? widget.currentHealth : null,
+        maxHealth: widget.maxHealth > 0 ? widget.maxHealth : null,
+        potionBonus: widget.potionBonus,
+        keepWounds: data.keepWounds,
+      ),
+      language: widget.language,
+      ink: ink,
+      items: widget.items,
+      spellName: (id) {
+        final spell = data.spells[id] as Map<String, dynamic>?;
+        return spell?['spellName']?.toString() ?? id;
+      },
+    );
+    final rewards = <LootReward>[];
+    for (var slot = 1; slot < _slotCount; slot++) {
+      final itemId = _itemIdAt(slot);
+      final item = _itemAt(slot);
+      final type = item?['itemType']?.toString() ?? '';
+      final action = _actionFor(slot);
+      final text = consumableNote(itemId, item, widget.language) ??
+          (type == 'Tome' || type == 'Spellbook'
+              ? _t('loot_auto_read_note')
+              : isGear(item) && !_canEquipSlot(slot)
+                  ? _t('loot_cannot_wear_note')
+                  : (item?['description']?.toString() ?? ''));
+      final wornId = _wornFor(slot);
+      final worn =
+          wornId == null ? null : widget.items[wornId] as Map<String, dynamic>?;
+      rewards.add(LootReward(
+        id: '$slot',
+        name: item?['itemName']?.toString() ?? itemId,
+        text: text,
+        icon: ItemPixelIcon(itemId, type, size: 28),
+        canUseNow: action != null,
+        useLabel: action?.$1,
+        useEnabled: action?.$3 != null,
+        // A piece of gear says what it changes against the one worn (the
+        // stats with their difference, and what it replaces), as the old
+        // list under the slots did; a tap reads it in full.
+        detail: isGear(item)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ItemStatChips(
+                    item: item,
+                    equipped: worn,
+                    language: widget.language,
+                    compact: true,
+                  ),
+                  if (worn != null)
+                    Text(
+                        _t('loot_replaces').replaceAll(
+                            '{name}', worn['itemName']?.toString() ?? wornId!),
+                        key: Key('loot_replaces_$slot'),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant)),
+                ],
+              )
+            : null,
+        onTap: () => _showDetails(slot),
+      ));
+    }
+    final height = MediaQuery.sizeOf(context).height -
+        MediaQuery.paddingOf(context).top -
+        56;
+    return Dialog(
+      key: const Key('spoils_sheet'),
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.only(top: 56),
+      alignment: Alignment.bottomCenter,
+      child: SizedBox(
+        width: double.infinity,
+        height: height,
+        child: LootSheet(
+          language: widget.language,
+          title: _t('spoils_title'),
+          chestAsset: _chestAssetPath(result.tier, open: true),
+          tierLabel: _t(chestTierLabelKey(result.tier)),
+          tierColor: _chestTierColor(result.tier),
+          changes: lines,
+          rewards: rewards,
+          useNow: {
+            for (final i in {..._equipSlots, ..._drinkSlots}) '$i'
+          },
+          onUseNow: (id, on) {
+            final action = _actionFor(int.parse(id));
+            if (action != null && action.$3 != null && action.$2 != on) {
+              action.$3!();
+            }
+          },
+          onTake: () => Navigator.of(context).pop(SpoilsChoices(
+            equipItemIds: [
+              for (final i in _equipSlots) result.itemIds[i - 1],
+            ],
+            drinkItemIds: drinks,
+          )),
+          footer: _buildFortune(theme),
+        ),
+      ),
     );
   }
 
@@ -451,7 +611,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     String label;
     if (index == 0) {
       face =
-          Icon(Icons.monetization_on, size: 36, color: Colors.amber.shade700);
+          const Icon(Icons.monetization_on, size: 36, color: Palette.goldDeep);
       label = '+${widget.result.gold} ${_t('gold_label')}';
     } else {
       final itemId = widget.result.itemIds[index - 1];
@@ -465,7 +625,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           : () => _reveal(index),
       onLongPress: revealed && index > 0 ? () => _showDetails(index) : null,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: Motion.base,
         width: 96,
         height: 96,
         padding: const EdgeInsets.all(6),
@@ -604,78 +764,6 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           ? null
           : (action.$2 ? _t('loot_undo_button') : action.$1),
       onAction: action?.$3,
-    );
-  }
-
-  List<Widget> _buildSpoilsList(ThemeData theme) {
-    final slots = [
-      for (var i = 1; i < _slotCount; i++)
-        if (_revealed.contains(i)) i,
-    ];
-    if (slots.isEmpty) return const [];
-    return [
-      const SizedBox(height: 12),
-      Text(_t('loot_use_now_title'), style: theme.textTheme.titleSmall),
-      const SizedBox(height: 4),
-      for (final slot in slots) _buildSpoilsRow(theme, slot),
-    ];
-  }
-
-  Widget _buildSpoilsRow(ThemeData theme, int slot) {
-    final itemId = _itemIdAt(slot);
-    final item = _itemAt(slot);
-    final wornId = _wornFor(slot);
-    final worn =
-        wornId == null ? null : widget.items[wornId] as Map<String, dynamic>?;
-    final type = item?['itemType']?.toString() ?? '';
-    final action = _actionFor(slot);
-    final note = consumableNote(itemId, item, widget.language) ??
-        (type == 'Tome' || type == 'Spellbook'
-            ? _t('loot_auto_read_note')
-            : isGear(item) && !_canEquipSlot(slot)
-                ? _t('loot_cannot_wear_note')
-                : null);
-    return InkWell(
-      onTap: () => _showDetails(slot),
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ItemPixelIcon(itemId, type, size: 28),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item?['itemName']?.toString() ?? itemId,
-                      style: theme.textTheme.bodyMedium),
-                  ItemStatChips(
-                    item: item,
-                    equipped: worn,
-                    language: widget.language,
-                    compact: true,
-                  ),
-                  if (note != null)
-                    Text(note,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant)),
-                ],
-              ),
-            ),
-            if (action != null) ...[
-              const SizedBox(width: 6),
-              FilterChip(
-                label: Text(action.$1),
-                selected: action.$2,
-                onSelected: action.$3 == null ? null : (_) => action.$3!(),
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 

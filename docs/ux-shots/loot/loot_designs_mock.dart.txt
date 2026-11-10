@@ -1,0 +1,360 @@
+// Design mock for the loot dialog (docs only, not built): three layouts for the
+// post-fight spoils, and the same card used as a "pick 1 of 3" reward. Copy to
+// test/zz_loot_designs_test.dart and run:
+//   OUT=/tmp/loot flutter test test/zz_loot_designs_test.dart
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/providers/palette_provider.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/utils/pixel_icons/game_pixel_icons.dart';
+import 'package:narrative_data_app/utils/pixel_icons/pixel_icon.dart';
+import 'package:narrative_data_app/main.dart' show buildAppTheme;
+import 'support/fonts.dart';
+
+class _T {
+  const _T(this.fr, this.en);
+  final String fr, en;
+  String of(bool fr_) => fr_ ? fr : en;
+}
+
+const _title = _T('Butin', 'Spoils');
+const _tier = _T("Coffre d'argent", 'Silver chest');
+const _allYours = _T('Tout est à vous.', 'Everything is yours.');
+const _take = _T('Prendre', 'Take');
+const _gold = _T('+18 or', '+18 gold');
+const _knuckle = _T('Osselet du joueur', "Gambler's Knucklebone");
+const _knuckleText = _T(
+    "Consumé au début d'un combat : une relance supplémentaire à chaque tour de ce combat.",
+    'Burned at the start of a fight: one extra reroll each round of that fight.');
+const _antidote = _T('Antidote', 'Antidote');
+const _antidoteText = _T(
+    'Se boit pour guérir le poison et les afflictions.',
+    'Drunk to cure poison and afflictions.');
+const _goldText = _T('Ajouté à votre bourse.', 'Added to your purse.');
+const _useNow = _T('Utiliser tout de suite', 'Use right away');
+const _chosen = _T('Choisir', 'Choose');
+
+class _Item {
+  const _Item(this.name, this.text, this.icon, this.tone);
+  final _T name, text;
+  final Widget icon;
+  final Color tone;
+}
+
+Widget _gold18(double s) => Container(
+      width: s * .8,
+      height: s * .8,
+      decoration: const BoxDecoration(
+          color: Color(0xFFF2A93B), shape: BoxShape.circle),
+      alignment: Alignment.center,
+      child: Text('\$',
+          style: TextStyle(
+              fontSize: s * .5,
+              fontWeight: FontWeight.w800,
+              color: const Color(0xFF3A2A10))),
+    );
+
+List<_Item> _items(double s) => [
+      _Item(_gold, _goldText, _gold18(s), const Color(0xFFF2A93B)),
+      _Item(_knuckle, _knuckleText,
+          ItemPixelIcon('charm_fourth_roll', 'Charm', size: s), const Color(0xFFE8DCC0)),
+      _Item(_antidote, _antidoteText,
+          ItemPixelIcon('antidote', 'Potion', size: s), const Color(0xFF7DBE6A)),
+    ];
+
+TextStyle _prose({double size = 13, Color? color}) =>
+    TextStyle(fontFamily: InkFonts.prose, fontSize: size, height: 1.3, color: color ?? Colors.white70);
+TextStyle _sys(double size, {Color? color, FontWeight? w}) =>
+    TextStyle(fontFamily: InkFonts.system, fontSize: size, color: color ?? Colors.white, fontWeight: w);
+TextStyle _disp(double size) =>
+    TextStyle(fontFamily: InkFonts.display, fontSize: size, color: Colors.white);
+
+Widget _modal(Widget child, {double? height}) => Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 28),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1B1923),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFF3B3743)),
+      ),
+      child: child,
+    );
+
+Widget _tierChip(bool fr) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFA8A194))),
+      child: Text(_tier.of(fr), style: _sys(12, color: const Color(0xFFD7D3CA))),
+    );
+
+Widget _takeBtn(bool fr, {String? label, bool wide = false}) => SizedBox(
+      width: wide ? double.infinity : null,
+      child: FilledButton(
+        onPressed: () {},
+        style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFFF2C14E),
+            foregroundColor: const Color(0xFF1B1923),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+        child: Text(label ?? _take.of(fr), style: _sys(15, color: const Color(0xFF1B1923), w: FontWeight.w600)),
+      ),
+    );
+
+// ---- A: the chest opens and the rewards come out as cards with their text ----
+Widget designA(bool fr, {bool pick = false}) {
+  final items = _items(40);
+  return _modal(Column(mainAxisSize: MainAxisSize.min, children: [
+    Row(children: [
+      Text(pick ? (fr ? 'Récompense' : 'Reward') : _title.of(fr), style: _disp(26)),
+      const Spacer(),
+      if (!pick) _tierChip(fr) else Text(fr ? 'Étage 7' : 'Floor 7', style: _sys(13, color: const Color(0xFFD7D3CA))),
+    ]),
+    const SizedBox(height: 6),
+    Stack(alignment: Alignment.center, children: [
+      Container(
+        width: 150,
+        height: 70,
+        decoration: BoxDecoration(
+            gradient: RadialGradient(colors: [const Color(0x66F2C14E), const Color(0x00F2C14E)])),
+      ),
+      const PixelIcon('assets/icons/chests/silver_open.png', size: 72),
+    ]),
+    Text(pick ? (fr ? 'Choisissez une récompense.' : 'Choose one reward.') : _allYours.of(fr),
+        style: _prose(size: 14, color: Colors.white)),
+    const SizedBox(height: 10),
+    for (var i = 0; i < items.length; i++)
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: _cardA(items[i], fr, pick: pick, dim: pick && i != 1, first: i == 0),
+      ),
+    const SizedBox(height: 6),
+    if (!pick) Align(alignment: Alignment.centerRight, child: _takeBtn(fr)),
+  ]));
+}
+
+Widget _cardA(_Item it, bool fr, {required bool pick, required bool dim, required bool first}) {
+  final ring = pick && !dim;
+  return Opacity(
+    opacity: dim ? .55 : 1,
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF24222E),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: ring ? const Color(0xFFF2C14E) : it.tone.withValues(alpha: .55), width: ring ? 2 : 1),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(width: 44, height: 44, child: Center(child: it.icon)),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(it.name.of(fr), style: _disp(17)),
+            const SizedBox(height: 2),
+            Text(it.text.of(fr), style: _prose(size: 12.5)),
+            if (!pick && !first) ...[
+              const SizedBox(height: 6),
+              Row(children: [
+                Icon(Icons.bolt, size: 16, color: it.tone),
+                const SizedBox(width: 4),
+                Text(_useNow.of(fr), style: _sys(12, color: it.tone)),
+              ]),
+            ],
+            if (pick) ...[
+              const SizedBox(height: 8),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: ring ? const Color(0xFFF2C14E) : Colors.white24),
+                          foregroundColor: ring ? const Color(0xFFF2C14E) : Colors.white54),
+                      child: Text(_chosen.of(fr), style: _sys(13)))),
+            ],
+          ]),
+        ),
+      ]),
+    ),
+  );
+}
+
+// ---- B: a compact strip of rewards, a detail line for the selected one ----
+Widget designB(bool fr) {
+  final items = _items(34);
+  const sel = 1;
+  return _modal(Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Row(children: [
+      const PixelIcon('assets/icons/chests/silver_open.png', size: 44),
+      const SizedBox(width: 10),
+      Text(_title.of(fr), style: _disp(26)),
+      const Spacer(),
+      _tierChip(fr),
+    ]),
+    const SizedBox(height: 14),
+    IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      for (var i = 0; i < items.length; i++)
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: i < 2 ? 8 : 0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF24222E),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: i == sel ? const Color(0xFFF2C14E) : Colors.white24, width: i == sel ? 2 : 1),
+              ),
+              child: Column(children: [
+                items[i].icon,
+                const SizedBox(height: 6),
+                Text(items[i].name.of(fr), textAlign: TextAlign.center, maxLines: 2, style: _sys(12)),
+              ]),
+            ),
+          ),
+        ),
+    ])),
+    const SizedBox(height: 12),
+    Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: const Color(0xFF14131A), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white12)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(items[sel].name.of(fr), style: _disp(18)),
+        const SizedBox(height: 4),
+        Text(items[sel].text.of(fr), style: _prose(size: 13)),
+        const SizedBox(height: 8),
+        Row(children: [
+          Icon(Icons.bolt, size: 16, color: items[sel].tone),
+          const SizedBox(width: 4),
+          Text(_useNow.of(fr), style: _sys(12, color: items[sel].tone)),
+          const Spacer(),
+          Switch(value: true, onChanged: (_) {}),
+        ]),
+      ]),
+    ),
+    const SizedBox(height: 14),
+    Align(alignment: Alignment.centerRight, child: _takeBtn(fr)),
+  ]));
+}
+
+// ---- C: a full-height sheet with what the loot changes ----
+Widget designC(bool fr) {
+  final rows = [
+    (fr ? 'Or' : 'Gold', '126', '144', _gold18(30), const Color(0xFFF2A93B)),
+    (fr ? 'Dés' : 'Dice', fr ? '1 relance / tour' : '1 reroll / round', fr ? '2 relances / tour' : '2 rerolls / round',
+        ItemPixelIcon('charm_fourth_roll', 'Charm', size: 30), const Color(0xFFE8DCC0)),
+    (fr ? 'Sac' : 'Bag', 'Antidote ×1', 'Antidote ×2',
+        ItemPixelIcon('antidote', 'Potion', size: 30), const Color(0xFF7DBE6A)),
+  ];
+  return Container(
+    margin: const EdgeInsets.only(top: 56),
+    padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+    decoration: const BoxDecoration(
+      color: Color(0xFF1B1923),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      border: Border(top: BorderSide(color: Color(0xFF3B3743))),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)))),
+      const SizedBox(height: 12),
+      Row(children: [
+        const PixelIcon('assets/icons/chests/silver_open.png', size: 60),
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(_title.of(fr), style: _disp(26)),
+          Text(_tier.of(fr), style: _sys(12, color: const Color(0xFFD7D3CA))),
+        ])),
+      ]),
+      const SizedBox(height: 14),
+      Text(fr ? 'Ce que le butin change' : 'What the spoils change', style: _sys(13, color: const Color(0xFFD7D3CA))),
+      const SizedBox(height: 8),
+      for (final r in rows)
+        Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: const Color(0xFF24222E), borderRadius: BorderRadius.circular(10), border: Border.all(color: r.$5.withValues(alpha: .5))),
+          child: Row(children: [
+            SizedBox(width: 36, child: Center(child: r.$4)),
+            const SizedBox(width: 8),
+            Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(r.$1, style: _sys(12, color: Colors.white60)),
+              const SizedBox(height: 2),
+              Row(children: [
+                Flexible(child: Text(r.$2, style: _sys(13, color: Colors.white54))),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 6), child: Icon(Icons.arrow_forward, size: 14, color: Colors.white54)),
+                Flexible(child: Text(r.$3, style: _sys(14, color: r.$5, w: FontWeight.w600))),
+              ]),
+            ])),
+          ]),
+        ),
+      const SizedBox(height: 4),
+      Text(fr ? 'Détail' : 'Details', style: _sys(13, color: const Color(0xFFD7D3CA))),
+      const SizedBox(height: 6),
+      for (final it in _items(24).skip(1))
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text('${it.name.of(fr)} · ${it.text.of(fr)}', style: _prose(size: 12)),
+        ),
+      const Spacer(),
+      _takeBtn(fr, wide: true),
+    ]),
+  );
+}
+
+Future<void> _shot(WidgetTester tester, Widget app, double w, String name) async {
+  final key = GlobalKey();
+  tester.view.devicePixelRatio = 2;
+  tester.view.physicalSize = Size(w * 2, 800 * 2);
+  await tester.pumpWidget(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: buildAppTheme(AppPalette.stitchedInk.schemeFor(Brightness.dark)),
+    home: RepaintBoundary(
+      key: key,
+      child: Scaffold(
+        backgroundColor: const Color(0xFF14131A),
+        body: Stack(children: [
+          // The fight behind, dimmed.
+          Positioned.fill(child: Container(color: const Color(0xFF2A2833))),
+          Align(alignment: Alignment.topCenter, child: Container(height: 60, color: const Color(0xFF14131A), alignment: Alignment.center, child: Text('Combat : Élite Bandit des rues', style: _disp(15).copyWith(color: Colors.white38)))),
+          Positioned.fill(child: Container(color: Colors.black54)),
+          Align(alignment: Alignment.center, child: name.startsWith('C') ? SizedBox(height: 800, child: app) : SingleChildScrollView(child: app)),
+        ]),
+      ),
+    ),
+  ));
+  await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.runAsync(() async {
+    final b = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final image = await b.toImage(pixelRatio: 1);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    File('${Platform.environment['OUT']}/$name.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+  });
+}
+
+void main() {
+  testWidgets('loot designs', (tester) async {
+    await tester.runAsync(loadAppFonts);
+    Directory(Platform.environment['OUT']!).createSync(recursive: true);
+    final sets = <String, Widget Function(bool)>{
+      'A': (fr) => designA(fr),
+      'A-pick': (fr) => designA(fr, pick: true),
+      'B': designB,
+      'C': designC,
+    };
+    for (final e in sets.entries) {
+      for (final w in [360.0, 412.0]) {
+        for (final fr in [true, false]) {
+          await _shot(tester, e.value(fr), w, '${e.key}-${w.round()}-${fr ? 'fr' : 'en'}');
+        }
+      }
+    }
+  });
+}

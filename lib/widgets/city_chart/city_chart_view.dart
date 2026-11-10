@@ -17,6 +17,8 @@ import '../../data/world_map.dart' show MapLook;
 import '../journey_banner_pin.dart' show PinBanner;
 import 'city_chart.dart';
 import 'city_chart_painter.dart';
+import '../motion.dart';
+import '../../theme/motion.dart';
 
 /// The words the view says, in the player's language (the host passes them).
 class CityChartText {
@@ -223,7 +225,19 @@ class _CityChartViewState extends State<CityChartView>
     super.initState();
     widget.camera?.addListener(_onCamera);
     _move.addListener(_tick);
-    if (widget.animate) _breath.repeat();
+  }
+
+  /// Moves and breathes, unless the caller or the platform says no.
+  bool get _animate => widget.animate && !stillMotion(context);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_animate) {
+      if (!_breath.isAnimating) _breath.repeat();
+    } else {
+      _breath.stop();
+    }
   }
 
   @override
@@ -262,11 +276,17 @@ class _CityChartViewState extends State<CityChartView>
         ? null
         : widget.chart.districtById(shot.districtId!);
     final box = d?.box ?? widget.chart.bounds;
-    final frame = math.min(_size.width / box.width, _size.height / box.height);
+    // A district is framed with room for its banners and names.
+    final framed = d == null ? null : _framed(box, _size);
+    final frame = framed?.$1 ??
+        math.min(_size.width / box.width, _size.height / box.height);
     final scale = shot.full ? _maxScale : frame * shot.zoom;
     final centre = shot.centre ?? box.center;
-    final offset = Offset(_size.width / 2, _size.height / 2) - centre * scale;
-    if (shot.jump || !widget.animate) {
+    final offset =
+        framed != null && shot.centre == null && shot.zoom == 1 && !shot.full
+            ? framed.$2
+            : Offset(_size.width / 2, _size.height / 2) - centre * scale;
+    if (shot.jump || !_animate) {
       final s = scale.clamp(_minScale, _maxScale);
       setState(() {
         _scale = s;
@@ -305,6 +325,24 @@ class _CityChartViewState extends State<CityChartView>
   double get _minScale => _fitted * 0.85;
   double get _maxScale => _fitted * 9;
 
+  /// The scale and offset that frame [box] in [size] with room for what
+  /// hangs over it: the banners above their buildings (38 px) and the
+  /// names under them.
+  (double, Offset) _framed(Rect box, Size size,
+      {double top = 48,
+      double bottom = 30,
+      double side = 16,
+      double usable = 1}) {
+    // [usable]: the share of the height above whatever covers the foot (a
+    // district's card sits below the frame, from 0.42 of the height down
+    // to the middle).
+    final height = size.height * usable;
+    final s = math.min((size.width - 2 * side) / box.width,
+        (height - top - bottom) / box.height);
+    final centre = Offset(size.width / 2, top + (height - top - bottom) / 2);
+    return (s, centre - box.center * s);
+  }
+
   void _fit(Size size) {
     _size = size;
     final b = widget.chart.bounds;
@@ -322,13 +360,9 @@ class _CityChartViewState extends State<CityChartView>
           ? null
           : widget.chart.districtById(widget.focus!);
       if (d != null) {
-        final box = d.box;
-        final scale =
-            math.min(size.width / box.width, size.height / box.height);
+        final (scale, offset) = _framed(d.box, size);
         _scale = scale.clamp(_minScale, _maxScale);
-        _offset = _clamped(
-            Offset(size.width / 2, size.height * 0.5) - box.center * _scale,
-            _scale);
+        _offset = _clamped(offset, _scale);
         _focus = d.id;
       }
     }
@@ -349,7 +383,7 @@ class _CityChartViewState extends State<CityChartView>
   void _animateTo(double scale, Offset offset) {
     scale = scale.clamp(_minScale, _maxScale);
     offset = _clamped(offset, scale);
-    if (!widget.animate) {
+    if (!_animate) {
       setState(() {
         _scale = scale;
         _offset = offset;
@@ -386,11 +420,9 @@ class _CityChartViewState extends State<CityChartView>
   }
 
   void _showDistrict(CityChartDistrict d) {
-    final box = d.box;
-    final scale = math.min(_size.width / box.width, _size.height / box.height);
-    final c = box.center;
-    // Framed a little above the middle: the district's card sits below.
-    _animateTo(scale, Offset(_size.width / 2, _size.height * 0.42) - c * scale);
+    // Framed with room for its banners and names.
+    final (scale, offset) = _framed(d.box, _size, usable: 0.84);
+    _animateTo(scale, offset);
     setState(() {
       _focus = d.id;
       _pickedWay = null;
@@ -429,6 +461,34 @@ class _CityChartViewState extends State<CityChartView>
 
   /// Where the pin of way [wayId] is, in this widget's own coordinates, and
   /// whether a tap there reaches it (the district shown, the pins drawn):
+  /// The building names on the screen: the box of each (in pixels, in the
+  /// view's own space) and its text. For tests that look for names over
+  /// each other.
+  @visibleForTesting
+  List<(Rect, String)> debugNames() {
+    final painter = _painter();
+    return [
+      for (final n in painter.nameSpots(size: _size))
+        (
+          Rect.fromLTWH(
+              _offset.dx + n.box.left * _scale,
+              _offset.dy + n.box.top * _scale,
+              n.box.width * _scale,
+              n.box.height * _scale),
+          n.building.name,
+        ),
+    ];
+  }
+
+  /// The banner of way [wayId] on the screen (pixels, the view's space), or
+  /// null when it is not showing.
+  @visibleForTesting
+  Rect? debugBanner(String wayId) {
+    final c = debugPinCentre(wayId);
+    // A banner's cloth: 26 x 38 px, its hem on the building, 16 px above.
+    return c == null ? null : Rect.fromLTWH(c.dx - 13, c.dy - 19, 26, 38);
+  }
+
   /// null when it is not showing. For tests that tap a pin's centre.
   @visibleForTesting
   Offset? debugPinCentre(String wayId) {
@@ -605,7 +665,7 @@ class _CityChartViewState extends State<CityChartView>
             left: 12,
             top: 12,
             child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
+              duration: Motion.base,
               opacity: zoomed ? 1 : 0,
               child: IgnorePointer(
                 ignoring: !zoomed,

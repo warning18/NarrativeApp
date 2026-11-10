@@ -24,9 +24,19 @@ import '../widgets/immersive_notice.dart';
 import 'origin_stories_screen.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/race_profession_cards.dart';
+import '../widgets/ink_sheet.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
-  const RaceProfessionScreen({super.key});
+  const RaceProfessionScreen({super.key, this.locks = const {}, this.onChosen});
+
+  /// Choices shut for now, by id, with the line saying why (the Tower's
+  /// callings not yet bought); a tap on one does nothing.
+  final Map<String, String> locks;
+
+  /// The Tower's way in: the screen then only picks a people and a calling
+  /// (no clans told, no story save written, no name or memories) and hands
+  /// them to this; null is the story's own creation.
+  final Future<void> Function(String raceId, String professionId)? onChosen;
 
   @override
   ConsumerState<RaceProfessionScreen> createState() =>
@@ -36,6 +46,9 @@ class RaceProfessionScreen extends ConsumerStatefulWidget {
 class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   String? _selectedRaceId;
   String? _selectedProfessionId;
+  bool _starting = false;
+
+  bool get _tower => widget.onChosen != null;
 
   /// The step shown (v1.599): 0 the peoples, 1 the callings; and whether the
   /// picked card is folded back into the list of all of them.
@@ -55,17 +68,22 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
-    _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
-    _selectedProfessionId ??=
-        session.professionId.isNotEmpty ? session.professionId : null;
+    if (!_tower) {
+      _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
+      _selectedProfessionId ??=
+          session.professionId.isNotEmpty ? session.professionId : null;
+    }
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'race_profession_title'))),
+      appBar: AppBar(
+          title:
+              Text(tr(ref, _tower ? 'tower_name' : 'race_profession_title'))),
       body: racesAsync.when(
         data: (races) => professionsAsync.when(
           data: (professions) => skillsAsync.when(
             data: (skills) {
-              if (session.raceId.isNotEmpty &&
+              if (!_tower &&
+                  session.raceId.isNotEmpty &&
                   session.professionId.isNotEmpty) {
                 return _CharacterSheet(
                   session: session,
@@ -131,12 +149,19 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           id: id,
           selected: id == pickedHere,
           compact: compact,
+          lockedNote: widget.locks[id],
+          showClans: !_tower,
           onTap: () => pick(id),
         );
 
     final hint = Row(children: [
       Expanded(
-        child: Text(tr(ref, _step == 0 ? 'rp_hint_people' : 'rp_hint_calling'),
+        child: Text(
+            tr(
+                ref,
+                _step == 0
+                    ? (_tower ? 'tower_hint_people' : 'rp_hint_people')
+                    : 'rp_hint_calling'),
             style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
       ),
       const SizedBox(width: 6),
@@ -148,23 +173,30 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         onPressed: () => showCompareSheet(context, ref, book,
             folder: folder,
             first: pickedHere ?? ids.first,
-            onPick: (id) => setState(() {
-                  if (_step == 0) {
-                    _selectedRaceId = id;
-                  } else {
-                    _selectedProfessionId = id;
-                  }
-                  _listAll = false;
-                })),
+            showClans: !_tower,
+            onPick: (id) => widget.locks.containsKey(id)
+                ? null
+                : setState(() {
+                    if (_step == 0) {
+                      _selectedRaceId = id;
+                    } else {
+                      _selectedProfessionId = id;
+                    }
+                    _listAll = false;
+                  })),
       ),
       IconButton(
         key: const Key('rp_randomize'),
         tooltip: tr(ref, 'randomize_character_button'),
         icon: const Icon(Icons.casino_outlined),
         onPressed: () => setState(() {
-          _selectedRaceId = raceIds[Random().nextInt(raceIds.length)];
+          final raceOpen =
+              raceIds.where((i) => !widget.locks.containsKey(i)).toList();
+          final professionOpen =
+              professionIds.where((i) => !widget.locks.containsKey(i)).toList();
+          _selectedRaceId = raceOpen[Random().nextInt(raceOpen.length)];
           _selectedProfessionId =
-              professionIds[Random().nextInt(professionIds.length)];
+              professionOpen[Random().nextInt(professionOpen.length)];
           _listAll = false;
         }),
       ),
@@ -193,7 +225,11 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               const SizedBox(height: 6),
               if (open) ...[
                 card(pickedHere),
-                OpenChoice(book: book, folder: folder, id: pickedHere),
+                OpenChoice(
+                    book: book,
+                    folder: folder,
+                    id: pickedHere,
+                    showClans: !_tower),
                 for (final id in ids)
                   if (id != pickedHere) card(id, compact: true),
               ] else
@@ -210,23 +246,28 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                 SummaryCard(
                     book: book,
                     raceId: _selectedRaceId!,
-                    professionId: _selectedProfessionId!),
+                    professionId: _selectedProfessionId!,
+                    showClans: !_tower),
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: both || pickedHere == null
                     ? FilledButton.icon(
-                        onPressed: !both
+                        key: const Key('rp_start'),
+                        onPressed: !both || _starting
                             ? null
-                            : () => _confirmStart(
-                                  context,
-                                  races[_selectedRaceId!]
-                                      as Map<String, dynamic>,
-                                  professions[_selectedProfessionId!]
-                                      as Map<String, dynamic>,
-                                ),
+                            : _tower
+                                ? _climb
+                                : () => _confirmStart(
+                                      context,
+                                      races[_selectedRaceId!]
+                                          as Map<String, dynamic>,
+                                      professions[_selectedProfessionId!]
+                                          as Map<String, dynamic>,
+                                    ),
                         icon: const Icon(Icons.play_arrow),
-                        label: Text(tr(ref, 'start_new_game_button')),
+                        label: Text(tr(ref,
+                            _tower ? 'tower_climb' : 'start_new_game_button')),
                       )
                     : FilledButton.tonalIcon(
                         key: const Key('rp_next'),
@@ -244,6 +285,16 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         ),
       ],
     );
+  }
+
+  /// The Tower: the pick goes to the caller, nothing is asked or saved here.
+  Future<void> _climb() async {
+    setState(() => _starting = true);
+    try {
+      await widget.onChosen!(_selectedRaceId!, _selectedProfessionId!);
+    } finally {
+      if (mounted) setState(() => _starting = false);
+    }
   }
 
   Future<void> _confirmStart(
@@ -531,10 +582,8 @@ class _ChoiceRow extends ConsumerWidget {
       skillDisplayName(_skillId, language: language);
 
   void _read(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet<void>(
+    showInkSheet<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
       builder: (context) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -898,10 +947,8 @@ class _CharacterSheet extends StatelessWidget {
       (t('unlocked_skills_label'), '${session.unlockedSkillIds.length}'),
     ];
 
-    void openBelongings() => showModalBottomSheet<void>(
+    void openBelongings() => showInkSheet<void>(
           context: context,
-          isScrollControlled: true,
-          showDragHandle: true,
           builder: (sheetContext) => SafeArea(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -939,10 +986,8 @@ class _CharacterSheet extends StatelessWidget {
           ),
         );
 
-    void openElements() => showModalBottomSheet<void>(
+    void openElements() => showInkSheet<void>(
           context: context,
-          isScrollControlled: true,
-          showDragHandle: true,
           builder: (sheetContext) => SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

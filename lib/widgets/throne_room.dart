@@ -23,6 +23,8 @@ import 'clan_power_block.dart' show powerTierKey;
 import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
 import 'wind_banner.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// One banner hanging in the hall.
 class HungBanner {
@@ -157,7 +159,7 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
                   style: theme.textTheme.labelMedium),
               const SizedBox(height: 4),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: Motion.base,
                 child: Text(
                   picked == null
                       ? trFor(lang, 'throne_room_hint')
@@ -336,8 +338,8 @@ class _ThroneRoomState extends State<ThroneRoom>
                       boxShadow: widget.pickedId == banner.id
                           ? [
                               BoxShadow(
-                                  color: const Color(0xFFF2C14E)
-                                      .withValues(alpha: 0.5),
+                                  color:
+                                      Palette.goldDark.withValues(alpha: 0.5),
                                   blurRadius: 16),
                             ]
                           : null,

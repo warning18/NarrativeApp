@@ -114,7 +114,7 @@ bool isHunterAmbushChain(List<StoryNode> chain) =>
     chain.isNotEmpty && chain.first.choices.any((c) => c.isHunterAmbush);
 
 const List<String> _angelAmbushEn = [
-  'The air goes white and still. A figure in burning armor descends the '
+  'The air goes white and still. A figure in burning armour descends the '
       'street as if it were a stair, and its eyes, when they find you, hold '
       'no mercy at all. "Your ledger is known to us," it says.',
   'Bells that no church is ringing. A shape of light steps out of the '
@@ -451,7 +451,7 @@ const List<_Temptation> _temptations = [
         'désert, et une voix comme une fumée tiède fait remarquer combien '
         'un chiffre pourrait aisément en devenir un autre. « Personne ne '
         'vérifie ces choses-là, dit-elle. Personne, jamais. »',
-    acceptEn: 'Alter the sum in your favor (+60 gold)',
+    acceptEn: 'Alter the sum in your favour (+60 gold)',
     acceptFr: 'Modifier la somme à votre avantage (+60 or)',
     refuseEn: 'Close the ledger',
     refuseFr: 'Refermer le registre',

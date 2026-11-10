@@ -13,6 +13,7 @@ import '../../theme/stitched_ink.dart' show InkFonts;
 import '../journey_banner_pin.dart' show PinBanner, paintBannerPin;
 import '../../data/journey_rules.dart' show DayPhase;
 import 'city_chart.dart';
+import '../../theme/palette.dart';
 
 /// How far in (the view's scale over the fitted one) the lots grow roofs,
 /// the buildings their names and the ways their pins.
@@ -109,8 +110,12 @@ class CityChartPainter extends CustomPainter {
 
   static Color _mix(Color a, Color b, double t) => Color.lerp(a, b, t)!;
 
+  /// The view's size on the screen, as the last paint saw it.
+  Size _view = Size.zero;
+
   @override
   void paint(Canvas canvas, Size size) {
+    _view = size;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
     canvas.translate(offset.dx, offset.dy);
@@ -387,14 +392,14 @@ class CityChartPainter extends CustomPainter {
   void _hour(Canvas canvas) {
     if (phase == DayPhase.day) return;
     final wash = switch (phase) {
-      DayPhase.dawn => const Color(0xFFF2A36B).withValues(alpha: 0.10),
-      DayPhase.dusk => const Color(0xFF7A4A7C).withValues(alpha: 0.20),
-      _ => const Color(0xFF0B1230).withValues(alpha: 0.42),
+      DayPhase.dawn => Palette.orange68.withValues(alpha: 0.10),
+      DayPhase.dusk => Palette.stone39.withValues(alpha: 0.20),
+      _ => Palette.blue12.withValues(alpha: 0.42),
     };
     canvas.drawRect(chart.bounds.inflate(4000), Paint()..color = wash);
     if (phase == DayPhase.dawn) return;
     final night = phase == DayPhase.night;
-    const warm = Color(0xFFFFD27A);
+    const warm = Palette.orange74;
     final glow = Paint()..color = warm.withValues(alpha: night ? 0.28 : 0.16);
     final lit = Paint()..color = warm.withValues(alpha: 0.95);
     for (final l in chart.lanterns) {
@@ -431,7 +436,7 @@ class CityChartPainter extends CustomPainter {
     for (final l in chart.lanterns) {
       canvas.drawCircle(l, 1.5, fill);
     }
-    fill.color = _mix(p.roofs, const Color(0xFFE8B94E), 0.7);
+    fill.color = _mix(p.roofs, Palette.amber61, 0.7);
     for (final s in chart.stalls) {
       canvas.drawRect(Rect.fromLTWH(s.dx, s.dy, 6, 4), fill);
     }
@@ -563,7 +568,7 @@ class CityChartPainter extends CustomPainter {
         final q = st + Offset(math.cos(a) * r, math.sin(a) * r);
         i == 0 ? star.moveTo(q.dx, q.dy) : star.lineTo(q.dx, q.dy);
       }
-      canvas.drawPath(star..close(), Paint()..color = const Color(0xFFF2C14E));
+      canvas.drawPath(star..close(), Paint()..color = Palette.goldDark);
     }
   }
 
@@ -666,26 +671,116 @@ class CityChartPainter extends CustomPainter {
       canvas.restore();
     }
     if (!detailed) return;
-    // Building names, in the district being looked at.
-    for (final b in chart.buildings) {
+    // Building names, in the district being looked at, kept clear of each
+    // other and of the banners (see [nameSpots]).
+    for (final spot in nameSpots()) {
+      canvas.save();
+      canvas.translate(spot.building.at.dx, spot.building.at.dy);
+      canvas.scale(inv);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              Rect.fromLTWH(spot.at.dx - 3, spot.at.dy - 1, spot.text.width + 6,
+                  spot.text.height + 2),
+              const Radius.circular(4)),
+          Paint()..color = p.fog.withValues(alpha: 0.7));
+      spot.text.paint(canvas, spot.at);
+      canvas.restore();
+    }
+  }
+
+  /// Where the building names go: each in the first spot clear of the
+  /// names placed before it, the banners, the service pins and the view's
+  /// edge (under its building, then right, left, a row lower); the way
+  /// picked is placed first and keeps its name even where nothing is clear.
+  /// A name with no clear spot is left off: the list under the chart names
+  /// every way. [size] is the view's size on the screen (the last paint's
+  /// when null).
+  List<ChartNameSpot> nameSpots({Size? size}) {
+    final p = palette;
+    final inv = 1 / scale;
+    final view = size ?? _view;
+    final out = <ChartNameSpot>[];
+    if (!detailed) return out;
+    final named = <Rect>[
+      for (final w in chart.ways)
+        if (focusDistrict == null ||
+            chart.districts[w.district].id == focusDistrict)
+          if (_known(chart.districts[w.district].id))
+            () {
+              final at = pinAt(w);
+              return Rect.fromLTWH(
+                  at.dx - 13 * inv, at.dy - 35 * inv, 26 * inv, 38 * inv);
+            }(),
+    ];
+    for (final sv in services) {
+      if (serviceShown(sv)) {
+        named.add(
+            Rect.fromCenter(center: sv.at, width: 24 * inv, height: 24 * inv));
+      }
+    }
+    // The picked way's building goes first.
+    String? pickedKey;
+    for (final w in chart.ways) {
+      if (w.id == selectedWayId) pickedKey = w.building;
+    }
+    final buildings = [
+      ...chart.buildings.where((b) => b.key == pickedKey),
+      ...chart.buildings.where((b) => b.key != pickedKey),
+    ];
+    // What the view shows, in the chart's own units.
+    final shown = Rect.fromLTWH(-offset.dx / scale, -offset.dy / scale,
+            view.width / scale, view.height / scale)
+        .deflate(4 * inv);
+    for (final b in buildings) {
       if (!buildingNames || b.quiet || !b.story || b.name.isEmpty) continue;
       final d = chart.districts[b.district];
       if (focusDistrict != null && d.id != focusDistrict) continue;
       if (!_known(d.id)) continue;
-      canvas.save();
-      canvas.translate(b.at.dx, b.at.dy);
-      canvas.scale(inv);
-      final tp = _text(b.name, 11, p.place, w: FontWeight.w500);
-      final below = Offset(-tp.width / 2, 12);
-      canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              Rect.fromLTWH(
-                  below.dx - 3, below.dy - 1, tp.width + 6, tp.height + 2),
-              const Radius.circular(4)),
-          Paint()..color = p.fog.withValues(alpha: 0.7));
-      tp.paint(canvas, below);
-      canvas.restore();
+      final tp = TextPainter(
+        text: TextSpan(
+            text: b.name,
+            style: TextStyle(
+                fontFamily: InkFonts.prose,
+                fontSize: 11,
+                color: p.place,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2)),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+        maxLines: 2,
+        ellipsis: '…',
+      )..layout(maxWidth: 124);
+      final w = tp.width + 6, h = tp.height + 2;
+      Rect box(Offset c) => Rect.fromLTWH(b.at.dx + (c.dx - 3) * inv,
+          b.at.dy + (c.dy - 1) * inv, w * inv, h * inv);
+      final picked = b.key == pickedKey;
+      Offset? spot;
+      Offset? inView;
+      for (final c in [
+        Offset(-tp.width / 2, 12),
+        Offset(15, -h / 2),
+        Offset(-15 - tp.width, -h / 2),
+        Offset(-tp.width / 2, 12 + h + 2),
+        Offset(15, h / 2),
+        Offset(-15 - tp.width, h / 2),
+      ]) {
+        final r = box(c);
+        if (!shown.contains(r.topLeft) || !shown.contains(r.bottomRight)) {
+          continue;
+        }
+        inView ??= c;
+        if (named.any((o) => o.overlaps(r))) continue;
+        spot = c;
+        break;
+      }
+      // The way picked keeps its name: the first spot in view, over a
+      // banner if it must.
+      if (spot == null && picked) spot = inView;
+      if (spot == null) continue;
+      named.add(box(spot));
+      out.add(ChartNameSpot(b, tp, spot, box(spot)));
     }
+    return out;
   }
 
   /// The icon of a service pin.
@@ -732,7 +827,7 @@ class CityChartPainter extends CustomPainter {
             Offset.zero,
             serviceRadius + 9,
             Paint()
-              ..color = const Color(0xFFFFD27A)
+              ..color = Palette.orange74
                   .withValues(alpha: phase == DayPhase.night ? 0.38 : 0.22));
       }
       canvas.drawRRect(
@@ -766,8 +861,8 @@ class CityChartPainter extends CustomPainter {
         RRect.fromRectAndRadius(
             Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
             const Radius.circular(1.5)),
-        Paint()..color = const Color(0xFF7A5B3A).withValues(alpha: a));
-    final note = Paint()..color = const Color(0xFFEADFC2).withValues(alpha: a);
+        Paint()..color = Palette.orange35a.withValues(alpha: a));
+    final note = Paint()..color = Palette.amber84a.withValues(alpha: a);
     canvas.drawRect(const Rect.fromLTWH(-7, -5.5, 6, 5), note);
     canvas.drawRect(const Rect.fromLTWH(0, -5, 6, 4), note);
     canvas.drawRect(const Rect.fromLTWH(-5.5, 0.5, 7, 5), note);
@@ -778,8 +873,8 @@ class CityChartPainter extends CustomPainter {
   void _serviceBadge(Canvas canvas, CityChartService s, ChartPalette p) {
     const centre = Offset(serviceRadius - 1, -serviceRadius + 1);
     canvas.drawCircle(centre, 7.5, Paint()..color = Colors.black45);
-    canvas.drawCircle(centre, 6.5,
-        Paint()..color = s.urgent ? const Color(0xFFC0392B) : p.label);
+    canvas.drawCircle(
+        centre, 6.5, Paint()..color = s.urgent ? Palette.red46 : p.label);
     final tp = TextPainter(
       text: TextSpan(
           text: s.badge > 9 ? '9+' : '${s.badge}',
@@ -995,4 +1090,16 @@ class CityChartPainter extends CustomPainter {
       old.pulse != pulse ||
       old.phase != phase ||
       old.buildingNames != buildingNames;
+}
+
+/// A building's name placed on the chart: its [building], the [text], its
+/// top left [at] from the building on the screen (in pixels), and its
+/// [box] in the chart's own units.
+class ChartNameSpot {
+  const ChartNameSpot(this.building, this.text, this.at, this.box);
+
+  final CityChartBuilding building;
+  final TextPainter text;
+  final Offset at;
+  final Rect box;
 }

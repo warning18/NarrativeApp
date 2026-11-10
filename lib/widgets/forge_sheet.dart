@@ -26,16 +26,16 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'forge_moment.dart';
 import 'player_stats_bar.dart';
+import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// A test seam: the random the forge rolls its d20 with (null: a fresh one).
 Random Function()? forgeRandomForTest;
 
 /// Opens the forge's recipes at [shopId].
 Future<void> showForgeSheet(BuildContext context, {required String shopId}) {
-  return showModalBottomSheet<void>(
+  return showInkSheet<void>(
     context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
     builder: (_) => FractionallySizedBox(
       heightFactor: 0.8,
       child: ForgeSheetView(shopId: shopId),
@@ -379,7 +379,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       color: m.value >= 0
-                                          ? Colors.green.shade600
+                                          ? Palette.goodStrong
                                           : theme.colorScheme.error),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -450,7 +450,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                         decoration: BoxDecoration(
                           border: Border.all(
                               color: ok
-                                  ? Colors.green.shade600
+                                  ? Palette.goodStrong
                                   : theme.colorScheme.error),
                           borderRadius: BorderRadius.circular(6),
                         ),
@@ -458,7 +458,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                           Icon(ok ? Icons.check : Icons.close,
                               size: 14,
                               color: ok
-                                  ? Colors.green.shade600
+                                  ? Palette.goodStrong
                                   : theme.colorScheme.error),
                           const SizedBox(width: 4),
                           Flexible(
@@ -485,8 +485,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.green.shade600),
+                                border: Border.all(color: Palette.goodStrong),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(

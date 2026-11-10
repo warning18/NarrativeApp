@@ -358,9 +358,9 @@ void main() {
     // The five professions win about as often as each other (the L3 on
     // v1.489 found the warrior at 73% and the mage at 60%; v1.497 and v1.499
     // closed it). No profession more than [_spreadLimit] points from the
-    // others, give or take three standard errors of the gap (a story PR
-    // reshuffles the seeded dice: #588 moved it by a quarter point), none
-    // under 60%. Core tunes this: the profession paths in
+    // others, give or take two standard errors of the gap (a story PR
+    // reshuffles the seeded dice: #588 moved it by a quarter point; three,
+    // until v1.888, let a 9.7-point spread pass), none under 60%. Core tunes this: the profession paths in
     // training_paths.json, bonusMaxHealth and the base numbers in
     // professions.json, and the specialisations.
     test(
@@ -376,7 +376,7 @@ void main() {
       final worst =
           professionWin.entries.reduce((a, b) => a.value <= b.value ? a : b);
       final spread = best.value - worst.value;
-      final noise = 3 *
+      final noise = 2 *
           sqrt(pow(professionError[best.key]!, 2) +
               pow(professionError[worst.key]!, 2));
       expect(spread, lessThanOrEqualTo(_spreadLimit + noise),

@@ -8,6 +8,7 @@ import 'dart:ui' show Color, Offset;
 
 import 'map_charts.dart';
 import 'world_map.dart' show worldMapHeight, worldMapWidth;
+import '../theme/palette.dart';
 
 /// Whether the edge [a]-[b] lies along the chart's border (the seam at the
 /// left and right, the top or the bottom): the ice caps of the whole sphere
@@ -93,23 +94,21 @@ const Map<String, ChartBiomeColours> chartBiomeColours = {
   'temperate': ChartBiomeColours(
       Color(0xFF7E9A5A), Color(0xFF56703C), Color(0xFFC9D7A0)),
   'desert': ChartBiomeColours(
-      Color(0xFFC9A86A), Color(0xFF9C7B45), Color(0xFFE8D7A8)),
-  'arid_coast': ChartBiomeColours(
-      Color(0xFFD2BE94), Color(0xFFA3865A), Color(0xFFF1EBDD)),
-  'sea': ChartBiomeColours(
-      Color(0xFF2F5D7C), Color(0xFF1E3F57), Color(0xFFCFE3EE)),
-  'ashlands': ChartBiomeColours(
-      Color(0xFF8C877E), Color(0xFF5F5B55), Color(0xFFD8D3C8)),
-  'volcanic': ChartBiomeColours(
-      Color(0xFFA0523D), Color(0xFF6E3527), Color(0xFFE9B48A)),
-  'sea_cliffs': ChartBiomeColours(
-      Color(0xFF7D8C7A), Color(0xFF4E5B52), Color(0xFFD9DDD2)),
-  'fen': ChartBiomeColours(
-      Color(0xFF5E6B57), Color(0xFF3B4538), Color(0xFFA9B59A)),
-  'frost': ChartBiomeColours(
-      Color(0xFFD7DEE6), Color(0xFF9AA7B4), Color(0xFFF4F7FA)),
-  'tear': ChartBiomeColours(
-      Color(0xFFA7A39C), Color(0xFF6E6A73), Color(0xFFE9E6DF)),
+      Palette.orange60a, Color(0xFF9C7B45), Color(0xFFE8D7A8)),
+  'arid_coast':
+      ChartBiomeColours(Color(0xFFD2BE94), Palette.stone50, Palette.amber91),
+  'sea': ChartBiomeColours(Palette.cyan34, Palette.blue23, Palette.cyan87),
+  'ashlands':
+      ChartBiomeColours(Color(0xFF8C877E), Palette.stone35a, Color(0xFFD8D3C8)),
+  'volcanic':
+      ChartBiomeColours(Color(0xFFA0523D), Palette.red29, Palette.orange73a),
+  'sea_cliffs':
+      ChartBiomeColours(Color(0xFF7D8C7A), Color(0xFF4E5B52), Palette.paper85),
+  'fen':
+      ChartBiomeColours(Color(0xFF5E6B57), Color(0xFF3B4538), Palette.stone66),
+  'frost':
+      ChartBiomeColours(Color(0xFFD7DEE6), Palette.stone65a, Palette.blue97a),
+  'tear': ChartBiomeColours(Palette.stone63, Palette.stone43, Palette.paper89a),
   'jungle': ChartBiomeColours(
       Color(0xFF4E7A3A), Color(0xFF2F5224), Color(0xFF9CC77A)),
 };

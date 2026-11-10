@@ -41,9 +41,13 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
     _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _offset = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    Future.delayed(widget.delay, () {
-      if (mounted) _controller.forward();
-    });
+    if (stillMotion(context)) {
+      _controller.value = 1; // shown at once, not staggered
+    } else {
+      Future.delayed(widget.delay, () {
+        if (mounted) _controller.forward();
+      });
+    }
   }
 
   @override
@@ -262,28 +266,19 @@ class _ChoiceLabel extends ConsumerWidget {
     String signed(int v) => v > 0 ? '+$v' : '\u2212${v.abs()}';
     final tags = [
       if (choice.goldMod != 0)
-        InkTag(
-          label: '${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
-          color: ink.gold,
-        ),
+        InkChip('${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
+            color: ink.gold),
       if (choice.healAmount != 0)
-        InkTag(
-          label: '${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
-          color: choice.healAmount > 0 ? ink.heal : ink.blood,
-        ),
+        InkChip('${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
+            color: choice.healAmount > 0 ? ink.heal : ink.blood),
       if (choice.alignmentMod != 0)
-        InkTag(
-          label: '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
-          color: ink.voidColor,
-        ),
+        InkChip('${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
+            color: ink.voidColor),
       if (choice.grantsItem)
-        InkTag(
-          label:
-              '+ ${(ref.watch(localizedDbProvider(itemsSchema)).value?[choice.grantItemId] as Map<String, dynamic>?)?['itemName'] ?? choice.grantItemId}',
-          color: ink.gold,
-        ),
-      if (workAhead)
-        InkTag(label: tr(ref, 'choice_work_ahead'), color: ink.gold),
+        InkChip(
+            '+ ${(ref.watch(localizedDbProvider(itemsSchema)).value?[choice.grantItemId] as Map<String, dynamic>?)?['itemName'] ?? choice.grantItemId}',
+            color: ink.gold),
+      if (workAhead) InkChip(tr(ref, 'choice_work_ahead'), color: ink.gold),
     ];
     if (tags.isEmpty) return Text(label);
     return Column(

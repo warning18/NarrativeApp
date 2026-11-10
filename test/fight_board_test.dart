@@ -18,12 +18,14 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
+import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
+import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
 import 'skill_fight_harness.dart'
     show gamedata, pumpUntil, settle, shows, tapWhenEnabled;
 import 'support/pump.dart';
 
-Future<void> _enter(WidgetTester tester) async {
+Future<void> _enter(WidgetTester tester, {List<SideLayer>? land}) async {
   SharedPreferences.setMockInitialValues({
     // The dice thrown at 4x: the tests wait a quarter of the throw (the
     // default speed is proven by dice_speed_test).
@@ -71,6 +73,7 @@ Future<void> _enter(WidgetTester tester) async {
       .push(MaterialPageRoute<bool>(
           builder: (_) => FightScreen(
                 enemyId: 'slum_thug',
+                landLayers: land,
                 enemy: thug,
                 modifiers: const EncounterModifiers(
                     forcedCondition: BattlefieldCondition.highGround,
@@ -87,7 +90,9 @@ Finder _keyStarting(String prefix) =>
 
 void main() {
   testWidgets('slots, pop-in, pick, keep and put back', (tester) async {
-    await _enter(tester);
+    // Met on a road, the fight has the land behind it (v1.825).
+    await _enter(tester, land: desertLayers(progress: 0.5));
+    expect(find.byKey(const Key('fight_land')), findsOneWidget);
     // Three equal slots a side; one fighter a side leaves two empty each.
     expect(find.byKey(const Key('fight_empty_slot')), findsNWidgets(4));
     final party = tester.getSize(find.byKey(const Key('party_slot_player')));
@@ -118,6 +123,26 @@ void main() {
     expect(find.byKey(const Key('die_picked_player')), findsOneWidget);
     expect(find.byKey(const Key('fight_aim_line')), findsOneWidget);
     expect(find.byKey(const ValueKey('kept_die_player')), findsNothing);
+
+    // The line is not clipped to the board: it runs up over the cards to the
+    // enemy card's lower edge, which is above the board's own box (user
+    // feedback: "the line goes under the interface").
+    final line = tester.widget<Stack>(find.byKey(const Key('fight_aim_line')));
+    expect(line.clipBehavior, Clip.none);
+    final paint = tester.widget<CustomPaint>(find.descendant(
+        of: find.byKey(const Key('fight_aim_line')),
+        matching: find.byType(CustomPaint)));
+    final painter = paint.painter as dynamic;
+    final boardTop =
+        tester.getTopLeft(find.byKey(const Key('fight_aim_line'))).dy;
+    final enemyCard = tester.getRect(_keyStarting('enemy_slot_'));
+    final end = painter.b as Offset;
+    final start = painter.a as Offset;
+    expect(boardTop + end.dy, closeTo(enemyCard.bottom, 1),
+        reason: 'it ends on the edge of the target card that faces the die');
+    expect(end.dy, lessThan(0),
+        reason: 'above the board box: drawn over the cards');
+    expect(start.dy, greaterThan(0));
 
     // The second keeps it: gone from the board, small in the kept row.
     await tester.tap(find.byKey(const ValueKey('die_tile_player')));

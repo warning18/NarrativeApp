@@ -13,6 +13,8 @@ import '../providers/clans_provider.dart';
 import '../providers/geography_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import 'ink_chip.dart';
+import '../theme/palette.dart';
 
 /// [text] with its first letter up, for a name that opens a line or heads
 /// a section (« l’Ancien Continent » → « L’Ancien Continent »).
@@ -178,7 +180,7 @@ class GeoBreadcrumb extends StatelessWidget {
       child: ShaderMask(
         blendMode: BlendMode.dstIn,
         shaderCallback: (bounds) => LinearGradient(
-          colors: const [Color(0x00000000), Color(0xFF000000)],
+          colors: const [Palette.clear, Palette.black],
           stops: [0, bounds.width <= 0 ? 0 : (14 / bounds.width).clamp(0, 1)],
         ).createShader(bounds),
         child: LayoutBuilder(
@@ -351,7 +353,7 @@ class ThisLandSheet extends ConsumerWidget {
                 runSpacing: 4,
                 children: [
                   for (final line in biome.weather)
-                    InkTag(label: line.nameFor(french), color: ink.tide),
+                    InkChip(line.nameFor(french), color: ink.tide),
                 ],
               ),
             ],
@@ -620,7 +622,7 @@ class _ZoneCard extends ConsumerWidget {
               Tooltip(
                 message: line.noteFor(french),
                 triggerMode: TooltipTriggerMode.tap,
-                child: InkTag(label: line.nameFor(french), color: ink.heal),
+                child: InkChip(line.nameFor(french), color: ink.heal),
               ),
           ],
         );

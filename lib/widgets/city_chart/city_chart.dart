@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 
 import '../../data/city_plan_record.dart';
 import '../../data/town_rulers.dart' show TownRuler;
+import '../../theme/palette.dart';
 
 /// What a way does, as the pin on its building says it.
 enum CityWayKind { quest, fight, check, shop, road }
@@ -346,11 +347,11 @@ class CityChart {
   /// The colours the districts wear, in the order the plan lists them.
   static const List<Color> districtColours = [
     Color(0xFF7FA6D8),
-    Color(0xFFE8B94E),
+    Palette.amber61,
     Color(0xFF3FB8B0),
     Color(0xFFD98A3C),
-    Color(0xFFD9544D),
-    Color(0xFF9A6BFF),
+    Palette.bloodDark,
+    Palette.purple71,
     Color(0xFF6BBF59),
     Color(0xFFC77DBA),
   ];

@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'die_skins.dart';
+import '../theme/palette.dart';
 
 /// A line of words saying what a die's art is, for its sheet.
 const Map<String, String> dieArtNotes = {
@@ -59,7 +60,7 @@ void paintDieHalo(Canvas canvas, Size size, String? id) {
   if (id != 'tearglass_die') return;
   final c = size.center(Offset.zero);
   final r = size.shortestSide / 2;
-  final p = Paint()..color = const Color(0xFF38D6C0).withValues(alpha: 0.2);
+  final p = Paint()..color = Palette.teal53.withValues(alpha: 0.2);
   for (var i = 0; i < 12; i++) {
     final a = i * math.pi / 6;
     canvas.drawPath(
@@ -173,7 +174,7 @@ void paintDieArt(
         final p = Offset(0.38 + math.cos(a) * rr, -0.05 + math.sin(a) * rr);
         i == 0 ? star.moveTo(p.dx, p.dy) : star.lineTo(p.dx, p.dy);
       }
-      canvas.drawPath(star..close(), stroke(const Color(0xFF7C8CFF), 1.4));
+      canvas.drawPath(star..close(), stroke(Palette.blue74, 1.4));
     case 'iron_die': // riveted bands
       canvas.drawLine(const Offset(-0.87, -0.5), Offset.zero,
           stroke(const Color(0xFF2B2F35), 3));
@@ -194,12 +195,12 @@ void paintDieArt(
         canvas.drawLine(
             Offset(math.cos(a) * 1.05, math.sin(a) * 1.05),
             Offset(math.cos(a) * 1.3, math.sin(a) * 1.3),
-            stroke(const Color(0xFFF2C14E), 1.6));
+            stroke(Palette.goldDark, 1.6));
       }
       canvas.drawLine(const Offset(0.45, -0.3), const Offset(0.45, 0.35),
-          stroke(const Color(0xFFF2C14E), 2));
+          stroke(Palette.goldDark, 2));
       canvas.drawLine(const Offset(0.3, -0.05), const Offset(0.6, -0.05),
-          stroke(const Color(0xFFF2C14E), 2));
+          stroke(Palette.goldDark, 2));
     case 'bulwark_die': // battlements
       for (final x in [-0.35, -0.05, 0.25]) {
         canvas.drawRect(
@@ -211,38 +212,38 @@ void paintDieArt(
         canvas.drawLine(
             const Offset(0.42, 0.4),
             Offset(0.42 + math.cos(a) * 0.3, 0.4 + math.sin(a) * 0.3),
-            stroke(const Color(0xFFDCCB9F), 1.3));
+            stroke(Palette.amber74, 1.3));
       }
       canvas.drawArc(
           Rect.fromCircle(center: const Offset(0.42, 0.4), radius: 0.3),
           -math.pi,
           math.pi,
           false,
-          stroke(const Color(0xFFDCCB9F), 1.3));
+          stroke(Palette.amber74, 1.3));
     case 'liora_die':
       canvas.drawPath(
           Path()
             ..moveTo(-0.87, 0.5)
             ..quadraticBezierTo(-0.5, 0.2, -0.3, 0.55)
             ..quadraticBezierTo(0.0, 0.9, 0.35, 0.7),
-          stroke(const Color(0xFF95D16F), 1.6));
-      leaf(-0.5, 0.32, -0.8, const Color(0xFF6FBF4E));
-      leaf(-0.1, 0.78, 0.6, const Color(0xFF6FBF4E));
-      leaf(0.3, 0.72, -0.4, const Color(0xFF6FBF4E));
-      leaf(0.74, -0.45, 0.9, const Color(0xFF6FBF4E));
+          stroke(Palette.green63a, 1.6));
+      leaf(-0.5, 0.32, -0.8, Palette.green53);
+      leaf(-0.1, 0.78, 0.6, Palette.green53);
+      leaf(0.3, 0.72, -0.4, Palette.green53);
+      leaf(0.74, -0.45, 0.9, Palette.green53);
     case 'grosh_die':
       spikes(const Color(0xFFE9E0C2), 0.26, 0.1);
       for (var i = 0; i < 4; i++) {
         canvas.drawLine(Offset(0.2 + i * 0.1, 0.45),
-            Offset(0.2 + i * 0.1, 0.62), stroke(const Color(0xFF8F8771), 1.2));
+            Offset(0.2 + i * 0.1, 0.62), stroke(Palette.stone50a, 1.2));
       }
     case 'tobin_die': // a reliquary cross, brass caps
       canvas.drawLine(const Offset(0.45, -0.3), const Offset(0.45, 0.35),
-          stroke(const Color(0xFFE5B566), 2.4));
+          stroke(Palette.orange65, 2.4));
       canvas.drawLine(const Offset(0.3, -0.05), const Offset(0.6, -0.05),
-          stroke(const Color(0xFFE5B566), 2.4));
+          stroke(Palette.orange65, 2.4));
       for (final v in corners) {
-        canvas.drawCircle(v * 0.95, 0.06, fill(const Color(0xFFE5B566)));
+        canvas.drawCircle(v * 0.95, 0.06, fill(Palette.orange65));
       }
     case 'malrik_die': // rust and a crack
       for (final (x, y, s) in const [
@@ -261,9 +262,9 @@ void paintDieArt(
           stroke(const Color(0xFF2B1A12), 1.2));
     case 'void_die': // stars and a dark swirl
       canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: 0.3), 0.3,
-          4.2, false, stroke(const Color(0xFF8D6CFF), 1.6));
+          4.2, false, stroke(Palette.blue71, 1.6));
       canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: 0.15), 3.4,
-          4.2, false, stroke(const Color(0xFF8D6CFF), 1.4));
+          4.2, false, stroke(Palette.blue71, 1.4));
       for (final p in const [
         Offset(-1.1, -0.7),
         Offset(1.1, -0.4),
@@ -280,7 +281,7 @@ void paintDieArt(
               ..lineTo(v.dx * 1.02 + 0.06, v.dy * 1.02 + 0.02)
               ..lineTo(v.dx * 0.9, v.dy * 0.7)
               ..close(),
-            fill(const Color(0xFF2A241D)));
+            fill(Palette.night14));
       }
       canvas.drawPath(
           Path()
@@ -290,11 +291,11 @@ void paintDieArt(
             ..lineTo(0.41, 0.5),
           stroke(skin.edge, 1.4));
     case 'berserker_die': // spikes, blood running
-      spikes(const Color(0xFFE8473F), 0.22, 0.09);
+      spikes(Palette.red58, 0.22, 0.09);
       for (final x in [-0.3, 0.05, 0.4]) {
-        drop(x, 0.0, 0.06, const Color(0xFFE8473F));
-        canvas.drawLine(Offset(x, -0.4), Offset(x, -0.1),
-            stroke(const Color(0xFFE8473F), 1.6));
+        drop(x, 0.0, 0.06, Palette.red58);
+        canvas.drawLine(
+            Offset(x, -0.4), Offset(x, -0.1), stroke(Palette.red58, 1.6));
       }
     case 'shadow_die': // a crescent
       canvas.drawPath(
@@ -318,11 +319,11 @@ void paintDieArt(
             ..quadraticBezierTo(1.5, -0.8, 1.45, -0.35)
             ..quadraticBezierTo(1.3, -0.3, 1.0, -0.4)
             ..close(),
-          fill(const Color(0xFFCF3E2F)));
+          fill(Palette.red50));
     case 'flame_die':
-      flame(-0.3, -0.9, 0.3, const Color(0xFFFF8A3D), const Color(0xFFFFD27A));
-      flame(0.0, -0.95, 0.42, const Color(0xFFFF6A1F), const Color(0xFFFFD27A));
-      flame(0.3, -0.9, 0.3, const Color(0xFFFF8A3D), const Color(0xFFFFD27A));
+      flame(-0.3, -0.9, 0.3, Palette.orange62, Palette.orange74);
+      flame(0.0, -0.95, 0.42, Palette.orange56, Palette.orange74);
+      flame(0.3, -0.9, 0.3, Palette.orange62, Palette.orange74);
     case 'tide_die': // a wave curling
       canvas.drawPath(
           Path()
@@ -333,30 +334,28 @@ void paintDieArt(
           stroke(const Color(0xFFA6F5EC), 1.8));
     case 'huntsman_die': // an arrow through it
       canvas.drawLine(const Offset(-1.15, 0.9), const Offset(1.15, -0.9),
-          stroke(const Color(0xFFB5935F), 1.8));
+          stroke(Palette.orange54, 1.8));
       canvas.drawPath(
           Path()
             ..moveTo(1.2, -1.0)
             ..lineTo(0.92, -0.9)
             ..lineTo(1.08, -0.72)
             ..close(),
-          fill(const Color(0xFFDCCB9F)));
+          fill(Palette.amber74));
       for (final d in [0.0, 0.1]) {
-        canvas.drawLine(
-            Offset(-1.15 + d, 0.9 - d * 0.8),
-            Offset(-1.3 + d, 0.8 - d * 0.8),
-            stroke(const Color(0xFFDCCB9F), 1.4));
+        canvas.drawLine(Offset(-1.15 + d, 0.9 - d * 0.8),
+            Offset(-1.3 + d, 0.8 - d * 0.8), stroke(Palette.amber74, 1.4));
       }
     case 'vess_die': // an ink drop and ripples
-      drop(0.0, -1.2, 0.14, const Color(0xFF86D6FF));
+      drop(0.0, -1.2, 0.14, Palette.cyan76);
       canvas.drawOval(
           Rect.fromCenter(
               center: const Offset(0, 0.28), width: 0.6, height: 0.18),
-          stroke(const Color(0xFF86D6FF), 1.2));
+          stroke(Palette.cyan76, 1.2));
       canvas.drawOval(
           Rect.fromCenter(
               center: const Offset(0, 0.28), width: 0.34, height: 0.1),
-          stroke(const Color(0xFF86D6FF), 1.2));
+          stroke(Palette.cyan76, 1.2));
     case 'frost_die': // icicles
       for (final x in [-0.5, -0.15, 0.2, 0.55]) {
         canvas.drawPath(
@@ -365,18 +364,18 @@ void paintDieArt(
               ..lineTo(x + 0.08, 0.78)
               ..lineTo(x, 1.1 + (x.abs() < 0.3 ? 0.12 : 0))
               ..close(),
-            fill(const Color(0xFFC4EBFF)));
+            fill(Palette.cyan88));
       }
     case 'greenwood_die': // a crown of leaves
       for (var i = 0; i < 5; i++) {
         leaf(-0.5 + i * 0.25, -1.0 - (i == 2 ? 0.1 : 0.0), -0.6 + i * 0.3,
-            const Color(0xFFA8D96D), 1.2);
+            Palette.green64, 1.2);
       }
     case 'vigil_die': // a candle flame and wax
-      canvas.drawRect(const Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27),
-          fill(const Color(0xFFE8DFC4)));
-      flame(0, -1.25, 0.2, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
-      drop(0.5, 0.0, 0.06, const Color(0xFFE8DFC4));
+      canvas.drawRect(
+          const Rect.fromLTWH(-0.07, -1.25, 0.14, 0.27), fill(Palette.amber84));
+      flame(0, -1.25, 0.2, Palette.orange71, const Color(0xFFFFF0B0));
+      drop(0.5, 0.0, 0.06, Palette.amber84);
     case 'storm_die':
       canvas.drawPath(
           Path()
@@ -391,10 +390,10 @@ void paintDieArt(
       for (var i = 0; i < 8; i++) {
         final a = i * math.pi / 4;
         final p = Offset(math.cos(a) * 1.15, math.sin(a) * 1.15);
-        canvas.drawLine(p, p + const Offset(0.0, 0.1),
-            stroke(const Color(0xFF8E9CFF), 1.6));
+        canvas.drawLine(
+            p, p + const Offset(0.0, 0.1), stroke(Palette.blue78, 1.6));
         canvas.drawLine(p + const Offset(-0.05, 0.03),
-            p + const Offset(0.05, 0.06), stroke(const Color(0xFF8E9CFF), 1.4));
+            p + const Offset(0.05, 0.06), stroke(Palette.blue78, 1.4));
       }
     case 'sage_die': // an eye
       canvas.drawPath(
@@ -426,13 +425,13 @@ void paintDieArt(
             ..lineTo(-0.1, -0.35)
             ..lineTo(0.1, -0.35)
             ..lineTo(-0.15, 0.2),
-          stroke(const Color(0xFFFFE48A), 2.4));
+          stroke(Palette.amber77b, 2.4));
     case 'chorus_die': // sound rings and a bell
       for (final k in [1.12, 1.3]) {
         canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: k), -0.5,
-            1.0, false, stroke(const Color(0xFFF5F7FB), 1.3));
+            1.0, false, stroke(Palette.blue97, 1.3));
         canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: k),
-            math.pi - 0.5, 1.0, false, stroke(const Color(0xFFF5F7FB), 1.3));
+            math.pi - 0.5, 1.0, false, stroke(Palette.blue97, 1.3));
       }
       canvas.drawPath(
           Path()
@@ -440,15 +439,15 @@ void paintDieArt(
             ..quadraticBezierTo(-0.16, -0.12, 0, -0.14)
             ..quadraticBezierTo(0.16, -0.12, 0.14, 0.2)
             ..close(),
-          fill(const Color(0xFFF5F7FB)));
+          fill(Palette.blue97));
     case 'tearglass_die': // THE LEGENDARY D12: a crown, a tear
-      crown(const Color(0xFFA0F5E8), -1.0);
-      drop(0.0, 0.1, 0.16, const Color(0xFFA0F5E8));
+      crown(Palette.teal79, -1.0);
+      drop(0.0, 0.1, 0.16, Palette.teal79);
       for (final v in corners.skip(1)) {
-        canvas.drawCircle(v, 0.05, fill(const Color(0xFFF2C14E)));
+        canvas.drawCircle(v, 0.05, fill(Palette.goldDark));
       }
     case 'hound_die': // a paw print
-      const paw = Color(0xFFF2F0EA);
+      const paw = Palette.paper93;
       canvas.drawOval(
           Rect.fromCenter(
               center: const Offset(0.4, 0.28), width: 0.3, height: 0.24),
@@ -462,7 +461,7 @@ void paintDieArt(
         canvas.drawCircle(p, 0.065, fill(paw));
       }
     case 'lantern_die': // a hanging lantern, its flame, rays on the face
-      const brass = Color(0xFFD9A441);
+      const brass = Palette.orange55;
       canvas.drawCircle(const Offset(0, -1.4), 0.07, stroke(brass, 1.3));
       canvas.drawPath(
           Path()
@@ -475,7 +474,7 @@ void paintDieArt(
           fill(const Color(0x40F2C14E)));
       canvas.drawRect(
           const Rect.fromLTWH(-0.16, -1.2, 0.32, 0.3), stroke(brass, 1.2));
-      flame(0, -0.93, 0.11, const Color(0xFFFFC96B), const Color(0xFFFFF0B0));
+      flame(0, -0.93, 0.11, Palette.orange71, const Color(0xFFFFF0B0));
       canvas.drawRect(const Rect.fromLTWH(-0.2, -0.9, 0.4, 0.05), fill(brass));
       // The light it gives: a small sun of rays on the face.
       for (var i = 0; i < 8; i++) {
@@ -487,8 +486,8 @@ void paintDieArt(
       }
       canvas.drawCircle(const Offset(0.4, 0.1), 0.07, fill(brass));
     case 'cinder_die': // a banked coal, embers rising
-      const ember = Color(0xFFFF8A3D);
-      flame(0, -1.1, 0.2, const Color(0xFFFF6A1F), const Color(0xFFFFC07A));
+      const ember = Palette.orange62;
+      flame(0, -1.1, 0.2, Palette.orange56, const Color(0xFFFFC07A));
       canvas.drawOval(
           Rect.fromCenter(
               center: const Offset(0.4, 0.3), width: 0.34, height: 0.2),
@@ -521,16 +520,14 @@ void paintDieArt(
           const Offset(0.4, 0.24), const Offset(0.4, 0.4), stroke(cup, 1.4));
       canvas.drawLine(
           const Offset(0.3, 0.42), const Offset(0.5, 0.42), stroke(cup, 1.6));
-      drop(0.4, -0.3, 0.07, const Color(0xFF9FD8A6));
+      drop(0.4, -0.3, 0.07, Palette.green74);
     case 'tally_die': // tally marks, the fifth across
       for (var i = 0; i < 4; i++) {
-        canvas.drawLine(
-            Offset(0.22 + i * 0.12, -0.12),
-            Offset(0.22 + i * 0.12, 0.34),
-            stroke(const Color(0xFF7C735B), 1.8));
+        canvas.drawLine(Offset(0.22 + i * 0.12, -0.12),
+            Offset(0.22 + i * 0.12, 0.34), stroke(Palette.stone42, 1.8));
       }
       canvas.drawLine(const Offset(0.16, 0.26), const Offset(0.7, -0.04),
-          stroke(const Color(0xFF7C735B), 1.8));
+          stroke(Palette.stone42, 1.8));
     case 'gambler_die': // suits and red pips
       canvas.drawPath(
           Path()
@@ -539,13 +536,13 @@ void paintDieArt(
             ..lineTo(0.0, 0.1)
             ..lineTo(-0.1, 0.0)
             ..close(),
-          fill(const Color(0xFFC0392B)));
+          fill(Palette.red46));
       for (final p in const [
         Offset(-0.55, -0.15),
         Offset(0.55, 0.45),
         Offset(-0.2, 0.6)
       ]) {
-        canvas.drawCircle(p, 0.06, fill(const Color(0xFFC0392B)));
+        canvas.drawCircle(p, 0.06, fill(Palette.red46));
       }
   }
   canvas.restore();

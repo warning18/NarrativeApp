@@ -7,12 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
+import '../combat/fight_ground_rule.dart';
 import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
+import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
 import '../widgets/head_avatar.dart';
@@ -48,6 +50,7 @@ import '../combat/fight_tips.dart';
 import '../combat/context_rules.dart';
 import '../data/clan_power.dart' show holderOf, reinforcementAt;
 import '../combat/fight_length.dart';
+import '../combat/heal_rules.dart';
 import '../combat/foe_kind.dart';
 import '../combat/profession_cores.dart';
 import '../combat/spec_variants.dart';
@@ -60,6 +63,8 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../data/item_origin_here.dart';
+import '../data/loot_changes.dart'
+    show charmExtraRolls, healthAfterDrinks, rollsPerRoundOf;
 import '../data/feature_unlocks.dart';
 import '../data/factions.dart'
     show ClanData, Host, parseFactions, parseSubclans, parseTitles;
@@ -115,6 +120,9 @@ import '../widgets/pixel_vfx.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 import 'fight/fight_tips.dart';
+import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';
@@ -193,7 +201,7 @@ const int _luckyCoinLuckBonus = 10;
 /// enemy's health bar the aimed dice would take off, and its "-N" chip
 /// (see [_FightScreenState._buildHpBar]). Blue on purpose -- nothing else
 /// on the enemy side is blue, so it never reads as damage already taken.
-const Color _previewColor = Color(0xFF42A5F5);
+const Color _previewColor = Palette.blue61;
 
 /// Armor added to the player for one fight by a `charm_iron_skin`.
 const int _ironSkinArmorBonus = 1;
@@ -213,7 +221,14 @@ class FightScreen extends ConsumerStatefulWidget {
     this.additionalEnemies = const {},
     this.modifiers = EncounterModifiers.none,
     this.random,
+    this.landLayers,
   });
+
+  /// The land the fight stands on, when it is met on a road: the side-view
+  /// kit of the place (the camera's at the party's x, see world_camera.dart),
+  /// drawn behind the battle's upper part and faded into the stage's ground.
+  /// Null (every other fight) leaves the backdrop as it was.
+  final List<SideLayer>? landLayers;
 
   /// The dice this fight rolls (see [fightRandomProvider]): null in play, so
   /// the fight makes its own unseeded Random; a test gives a seeded one.

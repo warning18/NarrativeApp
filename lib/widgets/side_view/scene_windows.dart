@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// How many windows every kit has.
 const int sceneWindowCount = 4;
@@ -125,6 +126,45 @@ List<SideLayer> withSceneWindow(
   ];
 }
 
+/// [layers] of the scene [kit] with the camera at [x] on the world's strip:
+/// the kit's own world scrolled to the place, continuously (a window of the
+/// strip is [sceneWindowSpan] wide, so moving the camera pans the land
+/// instead of cutting between windows), and the landmark of the window [x]
+/// is in, at [landmark] opacity (0 to 1: a camera on the move shows none).
+List<SideLayer> withSceneAt(List<SideLayer> layers, String kit, double x,
+    {double landmark = 1}) {
+  final v = sceneWindowAt(x);
+  final offset = x / sceneWindowSpan;
+  final street = kit.startsWith('street-');
+  return [
+    for (final layer in layers)
+      SideLayer(
+          layer.speed,
+          street
+              ? layer.paint
+              : (c, s, scroll, t, u) =>
+                  layer.paint(c, s, scroll + offset * s.width, t, u)),
+    if (v > 0 && landmark > 0 && _marks[kit] != null)
+      SideLayer(0.8, (canvas, size, scroll, t, u) {
+        final g = _G(canvas, size, u, _inkOf(kit));
+        final cols = size.width / u;
+        final period = cols * 1.7;
+        final shift = (-(scroll / u) % period + period) % period;
+        if (landmark < 1) {
+          canvas.saveLayer(Offset.zero & size,
+              Paint()..color = Colors.white.withValues(alpha: landmark));
+        }
+        for (final dx in [shift, shift - period]) {
+          canvas.save();
+          canvas.translate(dx.floorToDouble() * u, 0);
+          _marks[kit]![v - 1](g);
+          canvas.restore();
+        }
+        if (landmark < 1) canvas.restore();
+      }),
+  ];
+}
+
 class _Ink {
   const _Ink(this.dark, this.mid, this.rim);
   final Color dark, mid, rim;
@@ -135,7 +175,7 @@ _Ink _inkOf(String id) {
     return const _Ink(Color(0xFF0E1A26), Color(0xFF2A4358), Color(0xFFBFD6E0));
   }
   if (id.startsWith('street-')) {
-    return const _Ink(Color(0xFF2A211B), Color(0xFF5A4636), Color(0xFFE0C089));
+    return const _Ink(Color(0xFF2A211B), Palette.night28, Color(0xFFE0C089));
   }
   return switch (id) {
     'desert' =>
@@ -442,7 +482,7 @@ void _pier(_G g, double x, double y) {
     g.r(i.dark, x + 2 + k * 8, y - 3, 2, 12);
   }
   g.r(i.dark, x + 38, y - 12, 2, 9);
-  g.r(const Color(0xFFFFD27A), x + 38, y - 14, 2, 2);
+  g.r(Palette.orange74, x + 38, y - 14, 2, 2);
 }
 
 void _graves(_G g, double x, double y) {
@@ -484,7 +524,7 @@ void _beacon(_G g, double x, double y) {
   g.r(i.dark, x, y - 20, 2, 20);
   g.r(i.mid, x - 2, y - 22, 6, 2);
   g.r(const Color(0xFFFFB43C), x - 1, y - 27, 4, 5);
-  g.r(const Color(0xFFFFE08A), x, y - 26, 2, 3);
+  g.r(Palette.amber77, x, y - 26, 2, 3);
   g.r(i.rim.withValues(alpha: 0.5), x - 4, y - 30, 1, 1);
 }
 
@@ -544,8 +584,8 @@ void _hulk(_G g, double x, double y) {
   g.r(i.dark, x + 2, y - 5, 18, 2);
   g.r(i.dark, x + 12, y - 16, 1, 12);
   g.r(i.dark, x + 8, y - 12, 9, 1);
-  g.r(const Color(0xFFFF8A3C), x + 6, y - 6, 2, 1);
-  g.r(const Color(0xFFFF8A3C), x + 15, y - 5, 1, 1);
+  g.r(Palette.orange62a, x + 6, y - 6, 2, 1);
+  g.r(Palette.orange62a, x + 15, y - 5, 1, 1);
 }
 
 void _marketCart(_G g, double x, double y) {
@@ -587,6 +627,6 @@ void _lampPost(_G g, double x, double y) {
   final i = g.ink;
   g.r(i.dark, x, y - 26, 2, 26);
   g.r(i.dark, x - 2, y - 28, 6, 2);
-  g.r(const Color(0xFFFFD27A), x - 1, y - 33, 4, 5);
+  g.r(Palette.orange74, x - 1, y - 33, 4, 5);
   g.r(i.dark, x - 2, y - 34, 6, 1);
 }

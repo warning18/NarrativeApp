@@ -423,6 +423,9 @@ void main() {
       await settle();
       expect(sawJolt, isTrue, reason: 'the jolt plays before the fight');
       expect(find.byType(FightScreen), findsOneWidget);
+      // The fight is dressed with the road's land (v1.825).
+      expect(tester.widget<FightScreen>(find.byType(FightScreen)).landLayers,
+          isNotNull);
       // The fight's own end, as FightScreen leaves it.
       if (retreat) ref.read(lastFightRetreatedProvider.notifier).state = true;
       Navigator.of(tester.element(find.byType(FightScreen))).pop(won);

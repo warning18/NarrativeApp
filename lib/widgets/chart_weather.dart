@@ -14,6 +14,8 @@ import '../data/chart_globe.dart';
 import '../data/climate.dart';
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
+import 'motion.dart';
+import '../theme/palette.dart';
 
 /// The weather layer: a canvas the size of the chart (or of the globe's
 /// box), painted once for the day's sky.
@@ -63,7 +65,7 @@ class _ChartWeatherState extends State<ChartWeather>
   @override
   void initState() {
     super.initState();
-    _fade.forward();
+    _fade.forwardOrJump(context);
   }
 
   @override
@@ -231,7 +233,7 @@ class _ChartWeatherPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final snow = Paint()..color = Colors.white;
     final dust = Paint()
-      ..color = const Color(0xFFC9A46A)
+      ..color = Palette.orange60
       ..strokeCap = StrokeCap.round;
     final ash = Paint()..color = Color.lerp(palette.place, palette.fog, 0.3)!;
     for (final (p, q, w) in cells) {

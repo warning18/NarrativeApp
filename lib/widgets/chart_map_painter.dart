@@ -13,6 +13,7 @@ import '../data/world_map.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/palette.dart';
 
 /// How the chart hides what the story has not reached.
 enum ChartFog {
@@ -328,7 +329,7 @@ class ChartMapPainter extends CustomPainter {
       canvas.drawPath(
           path,
           Paint()
-            ..color = const Color(0xFF17151B).withValues(alpha: 0.8)
+            ..color = Palette.night9.withValues(alpha: 0.8)
             ..style = PaintingStyle.stroke
             ..strokeCap = StrokeCap.round
             ..strokeJoin = StrokeJoin.round
@@ -384,7 +385,7 @@ class ChartMapPainter extends CustomPainter {
 
   void _feature(Canvas canvas, ChartFeature f, Offset p) {
     final ink = palette.place;
-    final dark = const Color(0xFF17151B).withValues(alpha: 0.8);
+    final dark = Palette.night9.withValues(alpha: 0.8);
     // About 26 px across at least once the chart is looked at closer, on a
     // small plate so it reads over dark and light ground alike.
     final sc = math.max((_m * 1.3).clamp(0.3, 1.3), _px(26 * _grow) / 8.4);
@@ -1115,7 +1116,7 @@ class ChartMapPainter extends CustomPainter {
         canvas.drawPath(
             _line(line),
             Paint()
-              ..color = const Color(0xFF17151B).withValues(alpha: 0.3)
+              ..color = Palette.night9.withValues(alpha: 0.3)
               ..style = PaintingStyle.stroke
               ..strokeCap = StrokeCap.round
               ..strokeWidth = range.size * 0.4);
@@ -1326,7 +1327,7 @@ class ChartMapPainter extends CustomPainter {
   }
 
   void _terrain(Canvas canvas, ChartRelief relief, {bool fine = false}) {
-    const shadow = Color(0xFF17151B);
+    const shadow = Palette.night9;
     for (final m in fine ? relief.fineTerrain : relief.terrain) {
       if (!_vis(m.at)) continue;
       final colours = chartBiome(geography.zones[m.zone].biome);
@@ -1448,7 +1449,7 @@ class ChartMapPainter extends CustomPainter {
           canvas.drawPath(
               path,
               Paint()
-                ..color = const Color(0xFFC9A86A).withValues(alpha: 0.7)
+                ..color = Palette.orange60a.withValues(alpha: 0.7)
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 0.35);
           canvas.drawPath(
@@ -1475,7 +1476,7 @@ class ChartMapPainter extends CustomPainter {
               Offset(p.dx - s * 0.3, p.dy - s),
               Offset(p.dx + s * 0.3, p.dy - s),
               Paint()
-                ..color = const Color(0xFFE0762B).withValues(alpha: 0.7)
+                ..color = Palette.emberDark.withValues(alpha: 0.7)
                 ..strokeWidth = 0.3);
         case TerrainKind.crack:
           canvas.drawLine(
@@ -1491,8 +1492,8 @@ class ChartMapPainter extends CustomPainter {
             ..lineTo(p.dx + s * 0.5, p.dy + s * 0.6)
             ..lineTo(p.dx - s * 0.4, p.dy + s * 0.3)
             ..close();
-          canvas.drawPath(path,
-              Paint()..color = const Color(0xFFE9E6DF).withValues(alpha: 0.3));
+          canvas.drawPath(
+              path, Paint()..color = Palette.paper89a.withValues(alpha: 0.3));
           canvas.drawPath(
               path,
               Paint()
@@ -1509,7 +1510,7 @@ class ChartMapPainter extends CustomPainter {
               p + Offset(s * 0.3, s), p + Offset(s, -s * 0.3), paint);
         case TerrainKind.salt:
           final paint = Paint()
-            ..color = const Color(0xFFF1EBDD).withValues(alpha: 0.45)
+            ..color = Palette.amber91.withValues(alpha: 0.45)
             ..strokeWidth = 0.25;
           canvas.drawLine(p + Offset(-s, 0), p + Offset(s, 0), paint);
           canvas.drawLine(p + Offset(0, -s), p + Offset(0, s), paint);
@@ -1520,13 +1521,13 @@ class ChartMapPainter extends CustomPainter {
           canvas.drawPath(
               path,
               Paint()
-                ..color = const Color(0xFFE9B48A).withValues(alpha: 0.7)
+                ..color = Palette.orange73a.withValues(alpha: 0.7)
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 0.35);
         case TerrainKind.hatch:
           // Snow lying in drifts: three short strokes.
           final drift = Paint()
-            ..color = const Color(0xFFF4F7FA).withValues(alpha: 0.55)
+            ..color = Palette.blue97a.withValues(alpha: 0.55)
             ..strokeWidth = 0.22;
           for (var i = -1; i <= 1; i++) {
             canvas.drawLine(p + Offset(-s * 1.4, i * s * 0.9),
@@ -1555,7 +1556,7 @@ class ChartMapPainter extends CustomPainter {
           ..lineTo(right.dx, right.dy)
           ..lineTo(p.dx + 0.3, right.dy)
           ..close(),
-        Paint()..color = const Color(0xFF17151B).withValues(alpha: 0.65));
+        Paint()..color = Palette.night9.withValues(alpha: 0.65));
     canvas.drawPath(
         Path()
           ..moveTo(left.dx, left.dy)
@@ -1585,8 +1586,8 @@ class ChartMapPainter extends CustomPainter {
           Paint()..color = const Color(0xFFE6ECF2).withValues(alpha: 0.85));
     }
     if (ember) {
-      canvas.drawCircle(Offset(p.dx, top.dy + 0.4), 0.4,
-          Paint()..color = const Color(0xFFE0762B));
+      canvas.drawCircle(
+          Offset(p.dx, top.dy + 0.4), 0.4, Paint()..color = Palette.emberDark);
     }
   }
 
@@ -1997,10 +1998,8 @@ class ChartMapPainter extends CustomPainter {
           // Hunted red through grey to sworn gold.
           final t = ((standing + 100) / 200).clamp(0.0, 1.0);
           final colour = t < 0.5
-              ? Color.lerp(
-                  const Color(0xFFD9544D), const Color(0xFF8A8F98), t * 2)!
-              : Color.lerp(const Color(0xFF8A8F98), const Color(0xFFF2C14E),
-                  (t - 0.5) * 2)!;
+              ? Color.lerp(Palette.bloodDark, Palette.stone57, t * 2)!
+              : Color.lerp(Palette.stone57, Palette.goldDark, (t - 0.5) * 2)!;
           canvas.drawPath(
               path, Paint()..color = colour.withValues(alpha: 0.32));
         }
@@ -2009,7 +2008,7 @@ class ChartMapPainter extends CustomPainter {
 
     // The towns about the places reached (v1.202): houses round each, a
     // wall round the big ones; the fog must not give the rest away.
-    final roofDark = Color.lerp(palette.roofs, const Color(0xFF17151B), 0.4)!;
+    final roofDark = Color.lerp(palette.roofs, Palette.night9, 0.4)!;
     for (final l in worldMapLandmarks) {
       if (l.atSea || !discovered.contains(l.id)) continue;
       if (!_vis(geography.of(l))) continue;
@@ -2081,8 +2080,8 @@ class ChartMapPainter extends CustomPainter {
         canvas.translate(p.dx, p.dy);
         canvas.scale(m.clamp(0.35, 1.0));
         if (shopPlaces.contains(l.id)) {
-          canvas.drawCircle(const Offset(5, -5), 2.4,
-              Paint()..color = const Color(0xFFF2C14E));
+          canvas.drawCircle(
+              const Offset(5, -5), 2.4, Paint()..color = Palette.goldDark);
           canvas.drawCircle(
               const Offset(5, -5),
               2.4,
@@ -2098,7 +2097,7 @@ class ChartMapPainter extends CustomPainter {
                 ..lineTo(-5, -7)
                 ..lineTo(-2, -2)
                 ..close(),
-              Paint()..color = const Color(0xFF7DBE6A));
+              Paint()..color = Palette.healDark);
         }
         canvas.restore();
       }
@@ -2287,7 +2286,7 @@ class ChartMapPainter extends CustomPainter {
             p,
             dot,
             Paint()
-              ..color = const Color(0xFF17151B).withValues(alpha: 0.6)
+              ..color = Palette.night9.withValues(alpha: 0.6)
               ..style = PaintingStyle.stroke
               ..strokeWidth = math.max(0.4 * m, _px(0.8 * _grow)));
       }
@@ -2301,7 +2300,7 @@ class ChartMapPainter extends CustomPainter {
             p,
             ring,
             Paint()
-              ..color = const Color(0xFF17151B).withValues(alpha: 0.85)
+              ..color = Palette.night9.withValues(alpha: 0.85)
               ..style = PaintingStyle.stroke
               ..strokeWidth = math.max(3 * m, _px(4 * _grow)));
         canvas.drawCircle(
@@ -2383,7 +2382,7 @@ class ChartMapPainter extends CustomPainter {
       canvas.translate(shown.dx, shown.dy);
       canvas.scale(m.clamp(0.4, 1.0));
       const x = 0.0, y = 0.0;
-      final cloak = Paint()..color = const Color(0xFFA8A194);
+      final cloak = Paint()..color = Palette.ashDark;
       canvas.drawPath(
           Path()
             ..moveTo(x - 1.8, y)

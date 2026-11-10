@@ -1,0 +1,12 @@
+## What the batch says (v1.860, after #854: spoils and boons)
+
+**The totals sit inside Core's bands** (median 13 to 18, floor 20 at 20 to 38%, top 5 to 12% with no unlocks, 15 to 25% with all). Two ranges of 2,000 seeds, both ways (1 to 2000 and 10001 to 12000): median floor 17 and 17, floor 20 at 32.7% and 34.1%, top with no unlocks 9.6% and 10.6%, with all unlocks 15.7% and 18.4% (the low edge of its band on the first range). The guards of `test/qa_tower_sim_test.dart` hold the bands on seeds 1 to 500.
+
+1. **The two bosses are walls now**: win rate of the runs that reach the floor, no unlocks: floor 5 warden 98.7%, 10 boss 94.7%, 15 warden 88.2%, **20 boss 72.9%**, **25 warden 79.3%**, 30 top boss 99.0%. Without heal cards, the floor 20 boss kills 27% of those who reach it (177 runs, 8.9% of all) and floor 25 kills 21% of the rest: the two floors the report marks hard. Whoever passes floor 25 nearly always wins the top (99.0%, 2 deaths in 194). With all unlocks: 99.9, 91.8, 89.9, 73.9, 77.7, 99.7.
+2. **The professions are level**: the top rate with no unlocks runs from 8.6% (mage) to 10.9% (rogue); floor 20 from 28.6% (mage) to 37.4% (rogue). With all unlocks: mage 20.2%, cleric 16.7%, warrior 16.6%, rogue 13.8%, ranger 11.4% (the ranger lags).
+3. **The clans drift apart again**: Dominion 12.7% (floor 20 at 38.2%), Mire 8.2% (median floor 15), Penitents 8.0%, a spread of 4.7 points against 1.7 in v1.855. With all unlocks Dominion 19.6% against Penitents 11.1% (Compact 15.7%, Crows 16.9%, Mire 17.6%, Vigil 13.6%).
+4. **Spoils**: a run carries 22.1 items from its chests on average (median 21): a chest for each floor won, since v1.860. After a floor the bot now takes only a clan's oath or a skill (50.9% and 49.1% of its picks): the heal and item cards are gone from the offers. The bot does not use the bag's potions and antidotes, so what the chests give is not in these numbers (only the boons it takes).
+5. **Never sworn: 1 run in 2,000**, as before; the runs that swore to one or two clans (93 and 196) died early (median floor 8 and 10).
+6. The bot never refuses a card, so a run earns 26.1 marks on average (median 25; 29.6 with all unlocks).
+
+**What the bot cannot say (Core's note).** It plays on the headless fight (`simulateSimFight`): that fight has **no affixes** (the real one has them, so the real floors are harder), and the clan die's resonance and the specialisations are not simulated. The splits above are findings to check, not verdicts.

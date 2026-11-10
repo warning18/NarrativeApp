@@ -22,6 +22,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/fate_coin_offer.dart';
 import 'approval_notice.dart';
+import '../theme/motion.dart';
 
 /// The camp's fate die (see camp_fate.dart) after a night's rest at the
 /// camp: [restedLine] says the night was had, then the die is rolled and
@@ -371,7 +372,7 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
     final scheme = theme.colorScheme;
     return AnimatedContainer(
       key: ValueKey('fate_face_$index'),
-      duration: const Duration(milliseconds: 120),
+      duration: Motion.fast,
       width: 64,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       decoration: BoxDecoration(

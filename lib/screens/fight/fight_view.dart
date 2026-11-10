@@ -283,7 +283,7 @@ extension _FightView on _FightScreenState {
         CircleAvatar(
           radius: 24,
           backgroundColor: _isElite
-              ? Colors.amber.shade700
+              ? Palette.goldDeep
               : Theme.of(context).colorScheme.errorContainer,
           child: EnemyPixelIcon(enemy.enemyId, size: 36),
         ),
@@ -295,7 +295,7 @@ extension _FightView on _FightScreenState {
               Text(
                 enemy.displayName,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: _isElite ? Colors.amber.shade800 : null,
+                      color: _isElite ? Palette.amberDeep : null,
                       fontWeight: _isElite ? FontWeight.bold : null,
                     ),
               ),
@@ -432,7 +432,7 @@ extension _FightView on _FightScreenState {
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready ? tr(ref, 'momentum_ready_label') : tr(ref, 'momentum_label'),
           badge: ready ? null : '$_momentum/$_momentumNeeded',
-          color: ready ? Colors.orange : null,
+          color: ready ? Palette.flame : null,
           tip: tr(ref, 'momentum_tip'),
         ),
         // Luck nudges left (long-press a die to spend one).
@@ -690,7 +690,7 @@ extension _FightView on _FightScreenState {
                 trFor(lang, comboDescriptionKey(combo)), colorScheme.primary),
           for (final duo in plan.duos)
             chip(Icons.handshake, duo.nameFor(french),
-                duo.descriptionFor(french), Colors.deepPurple),
+                duo.descriptionFor(french), Palette.arcane),
         ],
       ),
     );
@@ -805,8 +805,7 @@ extension _FightView on _FightScreenState {
                         key: Key('die_picked_${actor.id}'),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                              color: const Color(0xFFF2C14E), width: 3),
+                          border: Border.all(color: Palette.goldDark, width: 3),
                           boxShadow: const [
                             BoxShadow(color: Color(0x88F2C14E), blurRadius: 16)
                           ],
@@ -844,7 +843,7 @@ extension _FightView on _FightScreenState {
                       child: Icon(Icons.auto_awesome,
                           size: 14,
                           color: _dieResonance == Resonance.lit
-                              ? const Color(0xFFF2C14E)
+                              ? Palette.goldDark
                               : Colors.white38),
                     ),
                   ),
@@ -1094,7 +1093,7 @@ extension _FightView on _FightScreenState {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+        color: Palette.amber88.withValues(alpha: 0.92),
         border: Border.all(color: color, width: 2),
       ),
       child: SkillPixelIcon(_effectiveSkillId(face), size: 26),
@@ -1183,9 +1182,9 @@ extension _FightView on _FightScreenState {
     final canNudge =
         onTable && _awaitingDecision && !_rolling && _nudgesLeft > 0;
     final nudgeTo = canNudge ? _nudgePreview(actor) : null;
-    return showModalBottomSheet<void>(
+    return showInkSheet<void>(
       context: context,
-      showDragHandle: true,
+      scrollControlled: false,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
         // Scrolls: a face with keywords, a curse and a nudge to offer
@@ -1235,7 +1234,7 @@ extension _FightView on _FightScreenState {
                   Text(
                     targetLine,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                        color: preview.lethal ? Colors.red : Colors.deepOrange,
+                        color: preview.lethal ? Palette.alert : Palette.hot,
                         fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -1286,7 +1285,7 @@ extension _FightView on _FightScreenState {
                   const SizedBox(height: 4),
                   Text(trFor(lang, 'cursed_face_note'),
                       style: theme.textTheme.bodySmall
-                          ?.copyWith(color: Colors.red.shade700)),
+                          ?.copyWith(color: Palette.danger)),
                 ],
                 if (_steadyActorIds.contains(actor.id) && onTable) ...[
                   const SizedBox(height: 4),
@@ -1369,7 +1368,7 @@ extension _FightView on _FightScreenState {
                   .withValues(alpha: isRolled ? 0.28 : 0.14),
               border: Border.all(
                 color: cursed
-                    ? Colors.red.shade700
+                    ? Palette.danger
                     : isRolled
                         ? accent
                         : colorScheme.outlineVariant,

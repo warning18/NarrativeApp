@@ -8,6 +8,798 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.888.0+924]
+
+### Changed
+- **The mage's opening Arcane Bolt hits a little softer** (Core round 4,
+  items 3 and 4). Its damage multiplier goes from 1.6 to 1.35. The mage had
+  led every other profession by about 5 points since v1.696. In the
+  simulator's balance batch (400 runs each on seeds 7, 11 and 13), the mage
+  now wins 78.2% of its encounters, down from 81.5%, just above the rogue's
+  76.9%. The widest gap between two professions falls from 8.7 to 5.4
+  points, and no other profession moves.
+- The balance test's profession guard now allows two standard errors of
+  noise on top of its 8-point limit, not three, so a spread like the old
+  9.7 points fails it.
+## [1.886.0+922]
+
+### Changed
+- **Motion tokens** (the user's choice, UX-2 round 4): the interface's own
+  transitions keep to three paces, `Motion.fast` 160 ms, `base` 240 ms and
+  `slow` 400 ms (`lib/theme/motion.dart`). The 22 implicit animations (a fade,
+  a switch, a resize: `AnimatedOpacity`, `AnimatedSwitcher`,
+  `AnimatedContainer`, `AnimatedRotation`, `AnimatedPositioned`, `AnimatedSize`)
+  had 12 different durations of their own, from 120 to 400 ms; they now use a
+  token. Moved: 120 and 180 ms to 160; 200, 220, 250, 260, 280, 300 and 320 ms
+  to 240 (the two story page switchers, 320 to 240, are a little quicker);
+  160 and 400 ms stay. Not moved on purpose: timelines choreographed to art (a
+  fight's blows, the reveals, the loops, the world map's flights).
+- `test/motion_tokens_test.dart` fails when an implicit animation under half a
+  second carries a number of its own.
+
+## [1.885.0+921]
+
+### Changed
+- **The shared palette** (the user's choice, UX-2; no change to how anything
+  looks, the pictures are byte for byte the same): `lib/theme/palette.dart`
+  holds every colour that two or more files drew with, 157 of them, with the
+  hex each always had, and the 16 semantic tokens of the theme (`InkColors`
+  dark and light), which now take their values from it. A colour only one
+  painter uses stays beside it (about 1,170 of them: the backdrops, ships and
+  dice). 580 literals in 84 files now say `Palette.<name>`; the names are the
+  hue and lightness of the colour (`amber77`), to be renamed by role as roles
+  are found.
+  - The Material named colours used in two or more files are roles:
+    `Palette.good` (green), `danger`, `alert`, `hot`, `arcane`, `neutral`...
+    (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
+  - `test/palette_test.dart` fails when a colour drawn in two files is written
+    as a literal: it goes to the palette.
+## [1.884.0+920]
+
+### Changed
+- **The simulator fights on the ground the fight screen picks** (Core round
+  4, item 1; nothing changes on screen). `fightGroundAt`
+  (`lib/combat/fight_ground_rule.dart`) gives a fight's stage and rule from
+  its place: the watch in a city, a holy place's sanctified ground, the
+  desert heat, the rising water, the marsh mist, and the Tide where none
+  applies or a boss is fought. The fight screen's two helpers now call it,
+  and so does the playthrough simulator, which used to play every fight on
+  the Tide. On the feature ladder the Tide plays until the place rules
+  open, as in the game. In the 400-run balance batch, a third of the fights
+  now play a place rule (most of them the rising water). The encounter win
+  rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
+  ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
+  boss curve and every balance guard stay green.
+## [1.883.0+919]
+
+- **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
+  A read of every "something", "the way" and "as if" in the scenes (about 210) found the
+  narrator's similes are deliberate voice and stay; four scenes had a real placeholder,
+  now named: the tall shape in the dunes (`1120`, English and French), the message the
+  Spire courier passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and
+  the wisp's luminous smear (`3005_wisp`). In the French, 13 phrases in 11 of the 34
+  longest scenes lose their padding (150 characters in all); the rest of those scenes
+  read as long as French normally does and are left as written. No key, flag or number
+  changed; bold counts match in both languages.
+
+## [1.882.0+918]
+
+### Changed
+- **One chip** (the user's choice, UX-2 round 3): `InkChip`
+  (`lib/widgets/ink_chip.dart`) is the app's one chip: a short label in a
+  colour, on a tinted pill with a thin edge of the same colour, 12 px bold.
+  It replaces the square `InkTag` (21 uses: item and calling tags, the
+  geography lines, the camp tags, the story choices), the look of the choice
+  tags (`ChoiceTagChip` is now an `InkChip`) and the Tower's Material chips.
+  - **A bug fixed:** the Tower's foe marks ("Frenzied", "Skittish", "Elite")
+    were drawn in white on cream, unreadable, on every floor that has one
+    (since v1.848); they are red chips now, and "Elite" a gold one.
+  - What changes on screen: item and calling tags gain an edge and rounder
+    corners; the choice tags go from 11 to 12 px and from 10 to 8 px corners.
+  - Left as they were: the offer dialog's and the harbor's own tags, the stat
+    bonus chips.
+- `test/ink_chip_test.dart`; the Tower's picture test draws a warden floor.
+  Pictures before and after: `docs/ux-shots/chips/`.
+
+## [1.881.0+917]
+
+- **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
+  two buttons: "Back into the Anchorage" (the five `7100` rows) and "Head back toward
+  the harbour master’s post" (the five `2015` rows). Each now says what that scene just
+  did ("Leave the helmsman to his cup", "Leave Sable with her marker"), in English and
+  French. Flags, gold and destinations unchanged.
+
+## [1.880.0+916]
+
+### Changed
+- **The Tower rebuilds its hero from the last floor it already built**
+  (Core round 4; nothing changes in play): `SimCharacter.copy()` copies the
+  hero field by field, and `towerHeroOf` keeps a copy of the hero after each
+  floor, keyed by the run's choices so far. Replaying a run now starts from
+  the longest matching floor instead of from floor 0. The balance bot's 300
+  runs give byte-identical results and take 4.1 s instead of 5.8 s; hero
+  rebuilds fall from about half of the bot's time to about 15%. A new test
+  (`test/sim_character_copy_test.dart`) fails when a field is added to
+  `SimCharacter` without being copied.
+
+## [1.877.0+913]
+
+- **Narrative: one bold passage per scene, the sharpest.** 668 passages were bold,
+  about one word in eight; 192 scenes that carried two or three now carry one,
+  the fact the player most needs (a name, a rule, a price, a turn). The opening,
+  the reveals, the chapter endings, the crowning scenes and the ledgers keep all
+  theirs (28 scenes). English and French trim the same passage, so every scene has
+  the same number of bold passages in both. New guard
+  `test/story_bold_budget_test.dart`: EN and FR counts match, and a scene has one
+  bold passage unless it is on the keep list. No wording, flag or number changed.
+
+## [1.876.0+912]
+
+- **Narrative: British spelling in the English text the game builds in code.**
+  The last player-visible English strings that were not in the string table
+  follow the spelling of v1.872: the street and sea encounter lines (harbour,
+  traveller, favour, colour, centre), a chapter-1 origin line, the alignment
+  event's "burning armour" and "in your favour" choice, the Saltmouth blurb on
+  the world map and a chart note. 16 strings in 8 files; no key, id or French
+  text changed. Editor documentation (the `db_schema_*` files) is left as it is.
+
+## [1.875.0+911]
+
+### Changed
+- **One bottom sheet, step 2 of the shared frames** (UX-2 round 3; no change
+  to how anything looks): `showInkSheet` (`lib/widgets/ink_sheet.dart`) is
+  the bottom sheet with the grip, scroll-controlled unless told otherwise,
+  with an optional width limit. 49 of the 56 hand-written
+  `showModalBottomSheet` calls had exactly those flags and now use it (the
+  other seven carry their own shape, barrier colour or safe area and stay).
+  About 40 lines fewer, and one place to change the sheet's look.
+
+## [1.874.0+910]
+
+### Changed
+- **The simulator says what the hero healed** (QA's ask, for its heal-rule
+  guards): `SimFightOutcome.healedBy` (by source: a die's face, a spell, a
+  potion), `.healed` and `.spellHealed`, as the heal rule (heal_rules.dart)
+  works the amounts out, before full health caps them; a lost fight's too
+  (its hero is then refilled, so its health can't tell). Nothing in a
+  fight changes.
+- `test/sim_heals_test.dart`.
+
+## [1.873.0+909]
+
+- **Narrative: six endings with their own buttons, two dead lines out, three
+  shorter speeches.** The six scenes where someone comes back with a message
+  (`3005_dorran_later`, `5010_imeh_later`, `6010_brannoc_later`,
+  `7100_orsabet_later`, `7100_ghrem_later`, `7800_nkem_later`) no longer end
+  on the same "Accept what they offer" / "Say your goodbyes": each pair now
+  names the person and what they bring (the gold and the flag are unchanged).
+  Two Vess remarks keyed to the choices of an old pier scene
+  (`choice_960_1_vess`, `choice_960_2_vess`) are removed: they could never play.
+  The quest-giver speeches of Tobin, Vess and Liora lose a sentence each
+  (439, 422 and 385 characters to 336, 290 and 311). English and French.
+
+## [1.872.0+908]
+
+- **Narrative: British spelling everywhere in the English text.** The story
+  and game data, and the English UI strings, used both spellings (harbour 64
+  against harbor 40, armour against armor, colour, favour, rumour, armoury,
+  centre, defence, travelled). They now follow the majority, British, like
+  the 204 "grey". 115 strings in the story and game data and 34 in
+  `app_strings.dart` change; ids, flags, keys, enum values and French are
+  untouched. Names that move: Harbour Rat, Harbour Reckoning, A Smuggler's
+  Favour, The Harbour (house), Harbourwatch (set and items).
+
+## [1.871.0+907]
+
+### Changed
+- **One panel, one confirm dialog, step 1** (UX-2 round 3, "one panel / one
+  tag / one dialog frame / one sheet frame"; no change to how anything looks):
+  - `InkPanel` and `InkLabel` (`lib/widgets/ink_panel.dart`) are the Tower's
+    panel and label, promoted: the 77 uses in the Tower's screens now say
+    `InkPanel`/`InkLabel`, `tower_widgets.dart` is gone. The 36 pictures of
+    the Tower's screens are byte for byte the same before and after.
+  - `showInkConfirm` (`lib/widgets/ink_confirm.dart`) is the plain yes/no
+    dialog (title, words, Cancel left, the act right, filled or quiet). Seven
+    hand-written ones use it: New Game, New Game+, overwrite a save slot, leave
+    the Tower, rebuild a hull, reset the game defaults, reset the story
+    (about 100 lines fewer). The hull confirm's act is a filled button where
+    it was an elevated one.
+  - Next steps (own PRs, picture first): the sheet frame, the tags, the
+    story's offer dialog last.
+
+## [1.870.0+906]
+
+### Fixed
+- **"Remove animations" is honoured by the last animations that ignored it**
+  (UX-2 round 3): the city chart no longer breathes in a loop nor glides
+  between zooms, the map's sky no longer fades in, a stat no longer pulses on
+  a change, and the story's cards no longer reveal one after the other. With
+  the platform's setting on they stand at their end state at once. Everything
+  else already honoured it (about 60 places read the setting, the page
+  transitions among them); `lib/widgets/motion.dart` (`stillMotion`,
+  `forwardOrJump`) is the one helper for those that start in `initState`.
+  The aim sweep of a ship battle and the timed choice's countdown are play,
+  not decoration, and keep running.
+- `test/motion_test.dart`.
+
+## [1.869.0+905]
+
+### Changed
+- **The spoils have one list, and it lets you equip** (the user's feedback:
+  "allow direct equipment again"; UX-2 round 3): the full-height spoils sheet
+  now says, for each piece of gear, what the old list under the flipped slots
+  said: its stats with their difference against the piece worn in that slot
+  (`ATK 3 +1`) and "Replaces Iron Sword", with the Equip switch; a tap on any
+  drop reads it in full, with the same Equip or Drink action. A potion keeps
+  its Drink switch. The chest dialog's own Equip/Drink list under the slots
+  (about 90 lines) is gone: one list, on the sheet. Nothing changes in
+  `fight_rewards.dart`: what is switched on goes back through the same
+  `SpoilsChoices` (`equipItemIds`, `drinkItemIds`) and `equipItem`, which puts
+  the new piece on and leaves the old one in the bag.
+- `LootReward.detail` and `.onTap`; the string `loot_use_now_title` is gone,
+  `loot_replaces` is new. Pictures: `docs/ux-shots/spoils-actions/`.
+
+## [1.868.0+904]
+
+### Changed
+- **The fonts are cut to the letters the game draws** (UX-2 round 3): the six
+  font files go from 774 KB to 376 KB (Spectral 160 to 62 KB each, Pixelify
+  48 to 28, IM Fell 179 to 131), so every in-app update downloads about 400 KB
+  less. Kept: ASCII, Latin-1, Latin Extended-A (a typed name keeps its
+  accents), general punctuation, the arrows, and every other character the
+  texts really use (gamedata, the story, every string in `lib/`) that the
+  font had. Kerning, ligatures and hinting are kept. The same text drawn in
+  the old and the new fonts (EN and FR, all four faces) is pixel for pixel
+  identical.
+- `tool/subset_fonts.py` makes them (needs fonttools, and the full fonts:
+  `git show 60522342e:assets/fonts/NAME.ttf`); `assets/fonts/GLYPHS.json` lists
+  what each font never had; `test/font_glyphs_test.dart` fails when a new
+  character comes into a text that a font had and the subset lost.
+
+## [1.867.0+903]
+
+### Changed
+- **Old Tower saves are brought up to date once, as they load** (round 3,
+  item D, the user's pick), and the three paths kept for them are gone:
+  - a clan sworn at the start (before v1.855) is its oath on floor 0, and
+    now gives its die as any oath does;
+  - a run without level-up picks (before v1.857) takes the calling's for
+    each level;
+  - the old cards (before v1.860): an item card's gear joins the floor's
+    spoils, a clan's die becomes a die card, a heal or stat-point card
+    nothing (the health is saved apart).
+- Gone: `TowerRun.clanId`, `TowerRun.autoPicks`, the `item`, `heal` and
+  `clanGift` reward kinds and their seven strings.
+- `test/tower_save_migration_test.dart`: one save of each old shape.
+
+## [1.866.0+902]
+
+### Changed
+- **One healing rule for the fight and the simulator** (round 3, item C, the
+  user's pick): `lib/combat/heal_rules.dart` (`healDealt`, `healFeedsFire`)
+  says what a heal heals, whatever it comes from (a die's Heal face, a
+  spell, a potion), in one place: the Anvil-Deaf's wall, the shrine, the
+  ground's rule, the fatigue (never a potion's or the cleric's), and what
+  feeds the Watchfire. The fight screen's three heal paths and the
+  simulator's three call it, instead of five copies of it.
+- The one difference it found: in the simulator, the cleric's spell heals
+  skipped the ground's rule (desert heat, rising water, sanctified ground);
+  on the screen they never did. They now go through it in both.
+- `test/heal_rules_test.dart`: each source against each step.
+
+## [1.865.0+901]
+
+### Changed
+- **The Tower's bag holds 5 potions, and no chest is empty** (round 3,
+  item B, the user's pick):
+  - what a chest gives past a full bag is drunk at once (each heals the
+    story's potion, 8);
+  - the Tower's chest draws a gold pouch's slot as a potion and a charm's
+    or a tome's as gear (`rollLootBox(gearAndPotionsOnly:)`; the story's
+    chest is unchanged): 15.5% of floors gave nothing before.
+- Balance kept (1,500 seeds): no unlocks, median 17, top 10.6%; every
+  unlock, median 19, top 19.3%. Every foe at `towerFoeScale` 1.02 (was
+  0.95), the cleric's at 1.28 (was 1.35).
+
+## [1.864.0+900]
+
+### Changed
+- **The Tower's engine, lighter** (round 3, item A; the game plays the same):
+  - the bot builds each step's hero once and hands it on (`towerPick`,
+    `towerStatPickOffer`, `towerTakeStatPick` and `towerAfterFight` take
+    the hero, the drawn offer or the max health already at hand):
+    rebuilds per floor 7.2 to about 4, the bot about 20% faster, its 300
+    test runs giving the same runs to the byte;
+  - the cards nothing deals since v1.860 are gone: the heal, item and
+    clan-gift draws, `towerRewardWeights`, `towerOfferSize`,
+    `towerHealShare`, `towerBigHealShare`, `towerHealFloor`,
+    `towerItemRarities` and the bot's branches for them (an old save's
+    waiting card still applies).
+
+## [1.863.0+899]
+
+### Changed
+- **The Skills tab's tree is the banner version again** (the user's call: "revert
+  the skill to the banner interface, the previous one didn't accept this").
+  The sky of constellations of v1.619 is gone: the branches are columns of
+  rings again, each unknown skill with its offering clan's small banner on
+  its ring, the clan's name under it. `skill_tree_view.dart` is the v1.618
+  file; `star_chart.dart`, its tests and its `star_*` strings are deleted.
+- The branch header keeps #651's promise in French: the name shrinks to its
+  column ("Avant-garde" at 320 px) and the count `2/4` stays whole under it.
+  The scrollable Skills tab bar of #655 stays.
+- The Mastery cost under each column reads "Mastery" over its cost and shrinks
+  to the column, so French no longer breaks "d'essence" mid-word at 320 px.
+- `test/skill_tree_test.dart` reads the banner again; the `skills_star_chart`
+  smoke case is now `skills_tree`; `skills_fr_layout_test` checks the counts
+  under `branch_count_*`. Pictures: `docs/ux-shots/skills-banner-restored/`.
+
+## [1.862.0+898]
+
+### Changed
+- **The Tower is created on the main game's own screen** (step 4 of "the
+  main game's earning offers"): Climb opens the Race & Profession screen
+  (`RaceProfessionScreen(locks, onChosen)`), the callings not yet bought
+  padlocked with "Bought with marks: 15" (Cleric) / "25" (Ranger). The story's
+  clan discs, counts and "will court you" lines are hidden for the Tower
+  (`showClans`), the hint reads "Who climbs the Tower?", and there is no name,
+  look or origin memories. The pick goes to `TowerController.start`; the story
+  save is never written.
+- The start screen's own people/calling lists are gone.
+- `test/tower_screens_test.dart` follows the new flow and checks the story
+  session is untouched; pictures in `docs/ux-shots/tower/create/`.
+
+## [1.861.0+897]
+
+### Changed
+- **The Tower shows its spoils** (step 3 of "the main game's earning
+  offers"): after the Level Up, every floor won opens the main game's spoils
+  sheet (`LootSheet`, no gold) beside the ladder: the potions and antidotes
+  the bag gains, each item with what becomes of it. Take goes on to the boon
+  (floors 5, 10, 15, 20, 25) or the oath, and straight to the next floor when
+  no card is on offer. An empty chest says so.
+- `LootSheet.showHandle` (default true: the story's sheet is unchanged).
+- `test/tower_climb_test.dart` takes the sheet first; the picture test draws
+  it (`docs/ux-shots/tower/spoils/`).
+
+## [1.860.0+896]
+
+### Changed
+- **The Tower pays the main game's way** (the user's call, step 2 of "the
+  main game's earning offers"):
+  - every floor won drops the story's spoils chest (its gear and potions,
+    never its gold); the gear is worn when better, the potions go in a bag
+    carried from floor to floor on top of the flask;
+  - floors 5, 10, 15, 20 and 25 offer a boon: a skill, a die or a spell,
+    one to take;
+  - a clan's oath still comes after the spoils (always on the first floor
+    won, then on 35% of the other floors); many floors offer nothing;
+  - no more heal, item or clan-gift cards.
+  - `towerSpoilsFor`, `TowerRun.spoils` / `potions` / `antidotes`,
+    `towerBoonFloors`; `TowerFightSession` reports the potions left.
+- Balance (1,500 seeds): no unlocks, median 17, top 10.2%; every unlock,
+  median 18, top 15.7%. An unlock is `towerHealthPerUnlock` .04 more health
+  (was .02); the ranger's foes at .88, the rogue's at 1.04. QA's floor-20
+  bound to 20%.
+
+## [1.859.0+895]
+
+### Fixed
+- **A cleric's Mending Light now feeds the Watchfire** (the user's bug: "the
+  watchfire countdown doesn't accumulate"). A spell's heal past full feeds
+  the fire as a die's heal does, in the story's fights, the Tower's and the
+  playthrough simulator. Only what heals past full feeds it, so a Mending
+  Light on a wounded member still leaves the fire as it was.
+- `test/qa_mending_light_watchfire_test.dart`.
+
+## [1.858.0+894]
+
+### Changed
+- **The Tower opens the main game's Level Up after a floor that gains a
+  level**, before the cards (step 2 of "the main game's earning offers"):
+  `TowerLevelUpSession(run, data).wrap(LevelUpScreen())`, the run saved
+  afterwards. A saved run reopened with picks waiting does the same once.
+- `test/tower_climb_test.dart` goes past the Level Up; the picture test
+  draws it (`docs/ux-shots/tower/levelup/`).
+
+## [1.857.0+893]
+
+### Changed
+- **The Tower's level-up is the main game's** (the user's call, step 1 of
+  "the main game's earning offers"): each level gained puts the main
+  game's stat pick on the table (three offers, one rarity, drawn from the
+  run's seed) and the player takes one, as in the story; no more point
+  given to the damage stat.
+  - The run holds the picks (`TowerRun.statPicks`); `towerPendingPicks`,
+    `towerStatPickOffer`, `towerTakeStatPick`; the hero replays them.
+  - `TowerLevelUpSession` runs the main game's Level Up screen on the
+    Tower hero (a detached session: the story save untouched).
+  - A pick still waiting when the floor's cards are taken goes to the
+    calling, so the climb never stalls; an old save keeps its points.
+  - The bot takes its picks as the story's bot does.
+- Balance: every Tower foe at `towerFoeScale` 0.95 of its floor's extra,
+  so the climb stays as hard as at 1.855 (1,500 seeds: no unlocks, median
+  17, top 10.7%; every unlock, top 16.3%).
+- `test/tower_level_up_test.dart`.
+
+## [1.856.0+892]
+
+- **The Tower's oaths, on screen** (Core's oaths, v1.855): the start screen takes a people and a calling only (no clan to pick); a clan's oath is a card among the rewards: its banner, "The Salt Crows offer you their oath", what swearing gives (their standing, and their die by name) and a Swear button (leaving them all is still the mark); the floor screen shows the clans sworn so far ("Unsworn" before the first, the main clan marked when there are several); the marks screen words the three clan unlocks "Can be offered: the Salt Crows." and so on. Also: a die's card no longer shows its raw id in English ("lantern_die" is "Lantern Die").
+
+## [1.855.0+891]
+
+### Changed
+- **The Tower's clans offer their oaths** (the user's call): no clan is
+  chosen at the start; a clan offers its oath among the cards on the way
+  up (`TowerRewardKind.clanOath`). Always on the first floor won, then on
+  35% of the offers while a clan of the run's pool is left; one oath an
+  offer at most; refused, the usual mark. Several clans may be sworn.
+  - Sworn, the hero owns the clan's die at once, and stands at Friend with
+    the clan in the fight. The first clan sworn is the main one (the
+    story's rules: its die resonates, the others roll plain).
+  - The clan's gift (a stat point) is offered only once a clan is sworn.
+  - The clan unlocks (Salt Crows, Grey Vigil, Cinder Compact) now let the
+    clan be offered (`TowerRun.clanPool`, from `TowerProgress.clans`).
+  - An old save sworn at the start keeps its clan.
+- Balance (1,500 seeds): no unlocks, median 17, floor 20 34.7%, top 10.5%;
+  every unlock, top 16.5%. The clans' spread is gone (each 10–11% top as
+  the main clan). QA's floor-20 band is now 25–38% (34.4% to 36.8% over
+  the 500 guard seeds).
+- `test/tower_oaths_test.dart`; `docs/proposals/tower-mechanics.md` has the
+  rules.
+
+## [1.854.0+890]
+
+### Changed
+- **Every move wears its tag** (the user's call): a way's price, check or
+  fight now shows where the way is, not only on a card:
+  - on its name on the map (the place view's plaque, the street's pin:
+    scene 125's "Get up and go home" says 15, 35 or 70 gold);
+  - on its row under the town chart (a place with one way wears that
+    way's tag: "The loading crane · Strength DC 13");
+  - on the panel of the way picked.
+  The chip is the cards' own (`ChoiceTagChip`, choice_card.dart).
+- **A move that pays, checks or fights is a mark, not a card**, in a place
+  drawn with no plan: a way that walks or travels somewhere stays on the
+  map with its tag, even when it has a price, a roll or a fight on the way
+  (the Sleeper's Face: "Slip past them in the dark", "Take back what they
+  stole"; the Stone Bridge's "Refuse and fight"). What is done where the
+  party stands stays a card, and so does a decision that weighs on the
+  conscience (choice_shape's `decide`). On a town's chart such a move stays
+  a card, now with its tag on its row too: there a way into a district not
+  yet found would stand in its fog (the wharf's docks fight, 2011).
+- Tests: `qa_journey_move_tags_test.dart` (125's price on its pin and its
+  row), `qa_journey_move_pins_test.dart` (1140's moves are pins, a fight
+  tag on them); journey_choice_cards_test follows the new rule. Before and after pictures in
+  `docs/ux-shots/journey-moves/` (`test/ux_journey_moves_shot_test.dart`).
+
+## [1.853.0+889]
+
+- **The town chart** (the district view of a town or village): a district is framed with room for what hangs over it (the banners above their buildings, the names under them), so a way's banner is never cut by the frame (White Wells' "pool at night"); and the building names are placed one after another in the first clear spot (under, right, left, a row lower), clear of each other, of the banners, of the service pins and of the edge, long names on two lines. A name with no clear spot is left off (the list under the chart names every way); the way picked always keeps its name. Rimewell, Greyhithe, Wrack's End, Highhearth, Emberwick and Akagiri no longer pile their names on each other.
+
+## [1.852.0+888]
+
+- **The story node editor** (Edit Mode): the "Destination node", "Fail destination" and "Lose destination" fields take the width they are given and cut a long node id with an ellipsis; the longest id of the story (37 characters) overflowed the first one by 22 px at 412 px. Layout only.
+
+## [1.851.0+887]
+
+### Fixed
+- **The White Wells' road south is on the map** (QA's hand test of 1.846,
+  scene 1200). The "Go south…" ways lead to a departure scene still told at
+  the Wells (1000, 1001, 1002), so they read as things done on the spot:
+  behind the hand badge, with the chart opened on the whole village and no
+  way on it.
+  - A choice's `place` may now be `out`: a way out of the town, ending where
+    its departure scene's one way goes (`wayOutEndOf`, choice_shape.dart).
+    `choiceShape`, `placeOfWay` and the Journey read it, so the way south is
+    a journey to Saltmouth's landward gate, not an action here. The three
+    1200 ways carry it.
+  - A village hub told at the village itself stands at its hub district
+    (`partyDistrictProvider` falls back on the scene's stop): the chart
+    opens on the Pool, both ways banners on it.
+  - 1200's page now keeps its way back to the map (first_journey_test's
+    list, on purpose).
+- `test/qa_white_wells_way_out_test.dart` guards it; before and after
+  pictures in `docs/ux-shots/journey-moves/`
+  (`test/ux_white_wells_shot_test.dart`).
+
+## [1.850.0+886]
+
+- **The Tower's climb** (phase 3b): the floor screen with B's vertical ladder beside A's panels (the band, the floor's title, the foes with their affixes, a red band and the boss's line on the warden and boss floors, the health), Fight over Core's Tower fight session (no retreat; Back before the first roll leaves the floor as it was), the cards of a won floor (take one, or leave them all for a mark), the end of a run on a loss or at floor 30, and Continue the climb from the save. The Tower entry is on the main menu for everyone, below Edit Mode. English and French from Narrative's names note (the 30 floor titles, the three boss lines).
+
+## [1.849.0+885]
+
+### Added
+- **The Tower's fight, apart from the story** (for UX-2's floor screen):
+  - `TowerFightSession(run, data)` (`lib/providers/tower_fight_session.dart`)
+    wraps the FightScreen in a ProviderScope whose hero is the Tower's
+    (`towerSessionOf`, `lib/data/tower/tower_session.dart`). The hero
+    carries the run's race, profession, level, health, dice, skills,
+    spells, gear and potions, and its clan at Friend.
+  - Whatever the fight does to the hero stays in that session: a new
+    `PlayerSessionNotifier.detached` never reads or writes the story save.
+  - `fight.after(run, won:)` takes the fight's result and the health it
+    left through `towerAfterFight`.
+- **No retreat in the Tower**: a floor's fight, once begun, is won or lost
+  (`_canRetreat` is false under `EncounterModifiers.tower`). Back before
+  the first roll still leaves, and FightScreen pops null: the floor was
+  not fought.
+- `test/tower_fight_session_test.dart` opens a fight under it with a story
+  save in place, and checks that the save is untouched.
+
+## [1.848.0+884]
+
+### Changed
+- The Tower's balance, from QA's batch (#834) and the user's calls (numbers
+  only, `lib/data/tower/tower_tables.dart`):
+  - **Foes per profession:** mage ×0.65, cleric ×1.35, the others ×1
+    (Tower only; `TowerFloor.modifiersFor(professionId)`). The mage was
+    winning the top 1 run in 100, and the cleric half the runs with every
+    unlock.
+  - **Wardens and bosses are gates:** wardens ×1.9; bosses 10 ×1.7, 20
+    ×1.25, 30 ×1.1.
+  - **Unlocks give power:** +2% max health for each unlock owned at the
+    start, and +1 potion per fight for every 5 (`TowerRun.unlocksOwned`).
+- The bot over 1,500 seeds: with no unlocks, median floor 17 and the top
+  won 10.1%; with every unlock, the top won 19.6%. Professions now win
+  9–11% with no unlocks.
+- The overall difficulty is unchanged, as the user asked. Clans and
+  Voidkin are left to the user's hand test.
+
+## [1.847.0+883]
+
+- **The Tower's door and screens, without the climb** (phase 3a; shown in Edit mode only until the climb is in): "The Tower" on the main menu, the start screen (a people, a calling and a clan, the ones not bought yet locked, marks and best floor, Continue when a run is under way), the marks and unlocks screen (the ten unlocks, Buy and Owned), and the end of a run (floor, marks earned and total). A run can be started and left from a stand-in floor page; the floor itself, the ladder and the cards come in the next release. English and French from Narrative's names note; the Tower keeps its own save and never touches the story's.
+
+## [1.846.0+882]
+
+- A road the story crosses on foot (the Dune Sea road and the other long land routes) is one trip now: the chart flight only sets the party out (two seconds at most, it used to run to the far place), and the crossing rises over the chart from the top, scene first, in 420 ms, instead of a new page that set out again from day 1. Turning back lowers it the same way; with reduced motion it is there at once.
+
+## [1.845.0+881]
+
+### Added
+- **The Tower's engine** (phase 1, headless; no screens yet), in
+  `lib/data/tower/`, following `docs/proposals/tower-mechanics.md`:
+  - **The run** (`TowerRun`): its seed, race, profession and clan, the
+    floor, the health, the cards taken, and the cards on the table. Its
+    moves are `towerStart`, `towerAfterFight`, `towerPick` and
+    `towerAbandon`. The hero is rebuilt from the run (`towerHeroOf`), so
+    the save holds no character.
+  - **30 seeded floors** (`towerFloorsFor`): the budget table, a pool of
+    ordinary foes per chapter, wardens on 5, 15 and 25, and Narrative's
+    bosses on 10, 20 and 30 (the Legate's Champion, Hesk Morrow, the
+    Sovereign). The same seed always gives the same tower.
+  - **The cards** (`towerOfferFor`): 3 of different kinds (item, die,
+    skill, spell, heal, clan gift), never gold, with a heal always among
+    them below 40% health.
+  - **Marks and unlocks** (`TowerProgress`): 1 a floor, 2 a warden, 5 a
+    boss, 15 the top (61 for a win), and +1 for refusing an offer.
+    Narrative's ten unlocks cost 210 marks in all.
+  - **Its own save** (`TowerSave`): the keys `tower_run_v1` and
+    `tower_marks_v1`. Deleting the story saves never touches them.
+  - **The fight without a scene**: a new setting,
+    `EncounterModifiers.tower`, gives no chest, no gold or XP, no threat
+    and no weather, and tells nothing to a scene. Each floor's settings
+    are `TowerFloor.modifiers`.
+  - **The bot** (`playTowerRun`, `playTowerBatch`) plays whole runs on the
+    headless fight in about 10 ms each. Over 500 seeds with no unlocks,
+    the median run reaches floor 16, 30% reach floor 20 and 9.6% win the
+    top (18.8% with every unlock).
+- The headless fight takes a fight's own multiplier on the curve
+  (`simulateSimFight(zoneMultiplier:)`), as the fight screen does. It
+  defaults to 1.0, so the simulator's existing runs are unchanged.
+
+## [1.844.0+880]
+
+- Skill icons: the last pair that shared a gem gets its own glyphs: Disorienting Pulse a ringed eye, Warrior Shield Bash a shield. No skill shares a gem any more.
+
+## [1.843.0+879]
+
+- Skill icons: two more pairs that shared a gem each get their own glyph: Rogue Backstab a dagger, Void Drain a funnel, Plague Bite a skull, Voidkin Entropy Touch fading dots.
+
+## [1.842.0+878]
+
+- Skill icons: the Electricity pair and the Fire pair that shared a gem each get their own glyph: Adrenaline Surge a bolt, Mage Arcane Missile a dart, Dwarf Forgeheart a hammer, Orc Bloodlust a set of fangs.
+
+## [1.841.0+877]
+
+- Skill icons: the two Water pairs that shared a gem each get their own glyph: Cleric Holy Light a cross, Mage Frost Nova a snowflake, Cleric Purify a drop, Elf Moonlight Step a crescent moon.
+
+## [1.840.0+876]
+
+- Skill icons: the 3 warding skills on the grey shield each get their own glyph: Cleric Sanctuary an arch, Iron Will an anvil, Mage Mana Shield a spark.
+
+## [1.839.0+875]
+
+- Skill icons: the 3 healing skills on the blue gem each get their own glyph: Bind Wounds a bandage, Mending Touch a hand over a spark, Quick Heal a cross with speed marks.
+
+## [1.838.0+874]
+
+- Skill icons: the 4 rallying skills each get their own glyph on the grey gem: Rallying Cry a banner, Rallying Shout a horn with sound waves, Warrior Rally Cry a raised blade with rays, Rogue Quick Pockets a pouch.
+
+## [1.837.0+873]
+
+- Skill icons, the second-chance skills on the grey diamond: Cleric Revive
+  Prayer (a halo over a cross), Human Resolve (a fist), Second Chance (a heart)
+  and Second Wind (a breath) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/resolve.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/resolve-before-after.png`.
+
+## [1.836.0+872]
+
+- Skill icons, the void school on the violet diamond: Mage Teleport Strike (a
+  blink), Void Blast (an orb with a dark heart), Void Gathering (motes drawn
+  in) and Voidkin Starless Gaze (an eye with a dark pupil) each had the same
+  blank gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/void.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/void-before-after.png`.
+
+## [1.835.0+871]
+
+- Skill icons, the earth school on the green diamond: Dwarf Hammer Blow (a
+  mallet), Ranger Camouflage (a leaf), Ranger Trap Set (a trap's teeth) and
+  Rogue Poison Blade (a drop) each had the same blank gem; each now has its own
+  7x7 cream glyph on it. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth.png`, stored by `tool/png8.py`. Picture:
+  `docs/ux-shots/skill-glyphs/earth-before-after.png`.
+
+## [1.834.0+870]
+
+- Skill icons, the earth school on the shield-shaped gem: Brace (two planted
+  legs), Bulwark Stance (a wall), Dwarf Stoneskin (a boulder), Stone Resolve (a
+  mountain) and Warrior Iron Stance (an anvil) each had the same blank green
+  shield; each now has its own 7x7 cream glyph on it, set higher where the
+  shield has room. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/earth_shield.png`, stored by `tool/png8.py`. Also fixes the
+  generator itself: merge conflict markers had been left in it by v1.833
+  (it did not run; the shipped icons are unaffected). Picture:
+  `docs/ux-shots/skill-glyphs/earth-shield-before-after.png`.
+
+## [1.833.0+869]
+
+- Skill icons, the wind school: Elf Arcane Focus (a four-point star), Elf Keen
+  Eye, Ranger Aimed Shot (an arrow), Ranger Multi Shot (three), Rogue Shadow
+  Clone (a ghost) and Steady Aim (a crosshair) each had the same blank teal
+  gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/wind.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/wind-before-after.png`.
+
+## [1.832.0+868]
+
+- Skill icons, the fire school: Cleric Smite (a bolt), Fireball, Inner Fire (a
+  flame), Mage Meteor, Molten Backlash, Orc Berserk Rage (a snarling face), Pack
+  Howl (a crescent moon) and Warcry (the sound of it) each had the same blank
+  orange gem; each now has its own 7x7 cream glyph on it. Drawn by
+  `tool/gen_skill_glyphs.py` on `tool/skill_gems/fire.png`, stored by
+  `tool/png8.py`. Picture: `docs/ux-shots/skill-glyphs/fire-before-after.png`.
+
+## [1.831.0+867]
+
+- The spoils sheet, wired (design C, the user's pick): once the chest is open
+  and every drop shown, the loot dialog gives way to the full-height sheet: the
+  chest and its rarity, "What the spoils change" (gold 126 to 144, Antidote
+  x1 to x2, the Knucklebone's rolls a round, health from a potion drunk, a
+  spell learnt, stat points, clan offers) from the engine's own numbers
+  (`lootChanges`, v1.830), each drop's text with its switch to put it on or
+  drink it (the same choices as before), the fortune roll, and Take. A value
+  several rewards move shows from the first before to the last after; gear
+  and a spellbook already known add no line. The fight passes the dialog the
+  whole loot (`SpoilsSheetData`), not only the chest's. Without it the dialog
+  is as it was. Strings `loot_line_*`. Tests: `loot_sheet_wiring_test.dart`.
+
+## [1.830.0+866]
+
+### Added
+- The engine can say what each reward of a loot changes, for the spoils
+  sheet of design C (`lib/data/loot_changes.dart`, `lootChanges`). For each
+  reward it gives a before and an after for each thing that moves:
+  - gold;
+  - healing potion and antidote charges;
+  - the copies of a charm, material or trophy in the bag;
+  - dice rolls a round (the Gambler's Knucklebone);
+  - health, for a potion drunk from the chest;
+  - a spell learnt, a stat point (Tome of Insight) or an offer (Tome of
+    Mastery).
+
+  Gear is shown as "nothing to count". The numbers come from the code that
+  applies the loot (`lootGrantOf`, now shared with `applyCombatResult`,
+  and the fight's own rolls and potion heal), so the sheet can't say
+  something taking the loot doesn't do. `test/loot_changes_test.dart`
+  checks that every "after" is what taking the loot leaves. No screen
+  changes yet: UX-2 wires the sheet.
+
+## [1.829.0+865]
+
+- Skill icons, the martial school: the 17 martial skills (Power Strike, Heavy
+  Attack, Heavy Windup, Battle Trance, Final Stand, Focus Mind, Guard Break,
+  Human Diplomacy, Human Quick Study, Improvised Strike, Lucky Strike, Orc
+  Savage Cleave, Precision Thrust, Ruthless Edge, Warrior Execute, Warrior
+  Whirlwind, Zealous Conviction) shared one blank grey gem; each now has its
+  own 7x7 cream glyph on it (a sword, a hammer, an axe, a spiral, a flag, an
+  eye, a broken shield, a speech bubble, a book, a club, a star, claw marks,
+  a spear, a dagger, a skull, a whirl, a sun). The frame keeps the school;
+  the glyph carries the skill. Drawn by `tool/gen_skill_glyphs.py` on
+  `tool/skill_gems/martial.png`, stored by `tool/png8.py`. Pictures:
+  `docs/ux-shots/skill-glyphs/`. The other schools follow in their own
+  releases.
+
+## [1.828.0+864]
+
+- The spoils sheet, laid out (design C of `docs/proposals/loot-dialog-designs.md`,
+  the user's pick): `LootSheet` (`loot_sheet.dart`) is the post-fight loot as a
+  full-height sheet: the chest and its rarity, "What the spoils change" (gold
+  126 to 144, dice 1 to 2 rerolls a round, bag Antidote x1 to x2), each
+  reward's text with its "Use right away" switch, and one Take button that
+  stays at the bottom; it scrolls on a short phone. Three strings
+  (`loot_sheet_changes`, `loot_sheet_details`, `loot_use_now`). Nothing uses
+  it yet: it is wired to the chest and to the engine's before-and-after data
+  when that merges, so the game does not change. Picture:
+  `docs/ux-shots/loot/sheet-built-stub.png`. Test: `loot_sheet_test.dart`
+  (360 and 412 px, French and English, real fonts, no text under 11 px, the
+  switch and Take).
+
+## [1.827.0+863]
+
+### Fixed
+- Journey: a tap on the map no longer sets the party on the road by itself.
+  When a scene has one way, the game picks it for the player; a tap on its
+  mark (after "Back to the map", for example) now only confirms the pick.
+  Go, a second tap or a page card takes it. Before, the first tap took the
+  step, and a way to another place rolled its detour (1101_scarred).
+  `test/journey_auto_pick_test.dart` guards it.
+
+## [1.826.0+862]
+
+- Fights on the road: the fight is dressed with the land it is met on. A fight
+  fought during a land crossing (the scavengers) now has the side-view land
+  behind its cards: the world camera's kit at the party's place (or, on a
+  road the camera does not paint, the route's own terrain in today's window),
+  across the upper half of the screen and faded softly into the stage's ground,
+  standing still. Fights met anywhere else (the Journey, the story, a
+  hunt) are unchanged. `FightScreen.landLayers`; the backdrop's
+  `_buildLand` in `fight_ground.dart`. Picture:
+  `docs/ux-shots/fight-land/before-desert-ruins.png` (no land, desert, ruins).
+  Tests: `fight_board_test.dart` (the land is behind a fight given one),
+  `land_crossing_test.dart` (the road's fight is given it).
+
+## [1.825.0+861]
+
+- Journey: the map is back for every scene with a choice to make, as before
+  v1.809. A room's ways are spots on its plan again (the Blind Beggar's
+  tables and doors, the family house, Kindly Hill: 28 scenes had lost
+  them), and the party walks to the one picked. Only a scene with nothing to
+  choose, its one way leading on in the same place, still goes on with no
+  map (its way a card on the page). A way to another district of a town is
+  walked on the town's chart: the party's mark crosses the streets to it.
+
+## [1.824.0+860]
+
+- Fight: the aim line of a picked die is no longer cut off at the dice board.
+  It ran from the die up toward its target but was clipped to the board's own
+  box, so it vanished under the party and enemy cards; it now draws over the
+  cards and ends on the edge of the target card that faces the die (not on
+  its middle, which hid the health and name). Same for a heal or a defence
+  aimed at an ally. Pictures: `docs/ux-shots/fight-aim/` (360 and 412 px,
+  before and after). Test: `fight_board_test.dart` (the line is not clipped
+  and ends on the target card's edge, above the board).
+
+## [1.822.0+858]
+
+- Crossings: the camera travels. On a road the world camera paints (v1.821),
+  the land no longer dissolves from one day to the next: the camera pans
+  along the road from the day's place to the next's over 1.1 s (a cut with
+  reduced motion), crossing the dithered seam where two regions meet, and
+  the window's landmark fades out and in as it passes. The kits' world is
+  now scrolled continuously to the place (`withSceneAt`, `layersAt(x)`),
+  where a window used to be a discrete step. Crossings on roads too long for
+  the camera (the sea cliffs') and every other scene still use the windows
+  and the dissolve. Not yet: the map's flight along the road still ends in
+  a screen change to the crossing; folding that hand-off into the same
+  travel needs the Journey's map to give up its scene. Picture:
+  `docs/ux-shots/camera/crossing-travel.png`. Tests: `scene_windows_test.dart`
+  (the land pans with x, no jump at a window border; the landmark shows or
+  not), `crossing_strip_path_test.dart` (the camera travels to the next day).
+
 ## [1.821.0+857]
 
 - Crossings: a land crossing's scene is now painted by the world camera

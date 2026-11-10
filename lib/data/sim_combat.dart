@@ -21,6 +21,7 @@ import 'character_start.dart';
 import '../combat/squad.dart';
 import '../combat/fight_numbers.dart';
 import '../combat/gear_effects.dart';
+import '../combat/heal_rules.dart';
 import '../combat/heal_target.dart';
 import '../combat/strike_damage.dart';
 import '../combat/spells.dart';
@@ -83,7 +84,7 @@ part 'sim_combat/sim_spell_cast.dart';
 /// How each profession's simulated build shares its picks (ability ->
 /// share of the points): mostly the damage stat, some Constitution, and
 /// what else the profession leans on (stat_rules.dart).
-const Map<String, Map<String, double>> _simBuildShares = {
+const Map<String, Map<String, double>> simBuildShares = {
   'warrior': {'strength': .6, 'constitution': .3, 'perception': .1},
   'rogue': {'dexterity': .6, 'perception': .1, 'luck': .1, 'constitution': .2},
   'ranger': {'dexterity': .6, 'perception': .15, 'constitution': .25},
@@ -543,7 +544,7 @@ class SimCharacter {
         bannedPaths: roll?.banned(RollBanOn.pick) ?? const {},
       );
       if (offer.isEmpty) return;
-      final shares = _simBuildShares[professionId] ?? {preferredStat: 1.0};
+      final shares = simBuildShares[professionId] ?? {preferredStat: 1.0};
       int choose(List<StatPickOffer> o) =>
           statPickForShares(o, shares, pickedPoints);
       if (roll != null) {
@@ -866,6 +867,67 @@ class SimCharacter {
     buyPotions(_potionsStocked);
     return purse;
   }
+
+  /// A copy of this character, field by field (v1.880): the Tower builds
+  /// its hero once a floor and goes on from the copy (towerHeroOf), not
+  /// from scratch. Its lists, sets and maps are its own; what they hold
+  /// (a die's faces, a spell, a sign) is shared, as nothing changes those
+  /// in place. [pickRandom] and [rolls] are shared too: a Random can't be
+  /// copied (the Tower never draws from it). `test/sim_character_copy_test`
+  /// fails when a field is added here and not to this copy.
+  SimCharacter copy() => SimCharacter._(
+        raceId: raceId,
+        professionId: professionId,
+        preferredStat: preferredStat,
+        maxHealth: maxHealth,
+        baseDamage: baseDamage,
+        baseArmor: baseArmor,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence,
+        wisdom: wisdom,
+        luck: luck,
+        charisma: charisma,
+        perception: perception,
+        diceFaces: List.of(diceFaces),
+        diceSkillAssignments: Map.of(diceSkillAssignments),
+        unlockedSkillIds: Set.of(unlockedSkillIds),
+        knownSpells: List.of(knownSpells),
+        potions: potions,
+        startingGold: startingGold,
+      )
+        ..level = level
+        ..xp = xp
+        ..currentHealth = currentHealth
+        ..mana = mana
+        ..equippedBySlot.addAll(equippedBySlot)
+        ..policy = policy
+        ..ownedItemIds.addAll(ownedItemIds)
+        ..diceId = diceId
+        ..ownedDice.addAll({
+          for (final MapEntry(:key, :value) in ownedDice.entries)
+            key: List.of(value),
+        })
+        ..dieTrial = dieTrial
+        .._dieFailedAt.addAll(_dieFailedAt)
+        ..statusEffects = List.of(statusEffects)
+        ..heldSigns = List.of(heldSigns)
+        ..specIds = List.of(specIds)
+        ..trainingPaths = trainingPaths
+        ..pickRandom = pickRandom
+        ..trainingTaken.addAll(trainingTaken)
+        ..rolls = rolls
+        ..signMaxMana = signMaxMana
+        ..fightsWon = fightsWon
+        ..fightsLost = fightsLost
+        ..roundsFought = roundsFought
+        ..potionsUsed = potionsUsed
+        ..manaGained = manaGained
+        ..spellsCast.addAll(spellsCast)
+        ..spellbooksBought.addAll(spellbooksBought)
+        ..alignmentLabel = alignmentLabel
+        ..pickedPoints.addAll(pickedPoints);
 }
 
 /// The potion charges the competent player keeps before buying gear, and
@@ -883,6 +945,7 @@ class SimFightOutcome {
     required this.potionsUsed,
     this.phasesEntered = 0,
     this.goldStolen = 0,
+    this.healedBy = const {},
   });
 
   final bool won;
@@ -900,6 +963,15 @@ class SimFightOutcome {
   final int potionsUsed;
 
   int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
+
+  /// What the hero's heals healed this fight, by source (v1.874, for QA's
+  /// heal-rule guards): the heal rule's amounts (heal_rules.dart), before
+  /// full health caps them; a lost fight's too (its hero is then refilled).
+  final Map<HealSource, int> healedBy;
+
+  /// All of [healedBy], and the spells' share of it.
+  int get healed => healedBy.values.fold(0, (a, b) => a + b);
+  int get spellHealed => healedBy[HealSource.spell] ?? 0;
 }
 
 // The fight screen's own numbers (fight_numbers.dart).
@@ -914,6 +986,9 @@ const int _maxRolls = maxRollsPerTurn;
 /// a loss; XP and gold are the caller's to grant on a win. [signs] is what
 /// the character's held signs add up to (see signEffectsFor): lent for
 /// the fight and taken back when it ends; [perks] what the perk ranks do.
+/// [zoneMultiplier] is the fight's own multiplier on the curve, as the
+/// fight screen's `EncounterModifiers.difficultyMultiplier` (a Tower floor's
+/// extra).
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -932,6 +1007,7 @@ SimFightOutcome simulateSimFight({
   ContextRule? context,
   Reinforcement reinforcement = Reinforcement.none,
   List<SimAlly> allies = const [],
+  double zoneMultiplier = 1.0,
 }) {
   final fight = _SimFight(
     c: character,
@@ -951,6 +1027,7 @@ SimFightOutcome simulateSimFight({
     context: context,
     reinforcement: reinforcement,
     allies: allies,
+    zoneMultiplier: zoneMultiplier,
   ).._setup();
   return fight.run();
 }

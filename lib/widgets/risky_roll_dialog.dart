@@ -10,6 +10,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'd20_roll.dart';
+import '../theme/motion.dart';
 
 /// The odds of a risky card as a bar: the gift's share, then the price's,
 /// each with its percentage. [luck] is the character's Luck (see
@@ -121,7 +122,7 @@ class _RiskyRollDialogState extends State<_RiskyRollDialog> {
           ),
           const SizedBox(height: 10),
           AnimatedOpacity(
-            duration: const Duration(milliseconds: 250),
+            duration: Motion.base,
             opacity: _landed ? 1 : 0,
             child: Column(
               mainAxisSize: MainAxisSize.min,

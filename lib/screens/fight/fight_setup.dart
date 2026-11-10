@@ -32,9 +32,10 @@ extension _FightSetup on _FightScreenState {
                 modifiers.forcedAffixes.isEmpty &&
                 _random.nextDouble() < _eliteChance));
     final session = ref.read(playerSessionProvider);
-    _threat = modifiers.isTest || modifiers.isZoneBoss || lesson
-        ? 0
-        : session.threatIn(ref.read(reachedChapterProvider));
+    _threat =
+        modifiers.isTest || modifiers.isZoneBoss || lesson || modifiers.tower
+            ? 0
+            : session.threatIn(ref.read(reachedChapterProvider));
     _light = _lightHere();
     // On the feature ladder no condition is rolled before the ambush at
     // 1140 (feature_unlocks.dart); a forced one stands.
@@ -44,7 +45,7 @@ extension _FightSetup on _FightScreenState {
             : rollBattlefieldCondition(
                 enemyCount: entries.length, random: _random, light: _light));
     // The day's sky over the party (v1.208): none for a lesson or a test.
-    _sky = lesson || modifiers.isTest
+    _sky = lesson || modifiers.isTest || modifiers.tower
         ? WeatherEffects.of(null)
         : WeatherEffects.of(ref.read(skyHereProvider)?.today().kind);
     _setTheGround(lesson: lesson);
@@ -307,7 +308,7 @@ extension _FightSetup on _FightScreenState {
     }
     // The mage's Ash Well starts every fight empty (profession_cores.dart).
     if (_core.core == ProfessionCore.ashWell) _mana = 0;
-    _maxRollsThisFight = _maxRolls + _perks.extraRolls;
+    _maxRollsThisFight = rollsPerRoundOf(session);
     _alignmentLabel = session.alignmentLabel;
     _partyBonus = partyBonusFor(
       bossDefeatCounts: session.bossDefeatCounts,
@@ -734,7 +735,7 @@ extension _FightSetup on _FightScreenState {
     for (final id in _armedCharmIds) {
       switch (id) {
         case 'charm_fourth_roll':
-          _maxRollsThisFight += 1;
+          _maxRollsThisFight += charmExtraRolls(id);
         case 'charm_lucky_coin':
           _luckyCoinArmed = true;
         case 'charm_iron_skin':

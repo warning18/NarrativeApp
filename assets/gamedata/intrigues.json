@@ -19,7 +19,7 @@
       {
         "stage": "Clue",
         "chapter": 1,
-        "text": "A Harbor informant is paid in Inquisition silver for anything the tide brings in from the tear.",
+        "text": "A Harbour informant is paid in Inquisition silver for anything the tide brings in from the tear.",
         "text_fr": "Au port, un indicateur est payé en argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure.",
         "npcId": "wharf_informant"
       },
@@ -521,7 +521,7 @@
       {
         "stage": "Clue",
         "chapter": 1,
-        "text": "A drunk White Fleet survivor at the Harbor says: “It wasn’t a storm.”",
+        "text": "A drunk White Fleet survivor at the Harbour says: “It wasn’t a storm.”",
         "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »"
       },
       {
