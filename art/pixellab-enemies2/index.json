@@ -1,0 +1,174 @@
+{
+ "date": "2026-11-10",
+ "note": "Next 8 enemies by priority; standard pose only, 60x60 west-facing side view, palette PNG8 (32 colours). Foot inset and bbox are for fight_sprites.dart _enemyFrames (size 60). Nothing wired.",
+ "items": [
+  {
+   "category": "enemy sprites",
+   "element": "tear_herald",
+   "today": "portrait head only: assets/visuals/heads/tear_herald.png",
+   "pixellab": "staged/tear_herald_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "tall gaunt herald of the void wearing many pale mask faces at once, tattered violet-grey robes, a crude patched banner sewn on its chest, a faint violet glow, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "boss, chapter 8, 260 xp: the Sovereign's answer to the crowning",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads as a hooded skeletal wraith; the many faces and the banner are not visible",
+   "art_bbox": [
+    21,
+    1,
+    46,
+    59
+   ],
+   "foot_inset_rows": 1
+  },
+  {
+   "category": "enemy sprites",
+   "element": "white_admiral",
+   "today": "portrait head only: assets/visuals/heads/white_admiral.png",
+   "pixellab": "staged/white_admiral_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "undead admiral in a long pale white naval coat with gold braid, tricorn hat, a rusted sabre, ghostly grey skin, tattered orders, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "boss (chapter 6), the White Fleet",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads very well",
+   "art_bbox": [
+    11,
+    1,
+    46,
+    60
+   ],
+   "foot_inset_rows": 0
+  },
+  {
+   "category": "enemy sprites",
+   "element": "bone_warden",
+   "today": "portrait head only: assets/visuals/heads/bone_warden.png",
+   "pixellab": "staged/bone_warden_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "skeleton guardian made of lashed bones bound with rope, a cracked skull helm, a bone halberd, old oath cords hanging, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "boss (chapter 4, fen), the sealed stair",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads as an armoured skeleton with rope; good",
+   "art_bbox": [
+    20,
+    3,
+    45,
+    57
+   ],
+   "foot_inset_rows": 3
+  },
+  {
+   "category": "enemy sprites",
+   "element": "inquisition_high_warden",
+   "today": "portrait head only: assets/visuals/heads/inquisition_high_warden.png",
+   "pixellab": "staged/inquisition_high_warden_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "Inquisition High Warden commander in heavy white and grey plate with a lantern emblem, a dark patch of Shroud cloth stitched on his back, grim, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "warden (tier 2, chapter 3), the vanguard commander",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads well; the Shroud patch on the back is not visible from this side",
+   "art_bbox": [
+    8,
+    3,
+    43,
+    57
+   ],
+   "foot_inset_rows": 3
+  },
+  {
+   "category": "enemy sprites",
+   "element": "void_hound",
+   "today": "portrait head only: assets/visuals/heads/void_hound.png",
+   "pixellab": "staged/void_hound_idle_west.png",
+   "size": "60x60",
+   "model": "create_image_pixen 60x60 (seed 21)",
+   "generations": 1,
+   "prompt": "a hound made of black smoke with sharp white teeth, violet glow in the eyes, snarling, 16-bit pixel art, flat colour with a dark ink outline, muted warm palette, side view facing west, no text, no UI",
+   "seed": 21,
+   "rank_reason": "most met: 23 data references, chapter 5 void",
+   "verdict": "retry before use",
+   "note": "NOT a full hound: the model drew a snarling wolf head and chest filling the whole canvas; it would need a retry (1 generation) to get a full body",
+   "art_bbox": [
+    3,
+    2,
+    60,
+    58
+   ],
+   "foot_inset_rows": 2
+  },
+  {
+   "category": "enemy sprites",
+   "element": "cultist_acolyte",
+   "today": "portrait head only: assets/visuals/heads/cultist_acolyte.png",
+   "pixellab": "staged/cultist_acolyte_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "novice void cultist in a plain dark violet hooded robe with a rope belt, hands raised in prayer, a small purple tear symbol, pale, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "18 data references, chapter 3 ashlands",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads well",
+   "art_bbox": [
+    14,
+    1,
+    41,
+    59
+   ],
+   "foot_inset_rows": 1
+  },
+  {
+   "category": "enemy sprites",
+   "element": "void_wisp",
+   "today": "portrait head only: assets/visuals/heads/void_wisp.png",
+   "pixellab": "staged/void_wisp_idle_west.png",
+   "size": "60x60",
+   "model": "create_image_pixen 60x60 (seed 21)",
+   "generations": 1,
+   "prompt": "a small floating mote of cold pale violet-blue light with a hungry flickering tail, 16-bit pixel art, flat colour with a dark ink outline, muted warm palette, side view facing west, no text, no UI",
+   "seed": 21,
+   "rank_reason": "17 data references, chapter 3",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads very well; one image only (no west/east distinction needed)",
+   "art_bbox": [
+    2,
+    9,
+    59,
+    49
+   ],
+   "foot_inset_rows": 11
+  },
+  {
+   "category": "enemy sprites",
+   "element": "hollow_reflection",
+   "today": "portrait head only: assets/visuals/heads/hollow_reflection.png",
+   "pixellab": "staged/hollow_reflection_idle_west.png",
+   "size": "60x60",
+   "model": "create_character v3",
+   "generations": 2,
+   "prompt": "dark shadow copy of a ronin in a wide straw hat, entirely grey-black and glassy, cold white eyes, jagged edges, void-touched, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+   "seed": "none (create_character takes no seed)",
+   "rank_reason": "15 data references, chapter 6, the Hollow Shore",
+   "verdict": "replace (adds a fight sprite)",
+   "note": "reads as a monochrome ronin: right idea",
+   "art_bbox": [
+    11,
+    2,
+    45,
+    59
+   ],
+   "foot_inset_rows": 1
+  }
+ ]
+}

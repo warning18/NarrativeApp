@@ -1,0 +1,36 @@
+{
+  "group_id": "bcca6892-dc4a-49bb-a597-055d17901d63",
+  "states": [
+    {
+      "character": {
+        "id": "db631f10-bc30-4fe9-9d7f-ca453d4e1a42",
+        "name": "Idle",
+        "prompt": "Inquisition High Warden commander in heavy white and grey plate with a lantern emblem, a dark patch of Shroud cloth stitched on his back, grim, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T21:48:29.220321+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T21:52:06.537545"
+}
