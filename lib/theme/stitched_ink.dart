@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ink_frames.dart';
 import 'palette.dart';
 
 /// "Stitched Ink", the app's look: a dark book you read, stitched to a
@@ -232,6 +233,11 @@ ThemeData buildAppTheme(ColorScheme scheme) {
   const radius = BorderRadius.all(Radius.circular(4));
   const shape = RoundedRectangleBorder(borderRadius: radius);
   final seamSide = BorderSide(color: scheme.outlineVariant);
+  // The Art pack's frames (v1.901): A panels and C buttons, from ink_frames.
+  final outline = inkOutlineFor(scheme.brightness);
+  final buttonShape = inkButtonShape(outline);
+  final cardShape =
+      InkPanelBorder(radius: 4, outer: outline, inner: scheme.outlineVariant);
 
   final base = ThemeData(
     colorScheme: scheme,
@@ -306,29 +312,26 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        shape: shape,
         padding: buttonPadding,
         textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
-      ),
+      ).copyWith(shape: buttonShape),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        shape: shape,
         backgroundColor: scheme.surfaceContainerHighest,
         foregroundColor: scheme.onSurface,
         padding: buttonPadding,
         textStyle: buttonText,
-      ),
+      ).copyWith(shape: buttonShape),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        shape: shape,
         padding: buttonPadding,
         side: BorderSide(color: scheme.outline),
         foregroundColor: scheme.onSurface,
         textStyle: buttonText,
-      ),
+      ).copyWith(shape: buttonShape),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(shape: shape, textStyle: buttonText),
@@ -349,7 +352,7 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       color: scheme.surfaceContainer,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
+      shape: cardShape,
     ),
     chipTheme: ChipThemeData(
       shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),

@@ -17,7 +17,7 @@ String towerBackdropAsset(int band) =>
     'assets/visuals/tower/tower_band${band.clamp(1, 3)}.png';
 
 /// How much of the page's colour lies over the picture.
-const double towerBackdropVeil = 0.8;
+const double towerBackdropVeil = 0.58;
 
 class TowerBackdrop extends StatelessWidget {
   const TowerBackdrop({super.key, required this.floor, required this.child});

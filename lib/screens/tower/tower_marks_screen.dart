@@ -7,11 +7,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
+import 'tower_look.dart';
 import 'tower_providers.dart';
 import '../../widgets/ink_panel.dart';
 
-class TowerMarksScreen extends ConsumerWidget {
+/// The marks and unlocks, in the Tower's night theme (its body below).
+class TowerMarksScreen extends StatelessWidget {
   const TowerMarksScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      const TowerNight(child: _TowerMarksBody());
+}
+
+class _TowerMarksBody extends ConsumerWidget {
+  const _TowerMarksBody();
 
   static const _groups = <(String, Set<TowerUnlockKind>)>[
     (

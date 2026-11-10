@@ -1,12 +1,15 @@
 // The panel and the small-caps label of the app's own look (promoted from the
-// Tower's screens, v1.871): the surface colour, a seam border and round
-// corners, with a gold edge when lit; a label over a group of panels.
+// Tower's screens, v1.871; v1.901: the A panel, a double ink line): the surface
+// colour, an outer ink line, an inner seam line and a stitch in each corner
+// (lib/theme/ink_frames.dart), with a gold inner line when lit; a label over
+// a group of panels.
 import 'package:flutter/material.dart';
 
+import '../theme/ink_frames.dart';
 import '../theme/stitched_ink.dart';
 
-/// A panel: the surface colour, a seam border and
-/// round corners, with a gold edge when [lit].
+/// A panel: the surface colour in a double ink line, with a gold inner line
+/// when [lit].
 class InkPanel extends StatelessWidget {
   const InkPanel({
     super.key,
@@ -29,11 +32,13 @@ class InkPanel extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final body = Container(
       padding: padding,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: scheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(10),
-        border:
-            Border.all(color: lit ? ink.gold : ink.seam, width: lit ? 1.6 : 1),
+        shape: InkPanelBorder(
+          radius: 10,
+          outer: inkOutlineFor(scheme.brightness),
+          inner: lit ? ink.gold : ink.seam,
+        ),
       ),
       child: Opacity(opacity: dim ? .5 : 1, child: child),
     );
