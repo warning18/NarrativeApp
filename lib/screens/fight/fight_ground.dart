@@ -12,24 +12,11 @@ extension _FightGround on _FightScreenState {
     return geography.placeOfNode(story?.nodeFor(play.currentNodeId))?.id;
   }
 
-  /// Where this fight is drawn: the scene's own stage when the choice names
-  /// one, else the stage the place the story stands at names (a hall for a
-  /// prison or a crypt), else a town's streets, else the pattern of the
-  /// land's biome, else open country.
-  FightStage _stageHere() {
-    final forced = widget.modifiers.forcedStage;
-    if (forced != null) return forced;
-    final geography = ref.read(geographyProvider);
-    final placeId = _placeIdHere();
-    final named = fightStageFromName(geography.placeStageNameOf(placeId));
-    if (named != null) return named;
-    // Open country has a few faces: the place picks one and keeps it.
-    return poolStageOf(
-        fightStageOf(geography.biomeOf(placeId)?.pattern,
-            town: guardedPlaceKinds
-                .contains(geography.locationOf(placeId)?.kind)),
-        placeId);
-  }
+  /// Where this fight is drawn (fight_ground_rule.dart): the scene's own
+  /// stage, the place's, a town's streets, the biome's, open country.
+  FightStage _stageHere() =>
+      fightStageAt(ref.read(geographyProvider), _placeIdHere(),
+          forcedStage: widget.modifiers.forcedStage);
 
   /// The light this fight is fought in (see place_traits.dart): the place's,
   /// else the day's.
@@ -75,21 +62,15 @@ extension _FightGround on _FightScreenState {
     );
   }
 
-  /// The rule this fight plays by its place and foe: the watch in a city,
-  /// a holy place's ground, the stage's own, the Tide where none applies or
-  /// a boss is fought.
-  ContextRule _contextRuleHere() {
-    final geography = ref.read(geographyProvider);
-    final placeId = _placeIdHere();
-    return contextRuleFor(
-      stage: _stage,
-      bossFight: widget.modifiers.isZoneBoss ||
-          widget._allEnemyEntries.any((e) =>
-              isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key)),
-      city: guardedPlaceKinds.contains(geography.place(placeId)?.kind),
-      holy: geography.tagsOf(placeId).contains('holy'),
-    );
-  }
+  /// The rule this fight plays by its place and foe (fight_ground_rule.dart):
+  /// the watch in a city, a holy place's ground, the stage's own, the Tide
+  /// where none applies or a boss is fought.
+  ContextRule _contextRuleHere() =>
+      fightGroundAt(ref.read(geographyProvider), _placeIdHere(),
+              forcedStage: _stage,
+              bossFight: isBossFight(widget._allEnemyEntries,
+                  zoneBoss: widget.modifiers.isZoneBoss))
+          .rule;
 
   /// The context rule as a round starts (context_rules.dart): its omen the
   /// round before it rises, its level as it rises, the ground's toll on
