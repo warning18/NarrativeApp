@@ -1,0 +1,37 @@
+{
+ "world": [
+  "anchor",
+  "bolt_gold",
+  "bolt_tide",
+  "dark",
+  "die",
+  "drop",
+  "flame",
+  "heart",
+  "holy",
+  "ice",
+  "none",
+  "potion",
+  "scroll",
+  "shield",
+  "ship",
+  "signpost",
+  "skull",
+  "sparkle",
+  "sword"
+ ],
+ "chrome": [
+  "add",
+  "arrow_forward",
+  "check",
+  "chevron_right",
+  "close",
+  "flag",
+  "home",
+  "lock",
+  "map",
+  "more_horiz",
+  "person",
+  "settings"
+ ]
+}
