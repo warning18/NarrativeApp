@@ -128,6 +128,20 @@ FightSpriteSet? enemyFightSprite(String enemyId) {
   return name == null ? null : _enemySet(name);
 }
 
+/// The companions that stand as figures (the Party tab, v1.898): companion id
+/// to sprite name, the files of assets/visuals/fighters (art facing west, as
+/// the enemies'; the party draws it mirrored, facing east with the hero).
+const Map<String, String> _companionSprites = {
+  'kelda': 'kelda',
+  'sable': 'sable',
+};
+
+/// The figure a companion stands as, or null: they keep their portrait.
+FightSpriteSet? companionFightSprite(String companionId) {
+  final name = _companionSprites[companionId];
+  return name == null ? null : _enemySet(name);
+}
+
 /// Which enemy a road event puts on the road when the event's own data does
 /// not say (land_events.json names an enemy only in a fight choice): event id
 /// to enemy id. UX's table, so the event data stays Core's and Narrative's.

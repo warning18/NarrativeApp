@@ -18,6 +18,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../screens/race_profession_screen.dart' show PresetMark;
 import '../theme/stitched_ink.dart';
+import 'fight_sprites.dart';
 import 'moments.dart' show ApprovalHeart;
 import '../theme/palette.dart';
 
@@ -148,6 +149,18 @@ class CompanionPortrait extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ring = tierColorOf(context, view.tier);
+    final figure = companionFightSprite(view.id);
+    if (figure != null) {
+      return Opacity(
+        opacity: dim ? 0.55 : 1,
+        child: SizedBox(
+          key: Key('companion_portrait_${view.id}'),
+          width: size,
+          height: size,
+          child: CustomPaint(painter: _FigurePainter(figure, ring)),
+        ),
+      );
+    }
     final alignment =
         ref.watch(playerSessionProvider.select((s) => s.alignmentLabel));
     return Opacity(
@@ -332,4 +345,50 @@ class ApprovalMeter extends ConsumerWidget {
       }),
     ]);
   }
+}
+
+/// A companion standing (the Party tab): the figure of their sprite set,
+/// mirrored to face east with the hero, on a ground ellipse in the colour of
+/// their approval tier, filling the portrait's box.
+class _FigurePainter extends CustomPainter {
+  _FigurePainter(this.set, this.ground)
+      : super(repaint: FightSpriteImages.loaded);
+
+  final FightSpriteSet set;
+  final Color ground;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final use = FightSpriteImages.effective(set);
+    final scale = size.height / use.frameHeight;
+    // The ground, under the feet.
+    final feet = size.height - use.footInset * scale;
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(size.width / 2, feet - 1),
+          width: size.width * 0.62,
+          height: size.height * 0.14),
+      Paint()..color = ground.withValues(alpha: 0.45),
+    );
+    final image = FightSpriteImages.idleOf(set);
+    if (image == null) return;
+    canvas.save();
+    canvas.translate(size.width / 2, 0);
+    canvas.scale(-1, 1); // the art faces west; the party faces east
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(
+          0, 0, use.frameWidth.toDouble(), use.frameHeight.toDouble()),
+      Rect.fromLTWH(
+          -use.frameWidth * scale / 2, 0, use.frameWidth * scale, size.height),
+      Paint()
+        ..filterQuality = FilterQuality.none
+        ..isAntiAlias = false,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_FigurePainter old) =>
+      old.set != set || old.ground != ground;
 }
