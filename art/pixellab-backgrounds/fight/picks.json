@@ -1,0 +1,10 @@
+{
+  "note": "The user's choices (2026-11-10) among the two seeds tried per scenery. Files are staged at 180x320, palette PNG8 (24 colours): <scenery>_s<seed>.png in this folder. Nothing wired.",
+  "picks": {
+    "dunes": {"seed": 12, "file": "dunes_s12.png", "keeps_in_code": "the sky (sun, moon, stars, hour tint): art from the horizon down"},
+    "woods": {"seed": 11, "file": "woods_s11.png", "keeps_in_code": "the hour veil and weather over a full-bleed picture"},
+    "ruins": {"seed": 12, "file": "ruins_s12.png", "keeps_in_code": "the hour veil and weather over a full-bleed picture"},
+    "quay": {"seed": 11, "file": "quay_s11.png", "keeps_in_code": "the sky and the lantern glow; art from the water line down"},
+    "snow": {"seed": 12, "file": "snow_s12.png", "keeps_in_code": "the sky and the snowfall: art from the horizon down"}
+  }
+}

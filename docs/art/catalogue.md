@@ -62,3 +62,6 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 
 ## Dice 40 px cuts (no generation)
 `art/pixellab-pilots/final/dice/die_{d4,d6,d8,d12,d20}_bone_40.png`: the 44 px recipe at 40 px for the companion page's tile (user chose B: bone body on the die's own skin tile). Free PIL cut from `round3/pixellab`, PNG8 (`tool/png8.py --check`: 0 to convert). Balance unchanged, 1251.5.
+
+## Story scene backgrounds (user: "add some backgrounds to important scenes you see fit")
+`art/pixellab-scenes/` (raw, `staged/` PNG8, `index.json`), sheet `docs/art/boards/story-scenes.png`. Six of the 74 story locations by node count and weight: cove_camp (39 nodes), saltmouth_wharf (22), hollow_shore (15), candlehold_throne_room (9), black_hold_cells (6), alster_lower_town (the prologue). `create_image_pixen` 240x100, seeds 3 and 4, 1 generation each = **12** (balance 1187.5 to 1175.5). Recommended pick per scene is in the index. Nothing wired.
