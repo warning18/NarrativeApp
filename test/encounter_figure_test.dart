@@ -20,12 +20,17 @@ void main() {
     // The patrol is Inquisition soldiers: their art.
     expect(roadEncounterFigure('inquisition_patrol')!.sprite?.id,
         'inquisition_soldier_02');
-    // The scavengers' fight is with an enemy that has no art yet: a
-    // placeholder (sprite null), not nothing.
-    final scavengers =
-        roadEncounterFigure('scavengers', fightEnemyId: 'wreck_scavenger');
-    expect(scavengers, isNotNull);
-    expect(scavengers!.sprite, isNull);
+    // The scavengers' fight is with the Wreck Scavenger: its art.
+    expect(
+        roadEncounterFigure('scavengers', fightEnemyId: 'wreck_scavenger')!
+            .sprite
+            ?.id,
+        'wreck_scavenger');
+    // A fight with an enemy that has no art yet: a placeholder (sprite
+    // null), not nothing.
+    final thug = roadEncounterFigure('x', fightEnemyId: 'slum_thug');
+    expect(thug, isNotNull);
+    expect(thug!.sprite, isNull);
     // A fight with an enemy that has art wears it.
     expect(roadEncounterFigure('x', fightEnemyId: 'white_soldier')!.sprite?.id,
         'white_soldier');
