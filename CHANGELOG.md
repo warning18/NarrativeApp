@@ -24,6 +24,36 @@ isn't reconstructable from git history alone.
   rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
   ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
   boss curve and every balance guard stay green.
+## [1.883.0+919]
+
+- **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
+  A read of every "something", "the way" and "as if" in the scenes (about 210) found the
+  narrator's similes are deliberate voice and stay; four scenes had a real placeholder,
+  now named: the tall shape in the dunes (`1120`, English and French), the message the
+  Spire courier passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and
+  the wisp's luminous smear (`3005_wisp`). In the French, 13 phrases in 11 of the 34
+  longest scenes lose their padding (150 characters in all); the rest of those scenes
+  read as long as French normally does and are left as written. No key, flag or number
+  changed; bold counts match in both languages.
+
+## [1.882.0+918]
+
+### Changed
+- **One chip** (the user's choice, UX-2 round 3): `InkChip`
+  (`lib/widgets/ink_chip.dart`) is the app's one chip: a short label in a
+  colour, on a tinted pill with a thin edge of the same colour, 12 px bold.
+  It replaces the square `InkTag` (21 uses: item and calling tags, the
+  geography lines, the camp tags, the story choices), the look of the choice
+  tags (`ChoiceTagChip` is now an `InkChip`) and the Tower's Material chips.
+  - **A bug fixed:** the Tower's foe marks ("Frenzied", "Skittish", "Elite")
+    were drawn in white on cream, unreadable, on every floor that has one
+    (since v1.848); they are red chips now, and "Elite" a gold one.
+  - What changes on screen: item and calling tags gain an edge and rounder
+    corners; the choice tags go from 11 to 12 px and from 10 to 8 px corners.
+  - Left as they were: the offer dialog's and the harbor's own tags, the stat
+    bonus chips.
+- `test/ink_chip_test.dart`; the Tower's picture test draws a warden floor.
+  Pictures before and after: `docs/ux-shots/chips/`.
 
 ## [1.881.0+917]
 

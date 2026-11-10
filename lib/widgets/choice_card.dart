@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import 'ink_chip.dart';
 
 /// The one tag a card carries: "30 gold", "Good +2", "CHA DC 12", "Fight".
 class ChoiceTag {
@@ -156,6 +157,7 @@ class ChoiceCard extends StatelessWidget {
 }
 
 /// A card's tag as a chip; the Journey's pins and rows wear it too (v1.854).
+/// Since v1.882 it is the app's one [InkChip]; a locked card's tag is ash.
 class ChoiceTagChip extends StatelessWidget {
   const ChoiceTagChip({super.key, required this.tag, this.locked = false});
 
@@ -163,19 +165,6 @@ class ChoiceTagChip extends StatelessWidget {
   final bool locked;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = locked ? InkColors.of(context).ash : tag.color;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.7)),
-        color: color.withValues(alpha: 0.12),
-      ),
-      child: Text(tag.label,
-          style: theme.textTheme.labelSmall
-              ?.copyWith(color: color, fontWeight: FontWeight.w700)),
-    );
-  }
+  Widget build(BuildContext context) =>
+      InkChip(tag.label, color: locked ? InkColors.of(context).ash : tag.color);
 }
