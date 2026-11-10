@@ -1109,6 +1109,12 @@ void main() {
       for (var i = 0; i < 3; i++) {
         await tester.pump(const Duration(milliseconds: 1500));
       }
+      // The sheet's icons decode off the test clock: give them real time.
+      for (var i = 0; i < 6; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 300)));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
       await shot('l3-fight-4-after-$tag');
       await clear();
     });

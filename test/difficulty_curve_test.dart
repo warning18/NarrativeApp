@@ -74,7 +74,7 @@ void main() {
         expect(
             difficultyCurveFor(chapter: chapter, isBoss: true).damage,
             closeTo(
-                bossDamageBaseMultiplier *
+                bossDamageBaseMultiplierFor(chapter) *
                     damageShareOf(chapterDifficultyMultiplier(chapter)),
                 1e-9));
       }
@@ -92,6 +92,18 @@ void main() {
           difficultyCurveFor(chapter: 4, isBoss: true).health,
           closeTo(
               bossHealthBaseMultiplier * chapterDifficultyMultiplier(4), 1e-9));
+    });
+
+    // v1.896 (#895): the void stalker's chapter and chapters 5 on take a
+    // lighter boss damage floor; chapters 1, 2 and 4 keep the base.
+    test('a boss hits by its chapter', () {
+      for (final chapter in [1, 2, 4]) {
+        expect(bossDamageBaseMultiplierFor(chapter), bossDamageBaseMultiplier);
+      }
+      for (final chapter in [3, 5, 6, 7, 8, 9]) {
+        expect(bossDamageBaseMultiplierFor(chapter),
+            lessThan(bossDamageBaseMultiplier));
+      }
     });
 
     test('every New Game+ cycle scales health and damage alike', () {

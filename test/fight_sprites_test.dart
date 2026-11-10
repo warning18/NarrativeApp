@@ -54,7 +54,13 @@ void main() {
       expect(File(set.idleAsset).existsSync(), isTrue, reason: set.idleAsset);
     }
     // The sewer's vermin are 60 x 60 side views, and the file is that size.
-    for (final id in ['harbor_rat', 'rat_matriarch', 'plague_hound']) {
+    for (final id in [
+      'harbor_rat',
+      'rat_matriarch',
+      'plague_hound',
+      'iron_golem',
+      'void_sovereign',
+    ]) {
       final set = enemyFightSprite(id)!;
       expect(set.facesEast, isFalse, reason: id);
       expect(set.frameWidth, 60, reason: id);
