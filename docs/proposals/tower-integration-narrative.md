@@ -104,8 +104,10 @@ stalls and the simulator can ignore it.
 - **Achievements:** 7, one per door ("The Well-Head Stair, floor 10"),
   alongside Proposition 1's "Seven Doors".
 - **Intrigues:** untouched.
-- **Rewards into the story:** none by default. If Core wants one (a title
-  or a one-time item per door), Core sets it; I write the line.
+- **Rewards into the story:** none. Core's rule is that the Tower gives
+  the story only text, achievements and scene flags (never power, and not
+  titles, which carry effects). So the return line, the achievement and
+  the remark are the whole reward.
 
 **What changes in my files:** `Cleaned_Narrative_DAG.json` (7 door scenes,
 choices carry a `towerId` field Core adds), `npcs.json`,
@@ -154,7 +156,9 @@ reads one name from it.
 - **Chapter 8, "Beyond the Tear":** reaching floor 30 at Candlehold, the
   Sovereign's own door, is offered as an optional last scene before the end.
 - **Quests:** 7 short quests (one per door, "Count the stair at X"), with
-  objectives that read the floor reached; Core sets the rewards.
+  objectives that read the floor reached (UX-2's "climb to floor N" button
+  on the quest card). Their reward is text only: a line, a scene flag and
+  an achievement, never gold, XP or an item (Core's rule).
 - **Companions and intrigues:** 9 remarks across the doors; the Open Hand
   intrigue gets a sixth-step line (the clan that never was has a stair of
   its own).
@@ -193,13 +197,50 @@ doors, if the user wants the climbs to matter to the ending.
 
 ## What I need from the others
 
-- **Core:** does a story scene hand off to a chosen tower (a `towerId` on a
-  choice), and can the best floor per door become a story flag? (P2, P3)
-  Is a story-side reward wanted at all?
-- **UX-2:** where a door scene appears in a hub (one folded row), and how
-  the sphere shows a door the story has already offered.
-- **Art:** one picture per door only if the user picks P2 or P3 (7 small
-  exteriors: well-head stair, harbour-light stair, slag stack, drowned
-  belfry, reliquary spire, flagship mast, First Lantern stair).
 - **QA:** a guard that every door has its scene, its clan and its two
   languages (P2, P3).
+
+(Core's, UX-2's and Art's answers to my first draft are folded into
+phase 2 below.)
+
+## Phase 2: folded with Core, UX-2 and Art
+
+**Rules from Core that bind all three** (`tower-integration-core.md`): the
+story hero never climbs and no Tower power enters the story; the Tower has
+one profile shared by several story saves, so any grant is once per
+profile; **story → Tower** may give marks or an early clan unlock only;
+**Tower → story** may give text, achievements and scene flags only (no
+titles, no gold, no items). Core's two light links, which I add to P2 and
+P3, cost one Core PR each:
+
+- **D1, story to Tower:** a story event (a clan sworn, a chapter boss)
+  grants Tower marks or an early unlock of that clan, once per profile. I
+  write the line the story shows when it happens ("The Crows have
+  vouched for you at the stair").
+- **D2, Tower to story:** floors 10, 20 and the top set scene flags and
+  achievements. This *is* my best-floor flag; it fits as Core designed it.
+- **D3, the first oath:** the clan the hero swore in the story is offered as
+  the Tower's first oath, instead of the door's own clan (the door's clan
+  stays the default for a hero with none). It needs no new text from me
+  beyond one line per clan.
+
+**Where the player meets a door (UX-2's list):** the sphere pin (cheap, a
+landmark), a "Tower" card among the town's places (the start screen under
+the night palette), a "climb to floor N" button on a quest card, and a
+chapter-strip line that names the door. No new screen.
+
+| | P1: a name on the map | P2: a door in the story | P3: the stair in the arc |
+|---|---|---|---|
+| **The player sees** | seven pins with names on the sphere; a sentence in each town | the sphere pins, plus a Tower card in the seven towns' place views (the "door scene" is its one-paragraph read), a chapter-strip line, a story line on return | all of P2, plus quests with a "climb" button, seven recovered names changing the ledger scenes, a finale offer at Candlehold |
+| **Narrative** | 7 door names and lore lines, 7 town sentences, 1 achievement: S, 1 PR | + 7 door scenes and return callbacks, 3 remarks, 7 to 8 achievements, 3 to 7 NPC lines, D1 lines: M, 1 to 2 PRs | + 7 quests, 8 NPCs, about 15 remarks, 4 ledger callbacks, ending callbacks, a finale scene: L, 3 PRs |
+| **Core** | `tower_sites.json` names only (already planned for option A) | + D2 flags, D1 grant, a `towerId` on the door card: 2 PRs | + a quest objective that reads a floor, a names count flag: 3 PRs |
+| **UX-2** | the sphere pin (small) | + the Tower card in the place view, the chapter-strip line: 1 PR | + the quest-card button: 1 small PR more |
+| **Art** | 5 generations (one generic tower, a code tint per place), pins hand-drawn (0) | the minimal set, 8 to 12 generations (1 exterior, 1 icon, 2 strips, wardens reused) | the full set, 20 to 35 (strips for arrival, a warden and the top; new wardens) |
+| **Risk** | none | low to medium: the hubs are long; every door scene is one folded row under the page cap | medium to high: the 4% step margin and the shared ending text; the names must stay text only |
+
+**My recommendation: P2, built on P1.** It gives the user what they asked
+(the towers part of the system, met in the towns, on the map, in a quest
+line of the chapter strip) with no power crossing and no new fight path.
+Core's D1 and D2 are the two small links that make it feel joined up, and
+D3 makes the first oath the hero's own. P3 stays open for later on the
+same doors; Option B (the story hero climbs) is not proposed.
