@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 
 import '../combat/context_rules.dart';
+import '../theme/palette.dart';
 
 /// A small badge on a die: "×2" for a Flurry.
 class DieBadge extends StatelessWidget {
@@ -19,16 +20,16 @@ class DieBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
         decoration: BoxDecoration(
-          color: const Color(0xFF17151B),
+          color: Palette.night9,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: const Color(0xFFF2C14E), width: 1),
+          border: Border.all(color: Palette.goldDark, width: 1),
         ),
         child: Text(text,
             style: const TextStyle(
                 fontSize: 9,
                 height: 1.2,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFF2C14E))),
+                color: Palette.goldDark)),
       ),
     );
   }

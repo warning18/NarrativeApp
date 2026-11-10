@@ -18,13 +18,15 @@ import '../providers/clans_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'd20_roll.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// The colour of a forge tier (the odds bar, the sparks, the word).
 Color forgeTierColor(ForgeTier tier) => switch (tier) {
       ForgeTier.flawed => const Color(0xFFD9625A),
-      ForgeTier.sound => const Color(0xFF9A93A6),
+      ForgeTier.sound => Palette.stone61,
       ForgeTier.fine => const Color(0xFF5CCB9A),
-      ForgeTier.masterwork => const Color(0xFFF2C14E),
+      ForgeTier.masterwork => Palette.goldDark,
     };
 
 const Map<ForgeTier, String> _bandLabels = {
@@ -227,7 +229,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
                 ),
               Expanded(
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: Motion.base,
                   child: switch (beat) {
                     0 || 1 => _landing(context, lang, beat),
                     2 => _tierRead(context, lang, tierColor),
@@ -541,7 +543,7 @@ class _AnvilPainter extends CustomPainter {
         stone);
     canvas.drawRect(
         Rect.fromCenter(center: Offset(cx, base - 22), width: 54, height: 24),
-        Paint()..color = const Color(0xFF38343F));
+        Paint()..color = Palette.night23);
     canvas.drawRRect(
         RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -564,8 +566,8 @@ class _AnvilPainter extends CustomPainter {
     canvas.save();
     canvas.translate(cx + 46, base - 56);
     canvas.rotate(angle);
-    canvas.drawRect(const Rect.fromLTWH(0, -6, 74, 6),
-        Paint()..color = const Color(0xFF7A5A3A));
+    canvas.drawRect(
+        const Rect.fromLTWH(0, -6, 74, 6), Paint()..color = Palette.orange35);
     canvas.drawRRect(
         RRect.fromRectAndRadius(
             const Rect.fromLTWH(62, -17, 22, 22), const Radius.circular(3)),

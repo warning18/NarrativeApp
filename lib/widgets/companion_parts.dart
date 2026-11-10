@@ -19,6 +19,7 @@ import '../providers/player_session_provider.dart';
 import '../screens/race_profession_screen.dart' show PresetMark;
 import '../theme/stitched_ink.dart';
 import 'moments.dart' show ApprovalHeart;
+import '../theme/palette.dart';
 
 /// The id of the guide dog (companions.json).
 const String _guideDogId = 'vica';
@@ -121,7 +122,7 @@ Color tierColorOf(BuildContext context, ApprovalTier tier) {
   final scheme = Theme.of(context).colorScheme;
   return switch (tier) {
     ApprovalTier.devoted => const Color(0xFFD9A400),
-    ApprovalTier.friendly => const Color(0xFF3F8F5A),
+    ApprovalTier.friendly => Palette.green40,
     ApprovalTier.neutral => InkColors.of(context).ash,
     _ => scheme.error,
   };
@@ -198,7 +199,7 @@ class HealthBar extends StatelessWidget {
       child: LinearProgressIndicator(
         value: f,
         minHeight: height,
-        color: f < 0.5 ? ink.blood : const Color(0xFF3F8F5A),
+        color: f < 0.5 ? ink.blood : Palette.green40,
         backgroundColor: ink.seam,
       ),
     );

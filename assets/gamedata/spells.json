@@ -10,7 +10,7 @@
     "effect": "Damage",
     "target": "Enemy",
     "amount": 1,
-    "damageMultiplier": 1.6,
+    "damageMultiplier": 1.35,
     "scalingStat": "intelligence",
     "element": "Electricity",
     "inflictsStatus": "",

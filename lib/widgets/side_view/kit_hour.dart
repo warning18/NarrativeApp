@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/journey_rules.dart' show DayPhase;
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The wash over the whole scene for [phase], or null by day.
 SideLayer? hourWash(DayPhase phase) {
@@ -25,9 +26,9 @@ SideLayer? hourWash(DayPhase phase) {
 /// same hour on the plan and on the road to it.
 Color? hourWashColour(DayPhase phase) => switch (phase) {
       DayPhase.day => null,
-      DayPhase.dawn => const Color(0xFFF2A36B).withValues(alpha: 0.10),
-      DayPhase.dusk => const Color(0xFF7A4A7C).withValues(alpha: 0.20),
-      DayPhase.night => const Color(0xFF0B1230).withValues(alpha: 0.42),
+      DayPhase.dawn => Palette.orange68.withValues(alpha: 0.10),
+      DayPhase.dusk => Palette.stone39.withValues(alpha: 0.20),
+      DayPhase.night => Palette.blue12.withValues(alpha: 0.42),
     };
 
 /// How many stars the sky shows at [phase].

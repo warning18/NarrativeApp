@@ -15,6 +15,8 @@ import 'loot_sheet.dart';
 import 'loot_sheet_lines.dart';
 import 'item_detail_view.dart';
 import 'pixel_sprite.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// What the player chose to do with the spoils before closing the chest:
 /// gear to put on at once and healing potions to drink on the spot.
@@ -609,7 +611,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     String label;
     if (index == 0) {
       face =
-          Icon(Icons.monetization_on, size: 36, color: Colors.amber.shade700);
+          const Icon(Icons.monetization_on, size: 36, color: Palette.goldDeep);
       label = '+${widget.result.gold} ${_t('gold_label')}';
     } else {
       final itemId = widget.result.itemIds[index - 1];
@@ -623,7 +625,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           : () => _reveal(index),
       onLongPress: revealed && index > 0 ? () => _showDetails(index) : null,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: Motion.base,
         width: 96,
         height: 96,
         padding: const EdgeInsets.all(6),

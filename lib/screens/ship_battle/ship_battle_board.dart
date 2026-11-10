@@ -374,7 +374,7 @@ extension _ShipBattleBoard on _ShipBattlePanelState {
                         },
                         water: min(ship.leaks, 3) / 3,
                         shield: _roomColor(context, ShipRoom.bulwark),
-                        foam: const Color(0xFFE6F2F4),
+                        foam: Palette.cyan93,
                         roomColors: {
                           for (final r in ShipRoom.values)
                             r: _roomColor(context, r)

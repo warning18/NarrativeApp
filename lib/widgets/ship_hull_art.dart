@@ -7,8 +7,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../data/ship_forms.dart';
+import '../theme/palette.dart';
 
-const Color _timber = Color(0xFF3A2818);
+const Color _timber = Palette.orange16;
 
 Paint _fill(Color c) => Paint()..color = c;
 Paint _line(Color c, double w) => Paint()
@@ -45,7 +46,7 @@ void paintOars(Canvas canvas, ShipForm form, double x0, double cy, double len,
           Offset(x0 + len * u, cy + side * w),
           Offset(x0 + len * u - 6 - 3 * stroke,
               cy + side * (w + beam * (0.32 + 0.1 * stroke))),
-          _line(const Color(0xFFC9B58A), 1.8));
+          _line(Palette.amber66, 1.8));
     }
   }
 }
@@ -149,7 +150,7 @@ void paintMastSail(
       canvas.drawPath(path, edge);
       canvas.drawLine(tipUp, tipDown, _line(mastColor, 2.2));
   }
-  canvas.drawCircle(Offset(x, cy), 3.5, _fill(const Color(0xFF2A1C10)));
+  canvas.drawCircle(Offset(x, cy), 3.5, _fill(Palette.orange11));
 }
 
 /// The headsails on the bowsprit of [form] and the sprit itself.
@@ -292,7 +293,7 @@ void paintSkyRig(Canvas canvas, ShipForm form, double x0, double cy, double len,
         canvas.drawCircle(
             c,
             beam * 0.17,
-            _fill(const Color(0xFF80D8FF).withValues(alpha: glow * 0.4))
+            _fill(Palette.cyan75.withValues(alpha: glow * 0.4))
               ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
         canvas.drawCircle(c, beam * 0.09, _fill(const Color(0xFF4A5560)));
         canvas.drawCircle(c, beam * 0.09, _line(const Color(0xFFB8E8FF), 1.4));
@@ -315,13 +316,12 @@ void paintSkyRig(Canvas canvas, ShipForm form, double x0, double cy, double len,
         wing.close();
         canvas.drawPath(wing.shift(const Offset(4, 6)),
             _fill(Colors.black.withValues(alpha: 0.2)));
-        canvas.drawPath(
-            wing, _fill(const Color(0xFFD9CDB0).withValues(alpha: 0.88)));
+        canvas.drawPath(wing, _fill(Palette.amber77a.withValues(alpha: 0.88)));
         for (final tip in tips) {
-          canvas.drawLine(shoulder, tip, _line(const Color(0xFF8E8468), 2.4));
+          canvas.drawLine(shoulder, tip, _line(Palette.stone48, 2.4));
           canvas.drawCircle(tip, 2.2, _fill(const Color(0xFFEFE6CE)));
         }
-        canvas.drawPath(wing, _line(const Color(0xFF6E6246), 1.2));
+        canvas.drawPath(wing, _line(Palette.stone35b, 1.2));
       }
     case HullKind.hull:
     case HullKind.twin:
@@ -336,11 +336,11 @@ void _screw(Canvas canvas, Offset c, double r, double t) {
     final d =
         Offset(math.cos(a + k * math.pi / 2), math.sin(a + k * math.pi / 2)) *
             r;
-    canvas.drawLine(c - d, c + d,
-        _line(const Color(0xFFC9B58A).withValues(alpha: 0.7), 2.2));
+    canvas.drawLine(
+        c - d, c + d, _line(Palette.amber66.withValues(alpha: 0.7), 2.2));
   }
   canvas.drawCircle(c, r * 0.9, _line(Colors.white.withValues(alpha: 0.18), 1));
-  canvas.drawCircle(c, 2.4, _fill(const Color(0xFF2A1C10)));
+  canvas.drawCircle(c, 2.4, _fill(Palette.orange11));
 }
 
 /// The twin hulls of [form]: two slender hulls and the deck between them.

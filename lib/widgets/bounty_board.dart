@@ -13,6 +13,7 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/palette.dart';
 
 /// The notice board (see contracts.dart), a board you read (v1.561): three
 /// contracts pinned on wood as parchment notes, slightly tilted, each with a
@@ -244,10 +245,10 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
 }
 
 /// The wax of a met contract's seal.
-const Color _sealRed = Color(0xFFC0392B);
-const Color _parchment = Color(0xFFEADFC2);
+const Color _sealRed = Palette.red46;
+const Color _parchment = Palette.amber84a;
 const Color _noteInk = Color(0xFF2B2118);
-const Color _noteBrown = Color(0xFF7A5B3A);
+const Color _noteBrown = Palette.orange35a;
 
 /// The board's wood: planks with a dark frame.
 class _Wood extends StatelessWidget {
@@ -276,7 +277,7 @@ class _PlankPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final seam = Paint()
-      ..color = const Color(0x33000000)
+      ..color = Palette.alpha33Night0
       ..strokeWidth = 2;
     final grain = Paint()
       ..color = const Color(0x14FFFFFF)

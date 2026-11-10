@@ -8,6 +8,141 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.888.0+924]
+
+### Changed
+- **The mage's opening Arcane Bolt hits a little softer** (Core round 4,
+  items 3 and 4). Its damage multiplier goes from 1.6 to 1.35. The mage had
+  led every other profession by about 5 points since v1.696. In the
+  simulator's balance batch (400 runs each on seeds 7, 11 and 13), the mage
+  now wins 78.2% of its encounters, down from 81.5%, just above the rogue's
+  76.9%. The widest gap between two professions falls from 8.7 to 5.4
+  points, and no other profession moves.
+- The balance test's profession guard now allows two standard errors of
+  noise on top of its 8-point limit, not three, so a spread like the old
+  9.7 points fails it.
+## [1.886.0+922]
+
+### Changed
+- **Motion tokens** (the user's choice, UX-2 round 4): the interface's own
+  transitions keep to three paces, `Motion.fast` 160 ms, `base` 240 ms and
+  `slow` 400 ms (`lib/theme/motion.dart`). The 22 implicit animations (a fade,
+  a switch, a resize: `AnimatedOpacity`, `AnimatedSwitcher`,
+  `AnimatedContainer`, `AnimatedRotation`, `AnimatedPositioned`, `AnimatedSize`)
+  had 12 different durations of their own, from 120 to 400 ms; they now use a
+  token. Moved: 120 and 180 ms to 160; 200, 220, 250, 260, 280, 300 and 320 ms
+  to 240 (the two story page switchers, 320 to 240, are a little quicker);
+  160 and 400 ms stay. Not moved on purpose: timelines choreographed to art (a
+  fight's blows, the reveals, the loops, the world map's flights).
+- `test/motion_tokens_test.dart` fails when an implicit animation under half a
+  second carries a number of its own.
+
+## [1.885.0+921]
+
+### Changed
+- **The shared palette** (the user's choice, UX-2; no change to how anything
+  looks, the pictures are byte for byte the same): `lib/theme/palette.dart`
+  holds every colour that two or more files drew with, 157 of them, with the
+  hex each always had, and the 16 semantic tokens of the theme (`InkColors`
+  dark and light), which now take their values from it. A colour only one
+  painter uses stays beside it (about 1,170 of them: the backdrops, ships and
+  dice). 580 literals in 84 files now say `Palette.<name>`; the names are the
+  hue and lightness of the colour (`amber77`), to be renamed by role as roles
+  are found.
+  - The Material named colours used in two or more files are roles:
+    `Palette.good` (green), `danger`, `alert`, `hot`, `arcane`, `neutral`...
+    (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
+  - `test/palette_test.dart` fails when a colour drawn in two files is written
+    as a literal: it goes to the palette.
+## [1.884.0+920]
+
+### Changed
+- **The simulator fights on the ground the fight screen picks** (Core round
+  4, item 1; nothing changes on screen). `fightGroundAt`
+  (`lib/combat/fight_ground_rule.dart`) gives a fight's stage and rule from
+  its place: the watch in a city, a holy place's sanctified ground, the
+  desert heat, the rising water, the marsh mist, and the Tide where none
+  applies or a boss is fought. The fight screen's two helpers now call it,
+  and so does the playthrough simulator, which used to play every fight on
+  the Tide. On the feature ladder the Tide plays until the place rules
+  open, as in the game. In the 400-run balance batch, a third of the fights
+  now play a place rule (most of them the rising water). The encounter win
+  rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
+  ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
+  boss curve and every balance guard stay green.
+## [1.883.0+919]
+
+- **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
+  A read of every "something", "the way" and "as if" in the scenes (about 210) found the
+  narrator's similes are deliberate voice and stay; four scenes had a real placeholder,
+  now named: the tall shape in the dunes (`1120`, English and French), the message the
+  Spire courier passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and
+  the wisp's luminous smear (`3005_wisp`). In the French, 13 phrases in 11 of the 34
+  longest scenes lose their padding (150 characters in all); the rest of those scenes
+  read as long as French normally does and are left as written. No key, flag or number
+  changed; bold counts match in both languages.
+
+## [1.882.0+918]
+
+### Changed
+- **One chip** (the user's choice, UX-2 round 3): `InkChip`
+  (`lib/widgets/ink_chip.dart`) is the app's one chip: a short label in a
+  colour, on a tinted pill with a thin edge of the same colour, 12 px bold.
+  It replaces the square `InkTag` (21 uses: item and calling tags, the
+  geography lines, the camp tags, the story choices), the look of the choice
+  tags (`ChoiceTagChip` is now an `InkChip`) and the Tower's Material chips.
+  - **A bug fixed:** the Tower's foe marks ("Frenzied", "Skittish", "Elite")
+    were drawn in white on cream, unreadable, on every floor that has one
+    (since v1.848); they are red chips now, and "Elite" a gold one.
+  - What changes on screen: item and calling tags gain an edge and rounder
+    corners; the choice tags go from 11 to 12 px and from 10 to 8 px corners.
+  - Left as they were: the offer dialog's and the harbor's own tags, the stat
+    bonus chips.
+- `test/ink_chip_test.dart`; the Tower's picture test draws a warden floor.
+  Pictures before and after: `docs/ux-shots/chips/`.
+
+## [1.881.0+917]
+
+- **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
+  two buttons: "Back into the Anchorage" (the five `7100` rows) and "Head back toward
+  the harbour master’s post" (the five `2015` rows). Each now says what that scene just
+  did ("Leave the helmsman to his cup", "Leave Sable with her marker"), in English and
+  French. Flags, gold and destinations unchanged.
+
+## [1.880.0+916]
+
+### Changed
+- **The Tower rebuilds its hero from the last floor it already built**
+  (Core round 4; nothing changes in play): `SimCharacter.copy()` copies the
+  hero field by field, and `towerHeroOf` keeps a copy of the hero after each
+  floor, keyed by the run's choices so far. Replaying a run now starts from
+  the longest matching floor instead of from floor 0. The balance bot's 300
+  runs give byte-identical results and take 4.1 s instead of 5.8 s; hero
+  rebuilds fall from about half of the bot's time to about 15%. A new test
+  (`test/sim_character_copy_test.dart`) fails when a field is added to
+  `SimCharacter` without being copied.
+
+## [1.877.0+913]
+
+- **Narrative: one bold passage per scene, the sharpest.** 668 passages were bold,
+  about one word in eight; 192 scenes that carried two or three now carry one,
+  the fact the player most needs (a name, a rule, a price, a turn). The opening,
+  the reveals, the chapter endings, the crowning scenes and the ledgers keep all
+  theirs (28 scenes). English and French trim the same passage, so every scene has
+  the same number of bold passages in both. New guard
+  `test/story_bold_budget_test.dart`: EN and FR counts match, and a scene has one
+  bold passage unless it is on the keep list. No wording, flag or number changed.
+
+## [1.876.0+912]
+
+- **Narrative: British spelling in the English text the game builds in code.**
+  The last player-visible English strings that were not in the string table
+  follow the spelling of v1.872: the street and sea encounter lines (harbour,
+  traveller, favour, colour, centre), a chapter-1 origin line, the alignment
+  event's "burning armour" and "in your favour" choice, the Saltmouth blurb on
+  the world map and a chart note. 16 strings in 8 files; no key, id or French
+  text changed. Editor documentation (the `db_schema_*` files) is left as it is.
+
 ## [1.875.0+911]
 
 ### Changed
@@ -18,6 +153,7 @@ isn't reconstructable from git history alone.
   `showModalBottomSheet` calls had exactly those flags and now use it (the
   other seven carry their own shape, barrier colour or safe area and stay).
   About 40 lines fewer, and one place to change the sheet's look.
+
 ## [1.874.0+910]
 
 ### Changed

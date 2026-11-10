@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../combat/field_anomaly.dart' show FightStage;
+import '../theme/palette.dart';
 
 /// The board's base colour for [stage] (also the colour of its edge glow).
 Color _fightBoardBase(FightStage stage) => switch (stage) {
@@ -26,7 +27,7 @@ Color _fightBoardBase(FightStage stage) => switch (stage) {
       FightStage.ruins => const Color(0xFF5A5854),
       FightStage.woods => const Color(0xFF2E3B28),
       FightStage.ford => const Color(0xFF3A6A7C),
-      FightStage.burntFields => const Color(0xFF2B2420),
+      FightStage.burntFields => Palette.night15,
       FightStage.oasis => const Color(0xFFD2B676),
       FightStage.caravanRoad => const Color(0xFF9A7C52),
       FightStage.quay => const Color(0xFF55606A),
@@ -115,7 +116,7 @@ class _FightBoardPainter extends CustomPainter {
         }
         for (var i = 0; i < 160; i++) {
           final c = [
-            const Color(0xFFE0752B),
+            Palette.orange52,
             const Color(0xFFF2A24A),
             const Color(0xFF5B5860)
           ][r.nextInt(3)];
@@ -210,7 +211,7 @@ class _FightBoardPainter extends CustomPainter {
                   const Color(0xFF4F453A),
                   const Color(0xFF625648)
                 ][r.nextInt(3)]));
-            canvas.drawRect(rect, stroke(const Color(0xFF2A241D), 2));
+            canvas.drawRect(rect, stroke(Palette.night14, 2));
           }
         }
       case FightStage.cityRoad:
@@ -276,7 +277,7 @@ class _FightBoardPainter extends CustomPainter {
                   const Color(0xFF55534F),
                   const Color(0xFF6E6C66)
                 ][r.nextInt(3)]));
-            canvas.drawRect(rect, stroke(const Color(0xFF2B2A28), 2));
+            canvas.drawRect(rect, stroke(Palette.night16, 2));
           }
         }
         for (var i = 0; i < 18; i++) {
@@ -308,7 +309,7 @@ class _FightBoardPainter extends CustomPainter {
             ..moveTo(rx(0, w), rx(0, h))
             ..relativeQuadraticBezierTo(
                 rx(-30, 30), rx(10, 40), rx(-50, 50), rx(20, 60));
-          canvas.drawPath(p, stroke(const Color(0xFF1B1710), 4));
+          canvas.drawPath(p, stroke(Palette.night8b, 4));
         }
       case FightStage.ford:
         // Shallow water over a stony bed, stepping stones across.
@@ -345,7 +346,7 @@ class _FightBoardPainter extends CustomPainter {
         }
         for (var i = 0; i < 40; i++) {
           canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1, 2),
-              fill(const Color(0xFFE0752B), 0.8));
+              fill(Palette.orange52, 0.8));
         }
       case FightStage.oasis:
         // Sand ripples around a pool, a few palms' shade.
@@ -379,7 +380,7 @@ class _FightBoardPainter extends CustomPainter {
           final p = Path()
             ..moveTo(0, y)
             ..quadraticBezierTo(w * 0.5, y + (side == 0 ? 10 : -10), w, y);
-          canvas.drawPath(p, stroke(const Color(0xFF5E4630), 9, 0.6));
+          canvas.drawPath(p, stroke(Palette.orange28, 9, 0.6));
           canvas.drawPath(p, stroke(const Color(0xFFB59A70), 2, 0.7));
         }
         for (var i = 0; i < 50; i++) {
@@ -430,7 +431,7 @@ class _FightBoardPainter extends CustomPainter {
         ..shader = const RadialGradient(
           center: Alignment(0, -0.1),
           radius: 0.95,
-          colors: [Color(0x00000000), Color(0xAA000000)],
+          colors: [Palette.clear, Color(0xAA000000)],
           stops: [0.45, 1],
         ).createShader(Rect.fromLTWH(0, 0, w, h)),
     );

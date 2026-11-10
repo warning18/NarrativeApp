@@ -10,6 +10,7 @@ import '../utils/face_style.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'die_3d.dart';
 import 'die_skins.dart';
+import '../theme/palette.dart';
 
 class StationDie extends StatefulWidget {
   const StationDie({
@@ -78,8 +79,9 @@ class _StationDieState extends State<StationDie>
     final s = widget.size;
     if (face == null) {
       return DieCubeFace(
-          glyph: Icon(FaceKind.empty.icon, size: s * 0.5, color: Colors.grey),
-          color: Colors.grey);
+          glyph:
+              Icon(FaceKind.empty.icon, size: s * 0.5, color: Palette.neutral),
+          color: Palette.neutral);
     }
     final kind = face.kind;
     final skill = face.face.type == 'Skill';

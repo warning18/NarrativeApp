@@ -13,6 +13,7 @@ import 'encounter_figure.dart';
 import 'party_look.dart';
 import 'side_sprite.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The desert's colours.
 abstract final class _DesertLook {
@@ -155,7 +156,7 @@ SideLayer desertActors({
       c.restore();
     }
     if (!SideSprites.paint(c, u, xs[0], 66, t, moving: moving)) {
-      _figure(c, u, xs[0] - 2, 66, const Color(0xFFC0392B), moving ? t : 1.3);
+      _figure(c, u, xs[0] - 2, 66, Palette.red46, moving ? t : 1.3);
     }
     encounter?.paint(c, s, t, u, partyX: xs.last);
   });

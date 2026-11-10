@@ -11,6 +11,7 @@ import '../data/cliff_town.dart' show TownAddition;
 import '../l10n/app_strings.dart';
 import '../providers/camp_works_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'ink_chip.dart';
 
 /// What the filter row keeps: the works ready to go up, those the gold and
 /// the pack can pay for (whatever else they wait on), or those that stand.
@@ -393,7 +394,7 @@ class _AdditionCard extends ConsumerWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerRight,
-                      child: InkTag(label: tag, color: tagColour),
+                      child: InkChip(tag, color: tagColour),
                     ),
                   ),
                 ],

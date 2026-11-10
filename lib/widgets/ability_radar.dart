@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../data/element_points.dart';
 import '../combat/skill_vfx.dart';
 import 'radar_chart.dart';
+import '../theme/palette.dart';
 
 /// The abilities in the order the radar draws them, clockwise from the top.
 const List<String> abilityRadarOrder = [
@@ -33,10 +34,10 @@ String abilityAbbrevKey(String ability) => switch (ability) {
 
 /// A shape's colour for the abilities, the change colours, and a quiet one
 /// for what a shape is compared with.
-const Color radarGold = Color(0xFFF2C14E);
-const Color radarMore = Color(0xFF6FD08C);
+const Color radarGold = Palette.goldDark;
+const Color radarMore = Palette.green63;
 const Color _radarLess = Color(0xFFEF5350);
-const Color _radarCompare = Color(0xFF9FB0C2);
+const Color _radarCompare = Palette.stone69;
 
 class AbilityRadar extends StatelessWidget {
   const AbilityRadar({
@@ -224,7 +225,7 @@ class _ElementsCardState extends State<ElementsCard> {
   int _view = 0;
 
   static const Color _damage = Color(0xFFFF8A5C);
-  static const Color _resist = Color(0xFF9FC2D6);
+  static const Color _resist = Palette.cyan73;
 
   /// An element's name for a chart's corner: the long one (Lightning) as
   /// its short form.

@@ -45,6 +45,7 @@ import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -250,8 +251,8 @@ class CampScreen extends ConsumerWidget {
                         minimumSize: const Size(0, 36),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         backgroundColor: const Color(0xE614262A),
-                        foregroundColor: const Color(0xFFECE7DC),
-                        side: const BorderSide(color: Color(0xFF4FB0B0)),
+                        foregroundColor: Palette.paper89,
+                        side: const BorderSide(color: Palette.tideDark),
                         textStyle: const TextStyle(
                             fontFamily: 'PixelifySans', fontSize: 12),
                       ),

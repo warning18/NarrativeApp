@@ -45,6 +45,7 @@ import 'fight_screen.dart';
 import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
 import 'port_screen.dart';
+import '../theme/palette.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -508,7 +509,7 @@ class _CollapsibleSection extends StatelessWidget {
                 margin: const EdgeInsets.only(left: 8, right: 4),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade700,
+                  color: Palette.goodDeep,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -628,7 +629,7 @@ class _QuestList extends ConsumerWidget {
 
         Widget trailing;
         if (isCompleted) {
-          trailing = const Icon(Icons.check_circle, color: Colors.green);
+          trailing = const Icon(Icons.check_circle, color: Palette.good);
         } else if (!isDiscovered) {
           trailing = const Icon(Icons.lock_outline);
         } else if (isActive) {
@@ -722,7 +723,7 @@ class _QuestList extends ConsumerWidget {
                                   : Icons.radio_button_unchecked,
                               size: 16,
                               color: isActive && status.met
-                                  ? Colors.green
+                                  ? Palette.good
                                   : theme.colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 6),

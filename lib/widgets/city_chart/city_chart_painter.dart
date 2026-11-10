@@ -13,6 +13,7 @@ import '../../theme/stitched_ink.dart' show InkFonts;
 import '../journey_banner_pin.dart' show PinBanner, paintBannerPin;
 import '../../data/journey_rules.dart' show DayPhase;
 import 'city_chart.dart';
+import '../../theme/palette.dart';
 
 /// How far in (the view's scale over the fitted one) the lots grow roofs,
 /// the buildings their names and the ways their pins.
@@ -391,14 +392,14 @@ class CityChartPainter extends CustomPainter {
   void _hour(Canvas canvas) {
     if (phase == DayPhase.day) return;
     final wash = switch (phase) {
-      DayPhase.dawn => const Color(0xFFF2A36B).withValues(alpha: 0.10),
-      DayPhase.dusk => const Color(0xFF7A4A7C).withValues(alpha: 0.20),
-      _ => const Color(0xFF0B1230).withValues(alpha: 0.42),
+      DayPhase.dawn => Palette.orange68.withValues(alpha: 0.10),
+      DayPhase.dusk => Palette.stone39.withValues(alpha: 0.20),
+      _ => Palette.blue12.withValues(alpha: 0.42),
     };
     canvas.drawRect(chart.bounds.inflate(4000), Paint()..color = wash);
     if (phase == DayPhase.dawn) return;
     final night = phase == DayPhase.night;
-    const warm = Color(0xFFFFD27A);
+    const warm = Palette.orange74;
     final glow = Paint()..color = warm.withValues(alpha: night ? 0.28 : 0.16);
     final lit = Paint()..color = warm.withValues(alpha: 0.95);
     for (final l in chart.lanterns) {
@@ -435,7 +436,7 @@ class CityChartPainter extends CustomPainter {
     for (final l in chart.lanterns) {
       canvas.drawCircle(l, 1.5, fill);
     }
-    fill.color = _mix(p.roofs, const Color(0xFFE8B94E), 0.7);
+    fill.color = _mix(p.roofs, Palette.amber61, 0.7);
     for (final s in chart.stalls) {
       canvas.drawRect(Rect.fromLTWH(s.dx, s.dy, 6, 4), fill);
     }
@@ -567,7 +568,7 @@ class CityChartPainter extends CustomPainter {
         final q = st + Offset(math.cos(a) * r, math.sin(a) * r);
         i == 0 ? star.moveTo(q.dx, q.dy) : star.lineTo(q.dx, q.dy);
       }
-      canvas.drawPath(star..close(), Paint()..color = const Color(0xFFF2C14E));
+      canvas.drawPath(star..close(), Paint()..color = Palette.goldDark);
     }
   }
 
@@ -826,7 +827,7 @@ class CityChartPainter extends CustomPainter {
             Offset.zero,
             serviceRadius + 9,
             Paint()
-              ..color = const Color(0xFFFFD27A)
+              ..color = Palette.orange74
                   .withValues(alpha: phase == DayPhase.night ? 0.38 : 0.22));
       }
       canvas.drawRRect(
@@ -860,8 +861,8 @@ class CityChartPainter extends CustomPainter {
         RRect.fromRectAndRadius(
             Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
             const Radius.circular(1.5)),
-        Paint()..color = const Color(0xFF7A5B3A).withValues(alpha: a));
-    final note = Paint()..color = const Color(0xFFEADFC2).withValues(alpha: a);
+        Paint()..color = Palette.orange35a.withValues(alpha: a));
+    final note = Paint()..color = Palette.amber84a.withValues(alpha: a);
     canvas.drawRect(const Rect.fromLTWH(-7, -5.5, 6, 5), note);
     canvas.drawRect(const Rect.fromLTWH(0, -5, 6, 4), note);
     canvas.drawRect(const Rect.fromLTWH(-5.5, 0.5, 7, 5), note);
@@ -872,8 +873,8 @@ class CityChartPainter extends CustomPainter {
   void _serviceBadge(Canvas canvas, CityChartService s, ChartPalette p) {
     const centre = Offset(serviceRadius - 1, -serviceRadius + 1);
     canvas.drawCircle(centre, 7.5, Paint()..color = Colors.black45);
-    canvas.drawCircle(centre, 6.5,
-        Paint()..color = s.urgent ? const Color(0xFFC0392B) : p.label);
+    canvas.drawCircle(
+        centre, 6.5, Paint()..color = s.urgent ? Palette.red46 : p.label);
     final tp = TextPainter(
       text: TextSpan(
           text: s.badge > 9 ? '9+' : '${s.badge}',

@@ -53,6 +53,7 @@ import '../widgets/pixel_banner.dart' show ClanFlag;
 import '../widgets/walk_bubble.dart';
 import 'crossing_rise_route.dart';
 import 'fight_screen.dart';
+import '../theme/motion.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
 /// lost or turned back from, after its check and fight went the party's
@@ -622,7 +623,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
           ),
           const SizedBox(height: 8),
           AnimatedOpacity(
-            duration: const Duration(milliseconds: 250),
+            duration: Motion.base,
             opacity: rolling && !_landed ? 0 : 1,
             child: Text(
               _checkLine,

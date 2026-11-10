@@ -21,6 +21,7 @@ import '../theme/stitched_ink.dart';
 import 'city_chart/city_chart.dart' show CityChartHold;
 import 'pixel_banner.dart' show ClanFlag, clanBannerId;
 import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// What the Town view says of one district.
 class DistrictStanding {
@@ -184,7 +185,7 @@ class DistrictStandingLine extends ConsumerWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           if (s.flipped) ...[
-            const Icon(Icons.star, size: 12, color: Color(0xFFF2C14E)),
+            const Icon(Icons.star, size: 12, color: Palette.goldDark),
             const SizedBox(width: 3),
           ],
           Flexible(

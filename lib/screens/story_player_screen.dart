@@ -89,6 +89,7 @@ import '../providers/story_text_provider.dart'
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'epilogue_map_screen.dart';
+import '../widgets/ink_chip.dart';
 import '../widgets/motion.dart';
 import '../widgets/creation_fade_route.dart';
 import '../widgets/prologue_opening.dart';
@@ -124,6 +125,8 @@ import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 part 'story_player/story_choice_flow.dart';
 part 'story_player/story_hub.dart';
@@ -863,8 +866,7 @@ class _StoryView extends ConsumerWidget {
                                               .notifier)
                                           .state = !fullscreenReading,
                                       child: AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 320),
+                                        duration: Motion.base,
                                         switchInCurve: Curves.easeOut,
                                         switchOutCurve: Curves.easeIn,
                                         transitionBuilder: _nodeTransition,
@@ -946,7 +948,7 @@ class _StoryView extends ConsumerWidget {
                                 constraints:
                                     BoxConstraints(maxHeight: choiceBudget),
                                 child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 320),
+                                  duration: Motion.base,
                                   switchInCurve: Curves.easeOut,
                                   switchOutCurve: Curves.easeIn,
                                   transitionBuilder: _nodeTransition,

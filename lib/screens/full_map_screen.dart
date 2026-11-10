@@ -27,6 +27,7 @@ import '../widgets/journey_world_map.dart';
 import '../widgets/map_legend_sheet.dart';
 import 'heard_of_travel.dart' show setOutToHeardOf;
 import 'journal_screen.dart' show JournalScreen;
+import '../theme/palette.dart';
 
 /// Closes the full map's [route] wherever it is in the stack (not whatever
 /// is on top: a "walked to" notice can be over it). A route that is gone
@@ -307,7 +308,7 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
     Color chapterColor(int n) => switch (look) {
           MapLook.night => mapChapter(n).dark,
           MapLook.parchment => mapChapter(n).light,
-          MapLook.shroud => const Color(0xFFA3A3AA),
+          MapLook.shroud => Palette.stone65,
         };
     // The chapters reached, for the chips: each picks that chapter's places
     // and roads out, and turns the chart to its first place.

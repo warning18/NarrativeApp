@@ -23,6 +23,7 @@ import '../utils/face_style.dart';
 import 'die_skins.dart';
 import 'pixel_sprite.dart';
 import 'poly_die.dart';
+import '../theme/palette.dart';
 
 export 'poly_die.dart' show DieShape, dieShapeOf;
 
@@ -513,7 +514,7 @@ class _HeldRingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFF2C14E).withValues(alpha: 0.9);
+      ..color = Palette.goldDark.withValues(alpha: 0.9);
     final circle = Path()..addOval(Rect.fromCircle(center: c, radius: r));
     for (final metric in circle.computeMetrics()) {
       for (var d = 0.0; d < metric.length; d += 9) {
@@ -523,7 +524,7 @@ class _HeldRingPainter extends CustomPainter {
     }
     // The lock, at the ring's upper right.
     final at = c + Offset(r * 0.72, -r * 0.72);
-    final gold = Paint()..color = const Color(0xFFF2C14E);
+    final gold = Paint()..color = Palette.goldDark;
     canvas.drawRRect(
         RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -583,8 +584,7 @@ class DieBurstPainter extends CustomPainter {
     switch (fx) {
       case DieFx.strike:
         // A flash, a shock ring and sparks thrown out.
-        fill.color =
-            const Color(0xFFFF8A3D).withValues(alpha: 0.5 * fade * fade);
+        fill.color = Palette.orange62.withValues(alpha: 0.5 * fade * fade);
         canvas.drawCircle(c, u * (0.35 + 0.5 * out), fill);
         line
           ..strokeWidth = 3 * fade + 0.5
@@ -597,9 +597,8 @@ class DieBurstPainter extends CustomPainter {
           final r1 = r0 + u * 0.22 * (1 - out) + 2;
           line
             ..strokeWidth = 2
-            ..color =
-                (i.isEven ? const Color(0xFFFFE08A) : const Color(0xFFE53935))
-                    .withValues(alpha: fade);
+            ..color = (i.isEven ? Palette.amber77 : Palette.red55)
+                .withValues(alpha: fade);
           canvas.drawLine(c + Offset(math.cos(a), math.sin(a)) * r0,
               c + Offset(math.cos(a), math.sin(a)) * r1, line);
         }
@@ -617,7 +616,7 @@ class DieBurstPainter extends CustomPainter {
           path.close();
           line
             ..strokeWidth = 3 * (1 - k) + 0.6
-            ..color = const Color(0xFF9FC2D6).withValues(alpha: 0.85 * (1 - k));
+            ..color = Palette.cyan73.withValues(alpha: 0.85 * (1 - k));
           canvas.drawPath(path, line);
         }
         fill.color = const Color(0xFF90B4C8).withValues(alpha: 0.22 * fade);
@@ -641,7 +640,7 @@ class DieBurstPainter extends CustomPainter {
           canvas.drawLine(p - Offset(s, 0), p + Offset(s, 0), line);
           canvas.drawLine(p - Offset(0, s), p + Offset(0, s), line);
         }
-        fill.color = const Color(0xFFEC407A).withValues(alpha: 0.18 * fade);
+        fill.color = Palette.red59.withValues(alpha: 0.18 * fade);
         canvas.drawCircle(c, u * 0.7, fill);
       case DieFx.arcs:
         // Blue motes orbiting up and outward.
@@ -662,7 +661,7 @@ class DieBurstPainter extends CustomPainter {
         canvas.drawCircle(c, u * (0.5 + 0.7 * out), line);
       case DieFx.miasma:
         // Green bubbles rising out of a thin cloud.
-        fill.color = const Color(0xFF43A047).withValues(alpha: 0.2 * fade);
+        fill.color = Palette.green45.withValues(alpha: 0.2 * fade);
         canvas.drawOval(
             Rect.fromCenter(
                 center: c + Offset(0, u * 0.1),
@@ -722,7 +721,7 @@ class DieBurstPainter extends CustomPainter {
         for (var i = 0; i < 6; i++) {
           final a = i * math.pi / 3 + _hash(i, 9);
           final r = u * (0.25 + 0.5 * out);
-          fill.color = const Color(0xFF9E9E9E).withValues(alpha: 0.32 * fade);
+          fill.color = Palette.stone62.withValues(alpha: 0.32 * fade);
           canvas.drawCircle(c + Offset(math.cos(a), math.sin(a)) * r,
               u * (0.12 + 0.12 * out), fill);
         }
@@ -735,8 +734,8 @@ class DieBurstPainter extends CustomPainter {
       // A gold dashed ring turning, and a crown over the die.
       line
         ..strokeWidth = 2.4
-        ..color = const Color(0xFFF2C14E)
-            .withValues(alpha: 0.9 * math.min(1.0, fade * 1.6));
+        ..color =
+            Palette.goldDark.withValues(alpha: 0.9 * math.min(1.0, fade * 1.6));
       final ring = Path()
         ..addOval(Rect.fromCircle(center: c, radius: u * 0.95));
       for (final metric in ring.computeMetrics()) {
@@ -757,15 +756,14 @@ class DieBurstPainter extends CustomPainter {
             ..lineTo(crown.dx + 9, crown.dy + 6)
             ..close(),
           fill
-            ..color = const Color(0xFFF2C14E)
-                .withValues(alpha: math.min(1.0, fade * 1.6)));
+            ..color =
+                Palette.goldDark.withValues(alpha: math.min(1.0, fade * 1.6)));
     }
     if (cursed) {
       // Chains across the die that fade slowly.
       line
         ..strokeWidth = 3
-        ..color =
-            const Color(0xFF9E9E9E).withValues(alpha: 0.85 * math.sqrt(fade));
+        ..color = Palette.stone62.withValues(alpha: 0.85 * math.sqrt(fade));
       for (final s in [-1.0, 1.0]) {
         final chain = Path()
           ..moveTo(c.dx - u * .75, c.dy + s * u * .28)
@@ -796,7 +794,7 @@ class DieBurstPainter extends CustomPainter {
       double fade, Paint line, Paint fill) {
     final color = switch (element) {
       'Fire' => const Color(0xFFFF7043),
-      'Water' => const Color(0xFF4FC3F7),
+      'Water' => Palette.cyan64,
       'Wind' => const Color(0xFFA5D6C8),
       'Earth' => const Color(0xFFA1887F),
       'Electricity' => const Color(0xFFFFE082),
@@ -891,7 +889,7 @@ class DieBurstPainter extends CustomPainter {
         // The blow splits: arcs flung to either side.
         line
           ..strokeWidth = 3
-          ..color = const Color(0xFFFF8A3D).withValues(alpha: fade);
+          ..color = Palette.orange62.withValues(alpha: fade);
         for (final s in [-1.0, 1.0]) {
           final x = c.dx + s * u * (.4 + .9 * out);
           canvas.drawArc(
@@ -937,7 +935,7 @@ class DieBurstPainter extends CustomPainter {
         // A crack across the die and a drop falling.
         line
           ..strokeWidth = 2.6
-          ..color = const Color(0xFFE8473F).withValues(alpha: fade);
+          ..color = Palette.red58.withValues(alpha: fade);
         canvas.drawPath(
             Path()
               ..moveTo(c.dx - u * .15, c.dy - u * .6)
@@ -945,7 +943,7 @@ class DieBurstPainter extends CustomPainter {
               ..lineTo(c.dx - u * .1, c.dy + u * .15)
               ..lineTo(c.dx + u * .1, c.dy + u * .6),
             line);
-        fill.color = const Color(0xFFE8473F).withValues(alpha: fade);
+        fill.color = Palette.red58.withValues(alpha: fade);
         final dy = c.dy + u * .6 + out * u * .7;
         canvas.drawPath(
             Path()

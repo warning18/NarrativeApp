@@ -185,6 +185,11 @@ void main() {
           prefs: saved(mid.copyWith(floor: 10, health: 40)));
       await settleLong();
       await shot('8-boss-$tag');
+      // A warden floor: its foe wears marks, now one readable chip each.
+      await open(const TowerFloorScreen(),
+          prefs: saved(mid.copyWith(floor: 22, health: 40)));
+      await settleLong();
+      await shot('8b-affixes-$tag');
       // The cards of a won floor: the offer the engine draws for it.
       await open(const TowerFloorScreen(), prefs: saved(mid));
       await settleLong();

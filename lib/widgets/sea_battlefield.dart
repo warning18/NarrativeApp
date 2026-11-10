@@ -21,6 +21,7 @@ import '../data/ship_forms.dart';
 import 'pixelated.dart';
 import 'ship_dress.dart';
 import 'ship_hull_art.dart';
+import '../theme/palette.dart';
 
 /// The waters a battle is fought on, which set the sea's colour, its kind
 /// of waves and what drifts over it.
@@ -98,14 +99,14 @@ class SeaLook {
         SeaWaters.abyss => const SeaLook(
             deep: Color(0xFF0A0812),
             shallow: Color(0xFF1C1432),
-            wave: Color(0xFF3A2A66),
+            wave: Palette.purple28,
             foam: Color(0xFFCBB8FF),
-            accent: Color(0xFF9A6BFF)),
+            accent: Palette.purple71),
         SeaWaters.ashen => const SeaLook(
             deep: Color(0xFF1E2426),
             shallow: Color(0xFF394346),
             wave: Color(0xFF5C696B),
-            foam: Color(0xFFE4E2DC),
+            foam: Palette.paper88,
             accent: Color(0xFFB9B1A4)),
       };
 }
@@ -674,7 +675,7 @@ class _SeaDepthsPainter extends CustomPainter {
     final rim = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
-      ..color = const Color(0xFF9A6BFF).withValues(alpha: 0.25);
+      ..color = Palette.purple71.withValues(alpha: 0.25);
     for (var i = 0; i < 5; i++) {
       final x = size.width *
           (i.isEven ? 0.03 + 0.08 * _hash(i, 80) : 0.88 + 0.08 * _hash(i, 80));
@@ -1064,15 +1065,15 @@ class TopShipLook {
       id: 'rusty_eel',
       length: 1,
       beam: 0.24,
-      hull: Color(0xFF6B4A2E),
+      hull: Palette.orange30,
       deck: Color(0xFF9A7148),
       sail: Color(0xFFD8C8A2),
-      trim: Color(0xFFB0472E));
+      trim: Palette.red44);
   static const raiderSkiff = TopShipLook(
       id: 'raider_skiff',
       length: 0.86,
       beam: 0.22,
-      hull: Color(0xFF5A3A26),
+      hull: Palette.orange25,
       deck: Color(0xFF86613F),
       sail: Color(0xFFB8A27A),
       trim: Color(0xFF7A2E22));
@@ -1081,18 +1082,18 @@ class TopShipLook {
       length: 1,
       beam: 0.25,
       hull: Color(0xFF2E2A2C),
-      deck: Color(0xFF6E5A46),
+      deck: Palette.stone35,
       sail: Color(0xFF3A3336),
-      trim: Color(0xFFC0392B),
+      trim: Palette.red46,
       masts: 2);
   static const inquisitionCutter = TopShipLook(
       id: 'inquisition_cutter',
       length: 0.94,
       beam: 0.2,
       hull: Color(0xFFE0D8C8),
-      deck: Color(0xFFB59A74),
+      deck: Palette.orange58,
       sail: Color(0xFFF4EFE4),
-      trim: Color(0xFFB3261E),
+      trim: Palette.red41,
       masts: 2);
   static const voidBarge = TopShipLook(
       id: 'void_barge',
@@ -1101,9 +1102,9 @@ class TopShipLook {
       hull: Color(0xFF2A2140),
       deck: Color(0xFF4A3E66),
       sail: Color(0xFF6B4FB0),
-      trim: Color(0xFF9A6BFF),
+      trim: Palette.purple71,
       sails: false,
-      glow: Color(0xFF9A6BFF));
+      glow: Palette.purple71);
 
   // The beasts (see sea_beasts.dart; ids are enemy_ships.json keys): the
   // designs' bodies are sprites, so only the size and the room tints
@@ -1378,7 +1379,7 @@ class TopShipPainter extends CustomPainter {
         canvas.drawRect(
             r,
             Paint()
-              ..color = const Color(0xFFFF7A2E).withValues(
+              ..color = Palette.orange59.withValues(
                   alpha: 0.18 + 0.1 * math.sin(t * 9 + room.index)));
       }
     }
@@ -1482,7 +1483,7 @@ class TopShipPainter extends CustomPainter {
         canvas.drawRect(
             zone,
             over
-              ..color = const Color(0xFFFF7A2E)
+              ..color = Palette.orange59
                   .withValues(alpha: 0.18 + 0.1 * math.sin(t * 9 + r.index)));
       }
     }
@@ -1593,7 +1594,7 @@ class TopShipPainter extends CustomPainter {
       paintMounts(canvas, r, cy, beam, towards, dress!, t);
       return;
     }
-    final barrel = Paint()..color = const Color(0xFF1C1B1F);
+    final barrel = Paint()..color = Palette.night11a;
     final ring = Paint()
       ..color = const Color(0xFF55525A)
       ..style = PaintingStyle.stroke
@@ -1613,13 +1614,12 @@ class TopShipPainter extends CustomPainter {
 
   void _bulwark(Canvas canvas, Rect r, double cy, double beam) {
     if (dress != null) {
-      paintPlating(
-          canvas, r, cy, beam, dress!.plating, refit, const Color(0xFF6E5A46));
+      paintPlating(canvas, r, cy, beam, dress!.plating, refit, Palette.stone35);
     } else {
       final plate = Paint()
         ..color = refit >= 2 || look.id != TopShipLook.rustyEel.id
-            ? const Color(0xFF8C98A6)
-            : const Color(0xFF6E5A46)
+            ? Palette.stone60
+            : Palette.stone35
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.5;
       for (final s in [-1.0, 1.0]) {
@@ -1632,7 +1632,7 @@ class TopShipPainter extends CustomPainter {
         Offset(r.right - r.width * 0.2, cy),
         Offset(r.right + r.width * 0.45, cy),
         Paint()
-          ..color = const Color(0xFF3A2818)
+          ..color = Palette.orange16
           ..strokeWidth = 2.5);
   }
 
@@ -1657,7 +1657,7 @@ class TopShipPainter extends CustomPainter {
       final x = x0 + len * mast.at;
       final cloth = look.sail;
       paintMastSail(canvas, mast, x, cy, len, beam, cloth, look.trim, billow,
-          battered, const Color(0xFF3A2818));
+          battered, Palette.orange16);
       final worked = dress;
       if (worked != null) {
         final belly = beam * 0.34 * mast.size;
@@ -1757,10 +1757,9 @@ class TopShipPainter extends CustomPainter {
           Offset(x, cy - span / 2 - 2),
           Offset(x, cy + span / 2 + 2),
           Paint()
-            ..color = const Color(0xFF3A2818)
+            ..color = Palette.orange16
             ..strokeWidth = 2.5);
-      canvas.drawCircle(
-          Offset(x, cy), 3.5, Paint()..color = const Color(0xFF2A1C10));
+      canvas.drawCircle(Offset(x, cy), 3.5, Paint()..color = Palette.orange11);
     }
     if (dress != null) {
       // The flag at the masthead, streaming aft.

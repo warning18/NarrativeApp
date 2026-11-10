@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// How many windows every kit has.
 const int sceneWindowCount = 4;
@@ -174,7 +175,7 @@ _Ink _inkOf(String id) {
     return const _Ink(Color(0xFF0E1A26), Color(0xFF2A4358), Color(0xFFBFD6E0));
   }
   if (id.startsWith('street-')) {
-    return const _Ink(Color(0xFF2A211B), Color(0xFF5A4636), Color(0xFFE0C089));
+    return const _Ink(Color(0xFF2A211B), Palette.night28, Color(0xFFE0C089));
   }
   return switch (id) {
     'desert' =>
@@ -481,7 +482,7 @@ void _pier(_G g, double x, double y) {
     g.r(i.dark, x + 2 + k * 8, y - 3, 2, 12);
   }
   g.r(i.dark, x + 38, y - 12, 2, 9);
-  g.r(const Color(0xFFFFD27A), x + 38, y - 14, 2, 2);
+  g.r(Palette.orange74, x + 38, y - 14, 2, 2);
 }
 
 void _graves(_G g, double x, double y) {
@@ -523,7 +524,7 @@ void _beacon(_G g, double x, double y) {
   g.r(i.dark, x, y - 20, 2, 20);
   g.r(i.mid, x - 2, y - 22, 6, 2);
   g.r(const Color(0xFFFFB43C), x - 1, y - 27, 4, 5);
-  g.r(const Color(0xFFFFE08A), x, y - 26, 2, 3);
+  g.r(Palette.amber77, x, y - 26, 2, 3);
   g.r(i.rim.withValues(alpha: 0.5), x - 4, y - 30, 1, 1);
 }
 
@@ -583,8 +584,8 @@ void _hulk(_G g, double x, double y) {
   g.r(i.dark, x + 2, y - 5, 18, 2);
   g.r(i.dark, x + 12, y - 16, 1, 12);
   g.r(i.dark, x + 8, y - 12, 9, 1);
-  g.r(const Color(0xFFFF8A3C), x + 6, y - 6, 2, 1);
-  g.r(const Color(0xFFFF8A3C), x + 15, y - 5, 1, 1);
+  g.r(Palette.orange62a, x + 6, y - 6, 2, 1);
+  g.r(Palette.orange62a, x + 15, y - 5, 1, 1);
 }
 
 void _marketCart(_G g, double x, double y) {
@@ -626,6 +627,6 @@ void _lampPost(_G g, double x, double y) {
   final i = g.ink;
   g.r(i.dark, x, y - 26, 2, 26);
   g.r(i.dark, x - 2, y - 28, 6, 2);
-  g.r(const Color(0xFFFFD27A), x - 1, y - 33, 4, 5);
+  g.r(Palette.orange74, x - 1, y - 33, 4, 5);
   g.r(i.dark, x - 2, y - 34, 6, 1);
 }

@@ -33,6 +33,7 @@ import '../widgets/rolling_die.dart';
 import 'skills/die_slot_ring.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
+import '../theme/palette.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
@@ -954,7 +955,7 @@ DieCubeFace _cubeSide(Map<String, dynamic> face, String? assigned,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color(0xFFEFE6D2).withValues(alpha: 0.92),
+          color: Palette.amber88.withValues(alpha: 0.92),
           border: Border.all(color: kind.color, width: size * 0.04 + 0.6),
         ),
         child: SkillPixelIcon(skillId, size: size * 0.55),

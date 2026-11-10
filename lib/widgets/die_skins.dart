@@ -5,6 +5,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 /// The mark cut into a die's faces.
 enum DiePattern {
@@ -45,19 +46,19 @@ class DieSkin {
 }
 
 const DieSkin boneSkin =
-    DieSkin('Bone', Color(0xFFCFC6AE), Color(0xFF7C735B), DiePattern.pips);
+    DieSkin('Bone', Color(0xFFCFC6AE), Palette.stone42, DiePattern.pips);
 
 /// The skin of the die [id] (dice.json key).
 DieSkin dieSkinOf(String? id) => dieSkins[id] ?? boneSkin;
 
 const Map<String, DieSkin> dieSkins = {
   'starter_die': boneSkin,
-  'void_die': DieSkin('Void glass', Color(0xFF171225), Color(0xFF8D6CFF),
+  'void_die': DieSkin('Void glass', Color(0xFF171225), Palette.blue71,
       DiePattern.stars, Color(0xFF7A5CFF)),
   'iron_die': DieSkin(
       'Riveted iron', Color(0xFF4B5057), Color(0xFFA6AFBA), DiePattern.rivets),
-  'flame_die': DieSkin('Ember', Color(0xFF4D1F12), Color(0xFFFF8A3D),
-      DiePattern.cracks, Color(0xFFFF6A1F)),
+  'flame_die': DieSkin('Ember', Color(0xFF4D1F12), Palette.orange62,
+      DiePattern.cracks, Palette.orange56),
   'tide_die': DieSkin('Sea glass', Color(0xFF13393F), Color(0xFF5ADBCB),
       DiePattern.waves, Color(0xFF2FBFB0)),
   'storm_die': DieSkin('Stormcast', Color(0xFF2B3445), Color(0xFFB4CDFF),
@@ -66,64 +67,64 @@ const Map<String, DieSkin> dieSkins = {
       'Dwarven stone', Color(0xFF5B5349), Color(0xFFD1B684), DiePattern.bricks),
   'shadow_die': DieSkin('Black lacquer', Color(0xFF101015), Color(0xFF7A7F99),
       DiePattern.scratch),
-  'holy_die': DieSkin('Ivory and gold', Color(0xFFD9D0B8), Color(0xFFF2C14E),
-      DiePattern.rays, Color(0xFFF2C14E)),
+  'holy_die': DieSkin('Ivory and gold', Color(0xFFD9D0B8), Palette.goldDark,
+      DiePattern.rays, Palette.goldDark),
   'berserker_die': DieSkin(
-      'Blood-iron', Color(0xFF4A1515), Color(0xFFE8473F), DiePattern.scratch),
-  'arcane_die': DieSkin('Rune crystal', Color(0xFF20245A), Color(0xFF8E9CFF),
+      'Blood-iron', Color(0xFF4A1515), Palette.red58, DiePattern.scratch),
+  'arcane_die': DieSkin('Rune crystal', Color(0xFF20245A), Palette.blue78,
       DiePattern.runes, Color(0xFF6E7DFF)),
   'huntsman_die': DieSkin(
-      'Antler and oak', Color(0xFF4B3B28), Color(0xFFB5935F), DiePattern.grain),
-  'liora_die': DieSkin('Living wood', Color(0xFF30502B), Color(0xFF95D16F),
-      DiePattern.leaf, Color(0xFF6FBF4E)),
-  'vess_die': DieSkin('Tide-crystal, ink', Color(0xFF1C2650), Color(0xFF86D6FF),
+      'Antler and oak', Color(0xFF4B3B28), Palette.orange54, DiePattern.grain),
+  'liora_die': DieSkin('Living wood', Color(0xFF30502B), Palette.green63a,
+      DiePattern.leaf, Palette.green53),
+  'vess_die': DieSkin('Tide-crystal, ink', Color(0xFF1C2650), Palette.cyan76,
       DiePattern.ink, Color(0xFF6A8CFF)),
   'grosh_die':
-      DieSkin('Tusk', Color(0xFF8F8771), Color(0xFFE0D6B6), DiePattern.cracks),
+      DieSkin('Tusk', Palette.stone50a, Color(0xFFE0D6B6), DiePattern.cracks),
   // Vica's die (v1.601): her black and white coat.
   'hound_die': DieSkin('Black and white coat', Color(0xFF1E1E1E),
-      Color(0xFFF2F0EA), DiePattern.scratch),
+      Palette.paper93, DiePattern.scratch),
   'apprentice_die':
-      DieSkin('Chalk', Color(0xFFD8D4C6), Color(0xFF7C8CFF), DiePattern.chalk),
+      DieSkin('Chalk', Color(0xFFD8D4C6), Palette.blue74, DiePattern.chalk),
   'sage_die': DieSkin('Sky-glass', Color(0xFF21324D), Color(0xFF96D9FF),
       DiePattern.stars, Color(0xFF5FB6F2)),
-  'tobin_die': DieSkin('Reliquary bronze', Color(0xFF5C4527), Color(0xFFE5B566),
+  'tobin_die': DieSkin('Reliquary bronze', Color(0xFF5C4527), Palette.orange65,
       DiePattern.rivets),
   'malrik_die':
       DieSkin('Rust', Color(0xFF4D3123), Color(0xFFCC8250), DiePattern.scratch),
   'gambler_die': DieSkin(
-      'Casino ivory', Color(0xFFE6E0D0), Color(0xFFC0392B), DiePattern.pips),
-  'frost_die': DieSkin('Ice', Color(0xFF1F3C52), Color(0xFFC4EBFF),
+      'Casino ivory', Color(0xFFE6E0D0), Palette.red46, DiePattern.pips),
+  'frost_die': DieSkin('Ice', Color(0xFF1F3C52), Palette.cyan88,
       DiePattern.facets, Color(0xFF7FD3FF)),
   'twinfang_die': DieSkin('Bone and fang', Color(0xFFCFC6AE), Color(0xFF3A3A3A),
       DiePattern.scratch),
   'bulwark_die': DieSkin(
       'Tower stone', Color(0xFF505661), Color(0xFFB6BEC9), DiePattern.bricks),
   'pilgrim_die': DieSkin(
-      'Wayworn wood', Color(0xFF6D5635), Color(0xFFDCCB9F), DiePattern.grain),
-  'tempest_die': DieSkin('Thunder iron', Color(0xFF242B3C), Color(0xFFFFE48A),
+      'Wayworn wood', Color(0xFF6D5635), Palette.amber74, DiePattern.grain),
+  'tempest_die': DieSkin('Thunder iron', Color(0xFF242B3C), Palette.amber77b,
       DiePattern.bolt, Color(0xFFFFD54F)),
   'ossuary_die': DieSkin(
       'Bone mosaic', Color(0xFFCFC6AE), Color(0xFF7A7364), DiePattern.bones),
-  'vigil_die': DieSkin('Candle wax', Color(0xFFE8DFC4), Color(0xFFF2C14E),
-      DiePattern.rays, Color(0xFFFFC96B)),
-  'tearglass_die': DieSkin('Tear-glass', Color(0xFF102B30), Color(0xFFA0F5E8),
-      DiePattern.cracks, Color(0xFF38D6C0)),
-  'headsman_die': DieSkin('Black iron, red', Color(0xFF1D1D22),
-      Color(0xFFCF3E2F), DiePattern.scratch),
-  'greenwood_die': DieSkin(
-      'Greenwood', Color(0xFF2B4B2D), Color(0xFFA8D96D), DiePattern.leaf),
+  'vigil_die': DieSkin('Candle wax', Palette.amber84, Palette.goldDark,
+      DiePattern.rays, Palette.orange71),
+  'tearglass_die': DieSkin('Tear-glass', Color(0xFF102B30), Palette.teal79,
+      DiePattern.cracks, Palette.teal53),
+  'headsman_die': DieSkin(
+      'Black iron, red', Color(0xFF1D1D22), Palette.red50, DiePattern.scratch),
+  'greenwood_die':
+      DieSkin('Greenwood', Color(0xFF2B4B2D), Palette.green64, DiePattern.leaf),
   'chorus_die': DieSkin(
-      'Silver bell', Color(0xFFAEB4BE), Color(0xFFF5F7FB), DiePattern.waves),
+      'Silver bell', Color(0xFFAEB4BE), Palette.blue97, DiePattern.waves),
   // The built d12 (Core, dice sizes): bone until UX draws its own.
   'tally_die': boneSkin,
   // The clans' new dice (Core, clan_dice.dart): placeholders until UX's.
-  'lantern_die': DieSkin('Lantern brass', Color(0xFF3A2E1A), Color(0xFFF2C14E),
-      DiePattern.rays, Color(0xFFFFC96B)),
-  'cinder_die': DieSkin('Banked coal', Color(0xFF2A1F1C), Color(0xFFFF8A3D),
-      DiePattern.cracks, Color(0xFFFF6A1F)),
+  'lantern_die': DieSkin('Lantern brass', Color(0xFF3A2E1A), Palette.goldDark,
+      DiePattern.rays, Palette.orange71),
+  'cinder_die': DieSkin('Banked coal', Color(0xFF2A1F1C), Palette.orange62,
+      DiePattern.cracks, Palette.orange56),
   'court_die': DieSkin(
-      'Mire green', Color(0xFF1E3326), Color(0xFF9FD8A6), DiePattern.waves),
+      'Mire green', Color(0xFF1E3326), Palette.green74, DiePattern.waves),
 };
 
 /// A pattern cut into one face, drawn over its unit square: faint, so the

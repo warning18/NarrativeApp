@@ -24,6 +24,8 @@ import '../widgets/intro_art.dart';
 import '../widgets/pixel_banner.dart';
 import '../widgets/story_text.dart' show storyTextShownAtOnce;
 import '../widgets/street_view/street_view.dart';
+import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// Whether the intro plays at the first New Game. The tests turn it off (see
 /// test/flutter_test_config.dart); the ones about the intro turn it back on.
@@ -65,7 +67,7 @@ const List<(String, double, double)> _lines = [
   ('intro_line_4', 13.8, 99),
 ];
 
-const Color _cream = Color(0xFFEDE3C8);
+const Color _cream = Palette.amber86;
 const double _stageW = 210;
 const double _stageH = 372;
 
@@ -184,13 +186,13 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
             bottom: 14,
             child: SafeArea(
               child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 400),
+                duration: Motion.slow,
                 opacity: seconds < 3.5 ? 0.7 : 0,
                 child: Text(tr(ref, 'intro_skip'),
                     style: const TextStyle(
                         fontFamily: InkFonts.system,
                         fontSize: 11,
-                        color: Color(0xFF9A93A6))),
+                        color: Palette.stone61)),
               ),
             ),
           ),
@@ -336,8 +338,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
           top: 120 + 160 * p - k * 11.0,
           child: Opacity(
             opacity: (p * 2).clamp(0.0, 1.0) * (0.9 - k * 0.12).clamp(0.0, 1.0),
-            child:
-                Container(width: 3, height: 3, color: const Color(0xFFE0702A)),
+            child: Container(width: 3, height: 3, color: Palette.orange52b),
           ),
         ),
       Positioned(
@@ -464,7 +465,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
                         fontFamily: InkFonts.prose,
                         fontSize: 12,
                         fontStyle: FontStyle.italic,
-                        color: Color(0xFF9A93A6))),
+                        color: Palette.stone61)),
               ),
             ]),
           ),
@@ -503,7 +504,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                const Color(0x00000000),
+                Palette.clear,
                 Colors.black.withValues(alpha: 0.85 * (1 - endFade))
               ])),
           child: Text(

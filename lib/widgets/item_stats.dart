@@ -4,6 +4,7 @@ import '../combat/fight_numbers.dart' show potionHealAmount;
 import '../combat/gear_effects.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../theme/palette.dart';
 
 // HP a healing potion restores: the fight's own number.
 export '../combat/fight_numbers.dart' show potionHealAmount;
@@ -245,7 +246,7 @@ class ItemStatChips extends StatelessWidget {
     final deltaColor = delta == null || delta == 0
         ? theme.colorScheme.onSurfaceVariant
         : delta > 0
-            ? Colors.green.shade600
+            ? Palette.goodStrong
             : theme.colorScheme.error;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
