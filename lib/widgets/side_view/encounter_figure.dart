@@ -75,9 +75,9 @@ class EncounterWalk {
     }
     if (set != null && image != null) {
       final use = FightSpriteImages.effective(set);
-      final w = use.frameWidth * scale;
-      final h = use.frameHeight * scale;
-      final foot = use.footInset * scale;
+      final w = use.frameWidth * scale * use.drawScale;
+      final h = use.frameHeight * scale * use.drawScale;
+      final foot = use.footInset * scale * use.drawScale;
       final dst = ui.Rect.fromLTWH(
           (x - w / 2) * u, (baseY - h + foot + bob) * u, w * u, h * u);
       canvas.drawImageRect(
