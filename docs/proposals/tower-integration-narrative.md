@@ -239,8 +239,8 @@ chapter-strip line that names the door. No new screen.
 | **Risk** | none | low to medium: the hubs are long; every door scene is one folded row under the page cap | medium to high: the 4% step margin and the shared ending text; the names must stay text only |
 
 **My recommendation: P2, built on P1.** It gives the user what they asked
-(the towers part of the system, met in the towns, on the map, in a quest
-line of the chapter strip) with no power crossing and no new fight path.
+(the towers part of the system, met in the towns, on the map and in the
+chapter strip) with no power crossing and no new fight path.
 Core's D1 and D2 are the two small links that make it feel joined up, and
 D3 makes the first oath the hero's own. P3 stays open for later on the
 same doors; Option B (the story hero climbs) is not proposed.
