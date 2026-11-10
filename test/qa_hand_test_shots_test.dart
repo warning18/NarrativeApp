@@ -29,6 +29,7 @@ import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/data/choice_flow.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart' show trFor;
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/choice_flow_provider.dart';
@@ -72,7 +73,27 @@ void main() {
     });
     addTearDown(tester.view.reset);
     tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(412, 860);
+    // QA_SHOTS_SIZE=320x568 and QA_SHOTS_LANG=fr: the same sections at another
+    // phone size and in French (the L3's screen read, docs/qa/l3-1.888.0/).
+    final sizeEnv = (Platform.environment['QA_SHOTS_SIZE'] ?? '412x860')
+        .split('x')
+        .map(int.parse)
+        .toList();
+    final phone = Size(sizeEnv[0] * 1.0, sizeEnv[1] * 1.0);
+    final lang = Platform.environment['QA_SHOTS_LANG'] == 'fr'
+        ? AppLanguage.fr
+        : AppLanguage.en;
+    tester.view.physicalSize = phone;
+    final overflows = <String>[];
+    final previousHandler = FlutterError.onError;
+    FlutterError.onError = (details) {
+      if (details.exceptionAsString().contains('overflowed')) {
+        overflows.add(details.exceptionAsString().split('\n').first);
+      } else {
+        previousHandler?.call(details);
+      }
+    };
+    addTearDown(() => FlutterError.onError = previousHandler);
     Directory(out).createSync(recursive: true);
 
     final boundary = GlobalKey();
@@ -92,9 +113,8 @@ void main() {
     await settle();
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(() => container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en));
+    await tester.runAsync(
+        () => container.read(appLanguageProvider.notifier).setLanguage(lang));
     Future<void> newSession(Map<String, dynamic> extra) async {
       await tester.runAsync(() => container
           .read(playerSessionProvider.notifier)
@@ -228,9 +248,8 @@ void main() {
       await clear();
       // Each section starts from the Journey tab, in English, in play mode.
       container.read(homeTabIndexProvider.notifier).state = journeyTabIndex;
-      await tester.runAsync(() => container
-          .read(appLanguageProvider.notifier)
-          .setLanguage(AppLanguage.en));
+      await tester.runAsync(
+          () => container.read(appLanguageProvider.notifier).setLanguage(lang));
       await tester.runAsync(() =>
           container.read(appModeProvider.notifier).setMode(AppMode.inGame));
       await settle();
@@ -979,6 +998,122 @@ void main() {
           '${find.descendant(of: icon.first, matching: find.byType(Text)).evaluate().map((e) => (e.widget as Text).data).toList()}');
       await clear();
     });
+
+    // ---- the L3's screen read (v1.888): the changed screens at any size and
+    // language; QA_SHOTS_ONLY=l3 ----
+    final tag =
+        '${phone.width.toInt()}-${lang == AppLanguage.fr ? 'fr' : 'en'}';
+    await section('l3-journey', () async {
+      for (final (id, flags, name) in const <(String, List<String>, String)>[
+        ('106', <String>[], 'room-106'),
+        ('125', ['casino_rescue', 'saved_woman'], 'street-125'),
+        ('2015', <String>[], 'hub-2015'),
+        ('1200', ['lysa_survived', 'vica_follow'], 'wells-1200'),
+        ('1101_scarred', <String>[], 'land-1101'),
+        ('6100', <String>[], 'village-rimewell'),
+        ('5100', <String>[], 'village-wracks-end'),
+        ('5200', <String>[], 'village-kindly-hill'),
+      ]) {
+        await newSession({'flags': flags});
+        await go(id);
+        await toMap();
+        await shot('l3-$name-$tag');
+        // The ways behind the hand badge, where there is one.
+        final badge = _key('journey_open_choices');
+        if (badge.evaluate().isNotEmpty) {
+          await tester.tap(badge.first);
+          await settle();
+          await tester.pump(const Duration(milliseconds: 600));
+          await shot('l3-$name-cards-$tag');
+          await clear();
+        }
+      }
+    });
+    await section('l3-skills', () async {
+      await newSession({'level': 12, 'professionId': 'cleric'});
+      final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+      nav.push(MaterialPageRoute<void>(builder: (_) => const SkillsScreen()));
+      await settle();
+      await tester.pump(const Duration(seconds: 1));
+      final tabs = find.byType(Tab);
+      for (var i = 0; i < tabs.evaluate().length; i++) {
+        await tester.tap(tabs.at(i));
+        await settle();
+        await tester.pump(const Duration(seconds: 1));
+        await shot('l3-skills-tab${i + 1}-$tag');
+      }
+      nav.popUntil(isGameRoute);
+      await tester.pump(const Duration(seconds: 1));
+    });
+    await section('l3-tabs', () async {
+      await newSession({'level': 12});
+      for (final key in const ['nav_character', 'nav_camp', 'nav_other']) {
+        await tester.tap(find.text(trFor(lang, key)).last);
+        await settle();
+        await shot('l3-$key-$tag');
+      }
+      await tester.tap(find.text(trFor(lang, 'nav_journey')).last);
+      await settle();
+    });
+    await section('l3-fight', () async {
+      await newSession({
+        'level': 9,
+        'baseDamage': 600,
+        'ownedDiceIds': ['starter_die'],
+        'equippedDiceId': 'starter_die',
+        'recruitedAllies': [
+          {'companionId': 'vica', 'currentHealth': 1 << 30},
+        ],
+        'activeAllyIds': ['vica'],
+      });
+      final enemy = {
+        ...fh.gamedata('enemies.json')['slum_thug'] as Map<String, dynamic>,
+        'skillMoves': <dynamic>[],
+        'maxHealth': 1,
+        'minHealth': 1,
+      };
+      tester
+          .state<NavigatorState>(find.byType(Navigator).first)
+          .push(MaterialPageRoute<bool>(
+              builder: (_) => FightScreen(
+                    enemyId: 'slum_thug',
+                    enemy: enemy,
+                    modifiers: const EncounterModifiers(
+                        forcedCondition: BattlefieldCondition.highGround,
+                        forcedGoal: FightGoal.slay),
+                  )));
+      await fightSettle(tester);
+      await shot('l3-fight-0-prebattle-$tag');
+      final enter = find.text(trFor(lang, 'enter_battle_button'));
+      await tester.ensureVisible(enter);
+      await tester.pump();
+      await tester.tap(enter);
+      await fightSettle(tester);
+      await shot('l3-fight-1-board-$tag');
+      final roll = find.textContaining(trFor(lang, 'roll_dice_button'));
+      for (var i = 0; i < 40 && roll.evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.tap(roll.first);
+      await tester.pump();
+      await fh.pumpUntil(
+          tester, () => fh.shows(trFor(lang, 'confirm_roll_button')));
+      await fightSettle(tester);
+      await shot('l3-fight-2-rolled-$tag');
+      await fh.tapWhenEnabled(tester, trFor(lang, 'confirm_roll_button'));
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 700));
+      }
+      await shot('l3-fight-3-spoils-$tag');
+      // The chest's own sheet (its Take button), when it is open.
+      for (var i = 0; i < 3; i++) {
+        await tester.pump(const Duration(milliseconds: 1500));
+      }
+      await shot('l3-fight-4-after-$tag');
+      await clear();
+    });
+    File('$out/_overflow-$tag.txt').writeAsStringSync(
+        overflows.isEmpty ? 'none\n' : '${overflows.toSet().join('\n')}\n');
 
     // ---- the keys of the other tabs, to find what to tap ----
     if (Platform.environment['QA_SHOTS_KEYS'] != null) {
