@@ -9,11 +9,12 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The ruins' colours.
 abstract final class _RuinsLook {
   static const sky = [
-    Color(0xFF2A2433),
+    Palette.night17a,
     Color(0xFF4A3340),
     Color(0xFF7A4046),
     Color(0xFFB3593F),

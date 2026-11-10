@@ -41,13 +41,13 @@ extension _FightCards on _FightScreenState {
           message:
               '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
           child: _miniStat(elementIcon(element),
-              '×${weaknessMultiplier.round()}', Colors.green.shade700),
+              '×${weaknessMultiplier.round()}', Palette.goodDeep),
         ),
       for (final element in known.resist)
         Tooltip(
           message:
               '${trFor(lang, 'resists_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×½', Colors.blueGrey),
+          child: _miniStat(elementIcon(element), '×½', Palette.slate),
         ),
     ];
   }
@@ -127,8 +127,8 @@ extension _FightCards on _FightScreenState {
     final after = max(0, current - pending);
     final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
     final barColor = ratio > 0.5
-        ? Colors.green
-        : (ratio > 0.25 ? Colors.orange : Colors.red);
+        ? Palette.good
+        : (ratio > 0.25 ? Palette.flame : Palette.alert);
     return ClipRRect(
       borderRadius: BorderRadius.circular(height / 2),
       child: Container(
@@ -212,7 +212,7 @@ extension _FightCards on _FightScreenState {
     if (!show) return child;
     final label = Text(
       '-$amount',
-      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      style: const TextStyle(color: Palette.alert, fontWeight: FontWeight.bold),
     );
     return Stack(
       clipBehavior: Clip.none,
@@ -598,7 +598,7 @@ extension _FightCards on _FightScreenState {
                             '${enemy.currentPhase!.nameFor(lang)}: '
                             '${enemy.currentPhase!.messageFor(lang)}',
                     style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.deepPurple),
+                        ?.copyWith(color: Palette.arcane),
                   ),
                 ],
                 const SizedBox(height: 10),
@@ -617,11 +617,11 @@ extension _FightCards on _FightScreenState {
   // --- Small helpers -------------------------------------------------------
 
   static const List<Color> _allyAccents = [
-    Colors.teal,
-    Colors.deepPurple,
-    Colors.orange,
-    Colors.pink,
-    Colors.brown,
+    Palette.lagoon,
+    Palette.arcane,
+    Palette.flame,
+    Palette.rose,
+    Palette.earth,
   ];
 
   /// The color that stands for [member] everywhere on the battle screen:

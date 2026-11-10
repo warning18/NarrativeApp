@@ -10,6 +10,7 @@ import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/moments.dart';
+import '../theme/palette.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -73,7 +74,7 @@ class AchievementsScreen extends ConsumerWidget {
                       ),
                       subtitle: Text(description),
                       trailing: unlocked
-                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          ? const Icon(Icons.check_circle, color: Palette.good)
                           : null,
                     ),
                   );

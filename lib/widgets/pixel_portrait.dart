@@ -16,6 +16,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../utils/pixel_icons/enemy_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'combat_vfx.dart';
+import '../theme/palette.dart';
 
 /// What a portrait can be cued to do.
 enum PortraitCue { hit, lunge, death }
@@ -416,12 +417,8 @@ class _PortraitPainter extends CustomPainter {
               if (_bayer[y % 4][x % 4] / 16 < fadeOut) continue;
               final ex = x + sin(age * 1.3 + x) * 2;
               final ey = y - age * (2.0 + _hash(x, 6) * 1.5);
-              dot(
-                  ex,
-                  ey,
-                  age > 2
-                      ? (age.isOdd ? const Color(0xFFFFE08A) : Colors.white)
-                      : c,
+              dot(ex, ey,
+                  age > 2 ? (age.isOdd ? Palette.amber77 : Colors.white) : c,
                   w: boss && age < 3 ? 2 : 1);
             }
           }

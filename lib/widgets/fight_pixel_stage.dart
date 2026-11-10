@@ -11,6 +11,7 @@ import '../combat/field_anomaly.dart' show FightStage;
 import 'fight_backdrop.dart' show FightScenery;
 import 'side_view/kit_common.dart';
 import 'side_view/side_view.dart';
+import '../theme/palette.dart';
 
 /// The grid is 120 scene pixels across at any width (3 logical pixels on a
 /// 360-wide phone, close to the scenes' own 2.6), as tall as the box needs.
@@ -750,7 +751,7 @@ class _P {
 
   /// What shines through the dark: lamps, torches, the lava.
   void lights(FightStage stage, {required bool lit}) {
-    const warm = Color(0xFFFFC66B);
+    const warm = Palette.orange71a;
     switch (stage) {
       case FightStage.quay:
         for (final x in const [12.0, 104.0]) {
@@ -787,7 +788,7 @@ class _P {
           }
         }
       case FightStage.ash:
-        r(const Color(0xFFFF8A3C), 37, 50, 7, 1);
+        r(Palette.orange62a, 37, 50, 7, 1);
       default:
         break;
     }

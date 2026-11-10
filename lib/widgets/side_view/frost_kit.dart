@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'kit_common.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The frost's colours.
 abstract final class _FrostLook {
@@ -31,7 +32,7 @@ abstract final class _FrostLook {
   static const nearRim = Color(0xFFF4F8FA);
   static const path = Color(0xFFE2EBF1);
   static const pathDark = Color(0xFF9DB0C2);
-  static const pathLight = Color(0xFFFFFFFF);
+  static const pathLight = Palette.white;
   static const stone = Color(0xFF6A7A8A);
   static const window = Color(0xFFF8C878);
   static const smoke = Color(0xFFB8C6D2);

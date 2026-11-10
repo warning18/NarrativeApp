@@ -124,6 +124,7 @@ import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
 
 part 'story_player/story_choice_flow.dart';
 part 'story_player/story_hub.dart';

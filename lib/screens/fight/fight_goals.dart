@@ -243,12 +243,12 @@ extension _FightGoals on _FightScreenState {
   /// The marks on an enemy's card: the Rout's captain, a thief's purse.
   List<Widget> _goalMarks(_EnemyMember enemy) => [
         if (enemy.isCaptain && enemy.isAlive)
-          _stateChip(Icons.military_tech, tr(ref, 'goal_captain'),
-              Colors.amber.shade800),
+          _stateChip(
+              Icons.military_tech, tr(ref, 'goal_captain'), Palette.amberDeep),
         if (enemy.stash > 0 && enemy.isAlive)
           _stateChip(
               Icons.savings_outlined,
               tr(ref, 'plunder_stash_chip').replaceAll('{n}', '${enemy.stash}'),
-              Colors.brown),
+              Palette.earth),
       ];
 }

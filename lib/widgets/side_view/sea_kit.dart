@@ -22,6 +22,7 @@ import 'side_ship.dart';
 import 'kit_hour.dart';
 import 'scene_windows.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// The horizon, in scene rows from the top.
 const int _horizon = 38;
@@ -427,7 +428,7 @@ void _paintMeeting(Canvas canvas, Size size, double u, double t,
   switch (meeting.kind) {
     case SeaMeetingKind.none:
       // A pair of gulls crossing.
-      final gull = Paint()..color = const Color(0xFFECE7DC);
+      final gull = Paint()..color = Palette.paper89;
       for (var i = 0; i < 2; i++) {
         final gx = ((t * (5 + i * 2) + i * 40) % (w + 20)) - 10;
         final gy = 14 + i * 7 + math.sin(t * 2 + i).roundToDouble();
@@ -468,9 +469,9 @@ void _paintMeeting(Canvas canvas, Size size, double u, double t,
 
 /// A derelict: the hull heeled over, the mast snapped, a rag of sail.
 void _derelict(Canvas canvas, double u, double x, double base) {
-  final hull = Paint()..color = const Color(0xFF4A3426);
+  final hull = Paint()..color = Palette.orange22;
   final plank = Paint()..color = const Color(0xFF2E2016);
-  final rim = Paint()..color = const Color(0xFF7A5A3A);
+  final rim = Paint()..color = Palette.orange35;
   final mast = Paint()..color = const Color(0xFF241A12);
   final rag = Paint()..color = const Color(0xFFB8AF98);
   for (var r = 0; r < 5; r++) {
@@ -497,10 +498,10 @@ void _sighting(Canvas canvas, Size size, double u, double t, double w) {
   final lx = (w * 0.78).floorToDouble();
   final pulse = 0.6 + 0.4 * math.sin(t * 1.4);
   canvas.drawCircle(Offset(lx * u, (_horizon - 1) * u), 7 * u,
-      Paint()..color = const Color(0xFFFFE08A).withValues(alpha: 0.18 * pulse));
-  sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE9A8), lx - 1,
-      _horizon - 2, 2, 2);
-  final path = Paint()..color = const Color(0xFFFFE08A).withValues(alpha: 0.32);
+      Paint()..color = Palette.amber77.withValues(alpha: 0.18 * pulse));
+  sidePixels(
+      canvas, u, Paint()..color = Palette.amber83, lx - 1, _horizon - 2, 2, 2);
+  final path = Paint()..color = Palette.amber77.withValues(alpha: 0.32);
   for (var k = 0; k < 8; k++) {
     sidePixels(canvas, u, path, lx - 1 - (k % 2), _horizon + 2 + k * 3,
         2 + (k % 2) * 2, 1);
@@ -566,7 +567,7 @@ void _harbour(Canvas canvas, double u, double w, double t) {
   final stoneLight = Paint()..color = const Color(0xFF807A72);
   final wall = Paint()..color = const Color(0xFF3F3A44);
   final roof = Paint()..color = const Color(0xFF2A2630);
-  final window = Paint()..color = const Color(0xFFF2B85A);
+  final window = Paint()..color = Palette.orange65a;
   sidePixels(canvas, u, stone, x0, 52, w - x0 + 2, 6);
   sidePixels(canvas, u, stoneLight, x0, 52, w - x0 + 2, 1);
   var x = x0 + 4;
@@ -584,12 +585,9 @@ void _harbour(Canvas canvas, double u, double w, double t) {
     }
     if (tower) {
       final glow = 0.7 + 0.3 * math.sin(t * 2.2);
-      canvas.drawCircle(
-          Offset((x + 3) * u, (52 - bh - 4) * u),
-          7 * u,
-          Paint()
-            ..color = const Color(0xFFF2B85A).withValues(alpha: 0.22 * glow));
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFFFE9A8), x + 2,
+      canvas.drawCircle(Offset((x + 3) * u, (52 - bh - 4) * u), 7 * u,
+          Paint()..color = Palette.orange65a.withValues(alpha: 0.22 * glow));
+      sidePixels(canvas, u, Paint()..color = Palette.amber83, x + 2,
           52 - bh - 5, 2, 2);
     }
     x += bw + 3;

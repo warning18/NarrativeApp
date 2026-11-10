@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' show Color;
 
 import '../l10n/app_locale.dart';
+import '../theme/palette.dart';
 
 /// The story's world, on a chart 256 × 176 units across: the landmarks
 /// every scene of the story happens at and the road between them
@@ -31,7 +32,7 @@ class MapChapter {
 
 const List<MapChapter> mapChapters = [
   MapChapter(
-      1, 'Chapter 1', 'Chapitre 1', Color(0xFFE0762B), Color(0xFFB5531A)),
+      1, 'Chapter 1', 'Chapitre 1', Palette.emberDark, Color(0xFFB5531A)),
   MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2\u00a0: Bouche-de-Sel',
       Color(0xFF3F9C9C), Color(0xFF1F6F6F)),
   MapChapter(
@@ -39,7 +40,7 @@ const List<MapChapter> mapChapters = [
       'Chapter 3: The Spire of Judgment',
       'Chapitre 3\u00a0: La Flèche du Jugement',
       Color(0xFF9A968C),
-      Color(0xFF5F5B55)),
+      Palette.stone35a),
   MapChapter(4, 'Chapter 4: The Hollow Court',
       'Chapitre 4\u00a0: La Cour Creuse', Color(0xFFD9CFB8), Color(0xFF7A6A48)),
   MapChapter(
@@ -49,19 +50,19 @@ const List<MapChapter> mapChapters = [
       Color(0xFF9B6FE0),
       Color(0xFF6D3FA0)),
   MapChapter(6, 'Chapter 6: The Hollow Shore',
-      'Chapitre 6\u00a0: La Rive Creuse', Color(0xFFE9E6DF), Color(0xFF3B3743)),
+      'Chapitre 6\u00a0: La Rive Creuse', Palette.paper89a, Palette.seamDark),
   MapChapter(
       7,
       'Chapter 7: The Lantern Throne',
       'Chapitre 7\u00a0: Le Trône de la Lanterne',
-      Color(0xFFF2C14E),
+      Palette.goldDark,
       Color(0xFF8F6B10)),
   MapChapter(
       8,
       'Chapter 8: Beyond the Tear',
       'Chapitre 8\u00a0: Au-delà de la déchirure',
-      Color(0xFFD9544D),
-      Color(0xFF8A1A1A)),
+      Palette.bloodDark,
+      Palette.red32),
 ];
 
 MapChapter mapChapter(int number) =>

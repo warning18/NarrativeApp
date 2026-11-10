@@ -186,7 +186,7 @@ extension _FightClash on _FightScreenState {
         _stateChip(
           Icons.bubble_chart,
           elementLabel(element, lang),
-          Colors.indigo,
+          Palette.dusk,
           tooltip: tr(ref, 'reaction_primed_tip')
               .replaceAll('{e}', elementLabel(element, lang))
               .replaceAll(

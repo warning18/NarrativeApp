@@ -17,6 +17,7 @@ import '../side_view/kit_hour.dart';
 import '../side_view/scene_windows.dart';
 import '../side_view/side_view.dart';
 import 'street_facade.dart';
+import '../../theme/palette.dart';
 
 /// One choice standing in the street: its [index] among the scene's ways,
 /// the [child] (the pin the Journey draws everywhere else), its [label].
@@ -71,7 +72,7 @@ List<Color> streetSkyBands(DayPhase phase, WeatherKind? sky) {
         Color(0xFFE59A62)
       ],
     DayPhase.night => const [
-        Color(0xFF0B1230),
+        Palette.blue12,
         Color(0xFF16204A),
         Color(0xFF2A3562)
       ],
@@ -150,7 +151,7 @@ List<SideLayer> streetLayers({
         if (y > 71) break;
       }
       // The kerb line and its shadow.
-      paint.color = const Color(0xFF8C857A);
+      paint.color = Palette.stone51;
       sidePixels(canvas, u, paint, 0, streetKerb, cols, 1);
       paint.color = Colors.black.withValues(alpha: 0.18);
       sidePixels(canvas, u, paint, 0, streetKerb + 1, cols, 2);
@@ -202,7 +203,7 @@ SideLayer _streetOverlay(
             width: box.width * 0.9 * u,
             height: 9 * u),
         Paint()
-          ..color = const Color(0xFFFFD27A)
+          ..color = Palette.orange74
               .withValues(alpha: phase == DayPhase.night ? 0.2 : 0.12));
     paintFacadeLights(canvas, u, style, box, t,
         strength: phase == DayPhase.night ? 1 : 0.7);
@@ -218,15 +219,15 @@ SideLayer _streetParty({required FacadeStyle style}) {
     final x = (box.doorX - 14).floorToDouble();
     const feet = streetKerb + 5;
     final paint = Paint();
-    paint.color = const Color(0xFF2B2420);
+    paint.color = Palette.night15;
     sidePixels(canvas, u, paint, x, feet - 2, 3, 2);
-    paint.color = const Color(0xFFC0392B);
+    paint.color = Palette.red46;
     sidePixels(canvas, u, paint, x - 1, feet - 6, 5, 4);
     paint.color = const Color(0xFF8E2B20);
     sidePixels(canvas, u, paint, x - 1, feet - 3, 5, 1);
-    paint.color = const Color(0xFFE2B890);
+    paint.color = Palette.orange73;
     sidePixels(canvas, u, paint, x, feet - 8, 3, 2);
-    paint.color = const Color(0xFFEFE6CF);
+    paint.color = Palette.amber87;
     sidePixels(canvas, u, paint, x - 1, feet - 9, 4, 1);
     // A shadow under their feet.
     paint.color = Colors.black.withValues(alpha: 0.25);

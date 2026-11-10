@@ -121,6 +121,7 @@ import 'story_player_screen.dart'
         takeStoryChoice;
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -2192,7 +2193,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             chapterColor: (n) => switch (look) {
               MapLook.night => mapChapter(n).dark,
               MapLook.parchment => mapChapter(n).light,
-              MapLook.shroud => const Color(0xFFA3A3AA),
+              MapLook.shroud => Palette.stone65,
             },
             onLayers: _showCalques,
             onSelect: (landmark) => setState(() => _lookedAt = landmark),
@@ -3122,7 +3123,7 @@ class _JourneyChartState extends State<_JourneyChart>
     vsync: this,
     duration: const Duration(milliseconds: 520),
   );
-  Color _beatColor = const Color(0xFFFFFFFF);
+  Color _beatColor = Palette.white;
   IconData _beatIcon = Icons.circle;
 
   /// A ring spreads from the party's mark in [colour] and [icon] rises from
@@ -3996,12 +3997,9 @@ class _JourneyChartState extends State<_JourneyChart>
                                         ? JourneyWeather.none
                                         : widget.weather,
                                     weatherColour: switch (widget.weather) {
-                                      JourneyWeather.rain =>
-                                        const Color(0xFF8FC3CF),
-                                      JourneyWeather.snow =>
-                                        const Color(0xFFEFF3F6),
-                                      JourneyWeather.dust =>
-                                        const Color(0xFFC9A46A),
+                                      JourneyWeather.rain => Palette.cyan69,
+                                      JourneyWeather.snow => Palette.paper95,
+                                      JourneyWeather.dust => Palette.orange60,
                                       _ => palette.place,
                                     },
                                     selectedRoad: selectedRoad,
@@ -4088,7 +4086,7 @@ class _JourneyChartState extends State<_JourneyChart>
                               decoration: BoxDecoration(
                                 color: _placeMode
                                     ? palette.land.withValues(alpha: 0.85)
-                                    : const Color(0x00000000),
+                                    : Palette.clear,
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Padding(
@@ -5471,7 +5469,7 @@ class _CityDistrictView extends ConsumerWidget {
                   fontFamily: InkFonts.system,
                   fontSize: 11,
                   height: 1,
-                  color: Color(0xFF17151B))),
+                  color: Palette.night9)),
         );
 
     // A way's pin in the street (v1.544): its banner, else its kind's disc.

@@ -6,6 +6,7 @@ import '../combat/status_effect.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import 'game_icons.dart';
+import '../theme/palette.dart';
 
 /// What a die face does, read at a glance: one colour per effect, the same
 /// on the battle tray, the face sheet, the dice loadout and the skill list.
@@ -16,14 +17,14 @@ enum FaceKind { attack, defend, heal, mana, poison, stun, weaken, empty }
 
 extension FaceKindStyle on FaceKind {
   Color get color => switch (this) {
-        FaceKind.attack => const Color(0xFFE53935),
+        FaceKind.attack => Palette.red55,
         FaceKind.defend => const Color(0xFF607D8B),
-        FaceKind.heal => const Color(0xFFEC407A),
+        FaceKind.heal => Palette.red59,
         FaceKind.mana => manaColor,
-        FaceKind.poison => const Color(0xFF43A047),
+        FaceKind.poison => Palette.green45,
         FaceKind.stun => const Color(0xFFFFA000),
         FaceKind.weaken => const Color(0xFF8E24AA),
-        FaceKind.empty => Colors.grey,
+        FaceKind.empty => Palette.neutral,
       };
 
   IconData get icon => switch (this) {
@@ -53,8 +54,8 @@ extension FaceKindStyle on FaceKind {
 /// through green, blue and purple to orange.
 extension SkillRarityStyle on SkillRarity {
   Color get color => switch (this) {
-        SkillRarity.common => const Color(0xFF9E9E9E),
-        SkillRarity.uncommon => const Color(0xFF43A047),
+        SkillRarity.common => Palette.stone62,
+        SkillRarity.uncommon => Palette.green45,
         SkillRarity.rare => const Color(0xFF1E88E5),
         SkillRarity.epic => const Color(0xFF8E24AA),
         SkillRarity.legendary => const Color(0xFFFB8C00),

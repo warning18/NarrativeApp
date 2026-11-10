@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 /// One axis of a [RadarChart]: its short label, the value shown under it, an
 /// optional small [sub] line (a change, in [subColor]) and its colour.
@@ -163,8 +164,7 @@ class RadarChart extends StatelessWidget {
               if (axis.sub != null)
                 Text(axis.sub!,
                     style: theme.textTheme.labelSmall?.copyWith(
-                        fontSize: 11,
-                        color: axis.subColor ?? const Color(0xFF6FD08C))),
+                        fontSize: 11, color: axis.subColor ?? Palette.green63)),
             ],
           ),
         ),

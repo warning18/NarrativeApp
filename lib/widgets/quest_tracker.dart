@@ -16,6 +16,7 @@ import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import 'quest_turn_in.dart';
 import 'ink_sheet.dart';
+import '../theme/palette.dart';
 
 /// The followed quest above the story: its name and the goal it waits on
 /// ("Defeat catacomb ghouls (1/3)"), a Turn in button once every objective
@@ -75,7 +76,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final lang = ref.watch(appLanguageProvider);
-    final accent = goal.ready ? Colors.green.shade700 : colors.primary;
+    final accent = goal.ready ? Palette.goodDeep : colors.primary;
     final objectives =
         (quest['objectives'] as List?)?.cast<Map<String, dynamic>>() ??
             const [];
@@ -324,7 +325,7 @@ class _QuestSheet extends ConsumerWidget {
                           : Icons.radio_button_unchecked,
                       size: 18,
                       color: status.met
-                          ? Colors.green
+                          ? Palette.good
                           : theme.colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 8),

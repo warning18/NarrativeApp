@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import 'pixel_banner.dart';
+import '../theme/palette.dart';
 
 /// A faction's icon (factions.json `icon`, see patronIconNames): a
 /// Material icon, since factions have no image of their own.
@@ -84,7 +85,7 @@ IconData _patronIconFor(String name) => switch (name) {
 
 /// The color a rarity is shown in, readable on light and dark alike.
 Color signRarityColor(SignRarity rarity) => switch (rarity) {
-      SignRarity.common => const Color(0xFF8A8F98),
+      SignRarity.common => Palette.stone57,
       SignRarity.rare => const Color(0xFF3A7BD5),
       SignRarity.epic => const Color(0xFF9B51E0),
       SignRarity.heroic => const Color(0xFFE08A1E),
@@ -112,7 +113,7 @@ class PatronEmblem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = Color(patron?.color ?? 0xFFB08D3C);
-    final color = dimmed ? Colors.grey : base;
+    final color = dimmed ? Palette.neutral : base;
     final banner = patron == null ? null : clanBannerId(patron!.id);
     if (banner != null) {
       final k = size / _sign.width;
@@ -142,7 +143,7 @@ class PatronEmblem extends StatelessWidget {
       if (dimmed) {
         cloth = ColorFiltered(
           colorFilter:
-              const ColorFilter.mode(Colors.grey, BlendMode.saturation),
+              const ColorFilter.mode(Palette.neutral, BlendMode.saturation),
           child: cloth,
         );
       }
@@ -152,7 +153,7 @@ class PatronEmblem extends StatelessWidget {
         height: size,
         padding: const EdgeInsets.all(1.5),
         decoration: BoxDecoration(
-          color: const Color(0xFF141217),
+          color: Palette.night8,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: color.withValues(alpha: 0.9)),
         ),
@@ -287,7 +288,7 @@ class SignsSection extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.water_drop, color: Color(0xFFB3261E)),
+        icon: const Icon(Icons.water_drop, color: Palette.red41),
         title: Text(trFor(lang, 'titan_blood_confirm_title')
             .replaceAll('{name}', name)),
         content: Text(trFor(lang, 'titan_blood_confirm_body')
@@ -410,8 +411,7 @@ class SignsSection extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.water_drop,
-                      size: 16, color: Color(0xFFB3261E)),
+                  const Icon(Icons.water_drop, size: 16, color: Palette.red41),
                   const SizedBox(width: 2),
                   Text(
                     tr(ref, 'titan_blood_label')

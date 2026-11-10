@@ -23,6 +23,7 @@ import 'clan_power_block.dart' show powerTierKey;
 import 'pixel_banner.dart';
 import 'pixel_sprite.dart';
 import 'wind_banner.dart';
+import '../theme/palette.dart';
 
 /// One banner hanging in the hall.
 class HungBanner {
@@ -336,8 +337,8 @@ class _ThroneRoomState extends State<ThroneRoom>
                       boxShadow: widget.pickedId == banner.id
                           ? [
                               BoxShadow(
-                                  color: const Color(0xFFF2C14E)
-                                      .withValues(alpha: 0.5),
+                                  color:
+                                      Palette.goldDark.withValues(alpha: 0.5),
                                   blurRadius: 16),
                             ]
                           : null,

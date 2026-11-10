@@ -9,6 +9,7 @@ import '../combat/skill_vfx.dart' show VfxPalette;
 import '../theme/stitched_ink.dart';
 import 'journey_fx.dart';
 import 'pixel_vfx.dart';
+import '../theme/palette.dart';
 
 /// The small moments that make an action land, across the game: bursts,
 /// a healing wave, an achievement's toast, a chapter's title card, the
@@ -135,7 +136,7 @@ void showBurst(BuildContext context,
 /// Coins flying from [from] to [to] (a purchase, gold earned).
 void showCoinFlight(BuildContext context,
     {required Offset from, required Offset to, int count = 6}) {
-  const gold = Color(0xFFF2C14E);
+  const gold = Palette.goldDark;
   _overlayFor(
     context,
     duration: const Duration(milliseconds: 900),
@@ -155,7 +156,7 @@ void showCoinFlight(BuildContext context,
             Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1
-              ..color = const Color(0xFF8A5A00));
+              ..color = Palette.goldLight);
       }
     },
   );
@@ -163,7 +164,7 @@ void showCoinFlight(BuildContext context,
 
 /// A soft green wave through the whole screen: the party rested.
 void showHealWave(BuildContext context) {
-  const heal = Color(0xFF7DBE6A);
+  const heal = Palette.healDark;
   _overlayFor(
     context,
     duration: const Duration(milliseconds: 1400),
@@ -620,9 +621,9 @@ class WeatherLayer extends StatelessWidget {
     if (weather == JourneyWeather.none) return const SizedBox.shrink();
     final ink = InkColors.of(context);
     final colour = switch (weather) {
-      JourneyWeather.rain => const Color(0xFF8FC3CF),
-      JourneyWeather.snow => const Color(0xFFEFF3F6),
-      JourneyWeather.dust => const Color(0xFFC9A46A),
+      JourneyWeather.rain => Palette.cyan69,
+      JourneyWeather.snow => Palette.paper95,
+      JourneyWeather.dust => Palette.orange60,
       _ => ink.ash,
     }
         .withValues(alpha: strength);
@@ -654,7 +655,7 @@ class StormLayer extends StatelessWidget {
           : 0.0;
       if (flash > 0) {
         canvas.drawRect(Offset.zero & size,
-            Paint()..color = const Color(0xFFEAF4FF).withValues(alpha: flash));
+            Paint()..color = Palette.blue96.withValues(alpha: flash));
       }
     });
   }
@@ -858,7 +859,7 @@ class ApprovalHeart extends StatelessWidget {
 
 /// Slow golden rays turning behind a medal (a level gained).
 class RayBurst extends StatelessWidget {
-  const RayBurst({super.key, this.colour = const Color(0xFFD4A017)});
+  const RayBurst({super.key, this.colour = Palette.amber46});
 
   final Color colour;
 

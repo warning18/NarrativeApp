@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../data/map_charts.dart';
 import '../data/room_plan.dart';
+import '../theme/palette.dart';
 
 class RoomPlanPainter extends CustomPainter {
   RoomPlanPainter({
@@ -25,7 +26,7 @@ class RoomPlanPainter extends CustomPainter {
   final ChartPalette palette;
   final Color ember;
 
-  static const Color _dark = Color(0xFF17151B);
+  static const Color _dark = Palette.night9;
 
   @override
   void paint(Canvas canvas, Size size) {

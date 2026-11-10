@@ -120,6 +120,7 @@ import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 import 'fight/fight_tips.dart';
 import '../widgets/ink_sheet.dart';
+import '../theme/palette.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';
@@ -198,7 +199,7 @@ const int _luckyCoinLuckBonus = 10;
 /// enemy's health bar the aimed dice would take off, and its "-N" chip
 /// (see [_FightScreenState._buildHpBar]). Blue on purpose -- nothing else
 /// on the enemy side is blue, so it never reads as damage already taken.
-const Color _previewColor = Color(0xFF42A5F5);
+const Color _previewColor = Palette.blue61;
 
 /// Armor added to the player for one fight by a `charm_iron_skin`.
 const int _ironSkinArmorBonus = 1;

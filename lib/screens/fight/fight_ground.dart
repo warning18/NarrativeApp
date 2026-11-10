@@ -400,7 +400,11 @@ extension _FightGround on _FightScreenState {
             end: Alignment.bottomCenter,
             // Softer than the scene is on its own, so the names and bars
             // over it keep their contrast.
-            colors: [Color(0xB3FFFFFF), Color(0xB3FFFFFF), Color(0x00FFFFFF)],
+            colors: [
+              Color(0xB3FFFFFF),
+              Color(0xB3FFFFFF),
+              Palette.alpha00Paper100
+            ],
             stops: [0, 0.6, 1],
           ).createShader(rect),
           child: SideViewScene(
@@ -461,7 +465,7 @@ extension _FightGround on _FightScreenState {
     final favour = reads ? plan.helpsParty : null;
     final scheme = Theme.of(context).colorScheme;
     final colour = switch (favour) {
-      true => Colors.green,
+      true => Palette.good,
       false => scheme.error,
       null => scheme.tertiary,
     };

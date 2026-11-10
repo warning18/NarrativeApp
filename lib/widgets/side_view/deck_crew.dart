@@ -12,6 +12,7 @@ import '../../providers/walking_party_provider.dart';
 import 'desert_kit.dart' show walkPlaceholderColour;
 import 'party_look.dart';
 import 'side_view.dart';
+import '../../theme/palette.dart';
 
 /// One of the crew on deck: [id] (`hero` or a companion's id) and the cloak
 /// colour.
@@ -34,8 +35,7 @@ class DeckCrew {
 /// The crew of [party] (see walkingPartyProvider), the hero first.
 List<DeckCrew> deckCrewOf(List<WalkingPartyMember> party) => [
       for (final m in party)
-        DeckCrew(m.id,
-            m.isHero ? const Color(0xFFC0392B) : walkPlaceholderColour(m.id)),
+        DeckCrew(m.id, m.isHero ? Palette.red46 : walkPlaceholderColour(m.id)),
     ];
 
 /// How far along the hull, as a fraction of her length from the stern,
@@ -69,8 +69,8 @@ void paintDeckCrew(
 }) {
   if (crew.isEmpty || top.isEmpty) return;
   final at = deckCrewAt(crew.length);
-  const skin = Color(0xFFE2B890);
-  const boots = Color(0xFF2B2420);
+  const skin = Palette.orange73;
+  const boots = Palette.night15;
   // Back to front: the last of the crew first, the hero in front.
   for (var i = crew.length - 1; i >= 0; i--) {
     final who = crew[i];
@@ -95,7 +95,7 @@ void paintDeckCrew(
       sidePixels(
           canvas, u, paint, fx + (look ? 0 : 1), feet - 7 + crouch, 3, 2);
       // The hero's pale hat.
-      paint.color = const Color(0xFFEFE6CF);
+      paint.color = Palette.amber87;
       sidePixels(canvas, u, paint, fx, feet - 8 + crouch, 4, 1);
       // A dark eye.
       paint.color = boots;
@@ -108,12 +108,12 @@ void paintDeckCrew(
     }
     // After dark the hero carries a lantern, held out toward the bow.
     if (lamp && who.isHero) {
-      const warm = Color(0xFFFFD27A);
+      const warm = Palette.orange74;
       final lx = fx + 5, ly = feet - 4 + crouch;
       final sway = math.sin(t * 2.2) * 0.4;
       canvas.drawCircle(Offset((lx + 0.5) * u, (ly + 1 + sway) * u), 6 * u,
           Paint()..color = warm.withValues(alpha: 0.22));
-      paint.color = const Color(0xFF3A2A1C);
+      paint.color = Palette.orange17a;
       sidePixels(canvas, u, paint, lx, ly - 1, 2, 1);
       paint.color = warm;
       sidePixels(canvas, u, paint, lx, ly, 2, 2);

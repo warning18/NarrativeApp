@@ -48,7 +48,7 @@ extension _FightControls on _FightScreenState {
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Color(0xFFE0752B)),
+                          shape: BoxShape.circle, color: Palette.orange52),
                     ),
                   ),
               ],
@@ -302,7 +302,7 @@ extension _FightControls on _FightScreenState {
             ),
             child: Stack(
               children: [
-                Center(child: Icon(icon, size: 20, color: Colors.green)),
+                Center(child: Icon(icon, size: 20, color: Palette.good)),
                 Positioned(
                   right: 2,
                   bottom: 1,

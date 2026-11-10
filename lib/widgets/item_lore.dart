@@ -5,9 +5,10 @@ import '../data/throne.dart' show midSentenceName;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/item_origin.dart';
+import '../theme/palette.dart';
 
 /// An item's gold, for a Relic's tag: the same on every screen.
-const Color relicColor = Color(0xFFC9A227);
+const Color relicColor = Palette.amber47;
 
 /// [rarity] (items.json: Common, Uncommon, Rare, Relic) in [language];
 /// the raw word for one the game does not name, '' for none.
