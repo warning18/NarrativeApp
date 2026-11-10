@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.897.0+933]
+
+### Added
+- **Two bosses stand in the fight, two chapter strips are redrawn** (UX, the
+  Art pilots the user approved). The Iron Golem and the Void Sovereign wear
+  PixelLab art (60 x 60 side views, drawn at 0.9 so they fit the stage) in
+  the scene stage and on the road; enemy ids unchanged. The reward card's
+  chapter strips for chapters 1 and 4 are the PixelLab pictures (160 x 56,
+  same slot; the words on top stay readable at 412, 360 and 320 px, EN and FR).
+  The other six strips are as before. Lysa, Kelda and Sable are not wired:
+  no screen stands them today (see the PR).
+
 ## [1.893.0+929]
 
 ### Fixed

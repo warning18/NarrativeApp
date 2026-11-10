@@ -81,6 +81,8 @@ const Map<String, ({int size, int foot, double scale})> _enemyFrames = {
   'rat': (size: 60, foot: 1, scale: 0.7),
   'rat_matriarch': (size: 60, foot: 4, scale: 0.85),
   'plague_hound': (size: 60, foot: 2, scale: 0.85),
+  'iron_golem': (size: 60, foot: 3, scale: 0.9),
+  'void_sovereign': (size: 60, foot: 2, scale: 0.9),
 };
 
 FightSpriteSet _enemySet(String name) {
@@ -115,6 +117,8 @@ const Map<String, String> _enemySprites = {
   'demon_imp': 'low_demon',
   'angel_sentinel': 'low_angel',
   'street_bandit': 'street_bandit',
+  'iron_golem': 'iron_golem',
+  'void_sovereign': 'void_sovereign',
 };
 
 /// The art an enemy stands in the fight with (facing west, toward the

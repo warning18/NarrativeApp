@@ -23,3 +23,5 @@ The sewer ones are 60 x 60 side views: `lib/widgets/fight_sprites.dart` keeps a 
 | `low_demon` | Low demon | `demon_imp` |
 | `low_angel` | Low angel | `angel_sentinel` |
 | `street_bandit` | Bandit from the desert, Pit wretch no hood | `street_bandit` |
+| `iron_golem` | Iron Golem (60 x 60, Art pilots) | `iron_golem` |
+| `void_sovereign` | Void Sovereign (60 x 60, Art pilots) | `void_sovereign` |
