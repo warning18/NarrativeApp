@@ -29,3 +29,10 @@ Notes for UX-2: the PixelLab frames are exactly the canvas size (no extra margin
 
 ### Banners (no generation; exact pixel edit of today's files)
 Cost 0. `art/pixellab-banners/clan_{dominion,oni}_{rim,rim_folds}.png`: only the first cloth pixel inside the left outline (`#8A6B43`, the rod's brass) and, for `rim_folds`, a faint fold dot (`#332B22`) every second row 4 px inside each edge. Emblem, rod, hem, accents and the 64x128 size are untouched. A PixelLab `edit_image` costs 10 generations per banner and may redraw the emblem; it was not used. Not yet staged for `assets/`.
+
+### Round 1 rest: chests, panels and button, die skin, chapter strips (all in `art/pixellab-pilots/`, see its `index.json`)
+Balance 1317.5 before, 1288.5 after: **29 generations** (6 chests x 1, die 1, 2 chapter strips x 1, 2 `create_ui_asset` x 10). Nothing is wired into the game. Raw downloads are in `art/pixellab-pilots/raw/`; review files in `pixellab/` (palette PNG8) with today's crop in `today/`.
+- Chests: pixen 32x32, seed 5, no background; one prompt per tier and state.
+- Panel + button: one `create_ui_asset` call per surface (dark `#1F1C23`, parchment `#EAE0C9`, the app's real `surfaceContainer` tokens, not the board mock's `#3B3743`), seed 21, palette-locked, style reference = the stitched-ink mock of the board. The button on the parchment sheet had the word "BUTTON" written in it; it is painted out in the review file.
+- Die: pixen 64x64, seed 7. One fixed isometric cube (no rotation, no numbers).
+- Chapter strips: pixen 160x56, seed 3; they are much more detailed than today's code strips.
