@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
+import 'ink_chip.dart';
 
 /// One title, read: the clan's banner beside the title's own badge in the
 /// clan's colour and the clan that grants it, then what it does in a card
@@ -106,7 +107,7 @@ class TitleDetailView extends StatelessWidget {
                             ?.copyWith(color: clanColor)),
                   if (worn) ...[
                     const SizedBox(height: 6),
-                    InkTag(label: t('title_worn'), color: ink.gold),
+                    InkChip(t('title_worn'), color: ink.gold),
                   ],
                 ],
               ),

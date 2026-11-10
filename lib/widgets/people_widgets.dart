@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/factions.dart';
 import '../data/geography.dart';
 import '../l10n/app_locale.dart';
-import '../theme/stitched_ink.dart' show InkTag;
+import 'ink_chip.dart';
 
 /// The name of [factionId] (a factions.json or subclans.json id) in
 /// [language], with its colour; null for '' or an id the data does not
@@ -48,9 +48,7 @@ class NpcFactionTag extends StatelessWidget {
     final tag = npcFactionTag(data, factionId, language);
     if (tag == null) return const SizedBox.shrink();
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return InkTag(
-      label: tag.name,
-      color: dark ? tag.color : Color.lerp(tag.color, Colors.black, 0.38)!,
-    );
+    return InkChip(tag.name,
+        color: dark ? tag.color : Color.lerp(tag.color, Colors.black, 0.38)!);
   }
 }
