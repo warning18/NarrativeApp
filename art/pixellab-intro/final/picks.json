@@ -1,0 +1,30 @@
+{
+ "version": "A: Alster in ashes (the user chose A)",
+ "plates": [
+  {
+   "file": "plate1_shroud_burns.png",
+   "size": "180x320",
+   "source": "A1_s5/get_image_0.png",
+   "beats": "beats 1 and 2 (0 to 4.5 s): the Great Shroud burns; fire climbs from the foot; the six embers are code particles"
+  },
+  {
+   "file": "plate2_city_on_alert.png",
+   "size": "180x320",
+   "source": "A2_s6/get_image_0.png",
+   "beats": "beat 3 (4.5 to 6.5 s): Alster on alert; the calm streets, the bell tower, the giant, the white ships far off"
+  },
+  {
+   "file": "plate3_blind_beggar.png",
+   "size": "180x320",
+   "source": "A3_s5_clean.png",
+   "beats": "beat 4 (6.5 to 8.5 s): Tallow Street and the Blind Beggar; the sign text painted out (blank board)"
+  },
+  {
+   "file": "plate4_tavern_room.png",
+   "size": "180x320",
+   "source": "A4_s5/get_image_0.png",
+   "beats": "beats 5 to 7 (8.5 to 13.5 s): the room; the code die drops on the floor in the foreground; the title over it"
+  }
+ ],
+ "note": "180x320 plates, palette PNG8 (32 colours). Cover-fit to the intro screen (ratio 0.5625 against the intro grid 70x124 = 0.5645), nearest neighbour, whole-number zoom where possible. The timing, the four lines, the die (Die3D) and the title are unchanged."
+}
