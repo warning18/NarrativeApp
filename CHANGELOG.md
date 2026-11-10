@@ -8,6 +8,19 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.888.0+924]
+
+### Changed
+- **The mage's opening Arcane Bolt hits a little softer** (Core round 4,
+  items 3 and 4). Its damage multiplier goes from 1.6 to 1.35. The mage had
+  led every other profession by about 5 points since v1.696. In the
+  simulator's balance batch (400 runs each on seeds 7, 11 and 13), the mage
+  now wins 78.2% of its encounters, down from 81.5%, just above the rogue's
+  76.9%. The widest gap between two professions falls from 8.7 to 5.4
+  points, and no other profession moves.
+- The balance test's profession guard now allows two standard errors of
+  noise on top of its 8-point limit, not three, so a spread like the old
+  9.7 points fails it.
 ## [1.886.0+922]
 
 ### Changed
