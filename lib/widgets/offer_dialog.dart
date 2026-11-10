@@ -41,6 +41,7 @@ import 'sign_widgets.dart';
 import 'wind_banner.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import 'ink_loading.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
 const Color _wayfarerColor = Color(0xFF8D6E63);
@@ -449,7 +450,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       return const Dialog(
         child: Padding(
           padding: EdgeInsets.all(24),
-          child: Center(heightFactor: 1, child: CircularProgressIndicator()),
+          child: InkLoading(centered: false),
         ),
       );
     }

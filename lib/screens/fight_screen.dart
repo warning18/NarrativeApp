@@ -123,6 +123,7 @@ import 'fight/fight_tips.dart';
 import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import '../widgets/ink_loading.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';
@@ -785,7 +786,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         body: Center(
           child: error != null
               ? Text('${tr(ref, 'failed_to_load_dice')}: $error')
-              : const CircularProgressIndicator(),
+              : const InkLoading(centered: false),
         ),
       );
     }

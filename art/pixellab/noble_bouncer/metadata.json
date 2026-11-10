@@ -1,0 +1,94 @@
+{
+  "group_id": "5dd77bb2-1ee4-46b2-ace1-0c0214f4828d",
+  "states": [
+    {
+      "character": {
+        "id": "91c578f8-45bd-4960-922f-698adad1178e",
+        "name": "Idle",
+        "prompt": "The Blind Beggar\u2019s Casino back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-10-16T12:13:52.692553+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    },
+    {
+      "character": {
+        "id": "325da462-5356-4a33-8e58-c64701f46586",
+        "name": "A looter who got to",
+        "prompt": "The Blind Beggar\u2019s Casino back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-10-16T13:37:06.310374+00:00"
+      },
+      "folder": "A_looter_who_got_to",
+      "frames": {
+        "rotations": {
+          "south": "A_looter_who_got_to/rotations/south.png",
+          "south-east": "A_looter_who_got_to/rotations/south-east.png",
+          "east": "A_looter_who_got_to/rotations/east.png",
+          "north-east": "A_looter_who_got_to/rotations/north-east.png",
+          "north": "A_looter_who_got_to/rotations/north.png",
+          "north-west": "A_looter_who_got_to/rotations/north-west.png",
+          "west": "A_looter_who_got_to/rotations/west.png",
+          "south-west": "A_looter_who_got_to/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    },
+    {
+      "character": {
+        "id": "992f75f0-3e6b-498e-9d94-53c76de3a2ca",
+        "name": "Thiner man, no beard",
+        "prompt": "The Blind Beggar\u2019s Casino back-room bouncer, paid to keep the tables honest and the till shut. Tonight he is only keeping the till.",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-10-16T14:22:38.782743+00:00"
+      },
+      "folder": "Thiner_man_no_beard",
+      "frames": {
+        "rotations": {
+          "south": "Thiner_man_no_beard/rotations/south.png",
+          "south-east": "Thiner_man_no_beard/rotations/south-east.png",
+          "east": "Thiner_man_no_beard/rotations/east.png",
+          "north-east": "Thiner_man_no_beard/rotations/north-east.png",
+          "north": "Thiner_man_no_beard/rotations/north.png",
+          "north-west": "Thiner_man_no_beard/rotations/north-west.png",
+          "west": "Thiner_man_no_beard/rotations/west.png",
+          "south-west": "Thiner_man_no_beard/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T15:41:26.691876"
+}

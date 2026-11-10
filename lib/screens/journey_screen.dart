@@ -124,6 +124,7 @@ import '../widgets/ink_sheet.dart';
 import '../widgets/ink_chip.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import '../widgets/ink_loading.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -145,7 +146,7 @@ class JourneyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(storyDataProvider).when(
           data: (story) => _JourneyView(story: story),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const InkLoading(),
           error: (error, stack) => Center(
             child: Padding(
               padding: const EdgeInsets.all(24),

@@ -1,0 +1,36 @@
+{
+  "group_id": "71fa1a21-6c0f-40e3-be50-00941659ac1c",
+  "states": [
+    {
+      "character": {
+        "id": "effc6b6b-91f7-4540-b101-bfae7720ef60",
+        "name": "Idle",
+        "prompt": "A low level demon",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-10-29T13:11:37.546138+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T15:41:30.833447"
+}
