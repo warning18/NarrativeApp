@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/tower/tower_tables.dart';
+import '../../theme/palette.dart';
 import '../../theme/stitched_ink.dart';
 
 /// The width the ladder takes.
@@ -25,7 +26,7 @@ class TowerLadder extends StatelessWidget {
     final ink = InkColors.of(context);
     final label = Theme.of(context).textTheme.labelSmall;
     const night = Color(0xFF211E28);
-    const dark = Color(0xFF14121A);
+    const dark = Palette.night8c;
     Widget stone(int n) {
       final here = n == floor;
       final lit = n <= floor;
