@@ -17,7 +17,8 @@ A flag counts as settable when a scene choice adds it, a quest sets it, the
 code names it (the engine sets it: `ally_*`, `devoted_*`, `host_*`, the
 zones' clears), or it follows a pattern the engine builds.
 """
-import json, os, re, sys, collections
+import json
+import os, os, re, sys, collections
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 J = lambda n: json.load(open(f'{ROOT}/assets/gamedata/{n}.json', encoding='utf-8'))
@@ -107,7 +108,7 @@ for npc in npcs.values():
             unlock.add(v)
         if isinstance(v, list):
             unlock.update(x for x in v if isinstance(x, str) and x in quests)
-raw_q = json.dumps(list(J('companions').values())) + json.dumps(J('npcs')) + json.dumps(J('zones')) + json.dumps(J('adventure_nodes'))
+raw_q = json.dumps(list(J('companions').values())) + json.dumps(J('npcs')) + json.dumps(J('zones')) + (json.dumps(J('adventure_nodes')) if os.path.exists(f'{ROOT}/assets/gamedata/adventure_nodes.json') else '')
 for q in quests:
     if f'"{q}"' in raw_q or f"'{q}'" in code:
         unlock.add(q)

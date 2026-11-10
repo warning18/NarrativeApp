@@ -22,6 +22,29 @@ isn't reconstructable from git history alone.
   fails when a bare `CircularProgressIndicator()` comes back to
   `lib/screens`.
 
+## [1.890.0+926]
+
+### Added
+- **Seven more enemies stand in the fight** (UX, from the user's PixelLab
+  library). The Wreck Scavenger, the Den Bouncer, the Den Looter, the Returned
+  Sedge, the Demon Imp, the Angel Sentinel and the Street Bandit now wear
+  PixelLab art in the scene stage and on the road. All are 48 x 48 side views,
+  one idle frame each (about 15 KB in all); the other clothes states and the
+  walk strips stay in `art/`. The Den Bouncer is the heavy bearded one and the
+  Den Looter the lean one in the green vest; the Street Bandit is the
+  hoodless one that fits the Alster streets.
+
+## [1.889.0+925]
+
+### Added
+- **The sewer rats stand in the fight** (UX, from the user's PixelLab library).
+  The Harbour Rat, the Rat Matriarch and the Plague Hound now wear PixelLab
+  art in the scene stage and on the road, 60 x 60 side views (the dominion
+  figures are 48 x 48). A sprite has its own frame size and a draw scale, so
+  the rat stands smaller than the ronin and the hound a little smaller than
+  its frame. Three idle frames only (about 6 KB); the walk strips stay in
+  `art/`. The matriarch's pups are cut at the art's own edge (a bigger canvas cannot bring them back); on the stage it reads as a crop.
+
 ## [1.888.0+924]
 
 ### Changed

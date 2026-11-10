@@ -11,3 +11,15 @@ Used by `lib/widgets/fight_sprites.dart` (`enemyFightSprite`: which enemy gets w
 | `white_soldier` | White Soldier | `white_soldier` |
 | `inquisition_soldier_02` | Inquisition Soldier_02 | `inquisition_soldier` |
 | `inquisition_soldier_03` | Inquisition Soldier_03 | `inquisition_auxiliary` |
+| `rat` | Big rat monster, Idle (`art/pixellab/sewer/rat`) | `harbor_rat` |
+| `rat_matriarch` | Rat matriarch (`art/pixellab/sewer/rat_matriarch`) | `rat_matriarch` (her pups are cut at the art's own edge) |
+| `plague_hound` | Plague Hound (`art/pixellab/sewer/plague_hound`) | `plague_hound` |
+
+The sewer ones are 60 x 60 side views: `lib/widgets/fight_sprites.dart` keeps a frame size, foot inset and draw scale for them (`_enemyFrames`).
+| `wreck_scavenger` | Wreck Scavenger, Idle | `wreck_scavenger` |
+| `den_bouncer` | Noble Bouncer, Idle | `den_bouncer` |
+| `den_looter` | Noble Bouncer, Thiner man no beard | `den_looter` |
+| `sedge_returned` | Sedge of the Returned, Idle | `mire_returned_sedge` |
+| `low_demon` | Low demon | `demon_imp` |
+| `low_angel` | Low angel | `angel_sentinel` |
+| `street_bandit` | Bandit from the desert, Pit wretch no hood | `street_bandit` |
