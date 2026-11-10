@@ -708,7 +708,7 @@ final ChartGeography chartWorldB = ChartGeography(
         atSea: false),
     ChartFeature(ChartFeatureKind.site, Offset(166, 56), 'Ashen Landing',
         'Le Débarcadère des Cendres',
-        noteEn: 'Dominion · A Light for the Harbor',
+        noteEn: 'Dominion · A Light for the Harbour',
         noteFr: 'Dominion',
         atSea: false),
     ChartFeature(ChartFeatureKind.site, Offset(164, 66),
