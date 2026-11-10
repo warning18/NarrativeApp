@@ -20,6 +20,7 @@ import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
+import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
@@ -215,7 +216,11 @@ class _FloorIntro extends ConsumerWidget {
                 letterSpacing: 1.2, color: theme.colorScheme.onSurfaceVariant)),
         Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
             key: const Key('tower_floor_label'),
-            style: theme.textTheme.headlineSmall),
+            style: towerLook == TowerLookOption.b
+                ? theme.textTheme.headlineMedium?.copyWith(
+                    color: ink.gold,
+                    shadows: const [Shadow(blurRadius: 8, color: Colors.black)])
+                : theme.textTheme.headlineSmall),
         Text(tr(ref, 'tower_floor_${run.floor}'),
             style: theme.textTheme.bodyLarge
                 ?.copyWith(fontStyle: FontStyle.italic)),
@@ -262,6 +267,9 @@ class _FloorIntro extends ConsumerWidget {
                     child: Text('${(enemies[id] as Map?)?['enemyName'] ?? id}',
                         style: theme.textTheme.titleSmall),
                   ),
+                  if (towerLook == TowerLookOption.b &&
+                      id == floor.enemyIds.first)
+                    TowerFoeFigure(id, size: 56),
                   if (id == floor.enemyIds.first) ...[
                     for (final a in floor.affixes)
                       Padding(

@@ -9,7 +9,9 @@ import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import '../race_profession_screen.dart';
+import 'tower_backdrop.dart';
 import 'tower_floor_screen.dart';
+import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
 import '../../widgets/ink_panel.dart';
@@ -73,7 +75,7 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
     final run = state.run;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
-      body: SafeArea(
+      body: _wrap(SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
           children: [
@@ -136,9 +138,46 @@ class _TowerStartScreenState extends ConsumerState<TowerStartScreen> {
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall
                     ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            if (towerLook == TowerLookOption.b) ...[
+              const SizedBox(height: 18),
+              for (final band in [3, 2, 1]) _bandPane(band, theme, ink),
+            ],
           ],
         ),
-      ),
+      )),
     );
   }
+
+  Widget _wrap(Widget child) =>
+      towerLooked ? TowerBackdrop(floor: 1, child: child) : child;
+
+  /// One band of the tower as a pane of its own picture (the proposed look B):
+  /// the band's name and its floors.
+  Widget _bandPane(int band, ThemeData theme, InkColors ink) => Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            height: 70,
+            child: Stack(fit: StackFit.expand, children: [
+              Image.asset(towerBackdropAsset(band),
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              ColoredBox(color: Colors.black.withValues(alpha: .45)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(tr(ref, 'tower_band_$band'),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: Colors.white)),
+                  ),
+                  Text('${(band - 1) * 10 + 1}–${band * 10}',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(color: ink.gold)),
+                ]),
+              ),
+            ]),
+          ),
+        ),
+      );
 }

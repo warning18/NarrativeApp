@@ -5,6 +5,8 @@
 // touched; only what is drawn behind it).
 import 'package:flutter/material.dart';
 
+import 'tower_look.dart';
+
 /// The band of a floor: 1 for floors 1 to 10, 2 for 11 to 20, 3 above.
 int towerBandOf(int floor) => floor <= 10
     ? 1
@@ -39,7 +41,13 @@ class TowerBackdrop extends StatelessWidget {
           gaplessPlayback: true,
           errorBuilder: (context, error, stack) => const SizedBox.shrink(),
         ),
-        ColoredBox(color: ground.withValues(alpha: towerBackdropVeil)),
+        ColoredBox(
+            color: ground.withValues(
+                alpha: towerLook == TowerLookOption.b
+                    ? 0.58
+                    : towerLook == TowerLookOption.a
+                        ? 0.72
+                        : towerBackdropVeil)),
         child,
       ],
     );

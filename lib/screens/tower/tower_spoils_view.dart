@@ -3,6 +3,8 @@
 // gave (gear worn when it beats the hero's, potions into the bag) is only
 // shown here: the engine has already put it where it goes.
 import 'package:flutter/material.dart';
+
+import 'tower_look.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/tower/tower_run.dart';
@@ -43,6 +45,7 @@ class TowerSpoilsView extends ConsumerWidget {
       chestAsset: 'assets/icons/chests/wooden_open.png',
       tierLabel: tr(ref, 'tower_floor_${run.floor}'),
       showHandle: false,
+      chestSize: towerLook == TowerLookOption.b ? 96 : 60,
       changes: [
         if (potions > 0)
           LootSheetLine(
