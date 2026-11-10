@@ -30,6 +30,7 @@ import '../theme/palette.dart';
 
 export 'poly_die.dart' show DieShape, dieShapeOf;
 export 'die_solids.dart' show dieSolidOf;
+export 'die_poly3d.dart' show dieSolidScale;
 
 /// One side of the cube: what it shows, and the colour it is tinted.
 class DieCubeFace {
@@ -408,6 +409,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   size: size,
                   t: t,
                   unrolled: _unrolled,
+                  landed: widget.fx != null && !widget.dim && t >= 1,
                 )
               else if (widget.shape != DieShape.d6 || widget.flat)
                 PolyDie(

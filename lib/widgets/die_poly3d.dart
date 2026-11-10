@@ -47,6 +47,7 @@ class PolyDie3D extends StatelessWidget {
     required this.t,
     this.showGlyphs = true,
     this.unrolled = false,
+    this.landed = false,
   });
 
   final DieShape shape;
@@ -64,6 +65,10 @@ class PolyDie3D extends StatelessWidget {
 
   /// Not rolled yet: the front facet shows a "?" and the others no glyph.
   final bool unrolled;
+
+  /// At rest on the face it rolled: that facet (the first) is ringed and lit,
+  /// the others a little dimmer, so the result reads at a glance.
+  final bool landed;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +138,8 @@ class PolyDie3D extends StatelessWidget {
               skin: skin,
               light: light,
               glyphBox: glyph,
+              front: landed && i == 0,
+              muted: landed && i != 0,
             ),
           ),
         ),
@@ -191,6 +198,8 @@ class _Facet extends StatelessWidget {
     required this.skin,
     required this.light,
     required this.glyphBox,
+    this.front = false,
+    this.muted = false,
   });
 
   final double side;
@@ -199,6 +208,8 @@ class _Facet extends StatelessWidget {
   final DieSkin skin;
   final double light;
   final double glyphBox;
+  final bool front;
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +222,8 @@ class _Facet extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           CustomPaint(
-              painter: _FacetPainter(points, fill, skin.edge, 1 - light)),
+              painter: _FacetPainter(points, fill, skin.edge,
+                  muted ? 1 - light * 0.7 : 1 - light, front)),
           if (glyphBox > 0)
             Center(
               child: Opacity(
@@ -230,7 +242,7 @@ class _Facet extends StatelessWidget {
 }
 
 class _FacetPainter extends CustomPainter {
-  _FacetPainter(this.points, this.fill, this.edge, this.shade);
+  _FacetPainter(this.points, this.fill, this.edge, this.shade, this.front);
 
   final List<Offset> points;
   final Color fill;
@@ -239,18 +251,35 @@ class _FacetPainter extends CustomPainter {
   /// 0 (lit) to 1 (dark): the lamp's shade.
   final double shade;
 
+  /// The facet the die landed on: a bright ring and a soft glow.
+  final bool front;
+
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(points, true);
     canvas.drawPath(path, Paint()..color = fill);
     canvas.drawPath(
         path, Paint()..color = Colors.black.withValues(alpha: shade * 0.62));
+    if (front) {
+      canvas.drawPath(
+          path,
+          Paint()
+            ..color = Colors.white.withValues(alpha: 0.16)
+            ..style = PaintingStyle.fill);
+      canvas.drawPath(
+          path,
+          Paint()
+            ..color = edge.withValues(alpha: 0.35)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 7
+            ..strokeJoin = StrokeJoin.round);
+    }
     canvas.drawPath(
         path,
         Paint()
-          ..color = edge
+          ..color = front ? Color.lerp(edge, Colors.white, 0.45)! : edge
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.8
+          ..strokeWidth = front ? 3.2 : 1.8
           ..strokeJoin = StrokeJoin.round);
   }
 
@@ -259,5 +288,6 @@ class _FacetPainter extends CustomPainter {
       old.points != points ||
       old.fill != fill ||
       old.edge != edge ||
-      old.shade != shade;
+      old.shade != shade ||
+      old.front != front;
 }

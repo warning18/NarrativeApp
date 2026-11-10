@@ -26,14 +26,21 @@ const double _tileH = 118;
 /// coin keep [_dieCube]; the solids (die_poly3d.dart) are drawn bigger than
 /// their square, and their square grows too, so a d20 stands about 130 px
 /// across and its facets can carry their glyphs (v1.903).
-double _dieSquareFor(int faces) => switch (dieShapeOf(faces)) {
-      DieShape.d4 => _dieCube,
-      DieShape.d8 => 70,
-      DieShape.d10 => 74,
-      DieShape.d12 => 80,
-      DieShape.d20 => 87,
-      _ => _dieCube,
-    };
+double _dieSquareFor(int faces, {int count = 1, double boardWidth = 0}) {
+  final double base = switch (dieShapeOf(faces)) {
+    DieShape.d4 => _dieCube,
+    DieShape.d8 => 70,
+    DieShape.d10 => 74,
+    DieShape.d12 => 80,
+    DieShape.d20 => 87,
+    _ => _dieCube,
+  };
+  // Three on a board (a party with companions): each solid may take only so
+  // much of the width, so they stand apart at 320 px too.
+  if (count < 3 || boardWidth <= 0) return base;
+  final fit = boardWidth * 0.38 / dieSolidScale(dieShapeOf(faces));
+  return min(base, max(_dieCube, fit));
+}
 
 /// The fight's cards as fixed slots, the dice board and the row of kept dice
 /// (combat redesign A'/A''): a head and some icons for each fighter, the dice
@@ -674,7 +681,8 @@ extension _FightBoardView on _FightScreenState {
                             final seat = _seatFor(i, acting.length, size);
                             final pos =
                                 Offset.lerp(launch, seat, t)! - Offset(0, arc);
-                            final square = _dieSquareFor(actor.dieFaces.length);
+                            final square = _dieSquareFor(actor.dieFaces.length,
+                                count: onBoard.length, boardWidth: size.width);
                             final tileW = max(_tileW, square + 24);
                             final tileH = _tileH + (square - _dieCube);
                             return Positioned(
