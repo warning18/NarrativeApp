@@ -532,8 +532,19 @@ String inventoryRarityWord(AppLanguage lang, Map<String, dynamic>? item) {
   return itemRarityLabelFor(lang, rarity);
 }
 
-/// A die as a tile in its own skin: the stone, the mark cut in it, its edge
-/// and its glow; the shape's name on it.
+/// The shapes that have a bone body (assets/visuals/dice, the Art pack): the
+/// d4, d6, d8, d12 and d20; the d10 keeps the tile's own drawing.
+const Map<int, String> _boneShapes = {
+  4: 'd4',
+  6: 'd6',
+  8: 'd8',
+  12: 'd12',
+  20: 'd20',
+};
+
+/// A die as a tile in its own skin: the stone, its edge and its glow, with the
+/// die's bone body on it (v1.902); a d10, or a tile too small for a body (under
+/// 28 px), keeps the stone with the mark cut in it and the shape's name.
 class InventoryDieTile extends StatelessWidget {
   const InventoryDieTile(
       {super.key,
@@ -547,10 +558,41 @@ class InventoryDieTile extends StatelessWidget {
   final double size;
   final bool lit;
 
+  /// The bone body of a die of [faces] at [size]: the 40 px cut for a tile of
+  /// 40 or less, else the 44 px; null for a shape with none.
+  static Widget? boneBody(int faces, double size) {
+    final shape = _boneShapes[faces];
+    if (shape == null) return null;
+    Widget image(int px) => Image.asset(
+          'assets/visuals/dice/die_${shape}_bone_$px.png',
+          width: size,
+          height: size,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.none,
+          isAntiAlias: false,
+          gaplessPlayback: true,
+        );
+    // The 40 px cut, when the pack has it; the 44 px otherwise.
+    if (size <= 40) {
+      return Image.asset(
+        'assets/visuals/dice/die_${shape}_bone_40.png',
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.none,
+        isAntiAlias: false,
+        gaplessPlayback: true,
+        errorBuilder: (_, __, ___) => image(44),
+      );
+    }
+    return image(44);
+  }
+
   @override
   Widget build(BuildContext context) {
     final skin = dieSkinOf(dieId);
     final dark = skin.base.computeLuminance() > 0.45;
+    final body = size >= 28 ? boneBody(faces, size) : null;
     return Container(
       width: size,
       height: size,
@@ -567,17 +609,27 @@ class InventoryDieTile extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(alignment: Alignment.center, children: [
-        Positioned.fill(
-            child: CustomPaint(
-                painter: DiePatternPainter(skin.pattern, skin.edge))),
-        Text('d$faces',
-            style: TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: size * 0.34,
-                color: dark ? Palette.night8b : skin.edge,
-                fontWeight: FontWeight.w600)),
-      ]),
+      // The body is drawn at the tile's full size (not shrunk by the border), so
+      // its pixels keep their scale.
+      child: (body == null
+              ? null
+              : OverflowBox(
+                  minWidth: size,
+                  maxWidth: size,
+                  minHeight: size,
+                  maxHeight: size,
+                  child: body)) ??
+          Stack(alignment: Alignment.center, children: [
+            Positioned.fill(
+                child: CustomPaint(
+                    painter: DiePatternPainter(skin.pattern, skin.edge))),
+            Text('d$faces',
+                style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: size * 0.34,
+                    color: dark ? Palette.night8b : skin.edge,
+                    fontWeight: FontWeight.w600)),
+          ]),
     );
   }
 }
