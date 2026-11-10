@@ -18,9 +18,10 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
+import '../theme/palette.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
-const Color clanFoeColor = Color(0xFFD9544D);
+const Color clanFoeColor = Palette.bloodDark;
 
 /// [tier]'s colour (see tierColor), the same on every screen.
 Color standingTierColor(StandingTier tier) => Color(tierColor(tier));
@@ -146,10 +147,10 @@ class _StandingMeterPainter extends CustomPainter {
       bar,
       Paint()
         ..shader = const LinearGradient(colors: [
-          Color(0xFF8A1A1A),
+          Palette.red32,
           Color(0xFF4A4740),
-          Color(0xFF7DBE6A),
-          Color(0xFFF2C14E),
+          Palette.healDark,
+          Palette.goldDark,
         ], stops: [
           0,
           0.5,
@@ -161,8 +162,7 @@ class _StandingMeterPainter extends CustomPainter {
     if (from != null && glow > 0) {
       final a = _x(math.min(from, glowTo), size.width);
       final b = _x(math.max(from, glowTo), size.width);
-      final colour =
-          glowTo >= from ? const Color(0xFFF2C14E) : const Color(0xFFD9544D);
+      final colour = glowTo >= from ? Palette.goldDark : Palette.bloodDark;
       final span =
           Rect.fromLTRB(a, top - 2, math.max(b, a + 3), top + barHeight + 2);
       canvas.drawRRect(
@@ -519,7 +519,7 @@ class LostClanEmblem extends StatelessWidget {
     if (stage >= _ownHandNameStage) return emblem;
     return ColorFiltered(
       key: Key('lost_clan_silhouette_${faction.id}'),
-      colorFilter: const ColorFilter.mode(Color(0xFF2B2A28), BlendMode.srcIn),
+      colorFilter: const ColorFilter.mode(Palette.night16, BlendMode.srcIn),
       child: emblem,
     );
   }

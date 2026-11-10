@@ -36,6 +36,7 @@ import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
+import '../theme/palette.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -535,10 +536,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                               ),
                                               if (wearing) ...[
                                                 const SizedBox(width: 6),
-                                                Icon(Icons.check_circle,
+                                                const Icon(Icons.check_circle,
                                                     size: 14,
-                                                    color:
-                                                        Colors.green.shade600),
+                                                    color: Palette.goodStrong),
                                               ],
                                             ],
                                           ),
@@ -657,7 +657,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 isThreeLine: true,
                                 trailing: owned
                                     ? const Icon(Icons.check_circle,
-                                        color: Colors.green)
+                                        color: Palette.good)
                                     : ElevatedButton(
                                         onPressed: !canAfford ||
                                                 !usable ||

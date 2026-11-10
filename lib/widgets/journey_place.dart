@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import '../data/map_charts.dart';
 import '../data/road_chart.dart';
+import '../theme/palette.dart';
 
 /// What a place is drawn as, up close.
 enum PlaceKind { town, camp, site, sea, wild }
@@ -73,7 +74,7 @@ class PlacePlanPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rng = math.Random(seed);
-    const dark = Color(0xFF17151B);
+    const dark = Palette.night9;
     if (kind == PlaceKind.sea) {
       canvas.drawRect(Offset.zero & size, Paint()..color = palette.sea);
       final wave = Paint()

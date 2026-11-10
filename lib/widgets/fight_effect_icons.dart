@@ -3,6 +3,7 @@
 // icon in one colour, a corner number for the turns left or the value, and a
 // pop-in that explains it on a tap. Drawn in code: no image to ship.
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 /// What an icon can stand for.
 enum FightEffect {
@@ -194,19 +195,19 @@ const Map<FightEffect, List<String>> _bitmaps = {
 /// The icon's colour.
 Color _fightEffectColor(FightEffect effect) => switch (effect) {
       FightEffect.poison => const Color(0xFF4CAF50),
-      FightEffect.stun => const Color(0xFFF2C14E),
+      FightEffect.stun => Palette.goldDark,
       FightEffect.weaken => const Color(0xFFA070E0),
-      FightEffect.block => const Color(0xFF4C8FC7),
+      FightEffect.block => Palette.blue54,
       FightEffect.parry => const Color(0xFF5FD0D0),
-      FightEffect.shelter => const Color(0xFFC9A070),
-      FightEffect.fury => const Color(0xFFE0752B),
+      FightEffect.shelter => Palette.orange61,
+      FightEffect.fury => Palette.orange52,
       FightEffect.watchfire => const Color(0xFFF2D14E),
       FightEffect.target => const Color(0xFFE0453B),
-      FightEffect.guard => const Color(0xFF7F92A6),
-      FightEffect.windUp => const Color(0xFFE0752B),
+      FightEffect.guard => Palette.stone57a,
+      FightEffect.windUp => Palette.orange52,
       FightEffect.staggered => const Color(0xFF3FB5A8),
       FightEffect.rally => const Color(0xFFD64A4A),
-      FightEffect.flee => const Color(0xFFD9A441),
+      FightEffect.flee => Palette.orange55,
       FightEffect.info => const Color(0xFF9A94A8),
     };
 

@@ -5,6 +5,7 @@ import '../data/expedition_kinds.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/palette.dart';
 
 /// One zone's row in the town, camp and port expedition lists: its name,
 /// tier and main-zone chips, its boss or the zone that must be cleared
@@ -132,7 +133,7 @@ class ZoneCard extends ConsumerWidget {
                         : unlocked
                             ? Icons.explore_outlined
                             : Icons.lock_outline,
-                    color: completed ? Colors.green : null,
+                    color: completed ? Palette.good : null,
                   ),
                   const SizedBox(width: 12),
                   Expanded(

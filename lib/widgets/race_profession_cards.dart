@@ -23,6 +23,7 @@ import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
 import 'ink_chip.dart';
+import '../theme/palette.dart';
 
 /// The races, the professions, the skill trees and the clans, together: what
 /// the choice reads.
@@ -182,8 +183,7 @@ class StatChips extends ConsumerWidget {
   }
 
   Widget _chip(BuildContext context, String label, int value) {
-    final colour =
-        value > 0 ? const Color(0xFF3F8F5A) : const Color(0xFFC0392B);
+    final colour = value > 0 ? Palette.green40 : Palette.red46;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/cliff_town.dart';
+import '../theme/palette.dart';
 
 /// The camp's town, drawn: the harbour and The Rusty Eel at the bottom,
 /// the pieces of [town] stacked up between two cliffs, the sky above, and
@@ -131,7 +132,7 @@ class CliffTownView extends StatelessWidget {
                                 fontFamily: 'PixelifySans',
                                 fontSize: 10,
                                 height: 1.1,
-                                color: Color(0xFFF2C14E),
+                                color: Palette.goldDark,
                               ),
                             ),
                           ),
@@ -152,32 +153,32 @@ class CliffTownView extends StatelessWidget {
 
 // The town's night palette: the Stitched Ink colours, whatever the app's.
 const _sky = Color(0xFF211D29);
-const _cloud = Color(0xFF2A2433);
+const _cloud = Palette.night17a;
 const _rock1 = Color(0xFF2B2730);
 const _rock2 = Color(0xFF332E39);
 const _water = Color(0xFF1F3A44);
 const _wave = Color(0xFF2F5A66);
-const _quay = Color(0xFF3B3743);
+const _quay = Palette.seamDark;
 const _quayTop = Color(0xFF57525E);
 const _mortar = Color(0xFF332F3A);
 const _stone = Color(0xFF57525E);
-const _wall = Color(0xFF4A4552);
-const _wallDark = Color(0xFF3B3743);
+const _wall = Palette.night30;
+const _wallDark = Palette.seamDark;
 const _timber = Color(0xFF221F27);
 const _roof = Color(0xFF2E3340);
-const _roofLight = Color(0xFF5A5463);
-const _dark = Color(0xFF1A181E);
-const _lit = Color(0xFFF2C14E);
-const _ember = Color(0xFFE0762B);
-const _tide = Color(0xFF4FB0B0);
-const _void = Color(0xFFA987EA);
-const _voidDeep = Color(0xFF2A2233);
+const _roofLight = Palette.stone36;
+const _dark = Palette.night11;
+const _lit = Palette.goldDark;
+const _ember = Palette.emberDark;
+const _tide = Palette.tideDark;
+const _void = Palette.voidDark;
+const _voidDeep = Palette.night17;
 const _wood = Color(0xFF4A3B2E);
 const _woodDark = Color(0xFF3A2E24);
 const _plank = Color(0xFF5A4530);
 const _crate = Color(0xFF6B5438);
-const _ash = Color(0xFFA8A194);
-const _bone = Color(0xFFECE7DC);
+const _ash = Palette.ashDark;
+const _bone = Palette.paper89;
 
 class _CliffTownPainter extends CustomPainter {
   _CliffTownPainter({
@@ -379,7 +380,7 @@ class _CliffTownPainter extends CustomPainter {
     _rect(6, 56, 86, 3, _crate);
     _rect(44, 4, 3, 54, _timber);
     _poly([48, 8, 72, 14, 72, 50, 48, 52], _ash);
-    _poly([42, 10, 22, 18, 22, 48, 42, 52], const Color(0xFF8C857A));
+    _poly([42, 10, 22, 18, 22, 48, 42, 52], Palette.stone51);
     _rect(16, 62, 5, 4, _lit);
   }
 

@@ -124,15 +124,15 @@ extension _FightSquad on _FightScreenState {
             SquadRole.striker => Icons.flash_on,
           },
           tr(ref, squadRoleLabelKey(role)),
-          Colors.teal,
+          Palette.lagoon,
           tooltip: tr(ref, squadRoleDescriptionKey(role)),
         ),
       if (enemy.provoked)
-        _stateChip(Icons.whatshot, tr(ref, 'response_provoked_chip'),
-            Colors.red.shade700),
+        _stateChip(
+            Icons.whatshot, tr(ref, 'response_provoked_chip'), Palette.danger),
       if (enemy.pressing)
         _stateChip(Icons.keyboard_double_arrow_down,
-            tr(ref, 'response_pressing_chip'), Colors.red.shade700),
+            tr(ref, 'response_pressing_chip'), Palette.danger),
     ];
   }
 }

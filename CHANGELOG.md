@@ -22,6 +22,23 @@ isn't reconstructable from git history alone.
   noise on top of its 8-point limit, not three, so a spread like the old
   9.7 points fails it.
 
+## [1.885.0+921]
+
+### Changed
+- **The shared palette** (the user's choice, UX-2; no change to how anything
+  looks, the pictures are byte for byte the same): `lib/theme/palette.dart`
+  holds every colour that two or more files drew with, 157 of them, with the
+  hex each always had, and the 16 semantic tokens of the theme (`InkColors`
+  dark and light), which now take their values from it. A colour only one
+  painter uses stays beside it (about 1,170 of them: the backdrops, ships and
+  dice). 580 literals in 84 files now say `Palette.<name>`; the names are the
+  hue and lightness of the colour (`amber77`), to be renamed by role as roles
+  are found.
+  - The Material named colours used in two or more files are roles:
+    `Palette.good` (green), `danger`, `alert`, `hot`, `arcane`, `neutral`...
+    (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
+  - `test/palette_test.dart` fails when a colour drawn in two files is written
+    as a literal: it goes to the palette.
 ## [1.884.0+920]
 
 ### Changed

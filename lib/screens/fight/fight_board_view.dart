@@ -297,7 +297,7 @@ extension _FightBoardView on _FightScreenState {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: picked
-                ? const Color(0xFFF2C14E)
+                ? Palette.goldDark
                 : healed
                     ? const Color(0xFFD9457A)
                     : colorScheme.outlineVariant,
@@ -351,13 +351,13 @@ extension _FightBoardView on _FightScreenState {
                           ),
                           if (member.isPlayer) ...[
                             const Icon(Icons.bolt,
-                                size: 11, color: Colors.deepOrange),
+                                size: 11, color: Palette.hot),
                             Text('$damage',
                                 style: const TextStyle(
                                     fontSize: 10, fontWeight: FontWeight.w600)),
                             const SizedBox(width: 4),
                             const Icon(Icons.shield_outlined,
-                                size: 11, color: Colors.blueGrey),
+                                size: 11, color: Palette.slate),
                             Text('$armor',
                                 style: const TextStyle(
                                     fontSize: 10, fontWeight: FontWeight.w600)),
@@ -436,9 +436,9 @@ extension _FightBoardView on _FightScreenState {
     final aimedByPicked =
         canRetarget && _selectedTargets[pickedActor.id] == enemy.key;
     final borderColor = aimedByPicked
-        ? const Color(0xFFF2C14E)
+        ? Palette.goldDark
         : boss || (_isElite && enemy.isAlive)
-            ? Colors.amber.shade700
+            ? Palette.goldDeep
             : const Color(0xFFFF9A2E).withValues(alpha: 0.75);
     final who = enemy.displayName;
     final extras = _enemyExtraCount(enemy);
@@ -516,7 +516,7 @@ extension _FightBoardView on _FightScreenState {
             children: [
               Row(
                 children: [
-                  _headTile(enemy.enemyId, enemy.displayName, Colors.deepOrange,
+                  _headTile(enemy.enemyId, enemy.displayName, Palette.hot,
                       size: 34, dim: !enemy.isAlive),
                   const SizedBox(width: 8),
                   Expanded(
@@ -533,7 +533,7 @@ extension _FightBoardView on _FightScreenState {
                               ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: boss || _isElite
-                                      ? Colors.amber.shade800
+                                      ? Palette.amberDeep
                                       : const Color(0xFFFF9A2E)),
                         ),
                         const SizedBox(height: 3),
@@ -815,7 +815,7 @@ extension _FightBoardView on _FightScreenState {
               const Positioned(
                 right: -4,
                 top: -6,
-                child: Icon(Icons.lock, size: 13, color: Color(0xFFC9A070)),
+                child: Icon(Icons.lock, size: 13, color: Palette.orange61),
               ),
           ],
         ),
@@ -861,14 +861,14 @@ extension _FightBoardView on _FightScreenState {
     String label;
     if (target != null) {
       to = _enemyCardKey(target.key);
-      color = const Color(0xFFE0752B);
+      color = Palette.orange52;
       label = '−${preview?.damage ?? 0}';
     } else {
       final healing = preview?.healing ?? 0;
       // A heal goes to the member it is aimed at (Core's heal targets).
       to = _memberCardKey(healing > 0 ? _healTargetFor(actor).id : id);
       final block = preview?.block ?? 0;
-      color = healing > 0 ? const Color(0xFFD9457A) : const Color(0xFF4C8FC7);
+      color = healing > 0 ? const Color(0xFFD9457A) : Palette.blue54;
       label = healing > 0
           ? '+$healing'
           : block > 0

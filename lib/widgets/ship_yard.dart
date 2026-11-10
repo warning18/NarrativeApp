@@ -13,11 +13,12 @@ import '../theme/stitched_ink.dart';
 import 'sea_battlefield.dart';
 import 'ship_dress.dart';
 import 'side_view/sea_kit.dart' show SeaSideScene;
+import '../theme/palette.dart';
 
 /// How a rarity is told apart on a card: common grey to legendary amber.
 Color rarityColor(String rarity) => switch (rarity) {
       'uncommon' => const Color(0xFF66BB6A),
-      'rare' => const Color(0xFF4FC3F7),
+      'rare' => Palette.cyan64,
       'epic' => const Color(0xFFB388FF),
       'legendary' => const Color(0xFFFFB74D),
       _ => const Color(0xFF9AA0A6),
@@ -137,11 +138,10 @@ class _ShipYardPreviewState extends State<ShipYardPreview>
                           down: const {},
                           burning: const {},
                           water: 0,
-                          shield: const Color(0xFF80D8FF),
-                          foam: const Color(0xFFE6F2F4),
+                          shield: Palette.cyan75,
+                          foam: Palette.cyan93,
                           roomColors: {
-                            for (final r in ShipRoom.values)
-                              r: const Color(0xFFAAAAAA)
+                            for (final r in ShipRoom.values) r: Palette.stone67
                           },
                           refit: widget.refit,
                           speed: 0.6,
@@ -178,20 +178,20 @@ class _LookSwatchPainter extends CustomPainter {
           ..quadraticBezierTo(w * 0.95, h * 0.5, w * 0.62, h * 0.82)
           ..lineTo(w * 0.08, h * 0.7)
           ..close();
-        canvas.drawPath(hull, Paint()..color = look.color ?? Colors.brown);
+        canvas.drawPath(hull, Paint()..color = look.color ?? Palette.earth);
         final deck = Path()
           ..moveTo(w * 0.14, h * 0.36)
           ..lineTo(w * 0.6, h * 0.27)
           ..quadraticBezierTo(w * 0.84, h * 0.5, w * 0.6, h * 0.73)
           ..lineTo(w * 0.14, h * 0.64)
           ..close();
-        canvas.drawPath(deck, Paint()..color = look.color2 ?? Colors.brown);
+        canvas.drawPath(deck, Paint()..color = look.color2 ?? Palette.earth);
         canvas.drawPath(
             deck,
             Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.6
-              ..color = look.color3 ?? Colors.red);
+              ..color = look.color3 ?? Palette.alert);
       case 'sail':
         final sail = Path()
           ..moveTo(w * 0.34, h * 0.1)
@@ -204,18 +204,18 @@ class _LookSwatchPainter extends CustomPainter {
             sail,
             Rect.fromLTRB(w * 0.34, h * 0.1, w * 0.8, h * 0.9),
             look.pattern,
-            look.color2 ?? Colors.brown);
+            look.color2 ?? Palette.earth);
         canvas.drawPath(
             sail,
             Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.4
-              ..color = look.color3 ?? Colors.brown);
+              ..color = look.color3 ?? Palette.earth);
         canvas.drawLine(
             Offset(w * 0.34, h * 0.06),
             Offset(w * 0.34, h * 0.94),
             Paint()
-              ..color = const Color(0xFF3A2818)
+              ..color = Palette.orange16
               ..strokeWidth = 2);
       case 'figurehead':
         if (look.pattern == 'none') {
@@ -223,7 +223,7 @@ class _LookSwatchPainter extends CustomPainter {
               Offset(w * 0.2, h / 2),
               Offset(w * 0.8, h / 2),
               Paint()
-                ..color = const Color(0xFF6B4A2E)
+                ..color = Palette.orange30
                 ..strokeWidth = 4
                 ..strokeCap = StrokeCap.round);
         } else {
@@ -242,7 +242,7 @@ class _LookSwatchPainter extends CustomPainter {
             Offset(w * 0.12, h * 0.1),
             Offset(w * 0.12, h * 0.9),
             Paint()
-              ..color = const Color(0xFF3A2818)
+              ..color = Palette.orange16
               ..strokeWidth = 2);
         // The flag streams aft in the ship's own drawing; here it is
         // mirrored to fly to the right of its pole.
@@ -257,11 +257,11 @@ class _LookSwatchPainter extends CustomPainter {
                 ensign: look.pattern,
                 ensignColor: look.color,
                 ensignDevice: look.color2),
-            const Color(0xFFB0472E),
+            Palette.red44,
             0.6);
         canvas.restore();
       default:
-        canvas.drawCircle(c, h * 0.2, Paint()..color = Colors.grey);
+        canvas.drawCircle(c, h * 0.2, Paint()..color = Palette.neutral);
     }
   }
 
@@ -540,10 +540,10 @@ class HullThumb extends StatelessWidget {
                   down: const {},
                   burning: const {},
                   water: 0,
-                  shield: const Color(0xFF80D8FF),
-                  foam: const Color(0xFFE6F2F4),
+                  shield: Palette.cyan75,
+                  foam: Palette.cyan93,
                   roomColors: {
-                    for (final r in ShipRoom.values) r: const Color(0xFFAAAAAA)
+                    for (final r in ShipRoom.values) r: Palette.stone67
                   },
                   speed: 0.2,
                   pixel: 2,

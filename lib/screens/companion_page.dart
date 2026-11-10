@@ -25,6 +25,7 @@ import '../widgets/party_actions.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'skills/skills_screen.dart';
+import '../theme/palette.dart';
 
 class CompanionPage extends ConsumerWidget {
   const CompanionPage({super.key, required this.companionId});
@@ -261,12 +262,12 @@ class _CompanionBody extends ConsumerWidget {
         const SizedBox(height: 8),
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
-              child: chips(deeds(true), const Color(0xFF3F8F5A),
-                  Icons.thumb_up_outlined)),
+              child:
+                  chips(deeds(true), Palette.green40, Icons.thumb_up_outlined)),
           const SizedBox(width: 8),
           Expanded(
-              child: chips(deeds(false), const Color(0xFFC0392B),
-                  Icons.thumb_down_outlined)),
+              child: chips(
+                  deeds(false), Palette.red46, Icons.thumb_down_outlined)),
         ]),
         _DrinkButton(view: view),
         title(tr(ref, 'companion_their_die')),

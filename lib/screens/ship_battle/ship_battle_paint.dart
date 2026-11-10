@@ -225,7 +225,7 @@ final RegExp _theMidSentence = RegExp("([a-z,;:]) The ");
 
 /// The color of damage that is coming but not dealt yet, the same blue
 /// the dice fight uses for its preview.
-const Color _previewColor = Color(0xFF42A5F5);
+const Color _previewColor = Palette.blue61;
 
 /// Boarders met by a hand in the hold come over the rail at this share
 /// of their health.
@@ -243,8 +243,7 @@ Color _roomColor(BuildContext context, ShipRoom room) {
   return switch (room) {
     ShipRoom.helm => ink.tide,
     ShipRoom.guns => ink.ember,
-    ShipRoom.bulwark =>
-      light ? const Color(0xFF4F6275) : const Color(0xFF9FB0C2),
+    ShipRoom.bulwark => light ? const Color(0xFF4F6275) : Palette.stone69,
     ShipRoom.hold => light ? const Color(0xFF7A5534) : const Color(0xFFB08A64),
   };
 }

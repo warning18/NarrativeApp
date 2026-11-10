@@ -25,6 +25,7 @@ import '../providers/geography_provider.dart';
 import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../theme/palette.dart';
 
 const String _pixelFont = 'PixelifySans';
 const String _textFont = 'Spectral';
@@ -49,12 +50,12 @@ class _Tokens {
   final Color accent;
 
   static const dark = _Tokens(
-    Color(0xFF1A181E),
-    Color(0xFF24212A),
-    Color(0xFFECE7DC),
-    Color(0xFFA8A194),
-    Color(0xFF3B3743),
-    Color(0xFFF2C14E),
+    Palette.night11,
+    Palette.night15a,
+    Palette.paper89,
+    Palette.ashDark,
+    Palette.seamDark,
+    Palette.goldDark,
   );
   static const light = _Tokens(
     Color(0xFFDEDAD2),
@@ -62,7 +63,7 @@ class _Tokens {
     Color(0xFF1F1C22),
     Color(0xFF5B564E),
     Color(0xFFC4BFB4),
-    Color(0xFF8A5A00),
+    Palette.goldLight,
   );
 }
 
@@ -364,7 +365,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     Color chartChapterColor(int n) => switch (look) {
           MapLook.night => _mapChapterOf(n).dark,
           MapLook.parchment => _mapChapterOf(n).light,
-          MapLook.shroud => const Color(0xFFA3A3AA),
+          MapLook.shroud => Palette.stone65,
         };
 
     Widget mapBox(double width) {
@@ -845,7 +846,7 @@ class _PixelChip extends StatelessWidget {
                     ? (ThemeData.estimateBrightnessForColor(color) ==
                             Brightness.dark
                         ? Colors.white
-                        : const Color(0xFF1A1408))
+                        : Palette.amber7)
                     : tokens.ink),
           ),
         ),
@@ -1016,7 +1017,7 @@ class _LandmarkPanel extends ConsumerWidget {
                   tag(
                     '${fight.name ?? '???'}'
                     '${fight.count > 1 ? ' ×${fight.count}' : ''}',
-                    border: const Color(0xFF9B2A2A),
+                    border: Palette.red39,
                   ),
               ],
             ),

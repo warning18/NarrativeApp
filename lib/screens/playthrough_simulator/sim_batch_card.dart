@@ -294,21 +294,19 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       _avg(results.map((r) => r.finalAlignment));
                   final alignmentColor = avgAlignment > 0.5
                       ? Colors.blue
-                      : (avgAlignment < -0.5
-                          ? Colors.deepOrange
-                          : Colors.blueGrey);
+                      : (avgAlignment < -0.5 ? Palette.hot : Palette.slate);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _StatLine(
                         icon: Icons.route,
-                        color: Colors.blueGrey,
+                        color: Palette.slate,
                         text:
                             '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
                       ),
                       _StatLine(
                         icon: Icons.paid,
-                        color: Colors.amber.shade800,
+                        color: Palette.amberDeep,
                         text:
                             '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
                       ),
@@ -327,7 +325,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       if (results.any((r) => r.hasCharacter)) ...[
                         _StatLine(
                           icon: Icons.emoji_events_outlined,
-                          color: Colors.green.shade700,
+                          color: Palette.goodDeep,
                           text:
                               '${tr(ref, 'sim_fights_label')}: ${_oneDecimal(_avg(results.map((r) => r.fightsWon)))} / '
                               '${_oneDecimal(_avg(results.map((r) => r.fightsLost)))}',

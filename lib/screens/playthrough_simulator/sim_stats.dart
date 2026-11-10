@@ -108,11 +108,11 @@ Map<String, int> _companionEncounterCounts(
 /// palette by insertion order) — just enough to tell chips apart at a
 /// glance, not meaningful per-companion branding.
 const List<Color> _companionColors = [
-  Colors.teal,
-  Colors.deepPurple,
-  Colors.orange,
-  Colors.indigo,
-  Colors.pink,
+  Palette.lagoon,
+  Palette.arcane,
+  Palette.flame,
+  Palette.dusk,
+  Palette.rose,
 ];
 
 Color _companionColor(String companionId, Map<String, int> allCounts) {

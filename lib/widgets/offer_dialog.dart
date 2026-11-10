@@ -39,6 +39,7 @@ import 'reward_cards.dart';
 import 'roll_power_row.dart';
 import 'sign_widgets.dart';
 import 'wind_banner.dart';
+import '../theme/palette.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
 const Color _wayfarerColor = Color(0xFF8D6E63);
@@ -681,7 +682,7 @@ class _OfferBanner extends ConsumerWidget {
         flags: session.flags);
     final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
     final who = _suitorName(suitor, data, lang);
-    const good = Color(0xFF3E9B57);
+    const good = Palette.green43;
 
     // One box for every banner, so none changes size when another is picked
     // (the picked one only takes the wind).
@@ -821,7 +822,7 @@ class _OfferHall extends ConsumerWidget {
         ? const <String, double>{}
         : suitorPreview(picked, offer.ticket,
             politics: politics, data: data, flags: session.flags);
-    const good = Color(0xFF3E9B57);
+    const good = Palette.green43;
     final bad = theme.colorScheme.error;
     final compass = ClanCompass(
       clans: data.clans,
@@ -1167,13 +1168,13 @@ class _PlainFlag extends StatelessWidget {
               child: Container(
                 width: 56,
                 height: 114,
-                color: const Color(0xFF141217),
+                color: Palette.night8,
                 child: Column(
                   children: [
                     Container(height: 4, color: color),
                     const Spacer(),
                     Icon(wayfarer ? Icons.hiking : Icons.flag,
-                        size: 30, color: const Color(0xFFEFE6D2)),
+                        size: 30, color: Palette.amber88),
                     const SizedBox(height: 14),
                     const Spacer(),
                   ],

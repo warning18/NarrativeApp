@@ -59,7 +59,7 @@ IconData _faceTypeIcon(String type) => faceKind(type).icon;
 // boss's new phase. Mid-tones, legible on the dark page and the parchment
 // one. Die faces take their colour from [FaceKind].
 const Color _attackColor = Color(0xFFD9692A);
-const Color _defendColor = Color(0xFF7F92A6);
+const Color _defendColor = Palette.stone57a;
 const Color _healColor = Color(0xFF5FA64C);
 const Color _skillColor = Color(0xFF9270DA);
 
@@ -75,9 +75,9 @@ class _StatusEffectChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (icon, color) = switch (effect.type) {
-      StatusEffectType.poison => (Icons.coronavirus, Colors.green),
+      StatusEffectType.poison => (Icons.coronavirus, Palette.good),
       StatusEffectType.stun => (Icons.flash_on, Colors.amber),
-      StatusEffectType.weaken => (Icons.trending_down, Colors.purple),
+      StatusEffectType.weaken => (Icons.trending_down, Palette.violet),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),

@@ -14,6 +14,7 @@ import '../data/factions.dart';
 import '../providers/clans_provider.dart';
 import 'clan_rank_plate.dart';
 import 'standing_sign.dart';
+import '../theme/palette.dart';
 
 /// What a clan's banner says of it at a glance.
 class _ClanGlance {
@@ -52,7 +53,7 @@ final _clanGlanceProvider =
 /// How much of the cloth a power tier fills, from the foot: a quarter a tier.
 double powerClothShare(PowerTier tier) => (tier.index + 1) / 4;
 
-const Color _hairline = Color(0xFFF2C14E);
+const Color _hairline = Palette.goldDark;
 
 /// The cloth above the level: the banner's own colours nearly all hidden.
 const Color _empty = Color(0xE0151319);
@@ -87,8 +88,8 @@ class PowerCloth extends StatelessWidget {
                     colors: const [
                       _empty,
                       _empty,
-                      Color(0x00000000),
-                      Color(0x00000000)
+                      Palette.clear,
+                      Palette.clear
                     ],
                     stops: [0, level, level + 0.0001, 1],
                   ).createShader(rect),
