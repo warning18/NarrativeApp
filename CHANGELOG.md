@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.901.0+937]
+
+### Changed
+- **The thirteen clan banners, redrawn** (UX, the Art pack the user approved:
+  the Dominion v2 treatment for every clan). The cloth has folds and a light
+  rim on its left edge; the signs, the colours and the 64 x 128 size are the same, so
+  every place that draws a banner (the clan pages, the offers, the standing
+  signs, the compass, the flags) shows the new cloth with no layout change.
+  Palette PNGs, same files as before.
+
 ## [1.900.0+936]
 
 ### Changed
