@@ -1,0 +1,36 @@
+{
+  "group_id": "a930a130-aa05-4497-9a4e-cb4439071437",
+  "states": [
+    {
+      "character": {
+        "id": "7ae33aa4-9428-4ea7-adf8-0461bd0cbf24",
+        "name": "Idle",
+        "prompt": "tall ominous void sovereign, a robed crowned figure of black glass and violet void light, long torn cloak, a faint purple glow in the hollow eyes, regal and dreadful, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T16:41:14.511365+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T16:45:51.385387"
+}
