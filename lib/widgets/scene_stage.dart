@@ -200,8 +200,8 @@ class _Figure extends StatelessWidget {
       valueListenable: FightSpriteImages.loaded,
       builder: (context, _, __) {
         final use = FightSpriteImages.effective(set);
-        final w = use.frameWidth * scale;
-        final h = use.frameHeight * scale;
+        final w = use.frameWidth * scale * use.drawScale;
+        final h = use.frameHeight * scale * use.drawScale;
         return SizedBox(
           key: Key('scene_stage_$keyName'),
           width: w,
