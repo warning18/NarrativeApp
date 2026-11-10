@@ -17,7 +17,7 @@ isn't reconstructable from git history alone.
   figures are 48 x 48). A sprite has its own frame size and a draw scale, so
   the rat stands smaller than the ronin and the hound a little smaller than
   its frame. Three idle frames only (about 6 KB); the walk strips stay in
-  `art/`. The matriarch's body is clipped by its canvas and needs a bigger one.
+  `art/`. The matriarch's pups are cut at the art's own edge (a bigger canvas cannot bring them back); on the stage it reads as a crop.
 
 ## [1.888.0+924]
 

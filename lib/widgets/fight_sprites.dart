@@ -79,7 +79,7 @@ const String _fighters = 'assets/visuals/fighters';
 /// side views (art/pixellab/sewer).
 const Map<String, ({int size, int foot, double scale})> _enemyFrames = {
   'rat': (size: 60, foot: 1, scale: 0.7),
-  'rat_matriarch': (size: 60, foot: 4, scale: 1.0),
+  'rat_matriarch': (size: 60, foot: 4, scale: 0.85),
   'plague_hound': (size: 60, foot: 2, scale: 0.85),
 };
 
