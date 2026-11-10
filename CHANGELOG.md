@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.894.0+930]
+
+- **Narrative: the last American spellings in the English text** (QA's L3 on 1.888, issue #894).
+  "Recognised" (nine places in the story and the Frost Quarry's zone text), "apologised",
+  "practised" (the first-aid skill) and "Harbour master’s office" (the Saltmouth chart's
+  stub plan) now follow the British spelling of v1.872. Text only; no key, id or French changed.
+
 ## [1.893.0+929]
 
 ### Fixed
@@ -50,6 +57,7 @@ isn't reconstructable from git history alone.
   Drowned Cloister, the Ashen Quarter, Candlehold and the White Anchorage.
   Over three seeds the encounter win rates move by a point at most, and
   the profession spread goes from 5.4 to 5.6.
+
 ## [1.890.0+926]
 
 ### Added
@@ -86,6 +94,7 @@ isn't reconstructable from git history alone.
 - The balance test's profession guard now allows two standard errors of
   noise on top of its 8-point limit, not three, so a spread like the old
   9.7 points fails it.
+
 ## [1.886.0+922]
 
 ### Changed
@@ -119,6 +128,7 @@ isn't reconstructable from git history alone.
     (17). `Colors.white`, `black` and `transparent` stay Flutter's own.
   - `test/palette_test.dart` fails when a colour drawn in two files is written
     as a literal: it goes to the palette.
+
 ## [1.884.0+920]
 
 ### Changed
@@ -135,6 +145,7 @@ isn't reconstructable from git history alone.
   rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
   ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
   boss curve and every balance guard stay green.
+
 ## [1.883.0+919]
 
 - **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
