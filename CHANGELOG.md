@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.880.0+916]
+
+### Changed
+- **The Tower rebuilds its hero from the last floor it already built**
+  (Core round 4; nothing changes in play): `SimCharacter.copy()` copies the
+  hero field by field, and `towerHeroOf` keeps a copy of the hero after each
+  floor, keyed by the run's choices so far. Replaying a run now starts from
+  the longest matching floor instead of from floor 0. The balance bot's 300
+  runs give byte-identical results and take 4.1 s instead of 5.8 s; hero
+  rebuilds fall from about half of the bot's time to about 15%. A new test
+  (`test/sim_character_copy_test.dart`) fails when a field is added to
+  `SimCharacter` without being copied.
 ## [1.877.0+913]
 
 - **Narrative: one bold passage per scene, the sharpest.** 668 passages were bold,
