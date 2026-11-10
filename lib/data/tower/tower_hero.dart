@@ -3,6 +3,8 @@
 // gave, the cards it took), so the save holds no character and a reload
 // can never drift from the run.
 
+import 'dart:math';
+
 import '../../combat/spells.dart';
 import '../../combat/stat_rules.dart' show levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
@@ -228,29 +230,67 @@ void _takeDie(SimCharacter hero, String dieId, TowerData data) {
 
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
 /// floors it cleared and the cards it took, with the run's health.
+///
+/// A rebuild goes on from the longest run of floors already built for this
+/// [data] (v1.880): each floor's hero is kept, as a copy (SimCharacter.copy),
+/// under all that made it (the run's start; each floor's picks, spoils and
+/// card), so a move rebuilds only the floors it changed, not the climb.
 SimCharacter towerHeroOf(TowerRun run, TowerData data) {
-  final hero = towerFreshHero(
-      run.raceId, run.professionId, run.startUnlocks, data,
-      unlocksOwned: run.unlocksOwned);
-  // A clan sworn at the start: its oath on floor 0 (towerStart).
-  if (run.taken[0] case final oath?) towerApplyReward(hero, oath, data);
-  var pick = 0;
+  final built = _builtHeroes[data] ??= {};
+  // Each floor's key: all that the hero after it depends on.
+  final keys = <String>[
+    '${run.seed}|${run.raceId}|${run.professionId}|'
+        '${run.startUnlocks.join(',')}|${run.unlocksOwned}|${run.taken[0]}',
+  ];
+  final picksAt = <List<int>>[const []];
+  var level = 1, pick = 0;
   for (var floor = 1; floor <= run.floorsCleared; floor++) {
-    final gained = towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
+    final next = max(level, towerBudgetOf(floor).levelAfter);
+    final from = min(pick, run.statPicks.length);
+    pick += (next - level) * levelStatPicks;
+    level = next;
+    final picks = run.statPicks.sublist(from, min(pick, run.statPicks.length));
+    picksAt.add(picks);
+    keys.add('${keys.last}#$floor:${picks.join(',')}:'
+        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}');
+  }
+  // The longest run of floors already built.
+  var floor = keys.length - 1;
+  while (floor >= 0 && !built.containsKey(keys[floor])) {
+    floor--;
+  }
+  late SimCharacter hero;
+  if (floor >= 0) {
+    hero = built[keys[floor]]!.copy();
+    pick = 0;
+    for (var f = 1; f <= floor; f++) {
+      pick += picksAt[f].length;
+    }
+  } else {
+    hero = towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data,
+        unlocksOwned: run.unlocksOwned);
+    // A clan sworn at the start: its oath on floor 0 (towerStart).
+    if (run.taken[0] case final oath?) towerApplyReward(hero, oath, data);
+    _keep(built, keys[0], hero);
+    floor = 0;
+    pick = 0;
+  }
+  for (floor++; floor <= run.floorsCleared; floor++) {
+    towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
     // The floor's level-up picks, taken before its cards (towerPick waits
     // for them): each drawn as the hero stands then.
-    for (var i = 0; i < gained * levelStatPicks; i++, pick++) {
-      if (pick >= run.statPicks.length) break;
+    for (final index in picksAt[floor]) {
       final offer = towerStatPickDraw(hero, run.seed, pick, data);
-      final index = run.statPicks[pick];
       if (index >= 0 && index < offer.length) {
         towerTakePickOn(hero, offer[index]);
       }
+      pick++;
     }
     // The floor's spoils (v1.860): its gear worn when better.
     towerWearSpoils(hero, run.spoils[floor] ?? const [], data);
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data);
+    _keep(built, keys[floor], hero);
   }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
@@ -258,6 +298,19 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   hero.potions =
       towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion + run.potions;
   return hero;
+}
+
+/// The heroes built so far, by [TowerData] (towerHeroOf): each floor's,
+/// under its key.
+final Expando<Map<String, SimCharacter>> _builtHeroes = Expando();
+
+/// The most floors kept for one [TowerData]: a batch of climbs keeps about
+/// thirty a climb; past this the oldest go first.
+const int _builtHeroesKept = 4096;
+
+void _keep(Map<String, SimCharacter> built, String key, SimCharacter hero) {
+  if (built.length >= _builtHeroesKept) built.remove(built.keys.first);
+  built[key] = hero.copy();
 }
 
 /// What the offer reads of [hero] in [run].
