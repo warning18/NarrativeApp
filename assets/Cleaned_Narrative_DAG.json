@@ -7107,8 +7107,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbour master’s post",
-        "text_fr": "Revenir vers le poste du maître du port",
+        "text": "Pocket the marker and head back to the harbour master’s post",
+        "text_fr": "Empocher le billet et revenir vers le poste du maître du port",
         "next_id": "2015",
         "goldMod": 35,
         "flagsToAdd": [
@@ -16010,8 +16010,8 @@
     "location": "white_anchorage_stern",
     "choices": [
       {
-        "text": "Back into the Anchorage",
-        "text_fr": "Retour au Mouillage",
+        "text": "Take the seal and go back down to the Anchorage",
+        "text_fr": "Prendre le sceau et redescendre au Mouillage",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_chaplain",
@@ -16041,8 +16041,8 @@
     "spot": "counter",
     "choices": [
       {
-        "text": "Back into the Anchorage",
-        "text_fr": "Retour au Mouillage",
+        "text": "Leave the chandlery for the Anchorage",
+        "text_fr": "Quitter la chandlerie pour le Mouillage",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_chandlery"
@@ -16084,8 +16084,8 @@
     "location": "white_anchorage_hulls",
     "choices": [
       {
-        "text": "Back into the Anchorage",
-        "text_fr": "Retour au Mouillage",
+        "text": "Leave the pilgrims to say each other’s names",
+        "text_fr": "Laisser les pèlerins se dire leurs noms",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_sick"
@@ -16105,8 +16105,8 @@
     "location": "white_anchorage_hulls",
     "choices": [
       {
-        "text": "Back into the Anchorage",
-        "text_fr": "Retour au Mouillage",
+        "text": "Leave the sick tent, the cold still in your hands",
+        "text_fr": "Quitter la tente des malades, le froid encore dans les doigts",
         "next_id": "7100",
         "healAmount": -4,
         "flagsToAdd": [
@@ -16127,8 +16127,8 @@
     "location": "white_anchorage_hulls",
     "choices": [
       {
-        "text": "Back into the Anchorage",
-        "text_fr": "Retour au Mouillage",
+        "text": "Leave the helmsman to his cup",
+        "text_fr": "Laisser le timonier à sa tasse",
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_helmsman"
@@ -17978,8 +17978,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbour master’s post",
-        "text_fr": "Revenir vers le poste du maître du port",
+        "text": "Leave Sable with her marker",
+        "text_fr": "Laisser Sable à son billet",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -18007,8 +18007,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbour master’s post",
-        "text_fr": "Revenir vers le poste du maître du port",
+        "text": "Leave the wharf to Sable’s laughing",
+        "text_fr": "Quitter le quai sous les rires de Sable",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -18029,8 +18029,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbour master’s post",
-        "text_fr": "Revenir vers le poste du maître du port",
+        "text": "Go, with Sable’s marker paid for",
+        "text_fr": "Partir, le billet de Sable payé",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -18051,8 +18051,8 @@
     "location": "saltmouth_card_row",
     "choices": [
       {
-        "text": "Head back toward the harbour master’s post",
-        "text_fr": "Revenir vers le poste du maître du port",
+        "text": "Walk back to Sable, and the cards",
+        "text_fr": "Retourner vers Sable et les cartes",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
