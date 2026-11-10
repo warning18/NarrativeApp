@@ -15,9 +15,8 @@ void main() {
     await tester.pumpWidget(const ProviderScope(
         child: MaterialApp(home: Scaffold(body: InkLoading()))));
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    double opacity() => tester
-        .widget<AnimatedOpacity>(find.byType(AnimatedOpacity))
-        .opacity;
+    double opacity() =>
+        tester.widget<AnimatedOpacity>(find.byType(AnimatedOpacity)).opacity;
     expect(opacity(), 0);
     await tester.pump(const Duration(milliseconds: 1900));
     expect(opacity(), 0);
