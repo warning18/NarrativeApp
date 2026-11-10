@@ -1,0 +1,157 @@
+{
+ "geometry": {
+  "unit": "1 art px = 2 dp",
+  "panel": {
+   "size_px": [
+    48,
+    32
+   ],
+   "corner_dp": 10,
+   "corner_radius_px": 5,
+   "nine_slice_insets_px": {
+    "left": 6,
+    "top": 6,
+    "right": 6,
+    "bottom": 6
+   },
+   "outer_line_px": 1,
+   "inner_line_inset_px": 3,
+   "inner_line_px": 1,
+   "inner_radius_px": 2,
+   "corner_stitches": "1 px dot at (1,1) and the 3 mirrored corners, drawn in the inner line colour"
+  },
+  "button": {
+   "size_px": [
+    40,
+    16
+   ],
+   "corner_dp": 4,
+   "corner_radius_px": 2,
+   "nine_slice_insets_px": {
+    "left": 4,
+    "top": 4,
+    "right": 4,
+    "bottom": 4
+   },
+   "outline_px": 1,
+   "bevel": "1 px highlight inside the top and left edges, 1 px shadow inside the bottom and right edges; swapped when pressed; none when disabled; lit = gold outline and the lighter fill"
+  }
+ },
+ "colours": {
+  "dark": {
+   "panel": {
+    "normal": {
+     "fill": "#1F1C23",
+     "outer_line": "#0E0D10",
+     "inner_line": "#3B3743",
+     "corner_stitch": "#3B3743"
+    },
+    "pressed": {
+     "fill": "#1C1920",
+     "outer_line": "#0E0D10",
+     "inner_line": "#2B2831",
+     "corner_stitch": "#2B2831"
+    },
+    "disabled": {
+     "fill": "#1E1B22",
+     "outer_line": "#161419",
+     "inner_line": "#2A262F",
+     "corner_stitch": "#2A262F"
+    },
+    "lit": {
+     "fill": "#1F1C23",
+     "outer_line": "#0E0D10",
+     "inner_line": "#F2C14E",
+     "corner_stitch": "#F2C14E"
+    }
+   },
+   "button": {
+    "normal": {
+     "fill": "#F2C14E",
+     "outline": "#0E0D10",
+     "highlight_top_left": "#F8DD9E",
+     "shadow_bottom_right": "#8B7032"
+    },
+    "pressed": {
+     "fill": "#B88C2C",
+     "outline": "#0E0D10",
+     "highlight_top_left": "#6C531F",
+     "shadow_bottom_right": "#D8C08B"
+    },
+    "disabled": {
+     "fill": "#3A3640",
+     "outline": "#0E0D10",
+     "highlight_top_left": "#3A3640",
+     "shadow_bottom_right": "#3A3640"
+    },
+    "lit": {
+     "fill": "#FFE08A",
+     "outline": "#F2C14E",
+     "highlight_top_left": "#FFEEBF",
+     "shadow_bottom_right": "#938153"
+    }
+   }
+  },
+  "parchment": {
+   "panel": {
+    "normal": {
+     "fill": "#EAE0C9",
+     "outer_line": "#231F1A",
+     "inner_line": "#CFC4AE",
+     "corner_stitch": "#CFC4AE"
+    },
+    "pressed": {
+     "fill": "#C6BDAA",
+     "outer_line": "#231F1A",
+     "inner_line": "#938A7A",
+     "corner_stitch": "#938A7A"
+    },
+    "disabled": {
+     "fill": "#E6DCC3",
+     "outer_line": "#847E6E",
+     "inner_line": "#DDD2BB",
+     "corner_stitch": "#DDD2BB"
+    },
+    "lit": {
+     "fill": "#EAE0C9",
+     "outer_line": "#231F1A",
+     "inner_line": "#8A5A00",
+     "corner_stitch": "#8A5A00"
+    }
+   },
+   "button": {
+    "normal": {
+     "fill": "#8A5A00",
+     "outline": "#231F1A",
+     "highlight_top_left": "#BFA473",
+     "shadow_bottom_right": "#5C3F0C"
+    },
+    "pressed": {
+     "fill": "#5E3C00",
+     "outline": "#231F1A",
+     "highlight_top_left": "#432F0C",
+     "shadow_bottom_right": "#A69473"
+    },
+    "disabled": {
+     "fill": "#C9BEA4",
+     "outline": "#231F1A",
+     "highlight_top_left": "#C9BEA4",
+     "shadow_bottom_right": "#C9BEA4"
+    },
+    "lit": {
+     "fill": "#B5801C",
+     "outline": "#8A5A00",
+     "highlight_top_left": "#D6B982",
+     "shadow_bottom_right": "#73541B"
+    }
+   }
+  }
+ },
+ "states": [
+  "normal",
+  "pressed",
+  "disabled",
+  "lit"
+ ],
+ "source": "art/pixellab-pilots/round4 directions A (panels) and C (buttons); drawn by hand with PIL, 0 generations"
+}
