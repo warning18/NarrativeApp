@@ -19,30 +19,20 @@ simplifies. Measured on `main` (v1.875), English text of `Cleaned_Narrative_DAG.
   tests pin a phrase, I list and update them. Words only, no flag or number moves.
 - **The player notices:** sharper images, slightly shorter pages.
 
-### 2. Cap companion remarks at three lines
-- **What:** 278 remarks: 72 have one line, 153 two, 44 three, and 9 four. The nine
-  four-line ones are the `*_walk` remarks (`tobin_walk` 305 characters, `sable_walk` 296,
-  `kelda_walk` 295, `malrik_walk` 294, and five more). Cut each to three lines by
-  merging the two shortest; no line is rewritten.
-- **Why:** a remark is a companion's aside under a scene; at four lines it is a
-  second scene, and it is the only place the pages can still grow.
-- **Size:** S (nine remarks, EN and FR; 9 lines removed). **Risk:** none found;
-  `companion_remarks_test` counts remarks, not lines.
-- **The player notices:** the nine longest asides land in one glance.
+### 2. Own wording for the hub-return buttons (corrected after reading the code)
+- **What:** two hubs end ten scenes with the same button: "Back into the Anchorage" (5 rows of
+  `7100`) and "Head back toward the harbour master’s post" (5 rows of `2015`). Each now names
+  what that scene just did ("Leave the helmsman to his cup"). The other repeated labels I first
+  listed are not repeats of a formula: "Crawl out into the street" and "Get up and go home" are one
+  scene's gold-loss variants, and "Begin again, changed" is the four endings' exit; all stay.
+- **Why:** the same line after five different scenes reads as a menu, not a story.
+- **Size:** S (10 labels, EN and FR). **Risk:** none found; flags and gold untouched.
+- **The player notices:** each return button belongs to its scene.
 
-### 3. Give the return-and-retreat buttons their own wording
-- **What:** five formula labels are reused as the exit of many scenes: "Crawl out into
-  the street" (5), "Head back toward the harbour master’s post" (5), "Back into the
-  Anchorage" (5), "Get up and go home" (4), "Begin again, changed" (4); plus
-  "Continue" (3), "Fight" (3) and "Proceed to Chapter 2" (3). 32 labels in all. Keep the
-  last four as they are (they are navigation); rewrite the first five so each names what
-  that scene just did ("Crawl out with the bandits’ laughter behind you").
-- **Why:** the same line after five different failures reads as a menu, not a story.
-- **Size:** S (23 labels, EN and FR). **Risk:** low; flags and gold untouched;
-  a few tests look a label up by text, I update those.
-- **The player notices:** a failed scene ends on a line that belongs to it.
+(The first draft of this item proposed capping the nine four-line `*_walk` remarks. Withdrawn: the
+walk bubble shows one line chosen at random, so the four lines are variants, not a sequence.)
 
-### 4. Shorten the French where it runs a third longer than the English
+### 3. Shorten the French where it runs a third longer than the English
 - **What:** over 392 long scenes the French is on average 14 % longer than the
   English; 34 of them pass 900 French characters, and the longest ratios (`2015_sable`,
   `2015_sable_lifted`, `2015_cards`, `820`) reach 1.27 to 1.29. Tighten those 34 French
@@ -54,9 +44,9 @@ simplifies. Measured on `main` (v1.875), English text of `Cleaned_Narrative_DAG.
 - **The player notices:** a French page that scrolls no further than the English one.
 
 ## What I would do first
-1. **Item 2** and **item 3** together, one small PR (about 32 strings).
+1. **Item 2**, one small PR (10 labels; done in v1.878).
 2. **Item 1**, the biggest read, after the bold trim has landed (they touch the same scenes).
-3. **Item 4** last, French only.
+3. **Item 3** last, French only.
 
 ## Not proposed (checked)
 - 19 NPCs carry no spoken line (13 are shopkeepers): adds text, so I left it.
