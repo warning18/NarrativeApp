@@ -1,0 +1,24 @@
+OLD n=800 attempt 44.3% encounter 75.5% level 22.5 gold 5280 endings {'ending': 800}
+NEW n=800 attempt 43.6% encounter 74.4% level 21.9 gold 3982 endings {'ending': 800}
+profession (encounter win) old / new:
+  cleric     73.4 /  73.2
+  mage       80.6 /  77.4
+  ranger     75.4 /  72.0
+  rogue      75.1 /  76.0
+  warrior    72.7 /  73.5
+  spread 7.9 / 5.4
+chapter (encounter win) old / new: 1:94/93 2:95/99 3:75/82 4:68/70 5:75/70 6:71/61 7:59/51 8:61/48
+bosses (encounter win, target) old / new:
+  aurel_vane               ch1 target 75: 72 / 70 (n=260)
+  void_stalker             ch3 target 65: 61 / 54 (n=819)
+  hollow_court_inquisitor  ch4 target 55: 55 / 60 (n=761)
+  bone_warden              ch4 target 55: 56 / 59 (n=1063)
+  void_archon              ch5 target 50: 50 / 41 (n=645)
+  white_admiral            ch6 target 45: 51 / 38 (n=509)
+  claimant_vane            ch7 target 40: 35 / 40 (n=115)
+  claimant_tallis          ch7 target 40: 42 / 28 (n=568)
+  claimant_morrow          ch7 target 40: 45 / 32 (n=117)
+  tear_herald              ch8 target 35: 37 / 26 (n=800)
+  void_sovereign           ch8 target 35: 32 / 26 (n=441)
+enemies lost most (new): void_sovereign 74% (n=441), tear_herald 74% (n=800), claimant_tallis 72% (n=568), strand_colossus 70% (n=522), claimant_morrow 68% (n=117), white_admiral 62% (n=509)
+enemies lost most (old): void_sovereign 68%, claimant_vane 65%, tear_herald 63%, claimant_tallis 58%, strand_colossus 58%, brother_clement 58%
