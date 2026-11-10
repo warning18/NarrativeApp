@@ -47,3 +47,7 @@ Seeds: chest edits 41 and 42; dice 7 (retries 8 and 9). Prompts per file: `round
 
 ## Round 3: simple dice bodies (`art/pixellab-pilots/round3/`)
 The user: the game draws the skill glyph on each face, so the body must be simple. One skin for the set: plain warm bone, three flat tones, thin dark outline, no texture, cracks, runes or marks. 16 generations (balance 1267.5 to 1251.5), pixen 64x64, 1 each, seeds 11 to 16, views side or high top-down per `round3/index.json`. Chosen: d4 (`d4_c`), d6, d8, d12 (`d12_c`), d20 (`d20_a`). The d10 is NOT solved: 5 tries read as a d20, a spiky bipyramid with small faces, or a hexagon (a d6 from above). Resting bodies only: a PixelLab body cannot rotate, so the code keeps the roll. Nothing wired.
+
+## Round 5 (user: dice approved with icons on the faces, Dominion v2): no generation
+- `docs/art/boards/dice-with-skill-icons.png`: the five approved bone dice (d4 `d4_c`, d6, d8, d12 `d12_c`, d20 `d20_a`) drawn at 2x with real skill icons (fireball, power_strike, mage_frost_nova, cleric_holy_light, rogue_backstab, warrior_shield_bash, ranger_aimed_shot, second_wind) composited on each face large enough for a 16 px icon; the d10 stays the code painter. Free PIL composite.
+- `art/pixellab-banners-v2/`: the Dominion v2 treatment (folds, brighter brass rod and finials, woven accent hem) applied by exact pixel edit to all 13 `clan_*` banners, 64x128 palette PNGs, plus `docs/art/boards/clan-banners-v2.png` (today vs v2). Staged only: `assets/visuals/banners/` is untouched.
