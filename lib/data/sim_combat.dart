@@ -867,6 +867,67 @@ class SimCharacter {
     buyPotions(_potionsStocked);
     return purse;
   }
+
+  /// A copy of this character, field by field (v1.880): the Tower builds
+  /// its hero once a floor and goes on from the copy (towerHeroOf), not
+  /// from scratch. Its lists, sets and maps are its own; what they hold
+  /// (a die's faces, a spell, a sign) is shared, as nothing changes those
+  /// in place. [pickRandom] and [rolls] are shared too: a Random can't be
+  /// copied (the Tower never draws from it). `test/sim_character_copy_test`
+  /// fails when a field is added here and not to this copy.
+  SimCharacter copy() => SimCharacter._(
+        raceId: raceId,
+        professionId: professionId,
+        preferredStat: preferredStat,
+        maxHealth: maxHealth,
+        baseDamage: baseDamage,
+        baseArmor: baseArmor,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        intelligence: intelligence,
+        wisdom: wisdom,
+        luck: luck,
+        charisma: charisma,
+        perception: perception,
+        diceFaces: List.of(diceFaces),
+        diceSkillAssignments: Map.of(diceSkillAssignments),
+        unlockedSkillIds: Set.of(unlockedSkillIds),
+        knownSpells: List.of(knownSpells),
+        potions: potions,
+        startingGold: startingGold,
+      )
+        ..level = level
+        ..xp = xp
+        ..currentHealth = currentHealth
+        ..mana = mana
+        ..equippedBySlot.addAll(equippedBySlot)
+        ..policy = policy
+        ..ownedItemIds.addAll(ownedItemIds)
+        ..diceId = diceId
+        ..ownedDice.addAll({
+          for (final MapEntry(:key, :value) in ownedDice.entries)
+            key: List.of(value),
+        })
+        ..dieTrial = dieTrial
+        .._dieFailedAt.addAll(_dieFailedAt)
+        ..statusEffects = List.of(statusEffects)
+        ..heldSigns = List.of(heldSigns)
+        ..specIds = List.of(specIds)
+        ..trainingPaths = trainingPaths
+        ..pickRandom = pickRandom
+        ..trainingTaken.addAll(trainingTaken)
+        ..rolls = rolls
+        ..signMaxMana = signMaxMana
+        ..fightsWon = fightsWon
+        ..fightsLost = fightsLost
+        ..roundsFought = roundsFought
+        ..potionsUsed = potionsUsed
+        ..manaGained = manaGained
+        ..spellsCast.addAll(spellsCast)
+        ..spellbooksBought.addAll(spellbooksBought)
+        ..alignmentLabel = alignmentLabel
+        ..pickedPoints.addAll(pickedPoints);
 }
 
 /// The potion charges the competent player keeps before buying gear, and
