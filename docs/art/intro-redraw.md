@@ -1,5 +1,7 @@
 # The first-launch intro, redrawn: two versions (picture first, nothing wired)
 
+> **Chosen by the user: Version A "Alster in ashes".** The final four plates are in `art/pixellab-intro/final/` (README, picks.json): seeds A1 s5, A2 s6, A3 s5 with the sign text painted out, A4 s5. Version B stays in `staged/` as an alternative.
+
 Sheet: `docs/art/boards/intro-redraw.png`. Files: `art/pixellab-intro/staged/<plate>_s5|s6.png` (180x320, PNG8) + `index.json` (prompts, seeds, per-plate notes). 16 generations (balance 1175.5 to 1159.5). The intro today is eight beats of code painters (`intro_art.dart`, 70x124 grid); the redraw replaces the four picture plates and keeps the timing, the four lines, the die (`Die3D`, bone skin), the title and the fade.
 
 ## The four plates (both versions)
