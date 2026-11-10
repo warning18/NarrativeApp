@@ -1417,6 +1417,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Owned',
     AppLanguage.fr: 'Acquis',
   },
+  'loading_wait': {
+    AppLanguage.en: 'Still gathering the pages…',
+    AppLanguage.fr: 'Les pages se rassemblent encore…',
+  },
+  'loading_map': {
+    AppLanguage.en: 'Reading the map…',
+    AppLanguage.fr: 'Lecture de la carte…',
+  },
   'tower_leave': {
     AppLanguage.en: 'Leave the Tower',
     AppLanguage.fr: 'Quitter la Tour',

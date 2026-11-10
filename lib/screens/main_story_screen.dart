@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/story_providers.dart';
 import 'story_node_editor_screen.dart';
 import '../widgets/ink_confirm.dart';
+import '../widgets/ink_loading.dart';
 
 /// The main quest line: each chapter's fixed story beats, pulled live from
 /// the narrative data. Tap a node id to edit its text and choices directly;
@@ -116,7 +117,7 @@ class MainStoryScreen extends ConsumerWidget {
             ],
           ],
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const InkLoading(),
         error: (error, stack) =>
             Center(child: Text('${tr(ref, 'failed_to_load_story')}: $error')),
       ),

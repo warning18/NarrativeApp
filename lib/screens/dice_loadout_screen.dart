@@ -34,6 +34,7 @@ import 'skills/die_slot_ring.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 import '../theme/palette.dart';
+import '../widgets/ink_loading.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
@@ -102,11 +103,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           data: (dice) => skillsAsync.when(
             data: (skills) =>
                 _buildBody(context, dice, skills, session, companion, ally),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
                 message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
               message: tr(ref, 'failed_to_load_dice'), detail: error),
         ),
