@@ -19,6 +19,7 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'd20_roll.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 /// The colour of a forge tier (the odds bar, the sparks, the word).
 Color forgeTierColor(ForgeTier tier) => switch (tier) {
@@ -228,7 +229,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
                 ),
               Expanded(
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: Motion.base,
                   child: switch (beat) {
                     0 || 1 => _landing(context, lang, beat),
                     2 => _tierRead(context, lang, tierColor),

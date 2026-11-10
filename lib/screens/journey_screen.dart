@@ -123,6 +123,7 @@ import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
 import '../widgets/ink_chip.dart';
 import '../theme/palette.dart';
+import '../theme/motion.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -2457,7 +2458,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                 );
                               },
                               child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 280),
+                                duration: Motion.base,
                                 child: _JourneyChart(
                                   key: _chartKey,
                                   // Looking out at the streets from inside, the
