@@ -83,7 +83,7 @@ is part of the world. The story offers each door, and takes what the climb
 says back, with no numbers moved.
 
 **How the hero meets the first one:** Alster's hub gets one optional scene,
-"The stair behind the well" (about 500 characters): the Keyholders' mark
+"The stair behind the well" (about 500 characters): the Houses’ chalk mark
 on a bricked door, a pensioner who watches it, a choice **Climb** or **Not
 today**. *Climb* hands over to the Tower mode on that door with the
 reflection hero (Core's option A; the Tower's back button returns to the
