@@ -1,0 +1,115 @@
+{
+ "date": "2026-11-10",
+ "round": 4,
+ "note": "Three new directions for panels and buttons, drawn free (0 generations), on the real dark #1F1C23 and parchment #EAE0C9 surfaces. Panel base 48x32, button 40x16, 4 states each. Round 1 (stitched ink) was not chosen. Layouts, sizes, radius tokens and text unchanged. Staged only.",
+ "items": [
+  {
+   "category": "panels and buttons",
+   "element": "A. Double ink line",
+   "direction": "A. Double ink line: outer ink line, a thin seam line inside it, 4 corner stitches",
+   "surface": "dark",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "A_double_line/dark/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  },
+  {
+   "category": "panels and buttons",
+   "element": "A. Double ink line",
+   "direction": "A. Double ink line: outer ink line, a thin seam line inside it, 4 corner stitches",
+   "surface": "parchment",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "A_double_line/parchment/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  },
+  {
+   "category": "panels and buttons",
+   "element": "B. Worn leather and parchment edge",
+   "direction": "B. Worn leather and parchment edge: ragged darkened edge in 3 tones, 4 rivets",
+   "surface": "dark",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "B_worn_edge/dark/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  },
+  {
+   "category": "panels and buttons",
+   "element": "B. Worn leather and parchment edge",
+   "direction": "B. Worn leather and parchment edge: ragged darkened edge in 3 tones, 4 rivets",
+   "surface": "parchment",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "B_worn_edge/parchment/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  },
+  {
+   "category": "panels and buttons",
+   "element": "C. Flat pixel frame",
+   "direction": "C. Flat pixel frame: 1 px ink outline, 1 px highlight top-left and shadow bottom-right",
+   "surface": "dark",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "C_bevel/dark/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  },
+  {
+   "category": "panels and buttons",
+   "element": "C. Flat pixel frame",
+   "direction": "C. Flat pixel frame: 1 px ink outline, 1 px highlight top-left and shadow bottom-right",
+   "surface": "parchment",
+   "today": "code (InkPanel: surfaceContainer, 1 px seam, 10 dp corner; filled button 4 dp corner, gold)",
+   "pixellab": "C_bevel/parchment/ (panel_<state>.png 48x32, button_<state>.png 40x16; states normal, pressed, disabled, lit)",
+   "nine_slice": {
+    "panel_corner_px": 6,
+    "button_corner_px": 4,
+    "note": "stretch the centre and edges; corners fixed"
+   },
+   "model": "free pixel drawing (PIL), no PixelLab call",
+   "generations": 0,
+   "prompt": "n/a",
+   "seed": "n/a",
+   "verdict": "proposal"
+  }
+ ]
+}

@@ -44,3 +44,13 @@ Balance 1288.5 before, 1267.5 after: **21 generations**. Nothing wired.
 - Dice in the Ember skin (blank faces): d4, d8, d10, d12, d20 and the d6 bone and iron skins, pixen 64x64, 1 each = 7; retries for d12 and d20 (the first tries read as diamonds) = 4, of which two (`d12_c`, `d20_c`, seeds 9) were not kept (flames around the die). Raw files of all are in `round2/raw/`.
 - Banners: 3 stronger versions of the Dominion banner by exact pixel edit (0 generations), `round2/banners/`.
 Seeds: chest edits 41 and 42; dice 7 (retries 8 and 9). Prompts per file: `round2/index.json`.
+
+## Round 3: simple dice bodies (`art/pixellab-pilots/round3/`)
+The user: the game draws the skill glyph on each face, so the body must be simple. One skin for the set: plain warm bone, three flat tones, thin dark outline, no texture, cracks, runes or marks. 16 generations (balance 1267.5 to 1251.5), pixen 64x64, 1 each, seeds 11 to 16, views side or high top-down per `round3/index.json`. Chosen: d4 (`d4_c`), d6, d8, d12 (`d12_c`), d20 (`d20_a`). The d10 is NOT solved: 5 tries read as a d20, a spiky bipyramid with small faces, or a hexagon (a d6 from above). Resting bodies only: a PixelLab body cannot rotate, so the code keeps the roll. Nothing wired.
+
+## Round 5 (user: dice approved with icons on the faces, Dominion v2): no generation
+- `docs/art/boards/dice-with-skill-icons.png`: the five approved bone dice (d4 `d4_c`, d6, d8, d12 `d12_c`, d20 `d20_a`) drawn at 2x with real skill icons (fireball, power_strike, mage_frost_nova, cleric_holy_light, rogue_backstab, warrior_shield_bash, ranger_aimed_shot, second_wind) composited on each face large enough for a 16 px icon; the d10 stays the code painter. Free PIL composite.
+- `art/pixellab-banners-v2/`: the Dominion v2 treatment (folds, brighter brass rod and finials, woven accent hem) applied by exact pixel edit to all 13 `clan_*` banners, 64x128 palette PNGs, plus `docs/art/boards/clan-banners-v2.png` (today vs v2). Staged only: `assets/visuals/banners/` is untouched.
+
+## Round 4: panels and buttons, three new directions (free pixel drawing, 0 generations)
+`art/pixellab-pilots/round4/` (`index.json`, `<direction>/<dark|parchment>/panel_<state>.png` 48x32 and `button_<state>.png` 40x16, states normal, pressed, disabled, lit) and `docs/art/boards/round4-*.png`. Real tokens: dark surface `#1F1C23`, parchment `#EAE0C9`, panel corner 10 dp and button corner 4 dp (art px = 2 dp: 5 and 2 px), gold primary buttons. A: double ink line with corner stitches. B: worn leather/parchment edge (ragged 3-tone edge, rivets). C: flat pixel frame with 1 px highlight and shadow bevel. Nine-slice corner 6 px (panel), 4 px (button). Round 1's stitched ink was not chosen. Balance unchanged, 1251.5.
