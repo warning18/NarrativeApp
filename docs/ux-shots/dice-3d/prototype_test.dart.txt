@@ -1,0 +1,172 @@
+// SCRATCH prototype (not committed): real 3D d8 / d20 built from facets, each
+// facet a flat widget with the real face glyph, in perspective.
+import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/theme/palette.dart';
+import 'package:narrative_data_app/utils/face_style.dart';
+import 'package:narrative_data_app/utils/pixel_icons/game_pixel_icons.dart';
+import 'package:narrative_data_app/widgets/die_skins.dart';
+import 'support/fonts.dart';
+
+typedef V = List<double>;
+V _sub(V a, V b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+V _cross(V a, V b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+double _dot(V a, V b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+V _norm(V a) { final l = math.sqrt(_dot(a, a)); return [a[0] / l, a[1] / l, a[2] / l]; }
+
+class Solid { Solid(this.verts, this.faces); final List<V> verts; final List<List<int>> faces; }
+
+Solid octa() {
+  final v = <V>[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  final f = <List<int>>[];
+  for (final sx in [0,1]) { for (final sy in [2,3]) { for (final sz in [4,5]) { f.add([sx,sy,sz]); } } }
+  return Solid(v, f);
+}
+
+Solid icosa() {
+  final p = (1 + math.sqrt(5)) / 2;
+  final v = <V>[];
+  for (final a in [-1.0, 1.0]) { for (final b in [-p, p]) { v..add([0, a, b])..add([a, b, 0])..add([b, 0, a]); } }
+  final e = _dot(_sub(v[0], v[3]), _sub(v[0], v[3]));
+  double d(int i, int j) { final s = _sub(v[i], v[j]); return _dot(s, s); }
+  var edge = 1e9;
+  for (var i = 1; i < v.length; i++) { edge = math.min(edge, d(0, i)); }
+  final f = <List<int>>[];
+  for (var i = 0; i < v.length; i++) { for (var j = i + 1; j < v.length; j++) { for (var k = j + 1; k < v.length; k++) {
+    if ((d(i,j)-edge).abs() < 1e-6 && (d(j,k)-edge).abs() < 1e-6 && (d(i,k)-edge).abs() < 1e-6) f.add([i,j,k]);
+  } } }
+  assert(e > 0);
+  return Solid(v.map(_norm).toList(), f);
+}
+
+Matrix4 _rest(V n, V u) {
+  final v = _cross(u, n);
+  return Matrix4(u[0], v[0], -n[0], 0, u[1], v[1], -n[1], 0, u[2], v[2], -n[2], 0, 0, 0, 0, 1);
+}
+
+class _Glyph { _Glyph(this.skill, this.kind, this.value); final String? skill; final FaceKind kind; final int value; }
+
+Widget glyphOf(_Glyph g, double plaque) {
+  if (g.skill != null) {
+    return Container(width: plaque, height: plaque, alignment: Alignment.center,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: Palette.amber88.withValues(alpha: 0.92),
+        border: Border.all(color: g.kind.color, width: plaque * 0.05 + 0.6)),
+      child: SkillPixelIcon(g.skill!, size: plaque * 0.76));
+  }
+  return Column(mainAxisSize: MainAxisSize.min, children: [
+    Icon(g.kind.icon, size: g.value > 0 ? plaque * 0.5 : plaque * 0.6, color: g.kind.color),
+    if (g.value > 0) Text('${g.value}', style: TextStyle(fontSize: plaque * 0.36, fontWeight: FontWeight.bold, height: 1, color: g.kind.color)),
+  ]);
+}
+
+class _Tri extends CustomClipper<Path> {
+  _Tri(this.pts); final List<Offset> pts;
+  @override Path getClip(Size s) => Path()..addPolygon(pts, true);
+  @override bool shouldReclip(_) => true;
+}
+
+/// One frame of the die: stage [w]x[h], radius [R].
+Widget dieFrame(Solid s, List<_Glyph> glyphs, DieSkin skin, int landed, double t, double R, Size stage, {bool still = false}) {
+  final faces = s.faces;
+  V c(int fi) { final f = faces[fi]; return [ for (var a = 0; a < 3; a++) (s.verts[f[0]][a] + s.verts[f[1]][a] + s.verts[f[2]][a]) / 3 ]; }
+  final n0 = _norm(c(landed));
+  final u0 = _norm(_sub(s.verts[faces[landed][0]], c(landed)));
+  final rest = _rest(n0, u0);
+  final k = still ? 0.0 : (1 - Curves.easeOutCubic.transform(t)) * 2.5 * 2 * math.pi;
+  final tumble = Matrix4.identity()..rotateX(k)..rotateY(k * 0.7)..rotateZ(k * 0.4);
+  final model = Matrix4.identity()..rotateX(0.2)..rotateY(0.26);
+  model.multiply(tumble); model.multiply(rest);
+  final items = <(double, Widget)>[];
+  const persp = 0.0016;
+  for (var fi = 0; fi < faces.length; fi++) {
+    final cc = c(fi); final n = _norm(cc);
+    final u = _norm(_sub(s.verts[faces[fi][0]], cc)); final v = _cross(u, n);
+    // world-space normal and centre after the model.
+    final m = model.storage;
+    V rot(V p) => [m[0]*p[0]+m[4]*p[1]+m[8]*p[2], m[1]*p[0]+m[5]*p[1]+m[9]*p[2], m[2]*p[0]+m[6]*p[1]+m[10]*p[2]];
+    final nr = rot(n); final cr = rot([cc[0]*R, cc[1]*R, cc[2]*R]);
+    const eye = -1 / persp;
+    if (_dot(nr, [cr[0], cr[1], cr[2] - eye]) >= 0) continue;
+    final lit = _dot(nr, [-0.35, -0.55, -0.76]).clamp(0.0, 1.0);
+    final light = 0.45 + 0.55 * lit;
+    final tri = [ for (final i in faces[fi]) Offset(_dot(_sub(s.verts[i], cc), u) * R, _dot(_sub(s.verts[i], cc), v) * R) ];
+    final r = tri.map((p) => p.distance).reduce(math.max);
+    final inr = r / 2;
+    final basis = Matrix4(u[0], u[1], u[2], 0, v[0], v[1], v[2], 0, n[0], n[1], n[2], 0, cc[0]*R, cc[1]*R, cc[2]*R, 1);
+    final mat = (Matrix4.identity()..setEntry(3, 2, persp)).multiplied(model).multiplied(basis).multiplied(Matrix4.translationValues(-r, -r, 0));
+    final g = glyphs[fi % glyphs.length];
+    final local = tri.map((p) => p + Offset(r, r)).toList();
+    final base = Color.alphaBlend(g.kind.color.withValues(alpha: 0.24), skin.base);
+    final tile = SizedBox(width: 2 * r, height: 2 * r, child: Stack(fit: StackFit.expand, children: [
+      CustomPaint(painter: _TriPaint(local, base, skin.edge, (1 - light) * 0.62)),
+      ClipPath(clipper: _Tri(local), child: Center(child: Opacity(opacity: 0.55 + 0.45 * light, child: glyphOf(g, inr * 1.5)))),
+    ]));
+    items.add((cr[2], Positioned(left: stage.width / 2, top: stage.height / 2, child: Transform(transform: mat, child: tile))));
+  }
+  items.sort((a, b) => b.$1.compareTo(a.$1));
+  return SizedBox(width: stage.width, height: stage.height, child: ColoredBox(color: const Color(0xFF1B1613), child: Stack(children: [for (final i in items) i.$2])));
+}
+
+class _TriPaint extends CustomPainter {
+  _TriPaint(this.pts, this.fill, this.edge, this.shade); final List<Offset> pts; final Color fill, edge; final double shade;
+  @override void paint(Canvas c, Size s) {
+    final p = Path()..addPolygon(pts, true);
+    c.drawPath(p, Paint()..color = fill);
+    c.drawPath(p, Paint()..color = Colors.black.withValues(alpha: shade));
+    c.drawPath(p, Paint()..color = edge..style = PaintingStyle.stroke..strokeWidth = 2.4..strokeJoin = StrokeJoin.round);
+  }
+  @override bool shouldRepaint(_) => true;
+}
+
+List<_Glyph> d8Glyphs() => [
+  _Glyph('fireball', FaceKind.attack, 0), _Glyph(null, FaceKind.attack, 6), _Glyph('second_wind', FaceKind.heal, 0),
+  _Glyph(null, FaceKind.defend, 4), _Glyph('shadow_step', FaceKind.stun, 0), _Glyph(null, FaceKind.attack, 3),
+  _Glyph(null, FaceKind.mana, 3), _Glyph(null, FaceKind.heal, 2)];
+List<_Glyph> d20Glyphs() {
+  final skills = ['fireball','second_wind','shadow_step','void_blast'];
+  final kinds = [FaceKind.attack, FaceKind.defend, FaceKind.heal, FaceKind.mana, FaceKind.attack];
+  return [for (var i = 0; i < 20; i++) i % 5 == 0 ? _Glyph(skills[(i ~/ 5) % 4], kinds[i % 5], 0) : _Glyph(null, kinds[i % 5], 2 + (i * 3) % 9)];
+}
+
+void main() {
+  testWidgets('3d filmstrips', (tester) async {
+    await loadAppFonts();
+    final out = Platform.environment['UX_SHOTS'];
+    if (out == null) return;
+    tester.view.physicalSize = const Size(2400, 1400); tester.view.devicePixelRatio = 2; addTearDown(tester.view.reset);
+    final key = GlobalKey();
+    Future<void> shoot(String name, Widget w) async {
+      await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: MediaQuery(data: const MediaQueryData(), child: Center(child: RepaintBoundary(key: key, child: w)))));
+      for (var i = 0; i < 4; i++) { await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 150))); await tester.pump(const Duration(milliseconds: 100)); }
+      final bytes = await tester.runAsync(() async {
+        final o = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+        final im = await o.toImage(pixelRatio: 2);
+        return im.toByteData(format: ui.ImageByteFormat.png);
+      });
+      File('$out/$name.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+    }
+    final skin = dieSkinOf('flame_die');
+    Widget strip(String label, Solid s, List<_Glyph> g, int landed, double R, double cell, List<double> ts, {bool rest = true}) {
+      final stage = Size(cell, cell);
+      return Container(color: const Color(0xFF0E0D10), padding: const EdgeInsets.all(6), child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text(label, style: const TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Spectral')),
+        Wrap(spacing: 4, runSpacing: 4, children: [for (final t in ts) Column(children: [dieFrame(s, g, skin, landed, t, R, stage), Text('t=${t.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontFamily: 'Spectral'))])]),
+      ]));
+    }
+    Widget sizes(String label, Solid s, List<_Glyph> g, double k, List<double> radii) => Container(color: const Color(0xFF0E0D10), padding: const EdgeInsets.all(6), child: Column(mainAxisSize: MainAxisSize.min, children: [
+      Text(label, style: const TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Spectral')),
+      Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [for (final R in radii) Column(children: [dieFrame(s, g, skin, 0, 1, R, Size(R * 2 + 16, R * 2 + 16), still: true), Text('R=${R.toInt()} edge=${(R * k).round()}px', style: const TextStyle(color: Colors.white70, fontSize: 10, fontFamily: 'Spectral'))])]),
+    ]));
+    await shoot('d20-sizes', sizes('d20 at rest, die radius (edge of one facet)', icosa(), d20Glyphs(), 1.0515, [24, 32, 40, 50, 64, 78]));
+    await shoot('d8-sizes', sizes('d8 at rest', octa(), d8Glyphs(), 1.4142, [22, 30, 40, 52, 62]));
+    final ts = [0.0, 0.12, 0.25, 0.4, 0.55, 0.7, 0.85, 1.0];
+    await shoot('d8-filmstrip', strip('d8 (8 facets), landed face 0; roll 1.0 s; cell = 200 px', octa(), d8Glyphs(), 0, 62, 200, ts));
+    await shoot('d20-filmstrip', strip('d20 (20 facets), landed face 0; roll 1.5 s; cell = 200 px', icosa(), d20Glyphs(), 0, 78, 200, ts));
+  });
+}
