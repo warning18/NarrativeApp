@@ -10,12 +10,15 @@ isn't reconstructable from git history alone.
 
 ## [1.883.0+919]
 
-- **Narrative: four unnamed "something"s get a name.** A read of every "something",
-  "the way" and "as if" in the scenes (about 210) found the narrator's similes are
-  deliberate voice and stay; four scenes had a real placeholder, now named: the tall
-  shape in the dunes (`1120`, English and French), the message the Spire courier
-  passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and the wisp's
-  luminous smear (`3005_wisp`). No key, flag or number changed.
+- **Narrative: four unnamed "something"s get a name; the French trims where it ran long.**
+  A read of every "something", "the way" and "as if" in the scenes (about 210) found the
+  narrator's similes are deliberate voice and stay; four scenes had a real placeholder,
+  now named: the tall shape in the dunes (`1120`, English and French), the message the
+  Spire courier passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and
+  the wisp's luminous smear (`3005_wisp`). In the French, 13 phrases in 11 of the 34
+  longest scenes lose their padding (150 characters in all); the rest of those scenes
+  read as long as French normally does and are left as written. No key, flag or number
+  changed; bold counts match in both languages.
 
 ## [1.881.0+917]
 
