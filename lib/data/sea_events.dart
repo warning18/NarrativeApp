@@ -202,7 +202,7 @@ const _calmFr = [
   'Des mouettes suivent le sillage. Quelqu\'un trouve assez de goudron pour colmater les pires jointures.',
 ];
 const _storm = [
-  'The sky goes the color of a bruise and the sea follows. The Eel takes green water over the bow all night.',
+  'The sky goes the colour of a bruise and the sea follows. The Eel takes green water over the bow all night.',
   'A squall out of nowhere. The patched sail holds; the hull complains in a voice I did not like.',
   'Lightning walks the horizon. Something below decks tears loose and takes a plank with it.',
   'Rain like flung gravel, and a swell that lifts the Eel and drops her onto her own keel.',

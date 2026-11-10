@@ -227,7 +227,7 @@ class SubNodeEngine {
     'The lair is a hollow of stolen things and old bones, and the thing '
         'that owns it rises to meet you with no intention of running.',
     'It has been eating what the others brought back for a long time, and it has grown into the space they left it, and it does not look up when you enter because it has never once had to.',
-    "The lair's floor is a ring of picked bones, and at the center of the ring the thing that picked them uncoils, unhurried, to see who has walked in on its own feet.",
+    "The lair's floor is a ring of picked bones, and at the centre of the ring the thing that picked them uncoils, unhurried, to see who has walked in on its own feet.",
     'It wears what the pack stole, all of it, in layers, and turns to show you the one piece it is proudest of, which is a face.',
     'The runner is here, dead, at its feet. It has been waiting for whoever would follow, and it has been waiting for a while, and it is not patient.',
     'It is old, and scarred in the shape of every hunter who came before you, and it stands the way a wall stands: as if the question of moving had been settled long ago.',

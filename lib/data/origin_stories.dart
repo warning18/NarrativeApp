@@ -581,7 +581,7 @@ const Map<String, OriginMemory> _callingByProfession = {
     sceneEn: 'You were twelve and hauled nets on the docks for a copper a day. '
         'A drunk sailor twice your size shoved the net-mender’s daughter off '
         'the pier for being slow, and stood at the edge laughing while she '
-        'floundered in the harbor.',
+        'floundered in the harbour.',
     sceneFr:
         'Vous aviez douze ans et vous haliez des filets sur les quais pour '
         'un sou par jour. Un marin ivre, deux fois plus large que vous, poussa '
