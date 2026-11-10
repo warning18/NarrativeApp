@@ -69,3 +69,17 @@ Total: **0 generations** by hand; about 21 if the model does the gaps. **Why han
 
 ## 5. What changes in the app (UX-2's part, later)
 A `PixelGlyph` widget that tints a mask and a size-token set; a family-by-family swap behind the user's approval. Ids, names and numbers never change.
+
+
+## 6. Update (user priority: skills, event/journey interface, UI first): the skill badge system
+Sheet: `docs/art/boards/icons-pilot-skills-journey.png`. Files: `art/pixellab-pilots/icons/skills/` (9 pilots) and `world/` (tree, mountains, paw, waves, eye, compass, pin). Order of work after approval: **1 skills, 2 event and journey glyphs, 3 items, 4 elements, 5 die kinds and rule words, 6 the top Material glyphs of the header, nav bar and buttons.**
+
+**What the 162 skill icons are today:** a badge (diamond, shield, octagon, framed square) with a glyph in it, but the container does not follow anything: `rarity` (common 29, uncommon 36, rare 45, epic 43, legendary 9) and `element` (None 41, Earth 28, Fire 23, Wind 20, Void 17, Water 11, Light 11, Electricity 7, Ice 4) are both in `skills.json`, and the shapes mix freely across them.
+**Proposal (pilot drawn):** the badge becomes a code, so a player reads rarity and element before the glyph:
+- **Container = rarity:** common diamond, uncommon rounded square, rare shield, epic octagon, legendary gold frame.
+- **Fill = element:** Fire ember, Water tide, Earth wood, Wind ice, Electricity gold, Ice pale blue, Light bone, Void violet, None steel.
+- **Glyph = the skill's subject**, 10x10 white inside the 1 px rim. About 60 reusable motifs (flame, flake, bolt, dagger, shield, sword, orb, sun, wind, rock, fist, arrow, heart, hand, eye, skull...) cover the 162 skills; the badge itself is composed by code from (rarity, element, motif): 5 x 9 = 45 containers, so only the motifs are drawn.
+**Honest findings:** at 16 px the glyph has about 10 px, so it works for strong silhouettes (flame, flake, bolt, dagger) and not for fine ones; the 20 skills that are 32x32 today keep a bigger glyph (the same badge at 32 px). Today's icons carry more individual detail than a composed badge: the trade is coherence for detail. The user should look at the sheet before we draw the 60 motifs.
+**Cost:** 0 generations (hand-drawn, composed by code). Effort: 60 motifs plus 5 missing skills (the dice-tampering moves that borrow another's icon). PixelLab alternative: 162 x 1 = about 162 generations plus a clean-up pass to a common outline; not recommended at 16 px.
+
+**Event and journey glyphs:** the 33 journey way glyphs (Material today) become world icons (pilot: tree, mountains, paw, waves, eye, compass) and the map pin; road-event and quest marks follow as 24x24 pins (a coloured teardrop with a 10 px glyph) so a mark's kind reads from its colour and shape. 0 generations, hand-drawn.
