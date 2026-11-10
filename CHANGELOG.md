@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.896.0+932]
+
+### Changed
+- **Late bosses hit a little softer** (Core, QA's finding #895). Since
+  v1.743 (ordinary foes 15% harder) and v1.766 (the simulator shopping as
+  a player does), the void stalker and the bosses of chapters 5 to 8 had
+  fallen 5 to 12 points under their targets.
+  - A boss's damage floor now goes by the chapter it is fought in: 1.24 in
+    chapters 1, 2 and 4, as before, and 1.12 in chapters 3 and 5 to 8.
+  - The Void Sovereign has 86 health instead of 95.
+  - Over three seeds (1,200 runs), all eleven bosses are within 5 points
+    of their targets; before, seven were 5 to 12 points under.
+  - Ordinary fights move little: encounter win goes from 74.8% to 76.4%,
+    and chapters 6, 7 and 8 from 62, 51 and 48 to 64, 56 and 53.
+  - The profession spread goes from 5.3 to 5.8, and a run ends with 4,221
+    gold instead of 4,005.
+  - The Tower's bosses (the legate, Morrow, the Sovereign on floor 30) use
+    the same floor; the Tower's bands still pass.
+
 ## [1.889.0+925]
 
 ### Added
