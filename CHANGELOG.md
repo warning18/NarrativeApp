@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.884.0+920]
+
+### Changed
+- **The simulator fights on the ground the fight screen picks** (Core round
+  4, item 1; nothing changes on screen). `fightGroundAt`
+  (`lib/combat/fight_ground_rule.dart`) gives a fight's stage and rule from
+  its place: the watch in a city, a holy place's sanctified ground, the
+  desert heat, the rising water, the marsh mist, and the Tide where none
+  applies or a boss is fought. The fight screen's two helpers now call it,
+  and so does the playthrough simulator, which used to play every fight on
+  the Tide. On the feature ladder the Tide plays until the place rules
+  open, as in the game. In the 400-run balance batch, a third of the fights
+  now play a place rule (most of them the rising water). The encounter win
+  rates move by 1.5 points at most (cleric 74.9 → 76.4%, mage 82.1 → 82.0%,
+  ranger 74.0 → 72.9%, rogue 77.1 → 76.9%, warrior 72.4 → 73.6%), and the
+  boss curve and every balance guard stay green.
+
 ## [1.881.0+917]
 
 - **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
