@@ -57,6 +57,7 @@ abstract final class Palette {
   static const Color night8 = Color(0xFF141217);
   static const Color night8a = Color(0xFF141218);
   static const Color night8b = Color(0xFF1B1710);
+  static const Color night8c = Color(0xFF14121A);
   static const Color night9 = Color(0xFF17151B);
 
   // --- stone
