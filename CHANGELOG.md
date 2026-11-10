@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.883.0+919]
+
+- **Narrative: four unnamed "something"s get a name.** A read of every "something",
+  "the way" and "as if" in the scenes (about 210) found the narrator's similes are
+  deliberate voice and stay; four scenes had a real placeholder, now named: the tall
+  shape in the dunes (`1120`, English and French), the message the Spire courier
+  passes (`3002`), the grey shapes on the rubble (`3005_clan_vigil_1`) and the wisp's
+  luminous smear (`3005_wisp`). No key, flag or number changed.
+
 ## [1.881.0+917]
 
 - **Narrative: the hub-return buttons name their scene.** Ten scenes ended on the same
