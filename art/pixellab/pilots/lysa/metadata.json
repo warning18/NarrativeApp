@@ -1,0 +1,36 @@
+{
+  "group_id": "948a8a04-3f42-4620-8a65-f23316550e28",
+  "states": [
+    {
+      "character": {
+        "id": "364a48ef-e7c6-440c-89f5-30c1108565e9",
+        "name": "Idle",
+        "prompt": "young girl, the hero's younger sister, plain brown wool dress, a worn grey shawl, tied-back dark hair, thin and wary, poor harbour town clothes, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T16:41:15.247537+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T16:45:52.720721"
+}

@@ -1,0 +1,36 @@
+{
+  "group_id": "b73a5375-d0f7-4138-b825-8383c0547f32",
+  "states": [
+    {
+      "character": {
+        "id": "7e248546-6718-4fda-88b9-b5d3407f1790",
+        "name": "Idle",
+        "prompt": "heavyset Inquisition toll collector, bald with a thick grey beard, grey wool tunic under a brown leather apron, a ring of iron keys at the belt, a wooden stamp in one hand, scowl, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T17:10:31.411184+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T17:14:56.471358"
+}

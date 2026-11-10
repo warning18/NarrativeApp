@@ -1,0 +1,36 @@
+{
+  "group_id": "487b7bcf-6d0a-4b6f-9fe5-f5a0f4e3d7c0",
+  "states": [
+    {
+      "character": {
+        "id": "bb273e79-1fff-44ff-909b-ddc2968b7c91",
+        "name": "Idle",
+        "prompt": "stern Inquisition customs officer, long dark charcoal greatcoat with brass buttons and a small lantern pin, black peaked cap, heavy grey moustache, a brass-bound ledger under one arm, cold hard expression, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T17:10:30.690179+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T17:14:56.018731"
+}

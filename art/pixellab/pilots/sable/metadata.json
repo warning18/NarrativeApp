@@ -1,0 +1,36 @@
+{
+  "group_id": "014569ee-9ebb-4222-a964-99c2e259508a",
+  "states": [
+    {
+      "character": {
+        "id": "afc30f43-afd8-4b20-ada0-287f623d3177",
+        "name": "Idle",
+        "prompt": "lean human rogue woman, hooded dark grey cloak, short black hair, leather jerkin, dagger at the belt, sly look, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T16:41:17.389614+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T16:47:25.634338"
+}

@@ -1,0 +1,36 @@
+{
+  "group_id": "c36909bb-325a-4a3f-acd8-4470fdad82da",
+  "states": [
+    {
+      "character": {
+        "id": "dcc7dd9a-f799-4004-8a69-aa5d826d10c9",
+        "name": "Idle",
+        "prompt": "stout dwarf woman warrior, braided red hair, iron round shield and short axe, riveted brown leather and iron plate, grin, muted warm palette, dark ink outline, flat colour, side view facing west, no text",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-10T16:41:16.643058+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-10T16:47:23.958414"
+}
