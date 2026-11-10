@@ -1,5 +1,7 @@
 # Design proposal: one icon language for the whole game (phase 1, nothing wired)
 
+> **Decision (the user, 2026-11-10): "For icons don't redraw, mix with the original style."** The 289 existing pixel icons (157 skills, 132 items) stay the base: we **harmonise, don't redraw**. Only the shared palette, one ink colour, the size scale and the gaps change; everything new is drawn in the original icons' style (outlined 16 px gems and objects, 2 to 3 tones), not in the chunkier first-pilot style below. Sections 1 to 6 are the first pilot (kept for the rules and the counts); **section 7 is the mix pilot and what applies.**
+
 Inventory: UX-2's `docs/ux-shots/icons-inventory/` (branch `claude/ux-2-icons-inventory`). Pilot sheet: `docs/art/boards/icons-pilot.png`. Pilot files: `art/pixellab-pilots/icons/` (`world/` full colour, `chrome/` tintable masks, generator `icons_gen.py`). Pilot cost: **3 generations** (the PixelLab comparison); everything else is hand-drawn, 0.
 
 Scope (as sent): UI icons only. Portraits, sprites, chapter strips, tower bands and dice bodies follow the character style track.
@@ -83,3 +85,31 @@ Sheet: `docs/art/boards/icons-pilot-skills-journey.png`. Files: `art/pixellab-pi
 **Cost:** 0 generations (hand-drawn, composed by code). Effort: 60 motifs plus 5 missing skills (the dice-tampering moves that borrow another's icon). PixelLab alternative: 162 x 1 = about 162 generations plus a clean-up pass to a common outline; not recommended at 16 px.
 
 **Event and journey glyphs:** the 33 journey way glyphs (Material today) become world icons (pilot: tree, mountains, paw, waves, eye, compass) and the map pin; road-event and quest marks follow as 24x24 pins (a coloured teardrop with a 10 px glyph) so a mark's kind reads from its colour and shape. 0 generations, hand-drawn.
+
+
+## 7. Mix pilot: harmonise, don't redraw (the decision above)
+Sheet: `docs/art/boards/icons-pilot-mix.png`. Files: `art/pixellab-pilots/icons/mix/` (palette PNGs), `shared_palette.json`, generators `harmonise_gen.py` and `mix_sheet_gen.py`. **0 generations.**
+
+**What the originals already do (measured on all 289 PNGs):** every icon has a 1 px dark outline (`#0A0807` in 10,071 pixels, `#18121C` in 1,514); 269 are 16x16 and 20 are 32x32; 467 distinct colours in total. So the outline rule is already met, and what drifts is two near-black inks and a long tail of one-off colours.
+
+**Harmonisation (applies to every skill and item icon, by script, drawings untouched):**
+1. **One ink:** every near-black outline pixel becomes `#0A0807`.
+2. **Shared palette of 63 colours:** `palette.dart` tokens (16), the hero's browns and greys (10), and the originals' 40 most used colours, merged within a small distance. Every pixel snaps to the nearest. Measured change on 60 icons: 5.6 out of 255 on average, so each icon still looks like itself (see the (a) columns).
+3. **Light from the top-left:** the originals already follow it; new pieces follow it; nothing is changed on existing icons.
+4. **Size scale:** 16 native drawn at 16, 32 or 48 dp; the 20 skills and 6 chests that are 32 native drawn at 32 or 64 dp; 24 native only for nav, header and menu.
+
+**Skills, two variants of the same 9 icons (today | a | b):**
+- **(a) harmonised only:** the original badge and glyph, palette and ink unified. Nearly identical to today by design.
+- **(b) the original glyph in the rarity frame and element colour:** the glyph pixels are cut out of the original (the pixels inside the container that are not its colour family) and set in the rarity container (common diamond, uncommon rounded square, rare shield, epic octagon, legendary gold frame) filled with the element's colour. Works for the badge-style skills (8 of 9 in the pilot). **Object-style icons** (a sword or a dagger with no container, e.g. rogue_backstab) get the rarity/element plate behind the original drawing instead. A 32 px skill gets the same frame at 32 px (not piloted). Cost: 0. Honest note: (b) changes every skill's silhouette, so the user may prefer (a) for everything and (b) only for the legendary and epic skills.
+
+**Items:** harmonised only (palette and ink); the drawings are untouched.
+
+**Gaps, drawn in the original style (next to a neighbouring original on the sheet):**
+- 5 elements (lightning, ice, holy, dark, none) as the original common gem with a cream glyph, in the element's colour ramp.
+- 5 skills with no icon (edict_of_silence, glass_reflection, hex_of_ill_luck, rotting_mark, shroud_reflection) as common gems with new glyphs (lips, mirror, a crossed die, a skull blotch, a shroud).
+- 2 items (boss_trophy, fate_coin) as outlined objects.
+- 6 journey glyphs (tree, mountains, paw, waves, eye, compass) as outlined objects.
+
+**Material replacements, drawn to match the originals:** the top 12 (chevron, lock, check, close, add, arrow, flag, home, map, settings, person, more) as outlined, two-tone pixel glyphs at 16 px, shown in a header, stats bar, nav bar and a button. Trade-off: they are fixed colours, so no theme tint; plain chrome (chevron, close, add) can still use the one-colour masks from the first pilot if the user prefers.
+
+**Cost and method per family (updated):** skills and items: harmonise by script (289 icons, 0 generations); skill variant (b): 0; gaps (5 + 5 + 2 + 6 + 5 elements): hand-drawn, 0, done in the pilot; Material replacement: hand-drawn in the same style, 0 for the first 60 (about 60% of the uses), the long tail later; enemies, shops, chests: keep (harmonise the palette only). Total generations: 0.
