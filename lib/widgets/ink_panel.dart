@@ -17,6 +17,7 @@ class InkPanel extends StatelessWidget {
     this.dim = false,
     this.onTap,
     this.padding = const EdgeInsets.all(12),
+    this.decor = EnvParts.none,
   });
 
   final Widget child;
@@ -24,6 +25,10 @@ class InkPanel extends StatelessWidget {
   final bool dim;
   final VoidCallback? onTap;
   final EdgeInsets padding;
+
+  /// The place's decorations this panel wears (none by default): a screen
+  /// gives a few of its panels a share, so the frames stay clean otherwise.
+  final EnvParts decor;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +45,11 @@ class InkPanel extends StatelessWidget {
           shape: FrameBorder(
               piece: FramePiece.panelDark,
               material: f.material,
-              env: f.env,
+              env: decor == EnvParts.none ? EnvDecor.none : f.env,
+              envParts: decor,
+              envPixel: f.compactScale,
               pixel: f.compactScale,
-              seed: padding.hashCode ^ lit.hashCode),
+              seed: f.seed * 31 + decor.hashCode),
         ),
         child: Opacity(opacity: dim ? .5 : 1, child: child),
       );

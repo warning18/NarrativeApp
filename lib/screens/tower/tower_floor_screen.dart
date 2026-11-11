@@ -26,6 +26,7 @@ import 'tower_offer_view.dart';
 import 'tower_providers.dart';
 import 'tower_spoils_view.dart';
 import '../../widgets/ink_chip.dart';
+import '../../theme/frame_style.dart' show EnvParts;
 import '../../widgets/ink_panel.dart';
 import '../../widgets/ink_confirm.dart';
 import '../../widgets/ink_loading.dart';
@@ -271,6 +272,9 @@ class _FloorIntro extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 6),
             child: InkPanel(
               lit: danger,
+              decor: id == floor.enemyIds.first
+                  ? const EnvParts(top: 2)
+                  : EnvParts.none,
               child: Row(
                 children: [
                   Expanded(
@@ -299,6 +303,7 @@ class _FloorIntro extends ConsumerWidget {
           ),
         InkLabel(tr(ref, 'tower_your_health')),
         InkPanel(
+          decor: const EnvParts(bottom: 2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -335,6 +340,7 @@ class _SwornRow extends ConsumerWidget {
     final sworn = run.clanIds;
     return InkPanel(
       key: const Key('tower_sworn'),
+      decor: const EnvParts(corners: true),
       child: sworn.isEmpty
           ? Text(tr(ref, 'tower_unsworn'),
               style: theme.textTheme.bodyMedium?.copyWith(
