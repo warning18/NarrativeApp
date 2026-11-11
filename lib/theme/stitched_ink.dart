@@ -1,3 +1,4 @@
+import 'frame_style.dart';
 import 'package:flutter/material.dart';
 import 'palette.dart';
 import 'pixel_chip.dart';
@@ -221,7 +222,7 @@ final PageTransitionsTheme _inkTransitions = PageTransitionsTheme(builders: {
 
 /// The app's theme over [scheme]: Stitched Ink's type, shapes and
 /// components, in whatever colours the palette gives.
-ThemeData buildAppTheme(ColorScheme scheme) {
+ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
   final dark = scheme.brightness == Brightness.dark;
   final ink = dark ? InkColors.dark : InkColors.light;
   // Seams and quiet text follow the scheme, so other palettes keep their
@@ -263,11 +264,54 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       TextStyle(fontFamily: InkFonts.system, fontSize: 15, height: 1.2);
   const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
 
+  final framed = frames;
+  final parchment = scheme.brightness == Brightness.light;
+  ButtonStyle frameButton(bool primary) => ButtonStyle(
+        backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        foregroundColor: WidgetStatePropertyAll(
+            primary ? const Color(0xFFF4E8CF) : const Color(0xFFE8DCC0)),
+        shape: WidgetStateProperty.resolveWith((states) {
+          final off = states.contains(WidgetState.disabled);
+          final down = states.contains(WidgetState.pressed);
+          // Only the wood tier keeps the honey primary face: the bronze,
+          // sapphire and gold ones read as one flat colour, so iron, silver
+          // and gilt wear the kit's steel face.
+          final honey = primary && framed!.material == FrameMaterial.wood;
+          return FrameBorder(
+              piece: honey
+                  ? (off
+                      ? FramePiece.buttonPrimaryDisabled
+                      : down
+                          ? FramePiece.buttonPrimaryPressed
+                          : FramePiece.buttonPrimary)
+                  : (off
+                      ? FramePiece.buttonSecondaryDisabled
+                      : down
+                          ? FramePiece.buttonSecondaryPressed
+                          : FramePiece.buttonSecondary),
+              material: framed!.material,
+              env: EnvDecor.none,
+              pixel: framed.compactScale,
+              fillCenter: true,
+              plate: switch (framed.material) {
+                FrameMaterial.wood =>
+                  off ? Palette.brown13 : const Color(0xFF3B2814),
+                // The silver face has an engraved line across its middle,
+                // which would run through the label.
+                FrameMaterial.silver =>
+                  off ? const Color(0xFF3A3F47) : const Color(0xFF3E4856),
+                _ => null,
+              });
+        }),
+        padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+      );
   return base.copyWith(
     pageTransitionsTheme: _inkTransitions,
     textTheme: textTheme,
     scaffoldBackgroundColor: scheme.surface,
-    extensions: [colors],
+    extensions: [colors, if (framed != null) framed],
     dividerTheme: DividerThemeData(color: scheme.outlineVariant),
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
@@ -306,11 +350,14 @@ ThemeData buildAppTheme(ColorScheme scheme) {
           )),
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        shape: shape,
-        padding: buttonPadding,
-        textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
-      ),
+      style: framed != null
+          ? frameButton(true).merge(FilledButton.styleFrom(
+              textStyle: buttonText.copyWith(fontWeight: FontWeight.w600)))
+          : FilledButton.styleFrom(
+              shape: shape,
+              padding: buttonPadding,
+              textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
+            ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -350,7 +397,14 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       color: scheme.surfaceContainer,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
+      shape: framed != null
+          ? FrameBorder(
+              piece:
+                  parchment ? FramePiece.panelParchment : FramePiece.panelDark,
+              material: framed.material,
+              env: framed.env,
+              pixel: framed.compactScale)
+          : RoundedRectangleBorder(borderRadius: radius, side: seamSide),
     ),
     chipTheme: ChipThemeData(
       shape: PixelChipBorder(side: seamSide),
@@ -364,7 +418,13 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     dialogTheme: DialogThemeData(
       backgroundColor: scheme.surfaceContainer,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
+      shape: framed != null
+          ? FrameBorder(
+              piece: FramePiece.dialog,
+              material: framed.material,
+              env: framed.env,
+              pixel: framed.largeScale)
+          : RoundedRectangleBorder(borderRadius: radius, side: seamSide),
       titleTextStyle: TextStyle(
         fontFamily: InkFonts.display,
         fontSize: 24,

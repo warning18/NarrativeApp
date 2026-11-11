@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.923.0+959]
+
+- Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won (blackened steel with a heavy gold band and corner plates). A wood or silver button has a flat plate under its label so the label reads; iron and gilt buttons wear the kit's steel face. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.
+
 ## [1.922.0+958]
 
 - Tower: humans and voidkin start a Tower run with points in their calling's damage stat (humans +2, voidkin +3, with the base damage those bring), and the Tower's foes are a little tougher (scale 1.14 to 1.18) so the climb stays as hard as v1.920's. Before, humans reached the top about 1 run in 13 and voidkin 1 in 21, against 1 in 4 for elves; now every people reaches it about 1 run in 6 to 1 in 10 (difficulty review, finding 3). The story's characters are unchanged.

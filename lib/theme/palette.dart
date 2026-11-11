@@ -143,6 +143,9 @@ abstract final class Palette {
   static const Color orange73a = Color(0xFFE9B48A);
   static const Color orange74 = Color(0xFFFFD27A);
 
+  // --- brown
+  static const Color brown13 = Color(0xFF2B2118);
+
   // --- amber
   static const Color amber46 = Color(0xFFD4A017);
   static const Color amber47 = Color(0xFFC9A227);

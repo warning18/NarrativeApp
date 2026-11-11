@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/palette_provider.dart';
+import '../../theme/frame_style.dart';
 import '../../theme/stitched_ink.dart';
+import 'tower_providers.dart';
 import '../../widgets/fight_sprites.dart';
 
 /// Whether the panels under it wear the Tower's double ink line and bevel.
@@ -22,20 +24,48 @@ class TowerPanelStyle extends InheritedWidget {
   bool updateShouldNotify(TowerPanelStyle old) => false;
 }
 
-/// The Tower's screens wear this: the dark scheme of the current palette, and
-/// the bevel panels. Each Tower screen is a thin wrapper that puts its body
-/// under it, so the body's own theme reads, and the dialogs it opens, are dark.
+/// The frame material of the Tower's panels and buttons: the interface gets
+/// less cheap as the climb goes on (floors 1 to 10 wood, 11 to 20 iron, 21 to
+/// 30 silver), and gilt for good once a run has been won.
+FrameMaterial towerMaterialOf({required int floor, required bool climbed}) {
+  if (climbed) return FrameMaterial.gilt;
+  if (floor <= 10) return FrameMaterial.wood;
+  if (floor <= 20) return FrameMaterial.iron;
+  return FrameMaterial.silver;
+}
+
+/// The Tower's screens wear this: the dark scheme of the current palette, the
+/// frames of the floor's material and the bevel panels. Each Tower screen is a
+/// thin wrapper that puts its body under it, so the body's own theme reads,
+/// and the dialogs it opens, are dark. [floor] overrides the run's floor (the
+/// end screen, where the run is already cleared).
 class TowerNight extends ConsumerWidget {
-  const TowerNight({super.key, required this.child});
+  const TowerNight({super.key, required this.child, this.floor});
 
   final Widget child;
+  final int? floor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final palette = ref.watch(appPaletteProvider);
-    return Theme(
-      data: buildAppTheme(palette.schemeFor(Brightness.dark)),
-      child: TowerPanelStyle(child: child),
+    final state = ref.watch(towerProvider).value;
+    final material = towerMaterialOf(
+        floor: floor ?? state?.run?.floor ?? 1,
+        climbed: (state?.progress.wins ?? 0) > 0);
+    const env = EnvDecor.none;
+    // The pieces are small and loaded ahead (main.dart); until they are
+    // there the Tower wears its plain bevel, so no panel is drawn bare.
+    final ready = FrameImages.ready(material, env);
+    if (!ready) FrameImages.preload(material, env);
+    return ValueListenableBuilder<int>(
+      valueListenable: FrameImages.loaded,
+      builder: (context, _, __) => Theme(
+        data: buildAppTheme(palette.schemeFor(Brightness.dark),
+            frames: FrameImages.ready(material, env)
+                ? FrameStyle(material: material, env: env, compactScale: 2)
+                : null),
+        child: TowerPanelStyle(child: child),
+      ),
     );
   }
 }
