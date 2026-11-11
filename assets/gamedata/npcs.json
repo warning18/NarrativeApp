@@ -362,9 +362,9 @@
     "chapter": 2,
     "kind": "soldier",
     "description": "An Inquisition customs officer who took to charging Tern Row a ’landing toll’ that exists in none of the city’s ledgers, and lately uses the word ’deportation’ the way other men use a fist.",
-    "description_fr": "Un douanier de l’Inquisition qui s’est mis à faire payer à Tern Row un « péage de débarquement » qui n’existe dans aucun registre de la ville, et qui emploie depuis peu le mot « expulsion » comme d’autres emploient un poing.",
+    "description_fr": "Un douanier de l’Inquisition qui s’est mis à faire payer à la Rangée des sternes un « péage de débarquement » qui n’existe dans aucun registre de la ville, et qui emploie depuis peu le mot « expulsion » comme d’autres emploient un poing.",
     "want": "Wants Tern Row’s toll paid, and to be seen backing down gracefully rather than caught.",
-    "want_fr": "Veut que Tern Row paie son péage, et qu’on le voie reculer avec grâce plutôt que d’être pris en faute.",
+    "want_fr": "Veut que la Rangée des sternes paie son péage, et qu’on le voie reculer avec grâce plutôt que d’être pris en faute.",
     "metNodes": [
       "2015_ternrow"
     ],
@@ -377,7 +377,7 @@
         "andFlags": [],
         "unlessFlags": [],
         "line": "You talked him down in front of Tern Row; he suspended his tolls ’pending review’ and left without another word about them.",
-        "line_fr": "Vous l’avez fait reculer devant Tern Row ; il suspendit ses péages « en attendant réexamen » et partit sans un mot de plus à leur sujet."
+        "line_fr": "Vous l’avez fait reculer devant la Rangée des sternes ; il suspendit ses péages « en attendant réexamen » et partit sans un mot de plus à leur sujet."
       },
       {
         "flag": "hub_2015_ternrow",
@@ -393,7 +393,7 @@
         "andFlags": [],
         "unlessFlags": [],
         "line": "You gave the toll he had collected back to Tern Row, to the last copper.",
-        "line_fr": "Vous avez rendu à Tern Row le péage qu’il avait extorqué, jusqu’au dernier sou."
+        "line_fr": "Vous avez rendu à la Rangée des sternes le péage qu’il avait extorqué, jusqu’au dernier sou."
       },
       {
         "flag": "",
@@ -417,7 +417,7 @@
           }
         },
         "line": "The Dominion counts you a friend; he salutes you on Tern Row and keeps his tolls out of your sight.",
-        "line_fr": "Le Dominion vous tient en amitié ; il vous salue sur Tern Row et garde ses péages hors de votre vue."
+        "line_fr": "Le Dominion vous tient en amitié ; il vous salue sur la Rangée des sternes et garde ses péages hors de votre vue."
       }
     ],
     "dialogueLines": [
@@ -440,15 +440,15 @@
     "npcName": "Nadira",
     "npcName_fr": "Nadira",
     "role": "Voice of Tern Row",
-    "role_fr": "Voix de Tern Row",
+    "role_fr": "Voix de la Rangée des sternes",
     "faction": "tidekin",
     "placeId": "saltmouth_tern_row",
     "chapter": 2,
     "kind": "elder",
     "description": "A Tide-Kin woman of Tern Row, where paper boats are lit and set adrift at dusk for everyone the sea has not given back. She has the particular tiredness of someone explaining, again, to someone who might finally listen.",
-    "description_fr": "Une femme des Gens de la Marée, de Tern Row, où l’on allume des bateaux de papier qu’on lâche à la dérive chaque soir pour tous ceux que la mer n’a pas rendus. Elle a la lassitude particulière de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.",
+    "description_fr": "Une femme des Gens de la Marée, de la Rangée des sternes, où l’on allume des bateaux de papier qu’on lâche à la dérive chaque soir pour tous ceux que la mer n’a pas rendus. Elle a la lassitude particulière de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.",
     "want": "Wants Tern Row left alone, its lanterns lit and nobody collecting for the privilege.",
-    "want_fr": "Veut qu’on laisse Tern Row tranquille, ses lanternes allumées et personne pour faire payer le privilège.",
+    "want_fr": "Veut qu’on laisse la Rangée des sternes tranquille, ses lanternes allumées et personne pour faire payer le privilège.",
     "metNodes": [
       "2015_ternrow"
     ],
@@ -461,14 +461,14 @@
         "andFlags": [],
         "unlessFlags": [],
         "line": "You reasoned Overseer Renn out of Tern Row; she pressed a paper lantern into your hand for your trouble, and did not wait to see if you would give it back.",
-        "line_fr": "Vous avez fait entendre raison au contremaître Renn et chassé ses péages de Tern Row ; elle vous glissa une lanterne de papier dans la main, sans attendre de voir si vous la rendriez."
+        "line_fr": "Vous avez fait entendre raison au contremaître Renn et chassé ses péages de la Rangée des sternes ; elle vous glissa une lanterne de papier dans la main, sans attendre de voir si vous la rendriez."
       },
       {
         "flag": "terns_toll_returned",
         "andFlags": [],
         "unlessFlags": [],
         "line": "You gave Tern Row back the toll Renn had collected; she shared it out to the last copper and set one coin aside for you.",
-        "line_fr": "Vous avez rendu à Tern Row le péage que Renn avait extorqué ; elle le partagea jusqu’au dernier sou, et mit une pièce de côté pour vous."
+        "line_fr": "Vous avez rendu à la Rangée des sternes le péage que Renn avait extorqué ; elle le partagea jusqu’au dernier sou, et mit une pièce de côté pour vous."
       },
       {
         "flag": "host_tidekin",
@@ -487,7 +487,7 @@
           }
         },
         "line": "The Tide-Kin count you one of the Row’s own; a paper boat is lit for you at dusk, in case the sea does not give you back.",
-        "line_fr": "Les Gens de la Marée vous comptent parmi ceux de Tern Row ; on allume pour vous un bateau de papier au crépuscule, au cas où la mer ne vous rendrait pas."
+        "line_fr": "Les Gens de la Marée vous comptent parmi ceux de la Rangée des sternes ; on allume pour vous un bateau de papier au crépuscule, au cas où la mer ne vous rendrait pas."
       },
       {
         "flag": "",
@@ -499,7 +499,7 @@
           }
         },
         "line": "Tern Row has heard what you do on the water; she speaks to you the way she speaks to the Inquisition, carefully.",
-        "line_fr": "Tern Row a entendu ce que vous faites sur l’eau ; elle vous parle comme elle parle à l’Inquisition, avec précaution."
+        "line_fr": "La Rangée des sternes a entendu ce que vous faites sur l’eau ; elle vous parle comme elle parle à l’Inquisition, avec précaution."
       }
     ],
     "dialogueLines": [
