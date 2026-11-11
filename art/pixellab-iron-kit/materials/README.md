@@ -1,0 +1,8 @@
+# UI frame material as a progression tier: wood, iron, silver, gilt
+The user: "going on in the story, your interface becomes less cheap: first wood, then iron, then silver, ...". Four tiers in the **exact shape, sizes, 9-slice margins and anchors of the #939 iron kit** (`../anchors.json`), so UX-2 swaps one token (a tier name in the file path): `materials/<tier>/ui/<piece>.png` for `wood`, `iron` (= #939), `silver`, `gilt`, each with `panel_dark`, `panel_parchment`, `hud_panel`, `dialog`, `button_{primary,secondary}_{normal,pressed,disabled}`, `tab`, `chip`, `corner`, `divider`. The environment decorations (`../env/`) stay separate and sit on every tier (shown on the ladder sheet). `tiers.json` gives the order. 0 generations; generator `materials_gen.py` (repo root).
+1. **wood:** rough planks (grain strokes, knots), nail heads, honey-wood primary button, dark-plank secondary: the first, cheapest frame.
+2. **iron:** the #939 kit (rust, pitting, rivets, bronze primary).
+3. **silver:** polished, light blue-white highlights, an engraved dotted line along the band, white rivets, a blued-steel (sapphire) primary button, a bright silver secondary.
+4. **gilt (the proposed top tier): blackened steel with gilt:** near-black steel, a gold line on the inner edge, gold rivets and studs, a gold primary button. Chosen over solid gold because it keeps the dark HUD readable and stays chunky, not flashy.
+Sheets: `docs/art/boards/materials-tiers.png` (the same panel and two buttons in each tier, light and dark, real size and 3x) and `materials-ladder.png` (the four side by side with dialog, HUD panel and the frost, wilds and ash decorations on each).
+Which tier when is the story's call (a chapter or level threshold, or a purchase): not decided here. Not wired.
