@@ -13,8 +13,7 @@ numbers change until the user picks.**
   The per-clan, per-unlock and per-die batches used 500 to 1,000 seeds.
 - The die figures are exact sums over each die's faces.
 - Every claim about the code was checked at the line cited.
-- QA's real-UI playthroughs run in parallel; their findings are folded in
-  §4 as they arrive.
+- QA's real-UI playthrough of v1.906 is folded in §4.
 
 ## 0. Already fixed (PR #948, v1.910)
 
@@ -367,25 +366,43 @@ Expected damage per roll at base damage 4 (sd in brackets):
 
 ## 4. QA's playthrough findings
 
-- **The floor 5 lock:** fixed in #948 (§0).
+From QA's v1.906 playthrough (`docs/qa/playthrough-1.906.md`, PR #954):
+
+- **The floor 5 lock (#949):** fixed in #948 (§0).
 - **The Level Up's way back:** fixed in #948 (§0).
-- Others: to be folded in when QA sends them.
+- **"Spare or finish" in the Tower (#956).** Beating a hunter opened the
+  story's mercy dialog, which has no stakes in the Tower (no bounty, no
+  alignment, no road back).
+  - Fixed in #948: a Tower hunter falls like any foe.
+- **Balance drift (#955).** Winning floor 30 with no unlocks is 12.2%,
+  above the design band of 5–12% (it was 10.2% at v1.888; 13.2% on seeds
+  10001–12000). With all unlocks it is 22.6%, inside the band of 15–25%
+  (was 19.1%).
+  - This matches §1.1 and §1.7: the same numbers, measured independently.
+  - It does not change the ranking. Re-banding after #2 (the batch measures
+    a different game) will move these numbers more than the drift. A
+    retune of the late floors (#5) or a race nudge (#8) closes both.
+- **A potion can be drunk at full health** (minor). Nothing stops it, and
+  the charge is wasted. In the story too.
+  - Fix: disable the potion when health is full.
+  - Cost: a few lines (Core, fight logic); the button's look is unchanged.
 
 ## 5. Ranking
 
 | # | Finding | Severity | Fix | Cost |
 |---|---|---|---|---|
-| 1 | Floor-5 lock, Level Up way back | blocker | fixed | #948 |
+| 1 | Floor-5 lock (#949), Level Up way back, mercy question in the Tower (#956) | blocker | fixed | #948 |
 | 2 | The batch measures a different game (no standing, affixes, rerolls; 68% vs 43%) | high | standing, affixes and threshold rerolls in the bot; re-band | Core 1–2 PRs |
 | 3 | Auto die swap decides runs (mage 11% → 53% by never swearing) | high | a die gained goes to the bag; "Your dice" on the floor screen | Core 1 + UX 1 small |
 | 4 | Big dice and the three Tower dice are worse than the starter die; the die card is worse than refusing | high | (c) rework the Tower dice now; (a)/(b) story-wide later | Core 1 small (c) |
 | 5 | No attrition; spikes on 17/20/25; floor 30 trivial (0.8%), floor 10 easy (3%) | medium | heal 30% → 20%, smooth 17, raise the final boss's extra | Core 1 PR (numbers), after #2 |
 | 6 | Boon cards unbalanced (spell > skill > refuse > die) | medium | one rarity roll for all three; the die card after #4 | Core 1 small |
 | 7 | Refusing oaths farms marks and, for a mage, wins | medium | goes with #3; refusal pays 1 mark only on boon floors | small |
-| 8 | Race spread 2.4× (human, voidkin weak) | medium | Tower-only race starts (health, a stat) | Core 1 small |
+| 8 | Race spread 2.4× (human, voidkin weak); QA #955 measured the same | medium | Tower-only race starts (health, a stat) | Core 1 small |
 | 9 | Meta short and flat (all in ~7 runs, each 0–3 points) | low–medium | more unlocks, or tiers (floor-starts, ascension) | Core 1–2 + UX |
 | 10 | Momentum nearly dead | low | lose it only on a heavy hit | Core 1 small |
 | 11 | Start dice skip the profession; oath 35% plays as 20%; "blank" faces are skills; dead rarity branch | low | §3 | small each |
+| 12 | A potion can be drunk at full health (QA) | low | disable it at full health | a few lines |
 
 **Order I'd propose:**
 1. #2 first, so every later number is the real game's.
