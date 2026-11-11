@@ -34,3 +34,6 @@ Remaining on hold until UX-2 and Core confirm a fight can pick a plate by stage 
 
 ## Correction after Core's note: redo count
 Core confirmed the real order and that **lark_wreck on dunes and highhearth on snow are intended**: the *band* is what should lean towards the stage. Redo list now: done 11 (8 bands + 3 cityRoad variants); `hollow_shore_battlefield` retried once more (no figure; `redos/staged/hollow_shore_battlefield_s9.png` replaces s7); **to do: `lark_wreck` (a wreck on a dune) and `highhearth` (a frost-bound stone village), 2 generations**; held until the user answers: 5 stage variants (glass warm dusk, ash warm kiln, terraces red haze, waves night, hall wet vault) + White Anchorage's harbour road. Count: 12 done + 2 to do = 14 of the approved 15, plus the 6 held.
+
+## Done: lark_wreck and highhearth (2 generations, balance 984.5 to 982.5)
+`art/pixellab-backgrounds/redos/staged/lark_wreck_s7.png` (a ship wrecked on a dune in the Dune Sea: dunes stage) and `highhearth_s7.png` (a frost-bound stone village under the quarry cliff: snow stage) replace the batch B bands; sheet `docs/art/boards/backgrounds-redos2.png` (old above, redo below). Redo count: 14 of the approved 15 used. Held: 5 stage variants + a White Anchorage harbour road.
