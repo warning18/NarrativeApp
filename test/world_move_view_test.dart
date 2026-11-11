@@ -9,8 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/data/world_leg_path.dart';
 import 'package:narrative_data_app/data/world_map.dart' show MapLook;
-import 'package:narrative_data_app/providers/map_look_provider.dart'
-    show chartGlobeProvider;
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 
@@ -39,16 +37,13 @@ void main() {
     expect(smooth.length, greaterThan(path.points.length));
   });
 
-  Future<AnimationController> pumpMove(WidgetTester tester,
-      {required bool sphere}) async {
+  Future<AnimationController> pumpMove(WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(360, 500);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    await tester.runAsync(
-        () => container.read(chartGlobeProvider.notifier).choose(sphere));
     final path = worldLegPath(chart, 'alster', 'candlehold');
     final clock = AnimationController(
         vsync: tester, duration: const Duration(seconds: 10));
@@ -86,14 +81,11 @@ void main() {
 
   testWidgets('the camera closes in on the party, follows, pulls back out',
       (tester) async {
-    final clock = await pumpMove(tester, sphere: false);
-    double scale() => tester
-        .widget<InteractiveViewer>(find.byType(InteractiveViewer))
-        .transformationController!
-        .value
-        .getMaxScaleOnAxis();
+    final clock = await pumpMove(tester);
+    double scale() =>
+        journeyGlobeOf(tester.element(find.byType(JourneyWorldMap)))!.zoom;
 
-    // At the start the whole world is in view.
+    // At the start the whole ball is in view.
     expect(scale(), closeTo(1, 0.01));
     // Mid-move the camera is on the party at the land's zoom.
     clock.value = 0.5;
@@ -112,12 +104,9 @@ void main() {
 
   testWidgets('a drag or a zoom takes the camera; recentre gives it back',
       (tester) async {
-    final clock = await pumpMove(tester, sphere: false);
-    double scale() => tester
-        .widget<InteractiveViewer>(find.byType(InteractiveViewer))
-        .transformationController!
-        .value
-        .getMaxScaleOnAxis();
+    final clock = await pumpMove(tester);
+    double scale() =>
+        journeyGlobeOf(tester.element(find.byType(JourneyWorldMap)))!.zoom;
 
     clock.value = 0.5;
     await tester.pump();
@@ -139,7 +128,7 @@ void main() {
   });
 
   testWidgets('on the sphere the globe turns with the party', (tester) async {
-    final clock = await pumpMove(tester, sphere: true);
+    final clock = await pumpMove(tester);
     expect(find.byKey(const ValueKey('journey_globe_canvas')), findsOneWidget);
     for (final t in [0.0, 0.1, 0.3, 0.5, 0.8, 1.0]) {
       clock.value = t;
