@@ -71,3 +71,6 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 
 ## Skill animations pilot (user: "now propose new skills animations")
 `art/pixellab-vfx/` (raw frames, `staged/` strips 432x48, `gif/`), `docs/art/design-skill-effects.md`, sheet `docs/art/boards/skill-effects-pilot.png`. 6 styles (flame, frost, lightning, heal, void_rift, shield): `create_image_pixen` 48x48 first frame (seed 61) + `animate_image` 8 frames (9 with the input), 2 generations each, plus 1 test animation of the flame = **13** (balance 1159.5 to 1146.5). The 9 frames beyond the 4 returned inline come from `https://api.pixellab.ai/mcp/images/<job>/download?index=0..8`. Nothing wired.
+
+## Harmonised icons, all 289 (0 generations)
+`art/pixellab-icons/harmonised/` (skills 157, items 132), one ink + 63-colour palette, same names and sizes. Sheets `docs/art/boards/icons-harmonised-*.png`. Not wired.
