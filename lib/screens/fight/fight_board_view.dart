@@ -649,7 +649,8 @@ extension _FightBoardView on _FightScreenState {
       children: [
         Expanded(
           child: FightBoardSurface(
-            stage: _stage,
+            stage: _boardStage(),
+            plate: _plateHere(),
             event: _buildBoardEvent(),
             child: LayoutBuilder(
               builder: (context, box) {

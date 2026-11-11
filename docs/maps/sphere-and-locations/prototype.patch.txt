@@ -1,0 +1,147 @@
+diff --git a/lib/screens/journey_screen.dart b/lib/screens/journey_screen.dart
+index abc74f09..158d5da8 100644
+--- a/lib/screens/journey_screen.dart
++++ b/lib/screens/journey_screen.dart
+@@ -5184,6 +5184,7 @@ void openStoryReader(BuildContext context, WidgetRef ref) {
+ }
+ 
+ /// The Journey map's levels as tabs (v1.350).
++String? debugAtlasRung;
+ enum _LevelTab { district, town, world }
+ 
+ /// Three small tab buttons on the map: the district, the whole town, the
+@@ -5222,8 +5223,8 @@ class _LevelTabs extends ConsumerWidget {
+         key: Key('journey_tab_${t.name}'),
+         onTap: open && !busy && !on ? () => onPick(t) : null,
+         child: Container(
+-          height: 28,
+-          padding: const EdgeInsets.symmetric(horizontal: 9),
++          height: 40,
++          padding: const EdgeInsets.symmetric(horizontal: 12),
+           alignment: Alignment.center,
+           decoration: BoxDecoration(
+             color: on ? palette.mark.withValues(alpha: 0.18) : null,
+@@ -5242,6 +5243,28 @@ class _LevelTabs extends ConsumerWidget {
+       );
+     }
+ 
++    Widget fake(String label, bool on, bool dim) => Container(
++          height: 40,
++          padding: const EdgeInsets.symmetric(horizontal: 12),
++          alignment: Alignment.center,
++          decoration: BoxDecoration(
++            color: on ? palette.mark.withValues(alpha: 0.18) : null,
++            border: Border(
++              bottom: BorderSide(
++                  color: on ? palette.mark : Colors.transparent, width: 2),
++            ),
++          ),
++          child: Text(label,
++              style: TextStyle(
++                  fontFamily: InkFonts.system,
++                  fontSize: 12,
++                  height: 1,
++                  color: on
++                      ? palette.mark
++                      : dim
++                          ? palette.label.withValues(alpha: 0.5)
++                          : palette.place)),
++        );
+     return Material(
+       color: palette.land.withValues(alpha: 0.92),
+       shape: RoundedRectangleBorder(
+@@ -5252,10 +5275,14 @@ class _LevelTabs extends ConsumerWidget {
+         key: const Key('journey_level_tabs'),
+         mainAxisSize: MainAxisSize.min,
+         children: [
+-          tab(_LevelTab.district, tr(ref, 'journey_tab_district')),
+-          tab(_LevelTab.town, tr(ref, 'journey_tab_town'),
+-              enabled: townEnabled),
+           tab(_LevelTab.world, tr(ref, 'journey_tab_world')),
++          tab(_LevelTab.town, tr(ref, 'journey_tab_town'),
++              enabled: townEnabled || debugAtlasRung == 'room'),
++          if (debugAtlasRung == 'room')
++            fake(tr(ref, 'journey_tab_district'), false, false)
++          else
++            tab(_LevelTab.district, tr(ref, 'journey_tab_district')),
++          fake('Room', debugAtlasRung == 'room', debugAtlasRung != 'room'),
+         ],
+       ),
+     );
+diff --git a/lib/widgets/chart_map_painter.dart b/lib/widgets/chart_map_painter.dart
+index a985b270..2814e726 100644
+--- a/lib/widgets/chart_map_painter.dart
++++ b/lib/widgets/chart_map_painter.dart
+@@ -1634,7 +1634,11 @@ class ChartMapPainter extends CustomPainter {
+   /// inside the chart and clear of the other names and marks), then the
+   /// regions' names where there is room for them.
+   void _names(Canvas canvas, Landmark? standing) {
+-    final bounds = _whole.deflate(1);
++    // PROTOTYPE: names keep clear of the button column on the sphere.
++    final bounds = globe == null
++        ? _whole.deflate(1)
++        : Rect.fromLTRB(_whole.left + 1, _whole.top + 1,
++            _whole.right - 56 / _k, _whole.bottom - 1);
+     final reached = [
+       for (final l in worldMapLandmarks)
+         if (discovered.contains(l.id)) l,
+diff --git a/lib/widgets/journey_world_map.dart b/lib/widgets/journey_world_map.dart
+index 06d3d635..5fdf7c75 100644
+--- a/lib/widgets/journey_world_map.dart
++++ b/lib/widgets/journey_world_map.dart
+@@ -560,11 +560,17 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+       _globe = geo.globeAt(geo.of(focus), _focusZoom, centre);
+     } else {
+       _view.value = Matrix4.identity();
++      // PROTOTYPE: the ball fills its box, turned to the party.
++      final fill = box.shortestSide <= 0
++          ? 1.0
++          : (Offset(box.width, box.height).distance /
++                  (box.shortestSide * 0.9))
++              .clamp(1.0, _maxZoom);
+       _globe = geo.globeAt(
+           here == null
+               ? const Offset(worldMapWidth / 2, worldMapHeight / 2)
+               : geo.of(here),
+-          1,
++          here == null ? 1 : fill,
+           centre);
+     }
+   }
+@@ -605,6 +611,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+     final g = _globe;
+     if (g == null) return;
+     if (factor > 1 && _intoPlace(Size.zero, sphere: true)) return;
++    final hereP = widget.here;
++    if (factor > 1 && hereP != null && _box != Size.zero) {
++      // PROTOTYPE: closing in turns the ball to the party.
++      final geo = _geoOf(true);
++      setState(() => _globe = geo.globeAt(
++          geo.of(hereP),
++          JourneyWorldMapZoom.stepIn(g.zoom).clamp(1.0, _maxZoom),
++          _globeCentre(_box)));
++      return;
++    }
+     _animateRadius(GlobeView.baseRadius *
+         (factor > 1
+                 ? JourneyWorldMapZoom.stepIn(g.zoom)
+@@ -890,8 +906,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+               key: Key(key),
+               onTap: onTap,
+               child: SizedBox(
+-                width: 34,
+-                height: 34,
++                width: 44,
++                height: 44,
+                 child: Icon(icon,
+                     size: IconSize.s16,
+                     color: on ? widget.palette.mark : widget.palette.place),
+@@ -946,7 +962,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+                 const SizedBox(height: 6),
+                 // The poles (board 11): the sphere turns right over either,
+                 // and the view comes round past the seam.
+-                if (sphere && geo.wholeSphere) ...[
++                if (false && sphere && geo.wholeSphere) ...[
+                   button('journey_pole_north', Icons.keyboard_double_arrow_up,
+                       tr(ref, 'world_map_pole_north'), () {
+                     _takeCamera();

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../combat/field_anomaly.dart' show FightStage;
 import '../theme/palette.dart';
+import 'fight_plates.dart' show FightPlateImages;
 
 /// The board's base colour for [stage] (also the colour of its edge glow).
 Color _fightBoardBase(FightStage stage) => switch (stage) {
@@ -37,9 +38,13 @@ Color _fightBoardBase(FightStage stage) => switch (stage) {
 /// Paints the board's surface for [stage]: the same picture every time (a
 /// fixed seed), never animated.
 class _FightBoardPainter extends CustomPainter {
-  const _FightBoardPainter(this.stage);
+  const _FightBoardPainter(this.stage, [this.tint]);
 
   final FightStage stage;
+
+  /// The ground colour of the picture behind the board: the surface leans
+  /// towards it, so the board and the picture are one place.
+  final Color? tint;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -424,6 +429,11 @@ class _FightBoardPainter extends CustomPainter {
               fill(Colors.white, 0.75));
         }
     }
+    final lean = tint;
+    if (lean != null) {
+      canvas.drawRect(Rect.fromLTWH(0, 0, w, h),
+          Paint()..color = lean.withValues(alpha: 0.38));
+    }
     // The edge falls into shadow, so the dice stand out in the middle.
     canvas.drawRect(
       Rect.fromLTWH(0, 0, w, h),
@@ -438,7 +448,8 @@ class _FightBoardPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_FightBoardPainter old) => old.stage != stage;
+  bool shouldRepaint(_FightBoardPainter old) =>
+      old.stage != stage || old.tint != tint;
 }
 
 /// The board surface for [stage], with [child] (the dice) on it. Rounded and
@@ -446,9 +457,17 @@ class _FightBoardPainter extends CustomPainter {
 /// outside it.
 class FightBoardSurface extends StatelessWidget {
   const FightBoardSurface(
-      {super.key, required this.stage, required this.child, this.event});
+      {super.key,
+      required this.stage,
+      required this.child,
+      this.event,
+      this.plate});
 
   final FightStage stage;
+
+  /// The picture behind the fight (fight_plates.dart): the surface leans
+  /// towards its ground colour.
+  final String? plate;
   final Widget child;
 
   /// What breaks over the board (an anomaly), drawn on the skin and under
@@ -468,9 +487,13 @@ class FightBoardSurface extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             RepaintBoundary(
-              child: CustomPaint(
-                key: const Key('fight_board_skin'),
-                painter: _FightBoardPainter(stage),
+              child: ValueListenableBuilder<int>(
+                valueListenable: FightPlateImages.loaded,
+                builder: (context, _, __) => CustomPaint(
+                  key: const Key('fight_board_skin'),
+                  painter: _FightBoardPainter(stage,
+                      plate == null ? null : FightPlateImages.tintOf(plate!)),
+                ),
               ),
             ),
             if (event != null) Positioned.fill(child: event!),

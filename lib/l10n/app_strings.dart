@@ -1373,6 +1373,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Thirty floors. One way up.',
     AppLanguage.fr: 'Trente étages. Un seul chemin.',
   },
+  // The fight's ground line in the Tower (instead of its stage's name).
+  'tower_fight_ground': {
+    AppLanguage.en: 'The Ashen Tower · floor {n}',
+    AppLanguage.fr: 'La Tour de Cendre · étage {n}',
+  },
   'tower_floor_of': {
     AppLanguage.en: 'Floor {n} of 30',
     AppLanguage.fr: 'Étage {n} sur 30',

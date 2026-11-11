@@ -38,6 +38,34 @@ void main() {
     }
   });
 
+  test('the wardens and the bosses have their own picture, 180 x 320', () {
+    expect(
+        [
+          for (final f in [4, 5, 10, 15, 20, 25, 30]) towerFloorPlate(f)
+        ],
+        [
+          null,
+          endsWith('tower_ward5.png'),
+          endsWith('tower_boss10.png'),
+          endsWith('tower_ward15.png'),
+          endsWith('tower_boss20.png'),
+          endsWith('tower_ward25.png'),
+          endsWith('tower_boss30.png'),
+        ].map((m) => m is Matcher ? m : isNull).toList());
+    for (final path in [
+      for (final f in [5, 10, 15, 20, 25, 30]) towerFloorPlate(f)!,
+      towerEndPlate(won: true),
+      towerEndPlate(won: false),
+    ]) {
+      final file = File(path);
+      expect(file.existsSync(), isTrue, reason: path);
+      final data = ByteData.sublistView(file.readAsBytesSync());
+      expect(data.getUint32(16), 180, reason: path);
+      expect(data.getUint32(20), 320, reason: path);
+      expect(data.getUint8(25), 3, reason: path);
+    }
+  });
+
   testWidgets('the child is drawn over the picture', (tester) async {
     await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
