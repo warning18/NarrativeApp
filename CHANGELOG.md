@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.909.0+945]
+## [1.910.0+946]
 
 - Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
 

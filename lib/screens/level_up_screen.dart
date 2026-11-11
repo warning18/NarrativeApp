@@ -17,7 +17,7 @@ class LevelUpScreen extends ConsumerWidget {
   const LevelUpScreen({super.key, this.doneLabelKey = 'level_up_done'});
 
   /// The string key of the button that closes the screen once no pick is
-  /// waiting (v1.909, the user's report from the Tower: after the pick the
+  /// waiting (v1.910, the user's report from the Tower: after the pick the
   /// only way on was the back arrow). The Tower passes its own
   /// ('tower_continue', "Continue the climb").
   final String doneLabelKey;

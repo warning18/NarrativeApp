@@ -106,7 +106,7 @@ void main() {
     expect(find.text('4 picks'), findsOneWidget);
     expect(find.byKey(const Key('stat_pick_picker')), findsOneWidget);
     expect(find.byType(SnackBar), findsNothing);
-    // Picks still waiting: no button to leave yet (v1.909).
+    // Picks still waiting: no button to leave yet (v1.910).
     expect(find.byKey(const Key('level_up_done')), findsNothing);
   });
 

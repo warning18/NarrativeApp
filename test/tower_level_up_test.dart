@@ -143,7 +143,7 @@ void main() {
     expect(saved['gold'], 321);
     expect(saved['trainingTaken'] ?? const {}, isEmpty);
     // The pick made, a clear button takes the hero back to the climb
-    // (v1.909, the user's phone report: only the back arrow did).
+    // (v1.910, the user's phone report: only the back arrow did).
     expect(find.byKey(const Key('level_up_done')), findsOneWidget);
     expect(find.text('Continue the climb'), findsOneWidget);
     await tester.tap(find.byKey(const Key('level_up_done')));
