@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.931.0+967]
+
+- Fight backgrounds by place: Art's six stage versions. The glass shore at Greyhithe, Hollow Shore and the White Fleet Grave wears a brown dusk, the ash at Emberwick a kiln's glow, the terraces at Akagiri a red haze, the waves at the Crossing a night sea, a wet vault in the drowned cloister and under Alster, and the city road at White Anchorage a harbour of hulls. A version is worn by its places only (the stage must match too); every other place keeps the stage's shared picture. The dice board leans further to the night and dusk pictures (their board was a day colour), and the kiln's floor gets a veil so the log row reads. Pictures: `docs/ux-shots/stage-versions/`.
+
 ## [1.927.0+963]
 
 - Tower: Art's decorations on the frames, by band: the night rooms (floors 1 to 10) hang chains and candle stubs, the stone stair (11 to 20) has cracks and rubble, the void (21 to 30) violet cracks and a glow. A few pieces per screen, at the frame's pixel density: corner pieces on the oaths panel, two pieces hanging from the first foe's panel (its content starts under them, never under a piece) and two standing on the health panel's lower edge, picked by the floor so they are stable. Every other panel and every button stays clean. Pictures: `docs/ux-shots/tower-decorations/`.

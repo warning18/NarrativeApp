@@ -137,6 +137,21 @@ abstract final class FightPlateImages {
   /// dice board to lean towards; null until it is loaded.
   static Color? tintOf(String asset) => _tints[asset];
 
+  /// How far the dice board leans to its picture's ground (0 to 1): the
+  /// night and dusk versions lean further, their board being a day colour.
+  static double leanOf(String asset) => switch (asset) {
+        '$_dir/waves_crossing.png' => 0.72,
+        '$_dir/glass_greyhithe.png' => 0.62,
+        _ => 0.38,
+      };
+
+  /// An extra veil over the lower part of the screen, for a picture whose
+  /// floor holds something bright where the log row sits (the kiln's fire).
+  static double floorVeilOf(String asset) => switch (asset) {
+        '$_dir/ash_emberwick.png' => 0.85,
+        _ => 0,
+      };
+
   static Future<Color?> _groundTintOf(ui.Image image) async {
     final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
     if (data == null) return null;

@@ -356,13 +356,15 @@ extension _FightGround on _FightScreenState {
     // The pictures are brighter and busier than the painted stages were: the
     // light theme's cream veil is stronger over them so names and cards read.
     if (scheme.brightness == Brightness.light) veil += 0.22;
+    final plate = _plateHere();
+    final floorVeil = FightPlateImages.floorVeilOf(plate);
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
-          plate: _plateHere(),
+          plate: plate,
           light: lightLevel(_light),
           weather: false,
           events: false,
@@ -382,6 +384,22 @@ extension _FightGround on _FightScreenState {
             ),
           ),
         ),
+        if (floorVeil > 0)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  scheme.surface.withValues(alpha: 0),
+                  scheme.surface.withValues(alpha: 0),
+                  scheme.surface.withValues(alpha: floorVeil),
+                  scheme.surface.withValues(alpha: floorVeil),
+                ],
+                stops: const [0.0, 0.64, 0.74, 1.0],
+              ),
+            ),
+          ),
       ],
     );
   }
