@@ -695,7 +695,9 @@ extension _FightRewards on _FightScreenState {
   /// a test fight). Settles its clan's standing and, spared, the betrayal.
   /// Returns whether it was spared.
   Future<bool> _settleHunter(List<_EnemyMember> defeated) async {
-    if (widget.modifiers.isTest) return false;
+    // The Tower has no bounty, no alignment and no road for a spared hunter
+    // to come back on (v1.910, QA #956): its hunters fall like any foe.
+    if (widget.modifiers.isTest || widget.modifiers.tower) return false;
     final hunter = defeated
         .where((e) =>
             !e.fled && (e.data['hunterClan']?.toString() ?? '').isNotEmpty)

@@ -2,7 +2,8 @@
 // playthrough on v1.906): the fight's way out opens. The warden is a boss,
 // and the story's clan offer used to be queued on the Tower's detached
 // session, its dialog waiting for ever over the won fight with "Victory!
-// Return" disabled. The Tower has its own oath cards: no story offer.
+// Return" disabled. The Tower has its own oath cards: no story offer, and
+// no story mercy for a hunter (QA #956).
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -49,11 +50,13 @@ void main() {
     }
     final floor = towerFloorOf(run, data);
     final fight = TowerFightSession(run, data);
-    // One hit fells it: the fight is won on the first roll.
+    // One hit fells it: the fight is won on the first roll. A hunter's
+    // clan too: the Tower asks no "spare or finish" (QA #956).
     final warden = {
       ...data.enemies[floor.enemyIds.first] as Map<String, dynamic>,
       'maxHealth': 1,
       'phases': <dynamic>[],
+      'hunterClan': 'crows',
     };
     final navigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
@@ -75,6 +78,7 @@ void main() {
       await pumpUntil(tester, () => shows('Victory! Return'));
     }
     await settle(tester);
+    expect(find.byKey(const Key('mercy_dialog')), findsNothing);
     expect(buttonLabelled('Victory! Return')?.enabled, isTrue);
     // No story offer queued on the Tower's hero.
     final inner =
