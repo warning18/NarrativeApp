@@ -618,7 +618,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       final itemId = widget.result.itemIds[index - 1];
       final item = widget.items[itemId] as Map<String, dynamic>?;
       face = ItemPixelIcon(itemId, item?['itemType']?.toString(),
-          size: IconSize.s48);
+          size: IconSize.s32);
       label = item?['itemName']?.toString() ?? itemId;
     }
     return GestureDetector(
