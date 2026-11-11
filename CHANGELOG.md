@@ -8,9 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.909.0+945]
+## [1.912.0+948]
 
 - Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
+
+## [1.910.0+946]
+
+- Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
+- Tower: winning a warden or boss floor (5, 10, 15…) no longer leaves the fight stuck under an endless loading dialog with "Victory! Return" disabled. A Tower fight no longer queues the story's clan offer (the Tower has its own oath cards), and the clans' offer dialog now reads the hero that drew the offer, so it can never wait on a session that has none. Found by QA in a real playthrough.
+- Tower: beating a hunter no longer asks the story's "spare or finish" question; in the Tower a hunter falls like any foe (QA #956).
 
 ## [1.908.0+944]
 
