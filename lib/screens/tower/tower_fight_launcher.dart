@@ -50,6 +50,7 @@ Future<TowerFightResult?> towerFightFor(
           for (final id in floor.enemyIds.skip(1)) id: records[id]!,
         },
         modifiers: floor.modifiersFor(run.professionId),
+        onRound: fight.onRound,
       ));
       // The Tower's fights wear the Tower: a warden's or a boss's floor its
       // own picture, the others their band's, the hall's stone under the dice
@@ -69,5 +70,6 @@ Future<TowerFightResult?> towerFightFor(
       won: won,
       healthLeft: fight.healthLeft,
       potionsLeft: fight.potionsLeft,
-      antidotesLeft: fight.antidotesLeft);
+      antidotesLeft: fight.antidotesLeft,
+      rounds: fight.rounds > 0 ? fight.rounds : null);
 }
