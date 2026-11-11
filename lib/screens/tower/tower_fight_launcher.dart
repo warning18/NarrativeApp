@@ -12,6 +12,8 @@ import '../../providers/game_db_providers.dart';
 import '../../providers/combat_active_provider.dart';
 import '../../providers/tower_fight_session.dart';
 import '../fight_screen.dart';
+import '../../widgets/fight_plates.dart' show FightPlateOverride;
+import 'tower_backdrop.dart' show towerFloorPlate;
 import 'tower_providers.dart';
 
 /// Plays [run]'s floor and says how it ended; null when it was not fought (a
@@ -37,15 +39,22 @@ Future<TowerFightResult?> towerFightFor(
   final fight = TowerFightSession(run, data);
   ref.read(combatActiveProvider.notifier).state = true;
   final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
-    builder: (_) => fight.wrap(FightScreen(
-      enemyId: floor.enemyIds.first,
-      enemy: records[floor.enemyIds.first]!,
-      additionalEnemyIds: floor.enemyIds.skip(1).toList(),
-      additionalEnemies: {
-        for (final id in floor.enemyIds.skip(1)) id: records[id]!,
-      },
-      modifiers: floor.modifiersFor(run.professionId),
-    )),
+    builder: (_) {
+      final screen = fight.wrap(FightScreen(
+        enemyId: floor.enemyIds.first,
+        enemy: records[floor.enemyIds.first]!,
+        additionalEnemyIds: floor.enemyIds.skip(1).toList(),
+        additionalEnemies: {
+          for (final id in floor.enemyIds.skip(1)) id: records[id]!,
+        },
+        modifiers: floor.modifiersFor(run.professionId),
+      ));
+      // A warden's or a boss's floor fights in front of its own picture.
+      final plate = towerFloorPlate(run.floor);
+      return plate == null
+          ? screen
+          : FightPlateOverride(asset: plate, child: screen);
+    },
   ));
   ref.read(combatActiveProvider.notifier).state = false;
   // Back before the first roll pops null: the floor was not fought.

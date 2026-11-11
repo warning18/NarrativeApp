@@ -337,14 +337,23 @@ extension _FightGround on _FightScreenState {
   /// the log readable in either theme.
   Widget _buildBackdrop({double veil = 0.4}) {
     final scheme = Theme.of(context).colorScheme;
+    // The pictures are brighter and busier than the painted stages were: the
+    // light theme's cream veil is stronger over them so names and cards read.
+    if (scheme.brightness == Brightness.light) veil += 0.22;
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
-          plate: fightPlateAsset(_stage,
-              ref.read(geographyProvider).locationOf(_placeIdHere())?.id),
+          plate: FightPlateOverride.of(context) ??
+              fightPlateAsset(
+                  _stage,
+                  ref
+                      .read(geographyProvider)
+                      .locationOf(
+                          fightPlaceOf(widget.modifiers, _placeIdHere()))
+                      ?.id),
           light: lightLevel(_light),
           weather: false,
           events: false,

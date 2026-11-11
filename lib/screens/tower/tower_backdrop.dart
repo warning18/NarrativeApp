@@ -16,13 +16,29 @@ int towerBandOf(int floor) => floor <= 10
 String towerBackdropAsset(int band) =>
     'assets/visuals/tower/tower_band${band.clamp(1, 3)}.png';
 
+/// The picture of a special floor: the wardens (5, 15, 25) and the bosses (10,
+/// 20, 30) each have their own; null for an ordinary floor.
+String? towerFloorPlate(int floor) => switch (floor) {
+      5 || 15 || 25 => 'assets/visuals/tower/tower_ward$floor.png',
+      10 || 20 || 30 => 'assets/visuals/tower/tower_boss$floor.png',
+      _ => null,
+    };
+
+/// The end of a run: the picture of a won run, of a lost one.
+String towerEndPlate({required bool won}) =>
+    'assets/visuals/tower/tower_${won ? 'win' : 'lose'}.png';
+
 /// How much of the page's colour lies over the picture.
 const double towerBackdropVeil = 0.58;
 
 class TowerBackdrop extends StatelessWidget {
-  const TowerBackdrop({super.key, required this.floor, required this.child});
+  const TowerBackdrop(
+      {super.key, required this.floor, required this.child, this.asset});
 
   final int floor;
+
+  /// A picture to wear in place of the floor's (the end of a run).
+  final String? asset;
   final Widget child;
 
   @override
@@ -32,7 +48,9 @@ class TowerBackdrop extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          towerBackdropAsset(towerBandOf(floor)),
+          asset ??
+              towerFloorPlate(floor) ??
+              towerBackdropAsset(towerBandOf(floor)),
           key: const Key('tower_backdrop'),
           fit: BoxFit.cover,
           filterQuality: FilterQuality.none,

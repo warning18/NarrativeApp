@@ -1,8 +1,9 @@
 // The fight's background pictures (fight_plates.dart): the city road has a
 // picture per region (Alster by default, Saltmouth, the grey frost towns,
-// Candlehold), every named file is bundled, a stage with no picture keeps its
-// code painter, and a backdrop given a picture draws it.
+// Candlehold), every stage has a bundled picture, and a backdrop given a
+// picture draws it.
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,9 +24,16 @@ void main() {
     expect(of('candlehold'), endsWith('/cityroad_candlehold.png'));
   });
 
-  test('a stage with no picture keeps its code painter', () {
-    expect(fightPlateAsset(FightStage.dunes, 'saltmouth'), isNull);
-    expect(fightPlateAsset(FightStage.hall, null), isNull);
+  test('every stage has its picture, bundled, a 180 x 320 palette PNG', () {
+    for (final stage in FightStage.values) {
+      final asset = fightPlateAsset(stage, null);
+      final file = File(asset);
+      expect(file.existsSync(), isTrue, reason: '$stage: $asset');
+      final data = ByteData.sublistView(file.readAsBytesSync());
+      expect(data.getUint32(16), 180, reason: asset);
+      expect(data.getUint32(20), 320, reason: asset);
+      expect(data.getUint8(25), 3, reason: asset);
+    }
   });
 
   test('every picture named is in the bundle, 180 x 320', () {
@@ -35,7 +43,7 @@ void main() {
       'black_reliquary',
       'candlehold',
     ]) {
-      final asset = fightPlateAsset(FightStage.cityRoad, s)!;
+      final asset = fightPlateAsset(FightStage.cityRoad, s);
       expect(File(asset).existsSync(), isTrue, reason: asset);
     }
   });
@@ -43,7 +51,7 @@ void main() {
   testWidgets('a backdrop with a picture draws it, none draws the code stage',
       (tester) async {
     FightPlateImages.reset();
-    final asset = fightPlateAsset(FightStage.cityRoad, 'saltmouth')!;
+    final asset = fightPlateAsset(FightStage.cityRoad, 'saltmouth');
     await tester.pumpWidget(MaterialApp(
         home: SizedBox(
             width: 200,
