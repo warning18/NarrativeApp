@@ -121,6 +121,7 @@ flutter:
     - assets/visuals/shops/
     - assets/visuals/races/
     - assets/visuals/professions/
+    - assets/icons/glyphs/
     - assets/icons/items/
     - assets/icons/skills/
     - assets/icons/enemies/
