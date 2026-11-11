@@ -63,6 +63,21 @@ void main() {
         findsOneWidget);
   });
 
+  testWidgets('a full bag drinks the potion: the card says so, an open bag not',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final (seed, floor) = floorWith(TowerEventKind.test);
+    final view = towerEventOf(run(seed, floor), data)!;
+    await tester.pumpWidget(host(TowerEventCard(view)));
+    await tester.pump();
+    expect(find.textContaining('Your bag is full', findRichText: true),
+        findsNothing);
+    await tester.pumpWidget(host(TowerEventCard(view, bagFull: true)));
+    await tester.pump();
+    expect(find.textContaining('Your bag is full', findRichText: true),
+        findsOneWidget);
+  });
+
   testWidgets('a rival shows its rounds and its landing', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final (seed, floor) = floorWith(TowerEventKind.rival);

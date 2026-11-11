@@ -123,7 +123,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 12),
         if (widget.event?.kind == TowerEventKind.test) ...[
-          TowerEventCard(widget.event!),
+          TowerEventCard(widget.event!,
+              bagFull: widget.run.potions >= towerBagCap),
           const SizedBox(height: 12),
         ],
         for (var i = 0; i < offer.length; i++)

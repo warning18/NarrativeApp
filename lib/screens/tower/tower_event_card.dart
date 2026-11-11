@@ -15,15 +15,18 @@ import '../../widgets/ink_panel.dart';
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
-  const TowerEventCard(this.view, {super.key});
+  const TowerEventCard(this.view, {super.key, this.bagFull = false});
 
   final TowerEventView view;
+
+  /// The potion bag is full: a pass drinks the potion at once.
+  final bool bagFull;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (view.kind) {
       case TowerEventKind.test:
-        return _TestCard(view);
+        return _TestCard(view, bagFull);
       case TowerEventKind.rival:
         return _RivalCard(view);
       case null:
@@ -82,9 +85,10 @@ class _Outcome extends StatelessWidget {
 }
 
 class _TestCard extends ConsumerWidget {
-  const _TestCard(this.view);
+  const _TestCard(this.view, this.bagFull);
 
   final TowerEventView view;
+  final bool bagFull;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +114,7 @@ class _TestCard extends ConsumerWidget {
         Text(sub('tower_event_test_title', {'ability': ability}),
             style: theme.textTheme.titleMedium
                 ?.copyWith(fontFamily: InkFonts.display)),
-        Text(sub('tower_event_test_body', {'mod': signed, 'dc': dc}),
+        Text(tr(ref, 'tower_event_test_body_${view.ability}'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 10),
@@ -133,9 +137,14 @@ class _TestCard extends ConsumerWidget {
             Icons.check_circle_outline,
             ink.heal,
             tr(ref, 'tower_event_pass'),
-            sub('tower_event_pass_text', {'n': view.gain ?? 1})),
-        _Outcome(Icons.south, ink.blood, tr(ref, 'tower_event_fail'),
-            sub('tower_event_fail_text', {'n': view.fallTo ?? view.floor})),
+            tr(ref, 'tower_event_pass_text_${view.ability}') +
+                (bagFull ? ' ${tr(ref, 'tower_event_pass_full')}' : '')),
+        _Outcome(
+            Icons.south,
+            ink.blood,
+            tr(ref, 'tower_event_fail'),
+            sub('tower_event_fail_text_${view.ability}',
+                {'n': view.fallTo ?? view.floor})),
         const SizedBox(height: 6),
         Text(
             sub(
@@ -212,7 +221,8 @@ class TowerEventResultLine extends ConsumerWidget {
         .replaceAll('{skipped}', '${result.from + 1}');
     final headline = switch ((result.kind, result.passed)) {
       (TowerEventKind.test, false) => sub('tower_event_fell'),
-      (TowerEventKind.test, true) => sub('tower_event_held'),
+      (TowerEventKind.test, true) =>
+        sub('tower_event_held_${towerSetbackAbilityOf(result.from)}'),
       (TowerEventKind.rival, true) => sub('tower_event_outran'),
       (TowerEventKind.rival, false) => sub('tower_event_rival_lost'),
     };

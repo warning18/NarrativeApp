@@ -1384,10 +1384,59 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'A test of {ability}',
     AppLanguage.fr: 'Une épreuve de {ability}',
   },
-  'tower_event_test_body': {
-    AppLanguage.en: 'Roll a d20 and add {mod}: you need {dc} to hold on.',
+  'tower_event_test_body_strength': {
+    AppLanguage.en: 'The stair is slick with ash. Hold on.',
+    AppLanguage.fr: 'L’escalier est glissant de cendre. Tenez bon.',
+  },
+  'tower_event_test_body_dexterity': {
+    AppLanguage.en: 'A tread gives way under your foot. Catch yourself.',
+    AppLanguage.fr: 'Une marche cède sous votre pied. Rattrapez-vous.',
+  },
+  'tower_event_test_body_wisdom': {
+    AppLanguage.en:
+        'Something about this landing is wrong. See it before it springs.',
     AppLanguage.fr:
-        'Lancez un d20 et ajoutez {mod} : il vous faut {dc} pour tenir bon.',
+        'Quelque chose cloche sur ce palier. Voyez-le avant qu’il ne se referme.',
+  },
+  'tower_event_pass_text_strength': {
+    AppLanguage.en: 'hold on and take a potion.',
+    AppLanguage.fr: 'vous tenez bon et gagnez une potion.',
+  },
+  'tower_event_pass_text_dexterity': {
+    AppLanguage.en: 'catch yourself and take a potion.',
+    AppLanguage.fr: 'vous vous rattrapez et gagnez une potion.',
+  },
+  'tower_event_pass_text_wisdom': {
+    AppLanguage.en: 'see the trap and take a potion.',
+    AppLanguage.fr: 'vous voyez le piège et gagnez une potion.',
+  },
+  'tower_event_fail_text_strength': {
+    AppLanguage.en: 'your grip gives: fall to floor {n}.',
+    AppLanguage.fr: 'votre prise cède : vous chutez à l’étage {n}.',
+  },
+  'tower_event_fail_text_dexterity': {
+    AppLanguage.en: 'your foot slips: fall to floor {n}.',
+    AppLanguage.fr: 'votre pied glisse : vous chutez à l’étage {n}.',
+  },
+  'tower_event_fail_text_wisdom': {
+    AppLanguage.en: 'the trap springs: fall to floor {n}.',
+    AppLanguage.fr: 'le piège se referme : vous chutez à l’étage {n}.',
+  },
+  'tower_event_held_strength': {
+    AppLanguage.en: 'You hold on at floor {from}',
+    AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
+  },
+  'tower_event_held_dexterity': {
+    AppLanguage.en: 'You catch yourself at floor {from}',
+    AppLanguage.fr: 'Vous vous rattrapez à l’étage {from}',
+  },
+  'tower_event_held_wisdom': {
+    AppLanguage.en: 'You see the trap at floor {from}',
+    AppLanguage.fr: 'Vous voyez le piège à l’étage {from}',
+  },
+  'tower_event_pass_full': {
+    AppLanguage.en: 'Your bag is full: you drink it at once.',
+    AppLanguage.fr: 'Votre sac est plein : vous la buvez aussitôt.',
   },
   'tower_event_chance': {
     AppLanguage.en: 'chance to pass (d20 {mod} against {dc})',
@@ -1397,17 +1446,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Pass',
     AppLanguage.fr: 'Réussite',
   },
-  'tower_event_pass_text': {
-    AppLanguage.en: 'hold on and take a potion.',
-    AppLanguage.fr: 'vous tenez bon et gagnez une potion.',
-  },
   'tower_event_fail': {
     AppLanguage.en: 'Fail',
     AppLanguage.fr: 'Échec',
-  },
-  'tower_event_fail_text': {
-    AppLanguage.en: 'fall to floor {n}.',
-    AppLanguage.fr: 'vous chutez à l’étage {n}.',
   },
   'tower_event_left': {
     AppLanguage.en: '{n} setbacks left on this climb',
@@ -1446,10 +1487,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_event_fell': {
     AppLanguage.en: 'You fall from floor {from} to floor {to}',
     AppLanguage.fr: 'Vous tombez de l’étage {from} à l’étage {to}',
-  },
-  'tower_event_held': {
-    AppLanguage.en: 'You hold on at floor {from}',
-    AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
   },
   'tower_event_outran': {
     AppLanguage.en:
