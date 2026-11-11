@@ -1,0 +1,2100 @@
+{
+ "version": "1.914.0 (origin/main 3309315f)",
+ "plan": "seeds 1..100, one simulatePlaythroughs call per seed; the 25 race x profession pairs x 4 goals (random, favorGood, favorEvil, maximizeGold), see story_runs_test.dart.txt",
+ "notes": "Lost fights do not stop a run: after 3 failed tries the walk moves on. \"deaths\" = encounters lost after 3 tries (the run would end there with permadeath). Story losses = the chapter-1 defeat branches (scenes 105, 110, 120, 400), fought once. Fight ids are scene:enemy (the first enemy of a pack).",
+ "naive": {
+  "runs": 100,
+  "endings": {
+   "ending": 100
+  },
+  "furthestChapter": {
+   "8": 100
+  },
+  "attemptWinPct": 41.9,
+  "encounterWinPct": 73.9,
+  "attempts": 10660,
+  "won": 4464,
+  "encounters": 6043,
+  "runsWithNoDeath": 0,
+  "medianFinalLevel": 21.0,
+  "medianFinalGold": 3713.5,
+  "chapters": {
+   "1": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 411,
+    "won": 357,
+    "failedAttempts": 54,
+    "attemptWinPct": 86.9,
+    "encounters": 385,
+    "encounterWinPct": 92.7,
+    "deaths": 8,
+    "storyLosses": 20,
+    "runsWithADeath": 8,
+    "permadeath": {
+     "aliveOnArrival": 100,
+     "firstDeathHere": 8
+    },
+    "medianArrivalLevel": 1.0,
+    "medianArrivalGold": 110.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "855:rat_matriarch",
+      "deaths": 5,
+      "fought": 7
+     },
+     {
+      "fight": "850_fed_failed:rat_matriarch",
+      "deaths": 2,
+      "fought": 2
+     },
+     {
+      "fight": "850:rat_matriarch",
+      "deaths": 1,
+      "fought": 4
+     }
+    ],
+    "storyLossesByFight": [
+     {
+      "fight": "400:aurel_vane",
+      "lost": 14,
+      "fought": 32
+     },
+     {
+      "fight": "120:white_soldier",
+      "lost": 4,
+      "fought": 20
+     },
+     {
+      "fight": "110:white_soldier",
+      "lost": 2,
+      "fought": 14
+     }
+    ],
+    "enemiesByLosses": [
+     {
+      "enemy": "aurel_vane",
+      "lost": 14,
+      "fought": 32
+     },
+     {
+      "enemy": "rat_matriarch",
+      "lost": 8,
+      "fought": 13
+     },
+     {
+      "enemy": "white_soldier",
+      "lost": 6,
+      "fought": 34
+     }
+    ],
+    "fightsNeverLost": [
+     "105:den_bouncer",
+     "105:den_looter",
+     "105:sore_loser",
+     "110:street_bandit",
+     "1140:wreck_scavenger",
+     "120:street_bandit",
+     "260:slum_thug",
+     "820:inquisition_warden"
+    ]
+   },
+   "2": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 736,
+    "won": 656,
+    "failedAttempts": 80,
+    "attemptWinPct": 89.1,
+    "encounters": 668,
+    "encounterWinPct": 98.2,
+    "deaths": 12,
+    "storyLosses": 0,
+    "runsWithADeath": 12,
+    "permadeath": {
+     "aliveOnArrival": 92,
+     "firstDeathHere": 12
+    },
+    "medianArrivalLevel": 3.0,
+    "medianArrivalGold": 369.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "2020:inquisition_soldier",
+      "deaths": 11,
+      "fought": 35
+     },
+     {
+      "fight": "2015_kelda:inquisition_soldier",
+      "deaths": 1,
+      "fought": 90
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "inquisition_soldier",
+      "lost": 12,
+      "fought": 128
+     }
+    ],
+    "fightsNeverLost": [
+     "2000:harbor_rat",
+     "2011:harbor_rat",
+     "2015:harbor_rat",
+     "2015:plague_hound",
+     "2015_dockside:harbor_rat",
+     "2015_house_drowned_debt:street_bandit",
+     "2015_informant_caught:street_bandit",
+     "2015_informant_trap:street_bandit",
+     "2015_ternrow_fight:dock_overseer",
+     "zone:z_fishermans_row:dock_overseer",
+     "zone:z_fishermans_row:harbor_rat",
+     "zone:z_tanners_court:plague_hound",
+     "zone:z_tanners_court:street_bandit"
+    ]
+   },
+   "3": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 2114,
+    "won": 1049,
+    "failedAttempts": 1065,
+    "attemptWinPct": 49.6,
+    "encounters": 1302,
+    "encounterWinPct": 80.6,
+    "deaths": 253,
+    "storyLosses": 0,
+    "runsWithADeath": 85,
+    "permadeath": {
+     "aliveOnArrival": 80,
+     "firstDeathHere": 66
+    },
+    "medianArrivalLevel": 5.0,
+    "medianArrivalGold": 403.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "3200:inquisition_soldier",
+      "deaths": 40,
+      "fought": 68
+     },
+     {
+      "fight": "zone:z_lantern_docks:inquisition_soldier",
+      "deaths": 33,
+      "fought": 50
+     },
+     {
+      "fight": "zone:z_fever_bark:inquisition_soldier",
+      "deaths": 29,
+      "fought": 50
+     },
+     {
+      "fight": "zone:z_cinder_row:inquisition_auxiliary",
+      "deaths": 29,
+      "fought": 50
+     },
+     {
+      "fight": "3100:inquisition_auxiliary",
+      "deaths": 29,
+      "fought": 54
+     },
+     {
+      "fight": "zone:z_scaffold_yards:void_stalker",
+      "deaths": 25,
+      "fought": 62
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "inquisition_soldier",
+      "lost": 102,
+      "fought": 168
+     },
+     {
+      "enemy": "inquisition_auxiliary",
+      "lost": 89,
+      "fought": 179
+     },
+     {
+      "enemy": "void_stalker",
+      "lost": 37,
+      "fought": 95
+     },
+     {
+      "enemy": "void_wisp",
+      "lost": 12,
+      "fought": 68
+     },
+     {
+      "enemy": "demon_imp",
+      "lost": 5,
+      "fought": 20
+     },
+     {
+      "enemy": "street_bandit",
+      "lost": 4,
+      "fought": 50
+     },
+     {
+      "enemy": "inquisition_high_warden",
+      "lost": 3,
+      "fought": 100
+     },
+     {
+      "enemy": "cultist_acolyte",
+      "lost": 1,
+      "fought": 111
+     }
+    ],
+    "fightsNeverLost": [
+     "3005:iron_golem",
+     "3005_grosh:hollow_court_zealot",
+     "3005_oath:cultist_acolyte",
+     "3040:inquisition_high_warden",
+     "zone:z_cinder_row:cultist_acolyte",
+     "zone:z_cinder_row:iron_golem",
+     "zone:z_exorcists_road:horn_taker",
+     "zone:z_fever_bark:purifier_vell",
+     "zone:z_lantern_docks:harbor_rat",
+     "zone:z_lantern_docks:smuggler_captain",
+     "zone:z_salt_road:brine_jack",
+     "zone:z_salt_road:plague_hound",
+     "zone:z_scaffold_yards:cultist_acolyte",
+     "zone:z_scaffold_yards:iron_golem"
+    ]
+   },
+   "4": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1964,
+    "won": 683,
+    "failedAttempts": 1281,
+    "attemptWinPct": 34.8,
+    "encounters": 998,
+    "encounterWinPct": 68.4,
+    "deaths": 315,
+    "storyLosses": 0,
+    "runsWithADeath": 94,
+    "permadeath": {
+     "aliveOnArrival": 14,
+     "firstDeathHere": 13
+    },
+    "medianArrivalLevel": 8.0,
+    "medianArrivalGold": 908.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "zone:z_ossuary_galleries:bone_warden",
+      "deaths": 45,
+      "fought": 88
+     },
+     {
+      "fight": "5100:drowned_pilgrim",
+      "deaths": 45,
+      "fought": 52
+     },
+     {
+      "fight": "zone:z_drowned_stair:hollow_court_inquisitor",
+      "deaths": 42,
+      "fought": 98
+     },
+     {
+      "fight": "zone:z_bell_road:knell_keeper",
+      "deaths": 40,
+      "fought": 86
+     },
+     {
+      "fight": "5200:bone_sexton",
+      "deaths": 29,
+      "fought": 64
+     },
+     {
+      "fight": "5010:catacomb_ghoul",
+      "deaths": 25,
+      "fought": 41
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "bone_warden",
+      "lost": 63,
+      "fought": 133
+     },
+     {
+      "enemy": "drowned_pilgrim",
+      "lost": 58,
+      "fought": 68
+     },
+     {
+      "enemy": "catacomb_ghoul",
+      "lost": 46,
+      "fought": 166
+     },
+     {
+      "enemy": "hollow_court_inquisitor",
+      "lost": 42,
+      "fought": 98
+     },
+     {
+      "enemy": "knell_keeper",
+      "lost": 40,
+      "fought": 86
+     },
+     {
+      "enemy": "bone_sexton",
+      "lost": 31,
+      "fought": 114
+     },
+     {
+      "enemy": "void_wisp",
+      "lost": 17,
+      "fought": 104
+     },
+     {
+      "enemy": "teind_rider",
+      "lost": 13,
+      "fought": 40
+     }
+    ],
+    "fightsNeverLost": [
+     "5003:hollow_court_zealot",
+     "zone:z_drowned_stair:hollow_court_zealot"
+    ]
+   },
+   "5": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 2452,
+    "won": 965,
+    "failedAttempts": 1487,
+    "attemptWinPct": 39.4,
+    "encounters": 1346,
+    "encounterWinPct": 71.7,
+    "deaths": 381,
+    "storyLosses": 0,
+    "runsWithADeath": 98,
+    "permadeath": {
+     "aliveOnArrival": 1,
+     "firstDeathHere": 1
+    },
+    "medianArrivalLevel": 11.0,
+    "medianArrivalGold": 1615.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "zone:z_shroud_vigil:void_archon",
+      "deaths": 53,
+      "fought": 86
+     },
+     {
+      "fight": "6200:void_hound",
+      "deaths": 48,
+      "fought": 74
+     },
+     {
+      "fight": "6100:void_hound",
+      "deaths": 46,
+      "fought": 59
+     },
+     {
+      "fight": "zone:z_ember_run:rime_bailiff",
+      "deaths": 43,
+      "fought": 98
+     },
+     {
+      "fight": "zone:z_frost_quarry:frost_kept_giant",
+      "deaths": 33,
+      "fought": 66
+     },
+     {
+      "fight": "6002_siege_breach:void_hound",
+      "deaths": 30,
+      "fought": 45
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "void_hound",
+      "lost": 227,
+      "fought": 456
+     },
+     {
+      "enemy": "void_archon",
+      "lost": 53,
+      "fought": 86
+     },
+     {
+      "enemy": "rime_bailiff",
+      "lost": 43,
+      "fought": 102
+     },
+     {
+      "enemy": "frost_kept_giant",
+      "lost": 33,
+      "fought": 66
+     },
+     {
+      "enemy": "inquisition_penitent",
+      "lost": 9,
+      "fought": 142
+     },
+     {
+      "enemy": "brother_clement",
+      "lost": 8,
+      "fought": 25
+     },
+     {
+      "enemy": "void_manifestation",
+      "lost": 3,
+      "fought": 153
+     },
+     {
+      "enemy": "tear_spawn",
+      "lost": 3,
+      "fought": 119
+     }
+    ],
+    "fightsNeverLost": [
+     "6010_masked:masked_penitent",
+     "zone:z_dead_heart_approach:masked_penitent",
+     "zone:z_shroud_vigil:masked_penitent"
+    ]
+   },
+   "6": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1699,
+    "won": 465,
+    "failedAttempts": 1234,
+    "attemptWinPct": 27.4,
+    "encounters": 779,
+    "encounterWinPct": 59.7,
+    "deaths": 314,
+    "storyLosses": 0,
+    "runsWithADeath": 94,
+    "permadeath": {
+     "aliveOnArrival": 0,
+     "firstDeathHere": 0
+    },
+    "medianArrivalLevel": 15.0,
+    "medianArrivalGold": 2456.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "7002:hollow_reflection",
+      "deaths": 48,
+      "fought": 87
+     },
+     {
+      "fight": "zone:z_glass_strand:strand_colossus",
+      "deaths": 42,
+      "fought": 60
+     },
+     {
+      "fight": "zone:z_white_fleet_grave:white_admiral",
+      "deaths": 36,
+      "fought": 60
+     },
+     {
+      "fight": "zone:z_lantern_train:glass_shepherd",
+      "deaths": 26,
+      "fought": 62
+     },
+     {
+      "fight": "7200:hollow_reflection",
+      "deaths": 24,
+      "fought": 67
+     },
+     {
+      "fight": "zone:z_glass_strand:hollow_reflection",
+      "deaths": 22,
+      "fought": 63
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "hollow_reflection",
+      "lost": 126,
+      "fought": 328
+     },
+     {
+      "enemy": "drowned_pilgrim",
+      "lost": 45,
+      "fought": 134
+     },
+     {
+      "enemy": "strand_colossus",
+      "lost": 42,
+      "fought": 60
+     },
+     {
+      "enemy": "white_admiral",
+      "lost": 36,
+      "fought": 60
+     },
+     {
+      "enemy": "unmade_knight",
+      "lost": 28,
+      "fought": 87
+     },
+     {
+      "enemy": "glass_shepherd",
+      "lost": 26,
+      "fought": 62
+     },
+     {
+      "enemy": "inquisition_soldier",
+      "lost": 11,
+      "fought": 48
+     }
+    ],
+    "fightsNeverLost": []
+   },
+   "7": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 378,
+    "won": 99,
+    "failedAttempts": 279,
+    "attemptWinPct": 26.2,
+    "encounters": 173,
+    "encounterWinPct": 57.2,
+    "deaths": 74,
+    "storyLosses": 0,
+    "runsWithADeath": 69,
+    "permadeath": {
+     "aliveOnArrival": 0,
+     "firstDeathHere": 0
+    },
+    "medianArrivalLevel": 18.0,
+    "medianArrivalGold": 3273.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "7520_tallis:claimant_tallis",
+      "deaths": 50,
+      "fought": 76
+     },
+     {
+      "fight": "7520_morrow:claimant_morrow",
+      "deaths": 8,
+      "fought": 13
+     },
+     {
+      "fight": "7520_vane:claimant_vane",
+      "deaths": 7,
+      "fought": 11
+     },
+     {
+      "fight": "7510_seen:inquisition_soldier",
+      "deaths": 4,
+      "fought": 18
+     },
+     {
+      "fight": "7510_open_hand:inquisition_auxiliary",
+      "deaths": 2,
+      "fought": 30
+     },
+     {
+      "fight": "7510_penitents:inquisition_soldier",
+      "deaths": 1,
+      "fought": 5
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "claimant_tallis",
+      "lost": 50,
+      "fought": 76
+     },
+     {
+      "enemy": "claimant_morrow",
+      "lost": 8,
+      "fought": 13
+     },
+     {
+      "enemy": "claimant_vane",
+      "lost": 7,
+      "fought": 11
+     },
+     {
+      "enemy": "inquisition_soldier",
+      "lost": 6,
+      "fought": 34
+     },
+     {
+      "enemy": "inquisition_auxiliary",
+      "lost": 2,
+      "fought": 32
+     },
+     {
+      "enemy": "white_soldier",
+      "lost": 1,
+      "fought": 7
+     }
+    ],
+    "fightsNeverLost": []
+   },
+   "8": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 906,
+    "won": 190,
+    "failedAttempts": 716,
+    "attemptWinPct": 21.0,
+    "encounters": 392,
+    "encounterWinPct": 48.5,
+    "deaths": 202,
+    "storyLosses": 0,
+    "runsWithADeath": 94,
+    "permadeath": {
+     "aliveOnArrival": 0,
+     "firstDeathHere": 0
+    },
+    "medianArrivalLevel": 19.0,
+    "medianArrivalGold": 3609.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "7810:tear_herald",
+      "deaths": 78,
+      "fought": 100
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:void_sovereign",
+      "deaths": 43,
+      "fought": 57
+     },
+     {
+      "fight": "7002_approach:hollow_reflection",
+      "deaths": 23,
+      "fought": 49
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:hollow_reflection",
+      "deaths": 20,
+      "fought": 63
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:unmade_knight",
+      "deaths": 16,
+      "fought": 50
+     },
+     {
+      "fight": "7002_alarm:hollow_reflection",
+      "deaths": 15,
+      "fought": 22
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "tear_herald",
+      "lost": 78,
+      "fought": 100
+     },
+     {
+      "enemy": "hollow_reflection",
+      "lost": 58,
+      "fought": 134
+     },
+     {
+      "enemy": "void_sovereign",
+      "lost": 43,
+      "fought": 57
+     },
+     {
+      "enemy": "unmade_knight",
+      "lost": 16,
+      "fought": 50
+     },
+     {
+      "enemy": "void_hound",
+      "lost": 7,
+      "fought": 24
+     }
+    ],
+    "fightsNeverLost": [
+     "zone:z_beyond_the_tear:void_manifestation"
+    ]
+   }
+  },
+  "deadliestFights": [
+   {
+    "fight": "ch8 7810:tear_herald",
+    "deaths": 78,
+    "fought": 100,
+    "lossPct": 78.0
+   },
+   {
+    "fight": "ch5 zone:z_shroud_vigil:void_archon",
+    "deaths": 53,
+    "fought": 86,
+    "lossPct": 61.6
+   },
+   {
+    "fight": "ch7 7520_tallis:claimant_tallis",
+    "deaths": 50,
+    "fought": 76,
+    "lossPct": 65.8
+   },
+   {
+    "fight": "ch5 6200:void_hound",
+    "deaths": 48,
+    "fought": 74,
+    "lossPct": 64.9
+   },
+   {
+    "fight": "ch6 7002:hollow_reflection",
+    "deaths": 48,
+    "fought": 87,
+    "lossPct": 55.2
+   },
+   {
+    "fight": "ch5 6100:void_hound",
+    "deaths": 46,
+    "fought": 59,
+    "lossPct": 78.0
+   },
+   {
+    "fight": "ch4 zone:z_ossuary_galleries:bone_warden",
+    "deaths": 45,
+    "fought": 88,
+    "lossPct": 51.1
+   },
+   {
+    "fight": "ch4 5100:drowned_pilgrim",
+    "deaths": 45,
+    "fought": 52,
+    "lossPct": 86.5
+   },
+   {
+    "fight": "ch5 zone:z_ember_run:rime_bailiff",
+    "deaths": 43,
+    "fought": 98,
+    "lossPct": 43.9
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:void_sovereign",
+    "deaths": 43,
+    "fought": 57,
+    "lossPct": 75.4
+   }
+  ],
+  "byRace": {
+   "dwarf": {
+    "runs": 20,
+    "attemptWinPct": 42.1,
+    "encounterWinPct": 73.9,
+    "deathsPerRun": 15.5,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 1,
+     "2": 4,
+     "3": 13,
+     "4": 2
+    },
+    "medianFinalLevel": 21.0,
+    "medianFinalGold": 3824.5
+   },
+   "elf": {
+    "runs": 20,
+    "attemptWinPct": 46.0,
+    "encounterWinPct": 77.8,
+    "deathsPerRun": 13.6,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 2,
+     "2": 3,
+     "3": 9,
+     "4": 5,
+     "5": 1
+    },
+    "medianFinalLevel": 22.5,
+    "medianFinalGold": 4188.0
+   },
+   "human": {
+    "runs": 20,
+    "attemptWinPct": 37.5,
+    "encounterWinPct": 69.4,
+    "deathsPerRun": 17.3,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 2,
+     "2": 2,
+     "3": 16
+    },
+    "medianFinalLevel": 19.5,
+    "medianFinalGold": 3331.5
+   },
+   "orc": {
+    "runs": 20,
+    "attemptWinPct": 48.3,
+    "encounterWinPct": 80.2,
+    "deathsPerRun": 12.55,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 1,
+     "2": 1,
+     "3": 13,
+     "4": 5
+    },
+    "medianFinalLevel": 24.0,
+    "medianFinalGold": 4570.0
+   },
+   "voidkin": {
+    "runs": 20,
+    "attemptWinPct": 35.7,
+    "encounterWinPct": 67.2,
+    "deathsPerRun": 19.0,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 2,
+     "2": 2,
+     "3": 15,
+     "4": 1
+    },
+    "medianFinalLevel": 20.0,
+    "medianFinalGold": 3042.0
+   }
+  },
+  "byProfession": {
+   "cleric": {
+    "runs": 20,
+    "attemptWinPct": 38.5,
+    "encounterWinPct": 69.8,
+    "deathsPerRun": 17.9,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "2": 2,
+     "3": 14,
+     "4": 4
+    },
+    "medianFinalLevel": 21.0,
+    "medianFinalGold": 3653.0
+   },
+   "mage": {
+    "runs": 20,
+    "attemptWinPct": 43.7,
+    "encounterWinPct": 74.9,
+    "deathsPerRun": 14.95,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 3,
+     "3": 14,
+     "4": 2,
+     "5": 1
+    },
+    "medianFinalLevel": 21.5,
+    "medianFinalGold": 4160.0
+   },
+   "ranger": {
+    "runs": 20,
+    "attemptWinPct": 41.4,
+    "encounterWinPct": 73.8,
+    "deathsPerRun": 15.35,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 3,
+     "2": 5,
+     "3": 10,
+     "4": 2
+    },
+    "medianFinalLevel": 20.0,
+    "medianFinalGold": 3351.5
+   },
+   "rogue": {
+    "runs": 20,
+    "attemptWinPct": 44.2,
+    "encounterWinPct": 76.8,
+    "deathsPerRun": 13.85,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 1,
+     "3": 17,
+     "4": 2
+    },
+    "medianFinalLevel": 21.0,
+    "medianFinalGold": 4404.0
+   },
+   "warrior": {
+    "runs": 20,
+    "attemptWinPct": 41.7,
+    "encounterWinPct": 74.0,
+    "deathsPerRun": 15.9,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 1,
+     "2": 5,
+     "3": 11,
+     "4": 3
+    },
+    "medianFinalLevel": 21.0,
+    "medianFinalGold": 3408.5
+   }
+  },
+  "byGoal": {
+   "favorEvil": {
+    "runs": 25,
+    "attemptWinPct": 36.0,
+    "encounterWinPct": 66.5,
+    "deathsPerRun": 15.68,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 6,
+     "2": 3,
+     "3": 10,
+     "4": 6
+    },
+    "medianFinalLevel": 19,
+    "medianFinalGold": 2474
+   },
+   "favorGood": {
+    "runs": 25,
+    "attemptWinPct": 39.3,
+    "encounterWinPct": 70.7,
+    "deathsPerRun": 13.44,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "2": 2,
+     "3": 16,
+     "4": 6,
+     "5": 1
+    },
+    "medianFinalLevel": 19,
+    "medianFinalGold": 2728
+   },
+   "maximizeGold": {
+    "runs": 25,
+    "attemptWinPct": 43.7,
+    "encounterWinPct": 75.8,
+    "deathsPerRun": 18.92,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "2": 6,
+     "3": 18,
+     "4": 1
+    },
+    "medianFinalLevel": 26,
+    "medianFinalGold": 5996
+   },
+   "random": {
+    "runs": 25,
+    "attemptWinPct": 46.0,
+    "encounterWinPct": 78.8,
+    "deathsPerRun": 14.32,
+    "runsWithNoDeath": 0,
+    "firstDeathChapter": {
+     "1": 2,
+     "2": 1,
+     "3": 22
+    },
+    "medianFinalLevel": 25,
+    "medianFinalGold": 4761
+   }
+  }
+ },
+ "competent": {
+  "runs": 100,
+  "endings": {
+   "ending": 100
+  },
+  "furthestChapter": {
+   "8": 100
+  },
+  "attemptWinPct": 94.1,
+  "encounterWinPct": 99.0,
+  "attempts": 7271,
+  "won": 6843,
+  "encounters": 6910,
+  "runsWithNoDeath": 70,
+  "medianFinalLevel": 25.0,
+  "medianFinalGold": 6889.0,
+  "chapters": {
+   "1": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 394,
+    "won": 363,
+    "failedAttempts": 31,
+    "attemptWinPct": 92.1,
+    "encounters": 380,
+    "encounterWinPct": 95.5,
+    "deaths": 6,
+    "storyLosses": 11,
+    "runsWithADeath": 6,
+    "permadeath": {
+     "aliveOnArrival": 100,
+     "firstDeathHere": 6
+    },
+    "medianArrivalLevel": 1.0,
+    "medianArrivalGold": 110.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "855:rat_matriarch",
+      "deaths": 4,
+      "fought": 6
+     },
+     {
+      "fight": "850:rat_matriarch",
+      "deaths": 2,
+      "fought": 7
+     }
+    ],
+    "storyLossesByFight": [
+     {
+      "fight": "120:white_soldier",
+      "lost": 5,
+      "fought": 15
+     },
+     {
+      "fight": "400:aurel_vane",
+      "lost": 4,
+      "fought": 29
+     },
+     {
+      "fight": "110:white_soldier",
+      "lost": 1,
+      "fought": 14
+     },
+     {
+      "fight": "110:street_bandit",
+      "lost": 1,
+      "fought": 35
+     }
+    ],
+    "enemiesByLosses": [
+     {
+      "enemy": "rat_matriarch",
+      "lost": 6,
+      "fought": 14
+     },
+     {
+      "enemy": "white_soldier",
+      "lost": 6,
+      "fought": 29
+     },
+     {
+      "enemy": "aurel_vane",
+      "lost": 4,
+      "fought": 29
+     },
+     {
+      "enemy": "street_bandit",
+      "lost": 1,
+      "fought": 43
+     }
+    ],
+    "fightsNeverLost": [
+     "105:den_bouncer",
+     "105:den_looter",
+     "105:sore_loser",
+     "1140:wreck_scavenger",
+     "260:slum_thug",
+     "820:inquisition_warden"
+    ]
+   },
+   "2": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 690,
+    "won": 682,
+    "failedAttempts": 8,
+    "attemptWinPct": 98.8,
+    "encounters": 682,
+    "encounterWinPct": 100.0,
+    "deaths": 0,
+    "storyLosses": 0,
+    "runsWithADeath": 0,
+    "permadeath": {
+     "aliveOnArrival": 94,
+     "firstDeathHere": 0
+    },
+    "medianArrivalLevel": 3.0,
+    "medianArrivalGold": 353.0,
+    "topFightsByDeaths": [],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [],
+    "fightsNeverLost": [
+     "2000:harbor_rat",
+     "2010_liora:smuggler_captain",
+     "2011:harbor_rat",
+     "2015:harbor_rat",
+     "2015:plague_hound",
+     "2015:street_bandit",
+     "2015_dockside:harbor_rat",
+     "2015_house_drowned_debt:street_bandit",
+     "2015_informant_caught:street_bandit",
+     "2015_informant_trap:street_bandit",
+     "2015_kelda:inquisition_soldier",
+     "2015_ternrow_fight:dock_overseer",
+     "2020:inquisition_soldier",
+     "2040:street_bandit",
+     "zone:z_fishermans_row:dock_overseer",
+     "zone:z_fishermans_row:harbor_rat",
+     "zone:z_tanners_court:plague_hound",
+     "zone:z_tanners_court:street_bandit"
+    ]
+   },
+   "3": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1641,
+    "won": 1617,
+    "failedAttempts": 24,
+    "attemptWinPct": 98.5,
+    "encounters": 1620,
+    "encounterWinPct": 99.8,
+    "deaths": 3,
+    "storyLosses": 0,
+    "runsWithADeath": 3,
+    "permadeath": {
+     "aliveOnArrival": 94,
+     "firstDeathHere": 3
+    },
+    "medianArrivalLevel": 5.0,
+    "medianArrivalGold": 476.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "3200:inquisition_soldier",
+      "deaths": 3,
+      "fought": 68
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "inquisition_soldier",
+      "lost": 3,
+      "fought": 168
+     }
+    ],
+    "fightsNeverLost": [
+     "3005:cultist_acolyte",
+     "3005:inquisition_auxiliary",
+     "3005:void_stalker",
+     "3030:inquisition_high_warden",
+     "3040:inquisition_high_warden",
+     "3050:inquisition_high_warden",
+     "3100:inquisition_auxiliary",
+     "3100_house_cantors:void_wisp",
+     "3100_house_emberwives:inquisition_auxiliary",
+     "3200_house_road_exorcists:void_wisp",
+     "zone:z_cinder_row:cultist_acolyte",
+     "zone:z_cinder_row:inquisition_auxiliary",
+     "zone:z_cinder_row:iron_golem",
+     "zone:z_exorcists_road:cultist_acolyte",
+     "zone:z_exorcists_road:demon_imp",
+     "zone:z_exorcists_road:horn_taker",
+     "zone:z_fever_bark:inquisition_soldier",
+     "zone:z_fever_bark:purifier_vell",
+     "zone:z_lantern_docks:harbor_rat",
+     "zone:z_lantern_docks:inquisition_soldier",
+     "zone:z_lantern_docks:smuggler_captain",
+     "zone:z_salt_road:brine_jack",
+     "zone:z_salt_road:plague_hound",
+     "zone:z_salt_road:street_bandit",
+     "zone:z_scaffold_yards:cultist_acolyte",
+     "zone:z_scaffold_yards:inquisition_auxiliary",
+     "zone:z_scaffold_yards:iron_golem",
+     "zone:z_scaffold_yards:void_stalker"
+    ]
+   },
+   "4": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1154,
+    "won": 1127,
+    "failedAttempts": 27,
+    "attemptWinPct": 97.7,
+    "encounters": 1128,
+    "encounterWinPct": 99.9,
+    "deaths": 1,
+    "storyLosses": 0,
+    "runsWithADeath": 1,
+    "permadeath": {
+     "aliveOnArrival": 91,
+     "firstDeathHere": 1
+    },
+    "medianArrivalLevel": 9.0,
+    "medianArrivalGold": 1349.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "5100:drowned_pilgrim",
+      "deaths": 1,
+      "fought": 48
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "drowned_pilgrim",
+      "lost": 1,
+      "fought": 59
+     }
+    ],
+    "fightsNeverLost": [
+     "5003:hollow_court_zealot",
+     "5006_chase:cultist_acolyte",
+     "5006_cornered:cultist_acolyte",
+     "5010:bone_warden",
+     "5010:catacomb_ghoul",
+     "5010:void_wisp",
+     "5010_tobin:catacomb_ghoul",
+     "5100_clan_dominion_1:drowned_pilgrim",
+     "5200:bone_sexton",
+     "zone:z_bell_road:catacomb_ghoul",
+     "zone:z_bell_road:knell_keeper",
+     "zone:z_bell_road:void_wisp",
+     "zone:z_changeling_fen:catacomb_ghoul",
+     "zone:z_changeling_fen:teind_rider",
+     "zone:z_changeling_fen:void_wisp",
+     "zone:z_drowned_stair:bone_sexton",
+     "zone:z_drowned_stair:hollow_court_inquisitor",
+     "zone:z_drowned_stair:hollow_court_zealot",
+     "zone:z_ossuary_galleries:bone_warden",
+     "zone:z_ossuary_galleries:catacomb_ghoul"
+    ]
+   },
+   "5": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1583,
+    "won": 1471,
+    "failedAttempts": 112,
+    "attemptWinPct": 92.9,
+    "encounters": 1488,
+    "encounterWinPct": 98.9,
+    "deaths": 17,
+    "storyLosses": 0,
+    "runsWithADeath": 14,
+    "permadeath": {
+     "aliveOnArrival": 90,
+     "firstDeathHere": 13
+    },
+    "medianArrivalLevel": 12.5,
+    "medianArrivalGold": 2318.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "6100:void_hound",
+      "deaths": 7,
+      "fought": 54
+     },
+     {
+      "fight": "6200:void_hound",
+      "deaths": 4,
+      "fought": 68
+     },
+     {
+      "fight": "zone:z_frost_quarry:frost_kept_giant",
+      "deaths": 2,
+      "fought": 100
+     },
+     {
+      "fight": "zone:z_shroud_vigil:void_archon",
+      "deaths": 2,
+      "fought": 100
+     },
+     {
+      "fight": "6200_house_quarrymen:void_hound",
+      "deaths": 1,
+      "fought": 28
+     },
+     {
+      "fight": "6002_siege_breach:void_hound",
+      "deaths": 1,
+      "fought": 48
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "void_hound",
+      "lost": 13,
+      "fought": 466
+     },
+     {
+      "enemy": "frost_kept_giant",
+      "lost": 2,
+      "fought": 100
+     },
+     {
+      "enemy": "void_archon",
+      "lost": 2,
+      "fought": 100
+     }
+    ],
+    "fightsNeverLost": [
+     "6002_siege:void_hound",
+     "6002_siege_2:hollow_court_zealot",
+     "6003b:void_manifestation",
+     "6010:inquisition_penitent",
+     "6010:tear_spawn",
+     "6010:void_hound",
+     "6010_masked:brother_clement",
+     "6010_masked:masked_penitent",
+     "zone:z_dead_heart_approach:masked_penitent",
+     "zone:z_dead_heart_approach:tear_spawn",
+     "zone:z_dead_heart_approach:void_hound",
+     "zone:z_ember_run:inquisition_penitent",
+     "zone:z_ember_run:rime_bailiff",
+     "zone:z_frost_quarry:inquisition_penitent",
+     "zone:z_frost_quarry:void_hound",
+     "zone:z_shroud_vigil:masked_penitent",
+     "zone:z_shroud_vigil:void_hound",
+     "zone:z_shroud_vigil:void_manifestation"
+    ]
+   },
+   "6": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 1015,
+    "won": 925,
+    "failedAttempts": 90,
+    "attemptWinPct": 91.1,
+    "encounters": 933,
+    "encounterWinPct": 99.1,
+    "deaths": 8,
+    "storyLosses": 0,
+    "runsWithADeath": 5,
+    "permadeath": {
+     "aliveOnArrival": 77,
+     "firstDeathHere": 1
+    },
+    "medianArrivalLevel": 17.0,
+    "medianArrivalGold": 4152.0,
+    "topFightsByDeaths": [
+     {
+      "fight": "zone:z_lantern_train:drowned_pilgrim",
+      "deaths": 2,
+      "fought": 50
+     },
+     {
+      "fight": "zone:z_lantern_train:glass_shepherd",
+      "deaths": 2,
+      "fought": 98
+     },
+     {
+      "fight": "zone:z_white_fleet_grave:hollow_reflection",
+      "deaths": 1,
+      "fought": 62
+     },
+     {
+      "fight": "7002:hollow_reflection",
+      "deaths": 1,
+      "fought": 82
+     },
+     {
+      "fight": "zone:z_glass_strand:strand_colossus",
+      "deaths": 1,
+      "fought": 100
+     },
+     {
+      "fight": "zone:z_white_fleet_grave:white_admiral",
+      "deaths": 1,
+      "fought": 99
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "hollow_reflection",
+      "lost": 2,
+      "fought": 333
+     },
+     {
+      "enemy": "drowned_pilgrim",
+      "lost": 2,
+      "fought": 162
+     },
+     {
+      "enemy": "glass_shepherd",
+      "lost": 2,
+      "fought": 98
+     },
+     {
+      "enemy": "strand_colossus",
+      "lost": 1,
+      "fought": 100
+     },
+     {
+      "enemy": "white_admiral",
+      "lost": 1,
+      "fought": 99
+     }
+    ],
+    "fightsNeverLost": [
+     "7100:inquisition_soldier",
+     "7100_house_order:unmade_knight",
+     "7200:hollow_reflection",
+     "zone:z_glass_strand:drowned_pilgrim",
+     "zone:z_glass_strand:hollow_reflection",
+     "zone:z_lantern_train:hollow_reflection",
+     "zone:z_white_fleet_grave:drowned_pilgrim",
+     "zone:z_white_fleet_grave:unmade_knight"
+    ]
+   },
+   "7": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 189,
+    "won": 176,
+    "failedAttempts": 13,
+    "attemptWinPct": 93.1,
+    "encounters": 177,
+    "encounterWinPct": 99.4,
+    "deaths": 1,
+    "storyLosses": 0,
+    "runsWithADeath": 1,
+    "permadeath": {
+     "aliveOnArrival": 76,
+     "firstDeathHere": 0
+    },
+    "medianArrivalLevel": 20.5,
+    "medianArrivalGold": 5713.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "7520_morrow:claimant_morrow",
+      "deaths": 1,
+      "fought": 14
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "claimant_morrow",
+      "lost": 1,
+      "fought": 14
+     }
+    ],
+    "fightsNeverLost": [
+     "7510_open_hand:inquisition_auxiliary",
+     "7510_seen:inquisition_soldier",
+     "7520_tallis:claimant_tallis",
+     "7520_vane:claimant_vane"
+    ]
+   },
+   "8": {
+    "runsReached": 100,
+    "runsFinished": 100,
+    "attempts": 605,
+    "won": 482,
+    "failedAttempts": 123,
+    "attemptWinPct": 79.7,
+    "encounters": 502,
+    "encounterWinPct": 96.0,
+    "deaths": 20,
+    "storyLosses": 0,
+    "runsWithADeath": 14,
+    "permadeath": {
+     "aliveOnArrival": 76,
+     "firstDeathHere": 6
+    },
+    "medianArrivalLevel": 21.5,
+    "medianArrivalGold": 5964.5,
+    "topFightsByDeaths": [
+     {
+      "fight": "7810:tear_herald",
+      "deaths": 9,
+      "fought": 100
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:void_sovereign",
+      "deaths": 6,
+      "fought": 97
+     },
+     {
+      "fight": "7002_approach:hollow_reflection",
+      "deaths": 2,
+      "fought": 44
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:unmade_knight",
+      "deaths": 2,
+      "fought": 62
+     },
+     {
+      "fight": "zone:z_beyond_the_tear:void_hound",
+      "deaths": 1,
+      "fought": 49
+     }
+    ],
+    "storyLossesByFight": [],
+    "enemiesByLosses": [
+     {
+      "enemy": "tear_herald",
+      "lost": 9,
+      "fought": 100
+     },
+     {
+      "enemy": "void_sovereign",
+      "lost": 6,
+      "fought": 97
+     },
+     {
+      "enemy": "hollow_reflection",
+      "lost": 2,
+      "fought": 135
+     },
+     {
+      "enemy": "unmade_knight",
+      "lost": 2,
+      "fought": 62
+     },
+     {
+      "enemy": "void_hound",
+      "lost": 1,
+      "fought": 49
+     }
+    ],
+    "fightsNeverLost": [
+     "7002_alarm:hollow_reflection",
+     "zone:z_beyond_the_tear:hollow_reflection",
+     "zone:z_beyond_the_tear:void_manifestation"
+    ]
+   }
+  },
+  "deadliestFights": [
+   {
+    "fight": "ch8 7810:tear_herald",
+    "deaths": 9,
+    "fought": 100,
+    "lossPct": 9.0
+   },
+   {
+    "fight": "ch5 6100:void_hound",
+    "deaths": 7,
+    "fought": 54,
+    "lossPct": 13.0
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:void_sovereign",
+    "deaths": 6,
+    "fought": 97,
+    "lossPct": 6.2
+   },
+   {
+    "fight": "ch5 6200:void_hound",
+    "deaths": 4,
+    "fought": 68,
+    "lossPct": 5.9
+   },
+   {
+    "fight": "ch1 855:rat_matriarch",
+    "deaths": 4,
+    "fought": 6,
+    "lossPct": 66.7
+   },
+   {
+    "fight": "ch3 3200:inquisition_soldier",
+    "deaths": 3,
+    "fought": 68,
+    "lossPct": 4.4
+   },
+   {
+    "fight": "ch5 zone:z_frost_quarry:frost_kept_giant",
+    "deaths": 2,
+    "fought": 100,
+    "lossPct": 2.0
+   },
+   {
+    "fight": "ch8 7002_approach:hollow_reflection",
+    "deaths": 2,
+    "fought": 44,
+    "lossPct": 4.5
+   },
+   {
+    "fight": "ch6 zone:z_lantern_train:drowned_pilgrim",
+    "deaths": 2,
+    "fought": 50,
+    "lossPct": 4.0
+   },
+   {
+    "fight": "ch6 zone:z_lantern_train:glass_shepherd",
+    "deaths": 2,
+    "fought": 98,
+    "lossPct": 2.0
+   }
+  ],
+  "byRace": {
+   "dwarf": {
+    "runs": 20,
+    "attemptWinPct": 94.0,
+    "encounterWinPct": 99.0,
+    "deathsPerRun": 0.6,
+    "runsWithNoDeath": 13,
+    "firstDeathChapter": {
+     "3": 1,
+     "5": 3,
+     "8": 3
+    },
+    "medianFinalLevel": 25.0,
+    "medianFinalGold": 7147.5
+   },
+   "elf": {
+    "runs": 20,
+    "attemptWinPct": 95.1,
+    "encounterWinPct": 99.3,
+    "deathsPerRun": 0.4,
+    "runsWithNoDeath": 14,
+    "firstDeathChapter": {
+     "1": 2,
+     "4": 1,
+     "5": 2,
+     "8": 1
+    },
+    "medianFinalLevel": 23.5,
+    "medianFinalGold": 6797.0
+   },
+   "human": {
+    "runs": 20,
+    "attemptWinPct": 91.3,
+    "encounterWinPct": 98.8,
+    "deathsPerRun": 0.75,
+    "runsWithNoDeath": 15,
+    "firstDeathChapter": {
+     "1": 2,
+     "5": 1,
+     "6": 1,
+     "8": 1
+    },
+    "medianFinalLevel": 23.0,
+    "medianFinalGold": 6446.5
+   },
+   "orc": {
+    "runs": 20,
+    "attemptWinPct": 96.1,
+    "encounterWinPct": 99.3,
+    "deathsPerRun": 0.4,
+    "runsWithNoDeath": 16,
+    "firstDeathChapter": {
+     "3": 1,
+     "5": 3
+    },
+    "medianFinalLevel": 25.5,
+    "medianFinalGold": 6992.5
+   },
+   "voidkin": {
+    "runs": 20,
+    "attemptWinPct": 94.2,
+    "encounterWinPct": 98.8,
+    "deathsPerRun": 0.65,
+    "runsWithNoDeath": 12,
+    "firstDeathChapter": {
+     "1": 2,
+     "3": 1,
+     "5": 4,
+     "8": 1
+    },
+    "medianFinalLevel": 23.5,
+    "medianFinalGold": 6630.5
+   }
+  },
+  "byProfession": {
+   "cleric": {
+    "runs": 20,
+    "attemptWinPct": 93.2,
+    "encounterWinPct": 99.0,
+    "deathsPerRun": 0.65,
+    "runsWithNoDeath": 15,
+    "firstDeathChapter": {
+     "3": 1,
+     "5": 2,
+     "8": 2
+    },
+    "medianFinalLevel": 24.5,
+    "medianFinalGold": 6904.5
+   },
+   "mage": {
+    "runs": 20,
+    "attemptWinPct": 91.2,
+    "encounterWinPct": 98.4,
+    "deathsPerRun": 0.85,
+    "runsWithNoDeath": 13,
+    "firstDeathChapter": {
+     "1": 1,
+     "4": 1,
+     "5": 2,
+     "6": 1,
+     "8": 2
+    },
+    "medianFinalLevel": 24.5,
+    "medianFinalGold": 7030.5
+   },
+   "ranger": {
+    "runs": 20,
+    "attemptWinPct": 96.7,
+    "encounterWinPct": 99.6,
+    "deathsPerRun": 0.3,
+    "runsWithNoDeath": 14,
+    "firstDeathChapter": {
+     "1": 5,
+     "3": 1
+    },
+    "medianFinalLevel": 24.0,
+    "medianFinalGold": 6977.0
+   },
+   "rogue": {
+    "runs": 20,
+    "attemptWinPct": 93.8,
+    "encounterWinPct": 99.1,
+    "deathsPerRun": 0.5,
+    "runsWithNoDeath": 12,
+    "firstDeathChapter": {
+     "3": 1,
+     "5": 5,
+     "8": 2
+    },
+    "medianFinalLevel": 24.0,
+    "medianFinalGold": 6628.0
+   },
+   "warrior": {
+    "runs": 20,
+    "attemptWinPct": 96.0,
+    "encounterWinPct": 99.1,
+    "deathsPerRun": 0.5,
+    "runsWithNoDeath": 16,
+    "firstDeathChapter": {
+     "5": 4
+    },
+    "medianFinalLevel": 25.0,
+    "medianFinalGold": 6936.0
+   }
+  },
+  "byGoal": {
+   "favorEvil": {
+    "runs": 25,
+    "attemptWinPct": 85.3,
+    "encounterWinPct": 96.8,
+    "deathsPerRun": 1.48,
+    "runsWithNoDeath": 9,
+    "firstDeathChapter": {
+     "1": 3,
+     "4": 1,
+     "5": 8,
+     "6": 1,
+     "8": 3
+    },
+    "medianFinalLevel": 21,
+    "medianFinalGold": 5479
+   },
+   "favorGood": {
+    "runs": 25,
+    "attemptWinPct": 97.5,
+    "encounterWinPct": 99.4,
+    "deathsPerRun": 0.08,
+    "runsWithNoDeath": 23,
+    "firstDeathChapter": {
+     "1": 1,
+     "3": 1
+    },
+    "medianFinalLevel": 21,
+    "medianFinalGold": 5834
+   },
+   "maximizeGold": {
+    "runs": 25,
+    "attemptWinPct": 95.3,
+    "encounterWinPct": 99.5,
+    "deathsPerRun": 0.4,
+    "runsWithNoDeath": 19,
+    "firstDeathChapter": {
+     "3": 1,
+     "5": 4,
+     "8": 1
+    },
+    "medianFinalLevel": 30,
+    "medianFinalGold": 10464
+   },
+   "random": {
+    "runs": 25,
+    "attemptWinPct": 96.5,
+    "encounterWinPct": 99.6,
+    "deathsPerRun": 0.28,
+    "runsWithNoDeath": 19,
+    "firstDeathChapter": {
+     "1": 2,
+     "3": 1,
+     "5": 1,
+     "8": 2
+    },
+    "medianFinalLevel": 26,
+    "medianFinalGold": 8165
+   }
+  }
+ },
+ "check800_naive_v1914": {
+  "runs": 800,
+  "bosses": {
+   "aurel_vane": {
+    "target": 75,
+    "fought": 260,
+    "lost": 78,
+    "encounterWinPct": 70.0
+   },
+   "void_stalker": {
+    "target": 65,
+    "fought": 837,
+    "lost": 294,
+    "encounterWinPct": 64.9
+   },
+   "hollow_court_inquisitor": {
+    "target": 55,
+    "fought": 754,
+    "lost": 296,
+    "encounterWinPct": 60.7
+   },
+   "bone_warden": {
+    "target": 55,
+    "fought": 1044,
+    "lost": 394,
+    "encounterWinPct": 62.3
+   },
+   "void_archon": {
+    "target": 50,
+    "fought": 647,
+    "lost": 340,
+    "encounterWinPct": 47.4
+   },
+   "white_admiral": {
+    "target": 45,
+    "fought": 506,
+    "lost": 264,
+    "encounterWinPct": 47.8
+   },
+   "claimant_vane": {
+    "target": 40,
+    "fought": 97,
+    "lost": 57,
+    "encounterWinPct": 41.2
+   },
+   "claimant_tallis": {
+    "target": 40,
+    "fought": 584,
+    "lost": 365,
+    "encounterWinPct": 37.5
+   },
+   "claimant_morrow": {
+    "target": 40,
+    "fought": 119,
+    "lost": 76,
+    "encounterWinPct": 36.1
+   },
+   "tear_herald": {
+    "target": 35,
+    "fought": 800,
+    "lost": 554,
+    "encounterWinPct": 30.8
+   },
+   "void_sovereign": {
+    "target": 35,
+    "fought": 469,
+    "lost": 308,
+    "encounterWinPct": 34.3
+   }
+  },
+  "method": "test/sim_playthroughs_test.dart, naive player, goals random,favorGood,favorEvil,maximizeGold, seeds 11 and 23, 400 each, professions rotated, race drawn; measured on v1.914 (3309315f)",
+  "endings": {
+   "ending": 800
+  },
+  "chapters": {
+   "1": {
+    "attempts": 3402,
+    "won": 2944,
+    "encounters": 3160,
+    "attemptWinPct": 86.5,
+    "encounterWinPct": 93.2,
+    "failedAttempts": 458,
+    "medianArrivalLevel": 1.0,
+    "medianArrivalGold": 110.0
+   },
+   "2": {
+    "attempts": 6047,
+    "won": 5435,
+    "encounters": 5536,
+    "attemptWinPct": 89.9,
+    "encounterWinPct": 98.2,
+    "failedAttempts": 612,
+    "medianArrivalLevel": 3.0,
+    "medianArrivalGold": 371.0
+   },
+   "3": {
+    "attempts": 17104,
+    "won": 9041,
+    "encounters": 10821,
+    "attemptWinPct": 52.9,
+    "encounterWinPct": 83.6,
+    "failedAttempts": 8063,
+    "medianArrivalLevel": 5.0,
+    "medianArrivalGold": 424.5
+   },
+   "4": {
+    "attempts": 14845,
+    "won": 5669,
+    "encounters": 7935,
+    "attemptWinPct": 38.2,
+    "encounterWinPct": 71.4,
+    "failedAttempts": 9176,
+    "medianArrivalLevel": 8.0,
+    "medianArrivalGold": 905.0
+   },
+   "5": {
+    "attempts": 18968,
+    "won": 7662,
+    "encounters": 10556,
+    "attemptWinPct": 40.4,
+    "encounterWinPct": 72.6,
+    "failedAttempts": 11306,
+    "medianArrivalLevel": 11.0,
+    "medianArrivalGold": 1563.5
+   },
+   "6": {
+    "attempts": 13188,
+    "won": 3902,
+    "encounters": 6216,
+    "attemptWinPct": 29.6,
+    "encounterWinPct": 62.8,
+    "failedAttempts": 9286,
+    "medianArrivalLevel": 15.0,
+    "medianArrivalGold": 2634.0
+   },
+   "7": {
+    "attempts": 3070,
+    "won": 744,
+    "encounters": 1384,
+    "attemptWinPct": 24.2,
+    "encounterWinPct": 53.8,
+    "failedAttempts": 2326,
+    "medianArrivalLevel": 18.0,
+    "medianArrivalGold": 3393.0
+   },
+   "8": {
+    "attempts": 7196,
+    "won": 1619,
+    "encounters": 3159,
+    "attemptWinPct": 22.5,
+    "encounterWinPct": 51.3,
+    "failedAttempts": 5577,
+    "medianArrivalLevel": 19.0,
+    "medianArrivalGold": 3718.5
+   }
+  },
+  "byProfession": {
+   "cleric": {
+    "runs": 160,
+    "attemptWinPct": 43.0,
+    "encounterWinPct": 73.9
+   },
+   "mage": {
+    "runs": 160,
+    "attemptWinPct": 49.1,
+    "encounterWinPct": 80.1
+   },
+   "ranger": {
+    "runs": 160,
+    "attemptWinPct": 41.4,
+    "encounterWinPct": 73.7
+   },
+   "rogue": {
+    "runs": 160,
+    "attemptWinPct": 44.3,
+    "encounterWinPct": 76.4
+   },
+   "warrior": {
+    "runs": 160,
+    "attemptWinPct": 43.1,
+    "encounterWinPct": 75.2
+   }
+  },
+  "byRace": {
+   "dwarf": {
+    "runs": 151,
+    "attemptWinPct": 45.2,
+    "encounterWinPct": 76.8
+   },
+   "elf": {
+    "runs": 135,
+    "attemptWinPct": 47.2,
+    "encounterWinPct": 78.8
+   },
+   "human": {
+    "runs": 158,
+    "attemptWinPct": 42.8,
+    "encounterWinPct": 74.7
+   },
+   "orc": {
+    "runs": 168,
+    "attemptWinPct": 44.2,
+    "encounterWinPct": 75.9
+   },
+   "voidkin": {
+    "runs": 188,
+    "attemptWinPct": 42.4,
+    "encounterWinPct": 74.1
+   }
+  },
+  "enemiesByLosses": [
+   {
+    "enemy": "Chapter 5 void_hound",
+    "lost": 1707,
+    "fought": 3613
+   },
+   {
+    "enemy": "Chapter 6 hollow_reflection",
+    "lost": 892,
+    "fought": 2498
+   },
+   {
+    "enemy": "Chapter 3 inquisition_soldier",
+    "lost": 697,
+    "fought": 1299
+   },
+   {
+    "enemy": "Chapter 8 tear_herald",
+    "lost": 554,
+    "fought": 800
+   },
+   {
+    "enemy": "Chapter 3 inquisition_auxiliary",
+    "lost": 540,
+    "fought": 1466
+   },
+   {
+    "enemy": "Chapter 8 hollow_reflection",
+    "lost": 469,
+    "fought": 1114
+   },
+   {
+    "enemy": "Chapter 4 bone_warden",
+    "lost": 394,
+    "fought": 1044
+   },
+   {
+    "enemy": "Chapter 4 drowned_pilgrim",
+    "lost": 381,
+    "fought": 492
+   },
+   {
+    "enemy": "Chapter 5 rime_bailiff",
+    "lost": 373,
+    "fought": 804
+   },
+   {
+    "enemy": "Chapter 4 catacomb_ghoul",
+    "lost": 367,
+    "fought": 1410
+   }
+  ]
+ },
+ "simulatorGaps": [
+  "Naive player (CI bands, L3, this file's main batch): only Vica, the story's own companion; no recruited companions. Competent: recruits and seats companions, but no party combos, duo techniques, dexterity order or hunt-the-healer retarget (sim_combat.dart header).",
+  "No Quick Resolve, no momentum surge; no Luck nudges, no Hammersmith die work; a die rerolled only on an empty face (naive).",
+  "No battlefield conditions, no chapter threat on enemies, no sellsword; the story walk rolls no encounter affixes and no Elites.",
+  "Signs without momentum or the party share; no Titan's Blood; perks without rerolls, momentum or party.",
+  "A lost encounter is not a death: after 3 failed tries the walk moves on with health and mana refilled; a lost fight gives no XP. Permadeath is not played (this file derives \"would die in chapter c\" from the first lost encounter).",
+  "Choices along the story graph follow the goal only: random, the most good (favorGood), the most evil (favorEvil) or the most gold (maximizeGold); a player reads the scene and avoids or seeks fights. Ability checks are rolled.",
+  "Shops: naive buys the spellbook, 2 potions, the best piece per slot by attack + armor, the sage die for a caster; never wears loot, quest rewards or scene grants. Competent wears the best loadout of all it owns, buys dice and merges skills. Shops at a scene, port, built house or the caravan, at most once a chapter; no revisit from the camp (kept off main, sim-reach-v1.766.md).",
+  "Stat picks follow fixed per-profession shares (simBuildShares); skill faces by simSkillScore; potions drunk below 40% health.",
+  "Clan offers: naive takes the best gift 75% / its best-standing clan 25%, kept to its main clan; competent the gift that raises its power most.",
+  "Not played: the companions' crises, the detour choices, the fall-of-the-seat scene; a seat crisis is played at once at the hub (sim-gaps.md, l3-1.888.0.md).",
+  "The thieves' purse is not played; land crossings, road events and hunters are, but road hunters and crisis fights are not counted among encounters."
+ ]
+}
