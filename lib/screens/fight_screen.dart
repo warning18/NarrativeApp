@@ -220,7 +220,13 @@ class FightScreen extends ConsumerStatefulWidget {
     this.modifiers = EncounterModifiers.none,
     this.random,
     this.landLayers,
+    this.onRound,
   });
+
+  /// Told the number of each round as it starts (1 when the battle begins):
+  /// the Tower's rival counts the rounds a fight took. Null (every other
+  /// fight) changes nothing.
+  final ValueChanged<int>? onRound;
 
   /// The land the fight stands on, when it is met on a road: the side-view
   /// kit of the place (the camera's at the party's x, see world_camera.dart),

@@ -88,6 +88,7 @@ class ChartMapPainter extends CustomPainter {
     this.globe,
     this.sphereMaxScale = double.infinity,
     this.sphereScale,
+    this.labelInsetRight = 0,
     this.zoomOf,
     this.fogOf,
     Listenable? view,
@@ -165,6 +166,10 @@ class ChartMapPainter extends CustomPainter {
   /// The exact chart units to canvas pixels the sphere is drawn at (v1.350:
   /// the ball fills a phone's width); null keeps [sphereMaxScale]'s rule.
   final double? sphereScale;
+
+  /// Screen pixels kept free of names along the right edge: the map's
+  /// button column sits there.
+  final double labelInsetRight;
 
   /// How close the chart is looked at (1 = the whole of it in the box):
   /// the names keep a readable size and the small detail shows as the
@@ -1634,7 +1639,8 @@ class ChartMapPainter extends CustomPainter {
   /// inside the chart and clear of the other names and marks), then the
   /// regions' names where there is room for them.
   void _names(Canvas canvas, Landmark? standing) {
-    final bounds = _whole.deflate(1);
+    final bounds = Rect.fromLTRB(_whole.left + 1, _whole.top + 1,
+        _whole.right - 1 - labelInsetRight / _k, _whole.bottom - 1);
     final reached = [
       for (final l in worldMapLandmarks)
         if (discovered.contains(l.id)) l,

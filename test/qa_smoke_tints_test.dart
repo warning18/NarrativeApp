@@ -20,8 +20,6 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/home_tab_provider.dart'
     show isGameRoute;
 import 'package:narrative_data_app/providers/app_mode_provider.dart';
-import 'package:narrative_data_app/providers/map_look_provider.dart'
-    show chartGlobeProvider;
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 
@@ -89,8 +87,6 @@ void main() {
         .read(playerSessionProvider.notifier)
         .loadSession(PlayerSession.fromJson(
             {'raceId': 'human', 'professionId': 'warrior'})));
-    await tester.runAsync(
-        () => container.read(chartGlobeProvider.notifier).choose(false));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);

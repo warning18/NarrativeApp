@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/data/travel_history.dart';
-import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/providers/travel_history_provider.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
@@ -47,8 +46,8 @@ void main() {
     currentNodeId: '1200',
   );
 
-  Future<void> open(WidgetTester tester, {required bool sphere}) async {
-    SharedPreferences.setMockInitialValues({chartGlobePrefsKey: sphere});
+  Future<void> open(WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(411, 800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -70,23 +69,19 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
   }
 
-  for (final sphere in [true, false]) {
-    final shape = sphere ? 'sphere' : 'flat';
-    testWidgets('marks and names hold their size on the $shape chart',
-        (tester) async {
-      await open(tester, sphere: sphere);
-      expect(
-          find.byKey(ValueKey(
-              sphere ? 'journey_globe_canvas' : 'journey_world_canvas')),
-          findsOneWidget);
-      await _shot(tester, 'poi-$shape-1-world');
-      for (final (i, name) in ['land', 'district', 'closest'].indexed) {
-        await tester.tap(find.byKey(const Key('journey_zoom_in')));
-        await tester.pump(const Duration(milliseconds: 600));
-        await tester.pump(const Duration(milliseconds: 600));
-        await _shot(tester, 'poi-$shape-${i + 2}-$name');
-      }
-      expect(tester.takeException(), isNull);
-    });
-  }
+  testWidgets('marks and names hold their size on the sphere', (tester) async {
+    await open(tester);
+    expect(find.byKey(const ValueKey('journey_globe_canvas')), findsOneWidget);
+    await _shot(tester, 'poi-sphere-1-world');
+    for (final (i, name) in ['district', 'closest'].indexed) {
+      await tester.tap(find.byKey(const Key('journey_zoom_in')));
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(const Duration(milliseconds: 600));
+      await _shot(tester, 'poi-sphere-${i + 2}-$name');
+    }
+    await tester.tap(find.byKey(const Key('journey_zoom_out')));
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(tester.takeException(), isNull);
+  });
 }

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/climate.dart';
 import '../data/map_charts.dart';
 import '../data/world_map.dart';
-import 'map_look_provider.dart';
 import 'player_session_provider.dart';
 import 'story_providers.dart';
 
@@ -43,7 +42,8 @@ final skyHereProvider = Provider<SkyHere?>((ref) {
   final standing = currentLandmark(play.currentNodeId, play.history) ??
       landmarkOfScene(play.currentNodeId);
   if (standing == null) return null;
-  final chart = chartOf(ref.watch(mapShapeProvider));
+  // The sphere's world, the one the map shows.
+  final chart = chartOf(MapShape.story);
   final day = ref.watch(playerSessionProvider.select((s) => s.day));
   return SkyHere(
       climate: ChartClimate.of(chart), at: chart.of(standing), day: day);
