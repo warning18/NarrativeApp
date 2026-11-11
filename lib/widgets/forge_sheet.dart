@@ -29,6 +29,7 @@ import 'player_stats_bar.dart';
 import 'ink_sheet.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 /// A test seam: the random the forge rolls its d20 with (null: a fresh one).
 Random Function()? forgeRandomForTest;
@@ -536,7 +537,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                                 : FilledButton.tonalIcon(
                                     key: ValueKey('forge_go_$id'),
                                     onPressed: null,
-                                    icon: const Icon(Icons.lock_outline,
+                                    icon: const PixelGlyph(PixelGlyphs.lock,
                                         size: IconSize.s16),
                                     label: Text(
                                         lacking ?? trFor(lang, 'forge_button')),

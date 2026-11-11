@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/widgets/pixel_glyph.dart';
 import 'package:narrative_data_app/data/city_districts.dart';
 import 'package:narrative_data_app/data/district_influence.dart';
 import 'package:narrative_data_app/data/factions.dart';
@@ -23,6 +24,9 @@ const _tern = 'saltmouth_tern_row';
 const _alleys = 'saltmouth_lantern_alleys';
 const _yard = 'saltmouth_yard';
 const _wharf = 'saltmouth_wharf';
+
+Finder _pixel(PixelGlyphs g) =>
+    find.byWidgetPredicate((w) => w is PixelGlyph && w.glyph == g);
 
 void main() {
   final data = ClanData.fromTables(
@@ -142,13 +146,13 @@ void main() {
       expect(
           find.byKey(const Key('district_influence_$_yard')), findsOneWidget);
       expect(find.textContaining('$holderStartInfluence'), findsOneWidget);
-      expect(find.byIcon(Icons.star), findsNothing);
+      expect(_pixel(PixelGlyphs.star), findsNothing);
     });
 
     testWidgets('a district that changed hands says so', (tester) async {
       final s = standings(flags: [districtFlippedFlag(_yard)])[_yard]!;
       await tester.pumpWidget(host(DistrictStandingLine(s)));
-      expect(find.byIcon(Icons.star), findsOneWidget);
+      expect(_pixel(PixelGlyphs.star), findsOneWidget);
       expect(
           find.textContaining(trFor(AppLanguage.en, 'district_changed_hands')),
           findsOneWidget);
@@ -159,7 +163,7 @@ void main() {
       const plain = SizedBox(key: Key('plain'), width: 12, height: 12);
       final all = standings();
       await tester.pumpWidget(host(DistrictLead(all[_tern]!, plain: plain)));
-      expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+      expect(_pixel(PixelGlyphs.lock), findsOneWidget);
       expect(find.byKey(const Key('plain')), findsNothing);
       // A clan without a flag keeps the row's own marker.
       await tester.pumpWidget(

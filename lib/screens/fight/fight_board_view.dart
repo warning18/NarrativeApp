@@ -855,7 +855,7 @@ extension _FightBoardView on _FightScreenState {
               const Positioned(
                 right: -4,
                 top: -6,
-                child: Icon(Icons.lock,
+                child: PixelGlyph(PixelGlyphs.lock,
                     size: IconSize.s16, color: Palette.orange61),
               ),
           ],

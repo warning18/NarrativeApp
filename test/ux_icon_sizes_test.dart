@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/theme/icon_sizes.dart';
 
 final _ctor = RegExp(
-    r'\b(Icon|PixelIcon|SkillPixelIcon|ItemPixelIcon|EnemyPixelIcon|ShopPixelIcon)\(');
+    r'\b(Icon|PixelGlyph|PixelIcon|SkillPixelIcon|ItemPixelIcon|EnemyPixelIcon|ShopPixelIcon)\(');
 
 int _closing(String s, int open) {
   var depth = 0;

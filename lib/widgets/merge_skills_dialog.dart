@@ -12,6 +12,7 @@ import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ink_sheet.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 /// The Skillwright's bench: every skill_merges.json recipe as two skills
 /// becoming a third, each drawn with its icon and its real name, the ones
@@ -255,7 +256,7 @@ class _SkillTile extends StatelessWidget {
               Positioned(
                 right: -5,
                 top: -5,
-                child: Icon(Icons.lock_outline,
+                child: PixelGlyph(PixelGlyphs.lock,
                     size: IconSize.s16, color: ink.ember),
               ),
           ],

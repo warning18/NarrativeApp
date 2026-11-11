@@ -31,6 +31,7 @@ import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
 import '../../widgets/ink_sheet.dart';
 import '../../theme/icon_sizes.dart';
+import '../../widgets/pixel_glyph.dart';
 
 /// The skills of the player ([allyId] null) or a companion, from the live
 /// session and tables; null while the skills table loads.
@@ -577,7 +578,8 @@ Future<void> showMasterySheet(
             children: [
               Row(
                 children: [
-                  Icon(Icons.star, color: ink.gold, size: IconSize.s32),
+                  PixelGlyph(PixelGlyphs.star,
+                      color: ink.gold, size: IconSize.s32),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -618,7 +620,7 @@ Future<void> showMasterySheet(
                           );
                         }
                       : null,
-                  icon: const Icon(Icons.star),
+                  icon: const PixelGlyph(PixelGlyphs.star),
                   label: Text(tr(ref, 'mastery_button')
                       .replaceAll('{cost}', '$branchMasteryEssenceCost')),
                 ),

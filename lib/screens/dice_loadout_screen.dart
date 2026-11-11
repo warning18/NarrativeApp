@@ -36,6 +36,7 @@ import '../widgets/empty_state.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
@@ -872,7 +873,7 @@ class _FaceSlot extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: locked
-                    ? Icon(Icons.lock_outline,
+                    ? PixelGlyph(PixelGlyphs.lock,
                         size: compact ? IconSize.inline : IconSize.s16,
                         color: colorScheme.outline)
                     : compact
