@@ -8,10 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.916.0+952]
+## [1.917.0+953]
 
 - Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
 - Tower: the three Tower dice are reworked for the Tower only (the story's shop dice are unchanged): Flame leans on skills, Tide on bigger heals and a guard, Tearglass on bigger values with fewer flat faces. Each now fights within 3 points of the starter die (tearglass on floor 30: 46% → 94%).
+
+## [1.915.0+951]
+
+- Fight: no empty space before the battle, and portraits from the sprites. When the setup page (the foe, the die, Enter Battle) is shorter than the screen, the fighters stand at the bottom of it, the hero and the allies facing the foes, over the ground that now fills the page (QA's empty lower half); a page that already fills the screen is as it was (the room is measured after layout, so it never changes the page). The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
 
 ## [1.914.0+950]
 
