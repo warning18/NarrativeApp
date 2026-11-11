@@ -38,7 +38,7 @@ class InkPanel extends StatelessWidget {
         decoration: ShapeDecoration(
           color: scheme.surfaceContainer,
           shape: FrameBorder(
-              piece: FramePiece.hudPanel,
+              piece: FramePiece.panelDark,
               material: f.material,
               env: f.env,
               pixel: f.compactScale,

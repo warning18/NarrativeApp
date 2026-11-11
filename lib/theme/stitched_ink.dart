@@ -274,8 +274,12 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
         shape: WidgetStateProperty.resolveWith((states) {
           final off = states.contains(WidgetState.disabled);
           final down = states.contains(WidgetState.pressed);
+          // Only the wood tier keeps the honey primary face: the bronze,
+          // sapphire and gold ones read as one flat colour, so iron, silver
+          // and gilt wear the kit's steel face.
+          final honey = primary && framed!.material == FrameMaterial.wood;
           return FrameBorder(
-              piece: primary
+              piece: honey
                   ? (off
                       ? FramePiece.buttonPrimaryDisabled
                       : down
@@ -290,9 +294,15 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
               env: EnvDecor.none,
               pixel: framed.compactScale,
               fillCenter: true,
-              plate: framed.material == FrameMaterial.wood
-                  ? (off ? const Color(0xFF2B2118) : const Color(0xFF3B2814))
-                  : null);
+              plate: switch (framed.material) {
+                FrameMaterial.wood =>
+                  off ? const Color(0xFF2B2118) : const Color(0xFF3B2814),
+                // The silver face has an engraved line across its middle,
+                // which would run through the label.
+                FrameMaterial.silver =>
+                  off ? const Color(0xFF3A3F47) : const Color(0xFF3E4856),
+                _ => null,
+              });
         }),
         padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
