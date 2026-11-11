@@ -1,0 +1,194 @@
+diff --git a/lib/screens/origin_stories_screen.dart b/lib/screens/origin_stories_screen.dart
+index 013eda421..e592c87fa 100644
+--- a/lib/screens/origin_stories_screen.dart
++++ b/lib/screens/origin_stories_screen.dart
+@@ -214,7 +214,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
+                 gradient: LinearGradient(
+                   begin: Alignment.topCenter,
+                   end: Alignment.bottomCenter,
+-                  stops: const [0.5, 1],
++                  stops: const [0.3, 0.78],
+                   colors: [Colors.transparent, colors.surface],
+                 ),
+               ),
+@@ -232,7 +232,9 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
+                         child: Text(
+                           _stageLabel(memory).toUpperCase(),
+                           style: theme.textTheme.labelMedium?.copyWith(
+-                            color: colors.primary,
++                            color: theme.brightness == Brightness.light
++                                ? const Color(0xFF7A3E12)
++                                : colors.primary,
+                             letterSpacing: 1.1,
+                             fontWeight: FontWeight.w600,
+                           ),
+@@ -243,7 +245,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
+                             .replaceAll('{n}', '${_index + 1}')
+                             .replaceAll('{total}', '${_memories.length}'),
+                         style: theme.textTheme.labelMedium
+-                            ?.copyWith(color: colors.onSurfaceVariant),
++                            ?.copyWith(color: colors.onSurface),
+                       ),
+                     ],
+                   ),
+diff --git a/lib/screens/race_profession_screen.dart b/lib/screens/race_profession_screen.dart
+index 29b19cd83..0cb524b31 100644
+--- a/lib/screens/race_profession_screen.dart
++++ b/lib/screens/race_profession_screen.dart
+@@ -251,6 +251,18 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
+                     professionId: _selectedProfessionId!,
+                     showClans: !_tower),
+               const SizedBox(height: 8),
++              if (!both && pickedHere == null)
++                Padding(
++                  padding: const EdgeInsets.only(bottom: 6),
++                  child: Text(
++                      _selectedRaceId == null && _selectedProfessionId == null
++                          ? 'Still to choose: a people and a calling'
++                          : _selectedRaceId == null
++                              ? 'Still to choose: a people'
++                              : 'Still to choose: a calling',
++                      key: const Key('rp_missing'),
++                      style: Theme.of(context).textTheme.labelMedium),
++                ),
+               SizedBox(
+                 width: double.infinity,
+                 child: both || pickedHere == null
+diff --git a/lib/widgets/race_profession_cards.dart b/lib/widgets/race_profession_cards.dart
+index ce7e2063a..9c6cf90ad 100644
+--- a/lib/widgets/race_profession_cards.dart
++++ b/lib/widgets/race_profession_cards.dart
+@@ -19,6 +19,8 @@ import '../l10n/app_strings.dart';
+ import '../providers/clans_provider.dart';
+ import '../providers/game_db_providers.dart';
+ import '../screens/race_profession_screen.dart' show PresetMark, leadAndRest;
++import '../theme/frame_style.dart';
++import '../theme/pixel_chip.dart';
+ import '../theme/stitched_ink.dart';
+ import 'pixel_banner.dart';
+ import 'ink_sheet.dart';
+@@ -187,10 +189,10 @@ class StatChips extends ConsumerWidget {
+     final colour = value > 0 ? Palette.green40 : Palette.red46;
+     return Container(
+       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+-      decoration: BoxDecoration(
++      decoration: ShapeDecoration(
+         color: colour.withValues(alpha: 0.1),
+-        border: Border.all(color: colour.withValues(alpha: 0.6)),
+-        borderRadius: BorderRadius.circular(12),
++        shape: PixelChipBorder(
++            side: BorderSide(color: colour.withValues(alpha: 0.6))),
+       ),
+       child: Text('${value > 0 ? '+' : ''}$value $label',
+           style:
+@@ -246,9 +248,18 @@ class ChoiceCard extends ConsumerWidget {
+         child: Material(
+           key: Key('choice_card_$id'),
+           color: selected
+-              ? ink.gold.withValues(alpha: 0.1)
++              ? Color.alphaBlend(ink.gold.withValues(alpha: 0.16),
++                  theme.colorScheme.surfaceContainer)
+               : theme.colorScheme.surfaceContainer,
+-          shape: RoundedRectangleBorder(
++          shape: FrameTheme.style != null
++              ? FrameBorder(
++                  piece: theme.brightness == Brightness.light
++                      ? FramePiece.panelParchment
++                      : FramePiece.panelDark,
++                  material: FrameTheme.style!.material,
++                  pixel: FrameTheme.style!.compactScale,
++                  seed: id.hashCode)
++              : RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(10),
+             side: BorderSide(
+                 color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
+@@ -258,10 +269,10 @@ class ChoiceCard extends ConsumerWidget {
+             onTap: locked ? null : onTap,
+             child: Padding(
+               padding: EdgeInsets.fromLTRB(
+-                  10, compact ? 7 : 10, 10, compact ? 7 : 10),
++                  16, compact ? 11 : 14, 16, compact ? 11 : 14),
+               child: Row(children: [
+                 PresetMark(
+-                    folder: folder, preset: record, size: compact ? 30 : 44),
++                    folder: folder, preset: record, size: compact ? 32 : 48),
+                 const SizedBox(width: 10),
+                 Expanded(
+                   child: Column(
+@@ -624,11 +635,11 @@ class StepSwitch extends ConsumerWidget {
+         child: Material(
+           key: Key('rp_step_$slug'),
+           color: on ? ink.gold.withValues(alpha: 0.14) : Colors.transparent,
+-          shape: RoundedRectangleBorder(
+-            borderRadius: BorderRadius.circular(10),
+-            side:
+-                BorderSide(color: on ? ink.gold : ink.seam, width: on ? 2 : 1),
+-          ),
++          shape: id == null
++              ? _DashedSlotBorder(color: on ? ink.gold : ink.ash)
++              : PixelChipBorder(
++                  side: BorderSide(
++                      color: on ? ink.gold : ink.seam, width: on ? 2 : 1)),
+           child: InkWell(
+             borderRadius: BorderRadius.circular(10),
+             onTap: () => onStep(i),
+@@ -638,7 +649,12 @@ class StepSwitch extends ConsumerWidget {
+                 if (record != null)
+                   PresetMark(folder: folder, preset: record, size: 28)
+                 else
+-                  Icon(Icons.help_outline, size: IconSize.s32, color: ink.ash),
++                  SizedBox(
++                      width: 28,
++                      child: Center(
++                          child: Text('?',
++                              style: theme.textTheme.titleLarge
++                                  ?.copyWith(color: ink.ash)))),
+                 const SizedBox(width: 8),
+                 Expanded(
+                   child: Column(
+@@ -872,3 +888,45 @@ Future<void> showCompareSheet(
+     }),
+   );
+ }
++
++/// An empty step slot: a dashed outline with stepped corners, so it reads as
++/// a place waiting for something (not a button that does nothing).
++class _DashedSlotBorder extends OutlinedBorder {
++  const _DashedSlotBorder({required this.color});
++  final Color color;
++
++  @override
++  EdgeInsetsGeometry get dimensions => const EdgeInsets.all(1);
++
++  @override
++  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
++      Path()..addRect(rect.deflate(1));
++
++  @override
++  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
++      const PixelChipBorder().getOuterPath(rect);
++
++  @override
++  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
++    final paint = Paint()
++      ..color = color
++      ..style = PaintingStyle.stroke
++      ..strokeWidth = 2
++      ..isAntiAlias = false;
++    final path = const PixelChipBorder().getOuterPath(rect.deflate(1));
++    for (final m in path.computeMetrics()) {
++      var d = 0.0;
++      while (d < m.length) {
++        canvas.drawPath(m.extractPath(d, (d + 6).clamp(0, m.length)), paint);
++        d += 11;
++      }
++    }
++  }
++
++  @override
++  _DashedSlotBorder copyWith({BorderSide? side, Color? color}) =>
++      _DashedSlotBorder(color: color ?? this.color);
++
++  @override
++  ShapeBorder scale(double t) => this;
++}
