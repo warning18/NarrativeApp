@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.919.0+955]
+
+- Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won. A wood button has a flat plate under its label so the label reads. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.
+
 ## [1.915.0+951]
 
 - Fight: no empty space before the battle, and portraits from the sprites. When the setup page (the foe, the die, Enter Battle) is shorter than the screen, the fighters stand at the bottom of it, the hero and the allies facing the foes, over the ground that now fills the page (QA's empty lower half); a page that already fills the screen is as it was (the room is measured after layout, so it never changes the page). The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
