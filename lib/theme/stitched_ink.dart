@@ -296,7 +296,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
               fillCenter: true,
               plate: switch (framed.material) {
                 FrameMaterial.wood =>
-                  off ? const Color(0xFF2B2118) : const Color(0xFF3B2814),
+                  off ? const Color(0xFF2A2017) : const Color(0xFF3B2814),
                 // The silver face has an engraved line across its middle,
                 // which would run through the label.
                 FrameMaterial.silver =>
