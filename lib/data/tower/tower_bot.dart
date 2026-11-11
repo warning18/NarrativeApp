@@ -3,14 +3,16 @@
 // moves the run through the same functions the screens will
 // (towerAfterFight, towerPick), so what it measures is the Tower itself.
 // Its fights are set up as the app's Tower fight sets them (towerBotFight):
-// the clans' standings, the floor's affixes and Elite, a die rerolled as a
-// player would.
+// the clans' standings, the floor's affixes and Elite, the die's own
+// skills, a die rerolled as a player would. A die gained goes to the bag;
+// the bot tries it before it rolls it (towerBotRollBest).
 
 import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 
 import '../../combat/clan_dice.dart';
+import '../../combat/dice_faces.dart' show dieSignatureSkillIds;
 import '../../combat/combat_engine.dart' show isBossEnemy, isRandomDrawEnemy;
 import '../../combat/doctrine.dart';
 import '../../combat/enemy_affix.dart';
@@ -18,6 +20,7 @@ import '../../combat/fight_numbers.dart';
 import '../factions.dart' show ClanData;
 import '../sim_combat.dart';
 import '../training.dart' show statPickForShares;
+import 'tower_dice.dart' show towerChooseDie;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_progress.dart';
@@ -49,6 +52,8 @@ final ClanData _assetClans = towerClanDataFromAssets();
 /// TowerFloor.modifiersFor, fight_setup.dart's _ensureEnemiesBuilt):
 /// - the clans' standings of the Tower's session (towerPoliticsOf), and
 ///   the main clan's die resonating when it is the one in play;
+/// - the skills of the die's own Skill faces (its signature skills, as
+///   fight_setup.dart lends them), learned or not;
 /// - the Elite: the floor's, else a lone ordinary foe's own roll on a
 ///   floor that forces no affix ([eliteChance]);
 /// - the affixes rolled by rollEncounterAffixes under the foes' doctrine,
@@ -103,6 +108,13 @@ SimFightOutcome towerBotFight({
       Resonance.lit) {
     hero.diceFaces = resonantFaces(ownFaces);
   }
+  // The die's signature skills, lent for the fight (fight_setup.dart): the
+  // headless fight casts only the skills learned.
+  final lent = [
+    for (final id in dieSignatureSkillIds(
+        data.dice[hero.diceId] as Map<String, dynamic>?))
+      if (id.isNotEmpty && hero.unlockedSkillIds.add(id)) id,
+  ];
   final outcome = simulateSimFight(
     character: hero,
     enemies: enemies,
@@ -118,6 +130,7 @@ SimFightOutcome towerBotFight({
     rerollWeakFaces: true,
   );
   hero.diceFaces = ownFaces;
+  hero.unlockedSkillIds.removeAll(lent);
   return outcome;
 }
 
@@ -125,7 +138,8 @@ SimFightOutcome towerBotFight({
 /// default, [towerAllUnlocked] for all) and returns it ended: won, or dead
 /// on the floor it lost. The race and profession are drawn by the seed
 /// among those open, unless given; it starts unsworn ([clanId] swears one
-/// from the start) and takes the first oath it is offered.
+/// from the start) and takes the first oath it is offered ([choice], when
+/// given, picks its cards instead: an offer's index, or null to refuse).
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -133,6 +147,7 @@ TowerRun playTowerRun({
   String? raceId,
   String? professionId,
   String? clanId,
+  int? Function(TowerRun run)? choice,
 }) {
   final pick = towerRandom(seed, 0, TowerStream.start);
   T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
@@ -150,6 +165,13 @@ TowerRun playTowerRun({
     data: data,
   );
   final floors = towerFloorsFor(seed, data.enemies);
+  // The start's dice (its unlocks', a clan sworn at the start) tried
+  // against the calling's own.
+  final start = towerHeroOf(run, data);
+  run = towerBotRollBest(run, data, floors, [
+    for (final id in start.ownedDice.keys)
+      if (id != start.diceId) id,
+  ]);
   while (!run.isOver) {
     final floor = floors[run.floor - 1];
     final hero = towerHeroOf(run, data);
@@ -184,10 +206,76 @@ TowerRun playTowerRun({
             offer: offer);
       }
       final hero = towerHeroOf(run, data);
-      run = towerPick(run, data, towerBotChoice(run), hero: hero);
+      final owned = hero.ownedDice.keys.toSet();
+      final index = (choice ?? towerBotChoice)(run);
+      final card = index != null && index >= 0 && index < run.offer.length
+          ? run.offer[index]
+          : null;
+      run = towerPick(run, data, index, hero: hero);
+      // A die gained (a die card's, an oath's) goes to the bag: tried.
+      final gained = switch (card?.kind) {
+        TowerRewardKind.die => card!.id,
+        TowerRewardKind.clanOath => towerClanDieOf(card!.id, data.dice),
+        _ => null,
+      };
+      if (gained != null && !owned.contains(gained)) {
+        run = towerBotRollBest(run, data, floors, [gained]);
+      }
     }
   }
   return run;
+}
+
+/// The trial fights the bot gives each die it tries ([towerBotRollBest]).
+const int towerBotDieTrialFights = 4;
+
+/// The most dice the bot tries at once: the one in play, those just gained,
+/// then the others owned.
+const int towerBotDiceTried = 3;
+
+/// [run] rolling the die its bot would choose after gaining [gained] (a
+/// player's sensible choice, as the story's competent player tries a die
+/// before it rolls it): each die tried ([towerBotDiceTried] at most) fights
+/// [run]'s next floor [towerBotDieTrialFights] times at full health, on the
+/// Tower's own trial stream; the most wins is rolled, the die in play
+/// keeping a tie. [run] as it is when it is over, saved before the bag, or
+/// has nothing to try.
+TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
+    Iterable<String> gained) {
+  if (run.isOver || run.dieChoice == null) return run;
+  final hero = towerHeroOf(run, data);
+  final current = hero.diceId;
+  final tried = <String>[current];
+  for (final id in [...gained, ...hero.ownedDice.keys.toList()..sort()]) {
+    if (tried.length >= towerBotDiceTried) break;
+    if (hero.ownedDice.containsKey(id) && !tried.contains(id)) tried.add(id);
+  }
+  if (tried.length < 2) return run;
+  final floor = floors[run.floor - 1];
+  var best = current, bestWins = -1;
+  for (final id in tried) {
+    final trial = run.copyWith(dieChoice: id);
+    final rolled = towerHeroOf(trial, data);
+    var wins = 0;
+    for (var i = 0; i < towerBotDieTrialFights; i++) {
+      final fighter = rolled.copy()..currentHealth = rolled.maxHealth;
+      if (towerBotFight(
+        run: trial,
+        floor: floor,
+        hero: fighter,
+        data: data,
+        random: towerRandom(run.seed, run.floor * towerBotDieTrialFights + i,
+            TowerStream.dieTrial),
+      ).won) {
+        wins++;
+      }
+    }
+    if (wins > bestWins) {
+      best = id;
+      bestWins = wins;
+    }
+  }
+  return towerChooseDie(run, data, best);
 }
 
 /// The card the bot takes from [run]'s offer: the first of a clan's oath

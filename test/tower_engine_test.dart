@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/fight_numbers.dart'
     show potionHealAmount;
+import 'package:narrative_data_app/data/sim_combat.dart' show SimCharacter;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
@@ -75,10 +76,10 @@ void main() {
       final m = floor.modifiersFor('warrior');
       expect(m.tower, isTrue);
       expect(m.chapter, floor.chapter);
-      expect(
-          m.difficultyMultiplier, closeTo(floor.extra * towerFoeScale, 1e-9));
+      expect(m.difficultyMultiplier,
+          closeTo(floor.extra * .90 * towerFoeScale, 1e-9));
       expect(floor.modifiersFor('mage').difficultyMultiplier,
-          closeTo(floor.extra * .65 * towerFoeScale, 1e-9));
+          closeTo(floor.extra * .72 * towerFoeScale, 1e-9));
       expect(m.forcedAffixes, floor.affixes);
       expect(m.lossContinues, isTrue);
       expect(m.keepWounds, isTrue);
@@ -366,5 +367,39 @@ void main() {
     expect(floors.last, greaterThan(10), reason: '$floors');
     expect(floors[floors.length ~/ 2], greaterThan(3), reason: '$floors');
     expect(perRun, lessThan(500), reason: '$perRun ms a run');
+  });
+
+  // The difficulty review's finding 3 (v1.922): a human or voidkin climber
+  // starts with points in the calling's damage stat, and its base damage;
+  // the other peoples start as the story's character does.
+  test('humans and voidkin start with their Tower points', () {
+    int stat(SimCharacter c) => switch (c.preferredStat) {
+          'strength' => c.strength,
+          'dexterity' => c.dexterity,
+          'intelligence' => c.intelligence,
+          _ => c.wisdom,
+        };
+    for (final race in data.races.keys) {
+      for (final profession in ['warrior', 'mage', 'rogue']) {
+        final story = SimCharacter.create(
+          raceId: race,
+          race: data.races[race] as Map<String, dynamic>,
+          professionId: profession,
+          profession: data.professions[profession] as Map<String, dynamic>,
+          gameConfig: data.gameConfig,
+          dice: data.dice,
+          spells: data.spellSpecs,
+        );
+        final tower = towerFreshHero(race, profession, const [], data);
+        final points = towerPeoplePoints[race] ?? 0;
+        expect(stat(tower) - stat(story), points, reason: '$race $profession');
+        if (points == 0) {
+          expect(tower.baseDamage, story.baseDamage, reason: race);
+        } else {
+          expect(tower.baseDamage, greaterThanOrEqualTo(story.baseDamage));
+        }
+      }
+    }
+    expect(towerPeoplePoints, {'human': 2, 'voidkin': 3});
   });
 }

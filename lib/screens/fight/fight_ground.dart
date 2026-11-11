@@ -333,16 +333,36 @@ extension _FightGround on _FightScreenState {
 
   // --- On screen ----------------------------------------------------------------
 
+  /// The picture behind the fight: the Tower's when it dresses the fight,
+  /// else the stage's at the fight's place (fightPlaceOf).
+  String _plateHere() =>
+      FightPlateOverride.maybeOf(context)?.asset ??
+      fightPlateAsset(
+          _stage,
+          ref
+              .read(geographyProvider)
+              .locationOf(fightPlaceOf(widget.modifiers, _placeIdHere()))
+              ?.id);
+
+  /// The stage whose ground skin the dice board wears: the stage's own, the
+  /// Tower's stone when it dresses the fight. A look only.
+  FightStage _boardStage() =>
+      FightPlateOverride.maybeOf(context)?.boardStage ?? _stage;
+
   /// The ground behind the battle, under a veil that keeps the cards and
   /// the log readable in either theme.
   Widget _buildBackdrop({double veil = 0.4}) {
     final scheme = Theme.of(context).colorScheme;
+    // The pictures are brighter and busier than the painted stages were: the
+    // light theme's cream veil is stronger over them so names and cards read.
+    if (scheme.brightness == Brightness.light) veil += 0.22;
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
+          plate: _plateHere(),
           light: lightLevel(_light),
           weather: false,
           events: false,
@@ -467,6 +487,13 @@ extension _FightGround on _FightScreenState {
 
   /// The fight's title with the ground under it (its stage and the day's
   /// sky), for the app bar: it adds no height to the setup screen.
+  String _groundName(AppLanguage lang) {
+    final tower = FightPlateOverride.maybeOf(context);
+    return tower == null
+        ? trFor(lang, 'stage_${_stage.name}')
+        : trFor(lang, 'tower_fight_ground').replaceAll('{n}', '${tower.floor}');
+  }
+
   Widget _buildTitle() {
     final lang = ref.watch(appLanguageProvider);
     final sky = _sky.kind == WeatherKind.clear
@@ -478,7 +505,7 @@ extension _FightGround on _FightScreenState {
       children: [
         Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
         Text(
-          '${trFor(lang, 'stage_${_stage.name}')}$sky',
+          '${_groundName(lang)}$sky',
           key: const Key('fight_ground_strip'),
           style: Theme.of(context).textTheme.labelSmall,
         ),

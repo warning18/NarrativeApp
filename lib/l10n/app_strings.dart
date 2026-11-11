@@ -1373,6 +1373,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Thirty floors. One way up.',
     AppLanguage.fr: 'Trente étages. Un seul chemin.',
   },
+  // The fight's ground line in the Tower (instead of its stage's name).
+  'tower_fight_ground': {
+    AppLanguage.en: 'The Ashen Tower · floor {n}',
+    AppLanguage.fr: 'La Tour de Cendre · étage {n}',
+  },
   'tower_floor_of': {
     AppLanguage.en: 'Floor {n} of 30',
     AppLanguage.fr: 'Étage {n} sur 30',
@@ -1801,6 +1806,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_oath_text': {
     AppLanguage.en: 'Swear to them: their standing and their die.',
     AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+  },
+  // The Tower's dice bag (towerDiceOf): a die gained waits in it.
+  'tower_dice_title': {
+    AppLanguage.en: 'Your dice',
+    AppLanguage.fr: 'Vos dés',
+  },
+  'tower_dice_in_play': {
+    AppLanguage.en: 'In play',
+    AppLanguage.fr: 'En jeu',
+  },
+  'tower_dice_roll': {
+    AppLanguage.en: 'Roll this die',
+    AppLanguage.fr: 'Lancer ce dé',
+  },
+  'tower_dice_resonates': {
+    AppLanguage.en: 'Resonates',
+    AppLanguage.fr: 'Résonne',
+  },
+  'tower_dice_new': {
+    AppLanguage.en: 'New',
+    AppLanguage.fr: 'Nouveau',
   },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',

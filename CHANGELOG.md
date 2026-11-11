@@ -8,9 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.923.0+959]
+
+- Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won (blackened steel with a heavy gold band and corner plates). A wood or silver button has a flat plate under its label so the label reads; iron and gilt buttons wear the kit's steel face. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.
+
+## [1.922.0+958]
+
+- Tower: humans and voidkin start a Tower run with points in their calling's damage stat (humans +2, voidkin +3, with the base damage those bring), and the Tower's foes are a little tougher (scale 1.14 to 1.18) so the climb stays as hard as v1.920's. Before, humans reached the top about 1 run in 13 and voidkin 1 in 21, against 1 in 4 for elves; now every people reaches it about 1 run in 6 to 1 in 10 (difficulty review, finding 3). The story's characters are unchanged.
+
+## [1.921.0+957]
+
+- Fight and Tower backgrounds: Art's PixelLab pictures. Every fight stage (fields, dunes, salt flats, waves, ash, terraces, cliffs, reeds, snow, glass, hall, city road, ship deck, ruins, woods, ford, burnt fields, oasis, caravan road, quay, pass) now draws its picture, cover-fit with hard pixels, behind the battle in place of the painted stage; the day's weather, the anomalies, the night veil and the screen veil stay over it (a stronger cream veil in the light theme so names and cards read). A city road has a picture per town: Alster's, Saltmouth's, the grey frost of the Reliquary and the Ashen Quarter, Candlehold's, chosen by the fight's place (Core's `fightPlaceOf`). The Tower's warden floors (5, 15, 25) and boss floors (10, 20, 30) have their own picture on the floor screen and in the fight, and the end of a run shows the victory or the defeat picture. The dice board takes the ground of its picture (a tint from the lowest third of the plate, so Saltmouth's sun-bleached street has a sandy board and the ochre fields an olive one), and a Tower fight wears the Tower: its floor's picture (a band's for an ordinary floor), the hall's stone under the dice and "The Ashen Tower · floor N" in the ground line instead of "Open country" (looks only: the stage the rules read is unchanged). Pictures: `docs/ux-shots/fight-plates/`.
+
+## [1.920.0+956]
+
+- Tower: the climb is retuned (review fix #5). You heal 15% of your health between floors instead of 30%, so a bad fight still hurts two floors on. No ordinary floor ambushes you any more: floor 17 used to stop 1 climber in 8. The wardens (5, 15, 25) and bosses (10, 20, 30) are real peaks, the last boss stopping about 1 in 4 or 5 who reach it. About 1 run in 7 reaches the top without unlocks, 2 in 7 with them; warrior, mage and rogue climb about equally well.
+
 ## [1.919.0+955]
 
-- Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won. A wood button has a flat plate under its label so the label reads. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.
+- Fights now know the place they happen in, for their background: an expedition's fight carries its zone's place, a land crossing's fight the place it arrives at, a story fight the scene's place (the Tower has none). No rule changes; UX-2 uses it to draw a place's own version of a stage.
+
+## [1.918.0+954]
+
+- Tower: the floor screen shows a "Your dice" panel once you own a second die: a tile per die (its shape and skin), the one in play and the clan die that resonates tagged, a red dot on a die you have not looked at yet. Tap a die to see its faces and press "Roll this die" to roll it from the next fight on.
+
+## [1.917.0+953]
+
+- Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
+- Tower: the three Tower dice are reworked for the Tower only (the story's shop dice are unchanged): Flame leans on skills, Tide on bigger heals and a guard, Tearglass on bigger values with fewer flat faces. Each now fights within 3 points of the starter die (tearglass on floor 30: 46% → 94%).
 
 ## [1.916.0+952]
 

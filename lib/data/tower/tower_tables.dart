@@ -4,8 +4,10 @@
 // numbers are not read here and none of these is read by it.
 
 /// The share of max health the hero gets back after each floor won, on top
-/// of what its levels add.
-const double towerRecoveryShare = .30;
+/// of what its levels add. The Tower curve review (fix #5): .15 (was .30),
+/// so a hard fight still shows a few floors on (health entering floors 21
+/// to 29 about 3/4 of max, was 0.9).
+const double towerRecoveryShare = .15;
 
 /// The healing potions the hero carries into each fight (refilled every
 /// floor): the fight's Potion button, at the story's own heal.
@@ -17,12 +19,16 @@ const int towerFlask = 1;
 /// strongest (half the runs with every unlock). v1.860 (the spoils and
 /// the boons, fewer skills and dice than the cards gave): the ranger, who
 /// leans on them most, at .88 (else 1 run in 25 won the top with every
-/// unlock); the rogue, whom the spoils' gear lifts most, at 1.04.
+/// unlock); the rogue, whom the spoils' gear lifts most, at 1.04. The
+/// Tower curve review (fix #5), with the harder curve: the mage .72 (was
+/// .65: it kept its apprentice die and led), the warrior .90, the rogue .98
+/// (the three about even with no unlocks).
 const Map<String, double> towerProfessionScale = {
-  'mage': .65,
+  'mage': .72,
   'cleric': 1.28,
   'ranger': .88,
-  'rogue': 1.04,
+  'warrior': .90,
+  'rogue': .98,
 };
 
 /// The foes' scale for [professionId] (1 for the others), with the
@@ -35,16 +41,34 @@ double towerProfessionScaleOf(String professionId) =>
 /// their points as the story's builds do (less into the damage stat than
 /// the point a level gave before), so the foes come down to keep the
 /// climb as hard as it was. v1.865: 1.02 (was 0.95), as full chests
-/// (rollLootBox's gearAndPotionsOnly) gave the hero much more gear.
-const double towerFoeScale = 1.02;
+/// (rollLootBox's gearAndPotionsOnly) gave the hero much more gear. The
+/// Tower curve review (fix #5): 1.14 (was 1.02), with the floors' extras
+/// re-spread (towerBudgets): the dice gone to the bag had taken the top
+/// with no unlocks to 22%. v1.922: 1.18 (was 1.14), with the humans' and
+/// voidkin's start (towerPeoplePoints): the top with no unlocks back near
+/// the curve review's (12.6%; 17.9% with the start alone).
+const double towerFoeScale = 1.18;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
 /// more max health. (Start levels were tried first and made the Tower
 /// harder: the foes grow with the hero's level.) v1.860: .04 (was .02):
 /// the cards the unlocked runs took most are gone, and the top with every
-/// unlock had fallen to 7% (the design asks 15 to 25%).
-const double towerHealthPerUnlock = .04;
+/// unlock had fallen to 7% (the design asks 15 to 25%). The Tower curve
+/// review (fix #5): .03 (the top with every unlock 31% to 29%).
+const double towerHealthPerUnlock = .03;
+
+/// The Tower's start for a people (the difficulty review's finding 3, a
+/// Tower-only start): this many points in the calling's damage stat, with
+/// what they bring (its base damage). Human and voidkin climbed about half
+/// as well as the others (no unlocks, the top: human 8%, voidkin 6%
+/// against dwarf and elf 20%): their races' bonuses go to stats the
+/// Tower's fights barely read. The story's races are unchanged (their
+/// 800-run spread is under 5 points).
+const Map<String, int> towerPeoplePoints = {
+  'human': 2,
+  'voidkin': 3,
+};
 
 /// Every this many unlocks owned at the start: one more potion carried into
 /// each fight.
@@ -101,102 +125,106 @@ class TowerBudget {
 /// about a third of the story's curve, bosses and wardens lower again
 /// (the bot's batch, v1.845: no unlocks, median floor 14, floor 20 reached
 /// by 26%, the top by 8%; every unlock, the top by 18%). The levels follow
-/// the story's own pace by chapter.
+/// the story's own pace by chapter. The Tower curve review (fix #5): the
+/// deaths spread evenly over the ordinary floors (chapter 5's floors 17 to
+/// 19 had killed 12% of those who reached them, the floors around 5%), the
+/// bosses and wardens made peaks (floor 10 about 9% of those who reach it,
+/// floor 20 12%, floor 30 23%; it had been 1%).
 const List<TowerBudget> towerBudgets = [
   TowerBudget(1, 0.30, levelAfter: 2),
   TowerBudget(1, 0.30, levelAfter: 2),
   TowerBudget(1, 0.30, levelAfter: 3),
   TowerBudget(2, 0.30,
       maxFoes: 2, packChance: .30, eliteChance: .12, levelAfter: 3),
-  TowerBudget(2, 0.34, levelAfter: 4, kind: TowerFloorKind.warden),
-  TowerBudget(2, 0.30,
+  TowerBudget(2, 0.62, levelAfter: 4, kind: TowerFloorKind.warden),
+  TowerBudget(2, 0.36,
       maxFoes: 2,
       packChance: .30,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 4),
-  TowerBudget(2, 0.30,
+  TowerBudget(2, 0.36,
       maxFoes: 2,
       packChance: .30,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 5),
-  TowerBudget(3, 0.30,
+  TowerBudget(3, 0.34,
       maxFoes: 2,
       packChance: .30,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 5),
-  TowerBudget(3, 0.30,
+  TowerBudget(3, 0.34,
       maxFoes: 2,
       packChance: .30,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 6),
-  TowerBudget(3, 0.31, levelAfter: 7, kind: TowerFloorKind.boss),
-  TowerBudget(4, 0.35,
+  TowerBudget(3, 0.52, levelAfter: 7, kind: TowerFloorKind.boss),
+  TowerBudget(4, 0.31,
       maxFoes: 2,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 7),
-  TowerBudget(4, 0.35,
+  TowerBudget(4, 0.31,
       maxFoes: 2,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 8),
-  TowerBudget(4, 0.35,
+  TowerBudget(4, 0.33,
       maxFoes: 2,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 8),
-  TowerBudget(4, 0.35,
+  TowerBudget(4, 0.33,
       maxFoes: 2,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .12,
       levelAfter: 9),
-  TowerBudget(4, 0.42,
+  TowerBudget(4, 0.50,
       minAffixes: 1,
       maxAffixes: 1,
       levelAfter: 10,
       kind: TowerFloorKind.warden),
-  TowerBudget(4, 0.37,
+  TowerBudget(4, 0.34,
       maxFoes: 3,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .15,
       levelAfter: 10),
-  TowerBudget(5, 0.37,
+  TowerBudget(5, 0.26,
       maxFoes: 3,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .15,
       levelAfter: 11),
-  TowerBudget(5, 0.37,
+  TowerBudget(5, 0.26,
       maxFoes: 3,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .15,
       levelAfter: 11),
-  TowerBudget(5, 0.37,
+  TowerBudget(5, 0.28,
       maxFoes: 3,
       packChance: .50,
       minAffixes: 1,
       maxAffixes: 1,
       eliteChance: .15,
       levelAfter: 12),
-  TowerBudget(5, 0.28, levelAfter: 13, kind: TowerFloorKind.boss),
-  TowerBudget(6, 0.39,
+  TowerBudget(5, 0.29, levelAfter: 13, kind: TowerFloorKind.boss),
+  TowerBudget(6, 0.30,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -204,7 +232,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .20,
       levelAfter: 13),
-  TowerBudget(6, 0.39,
+  TowerBudget(6, 0.31,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -212,7 +240,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .20,
       levelAfter: 14),
-  TowerBudget(6, 0.39,
+  TowerBudget(6, 0.33,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -220,7 +248,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .20,
       levelAfter: 14),
-  TowerBudget(6, 0.39,
+  TowerBudget(6, 0.32,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -228,12 +256,12 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .20,
       levelAfter: 15),
-  TowerBudget(7, 0.44,
+  TowerBudget(7, 0.43,
       minAffixes: 1,
       maxAffixes: 1,
       levelAfter: 16,
       kind: TowerFloorKind.warden),
-  TowerBudget(7, 0.40,
+  TowerBudget(7, 0.30,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -241,7 +269,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 16),
-  TowerBudget(7, 0.40,
+  TowerBudget(7, 0.32,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -249,7 +277,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 17),
-  TowerBudget(8, 0.40,
+  TowerBudget(8, 0.34,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -257,7 +285,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 17),
-  TowerBudget(8, 0.40,
+  TowerBudget(8, 0.30,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -265,7 +293,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 18),
-  TowerBudget(8, 0.26, levelAfter: 18, kind: TowerFloorKind.boss),
+  TowerBudget(8, 0.34, levelAfter: 18, kind: TowerFloorKind.boss),
 ];
 
 /// Floor [floor]'s budget (1..[towerTop]).
@@ -458,6 +486,86 @@ const List<TowerUnlock> towerUnlocks = [
 TowerUnlock? towerUnlockOf(String id) {
   for (final u in towerUnlocks) {
     if (u.id == id) return u;
+  }
+  return null;
+}
+
+/// The Tower's own faces of its three dice unlocks (the Tower review,
+/// docs/proposals/tower-mechanics-review.md §2.1 (c)): each a side-grade of
+/// the starter die, where the game's (dice.json, sold in the story's shops
+/// and left as they are) were all worse. Each face is one of the die's own
+/// (`from`, by its name: its name, element and keywords kept) with its
+/// type, value or weight changed; the die keeps its size. Only the Tower
+/// reads them ([towerDiceTable], TowerData.dice).
+/// - flame d8, a mage's: six Skill and Attack faces of eight, no heal;
+/// - tide d8, a cleric's: a big heal, a guard, two strikes;
+/// - tearglass d12: bigger values, one Defend and one Heal face.
+const Map<String, List<Map<String, Object>>> towerDieFaces = {
+  'flame_die': [
+    {'from': 'Fireball', 'weight': 1.0},
+    {'from': 'Ember Slash', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Meteor', 'weight': 0.8},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Strike', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+  ],
+  'tide_die': [
+    {'from': 'Cleansing Wave', 'value': 5, 'weight': 0.6},
+    {'from': 'Riptide Slash', 'value': 3},
+    {'from': 'Tide Wall', 'value': 3, 'weight': 0.6},
+    {'from': 'Holy Light', 'weight': 0.8},
+    {'from': 'Purify', 'weight': 0.4},
+    {'from': 'Heavy Strike', 'weight': 0.8},
+    {'from': 'Strike', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+  ],
+  'tearglass_die': [
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Guard', 'value': 3, 'weight': 0.5},
+    {'from': 'Riftcut', 'weight': 0.8},
+    {'from': 'Seal the Crack', 'value': 5, 'weight': 0.5},
+    {'from': 'Blank Facet', 'weight': 1.0},
+    {'from': 'Final Shard', 'weight': 0.6},
+    {'from': 'Strike', 'value': 6},
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Blank Facet', 'weight': 1.0},
+    {'from': 'Strike', 'value': 6},
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Strike', 'value': 6},
+  ],
+};
+
+/// [dice] (dice.json's records) as the Tower rolls them: the dice of
+/// [towerDieFaces] with their Tower faces, the others as they are. [dice]
+/// itself is left as it is.
+Map<String, dynamic> towerDiceTable(Map<String, dynamic> dice) {
+  if (!towerDieFaces.keys.any(dice.containsKey)) return dice;
+  return {
+    for (final MapEntry(:key, :value) in dice.entries)
+      key: switch ((towerDieFaces[key], value)) {
+        (final List<Map<String, Object>> faces, final Map die) => {
+            ...die.cast<String, dynamic>(),
+            'faces': [
+              for (final face in faces)
+                {
+                  ...?_faceNamed(die, face['from']),
+                  for (final MapEntry(:key, :value) in face.entries)
+                    if (key != 'from') key: value,
+                },
+            ],
+          },
+        _ => value,
+      },
+  };
+}
+
+Map<String, dynamic>? _faceNamed(Map die, Object? name) {
+  for (final face in (die['faces'] as List?) ?? const []) {
+    if (face is Map && face['faceName'] == name) {
+      return face.cast<String, dynamic>();
+    }
   }
   return null;
 }

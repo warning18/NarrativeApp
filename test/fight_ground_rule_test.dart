@@ -3,6 +3,7 @@
 // game's own geography.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/combat/context_rules.dart';
+import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/field_anomaly.dart';
 import 'package:narrative_data_app/combat/fight_ground_rule.dart';
 import 'package:narrative_data_app/data/geography.dart';
@@ -69,5 +70,24 @@ void main() {
   test('the world holds more than one ground', () {
     final rules = {for (final id in ids) ruleAt(id)};
     expect(rules.length, greaterThanOrEqualTo(4), reason: '$rules');
+  });
+
+  test(
+      'the place of a fight: the launcher\'s, else the story\'s, none in the Tower',
+      () {
+    // v1.921: for the fight's background only; no rule reads it.
+    expect(fightPlaceOf(EncounterModifiers.none, 'saltmouth'), 'saltmouth');
+    expect(
+        fightPlaceOf(
+            const EncounterModifiers(placeId: 'dune_sea'), 'saltmouth'),
+        'dune_sea');
+    expect(fightPlaceOf(const EncounterModifiers(tower: true), 'saltmouth'),
+        isNull);
+    expect(const EncounterModifiers(placeId: 'dune_sea').isDefault, isFalse);
+    expect(
+        const EncounterModifiers(placeId: 'dune_sea')
+            .copyWith(chapter: 3)
+            .placeId,
+        'dune_sea');
   });
 }

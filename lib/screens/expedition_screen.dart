@@ -180,7 +180,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         difficultyMultiplier: zoneTierMultiplier(zoneTier(widget.zone)),
         hostFight: base.hostFight || widget.hostFight,
         forcedStage: _zoneStage,
+        placeId: _zonePlace,
       );
+
+  /// Where the zone's fights happen (v1.921): the place the zone lies at,
+  /// for the fight's background; null when the zone names none.
+  String? get _zonePlace {
+    final location = widget.zone['location']?.toString() ?? '';
+    return location.isEmpty ? null : location;
+  }
 
   /// How the zone's fights look (v1.241): the stage of the place the zone
   /// lies at, so an expedition into the dunes is fought in the dunes
@@ -490,7 +498,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                     difficultyMultiplier:
                         zoneTierMultiplier(zoneTier(widget.zone)),
                   ).copyWith(
-                    hostFight: widget.hostFight, forcedStage: _zoneStage)
+                    hostFight: widget.hostFight,
+                    forcedStage: _zoneStage,
+                    placeId: _zonePlace)
                 : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),

@@ -25,7 +25,8 @@ import '../providers/clans_provider.dart'
 import '../providers/day_phase_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
-import '../providers/geography_provider.dart' show loadGeography;
+import '../providers/geography_provider.dart'
+    show geographyProvider, loadGeography;
 import '../providers/player_session_provider.dart';
 import '../providers/region_strips_provider.dart';
 import '../providers/walking_party_provider.dart';
@@ -529,7 +530,13 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
             enemyId: choice.fightEnemyId!,
             enemy: enemy,
             landLayers: _landForFight(),
-            modifiers: EncounterModifiers(forcedStage: stage))));
+            // Where the road leads (v1.921), for the fight's background.
+            modifiers: EncounterModifiers(
+                forcedStage: stage,
+                placeId: ref
+                    .read(geographyProvider)
+                    .placeOfLandmark(widget.route.to)
+                    ?.id))));
     ref.read(combatActiveProvider.notifier).state = false;
     final retreated = ref.read(lastFightRetreatedProvider);
     ref.read(lastFightRetreatedProvider.notifier).state = false;
