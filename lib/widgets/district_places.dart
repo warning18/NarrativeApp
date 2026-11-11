@@ -14,6 +14,7 @@ import '../models/story_node.dart';
 import '../theme/stitched_ink.dart';
 import 'journey_banner_pin.dart';
 import '../theme/palette.dart';
+import '../theme/pixel_chip.dart';
 
 /// One place of the district's list, ready to draw: its [name] (empty when
 /// the plan has none yet), the [steps] taken there (indices of the Journey's
@@ -316,9 +317,9 @@ class PlacesHandle extends StatelessWidget {
     final ink = InkColors.of(context);
     return Material(
       color: const Color(0xEE17151B),
-      shape: StadiumBorder(side: BorderSide(color: ink.gold, width: 1.2)),
+      shape: PixelChipBorder(side: BorderSide(color: ink.gold, width: 1.2)),
       child: InkWell(
-        customBorder: const StadiumBorder(),
+        customBorder: const PixelChipBorder(),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

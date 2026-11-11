@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'palette.dart';
+import 'pixel_chip.dart';
 
 /// "Stitched Ink", the app's look: a dark book you read, stitched to a
 /// game you play.
@@ -352,7 +353,7 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
     ),
     chipTheme: ChipThemeData(
-      shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
+      shape: PixelChipBorder(side: seamSide),
       side: seamSide,
       // Font and size only: the chip keeps its own colours for selected
       // and disabled.

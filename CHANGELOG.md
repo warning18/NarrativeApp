@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.908.0+944]
+
+- Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags.
+
 ## [1.904.0+940]
 
 - Intro: the four scenes (the burning Shroud, the city on alert, Tallow Street and the Blind Beggar, the tavern room) are now Art's pixel plates, drawn cover-fit with a slow push or pan; the ash, the six embers, the shell's flash, the die, the title, the four lines, the fade, tap-to-skip and reduced motion are unchanged.
