@@ -28,7 +28,7 @@ Future<TowerFightResult?> towerFightFor(
       if (enemies[id] case final Map<String, dynamic> record) id: record,
   };
   // A floor may hold the same foe twice (two Harbour Rats): the records are
-  // by id, so it is the distinct foes that must all be found (v1.915, QA's
+  // by id, so it is the distinct foes that must all be found (v1.914, QA's
   // blocker: a repeat read as a missing foe and the fight never began).
   // FightScreen spawns one foe per id in additionalEnemyIds, repeats too.
   if (records.length != floor.enemyIds.toSet().length || !context.mounted) {
