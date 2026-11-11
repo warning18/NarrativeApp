@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.919.0+955]
+
+- Fights now know the place they happen in, for their background: an expedition's fight carries its zone's place, a land crossing's fight the place it arrives at, a story fight the scene's place (the Tower has none). No rule changes; UX-2 uses it to draw a place's own version of a stage.
+
 ## [1.915.0+951]
 
 - Fight: no empty space before the battle, and portraits from the sprites. When the setup page (the foe, the die, Enter Battle) is shorter than the screen, the fighters stand at the bottom of it, the hero and the allies facing the foes, over the ground that now fills the page (QA's empty lower half); a page that already fills the screen is as it was (the room is measured after layout, so it never changes the page). The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
