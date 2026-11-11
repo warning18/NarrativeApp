@@ -335,14 +335,14 @@ extension _FightGround on _FightScreenState {
 
   /// The picture behind the fight: the Tower's when it dresses the fight,
   /// else the stage's at the fight's place (fightPlaceOf).
-  String _plateHere() =>
-      FightPlateOverride.maybeOf(context)?.asset ??
-      fightPlateAsset(
-          _stage,
-          ref
-              .read(geographyProvider)
-              .locationOf(fightPlaceOf(widget.modifiers, _placeIdHere()))
-              ?.id);
+  String _plateHere() {
+    final override = FightPlateOverride.maybeOf(context)?.asset;
+    if (override != null) return override;
+    final place = fightPlaceOf(widget.modifiers, _placeIdHere());
+    return fightPlateAsset(
+        _stage, ref.read(geographyProvider).locationOf(place)?.id,
+        placeId: place);
+  }
 
   /// The stage whose ground skin the dice board wears: the stage's own, the
   /// Tower's stone when it dresses the fight. A look only.
@@ -356,13 +356,15 @@ extension _FightGround on _FightScreenState {
     // The pictures are brighter and busier than the painted stages were: the
     // light theme's cream veil is stronger over them so names and cards read.
     if (scheme.brightness == Brightness.light) veil += 0.22;
+    final plate = _plateHere();
+    final floorVeil = FightPlateImages.floorVeilOf(plate);
     return Stack(
       fit: StackFit.expand,
       children: [
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
-          plate: _plateHere(),
+          plate: plate,
           light: lightLevel(_light),
           weather: false,
           events: false,
@@ -382,6 +384,22 @@ extension _FightGround on _FightScreenState {
             ),
           ),
         ),
+        if (floorVeil > 0)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  scheme.surface.withValues(alpha: 0),
+                  scheme.surface.withValues(alpha: 0),
+                  scheme.surface.withValues(alpha: floorVeil),
+                  scheme.surface.withValues(alpha: floorVeil),
+                ],
+                stops: const [0.0, 0.64, 0.74, 1.0],
+              ),
+            ),
+          ),
       ],
     );
   }

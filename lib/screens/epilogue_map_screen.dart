@@ -94,7 +94,8 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
     final politics = ref.watch(politicsProvider);
     final data = ref.watch(clanDataProvider);
     final rulers = ref.watch(townRulersProvider);
-    final chart = chartOf(ref.watch(mapShapeProvider));
+    // The sphere's world: a town sits where the world map shows it.
+    final chart = chartOf(MapShape.story);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final routes =
         ref.watch(localizedDbProvider(landRoutesSchema)).value ?? const {};

@@ -17,19 +17,43 @@ import '../combat/field_anomaly.dart' show FightStage;
 const String _dir = 'assets/visuals/fight_plates';
 
 /// The picture of [stage] at the settlement [settlementId] (the `location`
-/// level of the geography: 'saltmouth', 'candlehold'...). Every stage has
-/// one; a settlement with no picture of its own takes the stage's default.
-String fightPlateAsset(FightStage stage, String? settlementId) {
-  if (stage == FightStage.cityRoad) {
-    final region = switch (settlementId) {
-      'saltmouth' => 'saltmouth',
-      // The Reliquary and the Ashen Quarter: the grey frost towns.
-      'black_reliquary' || 'ashen_quarter' => 'frost',
-      'candlehold' => 'candlehold',
-      _ => null,
-    };
-    return '$_dir/cityroad${region == null ? '' : '_$region'}.png';
-  }
+/// level of the geography: 'saltmouth', 'candlehold'...) or the place
+/// [placeId] itself. Every stage has one; a place whose region has a picture
+/// of its own (a stage's version) wears that, every other place the stage's
+/// shared picture.
+String fightPlateAsset(
+  FightStage stage,
+  String? settlementId, {
+  String? placeId,
+}) {
+  bool at(Set<String> ids) =>
+      ids.contains(settlementId) || ids.contains(placeId);
+  final version = switch (stage) {
+    FightStage.cityRoad when settlementId == 'saltmouth' =>
+      'cityroad_saltmouth',
+    // The Reliquary and the Ashen Quarter: the grey frost towns.
+    FightStage.cityRoad when at(const {'black_reliquary', 'ashen_quarter'}) =>
+      'cityroad_frost',
+    FightStage.cityRoad when settlementId == 'candlehold' =>
+      'cityroad_candlehold',
+    FightStage.cityRoad when settlementId == 'white_anchorage' =>
+      'cityroad_whiteanchorage',
+    FightStage.glass
+        when at(const {
+          'greyhithe',
+          'hollow_shore',
+          'beyond_the_tear',
+          'white_fleet_grave',
+        }) =>
+      'glass_greyhithe',
+    FightStage.ash when settlementId == 'emberwick' => 'ash_emberwick',
+    FightStage.terraces when settlementId == 'akagiri' => 'terraces_akagiri',
+    FightStage.waves when settlementId == 'the_crossing' => 'waves_crossing',
+    FightStage.hall when at(const {'drowned_cloister', 'alster_undercroft'}) =>
+      'hall_wet',
+    _ => null,
+  };
+  if (version != null) return '$_dir/$version.png';
   final stem = switch (stage) {
     FightStage.fields => 'fields',
     FightStage.dunes => 'dunes',
@@ -112,6 +136,21 @@ abstract final class FightPlateImages {
   /// The colour of [asset]'s ground (the mean of its lowest third), for the
   /// dice board to lean towards; null until it is loaded.
   static Color? tintOf(String asset) => _tints[asset];
+
+  /// How far the dice board leans to its picture's ground (0 to 1): the
+  /// night and dusk versions lean further, their board being a day colour.
+  static double leanOf(String asset) => switch (asset) {
+        '$_dir/waves_crossing.png' => 0.72,
+        '$_dir/glass_greyhithe.png' => 0.62,
+        _ => 0.38,
+      };
+
+  /// An extra veil over the lower part of the screen, for a picture whose
+  /// floor holds something bright where the log row sits (the kiln's fire).
+  static double floorVeilOf(String asset) => switch (asset) {
+        '$_dir/ash_emberwick.png' => 0.85,
+        _ => 0,
+      };
 
   static Future<Color?> _groundTintOf(ui.Image image) async {
     final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
