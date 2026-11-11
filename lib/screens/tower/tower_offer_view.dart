@@ -52,23 +52,31 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
   String dieName(String id) => towerDieName(ref, id);
   switch (reward.kind) {
     case TowerRewardKind.die:
-      return TowerCardText(tr(ref, 'tower_kind_die'), dieName(reward.id),
-          '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}');
+      return TowerCardText(
+        tr(ref, 'tower_kind_die'),
+        dieName(reward.id),
+        '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}',
+      );
     case TowerRewardKind.skill:
       return TowerCardText(
-          tr(ref, 'tower_kind_skill'),
-          skillDisplayName(reward.id, language: lang),
-          '${row(skillsSchema, reward.id)['description'] ?? ''}');
+        tr(ref, 'tower_kind_skill'),
+        skillDisplayName(reward.id, language: lang),
+        '${row(skillsSchema, reward.id)['description'] ?? ''}',
+      );
     case TowerRewardKind.spell:
       final r = row(spellsSchema, reward.id);
-      return TowerCardText(tr(ref, 'tower_kind_spell'),
-          '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
+      return TowerCardText(
+        tr(ref, 'tower_kind_spell'),
+        '${r['spellName'] ?? reward.id}',
+        '${r['description'] ?? ''}',
+      );
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
-          tr(ref, 'tower_kind_oath'),
-          ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
-          tr(ref, 'tower_oath_text'));
+        tr(ref, 'tower_kind_oath'),
+        ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
+        tr(ref, 'tower_oath_text'),
+      );
   }
 }
 
@@ -108,71 +116,85 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
-        Text(tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),
-            key: const Key('tower_cleared'),
-            style: theme.textTheme.headlineSmall),
-        Text(tr(ref, 'tower_choose_one'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),
+          key: const Key('tower_cleared'),
+          style: theme.textTheme.headlineSmall,
+        ),
+        Text(
+          tr(ref, 'tower_choose_one'),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 12),
         for (var i = 0; i < offer.length; i++)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Builder(builder: (context) {
-              final text = towerCardText(ref, offer[i]);
-              final held = i == _held;
-              if (offer[i].kind == TowerRewardKind.clanOath) {
-                return _OathCard(
+            child: Builder(
+              builder: (context) {
+                final text = towerCardText(ref, offer[i]);
+                final held = i == _held;
+                if (offer[i].kind == TowerRewardKind.clanOath) {
+                  return _OathCard(
+                    key: Key('tower_card_$i'),
+                    clanId: offer[i].id,
+                    held: held,
+                    done: _done,
+                    data: widget.data,
+                    onHold: () => setState(() => _held = i),
+                    onSwear: () => _pick(i),
+                  );
+                }
+                return InkPanel(
                   key: Key('tower_card_$i'),
-                  clanId: offer[i].id,
-                  held: held,
-                  done: _done,
-                  data: widget.data,
-                  onHold: () => setState(() => _held = i),
-                  onSwear: () => _pick(i),
-                );
-              }
-              return InkPanel(
-                key: Key('tower_card_$i'),
-                lit: held,
-                dim: !held,
-                onTap: () => setState(() => _held = i),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(text.name,
-                              style: theme.textTheme.titleSmall),
-                        ),
-                        Text(text.kind,
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(color: ink.gold)),
-                      ],
-                    ),
-                    if (text.text.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child:
-                            Text(text.text, style: theme.textTheme.bodySmall),
+                  lit: held,
+                  dim: !held,
+                  onTap: () => setState(() => _held = i),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              text.name,
+                              style: theme.textTheme.titleSmall,
+                            ),
+                          ),
+                          Text(
+                            text.kind,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: ink.gold,
+                            ),
+                          ),
+                        ],
                       ),
-                    if (held)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: FilledButton(
-                            key: const Key('tower_take'),
-                            onPressed: _done ? null : () => _pick(i),
-                            child: Text(tr(ref, 'tower_take')),
+                      if (text.text.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            text.text,
+                            style: theme.textTheme.bodySmall,
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              );
-            }),
+                      if (held)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: FilledButton(
+                              key: const Key('tower_take'),
+                              onPressed: _done ? null : () => _pick(i),
+                              child: Text(tr(ref, 'tower_take')),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         const SizedBox(height: 8),
         Center(
@@ -232,27 +254,36 @@ class _OathCard extends ConsumerWidget {
               ],
               Expanded(
                 child: Text(
-                    tr(ref, 'tower_oath_title').replaceAll('{clan}', name),
-                    key: Key('tower_oath_title_$clanId'),
-                    style: theme.textTheme.titleSmall),
+                  tr(ref, 'tower_oath_title').replaceAll('{clan}', name),
+                  key: Key('tower_oath_title_$clanId'),
+                  style: theme.textTheme.titleSmall,
+                ),
               ),
-              Text(tr(ref, 'tower_kind_oath'),
-                  style: theme.textTheme.labelSmall?.copyWith(color: colour)),
+              Text(
+                tr(ref, 'tower_kind_oath'),
+                style: theme.textTheme.labelSmall?.copyWith(color: colour),
+              ),
             ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(tr(ref, 'tower_oath_text'),
-                style: theme.textTheme.bodySmall),
+            child: Text(
+              tr(ref, 'tower_oath_text'),
+              style: theme.textTheme.bodySmall,
+            ),
           ),
           if (die != null)
             Padding(
               padding: const EdgeInsets.only(top: 2),
               child: Text(
-                  tr(ref, 'tower_oath_die')
-                      .replaceAll('{die}', towerDieName(ref, die)),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w700)),
+                tr(
+                  ref,
+                  'tower_oath_die',
+                ).replaceAll('{die}', towerDieName(ref, die)),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           if (held)
             Align(

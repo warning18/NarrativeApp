@@ -54,14 +54,13 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   Future<void> _create() async {
     final progress = ref.read(towerProvider).value?.progress;
     final locks = _locks(progress?.professions ?? towerStartProfessions);
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => TowerNight(
-        child: RaceProfessionScreen(
-          locks: locks,
-          onChosen: _begin,
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TowerNight(
+          child: RaceProfessionScreen(locks: locks, onChosen: _begin),
         ),
       ),
-    ));
+    );
   }
 
   Future<void> _begin(String race, String profession) async {
@@ -74,7 +73,8 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     if (!mounted) return;
     setState(() => _starting = false);
     await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const TowerFloorScreen()));
+      MaterialPageRoute(builder: (_) => const TowerFloorScreen()),
+    );
   }
 
   @override
@@ -92,9 +92,12 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
             children: [
-              Text(tr(ref, 'tower_tagline'),
-                  style: theme.textTheme.bodyLarge
-                      ?.copyWith(fontStyle: FontStyle.italic)),
+              Text(
+                tr(ref, 'tower_tagline'),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
               const SizedBox(height: 10),
               InkPanel(
                 child: Row(
@@ -104,26 +107,34 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              '${progress.marks} ${tr(ref, 'tower_marks_name')}',
-                              key: const Key('tower_marks_total'),
-                              style: theme.textTheme.titleSmall
-                                  ?.copyWith(color: ink.gold)),
+                            '${progress.marks} ${tr(ref, 'tower_marks_name')}',
+                            key: const Key('tower_marks_total'),
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: ink.gold,
+                            ),
+                          ),
                           Text(
-                              [
-                                _fill(tr(ref, 'tower_best'),
-                                    {'n': progress.bestFloor}),
-                                _fill(tr(ref, 'tower_runs_line'),
-                                    {'r': progress.runs, 'w': progress.wins}),
-                              ].join(' · '),
-                              style: theme.textTheme.bodySmall),
+                            [
+                              _fill(tr(ref, 'tower_best'), {
+                                'n': progress.bestFloor,
+                              }),
+                              _fill(tr(ref, 'tower_runs_line'), {
+                                'r': progress.runs,
+                                'w': progress.wins,
+                              }),
+                            ].join(' · '),
+                            style: theme.textTheme.bodySmall,
+                          ),
                         ],
                       ),
                     ),
                     OutlinedButton(
                       key: const Key('tower_marks_button'),
                       onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => const TowerMarksScreen())),
+                        MaterialPageRoute(
+                          builder: (_) => const TowerMarksScreen(),
+                        ),
+                      ),
                       child: Text(tr(ref, 'tower_marks_button')),
                     ),
                   ],
@@ -133,12 +144,14 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                 const SizedBox(height: 10),
                 FilledButton(
                   key: const Key('tower_continue'),
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const TowerFloorScreen())),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const TowerFloorScreen()),
+                  ),
                   child: Text(
-                      '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
-                        'n': run.floor
-                      })}'),
+                    '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
+                          'n': run.floor
+                        })}',
+                  ),
                 ),
               ],
               const SizedBox(height: 14),
@@ -148,10 +161,13 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                 child: Text(tr(ref, 'tower_climb')),
               ),
               const SizedBox(height: 8),
-              Text(tr(ref, 'tower_save_note'),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              Text(
+                tr(ref, 'tower_save_note'),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               // The three bands of the tower, top to bottom (v1.900).
               const SizedBox(height: 18),
               for (final band in [3, 2, 1]) _bandPane(band, theme, ink),
@@ -169,24 +185,38 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
             height: 70,
-            child: Stack(fit: StackFit.expand, children: [
-              Image.asset(towerBackdropAsset(band),
-                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
-              ColoredBox(color: Colors.black.withValues(alpha: .45)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Row(children: [
-                  Expanded(
-                    child: Text(tr(ref, 'tower_band_$band'),
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: Colors.white)),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  towerBackdropAsset(band),
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.none,
+                ),
+                ColoredBox(color: Colors.black.withValues(alpha: .45)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          tr(ref, 'tower_band_$band'),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${(band - 1) * 10 + 1}\u2013${band * 10}',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: ink.gold,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text('${(band - 1) * 10 + 1}\u2013${band * 10}',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(color: ink.gold)),
-                ]),
-              ),
-            ]),
+                ),
+              ],
+            ),
           ),
         ),
       );

@@ -25,15 +25,9 @@ class _TowerMarksBody extends ConsumerWidget {
   const _TowerMarksBody();
 
   static const _groups = <(String, Set<TowerUnlockKind>)>[
-    (
-      'tower_group_peoples',
-      {TowerUnlockKind.profession},
-    ),
+    ('tower_group_peoples', {TowerUnlockKind.profession}),
     ('tower_group_clans', {TowerUnlockKind.clan}),
-    (
-      'tower_group_kit',
-      {TowerUnlockKind.startDie, TowerUnlockKind.startItem},
-    ),
+    ('tower_group_kit', {TowerUnlockKind.startDie, TowerUnlockKind.startItem}),
   ];
 
   @override
@@ -53,14 +47,19 @@ class _TowerMarksBody extends ConsumerWidget {
               lit: true,
               child: Row(
                 children: [
-                  Text('${progress.marks}',
-                      key: const Key('tower_marks_balance'),
-                      style: theme.textTheme.headlineMedium
-                          ?.copyWith(color: ink.gold)),
+                  Text(
+                    '${progress.marks}',
+                    key: const Key('tower_marks_balance'),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: ink.gold,
+                    ),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(tr(ref, 'tower_marks_name'),
-                        style: theme.textTheme.titleMedium),
+                    child: Text(
+                      tr(ref, 'tower_marks_name'),
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
                 ],
               ),
@@ -81,24 +80,35 @@ class _TowerMarksBody extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(tr(ref, 'tower_unlock_${u.id}'),
-                                  style: theme.textTheme.bodyMedium),
                               Text(
-                                  tr(ref, 'tower_marks_cost')
-                                      .replaceAll('{n}', '${u.cost}'),
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                      color:
-                                          theme.colorScheme.onSurfaceVariant)),
+                                tr(ref, 'tower_unlock_${u.id}'),
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              Text(
+                                tr(
+                                  ref,
+                                  'tower_marks_cost',
+                                ).replaceAll('{n}', '${u.cost}'),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         if (progress.unlocked.contains(u.id))
-                          Row(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.check,
-                                size: IconSize.s16, color: ink.heal),
-                            const SizedBox(width: 4),
-                            Text(tr(ref, 'tower_owned')),
-                          ])
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.check,
+                                size: IconSize.s16,
+                                color: ink.heal,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(tr(ref, 'tower_owned')),
+                            ],
+                          )
                         else
                           FilledButton(
                             key: Key('tower_buy_${u.id}'),

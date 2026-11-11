@@ -56,8 +56,10 @@ class BevelPanelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final r =
-        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius));
+    final r = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(radius),
+    );
     Paint stroke(double w, Color c) => Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = w
@@ -111,7 +113,8 @@ class TowerFoeFigure extends StatelessWidget {
           child: image == null
               ? null
               : CustomPaint(
-                  painter: _FoePainter(image, set.frameWidth, set.frameHeight)),
+                  painter: _FoePainter(image, set.frameWidth, set.frameHeight),
+                ),
         );
       },
     );
@@ -126,12 +129,13 @@ class _FoePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) => canvas.drawImageRect(
-      image,
-      Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()),
-      Offset.zero & size,
-      Paint()
-        ..filterQuality = FilterQuality.none
-        ..isAntiAlias = false);
+        image,
+        Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()),
+        Offset.zero & size,
+        Paint()
+          ..filterQuality = FilterQuality.none
+          ..isAntiAlias = false,
+      );
 
   @override
   bool shouldRepaint(_FoePainter old) => old.image != image;

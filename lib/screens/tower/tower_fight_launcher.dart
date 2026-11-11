@@ -18,7 +18,11 @@ import 'tower_providers.dart';
 /// foe missing from the tables, or Back before the first roll). There is no
 /// retreat in the Tower: once begun, a fight is won or lost.
 Future<TowerFightResult?> towerFightFor(
-    Ref ref, BuildContext context, TowerRun run, TowerData data) async {
+  Ref ref,
+  BuildContext context,
+  TowerRun run,
+  TowerData data,
+) async {
   await ref.read(gameDbProvider(enemiesSchema).notifier).whenLoaded();
   final enemies =
       ref.read(localizedDbProvider(enemiesSchema)).value ?? const {};
@@ -36,23 +40,28 @@ Future<TowerFightResult?> towerFightFor(
   }
   final fight = TowerFightSession(run, data);
   ref.read(combatActiveProvider.notifier).state = true;
-  final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
-    builder: (_) => fight.wrap(FightScreen(
-      enemyId: floor.enemyIds.first,
-      enemy: records[floor.enemyIds.first]!,
-      additionalEnemyIds: floor.enemyIds.skip(1).toList(),
-      additionalEnemies: {
-        for (final id in floor.enemyIds.skip(1)) id: records[id]!,
-      },
-      modifiers: floor.modifiersFor(run.professionId),
-    )),
-  ));
+  final won = await Navigator.of(context).push<bool>(
+    MaterialPageRoute(
+      builder: (_) => fight.wrap(
+        FightScreen(
+          enemyId: floor.enemyIds.first,
+          enemy: records[floor.enemyIds.first]!,
+          additionalEnemyIds: floor.enemyIds.skip(1).toList(),
+          additionalEnemies: {
+            for (final id in floor.enemyIds.skip(1)) id: records[id]!,
+          },
+          modifiers: floor.modifiersFor(run.professionId),
+        ),
+      ),
+    ),
+  );
   ref.read(combatActiveProvider.notifier).state = false;
   // Back before the first roll pops null: the floor was not fought.
   if (won == null) return null;
   return TowerFightResult(
-      won: won,
-      healthLeft: fight.healthLeft,
-      potionsLeft: fight.potionsLeft,
-      antidotesLeft: fight.antidotesLeft);
+    won: won,
+    healthLeft: fight.healthLeft,
+    potionsLeft: fight.potionsLeft,
+    antidotesLeft: fight.antidotesLeft,
+  );
 }
