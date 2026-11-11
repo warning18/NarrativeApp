@@ -16,14 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/climate.dart' show WeatherKind;
-import '../data/journey_rules.dart' show DayPhase;
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/intro_art.dart';
-import '../widgets/pixel_banner.dart';
+import '../widgets/pixel_banner.dart' show shroudPieceIds;
 import '../widgets/story_text.dart' show storyTextShownAtOnce;
-import '../widgets/street_view/street_view.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
 
@@ -262,60 +259,19 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     }
   }
 
-  // 1: the Great Shroud, burning.
+  // 1: the Great Shroud, burning (plate 1, a slow push in).
   Widget _shroud(double p, double seconds, {required bool burning}) {
-    final flame = (seconds * 12).floor();
     return Stack(fit: StackFit.expand, children: [
-      const CustomPaint(painter: IntroCity('smoke')),
-      ColoredBox(color: Colors.black.withValues(alpha: 0.72 - 0.4 * p)),
-      const Align(
-        alignment: Alignment(0, -0.1),
-        child: SizedBox(
-          height: 300,
-          child: ColorFiltered(
-            colorFilter: ColorFilter.matrix(<double>[
-              0.7, 0.05, 0.02, 0, 0, //
-              0.05, 0.55, 0.02, 0, 0,
-              0.04, 0.04, 0.5, 0, 0,
-              0, 0, 0, 1, 0,
-            ]),
-            child: FittedBox(child: PixelBanner(id: titleBannerId, scale: 1)),
-          ),
-        ),
-      ),
-      CustomPaint(painter: IntroFire(0.1 + 0.5 * p, flicker: flame)),
+      IntroPlate(0, zoom: 1 + 0.05 * p, anchor: Alignment.bottomLeft),
+      ColoredBox(color: Colors.black.withValues(alpha: 0.72 - 0.72 * p)),
     ]);
   }
 
   // 2: it burns away into six embers, one falling toward Alster.
   Widget _embers(double p, double seconds) {
-    final flame = (seconds * 12).floor();
-    final banner = (1 - p * 2.2).clamp(0.0, 1.0);
     return Stack(fit: StackFit.expand, children: [
-      const CustomPaint(painter: IntroCity('smoke')),
-      if (banner > 0)
-        Opacity(
-          opacity: banner,
-          child: Stack(fit: StackFit.expand, children: [
-            const Align(
-              alignment: Alignment(0, -0.1),
-              child: SizedBox(
-                height: 300,
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.matrix(<double>[
-                    0.5, 0.05, 0.02, 0, 0, //
-                    0.05, 0.35, 0.02, 0, 0,
-                    0.04, 0.04, 0.3, 0, 0,
-                    0, 0, 0, 1, 0,
-                  ]),
-                  child: FittedBox(
-                      child: PixelBanner(id: titleBannerId, scale: 1)),
-                ),
-              ),
-            ),
-            CustomPaint(painter: IntroFire(0.6 + 0.35 * p, flicker: flame)),
-          ]),
-        ),
+      IntroPlate(0, zoom: 1.05 + 0.05 * p, anchor: Alignment.bottomLeft),
+      ColoredBox(color: Colors.black.withValues(alpha: 0.28 * p)),
       for (final (i, from, drift) in const [
         (0, Offset(80, 150), Offset(-46, -110)),
         (1, Offset(100, 140), Offset(0, -118)),
@@ -349,57 +305,28 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     ]);
   }
 
-  // 3: the city on alert: calm streets, the white ships far off. No shell.
-  Widget _city(double p) => Stack(fit: StackFit.expand, children: [
-        const CustomPaint(painter: IntroCity('street')),
-        Positioned(
-          left: 6.0 + 8 * p,
-          top: 0,
-          width: _stageW,
-          height: _stageH,
-          child: const CustomPaint(
-              painter: IntroSkyShips(ships: [(4, 18, 0.55), (44, 10, 0.4)])),
-        ),
-      ]);
+  // 3: the city on alert: calm streets, the white ships far off (plate 2, a
+  // slow pan down toward the street). No shell.
+  Widget _city(double p) => IntroPlate(1,
+      zoom: 1.12,
+      anchor: Alignment(0, -0.9 + 1.8 * Curves.easeInOut.transform(p)));
 
-  // 4: down through the smoke to the Blind Beggar.
-  Widget _tavernFront(double p) => Stack(fit: StackFit.expand, children: [
-        ClipRect(
-          child: Transform.scale(
-            scale: 1.35 + 0.45 * Curves.easeInOut.transform(p),
-            alignment: const Alignment(-0.1, 0.35),
-            child: const StreetViewScene(
-                kind: 'tavern',
-                name: 'The Blind Beggar',
-                phase: DayPhase.dusk,
-                sky: WeatherKind.ash,
-                party: false),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            height: 140 * (1 - p * 0.6),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xEE2B2830), Color(0x002B2830)])),
-          ),
-        ),
-      ]);
+  // 4: down to the Blind Beggar (plate 3, a slow push in on its door).
+  Widget _tavernFront(double p) => IntroPlate(2,
+      zoom: 1.02 + 0.1 * Curves.easeInOut.transform(p),
+      anchor: const Alignment(-0.3, 0.6));
 
   // 5: the die falls from the top, bounces on the floor, rolls to the middle.
   Widget _dieFalls(double p) {
     // Keyframes: (progress, x, y) as shares of the stage, y down.
     const keys = [
       (0.0, -0.25, -0.12),
-      (0.34, -0.12, 0.52),
-      (0.52, -0.04, 0.30),
-      (0.66, 0.03, 0.54),
-      (0.77, 0.06, 0.45),
-      (0.88, 0.09, 0.55),
-      (1.0, 0.12, 0.55),
+      (0.34, -0.12, 0.78),
+      (0.52, -0.04, 0.6),
+      (0.66, 0.03, 0.8),
+      (0.77, 0.06, 0.72),
+      (0.88, 0.09, 0.82),
+      (1.0, 0.12, 0.82),
     ];
     var (x, y) = (keys.last.$2, keys.last.$3);
     for (var i = 0; i < keys.length - 1; i++) {
@@ -415,7 +342,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
       }
     }
     return Stack(fit: StackFit.expand, children: [
-      const CustomPaint(painter: IntroFloor()),
+      const IntroPlate(3),
       Align(
         alignment: Alignment(x * 2, y * 2 - 1),
         child: introDie(70, roll: 0.72 * p),
@@ -428,9 +355,10 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     final e = Curves.easeOut.transform(p);
     final stopped = p >= 0.97;
     return Stack(fit: StackFit.expand, children: [
-      CustomPaint(painter: IntroFloor(flash: p > 0.8 && p < 0.97)),
+      const IntroPlate(3),
+      if (p > 0.8 && p < 0.97) const CustomPaint(painter: IntroFlash()),
       Align(
-        alignment: Alignment(0.24 * (1 - e), 0.1 + 0.0 * e),
+        alignment: Alignment(0.24 * (1 - e), 0.64),
         child: introDie(86, roll: stopped ? null : 0.72 + 0.28 * e),
       ),
     ]);
@@ -440,8 +368,29 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
   Widget _title(double p) {
     final e = Curves.easeOut.transform(p);
     return Stack(fit: StackFit.expand, children: [
-      const CustomPaint(painter: IntroFloor()),
-      Align(alignment: const Alignment(0, 0.35), child: introDie(86)),
+      const IntroPlate(3),
+      // The title over the plate's upper part: a veil so it reads.
+      Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          height: 300,
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [
+                0,
+                0.6,
+                1
+              ],
+                  colors: [
+                Color(0xE615110E),
+                Color(0xB815110E),
+                Color(0x0015110E)
+              ])),
+        ),
+      ),
+      Align(alignment: const Alignment(0, 0.64), child: introDie(86)),
       Align(
         alignment: const Alignment(0, -0.62),
         child: Opacity(
