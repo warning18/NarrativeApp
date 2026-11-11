@@ -1,0 +1,150 @@
+diff --git a/lib/screens/tower/tower_floor_screen.dart b/lib/screens/tower/tower_floor_screen.dart
+index 685d94244..45affa0b2 100644
+--- a/lib/screens/tower/tower_floor_screen.dart
++++ b/lib/screens/tower/tower_floor_screen.dart
+@@ -22,6 +22,7 @@ import '../../theme/stitched_ink.dart';
+ import 'tower_end_screen.dart';
+ import 'tower_backdrop.dart';
+ import 'tower_dice_panel.dart';
++import 'tower_event_card.dart';
+ import 'tower_look.dart';
+ import 'tower_ladder.dart';
+ import 'tower_offer_view.dart';
+@@ -159,7 +160,15 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
+             children: [
+               Padding(
+                 padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
+-                child: TowerLadder(floor: run.floor),
++                child: TowerLadder(
++                  floor: run.floor,
++                  jump: towerEventMock?.result == null
++                      ? null
++                      : (
++                          towerEventMock!.result!.from,
++                          towerEventMock!.result!.to
++                        ),
++                ),
+               ),
+               Expanded(
+                 child: choosing && _spoilsTaken != run.floor
+@@ -236,6 +245,16 @@ class _FloorIntro extends ConsumerWidget {
+         Text(tr(ref, 'tower_floor_${run.floor}'),
+             style: theme.textTheme.bodyLarge
+                 ?.copyWith(fontStyle: FontStyle.italic)),
++        if (towerEventMock case final event?) ...[
++          const SizedBox(height: 10),
++          if (event.result case final r?) TowerEventResultLine(r),
++          if (event.revisit) const TowerRevisitLine(),
++          if (event.kind == MockEventKind.rival ||
++              event.kind == MockEventKind.shortcut) ...[
++            if (event.result != null) const SizedBox(height: 8),
++            TowerEventCard(event),
++          ],
++        ],
+         if (danger) ...[
+           const SizedBox(height: 10),
+           Container(
+diff --git a/lib/screens/tower/tower_ladder.dart b/lib/screens/tower/tower_ladder.dart
+index 3c95fa10b..f21a7536f 100644
+--- a/lib/screens/tower/tower_ladder.dart
++++ b/lib/screens/tower/tower_ladder.dart
+@@ -13,7 +13,11 @@ import '../../theme/stitched_ink.dart';
+ const double towerLadderWidth = 40;
+ 
+ class TowerLadder extends StatelessWidget {
+-  const TowerLadder({super.key, required this.floor});
++  const TowerLadder({super.key, required this.floor, this.jump});
++
++  /// How the last event moved the run: from this floor to [floor] (a skip up,
++  /// a fall down), drawn as an arrow beside the rail.
++  final (int, int)? jump;
+ 
+   /// The floor the party stands on (1 to 30).
+   final int floor;
+@@ -68,7 +72,7 @@ class TowerLadder extends StatelessWidget {
+       );
+     }
+ 
+-    return SizedBox(
++    final rail = SizedBox(
+       key: const Key('tower_ladder'),
+       width: towerLadderWidth,
+       child: Column(
+@@ -88,5 +92,54 @@ class TowerLadder extends StatelessWidget {
+         ],
+       ),
+     );
++    final jump = this.jump;
++    if (jump == null) return rail;
++    return Stack(children: [
++      rail,
++      Positioned.fill(
++          child: IgnorePointer(
++              child: CustomPaint(
++                  painter:
++                      _JumpPainter(jump.$1, jump.$2, ink.gold, ink.blood)))),
++    ]);
++  }
++}
++
++/// An arrow along the rail from floor [from] to floor [to]: gold going up,
++/// blood coming down, dashed, with its head on the floor the run lands on.
++class _JumpPainter extends CustomPainter {
++  _JumpPainter(this.from, this.to, this.up, this.down);
++
++  final int from, to;
++  final Color up, down;
++
++  @override
++  void paint(Canvas canvas, Size size) {
++    final row = size.height / towerTop;
++    double y(int n) => (towerTop - n) * row + row / 2;
++    final color = to > from ? up : down;
++    final x = size.width + 5;
++    final paint = Paint()
++      ..color = color
++      ..strokeWidth = 2.5
++      ..strokeCap = StrokeCap.round;
++    final y0 = y(from), y1 = y(to);
++    final dir = y1 > y0 ? 1.0 : -1.0;
++    var yy = y0;
++    while ((y1 - yy) * dir > 8) {
++      canvas.drawLine(Offset(x, yy), Offset(x, yy + dir * 6), paint);
++      yy += dir * 11;
++    }
++    final head = Path()
++      ..moveTo(x, y1)
++      ..lineTo(x - 5, y1 - dir * 9)
++      ..lineTo(x + 5, y1 - dir * 9)
++      ..close();
++    canvas.drawPath(head, Paint()..color = color);
++    canvas.drawCircle(Offset(x, y0), 3.5, Paint()..color = color);
+   }
++
++  @override
++  bool shouldRepaint(_JumpPainter old) =>
++      old.from != from || old.to != to || old.up != up || old.down != down;
+ }
+diff --git a/lib/screens/tower/tower_offer_view.dart b/lib/screens/tower/tower_offer_view.dart
+index 9a2f34e75..5a4fbbd9c 100644
+--- a/lib/screens/tower/tower_offer_view.dart
++++ b/lib/screens/tower/tower_offer_view.dart
+@@ -18,6 +18,7 @@ import '../../widgets/race_profession_cards.dart' show ClanDisc;
+ import '../../providers/game_db_providers.dart';
+ import '../../theme/stitched_ink.dart';
+ import '../../widgets/ink_panel.dart';
++import 'tower_event_card.dart';
+ 
+ /// What a card reads: its kind, its name and what it does.
+ class TowerCardText {
+@@ -115,6 +116,10 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
+             style: theme.textTheme.bodyMedium
+                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+         const SizedBox(height: 12),
++        if (towerEventMock?.kind == MockEventKind.test) ...[
++          TowerEventCard(towerEventMock!),
++          const SizedBox(height: 12),
++        ],
+         for (var i = 0; i < offer.length; i++)
+           Padding(
+             padding: const EdgeInsets.only(bottom: 8),
