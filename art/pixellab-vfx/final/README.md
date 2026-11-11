@@ -1,0 +1,2 @@
+# Skill effects, final 6 strips (the user's look: rawer)
+`vfx_<style>.png` (432x48 PNG8, 9 frames of 48x48, transparent): flame, frost, lightning, heal, void_rift, shield. GIFs in `gif/` (90 ms a frame). Made by `art/pixellab-vfx/rawer_gen.py` from the pilot strips (24-grid x2, hard edges, 5 colours + ink); **heal** keeps the first pilot's bright core and sparkles (7 colours, plain 2x2 sparkles). Flame and heal fade out in code (user's decision). Re-tint by luminance rank works (Fire, Water, Void on `docs/art/boards/skill-effects-final6.png`). Not wired; 0 generations.

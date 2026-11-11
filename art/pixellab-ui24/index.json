@@ -1,0 +1,44 @@
+{
+ "colour_24px": {
+  "nav": [
+   "story",
+   "journey",
+   "character",
+   "camp",
+   "ship",
+   "other",
+   "play",
+   "data"
+  ],
+  "stats": [
+   "level",
+   "time_dawn",
+   "time_day",
+   "time_dusk",
+   "time_night",
+   "hp",
+   "mana",
+   "gold",
+   "rations",
+   "quest"
+  ],
+  "header": [
+   "settings",
+   "home",
+   "map",
+   "info"
+  ]
+ },
+ "masks_24px": [
+  "chevron_right",
+  "chevron_left",
+  "expand_more",
+  "expand_less",
+  "close",
+  "add",
+  "remove",
+  "check",
+  "arrow_back",
+  "arrow_forward"
+ ]
+}

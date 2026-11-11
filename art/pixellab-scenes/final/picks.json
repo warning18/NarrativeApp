@@ -1,0 +1,57 @@
+{
+ "date": "2026-11-11",
+ "chosen_by": "the user (Hollow Shore: neither, no scene for now)",
+ "keyed_by": "Cleaned_Narrative_DAG.json node \"location\"",
+ "scenes": [
+  {
+   "location": "alster_lower_town",
+   "file": "alster_lower_town.png",
+   "size": [
+    240,
+    100
+   ],
+   "seed": 4,
+   "note": "the street receding to the tower reads as the opening"
+  },
+  {
+   "location": "cove_camp",
+   "file": "cove_camp.png",
+   "size": [
+    240,
+    100
+   ],
+   "seed": 4,
+   "note": "the fire, the burning wreck and the tents"
+  },
+  {
+   "location": "saltmouth_wharf",
+   "file": "saltmouth_wharf.png",
+   "size": [
+    240,
+    100
+   ],
+   "seed": 3,
+   "note": "the night wharf with the moored boat"
+  },
+  {
+   "location": "black_hold_cells",
+   "file": "black_hold_cells.png",
+   "size": [
+    240,
+    100
+   ],
+   "seed": 3,
+   "note": "the cell with the barred arch and the brazier"
+  },
+  {
+   "location": "candlehold_throne_room",
+   "file": "candlehold_throne_room.png",
+   "size": [
+    240,
+    100
+   ],
+   "seed": 4,
+   "note": "the red carpet to the throne"
+  }
+ ]
+}
