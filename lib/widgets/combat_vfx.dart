@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../combat/skill_vfx.dart';
+import '../theme/stitched_ink.dart' show InkFonts;
 import 'pixel_portrait.dart';
 import 'pixel_vfx.dart';
 
@@ -567,6 +568,10 @@ class _VfxPainter extends CustomPainter {
       text: TextSpan(
         text: burst.text,
         style: TextStyle(
+          // The app's own pixel font: with no family the number fell back to
+          // the platform's, and where that is not loaded it drew as a solid
+          // block (QA's pale and red rectangles by the cards, v1.915).
+          fontFamily: InkFonts.system,
           fontSize: _textSize(burst) * _textPop(burst, t),
           fontWeight: FontWeight.w900,
           color: color.withValues(alpha: opacity),
