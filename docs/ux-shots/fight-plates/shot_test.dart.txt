@@ -1,0 +1,62 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/combat/field_anomaly.dart';
+import 'package:narrative_data_app/widgets/fight_backdrop.dart';
+import 'package:narrative_data_app/widgets/fight_plates.dart';
+
+void main() {
+  final out = Platform.environment['UX_SHOTS'];
+  testWidgets('city road plates', skip: out == null, (tester) async {
+    for (final (name, settlement, withPlate) in [
+      ('0-code', null, false),
+      ('1-alster', 'alster', true),
+      ('2-saltmouth', 'saltmouth', true),
+      ('3-candlehold', 'candlehold', true),
+      ('4-frost', 'black_reliquary', true),
+    ]) {
+      await tester.binding.setSurfaceSize(const Size(412, 780));
+      final key = GlobalKey();
+      final asset = withPlate ? fightPlateAsset(FightStage.cityRoad, settlement) : null;
+      await tester.pumpWidget(MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(),
+          home: RepaintBoundary(
+              key: key,
+              child: Stack(fit: StackFit.expand, children: [
+                FightBackdrop(
+                    stage: FightStage.cityRoad,
+                    plate: asset,
+                    weather: false,
+                    events: false),
+                DecoratedBox(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                      const Color(0xFF121212).withValues(alpha: 0.6),
+                      const Color(0xFF121212).withValues(alpha: 0.28),
+                      const Color(0xFF121212).withValues(alpha: 0.65),
+                    ], stops: const [0, 0.5, 1]))),
+              ]))));
+      if (asset != null) {
+        await tester.runAsync(() async {
+          for (var i = 0; i < 20 && FightPlateImages.of(asset) == null; i++) {
+            await Future<void>.delayed(const Duration(milliseconds: 20));
+          }
+        });
+      }
+      await tester.pump();
+      await tester.pump();
+      await tester.runAsync(() async {
+        final b = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final img = await b.toImage(pixelRatio: 1);
+        final d = await img.toByteData(format: ui.ImageByteFormat.png);
+        File('$out/$name.png').writeAsBytesSync(d!.buffer.asUint8List());
+      });
+    }
+  });
+}

@@ -343,6 +343,8 @@ extension _FightGround on _FightScreenState {
         FightBackdrop(
           key: const Key('fight_backdrop'),
           stage: _stage,
+          plate: fightPlateAsset(_stage,
+              ref.read(geographyProvider).locationOf(_placeIdHere())?.id),
           light: lightLevel(_light),
           weather: false,
           events: false,
