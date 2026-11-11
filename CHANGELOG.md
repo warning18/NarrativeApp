@@ -8,9 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.926.0+962]
+## [1.932.0+968]
 
 - Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger. The Tower keeps all six foes as they were, so the climb doesn't change.
+
+## [1.927.0+963]
+
+- Tower: Art's decorations on the frames, by band: the night rooms (floors 1 to 10) hang chains and candle stubs, the stone stair (11 to 20) has cracks and rubble, the void (21 to 30) violet cracks and a glow. A few pieces per screen, at the frame's pixel density: corner pieces on the oaths panel, two pieces hanging from the first foe's panel (its content starts under them, never under a piece) and two standing on the health panel's lower edge, picked by the floor so they are stable. Every other panel and every button stays clean. Pictures: `docs/ux-shots/tower-decorations/`.
 
 ## [1.925.0+961]
 
