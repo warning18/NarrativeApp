@@ -45,34 +45,24 @@ class TowerLadder extends StatelessWidget {
           boxShadow: here
               ? [
                   BoxShadow(
-                    color: ink.gold.withValues(alpha: .7),
-                    blurRadius: 9,
-                  ),
+                      color: ink.gold.withValues(alpha: .7), blurRadius: 9)
                 ]
               : null,
         ),
         child: here
-            ? Text(
-                '$n',
+            ? Text('$n',
                 style: label?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: ink.gold,
-                  height: 1,
-                ),
-              )
+                    fontWeight: FontWeight.w800, color: ink.gold, height: 1))
             : isBoss(n)
-                ? Text(
-                    '$n',
-                    style: label?.copyWith(color: Colors.white70, height: 1),
-                  )
+                ? Text('$n',
+                    style: label?.copyWith(color: Colors.white70, height: 1))
                 : Container(
                     width: w * 0.36,
                     height: 4,
                     decoration: BoxDecoration(
                       color: lit ? ink.gold.withValues(alpha: .85) : dark,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(3),
-                      ),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(3)),
                     ),
                   ),
       );
@@ -90,9 +80,7 @@ class TowerLadder extends StatelessWidget {
                 child: Center(
                   child: n == floor
                       ? KeyedSubtree(
-                          key: const Key('tower_ladder_here'),
-                          child: stone(n),
-                        )
+                          key: const Key('tower_ladder_here'), child: stone(n))
                       : stone(n),
                 ),
               ),

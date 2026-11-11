@@ -24,9 +24,8 @@ class TowerEndScreen extends StatelessWidget {
   final TowerProgress progress;
 
   @override
-  Widget build(BuildContext context) => TowerNight(
-        child: _TowerEndBody(run: run, progress: progress),
-      );
+  Widget build(BuildContext context) =>
+      TowerNight(child: _TowerEndBody(run: run, progress: progress));
 }
 
 class _TowerEndBody extends ConsumerWidget {
@@ -63,23 +62,16 @@ class _TowerEndBody extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tr(
-                      ref,
-                      'tower_floor_of',
-                    ).replaceAll('{n}', '${run.floorReached}'),
-                    key: const Key('tower_end_floor'),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: won ? ink.gold : ink.blood,
-                    ),
-                  ),
+                      tr(ref, 'tower_floor_of')
+                          .replaceAll('{n}', '${run.floorReached}'),
+                      key: const Key('tower_end_floor'),
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(color: won ? ink.gold : ink.blood)),
                   const SizedBox(height: 8),
-                  Text(
-                    line,
-                    key: const Key('tower_end_line'),
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
+                  Text(line,
+                      key: const Key('tower_end_line'),
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(fontStyle: FontStyle.italic)),
                 ],
               ),
             ),
@@ -89,18 +81,15 @@ class _TowerEndBody extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tr(ref, 'tower_earned').replaceAll('{n}', '${run.marks}'),
-                    key: const Key('tower_end_earned'),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: ink.gold,
-                    ),
-                  ),
+                      tr(ref, 'tower_earned').replaceAll('{n}', '${run.marks}'),
+                      key: const Key('tower_end_earned'),
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(color: ink.gold)),
                   const SizedBox(height: 4),
                   Text(
-                    '${progress.marks} ${tr(ref, 'tower_marks_name')} · '
-                    '${tr(ref, 'tower_best').replaceAll('{n}', '${progress.bestFloor}')}',
-                    style: theme.textTheme.bodySmall,
-                  ),
+                      '${progress.marks} ${tr(ref, 'tower_marks_name')} · '
+                      '${tr(ref, 'tower_best').replaceAll('{n}', '${progress.bestFloor}')}',
+                      style: theme.textTheme.bodySmall),
                 ],
               ),
             ),
@@ -108,16 +97,14 @@ class _TowerEndBody extends ConsumerWidget {
             FilledButton(
               key: const Key('tower_end_again'),
               onPressed: () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const TowerStartScreen()),
-              ),
+                  MaterialPageRoute(builder: (_) => const TowerStartScreen())),
               child: Text(tr(ref, 'tower_climb_again')),
             ),
             const SizedBox(height: 8),
             OutlinedButton(
               key: const Key('tower_end_marks'),
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const TowerMarksScreen()),
-              ),
+                  MaterialPageRoute(builder: (_) => const TowerMarksScreen())),
               child: Text(tr(ref, 'tower_marks_button')),
             ),
             const SizedBox(height: 8),

@@ -61,15 +61,10 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   Future<void> _levelUp(TowerRun run, TowerData data) async {
     _resumed = true;
     final session = TowerLevelUpSession(run, data);
-    await Navigator.of(context).push(
-      MaterialPageRoute(
+    await Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => TowerNight(
-          child: session.wrap(
-            const LevelUpScreen(doneLabelKey: 'tower_continue'),
-          ),
-        ),
-      ),
-    );
+            child: session
+                .wrap(const LevelUpScreen(doneLabelKey: 'tower_continue')))));
     if (!mounted) return;
     await ref.read(towerProvider.notifier).setRun(session.run);
   }
@@ -78,33 +73,24 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   Future<void> _finish(TowerRun over) async {
     final progress = await ref.read(towerProvider.notifier).end(over);
     if (!mounted) return;
-    await Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => TowerEndScreen(run: over, progress: progress),
-      ),
-    );
+    await Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (_) => TowerEndScreen(run: over, progress: progress)));
   }
 
   Future<void> _fight(TowerRun run, TowerData data) async {
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      final result = await ref.read(towerFightLauncherProvider)(
-        context,
-        run,
-        data,
-      );
+      final result =
+          await ref.read(towerFightLauncherProvider)(context, run, data);
       if (!mounted) return;
       // Not fought (Back before the first roll): the floor stays as it was.
       if (result == null) return;
-      final next = towerAfterFight(
-        run,
-        data,
-        won: result.won,
-        healthLeft: result.healthLeft,
-        potionsLeft: result.potionsLeft,
-        antidotesLeft: result.antidotesLeft,
-      );
+      final next = towerAfterFight(run, data,
+          won: result.won,
+          healthLeft: result.healthLeft,
+          potionsLeft: result.potionsLeft,
+          antidotesLeft: result.antidotesLeft);
       if (next.isOver) {
         await _finish(next);
       } else {
@@ -143,9 +129,8 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     final data = ref.watch(towerDataProvider).value;
     if (run == null || data == null || run.isOver) {
       return Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
-        body: const InkLoading(),
-      );
+          appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
+          body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
     // Back on a floor won with a pick still owed: the Level Up first.
@@ -239,28 +224,18 @@ class _FloorIntro extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
-        Text(
-          tr(ref, 'tower_band_$band').toUpperCase(),
-          style: theme.textTheme.labelMedium?.copyWith(
-            letterSpacing: 1.2,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        Text(tr(ref, 'tower_band_$band').toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+                letterSpacing: 1.2, color: theme.colorScheme.onSurfaceVariant)),
         // The floor's number, large and gold (v1.900).
-        Text(
-          tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
-          key: const Key('tower_floor_label'),
-          style: theme.textTheme.headlineMedium?.copyWith(
-            color: ink.gold,
-            shadows: const [Shadow(blurRadius: 8, color: Colors.black)],
-          ),
-        ),
-        Text(
-          tr(ref, 'tower_floor_${run.floor}'),
-          style: theme.textTheme.bodyLarge?.copyWith(
-            fontStyle: FontStyle.italic,
-          ),
-        ),
+        Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
+            key: const Key('tower_floor_label'),
+            style: theme.textTheme.headlineMedium?.copyWith(
+                color: ink.gold,
+                shadows: const [Shadow(blurRadius: 8, color: Colors.black)])),
+        Text(tr(ref, 'tower_floor_${run.floor}'),
+            style: theme.textTheme.bodyLarge
+                ?.copyWith(fontStyle: FontStyle.italic)),
         if (danger) ...[
           const SizedBox(height: 10),
           Container(
@@ -275,22 +250,17 @@ class _FloorIntro extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tr(
-                    ref,
-                    floor.kind == TowerFloorKind.boss
-                        ? 'tower_floor_boss'
-                        : 'tower_floor_warden',
-                  ).replaceAll('{n}', '${run.floor}'),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: ink.blood,
-                    letterSpacing: 1,
-                  ),
-                ),
+                    tr(
+                            ref,
+                            floor.kind == TowerFloorKind.boss
+                                ? 'tower_floor_boss'
+                                : 'tower_floor_warden')
+                        .replaceAll('{n}', '${run.floor}'),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: ink.blood, letterSpacing: 1)),
                 if (floor.kind == TowerFloorKind.boss)
-                  Text(
-                    tr(ref, 'tower_boss_line_${run.floor}'),
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  Text(tr(ref, 'tower_boss_line_${run.floor}'),
+                      style: theme.textTheme.bodyMedium),
               ],
             ),
           ),
@@ -306,10 +276,8 @@ class _FloorIntro extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      '${(enemies[id] as Map?)?['enemyName'] ?? id}',
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    child: Text('${(enemies[id] as Map?)?['enemyName'] ?? id}',
+                        style: theme.textTheme.titleSmall),
                   ),
                   // The foe stands in its panel when it has art (v1.900).
                   if (id == floor.enemyIds.first) TowerFoeFigure(id),
@@ -317,20 +285,14 @@ class _FloorIntro extends ConsumerWidget {
                     for (final a in floor.affixes)
                       Padding(
                         padding: const EdgeInsets.only(left: 6),
-                        child: InkChip(
-                          tr(ref, affixLabelKey(a)),
-                          color: ink.blood,
-                          dense: true,
-                        ),
+                        child: InkChip(tr(ref, affixLabelKey(a)),
+                            color: ink.blood, dense: true),
                       ),
                     if (floor.elite)
                       Padding(
                         padding: const EdgeInsets.only(left: 6),
-                        child: InkChip(
-                          tr(ref, 'tower_floor_elite'),
-                          color: ink.gold,
-                          dense: true,
-                        ),
+                        child: InkChip(tr(ref, 'tower_floor_elite'),
+                            color: ink.gold, dense: true),
                       ),
                   ],
                 ],
@@ -344,11 +306,9 @@ class _FloorIntro extends ConsumerWidget {
             children: [
               LinearProgressIndicator(value: hp, color: ink.heal, minHeight: 8),
               const SizedBox(height: 4),
-              Text(
-                '${run.health} / ${hero.maxHealth}',
-                key: const Key('tower_health'),
-                style: theme.textTheme.bodySmall,
-              ),
+              Text('${run.health} / ${hero.maxHealth}',
+                  key: const Key('tower_health'),
+                  style: theme.textTheme.bodySmall),
             ],
           ),
         ),
@@ -396,13 +356,10 @@ class _SwornRow extends ConsumerWidget {
     return InkPanel(
       key: const Key('tower_sworn'),
       child: sworn.isEmpty
-          ? Text(
-              tr(ref, 'tower_unsworn'),
+          ? Text(tr(ref, 'tower_unsworn'),
               style: theme.textTheme.bodyMedium?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            )
+                  fontStyle: FontStyle.italic,
+                  color: theme.colorScheme.onSurfaceVariant))
           : Wrap(
               spacing: 12,
               runSpacing: 6,
@@ -416,10 +373,8 @@ class _SwornRow extends ConsumerWidget {
                         if (id == run.mainClanId && sworn.length > 1)
                           Padding(
                             padding: const EdgeInsets.only(left: 4),
-                            child: Text(
-                              '(${tr(ref, 'tower_main_clan')})',
-                              style: theme.textTheme.labelSmall,
-                            ),
+                            child: Text('(${tr(ref, 'tower_main_clan')})',
+                                style: theme.textTheme.labelSmall),
                           ),
                       ],
                     ),
