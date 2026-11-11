@@ -52,6 +52,8 @@ class TowerRun {
     this.spoils = const {},
     this.potions = 0,
     this.antidotes = 0,
+    this.dieChoice,
+    this.seenDieIds = const {},
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -125,6 +127,10 @@ class TowerRun {
       spoils: spoils,
       potions: (json['potions'] as num?)?.toInt() ?? 0,
       antidotes: (json['antidotes'] as num?)?.toInt() ?? 0,
+      dieChoice: json['die']?.toString(),
+      seenDieIds: {
+        for (final id in (json['seen'] as List?) ?? const []) id.toString(),
+      },
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -199,6 +205,17 @@ class TowerRun {
   final int potions;
   final int antidotes;
 
+  /// The die in play, the player's choice: a die gained goes to
+  /// the bag ([towerHeroOf]), the player rolls the one it chose
+  /// (towerChooseDie). Null, a run saved before: the die gained is rolled
+  /// at once when the simulator's worth rates it higher, as it was.
+  final String? dieChoice;
+
+  /// The dice the player has seen in the bag (towerDiceOf's `isNew`): the
+  /// die in play at the start, and each one chosen or looked at
+  /// (towerMarkDieSeen). A run saved before [dieChoice] reads as all seen.
+  final Set<String> seenDieIds;
+
   bool get isOver =>
       status == TowerStatus.dead ||
       status == TowerStatus.won ||
@@ -228,6 +245,8 @@ class TowerRun {
     Map<int, List<String>>? spoils,
     int? potions,
     int? antidotes,
+    String? dieChoice,
+    Set<String>? seenDieIds,
   }) =>
       TowerRun(
         seed: seed,
@@ -246,6 +265,8 @@ class TowerRun {
         spoils: spoils ?? this.spoils,
         potions: potions ?? this.potions,
         antidotes: antidotes ?? this.antidotes,
+        dieChoice: dieChoice ?? this.dieChoice,
+        seenDieIds: seenDieIds ?? this.seenDieIds,
       );
 
   Map<String, dynamic> toJson() => {
@@ -272,6 +293,8 @@ class TowerRun {
           },
         if (potions != 0) 'potions': potions,
         if (antidotes != 0) 'antidotes': antidotes,
+        if (dieChoice != null) 'die': dieChoice,
+        if (seenDieIds.isNotEmpty) 'seen': (seenDieIds.toList()..sort()),
       };
 }
 
@@ -292,7 +315,8 @@ int towerMarksOf(int floorsCleared, int refusals) {
 }
 
 /// A new run of [seed]: floor 1, the hero at full health, with the power
-/// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned). It is sworn
+/// of the [unlocksOwned] unlocks (TowerProgress.unlocksOwned), rolling its
+/// calling's own die (the start's dice in the bag, [TowerRun.dieChoice]). It is sworn
 /// to no clan (v1.855): the clans of [clanPool] (TowerProgress.clans)
 /// offer their oaths on the way up. A [clanId] swears one from the start:
 /// its oath taken on floor 0 (the bot's and the tests').
@@ -313,7 +337,10 @@ TowerRun towerStart({
         id,
   ];
   final hero = towerFreshHero(raceId, professionId, unlocks, data,
-      unlocksOwned: unlocksOwned);
+      unlocksOwned: unlocksOwned, bag: true);
+  // The die in play: the calling's own; the start's dice wait in
+  // the bag.
+  final die = hero.diceId;
   return TowerRun(
     seed: seed,
     raceId: raceId,
@@ -329,6 +356,8 @@ TowerRun towerStart({
     startUnlocks: unlocks,
     unlocksOwned: unlocksOwned,
     health: hero.maxHealth,
+    dieChoice: die,
+    seenDieIds: {die},
   );
 }
 
@@ -476,7 +505,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
   }
   final card = run.offer[index];
   hero ??= towerHeroOf(run, data);
-  towerApplyReward(hero, card, data);
+  towerApplyReward(hero, card, data, bag: run.dieChoice != null);
   return run.copyWith(
     status: TowerStatus.climbing,
     floor: run.floor + 1,

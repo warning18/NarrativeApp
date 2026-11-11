@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 
 import '../data/description_text.dart';
 import '../data/forge_roll.dart' show withForgedVariants;
@@ -30,6 +31,12 @@ Map<String, dynamic> _readableTable(
 class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   _GameDbNotifier(this._repository) : super(const AsyncValue.loading()) {
     _load();
+  }
+
+  /// A table held at [records], never loaded ([gameDbScopedTo]).
+  _GameDbNotifier.fixed(this._repository, Map<String, dynamic> records)
+      : super(AsyncValue.data(records)) {
+    _loaded.complete(records);
   }
 
   final GameDbRepository _repository;
@@ -149,10 +156,25 @@ dynamic _overlaid(dynamic value) {
 /// never writes French into an English field, nor a number into a
 /// placeholder.
 final localizedDbProvider =
-    Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
+    Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>(_localized);
+
+AsyncValue<Map<String, dynamic>> _localized(Ref ref, DbSchema schema) {
   final raw = ref.watch(gameDbProvider(schema)).whenData((records) =>
       _readableTable(schema, withResolvedPlaceholders(schema.id, records)));
   if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
   return raw.whenData((records) =>
       _readableTable(schema, frenchOverlay(records), french: true));
-});
+}
+
+/// The overrides that hold [schema]'s table at [records] under a
+/// ProviderScope: [gameDbProvider] and [localizedDbProvider] (its French
+/// laid over as for the real table) read them below it, nothing is saved.
+/// The Tower's fight rolls the Tower's own dice so (tower_fight_session.dart,
+/// TowerData.dice).
+List<Override> gameDbScopedTo(DbSchema schema, Map<String, dynamic> records) =>
+    [
+      gameDbProvider(schema).overrideWith(
+          (ref) => _GameDbNotifier.fixed(GameDbRepository(schema), records)),
+      localizedDbProvider(schema)
+          .overrideWith((ref) => _localized(ref, schema)),
+    ];

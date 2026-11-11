@@ -461,3 +461,83 @@ TowerUnlock? towerUnlockOf(String id) {
   }
   return null;
 }
+
+/// The Tower's own faces of its three dice unlocks (the Tower review,
+/// docs/proposals/tower-mechanics-review.md §2.1 (c)): each a side-grade of
+/// the starter die, where the game's (dice.json, sold in the story's shops
+/// and left as they are) were all worse. Each face is one of the die's own
+/// (`from`, by its name: its name, element and keywords kept) with its
+/// type, value or weight changed; the die keeps its size. Only the Tower
+/// reads them ([towerDiceTable], TowerData.dice).
+/// - flame d8, a mage's: six Skill and Attack faces of eight, no heal;
+/// - tide d8, a cleric's: a big heal, a guard, two strikes;
+/// - tearglass d12: bigger values, one Defend and one Heal face.
+const Map<String, List<Map<String, Object>>> towerDieFaces = {
+  'flame_die': [
+    {'from': 'Fireball', 'weight': 1.0},
+    {'from': 'Ember Slash', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Meteor', 'weight': 0.8},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Profession Technique', 'weight': 1.0},
+    {'from': 'Strike', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+  ],
+  'tide_die': [
+    {'from': 'Cleansing Wave', 'value': 5, 'weight': 0.6},
+    {'from': 'Riptide Slash', 'value': 3},
+    {'from': 'Tide Wall', 'value': 3, 'weight': 0.6},
+    {'from': 'Holy Light', 'weight': 0.8},
+    {'from': 'Purify', 'weight': 0.4},
+    {'from': 'Heavy Strike', 'weight': 0.8},
+    {'from': 'Strike', 'value': 3},
+    {'from': 'Profession Technique', 'weight': 1.0},
+  ],
+  'tearglass_die': [
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Guard', 'value': 3, 'weight': 0.5},
+    {'from': 'Riftcut', 'weight': 0.8},
+    {'from': 'Seal the Crack', 'value': 5, 'weight': 0.5},
+    {'from': 'Blank Facet', 'weight': 1.0},
+    {'from': 'Final Shard', 'weight': 0.6},
+    {'from': 'Strike', 'value': 6},
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Blank Facet', 'weight': 1.0},
+    {'from': 'Strike', 'value': 6},
+    {'from': 'Glass Edge', 'value': 6},
+    {'from': 'Strike', 'value': 6},
+  ],
+};
+
+/// [dice] (dice.json's records) as the Tower rolls them: the dice of
+/// [towerDieFaces] with their Tower faces, the others as they are. [dice]
+/// itself is left as it is.
+Map<String, dynamic> towerDiceTable(Map<String, dynamic> dice) {
+  if (!towerDieFaces.keys.any(dice.containsKey)) return dice;
+  return {
+    for (final MapEntry(:key, :value) in dice.entries)
+      key: switch ((towerDieFaces[key], value)) {
+        (final List<Map<String, Object>> faces, final Map die) => {
+            ...die.cast<String, dynamic>(),
+            'faces': [
+              for (final face in faces)
+                {
+                  ...?_faceNamed(die, face['from']),
+                  for (final MapEntry(:key, :value) in face.entries)
+                    if (key != 'from') key: value,
+                },
+            ],
+          },
+        _ => value,
+      },
+  };
+}
+
+Map<String, dynamic>? _faceNamed(Map die, Object? name) {
+  for (final face in (die['faces'] as List?) ?? const []) {
+    if (face is Map && face['faceName'] == name) {
+      return face.cast<String, dynamic>();
+    }
+  }
+  return null;
+}

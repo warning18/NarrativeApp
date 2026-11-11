@@ -1802,6 +1802,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Swear to them: their standing and their die.',
     AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
   },
+  // The Tower's dice bag (towerDiceOf): a die gained waits in it.
+  'tower_dice_title': {
+    AppLanguage.en: 'Your dice',
+    AppLanguage.fr: 'Vos dés',
+  },
+  'tower_dice_in_play': {
+    AppLanguage.en: 'In play',
+    AppLanguage.fr: 'En jeu',
+  },
+  'tower_dice_roll': {
+    AppLanguage.en: 'Roll this die',
+    AppLanguage.fr: 'Lancer ce dé',
+  },
+  'tower_dice_resonates': {
+    AppLanguage.en: 'Resonates',
+    AppLanguage.fr: 'Résonne',
+  },
+  'tower_dice_new': {
+    AppLanguage.en: 'New',
+    AppLanguage.fr: 'Nouveau',
+  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',
