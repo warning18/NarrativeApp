@@ -53,7 +53,7 @@ BAND={'panel_dark':(2,3),'panel_parchment':(2,3),'hud_panel':(1,2),'dialog':(2,4
 def decorate(name,im):
     mat=K.CURMAT
     if mat=='iron' or name not in BAND: return im
-    ink,band=BAND[name]; w,h=im.size; px=im.load(); rnd=random.Random(hash(name)%999)
+    ink,band=BAND[name]; w,h=im.size; px=im.load(); rnd=random.Random(sum(map(ord,name)))
     def inband(x,y): d_=min(x,y,w-1-x,h-1-y); return ink<=d_<ink+band
     if mat=='wood':
         for _ in range(w*h//9):                      # grain: short dark strokes along the band, a few knots
