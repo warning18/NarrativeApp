@@ -173,8 +173,29 @@ void main() {
         final label = texts(8).join(' | ');
         note('FLOOR $floorsPlayed stand: $label');
         await shot('floor-$floorsPlayed-stand');
+        // The Fight button waits while the last floor is still being put
+        // away: give it real time, and say how long it took.
+        var waited = 0;
+        while (waited < 40 &&
+            !(tester.widget(find.byKey(const Key('tower_fight')).first)
+                    as ButtonStyleButton)
+                .enabled) {
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 250)));
+          await tester.pump(const Duration(milliseconds: 250));
+          waited++;
+        }
+        if (waited > 0) {
+          note(waited >= 40
+              ? 'FINDING Fight button stayed disabled for 10 s on floor $floorsPlayed'
+              : 'Fight button waited ${waited * 250} ms on floor $floorsPlayed');
+        }
         await tapKey('tower_fight');
         await settle(10);
+        if (floorsPlayed >= 6 && floorsPlayed <= 8) {
+          note(
+              'AFTER FIGHT TAP (floor $floorsPlayed): ${seen()} barriers=${find.byType(ModalBarrier).evaluate().length}');
+        }
         // the fight
         final enter = find.text('Enter Battle');
         if (enter.evaluate().isNotEmpty) {

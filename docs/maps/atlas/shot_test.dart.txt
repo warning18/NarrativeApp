@@ -1,0 +1,481 @@
+// Throw-away picture test for the map atlas (docs/maps/atlas). Not part of
+// the suite: it only runs with ATLAS=<folder>.
+//   ATLAS=docs/maps/atlas/shots ATLAS_THEME=dark ATLAS_W=412 \
+//     flutter test test/zz_atlas_shot_test.dart
+// It opens the real app, jumps the story to a scene, and walks the map
+// levels with the same buttons the player has, saving the screen each time.
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:narrative_data_app/data/map_charts.dart' show ChartPalette;
+import 'package:narrative_data_app/data/room_plan.dart';
+import 'package:narrative_data_app/data/world_map.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/room_plan_painter.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/app_mode_provider.dart';
+import 'package:narrative_data_app/providers/map_look_provider.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/providers/theme_mode_provider.dart';
+import 'package:narrative_data_app/screens/journey_screen.dart';
+import 'package:narrative_data_app/providers/home_tab_provider.dart'
+    show isGameRoute;
+
+import 'support/fonts.dart';
+import 'support/open_game.dart';
+import 'support/pump.dart';
+
+final _shotKey = GlobalKey();
+
+void main() {
+  final dir = Platform.environment['ATLAS'];
+  if (dir == null) {
+    test('the atlas pictures are taken only with ATLAS', () {});
+    return;
+  }
+  final theme = Platform.environment['ATLAS_THEME'] ?? 'dark';
+  final w = double.parse(Platform.environment['ATLAS_W'] ?? '412');
+  final only = Platform.environment['ATLAS_ONLY'];
+  final tag = '$theme-${w.round()}';
+  Directory(dir).createSync(recursive: true);
+  final log = File('$dir/log-$tag.txt');
+
+  Future<void> shoot(WidgetTester tester, String name) async {
+    await tester.runAsync(() async {
+      final boundary =
+          _shotKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 2);
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      File('$dir/$name-$tag.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+    });
+  }
+
+  Future<void> settle(WidgetTester tester, [int seconds = 2]) async {
+    await settleApp(tester);
+    await tester.pump(Duration(seconds: seconds));
+    await tester.pump(const Duration(milliseconds: 400));
+  }
+
+  Future<bool> tap(WidgetTester tester, String key, {String? as}) async {
+    final f = find.byKey(ValueKey(key));
+    if (f.evaluate().isEmpty) {
+      log.writeAsStringSync('MISSING $key (${as ?? ''})\n',
+          mode: FileMode.append);
+      return false;
+    }
+    await tester.tap(f.first, warnIfMissed: false);
+    await settle(tester);
+    return true;
+  }
+
+  Future<ProviderContainer> open(WidgetTester tester, String scene,
+      {List<String> flags = const [], List<String> via = const []}) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
+    usePhone(tester, Size(w, 915));
+    await tester.pumpWidget(ProviderScope(
+      overrides: [storedCityPlans],
+      child: RepaintBoundary(key: _shotKey, child: const MyApp()),
+    ));
+    await tester.runAsync(loadAppFonts);
+    await settleApp(tester);
+    await tester.tap(find.byKey(const Key('menu_edit_mode')));
+    await settleApp(tester);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    await tester.runAsync(() => container
+        .read(themeModeProvider.notifier)
+        .setThemeMode(theme == 'light' ? ThemeMode.light : ThemeMode.dark));
+    await tester.runAsync(() => container
+        .read(mapLookProvider.notifier)
+        .choose(theme == 'light' ? MapLook.parchment : MapLook.night));
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          'gold': 100,
+          'flags': ['journey_first_shown', ...flags],
+        })));
+    await tester.runAsync(
+        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+    await settleApp(tester);
+    await tester.tap(find.text('Journey'));
+    await settleApp(tester);
+    if (scene == 'mid') {
+      // A scene of each landmark of chapters 1 to 3: most lands charted.
+      final ids = [
+        for (final l in worldMapLandmarks)
+          if (l.chapter <= 3 && l.scenes.isNotEmpty) l.scenes.first,
+      ];
+      container
+          .read(storyPlayProvider.notifier)
+          .loadState(ids.last, ids.sublist(0, ids.length - 1));
+      await settleApp(tester);
+      await tester.pump(const Duration(seconds: 6));
+    }
+    for (final s in [...via, if (scene != 'mid') scene]) {
+      container.read(storyPlayProvider.notifier).jumpTo(s);
+      await settleApp(tester);
+      await tester.pump(const Duration(seconds: 6));
+      for (var i = 0; i < 3; i++) {
+        Navigator.of(tester.element(find.byType(JourneyScreen)))
+            .popUntil(isGameRoute);
+        await tester.pump(const Duration(seconds: 1));
+      }
+    }
+    await tester.pump(const Duration(milliseconds: 700));
+    return container;
+  }
+
+  // One walk up the ladder from a scene: where the party stands, then each
+  // tab and button the player has.
+  for (final (name, scene, via) in [
+    ('alster', '100', <String>[]),
+    ('saltmouth', '2015_cards', ['2010']),
+    ('ashen', '3005_archive', ['3005_oath']),
+    ('wells', '1200', <String>[]),
+    ('reliquary', '6010', <String>[]),
+  ]) {
+    if (only != null && !only.split(',').contains(name)) continue;
+    testWidgets('ladder from $name', (tester) async {
+      final c = await open(tester, scene, via: via, flags: ['lysa_survived']);
+      await shoot(tester, '$name-1-here');
+      // Out of the building or up from the district with the map's own
+      // "look out" button, as far as it goes.
+      for (var i = 2; i <= 4; i++) {
+        if (!await tap(tester, 'journey_place_zoom_out', as: name)) break;
+        await shoot(tester, '$name-$i-out');
+      }
+      await tap(tester, 'journey_tab_district');
+      await shoot(tester, '$name-5-tab-district');
+      await tap(tester, 'journey_tab_town');
+      await shoot(tester, '$name-6-tab-town');
+      if (await tap(tester, 'journey_city_plan')) {
+        await shoot(tester, '$name-7-city-plan');
+        await tap(tester, 'city_chart_zoom_in');
+        await tap(tester, 'city_chart_zoom_in');
+        await shoot(tester, '$name-8-city-plan-close');
+        Navigator.of(tester.element(find.byKey(const Key('city_chart')))).pop();
+        await settle(tester);
+      }
+      await tap(tester, 'journey_tab_world');
+      await shoot(tester, '$name-9-tab-world');
+      for (var i = 1; i <= 3; i++) {
+        if (!await tap(tester, 'journey_zoom_in')) break;
+        await shoot(tester, '$name-9${'abc'[i - 1]}-world-in$i');
+      }
+      // The flat chart at the same rungs.
+      await tester
+          .runAsync(() => c.read(chartGlobeProvider.notifier).choose(false));
+      await tap(tester, 'journey_tab_district');
+      await tap(tester, 'journey_tab_world');
+      await shoot(tester, '$name-10-flat-world');
+      for (var i = 1; i <= 3; i++) {
+        if (!await tap(tester, 'journey_zoom_in')) break;
+        await shoot(tester, '$name-10${'abc'[i - 1]}-flat-in$i');
+      }
+      final e = tester.takeException();
+      if (e != null) {
+        log.writeAsStringSync('EXCEPTION $name: $e\n', mode: FileMode.append);
+      }
+    });
+  }
+
+  // The full-screen map: the three looks, the sphere whole and turned to
+  // two places, the flat chart, the layers sheet.
+  if (only == null || only.split(',').contains('fullmap')) {
+    testWidgets('the full map', (tester) async {
+      final c = await open(tester, 'mid');
+      await shoot(tester, 'full-0-journey');
+      await tap(tester, 'journey_tab_world');
+      await shoot(tester, 'full-1-journey-world');
+      await tap(tester, 'journey_full_map');
+      await shoot(tester, 'full-2-sphere');
+      for (final look in MapLook.values) {
+        await tester
+            .runAsync(() => c.read(mapLookProvider.notifier).choose(look));
+        await settle(tester);
+        await shoot(tester, 'full-3-sphere-${look.name}');
+      }
+      await tester.runAsync(() => c
+          .read(mapLookProvider.notifier)
+          .choose(theme == 'light' ? MapLook.parchment : MapLook.night));
+      // Turned by hand: a drag east, then a drag west and south.
+      final globe = find.byKey(const ValueKey('journey_globe_canvas'));
+      if (globe.evaluate().isNotEmpty) {
+        await tester.drag(globe.first, const Offset(-150, 20));
+        await settle(tester);
+        await shoot(tester, 'full-4-sphere-turned-east');
+        await tester.drag(globe.first, const Offset(260, -90));
+        await settle(tester);
+        await shoot(tester, 'full-5-sphere-turned-west');
+        await tap(tester, 'journey_pole_north');
+        await shoot(tester, 'full-6-sphere-pole-north');
+        await tap(tester, 'journey_recentre');
+      }
+      for (var i = 1; i <= 3; i++) {
+        await tap(tester, 'journey_zoom_in');
+        await shoot(tester, 'full-7-sphere-in$i');
+      }
+      await tap(tester, 'journey_layers');
+      await shoot(tester, 'full-8-layers');
+      Navigator.of(tester.element(find.byType(BottomSheet))).pop();
+      await settle(tester);
+      await tester
+          .runAsync(() => c.read(chartGlobeProvider.notifier).choose(false));
+      await settle(tester);
+      await shoot(tester, 'full-9-flat');
+      for (final look in MapLook.values) {
+        await tester
+            .runAsync(() => c.read(mapLookProvider.notifier).choose(look));
+        await settle(tester);
+        await tap(tester, 'journey_recentre');
+        await shoot(tester, 'full-9-flat-${look.name}');
+      }
+      final e = tester.takeException();
+      if (e != null) {
+        log.writeAsStringSync('EXCEPTION full: $e\n', mode: FileMode.append);
+      }
+    });
+  }
+
+  // The room plans, drawn by the game's own painter in a box the size of
+  // the Journey's map (the casino has no building in the story yet, so it
+  // can't be walked into).
+  if (only == null || only.split(',').contains('rooms')) {
+    testWidgets('the room plans', (tester) async {
+      usePhone(tester, Size(w, 915));
+      await tester.runAsync(loadAppFonts);
+      final dark = theme != 'light';
+      final palette = ChartPalette.of(dark ? MapLook.night : MapLook.parchment);
+      const kinds = [
+        'casino', 'den', 'tavern', 'temple', 'library', 'prison', //
+        'forge', 'theatre', 'baths', 'barracks', 'inn', 'keep',
+      ];
+      for (var page = 0; page < 2; page++) {
+        await tester.pumpWidget(RepaintBoundary(
+          key: _shotKey,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: buildAppTheme(ColorScheme.fromSeed(
+                seedColor: Colors.amber,
+                brightness: dark ? Brightness.dark : Brightness.light)),
+            home: Builder(builder: (context) {
+              final ember = InkColors.of(context).ember;
+              final side = (w - 24) / 2;
+              return Scaffold(
+                body: Wrap(spacing: 8, runSpacing: 6, children: [
+                  for (final kind in kinds.skip(page * 6).take(6))
+                    SizedBox(
+                      width: side,
+                      height: side + 22,
+                      child: Column(children: [
+                        Text(kind,
+                            style: const TextStyle(
+                                fontFamily: InkFonts.system, fontSize: 12)),
+                        Expanded(
+                          child: ClipRect(
+                            // The painter washes the whole canvas: clipped
+                            // here, as the Journey's map box clips it.
+                            child: ColoredBox(
+                              color: palette.land,
+                              child: CustomPaint(
+                                size: Size.square(side),
+                                painter: RoomPlanPainter(
+                                  plan: RoomPlan.of(seed: 7, kind: kind),
+                                  scale: (side - 12) / 1000,
+                                  origin: const Offset(6, 6),
+                                  palette: palette,
+                                  ember: ember,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                ]),
+              );
+            }),
+          ),
+        ));
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+        await shoot(tester, 'rooms-${page + 1}');
+      }
+      // The casino alone, at the size the Journey gives a room.
+      await tester.pumpWidget(RepaintBoundary(
+        key: _shotKey,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: buildAppTheme(ColorScheme.fromSeed(
+              seedColor: Colors.amber,
+              brightness: dark ? Brightness.dark : Brightness.light)),
+          home: Builder(builder: (context) {
+            final side = w - 32;
+            return Scaffold(
+              body: Center(
+                child: ColoredBox(
+                  color: palette.land,
+                  child: CustomPaint(
+                    size: Size.square(side),
+                    painter: RoomPlanPainter(
+                      plan: RoomPlan.of(seed: 7, kind: 'casino'),
+                      scale: (side - 44) / 1000,
+                      origin: const Offset(22, 22),
+                      palette: palette,
+                      ember: InkColors.of(context).ember,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
+      await shoot(tester, 'room-casino');
+    });
+  }
+
+  // How long each map takes to draw: the canvas is marked dirty and one
+  // frame is pumped, 40 times. This is the time to build the frame's
+  // drawing commands on this machine's processor, not a phone's frame.
+  if (only == null || only.split(',').contains('perf')) {
+    testWidgets('drawing time', (tester) async {
+      final out = File('$dir/perf-$tag.txt');
+      Future<void> time(String label, List<String> keys) async {
+        RenderObject? target;
+        for (final k in keys) {
+          final f = find.byKey(ValueKey(k));
+          if (f.evaluate().isNotEmpty) {
+            target = tester.renderObject(f.first);
+            break;
+          }
+        }
+        if (target == null) {
+          out.writeAsStringSync('$label: canvas not found\n',
+              mode: FileMode.append);
+          return;
+        }
+        final times = <int>[];
+        for (var i = 0; i < 40; i++) {
+          target.markNeedsPaint();
+          final sw = Stopwatch()..start();
+          await tester.pump(const Duration(milliseconds: 16));
+          times.add(sw.elapsedMicroseconds);
+        }
+        times.sort();
+        // Does it keep asking for frames when nothing is touched?
+        await tester.pump(const Duration(milliseconds: 500));
+        final busy = tester.binding.hasScheduledFrame;
+        out.writeAsStringSync(
+            '$label: median ${(times[20] / 1000).toStringAsFixed(1)} ms, '
+            'worst ${(times.last / 1000).toStringAsFixed(1)} ms, '
+            '${busy ? 'redraws every frame' : 'still when idle'}\n',
+            mode: FileMode.append);
+      }
+
+      if (Platform.environment['ATLAS_PERF'] == 'room') {
+        await open(tester, '100');
+        await time('room (the Blind Beggar)', ['journey_room']);
+        return;
+      }
+      final c = await open(tester, '2015_cards', via: ['2010']);
+      await time('district (Saltmouth, Card Row)',
+          ['journey_streets', 'journey_city_chart']);
+      await tap(tester, 'journey_tab_town');
+      await time(
+          'town (Saltmouth, whole)', ['journey_streets', 'journey_city_chart']);
+      if (await tap(tester, 'journey_city_plan')) {
+        await time('city plan page (Saltmouth)', ['city_chart']);
+        Navigator.of(tester.element(find.byKey(const Key('city_chart')))).pop();
+        await settle(tester);
+      }
+      await tap(tester, 'journey_tab_world');
+      await time('sphere, whole', ['journey_globe_canvas']);
+      await tap(tester, 'journey_zoom_in');
+      await time('sphere, land zoom', ['journey_globe_canvas']);
+      await tap(tester, 'journey_zoom_in');
+      await tap(tester, 'journey_zoom_in');
+      await time('sphere, closest', ['journey_globe_canvas']);
+      await tester
+          .runAsync(() => c.read(chartGlobeProvider.notifier).choose(false));
+      await tap(tester, 'journey_tab_district');
+      await tap(tester, 'journey_tab_world');
+      await time('flat chart, whole', ['journey_world_canvas']);
+      await tap(tester, 'journey_recentre');
+      await time('flat chart, land zoom', ['journey_world_canvas']);
+      await tester
+          .runAsync(() => c.read(chartWeatherProvider.notifier).choose(false));
+      await settle(tester);
+      await time(
+          'flat chart, land zoom, weather off', ['journey_world_canvas']);
+      tester.takeException();
+    });
+  }
+
+  // The "after" pictures, with docs/maps/atlas/prototype.patch.txt applied.
+  if (only != null && only.split(',').contains('proto')) {
+    testWidgets('prototypes', (tester) async {
+      final c = await open(tester, '100');
+      Future<void> rung(String? r) async {
+        debugAtlasRung = r;
+        tester.element(find.byType(JourneyScreen)).markNeedsBuild();
+        await tester.pump();
+        await settle(tester);
+      }
+
+      await rung('room');
+      await shoot(tester, 'proto-rungs-room');
+      await rung(null);
+      await tap(tester, 'journey_place_zoom_out');
+      await tap(tester, 'journey_tab_town');
+      await shoot(tester, 'proto-town-fog');
+      await tap(tester, 'journey_tab_world');
+      await rung('globe');
+      await shoot(tester, 'proto-rungs-globe');
+      await tap(tester, 'journey_zoom_in');
+      await rung('land');
+      await shoot(tester, 'proto-rungs-land');
+      debugAtlasRung = null;
+      await tester
+          .runAsync(() => c.read(chartGlobeProvider.notifier).choose(false));
+      await tap(tester, 'journey_tab_district');
+      await tap(tester, 'journey_tab_world');
+      await shoot(tester, 'proto-flat-open');
+      await tap(tester, 'journey_zoom_in');
+      await shoot(tester, 'proto-flat-in1');
+      tester.takeException();
+    });
+  }
+  if (only != null && only.split(',').contains('proto2')) {
+    testWidgets('one world', (tester) async {
+      final c = await open(tester, 'mid');
+      await tester
+          .runAsync(() => c.read(chartGlobeProvider.notifier).choose(false));
+      await tap(tester, 'journey_tab_world');
+      await tap(tester, 'journey_full_map');
+      await shoot(tester, 'proto-oneworld-flat');
+      await tap(tester, 'journey_recentre');
+      await shoot(tester, 'proto-oneworld-flat-land');
+      tester.takeException();
+    });
+  }
+}
