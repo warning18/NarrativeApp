@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.920.0+956]
+
+- Tower: the climb is retuned (review fix #5). You heal 15% of your health between floors instead of 30%, so a bad fight still hurts two floors on. No ordinary floor ambushes you any more: floor 17 used to stop 1 climber in 8. The wardens (5, 15, 25) and bosses (10, 20, 30) are real peaks, the last boss stopping about 1 in 4 or 5 who reach it. About 1 run in 7 reaches the top without unlocks, 2 in 7 with them; warrior, mage and rogue climb about equally well.
+
 ## [1.919.0+955]
 
 - Fights now know the place they happen in, for their background: an expedition's fight carries its zone's place, a land crossing's fight the place it arrives at, a story fight the scene's place (the Tower has none). No rule changes; UX-2 uses it to draw a place's own version of a stage.

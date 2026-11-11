@@ -54,10 +54,17 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 // unlock: the top 27.0% to 38.5%. On the 500 guard seeds: median 21,
 // floor 20 52.8%, the top 23.0%, and 37.8% with every unlock. The bands
 // sit around those, as wide as before.
-const _medianFloor = (min: 18, max: 24);
-const _floor20 = (min: 0.43, max: 0.63);
-const _topNone = (min: 0.14, max: 0.27);
-const _topAll = (min: 0.32, max: 0.46);
+// Re-banded for the Tower curve review (fix #5: less healing between
+// floors, the foes 1.14 and the floors' extras re-spread, the bosses and
+// wardens made peaks, the mage, warrior and rogue evened). Seeds 1 to 2000,
+// no unlocks: median 21 to 17, floor 20 52.5% to 41.5%, the top 22.1% to
+// 13.6%; every unlock: the top 38.5% to 28.7%. On the 500 guard seeds:
+// median 17, floor 20 43.2%, the top 13.2%, and 30.8% with every unlock.
+// The bands sit around those, as wide as before.
+const _medianFloor = (min: 14, max: 20);
+const _floor20 = (min: 0.33, max: 0.53);
+const _topNone = (min: 0.07, max: 0.20);
+const _topAll = (min: 0.23, max: 0.37);
 
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;
