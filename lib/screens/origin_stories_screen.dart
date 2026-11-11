@@ -14,6 +14,7 @@ import '../widgets/origin_scene_backdrop.dart';
 import '../widgets/story_text.dart';
 import '../theme/motion.dart';
 import '../theme/icon_sizes.dart';
+import '../theme/pixel_chip.dart';
 
 /// The formative memories, on their own page once the character is named:
 /// six moments from the age of six to sixteen (origin_stories.dart), one
@@ -713,9 +714,9 @@ class _Tag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.6)),
+      decoration: ShapeDecoration(
+        shape: PixelChipBorder(
+            side: BorderSide(color: color.withValues(alpha: 0.6))),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
