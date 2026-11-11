@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.922.0+958]
+
+- **Narrative: four wording fixes on the map screens** (from the Maps session's French
+  pass). Saltmouth's "Tern Row" has its French name, **La Rangée des sternes**, on the
+  map and everywhere the French story, quests, NPCs and the item text named it (32
+  places); the Journey button and its hint say **Partir** instead of "Go"; the weather
+  line reads "vent d’est" / "vent du nord-ouest" (and "wind from the north-east" in
+  English) instead of a compass letter; the layers sheet is **Layers** in English.
+  Wording only; no key, id or number changed.
+
 ## [1.914.0+950]
 
 - Tower: a floor with the same foe twice (two Harbour Rats on floor 6, two Street Bandits on floor 7, and many later floors) now starts its fight. "Fight" did nothing there and the climb could go no further. Found by QA in a real-fight rerun.
