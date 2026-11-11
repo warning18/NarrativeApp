@@ -115,7 +115,7 @@ Future<void> _enter(WidgetTester tester,
 void main() {
   setUp(FightSpriteImages.reset);
   testWidgets(
-      'the setup page: the fighters stand and Enter Battle is at the bottom',
+      'the setup page: the fighters stand in the empty space under the page',
       (tester) async {
     await loadAppFonts();
     await _enter(tester, w: 412, id: 'den_bouncer');
@@ -123,11 +123,11 @@ void main() {
     expect(find.byKey(const Key('fight_figure_hero')), findsOneWidget);
     expect(find.byKey(const Key('fight_figure_den_bouncer')), findsOneWidget);
     final button = tester.getRect(find.text('Enter Battle'));
-    expect(button.bottom, greaterThan(860 - 120),
-        reason: 'Enter Battle sits at the bottom of the page');
     final figures = tester.getRect(find.byKey(const Key('fight_figures')));
-    expect(figures.bottom, lessThan(button.top),
-        reason: 'the fighters are above the button');
+    expect(figures.top, greaterThan(button.bottom),
+        reason: 'the fighters stand in the empty space under the page');
+    expect(figures.bottom, greaterThan(860 - 40),
+        reason: 'and at the bottom of the screen');
     // the enemy's portrait is its sprite, cropped
     expect(find.byKey(const Key('head_sprite_den_bouncer')), findsOneWidget);
   });
