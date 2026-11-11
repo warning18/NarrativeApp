@@ -254,13 +254,22 @@ extension _FightView on _FightScreenState {
                             const SizedBox(height: 8),
                             _buildLoadoutPicker(dice, skills, session),
                           ],
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: FightFigures(
-                              allies: [for (final m in _party) _headIdFor(m)],
-                              foes: [for (final e in _enemies) e.enemyId],
-                              height: 96,
+                          // The fighters stand in the free space between the page and the
+                          // button, when there is room for them (a long page
+                          // keeps the button where it was).
+                          Expanded(
+                            child: CustomSingleChildLayout(
+                              delegate: const _FreeRoomDelegate(120),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: FightFigures(
+                                  allies: [
+                                    for (final m in _party) _headIdFor(m),
+                                  ],
+                                  foes: [for (final e in _enemies) e.enemyId],
+                                  height: 96,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -1425,4 +1434,32 @@ extension _FightView on _FightScreenState {
       ),
     );
   }
+}
+
+/// Puts its child at the bottom of the room it is given, and gives it no room
+/// at all when the room is shorter than [minRoom]: the setup page's fighters
+/// stand in the free space under the page, and a page that fills the screen
+/// keeps its button where it was. It reports no intrinsic height, so it never
+/// adds to the page's own.
+class _FreeRoomDelegate extends SingleChildLayoutDelegate {
+  const _FreeRoomDelegate(this.minRoom);
+
+  final double minRoom;
+
+  @override
+  Size getSize(BoxConstraints constraints) => constraints.biggest;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      constraints.maxHeight < minRoom
+          ? BoxConstraints.tight(Size(constraints.maxWidth, 0))
+          : BoxConstraints(
+              maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight);
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) =>
+      Offset(0, size.height - childSize.height);
+
+  @override
+  bool shouldRelayout(_FreeRoomDelegate old) => old.minRoom != minRoom;
 }
