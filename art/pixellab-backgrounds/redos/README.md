@@ -1,0 +1,2 @@
+# Redos (11 generations): 8 story bands and 3 cityRoad variants, each generated from its pair
+`staged/<band>_s7.png` (240x100, 32-colour PNG8) replace the same-named batch A/B/C bands; `staged/fight_cityroad_{saltmouth,frost,candlehold}_s11.png` (180x320, 24 colours) are regional variants of the cityRoad stage (the Alster plate stays `batchA/staged/fight_cityroad_s11.png`). Raw in `raw/`, generator `../redos_gen.py`. Balance 996.5 to 985.5. Not wired. Hollow_shore_battlefield carries a small figure: see `docs/art/pairing-stage-scenes.md`.
