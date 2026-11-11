@@ -1,6 +1,7 @@
 // How the eight abilities look wherever they are shown (v1.223): one icon
 // each, and a pill that names an ability with its icon.
 import 'package:flutter/material.dart';
+import '../theme/icon_sizes.dart';
 
 /// The icon of an ability (one of abilityScoreKeys).
 IconData abilityIcon(String key) => switch (key) {
@@ -40,7 +41,7 @@ class AbilityPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: color),
+          Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 6),
           Text(label,
               style: Theme.of(context)

@@ -125,6 +125,7 @@ import '../widgets/ink_chip.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -583,7 +584,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   color: steps[i].locked ? ink.ash : null,
                                   height: 1.2)),
                         ),
-                        Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                        Icon(Icons.chevron_right,
+                            size: IconSize.s16, color: ink.ash),
                       ]),
                     ),
                   ),
@@ -1275,7 +1277,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
     final tools = [
       IconButton(
-        icon: const Icon(Icons.menu_book_outlined, size: 20),
+        icon: const Icon(Icons.menu_book_outlined, size: IconSize.s16),
         tooltip: tr(ref, 'journal_title'),
         visualDensity: VisualDensity.compact,
         onPressed: () => Navigator.of(context).push(
@@ -1291,7 +1293,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         !ref.read(storyPlayProvider).isInExcursion) {
       tools.add(IconButton(
         key: const ValueKey('journey_city_plan'),
-        icon: const Icon(Icons.map_outlined, size: 20),
+        icon: const Icon(Icons.map_outlined, size: IconSize.s16),
         tooltip: tr(ref, 'city_plan_tooltip'),
         visualDensity: VisualDensity.compact,
         onPressed: () async {
@@ -1928,7 +1930,8 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           right: 2,
                           child: IconButton(
                             key: const ValueKey('journey_reading_exit'),
-                            icon: const Icon(Icons.map_outlined, size: 20),
+                            icon: const Icon(Icons.map_outlined,
+                                size: IconSize.s16),
                             tooltip: tr(ref, 'journey_reading_exit'),
                             visualDensity: VisualDensity.compact,
                             onPressed: () => _read(false),
@@ -1992,7 +1995,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                 : continueFromScene,
                     icon: Icon(
                         toMapLabel ? Icons.map_outlined : Icons.arrow_forward,
-                        size: 18),
+                        size: IconSize.s16),
                     label: Text(tr(
                         ref,
                         toMapLabel
@@ -2660,7 +2663,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                             '${steps.where((s) => s.onCard).length}'),
                                         child: const Icon(
                                             Icons.touch_app_outlined,
-                                            size: 20),
+                                            size: IconSize.s16),
                                       ),
                                     ),
                                   TutorialTarget(
@@ -2671,7 +2674,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                           _busy ? null : () => _read(true),
                                       icon: const Icon(
                                           Icons.chrome_reader_mode_outlined,
-                                          size: 18),
+                                          size: IconSize.s16),
                                       label: Text(tr(ref, 'journey_read')),
                                     ),
                                   ),
@@ -2761,7 +2764,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                           visualDensity: VisualDensity.compact),
                                       onPressed: () => _showTravelOn(node.id),
                                       icon: const Icon(Icons.signpost_outlined,
-                                          size: 18),
+                                          size: IconSize.s16),
                                       label: Text(tr(ref, 'travel_on_button')),
                                     ),
                                   ],
@@ -4376,7 +4379,7 @@ class _JourneyChartState extends State<_JourneyChart>
             ),
           ],
         ),
-        child: Icon(Icons.person_pin, color: palette.land, size: 26),
+        child: Icon(Icons.person_pin, color: palette.land, size: IconSize.s32),
       );
 
   Widget _hereMark(Offset here, {required bool faded}) {
@@ -4614,7 +4617,7 @@ class _JourneyChartState extends State<_JourneyChart>
                         angle: shake,
                         child: step.locked
                             ? Icon(Icons.lock_outline,
-                                size: 20,
+                                size: IconSize.s16,
                                 color: isSelected ? palette.land : colour)
                             : AnimatedBuilder(
                                 animation: _idleGlyphs,
@@ -4649,7 +4652,7 @@ class _JourneyChartState extends State<_JourneyChart>
                           step.questTie == JourneyQuestTie.main
                               ? Icons.bookmark
                               : Icons.bookmark_border,
-                          size: 11,
+                          size: IconSize.inline,
                           color: palette.land,
                         ),
                       ),
@@ -4677,7 +4680,7 @@ class _JourneyChartState extends State<_JourneyChart>
                         ),
                         child: Icon(
                             _eventIcon(step.event!, hazard: step.hazard),
-                            size: 11,
+                            size: IconSize.inline,
                             color: palette.land),
                       ),
                     ),
@@ -5118,7 +5121,7 @@ class _StepDetail extends ConsumerWidget {
                         child: Row(
                           children: [
                             Icon(_eventIcon(step.event!, hazard: step.hazard),
-                                size: 14,
+                                size: IconSize.s16,
                                 color: _eventColour(step.event!, ink)),
                             const SizedBox(width: 4),
                             Expanded(
@@ -5750,7 +5753,8 @@ class _CityDistrictView extends ConsumerWidget {
               decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: ink.seam))),
               child: Row(children: [
-                Icon(Icons.directions_walk, size: 20, color: d.colour),
+                Icon(Icons.directions_walk,
+                    size: IconSize.s16, color: d.colour),
                 const SizedBox(width: 10),
                 Expanded(
                     child: Text(

@@ -8,6 +8,7 @@ import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
 import 'ink_chip.dart';
+import '../theme/icon_sizes.dart';
 
 /// One title, read: the clan's banner beside the title's own badge in the
 /// clan's colour and the clan that grants it, then what it does in a card
@@ -82,7 +83,7 @@ class TitleDetailView extends StatelessWidget {
                             title.negative
                                 ? Icons.report_outlined
                                 : Icons.workspace_premium,
-                            size: 28,
+                            size: IconSize.s32,
                             color: accent),
                         const SizedBox(width: 8),
                         Expanded(
@@ -137,7 +138,7 @@ class TitleDetailView extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.bolt, size: 18, color: accent),
+                        Icon(Icons.bolt, size: IconSize.s16, color: accent),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(text,

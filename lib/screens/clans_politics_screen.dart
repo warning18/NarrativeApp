@@ -29,6 +29,7 @@ import '../widgets/sign_widgets.dart';
 import '../widgets/throne_edit_tab.dart';
 import '../widgets/throne_room.dart';
 import '../widgets/empty_state.dart';
+import '../theme/icon_sizes.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
 /// top bar's scales: the **Throne room** first (v1.267), then the tabs below.
@@ -1434,7 +1435,7 @@ class _IntrigueCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.person_outline,
-              size: 14, color: theme.colorScheme.onSurfaceVariant),
+              size: IconSize.s16, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: 4),
           Flexible(
             child: Text(name,
@@ -1598,7 +1599,8 @@ class _IntrigueCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(Icons.lock_outline,
-                          size: 14, color: theme.colorScheme.onSurfaceVariant),
+                          size: IconSize.s16,
+                          color: theme.colorScheme.onSurfaceVariant),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(

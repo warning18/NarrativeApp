@@ -128,7 +128,7 @@ class _ChoiceButton extends ConsumerWidget {
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.sports_martial_arts, size: 16),
+              const Icon(Icons.sports_martial_arts, size: IconSize.s16),
               const SizedBox(width: 6),
               Flexible(
                 child: Column(
@@ -150,7 +150,7 @@ class _ChoiceButton extends ConsumerWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.casino_outlined, size: 16),
+                  const Icon(Icons.casino_outlined, size: IconSize.s16),
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
@@ -224,7 +224,7 @@ class _PoliticsHintLine extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.flag_outlined, size: 12),
+            const Icon(Icons.flag_outlined, size: IconSize.inline),
             const SizedBox(width: 4),
             Flexible(
               child: Text(
@@ -325,7 +325,7 @@ class _ReadAloudButton extends ConsumerWidget {
               isSpeaking
                   ? Icons.stop_circle_outlined
                   : Icons.volume_up_outlined,
-              size: 18),
+              size: IconSize.s16),
       tooltip: isLoading
           ? tr(ref, 'loading_voice_tooltip')
           : (isSpeaking
@@ -373,7 +373,7 @@ class _RecordSceneButton extends ConsumerWidget {
       builder: (context, snapshot) {
         final recorded = snapshot.data ?? false;
         return IconButton(
-          icon: Icon(recorded ? Icons.mic : Icons.mic_none, size: 18),
+          icon: Icon(recorded ? Icons.mic : Icons.mic_none, size: IconSize.s16),
           color: recorded ? Theme.of(context).colorScheme.primary : null,
           tooltip: tr(ref, recorded ? 'scene_recorded' : 'record_scene'),
           visualDensity: VisualDensity.compact,
@@ -432,7 +432,7 @@ class _FoldedNarration extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.auto_stories_outlined,
-                      size: 20, color: accent.text),
+                      size: IconSize.s16, color: accent.text),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(

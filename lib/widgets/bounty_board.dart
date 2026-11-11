@@ -14,6 +14,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The notice board (see contracts.dart), a board you read (v1.561): three
 /// contracts pinned on wood as parchment notes, slightly tilted, each with a
@@ -447,7 +448,7 @@ class _Note extends StatelessWidget {
               border: Border.all(color: _noteBrown.withValues(alpha: 0.7)),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(i, size: 13, color: _noteBrown),
+              Icon(i, size: IconSize.s16, color: _noteBrown),
               const SizedBox(width: 3),
               Text(text,
                   style: const TextStyle(
@@ -487,7 +488,7 @@ class _Note extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: ring.withValues(alpha: 0.85), width: 2),
             ),
-            child: Icon(icon, size: 21, color: ring),
+            child: Icon(icon, size: IconSize.s16, color: ring),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -580,7 +581,8 @@ class _Seal extends StatelessWidget {
                     : null,
               ),
               child: Icon(on ? Icons.check : Icons.hourglass_empty,
-                  size: 20, color: on ? _parchment : const Color(0xFF6F664F)),
+                  size: IconSize.s16,
+                  color: on ? _parchment : const Color(0xFF6F664F)),
             ),
             const SizedBox(height: 2),
             Text(label,

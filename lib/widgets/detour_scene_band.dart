@@ -17,6 +17,7 @@ import 'side_view/ruins_kit.dart';
 import 'side_view/scene_windows.dart';
 import 'side_view/side_view.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The kit that dresses a scene of a biome, if there is one: the desert's
 /// for the dry lands, the ruins' for the burned, torn and shattered ones.
@@ -157,7 +158,7 @@ class DetourSceneBand extends StatelessWidget {
                           scene.tags.contains(detourLandmarkTag)
                               ? Icons.star_outline
                               : Icons.explore_outlined,
-                          size: 22,
+                          size: IconSize.s32,
                           color: ink.gold),
                       const SizedBox(width: 8),
                       Flexible(
@@ -246,7 +247,7 @@ class DetourSceneBand extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.place_outlined,
-                            size: 14, color: Palette.ashDark),
+                            size: IconSize.s16, color: Palette.ashDark),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(place,

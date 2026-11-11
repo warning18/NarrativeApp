@@ -16,6 +16,7 @@ import '../utils/game_icons.dart';
 import 'immersive_notice.dart';
 import 'player_stats_bar.dart';
 import 'ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// Opens the Hammersmith's dice smithing (v1.182, see face_smithing.dart):
 /// the party's dice, face by face.
@@ -224,7 +225,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(kind.icon, size: 16, color: kind.color),
+                Icon(kind.icon, size: IconSize.s16, color: kind.color),
                 if (type != 'Skill' && value > 0) ...[
                   const SizedBox(width: 3),
                   Text('$value',
@@ -233,7 +234,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
                 ],
                 if (element != 'None') ...[
                   const SizedBox(width: 3),
-                  Icon(elementIcon(element), size: 13),
+                  Icon(elementIcon(element), size: IconSize.s16),
                 ],
               ],
             ),
@@ -253,7 +254,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
                     padding: const EdgeInsets.only(left: 2),
                     child: Tooltip(
                       message: trFor(lang, 'smith_worked_label'),
-                      child: const Icon(Icons.hardware, size: 12),
+                      child: const Icon(Icons.hardware, size: IconSize.inline),
                     ),
                   ),
               ],

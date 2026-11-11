@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 import 'ink_chip.dart';
+import '../theme/icon_sizes.dart';
 
 /// The one tag a card carries: "30 gold", "Good +2", "CHA DC 12", "Fight".
 class ChoiceTag {
@@ -93,7 +94,7 @@ class ChoiceCard extends StatelessWidget {
                     border: Border.all(color: tone, width: 2),
                   ),
                   child: Icon(locked ? Icons.lock_outline : icon,
-                      size: 18,
+                      size: IconSize.s16,
                       color: selected ? theme.colorScheme.surface : tone),
                 ),
               const SizedBox(width: 10),
@@ -117,7 +118,8 @@ class ChoiceCard extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.arrow_forward, size: 12, color: ink.ash),
+                            Icon(Icons.arrow_forward,
+                                size: IconSize.inline, color: ink.ash),
                             const SizedBox(width: 3),
                             Flexible(
                               child: Text(leadsTo!,

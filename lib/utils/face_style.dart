@@ -7,6 +7,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import 'game_icons.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// What a die face does, read at a glance: one colour per effect, the same
 /// on the battle tray, the face sheet, the dice loadout and the skill list.
@@ -140,7 +141,7 @@ class FaceColorLegend extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(kind.icon, size: 12, color: kind.color),
+                Icon(kind.icon, size: IconSize.inline, color: kind.color),
                 const SizedBox(width: 3),
                 Text(
                   trFor(language, kind.labelKey),

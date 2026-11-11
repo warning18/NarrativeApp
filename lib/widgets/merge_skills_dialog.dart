@@ -11,6 +11,7 @@ import '../screens/skills/dice_weave_card.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// The Skillwright's bench: every skill_merges.json recipe as two skills
 /// becoming a third, each drawn with its icon and its real name, the ones
@@ -185,7 +186,7 @@ class _Sign extends StatelessWidget {
         child: SizedBox(
           width: 22,
           child: text == null
-              ? Icon(Icons.arrow_forward, size: 20, color: color)
+              ? Icon(Icons.arrow_forward, size: IconSize.s16, color: color)
               : Text(text!,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -221,7 +222,7 @@ class _SkillTile extends StatelessWidget {
       _TileState.missing => ink.ember,
       _ => ink.ash,
     };
-    final icon = SkillPixelIcon(skill.id, size: 44);
+    final icon = SkillPixelIcon(skill.id, size: IconSize.s48);
     return Column(
       children: [
         Stack(
@@ -247,13 +248,15 @@ class _SkillTile extends StatelessWidget {
               Positioned(
                 right: -5,
                 top: -5,
-                child: Icon(Icons.check_circle, size: 18, color: ink.heal),
+                child: Icon(Icons.check_circle,
+                    size: IconSize.s16, color: ink.heal),
               ),
             if (missing)
               Positioned(
                 right: -5,
                 top: -5,
-                child: Icon(Icons.lock_outline, size: 18, color: ink.ember),
+                child: Icon(Icons.lock_outline,
+                    size: IconSize.s16, color: ink.ember),
               ),
           ],
         ),

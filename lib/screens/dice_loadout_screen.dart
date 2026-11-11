@@ -35,6 +35,7 @@ import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId, this.initialDieId});
@@ -638,7 +639,7 @@ class _SkillChip extends StatelessWidget {
     final chip = GestureDetector(
       onTap: onTap,
       child: Chip(
-        avatar: Icon(kind.icon, size: 18, color: kind.color),
+        avatar: Icon(kind.icon, size: IconSize.s16, color: kind.color),
         label: Text(label),
         backgroundColor: kind.color.withValues(alpha: 0.12),
         side: BorderSide(color: rarity.color, width: 1.5),
@@ -835,7 +836,7 @@ class _FaceSlot extends StatelessWidget {
                 alignment:
                     compact ? Alignment.center : const Alignment(0, -0.35),
                 child: skillId != null
-                    ? SkillPixelIcon(skillId, size: compact ? 24 : 34)
+                    ? SkillPixelIcon(skillId, size: IconSize.s32)
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -872,7 +873,8 @@ class _FaceSlot extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: locked
                     ? Icon(Icons.lock_outline,
-                        size: compact ? 11 : 15, color: colorScheme.outline)
+                        size: compact ? IconSize.inline : IconSize.s16,
+                        color: colorScheme.outline)
                     : compact
                         ? const SizedBox.shrink()
                         : onClear != null
@@ -882,14 +884,16 @@ class _FaceSlot extends StatelessWidget {
                                 child: Tooltip(
                                   message: trFor(
                                       language, 'clear_assigned_skill_tooltip'),
-                                  child: const Icon(Icons.close, size: 16),
+                                  child: const Icon(Icons.close,
+                                      size: IconSize.s16),
                                 ),
                               )
                             : InkResponse(
                                 onTap: onPick,
                                 radius: 16,
                                 child: Icon(Icons.edit_outlined,
-                                    size: 16, color: colorScheme.primary),
+                                    size: IconSize.s16,
+                                    color: colorScheme.primary),
                               ),
               ),
               Align(
@@ -900,7 +904,8 @@ class _FaceSlot extends StatelessWidget {
                             '${skillDisplayName(overLimitSkillId!, language: language)}: '
                             '${trFor(language, 'face_over_limit_label')}',
                         child: Icon(Icons.warning_amber_rounded,
-                            size: compact ? 11 : 16, color: colorScheme.error),
+                            size: compact ? IconSize.inline : IconSize.s16,
+                            color: colorScheme.error),
                       )
                     : showOdds && !compact
                         ? Text('${(chance * 100).round()}%',
@@ -1254,7 +1259,8 @@ class _DieStage extends StatelessWidget {
                             padding: EdgeInsets.zero,
                             alignment: Alignment.centerLeft),
                         onPressed: () => onActivate(selected),
-                        icon: const Icon(Icons.edit_outlined, size: 16),
+                        icon:
+                            const Icon(Icons.edit_outlined, size: IconSize.s16),
                         label: Text(t('pick_face_skill_title')),
                       ),
                   ],

@@ -9,6 +9,7 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import 'ink_sheet.dart';
 import 'ink_chip.dart';
+import '../theme/icon_sizes.dart';
 
 num _stat(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
 
@@ -116,7 +117,7 @@ class ItemDetailView extends StatelessWidget {
             : null,
       ),
       alignment: Alignment.center,
-      child: ItemPixelIcon(itemId, type, size: 52),
+      child: ItemPixelIcon(itemId, type, size: IconSize.s48),
     );
 
     return Column(
@@ -189,7 +190,7 @@ class ItemDetailView extends StatelessWidget {
             children: [
               if (against != null) ...[
                 ItemPixelIcon(equippedId, against['itemType']?.toString(),
-                    size: 16),
+                    size: IconSize.s16),
                 const SizedBox(width: 4),
               ],
               Expanded(
@@ -221,7 +222,8 @@ class ItemDetailView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(trait.icon,
-                      size: 16, color: trait.warn ? scheme.error : ink.gold),
+                      size: IconSize.s16,
+                      color: trait.warn ? scheme.error : ink.gold),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text.rich(
@@ -434,7 +436,7 @@ class _SetBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Icon(Icons.layers_outlined, size: 16, color: ink.gold),
+            Icon(Icons.layers_outlined, size: IconSize.s16, color: ink.gold),
             const SizedBox(width: 6),
             Expanded(
               child: Text(set.nameFor(language),
@@ -453,7 +455,7 @@ class _SetBlock extends StatelessWidget {
                       tier.pieces <= worn
                           ? Icons.check_circle
                           : Icons.radio_button_unchecked,
-                      size: 14,
+                      size: IconSize.s16,
                       color: tier.pieces <= worn ? ink.heal : ink.ash),
                   const SizedBox(width: 6),
                   Expanded(

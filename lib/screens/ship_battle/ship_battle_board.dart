@@ -488,19 +488,22 @@ extension _ShipBattleBoard on _ShipBattlePanelState {
           ],
           if (state.onFire) ...[
             const SizedBox(width: 2),
-            Icon(Icons.local_fire_department, size: 14, color: ink.ember),
+            Icon(Icons.local_fire_department,
+                size: IconSize.s16, color: ink.ember),
           ],
           for (var i = 0; i < leaks; i++)
             Icon(Icons.water_drop,
-                key: Key('ship_leak_$i'), size: 13, color: ink.tide),
+                key: Key('ship_leak_$i'), size: IconSize.s16, color: ink.tide),
           for (final w in incoming) ...[
             const SizedBox(width: 2),
-            Icon(Icons.warning_amber_rounded, size: 14, color: ink.blood),
+            Icon(Icons.warning_amber_rounded,
+                size: IconSize.s16, color: ink.blood),
             Text('${w.damage}', style: label?.copyWith(color: ink.blood)),
           ],
           if (railOpen) ...[
             const SizedBox(width: 2),
-            Icon(Icons.door_front_door_outlined, size: 14, color: ink.ember),
+            Icon(Icons.door_front_door_outlined,
+                size: IconSize.s16, color: ink.ember),
           ],
           if (preview != null) ...[
             const SizedBox(width: 4),
@@ -563,7 +566,7 @@ extension _ShipBattleBoard on _ShipBattlePanelState {
                     Tooltip(
                       message: trFor(lang, 'ship_focus_hint'),
                       child: Icon(Icons.center_focus_strong,
-                          size: 13, color: ink.ember),
+                          size: IconSize.s16, color: ink.ember),
                     ),
                 ],
               ),

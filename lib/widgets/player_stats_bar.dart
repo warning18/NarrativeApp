@@ -12,6 +12,7 @@ import '../utils/game_icons.dart';
 import 'road_panel.dart';
 import 'ink_sheet.dart';
 import 'motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The party's vital numbers on one line: level, health, mana, gold and
 /// the open quests, sized down rather than scrolled when the screen is
@@ -180,7 +181,7 @@ class _Stat extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: tint),
+            Icon(icon, size: IconSize.s16, color: tint),
             const SizedBox(width: 4),
             Text(
               text,
@@ -218,7 +219,7 @@ class _PlayerStatusSheet extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     Widget row(IconData icon, String label, String value) => ListTile(
           dense: true,
-          leading: Icon(icon, size: 20),
+          leading: Icon(icon, size: IconSize.s16),
           title: Text(label),
           trailing: Text(value, style: Theme.of(context).textTheme.titleSmall),
         );
@@ -255,14 +256,14 @@ class _PlayerStatusSheet extends ConsumerWidget {
                 runSpacing: 4,
                 children: [
                   ActionChip(
-                    avatar: const Icon(Icons.assignment, size: 16),
+                    avatar: const Icon(Icons.assignment, size: IconSize.s16),
                     label: Text(
                         '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
                     onPressed: openPlay,
                   ),
                   if (session.unlockedShopIds.isNotEmpty)
                     ActionChip(
-                      avatar: const Icon(Icons.storefront, size: 16),
+                      avatar: const Icon(Icons.storefront, size: IconSize.s16),
                       label: Text(
                           '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
                       onPressed: openPlay,
@@ -303,7 +304,8 @@ class GoldBadge extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.paid, size: 18, color: InkColors.of(context).gold),
+                Icon(Icons.paid,
+                    size: IconSize.s16, color: InkColors.of(context).gold),
                 const SizedBox(width: 4),
                 Text(
                   '$gold',

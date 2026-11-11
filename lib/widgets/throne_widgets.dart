@@ -11,6 +11,7 @@ import '../providers/player_session_provider.dart';
 import 'clan_widgets.dart';
 import 'sign_widgets.dart';
 import 'ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// The climb to the Lantern Throne and the Host (v1.196, see throne.dart),
 /// on screen: the Character tab's climb ([ClimbCard]), its rungs
@@ -66,7 +67,7 @@ class _RungChip extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(reached ? Icons.check_circle : Icons.circle_outlined,
-                    size: 14, color: colour),
+                    size: IconSize.s16, color: colour),
                 const SizedBox(width: 4),
                 Flexible(
                   child: Text(
@@ -183,7 +184,7 @@ class ClimbCard extends ConsumerWidget {
             Row(
               children: [
                 Icon(crowned ? Icons.workspace_premium : Icons.stairs_outlined,
-                    size: 18,
+                    size: IconSize.s16,
                     color: crowned
                         ? standingTierColor(StandingTier.sworn)
                         : theme.colorScheme.onSurfaceVariant),
@@ -232,7 +233,7 @@ class ClimbCard extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: TextButton.icon(
                   key: const Key('climb_open_host'),
-                  icon: const Icon(Icons.groups_2_outlined, size: 18),
+                  icon: const Icon(Icons.groups_2_outlined, size: IconSize.s16),
                   label: Text(trFor(lang, 'host_title')),
                   onPressed: () => showHostSheet(context),
                 ),
@@ -378,7 +379,7 @@ class HostSheet extends ConsumerWidget {
                     key: Key('host_house_$id'),
                     visualDensity: VisualDensity.compact,
                     avatar: Icon(Icons.shield_outlined,
-                        size: 16,
+                        size: IconSize.s16,
                         color: Color(data.subclan(id)?.color ?? 0xFFB08D3C)),
                     label: Text(data.subclan(id)?.nameFor(lang) ?? id,
                         style: theme.textTheme.labelSmall),

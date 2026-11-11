@@ -80,7 +80,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(
                             width: 30, height: 26),
-                        icon: Icon(Icons.history, size: 17, color: ink.ash),
+                        icon: Icon(Icons.history,
+                            size: IconSize.s16, color: ink.ash),
                         onPressed: _battle.log.isEmpty ? null : _openLog,
                       ),
                       if (timed) ...[
@@ -100,7 +101,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                       onPressed: _battle.crew.isEmpty
                           ? null
                           : () => _openCrewSheet(enemies),
-                      icon: const Icon(Icons.groups_2_outlined, size: 20),
+                      icon: const Icon(Icons.groups_2_outlined,
+                          size: IconSize.s16),
                     ),
                     const SizedBox(width: 8),
                     // Push a room past its limit, once a turn.
@@ -110,7 +112,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                         tooltip: trFor(lang, 'ship_push_button'),
                         onPressed: _canPushNow ? _openPushSheet : null,
                         icon: Icon(Icons.bolt,
-                            size: 20, color: _canPushNow ? ink.ember : null),
+                            size: IconSize.s16,
+                            color: _canPushNow ? ink.ember : null),
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -126,7 +129,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10)),
                           onPressed: () => _boardThem(enemies),
-                          icon: const Icon(Icons.sports_kabaddi, size: 18),
+                          icon: const Icon(Icons.sports_kabaddi,
+                              size: IconSize.s16),
                           label: Text(trFor(lang, 'ship_board_button'),
                               overflow: TextOverflow.ellipsis),
                         ),
@@ -142,7 +146,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                           padding: const EdgeInsets.symmetric(horizontal: 16)),
                       onPressed:
                           _busy || _over ? null : () => _endTurn(manual: true),
-                      icon: const Icon(Icons.hourglass_bottom, size: 16),
+                      icon: const Icon(Icons.hourglass_bottom,
+                          size: IconSize.s16),
                       label: Text(trFor(lang, 'ship_end_turn_button')),
                     ),
                   ],
@@ -168,7 +173,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
       key: const Key('ship_turn_clock'),
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.timer_outlined, size: 14, color: color),
+        Icon(Icons.timer_outlined, size: IconSize.s16, color: color),
         const SizedBox(width: 3),
         Text(
           trFor(lang, 'ship_turn_seconds').replaceAll('{n}', '$_secondsLeft'),
@@ -183,7 +188,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             key: const Key('ship_quick_orders'),
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.bolt, size: 14, color: quick ? ink.ember : ink.ash),
+              Icon(Icons.bolt,
+                  size: IconSize.s16, color: quick ? ink.ember : ink.ash),
               Text(
                 '+$quickOrdersEvasion%',
                 style: theme.textTheme.labelSmall?.copyWith(
@@ -211,7 +217,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
           visualDensity: VisualDensity.compact,
           tooltip: trFor(lang, 'cancel'),
           onPressed: () => _update(_cancelAim),
-          icon: const Icon(Icons.close, size: 18),
+          icon: const Icon(Icons.close, size: IconSize.s16),
         ),
         Expanded(
           child: GestureDetector(
@@ -272,7 +278,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(_weatherIcon(_battle.weather),
-              size: 14, color: _weatherColor(ink, _battle.weather)),
+              size: IconSize.s16, color: _weatherColor(ink, _battle.weather)),
           const SizedBox(width: 4),
           Text(trFor(lang, 'ship_weather_${_battle.weather.name}'),
               style: small?.copyWith(color: Colors.white)),
@@ -288,7 +294,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                       style: small?.copyWith(
                           color: ink.ember, fontWeight: FontWeight.bold)),
                   Icon(_weatherIcon(SeaWeather.squall),
-                      size: 13, color: ink.ember),
+                      size: IconSize.s16, color: ink.ember),
                 ],
               ),
             )
@@ -298,7 +304,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             Tooltip(
               message: trFor(lang, 'ship_weather_${_battle.nextWeather.name}'),
               child: Icon(_weatherIcon(_battle.nextWeather),
-                  size: 13, color: ink.ash),
+                  size: IconSize.s16, color: ink.ash),
             ),
           ],
           if (_battle.wreck) ...[
@@ -306,7 +312,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             Tooltip(
               message: trFor(lang, 'ship_wreck_hint'),
               child: Icon(Icons.sailing_outlined,
-                  size: 14, color: _roomColor(context, ShipRoom.hold)),
+                  size: IconSize.s16,
+                  color: _roomColor(context, ShipRoom.hold)),
             ),
           ],
         ],
@@ -339,7 +346,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             child: SizedBox(
               width: 42,
               height: 42,
-              child: Icon(icon, size: 22, color: on ? ink.gold : ink.ash),
+              child: Icon(icon,
+                  size: IconSize.s32, color: on ? ink.gold : ink.ash),
             ),
           ),
         ),
@@ -440,7 +448,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
       key: Key(key),
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: color),
+        Icon(icon, size: IconSize.s16, color: color),
         const SizedBox(width: 3),
         Flexible(
           child: Text(text,
@@ -492,7 +500,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(seen ? _intentIcon(intent) : Icons.question_mark,
-                size: 12, color: color),
+                size: IconSize.inline, color: color),
             const SizedBox(width: 3),
             Flexible(
               child: Text(
@@ -595,7 +603,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
           ),
           if (b.salvoReady) ...[
             const SizedBox(width: 8),
-            Icon(Icons.bolt, size: 12, color: ink.gold),
+            Icon(Icons.bolt, size: IconSize.inline, color: ink.gold),
             Flexible(
               child: Text(trFor(lang, 'ship_sums_salvo'),
                   key: const Key('ship_salvo_ready'),
@@ -657,7 +665,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_habitIcon(habit), size: 12, color: ink.ember),
+                        Icon(_habitIcon(habit),
+                            size: IconSize.inline, color: ink.ember),
                         const SizedBox(width: 3),
                         Flexible(
                           child: Text(
@@ -677,7 +686,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             for (var i = 0; i < max(ship.maxLayers, ship.layers); i++)
               Icon(
                 i < ship.layers ? Icons.shield : Icons.shield_outlined,
-                size: 14,
+                size: IconSize.s16,
                 color: steel,
               ),
             const SizedBox(width: 6),
@@ -685,7 +694,7 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             if (heavy > 0) ...[
               Icon(Icons.water_drop,
                   key: Key('ship_heavy_${eel ? 'eel' : 'enemy'}'),
-                  size: 11,
+                  size: IconSize.inline,
                   color: ink.blood),
               Text(
                 trFor(lang, 'ship_heavy_label').replaceAll('{n}', '$heavy'),

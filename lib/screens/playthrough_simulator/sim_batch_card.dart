@@ -417,7 +417,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                                     ? manaIcon
                                     : spellEffectIcon(
                                         widget.spells[entry.key]!.effect),
-                                size: 16,
+                                size: IconSize.s16,
                                 color: widget.spells[entry.key] == null
                                     ? manaColor
                                     : spellEffectColor(
@@ -531,7 +531,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
-                            const Icon(Icons.chevron_right, size: 18),
+                            const Icon(Icons.chevron_right, size: IconSize.s16),
                           ],
                         ),
                       ),

@@ -51,6 +51,7 @@ import '../widgets/side_view/side_view.dart' show sideViewRows;
 import '../widgets/walk_bubble.dart';
 import 'ship_battle_panel.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
 
@@ -427,7 +428,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.visibility_outlined,
-              size: 18, color: theme.colorScheme.tertiary),
+              size: IconSize.s16, color: theme.colorScheme.tertiary),
           const SizedBox(width: 8),
           Expanded(
             child: Text(text,
@@ -1331,7 +1332,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                     crew: deckCrewOf(ref.watch(walkingPartyProvider)),
                     phase: ref.watch(dayPhaseProvider),
                     height: 140,
-                    beside: Icon(icon, size: 34, color: colour),
+                    beside: Icon(icon, size: IconSize.s32, color: colour),
                   ),
                   if (_spoken != null)
                     Positioned.fill(
@@ -1355,7 +1356,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(children: [
-                    Icon(icon, size: 18, color: colour),
+                    Icon(icon, size: IconSize.s16, color: colour),
                     const SizedBox(width: 6),
                     Text(
                       trFor(lang, 'sea_event_${event.kind.name}').toUpperCase(),
@@ -1462,7 +1463,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 
     Widget end(IconData icon, Color colour) => Padding(
           padding: const EdgeInsets.only(top: 4),
-          child: Icon(icon, size: 18, color: colour),
+          child: Icon(icon, size: IconSize.s16, color: colour),
         );
     // A link between two days: it takes the room left, or a fixed width
     // when the strip scrolls.
@@ -1495,7 +1496,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   color: now ? ink.gold : ink.seam, width: now ? 2 : 1),
             ),
             child: Icon(seen ? icon : Icons.question_mark,
-                size: 14, color: seen ? colour : ink.ash),
+                size: IconSize.s16, color: seen ? colour : ink.ash),
           ),
           const SizedBox(height: 2),
           Text(
@@ -1835,7 +1836,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         if (picture != null)
           ClipRect(child: picture)
         else
-          Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
+          Icon(icon,
+              size: IconSize.s64, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
         Text(title,
             style: Theme.of(context).textTheme.headlineSmall,

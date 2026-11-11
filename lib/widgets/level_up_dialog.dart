@@ -12,6 +12,7 @@ import 'level_up_stats.dart';
 import 'offer_dialog.dart';
 import 'pixel_vfx.dart';
 import 'stat_pick_picker.dart';
+import '../theme/icon_sizes.dart';
 
 /// Shown right after a fight that leveled the character up. The level's
 /// points are stat picks (stat_pick_picker.dart) taken right here: the
@@ -79,7 +80,7 @@ class _LevelUpDialog extends ConsumerWidget {
                   ],
                 ),
                 child: const Icon(Icons.military_tech,
-                    size: 30, color: Color(0xFF14110A)),
+                    size: IconSize.s32, color: Color(0xFF14110A)),
               ),
             ]),
       );
@@ -113,7 +114,7 @@ class _LevelUpDialog extends ConsumerWidget {
         child: Row(
           key: const Key('level_up_patron_line'),
           children: [
-            Icon(Icons.shield_moon_outlined, size: 18, color: colour),
+            Icon(Icons.shield_moon_outlined, size: IconSize.s16, color: colour),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

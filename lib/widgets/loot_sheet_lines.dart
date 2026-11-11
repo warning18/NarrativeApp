@@ -6,6 +6,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'loot_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// The sheet's "what the spoils change" lines for what the engine says each
 /// reward changes ([lootChanges], data/loot_changes.dart): one line per thing
@@ -67,7 +68,7 @@ LootSheetLine _line(
         label: t('loot_line_gold'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: Icon(Icons.monetization_on, size: 28, color: ink.gold),
+        icon: Icon(Icons.monetization_on, size: IconSize.s32, color: ink.gold),
         tone: ink.gold,
       );
     case LootChangeKind.potions:
@@ -75,7 +76,7 @@ LootSheetLine _line(
         label: t('loot_line_potions'),
         before: times(c.before),
         after: times(c.after),
-        icon: Icon(Icons.science, size: 26, color: ink.heal),
+        icon: Icon(Icons.science, size: IconSize.s32, color: ink.heal),
         tone: ink.heal,
       );
     case LootChangeKind.antidotes:
@@ -83,7 +84,7 @@ LootSheetLine _line(
         label: t('loot_line_antidotes'),
         before: times(c.before),
         after: times(c.after),
-        icon: const ItemPixelIcon('antidote', 'Potion', size: 28),
+        icon: const ItemPixelIcon('antidote', 'Potion', size: IconSize.s32),
         tone: ink.heal,
       );
     case LootChangeKind.bagItem:
@@ -93,21 +94,23 @@ LootSheetLine _line(
         label: item?['itemName']?.toString() ?? id,
         before: times(c.before),
         after: times(c.after),
-        icon: ItemPixelIcon(id, item?['itemType']?.toString(), size: 28),
+        icon: ItemPixelIcon(id, item?['itemType']?.toString(),
+            size: IconSize.s32),
       );
     case LootChangeKind.rollsPerRound:
       return LootSheetLine(
         label: t('loot_line_rolls'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: const ItemPixelIcon('charm_fourth_roll', 'Charm', size: 28),
+        icon: const ItemPixelIcon('charm_fourth_roll', 'Charm',
+            size: IconSize.s32),
       );
     case LootChangeKind.health:
       return LootSheetLine(
         label: t('loot_line_health'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: Icon(Icons.favorite, size: 26, color: ink.blood),
+        icon: Icon(Icons.favorite, size: IconSize.s32, color: ink.blood),
         tone: ink.heal,
       );
     case LootChangeKind.spell:
@@ -116,7 +119,8 @@ LootSheetLine _line(
         label: '${t('loot_line_spell')} · ${spellName?.call(id) ?? id}',
         before: '—',
         after: t('loot_line_spell_learnt'),
-        icon: Icon(Icons.auto_awesome, size: 26, color: ink.voidColor),
+        icon:
+            Icon(Icons.auto_awesome, size: IconSize.s32, color: ink.voidColor),
         tone: ink.voidColor,
       );
     case LootChangeKind.statPoints:
@@ -124,14 +128,14 @@ LootSheetLine _line(
         label: t('loot_line_stat_points'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: Icon(Icons.trending_up, size: 26, color: ink.gold),
+        icon: Icon(Icons.trending_up, size: IconSize.s32, color: ink.gold),
       );
     case LootChangeKind.offers:
       return LootSheetLine(
         label: t('loot_line_offers'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: Icon(Icons.handshake, size: 26, color: ink.gold),
+        icon: Icon(Icons.handshake, size: IconSize.s32, color: ink.gold),
       );
     case LootChangeKind.nothing:
       throw StateError('a "nothing" line has no row');

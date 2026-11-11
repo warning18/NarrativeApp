@@ -22,6 +22,7 @@ import '../widgets/elevenlabs_voice_settings.dart';
 import '../widgets/slow_frames_settings.dart';
 import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
+import '../theme/icon_sizes.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -264,7 +265,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           const SizedBox(height: 2),
                           Icon(
                             Icons.check_circle,
-                            size: 16,
+                            size: IconSize.s16,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         ],

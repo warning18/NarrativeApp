@@ -48,7 +48,7 @@ extension _FightClash on _FightScreenState {
       child: ActionChip(
         key: Key('parry_${member.id}'),
         visualDensity: VisualDensity.compact,
-        avatar: const Icon(Icons.shield_moon_outlined, size: 14),
+        avatar: const Icon(Icons.shield_moon_outlined, size: IconSize.s16),
         label: Text(
           enemy == null
               ? tr(ref, 'parry_off')

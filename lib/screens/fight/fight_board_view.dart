@@ -371,13 +371,13 @@ extension _FightBoardView on _FightScreenState {
                           ),
                           if (member.isPlayer) ...[
                             const Icon(Icons.bolt,
-                                size: 11, color: Palette.hot),
+                                size: IconSize.inline, color: Palette.hot),
                             Text('$damage',
                                 style: const TextStyle(
                                     fontSize: 10, fontWeight: FontWeight.w600)),
                             const SizedBox(width: 4),
                             const Icon(Icons.shield_outlined,
-                                size: 11, color: Palette.slate),
+                                size: IconSize.inline, color: Palette.slate),
                             Text('$armor',
                                 style: const TextStyle(
                                     fontSize: 10, fontWeight: FontWeight.w600)),
@@ -839,7 +839,8 @@ extension _FightBoardView on _FightScreenState {
               const Positioned(
                 right: -4,
                 top: -6,
-                child: Icon(Icons.lock, size: 13, color: Palette.orange61),
+                child: Icon(Icons.lock,
+                    size: IconSize.s16, color: Palette.orange61),
               ),
           ],
         ),
