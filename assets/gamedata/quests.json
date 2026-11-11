@@ -789,7 +789,7 @@
         "targetNPCName": "",
         "requiredAmount": 1,
         "targetFlag": "hub_2015_ternrow",
-        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
+        "description_fr": "S’occuper du contremaître qui rançonne la Rangée des sternes"
       }
     ],
     "rewardGold": 40,
@@ -812,8 +812,8 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
-    "questName_fr": "Le Péage de Tern Row",
-    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
+    "questName_fr": "Le Péage de la Rangée des sternes",
+    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et la Rangée des sternes s’en souviendra. »",
     "turnInChoices": [
       {
         "choiceText": "Pocket the toll he collected",
@@ -821,12 +821,12 @@
         "rewardGold": 85,
         "alignmentChange": -4,
         "resultText": "Nadira sees the purse go into your coat. Tern Row will remember that too.",
-        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi.",
+        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. La Rangée des sternes s’en souviendra aussi.",
         "flag": "tern_toll_pocketed"
       },
       {
         "choiceText": "Give the toll back to Tern Row",
-        "choiceText_fr": "Rendre le péage à Tern Row",
+        "choiceText_fr": "Rendre le péage à la Rangée des sternes",
         "rewardGold": 10,
         "alignmentChange": 8,
         "flag": "terns_toll_returned",
@@ -2977,7 +2977,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Une barque pour le mauvais nom",
-    "npcDialogueText_fr": "Dunn, la fabricante de lanternes de Tern Row, dit qu’un acheteur allume des bateaux pour des noms que la mer n’a jamais pris, et que la mer tient ses propres comptes.",
+    "npcDialogueText_fr": "Dunn, la fabricante de lanternes de la Rangée des sternes, dit qu’un acheteur allume des bateaux pour des noms que la mer n’a jamais pris, et que la mer tient ses propres comptes.",
     "detourEligible": false,
     "turnInChoices": [
       {
