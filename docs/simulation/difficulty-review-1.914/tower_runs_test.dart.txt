@@ -1,0 +1,287 @@
+// Tower difficulty review (v1.914 vs v1.916): 50 fixed runs + a 2,000-seed
+// batch, on the app's real Tower bot (lib/data/tower/tower_bot.dart).
+//
+// HOW TO RUN (not kept in test/: CI would run it)
+//   One source for both versions. Lines starting `/*1916*/` exist only on
+//   v1.916 (PR #965: the dice bag and the bot's die trial); lines starting
+//   `/*1914*/` only on v1.914. Make the version's copy with sed:
+//     v1.914: sed -e '/^\/\*1916\*\//d' -e 's/^\/\*1914\*\///' \
+//               tower_runs_test.dart.txt > test/tmp_tower_runs_test.dart
+//     v1.916: sed -e '/^\/\*1914\*\//d' -e 's/^\/\*1916\*\///' \
+//               tower_runs_test.dart.txt > test/tmp_tower_runs_test.dart
+//   then, from the worktree root:
+//     OUT=/some/dir VERSION=1.914 BATCH=2000 \
+//       flutter test test/tmp_tower_runs_test.dart
+//   It writes $OUT/tower-runs-$VERSION.csv and $OUT/tower-$VERSION.json
+//   (the 50 runs' summary and the batch's). BATCH=0 skips the batch.
+//
+// The 50 runs: seeds 1001..1050, pair i = (seed - 1001) % 25 over
+// races (sorted) x professions (warrior, mage, rogue, cleric, ranger),
+// race = races[i ~/ 5], profession = professions[i % 5]. Cleric and ranger
+// need an unlock in the Tower; they are passed explicitly here (allowed),
+// with no other unlock (TowerProgress() default: no start dice, no extra
+// clans: the oath pool is dominion, mire, penitents).
+//
+// Health entering each floor is not saved on a run, so the loop below
+// replays playTowerRun step by step (the same calls, in the same order)
+// and reads run.health / max health before each fight. Each replay is
+// checked against playTowerRun's own result (same JSON) so the replay
+// cannot drift from the bot.
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/data/sim_combat.dart' show simBuildShares;
+import 'package:narrative_data_app/data/training.dart' show statPickForShares;
+import 'package:narrative_data_app/data/tower/tower_bot.dart';
+import 'package:narrative_data_app/data/tower/tower_floors.dart';
+import 'package:narrative_data_app/data/tower/tower_hero.dart';
+import 'package:narrative_data_app/data/tower/tower_progress.dart';
+/*1916*/import 'package:narrative_data_app/data/tower/tower_rewards.dart';
+/*1916*/import 'package:narrative_data_app/data/tower/tower_tables.dart';
+import 'package:narrative_data_app/data/tower/tower_run.dart';
+
+final _data = towerDataFromAssets();
+final _env = Platform.environment;
+const _professions = ['warrior', 'mage', 'rogue', 'cleric', 'ranger'];
+
+class Rec {
+  Rec(this.run, this.healthIn);
+  final TowerRun run;
+  final Map<int, double> healthIn; // floor -> health share entering it
+}
+
+Rec replay(int seed, String raceId, String professionId) {
+  var run = towerStart(
+    seed: seed,
+    raceId: raceId,
+    professionId: professionId,
+    clanPool: const TowerProgress().clans.toList()..sort(),
+    data: _data,
+  );
+  final floors = towerFloorsFor(seed, _data.enemies);
+/*1916*/  final start = towerHeroOf(run, _data);
+/*1916*/  run = towerBotRollBest(run, _data, floors, [
+/*1916*/    for (final id in start.ownedDice.keys)
+/*1916*/      if (id != start.diceId) id,
+/*1916*/  ]);
+  final healthIn = <int, double>{};
+  while (!run.isOver) {
+    final floor = floors[run.floor - 1];
+    final hero = towerHeroOf(run, _data);
+    final maxHealth = hero.maxHealth;
+    healthIn[run.floor] = run.health / maxHealth;
+    final outcome = towerBotFight(
+      run: run,
+      floor: floor,
+      hero: hero,
+      data: _data,
+      random: towerRandom(seed, floor.floor, TowerStream.fight),
+    );
+    run = towerAfterFight(run, _data,
+        won: outcome.won,
+        healthLeft: hero.currentHealth,
+        potionsLeft: hero.potions,
+        maxHealthBefore: maxHealth);
+    if (run.status == TowerStatus.choosing) {
+      while (towerPendingPicks(run) > 0) {
+        final hero = towerHeroOf(run, _data);
+        final offer = towerStatPickOffer(run, _data, hero: hero);
+        if (offer.isEmpty) break;
+        run = towerTakeStatPick(
+            run,
+            _data,
+            statPickForShares(
+                offer,
+                simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
+                hero.pickedPoints),
+            offer: offer);
+      }
+      final hero = towerHeroOf(run, _data);
+/*1916*/      final owned = hero.ownedDice.keys.toSet();
+      final index = towerBotChoice(run);
+/*1916*/      final card = index != null && index >= 0 && index < run.offer.length
+/*1916*/          ? run.offer[index]
+/*1916*/          : null;
+      run = towerPick(run, _data, index, hero: hero);
+/*1916*/      final gained = switch (card?.kind) {
+/*1916*/        TowerRewardKind.die => card!.id,
+/*1916*/        TowerRewardKind.clanOath => towerClanDieOf(card!.id, _data.dice),
+/*1916*/        _ => null,
+/*1916*/      };
+/*1916*/      if (gained != null && !owned.contains(gained)) {
+/*1916*/        run = towerBotRollBest(run, _data, floors, [gained]);
+/*1916*/      }
+    }
+  }
+  return Rec(run, healthIn);
+}
+
+String outcomeOf(TowerRun r) => switch (r.status) {
+      TowerStatus.won => 'won',
+      TowerStatus.dead => 'died on floor ${r.floor}',
+      _ => 'other',
+    };
+
+double? meanOf(Iterable<double> v) =>
+    v.isEmpty ? null : v.reduce((a, b) => a + b) / v.length;
+
+double? band(Map<int, double> h, int lo, int hi) =>
+    meanOf([for (var f = lo; f <= hi; f++) if (h[f] != null) h[f]!]);
+
+String r3(double? x) => x == null ? '' : x.toStringAsFixed(3);
+
+Map<String, dynamic> share(int k, int n) =>
+    {'count': k, 'of': n, 'share': n == 0 ? 0 : (k / n * 1000).round() / 1000};
+
+Map<String, dynamic> summarize(List<TowerRun> runs,
+    {List<Map<int, double>>? health}) {
+  final n = runs.length;
+  final reach = {
+    for (final f in [5, 10, 15, 20, 25, 30])
+      'floor$f': share(runs.where((r) => r.floorReached >= f).length, n),
+  };
+  final won = runs.where((r) => r.status == TowerStatus.won).length;
+  final deaths = <int, int>{};
+  for (final r in runs) {
+    if (r.status == TowerStatus.dead) {
+      deaths[r.floor] = (deaths[r.floor] ?? 0) + 1;
+    }
+  }
+  Map<String, dynamic> by(String Function(TowerRun) key) {
+    final g = <String, List<TowerRun>>{};
+    for (final r in runs) {
+      g.putIfAbsent(key(r), () => []).add(r);
+    }
+    final keys = g.keys.toList()..sort();
+    return {
+      for (final k in keys)
+        k: {
+          'won': share(g[k]!.where((r) => r.status == TowerStatus.won).length,
+              g[k]!.length),
+          'reached20': share(
+              g[k]!.where((r) => r.floorReached >= 20).length, g[k]!.length),
+          'meanFloor': (meanOf([for (final r in g[k]!) r.floorReached * 1.0])! *
+                      10)
+                  .round() /
+              10,
+        },
+    };
+  }
+
+  final sortedDeaths = deaths.keys.toList()..sort();
+  final byKind = <String, int>{}, byFoe = <String, int>{};
+  for (final r in runs) {
+    if (r.status != TowerStatus.dead) continue;
+    final f = towerFloorsFor(r.seed, _data.enemies)[r.floor - 1];
+    byKind[f.kind.name] = (byKind[f.kind.name] ?? 0) + 1;
+    for (final id in f.enemyIds.toSet()) {
+      byFoe[id] = (byFoe[id] ?? 0) + 1;
+    }
+  }
+  final foes = byFoe.keys.toList()..sort((a, b) => byFoe[b]! - byFoe[a]!);
+  return {
+    'runs': n,
+    'reached': reach,
+    'won': share(won, n),
+    'deathsPerFloor': {for (final f in sortedDeaths) '$f': deaths[f]},
+    'deathsPerFloorShareOfReached': {
+      for (final f in sortedDeaths)
+        '$f': share(deaths[f]!, runs.where((r) => r.floorReached >= f).length),
+    },
+    'deathsByFloorKind': byKind,
+    'deathsByFoePresent': {for (final id in foes.take(12)) id: byFoe[id]},
+    if (health != null)
+      'meanHealthEntering': {
+        for (final (lo, hi) in [(1, 10), (11, 20), (21, 30)])
+          '$lo-$hi': () {
+            final v = [
+              for (final h in health)
+                for (var f = lo; f <= hi; f++)
+                  if (h[f] != null) h[f]!
+            ];
+            return {
+              'mean': double.parse(r3(meanOf(v) ?? 0)),
+              'floorEntries': v.length
+            };
+          }(),
+      },
+    'byRace': by((r) => r.raceId),
+    'byProfession': by((r) => r.professionId),
+  };
+}
+
+void main() {
+  test('tower runs', () {
+    final version = _env['VERSION'] ?? 'x';
+    final out = _env['OUT'] ?? '.';
+    final batchN = int.tryParse(_env['BATCH'] ?? '') ?? 2000;
+    final races = _data.races.keys.toList()..sort();
+    final csv = StringBuffer(
+        'seed,race,profession,floor_reached,outcome,death_enemy_ids,'
+        'death_floor_kind,fights_fought,level_end,oaths,'
+        'health_in_1_10,health_in_11_20,health_in_21_30\n');
+    final runs = <TowerRun>[];
+    final health = <Map<int, double>>[];
+    for (var seed = 1001; seed <= 1050; seed++) {
+      final i = (seed - 1001) % 25;
+      final race = races[i ~/ 5], prof = _professions[i % 5];
+      final rec = replay(seed, race, prof);
+      final bot = playTowerRun(
+          seed: seed, data: _data, raceId: race, professionId: prof);
+      expect(jsonEncode(rec.run.toJson()), jsonEncode(bot.toJson()),
+          reason: 'replay drifted from playTowerRun, seed $seed');
+      final r = rec.run;
+      final dead = r.status == TowerStatus.dead;
+      final floor = dead ? towerFloorsFor(seed, _data.enemies)[r.floor - 1] : null;
+      runs.add(r);
+      health.add(rec.healthIn);
+      csv.writeln([
+        seed,
+        race,
+        prof,
+        r.floorReached,
+        outcomeOf(r),
+        floor?.enemyIds.join('|') ?? '',
+        floor?.kind.name ?? '',
+        rec.healthIn.length, // one fight a floor
+        towerLevelAfter(r.floorsCleared),
+        r.clanIds.join('|'),
+        r3(band(rec.healthIn, 1, 10)),
+        r3(band(rec.healthIn, 11, 20)),
+        r3(band(rec.healthIn, 21, 30)),
+      ].join(','));
+    }
+    File('$out/tower-runs-$version.csv').writeAsStringSync(csv.toString());
+    final sw = Stopwatch()..start();
+    // The batch: playTowerRun's own draw of race and profession (among the
+    // open: warrior, mage, rogue), replayed for the health entering floors.
+    final batch = <TowerRun>[];
+    final batchHealth = <Map<int, double>>[];
+    for (var seed = 1; seed <= batchN; seed++) {
+      final pick = towerRandom(seed, 0, TowerStream.start);
+      final profs = const TowerProgress().professions.toList()..sort();
+      final race = races[pick.nextInt(races.length)];
+      final prof = profs[pick.nextInt(profs.length)];
+      final rec = replay(seed, race, prof);
+      if (seed <= 100) {
+        expect(jsonEncode(rec.run.toJson()),
+            jsonEncode(playTowerRun(seed: seed, data: _data).toJson()),
+            reason: 'batch replay drifted, seed $seed');
+      }
+      batch.add(rec.run);
+      batchHealth.add(rec.healthIn);
+    }
+    File('$out/tower-$version.json').writeAsStringSync(
+        const JsonEncoder.withIndent('  ').convert({
+      'version': version,
+      'fixed50': summarize(runs, health: health),
+      if (batchN > 0) 'batch': {
+        'seeds': '1..$batchN, random race and profession among the open '
+            '(warrior, mage, rogue), no unlocks',
+        'seconds': sw.elapsed.inSeconds,
+        ...summarize(batch, health: batchHealth),
+      },
+    }));
+  }, timeout: Timeout.none);
+}
