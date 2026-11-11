@@ -1,0 +1,18 @@
+{
+ "date": "2026-11-11",
+ "mix": "A for beats 1 to 4 (art/pixellab-intro/final), B for the ending",
+ "plates": [
+  {
+   "file": "final/plateB_table_pool.png",
+   "beats": "5 to 7 (the die drops and rests, the title)",
+   "source": "B4 seed 6 (art/pixellab-intro/staged/B4_s6.png)",
+   "edit": "the painted die in the pool of light painted out by hand (the pool is flat; refilled with its own colour). The die is code (Die3D). No baked text."
+  },
+  {
+   "file": "final/plateB_shell_flash.png",
+   "beat": "6 (the die stops: the first shell, per Narrative's lore)",
+   "source": "B2 seed 5 (staged/B2_s5.png)",
+   "edit": "none; no baked text. Seed 6 is the alternative (more chaos, a ball in flight)."
+  }
+ ]
+}
