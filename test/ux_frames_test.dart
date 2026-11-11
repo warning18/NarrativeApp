@@ -64,7 +64,7 @@ void main() {
     await tester.pumpWidget(app());
     expect(seen, isNull, reason: 'not loaded: the plain bevel');
     await tester.runAsync(() async {
-      await FrameImages.preload(FrameMaterial.iron, EnvDecor.none);
+      await FrameImages.preload(FrameMaterial.iron, EnvDecor.towerStone);
     });
     await tester.pump();
     expect(seen?.material, FrameMaterial.iron);
