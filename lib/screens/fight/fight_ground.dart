@@ -335,14 +335,14 @@ extension _FightGround on _FightScreenState {
 
   /// The picture behind the fight: the Tower's when it dresses the fight,
   /// else the stage's at the fight's place (fightPlaceOf).
-  String _plateHere() =>
-      FightPlateOverride.maybeOf(context)?.asset ??
-      fightPlateAsset(
-          _stage,
-          ref
-              .read(geographyProvider)
-              .locationOf(fightPlaceOf(widget.modifiers, _placeIdHere()))
-              ?.id);
+  String _plateHere() {
+    final override = FightPlateOverride.maybeOf(context)?.asset;
+    if (override != null) return override;
+    final place = fightPlaceOf(widget.modifiers, _placeIdHere());
+    return fightPlateAsset(
+        _stage, ref.read(geographyProvider).locationOf(place)?.id,
+        placeId: place);
+  }
 
   /// The stage whose ground skin the dice board wears: the stage's own, the
   /// Tower's stone when it dresses the fight. A look only.
