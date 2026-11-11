@@ -55,9 +55,13 @@ extension _FightView on _FightScreenState {
         Positioned.fill(
             child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
         Positioned.fill(child: _buildWeatherOverlay()),
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
+        _SetupBody(
+          figures: FightFigures(
+            allies: [for (final m in _party) _headIdFor(m)],
+            foes: [for (final e in _enemies) e.enemyId],
+            height: 96,
+          ),
+          content: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // What this fight's goal, doctrine and situation mean, the
@@ -281,12 +285,11 @@ extension _FightView on _FightScreenState {
   Widget _buildEnemySetupCard(_EnemyMember enemy) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 24,
-          backgroundColor: _isElite
-              ? Palette.goldDeep
-              : Theme.of(context).colorScheme.errorContainer,
-          child: EnemyPixelIcon(enemy.enemyId, size: IconSize.s32),
+        HeadAvatar(
+          id: enemy.enemyId,
+          name: enemy.displayName,
+          accent: _isElite ? Palette.goldDeep : Palette.hot,
+          size: 56,
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1407,4 +1410,69 @@ extension _FightView on _FightScreenState {
       ),
     );
   }
+}
+
+/// The setup page's scroll view, with the fighters standing at the bottom of
+/// the screen when the page leaves room for them (the page is shorter than
+/// the screen by a figure's height or more): no empty lower half before the
+/// battle (QA, v1.915), and a page that fills the screen is as it was. The
+/// room is measured after layout, so it never changes the page's own layout.
+class _SetupBody extends StatefulWidget {
+  const _SetupBody({required this.content, required this.figures});
+
+  final Widget content;
+  final Widget figures;
+
+  @override
+  State<_SetupBody> createState() => _SetupBodyState();
+}
+
+class _SetupBodyState extends State<_SetupBody> {
+  static const double _padding = 16;
+  static const double _need = 96 + 12;
+  final _content = GlobalKey();
+  double _room = 0;
+
+  void _measure(double viewport) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final h = _content.currentContext?.size?.height;
+      if (h == null) return;
+      final room = viewport - 2 * _padding - h;
+      if ((room - _room).abs() > 1) setState(() => _room = room);
+    });
+    // The callback waits for a frame: make sure one comes.
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, box) {
+          _measure(box.maxHeight);
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              if (_room >= _need)
+                Positioned(
+                  left: _padding,
+                  right: _padding,
+                  bottom: _padding,
+                  child: IgnorePointer(child: widget.figures),
+                ),
+              NotificationListener<SizeChangedLayoutNotification>(
+                onNotification: (_) {
+                  _measure(box.maxHeight);
+                  return false;
+                },
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(_padding),
+                  child: SizeChangedLayoutNotifier(
+                    child: KeyedSubtree(key: _content, child: widget.content),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
 }

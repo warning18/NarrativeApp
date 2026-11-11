@@ -208,9 +208,61 @@ abstract final class FightSpriteImages {
         }
       }();
 
+  static final Map<String, ui.Rect> _heads = {};
+  static final Set<String> _headAsked = {};
+
+  /// The head of [set]'s figure, a square in image pixels, for a card's
+  /// portrait (v1.916): the whole figure, squared, for a creature drawn on a
+  /// bigger canvas than its body (the vermin, hounds and golem), the top of a
+  /// walking figure (a head and shoulders) otherwise. Null until the image is
+  /// in and measured (then [loaded] counts once more).
+  static ui.Rect? headOf(FightSpriteSet set) {
+    final use = effective(set);
+    final got = _heads[use.id];
+    if (got != null) return got;
+    final image = idleOf(use);
+    if (image != null && _headAsked.add(use.id)) _measure(use, image);
+    return null;
+  }
+
+  static Future<void> _measure(FightSpriteSet set, ui.Image image) async {
+    final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    if (data == null) return;
+    final w = image.width;
+    final fw = set.frameWidth, fh = set.frameHeight;
+    var minX = fw, minY = fh, maxX = -1, maxY = -1;
+    for (var y = 0; y < fh; y++) {
+      for (var x = 0; x < fw; x++) {
+        if (data.getUint8((y * w + x) * 4 + 3) > 8) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return;
+    final bw = (maxX - minX + 1).toDouble(), bh = (maxY - minY + 1).toDouble();
+    final creature = set.drawScale < 1 || set.frameWidth > 48;
+    final cx = minX + bw / 2;
+    ui.Rect rect;
+    if (creature) {
+      final side = bw > bh ? bw : bh;
+      rect = ui.Rect.fromCenter(
+          center: ui.Offset(cx, minY + bh / 2), width: side, height: side);
+    } else {
+      final side = bw > bh * 0.5 ? bw : bh * 0.5;
+      rect = ui.Rect.fromLTWH(cx - side / 2, minY.toDouble() - 1, side, side);
+    }
+    _heads[set.id] = rect;
+    loaded.value++;
+  }
+
   /// For tests: forget what was loaded.
   @visibleForTesting
   static void reset() {
+    _heads.clear();
+    _headAsked.clear();
     _idle.clear();
     _loading.clear();
     _missing.clear();
