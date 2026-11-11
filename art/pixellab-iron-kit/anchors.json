@@ -1,0 +1,370 @@
+{
+ "ui": {
+  "panel_dark": {
+   "size": [
+    24,
+    24
+   ],
+   "slice": 8
+  },
+  "panel_parchment": {
+   "size": [
+    24,
+    24
+   ],
+   "slice": 8
+  },
+  "hud_panel": {
+   "size": [
+    16,
+    16
+   ],
+   "slice": 5
+  },
+  "tab": {
+   "size": [
+    20,
+    14
+   ],
+   "slice": 6
+  },
+  "chip": {
+   "size": [
+    16,
+    12
+   ],
+   "slice": 5
+  },
+  "corner": {
+   "size": [
+    12,
+    12
+   ],
+   "slice": null
+  },
+  "divider": {
+   "size": [
+    24,
+    6
+   ],
+   "slice": 8
+  },
+  "dialog": {
+   "size": [
+    32,
+    32
+   ],
+   "slice": 12
+  },
+  "button_primary_normal": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  },
+  "button_primary_pressed": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  },
+  "button_primary_disabled": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  },
+  "button_secondary_normal": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  },
+  "button_secondary_pressed": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  },
+  "button_secondary_disabled": {
+   "size": [
+    24,
+    16
+   ],
+   "slice": 6
+  }
+ },
+ "env": {
+  "wilds": {
+   "top": {
+    "files": [
+     "wilds_top_0.png",
+     "wilds_top_1.png",
+     "wilds_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "wilds_bottom_0.png",
+     "wilds_bottom_1.png",
+     "wilds_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "wilds_corner_0.png",
+     "wilds_corner_1.png",
+     "wilds_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "dunes": {
+   "top": {
+    "files": [
+     "dunes_top_0.png",
+     "dunes_top_1.png",
+     "dunes_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "dunes_bottom_0.png",
+     "dunes_bottom_1.png",
+     "dunes_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "dunes_corner_0.png",
+     "dunes_corner_1.png",
+     "dunes_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "frost": {
+   "top": {
+    "files": [
+     "frost_top_0.png",
+     "frost_top_1.png",
+     "frost_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "frost_bottom_0.png",
+     "frost_bottom_1.png",
+     "frost_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "frost_corner_0.png",
+     "frost_corner_1.png",
+     "frost_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "coast": {
+   "top": {
+    "files": [
+     "coast_top_0.png",
+     "coast_top_1.png",
+     "coast_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "coast_bottom_0.png",
+     "coast_bottom_1.png",
+     "coast_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "coast_corner_0.png",
+     "coast_corner_1.png",
+     "coast_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "ash": {
+   "top": {
+    "files": [
+     "ash_top_0.png",
+     "ash_top_1.png",
+     "ash_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "ash_bottom_0.png",
+     "ash_bottom_1.png",
+     "ash_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "ash_corner_0.png",
+     "ash_corner_1.png",
+     "ash_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "city": {
+   "top": {
+    "files": [
+     "city_top_0.png",
+     "city_top_1.png",
+     "city_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "city_bottom_0.png",
+     "city_bottom_1.png",
+     "city_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "city_corner_0.png",
+     "city_corner_1.png",
+     "city_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  },
+  "sacred_void": {
+   "top": {
+    "files": [
+     "sacred_void_top_0.png",
+     "sacred_void_top_1.png",
+     "sacred_void_top_2.png"
+    ],
+    "size": [
+     32,
+     10
+    ],
+    "anchor": "top edge, sprite top = panel outer top; tile horizontally, cycle variants, overlap 4 px"
+   },
+   "bottom": {
+    "files": [
+     "sacred_void_bottom_0.png",
+     "sacred_void_bottom_1.png",
+     "sacred_void_bottom_2.png"
+    ],
+    "size": [
+     32,
+     8
+    ],
+    "anchor": "bottom edge, sprite bottom = panel outer bottom; tile horizontally"
+   },
+   "corner": {
+    "files": [
+     "sacred_void_corner_0.png",
+     "sacred_void_corner_1.png",
+     "sacred_void_corner_2.png"
+    ],
+    "size": [
+     16,
+     16
+    ],
+    "anchor": "top-left outer corner; mirror horizontally for top-right (and vertically for the bottom corners)"
+   }
+  }
+ }
+}
