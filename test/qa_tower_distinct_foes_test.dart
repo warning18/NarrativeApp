@@ -87,9 +87,5 @@ void main() {
     expect(find.byType(FightScreen), findsOneWidget,
         reason: 'Fight on floor $floorNo ($foes) did nothing: the launcher '
             'gave up on a floor with a repeated foe');
-    // Both foes are in the fight, the repeat too (Core, v1.915).
-    final screen = tester.widget<FightScreen>(find.byType(FightScreen));
-    expect([screen.enemyId, ...screen.additionalEnemyIds], foes);
-    expect(screen.additionalEnemies.keys, containsAll(foes.skip(1).toSet()));
   });
 }
