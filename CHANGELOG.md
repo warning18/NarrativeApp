@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.916.0+952]
+
+- Fight: no empty space before the battle, and portraits from the sprites. The setup page (the foe, the die, Enter Battle) fills the screen: the fighters stand in the free space under the page, the hero and the allies facing the foes, and Enter Battle sits at the bottom (QA's empty lower half); a page that already fills the screen is as it was. The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
+
 ## [1.912.0+948]
 
 - Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
