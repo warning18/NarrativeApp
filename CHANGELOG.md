@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.919.0+955]
+
+- Fights now know the place they happen in, for their background: an expedition's fight carries its zone's place, a land crossing's fight the place it arrives at, a story fight the scene's place (the Tower has none). No rule changes; UX-2 uses it to draw a place's own version of a stage.
+
 ## [1.918.0+954]
 
 - Tower: the floor screen shows a "Your dice" panel once you own a second die: a tile per die (its shape and skin), the one in play and the clan die that resonates tagged, a red dot on a die you have not looked at yet. Tap a die to see its faces and press "Roll this die" to roll it from the next fight on.

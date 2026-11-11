@@ -6,6 +6,7 @@
 import '../data/geography.dart';
 import 'combat_engine.dart' show isBossEnemy, zoneBossEnemyIds;
 import 'context_rules.dart';
+import 'encounter.dart' show EncounterModifiers;
 import 'field_anomaly.dart';
 
 /// The stage a fight at [placeId] is drawn on: [forcedStage] when the
@@ -52,3 +53,11 @@ bool isBossFight(Iterable<MapEntry<String, Map<String, dynamic>>> enemies,
     ),
   );
 }
+
+/// The place a fight happens in, for its background (v1.921): the
+/// launcher's own ([EncounterModifiers.placeId]: an expedition's zone, a
+/// land crossing's arrival), else [storyPlace], where the story stands;
+/// none in the Tower, which is its own place. No rule reads it: the stage
+/// is [fightStageAt]'s.
+String? fightPlaceOf(EncounterModifiers modifiers, String? storyPlace) =>
+    modifiers.tower ? null : modifiers.placeId ?? storyPlace;
