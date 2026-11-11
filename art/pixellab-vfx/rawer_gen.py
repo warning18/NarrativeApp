@@ -13,9 +13,9 @@ NCOL = 5
 
 def lum(c): return 0.3*c[...,0]+0.59*c[...,1]+0.11*c[...,2]
 
-def process(style, ncol=None, speck=3, athr=110):
+def process(style, ncol=None, speck=3, athr=110, src_dir=None):
     NCOL_ = ncol or NCOL
-    src = Image.open(f'{R}/staged/vfx_{style}.png').convert('RGBA')
+    src = Image.open(f'{src_dir or R+"/staged"}/vfx_{style}.png').convert('RGBA')
     n = src.width//48
     frames = [src.crop((i*48,0,i*48+48,48)) for i in range(n)]
     small = []
