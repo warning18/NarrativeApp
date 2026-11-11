@@ -1,6 +1,6 @@
 # Basic attack, die-landing and hit animations: a proposal (picture first, nothing wired)
 
-Sheet: `docs/art/boards/attack-fx-pilot.png` (today | proposal). Strips: `art/pixellab-attackfx/strips/`, GIFs `gif/`, generator `attackfx_gen.py`. **Pilot: 4 strips, hand-drawn in code, 0 generations.** Same look as the skill strips: 5 colours + ink, hard edges, no glow, whole-pixel scaling.
+Sheet: `docs/art/boards/attack-fx-pilot.png` (today | proposal). Strips: `art/pixellab-attackfx/strips/`, GIFs `gif/`, generator `attackfx_gen.py`. **The user approved the full set of 11: all drawn, hand-drawn in code, 0 generations.** Strips: die_strike, die_ward, die_bloom, die_arcs (mana), die_miasma (poison, light: the code bubbles keep the motion), die_shock (stun), die_drain (weaken, light), die_fizzle (blank, light: the shake stays code), hit_slash, hit_heavy (a second crescent lands two frames later), hit_crit (gold starburst, 48x48). Same look as the skill strips: 5 colours + ink, hard edges, no glow, whole-pixel scaling.
 
 ## How it works today
 `lib/widgets/die_3d.dart` plays, when a die lands, a code burst (`DieFx`: strike, ward, bloom, arcs, miasma, shock, drain, fizzle) and, on top, the pixel strips `die_<fx>`, `el_<element>`, `kw_<word>`, `die_surge`, `die_curse`, `die_glint` from `assets/visuals/pixel_fx/` (40x40, 8 frames, thin dithered masks). Hits on enemies use the `vfx` styles (`vfx_*.png`, 48x48).

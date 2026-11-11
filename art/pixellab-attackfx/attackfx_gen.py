@@ -88,8 +88,8 @@ def bloom():
                 if 0<=x+dx<20 and 0<=y+dy<20: g.putpixel((x+dx,y+dy),col)
         out.append(finish(g,ring_min=5))
     return strip(out)
-def hit_slash():
-    c=PAL['steel']; out=[]
+def crescent(c,mirror=False,scale=1.0):
+    out=[]
     for t in range(8):
         g=grid(24); px=g.load()
         head=min(1.0,(t+1)/3.0); tail=max(0.0,(t-2.5)/4.5)
@@ -108,9 +108,111 @@ def hit_slash():
             for ang in (200,240,160):
                 x=int(12+math.cos(math.radians(ang))*(6+t*1.5)); y=int(12-math.sin(math.radians(ang))*(6+t*1.5))
                 if 0<=x<24 and 0<=y<24: g.putpixel((x,y),c[2])
+        if mirror: g=g.transpose(Image.FLIP_LEFT_RIGHT)
         out.append(finish(g,ring_min=4))
     return strip(out)
+def hit_slash(): return crescent(PAL['steel'])
 OUT={'die_strike':strike,'die_ward':ward,'die_bloom':bloom,'hit_slash':hit_slash}
+
+PAL['gold']=[H('#8A5A00'),H('#F2C14E'),H('#FFE08A'),H('#FFFFFF')]
+PAL['void']=[H('#2A1A52'),H('#6A4FB0'),H('#A987EA'),H('#E6D6FF')]
+PAL['poison']=[H('#2E5A22'),H('#3D7A2C'),H('#7DBE6A'),H('#C8EE9A')]
+PAL['ash']=[H('#4A443B'),H('#6B6356'),H('#A8A194'),H('#CFC4AE')]
+def arcs():
+    c=PAL['tide']; out=[]
+    for t in range(8):
+        g=grid(20)
+        if t<=6: ring_px(g,10,10,1.5+t*1.2,c[1] if t<5 else c[0],w=1.5)
+        if 2<=t<=7: ring_px(g,10,10,(t-2)*1.4+1,c[2],w=1)
+        for i in range(4):
+            ang=math.radians(90*i+t*35); r=2+t*1.1
+            x=int(10+math.cos(ang)*r); y=int(10+math.sin(ang)*r)
+            if 0<=x<19 and 0<=y<19 and t<7:
+                for dx in (0,1):
+                    for dy in (0,1): g.putpixel((x+dx,y+dy),c[3] if t<4 else c[2])
+        out.append(finish(g,ring_min=30))
+    return strip(out)
+def miasma():
+    c=PAL['poison']; out=[]
+    bub=[(4,0,2.5),(10,1,3.2),(16,2,2.2)]
+    for t in range(8):
+        g=grid(20)
+        if t<=5: disc(g,10,17,[1,3,4,4,3,1][t],c[0])
+        for x,start,r in bub:
+            tt=t-start
+            if tt<0 or tt>5: continue
+            y=14-tt*2.4; rr=r*(1-tt*.08)
+            ring_px(g,x,y,rr,c[2],w=1.4)
+            if tt<4: g.putpixel((int(x-rr*.4),int(y-rr*.4)),c[3])
+        out.append(finish(g,ring_min=99))
+    return strip(out)
+def shock():
+    c=PAL['gold']; out=[]
+    for t in range(8):
+        g=grid(20)
+        if t<=4: disc(g,10,10,[1,2,2.5,2,1.5][t],c[3 if t<3 else 2])
+        d=ImageDraw.Draw(g)
+        for k in range(4):
+            ang=math.radians(90*k+30); L=[0,5,8,9,8,6,4,2][t]
+            if L<=0: continue
+            pts=[(10,10)]
+            for s_ in range(1,int(L)+1):
+                off=(2.6 if s_%2 else -2.6)
+                pts.append((10+math.cos(ang)*s_*1.1-math.sin(ang)*off,10+math.sin(ang)*s_*1.1+math.cos(ang)*off))
+            if len(pts)>1: d.line(pts,fill=c[2] if t<5 else c[1],width=1)
+        out.append(finish(g,ring_min=60))
+    return strip(out)
+def drain():
+    c=PAL['void']; out=[]
+    for t in range(8):
+        g=grid(20)
+        for i in range(14):
+            u=i/14; ang=u*math.pi*4+t*.5; r=(9-t*.9)*(1-u*.85)+.5
+            if r<=0.5 and t>5: continue
+            x=int(10+math.cos(ang)*r); y=int(10+math.sin(ang)*r)
+            if 0<=x<20 and 0<=y<20: g.putpixel((x,y),c[3] if u<.3 else c[2] if u<.6 else c[1])
+        if t>=2: 
+            d=ImageDraw.Draw(g); y0=3+t//2; d.polygon([(10,y0+5),(6,y0),(14,y0)],fill=H('#D9544D')) if t<7 else None
+        out.append(finish(g,ring_min=7))
+    return strip(out)
+def fizzle():
+    c=PAL['ash']; out=[]
+    puffs=[(5,12,0),(10,14,1),(14,11,0),(8,9,2)]
+    for t in range(8):
+        g=grid(20)
+        for x,y,st in puffs:
+            tt=t-st
+            if tt<0 or tt>5: continue
+            yy=y-tt*1.4; sz=[1,2,2,2,1,1][tt]; col=c[2] if tt<3 else c[1]
+            for dx in range(sz):
+                for dy in range(sz): 
+                    if 0<=x+dx<20 and 0<=int(yy)+dy<20 and (tt<4 or (dx+dy)%2==0): g.putpixel((x+dx,int(yy)+dy),col)
+        out.append(finish(g,ring_min=99))
+    return strip(out)
+def hit_heavy():
+    a=crescent(PAL['ember']); b=crescent(PAL['ember'],mirror=True)
+    out=Image.new('RGBA',a.size,(0,0,0,0)); out.alpha_composite(a); 
+    # the second crescent lands two frames later, mirrored
+    w=48; sh=Image.new('RGBA',a.size,(0,0,0,0))
+    for i in range(8):
+        j=i-2
+        if j>=0: sh.alpha_composite(b.crop((j*w,0,j*w+w,w)),(i*w,0))
+    out.alpha_composite(sh); return out
+def hit_crit():
+    c=PAL['gold']; out=[]
+    for t in range(8):
+        g=grid(24); cx=cy=12
+        if t<=5: disc(g,cx,cy,[2,4,6,5,3,2][t],c[3 if t<4 else 2])
+        for a in range(8):
+            ang=a*math.pi/4+(math.pi/8 if a%2 else 0); L=[3,7,11,11,10,8,6,4][t]; l0=2+t*.5
+            for s_ in range(int(l0),int(L)+1):
+                if a%2 and s_>L*.65: continue
+                x=int(round(cx+math.cos(ang)*s_)); y=int(round(cy+math.sin(ang)*s_))
+                if 0<=x<24 and 0<=y<24: g.putpixel((x,y),c[3] if s_<L*.5 else c[2] if s_<L-1 else c[1])
+        if 2<=t<=7: ring_px(g,cx,cy,2+t*1.3,c[1] if t<6 else c[0],w=1.4)
+        out.append(finish(g,ring_min=6))
+    return strip(out)
+OUT.update({'die_arcs':arcs,'die_miasma':miasma,'die_shock':shock,'die_drain':drain,'die_fizzle':fizzle,'hit_heavy':hit_heavy,'hit_crit':hit_crit})
 def png8(im):
     a=im.convert('RGBA'); cols={}; pal=[0,0,0]; q=Image.new('P',a.size,0); px=a.load(); qp=q.load()
     for y in range(a.height):
