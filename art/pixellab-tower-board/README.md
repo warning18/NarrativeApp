@@ -1,0 +1,7 @@
+# Tower board look study (a look, not a commitment: whether ladders and snakes exist as events is the user's choice)
+Hand-drawn in code (`board_gen.py`, repo root), 0 generations, the iron kit's format and the art direction (one ink `#0A0807`, light top-left, no glow), transparent PNGs. Mock: `docs/art/boards/tower-board-look.png` (the 30 floors as 5 x 6, floor 1 bottom-left, winding, 412 px wide, dark: cells are the iron panel with a band tint night / stone / void, wardens 5/15/25 with a shield, bosses 10/20/30 with a mark, climbed floors with a gold ring, a ladder 3 to 8, a snake 17 to 12, the hero token on floor 13 in its ring, and the three band steps as a short stair below). Pieces: `docs/art/boards/tower-board-pieces.png`. `anchors.json` has the sizes.
+- **`ladder/ladder_{wood,iron}_{top,mid,bot}.png`** (12 wide, 8 tall each): top cap + n x tileable middle + bottom cap spans 1 to 4 board rows; the iron variant adds iron bands and rivets on the rails.
+- **`snake/snake_{green,night,stone,void}_{head,straight,curve,tail}.png`** (head 16x12 facing right; straight 12x12 horizontal; curve 12x12 left-to-bottom; tail 12x12): rotate or flip by 90 degrees to lay along a path; green is the muted default, night / stone / void match the bands.
+- **`step/step_{night,stone,void}.png`** (24x14): a stone step, tiles horizontally; one per band (floors 1-10, 11-20, 21-30).
+- **`markers/`**: `warden_shield.png` and `boss_mark.png` (14 px), `climbed_ring.png` (16 px gold ring), `hero_ring.png` (26 outer, 20 inner: frames the hero's head crop).
+Not wired.

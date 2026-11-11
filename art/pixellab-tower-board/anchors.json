@@ -1,0 +1,28 @@
+{
+ "ladder": {
+  "width": 12,
+  "caps": "top 8, bottom 8, middle 8 tileable vertically; wood and iron-banded",
+  "span": "1 to 4 board rows: top + n x mid + bottom"
+ },
+ "snake": {
+  "tiles": "head 16x12 (faces right), straight 12x12 (horizontal), curve 12x12 (left to bottom), tail 12x12; rotate 90 degrees to lay along a path; variants green, night, stone, void"
+ },
+ "step": {
+  "size": [
+   24,
+   14
+  ],
+  "tile": "horizontal",
+  "bands": {
+   "night": "floors 1-10",
+   "stone": "floors 11-20",
+   "void": "floors 21-30"
+  }
+ },
+ "markers": {
+  "warden_shield": 14,
+  "boss_mark": 14,
+  "climbed_ring": 16,
+  "hero_ring": "26 outer, 20 inner (frames the head crop)"
+ }
+}
