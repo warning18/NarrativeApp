@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.911.0+947]
+
+- Fight: the fighters stand on the board. The hero and the allies on the left (facing east), the foes on the right (facing west), along the top edge of the dice stage, drawn from the same sprites as the Journey scenes (`lib/widgets/fight_figures.dart`); 62, 54 and 46 px tall at 412, 360 and 320 px wide, scaled together when six stand there. They take no touch and the dice are drawn over them; a fighter with no sprite is left out (its card stays). Pictures in `docs/ux-shots/fighters/`; the enemy cards' portraits from the sprites follow.
+
 ## [1.910.0+946]
 
 - Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
