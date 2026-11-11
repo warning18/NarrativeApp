@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.922.0+958]
+## [1.916.0+952]
 
 - **Narrative: four wording fixes on the map screens** (from the Maps session's French
   pass). Saltmouth's "Tern Row" has its French name, **La Rangée des sternes**, on the
