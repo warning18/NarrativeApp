@@ -12,6 +12,10 @@ isn't reconstructable from git history alone.
 
 - Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
 
+## [1.907.0+943]
+
+- Dice: a die looks the same while it rolls and at rest. A phone whose roll ran slow used to turn the solid d4/d8/d10/d12/d20 on the board into the flat drawing in the middle of the roll, and it stayed flat (two different dice, shape and skin). A mounted die now never changes its drawing; a slow roll (12 frames in a row over 34 ms, was 6 over 24 ms) only makes the dice mounted after it, in the next fight, flat. Test: `test/ux_die_same_look_test.dart`; before/after in `docs/ux-shots/dice-same-look/`.
+
 ## [1.906.0+942]
 
 - Icons: Art's harmonised set of the 289 skill and item icons (one ink outline, the shared 63-colour palette; the drawings are untouched) replaces the originals in `assets/icons/skills` and `assets/icons/items`, same names and sizes.
