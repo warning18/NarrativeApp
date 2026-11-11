@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/enemy_affix.dart';
+import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
@@ -20,6 +21,7 @@ import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
+import 'tower_dice_panel.dart';
 import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
@@ -310,6 +312,8 @@ class _FloorIntro extends ConsumerWidget {
             ],
           ),
         ),
+        // The bag: shown once the hero owns more than its first die.
+        ..._dicePanel(ref),
         const SizedBox(height: 16),
         FilledButton(
           key: const Key('tower_fight'),
@@ -318,6 +322,22 @@ class _FloorIntro extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+extension on _FloorIntro {
+  List<Widget> _dicePanel(WidgetRef ref) {
+    final dice = towerDiceOf(run, data, clans: ref.watch(clanDataProvider));
+    if (dice.length < 2) return const [];
+    final tower = ref.read(towerProvider.notifier);
+    return [
+      InkLabel(tr(ref, 'tower_dice_title')),
+      TowerDicePanel(
+        dice: dice,
+        onChoose: (id) => tower.chooseDie(id, data: data),
+        onSeen: tower.markDieSeen,
+      ),
+    ];
   }
 }
 

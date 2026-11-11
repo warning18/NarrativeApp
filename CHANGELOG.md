@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.918.0+954]
+
+- Tower: the floor screen shows a "Your dice" panel once you own a second die: a tile per die (its shape and skin), the one in play and the clan die that resonates tagged, a red dot on a die you have not looked at yet. Tap a die to see its faces and press "Roll this die" to roll it from the next fight on.
+
 ## [1.917.0+953]
 
 - Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
