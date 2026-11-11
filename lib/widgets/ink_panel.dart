@@ -39,7 +39,11 @@ class InkPanel extends StatelessWidget {
         f != null &&
         FrameImages.ready(f.material, f.env)) {
       final framed = Container(
-        padding: padding.add(EdgeInsets.all(2.0 * f.compactScale)),
+        // Top pieces (32 art px tall at 2x) hang below the frame's edge: the
+        // content starts under them, never under a piece.
+        padding: padding
+            .add(EdgeInsets.all(2.0 * f.compactScale))
+            .add(EdgeInsets.only(top: decor.top > 0 ? 8 : 0)),
         decoration: ShapeDecoration(
           color: scheme.surfaceContainer,
           shape: FrameBorder(
