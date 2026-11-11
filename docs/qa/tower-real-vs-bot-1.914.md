@@ -30,8 +30,8 @@ bot is now above on floor 20 and on the top.
 
 `test/qa_tower_playthrough_test.dart` drives the real app and the real
 fights: the bot's picks are not used, the driver takes the first oath or boon
-offered, the first Level Up pick, drinks a potion when hurt, and rerolls the
-dice with a simple rule. One run per row, random seed:
+offered, the first Level Up pick, drinks a potion when hurt, and plays the
+dice in the most basic way (roll, confirm). One run per row, random seed:
 
 | race, calling | how it ended |
 |---|---|
