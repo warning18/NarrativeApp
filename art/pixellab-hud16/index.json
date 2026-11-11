@@ -1,0 +1,70 @@
+{
+ "die": [
+  "attack",
+  "defend",
+  "heal",
+  "mana",
+  "skill",
+  "curse",
+  "drain",
+  "blank"
+ ],
+ "rule": [
+  "cleave",
+  "echo",
+  "pierce",
+  "growth",
+  "pain",
+  "steady"
+ ],
+ "spell": [
+  "damage",
+  "block",
+  "sheal",
+  "status",
+  "cleanse"
+ ],
+ "element": [
+  "fire",
+  "water",
+  "earth",
+  "wind",
+  "lightning",
+  "ice",
+  "light",
+  "void",
+  "none"
+ ],
+ "chip": [
+  "poison",
+  "stun",
+  "weaken",
+  "braced",
+  "broken",
+  "ambush",
+  "dark",
+  "cramped",
+  "high_ground",
+  "shrine",
+  "conduct",
+  "shatter",
+  "firestorm",
+  "freeze",
+  "sandblast",
+  "eclipse",
+  "venomous",
+  "armored",
+  "skittish",
+  "frenzied",
+  "pack_leader",
+  "anomaly_storm",
+  "anomaly_ground",
+  "anomaly_cold",
+  "anomaly_heat",
+  "anomaly_water",
+  "anomaly_light",
+  "boon",
+  "hazard",
+  "omen"
+ ]
+}
