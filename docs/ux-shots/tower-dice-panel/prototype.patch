@@ -1,0 +1,243 @@
+diff --git a/lib/screens/tower/tower_dice_panel.dart b/lib/screens/tower/tower_dice_panel.dart
+new file mode 100644
+index 000000000..71a054d46
+--- /dev/null
++++ b/lib/screens/tower/tower_dice_panel.dart
+@@ -0,0 +1,177 @@
++// PROTOTYPE of the Tower floor's "Your dice" panel (picture first, never
++// merged): the dice the run has gained, the one in play marked, a die of the
++// main clan saying it resonates, a "new" dot on a die not looked at yet, and
++// a tap on a die showing its faces and "Roll this die". The data is Core's
++// (towerDiceOf / towerChooseDie); here it is a mock so the panel can be
++// pictured on the real floor screen.
++import 'package:flutter/material.dart';
++
++import '../../theme/pixel_chip.dart';
++import '../../theme/stitched_ink.dart';
++import '../../utils/face_style.dart';
++import '../../widgets/die_skins.dart';
++import '../../widgets/ink_panel.dart';
++import '../../widgets/poly_die.dart';
++
++class TowerDiePanelDie {
++  const TowerDiePanelDie({
++    required this.id,
++    required this.name,
++    required this.faces,
++    this.inPlay = false,
++    this.resonates = false,
++    this.isNew = false,
++    this.faceList = const [],
++  });
++  final String id;
++  final String name;
++  final int faces;
++  final bool inPlay;
++  final bool resonates;
++  final bool isNew;
++  final List<(FaceKind, String)> faceList;
++}
++
++/// What the picture shows; null leaves the floor screen as it is.
++List<TowerDiePanelDie>? towerDicePanelMock;
++String? towerDicePanelOpenMock;
++
++class TowerDicePanel extends StatefulWidget {
++  const TowerDicePanel({super.key, required this.dice, this.open});
++  final List<TowerDiePanelDie> dice;
++  final String? open;
++
++  @override
++  State<TowerDicePanel> createState() => _TowerDicePanelState();
++}
++
++class _TowerDicePanelState extends State<TowerDicePanel> {
++  String? _open;
++
++  @override
++  void initState() {
++    super.initState();
++    _open = widget.open;
++  }
++
++  @override
++  Widget build(BuildContext context) {
++    final theme = Theme.of(context);
++    final ink = InkColors.of(context);
++    final open = widget.dice.where((d) => d.id == _open).firstOrNull;
++    return InkPanel(
++      key: const Key('tower_dice_panel'),
++      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
++        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
++          for (final d in widget.dice)
++            Expanded(
++              child: Align(
++                alignment: Alignment.topLeft,
++                child: ConstrainedBox(
++                  constraints: const BoxConstraints(maxWidth: 124),
++                  child: InkWell(
++                    key: Key('tower_die_${d.id}'),
++                    onTap: () =>
++                        setState(() => _open = _open == d.id ? null : d.id),
++                    child: Container(
++                      margin: const EdgeInsets.symmetric(horizontal: 2),
++                      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
++                      decoration: ShapeDecoration(
++                        color: d.inPlay
++                            ? ink.gold.withValues(alpha: 0.12)
++                            : Colors.transparent,
++                        shape: PixelChipBorder(
++                            side: BorderSide(
++                                color: _open == d.id
++                                    ? ink.gold
++                                    : d.inPlay
++                                        ? ink.gold.withValues(alpha: 0.6)
++                                        : ink.seam,
++                                width: _open == d.id ? 2 : 1)),
++                      ),
++                      child: Column(children: [
++                        Stack(clipBehavior: Clip.none, children: [
++                          PolyDie(
++                            shape: dieShapeOf(d.faces),
++                            size: 48,
++                            skin: dieSkinOf(d.id),
++                            dieId: d.id,
++                            still: true,
++                            glowing: d.inPlay,
++                          ),
++                          if (d.isNew)
++                            Positioned(
++                              right: -4,
++                              top: -4,
++                              child: Container(
++                                key: Key('tower_die_new_${d.id}'),
++                                width: 10,
++                                height: 10,
++                                decoration: BoxDecoration(
++                                    color: ink.blood,
++                                    shape: BoxShape.circle,
++                                    border: Border.all(color: Colors.black)),
++                              ),
++                            ),
++                        ]),
++                        const SizedBox(height: 6),
++                        Text(d.name,
++                            maxLines: 2,
++                            textAlign: TextAlign.center,
++                            overflow: TextOverflow.ellipsis,
++                            style: theme.textTheme.labelMedium),
++                        const SizedBox(height: 4),
++                        if (d.inPlay) _tag('In play', ink.gold, theme),
++                        if (d.resonates) _tag('Resonates', ink.heal, theme),
++                      ]),
++                    ),
++                  ),
++                ),
++              ),
++            ),
++        ]),
++        if (open != null) ...[
++          const SizedBox(height: 10),
++          Wrap(spacing: 6, runSpacing: 6, children: [
++            for (final f in open.faceList)
++              Container(
++                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
++                decoration: ShapeDecoration(
++                    shape: PixelChipBorder(
++                        side: BorderSide(
++                            color: f.$1.color.withValues(alpha: 0.7)))),
++                child: Row(mainAxisSize: MainAxisSize.min, children: [
++                  Icon(f.$1.icon, size: 14, color: f.$1.color),
++                  const SizedBox(width: 3),
++                  Text(f.$2, style: theme.textTheme.labelMedium),
++                ]),
++              ),
++          ]),
++          const SizedBox(height: 10),
++          FilledButton(
++            key: const Key('tower_die_roll'),
++            onPressed: open.inPlay ? null : () {},
++            child: Text(open.inPlay ? 'In play' : 'Roll this die'),
++          ),
++        ],
++      ]),
++    );
++  }
++
++  Widget _tag(String text, Color color, ThemeData theme) => Padding(
++        padding: const EdgeInsets.only(top: 2),
++        child: Container(
++          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
++          decoration: ShapeDecoration(
++              color: color.withValues(alpha: 0.14),
++              shape: PixelChipBorder(
++                  side: BorderSide(color: color.withValues(alpha: 0.7)))),
++          child: FittedBox(
++            fit: BoxFit.scaleDown,
++            child: Text(text,
++                maxLines: 1,
++                style: theme.textTheme.labelSmall?.copyWith(color: color)),
++          ),
++        ),
++      );
++}
+diff --git a/lib/screens/tower/tower_floor_screen.dart b/lib/screens/tower/tower_floor_screen.dart
+index 11c24ef77..35c06b835 100644
+--- a/lib/screens/tower/tower_floor_screen.dart
++++ b/lib/screens/tower/tower_floor_screen.dart
+@@ -28,6 +28,7 @@ import 'tower_spoils_view.dart';
+ import '../../widgets/ink_chip.dart';
+ import '../../widgets/ink_panel.dart';
+ import '../../widgets/ink_confirm.dart';
++import 'tower_dice_panel.dart';
+ import '../../widgets/ink_loading.dart';
+ 
+ /// The Tower's floor, in the Tower's night theme (its body below).
+@@ -309,6 +310,11 @@ class _FloorIntro extends ConsumerWidget {
+             ],
+           ),
+         ),
++        if (towerDicePanelMock != null) ...[
++          const InkLabel('Your dice'),
++          TowerDicePanel(
++              dice: towerDicePanelMock!, open: towerDicePanelOpenMock),
++        ],
+         const SizedBox(height: 16),
+         FilledButton(
+           key: const Key('tower_fight'),
+diff --git a/lib/widgets/ink_panel.dart b/lib/widgets/ink_panel.dart
+index 1e4cc880f..84924ce9c 100644
+--- a/lib/widgets/ink_panel.dart
++++ b/lib/widgets/ink_panel.dart
+@@ -4,6 +4,7 @@
+ import 'package:flutter/material.dart';
+ 
+ import '../screens/tower/tower_look.dart';
++import '../theme/frame_style.dart';
+ import '../theme/stitched_ink.dart';
+ 
+ /// A panel: the surface colour, a seam border and
+@@ -28,6 +29,23 @@ class InkPanel extends StatelessWidget {
+   Widget build(BuildContext context) {
+     final ink = InkColors.of(context);
+     final scheme = Theme.of(context).colorScheme;
++    if (TowerPanelStyle.of(context) && FrameTheme.style != null) {
++      final f = FrameTheme.style!;
++      final framed = Container(
++        padding: padding.add(EdgeInsets.all(2.0 * f.compactScale)),
++        decoration: ShapeDecoration(
++          color: scheme.surfaceContainer,
++          shape: FrameBorder(
++              piece: FramePiece.hudPanel,
++              material: f.material,
++              env: f.env,
++              pixel: f.compactScale,
++              seed: padding.hashCode ^ lit.hashCode),
++        ),
++        child: Opacity(opacity: dim ? .5 : 1, child: child),
++      );
++      return onTap == null ? framed : InkWell(onTap: onTap, child: framed);
++    }
+     if (TowerPanelStyle.of(context)) {
+       // The Tower's panel (v1.900): a double ink line and a bevel.
+       final panel = CustomPaint(
