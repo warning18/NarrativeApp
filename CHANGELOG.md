@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.929.0+965]
+
+- Fight: the fight screen can tell its caller how many rounds it has started (a new optional `onRound`, told 1 when the battle begins and the round's number each time a new one starts), so the Tower's rival can count the rounds a fight took. Nothing changes for any other fight.
+
 ## [1.927.0+963]
 
 - Tower: Art's decorations on the frames, by band: the night rooms (floors 1 to 10) hang chains and candle stubs, the stone stair (11 to 20) has cracks and rubble, the void (21 to 30) violet cracks and a glow. A few pieces per screen, at the frame's pixel density: corner pieces on the oaths panel, two pieces hanging from the first foe's panel (its content starts under them, never under a piece) and two standing on the health panel's lower edge, picked by the floor so they are stable. Every other panel and every button stays clean. Pictures: `docs/ux-shots/tower-decorations/`.
