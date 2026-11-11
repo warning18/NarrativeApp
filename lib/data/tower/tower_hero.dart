@@ -23,13 +23,14 @@ class TowerData {
     required this.races,
     required this.professions,
     required this.gameConfig,
-    required this.dice,
+    required Map<String, dynamic> dice,
     required this.skills,
     required this.items,
     required this.enemies,
     required this.spells,
     this.trainingPaths = const {},
-  }) : spellSpecs = parseSpells(spells);
+  })  : dice = towerDiceTable(dice),
+        spellSpecs = parseSpells(spells);
 
   /// From the tables keyed by file name (as `gameDbProvider` or a test
   /// reads them).
@@ -62,6 +63,9 @@ class TowerData {
   final Map<String, dynamic> races;
   final Map<String, dynamic> professions;
   final Map<String, dynamic> gameConfig;
+
+  /// The dice as the Tower rolls them: the game's, with the Tower's own
+  /// faces of its three dice ([towerDiceTable], [towerDieFaces]).
   final Map<String, dynamic> dice;
   final Map<String, dynamic> skills;
   final Map<String, dynamic> items;
@@ -83,10 +87,12 @@ class TowerData {
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
 /// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
 /// unlocks, no potions (the flask and the bag come with the run,
-/// [towerHeroOf]).
+/// [towerHeroOf]). [bag]: the start's dice go to the bag, the calling's own
+/// die stays in play (a run with [TowerRun.dieChoice]); else the best is
+/// rolled (simDieValue, a run saved before).
 SimCharacter towerFreshHero(String raceId, String professionId,
     Iterable<String> unlockIds, TowerData data,
-    {int unlocksOwned = 0}) {
+    {int unlocksOwned = 0, bool bag = false}) {
   final hero = SimCharacter.create(
     raceId: raceId,
     race: data.races[raceId] as Map<String, dynamic>? ?? const {},
@@ -102,7 +108,7 @@ SimCharacter towerFreshHero(String raceId, String professionId,
     if (unlock == null) continue;
     switch (unlock.kind) {
       case TowerUnlockKind.startDie:
-        _takeDie(hero, unlock.value, data);
+        _takeDie(hero, unlock.value, data, bag: bag);
       case TowerUnlockKind.startItem:
         _wear(hero, unlock.value, data);
       case TowerUnlockKind.clan:
@@ -169,11 +175,14 @@ void towerTakePickOn(SimCharacter hero, StatPickOffer pick) {
   hero.addAbilities(pick.gains);
 }
 
-/// [reward] given to [hero].
-void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
+/// [reward] given to [hero]. [bag]: a die gained goes to the bag, the one
+/// in play stays (a run with [TowerRun.dieChoice]); else it is rolled when
+/// the simulator's worth rates it higher (a run saved before).
+void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
+    {bool bag = false}) {
   switch (reward.kind) {
     case TowerRewardKind.die:
-      _takeDie(hero, reward.id, data);
+      _takeDie(hero, reward.id, data, bag: bag);
     case TowerRewardKind.skill:
       hero.unlockedSkillIds.add(reward.id);
       hero.diceSkillAssignments = simSkillAssignments(
@@ -187,10 +196,10 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data) {
         hero.knownSpells.add(spell);
       }
     case TowerRewardKind.clanOath:
-      // Sworn: the clan's die at once (the user's call); its standing is
-      // the session's (towerSessionOf).
+      // Sworn: the clan's die at once (the user's call: in the bag, with
+      // [bag]); its standing is the session's (towerSessionOf).
       if (towerClanDieOf(reward.id, data.dice) case final die?) {
-        _takeDie(hero, die, data);
+        _takeDie(hero, die, data, bag: bag);
       }
   }
 }
@@ -221,15 +230,38 @@ int _gearScore(String itemId, TowerData data) {
   return n('attackDamage') + n('damage') + n('armor');
 }
 
-void _takeDie(SimCharacter hero, String dieId, TowerData data) {
+void _takeDie(SimCharacter hero, String dieId, TowerData data,
+    {bool bag = false}) {
   final faces = data.facesOf(dieId);
   if (faces.isEmpty) return;
   hero.ownedDice[dieId] = faces;
-  hero.rollBestDie(data.skills);
+  if (!bag) hero.rollBestDie(data.skills);
+}
+
+/// [hero] rolling its owned die [dieId] from now on, its skills placed
+/// afresh on its faces (simSkillAssignments); as it is when [dieId] is the
+/// die in play already, or not owned.
+void towerRollDie(SimCharacter hero, String dieId, TowerData data) {
+  if (dieId == hero.diceId) return;
+  final faces = hero.ownedDice[dieId];
+  if (faces == null) return;
+  hero
+    ..diceId = dieId
+    ..diceFaces = faces
+    ..diceSkillAssignments = simSkillAssignments(
+        faces: faces,
+        current: const {},
+        unlocked: hero.unlockedSkillIds,
+        skills: data.skills);
 }
 
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
 /// floors it cleared and the cards it took, with the run's health.
+///
+/// The die in play is [TowerRun.dieChoice]: the dice gained wait in the
+/// bag, and the chosen one, when it is not the calling's own, is rolled
+/// with its skills placed afresh. A run saved before has none: each die
+/// gained is rolled when the simulator's worth rates it higher, as then.
 ///
 /// A rebuild goes on from the longest run of floors already built for this
 /// [data] (v1.880): each floor's hero is kept, as a copy (SimCharacter.copy),
@@ -237,10 +269,13 @@ void _takeDie(SimCharacter hero, String dieId, TowerData data) {
 /// card), so a move rebuilds only the floors it changed, not the climb.
 SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   final built = _builtHeroes[data] ??= {};
+  // A run that chooses its die keeps the dice gained in the bag.
+  final bag = run.dieChoice != null;
   // Each floor's key: all that the hero after it depends on.
   final keys = <String>[
     '${run.seed}|${run.raceId}|${run.professionId}|'
-        '${run.startUnlocks.join(',')}|${run.unlocksOwned}|${run.taken[0]}',
+        '${run.startUnlocks.join(',')}|${run.unlocksOwned}|${run.taken[0]}'
+        '${bag ? '|bag' : ''}',
   ];
   final picksAt = <List<int>>[const []];
   var level = 1, pick = 0;
@@ -268,9 +303,11 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     }
   } else {
     hero = towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data,
-        unlocksOwned: run.unlocksOwned);
+        unlocksOwned: run.unlocksOwned, bag: bag);
     // A clan sworn at the start: its oath on floor 0 (towerStart).
-    if (run.taken[0] case final oath?) towerApplyReward(hero, oath, data);
+    if (run.taken[0] case final oath?) {
+      towerApplyReward(hero, oath, data, bag: bag);
+    }
     _keep(built, keys[0], hero);
     floor = 0;
     pick = 0;
@@ -289,9 +326,12 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     // The floor's spoils (v1.860): its gear worn when better.
     towerWearSpoils(hero, run.spoils[floor] ?? const [], data);
     final card = run.taken[floor];
-    if (card != null) towerApplyReward(hero, card, data);
+    if (card != null) towerApplyReward(hero, card, data, bag: bag);
     _keep(built, keys[floor], hero);
   }
+  // The die the player chose (the floors' heroes are kept on the calling's
+  // own, so a new choice rebuilds nothing).
+  if (run.dieChoice case final die?) towerRollDie(hero, die, data);
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
   // The flask, filled every floor, and the bag the spoils filled.

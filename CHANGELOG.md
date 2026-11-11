@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.917.0+953]
+
+- Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
+- Tower: the three Tower dice are reworked for the Tower only (the story's shop dice are unchanged): Flame leans on skills, Tide on bigger heals and a guard, Tearglass on bigger values with fewer flat faces. Each now fights within 3 points of the starter die (tearglass on floor 30: 46% → 94%).
+
 ## [1.916.0+952]
 
 - **Narrative: four wording fixes on the map screens** (from the Maps session's French
