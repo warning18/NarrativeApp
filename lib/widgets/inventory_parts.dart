@@ -16,11 +16,8 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
-<<<<<<< HEAD
 import 'pixel_glyph.dart';
-=======
 import '../theme/pixel_chip.dart';
->>>>>>> origin/main
 
 /// The inventory's tabs, in the order they are drawn.
 enum InventoryTab { all, gear, charms, potions, materials, books, quest, dice }
