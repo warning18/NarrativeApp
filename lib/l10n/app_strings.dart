@@ -1370,6 +1370,108 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Ashen Tower · floor {n}',
     AppLanguage.fr: 'La Tour de Cendre · étage {n}',
   },
+  // The Tower's floor events (floor events PR 1): the setback's test, the
+  // rival, how an event ended, a floor met again. Narrative words them.
+  'tower_event_setback': {
+    AppLanguage.en: 'Setback',
+    AppLanguage.fr: 'Revers',
+  },
+  'tower_event_rival': {
+    AppLanguage.en: 'Rival',
+    AppLanguage.fr: 'Rival',
+  },
+  'tower_event_test_title': {
+    AppLanguage.en: 'A test of {ability}',
+    AppLanguage.fr: 'Une épreuve de {ability}',
+  },
+  'tower_event_test_body': {
+    AppLanguage.en:
+        'Roll a d20 and add {mod}: you need {dc} to hold your footing.',
+    AppLanguage.fr:
+        'Lancez un d20 et ajoutez {mod} : il vous faut {dc} pour tenir bon.',
+  },
+  'tower_event_chance': {
+    AppLanguage.en: 'chance to pass (d20 {mod} against {dc})',
+    AppLanguage.fr: 'chances de réussir (d20 {mod} contre {dc})',
+  },
+  'tower_event_pass': {
+    AppLanguage.en: 'Pass',
+    AppLanguage.fr: 'Réussite',
+  },
+  'tower_event_pass_text': {
+    AppLanguage.en: 'keep your footing and take {n} potion.',
+    AppLanguage.fr: 'vous tenez bon et gagnez {n} potion.',
+  },
+  'tower_event_fail': {
+    AppLanguage.en: 'Fail',
+    AppLanguage.fr: 'Échec',
+  },
+  'tower_event_fail_text': {
+    AppLanguage.en: 'fall to floor {n}.',
+    AppLanguage.fr: 'chute à l’étage {n}.',
+  },
+  'tower_event_left': {
+    AppLanguage.en: '{n} setbacks left on this climb',
+    AppLanguage.fr: '{n} revers restants sur cette ascension',
+  },
+  'tower_event_left_one': {
+    AppLanguage.en: '1 setback left on this climb',
+    AppLanguage.fr: '1 revers restant sur cette ascension',
+  },
+  'tower_event_rival_title': {
+    AppLanguage.en: 'A rival races you up',
+    AppLanguage.fr: 'Un rival monte avec vous',
+  },
+  'tower_event_rival_body': {
+    AppLanguage.en: 'Beat them fast and you skip floor {n}.',
+    AppLanguage.fr: 'Battez-le vite et vous sautez l’étage {n}.',
+  },
+  'tower_event_rival_win': {
+    AppLanguage.en: 'Win within {n} rounds',
+    AppLanguage.fr: 'Victoire en {n} tours',
+  },
+  'tower_event_rival_win_text': {
+    AppLanguage.en: 'skip to floor {n}.',
+    AppLanguage.fr: 'saut à l’étage {n}.',
+  },
+  'tower_event_rival_slow': {
+    AppLanguage.en: 'Slower',
+    AppLanguage.fr: 'Plus lent',
+  },
+  'tower_event_rival_slow_text': {
+    AppLanguage.en: 'no skip, the climb goes on as usual.',
+    AppLanguage.fr: 'pas de saut, l’ascension continue comme d’habitude.',
+  },
+  'tower_event_fell': {
+    AppLanguage.en: 'You fell from floor {from} to floor {to}',
+    AppLanguage.fr: 'Vous tombez de l’étage {from} à l’étage {to}',
+  },
+  'tower_event_held': {
+    AppLanguage.en: 'You held your footing on floor {from}',
+    AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
+  },
+  'tower_event_outran': {
+    AppLanguage.en:
+        'You outran your rival: floor {skipped} skipped, you land on floor {to}',
+    AppLanguage.fr:
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+  },
+  'tower_event_rival_lost': {
+    AppLanguage.en: 'Your rival got away: no skip',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+  },
+  'tower_event_rolled': {
+    AppLanguage.en: 'You rolled {roll}, total {total}.',
+    AppLanguage.fr: 'Vous avez fait {roll}, total {total}.',
+  },
+  'tower_event_nothing_again': {
+    AppLanguage.en: 'Floors you have already cleared pay nothing again.',
+    AppLanguage.fr: 'Les étages déjà franchis ne rapportent plus rien.',
+  },
+  'tower_event_nothing': {
+    AppLanguage.en: 'You have been here: this floor pays nothing.',
+    AppLanguage.fr: 'Vous êtes déjà passé ici : cet étage ne rapporte rien.',
+  },
   'tower_floor_of': {
     AppLanguage.en: 'Floor {n} of 30',
     AppLanguage.fr: 'Étage {n} sur 30',

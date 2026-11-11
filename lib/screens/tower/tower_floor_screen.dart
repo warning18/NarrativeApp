@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/enemy_affix.dart';
 import '../../data/tower/tower_dice.dart';
+import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
@@ -22,6 +23,7 @@ import '../../theme/stitched_ink.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
+import 'tower_event_card.dart';
 import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
@@ -110,6 +112,15 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   Future<void> _pick(TowerRun run, TowerData data, int? index) async {
     final next = towerPick(run, data, index);
     await ref.read(towerProvider.notifier).setRun(next);
+    // A rival's skip lands two floors up and the skipped floor's level-ups
+    // wait there: their pick opens on the landing floor.
+    if (!next.isOver &&
+        next.status == TowerStatus.climbing &&
+        towerPendingPicks(next) > 0 &&
+        mounted) {
+      _resumed = true;
+      await _levelUp(next, data);
+    }
   }
 
   Future<void> _leave(TowerRun run) async {
@@ -134,6 +145,16 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
+    // The floor's event (off for a run that plays without them).
+    final event = towerEventOf(run, data);
+    // How the last event moved the run, for the rail: an arrow down a fall,
+    // up a skip, ending on this floor.
+    final last = event?.result;
+    final jump = last != null &&
+            last.to == run.floor &&
+            (last.to < last.from || last.to > last.from + 1)
+        ? (last.from, last.to)
+        : null;
     // Back on a floor won with a pick still owed: the Level Up first.
     if (!_resumed && choosing && towerPendingPicks(run) > 0) {
       _resumed = true;
@@ -160,13 +181,14 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                child: TowerLadder(floor: run.floor),
+                child: TowerLadder(floor: run.floor, jump: jump),
               ),
               Expanded(
                 child: choosing && _spoilsTaken != run.floor
                     ? TowerSpoilsView(
                         run: run,
-                        onTake: () => run.offer.isEmpty
+                        onTake: () => run.offer.isEmpty &&
+                                event?.kind != TowerEventKind.test
                             ? _pick(run, data, null)
                             : setState(() => _spoilsTaken = run.floor),
                       )
@@ -174,11 +196,13 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                         ? TowerOfferView(
                             run: run,
                             data: data,
+                            event: event,
                             onPick: (i) => _pick(run, data, i),
                           )
                         : _FloorIntro(
                             run: run,
                             data: data,
+                            event: event,
                             busy: _busy,
                             onFight: () => _fight(run, data),
                           ),
@@ -197,10 +221,14 @@ class _FloorIntro extends ConsumerWidget {
     required this.data,
     required this.busy,
     required this.onFight,
+    this.event,
   });
 
   final TowerRun run;
   final TowerData data;
+
+  /// The floor's event: the last result, the floor met again, a rival.
+  final TowerEventView? event;
   final bool busy;
   final VoidCallback onFight;
 
@@ -237,6 +265,19 @@ class _FloorIntro extends ConsumerWidget {
         Text(tr(ref, 'tower_floor_${run.floor}'),
             style: theme.textTheme.bodyLarge
                 ?.copyWith(fontStyle: FontStyle.italic)),
+        if (event case final e?) ...[
+          const SizedBox(height: 10),
+          if (e.result case final r? when r.to == run.floor)
+            TowerEventResultLine(r),
+          if (e.revisit) ...[
+            const SizedBox(height: 6),
+            const TowerRevisitLine(),
+          ],
+          if (e.kind == TowerEventKind.rival) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e),
+          ],
+        ],
         if (danger) ...[
           const SizedBox(height: 10),
           Container(
