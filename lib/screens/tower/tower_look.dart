@@ -52,7 +52,14 @@ class TowerNight extends ConsumerWidget {
     final material = towerMaterialOf(
         floor: floor ?? state?.run?.floor ?? 1,
         climbed: (state?.progress.wins ?? 0) > 0);
-    const env = EnvDecor.none;
+    // The band's own decorations on the frame: the night rooms, the stone
+    // stairs, the void.
+    final floorNow = floor ?? state?.run?.floor ?? 1;
+    final env = floorNow <= 10
+        ? EnvDecor.towerNight
+        : floorNow <= 20
+            ? EnvDecor.towerStone
+            : EnvDecor.towerVoid;
     // The pieces are small and loaded ahead (main.dart); until they are
     // there the Tower wears its plain bevel, so no panel is drawn bare.
     final ready = FrameImages.ready(material, env);
@@ -62,7 +69,11 @@ class TowerNight extends ConsumerWidget {
       builder: (context, _, __) => Theme(
         data: buildAppTheme(palette.schemeFor(Brightness.dark),
             frames: FrameImages.ready(material, env)
-                ? FrameStyle(material: material, env: env, compactScale: 2)
+                ? FrameStyle(
+                    material: material,
+                    env: env,
+                    compactScale: 2,
+                    seed: floorNow)
                 : null),
         child: TowerPanelStyle(child: child),
       ),
