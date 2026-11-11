@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.915.0+951]
+
+- Tower: a floor with the same foe twice (two Harbour Rats on floor 6, two Street Bandits on floor 7, and many later floors) now starts its fight. "Fight" did nothing there and the climb could go no further. Found by QA in a real-fight rerun.
+
 ## [1.912.0+948]
 
 - Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
