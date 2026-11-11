@@ -16,6 +16,7 @@
 // the rest of the fight draws.
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -89,9 +90,30 @@ const double _perspective = 0.0016;
 const double dieSolidMinSize = 40;
 
 /// A frame that takes longer than this, [dieSlowFrames] times in a row during
-/// a roll, drops the solid for the flat drawing.
-const Duration dieFrameBudget = Duration(milliseconds: 24);
-const int dieSlowFrames = 6;
+/// a roll, marks the phone as too slow for the solids. A die already on
+/// screen never changes its drawing (it looked like two different dice, one
+/// rolling and one at rest, v1.909): the flat drawing starts with the dice
+/// that are mounted after, the next fight.
+const Duration dieFrameBudget = Duration(milliseconds: 34);
+const int dieSlowFrames = 12;
+
+/// Set once a roll was slow; read when a die is mounted, never after.
+bool dieSolidsDemoted = false;
+int _slowRun = 0;
+
+/// One frame of a roll, judged: [dieSlowFrames] slow ones in a row demote
+/// the solids for the dice mounted from now on.
+@visibleForTesting
+void dieJudgeFrame(Duration span) {
+  _slowRun = span > dieFrameBudget ? _slowRun + 1 : 0;
+  if (_slowRun >= dieSlowFrames) dieSolidsDemoted = true;
+}
+
+@visibleForTesting
+void dieResetQuality() {
+  dieSolidsDemoted = false;
+  _slowRun = 0;
+}
 
 /// Turns the tumble makes before the die settles.
 const double _tumbleTurns = 2.5;
@@ -191,10 +213,10 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   late final AnimationController _burst = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 900));
 
-  /// Frames in a row that took too long while a solid tumbled; the solid
-  /// gives way to the flat drawing for good when it is slow.
-  int _slow = 0;
-  bool _flatFallback = false;
+  /// Whether this die is drawn flat because the phone was too slow before it
+  /// was mounted; fixed for its whole life, so it looks the same rolling and
+  /// at rest.
+  late final bool _flatFallback = dieSolidsDemoted;
   bool _watching = false;
 
   @override
@@ -210,10 +232,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   void _onTimings(List<FrameTiming> timings) {
     if (_flatFallback || !widget.rolling) return;
     for (final t in timings) {
-      _slow = t.totalSpan > dieFrameBudget ? _slow + 1 : 0;
-    }
-    if (_slow >= dieSlowFrames && mounted) {
-      setState(() => _flatFallback = true);
+      dieJudgeFrame(t.totalSpan);
     }
   }
 
