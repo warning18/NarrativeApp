@@ -1,0 +1,5 @@
+# Apollo 46-colour palette sample (0 generations, nothing staged, no assets/ change)
+Sheet `docs/art/boards/skills-apollo-palette-sample.png`; script `tool/apollo_remap.py` (nearest colour by redmean distance, hard pixels, alpha kept; dithering available as `remap(img, dither=True)` but not needed: no banding).
+Effects (key frame of fire, frost, poison, holy/radiance, shadow, steel hit) and 12 skill icons (3 common, 2 uncommon, 3 rare, 2 epic, 2 legendary), today above, remapped below.
+- Gains: one consistent, harmonious set of colours across effects, icons and (if adopted) the rest of the art; clean dark ink (#090A14) and a good grey/blue-grey ramp for steel and frost; reds and purples stay separate (A53030/CF573C vs 7A367B/A23E8C); poison and nature greens read well.
+- Loses: no saturated bright yellow (the brightest is E8C170, a muted gold), so holy and fire cores go cream/white-grey (EBEDE9) and fire's yellow-white heart flattens; legendary gold is a little duller but still reads as gold next to the grey epic frames; the strongest orange (DA863E) is paler than today's flame orange.
