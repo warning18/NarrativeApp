@@ -10,6 +10,7 @@ import '../../combat/dice_faces.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
+import '../../theme/icon_sizes.dart';
 import '../../theme/pixel_chip.dart';
 import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
@@ -187,7 +188,7 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(kind.icon, size: 14, color: kind.color),
+          Icon(kind.icon, size: IconSize.s16, color: kind.color),
           if (value != null) ...[
             const SizedBox(width: 3),
             Text('$value', style: theme.textTheme.labelMedium),
