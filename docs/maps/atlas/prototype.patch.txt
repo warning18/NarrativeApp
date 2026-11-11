@@ -1,0 +1,151 @@
+diff --git a/lib/screens/journey_screen.dart b/lib/screens/journey_screen.dart
+index abc74f0..bbcfe81 100644
+--- a/lib/screens/journey_screen.dart
++++ b/lib/screens/journey_screen.dart
+@@ -5184,6 +5184,7 @@ void openStoryReader(BuildContext context, WidgetRef ref) {
+ }
+ 
+ /// The Journey map's levels as tabs (v1.350).
++String? debugAtlasRung;
+ enum _LevelTab { district, town, world }
+ 
+ /// Three small tab buttons on the map: the district, the whole town, the
+@@ -5242,6 +5243,24 @@ class _LevelTabs extends ConsumerWidget {
+       );
+     }
+ 
++    Widget fake(String label, bool on) => Container(
++          height: 28,
++          padding: const EdgeInsets.symmetric(horizontal: 9),
++          alignment: Alignment.center,
++          decoration: BoxDecoration(
++            color: on ? palette.mark.withValues(alpha: 0.18) : null,
++            border: Border(
++              bottom: BorderSide(
++                  color: on ? palette.mark : Colors.transparent, width: 2),
++            ),
++          ),
++          child: Text(label,
++              style: TextStyle(
++                  fontFamily: InkFonts.system,
++                  fontSize: 12,
++                  height: 1,
++                  color: on ? palette.mark : palette.place)),
++        );
+     return Material(
+       color: palette.land.withValues(alpha: 0.92),
+       shape: RoundedRectangleBorder(
+@@ -5252,10 +5271,18 @@ class _LevelTabs extends ConsumerWidget {
+         key: const Key('journey_level_tabs'),
+         mainAxisSize: MainAxisSize.min,
+         children: [
+-          tab(_LevelTab.district, tr(ref, 'journey_tab_district')),
++          fake('Room', debugAtlasRung == 'room'),
++          if (debugAtlasRung == null || debugAtlasRung == 'globe')
++            tab(_LevelTab.district, tr(ref, 'journey_tab_district'))
++          else
++            fake(tr(ref, 'journey_tab_district'), false),
+           tab(_LevelTab.town, tr(ref, 'journey_tab_town'),
+               enabled: townEnabled),
+-          tab(_LevelTab.world, tr(ref, 'journey_tab_world')),
++          fake('Land', debugAtlasRung == 'land'),
++          if (debugAtlasRung == null)
++            tab(_LevelTab.world, tr(ref, 'journey_tab_world'))
++          else
++            fake(tr(ref, 'journey_tab_world'), debugAtlasRung == 'globe'),
+         ],
+       ),
+     );
+diff --git a/lib/widgets/city_chart/city_chart_painter.dart b/lib/widgets/city_chart/city_chart_painter.dart
+index 6b940ac..e0b7ec3 100644
+--- a/lib/widgets/city_chart/city_chart_painter.dart
++++ b/lib/widgets/city_chart/city_chart_painter.dart
+@@ -345,16 +345,16 @@ class CityChartPainter extends CustomPainter {
+     // What the party has not found: fog, a dashed outline.
+     for (final d in chart.districts) {
+       if (_known(d.id)) continue;
+-      canvas.drawPath(d.blocks, fill..color = p.fog.withValues(alpha: 0.88));
++      canvas.drawPath(d.blocks, fill..color = p.fog.withValues(alpha: 0.55));
+       // Its buildings stand a little beyond its blocks: fogged too.
+       for (final b in chart.buildings) {
+         if (chart.districts[b.district].id != d.id) continue;
+-        canvas.drawPath(b.shape, fill..color = p.fog.withValues(alpha: 0.88));
++        canvas.drawPath(b.shape, fill..color = p.fog.withValues(alpha: 0.55));
+         canvas.drawPath(
+             b.shape,
+             stroke
+               ..strokeWidth = 7
+-              ..color = p.fog.withValues(alpha: 0.88));
++              ..color = p.fog.withValues(alpha: 0.55));
+       }
+       _dashed(
+           canvas,
+diff --git a/lib/widgets/journey_world_map.dart b/lib/widgets/journey_world_map.dart
+index 06d3d63..b0171e9 100644
+--- a/lib/widgets/journey_world_map.dart
++++ b/lib/widgets/journey_world_map.dart
+@@ -560,6 +560,15 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+       _globe = geo.globeAt(geo.of(focus), _focusZoom, centre);
+     } else {
+       _view.value = Matrix4.identity();
++      if (here != null && _size.height > 0 && box.height > _size.height) {
++        // PROTOTYPE: the chart fills the box's height, on the party.
++        final s = box.height / _size.height;
++        final at = _onMap(geo.of(here));
++        final tx = (box.width / 2 - at.dx * s)
++            .clamp(box.width - _size.width * s, 0.0);
++        final top = math.max(0, (_childHeight - _size.height) / 2);
++        _view.value = _matrix(s, tx, -top * s);
++      }
+       _globe = geo.globeAt(
+           here == null
+               ? const Offset(worldMapWidth / 2, worldMapHeight / 2)
+@@ -673,6 +682,13 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+             ? JourneyWorldMapZoom.stepIn(_settledScale)
+             : JourneyWorldMapZoom.stepOut(_settledScale))
+         .clamp(1.0, _maxZoom);
++    final hereP = widget.here;
++    if (factor > 1 && hereP != null && _hereShown(box)) {
++      // PROTOTYPE: closing in goes to the party.
++      _animateTo(_framing(
++          _geoOf(ref.read(chartGlobeProvider)).of(hereP), target, box));
++      return;
++    }
+     final inverse = Matrix4.inverted(_settled);
+     final at = MatrixUtils.transformPoint(inverse, centre);
+     _animateTo(_matrix(
+@@ -890,8 +906,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+               key: Key(key),
+               onTap: onTap,
+               child: SizedBox(
+-                width: 34,
+-                height: 34,
++                width: 44,
++                height: 44,
+                 child: Icon(icon,
+                     size: IconSize.s16,
+                     color: on ? widget.palette.mark : widget.palette.place),
+@@ -946,7 +962,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+                 const SizedBox(height: 6),
+                 // The poles (board 11): the sphere turns right over either,
+                 // and the view comes round past the seam.
+-                if (sphere && geo.wholeSphere) ...[
++                if (false && sphere && geo.wholeSphere) ...[
+                   button('journey_pole_north', Icons.keyboard_double_arrow_up,
+                       tr(ref, 'world_map_pole_north'), () {
+                     _takeCamera();
+
+# Second prototype (proposal 5): the flat chart wears the sphere's world
+diff --git a/lib/widgets/journey_world_map.dart b/lib/widgets/journey_world_map.dart
+index 06d3d63..02b2e5e 100644
+--- a/lib/widgets/journey_world_map.dart
++++ b/lib/widgets/journey_world_map.dart
+@@ -438,7 +438,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
+   /// (A, B or C, a band of the globe); the sphere wears the story world,
+   /// which covers the whole of it, poles and all (board 11).
+   ChartGeography _geoOf(bool sphere) =>
+-      sphere ? chartOf(MapShape.story) : chartOf(ref.read(mapShapeProvider));
++      chartOf(MapShape.story); // PROTOTYPE
+ 
+   /// The most chart units to canvas pixels the sphere is drawn at: on a big
+   /// screen the ball stops growing here.

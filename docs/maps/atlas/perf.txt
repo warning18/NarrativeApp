@@ -1,0 +1,28 @@
+district (Saltmouth, Card Row): median 3.7 ms, worst 11.1 ms, redraws every frame
+town (Saltmouth, whole): median 4.9 ms, worst 15.6 ms, redraws every frame
+city plan page (Saltmouth): median 2.8 ms, worst 10.4 ms, redraws every frame
+sphere, whole: median 4.2 ms, worst 9.5 ms, still when idle
+sphere, land zoom: median 5.7 ms, worst 26.7 ms, still when idle
+sphere, closest: median 4.3 ms, worst 9.5 ms, still when idle
+flat chart, whole: median 3.2 ms, worst 10.0 ms, still when idle
+flat chart, land zoom: median 4.7 ms, worst 26.2 ms, still when idle
+flat chart, land zoom, weather off: median 3.9 ms, worst 18.5 ms, still when idle
+district (Saltmouth, Card Row): median 4.5 ms, worst 12.3 ms, redraws every frame
+town (Saltmouth, whole): median 5.0 ms, worst 14.8 ms, redraws every frame
+city plan page (Saltmouth): median 2.9 ms, worst 13.1 ms, redraws every frame
+sphere, whole: median 5.1 ms, worst 10.9 ms, still when idle
+sphere, land zoom: median 5.0 ms, worst 13.8 ms, still when idle
+sphere, closest: median 4.4 ms, worst 9.4 ms, still when idle
+flat chart, whole: median 3.8 ms, worst 11.1 ms, still when idle
+flat chart, land zoom: median 4.5 ms, worst 15.9 ms, still when idle
+flat chart, land zoom, weather off: median 3.8 ms, worst 13.1 ms, still when idle
+district (Saltmouth, Card Row): median 4.1 ms, worst 10.1 ms, redraws every frame
+town (Saltmouth, whole): median 4.6 ms, worst 12.2 ms, redraws every frame
+city plan page (Saltmouth): median 3.4 ms, worst 12.2 ms, redraws every frame
+sphere, whole: median 4.7 ms, worst 9.3 ms, still when idle
+sphere, land zoom: median 5.1 ms, worst 15.5 ms, still when idle
+sphere, closest: median 4.0 ms, worst 9.3 ms, still when idle
+flat chart, whole: median 3.8 ms, worst 10.1 ms, still when idle
+flat chart, land zoom: median 4.7 ms, worst 16.3 ms, still when idle
+flat chart, land zoom, weather off: median 3.2 ms, worst 14.5 ms, still when idle
+room (the Blind Beggar): median 1.8 ms, worst 5.3 ms, redraws every frame
