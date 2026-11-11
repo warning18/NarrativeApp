@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.933.0+969]
+
+- Tower: the engine of two floor events, setbacks and rivals (floor events PR 1, docs/proposals/tower-snakes-and-ladders.md). **They stay off for players** until the user has seen UX-2's event cards: a run started now plays exactly as before. In the engine: a setback is a d20 check after an ordinary floor (strength, dexterity or wisdom, DC 10 to 14, odds shown) that gives a potion, or on a fail drops the hero 1 to 3 floors, never past a warden or boss, once a run; a rival is a fight that, won within 3 rounds, skips the next floor. A floor met again after a fall pays nothing, and a fall never takes a level or a mark away.
+
 ## [1.932.0+968]
 
 - Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger. The Tower keeps all six foes as they were, so the climb doesn't change.
