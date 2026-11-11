@@ -22,7 +22,67 @@ def is_container(im):
     if not ring: return False
     top=collections.Counter(ring).most_common(1)[0][1]/len(ring)
     return opaque/(w*h)>0.4 and top>0.6
+def lum(c): return .3*c[0]+.59*c[1]+.11*c[2]
+def badge_glyph(a):
+    """the glyph of a badge-style original: interior pixels (inside the ring) that differ from the badge's fill colour; (glyph, fill) or None"""
+    w,h=a.size; px=a.load(); dep=HG.depth_map(a); k=w//16; ring=2*k; inner=3*k
+    ringc=collections.Counter(px[x,y][:3] for y in range(h) for x in range(w) if px[x,y][3]>0 and dep[y][x]<=ring)
+    fillc=collections.Counter(px[x,y][:3] for y in range(h) for x in range(w) if px[x,y][3]>0 and dep[y][x]>=inner)
+    if not fillc: return None
+    opaque=sum(1 for y in range(h) for x in range(w) if px[x,y][3]>0)
+    if opaque/(w*h)<0.5: return None
+    fill=fillc.most_common(1)[0][0]
+    # the fill family: the commonest interior colours that cover most of the interior
+    tot=sum(fillc.values()); fam=set(); cum=0
+    for c,n in fillc.most_common():
+        fam.add(c); cum+=n
+        if cum>=0.55*tot: break
+    g=Image.new('RGBA',a.size,(0,0,0,0)); gp=g.load(); n=0
+    for y in range(h):
+        for x in range(w):
+            if px[x,y][3]>0 and dep[y][x]>=inner-(k-1) and px[x,y][:3] not in fam and min(sum((px[x,y][i]-f[i])**2 for i in range(3)) for f in fam)>30**2: gp[x,y]=px[x,y]; n+=1
+    return (g,fill,n)
+
+def is_dark_badge(a):
+    """a round badge with a dark fill and a coloured ring (the epic originals): the glyph is light on dark"""
+    w,h=a.size; px=a.load(); dep=HG.depth_map(a)
+    inner=[px[x,y][:3] for y in range(h) for x in range(w) if px[x,y][3]>0 and dep[y][x]>=3]
+    if len(inner)<40: return False
+    opaque=sum(1 for y in range(h) for x in range(w) if px[x,y][3]>0)
+    if opaque/(w*h)<0.6: return False
+    top=collections.Counter(inner).most_common(1)[0][0]
+    return lum(top)<80 and collections.Counter(inner).most_common(1)[0][1]/len(inner)>0.45
+def ring_recolour(a,rarity,element):
+    """keep the badge and its glyph exactly; the ring takes the element's colour (light ring pixels the element's light tone, dark ones its dark tone)"""
+    out=a.copy(); px=out.load(); w,h=a.size; dep=HG.depth_map(a)
+    ringc=[px[x,y][:3] for y in range(h) for x in range(w) if px[x,y][3]>0 and dep[y][x]==2]
+    fams=[c for c,_ in collections.Counter(ringc).most_common(2)]
+    mid=PAL[ELEM[element][0]][:3]; dark=PAL[ELEM[element][1]][:3]
+    lighter=max(fams,key=lum) if fams else None
+    for y in range(h):
+        for x in range(w):
+            if px[x,y][3]>0 and dep[y][x]<=2 and px[x,y][:3] in fams and px[x,y][:3]!=INK[:3]:
+                px[x,y]=(mid if px[x,y][:3]==lighter else dark)+(255,)
+    if rarity=='legendary':     # a gold pip at the top: the legendary mark
+        px[w//2,1]=(242,193,78,255); px[w//2-1,1]=(242,193,78,255)
+    return out
+def rarity_ring32(a,rarity,element):
+    """the 32 px diamonds keep their glyph and element colour; the rarity is a ring (epic: the element's dark tone, legendary: gold) with the ink outside it"""
+    w,h=a.size; src=a.load(); out=Image.new('RGBA',a.size,(0,0,0,0)); op=out.load()
+    ring=(242,193,78,255) if rarity=='legendary' else PAL[ELEM[element][1]]
+    def solid(x,y): return 0<=x<w and 0<=y<h and src[x,y][3]>0
+    for y in range(h):
+        for x in range(w):
+            if src[x,y][3]>0: op[x,y]=src[x,y]
+            elif any(solid(x+dx,y+dy) for dx in (-1,0,1) for dy in (-1,0,1)): op[x,y]=ring
+    # then an ink outline around the ring
+    res=out.copy(); rp=res.load(); ro=out.load()
+    for y in range(h):
+        for x in range(w):
+            if ro[x,y][3]==0 and any(0<=x+dx<w and 0<=y+dy<h and ro[x+dx,y+dy][3]>0 for dx,dy in ((1,0),(-1,0),(0,1),(0,-1))): rp[x,y]=INK
+    return res
 def variant_b16(a,rarity,element):
+    if is_dark_badge(a): return ring_recolour(a,rarity,element),'badge-ring'
     fk,rk=elem_keys(element); cont=finish(container2(rarity,fk,rk))
     if is_container(a):
         g=HG.extract_glyph(a)
@@ -35,8 +95,7 @@ def variant_b16(a,rarity,element):
         return out,'glyph'
     out=cont.copy(); out.alpha_composite(a); return out,'object'         # a free-standing drawing: plate behind it
 def variant_b32(a,rarity,element):
-    fk,rk=elem_keys(element); cont=finish(container2(rarity,fk,rk)).resize((32,32),Image.NEAREST)
-    out=cont.copy(); out.alpha_composite(a); return out,'object32'
+    return rarity_ring32(a,rarity,element),'ring32'
 def p8(im,path):
     cols=sorted({p for p in im.getdata()}); idx={c:j for j,c in enumerate(cols)}; assert len(cols)<=256
     o=Image.new('P',im.size); o.putpalette(sum([list(c[:3]) for c in cols],[])+[0]*(768-3*len(cols))); o.putdata([idx[p] for p in im.getdata()]); o.save(path,optimize=True,transparency=bytes(c[3] for c in cols))

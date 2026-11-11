@@ -326,7 +326,7 @@
  "warrior_matriarch_reckoning": {
   "rarity": "epic",
   "element": "None",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -335,7 +335,7 @@
  "warrior_gate_oath": {
   "rarity": "epic",
   "element": "Earth",
-  "treatment": "framed-original",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -344,7 +344,7 @@
  "mage_tear_sight": {
   "rarity": "epic",
   "element": "Void",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -353,7 +353,7 @@
  "mage_ash_ledger": {
   "rarity": "epic",
   "element": "Fire",
-  "treatment": "framed-original",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -362,7 +362,7 @@
  "rogue_marked_deck": {
   "rarity": "epic",
   "element": "None",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -371,7 +371,7 @@
  "rogue_borrowed_face": {
   "rarity": "epic",
   "element": "Wind",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -380,7 +380,7 @@
  "cleric_absolved_penance": {
   "rarity": "epic",
   "element": "Light",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -389,7 +389,7 @@
  "cleric_kept_lantern": {
   "rarity": "epic",
   "element": "Fire",
-  "treatment": "framed-original",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -398,7 +398,7 @@
  "ranger_followed_trail": {
   "rarity": "epic",
   "element": "Wind",
-  "treatment": "glyph",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -407,7 +407,7 @@
  "ranger_horn_call": {
   "rarity": "epic",
   "element": "Earth",
-  "treatment": "framed-original",
+  "treatment": "badge-ring",
   "size": [
    16,
    16
@@ -416,7 +416,7 @@
  "mage_thunderclap": {
   "rarity": "epic",
   "element": "Electricity",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
@@ -425,7 +425,7 @@
  "mage_stormcaller": {
   "rarity": "legendary",
   "element": "Electricity",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
@@ -434,7 +434,7 @@
  "cleric_winter_hush": {
   "rarity": "legendary",
   "element": "Ice",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
@@ -443,7 +443,7 @@
  "cleric_second_dawn": {
   "rarity": "legendary",
   "element": "Light",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
@@ -452,7 +452,7 @@
  "ranger_rain_of_arrows": {
   "rarity": "epic",
   "element": "Wind",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
@@ -461,7 +461,7 @@
  "ranger_windwalker": {
   "rarity": "epic",
   "element": "Wind",
-  "treatment": "object32",
+  "treatment": "ring32",
   "size": [
    32,
    32
