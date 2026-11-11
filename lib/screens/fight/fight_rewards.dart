@@ -101,8 +101,12 @@ extension _FightRewards on _FightScreenState {
     _feedSignKills(signLog, ref.read(appLanguageProvider));
     // A boss beaten brings an offer from the clans (see offers.dart); a
     // hunt's quarry leaves a drop of Titan's Blood (see signs.dart), an
-    // Elite sometimes.
+    // Elite sometimes. Not in the Tower (v1.910, QA's run): its wardens
+    // and bosses are bosses, but the Tower has its own oath cards, and the
+    // story's offer dialog, queued on the Tower's detached session, waited
+    // for ever over the won fight.
     final bossBeaten = !widget.modifiers.isTest &&
+        !widget.modifiers.tower &&
         (widget.modifiers.isZoneBoss ||
             defeated.any((e) =>
                 !e.fled &&

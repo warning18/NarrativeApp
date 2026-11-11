@@ -11,6 +11,7 @@ isn't reconstructable from git history alone.
 ## [1.910.0+946]
 
 - Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
+- Tower: winning a warden or boss floor (5, 10, 15…) no longer leaves the fight stuck under an endless loading dialog with "Victory! Return" disabled. A Tower fight no longer queues the story's clan offer (the Tower has its own oath cards). Found by QA in a real playthrough.
 
 ## [1.906.0+942]
 
