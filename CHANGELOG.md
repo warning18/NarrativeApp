@@ -12,6 +12,14 @@ isn't reconstructable from git history alone.
 
 - Maps, release 1: the sphere is the world. The world map is the sphere only: it opens filling its box, turned to the party; "+" closes in on the party wherever the ball was turned, "−" shows the whole ball, and quick presses add up. Names keep clear of the buttons (English and French), and there are five 44 px map buttons instead of seven of 34. The flat world chart, the sphere switch in the layers sheet, the two pole buttons and the separate "Land" view leave the player's path; the older worlds A, B and C stay on Edit Mode's world page. Going up from a town, the fog is on from the first frame. The epilogue map and the direction of a district's ways out read the sphere's world, and so does the weather where the party stands (Core's agreed line in `climate_provider.dart`). Pictures: `docs/maps/sphere-and-locations/release-1/`.
 
+## [1.929.0+965]
+
+- Fight: the fight screen can tell its caller how many rounds it has started (a new optional `onRound`, told 1 when the battle begins and the round's number each time a new one starts), so the Tower's rival can count the rounds a fight took. Nothing changes for any other fight.
+
+## [1.927.0+963]
+
+- Tower: Art's decorations on the frames, by band: the night rooms (floors 1 to 10) hang chains and candle stubs, the stone stair (11 to 20) has cracks and rubble, the void (21 to 30) violet cracks and a glow. A few pieces per screen, at the frame's pixel density: corner pieces on the oaths panel, two pieces hanging from the first foe's panel (its content starts under them, never under a piece) and two standing on the health panel's lower edge, picked by the floor so they are stable. Every other panel and every button stays clean. Pictures: `docs/ux-shots/tower-decorations/`.
+
 ## [1.925.0+961]
 
 - Character choice and the life: the peoples and callings are Art's free-standing emblems (no plate behind them) on cards in the wood frame, the first tier of the frames (dark and parchment), and the page says what is still to be chosen ("Still to choose: a people and a calling") above the start button. The life's first screen reads better in the light theme. Pictures: `docs/ux-shots/life-redo-build/`.
