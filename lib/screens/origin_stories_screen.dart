@@ -214,7 +214,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const [0.5, 1],
+                  stops: const [0.3, 0.78],
                   colors: [Colors.transparent, colors.surface],
                 ),
               ),
@@ -232,7 +232,9 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                         child: Text(
                           _stageLabel(memory).toUpperCase(),
                           style: theme.textTheme.labelMedium?.copyWith(
-                            color: colors.primary,
+                            color: theme.brightness == Brightness.light
+                                ? const Color(0xFF7A3E12)
+                                : colors.primary,
                             letterSpacing: 1.1,
                             fontWeight: FontWeight.w600,
                           ),
@@ -243,7 +245,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                             .replaceAll('{n}', '${_index + 1}')
                             .replaceAll('{total}', '${_memories.length}'),
                         style: theme.textTheme.labelMedium
-                            ?.copyWith(color: colors.onSurfaceVariant),
+                            ?.copyWith(color: colors.onSurface),
                       ),
                     ],
                   ),
