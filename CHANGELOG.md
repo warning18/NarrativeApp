@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.907.0+943]
+
+- Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, and the equipment slots' empty silhouettes, are wired and show their Material stand-ins until Art's star, slot and block glyphs land.
+
 ## [1.905.0+941]
 
 - Icons: one size scale for every icon the code sizes (`IconSize`: 12, 16, 32, 48, 64), so pixel icons land on whole multiples (no more 1.4x or 1.75x smear) and the Material glyphs beside them match: 283 sites moved off 11, 13, 14, 15, 18, 20, 22, 24, 26, 28, 30, 36, 40, 44, 52 dp. A guard test refuses off-scale sizes.

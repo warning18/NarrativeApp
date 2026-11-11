@@ -31,6 +31,7 @@ import 'voyage_screen.dart';
 import '../widgets/ink_confirm.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 /// The camp's Harbor, once built: the Rusty Eel hauled up on its slipway,
 /// her hull made sound and the shipwright's parts fitted into her slots.
@@ -605,7 +606,7 @@ class _HullCard extends ConsumerWidget {
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.lock_outline,
+                                    PixelGlyph(PixelGlyphs.lock,
                                         size: IconSize.s16, color: ink.ash),
                                     const SizedBox(width: 4),
                                     Flexible(
@@ -890,7 +891,8 @@ class _PartCard extends ConsumerWidget {
         ),
         child: ListTile(
           dense: true,
-          leading: Icon(Icons.lock_outline, size: IconSize.s16, color: ink.ash),
+          leading:
+              PixelGlyph(PixelGlyphs.lock, size: IconSize.s16, color: ink.ash),
           title: Text(shipPartName(part, fr),
               style: theme.textTheme.titleSmall?.copyWith(color: ink.ash)),
           subtitle: Text(
