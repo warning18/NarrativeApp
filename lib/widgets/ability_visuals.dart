@@ -2,6 +2,7 @@
 // each, and a pill that names an ability with its icon.
 import 'package:flutter/material.dart';
 import '../theme/icon_sizes.dart';
+import '../theme/pixel_chip.dart';
 
 /// The icon of an ability (one of abilityScoreKeys).
 IconData abilityIcon(String key) => switch (key) {
@@ -33,10 +34,10 @@ class AbilityPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+      decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.14),
-        border: Border.all(color: color.withValues(alpha: 0.7)),
+        shape: PixelChipBorder(
+            side: BorderSide(color: color.withValues(alpha: 0.7))),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
