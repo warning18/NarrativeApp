@@ -818,15 +818,16 @@ class _CityChartViewState extends State<CityChartView>
       Tooltip(
         message: tooltip,
         child: Material(
-          color: palette.fog.withValues(alpha: 0.92),
-          shape: CircleBorder(side: BorderSide(color: palette.coast)),
+          // The same button as on the Journey's maps: square, a thumb wide.
+          color: palette.land.withValues(alpha: 0.9),
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: palette.coast, width: 2)),
           child: InkWell(
             key: key,
-            customBorder: const CircleBorder(),
             onTap: onTap,
             child: SizedBox(
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 child: Icon(icon, size: IconSize.s16, color: palette.place)),
           ),
         ),
