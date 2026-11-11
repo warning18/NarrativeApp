@@ -20,6 +20,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'd20_roll.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The colour of a forge tier (the odds bar, the sparks, the word).
 Color forgeTierColor(ForgeTier tier) => switch (tier) {
@@ -410,8 +411,8 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
                   color: Colors.white54)),
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 6),
-              child:
-                  Icon(Icons.arrow_right_alt, size: 18, color: Colors.white54)),
+              child: Icon(Icons.arrow_right_alt,
+                  size: IconSize.s16, color: Colors.white54)),
           Text(to,
               style: TextStyle(
                   fontFamily: InkFonts.system, fontSize: 17, color: colour)),
@@ -446,7 +447,7 @@ class _ForgeMomentState extends ConsumerState<ForgeMoment>
           child: Column(children: [
             Row(children: [
               ItemPixelIcon(widget.itemId, widget.base['itemType']?.toString(),
-                  size: 40),
+                  size: IconSize.s48),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(widget.pieceName,

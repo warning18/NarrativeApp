@@ -1,0 +1,32 @@
+{
+ "panel": {
+  "size": [
+   24,
+   24
+  ],
+  "slice": 8
+ },
+ "button": {
+  "size": [
+   24,
+   16
+  ],
+  "slice": 6
+ },
+ "corner": [
+  12,
+  12
+ ],
+ "texture": [
+  16,
+  16
+ ],
+ "env": [
+  "city",
+  "wilds",
+  "coast",
+  "ash",
+  "frost",
+  "sacred_void"
+ ]
+}

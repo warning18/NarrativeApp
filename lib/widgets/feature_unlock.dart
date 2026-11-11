@@ -23,6 +23,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/tutorial_launcher.dart';
 import '../tutorial/tutorial_topics.dart';
 import 'ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 export '../data/feature_unlocks.dart' show GameFeature, GameFeatureInfo;
 export '../providers/feature_unlocks_provider.dart' show isFeatureUnlocked;
@@ -160,7 +161,7 @@ class FeatureLockedTile extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleSmall),
                 ),
-                Icon(Icons.lock_outline, size: 18, color: ink.ash),
+                Icon(Icons.lock_outline, size: IconSize.s16, color: ink.ash),
               ],
             ),
           ),
@@ -403,7 +404,7 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
                     color: theme.colorScheme.surface,
                     border: Border.all(color: ink.gold, width: 2),
                   ),
-                  child: Icon(info.icon, color: ink.gold, size: 20),
+                  child: Icon(info.icon, color: ink.gold, size: IconSize.s16),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

@@ -24,6 +24,7 @@ import 'moments.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
 import 'turn_in_choice_dialog.dart';
+import '../theme/icon_sizes.dart';
 
 /// Takes on [questId] (it becomes the followed quest when none is) and
 /// says so.
@@ -185,7 +186,7 @@ Future<void> turnInQuest(
     if (rewardDiceId != null && rewardDiceId.isNotEmpty)
       RewardLine(
         key: Key('reward_die_$rewardDiceId'),
-        icon: Icon(Icons.casino, size: 28, color: ink.tide),
+        icon: Icon(Icons.casino, size: IconSize.s32, color: ink.tide),
         accent: ink.tide,
         title: dieDisplayName(rewardDiceId, language: lang),
         sub: trFor(lang, 'reward_die_made_for'),
@@ -194,7 +195,7 @@ Future<void> turnInQuest(
     if (recruitedName != null)
       RewardLine(
         key: const Key('reward_ally'),
-        icon: Icon(Icons.person_add_alt_1, size: 28, color: ink.heal),
+        icon: Icon(Icons.person_add_alt_1, size: IconSize.s32, color: ink.heal),
         accent: ink.heal,
         title: recruitedName,
         sub: trFor(lang, 'recruited_prefix'),

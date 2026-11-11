@@ -18,6 +18,7 @@ import 'clan_radar_chart.dart';
 import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// Wraps [child] so a long press opens the details of [factionId] (see
 /// [showClanDetails]); they stay open until closed. With no clan (the
@@ -257,7 +258,7 @@ class ClanDetailsCard extends ConsumerWidget {
             right: 2,
             child: IconButton(
               key: const Key('clan_details_close'),
-              icon: const Icon(Icons.close, size: 20),
+              icon: const Icon(Icons.close, size: IconSize.s16),
               tooltip: tr(ref, 'close_button'),
               visualDensity: VisualDensity.compact,
               onPressed: onClose,

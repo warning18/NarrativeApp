@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/icon_sizes.dart';
 
 /// Shows a themed, centered notification card in place of the default
 /// Material SnackBar — matches the story reader's parchment/serif
@@ -112,7 +113,8 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(widget.icon, color: colorScheme.primary, size: 32),
+                Icon(widget.icon,
+                    color: colorScheme.primary, size: IconSize.s32),
                 const SizedBox(height: 12),
                 Text(
                   widget.message,

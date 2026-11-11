@@ -15,6 +15,7 @@ import '../providers/player_session_provider.dart' show roadWardsProvider;
 import '../theme/stitched_ink.dart';
 import 'level_signpost.dart';
 import 'ward_mark.dart';
+import '../theme/icon_sizes.dart';
 
 class WeatherChip extends ConsumerWidget {
   const WeatherChip({super.key, required this.palette, this.compact = false});
@@ -111,7 +112,8 @@ class WeatherChip extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(6),
-              child: Icon(iconOf(sky.kind), size: 16, color: palette.place),
+              child: Icon(iconOf(sky.kind),
+                  size: IconSize.s16, color: palette.place),
             ),
           ),
         ),
@@ -131,7 +133,7 @@ class WeatherChip extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(iconOf(sky.kind), size: 13, color: palette.place),
+              Icon(iconOf(sky.kind), size: IconSize.s16, color: palette.place),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(

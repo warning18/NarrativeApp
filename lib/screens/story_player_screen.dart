@@ -128,6 +128,7 @@ import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 part 'story_player/story_choice_flow.dart';
 part 'story_player/story_hub.dart';
@@ -588,7 +589,7 @@ class _StoryView extends ConsumerWidget {
                   ? ref.read(scenePageProvider.notifier).state =
                       (key: pageKey, page: page + 1)
                   : ref.read(storyTextSkipProvider.notifier).state++,
-              icon: const Icon(Icons.arrow_forward, size: 18),
+              icon: const Icon(Icons.arrow_forward, size: IconSize.s16),
               label: Text(tr(ref, 'journey_continue')),
             ),
           );
@@ -605,7 +606,7 @@ class _StoryView extends ConsumerWidget {
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final storyTools = <Widget>[
       IconButton(
-        icon: const Icon(Icons.menu_book_outlined, size: 20),
+        icon: const Icon(Icons.menu_book_outlined, size: IconSize.s16),
         tooltip: tr(ref, 'journal_title'),
         visualDensity: VisualDensity.compact,
         onPressed: () => Navigator.of(context).push(
@@ -750,7 +751,8 @@ class _StoryView extends ConsumerWidget {
                       if (!playState.isInExcursion) ...[
                         const SizedBox(width: 4),
                         IconButton(
-                          icon: const Icon(Icons.edit_outlined, size: 18),
+                          icon: const Icon(Icons.edit_outlined,
+                              size: IconSize.s16),
                           tooltip: tr(ref, 'edit_node'),
                           visualDensity: VisualDensity.compact,
                           onPressed: () {

@@ -10,6 +10,7 @@ import '../theme/stitched_ink.dart';
 import 'journey_fx.dart';
 import 'pixel_vfx.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The small moments that make an action land, across the game: bursts,
 /// a healing wave, an achievement's toast, a chapter's title card, the
@@ -308,7 +309,8 @@ class _AchievementToastState extends State<_AchievementToast>
                 CircleAvatar(
                   radius: 18,
                   backgroundColor: ink.gold.withValues(alpha: 0.18),
-                  child: Icon(Icons.emoji_events, color: ink.gold, size: 20),
+                  child: Icon(Icons.emoji_events,
+                      color: ink.gold, size: IconSize.s16),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

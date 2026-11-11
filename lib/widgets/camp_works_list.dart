@@ -13,6 +13,7 @@ import 'camp_build_tray.dart' show SlotChip, slotText;
 import 'sheet_kit.dart';
 import 'ink_sheet.dart';
 import 'ink_chip.dart';
+import '../theme/icon_sizes.dart';
 
 /// The building screen's list of houses (docs/proposals/building-screen.md):
 /// four sections read from [campWorksProvider], each house a card by state
@@ -231,7 +232,8 @@ class CampWorksList extends ConsumerWidget {
                       for (final e in materials.entries)
                         _CostChip(
                           key: Key('town_material_${e.key}'),
-                          icon: ItemPixelIcon(e.key, 'Material', size: 18),
+                          icon: ItemPixelIcon(e.key, 'Material',
+                              size: IconSize.s16),
                           tooltip: _itemName(e.key),
                           text: short.containsKey(e.key)
                               ? '${e.value - short[e.key]!}/${e.value}'
@@ -276,7 +278,7 @@ class CampWorksList extends ConsumerWidget {
                   OutlinedButton.icon(
                     key: Key('works_craft_$id'),
                     onPressed: () => openCraft(context, ref),
-                    icon: const Icon(Icons.auto_fix_high, size: 18),
+                    icon: const Icon(Icons.auto_fix_high, size: IconSize.s16),
                     label: Text(tr(ref, 'craft_skill_button')),
                   ),
                 ],
@@ -350,7 +352,8 @@ class CampWorksList extends ConsumerWidget {
                       for (final e
                           in materialCountsOf(house, 'materialCost').entries)
                         _CostChip(
-                          icon: ItemPixelIcon(e.key, 'Material', size: 18),
+                          icon: ItemPixelIcon(e.key, 'Material',
+                              size: IconSize.s16),
                           tooltip: _itemName(e.key),
                           text: '${e.value}',
                           short: false,
@@ -366,7 +369,8 @@ class CampWorksList extends ConsumerWidget {
                       WorkNeedKind.material => Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ItemPixelIcon(need.id, 'Material', size: 18),
+                            ItemPixelIcon(need.id, 'Material',
+                                size: IconSize.s16),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(

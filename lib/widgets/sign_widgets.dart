@@ -8,6 +8,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import 'pixel_banner.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// A faction's icon (factions.json `icon`, see patronIconNames): a
 /// Material icon, since factions have no image of their own.
@@ -411,7 +412,8 @@ class SignsSection extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.water_drop, size: 16, color: Palette.red41),
+                  const Icon(Icons.water_drop,
+                      size: IconSize.s16, color: Palette.red41),
                   const SizedBox(width: 2),
                   Text(
                     tr(ref, 'titan_blood_label')

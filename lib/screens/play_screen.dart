@@ -47,6 +47,7 @@ import 'shop_detail_screen.dart';
 import 'port_screen.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -512,7 +513,8 @@ class _CollapsibleSection extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.check, size: 14, color: Colors.white),
+                    const Icon(Icons.check,
+                        size: IconSize.s16, color: Colors.white),
                     const SizedBox(width: 4),
                     Text(
                       '$readyCount $readyLabel',
@@ -718,7 +720,7 @@ class _QuestList extends ConsumerWidget {
                               isActive && status.met
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
-                              size: 16,
+                              size: IconSize.s16,
                               color: isActive && status.met
                                   ? Palette.good
                                   : theme.colorScheme.onSurfaceVariant,
@@ -1020,7 +1022,7 @@ class _PeopleList extends ConsumerWidget {
             if (fresh)
               Icon(Icons.circle,
                   key: Key('person_new_$npcId'),
-                  size: 10,
+                  size: IconSize.inline,
                   color: theme.colorScheme.error),
             const Icon(Icons.chevron_right),
           ],
@@ -1060,7 +1062,7 @@ class _LockedPlacesLine extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.lock_outline, size: 18, color: muted),
+          Icon(Icons.lock_outline, size: IconSize.s16, color: muted),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

@@ -8,6 +8,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// "News from the coast" (v1.195, see politics_events.dart): what the
 /// clans did while the party was elsewhere. The camp says what it has not
@@ -38,7 +39,7 @@ class CoastNewsChip extends ConsumerWidget {
         context: context,
         builder: (_) => const SafeArea(child: CoastNewsSheet()),
       ),
-      icon: Icon(Icons.campaign_outlined, size: 18, color: ink.ember),
+      icon: Icon(Icons.campaign_outlined, size: IconSize.s16, color: ink.ember),
       label: Text(
           trFor(lang, 'coast_news_chip').replaceAll('{n}', '${unread.length}')),
     );

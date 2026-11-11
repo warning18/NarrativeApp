@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../data/choice_flow.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// How the Journey shows the scene a taken choice led to.
 enum ArrivalView {
@@ -138,7 +139,8 @@ class _ArrivalSheetState extends State<ArrivalSheet>
                   padding: const EdgeInsets.fromLTRB(16, 0, 4, 6),
                   child: Row(
                     children: [
-                      Icon(Icons.place_outlined, size: 18, color: ink.gold),
+                      Icon(Icons.place_outlined,
+                          size: IconSize.s16, color: ink.gold),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -152,7 +154,7 @@ class _ArrivalSheetState extends State<ArrivalSheet>
                       ),
                       IconButton(
                         key: const Key('journey_arrival_close'),
-                        icon: const Icon(Icons.close, size: 20),
+                        icon: const Icon(Icons.close, size: IconSize.s16),
                         tooltip: widget.closeTip,
                         visualDensity: VisualDensity.compact,
                         onPressed: widget.onContinue,
@@ -173,7 +175,7 @@ class _ArrivalSheetState extends State<ArrivalSheet>
                   child: FilledButton.icon(
                     key: const ValueKey('journey_continue'),
                     onPressed: widget.onContinue,
-                    icon: const Icon(Icons.arrow_forward, size: 18),
+                    icon: const Icon(Icons.arrow_forward, size: IconSize.s16),
                     label: Text(widget.continueLabel),
                   ),
                 ),

@@ -271,7 +271,7 @@ class _ScenePanel extends ConsumerWidget {
                 if (reading && (toMap || locked))
                   IconButton(
                     key: const ValueKey('journey_reading_exit'),
-                    icon: const Icon(Icons.map_outlined, size: 20),
+                    icon: const Icon(Icons.map_outlined, size: IconSize.s16),
                     // A locked page's map waits (v1.553): greyed.
                     tooltip: tr(
                         ref,
@@ -285,7 +285,7 @@ class _ScenePanel extends ConsumerWidget {
                   if (folded)
                     IconButton(
                       key: const ValueKey('journey_scene_unfold'),
-                      icon: const Icon(Icons.expand_more, size: 20),
+                      icon: const Icon(Icons.expand_more, size: IconSize.s16),
                       tooltip: tr(ref, 'hub_story_unfold'),
                       visualDensity: VisualDensity.compact,
                       onPressed: () => onFold(false),
@@ -300,7 +300,7 @@ class _ScenePanel extends ConsumerWidget {
               right: 2,
               child: IconButton(
                 key: const ValueKey('journey_scene_fold'),
-                icon: const Icon(Icons.expand_less, size: 20),
+                icon: const Icon(Icons.expand_less, size: IconSize.s16),
                 tooltip: tr(ref, 'hub_story_fold'),
                 visualDensity: VisualDensity.compact,
                 onPressed: () => onFold(true),
@@ -343,7 +343,7 @@ class _MapButton extends StatelessWidget {
           child: SizedBox(
             width: 34,
             height: 34,
-            child: Icon(icon, size: 20, color: palette.place),
+            child: Icon(icon, size: IconSize.s16, color: palette.place),
           ),
         ),
       ),

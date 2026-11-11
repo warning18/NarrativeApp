@@ -8,6 +8,7 @@ import '../providers/story_providers.dart';
 import 'story_node_editor_screen.dart';
 import '../widgets/ink_confirm.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 /// The main quest line: each chapter's fixed story beats, pulled live from
 /// the narrative data. Tap a node id to edit its text and choices directly;
@@ -76,7 +77,8 @@ class MainStoryScreen extends ConsumerWidget {
                                 children: spine.beats[i].map((id) {
                                   final node = story.nodeFor(id);
                                   return ActionChip(
-                                    avatar: const Icon(Icons.edit, size: 16),
+                                    avatar: const Icon(Icons.edit,
+                                        size: IconSize.s16),
                                     label: Text(id),
                                     onPressed: node == null
                                         ? null

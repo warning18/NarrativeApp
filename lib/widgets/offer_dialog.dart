@@ -42,6 +42,7 @@ import 'wind_banner.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
 import 'ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 /// The Wayfarer's colour and mark: no banner, a walker's.
 const Color _wayfarerColor = Color(0xFF8D6E63);
@@ -852,7 +853,8 @@ class _OfferHall extends ConsumerWidget {
           Row(
             children: [
               Icon(Icons.touch_app_outlined,
-                  size: 18, color: theme.colorScheme.onSurfaceVariant),
+                  size: IconSize.s16,
+                  color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -940,7 +942,7 @@ class _OfferHall extends ConsumerWidget {
                       constraints:
                           const BoxConstraints(minWidth: 32, minHeight: 32),
                       icon: Icon(Icons.info_outline,
-                          size: 20,
+                          size: IconSize.s16,
                           color: picked.firstMeeting
                               ? theme.colorScheme.primary
                               : theme.colorScheme.onSurfaceVariant),
@@ -1136,12 +1138,12 @@ Widget _giftGlyph(OfferGift gift, Color color) {
     GiftKind.die => Icons.casino_outlined,
     GiftKind.perk => Icons.star_outline,
   };
-  final mark = Icon(fallback, size: 24, color: color);
+  final mark = Icon(fallback, size: IconSize.s32, color: color);
   return switch (gift.kind) {
     GiftKind.object =>
-      PixelIcon(ItemIcons.pathFor(gift.id), size: 32, fallback: mark),
-    GiftKind.skill =>
-      PixelIcon(SkillIcons.pathFor(gift.id), size: 32, fallback: mark),
+      PixelIcon(ItemIcons.pathFor(gift.id), size: IconSize.s32, fallback: mark),
+    GiftKind.skill => PixelIcon(SkillIcons.pathFor(gift.id),
+        size: IconSize.s32, fallback: mark),
     _ => mark,
   };
 }
@@ -1176,7 +1178,7 @@ class _PlainFlag extends StatelessWidget {
                     Container(height: 4, color: color),
                     const Spacer(),
                     Icon(wayfarer ? Icons.hiking : Icons.flag,
-                        size: 30, color: Palette.amber88),
+                        size: IconSize.s32, color: Palette.amber88),
                     const SizedBox(height: 14),
                     const Spacer(),
                   ],
