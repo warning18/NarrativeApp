@@ -1,0 +1,16 @@
+{
+ "races": [
+  "human",
+  "elf",
+  "dwarf",
+  "orc",
+  "voidkin"
+ ],
+ "professions": [
+  "cleric",
+  "mage",
+  "ranger",
+  "rogue",
+  "warrior"
+ ]
+}

@@ -1,0 +1,15 @@
+# Character choice and "A Life Before This One": a proposal (picture first, nothing wired)
+
+## 1. Race and profession icons (0 generations)
+Sheet: `docs/art/boards/race-profession-icons.png` (today | proposal). Files: `art/pixellab-race-icons/png/` (16x16), generator `race_gen.py`.
+- **Today:** the five races are five unrelated kinds of picture (a flag for Human, a beige spiral tile for Elf, a grey tile with orange chevrons for Dwarf, a green branch for Orc, a dark gem tile for Voidkin). The five professions are loose glyphs without a plate (star, staff, bow, crossed daggers, shield and sword).
+- **Races, proposal:** one rounded-square plate (the originals' container) in each race's colour with an outlined cream glyph: Human red + gold cross, Elf teal + leaf, Dwarf grey + anvil, Orc green + tusks, Voidkin violet + gem. Same size, same ink `#0A0807`, light from the top-left. Drawn by hand in code in the originals' style ("harmonise, don't redraw").
+- **Professions, proposal:** keep the five glyphs (they already read well and match the skill icons), snapped to the shared 63-colour palette and the one ink (harmonised, drawings untouched). If the user wants the pair to read as one family, a diamond plate behind each glyph is a 0-generation option.
+- **Optional, costs generations: race portraits (busts) in the hero's style.** Five races x one bust: `create_character` standard 1 generation each (about 5), v3 2 each (about 10), pro mode with the hero as style reference 10 each (about 50). Recommended if wanted: v3, 5 generations for a first pass, picked by the user. Not started; the user limited NPC generation.
+
+## 2. A Life Before This One: a band per age (proposal, 0 generations now)
+Sheet: `docs/art/boards/life-choices-bands.png` (the six age stops, what the code draws today, the proposed band prompt, the approved story scenes as the style reference).
+- **Today:** `lib/widgets/origin_scene_backdrop.dart` draws each memory's place from the Journey kits (a street kit with a building, or a wild kit), by memory id: sparrow (6, rope-walk in rain), mark_* (8, by race), beggar (10, tavern, snow), calling_* (12, by profession), lamp (14, Old Hesk's house), board (16, the parents' house, winter night). It reads flat and the same house shape comes back.
+- **Proposal:** replace the kit with one **240x100 pixel band per age stop** in the story-scene style (the 5 approved bands), tied to the memory's own words: 6 base bands (6, 8, 10, 12, 14, 16). The race (8) and profession (12) variants are a second step (5 + 5 more) only if the user wants them.
+- **Cost:** `create_image_pixen`, 1 generation a seed. Pilot: **2 bands (age 6 sparrow, age 16 board), 2 seeds each = 4 generations**; if liked, the other 4 bands x 2 seeds = 8; the 10 race and profession variants x 1 seed = 10 more, optional. Total for the base set: 12.
+- **Hand-off:** bands go in `art/pixellab-scenes/` style, keyed by memory id; UX-2 wires them in place of the kit backdrop (the kit stays as the fallback for a memory without a band).
