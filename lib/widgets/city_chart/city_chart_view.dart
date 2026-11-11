@@ -19,6 +19,7 @@ import 'city_chart.dart';
 import 'city_chart_painter.dart';
 import '../motion.dart';
 import '../../theme/motion.dart';
+import '../../theme/icon_sizes.dart';
 import '../../theme/pixel_chip.dart';
 
 /// The words the view says, in the player's language (the host passes them).
@@ -798,7 +799,7 @@ class _CityChartViewState extends State<CityChartView>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(icon, size: 16, color: palette.place),
+              Icon(icon, size: IconSize.s16, color: palette.place),
               const SizedBox(width: 6),
               Text(label,
                   style: TextStyle(color: palette.place, fontSize: 12.5)),
@@ -826,7 +827,7 @@ class _CityChartViewState extends State<CityChartView>
             child: SizedBox(
                 width: 40,
                 height: 40,
-                child: Icon(icon, size: 20, color: palette.place)),
+                child: Icon(icon, size: IconSize.s16, color: palette.place)),
           ),
         ),
       );

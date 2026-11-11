@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_strings.dart';
 import '../theme/motion.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
+import '../theme/icon_sizes.dart';
 
 class InkLoading extends ConsumerStatefulWidget {
   /// [wordKey] is the string key of what is awaited ("Reading the map..."),
@@ -64,7 +65,7 @@ class _InkLoadingState extends ConsumerState<InkLoading> {
             children: [
               SizedBox.expand(child: CircularProgressIndicator(strokeWidth: 3)),
               PixelIcon('assets/icons/items/material_lantern_brass.png',
-                  size: 28),
+                  size: IconSize.s32),
             ],
           ),
         ),

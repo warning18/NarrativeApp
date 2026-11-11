@@ -3,6 +3,7 @@
 // choice tag chip's own look and the Tower's Material chips, which were three
 // looks for the same thing.
 import 'package:flutter/material.dart';
+import '../theme/icon_sizes.dart';
 
 class InkChip extends StatelessWidget {
   const InkChip(
@@ -38,7 +39,7 @@ class InkChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 12, color: color),
+            Icon(icon, size: IconSize.inline, color: color),
             const SizedBox(width: 3),
           ],
           Flexible(child: Text(label, style: style)),

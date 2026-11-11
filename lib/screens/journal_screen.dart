@@ -18,6 +18,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/clan_widgets.dart' show standingTierColor;
 import '../widgets/coast_news.dart';
 import '../widgets/empty_state.dart';
+import '../theme/icon_sizes.dart';
 
 /// [entry]'s opening line with the reader's name and people filled in.
 String _personal(String text, PlayerSession session, bool french) =>
@@ -87,7 +88,7 @@ class JournalScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.subdirectory_arrow_right,
-                        size: 16, color: theme.colorScheme.primary),
+                        size: IconSize.s16, color: theme.colorScheme.primary),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -240,7 +241,7 @@ class _StorySoFarPage extends ConsumerWidget {
                           thread.main
                               ? Icons.flag_outlined
                               : Icons.chat_bubble_outline,
-                          size: 16,
+                          size: IconSize.s16,
                           color: thread.main ? ink.gold : ink.tide),
                       const SizedBox(width: 8),
                       Expanded(
@@ -302,7 +303,8 @@ class _StorySoFarPage extends ConsumerWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.history, size: 16, color: ink.ember),
+                        Icon(Icons.history,
+                            size: IconSize.s16, color: ink.ember),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text.rich(
@@ -408,7 +410,7 @@ class _WhatChanged extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.history,
-                          size: 16, color: theme.colorScheme.primary),
+                          size: IconSize.s16, color: theme.colorScheme.primary),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(

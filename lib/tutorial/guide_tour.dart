@@ -15,6 +15,7 @@ import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/speech_bubble.dart';
 import 'tutorial_topics.dart';
+import '../theme/icon_sizes.dart';
 
 // --- Targets --------------------------------------------------------------
 
@@ -681,7 +682,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
                             theme.colorScheme.surface.withValues(alpha: 0.92),
                         minimumSize: const Size(0, 40),
                       ),
-                      icon: const Icon(Icons.close, size: 18),
+                      icon: const Icon(Icons.close, size: IconSize.s16),
                       label: Text(tr(ref, 'tut_skip')),
                     ),
                   ),

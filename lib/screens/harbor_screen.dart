@@ -30,6 +30,7 @@ import '../widgets/ship_yard.dart';
 import 'voyage_screen.dart';
 import '../widgets/ink_confirm.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 /// The camp's Harbor, once built: the Rusty Eel hauled up on its slipway,
 /// her hull made sound and the shipwright's parts fitted into her slots.
@@ -314,7 +315,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                       Row(
                         children: [
                           Icon(Icons.visibility_outlined,
-                              size: 18, color: ink.gold),
+                              size: IconSize.s16, color: ink.gold),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
@@ -337,7 +338,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                       Row(
                         children: [
                           Icon(Icons.visibility_outlined,
-                              size: 18, color: ink.gold),
+                              size: IconSize.s16, color: ink.gold),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
@@ -605,7 +606,7 @@ class _HullCard extends ConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.lock_outline,
-                                        size: 14, color: ink.ash),
+                                        size: IconSize.s16, color: ink.ash),
                                     const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(
@@ -664,7 +665,7 @@ class _HullCard extends ConsumerWidget {
                           trying
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
-                          size: 18),
+                          size: IconSize.s16),
                       label: Text(tr(
                           ref, trying ? 'part_try_clear' : 'part_try_button')),
                     ),
@@ -889,7 +890,7 @@ class _PartCard extends ConsumerWidget {
         ),
         child: ListTile(
           dense: true,
-          leading: Icon(Icons.lock_outline, size: 20, color: ink.ash),
+          leading: Icon(Icons.lock_outline, size: IconSize.s16, color: ink.ash),
           title: Text(shipPartName(part, fr),
               style: theme.textTheme.titleSmall?.copyWith(color: ink.ash)),
           subtitle: Text(
@@ -909,7 +910,7 @@ class _PartCard extends ConsumerWidget {
                 trying
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
-                size: 20,
+                size: IconSize.s16,
                 color: trying ? ink.gold : ink.ash),
           ),
         ),
@@ -943,7 +944,7 @@ class _PartCard extends ConsumerWidget {
                                   : (slot == 'Sail'
                                       ? Icons.brush_outlined
                                       : Icons.handyman_outlined),
-                      size: 20,
+                      size: IconSize.s16,
                       color: isInstalled ? ink.heal : ink.ash),
                   const SizedBox(width: 10),
                   Expanded(
@@ -990,7 +991,7 @@ class _PartCard extends ConsumerWidget {
                             trying
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
-                            size: 18),
+                            size: IconSize.s16),
                         label: Text(tr(ref,
                             trying ? 'part_try_clear' : 'part_try_button')),
                       ),

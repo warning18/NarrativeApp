@@ -105,7 +105,8 @@ class _HubSections extends ConsumerWidget {
           child: Row(
             children: [
               Icon(Icons.check_circle,
-                  size: 16, color: Theme.of(context).colorScheme.outline),
+                  size: IconSize.s16,
+                  color: Theme.of(context).colorScheme.outline),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -234,7 +235,7 @@ class _HubSections extends ConsumerWidget {
           padding: const EdgeInsets.only(top: 12, bottom: 8),
           child: Row(
             children: [
-              Icon(group.icon, size: 18),
+              Icon(group.icon, size: IconSize.s16),
               const SizedBox(width: 6),
               Text(group.title, style: Theme.of(context).textTheme.titleMedium),
             ],
@@ -297,7 +298,7 @@ class _HubSections extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
             children: [
-              const Icon(Icons.arrow_forward, size: 18),
+              const Icon(Icons.arrow_forward, size: IconSize.s16),
               const SizedBox(width: 6),
               Text(tr(ref, 'hub_onward_section'),
                   style: Theme.of(context).textTheme.titleMedium),
@@ -326,7 +327,7 @@ class _HubSections extends ConsumerWidget {
               settlement.isCamp
                   ? Icons.local_fire_department_outlined
                   : Icons.location_city_outlined,
-              size: 20,
+              size: IconSize.s16,
             ),
             const SizedBox(width: 8),
           ],
@@ -436,7 +437,8 @@ class _HubSections extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        icon: const Icon(Icons.signpost_outlined, size: 18),
+                        icon: const Icon(Icons.signpost_outlined,
+                            size: IconSize.s16),
                         label: Text(tr(ref, 'travel_on_button')),
                       ),
                   ],
@@ -613,7 +615,7 @@ void _showSettlementArrival(
         // A short screen scrolls the port's description and the guide
         // rather than overflowing.
         scrollable: true,
-        icon: const Icon(Icons.location_city, size: 36),
+        icon: const Icon(Icons.location_city, size: IconSize.s32),
         title: Text(
           tr(ref, 'arrival_town_title').replaceAll('{place}', name),
           textAlign: TextAlign.center,
@@ -638,7 +640,7 @@ void _showSettlementArrival(
                 key: const ValueKey('arrival_condition'),
                 children: [
                   Icon(Icons.flag_outlined,
-                      size: 20, color: theme.colorScheme.primary),
+                      size: IconSize.s16, color: theme.colorScheme.primary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -798,7 +800,7 @@ class _DetourContextCard extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.alt_route, size: 18, color: onColor),
+            Icon(Icons.alt_route, size: IconSize.s16, color: onColor),
             const SizedBox(width: 8),
             Expanded(
               child: Column(

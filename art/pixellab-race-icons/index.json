@@ -1,0 +1,30 @@
+{
+ "races": [
+  "human",
+  "elf",
+  "dwarf",
+  "orc",
+  "voidkin"
+ ],
+ "callings_plate": [
+  "warrior",
+  "mage",
+  "ranger",
+  "rogue",
+  "cleric"
+ ],
+ "callings_diamond": [
+  "warrior",
+  "mage",
+  "ranger",
+  "rogue",
+  "cleric"
+ ],
+ "callings_glyph": [
+  "warrior",
+  "mage",
+  "ranger",
+  "rogue",
+  "cleric"
+ ]
+}

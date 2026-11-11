@@ -129,7 +129,7 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 2, right: 4),
-              child: Icon(manaIcon, size: 16, color: manaColor),
+              child: Icon(manaIcon, size: IconSize.s16, color: manaColor),
             ),
             Expanded(
               child: Text(

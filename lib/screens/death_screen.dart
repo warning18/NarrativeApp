@@ -6,6 +6,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/save_game_provider.dart';
 import '../widgets/moments.dart';
+import '../theme/icon_sizes.dart';
 
 /// Shown after a permadeath loss, once the player's session has already
 /// been reset (inventory cleared, story restarted to node 0). Purely a
@@ -76,7 +77,7 @@ class _DeathScreenState extends ConsumerState<DeathScreen> {
                   // the last words are written after it.
                   const RiseIn(
                     child: Icon(Icons.dangerous,
-                        color: Colors.redAccent, size: 64),
+                        color: Colors.redAccent, size: IconSize.s64),
                   ),
                   const SizedBox(height: 16),
                   RiseIn(

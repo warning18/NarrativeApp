@@ -5,6 +5,7 @@ import '../l10n/app_strings.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../theme/icon_sizes.dart';
 
 /// A section name that explains itself: a small ⓘ after it, and the
 /// explanation shown while the name is held. It stands in for the long
@@ -40,7 +41,8 @@ class HelpTitle extends StatelessWidget {
           Flexible(child: Text(title, style: theme.textTheme.titleMedium)),
           const SizedBox(width: 6),
           ExcludeSemantics(
-              child: Icon(Icons.info_outline, size: 15, color: ink.ash)),
+              child:
+                  Icon(Icons.info_outline, size: IconSize.s16, color: ink.ash)),
         ],
       ),
     );

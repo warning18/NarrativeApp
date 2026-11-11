@@ -15,6 +15,7 @@ import 'die_skins.dart';
 import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 import '../theme/pixel_chip.dart';
 
 /// The inventory's tabs, in the order they are drawn.
@@ -247,7 +248,7 @@ class InventorySortButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.sort, size: 16, color: ink.ash),
+          Icon(Icons.sort, size: IconSize.s16, color: ink.ash),
           const SizedBox(width: 3),
           Text(trFor(language, 'inv_sort_${sort.name}'),
               style: Theme.of(context)
@@ -334,7 +335,7 @@ class InventorySlotTile extends StatelessWidget {
                 top: 0,
                 right: 0,
                 child: IconButton(
-                  icon: const Icon(Icons.close, size: 14),
+                  icon: const Icon(Icons.close, size: IconSize.s16),
                   tooltip: clearTip,
                   visualDensity: VisualDensity.compact,
                   constraints:
@@ -429,7 +430,7 @@ class InventoryRow extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Row(children: [
-              ItemPixelIcon(itemId, type, size: 30),
+              ItemPixelIcon(itemId, type, size: IconSize.s32),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -467,7 +468,7 @@ class InventoryRow extends StatelessWidget {
                     Row(children: [
                       if (slot != null && slot!.isNotEmpty) ...[
                         Icon(inventorySlotIcon(slot!),
-                            size: 13, color: ink.ash),
+                            size: IconSize.s16, color: ink.ash),
                         const SizedBox(width: 3),
                       ],
                       Flexible(

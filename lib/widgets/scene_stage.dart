@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 import 'fight_sprites.dart';
+import '../theme/icon_sizes.dart';
 
 /// The ids of those who have a standing sprite, for [sceneChoiceMode].
 bool sceneHasSprite(String facingId) => enemyFightSprite(facingId) != null;
@@ -157,7 +158,7 @@ class SceneStage extends StatelessWidget {
                         ),
                         const SizedBox(width: 3),
                         const Icon(Icons.arrow_forward,
-                            size: 12, color: Colors.black),
+                            size: IconSize.inline, color: Colors.black),
                       ],
                     ),
                   ),

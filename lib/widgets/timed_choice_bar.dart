@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/timed_clock_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// The clock over a timed scene's choices (see StoryNode.timeLimit): a
 /// bar that empties over [seconds], reddening in its last third, with the
@@ -109,7 +110,8 @@ class _TimedChoiceBarState extends ConsumerState<TimedChoiceBar>
             children: [
               Row(
                 children: [
-                  Icon(Icons.hourglass_bottom, size: 14, color: colour),
+                  Icon(Icons.hourglass_bottom,
+                      size: IconSize.s16, color: colour),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(

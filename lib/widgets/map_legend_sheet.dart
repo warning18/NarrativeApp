@@ -10,6 +10,7 @@ import '../theme/stitched_ink.dart';
 import 'chart_map_painter.dart' show ChartCalque;
 import 'ink_sheet.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// What the marks on the Journey's chart mean, as the chart draws them:
 /// one sheet so a new player does not guess. The calque showing adds its
@@ -74,7 +75,9 @@ Future<void> showMapLegendSheet(
                   style: theme.textTheme.labelMedium
                       ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
               const SizedBox(height: 6),
-              row(Icon(Icons.person_pin_circle, size: 22, color: palette.mark),
+              row(
+                  Icon(Icons.person_pin_circle,
+                      size: IconSize.s32, color: palette.mark),
                   'map_leg_here'),
               row(dot(10, chapterColor(1)), 'map_leg_place'),
               row(dot(12, chapterColor(1), ring: true), 'map_leg_sea_place'),
@@ -106,7 +109,7 @@ Future<void> showMapLegendSheet(
                 row(dot(10, Palette.goldDark), 'map_leg_shop'),
                 row(
                     const Icon(Icons.change_history,
-                        size: 18, color: Palette.healDark),
+                        size: IconSize.s16, color: Palette.healDark),
                     'map_leg_camp'),
               ],
               const SizedBox(height: 8),
@@ -177,7 +180,7 @@ Future<MapJourneysPick?> showMapJourneysSheet(
                     key: const Key('map_replay'),
                     onPressed: () =>
                         Navigator.of(sheet).pop(const MapJourneysPick.replay()),
-                    icon: const Icon(Icons.directions_walk, size: 18),
+                    icon: const Icon(Icons.directions_walk, size: IconSize.s16),
                     label: Text(tr(ref, 'map_replay_all')),
                   ),
                 ),
@@ -207,7 +210,7 @@ Future<MapJourneysPick?> showMapJourneysSheet(
                         leg.$1.atSea || leg.$2.atSea
                             ? Icons.sailing_outlined
                             : Icons.directions_walk,
-                        size: 20,
+                        size: IconSize.s16,
                         color: chapterColor(n)),
                     title: Text(
                         '${leg.$1.name(language)} → ${leg.$2.name(language)}',

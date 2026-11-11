@@ -14,6 +14,7 @@ import '../models/story_node.dart';
 import '../theme/stitched_ink.dart';
 import 'journey_banner_pin.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 import '../theme/pixel_chip.dart';
 
 /// One place of the district's list, ready to draw: its [name] (empty when
@@ -157,10 +158,10 @@ class PlaceRow extends StatelessWidget {
     final named = info.name.isNotEmpty;
     final cat = info.main ? JourneyPinCat.main : JourneyPinCat.side;
     final Widget lead = info.here
-        ? Icon(Icons.my_location, size: 20, color: ink.gold)
+        ? Icon(Icons.my_location, size: IconSize.s16, color: ink.gold)
         : info.wayOut
             ? Icon(info.locked ? Icons.lock_outline : Icons.logout,
-                size: 19, color: ink.ash)
+                size: IconSize.s16, color: ink.ash)
             : BannerPin(
                 cat: cat,
                 color: info.locked ? ink.ash : cat.colorOn(ink, dark: dark),
@@ -213,11 +214,11 @@ class PlaceRow extends StatelessWidget {
             if (info.main)
               Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: Icon(Icons.flag, size: 17, color: ink.gold)),
+                  child: Icon(Icons.flag, size: IconSize.s16, color: ink.gold)),
             if (!info.locked) _count(context, info.count),
             const SizedBox(width: 4),
             Icon(info.locked ? Icons.lock_outline : Icons.chevron_right,
-                size: 18, color: ink.ash),
+                size: IconSize.s16, color: ink.ash),
           ]),
         ),
       ),
@@ -325,7 +326,7 @@ class PlacesHandle extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-                size: 18, color: ink.gold),
+                size: IconSize.s16, color: ink.gold),
             const SizedBox(width: 4),
             Text(label,
                 style: const TextStyle(
@@ -368,7 +369,7 @@ List<Widget> placesRows(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(children: [
-            Icon(Icons.arrow_back, size: 18, color: ink.gold),
+            Icon(Icons.arrow_back, size: IconSize.s16, color: ink.gold),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

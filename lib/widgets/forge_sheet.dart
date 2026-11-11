@@ -28,6 +28,7 @@ import 'forge_moment.dart';
 import 'player_stats_bar.dart';
 import 'ink_sheet.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// A test seam: the random the forge rolls its d20 with (null: a fresh one).
 Random Function()? forgeRandomForTest;
@@ -245,7 +246,8 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             Text(tr(ref, 'forge_title'), style: theme.textTheme.titleMedium),
             IconButton(
               key: const Key('forge_hint_button'),
-              icon: Icon(Icons.info_outline, size: 18, color: ink.ash),
+              icon:
+                  Icon(Icons.info_outline, size: IconSize.s16, color: ink.ash),
               tooltip: tr(ref, 'forge_hint_tip'),
               visualDensity: VisualDensity.compact,
               onPressed: () => setState(() => _hint = !_hint),
@@ -340,7 +342,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                   child: Row(children: [
-                    const Icon(Icons.casino_outlined, size: 18),
+                    const Icon(Icons.casino_outlined, size: IconSize.s16),
                     const SizedBox(width: 8),
                     Text(
                         trFor(lang, 'forge_roll_line').replaceAll(
@@ -359,7 +361,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: ink.ash)),
                     Icon(_odds ? Icons.expand_less : Icons.expand_more,
-                        size: 18, color: ink.ash),
+                        size: IconSize.s16, color: ink.ash),
                   ]),
                 ),
               ),
@@ -456,7 +458,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Icon(ok ? Icons.check : Icons.close,
-                              size: 14,
+                              size: IconSize.s16,
                               color: ok
                                   ? Palette.goodStrong
                                   : theme.colorScheme.error),
@@ -475,7 +477,7 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                         children: [
                           Row(children: [
                             ItemPixelIcon(id, item['itemType']?.toString(),
-                                size: 36),
+                                size: IconSize.s32),
                             const SizedBox(width: 12),
                             Expanded(
                               child:
@@ -527,14 +529,15 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                                     key: ValueKey('forge_go_$id'),
                                     onPressed:
                                         _busy ? null : () => _forge(id, items),
-                                    icon: const Icon(Icons.hardware, size: 18),
+                                    icon: const Icon(Icons.hardware,
+                                        size: IconSize.s16),
                                     label: Text(trFor(lang, 'forge_button')),
                                   )
                                 : FilledButton.tonalIcon(
                                     key: ValueKey('forge_go_$id'),
                                     onPressed: null,
                                     icon: const Icon(Icons.lock_outline,
-                                        size: 18),
+                                        size: IconSize.s16),
                                     label: Text(
                                         lacking ?? trFor(lang, 'forge_button')),
                                   ),

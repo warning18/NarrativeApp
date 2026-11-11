@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../theme/stitched_ink.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The ids of the sections folded shut, for the session.
 final foldedSectionsProvider = StateProvider<Set<String>>((ref) => const {});
@@ -84,7 +85,8 @@ class InkFold extends ConsumerWidget {
                   AnimatedRotation(
                     turns: folded ? 0 : 0.5,
                     duration: Motion.fast,
-                    child: Icon(Icons.expand_more, size: 20, color: ink.ash),
+                    child: Icon(Icons.expand_more,
+                        size: IconSize.s16, color: ink.ash),
                   ),
                 ],
               ),

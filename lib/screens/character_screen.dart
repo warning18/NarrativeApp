@@ -31,6 +31,7 @@ import 'level_up_screen.dart';
 import 'race_profession_screen.dart';
 import 'skills/skills_screen.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 class CharacterScreen extends ConsumerWidget {
   const CharacterScreen({super.key, this.embedded = false});
@@ -448,7 +449,8 @@ class _GiftsTab extends ConsumerWidget {
                 child: Row(
                   children: [
                     Icon(Icons.diversity_3,
-                        size: 18, color: waiting > 0 ? ink.gold : ink.ash),
+                        size: IconSize.s16,
+                        color: waiting > 0 ? ink.gold : ink.ash),
                     const SizedBox(width: 8),
                     Text(tr(ref, 'offers_section'),
                         style: theme.textTheme.titleSmall),
@@ -467,7 +469,8 @@ class _GiftsTab extends ConsumerWidget {
                       ),
                     ),
                     if (waiting > 0)
-                      Icon(Icons.chevron_right, size: 20, color: ink.ash),
+                      Icon(Icons.chevron_right,
+                          size: IconSize.s16, color: ink.ash),
                   ],
                 ),
               ),
@@ -696,7 +699,7 @@ class _NewGamePlusCard extends ConsumerWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.replay_circle_filled_outlined,
-            color: Palette.arcane, size: 28),
+            color: Palette.arcane, size: IconSize.s32),
         title: Text(
             '${tr(ref, 'new_game_plus_label')} · ${tr(ref, 'new_game_plus_cycle_label')} $cycle'),
         subtitle: Text(
@@ -726,7 +729,7 @@ class _ManaSpellsCard extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
         key: const Key('character_mana'),
-        leading: const Icon(manaIcon, color: manaColor, size: 28),
+        leading: const Icon(manaIcon, color: manaColor, size: IconSize.s32),
         title: Row(
           children: [
             Text('${tr(ref, 'mana_label')} ${session.mana}/${session.maxMana}'),
@@ -794,7 +797,7 @@ class _PageTile extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: ink.gold),
+              Icon(icon, size: IconSize.s16, color: ink.gold),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
