@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.929.0+965]
+
+- Fight: the fight screen can tell its caller how many rounds it has started (a new optional `onRound`, told 1 when the battle begins and the round's number each time a new one starts), so the Tower's rival can count the rounds a fight took. Nothing changes for any other fight.
+
 ## [1.925.0+961]
 
 - Character choice and the life: the peoples and callings are Art's free-standing emblems (no plate behind them) on cards in the wood frame, the first tier of the frames (dark and parchment), and the page says what is still to be chosen ("Still to choose: a people and a calling") above the start button. The life's first screen reads better in the light theme. Pictures: `docs/ux-shots/life-redo-build/`.
