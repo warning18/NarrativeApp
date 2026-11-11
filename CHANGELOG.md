@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.908.0+944]
+
+- Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
+
+## [1.907.0+943]
+
+- Dice: a die looks the same while it rolls and at rest. A phone whose roll ran slow used to turn the solid d4/d8/d10/d12/d20 on the board into the flat drawing in the middle of the roll, and it stayed flat (two different dice, shape and skin). A mounted die now never changes its drawing; a slow roll (12 frames in a row over 34 ms, was 6 over 24 ms) only makes the dice mounted after it, in the next fight, flat. Test: `test/ux_die_same_look_test.dart`; before/after in `docs/ux-shots/dice-same-look/`.
+
+## [1.906.0+942]
+
+- Icons: Art's harmonised set of the 289 skill and item icons (one ink outline, the shared 63-colour palette; the drawings are untouched) replaces the originals in `assets/icons/skills` and `assets/icons/items`, same names and sizes.
+
 ## [1.905.0+941]
 
 - Icons: one size scale for every icon the code sizes (`IconSize`: 12, 16, 32, 48, 64), so pixel icons land on whole multiples (no more 1.4x or 1.75x smear) and the Material glyphs beside them match: 283 sites moved off 11, 13, 14, 15, 18, 20, 22, 24, 26, 28, 30, 36, 40, 44, 52 dp. A guard test refuses off-scale sizes.

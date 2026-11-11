@@ -1,0 +1,4 @@
+# Skill effects, batch 1 of 3 (10 of the 23 remaining styles)
+`final/vfx_<style>.png` (432x48 PNG8, 9 frames, rawer look: 24 grid x2, 5 colours + ink), GIFs in `final/gif/`, sheet `docs/art/boards/skill-effects-batch1.png` (today | rawer | Fire | Water | Void). Styles: radiance, shout, stone_shield, arrow, shadow, pierce, heavy_slash, poison, splash, impact. Raw frames in `raw/` (and `../retry1/raw/` for heavy_slash and splash, whose first try was an explosion and a stray object).
+Cost: **24 generations** (10 styles x 2 = 20, plus 4 for the two retries); balance 1146.5 to 1122.5.
+**Honest notes:** radiance, shout, shadow, impact and splash have a clean appear / peak / fade. **arrow, pierce, stone_shield, poison and heavy_slash end with the object still visible**: the code fades and shrinks them out (as for flame and heal). Arrow and pierce are centred stabs, not travelling projectiles: the code moves them. Not wired.
