@@ -1,6 +1,6 @@
 # The atlas: every map the player sees, from a room to the globe
 
-Maps session, first task. Docs only: nothing in the app changed.
+Maps session, first task. Docs only: nothing in the app changed. The French pass is in `french.md`.
 
 **How the pictures were made.** Real screens of the app at v1.913, 412 x 915, rendered by a throw-away
 Flutter test (`shot_test.dart.txt`, copy it to `test/zz_atlas_shot_test.dart` to run it; one
@@ -8,7 +8,7 @@ Flutter test (`shot_test.dart.txt`, copy it to `test/zz_atlas_shot_test.dart` to
 four screens at half size. Dark theme with the Night look unless the caption says otherwise.
 The "after" pictures come from two small temporary patches (`prototype.patch.txt`), reverted afterwards.
 
-**Not done, so not judged here:** French, the epilogue map (it needs a finished game), the camp's cliff town,
+**Not done, so not judged here:** the epilogue map (it needs a finished game), the camp's cliff town,
 a walk on a real phone, and frame times on a phone (see "Speed").
 
 ## 1. The chain of maps, as the player meets it
@@ -143,3 +143,4 @@ that sheet), and Shroud needs to differ by more than one colour, or go.
 - `01` to `12`: the levels as they are. `20` to `24`: before and after for proposals A to E.
 - `shot_test.dart.txt`: the picture test. `prototype.patch.txt`: the two temporary patches for the after pictures.
 - `perf.txt`: the drawing times, three runs.
+- `french.md` (`30`, `31`): the French pass. `core-questions.md`: what proposals C and F need Core to confirm.
