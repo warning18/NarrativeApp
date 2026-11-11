@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.909.0+945]
+
+- Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
+
 ## [1.906.0+942]
 
 - Icons: Art's harmonised set of the 289 skill and item icons (one ink outline, the shared 63-colour palette; the drawings are untouched) replaces the originals in `assets/icons/skills` and `assets/icons/items`, same names and sizes.

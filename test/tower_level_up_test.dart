@@ -107,16 +107,24 @@ void main() {
     final run = won(start(5));
     final offer = towerStatPickOffer(run, data);
     final levelUp = TowerLevelUpSession(run, data);
+    final nav = GlobalKey<NavigatorState>();
     await tester.pumpWidget(ProviderScope(
       overrides: [trainingPathsProvider.overrideWith((ref) async => paths)],
-      child: MaterialApp(home: levelUp.wrap(const LevelUpScreen())),
+      child: MaterialApp(
+          navigatorKey: nav, home: const Scaffold(body: Text('the floor'))),
     ));
+    // Opened the way the floor opens it (tower_floor_screen.dart).
+    nav.currentState!.push(MaterialPageRoute<void>(
+        builder: (_) =>
+            levelUp.wrap(const LevelUpScreen(doneLabelKey: 'tower_continue'))));
     for (var i = 0; i < 10; i++) {
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 20)));
       await tester.pump(const Duration(milliseconds: 20));
     }
     expect(find.byKey(const Key('stat_pick_offer_1')), findsOneWidget);
+    // A pick still waiting: no button to leave yet.
+    expect(find.byKey(const Key('level_up_done')), findsNothing);
     await tester.tap(find.byKey(const Key('stat_pick_offer_1')));
     await tester.pump(const Duration(milliseconds: 50));
     await tester.tap(find.byKey(const Key('stat_pick_take')));
@@ -134,5 +142,13 @@ void main() {
     expect(saved['raceId'], 'elf');
     expect(saved['gold'], 321);
     expect(saved['trainingTaken'] ?? const {}, isEmpty);
+    // The pick made, a clear button takes the hero back to the climb
+    // (v1.909, the user's phone report: only the back arrow did).
+    expect(find.byKey(const Key('level_up_done')), findsOneWidget);
+    expect(find.text('Continue the climb'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('level_up_done')));
+    await tester.pumpAndSettle();
+    expect(find.byType(LevelUpScreen), findsNothing);
+    expect(find.text('the floor'), findsOneWidget);
   });
 }
