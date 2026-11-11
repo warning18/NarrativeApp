@@ -122,6 +122,11 @@ flutter:
     - assets/visuals/races/
     - assets/visuals/professions/
     - assets/icons/glyphs/
+    - assets/ui/frames/wood/
+    - assets/ui/frames/iron/
+    - assets/ui/frames/silver/
+    - assets/ui/frames/gilt/
+    - assets/ui/frames/env/
     - assets/icons/items/
     - assets/icons/skills/
     - assets/icons/enemies/

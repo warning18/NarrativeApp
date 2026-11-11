@@ -10,10 +10,12 @@ import 'providers/palette_provider.dart';
 import 'providers/slow_frames_provider.dart';
 import 'providers/theme_mode_provider.dart';
 import 'screens/main_menu_screen.dart';
+import 'theme/frame_style.dart';
 import 'theme/stitched_ink.dart';
 import 'widgets/slow_frames_overlay.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   // The app's fonts are under the SIL Open Font License, which asks that
   // their licence travel with them: it shows in the app's licences.
   LicenseRegistry.addLicense(() async* {
@@ -30,6 +32,8 @@ void main() {
       await rootBundle.loadString('assets/fonts/IMFellEnglishSC-OFL.txt'),
     );
   });
+  // The frames' pieces, small, loaded while the menu opens.
+  FrameImages.preloadAll();
   runApp(const ProviderScope(child: MyApp()));
 }
 

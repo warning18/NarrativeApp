@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/tower/tower_look.dart';
+import '../theme/frame_style.dart';
 import '../theme/stitched_ink.dart';
 
 /// A panel: the surface colour, a seam border and
@@ -28,6 +29,25 @@ class InkPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final ink = InkColors.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final f = Theme.of(context).extension<FrameStyle>();
+    if (TowerPanelStyle.of(context) &&
+        f != null &&
+        FrameImages.ready(f.material, f.env)) {
+      final framed = Container(
+        padding: padding.add(EdgeInsets.all(2.0 * f.compactScale)),
+        decoration: ShapeDecoration(
+          color: scheme.surfaceContainer,
+          shape: FrameBorder(
+              piece: FramePiece.hudPanel,
+              material: f.material,
+              env: f.env,
+              pixel: f.compactScale,
+              seed: padding.hashCode ^ lit.hashCode),
+        ),
+        child: Opacity(opacity: dim ? .5 : 1, child: child),
+      );
+      return onTap == null ? framed : InkWell(onTap: onTap, child: framed);
+    }
     if (TowerPanelStyle.of(context)) {
       // The Tower's panel (v1.900): a double ink line and a bevel.
       final panel = CustomPaint(
