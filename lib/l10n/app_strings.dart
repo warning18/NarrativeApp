@@ -1386,7 +1386,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_test_body': {
     AppLanguage.en:
-        'Roll a d20 and add {mod}: you need {dc} to hold your footing.',
+        'Roll a d20 and add {mod}: you need {dc} to hold on.',
     AppLanguage.fr:
         'Lancez un d20 et ajoutez {mod} : il vous faut {dc} pour tenir bon.',
   },
@@ -1399,7 +1399,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Réussite',
   },
   'tower_event_pass_text': {
-    AppLanguage.en: 'keep your footing and take a potion.',
+    AppLanguage.en: 'hold on and take a potion.',
     AppLanguage.fr: 'vous tenez bon et gagnez une potion.',
   },
   'tower_event_fail': {
@@ -1449,7 +1449,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vous tombez de l’étage {from} à l’étage {to}',
   },
   'tower_event_held': {
-    AppLanguage.en: 'You hold your footing on floor {from}',
+    AppLanguage.en: 'You hold on at floor {from}',
     AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
   },
   'tower_event_outran': {
