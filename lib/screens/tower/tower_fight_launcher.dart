@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../combat/field_anomaly.dart' show FightStage;
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../gamedata/db_schema.dart';
@@ -13,7 +14,8 @@ import '../../providers/combat_active_provider.dart';
 import '../../providers/tower_fight_session.dart';
 import '../fight_screen.dart';
 import '../../widgets/fight_plates.dart' show FightPlateOverride;
-import 'tower_backdrop.dart' show towerFloorPlate;
+import 'tower_backdrop.dart'
+    show towerBackdropAsset, towerBandOf, towerFloorPlate;
 import 'tower_providers.dart';
 
 /// Plays [run]'s floor and says how it ended; null when it was not fought (a
@@ -49,11 +51,15 @@ Future<TowerFightResult?> towerFightFor(
         },
         modifiers: floor.modifiersFor(run.professionId),
       ));
-      // A warden's or a boss's floor fights in front of its own picture.
-      final plate = towerFloorPlate(run.floor);
-      return plate == null
-          ? screen
-          : FightPlateOverride(asset: plate, child: screen);
+      // The Tower's fights wear the Tower: a warden's or a boss's floor its
+      // own picture, the others their band's, the hall's stone under the dice
+      // and the floor named in the ground line (looks only).
+      return FightPlateOverride(
+          asset: towerFloorPlate(run.floor) ??
+              towerBackdropAsset(towerBandOf(run.floor)),
+          boardStage: FightStage.hall,
+          floor: run.floor,
+          child: screen);
     },
   ));
   ref.read(combatActiveProvider.notifier).state = false;

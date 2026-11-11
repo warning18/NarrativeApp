@@ -9,7 +9,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart' show BuildContext, InheritedWidget;
+import 'package:flutter/widgets.dart' show BuildContext, Color, InheritedWidget;
 import 'package:flutter/services.dart';
 
 import '../combat/field_anomaly.dart' show FightStage;
@@ -56,24 +56,35 @@ String fightPlateAsset(FightStage stage, String? settlementId) {
   return '$_dir/$stem.png';
 }
 
-/// A picture the fight is told to wear whatever its stage (the Tower's boss
-/// and warden floors): put above the FightScreen, it wins over the stage's.
+/// How a fight is dressed whatever its stage (the Tower's): the picture it
+/// wears ([asset]), the stage whose ground skin the dice board takes
+/// ([boardStage]) and the floor named in the ground line. Put above the
+/// FightScreen. A look only: the stage the rules read is not changed.
 class FightPlateOverride extends InheritedWidget {
-  const FightPlateOverride(
-      {super.key, required this.asset, required super.child});
+  const FightPlateOverride({
+    super.key,
+    required this.asset,
+    required this.boardStage,
+    required this.floor,
+    required super.child,
+  });
 
   final String asset;
+  final FightStage boardStage;
+  final int floor;
 
-  static String? of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<FightPlateOverride>()?.asset;
+  static FightPlateOverride? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<FightPlateOverride>();
 
   @override
-  bool updateShouldNotify(FightPlateOverride old) => old.asset != asset;
+  bool updateShouldNotify(FightPlateOverride old) =>
+      old.asset != asset || old.boardStage != boardStage || old.floor != floor;
 }
 
 /// The pictures, decoded once. [loaded] changes when one arrives.
 abstract final class FightPlateImages {
   static final Map<String, ui.Image> _images = {};
+  static final Map<String, Color> _tints = {};
   static final Set<String> _loading = {};
   static final ValueNotifier<int> loaded = ValueNotifier(0);
 
@@ -88,15 +99,41 @@ abstract final class FightPlateImages {
     try {
       final data = await rootBundle.load(asset);
       final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-      _images[asset] = (await codec.getNextFrame()).image;
+      final image = (await codec.getNextFrame()).image;
+      final tint = await _groundTintOf(image);
+      if (tint != null) _tints[asset] = tint;
+      _images[asset] = image;
       loaded.value++;
     } catch (_) {
       // A missing file leaves the stage to its code painter.
     }
   }
 
+  /// The colour of [asset]'s ground (the mean of its lowest third), for the
+  /// dice board to lean towards; null until it is loaded.
+  static Color? tintOf(String asset) => _tints[asset];
+
+  static Future<Color?> _groundTintOf(ui.Image image) async {
+    final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    if (data == null) return null;
+    final from = image.height * 2 ~/ 3;
+    var r = 0, g = 0, b = 0, n = 0;
+    for (var y = from; y < image.height; y++) {
+      for (var x = 0; x < image.width; x++) {
+        final i = (y * image.width + x) * 4;
+        r += data.getUint8(i);
+        g += data.getUint8(i + 1);
+        b += data.getUint8(i + 2);
+        n++;
+      }
+    }
+    if (n == 0) return null;
+    return Color.fromARGB(255, r ~/ n, g ~/ n, b ~/ n);
+  }
+
   static void reset() {
     _images.clear();
+    _tints.clear();
     _loading.clear();
   }
 }

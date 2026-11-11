@@ -69,6 +69,9 @@ void main() {
     });
     await tester.pump();
     expect(FightPlateImages.of(asset), isNotNull);
+    // The board leans towards the picture's ground: a colour, not black.
+    expect(FightPlateImages.tintOf(asset), isNotNull);
+    expect(FightPlateImages.tintOf(asset)!.toARGB32(), isNot(0xFF000000));
     expect(tester.takeException(), isNull);
   });
 }
