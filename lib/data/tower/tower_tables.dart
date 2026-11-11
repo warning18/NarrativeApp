@@ -44,8 +44,10 @@ double towerProfessionScaleOf(String professionId) =>
 /// (rollLootBox's gearAndPotionsOnly) gave the hero much more gear. The
 /// Tower curve review (fix #5): 1.14 (was 1.02), with the floors' extras
 /// re-spread (towerBudgets): the dice gone to the bag had taken the top
-/// with no unlocks to 22%.
-const double towerFoeScale = 1.14;
+/// with no unlocks to 22%. v1.922: 1.18 (was 1.14), with the humans' and
+/// voidkin's start (towerPeoplePoints): the top with no unlocks back near
+/// the curve review's (12.6%; 17.9% with the start alone).
+const double towerFoeScale = 1.18;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -55,6 +57,18 @@ const double towerFoeScale = 1.14;
 /// unlock had fallen to 7% (the design asks 15 to 25%). The Tower curve
 /// review (fix #5): .03 (the top with every unlock 31% to 29%).
 const double towerHealthPerUnlock = .03;
+
+/// The Tower's start for a people (the difficulty review's finding 3, a
+/// Tower-only start): this many points in the calling's damage stat, with
+/// what they bring (its base damage). Human and voidkin climbed about half
+/// as well as the others (no unlocks, the top: human 8%, voidkin 6%
+/// against dwarf and elf 20%): their races' bonuses go to stats the
+/// Tower's fights barely read. The story's races are unchanged (their
+/// 800-run spread is under 5 points).
+const Map<String, int> towerPeoplePoints = {
+  'human': 2,
+  'voidkin': 3,
+};
 
 /// Every this many unlocks owned at the start: one more potion carried into
 /// each fight.

@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.922.0+958]
+
+- Tower: humans and voidkin start a Tower run with points in their calling's damage stat (humans +2, voidkin +3, with the base damage those bring), and the Tower's foes are a little tougher (scale 1.14 to 1.18) so the climb stays as hard as v1.920's. Before, humans reached the top about 1 run in 13 and voidkin 1 in 21, against 1 in 4 for elves; now every people reaches it about 1 run in 6 to 1 in 10 (difficulty review, finding 3). The story's characters are unchanged.
+
 ## [1.920.0+956]
 
 - Tower: the climb is retuned (review fix #5). You heal 15% of your health between floors instead of 30%, so a bad fight still hurts two floors on. No ordinary floor ambushes you any more: floor 17 used to stop 1 climber in 8. The wardens (5, 15, 25) and bosses (10, 20, 30) are real peaks, the last boss stopping about 1 in 4 or 5 who reach it. About 1 run in 7 reaches the top without unlocks, 2 in 7 with them; warrior, mage and rogue climb about equally well.
