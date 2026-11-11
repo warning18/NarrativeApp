@@ -59,6 +59,7 @@ class TowerRun {
     this.events = 0,
     this.setbacks = 0,
     this.lastEvent,
+    this.shortcut,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -142,6 +143,7 @@ class TowerRun {
       lastEvent: json['last'] is Map<String, dynamic>
           ? TowerEventResult.fromJson(json['last'] as Map<String, dynamic>)
           : null,
+      shortcut: json['shortcut'] as bool?,
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -244,6 +246,11 @@ class TowerRun {
   /// fight ends; null when none is to show.
   final TowerEventResult? lastEvent;
 
+  /// The choice on this floor's shortcut (floor events PR 2,
+  /// towerChooseShortcut): taken, declined, or null until chosen (and on
+  /// every floor without one). Cleared when the run moves on.
+  final bool? shortcut;
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -270,8 +277,9 @@ class TowerRun {
   /// the height cleared.
   int get marks => towerMarksOf(heightCleared, refused.length);
 
-  /// A copy with the fields given. [lastEvent] can't be cleared by passing
-  /// null: [clearLastEvent] clears it.
+  /// A copy with the fields given. [lastEvent] and [shortcut] can't be
+  /// cleared by passing null: [clearLastEvent] and [clearShortcut] clear
+  /// them.
   TowerRun copyWith({
     int? floor,
     int? health,
@@ -290,6 +298,8 @@ class TowerRun {
     int? setbacks,
     TowerEventResult? lastEvent,
     bool clearLastEvent = false,
+    bool? shortcut,
+    bool clearShortcut = false,
   }) =>
       TowerRun(
         seed: seed,
@@ -314,6 +324,7 @@ class TowerRun {
         events: events ?? this.events,
         setbacks: setbacks ?? this.setbacks,
         lastEvent: clearLastEvent ? null : lastEvent ?? this.lastEvent,
+        shortcut: clearShortcut ? null : shortcut ?? this.shortcut,
       );
 
   Map<String, dynamic> toJson() => {
@@ -346,6 +357,7 @@ class TowerRun {
         if (events != 0) 'events': events,
         if (setbacks != 0) 'setbacks': setbacks,
         if (lastEvent != null) 'last': lastEvent!.toJson(),
+        if (shortcut != null) 'shortcut': shortcut,
       };
 }
 
@@ -416,9 +428,16 @@ TowerRun towerStart({
   );
 }
 
-/// The floor [run] fights next (its foes, its fight settings).
-TowerFloor towerFloorOf(TowerRun run, TowerData data) =>
-    towerFloorsFor(run.seed, data.enemies)[run.floor - 1];
+/// The floor [run] fights next (its foes, its fight settings): with its
+/// shortcut taken (TowerRun.shortcut, floor events PR 2), the tougher
+/// fight of towerShortcutFloor.
+TowerFloor towerFloorOf(TowerRun run, TowerData data) {
+  final floor = towerFloorsFor(run.seed, data.enemies)[run.floor - 1];
+  return (run.shortcut ?? false) &&
+          towerEventKindOf(run) == TowerEventKind.shortcut
+      ? towerShortcutFloor(floor)
+      : floor;
+}
 
 /// [run] after its fight of [TowerRun.floor]: lost, the run is over; won,
 /// the hero levels (its new health added to what it has left,
@@ -478,7 +497,8 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   final hero = towerHeroOf(leveled, data);
   final drop = towerSpoilsFor(
     seed: run.seed,
-    floor: towerFloorOf(run, data),
+    // The floor's own spoils, a shortcut's too.
+    floor: towerFloorsFor(run.seed, data.enemies)[run.floor - 1],
     luck: hero.luck,
     ownedItemIds: hero.ownedItemIds,
     preferredScalingStat:
@@ -562,9 +582,11 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// (the screen opens the Level Up before the cards); a pick still waiting
 /// here is given its first offer, the calling, so the climb never stalls.
 /// [hero], when given, is [run]'s hero already built (towerHeroOf); it is
-/// given the card. Then the floor's event (floor events PR 1,
-/// towerAfterEvent): a setback's test rolled, a rival's skip landed; a
-/// skip's level-up picks wait on the landing floor.
+/// given the card. Then the floor's event (floor events PR 1 and 2,
+/// towerAfterEvent): a setback's test rolled, a rival's or a shortcut's
+/// skip landed (a shortcut's landing card dealt: the run chooses again, on
+/// the floor below the landing); a skip's level-up picks wait on the
+/// landing.
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
@@ -583,6 +605,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
           refused:
               run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
           offer: const [],
+          clearShortcut: true,
         ),
         data);
   }
@@ -597,6 +620,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
         health: hero.currentHealth.clamp(1, hero.maxHealth),
         taken: {...run.taken, run.floor: card},
         offer: const [],
+        clearShortcut: true,
       ),
       data);
 }

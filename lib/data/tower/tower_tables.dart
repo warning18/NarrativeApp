@@ -432,6 +432,14 @@ const int towerSetbackDcFloors = 6;
 /// The most floors a setback falls (1 to this, drawn).
 const int towerSetbackMaxFall = 3;
 
+/// The share of ordinary floors that hold a shortcut (floor events PR 2,
+/// the proposal's "Shortcut floors" and recommended set): before the fight,
+/// fight the floor's foe as an Elite (a pack one foe more) and skip 1 to
+/// [towerSetbackMaxFall] floors (drawn, shown), never past the floor before
+/// the next gate; won, the floor's spoils and card and a card on landing;
+/// lost, the run ends. Only where a skip fits.
+const double towerShortcutShare = .15;
+
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.
 const List<List<double>> towerRarityOdds = [
