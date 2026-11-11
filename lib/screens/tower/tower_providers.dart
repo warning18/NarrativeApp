@@ -10,6 +10,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
@@ -101,6 +102,24 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
     final save = await _opened();
     await save.saveRun(run);
     state = AsyncValue.data(TowerState(progress: _now.progress, run: run));
+  }
+
+  /// The run's hero rolling its die [dieId] from the next fight on
+  /// (towerChooseDie), saved at once; nothing when it does not own it.
+  Future<void> chooseDie(String dieId, {required TowerData data}) async {
+    final run = _now.run;
+    if (run == null) return;
+    final chosen = towerChooseDie(run, data, dieId);
+    if (!identical(chosen, run)) await setRun(chosen);
+  }
+
+  /// The die [dieId] of the bag seen, no longer new (towerMarkDieSeen),
+  /// saved at once.
+  Future<void> markDieSeen(String dieId) async {
+    final run = _now.run;
+    if (run == null) return;
+    final seen = towerMarkDieSeen(run, dieId);
+    if (!identical(seen, run)) await setRun(seen);
   }
 
   /// [run] ended: its marks banked, the run cleared. Returns the record

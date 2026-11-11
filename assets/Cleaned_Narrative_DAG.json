@@ -3436,7 +3436,7 @@
       },
       {
         "text": "Hear out the lantern-maker on Tern Row",
-        "text_fr": "Écouter la fabricante de lanternes de Tern Row",
+        "text_fr": "Écouter la fabricante de lanternes de la Rangée des sternes",
         "next_id": "2015_ternrow_buyer",
         "hideIfFlags": [
           "hub_2015_ternrow_buyer"
@@ -3465,7 +3465,7 @@
       {
         "flag": "tern_row_spared",
         "en": "Down the side alley, Tern Row’s paper lanterns were lit again, and for once nobody was collecting for the privilege.",
-        "fr": "Au fond de la ruelle, les lanternes de papier de Tern Row étaient rallumées, et pour une fois personne ne faisait payer le privilège."
+        "fr": "Au fond de la ruelle, les lanternes de papier de la Rangée des sternes étaient rallumées, et pour une fois personne ne faisait payer le privilège."
       },
       {
         "flag": "lysa_survived",
@@ -4443,7 +4443,7 @@
       {
         "flag": "tern_row_spared",
         "en": "Word of Tern Row had run up the wharf ahead of me. A Tide-Kin boy pressed a paper lantern into my hand; I hung it from the Eel’s stern.",
-        "fr": "La nouvelle de Tern Row m’avait précédé sur le quai. Un gamin des Gens de la Marée me fourra une lanterne de papier dans la main ; je la suspendis à la poupe de l’Eel."
+        "fr": "La nouvelle de la Rangée des sternes m’avait précédé sur le quai. Un gamin des Gens de la Marée me fourra une lanterne de papier dans la main ; je la suspendis à la poupe de l’Eel."
       },
       {
         "flag": "void_marked",
@@ -4553,7 +4553,7 @@
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
     "description": "The Rusty Eel sat lower in the water than she had on the slip, but evenly now. Her hull was sound, her sail patched in a canvas that didn’t quite match. Honest work, by hands that hadn’t asked for thanks and hadn’t got any from me, until now.\n\nShe would carry twenty in comfort, and a hundred only if the stores went over the side and a skiff was towed astern for the rest. **The wharf held a hundred**: Tern Row’s families with their paper lanterns, the harbour’s last dockhands, a cleric with three orphans and no boat. They watched the Eel the way the drowning watch a plank.\n\nThe Inquisition’s drums were already at the landward gate. Whatever I decided, I would decide it for people who would not get another chance to be decided for.",
-    "description_fr": "Le Rusty Eel s’enfonçait plus bas dans l’eau qu’il ne reposait sur sa cale, mais d’aplomb désormais. La coque saine, la voile rapiécée d’une toile à peine assortie. Un travail honnête, fait par des mains qui n’avaient pas demandé de merci et n’en avaient pas reçu de moi, jusqu’à maintenant.\n\nIl en porterait vingt à l’aise, et cent seulement si les réserves passaient par-dessus bord et qu’on remorquait une yole à l’arrière pour le reste. **Le quai en comptait cent** : les familles de Tern Row avec leurs lanternes de papier, les derniers dockers du port, un clerc avec trois orphelins et pas de bateau. Ils regardaient l’Eel comme les noyés regardent une planche.\n\nLes tambours de l’Inquisition étaient déjà à la porte de la terre. Quoi que je décide, je déciderais pour des gens qui n’auraient pas d’autre occasion qu’on décide pour eux.",
+    "description_fr": "Le Rusty Eel s’enfonçait plus bas dans l’eau qu’il ne reposait sur sa cale, mais d’aplomb désormais. La coque saine, la voile rapiécée d’une toile à peine assortie. Un travail honnête, fait par des mains qui n’avaient pas demandé de merci et n’en avaient pas reçu de moi, jusqu’à maintenant.\n\nIl en porterait vingt à l’aise, et cent seulement si les réserves passaient par-dessus bord et qu’on remorquait une yole à l’arrière pour le reste. **Le quai en comptait cent** : les familles de la Rangée des sternes avec leurs lanternes de papier, les derniers dockers du port, un clerc avec trois orphelins et pas de bateau. Ils regardaient l’Eel comme les noyés regardent une planche.\n\nLes tambours de l’Inquisition étaient déjà à la porte de la terre. Quoi que je décide, je déciderais pour des gens qui n’auraient pas d’autre occasion qu’on décide pour eux.",
     "context_taxonomy": {
       "ui_theme": "gate",
       "mood": "reflective",
@@ -6816,7 +6816,7 @@
   "2015_ternrow": {
     "id": "2015_ternrow",
     "description": "The lanterns led to a footbridge, and the footbridge to a quarter the map had not bothered to name. Narrow, salt-scoured, hung with **more paper boats than living people**, each one lit and set adrift at dusk for someone the sea hadn’t given back.\n\nTern Row, the woman who caught me staring called it. Her name was Nadira. She spoke in the call-and-response cadence of the Tide-Kin, a people who had come up the coast one drowned island at a time and never quite been asked to stay. She had the tiredness of someone explaining, again, to someone who might finally listen.\n\nAn Inquisition customs overseer named Renn charged Tern Row a ‘landing toll’ found in none of the city’s ledgers. Lately he used the word ‘deportation’ the way other men use a fist.",
-    "description_fr": "Les lanternes menaient à une passerelle, et la passerelle à un quartier que la carte n’avait pas jugé bon de nommer. Étroit, rongé par le sel, hérissé de **plus de bateaux de papier que d’habitants vivants**, chacun allumé et lâché à la dérive au crépuscule pour quelqu’un que la mer n’avait pas rendu.\n\nTern Row, m’apprit la femme qui me surprit à regarder. Elle s’appelait Nadira. Elle parlait dans la cadence en écho des Gens de la Marée, un peuple remonté le long de la côte une île engloutie après l’autre, sans qu’on lui ait jamais vraiment demandé de rester. Elle avait la lassitude de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.\n\nUn contremaître des douanes de l’Inquisition nommé Renn faisait payer à Tern Row un « péage de débarquement » absent de tous les registres de la ville. Depuis peu, il employait le mot « expulsion » comme d’autres un poing.",
+    "description_fr": "Les lanternes menaient à une passerelle, et la passerelle à un quartier que la carte n’avait pas jugé bon de nommer. Étroit, rongé par le sel, hérissé de **plus de bateaux de papier que d’habitants vivants**, chacun allumé et lâché à la dérive au crépuscule pour quelqu’un que la mer n’avait pas rendu.\n\nLa Rangée des sternes, m’apprit la femme qui me surprit à regarder. Elle s’appelait Nadira. Elle parlait dans la cadence en écho des Gens de la Marée, un peuple remonté le long de la côte une île engloutie après l’autre, sans qu’on lui ait jamais vraiment demandé de rester. Elle avait la lassitude de quelqu’un qui explique, encore, à quelqu’un qui pourrait enfin écouter.\n\nUn contremaître des douanes de l’Inquisition nommé Renn faisait payer à la Rangée des sternes un « péage de débarquement » absent de tous les registres de la ville. Depuis peu, il employait le mot « expulsion » comme d’autres un poing.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -6876,7 +6876,7 @@
   "2015_ternrow_talked": {
     "id": "2015_ternrow_talked",
     "description": "It took less persuading than I’d braced for. Renn was a petty tyrant who wanted to be seen backing down gracefully, not caught doing anything. I let him keep the grace.\n\n\"**Tolls are suspended**,\" he announced to nobody in particular, \"pending review.\" He left Tern Row without another word about them.\n\nNadira didn’t thank me, exactly, the way people who have learned not to trust rescues don’t. But she pressed something into my hand on the way out.\n\n\"For the lanterns,\" she said, and didn’t wait to see if I’d give it back.",
-    "description_fr": "Il fallut moins d’efforts que prévu. Renn était un petit tyran qui voulait qu’on le voie reculer avec grâce, pas qu’on le prenne en faute. Je lui laissai la grâce.\n\n« **Les péages sont suspendus**, annonça-t-il à la cantonade, en attendant réexamen. » Il quitta Tern Row sans un mot de plus à leur sujet.\n\nNadira ne me remercia pas vraiment, à la manière de ceux qui ont appris à se méfier des sauvetages. Mais elle me glissa quelque chose dans la main en partant.\n\n« Pour les lanternes », dit-elle, sans attendre de voir si je le rendrais.",
+    "description_fr": "Il fallut moins d’efforts que prévu. Renn était un petit tyran qui voulait qu’on le voie reculer avec grâce, pas qu’on le prenne en faute. Je lui laissai la grâce.\n\n« **Les péages sont suspendus**, annonça-t-il à la cantonade, en attendant réexamen. » Il quitta la Rangée des sternes sans un mot de plus à leur sujet.\n\nNadira ne me remercia pas vraiment, à la manière de ceux qui ont appris à se méfier des sauvetages. Mais elle me glissa quelque chose dans la main en partant.\n\n« Pour les lanternes », dit-elle, sans attendre de voir si je le rendrais.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -10118,7 +10118,7 @@
       {
         "flag": "tern_row_spared",
         "en": "Tern Row’s lanterns were the first lights I saw from the water. Nadira had hung one on every post of the camp’s landing.",
-        "fr": "Les lanternes de Tern Row furent les premières lumières que je vis depuis l’eau. Nadira en avait suspendu une à chaque poteau du débarcadère du camp.",
+        "fr": "Les lanternes de la Rangée des sternes furent les premières lumières que je vis depuis l’eau. Nadira en avait suspendu une à chaque poteau du débarcadère du camp.",
         "andFlags": [
           "refugees_aboard"
         ]
@@ -29017,7 +29017,7 @@
   "2015_ternrow_door": {
     "id": "2015_ternrow_door",
     "description": "The footbridge to Tern Row had been drawn up on the far side. A line of paper boats stood on the rail, each unlit. Nadira stood at the other end, arms folded.\n\n“It is not you,” she said across the gap. “It is the overseer’s boot on every plank. Whoever crosses brings his toll, and we cannot afford another.”\n\nA gull landed on the rail, looked at the boats, left. **The Tide-Kin light a boat for each person the sea gave back**. She did not say how many were unlit. “Make him reconsider the arithmetic,” she said. “Then we will lower the bridge.”",
-    "description_fr": "La passerelle de Tern Row avait été relevée de l’autre côté. Une rangée de bateaux de papier se tenait sur la rambarde, tous éteints. Nadira attendait à l’autre bout, les bras croisés.\n\n« Ce n’est pas vous, dit-elle par-dessus le vide. C’est la botte du contremaître sur chaque planche. Qui passe apporte son péage, et nous ne pouvons pas en payer un autre. »\n\nUne mouette se posa sur la rambarde, regarda les bateaux, et repartit. **Les Gens de la Marée allument un bateau pour chaque personne que la mer a rendue**. Elle ne dit pas combien restaient éteints. « Faites-lui revoir son arithmétique, dit-elle. Alors nous baisserons la passerelle. »",
+    "description_fr": "La passerelle de la Rangée des sternes avait été relevée de l’autre côté. Une rangée de bateaux de papier se tenait sur la rambarde, tous éteints. Nadira attendait à l’autre bout, les bras croisés.\n\n« Ce n’est pas vous, dit-elle par-dessus le vide. C’est la botte du contremaître sur chaque planche. Qui passe apporte son péage, et nous ne pouvons pas en payer un autre. »\n\nUne mouette se posa sur la rambarde, regarda les bateaux, et repartit. **Les Gens de la Marée allument un bateau pour chaque personne que la mer a rendue**. Elle ne dit pas combien restaient éteints. « Faites-lui revoir son arithmétique, dit-elle. Alors nous baisserons la passerelle. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "mournful",
@@ -29080,7 +29080,7 @@
   "2015_doors": {
     "id": "2015_doors",
     "description": "Two stairs climbed off the wharf a few paces apart. Each had someone waiting at the top.\n\nOne ended under the first arch of the Lantern Alleys, where a woman stood with her hand on a lamp she had not lit. The other ended at the rail of a footbridge, drawn up on the far side, a line of unlit paper boats along it: Tern Row.",
-    "description_fr": "Deux escaliers montaient du quai à quelques pas l’un de l’autre. Chacun avait quelqu’un qui attendait en haut.\n\nL’un finissait sous la première arche des Ruelles aux lanternes, où une femme se tenait la main sur une lampe qu’elle n’avait pas allumée. L’autre finissait à la rambarde d’une passerelle relevée du côté opposé, une rangée de bateaux de papier éteints le long de la rampe : Tern Row.",
+    "description_fr": "Deux escaliers montaient du quai à quelques pas l’un de l’autre. Chacun avait quelqu’un qui attendait en haut.\n\nL’un finissait sous la première arche des Ruelles aux lanternes, où une femme se tenait la main sur une lampe qu’elle n’avait pas allumée. L’autre finissait à la rambarde d’une passerelle relevée du côté opposé, une file de bateaux de papier éteints le long de la rampe : La Rangée des sternes.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -29098,7 +29098,7 @@
       },
       {
         "text": "Look across the footbridge to Tern Row",
-        "text_fr": "Regarder de l’autre côté de la passerelle, vers Tern Row",
+        "text_fr": "Regarder de l’autre côté de la passerelle, vers la Rangée des sternes",
         "next_id": "2015_ternrow_door",
         "hideIfFlags": [
           "hub_2015_ternrow_door"

@@ -45,10 +45,19 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 // 27.0%. On the 500 guard seeds: median 18, floor 20 45.2%, the top 21.0%,
 // and 24.6% with every unlock. The bands sit around those, as wide as
 // before.
-const _medianFloor = (min: 15, max: 21);
-const _floor20 = (min: 0.32, max: 0.52);
-const _topNone = (min: 0.12, max: 0.25);
-const _topAll = (min: 0.19, max: 0.33);
+// Re-banded when a die gained went to the bag (the Tower review §1.5: the
+// hero keeps its calling's die, the bot tries a new one before it rolls
+// it), the bot's fights lent the die's own skills as the app's are, and
+// the three Tower dice got their Tower faces (§2.1 (c)). Seeds 1 to 2000,
+// no unlocks: median 18 to 21, floor 20 42.4% to 52.5%, the top 17.5% to
+// 22.1% (a mage 14.5% to 31.1%: it keeps its apprentice die); every
+// unlock: the top 27.0% to 38.5%. On the 500 guard seeds: median 21,
+// floor 20 52.8%, the top 23.0%, and 37.8% with every unlock. The bands
+// sit around those, as wide as before.
+const _medianFloor = (min: 18, max: 24);
+const _floor20 = (min: 0.43, max: 0.63);
+const _topNone = (min: 0.14, max: 0.27);
+const _topAll = (min: 0.32, max: 0.46);
 
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;

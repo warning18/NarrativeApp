@@ -24,6 +24,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/tower/tower_hero.dart';
 import '../data/tower/tower_run.dart';
 import '../data/tower/tower_session.dart';
+import '../gamedata/db_schema.dart' show diceSchema;
+import 'game_db_providers.dart' show gameDbScopedTo;
 import 'player_session_provider.dart';
 
 /// One Tower floor's fight: the hero's session for it, and what it left.
@@ -51,9 +53,11 @@ class TowerFightSession {
 
   /// [child] (the FightScreen) under the Tower hero's session: every read
   /// of playerSessionProvider below it is the Tower's, every write stays
-  /// in it and is never saved.
+  /// in it and is never saved. Its dice table is the Tower's (TowerData.dice:
+  /// the Tower's own faces of its three dice unlocks).
   Widget wrap(Widget child) => ProviderScope(
         overrides: [
+          ...gameDbScopedTo(diceSchema, data.dice),
           playerSessionProvider.overrideWith((ref) {
             final notifier = PlayerSessionNotifier.detached(start);
             notifier.addListener((session) => _last = session);
