@@ -6,6 +6,7 @@
 // stage is a few shapes, so it costs nothing to ship and looks the same each
 // time.
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/scheduler.dart';
 import '../combat/field_anomaly.dart';
 import '../data/climate.dart';
 import 'fight_pixel_stage.dart';
+import 'fight_plates.dart';
 import 'side_view/side_view.dart' show SideParticles, paintSideParticles;
 import '../theme/palette.dart';
 
@@ -231,7 +233,12 @@ class FightBackdrop extends StatefulWidget {
     this.ground = true,
     this.weather = true,
     this.events = true,
+    this.plate,
   });
+
+  /// The asset of this stage's picture at this place (fightPlateAsset), if
+  /// it has one: drawn full-bleed in place of the code painter.
+  final String? plate;
 
   /// Which layers this one draws: the ground with its night and lamps, the
   /// day's weather, the anomaly. The fight stacks three of them: the ground
@@ -280,11 +287,27 @@ class _FightBackdropState extends State<FightBackdrop>
   bool _still(BuildContext context) =>
       MediaQuery.maybeOf(context)?.disableAnimations ?? false;
 
+  /// The picture, once decoded (null while it loads or when there is none).
+  ui.Image? _plate;
+
+  void _readPlate() {
+    final asset = widget.plate;
+    _plate = asset == null ? null : FightPlateImages.of(asset);
+  }
+
+  void _plateArrived() {
+    if (!mounted || _plate != null || widget.plate == null) return;
+    _readPlate();
+    if (_plate != null) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     _level = _target;
     _frame.tick(0, _level);
+    _readPlate();
+    FightPlateImages.loaded.addListener(_plateArrived);
   }
 
   /// Whether motion is allowed here (not reduced, and the page is live).
@@ -324,6 +347,7 @@ class _FightBackdropState extends State<FightBackdrop>
   @override
   void didUpdateWidget(FightBackdrop old) {
     super.didUpdateWidget(old);
+    if (old.plate != widget.plate) _readPlate();
     _sync();
   }
 
@@ -345,6 +369,7 @@ class _FightBackdropState extends State<FightBackdrop>
 
   @override
   void dispose() {
+    FightPlateImages.loaded.removeListener(_plateArrived);
     _ticker?.dispose();
     _frame.dispose();
     super.dispose();
@@ -363,6 +388,7 @@ class _FightBackdropState extends State<FightBackdrop>
           light: widget.light,
           ground: widget.ground,
           weather: widget.weather,
+          plate: _plate,
         ),
       ),
     );
@@ -378,6 +404,7 @@ class _FightBackdropPainter extends CustomPainter {
     required this.light,
     this.ground = true,
     this.weather = true,
+    this.plate,
   })  : _frame = frame,
         super(repaint: frame);
 
@@ -388,6 +415,7 @@ class _FightBackdropPainter extends CustomPainter {
   final double light;
   final bool ground;
   final bool weather;
+  final ui.Image? plate;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -402,11 +430,13 @@ class _FightBackdropPainter extends CustomPainter {
       light: light,
       ground: ground,
       weather: weather,
+      plate: plate,
     );
   }
 
   @override
   bool shouldRepaint(_FightBackdropPainter old) =>
+      old.plate != plate ||
       old.stage != stage ||
       old.sky != sky ||
       old.anomalyId != anomalyId ||
@@ -428,12 +458,15 @@ void paintFightBackdrop(
   double light = 1,
   bool ground = true,
   bool weather = true,
+  ui.Image? plate,
 }) {
   if (size.isEmpty) return;
   final scenery = FightScenery.of(stage);
   canvas.save();
   canvas.clipRect(Offset.zero & size);
-  if (ground) {
+  if (ground && plate != null) {
+    _paintPlate(canvas, size, plate);
+  } else if (ground) {
     paintPixelStage(canvas, size, stage,
         stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0));
   }
@@ -462,8 +495,29 @@ void paintFightBackdrop(
     );
   }
   // The lamps and torches shine through the dark.
-  if (ground) paintPixelLights(canvas, size, stage, lit: light < 1);
+  // (A picture has its lamps painted in it.)
+  if (ground && plate == null) {
+    paintPixelLights(canvas, size, stage, lit: light < 1);
+  }
   canvas.restore();
+}
+
+/// [plate] cover-fit, centred, pixels kept hard.
+void _paintPlate(Canvas canvas, Size size, ui.Image plate) {
+  final w = plate.width.toDouble();
+  final h = plate.height.toDouble();
+  final k = math.max(size.width / w, size.height / h);
+  final src = Rect.fromCenter(
+      center: Offset(w / 2, h / 2),
+      width: size.width / k,
+      height: size.height / k);
+  canvas.drawImageRect(
+      plate,
+      src,
+      Offset.zero & size,
+      Paint()
+        ..filterQuality = FilterQuality.none
+        ..isAntiAlias = false);
 }
 
 double _h(num n) {
