@@ -74,3 +74,5 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 
 ## UI 24 px glyphs and masks, item 3 (0 generations)
 `art/pixellab-ui24/` (22 coloured glyphs for nav, stats strip and header; 10 one-colour masks), generator `ui24_gen.py`, sheet `docs/art/boards/ui24-nav-stats-header.png`. Not wired.
+## Skill effects, rawer amendment (0 generations)
+Strips `art/pixellab-vfx/staged-rawer/` (flame, frost, lightning, heal, void_rift, shield), made by `rawer_gen.py` from the pilot strips: 24x24 grid x2, 5 colours + ink, no glow. Sheet `docs/art/boards/skill-effects-rawer.png`. Not wired.

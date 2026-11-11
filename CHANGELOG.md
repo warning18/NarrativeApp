@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.904.0+940]
+
+- Intro: the four scenes (the burning Shroud, the city on alert, Tallow Street and the Blind Beggar, the tavern room) are now Art's pixel plates, drawn cover-fit with a slow push or pan; the ash, the six embers, the shell's flash, the die, the title, the four lines, the fade, tap-to-skip and reduced motion are unchanged.
+
 ## [1.903.0+939]
 
 - Dice in the fight: the d4, d8, d10, d12 and d20 are real 3D solids that tumble in perspective, each facet carrying its own face (a skill's icon, or a type icon over its value) on the facets turned toward you; the d20 stands about 130 px across. A die not yet rolled shows a "?" on its front. Falls back to the flat drawing with a slow frame, on small tiles and with reduced motion stays still.
