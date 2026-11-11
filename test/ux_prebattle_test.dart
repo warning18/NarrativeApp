@@ -19,14 +19,11 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
-import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
 
-import 'package:narrative_data_app/widgets/head_avatar.dart';
 import 'package:narrative_data_app/widgets/fight_sprites.dart';
 import 'support/fonts.dart';
-import 'skill_fight_harness.dart'
-    show gamedata, pumpUntil, settle, shows, tapWhenEnabled;
+import 'skill_fight_harness.dart' show gamedata, settle, shows;
 import 'support/pump.dart';
 
 bool _dark = false;
