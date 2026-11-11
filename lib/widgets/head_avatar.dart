@@ -7,7 +7,10 @@
 // head a name gets, so a card never shows a letter where art exists.
 import 'package:flutter/material.dart';
 
+import 'dart:ui' as ui;
+
 import '../utils/pixel_icons/enemy_icons.dart';
+import 'fight_sprites.dart';
 
 /// Heads of figures that have a sprite of their own though their enemy
 /// record borrows another icon (the borrowed one would be the wrong face).
@@ -81,16 +84,58 @@ class HeadAvatar extends StatelessWidget {
           color: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: asset.isEmpty
-            ? letter
-            : Image.asset(
-                asset,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.none,
-                isAntiAlias: false,
-                errorBuilder: (_, __, ___) => letter,
-              ),
+        child: _spriteHead(asset, letter),
       ),
     );
   }
+
+  /// The head cropped from the character's standing sprite when there is one
+  /// (the new art), else the old head picture, else the letter.
+  Widget _spriteHead(String asset, Widget letter) {
+    final set = id == 'hero'
+        ? roninSprite
+        : enemyFightSprite(id) ?? companionFightSprite(id);
+    final old = asset.isEmpty
+        ? letter
+        : Image.asset(
+            asset,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.none,
+            isAntiAlias: false,
+            errorBuilder: (_, __, ___) => letter,
+          );
+    if (set == null) return old;
+    return ValueListenableBuilder<int>(
+      valueListenable: FightSpriteImages.loaded,
+      builder: (context, _, __) {
+        final image = FightSpriteImages.idleOf(set);
+        final head = FightSpriteImages.headOf(set);
+        if (image == null || head == null) return old;
+        return CustomPaint(
+          key: Key('head_sprite_$id'),
+          painter: _HeadPainter(image, head),
+        );
+      },
+    );
+  }
+}
+
+class _HeadPainter extends CustomPainter {
+  _HeadPainter(this.image, this.rect);
+
+  final ui.Image image;
+  final ui.Rect rect;
+
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawImageRect(
+      image,
+      rect,
+      Offset.zero & size,
+      Paint()
+        ..filterQuality = FilterQuality.none
+        ..isAntiAlias = false);
+
+  @override
+  bool shouldRepaint(_HeadPainter old) =>
+      old.image != image || old.rect != rect;
 }

@@ -1,0 +1,26 @@
+{
+ "date": "2026-11-11",
+ "chosen_by": "the user",
+ "seeds": {
+  "tower_boss10": 11,
+  "tower_boss20": 12,
+  "tower_boss30": 12,
+  "tower_ward5": 11,
+  "tower_ward15": 11,
+  "tower_ward25": 12,
+  "tower_win": 11,
+  "tower_lose": 12,
+  "fight_fields": 11,
+  "fight_ford": 12,
+  "fight_burnt": 12,
+  "fight_cliffs": 12,
+  "fight_terraces": 12,
+  "fight_reeds": 12,
+  "fight_hall": 11
+ },
+ "size": [
+  180,
+  320
+ ],
+ "format": "palette PNG8, 24 colours"
+}
