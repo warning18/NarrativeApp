@@ -8,9 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.924.0+960]
+## [1.926.0+962]
 
-- Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger.
+- Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger. The Tower keeps all six foes as they were, so the climb doesn't change.
+
+## [1.925.0+961]
+
+- Character choice and the life: the peoples and callings are Art's free-standing emblems (no plate behind them) on cards in the wood frame, the first tier of the frames (dark and parchment), and the page says what is still to be chosen ("Still to choose: a people and a calling") above the start button. The life's first screen reads better in the light theme. Pictures: `docs/ux-shots/life-redo-build/`.
 
 ## [1.923.0+959]
 
