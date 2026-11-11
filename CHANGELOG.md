@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.924.0+960]
+
+- Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger.
+
 ## [1.923.0+959]
 
 - Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won (blackened steel with a heavy gold band and corner plates). A wood or silver button has a flat plate under its label so the label reads; iron and gilt buttons wear the kit's steel face. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.

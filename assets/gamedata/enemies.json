@@ -410,7 +410,7 @@
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
-    "maxHealth": 30,
+    "maxHealth": 26,
     "damage": 4,
     "guile": 2,
     "faction": "dominion",
@@ -442,7 +442,7 @@
         "skillID": "brace",
         "condition": "Chance",
         "requiredElement": "None",
-        "chance": 25,
+        "chance": 55,
         "healthThreshold": 0,
         "priority": 1
       },
@@ -1212,9 +1212,9 @@
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
-    "maxHealth": 22,
-    "damage": 3,
-    "guile": 2,
+    "maxHealth": 36,
+    "damage": 5,
+    "guile": 3,
     "faction": "dominion",
     "reaction": "",
     "weakTo": [
@@ -1304,7 +1304,7 @@
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
-    "maxHealth": 24,
+    "maxHealth": 21,
     "damage": 3,
     "guile": 1,
     "faction": "dominion",
@@ -1832,7 +1832,7 @@
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
-    "maxHealth": 46,
+    "maxHealth": 49,
     "damage": 5,
     "guile": 9,
     "faction": "",
@@ -1938,9 +1938,9 @@
   },
   "void_hound": {
     "enemyName": "Void Hound",
-    "maxHealth": 27,
+    "maxHealth": 24,
     "damage": 3,
-    "guile": 4,
+    "guile": 2,
     "faction": "",
     "reaction": "counter",
     "weakTo": [
@@ -1974,7 +1974,7 @@
         "skillID": "pack_howl",
         "condition": "Chance",
         "requiredElement": "None",
-        "chance": 20,
+        "chance": 8,
         "healthThreshold": 0,
         "priority": 0
       }
@@ -3264,8 +3264,8 @@
   "drowned_pilgrim": {
     "enemyName": "Drowned Pilgrim",
     "enemyName_fr": "Pèlerin noyé",
-    "maxHealth": 33,
-    "damage": 4,
+    "maxHealth": 28,
+    "damage": 3,
     "guile": 5,
     "faction": "",
     "reaction": "",
