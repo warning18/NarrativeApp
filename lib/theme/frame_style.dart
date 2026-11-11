@@ -31,10 +31,22 @@ enum EnvDecor {
   coast,
   ash,
   city,
-  sacredVoid;
+  sacredVoid,
+
+  /// The Tower's three sets, by band: night (chains, wax), stone (cracks,
+  /// rubble), void (violet cracks).
+  towerNight,
+  towerStone,
+  towerVoid;
 
   /// The file prefix of the set in assets/ui/frames/env.
-  String get file => this == sacredVoid ? 'sacred_void' : name;
+  String get file => switch (this) {
+        sacredVoid => 'sacred_void',
+        towerNight => 'tower_night',
+        towerStone => 'tower_stone',
+        towerVoid => 'tower_void',
+        _ => name,
+      };
 }
 
 /// The pieces of the kit a [FrameBorder] can wear: the file, the art size
@@ -154,6 +166,13 @@ abstract final class FrameImages {
   static void preloadAll() {
     for (final m in FrameMaterial.values) {
       preload(m, EnvDecor.none);
+    }
+    for (final e in const [
+      EnvDecor.towerNight,
+      EnvDecor.towerStone,
+      EnvDecor.towerVoid,
+    ]) {
+      preload(FrameMaterial.wood, e);
     }
   }
 
