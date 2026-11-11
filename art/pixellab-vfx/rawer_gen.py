@@ -13,7 +13,8 @@ NCOL = 5
 
 def lum(c): return 0.3*c[...,0]+0.59*c[...,1]+0.11*c[...,2]
 
-def process(style):
+def process(style, ncol=None, speck=3, athr=110):
+    NCOL_ = ncol or NCOL
     src = Image.open(f'{R}/staged/vfx_{style}.png').convert('RGBA')
     n = src.width//48
     frames = [src.crop((i*48,0,i*48+48,48)) for i in range(n)]
@@ -26,16 +27,16 @@ def process(style):
         rgb = (a[...,:3]*w).sum(axis=(1,3))/w.sum(axis=(1,3))
         small.append((rgb, al))
     # palette: median cut on all opaque cells
-    px = np.concatenate([rgb[al>140] for rgb,al in small])
-    pal_im = Image.fromarray(px.astype(np.uint8).reshape(-1,1,3)).quantize(NCOL, method=Image.Quantize.MEDIANCUT)
-    p = np.array(pal_im.getpalette()[:NCOL*3]).reshape(NCOL,3)
+    px = np.concatenate([rgb[al>max(athr,140)] for rgb,al in small])
+    pal_im = Image.fromarray(px.astype(np.uint8).reshape(-1,1,3)).quantize(NCOL_, method=Image.Quantize.MEDIANCUT)
+    p = np.array(pal_im.getpalette()[:NCOL_*3]).reshape(NCOL_,3)
     p = p[np.argsort(lum(p))]
     out = Image.new('RGBA',(48*n,48),(0,0,0,0))
     for i,(rgb,al) in enumerate(small):
-        mask = al>110
+        mask = al>athr
         lab,k = ndimage.label(mask)
         for j in range(1,k+1):
-            if (lab==j).sum()<3: mask[lab==j]=False
+            if (lab==j).sum()<speck: mask[lab==j]=False
         d = ((rgb[:,:,None,:]-p[None,None])**2).sum(-1)
         idx = d.argmin(-1)
         g = np.zeros((24,24,4),np.uint8)
@@ -43,7 +44,9 @@ def process(style):
             for x in range(24):
                 if mask[y,x]: g[y,x]=(*p[idx[y,x]],255)
         # ink outline (4-neighbour) around the shape
-        ring = ndimage.binary_dilation(mask) & ~mask
+        lab2,k2 = ndimage.label(mask)
+        big_m = np.isin(lab2,[j for j in range(1,k2+1) if (lab2==j).sum()>=8])
+        ring = ndimage.binary_dilation(big_m) & ~mask
         g[ring]=(*INK,255)
         big = np.kron(g, np.ones((2,2,1),np.uint8))
         out.paste(Image.fromarray(big,'RGBA'),(i*48,0))
@@ -65,8 +68,9 @@ def png8(im):
 
 if __name__=='__main__':
     os.makedirs(f'{R}/staged-rawer',exist_ok=True); os.makedirs(f'{R}/gif-rawer',exist_ok=True)
+    OPT={'heal':dict(ncol=7,speck=1,athr=50)}
     for s in STYLES:
-        im = process(s)
+        im = process(s, **OPT.get(s,{}))
         png8(im).save(f'{R}/staged-rawer/vfx_{s}.png', optimize=True)
         fr=[]
         for i in range(im.width//48):
