@@ -31,10 +31,22 @@ enum EnvDecor {
   coast,
   ash,
   city,
-  sacredVoid;
+  sacredVoid,
+
+  /// The Tower's three sets, by band: night (chains, wax), stone (cracks,
+  /// rubble), void (violet cracks).
+  towerNight,
+  towerStone,
+  towerVoid;
 
   /// The file prefix of the set in assets/ui/frames/env.
-  String get file => this == sacredVoid ? 'sacred_void' : name;
+  String get file => switch (this) {
+        sacredVoid => 'sacred_void',
+        towerNight => 'tower_night',
+        towerStone => 'tower_stone',
+        towerVoid => 'tower_void',
+        _ => name,
+      };
 }
 
 /// The pieces of the kit a [FrameBorder] can wear: the file, the art size
@@ -71,12 +83,17 @@ class FrameStyle extends ThemeExtension<FrameStyle> {
     this.env = EnvDecor.none,
     this.compactScale = 1,
     this.largeScale = 2,
+    this.seed = 0,
   });
 
   final FrameMaterial material;
   final EnvDecor env;
   final double compactScale;
   final double largeScale;
+
+  /// Picks which slots the decorations stand in (the Tower's floor), so they
+  /// are stable for a floor and differ from one to the next.
+  final int seed;
 
   static FrameStyle of(BuildContext context) =>
       Theme.of(context).extension<FrameStyle>() ?? const FrameStyle();
@@ -87,12 +104,14 @@ class FrameStyle extends ThemeExtension<FrameStyle> {
     EnvDecor? env,
     double? compactScale,
     double? largeScale,
+    int? seed,
   }) =>
       FrameStyle(
         material: material ?? this.material,
         env: env ?? this.env,
         compactScale: compactScale ?? this.compactScale,
         largeScale: largeScale ?? this.largeScale,
+        seed: seed ?? this.seed,
       );
 
   @override
@@ -155,12 +174,45 @@ abstract final class FrameImages {
     for (final m in FrameMaterial.values) {
       preload(m, EnvDecor.none);
     }
+    for (final e in const [
+      EnvDecor.towerNight,
+      EnvDecor.towerStone,
+      EnvDecor.towerVoid,
+    ]) {
+      preload(FrameMaterial.wood, e);
+    }
   }
 
   static void reset() {
     _images.clear();
     _loading.clear();
   }
+}
+
+/// Which decorations a frame wears: the four corner pieces, a number of
+/// top-edge pieces hanging from the top (-1: the old fringe all along it) and
+/// a number of bottom-edge pieces rising from the bottom. A screen gives each
+/// panel its own share, so a few panels are decorated and the rest stay clean.
+@immutable
+class EnvParts {
+  const EnvParts({this.corners = false, this.top = 0, this.bottom = 0});
+
+  static const EnvParts none = EnvParts();
+  static const EnvParts fringe = EnvParts(corners: true, top: -1);
+
+  final bool corners;
+  final int top;
+  final int bottom;
+
+  @override
+  bool operator ==(Object other) =>
+      other is EnvParts &&
+      other.corners == corners &&
+      other.top == top &&
+      other.bottom == bottom;
+
+  @override
+  int get hashCode => Object.hash(corners, top, bottom);
 }
 
 /// A frame: the piece's 9-slice drawn around the box, corners as they are,
@@ -176,6 +228,7 @@ class FrameBorder extends OutlinedBorder {
     this.fillCenter = false,
     this.envPixel = 1,
     this.plate,
+    this.envParts = EnvParts.fringe,
   }) : super(side: BorderSide.none);
 
   final FramePiece piece;
@@ -195,6 +248,9 @@ class FrameBorder extends OutlinedBorder {
 
   /// Picks the decoration variants, so a panel never changes between frames.
   final int seed;
+
+  /// Which of the decorations this frame wears.
+  final EnvParts envParts;
 
   /// A flat colour laid on the middle of a button over the art, so its label
   /// reads on the grain of a wood button (no art is redrawn).
@@ -322,26 +378,61 @@ class FrameBorder extends OutlinedBorder {
     ui.Image? sprite(String part, int variant) =>
         FrameImages.image('env', '${env.file}_${part}_${variant % 3}');
 
-    // The top edge: 32 x 10 tiles side by side overlapping by 4 px, the
-    // variant cycling; kept clear of the corners (16 px each side).
+    // The span the top and bottom pieces may stand in, clear of the corners.
     final cornerW = 16 * k;
     final from = rect.left + cornerW;
     final to = rect.right - cornerW;
-    if (to - from > 24 * k) {
-      var i = 0;
-      for (var x = from; x < to - 0.01; x += 28 * k, i++) {
-        final img = sprite('top', _hash(i));
-        if (img == null) continue;
-        final w = (to - x).clamp(0.0, 32 * k);
-        canvas.drawImageRect(
-          img,
-          Rect.fromLTWH(0, 0, w / k, img.height.toDouble()),
-          Rect.fromLTWH(x, rect.top, w, img.height * k),
-          paint,
-        );
+
+    if (envParts.top == -1) {
+      // The fringe: 32 x 10 tiles side by side overlapping by 4 px.
+      if (to - from > 24 * k) {
+        var i = 0;
+        for (var x = from; x < to - 0.01; x += 28 * k, i++) {
+          final img = sprite('top', _hash(i));
+          if (img == null) continue;
+          final w = (to - x).clamp(0.0, 32 * k);
+          canvas.drawImageRect(
+            img,
+            Rect.fromLTWH(0, 0, w / k, img.height.toDouble()),
+            Rect.fromLTWH(x, rect.top, w, img.height * k),
+            paint,
+          );
+        }
       }
+    } else {
+      // A few whole pieces, in slots picked by the seed (so a panel never
+      // changes between frames): top ones hang from the top edge, bottom
+      // ones rise from the bottom edge.
+      void pieces(String part, int count, int salt, bool bottom) {
+        final slotW = 40 * k;
+        final slots = ((to - from) / slotW).floor();
+        if (count <= 0 || slots < 1) return;
+        final taken = <int>{};
+        for (var n = 0; n < count && taken.length < slots; n++) {
+          var slot = _hash(salt + n * 7) % slots;
+          while (taken.contains(slot)) {
+            slot = (slot + 1) % slots;
+          }
+          taken.add(slot);
+          final img = sprite(part, _hash(salt + 50 + n));
+          if (img == null) continue;
+          final x = from + slot * slotW + (slotW - 32 * k) / 2;
+          final h = img.height * k;
+          canvas.drawImageRect(
+            img,
+            Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+            Rect.fromLTWH(
+                x, bottom ? rect.bottom - h : rect.top, img.width * k, h),
+            paint,
+          );
+        }
+      }
+
+      pieces('top', envParts.top, 200, false);
+      pieces('bottom', envParts.bottom, 300, true);
     }
     // The corners: the top-left sprite, mirrored for the others.
+    if (!envParts.corners) return;
     for (var c = 0; c < 4; c++) {
       final img = sprite('corner', _hash(100 + c));
       if (img == null) continue;
@@ -368,6 +459,7 @@ class FrameBorder extends OutlinedBorder {
     int? seed,
     bool? fillCenter,
     Color? plate,
+    EnvParts? envParts,
   }) =>
       FrameBorder(
         piece: piece ?? this.piece,
@@ -378,6 +470,7 @@ class FrameBorder extends OutlinedBorder {
         fillCenter: fillCenter ?? this.fillCenter,
         envPixel: envPixel,
         plate: plate ?? this.plate,
+        envParts: envParts ?? this.envParts,
       );
 
   @override
@@ -389,9 +482,10 @@ class FrameBorder extends OutlinedBorder {
       other.pixel == pixel &&
       other.seed == seed &&
       other.fillCenter == fillCenter &&
-      other.plate == plate;
+      other.plate == plate &&
+      other.envParts == envParts;
 
   @override
-  int get hashCode =>
-      Object.hash(piece, material, env, pixel, seed, fillCenter, plate);
+  int get hashCode => Object.hash(
+      piece, material, env, pixel, seed, fillCenter, plate, envParts);
 }
