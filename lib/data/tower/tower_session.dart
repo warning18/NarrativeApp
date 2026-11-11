@@ -60,12 +60,15 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
     knownSpellIds: [for (final s in hero.knownSpells) s.id],
     trainingTaken: {...hero.trainingTaken},
     statPickOffer: towerStatPickOffer(run, data),
-    // Each clan sworn at Friend; the first (the main one) a point above, so
-    // it is the patron and its die the one that resonates (one main clan,
-    // the story's rule: the others' dice roll plain).
-    politics: PoliticsState(standings: {
-      for (final c in run.clanIds)
-        c: c == run.mainClanId ? towerClanStanding + 1 : towerClanStanding,
-    }),
+    politics: towerPoliticsOf(run),
   );
 }
+
+/// [run]'s standings: each clan sworn at Friend; the first (the main one) a
+/// point above, so it is the patron and its die the one that resonates
+/// (one main clan, the story's rule: the others' dice roll plain). The
+/// bot's fights read the same (tower_bot.dart).
+PoliticsState towerPoliticsOf(TowerRun run) => PoliticsState(standings: {
+      for (final c in run.clanIds)
+        c: c == run.mainClanId ? towerClanStanding + 1 : towerClanStanding,
+    });

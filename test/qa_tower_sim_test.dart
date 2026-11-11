@@ -27,7 +27,6 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 /// floor it reaches, how many reach floor 20, how many win floor 30.
 /// v1.848 (the user's calls on #834): the professions evened out, the median
 /// moved to 17 and the top with no unlocks to about 10%.
-const _medianFloor = (min: 13, max: 18);
 // v1.855 (the user's call): no clan at the start, the clans offer their
 // oaths on the way up (a die each, at once): floor 20 about 2 points more
 // often (34.4% to 36.8% over the 500 guard seeds), the top unchanged.
@@ -35,9 +34,21 @@ const _medianFloor = (min: 13, max: 18);
 // a boon of a skill, a die or a spell on 5, 10, 15, 20 and 25, no heal
 // cards): the median and the top hold, but more climbs end between 10 and
 // 20 (floor 20 at 24.6% over the 500 guard seeds).
-const _floor20 = (min: 0.20, max: 0.38);
-const _topNone = (min: 0.05, max: 0.12);
-const _topAll = (min: 0.15, max: 0.25);
+// Re-banded when the bot came to play the app's Tower fight (the user's
+// call on the Tower review, docs/proposals/tower-mechanics-review.md §1.9:
+// the clans' standings and the main die's Resonance, the floors' affixes
+// rolled and forced, the real Elite, no goal, a weak face rerolled within
+// the round's three rolls). No number of the Tower moved; the bot's batch
+// did. Seeds 1 to 2000, no unlocks: median 17 to 18, floor 20 36.2% to
+// 42.4%, the top 12.3% to 17.5% (the affixes and the Elite alone take it
+// to 7.2%, the rerolls give back more); every unlock: the top 22.6% to
+// 27.0%. On the 500 guard seeds: median 18, floor 20 45.2%, the top 21.0%,
+// and 24.6% with every unlock. The bands sit around those, as wide as
+// before.
+const _medianFloor = (min: 15, max: 21);
+const _floor20 = (min: 0.32, max: 0.52);
+const _topNone = (min: 0.12, max: 0.25);
+const _topAll = (min: 0.19, max: 0.33);
 
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;

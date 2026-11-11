@@ -2,10 +2,20 @@
 // (simulateSimFight), for the tests and QA's balance batch (phase 2). It
 // moves the run through the same functions the screens will
 // (towerAfterFight, towerPick), so what it measures is the Tower itself.
+// Its fights are set up as the app's Tower fight sets them (towerBotFight):
+// the clans' standings, the floor's affixes and Elite, a die rerolled as a
+// player would.
 
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 
+import '../../combat/clan_dice.dart';
+import '../../combat/combat_engine.dart' show isBossEnemy, isRandomDrawEnemy;
+import '../../combat/doctrine.dart';
+import '../../combat/enemy_affix.dart';
+import '../../combat/fight_numbers.dart';
+import '../factions.dart' show ClanData;
 import '../sim_combat.dart';
 import '../training.dart' show statPickForShares;
 import 'tower_floors.dart';
@@ -13,6 +23,7 @@ import 'tower_hero.dart';
 import 'tower_progress.dart';
 import 'tower_rewards.dart';
 import 'tower_run.dart';
+import 'tower_session.dart' show towerPoliticsOf;
 import 'tower_tables.dart';
 
 /// The Tower's tables read from assets/gamedata/ (for tests and tools; the
@@ -23,6 +34,92 @@ TowerData towerDataFromAssets([String dir = 'assets/gamedata']) =>
         name: jsonDecode(File('$dir/$name.json').readAsStringSync())
             as Map<String, dynamic>,
     });
+
+/// The clans' records read from assets/gamedata/factions.json (the
+/// standings of the clans not sworn start where the story's do).
+ClanData towerClanDataFromAssets([String dir = 'assets/gamedata']) =>
+    ClanData.fromTables(
+        factions: jsonDecode(File('$dir/factions.json').readAsStringSync())
+            as Map<String, dynamic>);
+
+final ClanData _assetClans = towerClanDataFromAssets();
+
+/// [floor] of [run] fought by [hero] on the headless fight, set up as the
+/// app's Tower fight sets it (tower_fight_launcher.dart, FightScreen with
+/// TowerFloor.modifiersFor, fight_setup.dart's _ensureEnemiesBuilt):
+/// - the clans' standings of the Tower's session (towerPoliticsOf), and
+///   the main clan's die resonating when it is the one in play;
+/// - the Elite: the floor's, else a lone ordinary foe's own roll on a
+///   floor that forces no affix ([eliteChance]);
+/// - the affixes rolled by rollEncounterAffixes under the foes' doctrine,
+///   the floor's forced ones in place of the first foe's;
+/// - no goal (a fight whose loss goes on, `lossContinues`, rolls none);
+/// - the hero rerolling a weak face, within the round's three rolls.
+/// Not played (the headless fight has none): the battlefield conditions
+/// the screen rolls, momentum, Quick Resolve.
+SimFightOutcome towerBotFight({
+  required TowerRun run,
+  required TowerFloor floor,
+  required SimCharacter hero,
+  required TowerData data,
+  required Random random,
+  ClanData? clans,
+}) {
+  final clanData = clans ?? _assetClans;
+  final politics = towerPoliticsOf(run);
+  final enemies = [
+    for (final id in floor.enemyIds)
+      MapEntry(id, data.enemies[id] as Map<String, dynamic>),
+  ];
+  final elite = enemies.length == 1 &&
+      (floor.elite ||
+          (isRandomDrawEnemy(enemies.first.key) &&
+              floor.affixes.isEmpty &&
+              random.nextDouble() < eliteChance));
+  final factions = [
+    for (final e in enemies) e.value['faction']?.toString() ?? '',
+  ];
+  final doctrine = doctrineForFight(
+      factions: factions,
+      isBoss: [for (final e in enemies) isBossEnemy(e.key, e.value)]);
+  final affixes = rollEncounterAffixes(
+    enemyIds: floor.enemyIds,
+    isElite: elite,
+    random: random,
+    tastes: [
+      for (final faction in factions)
+        if (doctrine != null && faction == doctrine.factionId)
+          doctrine.affixes
+        else
+          const <EnemyAffix>[],
+    ],
+  );
+  if (floor.affixes.isNotEmpty) affixes[0] = floor.affixes;
+  // A clan's die with its Resonance lit rolls its low faces one more
+  // (clan_dice.dart), for this fight.
+  final ownFaces = hero.diceFaces;
+  if (resonanceOf(data.dice[hero.diceId] as Map<String, dynamic>?,
+          politics: politics, data: clanData) ==
+      Resonance.lit) {
+    hero.diceFaces = resonantFaces(ownFaces);
+  }
+  final outcome = simulateSimFight(
+    character: hero,
+    enemies: enemies,
+    chapter: floor.chapter,
+    zoneMultiplier: floor.extraFor(run.professionId),
+    skills: data.skills,
+    items: data.items,
+    random: random,
+    clashOff: const {'goal'},
+    clanStanding: (id) => politics.standingOf(id, clanData),
+    affixes: affixes,
+    elite: elite,
+    rerollWeakFaces: true,
+  );
+  hero.diceFaces = ownFaces;
+  return outcome;
+}
 
 /// Plays one whole run of [seed] with the unlocks of [progress] (none by
 /// default, [towerAllUnlocked] for all) and returns it ended: won, or dead
@@ -57,17 +154,11 @@ TowerRun playTowerRun({
     final floor = floors[run.floor - 1];
     final hero = towerHeroOf(run, data);
     final maxHealth = hero.maxHealth;
-    final outcome = simulateSimFight(
-      character: hero,
-      enemies: [
-        for (final id in floor.enemyIds)
-          MapEntry(id, data.enemies[id] as Map<String, dynamic>),
-      ],
-      chapter: floor.chapter,
-      zoneMultiplier: floor.extraFor(run.professionId) *
-          (floor.elite ? towerSimEliteMultiplier : 1.0),
-      skills: data.skills,
-      items: data.items,
+    final outcome = towerBotFight(
+      run: run,
+      floor: floor,
+      hero: hero,
+      data: data,
       random: towerRandom(seed, floor.floor, TowerStream.fight),
     );
     run = towerAfterFight(run, data,

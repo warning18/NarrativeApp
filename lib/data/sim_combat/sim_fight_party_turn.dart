@@ -138,6 +138,7 @@ extension _SimFightPartyTurn on _SimFight {
     // (it hits each enemy once), then the die's.
     bestHit = ens.fold<int>(0, (best, e) => max(best, e.damageThisRound));
     advancePhases();
+    noteSkittishFlights();
     feedKills();
     if (allDead()) return finish(true);
     return null;
@@ -157,6 +158,18 @@ extension _SimFightPartyTurn on _SimFight {
     // (a cursed blank strikes; a silenced skill face of its own is blank).
     bool blank(DiceFaceResult f) =>
         _tamperedFace(f, cursedFaces, silenced).type == 'Empty';
+    // With [rerollWeakFaces], a face worth less to the hero than the die's
+    // mean is rolled again too (simFaceValue; the round's last roll kept).
+    final caster = c.knownSpells.isNotEmpty;
+    final mean = rerollWeakFaces
+        ? simDieValue(c.diceFaces, c.diceSkillAssignments, skills,
+            damage: c.baseDamage, caster: caster)
+        : 0.0;
+    bool weak(DiceFaceResult f) =>
+        rerollWeakFaces &&
+        simFaceValue(c.diceFaces, f.faceIndex, c.diceSkillAssignments, skills,
+                damage: c.baseDamage, caster: caster) <
+            mean;
     do {
       rolls++;
       if (trail != null) {
@@ -184,7 +197,7 @@ extension _SimFightPartyTurn on _SimFight {
           !blank(face) &&
           !faceStrikes(face.type);
       if (redraw) broadsideUsed = true;
-    } while ((blank(face) || redraw) && rolls < _maxRolls);
+    } while ((blank(face) || redraw || weak(face)) && rolls < _maxRolls);
     face = applyFaceAssignment(
       face,
       c.diceFaces[face.faceIndex],
@@ -378,15 +391,20 @@ extension _SimFightPartyTurn on _SimFight {
     }
     if (target != null && dealt > 0) {
       final pierce = piercing;
+      // An Armored foe shrugs off a point of an Attack face (not a Pierce).
+      final struck = pierce
+          ? dealt
+          : strikeDamageAfterAffixes(dealt, face.type,
+              armored: target.has(EnemyAffix.armored));
       final landed = clash
           ? target.landHit(
-              dealt,
+              struck,
               element,
               rounds,
               pierce: pierce,
               react: on('reaction'),
             )
-          : target.takeHit(dealt, element, pierce: pierce);
+          : target.takeHit(struck, element, pierce: pierce);
       if (landed > 0) crowsHits++;
       if (!clash) target.health = max(0, target.health - landed);
       if (pitched && target.isAlive) {
@@ -639,10 +657,14 @@ extension _SimFightPartyTurn on _SimFight {
       final target = on('squad') ? _focusTarget(ens) : firstLiving();
       if (target != null && dealt > 0) {
         final pierce = face.hasKeyword(FaceKeyword.pierce);
+        final struck = pierce
+            ? dealt
+            : strikeDamageAfterAffixes(dealt, face.type,
+                armored: target.has(EnemyAffix.armored));
         final landed = clash
-            ? target.landHit(dealt, element, rounds,
+            ? target.landHit(struck, element, rounds,
                 pierce: pierce, react: on('reaction'))
-            : target.takeHit(dealt, element, pierce: pierce);
+            : target.takeHit(struck, element, pierce: pierce);
         if (!clash) target.health = max(0, target.health - landed);
         a.damageDealt += landed;
         bestHit = max(bestHit, landed);

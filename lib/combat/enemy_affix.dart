@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'combat_engine.dart';
+import 'status_effect.dart';
 
 /// A one-word modifier an enemy can spawn with, changing how the fight
 /// plays without touching the enemy's own tuned record -- the same idea as
@@ -31,6 +32,11 @@ const double _affixChanceSolo = 0.20;
 
 /// Odds each member of a pack spawns with one affix, rolled independently.
 const double _affixChancePackMember = 0.15;
+
+/// The Poison a [EnemyAffix.venomous] enemy's plain attack carries (one
+/// with no status of its own).
+const StatusEffect venomousPoison = StatusEffect(
+    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
 
 /// Flat damage an [EnemyAffix.armored] enemy ignores from each Attack face
 /// (never below 1 damage dealt).

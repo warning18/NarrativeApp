@@ -326,10 +326,6 @@ const Set<String> towerExcludedEnemies = {
 /// has another.
 const int towerNoRepeatFloors = 3;
 
-/// The Elite's stat multiplier in the headless fight, which has no Elite of
-/// its own (the fight screen's `_eliteStatMultiplier`).
-const double towerSimEliteMultiplier = 1.35;
-
 /// What a reward card gives: a boon's skill, die or spell (v1.860), or
 /// [clanOath], a clan offering itself (v1.855, the user's call): sworn, the
 /// hero holds its standing and its die (see [towerOathChance]). The item,

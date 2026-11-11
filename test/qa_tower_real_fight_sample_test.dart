@@ -1,5 +1,5 @@
-// QA: how far the Tower bot's headless fight (simulateSimFight: no affixes,
-// no clan-die resonance, no specialisations) is from the real fight screen.
+// QA: how far the Tower bot's headless fight (towerBotFight on
+// simulateSimFight) is from the real fight screen.
 // Round 3, idea 7 (docs/proposals/qa-ideas-round-3.md). Only with
 // QA_REAL_SAMPLE=<out.json>; without it the file holds one empty test.
 //
@@ -18,13 +18,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:narrative_data_app/data/sim_combat.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_session.dart';
-import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -76,17 +74,11 @@ void main() {
       for (var t = 0; t < simTries; t++) {
         final hero = towerHeroOf(run, data)..currentHealth = 0;
         hero.currentHealth = hero.maxHealth;
-        final outcome = simulateSimFight(
-          character: hero,
-          enemies: [
-            for (final id in floor.enemyIds)
-              MapEntry(id, data.enemies[id] as Map<String, dynamic>),
-          ],
-          chapter: floor.chapter,
-          zoneMultiplier: floor.extraFor(run.professionId) *
-              (floor.elite ? towerSimEliteMultiplier : 1.0),
-          skills: data.skills,
-          items: data.items,
+        final outcome = towerBotFight(
+          run: run,
+          floor: floor,
+          hero: hero,
+          data: data,
           random: Random(1000 + t),
         );
         if (outcome.won) {

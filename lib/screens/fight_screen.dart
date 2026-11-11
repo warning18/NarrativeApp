@@ -154,18 +154,11 @@ const int _potionHealAmount = potionHealAmount;
 /// max health after a won fight — see [_FightScreenState._finishFight].
 const double _reviveHealthFraction = reviveHealthFraction;
 
-/// Odds a solo fight against an enemy not in [soloOnlyEnemyIds] is promoted
-/// to an Elite encounter — see [_FightScreenState._isElite]. Never rolled
-/// for a multi-enemy pack (see [_FightScreenState._ensureEnemiesBuilt]) —
-/// Elite and packs are two separate variance mechanics, deliberately never
-/// combined.
-const double _eliteChance = 0.12;
-
-/// An Elite's health/damage are both multiplied by this on top of the
-/// normal player-level scaling -- a real, noticeable step up, not a
-/// rounding error, without being so far past the enemy's own tuned
-/// baseline that it stops feeling like a harder version of the same fight.
-const double _eliteStatMultiplier = 1.35;
+/// Odds a solo fight is promoted to an Elite encounter, and an Elite's
+/// health/damage multiplier (fight_numbers.dart, which the simulator plays
+/// by too) -- see [_FightScreenState._isElite].
+const double _eliteChance = eliteChance;
+const double _eliteStatMultiplier = eliteStatMultiplier;
 
 /// An Elite's gold/XP reward on a win are multiplied by this -- the
 /// "worth the extra risk" payoff, alongside the guaranteed trophy drop
@@ -208,9 +201,8 @@ const Color _previewColor = Palette.blue61;
 /// Armor added to the player for one fight by a `charm_iron_skin`.
 const int _ironSkinArmorBonus = 1;
 
-/// The Poison a Venomous enemy's plain attack carries (see [EnemyAffix]).
-const StatusEffect _venomousPoison = StatusEffect(
-    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
+/// The Poison a Venomous enemy's plain attack carries (enemy_affix.dart).
+const StatusEffect _venomousPoison = venomousPoison;
 
 const int _maxRolls = maxRollsPerTurn;
 
