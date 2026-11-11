@@ -1,0 +1,2 @@
+# Locked and empty states (v1.907)
+`png/star.png` (16x16, gold, outlined: Mastery node, star rows, bounty board, district standing), `png/block.png` (16x16, closed mastery: red disc with a bar), `png/lock8.png` (8x8 with the ink ring: small lock for badges). `masks/slot_<head|body|weapon|legs|feet|bag>.png`: 16x16 white on transparent, for the empty equipment slots; UX tints them (ink or parchment at about 35% alpha, as on the sheet). Sheet: `docs/art/boards/locked-states.png`. Generator `locked_gen.py` (repo root). 0 generations. Not wired.
