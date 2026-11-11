@@ -25,6 +25,7 @@ import '../widgets/item_stats.dart';
 import 'dice_loadout_screen.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -536,8 +537,8 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                 ? ItemPixelIcon(
                     equippedId, equippedItem?['itemType']?.toString(),
                     size: IconSize.s32)
-                : Icon(inventorySlotIcon(slot),
-                    size: IconSize.s32, color: ink.ash),
+                : PixelGlyph(inventorySlotGlyph(slot),
+                    size: IconSize.s32, color: ink.ash, opacity: 0.7),
             worn: equippedItem?['itemName']?.toString(),
             lit: equippedId == null && candidates.isNotEmpty,
             tip: tr(ref, 'choose_item'),

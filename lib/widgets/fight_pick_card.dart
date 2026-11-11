@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'head_avatar.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 /// One companion who could fight.
 class FightPickOption {
@@ -65,7 +66,7 @@ class FightPickCard extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               leading: HeadAvatar(id: 'hero', name: heroName, size: 40),
               title: Text(heroName),
-              trailing: const Icon(Icons.lock_outline, size: IconSize.s16),
+              trailing: const PixelGlyph(PixelGlyphs.lock, size: IconSize.s16),
             ),
             for (final o in options)
               Builder(builder: (context) {

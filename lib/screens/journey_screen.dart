@@ -126,6 +126,7 @@ import '../theme/palette.dart';
 import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 export '../providers/home_tab_provider.dart' show journeyTabIndex;
 
@@ -4616,7 +4617,7 @@ class _JourneyChartState extends State<_JourneyChart>
                       child: Transform.rotate(
                         angle: shake,
                         child: step.locked
-                            ? Icon(Icons.lock_outline,
+                            ? PixelGlyph(PixelGlyphs.lock,
                                 size: IconSize.s16,
                                 color: isSelected ? palette.land : colour)
                             : AnimatedBuilder(

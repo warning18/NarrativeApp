@@ -25,6 +25,7 @@ import 'ink_sheet.dart';
 import 'ink_chip.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 /// The races, the professions, the skill trees and the clans, together: what
 /// the choice reads.
@@ -286,7 +287,7 @@ class ChoiceCard extends ConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Row(children: [
-                            Icon(Icons.lock_outline,
+                            PixelGlyph(PixelGlyphs.lock,
                                 size: IconSize.s16, color: ink.gold),
                             const SizedBox(width: 4),
                             Flexible(
