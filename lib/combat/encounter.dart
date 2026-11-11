@@ -61,6 +61,7 @@ class EncounterModifiers {
     this.forcedCondition,
     this.forcedAnomaly,
     this.forcedStage,
+    this.placeId,
     this.forceElite = false,
     this.keepWounds = false,
     this.tutorial = false,
@@ -129,6 +130,12 @@ class EncounterModifiers {
   final FieldAnomalyPlan? forcedAnomaly;
   final FightStage? forcedStage;
 
+  /// The place the fight happens in, when it is not where the story stands
+  /// (v1.921: an expedition's zone, a land crossing's arrival): a geography
+  /// id the fight's background may draw by. It changes no rule: the stage is
+  /// still [forcedStage] or the place's own (fight_ground_rule.dart).
+  final String? placeId;
+
   /// A lone enemy that is Elite for certain (a road event's champion, see
   /// road_events.dart), instead of rolling for it.
   final bool forceElite;
@@ -180,6 +187,7 @@ class EncounterModifiers {
       forcedCondition == null &&
       forcedAnomaly == null &&
       forcedStage == null &&
+      placeId == null &&
       !forceElite &&
       !keepWounds &&
       !tutorial &&
@@ -195,7 +203,8 @@ class EncounterModifiers {
           {int? chapter,
           double? difficultyMultiplier,
           bool? hostFight,
-          FightStage? forcedStage}) =>
+          FightStage? forcedStage,
+          String? placeId}) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,
@@ -212,6 +221,7 @@ class EncounterModifiers {
         forcedCondition: forcedCondition,
         forcedAnomaly: forcedAnomaly,
         forcedStage: forcedStage ?? this.forcedStage,
+        placeId: placeId ?? this.placeId,
         forceElite: forceElite,
         keepWounds: keepWounds,
         tutorial: tutorial,
@@ -287,6 +297,7 @@ class EncounterModifiers {
         forcedCondition: own.forcedCondition,
         forcedAnomaly: own.forcedAnomaly,
         forcedStage: own.forcedStage,
+        placeId: own.placeId,
         keepWounds: own.keepWounds,
         tutorial: own.tutorial,
         luckyDieReveal: own.luckyDieReveal,
@@ -346,6 +357,7 @@ class EncounterModifiers {
         forcedCondition: forcedCondition,
         forcedAnomaly: forcedAnomaly,
         forcedStage: forcedStage,
+        placeId: placeId,
         forceElite: forceElite ?? this.forceElite,
         keepWounds: keepWounds,
         tutorial: tutorial,
