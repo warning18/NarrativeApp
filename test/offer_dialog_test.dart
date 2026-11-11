@@ -76,7 +76,9 @@ Future<void> _shot(WidgetTester tester, String name) async {
 }
 
 Future<ProviderContainer> _open(WidgetTester tester,
-    {required bool french, Size size = const Size(360, 740)}) async {
+    {required bool french,
+    Size size = const Size(360, 740),
+    bool nested = false}) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -120,24 +122,37 @@ Future<ProviderContainer> _open(WidgetTester tester,
         politics: const PoliticsState(marks: {'inquisition': SubclanMark.foe}),
       )));
 
+  final home = Scaffold(
+    body: Consumer(
+      builder: (context, ref, _) => ListView(
+        children: [
+          ElevatedButton(
+            key: const Key('open'),
+            onPressed: () => showOfferIfWaiting(context, ref),
+            child: const Text('Open'),
+          ),
+        ],
+      ),
+    ),
+  );
+  // [nested]: the hero with the offer is held by a scope below the app's
+  // (as the Tower's detached session is); the app's own hero has none.
+  final root = nested
+      ? ProviderContainer(overrides: [
+          playerSessionProvider.overrideWith((ref) =>
+              PlayerSessionNotifier.detached(
+                  PlayerSession.fromJson(baseSession().toJson()))),
+        ])
+      : container;
+  if (nested) addTearDown(root.dispose);
   await tester.pumpWidget(UncontrolledProviderScope(
-    container: container,
+    container: root,
     child: MaterialApp(
       theme: buildAppTheme(const ColorScheme.dark()),
       builder: (context, child) => RepaintBoundary(key: _shotKey, child: child),
-      home: Scaffold(
-        body: Consumer(
-          builder: (context, ref, _) => ListView(
-            children: [
-              ElevatedButton(
-                key: const Key('open'),
-                onPressed: () => showOfferIfWaiting(context, ref),
-                child: const Text('Open'),
-              ),
-            ],
-          ),
-        ),
-      ),
+      home: nested
+          ? UncontrolledProviderScope(container: container, child: home)
+          : home,
     ),
   ));
   await tester.tap(find.byKey(const Key('open')));
@@ -177,6 +192,15 @@ void main() {
     expect(find.byKey(const Key('offer_drawing')), findsOneWidget);
     expect(find.byKey(const Key('offer_title')), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the dialog reads the hero that drew the offer, not the root',
+      (tester) async {
+    // v1.910 (QA's Tower run): opened on the root navigator, the dialog read
+    // the app's session, which had no offer, and its spinner waited for ever.
+    await _open(tester, french: false, nested: true);
+    expect(find.byKey(const Key('offer_title')), findsOneWidget);
+    expect(find.byKey(const Key('offer_drawing')), findsNothing);
   });
 
   testWidgets(

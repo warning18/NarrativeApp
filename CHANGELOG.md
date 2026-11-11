@@ -12,6 +12,12 @@ isn't reconstructable from git history alone.
 
 - Fight: the fighters stand on the board. The hero and the allies on the left (facing east), the foes on the right (facing west), along the top edge of the dice stage, drawn from the same sprites as the Journey scenes (`lib/widgets/fight_figures.dart`); 62, 54 and 46 px tall at 412, 360 and 320 px wide, scaled together when six stand there. They take no touch and the dice are drawn over them; a fighter with no sprite is left out (its card stays). Pictures in `docs/ux-shots/fighters/`; the enemy cards' portraits from the sprites follow.
 
+## [1.910.0+946]
+
+- Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
+- Tower: winning a warden or boss floor (5, 10, 15…) no longer leaves the fight stuck under an endless loading dialog with "Victory! Return" disabled. A Tower fight no longer queues the story's clan offer (the Tower has its own oath cards), and the clans' offer dialog now reads the hero that drew the offer, so it can never wait on a session that has none. Found by QA in a real playthrough.
+- Tower: beating a hunter no longer asks the story's "spare or finish" question; in the Tower a hunter falls like any foe (QA #956).
+
 ## [1.908.0+944]
 
 - Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
