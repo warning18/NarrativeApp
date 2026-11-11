@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/widgets/pixel_glyph.dart';
 import 'package:narrative_data_app/combat/battlefield_condition.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
@@ -106,7 +107,10 @@ void main() {
     await settle(tester);
     final kept = find.byKey(const ValueKey('kept_die_player'));
     expect(kept, findsOneWidget);
-    expect(find.byIcon(Icons.lock), findsWidgets);
+    expect(
+        find.byWidgetPredicate(
+            (w) => w is PixelGlyph && w.glyph == PixelGlyphs.lock),
+        findsWidgets);
     // A tap on it says why it stays; it does not come back.
     await tester.tap(kept);
     await settle(tester);

@@ -126,6 +126,7 @@ import '../theme/palette.dart';
 import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';

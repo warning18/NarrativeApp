@@ -11,6 +11,7 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import 'reward_card.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 /// The accent of a quest's chapter (the card's header colour); chapter art
 /// takes this over when it exists.
@@ -152,7 +153,8 @@ RewardCardData questRewardCard(
       if (xp > 0)
         RewardLine(
           key: const Key('reward_xp'),
-          icon: Icon(Icons.star, size: IconSize.s32, color: ink.tide),
+          icon:
+              PixelGlyph(PixelGlyphs.star, size: IconSize.s32, color: ink.tide),
           accent: ink.tide,
           title: trFor(lang, 'reward_xp'),
           bar: leveledUp ? 1 : (xpNeeded <= 0 ? 0 : xpAfter / xpNeeded),

@@ -41,6 +41,7 @@ import 'story_player_screen.dart';
 import 'full_map_screen.dart';
 import 'world_map_screen.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 /// The game under the main menu. In play: Story, Journey (the story on a
 /// map, its ways on as steps to pick), Character, Camp and Other (quests,
@@ -511,7 +512,7 @@ class _CampTab extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.lock_outline,
+            PixelGlyph(PixelGlyphs.lock,
                 size: IconSize.s48, color: theme.colorScheme.onSurfaceVariant),
             const SizedBox(height: 12),
             Text(tr(ref, 'camp_title'), style: theme.textTheme.titleLarge),

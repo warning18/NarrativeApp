@@ -48,6 +48,7 @@ import 'port_screen.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/pixel_glyph.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -630,7 +631,7 @@ class _QuestList extends ConsumerWidget {
         if (isCompleted) {
           trailing = const Icon(Icons.check_circle, color: Palette.good);
         } else if (!isDiscovered) {
-          trailing = const Icon(Icons.lock_outline);
+          trailing = const PixelGlyph(PixelGlyphs.lock);
         } else if (isActive) {
           trailing = ElevatedButton(
             onPressed: !objectivesMet
@@ -1062,7 +1063,7 @@ class _LockedPlacesLine extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.lock_outline, size: IconSize.s16, color: muted),
+          PixelGlyph(PixelGlyphs.lock, size: IconSize.s16, color: muted),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

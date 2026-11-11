@@ -24,6 +24,7 @@ import '../tutorial/tutorial_launcher.dart';
 import '../tutorial/tutorial_topics.dart';
 import 'ink_sheet.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 
 export '../data/feature_unlocks.dart' show GameFeature, GameFeatureInfo;
 export '../providers/feature_unlocks_provider.dart' show isFeatureUnlocked;
@@ -104,7 +105,7 @@ Future<void> _showFeatureLocked(
         child: Row(
           key: const Key('feature_locked_sheet'),
           children: [
-            Icon(Icons.lock_outline, color: ink.ash),
+            PixelGlyph(PixelGlyphs.lock, color: ink.ash),
             const SizedBox(width: 12),
             Icon(info.icon, color: ink.ash),
             const SizedBox(width: 12),
@@ -161,7 +162,8 @@ class FeatureLockedTile extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleSmall),
                 ),
-                Icon(Icons.lock_outline, size: IconSize.s16, color: ink.ash),
+                PixelGlyph(PixelGlyphs.lock,
+                    size: IconSize.s16, color: ink.ash),
               ],
             ),
           ),

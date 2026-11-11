@@ -1,0 +1,119 @@
+{
+ "tower_night": {
+  "top": {
+   "files": [
+    "tower_night_top_0.png",
+    "tower_night_top_1.png",
+    "tower_night_top_2.png"
+   ],
+   "size": [
+    32,
+    10
+   ],
+   "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
+  },
+  "bottom": {
+   "files": [
+    "tower_night_bottom_0.png",
+    "tower_night_bottom_1.png",
+    "tower_night_bottom_2.png"
+   ],
+   "size": [
+    32,
+    8
+   ],
+   "anchor": "bottom edge (rises)"
+  },
+  "corner": {
+   "files": [
+    "tower_night_corner_0.png",
+    "tower_night_corner_1.png",
+    "tower_night_corner_2.png"
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "anchor": "top-left outer corner; mirror for the others; thin L, transparent elsewhere"
+  },
+  "tower_band": "night floors"
+ },
+ "tower_stone": {
+  "top": {
+   "files": [
+    "tower_stone_top_0.png",
+    "tower_stone_top_1.png",
+    "tower_stone_top_2.png"
+   ],
+   "size": [
+    32,
+    10
+   ],
+   "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
+  },
+  "bottom": {
+   "files": [
+    "tower_stone_bottom_0.png",
+    "tower_stone_bottom_1.png",
+    "tower_stone_bottom_2.png"
+   ],
+   "size": [
+    32,
+    8
+   ],
+   "anchor": "bottom edge (rises)"
+  },
+  "corner": {
+   "files": [
+    "tower_stone_corner_0.png",
+    "tower_stone_corner_1.png",
+    "tower_stone_corner_2.png"
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "anchor": "top-left outer corner; mirror for the others; thin L, transparent elsewhere"
+  },
+  "tower_band": "stone floors"
+ },
+ "tower_void": {
+  "top": {
+   "files": [
+    "tower_void_top_0.png",
+    "tower_void_top_1.png",
+    "tower_void_top_2.png"
+   ],
+   "size": [
+    32,
+    10
+   ],
+   "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
+  },
+  "bottom": {
+   "files": [
+    "tower_void_bottom_0.png",
+    "tower_void_bottom_1.png",
+    "tower_void_bottom_2.png"
+   ],
+   "size": [
+    32,
+    8
+   ],
+   "anchor": "bottom edge (rises)"
+  },
+  "corner": {
+   "files": [
+    "tower_void_corner_0.png",
+    "tower_void_corner_1.png",
+    "tower_void_corner_2.png"
+   ],
+   "size": [
+    16,
+    16
+   ],
+   "anchor": "top-left outer corner; mirror for the others; thin L, transparent elsewhere"
+  },
+  "tower_band": "void floors"
+ }
+}

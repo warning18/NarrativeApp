@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.916.0+952]
+
+- Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
+- Tower: the three Tower dice are reworked for the Tower only (the story's shop dice are unchanged): Flame leans on skills, Tide on bigger heals and a guard, Tearglass on bigger values with fewer flat faces. Each now fights within 3 points of the starter die (tearglass on floor 30: 46% → 94%).
+
+## [1.912.0+948]
+
+- Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
+
 ## [1.911.0+947]
 
 - Fight: the fighters stand on the board. The hero and the allies on the left (facing east), the foes on the right (facing west), along the top edge of the dice stage, drawn from the same sprites as the Journey scenes (`lib/widgets/fight_figures.dart`); 62, 54 and 46 px tall at 412, 360 and 320 px wide, scaled together when six stand there. They take no touch and the dice are drawn over them; a fighter with no sprite is left out (its card stays). Pictures in `docs/ux-shots/fighters/`; the enemy cards' portraits from the sprites follow.

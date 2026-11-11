@@ -1,0 +1,15 @@
+{
+ "tiers": [
+  "wood",
+  "iron",
+  "silver",
+  "gilt"
+ ],
+ "note": "same file names, sizes and 9-slice margins as art/pixellab-iron-kit/anchors.json; env decorations (art/pixellab-iron-kit/env/) are separate and sit on every tier",
+ "order": [
+  "wood",
+  "iron",
+  "silver",
+  "gilt"
+ ]
+}

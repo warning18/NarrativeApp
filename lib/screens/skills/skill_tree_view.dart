@@ -21,6 +21,7 @@ import '../../widgets/pixel_banner.dart';
 import 'skill_sheet.dart';
 import 'skills_view_model.dart';
 import '../../theme/icon_sizes.dart';
+import '../../widgets/pixel_glyph.dart';
 
 class SkillTreeView extends ConsumerWidget {
   const SkillTreeView({super.key, required this.model});
@@ -282,15 +283,17 @@ class SkillNode extends ConsumerWidget {
                   right: -3,
                   bottom: -3,
                   child: Container(
-                    width: 17,
-                    height: 17,
+                    width: 20,
+                    height: 20,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: theme.scaffoldBackgroundColor,
                     ),
-                    child: Icon(locked ? Icons.lock : kind.icon,
-                        size: IconSize.inline,
-                        color: locked ? ink.ash : kind.color),
+                    child: locked
+                        ? const PixelGlyph(PixelGlyphs.lock8,
+                            size: IconSize.s16)
+                        : Icon(kind.icon,
+                            size: IconSize.inline, color: kind.color),
                   ),
                 ),
               ],
@@ -422,9 +425,10 @@ class _MasteryNode extends ConsumerWidget {
                   color: isMastered ? ink.gold.withValues(alpha: 0.2) : null,
                   border: Border.all(color: colour, width: 2),
                 ),
-                child: Icon(closed ? Icons.block : Icons.star,
+                child: PixelGlyph(closed ? PixelGlyphs.block : PixelGlyphs.star,
                     color: isMastered || ready ? ink.gold : ink.ash,
-                    size: IconSize.s16),
+                    opacity: isMastered || ready ? 1 : 0.55,
+                    size: IconSize.s32),
               ),
               const SizedBox(height: 3),
               // "Mastery" over its cost, shrunk to the column when French

@@ -16,6 +16,7 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import 'pixel_glyph.dart';
 import '../theme/pixel_chip.dart';
 
 /// The inventory's tabs, in the order they are drawn.
@@ -86,6 +87,18 @@ IconData inventorySlotIcon(String slot) => switch (slot) {
       'Bottom' => Icons.airline_seat_legroom_normal,
       'Foot' => Icons.hiking,
       _ => Icons.inventory_2_outlined,
+    };
+
+/// The pixel glyph of an equipment slot (its silhouette when the slot is
+/// empty, and the mark on a row's line); the Material one shows until Art's
+/// file is in the bundle (see pixel_glyph.dart).
+PixelGlyphs inventorySlotGlyph(String slot) => switch (slot) {
+      'Head' => PixelGlyphs.slotHead,
+      'Top' => PixelGlyphs.slotBody,
+      'Weapon' => PixelGlyphs.slotWeapon,
+      'Bottom' => PixelGlyphs.slotLegs,
+      'Foot' => PixelGlyphs.slotFeet,
+      _ => PixelGlyphs.slotBag,
     };
 
 /// The slot's name for the player ("Body" for Top).
@@ -467,7 +480,7 @@ class InventoryRow extends StatelessWidget {
                     const SizedBox(height: 2),
                     Row(children: [
                       if (slot != null && slot!.isNotEmpty) ...[
-                        Icon(inventorySlotIcon(slot!),
+                        PixelGlyph(inventorySlotGlyph(slot!),
                             size: IconSize.s16, color: ink.ash),
                         const SizedBox(width: 3),
                       ],
@@ -496,7 +509,7 @@ class InventoryRow extends StatelessWidget {
               if (locked)
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Icon(Icons.lock_outline, color: ink.ash),
+                  child: PixelGlyph(PixelGlyphs.lock, color: ink.ash),
                 )
               else if (actionLabel != null && onAction != null)
                 Padding(
@@ -730,7 +743,7 @@ class InventoryDieRow extends StatelessWidget {
               if (inHand)
                 Icon(Icons.chevron_right, color: ink.ash)
               else if (locked)
-                Icon(Icons.lock_outline, color: ink.ash)
+                PixelGlyph(PixelGlyphs.lock, color: ink.ash)
               else if (onEquip != null)
                 FilledButton(
                   key: Key('inv_equip_die_$dieId'),
