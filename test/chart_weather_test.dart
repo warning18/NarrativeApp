@@ -228,6 +228,15 @@ void main() {
 
     // The sky over the party, named in a chip on the place map.
     expect(container.read(skyHereProvider), isNotNull);
+    // The sky is read on the sphere's world, the one the map shows,
+    // whatever shape Edit Mode's world page has picked.
+    final sky = container.read(skyHereProvider)!;
+    final story = chartOf(MapShape.story);
+    expect([for (final l in worldMapLandmarks) story.of(l)], contains(sky.at));
+    await tester.runAsync(
+        () => container.read(mapShapeProvider.notifier).choose(MapShape.delta));
+    await tester.pump();
+    expect(container.read(skyHereProvider)!.at, sky.at);
     final chip = find.byKey(const ValueKey('journey_weather_chip'));
     expect(chip, findsOneWidget);
     final text = tester.widget<Text>(chip).data!;

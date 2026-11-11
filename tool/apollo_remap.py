@@ -10,7 +10,8 @@ MUTED="""A6884A 906C30 825337 83473D 66352E 562923 612638 46332C 323230 3E4055 3
 E3DDD1 BDBBAE AF9E94 907C75 A29F7E 969372 78735D 696353 4F493B 212528 595C55 4B4E4F 57562A 675F30 727234 73804B 5F7B53 3B6D62 32534A""".split()
 ACCENTS=['F2C14E','FFF6E0','A987EA']          # hot yellow, near white, one violet (kept from today's art)
 def mk(hs): return np.array([[int(h[i:i+2],16) for i in (0,2,4)] for h in hs],float)
-PALETTES={'apollo':mk(HEX),'muted':mk(MUTED),'muted+accents':mk(MUTED+ACCENTS)}
+CORES=['F2C14E','FFF6E0']             # hot yellow + near white, kept for the hot cores of skills
+PALETTES={'apollo+cores':mk(HEX+CORES),'apollo':mk(HEX),'muted':mk(MUTED),'muted+accents':mk(MUTED+ACCENTS)}
 PAL=PALETTES['apollo']
 def _dist(px,PAL=None):
     PAL=PALETTES['apollo'] if PAL is None else PAL                      # redmean-weighted distance (closer to how colours look than plain RGB)

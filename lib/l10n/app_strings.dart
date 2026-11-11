@@ -380,14 +380,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Revenir à la compagnie',
   },
   'journey_calques': {AppLanguage.en: 'Layers', AppLanguage.fr: 'Calques'},
-  'journey_globe': {
-    AppLanguage.en: 'The world as a sphere',
-    AppLanguage.fr: 'Le monde en sphère',
-  },
-  'journey_globe_sub': {
-    AppLanguage.en: 'turn it with a drag, pinch to come close',
-    AppLanguage.fr: 'tournez-la en glissant, pincez pour approcher',
-  },
   'journey_calques_hint': {
     AppLanguage.en:
         'One layer at a time keeps the map readable; the choice is kept.',
@@ -1880,14 +1872,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'world_map_look_shroud': {
     AppLanguage.en: 'Shroud',
     AppLanguage.fr: 'Linceul',
-  },
-  'world_map_pole_north': {
-    AppLanguage.en: 'North pole',
-    AppLanguage.fr: 'Pôle Nord',
-  },
-  'world_map_pole_south': {
-    AppLanguage.en: 'South pole',
-    AppLanguage.fr: 'Pôle Sud',
   },
   'world_map_zoom_in': {AppLanguage.en: 'Zoom in', AppLanguage.fr: 'Zoomer'},
   'world_map_zoom_out': {

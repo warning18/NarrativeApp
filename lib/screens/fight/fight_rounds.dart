@@ -723,6 +723,7 @@ extension _FightRounds on _FightScreenState {
     final newEntries = <_LogEntry>[];
     var playerDied = false;
     _roundsStarted++;
+    widget.onRound?.call(_roundsStarted);
     // A Silence laid in the enemies' turn hangs over this round's dice; the
     // round's best hit (what a Mirror sends back) starts over.
     _silenced = _silencePending;

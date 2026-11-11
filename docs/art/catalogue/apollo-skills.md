@@ -1,0 +1,1 @@
+# Apollo skills staging (0 generations): `art/pixellab-apollo-skills/` (157 icons, 6 effect strips), brief `docs/art/apollo-skills-brief.md`; muted UI preview `docs/art/boards/ui-muted-palette-preview.png` (Tower floor, a fight, character choice: today | muted palette, same remap tool; the interface changes little, the painted backgrounds change most).
