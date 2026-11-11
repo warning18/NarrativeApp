@@ -1,0 +1,223 @@
+// The Tower's screens on real data (UX_SHOTS=<folder>): the menu entry, the
+// start screen (as it opens and with a pick), the marks and the end of a run
+// (a death and a win), at 360 px in French and 412 px in English. Drawn only
+// with UX_SHOTS.
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:narrative_data_app/data/tower/tower_progress.dart';
+import 'package:narrative_data_app/data/tower/tower_rewards.dart';
+import 'package:narrative_data_app/data/tower/tower_run.dart';
+import 'package:narrative_data_app/data/tower/tower_tables.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/screens/main_menu_screen.dart';
+import 'package:narrative_data_app/screens/level_up_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_end_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_event_card.dart';
+import 'package:narrative_data_app/data/tower/tower_run.dart';
+import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_providers.dart';
+import 'dart:convert';
+import 'package:narrative_data_app/screens/tower/tower_marks_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_start_screen.dart';
+import 'package:narrative_data_app/providers/palette_provider.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'support/pump.dart';
+
+Future<void> _loadFonts() async {
+  for (final (family, files) in [
+    (
+      InkFonts.system,
+      ['PixelifySans-Regular.ttf', 'PixelifySans-SemiBold.ttf']
+    ),
+    (
+      InkFonts.prose,
+      ['Spectral-Regular.ttf', 'Spectral-Medium.ttf', 'Spectral-Italic.ttf']
+    ),
+    (InkFonts.display, ['IMFellEnglishSC-Regular.ttf']),
+  ]) {
+    final loader = FontLoader(family);
+    for (final file in files) {
+      loader.addFont(Future.value(
+          ByteData.sublistView(File('assets/fonts/$file').readAsBytesSync())));
+    }
+    await loader.load();
+  }
+  final icons = File('/root/fl/sdk/bin/cache/artifacts/material_fonts/'
+      'MaterialIcons-Regular.otf');
+  if (icons.existsSync()) {
+    final loader = FontLoader('MaterialIcons')
+      ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
+    await loader.load();
+  }
+}
+
+void main() {
+  final shots = Platform.environment['UX_SHOTS'];
+  testWidgets('the Tower screens', (tester) async {
+    await tester.runAsync(_loadFonts);
+    final key = GlobalKey();
+    Future<void> shot(String name) async {
+      final b =
+          key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      late Uint8List bytes;
+      await tester.runAsync(() async {
+        final image = await b.toImage(pixelRatio: 2);
+        bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!
+            .buffer
+            .asUint8List();
+      });
+      File('$shots/$name.png').writeAsBytesSync(bytes);
+    }
+
+    Future<void> settle() async {
+      for (var i = 0; i < 12; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    const run = TowerRun(
+      seed: 1,
+      raceId: 'human',
+      professionId: 'warrior',
+      floor: 17,
+      health: 0,
+      status: TowerStatus.dead,
+    );
+    for (final (lang, width, tag) in [
+      (AppLanguage.en, 412.0, 'en412'),
+    ]) {
+      Future<void> open(Widget screen,
+          {Map<String, Object> prefs = const {}}) async {
+        SharedPreferences.setMockInitialValues(
+            {'app_language': lang.name, ...prefs});
+        usePhone(tester, Size(width, 780));
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        await container.read(appLanguageProvider.notifier).setLanguage(lang);
+        await tester.pumpWidget(UncontrolledProviderScope(
+          container: container,
+          child: RepaintBoundary(
+            key: key,
+            child: MaterialApp(
+                key: UniqueKey(), // a screen pushed before is dropped
+                theme: buildAppTheme(container
+                    .read(appPaletteProvider)
+                    .schemeFor(Brightness.light)),
+                home: screen),
+          ),
+        ));
+        await settle();
+      }
+
+      Map<String, Object> saved(TowerRun r) =>
+          {'tower_run_v1': jsonEncode(r.toJson())};
+      Future<void> settleLong() async {
+        for (var i = 0; i < 40; i++) {
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 20)));
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      // A floor that gained a level opens the Level Up first: drawn once,
+      // then closed so the cards behind it show.
+      var levelShot = false;
+      Future<void> pastLevelUp() async {
+        final screen = find.byType(LevelUpScreen);
+        if (screen.evaluate().isEmpty) return;
+        if (!levelShot) {
+          levelShot = true;
+          await tester.pump(const Duration(milliseconds: 600));
+          await shot('12-levelup-$tag');
+        }
+        Navigator.of(tester.element(screen)).pop();
+        await settleLong();
+      }
+
+      // The spoils sheet of a won floor, drawn then taken: the boon or
+      // oath comes after it.
+      Future<void> spoils(String? name) async {
+        final take = find.byKey(const Key('loot_sheet_take'));
+        if (take.evaluate().isEmpty) return;
+        await tester.pump(const Duration(milliseconds: 600));
+        if (name != null) await shot(name);
+        await tester.tap(take);
+        await settleLong();
+      }
+
+      final mid =
+          run.copyWith(floor: 7, health: 28, status: TowerStatus.climbing);
+      Future<void> floor(String name, int f, TowerEventMock? ev) async {
+        towerEventMock = ev;
+        await open(const TowerFloorScreen(),
+            prefs: saved(mid.copyWith(floor: f, health: 28)));
+        await settleLong();
+        await shot(name);
+      }
+
+      // The setback on the cards screen of floor 14.
+      towerEventMock = const TowerEventMock(kind: MockEventKind.test, floor: 7, fallTo: 5);
+      await open(const TowerFloorScreen(), prefs: saved(mid));
+      await settleLong();
+      final data = await tester.runAsync(() => ProviderScope.containerOf(
+              tester.element(find.byType(TowerFloorScreen)))
+          .read(towerDataProvider.future));
+      final won = towerAfterFight(mid, data!,
+          won: true, healthLeft: 22);
+      await open(const TowerFloorScreen(), prefs: saved(won));
+      await settleLong();
+      final lvl = find.byType(LevelUpScreen);
+      if (lvl.evaluate().isNotEmpty) {
+        Navigator.of(tester.element(lvl)).pop();
+        await settleLong();
+      }
+      final take = find.byKey(const Key('loot_sheet_take'));
+      if (take.evaluate().isNotEmpty) {
+        await tester.pump(const Duration(milliseconds: 600));
+        await tester.tap(take);
+        await settleLong();
+      }
+      await shot('ev-1-setback');
+      await floor(
+          'ev-2-rival',
+          16,
+          const TowerEventMock(
+              kind: MockEventKind.rival, floor: 16, landsOn: 18, rounds: 3));
+      await floor(
+          'ev-3-shortcut',
+          12,
+          const TowerEventMock(
+              kind: MockEventKind.shortcut, floor: 12, landsOn: 14, skip: 2));
+      await floor(
+          'ev-4-fell',
+          12,
+          const TowerEventMock(
+              revisit: true,
+              result: MockResult(
+                  kind: MockEventKind.test,
+                  passed: false,
+                  from: 14,
+                  to: 12,
+                  roll: 6,
+                  total: 9,
+                  dc: 12)));
+      await floor(
+          'ev-5-skipped',
+          18,
+          const TowerEventMock(
+              result: MockResult(
+                  kind: MockEventKind.rival, passed: true, from: 16, to: 18)));
+      towerEventMock = null;
+    }
+  }, skip: shots == null);
+}

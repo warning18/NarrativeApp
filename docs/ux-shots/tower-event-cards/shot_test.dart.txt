@@ -190,9 +190,9 @@ void main() {
       await shot('ev-1-setback');
       await floor(
           'ev-2-rival',
-          15,
+          16,
           const TowerEventMock(
-              kind: MockEventKind.rival, floor: 15, landsOn: 17, rounds: 3));
+              kind: MockEventKind.rival, floor: 16, landsOn: 18, rounds: 3));
       await floor(
           'ev-3-shortcut',
           12,
@@ -213,10 +213,10 @@ void main() {
                   dc: 12)));
       await floor(
           'ev-5-skipped',
-          17,
+          18,
           const TowerEventMock(
               result: MockResult(
-                  kind: MockEventKind.rival, passed: true, from: 15, to: 17)));
+                  kind: MockEventKind.rival, passed: true, from: 16, to: 18)));
       towerEventMock = null;
     }
   }, skip: shots == null);
