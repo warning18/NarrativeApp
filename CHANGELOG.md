@@ -13,6 +13,14 @@ isn't reconstructable from git history alone.
 - Tower: a die you gain (an oath, a die card, a start unlock) now goes to your bag; the hero keeps rolling the die in play until you choose. A new run starts on your calling's own die, and a run saved before this keeps the old automatic choice. The choice is saved per run, with a "new" mark until a die is looked at; UX-2's "Your dice" panel on the floor screen uses it.
 - Tower: the three Tower dice are reworked for the Tower only (the story's shop dice are unchanged): Flame leans on skills, Tide on bigger heals and a guard, Tearglass on bigger values with fewer flat faces. Each now fights within 3 points of the starter die (tearglass on floor 30: 46% → 94%).
 
+## [1.914.0+950]
+
+- Tower: a floor with the same foe twice (two Harbour Rats on floor 6, two Street Bandits on floor 7, and many later floors) now starts its fight. "Fight" did nothing there and the climb could go no further. Found by QA in a real-fight rerun.
+
+## [1.913.0+949]
+
+- Effects: Art's strips are in. The eight die landings (strike, ward, bloom, arcs, miasma, shock, drain, fizzle) and the three hits (slash, heavy, crit) replace the old strips in their slots, and the six skill effects (flame, frost, lightning, heal, void rift, shield; 9 frames) replace theirs; the other 23 skill styles keep theirs. Art's strips are drawn in five colours and an ink, so the element tint now ranks the colours by brightness into the four tones (the old strips map one to one as before); the flame and the heal shrink and fade out in their last third, in code. The floating damage numbers now use the app's pixel font: with no font family they drew as a solid pale or red block where the platform font was not loaded (QA's pale rectangle by the cards). Pictures and GIFs of a real fight, before and after: `docs/ux-shots/effects-1915/`.
+
 ## [1.912.0+948]
 
 - Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.

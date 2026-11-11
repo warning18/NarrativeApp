@@ -15,6 +15,7 @@ before starting a change.
 | **QA** (testing) | `claude/qa` | keeps the tests fast and finds what broke: tests, simulator, L3 on request |
 | **Cleanup** (code health) | `claude/cleanup` | removes dead code, applies analyzer-proven lint fixes, privatises file-only names; no behaviour change (waves 1, 2, 2b of `docs/qa/code-cleanup-plan.md`) |
 | **Art** (PixelLab) | `claude/art` | every exchange with PixelLab: generates, reviews and stages the game's visual elements (characters, dice, buttons, icons, banners, backgrounds); hands finished files to UX, who wires them |
+| **Maps** | `claude/maps` | every map the player sees, from the inside of a building to the city, the world chart and the globe: how each is laid out, drawn, zoomed and linked to the next; pictures first |
 
 The manager is the Claude Code session `session_01SfVpQUmQNXErL5fGsy7HU9`.
 Sessions reach it with the `send_message` tool of the `claude-code-remote`
@@ -40,10 +41,12 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
 - the logic files of the fight: `lib/screens/fight/fight_rounds.dart`,
   `fight_dice_rules.dart`, `fight_queries.dart`, `fight_models.dart`,
   `fight_rewards.dart`, `fight_ground.dart`, `fight_goals.dart`
-- Journey, world roads, geography, the playthrough simulator, `docs/simulation/`
+- Journey, world roads, geography (the data and rules; the maps drawn from
+  them are Maps'), the playthrough simulator, `docs/simulation/`
 
 **UX owns:**
-- `lib/widgets/`, `lib/theme/`, `lib/utils/pixel_icons/`, `lib/utils/face_style.dart`
+- `lib/widgets/` (except the map widgets listed under Maps), `lib/theme/`,
+  `lib/utils/pixel_icons/`, `lib/utils/face_style.dart`
 - every visual effect: `lib/combat/skill_vfx.dart`, `lib/widgets/combat_vfx.dart`,
   `lib/widgets/pixel_vfx.dart`, `lib/screens/fight/fight_effects.dart`,
   `lib/screens/vfx_gallery_screen.dart`
@@ -73,6 +76,28 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
   and `lib/widgets/` in its own PR. Banners are improved in their current style,
   never restyled. Picture first for every category; state the cost of a call before
   making it and ask the user before a batch above about 30 generations.
+
+**Maps owns:**
+- the room and place plans: `lib/data/room_plan.dart`, `place_plan.dart`,
+  `lib/widgets/room_plan_painter.dart`
+- the town and city views: `lib/widgets/city_chart/`, `lib/data/city_camera.dart`,
+  `city_plan_record.dart`, `cliff_town.dart`, `lib/widgets/cliff_town_view.dart`,
+  `lib/screens/city_chart_screen.dart`, `assets/visuals/city/`
+- the world chart and the globe: `lib/data/map_charts.dart`, `chart_globe.dart`,
+  `chart_relief.dart`, `chart_story.dart`, `chart_worlds.dart` (generated),
+  `map_themes.dart`, `lib/widgets/chart_map_painter.dart`, `chart_weather.dart`,
+  `map_legend_sheet.dart`, `journey_world_map.dart`,
+  `lib/screens/world_map_screen.dart`, `full_map_screen.dart`,
+  `epilogue_map_screen.dart`, the map look and map theme providers
+- `docs/maps/`, and the map tests (`test/chart_*`, `city_chart_*`, `room_plan_*`,
+  `map_*`, `full_map_*`)
+- It lays out and draws; it never changes a rule, a number or an id. Travel
+  times, road events and hazards, district standing and influence, what a
+  place sells, and the landmarks, roads and places the story depends on
+  (`world_map.dart`, `world_roads.dart`, `geography.json`, `city_districts.dart`)
+  stay Core's; a field a map needs is asked from Core through the manager.
+  Colours, fonts and shared widgets stay UX's. Painted plates come from Art,
+  asked through the manager. Picture first for every change the player sees.
 
 **Cleanup owns:**
 - the waves 1, 2 and 2b of `docs/qa/code-cleanup-plan.md`: mechanical lint
