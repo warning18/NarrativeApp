@@ -74,3 +74,5 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 
 ## Story scenes, final pack (0 generations)
 `art/pixellab-scenes/final/`: 5 bands chosen by the user (alster_lower_town s4, cove_camp s4, saltmouth_wharf s3, black_hold_cells s3, candlehold_throne_room s4), picks.json and a hand-off README. Hollow Shore: none.
+## Skill effects, rawer amendment (0 generations)
+Strips `art/pixellab-vfx/staged-rawer/` (flame, frost, lightning, heal, void_rift, shield), made by `rawer_gen.py` from the pilot strips: 24x24 grid x2, 5 colours + ink, no glow. Sheet `docs/art/boards/skill-effects-rawer.png`. Not wired.
