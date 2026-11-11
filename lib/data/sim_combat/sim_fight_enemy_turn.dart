@@ -60,6 +60,7 @@ extension _SimFightEnemyTurn on _SimFight {
       }
     }
     advancePhases();
+    noteSkittishFlights();
     feedKills();
     if (allDead()) return finish(true);
 
@@ -108,6 +109,9 @@ extension _SimFightEnemyTurn on _SimFight {
   /// fight's outcome when the hero falls, else null.
   SimFightOutcome? _enemyTurn() {
     final ctx = this.ctx;
+    // A Pack Leader standing as the turn opens drives the rest harder.
+    final leaderStanding =
+        ens.any((e) => e.isAlive && e.has(EnemyAffix.packLeader));
     // --- enemy turn ---
     if (on('squad')) {
       for (var i = 0; i < ens.length; i++) {
@@ -273,14 +277,22 @@ extension _SimFightEnemyTurn on _SimFight {
       }
       // A Mirror sends back the round's best hit, as on the fight screen;
       // a pact's curse makes every blow harder while it runs.
-      var moveDamage = s.enemyDamage(
-        applyWeaken(
-          move.tamper == DiceTamper.mirror
-              ? mirrorDamage(bestPartyHit: bestHit, enemyDamage: e.damage)
-              : move.damage,
-          e.statusEffects,
-        ),
+      var weakened = applyWeaken(
+        move.tamper == DiceTamper.mirror
+            ? mirrorDamage(bestPartyHit: bestHit, enemyDamage: e.damage)
+            : move.damage,
+        e.statusEffects,
       );
+      // Frenzied below half health, and a standing Pack Leader's boost to
+      // the rest (the fight screen's _incomingDamage, in its order).
+      if (e.has(EnemyAffix.frenzied) &&
+          e.health < e.maxHealth * frenziedHealthThreshold) {
+        weakened = (weakened * frenziedDamageMultiplier).round();
+      }
+      if (leaderStanding && !e.has(EnemyAffix.packLeader)) {
+        weakened = (weakened * packLeaderAllyDamageMultiplier).round();
+      }
+      var moveDamage = s.enemyDamage(weakened);
       if (on('response')) {
         final answer = responseDamageMultiplier(
           provoked: e.provoked,
@@ -314,7 +326,8 @@ extension _SimFightEnemyTurn on _SimFight {
         final taken = dodged ? 0 : max(0, moveDamage - a.block - a.armor);
         a.block = 0;
         a.currentHealth = max(0, a.currentHealth - taken);
-        final inflicted = move.inflictedStatus;
+        final inflicted = move.inflictedStatus ??
+            (e.has(EnemyAffix.venomous) ? venomousPoison : null);
         if (!dodged && inflicted != null && !a.isKnockedOut) {
           a.statusEffects = applyStatusEffect(
               a.statusEffects, applyWisdomResistance(inflicted, a.wisdom));
@@ -387,7 +400,13 @@ extension _SimFightEnemyTurn on _SimFight {
         phasesEntered += e.advancePhases();
       }
       block = 0;
-      final inflicted = move.inflictedStatus;
+      // A Venomous foe's plain blow poisons, unless a parry stopped it
+      // outright.
+      final inflicted = move.inflictedStatus ??
+          (e.has(EnemyAffix.venomous) &&
+                  !(parry > 0 && parryStopsBlow(moveDamage, parry))
+              ? venomousPoison
+              : null);
       if (!dodged && inflicted != null && !c.isKnockedOut) {
         c.statusEffects = applyStatusEffect(
           c.statusEffects,

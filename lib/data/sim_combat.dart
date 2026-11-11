@@ -6,6 +6,7 @@ import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
 import '../combat/dice_tamper.dart';
 import '../combat/doctrine.dart';
+import '../combat/enemy_affix.dart';
 import '../combat/context_rules.dart';
 import '../combat/element_reaction.dart';
 import '../combat/face_element.dart';
@@ -59,9 +60,16 @@ part 'sim_combat/sim_spell_cast.dart';
 ///   Resolve, momentum's surge or the hunt-the-healer retarget);
 /// - of the clash rules (v1.212-v1.215) the goals (hold, rout, subdue), the
 ///   Writ, squad roles, the enemies' answers (counter, press), parries and
-///   element reactions are played when `clash` is on; the thieves' purse,
-///   the hunt-the-healer retarget and the doctrines' affixes are not;
-/// - no affixes, Elites or battlefield conditions;
+///   element reactions are played when `clash` is on; the thieves' purse
+///   and the hunt-the-healer retarget are not;
+/// - the affixes the caller hands it (`affixes`, rolled or forced as the
+///   fight screen does: rollEncounterAffixes): Venomous, Armored, Skittish
+///   (fled at the end of the party's turn, as the fight screen counts it:
+///   gone, the fight won when none is left), Frenzied and Pack Leader, by
+///   enemy_affix.dart's own rules; an Elite when `elite` (a solo foe at
+///   eliteStatMultiplier, no goal rolled); none of either by default (the
+///   story simulator rolls neither);
+/// - no battlefield conditions;
 /// - no chapter threat on the enemies, and no sellsword;
 /// - of the face keywords only the strike ones a sign may lend (Cleave,
 ///   Pierce, Pain, Steady), with the enemies' Hex, Silence and Curse on
@@ -74,7 +82,9 @@ part 'sim_combat/sim_spell_cast.dart';
 /// - of the perks (see perks.dart), what lays over the gear, Vigor's
 ///   health, the potions' and the mana's (no rerolls, momentum or party);
 /// - no crit/momentum beyond what the engine rolls, and a die rerolled
-///   only on an empty face;
+///   only on an empty face -- or, with `rerollWeakFaces`, also on a face
+///   worth less to the hero than the die's mean (simFaceValue,
+///   simDieValue), within the round's three rolls (the third kept);
 /// - a shop visited once when the story unlocks it (best affordable gear
 ///   per slot, two potions, the profession's own spellbook, the sage die
 ///   for a caster).
@@ -988,7 +998,10 @@ const int _maxRolls = maxRollsPerTurn;
 /// the fight and taken back when it ends; [perks] what the perk ranks do.
 /// [zoneMultiplier] is the fight's own multiplier on the curve, as the
 /// fight screen's `EncounterModifiers.difficultyMultiplier` (a Tower floor's
-/// extra).
+/// extra). [affixes] holds each enemy's affixes, in [enemies] order (none by
+/// default); [elite] makes a lone enemy an Elite (the fight screen's
+/// `forceElite`); [rerollWeakFaces] has the hero reroll a weak face, not
+/// only an empty one. Their defaults play the fight as it always was.
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -1008,6 +1021,9 @@ SimFightOutcome simulateSimFight({
   Reinforcement reinforcement = Reinforcement.none,
   List<SimAlly> allies = const [],
   double zoneMultiplier = 1.0,
+  List<List<EnemyAffix>> affixes = const [],
+  bool elite = false,
+  bool rerollWeakFaces = false,
 }) {
   final fight = _SimFight(
     c: character,
@@ -1028,6 +1044,9 @@ SimFightOutcome simulateSimFight({
     reinforcement: reinforcement,
     allies: allies,
     zoneMultiplier: zoneMultiplier,
+    affixes: affixes,
+    elite: elite,
+    rerollWeakFaces: rerollWeakFaces,
   ).._setup();
   return fight.run();
 }

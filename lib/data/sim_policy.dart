@@ -217,27 +217,41 @@ double simDieValue(
 }) {
   var total = 0.0, weights = 0.0;
   for (var i = 0; i < faces.length; i++) {
-    final face = faces[i];
-    final w = (face['weight'] as num?)?.toDouble() ?? 1.0;
-    final v = (face['value'] as num?)?.toDouble() ?? 0;
-    final worth = switch (face['type']?.toString()) {
-      'Attack' => damage + v,
-      'Defend' => v * 0.8,
-      'Heal' => v * 0.7,
-      'Mana' => caster ? v * 1.5 : 0.0,
-      'Skill' => () {
-          final linked = face['linkedSkillID']?.toString() ?? '';
-          final id =
-              assignments['$i'] ?? (linked.isEmpty ? 'heavy_attack' : linked);
-          if (_isManaSkill(skills, id)) return caster ? 2.0 : 0.0;
-          return damage + simSkillScore(skills[id] as Map<String, dynamic>?);
-        }(),
-      _ => 0.0,
-    };
-    total += w * worth;
+    final w = (faces[i]['weight'] as num?)?.toDouble() ?? 1.0;
+    total += w *
+        simFaceValue(faces, i, assignments, skills,
+            damage: damage, caster: caster);
     weights += w;
   }
   return weights <= 0 ? 0 : total / weights;
+}
+
+/// What face [i] of [faces] is worth when it lands, in [simDieValue]'s
+/// units ([simDieValue] is their weighted mean).
+double simFaceValue(
+  List<Map<String, dynamic>> faces,
+  int i,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills, {
+  required int damage,
+  bool caster = false,
+}) {
+  final face = faces[i];
+  final v = (face['value'] as num?)?.toDouble() ?? 0;
+  return switch (face['type']?.toString()) {
+    'Attack' => damage + v,
+    'Defend' => v * 0.8,
+    'Heal' => v * 0.7,
+    'Mana' => caster ? v * 1.5 : 0.0,
+    'Skill' => () {
+        final linked = face['linkedSkillID']?.toString() ?? '';
+        final id =
+            assignments['$i'] ?? (linked.isEmpty ? 'heavy_attack' : linked);
+        if (_isManaSkill(skills, id)) return caster ? 2.0 : 0.0;
+        return damage + simSkillScore(skills[id] as Map<String, dynamic>?);
+      }(),
+    _ => 0.0,
+  };
 }
 
 /// Whether [die] (a dice.json record) is one the character may roll: no

@@ -29,6 +29,9 @@ class _SimFight {
     required this.reinforcement,
     required this.allies,
     this.zoneMultiplier = 1.0,
+    this.affixes = const [],
+    this.elite = false,
+    this.rerollWeakFaces = false,
   });
 
   // simulateSimFight's arguments ([c] the character, [s] its signs).
@@ -53,6 +56,12 @@ class _SimFight {
   /// The fight's own multiplier on the curve (a zone's tier, a Tower
   /// floor's extra): the fight screen's EncounterModifiers.difficultyMultiplier.
   final double zoneMultiplier;
+
+  /// Each enemy's affixes, in [enemies] order; a lone foe made an Elite;
+  /// the hero rerolling a weak face (see [simulateSimFight]).
+  final List<List<EnemyAffix>> affixes;
+  final bool elite;
+  final bool rerollWeakFaces;
 
   // What the fight keeps from round to round, set in _setup (where each
   // is explained), in the order it sets them.
@@ -96,6 +105,7 @@ class _SimFight {
   late bool broadsideUsed;
   late final int baseMaxHealth;
   late final double packMultiplier;
+  late final bool isElite;
   late final List<bool> bossFlags;
   late FightGoal goal;
   late List<SquadRole?> roles;
@@ -230,7 +240,8 @@ class _SimFight {
     }
     if (s.killHeal <= 0 || c.isKnockedOut) return;
     for (final e in ens) {
-      if (e.isAlive || !fed.add(e)) continue;
+      // One that fled is no kill (fight_sign_rounds' _feedSignKills).
+      if (e.isAlive || e.fled || !fed.add(e)) continue;
       c.currentHealth = min(c.maxHealth, c.currentHealth + s.killHeal);
     }
   }
@@ -243,6 +254,20 @@ class _SimFight {
         e.statusEffects,
         s.playerInflicted(chance.status),
       );
+    }
+  }
+
+  // A Skittish enemy hurt below the line flees (the fight screen's
+  // _noteSkittishFlights, after the party's dice and after a spell): out
+  // of the fight, counted as gone.
+  void noteSkittishFlights() {
+    for (final e in ens) {
+      if (e.isAlive &&
+          e.has(EnemyAffix.skittish) &&
+          e.health < e.maxHealth * skittishFleeThreshold) {
+        e.fled = true;
+        e.health = 0;
+      }
     }
   }
 

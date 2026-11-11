@@ -27,6 +27,11 @@ class _SimEnemy {
 
   bool get isAlive => health > 0;
 
+  /// Its affixes (enemy_affix.dart), and whether it fled (a Skittish one).
+  List<EnemyAffix> affixes = const [];
+  bool fled = false;
+  bool has(EnemyAffix affix) => affixes.contains(affix);
+
   /// A `healsOnce` boss (the claimants, fight_length.dart) that has mended
   /// itself once this fight; [skills] is the skill table its heal moves
   /// are read from.

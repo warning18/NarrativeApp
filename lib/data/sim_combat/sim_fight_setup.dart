@@ -90,6 +90,8 @@ extension _SimFightSetup on _SimFight {
       if (full) c.mana = c.maxMana;
     }
     packMultiplier = _packStatMultipliers[enemies.length] ?? 1.0;
+    // An Elite is a lone foe (the fight screen's _isElite).
+    isElite = elite && enemies.length == 1;
     // v1.212/v1.215: the fight's goal and the pack's squad, rolled as the
     // fight screen rolls them.
     bossFlags = [
@@ -98,8 +100,9 @@ extension _SimFightSetup on _SimFight {
     goal = FightGoal.slay;
     roles = List<SquadRole?>.filled(enemies.length, null);
     if (on('goal')) {
+      // An Elite fight rolls no goal (the fight screen's goalEligible).
       goal = rollFightGoal(
-        eligible: !bossFlags.any((b) => b),
+        eligible: !bossFlags.any((b) => b) && !isElite,
         enemyCount: enemies.length,
         canYield: enemies.length == 1 &&
             canYieldFaction(enemies.first.value['faction']?.toString()),
@@ -146,6 +149,18 @@ extension _SimFightSetup on _SimFight {
                   curveFor(entry).damage *
                   packMultiplier)
               .round();
+          // The Elite's and the pack leader's stats, as the fight screen's
+          // _buildEnemyMember lays them (after the curve, before the
+          // squad's roles).
+          final affixed =
+              i < affixes.length ? affixes[i] : const <EnemyAffix>[];
+          if (isElite) {
+            health = (health * eliteStatMultiplier).round();
+            damage = (damage * eliteStatMultiplier).round();
+          }
+          if (affixed.contains(EnemyAffix.packLeader)) {
+            health = (health * packLeaderHealthMultiplier).round();
+          }
           switch (roles[i]) {
             case SquadRole.healer:
               damage = (damage * healerDamageMultiplier).round();
@@ -166,6 +181,7 @@ extension _SimFightSetup on _SimFight {
             damage: damage,
           )
             ..skills = skills
+            ..affixes = affixed
             ..role = roles[i]
             ..response = on('response') && chapter >= squadFirstChapter
                 ? enemyResponseFromName(entry.value['reaction']?.toString())
