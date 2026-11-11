@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.906.0+942]
+
+- Icons: Art's harmonised set of the 289 skill and item icons (one ink outline, the shared 63-colour palette; the drawings are untouched) replaces the originals in `assets/icons/skills` and `assets/icons/items`, same names and sizes.
+
 ## [1.904.0+940]
 
 - Intro: the four scenes (the burning Shroud, the city on alert, Tallow Street and the Blind Beggar, the tavern room) are now Art's pixel plates, drawn cover-fit with a slow push or pan; the ash, the six embers, the shell's flash, the die, the title, the four lines, the fade, tap-to-skip and reduced motion are unchanged.
