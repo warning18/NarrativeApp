@@ -28,7 +28,8 @@ import '../data/journey_map.dart';
 import '../data/scene_flow.dart';
 import '../data/scene_lock.dart' show isHubScene, pageExitHidden;
 import '../data/journey_relief.dart';
-import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
+import '../data/map_charts.dart'
+    show ChartGeography, ChartPalette, MapShape, chartOf;
 import '../data/road_chart.dart';
 import '../data/world_leg_path.dart';
 import '../data/world_roads.dart' show isWorldRoadLeg;
@@ -1364,7 +1365,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
     // The place up close, when the party stands at one the world chart
     // knows (not on a detour): where it is and what the ways out point at.
-    final geography = chartOf(ref.watch(mapShapeProvider));
+    final geography = chartOf(MapShape.story);
     final placeLandmark = play.isInExcursion ? null : standing;
     final chartHere =
         placeLandmark == null ? null : geography.of(placeLandmark);

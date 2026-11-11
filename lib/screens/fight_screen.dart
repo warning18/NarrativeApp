@@ -14,7 +14,8 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/fight_backdrop.dart';
-import '../widgets/fight_plates.dart' show FightPlateOverride, fightPlateAsset;
+import '../widgets/fight_plates.dart'
+    show FightPlateImages, FightPlateOverride, fightPlateAsset;
 import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
@@ -219,7 +220,13 @@ class FightScreen extends ConsumerStatefulWidget {
     this.modifiers = EncounterModifiers.none,
     this.random,
     this.landLayers,
+    this.onRound,
   });
+
+  /// Told the number of each round as it starts (1 when the battle begins):
+  /// the Tower's rival counts the rounds a fight took. Null (every other
+  /// fight) changes nothing.
+  final ValueChanged<int>? onRound;
 
   /// The land the fight stands on, when it is met on a road: the side-view
   /// kit of the place (the camera's at the party's x, see world_camera.dart),
