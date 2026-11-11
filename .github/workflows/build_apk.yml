@@ -52,6 +52,13 @@ jobs:
 
   # Format and analyze: fast, and independent of the tests, so they run
   # beside them instead of before them.
+  # Flutter is pinned (flutter-version below, in every job that sets it up and
+  # in format.yml). A bare `channel: stable` took whatever stable was that
+  # minute: on 11 November 2026 a new stable landed between two merges, its
+  # analyzer flagged every `package:flutter/material.dart` import and its
+  # Gradle step wanted a newer Android Gradle Plugin, so every pull request
+  # and the release build failed with no change of ours. Raise the version on
+  # purpose, in its own pull request, with whatever the new one asks for.
   checks:
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +69,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.47.9'
           cache: true
 
       - name: Get dependencies
@@ -105,6 +113,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.47.9'
           cache: true
 
       - name: Get dependencies
@@ -151,6 +160,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.47.9'
           cache: true
 
       - name: Cache Gradle
