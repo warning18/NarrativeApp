@@ -1385,8 +1385,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Une épreuve de {ability}',
   },
   'tower_event_test_body': {
-    AppLanguage.en:
-        'Roll a d20 and add {mod}: you need {dc} to hold on.',
+    AppLanguage.en: 'Roll a d20 and add {mod}: you need {dc} to hold on.',
     AppLanguage.fr:
         'Lancez un d20 et ajoutez {mod} : il vous faut {dc} pour tenir bon.',
   },
