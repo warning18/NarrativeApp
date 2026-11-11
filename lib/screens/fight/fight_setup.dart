@@ -608,6 +608,7 @@ extension _FightSetup on _FightScreenState {
     _update(() {
       _started = true;
       _roundsStarted = 1;
+      widget.onRound?.call(_roundsStarted);
       _log.add(
         _LogEntry(
           '${trFor(lang, 'fight_begins_prefix')} ${_battleTitle()}$hpSuffix.',
