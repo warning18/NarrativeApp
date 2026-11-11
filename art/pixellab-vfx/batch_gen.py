@@ -4,7 +4,10 @@ Each style = create_image_pixen 48x48 (1 generation) + animate_image 8 frames (1
 import json, subprocess, time, base64, sys, os, re
 CLI = ['python3', 'tool/pixellab_client.py', 'call']
 PIX = "16-bit pixel art, flat colour with a dark ink outline, hot bright core, centred effect on a transparent background, no text, no UI"
-BATCHES = {'batch1': {
+BATCHES = {'retry1': {
+ 'heavy_slash': ("one huge curved diagonal slash mark across the frame, a single white and crimson crescent blade streak with a sharp bright edge, nothing else", "the slash streak sweeps across, then thins and fades away until nothing is left"),
+ 'splash': ("a clean splash of blue water: a crown of droplets rising from a flat ripple ring, only water, light blue and white", "the water crown splashes up, peaks, then collapses into ripples and fades away completely")},
+ 'batch1': {
  'radiance': ("a burst of holy golden light, a bright white core with eight radiating rays", "the light blooms outward, shines at its peak, then fades away until nothing is left"),
  'shout': ("three curved sound waves bursting outward from a roaring centre, orange and cream", "the sound waves expand outward and thin out until they vanish"),
  'stone_shield': ("a round slab of grey rock hovering as a shield, cracked and mossy edge, a hard bright rim", "the stone slab slams into place, holds, then crumbles into dust and fades away"),
@@ -30,7 +33,7 @@ if __name__ == '__main__':
     while queue or active:
         while queue and len(active) < 4:
             k = queue.pop(0)
-            r = call('create_image_pixen', {"description": B[k][0] + ", " + PIX, "width": 48, "height": 48, "no_background": True, "seed": 61})
+            r = call('create_image_pixen', {"description": B[k][0] + ", " + PIX, "width": 48, "height": 48, "no_background": True, "seed": int(os.environ.get("SEED", "61"))})
             active.append(dict(k=k, job=field(r, 'job_id'), stage='img', raw=r[:200] if not field(r, 'job_id') else ''))
             save()
         time.sleep(25)
