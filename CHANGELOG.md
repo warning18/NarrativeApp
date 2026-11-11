@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.907.0+943]
 
-- Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, and the equipment slots' empty silhouettes, are wired and show their Material stand-ins until Art's star, slot and block glyphs land.
+- Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
 
 ## [1.905.0+941]
 

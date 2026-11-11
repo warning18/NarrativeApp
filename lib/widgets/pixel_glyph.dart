@@ -10,8 +10,11 @@ import '../theme/icon_sizes.dart';
 
 enum PixelGlyphs {
   lock('lock', Icons.lock),
-  star('star', Icons.star),
-  block('block', Icons.block),
+
+  /// The 8 x 8 lock with its ink ring, for badges (drawn at 16 dp, 2x).
+  lock8('lock8', Icons.lock, tinted: false),
+  star('star', Icons.star, tinted: false),
+  block('block', Icons.block, tinted: false),
   slotHead('slot_head', Icons.sports_motorsports_outlined),
   slotBody('slot_body', Icons.checkroom_outlined),
   slotWeapon('slot_weapon', Icons.gavel),
@@ -19,7 +22,11 @@ enum PixelGlyphs {
   slotFeet('slot_feet', Icons.hiking),
   slotBag('slot_bag', Icons.inventory_2_outlined);
 
-  const PixelGlyphs(this.file, this.fallback);
+  const PixelGlyphs(this.file, this.fallback, {this.tinted = true});
+
+  /// Whether the file is a white mask the theme tints (the lock, the slot
+  /// silhouettes) or a picture with its own colours (the star, the block).
+  final bool tinted;
 
   /// The file name under assets/icons/glyphs/ (without .png).
   final String file;
@@ -56,9 +63,9 @@ class PixelGlyph extends StatelessWidget {
       fit: BoxFit.contain,
       filterQuality: FilterQuality.none,
       isAntiAlias: false,
-      // The mask is white (its ink pixels stay dark): multiplied by the tint.
-      color: tint,
-      colorBlendMode: BlendMode.modulate,
+      // A mask is white (its ink pixels stay dark): multiplied by the tint.
+      color: glyph.tinted ? tint : null,
+      colorBlendMode: glyph.tinted ? BlendMode.modulate : null,
       errorBuilder: (context, error, stack) => fallback,
     );
     if (opacity < 1) child = Opacity(opacity: opacity, child: child);

@@ -290,8 +290,8 @@ class SkillNode extends ConsumerWidget {
                       color: theme.scaffoldBackgroundColor,
                     ),
                     child: locked
-                        ? PixelGlyph(PixelGlyphs.lock,
-                            size: IconSize.s16, color: ink.ash)
+                        ? const PixelGlyph(PixelGlyphs.lock8,
+                            size: IconSize.s16)
                         : Icon(kind.icon,
                             size: IconSize.inline, color: kind.color),
                   ),
@@ -427,7 +427,8 @@ class _MasteryNode extends ConsumerWidget {
                 ),
                 child: PixelGlyph(closed ? PixelGlyphs.block : PixelGlyphs.star,
                     color: isMastered || ready ? ink.gold : ink.ash,
-                    size: IconSize.s16),
+                    opacity: isMastered || ready ? 1 : 0.55,
+                    size: IconSize.s32),
               ),
               const SizedBox(height: 3),
               // "Mastery" over its cost, shrunk to the column when French
