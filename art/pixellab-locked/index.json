@@ -1,0 +1,15 @@
+{
+ "png": [
+  "star",
+  "block",
+  "lock8"
+ ],
+ "masks_16px": [
+  "slot_head",
+  "slot_body",
+  "slot_weapon",
+  "slot_legs",
+  "slot_feet",
+  "slot_bag"
+ ]
+}
