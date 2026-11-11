@@ -62,7 +62,7 @@ class TowerNight extends ConsumerWidget {
       builder: (context, _, __) => Theme(
         data: buildAppTheme(palette.schemeFor(Brightness.dark),
             frames: FrameImages.ready(material, env)
-                ? FrameStyle(material: material, env: env)
+                ? FrameStyle(material: material, env: env, compactScale: 2)
                 : null),
         child: TowerPanelStyle(child: child),
       ),

@@ -12,6 +12,16 @@ isn't reconstructable from git history alone.
 
 - Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won. A wood button has a flat plate under its label so the label reads. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.
 
+## [1.916.0+952]
+
+- **Narrative: four wording fixes on the map screens** (from the Maps session's French
+  pass). Saltmouth's "Tern Row" has its French name, **La Rangée des sternes**, on the
+  map and everywhere the French story, quests, NPCs and the item text named it (32
+  places); the Journey button and its hint say **Partir** instead of "Go"; the weather
+  line reads "vent d’est" / "vent du nord-ouest" (and "wind from the north-east" in
+  English) instead of a compass letter; the layers sheet is **Layers** in English.
+  Wording only; no key, id or number changed.
+
 ## [1.915.0+951]
 
 - Fight: no empty space before the battle, and portraits from the sprites. When the setup page (the foe, the die, Enter Battle) is shorter than the screen, the fighters stand at the bottom of it, the hero and the allies facing the foes, over the ground that now fills the page (QA's empty lower half); a page that already fills the screen is as it was (the room is measured after layout, so it never changes the page). The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
@@ -141,6 +151,7 @@ isn't reconstructable from git history alone.
     gold instead of 4,005.
   - The Tower's bosses (the legate, Morrow, the Sovereign on floor 30) use
     the same floor; the Tower's bands still pass.
+
 ## [1.895.0+931]
 
 ### Added
