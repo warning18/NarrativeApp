@@ -87,12 +87,12 @@ void main() {
         from: 14,
         to: 12))));
     await tester.pump();
-    expect(find.text('You fell from floor 14 to floor 12'), findsOneWidget);
-    expect(find.text('You rolled 6, total 9.'), findsOneWidget);
+    expect(find.text('You fall from floor 14 to floor 12'), findsOneWidget);
+    expect(find.text('You roll 6, total 9.'), findsOneWidget);
     await tester.pumpWidget(host(const TowerEventResultLine(TowerEventResult(
         kind: TowerEventKind.rival, passed: true, from: 16, to: 18))));
     await tester.pump();
-    expect(find.textContaining('floor 17 skipped'), findsOneWidget);
+    expect(find.textContaining('floor 17 is skipped'), findsOneWidget);
   });
 
   testWidgets('the floor screen shows a rival, and nothing when events are off',

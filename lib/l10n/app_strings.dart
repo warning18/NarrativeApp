@@ -1399,8 +1399,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Réussite',
   },
   'tower_event_pass_text': {
-    AppLanguage.en: 'keep your footing and take {n} potion.',
-    AppLanguage.fr: 'vous tenez bon et gagnez {n} potion.',
+    AppLanguage.en: 'keep your footing and take a potion.',
+    AppLanguage.fr: 'vous tenez bon et gagnez une potion.',
   },
   'tower_event_fail': {
     AppLanguage.en: 'Fail',
@@ -1408,7 +1408,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_fail_text': {
     AppLanguage.en: 'fall to floor {n}.',
-    AppLanguage.fr: 'chute à l’étage {n}.',
+    AppLanguage.fr: 'vous chutez à l’étage {n}.',
   },
   'tower_event_left': {
     AppLanguage.en: '{n} setbacks left on this climb',
@@ -1420,57 +1420,60 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_rival_title': {
     AppLanguage.en: 'A rival races you up',
-    AppLanguage.fr: 'Un rival monte avec vous',
+    AppLanguage.fr: 'Un rival vous fait la course',
   },
   'tower_event_rival_body': {
-    AppLanguage.en: 'Beat them fast and you skip floor {n}.',
-    AppLanguage.fr: 'Battez-le vite et vous sautez l’étage {n}.',
+    AppLanguage.en:
+        'Beat them fast and the stair will not make you climb floor {n}.',
+    AppLanguage.fr:
+        'Battez-le vite et l’escalier ne vous fera pas gravir l’étage {n}.',
   },
   'tower_event_rival_win': {
     AppLanguage.en: 'Win within {n} rounds',
-    AppLanguage.fr: 'Victoire en {n} tours',
+    AppLanguage.fr: 'Victoire en {n} tours au plus',
   },
   'tower_event_rival_win_text': {
     AppLanguage.en: 'skip to floor {n}.',
-    AppLanguage.fr: 'saut à l’étage {n}.',
+    AppLanguage.fr: 'vous sautez à l’étage {n}.',
   },
   'tower_event_rival_slow': {
-    AppLanguage.en: 'Slower',
-    AppLanguage.fr: 'Plus lent',
+    AppLanguage.en: 'Too slow',
+    AppLanguage.fr: 'Trop lent',
   },
   'tower_event_rival_slow_text': {
-    AppLanguage.en: 'no skip, the climb goes on as usual.',
-    AppLanguage.fr: 'pas de saut, l’ascension continue comme d’habitude.',
+    AppLanguage.en: 'no skip: the climb goes on.',
+    AppLanguage.fr: 'pas de saut : l’ascension continue.',
   },
   'tower_event_fell': {
-    AppLanguage.en: 'You fell from floor {from} to floor {to}',
+    AppLanguage.en: 'You fall from floor {from} to floor {to}',
     AppLanguage.fr: 'Vous tombez de l’étage {from} à l’étage {to}',
   },
   'tower_event_held': {
-    AppLanguage.en: 'You held your footing on floor {from}',
+    AppLanguage.en: 'You hold your footing on floor {from}',
     AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
   },
   'tower_event_outran': {
     AppLanguage.en:
-        'You outran your rival: floor {skipped} skipped, you land on floor {to}',
+        'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
     AppLanguage.fr:
         'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
   },
   'tower_event_rival_lost': {
-    AppLanguage.en: 'Your rival got away: no skip',
+    AppLanguage.en: 'Your rival gets away: no skip',
     AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
   'tower_event_rolled': {
-    AppLanguage.en: 'You rolled {roll}, total {total}.',
-    AppLanguage.fr: 'Vous avez fait {roll}, total {total}.',
+    AppLanguage.en: 'You roll {roll}, total {total}.',
+    AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',
   },
   'tower_event_nothing_again': {
-    AppLanguage.en: 'Floors you have already cleared pay nothing again.',
-    AppLanguage.fr: 'Les étages déjà franchis ne rapportent plus rien.',
+    AppLanguage.en: 'A floor you climb twice pays nothing the second time.',
+    AppLanguage.fr:
+        'Un étage gravi deux fois ne rapporte rien la seconde fois.',
   },
   'tower_event_nothing': {
     AppLanguage.en: 'You have been here: this floor pays nothing.',
-    AppLanguage.fr: 'Vous êtes déjà passé ici : cet étage ne rapporte rien.',
+    AppLanguage.fr: 'Étage déjà franchi : il ne rapporte rien.',
   },
   'tower_floor_of': {
     AppLanguage.en: 'Floor {n} of 30',
