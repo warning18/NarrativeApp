@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.915.0+951]
+
+- Effects: Art's strips are in. The eight die landings (strike, ward, bloom, arcs, miasma, shock, drain, fizzle) and the three hits (slash, heavy, crit) replace the old strips in their slots, and the six skill effects (flame, frost, lightning, heal, void rift, shield; 9 frames) replace theirs; the other 23 skill styles keep theirs. Art's strips are drawn in five colours and an ink, so the element tint now ranks the colours by brightness into the four tones (the old strips map one to one as before); the flame and the heal shrink and fade out in their last third, in code. The floating damage numbers now use the app's pixel font: with no font family they drew as a solid pale or red block where the platform font was not loaded (QA's pale rectangle by the cards). Pictures and GIFs of a real fight, before and after: `docs/ux-shots/effects-1915/`.
+
 ## [1.912.0+948]
 
 - Locked and empty states: a pixel glyph widget (`PixelGlyph`: a 16 x 16 one-colour mask the theme tints, with the Material glyph as its stand-in until Art's file for it is in the bundle). The lock on a skill node, in the lists and on the choice cards is the pixel lock; the mastery star and block, the small lock badge and the equipment slots' empty silhouettes are Art's glyphs.
